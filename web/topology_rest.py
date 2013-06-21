@@ -13,9 +13,9 @@ import re
 
 from flask import Flask, json, Response, render_template, make_response, request
 
-
 CONFIG_FILE=os.getenv("HOME") + "/ONOS/web/config.json"
 LINK_FILE=os.getenv("HOME") + "/ONOS/web/link.json"
+ONOSDIR=os.getenv("HOME") + "/ONOS"
 
 ## Global Var for ON.Lab local REST ##
 RestIP="localhost"
@@ -373,7 +373,8 @@ def topology_for_gui():
   except:
     log_error("REST IF has issue: %s" % command)
     log_error("%s" % result)
-    sys.exit(0)
+    return
+#    sys.exit(0)
 
   topo = {}
   switches = []
@@ -439,7 +440,8 @@ def topology_for_gui():
   except:
     log_error("REST IF has issue: %s" % command)
     log_error("%s" % result)
-    sys.exit(0)
+    return
+#    sys.exit(0)
 
   for v in parsedResult:
     link = {}
@@ -479,7 +481,8 @@ def shortest_path(v1, p1, v2, p2):
   except:
     log_error("REST IF has issue: %s" % command)
     log_error("%s" % result)
-    sys.exit(0)
+    return
+#    sys.exit(0)
 
   topo = {}
   switches = []
@@ -526,7 +529,8 @@ def shortest_path(v1, p1, v2, p2):
   except:
     log_error("REST IF has issue: %s" % command)
     log_error("%s" % result)
-    sys.exit(0)
+    return
+#    sys.exit(0)
 
   for v in parsedResult:
     link = {}
@@ -565,7 +569,8 @@ def query_switch():
   except:
     log_error("REST IF has issue: %s" % command)
     log_error("%s" % result)
-    sys.exit(0)
+    return
+#    sys.exit(0)
 
 #  print command
 #  print result
@@ -594,7 +599,8 @@ def devices():
   except:
     log_error("REST IF has issue: %s" % command)
     log_error("%s" % result)
-    sys.exit(0)
+    return
+#    sys.exit(0)
 
   devices = []
   for v in parsedResult:
@@ -656,7 +662,8 @@ def query_links():
   except:
     log_error("REST IF has issue: %s" % command)
     log_error("%s" % result)
-    sys.exit(0)
+    return
+#    sys.exit(0)
 
   debug("query_links %s" % command)
 #  pp.pprint(parsedResult)
@@ -672,7 +679,8 @@ def query_links():
     except:
       log_error("REST IF has issue: %s" % command)
       log_error("%s" % result)
-      sys.exit(0)
+      return
+#      sys.exit(0)
 
     for p in linkResults:
       if p.has_key('type') and p['type'] == "port":
@@ -697,14 +705,14 @@ def query_links():
 @app.route("/controller_status")
 def controller_status():
 #  onos_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh status | awk '{print $1}'"
-  onos_check="cd; onos status %s | grep %s | awk '{print $2}'"
+  onos_check="cd; onos status | grep %s | awk '{print $2}'"
   #cassandra_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-cassandra.sh status"
 
   cont_status=[]
   for i in controllers:
     status={}
     onos=os.popen(onos_check % i).read()[:-1]
-    onos=os.popen(onos_check % (i, i.lower())).read()[:-1]
+#    onos=os.popen(onos_check % (i, i.lower())).read()[:-1]
     status["name"]=i
     status["onos"]=onos
     status["cassandra"]=0
@@ -724,8 +732,11 @@ def controller_status_change(cmd, controller_name):
 #    stop_onos="/home/admin/bin/onos stop %s > /tmp/debug " % (controller_name[-1:])
 #    print "Debug: Controller command %s called %s" % (cmd, controller_name)
   else:
-    start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
-    stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
+    # No longer use -i to specify keys (use .ssh/config to specify it)
+    start_onos="ssh %s ONOS/start-onos.sh start" % (controller_name)
+    stop_onos="ssh %s ONOS/start-onos.sh stop" % (controller_name)
+#    start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
+#    stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
 
   if cmd == "up":
     result=os.popen(start_onos).read()
@@ -743,8 +754,8 @@ def switch_controller_setting(cmd):
     result=""
     if (TESTBED == "sw"):
       for i in range(1, len(controllers)):
-        cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-local.sh'" % (controllers[i])
-        result += os.popen(cmd_string).read()
+          cmd_string="ssh %s 'cd ONOS/scripts; ./ctrl-local.sh'" % (controllers[i])
+          result += os.popen(cmd_string).read()
     else:
       cmd_string="cd; switch local > /tmp/watch"
       result += os.popen(cmd_string).read()
@@ -753,7 +764,8 @@ def switch_controller_setting(cmd):
     result=""
     if (TESTBED == "sw"):
       for i in range(1, len(controllers)):
-        cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
+        cmd_string="ssh %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
+#        cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
         print "cmd is: "+cmd_string
         result += os.popen(cmd_string).read()
     else:
@@ -789,7 +801,8 @@ def switch_status_change(cmd, dpid):
   r = re.compile(':')
   dpid = re.sub(r, '', dpid)
   host=controllers[0]
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s %s'" % (host, dpid, cmd)
+  cmd_string="ssh %s 'cd ONOS/scripts; ./switch.sh %s %s'" % (host, dpid, cmd)
+#  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s %s'" % (host, dpid, cmd)
   get_status="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s'" % (host, dpid)
   print "cmd_string"
 
@@ -829,7 +842,8 @@ def link_up_sw(src_dpid, src_port, dst_dpid, dst_port):
     else:
       (port, dontcare) = get_link_ports(dpid, src_dpid)
 
-    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, dpid, port, cmd)
+#    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, dpid, port, cmd)
+    cmd_string="ssh %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, dpid, port, cmd)
     print cmd_string
     res=os.popen(cmd_string).read()
     result = result + ' ' + res
@@ -936,7 +950,7 @@ def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
     host = controllers[hostid-1]
 
   if (TESTBED == "sw"):
-    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
+    cmd_string="ssh %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
   else:
     if ( src_dpid == "00:00:00:08:a2:08:f9:01" ):
       cmd_string="~/ONOS/scripts/link-hw.sh %s %s %s " % ( dst_dpid, dst_port, cmd)
@@ -957,11 +971,17 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
   url ="%s/wm/flow/getsummary/%s/%s/json" % (host, 0, 0)
   (code, result) = get_json(url)
   parsedResult = json.loads(result)
-  flow_nr = int(parsedResult[-1]['flowId'], 16)
+  if len(parsedResult) > 0:
+    if parsedResult[-1].has_key('flowId'):
+      flow_nr = int(parsedResult[-1]['flowId'], 16)
+  else:
+    flow_nr = -1  # first flow
+    print "first flow"
+
   flow_nr += 1
-  command =  "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+  command =  "%s/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (ONOSDIR, flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
   flow_nr += 1
-  command1 = "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", dst_dpid, dst_port, src_dpid, src_port, dstMAC, srcMAC)
+  command1 = "%s/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (ONOSDIR, flow_nr, "dummy", dst_dpid, dst_port, src_dpid, src_port, dstMAC, srcMAC)
   print "add flow: %s, %s" % (command, command1)
   errcode = os.popen(command).read()
   errcode1 = os.popen(command1).read()
@@ -973,7 +993,7 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
 #http://localhost:9000/gui/delflow/<flow_id>
 @app.route("/gui/delflow/<flow_id>")
 def del_flow(flow_id):
-  command = "/home/ubuntu/ONOS/web/delete_flow.py %s" % (flow_id)
+  command = "%/web/delete_flow.py %s" % (ONOSDIR, flow_id)
   print command
   errcode = os.popen(command).read()
   return errcode
@@ -1027,7 +1047,7 @@ def iperf_start(flow_id,duration,samples):
   if TESTBED == "hw":
     cmd_string="dsh -w %s 'cd ONOS/scripts; " % dst_host
   else:
-    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; " % dst_host
+    cmd_string="ssh %s 'cd ONOS/scripts; " % dst_host
   cmd_string += "./runiperf.sh %d %s %s %s:%s %s/%s/%s/%s'" % (flowId, src_dpid, dst_dpid, TESTBED, "svr", protocol, duration, interval, samples)
   print cmd_string
   os.popen(cmd_string)
@@ -1035,7 +1055,7 @@ def iperf_start(flow_id,duration,samples):
   if TESTBED == "hw":
     cmd_string="dsh -w %s 'cd ONOS/scripts; " % src_host
   else:
-    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts;" % src_host
+    cmd_string="ssh %s 'cd ONOS/scripts;" % src_host
   cmd_string+="./runiperf.sh %d %s %s %s:%s %s/%s/%s/%s'" % (flowId, src_dpid, dst_dpid, TESTBED, "client", protocol, duration, interval, samples)
   print cmd_string
   os.popen(cmd_string)
