@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Set paths
-FL_HOME=`dirname $0`
-FL_JAR="${FL_HOME}/target/floodlight.jar"
-FL_ONLY_JAR="${FL_HOME}/target/floodlight-only.jar"
-FL_LOGBACK="${FL_HOME}/logback.xml"
-LOGDIR=${FL_HOME}/onos-logs
-FL_LOG="${LOGDIR}/onos.`hostname`.log"
+ONOS_HOME=`dirname $0`
+ONOS_JAR="${ONOS_HOME}/target/floodlight.jar"
+ONOS_ONLY_JAR="${ONOS_HOME}/target/floodlight-only.jar"
+ONOS_LOGBACK="${ONOS_HOME}/logback.xml"
+LOGDIR=${ONOS_HOME}/onos-logs
+ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
 PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
-LOGS="$FL_LOG $PCAP_LOG"
+LOGS="$ONOS_LOG $PCAP_LOG"
 
 # Set JVM options
 JVM_OPTS=""
@@ -24,10 +24,13 @@ JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 #JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
 
 # Set classpath to include titan libs
-#CLASSPATH=`echo ${FL_HOME}/lib/*.jar ${FL_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
-CLASSPATH="${FL_ONLY_JAR}:${FL_HOME}/lib/*:${FL_HOME}/lib/titan/*"
-MAIN_CLASS="net.floodlightcontroller.core.Main"
+#CLASSPATH=`echo ${ONOS_HOME}/lib/*.jar ${ONOS_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
+CLASSPATH="${ONOS_ONLY_JAR}:${ONOS_HOME}/lib/*:${ONOS_HOME}/lib/titan/*"
+MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
 
+if [ -z "${MVN}" ]; then
+    MVN="mvn"
+fi
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
 
@@ -57,7 +60,7 @@ function start {
   done
 
 # Create a logback file if required
-  cat <<EOF_LOGBACK >${FL_LOGBACK}
+  cat <<EOF_LOGBACK >${ONOS_LOGBACK}
 <configuration scan="true" debug="true">
 <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 <encoder>
@@ -66,7 +69,7 @@ function start {
 </appender>
 
 <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-<file>${FL_LOG}</file>
+<file>${ONOS_LOG}</file>
 <encoder>
 <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
 </encoder>
@@ -85,10 +88,10 @@ EOF_LOGBACK
   # Run floodlight
   echo "Starting ONOS controller ..."
   echo 
-  #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ${FL_HOME}/onos.properties > /dev/null 2>&1 &
-  #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp ${CLASSPATH} ${MAIN_CLASS} -cf ${FL_HOME}/onos.properties > /dev/n
+  #java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -jar ${ONOS_JAR} -cf ${ONOS_HOME}/onos.properties > /dev/null 2>&1 &
+  #java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp ${CLASSPATH} ${MAIN_CLASS} -cf ${ONOS_HOME}/onos.properties > /dev/n
 
-  mvn exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${FL_HOME}/conf/onos-embedded.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
+  ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
 
   echo "Waiting for ONOS to start..."
   COUNT=0
@@ -104,7 +107,7 @@ EOF_LOGBACK
   echo "Timed out"
   exit 1
 
-#  echo "java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ./onos.properties > /dev/null 2>&1 &"
+#  echo "java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -jar ${ONOS_JAR} -cf ./onos.properties > /dev/null 2>&1 &"
 #  sudo -b /usr/sbin/tcpdump -n -i eth0 -s0 -w ${PCAP_LOG} 'tcp port 6633' > /dev/null  2>&1
 }
 

@@ -14,17 +14,19 @@ import java.util.Set;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.core.IOFSwitchListener;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.devicemanager.IDeviceService;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.Port;
@@ -36,7 +38,6 @@ import net.sf.json.JSONSerializer;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFMessage;
@@ -45,12 +46,14 @@ import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionDataLayerDestination;
 import org.openflow.protocol.action.OFActionOutput;
+import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.net.InetAddresses;
 
-public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyListener {
+public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
+									ITopologyListener, IOFSwitchListener {
 	
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
@@ -79,16 +82,27 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	protected final short SDNIP_PRIORITY = 10;
 	
 	protected Map<String, GatewayRouter> gatewayRouters;
+	protected List<String> switches;
+	
+	//True when all switches have connected
+	protected volatile boolean switchesConnected = false;
+	//True when we have a full mesh of shortest paths between gateways
+	protected volatile boolean topologyReady = false;
 	
 	private void readGatewaysConfiguration(String gatewaysFilename){
 		File gatewaysFile = new File(gatewaysFilename);
 		ObjectMapper mapper = new ObjectMapper();
 		
-		TypeReference<HashMap<String, GatewayRouter>> typeref 
-			= new TypeReference<HashMap<String, GatewayRouter>>() {};
-		
 		try {
-			gatewayRouters = mapper.readValue(gatewaysFile, typeref);
+			Configuration config = mapper.readValue(gatewaysFile, Configuration.class);
+			
+			gatewayRouters = config.getGateways();
+			switches = config.getSwitches();
+			
+			for (String sw : switches){
+				log.debug("Switchjoin {}", sw);
+			}
+			
 		} catch (JsonParseException e) {
 			log.error("Error in JSON file", e);
 			System.exit(1);
@@ -265,6 +279,18 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 
 	}
 	
+	private String getPrefixFromPtree(PtreeNode node){
+        InetAddress address = null;
+        try {
+			address = InetAddress.getByAddress(node.key);
+		} catch (UnknownHostException e1) {
+			//Should never happen is the reverse conversion has already been done
+			log.error("Malformed IP address");
+			return "";
+		}
+        return address.toString() + "/" + node.rib.masklen;
+	}
+	
 	private void retrieveRib(){
 		String url = "http://" + bgpdRestIp + "/wm/bgp/" + routerId;
 		String response = RestClient.get(url);
@@ -318,6 +344,15 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	}
 	
 	public void prefixAdded(PtreeNode node) {
+		if (!topologyReady){
+			return;
+		}
+		
+		String prefix = getPrefixFromPtree(node);
+		
+		log.debug("New prefix {} added, next hop {}", 
+				prefix, node.rib.nextHop.toString());
+		
 		//Add a flow to rewrite mac for this prefix to all border switches
 		GatewayRouter thisRouter = gatewayRouters
 				.get(InetAddresses.toAddrString(node.rib.nextHop));
@@ -425,15 +460,88 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	}
 	
 	public void prefixDeleted(PtreeNode node) {
-		//Remove MAC rewriting flows from other border switches
+		if (!topologyReady) {
+			return;
+		}
 		
+		String prefix = getPrefixFromPtree(node);
+		
+		log.debug("Prefix {} deleted, next hop {}", 
+				prefix, node.rib.nextHop.toString());
+		
+		//Remove MAC rewriting flows from other border switches
+		GatewayRouter thisRouter = gatewayRouters
+				.get(InetAddresses.toAddrString(node.rib.nextHop));
+		
+		for (GatewayRouter ingressRouter : gatewayRouters.values()){
+			if (ingressRouter == thisRouter) {
+				continue;
+			}
+			
+			//Set up the flow mod
+			OFFlowMod fm =
+	                (OFFlowMod) floodlightProvider.getOFMessageFactory()
+	                                              .getMessage(OFType.FLOW_MOD);
+			
+	        fm.setIdleTimeout((short)0)
+	        .setHardTimeout((short)0)
+	        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
+	        .setCookie(MAC_RW_COOKIE)
+	        .setCommand(OFFlowMod.OFPFC_DELETE)
+	        //.setMatch(match)
+	        //.setActions(actions)
+	        .setPriority(SDNIP_PRIORITY)
+	        .setLengthU(OFFlowMod.MINIMUM_LENGTH);
+	        		//+ OFActionDataLayerDestination.MINIMUM_LENGTH
+	        		//+ OFActionOutput.MINIMUM_LENGTH);
+	        
+	        OFMatch match = new OFMatch();
+	        match.setDataLayerType(Ethernet.TYPE_IPv4);
+	        match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
+	        
+	        match.setDataLayerSource(ingressRouter.getRouterMac().toBytes());
+	        match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+	        
+	        //match.setDataLayerDestination(ingressRouter.getSdnRouterMac().toBytes());
+	        //match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+
+	        InetAddress address = null;
+	        try {
+				address = InetAddress.getByAddress(node.key);
+			} catch (UnknownHostException e1) {
+				//Should never happen is the reverse conversion has already been done
+				log.error("Malformed IP address");
+				return;
+			}
+	        
+	        match.setFromCIDR(address.getHostAddress() + "/" + node.rib.masklen, OFMatch.STR_NW_DST);
+	        fm.setMatch(match);
+	        
+	        //Write to switch
+	        IOFSwitch sw = floodlightProvider.getSwitches()
+	        		.get(ingressRouter.getAttachmentPoint().dpid().value());
+	        
+            if (sw == null){
+            	log.warn("Switch not found when pushing flow mod");
+            	continue;
+            }
+            
+            List<OFMessage> msglist = new ArrayList<OFMessage>();
+            msglist.add(fm);
+            try {
+				sw.write(msglist, null);
+				sw.flush();
+			} catch (IOException e) {
+				log.error("Failure writing flow mod", e);
+			}
+		}
 	}
 	
 	/*
 	 * On startup we need to calculate a full mesh of paths between all gateway
 	 * switches
 	 */
-	private void calculateFullMesh(){
+	private void setupFullMesh(){
 		Map<IOFSwitch, SwitchPort> gatewaySwitches = new HashMap<IOFSwitch, SwitchPort>();
 		
 		//have to account for switches not being there, paths not being found.
@@ -455,7 +563,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 			}
 			
 		}
-		log.debug("size {}", gatewaySwitches.size());
 		
 		//For each border router, calculate and install a path from every other
 		//border switch to said border router. However, don't install the entry
@@ -544,46 +651,118 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 		}
 	}
 	
+	
+	private void beginRouting(){
+		log.debug("Topology is now ready, beginning routing function");
+		
+		//traverse ptree and create flows for all routes
+		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)){
+			if (node.rib != null){
+				prefixAdded(node);
+			}
+		}
+	}
+	
+	private void checkSwitchesConnected(){
+		for (String dpid : switches){
+			if (floodlightProvider.getSwitches().get(HexString.toLong(dpid)) == null){
+				log.debug("Not all switches are here yet");
+				return;
+			}
+		}
+		switchesConnected = true;
+	}
+	
+	private void checkTopologyReady(){
+		for (GatewayRouter dstRouter : gatewayRouters.values()){
+			SwitchPort dstAttachmentPoint = dstRouter.getAttachmentPoint();
+			for (GatewayRouter srcRouter : gatewayRouters.values()) {
+				
+				if (dstRouter == srcRouter){
+					continue;
+				}
+				
+				SwitchPort srcAttachmentPoint = srcRouter.getAttachmentPoint();
+				
+				DataPath shortestPath = topoRouteService.getShortestPath(
+						srcAttachmentPoint, dstAttachmentPoint);
+				
+				if (shortestPath == null){
+					log.debug("Shortest path between {} and {} not found",
+							srcAttachmentPoint, dstAttachmentPoint);
+					return;
+				}
+			}
+		}
+		topologyReady = true;
+	}
+	
+	private void checkStatus(){
+		log.debug("In checkStatus, swC {}, toRe {}", switchesConnected, topologyReady);
+		
+		if (!switchesConnected){
+			checkSwitchesConnected();
+		}
+		boolean oldTopologyReadyStatus = topologyReady;
+		if (switchesConnected && !topologyReady){
+			checkTopologyReady();
+		}
+		if (!oldTopologyReadyStatus && topologyReady){
+			beginRouting();
+		}
+	}
+	
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		restApi.addRestletRoutable(new BgpRouteWebRoutable());
+		floodlightProvider.addOFSwitchListener(this);
 		topology.addListener(this);
 		
 		//Retrieve the RIB from BGPd during startup
 		retrieveRib();
-		
-		//Don't have to do this as we'll never have switches connected here
-		//calculateFullMesh();
 	}
 
 	@Override
-	public void topologyChanged() {
-		//Probably need to look at all changes, not just port changes
-		/*
-		boolean change = false;
-		String changelog = "";
+	public void topologyChanged() {		
+		//There seems to be more topology events than there should be. Lots of link
+		//updated, port up and switch updated on what should be a fairly static topology
 		
-		for (LDUpdate ldu : topology.getLastLinkUpdates()) {
-			if (ldu.getOperation().equals(ILinkDiscovery.UpdateOperation.PORT_DOWN)) {
-				change = true;
-				changelog = changelog + " down ";
-			} else if (ldu.getOperation().equals(ILinkDiscovery.UpdateOperation.PORT_UP)) {
-				change = true;
-				changelog = changelog + " up ";
+		boolean refreshNeeded = false;
+		for (LDUpdate ldu : topology.getLastLinkUpdates()){
+			if (!ldu.getOperation().equals(ILinkDiscovery.UpdateOperation.LINK_UPDATED)){
+				//We don't need to recalculate anything for just link updates
+				//They happen way too frequently (may be a bug in our link discovery)
+				refreshNeeded = true;
+			}
+			log.debug("Topo change {}", ldu.getOperation());
+		}
+		
+		if (refreshNeeded){
+			if (topologyReady){
+				setupFullMesh();
+			}
+			else{
+				checkStatus();
 			}
 		}
-		log.info ("received topo change" + changelog);
+	}
 
-		if (change) {
-			//RestClient.get ("http://localhost:5000/topo_change");
-		}
-		*/
-		
-		for (LDUpdate update : topology.getLastLinkUpdates()){
-			log.debug("{} event causing internal L2 path recalculation",
-					update.getOperation().toString());
-			
-		}
-		calculateFullMesh();
+	//TODO determine whether we need to listen for switch joins
+	@Override
+	public void addedSwitch(IOFSwitch sw) {
+		//checkStatus();
+	}
+
+	@Override
+	public void removedSwitch(IOFSwitch sw) {
+		// TODO Auto-generated method stub	
+	}
+
+	@Override
+	public void switchPortChanged(Long switchId) {}
+
+	@Override
+	public String getName() {
+		return "BgpRoute";
 	}
 }

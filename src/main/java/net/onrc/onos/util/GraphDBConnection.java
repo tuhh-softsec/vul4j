@@ -43,6 +43,11 @@ public class GraphDBConnection implements IDBConnection {
 	}
 
 	/* Static 'instance' method */
+	/**
+	 * Get the instance of GraphDBConnection class.
+	 * @param conf the path to the database configuration file.
+	 * @return GraphDBConnection instance.
+	 */
 	public static synchronized GraphDBConnection getInstance(final String conf) {
 		if (GraphDBConnection.configFile == null
 				|| GraphDBConnection.configFile.isEmpty()) {
@@ -79,8 +84,10 @@ public class GraphDBConnection implements IDBConnection {
 		return singleton;
 	}
 
+	/** 
+	 * Get a FramedGraph instance of the graph.
+	 */
 	public FramedGraph<TitanGraph> getFramedGraph() {
-
 		if (isValid()) {
 			FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
 			return fg;
@@ -90,8 +97,11 @@ public class GraphDBConnection implements IDBConnection {
 		}
 	}
 
+	/**
+	 * Get EventTransactionalGraph of the titan graph.
+	 * @return EventTransactionalGraph of the titan graph
+	 */
 	protected EventTransactionalGraph<TitanGraph> getEventGraph() {
-
 		if (isValid()) {
 			return eg;
 		} else {
@@ -99,72 +109,50 @@ public class GraphDBConnection implements IDBConnection {
 		}
 	}
 
+	/**
+	 * Add LocalGraphChangedLister for the graph.
+	 */
 	public void addEventListener(final LocalGraphChangedListener listener) {
 		EventTransactionalGraph<TitanGraph> eg = this.getEventGraph();
 		eg.addListener(listener);
 		log.debug("Registered listener {}", listener.getClass());
 	}
 
+	/**
+	 * Return whether this connection is valid.
+	 */
 	public Boolean isValid() {
-
 		return (graph != null || graph.isOpen());
 	}
 
-	public void startTx() {
-
-	}
-
-	public void endTx(Transaction tx) {
+	/**
+	 * Commit changes for the graph operations.
+	 */
+	public void commit() {
 		try {
-			switch (tx) {
-			case COMMIT:
-				graph.commit();
-			case ROLLBACK:
-				graph.rollback();
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			graph.commit();
+		}
+		catch (Exception e) {
 			log.error("{}", e.toString());
 		}
 	}
 
-	public void endTx(TransactionHandle tr, Transaction tx) {
-		switch (tx) {
-		case COMMIT:
-			if (tr != null && tr.tr != null) {
-				tr.tr.commit();
-			} else {
-				graph.commit();
-			}
-		case ROLLBACK:
-			if (tr != null && tr.tr != null) {
-				tr.tr.rollback();
-			} else {
-				graph.rollback();
-			}
-		}
-	}
-
-	public void endTx(Transaction tx, GenerateEvent fire) {
-
+	/**
+	 * Rollback changes for the graph operations.
+	 */
+	public void rollback() {
 		try {
-			if (fire.equals(GenerateEvent.TRUE)) {
-				switch (tx) {
-				case COMMIT:
-					eg.commit();
-				case ROLLBACK:
-					eg.rollback();
-				}
-			} else {
-				endTx(tx);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			graph.rollback();
+		}
+		catch (Exception e) {
+			log.error("{}", e.toString());
 		}
 	}
 
+	/**
+	 * Close this database connection.
+	 */
 	public void close() {
-		endTx(Transaction.COMMIT);
+		commit();
 	}
 }

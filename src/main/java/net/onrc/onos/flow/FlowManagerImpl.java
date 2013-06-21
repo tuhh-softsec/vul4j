@@ -30,10 +30,8 @@ import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
-import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBOperation;
 import net.onrc.onos.util.LocalTopologyEventListener;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 public class FlowManagerImpl implements IFlowManager {
 	

@@ -1,13 +1,11 @@
 package net.onrc.onos.ofcontroller.util;
 
-import org.openflow.util.HexString;
-
 import net.onrc.onos.ofcontroller.util.serializers.IPv6Deserializer;
 import net.onrc.onos.ofcontroller.util.serializers.IPv6Serializer;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.openflow.util.HexString;
 
 /**
  * The class representing an IPv6 address.

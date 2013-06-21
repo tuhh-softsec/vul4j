@@ -3,7 +3,6 @@ package net.onrc.onos.ofcontroller.core.internal;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService;
-import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBOperation;
 
 import org.slf4j.Logger;
@@ -15,7 +14,7 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	protected static Logger log = LoggerFactory.getLogger(TopoSwitchServiceImpl.class);
 
 	public TopoSwitchServiceImpl(String conf) {
-		op = new GraphDBOperation(GraphDBConnection.getInstance(conf));
+		op = new GraphDBOperation(conf);
 	}
 
 	public TopoSwitchServiceImpl() {

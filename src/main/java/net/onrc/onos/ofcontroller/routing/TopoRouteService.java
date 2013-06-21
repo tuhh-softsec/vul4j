@@ -23,8 +23,6 @@ import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
 import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.util.HexString;
@@ -32,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.pipes.PipeFunction;
 import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
@@ -135,7 +132,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
 	// TODO: Add the appropriate initialization
-    	op = new GraphDBOperation(GraphDBConnection.getInstance(""));
+    	op = new GraphDBOperation("");
     }
 
     @Override
@@ -266,7 +263,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      * See the documentation for method @ref prepareShortestPathTopo()
      * for additional information and usage.
      *
-     * @shortestPathTopo the Shortest Path info handler to release.
+     * @param shortestPathTopo the Shortest Path info handler to release.
      */
     public void dropShortestPathTopo(Map<Long, ?> shortestPathTopo) {
 	shortestPathTopo = null;

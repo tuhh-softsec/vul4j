@@ -1,24 +1,30 @@
 package net.onrc.onos.ofcontroller.devicemanager.internal;
 
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
-import net.onrc.onos.ofcontroller.devicemanager.internal.DeviceStorageImpl;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBOperation;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.SwitchPort;
-import net.floodlightcontroller.devicemanager.internal.Device;
 import net.floodlightcontroller.packet.IPv4;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
+import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
+import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBOperation;
+import net.floodlightcontroller.devicemanager.internal.Device;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflow.util.HexString;
@@ -43,7 +49,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
     
 	@Before
 	public void setUp() throws Exception {
-		
+	    deviceImpl = new DeviceStorageImpl();	
+		conf = "/dummy/path/to/db";
+				
 		PowerMock.mockStatic(GraphDBConnection.class);
 		mockConn = createMock(GraphDBConnection.class);
 		PowerMock.suppress(PowerMock.constructor(GraphDBConnection.class));
@@ -52,19 +60,22 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			
 		//PowerMock.mockStatic(GraphDBOperation.class);
 		mockOpe = PowerMock.createMock(GraphDBOperation.class);
-		PowerMock.expectNew(GraphDBOperation.class, mockConn).andReturn(mockOpe);
+		PowerMock.expectNew(GraphDBOperation.class, new Class<?>[]{String.class}, conf).andReturn(mockOpe);
+		mockOpe.close();
 		PowerMock.replay(GraphDBOperation.class);
         // Replace the conf to dummy conf
 		// String conf = "/tmp/cassandra.titan";
-		conf = "/dummy/path/to/db";
+
 		
-        deviceImpl = new DeviceStorageImpl();
+
 	}
 
 	@After
 	public void tearDown() throws Exception {	
 		deviceImpl.close();
 		deviceImpl = null;
+		
+		verify(mockOpe);
 	}
 	
 	private String makeIPStringFromArray(Integer[] ipaddresses){
@@ -142,7 +153,6 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			expect(mockOpe.newDevice()).andReturn(mockIDev);
 			expect(mockOpe.searchPort(switchMacAddr, portNum)).andReturn(mockIPort);
 			mockOpe.commit();
-
 			replay(mockOpe);				
 			
 			deviceImpl.init(conf);
@@ -152,7 +162,6 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			assertNotNull(obj);
 			
 			verify(mockIDev);
-			verify(mockOpe);
 			
 		} catch(Exception e) {
 			fail(e.getMessage());
@@ -233,10 +242,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			//Add the same device
 	        IDeviceObject obj2 = deviceImpl.addDevice(mockDev);
 			assertNotNull(obj2);
-			
-			verify(mockIDev);
-			verify(mockOpe);
-			
+
 		} catch(Exception e) {
 			fail(e.getMessage());
 		}
@@ -329,7 +335,6 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			assertNotNull(obj2);
 			
 			verify(mockIDev);
-			verify(mockOpe);
 			
 		} catch(Exception e) {
 			fail(e.getMessage());
@@ -423,7 +428,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 		    assertNull(dev2);
 		    
 			verify(mockIDev);
-			verify(mockOpe);
+
 		} catch(Exception e) {
 			fail(e.getMessage());
 		}
@@ -505,7 +510,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 		    assertNotNull(dev);
 		    
 			verify(mockIDev);
-			verify(mockOpe);   
+
 		} catch(Exception e) {
 			fail(e.getMessage());
 		}
@@ -594,7 +599,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 		    assertNotNull(dev);
 		    
 			verify(mockIDev);
-			verify(mockOpe);
+
 			
 		} catch(Exception e) {
 			fail(e.getMessage());
@@ -729,18 +734,17 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 		    deviceImpl.changeDeviceAttachments(mockDev3);
 		    
 			verify(mockIDev);
-			verify(mockOpe);
+
 			
 		} catch(Exception e) {
 			fail(e.getMessage());
 		}
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void testChangeDeviceAttachmentsIDeviceIDeviceObject() {
 		//It is tested by the testChangeDeviceAttachmentsIDevice
-		deviceImpl.init(conf);
 	}
 
 	/**
@@ -822,7 +826,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	        deviceImpl.changeDeviceIPv4Address(mockDev2);	
 	        
 			verify(mockIDev);
-			verify(mockOpe);
+
 					
 		} 
 		catch(Exception e) {

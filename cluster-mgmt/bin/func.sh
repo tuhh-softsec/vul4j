@@ -1,7 +1,6 @@
-USERNAME=ubuntu
-CASSANDRA_DIR='/home/ubuntu/apache-cassandra-1.1.4'
-ZK_DIR='/home/ubuntu/zookeeper-3.4.5'
-ONOS_DIR='/home/ubuntu/ONOS'
+CASSANDRA_DIR='${HOME}/apache-cassandra-1.1.4'
+ZK_DIR='${HOME}/zookeeper-3.4.5'
+ONOS_DIR='${HOME}/ONOS'
 ZK_LIB='/var/lib/zookeeper'
 CASSANDRA_LIB='/var/lib/cassandra'
 

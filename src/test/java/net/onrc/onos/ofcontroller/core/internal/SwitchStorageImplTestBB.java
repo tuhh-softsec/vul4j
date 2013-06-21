@@ -97,10 +97,10 @@ public class SwitchStorageImplTestBB {
 	 * Desc:
 	 *  Test method for addSwitch method.
 	 * Condition:
-	 *  The switch status is INACTIVE.
+	 *  The existing switch status is INACTIVE.
+	 *  The switch is already existing.
 	 * Expect:
-	 * 1. Switch should be existing.
-	 * 2. The status of switch should be ACTIVE
+	 * 1. After add the same switch, the status of switch should be ACTIVE
 	 */
 	//@Ignore 
 	@Test
@@ -121,7 +121,9 @@ public class SwitchStorageImplTestBB {
 	 * Desc:
 	 *  Test method for testUpdate method.
 	 * Condition:
-	 *  We will create a swith with this method.
+	 *  The switch is not existing.
+	 *  The status of added switch is INACTIVE.
+	 *  DM_OPERATION is CREATE.
 	 * Expect:
 	 * 1. Switch should be created.
 	 * 2. The status of switch should be INACTIVE.
@@ -146,6 +148,8 @@ public class SwitchStorageImplTestBB {
 	 *  Test method for testUpdate method.
 	 * Condition:
 	 *  The switch is existing.
+	 *  The status of added switch is ACTIVE.
+	 *  DM_OPERATION is DELETE.
 	 * Expect:
 	 * 1. Switch should be deleted.
 	 */
@@ -189,7 +193,7 @@ public class SwitchStorageImplTestBB {
 	 * Condition:
 	 *  The switch is not existing.
 	 * Expect:
-	 * Nothing happends.
+	 * Nothing happens.
 	 */
 	//@Ignore 
 	@Test
@@ -209,7 +213,7 @@ public class SwitchStorageImplTestBB {
 	 * Condition:
 	 *  The port is existing.
 	 * Expect:
-	 *  Delete the port.
+	 *  Deleted the port.
 	 */
 	//@Ignore 
 	@Test
@@ -247,11 +251,12 @@ public class SwitchStorageImplTestBB {
 	
 	/**
 	 * Desc:
-	 *  Test method for add method.
+	 *  Test method for add port method.
 	 * Condition:
 	 *  The port is not existing.
 	 * Expect:
 	 *  The port should be added.
+	 *  The desc of IPortObject is the same as the name of OFPhysicalPort.
 	 */
 	//@Ignore 
 	@Test
@@ -270,6 +275,7 @@ public class SwitchStorageImplTestBB {
 		swSt.addPort(dpid, port);
 		IPortObject portObj = ope.searchPort(dpid, portNumber);
 		assertTrue(portObj != null);
+		assertEquals(portObj.getDesc(), name);
 	}
 	
 	/**
@@ -285,7 +291,7 @@ public class SwitchStorageImplTestBB {
 	public void testAddExistingPort() {
 		String dpid = "00:00:00:00:00:00:0a:06";
 		short portNumber = 3;
-		String name = "port 3 at ATL Switch";
+		String name = "xxx";
 		int state = OFPortState.OFPPS_STP_FORWARD.getValue();
 		OFPhysicalPort port = new OFPhysicalPort(); 
 		port.setPortNumber(portNumber);

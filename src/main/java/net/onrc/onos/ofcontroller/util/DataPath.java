@@ -2,7 +2,6 @@ package net.onrc.onos.ofcontroller.util;
 
 import java.util.ArrayList;
 
-
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
