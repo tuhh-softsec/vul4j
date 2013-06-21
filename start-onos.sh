@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Set paths
-ONOS_HOME=`dirname $0`
+#ONOS_HOME=`dirname $0`
+ONOS_HOME=${HOME}/ONOS
 ONOS_JAR="${ONOS_HOME}/target/floodlight.jar"
 ONOS_ONLY_JAR="${ONOS_HOME}/target/floodlight-only.jar"
 ONOS_LOGBACK="${ONOS_HOME}/logback.xml"
@@ -91,7 +92,8 @@ EOF_LOGBACK
   #java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -jar ${ONOS_JAR} -cf ${ONOS_HOME}/onos.properties > /dev/null 2>&1 &
   #java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp ${CLASSPATH} ${MAIN_CLASS} -cf ${ONOS_HOME}/onos.properties > /dev/n
 
-  echo "mvn exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos.properties\""
+  # XXX : MVN has to run at the project top dir 
+  cd ${ONOS_HOME}
   ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
 
   echo "Waiting for ONOS to start..."
