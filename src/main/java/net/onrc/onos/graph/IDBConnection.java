@@ -1,4 +1,4 @@
-package net.onrc.onos.util;
+package net.onrc.onos.graph;
 
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.frames.FramedGraph;

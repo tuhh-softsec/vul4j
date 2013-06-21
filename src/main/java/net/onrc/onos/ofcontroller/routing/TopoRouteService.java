@@ -15,6 +15,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
@@ -23,7 +24,6 @@ import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
-import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -263,7 +263,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      * See the documentation for method @ref prepareShortestPathTopo()
      * for additional information and usage.
      *
-     * @shortestPathTopo the Shortest Path info handler to release.
+     * @param shortestPathTopo the Shortest Path info handler to release.
      */
     public void dropShortestPathTopo(Map<Long, ?> shortestPathTopo) {
 	shortestPathTopo = null;

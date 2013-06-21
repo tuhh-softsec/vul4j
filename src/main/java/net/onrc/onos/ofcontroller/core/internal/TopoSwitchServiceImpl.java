@@ -1,9 +1,9 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService;
-import net.onrc.onos.util.GraphDBOperation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

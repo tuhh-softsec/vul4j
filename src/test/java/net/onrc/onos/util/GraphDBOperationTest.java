@@ -9,6 +9,7 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
@@ -88,7 +89,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#newSwitch(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#newSwitch(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testNewSwitch() {
@@ -103,7 +104,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchSwitch(net.onrc.onos.util.GraphDBConnection, java.lang.String)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#searchSwitch(net.onrc.onos.graph.GraphDBConnection, java.lang.String)}.
 	 */
 	@Test
 	public final void testSearchSwitch() {
@@ -120,7 +121,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchActiveSwitch(net.onrc.onos.util.GraphDBConnection, java.lang.String)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#searchActiveSwitch(net.onrc.onos.graph.GraphDBConnection, java.lang.String)}.
 	 */
 	@Test
 	public final void testSearchActiveSwitch() {
@@ -137,7 +138,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getActiveSwitches(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#getActiveSwitches(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testGetActiveSwitches() {
@@ -153,7 +154,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getAllSwitches(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#getAllSwitches(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testGetAllSwitches() {
@@ -171,7 +172,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getInactiveSwitches(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#getInactiveSwitches(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testGetInactiveSwitches() {
@@ -187,7 +188,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getAllSwitchNotUpdatedFlowEntries(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#getAllSwitchNotUpdatedFlowEntries(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testGetAllSwitchNotUpdatedFlowEntries() {
@@ -209,7 +210,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeSwitch(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#removeSwitch(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject)}.
 	 */
 	@Test
 	public final void testRemoveSwitch() {
@@ -225,7 +226,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#newPort(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#newPort(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testNewPort() {
@@ -241,7 +242,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchPort(net.onrc.onos.util.GraphDBConnection, java.lang.String, short)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#searchPort(net.onrc.onos.graph.GraphDBConnection, java.lang.String, short)}.
 	 */
 	@Test
 	public final void testSearchPort() {
@@ -291,7 +292,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removePort(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#removePort(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject)}.
 	 */
 	@Test
 	public final void testRemovePort() {
@@ -324,7 +325,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#newDevice(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#newDevice(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testNewDevice() {
@@ -343,7 +344,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchDevice(net.onrc.onos.util.GraphDBConnection, java.lang.String)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#searchDevice(net.onrc.onos.graph.GraphDBConnection, java.lang.String)}.
 	 */
 	@Test
 	public final void testSearchDevice() {
@@ -361,7 +362,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getDevices(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#getDevices(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testGetDevices() {
@@ -382,7 +383,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeDevice(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#removeDevice(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject)}.
 	 */
 	@Test
 	public final void testRemoveDevice() {
@@ -395,7 +396,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#newFlowPath(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#newFlowPath(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testNewFlowPath() {
@@ -410,7 +411,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchFlowPath(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.util.FlowId)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#searchFlowPath(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.util.FlowId)}.
 	 */
 	@Test
 	public final void testSearchFlowPath() {
@@ -426,7 +427,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getFlowPathByFlowEntry(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#getFlowPathByFlowEntry(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry)}.
 	 */
 	@Test
 	public final void testGetFlowPathByFlowEntry() {
@@ -465,7 +466,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getAllFlowPaths(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#getAllFlowPaths(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testGetAllFlowPaths() {
@@ -489,7 +490,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeFlowPath(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#removeFlowPath(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath)}.
 	 */
 	@Test
 	public final void testRemoveFlowPath() {
@@ -509,7 +510,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#newFlowEntry(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#newFlowEntry(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testNewFlowEntry() {
@@ -525,7 +526,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchFlowEntry(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.util.FlowEntryId)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#searchFlowEntry(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.util.FlowEntryId)}.
 	 */
 	@Test
 	public final void testSearchFlowEntry() {
@@ -548,7 +549,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getAllFlowEntries(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#getAllFlowEntries(net.onrc.onos.graph.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testGetAllFlowEntries() {
@@ -572,7 +573,7 @@ public class GraphDBOperationTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeFlowEntry(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry)}.
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#removeFlowEntry(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry)}.
 	 */
 	@Test
 	public final void testRemoveFlowEntry() {

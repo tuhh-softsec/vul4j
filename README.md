@@ -31,11 +31,13 @@ Running ONOS
 
 1. Start zookeeper
 
-    $ cd (ZOOKEEPER-INSTALL-DIR)/bin
-    
-    $ ./zkServer.sh start
+    $ cd (ONOS-INSTALL-DIR)/
+
+    $ ./start-zk.sh
 
 2. Start cassandra
+
+    $ cd (ONOS-INSTALL-DIR)/
 
     $ ./start-cassandra.sh start
 
@@ -58,8 +60,8 @@ Running ONOS with Cassandra embedded (Optional)
 
 1. Start Zookeeper
 
-    $ cd (ZOOKEEPER-INSTALL-DIR)/bin
-    
+    $ cd (ONOS-INSTALL-DIR)/
+
     $ ./zkServer.sh start
     
 2. Start ONOS and Cassandra embedded

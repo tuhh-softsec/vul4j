@@ -2,7 +2,8 @@
 timeout used by controller functions. after the timeout expires the "pending" action
 is removed and the topology view is whatever is reported by the API
 ***************************************************************************************************/
-var pendingTimeout = 30000;
+/* var pendingTimeout = 30000; */
+var pendingTimeout = 60000;
 
 /***************************************************************************************************
 CSS names for the pallette of colors used by the topology view

@@ -18,6 +18,8 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
 
 import net.floodlightcontroller.core.IOFSwitch;
+import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.LocalTopologyEventListener;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
@@ -30,8 +32,6 @@ import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
-import net.onrc.onos.util.GraphDBOperation;
-import net.onrc.onos.util.LocalTopologyEventListener;
 
 public class FlowManagerImpl implements IFlowManager {
 	

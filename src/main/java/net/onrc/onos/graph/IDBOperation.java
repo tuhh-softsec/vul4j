@@ -1,4 +1,4 @@
-package net.onrc.onos.util;
+package net.onrc.onos.graph;
 
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
