@@ -1,0 +1,26 @@
+{
+    "LB": false, 
+    "TESTBED": "sw",
+    "ONOS_DEFAULT_HOST": "localhost",
+    "ONOS_GUI3_CONTROL_HOST": "http://localhost:9000", 
+    "ONOS_GUI3_HOST": "http://localhost:9000", 
+    "cluster_basename": "onosdev", 
+    "controllers": [
+        "onosdev1", 
+        "onosdev1", 
+        "onosdev1",
+        "onosdev1", 
+        "onosdev1", 
+        "onosdev1", 
+        "onosdev1", 
+        "onosdev1"
+    ], 
+    "core_switches": [
+        "00:00:00:00:00:00:01:01", 
+        "00:00:00:00:00:00:01:02", 
+        "00:00:00:00:00:00:01:03", 
+        "00:00:00:00:00:00:01:04", 
+        "00:00:00:00:00:00:01:05", 
+        "00:00:00:00:00:00:01:06"
+    ]
+}
