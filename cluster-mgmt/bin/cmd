@@ -1,5 +1,5 @@
 #! /bin/bash
-. ${HOME}/bin/func.sh
+. `dirname $0`/func.sh
 
 #$0 $1 $2
 `basename $0` $1 $2

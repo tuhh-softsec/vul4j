@@ -40,7 +40,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	
 	/***
 	 * Finalize/close function. After you use this class, please call this method.
-	 * It will close the DB connection. This is for Java gabage collection.
+	 * It will close the DB connection. This is for Java garbage collection.
 	 */
 	@Override
 	public void close() {

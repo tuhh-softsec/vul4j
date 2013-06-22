@@ -69,8 +69,8 @@ public class GraphDBConnection implements IDBConnection {
 			if (!s.contains("type")) {
 				graph.createKeyIndex("type", Vertex.class);
 			}
-			if (!s.contains("dl_address")) {
-				graph.createKeyIndex("dl_address", Vertex.class);
+			if (!s.contains("dl_addr")) {
+				graph.createKeyIndex("dl_addr", Vertex.class);
 			}
 			if (!s.contains("flow_id")) {
 				graph.createKeyIndex("flow_id", Vertex.class);
