@@ -3,12 +3,14 @@ package net.onrc.onos.ofcontroller.core.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.easymock.EasyMock;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.annotations.gremlin.GremlinParam;
 
 import net.onrc.onos.graph.GraphDBConnection;
@@ -291,6 +293,22 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public void setLinkPort(IPortObject dest_port) { linkedPortsToAdd.add(dest_port); }
+
+		@Override
+		@JsonIgnore
+		@Property("port_id")
+		public void setPortId(String id) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		@JsonIgnore
+		@Property("port_id")
+		public String getPortId() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 		
 	public static class TestDeviceObject implements IDeviceObject {
@@ -1127,7 +1145,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	}
 	
 	@Override
-	public IPortObject searchPort(String dpid_str, short number) {
+	public IPortObject searchPort(String dpid_str, Short number) {
 		long dpid = HexString.toLong(dpid_str);
 		
 		for(TestSwitchObject sw : switches) {

@@ -63,6 +63,9 @@ public class GraphDBConnection implements IDBConnection {
 			if (!s.contains("dpid")) {
 				graph.createKeyIndex("dpid", Vertex.class);
 			}
+			if (!s.contains("port_id")) {
+				graph.createKeyIndex("port_id", Vertex.class);
+			}
 			if (!s.contains("type")) {
 				graph.createKeyIndex("type", Vertex.class);
 			}

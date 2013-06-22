@@ -447,7 +447,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		mockOpe.close();
 		replay(mockOpe);
@@ -588,7 +588,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(null);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(null);	
 		mockOpe.rollback();
 		mockOpe.close();
 		replay(mockOpe);
@@ -639,7 +639,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		expectLastCall().andThrow(new RuntimeException());
 		mockOpe.rollback();
@@ -693,7 +693,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
@@ -750,7 +750,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);

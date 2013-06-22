@@ -18,8 +18,10 @@ public interface IDBOperation {
 	public Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries();
 	public void removeSwitch(ISwitchObject sw);
 	
+	@Deprecated
 	public IPortObject newPort(Short portNumber);
-	public IPortObject searchPort(String dpid, short number);
+	public IPortObject newPort(String dpid, Short portNum);
+	public IPortObject searchPort(String dpid, Short number);
 	public void removePort(IPortObject port);
 	
 	public IDeviceObject newDevice();
@@ -42,4 +44,5 @@ public interface IDBOperation {
 	public void commit();
 	public void rollback();
 	public void close();
+	
 }

@@ -153,10 +153,7 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 	public void addedSwitch(IOFSwitch sw) {
 
 		if (registryService.hasControl(sw.getId())) {
-	        	swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
-	        	for (OFPhysicalPort port: sw.getPorts()) {
-	        		swStore.addPort(sw.getStringId(), port);
-	        	}
+	        	swStore.addSwitch(sw);
 		}
 
 	}
