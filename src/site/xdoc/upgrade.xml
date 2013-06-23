@@ -14,7 +14,8 @@
 
 			<subsection name="ESI &amp; Aggregator">
 				<p>
-					ESI tags and comment-based directives are now processed by extensions.
+					ESI tags and comment-based directives are now processed by
+					extensions.
 					These extensions are enabled by default.
 				</p>
 				<ul>
@@ -22,22 +23,39 @@
 					<li>org.esigate.extension.Aggregate			</li>
 				</ul>
 				<p>
-					If you are overriding extensions in esigate.properties and use ESI
+					If you are overriding extensions in esigate.properties and use
+					ESI
 					and/or Aggregator features, you must add the corresponding
 					extension
-					before other rendering extensions (especially ResourceFixup)
+					before other rendering extensions (especially
+					ResourceFixup)
 				</p>
+			</subsection>
+			<subsection name="Aggregator servlet">
+				<p>
+					The aggregator servlet is now deprecated : you should use the proxy
+					servlet instead. Both now have the same behavior and parameters.
+					Simply rename
+					<b>org.esigate.servlet.AggregatorServlet</b>
+					to
+					<b>org.esigate.servlet.ProxyServlet</b>
+</p>
 			</subsection>
 
 			<subsection name="Cache">
 				<p>
-					The HTTP client and cache has been updated to Apache HttpClient 4.3.
-					This release fixes handling of "Vary: Cookie" header and has been
-					through major refactoring. All esigate tests have passed, but there
+					The HTTP client and cache has been updated to Apache HttpClient
+					4.3.
+					This release fixes handling of "Vary: Cookie" header and has
+					been
+					through major refactoring. All esigate tests have passed, but
+					there
 					may be
-					other small differences in behavior. It would be a good idea to test
+					other small differences in behavior. It would be a good
+					idea to test
 					your
-					applications to ensure they are not broken by these changes.
+					applications to ensure they are not broken by these
+					changes.
 				</p>
 
 			</subsection>
