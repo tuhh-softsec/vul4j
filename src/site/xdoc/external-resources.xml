@@ -6,6 +6,26 @@
 		<author email="nicolas.richeton@gmail.com">Nicolas Richeton</author>
 	</properties>
 	<body>
+			<section name="Related projects">
+			<ul>
+				<li>
+					<a href="http://smile-sa.github.io/fast-maven-plugin/">Maven FAST plugin</a>
+					- A maven plugin which can process esi tags on static resources.
+					The main use case is for HTML developement : you can create blocks,
+					templates and use them to generate pages.
+					<br />
+					This plugins works great in the Eclipse IDE and does not require
+					any local server.
+				</li>
+				
+				<li>
+					<a href="http://code.google.com/p/esigate-portlet/">Esigate portlet</a>
+					- A proxy portlet which can include pages from other websites.
+				</li>
+				
+			</ul>
+
+		</section>
 		<section name="External resources">
 			<p>Tutorials and examples can also be found on other sites. Feel free
 				to contact us to add your website in that list.</p>
