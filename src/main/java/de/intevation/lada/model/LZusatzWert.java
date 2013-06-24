@@ -112,15 +112,6 @@ public class LZusatzWert implements java.io.Serializable {
 		this.messfehler = messfehler;
 	}
 
-	@Column(name = "meh_id")
-	public Short getMehId() {
-		return this.mehId;
-	}
-
-	public void setMehId(Short mehId) {
-		this.mehId = mehId;
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "letzte_aenderung", length = 29)
 	public Date getLetzteAenderung() {
