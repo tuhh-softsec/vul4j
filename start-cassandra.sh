@@ -32,7 +32,7 @@ function start {
   echo "Starting cassandra"
   echo "[31;48m[WARNING] This script copies conf/cassandra.yam to $CASSANDRA_DIR/conf/cassandra.yaml (overwrites)[0m"
   echo "[31;48moriginal cassandra.yaml was backed up as cassandra.yaml.backup[0m"
-  cp $CASSANDRA_DIR/conf $CASSANDRA_DIR/conf.backup
+  cp $CASSANDRA_DIR/conf/cassandra.yaml $CASSANDRA_DIR/conf/cassandra.yaml.backup
   cp ${ONOS_HOME}/conf/cassandra.yaml $CASSANDRA_DIR/conf
   $CASSANDRA_DIR/bin/cassandra > $CASSANDRA_LOG 2>&1 
 }
