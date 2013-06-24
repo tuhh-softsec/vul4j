@@ -44,7 +44,7 @@ public class LProbeInfo implements Serializable {
 	private Long mittelungsdauer;
 
 	@Column(name="mp_kat")
-	private String mpKat;
+	private Character mpKat;
 
 	@Column(name="mpl_id")
 	private String mplId;
@@ -173,11 +173,11 @@ public class LProbeInfo implements Serializable {
 		this.mittelungsdauer = mittelungsdauer;
 	}
 
-	public String getMpKat() {
+	public Character getMpKat() {
 		return this.mpKat;
 	}
 
-	public void setMpKat(String mpKat) {
+	public void setMpKat(Character mpKat) {
 		this.mpKat = mpKat;
 	}
 
@@ -299,5 +299,32 @@ public class LProbeInfo implements Serializable {
 
     public void setMessmethode(String messmethode) {
         this.messmethode = messmethode;
+    }
+
+    public LProbe toLProbe() {
+        LProbe probe = new LProbe();
+        probe.setMstId(mstId);
+        probe.setUmwId(umwId);
+        probe.setTest(test);
+        probe.setHauptprobenNr(hauptprobenNr);
+        probe.setBaId(baId);
+        probe.setMediaDesk(mediaDesk);
+        probe.setMedia(media);
+        probe.setProbenartId(probenartId);
+        probe.setDatenbasisId(datenbasisId);
+        probe.setProbeentnahmeBeginn(probeentnahmeBeginn);
+        probe.setProbeentnahmeEnde(probeentnahmeEnde);
+        probe.setMittelungsdauer(mittelungsdauer);
+        probe.setLetzteAenderung(letzteAenderung);
+        probe.setErzeugerId(erzeugerId);
+        probe.setProbeNehmerId(probeNehmerId);
+        probe.setMpKat(mpKat);
+        probe.setMplId(mplId);
+        probe.setMprId(mprId);
+        probe.setSolldatumBeginn(solldatumBeginn);
+        probe.setSolldatumEnde(solldatumEnde);
+        probe.setNetzbetreiberId(netzbetreiberId);
+
+        return probe;
     }
 }
