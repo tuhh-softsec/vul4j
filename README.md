@@ -18,6 +18,7 @@ Building ONOS
     $ mvn clean
     $ mvn compile
 
+    $ NOTE: installing maven for the first time may switch java version from 1.7 to 1.6 causing cassandra to not run
 
 Dependencies
 ------------
