@@ -88,14 +88,15 @@ public class LProbeService {
     @Path("/{id}")
     @Produces("text/json")
     @Consumes("application/json")
-    public Response update(LProbe probe) {
+    public Response update(LProbeInfo probe) {
         return repository.update(probe);
     }
 
     @POST
     @Produces("text/json")
     @Consumes("application/json")
-    public Response create(LProbe probe) {
-        return repository.create(probe);
+    public Response create(LProbeInfo probe) {
+        LProbe p = probe.toLProbe();
+        return repository.create(p);
     }
 }
