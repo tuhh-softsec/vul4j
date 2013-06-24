@@ -8,6 +8,9 @@ ZK_CONF=${ONOS_HOME}/conf/zoo.cfg
 function start {
   # Run Zookeeper with our configuration
   echo "Starting Zookeeper"
+  echo "[31;48m[WARNING] This script copies conf/zoo.cfg to $ZK_DIR/conf/zoo.cfg (overwrites)[0m"
+  echo "[31;48moriginal zoo.cfg was backed up as zoo.cfg.backup[0m"
+  cp $ZK_DIR/conf/zoo.cfg $ZK_DIR/conf/zoo.cfg.backup
   cp $ZK_CONF $ZK_DIR/conf
   echo "cp $ZK_CONF $ZK_DIR/conf"
   $ZK_DIR/bin/zkServer.sh start
