@@ -25,7 +25,7 @@ public class LZusatzWert implements java.io.Serializable {
 	private LZusatzWertId id;
 	private String probeId;
 	private SProbenZusatz SProbenZusatz;
-	private String messwertNwg;
+	private Float nwgZuMesswert;
 	private Float messwertPzs;
 	private Float messfehler;
 	private Date letzteAenderung;
@@ -41,12 +41,12 @@ public class LZusatzWert implements java.io.Serializable {
 	}
 
 	public LZusatzWert(LZusatzWertId id, String probeId,
-			SProbenZusatz SProbenZusatz, String messwertNwg, Float messwertPzs,
+			SProbenZusatz SProbenZusatz, Float nwgZuMesswert, Float messwertPzs,
 			Float messfehler, Date letzteAenderung) {
 		this.id = id;
 		this.probeId = probeId;
 		this.SProbenZusatz = SProbenZusatz;
-		this.messwertNwg = messwertNwg;
+		this.nwgZuMesswert = nwgZuMesswert;
 		this.messwertPzs = messwertPzs;
 		this.messfehler = messfehler;
 		this.letzteAenderung = letzteAenderung;
@@ -83,13 +83,13 @@ public class LZusatzWert implements java.io.Serializable {
 		this.SProbenZusatz = SProbenZusatz;
 	}
 
-	@Column(name = "messwert_nwg", length = 1)
-	public String getMesswertNwg() {
-		return this.messwertNwg;
+	@Column(name = "nwg_zu_messwert", precision = 8, scale = 8)
+	public Float getNwgZuMesswert() {
+		return this.nwgZuMesswert;
 	}
 
-	public void setMesswertNwg(String messwertNwg) {
-		this.messwertNwg = messwertNwg;
+	public void setNwgZuMesswert(Float nwgZuMesswert) {
+		this.nwgZuMesswert = nwgZuMesswert;
 	}
 
 	@Column(name = "messwert_pzs", precision = 8, scale = 8)
