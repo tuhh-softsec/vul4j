@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LZusatzWert;
+import de.intevation.lada.model.LZusatzWertId;
 import de.intevation.lada.rest.Response;
 
 /**
@@ -46,6 +47,11 @@ extends Repository
             return new Response(false, 602, object);
         }
         LZusatzWert zusatzwert = (LZusatzWert)object;
+        LZusatzWertId id =
+            new LZusatzWertId(
+                zusatzwert.getProbeId(),
+                zusatzwert.getSProbenZusatz().getPzsId());
+        zusatzwert.setId(id);
         Response response = new Response(true, 200, zusatzwert);
         // Try to save the new LProbe.
         try {
@@ -76,11 +82,14 @@ extends Repository
         if (!(object instanceof LZusatzWert)) {
             return new Response(false, 602, object);
         }
-        LZusatzWert messwert = (LZusatzWert)object;
-        Response response = new Response(true, 200, messwert);
-        // Try to save the new LProbe.
+        LZusatzWert zusatzwert = (LZusatzWert)object;
+        LZusatzWertId id = new LZusatzWertId(
+            zusatzwert.getProbeId(),
+            zusatzwert.getSProbenZusatz().getPzsId());
+        zusatzwert.setId(id);
+        Response response = new Response(true, 200, zusatzwert);
         try {
-            manager.update(messwert);
+            manager.update(zusatzwert);
             return response;
         }
         catch (EntityExistsException eee) {
