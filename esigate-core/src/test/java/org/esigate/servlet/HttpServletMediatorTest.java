@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.servlet;
 
 import java.text.SimpleDateFormat;
@@ -27,11 +28,11 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.http.Header;
+import org.apache.http.client.utils.DateUtils;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
-import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.message.BasicHeader;
 import org.esigate.http.MockHttpServletRequestBuilder;
 import org.mockito.Mockito;
@@ -75,7 +76,7 @@ public class HttpServletMediatorTest extends TestCase {
 	 * request (during background revalidation). Expected behavior is no
 	 * exception, but value not set.
 	 * 
-	 * @see https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=229
+	 * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=229"
 	 * @throws Exception
 	 */
 	public void testSetAttributeNoSession() throws Exception {

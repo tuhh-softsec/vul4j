@@ -33,8 +33,8 @@ import org.esigate.Parameters;
 import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
 import org.esigate.http.HttpClientHelper;
-import org.esigate.http.MockConnectionManager;
 import org.esigate.test.TestUtils;
+import org.esigate.test.conn.MockConnectionManager;
 
 public class HtmlEncodingProcessorTest extends TestCase {
 

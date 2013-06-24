@@ -63,7 +63,6 @@ public class HttpRequestHelper {
 		request.getParams().setParameter(DRIVER, driver);
 	}
 
-	@SuppressWarnings("unchecked")
 	public final static Map<String, String> getParameters(HttpRequest request) {
 		return (Map<String, String>) request.getParams().getParameter(PARAMETERS);
 	}

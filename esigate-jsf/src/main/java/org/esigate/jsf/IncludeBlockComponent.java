@@ -97,6 +97,7 @@ public class IncludeBlockComponent extends UIComponentBase implements Replaceabl
 		return true;
 	}
 
+	@Override
 	public Map<String, String> getReplaceRules() {
 		return replaceRules;
 	}

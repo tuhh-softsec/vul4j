@@ -101,6 +101,7 @@ public class IncludeTemplateComponent extends UIComponentBase implements Replace
 		return true;
 	}
 
+	@Override
 	public Map<String, String> getReplaceRules() {
 		return replaceRules;
 	}

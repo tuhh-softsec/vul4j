@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.servlet;
 
 import java.io.IOException;
@@ -53,7 +54,6 @@ public class ProxyServletTest {
 		}
 
 		@Override
-		@SuppressWarnings("rawtypes")
 		public Enumeration getInitParameterNames() {
 			return null;
 		}

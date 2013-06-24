@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.http;
 
 import java.util.ArrayList;
@@ -47,7 +62,7 @@ public class MockHttpServletRequestBuilder {
 	 * 
 	 * @param name
 	 * @param value
-	 * @return
+	 * @return this
 	 */
 	public MockHttpServletRequestBuilder header(String name, String value) {
 		this.headers.add(new BasicHeader(name, value));
@@ -69,37 +84,12 @@ public class MockHttpServletRequestBuilder {
 	 * honored.
 	 * 
 	 * @param paramSession
-	 * @return
+	 * @return this
 	 */
 	public MockHttpServletRequestBuilder session(Map<String, Object> paramSession) {
 		this.session = paramSession;
 		return this;
 	}
-
-	// public MockHttpServletRequestBuilder entity(HttpEntity paramEntity) {
-	// this.entity = paramEntity;
-	// return this;
-	// }
-
-	// public MockHttpServletRequestBuilder mockMediator() {
-	//
-	// if (this.mediator != null)
-	// throw new IllegalArgumentException(
-	// "Cannot use both mockMediator and mediator when building HttpRequest");
-	//
-	// this.mockMediator = true;
-	// return this;
-	// }
-
-	// public MockHttpServletRequestBuilder mediator(ContainerRequestMediator
-	// paramMediator) {
-	// if (this.mockMediator)
-	// throw new IllegalArgumentException(
-	// "Cannot use both mockMediator and mediator when building HttpRequest");
-	//
-	// this.mediator = paramMediator;
-	// return this;
-	// }
 
 	/**
 	 * Build the request as defined in the current builder.
