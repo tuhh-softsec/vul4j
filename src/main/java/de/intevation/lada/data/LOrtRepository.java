@@ -14,7 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import de.intevation.lada.manage.LOrtManager;
+import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.rest.Response;
 import de.intevation.lada.validation.ValidationException;
@@ -35,7 +35,8 @@ extends Repository
     private Validator validator;
 
     @Inject
-    private LOrtManager manager;
+    @Named("datamanager")
+    private Manager manager;
     /**
      * Filter for LOrt objects used for calls from a service.
      *

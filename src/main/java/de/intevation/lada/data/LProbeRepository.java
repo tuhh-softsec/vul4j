@@ -15,7 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import de.intevation.lada.manage.LProbeManager;
+import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.rest.Response;
@@ -41,7 +41,8 @@ public class LProbeRepository extends Repository{
      * Manager class for LPRobe. Used to manipulate data objects.
      */
     @Inject
-    private LProbeManager manager;
+    @Named("datamanager")
+    private Manager manager;
 
     @Inject
     @Named("lprobevalidator")
@@ -51,7 +52,6 @@ public class LProbeRepository extends Repository{
     public <T> Response findAll(Class<T> clazz) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<LProbeInfo> criteria = cb.createQuery(LProbeInfo.class);
-        Root<LProbeInfo> member = criteria.from(LProbeInfo.class);
         criteria.distinct(true);
         List<LProbeInfo> result = filter(criteria);
         return new Response(true, 200, result);

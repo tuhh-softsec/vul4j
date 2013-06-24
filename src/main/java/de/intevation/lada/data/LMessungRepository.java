@@ -14,7 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import de.intevation.lada.manage.LMessungManager;
+import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LMessung;
 import de.intevation.lada.rest.Response;
 import de.intevation.lada.validation.ValidationException;
@@ -40,7 +40,8 @@ extends Repository
      * Manager class for LPRobe. Used to manipulate data objects.
      */
     @Inject
-    private LMessungManager manager;
+    @Named("datamanager")
+    private Manager manager;
 
     @Inject
     @Named("lmessungvalidator")

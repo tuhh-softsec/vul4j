@@ -15,7 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import de.intevation.lada.manage.LKommentarPManager;
+import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LKommentarP;
 import de.intevation.lada.rest.Response;
 
@@ -31,7 +31,8 @@ extends Repository
     private EntityManager em;
 
     @Inject
-    private LKommentarPManager manager;
+    @Named("datamanager")
+    private Manager manager;
 
     @Inject
     private Logger logger;

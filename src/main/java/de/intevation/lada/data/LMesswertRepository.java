@@ -15,7 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import de.intevation.lada.manage.LMesswertManager;
+import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.rest.Response;
 
@@ -39,7 +39,8 @@ extends Repository
      * Manager class for LPRobe. Used to manipulate data objects.
      */
     @Inject
-    private LMesswertManager manager;
+    @Named("datamanager")
+    private Manager manager;
 
     @Override
     public Response create(Object object) {

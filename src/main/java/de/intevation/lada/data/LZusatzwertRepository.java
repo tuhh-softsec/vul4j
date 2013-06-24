@@ -1,6 +1,5 @@
 package de.intevation.lada.data;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +11,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import de.intevation.lada.manage.LZusatzwertManager;
+import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LZusatzWert;
 import de.intevation.lada.rest.Response;
 
@@ -39,7 +37,8 @@ extends Repository
      * Manager class for LPRobe. Used to manipulate data objects.
      */
     @Inject
-    private LZusatzwertManager manager;
+    @Named("datamanager")
+    private Manager manager;
 
     @Override
     public Response create(Object object) {
