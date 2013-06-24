@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.server;
 
 import java.io.IOException;
@@ -81,15 +96,14 @@ public class ControlHandler extends AbstractHandler {
 						}
 
 						@Override
-						public void processGauge(MetricName name, Gauge gauge, Writer context) throws Exception {
+						public void processGauge(MetricName name, Gauge<?> gauge, Writer context) throws Exception {
 							context.append(name.getName() + ": " + gauge.value() + "\n");
 						}
 
 						@Override
 						public void processHistogram(MetricName name, Histogram histogram, Writer context)
 								throws Exception {
-							// TODO Auto-generated method stub
-
+							// Nothing to do
 						}
 
 						@Override
@@ -99,8 +113,7 @@ public class ControlHandler extends AbstractHandler {
 
 						@Override
 						public void processTimer(MetricName name, Timer timer, Writer context) throws Exception {
-							// TODO Auto-generated method stub
-
+							// Nothing to do
 						}
 
 					};
@@ -112,8 +125,7 @@ public class ControlHandler extends AbstractHandler {
 						try {
 							metric.processWith(p, name, sos);
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							throw new ServletException(e);
 						}
 
 					}

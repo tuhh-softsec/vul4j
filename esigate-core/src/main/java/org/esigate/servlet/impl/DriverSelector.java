@@ -87,6 +87,7 @@ public class DriverSelector {
 	 * 
 	 * @param request
 	 * @return provider name or null.
+	 * @throws HttpErrorPage 
 	 */
 	public Driver selectProvider(HttpServletRequest request) throws HttpErrorPage {
 
