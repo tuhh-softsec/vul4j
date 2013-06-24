@@ -28,7 +28,6 @@ public class LZusatzWert implements java.io.Serializable {
 	private String messwertNwg;
 	private Float messwertPzs;
 	private Float messfehler;
-	private Short mehId;
 	private Date letzteAenderung;
 
 	public LZusatzWert() {
@@ -43,14 +42,13 @@ public class LZusatzWert implements java.io.Serializable {
 
 	public LZusatzWert(LZusatzWertId id, String probeId,
 			SProbenZusatz SProbenZusatz, String messwertNwg, Float messwertPzs,
-			Float messfehler, Short mehId, Date letzteAenderung) {
+			Float messfehler, Date letzteAenderung) {
 		this.id = id;
 		this.probeId = probeId;
 		this.SProbenZusatz = SProbenZusatz;
 		this.messwertNwg = messwertNwg;
 		this.messwertPzs = messwertPzs;
 		this.messfehler = messfehler;
-		this.mehId = mehId;
 		this.letzteAenderung = letzteAenderung;
 	}
 
