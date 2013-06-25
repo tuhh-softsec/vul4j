@@ -21,8 +21,8 @@ package org.apache.xml.security.stax.config;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
-import org.xmlsecurity.ns.configuration.TransformAlgorithmType;
-import org.xmlsecurity.ns.configuration.TransformAlgorithmsType;
+import org.apache.xml.security.configuration.TransformAlgorithmType;
+import org.apache.xml.security.configuration.TransformAlgorithmsType;
 
 import java.util.HashMap;
 import java.util.List;

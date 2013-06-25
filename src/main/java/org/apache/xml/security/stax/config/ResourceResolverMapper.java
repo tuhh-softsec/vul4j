@@ -22,8 +22,8 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.ResourceResolver;
 import org.apache.xml.security.stax.ext.ResourceResolverLookup;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
-import org.xmlsecurity.ns.configuration.ResolverType;
-import org.xmlsecurity.ns.configuration.ResourceResolversType;
+import org.apache.xml.security.configuration.ResolverType;
+import org.apache.xml.security.configuration.ResourceResolversType;
 
 import java.util.ArrayList;
 import java.util.List;

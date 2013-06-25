@@ -21,7 +21,8 @@ package org.apache.xml.security.stax.config;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityConfigurationException;
 import org.apache.xml.security.utils.I18n;
-import org.xmlsecurity.ns.configuration.ConfigurationType;
+import org.apache.xml.security.configuration.ConfigurationType;
+import org.apache.xml.security.configuration.ObjectFactory;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -50,7 +51,7 @@ public class Init {
     public static synchronized void init(URI uri) throws XMLSecurityException {
         if (initialized == null || (uri != null && !uri.equals(initialized))) {
             try {
-                JAXBContext jaxbContext = JAXBContext.newInstance("org.xmlsecurity.ns.configuration");
+                JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
                 final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
                 SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                 Schema schema = schemaFactory.newSchema(Init.class.getClassLoader().getResource("schemas/security-config.xsd"));

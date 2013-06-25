@@ -19,8 +19,8 @@
 package org.apache.xml.security.stax.config;
 
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
-import org.xmlsecurity.ns.configuration.HandlerType;
-import org.xmlsecurity.ns.configuration.SecurityHeaderHandlersType;
+import org.apache.xml.security.configuration.HandlerType;
+import org.apache.xml.security.configuration.SecurityHeaderHandlersType;
 
 import javax.xml.namespace.QName;
 import java.util.HashMap;

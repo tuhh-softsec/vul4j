@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.config;
 
-import org.xmlsecurity.ns.configuration.PropertiesType;
-import org.xmlsecurity.ns.configuration.PropertyType;
+import org.apache.xml.security.configuration.PropertiesType;
+import org.apache.xml.security.configuration.PropertyType;
 
 import java.util.List;
 import java.util.Properties;

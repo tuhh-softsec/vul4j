@@ -266,6 +266,10 @@
                             <schemaIncludes>
                                 <schemaInclude>security-config.xsd</schemaInclude>
                             </schemaIncludes>
+                            <bindingDirectory>${basedir}/src/main/resources/bindings/</bindingDirectory>
+                            <bindingIncludes>
+                                <bindingInclude>security-config.xjb</bindingInclude>
+                            </bindingIncludes>
                             <readOnly>true</readOnly>
                          </configuration>
                     </execution>

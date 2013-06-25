@@ -21,8 +21,8 @@ package org.apache.xml.security.stax.config;
 import java.util.List;
 
 import org.apache.xml.security.algorithms.JCEMapper;
-import org.xmlsecurity.ns.configuration.AlgorithmType;
-import org.xmlsecurity.ns.configuration.JCEAlgorithmMappingsType;
+import org.apache.xml.security.configuration.AlgorithmType;
+import org.apache.xml.security.configuration.JCEAlgorithmMappingsType;
 
 /**
  * Mapping between JCE id and xmlsec uri's for algorithms
