@@ -420,8 +420,18 @@ public final class DOMXMLSignature extends DOMStructure
     
     @Override
     public int hashCode() {
-        assert false : "hashCode not designed";
-        return 42; // any arbitrary constant will do 
+        int result = 17;
+        if (id != null) {
+            result = 31 * result + id.hashCode();
+        }
+        if (ki != null) {
+            result = 31 * result + ki.hashCode();
+        }
+        result = 31 * result + sv.hashCode();
+        result = 31 * result + si.hashCode();
+        result = 31 * result + objects.hashCode();
+
+        return result;
     }
 
     private void digestReference(DOMReference ref, XMLSignContext signContext)
@@ -566,8 +576,12 @@ public final class DOMXMLSignature extends DOMStructure
         
         @Override
         public int hashCode() {
-            assert false : "hashCode not designed";
-            return 42; // any arbitrary constant will do 
+            int result = 17;
+            if (id != null) {
+                result = 31 * result + id.hashCode();
+            }
+
+            return result;
         }
 
         @Override

@@ -209,9 +209,7 @@ public final class DOMKeyInfo extends BaseStructure implements KeyInfo {
         if (id != null) {
             result = 31 * result + id.hashCode();
         }
-        if (keyInfoTypes != null) {
-            result = 31 * result + keyInfoTypes.hashCode();
-        }
+        result = 31 * result + keyInfoTypes.hashCode();
         
         return result;
     }

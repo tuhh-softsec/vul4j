@@ -597,12 +597,8 @@ public final class DOMReference extends DOMStructure
         if (digestValue != null) {
             result = 31 * result + Arrays.hashCode(digestValue);
         }
-        if (digestMethod != null) {
-            result = 31 * result + digestMethod.hashCode();
-        }
-        if (allTransforms != null) {
-            result = 31 * result + allTransforms.hashCode();
-        }
+        result = 31 * result + digestMethod.hashCode();
+        result = 31 * result + allTransforms.hashCode();
         
         return result;
     }

@@ -27,6 +27,7 @@ package org.apache.jcp.xml.dsig.internal.dom;
 import java.io.OutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.Provider;
+import java.security.spec.AlgorithmParameterSpec;
 
 import org.w3c.dom.Element;
 
@@ -114,8 +115,14 @@ public class DOMCanonicalizationMethod extends DOMTransform
     
     @Override
     public int hashCode() {
-        assert false : "hashCode not designed";
-        return 42; // any arbitrary constant will do 
+        int result = 17;
+        result = 31 * result + getAlgorithm().hashCode();
+        AlgorithmParameterSpec spec = getParameterSpec();
+        if (spec != null) {
+            result = 31 * result + spec.hashCode();
+        }
+
+        return result;
     }
     
     private static boolean isC14Nalg(String alg) {

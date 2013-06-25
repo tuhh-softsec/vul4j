@@ -273,12 +273,8 @@ public final class DOMRetrievalMethod extends DOMStructure
         if (type != null) {
             result = 31 * result + type.hashCode();
         }
-        if (uri != null) {
-            result = 31 * result + uri.hashCode();
-        }
-        if (transforms != null) {
-            result = 31 * result + transforms.hashCode();
-        }
+        result = 31 * result + uri.hashCode();
+        result = 31 * result + transforms.hashCode();
         
         return result;
     }

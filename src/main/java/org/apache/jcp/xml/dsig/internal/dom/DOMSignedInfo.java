@@ -302,15 +302,9 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
         if (id != null) {
             result = 31 * result + id.hashCode();
         }
-        if (canonicalizationMethod != null) {
-            result = 31 * result + canonicalizationMethod.hashCode();
-        }
-        if (signatureMethod != null) {
-            result = 31 * result + signatureMethod.hashCode();
-        }
-        if (references != null) {
-            result = 31 * result + references.hashCode();
-        }
+        result = 31 * result + canonicalizationMethod.hashCode();
+        result = 31 * result + signatureMethod.hashCode();
+        result = 31 * result + references.hashCode();
         
         return result;
     }

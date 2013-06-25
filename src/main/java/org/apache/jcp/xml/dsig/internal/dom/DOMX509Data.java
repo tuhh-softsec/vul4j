@@ -262,7 +262,9 @@ public final class DOMX509Data extends BaseStructure implements X509Data {
     
     @Override
     public int hashCode() {
-        assert false : "hashCode not designed";
-        return 42; // any arbitrary constant will do 
+        int result = 17;
+        result = 31 * result + content.hashCode();
+
+        return result;
     }
 }
