@@ -148,12 +148,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
         Element smElem = DOMUtils.getNextSiblingElement(cmElem);
         signatureMethod = DOMSignatureMethod.unmarshal(smElem);
         
-        Boolean secureValidation = (Boolean)
-            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
-        boolean secVal = false;
-        if (secureValidation != null && secureValidation) {
-            secVal = true;
-        }
+        boolean secVal = Utils.secureValidation(context);
 
         String signatureMethodAlgorithm = signatureMethod.getAlgorithm();
         if (secVal && ((ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5.equals(signatureMethodAlgorithm)

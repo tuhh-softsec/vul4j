@@ -125,12 +125,7 @@ public final class DOMRetrievalMethod extends DOMStructure
         // get here node
         here = rmElem.getAttributeNodeNS(null, "URI");
         
-        Boolean secureValidation = (Boolean)
-            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
-        boolean secVal = false;
-        if (secureValidation != null && secureValidation) {
-            secVal = true;
-        }
+        boolean secVal = Utils.secureValidation(context);
 
         // get Transforms, if specified
         List<Transform> transforms = new ArrayList<Transform>();

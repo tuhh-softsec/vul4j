@@ -68,12 +68,7 @@ public class DOMURIDereferencer implements URIDereferencer {
         DOMCryptoContext dcc = (DOMCryptoContext) context;
         String baseURI = context.getBaseURI();
         
-        Boolean secureValidation = (Boolean)
-            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
-        boolean secVal = false;
-        if (secureValidation != null && secureValidation) {
-            secVal = true;
-        }
+        boolean secVal = Utils.secureValidation(context);
         
         // Check if same-document URI and already registered on the context
         if (uri != null && uri.length() != 0 && uri.charAt(0) == '#') {

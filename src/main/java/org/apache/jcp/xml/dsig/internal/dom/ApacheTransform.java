@@ -143,9 +143,7 @@ public abstract class ApacheTransform extends TransformService {
             } 
         }
         
-        Boolean secureValidation = (Boolean)
-            xc.getProperty("org.apache.jcp.xml.dsig.secureValidation");
-        if (secureValidation != null && secureValidation) {
+        if (Utils.secureValidation(xc)) {
             String algorithm = getAlgorithm();
             if (Transforms.TRANSFORM_XSLT.equals(algorithm)) {
                 throw new TransformException(

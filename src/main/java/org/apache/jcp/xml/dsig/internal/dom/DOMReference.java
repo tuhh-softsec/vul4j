@@ -193,12 +193,7 @@ public final class DOMReference extends DOMStructure
                         Provider provider)
         throws MarshalException
     {
-        Boolean secureValidation = (Boolean)
-            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
-        boolean secVal = false;
-        if (secureValidation != null && secureValidation) {
-            secVal = true;
-        }
+        boolean secVal = Utils.secureValidation(context);
         
         // unmarshal Transforms, if specified
         Element nextSibling = DOMUtils.getFirstChildElement(refElem);
