@@ -116,10 +116,17 @@ public class StandaloneRegistry implements IFloodlightModule,
 		throw new RuntimeException("Not yet implemented");
 	}
 	
+	private long blockTop = 0L;
+	private static final long BLOCK_SIZE = 0x1000000L;
 	@Override
 	public IdBlock allocateUniqueIdBlock(){
-		//XXX Not exactly unique...
-		return new IdBlock(0L, 0x10000000L, 0x10000000L);
+		long blockHead = blockTop;
+		long blockTail = blockTop + BLOCK_SIZE;
+		
+		IdBlock block = new IdBlock(blockHead, blockTail, BLOCK_SIZE);
+		blockTop = blockTail;
+		
+		return block;
 	}
 
 	@Override

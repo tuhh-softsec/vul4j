@@ -109,13 +109,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		}
 	}
 	
-	
-	/**
-	 * Listens for changes to the switch znodes in Zookeeper. This maintains
-	 * the second level of PathChildrenCaches that hold the controllers 
-	 * contending for each switch - there's one for each switch.
-	 */
-	PathChildrenCacheListener switchPathCacheListener = new PathChildrenCacheListener() {
+	protected class SwitchPathCacheListener implements PathChildrenCacheListener {
 		@Override
 		public void childEvent(CuratorFramework client,
 				PathChildrenCacheEvent event) throws Exception {
@@ -158,6 +152,12 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			
 		}
 	};
+	/**
+	 * Listens for changes to the switch znodes in Zookeeper. This maintains
+	 * the second level of PathChildrenCaches that hold the controllers 
+	 * contending for each switch - there's one for each switch.
+	 */
+	PathChildrenCacheListener switchPathCacheListener = new SwitchPathCacheListener();
 	protected ServiceDiscovery<ControllerService> serviceDiscovery;
 	protected ServiceCache<ControllerService> serviceCache;
 
