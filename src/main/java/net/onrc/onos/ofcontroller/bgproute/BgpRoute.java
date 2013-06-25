@@ -26,6 +26,7 @@ import net.floodlightcontroller.topology.ITopologyService;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
+import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -62,6 +63,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected ITopoRouteService topoRouteService;
 	protected IDeviceService devices;
 	protected IRestApiService restApi;
+	
+	protected ProxyArpManager proxyArp;
 	
 	protected static Ptree ptree;
 	protected String bgpdRestIp;
@@ -168,7 +171,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		topology = context.getServiceImpl(ITopologyService.class);
 		topoRouteService = context.getServiceImpl(ITopoRouteService.class);
 		devices = context.getServiceImpl(IDeviceService.class);
-		restApi = context.getServiceImpl(IRestApiService.class);		
+		restApi = context.getServiceImpl(IRestApiService.class);
+		
+		//TODO We'll initialise this here for now, but it should really be done as
+		//part of the controller core
+		proxyArp = new ProxyArpManager(floodlightProvider, topology);
 		
 		//Read in config values
 		bgpdRestIp = context.getConfigParams(this).get("BgpdRestIp");
@@ -849,6 +856,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		restApi.addRestletRoutable(new BgpRouteWebRoutable());
 		floodlightProvider.addOFSwitchListener(this);
 		topology.addListener(this);
+		
+		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
 		
 		//Retrieve the RIB from BGPd during startup
 		retrieveRib();
