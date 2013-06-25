@@ -11,11 +11,11 @@ import com.thinkaurelius.titan.core.TitanException;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.floodlightcontroller.packet.IPv4;
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
-import net.onrc.onos.util.GraphDBOperation;
 
 /**
  * This is the class for storing the information of devices into CassandraDB
@@ -50,7 +50,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	
 	/***
 	 * Finalize/close function. After you use this class, please call this method.
-	 * It will close the DB connection. This is for Java gabage collection.
+	 * It will close the DB connection. This is for Java garbage collection.
 	 */
 	@Override
 	public void finalize() {

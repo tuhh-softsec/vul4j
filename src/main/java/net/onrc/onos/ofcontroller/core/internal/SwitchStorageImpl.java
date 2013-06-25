@@ -1,10 +1,11 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
+import net.floodlightcontroller.core.IOFSwitch;
+import net.onrc.onos.graph.GraphDBConnection;
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.protocol.OFPhysicalPort.OFPortConfig;
@@ -39,7 +40,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	
 	/***
 	 * Finalize/close function. After you use this class, please call this method.
-	 * It will close the DB connection. This is for Java gabage collection.
+	 * It will close the DB connection. This is for Java garbage collection.
 	 */
 	@Override
 	public void close() {
@@ -71,28 +72,31 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		
 		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
 		try {
-			ISwitchObject sw = op.searchSwitch(dpid);
-			if (sw != null) {
-				//If existing the switch. set The SW state ACTIVE. 
-				log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
-				sw.setState(SwitchState.ACTIVE.toString());
-				op.commit();
-			} else {
-				sw = op.newSwitch(dpid);
-
-				if (sw != null) {
-					sw.setState(SwitchState.ACTIVE.toString());
-					op.commit();
-					log.info("SwitchStorage:addSwitch dpid:{} added", dpid);
-				} else {
-					log.error("switchStorage:addSwitch dpid:{} failed -> newSwitch failed", dpid);
-				}
-			}
+			newSwitch(dpid);
+            op.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			op.rollback();
 			log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
 		}
+	}
+	
+	private ISwitchObject newSwitch(String dpid) {
+		ISwitchObject sw = op.searchSwitch(dpid);
+		if (sw != null) {
+			//If existing the switch. set The SW state ACTIVE. 
+			log.info("SwitchStorage:newSwitch dpid:{} already exists", dpid);
+			sw.setState(SwitchState.ACTIVE.toString());
+		} else {
+			sw = op.newSwitch(dpid);
+			if (sw != null) {
+				sw.setState(SwitchState.ACTIVE.toString());
+				log.info("SwitchStorage:newSwitch dpid:{} added", dpid);
+			} else {
+				log.error("switchStorage:newSwitch dpid:{} failed -> newSwitch failed", dpid);
+			}
+		}
+		return sw;
 	}
 	
 	/***
@@ -164,7 +168,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             	if (p != null) {
             		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
             	} else {
-            		p = op.newPort(port.getPortNumber());
+            		p = op.newPort(dpid, port.getPortNumber());
             		p.setState("ACTIVE");
             		p.setPortState(port.getState());
             		p.setDesc(port.getName());
@@ -206,5 +210,33 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			op.rollback();
 			log.info("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
 		}	
+	}
+
+	@Override
+	public void addSwitch(IOFSwitch sw) {
+		// TODO Auto-generated method stub
+		String dpid = sw.getStringId();
+		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
+		try {
+			ISwitchObject switchObject = newSwitch(dpid);
+        	for (OFPhysicalPort port: sw.getPorts()) {
+        		IPortObject p = op.searchPort(dpid, port.getPortNumber());
+        		if (p != null) {
+            		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
+            	} else {
+            		p = op.newPort(dpid, port.getPortNumber());
+            		p.setState("ACTIVE");
+            		p.setPortState(port.getState());
+            		p.setDesc(port.getName());           		
+            		switchObject.addPort(p);
+            	}         		
+        	}
+            op.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			op.rollback();
+			log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
+		}		
+		
 	}
 }

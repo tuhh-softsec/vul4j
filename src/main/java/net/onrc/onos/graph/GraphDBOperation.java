@@ -1,7 +1,9 @@
-package net.onrc.onos.util;
+package net.onrc.onos.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.openflow.protocol.OFPhysicalPort;
 
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
@@ -12,6 +14,7 @@ import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
+import com.google.common.base.Stopwatch;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
@@ -56,7 +59,7 @@ public class GraphDBOperation implements IDBOperation {
 	 * @param dpid DPID of the switch 
 	 */
 	public ISwitchObject searchSwitch(String dpid) {
-		// TODO Auto-generated method stub
+
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		
 		return (fg != null && fg.getVertices("dpid",dpid).iterator().hasNext()) ? 
@@ -136,11 +139,26 @@ public class GraphDBOperation implements IDBOperation {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		fg.removeVertex(sw.asVertex());		
 	}
+	
+	@Override
+	public IPortObject newPort(String dpid, Short portNumber) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+		IPortObject obj = fg.addVertex(null,IPortObject.class);
+		if (obj != null) {
+			obj.setType("port");
+			String id = dpid + portNumber.toString();
+			obj.setPortId(id);
+			obj.setNumber(portNumber);
+		}
+		return obj;	
+		
+	}
 
 	/**
 	 * Create a port having specified port number.
 	 * @param portNumber port number
 	 */
+	@Deprecated
 	public IPortObject newPort(Short portNumber) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IPortObject obj = fg.addVertex(null,IPortObject.class);
@@ -156,32 +174,11 @@ public class GraphDBOperation implements IDBOperation {
 	 * @param dpid DPID of a switch
 	 * @param number port number of the switch's port
 	 */
-	public IPortObject searchPort(String dpid, short number) {
-		ISwitchObject sw = searchSwitch(dpid);
-		if (sw != null) {
-			
-			IPortObject port = null;
-			
-			// Requires Frames 2.3.0
-			
-			try {
-				port = sw.getPort(number);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			return port;
-		}
-			
-	//		if (sw != null) {
-	//			GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
-	//			pipe.start(sw.asVertex());
-	//			pipe.out("on").has("number", number);
-	//			FramedVertexIterable<IPortObject> r = new FramedVertexIterable<IPortObject>(conn.getFramedGraph(), (Iterable) pipe, IPortObject.class);
-	//			return r != null && r.iterator().hasNext() ? r.iterator().next() : null;
-	//		}
-		return null;
+	public IPortObject searchPort(String dpid, Short number) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		String id = dpid + number.toString();
+		return (fg != null && fg.getVertices("port_id",id).iterator().hasNext()) ? 
+				fg.getVertices("port_id",id,IPortObject.class).iterator().next() : null;
 	}
 
 	/**
@@ -359,4 +356,6 @@ public class GraphDBOperation implements IDBOperation {
 	public void close() {
 		conn.close();
 	}
+
+
 }

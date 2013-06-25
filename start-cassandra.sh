@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set paths
-FL_HOME=`dirname $0`
+ONOS_HOME=`dirname $0`
 CASSANDRA_DIR=${HOME}/apache-cassandra-1.2.4
 LOGDIR=${HOME}/ONOS/onos-logs
 CASSANDRA_LOG=$LOGDIR/cassandara.`hostname`.log
@@ -30,6 +30,10 @@ function start {
 
   # Run cassandra 
   echo "Starting cassandra"
+  echo "[31;48m[WARNING] This script copies conf/cassandra.yam to $CASSANDRA_DIR/conf/cassandra.yaml (overwrites)[0m"
+  echo "[31;48moriginal cassandra.yaml was backed up as cassandra.yaml.backup[0m"
+  cp $CASSANDRA_DIR/conf/cassandra.yaml $CASSANDRA_DIR/conf/cassandra.yaml.backup
+  cp ${ONOS_HOME}/conf/cassandra.yaml $CASSANDRA_DIR/conf
   $CASSANDRA_DIR/bin/cassandra > $CASSANDRA_LOG 2>&1 
 }
 
@@ -56,7 +60,7 @@ function deldb {
 case "$1" in
   start)
     deldb
-    cp $FL_HOME/cassandra.titan /tmp
+    cp $ONOS_HOME/conf/cassandra.titan /tmp
     stop
     start 
     ;;

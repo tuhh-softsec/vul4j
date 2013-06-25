@@ -402,7 +402,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
      */
     @Override
     public String toString() {
-        return "OFSwitchImpl [" + channel.getRemoteAddress() + " DPID[" + ((stringId != null) ? stringId : "?") + "]]";
+        return "OFSwitchImpl [" + ((channel != null) ? channel.getRemoteAddress() : "?") + " DPID[" + ((stringId != null) ? stringId : "?") + "]]";
     }
 
     @Override

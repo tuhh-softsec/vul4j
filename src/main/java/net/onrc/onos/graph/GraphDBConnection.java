@@ -1,4 +1,4 @@
-package net.onrc.onos.util;
+package net.onrc.onos.graph;
 
 import java.util.Set;
 
@@ -63,11 +63,14 @@ public class GraphDBConnection implements IDBConnection {
 			if (!s.contains("dpid")) {
 				graph.createKeyIndex("dpid", Vertex.class);
 			}
+			if (!s.contains("port_id")) {
+				graph.createKeyIndex("port_id", Vertex.class);
+			}
 			if (!s.contains("type")) {
 				graph.createKeyIndex("type", Vertex.class);
 			}
-			if (!s.contains("dl_address")) {
-				graph.createKeyIndex("dl_address", Vertex.class);
+			if (!s.contains("dl_addr")) {
+				graph.createKeyIndex("dl_addr", Vertex.class);
 			}
 			if (!s.contains("flow_id")) {
 				graph.createKeyIndex("flow_id", Vertex.class);

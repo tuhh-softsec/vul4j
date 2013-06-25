@@ -18,6 +18,7 @@ Building ONOS
     $ mvn clean
     $ mvn compile
 
+    NOTE: installing maven for the first time may switch java version from 1.7 to 1.6 causing cassandra to not run
 
 Dependencies
 ------------
@@ -31,11 +32,13 @@ Running ONOS
 
 1. Start zookeeper
 
-    $ cd (ZOOKEEPER-INSTALL-DIR)/bin
-    
-    $ ./zkServer.sh start
+    $ cd (ONOS-INSTALL-DIR)/
+
+    $ ./start-zk.sh
 
 2. Start cassandra
+
+    $ cd (ONOS-INSTALL-DIR)/
 
     $ ./start-cassandra.sh start
 
@@ -58,8 +61,8 @@ Running ONOS with Cassandra embedded (Optional)
 
 1. Start Zookeeper
 
-    $ cd (ZOOKEEPER-INSTALL-DIR)/bin
-    
+    $ cd (ONOS-INSTALL-DIR)/
+
     $ ./zkServer.sh start
     
 2. Start ONOS and Cassandra embedded

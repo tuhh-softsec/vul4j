@@ -24,6 +24,10 @@ import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.graph.GraphDBConnection;
+import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.IDBConnection;
+import net.onrc.onos.graph.LocalTopologyEventListener;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.ILinkStorage;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
@@ -39,10 +43,6 @@ import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBOperation;
-import net.onrc.onos.util.IDBConnection;
-import net.onrc.onos.util.LocalTopologyEventListener;
 
 public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener, IOFSwitchPortListener,
 		ILinkDiscoveryListener, IFloodlightModule {
@@ -153,10 +153,7 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 	public void addedSwitch(IOFSwitch sw) {
 
 		if (registryService.hasControl(sw.getId())) {
-	        	swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
-	        	for (OFPhysicalPort port: sw.getPorts()) {
-	        		swStore.addPort(sw.getStringId(), port);
-	        	}
+	        	swStore.addSwitch(sw);
 		}
 
 	}

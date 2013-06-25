@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Set paths
-ONOS_HOME=`dirname $0`
-ONOS_JAR="${ONOS_HOME}/target/floodlight.jar"
-ONOS_ONLY_JAR="${ONOS_HOME}/target/floodlight-only.jar"
+if [ -z "${ONOS_HOME}" ]; then
+        ONOS_HOME=`dirname $0`
+fi
 ONOS_LOGBACK="${ONOS_HOME}/logback.xml"
 LOGDIR=${ONOS_HOME}/onos-logs
 ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
@@ -23,9 +23,7 @@ JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 
 #JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
 
-# Set classpath to include titan libs
-#CLASSPATH=`echo ${ONOS_HOME}/lib/*.jar ${ONOS_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
-CLASSPATH="${ONOS_ONLY_JAR}:${ONOS_HOME}/lib/*:${ONOS_HOME}/lib/titan/*"
+# Set Main class to start ONOS core
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
 
 if [ -z "${MVN}" ]; then
@@ -88,9 +86,9 @@ EOF_LOGBACK
   # Run floodlight
   echo "Starting ONOS controller ..."
   echo 
-  #java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -jar ${ONOS_JAR} -cf ${ONOS_HOME}/onos.properties > /dev/null 2>&1 &
-  #java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp ${CLASSPATH} ${MAIN_CLASS} -cf ${ONOS_HOME}/onos.properties > /dev/n
 
+  # XXX MVN has to run at the project top dir..
+  cd ${ONOS_HOME}
   ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
 
   echo "Waiting for ONOS to start..."
@@ -107,8 +105,7 @@ EOF_LOGBACK
   echo "Timed out"
   exit 1
 
-#  echo "java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -jar ${ONOS_JAR} -cf ./onos.properties > /dev/null 2>&1 &"
-#  sudo -b /usr/sbin/tcpdump -n -i eth0 -s0 -w ${PCAP_LOG} 'tcp port 6633' > /dev/null  2>&1
+  sudo -b /usr/sbin/tcpdump -n -i eth0 -s0 -w ${PCAP_LOG} 'tcp port 6633' > /dev/null  2>&1
 }
 
 function stop {
@@ -119,7 +116,7 @@ function stop {
   for p in ${pids}; do
     if [ x$p != "x" ]; then
       kill -KILL $p
-      echo "Killed existing prosess (pid: $p)"
+      echo "Killed existing process (pid: $p)"
     fi
   done
 }

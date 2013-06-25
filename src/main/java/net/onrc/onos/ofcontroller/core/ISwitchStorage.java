@@ -3,6 +3,8 @@ package net.onrc.onos.ofcontroller.core;
 import java.util.Collection;
 
 
+import net.floodlightcontroller.core.IOFSwitch;
+
 import org.openflow.protocol.OFPhysicalPort;
 
 public interface ISwitchStorage extends INetMapStorage {
@@ -21,7 +23,11 @@ public interface ISwitchStorage extends INetMapStorage {
 	 */
 	public void addPort(String dpid, OFPhysicalPort port);
 	/*
-	 * Get all ports associated on a switch
+	 * Add a switch and all its associated ports
+	 */
+	public void addSwitch(IOFSwitch sw);
+	/*
+	 * Add a switch
 	 */
 	public void addSwitch(String dpid);
 	/*

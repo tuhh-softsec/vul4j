@@ -1,6 +1,6 @@
 #! /bin/sh
 
-. ${HOME}/bin/func.sh
+. `dirname $0`/func.sh
 
 basename=$ONOS_CLUSTER_BASENAME
 nr_nodes=$ONOS_CLUSTER_NR_NODES

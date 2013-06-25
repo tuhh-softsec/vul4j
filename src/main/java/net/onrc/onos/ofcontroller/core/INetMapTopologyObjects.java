@@ -73,6 +73,14 @@ public interface ISwitchObject extends IBaseObject{
 		@Property("number")
 		public Short getNumber();
 		
+		@JsonIgnore
+		@Property("port_id")
+		public void setPortId(String id);
+		
+		@JsonIgnore
+		@Property("port_id")
+		public String getPortId();
+		
 		@Property("number")
 		public void setNumber(Short n);
 		

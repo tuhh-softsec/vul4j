@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.ILinkStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
-import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;

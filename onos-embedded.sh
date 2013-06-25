@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Set paths
-FL_HOME=`dirname $0`
-FL_JAR="${FL_HOME}/target/floodlight.jar"
-FL_LOGBACK="${FL_HOME}/logback.xml"
+ONOS_HOME=`dirname $0`
+ONOS_JAR="${ONOS_HOME}/target/floodlight.jar"
+ONOS_LOGBACK="${ONOS_HOME}/logback.xml"
 TITAN_CONFIG="/tmp/cassandra.titan"
 CASSANDRA_CONFIG="/home/`whoami`/apache-cassandra-1.1.4/conf/cassandra.yaml"
 
@@ -17,15 +17,15 @@ JVM_OPTS=""
 #JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
 
 # Set classpath to include titan libs
-#CLASSPATH=`echo ${FL_HOME}/lib/*.jar ${FL_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
-CLASSPATH="${FL_HOME}/lib/*.jar:${FL_HOME}/lib/titan/*.jar"
+#CLASSPATH=`echo ${ONOS_HOME}/lib/*.jar ${ONOS_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
+CLASSPATH="${ONOS_HOME}/lib/*.jar:${ONOS_HOME}/lib/titan/*.jar"
 
 CASSANDRA_OPTS="-Dcom.sun.management.jmxremote.port=7199"
 CASSANDRA_OPTS="$CASSANDRA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
 CASSANDRA_OPTS="$CASSANDRA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
 
 # Create a logback file if required
-cat <<EOF_LOGBACK >${FL_LOGBACK}
+cat <<EOF_LOGBACK >${ONOS_LOGBACK}
 <configuration scan="true" debug="true">
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
@@ -64,5 +64,5 @@ rm onos.log
 # Run floodlight
 echo "Starting ONOS controller ..."
 echo 
-#java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -Xbootclasspath/a:$CLASSPATH -jar ${FL_JAR} -cf ./onos.properties
-java ${JVM_OPTS} ${CASSANDRA_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR}
+#java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -Xbootclasspath/a:$CLASSPATH -jar ${ONOS_JAR} -cf ./onos.properties
+java ${JVM_OPTS} ${CASSANDRA_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -jar ${ONOS_JAR}

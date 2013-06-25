@@ -2,11 +2,11 @@ package net.onrc.onos.ofcontroller.core.internal;
 
 import static org.easymock.EasyMock.*;
 
+import net.onrc.onos.graph.GraphDBConnection;
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
@@ -447,7 +447,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		mockOpe.close();
 		replay(mockOpe);
@@ -588,7 +588,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(null);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(null);	
 		mockOpe.rollback();
 		mockOpe.close();
 		replay(mockOpe);
@@ -639,7 +639,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		expectLastCall().andThrow(new RuntimeException());
 		mockOpe.rollback();
@@ -693,7 +693,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
@@ -750,7 +750,7 @@ public class SwitchStorageImplTest {
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
-		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
