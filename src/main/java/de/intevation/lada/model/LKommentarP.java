@@ -9,6 +9,9 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -23,43 +26,42 @@ import javax.persistence.TemporalType;
 @Table(name = "l_kommentar_p", schema = "public")
 public class LKommentarP implements java.io.Serializable {
 
-	private LKommentarPId id;
 	private String probeId;
 	private String erzeuger;
 	private Date KDatum;
 	private String KText;
+    private Integer kId;
 
-	public LKommentarP() {
-	}
+    public LKommentarP() {
+    }
 
-	public LKommentarP(LKommentarPId id, String probeId, String erzeuger,
-			Date KDatum) {
-		this.id = id;
 		this.probeId = probeId;
 		this.erzeuger = erzeuger;
 		this.KDatum = KDatum;
 	}
+    public LKommentarP(Integer kId, String probeId, String erzeuger,
+            Date KDatum) {
+        this.kId = kId;
 
-	public LKommentarP(LKommentarPId id, String probeId, String erzeuger,
-			Date KDatum, String KText) {
-		this.id = id;
 		this.probeId = probeId;
 		this.erzeuger = erzeuger;
 		this.KDatum = KDatum;
 		this.KText = KText;
 	}
+    public LKommentarP(Integer kId, String probeId, String erzeuger,
+            Date KDatum, String KText) {
+        this.kId = kId;
 
-	@EmbeddedId
-	@AttributeOverrides({
-			@AttributeOverride(name = "probeId", column = @Column(name = "probe_id", nullable = false, length = 20)),
-			@AttributeOverride(name = "KId", column = @Column(name = "k_id", nullable = false)) })
-	public LKommentarPId getId() {
-		return this.id;
-	}
+    @Id
+    @Column(name = "k_id", nullable = false, insertable = false, updatable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getkId() {
+        return this.kId;
+    }
 
-	public void setId(LKommentarPId id) {
-		this.id = id;
-	}
+    public void setkId(Integer kId) {
+        this.kId = kId;
+    }
 
 	@Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
 	public String getProbeId() {
