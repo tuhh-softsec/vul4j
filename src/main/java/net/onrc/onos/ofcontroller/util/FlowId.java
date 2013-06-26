@@ -13,7 +13,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @JsonDeserialize(using=FlowIdDeserializer.class)
 @JsonSerialize(using=FlowIdSerializer.class)
-public class FlowId {
+public class FlowId implements Comparable<FlowId> {
     private long value;
 
     /**
@@ -76,4 +76,9 @@ public class FlowId {
     public String toString() {
 	return "0x" + Long.toHexString(this.value);
     }
+
+	@Override
+	public int compareTo(FlowId o) {
+		return Long.valueOf(this.value).compareTo(o.value());
+	}
 }
