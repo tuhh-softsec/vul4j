@@ -18,6 +18,7 @@ import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.topology.NodePortTuple;
+import net.floodlightcontroller.util.MACAddress;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -26,6 +27,7 @@ import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionOutput;
+import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +86,7 @@ public class ProxyArpManager implements IOFMessageListener {
 			ARP arp = (ARP) eth.getPayload();
 			
 			if (arp.getOpCode() == ARP.OP_REQUEST) {
-				log.debug("ARP request received");
+				log.debug("ARP request received for {}", bytesToStringAddr(arp.getTargetProtocolAddress()));
 				
 				byte[] mac = lookupArpTable(arp.getTargetProtocolAddress());
 				
@@ -100,11 +102,12 @@ public class ProxyArpManager implements IOFMessageListener {
 				}
 				else {
 					//We know the address, so send a reply
+					log.debug("Sending reply of {}", MACAddress.valueOf(mac).toString());
 					sendArpReply(arp, pi, mac, sw);
 				}
 			}
 			else if (arp.getOpCode() == ARP.OP_REPLY) {
-				log.debug("ARP reply recieved for {}");
+				log.debug("ARP reply recieved for {}", bytesToStringAddr(arp.getSenderProtocolAddress()));
 				
 				log.debug("arp table {}", arpTable.keySet());
 				
@@ -168,6 +171,11 @@ public class ProxyArpManager implements IOFMessageListener {
 			Collection<Short> enabledPorts = sw.getEnabledPortNumbers();
 			Set<Short> linkPorts = topology.getPortsWithLinks(sw.getId());
 			
+			if (linkPorts == null){
+				//I think this means the switch isn't known to topology yet.
+				//Maybe it only just joined.
+				continue;
+			}
 			
 			OFPacketOut po = new OFPacketOut();
 			po.setInPort(OFPort.OFPP_NONE)
@@ -188,6 +196,7 @@ public class ProxyArpManager implements IOFMessageListener {
 				}
 				
 				actions.add(new OFActionOutput(portNum));
+				log.debug("Broadcasting out {}/{}", HexString.toHexString(sw.getId()), portNum);
 			}
 			
 			po.setActions(actions);
@@ -232,7 +241,7 @@ public class ProxyArpManager implements IOFMessageListener {
 		OFPacketOut po = new OFPacketOut();
 		po.setInPort(OFPort.OFPP_NONE)
 			.setBufferId(-1)
-			.setPacketData(pi.getPacketData())
+			.setPacketData(eth.serialize())
 			.setActions(actions)
 			.setActionsLength((short)OFActionOutput.MINIMUM_LENGTH)
 			.setLengthU(OFPacketOut.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH
@@ -242,10 +251,24 @@ public class ProxyArpManager implements IOFMessageListener {
 		msgList.add(po);
 		
 		try {
+			log.debug("Sending ARP reply to {}/{}", HexString.toHexString(sw.getId()), pi.getInPort());
 			sw.write(msgList, null);
 			sw.flush();
 		} catch (IOException e) {
 			log.warn("Failure writing packet out to switch", e);
 		}
+	}
+	
+	private String bytesToStringAddr(byte[] bytes){
+		InetAddress addr;
+		try {
+			addr = InetAddress.getByAddress(bytes);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
+		if (addr == null) return "";
+		else return addr.getHostAddress();
 	}
 }
