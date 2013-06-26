@@ -26,31 +26,31 @@ import javax.persistence.TemporalType;
 @Table(name = "l_kommentar_p", schema = "public")
 public class LKommentarP implements java.io.Serializable {
 
-	private String probeId;
-	private String erzeuger;
-	private Date KDatum;
-	private String KText;
     private Integer kId;
+    private String probeId;
+    private String erzeuger;
+    private Date KDatum;
+    private String KText;
 
     public LKommentarP() {
     }
 
-		this.probeId = probeId;
-		this.erzeuger = erzeuger;
-		this.KDatum = KDatum;
-	}
     public LKommentarP(Integer kId, String probeId, String erzeuger,
             Date KDatum) {
         this.kId = kId;
+        this.probeId = probeId;
+        this.erzeuger = erzeuger;
+        this.KDatum = KDatum;
+    }
 
-		this.probeId = probeId;
-		this.erzeuger = erzeuger;
-		this.KDatum = KDatum;
-		this.KText = KText;
-	}
     public LKommentarP(Integer kId, String probeId, String erzeuger,
             Date KDatum, String KText) {
         this.kId = kId;
+        this.probeId = probeId;
+        this.erzeuger = erzeuger;
+        this.KDatum = KDatum;
+        this.KText = KText;
+    }
 
     @Id
     @Column(name = "k_id", nullable = false, insertable = false, updatable = false)
@@ -63,41 +63,41 @@ public class LKommentarP implements java.io.Serializable {
         this.kId = kId;
     }
 
-	@Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
-	public String getProbeId() {
-		return this.probeId;
-	}
+    @Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
+    public String getProbeId() {
+        return this.probeId;
+    }
 
-	public void setProbeId(String probeId) {
-		this.probeId = probeId;
-	}
+    public void setProbeId(String probeId) {
+        this.probeId = probeId;
+    }
 
-	@Column(name = "erzeuger", nullable = false, length = 5)
-	public String getErzeuger() {
-		return this.erzeuger;
-	}
+    @Column(name = "erzeuger", nullable = false, length = 5)
+    public String getErzeuger() {
+        return this.erzeuger;
+    }
 
-	public void setErzeuger(String erzeuger) {
-		this.erzeuger = erzeuger;
-	}
+    public void setErzeuger(String erzeuger) {
+        this.erzeuger = erzeuger;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "k_datum", nullable = false, length = 35)
-	public Date getKDatum() {
-		return this.KDatum;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "k_datum", nullable = false, length = 35)
+    public Date getKDatum() {
+        return this.KDatum;
+    }
 
-	public void setKDatum(Date KDatum) {
-		this.KDatum = KDatum;
-	}
+    public void setKDatum(Date KDatum) {
+        this.KDatum = KDatum;
+    }
 
-	@Column(name = "k_text", length = 1024)
-	public String getKText() {
-		return this.KText;
-	}
+    @Column(name = "k_text", length = 1024)
+    public String getKText() {
+        return this.KText;
+    }
 
-	public void setKText(String KText) {
-		this.KText = KText;
-	}
+    public void setKText(String KText) {
+        this.KText = KText;
+    }
 
 }
