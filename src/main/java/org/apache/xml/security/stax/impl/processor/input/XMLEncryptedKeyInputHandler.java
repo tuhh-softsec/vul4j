@@ -35,6 +35,7 @@ import org.apache.xml.security.stax.impl.securityToken.AbstractInboundSecurityTo
 import org.apache.xml.security.stax.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.securityEvent.EncryptedKeyTokenSecurityEvent;
+import org.apache.xml.security.utils.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -140,6 +141,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                                 inboundSecurityContext
                         );
                         this.wrappingSecurityToken.addWrappedToken(wrappedSecurityToken);
+                        
                         return this.wrappingSecurityToken;
                     }
 
@@ -221,6 +223,11 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                             throw new XMLSecurityException(e);
                         }
 
+                        byte[] sha1Bytes = 
+                            generateDigest(encryptedKeyType.getCipherData().getCipherValue());
+                        String sha1Identifier = Base64.encode(sha1Bytes);
+                        super.setSha1Identifier(sha1Identifier);
+                        
                         try {
                             Key key = cipher.unwrap(encryptedKeyType.getCipherData().getCipherValue(),
                                     jceName,
@@ -262,6 +269,14 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
         //if this EncryptedKey structure contains a reference list, delegate it to a subclass
         if (encryptedKeyType.getReferenceList() != null) {
             handleReferenceList(inputProcessorChain, encryptedKeyType, securityProperties);
+        }
+    }
+    
+    private byte[] generateDigest(byte[] inputBytes) throws XMLSecurityException {
+        try {
+            return MessageDigest.getInstance("SHA-1").digest(inputBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new XMLSecurityException(e);
         }
     }
 

@@ -80,4 +80,10 @@ public interface OutboundSecurityToken {
     void addWrappedToken(OutboundSecurityToken securityToken);
 
     SecurityTokenConstants.TokenType getTokenType();
+    
+    /**
+     * Returns a SHA-1 Identifier that refers to this token
+     * @return a SHA-1 Identifier that refers to this token
+     */
+    String getSha1Identifier();
 }

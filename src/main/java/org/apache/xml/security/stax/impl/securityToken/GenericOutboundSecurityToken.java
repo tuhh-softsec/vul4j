@@ -41,6 +41,7 @@ public class GenericOutboundSecurityToken implements OutboundSecurityToken {
     private final Map<String, Key> keyTable = new Hashtable<String, Key>();
     private PublicKey publicKey;
     private X509Certificate[] x509Certificates;
+    private String sha1Identifier;
 
     public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType, Key key, X509Certificate[] x509Certificates) {
         this(id, tokenType, key);
@@ -131,5 +132,13 @@ public class GenericOutboundSecurityToken implements OutboundSecurityToken {
     @Override
     public SecurityTokenConstants.TokenType getTokenType() {
         return tokenType;
+    }
+    
+    public String getSha1Identifier() {
+        return sha1Identifier;
+    }
+
+    public void setSha1Identifier(String sha1Identifier) {
+        this.sha1Identifier = sha1Identifier;
     }
 }

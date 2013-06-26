@@ -59,6 +59,7 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
     private X509Certificate[] x509Certificates;
     private boolean asymmetric = false;
     private boolean includedInMessage = false;
+    private String sha1Identifier;
 
     public AbstractInboundSecurityToken(
             InboundSecurityContext inboundSecurityContext, String id,
@@ -283,5 +284,13 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
     @Override
     public boolean isIncludedInMessage() {
         return includedInMessage;
+    }
+
+    public String getSha1Identifier() {
+        return sha1Identifier;
+    }
+
+    public void setSha1Identifier(String sha1Identifier) {
+        this.sha1Identifier = sha1Identifier;
     }
 }

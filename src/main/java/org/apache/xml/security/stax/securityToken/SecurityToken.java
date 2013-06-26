@@ -107,4 +107,10 @@ public interface SecurityToken {
      * @return true if the token is included false otherwise
      */
     boolean isIncludedInMessage();
+    
+    /**
+     * Returns a SHA-1 Identifier that refers to this token
+     * @return a SHA-1 Identifier that refers to this token
+     */
+    String getSha1Identifier();
 }
