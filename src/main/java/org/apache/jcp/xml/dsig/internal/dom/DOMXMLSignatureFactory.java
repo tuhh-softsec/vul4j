@@ -164,7 +164,10 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
     public XMLSignature unmarshalXMLSignature(XMLStructure xmlStructure)
         throws MarshalException {
 
-        if (xmlStructure == null || !(xmlStructure instanceof javax.xml.crypto.dom.DOMStructure)) {
+        if (xmlStructure == null) {
+            throw new NullPointerException("xmlStructure cannot be null");
+        }
+        if (!(xmlStructure instanceof javax.xml.crypto.dom.DOMStructure)) {
             throw new ClassCastException("xmlStructure must be of type DOMStructure");
         }
         return unmarshal
@@ -346,6 +349,11 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
             } catch (NoSuchAlgorithmException nsae) {
                 spi = TransformService.getInstance(algorithm, "DOM");
             }
+        }
+        if (params == null) {
+            spi.init(null);
+        } else {
+            spi.init(params, null);
         }
         
         return new DOMCanonicalizationMethod(spi);
