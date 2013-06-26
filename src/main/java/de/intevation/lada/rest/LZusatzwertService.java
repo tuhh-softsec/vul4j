@@ -79,6 +79,7 @@ public class LZusatzwertService
 
     @PUT
     @Produces("text/json")
+    @Path("/{pzsId}/{probeId}")
     @Consumes("application/json")
     public Response update(LZusatzWert zusatzwert) {
         return repository.update(zusatzwert);

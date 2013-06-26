@@ -24,7 +24,7 @@ public class LZusatzWert implements java.io.Serializable {
 
 	private LZusatzWertId id;
 	private String probeId;
-	private SProbenZusatz SProbenZusatz;
+	private String pzsId;
 	private Float nwgZuMesswert;
 	private Float messwertPzs;
 	private Float messfehler;
@@ -34,10 +34,10 @@ public class LZusatzWert implements java.io.Serializable {
 	}
 
 	public LZusatzWert(LZusatzWertId id, String probeId,
-			SProbenZusatz SProbenZusatz) {
+			String pzsId) {
 		this.id = id;
 		this.probeId = probeId;
-		this.SProbenZusatz = SProbenZusatz;
+		this.pzsId = pzsId;
 	}
 
 	public LZusatzWert(LZusatzWertId id, String probeId,
@@ -45,7 +45,7 @@ public class LZusatzWert implements java.io.Serializable {
 			Float messfehler, Date letzteAenderung) {
 		this.id = id;
 		this.probeId = probeId;
-		this.SProbenZusatz = SProbenZusatz;
+		this.pzsId = pzsId;
 		this.nwgZuMesswert = nwgZuMesswert;
 		this.messwertPzs = messwertPzs;
 		this.messfehler = messfehler;
@@ -73,14 +73,13 @@ public class LZusatzWert implements java.io.Serializable {
 		this.probeId = probeId;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "pzs_id", nullable = false, insertable = false, updatable = false)
-	public SProbenZusatz getSProbenZusatz() {
-		return this.SProbenZusatz;
+	@Column(name = "pzs_id", nullable = false, insertable = false, updatable = false)
+	public String getPzsId() {
+		return this.pzsId;
 	}
 
-	public void setSProbenZusatz(SProbenZusatz SProbenZusatz) {
-		this.SProbenZusatz = SProbenZusatz;
+	public void setPzsId(String pzsId) {
+	    this.pzsId = pzsId;
 	}
 
 	@Column(name = "nwg_zu_messwert", precision = 8, scale = 8)

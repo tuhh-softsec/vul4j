@@ -50,7 +50,7 @@ extends Repository
         LZusatzWertId id =
             new LZusatzWertId(
                 zusatzwert.getProbeId(),
-                zusatzwert.getSProbenZusatz().getPzsId());
+                zusatzwert.getPzsId());
         zusatzwert.setId(id);
         Response response = new Response(true, 200, zusatzwert);
         // Try to save the new LProbe.
@@ -85,7 +85,7 @@ extends Repository
         LZusatzWert zusatzwert = (LZusatzWert)object;
         LZusatzWertId id = new LZusatzWertId(
             zusatzwert.getProbeId(),
-            zusatzwert.getSProbenZusatz().getPzsId());
+            zusatzwert.getPzsId());
         zusatzwert.setId(id);
         Response response = new Response(true, 200, zusatzwert);
         try {
