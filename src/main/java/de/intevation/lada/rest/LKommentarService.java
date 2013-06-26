@@ -58,9 +58,9 @@ public class LKommentarService
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("/{kId}/{probeId}")
     @Produces("text/json")
-    public String delete(@PathParam("id") String id) {
+    public String delete(@PathParam("kId") String kid, @PathParam("probeId") String probeId) {
         return "[{success: true}]";
         //String response = repository.delete(id);
         //if (response.isEmpty()) {
@@ -73,6 +73,7 @@ public class LKommentarService
     }
 
     @PUT
+    @Path("/{kId}/{probeId}")
     @Produces("text/json")
     @Consumes("application/json")
     public String update(LKommentarP kommentar) {
