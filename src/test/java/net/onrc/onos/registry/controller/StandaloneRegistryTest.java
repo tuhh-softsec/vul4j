@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.openflow.util.HexString;
 
 /**
- * Unit test for StandaloneRegistry.
+ * Unit test for {@link StandaloneRegistry}.
  * @author Naoki Shiota
  *
  */
@@ -30,14 +30,13 @@ public class StandaloneRegistryTest {
 	protected StandaloneRegistry registry;
 	
 	/**
-	 * Implementation of ControlChangeCallback which defines callback interfaces called by Registry.
+	 * Implementation of {@link ControlChangeCallback} which defines callback interfaces called by Registry.
 	 * This class remembers past callback parameters and provides methods to access them.
 	 * This class also provides CountDownLatch so one can wait until the callback be called
-	 * specific times (specified by constructor param). Particularly, the first time callback
+	 * specific times (specified by constructor parameter). Particularly, the first time callback
 	 * called is supposed for registration, this class has an independent latch to wait for
 	 * the first callback.
 	 * @author Naoki Shiota
-	 *
 	 */
 	public static class LoggingCallback implements ControlChangeCallback {
 		private LinkedList<Long> dpidsCalledback = new LinkedList<Long>();
@@ -135,7 +134,7 @@ public class StandaloneRegistryTest {
 	}
 	
 	/**
-	 * Test if registerController() can run without error.
+	 * Test if {@link StandaloneRegistry#registerController(String)} can run without error.
 	 */
 	@Test
 	public void testRegisterController() {
@@ -157,7 +156,7 @@ public class StandaloneRegistryTest {
 	}
 	
 	/**
-	 * Test if getControllerId() can return correct ID.
+	 * Test if {@link StandaloneRegistry#getControllerId()} can return correct ID.
 	 * @throws RegistryException
 	 */
 	@Test
@@ -178,7 +177,7 @@ public class StandaloneRegistryTest {
 	}
 
 	/**
-	 * Test if getAllControllers() can return correct list of controllers.
+	 * Test if {@link StandaloneRegistry#getAllControllers()} can return correct list of controllers.
 	 * @throws RegistryException
 	 */
 	@Test
@@ -208,7 +207,7 @@ public class StandaloneRegistryTest {
 	}
 
 	/**
-	 * Test if requestControl() can correctly take control for switch so that callback is called.
+	 * Test if {@link StandaloneRegistry#requestControl(long, ControlChangeCallback)} can correctly take control for switch so that callback is called.
 	 * @throws RegistryException
 	 * @throws InterruptedException
 	 */
@@ -237,7 +236,7 @@ public class StandaloneRegistryTest {
 	}
 
 	/**
-	 * Test if releaseControl() can correctly release the control so that callback is called.
+	 * Test if {@link StandaloneRegistry#releaseControl(long)} can correctly release the control so that callback is called.
 	 * @throws InterruptedException
 	 * @throws RegistryException
 	 */
@@ -262,7 +261,7 @@ public class StandaloneRegistryTest {
 	}
 
 	/**
-	 * Test if hasControl() returns correct status.
+	 * Test if {@link StandaloneRegistry#hasControl(long)} returns correct status.
 	 * @throws InterruptedException
 	 * @throws RegistryException
 	 */
@@ -292,7 +291,7 @@ public class StandaloneRegistryTest {
 	}
 
 	/**
-	 * Test if getControllerForSwitch() returns correct controller ID.
+	 * Test if {@link StandaloneRegistry#getControllerForSwitch(long)} returns correct controller ID.
 	 * @throws InterruptedException
 	 * @throws RegistryException
 	 */
@@ -339,7 +338,7 @@ public class StandaloneRegistryTest {
 	}
 
 	/**
-	 * Test if getAllSwitches() returns correct list of switches.
+	 * Test if {@link StandaloneRegistry#getAllSwitches()} returns correct list of switches.
 	 * @throws InterruptedException
 	 * @throws RegistryException
 	 */
@@ -382,7 +381,7 @@ public class StandaloneRegistryTest {
 	}
 
 	/**
-	 * Test if getSwitchesControlledByController() returns correct list of switches.
+	 * Test if {@link StandaloneRegistry#getSwitchesControlledByController(String)} returns correct list of switches.
 	 * @throws InterruptedException
 	 * @throws RegistryException
 	 */
@@ -426,7 +425,8 @@ public class StandaloneRegistryTest {
 	}
 
 	/**
-	 * Test if allocateUniqueIdBlock() returns appropriate object.
+	 * Test if {@link StandaloneRegistry#allocateUniqueIdBlock()} returns appropriate object.
+	 * Get bulk of IdBlocks and check if they do have unique range of IDs.
 	 */
 	@Test
 	public void testAllocateUniqueIdBlock() {
@@ -454,7 +454,7 @@ public class StandaloneRegistryTest {
 				
 				assertTrue(lower.getSize() > 0L);
 				assertTrue(higher.getSize() > 0L);
-				assertTrue(lower.getEnd() <= higher.getStart());
+				assertTrue(lower.getEnd() < higher.getStart());
 			}
 		}
 	}
