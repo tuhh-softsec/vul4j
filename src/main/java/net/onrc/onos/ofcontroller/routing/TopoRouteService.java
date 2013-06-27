@@ -140,6 +140,9 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	// TODO: Add the approprate setup
     }
 
+    public void setDbOperationHandler(GraphDBOperation init_op) {
+    	op = init_op;
+    }
 
     static class ShortestPathLoopFunction implements PipeFunction<LoopBundle<Vertex>, Boolean> {
 	String dpid;
