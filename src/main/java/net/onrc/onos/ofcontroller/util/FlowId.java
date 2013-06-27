@@ -77,7 +77,14 @@ public class FlowId implements Comparable<FlowId> {
 	return "0x" + Long.toHexString(this.value);
     }
 
-	@Override
+    /**
+     * Compare two FlowId objects numerically using their Flow IDs.
+     *
+     * @return the value 0 if the Flow ID is equal to the argument's Flow ID;
+     *         a value less than 0 if the Flow ID is numerically less than the argument's Flow ID;
+     *         and a value greater than 0 if the Flow ID is numerically greater than the argument's Flow ID.
+     */
+ 	@Override
 	public int compareTo(FlowId o) {
 		return Long.valueOf(this.value).compareTo(o.value());
 	}
