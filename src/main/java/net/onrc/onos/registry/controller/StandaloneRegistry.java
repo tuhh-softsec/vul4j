@@ -118,12 +118,17 @@ public class StandaloneRegistry implements IFloodlightModule,
 	
 	private long blockTop = 0L;
 	private static final long BLOCK_SIZE = 0x1000000L;
+	
+	/**
+	 * Returns a block of IDs which are unique and unused.
+	 * Range of IDs is fixed size and is assigned incrementally as this method called.
+	 */
 	@Override
-	public IdBlock allocateUniqueIdBlock(){
+	public synchronized IdBlock allocateUniqueIdBlock(){
 		long blockHead = blockTop;
 		long blockTail = blockTop + BLOCK_SIZE;
 		
-		IdBlock block = new IdBlock(blockHead, blockTail, BLOCK_SIZE);
+		IdBlock block = new IdBlock(blockHead, blockTail - 1, BLOCK_SIZE);
 		blockTop = blockTail;
 		
 		return block;
