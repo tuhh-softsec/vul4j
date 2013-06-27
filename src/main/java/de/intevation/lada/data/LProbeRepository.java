@@ -1,7 +1,5 @@
 package de.intevation.lada.data;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBTransactionRolledbackException;
@@ -10,10 +8,6 @@ import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LProbe;
@@ -50,59 +44,19 @@ public class LProbeRepository extends Repository{
 
     @Override
     public <T> Response findAll(Class<T> clazz) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<LProbeInfo> criteria = cb.createQuery(LProbeInfo.class);
-        criteria.distinct(true);
-        List<LProbeInfo> result = filter(criteria);
-        return new Response(true, 200, result);
+        QueryBuilder<LProbeInfo> builder =
+            new QueryBuilder<LProbeInfo>(em, LProbeInfo.class);
+        builder.distinct();
+        return filter(builder.getQuery());
     }
 
     @Override
     public <T> Response findById(Class<T> clazz, String id) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<LProbeInfo> criteria = cb.createQuery(LProbeInfo.class);
-        Root<LProbeInfo> member = criteria.from(LProbeInfo.class);
-        Predicate pid = cb.equal(member.get("probeId"), id);
-        criteria.where(pid);
-        criteria.distinct(true);
-        List<LProbeInfo> result = filter(criteria);
-        return new Response(true, 200, result);
-    }
-
-    /**
-     * Filter for LProbe objects used for calls from a service.
-     *
-     * @param mstId mst_id
-     * @param uwbId umw_id
-     * @param begin probeentnahmebegin
-     * @return
-     */
-    public Response filter(Map<String, String> filter) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<LProbeInfo> criteria = cb.createQuery(LProbeInfo.class);
-        Root<LProbeInfo> member = criteria.from(LProbeInfo.class);
-        List<Predicate> andFilter = new ArrayList<Predicate>();
-        if (filter.containsKey("mst")) {
-            andFilter.add(cb.equal(member.get("mstId"), filter.get("mst")));
-        }
-        if (filter.containsKey("uwb")) {
-            andFilter.add(cb.equal(member.get("umwId"), filter.get("uwb")));
-        }
-        if (filter.containsKey("begin")) {
-            try {
-                Long date = Long.getLong(filter.get("begin"));
-                andFilter.add(
-                    cb.equal(member.get("probeentnahmeBeginn"), date));
-            }
-            catch(NumberFormatException nfe) {
-                //ignore filter parameter.
-            }
-        }
-        criteria.distinct(true);
-        Predicate af = cb.and(andFilter.toArray(new Predicate[andFilter.size()]));
-        criteria.where(af);
-        List<LProbeInfo> result = filter(criteria);
-        return new Response(true, 200, result);
+        QueryBuilder<LProbeInfo> builder =
+            new QueryBuilder<LProbeInfo>(em, LProbeInfo.class);
+        builder.and("probeId", id);
+        builder.distinct();
+        return filter(builder.getQuery());
     }
 
     /**

@@ -1,7 +1,6 @@
 package de.intevation.lada.rest;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -19,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarP;
 
@@ -98,14 +98,16 @@ public class LKommentarService
     @Produces("text/json")
     public Response filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty()) {
-            repository.findAll(LKommentarP.class);
+        if (params.isEmpty() ||
+            !params.containsKey("probeId")
+        ) {
+            return new Response(false, 609, new ArrayList<LKommentarP>());
         }
-        Map<String, String> filter = new HashMap<String, String>();
-        for (String key: params.keySet()) {
-            filter.put(key, params.getFirst(key));
-        }
-        return repository.filter(filter);
+        QueryBuilder<LKommentarP> builder =
+            new QueryBuilder<LKommentarP>(
+                repository.getEntityManager(), LKommentarP.class);
+        builder.and("probeId", params.getFirst("probeId"));
+        return repository.filter(builder.getQuery());
     }
 
     @POST

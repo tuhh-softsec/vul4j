@@ -1,19 +1,11 @@
 package de.intevation.lada.data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LKommentarM;
@@ -101,24 +93,4 @@ extends Repository
         }
         return response;
     }
-
-    @Override
-    public Response filter(Map<String, String> filter) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<LKommentarM> criteria = cb.createQuery(LKommentarM.class);
-        Root<LKommentarM> member = criteria.from(LKommentarM.class);
-        List<Predicate> andFilter = new ArrayList<Predicate>();
-        if (filter.containsKey("probe")) {
-            andFilter.add(cb.equal(member.get("probeId"), filter.get("probe")));
-        }
-        if (filter.containsKey("messung")) {
-            andFilter.add(cb.equal(member.get("messungsId"), filter.get("messung")));
-        }
-        criteria.distinct(true);
-        Predicate ap = cb.and(andFilter.toArray(new Predicate[andFilter.size()]));
-        criteria.where(ap);
-        List<LKommentarM> result = filter(criteria);
-        return new Response(true, 200, result);
-    }
-
 }

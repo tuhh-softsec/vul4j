@@ -16,8 +16,10 @@ import javax.persistence.criteria.Root;
 
 import de.intevation.lada.data.LOrtRepository;
 import de.intevation.lada.data.LProbeRepository;
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.rest.Response;
 
 /**
  * Validator for LProbe objects.
@@ -63,15 +65,13 @@ implements Validator
     private void validateHauptProbenNummer(LProbe p, Map<String, Integer> warnings)
     throws ValidationException {
         String hpn = p.getHauptprobenNr();
-        CriteriaBuilder cb = probeRepository.getCriteriaBuilder();
-        CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
-        Root<LProbe> member = criteria.from(LProbe.class);
-        Predicate mstId = cb.equal(member.get("mstId"), p.getMstId());
-        Predicate hpNr = cb.equal(member.get("hauptprobenNr"), hpn);
-        criteria.where(cb.and(mstId, hpNr));
+        QueryBuilder<LProbe> builder =
+            new QueryBuilder<LProbe>(
+                probeRepository.getEntityManager(), LProbe.class);
+        builder.and("mstId", p.getMstId()).and("hauptprobenNr", hpn);
 
-        List<LProbe> proben = probeRepository.filter(criteria);
-        if (!proben.isEmpty()) {
+        Response response = probeRepository.filter(builder.getQuery());
+        if (!((List<LProbe>)response.getData()).isEmpty()) {
             Map<String, Integer> errors = new HashMap<String, Integer>();
             errors.put("hauptprobenNr", 611);
             throw new ValidationException(errors, warnings);
@@ -81,14 +81,13 @@ implements Validator
     private void validateEntnahmeOrt(LProbe probe, Map<String, Integer> warnings) {
         String pid = probe.getProbeId();
 
-        CriteriaBuilder cb = ortRepository.getCriteriaBuilder();
-        CriteriaQuery<LOrt> criteria = cb.createQuery(LOrt.class);
-        Root<LOrt> member = criteria.from(LOrt.class);
-        Predicate probeId = cb.equal(member.get("probeId"), pid);
-        criteria.where(probeId);
+        QueryBuilder<LOrt> builder =
+            new QueryBuilder<LOrt>(
+                ortRepository.getEntityManager(), LOrt.class);
+        builder.and("probenId", pid);
 
-        List<LOrt> orte = ortRepository.filter(criteria);
-        if(orte.isEmpty()) {
+        Response response = ortRepository.filter(builder.getQuery());
+        if (((List<LOrt>)response.getData()).isEmpty()) {
             warnings.put("entnahmeOrt", 631);
         }
     }

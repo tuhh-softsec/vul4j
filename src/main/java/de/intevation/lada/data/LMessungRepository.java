@@ -1,7 +1,5 @@
 package de.intevation.lada.data;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBTransactionRolledbackException;
@@ -10,9 +8,6 @@ import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LMessung;
@@ -46,32 +41,6 @@ extends Repository
     @Inject
     @Named("lmessungvalidator")
     private Validator validator;
-
-    /**
-     * Filter for LProbe objects used for calls from a service.
-     *
-     * @param mstId mst_id
-     * @param uwbId umw_id
-     * @param begin probeentnahmebegin
-     * @return
-     */
-    public Response filter(Map<String, String> filter) {
-        if (filter.isEmpty()) {
-            return findAll(LMessung.class);
-        }
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<LMessung> criteria = cb.createQuery(LMessung.class);
-        Root<LMessung> member = criteria.from(LMessung.class);
-        if (filter.containsKey("probe")) {
-            criteria.where(
-                cb.equal(member.get("LProbeId"), filter.get("probe")));
-        }
-        else {
-            return new Response(false, 600, new ArrayList<LMessung>());
-        }
-        List<LMessung> result = filter(criteria);
-        return new Response(true, 200, result);
-    }
 
     /**
      * Validate and persist a new LProbe object.

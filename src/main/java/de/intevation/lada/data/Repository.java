@@ -1,7 +1,6 @@
 package de.intevation.lada.data;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -31,7 +30,17 @@ public abstract class Repository
 
     public abstract Response update(Object object);
 
-    public abstract Response filter(Map<String, String> keys);
+    /**
+     * Filter object list by the given criteria.
+     *
+     * @param criteria
+     * @return List of objects.
+     */
+    public <T> Response filter(CriteriaQuery<T> filter) {
+        List<T> result = em.createQuery(filter).getResultList();
+        return new Response(true, 200, result);
+    }
+
 
     /**
      * Get all objects of type <link>clazz</link>from database.
@@ -63,17 +72,7 @@ public abstract class Repository
         return new Response(true, 200, item);
     }
 
-    /**
-     * Filter object list by the given criteria.
-     *
-     * @param criteria
-     * @return List of LProbe objects.
-     */
-    public <T> List<T> filter(CriteriaQuery<T> criteria) {
-        return em.createQuery(criteria).getResultList();
-    }
-
-    public CriteriaBuilder getCriteriaBuilder() {
-        return em.getCriteriaBuilder();
+    public EntityManager getEntityManager() {
+        return this.em;
     }
 }

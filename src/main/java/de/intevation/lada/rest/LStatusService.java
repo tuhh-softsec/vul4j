@@ -2,6 +2,7 @@ package de.intevation.lada.rest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LStatus;
 
@@ -63,18 +65,17 @@ public class LStatusService
     @Produces("text/json")
     public Response filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty()) {
+        if (params.isEmpty() ||
+            !params.containsKey("probeId") ||
+            !params.containsKey("messungId")) {
             return new Response(false, 609, new ArrayList<LStatus>());
         }
-        Map<String, String> filter = new HashMap<String, String>();
-        if (!params.containsKey("probe") || !params.containsKey("messung")) {
-            return new Response(false, 609, new ArrayList<LStatus>());
-        }
-        for (String key: params.keySet()) {
-            filter.put(key, params.getFirst(key));
-        }
-
-        return repository.filter(filter);
+        QueryBuilder<LStatus> builder =
+            new QueryBuilder<LStatus>(
+                repository.getEntityManager(), LStatus.class);
+        builder.and("probeId", params.getFirst("probeId"))
+            .and("messungsId", params.getFirst("messungsId"));
+        return repository.filter(builder.getQuery());
     }
 
     @PUT

@@ -1,8 +1,5 @@
 package de.intevation.lada.rest;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -17,6 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LOrt;
 
@@ -46,11 +44,13 @@ public class LOrtService
         if (params.isEmpty()) {
             repository.findAll(LOrt.class);
         }
-        Map<String, String> filter = new HashMap<String, String>();
-        for (String key: params.keySet()) {
-            filter.put(key, params.getFirst(key));
+        QueryBuilder<LOrt> builder =
+            new QueryBuilder<LOrt>(
+                repository.getEntityManager(), LOrt.class);
+        if (params.containsKey("probeId")) {
+            builder.and("probeId", params.getFirst("probeId"));
         }
-        return repository.filter(filter);
+        return repository.filter(builder.getQuery());
     }
 
     @PUT

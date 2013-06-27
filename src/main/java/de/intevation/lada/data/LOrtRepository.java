@@ -1,7 +1,5 @@
 package de.intevation.lada.data;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBTransactionRolledbackException;
@@ -10,9 +8,6 @@ import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LOrt;
@@ -37,31 +32,6 @@ extends Repository
     @Inject
     @Named("datamanager")
     private Manager manager;
-    /**
-     * Filter for LOrt objects used for calls from a service.
-     *
-     * @param probeId The id of the LProbe object.
-     *
-     * @return Response object containing LOrt objects.
-     */
-    public Response filter(Map<String, String> filter) {
-        if (filter.isEmpty()) {
-            return findAll(LOrt.class);
-        }
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<LOrt> criteria = cb.createQuery(LOrt.class);
-        Root<LOrt> member = criteria.from(LOrt.class);
-        if (filter.containsKey("probe")) {
-            criteria.where(
-                cb.equal(member.get("probeId"), filter.get("probe")));
-        }
-        else {
-            return new Response(false, 600, new ArrayList<LOrt>());
-        }
-        List<LOrt> result = filter(criteria);
-
-        return new Response(true, 200, result);
-    }
 
     /**
      * Validate and persist a new LProbe object.

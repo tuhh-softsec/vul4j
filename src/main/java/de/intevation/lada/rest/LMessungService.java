@@ -1,8 +1,5 @@
 package de.intevation.lada.rest;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -17,6 +14,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.data.LMessungRepository;
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.model.LMessung;
 
 /**
@@ -64,11 +62,13 @@ public class LMessungService
         if (params.isEmpty()) {
             repository.findAll(LMessung.class);
         }
-        Map<String, String> filter = new HashMap<String, String>();
-        for (String key: params.keySet()) {
-            filter.put(key, params.getFirst(key));
+        QueryBuilder<LMessung> builder =
+            new QueryBuilder<LMessung>(
+                repository.getEntityManager(), LMessung.class);
+        if (params.containsKey("probeId")) {
+            builder.and("probeId", params.getFirst("probeId"));
         }
-        return repository.filter(filter);
+        return repository.filter(builder.getQuery());
     }
 
     @PUT

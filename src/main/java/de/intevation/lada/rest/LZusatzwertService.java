@@ -1,8 +1,6 @@
 package de.intevation.lada.rest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -18,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LZusatzWert;
 
@@ -63,18 +62,15 @@ public class LZusatzwertService
     @Produces("text/json")
     public Response filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty()) {
+        if (params.isEmpty() || !params.containsKey("probeId")) {
             return new Response(false, 609, new ArrayList<LZusatzWert>());
         }
-        Map<String, String> filter = new HashMap<String, String>();
-        if (!params.containsKey("probe")) {
-            return new Response(false, 609, new ArrayList<LZusatzWert>());
-        }
-        for (String key: params.keySet()) {
-            filter.put(key, params.getFirst(key));
-        }
-
-        return repository.filter(filter);
+        String paramValue = params.getFirst("probeId");
+        QueryBuilder<LZusatzWert> builder =
+            new QueryBuilder<LZusatzWert>(
+                repository.getEntityManager(), LZusatzWert.class);
+        builder.and("probeId", paramValue);
+        return repository.filter(builder.getQuery());
     }
 
     @PUT

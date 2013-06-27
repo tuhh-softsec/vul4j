@@ -1,7 +1,5 @@
 package de.intevation.lada.data;
 
-import java.util.Map;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
@@ -20,11 +18,6 @@ extends Repository
 
     @Override
     public Response update(Object object) {
-        return null;
-    }
-
-    @Override
-    public Response filter(Map<String, String> keys) {
         return null;
     }
 }
