@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.onrc.onos.util;
+package net.onrc.onos.graph;
 
 import static org.junit.Assert.*;
 
@@ -95,11 +95,12 @@ public class GraphDBOperationTest extends TestCase {
 	public final void testNewSwitch() {
 		assertNull(op.searchSwitch("123"));
 
-		op.newSwitch("123");		
+		ISwitchObject sw = op.newSwitch("123");
+		assertEquals(sw.getDPID(), "123");
 		op.commit();
 
-		ISwitchObject sw = op.searchSwitch("123");
-		assertNotNull(op);
+		sw = op.searchSwitch("123");
+		assertNotNull(sw);
 		assertEquals("123", sw.getDPID());
 	}
 
@@ -232,7 +233,7 @@ public class GraphDBOperationTest extends TestCase {
 	public final void testNewPort() {
 		assertFalse(testdb.getVertices("type", "port").iterator().hasNext());
 		
-		IPortObject port = op.newPort((short) 10);
+		IPortObject port = op.newPort("1", (short) 10);
 		assertTrue(port.getNumber() == 10);
 		op.commit();
 		
@@ -250,12 +251,12 @@ public class GraphDBOperationTest extends TestCase {
 		IPortObject port;
 		
 		sw = op.newSwitch("1");
-		sw.addPort(op.newPort((short) 1));
-		sw.addPort(op.newPort((short) 2));
+		sw.addPort(op.newPort("1", (short) 1));
+		sw.addPort(op.newPort("1", (short) 2));
 		
 		sw = op.newSwitch("2");
-		sw.addPort(op.newPort((short) 1));
-		sw.addPort(op.newPort((short) 2));
+		sw.addPort(op.newPort("2", (short) 1));
+		sw.addPort(op.newPort("2", (short) 2));
 
 		op.commit();
 
@@ -300,8 +301,8 @@ public class GraphDBOperationTest extends TestCase {
 		IPortObject port;
 		
 		sw = op.newSwitch("1");
-		sw.addPort(op.newPort((short) 1));
-		sw.addPort(op.newPort((short) 2));
+		sw.addPort(op.newPort("1", (short) 1));
+		sw.addPort(op.newPort("1", (short) 2));
 		
 		op.commit();
 
