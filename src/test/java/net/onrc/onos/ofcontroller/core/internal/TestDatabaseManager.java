@@ -56,6 +56,7 @@ public class TestDatabaseManager {
         
         //Change the type of all port numbers to short in the database
         Iterator<Vertex> it = titanGraph.getVertices("type", "port").iterator();
+
         while (it.hasNext()){
         	Vertex port = it.next();
 

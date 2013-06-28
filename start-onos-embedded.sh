@@ -14,9 +14,14 @@ LOGS="$ONOS_LOG $PCAP_LOG"
 JVM_OPTS=""
 JVM_OPTS="$JVM_OPTS -server -d64"
 JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
-JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
+#JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
+JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:+UseAdaptiveSizePolicy -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:MaxInlineSize=8192 -XX:FreqInlineSize=8192"
 JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
+		-XX:+UseThreadPriorities \
+		-XX:ThreadPriorityPolicy=42 \
+                 -XX:+UseCompressedOops \
+		-Dcassandra.compaction.priority=1 \
             -Dcom.sun.management.jmxremote.port=7199 \
               -Dcom.sun.management.jmxremote.ssl=false \
               -Dcom.sun.management.jmxremote.authenticate=false"
