@@ -56,20 +56,22 @@ public class TestDatabaseManager {
         
         //Change the type of all port numbers to short in the database
         Iterator<Vertex> it = titanGraph.getVertices("type", "port").iterator();
-	while (it.hasNext()){
-		Vertex port = it.next();
 
-		if(port.getProperty("number") instanceof Short)
-		{
-			Short portNum = (Short) port.getProperty("number");
-			port.setProperty("number", portNum.shortValue());
-		}
-		else{
-			Integer portNum = (Integer) port.getProperty("number");	
-			port.setProperty("number", portNum.shortValue());
-		}
+        while (it.hasNext()){
+        	Vertex port = it.next();
+
+        	if(port.getProperty("number") instanceof Short)
+        	{
+        		Short portNum = (Short) port.getProperty("number");
+        		port.setProperty("number", portNum.shortValue());
+        	}
+        	else{
+        		Integer portNum = (Integer) port.getProperty("number");	
+        		port.setProperty("number", portNum.shortValue());
+        	}
 
         }
+        
         titanGraph.stopTransaction(Conclusion.SUCCESS);
 	}
 	

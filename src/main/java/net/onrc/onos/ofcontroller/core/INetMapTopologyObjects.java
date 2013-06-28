@@ -14,6 +14,12 @@ import com.tinkerpop.frames.annotations.gremlin.GremlinGroovy;
 import com.tinkerpop.frames.annotations.gremlin.GremlinParam;
 import com.tinkerpop.frames.VertexFrame;
 
+/*
+ * This is the interfaces to make the objects for Cassandra DB.
+ * They are interfaces, but it is also implementation,
+ * so this handles various control to the objects.  
+ * Please take a look at tinkerpop/frames annotation doc to understand more.
+ */
 public interface INetMapTopologyObjects {
 	
 public interface IBaseObject extends VertexFrame {
@@ -62,7 +68,7 @@ public interface ISwitchObject extends IBaseObject{
 		public Iterable<IDeviceObject> getDevices();
 		
 		@JsonIgnore
-		@Incidence(label="switch",direction = Direction.IN)
+		@Adjacency(label="switch",direction = Direction.IN)
 		public Iterable<IFlowEntry> getFlowEntries();
 
 	}
@@ -114,11 +120,11 @@ public interface ISwitchObject extends IBaseObject{
 		public void removeDevice(final IDeviceObject device);
 		
 		@JsonIgnore
-		@Incidence(label="inport",direction = Direction.IN)
+		@Adjacency(label="inport",direction = Direction.IN)
 		public Iterable<IFlowEntry> getInFlowEntries();
 		
 		@JsonIgnore
-		@Incidence(label="outport",direction = Direction.IN)
+		@Adjacency(label="outport",direction = Direction.IN)
 		public Iterable<IFlowEntry> getOutFlowEntries();
 		
 		@JsonIgnore
@@ -155,11 +161,11 @@ public interface ISwitchObject extends IBaseObject{
 		public Iterable<IPortObject> getAttachedPorts();
 			
 		@JsonIgnore
-		@Incidence(label="host",direction=Direction.IN)
+		@Adjacency(label="host",direction=Direction.IN)
 		public void setHostPort(final IPortObject port);
 		
 		@JsonIgnore
-		@Incidence(label="host",direction=Direction.IN)
+		@Adjacency(label="host",direction=Direction.IN)
 		public void removeHostPort(final IPortObject port);
 		
 		@JsonIgnore
