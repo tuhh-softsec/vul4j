@@ -70,6 +70,12 @@ import net.floodlightcontroller.storage.memory.MemoryStorageSource;
 import net.floodlightcontroller.test.FloodlightTestCase;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
+import net.onrc.onos.ofcontroller.flowmanager.FlowManager;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
+import net.onrc.onos.ofcontroller.routing.TopoRouteService;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
+import net.onrc.onos.registry.controller.StandaloneRegistry;
 
 import org.easymock.Capture;
 import org.easymock.EasyMock;
@@ -82,6 +88,8 @@ import org.openflow.protocol.OFFeaturesReply;
 import org.openflow.protocol.OFPacketIn;
 import org.openflow.protocol.OFPacketIn.OFPacketInReason;
 import org.openflow.protocol.OFPhysicalPort;
+import org.openflow.protocol.OFPhysicalPort.OFPortConfig;
+import org.openflow.protocol.OFPhysicalPort.OFPortState;
 import org.openflow.protocol.OFPortStatus;
 import org.openflow.protocol.OFPortStatus.OFPortReason;
 import org.openflow.protocol.OFStatisticsReply;
@@ -128,16 +136,26 @@ public class ControllerTest extends FloodlightTestCase {
         tp = new MockThreadPoolService();
         fmc.addService(IThreadPoolService.class, tp);
         
+        // Following added by ONOS
+        // TODO replace with mock if further testing is needed.
+        fmc.addService(IFlowService.class, new FlowManager() );
+        fmc.addService(ITopoRouteService.class, new TopoRouteService() );
+        StandaloneRegistry sr = new StandaloneRegistry();
+        fmc.addService(IControllerRegistryService.class, sr );
+
+        
         ppt.init(fmc);
         restApi.init(fmc);
         memstorage.init(fmc);
         cm.init(fmc);
         tp.init(fmc);
+        sr.init(fmc);
         ppt.startUp(fmc);
         restApi.startUp(fmc);
         memstorage.startUp(fmc);
         cm.startUp(fmc);
         tp.startUp(fmc);
+        sr.startUp(fmc);
     }
 
     public Controller getController() {
@@ -394,7 +412,6 @@ public class ControllerTest extends FloodlightTestCase {
         expect(newsw.getBuffers()).andReturn(0).anyTimes();
         expect(newsw.getTables()).andReturn((byte)0).anyTimes();
         expect(newsw.getActions()).andReturn(0).anyTimes();
-        expect(newsw.getPorts()).andReturn(new ArrayList<OFPhysicalPort>());
         controller.activeSwitches.put(0L, oldsw);
         replay(newsw, channel, channel2);
 
@@ -647,7 +664,7 @@ public class ControllerTest extends FloodlightTestCase {
         assertTrue("Check that update is HARoleUpdate", 
                    upd instanceof Controller.HARoleUpdate);
         Controller.HARoleUpdate roleUpd = (Controller.HARoleUpdate)upd;
-        assertSame(null, roleUpd.oldRole);
+        assertSame(Role.MASTER, roleUpd.oldRole);
         assertSame(Role.SLAVE, roleUpd.newRole);
     }
     
@@ -701,15 +718,16 @@ public class ControllerTest extends FloodlightTestCase {
         state.hasGetConfigReply = true;
         // Role support disabled. Switch should be promoted to active switch
         // list. 
-        setupSwitchForAddSwitch(chdlr.sw, 0L);
-        chdlr.sw.clearAllFlowMods();
-        replay(controller.roleChanger, chdlr.sw);
-        chdlr.checkSwitchReady();
-        verify(controller.roleChanger, chdlr.sw);
-        assertSame(OFChannelState.HandshakeState.READY, state.hsState);
-        assertSame(chdlr.sw, controller.activeSwitches.get(0L));
-        assertTrue(controller.connectedSwitches.contains(chdlr.sw));
-        assertTrue(state.firstRoleReplyReceived);
+// FIXME: ONOS modified the behavior to always submit Role Request to trigger OFS error.
+//        setupSwitchForAddSwitch(chdlr.sw, 0L);
+//        chdlr.sw.clearAllFlowMods();
+//        replay(controller.roleChanger, chdlr.sw);
+//        chdlr.checkSwitchReady();
+//        verify(controller.roleChanger, chdlr.sw);
+//        assertSame(OFChannelState.HandshakeState.READY, state.hsState);
+//        assertSame(chdlr.sw, controller.activeSwitches.get(0L));
+//        assertTrue(controller.connectedSwitches.contains(chdlr.sw));
+//        assertTrue(state.firstRoleReplyReceived);
         reset(chdlr.sw);
         reset(controller.roleChanger);
         controller.connectedSwitches.clear();
@@ -719,9 +737,15 @@ public class ControllerTest extends FloodlightTestCase {
         // Role support enabled. 
         state.hsState = OFChannelState.HandshakeState.FEATURES_REPLY;
         controller.role = Role.MASTER;
+        expect(chdlr.sw.getStringId()).andReturn("SomeID").anyTimes();
+        expect(chdlr.sw.getId()).andReturn(42L).anyTimes();
         Capture<Collection<OFSwitchImpl>> swListCapture = 
                     new Capture<Collection<OFSwitchImpl>>();
         controller.roleChanger.submitRequest(capture(swListCapture), 
+                    same(Role.SLAVE));
+        Capture<Collection<OFSwitchImpl>> swListCapture2 = 
+                new Capture<Collection<OFSwitchImpl>>();
+        controller.roleChanger.submitRequest(capture(swListCapture2), 
                     same(Role.MASTER));
         replay(controller.roleChanger, chdlr.sw);
         chdlr.checkSwitchReady();
@@ -729,7 +753,7 @@ public class ControllerTest extends FloodlightTestCase {
         assertSame(OFChannelState.HandshakeState.READY, state.hsState);
         assertTrue(controller.activeSwitches.isEmpty());
         assertTrue(controller.connectedSwitches.contains(chdlr.sw));
-        assertTrue(state.firstRoleReplyReceived);
+//        assertTrue(state.firstRoleReplyReceived);
         Collection<OFSwitchImpl> swList = swListCapture.getValue();
         assertEquals(1, swList.size());
         assertTrue("swList must contain this switch", swList.contains(chdlr.sw));
@@ -825,7 +849,7 @@ public class ControllerTest extends FloodlightTestCase {
         state.firstRoleReplyReceived = false;
         controller.role = Role.SLAVE;
         expect(chdlr.sw.checkFirstPendingRoleRequestXid(xid)).andReturn(true);
-        chdlr.sw.deliverRoleRequestNotSupportedEx(xid);
+        expect(chdlr.sw.deliverRoleRequestNotSupportedEx(xid)).andReturn(Role.SLAVE);
         expect(chdlr.sw.getChannel()).andReturn(ch).anyTimes();
         expect(ch.close()).andReturn(null);
         
@@ -845,7 +869,7 @@ public class ControllerTest extends FloodlightTestCase {
         state.firstRoleReplyReceived = false;
         controller.role = Role.SLAVE;
         expect(chdlr.sw.checkFirstPendingRoleRequestXid(xid)).andReturn(true);
-        chdlr.sw.deliverRoleRequestNotSupportedEx(xid);
+        expect(chdlr.sw.deliverRoleRequestNotSupportedEx(xid)).andReturn(Role.SLAVE);
         expect(chdlr.sw.getChannel()).andReturn(ch).anyTimes();
         expect(ch.close()).andReturn(null);
         replay(ch, chdlr.sw);
@@ -864,7 +888,7 @@ public class ControllerTest extends FloodlightTestCase {
         state.firstRoleReplyReceived = false;
         controller.role = Role.MASTER;
         expect(chdlr.sw.checkFirstPendingRoleRequestXid(xid)).andReturn(true);
-        chdlr.sw.deliverRoleRequestNotSupportedEx(xid);
+        expect(chdlr.sw.deliverRoleRequestNotSupportedEx(xid)).andReturn(Role.MASTER);
         setupSwitchForAddSwitch(chdlr.sw, 0L);
         chdlr.sw.clearAllFlowMods();
         replay(ch, chdlr.sw);
@@ -1102,6 +1126,26 @@ public class ControllerTest extends FloodlightTestCase {
         assertEquals(SwitchUpdateType.PORTCHANGED, swUpdate.switchUpdateType);
     }
     
+    public void verifyPortAddedUpdateInQueue(IOFSwitch sw) throws Exception {
+        assertEquals(2, controller.updates.size());
+        IUpdate update = controller.updates.take();
+        assertEquals(true, update instanceof SwitchUpdate);
+        SwitchUpdate swUpdate = (SwitchUpdate)update;
+        assertEquals(sw, swUpdate.sw);
+        assertEquals(SwitchUpdateType.PORTADDED, swUpdate.switchUpdateType);
+        verifyPortChangedUpdateInQueue(sw);
+    }
+    
+    public void verifyPortRemovedUpdateInQueue(IOFSwitch sw) throws Exception {
+        assertEquals(2, controller.updates.size());
+        IUpdate update = controller.updates.take();
+        assertEquals(true, update instanceof SwitchUpdate);
+        SwitchUpdate swUpdate = (SwitchUpdate)update;
+        assertEquals(sw, swUpdate.sw);
+        assertEquals(SwitchUpdateType.PORTREMOVED, swUpdate.switchUpdateType);
+        verifyPortChangedUpdateInQueue(sw);
+    }
+    
     /*
      * Test handlePortStatus()
      * TODO: test correct updateStorage behavior!
@@ -1122,17 +1166,43 @@ public class ControllerTest extends FloodlightTestCase {
         replay(sw);
         controller.handlePortStatusMessage(sw, ofps, false);
         verify(sw);
-        verifyPortChangedUpdateInQueue(sw);
+        verifyPortAddedUpdateInQueue(sw);
         reset(sw);
         
+        // ONOS:Port is considered added if Link state is not down and not configured to be down
         ofps.setReason((byte)OFPortReason.OFPPR_MODIFY.ordinal());
         sw.setPort(port);
         expectLastCall().once();
         replay(sw);
         controller.handlePortStatusMessage(sw, ofps, false);
         verify(sw);
-        verifyPortChangedUpdateInQueue(sw);
+        verifyPortAddedUpdateInQueue(sw);
         reset(sw);
+        
+        // ONOS:Port is considered removed if Link state is down
+        ofps.setReason((byte)OFPortReason.OFPPR_MODIFY.ordinal());
+        port.setState(OFPortState.OFPPS_LINK_DOWN.getValue());
+        sw.setPort(port);
+        expectLastCall().once();
+        replay(sw);
+        controller.handlePortStatusMessage(sw, ofps, false);
+        verify(sw);
+        verifyPortRemovedUpdateInQueue(sw);
+        reset(sw);
+        port.setState(0);// reset
+        
+        // ONOS: .. or is configured to be down
+        ofps.setReason((byte)OFPortReason.OFPPR_MODIFY.ordinal());
+        port.setConfig(OFPortConfig.OFPPC_PORT_DOWN.getValue());
+        sw.setPort(port);
+        expectLastCall().once();
+        replay(sw);
+        controller.handlePortStatusMessage(sw, ofps, false);
+        verify(sw);
+        verifyPortRemovedUpdateInQueue(sw);
+        reset(sw);
+        port.setConfig(0);// reset
+        
         
         ofps.setReason((byte)OFPortReason.OFPPR_DELETE.ordinal());
         sw.deletePort(port.getPortNumber());
@@ -1140,7 +1210,7 @@ public class ControllerTest extends FloodlightTestCase {
         replay(sw);
         controller.handlePortStatusMessage(sw, ofps, false);
         verify(sw);
-        verifyPortChangedUpdateInQueue(sw);
+        verifyPortRemovedUpdateInQueue(sw);
         reset(sw);
     }
 }
