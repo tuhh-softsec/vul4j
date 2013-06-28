@@ -17,11 +17,18 @@ JVM_OPTS="$JVM_OPTS -server -d64"
 #JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
 JVM_OPTS="$JVM_OPTS -Xmx1g -Xms1g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
-JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
+JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:+UseAdaptiveSizePolicy -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:MaxInlineSize=8192 -XX:FreqInlineSize=8192"
 JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8"
 JVM_OPTS="$JVM_OPTS -XX:OnError=crash-logger" ;# For dumping core
 #JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
+JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
+		-XX:+UseThreadPriorities \
+		-XX:ThreadPriorityPolicy=42 \
+                 -XX:+UseCompressedOops \
+            -Dcom.sun.management.jmxremote.port=7189 \
+              -Dcom.sun.management.jmxremote.ssl=false \
+              -Dcom.sun.management.jmxremote.authenticate=false"
 
 # Set ONOS core main class
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
@@ -119,7 +126,7 @@ function stop {
   for p in ${pids}; do
     if [ x$p != "x" ]; then
       kill -KILL $p
-      echo "Killed existing prosess (pid: $p)"
+      echo "Killed existing process (pid: $p)"
     fi
   done
 }

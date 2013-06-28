@@ -40,6 +40,10 @@ import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
  * of shortest paths.
  */
 class Node {
+    /**
+     * A class for storing Link information for fast computation of shortest
+     * paths.
+     */
     class Link {
 	public Node me;			// The node this link originates from
 	public Node neighbor;		// The neighbor node on the other side
@@ -90,7 +94,9 @@ class Node {
     }
 };
 
-
+/**
+ * A class for implementing Topology Route Service.
+ */
 public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 
     /** The logger. */
@@ -99,6 +105,11 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     
     protected GraphDBOperation op;
 
+    /**
+     * Get the collection of module services.
+     *
+     * @return the collection of services provided by this module.
+     */
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
         Collection<Class<? extends IFloodlightService>> l = 
@@ -107,6 +118,11 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
         return l;
     }
 
+    /**
+     * Get a map with the services provided by this module.
+     *
+     * @return a map with the services provided by this module.
+     */
     @Override
     public Map<Class<? extends IFloodlightService>, IFloodlightService> 
 			       getServiceImpls() {
@@ -118,6 +134,11 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
         return m;
     }
 
+    /**
+     * Get the collection with the services this module depends on.
+     *
+     * @return the collection with the services this module depends on.
+     */
     @Override
     public Collection<Class<? extends IFloodlightService>> 
                                                     getModuleDependencies() {
@@ -128,6 +149,12 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
         return l;
     }
 
+    /**
+     * Init the module.
+     *
+     * @param context the module context to use for the initialization.
+     * @see FloodlightModuleContext.
+     */
     @Override
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
@@ -135,25 +162,22 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     	op = new GraphDBOperation("");
     }
 
+    /**
+     * Startup initialization.
+     */
     @Override
     public void startUp(FloodlightModuleContext context) {
 	// TODO: Add the approprate setup
     }
 
-
-    static class ShortestPathLoopFunction implements PipeFunction<LoopBundle<Vertex>, Boolean> {
-	String dpid;
-	public ShortestPathLoopFunction(String dpid) {
-	    super();
-	    this.dpid = dpid;
-	}
-	public Boolean compute(LoopBundle<Vertex> bundle) {
-	    Boolean output = false;
-	    if (! bundle.getObject().getProperty("dpid").equals(dpid)) {
-		output = true;
-	    }
-	    return output;
-	}
+    /**
+     * Set the database operation handler.
+     *
+     * @param init_op the database operation handler to use for the
+     * initialization.
+     */
+    public void setDbOperationHandler(GraphDBOperation init_op) {
+    	op = init_op;
     }
 
     /**

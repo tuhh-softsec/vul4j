@@ -379,6 +379,12 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		return data;
 	}
 	
+	/**
+	 * Returns a block of IDs which are unique and unused.
+	 * Range of IDs is fixed size and is assigned incrementally as this method called.
+	 * Since the range of IDs is managed by Zookeeper in distributed way, this method may block when
+	 * requests come up simultaneously.
+	 */
 	public IdBlock allocateUniqueIdBlock(){
 		try {
 			AtomicValue<Long> result = null;

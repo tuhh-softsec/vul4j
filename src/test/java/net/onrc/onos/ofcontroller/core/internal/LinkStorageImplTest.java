@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +32,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Unit test for {@link LinkStorageImpl}.
+ * @author Naoki Shiota
+ *
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LinkStorageImpl.class, GraphDBConnection.class, GraphDBOperation.class})
 public class LinkStorageImplTest {
@@ -100,12 +104,14 @@ public class LinkStorageImplTest {
 	 */
 	@Before
 	public void setUp() throws Exception{
+		// Create mock GraphDBConnection (replace Singleton object to mock one)
 		PowerMock.mockStatic(GraphDBConnection.class);
 		PowerMock.suppress(PowerMock.constructor(GraphDBConnection.class));
-		conn = PowerMock.createNiceMock(GraphDBConnection.class);
+		conn = PowerMock.createMock(GraphDBConnection.class);
 		EasyMock.expect(GraphDBConnection.getInstance((String)EasyMock.anyObject())).andReturn(conn).anyTimes();
 		PowerMock.replay(GraphDBConnection.class);
 		
+		// Create mock GraphDBOperation
 		ope = createMockGraphDBOperation();
 		PowerMock.expectNew(GraphDBOperation.class, new Class<?>[] {GraphDBConnection.class}, EasyMock.anyObject(GraphDBConnection.class)).andReturn(ope).anyTimes();
 		PowerMock.replay(GraphDBOperation.class);
@@ -121,18 +127,16 @@ public class LinkStorageImplTest {
 	
 	/**
 	 * Closing code called after each tests.
-	 * Discard test graph data.
 	 * @throws Exception
 	 */
 	@After
 	public void tearDown() throws Exception {
-		// finish code
 		linkStorage.close();
 	}
 	
 	// TODO: remove @Ignore after UPDATE method is implemented
 	/**
-	 * Test if update() can correctly updates LinkInfo for a Link.
+	 * Test if {@link LinkStorageImpl#update(Link, LinkInfo, DM_OPERATION)} can correctly updates LinkInfo for a Link.
 	 */
 	@Ignore @Test
 	public void testUpdate_UpdateSingleLink() {
@@ -147,7 +151,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if update() can correctly creates a Link.
+	 * Test if {@link LinkStorageImpl#update(Link, DM_OPERATION)} can correctly creates a Link.
 	 */
 	@Test
 	public void testUpdate_CreateSingleLink() {
@@ -157,18 +161,10 @@ public class LinkStorageImplTest {
 		//Use the link storage API to add the link
 		linkStorage.update(linkToCreate, ILinkStorage.DM_OPERATION.CREATE);
 		doTestLinkExist(linkToVerify);
-
-		// Avoiding duplication is out of scope. DBOperation is responsible for this.
-//		// Add same link
-//		Link linkToCreateTwice = createFeasibleLink();
-//		linkStorage.update(linkToCreateTwice, ILinkStorage.DM_OPERATION.CREATE);
-//		
-//		// this occurs assertion failure if there are two links in titanGraph
-//		doTestLinkIsInGraph(linkToVerify);
 	}
 
 	/**
-	 * Test if update() can correctly inserts a Link.
+	 * Test if {@link LinkStorageImpl#update(Link, DM_OPERATION)}can correctly inserts a Link.
 	 */
 	@Test
 	public void testUpdate_InsertSingleLink(){
@@ -181,7 +177,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if update() can correctly deletes a Link.
+	 * Test if {@link LinkStorageImpl#update(Link, DM_OPERATION)} can correctly deletes a Link.
 	 */
 	@Test
 	public void testUpdate_DeleteSingleLink(){
@@ -194,7 +190,7 @@ public class LinkStorageImplTest {
 	}
 
 	/**
-	 * Test if update() can correctly creates multiple Links.
+	 * Test if {@link LinkStorageImpl#update(List, DM_OPERATION)} can correctly creates multiple Links.
 	 */
 	@Test
 	public void testUpdate_CreateLinks(){
@@ -206,34 +202,10 @@ public class LinkStorageImplTest {
 		for(Link l : linksToVerify) {
 			doTestLinkExist(l);
 		}
-	
-		// Out of scope: DBOperation is responsible for avoiding duplication.
-//		// Test creation of existing links
-//		linksToCreate = createFeasibleLinks();
-//		linkStorage.update(linksToCreate, ILinkStorage.DM_OPERATION.CREATE);
-//		for(Link l : linksToVerify) {
-//			doTestLinkIsInGraph(l);
-//		}
-	}
-	
-	/**
-	 * Test if update() can handle mixture of normal/abnormal input for creation of Links.
-	 * Deprecated: DBOperation is responsible.
-	 */
-	@Ignore @Test
-	public void testUpdate_CreateLinks_Mixuture(){
-		List<Link> linksToCreate = new ArrayList<Link>();
-		linksToCreate.add(createFeasibleLink());
-		linksToCreate.add(createExistingLink());
-		
-		// Test creation of mixture of new/existing links
-		linkStorage.update(linksToCreate, ILinkStorage.DM_OPERATION.CREATE);
-		doTestLinkExist(createFeasibleLink());
-		doTestLinkExist(createExistingLink());
 	}
 
 	/**
-	 * Test if update() can correctly inserts multiple Links.
+	 * Test if {@link LinkStorageImpl#update(List, DM_OPERATION)} can correctly inserts multiple Links.
 	 */
 	@Test
 	public void testUpdate_InsertLinks(){
@@ -248,22 +220,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if update() can handle mixture of normal/abnormal input for creation of Links.
-	 */
-	@Ignore @Test
-	public void testUpdate_InsertLinks_Mixuture(){
-		List<Link> linksToInsert = new ArrayList<Link>();
-		linksToInsert.add(createFeasibleLink());
-		linksToInsert.add(createExistingLink());
-		
-		// Test insertion of mixture of new/existing links
-		linkStorage.update(linksToInsert, ILinkStorage.DM_OPERATION.INSERT);
-		doTestLinkExist(createFeasibleLink());
-		doTestLinkExist(createExistingLink());
-	}
-
-	/**
-	 * Test if update() can correctly deletes multiple Links.
+	 * Test if  {@link LinkStorageImpl#update(List, DM_OPERATION)} can correctly deletes multiple Links.
 	 */
 	@Test
 	public void testUpdate_DeleteLinks(){
@@ -277,24 +234,9 @@ public class LinkStorageImplTest {
 		}
 	}
 	
-	/**
-	 * Test if update() can handle mixture of normal/abnormal input for deletion of Links.
-	 */
-	@Ignore @Test
-	public void testUpdate_DeleteLinks_Mixuture(){
-		List<Link> linksToDelete = new ArrayList<Link>();
-		linksToDelete.add(createFeasibleLink());
-		linksToDelete.add(createExistingLink());
-		
-		// Test deletion of mixture of new/existing links
-		linkStorage.update(linksToDelete, ILinkStorage.DM_OPERATION.DELETE);
-		doTestLinkNotExist(createFeasibleLink());
-		doTestLinkNotExist(createExistingLink());
-	}
-	
 	// TODO: remove @Ignore after UPDATE method is implemented
 	/**
-	 * Test if updateLink() can correctly updates LinkInfo for a Link.
+	 * Test if {@link LinkStorageImpl#updateLink(Link, LinkInfo, DM_OPERATION)} can correctly updates LinkInfo for a Link.
 	 */
 	@Ignore @Test
 	public void testUpdateLink_Update() {
@@ -309,7 +251,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if updateLink() can correctly creates a Link.
+	 * Test if {@link LinkStorageImpl#updateLink(Link, LinkInfo, DM_OPERATION)} can correctly creates a Link.
 	 */
 	@Test
 	public void testUpdateLink_Create() {
@@ -322,7 +264,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if updateLink() can correctly inserts a Link.
+	 * Test if {@link LinkStorageImpl#updateLink(Link, LinkInfo, DM_OPERATION)} can correctly inserts a Link.
 	 */
 	@Test
 	public void testUpdateLink_Insert() {
@@ -337,7 +279,7 @@ public class LinkStorageImplTest {
 	
 	// TODO: Check if addOrUpdateLink() should accept DELETE operation. If not, remove this test.
 	/**
-	 * Test if updateLink() can correctly deletes a Link.
+	 * Test if {@link LinkStorageImpl#updateLink(Link, LinkInfo, DM_OPERATION)} can correctly deletes a Link.
 	 */
 	@Ignore @Test
 	public void testUpdateLink_Delete() {
@@ -357,7 +299,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if getLinks() can correctly return Links connected to specific DPID and port.
+	 * Test if {@link LinkStorageImpl#getLinks(Long, short)} can correctly return Links connected to specific DPID and port.
 	 */
 	@Test
 	public void testGetLinks_ByDpidPort(){
@@ -383,7 +325,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if getLinks() can correctly return Links connected to specific MAC address.
+	 * Test if {@link LinkStorageImpl#getLinks(String)} can correctly return Links connected to specific MAC address.
 	 */
 	@Test
 	public void testGetLinks_ByString() {
@@ -398,7 +340,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if deleteLink() can correctly delete a Link.
+	 * Test if {@link LinkStorageImpl#deleteLink(Link)} can correctly delete a Link.
 	 */
 	@Test
 	public void testDeleteLink() {
@@ -411,7 +353,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if deleteLinks() can correctly delete Links.
+	 * Test if {@link LinkStorageImpl#deleteLinks(List)} can correctly delete Links.
 	 */
 	@Test
 	public void testDeleteLinks(){
@@ -423,24 +365,9 @@ public class LinkStorageImplTest {
 			doTestLinkNotExist(l);
 		}
 	}
-	
-	/**
-	 * Test if deleteLinks() can handle mixture of normal/abnormal input.
-	 */
-	@Ignore @Test
-	public void testDeleteLinks_Mixture(){
-		List<Link> linksToDelete = new ArrayList<Link>();
-		linksToDelete.add(createFeasibleLink());
-		linksToDelete.add(createExistingLink());
-		
-		// Test deletion of mixture of new/existing links
-		linkStorage.deleteLinks(linksToDelete);
-		doTestLinkNotExist(createFeasibleLink());
-		doTestLinkNotExist(createExistingLink());
-	}
 
 	/**
-	 * Test if getActiveLinks() can correctly return active Links.
+	 * Test if {@link LinkStorageImpl#getActiveLinks()} can correctly return active Links.
 	 */
 	@Test
 	public void testGetActiveLinks() {
@@ -454,7 +381,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Test if deleteLinksOnPort() can delete Links.
+	 * Test if {@link LinkStorageImpl#deleteLinksOnPort(Long, short)} can delete Links.
 	 */
 	@Test
 	public void testDeleteLinksOnPort() {
@@ -493,11 +420,12 @@ public class LinkStorageImplTest {
 	 * Test if titanGraph has specific Link with specific LinkInfo
 	 * @param link 
 	 */
+	// TODO: Fix me
 	private void doTestLinkHasStateOf(Link link, LinkInfo info) {
 	}
 	
 	/**
-	 * Class defines a function called back when IPortObject#removeLink is called.
+	 * Class defines a function called back when {@link IPortObject#removeLink(IPortObject)} is called.
 	 * @author Naoki Shiota
 	 *
 	 */
@@ -521,9 +449,8 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Class defines a function called back when IPortObject#setLinkPort is called.
+	 * Class defines a function called back when {@link IPortObject#setLinkPort(IPortObject)} is called.
 	 * @author Naoki Shiota
-	 *
 	 */
 	private class SetLinkPortCallback implements IAnswer<Object> {
 		private long dpid;
@@ -546,7 +473,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Class defines a function called back when IPortObject#getSwitch is called.
+	 * Class defines a function called back when {@link IPortObject#getSwitch()} is called.
 	 * @author Naoki Shiota
 	 *
 	 */
@@ -565,7 +492,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Class defines a function called back when IPortObject#getLinkedPorts is called.
+	 * Class defines a function called back when {@link IPortObject#getLinkedPorts()} is called.
 	 * @author Naoki Shiota
 	 *
 	 */
@@ -594,7 +521,7 @@ public class LinkStorageImplTest {
 	}
 
 	/**
-	 * Class defines a function called back when ISwitchObject#getPorts is called.
+	 * Class defines a function called back when {@link LinkStorageImplTest} is called.
 	 * @author Naoki Shiota
 	 *
 	 */
@@ -619,7 +546,7 @@ public class LinkStorageImplTest {
 
 	// ------------------------Creation of Mock-----------------------------
 	/**
-	 * Create a mock GraphDBOperation which hooks port-related methods.
+	 * Create a mock {@link GraphDBOperation} which hooks port-related methods.
 	 * @return EasyMock-wrapped GraphDBOperation object.
 	 */
 	@SuppressWarnings("serial")
@@ -692,8 +619,8 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Create a mock IPortObject using given DPID and port number.
-	 * IPortObject can't store DPID, so DPID is stored to mockToPortInfoMap for later use.
+	 * Create a mock {@link IPortObject} using given DPID and port number.
+	 * {@link IPortObject} can't store DPID, so DPID is stored to mockToPortInfoMap for later use.
 	 * Duplication is not checked.
 	 * @param dpid DPID of a port
 	 * @param number Port Number
@@ -725,7 +652,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Create a mock ISwitchObject using given DPID number.
+	 * Create a mock {@link ISwitchObject} using given DPID number.
 	 * Duplication is not checked.
 	 * @param dpid DPID of a switch
 	 * @return EasyMock-wrapped ISwitchObject
@@ -811,7 +738,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Returns new Link object of an existing link
+	 * Returns new {@link Link} object of an existing link
 	 * @return new Link object
 	 */
 	private Link createExistingLink() {
@@ -819,7 +746,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Returns new Link object of a not-existing but feasible link
+	 * Returns new {@link Link} object of a not-existing but feasible link
 	 * @return new Link object
 	 */
 	private Link createFeasibleLink() {
@@ -833,7 +760,7 @@ public class LinkStorageImplTest {
 	}
 
 	/**
-	 * Returns list of Link objects which all has information of existing link in titanGraph
+	 * Returns list of existing {@link Link} objects
 	 * @return ArrayList of new Link objects
 	 */
 	private List<Link> createExistingLinks() {
@@ -844,7 +771,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Returns list of Link objects which all has information of not-existing but feasible link
+	 * Returns list of {@link Link} objects that are all not-existing but feasible
 	 * @return ArrayList of new Link objects
 	 */
 	private List<Link> createFeasibleLinks() {
@@ -855,7 +782,7 @@ public class LinkStorageImplTest {
 	}
 	
 	/**
-	 * Returns new LinkInfo object with convenient values.
+	 * Returns new {@link LinkInfo} object with convenient values.
 	 * @return LinkInfo object
 	 */
 	private LinkInfo createFeasibleLinkInfo(long time) {
