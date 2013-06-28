@@ -3,6 +3,7 @@
 
     <key id="id" for="node" attr.name="id" attr.type="string"></key>
     <key id="type" for="node" attr.name="type" attr.type="string"></key>
+    <key id="state" for="node" attr.name="state" attr.type="string"></key>
     <key id="dpid" for="node" attr.name="dpid" attr.type="string"></key>
     <key id="desc" for="node" attr.name="desc" attr.type="string"></key>
     <key id="number" for="node" attr.name="number" attr.type="int"></key>
@@ -17,31 +18,37 @@
         <node id="1">
             <data key="type">switch</data>
             <data key="dpid">00:00:00:00:00:00:0a:01</data>
+            <data key="state">ACTIVE</data>
             <data key="desc">OpenFlow Switch at SEA</data>
         </node>
         <node id="2">
             <data key="type">switch</data>
             <data key="dpid">00:00:00:00:00:00:0a:02</data>
+            <data key="state">ACTIVE</data>
             <data key="desc">OpenFlow Switch at LAX</data>
         </node>
         <node id="3">
             <data key="type">switch</data>
             <data key="dpid">00:00:00:00:00:00:0a:03</data>
+            <data key="state">ACTIVE</data>
             <data key="desc">OpenFlow Switch at CHI</data>
         </node>
         <node id="4">
             <data key="type">switch</data>
             <data key="dpid">00:00:00:00:00:00:0a:04</data>
+            <data key="state">ACTIVE</data>
             <data key="desc">OpenFlow Switch at IAH</data>
         </node>
         <node id="5">
             <data key="type">switch</data>
             <data key="dpid">00:00:00:00:00:00:0a:05</data>
+            <data key="state">ACTIVE</data>
             <data key="desc">OpenFlow Switch at NYC</data>
         </node>
         <node id="6">
             <data key="type">switch</data>
             <data key="dpid">00:00:00:00:00:00:0a:06</data>
+            <data key="state">ACTIVE</data>
             <data key="desc">OpenFlow Switch at ATL</data>
         </node>
 
