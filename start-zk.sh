@@ -3,18 +3,19 @@
 
 ONOS_HOME=`dirname $0`
 ZK_DIR=${HOME}/zookeeper-3.4.5
-ZK_CONF=${ONOS_HOME}/conf/zoo.cfg
+#ZK_CONF=${ONOS_HOME}/conf/zoo.cfg
 
 function start {
   # Run Zookeeper with our configuration
   echo "Starting Zookeeper"
-  echo "[31;48m[WARNING] This script copies conf/zoo.cfg to $ZK_DIR/conf/zoo.cfg (overwrites)[0m"
-  echo "[31;48moriginal zoo.cfg was backed up as zoo.cfg.backup[0m"
-  if [ $ZK_DIR/conf/zoo.cfg ]; then
-    cp $ZK_DIR/conf/zoo.cfg $ZK_DIR/conf/zoo.cfg.backup
-  fi
-  cp $ZK_CONF $ZK_DIR/conf
-  echo "cp $ZK_CONF $ZK_DIR/conf"
+#  echo "[31;48m[WARNING] This script copies conf/zoo.cfg to $ZK_DIR/conf/zoo.cfg (overwrites)[0m"
+#  echo "[31;48moriginal zoo.cfg was backed up as zoo.cfg.backup[0m"
+#  if [ $ZK_DIR/conf/zoo.cfg ]; then
+#    cp $ZK_DIR/conf/zoo.cfg $ZK_DIR/conf/zoo.cfg.backup
+#  fi
+#  hostid > /var/lib/zookeeper/myid
+#  cp $ZK_CONF $ZK_DIR/conf
+#  echo "cp $ZK_CONF $ZK_DIR/conf"
   $ZK_DIR/bin/zkServer.sh start
 }
 
@@ -29,7 +30,7 @@ function stop {
   done
 }
 function status {
-  $ZK_DIR/bin/zkServer.sh status $ZK_CONF
+  $ZK_DIR/bin/zkServer.sh status
 }
 
 case "$1" in

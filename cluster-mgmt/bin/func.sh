@@ -29,9 +29,11 @@ zk () {
   case "$1" in
     start)
       echo "Starting ZK.."
-      dsh -g $basename "$ZK_DIR/bin/zkServer.sh start"
+#      dsh -g $basename "$ZK_DIR/bin/zkServer.sh start"
+      dsh -g $basename 'cd ONOS; ./start-zk.sh start'
       while [ 1 ]; do
-        nup=`dsh -g $basename "$ZK_DIR/bin/zkServer.sh status" | grep "Mode" | egrep "leader|follower" | wc -l`
+#        nup=`dsh -g $basename "$ZK_DIR/bin/zkServer.sh status" | grep "Mode" | egrep "leader|follower" | wc -l`
+        nup=`dsh -g $basename "cd ONOS; ./start-zk.sh status" | grep "Mode" | egrep "leader|follower|standalone" | wc -l`
         if [ $nup == $nr_nodes ]; then
           echo "everybody's up: $nup up of of $nr_nodes"
           echo "ZK started"
@@ -125,7 +127,9 @@ onos () {
     start)
       if [ x$2 == "x" -o x$2 == "xall" ]; then
         echo "Starting ONOS on all nodes"
-        dsh -g ${basename} "cd $ONOS_DIR; ./start-onos.sh start"
+        dsh -w ${basename}1 "cd $ONOS_DIR; ./start-onos.sh start"
+        sleep 3
+        dsh -g ${basename} -x ${basename}1 "cd $ONOS_DIR; ./start-onos.sh start"
         dsh -g ${basename} "cd $ONOS_DIR; ./start-rest.sh start"
       else
         echo "Starting ONOS on ${basename}$2"
