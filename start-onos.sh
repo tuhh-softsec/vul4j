@@ -124,7 +124,7 @@ function stop {
   for p in ${pids}; do
     if [ x$p != "x" ]; then
       kill -KILL $p
-      echo "Killed existing prosess (pid: $p)"
+      echo "Killed existing process (pid: $p)"
     fi
   done
 }
