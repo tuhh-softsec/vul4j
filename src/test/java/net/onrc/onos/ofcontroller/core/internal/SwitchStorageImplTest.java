@@ -80,7 +80,6 @@ public class SwitchStorageImplTest {
 	 * Expect:
 	 * 	Call SwitchStorageImpl.addSwitch func with proper properties.
 	 */
-	@Ignore 
 	@Test
 	public void testAddSwitch() {
 		String dpid = "00:00:00:00:00:00:0a:07";
@@ -144,7 +143,6 @@ public class SwitchStorageImplTest {
 	 * Expect:
 	 * 	Write the status as info log.
 	 */
-	//@Ignore 
 	@Test
 	public void testAddSwitchAbnormal() {
 		String dpid = "00:00:00:00:00:00:0a:07";
@@ -152,6 +150,7 @@ public class SwitchStorageImplTest {
 		//Expectation of mock operation.
 		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
 		expect(mockOpe.newSwitch(dpid)).andReturn(null);
+		mockOpe.rollback();
 		mockOpe.close();
 		replay(mockOpe);
 		
@@ -163,7 +162,7 @@ public class SwitchStorageImplTest {
 	 * Desc:
 	 *  Test method for addSwitch method.
 	 * Condition:
-	 *  Tthrow runtimeException. 
+	 *  Throw runtimeException. 
 	 * Expect:
 	 * 	The rollback method is called.
 	 */

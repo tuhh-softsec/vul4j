@@ -72,7 +72,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		
 		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
 		try {
-			newSwitch(dpid);
+			ISwitchObject sw = newSwitch(dpid);
+			if ( sw == null ) throw new RuntimeException();
             op.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
