@@ -22,6 +22,9 @@ import com.tinkerpop.gremlin.java.GremlinPipeline;
 import com.tinkerpop.pipes.PipeFunction;
 import com.tinkerpop.pipes.transform.PathPipe;
 
+/**
+ * This is the class for storing the information of links into CassandraDB
+ */
 public class LinkStorageImpl implements ILinkStorage {
 	
 	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
@@ -126,7 +129,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	}
 	
 	/**
-	 * Delete multiple records in the LinkStorage.
+	 * Delete multiple records in LinkStorage.
 	 * @param links List of records to be deleted.
 	 */
 	@Override
