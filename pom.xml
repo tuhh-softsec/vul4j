@@ -112,15 +112,52 @@
           </execution>
         </executions>
       </plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <charset>UTF-8</charset>
+          <locale>en</locale>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <!-- for getting visualization reporting   -->
   <reporting>
+    <excludeDefaults>true</excludeDefaults>
+    <outputDirectory>${project.build.directory}/site</outputDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.camel</groupId>
         <artifactId>guice-maven-plugin</artifactId>
         <version>2.11.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+          <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependencies</report>
+              <report>scm</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <charset>UTF-8</charset>
+          <locale>en</locale>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>
