@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 public class LOrt implements java.io.Serializable {
 
 	private int POrtId;
-	private Ort ort;
+	private int ortId;
 	private String probeId;
 	private String ortsTyp;
 	private String ortszusatztext;
@@ -30,16 +30,16 @@ public class LOrt implements java.io.Serializable {
 	public LOrt() {
 	}
 
-	public LOrt(int POrtId, Ort ort, String probeId) {
+	public LOrt(int POrtId, int ortId, String probeId) {
 		this.POrtId = POrtId;
-		this.ort = ort;
+		this.ortId = ortId;
 		this.probeId = probeId;
 	}
 
-	public LOrt(int POrtId, Ort ort, String probeId, String ortsTyp,
+	public LOrt(int POrtId, int ortId, String probeId, String ortsTyp,
 			String ortszusatztext, Date letzteAenderung) {
 		this.POrtId = POrtId;
-		this.ort = ort;
+		this.ortId = ortId;
 		this.probeId = probeId;
 		this.ortsTyp = ortsTyp;
 		this.ortszusatztext = ortszusatztext;
@@ -56,14 +56,13 @@ public class LOrt implements java.io.Serializable {
 		this.POrtId = POrtId;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ort_id", nullable = false)
-	public Ort getOrt() {
-		return this.ort;
+	@Column(name = "ort_id", nullable = false)
+	public int getOrt() {
+		return this.ortId;
 	}
 
-	public void setOrt(Ort ort) {
-		this.ort = ort;
+	public void setOrtId(int ortId) {
+		this.ortId = ortId;
 	}
 
 	@Column(name = "probe_id", nullable = false)
