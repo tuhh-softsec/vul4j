@@ -84,7 +84,7 @@ implements Validator
         QueryBuilder<LOrt> builder =
             new QueryBuilder<LOrt>(
                 ortRepository.getEntityManager(), LOrt.class);
-        builder.and("probenId", pid);
+        builder.and("probeId", pid);
 
         Response response = ortRepository.filter(builder.getQuery());
         if (((List<LOrt>)response.getData()).isEmpty()) {
