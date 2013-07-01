@@ -117,6 +117,6 @@ extends Repository
             response.setSuccess(false);
             response.setMessage(603);
         }
-        return null;
+        return response;
     }
 }
