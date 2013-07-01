@@ -30,6 +30,8 @@ public abstract class Repository
 
     public abstract Response update(Object object);
 
+    public abstract Response delete(Object object);
+
     /**
      * Filter object list by the given criteria.
      *

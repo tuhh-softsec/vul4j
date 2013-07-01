@@ -88,4 +88,10 @@ extends Repository
         }
         return response;
     }
+
+    @Override
+    public Response delete(Object object) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

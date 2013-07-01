@@ -20,4 +20,9 @@ extends Repository
     public Response update(Object object) {
         return null;
     }
+
+    @Override
+    public Response delete(Object object) {
+        return null;
+    }
 }

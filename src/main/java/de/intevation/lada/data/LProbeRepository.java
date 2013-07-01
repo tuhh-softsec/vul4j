@@ -134,4 +134,9 @@ extends Repository{
         }
         return response;
     }
+
+    @Override
+    public Response delete(Object object) {
+        return null;
+    }
 }

@@ -4,7 +4,6 @@ import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
 
 import de.intevation.lada.manage.Manager;
@@ -98,5 +97,26 @@ extends Repository
             response.setMessage(604);
         }
         return response;
+    }
+
+    @Override
+    public Response delete(Object object) {
+        if (!(object instanceof LZusatzWert)) {
+            return new Response(false, 602, null);
+        }
+        LZusatzWert zusatzwert = (LZusatzWert)object;
+        Response response = new Response(true, 200, null);
+        try {
+            manager.delete(zusatzwert);
+        }
+        catch (IllegalArgumentException iae) {
+            response.setSuccess(false);
+            response.setMessage(602);
+        }
+        catch (TransactionRequiredException tre) {
+            response.setSuccess(false);
+            response.setMessage(603);
+        }
+        return null;
     }
 }

@@ -51,4 +51,10 @@ extends Repository
     public Response update(Object object) {
         return new Response(false, 698, new ArrayList<LKommentarP>());
     }
+
+    @Override
+    public Response delete(Object object) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
