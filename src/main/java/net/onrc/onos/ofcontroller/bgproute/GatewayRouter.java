@@ -15,6 +15,7 @@ public class GatewayRouter {
 	private short port;
 	private MACAddress routerMac;
 	private IPv4 routerIp;
+	private IPv4 myIpAddress;
 	
 	
 	public SwitchPort getAttachmentPoint() {
@@ -58,5 +59,14 @@ public class GatewayRouter {
 	@JsonProperty("ipAddress")
 	public void setRouterIp(String routerIp) {
 		this.routerIp = new IPv4(routerIp);
+	}
+	
+	public IPv4 getMyIpAddress() {
+		return myIpAddress;
+	}
+	
+	@JsonProperty("myIpAddress")
+	public void setMyIpAddress(String myIpAddress) {
+		this.myIpAddress = new IPv4(myIpAddress);
 	}
 }

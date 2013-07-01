@@ -4,13 +4,36 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.openflow.util.HexString;
 
 public class Configuration {
-	List<String> switches;
-	Map<String, GatewayRouter> gateways;
+	private long bgpdAttachmentDpid;
+	private short bgpdAttachmentPort;
+	private List<String> switches;
+	private Map<String, Interface> interfaces;
+	private List<BgpPeer> peers;
+	private Map<String, GatewayRouter> gateways;
 	
 	public Configuration() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public long getBgpdAttachmentDpid() {
+		return bgpdAttachmentDpid;
+	}
+
+	@JsonProperty("bgpdAttachmentDpid")
+	public void setBgpdAttachmentDpid(String bgpdAttachmentDpid) {
+		this.bgpdAttachmentDpid = HexString.toLong(bgpdAttachmentDpid);
+	}
+
+	public short getBgpdAttachmentPort() {
+		return bgpdAttachmentPort;
+	}
+
+	@JsonProperty("bgpdAttachmentPort")
+	public void setBgpdAttachmentPort(short bgpdAttachmentPort) {
+		this.bgpdAttachmentPort = bgpdAttachmentPort;
 	}
 
 	public List<String> getSwitches() {
@@ -20,6 +43,24 @@ public class Configuration {
 	@JsonProperty("switches")
 	public void setSwitches(List<String> switches) {
 		this.switches = switches;
+	}
+
+	public Map<String, Interface> getInterfaces() {
+		return interfaces;
+	}
+
+	@JsonProperty("interfaces")
+	public void setInterfaces(Map<String, Interface> interfaces) {
+		this.interfaces = interfaces;
+	}
+	
+	public List<BgpPeer> getPeers() {
+		return peers;
+	}
+
+	@JsonProperty("bgpPeers")
+	public void setPeers(List<BgpPeer> peers) {
+		this.peers = peers;
 	}
 
 	public Map<String, GatewayRouter> getGateways() {
