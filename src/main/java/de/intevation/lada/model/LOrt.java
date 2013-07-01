@@ -57,7 +57,7 @@ public class LOrt implements java.io.Serializable {
 	}
 
 	@Column(name = "ort_id", nullable = false)
-	public int getOrt() {
+	public int getOrtId() {
 		return this.ortId;
 	}
 
