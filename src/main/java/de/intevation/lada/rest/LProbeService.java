@@ -1,18 +1,14 @@
 package de.intevation.lada.rest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -22,13 +18,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
-import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
 
 import de.intevation.lada.authentication.Authentication;
 import de.intevation.lada.authentication.AuthenticationException;
 import de.intevation.lada.authentication.AuthenticationResponse;
-import de.intevation.lada.authentication.LdapAuthentication;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LProbe;
@@ -59,6 +52,7 @@ public class LProbeService {
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
+
     /**
      * Request a LProbe via its id.
      *
@@ -68,8 +62,34 @@ public class LProbeService {
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public Response findById(@PathParam("id") String id) {
-        return repository.findById(LProbeInfo.class, id);
+    public Response findById(
+        @PathParam("id") String id,
+        @Context HttpHeaders header
+    ) {
+        try {
+            AuthenticationResponse auth =
+                authentication.authorizedGroups(header);
+            Response response =
+                repository.findById(LProbeInfo.class, id);
+            List<LProbeInfo> probe = (List<LProbeInfo>)response.getData();
+            if (probe.isEmpty()) {
+                return new Response(false, 601, new ArrayList<LProbeInfo>());
+            }
+            String nbId = probe.get(0).getNetzbetreiberId();
+            String mstId = probe.get(0).getMstId();
+            if (auth.getNetzbetreiber().contains(nbId)) {
+                if (auth.getMst().contains(mstId)) {
+                    //TODO: Test if probe has a messung that has status 'ready'.
+                    return response;
+                }
+                response.setReadonly(true);
+                return response;
+            }
+            return new Response(false, 698, new ArrayList<LProbe>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LProbe>());
+        }
     }
 
     /**
