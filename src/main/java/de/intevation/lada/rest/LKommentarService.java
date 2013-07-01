@@ -1,6 +1,7 @@
 package de.intevation.lada.rest;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -60,16 +61,21 @@ public class LKommentarService
     @DELETE
     @Path("/{kId}/{probeId}")
     @Produces("text/json")
-    public String delete(@PathParam("kId") String kid, @PathParam("probeId") String probeId) {
-        return "[{success: true}]";
-        //String response = repository.delete(id);
-        //if (response.isEmpty()) {
-        //    return "[{success: true}]";
-        //}
-        //else {
-        //    return "[{success: false," +
-        //        " error: " + response + "}]";
-        //}
+    public Response delete(
+        @PathParam("kId") String kId,
+        @PathParam("probeId") String probeId) {
+        QueryBuilder<LKommentarP> builder =
+            new QueryBuilder<LKommentarP>(
+                repository.getEntityManager(),
+                LKommentarP.class);
+        builder.and("probeId", probeId).and("kId", kId);
+        Response response = repository.filter(builder.getQuery());
+        List<LKommentarP> list = (List<LKommentarP>)response.getData();
+        if (!list.isEmpty()) {
+            repository.delete(list.get(0));
+            return new Response(true, 200, null);
+        }
+        return new Response(false, 600, null);
     }
 
     @PUT
@@ -112,6 +118,7 @@ public class LKommentarService
 
     @POST
     @Consumes("application/json")
+    @Produces("text/json")
     public Response create(LKommentarP kommentar) {
         return repository.create(kommentar);
     }
