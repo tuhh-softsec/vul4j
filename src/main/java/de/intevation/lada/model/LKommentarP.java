@@ -3,17 +3,12 @@ package de.intevation.lada.model;
 // Generated 21.05.2013 16:58:30 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
+
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -24,10 +19,11 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "l_kommentar_p", schema = "public")
+@SequenceGenerator(name = "ID_STORE", sequenceName = "l_kommentar_p_id_seq")
 public class LKommentarP implements java.io.Serializable {
 
-    private Integer kId;
     private String probeId;
+    private int kId;
     private String erzeuger;
     private Date KDatum;
     private String KText;
@@ -35,16 +31,16 @@ public class LKommentarP implements java.io.Serializable {
     public LKommentarP() {
     }
 
-    public LKommentarP(Integer kId, String probeId, String erzeuger,
-            Date KDatum) {
-        this.kId = kId;
+    public LKommentarP(int kId, String probeId,
+        String erzeuger, Date KDatum) {
+        this.kId =kId;
         this.probeId = probeId;
         this.erzeuger = erzeuger;
         this.KDatum = KDatum;
     }
 
-    public LKommentarP(Integer kId, String probeId, String erzeuger,
-            Date KDatum, String KText) {
+    public LKommentarP(int kId, String probeId,
+        String erzeuger, Date KDatum, String KText) {
         this.kId = kId;
         this.probeId = probeId;
         this.erzeuger = erzeuger;
@@ -54,16 +50,16 @@ public class LKommentarP implements java.io.Serializable {
 
     @Id
     @Column(name = "k_id", nullable = false, insertable = false, updatable = false)
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    public Integer getkId() {
-        return this.kId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_STORE")
+    public int getkId() {
+        return kId;
     }
 
-    public void setkId(Integer kId) {
+    public void setkId(int kId) {
         this.kId = kId;
     }
 
-    @Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "probe_id", nullable = false, length = 20)
     public String getProbeId() {
         return this.probeId;
     }
