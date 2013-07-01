@@ -186,8 +186,8 @@ public class ProxyArpManager implements IOFMessageListener {
 			List<OFAction> actions = new ArrayList<OFAction>();
 			
 			for (short portNum : enabledPorts){
-				log.debug("linkPorts {}", linkPorts);
-				log.debug("portNum {}", portNum);
+				//log.debug("linkPorts {}", linkPorts);
+				//log.debug("portNum {}", portNum);
 				if (linkPorts.contains(portNum) || 
 						(sw.getId() == inSwitch && portNum == inPort)){
 					//If this port isn't an edge port or is the ingress port
