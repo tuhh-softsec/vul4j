@@ -1,11 +1,13 @@
 package de.intevation.lada.rest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -86,5 +88,24 @@ public class LZusatzwertService
     @Consumes("application/json")
     public Response create(LZusatzWert zusatzwert) {
         return repository.create(zusatzwert);
+    }
+
+    @DELETE
+    @Path("/{pzsId}/{probeId}")
+    public Response delete(
+        @PathParam("pzsId") String pzsId,
+        @PathParam("probeId") String probeId ) {
+        QueryBuilder<LZusatzWert> builder =
+            new QueryBuilder<LZusatzWert>(
+                repository.getEntityManager(),
+                LZusatzWert.class);
+        builder.and("pzsId", pzsId).and("probeId", probeId);
+        Response response = repository.filter(builder.getQuery());
+        List<LZusatzWert> list = (List<LZusatzWert>)response.getData();
+        if (!list.isEmpty()) {
+            repository.delete(list.get(0));
+            return new Response(true, 200, null);
+        }
+        return new Response(false, 600, null);
     }
 }
