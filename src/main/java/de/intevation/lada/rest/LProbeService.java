@@ -123,16 +123,16 @@ public class LProbeService {
                 return repository.filter(builder.getQuery());
             }
             QueryBuilder<LProbeInfo> mstBuilder = builder.getEmptyBuilder();
-            if (params.keySet().contains("mst")) {
-                String[] paramValues = params.getFirst("mst").split(",");
+            if (params.keySet().contains("mstId")) {
+                String[] paramValues = params.getFirst("mstId").split(",");
                 for (String pv: paramValues) {
                     mstBuilder.or("mstId", pv);
                 }
                 builder.and(mstBuilder);
             }
             QueryBuilder<LProbeInfo> umwBuilder = builder.getEmptyBuilder();
-            if (params.keySet().contains("uwb")) {
-                String[] paramValues = params.getFirst("uwb").split(",");
+            if (params.keySet().contains("umwId")) {
+                String[] paramValues = params.getFirst("umwId").split(",");
                 for (String pv: paramValues) {
                     umwBuilder.or("umwId", pv);
                 }
