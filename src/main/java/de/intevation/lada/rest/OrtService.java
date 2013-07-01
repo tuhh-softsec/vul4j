@@ -55,17 +55,8 @@ public class OrtService
      */
     @GET
     @Produces("text/json")
-    public Response filter(@Context UriInfo info) {
-        MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("probeId")) {
-            return new Response(false, 609, new ArrayList<Ort>());
-        }
-        String paramValue = params.getFirst("probeId");
-        QueryBuilder<Ort> builder =
-            new QueryBuilder<Ort>(
-                repository.getEntityManager(), Ort.class);
-        builder.and("probeId", paramValue);
-        return repository.filter(builder.getQuery());
+    public Response filter() {
+        return repository.findAll(Ort.class);
     }
 
     @PUT
