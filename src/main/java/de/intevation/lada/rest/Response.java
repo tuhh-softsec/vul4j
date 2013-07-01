@@ -26,6 +26,7 @@ public class Response implements java.io.Serializable {
     private Object data;
     private Map<String, String> errors;
     private Map<String, String> warnings;
+    private Boolean readonly;
 
     public Response(boolean success, int code, Object data) {
         this.success = success;
@@ -33,6 +34,7 @@ public class Response implements java.io.Serializable {
         this.data = data;
         this.errors = new HashMap<String, String>();
         this.warnings = new HashMap<String, String>();
+        this.readonly = Boolean.FALSE;
     }
 
     public Boolean getSuccess() {
@@ -73,6 +75,14 @@ public class Response implements java.io.Serializable {
 
     public void setWarnings(Map<String, Integer> warnings) {
         this.warnings = this.convertCodes(warnings);
+    }
+
+    public Boolean getReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(Boolean readonly) {
+        this.readonly = readonly;
     }
 
     private HashMap<String, String> convertCodes(Map<String, Integer> codes) {
