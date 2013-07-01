@@ -6,7 +6,6 @@ import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
 
 import de.intevation.lada.manage.Manager;
@@ -19,11 +18,6 @@ import de.intevation.lada.validation.Validator;
 public class LOrtRepository
 extends Repository
 {
-    /**
-     * The entitymanager managing the data.
-     */
-    @Inject
-    private EntityManager em;
 
     @Inject
     @Named("lortvalidator")

@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
 
 import de.intevation.lada.manage.Manager;
@@ -19,11 +18,6 @@ import de.intevation.lada.rest.Response;
 public class LKommentarPRepository
 extends Repository
 {
-    /**
-     * The entitymanager managing the data.
-     */
-    @Inject
-    private EntityManager em;
 
     @Inject
     @Named("datamanager")

@@ -22,11 +22,6 @@ import de.intevation.lada.rest.Response;
 public class LZusatzwertRepository
 extends Repository
 {
-    /**
-     * The entitymanager managing the data.
-     */
-    @Inject
-    private EntityManager em;
 
     /**
      * Manager class for LPRobe. Used to manipulate data objects.
