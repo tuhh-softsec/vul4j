@@ -39,7 +39,7 @@ extends Repository{
     @Override
     public <T> Response findAll(Class<T> clazz) {
         QueryBuilder<LProbeInfo> builder =
-            new QueryBuilder<LProbeInfo>(em, LProbeInfo.class);
+            new QueryBuilder<LProbeInfo>(this.getEntityManager(), LProbeInfo.class);
         builder.distinct();
         return filter(builder.getQuery());
     }
@@ -47,7 +47,7 @@ extends Repository{
     @Override
     public <T> Response findById(Class<T> clazz, String id) {
         QueryBuilder<LProbeInfo> builder =
-            new QueryBuilder<LProbeInfo>(em, LProbeInfo.class);
+            new QueryBuilder<LProbeInfo>(this.getEntityManager(), LProbeInfo.class);
         builder.and("probeId", id);
         builder.distinct();
         return filter(builder.getQuery());
