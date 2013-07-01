@@ -25,5 +25,7 @@ public interface Manager
         TransactionRequiredException;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public <T> void delete(String id, Class<T> clazz) throws Exception;
+    public <T> void delete(Object object)
+    throws IllegalArgumentException,
+        TransactionRequiredException;
 }
