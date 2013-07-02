@@ -16,7 +16,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.core.HttpHeaders;
 
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.model.Auth;
+import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LProbeInfo;
 
 @RequestScoped
 @Named("ldapauth")
@@ -25,6 +28,17 @@ implements Authentication
 {
     @Inject
     private EntityManager em;
+
+    @Override
+    public boolean isAuthorizedUser(HttpHeaders headers)
+    throws AuthenticationException {
+        AuthenticationResponse auth = authorizedGroups(headers);
+        if (auth.getMst().isEmpty() ||
+            auth.getNetzbetreiber().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public AuthenticationResponse authorizedGroups(HttpHeaders headers)
@@ -50,6 +64,29 @@ implements Authentication
         }
         response.setUser(user);
         return response;
+    }
+
+    public boolean hasAccess (HttpHeaders headers, String probeId)
+    throws AuthenticationException {
+        QueryBuilder<LProbe> builder = new QueryBuilder<LProbe>(em, LProbe.class);
+        builder.and("probeId", probeId);
+        List<LProbe> probe = em.createQuery(builder.getQuery()).getResultList();
+        if (probe.isEmpty()) {
+            return false;
+        }
+        String nbId = probe.get(0).getNetzbetreiberId();
+        String mstId = probe.get(0).getMstId();
+        AuthenticationResponse auth = authorizedGroups(headers);
+        if (auth.getNetzbetreiber().contains(nbId) &&
+            auth.getMst().contains(mstId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isReadOnly(HttpHeaders headers, String probeId) {
+        //TODO: test if probe has messung with status 'fertig'.
+        return false;
     }
 
     private String extractUser(HttpHeaders headers) {
