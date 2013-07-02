@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -158,15 +159,34 @@ public class LProbeService {
     @Path("/{id}")
     @Produces("text/json")
     @Consumes("application/json")
-    public Response update(LProbeInfo probe) {
-        return repository.update(probe);
+    public Response update(LProbeInfo probe, @Context HttpHeaders header) {
+        try {
+            if(authentication.hasAccess(header, probe.getProbeId())) {
+                return repository.update(probe);
+            }
+            return new Response(false, 698, new ArrayList<LProbeInfo>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LProbeInfo>());
+        }
     }
 
     @POST
     @Produces("text/json")
     @Consumes("application/json")
-    public Response create(LProbeInfo probe) {
-        LProbe p = probe.toLProbe();
-        return repository.create(p);
+    public Response create(LProbeInfo probe, @Context HttpHeaders header) {
+        try {
+            AuthenticationResponse auth =
+                authentication.authorizedGroups(header);
+            if (auth.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
+                auth.getMst().contains(probe.getMstId())) {
+                LProbe p = probe.toLProbe();
+                return repository.create(p);
+            }
+            return new Response(false, 698, new ArrayList<LProbeInfo>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LProbeInfo>());
+        }
     }
 }
