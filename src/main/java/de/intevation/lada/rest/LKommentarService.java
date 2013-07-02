@@ -82,16 +82,8 @@ public class LKommentarService
     @Path("/{kId}/{probeId}")
     @Produces("text/json")
     @Consumes("application/json")
-    public String update(LKommentarP kommentar) {
-        return "[{success: true}]";
-        //String response = repository.delete(id);
-        //if (response.isEmpty()) {
-        //    return "[{success: true}]";
-        //}
-        //else {
-        //    return "[{success: false," +
-        //        " error: " + response + "}]";
-        //}
+    public Response update(LKommentarP kommentar) {
+        return repository.update(kommentar);
     }
 
     /**

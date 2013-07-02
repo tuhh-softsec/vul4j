@@ -58,7 +58,32 @@ extends Repository
 
     @Override
     public Response update(Object object) {
-        return new Response(false, 698, new ArrayList<LKommentarP>());
+        if (!(object instanceof LKommentarP)) {
+            return new Response(false, 602, object);
+        }
+        LKommentarP kommentar = (LKommentarP)object;
+        Response response = new Response(true, 200, kommentar);
+        try {
+            manager.update(kommentar);
+            return response;
+        }
+        catch (EntityExistsException eee) {
+            response.setSuccess(false);
+            response.setMessage(601);
+        }
+        catch (IllegalArgumentException iae) {
+            response.setSuccess(false);
+            response.setMessage(602);
+        }
+        catch (TransactionRequiredException tre) {
+            response.setSuccess(false);
+            response.setMessage(603);
+        }
+        catch (EJBTransactionRolledbackException te) {
+            response.setSuccess(false);
+            response.setMessage(604);
+        }
+        return response;
     }
 
     @Override
