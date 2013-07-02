@@ -20,8 +20,6 @@ public class LProbeInfo implements Serializable {
 	@Column(name="ba_id")
 	private String baId;
 
-	private String bezeichnung;
-
 	@Column(name="datenbasis_id")
 	private Integer datenbasisId;
 
@@ -31,16 +29,16 @@ public class LProbeInfo implements Serializable {
 	@Column(name="hauptproben_nr")
 	private String hauptprobenNr;
 
-	private String kreis;
-
 	@Column(name="letzte_aenderung")
 	private Timestamp letzteAenderung;
 
+	@Column(name="media")
 	private String media;
 
 	@Column(name="media_desk")
 	private String mediaDesk;
 
+	@Column(name="mittelungsdauer")
 	private Long mittelungsdauer;
 
 	@Column(name="mp_kat")
@@ -82,6 +80,7 @@ public class LProbeInfo implements Serializable {
 	@Column(name="solldatum_ende")
 	private Timestamp solldatumEnde;
 
+	@Column(name="test")
 	private Boolean test;
 
 	@Column(name="umw_id")
@@ -99,14 +98,6 @@ public class LProbeInfo implements Serializable {
 
 	public void setBaId(String baId) {
 		this.baId = baId;
-	}
-
-	public String getBezeichnung() {
-		return this.bezeichnung;
-	}
-
-	public void setBezeichnung(String bezeichnung) {
-		this.bezeichnung = bezeichnung;
 	}
 
 	public Integer getDatenbasisId() {
@@ -131,14 +122,6 @@ public class LProbeInfo implements Serializable {
 
 	public void setHauptprobenNr(String hauptprobenNr) {
 		this.hauptprobenNr = hauptprobenNr;
-	}
-
-	public String getKreis() {
-		return this.kreis;
-	}
-
-	public void setKreis(String kreis) {
-		this.kreis = kreis;
 	}
 
 	public Timestamp getLetzteAenderung() {
