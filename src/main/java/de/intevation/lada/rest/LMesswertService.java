@@ -13,9 +13,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.authentication.Authentication;
+import de.intevation.lada.authentication.AuthenticationException;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMesswert;
@@ -37,18 +40,9 @@ public class LMesswertService
     @Named("lmesswertrepository")
     private Repository repository;
 
-    /**
-     * Request a LProbe via its id.
-     *
-     * @param id The LProbe id
-     * @return JSON Object via REST service.
-     */
-    @GET
-    @Path("/{id}")
-    @Produces("text/json")
-    public Response findById(@PathParam("id") String id) {
-        return repository.findById(LMesswert.class, id);
-    }
+    @Inject
+    @Named("ldapauth")
+    private Authentication authentication;
 
     /**
      * Request LMessert via a filter.
@@ -60,33 +54,71 @@ public class LMesswertService
      */
     @GET
     @Produces("text/json")
-    public Response filter(@Context UriInfo info) {
-        MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() ||
-            !params.containsKey("probeId") ||
-            !params.containsKey("messungsId")) {
-            return new Response(false, 609, new ArrayList<LMesswert>());
+    public Response filter(
+        @Context UriInfo info,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            if (!authentication.isAuthorizedUser(headers)) {
+                return new Response(false, 699, new ArrayList<LMesswert>());
+            }
+            MultivaluedMap<String, String> params = info.getQueryParameters();
+            if (params.isEmpty() ||
+                !params.containsKey("probeId") ||
+                !params.containsKey("messungId")) {
+                return new Response(false, 609, new ArrayList<LMesswert>());
+            }
+            String probeId = params.getFirst("probeId");
+            if (authentication.hasAccess(headers, probeId)) {
+                QueryBuilder<LMesswert> builder =
+                    new QueryBuilder<LMesswert>(
+                        repository.getEntityManager(), LMesswert.class);
+                builder.and("probeId", probeId)
+                    .and("messungsId", params.getFirst("messungsId"));
+                return repository.filter(builder.getQuery());
+            }
+            return new Response(false, 698, new ArrayList<LMesswert>());
         }
-        QueryBuilder<LMesswert> builder =
-            new QueryBuilder<LMesswert>(
-                repository.getEntityManager(), LMesswert.class);
-        builder.and("probeId", params.getFirst("probeId"))
-            .and("messungsId", params.getFirst("messungsId"));
-
-        return repository.filter(builder.getQuery());
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LMesswert>());
+        }
     }
 
     @PUT
     @Produces("text/json")
     @Consumes("application/json")
-    public Response update(LMesswert messwert) {
-        return repository.update(messwert);
+    public Response update(
+        LMesswert messwert,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            String probeId = messwert.getProbeId();
+            if (authentication.hasAccess(headers, probeId)) {
+                return repository.update(messwert);
+            }
+            return new Response(false, 698, new ArrayList<LMesswert>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LMesswert>());
+        }
     }
 
     @POST
     @Produces("text/json")
     @Consumes("application/json")
-    public Response create(LMesswert messwert) {
-        return repository.create(messwert);
+    public Response create(
+        LMesswert messwert,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            String probeId = messwert.getProbeId();
+            if (authentication.hasAccess(headers, probeId)) {
+                return repository.create(messwert);
+            }
+            return new Response(false, 698, new ArrayList<LMesswert>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LMesswert>());
+        }
     }
 }

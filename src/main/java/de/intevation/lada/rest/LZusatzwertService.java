@@ -15,9 +15,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.authentication.Authentication;
+import de.intevation.lada.authentication.AuthenticationException;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LZusatzWert;
@@ -39,18 +42,9 @@ public class LZusatzwertService
     @Named("lzusatzwertrepository")
     private Repository repository;
 
-    /**
-     * Request a LZusatzWert via its id.
-     *
-     * @param id The LProbe id
-     * @return JSON Object via REST service.
-     */
-    @GET
-    @Path("/{id}")
-    @Produces("text/json")
-    public Response findById(@PathParam("id") String id) {
-        return repository.findById(LZusatzWert.class, id);
-    }
+    @Inject
+    @Named("ldapauth")
+    private Authentication authentication;
 
     /**
      * Request LMessert via a filter.
@@ -62,50 +56,98 @@ public class LZusatzwertService
      */
     @GET
     @Produces("text/json")
-    public Response filter(@Context UriInfo info) {
-        MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("probeId")) {
-            return new Response(false, 609, new ArrayList<LZusatzWert>());
+    public Response filter(
+        @Context UriInfo info,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            if (!authentication.isAuthorizedUser(headers)) {
+                return new Response(false, 699, new ArrayList<LZusatzWert>());
+            }
+            MultivaluedMap<String, String> params = info.getQueryParameters();
+            if (params.isEmpty() || !params.containsKey("probeId")) {
+                return new Response(false, 609, new ArrayList<LZusatzWert>());
+            }
+            String probeId = params.getFirst("probeId");
+            if (authentication.hasAccess(headers, probeId)) {
+                QueryBuilder<LZusatzWert> builder =
+                    new QueryBuilder<LZusatzWert>(
+                        repository.getEntityManager(), LZusatzWert.class);
+                builder.and("probeId", probeId);
+                return repository.filter(builder.getQuery());
+            }
+            return new Response(false, 698, new ArrayList<LZusatzWert>());
         }
-        String paramValue = params.getFirst("probeId");
-        QueryBuilder<LZusatzWert> builder =
-            new QueryBuilder<LZusatzWert>(
-                repository.getEntityManager(), LZusatzWert.class);
-        builder.and("probeId", paramValue);
-        return repository.filter(builder.getQuery());
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LZusatzWert>());
+        }
     }
 
     @PUT
     @Produces("text/json")
     @Path("/{pzsId}/{probeId}")
     @Consumes("application/json")
-    public Response update(LZusatzWert zusatzwert) {
-        return repository.update(zusatzwert);
+    public Response update(
+        LZusatzWert zusatzwert,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            String probeId = zusatzwert.getProbeId();
+            if (authentication.hasAccess(headers, probeId)) {
+                return repository.update(zusatzwert);
+            }
+            return new Response(false, 698, new ArrayList<LZusatzWert>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LZusatzWert>());
+        }
     }
 
     @POST
     @Produces("text/json")
     @Consumes("application/json")
-    public Response create(LZusatzWert zusatzwert) {
-        return repository.create(zusatzwert);
+    public Response create(
+        LZusatzWert zusatzwert,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            String probeId = zusatzwert.getProbeId();
+            if (authentication.hasAccess(headers, probeId)) {
+                return repository.create(zusatzwert);
+            }
+            return new Response(false, 698, new ArrayList<LZusatzWert>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LZusatzWert>());
+        }
     }
 
     @DELETE
     @Path("/{pzsId}/{probeId}")
     public Response delete(
         @PathParam("pzsId") String pzsId,
-        @PathParam("probeId") String probeId ) {
-        QueryBuilder<LZusatzWert> builder =
-            new QueryBuilder<LZusatzWert>(
-                repository.getEntityManager(),
-                LZusatzWert.class);
-        builder.and("pzsId", pzsId).and("probeId", probeId);
-        Response response = repository.filter(builder.getQuery());
-        List<LZusatzWert> list = (List<LZusatzWert>)response.getData();
-        if (!list.isEmpty()) {
-            repository.delete(list.get(0));
-            return new Response(true, 200, null);
+        @PathParam("probeId") String probeId,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            if (authentication.hasAccess(headers, probeId)) {
+                QueryBuilder<LZusatzWert> builder =
+                    new QueryBuilder<LZusatzWert>(
+                        repository.getEntityManager(),
+                        LZusatzWert.class);
+                builder.and("pzsId", pzsId).and("probeId", probeId);
+                Response response = repository.filter(builder.getQuery());
+                List<LZusatzWert> list = (List<LZusatzWert>)response.getData();
+                if (!list.isEmpty()) {
+                    repository.delete(list.get(0));
+                    return new Response(true, 200, null);
+                }
+                return new Response(false, 600, null);
+            }
+            return new Response(false, 698, new ArrayList<LZusatzWert>());
         }
-        return new Response(false, 600, null);
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LZusatzWert>());
+        }
     }
 }

@@ -1,5 +1,6 @@
 package de.intevation.lada.rest;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -9,7 +10,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 
+import de.intevation.lada.authentication.Authentication;
+import de.intevation.lada.authentication.AuthenticationException;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SProbenart;
 
@@ -29,6 +34,10 @@ public class SProbenartService
     @Named("readonlyrepository")
     private Repository repository;
 
+    @Inject
+    @Named("ldapauth")
+    private Authentication authentication;
+
     /**
      * The logger for this class
      */
@@ -42,8 +51,16 @@ public class SProbenartService
      */
     @GET
     @Produces("text/json")
-    public Response findAll() {
-        return repository.findAll(SProbenart.class);
+    public Response findAll(@Context HttpHeaders headers) {
+        try {
+            if (authentication.isAuthorizedUser(headers)) {
+                return repository.findAll(SProbenart.class);
+            }
+            return new Response(false, 699, new ArrayList<SProbenart>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<SProbenart>());
+        }
     }
 
     /**
@@ -55,7 +72,18 @@ public class SProbenartService
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public Response findById(@PathParam("id") String id) {
-        return repository.findById(SProbenart.class, id);
+    public Response findById(
+        @PathParam("id") String id,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            if (authentication.isAuthorizedUser(headers)) {
+                return repository.findById(SProbenart.class, id);
+            }
+            return new Response(false, 699, new ArrayList<SProbenart>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<SProbenart>());
+        }
     }
 }

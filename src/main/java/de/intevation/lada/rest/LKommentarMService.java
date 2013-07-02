@@ -10,12 +10,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.authentication.Authentication;
+import de.intevation.lada.authentication.AuthenticationException;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarM;
@@ -37,18 +39,9 @@ public class LKommentarMService
     @Named("lkommentarmrepository")
     private Repository repository;
 
-    /**
-     * Request a single SMessStelle via its id.
-     *
-     * @param id The mst_id
-     * @return JSON Object via REST service.
-     */
-    @GET
-    @Path("/{id}")
-    @Produces("text/json")
-    public Response findById(@PathParam("id") String id) {
-        return repository.findById(LKommentarM.class, id);
-    }
+    @Inject
+    @Named("ldapauth")
+    private Authentication authentication;
 
     /**
      * Request LKommentarM via a filter.
@@ -60,34 +53,72 @@ public class LKommentarMService
      */
     @GET
     @Produces("text/json")
-    public Response filter(@Context UriInfo info) {
-        MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() ||
-            !params.containsKey("probeId") ||
-            !params.containsKey("messungsId")
-        ) {
-            return new Response(false, 609, new ArrayList<LKommentarM>());
+    public Response filter(
+        @Context UriInfo info,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            if (!authentication.isAuthorizedUser(headers)) {
+                return new Response(false, 699, new ArrayList<LKommentarM>());
+            }
+            MultivaluedMap<String, String> params = info.getQueryParameters();
+            if (params.isEmpty() ||
+                !params.containsKey("probeId") ||
+                !params.containsKey("messungsId")
+            ) {
+                return new Response(false, 609, new ArrayList<LKommentarM>());
+            }
+            String probeId = params.getFirst("probeId");
+            if (authentication.hasAccess(headers, probeId)) {
+                QueryBuilder<LKommentarM> builder =
+                    new QueryBuilder<LKommentarM>(
+                        repository.getEntityManager(), LKommentarM.class);
+                builder.and("probeId", probeId)
+                    .and("messungsId", params.getFirst("messungsId"));
+                return repository.filter(builder.getQuery());
+            }
+            return new Response(false, 698, new ArrayList<LKommentarM>());
         }
-        QueryBuilder<LKommentarM> builder =
-            new QueryBuilder<LKommentarM>(
-                repository.getEntityManager(), LKommentarM.class);
-        builder.and("probeId", params.getFirst("probeId"))
-            .and("messungsId", params.getFirst("messungsId"));
-
-        return repository.filter(builder.getQuery());
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LKommentarM>());
+        }
     }
 
     @PUT
     @Produces("text/json")
     @Consumes("application/json")
-    public Response update(LKommentarM kommentar) {
-        return repository.update(kommentar);
+    public Response update(
+        LKommentarM kommentar,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            String probeId = kommentar.getProbeId();
+            if (authentication.hasAccess(headers, probeId)) {
+                return repository.update(kommentar);
+            }
+            return new Response(false, 698, new ArrayList<LKommentarM>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LKommentarM>());
+        }
     }
 
     @POST
     @Produces("text/json")
     @Consumes("application/json")
-    public Response create(LKommentarM kommentar) {
-        return repository.create(kommentar);
+    public Response create(
+        LKommentarM kommentar,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            String probeId = kommentar.getProbeId();
+            if (authentication.hasAccess(headers, probeId)) {
+                return repository.create(kommentar);
+            }
+            return new Response(false, 698, new ArrayList<LKommentarM>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LKommentarM>());
+        }
     }
 }
