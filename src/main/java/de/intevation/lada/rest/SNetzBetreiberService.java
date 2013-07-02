@@ -1,5 +1,6 @@
 package de.intevation.lada.rest;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.faces.bean.RequestScoped;
@@ -9,7 +10,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 
+import de.intevation.lada.authentication.Authentication;
+import de.intevation.lada.authentication.AuthenticationException;
+import de.intevation.lada.authentication.AuthenticationResponse;
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SNetzBetreiber;
 
@@ -29,6 +36,10 @@ public class SNetzBetreiberService
     @Named("readonlyrepository")
     private Repository repository;
 
+    @Inject
+    @Named("ldapauth")
+    private Authentication authentication;
+
     /**
      * The logger for this class
      */
@@ -42,8 +53,19 @@ public class SNetzBetreiberService
      */
     @GET
     @Produces("text/json")
-    public Response findAll() {
-        return repository.findAll(SNetzBetreiber.class);
+    public Response findAll(@Context HttpHeaders headers) {
+        try {
+            AuthenticationResponse auth =
+                authentication.authorizedGroups(headers);
+            QueryBuilder<SNetzBetreiber> builder =
+                new QueryBuilder<SNetzBetreiber>(
+                    repository.getEntityManager(), SNetzBetreiber.class);
+            builder.or("netzbetreiberId", auth.getNetzbetreiber());
+            return repository.filter(builder.getQuery());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<SNetzBetreiber>());
+        }
     }
 
     /**
@@ -55,7 +77,19 @@ public class SNetzBetreiberService
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public Response findById(@PathParam("id") String id) {
-        return repository.findById(SNetzBetreiber.class, id);
+    public Response findById(
+        @PathParam("id") String id,
+        @Context HttpHeaders headers) {
+        try {
+            AuthenticationResponse auth =
+                authentication.authorizedGroups(headers);
+            if (auth.getNetzbetreiber().contains(id)) {
+                return repository.findById(SNetzBetreiber.class, id);
+            }
+            return new Response(false, 698, new ArrayList<SNetzBetreiber>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<SNetzBetreiber>());
+        }
     }
 }
