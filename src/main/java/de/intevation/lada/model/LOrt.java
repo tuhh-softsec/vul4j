@@ -21,7 +21,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "l_ort", schema = "public")
-@SequenceGenerator(name = "LORT_ID_STORE", sequenceName = "l_ort_id_seq")
 public class LOrt implements java.io.Serializable {
 
 	private int POrtId;
@@ -52,6 +51,7 @@ public class LOrt implements java.io.Serializable {
 
 	@Id
 	@Column(name = "p_ort_id", unique = true, nullable = false)
+	@SequenceGenerator(name = "LORT_ID_STORE", sequenceName = "l_ort_id_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LORT_ID_STORE")
 	public int getPOrtId() {
 		return this.POrtId;
