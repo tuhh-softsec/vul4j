@@ -1,5 +1,6 @@
 package de.intevation.lada.rest;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -9,7 +10,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 
+import de.intevation.lada.authentication.Authentication;
+import de.intevation.lada.authentication.AuthenticationException;
+import de.intevation.lada.authentication.AuthenticationResponse;
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SMessStelle;
 
@@ -30,6 +37,10 @@ public class SMessstelleService
     @Named("readonlyrepository")
     private Repository repository;
 
+    @Inject
+    @Named("ldapauth")
+    private Authentication authentication;
+
     /**
      * The logger for this class
      */
@@ -43,8 +54,19 @@ public class SMessstelleService
      */
     @GET
     @Produces("text/json")
-    public Response findAll() {
-        return repository.findAll(SMessStelle.class);
+    public Response findAll(@Context HttpHeaders headers) {
+        try {
+            AuthenticationResponse auth =
+                authentication.authorizedGroups(headers);
+            QueryBuilder<SMessStelle> builder =
+                new QueryBuilder<SMessStelle>(
+                    repository.getEntityManager(), SMessStelle.class);
+            builder.or("mstId", auth.getMst());
+            return repository.filter(builder.getQuery());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<SMessStelle>());
+        }
     }
 
     /**
@@ -56,7 +78,19 @@ public class SMessstelleService
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public Response findById(@PathParam("id") String id) {
-        return repository.findById(SMessStelle.class, id);
+    public Response findById(
+        @PathParam("id") String id,
+        @Context HttpHeaders headers) {
+        try {
+            AuthenticationResponse auth =
+                authentication.authorizedGroups(headers);
+            if (auth.getMst().contains(id)) {
+                return repository.findById(SMessStelle.class, id);
+            }
+            return new Response(false, 698, new ArrayList<SMessStelle>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<SMessStelle>());
+        }
     }
 }
