@@ -6,12 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.floodlightcontroller.core.module.FloodlightModuleContext;
+import net.floodlightcontroller.core.module.FloodlightModuleException;
+import net.floodlightcontroller.core.module.IFloodlightModule;
+import net.floodlightcontroller.core.module.IFloodlightService;
+
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Restlet;
+import org.restlet.Server;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
@@ -24,17 +30,13 @@ import org.restlet.service.StatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.floodlightcontroller.core.module.FloodlightModuleContext;
-import net.floodlightcontroller.core.module.FloodlightModuleException;
-import net.floodlightcontroller.core.module.IFloodlightModule;
-import net.floodlightcontroller.core.module.IFloodlightService;
-
 public class RestApiServer
     implements IFloodlightModule, IRestApiService {
     protected static Logger logger = LoggerFactory.getLogger(RestApiServer.class);
     protected List<RestletRoutable> restlets;
     protected FloodlightModuleContext fmlContext;
     protected int restPort = 8080;
+    protected String numThreads = null;
     
     // ***********
     // Application
@@ -98,7 +100,11 @@ public class RestApiServer
             // Start listening for REST requests
             try {
                 final Component component = new Component();
-                component.getServers().add(Protocol.HTTP, restPort);
+                Server server = component.getServers().add(Protocol.HTTP, restPort);
+                if (numThreads != null){
+                	logger.debug("Setting number of REST API threads to {}", numThreads);
+                	server.getContext().getParameters().add("defaultThreads", numThreads);
+                }
                 component.getClients().add(Protocol.CLAP);
                 component.getDefaultHost().attach(this);
                 component.start();
@@ -179,6 +185,11 @@ public class RestApiServer
             restPort = Integer.parseInt(port);
         }
         logger.debug("REST port set to {}", restPort);
+        
+        String numThreads = configOptions.get("dispatcherthreads");
+        if (numThreads != null) {
+        	this.numThreads = numThreads;
+        }
     }
 
     @Override
