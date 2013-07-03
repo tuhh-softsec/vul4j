@@ -1,12 +1,16 @@
 package de.intevation.lada.data;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBTransactionRolledbackException;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
+import javax.persistence.criteria.CriteriaQuery;
 
 import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LProbe;
@@ -21,9 +25,14 @@ import de.intevation.lada.validation.Validator;
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
+@ApplicationScoped
 @Named("lproberepository")
-public class LProbeRepository
-extends Repository{
+public class LProbeRepository implements Repository{
+    /**
+     * The entitymanager managing the data.
+     */
+    @Inject
+    private EntityManager em;
 
     /**
      * Manager class for LPRobe. Used to manipulate data objects.
@@ -36,7 +45,20 @@ extends Repository{
     @Named("lprobevalidator")
     private Validator validator;
 
-    @Override
+    public EntityManager getEntityManager() {
+        return this.em;
+    }
+    /**
+     * Filter object list by the given criteria.
+     *
+     * @param criteria
+     * @return List of objects.
+     */
+    public <T> Response filter(CriteriaQuery<T> filter) {
+        List<T> result = em.createQuery(filter).getResultList();
+        return new Response(true, 200, result);
+    }
+
     public <T> Response findAll(Class<T> clazz) {
         QueryBuilder<LProbeInfo> builder =
             new QueryBuilder<LProbeInfo>(this.getEntityManager(), LProbeInfo.class);
@@ -44,7 +66,6 @@ extends Repository{
         return filter(builder.getQuery());
     }
 
-    @Override
     public <T> Response findById(Class<T> clazz, String id) {
         QueryBuilder<LProbeInfo> builder =
             new QueryBuilder<LProbeInfo>(this.getEntityManager(), LProbeInfo.class);

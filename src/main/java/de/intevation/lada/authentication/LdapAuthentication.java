@@ -3,6 +3,7 @@ package de.intevation.lada.authentication;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,7 +28,7 @@ import de.intevation.lada.model.LProbeInfo;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@RequestScoped
+@ApplicationScoped
 @Named("ldapauth")
 public class LdapAuthentication
 implements Authentication

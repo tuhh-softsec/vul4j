@@ -5,8 +5,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -106,7 +104,7 @@ public class QueryBuilder<T>
             this.query.orderBy(this.builder.desc(this.root.get(id)));
         }
     }
-    
+
     public QueryBuilder<T> getEmptyBuilder(){
         QueryBuilder<T> copy = new QueryBuilder<T>(manager, clazz);
         copy.builder = this.builder;
