@@ -66,6 +66,7 @@ public class SecurePart {
     private String externalReference;
     private String[] transforms = new String[]{XMLSecurityConstants.NS_C14N_EXCL};
     private String digestMethod = XMLSecurityConstants.NS_XMLDSIG_SHA1;
+    private boolean required = true;
 
     public SecurePart(QName name, Modifier modifier) {
         this(name, false, modifier);
@@ -178,5 +179,13 @@ public class SecurePart {
 
     public void setDigestMethod(String digestMethod) {
         this.digestMethod = digestMethod;
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 }
