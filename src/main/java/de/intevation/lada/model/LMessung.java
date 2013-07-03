@@ -26,7 +26,7 @@ import javax.persistence.TemporalType;
 public class LMessung implements java.io.Serializable {
 
 	private LMessungId id;
-	private String lprobeId;
+	private String probeId;
 	private String mmtId;
 	private String nebenprobenNr;
 	private Integer messdauer;
@@ -38,20 +38,20 @@ public class LMessung implements java.io.Serializable {
 	public LMessung() {
 	}
 
-	public LMessung(LMessungId id, String lprobeId, String mmtId,
+	public LMessung(LMessungId id, String probeId, String mmtId,
 			boolean fertig, boolean geplant) {
 		this.id = id;
-		this.lprobeId = lprobeId;
+		this.probeId = probeId;
 		this.mmtId = mmtId;
 		this.fertig = fertig;
 		this.geplant = geplant;
 	}
 
-	public LMessung(LMessungId id, String lprobeId, String mmtId,
+	public LMessung(LMessungId id, String probeId, String mmtId,
 			String nebenprobenNr, Integer messdauer, Date messzeitpunkt,
 			boolean fertig, Date letzteAenderung, boolean geplant) {
 		this.id = id;
-		this.lprobeId = lprobeId;
+		this.probeId = probeId;
 		this.mmtId = mmtId;
 		this.nebenprobenNr = nebenprobenNr;
 		this.messdauer = messdauer;
@@ -74,12 +74,12 @@ public class LMessung implements java.io.Serializable {
 	}
 
 	@Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
-	public String getLProbeId() {
-		return this.lprobeId;
+	public String getProbeId() {
+		return this.probeId;
 	}
 
-	public void setLProbeId(String lprobeId) {
-		this.lprobeId = lprobeId;
+	public void setProbeId(String probeId) {
+		this.probeId = probeId;
 	}
 
 	@Column(name = "mmt_id", nullable = false)

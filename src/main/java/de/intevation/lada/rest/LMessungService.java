@@ -18,7 +18,6 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.authentication.Authentication;
 import de.intevation.lada.authentication.AuthenticationException;
-import de.intevation.lada.authentication.AuthenticationResponse;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMessung;
@@ -103,7 +102,7 @@ public class LMessungService
         @Context HttpHeaders headers
     ) {
         try {
-            String probeId = messung.getLProbeId();
+            String probeId = messung.getProbeId();
             if (authentication.hasAccess(headers, probeId)) {
                 return repository.update(messung);
             }
@@ -129,7 +128,7 @@ public class LMessungService
         @Context HttpHeaders headers
     ) {
         try {
-            String probeId = messung.getLProbeId();
+            String probeId = messung.getProbeId();
             if (authentication.hasAccess(headers, probeId)) {
                 return repository.create(messung);
             }
