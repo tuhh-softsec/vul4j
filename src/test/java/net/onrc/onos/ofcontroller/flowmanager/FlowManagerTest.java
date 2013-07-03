@@ -18,8 +18,8 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
+import net.onrc.onos.ofcontroller.routing.TopoRouteService;
 import net.onrc.onos.ofcontroller.util.*;
 
 import org.easymock.EasyMock;
@@ -43,7 +43,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class FlowManagerTest {
 	private static FloodlightModuleContext context;
 	private static IFloodlightProviderService floodlightProvider;
-	private static ITopoRouteService topoRouteService;
+	private static TopoRouteService topoRouteService;
 	private static IRestApiService restApi;
 	private static GraphDBOperation op;
 	
@@ -68,15 +68,15 @@ public class FlowManagerTest {
 		// create mock objects
 		context = createMock(FloodlightModuleContext.class);
 		floodlightProvider = createMock(IFloodlightProviderService.class);
-		topoRouteService = createMock(ITopoRouteService.class);
+		topoRouteService = createMock(TopoRouteService.class);
 		restApi = createMock(IRestApiService.class);
 		op = createMock(GraphDBOperation.class);
 
 		// setup expectations
 		expect(context.getServiceImpl(IFloodlightProviderService.class)).andReturn(floodlightProvider);
-		expect(context.getServiceImpl(ITopoRouteService.class)).andReturn(topoRouteService);
 		expect(context.getServiceImpl(IRestApiService.class)).andReturn(restApi);
 		expectNew(GraphDBOperation.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(op);
+		expectNew(TopoRouteService.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(topoRouteService);
 	}
 	
 	private IFlowPath createIFlowPathMock(long flowId, String installerID,
@@ -909,9 +909,8 @@ public class FlowManagerTest {
 
 		// verify the test
 		verifyAll();
-		assertEquals(3, md.size());
+		assertEquals(2, md.size());
 		assertTrue(md.contains(IFloodlightProviderService.class));
-		assertTrue(md.contains(ITopoRouteService.class));
 		assertTrue(md.contains(IRestApiService.class));
 	}
 
