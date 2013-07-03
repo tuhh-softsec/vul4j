@@ -18,30 +18,37 @@
  */
 package org.apache.xml.security.stax.impl.processor.output;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.*;
-import org.apache.xml.security.stax.securityToken.SecurityTokenProvider;
-import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
-import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
-import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
-import org.apache.xml.security.stax.impl.SignaturePartDef;
-import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
-import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithmFactory;
-import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
-import org.apache.xml.security.stax.impl.util.IDGenerator;
-import org.apache.xml.security.stax.impl.util.SignerOutputStream;
-import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
-
-import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.stax.ext.AbstractBufferingOutputProcessor;
+import org.apache.xml.security.stax.ext.AbstractOutputProcessor;
+import org.apache.xml.security.stax.ext.OutputProcessorChain;
+import org.apache.xml.security.stax.ext.Transformer;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityUtils;
+import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
+import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
+import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
+import org.apache.xml.security.stax.impl.SignaturePartDef;
+import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
+import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithmFactory;
+import org.apache.xml.security.stax.impl.util.IDGenerator;
+import org.apache.xml.security.stax.impl.util.SignerOutputStream;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
+import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
+import org.apache.xml.security.stax.securityToken.SecurityTokenProvider;
 
 /**
  * @author $Author$
@@ -126,7 +133,12 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
             throw new XMLSecurityException("stax.keyNotFound");
         }
 
-        signatureAlgorithm.engineInitSign(wrappingSecurityToken.getSecretKey(getSecurityProperties().getSignatureAlgorithm()));
+        String sigAlgorithm = getSecurityProperties().getSignatureAlgorithm();
+        Key key = wrappingSecurityToken.getSecretKey(sigAlgorithm);
+        if (XMLSecurityConstants.NS_XMLDSIG_HMACSHA1.equals(sigAlgorithm)) {
+            key = XMLSecurityUtils.prepareSecretKey(sigAlgorithm, key.getEncoded());
+        }
+        signatureAlgorithm.engineInitSign(key);
 
         SignedInfoProcessor signedInfoProcessor = newSignedInfoProcessor(signatureAlgorithm, signatureElement, subOutputProcessorChain);
         createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_SignedInfo, false, null);
@@ -204,7 +216,7 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
             OutputProcessorChain outputProcessorChain,
             OutboundSecurityToken securityToken,
             boolean useSingleCertificate) throws XMLStreamException, XMLSecurityException;
-
+    
 
     public class SignedInfoProcessor extends AbstractOutputProcessor {
 

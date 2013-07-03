@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.ext;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.apache.xml.security.stax.config.TransformerAlgorithmMapper;
@@ -31,6 +32,8 @@ import org.apache.xml.security.stax.securityEvent.*;
 import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -373,4 +376,30 @@ public class XMLSecurityUtils {
             outputStream.write(buf, 0, read);
         }
     }
+    
+    /**
+     * Convert the raw key bytes into a SecretKey object of type symEncAlgo.
+     */
+    public static SecretKey prepareSecretKey(String symEncAlgo, byte[] rawKey) {
+        // Do an additional check on the keysize required by the encryption algorithm
+        int size = 0;
+        try {
+            size = JCEMapper.getKeyLengthFromURI(symEncAlgo) / 8;
+        } catch (Exception e) {
+            // ignore - some unknown (to JCEMapper) encryption algorithm
+            size = 0;
+        }
+        String keyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(symEncAlgo);
+        SecretKeySpec keySpec;
+        if (size > 0) {
+            keySpec = 
+                new SecretKeySpec(
+                    rawKey, 0, ((rawKey.length > size) ? size : rawKey.length), keyAlgorithm
+                );
+        } else {
+            keySpec = new SecretKeySpec(rawKey, keyAlgorithm);
+        }
+        return keySpec;
+    }
+
 }

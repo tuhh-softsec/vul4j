@@ -291,8 +291,9 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
             } else {
                 verifyKey = inboundSecurityToken.getSecretKey(
                         algorithmURI, XMLSecurityConstants.Sym_Sig, signatureType.getId());
+                verifyKey = XMLSecurityUtils.prepareSecretKey(algorithmURI, verifyKey.getEncoded());
             }
-
+            
             try {
                 SignatureAlgorithm signatureAlgorithm =
                         SignatureAlgorithmFactory.getInstance().getSignatureAlgorithm(
