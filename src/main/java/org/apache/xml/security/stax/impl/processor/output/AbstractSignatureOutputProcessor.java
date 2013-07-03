@@ -133,14 +133,16 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
             Map.Entry<Object, SecurePart> securePartEntry = securePartsMapIterator.next();
             final SecurePart securePart = securePartEntry.getValue();
 
-            for (int i = 0; i < signaturePartDefs.size(); i++) {
-                SignaturePartDef signaturePartDef = signaturePartDefs.get(i);
-
-                if (signaturePartDef.getSecurePart() == securePart) {
-                    continue loop;
+            if (securePart.isRequired()) {
+                for (int i = 0; i < signaturePartDefs.size(); i++) {
+                    SignaturePartDef signaturePartDef = signaturePartDefs.get(i);
+    
+                    if (signaturePartDef.getSecurePart() == securePart) {
+                        continue loop;
+                    }
                 }
+                throw new XMLSecurityException("stax.signature.securePartNotFound", securePart.getName());
             }
-            throw new XMLSecurityException("stax.signature.securePartNotFound", securePart.getName());
         }
     }
 
