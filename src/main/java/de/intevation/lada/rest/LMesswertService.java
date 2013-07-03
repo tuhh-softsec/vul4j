@@ -68,7 +68,7 @@ public class LMesswertService
             MultivaluedMap<String, String> params = info.getQueryParameters();
             if (params.isEmpty() ||
                 !params.containsKey("probeId") ||
-                !params.containsKey("messungId")) {
+                !params.containsKey("messungsId")) {
                 return new Response(false, 609, new ArrayList<LMesswert>());
             }
             String probeId = params.getFirst("probeId");
