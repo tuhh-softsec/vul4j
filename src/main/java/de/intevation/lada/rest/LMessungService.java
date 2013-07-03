@@ -61,26 +61,26 @@ public class LMessungService
     @Produces("text/json")
     public Response filter(
         @Context UriInfo info,
-        @Context HttpHeaders header
+        @Context HttpHeaders headers
     ) {
         try {
-            AuthenticationResponse auth =
-                authentication.authorizedGroups(header);
-            QueryBuilder<LMessung> builder =
-                new QueryBuilder<LMessung>(
-                    repository.getEntityManager(),
-                    LMessung.class);
-            builder.or("netzbetreiberId", auth.getNetzbetreiber());
+            if (!authentication.isAuthorizedUser(headers)) {
+                return new Response(false, 699, new ArrayList<LMessung>());
+            }
             MultivaluedMap<String, String> params = info.getQueryParameters();
-            if (params.isEmpty()) {
-                repository.filter(builder.getQuery());
+            if (params.isEmpty() || !(params.containsKey("probeId"))) {
+                return new Response(false, 609, new ArrayList<LMessung>());
             }
-            QueryBuilder<LMessung> pBuilder = builder.getEmptyBuilder();
-            if (params.containsKey("probeId")) {
-                pBuilder.and("probeId", params.getFirst("probeId"));
-                builder.and(pBuilder);
+            String probeId = params.getFirst("probeId");
+            if (authentication.hasAccess(headers, probeId)) {
+                QueryBuilder<LMessung> builder =
+                    new QueryBuilder<LMessung>(
+                        repository.getEntityManager(),
+                        LMessung.class);
+                builder.and("probeId", probeId);
+                return repository.filter(builder.getQuery());
             }
-            return repository.filter(builder.getQuery());
+            return new Response(false, 698, new ArrayList<LMessung>());
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LMessung>());
