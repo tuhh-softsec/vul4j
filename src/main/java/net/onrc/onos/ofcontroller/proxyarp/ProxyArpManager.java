@@ -39,7 +39,6 @@ public class ProxyArpManager implements IOFMessageListener {
 	protected IFloodlightProviderService floodlightProvider;
 	protected ITopologyService topology;
 	
-	
 	protected Map<InetAddress, ArpTableEntry> arpTable;
 	
 	public ProxyArpManager(IFloodlightProviderService floodlightProvider,
@@ -57,13 +56,11 @@ public class ProxyArpManager implements IOFMessageListener {
 
 	@Override
 	public boolean isCallbackOrderingPrereq(OFType type, String name) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean isCallbackOrderingPostreq(OFType type, String name) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -114,7 +111,6 @@ public class ProxyArpManager implements IOFMessageListener {
 				updateArpTable(arp);
 			}
 		}
-		
 		
 		return Command.CONTINUE;
 	}
@@ -180,14 +176,11 @@ public class ProxyArpManager implements IOFMessageListener {
 			OFPacketOut po = new OFPacketOut();
 			po.setInPort(OFPort.OFPP_NONE)
 				.setBufferId(-1)
-				//.setLengthU(OFActionOutput.MINIMUM_LENGTH);
 				.setPacketData(pi.getPacketData());
 				
 			List<OFAction> actions = new ArrayList<OFAction>();
 			
 			for (short portNum : enabledPorts){
-				//log.debug("linkPorts {}", linkPorts);
-				//log.debug("portNum {}", portNum);
 				if (linkPorts.contains(portNum) || 
 						(sw.getId() == inSwitch && portNum == inPort)){
 					//If this port isn't an edge port or is the ingress port
@@ -258,14 +251,15 @@ public class ProxyArpManager implements IOFMessageListener {
 			log.warn("Failure writing packet out to switch", e);
 		}
 	}
-	
+
+	//TODO this should be put somewhere more central. I use it in BgpRoute as well.
+	//We need a HexString.toHexString() equivalent.
 	private String bytesToStringAddr(byte[] bytes){
 		InetAddress addr;
 		try {
 			addr = InetAddress.getByAddress(bytes);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(" ", e);
 			return "";
 		}
 		if (addr == null) return "";

@@ -12,7 +12,7 @@ public class Configuration {
 	private List<String> switches;
 	private Map<String, Interface> interfaces;
 	private List<BgpPeer> peers;
-	private Map<String, GatewayRouter> gateways;
+	//private Map<String, GatewayRouter> gateways;
 	
 	public Configuration() {
 		// TODO Auto-generated constructor stub
@@ -63,6 +63,7 @@ public class Configuration {
 		this.peers = peers;
 	}
 
+	/*
 	public Map<String, GatewayRouter> getGateways() {
 		return gateways;
 	}
@@ -70,6 +71,6 @@ public class Configuration {
 	@JsonProperty("gateways")
 	public void setGateways(Map<String, GatewayRouter> gateways) {
 		this.gateways = gateways;
-	}
+	}*/
 
 }
