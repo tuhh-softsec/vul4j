@@ -23,8 +23,8 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarM;
 
 /**
- * This class produces a RESTful service to read the contents of l_kommentar_m
- * table.
+ * This class produces a RESTful service to read, write and update
+ * LKommentarM objects.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -39,6 +39,9 @@ public class LKommentarMService
     @Named("lkommentarmrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -48,8 +51,9 @@ public class LKommentarMService
      *
      * Query parameters are used for the filter in form of key-value pairs.
      *
-     * @param info The URL query parameters.
-     * @return JSON Object via Rest service.
+     * @param info      The URL query parameters.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -84,6 +88,13 @@ public class LKommentarMService
         }
     }
 
+    /**
+     * Update LKommentarM objects.
+     *
+     * @param kommentar The LKommentarM object to update.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @PUT
     @Produces("text/json")
     @Consumes("application/json")
@@ -103,6 +114,13 @@ public class LKommentarMService
         }
     }
 
+    /**
+     * Create a new LKommentarM object.
+     *
+     * @param kommentar The new LKommentarM object.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @POST
     @Produces("text/json")
     @Consumes("application/json")

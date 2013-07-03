@@ -18,7 +18,7 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SStaat;
 
 /**
- * This class produces a RESTful service to read the contents of s_staat table.
+ * This class produces a RESTful service to read SStaat objects.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -33,14 +33,18 @@ public class SStaatService
     @Named("readonlyrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
 
     /**
-     * Request all SUmwelt objects.
+     * Request all SStaat objects.
      *
-     * @return JSON Object via Rest service
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -57,10 +61,11 @@ public class SStaatService
     }
 
     /**
-     * Request a SUmwelt object via its id.
+     * Request a SStaat object via its id.
      *
-     * @param id The SUmwelt id
-     * @return JSON Object via REST service.
+     * @param id The object id.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Path("/{id:[0-9][0-9]*}")

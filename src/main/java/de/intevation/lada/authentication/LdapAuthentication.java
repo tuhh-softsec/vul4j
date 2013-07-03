@@ -21,6 +21,12 @@ import de.intevation.lada.model.Auth;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 
+/**
+ * This implementation of the authentication interface reads LDAP users
+ * and groups from HTTP headers and validates the groups using a database.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @RequestScoped
 @Named("ldapauth")
 public class LdapAuthentication
@@ -29,6 +35,11 @@ implements Authentication
     @Inject
     private EntityManager em;
 
+    /**
+     * Determine if the header contains information about a valid user.
+     *
+     * @param headers   The HTTP header containing LDAP user information.
+     */
     @Override
     public boolean isAuthorizedUser(HttpHeaders headers)
     throws AuthenticationException {
@@ -40,6 +51,11 @@ implements Authentication
         return true;
     }
 
+    /**
+     * Synchronize LDAP user and groups with database.
+     *
+     * @param headers   The HTTP header containing LDAP user information.
+     */
     @Override
     public AuthenticationResponse authorizedGroups(HttpHeaders headers)
     throws AuthenticationException {
@@ -66,6 +82,12 @@ implements Authentication
         return response;
     }
 
+    /**
+     * Determine if the user has the permission to access a probe.
+     *
+     * @param headers   The HTTP header containing LDAP user information.
+     * @param probeId   The LProbe id.
+     */
     public boolean hasAccess (HttpHeaders headers, String probeId)
     throws AuthenticationException {
         QueryBuilder<LProbe> builder = new QueryBuilder<LProbe>(em, LProbe.class);
@@ -84,11 +106,23 @@ implements Authentication
         return false;
     }
 
+    /**
+     * Determine if the LProbe identified by probeId is writeable for the user.
+     *
+     * @param headers   The HTTP header containing LDAP user information.
+     * @param probeId   The probe id.
+     */
     public boolean isReadOnly(HttpHeaders headers, String probeId) {
         //TODO: test if probe has messung with status 'fertig'.
         return false;
     }
 
+    /**
+     * Get the user from HTTP header.
+     *
+     * @param headers   The HTTP header containing user information.
+     * @return The user name.
+     */
     private String extractUser(HttpHeaders headers) {
         List<String> user = headers.getRequestHeader("x-ldap-user");
         if (user == null || user.isEmpty()) {
@@ -97,6 +131,13 @@ implements Authentication
         return user.get(0);
     }
 
+    /**
+     * Extract LDAP information from HTTP header.
+     *
+     * @param headers   The HTTP header containing ldap information.
+     * @return The Ldap object.
+     * @throws InvalidNameException
+     */
     private LdapName extractLdapName(HttpHeaders headers) throws InvalidNameException {
         List<String> attributes = headers.getRequestHeader("x-ldap-groups");
         if (attributes == null ||attributes.isEmpty()) {
@@ -114,6 +155,13 @@ implements Authentication
         return ldap;
     }
 
+    /**
+     * Get the 'Messstellen' and 'Netzbetreiber' from database using the
+     * LDAP groups.
+     *
+     * @param groups    List of LDAP groups.
+     * @return AuthenticationResponse object.
+     */
     private AuthenticationResponse getDatabaseAtributes(List<String> groups) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Auth> criteria = builder.createQuery(Auth.class);

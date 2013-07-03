@@ -27,7 +27,8 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarP;
 
 /**
- * This class produces a RESTful service to read the contents of LKommentarP table.
+ * This class produces a RESTful service to read, write and update
+ * LKommentarP objects.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -42,6 +43,9 @@ public class LKommentarService
     @Named("lkommentarRepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -52,6 +56,14 @@ public class LKommentarService
     @Inject
     private Logger logger;
 
+    /**
+     * Delete a LKommentarP object identified by 'probeId' and 'kId'.
+     *
+     * @param kId       The object id.
+     * @param probeId   The LProbe object id.
+     * @param headers   The HTTP headers containing authorization information.
+     * @return Response object.
+     */
     @DELETE
     @Path("/{kId}/{probeId}")
     @Produces("text/json")
@@ -87,8 +99,9 @@ public class LKommentarService
     /**
      * Request a list of LKommentarP objects filtered by LProbe id.
      *
-     * @param info The query parameters
-     * @return JSON object via REST service.
+     * @param info      The URL parameters
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -119,6 +132,13 @@ public class LKommentarService
         }
     }
 
+    /**
+     * Update a LKommentarP object.
+     *
+     * @param kommentar The LKommentarP object to update.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @PUT
     @Path("/{kId}/{probeId}")
     @Produces("text/json")
@@ -139,6 +159,13 @@ public class LKommentarService
         }
     }
 
+    /**
+     * Create a new LKommentarP object.
+     *
+     * @param kommentar The new LKommentarP object.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @POST
     @Consumes("application/json")
     @Produces("text/json")

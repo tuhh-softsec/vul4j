@@ -24,8 +24,9 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMessung;
 
 /**
-* This class produces a RESTful service to read the contents of LProbe table.
-* 
+* This class produces a RESTful service to read, write and update
+* LMessung objects.
+*
 * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
 */
 @Path("/messung")
@@ -39,6 +40,9 @@ public class LMessungService
     @Named("lmessungrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -83,6 +87,13 @@ public class LMessungService
         }
     }
 
+    /**
+     * Update a LMessung object.
+     *
+     * @param messung   The LMessung object to update.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @PUT
     @Path("/{id}")
     @Produces("text/json")
@@ -103,6 +114,13 @@ public class LMessungService
         }
     }
 
+    /**
+     * Create a new LMessung object.
+     *
+     * @param messung   The new LMessung object.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @POST
     @Produces("text/json")
     @Consumes("application/json")

@@ -2,6 +2,9 @@ package de.intevation.lada.authentication;
 
 import javax.ws.rs.core.HttpHeaders;
 
+/**
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public interface Authentication
 {
     public boolean isAuthorizedUser(HttpHeaders headers)

@@ -15,15 +15,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.authentication.Authentication;
 import de.intevation.lada.authentication.AuthenticationException;
-import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.Ort;
 
+/**
+* This class produces a RESTful service to read, write and update
+* Ort objects.
+*
+* @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+*/
 @Path("/ortinfo")
 @RequestScoped
 public class OrtService
@@ -35,15 +38,19 @@ public class OrtService
     @Named("ortrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
 
     /**
-     * Request a LZusatzWert via its id.
+     * Request a Ort object via its id.
      *
-     * @param id The LProbe id
-     * @return JSON Object via REST service.
+     * @param id        The Ort id
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Path("/{id}")
@@ -64,11 +71,9 @@ public class OrtService
     }
 
     /**
-     * Request LMessert via a filter.
+     * Request all Ort objects
      *
-     * Query parameters are used for the filter in form of key-value pairs.
-     *
-     * @param info The URL query parameters.
+     * @param headers   The HTTP header containing authorization information.
      * @return JSON Object via Rest service.
      */
     @GET
@@ -85,6 +90,13 @@ public class OrtService
         }
     }
 
+    /**
+     * Update a Ort object.
+     *
+     * @param ort       The Ort object to update.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @PUT
     @Produces("text/json")
     @Path("/{ortId}")
@@ -101,6 +113,13 @@ public class OrtService
         }
     }
 
+    /**
+     * Create a new Ort object.
+     *
+     * @param ort       The new Ort object.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @POST
     @Produces("text/json")
     @Consumes("application/json")
@@ -116,6 +135,13 @@ public class OrtService
         }
     }
 
+    /**
+     * Delete a Ort object.
+     *
+     * @param ortId     The object od.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @DELETE
     @Path("/{ortId}")
     public Response delete(

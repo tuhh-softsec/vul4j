@@ -2,7 +2,12 @@ package de.intevation.lada.authentication;
 
 import java.util.List;
 
-
+/**
+ * Response of an authentication module. Contains the user name,
+ * 'Messstellen' and 'Netzbetreiber'.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class AuthenticationResponse
 {
     private String user;

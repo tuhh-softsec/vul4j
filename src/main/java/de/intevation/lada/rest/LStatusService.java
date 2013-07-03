@@ -23,8 +23,8 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LStatus;
 
 /**
- * This class produces a RESTful service to read the contents of
- * l_status table.
+ * This class produces a RESTful service to read, write and update
+ * LStatus objects.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -39,6 +39,9 @@ public class LStatusService
     @Named("lstatusrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -48,8 +51,9 @@ public class LStatusService
      *
      * Query parameters are used for the filter in form of key-value pairs.
      *
-     * @param info The URL query parameters.
-     * @return JSON Object via Rest service.
+     * @param info      The URL query parameters.
+     * @param header    The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -83,6 +87,13 @@ public class LStatusService
         }
     }
 
+    /**
+     * Update a LStatus object.
+     *
+     * @param status    The LStatus object to update.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @PUT
     @Produces("text/json")
     @Consumes("application/json")
@@ -102,6 +113,13 @@ public class LStatusService
         }
     }
 
+    /**
+     * Create a new LStatus object.
+     *
+     * @param status    The new LStatus object.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @POST
     @Produces("text/json")
     @Consumes("application/json")

@@ -26,8 +26,8 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LZusatzWert;
 
 /**
- * This class produces a RESTful service to read the contents of
- * l_zusatz_wert table.
+ * This class produces a RESTful service to read, write and update
+ * LZusatzwert objects.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -42,6 +42,9 @@ public class LZusatzwertService
     @Named("lzusatzwertrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -51,8 +54,9 @@ public class LZusatzwertService
      *
      * Query parameters are used for the filter in form of key-value pairs.
      *
-     * @param info The URL query parameters.
-     * @return JSON Object via Rest service.
+     * @param info      The URL query parameters.
+     * @param header    The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -83,6 +87,13 @@ public class LZusatzwertService
         }
     }
 
+    /**
+     * Update a LZusatzwert object.
+     *
+     * @param zusatzwert    The LZusatzwert object to update.
+     * @param headers       The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @PUT
     @Produces("text/json")
     @Path("/{pzsId}/{probeId}")
@@ -103,6 +114,13 @@ public class LZusatzwertService
         }
     }
 
+    /**
+     * Create a new LZusatzwert object.
+     *
+     * @param zusatzwert    The new LZusatzwert object.
+     * @param headers       THe HTTP header containing authorization information.
+     * @return Response object.
+     */
     @POST
     @Produces("text/json")
     @Consumes("application/json")
@@ -122,6 +140,14 @@ public class LZusatzwertService
         }
     }
 
+    /**
+     * Delete a LZusatzwert object.
+     *
+     * @param pzsId     The object id.
+     * @param probeId   The LProbe id.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @DELETE
     @Path("/{pzsId}/{probeId}")
     public Response delete(

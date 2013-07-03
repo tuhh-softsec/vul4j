@@ -21,8 +21,7 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SMessStelle;
 
 /**
- * This class produces a RESTful service to read the contents of s_messstelle
- * table.
+ * This class produces a RESTful service to read SMessstelle objects
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -37,6 +36,9 @@ public class SMessstelleService
     @Named("readonlyrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -48,9 +50,10 @@ public class SMessstelleService
     private Logger logger;
 
     /**
-     * Request all SMessStelle objects.
+     * Request all SMessstelle objects.
      *
-     * @return JSON Object via Rest service
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -70,10 +73,11 @@ public class SMessstelleService
     }
 
     /**
-     * Request a single SMessStelle via its id.
+     * Request a single SMessstelle via its id.
      *
-     * @param id The mst_id
-     * @return JSON Object via REST service.
+     * @param id        The object id.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Path("/{id}")

@@ -21,7 +21,7 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SNetzBetreiber;
 
 /**
- * This class produces a RESTful service to read the contents of SNetzbetreiber table.
+ * This class produces a RESTful service to read SNetzbetreiber objects.
  * 
  * @author <a href="mailto:torsten.irlaender@intevation.de">Torsten Irländer</a>
  */
@@ -36,6 +36,9 @@ public class SNetzBetreiberService
     @Named("readonlyrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -47,9 +50,10 @@ public class SNetzBetreiberService
     private Logger logger;
 
     /**
-     * Request all SDatenbasis objects.
+     * Request all SNetzbetreiber objects.
      *
-     * @return JSON Object via Rest service
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -69,10 +73,11 @@ public class SNetzBetreiberService
     }
 
     /**
-     * Request a single SDatenbasis via its id.
+     * Request a single SNetzbetreiber via its id.
      *
-     * @param id The mst_id
-     * @return JSON Object via REST service.
+     * @param id        The object id.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Path("/{id}")

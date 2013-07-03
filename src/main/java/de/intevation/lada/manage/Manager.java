@@ -7,6 +7,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityExistsException;
 import javax.persistence.TransactionRequiredException;
 
+/**
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Stateless
 public interface Manager
 {
@@ -25,7 +28,7 @@ public interface Manager
         TransactionRequiredException;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public <T> void delete(Object object)
+    public void delete(Object object)
     throws IllegalArgumentException,
         TransactionRequiredException;
 }

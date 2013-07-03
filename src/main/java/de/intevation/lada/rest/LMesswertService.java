@@ -10,7 +10,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -24,8 +23,8 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMesswert;
 
 /**
- * This class produces a RESTful service to read the contents of
- * l_messert table.
+ * This class produces a RESTful service to read, write and update
+ * the contents of LMesswert objects.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -34,12 +33,15 @@ import de.intevation.lada.model.LMesswert;
 public class LMesswertService
 {
     /**
-     * The Repository for SUmwelt.
+     * The Repository for LMesswert.
      */
     @Inject
     @Named("lmesswertrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -49,8 +51,9 @@ public class LMesswertService
      *
      * Query parameters are used for the filter in form of key-value pairs.
      *
-     * @param info The URL query parameters.
-     * @return JSON Object via Rest service.
+     * @param info      The URL query parameters.
+     * @param headers   The HTTP header containing authorization information.
+     * @return JSON     Object via Rest service.
      */
     @GET
     @Produces("text/json")
@@ -84,6 +87,13 @@ public class LMesswertService
         }
     }
 
+    /**
+     * Update a LMesswert object.
+     * 
+     * @param messwert  The LMesswert object to update.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @PUT
     @Produces("text/json")
     @Consumes("application/json")
@@ -103,6 +113,13 @@ public class LMesswertService
         }
     }
 
+    /**
+     * Create a new LMesswert object.
+     * 
+     * @param messwert  The new LMesswert object.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @POST
     @Produces("text/json")
     @Consumes("application/json")

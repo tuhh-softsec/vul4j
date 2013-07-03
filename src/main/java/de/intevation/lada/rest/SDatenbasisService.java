@@ -19,7 +19,7 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SDatenbasis;
 
 /**
- * This class produces a RESTful service to read the contents of SDatenbasis table.
+ * This class produces a RESTful service to read SDatenbasis objects.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -34,6 +34,9 @@ public class SDatenbasisService
     @Named("readonlyrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -47,7 +50,8 @@ public class SDatenbasisService
     /**
      * Request all SDatenbasis objects.
      *
-     * @return JSON Object via Rest service
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -66,8 +70,9 @@ public class SDatenbasisService
     /**
      * Request a single SDatenbasis via its id.
      *
-     * @param id The mst_id
-     * @return JSON Object via REST service.
+     * @param id        The object id.
+     * @param header    The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Path("/{id}")

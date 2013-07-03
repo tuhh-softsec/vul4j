@@ -7,7 +7,8 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 /**
-* This class is nice!.
+* Response object storing information about success, warnings, errors and
+* the data object. This class is used as return value in REST services.
 *
 * @author <a href="mailto:torsten@intevation.de">Torsten Irländer</a>
 */
@@ -28,6 +29,13 @@ public class Response implements java.io.Serializable {
     private Map<String, String> warnings;
     private Boolean readonly;
 
+    /**
+     * Constructor to create a basic Response object.
+     *
+     * @param success   Information if the operation was successful.
+     * @param code      The return code.
+     * @param data      The data object wrapped by the response.
+     */
     public Response(boolean success, int code, Object data) {
         this.success = success;
         this.message = Integer.toString(code);

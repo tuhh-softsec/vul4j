@@ -22,7 +22,13 @@ import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LOrt;
 
-@Path("ort")
+/**
+ * This class produces a RESTful service to read, write and update
+ * LOrt objects.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
+@Path("/ort")
 @RequestScoped
 public class LOrtService
 {
@@ -34,10 +40,22 @@ public class LOrtService
     @Named("lortrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
 
+    /**
+     * Request LOrt via a filter.
+     *
+     * Query parameters are used for the filter in form of key-value pairs.
+     *
+     * @param info      The URL query parameters.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @GET
     @Produces("text/json")
     public Response filter(
@@ -68,6 +86,13 @@ public class LOrtService
         }
     }
 
+    /**
+     * Update LOrt objects.
+     *
+     * @param ort       The LOrt object to update.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @PUT
     @Path("/{id}")
     @Produces("text/json")
@@ -88,6 +113,13 @@ public class LOrtService
         }
     }
 
+    /**
+     * Create a new LOrt object.
+     *
+     * @param ort       The new LOrt object.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @POST
     @Produces("text/json")
     @Consumes("application/json")

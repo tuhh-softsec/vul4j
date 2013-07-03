@@ -18,7 +18,7 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SMessEinheit;
 
 /**
- * This class produces a RESTful service to read the contents of SDatenbasis table.
+ * This class produces a RESTful service to read SMesseinheit objects.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -33,6 +33,9 @@ public class SMesseinheitService
     @Named("readonlyrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -44,9 +47,10 @@ public class SMesseinheitService
     private Logger logger;
 
     /**
-     * Request all SDatenbasis objects.
+     * Request all SMesseinheit objects.
      *
-     * @return JSON Object via Rest service
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")

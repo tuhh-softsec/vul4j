@@ -29,8 +29,9 @@ import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 
 /**
-* This class produces a RESTful service to read the contents of LProbe table.
-* 
+* This class produces a RESTful service to read, write and update
+* LProbe objects.
+*
 * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
 */
 @Path("/proben")
@@ -45,20 +46,24 @@ public class LProbeService {
     private Repository repository;
 
     /**
-     * The logger for this class.
+     * The authorization module.
      */
-    @Inject
-    private Logger log;
-
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
 
     /**
+     * The logger for this class.
+     */
+    @Inject
+    private Logger log;
+
+    /**
      * Request a LProbe via its id.
      *
-     * @param id The LProbe id
-     * @return JSON Object via REST service.
+     * @param id        The LProbe id
+     * @param header    THe HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Path("/{id}")
@@ -102,8 +107,9 @@ public class LProbeService {
      *   uwb=$UWBID (String)
      *   begin=$PROBEENTNAHMEBEGIN (Timestamp)
      *
-     * @param info The URL query parameters.
-     * @return JSON Object via Rest service.
+     * @param info      The URL query parameters.
+     * @param header    The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -155,6 +161,13 @@ public class LProbeService {
         }
     }
 
+    /**
+     * Update a LProbe object.
+     *
+     * @param probe     A LProbeInfo object wrapping the LProbe object.
+     * @param header    The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @PUT
     @Path("/{id}")
     @Produces("text/json")
@@ -171,6 +184,12 @@ public class LProbeService {
         }
     }
 
+    /**
+     * Create a new LProbe object.
+     * @param probe     A LProbeInfo object wrapping the LProbe object.
+     * @param header    The HTTP header containing authorization information.
+     * @return Response object.
+     */
     @POST
     @Produces("text/json")
     @Consumes("application/json")

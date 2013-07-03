@@ -18,8 +18,7 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SVerwaltungseinheit;
 
 /**
- * This class produces a RESTful service to read the contents of
- * s_verwaltungseinheit table.
+ * This class produces a RESTful service to read SVerwaltungseinheit objects.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -34,6 +33,9 @@ public class SVerwaltungseinheitService
     @Named("readonlyrepository")
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
@@ -41,7 +43,8 @@ public class SVerwaltungseinheitService
     /**
      * Request all SUmwelt objects.
      *
-     * @return JSON Object via Rest service
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Produces("text/json")
@@ -60,8 +63,9 @@ public class SVerwaltungseinheitService
     /**
      * Request a SUmwelt object via its id.
      *
-     * @param id The SUmwelt id
-     * @return JSON Object via REST service.
+     * @param id        The object id.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
      */
     @GET
     @Path("/{id:[0-9][0-9]*}")
