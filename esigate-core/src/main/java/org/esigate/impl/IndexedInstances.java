@@ -33,7 +33,7 @@ import org.esigate.Driver;
  * @author Nicolas Richeton
  */
 public class IndexedInstances {
-	private Map<String, Driver> instances;
+	private final Map<String, Driver> instances;
 	private final Map<UriMapping, String> uriMappings;
 
 	public IndexedInstances(Map<String, Driver> instances) {
