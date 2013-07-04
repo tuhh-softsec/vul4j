@@ -1,6 +1,7 @@
 package de.intevation.lada.rest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -103,7 +104,9 @@ public class LMessungService
     ) {
         try {
             String probeId = messung.getProbeId();
-            if (authentication.hasAccess(headers, probeId)) {
+            int messungsId = messung.getId().getMessungsId();
+            if (authentication.hasAccess(headers, probeId) &&
+                !isReadOnly(probeId, messungsId)) {
                 return repository.update(messung);
             }
             return new Response(false, 698, new ArrayList<LMessung>());
@@ -137,5 +140,23 @@ public class LMessungService
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LMessung>());
         }
+    }
+
+    private boolean isReadOnly(String probeId, Integer messungsId) {
+        QueryBuilder<LMessung> builder =
+            new QueryBuilder<LMessung>(
+                repository.getEntityManager(),
+                LMessung.class);
+        builder.and("probeId", probeId)
+            .and("messungsId", String.valueOf(messungsId));
+        Response response = repository.filter(builder.getQuery());
+        List<LMessung> messungen = (List<LMessung>) response.getData();
+        if (messungen.isEmpty()) {
+            return true;
+        }
+        if (messungen.size() > 1) {
+            return true;
+        }
+        return messungen.get(0).isFertig();
     }
 }

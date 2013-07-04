@@ -1,6 +1,7 @@
 package de.intevation.lada.rest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -20,6 +21,7 @@ import de.intevation.lada.authentication.Authentication;
 import de.intevation.lada.authentication.AuthenticationException;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
+import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LMesswert;
 
 /**
@@ -38,6 +40,10 @@ public class LMesswertService
     @Inject
     @Named("lmesswertrepository")
     private Repository repository;
+
+    @Inject
+    @Named("lmessungrepository")
+    private Repository messungRepository;
 
     /**
      * The authorization module.
@@ -103,7 +109,9 @@ public class LMesswertService
     ) {
         try {
             String probeId = messwert.getProbeId();
-            if (authentication.hasAccess(headers, probeId)) {
+            Integer messungsId = messwert.getMessungsId();
+            if (authentication.hasAccess(headers, probeId) &&
+                !isReadOnly(probeId, messungsId)) {
                 return repository.update(messwert);
             }
             return new Response(false, 698, new ArrayList<LMesswert>());
@@ -129,7 +137,9 @@ public class LMesswertService
     ) {
         try {
             String probeId = messwert.getProbeId();
-            if (authentication.hasAccess(headers, probeId)) {
+            Integer messungsId = messwert.getMessungsId();
+            if (authentication.hasAccess(headers, probeId) &&
+                !isReadOnly(probeId, messungsId)) {
                 return repository.create(messwert);
             }
             return new Response(false, 698, new ArrayList<LMesswert>());
@@ -137,5 +147,23 @@ public class LMesswertService
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LMesswert>());
         }
+    }
+
+    private boolean isReadOnly(String probeId, Integer messungsId) {
+        QueryBuilder<LMessung> builder =
+            new QueryBuilder<LMessung>(
+                messungRepository.getEntityManager(),
+                LMessung.class);
+        builder.and("probeId", probeId)
+            .and("messungsId", String.valueOf(messungsId));
+        Response response = messungRepository.filter(builder.getQuery());
+        List<LMessung> messungen = (List<LMessung>) response.getData();
+        if (messungen.isEmpty()) {
+            return true;
+        }
+        if (messungen.size() > 1) {
+            return true;
+        }
+        return messungen.get(0).isFertig();
     }
 }
