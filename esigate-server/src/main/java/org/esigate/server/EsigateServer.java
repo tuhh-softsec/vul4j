@@ -33,7 +33,9 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.esigate.server.metrics.InstrumentedServerConnector;
 
-import com.yammer.metrics.jetty.InstrumentedQueuedThreadPool;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jetty9.InstrumentedHandler;
+import com.codahale.metrics.jetty9.InstrumentedQueuedThreadPool;
 
 /**
  * The bootstrap code for esigate-server, using jetty.
@@ -100,6 +102,7 @@ public class EsigateServer {
 		try {
 			configFile = System.getProperty(PROPERTY_PREFIX + "config", "server.properties");
 			System.out.println("Loading server configuration from " + configFile);
+			//TODO: auto prefix. No prefix in server.properties
 			System.getProperties().load(new FileInputStream(configFile));
 		} catch (FileNotFoundException e) {
 			System.out.println(configFile + " not found.");
@@ -162,9 +165,13 @@ public class EsigateServer {
 
 	/**
 	 * Create and start server.
+	 * 
+	 * @throws Exception
 	 */
-	private static void start() {
-		QueuedThreadPool threadPool = new InstrumentedQueuedThreadPool();
+	private static void start() throws Exception {
+		MetricRegistry registry = new MetricRegistry();
+		QueuedThreadPool threadPool = new InstrumentedQueuedThreadPool(registry);
+
 		threadPool.setMaxThreads(maxThreads);
 		threadPool.setMinThreads(minThreads);
 
@@ -177,49 +184,47 @@ public class EsigateServer {
 		http_config.setOutputBufferSize(outputBufferSize);
 		http_config.setSendServerVersion(false);
 
-		try (ServerConnector connector = new InstrumentedServerConnector("main", EsigateServer.port, srv,
+		ServerConnector connector = new InstrumentedServerConnector("main", EsigateServer.port, srv, registry,
 				new HttpConnectionFactory(http_config));
-				ServerConnector controlConnector = new InstrumentedServerConnector("control",
-						EsigateServer.controlPort, srv);) {
+		ServerConnector controlConnector = new InstrumentedServerConnector("control", EsigateServer.controlPort, srv,
+				registry);
 
-			// Main connector
-			connector.setIdleTimeout(EsigateServer.idleTimeout);
-			connector.setSoLingerTime(-1);
+		// Main connector
+		connector.setIdleTimeout(EsigateServer.idleTimeout);
+		connector.setSoLingerTime(-1);
 
-			// Control connector
-			controlConnector.setHost("127.0.0.1");
+		// Control connector
+		controlConnector.setHost("127.0.0.1");
 
-			srv.setConnectors(new Connector[] { connector, controlConnector });
-			// War
-			ProtectionDomain protectionDomain = EsigateServer.class.getProtectionDomain();
-			String warFile = protectionDomain.getCodeSource().getLocation().toExternalForm();
-			String currentDir = new File(protectionDomain.getCodeSource().getLocation().getPath()).getParent();
+		srv.setConnectors(new Connector[] { connector, controlConnector });
+		// War
+		ProtectionDomain protectionDomain = EsigateServer.class.getProtectionDomain();
+		String warFile = protectionDomain.getCodeSource().getLocation().toExternalForm();
+		String currentDir = new File(protectionDomain.getCodeSource().getLocation().getPath()).getParent();
 
-			WebAppContext context = new WebAppContext(warFile, EsigateServer.contextPath);
-			context.setServer(srv);
+		WebAppContext context = new WebAppContext(warFile, EsigateServer.contextPath);
+		context.setServer(srv);
 
-			// Add extra classpath (allows to add extensions).
-			if (EsigateServer.extraClasspath != null) {
-				context.setExtraClasspath(EsigateServer.extraClasspath);
-			}
-			resetTempDirectory(context, currentDir);
-
-			// Add the handlers
-			HandlerCollection handlers = new HandlerList();
-			// control handler must be the first one.
-			// Work in progress, currently disabled.
-			// handlers.addHandler(new ControlHandler());
-			handlers.addHandler(context);
-			srv.setHandler(handlers);
-
-			srv.start();
-			srv.join();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(-1);
+		// Add extra classpath (allows to add extensions).
+		if (EsigateServer.extraClasspath != null) {
+			context.setExtraClasspath(EsigateServer.extraClasspath);
 		}
+		resetTempDirectory(context, currentDir);
 
-		System.exit(0);
+		// Add the handlers
+		HandlerCollection handlers = new HandlerList();
+		// control handler must be the first one.
+		// Work in progress, currently disabled.
+		handlers.addHandler(new ControlHandler(registry));
+		InstrumentedHandler ih = new InstrumentedHandler(registry);
+		ih.setHandler(context);
+		handlers.addHandler(ih);
+
+		srv.setHandler(handlers);
+
+		srv.start();
+		srv.join();
+
 	}
 
 	/**
