@@ -27,7 +27,7 @@ import de.intevation.lada.model.SStaat;
 public class SStaatService
 {
     /**
-     * The Repository for SUmwelt.
+     * The Repository for SStaat.
      */
     @Inject
     @Named("readonlyrepository")

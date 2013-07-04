@@ -18,8 +18,8 @@ import de.intevation.lada.model.LStatus;
 import de.intevation.lada.rest.Response;
 
 /**
- * This Container is an interface to request, filter and select LMesswert
- * obejcts from the connected database.
+ * This Container is an interface to read, write and update LStatus
+ * objects from the connected database.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -34,7 +34,7 @@ public class LStatusRepository implements Repository
     private EntityManager em;
 
     /**
-     * Manager class for LPRobe. Used to manipulate data objects.
+     * The data manager providing database operations.
      */
     @Inject
     @Named("datamanager")
@@ -47,8 +47,8 @@ public class LStatusRepository implements Repository
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria
-     * @return List of objects.
+     * @param criteria  The query filter.
+     * @return Response object.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {
         List<T> result = em.createQuery(filter).getResultList();
@@ -59,8 +59,8 @@ public class LStatusRepository implements Repository
     /**
      * Get all objects of type <link>clazz</link>from database.
      *
-     * @param clazz The class type.
-     * @return List of objects.
+     * @param clazz     The object type.
+     * @return Response object.
      */
     public <T> Response findAll(Class<T> clazz) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -74,9 +74,9 @@ public class LStatusRepository implements Repository
     /**
      * Find a single object identified by its id.
      * 
-     * @param clazz The class type.
-     * @param id The object id.
-     * @return The requested object of type clazz
+     * @param clazz The object type.
+     * @param id    The object id.
+     * @return Response object.
      */
     public <T> Response findById(Class<T> clazz, String id) {
         T item = em.find(clazz, id);
@@ -86,13 +86,18 @@ public class LStatusRepository implements Repository
         return new Response(true, 200, item);
     }
 
+    /**
+     * Create a new LStatus object.
+     *
+     * @param object    The new object.
+     * @return Response object.
+     */
     public Response create(Object object) {
         if (!(object instanceof LStatus)) {
             return new Response(false, 602, object);
         }
         LStatus status = (LStatus)object;
         Response response = new Response(true, 200, status);
-        // Try to save the new LProbe.
         try {
             manager.create(status);
             return response;
@@ -116,6 +121,12 @@ public class LStatusRepository implements Repository
         return response;
     }
 
+    /**
+     * Update a Lstatus object.
+     *
+     * @param object    The object to update.
+     * @return Response object.
+     */
     public Response update(Object object) {
         if (!(object instanceof LStatus)) {
             return new Response(false, 602, object);
@@ -145,6 +156,11 @@ public class LStatusRepository implements Repository
         return response;
     }
 
+    /**
+     * This class does not support this operation.
+     *
+     * @param object
+     */
     public Response delete(Object object) {
         return null;
     }

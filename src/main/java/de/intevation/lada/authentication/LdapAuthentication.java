@@ -189,5 +189,4 @@ implements Authentication
         response.setNetzbetreiber(nb);
         return response;
     }
-
 }

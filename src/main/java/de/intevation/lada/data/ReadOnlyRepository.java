@@ -12,6 +12,11 @@ import javax.persistence.criteria.Root;
 
 import de.intevation.lada.rest.Response;
 
+/**
+ * Repository that allows read only access to model objects.
+ * 
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @ApplicationScoped
 @Named("readonlyrepository")
 public class ReadOnlyRepository implements Repository
@@ -29,8 +34,8 @@ public class ReadOnlyRepository implements Repository
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria
-     * @return List of objects.
+     * @param criteria  The filter query.
+     * @return Response object.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {
         List<T> result = em.createQuery(filter).getResultList();
@@ -40,8 +45,8 @@ public class ReadOnlyRepository implements Repository
     /**
      * Get all objects of type <link>clazz</link>from database.
      *
-     * @param clazz The class type.
-     * @return List of objects.
+     * @param clazz     The object type.
+     * @return Response object.
      */
     public <T> Response findAll(Class<T> clazz) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -55,9 +60,9 @@ public class ReadOnlyRepository implements Repository
     /**
      * Find a single object identified by its id.
      * 
-     * @param clazz The class type.
-     * @param id The object id.
-     * @return The requested object of type clazz
+     * @param clazz     The object type.
+     * @param id        The object id.
+     * @return Response object.
      */
     public <T> Response findById(Class<T> clazz, String id) {
         T item = em.find(clazz, id);
@@ -67,14 +72,29 @@ public class ReadOnlyRepository implements Repository
         return new Response(true, 200, item);
     }
 
+    /**
+     * This class does not support this operation.
+     *
+     * @param object
+     */
     public Response create(Object object) {
         return null;
     }
 
+    /**
+     * This class does not support this operation.
+     *
+     * @param object
+     */
     public Response update(Object object) {
         return null;
     }
 
+    /**
+     * This class does not support this operation.
+     *
+     * @param object
+     */
     public Response delete(Object object) {
         return null;
     }
