@@ -25,6 +25,7 @@ import de.intevation.lada.authentication.AuthenticationException;
 import de.intevation.lada.authentication.AuthenticationResponse;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
+import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 
@@ -44,6 +45,10 @@ public class LProbeService {
     @Inject
     @Named("lproberepository")
     private Repository repository;
+
+    @Inject
+    @Named("lmessungrepository")
+    private Repository messungRepository;
 
     /**
      * The authorization module.
@@ -85,7 +90,7 @@ public class LProbeService {
             String mstId = probe.get(0).getMstId();
             if (auth.getNetzbetreiber().contains(nbId)) {
                 if (auth.getMst().contains(mstId)) {
-                    //TODO: Test if probe has a messung that has status 'ready'.
+                    response.setReadonly(isReadOnly(id));
                     return response;
                 }
                 response.setReadonly(true);
@@ -207,5 +212,29 @@ public class LProbeService {
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LProbeInfo>());
         }
+    }
+
+    /**
+     * Determine if the LProbe identified by probeId is writeable for the user.
+     *
+     * @param probeId   The probe id.
+     */
+    public boolean isReadOnly(String probeId) {
+        QueryBuilder<LMessung> builder =
+            new QueryBuilder<LMessung>(
+                repository.getEntityManager(),
+                LMessung.class);
+        builder.and("probeId", probeId);
+        Response response = messungRepository.filter(builder.getQuery());
+        List<LMessung> messungen = (List<LMessung>) response.getData();
+        if (messungen.isEmpty()) {
+            return false;
+        }
+        for(LMessung messung : messungen) {
+            if (messung.isFertig()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -15,7 +15,4 @@ public interface Authentication
 
     public boolean hasAccess(HttpHeaders headers, String probeId)
     throws AuthenticationException;
-
-    public boolean isReadOnly(HttpHeaders headers, String probeId)
-    throws AuthenticationException;
 }

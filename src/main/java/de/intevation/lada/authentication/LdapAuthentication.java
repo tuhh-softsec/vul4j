@@ -17,8 +17,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.omg.PortableServer.LifespanPolicyOperations;
+
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.model.Auth;
+import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 
@@ -107,16 +110,6 @@ implements Authentication
         return false;
     }
 
-    /**
-     * Determine if the LProbe identified by probeId is writeable for the user.
-     *
-     * @param headers   The HTTP header containing LDAP user information.
-     * @param probeId   The probe id.
-     */
-    public boolean isReadOnly(HttpHeaders headers, String probeId) {
-        //TODO: test if probe has messung with status 'fertig'.
-        return false;
-    }
 
     /**
      * Get the user from HTTP header.
