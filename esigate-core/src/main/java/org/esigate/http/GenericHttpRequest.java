@@ -22,6 +22,12 @@ import org.apache.http.client.methods.Configurable;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicRequestLine;
 
+/**
+ * Allows request line / uri modification after request creation. 
+ * 
+ * @author fxbonnet
+ *
+ */
 public class GenericHttpRequest extends BasicHttpEntityEnclosingRequest implements Configurable {
 
 	private RequestLine requestLine;
