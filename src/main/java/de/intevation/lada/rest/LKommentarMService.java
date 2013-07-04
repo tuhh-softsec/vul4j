@@ -96,6 +96,7 @@ public class LKommentarMService
      * @return Response object.
      */
     @PUT
+    @Path("/{kId}/{messungsId}/{probeId}")
     @Produces("text/json")
     @Consumes("application/json")
     public Response update(
