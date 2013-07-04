@@ -21,8 +21,7 @@ import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
 /**
- * This Container is an interface to request, filter and select LMessung
- * obejcts from the connected database.
+ * This Container is an interface to read, write and update LMessung obejcts.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -37,12 +36,15 @@ public class LMessungRepository implements Repository
     private EntityManager em;
 
     /**
-     * Manager class for LPRobe. Used to manipulate data objects.
+     * The data manager providing database operations.
      */
     @Inject
     @Named("datamanager")
     private Manager manager;
 
+    /**
+     * The validator used for LMessung objects.
+     */
     @Inject
     @Named("lmessungvalidator")
     private Validator validator;
@@ -54,8 +56,8 @@ public class LMessungRepository implements Repository
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria
-     * @return List of objects.
+     * @param criteria  The query filter.
+     * @return Response opbject.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {
         List<T> result = em.createQuery(filter).getResultList();
@@ -66,8 +68,8 @@ public class LMessungRepository implements Repository
     /**
      * Get all objects of type <link>clazz</link>from database.
      *
-     * @param clazz The class type.
-     * @return List of objects.
+     * @param clazz The object type.
+     * @return Response object.
      */
     public <T> Response findAll(Class<T> clazz) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -81,9 +83,9 @@ public class LMessungRepository implements Repository
     /**
      * Find a single object identified by its id.
      * 
-     * @param clazz The class type.
-     * @param id The object id.
-     * @return The requested object of type clazz
+     * @param clazz The object type.
+     * @param id    The object id.
+     * @return Response object.
      */
     public <T> Response findById(Class<T> clazz, String id) {
         T item = em.find(clazz, id);
@@ -94,10 +96,10 @@ public class LMessungRepository implements Repository
     }
 
     /**
-     * Validate and persist a new LProbe object.
+     * Validate and persist a new LMessung object.
      *
-     * @param probe The new LProbe object
-     * @return Response.
+     * @param probe The new object
+     * @return Response object.
      */
     public Response create(Object object) {
         if (!(object instanceof LMessung)) {
@@ -105,7 +107,6 @@ public class LMessungRepository implements Repository
         }
         LMessung messung = (LMessung)object;
         Response response = new Response(true, 200, messung);
-        // Try to save the new LMessung.
         try {
             Map<String, Integer> warnings = validator.validate(messung);
             manager.create(messung);
@@ -137,6 +138,12 @@ public class LMessungRepository implements Repository
         return response;
     }
 
+    /**
+     * Update a LMessung object.
+     *
+     * @param object    The object to update
+     * @return Response object.
+     */
     public Response update(Object object) {
         if (!(object instanceof LMessung)) {
             return new Response(false, 602, object);
@@ -175,9 +182,12 @@ public class LMessungRepository implements Repository
         return response;
     }
 
-    @Override
+    /**
+     * This class does not support this operation.
+     *
+     * @param object
+     */
     public Response delete(Object object) {
-        // TODO Auto-generated method stub
         return null;
     }
 }

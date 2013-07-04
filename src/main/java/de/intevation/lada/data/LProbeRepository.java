@@ -20,8 +20,7 @@ import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
 /**
- * This Container is an interface to request, filter and select LProbe
- * obejcts from the connected database.
+ * This Container is an interface to read, write and update LProbe objects.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -35,12 +34,15 @@ public class LProbeRepository implements Repository{
     private EntityManager em;
 
     /**
-     * Manager class for LPRobe. Used to manipulate data objects.
+     * The data manager providing database operations.
      */
     @Inject
     @Named("datamanager")
     private Manager manager;
 
+    /**
+     * The validator used for LProbe objects.
+     */
     @Inject
     @Named("lprobevalidator")
     private Validator validator;
@@ -48,17 +50,24 @@ public class LProbeRepository implements Repository{
     public EntityManager getEntityManager() {
         return this.em;
     }
+
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria
-     * @return List of objects.
+     * @param criteria  The query filter
+     * @return Response object.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {
         List<T> result = em.createQuery(filter).getResultList();
         return new Response(true, 200, result);
     }
 
+    /**
+     * Get all objects.
+     *
+     * @param clazz The object type. (unused)
+     * @return Response object.
+     */
     public <T> Response findAll(Class<T> clazz) {
         QueryBuilder<LProbeInfo> builder =
             new QueryBuilder<LProbeInfo>(this.getEntityManager(), LProbeInfo.class);
@@ -66,6 +75,13 @@ public class LProbeRepository implements Repository{
         return filter(builder.getQuery());
     }
 
+    /**
+     * Find object identified by its id.
+     *
+     * @param clazz The object type.(unused)
+     * @param id    The object id.
+     * @return Response object.
+     */
     public <T> Response findById(Class<T> clazz, String id) {
         QueryBuilder<LProbeInfo> builder =
             new QueryBuilder<LProbeInfo>(this.getEntityManager(), LProbeInfo.class);
@@ -118,13 +134,18 @@ public class LProbeRepository implements Repository{
         return response;
     }
 
+    /**
+     * Validate and update a LProbe object.
+     *
+     * @param object    The object to update.
+     * @return Response object.
+     */
     public Response update(Object object) {
         if (!(object instanceof LProbe)) {
             return new Response(false, 602, object);
         }
         LProbe probe = (LProbe)object;
         Response response = new Response(true, 200, probe);
-        // Try to save the new LProbe.
         try {
             Map<String, Integer> warnings = validator.validate(probe);
             manager.update(probe);
@@ -156,7 +177,11 @@ public class LProbeRepository implements Repository{
         return response;
     }
 
-    @Override
+    /**
+     * This class does not support this operation.
+     *
+     * @param object
+     */
     public Response delete(Object object) {
         return null;
     }

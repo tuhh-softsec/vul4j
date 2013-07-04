@@ -18,6 +18,11 @@ import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LKommentarP;
 import de.intevation.lada.rest.Response;
 
+/**
+ * This Container is an interface to read, write and update LKommentarP objects.
+ * 
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @ApplicationScoped
 @Named("lkommentarRepository")
 public class LKommentarPRepository implements Repository
@@ -28,10 +33,16 @@ public class LKommentarPRepository implements Repository
     @Inject
     private EntityManager em;
 
+    /**
+     * The data manager providing database operations.
+     */
     @Inject
     @Named("datamanager")
     private Manager manager;
 
+    /**
+     * The logger for this class.
+     */
     @Inject
     private Logger logger;
 
@@ -42,8 +53,8 @@ public class LKommentarPRepository implements Repository
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria
-     * @return List of objects.
+     * @param criteria  The query filter.
+     * @return Response object.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {
         List<T> result = em.createQuery(filter).getResultList();
@@ -54,34 +65,39 @@ public class LKommentarPRepository implements Repository
     /**
      * Get all objects of type <link>clazz</link>from database.
      *
-    * @param clazz The class type.
-    * @return List of objects.
-    */
-   public <T> Response findAll(Class<T> clazz) {
-       CriteriaBuilder builder = em.getCriteriaBuilder();
-       CriteriaQuery<T> criteria = builder.createQuery(clazz);
-       Root<T> member = criteria.from(clazz);
-       criteria.select(member);
-       List<T> result = em.createQuery(criteria).getResultList();
-       return new Response(true, 200, result);
-   }
+     * @param clazz The object type.
+     * @return Response object.
+     */
+    public <T> Response findAll(Class<T> clazz) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<T> criteria = builder.createQuery(clazz);
+        Root<T> member = criteria.from(clazz);
+        criteria.select(member);
+        List<T> result = em.createQuery(criteria).getResultList();
+        return new Response(true, 200, result);
+    }
 
-   /**
-    * Find a single object identified by its id.
-    * 
-    * @param clazz The class type.
-    * @param id The object id.
-    * @return The requested object of type clazz
-    */
-   public <T> Response findById(Class<T> clazz, String id) {
-       T item = em.find(clazz, id);
-       if (item == null) {
-           return new Response(false, 600, null);
-       }
-       return new Response(true, 200, item);
-   }
+    /**
+     * Find a single object identified by its id.
+     * 
+     * @param clazz The object type.
+     * @param id    The object id.
+     * @return Response object.
+     */
+    public <T> Response findById(Class<T> clazz, String id) {
+        T item = em.find(clazz, id);
+        if (item == null) {
+            return new Response(false, 600, null);
+        }
+        return new Response(true, 200, item);
+    }
 
-
+    /**
+     * Create a new LKommentarP object.
+     *
+     * @param object    The new object.
+     * @return Response object.
+     */
     public Response create(Object object) {
         if (!(object instanceof LKommentarP)) {
             return new Response(false, 602, object);
@@ -111,6 +127,12 @@ public class LKommentarPRepository implements Repository
         return response;
     }
 
+    /**
+     * Update a LKommentarP object.
+     *
+     * @param object    The object to update.
+     * @return Response object.
+     */
     public Response update(Object object) {
         if (!(object instanceof LKommentarP)) {
             return new Response(false, 602, object);
@@ -140,6 +162,12 @@ public class LKommentarPRepository implements Repository
         return response;
     }
 
+    /**
+     * Delete a LKommentarP object.
+     *
+     * @param object    The object to delete.
+     * @return Response object.
+     */
     public Response delete(Object object) {
         if (!(object instanceof LKommentarP)) {
             return new Response(false, 602, null);

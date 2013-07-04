@@ -17,6 +17,11 @@ import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.Ort;
 import de.intevation.lada.rest.Response;
 
+/**
+ * Repository that allows read, write and update operations on 'Ort' objects.
+ * 
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @ApplicationScoped
 @Named("ortrepository")
 public class OrtRepository implements Repository
@@ -27,6 +32,9 @@ public class OrtRepository implements Repository
     @Inject
     private EntityManager em;
 
+    /**
+     * THe data manager providing database operations.
+     */
     @Inject
     @Named("datamanager")
     private Manager manager;
@@ -38,8 +46,8 @@ public class OrtRepository implements Repository
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria
-     * @return List of objects.
+     * @param criteria  The query filter.
+     * @return Response object.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {
         List<T> result = em.createQuery(filter).getResultList();
@@ -50,8 +58,8 @@ public class OrtRepository implements Repository
     /**
      * Get all objects of type <link>clazz</link>from database.
      *
-     * @param clazz The class type.
-     * @return List of objects.
+     * @param clazz The object type.
+     * @return Response object
      */
     public <T> Response findAll(Class<T> clazz) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -65,9 +73,9 @@ public class OrtRepository implements Repository
     /**
      * Find a single object identified by its id.
      * 
-     * @param clazz The class type.
-     * @param id The object id.
-     * @return The requested object of type clazz
+     * @param clazz     The object type.
+     * @param id        The object id.
+     * @return Response object.
      */
     public <T> Response findById(Class<T> clazz, String id) {
         T item = em.find(clazz, id);
@@ -77,6 +85,12 @@ public class OrtRepository implements Repository
         return new Response(true, 200, item);
     }
 
+    /**
+     * Create a new 'Ort' object.
+     *
+     * @param object    The new object.
+     * @return Response object.
+     */
     public Response create(Object object) {
         if (!(object instanceof Ort)) {
             return new Response(false, 602, object);
@@ -97,6 +111,12 @@ public class OrtRepository implements Repository
         }
     }
 
+    /**
+     * Update a 'Ort' object.
+     *
+     * @param object    The object to update.
+     * @return Response object.
+     */
     public Response update(Object object) {
         if (!(object instanceof Ort)) {
             return new Response(false, 602, object);
@@ -126,6 +146,12 @@ public class OrtRepository implements Repository
         return response;
     }
 
+    /**
+     * Delete a 'Ort' object.
+     *
+     * @param object    The object to delete.
+     * @return Response object.
+     */
     public Response delete(Object object) {
         if (!(object instanceof Ort)) {
             return new Response(false, 602, null);

@@ -17,12 +17,17 @@ import de.intevation.lada.authentication.AuthenticationException;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SMessMethode;
 
+/**
+ * This class produces a RESTful service to read SMessMethode objects.
+ * 
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Path("/messmethode")
 @RequestScoped
 public class SMessMethodeService
 {
     /**
-     * The Repository for SUmwelt.
+     * The Repository for SMessMethode.
      */
     @Inject
     @Named("readonlyrepository")
@@ -36,7 +41,7 @@ public class SMessMethodeService
     private Authentication authentication;
 
     /**
-     * Request all SStaat objects.
+     * Request all SMessMethode objects.
      *
      * @param headers   The HTTP header containing authorization information.
      * @return Response object.
@@ -56,7 +61,7 @@ public class SMessMethodeService
     }
 
     /**
-     * Request a SStaat object via its id.
+     * Request a SMessMethode object via its id.
      *
      * @param id The object id.
      * @param headers   The HTTP header containing authorization information.

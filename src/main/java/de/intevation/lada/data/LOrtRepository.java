@@ -20,6 +20,11 @@ import de.intevation.lada.rest.Response;
 import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
+/**
+ * This Container is an interface to read, write and update LOrt objects.
+ * 
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @ApplicationScoped
 @Named("lortrepository")
 public class LOrtRepository implements Repository
@@ -30,10 +35,16 @@ public class LOrtRepository implements Repository
     @Inject
     private EntityManager em;
 
+    /**
+     * The validator used for LOrt objects.
+     */
     @Inject
     @Named("lortvalidator")
     private Validator validator;
 
+    /**
+     * The data manager providing database operations.
+     */
     @Inject
     @Named("datamanager")
     private Manager manager;
@@ -46,8 +57,8 @@ public class LOrtRepository implements Repository
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria
-     * @return List of objects.
+     * @param criteria  The query filter.
+     * @return Response object.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {
         List<T> result = em.createQuery(filter).getResultList();
@@ -57,8 +68,8 @@ public class LOrtRepository implements Repository
     /**
      * Get all objects of type <link>clazz</link>from database.
      *
-     * @param clazz The class type.
-     * @return List of objects.
+     * @param clazz The object type.
+     * @return Response object.
      */
     public <T> Response findAll(Class<T> clazz) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -72,9 +83,9 @@ public class LOrtRepository implements Repository
     /**
      * Find a single object identified by its id.
      *
-     * @param clazz The class type.
-     * @param id The object id.
-     * @return The requested object of type clazz
+     * @param clazz The object type.
+     * @param id    The object id.
+     * @return Response object.
      */
     public <T> Response findById(Class<T> clazz, String id) {
         T item = em.find(clazz, id);
@@ -85,10 +96,10 @@ public class LOrtRepository implements Repository
     }
 
     /**
-     * Validate and persist a new LProbe object.
+     * Validate and persist a new LOrt object.
      *
-     * @param probe The new LProbe object
-     * @return Response.
+     * @param object    The new object
+     * @return Response object.
      */
     public Response create(Object object) {
         if (!(object instanceof LOrt)) {
@@ -128,6 +139,12 @@ public class LOrtRepository implements Repository
         return response;
     }
 
+    /**
+     * Validate and update a LOrt object.
+     *
+     * @param object    The object to update.
+     * @return Response object.
+     */
     public Response update(Object object) {
         if (!(object instanceof LOrt)) {
             return new Response(false, 600, object);
@@ -166,9 +183,29 @@ public class LOrtRepository implements Repository
         return response;
     }
 
-    @Override
+    /**
+     * Delete a LOrt object.
+     *
+     * @param object    The object to delete.
+     * @return Response object.
+     */
     public Response delete(Object object) {
-        // TODO Auto-generated method stub
-        return null;
+        if (!(object instanceof LOrt)) {
+            return new Response(false, 602, null);
+        }
+        LOrt ort = (LOrt)object;
+        Response response = new Response(true, 200, null);
+        try {
+            manager.delete(ort);
+        }
+        catch (IllegalArgumentException iae) {
+            response.setSuccess(false);
+            response.setMessage(602);
+        }
+        catch (TransactionRequiredException tre) {
+            response.setSuccess(false);
+            response.setMessage(603);
+        }
+        return response;
     }
 }
