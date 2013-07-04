@@ -168,7 +168,22 @@ public class LOrtRepository implements Repository
 
     @Override
     public Response delete(Object object) {
-        // TODO Auto-generated method stub
-        return null;
+        if (!(object instanceof LOrt)) {
+            return new Response(false, 602, null);
+        }
+        LOrt ort = (LOrt)object;
+        Response response = new Response(true, 200, null);
+        try {
+            manager.delete(ort);
+        }
+        catch (IllegalArgumentException iae) {
+            response.setSuccess(false);
+            response.setMessage(602);
+        }
+        catch (TransactionRequiredException tre) {
+            response.setSuccess(false);
+            response.setMessage(603);
+        }
+        return response;
     }
 }

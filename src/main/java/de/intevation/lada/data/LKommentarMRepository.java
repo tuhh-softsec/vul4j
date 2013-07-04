@@ -147,7 +147,22 @@ public class LKommentarMRepository implements Repository
 
     @Override
     public Response delete(Object object) {
-        // TODO Auto-generated method stub
-        return null;
+        if (!(object instanceof LKommentarM)) {
+            return new Response(false, 602, null);
+        }
+        LKommentarM kommentar = (LKommentarM)object;
+        Response response = new Response(true, 200, null);
+        try {
+            manager.delete(kommentar);
+        }
+        catch (IllegalArgumentException iae) {
+            response.setSuccess(false);
+            response.setMessage(602);
+        }
+        catch (TransactionRequiredException tre) {
+            response.setSuccess(false);
+            response.setMessage(603);
+        }
+        return response;
     }
 }
