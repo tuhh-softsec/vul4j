@@ -26,8 +26,8 @@ public class LMesswert implements java.io.Serializable {
 	private LMesswertId id;
 	private String probeId;
 	private Integer messungsId;
-	private SMessEinheit SMessEinheit;
-	private SMessgroesse SMessgroesse;
+	private Integer mehId;
+	private Integer messgroesseId;
 	private String messwertNwg;
 	private float messwert;
 	private Float messfehler;
@@ -39,26 +39,26 @@ public class LMesswert implements java.io.Serializable {
 	}
 
 	public LMesswert(LMesswertId id, String probeId, Integer messungsId,
-	    SMessEinheit SMessEinheit, SMessgroesse SMessgroesse, float messwert
+	    Integer mehId, Integer messgroesseId, float messwert
 	) {
 		this.id = id;
 		this.probeId = probeId;
 		this.messungsId = messungsId;
-		this.SMessEinheit = SMessEinheit;
-		this.SMessgroesse = SMessgroesse;
+		this.mehId = mehId;
+		this.messgroesseId = messgroesseId;
 		this.messwert = messwert;
 	}
 
 	public LMesswert(LMesswertId id, String probeId, Integer messungsId,
-	    SMessEinheit SMessEinheit, SMessgroesse SMessgroesse, String messwertNwg,
+	    Integer mehId, Integer messgroesseId, String messwertNwg,
 		float messwert, Float messfehler, Float nwgZuMesswert,
 		Boolean grenzwertueberschreitung, Date letzteAenderung
 	) {
 		this.id = id;
 		this.probeId = probeId;
 		this.messungsId = messungsId;
-		this.SMessEinheit = SMessEinheit;
-		this.SMessgroesse = SMessgroesse;
+		this.mehId = mehId;
+		this.messgroesseId = messgroesseId;
 		this.messwertNwg = messwertNwg;
 		this.messwert = messwert;
 		this.messfehler = messfehler;
@@ -98,24 +98,22 @@ public class LMesswert implements java.io.Serializable {
 	    this.messungsId = messungsId;
 	}
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "meh_id", nullable = false)
-	public SMessEinheit getSMessEinheit() {
-		return this.SMessEinheit;
+	@Column(name = "meh_id", nullable = false)
+	public Integer getMehId() {
+		return this.mehId;
 	}
 
-	public void setSMessEinheit(SMessEinheit SMessEinheit) {
-		this.SMessEinheit = SMessEinheit;
+	public void setMehId(Integer mehId) {
+	    this.mehId = mehId;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "messgroesse_id", nullable = false, insertable = false, updatable = false)
-	public SMessgroesse getSMessgroesse() {
-		return this.SMessgroesse;
+	@Column(name = "messgroesse_id", nullable = false, insertable = false, updatable = false)
+	public Integer getMessgroesseId() {
+		return this.messgroesseId;
 	}
 
-	public void setSMessgroesse(SMessgroesse SMessgroesse) {
-		this.SMessgroesse = SMessgroesse;
+	public void setMessgroesseId(Integer messgroesseId) {
+		this.messgroesseId = messgroesseId;
 	}
 
 	@Column(name = "messwert_nwg", length = 1)
