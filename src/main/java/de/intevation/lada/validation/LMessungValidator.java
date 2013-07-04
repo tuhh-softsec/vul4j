@@ -1,12 +1,18 @@
 package de.intevation.lada.validation;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
+import de.intevation.lada.data.QueryBuilder;
+import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMessung;
+import de.intevation.lada.model.LProbe;
+import de.intevation.lada.rest.Response;
 
 /**
  * Validator for LMessung objects.
@@ -18,6 +24,13 @@ import de.intevation.lada.model.LMessung;
 public class LMessungValidator
 implements Validator
 {
+    @Inject
+    @Named("lproberepository")
+    private Repository probeRepository;
+
+    @Inject
+    @Named("lmessungrepository")
+    private Repository messungRepository;
 
     @Override
     public Map<String, Integer> validate(Object object)
@@ -30,8 +43,54 @@ implements Validator
         }
         LMessung messung = (LMessung)object;
 
-        //TODO: mode validation, see LSB: VI - Konsistenzregeln.
+        validateNebenprobenNr(messung, warnings);
+        validateDatum(messung, warnings);
         return warnings;
     }
 
+    private void validateNebenprobenNr(
+        LMessung messung,
+        Map<String, Integer> warnings)
+    throws ValidationException {
+        if (messung.getNebenprobenNr() == null ||
+            messung.getNebenprobenNr().equals("")) {
+            warnings.put("nebenprobenNr", 631);
+        }
+        QueryBuilder<LMessung> builder =
+            new QueryBuilder<LMessung>(
+                messungRepository.getEntityManager(),
+                LMessung.class);
+        builder.and("probeId", messung.getProbeId());
+        Response response = messungRepository.filter(builder.getQuery());
+        List<LMessung> list = (List<LMessung>) response.getData();
+        if (list.isEmpty()) {
+            return;
+        }
+        for (LMessung m: list) {
+            if (m.getNebenprobenNr().equals(messung.getNebenprobenNr())) {
+                Map<String, Integer> errors = new HashMap<String, Integer>();
+                errors.put("nebenprobenNr", 611);
+                throw new ValidationException(errors);
+            }
+        }
+    }
+
+    private void validateDatum(
+        LMessung messung,
+        Map<String, Integer> warnings)
+    throws ValidationException{
+        String probeId = messung.getProbeId();
+        Response response = probeRepository.findById(LProbe.class, probeId);
+        @SuppressWarnings("unchecked")
+        List<LProbe> list = (List<LProbe>) response.getData();
+        if (list.isEmpty()) {
+            Map<String, Integer> errors = new HashMap<String, Integer>();
+            errors.put("lprobe", 604);
+            throw new ValidationException(errors);
+        }
+        LProbe probe = list.get(0);
+        if (probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt())) {
+            warnings.put("messzeitpunkt", 661);
+        }
+    }
 }

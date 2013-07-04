@@ -1,6 +1,7 @@
 package de.intevation.lada.data;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.ApplicationScoped;
@@ -16,6 +17,8 @@ import javax.persistence.criteria.Root;
 import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.rest.Response;
+import de.intevation.lada.validation.ValidationException;
+import de.intevation.lada.validation.Validator;
 
 /**
  * This Container is an interface to read, write and update LMesswert obejcts.
@@ -38,6 +41,13 @@ public class LMesswertRepository implements Repository
     @Inject
     @Named("datamanager")
     private Manager manager;
+
+    /**
+     * The validator used for LMesswert.
+     */
+    @Inject
+    @Named("lmesswertvalidator")
+    private Validator validator;
 
     public EntityManager getEntityManager() {
         return this.em;
@@ -97,7 +107,9 @@ public class LMesswertRepository implements Repository
         LMesswert messwert = (LMesswert)object;
         Response response = new Response(true, 200, messwert);
         try {
+            Map<String, Integer> warnings = validator.validate(messwert);
             manager.create(messwert);
+            response.setWarnings(warnings);
             return response;
         }
         catch (EntityExistsException eee) {
@@ -113,6 +125,10 @@ public class LMesswertRepository implements Repository
             response.setMessage(603);
         }
         catch (EJBTransactionRolledbackException te) {
+            response.setSuccess(false);
+            response.setMessage(604);
+        }
+        catch (ValidationException e) {
             response.setSuccess(false);
             response.setMessage(604);
         }
