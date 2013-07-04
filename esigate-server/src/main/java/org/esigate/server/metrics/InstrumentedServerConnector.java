@@ -24,10 +24,9 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.annotation.Name;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.Counter;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.MetricsRegistry;
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 
 public class InstrumentedServerConnector extends ServerConnector {
 	private Meter accepts, connects, disconnects;
@@ -43,33 +42,33 @@ public class InstrumentedServerConnector extends ServerConnector {
 	 * @param server
 	 *            Jetty server.
 	 */
-	public InstrumentedServerConnector(String id, int port, @Name("server") Server server) {
+	public InstrumentedServerConnector(String id, int port, @Name("server") Server server, MetricRegistry registry) {
 		super(server);
-		instrument(id, port, Metrics.defaultRegistry());
+		instrument(id, port,registry);
 	}
 
 	public InstrumentedServerConnector(String id, int port, @Name("server") Server server,
-			@Name("factories") ConnectionFactory... factories) {
+			 MetricRegistry registry, @Name("factories") ConnectionFactory... factories) {
 		super(server, factories);
-		instrument(id, port, Metrics.defaultRegistry());
+		instrument(id, port, registry);
 	}
 
 	public InstrumentedServerConnector(String id, int port, @Name("server") Server server,
-			@Name("sslContextFactory") SslContextFactory sslContextFactory) {
+			@Name("sslContextFactory") SslContextFactory sslContextFactory, MetricRegistry registry) {
 		super(server, sslContextFactory);
-		instrument(id, port, Metrics.defaultRegistry());
+		instrument(id, port, registry);
 	}
 
 	@Override
 	public void accept(int acceptorID) throws IOException {
 		super.accept(acceptorID);
-		this.accepts.mark();
+//		this.accepts.mark();
 	}
 
 	@Override
 	public void close() {
 		super.close();
-		this.disconnects.mark();
+//		this.disconnects.mark();
 		this.connections.dec();
 	}
 
@@ -80,22 +79,21 @@ public class InstrumentedServerConnector extends ServerConnector {
 	 * @param port
 	 * @param registry
 	 */
-	private void instrument(String id, int port, MetricsRegistry registry) {
+	private void instrument(String id, int port, MetricRegistry registry) {
 		this.setPort(port);
-		this.accepts = registry.newMeter(InstrumentedServerConnector.class, id + "-accepts",
-				Integer.toString(this.getPort()), "connections", TimeUnit.SECONDS);
-		this.connects = registry.newMeter(InstrumentedServerConnector.class, id + "-connects",
-				Integer.toString(this.getPort()), "connections", TimeUnit.SECONDS);
-		this.disconnects = registry.newMeter(InstrumentedServerConnector.class, id + "-disconnects",
-				Integer.toString(this.getPort()), "connections", TimeUnit.SECONDS);
-		this.connections = registry.newCounter(InstrumentedServerConnector.class, id + "-active-connections",
-				Integer.toString(this.getPort()));
+		this.accepts = registry.meter( id + "-accepts" );
+//		this.connects = registry.newMeter(InstrumentedServerConnector.class, id + "-connects",
+//				Integer.toString(this.getPort()), "connections", TimeUnit.SECONDS);
+//		this.disconnects = registry.newMeter(InstrumentedServerConnector.class, id + "-disconnects",
+//				Integer.toString(this.getPort()), "connections", TimeUnit.SECONDS);
+		this.connections = registry.counter( id + "-active-connections" );
+//				Integer.toString(this.getPort()));
 	}
 
 	@Override
 	public void open() throws IOException {
 		this.connections.inc();
 		super.open();
-		this.connects.mark();
+//		this.connects.mark();
 	}
 }

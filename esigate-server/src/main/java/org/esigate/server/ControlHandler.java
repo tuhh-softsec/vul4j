@@ -18,6 +18,7 @@ package org.esigate.server;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,15 +28,10 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.Counter;
-import com.yammer.metrics.core.Gauge;
-import com.yammer.metrics.core.Histogram;
-import com.yammer.metrics.core.Metered;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricProcessor;
-import com.yammer.metrics.core.Timer;
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Gauge;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 
 /**
  * Handle commands to the control port. Work in progress.
@@ -52,8 +48,14 @@ import com.yammer.metrics.core.Timer;
  */
 public class ControlHandler extends AbstractHandler {
 
+	private final MetricRegistry registry;
+
+	public ControlHandler(MetricRegistry registry) {
+		this.registry = registry;
+	}
+
 	private static boolean ensureCommand(Request serverRequest) {
-		return "POST".equals(serverRequest.getMethod());
+		return "GET".equals(serverRequest.getMethod());
 	}
 
 	private static boolean fromControlConnection(Request serverRequest) {
@@ -88,46 +90,20 @@ public class ControlHandler extends AbstractHandler {
 				case "/status":
 					response.setStatus(HttpServletResponse.SC_OK);
 
-					final MetricProcessor<Writer> p = new MetricProcessor<Writer>() {
-
-						@Override
-						public void processCounter(MetricName name, Counter counter, Writer context) throws Exception {
-							context.append(name.getName() + ": " + counter.count() + "\n");
-						}
-
-						@Override
-						public void processGauge(MetricName name, Gauge<?> gauge, Writer context) throws Exception {
-							context.append(name.getName() + ": " + gauge.value() + "\n");
-						}
-
-						@Override
-						public void processHistogram(MetricName name, Histogram histogram, Writer context)
-								throws Exception {
-							// Nothing to do
-						}
-
-						@Override
-						public void processMeter(MetricName name, Metered meter, Writer context) throws Exception {
-							context.append(name.getName() + ": " + meter.oneMinuteRate() + " per min\n");
-						}
-
-						@Override
-						public void processTimer(MetricName name, Timer timer, Writer context) throws Exception {
-							// Nothing to do
-						}
-
-					};
 					Writer sos = response.getWriter();
-					Map<MetricName, Metric> a = Metrics.defaultRegistry().allMetrics();
-					for (MetricName name : a.keySet()) {
+					Map<String, Counter> counters = registry.getCounters();
+					for (Entry<String, Counter> c : counters.entrySet()) {
+						sos.append(c.getKey() + " " + c.getValue().getCount() + "\n");
+					}
 
-						Metric metric = a.get(name);
-						try {
-							metric.processWith(p, name, sos);
-						} catch (Exception e) {
-							throw new ServletException(e);
-						}
+					Map<String, Meter> meters = registry.getMeters();
+					for (Entry<String, Meter> c : meters.entrySet()) {
+						sos.append(c.getKey() + " " + c.getValue().getCount() + "\n");
+					}
 
+					Map<String, Gauge> gauges = registry.getGauges();
+					for (Entry<String, Gauge> c : gauges.entrySet()) {
+						sos.append(c.getKey() + " " + c.getValue().getValue() + "\n");
 					}
 
 					break;
