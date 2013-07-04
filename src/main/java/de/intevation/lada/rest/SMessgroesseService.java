@@ -27,7 +27,7 @@ import de.intevation.lada.model.SMessgroesse;
 public class SMessgroesseService
 {
     /**
-     * The Repository for SMessMethode.
+     * The Repository for SMessgroesse.
      */
     @Inject
     @Named("readonlyrepository")
@@ -41,7 +41,7 @@ public class SMessgroesseService
     private Authentication authentication;
 
     /**
-     * Request all SMessMethode objects.
+     * Request all SMessgroesse objects.
      *
      * @param headers   The HTTP header containing authorization information.
      * @return Response object.
@@ -61,9 +61,9 @@ public class SMessgroesseService
     }
 
     /**
-     * Request a SMessMethode object via its id.
+     * Request a SMessgroesse object via its id.
      *
-     * @param id The object id.
+     * @param id        The object id.
      * @param headers   The HTTP header containing authorization information.
      * @return Response object.
      */
