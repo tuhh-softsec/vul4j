@@ -92,11 +92,11 @@ public class LProbeService {
             }
             String nbId = probe.get(0).getNetzbetreiberId();
             String mstId = probe.get(0).getMstId();
-            if (auth.getNetzbetreiber().contains(nbId)) {
+            if (auth.getNetzbetreiber().contains(nbId) ||
+                probe.get(0).getFertig()) {
                 if (auth.getMst().contains(mstId)) {
                     return response;
                 }
-                response.setReadonly(true);
                 return response;
             }
             return new Response(false, 698, new ArrayList<LProbe>());
