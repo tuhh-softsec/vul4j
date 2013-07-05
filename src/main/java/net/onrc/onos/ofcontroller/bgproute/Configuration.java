@@ -1,7 +1,6 @@
 package net.onrc.onos.ofcontroller.bgproute;
 
 import java.util.List;
-import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.openflow.util.HexString;
@@ -10,7 +9,7 @@ public class Configuration {
 	private long bgpdAttachmentDpid;
 	private short bgpdAttachmentPort;
 	private List<String> switches;
-	private Map<String, Interface> interfaces;
+	private List<Interface> interfaces;
 	private List<BgpPeer> peers;
 	//private Map<String, GatewayRouter> gateways;
 	
@@ -45,12 +44,12 @@ public class Configuration {
 		this.switches = switches;
 	}
 
-	public Map<String, Interface> getInterfaces() {
+	public List<Interface> getInterfaces() {
 		return interfaces;
 	}
 
 	@JsonProperty("interfaces")
-	public void setInterfaces(Map<String, Interface> interfaces) {
+	public void setInterfaces(List<Interface> interfaces) {
 		this.interfaces = interfaces;
 	}
 	

@@ -12,12 +12,22 @@ import org.openflow.util.HexString;
 import com.google.common.net.InetAddresses;
 
 public class Interface {
+	private String name;
 	private SwitchPort switchPort = null;
 	private long dpid;
 	private short port;
 	private InetAddress ipAddress;
 	private int prefixLength;
 	
+	public String getName() {
+		return name;
+	}
+
+	@JsonProperty("name")
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public synchronized SwitchPort getSwitchPort() {
 		if (switchPort == null){
 			switchPort = new SwitchPort(new Dpid(dpid), new Port(port));

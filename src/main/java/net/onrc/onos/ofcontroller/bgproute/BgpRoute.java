@@ -51,6 +51,7 @@ import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketOut;
+import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionDataLayerDestination;
@@ -75,7 +76,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected static Ptree ptree;
 	protected String bgpdRestIp;
 	protected String routerId;
-	protected String gatewaysFilename = "config.json";
+	protected String configFilename = "config.json";
 	
 	//We need to identify our flows somehow. But like it says in LearningSwitch.java,
 	//the controller/OS should hand out cookie IDs to prevent conflicts.
@@ -156,7 +157,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			Configuration config = mapper.readValue(gatewaysFile, Configuration.class);
 			
 			switches = config.getSwitches();
-			interfaces = config.getInterfaces();
+			interfaces = new HashMap<String, Interface>();
+			for (Interface intf : config.getInterfaces()){
+				interfaces.put(intf.getName(), intf);
+			}
 			bgpPeers = new HashMap<InetAddress, BgpPeer>();
 			for (BgpPeer peer : config.getPeers()){
 				bgpPeers.put(peer.getIpAddress(), peer);
@@ -246,7 +250,13 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			log.info("RouterId set to {}", routerId);
 		}
 		
-		readGatewaysConfiguration(gatewaysFilename);
+		String configFilenameParameter = context.getConfigParams(this).get("configfile");
+		if (configFilenameParameter != null){
+			configFilename = configFilenameParameter;
+		}
+		log.debug("Config file set to {}", configFilename);
+		
+		readGatewaysConfiguration(configFilename);
 		// Test.
 		//test();
 	}
@@ -572,6 +582,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
 	        .setCookie(MAC_RW_COOKIE)
 	        .setCommand(OFFlowMod.OFPFC_DELETE)
+	        .setOutPort(OFPort.OFPP_NONE)
 	        .setPriority(SDNIP_PRIORITY)
 	        .setLengthU(OFFlowMod.MINIMUM_LENGTH);
 	        		//+ OFActionDataLayerDestination.MINIMUM_LENGTH
@@ -630,9 +641,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		for (BgpPeer peer : bgpPeers.values()) {
 			Interface peerInterface = interfaces.get(peer.getInterfaceName());
-			for (Map.Entry<String, Interface> intfEntry : interfaces.entrySet()) {
-				Interface srcInterface = intfEntry.getValue();
-				if (peer.getInterfaceName().equals(intfEntry.getKey())){
+			//for (Map.Entry<String, Interface> intfEntry : interfaces.entrySet()) {
+			for (Interface srcInterface : interfaces.values()) {
+				//Interface srcInterface = intfEntry.getValue();
+				//if (peer.getInterfaceName().equals(intfEntry.getKey())){
+				if (peer.getInterfaceName().equals(srcInterface.getName())){
 					continue;
 				}
 				
