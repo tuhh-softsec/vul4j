@@ -1,6 +1,7 @@
 package de.intevation.lada.rest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.auth.Authentication;
 import de.intevation.lada.auth.AuthenticationException;
+import de.intevation.lada.auth.Authorization;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LOrt;
@@ -46,6 +48,10 @@ public class LOrtService
     @Inject
     @Named("ldapauth")
     private Authentication authentication;
+
+    @Inject
+    @Named("dataauthorization")
+    private Authorization authorization;
 
     /**
      * Request LOrt via a filter.
@@ -77,7 +83,14 @@ public class LOrtService
                     new QueryBuilder<LOrt>(
                         repository.getEntityManager(), LOrt.class);
                 builder.and("probeId", probeId);
-                return repository.filter(builder.getQuery());
+                Response response = repository.filter(builder.getQuery());
+                List<LOrt> list = (List<LOrt>) response.getData();
+                boolean readonly = authorization.isReadOnly(probeId);
+                for (LOrt ort: list) {
+                    ort.setReadonly(readonly);
+                }
+                response.setData(list);
+                return response;
             }
             return new Response(false, 698, new ArrayList<LOrt>());
         }
@@ -103,7 +116,8 @@ public class LOrtService
     ) {
         try {
             String probeId = ort.getProbeId();
-            if (authentication.hasAccess(headers, probeId)) {
+            if (authentication.hasAccess(headers, probeId) &&
+                !authorization.isReadOnly(probeId)) {
                 return repository.update(ort);
             }
             return new Response(false, 698, new ArrayList<LOrt>());
@@ -129,7 +143,8 @@ public class LOrtService
     ) {
         try {
             String probeId = ort.getProbeId();
-            if (authentication.hasAccess(headers, probeId)) {
+            if (authentication.hasAccess(headers, probeId) &&
+                !authorization.isReadOnly(probeId)) {
                 return repository.create(ort);
             }
             return new Response(false, 698, new ArrayList<LOrt>());
