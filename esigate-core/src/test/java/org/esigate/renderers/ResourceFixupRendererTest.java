@@ -48,7 +48,7 @@ public class ResourceFixupRendererTest extends TestCase {
 		tested.render(null, input, out);
 		assertEquals(expectedOutputRelative, out.toString());
 	}
-	
+
 	/**
 	 * Ensure CDATA does not match replacement rules.
 	 * 
@@ -73,7 +73,6 @@ public class ResourceFixupRendererTest extends TestCase {
 		tested.render(null, input, out);
 		assertEquals(expectedOutputRelative, out.toString());
 	}
-	
 
 	public void testUrlReplaceContext() throws IOException, HttpErrorPage {
 		String base = "http://myapp/context/";
@@ -121,7 +120,8 @@ public class ResourceFixupRendererTest extends TestCase {
 		final String expectedOutputAbsolute = "  <a href=\"http://app2/page/../styles/style.css\"/> <img src=\"http://app2/page/images/logo.png\"/> <a href=\"http://app2/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
 
 		Writer out = new StringWriter();
-		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page, ResourceFixupRenderer.ABSOLUTE);
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page,
+				ResourceFixupRenderer.ABSOLUTE);
 		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 
@@ -139,7 +139,8 @@ public class ResourceFixupRendererTest extends TestCase {
 		final String expectedOutputAbsolute = "  <a href=\"http://app2/page/../styles/style$.css\"/> <img src=\"http://app2/page/images/logo$.png\"/></a> <img src=\"http://www.google.com/logo.com\"/>";
 
 		Writer out = new StringWriter();
-		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page, ResourceFixupRenderer.ABSOLUTE);
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page,
+				ResourceFixupRenderer.ABSOLUTE);
 		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 	}
@@ -152,7 +153,8 @@ public class ResourceFixupRendererTest extends TestCase {
 		final String expectedOutputAbsolute = "  <a HREF=\"http://app2/page/../styles/style.css\"/> <img SrC=\"http://app2/page/images/logo.png\"/></a> <img src=\"http://www.google.com/logo.com\"/>";
 
 		Writer out = new StringWriter();
-		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page, ResourceFixupRenderer.ABSOLUTE);
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page,
+				ResourceFixupRenderer.ABSOLUTE);
 		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 	}
@@ -165,12 +167,12 @@ public class ResourceFixupRendererTest extends TestCase {
 		final String expectedOutputAbsolute = "  <a background=\"http://app2/page/../styles/style.css\"/> <img background=\"http://app2/page/images/logo.png\"/></a> <img background=\"http://www.google.com/logo.com\"/>";
 
 		Writer out = new StringWriter();
-		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page, ResourceFixupRenderer.ABSOLUTE);
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page,
+				ResourceFixupRenderer.ABSOLUTE);
 		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 	}
-	
-	
+
 	/**
 	 * Ensures links like &lt;a href="?test=true">link&lt;a/> are correctly
 	 * fixed, with both RELATIVE and ABSOLUTE settings.
@@ -186,24 +188,23 @@ public class ResourceFixupRendererTest extends TestCase {
 
 		// Relative test
 		Writer out = new StringWriter();
-		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base,
-				page, ResourceFixupRenderer.RELATIVE);
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.RELATIVE);
 		tested.render(null, input, out);
 		assertEquals(expectedOutputRelative, out.toString());
 
 		// Absolute test
 		out = new StringWriter();
-		tested = new ResourceFixupRenderer(base, base, page,
-				ResourceFixupRenderer.ABSOLUTE);
+		tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.ABSOLUTE);
 		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 
 	}
-	
-	
+
 	/**
-	 * Test for 0000186: ResourceFixup : StringIndexOutOfBoundsException: String index out of range: -1
-	 * See https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=186
+	 * Test for 0000186: ResourceFixup : StringIndexOutOfBoundsException: String
+	 * index out of range: -1
+	 * 
+	 * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=186"
 	 * 
 	 * @throws IOException
 	 */
@@ -217,18 +218,49 @@ public class ResourceFixupRendererTest extends TestCase {
 
 		// Relative test
 		Writer out = new StringWriter();
-		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visible,
-				page, ResourceFixupRenderer.RELATIVE);
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visible, page, ResourceFixupRenderer.RELATIVE);
 		tested.render(null, input, out);
 		assertEquals(expectedOutputRelative, out.toString());
 
 		// Absolute test
 		out = new StringWriter();
-		tested = new ResourceFixupRenderer(base, visible, page,
-				ResourceFixupRenderer.ABSOLUTE);
+		tested = new ResourceFixupRenderer(base, visible, page, ResourceFixupRenderer.ABSOLUTE);
 		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 
 	}
-	
+
+	/**
+	 * Test for 0000238: ResourceFixUp does not support the protocol-relative
+	 * urls.
+	 * <p>
+	 * protocol-relative urls should be considered as absolute urls.
+	 * 
+	 * @see "http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=238"
+	 * 
+	 * 
+	 * 
+	 * @throws IOException
+	 */
+	public void testBug238() throws IOException {
+		String base = "http://localhost:8084/applicationPath/";
+		String visible = "http://localhost:8084/";
+		String page = "/";
+		final String input = "<script src=\"//domain.com/applicationPath/controller\"></script>";
+		final String expectedOutputRelative = "<script src=\"//domain.com/applicationPath/controller\"></script>";
+		final String expectedOutputAbsolute = "<script src=\"//domain.com/applicationPath/controller\"></script>";
+
+		// Relative test
+		Writer out = new StringWriter();
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visible, page, ResourceFixupRenderer.RELATIVE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputRelative, out.toString());
+
+		// Absolute test
+		out = new StringWriter();
+		tested = new ResourceFixupRenderer(base, visible, page, ResourceFixupRenderer.ABSOLUTE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputAbsolute, out.toString());
+	}
+
 }

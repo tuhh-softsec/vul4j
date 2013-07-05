@@ -28,8 +28,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This renderer fixes links to resources, images and pages in pages retrieved
- * by the WAT. This enables use of WAT without any special modifications of the
+ * This renderer "fixes" links to resources, images and pages in pages retrieved
+ * by esigate :
+ * <ul>
+ * <li>Current-path-relative urls are converted to full path relative urls (  img/test.img -> /myapp/curentpath/img/test.img)</li>
+ * <li>All relative urls can be converted to absolute urls (including server name)</li>
+ * </ul>
+ * 
+ * This enables use of esigate without any special modifications of the
  * generated urls on the provider side.
  * 
  * All href and src attributes are processed, except javascript links.
@@ -43,14 +49,16 @@ public class ResourceFixupRenderer implements Renderer {
 	public static final int ABSOLUTE = 0;
 	public static final int RELATIVE = 1;
 	public static final char SLASH = '/';
-	private static final Pattern URL_PATTERN = Pattern.compile("<([^\\!][^>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>", Pattern.CASE_INSENSITIVE);
+	private static final Pattern URL_PATTERN = Pattern.compile(
+			"<([^\\!][^>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
+			Pattern.CASE_INSENSITIVE);
 	private String contextAdd = null;
 	private String contextRemove = null;
 	/**
 	 * Page path without the filename
 	 */
 	private String pagePath = null;
-	
+
 	private String fileName = null;
 	private String server = null;
 	private String baseUrl;
@@ -120,7 +128,8 @@ public class ResourceFixupRenderer implements Renderer {
 	 * @param fixRelativeUrls
 	 *            defines whether relative URLs should be fixed
 	 */
-	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl, String pageFullPath, int mode, boolean fixRelativeUrls) {
+	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl, String pageFullPath, int mode,
+			boolean fixRelativeUrls) {
 		this.mode = mode;
 		this.fixRelativeUrls = fixRelativeUrls;
 
@@ -143,14 +152,13 @@ public class ResourceFixupRenderer implements Renderer {
 		if (cleanPageFullPath.charAt(0) == SLASH) {
 			cleanPageFullPath = cleanPageFullPath.substring(1);
 		}
-		
-		// Store the filename, if specified 
+
+		// Store the filename, if specified
 		if (cleanPageFullPath.length() > 0 && cleanPageFullPath.charAt(cleanPageFullPath.length() - 1) != SLASH) {
-			fileName = cleanPageFullPath.substring(cleanPageFullPath
-					.lastIndexOf(SLASH) + 1);
+			fileName = cleanPageFullPath.substring(cleanPageFullPath.lastIndexOf(SLASH) + 1);
 		}
-		
-		// Build clean URI for further processing 
+
+		// Build clean URI for further processing
 		URI url;
 		url = UriUtils.createUri(cleanBaseUrl + SLASH + cleanPageFullPath);
 
@@ -203,8 +211,10 @@ public class ResourceFixupRenderer implements Renderer {
 			LOG.debug("fix absolute url: {} -> {} ", urlParam, url);
 			return url;
 		}
-		// Keep absolute and javascript urls untouched.
-		if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("#") || url.startsWith("javascript:")) {
+
+		// Keep absolute, protocol-absolute and javascript urls untouched.
+		if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("//") || url.startsWith("#")
+				|| url.startsWith("javascript:")) {
 			LOG.debug("keeping absolute url: {}", url);
 			return url;
 		}
@@ -221,11 +231,11 @@ public class ResourceFixupRenderer implements Renderer {
 				url = server + url;
 			}
 		} else if (fixRelativeUrls) {
-			
-			if( url.charAt(0) == '?' && fileName != null){
-			    url = fileName+url; 	
+
+			if (url.charAt(0) == '?' && fileName != null) {
+				url = fileName + url;
 			}
-			
+
 			// Process relative urls
 			if (mode == ABSOLUTE) {
 				url = server + pagePath + SLASH + url;
