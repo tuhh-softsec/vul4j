@@ -12,8 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
-import de.intevation.lada.authentication.Authentication;
-import de.intevation.lada.authentication.AuthenticationException;
+import de.intevation.lada.auth.Authentication;
+import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SMessEinheit;
 

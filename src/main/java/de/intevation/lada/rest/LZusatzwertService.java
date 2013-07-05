@@ -19,8 +19,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.authentication.Authentication;
-import de.intevation.lada.authentication.AuthenticationException;
+import de.intevation.lada.auth.Authentication;
+import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LZusatzWert;

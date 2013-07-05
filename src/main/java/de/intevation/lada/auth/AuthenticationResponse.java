@@ -1,4 +1,4 @@
-package de.intevation.lada.authentication;
+package de.intevation.lada.auth;
 
 import java.util.List;
 

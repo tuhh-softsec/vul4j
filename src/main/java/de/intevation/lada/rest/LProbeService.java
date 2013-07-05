@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -20,12 +19,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.authentication.Authentication;
-import de.intevation.lada.authentication.AuthenticationException;
-import de.intevation.lada.authentication.AuthenticationResponse;
+import de.intevation.lada.auth.Authentication;
+import de.intevation.lada.auth.AuthenticationException;
+import de.intevation.lada.auth.AuthenticationResponse;
+import de.intevation.lada.auth.Authorization;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
-import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 
@@ -57,6 +56,10 @@ public class LProbeService {
     @Named("ldapauth")
     private Authentication authentication;
 
+    @Inject
+    @Named("dataauthorization")
+    private Authorization authorization;
+
     /**
      * The logger for this class.
      */
@@ -82,6 +85,7 @@ public class LProbeService {
                 authentication.authorizedGroups(header);
             Response response =
                 repository.findById(LProbeInfo.class, id);
+            @SuppressWarnings("unchecked")
             List<LProbeInfo> probe = (List<LProbeInfo>)response.getData();
             if (probe.isEmpty()) {
                 return new Response(false, 601, new ArrayList<LProbeInfo>());
