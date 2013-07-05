@@ -184,7 +184,9 @@ public class LProbeService {
     public Response update(LProbeInfo probe, @Context HttpHeaders header) {
         try {
             if(authentication.hasAccess(header, probe.getProbeId())) {
-                return repository.update(probe);
+                LProbe p = probe.toLProbe();
+                p.setProbeId(probe.getProbeId());
+                return repository.update(p);
             }
             return new Response(false, 698, new ArrayList<LProbeInfo>());
         }
