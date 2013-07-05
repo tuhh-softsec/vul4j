@@ -42,18 +42,21 @@
 		<section name="Configure ESIGate">
 			<p>
 				ESIGate needs a configuration file "esigate.properties" where you define the base Urls
-				of your applications:
+				of your applications. 
 			</p>
+			
 <source>
 esigate.remoteUrlBase=http://localhost:8080/
+esigate.mapping=/*
 </source>
+			<p>mapping=/* means that all requests will be forwarded to this application.</p>
 		</section>
 		<section name="Run ESIGate">
 			<p>
 				Now we put ESIGate server and esigate.properties in the same folder, open a console on this folder and launch the following command:
 			</p>
 <source>
-java -Desigate.config=esigate.properties -Djetty.port=8081 -jar esigate-server-4.0.jar start
+java -Desigate.config=esigate.properties -Dserver.port=8081 -jar esigate-server-.jar start
 </source>
 			<p>
 				You should now have ESIGate running on port 8081. Let's check by calling in a browser <a href="http://localhost:8081/hello/">http://localhost:8081/hello/</a>.

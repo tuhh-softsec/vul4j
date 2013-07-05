@@ -85,87 +85,35 @@
 			<p>
 				You can use esigate-war web application as an example.
 			</p>
-			<subsection name="esigate.properties and web.xml">
-				<p>Then you have to configure:</p>
-				<ul>
-					<li>esigate.properties: defines provider applications, network and caching parameters... All details in chapter <a href="#Configuration">Configuration</a></li>
-					<li>web.xml: defines the URL mappings for the different provider applications</li>
-				</ul>
-				<p>Example for 2 provider applications, first esigate.properties:</p>
-				<source><![CDATA[
-# Common settings
-uriEncoding=UTF-8
+			<subsection name="esigate.properties">
+				<p>Then you have to configure esigate.properties which defines provider applications, mappings, network and caching parameters... All details in chapter <a href="#Configuration">Configuration</a></p>
+					<p>Here is an example configuration, with 4 providers using different mapping types :</p>
+<source><![CDATA[
 
-# Settings for default application
-default.remoteUrlBase=http://application1/
+# Sample 1 : process all urls	        
+provider1.remoteUrlBase=http://host1/
+provider1.mapping=/*
 
-# Settings for aggregated2 application
-aggregated2.remoteUrlBase=http://application2/
-				]]></source>
-				<p>Then the web.xml file:</p>
-				<source><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app>
-	<servlet>
-		<servlet-name>aggregator1</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>aggregator2</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
-		<init-param>
-			<param-name>provider</param-name>
-			<param-value>aggregated2</param-value>
-		</init-param>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>aggregator1</servlet-name>
-		<url-pattern>/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>aggregator2</servlet-name>
-		<url-pattern>/ag2/*</url-pattern>
-	</servlet-mapping>
-</web-app>
-				]]></source>
+# Sample 2 : virtual host configuration
+# Process requests made for myhost 
+provider2.remoteUrlBase=http://host2/
+provider2.mapping=http://myhost/* 
+
+# Sample 3 : Process all php files
+provider3.remoteUrlBase=http://host3/
+provider3.mapping=*.php
+
+# Sample 4 : Process all files in css and images directories
+theme.remoteUrlBase=http://host4/
+theme.mapping=/css/*, /images/*
+	]]></source> 
+	        
 				<p>
-					Note: here, all requests will be forwarded to "default" application that is http://application1/
-					except request starting with "/ag2/" that will be forwarded to "aggregated2" application which is
-					http://application2/
-				</p>
-				<p>
-					Each of the applications can use ESI tags in its html pages to include some fragments coming
+					Each application can use ESI tags in its html pages to include some fragments coming
 					from the other.
 				</p>
 			</subsection>			
-			<subsection name="Using different providers for Virtual hosts">
-				<p>
-					The aggregator servlet can select providers according to the "Host"
-					of each request. Both parameters "provider" and "providers" can be
-					used at the sametime: in this case, "provider" will be used if no
-					match is found using "providers".
-				</p>
-              	<source><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app>
-	<servlet>
-		<servlet-name>aggregator1</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
-		<init-param>
-			<param-name>providers</param-name>
-			<param-value>sub1.domain.com=aggregated1,sub2.domain.com=aggregated2</param-value>
-		</init-param>
-	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>aggregator1</servlet-name>
-		<url-pattern>/*</url-pattern>
-	</servlet-mapping>
-</web-app>
-				]]></source> 
-	        </subsection>
+			
 		</section>
 		<section name="Configuration">
 		<subsection name="Configuration file">
