@@ -89,6 +89,12 @@ public class LProbeInfo implements Serializable {
 	@Column(name="messmethode")
 	private String messmethode;
 
+	@Column(name="fertig")
+	private Boolean fertig;
+
+	@Column(name="readonly")
+	private Boolean readonly;
+
 	public LProbeInfo() {
 	}
 
@@ -282,6 +288,22 @@ public class LProbeInfo implements Serializable {
 
     public void setMessmethode(String messmethode) {
         this.messmethode = messmethode;
+    }
+
+    public Boolean getFertig() {
+        return fertig;
+    }
+
+    public void setFertig(Boolean fertig) {
+        this.fertig = fertig;
+    }
+
+    public Boolean getReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(Boolean readonly) {
+        this.readonly = readonly;
     }
 
     public LProbe toLProbe() {
