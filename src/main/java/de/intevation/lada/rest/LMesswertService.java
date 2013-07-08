@@ -101,6 +101,7 @@ public class LMesswertService
      * @return Response object.
      */
     @PUT
+    @Path("/{messgroesseId}/{messungsId}/{messungsId}")
     @Produces("text/json")
     @Consumes("application/json")
     public Response update(
