@@ -15,7 +15,6 @@ import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
@@ -54,7 +53,6 @@ public class FloodlightProvider implements IFloodlightModule {
         dependencies.add(IThreadPoolService.class);
         // Following added by ONOS
         dependencies.add(IFlowService.class);
-        dependencies.add(ITopoRouteService.class);
         dependencies.add(IControllerRegistryService.class);
 
         return dependencies;
@@ -74,7 +72,6 @@ public class FloodlightProvider implements IFloodlightModule {
            context.getServiceImpl(IThreadPoolService.class));
        // Following added by ONOS
        controller.setFlowService(context.getServiceImpl(IFlowService.class));
-       controller.setTopoRouteService(context.getServiceImpl(ITopoRouteService.class));
        controller.setMastershipService(
     		   context.getServiceImpl(IControllerRegistryService.class));
 

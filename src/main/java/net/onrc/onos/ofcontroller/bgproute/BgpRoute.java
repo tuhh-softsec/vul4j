@@ -35,6 +35,7 @@ import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
+import net.onrc.onos.ofcontroller.routing.TopoRouteService;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -204,7 +205,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			= new ArrayList<Class<? extends IFloodlightService>>();
 		l.add(IFloodlightProviderService.class);
 		l.add(ITopologyService.class);
-		l.add(ITopoRouteService.class);
 		l.add(IDeviceService.class);
 		l.add(IRestApiService.class);
 		return l;
@@ -219,7 +219,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		topology = context.getServiceImpl(ITopologyService.class);
-		topoRouteService = context.getServiceImpl(ITopoRouteService.class);
 		devices = context.getServiceImpl(IDeviceService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
@@ -230,6 +229,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		topologyChangeDetectorTask = new SingletonTask(executor, new TopologyChangeDetector());
+
+		topoRouteService = new TopoRouteService("");
 		
 		//Read in config values
 		bgpdRestIp = context.getConfigParams(this).get("BgpdRestIp");

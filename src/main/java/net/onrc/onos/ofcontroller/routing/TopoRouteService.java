@@ -11,10 +11,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import net.floodlightcontroller.core.module.FloodlightModuleContext;
-import net.floodlightcontroller.core.module.FloodlightModuleException;
-import net.floodlightcontroller.core.module.IFloodlightModule;
-import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
@@ -97,7 +93,7 @@ class Node {
 /**
  * A class for implementing Topology Route Service.
  */
-public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
+public class TopoRouteService implements ITopoRouteService {
 
     /** The logger. */
     private static Logger log =
@@ -105,69 +101,42 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     
     protected GraphDBOperation op;
 
+
     /**
-     * Get the collection of module services.
-     *
-     * @return the collection of services provided by this module.
+     * Default constructor.
      */
-    @Override
-    public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-        Collection<Class<? extends IFloodlightService>> l = 
-            new ArrayList<Class<? extends IFloodlightService>>();
-        l.add(ITopoRouteService.class);
-        return l;
+    public TopoRouteService() {
     }
 
     /**
-     * Get a map with the services provided by this module.
+     * Constructor for given database configuration file.
      *
-     * @return a map with the services provided by this module.
+     * @param config the database configuration file to use for
+     * the initialization.
      */
-    @Override
-    public Map<Class<? extends IFloodlightService>, IFloodlightService> 
-			       getServiceImpls() {
-        Map<Class<? extends IFloodlightService>,
-        IFloodlightService> m = 
-            new HashMap<Class<? extends IFloodlightService>,
-                IFloodlightService>();
-        m.put(ITopoRouteService.class, this);
-        return m;
-    }
-
-    /**
-     * Get the collection with the services this module depends on.
-     *
-     * @return the collection with the services this module depends on.
-     */
-    @Override
-    public Collection<Class<? extends IFloodlightService>> 
-                                                    getModuleDependencies() {
-	Collection<Class<? extends IFloodlightService>> l =
-	    new ArrayList<Class<? extends IFloodlightService>>();
-	// TODO: Add the appropriate dependencies
-	// l.add(IRestApiService.class);
-        return l;
+    public TopoRouteService(String config) {
+	this.init(config);
     }
 
     /**
      * Init the module.
      *
-     * @param context the module context to use for the initialization.
-     * @see FloodlightModuleContext.
+     * @param config the database configuration file to use for
+     * the initialization.
      */
-    @Override
-    public void init(FloodlightModuleContext context)
-	throws FloodlightModuleException {
-	// TODO: Add the appropriate initialization
-    	op = new GraphDBOperation("");
+    public void init(String config) {
+	try {
+	    op = new GraphDBOperation(config);
+	} catch (Exception e) {
+	    log.error(e.getMessage());
+	}
     }
 
     /**
-     * Startup initialization.
+     * Close the service. It will close the corresponding database connection.
      */
-    @Override
-    public void startUp(FloodlightModuleContext context) {
-	// TODO: Add the approprate setup
+    public void close() {
+	op.close();
     }
 
     /**
