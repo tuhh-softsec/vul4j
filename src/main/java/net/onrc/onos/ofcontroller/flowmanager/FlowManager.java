@@ -570,19 +570,37 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - flowPath.installerId()
 	// - flowPath.dataPath().srcPort()
 	// - flowPath.dataPath().dstPort()
-	// - flowPath.matchEthernetFrameType()
-	// - flowPath.matchSrcIPv4Net()
-	// - flowPath.matchDstIPv4Net()
 	// - flowPath.matchSrcMac()
 	// - flowPath.matchDstMac()
+	// - flowPath.matchEthernetFrameType()
+	// - flowPath.matchVlanId()
+	// - flowPath.matchVlanPriority()
+	// - flowPath.matchSrcIPv4Net()
+	// - flowPath.matchDstIPv4Net()
+	// - flowPath.matchIpProto()
+	// - flowPath.matchIpToS()
+	// - flowPath.matchSrcTcpUdpPort()
+	// - flowPath.matchDstTcpUdpPort()
 	//
 	flowObj.setInstallerId(flowPath.installerId().toString());
 	flowObj.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
 	flowObj.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
 	flowObj.setDstPort(flowPath.dataPath().dstPort().port().value());
+	if (flowPath.flowEntryMatch().matchSrcMac()) {
+	    flowObj.setMatchSrcMac(flowPath.flowEntryMatch().srcMac().toString());
+	}
+	if (flowPath.flowEntryMatch().matchDstMac()) {
+	    flowObj.setMatchDstMac(flowPath.flowEntryMatch().dstMac().toString());
+	}
 	if (flowPath.flowEntryMatch().matchEthernetFrameType()) {
 	    flowObj.setMatchEthernetFrameType(flowPath.flowEntryMatch().ethernetFrameType());
+	}
+	if (flowPath.flowEntryMatch().matchVlanId()) {
+	    flowObj.setMatchVlanId(flowPath.flowEntryMatch().vlanId());
+	}
+	if (flowPath.flowEntryMatch().matchVlanPriority()) {
+	    flowObj.setMatchVlanPriority(flowPath.flowEntryMatch().vlanPriority());
 	}
 	if (flowPath.flowEntryMatch().matchSrcIPv4Net()) {
 	    flowObj.setMatchSrcIPv4Net(flowPath.flowEntryMatch().srcIPv4Net().toString());
@@ -590,11 +608,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (flowPath.flowEntryMatch().matchDstIPv4Net()) {
 	    flowObj.setMatchDstIPv4Net(flowPath.flowEntryMatch().dstIPv4Net().toString());
 	}
-	if (flowPath.flowEntryMatch().matchSrcMac()) {
-	    flowObj.setMatchSrcMac(flowPath.flowEntryMatch().srcMac().toString());
+	if (flowPath.flowEntryMatch().matchIpProto()) {
+	    flowObj.setMatchIpProto(flowPath.flowEntryMatch().ipProto());
 	}
-	if (flowPath.flowEntryMatch().matchDstMac()) {
-	    flowObj.setMatchDstMac(flowPath.flowEntryMatch().dstMac().toString());
+	if (flowPath.flowEntryMatch().matchIpToS()) {
+	    flowObj.setMatchIpToS(flowPath.flowEntryMatch().ipToS());
+	}
+	if (flowPath.flowEntryMatch().matchSrcTcpUdpPort()) {
+	    flowObj.setMatchSrcTcpUdpPort(flowPath.flowEntryMatch().srcTcpUdpPort());
+	}
+	if (flowPath.flowEntryMatch().matchDstTcpUdpPort()) {
+	    flowObj.setMatchDstTcpUdpPort(flowPath.flowEntryMatch().dstTcpUdpPort());
 	}
 
 	if (dataPathSummaryStr != null) {
@@ -696,11 +720,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - flowEntry.flowEntrySwitchState()
 	// - flowEntry.flowEntryErrorState()
 	// - flowEntry.matchInPort()
-	// - flowEntry.matchEthernetFrameType()
-	// - flowEntry.matchSrcIPv4Net()
-	// - flowEntry.matchDstIPv4Net()
 	// - flowEntry.matchSrcMac()
 	// - flowEntry.matchDstMac()
+	// - flowEntry.matchEthernetFrameType()
+	// - flowEntry.matchVlanId()
+	// - flowEntry.matchVlanPriority()
+	// - flowEntry.matchSrcIPv4Net()
+	// - flowEntry.matchDstIPv4Net()
+	// - flowEntry.matchIpProto()
+	// - flowEntry.matchIpToS()
+	// - flowEntry.matchSrcTcpUdpPort()
+	// - flowEntry.matchDstTcpUdpPort()
 	// - flowEntry.actionOutput()
 	//
 	ISwitchObject sw =
@@ -714,8 +744,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
 	    flowEntryObj.setInPort(inport);
 	}
+	if (flowEntry.flowEntryMatch().matchSrcMac()) {
+	    flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+	}
+	if (flowEntry.flowEntryMatch().matchDstMac()) {
+	    flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+	}
 	if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
 	    flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
+	}
+	if (flowEntry.flowEntryMatch().matchVlanId()) {
+	    flowEntryObj.setMatchVlanId(flowEntry.flowEntryMatch().vlanId());
+	}
+	if (flowEntry.flowEntryMatch().matchVlanPriority()) {
+	    flowEntryObj.setMatchVlanPriority(flowEntry.flowEntryMatch().vlanPriority());
 	}
 	if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
 	    flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
@@ -723,11 +765,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
 	    flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
 	}
-	if (flowEntry.flowEntryMatch().matchSrcMac()) {
-	    flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+	if (flowEntry.flowEntryMatch().matchIpProto()) {
+	    flowEntryObj.setMatchIpProto(flowEntry.flowEntryMatch().ipProto());
 	}
-	if (flowEntry.flowEntryMatch().matchDstMac()) {
-	    flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+	if (flowEntry.flowEntryMatch().matchIpToS()) {
+	    flowEntryObj.setMatchIpToS(flowEntry.flowEntryMatch().ipToS());
+	}
+	if (flowEntry.flowEntryMatch().matchSrcTcpUdpPort()) {
+	    flowEntryObj.setMatchSrcTcpUdpPort(flowEntry.flowEntryMatch().srcTcpUdpPort());
+	}
+	if (flowEntry.flowEntryMatch().matchDstTcpUdpPort()) {
+	    flowEntryObj.setMatchDstTcpUdpPort(flowEntry.flowEntryMatch().dstTcpUdpPort());
 	}
 
 	for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
@@ -1293,21 +1341,40 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	{
 	    FlowEntryMatch match = new FlowEntryMatch();
-	    Short matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
-	    if (matchEthernetFrameType != null)
-		match.enableEthernetFrameType(matchEthernetFrameType);
-	    String matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
-	    if (matchSrcIPv4Net != null)
-		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-	    String matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
-	    if (matchDstIPv4Net != null)
-		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
 	    String matchSrcMac = flowObj.getMatchSrcMac();
 	    if (matchSrcMac != null)
 		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
 	    String matchDstMac = flowObj.getMatchDstMac();
 	    if (matchDstMac != null)
 		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+	    Short matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
+	    if (matchEthernetFrameType != null)
+		match.enableEthernetFrameType(matchEthernetFrameType);
+	    Short matchVlanId = flowObj.getMatchVlanId();
+	    if (matchVlanId != null)
+		match.enableVlanId(matchVlanId);
+	    Byte matchVlanPriority = flowObj.getMatchVlanPriority();
+	    if (matchVlanPriority != null)
+		match.enableVlanPriority(matchVlanPriority);
+	    String matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
+	    if (matchSrcIPv4Net != null)
+		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+	    String matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
+	    if (matchDstIPv4Net != null)
+		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+	    Byte matchIpProto = flowObj.getMatchIpProto();
+	    if (matchIpProto != null)
+		match.enableIpProto(matchIpProto);
+	    Byte matchIpToS = flowObj.getMatchIpToS();
+	    if (matchIpToS != null)
+		match.enableIpToS(matchIpToS);
+	    Short matchSrcTcpUdpPort = flowObj.getMatchSrcTcpUdpPort();
+	    if (matchSrcTcpUdpPort != null)
+		match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
+	    Short matchDstTcpUdpPort = flowObj.getMatchDstTcpUdpPort();
+	    if (matchDstTcpUdpPort != null)
+		match.enableDstTcpUdpPort(matchDstTcpUdpPort);
+
 	    flowPath.setFlowEntryMatch(match);
 	}
 
@@ -1356,21 +1423,39 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	Short matchInPort = flowEntryObj.getMatchInPort();
 	if (matchInPort != null)
 	    match.enableInPort(new Port(matchInPort));
-	Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
-	if (matchEthernetFrameType != null)
-	    match.enableEthernetFrameType(matchEthernetFrameType);
-	String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
-	if (matchSrcIPv4Net != null)
-	    match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-	String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
-	if (matchDstIPv4Net != null)
-	    match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
 	String matchSrcMac = flowEntryObj.getMatchSrcMac();
 	if (matchSrcMac != null)
 	    match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
 	String matchDstMac = flowEntryObj.getMatchDstMac();
 	if (matchDstMac != null)
 	    match.enableDstMac(MACAddress.valueOf(matchDstMac));
+	Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+	if (matchEthernetFrameType != null)
+	    match.enableEthernetFrameType(matchEthernetFrameType);
+	Short matchVlanId = flowEntryObj.getMatchVlanId();
+	if (matchVlanId != null)
+	    match.enableVlanId(matchVlanId);
+	Byte matchVlanPriority = flowEntryObj.getMatchVlanPriority();
+	if (matchVlanPriority != null)
+	    match.enableVlanPriority(matchVlanPriority);
+	String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+	if (matchSrcIPv4Net != null)
+	    match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+	String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+	if (matchDstIPv4Net != null)
+	    match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+	Byte matchIpProto = flowEntryObj.getMatchIpProto();
+	if (matchIpProto != null)
+	    match.enableIpProto(matchIpProto);
+	Byte matchIpToS = flowEntryObj.getMatchIpToS();
+	if (matchIpToS != null)
+	    match.enableIpToS(matchIpToS);
+	Short matchSrcTcpUdpPort = flowEntryObj.getMatchSrcTcpUdpPort();
+	if (matchSrcTcpUdpPort != null)
+	    match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
+	Short matchDstTcpUdpPort = flowEntryObj.getMatchDstTcpUdpPort();
+	if (matchDstTcpUdpPort != null)
+	    match.enableDstTcpUdpPort(matchDstTcpUdpPort);
 	flowEntry.setFlowEntryMatch(match);
 
 	//
@@ -1553,6 +1638,24 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
 	}
 
+	// Match the Source MAC address
+	String matchSrcMac = flowEntryObj.getMatchSrcMac();
+	if (matchSrcMac == null)
+	    matchSrcMac = flowObj.getMatchSrcMac();
+	if (matchSrcMac != null) {
+	    match.setDataLayerSource(matchSrcMac);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+	}
+
+	// Match the Destination MAC address
+	String matchDstMac = flowEntryObj.getMatchDstMac();
+	if (matchDstMac == null)
+	    matchDstMac = flowObj.getMatchDstMac();
+	if (matchDstMac != null) {
+	    match.setDataLayerDestination(matchDstMac);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+	}
+
 	// Match the Ethernet Frame Type
 	Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
 	if (matchEthernetFrameType == null)
@@ -1560,6 +1663,24 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (matchEthernetFrameType != null) {
 	    match.setDataLayerType(matchEthernetFrameType);
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
+	}
+
+	// Match the VLAN ID
+	Short matchVlanId = flowEntryObj.getMatchVlanId();
+	if (matchVlanId == null)
+	    matchVlanId = flowObj.getMatchVlanId();
+	if (matchVlanId != null) {
+	    match.setDataLayerVirtualLan(matchVlanId);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_VLAN);
+	}
+
+	// Match the VLAN priority
+	Byte matchVlanPriority = flowEntryObj.getMatchVlanPriority();
+	if (matchVlanPriority == null)
+	    matchVlanPriority = flowObj.getMatchVlanPriority();
+	if (matchVlanPriority != null) {
+	    match.setDataLayerVirtualLanPriorityCodePoint(matchVlanPriority);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_VLAN_PCP);
 	}
 
 	// Match the Source IPv4 Network prefix
@@ -1578,22 +1699,40 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    match.setFromCIDR(matchDstIPv4Net, OFMatch.STR_NW_DST);
 	}
 
-	// Match the Source MAC address
-	String matchSrcMac = flowEntryObj.getMatchSrcMac();
-	if (matchSrcMac == null)
-	    matchSrcMac = flowObj.getMatchSrcMac();
-	if (matchSrcMac != null) {
-	    match.setDataLayerSource(matchSrcMac);
-	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+	// Match the IP protocol
+	Byte matchIpProto = flowEntryObj.getMatchIpProto();
+	if (matchIpProto == null)
+	    matchIpProto = flowObj.getMatchIpProto();
+	if (matchIpProto != null) {
+	    match.setNetworkTypeOfService(matchIpProto);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_NW_PROTO);
 	}
 
-	// Match the Destination MAC address
-	String matchDstMac = flowEntryObj.getMatchDstMac();
-	if (matchDstMac == null)
-	    matchDstMac = flowObj.getMatchDstMac();
-	if (matchDstMac != null) {
-	    match.setDataLayerDestination(matchDstMac);
-	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+	// Match the IP ToS (DSCP field, 6 bits)
+	Byte matchIpToS = flowEntryObj.getMatchIpToS();
+	if (matchIpToS == null)
+	    matchIpToS = flowObj.getMatchIpToS();
+	if (matchIpToS != null) {
+	    match.setNetworkTypeOfService(matchIpToS);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_NW_TOS);
+	}
+
+	// Match the Source TCP/UDP port
+	Short matchSrcTcpUdpPort = flowEntryObj.getMatchSrcTcpUdpPort();
+	if (matchSrcTcpUdpPort == null)
+	    matchSrcTcpUdpPort = flowObj.getMatchSrcTcpUdpPort();
+	if (matchSrcTcpUdpPort != null) {
+	    match.setTransportSource(matchSrcTcpUdpPort);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_TP_SRC);
+	}
+
+	// Match the Destination TCP/UDP port
+	Short matchDstTcpUdpPort = flowEntryObj.getMatchDstTcpUdpPort();
+	if (matchDstTcpUdpPort == null)
+	    matchDstTcpUdpPort = flowObj.getMatchDstTcpUdpPort();
+	if (matchDstTcpUdpPort != null) {
+	    match.setTransportDestination(matchDstTcpUdpPort);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_TP_DST);
 	}
 
 	//
@@ -1712,6 +1851,26 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
 	}
 
+	// Match the Source MAC address
+	MACAddress matchSrcMac = flowEntryMatch.srcMac();
+	if ((matchSrcMac == null) && (flowPathMatch != null)) {
+	    matchSrcMac = flowPathMatch.srcMac();
+	}
+	if (matchSrcMac != null) {
+	    match.setDataLayerSource(matchSrcMac.toString());
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+	}
+
+	// Match the Destination MAC address
+	MACAddress matchDstMac = flowEntryMatch.dstMac();
+	if ((matchDstMac == null) && (flowPathMatch != null)) {
+	    matchDstMac = flowPathMatch.dstMac();
+	}
+	if (matchDstMac != null) {
+	    match.setDataLayerDestination(matchDstMac.toString());
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+	}
+
 	// Match the Ethernet Frame Type
 	Short matchEthernetFrameType = flowEntryMatch.ethernetFrameType();
 	if ((matchEthernetFrameType == null) && (flowPathMatch != null)) {
@@ -1720,6 +1879,26 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (matchEthernetFrameType != null) {
 	    match.setDataLayerType(matchEthernetFrameType);
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
+	}
+
+	// Match the VLAN ID
+	Short matchVlanId = flowEntryMatch.vlanId();
+	if ((matchVlanId == null) && (flowPathMatch != null)) {
+	    matchVlanId = flowPathMatch.vlanId();
+	}
+	if (matchVlanId != null) {
+	    match.setDataLayerVirtualLan(matchVlanId);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_VLAN);
+	}
+
+	// Match the VLAN priority
+	Byte matchVlanPriority = flowEntryMatch.vlanPriority();
+	if ((matchVlanPriority == null) && (flowPathMatch != null)) {
+	    matchVlanPriority = flowPathMatch.vlanPriority();
+	}
+	if (matchVlanPriority != null) {
+	    match.setDataLayerVirtualLanPriorityCodePoint(matchVlanPriority);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_VLAN_PCP);
 	}
 
 	// Match the Source IPv4 Network prefix
@@ -1740,24 +1919,44 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    match.setFromCIDR(matchDstIPv4Net.toString(), OFMatch.STR_NW_DST);
 	}
 
-	// Match the Source MAC address
-	MACAddress matchSrcMac = flowEntryMatch.srcMac();
-	if ((matchSrcMac == null) && (flowPathMatch != null)) {
-	    matchSrcMac = flowPathMatch.srcMac();
+	// Match the IP protocol
+	Byte matchIpProto = flowEntryMatch.ipProto();
+	if ((matchIpProto == null) && (flowPathMatch != null)) {
+	    matchIpProto = flowPathMatch.ipProto();
 	}
-	if (matchSrcMac != null) {
-	    match.setDataLayerSource(matchSrcMac.toString());
-	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+	if (matchIpProto != null) {
+	    match.setNetworkProtocol(matchIpProto);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_NW_PROTO);
 	}
 
-	// Match the Destination MAC address
-	MACAddress matchDstMac = flowEntryMatch.dstMac();
-	if ((matchDstMac == null) && (flowPathMatch != null)) {
-	    matchDstMac = flowPathMatch.dstMac();
+	// Match the IP ToS (DSCP field, 6 bits)
+	Byte matchIpToS = flowEntryMatch.ipToS();
+	if ((matchIpToS == null) && (flowPathMatch != null)) {
+	    matchIpToS = flowPathMatch.ipToS();
 	}
-	if (matchDstMac != null) {
-	    match.setDataLayerDestination(matchDstMac.toString());
-	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+	if (matchIpToS != null) {
+	    match.setNetworkTypeOfService(matchIpToS);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_NW_TOS);
+	}
+
+	// Match the Source TCP/UDP port
+	Short matchSrcTcpUdpPort = flowEntryMatch.srcTcpUdpPort();
+	if ((matchSrcTcpUdpPort == null) && (flowPathMatch != null)) {
+	    matchSrcTcpUdpPort = flowPathMatch.srcTcpUdpPort();
+	}
+	if (matchSrcTcpUdpPort != null) {
+	    match.setTransportSource(matchSrcTcpUdpPort);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_TP_SRC);
+	}
+
+	// Match the Destination TCP/UDP port
+	Short matchDstTcpUdpPort = flowEntryMatch.dstTcpUdpPort();
+	if ((matchDstTcpUdpPort == null) && (flowPathMatch != null)) {
+	    matchDstTcpUdpPort = flowPathMatch.dstTcpUdpPort();
+	}
+	if (matchDstTcpUdpPort != null) {
+	    match.setTransportDestination(matchDstTcpUdpPort);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_TP_DST);
 	}
 
 	//

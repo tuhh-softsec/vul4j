@@ -241,24 +241,6 @@ public class INetMapTopologyObjectsIFlowPathTest {
 	
 	/**
 	 * Desc:
-	 *  Test method for set and get MatchEthernetFrameType
-	 * Condition:
-	 *  N/A
-	 * Expect:
-	 * 1. Should set MatchEthernetFrameType.
-	 * 2. Should get MatchEthernetFrameType.
-	 */
-	@Test
-	public void testSetGetMatchEthernetFrameType() {
-		String flowId = "xx";
-		Short matchEthernetFrameTypeShort = 1;
-		flowPath.setFlowId(flowId);
-		flowPath.setMatchEthernetFrameType(matchEthernetFrameTypeShort);
-		assertEquals(flowPath.getMatchEthernetFrameType(), matchEthernetFrameTypeShort);
-	}
-	
-	/**
-	 * Desc:
 	 *  Test method for set and get MatchSrcMac
 	 * Condition:
 	 *  N/A
@@ -292,15 +274,69 @@ public class INetMapTopologyObjectsIFlowPathTest {
 		flowPath.setMatchDstMac(matchDstMac);
 		assertEquals(flowPath.getMatchDstMac(), matchDstMac);
 	}
-	
+
 	/**
 	 * Desc:
-	 *  Test method for set and get SrcIPv4Net.
+	 *  Test method for set and get MatchEthernetFrameType
 	 * Condition:
 	 *  N/A
 	 * Expect:
-	 * 1. Should set SrcIPv4Net.
-	 * 2. Should get SrcIPv4Net.
+	 * 1. Should set MatchEthernetFrameType.
+	 * 2. Should get MatchEthernetFrameType.
+	 */
+	@Test
+	public void testSetGetMatchEthernetFrameType() {
+		String flowId = "xx";
+		Short matchEthernetFrameType = 1;
+		flowPath.setFlowId(flowId);
+		flowPath.setMatchEthernetFrameType(matchEthernetFrameType);
+		assertEquals(flowPath.getMatchEthernetFrameType(), matchEthernetFrameType);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchVlanId
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchVlanId.
+	 * 2. Should get MatchVlanId.
+	 */
+	@Test
+	public void testSetGetMatchVlanId() {
+		String flowId = "xx";
+		Short matchVlanId = 10;
+		flowPath.setFlowId(flowId);
+		flowPath.setMatchVlanId(matchVlanId);
+		assertEquals(flowPath.getMatchVlanId(), matchVlanId);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchVlanPriority
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchVlanPriority.
+	 * 2. Should get MatchVlanPriority.
+	 */
+	@Test
+	public void testSetGetMatchVlanPriority() {
+		String flowId = "xx";
+		Byte matchVlanPriority = 20;
+		flowPath.setFlowId(flowId);
+		flowPath.setMatchVlanPriority(matchVlanPriority);
+		assertEquals(flowPath.getMatchVlanPriority(), matchVlanPriority);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchSrcIPv4Net.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchSrcIPv4Net.
+	 * 2. Should get MatchSrcIPv4Net.
 	 */
 	@Test
 	public void testSetGetMatchSrcIPv4Net() {
@@ -313,12 +349,12 @@ public class INetMapTopologyObjectsIFlowPathTest {
 	
 	/**
 	 * Desc:
-	 *  Test method for set and get DstIPv4Net.
+	 *  Test method for set and get MatchDstIPv4Net.
 	 * Condition:
 	 *  N/A
 	 * Expect:
-	 * 1. Should set DstIPv4Net.
-	 * 2. Should get DstIPv4Net.
+	 * 1. Should set MatchDstIPv4Net.
+	 * 2. Should get MatchDstIPv4Net.
 	 */
 	@Test
 	public void testSetGetMatchDstIPv4Net() {
@@ -328,7 +364,79 @@ public class INetMapTopologyObjectsIFlowPathTest {
 		flowPath.setMatchDstIPv4Net(ip);
 		assertEquals(flowPath.getMatchDstIPv4Net(), ip);
 	}
-	
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchIpProto
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchIpProto.
+	 * 2. Should get MatchIpProto.
+	 */
+	@Test
+	public void testSetGetMatchIpProto() {
+		String flowId = "xx";
+		Byte matchIpProto = 20;
+		flowPath.setFlowId(flowId);
+		flowPath.setMatchIpProto(matchIpProto);
+		assertEquals(flowPath.getMatchIpProto(), matchIpProto);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchIpToS
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchIpToS.
+	 * 2. Should get MatchIpToS.
+	 */
+	@Test
+	public void testSetGetMatchIpToS() {
+		String flowId = "xx";
+		Byte matchIpToS = 20;
+		flowPath.setFlowId(flowId);
+		flowPath.setMatchIpToS(matchIpToS);
+		assertEquals(flowPath.getMatchIpToS(), matchIpToS);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchSrcTcpUdpPort.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchSrcTcpUdpPort.
+	 * 2. Should get MatchSrcTcpUdpPort.
+	 */
+	@Test
+	public void testSetGetMatchSrcTcpUdpPort() {
+		String flowId = "xx";
+		Short srcTcpUdpPort = (short)65535;
+		flowPath.setFlowId(flowId);
+		flowPath.setMatchSrcTcpUdpPort(srcTcpUdpPort);
+		assertEquals(flowPath.getMatchSrcTcpUdpPort(), srcTcpUdpPort);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchDstTcpUdpPort.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchDstTcpUdpPort.
+	 * 2. Should get MatchDstTcpUdpPort.
+	 */
+	@Test
+	public void testSetGetMatchDstTcpUdpPort() {
+		String flowId = "xx";
+		Short dstTcpUdpPort = (short)65535;
+		flowPath.setFlowId(flowId);
+		flowPath.setMatchDstTcpUdpPort(dstTcpUdpPort);
+		assertEquals(flowPath.getMatchDstTcpUdpPort(), dstTcpUdpPort);
+	}
+
 	/**
 	 * Desc:
 	 *  Test method for set and get UserState.

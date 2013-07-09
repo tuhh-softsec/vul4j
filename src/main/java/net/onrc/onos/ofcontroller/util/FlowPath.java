@@ -41,21 +41,40 @@ public class FlowPath implements Comparable<FlowPath> {
 	//
 	{
     	    FlowEntryMatch match = new FlowEntryMatch();
-    	    Short matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
-    	    if (matchEthernetFrameType != null)
-    		match.enableEthernetFrameType(matchEthernetFrameType);
-    	    String matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
-    	    if (matchSrcIPv4Net != null)
-    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-    	    String matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
-    	    if (matchDstIPv4Net != null)
-    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
     	    String matchSrcMac = flowObj.getMatchSrcMac();
     	    if (matchSrcMac != null)
     		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
     	    String matchDstMac = flowObj.getMatchDstMac();
     	    if (matchDstMac != null)
     		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+    	    Short matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
+    	    if (matchEthernetFrameType != null)
+    		match.enableEthernetFrameType(matchEthernetFrameType);
+    	    Short matchVlanId = flowObj.getMatchVlanId();
+    	    if (matchVlanId != null)
+    		match.enableVlanId(matchVlanId);
+    	    Byte matchVlanPriority = flowObj.getMatchVlanPriority();
+    	    if (matchVlanPriority != null)
+    		match.enableVlanPriority(matchVlanPriority);
+    	    String matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
+    	    if (matchSrcIPv4Net != null)
+    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+    	    String matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
+    	    if (matchDstIPv4Net != null)
+    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+    	    Byte matchIpProto = flowObj.getMatchIpProto();
+    	    if (matchIpProto != null)
+    		match.enableIpProto(matchIpProto);
+    	    Byte matchIpToS = flowObj.getMatchIpToS();
+    	    if (matchIpToS != null)
+    		match.enableIpToS(matchIpToS);
+    	    Short matchSrcTcpUdpPort = flowObj.getMatchSrcTcpUdpPort();
+    	    if (matchSrcTcpUdpPort != null)
+    		match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
+    	    Short matchDstTcpUdpPort = flowObj.getMatchDstTcpUdpPort();
+    	    if (matchDstTcpUdpPort != null)
+    		match.enableDstTcpUdpPort(matchDstTcpUdpPort);
+
     	    this.setFlowEntryMatch(match);
 	}
 
@@ -75,21 +94,39 @@ public class FlowPath implements Comparable<FlowPath> {
     	    Short matchInPort = flowEntryObj.getMatchInPort();
     	    if (matchInPort != null)
     		match.enableInPort(new Port(matchInPort));
-    	    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
-    	    if (matchEthernetFrameType != null)
-    		match.enableEthernetFrameType(matchEthernetFrameType);
-    	    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
-    	    if (matchSrcIPv4Net != null)
-    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-    	    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
-    	    if (matchDstIPv4Net != null)
-    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
     	    String matchSrcMac = flowEntryObj.getMatchSrcMac();
     	    if (matchSrcMac != null)
     		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
     	    String matchDstMac = flowEntryObj.getMatchDstMac();
     	    if (matchDstMac != null)
     		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+    	    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+    	    if (matchEthernetFrameType != null)
+    		match.enableEthernetFrameType(matchEthernetFrameType);
+    	    Short matchVlanId = flowEntryObj.getMatchVlanId();
+    	    if (matchVlanId != null)
+    		match.enableVlanId(matchVlanId);
+    	    Byte matchVlanPriority = flowEntryObj.getMatchVlanPriority();
+    	    if (matchVlanPriority != null)
+    		match.enableVlanPriority(matchVlanPriority);
+    	    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+    	    if (matchSrcIPv4Net != null)
+    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+    	    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+    	    if (matchDstIPv4Net != null)
+    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+    	    Byte matchIpProto = flowEntryObj.getMatchIpProto();
+    	    if (matchIpProto != null)
+    		match.enableIpProto(matchIpProto);
+    	    Byte matchIpToS = flowEntryObj.getMatchIpToS();
+    	    if (matchIpToS != null)
+    		match.enableIpToS(matchIpToS);
+    	    Short matchSrcTcpUdpPort = flowEntryObj.getMatchSrcTcpUdpPort();
+    	    if (matchSrcTcpUdpPort != null)
+    		match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
+    	    Short matchDstTcpUdpPort = flowEntryObj.getMatchDstTcpUdpPort();
+    	    if (matchDstTcpUdpPort != null)
+    		match.enableDstTcpUdpPort(matchDstTcpUdpPort);
     	    flowEntry.setFlowEntryMatch(match);
 
     	    //

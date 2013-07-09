@@ -166,21 +166,15 @@ def extract_flow_args(my_args):
       dstMac['value'] = arg2
       match['dstMac'] = dstMac
       # match['matchDstMac'] = True
+    elif arg1 == "matchEthernetFrameType":
+      match['ethernetFrameType'] = int(arg2, 0)
+      # match['matchEthernetFrameType'] = True
     elif arg1 == "matchVlanId":
       match['vlanId'] = int(arg2, 0)
       # match['matchVlanId'] = True
     elif arg1 == "matchVlanPriority":
       match['vlanPriority'] = int(arg2, 0)
       # match['matchVlanPriority'] = True
-    elif arg1 == "matchEthernetFrameType":
-      match['ethernetFrameType'] = int(arg2, 0)
-      # match['matchEthernetFrameType'] = True
-    elif arg1 == "matchIpToS":
-      match['ipToS'] = int(arg2, 0)
-      # match['matchIpToS'] = True
-    elif arg1 == "matchIpProto":
-      match['ipProto'] = int(arg2, 0)
-      # match['matchIpProto'] = True
     elif arg1 == "matchSrcIPv4Net":
       srcIPv4Net = {}
       srcIPv4Net['value'] = arg2
@@ -191,6 +185,12 @@ def extract_flow_args(my_args):
       dstIPv4Net['value'] = arg2
       match['dstIPv4Net'] = dstIPv4Net
       # match['matchDstIPv4Net'] = True
+    elif arg1 == "matchIpProto":
+      match['ipProto'] = int(arg2, 0)
+      # match['matchIpProto'] = True
+    elif arg1 == "matchIpToS":
+      match['ipToS'] = int(arg2, 0)
+      # match['matchIpToS'] = True
     elif arg1 == "matchSrcTcpUdpPort":
       match['srcTcpUdpPort'] = int(arg2, 0)
       # match['matchSrcTcpUdpPort'] = True
@@ -222,24 +222,6 @@ def extract_flow_args(my_args):
       vlanPriority['vlanPriority'] = int(arg2, 0)
       action['actionSetVlanPriority'] = vlanPriority
       # action['actionType'] = 'ACTION_SET_VLAN_PCP'
-      actions.append(copy.deepcopy(action))
-    elif arg1 == "actionSetIpToS":
-      ipToS = {}
-      ipToS['ipToS'] = int(arg2, 0)
-      action['actionSetIpToS'] = ipToS
-      # action['actionType'] = 'ACTION_SET_NW_TOS'
-      actions.append(copy.deepcopy(action))
-    elif arg1 == "actionSetTcpUdpSrcPort":
-      tcpUdpSrcPort = {}
-      tcpUdpSrcPort['port'] = int(arg2, 0)
-      action['actionSetTcpUdpSrcPort'] = tcpUdpSrcPort
-      # action['actionType'] = 'ACTION_SET_TP_SRC'
-      actions.append(copy.deepcopy(action))
-    elif arg1 == "actionSetTcpUdpDstPort":
-      tcpUdpDstPort = {}
-      tcpUdpDstPort['port'] = int(arg2, 0)
-      action['actionSetTcpUdpDstPort'] = tcpUdpDstPort
-      # action['actionType'] = 'ACTION_SET_TP_DST'
       actions.append(copy.deepcopy(action))
     elif arg1 == "actionStripVlan":
       stripVlan = {}
@@ -278,6 +260,24 @@ def extract_flow_args(my_args):
       setIPv4DstAddr['addr'] = IPv4DstAddr
       action['actionSetIPv4DstAddr'] = setIPv4DstAddr
       # action['actionType'] = 'ACTION_SET_NW_DST'
+      actions.append(copy.deepcopy(action))
+    elif arg1 == "actionSetIpToS":
+      ipToS = {}
+      ipToS['ipToS'] = int(arg2, 0)
+      action['actionSetIpToS'] = ipToS
+      # action['actionType'] = 'ACTION_SET_NW_TOS'
+      actions.append(copy.deepcopy(action))
+    elif arg1 == "actionSetTcpUdpSrcPort":
+      tcpUdpSrcPort = {}
+      tcpUdpSrcPort['port'] = int(arg2, 0)
+      action['actionSetTcpUdpSrcPort'] = tcpUdpSrcPort
+      # action['actionType'] = 'ACTION_SET_TP_SRC'
+      actions.append(copy.deepcopy(action))
+    elif arg1 == "actionSetTcpUdpDstPort":
+      tcpUdpDstPort = {}
+      tcpUdpDstPort['port'] = int(arg2, 0)
+      action['actionSetTcpUdpDstPort'] = tcpUdpDstPort
+      # action['actionType'] = 'ACTION_SET_TP_DST'
       actions.append(copy.deepcopy(action))
     elif arg1 == "actionEnqueue":
       # TODO: Implement ACTION_ENQUEUE
@@ -476,15 +476,13 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "        matchInPort <True|False> (default to True)\n"
   usage_msg = usage_msg + "        matchSrcMac <source MAC address>\n"
   usage_msg = usage_msg + "        matchDstMac <destination MAC address>\n"
-  usage_msg = usage_msg + "        matchSrcIPv4Net <source IPv4 network address>\n"
-  usage_msg = usage_msg + "        matchDstIPv4Net <destination IPv4 network address>\n"
   usage_msg = usage_msg + "        matchEthernetFrameType <Ethernet frame type>\n"
-  usage_msg = usage_msg + "\n"
-  usage_msg = usage_msg + "    Match Conditions (not implemented yet):\n"
   usage_msg = usage_msg + "        matchVlanId <VLAN ID>\n"
   usage_msg = usage_msg + "        matchVlanPriority <VLAN priority>\n"
-  usage_msg = usage_msg + "        matchIpToS <IP ToS (DSCP field, 6 bits)>\n"
+  usage_msg = usage_msg + "        matchSrcIPv4Net <source IPv4 network address>\n"
+  usage_msg = usage_msg + "        matchDstIPv4Net <destination IPv4 network address>\n"
   usage_msg = usage_msg + "        matchIpProto <IP protocol>\n"
+  usage_msg = usage_msg + "        matchIpToS <IP ToS (DSCP field, 6 bits)>\n"
   usage_msg = usage_msg + "        matchSrcTcpUdpPort <source TCP/UDP port>\n"
   usage_msg = usage_msg + "        matchDstTcpUdpPort <destination TCP/UDP port>\n"
   usage_msg = usage_msg + "\n"
