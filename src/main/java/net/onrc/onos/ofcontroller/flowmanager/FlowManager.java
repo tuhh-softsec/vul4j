@@ -1704,7 +1704,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (matchIpProto == null)
 	    matchIpProto = flowObj.getMatchIpProto();
 	if (matchIpProto != null) {
-	    match.setNetworkTypeOfService(matchIpProto);
+	    match.setNetworkProtocol(matchIpProto);
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_NW_PROTO);
 	}
 
