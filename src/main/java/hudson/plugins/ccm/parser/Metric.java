@@ -58,8 +58,16 @@ public class Metric {
 	 * The file name (e.g.:\ascx\request\open\form.ascx.cs).
 	 */
 	private String file;
-  private int startLineNumber;
-  private int endLineNumber;
+	
+	/**
+	 * The start line number of the measurement
+	 */
+	private int startLineNumber;
+	
+	/**
+	 * The end line number of the measurement
+	 */
+	private int endLineNumber;
   
 	public Metric() {
 		super();
