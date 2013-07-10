@@ -69,7 +69,7 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
 		if (sessionAttributesProperty != null) {
 			String attributes[] = sessionAttributesProperty.split(",");
 			for (String attribute : attributes) {
-				sessionAttributes.add(attribute.trim());
+				this.sessionAttributes.add(attribute.trim());
 				if (logger.isInfoEnabled()) {
 					logger.info("Forwading session attribute: " + attribute);
 				}
@@ -81,7 +81,7 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
 		if (requestAttributesProperty != null) {
 			String attributes[] = requestAttributesProperty.split(",");
 			for (String attribute : attributes) {
-				requestAttributes.add(attribute.trim());
+				this.requestAttributes.add(attribute.trim());
 				if (logger.isInfoEnabled()) {
 					logger.info("Forwading request attribute: " + attribute);
 				}
@@ -91,7 +91,7 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
 		// Prefix name
 		String headerPrefixProperty = (String) properties.get("headerPrefix");
 		if (headerPrefixProperty != null) {
-			headerPrefix = headerPrefixProperty;
+			this.headerPrefix = headerPrefixProperty;
 		}
 	}
 
@@ -102,29 +102,26 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
 
 	@Override
 	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("preRequest");
-		}
+		logger.debug("preRequest");
+
 		// Process session
 		ContainerRequestMediator mediator = HttpRequestHelper.getMediator(httpRequest);
-		for (String attribute : sessionAttributes) {
+		for (String attribute : this.sessionAttributes) {
 			String value = (String) mediator.getSessionAttribute(attribute);
 			if (value != null) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Adding session attribute " + attribute + " (" + value + ") as header (" + headerPrefix + attribute + ")");
-				}
-				request.addHeader(headerPrefix + attribute, value);
+				logger.debug("Adding session attribute {} ({}) as header ({}{})", attribute, value, this.headerPrefix,
+						attribute);
+				request.addHeader(this.headerPrefix + attribute, value);
 			}
 		}
 
 		// Process request
-		for (String attribute : requestAttributes) {
+		for (String attribute : this.requestAttributes) {
 			String value = (String) httpRequest.getParams().getParameter(attribute);
 			if (value != null) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Adding request attribute " + attribute + " (" + value + ") as header (" + headerPrefix + attribute + ")");
-				}
-				request.addHeader(headerPrefix + attribute, value);
+				logger.debug("Adding request attribute {} ({}) as header ({}{})", attribute, value, this.headerPrefix,
+						attribute);
+				request.addHeader(this.headerPrefix + attribute, value);
 			}
 		}
 	}
