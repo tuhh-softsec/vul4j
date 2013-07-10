@@ -158,7 +158,7 @@ public class ControlHandler extends AbstractHandler {
 		for (Entry<String, Gauge> c : gauges.entrySet()) {
 			result.put(c.getKey() + " gauge", String.valueOf(c.getValue().getValue()));
 		}
-		
+
 		// Get total accesses
 		Long accesses = new Long(meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.1xx-responses").getCount()
 				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.2xx-responses").getCount()
@@ -166,11 +166,13 @@ public class ControlHandler extends AbstractHandler {
 				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.4xx-responses").getCount()
 				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.5xx-responses").getCount());
 		result.put("Total Accesses", accesses);
-		
+
 		// Get uptime
 		result.put("Uptime", new Long(ManagementFactory.getRuntimeMXBean().getUptime()));
-		
-		
+
+		// Get CPULoad
+		result.put("CPULoad", new Double(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()));
+
 		return result;
 
 	}
