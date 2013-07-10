@@ -105,9 +105,9 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 	@Override
 	public void init(Driver d, Properties properties) {
 		this.driver = d;
-		driver.getEventManager().register(EventManager.EVENT_PROXY_PRE, this);
-		driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
-		driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST, this);
+		this.driver.getEventManager().register(EventManager.EVENT_PROXY_PRE, this);
+		this.driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
+		this.driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST, this);
 
 		init(properties);
 	}
@@ -125,7 +125,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 
 			while (needsNewRequest(e.httpResponse, e.originalRequest)) {
 				EntityUtils.consumeQuietly(e.httpResponse.getEntity());
-				e.httpResponse = driver.executeSingleRequest(e.httpRequest);
+				e.httpResponse = this.driver.executeSingleRequest(e.httpRequest);
 			}
 		} else if (EventManager.EVENT_PROXY_PRE.equals(id)) {
 			ProxyEvent e = (ProxyEvent) event;
