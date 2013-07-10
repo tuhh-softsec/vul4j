@@ -47,11 +47,6 @@ public class CcmParser extends AbstractAnnotationParser {
 
 	private static final long serialVersionUID = -5172155190810975806L;
 	
-	/** PMD priorities smaller than this value are mapped to {@link Priority#HIGH}. */
-    private static final int CCM_COMPLEXITY_MAPPED_TO_HIGH_PRIORITY = 10;
-    /** PMD priorities greater than this value are mapped to {@link Priority#LOW}. */
-    private static final int CCM_COMPLEXITY_MAPPED_TO_LOW_PRIORITY = 4;
-	
 	/**
      * Creates a new instance of {@link PmdParser}.
      */
@@ -88,6 +83,8 @@ public class CcmParser extends AbstractAnnotationParser {
             digester.addBeanPropertySetter("ccm/metric/unit");
             digester.addBeanPropertySetter("ccm/metric/classification");
             digester.addBeanPropertySetter("ccm/metric/file");
+            digester.addBeanPropertySetter("ccm/metric/startLineNumber");
+            digester.addBeanPropertySetter("ccm/metric/endLineNumber");
             digester.addSetNext(fileMetric, "addMetric", Metric.class.getName());
 
             Ccm module = (Ccm)digester.parse(file);
@@ -115,23 +112,25 @@ public class CcmParser extends AbstractAnnotationParser {
 		
 		for (Metric warning : collection.getMetrics()) {
 			Priority priority;
-			if (warning.getComplexity() > CCM_COMPLEXITY_MAPPED_TO_HIGH_PRIORITY) {
+			if (warning.getClassification().contains("high")) {
 				priority = Priority.HIGH;
-			} else if (warning.getComplexity() < CCM_COMPLEXITY_MAPPED_TO_LOW_PRIORITY) {
-				priority = Priority.LOW;
-			} else {
+			} else if (warning.getClassification().contains("moderate")) {
 				priority = Priority.NORMAL;
+			} else {
+				priority = Priority.LOW;
 			}
+			
+			String complexity = String.format("%s has a complexity of %d", warning.getUnit(), warning.getComplexity());
 
-			Bug bug = new Bug(priority, warning.getClassification(), warning.getClassification(), 
-					"Cyclomatic Complexity", 0, 0);
-			bug.setPackageName("");
+			Bug bug = new Bug(priority, complexity, warning.getClassification(), 
+					"Cyclomatic Complexity", warning.getStartLineNumber(), warning.getEndLineNumber());
+			bug.setPackageName("-");
 			bug.setModuleName(moduleName);
 			bug.setFileName(warning.getFile());
 			bug.setColumnPosition(0, 0);
 
 			try {
-				bug.setContextHashCode(createContextHashCode(warning.getFile(), 0));
+				bug.setContextHashCode(createContextHashCode(warning.getFile() + warning.getUnit() + warning.getClassification(), 0));
 			} catch (IOException exception) {
 				// ignore and continue
 			}
