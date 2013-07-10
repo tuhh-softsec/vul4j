@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
@@ -28,7 +29,6 @@ import org.esigate.events.impl.FragmentEvent;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.extension.Extension;
 import org.esigate.http.GenericHttpRequest;
-import org.esigate.http.HttpResponseUtils;
 
 /**
  * This class is an adapter from the old ESIgate 2.X/3.X API used for
@@ -124,7 +124,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 			FragmentEvent e = (FragmentEvent) event;
 
 			while (needsNewRequest(e.httpResponse, e.originalRequest)) {
-				HttpResponseUtils.release(e.httpResponse);
+				EntityUtils.consumeQuietly(e.httpResponse.getEntity());
 				e.httpResponse = driver.executeSingleRequest(e.httpRequest);
 			}
 		} else if (EventManager.EVENT_PROXY_PRE.equals(id)) {
