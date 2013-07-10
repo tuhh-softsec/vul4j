@@ -167,6 +167,17 @@ public class ControlHandler extends AbstractHandler {
 				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.5xx-responses").getCount());
 		result.put("Total Accesses", accesses);
 
+		// Get ReqPerSec
+		
+		Double reqPerSec = new Double(
+				meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.1xx-responses").getOneMinuteRate()
+				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.2xx-responses").getOneMinuteRate()
+				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.3xx-responses").getOneMinuteRate()
+				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.4xx-responses").getOneMinuteRate()
+				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.5xx-responses").getOneMinuteRate());
+		result.put("ReqPerSec", reqPerSec);
+		
+		
 		// Get uptime
 		result.put("Uptime", new Long(ManagementFactory.getRuntimeMXBean().getUptime()));
 
