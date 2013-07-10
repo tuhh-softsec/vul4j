@@ -104,9 +104,9 @@ public class EsigateServer {
 		try {
 			configFile = System.getProperty(PROPERTY_PREFIX + "config", "server.properties");
 			System.out.println("Loading server configuration from " + configFile);
-			
+
 			Properties serverProperties = new Properties();
-			
+
 			try (InputStream is = new FileInputStream(configFile);) {
 				serverProperties.load(is);
 			}
@@ -196,46 +196,49 @@ public class EsigateServer {
 		http_config.setOutputBufferSize(outputBufferSize);
 		http_config.setSendServerVersion(false);
 
-		ServerConnector connector = new InstrumentedServerConnector("main", EsigateServer.port, srv, registry,
-				new HttpConnectionFactory(http_config));
-		ServerConnector controlConnector = new InstrumentedServerConnector("control", EsigateServer.controlPort, srv,
-				registry);
+		try (ServerConnector connector = new InstrumentedServerConnector("main", EsigateServer.port, srv, registry,
+				new HttpConnectionFactory(http_config)); ServerConnector controlConnector = new ServerConnector(srv)) {
 
-		// Main connector
-		connector.setIdleTimeout(EsigateServer.idleTimeout);
-		connector.setSoLingerTime(-1);
+			// Main connector
+			connector.setIdleTimeout(EsigateServer.idleTimeout);
+			connector.setSoLingerTime(-1);
+			connector.setName("main");
 
-		// Control connector
-		controlConnector.setHost("127.0.0.1");
+			// Control connector
+			controlConnector.setHost("127.0.0.1");
+			controlConnector.setPort(EsigateServer.controlPort);
+			controlConnector.setName("control");
 
-		srv.setConnectors(new Connector[] { connector, controlConnector });
-		// War
-		ProtectionDomain protectionDomain = EsigateServer.class.getProtectionDomain();
-		String warFile = protectionDomain.getCodeSource().getLocation().toExternalForm();
-		String currentDir = new File(protectionDomain.getCodeSource().getLocation().getPath()).getParent();
+			srv.setConnectors(new Connector[] { connector, controlConnector });
+			// War
+			ProtectionDomain protectionDomain = EsigateServer.class.getProtectionDomain();
+			String warFile = protectionDomain.getCodeSource().getLocation().toExternalForm();
+			String currentDir = new File(protectionDomain.getCodeSource().getLocation().getPath()).getParent();
 
-		WebAppContext context = new WebAppContext(warFile, EsigateServer.contextPath);
-		context.setServer(srv);
+			WebAppContext context = new WebAppContext(warFile, EsigateServer.contextPath);
+			context.setServer(srv);
 
-		// Add extra classpath (allows to add extensions).
-		if (EsigateServer.extraClasspath != null) {
-			context.setExtraClasspath(EsigateServer.extraClasspath);
+			// Add extra classpath (allows to add extensions).
+			if (EsigateServer.extraClasspath != null) {
+				context.setExtraClasspath(EsigateServer.extraClasspath);
+			}
+			resetTempDirectory(context, currentDir);
+
+			// Add the handlers
+			HandlerCollection handlers = new HandlerList();
+			// control handler must be the first one.
+			// Work in progress, currently disabled.
+			handlers.addHandler(new ControlHandler(registry));
+			InstrumentedHandler ih = new InstrumentedHandler(registry);
+			ih.setName("esigate");
+			ih.setHandler(context);
+			handlers.addHandler(ih);
+
+			srv.setHandler(handlers);
+
+			srv.start();
+			srv.join();
 		}
-		resetTempDirectory(context, currentDir);
-
-		// Add the handlers
-		HandlerCollection handlers = new HandlerList();
-		// control handler must be the first one.
-		// Work in progress, currently disabled.
-		handlers.addHandler(new ControlHandler(registry));
-		InstrumentedHandler ih = new InstrumentedHandler(registry);
-		ih.setHandler(context);
-		handlers.addHandler(ih);
-
-		srv.setHandler(handlers);
-
-		srv.start();
-		srv.join();
 
 	}
 

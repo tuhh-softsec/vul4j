@@ -16,7 +16,6 @@
 package org.esigate.server.metrics;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Server;
@@ -44,11 +43,11 @@ public class InstrumentedServerConnector extends ServerConnector {
 	 */
 	public InstrumentedServerConnector(String id, int port, @Name("server") Server server, MetricRegistry registry) {
 		super(server);
-		instrument(id, port,registry);
+		instrument(id, port, registry);
 	}
 
-	public InstrumentedServerConnector(String id, int port, @Name("server") Server server,
-			 MetricRegistry registry, @Name("factories") ConnectionFactory... factories) {
+	public InstrumentedServerConnector(String id, int port, @Name("server") Server server, MetricRegistry registry,
+			@Name("factories") ConnectionFactory... factories) {
 		super(server, factories);
 		instrument(id, port, registry);
 	}
@@ -62,13 +61,13 @@ public class InstrumentedServerConnector extends ServerConnector {
 	@Override
 	public void accept(int acceptorID) throws IOException {
 		super.accept(acceptorID);
-//		this.accepts.mark();
+		this.accepts.mark();
 	}
 
 	@Override
 	public void close() {
 		super.close();
-//		this.disconnects.mark();
+		this.disconnects.mark();
 		this.connections.dec();
 	}
 
@@ -81,19 +80,17 @@ public class InstrumentedServerConnector extends ServerConnector {
 	 */
 	private void instrument(String id, int port, MetricRegistry registry) {
 		this.setPort(port);
-		this.accepts = registry.meter( id + "-accepts" );
-//		this.connects = registry.newMeter(InstrumentedServerConnector.class, id + "-connects",
-//				Integer.toString(this.getPort()), "connections", TimeUnit.SECONDS);
-//		this.disconnects = registry.newMeter(InstrumentedServerConnector.class, id + "-disconnects",
-//				Integer.toString(this.getPort()), "connections", TimeUnit.SECONDS);
-		this.connections = registry.counter( id + "-active-connections" );
-//				Integer.toString(this.getPort()));
+		this.accepts = registry.meter(id + "-accepts");
+		this.connects = registry.meter(id + "-connects");
+		this.disconnects = registry.meter(id + "-disconnects");
+		this.connections = registry.counter(id + "-active-connections");
+
 	}
 
 	@Override
 	public void open() throws IOException {
 		this.connections.inc();
 		super.open();
-//		this.connects.mark();
+		this.connects.mark();
 	}
 }

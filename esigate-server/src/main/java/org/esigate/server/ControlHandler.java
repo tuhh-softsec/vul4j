@@ -17,6 +17,7 @@ package org.esigate.server;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.management.ManagementFactory;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -112,7 +113,7 @@ public class ControlHandler extends AbstractHandler {
 				if ("GET".equals(serverRequest.getMethod())) {
 					response.setStatus(HttpServletResponse.SC_OK);
 					try (Writer sos = response.getWriter()) {
-						Map<String, String> status = getServerStatus();
+						Map<String, Object> status = getServerStatus();
 						for (String key : status.keySet()) {
 							sos.append(key + ": " + status.get(key) + "\n");
 						}
@@ -124,7 +125,7 @@ public class ControlHandler extends AbstractHandler {
 			case URL_STATUS_AUTO:
 				response.setStatus(HttpServletResponse.SC_OK);
 				try (Writer sos = response.getWriter()) {
-					Map<String, String> status = getServerStatus();
+					Map<String, Object> status = getServerStatus();
 					for (String key : status.keySet()) {
 						sos.append(key + ": " + status.get(key) + "\n");
 					}
@@ -140,24 +141,36 @@ public class ControlHandler extends AbstractHandler {
 
 	}
 
-	private Map<String, String> getServerStatus() {
-		Map<String, String> result = new TreeMap<>();
+	private Map<String, Object> getServerStatus() {
+		Map<String, Object> result = new TreeMap<>();
 
 		Map<String, Counter> counters = this.registry.getCounters();
 		for (Entry<String, Counter> c : counters.entrySet()) {
-			result.put(c.getKey(), String.valueOf(c.getValue().getCount()));
+			result.put(c.getKey() + " counter", String.valueOf(c.getValue().getCount()));
 		}
 
 		Map<String, Meter> meters = this.registry.getMeters();
 		for (Entry<String, Meter> c : meters.entrySet()) {
-			result.put(c.getKey(), String.valueOf(c.getValue().getCount()));
+			result.put(c.getKey() + " meter", String.valueOf(c.getValue().getCount()));
 		}
 
 		Map<String, Gauge> gauges = this.registry.getGauges();
 		for (Entry<String, Gauge> c : gauges.entrySet()) {
-			result.put(c.getKey(), String.valueOf(c.getValue().getValue()));
+			result.put(c.getKey() + " gauge", String.valueOf(c.getValue().getValue()));
 		}
-
+		
+		// Get total accesses
+		Long accesses = new Long(meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.1xx-responses").getCount()
+				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.2xx-responses").getCount()
+				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.3xx-responses").getCount()
+				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.4xx-responses").getCount()
+				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.5xx-responses").getCount());
+		result.put("Total Accesses", accesses);
+		
+		// Get uptime
+		result.put("Uptime", new Long(ManagementFactory.getRuntimeMXBean().getUptime()));
+		
+		
 		return result;
 
 	}
