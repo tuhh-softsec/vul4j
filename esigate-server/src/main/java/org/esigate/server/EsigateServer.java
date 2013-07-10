@@ -19,7 +19,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.ProtectionDomain;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.server.Connector;
@@ -102,8 +104,18 @@ public class EsigateServer {
 		try {
 			configFile = System.getProperty(PROPERTY_PREFIX + "config", "server.properties");
 			System.out.println("Loading server configuration from " + configFile);
-			//TODO: auto prefix. No prefix in server.properties
-			System.getProperties().load(new FileInputStream(configFile));
+			
+			Properties serverProperties = new Properties();
+			
+			try (InputStream is = new FileInputStream(configFile);) {
+				serverProperties.load(is);
+			}
+
+			for (Object prop : serverProperties.keySet()) {
+				String serverPropertyName = (String) prop;
+				System.setProperty(PROPERTY_PREFIX + serverPropertyName,
+						serverProperties.getProperty(serverPropertyName));
+			}
 		} catch (FileNotFoundException e) {
 			System.out.println(configFile + " not found.");
 		} catch (IOException e) {

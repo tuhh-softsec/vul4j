@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -48,14 +49,33 @@ import com.codahale.metrics.MetricRegistry;
  */
 public class ControlHandler extends AbstractHandler {
 
+	/**
+	 * Human-readable status
+	 */
+	private static final String URL_STATUS = "/server-status";
+	/**
+	 * Machine-readable status.
+	 * 
+	 * <p>
+	 * Sample :
+	 * 
+	 * <pre>
+	 * Total Accesses: 157678
+	 * Total kBytes: 176421
+	 * CPULoad: .0190435
+	 * Uptime: 2214828
+	 * ReqPerSec: .071192
+	 * BytesPerSec: 81.5662
+	 * BytesPerReq: 1145.72
+	 * BusyWorkers: 1
+	 * IdleWorkers: 4
+	 * </pre>
+	 */
+	private static final String URL_STATUS_AUTO = "/server-status?auto";
 	private final MetricRegistry registry;
 
 	public ControlHandler(MetricRegistry registry) {
 		this.registry = registry;
-	}
-
-	private static boolean ensureCommand(Request serverRequest) {
-		return "GET".equals(serverRequest.getMethod());
 	}
 
 	private static boolean fromControlConnection(Request serverRequest) {
@@ -68,7 +88,7 @@ public class ControlHandler extends AbstractHandler {
 	}
 
 	public static void status(int port) {
-		Http.POST("http://127.0.0.1:" + port + "/status");
+		Http.GET("http://127.0.0.1:" + port + URL_STATUS);
 		return;
 	}
 
@@ -79,43 +99,67 @@ public class ControlHandler extends AbstractHandler {
 		if (fromControlConnection(serverRequest)) {
 			serverRequest.setHandled(true);
 
-			if (ensureCommand(serverRequest)) {
-				switch (target) {
+			switch (target) {
 
-				case "/shutdown":
+			case "/shutdown":
+				if ("POST".equals(serverRequest.getMethod())) {
 					response.setStatus(HttpServletResponse.SC_OK);
 					stopServer();
-					break;
-
-				case "/status":
-					response.setStatus(HttpServletResponse.SC_OK);
-
-					Writer sos = response.getWriter();
-					Map<String, Counter> counters = registry.getCounters();
-					for (Entry<String, Counter> c : counters.entrySet()) {
-						sos.append(c.getKey() + " " + c.getValue().getCount() + "\n");
-					}
-
-					Map<String, Meter> meters = registry.getMeters();
-					for (Entry<String, Meter> c : meters.entrySet()) {
-						sos.append(c.getKey() + " " + c.getValue().getCount() + "\n");
-					}
-
-					Map<String, Gauge> gauges = registry.getGauges();
-					for (Entry<String, Gauge> c : gauges.entrySet()) {
-						sos.append(c.getKey() + " " + c.getValue().getValue() + "\n");
-					}
-
-					break;
-
-				default:
-					response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-					break;
 				}
+				break;
 
+			case URL_STATUS:
+				if ("GET".equals(serverRequest.getMethod())) {
+					response.setStatus(HttpServletResponse.SC_OK);
+					try (Writer sos = response.getWriter()) {
+						Map<String, String> status = getServerStatus();
+						for (String key : status.keySet()) {
+							sos.append(key + ": " + status.get(key) + "\n");
+						}
+					}
+
+				}
+				break;
+
+			case URL_STATUS_AUTO:
+				response.setStatus(HttpServletResponse.SC_OK);
+				try (Writer sos = response.getWriter()) {
+					Map<String, String> status = getServerStatus();
+					for (String key : status.keySet()) {
+						sos.append(key + ": " + status.get(key) + "\n");
+					}
+				}
+				break;
+
+			default:
+				response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+				break;
 			}
 
 		}
+
+	}
+
+	private Map<String, String> getServerStatus() {
+		Map<String, String> result = new TreeMap<>();
+
+		Map<String, Counter> counters = this.registry.getCounters();
+		for (Entry<String, Counter> c : counters.entrySet()) {
+			result.put(c.getKey(), String.valueOf(c.getValue().getCount()));
+		}
+
+		Map<String, Meter> meters = this.registry.getMeters();
+		for (Entry<String, Meter> c : meters.entrySet()) {
+			result.put(c.getKey(), String.valueOf(c.getValue().getCount()));
+		}
+
+		Map<String, Gauge> gauges = this.registry.getGauges();
+		for (Entry<String, Gauge> c : gauges.entrySet()) {
+			result.put(c.getKey(), String.valueOf(c.getValue().getValue()));
+		}
+
+		return result;
+
 	}
 
 	/**
