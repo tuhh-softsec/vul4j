@@ -183,7 +183,7 @@ public class EsigateServer {
 	private static void start() throws Exception {
 		MetricRegistry registry = new MetricRegistry();
 		QueuedThreadPool threadPool = new InstrumentedQueuedThreadPool(registry);
-
+		threadPool.setName("esigate");
 		threadPool.setMaxThreads(maxThreads);
 		threadPool.setMinThreads(minThreads);
 
@@ -230,7 +230,7 @@ public class EsigateServer {
 			// Work in progress, currently disabled.
 			handlers.addHandler(new ControlHandler(registry));
 			InstrumentedHandler ih = new InstrumentedHandler(registry);
-			ih.setName("esigate");
+			ih.setName("main");
 			ih.setHandler(context);
 			handlers.addHandler(ih);
 

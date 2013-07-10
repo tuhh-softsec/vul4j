@@ -49,7 +49,8 @@ import com.codahale.metrics.MetricRegistry;
  * 
  */
 public class ControlHandler extends AbstractHandler {
-
+	private static final String PREFIX_CONTEXT = "org.eclipse.jetty.webapp.WebAppContext.main.";
+	private static final String PREFIX_THREAD_POOL = "org.eclipse.jetty.util.thread.QueuedThreadPool.esigate.";
 	/**
 	 * Human-readable status
 	 */
@@ -146,38 +147,36 @@ public class ControlHandler extends AbstractHandler {
 
 		Map<String, Counter> counters = this.registry.getCounters();
 		for (Entry<String, Counter> c : counters.entrySet()) {
-			result.put(c.getKey() + " counter", String.valueOf(c.getValue().getCount()));
+			result.put(cleanupStatusKey(c.getKey()), String.valueOf(c.getValue().getCount()));
 		}
 
 		Map<String, Meter> meters = this.registry.getMeters();
 		for (Entry<String, Meter> c : meters.entrySet()) {
-			result.put(c.getKey() + " meter", String.valueOf(c.getValue().getCount()));
+			result.put(cleanupStatusKey(c.getKey()), String.valueOf(c.getValue().getCount()));
+			result.put(cleanupStatusKey(c.getKey()) + "PerSec", String.valueOf(c.getValue().getOneMinuteRate()));
 		}
 
 		Map<String, Gauge> gauges = this.registry.getGauges();
 		for (Entry<String, Gauge> c : gauges.entrySet()) {
-			result.put(c.getKey() + " gauge", String.valueOf(c.getValue().getValue()));
+			result.put(cleanupStatusKey(c.getKey()), String.valueOf(c.getValue().getValue()));
 		}
 
 		// Get total accesses
-		Long accesses = new Long(meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.1xx-responses").getCount()
-				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.2xx-responses").getCount()
-				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.3xx-responses").getCount()
-				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.4xx-responses").getCount()
-				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.5xx-responses").getCount());
+		Long accesses = new Long(meters.get(PREFIX_CONTEXT + "1xx-responses").getCount()
+				+ meters.get(PREFIX_CONTEXT + "2xx-responses").getCount()
+				+ meters.get(PREFIX_CONTEXT + "3xx-responses").getCount()
+				+ meters.get(PREFIX_CONTEXT + "4xx-responses").getCount()
+				+ meters.get(PREFIX_CONTEXT + "5xx-responses").getCount());
 		result.put("Total Accesses", accesses);
 
 		// Get ReqPerSec
-		
-		Double reqPerSec = new Double(
-				meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.1xx-responses").getOneMinuteRate()
-				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.2xx-responses").getOneMinuteRate()
-				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.3xx-responses").getOneMinuteRate()
-				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.4xx-responses").getOneMinuteRate()
-				+ meters.get("org.eclipse.jetty.webapp.WebAppContext.esigate.5xx-responses").getOneMinuteRate());
+		Double reqPerSec = new Double(meters.get(PREFIX_CONTEXT + "1xx-responses").getOneMinuteRate()
+				+ meters.get(PREFIX_CONTEXT + "2xx-responses").getOneMinuteRate()
+				+ meters.get(PREFIX_CONTEXT + "3xx-responses").getOneMinuteRate()
+				+ meters.get(PREFIX_CONTEXT + "4xx-responses").getOneMinuteRate()
+				+ meters.get(PREFIX_CONTEXT + "5xx-responses").getOneMinuteRate());
 		result.put("ReqPerSec", reqPerSec);
-		
-		
+
 		// Get uptime
 		result.put("Uptime", new Long(ManagementFactory.getRuntimeMXBean().getUptime()));
 
@@ -186,6 +185,26 @@ public class ControlHandler extends AbstractHandler {
 
 		return result;
 
+	}
+
+	/**
+	 * Remove unnecessary prefix from Metrics meters id.
+	 * 
+	 * @param s
+	 * @return
+	 */
+	private static String cleanupStatusKey(String s) {
+		String result = s;
+		if (s.startsWith(PREFIX_CONTEXT)) {
+			result = s.substring(PREFIX_CONTEXT.length());
+
+		}
+
+		if (s.startsWith(PREFIX_THREAD_POOL)) {
+			result = s.substring(PREFIX_THREAD_POOL.length());
+		}
+
+		return result;
 	}
 
 	/**
