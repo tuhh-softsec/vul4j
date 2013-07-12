@@ -42,17 +42,33 @@ import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility methods for HttpClient's Request and Response objects.
+ * 
+ * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
+ * 
+ */
 public class HttpResponseUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(HttpResponseUtils.class);
- 
 
- 	
- 	
+	/**
+	 * Check if httpResponse has an error status.
+	 * 
+	 * @param httpResponse
+	 * @return true if status code >= 400
+	 */
 	public static boolean isError(HttpResponse httpResponse) {
-		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		return statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_MOVED_TEMPORARILY && statusCode != HttpStatus.SC_MOVED_PERMANENTLY && statusCode != HttpStatus.SC_NOT_MODIFIED;
+		return httpResponse.getStatusLine().getStatusCode() >= 400;
 	}
 
+	/**
+	 * Get the value of the first header matching "headerName".
+	 * 
+	 * @param headerName
+	 * @param httpResponse
+	 * @return value of the first header or null if it doesn't exist.
+	 */
 	public static String getFirstHeader(String headerName, HttpResponse httpResponse) {
 		Header header = httpResponse.getFirstHeader(headerName);
 		if (header != null)
@@ -60,6 +76,12 @@ public class HttpResponseUtils {
 		return null;
 	}
 
+	/**
+	 * Returns the charset of the entity of "httpResponse".
+	 * 
+	 * @param httpResponse
+	 * @return charset as string or null if no charset defined.
+	 */
 	public static String getContentCharset(HttpResponse httpResponse) {
 		ContentType contentType = ContentType.get(httpResponse.getEntity());
 		if (contentType != null) {
@@ -70,17 +92,26 @@ public class HttpResponseUtils {
 		return null;
 	}
 
-	public static void release(HttpResponse httpResponse) {
-		HttpEntity httpEntity = httpResponse.getEntity();
-		if (httpEntity != null)
-			try {
-				EntityUtils.consume(httpEntity);
-			} catch (IOException e) {
-				LOG.debug("Could not release request. Usualy this is due to a client abort.");
-			}
-	}
-
-	public static String removeSessionId(String src, HttpResponse httpResponse) {
+	/**
+	 * Removes ";jsessionid=&lt;id&gt;" from the url, if the session id is also
+	 * set in "httpResponse".
+	 * <p>
+	 * This methods first looks for the following header :
+	 * 
+	 * <pre>
+	 * Set-Cookie: JSESSIONID=
+	 * </pre>
+	 * 
+	 * If found and perfectly matches the jsessionid value in url, the complete
+	 * jsessionid definition is removed from the url.
+	 * 
+	 * @param uri
+	 *            original uri, may contains a jsessionid.
+	 * @param httpResponse
+	 *            the response which set the jsessionId
+	 * @return uri, without jsession
+	 */
+	public static String removeSessionId(String uri, HttpResponse httpResponse) {
 		CookieSpec cookieSpec = new BrowserCompatSpec();
 		// Dummy origin, used only by CookieSpec for setting the domain for the
 		// cookie but we don't need it
@@ -103,12 +134,32 @@ public class HttpResponseUtils {
 				break;
 		}
 		if (jsessionid == null) {
-			return src;
-		} else {
-			return UriUtils.removeSessionId(jsessionid, src);
+			return uri;
 		}
+
+		return UriUtils.removeSessionId(jsessionid, uri);
+
 	}
 
+	/**
+	 * Returns the response body as a string or the reason phrase if body is
+	 * empty.
+	 * <p>
+	 * This methods is similar to EntityUtils#toString() internally, but
+	 * uncompress the entity first if necessary.
+	 * <p>
+	 * This methods also holds an extension point, which can be used to guess
+	 * the real encoding of the entity, if the HTTP headers set a wrong encoding
+	 * declaration.
+	 * 
+	 * @since 3.0
+	 * @since 4.1 - Event EventManager.EVENT_READ_ENTITY is fired when calling
+	 *        this method.
+	 * 
+	 * @param httpResponse
+	 * @return The body as string or the reason phrase if body was empty.
+	 * @throws HttpErrorPage
+	 */
 	public static String toString(HttpResponse httpResponse, EventManager eventManager) throws HttpErrorPage {
 		HttpEntity httpEntity = httpResponse.getEntity();
 		String result;
@@ -124,17 +175,17 @@ public class HttpResponseUtils {
 				} else if ("deflate".equalsIgnoreCase(contentEncodingValue)) {
 					httpEntity = new DeflateDecompressingEntity(httpEntity);
 				} else {
-					throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding + "\" is not supported");
+					throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding
+							+ "\" is not supported");
 				}
 			}
-			
+
 			try {
 				ReadEntityEvent event = new ReadEntityEvent();
 				event.rawEntityContent = EntityUtils.toByteArray(httpEntity);
 
 				try {
-					ContentType contentType = ContentType
-							.getOrDefault(httpEntity);
+					ContentType contentType = ContentType.getOrDefault(httpEntity);
 					event.mimeType = contentType.getMimeType();
 					event.charset = contentType.getCharset();
 				} catch (UnsupportedCharsetException ex) {
@@ -162,23 +213,38 @@ public class HttpResponseUtils {
 				throw new HttpErrorPage(IOExceptionHandler.toHttpResponse(e));
 			}
 		}
-		
+
 		return removeSessionId(result, httpResponse);
 	}
-	
+
+	/**
+	 * This method is work in progress to externalize the provider.ttl option in
+	 * an extension. May be moved and/or removed in 5.x Please do not use.
+	 * 
+	 * @deprecated since this is work in progress.
+	 * @param httpResponse
+	 * @return
+	 */
+	@Deprecated
 	public static boolean isCacheableError(HttpResponse httpResponse) {
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		return statusCode == HttpStatus.SC_NOT_FOUND
-				|| statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR
+		return statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR
 				|| statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE;
 	}
-	
+
+	/**
+	 * This method is work in progress to externalize the provider.ttl option in
+	 * an extension. May be moved and/or removed in 5.x Please do not use.
+	 * 
+	 * @deprecated since this is work in progress.
+	 * @param httpResponse
+	 * @return
+	 */
+	@Deprecated
 	public static boolean isCacheableSuccess(HttpResponse httpResponse) {
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		return statusCode == HttpStatus.SC_OK
-				|| statusCode == HttpStatus.SC_MOVED_PERMANENTLY
-				|| statusCode == HttpStatus.SC_MOVED_TEMPORARILY
-				|| statusCode == HttpStatus.SC_NOT_MODIFIED;
+		return statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MOVED_PERMANENTLY
+				|| statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_NOT_MODIFIED;
 	}
-	
+
 }
