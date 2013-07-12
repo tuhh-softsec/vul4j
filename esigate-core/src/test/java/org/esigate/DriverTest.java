@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.SocketTimeoutException;
 import java.util.Date;
@@ -42,6 +43,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.esigate.api.ContainerRequestMediator;
 import org.esigate.cookie.CookieManager;
 import org.esigate.esi.EsiRenderer;
@@ -829,5 +831,60 @@ public class DriverTest extends TestCase {
 		ContainerRequestMediator mediator = HttpRequestHelper.getMediator(request);
 		Assert.assertEquals(1, mediator.getCookies().length);
 		Assert.assertEquals("/", mediator.getCookies()[0].getPath());
+	}
+	
+	/**
+	 * 0000231: ESIgate should be enable to mashup elements for an error/404
+	 * page
+	 * 
+	 * @see "http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=231"
+	 * 
+	 * @throws Exception
+	 */
+	public void testBug231_RenderingOnProxyError() throws Exception {
+		// Configuration
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost.mydomain.fr/");
+		properties.put(Parameters.PRESERVE_HOST.name, "true");
+
+		// Setup server responses.
+		mockConnectionManager = new MockConnectionManager() {
+			@Override
+			public HttpResponse execute(HttpRequest request) {
+				// The main page
+				if (request.getRequestLine().getUri().equals("http://test.mydomain.fr/foobar/"))
+					return new HttpResponseBuilder()
+							.entity(new StringEntity("<esi:include src=\"http://test.mydomain.fr/esi/\"/>",
+									ContentType.TEXT_HTML)).status(400).build();
+
+				// The ESI fragment
+				if (request.getRequestLine().getUri().equals("http://test.mydomain.fr/esi/"))
+					try {
+						return new HttpResponseBuilder().entity("OK").build();
+					} catch (UnsupportedEncodingException e) {
+						Assert.fail("Unexpected exception" + e.getMessage());
+					}
+
+				// Other unexpected request ? -> Fail
+				Assert.fail("Unexpected request " + request.getRequestLine().getUri());
+				return null;
+			}
+		};
+		
+
+		// Build driver and request.
+		Driver driver = createMockDriver(properties, mockConnectionManager);
+		request = new HttpRequestBuilder().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+
+		try {
+			// Perform call with ESI rendering.
+			driver.proxy("/foobar/", request, new EsiRenderer());
+			fail("HttpErrorPage expected");
+		} catch (HttpErrorPage errorPage) {
+			// Ensure request was esi-processed.
+			HttpResponse response = errorPage.getHttpResponse();
+			Assert.assertEquals("OK", EntityUtils.toString(response.getEntity()));
+		}
+
 	}
 }

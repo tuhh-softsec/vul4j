@@ -57,6 +57,7 @@ public class HttpResponseBuilder {
 
 	public HttpResponseBuilder entity(HttpEntity paramEntity) {
 		this.entity = paramEntity;
+		this.headers.add( this.entity.getContentType());
 		return this;
 	}
 

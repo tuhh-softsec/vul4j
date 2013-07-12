@@ -63,7 +63,7 @@ public class Driver {
 	private final DriverConfiguration config;
 	private HttpClientHelper httpClientHelper;
 	private final Collection<String> parsableContentTypes;
-	private final EventManager eventManager ;
+	private final EventManager eventManager;
 
 	private Driver(Properties properties, String name, EventManager eventManagerParam) {
 		this.eventManager = eventManagerParam;
@@ -75,7 +75,7 @@ public class Driver {
 	}
 
 	public Driver(String name, Properties properties) {
-		this(properties, name,  new EventManager(name));
+		this(properties, name, new EventManager(name));
 		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, this);
 		httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties);
 	}
@@ -86,59 +86,76 @@ public class Driver {
 	}
 
 	public EventManager getEventManager() {
-		return eventManager;
+		return this.eventManager;
 	}
 
 	/**
-	 * @param page
+	 * Perform rendering on a single url content, and append result to "writer".
+	 * 
+	 * @param pageUrl
 	 *            Address of the page containing the template
 	 * @param parameters
 	 *            parameters to be added to the request
 	 * @param writer
 	 *            Writer where to write the result
-	 * @param request
+	 * @param originalRequest
 	 *            originating request object
 	 * @param renderers
-	 *            the renderers to use to transform the output
+	 *            the renderers to use in order to transform the output
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	public final void render(String page, Map<String, String> parameters, Appendable writer, HttpEntityEnclosingRequest request, Renderer... renderers) throws IOException, HttpErrorPage {
-		initHttpRequestParams(request, parameters);
-		if (LOG.isInfoEnabled()) {
-			List<String> rendererNames = new ArrayList<String>(renderers.length);
-			for (Renderer renderer : renderers) {
-				rendererNames.add(renderer.getClass().getName());
-			}
-			LOG.info("render provider={} page= {} renderers={}", new Object[] { config.getInstanceName(), page, rendererNames });
-		}
-		String resultingpage = VariablesResolver.replaceAllVariables(page, request);
-		String currentValue = getResourceAsString(resultingpage, request);
+	public final void render(String pageUrl, Map<String, String> parameters, Appendable writer,
+			HttpEntityEnclosingRequest originalRequest, Renderer... renderers) throws IOException, HttpErrorPage {
 
-		// Start rendering.
-		RenderEvent renderEvent = new RenderEvent();
-		renderEvent.originalRequest = request;
-		renderEvent.remoteUrl = page;
-		// Create renderer list from parameters. Ensure at least 10 additional
-		// renderers can be added at no cost.
-		renderEvent.renderers = new ArrayList<Renderer>(renderers.length + 10);
-		// Add renderers used as parameters
-		if( renderers != null && renderers.length > 0 ){
-			renderEvent.renderers.addAll(Arrays.asList(renderers));
-		}
-		eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
+		initHttpRequestParams(originalRequest, parameters);
 
-		// Process all renderers
-		for (Renderer renderer : renderEvent.renderers) {
-			StringWriter stringWriter = new StringWriter();
-			renderer.render(request, currentValue, stringWriter);
-			currentValue = stringWriter.toString();
-		}
-		eventManager.fire(EventManager.EVENT_RENDER_POST, renderEvent);
+		// Replace ESI variables in URL
+		// TODO: should be performed in the ESI extension
+		String resultingPageUrl = VariablesResolver.replaceAllVariables(pageUrl, originalRequest);
 
+		// Retrieve URL
+		String currentValue = getResourceAsString(resultingPageUrl, originalRequest);
+
+		// Apply renderers
+		currentValue = performRendering(pageUrl, originalRequest, currentValue, renderers);
+
+		// Output result
 		writer.append(currentValue);
+	}
+
+	/**
+	 * Log current provider, page and renderers that will be applied.
+	 * <p>
+	 * This methods log at the INFO level.
+	 * <p>
+	 * You should only call this method if INFO level is enabled.
+	 * 
+	 * <pre>
+	 * if (LOG.isInfoEnabled()) {
+	 * 	logRendering(pageUrl, renderers);
+	 * }
+	 * </pre>
+	 * 
+	 * @see Driver#logRendering(String, Renderer[]) logRendering for renderer
+	 *      <b>list</b>.
+	 * @param action
+	 *            Action name (eg. "proxy" or "render")
+	 * @param onUrl
+	 *            current page url.
+	 * @param renderers
+	 *            array of renderers
+	 * 
+	 */
+	private void logAction(String action, String onUrl, Renderer[] renderers) {
+		List<String> rendererNames = new ArrayList<String>(renderers.length);
+		for (Renderer renderer : renderers) {
+			rendererNames.add(renderer.getClass().getName());
+		}
+		LOG.info("render provider={} page= {} renderers={}", new Object[] { this.config.getInstanceName(), onUrl,
+				rendererNames });
 	}
 
 	public void initHttpRequestParams(HttpRequest request, Map<String, String> parameters) throws HttpErrorPage {
@@ -169,11 +186,12 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If the page contains incorrect tags
 	 */
-	public void proxy(String relUrl, HttpEntityEnclosingRequest request, Renderer... renderers) throws IOException, HttpErrorPage {
+	public void proxy(String relUrl, HttpEntityEnclosingRequest request, Renderer... renderers) throws IOException,
+			HttpErrorPage {
 		initHttpRequestParams(request, null);
 
 		if (LOG.isInfoEnabled()) {
-			LOG.info("proxy provider={} relUrl={}", config.getInstanceName(), relUrl);
+			logAction("render", relUrl, renderers);
 		}
 
 		HttpRequestHelper.setCharacterEncoding(request, config.getUriEncoding());
@@ -192,37 +210,23 @@ public class Driver {
 
 		String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, e.originalRequest, true);
 		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(request, url, true);
-		HttpResponse httpResponse = execute(httpRequest);
-		if (!isTextContentType(httpResponse)) {
-			LOG.debug("'{}' is binary on no transformation to apply: was forwarded without modification.", relUrl);
+
+		try {
+			// Execute request
+			HttpResponse httpResponse = execute(httpRequest);
+
+			// Perform rendering
+			httpResponse = performRendering(relUrl, request, httpResponse, renderers);
+
+			// Send request to the client.
 			HttpRequestHelper.getMediator(request).sendResponse(httpResponse);
-		} else {
-			LOG.debug("'{}' is text : will apply renderers.", relUrl);
-			String currentValue = HttpResponseUtils.toString(httpResponse, eventManager);
 
-			// Start rendering
-			RenderEvent renderEvent = new RenderEvent();
-			renderEvent.originalRequest = request;
-			renderEvent.remoteUrl = relUrl;
-			// Create renderer list from parameters. Ensure at least an
-			// additional
-			// renderer can be added at no cost.
-			renderEvent.renderers = new ArrayList<Renderer>(renderers.length + 1);
-			renderEvent.renderers.addAll(Arrays.asList(renderers));
-
-			eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
-			for (Renderer renderer : renderEvent.renderers) {
-				StringWriter stringWriter = new StringWriter();
-				renderer.render(request, currentValue, stringWriter);
-				currentValue = stringWriter.toString();
-			}
-			eventManager.fire(EventManager.EVENT_RENDER_POST, renderEvent);
-
-			HttpEntity transformedHttpEntity = new StringEntity(currentValue, ContentType.get(httpResponse.getEntity()));
-			HttpResponse transformedResponse = new BasicHttpResponse(httpResponse.getStatusLine());
-			transformedResponse.setHeaders(httpResponse.getAllHeaders());
-			transformedResponse.setEntity(transformedHttpEntity);
-			HttpRequestHelper.getMediator(request).sendResponse(transformedResponse);
+		} catch (HttpErrorPage errorPage) {
+			// On error returned by the proxy request, perform rendering on the
+			// error page.
+			HttpResponse errorResponse = errorPage.getHttpResponse();
+			errorResponse = performRendering(relUrl, request, errorResponse, renderers);
+			throw new HttpErrorPage(errorResponse);
 		}
 
 		// Event post-proxy
@@ -230,7 +234,96 @@ public class Driver {
 	}
 
 	/**
-	 * This method returns the content of an url as a StringOutput. The result
+	 * Performs rendering on an HttpResponse.
+	 * <p>
+	 * Rendering is only performed if page can be parsed.
+	 * 
+	 * @param pageUrl
+	 *            The remove url from which the body was retrieved.
+	 * @param originalRequest
+	 *            The request received by esigate.
+	 * @param response
+	 *            The response which will be rendered.
+	 * @param renderers
+	 *            list of renderers to apply.
+	 * @return The rendered response, or the original response if if was not
+	 *         parsed.
+	 * @throws HttpErrorPage
+	 * @throws IOException
+	 */
+	private HttpResponse performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest,
+			HttpResponse response, Renderer[] renderers) throws HttpErrorPage, IOException {
+
+		if (!isTextContentType(response)) {
+			LOG.debug("'{}' is binary on no transformation to apply: was forwarded without modification.", pageUrl);
+			return response;
+		}
+
+		LOG.debug("'{}' is text : will apply renderers.", pageUrl);
+
+		// Get response body
+		String currentValue = HttpResponseUtils.toString(response, this.eventManager);
+
+		// Perform rendering
+		currentValue = performRendering(pageUrl, originalRequest, currentValue, renderers);
+
+		// Generate the new response.
+		HttpEntity transformedHttpEntity = new StringEntity(currentValue, ContentType.get(response.getEntity()));
+		HttpResponse transformedResponse = new BasicHttpResponse(response.getStatusLine());
+		transformedResponse.setHeaders(response.getAllHeaders());
+		transformedResponse.setEntity(transformedHttpEntity);
+		return transformedResponse;
+
+	}
+
+	/**
+	 * Performs rendering (apply a render list) on an http response body (as a
+	 * String).
+	 * 
+	 * @param pageUrl
+	 *            The remove url from which the body was retrieved.
+	 * @param originalRequest
+	 *            The request received by esigate.
+	 * @param body
+	 *            The response body which will be rendered.
+	 * @param renderers
+	 *            list of renderers to apply.
+	 * @return The rendered response body.
+	 * @throws HttpErrorPage
+	 * @throws IOException
+	 */
+	private String performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, String body,
+			Renderer[] renderers) throws IOException, HttpErrorPage {
+
+		String currentBody = body;
+
+		if (LOG.isInfoEnabled()) {
+			logAction("render", pageUrl, renderers);
+		}
+
+		// Start rendering
+		RenderEvent renderEvent = new RenderEvent();
+		renderEvent.originalRequest = originalRequest;
+		renderEvent.remoteUrl = pageUrl;
+		// Create renderer list from parameters. Ensure at least 10
+		// additional
+		// renderers can be added at no cost.
+		renderEvent.renderers = new ArrayList<Renderer>(renderers.length + 10);
+		renderEvent.renderers.addAll(Arrays.asList(renderers));
+
+		this.eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
+		for (Renderer renderer : renderEvent.renderers) {
+			StringWriter stringWriter = new StringWriter();
+			renderer.render(originalRequest, currentBody, stringWriter);
+			currentBody = stringWriter.toString();
+		}
+		this.eventManager.fire(EventManager.EVENT_RENDER_POST, renderEvent);
+
+		return currentBody;
+	}
+
+	/**
+	 * This method returns the content of an url as a String. The result
 	 * is cached into the request scope in order not to send several requests if
 	 * you need several blocks in the same page to build the final page.
 	 * 
@@ -241,30 +334,29 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 */
 	protected String getResourceAsString(String url, HttpEntityEnclosingRequest originalRequest) throws HttpErrorPage {
-		String result;
-		url = VariablesResolver.replaceAllVariables(url, originalRequest);
-		url = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
+		String pageBody;
+
+		String targetUrl = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
 
 		// Get from cache
 		boolean cacheable = "GET".equalsIgnoreCase(originalRequest.getRequestLine().getMethod());
 		if (cacheable) {
-			result = (String) originalRequest.getParams().getParameter(url);
-			if (result != null)
-				return result;
+			pageBody = (String) originalRequest.getParams().getParameter(targetUrl);
+			if (pageBody != null)
+				return pageBody;
 		}
 
-		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, false);
+		GenericHttpRequest httpRequest = this.httpClientHelper.createHttpRequest(originalRequest, targetUrl, false);
 		HttpResponse httpResponse = execute(httpRequest);
 
-
 		// Unzip
-		result = HttpResponseUtils.toString(httpResponse, eventManager);
+		pageBody = HttpResponseUtils.toString(httpResponse, this.eventManager);
 
 		// Cache
 		if (cacheable) {
-			originalRequest.getParams().setParameter(url, result);
+			originalRequest.getParams().setParameter(targetUrl, pageBody);
 		}
-		return result;
+		return pageBody;
 	}
 
 	/**
@@ -279,27 +371,28 @@ public class Driver {
 	 * @return current configuration
 	 */
 	public DriverConfiguration getConfiguration() {
-		return config;
+		return this.config;
 	}
 
-	/** 
+	/**
 	 * Get current HTTP Client.
 	 * 
-	 *  <p>
-	 * This method is not intended to get a WRITE access to the HTTP Client configuration.
 	 * <p>
-	 * For the
-	 * time being, changing HTTP Client configuration after getting access through
-	 * this method is <b>UNSUPPORTED</b> and <b>SHOULD NOT</b> be used.
+	 * This method is not intended to get a WRITE access to the HTTP Client
+	 * configuration.
+	 * <p>
+	 * For the time being, changing HTTP Client configuration after getting
+	 * access through this method is <b>UNSUPPORTED</b> and <b>SHOULD NOT</b> be
+	 * used.
 	 * 
 	 * @return current HttpClient
 	 */
 	public HttpClientHelper getHttpClientHelper() {
-		return httpClientHelper;
+		return this.httpClientHelper;
 	}
-	
+
 	/**
-	 * Check whether the given content-type value corresponds to "parsable"
+	 * Check whether the given request's content-type corresponds to "parsable"
 	 * text.
 	 * 
 	 * @param httpResponse
@@ -311,10 +404,17 @@ public class Driver {
 		return isTextContentType(contentType);
 	}
 
+	/**
+	 * Check whether the given content-type corresponds to "parsable" text.
+	 * 
+	 * @param contentType
+	 *            the input content-type
+	 * @return true if this represents text or false if not
+	 */
 	protected boolean isTextContentType(String contentType) {
 		if (contentType != null) {
 			String lowerContentType = contentType.toLowerCase();
-			for (String textContentType : parsableContentTypes) {
+			for (String textContentType : this.parsableContentTypes) {
 				if (lowerContentType.startsWith(textContentType)) {
 					return true;
 				}
