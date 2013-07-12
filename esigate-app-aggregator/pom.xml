@@ -92,25 +92,26 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.15</version>
-				<configuration>
-					<includes>
-						<include>**/*PerformanceTestCase.java</include>
-					</includes>
-				</configuration>
-				<executions>
-					<execution>
-						<id>perf-test</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>integration-test</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!--  Performance test is disabled. It succeeds only on some linux machines (like the one it was written on), we need a better performance test  -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-failsafe-plugin</artifactId> -->
+<!-- 				<version>2.15</version> -->
+<!-- 				<configuration> -->
+<!-- 					<includes> -->
+<!-- 						<include>**/*PerformanceTestCase.java</include> -->
+<!-- 					</includes> -->
+<!-- 				</configuration> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>perf-test</id> -->
+<!-- 						<phase>integration-test</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>integration-test</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
 			<plugin>
 				<groupId>org.codehaus.cargo</groupId>
 				<artifactId>cargo-maven2-plugin</artifactId>
