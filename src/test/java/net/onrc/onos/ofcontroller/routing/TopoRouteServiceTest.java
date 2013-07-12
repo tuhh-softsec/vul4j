@@ -41,6 +41,7 @@ import net.onrc.onos.ofcontroller.core.internal.TestDatabaseManager;
 import net.onrc.onos.ofcontroller.routing.TopoRouteService;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowPathFlags;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 
@@ -132,6 +133,20 @@ public class TopoRouteServiceTest {
 	String expectedResult = "1/00:00:00:00:00:00:0a:01/2;1/00:00:00:00:00:00:0a:03/2;2/00:00:00:00:00:00:0a:04/3;1/00:00:00:00:00:00:0a:06/1;";
 	assertEquals(dataPathSummaryStr, expectedResult);
 
+	// Test if we apply various Flow Path Flags
+	String expectedResult2 = "1/00:00:00:00:00:00:0a:03/2;2/00:00:00:00:00:00:0a:04/3;1/00:00:00:00:00:00:0a:06/1;";
+	String expectedResult3 = "1/00:00:00:00:00:00:0a:03/2;";
+	FlowPathFlags flowPathFlags2 = new FlowPathFlags("DISCARD_FIRST_HOP_ENTRY");
+	FlowPathFlags flowPathFlags3 = new FlowPathFlags("KEEP_ONLY_FIRST_HOP_ENTRY");
+	//
+	dataPath.applyFlowPathFlags(flowPathFlags2);
+	dataPathSummaryStr = dataPath.dataPathSummary();
+	assertEquals(dataPathSummaryStr, expectedResult2);
+	//
+	dataPath.applyFlowPathFlags(flowPathFlags3);
+	dataPathSummaryStr = dataPath.dataPathSummary();
+	assertEquals(dataPathSummaryStr, expectedResult3);
+
 	//
 	// Test Shortest-Path computation to non-existing destination
 	//
@@ -179,6 +194,20 @@ public class TopoRouteServiceTest {
 	// System.out.println(dataPathSummaryStr);
 	String expectedResult = "1/00:00:00:00:00:00:0a:01/2;1/00:00:00:00:00:00:0a:03/2;2/00:00:00:00:00:00:0a:04/3;1/00:00:00:00:00:00:0a:06/1;";
 	assertEquals(dataPathSummaryStr, expectedResult);
+
+	// Test if we apply various Flow Path Flags
+	String expectedResult2 = "1/00:00:00:00:00:00:0a:03/2;2/00:00:00:00:00:00:0a:04/3;1/00:00:00:00:00:00:0a:06/1;";
+	String expectedResult3 = "1/00:00:00:00:00:00:0a:03/2;";
+	FlowPathFlags flowPathFlags2 = new FlowPathFlags("DISCARD_FIRST_HOP_ENTRY");
+	FlowPathFlags flowPathFlags3 = new FlowPathFlags("KEEP_ONLY_FIRST_HOP_ENTRY");
+	//
+	dataPath.applyFlowPathFlags(flowPathFlags2);
+	dataPathSummaryStr = dataPath.dataPathSummary();
+	assertEquals(dataPathSummaryStr, expectedResult2);
+	//
+	dataPath.applyFlowPathFlags(flowPathFlags3);
+	dataPathSummaryStr = dataPath.dataPathSummary();
+	assertEquals(dataPathSummaryStr, expectedResult3);
 
 	//
 	// Test Shortest-Path computation to non-existing destination

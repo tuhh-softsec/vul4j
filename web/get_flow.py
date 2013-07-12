@@ -36,12 +36,23 @@ def debug(txt):
 def print_flow_path(parsedResult):
   flowId = parsedResult['flowId']['value']
   installerId = parsedResult['installerId']['value']
+  flowPathFlags = parsedResult['flowPathFlags']['flags']
   srcSwitch = parsedResult['dataPath']['srcPort']['dpid']['value']
   srcPort = parsedResult['dataPath']['srcPort']['port']['value']
   dstSwitch = parsedResult['dataPath']['dstPort']['dpid']['value']
   dstPort = parsedResult['dataPath']['dstPort']['port']['value']
 
-  print "FlowPath: (flowId = %s installerId = %s src = %s/%s dst = %s/%s)" % (flowId, installerId, srcSwitch, srcPort, dstSwitch, dstPort)
+  flowPathFlagsStr = ""
+  if (flowPathFlags & 0x1):
+    if flowPathFlagsStr:
+      flowPathFlagsStr += ","
+    flowPathFlagsStr += "DISCARD_FIRST_HOP_ENTRY"
+  if (flowPathFlags & 0x2):
+    if flowPathFlagsStr:
+      flowPathFlagsStr += ","
+    flowPathFlagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY"
+
+  print "FlowPath: (flowId = %s installerId = %s flowPathFlags = 0x%x(%s) src = %s/%s dst = %s/%s)" % (flowId, installerId, flowPathFlags, flowPathFlagsStr, srcSwitch, srcPort, dstSwitch, dstPort)
   match = parsedResult['flowEntryMatch'];
   #
   # Print the common conditions

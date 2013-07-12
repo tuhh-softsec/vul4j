@@ -104,6 +104,24 @@ public class INetMapTopologyObjectsIFlowPathTest {
 
 	/**
 	 * Desc:
+	 *  Test method for get and set FlowPathFlags method.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set the Flow Path Flags.
+	 * 2. Should get the Flow Path Flags.
+	 */
+	@Test
+	public void testSetGetFlowPathFlags() {
+		String flowId = "xx";
+		Long flowPathFlags = new Long(0x3);
+		flowPath.setFlowId(flowId);
+		flowPath.setFlowPathFlags(flowPathFlags);
+		assertEquals(flowPath.getFlowPathFlags(), flowPathFlags);
+	}
+
+	/**
+	 * Desc:
 	 *  Test method for get and set SourceSwitch method.
 	 * Condition:
 	 *  N/A

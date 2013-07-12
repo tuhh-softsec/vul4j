@@ -76,6 +76,31 @@ public class DataPath {
     }
 
     /**
+     * Apply Flow Path Flags to the pre-computed Data Path.
+     *
+     * @param flowPathFlags the Flow Path Flags to apply.
+     */
+    public void applyFlowPathFlags(FlowPathFlags flowPathFlags) {
+	if (flowPathFlags == null)
+	    return;		// Nothing to do
+
+	// Discard the first Flow Entry
+	if (flowPathFlags.isDiscardFirstHopEntry()) {
+	    if (flowEntries.size() > 0)
+		flowEntries.remove(0);
+	}
+
+	// Keep only the first Flow Entry
+	if (flowPathFlags.isKeepOnlyFirstHopEntry()) {
+	    if (flowEntries.size() > 1) {
+		FlowEntry flowEntry = flowEntries.get(0);
+		flowEntries.clear();
+		flowEntries.add(flowEntry);
+	    }
+	}
+    }
+
+    /**
      * Get a string with the summary of the shortest-path data path
      * computation.
      *
