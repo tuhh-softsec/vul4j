@@ -455,11 +455,11 @@ public interface IFlowEntry extends IBaseObject {
 		@Property("matchDstTcpUdpPort")
 		public void setMatchDstTcpUdpPort(Short matchDstTcpUdpPort);
 
-		@Property("actionOutput")
-		public Short getActionOutput();
+		@Property("actionOutputPort")
+		public Short getActionOutputPort();
 
-		@Property("actionOutput")
-		public void setActionOutput(Short actionOutput);
+		@Property("actionOutputPort")
+		public void setActionOutputPort(Short actionOutputPort);
 
 		@Adjacency(label="flow")
 		public IFlowPath getFlow();

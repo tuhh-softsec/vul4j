@@ -137,7 +137,7 @@ public class FlowPath implements Comparable<FlowPath> {
     	    // Extract the actions
     	    //
     	    ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
-    	    Short actionOutputPort = flowEntryObj.getActionOutput();
+    	    Short actionOutputPort = flowEntryObj.getActionOutputPort();
     	    if (actionOutputPort != null) {
     		FlowEntryAction action = new FlowEntryAction();
     		action.setActionOutput(new Port(actionOutputPort));

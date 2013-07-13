@@ -1164,7 +1164,7 @@ public class FlowManagerTest {
 		expect(iFlowEntry.getMatchIpToS()).andReturn(new Byte((byte)0x3));
 		expect(iFlowEntry.getMatchSrcTcpUdpPort()).andReturn(new Short((short)40000));
 		expect(iFlowEntry.getMatchDstTcpUdpPort()).andReturn(new Short((short)80));
-		expect(iFlowEntry.getActionOutput()).andReturn(new Short((short) 2));
+		expect(iFlowEntry.getActionOutputPort()).andReturn(new Short((short) 2));
 		expect(floodlightProvider.getOFMessageFactory()).andReturn(basicFactory);
 		expect(basicFactory.getMessage(OFType.FLOW_MOD)).andReturn(new OFFlowMod());
 		expect(iofSwitch.getStringId()).andReturn(new Dpid(100).toString());

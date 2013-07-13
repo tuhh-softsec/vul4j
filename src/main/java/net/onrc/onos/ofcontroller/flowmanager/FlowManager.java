@@ -738,7 +738,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - flowEntry.matchIpToS()
 	// - flowEntry.matchSrcTcpUdpPort()
 	// - flowEntry.matchDstTcpUdpPort()
-	// - flowEntry.actionOutput()
+	// - flowEntry.actionOutputPort()
 	//
 	ISwitchObject sw =
 	    op.searchSwitch(flowEntry.dpid().toString());
@@ -790,7 +790,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		IPortObject outport =
 		    op.searchPort(flowEntry.dpid().toString(),
 					      fa.actionOutput().port().value());
-		flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+		flowEntryObj.setActionOutputPort(fa.actionOutput().port().value());
 		flowEntryObj.setOutPort(outport);
 	    }
 	}
@@ -1472,7 +1472,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Extract the actions
 	//
 	ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
-	Short actionOutputPort = flowEntryObj.getActionOutput();
+	Short actionOutputPort = flowEntryObj.getActionOutputPort();
 	if (actionOutputPort != null) {
 	    FlowEntryAction action = new FlowEntryAction();
 	    action.setActionOutput(new Port(actionOutputPort));
@@ -1752,7 +1752,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// TODO: For now we support only the "OUTPUT" actions.
 	//
 	List<OFAction> actions = new ArrayList<OFAction>();
-	Short actionOutputPort = flowEntryObj.getActionOutput();
+	Short actionOutputPort = flowEntryObj.getActionOutputPort();
 	if (actionOutputPort != null) {
 	    OFActionOutput action = new OFActionOutput();
 	    // XXX: The max length is hard-coded for now
