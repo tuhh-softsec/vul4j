@@ -202,13 +202,6 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                         getSecurityToken(inputProcessorChain, xmlSecStartElement, encryptedDataType);
                 handleSecurityToken(inboundSecurityToken, inputProcessorChain.getSecurityContext(), encryptedDataType);
 
-                //only fire here ContentEncryptedElementEvents
-                //the other ones will be fired later, because we don't know the encrypted element name yet
-                if (SecurePart.Modifier.Content.getModifier().equals(encryptedDataType.getType())) {
-                    handleEncryptedContent(inputProcessorChain, xmlSecStartElement.getParentXMLSecStartElement(),
-                            inboundSecurityToken, encryptedDataType);
-                }
-
                 final String algorithmURI = encryptedDataType.getEncryptionMethod().getAlgorithm();
                 final int ivLength = JCEAlgorithmMapper.getIVLengthFromURI(algorithmURI) / 8;
                 Cipher symCipher = getCipher(algorithmURI);
@@ -235,6 +228,14 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 inputProcessorChain.getDocumentContext().setIsInEncryptedContent(
                         inputProcessorChain.getProcessors().indexOf(decryptedEventReaderInputProcessor),
                         decryptedEventReaderInputProcessor);
+
+                //fire here only ContentEncryptedElementEvents
+                //the other ones will be fired later, because we don't know the encrypted element name yet
+                //important: this must occur after setIsInEncryptedContent!
+                if (SecurePart.Modifier.Content.getModifier().equals(encryptedDataType.getType())) {
+                    handleEncryptedContent(inputProcessorChain, xmlSecStartElement.getParentXMLSecStartElement(),
+                            inboundSecurityToken, encryptedDataType);
+                }
 
                 Thread thread = new Thread(decryptionThread);
                 thread.setPriority(Thread.NORM_PRIORITY + 1);
