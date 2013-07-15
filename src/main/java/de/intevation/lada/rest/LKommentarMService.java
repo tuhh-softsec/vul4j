@@ -155,4 +155,45 @@ public class LKommentarMService
             return new Response(false, 699, new ArrayList<LKommentarM>());
         }
     }
+
+    /**
+     * Delete a LKommentarM object.
+     *
+     * @param kId          The object id.
+     * @param messungsId   The LProbe id.
+     * @param statusId     The LStatus id
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
+    @DELETE
+    @Path("/{kId}/{messungsId}/{probeId}")
+    public Response delete(
+        @PathParam("kId") String kId,
+        @PathParam("messungsId") String messungsId,
+        @PathParam("probeId") String probeId,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            if (authentication.hasAccess(headers, probeId)) {
+                QueryBuilder<LKommentarM> builder =
+                    new QueryBuilder<LKommentarM>(
+                        repository.getEntityManager(),
+                        LKommentarM.class);
+                builder.and("kId", kId)
+                    .and("messungsId", messungsId)
+                    .and("probeId", probeId);
+                Response response = repository.filter(builder.getQuery());
+                List<LKommentarM> list = (List<LKommentarM>)response.getData();
+                if (!list.isEmpty()) {
+                    repository.delete(list.get(0));
+                    return new Response(true, 200, null);
+                }
+                return new Response(false, 600, null);
+            }
+            return new Response(false, 698, new ArrayList<LKommentarM>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LKommentarM>());
+        }
+    }
 }
