@@ -22,6 +22,7 @@ import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMessung;
+import de.intevation.lada.model.LMessungId;
 
 /**
 * This class produces a RESTful service to read, write and update
@@ -133,6 +134,9 @@ public class LMessungService
         try {
             String probeId = messung.getProbeId();
             if (authentication.hasAccess(headers, probeId)) {
+                LMessungId id = new LMessungId();
+                id.setProbeId(probeId);
+                messung.setId(id);
                 return repository.create(messung);
             }
             return new Response(false, 698, new ArrayList<LMessung>());

@@ -23,6 +23,7 @@ import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LMesswert;
+import de.intevation.lada.model.LMesswertId;
 
 /**
  * This class produces a RESTful service to read, write and update
@@ -141,6 +142,11 @@ public class LMesswertService
             Integer messungsId = messwert.getMessungsId();
             if (authentication.hasAccess(headers, probeId) &&
                 !isReadOnly(probeId, messungsId)) {
+                LMesswertId id = new LMesswertId();
+                id.setMessgroesseId(messwert.getMessgroesseId());
+                id.setMessungsId(messungsId);
+                id.setProbeId(probeId);
+                messwert.setId(id);
                 return repository.create(messwert);
             }
             return new Response(false, 698, new ArrayList<LMesswert>());

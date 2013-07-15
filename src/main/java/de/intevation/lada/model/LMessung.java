@@ -11,9 +11,12 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,9 +26,11 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "l_messung", schema = "public")
+@SequenceGenerator(name = "MESSUNG_ID_STORE", sequenceName = "messung_id_seq")
 public class LMessung implements java.io.Serializable {
 
 	private LMessungId id;
+	private Integer messungsId;
 	private String probeId;
 	private String mmtId;
 	private String nebenprobenNr;
@@ -73,7 +78,16 @@ public class LMessung implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "messungs_id", nullable = false, insertable = false, updatable = false)
+	public Integer getMessungsId() {
+        return messungsId;
+    }
+
+    public void setMessungsId(Integer messungsId) {
+        this.messungsId = messungsId;
+    }
+
+    @Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
 	public String getProbeId() {
 		return this.probeId;
 	}
