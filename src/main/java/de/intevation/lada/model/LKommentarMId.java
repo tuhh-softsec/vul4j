@@ -12,13 +12,13 @@ import javax.persistence.Embeddable;
 public class LKommentarMId implements java.io.Serializable {
 
 	private String probeId;
-	private short messungsId;
+	private Integer messungsId;
 	private int KId;
 
 	public LKommentarMId() {
 	}
 
-	public LKommentarMId(String probeId, short messungsId, int KId) {
+	public LKommentarMId(String probeId, Integer messungsId, int KId) {
 		this.probeId = probeId;
 		this.messungsId = messungsId;
 		this.KId = KId;
@@ -34,11 +34,11 @@ public class LKommentarMId implements java.io.Serializable {
 	}
 
 	@Column(name = "messungs_id", nullable = false)
-	public short getMessungsId() {
+	public Integer getMessungsId() {
 		return this.messungsId;
 	}
 
-	public void setMessungsId(short messungsId) {
+	public void setMessungsId(Integer messungsId) {
 		this.messungsId = messungsId;
 	}
 

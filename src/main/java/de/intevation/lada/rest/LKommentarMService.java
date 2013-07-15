@@ -1,15 +1,20 @@
 package de.intevation.lada.rest;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -21,6 +26,7 @@ import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarM;
+import de.intevation.lada.model.LKommentarMId;
 
 /**
  * This class produces a RESTful service to read, write and update
@@ -132,6 +138,15 @@ public class LKommentarMService
         try {
             String probeId = kommentar.getProbeId();
             if (authentication.hasAccess(headers, probeId)) {
+                LKommentarMId id = new LKommentarMId();
+                Query q =
+                    repository.getEntityManager().createNativeQuery(
+                        "select nextval('kommentar_m_id_seq')");
+                BigInteger seqId = (BigInteger)q.getSingleResult();
+                id.setKId(seqId.intValue());
+                id.setMessungsId(kommentar.getMessungsId());
+                id.setProbeId(probeId);
+                kommentar.setId(id);
                 return repository.create(kommentar);
             }
             return new Response(false, 698, new ArrayList<LKommentarM>());
