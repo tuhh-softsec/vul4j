@@ -101,6 +101,7 @@ public class LMesswertService
      * @return Response object.
      */
     @PUT
+    @Path("/{messgroesseId}/{messungsId}/{probeId}")
     @Produces("text/json")
     @Consumes("application/json")
     public Response update(
@@ -150,20 +151,22 @@ public class LMesswertService
     }
 
     private boolean isReadOnly(String probeId, Integer messungsId) {
-        QueryBuilder<LMessung> builder =
-            new QueryBuilder<LMessung>(
-                messungRepository.getEntityManager(),
-                LMessung.class);
-        builder.and("probeId", probeId)
-            .and("messungsId", String.valueOf(messungsId));
-        Response response = messungRepository.filter(builder.getQuery());
-        List<LMessung> messungen = (List<LMessung>) response.getData();
-        if (messungen.isEmpty()) {
-            return true;
-        }
-        if (messungen.size() > 1) {
-            return true;
-        }
-        return messungen.get(0).isFertig();
+        return false;
+        // TODO: Fix #19 and make the following line work. (2013-07-08, 10:08, torsten)
+        //QueryBuilder<LMessung> builder =
+        //    new QueryBuilder<LMessung>(
+        //        messungRepository.getEntityManager(),
+        //        LMessung.class);
+        //builder.and("probeId", probeId)
+        //    .and("messungsId", String.valueOf(messungsId));
+        //Response response = messungRepository.filter(builder.getQuery());
+        //List<LMessung> messungen = (List<LMessung>) response.getData();
+        //if (messungen.isEmpty()) {
+        //    return true;
+        //}
+        //if (messungen.size() > 1) {
+        //    return true;
+        //}
+        //return messungen.get(0).isFertig();
     }
 }

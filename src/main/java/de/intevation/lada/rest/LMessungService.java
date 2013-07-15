@@ -95,7 +95,7 @@ public class LMessungService
      * @return Response object.
      */
     @PUT
-    @Path("/{id}")
+    @Path("/{messungId}/{probeId}")
     @Produces("text/json")
     @Consumes("application/json")
     public Response update(
