@@ -7,10 +7,12 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -148,6 +150,43 @@ public class LOrtService
                 return repository.create(ort);
             }
             return new Response(false, 698, new ArrayList<LOrt>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LOrt>());
+        }
+    }
+
+    /**
+     * Delete a LZusatzwert object.
+     *
+     * @param pzsId     The object id.
+     * @param probeId   The LProbe id.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
+    @DELETE
+    @Path("/{ortId}")
+    public Response delete(
+        @PathParam("ortId") String ortId,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            QueryBuilder<LOrt> builder =
+                new QueryBuilder<LOrt>(
+                    repository.getEntityManager(),
+                    LOrt.class);
+            builder.and("POrtId", ortId);
+            Response response = repository.filter(builder.getQuery());
+            List<LOrt> list = (List<LOrt>)response.getData();
+            if (!list.isEmpty()) {
+                LOrt ort = list.get(0);
+                if (authentication.hasAccess(headers, ort.getProbeId())) {
+                    repository.delete(list.get(0));
+                    return new Response(true, 200, null);
+                }
+                return new Response(false, 698, null);
+            }
+            return new Response(false, 600, null);
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LOrt>());
