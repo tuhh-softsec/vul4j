@@ -1,15 +1,18 @@
 package de.intevation.lada.rest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -136,6 +139,47 @@ public class LStatusService
                 id.setProbeId(probeId);
                 status.setId(id);
                 return repository.create(status);
+            }
+            return new Response(false, 698, new ArrayList<LStatus>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LStatus>());
+        }
+    }
+
+    /**
+     * Delete a LStatus object.
+     *
+     * @param statusId     The object id.
+     * @param messungsId   The LProbe id.
+     * @param statusId     The LStatus id
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
+    @DELETE
+    @Path("/{statusId}/{messungsId}/{probeId}")
+    public Response delete(
+        @PathParam("statusId") String statusId,
+        @PathParam("messungsId") String messungsId,
+        @PathParam("probeId") String probeId,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            if (authentication.hasAccess(headers, probeId)) {
+                QueryBuilder<LStatus> builder =
+                    new QueryBuilder<LStatus>(
+                        repository.getEntityManager(),
+                        LStatus.class);
+                builder.and("SId", statusId)
+                    .and("messungsId", messungsId)
+                    .and("probeId", probeId);
+                Response response = repository.filter(builder.getQuery());
+                List<LStatus> list = (List<LStatus>)response.getData();
+                if (!list.isEmpty()) {
+                    repository.delete(list.get(0));
+                    return new Response(true, 200, null);
+                }
+                return new Response(false, 600, null);
             }
             return new Response(false, 698, new ArrayList<LStatus>());
         }
