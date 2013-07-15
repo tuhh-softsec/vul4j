@@ -12,6 +12,7 @@ import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.rest.Response;
 
 /**
@@ -82,13 +83,13 @@ implements Validator
         String probeId = messung.getProbeId();
         Response response = probeRepository.findById(LProbe.class, probeId);
         @SuppressWarnings("unchecked")
-        List<LProbe> list = (List<LProbe>) response.getData();
+        List<LProbeInfo> list = (List<LProbeInfo>) response.getData();
         if (list.isEmpty()) {
             Map<String, Integer> errors = new HashMap<String, Integer>();
             errors.put("lprobe", 604);
             throw new ValidationException(errors);
         }
-        LProbe probe = list.get(0);
+        LProbeInfo probe = list.get(0);
         if (probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt())) {
             warnings.put("messzeitpunkt", 661);
         }
