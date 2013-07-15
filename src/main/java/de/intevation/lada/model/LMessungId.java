@@ -14,12 +14,12 @@ import javax.persistence.GenerationType;
 public class LMessungId implements java.io.Serializable {
 
 	private String probeId;
-	private short messungsId;
+	private Integer messungsId;
 
 	public LMessungId() {
 	}
 
-	public LMessungId(String probeId, short messungsId) {
+	public LMessungId(String probeId, Integer messungsId) {
 		this.probeId = probeId;
 		this.messungsId = messungsId;
 	}
@@ -34,12 +34,11 @@ public class LMessungId implements java.io.Serializable {
 	}
 
 	@Column(name = "messungs_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MESSUNG_ID_STORE")
-	public short getMessungsId() {
+	public Integer getMessungsId() {
 		return this.messungsId;
 	}
 
-	public void setMessungsId(short messungsId) {
+	public void setMessungsId(Integer messungsId) {
 		this.messungsId = messungsId;
 	}
 

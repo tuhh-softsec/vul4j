@@ -26,7 +26,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "l_messung", schema = "public")
-@SequenceGenerator(name = "MESSUNG_ID_STORE", sequenceName = "messung_id_seq")
 public class LMessung implements java.io.Serializable {
 
 	private LMessungId id;

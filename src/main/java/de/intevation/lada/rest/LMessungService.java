@@ -1,11 +1,13 @@
 package de.intevation.lada.rest;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -134,8 +136,12 @@ public class LMessungService
         try {
             String probeId = messung.getProbeId();
             if (authentication.hasAccess(headers, probeId)) {
+                Query q = repository.getEntityManager().createNativeQuery(
+                    "select nextval('messung_id_seq')");
+                BigInteger seqId = (BigInteger)q.getSingleResult();
                 LMessungId id = new LMessungId();
                 id.setProbeId(probeId);
+                id.setMessungsId(seqId.intValue());
                 messung.setId(id);
                 return repository.create(messung);
             }
