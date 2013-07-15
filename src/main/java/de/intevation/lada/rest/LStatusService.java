@@ -157,6 +157,7 @@ public class LStatusService
      * @return Response object.
      */
     @DELETE
+    @Produces("text/json")
     @Path("/{statusId}/{messungsId}/{probeId}")
     public Response delete(
         @PathParam("statusId") String statusId,
