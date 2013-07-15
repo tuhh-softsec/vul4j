@@ -7,10 +7,12 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -156,23 +158,62 @@ public class LMesswertService
         }
     }
 
+    /**
+     * Delete a LMesswert object.
+     *
+     * @param statusId     The object id.
+     * @param messungsId   The LProbe id.
+     * @param statusId     The LStatus id
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
+    @DELETE
+    @Path("/{messgroesseId}/{messungsId}/{probeId}")
+    public Response delete(
+        @PathParam("messgroesseId") String messgroesseId,
+        @PathParam("messungsId") String messungsId,
+        @PathParam("probeId") String probeId,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            if (authentication.hasAccess(headers, probeId)) {
+                QueryBuilder<LMesswert> builder =
+                    new QueryBuilder<LMesswert>(
+                        repository.getEntityManager(),
+                        LMesswert.class);
+                builder.and("messgroesseId", messgroesseId)
+                    .and("messungsId", messungsId)
+                    .and("probeId", probeId);
+                Response response = repository.filter(builder.getQuery());
+                List<LMesswert> list = (List<LMesswert>)response.getData();
+                if (!list.isEmpty()) {
+                    repository.delete(list.get(0));
+                    return new Response(true, 200, null);
+                }
+                return new Response(false, 600, null);
+            }
+            return new Response(false, 698, new ArrayList<LMesswert>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LMesswert>());
+        }
+    }
+
     private boolean isReadOnly(String probeId, Integer messungsId) {
-        return false;
-        // TODO: Fix #19 and make the following line work. (2013-07-08, 10:08, torsten)
-        //QueryBuilder<LMessung> builder =
-        //    new QueryBuilder<LMessung>(
-        //        messungRepository.getEntityManager(),
-        //        LMessung.class);
-        //builder.and("probeId", probeId)
-        //    .and("messungsId", String.valueOf(messungsId));
-        //Response response = messungRepository.filter(builder.getQuery());
-        //List<LMessung> messungen = (List<LMessung>) response.getData();
-        //if (messungen.isEmpty()) {
-        //    return true;
-        //}
-        //if (messungen.size() > 1) {
-        //    return true;
-        //}
-        //return messungen.get(0).isFertig();
+        QueryBuilder<LMessung> builder =
+            new QueryBuilder<LMessung>(
+                messungRepository.getEntityManager(),
+                LMessung.class);
+        builder.and("probeId", probeId)
+            .and("messungsId", String.valueOf(messungsId));
+        Response response = messungRepository.filter(builder.getQuery());
+        List<LMessung> messungen = (List<LMessung>) response.getData();
+        if (messungen.isEmpty()) {
+            return true;
+        }
+        if (messungen.size() > 1) {
+            return true;
+        }
+        return messungen.get(0).isFertig();
     }
 }
