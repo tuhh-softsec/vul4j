@@ -143,7 +143,7 @@ public class OrtService
      * @return Response object.
      */
     @DELETE
-    @Path("/{ortId}")
+    @Path("/{ortId}/{probeId}")
     public Response delete(
         @PathParam("ortId") String ortId,
         @Context HttpHeaders headers
