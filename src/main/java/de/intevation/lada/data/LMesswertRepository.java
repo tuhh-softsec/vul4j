@@ -171,11 +171,28 @@ public class LMesswertRepository implements Repository
     }
 
     /**
-     * This class does not support this operation.
+     * Delete a LMesswert object.
      *
-     * @param object.
+     * @param object    The object to delete.
+     * @return Response object.
      */
     public Response delete(Object object) {
-        return null;
+        if (!(object instanceof LMesswert)) {
+            return new Response(false, 602, null);
+        }
+        LMesswert messwert = (LMesswert)object;
+        Response response = new Response(true, 200, null);
+        try {
+            manager.delete(messwert);
+        }
+        catch (IllegalArgumentException iae) {
+            response.setSuccess(false);
+            response.setMessage(602);
+        }
+        catch (TransactionRequiredException tre) {
+            response.setSuccess(false);
+            response.setMessage(603);
+        }
+        return response;
     }
 }
