@@ -21,6 +21,7 @@ import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LStatus;
+import de.intevation.lada.model.LStatusId;
 
 /**
  * This class produces a RESTful service to read, write and update
@@ -130,6 +131,10 @@ public class LStatusService
         try {
             String probeId = status.getProbeId();
             if (authentication.hasAccess(headers, probeId)) {
+                LStatusId id = new LStatusId();
+                id.setMessungsId(status.getMessungsId());
+                id.setProbeId(probeId);
+                status.setId(id);
                 return repository.create(status);
             }
             return new Response(false, 698, new ArrayList<LStatus>());

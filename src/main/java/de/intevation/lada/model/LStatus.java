@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,9 +22,11 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "l_status", schema = "public")
+@SequenceGenerator(name = "STATUS_ID_STORE", sequenceName = "status_id_seq")
 public class LStatus implements java.io.Serializable {
 
 	private LStatusId id;
+	private Integer sId;
 	private String probeId;
 	private String erzeuger;
 	private Integer messungsId;
@@ -68,7 +71,16 @@ public class LStatus implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "s_id", nullable = false, insertable = false, updatable = false)
+	public Integer getSId() {
+        return sId;
+    }
+
+    public void setSId(Integer sId) {
+        this.sId = sId;
+    }
+
+    @Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
 	public String getProbeId() {
         return probeId;
     }
