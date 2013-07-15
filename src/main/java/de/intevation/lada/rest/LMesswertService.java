@@ -168,6 +168,7 @@ public class LMesswertService
      * @return Response object.
      */
     @DELETE
+    @Produces("text/json")
     @Path("/{messgroesseId}/{messungsId}/{probeId}")
     public Response delete(
         @PathParam("messgroesseId") String messgroesseId,
