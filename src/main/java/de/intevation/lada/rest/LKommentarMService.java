@@ -179,7 +179,7 @@ public class LKommentarMService
                     new QueryBuilder<LKommentarM>(
                         repository.getEntityManager(),
                         LKommentarM.class);
-                builder.and("kId", kId)
+                builder.and("KId", kId)
                     .and("messungsId", messungsId)
                     .and("probeId", probeId);
                 Response response = repository.filter(builder.getQuery());

@@ -24,6 +24,7 @@ import javax.persistence.TemporalType;
 public class LKommentarM implements java.io.Serializable {
 
 	private LKommentarMId id;
+	private Integer kId;
 	private String probeId;
 	private Integer messungsId;
 	private String erzeuger;
@@ -65,7 +66,16 @@ public class LKommentarM implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
+	@Column(name = "k_id", nullable = false, insertable = false, updatable = false)
+	public Integer getKId() {
+        return kId;
+    }
+
+    public void setKId(Integer kId) {
+        this.kId = kId;
+    }
+
+    @Column(name = "probe_id", nullable = false, insertable = false, updatable = false)
 	public String getProbeId() {
         return probeId;
     }
