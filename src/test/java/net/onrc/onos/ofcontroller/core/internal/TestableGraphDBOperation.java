@@ -415,17 +415,31 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 	public static class TestFlowPath implements IFlowPath {
 		private String state,type,flowId,installerId,srcSw,dstSw;
+		private Long flowPathFlags;
 		private String dataPathSummary,userState;
-		private String matchSrcMac,matchDstMac,matchSrcIpaddr,matchDstIpaddr;
-		private Short srcPort,dstPort,matchEthernetFrameType;
+		private Short srcPort,dstPort;
+		private String matchSrcMac,matchDstMac;
+		private Short matchEthernetFrameType;
+		private Short matchVlanId;
+		private Byte matchVlanPriority;
+		private String matchSrcIpaddr,matchDstIpaddr;
+		private Byte matchIpProto, matchIpToS;
+		private Short matchSrcTcpUdpPort, matchDstTcpUdpPort;
 		
 		private List<IFlowEntry> entries;
 		private List<ISwitchObject> switches;
 
 		private String stateToUpdate,typeToUpdate,flowIdToUpdate,installerIdToUpdate,srcSwToUpdate,dstSwToUpdate;
+		private Long flowPathFlagsToUpdate;
 		private String dataPathSummaryToUpdate,userStateToUpdate;
-		private String matchSrcMacToUpdate,matchDstMacToUpdate,matchSrcIpaddrToUpdate,matchDstIpaddrToUpdate;
-		private Short srcPortToUpdate,dstPortToUpdate,matchEthernetFrameTypeToUpdate;
+		private Short srcPortToUpdate,dstPortToUpdate;
+		private String matchSrcMacToUpdate,matchDstMacToUpdate;
+		private Short matchEthernetFrameTypeToUpdate;
+		private Short matchVlanIdToUpdate;
+		private Byte matchVlanPriorityToUpdate;
+		private String matchSrcIpaddrToUpdate,matchDstIpaddrToUpdate;
+		private Byte matchIpProtoToUpdate, matchIpToSToUpdate;
+		private Short matchSrcTcpUdpPortToUpdate, matchDstTcpUdpPortToUpdate;
 
 		private List<IFlowEntry> flowsToAdd;
 		private List<IFlowEntry> flowsToRemove;
@@ -453,17 +467,24 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(typeToUpdate != null) { type = typeToUpdate; }
 			if(flowIdToUpdate != null) { flowId = flowIdToUpdate; }
 			if(installerIdToUpdate != null) { installerId = installerIdToUpdate; }
+			if(flowPathFlagsToUpdate != null) { flowPathFlags = flowPathFlagsToUpdate; }
 			if(srcSwToUpdate != null) { srcSw = srcSwToUpdate; }
 			if(dstSwToUpdate != null) { dstSw = dstSwToUpdate; }
 			if(dataPathSummaryToUpdate != null) { dataPathSummary = dataPathSummaryToUpdate; }
 			if(userStateToUpdate != null) { userState = userStateToUpdate; }
-			if(matchSrcMacToUpdate != null) { matchSrcMac = matchSrcMacToUpdate; }
-			if(matchDstMacToUpdate != null) { matchDstMac = matchDstMacToUpdate; }
-			if(matchSrcIpaddrToUpdate != null) { matchSrcIpaddr = matchSrcIpaddrToUpdate; }
-			if(matchDstIpaddrToUpdate != null) { matchDstIpaddr = matchDstIpaddrToUpdate; }
 			if(srcPortToUpdate != null) { srcPort = srcPortToUpdate; }
 			if(dstPortToUpdate != null) { dstPort = dstPortToUpdate; }
+			if(matchSrcMacToUpdate != null) { matchSrcMac = matchSrcMacToUpdate; }
+			if(matchDstMacToUpdate != null) { matchDstMac = matchDstMacToUpdate; }
 			if(matchEthernetFrameTypeToUpdate != null) { matchEthernetFrameType = matchEthernetFrameTypeToUpdate; }
+			if(matchVlanIdToUpdate != null) { matchVlanId = matchVlanIdToUpdate; }
+			if(matchVlanPriorityToUpdate != null) { matchVlanPriority = matchVlanPriorityToUpdate; }
+			if(matchSrcIpaddrToUpdate != null) { matchSrcIpaddr = matchSrcIpaddrToUpdate; }
+			if(matchDstIpaddrToUpdate != null) { matchDstIpaddr = matchDstIpaddrToUpdate; }
+			if(matchIpProtoToUpdate != null) { matchIpProto = matchIpProtoToUpdate; }
+			if(matchIpToSToUpdate != null) { matchIpToS = matchIpToSToUpdate; }
+			if(matchSrcTcpUdpPortToUpdate != null) { matchSrcTcpUdpPort = matchSrcTcpUdpPortToUpdate; }
+			if(matchDstTcpUdpPortToUpdate != null) { matchDstTcpUdpPort = matchDstTcpUdpPortToUpdate; }
 		}
 		
 		public void rollback() {
@@ -475,9 +496,16 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			flowsToRemove.clear();
 			
 			stateToUpdate = typeToUpdate = flowIdToUpdate = installerIdToUpdate = null;
+			flowPathFlagsToUpdate = null;
 			srcSwToUpdate = dstSwToUpdate = dataPathSummaryToUpdate = userStateToUpdate = null;
-			matchSrcMacToUpdate = matchDstMacToUpdate = matchSrcIpaddrToUpdate = matchDstIpaddrToUpdate = null;
-			srcPortToUpdate = dstPortToUpdate = matchEthernetFrameTypeToUpdate = null;
+			srcPortToUpdate = dstPortToUpdate = null;
+			matchSrcMacToUpdate = matchDstMacToUpdate = null;
+			matchEthernetFrameTypeToUpdate = null;
+			matchVlanIdToUpdate = null;
+			matchVlanPriorityToUpdate = null;
+			matchSrcIpaddrToUpdate = matchDstIpaddrToUpdate = null;
+			matchIpProtoToUpdate = matchIpToSToUpdate = null;
+			matchSrcTcpUdpPortToUpdate = matchDstTcpUdpPortToUpdate = null;
 		}
 		
 		// Setter methods for test
@@ -485,17 +513,24 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setTypeForTest(String type) { this.type = type; }
 		public void setFlowIdForTest(String flowId) { this.flowId = flowId; }
 		public void setInstallerIdForTest(String installerId) { this.installerId = installerId; }
+		public void setFlowPathFlagsForTest(Long flowPathFlags) { this.flowPathFlags = flowPathFlags; }
 		public void setSrcSwForTest(String srcSw) { this.srcSw = srcSw; }
 		public void setDstSwForTest(String dstSw) { this.dstSw = dstSw; }
 		public void setDataPathSummaryForTest(String dataPathSummary) { this.dataPathSummary = dataPathSummary; }
 		public void setUserStateForTest(String userState) { this.userState = userState; }
-		public void setMatchSrcMacForTest(String matchSrcMac) { this.matchSrcMac = matchSrcMac; }
-		public void setMatchDstMacForTest(String matchDstMac) { this.matchDstMac = matchDstMac; }
-		public void setMatchSrcIpaddrForTest(String matchSrcIpaddr) { this.matchSrcIpaddr = matchSrcIpaddr; }
-		public void setMatchDstIpaddrForTest(String matchDstIpaddr) { this.matchDstIpaddr = matchDstIpaddr; }
 		public void setSrcPortForTest(Short srcPort) { this.srcPort = srcPort; }
 		public void setDstPortForTest(Short dstPort) { this.dstPort = dstPort; }
+		public void setMatchSrcMacForTest(String matchSrcMac) { this.matchSrcMac = matchSrcMac; }
+		public void setMatchDstMacForTest(String matchDstMac) { this.matchDstMac = matchDstMac; }
 		public void setMatchEthernetFrameTypeForTest(Short matchEthernetFrameType) { this.matchEthernetFrameType = matchEthernetFrameType; }
+		public void setMatchVlanIdForTest(Short matchVlanId) { this.matchVlanId = matchVlanId; }
+		public void setMatchVlanPriorityForTest(Byte matchVlanPriority) { this.matchVlanPriority = matchVlanPriority; }
+		public void setMatchSrcIpaddrForTest(String matchSrcIpaddr) { this.matchSrcIpaddr = matchSrcIpaddr; }
+		public void setMatchDstIpaddrForTest(String matchDstIpaddr) { this.matchDstIpaddr = matchDstIpaddr; }
+		public void setMatchIpProtoForTest(Byte matchIpProto) { this.matchIpProto = matchIpProto; }
+		public void setMatchIpToSForTest(Byte matchIpToS) { this.matchIpToS = matchIpToS; }
+		public void setMatchSrcTcpUdpPortForTest(Short matchSrcTcpUdpPort) { this.matchSrcTcpUdpPort = matchSrcTcpUdpPort; }
+		public void setMatchDstTcpUdpPortForTest(Short matchDstTcpUdpPort) { this.matchDstTcpUdpPort = matchDstTcpUdpPort; }
 		public void addFlowEntryForTest(IFlowEntry entry) { entries.add(entry); }
 		public void addSwitchForTest(ISwitchObject sw) { switches.add(sw); }
 
@@ -528,6 +563,12 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public void setInstallerId(String installerId) { installerIdToUpdate = installerId; }
+
+		@Override
+		public Long getFlowPathFlags() { return flowPathFlags; }
+
+		@Override
+		public void setFlowPathFlags(Long flowPathFlags) { flowPathFlagsToUpdate = flowPathFlags; }
 
 		@Override
 		public String getSrcSwitch() { return srcSw; }
@@ -577,13 +618,6 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		}
 
 		@Override
-		public Short getMatchEthernetFrameType() { return matchEthernetFrameType; }
-
-		@Override
-		public void setMatchEthernetFrameType(Short matchEthernetFrameType) {
-			matchEthernetFrameTypeToUpdate = matchEthernetFrameType; }
-
-		@Override
 		public String getMatchSrcMac() { return matchSrcMac; }
 
 		@Override
@@ -594,6 +628,27 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public void setMatchDstMac(String matchDstMac) { matchDstMacToUpdate = matchDstMac; }
+
+		@Override
+		public Short getMatchEthernetFrameType() { return matchEthernetFrameType; }
+
+		@Override
+		public void setMatchEthernetFrameType(Short matchEthernetFrameType) {
+			matchEthernetFrameTypeToUpdate = matchEthernetFrameType; }
+
+		@Override
+		public Short getMatchVlanId() { return matchVlanId; }
+
+		@Override
+		public void setMatchVlanId(Short matchVlanId) {
+			matchVlanIdToUpdate = matchVlanId; }
+
+		@Override
+		public Byte getMatchVlanPriority() { return matchVlanPriority; }
+
+		@Override
+		public void setMatchVlanPriority(Byte matchVlanPriority) {
+			matchVlanPriorityToUpdate = matchVlanPriority; }
 
 		@Override
 		public String getMatchSrcIPv4Net() { return matchSrcIpaddr; }
@@ -610,6 +665,34 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			matchDstIpaddrToUpdate = matchDstIPv4Net; }
 
 		@Override
+		public Byte getMatchIpProto() { return matchIpProto; }
+
+		@Override
+		public void setMatchIpProto(Byte matchIpProto) {
+			matchIpProtoToUpdate = matchIpProto; }
+
+		@Override
+		public Byte getMatchIpToS() { return matchIpToS; }
+
+		@Override
+		public void setMatchIpToS(Byte matchIpToS) {
+			matchIpToSToUpdate = matchIpToS; }
+
+		@Override
+		public Short getMatchSrcTcpUdpPort() { return matchSrcTcpUdpPort; }
+
+		@Override
+		public void setMatchSrcTcpUdpPort(Short matchSrcTcpUdpPort) {
+			matchSrcTcpUdpPortToUpdate = matchSrcTcpUdpPort; }
+
+		@Override
+		public Short getMatchDstTcpUdpPort() { return matchDstTcpUdpPort; }
+
+		@Override
+		public void setMatchDstTcpUdpPort(Short matchDstTcpUdpPort) {
+			matchDstTcpUdpPortToUpdate = matchDstTcpUdpPort; }
+
+		@Override
 		public Iterable<ISwitchObject> getSwitches() { return switches; }
 
 		@Override
@@ -621,8 +704,15 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 	public static class TestFlowEntry implements IFlowEntry {
 		private String state,type,entryId,dpid,userState,switchState,errorStateType,errorStateCode;
-		private String matchSrcMac,matchDstMac,matchSrcIpaddr,matchDstIpaddr;
-		private Short matchInPort,matchEtherFrameType,actionOutput;
+		private Short matchInPort;
+		private String matchSrcMac,matchDstMac;
+		private Short matchEtherFrameType;
+		private Short matchVlanId;
+		private Byte matchVlanPriority;
+		private String matchSrcIpaddr,matchDstIpaddr;
+		private Byte matchIpProto, matchIpToS;
+		private Short matchSrcTcpUdpPort, matchDstTcpUdpPort;
+		private Short actionOutputPort;
 		
 		private IFlowPath flowPath;
 		private ISwitchObject sw;
@@ -630,9 +720,15 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 		private String stateToUpdate,typeToUpdate,entryIdToUpdate,dpidToUpdate,
 			userStateToUpdate,switchStateToUpdate,errorStateTypeToUpdate,errorStateCodeToUpdate;
-		private String matchSrcMacToUpdate,matchDstMacToUpdate,matchSrcIpaddrToUpdate,matchDstIpaddrToUpdate;
-	
-		private Short matchInPortToUpdate,matchEtherFrameTypeToUpdate,actionOutputToUpdate;
+		private Short matchInPortToUpdate;
+		private String matchSrcMacToUpdate,matchDstMacToUpdate;
+		private Short matchEtherFrameTypeToUpdate;
+		private Short matchVlanIdToUpdate;
+		private Byte matchVlanPriorityToUpdate;
+		private String matchSrcIpaddrToUpdate,matchDstIpaddrToUpdate;
+		private Byte matchIpProtoToUpdate, matchIpToSToUpdate;
+		private Short matchSrcTcpUdpPortToUpdate, matchDstTcpUdpPortToUpdate;
+		private Short actionOutputPortToUpdate;
 	
 		private IFlowPath flowPathToUpdate;
 		private ISwitchObject swToUpdate;
@@ -653,13 +749,19 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(switchStateToUpdate != null) { switchState = switchStateToUpdate; }
 			if(errorStateTypeToUpdate != null) { errorStateType = errorStateTypeToUpdate; }
 			if(errorStateCodeToUpdate != null) { errorStateCode = errorStateCodeToUpdate; }
+			if(matchInPortToUpdate != null) { matchInPort = matchInPortToUpdate; }
 			if(matchSrcMacToUpdate != null) { matchSrcMac = matchSrcMacToUpdate; }
 			if(matchDstMacToUpdate != null) { matchDstMac = matchDstMacToUpdate; }
+			if(matchEtherFrameTypeToUpdate != null) { matchEtherFrameType = matchEtherFrameTypeToUpdate; }
+			if(matchVlanIdToUpdate != null) { matchVlanId = matchVlanIdToUpdate; }
+			if(matchVlanPriorityToUpdate != null) { matchVlanPriority = matchVlanPriorityToUpdate; }
 			if(matchSrcIpaddrToUpdate != null) { matchSrcIpaddr = matchSrcIpaddrToUpdate; }
 			if(matchDstIpaddrToUpdate != null) { matchDstIpaddr = matchDstIpaddrToUpdate; }
-			if(matchInPortToUpdate != null) { matchInPort = matchInPortToUpdate; }
-			if(matchEtherFrameTypeToUpdate != null) { matchEtherFrameType = matchEtherFrameTypeToUpdate; }
-			if(actionOutputToUpdate != null) { actionOutput = actionOutputToUpdate; }
+			if(matchIpProtoToUpdate != null) { matchIpProto = matchIpProtoToUpdate; }
+			if(matchIpToSToUpdate != null) { matchIpToS = matchIpToSToUpdate; }
+			if(matchSrcTcpUdpPortToUpdate != null) { matchSrcTcpUdpPort = matchSrcTcpUdpPortToUpdate; }
+			if(matchDstTcpUdpPortToUpdate != null) { matchDstTcpUdpPort = matchDstTcpUdpPortToUpdate; }
+			if(actionOutputPortToUpdate != null) { actionOutputPort = actionOutputPortToUpdate; }
 			
 			if(flowPathToUpdate != null) { flowPath = flowPathToUpdate; }
 			if(swToUpdate != null) { sw = swToUpdate; }
@@ -676,8 +778,15 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void clearUncommitedData() {
 			stateToUpdate = typeToUpdate = entryIdToUpdate = dpidToUpdate = null;
 			userStateToUpdate = switchStateToUpdate = errorStateTypeToUpdate = errorStateCodeToUpdate = null;
-			matchSrcMacToUpdate = matchDstMacToUpdate = matchSrcIpaddrToUpdate = matchDstIpaddrToUpdate = null;
-			matchInPortToUpdate = matchEtherFrameTypeToUpdate = actionOutputToUpdate = null;
+			matchInPortToUpdate = null;
+			matchSrcMacToUpdate = matchDstMacToUpdate = null;
+			matchEtherFrameTypeToUpdate = null;
+			matchVlanIdToUpdate = null;
+			matchVlanPriorityToUpdate = null;
+			matchSrcIpaddrToUpdate = matchDstIpaddrToUpdate = null;
+			matchIpProtoToUpdate = matchIpToSToUpdate = null;
+			matchSrcTcpUdpPortToUpdate = matchDstTcpUdpPortToUpdate = null;
+			actionOutputPortToUpdate = null;
 			flowPathToUpdate = null;
 			swToUpdate = null;
 			inportToUpdate = outportToUpdate = null;
@@ -692,13 +801,19 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setSwitchStateForTest(String switchState) { this.switchState = switchState; }
 		public void setErrorStateTypeForTest(String errorStateType) { this.errorStateType = errorStateType; }
 		public void setErrorStateCodeForTest(String errorStateCode) { this.errorStateCode = errorStateCode; }
+		public void setMatchInPortForTest(Short matchInPort) { this.matchInPort = matchInPort; }
 		public void setMatchSrcMacForTest(String matchSrcMac) { this.matchSrcMac = matchSrcMac; }
 		public void setMatchDstMacForTest(String matchDstMac) { this.matchDstMac = matchDstMac; }
+		public void setMatchEtherFrameTypeForTest(Short matchEtherFrameType) { this.matchEtherFrameType = matchEtherFrameType; }
+		public void setMatchVlanIdForTest(Short matchVlanId) { this.matchVlanId = matchVlanId; }
+		public void setMatchVlanPriorityForTest(Byte matchVlanPriority) { this.matchVlanPriority = matchVlanPriority; }
 		public void setMatchSrcIpaddrForTest(String matchSrcIpaddr) { this.matchSrcIpaddr = matchSrcIpaddr; }
 		public void setMatchDstIpaddrForTest(String matchDstIpaddr) { this.matchDstIpaddr = matchDstIpaddr; }
-		public void setMatchInPortForTest(Short matchInPort) { this.matchInPort = matchInPort; }
-		public void setMatchEtherFrameTypeForTest(Short matchEtherFrameType) { this.matchEtherFrameType = matchEtherFrameType; }
-		public void setActionOutputForTest(Short actionOutput) { this.actionOutput = actionOutput; }
+		public void setMatchIpProtoForTest(Byte matchIpProto) { this.matchIpProto = matchIpProto; }
+		public void setMatchIpToSForTest(Byte matchIpToS) { this.matchIpToS = matchIpToS; }
+		public void setMatchSrcTcpUdpPortForTest(Short matchSrcTcpUdpPort) { this.matchSrcTcpUdpPort = matchSrcTcpUdpPort; }
+		public void setMatchDstTcpUdpPortForTest(Short matchDstTcpUdpPort) { this.matchDstTcpUdpPort = matchDstTcpUdpPort; }
+		public void setActionOutputPortForTest(Short actionOutputPort) { this.actionOutputPort = actionOutputPort; }
 		public void setFlowPathForTest(IFlowPath flowPath) { this.flowPath = flowPath; }
 		public void setSwitchForTest(ISwitchObject sw) { this.sw = sw; }
 		public void setInportForTest(IPortObject inport) { this.inport = inport; }
@@ -765,12 +880,6 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setMatchInPort(Short matchInPort) { matchInPortToUpdate = matchInPort; }
 	
 		@Override
-		public Short getMatchEthernetFrameType() {return matchEtherFrameType; }
-	
-		@Override
-		public void setMatchEthernetFrameType(Short matchEthernetFrameType) { matchEtherFrameTypeToUpdate = matchEthernetFrameType; }
-		
-		@Override
 		public String getMatchSrcMac() { return matchSrcMac; }
 	
 		@Override
@@ -781,7 +890,25 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 		@Override
 		public void setMatchDstMac(String matchDstMac) { matchDstMacToUpdate = matchDstMac; }
+
+		@Override
+		public Short getMatchEthernetFrameType() {return matchEtherFrameType; }
 	
+		@Override
+		public void setMatchEthernetFrameType(Short matchEthernetFrameType) { matchEtherFrameTypeToUpdate = matchEthernetFrameType; }
+
+		@Override
+		public Short getMatchVlanId() {return matchVlanId; }
+	
+		@Override
+		public void setMatchVlanId(Short matchVlanId) { matchVlanId = matchVlanId; }
+
+		@Override
+		public Byte getMatchVlanPriority() {return matchVlanPriority; }
+	
+		@Override
+		public void setMatchVlanPriority(Byte matchVlanPriority) { matchVlanPriority = matchVlanPriority; }
+		
 		@Override
 		public String getMatchSrcIPv4Net() { return matchSrcIpaddr; }
 	
@@ -793,12 +920,36 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 		@Override
 		public void setMatchDstIPv4Net(String matchDstIPv4Net) { matchDstIpaddrToUpdate = matchDstIPv4Net; }
+
+		@Override
+		public Byte getMatchIpProto() {return matchIpProto; }
 	
 		@Override
-		public Short getActionOutput() { return actionOutput; }
+		public void setMatchIpProto(Byte matchIpProto) { matchIpProto = matchIpProto; }
+
+		@Override
+		public Byte getMatchIpToS() {return matchIpToS; }
 	
 		@Override
-		public void setActionOutput(Short actionOutput) { actionOutputToUpdate = actionOutput; }
+		public void setMatchIpToS(Byte matchIpToS) { matchIpToS = matchIpToS; }
+
+		@Override
+		public Short getMatchSrcTcpUdpPort() {return matchSrcTcpUdpPort; }
+	
+		@Override
+		public void setMatchSrcTcpUdpPort(Short matchSrcTcpUdpPort) { matchSrcTcpUdpPortToUpdate = matchSrcTcpUdpPort; }
+
+		@Override
+		public Short getMatchDstTcpUdpPort() {return matchDstTcpUdpPort; }
+	
+		@Override
+		public void setMatchDstTcpUdpPort(Short matchDstTcpUdpPort) { matchDstTcpUdpPortToUpdate = matchDstTcpUdpPort; }
+	
+		@Override
+		public Short getActionOutputPort() { return actionOutputPort; }
+	
+		@Override
+		public void setActionOutputPort(Short actionOutputPort) { actionOutputPortToUpdate = actionOutputPort; }
 	
 		@Override
 		public IFlowPath getFlow() { return flowPath; }

@@ -72,13 +72,13 @@ public class FlowEntryMatch {
     private Field<Port> inPort;		// Matching input switch port
     private Field<MACAddress> srcMac;	// Matching source MAC address
     private Field<MACAddress> dstMac;	// Matching destination MAC address
+    private Field<Short> ethernetFrameType; // Matching Ethernet frame type
     private Field<Short> vlanId;	// Matching VLAN ID
     private Field<Byte> vlanPriority;	// Matching VLAN priority
-    private Field<Short> ethernetFrameType; // Matching Ethernet frame type
-    private Field<Byte> ipToS;		// Matching IP ToS (DSCP field, 6 bits)
-    private Field<Byte> ipProto;	// Matching IP protocol
     private Field<IPv4Net> srcIPv4Net;	// Matching source IPv4 prefix
     private Field<IPv4Net> dstIPv4Net;	// Matching destination IPv4 prefix
+    private Field<Byte> ipProto;	// Matching IP protocol
+    private Field<Byte> ipToS;		// Matching IP ToS (DSCP field, 6 bits)
     private Field<Short> srcTcpUdpPort;	// Matching source TCP/UDP port
     private Field<Short> dstTcpUdpPort;	// Matching destination TCP/UDP port
 
@@ -100,20 +100,20 @@ public class FlowEntryMatch {
 	    this.enableSrcMac(other.srcMac.value());
 	if ((other.dstMac != null) && other.dstMac.enabled())
 	    this.enableDstMac(other.dstMac.value());
+	if ((other.ethernetFrameType != null) && other.ethernetFrameType.enabled())
+	    this.enableEthernetFrameType(other.ethernetFrameType.value());
 	if ((other.vlanId != null) && other.vlanId.enabled())
 	    this.enableVlanId(other.vlanId.value());
 	if ((other.vlanPriority != null) && other.vlanPriority.enabled())
 	    this.enableVlanPriority(other.vlanPriority.value());
-	if ((other.ethernetFrameType != null) && other.ethernetFrameType.enabled())
-	    this.enableEthernetFrameType(other.ethernetFrameType.value());
-	if ((other.ipToS != null) && other.ipToS.enabled())
-	    this.enableIpToS(other.ipToS.value());
-	if ((other.ipProto != null) && other.ipProto.enabled())
-	    this.enableIpProto(other.ipProto.value());
 	if ((other.srcIPv4Net != null) && other.srcIPv4Net.enabled())
 	    this.enableSrcIPv4Net(other.srcIPv4Net.value());
 	if ((other.dstIPv4Net != null) && other.dstIPv4Net.enabled())
 	    this.enableDstIPv4Net(other.dstIPv4Net.value());
+	if ((other.ipProto != null) && other.ipProto.enabled())
+	    this.enableIpProto(other.ipProto.value());
+	if ((other.ipToS != null) && other.ipToS.enabled())
+	    this.enableIpToS(other.ipToS.value());
 	if ((other.srcTcpUdpPort != null) && other.srcTcpUdpPort.enabled())
 	    this.enableSrcTcpUdpPort(other.srcTcpUdpPort.value());
 	if ((other.dstTcpUdpPort != null) && other.dstTcpUdpPort.enabled())
@@ -244,6 +244,48 @@ public class FlowEntryMatch {
     }
 
     /**
+     * Get the matching Ethernet frame type.
+     *
+     * @return the matching Ethernet frame type.
+     */
+    @JsonProperty("ethernetFrameType")
+    public Short ethernetFrameType() {
+	if (ethernetFrameType != null)
+	    return ethernetFrameType.value();
+	return null;
+    }
+
+    /**
+     * Enable the matching on Ethernet frame type.
+     *
+     * @param ethernetFrameType the Ethernet frame type value to enable for
+     * matching.
+     */
+    @JsonProperty("ethernetFrameType")
+    public void enableEthernetFrameType(Short ethernetFrameType) {
+	this.ethernetFrameType = new Field<Short>(ethernetFrameType);
+    }
+
+    /**
+     * Disable the matching on Ethernet frame type.
+     */
+    public void disableEthernetFrameType() {
+	this.ethernetFrameType = null;
+    }
+
+    /**
+     * Test if matching on Ethernet frame type is enabled.
+     *
+     * @return true if matching on Ethernet frame type is enabled.
+     */
+    @JsonProperty("matchEthernetFrameType")
+    public boolean matchEthernetFrameType() {
+	if (ethernetFrameType != null)
+	    return ethernetFrameType.enabled();
+	return false;
+    }
+
+    /**
      * Get the matching VLAN ID.
      *
      * @return the matching VLAN ID.
@@ -322,130 +364,6 @@ public class FlowEntryMatch {
     public boolean matchVlanPriority() {
 	if (vlanPriority != null)
 	    return vlanPriority.enabled();
-	return false;
-    }
-
-    /**
-     * Get the matching Ethernet frame type.
-     *
-     * @return the matching Ethernet frame type.
-     */
-    @JsonProperty("ethernetFrameType")
-    public Short ethernetFrameType() {
-	if (ethernetFrameType != null)
-	    return ethernetFrameType.value();
-	return null;
-    }
-
-    /**
-     * Enable the matching on Ethernet frame type.
-     *
-     * @param ethernetFrameType the Ethernet frame type value to enable for
-     * matching.
-     */
-    @JsonProperty("ethernetFrameType")
-    public void enableEthernetFrameType(Short ethernetFrameType) {
-	this.ethernetFrameType = new Field<Short>(ethernetFrameType);
-    }
-
-    /**
-     * Disable the matching on Ethernet frame type.
-     */
-    public void disableEthernetFrameType() {
-	this.ethernetFrameType = null;
-    }
-
-    /**
-     * Test if matching on Ethernet frame type is enabled.
-     *
-     * @return true if matching on Ethernet frame type is enabled.
-     */
-    @JsonProperty("matchEthernetFrameType")
-    public boolean matchEthernetFrameType() {
-	if (ethernetFrameType != null)
-	    return ethernetFrameType.enabled();
-	return false;
-    }
-
-    /**
-     * Get the matching IP ToS (DSCP field, 6 bits)
-     *
-     * @return the matching IP ToS.
-     */
-    @JsonProperty("ipToS")
-    public Byte ipToS() {
-	if (ipToS != null)
-	    return ipToS.value();
-	return null;
-    }
-
-    /**
-     * Enable the matching on IP ToS (DSCP field, 6 bits).
-     *
-     * @param ipToS the IP ToS value to enable for matching.
-     */
-    @JsonProperty("ipToS")
-    public void enableIpToS(Byte ipToS) {
-	this.ipToS = new Field<Byte>(ipToS);
-    }
-
-    /**
-     * Disable the matching on IP ToS (DSCP field, 6 bits).
-     */
-    public void disableIpToS() {
-	this.ipToS = null;
-    }
-
-    /**
-     * Test if matching on IP ToS (DSCP field, 6 bits) is enabled.
-     *
-     * @return true if matching on IP ToS is enabled.
-     */
-    @JsonProperty("matchIpToS")
-    public boolean matchIpToS() {
-	if (ipToS != null)
-	    return ipToS.enabled();
-	return false;
-    }
-
-    /**
-     * Get the matching IP protocol.
-     *
-     * @return the matching IP protocol.
-     */
-    @JsonProperty("ipProto")
-    public Byte ipProto() {
-	if (ipProto != null)
-	    return ipProto.value();
-	return null;
-    }
-
-    /**
-     * Enable the matching on IP protocol.
-     *
-     * @param ipProto the IP protocol value to enable for matching.
-     */
-    @JsonProperty("ipProto")
-    public void enableIpProto(Byte ipProto) {
-	this.ipProto = new Field<Byte>(ipProto);
-    }
-
-    /**
-     * Disable the matching on IP protocol.
-     */
-    public void disableIpProto() {
-	this.ipProto = null;
-    }
-
-    /**
-     * Test if matching on IP protocol is enabled.
-     *
-     * @return true if matching on IP protocol is enabled.
-     */
-    @JsonProperty("matchIpProto")
-    public boolean matchIpProto() {
-	if (ipProto != null)
-	    return ipProto.enabled();
 	return false;
     }
 
@@ -529,6 +447,88 @@ public class FlowEntryMatch {
     public boolean matchDstIPv4Net() {
 	if (dstIPv4Net != null)
 	    return dstIPv4Net.enabled();
+	return false;
+    }
+
+    /**
+     * Get the matching IP protocol.
+     *
+     * @return the matching IP protocol.
+     */
+    @JsonProperty("ipProto")
+    public Byte ipProto() {
+	if (ipProto != null)
+	    return ipProto.value();
+	return null;
+    }
+
+    /**
+     * Enable the matching on IP protocol.
+     *
+     * @param ipProto the IP protocol value to enable for matching.
+     */
+    @JsonProperty("ipProto")
+    public void enableIpProto(Byte ipProto) {
+	this.ipProto = new Field<Byte>(ipProto);
+    }
+
+    /**
+     * Disable the matching on IP protocol.
+     */
+    public void disableIpProto() {
+	this.ipProto = null;
+    }
+
+    /**
+     * Test if matching on IP protocol is enabled.
+     *
+     * @return true if matching on IP protocol is enabled.
+     */
+    @JsonProperty("matchIpProto")
+    public boolean matchIpProto() {
+	if (ipProto != null)
+	    return ipProto.enabled();
+	return false;
+    }
+
+    /**
+     * Get the matching IP ToS (DSCP field, 6 bits)
+     *
+     * @return the matching IP ToS.
+     */
+    @JsonProperty("ipToS")
+    public Byte ipToS() {
+	if (ipToS != null)
+	    return ipToS.value();
+	return null;
+    }
+
+    /**
+     * Enable the matching on IP ToS (DSCP field, 6 bits).
+     *
+     * @param ipToS the IP ToS value to enable for matching.
+     */
+    @JsonProperty("ipToS")
+    public void enableIpToS(Byte ipToS) {
+	this.ipToS = new Field<Byte>(ipToS);
+    }
+
+    /**
+     * Disable the matching on IP ToS (DSCP field, 6 bits).
+     */
+    public void disableIpToS() {
+	this.ipToS = null;
+    }
+
+    /**
+     * Test if matching on IP ToS (DSCP field, 6 bits) is enabled.
+     *
+     * @return true if matching on IP ToS is enabled.
+     */
+    @JsonProperty("matchIpToS")
+    public boolean matchIpToS() {
+	if (ipToS != null)
+	    return ipToS.enabled();
 	return false;
     }
 
@@ -649,6 +649,12 @@ public class FlowEntryMatch {
 	    addSpace = true;
 	    ret += "dstMac=" + this.dstMac().toString();
 	}
+	if (matchEthernetFrameType()) {
+	    if (addSpace)
+		ret += " ";
+	    addSpace = true;
+	    ret += "ethernetFrameType=" + this.ethernetFrameType().toString();
+	}
 	if (matchVlanId()) {
 	    if (addSpace)
 		ret += " ";
@@ -661,24 +667,6 @@ public class FlowEntryMatch {
 	    addSpace = true;
 	    ret += "vlanPriority=" + this.vlanPriority().toString();
 	}
-	if (matchEthernetFrameType()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "ethernetFrameType=" + this.ethernetFrameType().toString();
-	}
-	if (matchIpToS()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "ipToS=" + this.ipToS().toString();
-	}
-	if (matchIpProto()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "ipProto=" + this.ipProto().toString();
-	}
 	if (matchSrcIPv4Net()) {
 	    if (addSpace)
 		ret += " ";
@@ -690,6 +678,18 @@ public class FlowEntryMatch {
 		ret += " ";
 	    addSpace = true;
 	    ret += "dstIPv4Net=" + this.dstIPv4Net().toString();
+	}
+	if (matchIpProto()) {
+	    if (addSpace)
+		ret += " ";
+	    addSpace = true;
+	    ret += "ipProto=" + this.ipProto().toString();
+	}
+	if (matchIpToS()) {
+	    if (addSpace)
+		ret += " ";
+	    addSpace = true;
+	    ret += "ipToS=" + this.ipToS().toString();
 	}
 	if (matchSrcTcpUdpPort()) {
 	    if (addSpace)

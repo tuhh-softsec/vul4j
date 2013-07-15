@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.util.FlowPathFlags;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -14,6 +15,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class FlowPath implements Comparable<FlowPath> {
     private FlowId flowId;		// The Flow ID
     private CallerId installerId;	// The Caller ID of the path installer
+    private FlowPathFlags flowPathFlags; // The Flow Path flags
     private DataPath dataPath;		// The data path
     private FlowEntryMatch flowEntryMatch; // Common Flow Entry Match for all
 					// Flow Entries
@@ -22,6 +24,7 @@ public class FlowPath implements Comparable<FlowPath> {
      * Default constructor.
      */
     public FlowPath() {
+	flowPathFlags = new FlowPathFlags();
 	dataPath = new DataPath();
     }
 
@@ -32,6 +35,7 @@ public class FlowPath implements Comparable<FlowPath> {
     	dataPath = new DataPath();
     	this.setFlowId(new FlowId(flowObj.getFlowId()));
     	this.setInstallerId(new CallerId(flowObj.getInstallerId()));
+	this.setFlowPathFlags(new FlowPathFlags(flowObj.getFlowPathFlags()));
     	this.dataPath().srcPort().setDpid(new Dpid(flowObj.getSrcSwitch()));
     	this.dataPath().srcPort().setPort(new Port(flowObj.getSrcPort()));
     	this.dataPath().dstPort().setDpid(new Dpid(flowObj.getDstSwitch()));
@@ -41,21 +45,40 @@ public class FlowPath implements Comparable<FlowPath> {
 	//
 	{
     	    FlowEntryMatch match = new FlowEntryMatch();
-    	    Short matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
-    	    if (matchEthernetFrameType != null)
-    		match.enableEthernetFrameType(matchEthernetFrameType);
-    	    String matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
-    	    if (matchSrcIPv4Net != null)
-    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-    	    String matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
-    	    if (matchDstIPv4Net != null)
-    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
     	    String matchSrcMac = flowObj.getMatchSrcMac();
     	    if (matchSrcMac != null)
     		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
     	    String matchDstMac = flowObj.getMatchDstMac();
     	    if (matchDstMac != null)
     		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+    	    Short matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
+    	    if (matchEthernetFrameType != null)
+    		match.enableEthernetFrameType(matchEthernetFrameType);
+    	    Short matchVlanId = flowObj.getMatchVlanId();
+    	    if (matchVlanId != null)
+    		match.enableVlanId(matchVlanId);
+    	    Byte matchVlanPriority = flowObj.getMatchVlanPriority();
+    	    if (matchVlanPriority != null)
+    		match.enableVlanPriority(matchVlanPriority);
+    	    String matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
+    	    if (matchSrcIPv4Net != null)
+    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+    	    String matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
+    	    if (matchDstIPv4Net != null)
+    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+    	    Byte matchIpProto = flowObj.getMatchIpProto();
+    	    if (matchIpProto != null)
+    		match.enableIpProto(matchIpProto);
+    	    Byte matchIpToS = flowObj.getMatchIpToS();
+    	    if (matchIpToS != null)
+    		match.enableIpToS(matchIpToS);
+    	    Short matchSrcTcpUdpPort = flowObj.getMatchSrcTcpUdpPort();
+    	    if (matchSrcTcpUdpPort != null)
+    		match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
+    	    Short matchDstTcpUdpPort = flowObj.getMatchDstTcpUdpPort();
+    	    if (matchDstTcpUdpPort != null)
+    		match.enableDstTcpUdpPort(matchDstTcpUdpPort);
+
     	    this.setFlowEntryMatch(match);
 	}
 
@@ -75,28 +98,46 @@ public class FlowPath implements Comparable<FlowPath> {
     	    Short matchInPort = flowEntryObj.getMatchInPort();
     	    if (matchInPort != null)
     		match.enableInPort(new Port(matchInPort));
-    	    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
-    	    if (matchEthernetFrameType != null)
-    		match.enableEthernetFrameType(matchEthernetFrameType);
-    	    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
-    	    if (matchSrcIPv4Net != null)
-    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-    	    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
-    	    if (matchDstIPv4Net != null)
-    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
     	    String matchSrcMac = flowEntryObj.getMatchSrcMac();
     	    if (matchSrcMac != null)
     		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
     	    String matchDstMac = flowEntryObj.getMatchDstMac();
     	    if (matchDstMac != null)
     		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+    	    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+    	    if (matchEthernetFrameType != null)
+    		match.enableEthernetFrameType(matchEthernetFrameType);
+    	    Short matchVlanId = flowEntryObj.getMatchVlanId();
+    	    if (matchVlanId != null)
+    		match.enableVlanId(matchVlanId);
+    	    Byte matchVlanPriority = flowEntryObj.getMatchVlanPriority();
+    	    if (matchVlanPriority != null)
+    		match.enableVlanPriority(matchVlanPriority);
+    	    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+    	    if (matchSrcIPv4Net != null)
+    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+    	    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+    	    if (matchDstIPv4Net != null)
+    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+    	    Byte matchIpProto = flowEntryObj.getMatchIpProto();
+    	    if (matchIpProto != null)
+    		match.enableIpProto(matchIpProto);
+    	    Byte matchIpToS = flowEntryObj.getMatchIpToS();
+    	    if (matchIpToS != null)
+    		match.enableIpToS(matchIpToS);
+    	    Short matchSrcTcpUdpPort = flowEntryObj.getMatchSrcTcpUdpPort();
+    	    if (matchSrcTcpUdpPort != null)
+    		match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
+    	    Short matchDstTcpUdpPort = flowEntryObj.getMatchDstTcpUdpPort();
+    	    if (matchDstTcpUdpPort != null)
+    		match.enableDstTcpUdpPort(matchDstTcpUdpPort);
     	    flowEntry.setFlowEntryMatch(match);
 
     	    //
     	    // Extract the actions
     	    //
     	    ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
-    	    Short actionOutputPort = flowEntryObj.getActionOutput();
+    	    Short actionOutputPort = flowEntryObj.getActionOutputPort();
     	    if (actionOutputPort != null) {
     		FlowEntryAction action = new FlowEntryAction();
     		action.setActionOutput(new Port(actionOutputPort));
@@ -153,6 +194,24 @@ public class FlowPath implements Comparable<FlowPath> {
     }
 
     /**
+     * Get the flow path flags.
+     *
+     * @return the flow path flags.
+     */
+    @JsonProperty("flowPathFlags")
+    public FlowPathFlags flowPathFlags() { return flowPathFlags; }
+
+    /**
+     * Set the flow path flags.
+     *
+     * @param flowPathFlags the flow path flags to set.
+     */
+    @JsonProperty("flowPathFlags")
+    public void setFlowPathFlags(FlowPathFlags flowPathFlags) {
+	this.flowPathFlags = flowPathFlags;
+    }
+
+    /**
      * Get the flow path's data path.
      *
      * @return the flow path's data path.
@@ -193,7 +252,7 @@ public class FlowPath implements Comparable<FlowPath> {
      * Convert the flow path to a string.
      *
      * The string has the following form:
-     *  [flowId=XXX installerId=XXX dataPath=XXX]
+     *  [flowId=XXX installerId=XXX flowPathFlags=XXX dataPath=XXX]
      *
      * @return the flow path as a string.
      */
@@ -201,6 +260,7 @@ public class FlowPath implements Comparable<FlowPath> {
     public String toString() {
 	String ret = "[flowId=" + this.flowId.toString();
 	ret += " installerId=" + this.installerId.toString();
+	ret += " flowPathFlags=" + this.flowPathFlags.toString();
 	if (dataPath != null)
 	    ret += " dataPath=" + this.dataPath.toString();
 	if (flowEntryMatch != null)

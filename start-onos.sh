@@ -5,8 +5,11 @@ if [ -z "${ONOS_HOME}" ]; then
         ONOS_HOME=`dirname $0`
 fi
 
-ONOS_LOGBACK="${ONOS_HOME}/logback.xml"
-LOGDIR=${ONOS_HOME}/onos-logs
+## Because the script change dir to $ONOS_HOME, we can set ONOS_LOGBACK and LOGDIR relative to $ONOS_HOME
+#ONOS_LOGBACK="${ONOS_HOME}/logback.`hostname`.xml"
+#LOGDIR=${ONOS_HOME}/onos-logs
+ONOS_LOGBACK="./logback.`hostname`.xml"
+LOGDIR=./onos-logs
 ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
 PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
 LOGS="$ONOS_LOG $PCAP_LOG"
@@ -96,20 +99,26 @@ EOF_LOGBACK
   echo 
 
   # XXX : MVN has to run at the project top dir 
+  echo $ONOS_HOME
   cd ${ONOS_HOME}
-  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos.properties\""
-  ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos.properties" > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
+  pwd 
+  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ./conf/onos.properties\""
+
+  ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ./conf/onos.properties" > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
 
   echo "Waiting for ONOS to start..."
   COUNT=0
   ESTATE=0
   while [ "$COUNT" != "10" ]; do
-    COUNT=$((COUNT + 1))
+    echo -n "."
+    sleep 1
+#    COUNT=$((COUNT + 1))
+#    sleep $COUNT
     n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
     if [ "$n" -ge "1" ]; then
+      echo ""
       exit 0
     fi
-    sleep $COUNT
   done
   echo "Timed out"
   exit 1

@@ -36,12 +36,23 @@ def debug(txt):
 def print_flow_path(parsedResult):
   flowId = parsedResult['flowId']['value']
   installerId = parsedResult['installerId']['value']
+  flowPathFlags = parsedResult['flowPathFlags']['flags']
   srcSwitch = parsedResult['dataPath']['srcPort']['dpid']['value']
   srcPort = parsedResult['dataPath']['srcPort']['port']['value']
   dstSwitch = parsedResult['dataPath']['dstPort']['dpid']['value']
   dstPort = parsedResult['dataPath']['dstPort']['port']['value']
 
-  print "FlowPath: (flowId = %s installerId = %s src = %s/%s dst = %s/%s)" % (flowId, installerId, srcSwitch, srcPort, dstSwitch, dstPort)
+  flowPathFlagsStr = ""
+  if (flowPathFlags & 0x1):
+    if flowPathFlagsStr:
+      flowPathFlagsStr += ","
+    flowPathFlagsStr += "DISCARD_FIRST_HOP_ENTRY"
+  if (flowPathFlags & 0x2):
+    if flowPathFlagsStr:
+      flowPathFlagsStr += ","
+    flowPathFlagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY"
+
+  print "FlowPath: (flowId = %s installerId = %s flowPathFlags = 0x%x(%s) src = %s/%s dst = %s/%s)" % (flowId, installerId, flowPathFlags, flowPathFlagsStr, srcSwitch, srcPort, dstSwitch, dstPort)
   match = parsedResult['flowEntryMatch'];
   #
   # Print the common conditions
@@ -55,20 +66,20 @@ def print_flow_path(parsedResult):
     matchSrcMac = match['matchSrcMac']
     dstMac = match['dstMac']
     matchDstMac = match['matchDstMac']
+    ethernetFrameType = match['ethernetFrameType']
+    matchEthernetFrameType = match['matchEthernetFrameType']
     vlanId = match['vlanId']
     matchVlanId = match['matchVlanId']
     vlanPriority = match['vlanPriority']
     matchVlanPriority = match['matchVlanPriority']
-    ethernetFrameType = match['ethernetFrameType']
-    matchEthernetFrameType = match['matchEthernetFrameType']
-    ipToS = match['ipToS']
-    matchIpToS = match['matchIpToS']
-    ipProto = match['ipProto']
-    matchIpProto = match['matchIpProto']
     srcIPv4Net = match['srcIPv4Net']
     matchSrcIPv4Net = match['matchSrcIPv4Net']
     dstIPv4Net = match['dstIPv4Net']
     matchDstIPv4Net = match['matchDstIPv4Net']
+    ipProto = match['ipProto']
+    matchIpProto = match['matchIpProto']
+    ipToS = match['ipToS']
+    matchIpToS = match['matchIpToS']
     srcTcpUdpPort = match['srcTcpUdpPort']
     matchSrcTcpUdpPort = match['matchSrcTcpUdpPort']
     dstTcpUdpPort = match['dstTcpUdpPort']
@@ -79,20 +90,20 @@ def print_flow_path(parsedResult):
       print "    srcMac: %s" % srcMac['value']
     if matchDstMac == True:
       print "    dstMac: %s" % dstMac['value']
+    if matchEthernetFrameType == True:
+      print "    ethernetFrameType: %s" % hex(ethernetFrameType)
     if matchVlanId == True:
       print "    vlanId: %s" % vlanId
     if matchVlanPriority == True:
       print "    vlanPriority: %s" % vlanPriority
-    if matchEthernetFrameType == True:
-      print "    ethernetFrameType: %s" % hex(ethernetFrameType)
-    if matchIpToS == True:
-      print "    ipToS: %s" % ipToS
-    if matchIpProto == True:
-      print "    ipProto: %s" % ipProto
     if matchSrcIPv4Net == True:
       print "    srcIPv4Net: %s" % srcIPv4Net['value']
     if matchDstIPv4Net == True:
       print "    dstIPv4Net: %s" % dstIPv4Net['value']
+    if matchIpProto == True:
+      print "    ipProto: %s" % ipProto
+    if matchIpToS == True:
+      print "    ipToS: %s" % ipToS
     if matchSrcTcpUdpPort == True:
       print "    srcTcpUdpPort: %s" % srcTcpUdpPort
     if matchDstTcpUdpPort == True:
@@ -119,20 +130,20 @@ def print_flow_path(parsedResult):
       matchSrcMac = match['matchSrcMac']
       dstMac = match['dstMac']
       matchDstMac = match['matchDstMac']
+      ethernetFrameType = match['ethernetFrameType']
+      matchEthernetFrameType = match['matchEthernetFrameType']
       vlanId = match['vlanId']
       matchVlanId = match['matchVlanId']
       vlanPriority = match['vlanPriority']
       matchVlanPriority = match['matchVlanPriority']
-      ethernetFrameType = match['ethernetFrameType']
-      matchEthernetFrameType = match['matchEthernetFrameType']
-      ipToS = match['ipToS']
-      matchIpToS = match['matchIpToS']
-      ipProto = match['ipProto']
-      matchIpProto = match['matchIpProto']
       srcIPv4Net = match['srcIPv4Net']
       matchSrcIPv4Net = match['matchSrcIPv4Net']
       dstIPv4Net = match['dstIPv4Net']
       matchDstIPv4Net = match['matchDstIPv4Net']
+      ipProto = match['ipProto']
+      matchIpProto = match['matchIpProto']
+      ipToS = match['ipToS']
+      matchIpToS = match['matchIpToS']
       srcTcpUdpPort = match['srcTcpUdpPort']
       matchSrcTcpUdpPort = match['matchSrcTcpUdpPort']
       dstTcpUdpPort = match['dstTcpUdpPort']
@@ -143,20 +154,20 @@ def print_flow_path(parsedResult):
 	print "    srcMac: %s" % srcMac['value']
       if matchDstMac == True:
 	print "    dstMac: %s" % dstMac['value']
+      if matchEthernetFrameType == True:
+	print "    ethernetFrameType: %s" % hex(ethernetFrameType)
       if matchVlanId == True:
 	print "    vlanId: %s" % vlanId
       if matchVlanPriority == True:
 	print "    vlanPriority: %s" % vlanPriority
-      if matchEthernetFrameType == True:
-	print "    ethernetFrameType: %s" % hex(ethernetFrameType)
-      if matchIpToS == True:
-	print "    ipToS: %s" % ipToS
-      if matchIpProto == True:
-	print "    ipProto: %s" % ipProto
       if matchSrcIPv4Net == True:
 	print "    srcIPv4Net: %s" % srcIPv4Net['value']
       if matchDstIPv4Net == True:
 	print "    dstIPv4Net: %s" % dstIPv4Net['value']
+      if matchIpProto == True:
+	print "    ipProto: %s" % ipProto
+      if matchIpToS == True:
+	print "    ipToS: %s" % ipToS
       if matchSrcTcpUdpPort == True:
 	print "    srcTcpUdpPort: %s" % srcTcpUdpPort
       if matchDstTcpUdpPort == True:

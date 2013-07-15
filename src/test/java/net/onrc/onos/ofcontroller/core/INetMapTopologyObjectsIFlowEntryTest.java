@@ -177,22 +177,6 @@ public class INetMapTopologyObjectsIFlowEntryTest {
 	
 	/**
 	 * Desc:
-	 *  Test method for set and get MatchEthernetFrameType.
-	 * Condition:
-	 *  N/A
-	 * Expect:
-	 * 1. Should set MatchEthernetFrameType.
-	 * 2. Should get MatchEthernetFrameType.
-	 */
-	@Test
-	public void testSetGetMatchEthernetFrameType() {
-		Short matchEthernetFrameType = 1;
-		flowEntry.setMatchEthernetFrameType(matchEthernetFrameType);
-		assertEquals(flowEntry.getMatchEthernetFrameType(), matchEthernetFrameType);
-	}
-	
-	/**
-	 * Desc:
 	 *  Test method for set and get MatchSrcMac.
 	 * Condition:
 	 *  N/A
@@ -222,6 +206,54 @@ public class INetMapTopologyObjectsIFlowEntryTest {
 		flowEntry.setMatchDstMac(matchDstMac);
 		assertEquals(flowEntry.getMatchDstMac(), matchDstMac);
 	}	
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchEthernetFrameType.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchEthernetFrameType.
+	 * 2. Should get MatchEthernetFrameType.
+	 */
+	@Test
+	public void testSetGetMatchEthernetFrameType() {
+		Short matchEthernetFrameType = 1;
+		flowEntry.setMatchEthernetFrameType(matchEthernetFrameType);
+		assertEquals(flowEntry.getMatchEthernetFrameType(), matchEthernetFrameType);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchVlanId.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchVlanId.
+	 * 2. Should get MatchVlanId.
+	 */
+	@Test
+	public void testSetGetMatchVlanId() {
+		Short matchVlanId = 10;
+		flowEntry.setMatchVlanId(matchVlanId);
+		assertEquals(flowEntry.getMatchVlanId(), matchVlanId);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchVlanPriority.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchVlanPriority.
+	 * 2. Should get MatchVlanPriority.
+	 */
+	@Test
+	public void testSetGetMatchVlanPriority() {
+		Byte matchVlanPriority = 10;
+		flowEntry.setMatchVlanPriority(matchVlanPriority);
+		assertEquals(flowEntry.getMatchVlanPriority(), matchVlanPriority);
+	}
 	
 	/**
 	 * Desc:
@@ -254,21 +286,85 @@ public class INetMapTopologyObjectsIFlowEntryTest {
 		flowEntry.setMatchDstIPv4Net(dstIPv4Net);
 		assertEquals(flowEntry.getMatchDstIPv4Net(), dstIPv4Net);
 	}	
-	
+
 	/**
 	 * Desc:
-	 *  Test method for set and get ActionOutput.
+	 *  Test method for set and get MatchIpProto.
 	 * Condition:
 	 *  N/A
 	 * Expect:
-	 * 1. Should set ActionOutput.
-	 * 2. Should get ActionOutput.
+	 * 1. Should set MatchIpProto.
+	 * 2. Should get MatchIpProto.
 	 */
 	@Test
-	public void testSetGetActionOutput() {
-		Short actionOutput = 1;
-		flowEntry.setActionOutput(actionOutput);
-		assertEquals(flowEntry.getActionOutput(), actionOutput);
+	public void testSetGetMatchIpProto() {
+		Byte matchIpProto = 20;
+		flowEntry.setMatchIpProto(matchIpProto);
+		assertEquals(flowEntry.getMatchIpProto(), matchIpProto);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchIpToS.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchIpToS.
+	 * 2. Should get MatchIpToS.
+	 */
+	@Test
+	public void testSetGetMatchIpToS() {
+		Byte matchIpToS = 20;
+		flowEntry.setMatchIpToS(matchIpToS);
+		assertEquals(flowEntry.getMatchIpToS(), matchIpToS);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchSrcTcpUdpPort.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchSrcTcpUdpPort.
+	 * 2. Should get MatchSrcTcpUdpPort.
+	 */
+	@Test
+	public void testSetGetMatchSrcTcpUdpPort() {
+		Short srcTcpUdpPort = (short)65535;
+		flowEntry.setMatchSrcTcpUdpPort(srcTcpUdpPort);
+		assertEquals(flowEntry.getMatchSrcTcpUdpPort(), srcTcpUdpPort);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get MatchDstTcpUdpPort.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set MatchDstTcpUdpPort.
+	 * 2. Should get MatchDstTcpUdpPort.
+	 */
+	@Test
+	public void testSetGetMatchDstTcpUdpPort() {
+		Short dstTcpUdpPort = (short)65535;
+		flowEntry.setMatchDstTcpUdpPort(dstTcpUdpPort);
+		assertEquals(flowEntry.getMatchDstTcpUdpPort(), dstTcpUdpPort);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for set and get ActionOutputPort.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set ActionOutputPort.
+	 * 2. Should get ActionOutputPort.
+	 */
+	@Test
+	public void testSetGetActionOutputPort() {
+		Short actionOutputPort = 1;
+		flowEntry.setActionOutputPort(actionOutputPort);
+		assertEquals(flowEntry.getActionOutputPort(), actionOutputPort);
 	}
 	
 	/**

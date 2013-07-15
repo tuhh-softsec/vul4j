@@ -200,6 +200,13 @@ public interface IFlowPath extends IBaseObject {
 		@Property("installer_id")
 		public void setInstallerId(String installerId);
 
+		@JsonProperty("flowPathFlags")
+		@Property("flow_path_flags")
+		public Long getFlowPathFlags();
+
+		@Property("flow_path_flags")
+		public void setFlowPathFlags(Long flowPathFlags);
+
 		@JsonProperty("srcDpid")
 		@Property("src_switch")
 		public String getSrcSwitch();
@@ -247,13 +254,6 @@ public interface IFlowPath extends IBaseObject {
 		public void removeFlowEntry(final IFlowEntry flowEntry);
 
 		@JsonIgnore
-		@Property("matchEthernetFrameType")
-		public Short getMatchEthernetFrameType();
-
-		@Property("matchEthernetFrameType")
-		public void setMatchEthernetFrameType(Short matchEthernetFrameType);
-
-		@JsonIgnore
 		@Property("matchSrcMac")
 		public String getMatchSrcMac();
 
@@ -268,6 +268,27 @@ public interface IFlowPath extends IBaseObject {
 		public void setMatchDstMac(String matchDstMac);
 
 		@JsonIgnore
+		@Property("matchEthernetFrameType")
+		public Short getMatchEthernetFrameType();
+
+		@Property("matchEthernetFrameType")
+		public void setMatchEthernetFrameType(Short matchEthernetFrameType);
+
+		@JsonIgnore
+		@Property("matchVlanId")
+		public Short getMatchVlanId();
+
+		@Property("matchVlanId")
+		public void setMatchVlanId(Short matchVlanId);
+
+		@JsonIgnore
+		@Property("matchVlanPriority")
+		public Byte getMatchVlanPriority();
+
+		@Property("matchVlanPriority")
+		public void setMatchVlanPriority(Byte matchVlanPriority);
+
+		@JsonIgnore
 		@Property("matchSrcIPv4Net")
 		public String getMatchSrcIPv4Net();
 
@@ -280,7 +301,35 @@ public interface IFlowPath extends IBaseObject {
 
 		@Property("matchDstIPv4Net")
 		public void setMatchDstIPv4Net(String matchDstIPv4Net);
-		
+
+		@JsonIgnore
+		@Property("matchIpProto")
+		public Byte getMatchIpProto();
+
+		@Property("matchIpProto")
+		public void setMatchIpProto(Byte matchIpProto);
+
+		@JsonIgnore
+		@Property("matchIpToS")
+		public Byte getMatchIpToS();
+
+		@Property("matchIpToS")
+		public void setMatchIpToS(Byte matchIpToS);
+
+		@JsonIgnore
+		@Property("matchSrcTcpUdpPort")
+		public Short getMatchSrcTcpUdpPort();
+
+		@Property("matchSrcTcpUdpPort")
+		public void setMatchSrcTcpUdpPort(Short matchSrcTcpUdpPort);
+
+		@JsonIgnore
+		@Property("matchDstTcpUdpPort")
+		public Short getMatchDstTcpUdpPort();
+
+		@Property("matchDstTcpUdpPort")
+		public void setMatchDstTcpUdpPort(Short matchDstTcpUdpPort);
+
 		@JsonIgnore
 		@GremlinGroovy("it.in('flow').out('switch')")
 		public Iterable<ISwitchObject> getSwitches();
@@ -340,12 +389,6 @@ public interface IFlowEntry extends IBaseObject {
 		@Property("matchInPort")
 		public void setMatchInPort(Short matchInPort);
 
-		@Property("matchEthernetFrameType")
-		public Short getMatchEthernetFrameType();
-
-		@Property("matchEthernetFrameType")
-		public void setMatchEthernetFrameType(Short matchEthernetFrameType);
-
 		@Property("matchSrcMac")
 		public String getMatchSrcMac();
 
@@ -357,6 +400,24 @@ public interface IFlowEntry extends IBaseObject {
 
 		@Property("matchDstMac")
 		public void setMatchDstMac(String matchDstMac);
+
+		@Property("matchEthernetFrameType")
+		public Short getMatchEthernetFrameType();
+
+		@Property("matchEthernetFrameType")
+		public void setMatchEthernetFrameType(Short matchEthernetFrameType);
+
+		@Property("matchVlanId")
+		public Short getMatchVlanId();
+
+		@Property("matchVlanId")
+		public void setMatchVlanId(Short matchVlanId);
+
+		@Property("matchVlanPriority")
+		public Byte getMatchVlanPriority();
+
+		@Property("matchVlanPriority")
+		public void setMatchVlanPriority(Byte matchVlanPriority);
 
 		@Property("matchSrcIPv4Net")
 		public String getMatchSrcIPv4Net();
@@ -370,11 +431,35 @@ public interface IFlowEntry extends IBaseObject {
 		@Property("matchDstIPv4Net")
 		public void setMatchDstIPv4Net(String matchDstIPv4Net);
 
-		@Property("actionOutput")
-		public Short getActionOutput();
+		@Property("matchIpProto")
+		public Byte getMatchIpProto();
 
-		@Property("actionOutput")
-		public void setActionOutput(Short actionOutput);
+		@Property("matchIpProto")
+		public void setMatchIpProto(Byte matchIpProto);
+
+		@Property("matchIpToS")
+		public Byte getMatchIpToS();
+
+		@Property("matchIpToS")
+		public void setMatchIpToS(Byte matchIpToS);
+
+		@Property("matchSrcTcpUdpPort")
+		public Short getMatchSrcTcpUdpPort();
+
+		@Property("matchSrcTcpUdpPort")
+		public void setMatchSrcTcpUdpPort(Short matchSrcTcpUdpPort);
+
+		@Property("matchDstTcpUdpPort")
+		public Short getMatchDstTcpUdpPort();
+
+		@Property("matchDstTcpUdpPort")
+		public void setMatchDstTcpUdpPort(Short matchDstTcpUdpPort);
+
+		@Property("actionOutputPort")
+		public Short getActionOutputPort();
+
+		@Property("actionOutputPort")
+		public void setActionOutputPort(Short actionOutputPort);
 
 		@Adjacency(label="flow")
 		public IFlowPath getFlow();
