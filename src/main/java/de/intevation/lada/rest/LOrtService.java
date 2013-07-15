@@ -109,7 +109,7 @@ public class LOrtService
      * @return Response object.
      */
     @PUT
-    @Path("/{id}")
+    @Path("/{portId}/{probeId}")
     @Produces("text/json")
     @Consumes("application/json")
     public Response update(
@@ -165,9 +165,11 @@ public class LOrtService
      * @return Response object.
      */
     @DELETE
-    @Path("/{ortId}")
+    @Produces("text/json")
+    @Path("/{ortId}/{probeId}")
     public Response delete(
         @PathParam("ortId") String ortId,
+        @PathParam("probeId") String probeId,
         @Context HttpHeaders headers
     ) {
         try {
@@ -175,7 +177,7 @@ public class LOrtService
                 new QueryBuilder<LOrt>(
                     repository.getEntityManager(),
                     LOrt.class);
-            builder.and("POrtId", ortId);
+            builder.and("POrtId", ortId).and("probeId", probeId);
             Response response = repository.filter(builder.getQuery());
             List<LOrt> list = (List<LOrt>)response.getData();
             if (!list.isEmpty()) {
