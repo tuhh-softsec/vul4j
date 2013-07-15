@@ -11,11 +11,13 @@ import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
@@ -168,5 +170,45 @@ public class LMessungService
             return true;
         }
         return messungen.get(0).isFertig();
+    }
+
+    /**
+     * Delete a LMessung object identified by 'probeId' and 'messungsId'.
+     *
+     * @param messungsId       The object id.
+     * @param probeId   The LProbe object id.
+     * @param headers   The HTTP headers containing authorization information.
+     * @return Response object.
+     */
+    @DELETE
+    @Path("/{messungsId}/{probeId}")
+    @Produces("text/json")
+    public Response delete(
+        @PathParam("messungsId") String messungsId,
+        @PathParam("probeId") String probeId,
+        @Context HttpHeaders headers
+    ) {
+        try {
+            if (!authentication.isAuthorizedUser(headers)) {
+                return new Response(false, 699, new ArrayList<LMessung>());
+            }
+            if (authentication.hasAccess(headers, probeId)) {
+                QueryBuilder<LMessung> builder =
+                    new QueryBuilder<LMessung>(
+                        repository.getEntityManager(), LMessung.class);
+                builder.and("probeId", probeId).and("messungsId", messungsId);
+                Response response = repository.filter(builder.getQuery());
+                List<LMessung> list = (List<LMessung>)response.getData();
+                if (!list.isEmpty()) {
+                    repository.delete(list.get(0));
+                    return new Response(true, 200, null);
+                }
+                return new Response(false, 600, null);
+            }
+            return new Response(false, 698, new ArrayList<LMessung>());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, new ArrayList<LMessung>());
+        }
     }
 }
