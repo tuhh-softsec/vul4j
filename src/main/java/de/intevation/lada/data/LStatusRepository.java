@@ -157,11 +157,28 @@ public class LStatusRepository implements Repository
     }
 
     /**
-     * This class does not support this operation.
+     * Delete a LStatus object.
      *
-     * @param object
+     * @param object    The object to delete.
+     * @return Response object.
      */
     public Response delete(Object object) {
-        return null;
+        if (!(object instanceof LStatus)) {
+            return new Response(false, 602, null);
+        }
+        LStatus status = (LStatus)object;
+        Response response = new Response(true, 200, null);
+        try {
+            manager.delete(status);
+        }
+        catch (IllegalArgumentException iae) {
+            response.setSuccess(false);
+            response.setMessage(602);
+        }
+        catch (TransactionRequiredException tre) {
+            response.setSuccess(false);
+            response.setMessage(603);
+        }
+        return response;
     }
 }
