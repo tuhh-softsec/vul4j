@@ -76,15 +76,12 @@ public class LStatusService
                 return new Response(false, 609, new ArrayList<LStatus>());
             }
             String probeId = params.getFirst("probeId");
-            if (authentication.hasAccess(headers, probeId)) {
-                QueryBuilder<LStatus> builder =
-                    new QueryBuilder<LStatus>(
-                        repository.getEntityManager(), LStatus.class);
-                builder.and("probeId", probeId)
-                    .and("messungsId", params.getFirst("messungsId"));
-                return repository.filter(builder.getQuery());
-            }
-            return new Response(false, 698, new ArrayList<LStatus>());
+            QueryBuilder<LStatus> builder =
+                new QueryBuilder<LStatus>(
+                    repository.getEntityManager(), LStatus.class);
+            builder.and("probeId", probeId)
+                .and("messungsId", params.getFirst("messungsId"));
+            return repository.filter(builder.getQuery());
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LStatus>());

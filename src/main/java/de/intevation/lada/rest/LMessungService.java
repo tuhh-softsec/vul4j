@@ -77,15 +77,12 @@ public class LMessungService
                 return new Response(false, 609, new ArrayList<LMessung>());
             }
             String probeId = params.getFirst("probeId");
-            if (authentication.hasAccess(headers, probeId)) {
-                QueryBuilder<LMessung> builder =
-                    new QueryBuilder<LMessung>(
-                        repository.getEntityManager(),
-                        LMessung.class);
-                builder.and("probeId", probeId);
-                return repository.filter(builder.getQuery());
-            }
-            return new Response(false, 698, new ArrayList<LMessung>());
+            QueryBuilder<LMessung> builder =
+                new QueryBuilder<LMessung>(
+                    repository.getEntityManager(),
+                    LMessung.class);
+            builder.and("probeId", probeId);
+            return repository.filter(builder.getQuery());
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LMessung>());

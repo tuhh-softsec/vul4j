@@ -79,15 +79,12 @@ public class LKommentarMService
                 return new Response(false, 609, new ArrayList<LKommentarM>());
             }
             String probeId = params.getFirst("probeId");
-            if (authentication.hasAccess(headers, probeId)) {
-                QueryBuilder<LKommentarM> builder =
-                    new QueryBuilder<LKommentarM>(
-                        repository.getEntityManager(), LKommentarM.class);
-                builder.and("probeId", probeId)
-                    .and("messungsId", params.getFirst("messungsId"));
-                return repository.filter(builder.getQuery());
-            }
-            return new Response(false, 698, new ArrayList<LKommentarM>());
+            QueryBuilder<LKommentarM> builder =
+                new QueryBuilder<LKommentarM>(
+                    repository.getEntityManager(), LKommentarM.class);
+            builder.and("probeId", probeId)
+                .and("messungsId", params.getFirst("messungsId"));
+            return repository.filter(builder.getQuery());
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LKommentarM>());

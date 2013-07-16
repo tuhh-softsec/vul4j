@@ -80,21 +80,18 @@ public class LOrtService
                 return new Response(false, 609, new ArrayList<LOrt>());
             }
             String probeId = params.getFirst("probeId");
-            if (authentication.hasAccess(headers, probeId)) {
-                QueryBuilder<LOrt> builder =
-                    new QueryBuilder<LOrt>(
-                        repository.getEntityManager(), LOrt.class);
-                builder.and("probeId", probeId);
-                Response response = repository.filter(builder.getQuery());
-                List<LOrt> list = (List<LOrt>) response.getData();
-                boolean readonly = authorization.isReadOnly(probeId);
-                for (LOrt ort: list) {
-                    ort.setReadonly(readonly);
-                }
-                response.setData(list);
-                return response;
+            QueryBuilder<LOrt> builder =
+                new QueryBuilder<LOrt>(
+                    repository.getEntityManager(), LOrt.class);
+            builder.and("probeId", probeId);
+            Response response = repository.filter(builder.getQuery());
+            List<LOrt> list = (List<LOrt>) response.getData();
+            boolean readonly = authorization.isReadOnly(probeId);
+            for (LOrt ort: list) {
+                ort.setReadonly(readonly);
             }
-            return new Response(false, 698, new ArrayList<LOrt>());
+            response.setData(list);
+            return response;
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LOrt>());

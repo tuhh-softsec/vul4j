@@ -81,15 +81,12 @@ public class LMesswertService
                 return new Response(false, 609, new ArrayList<LMesswert>());
             }
             String probeId = params.getFirst("probeId");
-            if (authentication.hasAccess(headers, probeId)) {
-                QueryBuilder<LMesswert> builder =
-                    new QueryBuilder<LMesswert>(
-                        repository.getEntityManager(), LMesswert.class);
-                builder.and("probeId", probeId)
-                    .and("messungsId", params.getFirst("messungsId"));
-                return repository.filter(builder.getQuery());
-            }
-            return new Response(false, 698, new ArrayList<LMesswert>());
+            QueryBuilder<LMesswert> builder =
+                new QueryBuilder<LMesswert>(
+                    repository.getEntityManager(), LMesswert.class);
+            builder.and("probeId", probeId)
+                .and("messungsId", params.getFirst("messungsId"));
+            return repository.filter(builder.getQuery());
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LMesswert>());

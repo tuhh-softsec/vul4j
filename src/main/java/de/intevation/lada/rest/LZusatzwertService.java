@@ -73,14 +73,11 @@ public class LZusatzwertService
                 return new Response(false, 609, new ArrayList<LZusatzWert>());
             }
             String probeId = params.getFirst("probeId");
-            if (authentication.hasAccess(headers, probeId)) {
-                QueryBuilder<LZusatzWert> builder =
-                    new QueryBuilder<LZusatzWert>(
-                        repository.getEntityManager(), LZusatzWert.class);
-                builder.and("probeId", probeId);
-                return repository.filter(builder.getQuery());
-            }
-            return new Response(false, 698, new ArrayList<LZusatzWert>());
+            QueryBuilder<LZusatzWert> builder =
+                new QueryBuilder<LZusatzWert>(
+                    repository.getEntityManager(), LZusatzWert.class);
+            builder.and("probeId", probeId);
+            return repository.filter(builder.getQuery());
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LZusatzWert>());
