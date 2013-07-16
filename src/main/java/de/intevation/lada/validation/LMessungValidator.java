@@ -34,7 +34,7 @@ implements Validator
     private Repository messungRepository;
 
     @Override
-    public Map<String, Integer> validate(Object object)
+    public Map<String, Integer> validate(Object object, boolean update)
     throws ValidationException {
         Map<String, Integer> warnings = new HashMap<String, Integer>();
         if (!(object instanceof LMessung)) {
@@ -44,12 +44,15 @@ implements Validator
         }
         LMessung messung = (LMessung)object;
 
-        validateNebenprobenNr(messung, warnings);
+        validateHasNebenprobenNr(messung, warnings);
         validateDatum(messung, warnings);
+        if (!update) {
+            validateUniqueNebenprobenNr(messung, warnings);
+        }
         return warnings;
     }
 
-    private void validateNebenprobenNr(
+    private void validateHasNebenprobenNr(
         LMessung messung,
         Map<String, Integer> warnings)
     throws ValidationException {
@@ -57,6 +60,12 @@ implements Validator
             messung.getNebenprobenNr().equals("")) {
             warnings.put("nebenprobenNr", 631);
         }
+    }
+
+    private void validateUniqueNebenprobenNr(
+        LMessung messung,
+        Map<String, Integer> warnings)
+    throws ValidationException {
         QueryBuilder<LMessung> builder =
             new QueryBuilder<LMessung>(
                 messungRepository.getEntityManager(),

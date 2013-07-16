@@ -15,7 +15,7 @@ implements Validator
 {
 
     @Override
-    public Map<String, Integer> validate(Object object)
+    public Map<String, Integer> validate(Object object, boolean update)
     throws ValidationException {
         Map<String, Integer> warnings = new HashMap<String, Integer>();
         if (!(object instanceof LMesswert)) {

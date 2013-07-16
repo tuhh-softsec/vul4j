@@ -108,7 +108,7 @@ public class LMessungRepository implements Repository
         LMessung messung = (LMessung)object;
         Response response = new Response(true, 200, messung);
         try {
-            Map<String, Integer> warnings = validator.validate(messung);
+            Map<String, Integer> warnings = validator.validate(messung, false);
             manager.create(messung);
             response.setWarnings(warnings);
             return response;
@@ -152,7 +152,7 @@ public class LMessungRepository implements Repository
         Response response = new Response(true, 200, messung);
         // Try to save the new LProbe.
         try {
-            Map<String, Integer> warnings = validator.validate(messung);
+            Map<String, Integer> warnings = validator.validate(messung, true);
             manager.update(messung);
             response.setWarnings(warnings);
             return response;

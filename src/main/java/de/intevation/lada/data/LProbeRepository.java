@@ -104,7 +104,7 @@ public class LProbeRepository implements Repository{
         Response response = new Response(true, 200, probe);
         // Try to save the new LProbe.
         try {
-            Map<String, Integer> warnings = validator.validate(probe);
+            Map<String, Integer> warnings = validator.validate(probe, false);
             manager.create(probe);
             response.setWarnings(warnings);
             return response;
@@ -147,7 +147,7 @@ public class LProbeRepository implements Repository{
         LProbe probe = (LProbe)object;
         Response response = new Response(true, 200, probe);
         try {
-            Map<String, Integer> warnings = validator.validate(probe);
+            Map<String, Integer> warnings = validator.validate(probe, true);
             manager.update(probe);
             response.setWarnings(warnings);
             return response;

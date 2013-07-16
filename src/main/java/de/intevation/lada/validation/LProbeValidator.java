@@ -40,7 +40,7 @@ implements Validator
      * @param probe The LProbe object.
      */
     @Override
-    public Map<String, Integer> validate(Object probe)
+    public Map<String, Integer> validate(Object probe, boolean update)
     throws ValidationException {
         Map<String, Integer>warnings = new HashMap<String, Integer>();
         if (!(probe instanceof LProbe)) {

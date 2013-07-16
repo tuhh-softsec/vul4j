@@ -107,7 +107,7 @@ public class LMesswertRepository implements Repository
         LMesswert messwert = (LMesswert)object;
         Response response = new Response(true, 200, messwert);
         try {
-            Map<String, Integer> warnings = validator.validate(messwert);
+            Map<String, Integer> warnings = validator.validate(messwert, false);
             manager.create(messwert);
             response.setWarnings(warnings);
             return response;

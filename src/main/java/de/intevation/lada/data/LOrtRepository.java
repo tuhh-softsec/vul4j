@@ -109,7 +109,7 @@ public class LOrtRepository implements Repository
         Response response = new Response(true, 200, ort);
         // Try to save the new LOrt.
         try {
-            Map<String, Integer> warnings = validator.validate(ort);
+            Map<String, Integer> warnings = validator.validate(ort, false);
             manager.create(ort);
             response.setWarnings(warnings);
             return response;
@@ -153,7 +153,7 @@ public class LOrtRepository implements Repository
         Response response = new Response(true, 200, ort);
         // Try to update a LOrt object.
         try {
-            Map<String, Integer> warnings = validator.validate(ort);
+            Map<String, Integer> warnings = validator.validate(ort, true);
             manager.update(ort);
             response.setWarnings(warnings);
             return response;
