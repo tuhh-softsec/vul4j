@@ -37,7 +37,11 @@ implements Validator
     /**
      * Validate a LProbe object.
      *
-     * @param probe The LProbe object.
+     * @param probe     The LProbe object.
+     * @param update    The database operation.
+     *                  TRUE indicates that the object should be updated, FALSE
+     *                  if the object is a new Object.
+     * @return Map containing warnings.
      */
     @Override
     public Map<String, Integer> validate(Object probe, boolean update)
@@ -57,6 +61,13 @@ implements Validator
         return warnings;
     }
 
+    /**
+     * Check if the 'Hauptproben Nr' is unique.
+     *
+     * @param p         The LProbe object.
+     * @param warnings  The map containing warnings.
+     * @throws ValidationException
+     */
     private void validateHauptProbenNummer(LProbe p, Map<String, Integer> warnings)
     throws ValidationException {
         String hpn = p.getHauptprobenNr();
@@ -73,6 +84,12 @@ implements Validator
         }
     }
 
+    /**
+     * Check if the LProbe object has 'Entnahmeort'.
+     *
+     * @param probe
+     * @param warnings
+     */
     private void validateEntnahmeOrt(LProbe probe, Map<String, Integer> warnings) {
         String pid = probe.getProbeId();
 
@@ -87,6 +104,12 @@ implements Validator
         }
     }
 
+    /**
+     * Check if 'Probenahmeende' is after 'Probenahmebeginn'.
+     *
+     * @param probe     The LProbe object.
+     * @param warnings  The map containing warnings.
+     */
     private void validateProbenahmeBegin(LProbe probe, Map<String, Integer> warnings) {
         Date begin = probe.getProbeentnahmeBeginn();
         if (begin == null) {
@@ -97,6 +120,12 @@ implements Validator
         }
     }
 
+    /**
+     * Check if the LProbe object has a 'Umweltbereich'.
+     *
+     * @param probe     The LProbe object.
+     * @param warnings  The map containing warnings.
+     */
     private void validateUWB(LProbe probe, Map<String, Integer> warnings) {
         String uwb = probe.getUmwId();
         if (uwb == null || uwb.equals("")) {

@@ -13,7 +13,15 @@ import de.intevation.lada.model.LMesswert;
 public class LMesswertValidator
 implements Validator
 {
-
+    /**
+     * Validate a LMesswert object.
+     *
+     * @param object    The LMesswert object.
+     * @param update    The database operation.
+     *                  TRUE indicates that the object should be updated, FALSE
+     *                  if the object is a new Object.
+     * @return Map containing warnings.
+     */
     @Override
     public Map<String, Integer> validate(Object object, boolean update)
     throws ValidationException {
@@ -29,6 +37,14 @@ implements Validator
         return null;
     }
 
+    /**
+     * Check if the LMesswert has a 'Messunsicherheit' or if the the value
+     * is lower than the 'Nachweisgrenze'.
+     *
+     * @param messwert  The LMesswert object.
+     * @param warnings  The map containing warnings.
+     * @throws ValidationException
+     */
     private void validateMessunsicherheit(
         LMesswert messwert,
         Map<String, Integer> warnings)

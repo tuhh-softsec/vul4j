@@ -11,6 +11,12 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMessung;
 import de.intevation.lada.rest.Response;
 
+/**
+* This implementation of the authorization interface handles access to data
+* objects.
+*
+* @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+*/
 @ApplicationScoped
 @Named("dataauthorization")
 public class DataAuthorization

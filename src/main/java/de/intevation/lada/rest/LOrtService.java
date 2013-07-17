@@ -154,7 +154,7 @@ public class LOrtService
     }
 
     /**
-     * Delete a LZusatzwert object.
+     * Delete a LOrt object.
      *
      * @param pzsId     The object id.
      * @param probeId   The LProbe id.

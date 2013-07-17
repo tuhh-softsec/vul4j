@@ -13,7 +13,15 @@ import de.intevation.lada.model.LOrt;
 public class LOrtValidator
 implements Validator
 {
-
+    /**
+     * Validate a LOrt object.
+     *
+     * @param object    The LOrt object.
+     * @param update    The database operation.
+     *                  TRUE indicates that the object should be updated, FALSE
+     *                  if the object is a new Object.
+     * @return Map containing warnings.
+     */
     @Override
     public Map<String, Integer> validate(Object object, boolean update)
     throws ValidationException {

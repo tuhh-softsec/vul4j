@@ -30,7 +30,7 @@ import de.intevation.lada.model.SNetzBetreiber;
 public class SNetzBetreiberService
 {
     /**
-     * The Repository for SDatenbasis.
+     * The Repository for SNetzBetreiber.
      */
     @Inject
     @Named("readonlyrepository")
@@ -50,7 +50,7 @@ public class SNetzBetreiberService
     private Logger logger;
 
     /**
-     * Request all SNetzbetreiber objects.
+     * Request all SNetzBetreiber objects.
      *
      * @param headers   The HTTP header containing authorization information.
      * @return Response object.
@@ -73,7 +73,7 @@ public class SNetzBetreiberService
     }
 
     /**
-     * Request a single SNetzbetreiber via its id.
+     * Request a single SNetzBetreiber via its id.
      *
      * @param id        The object id.
      * @param headers   The HTTP header containing authorization information.

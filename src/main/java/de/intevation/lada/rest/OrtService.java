@@ -32,7 +32,7 @@ import de.intevation.lada.model.Ort;
 public class OrtService
 {
     /**
-     * The Repository for SUmwelt.
+     * The Repository for Ort.
      */
     @Inject
     @Named("ortrepository")

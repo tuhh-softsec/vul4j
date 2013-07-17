@@ -41,7 +41,7 @@ public class SVerwaltungseinheitService
     private Authentication authentication;
 
     /**
-     * Request all SUmwelt objects.
+     * Request all SVerwaltungseinheit objects.
      *
      * @param headers   The HTTP header containing authorization information.
      * @return Response object.
@@ -61,7 +61,7 @@ public class SVerwaltungseinheitService
     }
 
     /**
-     * Request a SUmwelt object via its id.
+     * Request a SVerwaltungseinheit object via its id.
      *
      * @param id        The object id.
      * @param headers   The HTTP header containing authorization information.

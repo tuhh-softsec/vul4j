@@ -37,7 +37,7 @@ import de.intevation.lada.model.LStatusId;
 public class LStatusService
 {
     /**
-     * The Repository for SUmwelt.
+     * The Repository for LStatus.
      */
     @Inject
     @Named("lstatusrepository")

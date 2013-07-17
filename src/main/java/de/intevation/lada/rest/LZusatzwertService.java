@@ -36,7 +36,7 @@ import de.intevation.lada.model.LZusatzWert;
 public class LZusatzwertService
 {
     /**
-     * The Repository for SUmwelt.
+     * The Repository for LZusatzwert.
      */
     @Inject
     @Named("lzusatzwertrepository")
@@ -50,7 +50,7 @@ public class LZusatzwertService
     private Authentication authentication;
 
     /**
-     * Request LMessert via a filter.
+     * Request LZusatzwert via a filter.
      *
      * Query parameters are used for the filter in form of key-value pairs.
      *

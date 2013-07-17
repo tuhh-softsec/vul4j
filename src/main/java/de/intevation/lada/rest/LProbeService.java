@@ -111,8 +111,8 @@ public class LProbeService {
      *
      * Query parameters are used for the filter in form of key-value pairs.
      * This filter can take the three parameters
-     *   mst=$MSTID (String)
-     *   uwb=$UWBID (String)
+     *   mstId=$MSTID (String)
+     *   umwId=$UWBID (String)
      *   begin=$PROBEENTNAHMEBEGIN (Timestamp)
      *
      * @param info      The URL query parameters.
@@ -197,6 +197,7 @@ public class LProbeService {
 
     /**
      * Create a new LProbe object.
+     *
      * @param probe     A LProbeInfo object wrapping the LProbe object.
      * @param header    The HTTP header containing authorization information.
      * @return Response object.

@@ -33,6 +33,16 @@ implements Validator
     @Named("lmessungrepository")
     private Repository messungRepository;
 
+    /**
+     * Validate a LMessung object.
+     *
+     * @param object    The object to validate.
+     * @param update    The database operation.
+     *                  TRUE indicates that the object should be updated, FALSE
+     *                  if the object is a new Object.
+     * @return Map containing warnings.
+     * @throws ValidationException
+     */
     @Override
     public Map<String, Integer> validate(Object object, boolean update)
     throws ValidationException {
@@ -52,6 +62,13 @@ implements Validator
         return warnings;
     }
 
+    /**
+     * Check if the object has a 'Nebenproben Nr.'.
+     *
+     * @param messung   The LMessung object.
+     * @param warnings  The map containing warnings.
+     * @throws ValidationException
+     */
     private void validateHasNebenprobenNr(
         LMessung messung,
         Map<String, Integer> warnings)
@@ -62,6 +79,13 @@ implements Validator
         }
     }
 
+    /**
+     * Check if the 'Nebenproben Nr' is unique.
+     *
+     * @param messung   The LMessung object.
+     * @param warnings  The map containing warnings.
+     * @throws ValidationException
+     */
     private void validateUniqueNebenprobenNr(
         LMessung messung,
         Map<String, Integer> warnings)
@@ -85,6 +109,13 @@ implements Validator
         }
     }
 
+    /**
+     * Check if the 'Messdatum' is after the 'Probennahmedatum'.
+     *
+     * @param messung   The LMessung object.
+     * @param warnings  The map containing warinings. 
+     * @throws ValidationException
+     */
     private void validateDatum(
         LMessung messung,
         Map<String, Integer> warnings)
