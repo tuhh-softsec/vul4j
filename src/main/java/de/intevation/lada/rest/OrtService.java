@@ -143,6 +143,7 @@ public class OrtService
      * @return Response object.
      */
     @DELETE
+    @Produces("text/json")
     @Path("/{ortId}/{probeId}")
     public Response delete(
         @PathParam("ortId") String ortId,
