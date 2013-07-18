@@ -87,7 +87,7 @@ def extract_flow_args(my_args):
       if "KEEP_ONLY_FIRST_HOP_ENTRY" in arg2:
 	flowPathFlags = flowPathFlags + 0x2
     elif arg1 == "matchInPort":
-      # Just mark whether inPort matching is enabled
+      # Mark whether ACTION_OUTPUT action is enabled
       matchInPortEnabled = arg2 in ['True', 'true']
       # inPort = {}
       # inPort['value'] = int(arg2, 0)
@@ -135,18 +135,19 @@ def extract_flow_args(my_args):
       match['dstTcpUdpPort'] = int(arg2, 0)
       # match['matchDstTcpUdpPort'] = True
     elif arg1 == "actionOutput":
-      # Just mark whether ACTION_OUTPUT action is enabled
+      # Mark whether ACTION_OUTPUT action is enabled
       actionOutputEnabled = arg2 in ['True', 'true']
-      #
-      # TODO: Complete the implementation for ACTION_OUTPUT
-      #   actionOutput = {}
-      #   outPort = {}
-      #   outPort['value'] = int(arg2, 0)
-      #   actionOutput['port'] = outPort
-      #   actionOutput['maxLen'] = int(arg3, 0)
-      #   action['actionOutput'] = actionOutput
-      #   # action['actionType'] = 'ACTION_OUTPUT'
-      #   actions.append(action)
+      # If ACTION_OUTPUT is explicitly enabled, add an entry with a fake
+      # port number. We need this entry to preserve the action ordering.
+      if actionOutputEnabled == True:
+        actionOutput = {}
+        outPort = {}
+        outPort['value'] = 0xffff
+        actionOutput['port'] = outPort
+        actionOutput['maxLen'] = 0
+        action['actionOutput'] = actionOutput
+        # action['actionType'] = 'ACTION_OUTPUT'
+        actions.append(action)
       #
     elif arg1 == "actionSetVlanId":
       vlanId = {}
@@ -264,6 +265,8 @@ def compute_flow_path(parsed_args, data_path):
   flowPathFlags = {}
   flowPathFlags['flags'] = myFlowPathFlags
 
+  flowEntryActions = {}
+
   flow_path = {}
   flow_path['flowId'] = flow_id
   flow_path['installerId'] = installer_id
@@ -284,6 +287,11 @@ def compute_flow_path(parsed_args, data_path):
 	# match['matchInPort'] = True
       my_data_path['flowEntries'][idx]['flowEntryMatch'] = copy.deepcopy(match)
       idx = idx + 1
+
+
+  if (len(actions) > 0):
+    flowEntryActions['actions'] = copy.deepcopy(actions)
+    flow_path['flowEntryActions'] = flowEntryActions
 
   #
   # Set the actions for each flow entry
@@ -306,10 +314,11 @@ def compute_flow_path(parsed_args, data_path):
       action['actionOutput'] = copy.deepcopy(actionOutput)
       # action['actionType'] = 'ACTION_OUTPUT'
       actions.append(copy.deepcopy(action))
+      flowEntryActions = {}
+      flowEntryActions['actions'] = copy.deepcopy(actions)
 
-      my_data_path['flowEntries'][idx]['flowEntryActions'] = copy.deepcopy(actions)
+      my_data_path['flowEntries'][idx]['flowEntryActions'] = flowEntryActions
       idx = idx + 1
-
 
   flow_path['dataPath'] = my_data_path
   debug("Flow Path: %s" % flow_path)
@@ -396,6 +405,7 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "        actionSetIpToS <IP ToS (DSCP field, 6 bits)>\n"
   usage_msg = usage_msg + "        actionSetTcpUdpSrcPort <source TCP/UDP port>\n"
   usage_msg = usage_msg + "        actionSetTcpUdpDstPort <destination TCP/UDP port>\n"
+  usage_msg = usage_msg + "    Actions (not implemented yet):\n"
   usage_msg = usage_msg + "        actionEnqueue <dummy argument>\n"
 
   # app.debug = False;

@@ -25,6 +25,16 @@ public class IPv6 {
     }
 
     /**
+     * Copy constructor.
+     *
+     * @param other the object to copy from.
+     */
+    public IPv6(IPv6 other) {
+	this.valueHigh = other.valueHigh;
+	this.valueLow = other.valueLow;
+    }
+
+    /**
      * Constructor from integer values.
      *
      * @param valueHigh the higher (more significant) 64 bits of the address.
