@@ -1580,6 +1580,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			flowEntryActions.addAction(action);
 		}
 	    }
+	    idx++;
 	    //
 	    // Add the outgoing port output action
 	    //
