@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * request/responses.
  * <p>
  * When converting requests, a mediator instance is attached to the request and
- * call be retrieved anytime in esigate code, usually to update session and
+ * can be retrieved any time in esigate code, usually to update session and
  * cookies.
  * 
  * @author Francois-Xavier Bonnet
@@ -58,10 +58,10 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class HttpServletMediator implements ContainerRequestMediator {
-	private static final String WARN_SESSION_CREATION = "Cannot create session to store attribute {}. The attribute was discarded. "
+	private static final String WARN_RESPONSE_ALREADY_SENT = "Attempt to write to the response, but it is already sent. The operation {} was discarded. "
 			+ "This usually means that esigate is configured "
-			+ "to store cookies in user session AND stale-while-revalidate is enabled "
-			+ "AND backend is sending a cookie update. "
+			+ "with stale-while-revalidate is enabled "
+			+ "AND backend is sending a cookie update which is not discarded by configuration. "
 			+ "This configuration is unsupported. Please update configuration to turn off stale-while-revalidate "
 			+ "or discard cookies. ";
 
@@ -71,6 +71,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
 	private final HttpServletResponse response;
 	private final ServletContext servletContext;
 	private final HttpEntityEnclosingRequest httpRequest;
+	private boolean responseSent = false;
 
 	public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
 			throws IOException {
@@ -136,7 +137,12 @@ public class HttpServletMediator implements ContainerRequestMediator {
 
 	@Override
 	public void addCookie(Cookie src) {
-		response.addCookie(rewriteCookie(src));
+		if (this.responseSent) {
+			LOG.warn(WARN_RESPONSE_ALREADY_SENT, "Create cookie '" + src.getName() + "'");
+			return;
+		}
+
+		this.response.addCookie(rewriteCookie(src));
 	}
 
 	static javax.servlet.http.Cookie rewriteCookie(Cookie src) {
@@ -177,41 +183,49 @@ public class HttpServletMediator implements ContainerRequestMediator {
 
 	@Override
 	public void sendResponse(HttpResponse httpResponse) throws IOException {
-		response.setStatus(httpResponse.getStatusLine().getStatusCode());
-		for (Header header : httpResponse.getAllHeaders()) {
-			String name = header.getName();
-			String value = header.getValue();
-			response.addHeader(name, value);
-		}
-		HttpEntity httpEntity = httpResponse.getEntity();
-		if (httpEntity != null) {
-			long contentLength = httpEntity.getContentLength();
-			if (contentLength > -1 && contentLength < Integer.MAX_VALUE)
-				response.setContentLength((int) contentLength);
-			Header contentType = httpEntity.getContentType();
-			if (contentType != null)
-				response.setContentType(contentType.getValue());
-			Header contentEncoding = httpEntity.getContentEncoding();
-			if (contentEncoding != null)
-				response.setHeader(contentEncoding.getName(), contentEncoding.getValue());
-			httpEntity.writeTo(response.getOutputStream());
+
+		try {
+			response.setStatus(httpResponse.getStatusLine().getStatusCode());
+			for (Header header : httpResponse.getAllHeaders()) {
+				String name = header.getName();
+				String value = header.getValue();
+				response.addHeader(name, value);
+			}
+			HttpEntity httpEntity = httpResponse.getEntity();
+			if (httpEntity != null) {
+				long contentLength = httpEntity.getContentLength();
+				if (contentLength > -1 && contentLength < Integer.MAX_VALUE)
+					response.setContentLength((int) contentLength);
+				Header contentType = httpEntity.getContentType();
+				if (contentType != null)
+					response.setContentType(contentType.getValue());
+				Header contentEncoding = httpEntity.getContentEncoding();
+				if (contentEncoding != null)
+					response.setHeader(contentEncoding.getName(), contentEncoding.getValue());
+
+				httpEntity.writeTo(response.getOutputStream());
+			}
+		} finally {
+			this.responseSent = true;
 		}
 	}
 
 	@Override
 	public void setSessionAttribute(String key, Serializable value) {
-		HttpSession session = request.getSession();
 
-		if (session != null) {
-			session.setAttribute(key, value);
-		} else {
-			LOG.warn(WARN_SESSION_CREATION, key);
+		if (this.responseSent) {
+			LOG.warn(WARN_RESPONSE_ALREADY_SENT, "Set session attribute '" + key + "'");
+			return;
 		}
+
+		HttpSession session = this.request.getSession();
+		session.setAttribute(key, value);
+
 	}
 
 	@Override
 	public Serializable getSessionAttribute(String key) {
-		HttpSession session = request.getSession(false);
+		HttpSession session = this.request.getSession(false);
 		if (session == null)
 			return null;
 		return (Serializable) session.getAttribute(key);
