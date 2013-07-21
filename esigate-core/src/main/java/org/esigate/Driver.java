@@ -67,11 +67,12 @@ public class Driver {
 
 	private Driver(Properties properties, String name, EventManager eventManagerParam) {
 		this.eventManager = eventManagerParam;
-		config = new DriverConfiguration(name, properties);
+		this.config = new DriverConfiguration(name, properties);
+		this.parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueList(properties);
+
 		// Load extensions.
 		ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, this);
 
-		parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueList(properties);
 	}
 
 	public Driver(String name, Properties properties) {
@@ -85,6 +86,11 @@ public class Driver {
 		this.httpClientHelper = httpClientHelper;
 	}
 
+	/**
+	 * Get current event manager for this driver instance.
+	 * 
+	 * @return event manager.
+	 */
 	public EventManager getEventManager() {
 		return this.eventManager;
 	}
@@ -158,13 +164,27 @@ public class Driver {
 				rendererNames });
 	}
 
+	/**
+	 * Set request context informations as request parameters.
+	 * <p>
+	 * 
+	 * @see HttpRequest#setParams(org.apache.http.params.HttpParams)
+	 * @param request
+	 *            the HTTP request
+	 * @param parameters
+	 *            Additional parameters (other than the ones included in the
+	 *            request itself).
+	 * @throws HttpErrorPage
+	 *             if url base for this request is invalid (remoteBaseUrl or
+	 *             baseUrlRetriveStrategy).
+	 */
 	public void initHttpRequestParams(HttpRequest request, Map<String, String> parameters) throws HttpErrorPage {
 		HttpRequestHelper.setDriver(request, this);
 		HttpRequestHelper.setParameters(request, parameters);
-		UserContext userContext = new UserContext(request, config.getInstanceName());
+		UserContext userContext = new UserContext(request, this.config.getInstanceName());
 		HttpRequestHelper.setUserContext(request, userContext);
 		try {
-			URL baseUrl = new URL(config.getBaseUrlRetrieveStrategy().getBaseURL(request));
+			URL baseUrl = new URL(this.config.getBaseUrlRetrieveStrategy().getBaseURL(request));
 			HttpRequestHelper.setBaseUrl(request, baseUrl);
 		} catch (MalformedURLException e) {
 			throw new HttpErrorPage(500, "Internal server error", e);
@@ -188,49 +208,66 @@ public class Driver {
 	 */
 	public void proxy(String relUrl, HttpEntityEnclosingRequest request, Renderer... renderers) throws IOException,
 			HttpErrorPage {
-		initHttpRequestParams(request, null);
-
-		if (LOG.isInfoEnabled()) {
-			logAction("render", relUrl, renderers);
-		}
-
-		HttpRequestHelper.setCharacterEncoding(request, config.getUriEncoding());
+		// This is used to ensure EVENT_PROXY_POST is called once and only once.
+		// there are 3 different cases
+		// - Success -> the main code
+		// - Error page -> the HttpErrorPage exception
+		// - Unexpected error -> Other Exceptions
+		boolean postProxyPerformed = false;
 
 		// Create Proxy event
 		ProxyEvent e = new ProxyEvent();
 		e.originalRequest = request;
 
-		// Event pre-proxy
-		eventManager.fire(EventManager.EVENT_PROXY_PRE, e);
-
-		// Return immediately if exit is requested by extension
-		if (e.exit) {
-			return;
-		}
-
-		String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, e.originalRequest, true);
-		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(request, url, true);
-
 		try {
-			// Execute request
-			HttpResponse httpResponse = execute(httpRequest);
+			// Event pre-proxy
+			this.eventManager.fire(EventManager.EVENT_PROXY_PRE, e);
+			// Return immediately if exit is requested by extension
+			if (e.exit) {
+				return;
+			}
+
+			if (LOG.isInfoEnabled()) {
+				logAction("proxy", relUrl, renderers);
+			}
+
+			initHttpRequestParams(request, null);
+			HttpRequestHelper.setCharacterEncoding(request, this.config.getUriEncoding());
+			String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, e.originalRequest, true);
+			GenericHttpRequest httpRequest = this.httpClientHelper.createHttpRequest(request, url, true);
+			e.response = execute(httpRequest);
 
 			// Perform rendering
-			httpResponse = performRendering(relUrl, request, httpResponse, renderers);
+			e.response = performRendering(relUrl, request, e.response, renderers);
+
+			// Event post-proxy
+			// This must be done before calling sendResponse to ensure response
+			// can still be changed.
+			postProxyPerformed = true;
+			this.eventManager.fire(EventManager.EVENT_PROXY_POST, e);
 
 			// Send request to the client.
-			HttpRequestHelper.getMediator(request).sendResponse(httpResponse);
+			HttpRequestHelper.getMediator(request).sendResponse(e.response);
 
 		} catch (HttpErrorPage errorPage) {
+			e.errorPage = errorPage;
+
 			// On error returned by the proxy request, perform rendering on the
 			// error page.
-			HttpResponse errorResponse = errorPage.getHttpResponse();
-			errorResponse = performRendering(relUrl, request, errorResponse, renderers);
-			throw new HttpErrorPage(errorResponse);
-		}
+			e.errorPage = new HttpErrorPage(performRendering(relUrl, request, e.errorPage.getHttpResponse(), renderers));
 
-		// Event post-proxy
-		eventManager.fire(EventManager.EVENT_PROXY_POST, e);
+			// Event post-proxy
+			// This must be done before throwing exception to ensure response
+			// can still be changed.
+			postProxyPerformed = true;
+			this.eventManager.fire(EventManager.EVENT_PROXY_POST, e);
+
+			throw e.errorPage;
+		} finally {
+			if (!postProxyPerformed) {
+				this.eventManager.fire(EventManager.EVENT_PROXY_POST, e);
+			}
+		}
 	}
 
 	/**
@@ -323,8 +360,8 @@ public class Driver {
 	}
 
 	/**
-	 * This method returns the content of an url as a String. The result
-	 * is cached into the request scope in order not to send several requests if
+	 * This method returns the content of an url as a String. The result is
+	 * cached into the request scope in order not to send several requests if
 	 * you need several blocks in the same page to build the final page.
 	 * 
 	 * @param url
@@ -423,10 +460,29 @@ public class Driver {
 		return false;
 	}
 
+	/**
+	 * Execute a HTTP request
+	 * <p>
+	 * No special handling.
+	 * 
+	 * @param httpRequest
+	 *            HTTP request to execute.
+	 * @return HTTP response.
+	 */
 	public HttpResponse executeSingleRequest(GenericHttpRequest httpRequest) {
-		return httpClientHelper.execute(httpRequest);
+		return this.httpClientHelper.execute(httpRequest);
 	}
 
+	/**
+	 * Execute a HTTP request and handle errors as HttpErrorPage exceptions.
+	 * 
+	 * @param httpRequest
+	 *            HTTP request to execute.
+	 * @return HTTP response
+	 * @throws HttpErrorPage
+	 *             if server returned no response or if the response as an error
+	 *             status code.
+	 */
 	private HttpResponse execute(GenericHttpRequest httpRequest) throws HttpErrorPage {
 		HttpResponse httpResponse = executeSingleRequest(httpRequest);
 		// Handle errors.
