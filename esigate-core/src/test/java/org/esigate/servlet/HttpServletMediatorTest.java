@@ -15,12 +15,18 @@
 
 package org.esigate.servlet;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,7 +41,7 @@ import org.apache.http.cookie.CookieSpec;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.message.BasicHeader;
 import org.esigate.http.MockHttpServletRequestBuilder;
-import org.mockito.Mockito;
+import org.esigate.test.http.HttpResponseBuilder;
 
 public class HttpServletMediatorTest extends TestCase {
 	private SimpleDateFormat format;
@@ -82,10 +88,25 @@ public class HttpServletMediatorTest extends TestCase {
 	public void testSetAttributeNoSession() throws Exception {
 		HttpServletRequest request = new MockHttpServletRequestBuilder().protocolVersion("HTTP/1.0").method("GET")
 				.session(null).build();
-		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-		ServletContext context = Mockito.mock(ServletContext.class);
+		HttpServletResponse response = mock(HttpServletResponse.class);
+		ServletOutputStream outputStream = new ServletOutputStream() {
+
+			ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+
+			@Override
+			public void write(int b) throws IOException {
+				this.byteOutputStream.write(b);
+			}
+
+			public ByteArrayOutputStream getOutputStream() {
+				return this.byteOutputStream;
+			}
+		};
+		when(response.getOutputStream()).thenReturn(outputStream);
+		ServletContext context = mock(ServletContext.class);
 
 		HttpServletMediator mediator = new HttpServletMediator(request, response, context);
+		mediator.sendResponse(new HttpResponseBuilder().entity("Response").build());
 
 		mediator.setSessionAttribute("test", "value");
 
