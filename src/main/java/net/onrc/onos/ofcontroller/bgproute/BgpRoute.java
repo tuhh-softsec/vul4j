@@ -120,7 +120,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				
 				List<Link> activeLinks = topoLinkService.getActiveLinks();
 				for (Link l : activeLinks){
-					log.debug("active link: {}", l);
+					//log.debug("active link: {}", l);
 				}
 				
 				Iterator<LDUpdate> it = linkUpdates.iterator();
@@ -224,7 +224,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology);
+		proxyArp = new ProxyArpManager(floodlightProvider, topology, devices);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -435,7 +435,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				node.rib.routerId.getHostAddress()});
 		
 		//TODO this is wrong, we shouldn't be dealing with BGP peers here.
-		//We need to figure out where the device is attached and what it's
+		//We need to figure out where the device is attached and what its
 		//mac address is by learning. 
 		//The next hop is not necessarily the peer, and the peer's attachment
 		//point is not necessarily the next hop's attachment point.
