@@ -8,6 +8,8 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.esigate.api.ContainerRequestMediator;
@@ -32,6 +34,7 @@ public class HttpRequestBuilder {
 	ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
 	String uriString = "http://localhost/";
 	List<Header> headers = new ArrayList<Header>();
+	List<Cookie> cookies = new ArrayList<Cookie>();
 	HttpEntity entity = null;
 	private String method = "GET";
 
@@ -56,6 +59,11 @@ public class HttpRequestBuilder {
 	public HttpRequestBuilder protocolVersion(
 			ProtocolVersion paramProtocolVersion) {
 		this.protocolVersion = paramProtocolVersion;
+		return this;
+	}
+
+	public HttpRequestBuilder cookie(String name, String value) {
+		this.cookies.add(new BasicClientCookie(name, value));
 		return this;
 	}
 
@@ -110,12 +118,19 @@ public class HttpRequestBuilder {
 			request.setEntity(this.entity);
 		}
 
+		ContainerRequestMediator requestMediator = null;
 		if (this.mockMediator)
-			HttpRequestHelper.setMediator(request, new MockMediator(
-					this.uriString));
+			requestMediator = new MockMediator(this.uriString);
 
 		if (this.mediator != null)
-			HttpRequestHelper.setMediator(request, this.mediator);
+			requestMediator = this.mediator;
+
+		if (requestMediator != null) {
+			for (Cookie c : this.cookies) {
+				requestMediator.addCookie(c);
+			}
+			HttpRequestHelper.setMediator(request, requestMediator);
+		}
 
 		return request;
 	}
