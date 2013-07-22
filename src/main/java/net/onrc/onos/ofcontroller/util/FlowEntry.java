@@ -15,7 +15,7 @@ public class FlowEntry {
     private FlowId flowId;			// FlowID of flowEntry
     private FlowEntryId flowEntryId;		// The Flow Entry ID
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
-    private ArrayList<FlowEntryAction> flowEntryActions; // The Flow Entry Actions
+    private FlowEntryActions flowEntryActions;	// The Flow Entry Actions
     private Dpid dpid;				// The Switch DPID
     private Port inPort;		// The Switch incoming port. Used only
 					// when the entry is used to return
@@ -53,64 +53,64 @@ public class FlowEntry {
 	flowEntryMatch.enableDstTcpUdpPort((short)80);
 
 	FlowEntryAction action = null;
-	ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
+	FlowEntryActions actions = new FlowEntryActions();
 
 	action = new FlowEntryAction();
 	action.setActionOutput(new Port((short)12));
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionOutputToController((short)13);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionSetVlanId((short)14);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionSetVlanPriority((byte)15);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionStripVlan(true);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionSetEthernetSrcAddr(mac);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionSetEthernetDstAddr(mac);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionSetIPv4SrcAddr(ipv4);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionSetIPv4DstAddr(ipv4);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionSetIpToS((byte)16);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionSetTcpUdpSrcPort((short)17);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionSetTcpUdpDstPort((short)18);
-	actions.add(action);
+	actions.addAction(action);
 
 	action = new FlowEntryAction();
 	action.setActionEnqueue(new Port((short)19), 20);
-	actions.add(action);
+	actions.addAction(action);
 
 	setFlowEntryActions(actions);
 	*/
 
-
+	flowEntryActions = new FlowEntryActions();
 	flowEntryUserState = FlowEntryUserState.FE_USER_UNKNOWN;
 	flowEntrySwitchState = FlowEntrySwitchState.FE_SWITCH_UNKNOWN;
     }
@@ -173,7 +173,7 @@ public class FlowEntry {
      * @return the Flow Entry Actions.
      */
     @JsonProperty("flowEntryActions")
-    public ArrayList<FlowEntryAction> flowEntryActions() {
+    public FlowEntryActions flowEntryActions() {
 	return flowEntryActions;
     }
 
@@ -183,7 +183,7 @@ public class FlowEntry {
      * @param flowEntryActions the Flow Entry Actions to set.
      */
     @JsonProperty("flowEntryActions")
-    public void setFlowEntryActions(ArrayList<FlowEntryAction> flowEntryActions) {
+    public void setFlowEntryActions(FlowEntryActions flowEntryActions) {
 	this.flowEntryActions = flowEntryActions;
     }
 
@@ -319,8 +319,7 @@ public class FlowEntry {
      * Convert the flow entry to a string.
      *
      * The string has the following form:
-     *  [flowEntryId=XXX flowEntryMatch=XXX flowEntryAction=XXX
-     *   flowEntryAction=XXX flowEntryAction=XXX dpid=XXX
+     *  [flowEntryId=XXX flowEntryMatch=XXX flowEntryActions=XXX dpid=XXX
      *   inPort=XXX outPort=XXX flowEntryUserState=XXX flowEntrySwitchState=XXX
      *   flowEntryErrorState=XXX]
      * @return the flow entry as a string.
@@ -329,9 +328,7 @@ public class FlowEntry {
     public String toString() {
 	String ret = "[flowEntryId=" + this.flowEntryId.toString();
 	ret += " flowEntryMatch=" + this.flowEntryMatch.toString();
-	for (FlowEntryAction fa : flowEntryActions) {
-	    ret += " flowEntryAction=" + fa.toString();
-	}
+	ret += " flowEntryActions=" + this.flowEntryActions.toString();
 	ret += " dpid=" + this.dpid.toString();
 	ret += " inPort=" + this.inPort.toString();
 	ret += " outPort=" + this.outPort.toString();

@@ -23,6 +23,17 @@ public class IPv4Net {
     }
 
     /**
+     * Copy constructor.
+     *
+     * @param other the object to copy from.
+     */
+    public IPv4Net(IPv4Net other) {
+	if (other.address != null)
+	    this.address = new IPv4(other.address);
+	this.prefixLen = other.prefixLen;
+    }
+
+    /**
      * Constructor for a given address and prefix length.
      *
      * @param address the address to use.

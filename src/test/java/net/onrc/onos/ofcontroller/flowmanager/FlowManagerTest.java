@@ -1086,7 +1086,7 @@ public class FlowManagerTest {
 		flowEntry1.setOutPort(new Port((short) 11));
 		flowEntry1.setFlowEntryId(new FlowEntryId(1));
 		flowEntry1.setFlowEntryMatch(new FlowEntryMatch());
-		flowEntry1.setFlowEntryActions(new ArrayList<FlowEntryAction>());
+		flowEntry1.setFlowEntryActions(new FlowEntryActions());
 		flowEntry1.setFlowEntryErrorState(new FlowEntryErrorState());
 		
 		FlowEntry flowEntry2 = new FlowEntry();
@@ -1096,7 +1096,7 @@ public class FlowManagerTest {
 		flowEntry2.setOutPort(new Port((short) 2));
 		flowEntry2.setFlowEntryId(new FlowEntryId(2));
 		flowEntry2.setFlowEntryMatch(new FlowEntryMatch());
-		flowEntry2.setFlowEntryActions(new ArrayList<FlowEntryAction>());
+		flowEntry2.setFlowEntryActions(new FlowEntryActions());
 		flowEntry2.setFlowEntryErrorState(new FlowEntryErrorState());
 		
 		DataPath dataPath = new DataPath();
@@ -1147,6 +1147,11 @@ public class FlowManagerTest {
 		// instantiate required objects
 		FlowManager fm = new FlowManager();
 		
+		FlowEntryAction action = new FlowEntryAction();
+		action.setActionOutput(new Port((short)2));
+		FlowEntryActions actions = new FlowEntryActions();
+		actions.addAction(action);
+
 		// setup expectations
 		expectInitWithContext();
 		expect(iFlowEntry.getFlowEntryId()).andReturn(new FlowEntryId(123).toString());
@@ -1164,7 +1169,7 @@ public class FlowManagerTest {
 		expect(iFlowEntry.getMatchIpToS()).andReturn(new Byte((byte)0x3));
 		expect(iFlowEntry.getMatchSrcTcpUdpPort()).andReturn(new Short((short)40000));
 		expect(iFlowEntry.getMatchDstTcpUdpPort()).andReturn(new Short((short)80));
-		expect(iFlowEntry.getActionOutputPort()).andReturn(new Short((short) 2));
+		expect(iFlowEntry.getActions()).andReturn(actions.toString());
 		expect(floodlightProvider.getOFMessageFactory()).andReturn(basicFactory);
 		expect(basicFactory.getMessage(OFType.FLOW_MOD)).andReturn(new OFFlowMod());
 		expect(iofSwitch.getStringId()).andReturn(new Dpid(100).toString());

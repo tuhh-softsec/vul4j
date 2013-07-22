@@ -42,6 +42,8 @@ import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction;
+import net.onrc.onos.ofcontroller.util.FlowEntryAction.*;
+import net.onrc.onos.ofcontroller.util.FlowEntryActions;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowEntrySwitchState;
@@ -58,8 +60,7 @@ import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFPacketOut;
 import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
-import org.openflow.protocol.action.OFAction;
-import org.openflow.protocol.action.OFActionOutput;
+import org.openflow.protocol.action.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -587,6 +588,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - flowPath.matchIpToS()
 	// - flowPath.matchSrcTcpUdpPort()
 	// - flowPath.matchDstTcpUdpPort()
+	// - flowPath.flowEntryActions()
 	//
 	flowObj.setInstallerId(flowPath.installerId().toString());
 	flowObj.setFlowPathFlags(flowPath.flowPathFlags().flags());
@@ -626,6 +628,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	}
 	if (flowPath.flowEntryMatch().matchDstTcpUdpPort()) {
 	    flowObj.setMatchDstTcpUdpPort(flowPath.flowEntryMatch().dstTcpUdpPort());
+	}
+	if (! flowPath.flowEntryActions().actions().isEmpty()) {
+	    flowObj.setActions(flowPath.flowEntryActions().toString());
 	}
 
 	if (dataPathSummaryStr != null) {
@@ -720,8 +725,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - InPort edge
 	// - OutPort edge
 	//
-	// - flowEntry.flowEntryMatch()
-	// - flowEntry.flowEntryActions()
 	// - flowEntry.dpid()
 	// - flowEntry.flowEntryUserState()
 	// - flowEntry.flowEntrySwitchState()
@@ -739,6 +742,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - flowEntry.matchSrcTcpUdpPort()
 	// - flowEntry.matchDstTcpUdpPort()
 	// - flowEntry.actionOutputPort()
+	// - flowEntry.actions()
 	//
 	ISwitchObject sw =
 	    op.searchSwitch(flowEntry.dpid().toString());
@@ -785,7 +789,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    flowEntryObj.setMatchDstTcpUdpPort(flowEntry.flowEntryMatch().dstTcpUdpPort());
 	}
 
-	for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
+	for (FlowEntryAction fa : flowEntry.flowEntryActions().actions()) {
 	    if (fa.actionOutput() != null) {
 		IPortObject outport =
 		    op.searchPort(flowEntry.dpid().toString(),
@@ -794,6 +798,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowEntryObj.setOutPort(outport);
 	    }
 	}
+	if (! flowEntry.flowEntryActions().isEmpty()) {
+	    flowEntryObj.setActions(flowEntry.flowEntryActions().toString());
+	}
+
 	// TODO: Hacks with hard-coded state names!
 	if (found)
 	    flowEntryObj.setUserState("FE_USER_MODIFY");
@@ -1387,6 +1395,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	    flowPath.setFlowEntryMatch(match);
 	}
+	//
+	// Extract the actions for the first Flow Entry
+	//
+	{
+	    String actionsStr = flowObj.getActions();
+	    if (actionsStr != null) {
+		FlowEntryActions flowEntryActions = new FlowEntryActions(actionsStr);
+		flowPath.setFlowEntryActions(flowEntryActions);
+	    }
+	}
 
 	//
 	// Extract all Flow Entries
@@ -1471,19 +1489,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Extract the actions
 	//
-	ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
-	Short actionOutputPort = flowEntryObj.getActionOutputPort();
-	if (actionOutputPort != null) {
-	    FlowEntryAction action = new FlowEntryAction();
-	    action.setActionOutput(new Port(actionOutputPort));
-	    actions.add(action);
-	}
+	FlowEntryActions actions = new FlowEntryActions();
+	String actionsStr = flowEntryObj.getActions();
+	if (actionsStr != null)
+	    actions = new FlowEntryActions(actionsStr);
 	flowEntry.setFlowEntryActions(actions);
 	flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
 	flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
 	//
-	// TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
-	// and FlowEntryErrorState.
+	// TODO: Take care of FlowEntryErrorState.
 	//
 	return flowEntry;
     }
@@ -1518,6 +1532,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	computedFlowPath.setFlowPathFlags(new FlowPathFlags(flowPath.flowPathFlags().flags()));
 	computedFlowPath.setDataPath(dataPath);
 	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
+	computedFlowPath.setFlowEntryActions(new FlowEntryActions(flowPath.flowEntryActions()));
 
 	FlowId flowId = new FlowId();
 	String dataPathSummaryStr = dataPath.dataPathSummary();
@@ -1543,21 +1558,35 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Set the incoming port matching and the outgoing port output
 	// actions for each flow entry.
 	//
+	int idx = 0;
 	for (FlowEntry flowEntry : newDataPath.flowEntries()) {
 	    // Set the incoming port matching
 	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
 	    flowEntry.setFlowEntryMatch(flowEntryMatch);
 	    flowEntryMatch.enableInPort(flowEntry.inPort());
 
-	    // Set the outgoing port output action
-	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-	    if (flowEntryActions == null) {
-		flowEntryActions = new ArrayList<FlowEntryAction>();
-		flowEntry.setFlowEntryActions(flowEntryActions);
+	    //
+	    // Set the actions
+	    //
+	    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
+	    //
+	    // If the first Flow Entry, copy the Flow Path actions to it
+	    //
+	    if (idx == 0) {
+		String actionsStr = flowObj.getActions();
+		if (actionsStr != null) {
+		    FlowEntryActions flowActions = new FlowEntryActions(actionsStr);
+		    for (FlowEntryAction action : flowActions.actions())
+			flowEntryActions.addAction(action);
+		}
 	    }
+	    idx++;
+	    //
+	    // Add the outgoing port output action
+	    //
 	    FlowEntryAction flowEntryAction = new FlowEntryAction();
 	    flowEntryAction.setActionOutput(flowEntry.outPort());
-	    flowEntryActions.add(flowEntryAction);
+	    flowEntryActions.addAction(flowEntryAction);
 	}
 
 	//
@@ -1749,16 +1778,115 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Fetch the actions
 	//
-	// TODO: For now we support only the "OUTPUT" actions.
-	//
-	List<OFAction> actions = new ArrayList<OFAction>();
-	Short actionOutputPort = flowEntryObj.getActionOutputPort();
-	if (actionOutputPort != null) {
-	    OFActionOutput action = new OFActionOutput();
-	    // XXX: The max length is hard-coded for now
-	    action.setMaxLength((short)0xffff);
-	    action.setPort(actionOutputPort);
-	    actions.add(action);
+	Short actionOutputPort = null;
+	List<OFAction> openFlowActions = new ArrayList<OFAction>();
+	int actionsLen = 0;
+	FlowEntryActions flowEntryActions = null;
+	String actionsStr = flowEntryObj.getActions();
+	if (actionsStr != null)
+	    flowEntryActions = new FlowEntryActions(actionsStr);
+	for (FlowEntryAction action : flowEntryActions.actions()) {
+	    ActionOutput actionOutput = action.actionOutput();
+	    ActionSetVlanId actionSetVlanId = action.actionSetVlanId();
+	    ActionSetVlanPriority actionSetVlanPriority = action.actionSetVlanPriority();
+	    ActionStripVlan actionStripVlan = action.actionStripVlan();
+	    ActionSetEthernetAddr actionSetEthernetSrcAddr = action.actionSetEthernetSrcAddr();
+	    ActionSetEthernetAddr actionSetEthernetDstAddr = action.actionSetEthernetDstAddr();
+	    ActionSetIPv4Addr actionSetIPv4SrcAddr = action.actionSetIPv4SrcAddr();
+	    ActionSetIPv4Addr actionSetIPv4DstAddr = action.actionSetIPv4DstAddr();
+	    ActionSetIpToS actionSetIpToS = action.actionSetIpToS();
+	    ActionSetTcpUdpPort actionSetTcpUdpSrcPort = action.actionSetTcpUdpSrcPort();
+	    ActionSetTcpUdpPort actionSetTcpUdpDstPort = action.actionSetTcpUdpDstPort();
+	    ActionEnqueue actionEnqueue = action.actionEnqueue();
+
+	    if (actionOutput != null) {
+		actionOutputPort = actionOutput.port().value();
+		// XXX: The max length is hard-coded for now
+		OFActionOutput ofa =
+		    new OFActionOutput(actionOutput.port().value(),
+				       (short)0xffff);
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetVlanId != null) {
+		OFActionVirtualLanIdentifier ofa =
+		    new OFActionVirtualLanIdentifier(actionSetVlanId.vlanId());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetVlanPriority != null) {
+		OFActionVirtualLanPriorityCodePoint ofa =
+		    new OFActionVirtualLanPriorityCodePoint(actionSetVlanPriority.vlanPriority());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionStripVlan != null) {
+		if (actionStripVlan.stripVlan() == true) {
+		    OFActionStripVirtualLan ofa = new OFActionStripVirtualLan();
+		    openFlowActions.add(ofa);
+		    actionsLen += ofa.getLength();
+		}
+	    }
+
+	    if (actionSetEthernetSrcAddr != null) {
+		OFActionDataLayerSource ofa = 
+		    new OFActionDataLayerSource(actionSetEthernetSrcAddr.addr().toBytes());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetEthernetDstAddr != null) {
+		OFActionDataLayerDestination ofa =
+		    new OFActionDataLayerDestination(actionSetEthernetDstAddr.addr().toBytes());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIPv4SrcAddr != null) {
+		OFActionNetworkLayerSource ofa =
+		    new OFActionNetworkLayerSource(actionSetIPv4SrcAddr.addr().value());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIPv4DstAddr != null) {
+		OFActionNetworkLayerDestination ofa =
+		    new OFActionNetworkLayerDestination(actionSetIPv4DstAddr.addr().value());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIpToS != null) {
+		OFActionNetworkTypeOfService ofa =
+		    new OFActionNetworkTypeOfService(actionSetIpToS.ipToS());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetTcpUdpSrcPort != null) {
+		OFActionTransportLayerSource ofa =
+		    new OFActionTransportLayerSource(actionSetTcpUdpSrcPort.port());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetTcpUdpDstPort != null) {
+		OFActionTransportLayerDestination ofa =
+		    new OFActionTransportLayerDestination(actionSetTcpUdpDstPort.port());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionEnqueue != null) {
+		OFActionEnqueue ofa =
+		    new OFActionEnqueue(actionEnqueue.port().value(),
+					actionEnqueue.queueId());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
 	}
 
 	fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
@@ -1768,8 +1896,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    .setCookie(cookie)
 	    .setCommand(flowModCommand)
 	    .setMatch(match)
-	    .setActions(actions)
-	    .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
+	    .setActions(openFlowActions)
+	    .setLengthU(OFFlowMod.MINIMUM_LENGTH + actionsLen);
 	fm.setOutPort(OFPort.OFPP_NONE.getValue());
 	if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
 	    (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
@@ -1973,26 +2101,112 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Fetch the actions
 	//
-	// TODO: For now we support only the "OUTPUT" actions.
+	Short actionOutputPort = null;
+	List<OFAction> openFlowActions = new ArrayList<OFAction>();
+	int actionsLen = 0;
+	FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
 	//
-	fm.setOutPort(OFPort.OFPP_NONE.getValue());
-	List<OFAction> actions = new ArrayList<OFAction>();
-	ArrayList<FlowEntryAction> flowEntryActions =
-	    flowEntry.flowEntryActions();
-	for (FlowEntryAction flowEntryAction : flowEntryActions) {
-	    FlowEntryAction.ActionOutput actionOutput =
-		flowEntryAction.actionOutput();
+	for (FlowEntryAction action : flowEntryActions.actions()) {
+	    ActionOutput actionOutput = action.actionOutput();
+	    ActionSetVlanId actionSetVlanId = action.actionSetVlanId();
+	    ActionSetVlanPriority actionSetVlanPriority = action.actionSetVlanPriority();
+	    ActionStripVlan actionStripVlan = action.actionStripVlan();
+	    ActionSetEthernetAddr actionSetEthernetSrcAddr = action.actionSetEthernetSrcAddr();
+	    ActionSetEthernetAddr actionSetEthernetDstAddr = action.actionSetEthernetDstAddr();
+	    ActionSetIPv4Addr actionSetIPv4SrcAddr = action.actionSetIPv4SrcAddr();
+	    ActionSetIPv4Addr actionSetIPv4DstAddr = action.actionSetIPv4DstAddr();
+	    ActionSetIpToS actionSetIpToS = action.actionSetIpToS();
+	    ActionSetTcpUdpPort actionSetTcpUdpSrcPort = action.actionSetTcpUdpSrcPort();
+	    ActionSetTcpUdpPort actionSetTcpUdpDstPort = action.actionSetTcpUdpDstPort();
+	    ActionEnqueue actionEnqueue = action.actionEnqueue();
+
 	    if (actionOutput != null) {
-		short actionOutputPort = actionOutput.port().value();
-		OFActionOutput action = new OFActionOutput();
+		actionOutputPort = actionOutput.port().value();
 		// XXX: The max length is hard-coded for now
-		action.setMaxLength((short)0xffff);
-		action.setPort(actionOutputPort);
-		actions.add(action);
-		if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
-		    (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
-		    fm.setOutPort(actionOutputPort);
+		OFActionOutput ofa =
+		    new OFActionOutput(actionOutput.port().value(),
+				       (short)0xffff);
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetVlanId != null) {
+		OFActionVirtualLanIdentifier ofa =
+		    new OFActionVirtualLanIdentifier(actionSetVlanId.vlanId());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetVlanPriority != null) {
+		OFActionVirtualLanPriorityCodePoint ofa =
+		    new OFActionVirtualLanPriorityCodePoint(actionSetVlanPriority.vlanPriority());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionStripVlan != null) {
+		if (actionStripVlan.stripVlan() == true) {
+		    OFActionStripVirtualLan ofa = new OFActionStripVirtualLan();
+		    openFlowActions.add(ofa);
+		    actionsLen += ofa.getLength();
 		}
+	    }
+
+	    if (actionSetEthernetSrcAddr != null) {
+		OFActionDataLayerSource ofa = 
+		    new OFActionDataLayerSource(actionSetEthernetSrcAddr.addr().toBytes());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetEthernetDstAddr != null) {
+		OFActionDataLayerDestination ofa =
+		    new OFActionDataLayerDestination(actionSetEthernetDstAddr.addr().toBytes());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIPv4SrcAddr != null) {
+		OFActionNetworkLayerSource ofa =
+		    new OFActionNetworkLayerSource(actionSetIPv4SrcAddr.addr().value());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIPv4DstAddr != null) {
+		OFActionNetworkLayerDestination ofa =
+		    new OFActionNetworkLayerDestination(actionSetIPv4DstAddr.addr().value());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIpToS != null) {
+		OFActionNetworkTypeOfService ofa =
+		    new OFActionNetworkTypeOfService(actionSetIpToS.ipToS());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetTcpUdpSrcPort != null) {
+		OFActionTransportLayerSource ofa =
+		    new OFActionTransportLayerSource(actionSetTcpUdpSrcPort.port());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetTcpUdpDstPort != null) {
+		OFActionTransportLayerDestination ofa =
+		    new OFActionTransportLayerDestination(actionSetTcpUdpDstPort.port());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionEnqueue != null) {
+		OFActionEnqueue ofa =
+		    new OFActionEnqueue(actionEnqueue.port().value(),
+					actionEnqueue.queueId());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
 	    }
 	}
 
@@ -2003,8 +2217,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    .setCookie(cookie)
 	    .setCommand(flowModCommand)
 	    .setMatch(match)
-	    .setActions(actions)
-	    .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
+	    .setActions(openFlowActions)
+	    .setLengthU(OFFlowMod.MINIMUM_LENGTH + actionsLen);
+	fm.setOutPort(OFPort.OFPP_NONE.getValue());
+	if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
+	    (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
+	    if (actionOutputPort != null)
+		fm.setOutPort(actionOutputPort);
+	}
 
 	//
 	// TODO: Set the following flag
@@ -2131,14 +2351,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    flowEntryMatch.enableInPort(flowEntry.inPort());
 
 	    // Set the outgoing port output action
-	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-	    if (flowEntryActions == null) {
-		flowEntryActions = new ArrayList<FlowEntryAction>();
-		flowEntry.setFlowEntryActions(flowEntryActions);
-	    }
+	    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
 	    FlowEntryAction flowEntryAction = new FlowEntryAction();
 	    flowEntryAction.setActionOutput(flowEntry.outPort());
-	    flowEntryActions.add(flowEntryAction);
+	    flowEntryActions.addAction(flowEntryAction);
 	}
 
 	//

@@ -216,19 +216,6 @@ def proxy_iperf_rate(flow_id):
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
-@app.route("/proxy/gui/switchctrl/<cmd>")
-def proxy_switch_controller_setting(cmd):
-  try:
-    command = "curl -s %s/gui/switchctrl/%s" % (ONOS_GUI3_CONTROL_HOST, cmd)
-    print command
-    result = os.popen(command).read()
-  except:
-    print "REST IF has issue"
-    exit
-
-  resp = Response(result, status=200, mimetype='application/json')
-  return resp
-
 @app.route("/proxy/gui/reset")
 def proxy_gui_reset():
   result = ""
