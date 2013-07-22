@@ -51,7 +51,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
 	}
 
 	/**
-	 * Create a Driver instance which will always return the same reponse from
+	 * Create a Driver instance which will always return the same response from
 	 * backend.
 	 * 
 	 * @param properties
