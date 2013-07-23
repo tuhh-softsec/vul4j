@@ -311,23 +311,23 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Prefix r = new Prefix("10.0.0.0", 24);
 		Prefix a = new Prefix("10.0.0.1", 32);
 	
-		ptree.acquire(p.getAddress(), p.masklen);
-		ptree.acquire(q.getAddress(), q.masklen);
-		ptree.acquire(r.getAddress(), r.masklen);
+		ptree.acquire(p.getAddress(), p.getPrefixLength());
+		ptree.acquire(q.getAddress(), q.getPrefixLength());
+		ptree.acquire(r.getAddress(), r.getPrefixLength());
 	
 		System.out.println("Traverse start");
 		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)) {
 			Prefix p_result = new Prefix(node.key, node.keyBits);
 		}
 	
-		PtreeNode n = ptree.match(a.getAddress(), a.masklen);
+		PtreeNode n = ptree.match(a.getAddress(), a.getPrefixLength());
 		if (n != null) {
 			System.out.println("Matched prefix for 10.0.0.1:");
 			Prefix x = new Prefix(n.key, n.keyBits);
 			ptree.delReference(n);
 		}
 		
-		n = ptree.lookup(p.getAddress(), p.masklen);
+		n = ptree.lookup(p.getAddress(), p.getPrefixLength());
 		if (n != null) {
 			ptree.delReference(n);
 			ptree.delReference(n);
@@ -337,7 +337,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			Prefix p_result = new Prefix(node.key, node.keyBits);
 		}
 		
-		n = ptree.lookup(q.getAddress(), q.masklen);
+		n = ptree.lookup(q.getAddress(), q.getPrefixLength());
 		if (n != null) {
 			ptree.delReference(n);
 			ptree.delReference(n);
@@ -347,7 +347,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			Prefix p_result = new Prefix(node.key, node.keyBits);
 		}
 		
-		n = ptree.lookup(r.getAddress(), r.masklen);
+		n = ptree.lookup(r.getAddress(), r.getPrefixLength());
 		if (n != null) {
 			ptree.delReference(n);
 			ptree.delReference(n);
@@ -409,8 +409,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				continue;
 			}
 			
-			PtreeNode node = ptree.acquire(p.getAddress(), p.masklen);
-			Rib rib = new Rib(router_id, nexthop, p.masklen);
+			PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
+			Rib rib = new Rib(router_id, nexthop, p.getPrefixLength());
 			
 			if (node.rib != null) {
 				node.rib = null;

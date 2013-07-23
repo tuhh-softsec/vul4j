@@ -125,8 +125,8 @@ public class BgpRouteResource extends ServerResource {
 				return reply + "\n";
 			}
 			
-			PtreeNode node = ptree.acquire(p.getAddress(), p.masklen);
-			Rib rib = new Rib(routerId, nexthop, p.masklen);
+			PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
+			Rib rib = new Rib(routerId, nexthop, p.getPrefixLength());
 
 			if (node.rib != null) {
 				node.rib = null;
@@ -183,7 +183,7 @@ public class BgpRouteResource extends ServerResource {
 				return reply + "\n";
 			}
 
-			PtreeNode node = ptree.lookup(p.getAddress(), p.masklen);
+			PtreeNode node = ptree.lookup(p.getAddress(), p.getPrefixLength());
 			
 			//Remove the flows from the switches before the rib is lost
 			//Theory: we could get a delete for a prefix not in the Ptree.
@@ -195,7 +195,7 @@ public class BgpRouteResource extends ServerResource {
 				bgpRoute.prefixDeleted(node);
 			}
 
-			Rib r = new Rib(routerId, nextHop, p.masklen);
+			Rib r = new Rib(routerId, nextHop, p.getPrefixLength());
 
 			if (node != null && node.rib != null) {
 				if (r.equals(node.rib)) {

@@ -4,31 +4,40 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class Prefix {
-	public int masklen;
-	protected InetAddress address;
+	private int prefixLength;
+	private InetAddress address;
 
-	public Prefix(byte[] addr, int masklen) throws UnknownHostException {
+	public Prefix(byte[] addr, int prefixLength) throws UnknownHostException {
 		//try {
 		address = InetAddress.getByAddress(addr);
 		//} catch (UnknownHostException e) {
 		//	System.out.println("InetAddress exception");
 		//	return;
 		//}
-		this.masklen = masklen;
-		//System.out.println(address.toString() + "/" + masklen);
+		this.prefixLength = prefixLength;
+		//System.out.println(address.toString() + "/" + prefixLength);
 	}
 
-	public Prefix(String str, int masklen) throws UnknownHostException {
+	public Prefix(String str, int prefixLength) throws UnknownHostException {
 		//try {
 		address = InetAddress.getByName(str);
 		//} catch (UnknownHostException e) {
 		//	System.out.println("InetAddress exception");
 		//	return;
 		//}
-		this.masklen = masklen;
+		this.prefixLength = prefixLength;
 	}
 
-	public byte [] getAddress() {
+	public int getPrefixLength() {
+		return prefixLength;
+	}
+	
+	public byte[] getAddress() {
 		return address.getAddress();
+	}
+	
+	@Override
+	public String toString() {
+		return address.getHostAddress() + "/" + prefixLength;
 	}
 }
