@@ -106,7 +106,7 @@ class QueryConfig {
     String name;
     String description;
     String sql;
-    List<String> filter;
+    List<String> filters;
     List<ResultConfig> results;
 
     public QueryConfig()
@@ -172,15 +172,15 @@ class QueryConfig {
     /**
      * @return the filter
      */
-    public List<String> getFilter() {
-        return filter;
+    public List<String> getFilters() {
+        return filters;
     }
 
     /**
      * @param filter the filter to set
      */
-    public void setFilter(List<String> filter) {
-        this.filter = filter;
+    public void setFilters(List<String> filters) {
+        this.filters = filters;
     }
 
     /**
@@ -266,10 +266,11 @@ public class QueryService
         qc1.setDescription("Das ist die Beschreibung von Abfrage 1");
         qc1.setSql("Select * from l_probe");
         List<String> filters = new ArrayList<String>();
-        filters.add("mst");
-        qc1.setFilter(filters);
+        filters.add("mstId");
+        filters.add("umwId");
+        qc1.setFilters(filters);
         List<ResultConfig> results = new ArrayList<ResultConfig>();
-        results.add(new ResultConfig("datenbasisId","Datenbases"));
+        results.add(new ResultConfig("datenbasisId","Datenbasis"));
         results.add(new ResultConfig("mplId","MPL"));
         results.add(new ResultConfig("umwId","UWB"));
         results.add(new ResultConfig("messmethode","MMT"));
@@ -277,21 +278,24 @@ public class QueryService
         results.add(new ResultConfig("nebenprobenNr","NPNR"));
         results.add(new ResultConfig("bezeichnung","E.Gemeinde"));
         results.add(new ResultConfig("kreis","Ursprungsgemeinde"));
-        results.add(new ResultConfig("probeId","ProbeID"));
+        results.add(new ResultConfig("probeId","ProbeID",1));
         results.add(new ResultConfig("mstId","MS"));
         qc1.setResults(results);
         configs.add(qc1);
         /* Query 2 */
         QueryConfig qc2 = new QueryConfig();
         qc2.setId(2);
-        qc2.setName("Test");
-        qc2.setDescription("Das ist die Beschreibung von Abfrage 2");
+        qc2.setName("Einfach");
+        qc2.setDescription("Einfache Abfrage aller Proben ohne weitere Filterung.");
         qc2.setSql("Select * from l_probe");
         List<String> qcf2= new ArrayList<String>();
-        qcf2.add("mst");
-        qc2.setFilter(qcf2);
+        qc2.setFilters(qcf2);
         List<ResultConfig> qcr2= new ArrayList<ResultConfig>();
-        qcr2.add(new ResultConfig("mst","Messstelle"));
+        qcr2.add(new ResultConfig("datenbasisId","Datenbasis"));
+        qcr2.add(new ResultConfig("nebenprobenNr","NPNR"));
+        qcr2.add(new ResultConfig("hauptprobenNr","HPNR"));
+        qcr2.add(new ResultConfig("mstId","MS"));
+        qcr2.add(new ResultConfig("probeId","ProbeID",1));
         qc2.setResults(qcr2);
         configs.add(qc2);
         return configs;
