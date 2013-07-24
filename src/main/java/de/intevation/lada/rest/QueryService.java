@@ -61,8 +61,18 @@ public class QueryService
         }
     }
 
-	private String loadQueryConfig() {
-		String query = "[]";
-		return query;
-	}
+    private String loadQueryConfig() {
+        String query = "[" +
+        "{" +
+        "\"id\": \"1\"," +
+        "\"description\": \"Beschreibung für Query 1\"," +
+        "\"sql\": \"SELECT * FROM l_probe;\"," +
+        "\"filters\": [\"mst\"]," +
+        "\"results\": [" +
+        "{\"field\": \"\", \"label\": \"\", \"type\": \"\"}" +
+        "]" +
+        "}" +
+        "]";
+        return query;
+    }
 }
