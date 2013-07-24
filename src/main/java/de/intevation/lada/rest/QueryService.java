@@ -18,56 +18,86 @@ import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.model.LOrt;
 
 class ResultConfig {
-    String field;
-    String label;
-    String type;
+    String dataIndex;
+    String header;
+    Integer flex;
+    Integer width;
 
-    public ResultConfig(String field, String label, String type) {
-        this.field = field;
-        this.label = label;
-        this.type = type;
+    public ResultConfig(String dataIndex, String header, Integer flex, Integer width) {
+        this.dataIndex= dataIndex;
+        this.header= header;
+        this.flex = flex;
+        this.width = width;
+    }
+
+    public ResultConfig(String dataIndex, String header, Integer flex) {
+        this.dataIndex= dataIndex;
+        this.header= header;
+        this.flex = flex;
+        this.width = null;
+    }
+
+    public ResultConfig(String dataIndex, String header) {
+        this.dataIndex= dataIndex;
+        this.header= header;
+        this.flex = 0;
+        this.width = null;
     }
 
     /**
-     * @return the field
+     * @return the dataIndex
      */
-    public String getField() {
-        return field;
+    public String getDataIndex() {
+        return dataIndex;
     }
 
     /**
-     * @param field the field to set
+     * @param dataIndex the dataIndex to set
      */
-    public void setField(String field) {
-        this.field = field;
+    public void setDataIndex(String dataIndex) {
+        this.dataIndex = dataIndex;
     }
 
     /**
-     * @return the label
+     * @return the header
      */
-    public String getLabel() {
-        return label;
+    public String getHeader() {
+        return header;
     }
 
     /**
-     * @param label the label to set
+     * @param header the header to set
      */
-    public void setLabel(String label) {
-        this.label = label;
+    public void setHeader(String header) {
+        this.header = header;
     }
 
     /**
-     * @return the type
+     * @return the width
      */
-    public String getType() {
-        return type;
+    public Integer getWidth() {
+        return width;
     }
 
     /**
-     * @param type the type to set
+     * @param width the width to set
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    /**
+     * @return the flex
+     */
+    public Integer getFlex() {
+        return flex;
+    }
+
+    /**
+     * @param flex the flex to set
+     */
+    public void setFlex(Integer flex) {
+        this.flex = flex;
     }
 }
 
@@ -204,7 +234,7 @@ public class QueryService
             if (!authentication.isAuthorizedUser(headers)) {
                 return new Response(false, 699, new ArrayList<LOrt>());
             }
-            QueryConfig queries = this.loadQueryConfig();
+            List<QueryConfig> queries = this.loadQueryConfig();
             Response response = new Response(true, 200, queries);
             return response;
         }
@@ -213,19 +243,57 @@ public class QueryService
         }
     }
 
-    private QueryConfig loadQueryConfig() {
-        QueryConfig queryConfig = new QueryConfig();
+    private List<QueryConfig> loadQueryConfig() {
+        List<QueryConfig> configs = new ArrayList<QueryConfig>();
+
+        /* Typicall available fields
+        {header: 'Datenbasis',  dataIndex: 'datenbasisId', width: 70},
+        {header: 'MPL',  dataIndex: 'mplId', width: 50},
+        {header: 'UWB',  dataIndex: 'umwId', width: 50},
+        {header: 'MMT',  dataIndex: 'messmethode'},
+        {header: 'HPNR',  dataIndex: 'hauptprobenNr'},
+        {header: 'NPNR',  dataIndex: 'nebenprobenNr'},
+        {header: 'E.Gemeinde',  dataIndex: 'bezeichnung', flex: 1},
+        {header: 'Ursprungsgemeinde',  dataIndex: 'kreis', flex: 1},
+        {header: 'ProbeID', dataIndex: 'probeId'},
+        {header: 'MST', dataIndex: 'mstId', width: 50}
+        */
+
         /* Query 1 */
-        queryConfig.setId(1);
-        queryConfig.setName("MST, UWB");
-        queryConfig.setDescription("Das ist die Beschreibung von Abfrage 1");
-        queryConfig.setSql("Select * from l_probe");
+        QueryConfig qc1 = new QueryConfig();
+        qc1.setId(1);
+        qc1.setName("MST, UWB");
+        qc1.setDescription("Das ist die Beschreibung von Abfrage 1");
+        qc1.setSql("Select * from l_probe");
         List<String> filters = new ArrayList<String>();
         filters.add("mst");
-        queryConfig.setFilter(filters);
+        qc1.setFilter(filters);
         List<ResultConfig> results = new ArrayList<ResultConfig>();
-        results.add(new ResultConfig("mst","Messstelle","string"));
-        queryConfig.setResults(results);
-        return queryConfig;
+        results.add(new ResultConfig("datenbasisId","Datenbases"));
+        results.add(new ResultConfig("mplId","MPL"));
+        results.add(new ResultConfig("umwId","UWB"));
+        results.add(new ResultConfig("messmethode","MMT"));
+        results.add(new ResultConfig("hauptprobenNr","HPNR"));
+        results.add(new ResultConfig("nebenprobenNr","NPNR"));
+        results.add(new ResultConfig("bezeichnung","E.Gemeinde"));
+        results.add(new ResultConfig("kreis","Ursprungsgemeinde"));
+        results.add(new ResultConfig("probeId","ProbeID"));
+        results.add(new ResultConfig("mstId","MS"));
+        qc1.setResults(results);
+        configs.add(qc1);
+        /* Query 2 */
+        QueryConfig qc2 = new QueryConfig();
+        qc2.setId(2);
+        qc2.setName("Test");
+        qc2.setDescription("Das ist die Beschreibung von Abfrage 2");
+        qc2.setSql("Select * from l_probe");
+        List<String> qcf2= new ArrayList<String>();
+        qcf2.add("mst");
+        qc2.setFilter(qcf2);
+        List<ResultConfig> qcr2= new ArrayList<ResultConfig>();
+        qcr2.add(new ResultConfig("mst","Messstelle"));
+        qc2.setResults(qcr2);
+        configs.add(qc2);
+        return configs;
     }
 }
