@@ -114,6 +114,17 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}, 0, ARP_REQUEST_TIMEOUT_THREAD_PERIOD);
 	}
 	
+	private void storeRequester(InetAddress address, IArpRequester requester) {
+		synchronized (arpRequests) {
+			if (arpRequests.get(address) == null) {
+				arpRequests.put(address, new ArpRequest());
+			}
+			ArpRequest request = arpRequests.get(address);
+							
+			request.addRequester(requester);
+		}
+	}
+	
 	@Override
 	public String getName() {
 		return "ProxyArpManager";
@@ -179,23 +190,11 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				return;
 			}
 			
-			synchronized (arpRequests) {
-				//arpRequests.putIfAbsent(target, 
-						//Collections.synchronizedSet(new HashSet<ArpRequest>()));
-				//		new ArpRequest());
-				//Set<ArpRequest> requesters = arpRequests.get(target);
-				if (arpRequests.get(target) == null) {
-					arpRequests.put(target, new ArpRequest());
-				}
-				ArpRequest request = arpRequests.get(target);
-								
-				request.addRequester(new HostArpRequester(this, arp, 
-						sw.getId(), pi.getInPort()));
-			}
-			
+			storeRequester(target, new HostArpRequester(this, arp, sw.getId(), 
+					pi.getInPort()));
 			
 			//Flood the request out edge ports
-			broadcastArpRequestOutEdge(pi, sw.getId(), pi.getInPort());
+			broadcastArpRequestOutEdge(pi.getPacketData(), sw.getId(), pi.getInPort());
 		}
 		else {
 			//We know the address, so send a reply
@@ -292,7 +291,35 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 	}
 	
-	private void broadcastArpRequestOutEdge(OFPacketIn pi, long inSwitch, short inPort){
+	private void sendArpRequestForAddress(InetAddress ipAddress) {
+		byte[] zeroIpv4 = {0x0, 0x0, 0x0, 0x0};
+		byte[] zeroMac = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+		byte[] broadcastMac = {(byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, 
+				(byte)0xff, (byte)0xff, (byte)0xff};
+		
+		ARP arpRequest = new ARP();
+		
+		arpRequest.setHardwareType(ARP.HW_TYPE_ETHERNET)
+			.setProtocolType(ARP.PROTO_TYPE_IP)
+			.setHardwareAddressLength((byte)Ethernet.DATALAYER_ADDRESS_LENGTH)
+			.setProtocolAddressLength((byte)4) //can't find the constant anywhere
+			.setOpCode(ARP.OP_REQUEST)
+			.setSenderHardwareAddress(zeroMac)
+			.setSenderProtocolAddress(zeroIpv4)
+			.setTargetHardwareAddress(zeroMac)
+			.setTargetProtocolAddress(ipAddress.getAddress());
+	
+		Ethernet eth = new Ethernet();
+		eth.setDestinationMACAddress(arpRequest.getSenderHardwareAddress())
+			.setSourceMACAddress(broadcastMac)
+			.setEtherType(Ethernet.TYPE_ARP)
+			.setPayload(arpRequest);
+		
+		broadcastArpRequestOutEdge(eth.serialize(), 0, OFPort.OFPP_NONE.getValue());
+	}
+	
+	//private void broadcastArpRequestOutEdge(OFPacketIn pi, long inSwitch, short inPort){
+	private void broadcastArpRequestOutEdge(byte[] arpRequest, long inSwitch, short inPort) {
 		for (IOFSwitch sw : floodlightProvider.getSwitches().values()){
 			Collection<Short> enabledPorts = sw.getEnabledPortNumbers();
 			Set<Short> linkPorts = topology.getPortsWithLinks(sw.getId());
@@ -306,7 +333,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			OFPacketOut po = new OFPacketOut();
 			po.setInPort(OFPort.OFPP_NONE)
 				.setBufferId(-1)
-				.setPacketData(pi.getPacketData());
+				.setPacketData(arpRequest);
 				
 			List<OFAction> actions = new ArrayList<OFAction>();
 			
@@ -326,7 +353,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			short actionsLength = (short) (actions.size() * OFActionOutput.MINIMUM_LENGTH);
 			po.setActionsLength(actionsLength);
 			po.setLengthU(OFPacketOut.MINIMUM_LENGTH + actionsLength 
-					+ pi.getPacketData().length);
+					+ arpRequest.length);
 			
 			List<OFMessage> msgList = new ArrayList<OFMessage>();
 			msgList.add(po);
@@ -394,7 +421,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 
 	//TODO this should be put somewhere more central. I use it in BgpRoute as well.
 	//We need a HexString.toHexString() equivalent.
-	private String bytesToStringAddr(byte[] bytes){
+	private String bytesToStringAddr(byte[] bytes) {
 		InetAddress addr;
 		try {
 			addr = InetAddress.getByAddress(bytes);
@@ -407,12 +434,20 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	
-	public byte[] lookupMac(InetAddress ipAddress){
-		//TODO implement
-		return null;
+	public byte[] getMacAddress(InetAddress ipAddress) {
+		return lookupArpTable(ipAddress.getAddress());
 	}
-	public byte[] sendArpRequest(InetAddress ipAddress, IArpRequester requester){
-		//TODO implement
+	
+	public byte[] sendArpRequest(InetAddress ipAddress, IArpRequester requester) {
+		byte[] lookupMac;
+		if ((lookupMac = lookupArpTable(ipAddress.getAddress())) == null) {
+			return lookupMac;
+		}
+		
+		sendArpRequestForAddress(ipAddress);
+		
+		storeRequester(ipAddress, requester);
+		
 		return null;
 	}
 }

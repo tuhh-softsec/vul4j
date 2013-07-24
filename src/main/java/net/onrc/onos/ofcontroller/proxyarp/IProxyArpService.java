@@ -24,7 +24,7 @@ public interface IProxyArpService {
 	 * @param ipAddress
 	 * @return
 	 */
-	public byte[] lookupMac(InetAddress ipAddress);
+	public byte[] getMacAddress(InetAddress ipAddress);
 	
 	/**
 	 * Tell the IProxyArpService to send an ARP request for the IP address.
