@@ -1,0 +1,33 @@
+/* Beispieldatei einer Konfiguration einer Abfrage */
+{
+    "id": 1,
+    "name": "Name der Query in der Auswahlliste",
+    "description": "Detailiertere Beschreibung der Abfrage",
+    /* Die Definiton des SQL wie es später an den Server gesendet wird. ggf.
+     * werden einige Werte zuvor durch den Server ersetzt. Siehe Filter */
+    "sql": "select probe_id, mst_id, umw_id from l_probe where mst_id = %(mst_id)s",
+    /* Definition der anzuzeigenden Spalten in der Probenauswahlliste. Die
+     * Reihenfolge hier definiert auch die Reihenfolge im Clienten. Die
+     * Konfigurationsvariablen sind gleich er möglichen Variablen zur
+     * Konfiguration eines Grids in ExtJS:
+     * http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.grid.Panel 
+     *
+     * Achtung: Die Feldnamen (dataIndex) die hier angegeben werden können
+     * sich von den Feldnamen in der DB unterscheiden, da der Server die
+     * Feldnamen im ORM-Mapper modifiziert. So werden z.B Unterstriche
+     * ersetzt. Siehe Beispiel: */
+    "result": [
+        {"dataIndex": "mstId", "header": "MST"},
+        {"dataIndex": "probeId", "header": "ProbeId"}
+    ],
+    /* Filter für die Abfrage. Der Server empfängt hier Daten vom Clienten,
+     * die dann in das oben definierte sql eingebaut werden. Hier muss für den
+     * produktiven Einsatz noch eine strenge Überprüfung der Werte
+     * stattfinden.
+     * "type" gibt an, Welche Art von Feld im Clienten angezeigt werden soll.
+     * Hier müssen wir verschiedene Typen definieren. "listmst" könnte z.B
+     * eine Liste aller Messstationen sein. */
+    "filters": [
+        {"dataIndex": "mst_id", "type": "listmst"}
+    ]
+}
