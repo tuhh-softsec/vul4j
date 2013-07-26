@@ -9,27 +9,7 @@ import org.jboss.resteasy.client.ClientResponse;
 public class RestEasyClient {
 
 	public static String baseURL = "https://bfs-lada.intevation.de/lada/server/rest/";
-/*	
-	@Test
-	public void test2() {
-		String url = "https://bfs-lada.intevation.de/lada/server/rest/proben?mstId=06010&umwId=N24";
-		ClientRequest request = new ClientRequest(url);
-		request.header("Authorization", "Basic dGVzdGVpbnM6TjVKOENmSm5iOA==");
-		request.accept(MediaType.WILDCARD_TYPE);
-		
-		ClientResponse<String> response;
-		boolean get_error = false;
-		try {
-			response = request.get(String.class);
-			Assert.assertEquals(200,response.getStatus());
-			System.out.println(response.getEntity(String.class));
-		} catch (Exception e) {
-			get_error = true;
-			e.printStackTrace();
-		}
-		Assert.assertEquals(false, get_error);
-	}
-*/
+
 public ClientResponse<String> getResponse(String url, boolean header){
 	ClientRequest request = new ClientRequest(url);
 	if(header)
@@ -44,10 +24,15 @@ public ClientResponse<String> getResponse(String url, boolean header){
 	return response;
 }
 
+public void checkResponse(ClientResponse<String> response){
+	Assert.assertEquals(true, response.getEntity().contains("\"message\":\"200\""));
+}
+
 public void testHttpOK(String url) {
 	ClientResponse<String> response = getResponse(url, true);
 	Assert.assertNotNull("Response shouldnot be null", response);
 	Assert.assertEquals(200, response.getStatus());
+	checkResponse(response);
 }
 
 public void testHttpForbidden(String url) {
@@ -58,27 +43,27 @@ public void testHttpForbidden(String url) {
 
 @Test
 public void testLOrtService(){
-	testHttpOK(baseURL + "ort");
+	testHttpOK(baseURL + "ort?probeId=000007587685X");
 	testHttpForbidden(baseURL + "ort");
 }
 @Test
 public void testLMessKommentarService() {
-	testHttpOK(baseURL + "messkommentare");
+	testHttpOK(baseURL + "messkommentare?probeId=000007587685X&messungsId=1");
 	testHttpForbidden(baseURL + "messkommentare");
 }
 @Test
 public void testLKommentarService() {
-	testHttpOK(baseURL + "kommentare");
+	testHttpOK(baseURL + "kommentare?probeId=000007587685X");
 	testHttpForbidden(baseURL + "kommentare");
 }
 @Test
 public void testMessungService() {
-	testHttpOK(baseURL + "messung");
+	testHttpOK(baseURL + "messung?probeId=000007587685X");
 	testHttpForbidden(baseURL + "messung");
 }
 @Test
 public void testLMesswertService() {
-	testHttpOK(baseURL + "messwert");
+	testHttpOK(baseURL + "messwert?probeId=000007587685X&messungsId=1");
 	testHttpForbidden(baseURL + "messwert");
 }
 @Test
@@ -88,13 +73,20 @@ public void testLProbenService() {
 }
 @Test
 public void testLStatusService() {
-	testHttpOK(baseURL + "status");
+	testHttpOK(baseURL + "status?probeId=000007587685X&messungsId=1");
 	testHttpForbidden(baseURL + "status");
 }
 @Test
 public void testLZusatzwertService() {
-	testHttpOK(baseURL + "zusatzwert");
+	testHttpOK(baseURL + "zusatzwert?probeId=000007587685X");
 	testHttpForbidden(baseURL + "zusatzwert");
+}
+@Test
+public void testLProbenSfindByID() {
+	ClientResponse<String> response = getResponse(baseURL + "proben/000007587685X", true);
+	Assert.assertNotNull(response);
+	Assert.assertEquals(200, response.getStatus());
+	checkResponse(response);
 }
 
 }
