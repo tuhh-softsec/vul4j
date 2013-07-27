@@ -98,7 +98,7 @@ public class DAGTest
 
         assertFalse( dag.hasEdge( "d", "c" ) );
 
-        final Set labels = dag.getLabels();
+        final Set<String> labels = dag.getLabels();
 
         assertEquals( 4, labels.size() );
 
@@ -168,9 +168,9 @@ public class DAGTest
 
         dag.addEdge( "f", "g" );
 
-        final List actual = dag.getSuccessorLabels( "b" );
+        final List<String> actual = dag.getSuccessorLabels( "b" );
 
-        final List expected = new ArrayList();
+        final List<String> expected = new ArrayList<String>();
 
         expected.add( "d" );
 

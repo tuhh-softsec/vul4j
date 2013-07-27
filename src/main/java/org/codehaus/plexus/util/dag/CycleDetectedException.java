@@ -22,9 +22,9 @@ import java.util.List;
 public class CycleDetectedException
         extends Exception
 {
-    private List cycle;
+    private List<String> cycle;
 
-    public CycleDetectedException( final String message, final List cycle )
+    public CycleDetectedException( final String message, final List<String> cycle )
     {
         super( message );
 
@@ -32,8 +32,7 @@ public class CycleDetectedException
 
     }
 
-
-    public List getCycle()
+    public List<String> getCycle()
     {
         return cycle;
     }
@@ -45,7 +44,7 @@ public class CycleDetectedException
     {
         final StringBuffer buffer = new StringBuffer();
 
-        for ( Iterator iterator = cycle.iterator(); iterator.hasNext(); )
+        for ( Iterator<String> iterator = cycle.iterator(); iterator.hasNext(); )
         {
             buffer.append( iterator.next() );
 

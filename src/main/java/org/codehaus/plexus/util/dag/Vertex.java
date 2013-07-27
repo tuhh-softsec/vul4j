@@ -18,7 +18,6 @@ package org.codehaus.plexus.util.dag;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,9 +31,9 @@ public class Vertex implements Cloneable, Serializable
     //------------------------------------------------------------
     private String label = null;
 
-    List children = new ArrayList();
+    List<Vertex> children = new ArrayList<Vertex>();
 
-    List parents = new ArrayList();
+    List<Vertex> parents = new ArrayList<Vertex>();
 
 
     // ------------------------------------------------------------
@@ -90,13 +89,11 @@ public class Vertex implements Cloneable, Serializable
 
     public void removeEdgeFrom( final Vertex vertex )
     {
-
         parents.remove( vertex );
-
     }
 
 
-    public List getChildren()
+    public List<Vertex> getChildren()
     {
         return children;
     }
@@ -107,14 +104,12 @@ public class Vertex implements Cloneable, Serializable
      *
      * @return the labels used by the most direct children.
      */
-    public List getChildLabels()
+    public List<String> getChildLabels()
     {
-        final List retValue = new ArrayList( children.size() );
+        final List<String> retValue = new ArrayList<String>( children.size() );
 
-        for ( final Iterator iter = children.iterator(); iter.hasNext(); )
+        for ( Vertex vertex : children )
         {
-            final Vertex vertex = ( Vertex ) iter.next();
-
             retValue.add( vertex.getLabel() );
         }
         return retValue;
@@ -126,7 +121,7 @@ public class Vertex implements Cloneable, Serializable
      *
      * @return list of parents
      */
-    public List getParents()
+    public List<Vertex> getParents()
     {
         return parents;
     }
@@ -137,14 +132,12 @@ public class Vertex implements Cloneable, Serializable
      *
      * @return the labels used parents
      */
-    public List getParentLabels()
+    public List<String> getParentLabels()
     {
-        final List retValue = new ArrayList( parents.size() );
+        final List<String> retValue = new ArrayList<String>( parents.size() );
 
-        for ( final Iterator iter = parents.iterator(); iter.hasNext(); )
+        for ( Vertex vertex : parents )
         {
-            final Vertex vertex = ( Vertex ) iter.next();
-
             retValue.add( vertex.getLabel() );
         }
         return retValue;

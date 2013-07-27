@@ -18,7 +18,6 @@ package org.codehaus.plexus.util.dag;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +36,16 @@ public class CycleDetector
     private final static Integer VISITED = new Integer( 2 );
 
 
-    public static List hasCycle( final DAG graph )
+    public static List<String> hasCycle( final DAG graph )
     {
-        final List verticies = graph.getVerticies();
+        final List<Vertex> verticies = graph.getVerticies();
 
-        final Map vertexStateMap = new HashMap();
+        final Map<Vertex, Integer> vertexStateMap = new HashMap<Vertex, Integer>();
 
-        List retValue = null;
+        List<String> retValue = null;
 
-        for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
+        for ( Vertex vertex : verticies )
         {
-            final Vertex vertex = ( Vertex ) iter.next();
-
             if ( isNotVisited( vertex, vertexStateMap ) )
             {
                 retValue = introducesCycle( vertex, vertexStateMap );
@@ -61,12 +58,10 @@ public class CycleDetector
         }
 
         return retValue;
-
     }
 
-
     /**
-     * This method will be called when an egde leading to given vertex was added
+     * This method will be called when an edge leading to given vertex was added
      * and we want to check if introduction of this edge has not resulted
      * in apparition of cycle in the graph
      *
@@ -74,9 +69,9 @@ public class CycleDetector
      * @param vertexStateMap
      * @return
      */
-    public static List introducesCycle( final Vertex vertex, final Map vertexStateMap )
+    public static List<String> introducesCycle( final Vertex vertex, final Map<Vertex, Integer> vertexStateMap )
     {
-        final LinkedList cycleStack = new LinkedList();
+        final LinkedList<String> cycleStack = new LinkedList<String>();
 
         final boolean hasCycle = dfsVisit( vertex, cycleStack, vertexStateMap );
 
@@ -84,15 +79,15 @@ public class CycleDetector
         {
             // we have a situation like: [b, a, c, d, b, f, g, h].
             // Label of Vertex which introduced  the cycle is at the first position in the list
-            // We have to find second occurence of this label and use its position in the list
-            // for getting the sublist of vertex labels of cycle paricipants
+            // We have to find second occurrence of this label and use its position in the list
+            // for getting the sublist of vertex labels of cycle participants
             //
-            // So in our case we are seraching for [b, a, c, d, b]
-            final String label = ( String ) cycleStack.getFirst();
+            // So in our case we are searching for [b, a, c, d, b]
+            final String label = cycleStack.getFirst();
 
             final int pos = cycleStack.lastIndexOf( label );
 
-            final List cycle = cycleStack.subList( 0, pos + 1 );
+            final List<String> cycle = cycleStack.subList( 0, pos + 1 );
 
             Collections.reverse( cycle );
 
@@ -103,13 +98,11 @@ public class CycleDetector
     }
 
 
-    public static List introducesCycle( final Vertex vertex )
+    public static List<String> introducesCycle( final Vertex vertex )
     {
-
-        final Map vertexStateMap = new HashMap();
+        final Map<Vertex, Integer> vertexStateMap = new HashMap<Vertex, Integer>();
 
         return introducesCycle( vertex, vertexStateMap );
-
     }
 
     /**
@@ -117,16 +110,11 @@ public class CycleDetector
      * @param vertexStateMap
      * @return
      */
-    private static boolean isNotVisited( final Vertex vertex, final Map vertexStateMap )
+    private static boolean isNotVisited( final Vertex vertex, final Map<Vertex, Integer> vertexStateMap )
     {
-        if ( !vertexStateMap.containsKey( vertex ) )
-        {
-            return true;
-        }
+        final Integer state = vertexStateMap.get( vertex );
 
-        final Integer state = ( Integer ) vertexStateMap.get( vertex );
-
-        return NOT_VISTITED.equals( state );
+        return ( state == null ) || NOT_VISTITED.equals( state );
     }
 
     /**
@@ -134,25 +122,22 @@ public class CycleDetector
      * @param vertexStateMap
      * @return
      */
-    private static boolean isVisiting( final Vertex vertex, final Map vertexStateMap )
+    private static boolean isVisiting( final Vertex vertex, final Map<Vertex, Integer> vertexStateMap )
     {
-        final Integer state = ( Integer ) vertexStateMap.get( vertex );
+        final Integer state = vertexStateMap.get( vertex );
 
         return VISITING.equals( state );
     }
 
-    private static boolean dfsVisit( final Vertex vertex, final LinkedList cycle, final Map vertexStateMap )
+    private static boolean dfsVisit( final Vertex vertex, final LinkedList<String> cycle,
+                                     final Map<Vertex, Integer> vertexStateMap )
     {
         cycle.addFirst( vertex.getLabel() );
 
         vertexStateMap.put( vertex, VISITING );
 
-        final List verticies = vertex.getChildren();
-
-        for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
+        for ( Vertex v : vertex.getChildren() )
         {
-            final Vertex v = ( Vertex ) iter.next();
-
             if ( isNotVisited( v, vertexStateMap ) )
             {
                 final boolean hasCycle = dfsVisit( v, cycle, vertexStateMap );
@@ -174,9 +159,6 @@ public class CycleDetector
         cycle.removeFirst();
 
         return false;
-
     }
-
-
 
 }

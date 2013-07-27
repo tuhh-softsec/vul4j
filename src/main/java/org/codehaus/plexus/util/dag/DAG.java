@@ -28,7 +28,7 @@ import java.util.Set;
  *
  * @author <a href="michal.maczka@dimatics.com">Michal Maczka</a>
  * @version $Id$
- * @todo this class should be reanmed from DAG to Dag
+ * @todo this class should be renamed from DAG to Dag
  */
 public class DAG implements Cloneable, Serializable
 {
@@ -36,18 +36,18 @@ public class DAG implements Cloneable, Serializable
     //Fields
     //------------------------------------------------------------
     /**
-     * Nodes will be kept in two data strucures at the same time
+     * Nodes will be kept in two data structures at the same time
      * for faster processing
      */
     /**
      * Maps vertex's label to vertex
      */
-    private Map vertexMap = new HashMap();
+    private Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
 
     /**
      * Conatin list of all verticies
      */
-    private List vertexList = new ArrayList();
+    private List<Vertex> vertexList = new ArrayList<Vertex>();
 
     // ------------------------------------------------------------
     // Constructors
@@ -68,17 +68,15 @@ public class DAG implements Cloneable, Serializable
     /**
      * @return
      */
-    public List getVerticies()
+    public List<Vertex> getVerticies()
     {
         return vertexList;
     }
 
 
-    public Set getLabels()
+    public Set<String> getLabels()
     {
-        final Set retValue = vertexMap.keySet();
-
-        return retValue;
+        return vertexMap.keySet();
     }
 
     // ------------------------------------------------------------
@@ -100,7 +98,7 @@ public class DAG implements Cloneable, Serializable
         // check if vertex is alredy in DAG
         if ( vertexMap.containsKey( label ) )
         {
-            retValue = ( Vertex ) vertexMap.get( label );
+            retValue = vertexMap.get( label );
         }
         else
         {
@@ -130,7 +128,7 @@ public class DAG implements Cloneable, Serializable
 
         to.addEdgeFrom( from );
 
-        final List cycle = CycleDetector.introducesCycle( to );
+        final List<String> cycle = CycleDetector.introducesCycle( to );
 
         if ( cycle != null )
         {
@@ -185,7 +183,7 @@ public class DAG implements Cloneable, Serializable
      * @param label
      * @return
      */
-    public List getChildLabels( final String label )
+    public List<String> getChildLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
 
@@ -196,7 +194,7 @@ public class DAG implements Cloneable, Serializable
      * @param label
      * @return
      */
-    public List getParentLabels( final String label )
+    public List<String> getParentLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
 
@@ -241,16 +239,16 @@ public class DAG implements Cloneable, Serializable
      *         the label passed as parameter to this method. This label should
      *         always be the last item in the list.
      */
-    public List getSuccessorLabels( final String label )
+    public List<String> getSuccessorLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
 
-        final List retValue;
+        final List<String> retValue;
 
         //optimization.
         if ( vertex.isLeaf() )
         {
-            retValue = new ArrayList( 1 );
+            retValue = new ArrayList<String>( 1 );
 
             retValue.add( label );
         }

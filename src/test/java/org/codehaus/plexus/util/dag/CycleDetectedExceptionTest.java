@@ -30,7 +30,7 @@ public class CycleDetectedExceptionTest
 {
     public void testException()
     {
-        final List cycle = new ArrayList();
+        final List<String> cycle = new ArrayList<String>();
 
         cycle.add( "a" );
 

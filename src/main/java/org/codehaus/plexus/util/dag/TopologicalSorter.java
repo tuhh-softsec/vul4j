@@ -17,7 +17,6 @@ package org.codehaus.plexus.util.dag;
  */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,37 +39,30 @@ public class TopologicalSorter
      * @return List of String (vertex labels)
      */
 
-    public static List sort( final DAG graph )
+    public static List<String> sort( final DAG graph )
     {
         return dfs( graph );
     }
 
-    public static List sort( final Vertex vertex )
+    public static List<String> sort( final Vertex vertex )
     {
         // we need to use addFirst method so we will use LinkedList explicitly
-        final LinkedList retValue = new LinkedList();
+        final List<String> retValue = new LinkedList<String>();
 
-        final Map vertexStateMap = new HashMap();
-
-        dfsVisit( vertex, vertexStateMap, retValue );
+        dfsVisit( vertex, new HashMap<Vertex, Integer>(), retValue );
 
         return retValue;
     }
 
 
-    private static List dfs( final DAG graph )
+    private static List<String> dfs( final DAG graph )
     {
-        final List verticies = graph.getVerticies();
-
         // we need to use addFirst method so we will use LinkedList explicitly
-        final LinkedList retValue = new LinkedList();
+        final List<String> retValue = new LinkedList<String>();
+        final Map<Vertex, Integer> vertexStateMap = new HashMap<Vertex, Integer>();
 
-        final Map vertexStateMap = new HashMap();
-
-        for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
+        for ( Vertex vertex : graph.getVerticies() )
         {
-            final Vertex vertex = ( Vertex ) iter.next();
-
             if ( isNotVisited( vertex, vertexStateMap ) )
             {
                 dfsVisit( vertex, vertexStateMap, retValue );
@@ -85,28 +77,21 @@ public class TopologicalSorter
      * @param vertexStateMap
      * @return
      */
-    private static boolean isNotVisited( final Vertex vertex, final Map vertexStateMap )
+    private static boolean isNotVisited( final Vertex vertex, final Map<Vertex, Integer> vertexStateMap )
     {
-        if ( !vertexStateMap.containsKey( vertex ) )
-        {
-            return true;
-        }
-        final Integer state = ( Integer ) vertexStateMap.get( vertex );
+        final Integer state = vertexStateMap.get( vertex );
 
-        return NOT_VISTITED.equals( state );
+        return ( state == null ) || NOT_VISTITED.equals( state );
     }
 
 
-    private static void dfsVisit( final Vertex vertex, final Map vertexStateMap, final LinkedList list )
+    private static void dfsVisit( final Vertex vertex, final Map<Vertex, Integer> vertexStateMap,
+                                  final List<String> list )
     {
         vertexStateMap.put( vertex, VISITING );
 
-        final List verticies = vertex.getChildren();
-
-        for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
+        for ( Vertex v : vertex.getChildren() )
         {
-            final Vertex v = ( Vertex ) iter.next();
-
             if ( isNotVisited( v, vertexStateMap ) )
             {
                 dfsVisit( v, vertexStateMap, list );

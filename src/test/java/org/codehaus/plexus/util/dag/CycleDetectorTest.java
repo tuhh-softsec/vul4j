@@ -70,7 +70,7 @@ public class CycleDetectorTest extends TestCase
         catch ( CycleDetectedException e )
         {
 
-            final List cycle = e.getCycle();
+            final List<String> cycle = e.getCycle();
 
             assertNotNull( "Cycle should be not null", cycle );
 
@@ -129,7 +129,7 @@ public class CycleDetectorTest extends TestCase
         }
         catch ( CycleDetectedException e )
         {
-            final List cycle = e.getCycle();
+            final List<String> cycle = e.getCycle();
 
             assertNotNull( "Cycle should be not null", cycle );
 
@@ -177,7 +177,7 @@ public class CycleDetectorTest extends TestCase
         }
         catch ( CycleDetectedException e )
         {
-            final List cycle = e.getCycle();
+            final List<String> cycle = e.getCycle();
 
             assertNotNull( "Cycle should be not null", cycle );
 

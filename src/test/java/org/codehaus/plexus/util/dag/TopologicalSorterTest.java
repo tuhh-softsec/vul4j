@@ -40,7 +40,7 @@ public class TopologicalSorterTest
 
         dag1.addEdge( "b", "c" );
 
-        final List expected1 = new ArrayList();
+        final List<String> expected1 = new ArrayList<String>();
 
         expected1.add( "c" );
 
@@ -48,7 +48,7 @@ public class TopologicalSorterTest
 
         expected1.add( "a" );
 
-        final List actual1 = TopologicalSorter.sort( dag1 );
+        final List<String> actual1 = TopologicalSorter.sort( dag1 );
 
         assertEquals( "Order is different then expected", expected1, actual1 );
 
@@ -68,7 +68,7 @@ public class TopologicalSorterTest
 
         dag2.addEdge( "c", "b" );
 
-        final List expected2 = new ArrayList();
+        final List<String> expected2 = new ArrayList<String>();
 
         expected2.add( "a" );
 
@@ -76,7 +76,7 @@ public class TopologicalSorterTest
 
         expected2.add( "c" );
 
-        final List actual2 = TopologicalSorter.sort( dag2 );
+        final List<String> actual2 = TopologicalSorter.sort( dag2 );
 
         assertEquals( "Order is different then expected", expected2, actual2 );
 
@@ -117,7 +117,7 @@ public class TopologicalSorterTest
 
         dag3.addEdge( "f", "g" );
 
-        final List expected3 = new ArrayList();
+        final List<String> expected3 = new ArrayList<String>();
 
         expected3.add( "d" );
 
@@ -133,7 +133,7 @@ public class TopologicalSorterTest
 
         expected3.add( "a" );
 
-        final List actual3 = TopologicalSorter.sort( dag3 );
+        final List<String> actual3 = TopologicalSorter.sort( dag3 );
 
         assertEquals( "Order is different then expected", expected3, actual3 );
 
@@ -172,7 +172,7 @@ public class TopologicalSorterTest
 
         dag4.addEdge( "e", "f" );
 
-        final List expected4 = new ArrayList();
+        final List<String> expected4 = new ArrayList<String>();
 
         expected4.add( "d" );
 
@@ -186,7 +186,7 @@ public class TopologicalSorterTest
 
         expected4.add( "a" );
 
-        final List actual4 = TopologicalSorter.sort( dag4 );
+        final List<String> actual4 = TopologicalSorter.sort( dag4 );
 
         assertEquals( "Order is different then expected", expected4, actual4 );
     }
