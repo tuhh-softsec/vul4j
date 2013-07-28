@@ -39,7 +39,8 @@ public class EsiRenderer implements Renderer, Appendable {
 
     private final static Logger LOG = LoggerFactory.getLogger(EsiRenderer.class);
 
- 	private final static Pattern PATTERN = Pattern.compile("(<esi:[^>]*>)|(</esi:[^>]*>)");
+    
+ 	private final static Pattern PATTERN = Pattern.compile("(<esi:\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)/?>)|(</esi:[^>]*>)");
 	private final static Pattern PATTERN_COMMENTS = Pattern.compile("(<!--esi)|(-->)");
 
 	private final Parser parser = new Parser(PATTERN, IncludeElement.TYPE, CommentElement.TYPE, RemoveElement.TYPE, VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE, OtherwiseElement.TYPE,

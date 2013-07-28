@@ -134,7 +134,7 @@ public class MockMediator implements ContainerRequestMediator {
 
 	@Override
 	public String getSessionId() {
-		throw new RuntimeException("Method not implemented");
+		return null;
 	}
 
 	public HttpResponse getHttpResponse() {

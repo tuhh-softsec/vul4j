@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 class Tag {
 	private final static Pattern TAG_CLOSE_PATTERN = Pattern.compile("\\A</([\\S]*)[\\s]*>\\z");
 	private final static Pattern TAG_START_PATTERN = Pattern.compile("\\A<([\\S]*)[\\s|>]");
-	private final static Pattern ATTRIBUTE_PATTERN = Pattern.compile("([^\\s=]+)\\s*=\\s*('[^<']*'|\"[^<\"]*\")");
+	private final static Pattern ATTRIBUTE_PATTERN = Pattern.compile("([^\\s=]+)\\s*=\\s*('[^']*'|\"[^\"]*\")");
 	private final static Pattern AUTO_CLOSE_TAG = Pattern.compile("/[\\s]*>\\z");
 
 	private final String name;

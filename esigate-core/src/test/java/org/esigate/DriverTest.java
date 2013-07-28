@@ -314,7 +314,8 @@ public class DriverTest extends TestCase {
 		driver.proxy("/foo", request);
 		// The test initially failed with an invalid Location:
 		// http://www.foo.com:80:80/foo/bar
-		assertEquals("http://www.foo.com:80/foo/bar", TestUtils.getResponse(request).getFirstHeader("Location").getValue());
+		assertEquals("http://www.foo.com:80/foo/bar", TestUtils.getResponse(request).getFirstHeader("Location")
+				.getValue());
 	}
 
 	/**
@@ -339,9 +340,10 @@ public class DriverTest extends TestCase {
 		});
 		Driver driver = createMockDriver(properties, mockConnectionManager);
 
-		HttpEntityEnclosingRequest request1 = new HttpRequestBuilder().mockMediator().uri("http://www.foo.com:80").build();
+		HttpEntityEnclosingRequest request1 = new HttpRequestBuilder().mockMediator().uri("http://www.foo.com:80")
+				.build();
 		assertEquals("www.foo.com", request1.getLastHeader("Host").getValue());
-		
+
 		driver.proxy("", request1);
 		assertEquals("http://www.foo.com", TestUtils.getResponse(request1).getFirstHeader("Location").getValue());
 	}
@@ -832,7 +834,7 @@ public class DriverTest extends TestCase {
 		Assert.assertEquals(1, mediator.getCookies().length);
 		Assert.assertEquals("/", mediator.getCookies()[0].getPath());
 	}
-	
+
 	/**
 	 * 0000231: ESIgate should be enable to mashup elements for an error/404
 	 * page
@@ -870,7 +872,6 @@ public class DriverTest extends TestCase {
 				return null;
 			}
 		};
-		
 
 		// Build driver and request.
 		Driver driver = createMockDriver(properties, mockConnectionManager);
@@ -885,6 +886,63 @@ public class DriverTest extends TestCase {
 			HttpResponse response = errorPage.getHttpResponse();
 			Assert.assertEquals("OK", EntityUtils.toString(response.getEntity()));
 		}
+
+	}
+
+	/**
+	 * Test cache behavior : does POST request invalidate cache.
+	 * 
+	 * @throws Exception
+	 */
+	public void testCacheInvalidation() throws Exception {
+		// Configuration
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://test.mydomain.fr/");
+
+		// Setup server responses.
+		mockConnectionManager = new MockConnectionManager() {
+			int count = 0;
+
+			@Override
+			public HttpResponse execute(HttpRequest request) {
+
+				HttpResponse result = null;
+				try {
+					result = new HttpResponseBuilder().entity("OK").header("X-Count", String.valueOf(count))
+							.header("Cache-Control", "public, max-age= 30000").header("Date", DateUtils.formatDate(new Date())).build();
+				} catch (UnsupportedEncodingException e) {
+				}
+				count++;
+				return result;
+			}
+		};
+
+		// Build driver and request.
+		Driver driver = createMockDriver(properties, mockConnectionManager);
+		HttpEntityEnclosingRequest request1Get = new HttpRequestBuilder().uri("http://test.mydomain.fr/foobar/")
+				.mockMediator().build();
+		HttpEntityEnclosingRequest request2Get = new HttpRequestBuilder().uri("http://test.mydomain.fr/foobar/")
+				.mockMediator().build();
+		 HttpEntityEnclosingRequest request3Post = new
+		 HttpRequestBuilder().method("POST").uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+		HttpEntityEnclosingRequest request4Get = new HttpRequestBuilder().uri("http://test.mydomain.fr/foobar/")
+				.mockMediator().build();
+
+		// Perform call with ESI rendering.
+		driver.proxy("/foobar/", request1Get, new EsiRenderer());
+		HttpResponse response = TestUtils.getResponse(request1Get);
+		Assert.assertEquals("0", response.getFirstHeader("X-Count").getValue());
+
+		driver.proxy("/foobar/", request2Get, new EsiRenderer());
+		response = TestUtils.getResponse(request2Get);
+		Assert.assertEquals("0", response.getFirstHeader("X-Count").getValue());
+		
+		 driver.proxy("/foobar/", request3Post, new EsiRenderer());
+		 response = TestUtils.getResponse(request3Post);
+		 
+		driver.proxy("/foobar/", request4Get, new EsiRenderer());
+		response = TestUtils.getResponse(request4Get);
+		Assert.assertEquals("0", response.getFirstHeader("X-Count").getValue());
 
 	}
 }

@@ -56,8 +56,7 @@ public class HttpRequestBuilder {
 		return this;
 	}
 
-	public HttpRequestBuilder protocolVersion(
-			ProtocolVersion paramProtocolVersion) {
+	public HttpRequestBuilder protocolVersion(ProtocolVersion paramProtocolVersion) {
 		this.protocolVersion = paramProtocolVersion;
 		return this;
 	}
@@ -75,8 +74,7 @@ public class HttpRequestBuilder {
 	public HttpRequestBuilder mockMediator() {
 
 		if (this.mediator != null)
-			throw new IllegalArgumentException(
-					"Cannot use both mockMediator and mediator when building HttpRequest");
+			throw new IllegalArgumentException("Cannot use both mockMediator and mediator when building HttpRequest");
 
 		this.mockMediator = true;
 		return this;
@@ -84,8 +82,7 @@ public class HttpRequestBuilder {
 
 	public HttpRequestBuilder mediator(ContainerRequestMediator paramMediator) {
 		if (this.mockMediator)
-			throw new IllegalArgumentException(
-					"Cannot use both mockMediator and mediator when building HttpRequest");
+			throw new IllegalArgumentException("Cannot use both mockMediator and mediator when building HttpRequest");
 
 		this.mediator = paramMediator;
 		return this;
@@ -102,10 +99,8 @@ public class HttpRequestBuilder {
 		String scheme = uri.getScheme();
 		String host = uri.getHost();
 		int port = uri.getPort();
-		request = new BasicHttpEntityEnclosingRequest(this.method,
-				this.uriString, this.protocolVersion);
-		if (port == -1 || (port == 80 && "http".equals(scheme))
-				|| (port == 443 && "https".equals(scheme)))
+		request = new BasicHttpEntityEnclosingRequest(this.method, this.uriString, this.protocolVersion);
+		if (port == -1 || (port == 80 && "http".equals(scheme)) || (port == 443 && "https".equals(scheme)))
 			request.setHeader("Host", host);
 		else
 			request.setHeader("Host", host + ":" + port);
