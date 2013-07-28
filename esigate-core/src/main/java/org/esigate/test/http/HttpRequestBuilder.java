@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -120,6 +121,20 @@ public class HttpRequestBuilder {
 		if (this.mediator != null)
 			requestMediator = this.mediator;
 
+		// Add cookies 
+		// In request header
+		String cookieHeaderValue = StringUtils.EMPTY;
+		for (Cookie c : this.cookies) {
+			if (StringUtils.isNotBlank(cookieHeaderValue)) {
+				cookieHeaderValue = cookieHeaderValue + "; ";
+			}
+			cookieHeaderValue = cookieHeaderValue + c.getName() + "=" + c.getValue();
+		}
+		if (StringUtils.isNotBlank(cookieHeaderValue)) {
+			request.addHeader("Cookie", cookieHeaderValue);
+		}
+
+		// In mediator
 		if (requestMediator != null) {
 			for (Cookie c : this.cookies) {
 				requestMediator.addCookie(c);
