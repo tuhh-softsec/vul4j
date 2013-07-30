@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * The class representing the Data Path.
+ * The data forwarding path state from a source to a destination.
  */
 public class DataPath {
     private SwitchPort srcPort;		// The source port

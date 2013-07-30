@@ -7,7 +7,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
 /**
  * The class representing a single Flow Entry action.
  *
- * A set of Flow Entry actions need to be applied to each packet.
+ * A Flow Entry action that needs to be applied to each packet.
+ * Note that it contains only a single action. Multiple actions are
+ * listed in a list inside @ref FlowEntryActions.
  */
 public class FlowEntryAction {
     /**

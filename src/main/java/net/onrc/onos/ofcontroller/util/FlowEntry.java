@@ -12,7 +12,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * support multiple in-ports and multiple out-ports.
  */
 public class FlowEntry {
-    private FlowId flowId;			// FlowID of flowEntry
+    private FlowId flowId;			// FlowID of the Flow Entry
     private FlowEntryId flowEntryId;		// The Flow Entry ID
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
     private FlowEntryActions flowEntryActions;	// The Flow Entry Actions
