@@ -135,6 +135,7 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
 
         String sigAlgorithm = getSecurityProperties().getSignatureAlgorithm();
         Key key = wrappingSecurityToken.getSecretKey(sigAlgorithm);
+        //todo remove and use wrappingSecurityToken.isSymmetric or so?
         if (XMLSecurityConstants.NS_XMLDSIG_HMACSHA1.equals(sigAlgorithm)) {
             key = XMLSecurityUtils.prepareSecretKey(sigAlgorithm, key.getEncoded());
         }

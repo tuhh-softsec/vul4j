@@ -41,9 +41,7 @@ import org.apache.xml.security.stax.impl.XMLSecurityEventReader;
 import org.apache.xml.security.stax.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.impl.util.*;
 
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.*;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -714,9 +712,37 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         public void run() {
 
             try {
+                final OutputStream outputStream;
+
+                final Cipher cipher = getSymmetricCipher();
+                if (cipher.getAlgorithm().toUpperCase().contains("GCM")) {
+                    //we have to buffer the whole data until they are authenticated.
+                    //In GCM mode the authentication tag is appended after the last cipher block...
+                    outputStream = new FullyBufferedOutputStream(pipedOutputStream);
+                } else {
+                    outputStream = pipedOutputStream;
+                }
+
+                final CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher) {
+                    //override close() to workaround a bug in oracle-jdk:
+                    //authentication failures when using AEAD ciphers are silently ignored...
+                    @Override
+                    public void close() throws IOException {
+                        super.flush();
+                        try {
+                            byte[] bytes = cipher.doFinal();
+                            outputStream.write(bytes);
+                            outputStream.close();
+                        } catch (IllegalBlockSizeException e) {
+                            throw new IOException(e);
+                        } catch (BadPaddingException e) {
+                            throw new IOException(e);
+                        }
+                    }
+                };
                 IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(
-                        new CipherOutputStream(pipedOutputStream, getSymmetricCipher()),
-                        getSymmetricCipher(), getSecretKey(), getIvLength());
+                        cipherOutputStream,
+                        cipher, getSecretKey(), getIvLength());
                 //buffering seems not to help
                 //bufferedOutputStream = new BufferedOutputStream(new Base64OutputStream(ivSplittingOutputStream, false), 8192 * 5);
                 ReplaceableOuputStream replaceableOuputStream = new ReplaceableOuputStream(ivSplittingOutputStream);

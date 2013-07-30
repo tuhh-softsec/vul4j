@@ -20,6 +20,7 @@ package org.apache.xml.security.test.stax.encryption;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.Key;
 import java.security.KeyStore;
@@ -31,12 +32,14 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.dom.DOMSource;
@@ -392,6 +395,58 @@ public class XMLEncryption11Test extends org.junit.Assert {
         Document dd = decryptElement(ed, rsaKey, (X509Certificate) cert);
         // XMLUtils.outputDOM(dd.getFirstChild(), System.out);
         checkDecryptedDoc(dd, true);
+    }
+
+    /**
+     * rsa-oaep, Digest:SHA512, MGF:SHA512, PSource: Specified 8 bytes
+     */
+    @org.junit.Test
+    public void testAESGCMAuthentication() throws Exception {
+
+        String keystore = "org/w3c/www/interop/xmlenc-core-11/RSA-4096_SHA256WithRSA.jks";
+
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(this.getClass().getClassLoader().getResourceAsStream(keystore), "passwd".toCharArray());
+
+        Certificate cert = keyStore.getCertificate("importkey");
+
+        KeyStore.PrivateKeyEntry pkEntry = (KeyStore.PrivateKeyEntry)
+                keyStore.getEntry("importkey", new KeyStore.PasswordProtection("passwd".toCharArray()));
+        PrivateKey rsaKey = pkEntry.getPrivateKey();
+        X509Certificate x509Certificate = (X509Certificate) pkEntry.getCertificate();
+
+        // Perform encryption
+        String filename = "org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
+
+        KeyGenerator keygen = KeyGenerator.getInstance("AES");
+        keygen.init(256);
+        SecretKey sessionKey = keygen.generateKey();
+
+        SecurePart securePart =
+                new SecurePart(new QName("urn:example:po", "PurchaseOrder"), SecurePart.Modifier.Element);
+
+        Document ed = encryptDocument(filename, securePart,
+                x509Certificate.getPublicKey(), "http://www.w3.org/2009/xmlenc11#rsa-oaep",
+                "http://www.w3.org/2001/04/xmlenc#sha512",
+                "http://www.w3.org/2009/xmlenc11#mgf1sha512",
+                sessionKey, "http://www.w3.org/2009/xmlenc11#aes256-gcm",
+                Base64.decode("ZHVtbXkxMjM=".getBytes("UTF-8")));
+        // XMLUtils.outputDOM(ed.getFirstChild(), System.out);
+
+        NodeList nl = ed.getElementsByTagNameNS("http://www.w3.org/2001/04/xmlenc#", "CipherValue");
+        Element cipherValue = (Element) nl.item(1);
+        String elementText = cipherValue.getTextContent();
+        elementText = elementText.substring(0, 100) + 0 + elementText.substring(100);
+        cipherValue.setTextContent(elementText);
+
+        // Perform decryption
+        try {
+            Document dd = decryptElementStAX(ed, rsaKey, (X509Certificate) cert);
+        } catch (XMLStreamException e) {
+            Assert.assertTrue(e.getCause() instanceof IOException);
+            Assert.assertTrue(e.getCause().getCause() instanceof BadPaddingException);
+            Assert.assertEquals("mac check in GCM failed", e.getCause().getCause().getMessage());
+        }
     }
 
     /**
