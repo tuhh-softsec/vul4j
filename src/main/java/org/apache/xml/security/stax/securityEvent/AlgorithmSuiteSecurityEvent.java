@@ -31,6 +31,7 @@ public class AlgorithmSuiteSecurityEvent extends SecurityEvent {
     //chapter 6.1
 
     private int keyLength;
+    private boolean derivedKey = false;
     private String algorithmURI;
     private XMLSecurityConstants.AlgorithmUsage algorithmUsage;
 
@@ -44,6 +45,14 @@ public class AlgorithmSuiteSecurityEvent extends SecurityEvent {
 
     public void setKeyLength(int keyLength) {
         this.keyLength = keyLength;
+    }
+
+    public boolean isDerivedKey() {
+        return derivedKey;
+    }
+
+    public void setDerivedKey(boolean derivedKey) {
+        this.derivedKey = derivedKey;
     }
 
     public String getAlgorithmURI() {

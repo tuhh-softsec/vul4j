@@ -165,6 +165,10 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithmURI);
             algorithmSuiteSecurityEvent.setAlgorithmUsage(algorithmUsage);
             algorithmSuiteSecurityEvent.setCorrelationID(correlationID);
+
+            if (SecurityTokenConstants.DerivedKeyToken.equals(getTokenType())) {
+                algorithmSuiteSecurityEvent.setDerivedKey(true);
+            }
             if (key instanceof RSAKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(((RSAKey) key).getModulus().bitLength());
             } else if (key instanceof DSAKey) {

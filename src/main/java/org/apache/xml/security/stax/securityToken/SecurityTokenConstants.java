@@ -45,6 +45,7 @@ public class SecurityTokenConstants {
     public static final TokenType KeyValueToken = new TokenType("KeyValueToken");
     public static final TokenType KeyNameToken = new TokenType("KeyNameToken");
     public static final TokenType DefaultToken = new TokenType("DefaultToken");
+    public static final TokenType DerivedKeyToken = new TokenType("DerivedKeyToken");
 
 
     public static class TokenUsage extends ComparableType<TokenUsage> {
