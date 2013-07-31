@@ -16,6 +16,7 @@ package org.codehaus.plexus.util;
  * limitations under the License.
  */
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -200,7 +201,9 @@ public class ReaderFactory
     public static Reader newReader( File file, String encoding )
     throws FileNotFoundException, UnsupportedEncodingException
     {
-        return new InputStreamReader( new FileInputStream(file), encoding );
+        FileInputStream in = new FileInputStream( file );
+        BufferedInputStream bis = new BufferedInputStream( in, 32768 );
+        return new InputStreamReader( bis, encoding );
     }
 
     /**
