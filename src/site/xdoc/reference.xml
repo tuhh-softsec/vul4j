@@ -92,20 +92,20 @@
 
 # Sample 1 : process all urls	        
 provider1.remoteUrlBase=http://host1/
-provider1.mapping=/*
+provider1.mappings=/*
 
 # Sample 2 : virtual host configuration
 # Process requests made for myhost 
 provider2.remoteUrlBase=http://host2/
-provider2.mapping=http://myhost/* 
+provider2.mappings=http://myhost/* 
 
 # Sample 3 : Process all php files
 provider3.remoteUrlBase=http://host3/
-provider3.mapping=*.php
+provider3.mappings=*.php
 
 # Sample 4 : Process all files in css and images directories
 theme.remoteUrlBase=http://host4/
-theme.mapping=/css/*, /images/*
+theme.mappings=/css/*, /images/*
 	]]></source> 
 	        
 				<p>
