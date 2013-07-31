@@ -17,6 +17,7 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -305,7 +306,9 @@ public abstract class AbstractZipArchiver
 
         if ( !skipWriting )
         {
-            zOut = new ZipOutputStream( zipFile );
+            FileOutputStream out = new FileOutputStream( zipFile );
+            BufferedOutputStream buffered = new BufferedOutputStream( out, 65536 );
+            zOut = new ZipOutputStream( buffered );
 
             zOut.setEncoding( encoding );
             if ( doCompress )

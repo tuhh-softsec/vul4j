@@ -17,6 +17,7 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -537,7 +538,8 @@ public class JarArchiver
         try
         {
             getLogger().debug( "Building MANIFEST-only jar: " + getDestFile().getAbsolutePath() );
-            zOut = new ZipOutputStream( new FileOutputStream( getDestFile() ) );
+            FileOutputStream out = new FileOutputStream( getDestFile() );
+            zOut = new ZipOutputStream( new BufferedOutputStream( out, 65536) );
 
             zOut.setEncoding( getEncoding() );
             if ( isCompress() )
