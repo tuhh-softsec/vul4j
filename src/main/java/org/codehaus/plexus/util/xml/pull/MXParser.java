@@ -2206,7 +2206,7 @@ public class MXParser
         entityRefName = null;
         posStart = pos;
         char ch = more();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if(ch == '#') {
             // parse character reference
             char charRef = 0;
@@ -3043,7 +3043,7 @@ public class MXParser
                     reachedEnd = true;
                     return;
                 } else {
-                    StringBuffer expectedTagStack = new StringBuffer();
+                    StringBuilder expectedTagStack = new StringBuilder();
                     if(depth > 0) {
                         //final char[] cbuf = elRawName[depth];
                         //final String startname = new String(cbuf, 0, elRawNameEnd[depth]);
@@ -3274,7 +3274,7 @@ public class MXParser
     protected String printable(String s) {
         if(s == null) return null;
         final int sLen = s.length();
-        StringBuffer buf = new StringBuffer(sLen + 10);
+        StringBuilder buf = new StringBuilder(sLen + 10);
         for(int i = 0; i < sLen; ++i) {
             buf.append(printable(s.charAt(i)));
         }

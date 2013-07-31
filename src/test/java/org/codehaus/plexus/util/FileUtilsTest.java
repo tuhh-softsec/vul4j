@@ -595,7 +595,7 @@ public final class FileUtilsTest
 
     private String replaceAll( String text, String lookFor, String replaceWith )
     {
-        StringBuffer sb = new StringBuffer( text );
+        StringBuilder sb = new StringBuilder( text );
         while ( true )
         {
             int idx = sb.indexOf( lookFor );
@@ -1151,7 +1151,7 @@ public final class FileUtilsTest
         File a1 = new File( a, "a" );
         a1.mkdir();
 
-        StringBuffer path = new StringBuffer( "" );
+        StringBuilder path = new StringBuilder( "" );
         for ( int i = 0; i < 100; i++ )
         {
             path.append( "../a/" );

@@ -169,7 +169,7 @@ public class Xpp3DomBuilderTest
 
     private static String getAttributeEncodedString()
     {
-        StringBuffer domString = new StringBuffer();
+        StringBuilder domString = new StringBuilder();
         domString.append( "<root>" );
         domString.append( LS );
         domString.append( "  <el att=\"&lt;foo&gt;\">bar</el>" );
@@ -181,7 +181,7 @@ public class Xpp3DomBuilderTest
 
     private static String getEncodedString()
     {
-        StringBuffer domString = new StringBuffer();
+        StringBuilder domString = new StringBuilder();
         domString.append( "<root>\n" );
         domString.append( "  <el>\"text\"</el>\n" );
         domString.append( "  <ela><![CDATA[<b>\"text\"</b>]]></ela>\n" );
@@ -193,7 +193,7 @@ public class Xpp3DomBuilderTest
 
     private static String getExpectedString()
     {
-        StringBuffer domString = new StringBuffer();
+        StringBuilder domString = new StringBuilder();
         domString.append( "<root>" );
         domString.append( LS );
         domString.append( "  <el>&quot;text&quot;</el>" );
@@ -213,7 +213,7 @@ public class Xpp3DomBuilderTest
 
     private static String createDomString()
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append( "<root>\n" );
         buf.append( " <el1> element1\n </el1>\n" );
         buf.append( " <el2 att2='attribute2&#10;nextline'>\n" );

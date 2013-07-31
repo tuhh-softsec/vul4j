@@ -39,7 +39,7 @@ public class EnhancedStringTokenizerTest extends TestCase
     public void test1()
     {
         EnhancedStringTokenizer est = new EnhancedStringTokenizer( "this is a test string" );
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while ( est.hasMoreTokens() )
         {
             sb.append( est.nextToken() );

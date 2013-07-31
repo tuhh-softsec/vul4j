@@ -391,7 +391,7 @@ public class DirectoryScannerTest
             }
         }
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         if ( !failedToExclude.isEmpty() )
         {
             buffer.append( "Should NOT have included:\n" ).append(

@@ -187,9 +187,9 @@ public class ClassMap
     {
         Class[] parameterTypes = method.getParameterTypes();
 
-        StringBuffer methodKey = new StringBuffer( method.getName() );
+        StringBuilder methodKey = new StringBuilder( method.getName() );
 
-        for ( int j = 0; j < parameterTypes.length; j++ )
+        for ( Class parameterType : parameterTypes )
         {
             /*
              * If the argument type is primitive then we want
@@ -197,28 +197,44 @@ public class ClassMap
              * corresponding Object type so introspection for
              * methods with primitive types will work correctly.
              */
-            if ( parameterTypes[j].isPrimitive() )
+            if ( parameterType.isPrimitive() )
             {
-                if ( parameterTypes[j].equals( Boolean.TYPE ) )
+                if ( parameterType.equals( Boolean.TYPE ) )
+                {
                     methodKey.append( "java.lang.Boolean" );
-                else if ( parameterTypes[j].equals( Byte.TYPE ) )
+                }
+                else if ( parameterType.equals( Byte.TYPE ) )
+                {
                     methodKey.append( "java.lang.Byte" );
-                else if ( parameterTypes[j].equals( Character.TYPE ) )
+                }
+                else if ( parameterType.equals( Character.TYPE ) )
+                {
                     methodKey.append( "java.lang.Character" );
-                else if ( parameterTypes[j].equals( Double.TYPE ) )
+                }
+                else if ( parameterType.equals( Double.TYPE ) )
+                {
                     methodKey.append( "java.lang.Double" );
-                else if ( parameterTypes[j].equals( Float.TYPE ) )
+                }
+                else if ( parameterType.equals( Float.TYPE ) )
+                {
                     methodKey.append( "java.lang.Float" );
-                else if ( parameterTypes[j].equals( Integer.TYPE ) )
+                }
+                else if ( parameterType.equals( Integer.TYPE ) )
+                {
                     methodKey.append( "java.lang.Integer" );
-                else if ( parameterTypes[j].equals( Long.TYPE ) )
+                }
+                else if ( parameterType.equals( Long.TYPE ) )
+                {
                     methodKey.append( "java.lang.Long" );
-                else if ( parameterTypes[j].equals( Short.TYPE ) )
+                }
+                else if ( parameterType.equals( Short.TYPE ) )
+                {
                     methodKey.append( "java.lang.Short" );
+                }
             }
             else
             {
-                methodKey.append( parameterTypes[j].getName() );
+                methodKey.append( parameterType.getName() );
             }
         }
 
@@ -227,11 +243,11 @@ public class ClassMap
 
     private static String makeMethodKey( String method, Object[] params )
     {
-        StringBuffer methodKey = new StringBuffer().append( method );
+        StringBuilder methodKey = new StringBuilder().append( method );
 
-        for ( int j = 0; j < params.length; j++ )
+        for ( Object param : params )
         {
-            Object arg = params[j];
+            Object arg = param;
 
             if ( arg == null )
             {
@@ -287,9 +303,8 @@ public class ClassMap
         }
 
         int j = 0;
-        for ( int i = 0; i < methodInfos.length; ++i )
+        for ( MethodInfo methodInfo : methodInfos )
         {
-            MethodInfo methodInfo = methodInfos[i];
             if ( methodInfo.upcast )
             {
                 methods[j++] = methodInfo.method;

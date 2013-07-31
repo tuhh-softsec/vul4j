@@ -42,7 +42,7 @@ public class CycleDetectedException
      */
     public String cycleToString()
     {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
 
         for ( Iterator<String> iterator = cycle.iterator(); iterator.hasNext(); )
         {

@@ -320,7 +320,7 @@ public class DirectoryWalker
         if ( debugEnabled )
         {
             Iterator it;
-            StringBuffer dbg = new StringBuffer();
+            StringBuilder dbg = new StringBuilder();
             dbg.append( "DirectoryWalker Scan" );
             dbg.append( "\n  Base Dir: " ).append( this.baseDir.getAbsolutePath() );
             dbg.append( "\n  Includes: " );

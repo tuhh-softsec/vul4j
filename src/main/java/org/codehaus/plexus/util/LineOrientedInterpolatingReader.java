@@ -442,7 +442,7 @@ public class LineOrientedInterpolatingReader
                     lastReplacement = 0;
                 }
 
-                lineBuffer.append( rawLine.substring( lastReplacement, nextReplacement ) );
+                lineBuffer.append( rawLine, lastReplacement, nextReplacement );
 
                 int escIdx = rawLine.indexOf( escapeSeq, lastReplacement + 1 );
                 if(escIdx > -1 && escIdx + escapeSeq.length() == nextReplacement)
@@ -466,7 +466,7 @@ public class LineOrientedInterpolatingReader
 
         if( lastReplacement < rawLine.length() )
         {
-            lineBuffer.append( rawLine.substring( lastReplacement ) );
+            lineBuffer.append( rawLine, lastReplacement, rawLine.length() );
         }
 
         return lineBuffer.toString();

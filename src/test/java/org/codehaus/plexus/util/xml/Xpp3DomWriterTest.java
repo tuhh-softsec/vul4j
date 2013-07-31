@@ -48,7 +48,7 @@ public class Xpp3DomWriterTest
 
     private String createExpectedXML( boolean escape )
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append( "<root>" );
         buf.append( LS );
         buf.append( "  <el1>element1</el1>" );

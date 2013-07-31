@@ -373,7 +373,7 @@ public class FileUtils
     public static String fileRead( File file, String encoding )
         throws IOException
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         Reader reader = null;
 
@@ -1336,7 +1336,7 @@ public class FileUtils
         // FIXME: I'm almost certain this // removal is unnecessary, as getAbsoluteFile() strips
         // them. However, I'm not sure about this UNC stuff. (JT)
         final char[] chars = filename.toCharArray();
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         //remove duplicate file separators in succession - except
         //on win32 at start of filename as UNC filenames can

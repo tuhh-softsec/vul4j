@@ -631,7 +631,7 @@ public class CommandlineTest
 
             if ( exitCode != 0 )
             {
-                StringBuffer msg = new StringBuffer( "Exit code: " + exitCode + " - " + err.getOutput() );
+                String msg = "Exit code: " + exitCode + " - " + err.getOutput();
                 throw new Exception( msg.toString() );
             }
         }

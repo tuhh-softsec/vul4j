@@ -167,7 +167,7 @@ public class PrettyPrintXMLWriterTest
 
     private String expectedResult( String lineIndenter, String lineSeparator )
     {
-        StringBuffer expected = new StringBuffer();
+        StringBuilder expected = new StringBuilder();
 
         expected.append( "<html>" ).append( lineSeparator );
         expected.append( StringUtils.repeat( lineIndenter, 1 ) ).append( "<head>" ).append( lineSeparator );

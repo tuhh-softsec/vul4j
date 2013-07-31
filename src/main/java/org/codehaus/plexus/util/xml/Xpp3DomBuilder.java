@@ -91,7 +91,7 @@ public class Xpp3DomBuilder
     {
         List<Xpp3Dom> elements = new ArrayList<Xpp3Dom>();
 
-        List<StringBuffer> values = new ArrayList<StringBuffer>();
+        List<StringBuilder> values = new ArrayList<StringBuilder>();
 
         int eventType = parser.getEventType();
 
@@ -124,7 +124,7 @@ public class Xpp3DomBuilder
                 }
                 else
                 {
-                    values.add( new StringBuffer() );
+                    values.add( new StringBuilder() );
                 }
 
                 int attributesSize = parser.getAttributeCount();
@@ -144,7 +144,8 @@ public class Xpp3DomBuilder
             {
                 int depth = values.size() - 1;
 
-                StringBuffer valueBuffer = values.get( depth );
+                @SuppressWarnings( "MismatchedQueryAndUpdateOfStringBuilder" )
+                StringBuilder valueBuffer = values.get( depth );
 
                 String text = parser.getText();
 
@@ -159,7 +160,7 @@ public class Xpp3DomBuilder
             {
                 int depth = elements.size() - 1;
 
-                Xpp3Dom finishedConfiguration = (Xpp3Dom) elements.remove( depth );
+                Xpp3Dom finishedConfiguration = elements.remove( depth );
 
                 /* this Object could be null if it is a singleton tag */
                 Object accumulatedValue = values.remove( depth );

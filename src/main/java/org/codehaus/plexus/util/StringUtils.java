@@ -137,7 +137,7 @@ public class StringUtils
      */
     public static String deleteWhitespace( String str )
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         int sz = str.length();
         for ( int i = 0; i < sz; i++ )
         {
@@ -292,10 +292,10 @@ public class StringUtils
         // String's can't have a MAX_VALUEth index.
         int ret = Integer.MAX_VALUE;
 
-        int tmp = 0;
-        for ( int i = 0; i < sz; i++ )
+        int tmp;
+        for ( String searchStr : searchStrs )
         {
-            tmp = str.indexOf( searchStrs[i] );
+            tmp = str.indexOf( searchStr );
             if ( tmp == -1 )
             {
                 continue;
@@ -326,12 +326,11 @@ public class StringUtils
         {
             return -1;
         }
-        int sz = searchStrs.length;
         int ret = -1;
-        int tmp = 0;
-        for ( int i = 0; i < sz; i++ )
+        int tmp;
+        for ( String searchStr : searchStrs )
         {
-            tmp = str.lastIndexOf( searchStrs[i] );
+            tmp = str.lastIndexOf( searchStr );
             if ( tmp > ret )
             {
                 ret = tmp;
@@ -574,7 +573,7 @@ public class StringUtils
      */
     public static String[] split( String str, String separator, int max )
     {
-        StringTokenizer tok = null;
+        StringTokenizer tok;
         if ( separator == null )
         {
             // Null separator means we're using StringTokenizer's default
@@ -594,7 +593,7 @@ public class StringUtils
 
         String[] list = new String[listSize];
         int i = 0;
-        int lastTokenBegin = 0;
+        int lastTokenBegin;
         int lastTokenEnd = 0;
         while ( tok.hasMoreTokens() )
         {
@@ -654,7 +653,7 @@ public class StringUtils
         int arraySize = array.length;
         int bufSize = ( arraySize == 0 ? 0 : ( array[0].toString().length() +
             separator.length() ) * arraySize );
-        StringBuffer buf = new StringBuffer( bufSize );
+        StringBuilder buf = new StringBuilder( bufSize );
 
         for ( int i = 0; i < arraySize; i++ )
         {
@@ -684,7 +683,7 @@ public class StringUtils
         {
             separator = "";
         }
-        StringBuffer buf = new StringBuffer( 256 );  // Java default is 16, probably too small
+        StringBuilder buf = new StringBuilder( 256 );  // Java default is 16, probably too small
         while ( iterator.hasNext() )
         {
             buf.append( iterator.next() );
@@ -801,11 +800,11 @@ public class StringUtils
             return text;
         }
 
-        StringBuffer buf = new StringBuffer( text.length() );
-        int start = 0, end = 0;
+        StringBuilder buf = new StringBuilder( text.length() );
+        int start = 0, end;
         while ( ( end = text.indexOf( repl, start ) ) != -1 )
         {
-            buf.append( text.substring( start, end ) ).append( with );
+            buf.append( text, start, end ).append( with );
             start = end + repl.length();
 
             if ( --max == 0 )
@@ -813,7 +812,7 @@ public class StringUtils
                 break;
             }
         }
-        buf.append( text.substring( start ) );
+        buf.append( text, start, text.length());
         return buf.toString();
     }
 
@@ -830,9 +829,9 @@ public class StringUtils
     public static String overlayString( String text, String overlay, int start, int end )
     {
         return new StringBuffer( start + overlay.length() + text.length() - end + 1 )
-            .append( text.substring( 0, start ) )
+            .append( text, 0, start  )
             .append( overlay )
-            .append( text.substring( end ) )
+            .append( text, end, text.length() )
             .toString();
     }
 
@@ -1107,7 +1106,7 @@ public class StringUtils
         // improved with code from  cybertiger@cyberiantiger.org
         // unicode from him, and defaul for < 32's.
         int sz = str.length();
-        StringBuffer buffer = new StringBuffer( 2 * sz );
+        StringBuilder buffer = new StringBuilder( 2 * sz );
         for ( int i = 0; i < sz; i++ )
         {
             char ch = str.charAt( i );
@@ -1201,7 +1200,7 @@ public class StringUtils
      */
     public static String repeat( String str, int repeat )
     {
-        StringBuffer buffer = new StringBuffer( repeat * str.length() );
+        StringBuilder buffer = new StringBuilder( repeat * str.length() );
         for ( int i = 0; i < repeat; i++ )
         {
             buffer.append( str );
@@ -1478,7 +1477,7 @@ public class StringUtils
         {
             return new StringBuffer( str.length() )
                 .append( Character.toLowerCase( str.charAt( 0 ) ) )
-                .append( str.substring( 1 ) )
+                .append( str, 1, str.length() )
                 .toString();
         }
     }
@@ -1504,9 +1503,9 @@ public class StringUtils
         }
         else
         {
-            return new StringBuffer( str.length() )
+            return new StringBuilder( str.length() )
                 .append( Character.toTitleCase( str.charAt( 0 ) ) )
-                .append( str.substring( 1 ) )
+                .append( str, 1, str.length() )
                 .toString();
         }
     }
@@ -1529,11 +1528,11 @@ public class StringUtils
             return null;
         }
         int sz = str.length();
-        StringBuffer buffer = new StringBuffer( sz );
+        StringBuilder buffer = new StringBuilder( sz );
 
         boolean whitespace = false;
-        char ch = 0;
-        char tmp = 0;
+        char ch;
+        char tmp;
 
         for ( int i = 0; i < sz; i++ )
         {
@@ -1586,7 +1585,7 @@ public class StringUtils
             return null;
         }
         int sz = str.length();
-        StringBuffer buffer = new StringBuffer( sz );
+        StringBuilder buffer = new StringBuilder( sz );
         boolean space = true;
         for ( int i = 0; i < sz; i++ )
         {
@@ -1627,7 +1626,7 @@ public class StringUtils
             return null;
         }
         int sz = str.length();
-        StringBuffer buffer = new StringBuffer( sz );
+        StringBuilder buffer = new StringBuilder( sz );
         boolean space = true;
         for ( int i = 0; i < sz; i++ )
         {
@@ -2161,7 +2160,7 @@ public class StringUtils
     {
         String temp;
 
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
 
         temp = data;
 
@@ -2197,7 +2196,7 @@ public class StringUtils
 
     public static String addAndDeHump( String view )
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         for ( int i = 0; i < view.length(); i++ )
         {
@@ -2331,9 +2330,9 @@ public class StringUtils
         }
         else
         {
-            for ( int i = 0; i < quotingTriggers.length; i++ )
+            for ( char quotingTrigger : quotingTriggers )
             {
-                if ( escaped.indexOf( quotingTriggers[i] ) > -1 )
+                if ( escaped.indexOf( quotingTrigger ) > -1 )
                 {
                     quote = true;
                     break;
@@ -2379,7 +2378,7 @@ public class StringUtils
         System.arraycopy( escapedChars, 0, eqc, 0, escapedChars.length );
         Arrays.sort( eqc );
 
-        StringBuffer buffer = new StringBuffer( source.length() );
+        StringBuilder buffer = new StringBuilder( source.length() );
 
         for ( int i = 0; i < source.length(); i++ )
         {
@@ -2409,7 +2408,7 @@ public class StringUtils
      */
     public static String removeDuplicateWhitespace( String s )
     {
-        StringBuffer result = new StringBuffer( );
+        StringBuilder result = new StringBuilder( );
         int length = s.length();
         boolean isPreviousWhiteSpace = false;
         for (int i = 0; i < length; i++){
@@ -2466,7 +2465,7 @@ public class StringUtils
 
         int length = s.length();
 
-        StringBuffer buffer = new StringBuffer( length );
+        StringBuilder buffer = new StringBuilder( length );
         for ( int i = 0; i < length; i++ )
         {
             if ( s.charAt( i ) == '\r' )

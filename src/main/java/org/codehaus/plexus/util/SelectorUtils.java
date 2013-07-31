@@ -711,7 +711,7 @@ public final class SelectorUtils
      */
     public static String removeWhitespace( String input )
     {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         if ( input != null )
         {
             StringTokenizer st = new StringTokenizer( input );

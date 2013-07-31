@@ -396,7 +396,7 @@ public class PathTool
          * that the file is within one or more directories.  Thus, each
          * slash represents a "../" in the relative path.
          */
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for ( int i = 0; i < slashCount; i++ )
         {
             sb.append( "../" );

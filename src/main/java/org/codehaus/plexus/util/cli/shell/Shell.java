@@ -132,7 +132,7 @@ public class Shell
     protected List<String> getRawCommandLine( String executable, String[] arguments )
     {
         List<String> commandLine = new ArrayList<String>();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         if ( executable != null )
         {
@@ -189,7 +189,7 @@ public class Shell
 
     protected char[] getEscapeChars( boolean includeSingleQuote, boolean includeDoubleQuote )
     {
-        StringBuffer buf = new StringBuffer( 2 );
+        StringBuilder buf = new StringBuilder( 2 );
         if ( includeSingleQuote )
         {
             buf.append( '\'' );

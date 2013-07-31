@@ -1062,7 +1062,7 @@ public class MXSerializer implements XmlSerializer {
     /** simple utility method -- good for debugging */
     protected static final String printable(String s) {
         if(s == null) return "null";
-        StringBuffer retval = new StringBuffer(s.length() + 16);
+        StringBuilder retval = new StringBuilder(s.length() + 16);
         retval.append("'");
         char ch;
         for (int i = 0; i < s.length(); i++) {
@@ -1073,12 +1073,12 @@ public class MXSerializer implements XmlSerializer {
     }
 
     protected static final String printable(char ch) {
-        StringBuffer retval = new StringBuffer();
+        StringBuilder retval = new StringBuilder();
         addPrintable(retval, ch);
         return retval.toString();
     }
 
-    private static void addPrintable(StringBuffer retval, char ch)
+    private static void addPrintable(StringBuilder retval, char ch)
     {
         switch (ch)
         {
@@ -1109,7 +1109,7 @@ public class MXSerializer implements XmlSerializer {
             default:
                 if (ch  < 0x20 || ch > 0x7e) {
                     final String ss = "0000" + Integer.toString(ch, 16);
-                    retval.append("\\u" + ss.substring(ss.length() - 4, ss.length()));
+                    retval.append( "\\u" ).append( ss, ss.length() - 4, ss.length());
                 } else {
                     retval.append(ch);
                 }

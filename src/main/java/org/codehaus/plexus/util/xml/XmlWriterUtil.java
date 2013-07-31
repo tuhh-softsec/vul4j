@@ -206,17 +206,16 @@ public class XmlWriterUtil
         String[] sentences = StringUtils.split( comment, LS );
 
         StringBuffer line = new StringBuffer( indentation + "<!-- " );
-        for ( int i = 0; i < sentences.length; i++ )
+        for ( String sentence : sentences )
         {
-            String sentence = sentences[i];
             String[] words = StringUtils.split( sentence, " " );
-            for ( int j = 0; j < words.length; j++ )
+            for ( String word : words )
             {
-                StringBuffer sentenceTmp = new StringBuffer( line.toString() );
-                sentenceTmp.append( words[j] ).append( ' ' );
+                StringBuilder sentenceTmp = new StringBuilder( line.toString() );
+                sentenceTmp.append( word ).append( ' ' );
                 if ( sentenceTmp.length() > magicNumber )
                 {
-                    if ( line.length() != indentation.length() + "<!-- ".length())
+                    if ( line.length() != indentation.length() + "<!-- ".length() )
                     {
                         if ( magicNumber - line.length() > 0 )
                         {
@@ -227,11 +226,11 @@ public class XmlWriterUtil
                         writer.writeMarkup( line.toString() );
                     }
                     line = new StringBuffer( indentation + "<!-- " );
-                    line.append( words[j] ).append( ' ' );
+                    line.append( word ).append( ' ' );
                 }
                 else
                 {
-                    line.append( words[j] ).append( ' ' );
+                    line.append( word ).append( ' ' );
                 }
             }
 
