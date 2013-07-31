@@ -114,7 +114,7 @@ public class IndexTest extends PlexusTestCase {
         String res = new String(buf,0,i);
         //System.out.println(res);
         
-        StringBuffer expected = new StringBuffer();
+        StringBuilder expected = new StringBuilder();
         expected.append("JarIndex-Version: 1.0\n\n");
         expected.append("archive2.jar\ntwo.txt\n\n");
         expected.append("archive1.jar\nMETA-INF\none.txt\n\n");

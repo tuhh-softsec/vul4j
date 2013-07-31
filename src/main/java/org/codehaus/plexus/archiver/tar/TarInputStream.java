@@ -257,7 +257,7 @@ public class TarInputStream
         if ( this.currEntry != null && this.currEntry.isGNULongNameEntry() )
         {
             // read in the name
-            StringBuffer longName = new StringBuffer();
+            StringBuilder longName = new StringBuilder();
             byte[] buffer = new byte[256];
             int length;
             while ( ( length = read( buffer ) ) >= 0 )
