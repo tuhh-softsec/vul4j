@@ -207,7 +207,7 @@ public class LinkStorageImpl implements ILinkStorage {
     	IPortObject srcPort = dbop.searchPort(HexString.toHexString(dpid), port);
     	ISwitchObject srcSw = srcPort.getSwitch();
     	
-    	if(srcSw != null) {
+    	if(srcSw != null && srcPort != null) {
         	for(IPortObject dstPort : srcPort.getLinkedPorts()) {
         		ISwitchObject dstSw = dstPort.getSwitch();
         		Link link = new Link(HexString.toLong(srcSw.getDPID()),
