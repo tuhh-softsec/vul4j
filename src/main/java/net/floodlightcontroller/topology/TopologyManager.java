@@ -28,8 +28,6 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
 import net.floodlightcontroller.counter.ICounterStoreService;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryListener;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.floodlightcontroller.packet.BSN;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.LLDP;
@@ -39,6 +37,8 @@ import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.routing.Route;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.web.TopologyWebRoutable;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -871,7 +871,8 @@ public class TopologyManager implements
             if (log.isTraceEnabled()) {
                 log.trace("Applying update: {}", update);
             }
-            if (update.getOperation() == UpdateOperation.LINK_UPDATED) {
+            if (update.getOperation() == UpdateOperation.LINK_UPDATED ||
+            		update.getOperation() == UpdateOperation.LINK_ADDED	) {
                 addOrUpdateLink(update.getSrc(), update.getSrcPort(),
                                 update.getDst(), update.getDstPort(),
                                 update.getType());

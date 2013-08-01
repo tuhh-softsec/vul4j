@@ -1,28 +1,46 @@
 #!/bin/bash
 
 # Set paths
-FL_HOME=`dirname $0`
-FL_JAR="${FL_HOME}/target/floodlight.jar"
-FL_ONLY_JAR="${FL_HOME}/target/floodlight-only.jar"
-FL_LOGBACK="${FL_HOME}/logback.xml"
-LOGDIR=${FL_HOME}/onos-logs
-FL_LOG="${LOGDIR}/onos.`hostname`.log"
+if [ -z "${ONOS_HOME}" ]; then
+        ONOS_HOME=`dirname $0`
+fi
+
+## Because the script change dir to $ONOS_HOME, we can set ONOS_LOGBACK and LOGDIR relative to $ONOS_HOME
+#ONOS_LOGBACK="${ONOS_HOME}/logback.`hostname`.xml"
+#LOGDIR=${ONOS_HOME}/onos-logs
+ONOS_LOGBACK="./logback.`hostname`.xml"
+LOGDIR=./onos-logs
+ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
 PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
-LOGS="$FL_LOG $PCAP_LOG"
+LOGS="$ONOS_LOG $PCAP_LOG"
 
 # Set JVM options
 JVM_OPTS=""
+## If you want JaCoCo Code Coverage reports... uncomment line below
+JVM_OPTS="$JVM_OPTS -javaagent:${ONOS_HOME}/lib/jacocoagent.jar=dumponexit=true,output=file,destfile=${LOGDIR}/jacoco.exec"
 JVM_OPTS="$JVM_OPTS -server -d64"
-JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
-JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
+#JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
+JVM_OPTS="$JVM_OPTS -Xmx1g -Xms1g -Xmn800m"
+#JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
+JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:+UseAdaptiveSizePolicy -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:MaxInlineSize=8192 -XX:FreqInlineSize=8192"
 JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8"
+JVM_OPTS="$JVM_OPTS -XX:OnError=crash-logger" ;# For dumping core
 #JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
+JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
+		-XX:+UseThreadPriorities \
+		-XX:ThreadPriorityPolicy=42 \
+                 -XX:+UseCompressedOops \
+            -Dcom.sun.management.jmxremote.port=7189 \
+              -Dcom.sun.management.jmxremote.ssl=false \
+              -Dcom.sun.management.jmxremote.authenticate=false"
 
-# Set classpath to include titan libs
-#CLASSPATH=`echo ${FL_HOME}/lib/*.jar ${FL_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
-CLASSPATH="${FL_ONLY_JAR}:${FL_HOME}/lib/*:${FL_HOME}/lib/titan/*"
-MAIN_CLASS="net.floodlightcontroller.core.Main"
+# Set ONOS core main class
+MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
+
+if [ -z "${MVN}" ]; then
+    MVN="mvn -o"
+fi
 
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
@@ -53,7 +71,7 @@ function start {
   done
 
 # Create a logback file if required
-  cat <<EOF_LOGBACK >${FL_LOGBACK}
+  cat <<EOF_LOGBACK >${ONOS_LOGBACK}
 <configuration scan="true" debug="true">
 <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 <encoder>
@@ -62,7 +80,7 @@ function start {
 </appender>
 
 <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-<file>${FL_LOG}</file>
+<file>${ONOS_LOG}</file>
 <encoder>
 <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
 </encoder>
@@ -81,11 +99,33 @@ EOF_LOGBACK
   # Run floodlight
   echo "Starting ONOS controller ..."
   echo 
-  #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ${FL_HOME}/onos.properties > /dev/null 2>&1 &
-  java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp ${CLASSPATH} ${MAIN_CLASS} -cf ${FL_HOME}/onos.properties > /dev/null 2>&1 &
 
+  # XXX : MVN has to run at the project top dir 
+  echo $ONOS_HOME
+  cd ${ONOS_HOME}
+  pwd 
+  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ./conf/onos.properties\""
 
-#  echo "java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ./onos.properties > /dev/null 2>&1 &"
+  ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ./conf/onos.properties" > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
+
+  echo "Waiting for ONOS to start..."
+  COUNT=0
+  ESTATE=0
+  while [ "$COUNT" != "10" ]; do
+    echo -n "."
+    sleep 1
+#    COUNT=$((COUNT + 1))
+#    sleep $COUNT
+    n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
+    if [ "$n" -ge "1" ]; then
+      echo ""
+      exit 0
+    fi
+  done
+  echo "Timed out"
+  exit 1
+
+#  echo "java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -jar ${ONOS_JAR} -cf ./onos.properties > /dev/null 2>&1 &"
 #  sudo -b /usr/sbin/tcpdump -n -i eth0 -s0 -w ${PCAP_LOG} 'tcp port 6633' > /dev/null  2>&1
 }
 
@@ -96,19 +136,12 @@ function stop {
   pids="$flpid $tdpid"
   for p in ${pids}; do
     if [ x$p != "x" ]; then
-      kill -KILL $p
-      echo "Killed existing prosess (pid: $p)"
+      kill -TERM $p
+      echo "Killed existing process (pid: $p)"
     fi
   done
 }
 
-function deldb {
-   # Delete the berkeley db database
-   if [ -d "/tmp/cassandra.titan" ]; then
-      rm -rf /tmp/cassandra.titan
-      mkdir /tmp/cassandra.titan
-   fi
-}
 function check_db {
    if [ -d "/tmp/cassandra.titan" ]; then
       echo "Cassandra is running on local berkely db. Exitting"
@@ -128,7 +161,7 @@ case "$1" in
     start 
     ;;
   startifdown)
-    n=`jps -l |grep "net.floodlightcontroller.core.Main" | wc -l`
+    n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
     if [ $n == 0 ]; then
       start
     else 
@@ -138,11 +171,8 @@ case "$1" in
   stop)
     stop
     ;;
-  deldb)
-    deldb
-    ;;
   status)
-    n=`jps -l |grep "net.floodlightcontroller.core.Main" | wc -l`
+    n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
     echo "$n instance of onos running"
     ;;
   *)

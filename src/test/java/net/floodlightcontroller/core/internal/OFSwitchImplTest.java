@@ -197,7 +197,7 @@ public class OFSwitchImplTest extends FloodlightTestCase {
         sw.role = Role.SLAVE;
         sw.pendingRoleRequests.add(pending);
         replay(sw.channel);
-        sw.deliverRoleRequestNotSupported(pending.xid);
+        sw.deliverRoleRequestNotSupportedEx(pending.xid);
         verify(sw.channel);
         assertEquals(false, sw.getAttribute(IOFSwitch.SWITCH_SUPPORTS_NX_ROLE));
         assertEquals(null, sw.role);
@@ -210,7 +210,7 @@ public class OFSwitchImplTest extends FloodlightTestCase {
         sw.role = Role.SLAVE;
         expect(sw.channel.close()).andReturn(null);
         replay(sw.channel);
-        sw.deliverRoleRequestNotSupported(1);
+        sw.deliverRoleRequestNotSupportedEx(1);
         verify(sw.channel);
         assertEquals(null, sw.role);
         assertEquals(0, sw.pendingRoleRequests.size());
@@ -228,7 +228,7 @@ public class OFSwitchImplTest extends FloodlightTestCase {
         sw.pendingRoleRequests.add(pending);
         expect(sw.channel.close()).andReturn(null);
         replay(sw.channel);
-        sw.deliverRoleRequestNotSupported(pending.xid+1);
+        sw.deliverRoleRequestNotSupportedEx(pending.xid+1);
         verify(sw.channel);
         assertEquals(null, sw.role);
         assertEquals(0, sw.pendingRoleRequests.size());

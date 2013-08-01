@@ -44,6 +44,7 @@ import net.floodlightcontroller.core.annotations.LogMessageDocs;
 import net.floodlightcontroller.core.web.serializers.DPIDSerializer;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.TimedCache;
+import net.onrc.onos.ofcontroller.core.IOnosRemoteSwitch;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -75,7 +76,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This is the internal representation of an openflow switch.
  */
-public class OFSwitchImpl implements IOFSwitch {
+public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     // TODO: should we really do logging in the class or should we throw
     // exception that can then be handled by callers?
     protected static Logger log = LoggerFactory.getLogger(OFSwitchImpl.class);
@@ -268,7 +269,7 @@ public class OFSwitchImpl implements IOFSwitch {
     public void disconnectOutputStream() {
         channel.close();
     }
-    
+
     @Override
     @JsonIgnore
     public void setFeaturesReply(OFFeaturesReply featuresReply) {
@@ -401,7 +402,7 @@ public class OFSwitchImpl implements IOFSwitch {
      */
     @Override
     public String toString() {
-        return "OFSwitchImpl [" + channel.getRemoteAddress() + " DPID[" + ((stringId != null) ? stringId : "?") + "]]";
+        return "OFSwitchImpl [" + ((channel != null) ? channel.getRemoteAddress() : "?") + " DPID[" + ((stringId != null) ? stringId : "?") + "]]";
     }
 
     @Override
@@ -787,7 +788,18 @@ public class OFSwitchImpl implements IOFSwitch {
      * Otherwise we ignore it.
      * @param xid
      */
-    protected Role deliverRoleRequestNotSupported(int xid) {
+    protected void deliverRoleRequestNotSupported(int xid) {
+        deliverRoleRequestNotSupportedEx(xid);
+    }
+
+    /**
+     * ONOS Extension to deliverRoleRequestNotSupported().
+     * This version return the Roll request made.
+     * @see deliverRoleRequestNotSupported
+     * @param xid
+     * @return Role of attempted RoleRequest.
+     */
+    protected Role deliverRoleRequestNotSupportedEx(int xid) {
         synchronized(pendingRoleRequests) {
             PendingRoleRequestEntry head = pendingRoleRequests.poll();
             this.role = null;

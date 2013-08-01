@@ -2,10 +2,16 @@
 import sys
 import os
 
+ONOSDIR=os.getenv("HOME") + "/ONOS"
+IPERF=ONOSDIR + "/scripts/iperf"
+IPERFLOGDIR=ONOSDIR + "/web/log"
+
 # Usage: flowid src_dpid dst_dpid params
 def usage():
   print "%s flowid src_dpid dst_dpid hw:svr|sw:svr|hw:client|sw:client <proto>/<duration>/<interval>/<samples>" % sys.argv[0]
   sys.exit()
+
+
 
 def main():
   flowid = sys.argv[1]
@@ -24,9 +30,16 @@ def main():
   src_hostid=int(src_dpid.split(':')[-1], 16)
   dst_hostid=int(dst_dpid.split(':')[-1], 16)
 
+  if (testbed == "SW"):
+    MRUN=ONOSDIR + "/test-network/mininet/mrun"
+    HOST_FMT="host%d.%d"
+  else:
+    MRUN=ONOSDIR + "$HOME/mininet/util/m"
+    HOST_FMT="g%sh%02d"
+
   if (proto == "tcp"):
-    if (testbed == "SW"):
-      cmd="ssh -o StrictHostKeyChecking=no 1.1.%d.1 '/home/ubuntu/ONOS/scripts/iperf -t%s -i%s -k%s -yJ -o /home/ubuntu/ONOS/web/log/iperf_%s.out -c 192.168.%d.%d 2>&1 &' &" % (src_hostid, duration, interval, samples, flowid, dst_nwid, dst_hostid)
+      mininet_host = HOST_FMT % (dst_nwid, dst_hostid)
+      cmd="%s %s \'%s -t%s -i%s -k%s -yJ -o %s/iperf_%s.out -c 192.168.%d.%d 2>&1 &\' &" % (MRUN, mininet_host, IPERF, src_hostid, duration, interval, samples, IPERFLOGDIR, flowid, dst_nwid, dst_hostid)
       killcmd='sudo pkill -KILL -f \"iperf .* -o .*/iperf_%s.out\"' % (flowid)
       print killcmd
       print cmd
@@ -34,21 +47,18 @@ def main():
       os.popen(cmd)
   else:
     if (server == 'S'):
-      if (testbed == "SW"): 
-        cmd="ssh -o StrictHostKeyChecking=no 1.1.%d.1 '/home/ubuntu/ONOS/scripts/iperf -us -i%s -k%s -yJ -o /home/ubuntu/ONOS/web/log/iperfsvr_%s.out 2>&1 &' &" % (dst_hostid, interval, samples, flowid)
-      else:
-        cmd="~/mininet/util/m g%sh%02d '/home/ubuntu/ONOS/scripts/iperf -us -i%s -k%s -yJ -o /home/ubuntu/ONOS/web/log/iperfsvr_%s.out 2>&1 &' &" % (dst_nwid, dst_hostid, interval, samples, flowid)
+      mininet_host = HOST_FMT % (dst_nwid, dst_hostid)
+      cmd="%s %s \'%s -us -i%s -k%s -yJ -o %s/iperfsvr_%s.out 2>&1 &\' &" % (MRUN, mininet_host, IPERF, interval, samples, IPERFLOGDIR, flowid)
       killcmd='sudo pkill -KILL -f \"iperf .* -o .*/iperfsvr_%s.out\"' % (flowid)
       print killcmd
       print cmd
     else:
-      if (testbed == "SW"): 
-        cmd="ssh -o StrictHostKeyChecking=no 1.1.%d.1 '/home/ubuntu/ONOS/scripts/iperf -u -t%s -i%s -k%s -yJ -o /home/ubuntu/ONOS/web/log/iperfclient_%s.out -c 192.168.%d.%d 2>&1 &' &" % (src_hostid, duration, interval, samples, flowid, dst_nwid, dst_hostid)
-      else:
-        cmd="~/mininet/util/m g%sh%02d '/home/ubuntu/ONOS/scripts/iperf -u -t%s -i%s -k%s -yJ -o /home/ubuntu/ONOS/web/log/iperfclient_%s.out -c 192.168.%d.%d 2>&1 &' &" % (src_nwid, src_hostid, duration, interval, samples, flowid, dst_nwid, dst_hostid )
+      mininet_host = HOST_FMT % (src_nwid, src_hostid)
+      cmd="%s %s \'%s -u  -t%s -i%s -k%s -yJ -o %s/iperfclient_%s.out -c 192.168.%d.%d 2>&1 &\' &" % (MRUN, mininet_host, IPERF, duration, interval, samples, IPERFLOGDIR, flowid, dst_nwid, dst_hostid)
       killcmd='sudo pkill -KILL -f \"iperf .* -o .*/iperfclient_%s.out\"' % (flowid)
       print killcmd
       print cmd
+
     os.popen(killcmd)
     os.popen(cmd)
 

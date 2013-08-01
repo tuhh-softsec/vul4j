@@ -59,7 +59,6 @@ import net.floodlightcontroller.devicemanager.web.DeviceRoutable;
 import net.floodlightcontroller.flowcache.IFlowReconcileListener;
 import net.floodlightcontroller.flowcache.IFlowReconcileService;
 import net.floodlightcontroller.flowcache.OFMatchReconcile;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.DHCP;
 import net.floodlightcontroller.packet.Ethernet;
@@ -71,6 +70,7 @@ import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MultiIterator;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import static net.floodlightcontroller.devicemanager.internal.
 DeviceManagerImpl.DeviceUpdate.Change.*;
 

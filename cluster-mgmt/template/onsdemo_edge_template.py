@@ -56,7 +56,6 @@ class SDNTopo( Topo ):
 
         switch = []
         host = []
-        root = []
 
         for i in range (NR_NODES):
             name_suffix = '%02d' % NWID + "." + '%02d' % (int(i)+1)
@@ -67,16 +66,12 @@ class SDNTopo( Topo ):
 
         for i in range (NR_NODES):
             host.append(self.addHost( 'host%d' % (int(i)+1) ))
-            root.append(self.addHost( 'root%d' % (int(i)+1), inNamespace=False ))
 
         for i in range (NR_NODES):
             self.addLink(host[i], switch[i])
 
         for i in range (1, NR_NODES):
             self.addLink(switch[0], switch[i])
-
-        for i in range (NR_NODES):
-            self.addLink(root[i], host[i])
 
 def startsshd( host ):
     "Start sshd on host"
@@ -138,14 +133,6 @@ def sdnnet(opt):
        for n in range (2,9):
          for h in range (25):
            host[i].setARP('192.168.%d.%d' % (n, (int(h)+1)), '00:00:%02x:%02x:%02x:%02x' % (192,168,n,(int(h)+1))) 
-
-    root = []
-    for i in range (NR_NODES):
-        root.append(net.get( 'root%d' % (int(i)+1) ))
-
-    for i in range (NR_NODES):
-        host[i].intf('host%d-eth1' % (int(i)+1)).setIP('1.1.%d.1/24' % (int(i)+1))
-        root[i].intf('root%d-eth0' % (int(i)+1)).setIP('1.1.%d.2/24' % (int(i)+1))
 
     stopsshd ()
 #    stopiperf ()

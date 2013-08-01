@@ -18,9 +18,11 @@
 package net.floodlightcontroller.core.web;
 
 import net.floodlightcontroller.core.module.ModuleLoaderResource;
-import net.floodlightcontroller.linkdiscovery.web.TopoLinksResource;
-import net.floodlightcontroller.devicemanager.web.TopoDevicesResource;
 import net.floodlightcontroller.restserver.RestletRoutable;
+import net.onrc.onos.ofcontroller.core.web.ClearFlowTableResource;
+import net.onrc.onos.ofcontroller.core.web.TopoLinksResource;
+import net.onrc.onos.ofcontroller.core.web.TopoSwitchesResource;
+import net.onrc.onos.ofcontroller.devicemanager.web.TopoDevicesResource;
 
 import org.restlet.Context;
 import org.restlet.Restlet;
@@ -49,7 +51,6 @@ public class CoreWebRoutable implements RestletRoutable {
         router.attach("/counter/{switchId}/{counterName}/json", SwitchCounterResource.class);
         router.attach("/counter/categories/{switchId}/{counterName}/{layer}/json", SwitchCounterCategoriesResource.class);
         router.attach("/memory/json", ControllerMemoryResource.class);
-        router.attach("/packettrace/json", PacketTraceResource.class);
         // Get the last {count} events from the event histories
         router.attach("/event-history/topology-switch/{count}/json",
                 EventHistoryTopologySwitchResource.class);
@@ -62,6 +63,7 @@ public class CoreWebRoutable implements RestletRoutable {
         router.attach("/role/json", ControllerRoleResource.class);
         router.attach("/health/json", HealthCheckResource.class);
         router.attach("/system/uptime/json", SystemUptimeResource.class);
+        // Following added by ONOS
         router.attach("/topology/switches/{filter}/json", TopoSwitchesResource.class);
         router.attach("/topology/links/json", TopoLinksResource.class);
         router.attach("/topology/devices/json", TopoDevicesResource.class);

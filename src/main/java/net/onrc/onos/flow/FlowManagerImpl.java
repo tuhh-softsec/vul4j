@@ -17,27 +17,27 @@ import org.slf4j.LoggerFactory;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.util.DataPath;
-import net.floodlightcontroller.util.Dpid;
-import net.floodlightcontroller.util.FlowEntry;
-import net.floodlightcontroller.util.FlowEntryAction;
-import net.floodlightcontroller.util.FlowEntryMatch;
-import net.floodlightcontroller.util.FlowPath;
-import net.floodlightcontroller.util.Port;
-import net.floodlightcontroller.util.SwitchPort;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.LocalTopologyEventListener;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
+import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.LocalTopologyEventListener;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
+import net.onrc.onos.ofcontroller.util.DataPath;
+import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowEntryAction;
+import net.onrc.onos.ofcontroller.util.FlowEntryActions;
+import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
+import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.Port;
+import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 public class FlowManagerImpl implements IFlowManager {
 	
 	protected static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
-	protected static GraphDBConnection conn;
+	protected GraphDBOperation op;
 
 	@Override
 	public void createFlow(IPortObject src_port, IPortObject dest_port) {
@@ -87,8 +87,8 @@ public class FlowManagerImpl implements IFlowManager {
 		Short dst_port = flow.getDstPort();
 		IPortObject src = null;
 		IPortObject dst = null;
-		src = conn.utils().searchPort(conn, src_dpid, src_port);
-		dst = conn.utils().searchPort(conn, dst_dpid, dst_port);
+		src = op.searchPort(src_dpid, src_port);
+		dst = op.searchPort(dst_dpid, dst_port);
 		if (src != null && dst != null) {
 			FlowPath newFlow = this.computeFlowPath(src,dst);
 			installFlow(newFlow);
@@ -133,16 +133,12 @@ public class FlowManagerImpl implements IFlowManager {
 		    flowEntry.setOutPort(new Port(src_port.getNumber()));
 		    flowEntry.setFlowEntryMatch(new FlowEntryMatch());
 		    flowEntry.flowEntryMatch().enableInPort(flowEntry.inPort());
-		    
+
 		    // Set the outgoing port output action
-		    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-		    if (flowEntryActions == null) {
-			flowEntryActions = new ArrayList<FlowEntryAction>();
-			flowEntry.setFlowEntryActions(flowEntryActions);
-		    }
+		    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
 		    FlowEntryAction flowEntryAction = new FlowEntryAction();
 		    flowEntryAction.setActionOutput(flowEntry.outPort());
-		    flowEntryActions.add(flowEntryAction);
+		    flowEntryActions.addAction(flowEntryAction);
 		    dataPath.flowEntries().add(flowEntry);
 		    
 		    FlowPath flowPath = new FlowPath();
@@ -255,14 +251,10 @@ public class FlowManagerImpl implements IFlowManager {
 		    flowEntry.flowEntryMatch().enableInPort(flowEntry.inPort());
 		    
 		    // Set the outgoing port output action
-		    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-		    if (flowEntryActions == null) {
-			flowEntryActions = new ArrayList<FlowEntryAction>();
-			flowEntry.setFlowEntryActions(flowEntryActions);
-		    }
+		    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
 		    FlowEntryAction flowEntryAction = new FlowEntryAction();
 		    flowEntryAction.setActionOutput(flowEntry.outPort());
-		    flowEntryActions.add(flowEntryAction);
+		    flowEntryActions.addAction(flowEntryAction);
 		    dataPath.flowEntries().add(flowEntry);
 			continue;
 		    }
@@ -277,14 +269,10 @@ public class FlowManagerImpl implements IFlowManager {
 		    flowEntry.flowEntryMatch().enableInPort(flowEntry.inPort());
 		    
 		    // Set the outgoing port output action
-		    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-		    if (flowEntryActions == null) {
-			flowEntryActions = new ArrayList<FlowEntryAction>();
-			flowEntry.setFlowEntryActions(flowEntryActions);
-		    }
+		    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
 		    FlowEntryAction flowEntryAction = new FlowEntryAction();
 		    flowEntryAction.setActionOutput(flowEntry.outPort());
-		    flowEntryActions.add(flowEntryAction);
+		    flowEntryActions.addAction(flowEntryAction);
 		    dataPath.flowEntries().add(flowEntry);
 		    dataPath.flowEntries().add(flowEntry);
 		}

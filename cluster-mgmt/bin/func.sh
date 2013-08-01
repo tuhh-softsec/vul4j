@@ -1,7 +1,7 @@
-USERNAME=ubuntu
-CASSANDRA_DIR='/home/ubuntu/apache-cassandra-1.1.4'
-ZK_DIR='/home/ubuntu/zookeeper-3.4.5'
-ONOS_DIR='/home/ubuntu/ONOS'
+CASSANDRA_DIR='${HOME}/apache-cassandra-1.1.4'
+ZK_DIR='${HOME}/zookeeper-3.4.5'
+ONOS_DIR='${HOME}/ONOS'
+
 ZK_LIB='/var/lib/zookeeper'
 CASSANDRA_LIB='/var/lib/cassandra'
 
@@ -29,9 +29,11 @@ zk () {
   case "$1" in
     start)
       echo "Starting ZK.."
-      dsh -g $basename "$ZK_DIR/bin/zkServer.sh start"
+#      dsh -g $basename "$ZK_DIR/bin/zkServer.sh start"
+      dsh -g $basename 'cd ONOS; ./start-zk.sh start'
       while [ 1 ]; do
-        nup=`dsh -g $basename "$ZK_DIR/bin/zkServer.sh status" | grep "Mode" | egrep "leader|follower" | wc -l`
+#        nup=`dsh -g $basename "$ZK_DIR/bin/zkServer.sh status" | grep "Mode" | egrep "leader|follower" | wc -l`
+        nup=`dsh -g $basename "cd ONOS; ./start-zk.sh status" | grep "Mode" | egrep "leader|follower|standalone" | wc -l`
         if [ $nup == $nr_nodes ]; then
           echo "everybody's up: $nup up of of $nr_nodes"
           echo "ZK started"
@@ -75,6 +77,32 @@ cassandra () {
         sleep 1
       done
       ;;
+    bootup)
+      echo "Removing old Cassandra data and logs"
+      dsh -g ${basename} "rm -rf /var/lib/cassandra/*"
+      dsh -g ${basename} "rm -rf /var/log/cassandra/*"
+
+      echo "Starting Cassandra nodes one by one..."
+      for (( c=1; c<=$nr_nodes; c++ ))
+      do
+	echo "Starting node ${basename}${c}"
+	dsh -g ${basename} -w ${basename}${c} "cd $ONOS_DIR; ./start-cassandra.sh start"
+
+	#Wait until it's up
+	while [ 1 ]; do
+            echo $$
+            dsh -w ${basename}1 "cd $ONOS_DIR; ./start-cassandra.sh status" > .cassandra_check.$$
+            cat .cassandra_check.$$
+            nup=`cat .cassandra_check.$$ | grep Normal |grep Up| wc -l`
+            if [ $nup == $c ]; then
+		echo "New node up: $nup up of of $nr_nodes"
+		break;
+            fi
+            echo "Waiting for new node to come up: $nup up of of $nr_nodes"
+            sleep 5
+	done
+      done
+      ;;
     stop)
       echo "Stopping Cassandra.."
       dsh -g ${basename} "cd $ONOS_DIR; ./start-cassandra.sh stop"
@@ -99,7 +127,9 @@ onos () {
     start)
       if [ x$2 == "x" -o x$2 == "xall" ]; then
         echo "Starting ONOS on all nodes"
-        dsh -g ${basename} "cd $ONOS_DIR; ./start-onos.sh start"
+        dsh -w ${basename}1 "cd $ONOS_DIR; ./start-onos.sh start"
+        sleep 3
+        dsh -g ${basename} -x ${basename}1 "cd $ONOS_DIR; ./start-onos.sh start"
         dsh -g ${basename} "cd $ONOS_DIR; ./start-rest.sh start"
       else
         echo "Starting ONOS on ${basename}$2"

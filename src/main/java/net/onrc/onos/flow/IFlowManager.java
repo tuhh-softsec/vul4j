@@ -1,11 +1,9 @@
 package net.onrc.onos.flow;
 
-import java.util.Map;
-
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.floodlightcontroller.util.FlowEntry;
-import net.floodlightcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowPath;
 
 public interface IFlowManager {
     /**

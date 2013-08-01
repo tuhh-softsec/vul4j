@@ -346,10 +346,4 @@ public class OFMessageDamperMockSwitch implements IOFSwitch {
         return 0;
     }
 
-	@Override
-	public void setupRemoteSwitch(Long dpid) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

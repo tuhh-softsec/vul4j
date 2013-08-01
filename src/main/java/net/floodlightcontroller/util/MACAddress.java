@@ -2,10 +2,9 @@ package net.floodlightcontroller.util;
 
 import java.util.Arrays;
 
-import net.floodlightcontroller.util.serializers.MACAddressDeserializer;
-import net.floodlightcontroller.util.serializers.MACAddressSerializer;
+import net.onrc.onos.ofcontroller.util.serializers.MACAddressDeserializer;
+import net.onrc.onos.ofcontroller.util.serializers.MACAddressSerializer;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 

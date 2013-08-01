@@ -54,20 +54,16 @@ import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IListener.Command;
-import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
-import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchFilter;
 import net.floodlightcontroller.core.IOFSwitchListener;
-import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
 import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
 import net.floodlightcontroller.core.util.ListenerDispatcher;
 import net.floodlightcontroller.core.web.CoreWebRoutable;
 import net.floodlightcontroller.counter.ICounterStoreService;
-import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
@@ -77,6 +73,8 @@ import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
@@ -140,15 +138,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
 /**
  * The main controller class.  Handles all setup and network listeners
+ * 
+ * Extensions made by ONOS are:
+ * - Detailed Port event: PORTCHANGED -> {PORTCHANGED, PORTADDED, PORTREMOVED} 
+ *    Available as net.onrc.onos.ofcontroller.core.IOFSwitchPortListener
+ * - Distributed ownership control of switch through RegistryService(IControllerRegistryService)
+ * - Register ONOS services. (IFlowService, IControllerRegistryService)
+ * - Additional DEBUG logs
+ * - Try using hostname as controller ID, when ID was not explicitly given.
  */
 public class Controller implements IFloodlightProviderService, 
             IStorageSourceListener {
-   	
-	protected SwitchStorageImpl swStore;;
-	
+    
     protected static Logger log = LoggerFactory.getLogger(Controller.class);
 
     private static final String ERROR_DATABASE = 
@@ -185,7 +188,6 @@ public class Controller implements IFloodlightProviderService,
     protected IPktInProcessingTimeService pktinProcTime;
     protected IThreadPoolService threadPool;
     protected IFlowService flowService;
-    protected ITopoRouteService topoRouteService;
     protected IControllerRegistryService registryService;
     
     // Configuration options
@@ -265,16 +267,25 @@ public class Controller implements IFloodlightProviderService,
     public enum SwitchUpdateType {
         ADDED,
         REMOVED,
-        PORTCHANGED
+        PORTCHANGED,
+        PORTADDED,
+        PORTREMOVED
     }
     /**
      * Update message indicating a switch was added or removed 
+     * ONOS: This message extended to indicate Port add or removed event.
      */
     protected class SwitchUpdate implements IUpdate {
         public IOFSwitch sw;
+        public OFPhysicalPort port; // Added by ONOS
         public SwitchUpdateType switchUpdateType;
         public SwitchUpdate(IOFSwitch sw, SwitchUpdateType switchUpdateType) {
             this.sw = sw;
+            this.switchUpdateType = switchUpdateType;
+        }
+        public SwitchUpdate(IOFSwitch sw, OFPhysicalPort port, SwitchUpdateType switchUpdateType) {
+            this.sw = sw;
+            this.port = port;
             this.switchUpdateType = switchUpdateType;
         }
         public void dispatch() {
@@ -294,6 +305,18 @@ public class Controller implements IFloodlightProviderService,
                         case PORTCHANGED:
                             listener.switchPortChanged(sw.getId());
                             break;
+                        case PORTADDED:
+                        	if (listener instanceof IOFSwitchPortListener) {
+                        		((IOFSwitchPortListener) listener).switchPortAdded(sw.getId(), port);
+                        	}
+                        	break;
+                        case PORTREMOVED:
+                        	if (listener instanceof IOFSwitchPortListener) {
+                        		((IOFSwitchPortListener) listener).switchPortRemoved(sw.getId(), port);
+                        	}
+                        	break;
+                        default:
+                        	break;
                     }
                 }
             }
@@ -391,10 +414,6 @@ public class Controller implements IFloodlightProviderService,
 
     public void setFlowService(IFlowService serviceImpl) {
 	this.flowService = serviceImpl;		
-    }
-
-    public void setTopoRouteService(ITopoRouteService serviceImpl) {
-	this.topoRouteService = serviceImpl;		
     }
 
 	public void setMastershipService(IControllerRegistryService serviceImpl) {
@@ -789,10 +808,9 @@ public class Controller implements IFloodlightProviderService,
                     dfuture);
 
         }
- 
+        
       	volatile Boolean controlRequested = Boolean.FALSE;
         protected void checkSwitchReady() {
-  
             if (state.hsState == HandshakeState.FEATURES_REPLY &&
                     state.hasDescription && state.hasGetConfigReply) {
                 
@@ -1128,7 +1146,7 @@ public class Controller implements IFloodlightProviderService,
                             }
                             state.firstRoleReplyReceived = true;
                             Role requestedRole = 
-                            		sw.deliverRoleRequestNotSupported(error.getXid());
+                            		sw.deliverRoleRequestNotSupportedEx(error.getXid());
                             synchronized(roleChanger) {
                                 if (sw.role == null && Controller.this.role==Role.SLAVE) {
                                 	//This will now never happen. The Controller's role
@@ -1269,23 +1287,43 @@ public class Controller implements IFloodlightProviderService,
             		((OFPortState.OFPPS_LINK_DOWN.getValue() & port.getState()) > 0);
             sw.setPort(port);
            if (!portDown) {
-               swStore.addPort(sw.getStringId(), port);
+               SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTADDED);
+               try {
+                   this.updates.put(update);
+               } catch (InterruptedException e) {
+                   log.error("Failure adding update to queue", e);
+               }
            } else {
-        	   swStore.deletePort(sw.getStringId(), port.getPortNumber());
+               SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTREMOVED);
+               try {
+                   this.updates.put(update);
+               } catch (InterruptedException e) {
+                   log.error("Failure adding update to queue", e);
+               }
            }
             if (updateStorage)
                 updatePortInfo(sw, port);
             log.debug("Port #{} modified for {}", portNumber, sw);
         } else if (m.getReason() == (byte)OFPortReason.OFPPR_ADD.ordinal()) {
             sw.setPort(port);
-            swStore.addPort(sw.getStringId(), port);
+            SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTADDED);
+            try {
+                this.updates.put(update);
+            } catch (InterruptedException e) {
+                log.error("Failure adding update to queue", e);
+            }
             if (updateStorage)
                 updatePortInfo(sw, port);
             log.debug("Port #{} added for {}", portNumber, sw);
         } else if (m.getReason() == 
                    (byte)OFPortReason.OFPPR_DELETE.ordinal()) {
             sw.deletePort(portNumber);
-            swStore.deletePort(sw.getStringId(), portNumber);
+            SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTREMOVED);
+            try {
+                this.updates.put(update);
+            } catch (InterruptedException e) {
+                log.error("Failure adding update to queue", e);
+            }
             if (updateStorage)
                 removePortInfo(sw, portNumber);
             log.debug("Port #{} deleted for {}", portNumber, sw);
@@ -1559,12 +1597,6 @@ public class Controller implements IFloodlightProviderService,
         }
         
         updateActiveSwitchInfo(sw);
-        if (registryService.hasControl(sw.getId())) {
-        	swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
-        	for (OFPhysicalPort port: sw.getPorts()) {
-        		swStore.addPort(sw.getStringId(), port);
-        	}
-        }
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.ADDED);
         try {
             this.updates.put(update);
@@ -1584,14 +1616,6 @@ public class Controller implements IFloodlightProviderService,
         // this method is only called after netty has processed all
         // pending messages
         log.debug("removeSwitch: {}", sw);
- //
- //     Cannot set sw to inactive in network map due to race condition
- //     Need a cleanup thread to periodically check switches not active in registry
- //     and acquire control to set to inactive state in network map and release it       
- //
- //       if (registryService.hasControl(sw.getId())) {
- //      	swStore.update(sw.getStringId(), SwitchState.INACTIVE, DM_OPERATION.UPDATE);
- //       }
         if (!this.activeSwitches.remove(sw.getId(), sw) || !sw.isConnected()) {
             log.debug("Not removing switch {}; already removed", sw);
             return;
@@ -1601,7 +1625,6 @@ public class Controller implements IFloodlightProviderService,
         // from slave controllers. Then we need to move this cancelation
         // to switch disconnect
         sw.cancelAllStatisticsReplies();
-        
             
         // FIXME: I think there's a race condition if we call updateInactiveSwitchInfo
         // here if role support is enabled. In that case if the switch is being
@@ -1613,7 +1636,6 @@ public class Controller implements IFloodlightProviderService,
         // of the switch state that's written to storage.
         
         updateInactiveSwitchInfo(sw);
-        
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.REMOVED);
         try {
             this.updates.put(update);
@@ -2207,22 +2229,11 @@ public class Controller implements IFloodlightProviderService,
         this.updates = new LinkedBlockingQueue<IUpdate>();
         this.factory = new BasicFactory();
         this.providerMap = new HashMap<String, List<IInfoProvider>>();
-        
         setConfigParams(configParams);
         //this.role = getInitialRole(configParams);
         //Set the controller's role to MASTER so it always tries to do role requests.
         this.role = Role.MASTER;
         this.roleChanger = new RoleChanger();
-        
-		String conf = configParams.get("dbconf");
-		if (conf == null || conf.isEmpty()) {
-			conf = "/tmp/cassandra.titan";
-			log.debug("did not get DB config setting using default {}", conf);
-		}
-		log.debug("setting DB config {}", conf);
-		this.swStore = new SwitchStorageImpl();
-		this.swStore.init(conf);
-		
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();
     }
