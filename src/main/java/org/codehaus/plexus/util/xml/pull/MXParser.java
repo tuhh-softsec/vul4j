@@ -13,8 +13,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.codehaus.plexus.util.ReaderFactory;
 
@@ -743,33 +741,6 @@ public class MXParser
         throw new XmlPullParserException("no content available to check for whitespaces");
     }
 
-    private static final ConcurrentHashMap<String, Integer> counts = new ConcurrentHashMap<String, Integer>();
-
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            public void run() {
-                int overallDuped = 0;
-                int largeDuped = 0;
-                int totalOverall = 0;
-                int totalLarge = 0;
-                System.out.println("String usage report");
-                for (Map.Entry<String, Integer> entry : counts.entrySet()) {
-                    if (entry.getValue() > 200){
-                        System.out.println(entry.getKey() + ":" + entry.getValue());
-                        totalLarge += entry.getKey().length() * entry.getValue();
-                        largeDuped += entry.getValue();
-                    }
-                    totalOverall += entry.getKey().length() * entry.getValue();
-                    overallDuped += entry.getValue();
-                }
-                System.out.println("totalLarge = " + totalLarge);
-                System.out.println("totalOverall = " + totalOverall);
-                System.out.println("overallDuped = " + overallDuped);
-                System.out.println("largeDuped = " + largeDuped);
-            }
-        }));
-    }
-
     public String getText()
     {
         if(eventType == START_DOCUMENT || eventType == END_DOCUMENT) {
@@ -788,15 +759,9 @@ public class MXParser
             } else {
                 text = new String(pc, pcStart, pcEnd - pcStart);
             }
-            Integer current = counts.get( text);
-            if (current == null) current =  0;
-            counts.put( text, current + 1);
         }
         return text;
     }
-
-
-
 
     public char[] getTextCharacters(int [] holderForStartAndLength)
     {
