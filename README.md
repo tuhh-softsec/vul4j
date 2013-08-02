@@ -1,7 +1,7 @@
 ONOS (Open Networking Operating System)
 =======================================
 
-ONOS (Open Network Operating System) is an experimental distributed SDN OS. ONOS is under development. ONOS was announced and demonstrated at ONS'13.
+ONOS (Open Networking Operating System) is an experimental distributed SDN OS. ONOS is under development. ONOS was announced and demonstrated at ONS'13.
 
 Steps to download and setup development VM
 ==========================================
