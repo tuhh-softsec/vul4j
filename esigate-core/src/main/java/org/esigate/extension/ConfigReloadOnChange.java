@@ -47,7 +47,8 @@ public class ConfigReloadOnChange implements Extension {
 	 * The wait time (ms) between to check for configuration change.
 	 * 
 	 */
-	public static Parameter CONFIG_RELOAD_DELAY = new Parameter("configReloadDelay", String.valueOf(DEFAULT_RELOAD_DELAY));
+	public static Parameter CONFIG_RELOAD_DELAY = new Parameter("configReloadDelay",
+			String.valueOf(DEFAULT_RELOAD_DELAY));
 
 	// Do not poll too fast. (ms).
 	private static final int SPEED_LIMIT = 100;
@@ -93,7 +94,7 @@ public class ConfigReloadOnChange implements Extension {
 
 		// Do nothing if configuration is loaded from the classpath
 		if (configuration == null) {
-			LOG.warn("Cannot reload configuration from classpath. Please use -Desigate.config");
+			LOG.warn("Cannot reload configuration from classpath. Please use -D" + DriverFactory.PROP_CONF_LOCATION);
 			return;
 		}
 
@@ -111,7 +112,8 @@ public class ConfigReloadOnChange implements Extension {
 					CONFIG_RELOAD_DELAY.getValueString(properties));
 		}
 
-		LOG.info("Will reload configuration every {}ms if {} is modified", Long.valueOf(delay), configuration.getAbsoluteFile());
+		LOG.info("Will reload configuration every {}ms if {} is modified", Long.valueOf(delay),
+				configuration.getAbsoluteFile());
 	}
 
 	// This static block ensure thread is started only once.

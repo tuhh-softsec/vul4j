@@ -40,6 +40,12 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class DriverFactory {
+
+	/**
+	 * System property used to specify of esigate configuration, outside of the
+	 * classpath.
+	 */
+	public static final String PROP_CONF_LOCATION = "esigate.config";
 	private static IndexedInstances INSTANCES = new IndexedInstances(new HashMap<String, Driver>());
 	private static final String DEFAULT_INSTANCE_NAME = "default";
 	private static final Logger LOG = LoggerFactory.getLogger(DriverFactory.class);
@@ -60,13 +66,13 @@ public class DriverFactory {
 
 		try {
 			// Load from environment
-			String envPath = System.getProperty("esigate.config");
+			String envPath = System.getProperty(PROP_CONF_LOCATION);
 			if (envPath != null) {
 				try {
 					LOG.info("Scanning configuration {}", envPath);
 					inputStream = new FileInputStream(new File(envPath));
 				} catch (FileNotFoundException e) {
-					LOG.error("Can't read file {} (from -Desigate.config)", envPath, e);
+					LOG.error("Can't read file {} (from -D"+PROP_CONF_LOCATION+")", envPath, e);
 				}
 			}
 
@@ -143,7 +149,7 @@ public class DriverFactory {
 	 */
 	public final static void configure(Properties props) {
 		Properties defaultProperties = new Properties();
-		
+
 		HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
 		for (Enumeration<?> enumeration = props.propertyNames(); enumeration.hasMoreElements();) {
 			String propertyName = (String) enumeration.nextElement();
@@ -228,7 +234,7 @@ public class DriverFactory {
 	 * @param url
 	 *            The requested url
 	 * @return
-	 * @throws HttpErrorPage 
+	 * @throws HttpErrorPage
 	 */
 	public static Driver getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
 		for (UriMapping mapping : INSTANCES.getUrimappings().keySet()) {
@@ -238,7 +244,7 @@ public class DriverFactory {
 		}
 
 		// If no match, return default instance.
-		 throw new HttpErrorPage(404, "Not found", "No mapping defined for this url.");
+		throw new HttpErrorPage(404, "Not found", "No mapping defined for this url.");
 	}
 
 	/**
@@ -286,12 +292,12 @@ public class DriverFactory {
 
 		INSTANCES = new IndexedInstances(newInstances);
 	}
-	
+
 	/**
 	 * Ensure configuration has been loaded at least once. Helps to prevent
 	 * delay on first call because of initialization.
 	 */
-	public static void ensureConfigured(){
+	public static void ensureConfigured() {
 		// Just trigger static init.
 	}
 }
