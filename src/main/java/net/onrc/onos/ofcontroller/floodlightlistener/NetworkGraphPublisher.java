@@ -127,19 +127,22 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 	public void linkDiscoveryUpdate(LDUpdate update) {
 		// TODO Auto-generated method stub
 		Link lt = new Link(update.getSrc(),update.getSrcPort(),update.getDst(),update.getDstPort());
-		log.debug("{}:LinkDicoveryUpdate(): Updating Link {}",this.getClass(), lt);
-		switch (update.getOperation()) {
+		//log.debug("{}:LinkDicoveryUpdate(): Updating Link {}",this.getClass(), lt);
 		
+		switch (update.getOperation()) {
 			case LINK_REMOVED:
+				log.debug("LinkDiscoveryUpdate(): Removing link {}", lt);
 				linkStore.update(lt, DM_OPERATION.DELETE);
 				// TODO: Move network map link removal here
 				// reconcile paths here
 //				IPortObject srcPort = conn.utils().searchPort(conn, HexString.toHexString(update.getSrc()), update.getSrcPort());
 				break;
 			case LINK_UPDATED:
+				log.debug("LinkDiscoveryUpdate(): Updating link {}", lt);
 				linkStore.update(lt, DM_OPERATION.UPDATE);
 				break;
 			case LINK_ADDED:
+				log.debug("LinkDiscoveryUpdate(): Adding link {}", lt);
 				linkStore.update(lt, DM_OPERATION.INSERT);
 				break;
 					

@@ -353,18 +353,18 @@ public class INetMapTopologyObjectsIFlowEntryTest {
 	
 	/**
 	 * Desc:
-	 *  Test method for set and get ActionOutput.
+	 *  Test method for set and get ActionOutputPort.
 	 * Condition:
 	 *  N/A
 	 * Expect:
-	 * 1. Should set ActionOutput.
-	 * 2. Should get ActionOutput.
+	 * 1. Should set ActionOutputPort.
+	 * 2. Should get ActionOutputPort.
 	 */
 	@Test
-	public void testSetGetActionOutput() {
-		Short actionOutput = 1;
-		flowEntry.setActionOutput(actionOutput);
-		assertEquals(flowEntry.getActionOutput(), actionOutput);
+	public void testSetGetActionOutputPort() {
+		Short actionOutputPort = 1;
+		flowEntry.setActionOutputPort(actionOutputPort);
+		assertEquals(flowEntry.getActionOutputPort(), actionOutputPort);
 	}
 	
 	/**

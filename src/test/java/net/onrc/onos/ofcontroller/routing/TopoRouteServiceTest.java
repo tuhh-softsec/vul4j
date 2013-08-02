@@ -48,7 +48,6 @@ import net.onrc.onos.ofcontroller.util.SwitchPort;
 /**
  * A class for testing the TopoRouteService class.
  * @see net.onrc.onos.ofcontroller.routing.TopoRouteService
- * @author Pavlin Radoslavov (pavlin@onlab.us)
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TitanFactory.class, GraphDBConnection.class, GraphDBOperation.class, TopoRouteService.class})

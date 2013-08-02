@@ -19,6 +19,8 @@ public class FlowPath implements Comparable<FlowPath> {
     private DataPath dataPath;		// The data path
     private FlowEntryMatch flowEntryMatch; // Common Flow Entry Match for all
 					// Flow Entries
+    private FlowEntryActions flowEntryActions; // The Flow Entry Actions for
+					// the first Flow Entry
 
     /**
      * Default constructor.
@@ -26,6 +28,7 @@ public class FlowPath implements Comparable<FlowPath> {
     public FlowPath() {
 	flowPathFlags = new FlowPathFlags();
 	dataPath = new DataPath();
+	flowEntryActions = new FlowEntryActions();
     }
 
     /**
@@ -82,6 +85,19 @@ public class FlowPath implements Comparable<FlowPath> {
     	    this.setFlowEntryMatch(match);
 	}
 
+	//
+	// Extract the actions for the first Flow Entry
+	//
+	{
+	    FlowEntryActions actions = new FlowEntryActions();
+
+	    String actionsStr = flowObj.getActions();
+	    if (actions != null)
+		actions = new FlowEntryActions(actionsStr);
+
+	    this.setFlowEntryActions(actions);
+	}
+
     	//
     	// Extract all Flow Entries
     	//
@@ -95,64 +111,77 @@ public class FlowPath implements Comparable<FlowPath> {
     	    // Extract the match conditions
     	    //
     	    FlowEntryMatch match = new FlowEntryMatch();
+	    //
     	    Short matchInPort = flowEntryObj.getMatchInPort();
     	    if (matchInPort != null)
     		match.enableInPort(new Port(matchInPort));
+	    //
     	    String matchSrcMac = flowEntryObj.getMatchSrcMac();
     	    if (matchSrcMac != null)
     		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
+	    //
     	    String matchDstMac = flowEntryObj.getMatchDstMac();
     	    if (matchDstMac != null)
     		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+	    //
     	    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
     	    if (matchEthernetFrameType != null)
     		match.enableEthernetFrameType(matchEthernetFrameType);
+	    //
     	    Short matchVlanId = flowEntryObj.getMatchVlanId();
     	    if (matchVlanId != null)
     		match.enableVlanId(matchVlanId);
+	    //
     	    Byte matchVlanPriority = flowEntryObj.getMatchVlanPriority();
     	    if (matchVlanPriority != null)
     		match.enableVlanPriority(matchVlanPriority);
+	    //
     	    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
     	    if (matchSrcIPv4Net != null)
     		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+	    //
     	    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
     	    if (matchDstIPv4Net != null)
     		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+	    //
     	    Byte matchIpProto = flowEntryObj.getMatchIpProto();
     	    if (matchIpProto != null)
     		match.enableIpProto(matchIpProto);
+	    //
     	    Byte matchIpToS = flowEntryObj.getMatchIpToS();
     	    if (matchIpToS != null)
     		match.enableIpToS(matchIpToS);
+	    //
     	    Short matchSrcTcpUdpPort = flowEntryObj.getMatchSrcTcpUdpPort();
     	    if (matchSrcTcpUdpPort != null)
     		match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
+	    //
     	    Short matchDstTcpUdpPort = flowEntryObj.getMatchDstTcpUdpPort();
     	    if (matchDstTcpUdpPort != null)
     		match.enableDstTcpUdpPort(matchDstTcpUdpPort);
+	    //
     	    flowEntry.setFlowEntryMatch(match);
 
-    	    //
-    	    // Extract the actions
-    	    //
-    	    ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
-    	    Short actionOutputPort = flowEntryObj.getActionOutput();
-    	    if (actionOutputPort != null) {
-    		FlowEntryAction action = new FlowEntryAction();
-    		action.setActionOutput(new Port(actionOutputPort));
-    		actions.add(action);
-    	    }
-    	    flowEntry.setFlowEntryActions(actions);
+	    //
+	    // Extract the actions
+	    //
+	    {
+		FlowEntryActions actions = new FlowEntryActions();
+
+		String actionsStr = flowObj.getActions();
+		if (actions != null)
+		    actions = new FlowEntryActions(actionsStr);
+
+		flowEntry.setFlowEntryActions(actions);
+	    }
 
     	    String userState = flowEntryObj.getUserState();
     	    flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
     	    String switchState = flowEntryObj.getSwitchState();
     	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
-    	    //
-    	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
-    	    // and FlowEntryErrorState.
-    	    //
+	    //
+	    // TODO: Take care of the FlowEntryErrorState.
+	    //
     	    this.dataPath().flowEntries().add(flowEntry);
     	}
     }
@@ -249,10 +278,32 @@ public class FlowPath implements Comparable<FlowPath> {
     }
 
     /**
+     * Get the flow path's flow entry actions for the first Flow Entry.
+     *
+     * @return the flow path's flow entry actions for the first Flow Entry.
+     */
+    @JsonProperty("flowEntryActions")
+    public FlowEntryActions flowEntryActions() {
+	return flowEntryActions;
+    }
+
+    /**
+     * Set the flow path's flow entry actions for the first Flow Entry.
+     *
+     * @param flowEntryActions the flow path's flow entry actions for the first
+     * Flow Entry.
+     */
+    @JsonProperty("flowEntryActions")
+    public void setFlowEntryActions(FlowEntryActions flowEntryActions) {
+	this.flowEntryActions = flowEntryActions;
+    }
+
+    /**
      * Convert the flow path to a string.
      *
      * The string has the following form:
-     *  [flowId=XXX installerId=XXX flowPathFlags=XXX dataPath=XXX]
+     *  [flowId=XXX installerId=XXX flowPathFlags=XXX dataPath=XXX
+     *   flowEntryMatch=XXX flowEntryActions=XXX]
      *
      * @return the flow path as a string.
      */
@@ -265,6 +316,8 @@ public class FlowPath implements Comparable<FlowPath> {
 	    ret += " dataPath=" + this.dataPath.toString();
 	if (flowEntryMatch != null)
 	    ret += " flowEntryMatch=" + this.flowEntryMatch.toString();
+	if (flowEntryActions != null)
+	    ret += " flowEntryActions=" + this.flowEntryActions.toString();
 	ret += "]";
 	return ret;
     }
@@ -276,5 +329,4 @@ public class FlowPath implements Comparable<FlowPath> {
     public int compareTo(FlowPath f) {
     	return (int) (this.flowId.value() - f.flowId.value());
     }
-
 }

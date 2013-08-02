@@ -10,7 +10,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +64,8 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
 									ITopologyListener, IOFSwitchListener {
 	
@@ -75,6 +80,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected ProxyArpManager proxyArp;
 	
 	protected static Ptree ptree;
+	protected BlockingQueue<RibUpdate> ribUpdates;
+	
 	protected String bgpdRestIp;
 	protected String routerId;
 	protected String configFilename = "config.json";
@@ -119,9 +126,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				ITopoLinkService topoLinkService = new TopoLinkServiceImpl();
 				
 				List<Link> activeLinks = topoLinkService.getActiveLinks();
-				for (Link l : activeLinks){
-					log.debug("active link: {}", l);
-				}
+				//for (Link l : activeLinks){
+					//log.debug("active link: {}", l);
+				//}
 				
 				Iterator<LDUpdate> it = linkUpdates.iterator();
 				while (it.hasNext()){
@@ -139,12 +146,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			if (linkUpdates.isEmpty()){
 				//All updates have been seen in network map.
 				//We can check if topology is ready
-				log.debug("No know changes outstanding. Checking topology now");
+				log.debug("No known changes outstanding. Checking topology now");
 				checkStatus();
 			}
 			else {
 				//We know of some link updates that haven't propagated to the database yet
-				log.debug("Some changes not found in network map- size {}", linkUpdates.size());
+				log.debug("Some changes not found in network map - {} links missing", linkUpdates.size());
 				topologyChangeDetectorTask.reschedule(TOPO_DETECTION_WAIT, TimeUnit.SECONDS);
 			}
 		}
@@ -215,6 +222,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			throws FloodlightModuleException {
 	    
 	    ptree = new Ptree(32);
+	    
+	    ribUpdates = new LinkedBlockingQueue<RibUpdate>();
 	    	
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
@@ -224,7 +233,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology);
+		proxyArp = new ProxyArpManager(floodlightProvider, topology, devices);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -311,23 +320,23 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Prefix r = new Prefix("10.0.0.0", 24);
 		Prefix a = new Prefix("10.0.0.1", 32);
 	
-		ptree.acquire(p.getAddress(), p.masklen);
-		ptree.acquire(q.getAddress(), q.masklen);
-		ptree.acquire(r.getAddress(), r.masklen);
+		ptree.acquire(p.getAddress(), p.getPrefixLength());
+		ptree.acquire(q.getAddress(), q.getPrefixLength());
+		ptree.acquire(r.getAddress(), r.getPrefixLength());
 	
 		System.out.println("Traverse start");
 		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)) {
 			Prefix p_result = new Prefix(node.key, node.keyBits);
 		}
 	
-		PtreeNode n = ptree.match(a.getAddress(), a.masklen);
+		PtreeNode n = ptree.match(a.getAddress(), a.getPrefixLength());
 		if (n != null) {
 			System.out.println("Matched prefix for 10.0.0.1:");
 			Prefix x = new Prefix(n.key, n.keyBits);
 			ptree.delReference(n);
 		}
 		
-		n = ptree.lookup(p.getAddress(), p.masklen);
+		n = ptree.lookup(p.getAddress(), p.getPrefixLength());
 		if (n != null) {
 			ptree.delReference(n);
 			ptree.delReference(n);
@@ -337,7 +346,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			Prefix p_result = new Prefix(node.key, node.keyBits);
 		}
 		
-		n = ptree.lookup(q.getAddress(), q.masklen);
+		n = ptree.lookup(q.getAddress(), q.getPrefixLength());
 		if (n != null) {
 			ptree.delReference(n);
 			ptree.delReference(n);
@@ -347,7 +356,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			Prefix p_result = new Prefix(node.key, node.keyBits);
 		}
 		
-		n = ptree.lookup(r.getAddress(), r.masklen);
+		n = ptree.lookup(r.getAddress(), r.getPrefixLength());
 		if (n != null) {
 			ptree.delReference(n);
 			ptree.delReference(n);
@@ -409,8 +418,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				continue;
 			}
 			
-			PtreeNode node = ptree.acquire(p.getAddress(), p.masklen);
-			Rib rib = new Rib(router_id, nexthop, p.masklen);
+			PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
+			Rib rib = new Rib(router_id, nexthop, p.getPrefixLength());
 			
 			if (node.rib != null) {
 				node.rib = null;
@@ -423,6 +432,53 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		} 
 	}
 	
+	@Override
+	public void newRibUpdate(RibUpdate update) {
+		ribUpdates.add(update);
+	}
+	
+	//TODO temporary
+	public void wrapPrefixAdded(RibUpdate update) {
+		Prefix prefix = update.getPrefix();
+		
+		PtreeNode node = ptree.acquire(prefix.getAddress(), prefix.getPrefixLength());
+		
+		if (node.rib != null) {
+			node.rib = null;
+			ptree.delReference(node);
+		}
+		node.rib = update.getRibEntry();
+
+		prefixAdded(node);
+	}
+	
+	//TODO temporary
+	public void wrapPrefixDeleted(RibUpdate update) {
+		Prefix prefix = update.getPrefix();
+		
+		PtreeNode node = ptree.lookup(prefix.getAddress(), prefix.getPrefixLength());
+		
+		/* 
+		 * Remove the flows from the switches before the rib is lost
+		 * Theory: we could get a delete for a prefix not in the Ptree.
+		 * This would result in a null node being returned. We could get a delete for
+		 * a node that's not actually there, but is a aggregate node. This would result
+		 * in a non-null node with a null rib. Only a non-null node with a non-null
+		 * rib is an actual prefix in the Ptree.
+		 */
+		if (node != null && node.rib != null){
+			prefixDeleted(node);
+		}
+
+		if (node != null && node.rib != null) {
+			if (update.getRibEntry().equals(node.rib)) {
+				node.rib = null;
+				ptree.delReference(node);					
+			}
+		}
+	}
+	
+	@Override
 	public void prefixAdded(PtreeNode node) {
 		if (!topologyReady){
 			return;
@@ -435,7 +491,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				node.rib.routerId.getHostAddress()});
 		
 		//TODO this is wrong, we shouldn't be dealing with BGP peers here.
-		//We need to figure out where the device is attached and what it's
+		//We need to figure out where the device is attached and what its
 		//mac address is by learning. 
 		//The next hop is not necessarily the peer, and the peer's attachment
 		//point is not necessarily the next hop's attachment point.
@@ -549,6 +605,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	//TODO this is largely untested
+	@Override
 	public void prefixDeleted(PtreeNode node) {
 		if (!topologyReady) {
 			return;
@@ -915,8 +972,44 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
 		
+		ExecutorService e = Executors.newSingleThreadExecutor(
+				new ThreadFactoryBuilder().setNameFormat("bgp-updates-%d").build());
+		
+		
+		e.execute(new Runnable() {
+			@Override
+			public void run() {
+				doUpdatesThread();
+			}
+		});
+		
 		//Retrieve the RIB from BGPd during startup
 		retrieveRib();
+	}
+	
+	private void doUpdatesThread() {
+		boolean interrupted = false;
+		try {
+			while (true) {
+				try {
+					RibUpdate update = ribUpdates.take();
+					switch (update.getOperation()){
+					case UPDATE:
+						wrapPrefixAdded(update);
+						break;
+					case DELETE:
+						wrapPrefixDeleted(update);
+						break;
+					}
+				} catch (InterruptedException e) {
+					interrupted = true;
+				}
+			}
+		} finally {
+			if (interrupted) {
+				Thread.currentThread().interrupt();
+			}
+		}
 	}
 
 	@Override

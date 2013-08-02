@@ -7,7 +7,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
 /**
  * The class representing a single Flow Entry action.
  *
- * A set of Flow Entry actions need to be applied to each packet.
+ * A Flow Entry action that needs to be applied to each packet.
+ * Note that it contains only a single action. Multiple actions are
+ * listed in a list inside @ref FlowEntryActions.
  */
 public class FlowEntryAction {
     /**
@@ -59,6 +61,28 @@ public class FlowEntryAction {
 	    this.maxLen = 0;
 	}
 
+	/**
+	 * Copy constructor.
+	 *
+	 * @param other the object to copy from.
+	 */
+	public ActionOutput(ActionOutput other) {
+	    if (other.port != null)
+		this.port = new Port(other.port);
+	    this.maxLen = other.maxLen;
+	}
+
+	/**
+	 * Constructor from a string.
+	 *
+	 * The string has the following form:
+	 *  [port=XXX maxLen=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public ActionOutput(String actionStr) {
+	    this.fromString(actionStr);
+	}
 
 	/**
 	 * Constructor for a given output port and maximum length.
@@ -121,6 +145,54 @@ public class FlowEntryAction {
 
 	    return ret;
 	}
+
+	/**
+	 * Convert a string to an action.
+	 *
+	 * The string has the following form:
+	 *  [port=XXX maxLen=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public void fromString(String actionStr) {
+	    String[] parts = actionStr.split(" ");
+	    String decode = null;
+
+	    // Decode the "port=XXX" part
+	    if (parts.length > 0)
+		decode = parts[0];
+	    if (decode != null) {
+		String[] tokens = decode.split("port=");
+		if (tokens.length > 1 && tokens[1] != null) {
+		    try {
+			Short valueShort = Short.valueOf(tokens[1]);
+			port = new Port(valueShort);
+		    } catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid action string");
+		    }
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+
+	    // Decode the "maxLen=XXX" part
+	    decode = null;
+	    if (parts.length > 1)
+		decode = parts[1];
+	    if (decode != null) {
+		decode = decode.replace("]", "");
+		String[] tokens = decode.split("maxLen=");
+		if (tokens.length > 1 && tokens[1] != null) {
+		    try {
+			maxLen = Short.valueOf(tokens[1]);
+		    } catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid action string");
+		    }
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	}
     }
 
     /**
@@ -134,6 +206,27 @@ public class FlowEntryAction {
 	 */
 	public ActionSetVlanId() {
 	    this.vlanId = 0;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param other the object to copy from.
+	 */
+	public ActionSetVlanId(ActionSetVlanId other) {
+	    this.vlanId = other.vlanId;
+	}
+
+	/**
+	 * Constructor from a string.
+	 *
+	 * The string has the following form:
+	 *  [vlanId=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public ActionSetVlanId(String actionStr) {
+	    this.fromString(actionStr);
 	}
 
 	/**
@@ -171,6 +264,33 @@ public class FlowEntryAction {
 
 	    return ret;
 	}
+
+	/**
+	 * Convert a string to an action.
+	 *
+	 * The string has the following form:
+	 *  [vlanId=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public void fromString(String actionStr) {
+	    String[] parts = actionStr.split("vlanId=");
+	    String decode = null;
+
+	    // Decode the value
+	    if (parts.length > 1)
+		decode = parts[1];
+	    if (decode != null) {
+		decode = decode.replace("]", "");
+		try {
+		    vlanId = Short.valueOf(decode);
+		} catch (NumberFormatException e) {
+		    throw new IllegalArgumentException("Invalid action string");
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	}
     }
 
     /**
@@ -184,6 +304,27 @@ public class FlowEntryAction {
 	 */
 	public ActionSetVlanPriority() {
 	    this.vlanPriority = 0;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param other the object to copy from.
+	 */
+	public ActionSetVlanPriority(ActionSetVlanPriority other) {
+	    this.vlanPriority = other.vlanPriority;
+	}
+
+	/**
+	 * Constructor from a string.
+	 *
+	 * The string has the following form:
+	 *  [vlanPriority=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public ActionSetVlanPriority(String actionStr) {
+	    this.fromString(actionStr);
 	}
 
 	/**
@@ -221,6 +362,33 @@ public class FlowEntryAction {
 
 	    return ret;
 	}
+
+	/**
+	 * Convert a string to an action.
+	 *
+	 * The string has the following form:
+	 *  [vlanPriority=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public void fromString(String actionStr) {
+	    String[] parts = actionStr.split("vlanPriority=");
+	    String decode = null;
+
+	    // Decode the value
+	    if (parts.length > 1)
+		decode = parts[1];
+	    if (decode != null) {
+		decode = decode.replace("]", "");
+		try {
+		    vlanPriority = Byte.valueOf(decode);
+		} catch (NumberFormatException e) {
+		    throw new IllegalArgumentException("Invalid action string");
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	}
     }
 
     /**
@@ -234,6 +402,27 @@ public class FlowEntryAction {
 	 */
 	public ActionStripVlan() {
 	    this.stripVlan = false;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param other the object to copy from.
+	 */
+	public ActionStripVlan(ActionStripVlan other) {
+	    this.stripVlan = other.stripVlan;
+	}
+
+	/**
+	 * Constructor from a string.
+	 *
+	 * The string has the following form:
+	 *  [stripVlan=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public ActionStripVlan(String actionStr) {
+	    this.fromString(actionStr);
 	}
 
 	/**
@@ -271,6 +460,29 @@ public class FlowEntryAction {
 
 	    return ret;
 	}
+
+	/**
+	 * Convert a string to an action.
+	 *
+	 * The string has the following form:
+	 *  [stripVlan=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public void fromString(String actionStr) {
+	    String[] parts = actionStr.split("stripVlan=");
+	    String decode = null;
+
+	    // Decode the value
+	    if (parts.length > 1)
+		decode = parts[1];
+	    if (decode != null) {
+		decode = decode.replace("]", "");
+		stripVlan = Boolean.valueOf(decode);
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	}
     }
 
     /**
@@ -285,6 +497,28 @@ public class FlowEntryAction {
 	 */
 	public ActionSetEthernetAddr() {
 	    this.addr = null;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param other the object to copy from.
+	 */
+	public ActionSetEthernetAddr(ActionSetEthernetAddr other) {
+	    if (other.addr != null)
+		this.addr = MACAddress.valueOf(other.addr.toLong());
+	}
+
+	/**
+	 * Constructor from a string.
+	 *
+	 * The string has the following form:
+	 *  [addr=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public ActionSetEthernetAddr(String actionStr) {
+	    this.fromString(actionStr);
 	}
 
 	/**
@@ -322,6 +556,33 @@ public class FlowEntryAction {
 
 	    return ret;
 	}
+
+	/**
+	 * Convert a string to an action.
+	 *
+	 * The string has the following form:
+	 *  [addr=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public void fromString(String actionStr) {
+	    String[] parts = actionStr.split("addr=");
+	    String decode = null;
+
+	    // Decode the value
+	    if (parts.length > 1)
+		decode = parts[1];
+	    if (decode != null) {
+		decode = decode.replace("]", "");
+		try {
+		    addr = MACAddress.valueOf(decode);
+		} catch (IllegalArgumentException e) {
+		    throw new IllegalArgumentException("Invalid action string");
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	}
     }
 
     /**
@@ -336,6 +597,28 @@ public class FlowEntryAction {
 	 */
 	public ActionSetIPv4Addr() {
 	    this.addr = null;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param other the object to copy from.
+	 */
+	public ActionSetIPv4Addr(ActionSetIPv4Addr other) {
+	    if (other.addr != null)
+		this.addr = new IPv4(other.addr);
+	}
+
+	/**
+	 * Constructor from a string.
+	 *
+	 * The string has the following form:
+	 *  [addr=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public ActionSetIPv4Addr(String actionStr) {
+	    this.fromString(actionStr);
 	}
 
 	/**
@@ -373,6 +656,33 @@ public class FlowEntryAction {
 
 	    return ret;
 	}
+
+	/**
+	 * Convert a string to an action.
+	 *
+	 * The string has the following form:
+	 *  [addr=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public void fromString(String actionStr) {
+	    String[] parts = actionStr.split("addr=");
+	    String decode = null;
+
+	    // Decode the value
+	    if (parts.length > 1)
+		decode = parts[1];
+	    if (decode != null) {
+		decode = decode.replace("]", "");
+		try {
+		    addr = new IPv4(decode);
+		} catch (IllegalArgumentException e) {
+		    throw new IllegalArgumentException("Invalid action string");
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	}
     }
 
     /**
@@ -387,6 +697,27 @@ public class FlowEntryAction {
 	 */
 	public ActionSetIpToS() {
 	    this.ipToS = 0;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param other the object to copy from.
+	 */
+	public ActionSetIpToS(ActionSetIpToS other) {
+	    this.ipToS = other.ipToS;
+	}
+
+	/**
+	 * Constructor from a string.
+	 *
+	 * The string has the following form:
+	 *  [ipToS=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public ActionSetIpToS(String actionStr) {
+	    this.fromString(actionStr);
 	}
 
 	/**
@@ -424,6 +755,33 @@ public class FlowEntryAction {
 
 	    return ret;
 	}
+
+	/**
+	 * Convert a string to an action.
+	 *
+	 * The string has the following form:
+	 *  [ipToS=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public void fromString(String actionStr) {
+	    String[] parts = actionStr.split("ipToS=");
+	    String decode = null;
+
+	    // Decode the value
+	    if (parts.length > 1)
+		decode = parts[1];
+	    if (decode != null) {
+		decode = decode.replace("]", "");
+		try {
+		    ipToS = Byte.valueOf(decode);
+		} catch (NumberFormatException e) {
+		    throw new IllegalArgumentException("Invalid action string");
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	}
     }
 
     /**
@@ -438,6 +796,27 @@ public class FlowEntryAction {
 	 */
 	public ActionSetTcpUdpPort() {
 	    this.port = 0;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param other the object to copy from.
+	 */
+	public ActionSetTcpUdpPort(ActionSetTcpUdpPort other) {
+	    this.port = other.port;
+	}
+
+	/**
+	 * Constructor from a string.
+	 *
+	 * The string has the following form:
+	 *  [port=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public ActionSetTcpUdpPort(String actionStr) {
+	    this.fromString(actionStr);
 	}
 
 	/**
@@ -475,6 +854,33 @@ public class FlowEntryAction {
 
 	    return ret;
 	}
+
+	/**
+	 * Convert a string to an action.
+	 *
+	 * The string has the following form:
+	 *  [port=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public void fromString(String actionStr) {
+	    String[] parts = actionStr.split("port=");
+	    String decode = null;
+
+	    // Decode the value
+	    if (parts.length > 1)
+		decode = parts[1];
+	    if (decode != null) {
+		decode = decode.replace("]", "");
+		try {
+		    port = Short.valueOf(decode);
+		} catch (NumberFormatException e) {
+		    throw new IllegalArgumentException("Invalid action string");
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	}
     }
 
     /**
@@ -492,6 +898,29 @@ public class FlowEntryAction {
 	public ActionEnqueue() {
 	    this.port = null;
 	    this.queueId = 0;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param other the object to copy from.
+	 */
+	public ActionEnqueue(ActionEnqueue other) {
+	    if (other.port != null)
+		this.port = new Port(other.port);
+	    this.queueId = other.queueId;
+	}
+
+	/**
+	 * Constructor from a string.
+	 *
+	 * The string has the following form:
+	 *  [port=XXX queueId=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public ActionEnqueue(String actionStr) {
+	    this.fromString(actionStr);
 	}
 
 	/**
@@ -542,6 +971,54 @@ public class FlowEntryAction {
 
 	    return ret;
 	}
+
+	/**
+	 * Convert a string to an action.
+	 *
+	 * The string has the following form:
+	 *  [port=XXX queueId=XXX]
+	 *
+	 * @param actionStr the action as a string.
+	 */
+	public void fromString(String actionStr) {
+	    String[] parts = actionStr.split(" ");
+	    String decode = null;
+
+	    // Decode the "port=XXX" part
+	    if (parts.length > 0)
+		decode = parts[0];
+	    if (decode != null) {
+		String[] tokens = decode.split("port=");
+		if (tokens.length > 1 && tokens[1] != null) {
+		    try {
+			Short valueShort = Short.valueOf(tokens[1]);
+			port = new Port(valueShort);
+		    } catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid action string");
+		    }
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+
+	    // Decode the "queueId=XXX" part
+	    decode = null;
+	    if (parts.length > 1)
+		decode = parts[1];
+	    if (decode != null) {
+		decode = decode.replace("]", "");
+		String[] tokens = decode.split("queueId=");
+		if (tokens.length > 1 && tokens[1] != null) {
+		    try {
+			queueId = Short.valueOf(tokens[1]);
+		    } catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid action string");
+		    }
+		}
+	    } else {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	}
     }
 
     private ActionValues actionType;	// The action type
@@ -568,6 +1045,88 @@ public class FlowEntryAction {
      */
     public FlowEntryAction() {
 	actionType = ActionValues.ACTION_VENDOR;	// XXX: Initial value
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other the object to copy from.
+     */
+    public FlowEntryAction(FlowEntryAction other) {
+	this.actionType = other.actionType;
+
+	//
+	if (other.actionOutput != null)
+	    this.actionOutput = new ActionOutput(other.actionOutput);
+	else
+	    this.actionOutput = null;
+	//
+	if (other.actionSetVlanId != null)
+	    this.actionSetVlanId = new ActionSetVlanId(other.actionSetVlanId);
+	else
+	    this.actionSetVlanId = null;
+	//
+	if (other.actionSetVlanPriority != null)
+	    this.actionSetVlanPriority = new ActionSetVlanPriority(other.actionSetVlanPriority);
+	else
+	    this.actionSetVlanPriority = null;
+	//
+	if (other.actionStripVlan != null)
+	    this.actionStripVlan = new ActionStripVlan(other.actionStripVlan);
+	else
+	    this.actionStripVlan = null;
+	//
+	if (other.actionSetEthernetSrcAddr != null)
+	    this.actionSetEthernetSrcAddr = new ActionSetEthernetAddr(other.actionSetEthernetSrcAddr);
+	else
+	    this.actionSetEthernetSrcAddr = null;
+	//
+	if (other.actionSetEthernetDstAddr != null)
+	    this.actionSetEthernetDstAddr = new ActionSetEthernetAddr(other.actionSetEthernetDstAddr);
+	else
+	    this.actionSetEthernetDstAddr = null;
+	//
+	if (other.actionSetIPv4SrcAddr != null)
+	    this.actionSetIPv4SrcAddr = new ActionSetIPv4Addr(other.actionSetIPv4SrcAddr);
+	else
+	    this.actionSetIPv4SrcAddr = null;
+	//
+	if (other.actionSetIPv4DstAddr != null)
+	    this.actionSetIPv4DstAddr = new ActionSetIPv4Addr(other.actionSetIPv4DstAddr);
+	else
+	    this.actionSetIPv4DstAddr = null;
+	//
+	if (other.actionSetIpToS != null)
+	    this.actionSetIpToS = new ActionSetIpToS(other.actionSetIpToS);
+	else
+	    this.actionSetIpToS = null;
+	//
+	if (other.actionSetTcpUdpSrcPort != null)
+	    this.actionSetTcpUdpSrcPort = new ActionSetTcpUdpPort(other.actionSetTcpUdpSrcPort);
+	else
+	    this.actionSetTcpUdpSrcPort = null;
+	//
+	if (other.actionSetTcpUdpDstPort != null)
+	    this.actionSetTcpUdpDstPort = new ActionSetTcpUdpPort(other.actionSetTcpUdpDstPort);
+	else
+	    this.actionSetTcpUdpDstPort = null;
+	//
+	if (other.actionEnqueue != null)
+	    this.actionEnqueue = new ActionEnqueue(other.actionEnqueue);
+	else
+	    this.actionEnqueue = null;
+    }
+
+    /**
+     * Constructor from a string.
+     *
+     * The string has the following form:
+     *  [type=XXX action=XXX]
+     *
+     * @param actionStr the action as a string.
+     */
+    public FlowEntryAction(String actionStr) {
+	this.fromString(actionStr);
     }
 
     /**
@@ -957,12 +1516,12 @@ public class FlowEntryAction {
     }
 
     /**
-     * Convert the set of actions to a string.
+     * Convert the action to a string.
      *
      * The string has the following form:
      *  [type=XXX action=XXX]
      *
-     * @return the set of actions as a string.
+     * @return the action as a string.
      */
     @Override
     public String toString() {
@@ -1009,5 +1568,97 @@ public class FlowEntryAction {
 	ret += "]";
 
 	return ret;
+    }
+
+    /**
+     * Convert a string to an action.
+     *
+     * The string has the following form:
+     *  [type=XXX action=XXX]
+     *
+     * @param actionStr the action as a string.
+     */
+    public void fromString(String actionStr) {
+	String[] parts = actionStr.split("type=");
+	String decode = null;
+
+	// Extract the string after the "type="
+	if (parts.length > 1)
+	    decode = parts[1];
+	if (decode == null)
+	    throw new IllegalArgumentException("Invalid action string");
+
+	// Remove the trailing ']'
+	if ((decode.length() > 0) && (decode.charAt(decode.length() - 1) == ']')) {
+	    decode = decode.substring(0, decode.length() - 1);
+	} else {
+	    throw new IllegalArgumentException("Invalid action string");
+	}
+
+	// Extract the type value and the action value
+	parts = decode.split(" action=");
+
+	// Decode the "type=XXX" payload
+	if (parts.length > 0)
+	    decode = parts[0];
+	if (decode != null) {
+	    try {
+		actionType = Enum.valueOf(ActionValues.class, decode);
+	    } catch (IllegalArgumentException e) {
+		throw new IllegalArgumentException("Invalid action string");
+	    }
+	} else {
+	    throw new IllegalArgumentException("Invalid action string");
+	}
+
+	// Decode the "action=XXX" payload
+	decode = null;
+	if (parts.length > 1)
+	    decode = parts[1];
+	if (decode == null)
+	    throw new IllegalArgumentException("Invalid action string");
+	//
+	try {
+	    switch (actionType) {
+	    case ACTION_OUTPUT:
+		actionOutput = new ActionOutput(decode);
+		break;
+	    case ACTION_SET_VLAN_VID:
+		actionSetVlanId = new ActionSetVlanId(decode);
+		break;
+	    case ACTION_SET_VLAN_PCP:
+		actionSetVlanPriority = new ActionSetVlanPriority(decode);
+		break;
+	    case ACTION_STRIP_VLAN:
+		actionStripVlan = new ActionStripVlan(decode);
+		break;
+	    case ACTION_SET_DL_SRC:
+		actionSetEthernetSrcAddr = new ActionSetEthernetAddr(decode);
+		break;
+	    case ACTION_SET_DL_DST:
+		actionSetEthernetDstAddr = new ActionSetEthernetAddr(decode);
+		break;
+	    case ACTION_SET_NW_SRC:
+		actionSetIPv4SrcAddr = new ActionSetIPv4Addr(decode);
+		break;
+	    case ACTION_SET_NW_DST:
+		actionSetIPv4DstAddr = new ActionSetIPv4Addr(decode);
+		break;
+	    case ACTION_SET_NW_TOS:
+		actionSetIpToS = new ActionSetIpToS(decode);
+		break;
+	    case ACTION_SET_TP_SRC:
+		actionSetTcpUdpSrcPort = new ActionSetTcpUdpPort(decode);
+		break;
+	    case ACTION_SET_TP_DST:
+		actionSetTcpUdpDstPort = new ActionSetTcpUdpPort(decode);
+		break;
+	    case ACTION_ENQUEUE:
+		actionEnqueue = new ActionEnqueue(decode);
+		break;
+	    }
+	} catch (IllegalArgumentException e) {
+	    throw new IllegalArgumentException("Invalid action string");
+	}
     }
 }

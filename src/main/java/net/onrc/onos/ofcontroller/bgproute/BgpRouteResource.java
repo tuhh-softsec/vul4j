@@ -2,6 +2,8 @@ package net.onrc.onos.ofcontroller.bgproute;
 
 import java.net.UnknownHostException;
 
+import net.onrc.onos.ofcontroller.bgproute.RibUpdate.Operation;
+
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
@@ -100,7 +102,7 @@ public class BgpRouteResource extends ServerResource {
 		IBgpRouteService bgpRoute = (IBgpRouteService) getContext().getAttributes().
 				get(IBgpRouteService.class.getCanonicalName());
 
-		Ptree ptree = bgpRoute.getPtree();
+		//Ptree ptree = bgpRoute.getPtree();
 
 		String routerId = (String) getRequestAttributes().get("routerid");
 		String prefix = (String) getRequestAttributes().get("prefix");
@@ -125,9 +127,13 @@ public class BgpRouteResource extends ServerResource {
 				return reply + "\n";
 			}
 			
-			PtreeNode node = ptree.acquire(p.getAddress(), p.masklen);
-			Rib rib = new Rib(routerId, nexthop, p.masklen);
+			Rib rib = new Rib(routerId, nexthop, p.getPrefixLength());
 
+			bgpRoute.newRibUpdate(new RibUpdate(Operation.UPDATE, p, rib));
+			
+			/*
+			PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
+			
 			if (node.rib != null) {
 				node.rib = null;
 				ptree.delReference(node);
@@ -135,6 +141,7 @@ public class BgpRouteResource extends ServerResource {
 			node.rib = rib;
 
 			bgpRoute.prefixAdded(node);
+			*/
 			
 			reply = "[POST: " + prefix + "/" + mask + ":" + nexthop + "]";
 			log.info(reply);
@@ -158,7 +165,7 @@ public class BgpRouteResource extends ServerResource {
 		IBgpRouteService bgpRoute = (IBgpRouteService)getContext().getAttributes().
 				get(IBgpRouteService.class.getCanonicalName());
 
-		Ptree ptree = bgpRoute.getPtree();
+		//Ptree ptree = bgpRoute.getPtree();
 
 		String routerId = (String) getRequestAttributes().get("routerid");
 		String prefix = (String) getRequestAttributes().get("prefix");
@@ -182,8 +189,13 @@ public class BgpRouteResource extends ServerResource {
 				log.info(reply);
 				return reply + "\n";
 			}
-
-			PtreeNode node = ptree.lookup(p.getAddress(), p.masklen);
+			
+			Rib r = new Rib(routerId, nextHop, p.getPrefixLength());
+			
+			bgpRoute.newRibUpdate(new RibUpdate(Operation.DELETE, p, r));
+			
+			/*
+			PtreeNode node = ptree.lookup(p.getAddress(), p.getPrefixLength());
 			
 			//Remove the flows from the switches before the rib is lost
 			//Theory: we could get a delete for a prefix not in the Ptree.
@@ -195,7 +207,7 @@ public class BgpRouteResource extends ServerResource {
 				bgpRoute.prefixDeleted(node);
 			}
 
-			Rib r = new Rib(routerId, nextHop, p.masklen);
+			
 
 			if (node != null && node.rib != null) {
 				if (r.equals(node.rib)) {
@@ -203,6 +215,7 @@ public class BgpRouteResource extends ServerResource {
 					ptree.delReference(node);					
 				}
 			}
+			*/
 			
 			reply =reply + "[DELE: " + prefix + "/" + mask + ":" + nextHop + "]";
 		}

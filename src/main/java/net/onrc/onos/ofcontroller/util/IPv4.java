@@ -22,6 +22,15 @@ public class IPv4 {
     }
 
     /**
+     * Copy constructor.
+     *
+     * @param other the object to copy from.
+     */
+    public IPv4(IPv4 other) {
+	this.value = other.value;
+    }
+
+    /**
      * Constructor from an integer value.
      *
      * @param value the value to use.
