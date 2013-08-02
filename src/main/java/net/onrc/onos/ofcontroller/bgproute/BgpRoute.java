@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,11 +33,13 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
+import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
+import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 import net.onrc.onos.ofcontroller.routing.TopoRouteService;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -64,10 +67,14 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
-									ITopologyListener, IOFSwitchListener {
+									ITopologyListener, IOFSwitchListener,
+									IArpRequester {
 	
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
@@ -117,6 +124,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected ArrayList<LDUpdate> linkUpdates;
 	protected SingletonTask topologyChangeDetectorTask;
 	
+	//protected HashMap<InetAddress, RibUpdate> prefixesWaitingOnArp;
+	//protected HashMap<InetAddress, PathUpdate> pathsWaitingOnArp;
+	protected SetMultimap<InetAddress, RibUpdate> prefixesWaitingOnArp;
+	protected SetMultimap<InetAddress, PathUpdate> pathsWaitingOnArp;
+	
 	protected class TopologyChangeDetector implements Runnable {
 		@Override
 		public void run() {
@@ -126,9 +138,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				ITopoLinkService topoLinkService = new TopoLinkServiceImpl();
 				
 				List<Link> activeLinks = topoLinkService.getActiveLinks();
-				//for (Link l : activeLinks){
-					//log.debug("active link: {}", l);
-				//}
 				
 				Iterator<LDUpdate> it = linkUpdates.iterator();
 				while (it.hasNext()){
@@ -240,6 +249,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		topologyChangeDetectorTask = new SingletonTask(executor, new TopologyChangeDetector());
 
 		topoRouteService = new TopoRouteService("");
+		
+		pathsWaitingOnArp = Multimaps.synchronizedSetMultimap(
+				HashMultimap.<InetAddress, PathUpdate>create());
+		prefixesWaitingOnArp = Multimaps.synchronizedSetMultimap(
+				HashMultimap.<InetAddress, RibUpdate>create());
 		
 		//Read in config values
 		bgpdRestIp = context.getConfigParams(this).get("BgpdRestIp");
@@ -528,9 +542,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				return; // just quit here?
 			}
 			
-			//TODO check the shortest path against the cached version we
-			//calculated before. If they don't match up that's a problem
-			
 			//Set up the flow mod
 			OFFlowMod fm =
 	                (OFFlowMod) floodlightProvider.getOFMessageFactory()
@@ -699,30 +710,46 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		for (BgpPeer peer : bgpPeers.values()) {
 			Interface peerInterface = interfaces.get(peer.getInterfaceName());
-			//for (Map.Entry<String, Interface> intfEntry : interfaces.entrySet()) {
-			for (Interface srcInterface : interfaces.values()) {
-				//Interface srcInterface = intfEntry.getValue();
-				//if (peer.getInterfaceName().equals(intfEntry.getKey())){
-				if (peer.getInterfaceName().equals(srcInterface.getName())){
-					continue;
-				}
+			
+			//See if we know the MAC address of the peer. If not we can't
+			//do anything until we learn it
+			byte[] mac = proxyArp.getMacAddress(peer.getIpAddress());
+			if (mac == null) {
+				log.debug("Don't know MAC for {}", peer.getIpAddress().getHostAddress());
+				//Put in the pending paths list first
+				pathsWaitingOnArp.put(peer.getIpAddress(),
+						new PathUpdate(peerInterface, peer.getIpAddress()));
 				
-				DataPath shortestPath = topoRouteService.getShortestPath(
-							srcInterface.getSwitchPort(), peerInterface.getSwitchPort()); 
-				
-				if (shortestPath == null){
-					log.debug("Shortest path between {} and {} not found",
-							srcInterface.getSwitchPort(), peerInterface.getSwitchPort());
-					return; // just quit here?
-				}
-				
-				//install flows
-				installPath(shortestPath.flowEntries(), peer);
+				proxyArp.sendArpRequest(peer.getIpAddress(), this, true);
+				continue;
 			}
+			
+			//If we know the MAC, lets go ahead and push the paths to this peer
+			calculateAndPushPath(peerInterface, MACAddress.valueOf(mac));
 		}
 	}
 	
-	private void installPath(List<FlowEntry> flowEntries, BgpPeer peer){
+	private void calculateAndPushPath(Interface dstInterface, MACAddress dstMacAddress) {
+		for (Interface srcInterface : interfaces.values()) {
+			if (dstInterface.equals(srcInterface.getName())){
+				continue;
+			}
+			
+			DataPath shortestPath = topoRouteService.getShortestPath(
+						srcInterface.getSwitchPort(), dstInterface.getSwitchPort()); 
+			
+			if (shortestPath == null){
+				log.debug("Shortest path between {} and {} not found",
+						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
+				return; // just quit here?
+			}
+			
+			//install flows
+			installPath(shortestPath.flowEntries(), dstMacAddress);
+		}
+	}
+	
+	private void installPath(List<FlowEntry> flowEntries, MACAddress dstMacAddress){
 		//Set up the flow mod
 		OFFlowMod fm =
                 (OFFlowMod) floodlightProvider.getOFMessageFactory()
@@ -748,7 +775,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
            
             OFMatch match = new OFMatch();
             //TODO Again using MAC address from configuration
-            match.setDataLayerDestination(peer.getMacAddress().toBytes());
+            match.setDataLayerDestination(dstMacAddress.toBytes());
             match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
             ((OFActionOutput) fm.getActions().get(0)).setPort(flowEntry.outPort().value());
             
@@ -901,6 +928,23 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					log.error("Failure writing flow mod", e);
 				}
 			}
+		}
+	}
+	
+	@Override
+	public void arpResponse(InetAddress ipAddress, byte[] macAddress) {
+		log.debug("Received ARP response: {} => {}", ipAddress.getHostAddress(), 
+				MACAddress.valueOf(macAddress).toString());
+		
+		Set<PathUpdate> pathsToPush = pathsWaitingOnArp.removeAll(ipAddress);
+		
+		for (PathUpdate update : pathsToPush) {
+			log.debug("Pushing path to {} at {} on {}", new Object[] {
+					update.getDstIpAddress().getHostAddress(), 
+					MACAddress.valueOf(macAddress),
+					update.getDstInterface().getSwitchPort()});
+			calculateAndPushPath(update.getDstInterface(), 
+					MACAddress.valueOf(macAddress));
 		}
 	}
 	

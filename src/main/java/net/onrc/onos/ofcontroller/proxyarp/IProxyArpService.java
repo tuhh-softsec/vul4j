@@ -29,13 +29,11 @@ public interface IProxyArpService {
 	/**
 	 * Tell the IProxyArpService to send an ARP request for the IP address.
 	 * The request will be broadcast out all edge ports in the network.
-	 * As an optimization, the IProxyArpService will first check its cache and
-	 * return the MAC address if it is already known. If not, the request will be
-	 * sent and the callback will be called when the MAC address is known
-	 * (or if the request times out). 
 	 * @param ipAddress
 	 * @param requester
+	 * @param retry Whether to keep sending requests until the MAC is learnt
 	 * @return
 	 */
-	public byte[] sendArpRequest(InetAddress ipAddress, IArpRequester requester);
+	public void sendArpRequest(InetAddress ipAddress, IArpRequester requester,
+			boolean retry);
 }

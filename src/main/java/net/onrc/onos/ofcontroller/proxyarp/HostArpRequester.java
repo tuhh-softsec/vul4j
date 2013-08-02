@@ -1,5 +1,7 @@
 package net.onrc.onos.ofcontroller.proxyarp;
 
+import java.net.InetAddress;
+
 import net.floodlightcontroller.packet.ARP;
 
 public class HostArpRequester implements IArpRequester {
@@ -8,7 +10,6 @@ public class HostArpRequester implements IArpRequester {
 	private ARP arpRequest;
 	private long dpid;
 	private short port;
-	//private long requestTime; //in ms
 	
 	public HostArpRequester(IProxyArpService arpService, ARP arpRequest, 
 			long dpid, short port) {
@@ -17,12 +18,11 @@ public class HostArpRequester implements IArpRequester {
 		this.arpRequest = arpRequest;
 		this.dpid = dpid;
 		this.port = port;
-		//this.requestTime = System.currentTimeMillis();
 	}
 
 	@Override
-	public void arpResponse(byte[] mac) {
-		arpService.sendArpReply(arpRequest, dpid, port, mac);
+	public void arpResponse(InetAddress ipAddress, byte[] macAddress) {
+		arpService.sendArpReply(arpRequest, dpid, port, macAddress);
 	}
 
 }
