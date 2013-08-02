@@ -27,21 +27,21 @@ import sun.misc.SignalHandler;
  */
 @SuppressWarnings("restriction")
 public class ConfigReloadOnHup implements Extension {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(ConfigReloadOnHup.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(ConfigReloadOnHup.class);
 	static String signalName = "HUP";
 
 	private static File configuration = null;
 
+	@Override
 	public void init(Driver driver, Properties properties) {
 		// Initialization is done is static block.
 	}
 
 	static SignalHandler sh = new SignalHandler() {
+		@Override
 		public void handle(Signal signal) {
 			if (signalName.equals(signal.getName())) {
-				LOG.warn("Signal " + signalName
-						+ " received. Reloading configuration.");
+				LOG.warn("Signal " + signalName + " received. Reloading configuration.");
 				DriverFactory.configure();
 			}
 
@@ -58,8 +58,8 @@ public class ConfigReloadOnHup implements Extension {
 			Signal signal = new Signal(signalName);
 			Signal.handle(signal, sh);
 
-			LOG.info("Will reload configuration from {} on signal {}",
-					configuration.getAbsoluteFile(), signal.getNumber());
+			LOG.info("Will reload configuration from {} on signal {}", configuration.getAbsoluteFile(),
+					Integer.valueOf(signal.getNumber()));
 		} else {
 			// Do nothing if configuration is loaded from the classpath
 			LOG.warn("Cannot reload configuration from classpath. Please use -Desigate.config");
