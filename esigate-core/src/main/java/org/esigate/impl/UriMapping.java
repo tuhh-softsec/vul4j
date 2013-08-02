@@ -17,6 +17,7 @@ package org.esigate.impl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.esigate.ConfigurationException;
 
 /**
@@ -77,25 +78,21 @@ public class UriMapping {
 	 * </ul>
 	 * 
 	 * @param mapping
-	 * @return
+	 *            the mapping expression as string
+	 * @return the uri mapping object
 	 * @throws ConfigurationException
 	 */
 	public static UriMapping create(String mapping) throws ConfigurationException {
 		Matcher matcher = MAPPING_PATTERN.matcher(mapping);
 		if (!matcher.matches())
 			throw new ConfigurationException("Unrecognized URI pattern: " + mapping);
-		String host = matcher.group(1);
-		if ("".equals(host))
-			host = null;
-		String path = matcher.group(5);
-		if ("".equals(path))
-			path = null;
+		String host = StringUtils.trimToNull(matcher.group(1));
+		String path = StringUtils.trimToNull(matcher.group(5));
+
 		if (path != null && !path.startsWith("/"))
 			throw new ConfigurationException("Unrecognized URI pattern: " + mapping
 					+ " Mapping path should start with / was: " + path);
-		String extension = matcher.group(7);
-		if ("".equals(extension))
-			extension = null;
+		String extension = StringUtils.trimToNull(matcher.group(7));
 		if (extension != null && !extension.startsWith("."))
 			throw new ConfigurationException("Unrecognized URI pattern: " + mapping
 					+ " Mapping extension should start with . was: " + extension);
@@ -129,20 +126,35 @@ public class UriMapping {
 	/**
 	 * The weight of this URI matching. Larger weights must be evaluated first.
 	 * 
-	 * @return
+	 * @return the weight
 	 */
 	public int getWeight() {
 		return this.weight;
 	}
 
+	/**
+	 * Get the extension of this URI matching.
+	 * 
+	 * @return the extension
+	 */
 	public String getExtension() {
 		return this.extension;
 	}
 
+	/**
+	 * Get the path of this URI matching.
+	 * 
+	 * @return the path
+	 */
 	public String getPath() {
 		return this.path;
 	}
 
+	/**
+	 * Get the host of this URI matching.
+	 * 
+	 * @return the host
+	 */
 	public String getHost() {
 		return this.host;
 	}
