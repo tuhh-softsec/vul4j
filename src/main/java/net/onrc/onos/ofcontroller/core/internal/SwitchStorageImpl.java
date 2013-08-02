@@ -167,7 +167,11 @@ public class SwitchStorageImpl implements ISwitchStorage {
             	IPortObject p = op.searchPort(dpid, port.getPortNumber());
             	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port.getPortNumber());
             	if (p != null) {
-            		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
+            		log.error("SwitchStorage:addPort dpid:{} port:{} exists setting as ACTIVE", dpid, port.getPortNumber());
+            		p.setState("ACTIVE");
+            		p.setPortState(port.getState());
+            		p.setDesc(port.getName());
+            		op.commit();
             	} else {
             		p = op.newPort(dpid, port.getPortNumber());
             		p.setState("ACTIVE");
@@ -200,9 +204,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
             if (sw != null) {
             	IPortObject p = op.searchPort(dpid, port);
                 if (p != null) {
-            		log.info("SwitchStorage:deletePort dpid:{} port:{} found and deleted", dpid, port);
-            		sw.removePort(p);
-            		op.removePort(p);
+            		log.info("SwitchStorage:deletePort dpid:{} port:{} found and set INACTIVE", dpid, port);
+            		p.setState("INACTIVE");
             		op.commit();
             	}
             }
