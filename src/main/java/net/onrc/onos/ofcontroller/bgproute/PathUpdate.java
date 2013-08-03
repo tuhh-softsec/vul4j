@@ -9,24 +9,13 @@ import java.net.InetAddress;
 
 public class PathUpdate {
 
-	//private Set<Interface> srcInterfaces;
 	private Interface dstInterface;
 	private InetAddress dstIpAddress;
 	
-	public PathUpdate(//Collection<Interface> srcInterfaces, 
-			Interface dstInterface, InetAddress dstIpAddress) {
+	public PathUpdate(Interface dstInterface, InetAddress dstIpAddress) {
 		this.dstInterface = dstInterface;
 		this.dstIpAddress = dstIpAddress;
-
-		//this.srcInterfaces = new HashSet<Interface>(srcInterfaces.size());
-		//for (Interface intf : srcInterfaces) {
-		//	this.srcInterfaces.add(intf);
-		//}
 	}
-
-	//public Set<Interface> getSrcInterfaces() {
-	//	return Collections.unmodifiableSet(srcInterfaces);
-	//}
 
 	public Interface getDstInterface() {
 		return dstInterface;

@@ -43,26 +43,22 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	
 	private final long ARP_ENTRY_TIMEOUT = 600000; //ms (== 10 mins)
 	
-	private final long ARP_REQUEST_TIMEOUT_THREAD_PERIOD = 60000; //ms (== 1 min) 
+	private final long ARP_TIMER_PERIOD = 60000; //ms (== 1 min) 
 			
 	protected IFloodlightProviderService floodlightProvider;
 	protected ITopologyService topology;
 	protected IDeviceService devices;
 	
 	protected Map<InetAddress, ArpTableEntry> arpTable;
-	
-	//protected ConcurrentHashMap<InetAddress, Set<ArpRequest>> arpRequests;
-	//protected ConcurrentHashMap<InetAddress, ArpRequest> arpRequests;
+
 	protected SetMultimap<InetAddress, ArpRequest> arpRequests;
 	
 	private class ArpRequest {
-		//private Set<IArpRequester> requesters;
 		private IArpRequester requester;
 		private boolean retry;
 		private long requestTime;
 		
 		public ArpRequest(IArpRequester requester, boolean retry){
-			//this.requesters = new HashSet<IArpRequester>();
 			this.requester = requester;
 			this.retry = retry;
 			this.requestTime = System.currentTimeMillis();
@@ -73,13 +69,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			this.retry = old.retry;
 			this.requestTime = System.currentTimeMillis();
 		}
-		
-		/*
-		public synchronized void addRequester(IArpRequester requester){
-			requestTime = System.currentTimeMillis();
-			requesters.add(requester);
-		}
-		*/
 		
 		public boolean isExpired() {
 			return (System.currentTimeMillis() - requestTime) 
@@ -94,11 +83,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			log.debug("Dispatching reply for {} to {}", ipAddress.getHostAddress(), 
 					requester);
 			requester.arpResponse(ipAddress, replyMacAddress);
-			/*
-			for (IArpRequester requester : requesters){
-				requester.arpResponse(ipAddress, replyMacAddress);
-			}
-			*/
 		}
 	}
 	
@@ -109,100 +93,68 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		this.devices = devices;
 		
 		arpTable = new HashMap<InetAddress, ArpTableEntry>();
-		//arpRequests = new ConcurrentHashMap<InetAddress, Set<ArpRequest>>();
-		//arpRequests = new ConcurrentHashMap<InetAddress, ArpRequest>();
+
 		arpRequests = Multimaps.synchronizedSetMultimap(
 				HashMultimap.<InetAddress, ArpRequest>create());
 		
-		Timer arpRequestTimeoutTimer = new Timer();
-		arpRequestTimeoutTimer.scheduleAtFixedRate(new TimerTask() {
+		Timer arpTimer = new Timer();
+		arpTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				/*
-				synchronized (arpRequests) {
-					log.debug("Current have {} outstanding requests", 
-							arpRequests.size());
-					
-					Iterator<Map.Entry<InetAddress, ArpRequest>> it 
-							= arpRequests.entrySet().iterator();
-					
-					while (it.hasNext()){
-						Map.Entry<InetAddress, ArpRequest> entry
-								= it.next();
-						
-						if (entry.getValue().isExpired()){
-							log.debug("Cleaning expired ARP request for {}", 
-									entry.getKey().getHostAddress());
-							it.remove();
-						}
-					}
-				}
-				*/
-				
-				//List<ArpRequest> retryList = new ArrayList<ArpRequest>();
-				SetMultimap<InetAddress, ArpRequest> retryList 
-						= HashMultimap.<InetAddress, ArpRequest>create();
-				
-				//Have to synchronize externally on the Multimap while using an iterator.
-				//But because we're using a synchronizedMultiMap we don't have to
-				//synchronize when adding.
-				synchronized (arpRequests) {
-					log.debug("Current have {} outstanding requests", 
-							arpRequests.size());
-					
-					Iterator<Map.Entry<InetAddress, ArpRequest>> it 
-						= arpRequests.entries().iterator();
-					
-					while (it.hasNext()) {
-						Map.Entry<InetAddress, ArpRequest> entry
-								= it.next();
-						ArpRequest request = entry.getValue();
-						if (request.isExpired()) {
-							log.debug("Cleaning expired ARP request for {}", 
-									entry.getKey().getHostAddress());
-							//TODO retry here? Caller should specify whether we retry or not
-							//because we obviously won't retry received packets, only
-							//requests from other app modules.
-							it.remove();
-							
-							//retryList.add(new ArpRequest(request));
-							if (request.shouldRetry()) {
-								retryList.put(entry.getKey(), request);
-							}
-						}
-					}
-				}
-				
-				for (Map.Entry<InetAddress, Collection<ArpRequest>> entry 
-						: retryList.asMap().entrySet()) {
-					
-					InetAddress address = entry.getKey();
-					
-					log.debug("Resending ARP request for {}", address.getHostAddress());
-					
-					sendArpRequestForAddress(address);
-					
-					for (ArpRequest request : entry.getValue()) {
-						arpRequests.put(address, new ArpRequest(request));
-					}
-				}
+				doPeriodicArpProcessing();
 			}
-		}, 0, ARP_REQUEST_TIMEOUT_THREAD_PERIOD);
+		}, 0, ARP_TIMER_PERIOD);
 	}
 	
-	private void storeRequester(InetAddress address, IArpRequester requester, 
-			boolean retry) {
-		arpRequests.put(address, new ArpRequest(requester, retry));
-		/*
+	/*
+	 * Function that runs periodically to manage the asynchronous request mechanism.
+	 * It basically cleans up old ARP requests if we don't get a response for them.
+	 * The caller can designate that a request should be retried indefinitely, and
+	 * this task will handle that as well.
+	 */
+	private void doPeriodicArpProcessing() {
+		SetMultimap<InetAddress, ArpRequest> retryList 
+				= HashMultimap.<InetAddress, ArpRequest>create();
+
+		//Have to synchronize externally on the Multimap while using an iterator,
+		//even though it's a synchronizedMultimap
 		synchronized (arpRequests) {
-			if (arpRequests.get(address) == null) {
-				arpRequests.put(address, new ArpRequest());
+			log.debug("Current have {} outstanding requests", 
+					arpRequests.size());
+			
+			Iterator<Map.Entry<InetAddress, ArpRequest>> it 
+				= arpRequests.entries().iterator();
+			
+			while (it.hasNext()) {
+				Map.Entry<InetAddress, ArpRequest> entry
+						= it.next();
+				ArpRequest request = entry.getValue();
+				if (request.isExpired()) {
+					log.debug("Cleaning expired ARP request for {}", 
+							entry.getKey().getHostAddress());
+		
+					it.remove();
+					
+					if (request.shouldRetry()) {
+						retryList.put(entry.getKey(), request);
+					}
+				}
 			}
-			ArpRequest request = arpRequests.get(address);
-							
-			request.addRequester(requester);
 		}
-		*/
+		
+		for (Map.Entry<InetAddress, Collection<ArpRequest>> entry 
+				: retryList.asMap().entrySet()) {
+			
+			InetAddress address = entry.getKey();
+			
+			log.debug("Resending ARP request for {}", address.getHostAddress());
+			
+			sendArpRequestForAddress(address);
+			
+			for (ArpRequest request : entry.getValue()) {
+				arpRequests.put(address, new ArpRequest(request));
+			}
+		}
 	}
 	
 	@Override
@@ -270,9 +222,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				return;
 			}
 			
-			//storeRequester(target, new HostArpRequester(this, arp, sw.getId(), 
-			//		pi.getInPort()));
-			
 			boolean shouldBroadcastRequest = false;
 			synchronized (arpRequests) {
 				if (!arpRequests.containsKey(target)) {
@@ -290,7 +239,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		else {
 			//We know the address, so send a reply
 			log.debug("Sending reply of {}", MACAddress.valueOf(mac).toString());
-			//sendArpReply(arp, pi, mac, sw);
 			sendArpReply(arp, sw.getId(), pi.getInPort(), mac);
 		}
 	}
@@ -322,32 +270,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				request.dispatchReply(addr, arp.getSenderHardwareAddress());
 			}
 		}
-		/*
-		ArpRequest request = null;
-		synchronized (arpRequests) {
-			request = arpRequests.get(addr);
-			if (request != null) {
-				arpRequests.remove(addr);
-			}
-		}
-		if (request != null && !request.isExpired()) {
-			request.dispatchReply(addr, arp.getSenderHardwareAddress());
-		}
-		*/
-		
-		/*
-		Set<ArpRequest> requests = arpRequests.get(addr);
-		if (requests != null){
-			
-			synchronized (requests) {
-				for (ArpRequest request : requests) {
-					if (!request.isExpired()){
-						request.getRequester().arpResponse(
-								arp.getSenderHardwareAddress());
-					}
-				}
-			}
-		}*/
 	}
 
 	private synchronized byte[] lookupArpTable(byte[] ipAddress){
@@ -429,7 +351,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		broadcastArpRequestOutEdge(eth.serialize(), 0, OFPort.OFPP_NONE.getValue());
 	}
 	
-	//private void broadcastArpRequestOutEdge(OFPacketIn pi, long inSwitch, short inPort){
 	private void broadcastArpRequestOutEdge(byte[] arpRequest, long inSwitch, short inPort) {
 		for (IOFSwitch sw : floodlightProvider.getSwitches().values()){
 			Collection<Short> enabledPorts = sw.getEnabledPortNumbers();
@@ -457,7 +378,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				}
 				
 				actions.add(new OFActionOutput(portNum));
-				log.debug("Broadcasting out {}/{}", HexString.toHexString(sw.getId()), portNum);
+				//log.debug("Broadcasting out {}/{}", HexString.toHexString(sw.getId()), portNum);
 			}
 			
 			po.setActions(actions);
@@ -479,14 +400,12 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	public void sendArpReply(ARP arpRequest, long dpid, short port, byte[] targetMac) {
-	//private void sendArpReply(ARP arpRequest, OFPacketIn pi, byte[] macRequested, IOFSwitch sw){
 		ARP arpReply = new ARP();
 		arpReply.setHardwareType(ARP.HW_TYPE_ETHERNET)
 			.setProtocolType(ARP.PROTO_TYPE_IP)
 			.setHardwareAddressLength((byte)Ethernet.DATALAYER_ADDRESS_LENGTH)
 			.setProtocolAddressLength((byte)4) //can't find the constant anywhere
 			.setOpCode(ARP.OP_REPLY)
-			//.setSenderHardwareAddress(macRequested)
 			.setSenderHardwareAddress(targetMac)
 			.setSenderProtocolAddress(arpRequest.getTargetProtocolAddress())
 			.setTargetHardwareAddress(arpRequest.getSenderHardwareAddress())
@@ -494,13 +413,11 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		
 		Ethernet eth = new Ethernet();
 		eth.setDestinationMACAddress(arpRequest.getSenderHardwareAddress())
-			//.setSourceMACAddress(macRequested)
 			.setSourceMACAddress(targetMac)
 			.setEtherType(Ethernet.TYPE_ARP)
 			.setPayload(arpReply);
 		
 		List<OFAction> actions = new ArrayList<OFAction>();
-		//actions.add(new OFActionOutput(pi.getInPort()));
 		actions.add(new OFActionOutput(port));
 		
 		OFPacketOut po = new OFPacketOut();
@@ -552,14 +469,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	@Override
 	public void sendArpRequest(InetAddress ipAddress, IArpRequester requester,
 			boolean retry) {
-		/*
-		byte[] lookupMac;
-		if ((lookupMac = lookupArpTable(ipAddress.getAddress())) == null) {
-			return lookupMac;
-		}
-		*/
-		
-		storeRequester(ipAddress, requester, retry);
+		arpRequests.put(ipAddress, new ArpRequest(requester, retry));
+		//storeRequester(ipAddress, requester, retry);
 		
 		sendArpRequestForAddress(ipAddress);
 	}
