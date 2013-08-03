@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.bgproute;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -11,7 +12,6 @@ public class Configuration {
 	private List<String> switches;
 	private List<Interface> interfaces;
 	private List<BgpPeer> peers;
-	//private Map<String, GatewayRouter> gateways;
 	
 	public Configuration() {
 		// TODO Auto-generated constructor stub
@@ -36,7 +36,7 @@ public class Configuration {
 	}
 
 	public List<String> getSwitches() {
-		return switches;
+		return Collections.unmodifiableList(switches);
 	}
 
 	@JsonProperty("switches")
@@ -45,7 +45,7 @@ public class Configuration {
 	}
 
 	public List<Interface> getInterfaces() {
-		return interfaces;
+		return Collections.unmodifiableList(interfaces);
 	}
 
 	@JsonProperty("interfaces")
@@ -54,22 +54,12 @@ public class Configuration {
 	}
 	
 	public List<BgpPeer> getPeers() {
-		return peers;
+		return Collections.unmodifiableList(peers);
 	}
 
 	@JsonProperty("bgpPeers")
 	public void setPeers(List<BgpPeer> peers) {
 		this.peers = peers;
 	}
-
-	/*
-	public Map<String, GatewayRouter> getGateways() {
-		return gateways;
-	}
-
-	@JsonProperty("gateways")
-	public void setGateways(Map<String, GatewayRouter> gateways) {
-		this.gateways = gateways;
-	}*/
 
 }
