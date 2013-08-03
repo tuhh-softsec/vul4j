@@ -168,7 +168,7 @@ public class FlowPath implements Comparable<FlowPath> {
 	    {
 		FlowEntryActions actions = new FlowEntryActions();
 
-		String actionsStr = flowObj.getActions();
+		String actionsStr = flowEntryObj.getActions();
 		if (actions != null)
 		    actions = new FlowEntryActions(actionsStr);
 
