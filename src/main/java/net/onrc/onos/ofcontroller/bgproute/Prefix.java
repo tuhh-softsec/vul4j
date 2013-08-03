@@ -44,7 +44,7 @@ public class Prefix {
 		
 		Prefix otherPrefix = (Prefix) other;
 		
-		return (address == otherPrefix.address) && 
+		return (address.equals(otherPrefix.address)) && 
 				(prefixLength == otherPrefix.prefixLength);
 	}
 	
