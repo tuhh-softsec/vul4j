@@ -1,6 +1,5 @@
 package net.onrc.onos.ofcontroller.util;
 
-import java.util.ArrayList;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -326,17 +325,43 @@ public class FlowEntry {
      */
     @Override
     public String toString() {
-	String ret = "[flowEntryId=" + this.flowEntryId.toString();
-	ret += " flowEntryMatch=" + this.flowEntryMatch.toString();
-	ret += " flowEntryActions=" + this.flowEntryActions.toString();
-	ret += " dpid=" + this.dpid.toString();
-	ret += " inPort=" + this.inPort.toString();
-	ret += " outPort=" + this.outPort.toString();
-	ret += " flowEntryUserState=" + this.flowEntryUserState;
-	ret += " flowEntrySwitchState=" + this.flowEntrySwitchState;
-	ret += " flowEntryErrorState=" + this.flowEntryErrorState.toString();
-	ret += "]";
+	StringBuilder ret = new StringBuilder();
+	if ( flowEntryId != null ) {
+		ret.append("[flowEntryId=" + this.flowEntryId.toString());
+	} else {
+		ret.append("[flowEntryId=null");
+	}
+	if ( flowEntryMatch != null ) {
+		ret.append(" flowEntryMatch=" + this.flowEntryMatch.toString());
+	} else {
+		ret.append(" flowEntryMatch=null");
+	}
+	ret.append( " flowEntryActions=" + this.flowEntryActions.toString() );
+	if ( dpid != null ) {
+		ret.append(" dpid=" + this.dpid.toString());
+	} else {
+		ret.append(" dpid=null");
+	}
+	if ( inPort != null ) {
+		ret.append(" inPort=" + this.inPort.toString());
+	} else {
+		ret.append(" inPort=null");
+	}
+	if ( outPort != null ) {
+		ret.append(" outPort=" + this.outPort.toString());
+	} else {
+		ret.append(" outPort=null");
+	}
+	ret.append(" flowEntryUserState=" + this.flowEntryUserState);
+	ret.append(" flowEntrySwitchState=" + this.flowEntrySwitchState);
+	if ( flowEntryErrorState != null ) {
+		ret.append(" flowEntryErrorState=" + this.flowEntryErrorState.toString());
+	} else {
+		ret.append(" flowEntryErrorState=null" );
+		
+	}
+	ret.append("]");
 
-	return ret;
+	return ret.toString();
     }
 }
