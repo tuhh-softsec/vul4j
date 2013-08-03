@@ -37,6 +37,26 @@ public class Prefix {
 	}
 	
 	@Override
+	public boolean equals(Object other) {
+		if (other == null || !(other instanceof Prefix)) {
+			return false;
+		}
+		
+		Prefix otherPrefix = (Prefix) other;
+		
+		return (address == otherPrefix.address) && 
+				(prefixLength == otherPrefix.prefixLength);
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 17;
+		hash = 31 * hash + prefixLength;
+		hash = 31 * hash + (address == null ? 0 : address.hashCode());
+		return hash;
+	}
+	
+	@Override
 	public String toString() {
 		return address.getHostAddress() + "/" + prefixLength;
 	}

@@ -400,6 +400,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	private void sendArpRequestForAddress(InetAddress ipAddress) {
+		//TODO what should the sender IP address be? Probably not 0.0.0.0
 		byte[] zeroIpv4 = {0x0, 0x0, 0x0, 0x0};
 		byte[] zeroMac = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
 		byte[] bgpdMac = {0x0, 0x0, 0x0, 0x0, 0x0, 0x01};
