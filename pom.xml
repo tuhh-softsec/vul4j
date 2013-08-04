@@ -26,7 +26,7 @@ limitations under the License.
   </parent>
 
   <artifactId>plexus-utils</artifactId>
-  <version>3.0.14-SNAPSHOT</version>
+  <version>3.0.13</version>
 
   <name>Plexus Common Utilities</name>
   <description>A collection of various utility classes to ease working with strings, files, command lines, XML and
@@ -38,7 +38,7 @@ limitations under the License.
     <connection>scm:git:git@github.com:sonatype/plexus-utils.git</connection>
     <developerConnection>scm:git:git@github.com:sonatype/plexus-utils.git</developerConnection>
     <url>http://github.com/sonatype/plexus-utils</url>
-    <tag>HEAD</tag>
+    <tag>plexus-utils-3.0.13</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
