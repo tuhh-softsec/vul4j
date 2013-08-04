@@ -16,9 +16,10 @@ package org.codehaus.plexus.util.xml.pull;
  * limitations under the License.
  */
 
-import java.io.StringReader;
-
 import junit.framework.TestCase;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -84,6 +85,21 @@ public class MXParserTest
 
         assertEquals( "<>&'\"", parser.getText() );
 
+        assertEquals( XmlPullParser.END_TAG, parser.next() );
+    }
+
+    public void testEntityReplacementMap()
+        throws XmlPullParserException, IOException
+    {
+        EntityReplacementMap erm = new EntityReplacementMap( new String[][]{ { "abc", "CDE" }, { "EFG", "HIJ" } } );
+        MXParser parser = new MXParser( erm );
+
+        String input = "<root>&EFG;</root>";
+        parser.setInput( new StringReader( input ) );
+
+        assertEquals( XmlPullParser.START_TAG, parser.next() );
+        assertEquals( XmlPullParser.TEXT, parser.next() );
+        assertEquals( "HIJ", parser.getText() );
         assertEquals( XmlPullParser.END_TAG, parser.next() );
     }
 

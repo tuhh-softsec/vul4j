@@ -52,6 +52,7 @@ public class MXParser
     protected final static String PROPERTY_LOCATION =
         "http://xmlpull.org/v1/doc/properties.html#location";
 
+
     /**
      * Implementation notice:
      * the is instance variable that controls if newString() is interning.
@@ -295,6 +296,8 @@ public class MXParser
     protected char[] entityReplacementBuf[];
 
     protected int entityNameHash[];
+    private final EntityReplacementMap replacementMapTemplate;
+
 
     protected void ensureEntityCapacity() {
         final int entitySize = entityReplacementBuf != null ? entityReplacementBuf.length : 0;
@@ -394,6 +397,7 @@ public class MXParser
         namespaceEnd = 0;
 
         entityEnd = 0;
+        setupFromTemplate();
 
         reader = null;
         inputEncoding = null;
@@ -422,8 +426,29 @@ public class MXParser
     }
 
     public MXParser() {
+        replacementMapTemplate = null;
     }
 
+    public MXParser(EntityReplacementMap entityReplacementMap){
+      this.replacementMapTemplate = entityReplacementMap;
+    }
+
+    public void setupFromTemplate()
+    {
+        if ( replacementMapTemplate != null){
+        int length = replacementMapTemplate.entityEnd;
+
+        // This is a bit cheeky, since the EntityReplacementMap contains exact-sized arrays,
+        // and elements are always added to the array, we can use the array from the template.
+        // Kids; dont do this at home.
+        entityName = replacementMapTemplate.entityName;
+        entityNameBuf = replacementMapTemplate.entityNameBuf;
+        entityReplacement = replacementMapTemplate.entityReplacement;
+        entityReplacementBuf = replacementMapTemplate.entityReplacementBuf;
+        entityNameHash = replacementMapTemplate.entityNameHash;
+        entityEnd = length;
+        }
+    }
 
     /**
      * Method setFeature
