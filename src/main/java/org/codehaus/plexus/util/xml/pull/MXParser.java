@@ -578,8 +578,9 @@ public class MXParser
         ensureEntityCapacity();
 
         // this is to make sure that if interning works we will take advantage of it ...
-        this.entityName[entityEnd] = newString(entityName.toCharArray(), 0, entityName.length());
-        entityNameBuf[entityEnd] = entityName.toCharArray();
+        char[] entityNameCharData = entityName.toCharArray();
+        this.entityName[entityEnd] = newString( entityNameCharData, 0, entityName.length());
+        entityNameBuf[entityEnd] = entityNameCharData;
 
         entityReplacement[entityEnd] = replacementText;
         entityReplacementBuf[entityEnd] = replacementText.toCharArray();

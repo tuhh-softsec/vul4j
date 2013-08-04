@@ -56,6 +56,7 @@ package org.codehaus.plexus.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -218,6 +219,8 @@ public class DirectoryScanner
      */
     protected boolean everythingIncluded = true;
 
+    private final String[] tokenizedEmpty = MatchPattern.tokenizePathToString( "", File.separator );
+
     /**
      * Sole constructor.
      */
@@ -321,9 +324,10 @@ public class DirectoryScanner
         dirsExcluded = new Vector<String>();
         dirsDeselected = new Vector<String>();
 
-        if ( isIncluded( "" ) )
+        if ( isIncluded( "", tokenizedEmpty ) )
         {
-            if ( !isExcluded( "" ) )
+
+            if ( !isExcluded( "", tokenizedEmpty ) )
             {
                 if ( isSelected( "", basedir ) )
                 {
@@ -438,7 +442,7 @@ public class DirectoryScanner
 
         if ( !followSymlinks )
         {
-            Vector<String> noLinks = new Vector<String>();
+            ArrayList<String> noLinks = new ArrayList<String>();
             for ( String newfile : newfiles )
             {
                 try
@@ -458,7 +462,7 @@ public class DirectoryScanner
                     }
                     else
                     {
-                        noLinks.addElement( newfile );
+                        noLinks.add( newfile );
                     }
                 }
                 catch ( IOException ioe )
@@ -466,22 +470,23 @@ public class DirectoryScanner
                     String msg = "IOException caught while checking " + "for links, couldn't get cannonical path!";
                     // will be caught and redirected to Ant's logging system
                     System.err.println( msg );
-                    noLinks.addElement( newfile );
+                    noLinks.add( newfile );
                 }
             }
-            newfiles = new String[noLinks.size()];
-            noLinks.copyInto( newfiles );
+            newfiles = noLinks.toArray(new String[noLinks.size()]);
         }
 
         for ( String newfile : newfiles )
         {
             String name = vpath + newfile;
+            String[] tokenizedName =  MatchPattern.tokenizePathToString( name, File.separator );
             File file = new File( dir, newfile );
             if ( file.isDirectory() )
             {
-                if ( isIncluded( name ) )
+
+                if ( isIncluded( name, tokenizedName ) )
                 {
-                    if ( !isExcluded( name ) )
+                    if ( !isExcluded( name, tokenizedName ) )
                     {
                         if ( isSelected( name, file ) )
                         {
@@ -528,9 +533,9 @@ public class DirectoryScanner
             }
             else if ( file.isFile() )
             {
-                if ( isIncluded( name ) )
+                if ( isIncluded( name, tokenizedName ) )
                 {
-                    if ( !isExcluded( name ) )
+                    if ( !isExcluded( name, tokenizedName ) )
                     {
                         if ( isSelected( name, file ) )
                         {

@@ -345,6 +345,11 @@ public abstract class AbstractScanner
         return includesPatterns.matches( name, isCaseSensitive );
     }
 
+    protected boolean isIncluded( String name, String[] tokenizedName )
+    {
+        return includesPatterns.matches( name, tokenizedName, isCaseSensitive );
+    }
+
     /**
      * Tests whether or not a name matches the start of at least one include
      * pattern.
@@ -369,6 +374,11 @@ public abstract class AbstractScanner
     protected boolean isExcluded( String name )
     {
         return excludesPatterns.matches( name, isCaseSensitive );
+    }
+
+    protected boolean isExcluded( String name, String[] tokenizedName )
+    {
+        return excludesPatterns.matches( name, tokenizedName, isCaseSensitive );
     }
 
     /**

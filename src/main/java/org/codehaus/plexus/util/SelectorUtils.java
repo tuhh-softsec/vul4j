@@ -58,7 +58,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 /**
  * <p>This is a utility class used by selectors and DirectoryScanner. The
@@ -452,6 +451,141 @@ public final class SelectorUtils
         return true;
     }
 
+    static boolean matchAntPathPattern( char[][] patDirs, char[][] strDirs, boolean isCaseSensitive )
+    {
+        int patIdxStart = 0;
+        int patIdxEnd = patDirs.length - 1;
+        int strIdxStart = 0;
+        int strIdxEnd = strDirs.length - 1;
+
+        // up to first '**'
+        while ( patIdxStart <= patIdxEnd && strIdxStart <= strIdxEnd )
+        {
+            char[] patDir = patDirs[patIdxStart];
+            if ( isDoubleStar( patDir ) )
+            {
+                break;
+            }
+            if ( !match( patDir, strDirs[strIdxStart], isCaseSensitive ) )
+            {
+                return false;
+            }
+            patIdxStart++;
+            strIdxStart++;
+        }
+        if ( strIdxStart > strIdxEnd )
+        {
+            // String is exhausted
+            for ( int i = patIdxStart; i <= patIdxEnd; i++ )
+            {
+                if ( !isDoubleStar( patDirs[i] ) )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            if ( patIdxStart > patIdxEnd )
+            {
+                // String not exhausted, but pattern is. Failure.
+                return false;
+            }
+        }
+
+        // up to last '**'
+        while ( patIdxStart <= patIdxEnd && strIdxStart <= strIdxEnd )
+        {
+            char[] patDir = patDirs[patIdxEnd];
+            if ( isDoubleStar( patDir ) )
+            {
+                break;
+            }
+            if ( !match( patDir, strDirs[strIdxEnd], isCaseSensitive ) )
+            {
+                return false;
+            }
+            patIdxEnd--;
+            strIdxEnd--;
+        }
+        if ( strIdxStart > strIdxEnd )
+        {
+            // String is exhausted
+            for ( int i = patIdxStart; i <= patIdxEnd; i++ )
+            {
+                if ( !isDoubleStar( patDirs[i] ) )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        while ( patIdxStart != patIdxEnd && strIdxStart <= strIdxEnd )
+        {
+            int patIdxTmp = -1;
+            for ( int i = patIdxStart + 1; i <= patIdxEnd; i++ )
+            {
+                if ( isDoubleStar( patDirs[i] ) )
+                {
+                    patIdxTmp = i;
+                    break;
+                }
+            }
+            if ( patIdxTmp == patIdxStart + 1 )
+            {
+                // '**/**' situation, so skip one
+                patIdxStart++;
+                continue;
+            }
+            // Find the pattern between padIdxStart & padIdxTmp in str between
+            // strIdxStart & strIdxEnd
+            int patLength = ( patIdxTmp - patIdxStart - 1 );
+            int strLength = ( strIdxEnd - strIdxStart + 1 );
+            int foundIdx = -1;
+            strLoop:
+            for ( int i = 0; i <= strLength - patLength; i++ )
+            {
+                for ( int j = 0; j < patLength; j++ )
+                {
+                    char[] subPat = patDirs[patIdxStart + j + 1];
+                    char[] subStr = strDirs[strIdxStart + i + j];
+                    if ( !match( subPat, subStr, isCaseSensitive ) )
+                    {
+                        continue strLoop;
+                    }
+                }
+
+                foundIdx = strIdxStart + i;
+                break;
+            }
+
+            if ( foundIdx == -1 )
+            {
+                return false;
+            }
+
+            patIdxStart = patIdxTmp;
+            strIdxStart = foundIdx + patLength;
+        }
+
+        for ( int i = patIdxStart; i <= patIdxEnd; i++ )
+        {
+            if ( !isDoubleStar( patDirs[i] ) )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean isDoubleStar( char[] patDir )
+    {
+        return patDir != null && patDir.length == 2 && patDir[0] == '*' && patDir[1] == '*';
+    }
+
     /**
      * Tests whether or not a string matches against a pattern.
      * The pattern may contain two special characters:<br>
@@ -489,6 +623,11 @@ public final class SelectorUtils
     {
         char[] patArr = pattern.toCharArray();
         char[] strArr = str.toCharArray();
+        return match( patArr, strArr, isCaseSensitive);
+    }
+
+    public static boolean match( char[] patArr, char[] strArr, boolean isCaseSensitive )
+    {
         int patIdxStart = 0;
         int patIdxEnd = patArr.length - 1;
         int strIdxStart = 0;

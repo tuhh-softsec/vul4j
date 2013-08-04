@@ -30,9 +30,18 @@ public class MatchPatterns
     public boolean matches( String name, boolean isCaseSensitive )
     {
         String[] tokenized = MatchPattern.tokenizePathToString( name, File.separator );
+        return matches(  name, tokenized, isCaseSensitive );
+    }
+
+    public boolean matches( String name, String[] tokenizedName, boolean isCaseSensitive )
+    {
+        char[][] tokenizedNameChar = new char[tokenizedName.length][];
+        for(int i = 0;  i < tokenizedName.length; i++){
+        tokenizedNameChar[i] = tokenizedName[i].toCharArray();
+        }
         for ( MatchPattern pattern : patterns )
         {
-            if ( pattern.matchPath( name, tokenized, isCaseSensitive ) )
+            if ( pattern.matchPath( name, tokenizedNameChar, isCaseSensitive ) )
             {
                 return true;
             }

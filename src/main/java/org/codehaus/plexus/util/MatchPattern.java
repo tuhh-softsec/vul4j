@@ -36,6 +36,7 @@ public class MatchPattern
     private final String separator;
 
     private final String[] tokenized;
+    private final char[][] tokenizedChar;
 
     private MatchPattern( String source, String separator )
     {
@@ -49,6 +50,11 @@ public class MatchPattern
                 : source;
         this.separator = separator;
         tokenized = tokenizePathToString( this.source, separator );
+        tokenizedChar = new char[tokenized.length][];
+        for (int i = 0; i < tokenized.length; i++){
+            tokenizedChar[i] = tokenized[i].toCharArray();
+        }
+
     }
 
 
@@ -65,7 +71,7 @@ public class MatchPattern
         }
     }
 
-    boolean matchPath( String str, String[] strDirs, boolean isCaseSensitive )
+    boolean matchPath( String str, char[][] strDirs, boolean isCaseSensitive )
     {
         if ( regexPattern != null )
         {
@@ -73,7 +79,7 @@ public class MatchPattern
         }
         else
         {
-            return SelectorUtils.matchAntPathPattern( getTokenizedPathString(), strDirs, isCaseSensitive );
+            return SelectorUtils.matchAntPathPattern( getTokenizedPathChars(), strDirs, isCaseSensitive );
         }
     }
 
@@ -99,6 +105,10 @@ public class MatchPattern
         return tokenized;
     }
 
+    public char[][] getTokenizedPathChars()
+    {
+        return tokenizedChar;
+    }
 
     public boolean startsWith( String string )
     {
