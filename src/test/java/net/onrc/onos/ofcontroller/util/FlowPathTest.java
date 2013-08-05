@@ -166,7 +166,7 @@ public class FlowPathTest {
 	@Test
 	public void testToString(){
 
-		assertEquals("[flowId=0x1234 installerId=installerId flowPathFlags=[flags=] dataPath=[src=00:00:00:00:00:00:ca:fe/1 flowEntry=[flowEntryId=0x14 flowEntryMatch=[] flowEntryActions=[[type=ACTION_OUTPUT action=[port=23 maxLen=24]];[type=ACTION_OUTPUT action=[port=25 maxLen=26]];] dpid=00:00:00:00:00:00:be:ef inPort=null outPort=null flowEntryUserState=FE_USER_MODIFY flowEntrySwitchState=FE_SWITCH_UPDATE_IN_PROGRESS flowEntryErrorState=null] dst=00:00:00:00:00:00:ba:be/2] flowEntryMatch=[] flowEntryActions=[[type=ACTION_OUTPUT action=[port=10 maxLen=11]];[type=ACTION_OUTPUT action=[port=12 maxLen=13]];]]", flowPath.toString());
+		assertEquals("[flowId=0x1234 installerId=installerId flowPathFlags=[flags=] dataPath=[src=00:00:00:00:00:00:ca:fe/1 flowEntry=[flowEntryId=0x14 flowEntryMatch=[] flowEntryActions=[[type=ACTION_OUTPUT action=[port=23 maxLen=24]];[type=ACTION_OUTPUT action=[port=25 maxLen=26]];] dpid=00:00:00:00:00:00:be:ef flowEntryUserState=FE_USER_MODIFY flowEntrySwitchState=FE_SWITCH_UPDATE_IN_PROGRESS] dst=00:00:00:00:00:00:ba:be/2] flowEntryMatch=[] flowEntryActions=[[type=ACTION_OUTPUT action=[port=10 maxLen=11]];[type=ACTION_OUTPUT action=[port=12 maxLen=13]];]]", flowPath.toString());
 	}
 
 	@Test

@@ -329,36 +329,25 @@ public class FlowEntry {
 	if ( flowEntryId != null ) {
 		ret.append("[flowEntryId=" + this.flowEntryId.toString());
 	} else {
-		ret.append("[flowEntryId=null");
+		ret.append("[");
 	}
 	if ( flowEntryMatch != null ) {
 		ret.append(" flowEntryMatch=" + this.flowEntryMatch.toString());
-	} else {
-		ret.append(" flowEntryMatch=null");
 	}
 	ret.append( " flowEntryActions=" + this.flowEntryActions.toString() );
 	if ( dpid != null ) {
 		ret.append(" dpid=" + this.dpid.toString());
-	} else {
-		ret.append(" dpid=null");
 	}
 	if ( inPort != null ) {
 		ret.append(" inPort=" + this.inPort.toString());
-	} else {
-		ret.append(" inPort=null");
 	}
 	if ( outPort != null ) {
 		ret.append(" outPort=" + this.outPort.toString());
-	} else {
-		ret.append(" outPort=null");
 	}
 	ret.append(" flowEntryUserState=" + this.flowEntryUserState);
 	ret.append(" flowEntrySwitchState=" + this.flowEntrySwitchState);
 	if ( flowEntryErrorState != null ) {
 		ret.append(" flowEntryErrorState=" + this.flowEntryErrorState.toString());
-	} else {
-		ret.append(" flowEntryErrorState=null" );
-		
 	}
 	ret.append("]");
 
