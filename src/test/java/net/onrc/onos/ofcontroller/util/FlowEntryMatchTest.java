@@ -56,6 +56,7 @@ public class FlowEntryMatchTest {
 		assertEquals("default null", null, def.vlanPriority() );
 		assertEquals("default null", null, def.srcIPv4Net() );
 		assertEquals("default null", null, def.dstIPv4Net() );
+		assertEquals("default null", null, def.ipProto() );
 		assertEquals("default null", null, def.ipToS() );
 		assertEquals("default null", null, def.srcTcpUdpPort() );
 		assertEquals("default null", null, def.dstTcpUdpPort() );
