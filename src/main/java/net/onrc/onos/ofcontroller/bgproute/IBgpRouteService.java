@@ -21,6 +21,6 @@ public interface IBgpRouteService extends IFloodlightService {
 	public void newRibUpdate(RibUpdate update);
 	
 	//TODO This functionality should be provided by some sort of Ptree listener framework
-	public void prefixAdded(PtreeNode node);
-	public void prefixDeleted(PtreeNode node);
+	//public void prefixAdded(PtreeNode node);
+	//public void prefixDeleted(PtreeNode node);
 }
