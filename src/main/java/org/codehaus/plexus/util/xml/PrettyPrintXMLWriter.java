@@ -206,30 +206,49 @@ public class PrettyPrintXMLWriter
         write( StringUtils.unifyLineSeparators( text, lineSeparator ) );
     }
 
+    private static final Pattern amp = Pattern.compile( "&" );
+    private static final Pattern lt = Pattern.compile( "<" );
+    private static final Pattern gt = Pattern.compile( ">" );
+    private static final Pattern dqoute = Pattern.compile( "\"" );
+    private static final Pattern sqoute = Pattern.compile( "\'" );
+
     private static String escapeXml( String text )
     {
-        text = text.replaceAll( "&", "&amp;" );
-
-        text = text.replaceAll( "<", "&lt;" );
-
-        text = text.replaceAll( ">", "&gt;" );
-
-        text = text.replaceAll( "\"", "&quot;" );
-
-        text = text.replaceAll( "\'", "&apos;" );
+        if (text.indexOf('&') >= 0){
+            text = amp.matcher( text ).replaceAll( "&amp;" );
+        }
+        if (text.indexOf('<') >= 0){
+            text = lt.matcher( text ).replaceAll( "&lt;" );
+        }
+        if (text.indexOf('>') >= 0){
+            text = gt.matcher( text ).replaceAll( "&gt;" );
+        }
+        if (text.indexOf('"') >= 0){
+            text = dqoute.matcher( text ).replaceAll( "\"" );
+        }
+        if (text.indexOf('\'') >= 0){
+            text = sqoute.matcher( text ).replaceAll( "\'" );
+        }
 
         return text;
     }
+
+    private static final Pattern crlf = Pattern.compile( "\r\n" );
+    private static final Pattern lowers = Pattern.compile( "([\000-\037])" );
+
 
     private static String escapeXmlAttribute( String text )
     {
         text = escapeXml( text );
 
         // Windows
-        text = text.replaceAll( "\r\n", "&#10;" );
+        Matcher matcher = crlf.matcher( text );
+        if (matcher.matches())
+        {
+            text = matcher.replaceAll( "&#10;" );
+        }
 
-        Pattern pattern = Pattern.compile( "([\000-\037])" );
-        Matcher m = pattern.matcher( text );
+        Matcher m = lowers.matcher( text );
         StringBuffer b = new StringBuffer();
         while ( m.find() )
         {
