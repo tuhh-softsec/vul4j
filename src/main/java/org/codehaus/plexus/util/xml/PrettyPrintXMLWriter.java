@@ -224,16 +224,18 @@ public class PrettyPrintXMLWriter
             text = gt.matcher( text ).replaceAll( "&gt;" );
         }
         if (text.indexOf('"') >= 0){
-            text = dqoute.matcher( text ).replaceAll( "\"" );
+            text = dqoute.matcher( text ).replaceAll( "&quot;" );
         }
         if (text.indexOf('\'') >= 0){
-            text = sqoute.matcher( text ).replaceAll( "\'" );
+            text = sqoute.matcher( text ).replaceAll( "&apos;" );
         }
 
         return text;
     }
 
-    private static final Pattern crlf = Pattern.compile( "\r\n" );
+    private static final String crlf_str = "\r\n";
+
+    private static final Pattern crlf = Pattern.compile( crlf_str );
     private static final Pattern lowers = Pattern.compile( "([\000-\037])" );
 
 
@@ -242,10 +244,10 @@ public class PrettyPrintXMLWriter
         text = escapeXml( text );
 
         // Windows
-        Matcher matcher = crlf.matcher( text );
-        if (matcher.matches())
+        Matcher crlfmatcher = crlf.matcher( text );
+        if (text.contains( crlf_str ))
         {
-            text = matcher.replaceAll( "&#10;" );
+            text = crlfmatcher.replaceAll( "&#10;" );
         }
 
         Matcher m = lowers.matcher( text );
