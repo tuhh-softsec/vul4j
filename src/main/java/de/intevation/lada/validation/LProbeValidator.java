@@ -57,7 +57,9 @@ implements Validator
         validateEntnahmeOrt(p, warnings);
         validateProbenahmeBegin(p, warnings);
         validateUWB(p, warnings);
-        validateHauptProbenNummer(p, warnings);
+        if (!update) {
+            validateHauptProbenNummer(p, warnings);
+        }
         return warnings;
     }
 
