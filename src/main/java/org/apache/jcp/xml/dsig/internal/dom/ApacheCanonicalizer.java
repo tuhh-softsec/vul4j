@@ -72,7 +72,10 @@ public abstract class ApacheCanonicalizer extends TransformService {
             throw new ClassCastException
                 ("context must be of type DOMCryptoContext");
         }
-        if (parent == null || !(parent instanceof javax.xml.crypto.dom.DOMStructure)) {
+        if (parent == null) {
+            throw new NullPointerException();
+        }
+        if (!(parent instanceof javax.xml.crypto.dom.DOMStructure)) {
             throw new ClassCastException("parent must be of type DOMStructure");
         }
         transformElem = (Element)
@@ -88,7 +91,10 @@ public abstract class ApacheCanonicalizer extends TransformService {
             throw new ClassCastException
                 ("context must be of type DOMCryptoContext");
         }
-        if (parent == null || !(parent instanceof javax.xml.crypto.dom.DOMStructure)) {
+        if (parent == null) {
+            throw new NullPointerException();
+        }
+        if (!(parent instanceof javax.xml.crypto.dom.DOMStructure)) {
             throw new ClassCastException("parent must be of type DOMStructure");
         }
         transformElem = (Element)
