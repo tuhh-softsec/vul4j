@@ -1183,9 +1183,10 @@ public class FileUtils
     private static void mkdirsFor( File destination )
     {
         //does destination directory exist ?
-        if ( destination.getParentFile() != null && !destination.getParentFile().exists() )
+        File parentFile = destination.getParentFile();
+        if ( parentFile != null && !parentFile.exists() )
         {
-            destination.getParentFile().mkdirs();
+            parentFile.mkdirs();
         }
     }
 
@@ -2372,9 +2373,10 @@ public class FileUtils
                 return false;
             }
 
-            if ( f.getParentFile() != null )
+            File parentFile = f.getParentFile();
+            if ( parentFile != null )
             {
-                return isValidWindowsFileName( f.getParentFile() );
+                return isValidWindowsFileName( parentFile );
             }
         }
 
