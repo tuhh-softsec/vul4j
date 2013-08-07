@@ -121,7 +121,7 @@ public class BgpRouteResource extends ServerResource {
 				reply = "[POST: mask format is wrong]";
 				log.info(reply);
 				return reply + "\n";				
-			} catch (UnknownHostException e1) {
+			} catch (IllegalArgumentException e1) {
 				reply = "[POST: prefix format is wrong]";
 				log.info(reply);
 				return reply + "\n";
@@ -184,7 +184,7 @@ public class BgpRouteResource extends ServerResource {
 				reply = "[DELE: mask format is wrong]";
 				log.info(reply);
 				return reply + "\n";
-			} catch (UnknownHostException e1) {
+			} catch (IllegalArgumentException e1) {
 				reply = "[DELE: prefix format is wrong]";
 				log.info(reply);
 				return reply + "\n";

@@ -450,7 +450,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			} catch (NumberFormatException e) {
 				log.warn("Wrong mask format in RIB JSON: {}", mask1);
 				continue;
-			} catch (UnknownHostException e1) {
+			} catch (IllegalArgumentException e1) {
 				log.warn("Wrong prefix format in RIB JSON: {}", prefix1);
 				continue;
 			}
@@ -525,7 +525,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Prefix prefix = null;
 		try {
 			prefix = new Prefix(node.key, node.rib.masklen);
-		} catch (UnknownHostException e) {
+		} catch (IllegalArgumentException e) {
 			log.error(" ", e);
 		}
 

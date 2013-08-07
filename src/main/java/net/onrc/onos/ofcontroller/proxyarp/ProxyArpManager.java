@@ -38,6 +38,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 
+//TODO have L2 and also L3 mode, where it takes into account interface addresses
 public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private static Logger log = LoggerFactory.getLogger(ProxyArpManager.class);
 	
@@ -79,7 +80,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			return retry;
 		}
 		
-		public synchronized void dispatchReply(InetAddress ipAddress, byte[] replyMacAddress) {
+		public void dispatchReply(InetAddress ipAddress, byte[] replyMacAddress) {
 			log.debug("Dispatching reply for {} to {}", ipAddress.getHostAddress(), 
 					requester);
 			requester.arpResponse(ipAddress, replyMacAddress);
