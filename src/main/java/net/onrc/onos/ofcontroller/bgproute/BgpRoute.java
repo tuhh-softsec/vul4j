@@ -88,7 +88,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	protected ProxyArpManager proxyArp;
 	
-	protected static Ptree ptree;
+	//protected static Ptree ptree;
+	protected IPatriciaTrie ptree;
 	protected BlockingQueue<RibUpdate> ribUpdates;
 	
 	protected String bgpdRestIp;
@@ -250,7 +251,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	public void init(FloodlightModuleContext context)
 			throws FloodlightModuleException {
 	    
-	    ptree = new Ptree(32);
+	    //ptree = new Ptree(32);
+		ptree = new PatriciaTrie(32);
 	    
 	    ribUpdates = new LinkedBlockingQueue<RibUpdate>();
 	    	
@@ -307,13 +309,15 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		//test();
 	}
 
-	public Ptree getPtree() {
+	//public Ptree getPtree() {
+	public IPatriciaTrie getPtree() {
 		return ptree;
 	}
 	
 	public void clearPtree() {
 		//ptree = null;
-		ptree = new Ptree(32);	
+		//ptree = new Ptree(32);
+		ptree = new PatriciaTrie(32);
 	}
 	
 	public String getBGPdRestIp() {
@@ -325,6 +329,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	// Return nexthop address as byte array.
+	/*
 	public Rib lookupRib(byte[] dest) {
 		if (ptree == null) {
 		    log.debug("lookupRib: ptree null");
@@ -346,7 +351,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		return node.rib;
 	}
+	*/
 	
+	/*
 	//TODO looks like this should be a unit test
 	@SuppressWarnings("unused")
     private void test() throws UnknownHostException {
@@ -403,6 +410,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 
 	}
+	*/
 	
 	//TODO once the Ptree is object oriented this can go
 	private String getPrefixFromPtree(PtreeNode node){
@@ -455,15 +463,19 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				continue;
 			}
 			
-			PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
+			//PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
 			Rib rib = new Rib(router_id, nexthop, p.getPrefixLength());
 			
+			/*
 			if (node.rib != null) {
 				node.rib = null;
 				ptree.delReference(node);
 			}
 			
 			node.rib = rib;
+			*/
+			
+			ptree.put(p, rib);
 			
 			addPrefixFlows(p, rib);
 		} 
@@ -477,20 +489,22 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	public void processRibAdd(RibUpdate update) {
 		Prefix prefix = update.getPrefix();
 		
-		PtreeNode node = ptree.acquire(prefix.getAddress(), prefix.getPrefixLength());
+		//PtreeNode node = ptree.acquire(prefix.getAddress(), prefix.getPrefixLength());
+		Rib rib = ptree.put(prefix, update.getRibEntry());
 		
-		if (node.rib != null) {
+		//if (node.rib != null) {
+		if (rib != null) {
 			//There was an existing nexthop for this prefix. This update supersedes that,
 			//so we need to remove the old flows for this prefix from the switches
 			deletePrefixFlows(prefix);
 			
 			//Then remove the old nexthop from the Ptree
-			node.rib = null;
-			ptree.delReference(node);
+			//node.rib = null;
+			//ptree.delReference(node);
 		}
 		
 		//Put the new nexthop in the Ptree
-		node.rib = update.getRibEntry();
+		//node.rib = update.getRibEntry();
 
 		//Push flows for the new <prefix, nexthop>
 		addPrefixFlows(prefix, update.getRibEntry());
@@ -499,7 +513,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	public void processRibDelete(RibUpdate update) {
 		Prefix prefix = update.getPrefix();
 		
-		PtreeNode node = ptree.lookup(prefix.getAddress(), prefix.getPrefixLength());
+		//PtreeNode node = ptree.lookup(prefix.getAddress(), prefix.getPrefixLength());
 		
 		/* 
 		 * Remove the flows from the switches before the rib is lost
@@ -510,6 +524,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		 * rib is an actual prefix in the Ptree.
 		 */
 
+		/*
 		if (node != null && node.rib != null) {
 			if (update.getRibEntry().equals(node.rib)) {
 				node.rib = null;
@@ -518,10 +533,20 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				deletePrefixFlows(update.getPrefix());
 			}
 		}
+		*/
+		
+		if (ptree.remove(prefix, update.getRibEntry())) {
+			/*
+			 * Only delete flows if an entry was actually removed from the trie.
+			 * If no entry was removed, the <prefix, nexthop> wasn't there so
+			 * it's probably already been removed and we don't need to do anything
+			 */
+			deletePrefixFlows(prefix);
+		}
 	}
 	
 	//TODO compatibility layer, used by beginRouting()
-	public void prefixAdded(PtreeNode node) {
+	/*public void prefixAdded(PtreeNode node) {
 		Prefix prefix = null;
 		try {
 			prefix = new Prefix(node.key, node.rib.masklen);
@@ -530,7 +555,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 
 		addPrefixFlows(prefix, node.rib);
-	}
+	}*/
 
 	private void addPrefixFlows(Prefix prefix, Rib rib) {
 		if (!topologyReady){
@@ -980,11 +1005,22 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		setupFullMesh();
 		
 		//Traverse ptree and create flows for all routes
+		/*
 		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)){
 			if (node.rib != null){
 				prefixAdded(node);
 			}
 		}
+		*/
+		
+		synchronized (ptree) {
+			Iterator<IPatriciaTrie.Entry> it = ptree.iterator();
+			while (it.hasNext()) {
+				IPatriciaTrie.Entry entry = it.next();
+				addPrefixFlows(entry.getPrefix(), entry.getRib());
+			}
+		}
+		
 	}
 	
 	private void checkSwitchesConnected(){

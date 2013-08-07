@@ -1,6 +1,6 @@
 package net.onrc.onos.ofcontroller.bgproute;
 
-import java.net.UnknownHostException;
+import java.util.Iterator;
 
 import net.onrc.onos.ofcontroller.bgproute.RibUpdate.Operation;
 
@@ -59,11 +59,13 @@ public class BgpRouteResource extends ServerResource {
 			return output;
 		} 
 		else {
-			Ptree ptree = bgpRoute.getPtree();
+			//Ptree ptree = bgpRoute.getPtree();
+			IPatriciaTrie ptree = bgpRoute.getPtree();
 			output += "{\n  \"rib\": [\n";
 			boolean printed = false;
 			
-			for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)) {
+			/*
+			for (PtreeNode node = ptree.begin(); node!= null; node = ptree.next(node)) {
 				if (node.rib == null) {
 					continue;
 				}
@@ -73,7 +75,25 @@ public class BgpRouteResource extends ServerResource {
 				output += "    {\"prefix\": \"" + addrToString(node.key) + "/" + node.keyBits +"\", ";
 				output += "\"nexthop\": \"" + addrToString(node.rib.nextHop.getAddress()) +"\"}";
 				printed = true;
+			}*/
+			
+			synchronized(ptree) {
+				Iterator<IPatriciaTrie.Entry> it = ptree.iterator();
+				while (it.hasNext()) {
+					IPatriciaTrie.Entry entry = it.next();
+					
+					if (printed == true) {
+						output += ",\n";
+					}
+					
+					output += "    {\"prefix\": \"" + entry.getPrefix() +"\", ";
+					output += "\"nexthop\": \"" + entry.getRib().getNextHop().getHostAddress() +"\"}";
+					//output += ",\n";
+					
+					printed = true;
+				}
 			}
+			
 			//output += "{\"router_id\": \"" + addrToString(node.rib.routerId.getAddress()) +"\"}\n";
 			output += "\n  ]\n}\n";
 		}
