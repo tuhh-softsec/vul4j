@@ -154,13 +154,13 @@ public final class DOMSignatureProperty extends BaseStructure
         }
         SignatureProperty osp = (SignatureProperty)o;
 
-        boolean idsEqual = (id == null ? osp.getId() == null
-                                       : id.equals(osp.getId()));
+        boolean idsEqual = id == null ? osp.getId() == null
+                                       : id.equals(osp.getId());
 
         @SuppressWarnings("unchecked")
         List<XMLStructure> ospContent = osp.getContent();
-        return (equalsContent(ospContent) &&
-                target.equals(osp.getTarget()) && idsEqual);
+        return equalsContent(ospContent) &&
+                target.equals(osp.getTarget()) && idsEqual;
     }
     
     @Override

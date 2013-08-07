@@ -97,8 +97,8 @@ public final class DOMX509IssuerSerial extends BaseStructure
             return false;
         }
         X509IssuerSerial ois = (X509IssuerSerial)obj;
-        return (issuerName.equals(ois.getIssuerName()) &&
-                serialNumber.equals(ois.getSerialNumber()));
+        return issuerName.equals(ois.getIssuerName()) &&
+                serialNumber.equals(ois.getSerialNumber());
     }
     
     @Override

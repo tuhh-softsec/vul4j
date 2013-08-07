@@ -141,7 +141,7 @@ public final class DOMRetrievalMethod extends DOMStructure
                 transformElem = DOMUtils.getNextSiblingElement(transformElem);
                 
                 transformCount++;
-                if (secVal && (transformCount > DOMReference.MAXIMUM_TRANSFORM_COUNT)) {
+                if (secVal && transformCount > DOMReference.MAXIMUM_TRANSFORM_COUNT) {
                     String error = "A maxiumum of " + DOMReference.MAXIMUM_TRANSFORM_COUNT + " " 
                         + "transforms per Reference are allowed with secure validation";
                     throw new MarshalException(error);
@@ -260,11 +260,11 @@ public final class DOMRetrievalMethod extends DOMStructure
         }
         RetrievalMethod orm = (RetrievalMethod)obj;
 
-        boolean typesEqual = (type == null ? orm.getType() == null
-                                           : type.equals(orm.getType()));
+        boolean typesEqual = type == null ? orm.getType() == null
+                                           : type.equals(orm.getType());
 
-        return (uri.equals(orm.getURI()) &&
-            transforms.equals(orm.getTransforms()) && typesEqual);
+        return uri.equals(orm.getURI()) &&
+            transforms.equals(orm.getTransforms()) && typesEqual;
     }
     
     @Override

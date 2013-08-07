@@ -196,7 +196,7 @@ public interface XMLSignature extends XMLStructure {
      * @author Sean Mullan
      * @author JSR 105 Expert Group
      */
-    public interface SignatureValue extends XMLStructure {
+    interface SignatureValue extends XMLStructure {
         /**
          * Returns the optional <code>Id</code> attribute of this
          * <code>SignatureValue</code>, which permits this element to be

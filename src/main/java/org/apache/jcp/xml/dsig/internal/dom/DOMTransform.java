@@ -30,12 +30,17 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.spec.AlgorithmParameterSpec;
 
+import javax.xml.crypto.Data;
+import javax.xml.crypto.MarshalException;
+import javax.xml.crypto.XMLCryptoContext;
+import javax.xml.crypto.dsig.Transform;
+import javax.xml.crypto.dsig.TransformException;
+import javax.xml.crypto.dsig.TransformService;
+import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.crypto.dsig.dom.DOMSignContext;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import javax.xml.crypto.*;
-import javax.xml.crypto.dsig.*;
-import javax.xml.crypto.dsig.dom.DOMSignContext;
 
 /**
  * DOM-based abstract implementation of Transform.
@@ -168,9 +173,9 @@ public class DOMTransform extends BaseStructure implements Transform {
         }
         Transform otransform = (Transform)o;
 
-        return (getAlgorithm().equals(otransform.getAlgorithm()) &&
+        return getAlgorithm().equals(otransform.getAlgorithm()) &&
                 DOMUtils.paramsEqual(getParameterSpec(),
-                                     otransform.getParameterSpec()));
+                                     otransform.getParameterSpec());
     }
 
     @Override

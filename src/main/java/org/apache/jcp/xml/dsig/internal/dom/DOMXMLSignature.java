@@ -407,15 +407,15 @@ public final class DOMXMLSignature extends DOMStructure
         XMLSignature osig = (XMLSignature)o;
 
         boolean idEqual =
-            (id == null ? osig.getId() == null : id.equals(osig.getId()));
+            id == null ? osig.getId() == null : id.equals(osig.getId());
         boolean keyInfoEqual =
-            (ki == null ? osig.getKeyInfo() == null
-                        : ki.equals(osig.getKeyInfo()));
+            ki == null ? osig.getKeyInfo() == null
+                        : ki.equals(osig.getKeyInfo());
 
-        return (idEqual && keyInfoEqual &&
+        return idEqual && keyInfoEqual &&
                 sv.equals(osig.getSignatureValue()) &&
                 si.equals(osig.getSignedInfo()) &&
-                objects.equals(osig.getObjects()));
+                objects.equals(osig.getObjects());
     }
     
     @Override
@@ -568,7 +568,7 @@ public final class DOMXMLSignature extends DOMStructure
             SignatureValue osv = (SignatureValue)o;
 
             boolean idEqual =
-                (id == null ? osv.getId() == null : id.equals(osv.getId()));
+                id == null ? osv.getId() == null : id.equals(osv.getId());
 
             //XXX compare signature values?
             return idEqual;

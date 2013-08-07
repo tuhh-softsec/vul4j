@@ -114,7 +114,7 @@ public interface Transform extends XMLStructure, AlgorithmMethod {
      * @throws TransformException if an error occurs while executing the
      *    transform
      */
-    public abstract Data transform(Data data, XMLCryptoContext context)
+    Data transform(Data data, XMLCryptoContext context)
         throws TransformException;
 
     /**
@@ -137,7 +137,6 @@ public interface Transform extends XMLStructure, AlgorithmMethod {
      * @throws TransformException if an error occurs while executing the
      *    transform
      */
-    public abstract Data transform
-        (Data data, XMLCryptoContext context, OutputStream os)
+    Data transform(Data data, XMLCryptoContext context, OutputStream os)
         throws TransformException;
 }

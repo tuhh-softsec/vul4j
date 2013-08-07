@@ -169,10 +169,10 @@ public abstract class DOMDigestMethod extends BaseStructure
         }
         DigestMethod odm = (DigestMethod)o;
 
-        boolean paramsEqual = (params == null ? odm.getParameterSpec() == null :
-            params.equals(odm.getParameterSpec()));
+        boolean paramsEqual = params == null ? odm.getParameterSpec() == null :
+            params.equals(odm.getParameterSpec());
 
-        return (getAlgorithm().equals(odm.getAlgorithm()) && paramsEqual);
+        return getAlgorithm().equals(odm.getAlgorithm()) && paramsEqual;
     }
     
     @Override

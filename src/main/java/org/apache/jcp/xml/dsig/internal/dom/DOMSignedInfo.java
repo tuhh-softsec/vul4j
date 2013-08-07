@@ -151,8 +151,8 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
         boolean secVal = Utils.secureValidation(context);
 
         String signatureMethodAlgorithm = signatureMethod.getAlgorithm();
-        if (secVal && ((ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5.equals(signatureMethodAlgorithm)
-                || ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5.equals(signatureMethodAlgorithm)))) {
+        if (secVal && (ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5.equals(signatureMethodAlgorithm)
+                || ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5.equals(signatureMethodAlgorithm))) {
             throw new MarshalException(
                 "It is forbidden to use algorithm " + signatureMethod + " when secure validation is enabled"
             );
@@ -168,7 +168,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
             refElem = DOMUtils.getNextSiblingElement(refElem);
             
             refCount++;
-            if (secVal && (refCount > MAXIMUM_REFERENCE_COUNT)) {
+            if (secVal && refCount > MAXIMUM_REFERENCE_COUNT) {
                 String error = "A maxiumum of " + MAXIMUM_REFERENCE_COUNT + " " 
                     + "references per Manifest are allowed with secure validation";
                 throw new MarshalException(error);
@@ -283,12 +283,12 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
         }
         SignedInfo osi = (SignedInfo)o;
 
-        boolean idEqual = (id == null ? osi.getId() == null
-                                      : id.equals(osi.getId()));
+        boolean idEqual = id == null ? osi.getId() == null
+                                      : id.equals(osi.getId());
 
-        return (canonicalizationMethod.equals(osi.getCanonicalizationMethod()) 
+        return canonicalizationMethod.equals(osi.getCanonicalizationMethod()) 
                 && signatureMethod.equals(osi.getSignatureMethod()) && 
-                references.equals(osi.getReferences()) && idEqual);
+                references.equals(osi.getReferences()) && idEqual;
     }
 
     @SuppressWarnings("unchecked")

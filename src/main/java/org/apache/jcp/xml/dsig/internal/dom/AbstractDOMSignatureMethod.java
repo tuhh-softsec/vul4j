@@ -177,8 +177,8 @@ abstract class AbstractDOMSignatureMethod extends BaseStructure
         }
         SignatureMethod osm = (SignatureMethod)o;
 
-        return (getAlgorithm().equals(osm.getAlgorithm()) &&
-            paramsEqual(osm.getParameterSpec()));
+        return getAlgorithm().equals(osm.getAlgorithm()) &&
+            paramsEqual(osm.getParameterSpec());
     }
     
     @Override
@@ -201,6 +201,6 @@ abstract class AbstractDOMSignatureMethod extends BaseStructure
      */
     boolean paramsEqual(AlgorithmParameterSpec spec)
     {
-        return (getParameterSpec() == spec);
+        return getParameterSpec() == spec;
     }
 }

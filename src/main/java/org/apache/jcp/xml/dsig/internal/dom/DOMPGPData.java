@@ -171,12 +171,12 @@ public final class DOMPGPData extends BaseStructure implements PGPData {
 
     @Override
     public byte[] getKeyId() {
-        return (keyId == null ? null : keyId.clone());
+        return keyId == null ? null : keyId.clone();
     }
 
     @Override
     public byte[] getKeyPacket() {
-        return (keyPacket == null ? null : keyPacket.clone());
+        return keyPacket == null ? null : keyPacket.clone();
     }
 
     @Override
@@ -212,8 +212,8 @@ public final class DOMPGPData extends BaseStructure implements PGPData {
         }
 
         // tag value must be 6, 14, 5 or 7
-        if (((tag & 6) != 6) && ((tag & 14) != 14) && 
-            ((tag & 5) != 5) && ((tag & 7) != 7)) {
+        if ((tag & 6) != 6 && (tag & 14) != 14 && 
+            (tag & 5) != 5 && (tag & 7) != 7) {
             throw new IllegalArgumentException("keypacket tag is invalid: " +
                                                "must be 6, 14, 5, or 7");
         }

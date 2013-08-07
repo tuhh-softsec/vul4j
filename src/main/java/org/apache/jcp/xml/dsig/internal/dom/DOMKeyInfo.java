@@ -124,7 +124,7 @@ public final class DOMKeyInfo extends BaseStructure implements KeyInfo {
             } else if (localName.equals("PGPData")) {
                 content.add(new DOMPGPData(childElem));
             } else { //may be MgmtData, SPKIData or element from other namespace
-                content.add(new javax.xml.crypto.dom.DOMStructure((childElem)));
+                content.add(new javax.xml.crypto.dom.DOMStructure(childElem));
             }
         }
         keyInfoTypes = Collections.unmodifiableList(content);
@@ -197,10 +197,10 @@ public final class DOMKeyInfo extends BaseStructure implements KeyInfo {
         }
         KeyInfo oki = (KeyInfo)o;
 
-        boolean idsEqual = (id == null ? oki.getId() == null
-                                       : id.equals(oki.getId()));
+        boolean idsEqual = id == null ? oki.getId() == null
+                                       : id.equals(oki.getId());
 
-        return (keyInfoTypes.equals(oki.getContent()) && idsEqual);
+        return keyInfoTypes.equals(oki.getContent()) && idsEqual;
     }
     
     @Override

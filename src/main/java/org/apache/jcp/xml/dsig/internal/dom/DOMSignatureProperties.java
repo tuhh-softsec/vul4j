@@ -145,10 +145,10 @@ public final class DOMSignatureProperties extends BaseStructure
         }
         SignatureProperties osp = (SignatureProperties)o;
 
-        boolean idsEqual = (id == null ? osp.getId() == null
-                                       : id.equals(osp.getId()));
+        boolean idsEqual = id == null ? osp.getId() == null
+                                       : id.equals(osp.getId());
 
-        return (properties.equals(osp.getProperties()) && idsEqual);
+        return properties.equals(osp.getProperties()) && idsEqual;
     }
     
     @Override

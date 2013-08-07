@@ -96,7 +96,7 @@ public final class DOMManifest extends BaseStructure implements Manifest {
             refElem = DOMUtils.getNextSiblingElement(refElem);
             
             refCount++;
-            if (secVal && (refCount > DOMSignedInfo.MAXIMUM_REFERENCE_COUNT)) {
+            if (secVal && refCount > DOMSignedInfo.MAXIMUM_REFERENCE_COUNT) {
                 String error = "A maxiumum of " + DOMSignedInfo.MAXIMUM_REFERENCE_COUNT + " " 
                     + "references per Manifest are allowed with secure validation";
                 throw new MarshalException(error);
@@ -145,10 +145,10 @@ public final class DOMManifest extends BaseStructure implements Manifest {
         }
         Manifest oman = (Manifest)o;
 
-        boolean idsEqual = (id == null ? oman.getId() == null
-                                       : id.equals(oman.getId()));
+        boolean idsEqual = id == null ? oman.getId() == null
+                                       : id.equals(oman.getId());
 
-        return (idsEqual && references.equals(oman.getReferences()));
+        return idsEqual && references.equals(oman.getReferences());
     }
     
     @Override

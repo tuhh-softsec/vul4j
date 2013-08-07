@@ -197,17 +197,17 @@ public final class DOMXMLObject extends BaseStructure implements XMLObject {
         }
         XMLObject oxo = (XMLObject)o;
 
-        boolean idsEqual = (id == null ? oxo.getId() == null
-                                       : id.equals(oxo.getId()));
+        boolean idsEqual = id == null ? oxo.getId() == null
+                                       : id.equals(oxo.getId());
         boolean encodingsEqual =
-            (encoding == null ? oxo.getEncoding() == null
-                              : encoding.equals(oxo.getEncoding()));
+            encoding == null ? oxo.getEncoding() == null
+                              : encoding.equals(oxo.getEncoding());
         boolean mimeTypesEqual =
-            (mimeType == null ? oxo.getMimeType() == null
-                              : mimeType.equals(oxo.getMimeType()));
+            mimeType == null ? oxo.getMimeType() == null
+                              : mimeType.equals(oxo.getMimeType());
 
-        return (idsEqual && encodingsEqual && mimeTypesEqual && 
-                equalsContent(getXmlObjectContent(oxo)));
+        return idsEqual && encodingsEqual && mimeTypesEqual && 
+                equalsContent(getXmlObjectContent(oxo));
     }
     
     @Override

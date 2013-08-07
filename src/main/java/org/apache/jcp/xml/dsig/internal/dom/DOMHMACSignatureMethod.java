@@ -201,7 +201,7 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
         }
         HMACParameterSpec ospec = (HMACParameterSpec)spec;
 
-        return (outputLength == ospec.getOutputLength());
+        return outputLength == ospec.getOutputLength();
     }
 
     @Override

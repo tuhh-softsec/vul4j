@@ -71,7 +71,7 @@ public class DOMCryptoContext implements XMLCryptoContext {
             throw new NullPointerException("namespaceURI cannot be null");
         }
         String prefix = nsMap.get(namespaceURI);
-        return (prefix != null ? prefix : defaultPrefix);
+        return prefix != null ? prefix : defaultPrefix;
     }
 
     /**

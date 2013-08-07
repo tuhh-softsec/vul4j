@@ -70,7 +70,7 @@ public class DOMUtils {
      * @return The string for the qName, for example, "xsd:element".
      */
     public static String getQNameString(String prefix, String localName) {
-        String qName = (prefix == null || prefix.length() == 0)
+        String qName = prefix == null || prefix.length() == 0
                 ? localName : prefix + ":" + localName;
 
         return qName;
@@ -388,8 +388,8 @@ public class DOMUtils {
     private static boolean paramsEqual(XPathFilterParameterSpec spec1,
                                        XPathFilterParameterSpec spec2)
     {
-        return (spec1.getXPath().equals(spec2.getXPath()) && 
-                spec1.getNamespaceMap().equals(spec2.getNamespaceMap()));
+        return spec1.getXPath().equals(spec2.getXPath()) && 
+                spec1.getNamespaceMap().equals(spec2.getNamespaceMap());
     }
 
     private static boolean paramsEqual(XSLTTransformParameterSpec spec1,

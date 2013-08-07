@@ -167,7 +167,7 @@ public final class DOMReference extends DOMStructure
         }
         this.digestMethod = dm;
         this.uri = uri;
-        if ((uri != null) && (!uri.equals(""))) {
+        if (uri != null && !uri.equals("")) {
             try {
                 new URI(uri);
             } catch (URISyntaxException e) {
@@ -208,7 +208,7 @@ public final class DOMReference extends DOMStructure
                 transformElem = DOMUtils.getNextSiblingElement(transformElem);
                 
                 transformCount++;
-                if (secVal && (transformCount > MAXIMUM_TRANSFORM_COUNT)) {
+                if (secVal && transformCount > MAXIMUM_TRANSFORM_COUNT) {
                     String error = "A maxiumum of " + MAXIMUM_TRANSFORM_COUNT + " " 
                         + "transforms per Reference are allowed with secure validation";
                     throw new MarshalException(error);
@@ -276,13 +276,13 @@ public final class DOMReference extends DOMStructure
 
     @Override
     public byte[] getDigestValue() {
-        return (digestValue == null ? null : digestValue.clone());
+        return digestValue == null ? null : digestValue.clone();
     }
 
     @Override
     public byte[] getCalculatedDigestValue() {
-        return (calcDigestValue == null ? null 
-                                        : calcDigestValue.clone());
+        return calcDigestValue == null ? null 
+                                        : calcDigestValue.clone();
     }
 
     @Override
@@ -456,7 +456,7 @@ public final class DOMReference extends DOMStructure
                     if (!c14n11) {
                         Boolean prop = (Boolean)context.getProperty
                             ("org.apache.xml.security.useC14N11");
-                        c14n11 = (prop != null && prop);
+                        c14n11 = prop != null && prop;
                         if (c14n11) {
                             c14nalg = "http://www.w3.org/2006/12/xml-c14n11";
                         }
@@ -568,12 +568,12 @@ public final class DOMReference extends DOMStructure
         }
         Reference oref = (Reference)o;
 
-        boolean idsEqual = (id == null ? oref.getId() == null
-                                       : id.equals(oref.getId()));
-        boolean urisEqual = (uri == null ? oref.getURI() == null
-                                         : uri.equals(oref.getURI()));
-        boolean typesEqual = (type == null ? oref.getType() == null
-                                           : type.equals(oref.getType()));
+        boolean idsEqual = id == null ? oref.getId() == null
+                                       : id.equals(oref.getId());
+        boolean urisEqual = uri == null ? oref.getURI() == null
+                                         : uri.equals(oref.getURI());
+        boolean typesEqual = type == null ? oref.getType() == null
+                                           : type.equals(oref.getType());
         boolean digestValuesEqual =
             Arrays.equals(digestValue, oref.getDigestValue());
 

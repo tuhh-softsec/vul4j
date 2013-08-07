@@ -109,8 +109,8 @@ public class DOMCanonicalizationMethod extends DOMTransform
         }
         CanonicalizationMethod ocm = (CanonicalizationMethod)o;
 
-        return (getAlgorithm().equals(ocm.getAlgorithm()) &&
-            DOMUtils.paramsEqual(getParameterSpec(), ocm.getParameterSpec()));
+        return getAlgorithm().equals(ocm.getAlgorithm()) &&
+            DOMUtils.paramsEqual(getParameterSpec(), ocm.getParameterSpec());
     }
     
     @Override

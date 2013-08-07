@@ -102,7 +102,7 @@ public final class Utils {
      * Returns true if uri is a same-document URI, false otherwise.
      */
     public static boolean sameDocumentURI(String uri) {
-        return (uri != null && (uri.length() == 0 || uri.charAt(0) == '#'));
+        return uri != null && (uri.length() == 0 || uri.charAt(0) == '#');
     }
 
     static boolean secureValidation(XMLCryptoContext xc) {
@@ -114,6 +114,6 @@ public final class Utils {
 
     private static boolean getBoolean(XMLCryptoContext xc, String name) {
         Boolean value = (Boolean)xc.getProperty(name);
-        return (value != null && value.booleanValue());
+        return value != null && value.booleanValue();
     }
 }

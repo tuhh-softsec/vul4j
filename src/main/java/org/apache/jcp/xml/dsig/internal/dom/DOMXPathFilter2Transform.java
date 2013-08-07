@@ -130,7 +130,7 @@ public final class DOMXPathFilter2Transform extends ApacheTransform {
         XPathFilter2ParameterSpec xp = 
             (XPathFilter2ParameterSpec)getParameterSpec();
         String prefix = DOMUtils.getNSPrefix(context, Transform.XPATH2);
-        String qname = (prefix == null || prefix.length() == 0) 
+        String qname = prefix == null || prefix.length() == 0 
                        ? "xmlns" : "xmlns:" + prefix;
         @SuppressWarnings("unchecked")
         List<XPathType> xpathList = xp.getXPathList();

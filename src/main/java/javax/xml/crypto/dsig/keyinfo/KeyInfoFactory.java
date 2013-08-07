@@ -38,7 +38,6 @@ import javax.xml.crypto.NoSuchMechanismException;
 import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.XMLStructure;
 import javax.xml.crypto.dom.DOMStructure;
-import javax.xml.crypto.dsig.*;
 
 /**
  * A factory for creating {@link KeyInfo} objects from scratch or for
