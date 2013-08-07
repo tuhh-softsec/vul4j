@@ -147,6 +147,16 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.5.2</version>
+        <configuration>
+          <formats>
+            <format>xml</format>
+          </formats>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <!-- for getting visualization reporting   -->
@@ -185,11 +195,6 @@
           <charset>UTF-8</charset>
           <locale>en</locale>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.5.2</version>
       </plugin>
     </plugins>
   </reporting>
