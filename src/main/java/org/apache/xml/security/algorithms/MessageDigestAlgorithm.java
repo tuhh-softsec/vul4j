@@ -117,7 +117,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      *
      * @return the actual {@link java.security.MessageDigest} algorithm object
      */
-    public java.security.MessageDigest getAlgorithm() {
+    public MessageDigest getAlgorithm() {
         return algorithm;
     }
 
@@ -130,7 +130,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @return the result of the {@link java.security.MessageDigest#isEqual} method
      */
     public static boolean isEqual(byte[] digesta, byte[] digestb) {
-        return java.security.MessageDigest.isEqual(digesta, digestb);
+        return MessageDigest.isEqual(digesta, digestb);
     }
 
     /**

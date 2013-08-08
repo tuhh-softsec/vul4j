@@ -284,7 +284,7 @@ public class Init {
                         String description =
                             resolverElem[i].getAttributeNS(null, "DESCRIPTION");
 
-                        if ((description != null) && (description.length() > 0)) {
+                        if (description != null && description.length() > 0) {
                             if (log.isDebugEnabled()) {
                                 log.debug("Register Resolver: " + javaClass + ": "
                                           + description);
@@ -317,7 +317,7 @@ public class Init {
                         String description =
                             resolverElem[i].getAttributeNS(null, "DESCRIPTION");
 
-                        if ((description != null) && (description.length() > 0)) {
+                        if (description != null && description.length() > 0) {
                             if (log.isDebugEnabled()) {
                                 log.debug("Register Resolver: " + javaClass + ": "
                                           + description);

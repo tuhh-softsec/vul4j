@@ -81,7 +81,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                     lastlevel = 0;
                     return;    				
                 }
-                lastlevel = (levels.get(newSize - 1)).level;
+                lastlevel = levels.get(newSize - 1).level;
             }
         }
         

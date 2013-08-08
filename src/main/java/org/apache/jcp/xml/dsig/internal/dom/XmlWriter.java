@@ -41,7 +41,7 @@ public interface XmlWriter {
      *
      * @param <CLZ>
      */
-    static abstract class ToMarshal<CLZ extends XMLStructure> {
+    static abstract class ToMarshal<CLZ extends XMLStructure> { //NOPMD
         public final Class<CLZ> clazzToMatch;
         
         public ToMarshal(Class<CLZ> clazzToMatch) {

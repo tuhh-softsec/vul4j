@@ -47,7 +47,7 @@ public final class UtfHelpper {
             out.write(c);
             return;
         }
-        if ((c >= 0xD800 && c <= 0xDBFF) || (c >= 0xDC00 && c <= 0xDFFF)) {
+        if (c >= 0xD800 && c <= 0xDBFF || c >= 0xDC00 && c <= 0xDFFF) {
             //No Surrogates in sun java
             out.write(0x3f);
             return;
@@ -59,7 +59,7 @@ public final class UtfHelpper {
             ch = (char)(c>>>12);      
             write = 0xE0;
             if (ch > 0) {
-                write |= (ch & 0x0F);
+                write |= ch & 0x0F;
             } 
             out.write(write);
             write = 0x80;
@@ -70,7 +70,7 @@ public final class UtfHelpper {
         }
         ch = (char)(c>>>6);
         if (ch > 0) {
-            write |= (ch & bias);
+            write |= ch & bias;
         } 
         out.write(write);
         out.write(0x80 | ((c) & 0x3F));    
@@ -90,7 +90,7 @@ public final class UtfHelpper {
                 out.write(c);
                 continue;
             }
-            if ((c >= 0xD800 && c <= 0xDBFF) || (c >= 0xDC00 && c <= 0xDFFF)) {
+            if (c >= 0xD800 && c <= 0xDBFF || c >= 0xDC00 && c <= 0xDFFF) {
                 //No Surrogates in sun java
                 out.write(0x3f);
                 continue;
@@ -102,7 +102,7 @@ public final class UtfHelpper {
                 ch = (char)(c>>>12);      
                 write = 0xE0;
                 if (ch > 0) {
-                    write |= (ch & 0x0F);
+                    write |= ch & 0x0F;
                 } 
                 out.write(write);
                 write = 0x80;
@@ -113,7 +113,7 @@ public final class UtfHelpper {
             }
             ch = (char)(c>>>6);
             if (ch > 0) {
-                write |= (ch & bias);
+                write |= ch & bias;
             } 
             out.write(write);
             out.write(0x80 | ((c) & 0x3F));       
@@ -135,7 +135,7 @@ public final class UtfHelpper {
                 result[out++] = (byte)c;
                 continue;
             }
-            if ((c >= 0xD800 && c <= 0xDBFF) || (c >= 0xDC00 && c <= 0xDFFF)) {  	
+            if (c >= 0xD800 && c <= 0xDBFF || c >= 0xDC00 && c <= 0xDFFF) {  	
                 //No Surrogates in sun java
                 result[out++] = 0x3f;
                 continue;
@@ -153,7 +153,7 @@ public final class UtfHelpper {
                 ch = (char)(c>>>12);      
                 write = (byte)0xE0;
                 if (ch > 0) {
-                    write |= (ch & 0x0F);
+                    write |= ch & 0x0F;
                 } 
                 result[out++] = write;
                 write = (byte)0x80;
@@ -164,7 +164,7 @@ public final class UtfHelpper {
             }
             ch = (char)(c>>>6);
             if (ch > 0) {
-                write |= (ch & bias);
+                write |= ch & bias;
             } 
             result[out++] = write;
             result[out++] = (byte)(0x80 | ((c) & 0x3F)); 

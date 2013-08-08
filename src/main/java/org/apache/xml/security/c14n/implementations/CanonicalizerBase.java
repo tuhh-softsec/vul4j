@@ -423,7 +423,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 break;
 
             case Node.COMMENT_NODE :			
-                if (this.includeComments && (isVisibleDO(currentNode, ns.getLevel()) == 1)) {
+                if (this.includeComments && isVisibleDO(currentNode, ns.getLevel()) == 1) {
                     outputCommentToWriter((Comment) currentNode, writer, documentLevel);
                 }
                 break;
@@ -439,8 +439,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 if (isVisible(currentNode)) {
                     outputTextToWriter(currentNode.getNodeValue(), writer);
                     for (Node nextSibling = currentNode.getNextSibling();
-                        (nextSibling != null) && ((nextSibling.getNodeType() == Node.TEXT_NODE)
-                            || (nextSibling.getNodeType() == Node.CDATA_SECTION_NODE));
+                        nextSibling != null && (nextSibling.getNodeType() == Node.TEXT_NODE
+                            || nextSibling.getNodeType() == Node.CDATA_SECTION_NODE);
                         nextSibling = nextSibling.getNextSibling()) {
                         outputTextToWriter(nextSibling.getNodeValue(), writer);
                         currentNode = nextSibling;
@@ -459,7 +459,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                     sibling = currentNode.getNextSibling();
                     break;
                 }
-                currentNodeIsVisible = (i == 1);
+                currentNodeIsVisible = i == 1;
                 if (currentNodeIsVisible) {
                     ns.outputNodePush();
                     writer.write('<');
@@ -536,13 +536,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         if (nodeFilter != null) {
             Iterator<NodeFilter> it = nodeFilter.iterator();
             while (it.hasNext()) {   	
-                int i = (it.next()).isNodeIncludeDO(currentNode, level);
+                int i = it.next().isNodeIncludeDO(currentNode, level);
                 if (i != 1) {
                     return i;
                 }
             }
         }
-        if ((this.xpathNodeSet != null) && !this.xpathNodeSet.contains(currentNode)) {
+        if (this.xpathNodeSet != null && !this.xpathNodeSet.contains(currentNode)) {
             return 0;
         }
         return 1;
@@ -552,13 +552,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         if (nodeFilter != null) {
             Iterator<NodeFilter> it = nodeFilter.iterator();
             while (it.hasNext()) {   			
-                int i = (it.next()).isNodeInclude(currentNode);
+                int i = it.next().isNodeInclude(currentNode);
                 if (i != 1) {
                     return i;
                 }
             }
         }
-        if ((this.xpathNodeSet != null) && !this.xpathNodeSet.contains(currentNode)) {
+        if (this.xpathNodeSet != null && !this.xpathNodeSet.contains(currentNode)) {
             return 0;
         }
         return 1;
@@ -573,7 +573,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 }
             }
         }
-        if ((this.xpathNodeSet != null) && !this.xpathNodeSet.contains(currentNode)) {
+        if (this.xpathNodeSet != null && !this.xpathNodeSet.contains(currentNode)) {
             return false;
         }
         return true;
@@ -636,7 +636,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         }
         parents.clear();
         Attr nsprefix;
-        if (((nsprefix = ns.getMappingWithoutRendered(XMLNS)) != null) 
+        if ((nsprefix = ns.getMappingWithoutRendered(XMLNS)) != null 
             && "".equals(nsprefix.getValue())) {
             ns.addMappingAndRender(XMLNS, "", nullNode);
         }

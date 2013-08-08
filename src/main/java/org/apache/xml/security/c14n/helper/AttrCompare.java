@@ -113,6 +113,6 @@ public class AttrCompare implements Comparator<Attr>, Serializable {
             return a;
         }
       
-        return (attr0.getLocalName()).compareTo(attr1.getLocalName());
+        return attr0.getLocalName().compareTo(attr1.getLocalName());
     }
 }
