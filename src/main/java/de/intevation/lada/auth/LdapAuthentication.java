@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.InvalidNameException;
@@ -17,13 +16,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.core.HttpHeaders;
 
-import org.omg.PortableServer.LifespanPolicyOperations;
-
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.model.Auth;
-import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LProbe;
-import de.intevation.lada.model.LProbeInfo;
 
 /**
  * This implementation of the authentication interface reads LDAP users
