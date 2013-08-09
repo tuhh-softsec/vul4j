@@ -80,7 +80,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
         try {
             Element[] els = 
                 XMLUtils.selectDsNodes(element.getFirstChild(), Constants._TAG_X509CERTIFICATE);
-            if ((els == null) || (els.length == 0)) {  
+            if (els == null || els.length == 0) {  
                 Element el =
                     XMLUtils.selectDsNode(element.getFirstChild(), Constants._TAG_X509DATA, 0);
                 if (el != null) {

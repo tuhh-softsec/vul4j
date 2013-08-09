@@ -79,7 +79,7 @@ public class DSAKeyValue extends SignatureElementProxy implements KeyValueConten
 
         addReturnToSelf();
 
-        if (key instanceof java.security.interfaces.DSAPublicKey) {
+        if (key instanceof DSAPublicKey) {
             DSAParams params = ((DSAPublicKey) key).getParams();
             this.addBigIntegerElement(params.getP(), Constants._TAG_P);
             this.addBigIntegerElement(params.getQ(), Constants._TAG_Q);

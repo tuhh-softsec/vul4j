@@ -204,7 +204,7 @@ class XPath2NodeFilter implements NodeFilter {
     public int isNodeIncludeDO(Node n, int level) {
         int result = 1;
         if (hasSubtractFilter) {
-            if ((inSubtract == -1) || (level <= inSubtract)) {
+            if (inSubtract == -1 || level <= inSubtract) {
                 if (inList(n, subtractNodes)) {
                     inSubtract = level;
                 } else {
@@ -216,7 +216,7 @@ class XPath2NodeFilter implements NodeFilter {
             }
         } 
         if (result != -1 && hasIntersectFilter 
-            && ((inIntersect == -1) || (level <= inIntersect))) { 
+            && (inIntersect == -1 || level <= inIntersect)) { 
             if (!inList(n, intersectNodes)) {
                 inIntersect = -1;
                 result = 0;
@@ -232,13 +232,13 @@ class XPath2NodeFilter implements NodeFilter {
             return 1;
         }
         if (hasUnionFilter) {
-            if ((inUnion == -1) && inList(n, unionNodes)) {
+            if (inUnion == -1 && inList(n, unionNodes)) {
                 inUnion = level;
             }
             if (inUnion != -1) {
                 return 1;
             }
-            result=0;
+            result = 0;
         }
 
         return result;

@@ -117,9 +117,9 @@ public class DEREncodedKeyValue extends Signature11ElementProxy implements KeyIn
                 if (publicKey != null) {
                     return publicKey;
                 }
-            } catch (NoSuchAlgorithmException e) {
+            } catch (NoSuchAlgorithmException e) { //NOPMD
                 // Do nothing, try the next type
-            } catch (InvalidKeySpecException e) {
+            } catch (InvalidKeySpecException e) { //NOPMD
                 // Do nothing, try the next type
             }
         }

@@ -536,9 +536,9 @@ public class Reference extends SignatureElementProxy {
 
             Set<String> inclusiveNamespaces = new HashSet<String>();
             if (c14nTransform != null
-                && (c14nTransform.length(
+                && c14nTransform.length(
                     InclusiveNamespaces.ExclusiveCanonicalizationNamespace, 
-                    InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES) == 1)) {
+                    InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES) == 1) {
 
                 // there is one InclusiveNamespaces element
                 InclusiveNamespaces in = 

@@ -90,9 +90,9 @@ public class KeyResolver {
         for (KeyResolver resolver : resolverVector) {
             if (resolver == null) {
                 Object exArgs[] = {
-                                   (((element != null)
-                                       && (element.getNodeType() == Node.ELEMENT_NODE))
-                                       ? element.getTagName() : "null") 
+                                   element != null
+                                       && element.getNodeType() == Node.ELEMENT_NODE
+                                       ? element.getTagName() : "null"
                 };
 
                 throw new KeyResolverException("utils.resolver.noClass", exArgs);
@@ -108,8 +108,8 @@ public class KeyResolver {
         }
 
         Object exArgs[] = {
-                           (((element != null) && (element.getNodeType() == Node.ELEMENT_NODE))
-                           ? element.getTagName() : "null") 
+                           element != null && element.getNodeType() == Node.ELEMENT_NODE
+                           ? element.getTagName() : "null"
                           };
 
         throw new KeyResolverException("utils.resolver.noClass", exArgs);
@@ -131,9 +131,9 @@ public class KeyResolver {
         for (KeyResolver resolver : resolverVector) {
             if (resolver == null) {
                 Object exArgs[] = {
-                                   (((element != null)
-                                       && (element.getNodeType() == Node.ELEMENT_NODE))
-                                       ? element.getTagName() : "null")
+                                   element != null
+                                       && element.getNodeType() == Node.ELEMENT_NODE
+                                       ? element.getTagName() : "null"
                 };
 
                 throw new KeyResolverException("utils.resolver.noClass", exArgs);
@@ -149,8 +149,8 @@ public class KeyResolver {
         }
 
         Object exArgs[] = {
-                           (((element != null) && (element.getNodeType() == Node.ELEMENT_NODE))
-                           ? element.getTagName() : "null") 
+                           element != null && element.getNodeType() == Node.ELEMENT_NODE
+                           ? element.getTagName() : "null"
                           };
 
         throw new KeyResolverException("utils.resolver.noClass", exArgs);

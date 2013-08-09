@@ -34,7 +34,7 @@ public abstract class XPathFactory {
             if (funcTableClass != null) {
                 xalanInstalled = true;
             }
-        } catch (Exception e) {
+        } catch (Exception e) { //NOPMD
             //ignore
         }
     }

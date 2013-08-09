@@ -89,7 +89,7 @@ public class X509SKIResolver extends KeyResolverSpi {
         Element x509childNodes[] = null;
         x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(), Constants._TAG_X509SKI);
 
-        if (!((x509childNodes != null) && (x509childNodes.length > 0))) {
+        if (!(x509childNodes != null && x509childNodes.length > 0)) {
             if (log.isDebugEnabled()) {
                 log.debug("I can't");
             }

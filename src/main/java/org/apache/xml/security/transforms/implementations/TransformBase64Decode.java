@@ -157,7 +157,7 @@ public class TransformBase64Decode extends TransformSpi {
         }
     }
 
-    void traverseElement(org.w3c.dom.Element node, StringBuilder sb) {
+    void traverseElement(Element node, StringBuilder sb) {
         Node sibling = node.getFirstChild();
         while (sibling != null) {
             switch (sibling.getNodeType()) {

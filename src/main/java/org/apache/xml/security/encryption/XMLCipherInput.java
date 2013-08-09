@@ -78,7 +78,7 @@ public class XMLCipherInput {
      * @throws XMLEncryptionException {@link XMLEncryptionException}
      */
     public XMLCipherInput(EncryptedType input) throws XMLEncryptionException {
-        cipherData = ((input == null) ? null : input.getCipherData());
+        cipherData = input == null ? null : input.getCipherData();
         mode = XMLCipher.DECRYPT_MODE;
         if (cipherData == null) {
             throw new XMLEncryptionException("CipherData is null");

@@ -74,7 +74,7 @@ public class RSAKeyValue extends SignatureElementProxy implements KeyValueConten
 
         addReturnToSelf();
 
-        if (key instanceof java.security.interfaces.RSAPublicKey ) {
+        if (key instanceof RSAPublicKey ) {
             this.addBigIntegerElement(
                 ((RSAPublicKey) key).getModulus(), Constants._TAG_MODULUS
             );

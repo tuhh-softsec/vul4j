@@ -48,7 +48,7 @@ public class XMLX509SKI extends SignatureElementProxy implements XMLX509DataCont
      * A key identifier shall be unique with respect to all key identifiers
      * for the subject with which it is used. This extension is always non-critical.
      */
-    public static final String SKI_OID = "2.5.29.14";
+    public static final String SKI_OID = "2.5.29.14"; //NOPMD
 
     /**
      * Constructor X509SKI

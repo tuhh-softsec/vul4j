@@ -86,7 +86,7 @@ public final class ClassLoaderUtils {
             url = callingClass.getResource(resourceName);
         }
         
-        if ((url == null) && (resourceName != null) && (resourceName.charAt(0) != '/')) {
+        if (url == null && resourceName != null && resourceName.charAt(0) != '/') {
             return getResource('/' + resourceName, callingClass);
         }
 
@@ -191,7 +191,7 @@ public final class ClassLoaderUtils {
         }
 
         
-        if (ret.isEmpty() && (resourceName != null) && (resourceName.charAt(0) != '/')) {
+        if (ret.isEmpty() && resourceName != null && resourceName.charAt(0) != '/') {
             return getResources('/' + resourceName, callingClass);
         }
         return ret;

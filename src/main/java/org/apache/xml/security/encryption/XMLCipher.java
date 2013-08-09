@@ -327,7 +327,7 @@ public class XMLCipher {
      * @since 1.0.
      */
     private static boolean isValidEncryptionAlgorithm(String algorithm) {
-        return (
+        return 
             algorithm.equals(TRIPLEDES) ||
             algorithm.equals(AES_128) ||
             algorithm.equals(AES_256) ||
@@ -341,8 +341,7 @@ public class XMLCipher {
             algorithm.equals(TRIPLEDES_KeyWrap) ||
             algorithm.equals(AES_128_KeyWrap) ||
             algorithm.equals(AES_256_KeyWrap) ||
-            algorithm.equals(AES_192_KeyWrap)
-        );
+            algorithm.equals(AES_192_KeyWrap);
     }
 
     /**

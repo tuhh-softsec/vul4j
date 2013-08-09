@@ -88,7 +88,7 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
             setLocalAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH, "false");
         }
 
-        if ((includeButSearch != null) && (includeButSearch.trim().length() > 0)) {
+        if (includeButSearch != null && includeButSearch.trim().length() > 0) {
             Element includeButSearchElem =
                 ElementProxy.createElementForFamily(
                     doc, this.getBaseNamespace(), XPathFilterCHGPContainer._TAG_INCLUDE_BUT_SEARCH
@@ -101,7 +101,7 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
             appendSelf(includeButSearchElem);
         }
 
-        if ((excludeButSearch != null) && (excludeButSearch.trim().length() > 0)) {
+        if (excludeButSearch != null && excludeButSearch.trim().length() > 0) {
             Element excludeButSearchElem =
                 ElementProxy.createElementForFamily(
                     doc, this.getBaseNamespace(), XPathFilterCHGPContainer._TAG_EXCLUDE_BUT_SEARCH
@@ -114,7 +114,7 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
             appendSelf(excludeButSearchElem);
         }
 
-        if ((exclude != null) && (exclude.trim().length() > 0)) {
+        if (exclude != null && exclude.trim().length() > 0) {
             Element excludeElem = 
                 ElementProxy.createElementForFamily(
                    doc, this.getBaseNamespace(), XPathFilterCHGPContainer._TAG_EXCLUDE);
@@ -134,7 +134,7 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
      * @return the string with enters
      */
     static String indentXPathText(String xp) {
-        if ((xp.length() > 2) && (!Character.isWhitespace(xp.charAt(0)))) {
+        if (xp.length() > 2 && !Character.isWhitespace(xp.charAt(0))) {
             return "\n" + xp + "\n";
         } 
         return xp;

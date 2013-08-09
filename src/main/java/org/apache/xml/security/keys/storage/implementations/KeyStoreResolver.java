@@ -100,7 +100,7 @@ public class KeyStoreResolver extends StorageResolverSpi {
                 nextCert = findNextCert();
             }
 
-            return (nextCert != null);
+            return nextCert != null;
         }
 
         /** @inheritDoc */

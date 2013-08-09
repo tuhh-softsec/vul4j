@@ -282,8 +282,7 @@ public class XMLSignatureInput {
      * @return true if the object has been set up with a Node set
      */
     public boolean isNodeSet() {
-        return ((inputOctetStreamProxy == null
-            && inputNodeSet != null) || isNodeSet);
+        return inputOctetStreamProxy == null && inputNodeSet != null || isNodeSet;
     }
 
     /**
@@ -292,8 +291,8 @@ public class XMLSignatureInput {
      * @return true if the object has been set up with an Element
      */
     public boolean isElement() {
-        return (inputOctetStreamProxy == null && subNode != null
-            && inputNodeSet == null && !isNodeSet);
+        return inputOctetStreamProxy == null && subNode != null
+            && inputNodeSet == null && !isNodeSet;
     }
    
     /**
@@ -302,8 +301,8 @@ public class XMLSignatureInput {
      * @return true if the object has been set up with an octet stream
      */
     public boolean isOctetStream() {
-        return ((inputOctetStreamProxy != null || bytes != null)
-          && (inputNodeSet == null && subNode == null));
+        return (inputOctetStreamProxy != null || bytes != null)
+          && inputNodeSet == null && subNode == null;
     }
 
     /**
@@ -323,7 +322,7 @@ public class XMLSignatureInput {
      * @return true is the object has been set up with an octet stream
      */
     public boolean isByteArray() {
-        return (bytes != null && (this.inputNodeSet == null && subNode == null));
+        return bytes != null && this.inputNodeSet == null && subNode == null;
     }
 
     /**

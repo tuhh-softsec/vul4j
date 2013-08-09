@@ -116,7 +116,7 @@ public class TransformXPath extends TransformSpi {
      * @return true if needs to be circumvent for bug.
      */
     private boolean needsCircumvent(String str) {
-        return (str.indexOf("namespace") != -1) || (str.indexOf("name()") != -1);
+        return str.indexOf("namespace") != -1 || str.indexOf("name()") != -1;
     }
 
     static class XPathNodeFilter implements NodeFilter {

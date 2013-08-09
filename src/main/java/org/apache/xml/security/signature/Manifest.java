@@ -358,7 +358,7 @@ public class Manifest extends SignatureElementProxy {
                         while (nlIterator.hasNext()) {
                             Node n = nlIterator.next();
 
-                            if ((n.getNodeType() == Node.ELEMENT_NODE) 
+                            if (n.getNodeType() == Node.ELEMENT_NODE
                                 && ((Element) n).getNamespaceURI().equals(Constants.SignatureSpecNS) 
                                 && ((Element) n).getLocalName().equals(Constants._TAG_MANIFEST)
                             ) {
@@ -442,7 +442,7 @@ public class Manifest extends SignatureElementProxy {
      * @throws XMLSecurityException
      */
     public boolean getVerificationResult(int index) throws XMLSecurityException {
-        if ((index < 0) || (index > this.getLength() - 1)) {
+        if (index < 0 || index > this.getLength() - 1) {
             Object exArgs[] = { Integer.toString(index), Integer.toString(this.getLength()) };
             Exception e =
                 new IndexOutOfBoundsException(

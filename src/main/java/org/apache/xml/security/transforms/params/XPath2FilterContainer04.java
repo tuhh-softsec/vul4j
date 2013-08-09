@@ -75,8 +75,8 @@ public class XPath2FilterContainer04 extends ElementProxy implements TransformPa
 
         setLocalAttribute(XPath2FilterContainer04._ATT_FILTER, filterType);
 
-        if ((xpath2filter.length() > 2)
-            && (!Character.isWhitespace(xpath2filter.charAt(0)))) {
+        if (xpath2filter.length() > 2
+            && !Character.isWhitespace(xpath2filter.charAt(0))) {
             addReturnToSelf();
             appendSelf(createText(xpath2filter));
             addReturnToSelf();

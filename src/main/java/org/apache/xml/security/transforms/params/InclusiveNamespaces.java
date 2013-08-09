@@ -130,7 +130,7 @@ public class InclusiveNamespaces extends ElementProxy implements TransformParam 
     public static SortedSet<String> prefixStr2Set(String inclusiveNamespaces) {
         SortedSet<String> prefixes = new TreeSet<String>();
 
-        if ((inclusiveNamespaces == null) || (inclusiveNamespaces.length() == 0)) {
+        if (inclusiveNamespaces == null || inclusiveNamespaces.length() == 0) {
             return prefixes;
         }
 

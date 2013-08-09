@@ -122,7 +122,7 @@ public abstract class ElementProxy {
         } else {
             String baseName = this.getBaseNamespace();
             String prefix = ElementProxy.getDefaultPrefix(baseName);
-            if ((prefix == null) || (prefix.length() == 0)) {
+            if (prefix == null || prefix.length() == 0) {
                 result = doc.createElementNS(namespace, localName);
                 result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", namespace);
             } else {
@@ -153,7 +153,7 @@ public abstract class ElementProxy {
         if (namespace == null) {
             result = doc.createElementNS(null, localName);
         } else {
-            if ((prefix == null) || (prefix.length() == 0)) {
+            if (prefix == null || prefix.length() == 0) {
                 result = doc.createElementNS(namespace, localName);
                 result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", namespace);
             } else {
@@ -437,7 +437,7 @@ public abstract class ElementProxy {
         throws XMLSecurityException {
         String ns;
 
-        if ((prefix == null) || (prefix.length() == 0)) {
+        if (prefix == null || prefix.length() == 0) {
             throw new XMLSecurityException("defaultNamespaceCannotBeSetHere");
         } else if (prefix.equals("xmlns")) {
             throw new XMLSecurityException("defaultNamespaceCannotBeSetHere");

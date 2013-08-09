@@ -144,7 +144,7 @@ public class XMLSignatureInputDebugger {
      * @throws XMLSignatureException
      */
     public String getHTMLRepresentation() throws XMLSignatureException {
-        if ((this.xpathNodeSet == null) || (this.xpathNodeSet.size() == 0)) {
+        if (this.xpathNodeSet == null || this.xpathNodeSet.size() == 0) {
             return HTMLPrefix + "<blink>no node set, sorry</blink>" + HTMLSuffix;
         }
 
@@ -254,9 +254,9 @@ public class XMLSignatureInputDebugger {
             outputTextToWriter(currentNode.getNodeValue());
 
             for (Node nextSibling = currentNode.getNextSibling(); 
-                (nextSibling != null) 
-                && ((nextSibling.getNodeType() == Node.TEXT_NODE) 
-                    || (nextSibling.getNodeType() == Node.CDATA_SECTION_NODE)); 
+                nextSibling != null
+                && (nextSibling.getNodeType() == Node.TEXT_NODE
+                    || nextSibling.getNodeType() == Node.CDATA_SECTION_NODE); 
                 nextSibling = nextSibling.getNextSibling()) {
                 /*
                  * The XPath data model allows to select only the first of a

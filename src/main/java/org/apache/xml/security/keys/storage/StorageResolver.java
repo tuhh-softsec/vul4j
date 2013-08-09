@@ -148,7 +148,7 @@ public class StorageResolver {
             }
 
             currentResolver = findNextResolver();
-            return (currentResolver != null);
+            return currentResolver != null;
         }
 
         /** @inheritDoc */

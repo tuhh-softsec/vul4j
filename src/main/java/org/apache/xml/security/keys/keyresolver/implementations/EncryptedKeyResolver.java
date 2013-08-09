@@ -104,7 +104,7 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
     }
 
     /** @inheritDoc */
-    public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
+    public SecretKey engineLookupAndResolveSecretKey(
         Element element, String BaseURI, StorageResolver storage
     ) {
         if (log.isDebugEnabled()) {

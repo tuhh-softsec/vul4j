@@ -176,7 +176,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
 
         /** @inheritDoc */
         public boolean hasNext() {
-            return (this.i < this.certs.size());
+            return this.i < this.certs.size();
         }
 
         /** @inheritDoc */

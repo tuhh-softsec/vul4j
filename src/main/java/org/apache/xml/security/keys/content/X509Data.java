@@ -62,16 +62,14 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
         super(element, baseURI);
         
         Node sibling = getFirstChild();
-        while (sibling != null) {
-            if (sibling.getNodeType() != Node.ELEMENT_NODE) {
-                sibling = sibling.getNextSibling();
-                continue;
-            }
-            return;
+        while (sibling != null && sibling.getNodeType() != Node.ELEMENT_NODE) {
+            sibling = sibling.getNextSibling();
         }
-        /* No Elements found */
-        Object exArgs[] = { "Elements", Constants._TAG_X509DATA };
-        throw new XMLSecurityException("xml.WrongContent", exArgs);
+        if (sibling == null || sibling.getNodeType() != Node.ELEMENT_NODE) {
+            /* No Elements found */
+            Object exArgs[] = { "Elements", Constants._TAG_X509DATA };
+            throw new XMLSecurityException("xml.WrongContent", exArgs);
+        }
     }
 
     /**
@@ -327,7 +325,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
         int result = 0;
         Node n = getFirstChild();
         while (n != null) {         
-            if ((n.getNodeType() == Node.ELEMENT_NODE)
+            if (n.getNodeType() == Node.ELEMENT_NODE
                 && !n.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
                 result++;
             }

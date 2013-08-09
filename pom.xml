@@ -121,11 +121,6 @@
                     <failOnViolation>true</failOnViolation>
                     <verbose>true</verbose>
                     <targetJdk>1.6</targetJdk>
-                    <excludes>
-                        <exclude>
-                            **/XMLX509SKI.java,**/CryptoBase.java, **/XPathFactory.java,**/DEREncodedKeyValue.java
-                        </exclude>
-                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

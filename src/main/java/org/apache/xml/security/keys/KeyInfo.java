@@ -483,7 +483,7 @@ public class KeyInfo extends SignatureElementProxy {
              * $todo$ using this method, we don't see unknown Elements
              *  from Signature NS; revisit
              */
-            if ((current.getNodeType() == Node.ELEMENT_NODE)
+            if (current.getNodeType() == Node.ELEMENT_NODE
                 && current.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
                 res++;
             }
@@ -697,7 +697,7 @@ public class KeyInfo extends SignatureElementProxy {
              * $todo$ using this method, we don't see unknown Elements
              *  from Signature NS; revisit
              */
-            if ((current.getNodeType() == Node.ELEMENT_NODE)
+            if (current.getNodeType() == Node.ELEMENT_NODE
                 && current.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
                 res++;
 
