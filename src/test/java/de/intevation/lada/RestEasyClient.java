@@ -1,4 +1,4 @@
-package de.intevation.lada.test;
+package de.intevation.lada;
 
 import junit.framework.Assert;
 import org.junit.Test;
