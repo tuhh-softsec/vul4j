@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 
-public class RestEasyClient {
+public class TestRestEasyClient {
 
     public static String baseURL = "https://bfs-lada.intevation.de/lada/server/rest/";
 
