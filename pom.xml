@@ -274,8 +274,8 @@
             </build>
         </profile>
         <profile>
-        	<id>unit-tests</id>
-        	<dependencies>
+          <id>unit-tests</id>
+          <dependencies>
                 <dependency>
                    <groupId>junit</groupId>
                    <artifactId>junit</artifactId>
@@ -288,11 +288,11 @@
                    <version>2.2.2.GA</version>
             </dependency>
             <dependency>
-                 <groupId>org.apache.httpcomponents</groupId>
-                 <artifactId>httpcore</artifactId>
-                 <version>4.1.4</version>
+                   <groupId>org.apache.httpcomponents</groupId>
+                   <artifactId>httpcore</artifactId>
+                   <version>4.1.4</version>
             </dependency>
             </dependencies>
-        </profile>  
+        </profile>
     </profiles>
 </project>
