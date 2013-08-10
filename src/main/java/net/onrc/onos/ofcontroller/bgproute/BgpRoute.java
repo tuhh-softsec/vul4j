@@ -895,12 +895,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        //Forward = gateway -> bgpd, reverse = bgpd -> gateway
 	        OFMatch forwardMatchSrc = new OFMatch();
 	        
-	        
 	        String interfaceCidrAddress = peerInterface.getIpAddress().getHostAddress() 
 	        					+ "/32";
 	        String peerCidrAddress = bgpPeer.getIpAddress().getHostAddress()
 	        					+ "/32";
-	        	        
+	        
 	        //Common match fields
 	        forwardMatchSrc.setDataLayerType(Ethernet.TYPE_IPv4);
 	        //forwardMatch.setWildcards(forwardMatch.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
@@ -934,14 +933,27 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        
 	        fm.setMatch(forwardMatchSrc);
 	        
+	        OFMatch forwardIcmpMatch = new OFMatch();
+	        forwardIcmpMatch.setDataLayerType(Ethernet.TYPE_IPv4);
+	        forwardIcmpMatch.setNetworkProtocol(IPv4.PROTOCOL_ICMP);
+	        forwardIcmpMatch.setWildcards(forwardIcmpMatch.getWildcards() &
+	        		~OFMatch.OFPFW_DL_TYPE & ~OFMatch.OFPFW_NW_PROTO);
+	        
+	        OFMatch reverseIcmpMatch = forwardIcmpMatch.clone();
+	        forwardIcmpMatch.setFromCIDR(interfaceCidrAddress, OFMatch.STR_NW_DST);
+	        reverseIcmpMatch.setFromCIDR(interfaceCidrAddress, OFMatch.STR_NW_SRC);
+	        
 			for (FlowEntry flowEntry : path.flowEntries()){
 				OFFlowMod forwardFlowModSrc, forwardFlowModDst;
 				OFFlowMod reverseFlowModSrc, reverseFlowModDst;
+				OFFlowMod forwardIcmp, reverseIcmp;
 				try {
 					forwardFlowModSrc = fm.clone();
 					forwardFlowModDst = fm.clone();
 					reverseFlowModSrc = fm.clone();
 					reverseFlowModDst = fm.clone();
+					forwardIcmp = fm.clone();
+					reverseIcmp = fm.clone();
 				} catch (CloneNotSupportedException e) {
 					log.warn("Clone failed", e);
 					continue;
@@ -967,14 +979,29 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				((OFActionOutput)reverseFlowModDst.getActions().get(0))
 						.setPort(flowEntry.inPort().value());
 				
+				((OFActionOutput)forwardIcmp.getActions().get(0))
+						.setPort(flowEntry.outPort().value());
+				forwardIcmp.setMatch(forwardIcmpMatch);
+				
+				((OFActionOutput)reverseIcmp.getActions().get(0))
+						.setPort(flowEntry.inPort().value());
+				reverseIcmp.setMatch(reverseIcmpMatch);
+		
+
 				IOFSwitch sw = floodlightProvider.getSwitches().get(flowEntry.dpid().value());
 				
-				//Hopefully the switch is there
+				if (sw == null) {
+					log.warn("Switch not found when pushing BGP paths");
+					return;
+				}
+				
 				List<OFMessage> msgList = new ArrayList<OFMessage>(2);
 				msgList.add(forwardFlowModSrc);
 				msgList.add(forwardFlowModDst);
 				msgList.add(reverseFlowModSrc);
 				msgList.add(reverseFlowModDst);
+				msgList.add(forwardIcmp);
+				msgList.add(reverseIcmp);
 				
 				try {
 					sw.write(msgList, null);
