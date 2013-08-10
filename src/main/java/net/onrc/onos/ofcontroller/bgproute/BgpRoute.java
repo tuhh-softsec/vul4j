@@ -334,7 +334,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	// Return nexthop address as byte array.
 	/*
-	public Rib lookupRib(byte[] dest) {
+	public RibEntry lookupRib(byte[] dest) {
 		if (ptree == null) {
 		    log.debug("lookupRib: ptree null");
 		    return null;
@@ -470,7 +470,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 			
 			//PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
-			Rib rib = new Rib(router_id, nexthop, p.getPrefixLength());
+			RibEntry rib = new RibEntry(router_id, nexthop);
 			
 			/*
 			if (node.rib != null) {
@@ -501,7 +501,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Prefix prefix = update.getPrefix();
 		
 		//PtreeNode node = ptree.acquire(prefix.getAddress(), prefix.getPrefixLength());
-		Rib rib = ptree.put(prefix, update.getRibEntry());
+		RibEntry rib = ptree.put(prefix, update.getRibEntry());
 		
 		//if (node.rib != null) {
 		if (rib != null && !rib.equals(update.getRibEntry())) {
@@ -568,7 +568,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		addPrefixFlows(prefix, node.rib);
 	}*/
 
-	private void addPrefixFlows(Prefix prefix, Rib rib) {
+	private void addPrefixFlows(Prefix prefix, RibEntry rib) {
 		if (!topologyReady){
 			return;
 		}
@@ -578,16 +578,15 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		//I think we'll have to make prefixAdded and prefixDelete atomic as well
 		//to protect against the prefix getting deleted while where trying to add it
 
-		log.debug("New prefix {} added, next hop {}, routerId {}", 
-				new Object[] {prefix, rib.nextHop.getHostAddress(),
-				rib.routerId.getHostAddress()});
+		log.debug("New prefix {} added, next hop {}", 
+				prefix, rib.getNextHop().getHostAddress());
 		
 		//TODO this is wrong, we shouldn't be dealing with BGP peers here.
 		//We need to figure out where the device is attached and what its
 		//mac address is by learning. 
 		//The next hop is not necessarily the peer, and the peer's attachment
 		//point is not necessarily the next hop's attachment point.
-		BgpPeer peer = bgpPeers.get(rib.nextHop);
+		BgpPeer peer = bgpPeers.get(rib.getNextHop());
 		
 		if (peer == null){
 			//TODO local router isn't in peers list so this will get thrown
@@ -596,7 +595,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			//The other scenario is this is a route server route. In that
 			//case the next hop is not in our configuration
 			log.error("Couldn't find next hop router in router {} in config",
-					rib.nextHop.getHostAddress());
+					rib.getNextHop().getHostAddress());
 			return; //just quit out here? This is probably a configuration error
 		}
 		
@@ -1042,10 +1041,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				
 				//addPrefixFlows(update.getPrefix(), update.getRibEntry());
 				//processRibAdd(update);
-				Rib rib = ptree.lookup(update.getPrefix()); 
+				RibEntry rib = ptree.lookup(update.getPrefix()); 
 				if (rib != null && rib.equals(update.getRibEntry())) {
 					log.debug("Pushing prefix {} next hop {}", update.getPrefix(), 
-							rib.nextHop.getHostAddress());
+							rib.getNextHop().getHostAddress());
 					//We only push prefix flows if the prefix is still in the ptree
 					//and the next hop is the same as our update. The prefix could 
 					//have been removed while we were waiting for the ARP, or the 
@@ -1178,14 +1177,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 	@Override
 	public void topologyChanged() {		
-		//There seems to be more topology events than there should be. Lots of link
-		//updated, port up and switch updated on what should be a fairly static topology
-		
 		boolean refreshNeeded = false;
 		for (LDUpdate ldu : topology.getLastLinkUpdates()){
 			if (!ldu.getOperation().equals(ILinkDiscovery.UpdateOperation.LINK_UPDATED)){
 				//We don't need to recalculate anything for just link updates
-				//They happen way too frequently (may be a bug in our link discovery)
+				//They happen very frequently
 				refreshNeeded = true;
 			}
 			

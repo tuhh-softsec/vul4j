@@ -147,7 +147,7 @@ public class BgpRouteResource extends ServerResource {
 				return reply + "\n";
 			}
 			
-			Rib rib = new Rib(routerId, nexthop, p.getPrefixLength());
+			RibEntry rib = new RibEntry(routerId, nexthop);
 
 			bgpRoute.newRibUpdate(new RibUpdate(Operation.UPDATE, p, rib));
 			
@@ -210,7 +210,7 @@ public class BgpRouteResource extends ServerResource {
 				return reply + "\n";
 			}
 			
-			Rib r = new Rib(routerId, nextHop, p.getPrefixLength());
+			RibEntry r = new RibEntry(routerId, nextHop);
 			
 			bgpRoute.newRibUpdate(new RibUpdate(Operation.DELETE, p, r));
 			
@@ -242,7 +242,7 @@ public class BgpRouteResource extends ServerResource {
 		else {
 			// clear the local rib: Ptree			
 			bgpRoute.clearPtree();
-			reply = "[DELE-capability: " + capability + "; The local Rib is cleared!]\n";
+			reply = "[DELE-capability: " + capability + "; The local RibEntry is cleared!]\n";
 
 			// to store the number in the top node of the Ptree	
 		}

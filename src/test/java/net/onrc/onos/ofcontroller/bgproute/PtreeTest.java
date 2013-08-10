@@ -53,9 +53,9 @@ public class PtreeTest {
 			byteAddresses.put(prefix, InetAddresses.forString(address).getAddress());
 			
 			PtreeNode node = ptree.acquire(byteAddresses.get(prefix), prefixLength);
-			node.rib = new Rib("192.168.10.101", "192.168.60.1", prefixLength);
+			node.rib = new RibEntry("192.168.10.101", "192.168.60.1");
 			ooptrie.put(new Prefix(byteAddresses.get(prefix), prefixLength), 
-					new Rib("192.168.10.101", "192.168.60.1", prefixLength));
+					new RibEntry("192.168.10.101", "192.168.60.1"));
 		}
 	}
 

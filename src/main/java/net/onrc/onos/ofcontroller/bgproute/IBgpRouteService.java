@@ -4,7 +4,7 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 
 public interface IBgpRouteService extends IFloodlightService {
 
-	//public Rib lookupRib(byte[] dest);
+	//public RibEntry lookupRib(byte[] dest);
 
 	//public Ptree getPtree();
 	public IPatriciaTrie getPtree();

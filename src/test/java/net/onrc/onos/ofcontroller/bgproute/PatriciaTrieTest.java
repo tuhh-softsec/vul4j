@@ -19,12 +19,12 @@ public class PatriciaTrieTest {
 
 	IPatriciaTrie ptrie;
 	Prefix[] prefixes;
-	Map<Prefix, Rib> mappings;
+	Map<Prefix, RibEntry> mappings;
 	
 	@Before
 	public void setUp() throws Exception {
 		ptrie = new PatriciaTrie(32);
-		mappings = new HashMap<Prefix, Rib>();
+		mappings = new HashMap<Prefix, RibEntry>();
 		
 		prefixes = new Prefix[] {
 			new Prefix("192.168.10.0", 24),
@@ -39,8 +39,8 @@ public class PatriciaTrieTest {
 		};
 				
 		for (int i = 0; i < prefixes.length; i++) {
-			mappings.put(prefixes[i], new Rib("192.168.10.101", "192.168.20." + i, 32));
-			ptrie.put(prefixes[i], new Rib("192.168.10.101", "192.168.20." + i, 32));
+			mappings.put(prefixes[i], new RibEntry("192.168.10.101", "192.168.20." + i));
+			ptrie.put(prefixes[i], new RibEntry("192.168.10.101", "192.168.20." + i));
 		}
 	}
 
@@ -53,33 +53,33 @@ public class PatriciaTrieTest {
 		IPatriciaTrie ptrie = new PatriciaTrie(32);
 		
 		Prefix p1 = new Prefix("192.168.240.0", 20);
-		Rib r1 = new Rib("192.168.10.101", "192.168.60.2", 20);
-		Rib retval = ptrie.put(p1, r1);
+		RibEntry r1 = new RibEntry("192.168.10.101", "192.168.60.2");
+		RibEntry retval = ptrie.put(p1, r1);
 		assertNull(retval);
 		retval = ptrie.lookup(p1);
 		assertTrue(r1 == retval); //should be the same object
 		
 		Prefix p2 = new Prefix("192.160.0.0", 12);
-		Rib r2 = new Rib("192.168.10.101", "192.168.20.1", 12);
+		RibEntry r2 = new RibEntry("192.168.10.101", "192.168.20.1");
 		retval = ptrie.put(p2, r2);
 		assertNull(retval);
 		
 		Prefix p3 = new Prefix("192.168.208.0", 20);
-		Rib r3 = new Rib("192.168.10.101", "192.168.30.1", 20);
+		RibEntry r3 = new RibEntry("192.168.10.101", "192.168.30.1");
 		retval = ptrie.put(p3,  r3);
 		assertNull(retval);
 		
-		//Insert a new Rib entry over a previous one
-		Rib r3new = new Rib("192.168.10.101", "192.168.60.2", 20);
+		//Insert a new RibEntry entry over a previous one
+		RibEntry r3new = new RibEntry("192.168.10.101", "192.168.60.2");
 		retval = ptrie.put(p3, r3new);
 		assertNotNull(retval);
 		assertTrue(retval.equals(r3));
 		assertTrue(retval == r3); //should be the same object
 		
 		//Now we have an aggregate node with prefix 192.168.192.0/18.
-		//We will insert a Rib at this prefix
+		//We will insert a RibEntry at this prefix
 		Prefix p4 = new Prefix("192.168.192.0", 18);
-		Rib r4 = new Rib("192.168.10.101", "192.168.40.1", 18);
+		RibEntry r4 = new RibEntry("192.168.10.101", "192.168.40.1");
 		retval = ptrie.put(p4, r4);
 		assertNull(retval);
 		retval = ptrie.lookup(p4);
@@ -88,19 +88,19 @@ public class PatriciaTrieTest {
 
 	@Test
 	public void testLookup() {
-		for (Map.Entry<Prefix, Rib> entry : mappings.entrySet()) {
-			Rib r = ptrie.lookup(entry.getKey());
+		for (Map.Entry<Prefix, RibEntry> entry : mappings.entrySet()) {
+			RibEntry r = ptrie.lookup(entry.getKey());
 			assertTrue(entry.getValue().equals(r));
 		}
 		
 		//These are aggregate nodes in the tree. Shouldn't be returned by lookup
 		Prefix p1 = new Prefix("0.0.0.0", 0);
-		Rib retval = ptrie.lookup(p1);
+		RibEntry retval = ptrie.lookup(p1);
 		assertNull(retval);
 		
-		//We'll put a Rib at an aggregate node and check if lookup returns correctly
+		//We'll put a RibEntry at an aggregate node and check if lookup returns correctly
 		Prefix p2 = new Prefix("192.0.0.0", 4);
-		Rib r2 = new Rib("192.168.10.101", "192.168.60.1", 4);
+		RibEntry r2 = new RibEntry("192.168.10.101", "192.168.60.1");
 		retval = ptrie.put(p2, r2);
 		assertNull(retval);
 		retval = ptrie.lookup(p2);
@@ -116,7 +116,7 @@ public class PatriciaTrieTest {
 	@Test
 	public void testRemove() {
 		Prefix p1 = new Prefix("192.168.8.0", 23);
-		Rib retval = ptrie.lookup(p1);
+		RibEntry retval = ptrie.lookup(p1);
 		assertNotNull(retval);
 		boolean success = ptrie.remove(p1, retval);
 		assertTrue(success);

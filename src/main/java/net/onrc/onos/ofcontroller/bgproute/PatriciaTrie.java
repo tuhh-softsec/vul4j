@@ -15,7 +15,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 		this.maxPrefixLength = maxPrefixLength;
 	}
 
-	public synchronized Rib put(Prefix p, Rib r) {
+	public synchronized RibEntry put(Prefix p, RibEntry r) {
 		if (p.getPrefixLength() > maxPrefixLength) {
 			throw new IllegalArgumentException(String.format(
 					"Prefix length %d is greater than max prefix length %d", 
@@ -39,7 +39,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 		    	 * case we are inserting a new nexthop for the prefix and should return
 		    	 * the old nexthop.
 		    	 */
-		    	Rib oldRib = node.rib;
+		    	RibEntry oldRib = node.rib;
 		    	node.rib = r;
 		    	return oldRib;
 			}
@@ -94,7 +94,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 	}
 	
 	/*exact match*/
-	public synchronized Rib lookup(Prefix p) {
+	public synchronized RibEntry lookup(Prefix p) {
 		//TODO
 		
 		if (p.getPrefixLength() > maxPrefixLength) {
@@ -126,12 +126,12 @@ public class PatriciaTrie implements IPatriciaTrie{
 	}
 	
 	/*closest containing prefix*/
-	public synchronized Rib match(Prefix p) {
+	public synchronized RibEntry match(Prefix p) {
 		//TODO
 		return null;
 	}
 	
-	public synchronized boolean remove(Prefix p, Rib r) {
+	public synchronized boolean remove(Prefix p, RibEntry r) {
 		Node child;
 		Node parent;
 		
@@ -147,7 +147,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 		}
 		
 		if (node.left != null && node.right != null) {
-			//Remove the Rib entry and leave this node as an aggregate node
+			//Remove the RibEntry entry and leave this node as an aggregate node
 			//In the future, maybe we should re-evaluate what the aggregate prefix should be?
 			//It shouldn't necessarily stay the same.
 			//More complicated if the above prefix is also aggregate.
@@ -313,7 +313,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 		
 		//Creating a new Prefix with a prefix length of common_len
 		//Bits are copied from node's up until the common_len'th bit
-		//Rib is null, because this is an aggregate prefix - it's not
+		//RibEntry is null, because this is an aggregate prefix - it's not
 		//actually been added to the trie.
 		
 		byte[] newPrefix = new byte[getByteContainingBit(maxPrefixLength)];
@@ -335,9 +335,9 @@ public class PatriciaTrie implements IPatriciaTrie{
 		public Node right = null;
 		
 		public Prefix prefix;
-		public Rib rib;
+		public RibEntry rib;
 		
-		public Node(Prefix p, Rib r) {
+		public Node(Prefix p, RibEntry r) {
 			this.prefix = p;
 			this.rib = r;
 		}
@@ -349,9 +349,9 @@ public class PatriciaTrie implements IPatriciaTrie{
 	
 	private class PatriciaTrieEntry implements Entry {
 		private Prefix prefix;
-		private Rib rib;
+		private RibEntry rib;
 		
-		public PatriciaTrieEntry(Prefix prefix, Rib rib) {
+		public PatriciaTrieEntry(Prefix prefix, RibEntry rib) {
 			this.prefix = prefix;
 			this.rib = rib;
 		}
@@ -362,7 +362,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 		}
 		
 		@Override
-		public Rib getRib() {
+		public RibEntry getRib() {
 			return rib;
 		}
 	}
