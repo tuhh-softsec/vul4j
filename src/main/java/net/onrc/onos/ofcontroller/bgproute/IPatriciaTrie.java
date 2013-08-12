@@ -2,19 +2,19 @@ package net.onrc.onos.ofcontroller.bgproute;
 
 import java.util.Iterator;
 
-public interface IPatriciaTrie {
-	public RibEntry put(Prefix p, RibEntry r);
+public interface IPatriciaTrie<V> {
+	public V put(Prefix prefix, V value);
 	
-	public RibEntry lookup(Prefix p);
+	public V lookup(Prefix prefix);
 	
-	public RibEntry match(Prefix p);
+	public V match(Prefix prefix);
 	
-	public boolean remove(Prefix p, RibEntry r);
+	public boolean remove(Prefix prefix, V value);
 	
-	public Iterator<Entry> iterator();
+	public Iterator<Entry<V>> iterator();
 	
-	interface Entry {
+	interface Entry<V> {
 		public Prefix getPrefix();
-		public RibEntry getRib();
+		public V getValue();
 	}
 }

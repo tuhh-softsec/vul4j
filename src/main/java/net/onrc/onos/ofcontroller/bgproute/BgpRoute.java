@@ -88,7 +88,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected ProxyArpManager proxyArp;
 	
 	//protected static Ptree ptree;
-	protected IPatriciaTrie ptree;
+	protected IPatriciaTrie<RibEntry> ptree;
 	protected BlockingQueue<RibUpdate> ribUpdates;
 	
 	protected String bgpdRestIp;
@@ -253,7 +253,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			throws FloodlightModuleException {
 	    
 	    //ptree = new Ptree(32);
-		ptree = new PatriciaTrie(32);
+		ptree = new PatriciaTrie<RibEntry>(32);
 	    
 	    ribUpdates = new LinkedBlockingQueue<RibUpdate>();
 	    	
@@ -314,14 +314,14 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 
 	//public Ptree getPtree() {
-	public IPatriciaTrie getPtree() {
+	public IPatriciaTrie<RibEntry> getPtree() {
 		return ptree;
 	}
 	
 	public void clearPtree() {
 		//ptree = null;
 		//ptree = new Ptree(32);
-		ptree = new PatriciaTrie(32);
+		ptree = new PatriciaTrie<RibEntry>(32);
 	}
 	
 	public String getBGPdRestIp() {

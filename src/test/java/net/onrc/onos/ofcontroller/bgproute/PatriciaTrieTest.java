@@ -17,13 +17,13 @@ import org.junit.Test;
 
 public class PatriciaTrieTest {
 
-	IPatriciaTrie ptrie;
+	IPatriciaTrie<RibEntry> ptrie;
 	Prefix[] prefixes;
 	Map<Prefix, RibEntry> mappings;
 	
 	@Before
 	public void setUp() throws Exception {
-		ptrie = new PatriciaTrie(32);
+		ptrie = new PatriciaTrie<RibEntry>(32);
 		mappings = new HashMap<Prefix, RibEntry>();
 		
 		prefixes = new Prefix[] {
@@ -50,7 +50,7 @@ public class PatriciaTrieTest {
 
 	@Test
 	public void testPut() {
-		IPatriciaTrie ptrie = new PatriciaTrie(32);
+		IPatriciaTrie<RibEntry> ptrie = new PatriciaTrie<RibEntry>(32);
 		
 		Prefix p1 = new Prefix("192.168.240.0", 20);
 		RibEntry r1 = new RibEntry("192.168.10.101", "192.168.60.2");
@@ -169,19 +169,19 @@ public class PatriciaTrieTest {
 	public void testIterator() {		
 		int[] order = new int[] {7, 5, 3, 8, 2, 1, 0, 4, 6};
 		
-		Iterator<IPatriciaTrie.Entry> it = ptrie.iterator();
+		Iterator<IPatriciaTrie.Entry<RibEntry>> it = ptrie.iterator();
 		int i = 0;
 		assertTrue(it.hasNext());
 		while (it.hasNext()) {
-			IPatriciaTrie.Entry entry = it.next();
+			IPatriciaTrie.Entry<RibEntry> entry = it.next();
 			assertTrue(entry.getPrefix().equals(prefixes[order[i]]));
 			i++;
 		}
 		assertFalse(it.hasNext());
 		assertTrue(i == order.length);
 		
-		IPatriciaTrie pt = new PatriciaTrie(32);
-		Iterator<IPatriciaTrie.Entry> it2 = pt.iterator();
+		IPatriciaTrie<RibEntry> pt = new PatriciaTrie<RibEntry>(32);
+		Iterator<IPatriciaTrie.Entry<RibEntry>> it2 = pt.iterator();
 		assertFalse(it2.hasNext());
 		it.next(); //throws NoSuchElementException
 	}

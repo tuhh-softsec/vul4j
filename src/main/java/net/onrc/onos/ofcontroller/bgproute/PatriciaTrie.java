@@ -3,7 +3,7 @@ package net.onrc.onos.ofcontroller.bgproute;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class PatriciaTrie implements IPatriciaTrie{
+public class PatriciaTrie<V> implements IPatriciaTrie<V> {
 	private final byte maskBits[] = {(byte)0x00, (byte)0x80, (byte)0xc0, (byte)0xe0, (byte)0xf0, 
 												 (byte)0xf8, (byte)0xfc, (byte)0xfe, (byte)0xff};
 	
@@ -15,14 +15,15 @@ public class PatriciaTrie implements IPatriciaTrie{
 		this.maxPrefixLength = maxPrefixLength;
 	}
 
-	public synchronized RibEntry put(Prefix p, RibEntry r) {
-		if (p.getPrefixLength() > maxPrefixLength) {
+	@Override
+	public synchronized V put(Prefix prefix, V value) {
+		if (prefix.getPrefixLength() > maxPrefixLength) {
 			throw new IllegalArgumentException(String.format(
 					"Prefix length %d is greater than max prefix length %d", 
-					p.getPrefixLength(), maxPrefixLength));
+					prefix.getPrefixLength(), maxPrefixLength));
 		}
 		
-		if (p == null || r == null) {
+		if (prefix == null || value == null) {
 			throw new NullPointerException();
 		}
 		
@@ -30,23 +31,23 @@ public class PatriciaTrie implements IPatriciaTrie{
 		Node match = null;
 		
 		while (node != null
-				&& node.prefix.getPrefixLength() <= p.getPrefixLength()
-				&& key_match(node.prefix.getAddress(), node.prefix.getPrefixLength(), p.getAddress(), p.getPrefixLength()) == true) {
-		    if (node.prefix.getPrefixLength() == p.getPrefixLength()) {
+				&& node.prefix.getPrefixLength() <= prefix.getPrefixLength()
+				&& key_match(node.prefix.getAddress(), node.prefix.getPrefixLength(), prefix.getAddress(), prefix.getPrefixLength()) == true) {
+		    if (node.prefix.getPrefixLength() == prefix.getPrefixLength()) {
 		    	/*
 		    	 * Prefix is already in tree. This may be an aggregate node, in which case
 		    	 * we are inserting a new prefix, or it could be an actual node, in which 
 		    	 * case we are inserting a new nexthop for the prefix and should return
 		    	 * the old nexthop.
 		    	 */
-		    	RibEntry oldRib = node.rib;
-		    	node.rib = r;
-		    	return oldRib;
+		    	V oldValue = node.value;
+		    	node.value = value;
+		    	return oldValue;
 			}
 
 			match = node;
 			
-			if (bit_check(p.getAddress(), node.prefix.getPrefixLength()) == true) {
+			if (bit_check(prefix.getAddress(), node.prefix.getPrefixLength()) == true) {
 				node = node.right;
 			} else {
 				node = node.left;
@@ -56,7 +57,9 @@ public class PatriciaTrie implements IPatriciaTrie{
 		Node add = null;
 		
 		if (node == null) {
-			add = new Node(p, r);
+			//add = new Node(p, r);
+			add = new Node(prefix);
+			add.value = value;
 			
 			if (match != null) {
 				node_link(match, add);
@@ -64,7 +67,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 				top = add;
 			}
 		} else {
-			add = node_common(node, p.getAddress(), p.getPrefixLength());
+			add = node_common(node, prefix.getAddress(), prefix.getPrefixLength());
 			if (add == null) {
 				//I think this is -ENOMEM?
 				//return null;
@@ -77,14 +80,16 @@ public class PatriciaTrie implements IPatriciaTrie{
 			}
 			node_link(add, node);
 			
-			if (add.prefix.getPrefixLength() != p.getPrefixLength()) {
+			if (add.prefix.getPrefixLength() != prefix.getPrefixLength()) {
 				match = add;
 				
-				add = new Node(p, r);
+				//add = new Node(p, r);
+				add = new Node(prefix);
+				add.value = value;
 				node_link(match, add);
 			}
 			else {
-				add.rib = r;
+				add.value = value;
 			}
 		}
 		
@@ -94,10 +99,11 @@ public class PatriciaTrie implements IPatriciaTrie{
 	}
 	
 	/*exact match*/
-	public synchronized RibEntry lookup(Prefix p) {
+	@Override
+	public synchronized V lookup(Prefix prefix) {
 		//TODO
 		
-		if (p.getPrefixLength() > maxPrefixLength) {
+		if (prefix.getPrefixLength() > maxPrefixLength) {
 			return null;
 		}
 		
@@ -120,28 +126,30 @@ public class PatriciaTrie implements IPatriciaTrie{
 		}
 		*/
 		
-		Node node = findNode(p);
+		Node node = findNode(prefix);
 		
-		return node == null ? null : node.rib;
+		return node == null ? null : node.value;
 	}
 	
 	/*closest containing prefix*/
-	public synchronized RibEntry match(Prefix p) {
+	@Override
+	public synchronized V match(Prefix prefix) {
 		//TODO
 		return null;
 	}
 	
-	public synchronized boolean remove(Prefix p, RibEntry r) {
+	@Override
+	public synchronized boolean remove(Prefix prefix, V value) {
 		Node child;
 		Node parent;
 		
-		if (p == null || r == null) {
+		if (prefix == null || value == null) {
 			return false;
 		}
 		
-		Node node = findNode(p);
+		Node node = findNode(prefix);
 		
-		if (node == null || node.rib == null || !node.rib.equals(r)) {
+		if (node == null || node.isAggregate() || !node.value.equals(value)) {
 			//Given <prefix, nexthop> mapping is not in the tree
 			return false;
 		}
@@ -151,7 +159,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 			//In the future, maybe we should re-evaluate what the aggregate prefix should be?
 			//It shouldn't necessarily stay the same.
 			//More complicated if the above prefix is also aggregate.
-			node.rib = null;
+			node.value = null;
 			return true;
 		}
 		
@@ -192,22 +200,23 @@ public class PatriciaTrie implements IPatriciaTrie{
 		return true;
 	}
 	
-	public Iterator<Entry> iterator() {
+	@Override
+	public Iterator<Entry<V>> iterator() {
 		return new PatriciaTrieIterator(top);
 	}
 	
-	private Node findNode(Prefix p) {
+	private Node findNode(Prefix prefix) {
 		Node node = top;
 		
 		while (node != null
-				&& node.prefix.getPrefixLength() <= p.getPrefixLength()
-				&& key_match(node.prefix.getAddress(), node.prefix.getPrefixLength(), p.getAddress(), p.getPrefixLength()) == true) {
-			if (node.prefix.getPrefixLength() == p.getPrefixLength()) {
+				&& node.prefix.getPrefixLength() <= prefix.getPrefixLength()
+				&& key_match(node.prefix.getAddress(), node.prefix.getPrefixLength(), prefix.getAddress(), prefix.getPrefixLength()) == true) {
+			if (node.prefix.getPrefixLength() == prefix.getPrefixLength()) {
 				//return addReference(node);
 				return node;
 			}
 			
-			if (bit_check(p.getAddress(), node.prefix.getPrefixLength()) == true) {
+			if (bit_check(prefix.getAddress(), node.prefix.getPrefixLength()) == true) {
 				node = node.right;
 			} else {
 				node = node.left;
@@ -325,7 +334,8 @@ public class PatriciaTrie implements IPatriciaTrie{
 		if (boundary != 0)
 			newPrefix[j] = (byte)(node.prefix.getAddress()[j] & maskBits[common_len % 8]);
 		
-		return new Node(new Prefix(newPrefix, common_len), null);
+		//return new Node(new Prefix(newPrefix, common_len), null);
+		return new Node(new Prefix(newPrefix, common_len));
 		//return add;
 	}
 	
@@ -334,26 +344,33 @@ public class PatriciaTrie implements IPatriciaTrie{
 		public Node left = null;
 		public Node right = null;
 		
-		public Prefix prefix;
-		public RibEntry rib;
+		public final Prefix prefix;
+		public V value;
 		
-		public Node(Prefix p, RibEntry r) {
+		//public Node(Prefix p, RibEntry r) {
+		//	this.prefix = p;
+		//	this.rib = r;
+		//}
+		public Node(Prefix p) {
 			this.prefix = p;
-			this.rib = r;
 		}
 		
-		public Entry getEntry() {
-			return new PatriciaTrieEntry(prefix, rib);
+		public boolean isAggregate() {
+			return value == null;
+		}
+				
+		public Entry<V> getEntry() {
+			return new PatriciaTrieEntry(prefix, value);
 		}
 	}
 	
-	private class PatriciaTrieEntry implements Entry {
+	private class PatriciaTrieEntry implements Entry<V> {
 		private Prefix prefix;
-		private RibEntry rib;
+		private V value;
 		
-		public PatriciaTrieEntry(Prefix prefix, RibEntry rib) {
+		public PatriciaTrieEntry(Prefix prefix, V value) {
 			this.prefix = prefix;
-			this.rib = rib;
+			this.value = value;
 		}
 		
 		@Override
@@ -362,12 +379,12 @@ public class PatriciaTrie implements IPatriciaTrie{
 		}
 		
 		@Override
-		public RibEntry getRib() {
-			return rib;
+		public V getValue() {
+			return value;
 		}
 	}
 	
-	private class PatriciaTrieIterator implements Iterator<Entry> {
+	private class PatriciaTrieIterator implements Iterator<Entry<V>> {
 		
 		private Node current;
 		private boolean started = false;
@@ -376,7 +393,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 			current = start;
 			
 			//If the start is an aggregate node fast forward to find the next valid node
-			if (current != null && current.rib == null) {
+			if (current != null && current.isAggregate()) {
 				current = findNext(current);
 			}
 		}
@@ -395,7 +412,7 @@ public class PatriciaTrie implements IPatriciaTrie{
 		}
 
 		@Override
-		public Entry next() {
+		public Entry<V> next() {
 			if (current == null) {
 				throw new NoSuchElementException();
 			}
@@ -452,9 +469,9 @@ public class PatriciaTrie implements IPatriciaTrie{
 				return null;
 			}
 			
-			//If the node doesn't have a rib, it's not an actual node, it's an artifically
+			//If the node doesn't have a value, it's not an actual node, it's an artifically
 			//inserted aggregate node. We don't want to return these to the user.
-			if (next.rib == null) {
+			if (next.isAggregate()) {
 				return findNext(next);
 			}
 			
