@@ -13,7 +13,7 @@ public class PtreeNode {
 	
 	public int refCount;
 	
-	public Rib rib;
+	public RibEntry rib;
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 	
 	PtreeNode(byte [] key, int key_bits, int max_key_octet) {

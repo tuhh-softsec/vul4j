@@ -5,9 +5,9 @@ public class RibUpdate {
 	
 	private Operation operation;
 	private Prefix prefix;
-	private Rib ribEntry;
+	private RibEntry ribEntry;
 	
-	public RibUpdate(Operation operation, Prefix prefix, Rib ribEntry) {
+	public RibUpdate(Operation operation, Prefix prefix, RibEntry ribEntry) {
 		this.operation = operation;
 		this.prefix = prefix;
 		this.ribEntry = ribEntry;
@@ -21,7 +21,7 @@ public class RibUpdate {
 		return prefix;
 	}
 
-	public Rib getRibEntry() {
+	public RibEntry getRibEntry() {
 		return ribEntry;
 	}
 }

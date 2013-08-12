@@ -1,6 +1,6 @@
 package net.onrc.onos.ofcontroller.bgproute;
 
-import java.net.UnknownHostException;
+import java.util.Iterator;
 
 import net.onrc.onos.ofcontroller.bgproute.RibUpdate.Operation;
 
@@ -59,11 +59,13 @@ public class BgpRouteResource extends ServerResource {
 			return output;
 		} 
 		else {
-			Ptree ptree = bgpRoute.getPtree();
+			//Ptree ptree = bgpRoute.getPtree();
+			IPatriciaTrie ptree = bgpRoute.getPtree();
 			output += "{\n  \"rib\": [\n";
 			boolean printed = false;
 			
-			for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)) {
+			/*
+			for (PtreeNode node = ptree.begin(); node!= null; node = ptree.next(node)) {
 				if (node.rib == null) {
 					continue;
 				}
@@ -73,7 +75,25 @@ public class BgpRouteResource extends ServerResource {
 				output += "    {\"prefix\": \"" + addrToString(node.key) + "/" + node.keyBits +"\", ";
 				output += "\"nexthop\": \"" + addrToString(node.rib.nextHop.getAddress()) +"\"}";
 				printed = true;
+			}*/
+			
+			synchronized(ptree) {
+				Iterator<IPatriciaTrie.Entry> it = ptree.iterator();
+				while (it.hasNext()) {
+					IPatriciaTrie.Entry entry = it.next();
+					
+					if (printed == true) {
+						output += ",\n";
+					}
+					
+					output += "    {\"prefix\": \"" + entry.getPrefix() +"\", ";
+					output += "\"nexthop\": \"" + entry.getRib().getNextHop().getHostAddress() +"\"}";
+					//output += ",\n";
+					
+					printed = true;
+				}
 			}
+			
 			//output += "{\"router_id\": \"" + addrToString(node.rib.routerId.getAddress()) +"\"}\n";
 			output += "\n  ]\n}\n";
 		}
@@ -121,13 +141,13 @@ public class BgpRouteResource extends ServerResource {
 				reply = "[POST: mask format is wrong]";
 				log.info(reply);
 				return reply + "\n";				
-			} catch (UnknownHostException e1) {
+			} catch (IllegalArgumentException e1) {
 				reply = "[POST: prefix format is wrong]";
 				log.info(reply);
 				return reply + "\n";
 			}
 			
-			Rib rib = new Rib(routerId, nexthop, p.getPrefixLength());
+			RibEntry rib = new RibEntry(routerId, nexthop);
 
 			bgpRoute.newRibUpdate(new RibUpdate(Operation.UPDATE, p, rib));
 			
@@ -184,13 +204,13 @@ public class BgpRouteResource extends ServerResource {
 				reply = "[DELE: mask format is wrong]";
 				log.info(reply);
 				return reply + "\n";
-			} catch (UnknownHostException e1) {
+			} catch (IllegalArgumentException e1) {
 				reply = "[DELE: prefix format is wrong]";
 				log.info(reply);
 				return reply + "\n";
 			}
 			
-			Rib r = new Rib(routerId, nextHop, p.getPrefixLength());
+			RibEntry r = new RibEntry(routerId, nextHop);
 			
 			bgpRoute.newRibUpdate(new RibUpdate(Operation.DELETE, p, r));
 			
@@ -222,7 +242,7 @@ public class BgpRouteResource extends ServerResource {
 		else {
 			// clear the local rib: Ptree			
 			bgpRoute.clearPtree();
-			reply = "[DELE-capability: " + capability + "; The local Rib is cleared!]\n";
+			reply = "[DELE-capability: " + capability + "; The local RibEntry is cleared!]\n";
 
 			// to store the number in the top node of the Ptree	
 		}
