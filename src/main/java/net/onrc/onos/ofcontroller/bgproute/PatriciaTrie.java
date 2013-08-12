@@ -101,8 +101,6 @@ public class PatriciaTrie<V> implements IPatriciaTrie<V> {
 	/*exact match*/
 	@Override
 	public synchronized V lookup(Prefix prefix) {
-		//TODO
-		
 		if (prefix.getPrefixLength() > maxPrefixLength) {
 			return null;
 		}
@@ -135,7 +133,13 @@ public class PatriciaTrie<V> implements IPatriciaTrie<V> {
 	@Override
 	public synchronized V match(Prefix prefix) {
 		//TODO
-		return null;
+		if (prefix.getPrefixLength() > maxPrefixLength) {
+			return null;
+		}
+		
+		Node closestNode = findClosestNode(prefix);
+		
+		return closestNode == null ? null : closestNode.value;
 	}
 	
 	@Override
@@ -224,6 +228,27 @@ public class PatriciaTrie<V> implements IPatriciaTrie<V> {
 		}
 		
 		return null;
+	}
+	
+	private Node findClosestNode(Prefix prefix) {
+		Node node = top;
+		Node match = null;
+		
+		while (node != null
+				&& node.prefix.getPrefixLength() <= prefix.getPrefixLength()
+				&& key_match(node.prefix.getAddress(), node.prefix.getPrefixLength(), prefix.getAddress(), prefix.getPrefixLength()) == true) {
+			if (!node.isAggregate()) {
+				match = node;
+			}
+			
+			if (bit_check(prefix.getAddress(), node.prefix.getPrefixLength()) == true) {
+				node = node.right;
+			} else {
+				node = node.left;
+			}
+		}
+		
+		return match;
 	}
 	
 	/*

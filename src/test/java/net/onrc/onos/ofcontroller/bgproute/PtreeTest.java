@@ -25,14 +25,14 @@ public class PtreeTest {
 	private Logger log = LoggerFactory.getLogger(PtreeTest.class);
 	
 	private Ptree ptree;
-	private PatriciaTrie ooptrie;
+	private PatriciaTrie<RibEntry> ooptrie;
 	
 	private Map<String, byte[]> byteAddresses;
 
 	@Before
 	public void setUp() throws Exception {
 		ptree = new Ptree(32);
-		ooptrie = new PatriciaTrie(32);
+		ooptrie = new PatriciaTrie<RibEntry>(32);
 			
 		String[] strPrefixes = {
 			"192.168.10.0/24",
@@ -197,10 +197,10 @@ public class PtreeTest {
 	
 	@Test
 	public void testIteration() {
-		Iterator<IPatriciaTrie.Entry> it = ooptrie.iterator();
+		Iterator<IPatriciaTrie.Entry<RibEntry>> it = ooptrie.iterator();
 		
 		while (it.hasNext()) {
-			IPatriciaTrie.Entry entry = it.next();
+			IPatriciaTrie.Entry<RibEntry> entry = it.next();
 			log.debug("PatriciaTrie prefix {} \t {}", entry.getPrefix(), entry.getPrefix().printAsBits());
 		}
 		

@@ -89,6 +89,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	//protected static Ptree ptree;
 	protected IPatriciaTrie<RibEntry> ptree;
+	protected IPatriciaTrie<Interface> interfacePtrie;
 	protected BlockingQueue<RibUpdate> ribUpdates;
 	
 	protected String bgpdRestIp;
@@ -219,6 +220,22 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			log.error("Error reading JSON file", e);
 			System.exit(1);
 		}
+		
+		//Populate the interface Patricia Trie
+		for (Interface intf : interfaces.values()) {
+			Prefix prefix = new Prefix(intf.getIpAddress().getAddress(), intf.getPrefixLength());
+			interfacePtrie.put(prefix, intf);
+		}
+		
+		/*
+		Iterator<IPatriciaTrie.Entry<Interface>> it = interfacePtrie.iterator();
+		while (it.hasNext()) {
+			IPatriciaTrie.Entry<Interface> entry = it.next();
+			Interface intf = entry.getValue();
+			log.debug("Interface at prefix {}, switchport {}/{}",
+					new Object[] {entry.getPrefix(), HexString.toHexString(intf.getDpid()), intf.getPort()});
+		}
+		*/
 	}
 	
 	@Override
@@ -254,6 +271,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	    
 	    //ptree = new Ptree(32);
 		ptree = new PatriciaTrie<RibEntry>(32);
+		interfacePtrie = new PatriciaTrie<Interface>(32);
 	    
 	    ribUpdates = new LinkedBlockingQueue<RibUpdate>();
 	    	
