@@ -494,11 +494,18 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	@Override
 	public void newRibUpdate(RibUpdate update) {
-		ribUpdates.add(update);
+		try {
+			ribUpdates.put(update);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			log.debug(" ", e);
+		}
 	}
 	
 	public synchronized void processRibAdd(RibUpdate update) {
 		Prefix prefix = update.getPrefix();
+		
+		log.debug("Processing prefix add {}", prefix);
 		
 		//PtreeNode node = ptree.acquire(prefix.getAddress(), prefix.getPrefixLength());
 		RibEntry rib = ptree.put(prefix, update.getRibEntry());
@@ -1165,6 +1172,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 						break;
 					}
 				} catch (InterruptedException e) {
+					log.debug("interrupted", e);
 					interrupted = true;
 				}
 			}

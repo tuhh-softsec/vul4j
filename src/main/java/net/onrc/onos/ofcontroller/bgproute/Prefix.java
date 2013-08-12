@@ -73,13 +73,12 @@ public class Prefix {
 		
 		byte lastByte = address[lastByteIndex];
 		byte mask = 0;
-		byte lsb = 1;
+		byte msb = (byte) 0x80;
 		int lastBit = (prefixLength - 1) % Byte.SIZE;
 		for (int i = 0; i < Byte.SIZE; i++) {
-			if (i <= lastBit + 1) {
-				mask |= lsb;
+			if (i <= lastBit) {
+				mask |= (msb >> i);
 			}
-			mask <<= 1;
 		}
 
 		result[lastByteIndex] = (byte) (lastByte & mask);

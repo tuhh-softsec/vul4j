@@ -223,19 +223,13 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				return;
 			}
 			
-			boolean shouldBroadcastRequest = false;
-			synchronized (arpRequests) {
-				if (!arpRequests.containsKey(target)) {
-					shouldBroadcastRequest = true;
-				}
-				arpRequests.put(target, new ArpRequest(
-						new HostArpRequester(this, arp, sw.getId(), pi.getInPort()), false));
-			}
+			//Should we just broadcast all received requests here? Or rate limit
+			//if we know we just sent an request?
+			arpRequests.put(target, new ArpRequest(
+					new HostArpRequester(this, arp, sw.getId(), pi.getInPort()), false));
 						
 			//Flood the request out edge ports
-			if (shouldBroadcastRequest) {
-				broadcastArpRequestOutEdge(pi.getPacketData(), sw.getId(), pi.getInPort());
-			}
+			broadcastArpRequestOutEdge(pi.getPacketData(), sw.getId(), pi.getInPort());
 		}
 		else {
 			//We know the address, so send a reply

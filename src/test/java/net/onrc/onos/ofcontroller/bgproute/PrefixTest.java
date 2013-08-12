@@ -63,4 +63,39 @@ public class PrefixTest {
 		assertEquals(p1.hashCode(), p3.hashCode());
 	}
 
+	@Test
+	public void testPrefixReturnsSame() {
+		//Create a prefix of all 1s for each prefix length.
+		//Check that Prefix doesn't mangle it
+		int MAX_PREFIX_LENGTH = 32;
+		for (int prefixLength = 1; prefixLength <= MAX_PREFIX_LENGTH; prefixLength++) {
+			byte address[] = new byte[MAX_PREFIX_LENGTH/Byte.SIZE];
+			
+			int lastByte = (prefixLength - 1) / Byte.SIZE;
+			int lastBit = (prefixLength - 1) % Byte.SIZE;
+			
+			for (int j = 0; j < address.length; j++) {
+				if (j < lastByte) {
+					address[j] = (byte)0xff;
+				}
+				else if (j == lastByte) {
+					byte b = 0;
+					byte msb = (byte) 0x80;
+					for (int k = 0; k < Byte.SIZE; k++) {
+						if (k <= lastBit) {
+							b |= (msb >> k);
+						}
+					}
+					address[j] = b;
+				}
+				else {
+					address[j] = 0;
+				}
+			}
+			
+			Prefix p = new Prefix(address, prefixLength);
+			System.out.println(p.printAsBits());
+			assertTrue(Arrays.equals(address, p.getAddress()));
+		}
+	}
 }
