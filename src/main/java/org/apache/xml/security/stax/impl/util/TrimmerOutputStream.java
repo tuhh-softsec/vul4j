@@ -94,7 +94,7 @@ public class TrimmerOutputStream extends FilterOutputStream {
         if (len >= (buffer.length - bufferedCount)) {
             out.write(buffer, 0, bufferedCount);
             out.write(b, off, len - endTrimLength);
-            System.arraycopy(b, (off + len) - endTrimLength, buffer, 0, endTrimLength);
+            System.arraycopy(b, off + len - endTrimLength, buffer, 0, endTrimLength);
             bufferedCount = endTrimLength;
             return;
         }

@@ -141,8 +141,8 @@ public class ResolverXPointer extends ResourceResolverSpi {
             String idPlusDelim = uri.substring(XP_LENGTH, uri.length() - 2);
 
             int idLen = idPlusDelim.length() -1;
-            if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim.charAt(idLen) == '"')) 
-                || ((idPlusDelim.charAt(0) == '\'') && (idPlusDelim.charAt(idLen) == '\''))) {
+            if (idPlusDelim.charAt(0) == '"' && idPlusDelim.charAt(idLen) == '"' 
+                || idPlusDelim.charAt(0) == '\'' && idPlusDelim.charAt(idLen) == '\'') {
                 if (log.isDebugEnabled()) {
                     log.debug("Id = " + idPlusDelim.substring(1, idLen));
                 }
@@ -164,8 +164,8 @@ public class ResolverXPointer extends ResourceResolverSpi {
             String idPlusDelim = uri.substring(XP_LENGTH,uri.length() - 2);
             
             int idLen = idPlusDelim.length() -1;
-            if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim.charAt(idLen) == '"')) 
-                || ((idPlusDelim.charAt(0) == '\'') && (idPlusDelim.charAt(idLen) == '\''))) {
+            if (idPlusDelim.charAt(0) == '"' && idPlusDelim.charAt(idLen) == '"' 
+                || idPlusDelim.charAt(0) == '\'' && idPlusDelim.charAt(idLen) == '\'') {
                 return idPlusDelim.substring(1, idLen);
             }
         }

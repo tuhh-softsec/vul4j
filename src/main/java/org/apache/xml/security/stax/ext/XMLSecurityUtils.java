@@ -394,7 +394,7 @@ public class XMLSecurityUtils {
         if (size > 0) {
             keySpec = 
                 new SecretKeySpec(
-                    rawKey, 0, ((rawKey.length > size) ? size : rawKey.length), keyAlgorithm
+                    rawKey, 0, rawKey.length > size ? size : rawKey.length, keyAlgorithm
                 );
         } else {
             keySpec = new SecretKeySpec(rawKey, keyAlgorithm);

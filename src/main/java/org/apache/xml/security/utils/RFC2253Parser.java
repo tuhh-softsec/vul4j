@@ -68,7 +68,7 @@ public class RFC2253Parser {
      */
     public static String normalize(String dn, boolean toXml) {
         //if empty string
-        if ((dn == null) || dn.equals("")) {
+        if (dn == null || dn.equals("")) {
             return "";
         }
 
@@ -83,7 +83,7 @@ public class RFC2253Parser {
             for (int j = 0; (k = DN.indexOf(',', j)) >= 0; j = k + 1) {
                 l += countQuotes(DN, j, k);
 
-                if ((k > 0) && (DN.charAt(k - 1) != '\\') && (l % 2) == 0) {
+                if (k > 0 && DN.charAt(k - 1) != '\\' && (l % 2) == 0) {
                     sb.append(parseRDN(DN.substring(i, k).trim(), toXml)).append(",");
 
                     i = k + 1;
@@ -116,7 +116,7 @@ public class RFC2253Parser {
         for (int j = 0; (k = str.indexOf('+', j)) >= 0; j = k + 1) {
             l += countQuotes(str, j, k);
 
-            if ((k > 0) && (str.charAt(k - 1) != '\\') && (l % 2) == 0) {
+            if (k > 0 && str.charAt(k - 1) != '\\' && (l % 2) == 0) {
                 sb.append(parseATAV(trim(str.substring(i, k)), toXml)).append("+");
 
                 i = k + 1;
@@ -140,7 +140,7 @@ public class RFC2253Parser {
     static String parseATAV(String str, boolean toXml) throws IOException {
         int i = str.indexOf('=');
 
-        if ((i == -1) || ((i > 0) && (str.charAt(i - 1) == '\\'))) {
+        if (i == -1 || i > 0 && str.charAt(i - 1) == '\\') {
             return str;
         } 
         String attrType = normalizeAT(str.substring(0, i));
@@ -194,8 +194,8 @@ public class RFC2253Parser {
                 c = (char) i;
 
                 //the following char is defined at 4.Relationship with RFC1779 and LDAPv2 inrfc2253
-                if ((c == ',') || (c == '=') || (c == '+') || (c == '<')
-                    || (c == '>') || (c == '#') || (c == ';')) {
+                if (c == ',' || c == '=' || c == '+' || c == '<'
+                    || c == '>' || c == '#' || c == ';') {
                     sb.append('\\');
                 }
 
@@ -273,10 +273,10 @@ public class RFC2253Parser {
                 char c2 = (char) sr.read();
 
                 //65 (A) 97 (a)
-                if ((((c1 >= 48) && (c1 <= 57)) || ((c1 >= 65) && (c1 <= 70)) || ((c1 >= 97) && (c1 <= 102)))
-                    && (((c2 >= 48) && (c2 <= 57))
-                        || ((c2 >= 65) && (c2 <= 70))
-                        || ((c2 >= 97) && (c2 <= 102)))) {
+                if ((c1 >= 48 && c1 <= 57 || c1 >= 65 && c1 <= 70 || c1 >= 97 && c1 <= 102)
+                    && (c2 >= 48 && c2 <= 57
+                        || c2 >= 65 && c2 <= 70
+                        || c2 >= 97 && c2 <= 102)) {
                     char ch = (char) Byte.parseByte("" + c1 + c2, 16);
 
                     sb.append(ch);
@@ -413,7 +413,7 @@ public class RFC2253Parser {
         for (int j = 0; (k = str.indexOf(symbol, j)) >= 0; j = k + 1) {
             l += countQuotes(str, j, k);
 
-            if ((k > 0) && (str.charAt(k - 1) != '\\') && (l % 2) == 0) {
+            if (k > 0 && str.charAt(k - 1) != '\\' && (l % 2) == 0) {
                 sb.append(trim(str.substring(i, k))).append(replace);
 
                 i = k + 1;
@@ -459,8 +459,8 @@ public class RFC2253Parser {
         String trimed = str.trim();
         int i = str.indexOf(trimed) + trimed.length();
 
-        if ((str.length() > i) && trimed.endsWith("\\")
-            && !trimed.endsWith("\\\\") && (str.charAt(i) == ' ')) {
+        if (str.length() > i && trimed.endsWith("\\")
+            && !trimed.endsWith("\\\\") && str.charAt(i) == ' ') {
             trimed = trimed + " ";
         }
 

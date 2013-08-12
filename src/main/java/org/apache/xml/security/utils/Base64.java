@@ -116,8 +116,8 @@ public class Base64 {
 
         byte[] bigBytes = big.toByteArray();
 
-        if (((big.bitLength() % 8) != 0)
-            && (((big.bitLength() / 8) + 1) == (bitlen / 8))) {
+        if (big.bitLength() % 8 != 0
+            && big.bitLength() / 8 + 1 == bitlen / 8) {
             return bigBytes;
         }
 
@@ -125,7 +125,7 @@ public class Base64 {
         int startSrc = 0;    // no need to skip anything
         int bigLen = bigBytes.length;    //valid length of the string
 
-        if ((big.bitLength() % 8) == 0) {    // correct values
+        if (big.bitLength() % 8 == 0) {    // correct values
             startSrc = 1;    // skip sign bit
 
             bigLen--;    // valid length of the string
@@ -171,8 +171,8 @@ public class Base64 {
 
         byte[] bigBytes = big.toByteArray();
 
-        if (((big.bitLength() % 8) != 0)
-            && (((big.bitLength() / 8) + 1) == (bitlen / 8))) {
+        if (big.bitLength() % 8 != 0
+            && big.bitLength() / 8 + 1 == bitlen / 8) {
             return bigBytes;
         }
 
@@ -180,7 +180,7 @@ public class Base64 {
         int startSrc = 0;    // no need to skip anything
         int bigLen = bigBytes.length;    //valid length of the string
 
-        if ((big.bitLength() % 8) == 0) {    // correct values
+        if (big.bitLength() % 8 == 0) {    // correct values
             startSrc = 1;    // skip sign bit
 
             bigLen--;    // valid length of the string
@@ -338,12 +338,12 @@ public class Base64 {
         return retBytes;
     }
 
-    protected static final boolean isWhiteSpace(byte octect) {
-        return (octect == 0x20 || octect == 0xd || octect == 0xa || octect == 0x9);
+    protected static final boolean isWhiteSpace(byte octet) {
+        return octet == 0x20 || octet == 0xd || octet == 0xa || octet == 0x9;
     }
 
-    protected static final boolean isPad(byte octect) {
-        return (octect == PAD);
+    protected static final boolean isPad(byte octet) {
+        return octet == PAD;
     }
 
     /**
@@ -360,7 +360,7 @@ public class Base64 {
      * @param length <code>int<code> length of wrapped lines; No wrapping if less than 4.
      * @return a <code>String</code> with encoded data
      */
-    public static final String  encode(byte[] binaryData,int length) {
+    public static final String  encode(byte[] binaryData, int length) {
         if (length < 4) {
             length = Integer.MAX_VALUE;
         }
@@ -503,7 +503,7 @@ public class Base64 {
             //should be divisible by four
         }
 
-        int numberQuadruple = (len / FOURBYTE);
+        int numberQuadruple = len / FOURBYTE;
 
         if (numberQuadruple == 0) {
             return new byte[0];
@@ -522,7 +522,7 @@ public class Base64 {
         //first last bits.
         b1 = base64Alphabet[base64Data[dataIndex++]];
         b2 = base64Alphabet[base64Data[dataIndex++]];
-        if ((b1==-1) || (b2==-1)) {
+        if (b1 == -1 || b2 == -1) {
              //if found "no data" just return null
             throw new Base64DecodingException("decoding.general");
         }
@@ -531,7 +531,7 @@ public class Base64 {
         byte d3, d4;
         b3 = base64Alphabet[d3 = base64Data[dataIndex++]];
         b4 = base64Alphabet[d4 = base64Data[dataIndex++]];
-        if ((b3 == -1) || (b4 == -1) ) {
+        if (b3 == -1 || b4 == -1) {
             //Check if they are PAD characters
             if (isPad(d3) && isPad(d4)) {               //Two PAD e.g. 3c[Pad][Pad]
                 if ((b2 & 0xf) != 0) { //last 4 bits should be zero
@@ -566,10 +566,7 @@ public class Base64 {
             b3 = base64Alphabet[base64Data[dataIndex++]];
             b4 = base64Alphabet[base64Data[dataIndex++]];
 
-            if ((b1 == -1) ||
-                (b2 == -1) ||
-                (b3 == -1) ||
-                (b4 == -1)) {
+            if (b1 == -1 || b2 == -1 || b3 == -1 || b4 == -1) {
                 //if found "no data" just return null   
                 throw new Base64DecodingException("decoding.general");
             }
@@ -621,7 +618,7 @@ public class Base64 {
             //should be divisible by four
         }
 
-        int numberQuadruple = (len / FOURBYTE);
+        int numberQuadruple = len / FOURBYTE;
 
         if (numberQuadruple == 0) {
             return;
@@ -639,10 +636,7 @@ public class Base64 {
             b2 = base64Alphabet[base64Data[dataIndex++]];
             b3 = base64Alphabet[base64Data[dataIndex++]];
             b4 = base64Alphabet[base64Data[dataIndex++]];
-            if ((b1 == -1) ||
-                (b2 == -1) ||
-                (b3 == -1) ||
-                (b4 == -1)) {
+            if (b1 == -1 || b2 == -1 || b3 == -1 || b4 == -1) {
                 //if found "no data" just return null
                 throw new Base64DecodingException("decoding.general");
             }
@@ -655,7 +649,7 @@ public class Base64 {
         b2 = base64Alphabet[base64Data[dataIndex++]];
 
         //  first last bits.
-        if ((b1 == -1) || (b2 == -1) ) {
+        if (b1 == -1 || b2 == -1) {
             //if found "no data" just return null
             throw new Base64DecodingException("decoding.general");
         }
@@ -663,7 +657,7 @@ public class Base64 {
         byte d3, d4;
         b3 = base64Alphabet[d3 = base64Data[dataIndex++]];
         b4 = base64Alphabet[d4 = base64Data[dataIndex++]];
-        if ((b3 == -1 ) || (b4 == -1) ) { //Check if they are PAD characters
+        if (b3 == -1 || b4 == -1) { //Check if they are PAD characters
             if (isPad(d3) && isPad(d4)) {               //Two PAD e.g. 3c[Pad][Pad]
                 if ((b2 & 0xf) != 0) { //last 4 bits should be zero
                     throw new Base64DecodingException("decoding.general");
@@ -741,7 +735,7 @@ public class Base64 {
         b2 = base64Alphabet[d2];
         b3 = base64Alphabet[d3];
         b4 = base64Alphabet[d4];
-        if ((b3 == -1) || (b4 == -1)) { //Check if they are PAD characters
+        if (b3 == -1 || b4 == -1) { //Check if they are PAD characters
             if (isPad(d3) && isPad(d4)) {               //Two PAD e.g. 3c[Pad][Pad]
                 if ((b2 & 0xf) != 0) { //last 4 bits should be zero
                     throw new Base64DecodingException("decoding.general");

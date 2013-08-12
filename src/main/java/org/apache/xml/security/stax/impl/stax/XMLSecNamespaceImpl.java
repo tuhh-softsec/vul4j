@@ -135,7 +135,7 @@ public class XMLSecNamespaceImpl extends XMLSecEventBaseImpl implements XMLSecNa
 
     @Override
     public boolean isDefaultNamespaceDeclaration() {
-        return (prefix.length() == 0);
+        return prefix.length() == 0;
     }
 
     @Override

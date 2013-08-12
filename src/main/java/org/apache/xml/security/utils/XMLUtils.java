@@ -105,7 +105,7 @@ public class XMLUtils {
     
     public static Element getNextElement(Node el) {
         Node node = el;
-        while ((node != null) && (node.getNodeType() != Node.ELEMENT_NODE)) {
+        while (node != null && node.getNodeType() != Node.ELEMENT_NODE) {
             node = node.getNextSibling();
         }
         return (Element)node;
@@ -118,7 +118,7 @@ public class XMLUtils {
      * @param com whether comments or not
      */   
     public static void getSet(Node rootNode, Set<Node> result, Node exclude, boolean com) {
-        if ((exclude != null) && isDescendantOrSelf(exclude, rootNode)) {
+        if (exclude != null && isDescendantOrSelf(exclude, rootNode)) {
             return;
         }
         getSetRec(rootNode, result, exclude, com);
@@ -145,7 +145,7 @@ public class XMLUtils {
             for (Node r = rootNode.getFirstChild(); r != null; r = r.getNextSibling()) {                                    
                 if (r.getNodeType() == Node.TEXT_NODE) {
                     result.add(r); 
-                    while ((r != null) && (r.getNodeType() == Node.TEXT_NODE)) {
+                    while (r != null && r.getNodeType() == Node.TEXT_NODE) {
                         r = r.getNextSibling();
                     }
                     if (r == null) {
@@ -280,7 +280,7 @@ public class XMLUtils {
             throw new RuntimeException("Document is null");
         }
 
-        if ((dsPrefix == null) || (dsPrefix.length() == 0)) {
+        if (dsPrefix == null || dsPrefix.length() == 0) {
             return doc.createElementNS(Constants.SignatureSpecNS, elementName);
         } 
         return doc.createElementNS(Constants.SignatureSpecNS, dsPrefix + ":" + elementName);
@@ -298,7 +298,7 @@ public class XMLUtils {
             throw new RuntimeException("Document is null");
         }
 
-        if ((ds11Prefix == null) || (ds11Prefix.length() == 0)) {
+        if (ds11Prefix == null || ds11Prefix.length() == 0) {
             return doc.createElementNS(Constants.SignatureSpec11NS, elementName);
         } 
         return doc.createElementNS(Constants.SignatureSpec11NS, ds11Prefix + ":" + elementName);
@@ -316,7 +316,7 @@ public class XMLUtils {
             throw new RuntimeException("Document is null");
         }
 
-        if ((xencPrefix == null) || (xencPrefix.length() == 0)) {
+        if (xencPrefix == null || xencPrefix.length() == 0) {
             return doc.createElementNS(EncryptionConstants.EncryptionSpecNS, elementName);
         }
         return 
@@ -337,7 +337,7 @@ public class XMLUtils {
             throw new RuntimeException("Document is null");
         }
 
-        if ((xenc11Prefix == null) || (xenc11Prefix.length() == 0)) {
+        if (xenc11Prefix == null || xenc11Prefix.length() == 0) {
             return doc.createElementNS(EncryptionConstants.EncryptionSpec11NS, elementName);
         }
         return 
@@ -478,7 +478,7 @@ public class XMLUtils {
      * @return the element.
      */
     public static Element createDSctx(Document doc, String prefix, String namespace) {
-        if ((prefix == null) || (prefix.trim().length() == 0)) {
+        if (prefix == null || prefix.trim().length() == 0) {
             throw new IllegalArgumentException("You must supply a prefix");
         }
 
@@ -614,7 +614,7 @@ public class XMLUtils {
                 sibling = node.getFirstChild();
                 break;
             }
-            while ((sibling == null) && (parent != null)) {
+            while (sibling == null && parent != null) {
                 sibling = parent.getNextSibling();
                 parent = parent.getParentNode();
             }

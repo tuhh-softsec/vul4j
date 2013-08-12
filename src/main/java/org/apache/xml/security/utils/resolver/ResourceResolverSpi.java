@@ -34,7 +34,7 @@ public abstract class ResourceResolverSpi {
         org.slf4j.LoggerFactory.getLogger(ResourceResolverSpi.class);
 
     /** Field properties */
-    protected java.util.Map<String, String> properties = null;
+    protected Map<String, String> properties = null;
 
     /**
      * This is the workhorse method used to resolve resources.
@@ -160,9 +160,9 @@ public abstract class ResourceResolverSpi {
             char ch1 = str.charAt(1);
             char ch2 = str.charAt(2);
             char ch3 = str.charAt(3);
-            boolean isDosFilename = ((('A' <= ch0) && (ch0 <= 'Z'))
-                && (ch1 == ':') && (ch2 == '/')
-                && (ch3 != '/'));
+            boolean isDosFilename = 'A' <= ch0 && ch0 <= 'Z'
+                && ch1 == ':' && ch2 == '/'
+                && ch3 != '/';
 
             if (isDosFilename && log.isDebugEnabled()) {
                 log.debug("Found DOS filename: " + str);
@@ -176,7 +176,7 @@ public abstract class ResourceResolverSpi {
             if (ch1 == ':') {
                 char ch0 = Character.toUpperCase(str.charAt(0));
 
-                if (('A' <= ch0) && (ch0 <= 'Z')) {
+                if ('A' <= ch0 && ch0 <= 'Z') {
                     str = "/" + str;
                 }
             }

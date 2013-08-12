@@ -51,7 +51,7 @@ public class ResolverFilesystem implements ResourceResolver, ResourceResolverLoo
         if (uri == null) {
             return null;
         }
-        if (uri.startsWith("file:") || (baseURI != null && baseURI.startsWith("file:"))) {
+        if (uri.startsWith("file:") || baseURI != null && baseURI.startsWith("file:")) {
             return this;
         }
         return null;

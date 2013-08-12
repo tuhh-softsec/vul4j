@@ -18,16 +18,26 @@
  */
 package org.apache.xml.security.stax.impl;
 
+import java.util.Iterator;
+
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Comment;
+import javax.xml.stream.events.DTD;
+import javax.xml.stream.events.EntityReference;
+import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.ProcessingInstruction;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
-
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.namespace.QName;
-import javax.xml.stream.*;
-import javax.xml.stream.events.*;
-import java.util.Iterator;
 
 /**
  * A custom implementation of a XMLStreamReader to get back from the XMLEventReader world
@@ -400,7 +410,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
             case ENTITY_REFERENCE:
                 return ((EntityReference) xmlSecEvent).getDeclaration().getReplacementText();
             case DTD:
-                return ((javax.xml.stream.events.DTD) xmlSecEvent).getDocumentTypeDeclaration();
+                return ((DTD) xmlSecEvent).getDocumentTypeDeclaration();
             case COMMENT:
                 return ((Comment) xmlSecEvent).getText();
             case CDATA:
@@ -419,7 +429,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
             case ENTITY_REFERENCE:
                 return ((EntityReference) xmlSecEvent).getDeclaration().getReplacementText().toCharArray();
             case DTD:
-                return ((javax.xml.stream.events.DTD) xmlSecEvent).getDocumentTypeDeclaration().toCharArray();
+                return ((DTD) xmlSecEvent).getDocumentTypeDeclaration().toCharArray();
             case COMMENT:
                 return ((Comment) xmlSecEvent).getText().toCharArray();
             case CDATA:
@@ -439,7 +449,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
                 ((EntityReference) xmlSecEvent).getDeclaration().getReplacementText().getChars(sourceStart, sourceStart + length, target, targetStart);
                 return sourceStart + length;
             case DTD:
-                ((javax.xml.stream.events.DTD) xmlSecEvent).getDocumentTypeDeclaration().getChars(sourceStart, sourceStart + length, target, targetStart);
+                ((DTD) xmlSecEvent).getDocumentTypeDeclaration().getChars(sourceStart, sourceStart + length, target, targetStart);
                 return sourceStart + length;
             case COMMENT:
                 ((Comment) xmlSecEvent).getText().getChars(sourceStart, sourceStart + length, target, targetStart);
@@ -466,7 +476,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
             case ENTITY_REFERENCE:
                 return ((EntityReference) xmlSecEvent).getDeclaration().getReplacementText().length();
             case DTD:
-                return ((javax.xml.stream.events.DTD) xmlSecEvent).getDocumentTypeDeclaration().length();
+                return ((DTD) xmlSecEvent).getDocumentTypeDeclaration().length();
             case COMMENT:
                 return ((Comment) xmlSecEvent).getText().length();
             case CDATA:
@@ -490,7 +500,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
     @Override
     public boolean hasText() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
-        return (((1 << xmlSecEvent.getEventType()) & MASK_GET_TEXT) != 0);
+        return ((1 << xmlSecEvent.getEventType()) & MASK_GET_TEXT) != 0;
     }
 
     @Override

@@ -94,7 +94,7 @@ public class ResourceResolver {
                     );
                 }
     
-                if ((resolverTmp != null) && resolverTmp.canResolve(context)) {
+                if (resolverTmp != null && resolverTmp.canResolve(context)) {
                     // Check to see whether the Resolver is allowed
                     if (context.secureValidation 
                         && (resolverTmp.resolverSpi instanceof ResolverLocalFilesystem
@@ -109,8 +109,8 @@ public class ResourceResolver {
             }
         }
         
-        Object exArgs[] = { ((context.uriToResolve != null)
-                ? context.uriToResolve : "null"), context.baseUri };
+        Object exArgs[] = { context.uriToResolve != null
+                ? context.uriToResolve : "null", context.baseUri };
 
         throw new ResourceResolverException("utils.resolver.noClass", exArgs, context.uriToResolve, context.baseUri);
     }

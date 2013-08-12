@@ -49,7 +49,7 @@ public class Init {
 
     @SuppressWarnings("unchecked")
     public static synchronized void init(URI uri) throws XMLSecurityException {
-        if (initialized == null || (uri != null && !uri.equals(initialized))) {
+        if (initialized == null || uri != null && !uri.equals(initialized)) {
             try {
                 JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
                 final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

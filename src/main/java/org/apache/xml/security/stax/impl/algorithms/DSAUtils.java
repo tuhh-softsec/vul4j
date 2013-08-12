@@ -40,23 +40,23 @@ public class DSAUtils {
         byte rLength = asn1Bytes[3];
         int i;
 
-        for (i = rLength; (i > 0) && (asn1Bytes[(4 + rLength) - i] == 0); i--) ;
+        for (i = rLength; i > 0 && asn1Bytes[4 + rLength - i] == 0; i--) ;
 
         byte sLength = asn1Bytes[5 + rLength];
         int j;
 
-        for (j = sLength; (j > 0) && (asn1Bytes[(6 + rLength + sLength) - j] == 0); j--) ;
+        for (j = sLength; j > 0 && asn1Bytes[6 + rLength + sLength - j] == 0; j--) ;
 
-        if ((asn1Bytes[0] != 48)
-                || (asn1Bytes[1] != asn1Bytes.length - 2)
-                || (asn1Bytes[2] != 2) || (i > 20)
-                || (asn1Bytes[4 + rLength] != 2) || (j > 20)) {
+        if (asn1Bytes[0] != 48
+                || asn1Bytes[1] != asn1Bytes.length - 2
+                || asn1Bytes[2] != 2 || i > 20
+                || asn1Bytes[4 + rLength] != 2 || j > 20) {
             throw new IOException("Invalid ASN.1 format of DSA signature");
         } else {
             byte xmldsigBytes[] = new byte[40];
 
-            System.arraycopy(asn1Bytes, (4 + rLength) - i, xmldsigBytes, 20 - i, i);
-            System.arraycopy(asn1Bytes, (6 + rLength + sLength) - j, xmldsigBytes, 40 - j, j);
+            System.arraycopy(asn1Bytes, 4 + rLength - i, xmldsigBytes, 20 - i, i);
+            System.arraycopy(asn1Bytes, 6 + rLength + sLength - j, xmldsigBytes, 40 - j, j);
 
             return xmldsigBytes;
         }
@@ -79,7 +79,7 @@ public class DSAUtils {
 
         int i;
 
-        for (i = 20; (i > 0) && (xmldsigBytes[20 - i] == 0); i--) ;
+        for (i = 20; i > 0 && xmldsigBytes[20 - i] == 0; i--) ;
 
         int j = i;
 
@@ -89,7 +89,7 @@ public class DSAUtils {
 
         int k;
 
-        for (k = 20; (k > 0) && (xmldsigBytes[40 - k] == 0); k--) ;
+        for (k = 20; k > 0 && xmldsigBytes[40 - k] == 0; k--) ;
 
         int l = k;
 
@@ -104,12 +104,12 @@ public class DSAUtils {
         asn1Bytes[2] = 2;
         asn1Bytes[3] = (byte) j;
 
-        System.arraycopy(xmldsigBytes, 20 - i, asn1Bytes, (4 + j) - i, i);
+        System.arraycopy(xmldsigBytes, 20 - i, asn1Bytes, 4 + j - i, i);
 
         asn1Bytes[4 + j] = 2;
         asn1Bytes[5 + j] = (byte) l;
 
-        System.arraycopy(xmldsigBytes, 40 - k, asn1Bytes, (6 + j + l) - k, k);
+        System.arraycopy(xmldsigBytes, 40 - k, asn1Bytes, 6 + j + l - k, k);
 
         return asn1Bytes;
     }

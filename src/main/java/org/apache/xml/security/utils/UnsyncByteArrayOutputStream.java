@@ -62,7 +62,7 @@ public class UnsyncByteArrayOutputStream extends OutputStream  {
     }
 
     public void write(int arg0) {
-        if ((Integer.MAX_VALUE - pos) == 0) {
+        if (Integer.MAX_VALUE - pos == 0) {
             throw new OutOfMemoryError();
         }
         int newPos = pos + 1;

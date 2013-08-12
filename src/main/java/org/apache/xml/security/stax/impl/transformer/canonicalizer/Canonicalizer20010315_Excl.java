@@ -48,7 +48,7 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
 
     protected static ArrayList<String> getPrefixList(List<String> inclusiveNamespaces) {
 
-        if ((inclusiveNamespaces == null) || (inclusiveNamespaces.isEmpty())) {
+        if (inclusiveNamespaces == null || inclusiveNamespaces.isEmpty()) {
             return null;
         }
 
@@ -117,7 +117,7 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
                 //resultNamespace means the prefix matched. so check the ns further
                 if (resultNamespace == null || resultNamespace.getNamespaceURI() == null
                         || !resultNamespace.getNamespaceURI().equals(comparableNamespace.getNamespaceURI())
-                        || (firstCall && propagateDefaultNamespace && !utilizedNamespaces.contains(comparableNamespace))) {
+                        || firstCall && propagateDefaultNamespace && !utilizedNamespaces.contains(comparableNamespace)) {
 
                     if (utilizedNamespaces == Collections.<XMLSecNamespace>emptyList()) {
                         utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);

@@ -26,5 +26,5 @@ import javax.xml.stream.events.Attribute;
  */
 public interface XMLSecAttribute extends XMLSecEvent, Attribute, Comparable<XMLSecAttribute> {
 
-    public XMLSecNamespace getAttributeNamespace();
+    XMLSecNamespace getAttributeNamespace();
 }

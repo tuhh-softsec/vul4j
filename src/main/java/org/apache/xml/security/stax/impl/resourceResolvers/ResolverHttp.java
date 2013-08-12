@@ -59,7 +59,7 @@ public class ResolverHttp implements ResourceResolver, ResourceResolverLookup {
         if (uri == null) {
             return null;
         }
-        if (pattern.matcher(uri).matches() || (baseURI != null && pattern.matcher(baseURI).matches())) {
+        if (pattern.matcher(uri).matches() || baseURI != null && pattern.matcher(baseURI).matches()) {
             return this;
         }
         return null;

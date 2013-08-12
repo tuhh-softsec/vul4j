@@ -65,13 +65,13 @@ public final class ECDSAUtils {
         byte rLength = asn1Bytes[offset + 1];
         int i;
 
-        for (i = rLength; (i > 0) && (asn1Bytes[(offset + 2 + rLength) - i] == 0); i--) ;
+        for (i = rLength; i > 0 && asn1Bytes[offset + 2 + rLength - i] == 0; i--) ;
 
         byte sLength = asn1Bytes[offset + 2 + rLength + 1];
         int j;
 
         for (j = sLength;
-             (j > 0) && (asn1Bytes[(offset + 2 + rLength + 2 + sLength) - j] == 0); j--)
+             j > 0 && asn1Bytes[offset + 2 + rLength + 2 + sLength - j] == 0; j--)
             ;
 
         int rawLen = Math.max(i, j);
@@ -84,8 +84,8 @@ public final class ECDSAUtils {
         }
         byte xmldsigBytes[] = new byte[2 * rawLen];
 
-        System.arraycopy(asn1Bytes, (offset + 2 + rLength) - i, xmldsigBytes, rawLen - i, i);
-        System.arraycopy(asn1Bytes, (offset + 2 + rLength + 2 + sLength) - j, xmldsigBytes,
+        System.arraycopy(asn1Bytes, offset + 2 + rLength - i, xmldsigBytes, rawLen - i, i);
+        System.arraycopy(asn1Bytes, offset + 2 + rLength + 2 + sLength - j, xmldsigBytes,
                 2 * rawLen - j, j);
 
         return xmldsigBytes;
@@ -109,7 +109,7 @@ public final class ECDSAUtils {
 
         int i;
 
-        for (i = rawLen; (i > 0) && (xmldsigBytes[rawLen - i] == 0); i--) ;
+        for (i = rawLen; i > 0 && xmldsigBytes[rawLen - i] == 0; i--) ;
 
         int j = i;
 
@@ -119,7 +119,7 @@ public final class ECDSAUtils {
 
         int k;
 
-        for (k = rawLen; (k > 0) && (xmldsigBytes[2 * rawLen - k] == 0); k--) ;
+        for (k = rawLen; k > 0 && xmldsigBytes[2 * rawLen - k] == 0; k--) ;
 
         int l = k;
 
@@ -146,14 +146,14 @@ public final class ECDSAUtils {
         asn1Bytes[offset++] = 2;
         asn1Bytes[offset++] = (byte) j;
 
-        System.arraycopy(xmldsigBytes, rawLen - i, asn1Bytes, (offset + j) - i, i);
+        System.arraycopy(xmldsigBytes, rawLen - i, asn1Bytes, offset + j - i, i);
 
         offset += j;
 
         asn1Bytes[offset++] = 2;
         asn1Bytes[offset++] = (byte) l;
 
-        System.arraycopy(xmldsigBytes, 2 * rawLen - k, asn1Bytes, (offset + l) - k, k);
+        System.arraycopy(xmldsigBytes, 2 * rawLen - k, asn1Bytes, offset + l - k, k);
 
         return asn1Bytes;
     }
@@ -884,7 +884,7 @@ public final class ECDSAUtils {
         byte affineYBytes[] = stripLeadingZeros(ecPoint.getAffineY().toByteArray());
         byte encodedBytes[] = new byte[size * 2 + 1];
         encodedBytes[0] = 0x04; //uncompressed
-        System.arraycopy(affineXBytes, 0, encodedBytes, (size - affineXBytes.length) + 1, affineXBytes.length);
+        System.arraycopy(affineXBytes, 0, encodedBytes, size - affineXBytes.length + 1, affineXBytes.length);
         System.arraycopy(affineYBytes, 0, encodedBytes, encodedBytes.length - affineYBytes.length, affineYBytes.length);
         return encodedBytes;
     }

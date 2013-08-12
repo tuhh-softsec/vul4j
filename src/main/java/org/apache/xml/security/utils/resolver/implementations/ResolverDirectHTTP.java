@@ -121,7 +121,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
                 String pass =
                     engineGetProperty(ResolverDirectHTTP.properties[ResolverDirectHTTP.HttpBasicPass]);
 
-                if ((user != null) && (pass != null)) {
+                if (user != null && pass != null) {
                     urlConnection = openConnection(url);
 
                     String password = user + ":" + pass;
@@ -178,7 +178,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
                 engineGetProperty(ResolverDirectHTTP.properties[ResolverDirectHTTP.HttpProxyPass]);
 
         Proxy proxy = null;
-        if ((proxyHostProp != null) && (proxyPortProp != null)) {
+        if (proxyHostProp != null && proxyPortProp != null) {
             int port = Integer.parseInt(proxyPortProp);
             proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHostProp, port));
         }
@@ -187,7 +187,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
         if (proxy != null) {
             urlConnection = url.openConnection(proxy);
 
-            if ((proxyUser != null) && (proxyPass != null)) {
+            if (proxyUser != null && proxyPass != null) {
                 String password = proxyUser + ":" + proxyPass;
                 String authString = "Basic " + Base64.encode(password.getBytes("ISO-8859-1"));
 
@@ -215,7 +215,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
             return false;
         }
 
-        if (context.uriToResolve.equals("") || (context.uriToResolve.charAt(0)=='#')) {
+        if (context.uriToResolve.equals("") || context.uriToResolve.charAt(0) == '#') {
             if (log.isDebugEnabled()) {
                 log.debug("quick fail for empty URIs and local ones");
             }
@@ -227,7 +227,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
         }
 
         if (context.uriToResolve.startsWith("http:") ||
-            (context.baseUri != null && context.baseUri.startsWith("http:") )) {
+            context.baseUri != null && context.baseUri.startsWith("http:")) {
             if (log.isDebugEnabled()) {
                 log.debug("I state that I can resolve " + context.uriToResolve);
             }

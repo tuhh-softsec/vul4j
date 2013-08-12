@@ -129,7 +129,7 @@ public class ResolverFragment extends ResourceResolverSpi {
         }
         
         if (context.uriToResolve.equals("") || 
-            ((context.uriToResolve.charAt(0) == '#') && !context.uriToResolve.startsWith("#xpointer("))
+            context.uriToResolve.charAt(0) == '#' && !context.uriToResolve.startsWith("#xpointer(")
         ) {
             if (log.isDebugEnabled()) {
                 log.debug("State I can resolve reference: \"" + context.uriToResolve + "\"");
