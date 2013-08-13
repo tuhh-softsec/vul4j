@@ -28,6 +28,8 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+
 /**
 * This class produces a RESTful service to read, write and update
 * LProbe objects.
@@ -218,6 +220,41 @@ public class LProbeService {
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LProbeInfo>());
+        }
+    }
+    /**
+     * Import LProbe object.
+     * See
+     * http://howtodoinjava.com/2013/05/21/jax-rs-resteasy-file-upload-httpclient-example/
+     * for more details on the implementation.
+     *
+     * @param input MulitpartFormDataInput containing the file to upload.
+     * @param header    The HTTP header containing authorization information.
+     * @return Response object.
+     */
+    @POST
+    @Path("/import")
+    @Produces("application/json")
+    @Consumes("multipart/form-data")
+    public Response upload(MultipartFormDataInput input, @Context HttpHeaders header) {
+        try {
+            AuthenticationResponse auth = authentication.authorizedGroups(header);
+            // TODO: Check Authorisation. How should we check the
+            // authorisation while importing? I think we must differ between
+            // updating already existing proben and creating new proben. (ti)
+            // <2013-08-13 16:24> 
+            //if (auth.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
+            //    auth.getMst().contains(probe.getMstId())) {
+            //    LProbe p = probe.toLProbe();
+            //    return repository.create(p);
+            //}
+            // TODO: Response must contain a "file" attribute with the name of
+            // the uploaded file.(ti) <2013-08-13 16:23> 
+            return new Response(true, 200, null);
+            //return new Response(false, 698, null);
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, null);
         }
     }
 }

@@ -147,10 +147,28 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-               <groupId>org.jboss.resteasy</groupId>
-               <artifactId>resteasy-jaxrs</artifactId>
-               <version>2.2.2.GA</version>
-               <scope>test</scope>
+           <groupId>org.jboss.resteasy</groupId>
+           <artifactId>resteasy-jaxrs</artifactId>
+           <version>2.2.2.GA</version>
+           <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jaxb-provider</artifactId>
+          <version>2.3.1.GA</version>
+          <scope>provided</scope>
+        </dependency>
+        <!-- Multipart support -->
+        <dependency>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-multipart-provider</artifactId>
+          <version>2.3.1.GA</version>
+        </dependency>
+        <!-- For better I/O control -->
+        <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>2.0.1</version>
         </dependency>
         <dependency>
                <groupId>org.apache.httpcomponents</groupId>
