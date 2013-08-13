@@ -1,5 +1,6 @@
 net.floodlightcontroller.core.FloodlightProvider
 net.floodlightcontroller.storage.memory.MemoryStorageSource
+net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher
 net.floodlightcontroller.devicemanager.internal.DeviceManagerImpl
 net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager
 net.floodlightcontroller.topology.TopologyManager
@@ -17,7 +18,6 @@ net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier
 net.floodlightcontroller.devicemanager.test.MockDeviceManager
 net.floodlightcontroller.core.test.MockFloodlightProvider
 net.floodlightcontroller.core.test.MockThreadPoolService
-net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher
 net.onrc.onos.ofcontroller.flowmanager.FlowManager
 net.onrc.onos.ofcontroller.routing.TopoRouteService
 net.onrc.onos.ofcontroller.bgproute.BgpRoute
