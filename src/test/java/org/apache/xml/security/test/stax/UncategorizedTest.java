@@ -41,8 +41,7 @@ public class UncategorizedTest extends org.junit.Assert {
             Init.init(url.toURI());
             Assert.fail();
         } catch (XMLSecurityException e) {
-            Assert.assertEquals("cvc-elt.1: Cannot find the declaration of element 'doc'.",
-                    e.getMessage());
+            Assert.assertTrue(e.getMessage().contains("Cannot find the declaration of element 'doc'."));
         }
     }
 }
