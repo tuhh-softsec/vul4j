@@ -38,6 +38,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 
+//TODO have L2 and also L3 mode, where it takes into account interface addresses
 public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private static Logger log = LoggerFactory.getLogger(ProxyArpManager.class);
 	
@@ -79,7 +80,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			return retry;
 		}
 		
-		public synchronized void dispatchReply(InetAddress ipAddress, byte[] replyMacAddress) {
+		public void dispatchReply(InetAddress ipAddress, byte[] replyMacAddress) {
 			log.debug("Dispatching reply for {} to {}", ipAddress.getHostAddress(), 
 					requester);
 			requester.arpResponse(ipAddress, replyMacAddress);
@@ -222,19 +223,13 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				return;
 			}
 			
-			boolean shouldBroadcastRequest = false;
-			synchronized (arpRequests) {
-				if (!arpRequests.containsKey(target)) {
-					shouldBroadcastRequest = true;
-				}
-				arpRequests.put(target, new ArpRequest(
-						new HostArpRequester(this, arp, sw.getId(), pi.getInPort()), false));
-			}
+			//Should we just broadcast all received requests here? Or rate limit
+			//if we know we just sent an request?
+			arpRequests.put(target, new ArpRequest(
+					new HostArpRequester(this, arp, sw.getId(), pi.getInPort()), false));
 						
 			//Flood the request out edge ports
-			if (shouldBroadcastRequest) {
-				broadcastArpRequestOutEdge(pi.getPacketData(), sw.getId(), pi.getInPort());
-			}
+			broadcastArpRequestOutEdge(pi.getPacketData(), sw.getId(), pi.getInPort());
 		}
 		else {
 			//We know the address, so send a reply

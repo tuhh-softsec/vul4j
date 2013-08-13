@@ -80,8 +80,6 @@
             <exclude>**/*TestCase.java</exclude>
           -->
           </excludes>
-          <argLine>-XX:MaxPermSize=512m</argLine>
-          <reuseFork>false</reuseFork>
         </configuration>
       </plugin>
       <!-- exec:java -->
@@ -185,11 +183,6 @@
           <charset>UTF-8</charset>
           <locale>en</locale>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.5.2</version>
       </plugin>
     </plugins>
   </reporting>

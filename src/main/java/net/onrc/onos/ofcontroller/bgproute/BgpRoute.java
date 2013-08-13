@@ -3,7 +3,6 @@ package net.onrc.onos.ofcontroller.bgproute;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -88,7 +87,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	protected ProxyArpManager proxyArp;
 	
-	protected static Ptree ptree;
+	//protected static Ptree ptree;
+	protected IPatriciaTrie ptree;
 	protected BlockingQueue<RibUpdate> ribUpdates;
 	
 	protected String bgpdRestIp;
@@ -128,6 +128,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	protected SetMultimap<InetAddress, RibUpdate> prefixesWaitingOnArp;
 	protected SetMultimap<InetAddress, PathUpdate> pathsWaitingOnArp;
+	
+	protected ExecutorService bgpUpdatesExecutor;
 	
 	protected Multimap<Prefix, PushedFlowMod> pushedFlows;
 	
@@ -250,7 +252,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	public void init(FloodlightModuleContext context)
 			throws FloodlightModuleException {
 	    
-	    ptree = new Ptree(32);
+	    //ptree = new Ptree(32);
+		ptree = new PatriciaTrie(32);
 	    
 	    ribUpdates = new LinkedBlockingQueue<RibUpdate>();
 	    	
@@ -276,6 +279,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				HashMultimap.<InetAddress, RibUpdate>create());
 		
 		pushedFlows = HashMultimap.<Prefix, PushedFlowMod>create();
+		
+		bgpUpdatesExecutor = Executors.newSingleThreadExecutor(
+				new ThreadFactoryBuilder().setNameFormat("bgp-updates-%d").build());
 		
 		//Read in config values
 		bgpdRestIp = context.getConfigParams(this).get("BgpdRestIp");
@@ -307,13 +313,15 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		//test();
 	}
 
-	public Ptree getPtree() {
+	//public Ptree getPtree() {
+	public IPatriciaTrie getPtree() {
 		return ptree;
 	}
 	
 	public void clearPtree() {
 		//ptree = null;
-		ptree = new Ptree(32);	
+		//ptree = new Ptree(32);
+		ptree = new PatriciaTrie(32);
 	}
 	
 	public String getBGPdRestIp() {
@@ -325,7 +333,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	// Return nexthop address as byte array.
-	public Rib lookupRib(byte[] dest) {
+	/*
+	public RibEntry lookupRib(byte[] dest) {
 		if (ptree == null) {
 		    log.debug("lookupRib: ptree null");
 		    return null;
@@ -346,7 +355,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		return node.rib;
 	}
+	*/
 	
+	/*
 	//TODO looks like this should be a unit test
 	@SuppressWarnings("unused")
     private void test() throws UnknownHostException {
@@ -403,8 +414,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 
 	}
+	*/
 	
 	//TODO once the Ptree is object oriented this can go
+	/*
 	private String getPrefixFromPtree(PtreeNode node){
         InetAddress address = null;
         try {
@@ -416,6 +429,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
         return address.toString() + "/" + node.rib.masklen;
 	}
+	*/
 	
 	private void retrieveRib(){
 		String url = "http://" + bgpdRestIp + "/wm/bgp/" + routerId;
@@ -450,56 +464,74 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			} catch (NumberFormatException e) {
 				log.warn("Wrong mask format in RIB JSON: {}", mask1);
 				continue;
-			} catch (UnknownHostException e1) {
+			} catch (IllegalArgumentException e1) {
 				log.warn("Wrong prefix format in RIB JSON: {}", prefix1);
 				continue;
 			}
 			
-			PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
-			Rib rib = new Rib(router_id, nexthop, p.getPrefixLength());
+			//PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
+			RibEntry rib = new RibEntry(router_id, nexthop);
 			
+			/*
 			if (node.rib != null) {
 				node.rib = null;
 				ptree.delReference(node);
 			}
 			
 			node.rib = rib;
+			*/
 			
-			addPrefixFlows(p, rib);
+			//ptree.put(p, rib);
+			
+			//addPrefixFlows(p, rib);
+			try {
+				ribUpdates.put(new RibUpdate(Operation.UPDATE, p, rib));
+			} catch (InterruptedException e) {
+				log.debug("Interrupted while pushing onto update queue");
+			}
 		} 
 	}
 	
 	@Override
 	public void newRibUpdate(RibUpdate update) {
-		ribUpdates.add(update);
+		try {
+			ribUpdates.put(update);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			log.debug(" ", e);
+		}
 	}
 	
-	public void processRibAdd(RibUpdate update) {
+	public synchronized void processRibAdd(RibUpdate update) {
 		Prefix prefix = update.getPrefix();
 		
-		PtreeNode node = ptree.acquire(prefix.getAddress(), prefix.getPrefixLength());
+		log.debug("Processing prefix add {}", prefix);
 		
-		if (node.rib != null) {
+		//PtreeNode node = ptree.acquire(prefix.getAddress(), prefix.getPrefixLength());
+		RibEntry rib = ptree.put(prefix, update.getRibEntry());
+		
+		//if (node.rib != null) {
+		if (rib != null && !rib.equals(update.getRibEntry())) {
 			//There was an existing nexthop for this prefix. This update supersedes that,
 			//so we need to remove the old flows for this prefix from the switches
 			deletePrefixFlows(prefix);
 			
 			//Then remove the old nexthop from the Ptree
-			node.rib = null;
-			ptree.delReference(node);
+			//node.rib = null;
+			//ptree.delReference(node);
 		}
 		
 		//Put the new nexthop in the Ptree
-		node.rib = update.getRibEntry();
+		//node.rib = update.getRibEntry();
 
 		//Push flows for the new <prefix, nexthop>
 		addPrefixFlows(prefix, update.getRibEntry());
 	}
 	
-	public void processRibDelete(RibUpdate update) {
+	public synchronized void processRibDelete(RibUpdate update) {
 		Prefix prefix = update.getPrefix();
 		
-		PtreeNode node = ptree.lookup(prefix.getAddress(), prefix.getPrefixLength());
+		//PtreeNode node = ptree.lookup(prefix.getAddress(), prefix.getPrefixLength());
 		
 		/* 
 		 * Remove the flows from the switches before the rib is lost
@@ -510,6 +542,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		 * rib is an actual prefix in the Ptree.
 		 */
 
+		/*
 		if (node != null && node.rib != null) {
 			if (update.getRibEntry().equals(node.rib)) {
 				node.rib = null;
@@ -518,21 +551,31 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				deletePrefixFlows(update.getPrefix());
 			}
 		}
+		*/
+		
+		if (ptree.remove(prefix, update.getRibEntry())) {
+			/*
+			 * Only delete flows if an entry was actually removed from the trie.
+			 * If no entry was removed, the <prefix, nexthop> wasn't there so
+			 * it's probably already been removed and we don't need to do anything
+			 */
+			deletePrefixFlows(prefix);
+		}
 	}
 	
 	//TODO compatibility layer, used by beginRouting()
-	public void prefixAdded(PtreeNode node) {
+	/*public void prefixAdded(PtreeNode node) {
 		Prefix prefix = null;
 		try {
 			prefix = new Prefix(node.key, node.rib.masklen);
-		} catch (UnknownHostException e) {
+		} catch (IllegalArgumentException e) {
 			log.error(" ", e);
 		}
 
 		addPrefixFlows(prefix, node.rib);
-	}
+	}*/
 
-	private void addPrefixFlows(Prefix prefix, Rib rib) {
+	private void addPrefixFlows(Prefix prefix, RibEntry rib) {
 		if (!topologyReady){
 			return;
 		}
@@ -542,16 +585,15 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		//I think we'll have to make prefixAdded and prefixDelete atomic as well
 		//to protect against the prefix getting deleted while where trying to add it
 
-		log.debug("New prefix {} added, next hop {}, routerId {}", 
-				new Object[] {prefix, rib.nextHop.getHostAddress(),
-				rib.routerId.getHostAddress()});
+		log.debug("New prefix {} added, next hop {}", 
+				prefix, rib.getNextHop().getHostAddress());
 		
 		//TODO this is wrong, we shouldn't be dealing with BGP peers here.
 		//We need to figure out where the device is attached and what its
 		//mac address is by learning. 
 		//The next hop is not necessarily the peer, and the peer's attachment
 		//point is not necessarily the next hop's attachment point.
-		BgpPeer peer = bgpPeers.get(rib.nextHop);
+		BgpPeer peer = bgpPeers.get(rib.getNextHop());
 		
 		if (peer == null){
 			//TODO local router isn't in peers list so this will get thrown
@@ -560,7 +602,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			//The other scenario is this is a route server route. In that
 			//case the next hop is not in our configuration
 			log.error("Couldn't find next hop router in router {} in config",
-					rib.nextHop.getHostAddress());
+					rib.getNextHop().getHostAddress());
 			return; //just quit out here? This is probably a configuration error
 		}
 		
@@ -614,6 +656,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        match.setDataLayerType(Ethernet.TYPE_IPv4);
 	        match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
 	        
+	        /*
 	        InetAddress address = null;
 	        try {
 	        	address = InetAddress.getByAddress(prefix.getAddress());
@@ -621,10 +664,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				//Should never happen is the reverse conversion has already been done
 				log.error("Malformed IP address");
 				return;
-			}
+			}*/
 	        
-	        match.setFromCIDR(address.getHostAddress() + "/" + 
-	        		prefix.getPrefixLength(), OFMatch.STR_NW_DST);
+	        //match.setFromCIDR(address.getHostAddress() + "/" + 
+	        //		prefix.getPrefixLength(), OFMatch.STR_NW_DST);
+	        match.setFromCIDR(prefix.toString(), OFMatch.STR_NW_DST);
 	        fm.setMatch(match);
 	        
 	        //Set up MAC rewrite action
@@ -857,12 +901,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        //Forward = gateway -> bgpd, reverse = bgpd -> gateway
 	        OFMatch forwardMatchSrc = new OFMatch();
 	        
-	        
 	        String interfaceCidrAddress = peerInterface.getIpAddress().getHostAddress() 
 	        					+ "/32";
 	        String peerCidrAddress = bgpPeer.getIpAddress().getHostAddress()
 	        					+ "/32";
-	        	        
+	        
 	        //Common match fields
 	        forwardMatchSrc.setDataLayerType(Ethernet.TYPE_IPv4);
 	        //forwardMatch.setWildcards(forwardMatch.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
@@ -896,14 +939,27 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        
 	        fm.setMatch(forwardMatchSrc);
 	        
+	        OFMatch forwardIcmpMatch = new OFMatch();
+	        forwardIcmpMatch.setDataLayerType(Ethernet.TYPE_IPv4);
+	        forwardIcmpMatch.setNetworkProtocol(IPv4.PROTOCOL_ICMP);
+	        forwardIcmpMatch.setWildcards(forwardIcmpMatch.getWildcards() &
+	        		~OFMatch.OFPFW_DL_TYPE & ~OFMatch.OFPFW_NW_PROTO);
+	        
+	        OFMatch reverseIcmpMatch = forwardIcmpMatch.clone();
+	        forwardIcmpMatch.setFromCIDR(interfaceCidrAddress, OFMatch.STR_NW_DST);
+	        reverseIcmpMatch.setFromCIDR(interfaceCidrAddress, OFMatch.STR_NW_SRC);
+	        
 			for (FlowEntry flowEntry : path.flowEntries()){
 				OFFlowMod forwardFlowModSrc, forwardFlowModDst;
 				OFFlowMod reverseFlowModSrc, reverseFlowModDst;
+				OFFlowMod forwardIcmp, reverseIcmp;
 				try {
 					forwardFlowModSrc = fm.clone();
 					forwardFlowModDst = fm.clone();
 					reverseFlowModSrc = fm.clone();
 					reverseFlowModDst = fm.clone();
+					forwardIcmp = fm.clone();
+					reverseIcmp = fm.clone();
 				} catch (CloneNotSupportedException e) {
 					log.warn("Clone failed", e);
 					continue;
@@ -929,14 +985,29 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				((OFActionOutput)reverseFlowModDst.getActions().get(0))
 						.setPort(flowEntry.inPort().value());
 				
+				((OFActionOutput)forwardIcmp.getActions().get(0))
+						.setPort(flowEntry.outPort().value());
+				forwardIcmp.setMatch(forwardIcmpMatch);
+				
+				((OFActionOutput)reverseIcmp.getActions().get(0))
+						.setPort(flowEntry.inPort().value());
+				reverseIcmp.setMatch(reverseIcmpMatch);
+		
+
 				IOFSwitch sw = floodlightProvider.getSwitches().get(flowEntry.dpid().value());
 				
-				//Hopefully the switch is there
+				if (sw == null) {
+					log.warn("Switch not found when pushing BGP paths");
+					return;
+				}
+				
 				List<OFMessage> msgList = new ArrayList<OFMessage>(2);
 				msgList.add(forwardFlowModSrc);
 				msgList.add(forwardFlowModDst);
 				msgList.add(reverseFlowModSrc);
 				msgList.add(reverseFlowModDst);
+				msgList.add(forwardIcmp);
+				msgList.add(reverseIcmp);
 				
 				try {
 					sw.write(msgList, null);
@@ -966,11 +1037,31 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		Set<RibUpdate> prefixesToPush = prefixesWaitingOnArp.removeAll(ipAddress);
 		
-		for (RibUpdate update : prefixesToPush) {
-			//These will always be adds
-			log.debug("Pushing prefix {} next hop {}", update.getPrefix(), 
-					update.getRibEntry().nextHop.getHostAddress());
-			addPrefixFlows(update.getPrefix(), update.getRibEntry());
+		/*
+		 * We synchronize on this to prevent changes to the ptree while we're pushing
+		 * flows to the switches. If the ptree changes, the ptree and switches
+		 * could get out of sync. 
+		 */
+		synchronized (this) {
+			for (RibUpdate update : prefixesToPush) {
+				//These will always be adds
+				
+				//addPrefixFlows(update.getPrefix(), update.getRibEntry());
+				//processRibAdd(update);
+				RibEntry rib = ptree.lookup(update.getPrefix()); 
+				if (rib != null && rib.equals(update.getRibEntry())) {
+					log.debug("Pushing prefix {} next hop {}", update.getPrefix(), 
+							rib.getNextHop().getHostAddress());
+					//We only push prefix flows if the prefix is still in the ptree
+					//and the next hop is the same as our update. The prefix could 
+					//have been removed while we were waiting for the ARP, or the 
+					//next hop could have changed.
+					addPrefixFlows(update.getPrefix(), rib);
+				} else {
+					log.debug("Received ARP response, but {},{} is no longer in ptree", 
+							update.getPrefix(), update.getRibEntry());
+				}
+			}
 		}
 	}
 	
@@ -980,11 +1071,31 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		setupFullMesh();
 		
 		//Traverse ptree and create flows for all routes
+		/*
 		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)){
 			if (node.rib != null){
 				prefixAdded(node);
 			}
 		}
+		*/
+		
+		/*
+		synchronized (ptree) {
+			Iterator<IPatriciaTrie.Entry> it = ptree.iterator();
+			while (it.hasNext()) {
+				IPatriciaTrie.Entry entry = it.next();
+				addPrefixFlows(entry.getPrefix(), entry.getRib());
+			}
+		}
+		*/
+		
+		bgpUpdatesExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				doUpdatesThread();
+			}
+		});
+		
 	}
 	
 	private void checkSwitchesConnected(){
@@ -1042,17 +1153,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
 		
-		ExecutorService e = Executors.newSingleThreadExecutor(
-				new ThreadFactoryBuilder().setNameFormat("bgp-updates-%d").build());
-		
-		
-		e.execute(new Runnable() {
-			@Override
-			public void run() {
-				doUpdatesThread();
-			}
-		});
-		
 		//Retrieve the RIB from BGPd during startup
 		retrieveRib();
 	}
@@ -1072,6 +1172,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 						break;
 					}
 				} catch (InterruptedException e) {
+					log.debug("interrupted", e);
 					interrupted = true;
 				}
 			}
@@ -1084,14 +1185,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 	@Override
 	public void topologyChanged() {		
-		//There seems to be more topology events than there should be. Lots of link
-		//updated, port up and switch updated on what should be a fairly static topology
-		
 		boolean refreshNeeded = false;
 		for (LDUpdate ldu : topology.getLastLinkUpdates()){
 			if (!ldu.getOperation().equals(ILinkDiscovery.UpdateOperation.LINK_UPDATED)){
 				//We don't need to recalculate anything for just link updates
-				//They happen way too frequently (may be a bug in our link discovery)
+				//They happen very frequently
 				refreshNeeded = true;
 			}
 			
