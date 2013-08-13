@@ -220,14 +220,15 @@
                         </goals>
                         <configuration>
                             <schemaDirectory>
-                                ${basedir}/src/main/resources/bindings/schemas
+                                ${basedir}/src/main/resources/
                             </schemaDirectory>
                             <schemaIncludes>
-                                <schemaInclude>exc-c14n.xsd</schemaInclude>
-                                <schemaInclude>xmldsig-core-schema.xsd</schemaInclude>
-                                <schemaInclude>xmldsig11-schema.xsd</schemaInclude>
-                                <schemaInclude>xenc-schema.xsd</schemaInclude>
-                                <schemaInclude>xenc-schema-11.xsd</schemaInclude>
+                                <schemaInclude>schemas/security-config.xsd</schemaInclude>
+                                <schemaInclude>bindings/schemas/exc-c14n.xsd</schemaInclude>
+                                <schemaInclude>bindings/schemas/xmldsig-core-schema.xsd</schemaInclude>
+                                <schemaInclude>bindings/schemas/xmldsig11-schema.xsd</schemaInclude>
+                                <schemaInclude>bindings/schemas/xenc-schema.xsd</schemaInclude>
+                                <schemaInclude>bindings/schemas/xenc-schema-11.xsd</schemaInclude>
                             </schemaIncludes>
                             <bindingDirectory>${basedir}/src/main/resources/bindings/</bindingDirectory>
                             <bindingIncludes>
@@ -236,6 +237,7 @@
                                 <bindingInclude>dsig11.xjb</bindingInclude>
                                 <bindingInclude>xenc.xjb</bindingInclude>
                                 <bindingInclude>xenc11.xjb</bindingInclude>
+                                <bindingInclude>security-config.xjb</bindingInclude>
                             </bindingIncludes>
                             <catalog>${basedir}/src/main/resources/bindings/bindings.cat</catalog>
                             <forceRegenerate>false</forceRegenerate>
@@ -245,28 +247,10 @@
                             <!-- disable schema validation since the validation code
                             doesn't respect the catalog and will do online lookups :-( -->
                             <strict>false</strict>
+                            <args>
+                                <arg>-npa</arg>
+                            </args>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>schema</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <forceRegenerate>true</forceRegenerate>
-                            <schemaDirectory>
-                                ${basedir}/src/main/resources/schemas
-                            </schemaDirectory>
-                            <schemaIncludes>
-                                <schemaInclude>security-config.xsd</schemaInclude>
-                            </schemaIncludes>
-                            <bindingDirectory>${basedir}/src/main/resources/bindings/</bindingDirectory>
-                            <bindingIncludes>
-                                <bindingInclude>security-config.xjb</bindingInclude>
-                            </bindingIncludes>
-                            <readOnly>true</readOnly>
-                         </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -336,6 +320,7 @@
                         <systemPropertyVariables>
                             <product.version>${project.version}</product.version>
                             <log4j.configuration>log4j-xmlsec.xml</log4j.configuration>
+                            <javax.xml.bind.JAXBContext>${xmlsec.jaxb.context.class}</javax.xml.bind.JAXBContext>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
@@ -397,6 +382,36 @@
                 <pmd.skip>true</pmd.skip>
             </properties>
         </profile>
+        <profile>
+            <!-- Profile for testing with EclipseLink MOXy based JAXB implementation -->
+            <id>eclipse.moxy</id>
+            <properties>
+                <xmlsec.jaxb.context.class>org.eclipse.persistence.jaxb.JAXBContextFactory</xmlsec.jaxb.context.class>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.persistence</groupId>
+                    <artifactId>org.eclipse.persistence.moxy</artifactId>
+                    <version>2.5.1-SNAPSHOT</version>
+                    <scope>provided</scope>
+                    <optional>true</optional>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
+                    <version>1.7.1</version>
+                </dependency>
+            </dependencies>
+            <repositories>
+                <repository>
+                    <id>oss.sonatype.org</id>
+                    <name>OSS Sonatype Staging</name>
+                    <url>https://oss.sonatype.org/content/groups/staging</url>
+                    <releases><enabled>false</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                </repository>
+            </repositories>
+        </profile>
     </profiles>
 
     <properties>
@@ -412,6 +427,7 @@
         <commons.codec.version>1.7</commons.codec.version>
         <woodstox.core.asl.version>4.2.0</woodstox.core.asl.version>
         <jetty.version>8.1.4.v20120524</jetty.version>
+        <xmlsec.jaxb.context.class/>
     </properties>
     
     <dependencies>
