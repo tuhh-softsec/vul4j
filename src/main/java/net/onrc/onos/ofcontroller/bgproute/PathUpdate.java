@@ -1,6 +1,8 @@
 package net.onrc.onos.ofcontroller.bgproute;
 
 import java.net.InetAddress;
+import java.util.Collections;
+import java.util.List;
 
 /*
  * A path is always assumed to be from all other interfaces (external-facing
@@ -11,6 +13,10 @@ public class PathUpdate {
 
 	private Interface dstInterface;
 	private InetAddress dstIpAddress;
+	private int numUsers = 0;
+	
+	private List<PushedFlowMod> flowMods = null;
+	private boolean permanent = false;
 	
 	public PathUpdate(Interface dstInterface, InetAddress dstIpAddress) {
 		this.dstInterface = dstInterface;
@@ -23,5 +29,33 @@ public class PathUpdate {
 
 	public InetAddress getDstIpAddress() {
 		return dstIpAddress;
+	}
+	
+	public void incrementUsers() {
+		numUsers++;
+	}
+	
+	public void decrementUsers() {
+		numUsers--;
+	}
+	
+	public int getUsers() {
+		return numUsers;
+	}
+	
+	public List<PushedFlowMod> getFlowMods() {
+		return Collections.unmodifiableList(flowMods);
+	}
+	
+	public void setFlowMods(List<PushedFlowMod> flowMods) {
+		this.flowMods = flowMods;
+	}
+	
+	public boolean isPermanent() {
+		return permanent;
+	}
+	
+	public void setPermanent() {
+		permanent = true;
 	}
 }

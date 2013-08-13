@@ -176,6 +176,7 @@ public class PtreeTest {
 		fail("Not yet implemented");
 	}
 	
+	@Ignore
 	@Test
 	public void testMisc() {
 		int bitIndex = -1;
