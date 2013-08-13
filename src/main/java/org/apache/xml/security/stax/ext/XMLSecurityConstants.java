@@ -76,11 +76,11 @@ public class XMLSecurityConstants {
         try {
             setJaxbContext(
                     JAXBContext.newInstance(
-                            "org.apache.xml.security.binding.xmlenc:" +
-                                    "org.apache.xml.security.binding.xmlenc11:" +
-                                    "org.apache.xml.security.binding.xmldsig:" +
-                                    "org.apache.xml.security.binding.xmldsig11:" +
-                                    "org.apache.xml.security.binding.excc14n"
+                        org.apache.xml.security.binding.xmlenc.ObjectFactory.class,
+                        org.apache.xml.security.binding.xmlenc11.ObjectFactory.class,
+                        org.apache.xml.security.binding.xmldsig.ObjectFactory.class,
+                        org.apache.xml.security.binding.xmldsig11.ObjectFactory.class,
+                        org.apache.xml.security.binding.excc14n.ObjectFactory.class 
                     )
             );
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
