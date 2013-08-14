@@ -169,6 +169,7 @@ public class XMLSecurityConstants {
     public static final String NS_XMLENC = "http://www.w3.org/2001/04/xmlenc#";
     public static final String NS_XMLENC11 = "http://www.w3.org/2009/xmlenc11#";
     public static final String NS_DSIG = "http://www.w3.org/2000/09/xmldsig#";
+    public static final String NS_DSIG_MORE ="http://www.w3.org/2001/04/xmldsig-more#";
     public static final String NS_DSIG11 = "http://www.w3.org/2009/xmldsig11#";
     public static final String NS_WSSE11 = "http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd";
             
@@ -251,6 +252,13 @@ public class XMLSecurityConstants {
     public static final String NS_XMLDSIG_HMACSHA1 = NS_DSIG + "hmac-sha1";
     public static final String NS_XMLDSIG_RSASHA1 = NS_DSIG + "rsa-sha1";
     public static final String NS_XMLDSIG_MANIFEST = NS_DSIG + "Manifest";
+    
+    public static final String NS_XMLDSIG_HMACSHA256 = NS_DSIG_MORE + "hmac-sha256";
+    public static final String NS_XMLDSIG_HMACSHA384 = NS_DSIG_MORE + "hmac-sha384";
+    public static final String NS_XMLDSIG_HMACSHA512 = NS_DSIG_MORE + "hmac-sha512";
+    public static final String NS_XMLDSIG_RSASHA256 = NS_DSIG_MORE + "rsa-sha256";
+    public static final String NS_XMLDSIG_RSASHA384 = NS_DSIG_MORE + "rsa-sha384";
+    public static final String NS_XMLDSIG_RSASHA512 = NS_DSIG_MORE + "rsa-sha512";
 
     public static final String NS_XENC_TRIPLE_DES = NS_XMLENC + "tripledes-cbc";
     public static final String NS_XENC_AES128 = NS_XMLENC + "aes128-cbc";
