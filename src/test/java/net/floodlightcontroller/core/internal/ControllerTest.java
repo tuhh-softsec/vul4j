@@ -49,7 +49,7 @@ import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchListener;
-import net.floodlightcontroller.core.internal.Controller.IUpdate;
+import net.floodlightcontroller.core.IUpdate;
 import net.floodlightcontroller.core.internal.Controller.SwitchUpdate;
 import net.floodlightcontroller.core.internal.Controller.SwitchUpdateType;
 import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
@@ -659,7 +659,7 @@ public class ControllerTest extends FloodlightTestCase {
         controller.setRole(Role.SLAVE);
         verify(roleChanger);
         
-        Controller.IUpdate upd = controller.updates.poll();
+        IUpdate upd = controller.updates.poll();
         assertNotNull("Check that update queue has an update", upd);
         assertTrue("Check that update is HARoleUpdate", 
                    upd instanceof Controller.HARoleUpdate);
