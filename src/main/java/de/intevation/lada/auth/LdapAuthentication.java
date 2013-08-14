@@ -177,4 +177,14 @@ implements Authentication
         response.setNetzbetreiber(nb);
         return response;
     }
+
+    /**
+     * Returns the username specified in the header.
+     * 
+     * @param headers   The HTTP header.
+     */
+    public String getUserName(HttpHeaders headers)
+    throws AuthenticationException {
+        return extractUser(headers);
+    }
 }

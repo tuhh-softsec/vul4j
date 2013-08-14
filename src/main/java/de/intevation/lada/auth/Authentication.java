@@ -15,4 +15,7 @@ public interface Authentication
 
     public boolean hasAccess(HttpHeaders headers, String probeId)
     throws AuthenticationException;
+
+    public String getUserName(HttpHeaders headers)
+    throws AuthenticationException;
 }
