@@ -60,7 +60,7 @@ public class BgpRouteResource extends ServerResource {
 		} 
 		else {
 			//Ptree ptree = bgpRoute.getPtree();
-			IPatriciaTrie ptree = bgpRoute.getPtree();
+			IPatriciaTrie<RibEntry> ptree = bgpRoute.getPtree();
 			output += "{\n  \"rib\": [\n";
 			boolean printed = false;
 			
@@ -78,16 +78,16 @@ public class BgpRouteResource extends ServerResource {
 			}*/
 			
 			synchronized(ptree) {
-				Iterator<IPatriciaTrie.Entry> it = ptree.iterator();
+				Iterator<IPatriciaTrie.Entry<RibEntry>> it = ptree.iterator();
 				while (it.hasNext()) {
-					IPatriciaTrie.Entry entry = it.next();
+					IPatriciaTrie.Entry<RibEntry> entry = it.next();
 					
 					if (printed == true) {
 						output += ",\n";
 					}
 					
 					output += "    {\"prefix\": \"" + entry.getPrefix() +"\", ";
-					output += "\"nexthop\": \"" + entry.getRib().getNextHop().getHostAddress() +"\"}";
+					output += "\"nexthop\": \"" + entry.getValue().getNextHop().getHostAddress() +"\"}";
 					//output += ",\n";
 					
 					printed = true;
