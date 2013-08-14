@@ -1,5 +1,7 @@
 package net.onrc.onos.ofcontroller.linkdiscovery;
 
+import net.floodlightcontroller.core.IUpdate;
+
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 import org.openflow.util.HexString;
@@ -27,7 +29,7 @@ public interface ILinkDiscovery {
         }
     }
 
-    public class LDUpdate {
+    public class LDUpdate implements IUpdate{
         protected long src;
         protected short srcPort;
         protected long dst;
@@ -129,6 +131,12 @@ public interface ILinkDiscovery {
                 return "LDUpdate: Unknown update.";
             }
         }
+
+		@Override
+		public void dispatch() {
+			// TODO Auto-generated method stub
+			
+		}
     }
 
     public enum SwitchType {

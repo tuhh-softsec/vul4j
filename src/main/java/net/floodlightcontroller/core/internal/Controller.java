@@ -58,6 +58,7 @@ import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchFilter;
 import net.floodlightcontroller.core.IOFSwitchListener;
+import net.floodlightcontroller.core.IUpdate;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
 import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
@@ -253,17 +254,8 @@ public class Controller implements IFloodlightProviderService,
     // Perf. related configuration
     protected static final int SEND_BUFFER_SIZE = 4 * 1024 * 1024;
     protected static final int BATCH_MAX_SIZE = 100;
-    protected static final boolean ALWAYS_DECODE_ETH = true;
-
-    /**
-     *  Updates handled by the main loop 
-     */
-    protected interface IUpdate {
-        /** 
-         * Calls the appropriate listeners
-         */
-        public void dispatch();
-    }
+	protected static final boolean ALWAYS_DECODE_ETH = true;
+  
     public enum SwitchUpdateType {
         ADDED,
         REMOVED,
@@ -271,6 +263,7 @@ public class Controller implements IFloodlightProviderService,
         PORTADDED,
         PORTREMOVED
     }
+    
     /**
      * Update message indicating a switch was added or removed 
      * ONOS: This message extended to indicate Port add or removed event.
@@ -461,7 +454,13 @@ public class Controller implements IFloodlightProviderService,
         }
     }
     
-    
+    public void publishUpdate(IUpdate update) {
+    	try {
+			this.updates.put(update);
+		} catch (InterruptedException e) {
+			log.error("Failure adding update to queue", e);
+		}
+    }
     
     // **********************
     // ChannelUpstreamHandler
