@@ -1,5 +1,7 @@
 package de.intevation.lada.rest;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,6 +14,7 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.auth.Authentication;
 import de.intevation.lada.auth.AuthenticationException;
+import de.intevation.lada.auth.AuthenticationResponse;
 
 class Info {
     String user;
@@ -78,7 +81,25 @@ public class InfoService
             if (!authentication.isAuthorizedUser(headers)) {
                 return new Response(false, 699, null);
             }
-            Response response = new Response(true, 200, new Info("-/-", "-/-", "-/-"));
+            String user = authentication.getUserName(headers);
+            AuthenticationResponse ar = authentication.authorizedGroups(headers);
+            List<String> groups = ar.getNetzbetreiber();
+            String gString = "";
+            boolean first = true;
+            for(String g : groups) {
+                if (first) {
+                    gString += g;
+                }
+                else {
+                    gString += ", " + g;
+                }
+            }
+            //TODO: This is the best way to get the version.
+            //  Should read the version from MANIFEST.MF but does not work (returns null).
+            //String version = getClass().getPackage().getImplementationVersion();
+            String version = System.getProperty("de.intevation.lada.server.version");
+
+            Response response = new Response(true, 200, new Info(user, gString, version));
             return response;
         }
         catch(AuthenticationException ae) {
