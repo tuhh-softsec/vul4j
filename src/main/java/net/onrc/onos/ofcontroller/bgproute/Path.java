@@ -9,7 +9,7 @@ import java.util.List;
  * switchports) to the destination interface.
  */
 
-public class PathUpdate {
+public class Path {
 
 	private Interface dstInterface;
 	private InetAddress dstIpAddress;
@@ -18,7 +18,7 @@ public class PathUpdate {
 	private List<PushedFlowMod> flowMods = null;
 	private boolean permanent = false;
 	
-	public PathUpdate(Interface dstInterface, InetAddress dstIpAddress) {
+	public Path(Interface dstInterface, InetAddress dstIpAddress) {
 		this.dstInterface = dstInterface;
 		this.dstIpAddress = dstIpAddress;
 	}
