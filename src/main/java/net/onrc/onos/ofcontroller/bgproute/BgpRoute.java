@@ -133,6 +133,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected Map<InetAddress, Path> pushedPaths;
 	protected Map<Prefix, Path> prefixToPath;
 	protected Multimap<Prefix, PushedFlowMod> pushedFlows;
+	
+	protected volatile Map<Long, ?> topoRouteTopology = null;
 		
 	protected class TopologyChangeDetector implements Runnable {
 		@Override
@@ -478,10 +480,19 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				//Don't push a flow for the switch where this peer is attached
 				continue;
 			}
-						
-			DataPath shortestPath = topoRouteService.getShortestPath(
-					srcInterface.getSwitchPort(),
-					egressInterface.getSwitchPort());
+			
+			
+			DataPath shortestPath; 
+			if (topoRouteTopology == null) {
+				shortestPath = topoRouteService.getShortestPath(
+						srcInterface.getSwitchPort(),
+						egressInterface.getSwitchPort());
+			}
+			else {
+				shortestPath = topoRouteService.getTopoShortestPath(
+						topoRouteTopology, srcInterface.getSwitchPort(),
+						egressInterface.getSwitchPort());
+			}
 			
 			if (shortestPath == null){
 				log.debug("Shortest path between {} and {} not found",
@@ -683,8 +694,17 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				continue;
 			}
 			
-			DataPath shortestPath = topoRouteService.getShortestPath(
-						srcInterface.getSwitchPort(), dstInterface.getSwitchPort()); 
+			DataPath shortestPath;
+			if (topoRouteTopology == null) {
+				log.debug("Using database topo");
+				shortestPath = topoRouteService.getShortestPath(
+						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
+			}
+			else {
+				log.debug("Using prepared topo");
+				shortestPath = topoRouteService.getTopoShortestPath(topoRouteTopology, 
+						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
+			}
 			
 			if (shortestPath == null){
 				log.debug("Shortest path between {} and {} not found",
@@ -968,9 +988,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	private void beginRouting(){
 		log.debug("Topology is now ready, beginning routing function");
+		topoRouteTopology = topoRouteService.prepareShortestPathTopo();
+		
 		setupBgpPaths();
 		setupFullMesh();
-		
+
 		bgpUpdatesExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
