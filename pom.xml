@@ -191,6 +191,11 @@
             <artifactId>arquillian-protocol-servlet</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+        	<groupId>org.json</groupId>
+        	<artifactId>json</artifactId>
+        	<version>20090211</version>
+        </dependency>
     </dependencies>
 
     <build>
