@@ -17,11 +17,14 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.ofcontroller.bgproute.IPatriciaTrie;
+import net.onrc.onos.ofcontroller.bgproute.Interface;
+import net.onrc.onos.ofcontroller.bgproute.Prefix;
+import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -48,11 +51,17 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			
 	protected IFloodlightProviderService floodlightProvider;
 	protected ITopologyService topology;
-	protected IDeviceService devices;
 	
 	protected Map<InetAddress, ArpTableEntry> arpTable;
 
 	protected SetMultimap<InetAddress, ArpRequest> arpRequests;
+	
+	public enum Mode {L2_MODE, L3_MODE}
+	
+	private Mode mode;
+	private IPatriciaTrie<Interface> interfacePtrie = null;
+	private MACAddress routerMacAddress = null;
+	//private SwitchPort bgpdAttachmentPoint = null;
 	
 	private class ArpRequest {
 		private IArpRequester requester;
@@ -88,16 +97,26 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	public ProxyArpManager(IFloodlightProviderService floodlightProvider,
-				ITopologyService topology, IDeviceService devices){
+				ITopologyService topology){
 		this.floodlightProvider = floodlightProvider;
 		this.topology = topology;
-		this.devices = devices;
 		
 		arpTable = new HashMap<InetAddress, ArpTableEntry>();
 
 		arpRequests = Multimaps.synchronizedSetMultimap(
 				HashMultimap.<InetAddress, ArpRequest>create());
 		
+		mode = Mode.L2_MODE;
+	}
+	
+	public void setL3Mode(IPatriciaTrie<Interface> interfacePtrie, MACAddress routerMacAddress) {
+		this.interfacePtrie = interfacePtrie;
+		this.routerMacAddress = routerMacAddress;
+		//this.bgpdAttachmentPoint = bgpdAttachmentPoint;
+		mode = Mode.L3_MODE;
+	}
+	
+	public void startUp() {
 		Timer arpTimer = new Timer();
 		arpTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -205,23 +224,31 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	protected void handleArpRequest(IOFSwitch sw, OFPacketIn pi, ARP arp) {
 		log.debug("ARP request received for {}", 
 				bytesToStringAddr(arp.getTargetProtocolAddress()));
+
+		InetAddress target;
+		try {
+			 target = InetAddress.getByAddress(arp.getTargetProtocolAddress());
+		} catch (UnknownHostException e) {
+			log.debug("Invalid address in ARP request", e);
+			return;
+		}
+		
+		if (mode == Mode.L3_MODE) {
+			Interface intf = interfacePtrie.match(new Prefix(target.getAddress(), 32));
+			if (intf != null && target.equals(intf.getIpAddress())) {
+				//ARP request for one of our interfaces, we can reply straight away
+				sendArpReply(arp, sw.getId(), pi.getInPort(), routerMacAddress.toBytes());
+				return;
+			}
+		}
 		
 		byte[] mac = lookupArpTable(arp.getTargetProtocolAddress());
 		
 		if (mac == null){
 			//Mac address is not in our arp table.
 			
-			//TODO check what the DeviceManager thinks
-			
 			//Record where the request came from so we know where to send the reply
-			InetAddress target;
-			try {
-				 target = InetAddress.getByAddress(arp.getTargetProtocolAddress());
-			} catch (UnknownHostException e) {
-				log.debug("Invalid address in ARP request", e);
-				//return Command.CONTINUE; //Continue or stop?
-				return;
-			}
+
 			
 			//Should we just broadcast all received requests here? Or rate limit
 			//if we know we just sent an request?
@@ -229,7 +256,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 					new HostArpRequester(this, arp, sw.getId(), pi.getInPort()), false));
 						
 			//Flood the request out edge ports
-			broadcastArpRequestOutEdge(pi.getPacketData(), sw.getId(), pi.getInPort());
+			//broadcastArpRequestOutEdge(pi.getPacketData(), sw.getId(), pi.getInPort());
+			sendArpRequestToSwitches(target, pi.getPacketData(), sw.getId(), pi.getInPort());
 		}
 		else {
 			//We know the address, so send a reply
@@ -279,7 +307,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		ArpTableEntry arpEntry = arpTable.get(addr);
 		
 		if (arpEntry == null){
-			log.debug("MAC for {} unknown", bytesToStringAddr(ipAddress));
+			//log.debug("MAC for {} unknown", bytesToStringAddr(ipAddress));
 			return null;
 		}
 		
@@ -332,18 +360,46 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			.setProtocolAddressLength((byte)4) //can't find the constant anywhere
 			.setOpCode(ARP.OP_REQUEST)
 			.setSenderHardwareAddress(bgpdMac)
-			.setSenderProtocolAddress(zeroIpv4)
+			//.setSenderProtocolAddress(zeroIpv4)
 			.setTargetHardwareAddress(zeroMac)
 			.setTargetProtocolAddress(ipAddress.getAddress());
-	
+
+		byte[] senderIPAddress = zeroIpv4;
+		if (mode == Mode.L3_MODE) {
+			Interface intf = interfacePtrie.match(new Prefix(ipAddress.getAddress(), 32));
+			if (intf != null) {
+				senderIPAddress = intf.getIpAddress().getAddress();
+			}
+		}
+		
+		arpRequest.setSenderProtocolAddress(senderIPAddress);
+		
 		Ethernet eth = new Ethernet();
-		//eth.setDestinationMACAddress(arpRequest.getSenderHardwareAddress())
 		eth.setSourceMACAddress(bgpdMac)
 			.setDestinationMACAddress(broadcastMac)
 			.setEtherType(Ethernet.TYPE_ARP)
 			.setPayload(arpRequest);
 		
-		broadcastArpRequestOutEdge(eth.serialize(), 0, OFPort.OFPP_NONE.getValue());
+		//broadcastArpRequestOutEdge(eth.serialize(), 0, OFPort.OFPP_NONE.getValue());
+		sendArpRequestToSwitches(ipAddress, eth.serialize());
+	}
+	
+	private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest) {
+		sendArpRequestToSwitches(dstAddress, arpRequest, 0, OFPort.OFPP_NONE.getValue());
+	}
+	private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest,
+			long inSwitch, short inPort) {
+		if (mode == Mode.L2_MODE) {
+			log.debug("mode is l2");
+			broadcastArpRequestOutEdge(arpRequest, inSwitch, inPort);
+		}
+		else if (mode == Mode.L3_MODE) {
+			log.debug("mode is l3");
+			Interface intf = interfacePtrie.match(new Prefix(dstAddress.getAddress(), 32));
+			if (intf != null) {
+				sendArpRequestOutPort(arpRequest, intf.getDpid(), intf.getPort());
+			}
+		}
 	}
 	
 	private void broadcastArpRequestOutEdge(byte[] arpRequest, long inSwitch, short inPort) {
@@ -391,6 +447,37 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			} catch (IOException e) {
 				log.error("Failure writing packet out to switch", e);
 			}
+		}
+	}
+	
+	private void sendArpRequestOutPort(byte[] arpRequest, long dpid, short port) {
+		log.debug("Sending ARP request out {}/{}", HexString.toHexString(dpid), port);
+		
+		OFPacketOut po = new OFPacketOut();
+		po.setInPort(OFPort.OFPP_NONE)
+			.setBufferId(-1)
+			.setPacketData(arpRequest);
+			
+		List<OFAction> actions = new ArrayList<OFAction>();
+		actions.add(new OFActionOutput(port));
+		po.setActions(actions);
+		short actionsLength = (short) (actions.size() * OFActionOutput.MINIMUM_LENGTH);
+		po.setActionsLength(actionsLength);
+		po.setLengthU(OFPacketOut.MINIMUM_LENGTH + actionsLength 
+				+ arpRequest.length);
+		
+		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
+		
+		if (sw == null) {
+			log.debug("Switch not found when sending ARP request");
+			return;
+		}
+		
+		try {
+			sw.write(po, null);
+			sw.flush();
+		} catch (IOException e) {
+			log.error("Failure writing packet out to switch", e);
 		}
 	}
 	

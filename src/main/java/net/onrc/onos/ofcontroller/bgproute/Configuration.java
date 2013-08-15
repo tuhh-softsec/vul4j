@@ -3,12 +3,15 @@ package net.onrc.onos.ofcontroller.bgproute;
 import java.util.Collections;
 import java.util.List;
 
+import net.floodlightcontroller.util.MACAddress;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.openflow.util.HexString;
 
 public class Configuration {
 	private long bgpdAttachmentDpid;
 	private short bgpdAttachmentPort;
+	private MACAddress bgpdMacAddress;
 	private List<String> switches;
 	private List<Interface> interfaces;
 	private List<BgpPeer> peers;
@@ -33,6 +36,15 @@ public class Configuration {
 	@JsonProperty("bgpdAttachmentPort")
 	public void setBgpdAttachmentPort(short bgpdAttachmentPort) {
 		this.bgpdAttachmentPort = bgpdAttachmentPort;
+	}
+	
+	public MACAddress getBgpdMacAddress() {
+		return bgpdMacAddress;
+	}
+
+	@JsonProperty("bgpdMacAddress")
+	public void setBgpdMacAddress(String strMacAddress) {
+		this.bgpdMacAddress = MACAddress.valueOf(strMacAddress);
 	}
 
 	public List<String> getSwitches() {

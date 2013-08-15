@@ -24,7 +24,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
-import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.restserver.IRestApiService;
@@ -81,7 +80,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected IFloodlightProviderService floodlightProvider;
 	protected ITopologyService topology;
 	protected ITopoRouteService topoRouteService;
-	protected IDeviceService devices;
 	protected IRestApiService restApi;
 	
 	protected ProxyArpManager proxyArp;
@@ -116,6 +114,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected Map<String, Interface> interfaces;
 	protected Map<InetAddress, BgpPeer> bgpPeers;
 	protected SwitchPort bgpdAttachmentPoint;
+	protected MACAddress bgpdMacAddress;
 	
 	//True when all switches have connected
 	protected volatile boolean switchesConnected = false;
@@ -193,6 +192,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					new Dpid(config.getBgpdAttachmentDpid()),
 					new Port(config.getBgpdAttachmentPort()));
 			
+			bgpdMacAddress = config.getBgpdMacAddress();
 		} catch (JsonParseException e) {
 			log.error("Error in JSON file", e);
 			System.exit(1);
@@ -233,7 +233,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			= new ArrayList<Class<? extends IFloodlightService>>();
 		l.add(IFloodlightProviderService.class);
 		l.add(ITopologyService.class);
-		l.add(IDeviceService.class);
 		l.add(IRestApiService.class);
 		return l;
 	}
@@ -250,12 +249,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		topology = context.getServiceImpl(ITopologyService.class);
-		devices = context.getServiceImpl(IDeviceService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology, devices);
+		proxyArp = new ProxyArpManager(floodlightProvider, topology);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -300,12 +298,16 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		log.debug("Config file set to {}", configFilename);
 		
 		readGatewaysConfiguration(configFilename);
+		
+		proxyArp.setL3Mode(interfacePtrie, bgpdMacAddress);
 	}
 	
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		restApi.addRestletRoutable(new BgpRouteWebRoutable());
 		topology.addListener(this);
+		
+		proxyArp.startUp();
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
 		
