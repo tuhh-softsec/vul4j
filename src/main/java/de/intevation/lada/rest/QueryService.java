@@ -1,5 +1,10 @@
 package de.intevation.lada.rest;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,190 +18,17 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import de.intevation.lada.auth.Authentication;
 import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.model.LOrt;
-
-class ResultConfig {
-    String dataIndex;
-    String header;
-    Integer flex;
-    Integer width;
-
-    public ResultConfig(String dataIndex, String header, Integer flex, Integer width) {
-        this.dataIndex= dataIndex;
-        this.header= header;
-        this.flex = flex;
-        this.width = width;
-    }
-
-    public ResultConfig(String dataIndex, String header, Integer flex) {
-        this.dataIndex= dataIndex;
-        this.header= header;
-        this.flex = flex;
-        this.width = null;
-    }
-
-    public ResultConfig(String dataIndex, String header) {
-        this.dataIndex= dataIndex;
-        this.header= header;
-        this.flex = 0;
-        this.width = null;
-    }
-
-    /**
-     * @return the dataIndex
-     */
-    public String getDataIndex() {
-        return dataIndex;
-    }
-
-    /**
-     * @param dataIndex the dataIndex to set
-     */
-    public void setDataIndex(String dataIndex) {
-        this.dataIndex = dataIndex;
-    }
-
-    /**
-     * @return the header
-     */
-    public String getHeader() {
-        return header;
-    }
-
-    /**
-     * @param header the header to set
-     */
-    public void setHeader(String header) {
-        this.header = header;
-    }
-
-    /**
-     * @return the width
-     */
-    public Integer getWidth() {
-        return width;
-    }
-
-    /**
-     * @param width the width to set
-     */
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    /**
-     * @return the flex
-     */
-    public Integer getFlex() {
-        return flex;
-    }
-
-    /**
-     * @param flex the flex to set
-     */
-    public void setFlex(Integer flex) {
-        this.flex = flex;
-    }
-}
-
-class QueryConfig {
-    int id;
-    String name;
-    String description;
-    String sql;
-    List<String> filters;
-    List<ResultConfig> results;
-
-    public QueryConfig()
-    {
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * @return the sql
-     */
-    public String getSql() {
-        return sql;
-    }
-
-    /**
-     * @param sql the sql to set
-     */
-    public void setSql(String sql) {
-        this.sql = sql;
-    }
-
-    /**
-     * @return the filter
-     */
-    public List<String> getFilters() {
-        return filters;
-    }
-
-    /**
-     * @param filter the filter to set
-     */
-    public void setFilters(List<String> filters) {
-        this.filters = filters;
-    }
-
-    /**
-     * @return the results
-     */
-    public List<ResultConfig> getResults() {
-        return results;
-    }
-
-    /**
-     * @param results the results to set
-     */
-    public void setResults(List<ResultConfig> results) {
-        this.results = results;
-    }
-}
+import de.intevation.lada.model.query.QueryConfig;
+import de.intevation.lada.model.query.QueryFilter;
+import de.intevation.lada.model.query.ResultConfig;
+import de.intevation.lada.utils.QueryTools;
 
 /**
  * This class produces a RESTful service to read, write and update
@@ -226,7 +58,7 @@ public class QueryService
      */
     @GET
     @Produces("text/json")
-    public Response filter(
+    public Response get(
         @Context UriInfo info,
         @Context HttpHeaders headers
     ) {
@@ -234,8 +66,7 @@ public class QueryService
             if (!authentication.isAuthorizedUser(headers)) {
                 return new Response(false, 699, new ArrayList<LOrt>());
             }
-            List<QueryConfig> queries = this.loadQueryConfig();
-            Response response = new Response(true, 200, queries);
+            Response response = new Response(true, 200, this.loadQueryConfig());
             return response;
         }
         catch(AuthenticationException ae) {
@@ -244,8 +75,6 @@ public class QueryService
     }
 
     private List<QueryConfig> loadQueryConfig() {
-        List<QueryConfig> configs = new ArrayList<QueryConfig>();
-
         /* Typicall available fields
         {header: 'Datenbasis',  dataIndex: 'datenbasisId', width: 70},
         {header: 'MPL',  dataIndex: 'mplId', width: 50},
@@ -258,46 +87,6 @@ public class QueryService
         {header: 'ProbeID', dataIndex: 'probeId'},
         {header: 'MST', dataIndex: 'mstId', width: 50}
         */
-
-        /* Query 1 */
-        QueryConfig qc1 = new QueryConfig();
-        qc1.setId(1);
-        qc1.setName("MST, UWB");
-        qc1.setDescription("Das ist die Beschreibung von Abfrage 1");
-        qc1.setSql("Select * from l_probe");
-        List<String> filters = new ArrayList<String>();
-        filters.add("mstId");
-        filters.add("umwId");
-        qc1.setFilters(filters);
-        List<ResultConfig> results = new ArrayList<ResultConfig>();
-        results.add(new ResultConfig("datenbasisId","Datenbasis"));
-        results.add(new ResultConfig("mplId","MPL"));
-        results.add(new ResultConfig("umwId","UWB"));
-        results.add(new ResultConfig("messmethode","MMT"));
-        results.add(new ResultConfig("hauptprobenNr","HPNR"));
-        results.add(new ResultConfig("nebenprobenNr","NPNR"));
-        results.add(new ResultConfig("bezeichnung","E.Gemeinde"));
-        results.add(new ResultConfig("kreis","Ursprungsgemeinde"));
-        results.add(new ResultConfig("probeId","ProbeID",1));
-        results.add(new ResultConfig("mstId","MS"));
-        qc1.setResults(results);
-        configs.add(qc1);
-        /* Query 2 */
-        QueryConfig qc2 = new QueryConfig();
-        qc2.setId(2);
-        qc2.setName("Einfach");
-        qc2.setDescription("Einfache Abfrage aller Proben ohne weitere Filterung.");
-        qc2.setSql("Select * from l_probe");
-        List<String> qcf2= new ArrayList<String>();
-        qc2.setFilters(qcf2);
-        List<ResultConfig> qcr2= new ArrayList<ResultConfig>();
-        qcr2.add(new ResultConfig("datenbasisId","Datenbasis"));
-        qcr2.add(new ResultConfig("nebenprobenNr","NPNR"));
-        qcr2.add(new ResultConfig("hauptprobenNr","HPNR"));
-        qcr2.add(new ResultConfig("mstId","MS"));
-        qcr2.add(new ResultConfig("probeId","ProbeID",1));
-        qc2.setResults(qcr2);
-        configs.add(qc2);
-        return configs;
+        return QueryTools.getConfig();
     }
 }
