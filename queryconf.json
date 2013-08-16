@@ -1,49 +1,40 @@
-/* Beispieldatei einer Konfiguration einer Abfrage */
 [{
     "id": 1,
     "name": "Kein Filter",
     "description": "Abfrage der Proben ohne Filter",
-    /* Die Definiton des SQL wie es später an den Server gesendet wird. ggf.
-     * werden einige Werte zuvor durch den Server ersetzt. Siehe Filter */
     "sql": "select probe_id, mst_id, umw_id from l_probe",
     "result": [
-        {"dataIndex": "mstId", "header": "MST", "width": 100},
         {"dataIndex": "probeId", "header": "ProbeId", "flex": 1},
+        {"dataIndex": "mstId", "header": "MST", "width": 100},
         {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100}
     ],
-    /* Filter für die Abfrage. Der Server empfängt hier Daten vom Clienten,
-     * die dann in das oben definierte sql eingebaut werden. Hier muss für den
-     * produktiven Einsatz noch eine strenge Überprüfung der Werte
-     * stattfinden.
-     * "type" gibt an, Welche Art von Feld im Clienten angezeigt werden soll.
-     * Hier müssen wir verschiedene Typen definieren. "listmst" könnte z.B
-     * eine Liste aller Messstationen sein. */
     "filters": [
     ]
 }, {
     "id": 2,
     "name": "MST und UMW",
     "description": "Abfrage der Proben gefiltert nach Messtellen ID und ID des Umweltbereichs",
-    "sql": "select probe_id, mst_id, umw_id from l_probe where mst_id = %(mstId)% and umw_id = %(umwId)%",
+    "sql": "select probe_id, mst_id, umw_id from l_probe where (mst_id = :mst_id OR '' = :mst_id) and (umw_id = :umw_id OR '' = :umw_id)",
     "result": [
-        {"dataIndex": "mstId", "header": "MST", "width": 100},
         {"dataIndex": "probeId", "header": "ProbeId", "flex": 1},
+        {"dataIndex": "mstId", "header": "MST", "width": 100},
         {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100}
     ],
     "filters": [
-        {"dataIndex": "mstId", "type": "listmst", "label": "Messstelle"},
-        {"dataIndex": "umwId", "type": "listumw", "label": "Umweltbereich"}
+        {"dataIndex": "mst_id", "type": "listmst", "label": "Messstelle"},
+        {"dataIndex": "umw_id", "type": "listumw", "label": "Umweltbereich"}
     ]
 }, {
     "id": 3,
     "name": "3. Abfrage",
     "description": "Detailiertere Beschreibung der Abfrage",
-    "sql": "select probe_id, mst_id, umw_id from l_probe where mst_id = %(mstId)s",
+    "sql": "select probe_id, mst_id, umw_id from l_probe where (mst_id = :mst_id OR '' = :mst_id)",
     "result": [
+        {"dataIndex": "probeId", "header": "ProbeId", "flex": 1},
         {"dataIndex": "mstId", "header": "MST", "width": 100},
-        {"dataIndex": "probeId", "header": "ProbeId", "flex": 1}
+        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100}
     ],
     "filters": [
-        {"dataIndex": "mstId", "type": "listmst", "label": "Messstelle"}
+        {"dataIndex": "mst_id", "type": "listmst", "label": "Messstelle"}
     ]
 }]
