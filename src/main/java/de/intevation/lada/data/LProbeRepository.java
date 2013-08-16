@@ -1,5 +1,7 @@
 package de.intevation.lada.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,9 +11,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.ws.rs.core.MultivaluedMap;
 
+import de.intevation.lada.auth.Authorization;
 import de.intevation.lada.manage.Manager;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
@@ -47,6 +52,10 @@ public class LProbeRepository implements Repository{
     @Named("lprobevalidator")
     private Validator validator;
 
+    @Inject
+    @Named("dataauthorization")
+    private Authorization authorization;
+
     public EntityManager getEntityManager() {
         return this.em;
     }
@@ -62,6 +71,34 @@ public class LProbeRepository implements Repository{
         return new Response(true, 200, result);
     }
 
+    public Response filterFree(
+        String sql,
+        List<String> filters,
+        List<String> results,
+        MultivaluedMap<String, String> params) {
+        Query query = em.createNativeQuery(sql);
+        for (String filter: filters) {
+            query.setParameter(filter, params.get(filter));
+        }
+        List<Object[]> result = query.getResultList();
+        List<Map<String, Object>> res = new ArrayList<Map<String, Object>>();
+        for (Object[] row: result) {
+            Map<String, Object> set = new HashMap<String, Object>();
+            for (int i = 0; i < row.length; i++) {
+                set.put(results.get(i), row[i]);
+                if (results.get(i).equals("probeId")) {
+                    if (authorization.isReadOnly((String)row[i])) {
+                        set.put("readonly", Boolean.TRUE);
+                    }
+                    else {
+                        set.put("readonly", Boolean.FALSE);
+                    }
+                }
+            }
+            res.add(set);
+        }
+        return new Response(true, 200, res);
+    }
     /**
      * Get all objects.
      *
