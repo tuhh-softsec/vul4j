@@ -64,8 +64,8 @@ public class QueryTools
                     ResultConfig config = new ResultConfig();
                     config.setDataIndex(result.getString("dataIndex"));
                     config.setHeader(result.getString("header"));
-                    config.setWidth(result.optInt("width"));
-                    config.setFlex(result.optInt("flex"));
+                    config.setWidth(result.optInt("width", 100));
+                    config.setFlex(result.optInt("flex", 0));
                     sResults.add(config);
                 }
                 qConf.setResults(sResults);
