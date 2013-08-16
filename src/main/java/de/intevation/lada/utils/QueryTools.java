@@ -54,6 +54,7 @@ public class QueryTools
                     QueryFilter qFilter = new QueryFilter();
                     qFilter.setDataIndex(filter.getString("dataIndex"));
                     qFilter.setType(filter.getString("type"));
+                    qFilter.setLabel(filter.getString("label"));
                     qFilters.add(qFilter);
                 }
                 qConf.setFilters(qFilters);
