@@ -2,6 +2,7 @@ package de.intevation.lada.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -19,16 +20,23 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import de.intevation.lada.auth.Authentication;
 import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.auth.AuthenticationResponse;
 import de.intevation.lada.auth.Authorization;
+import de.intevation.lada.data.LProbeRepository;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
-
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import de.intevation.lada.utils.QueryTools;
 
 /**
 * This class produces a RESTful service to read, write and update
@@ -134,38 +142,52 @@ public class LProbeService {
                 new QueryBuilder<LProbeInfo>(
                     repository.getEntityManager(),
                     LProbeInfo.class);
-            builder.or("netzbetreiberId", auth.getNetzbetreiber());
-            builder.or("fertig", Boolean.TRUE);
+
             MultivaluedMap<String, String> params = info.getQueryParameters();
-            if (params.isEmpty()) {
+            if (params.isEmpty() || !params.containsKey("qid")) {
                 return repository.filter(builder.getQuery());
             }
-            QueryBuilder<LProbeInfo> mstBuilder = builder.getEmptyBuilder();
-            if (params.keySet().contains("mstId")) {
-                String[] paramValues = params.getFirst("mstId").split(",");
-                for (String pv: paramValues) {
-                    mstBuilder.or("mstId", pv);
+            String qid = params.getFirst("qid");
+            JSONObject query = QueryTools.getQueryById(qid);
+            List<String> filters = new ArrayList<String>();
+            List<String> results = new ArrayList<String>();
+            String sql = "";
+            try {
+                sql = query.getString("sql");
+                JSONArray jFilters = query.getJSONArray("filters");
+                for (int i = 0; i < jFilters.length(); i++) {
+                    JSONObject jFilter = jFilters.getJSONObject(i);
+                    filters.add(jFilter.getString("dataIndex"));
                 }
-                builder.and(mstBuilder);
-            }
-            QueryBuilder<LProbeInfo> umwBuilder = builder.getEmptyBuilder();
-            if (params.keySet().contains("umwId")) {
-                String[] paramValues = params.getFirst("umwId").split(",");
-                for (String pv: paramValues) {
-                    umwBuilder.or("umwId", pv);
+                JSONArray jResults = query.getJSONArray("result");
+                for (int i = 0; i < jResults.length(); i++) {
+                    JSONObject jResult = jResults.getJSONObject(i);
+                    results.add(jResult.getString("dataIndex"));
                 }
-                builder.and(umwBuilder);
             }
-            QueryBuilder<LProbeInfo> beginBuilder = builder.getEmptyBuilder();
-            if (params.keySet().contains("bedin")) {
-                String[] paramValues = params.getFirst("begin").split(",");
-                for (String pv: paramValues) {
-                    beginBuilder.or("probeentnahmeBegin", pv);
+            catch (JSONException e) {
+                return new Response(false, 603, new ArrayList<LProbeInfo>());
+            }
+
+            if (sql == null || sql.length() == 0) {
+                return new Response(false, 603, new ArrayList<LProbeInfo>());
+            }
+            LProbeRepository lpr = (LProbeRepository)repository;
+            String subselect = "(select * from l_probe_info where ";
+            List<String> netzbetreiberIds = auth.getNetzbetreiber();
+            boolean first = true;
+            for (String netzbetreiberId: netzbetreiberIds) {
+                if (first) {
+                    subselect += "netzbetreiber_id = '" + netzbetreiberId + "' ";
+                    first = false;
                 }
-                builder.and(beginBuilder);
+                else {
+                    subselect += "or netzbetreiber_id = '" + netzbetreiberId + "' ";
+                }
             }
-            builder.distinct();
-            return repository.filter(builder.getQuery());
+            subselect += "or fertig = true) as lp";
+            sql = sql.replace("l_probe", subselect);
+            return lpr.filterFree(sql, filters, results, params);
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LProbe>());
