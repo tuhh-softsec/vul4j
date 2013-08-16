@@ -31,8 +31,8 @@
         {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100}
     ],
     "filters": [
-        {"dataIndex": "mstId", "type": "listmst"},
-        {"dataIndex": "umwId", "type": "listumw"}
+        {"dataIndex": "mstId", "type": "listmst", "label": "Messstelle"},
+        {"dataIndex": "umwId", "type": "listumw", "label": "Umweltbereich"}
     ]
 }, {
     "id": 3,
@@ -44,6 +44,6 @@
         {"dataIndex": "probeId", "header": "ProbeId", "flex": 1}
     ],
     "filters": [
-        {"dataIndex": "mstId", "type": "listmst"}
+        {"dataIndex": "mstId", "type": "listmst", "label": "Messstelle"}
     ]
 }]
