@@ -579,7 +579,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		log.debug("is peer {}", bgpPeers.containsKey(ribEntry.getNextHop()));
 		if (!bgpPeers.containsKey(ribEntry.getNextHop())) {
 			log.debug("Getting path for route with non-peer nexthop");
-			Path path = prefixToPath.get(prefix);
+			//Path path = prefixToPath.get(prefix);
+			Path path = prefixToPath.remove(prefix);
 			
 			if (path == null) {
 				log.error("No path found for non-peer path");
@@ -589,6 +590,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			log.debug("users {}, permanent {}", path.getUsers(), path.isPermanent());
 			if (path.getUsers() <= 0 && !path.isPermanent()) {
 				deletePath(path);
+				pushedPaths.remove(path.getDstIpAddress());
 			}
 		}
 	}
@@ -686,6 +688,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	private void calculateAndPushPath(Path path, MACAddress dstMacAddress) {
 		Interface dstInterface = path.getDstInterface();
+		
+		log.debug("Setting up path to {}, {}", path.getDstIpAddress().getHostAddress(),
+				dstMacAddress);
 		
 		List<PushedFlowMod> pushedFlows = new ArrayList<PushedFlowMod>();
 		
