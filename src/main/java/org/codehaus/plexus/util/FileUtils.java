@@ -145,7 +145,7 @@ public class FileUtils
     private static final long FILE_COPY_BUFFER_SIZE = ONE_MB * 30;
 
     /**
-     * The vm line separator
+     * The vm file separator
      */
     public static String FS = System.getProperty( "file.separator" );
 
