@@ -190,6 +190,8 @@ public class ReaderFactory
     /**
      * Create a new Reader with specified encoding.
      *
+     * Note that there is no buffering on this reader, which favours clients that read into large buffers (8K+).
+     *
      * @param file not null file.
      * @param encoding not null supported encoding.
      * @return a reader instance for the input file using the given encoding.
