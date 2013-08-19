@@ -153,7 +153,7 @@ import java.nio.channels.Channel;
 
 public final class IOUtil
 {
-    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 16;
 
     /**
      * Private constructor to prevent instantiation.
