@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.core.IOFSwitchListener;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
@@ -73,7 +74,8 @@ import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
-									ITopologyListener, IArpRequester {
+									ITopologyListener, IArpRequester,
+									IOFSwitchListener {
 	
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
@@ -159,16 +161,18 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				}
 			}
 			
-			if (linkUpdates.isEmpty()){
-				//All updates have been seen in network map.
-				//We can check if topology is ready
-				log.debug("No known changes outstanding. Checking topology now");
-				checkStatus();
-			}
-			else {
-				//We know of some link updates that haven't propagated to the database yet
-				log.debug("Some changes not found in network map - {} links missing", linkUpdates.size());
-				topologyChangeDetectorTask.reschedule(TOPO_DETECTION_WAIT, TimeUnit.SECONDS);
+			if (!topologyReady) {
+				if (linkUpdates.isEmpty()){
+					//All updates have been seen in network map.
+					//We can check if topology is ready
+					log.debug("No known changes outstanding. Checking topology now");
+					checkStatus();
+				}
+				else {
+					//We know of some link updates that haven't propagated to the database yet
+					log.debug("Some changes not found in network map - {} links missing", linkUpdates.size());
+					topologyChangeDetectorTask.reschedule(TOPO_DETECTION_WAIT, TimeUnit.SECONDS);
+				}
 			}
 		}
 	}
@@ -308,6 +312,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	public void startUp(FloodlightModuleContext context) {
 		restApi.addRestletRoutable(new BgpRouteWebRoutable());
 		topology.addListener(this);
+		floodlightProvider.addOFSwitchListener(this);
 		
 		proxyArp.startUp();
 		
@@ -1080,7 +1085,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 
 	@Override
-	public void topologyChanged() {		
+	public void topologyChanged() {
+		if (topologyReady) {
+			return;
+		}
+		
 		boolean refreshNeeded = false;
 		for (LDUpdate ldu : topology.getLastLinkUpdates()){
 			if (!ldu.getOperation().equals(ILinkDiscovery.UpdateOperation.LINK_UPDATED)){
@@ -1098,8 +1107,33 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 		}
 		
-		if (refreshNeeded){
+		if (refreshNeeded && !topologyReady){
 			topologyChangeDetectorTask.reschedule(TOPO_DETECTION_WAIT, TimeUnit.SECONDS);
 		}
+	}
+
+	@Override
+	public void addedSwitch(IOFSwitch sw) {
+		if (!topologyReady) {
+			sw.clearAllFlowMods();
+		}
+	}
+
+	@Override
+	public void removedSwitch(IOFSwitch sw) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void switchPortChanged(Long switchId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

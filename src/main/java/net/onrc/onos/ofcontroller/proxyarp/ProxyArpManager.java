@@ -24,7 +24,6 @@ import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.bgproute.IPatriciaTrie;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
 import net.onrc.onos.ofcontroller.bgproute.Prefix;
-import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -222,7 +221,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	protected void handleArpRequest(IOFSwitch sw, OFPacketIn pi, ARP arp) {
-		log.debug("ARP request received for {}", 
+		log.trace("ARP request received for {}", 
 				bytesToStringAddr(arp.getTargetProtocolAddress()));
 
 		InetAddress target;
@@ -261,13 +260,13 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 		else {
 			//We know the address, so send a reply
-			log.debug("Sending reply of {}", MACAddress.valueOf(mac).toString());
+			log.trace("Sending reply of {}", MACAddress.valueOf(mac).toString());
 			sendArpReply(arp, sw.getId(), pi.getInPort(), mac);
 		}
 	}
 	
 	protected void handleArpReply(IOFSwitch sw, OFPacketIn pi, ARP arp){
-		log.debug("ARP reply recieved for {}, is {}, on {}/{}", new Object[] { 
+		log.trace("ARP reply recieved for {}, is {}, on {}/{}", new Object[] { 
 				bytesToStringAddr(arp.getSenderProtocolAddress()),
 				HexString.toHexString(arp.getSenderHardwareAddress()),
 				HexString.toHexString(sw.getId()), pi.getInPort()});
@@ -390,11 +389,11 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest,
 			long inSwitch, short inPort) {
 		if (mode == Mode.L2_MODE) {
-			log.debug("mode is l2");
+			//log.debug("mode is l2");
 			broadcastArpRequestOutEdge(arpRequest, inSwitch, inPort);
 		}
 		else if (mode == Mode.L3_MODE) {
-			log.debug("mode is l3");
+			//log.debug("mode is l3");
 			Interface intf = interfacePtrie.match(new Prefix(dstAddress.getAddress(), 32));
 			if (intf != null) {
 				sendArpRequestOutPort(arpRequest, intf.getDpid(), intf.getPort());
@@ -451,7 +450,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	private void sendArpRequestOutPort(byte[] arpRequest, long dpid, short port) {
-		log.debug("Sending ARP request out {}/{}", HexString.toHexString(dpid), port);
+		//log.debug("Sending ARP request out {}/{}", HexString.toHexString(dpid), port);
 		
 		OFPacketOut po = new OFPacketOut();
 		po.setInPort(OFPort.OFPP_NONE)
@@ -521,7 +520,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 		
 		try {
-			log.debug("Sending ARP reply to {}/{}", HexString.toHexString(sw.getId()), port);
+			//log.debug("Sending ARP reply to {}/{}", HexString.toHexString(sw.getId()), port);
 			sw.write(msgList, null);
 			sw.flush();
 		} catch (IOException e) {
