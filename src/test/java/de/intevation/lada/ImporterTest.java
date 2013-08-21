@@ -15,13 +15,13 @@ public class ImporterTest
     @Ignore
     public static void main(String[] args) {
         System.setProperty(
-            "de_intevation_lada_test_singleprobe",
+            "de.intevation.lada.test.singleprobe",
             "/home/rrenkert/single.laf");
         System.setProperty(
-            "de_intevation_lada_test_incompleteprobe",
+            "de.intevation.lada.test.incompleteprobe",
             "/home/rrenkert/incomplete.laf");
         System.setProperty(
-            "de_intevation_lada_import",
+            "de.intevation.lada.import",
             "/opt/lada/config/import.json");
         System.out.println("ImporterTest started.");
         TestLAFImporter test = new TestLAFImporter();
