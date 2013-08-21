@@ -375,7 +375,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		arpRequest.setSenderProtocolAddress(senderIPAddress);
 		
 		Ethernet eth = new Ethernet();
-		eth.setSourceMACAddress(bgpdMac)
+		eth.setSourceMACAddress(routerMacAddress.toBytes())
 			.setDestinationMACAddress(broadcastMac)
 			.setEtherType(Ethernet.TYPE_ARP)
 			.setPayload(arpRequest);
