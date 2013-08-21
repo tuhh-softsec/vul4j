@@ -45,6 +45,9 @@ public class LAFParser {
     public boolean parse(String laf)
     throws LAFParserException
     {
+        if (!laf.startsWith("%PROBE%\n")) {
+            throw new LAFParserException("No %PROBE% at the begining.");
+        }
         boolean parsed = false;
         while (laf.startsWith("%PROBE%\n")) {
             parsed = true;
@@ -68,9 +71,6 @@ public class LAFParser {
                 messungKommentare.addAll(producer.getMessungsKommentare());
                 producer.reset();
             }
-        }
-        if (!parsed) {
-            throw new LAFParserException("No %PROBE% at the begining.");
         }
         return parsed;
     }
