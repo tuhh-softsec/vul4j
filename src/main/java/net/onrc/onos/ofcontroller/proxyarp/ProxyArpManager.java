@@ -358,7 +358,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			.setHardwareAddressLength((byte)Ethernet.DATALAYER_ADDRESS_LENGTH)
 			.setProtocolAddressLength((byte)4) //can't find the constant anywhere
 			.setOpCode(ARP.OP_REQUEST)
-			.setSenderHardwareAddress(bgpdMac)
+			//.setSenderHardwareAddress(bgpdMac)
+			.setSenderHardwareAddress(routerMacAddress.toBytes())
 			//.setSenderProtocolAddress(zeroIpv4)
 			.setTargetHardwareAddress(zeroMac)
 			.setTargetProtocolAddress(ipAddress.getAddress());
