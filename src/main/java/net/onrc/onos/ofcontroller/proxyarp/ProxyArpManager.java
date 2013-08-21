@@ -225,20 +225,42 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				bytesToStringAddr(arp.getTargetProtocolAddress()));
 
 		InetAddress target;
+		InetAddress source;
 		try {
 			 target = InetAddress.getByAddress(arp.getTargetProtocolAddress());
+			 source = InetAddress.getByAddress(arp.getSenderProtocolAddress());
 		} catch (UnknownHostException e) {
 			log.debug("Invalid address in ARP request", e);
 			return;
 		}
 		
 		if (mode == Mode.L3_MODE) {
-			Interface intf = interfacePtrie.match(new Prefix(target.getAddress(), 32));
-			if (intf != null && target.equals(intf.getIpAddress())) {
-				//ARP request for one of our interfaces, we can reply straight away
-				sendArpReply(arp, sw.getId(), pi.getInPort(), routerMacAddress.toBytes());
+			
+			if (originatedOutsideNetwork(source)) {
+				//If the request came from outside our network, we only care if
+				//it was a request for one of our interfaces.
+				if (isInterfaceAddress(target)) {
+					sendArpReply(arp, sw.getId(), pi.getInPort(), routerMacAddress.toBytes());
+				}
 				return;
 			}
+			
+			/*
+			Interface intf = interfacePtrie.match(new Prefix(target.getAddress(), 32));
+			//if (intf != null && target.equals(intf.getIpAddress())) {
+			if (intf != null) {
+				if (target.equals(intf.getIpAddress())) {
+					//ARP request for one of our interfaces, we can reply straight away
+					sendArpReply(arp, sw.getId(), pi.getInPort(), routerMacAddress.toBytes());
+				}
+				// If we didn't enter the above if block, then we found a matching
+				// interface for the target IP but the request wasn't for us.
+				// This is someone else ARPing for a different host in the subnet.
+				// We shouldn't do anything in this case - if we let processing continue
+				// we'll end up erroneously re-broadcasting an ARP for someone else.
+				return;
+			}
+			*/
 		}
 		
 		byte[] mac = lookupArpTable(arp.getTargetProtocolAddress());
@@ -347,7 +369,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		//TODO what should the sender IP address be? Probably not 0.0.0.0
 		byte[] zeroIpv4 = {0x0, 0x0, 0x0, 0x0};
 		byte[] zeroMac = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
-		byte[] bgpdMac = {0x0, 0x0, 0x0, 0x0, 0x0, 0x01};
+		//byte[] bgpdMac = {0x0, 0x0, 0x0, 0x0, 0x0, 0x01};
 		byte[] broadcastMac = {(byte)0xff, (byte)0xff, (byte)0xff, 
 				(byte)0xff, (byte)0xff, (byte)0xff};
 		
@@ -395,6 +417,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 		else if (mode == Mode.L3_MODE) {
 			//log.debug("mode is l3");
+			//TODO the case where it should be broadcast out all non-interface
+			//edge ports
 			Interface intf = interfacePtrie.match(new Prefix(dstAddress.getAddress(), 32));
 			if (intf != null) {
 				sendArpRequestOutPort(arpRequest, intf.getDpid(), intf.getPort());
@@ -451,7 +475,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	private void sendArpRequestOutPort(byte[] arpRequest, long dpid, short port) {
-		//log.debug("Sending ARP request out {}/{}", HexString.toHexString(dpid), port);
+		log.debug("Sending ARP request out {}/{}", HexString.toHexString(dpid), port);
 		
 		OFPacketOut po = new OFPacketOut();
 		po.setInPort(OFPort.OFPP_NONE)
@@ -521,7 +545,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 		
 		try {
-			//log.debug("Sending ARP reply to {}/{}", HexString.toHexString(sw.getId()), port);
+			log.debug("Sending ARP reply to {}/{}", HexString.toHexString(sw.getId()), port);
 			sw.write(msgList, null);
 			sw.flush();
 		} catch (IOException e) {
@@ -554,6 +578,46 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		arpRequests.put(ipAddress, new ArpRequest(requester, retry));
 		//storeRequester(ipAddress, requester, retry);
 		
-		sendArpRequestForAddress(ipAddress);
+		//Sanity check to make sure we don't send a request for our own address
+		if (!isInterfaceAddress(ipAddress)) {
+			sendArpRequestForAddress(ipAddress);
+		}
+	}
+	
+	/*
+	 * TODO These methods might be more suited to some kind of L3 information service
+	 * that ProxyArpManager could query, rather than having the information 
+	 * embedded in ProxyArpManager. There may be many modules that need L3 information.
+	 */
+	
+	private boolean originatedOutsideNetwork(InetAddress source) {
+		Interface intf = interfacePtrie.match(new Prefix(source.getAddress(), 32));
+		if (intf != null) {
+			if (intf.getIpAddress().equals(source)) {
+				// This request must have been originated by us (the controller)
+				return false;
+			}
+			else {
+				// Source was in one of our interface subnets, but wasn't us.
+				// It must be external.
+				return true;
+			}
+		}
+		else {
+			// Source is not in one of our interface subnets. It's probably a host
+			// in our network as we should only receive ARPs broadcast by external
+			// hosts if they're in the same subnet.
+			return false;
+		}
+	}
+	
+	private boolean isInterfaceAddress(InetAddress address) {
+		Interface intf = interfacePtrie.match(new Prefix(address.getAddress(), 32));
+		return (intf != null && intf.getIpAddress().equals(address));
+	}
+	
+	private boolean inInterfaceSubnet(InetAddress address) {
+		Interface intf = interfacePtrie.match(new Prefix(address.getAddress(), 32));
+		return (intf != null && !intf.getIpAddress().equals(address));
 	}
 }
