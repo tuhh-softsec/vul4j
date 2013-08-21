@@ -243,15 +243,43 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <dependencies>
+             <dependency>
+                   <groupId>junit</groupId>
+                   <artifactId>junit</artifactId>
+                   <version>4.10</version>
+            </dependency>
+            <dependency>
+                   <groupId>org.jboss.resteasy</groupId>
+                   <artifactId>resteasy-jaxrs</artifactId>
+                   <version>2.2.2.GA</version>
+            </dependency>
+            <dependency>
+                   <groupId>org.apache.httpcomponents</groupId>
+                   <artifactId>httpcore</artifactId>
+                   <version>4.1.4</version>
+            </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.4.3</version>
                         <configuration>
-                            <!--
-                            <skip>true</skip>
-                            -->
+                            <systemProperties>
+                                <property>
+                                    <name>de.intevation.lada.test.singleprobe</name>
+                                    <value>/home/rrenkert/single.laf</value>
+                                </property>
+                                <property>
+                                    <name>de.intevation.lada.test.incompleteprobe</name>
+                                    <value>/home/rrenkert/incomplete.laf</value>
+                                </property>
+                                <property>
+                                    <name>de.intevation.lada.import</name>
+                                    <value>/opt/lada/config/import.json</value>
+                                </property>
+                            </systemProperties>
                         </configuration>
                     </plugin>
                 </plugins>
