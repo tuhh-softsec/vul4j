@@ -44,7 +44,7 @@ implements Producer
         this.messungen = new ArrayList<LMessung>();
         this.orte = new ArrayList<LOrt>();
         this.messwerte = new ArrayList<LMesswert>();
-        String fileName = System.getProperty("de_intevation_lada_import");
+        String fileName = System.getProperty("de.intevation.lada.import");
         LAFFormat format = new LAFFormat();
         format.readConfigFile(fileName);
         probenFormat = format.getFormat("probe");
