@@ -33,9 +33,9 @@ public class TestLAFImporter
     @Before
     @Ignore
     public void loadLafFiles() {
-        String single = System.getProperty("de_intevation_lada_test_singleprobe");
+        String single = System.getProperty("de.intevation.lada.test.singleprobe");
         String incomplete =
-            System.getProperty("de_intevation_lada_test_incompleteprobe");
+            System.getProperty("de.intevation.lada.test.incompleteprobe");
         try {
             byte[] encodedSingle = Files.readAllBytes(Paths.get(single));
             byte[] encodedIncomplete =
@@ -52,17 +52,16 @@ public class TestLAFImporter
         }
     }
 
-    @Test(expected = IOException.class)
-    @Ignore
+    @Test
     public void testConfigFileNotFound() {
         LAFFormat format = new LAFFormat();
         boolean success = format.readConfigFile("/file/not/found");
+        assertEquals(false, success);
     }
 
     @Test
-    @Ignore
     public void testConfigFileLoading() {
-        String fileName = System.getProperty("de_intevation_lada_import");
+        String fileName = System.getProperty("de.intevation.lada.import");
         LAFFormat format = new LAFFormat();
         boolean success = format.readConfigFile(fileName);
         assertEquals(true, success);
@@ -86,13 +85,13 @@ public class TestLAFImporter
             ortFormat.size());
     }
 
-    @Test(expected = LAFParserException.class)
-    @Ignore
+    @Test
     public void testProbeHeaderFail() {
         LAFParser parser = new LAFParser();
         parser.setDryRun(true);
         try {
-            parser.parse(PROBE_HEADER_FAIL);
+            boolean success = parser.parse(PROBE_HEADER_FAIL);
+            assertEquals(false, success);
         }
         catch (LAFParserException e) {
             assertEquals(
@@ -115,27 +114,14 @@ public class TestLAFImporter
     }
 
     @Test
-    @Ignore
     public void testCompleteParser() {
         LAFParser parser = new LAFParser();
-        //parser.setDryRun(true);
+        parser.setDryRun(true);
         try {
             parser.parse(singleProbe);
         }
         catch (LAFParserException e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    @Ignore
-    public void testMessungParser() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    @Ignore
-    public void testOrtParser() {
-        fail("Not yet implemented");
     }
 }
