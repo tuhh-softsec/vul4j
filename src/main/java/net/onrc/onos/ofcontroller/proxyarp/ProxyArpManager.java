@@ -41,6 +41,7 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 
 //TODO have L2 and also L3 mode, where it takes into account interface addresses
+//TODO REST API to inspect ARP table
 public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private static Logger log = LoggerFactory.getLogger(ProxyArpManager.class);
 	
@@ -306,13 +307,20 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		Set<ArpRequest> requests = arpRequests.get(addr);
 		
 		//Synchronize on the Multimap while using an iterator for one of the sets
+		List<ArpRequest> requestsToSend = new ArrayList<ArpRequest>(requests.size());
 		synchronized (arpRequests) {
 			Iterator<ArpRequest> it = requests.iterator();
 			while (it.hasNext()) {
 				ArpRequest request = it.next();
 				it.remove();
-				request.dispatchReply(addr, arp.getSenderHardwareAddress());
+				//request.dispatchReply(addr, arp.getSenderHardwareAddress());
+				requestsToSend.add(request);
 			}
+		}
+		
+		//Don't hold an ARP lock while dispatching requests
+		for (ArpRequest request : requestsToSend) {
+			request.dispatchReply(addr, arp.getSenderHardwareAddress());
 		}
 	}
 
