@@ -60,6 +60,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	
 	private Mode mode;
 	private IPatriciaTrie<Interface> interfacePtrie = null;
+	private Collection<Interface> interfaces = null;
 	private MACAddress routerMacAddress = null;
 	//private SwitchPort bgpdAttachmentPoint = null;
 	
@@ -109,10 +110,12 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		mode = Mode.L2_MODE;
 	}
 	
-	public void setL3Mode(IPatriciaTrie<Interface> interfacePtrie, MACAddress routerMacAddress) {
+	public void setL3Mode(IPatriciaTrie<Interface> interfacePtrie, 
+			Collection<Interface> interfaces, MACAddress routerMacAddress) {
 		this.interfacePtrie = interfacePtrie;
+		this.interfaces = interfaces;
 		this.routerMacAddress = routerMacAddress;
-		//this.bgpdAttachmentPoint = bgpdAttachmentPoint;
+
 		mode = Mode.L3_MODE;
 	}
 	
@@ -237,10 +240,13 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		
 		if (mode == Mode.L3_MODE) {
 			
-			if (originatedOutsideNetwork(source)) {
+			//if (originatedOutsideNetwork(source)) {
+			if (originatedOutsideNetwork(sw.getId(), pi.getInPort())) {
 				//If the request came from outside our network, we only care if
 				//it was a request for one of our interfaces.
 				if (isInterfaceAddress(target)) {
+					log.trace("ARP request for our interface. Sending reply {} => {}",
+							target.getHostAddress(), routerMacAddress.toString());
 					sendArpReply(arp, sw.getId(), pi.getInPort(), routerMacAddress.toBytes());
 				}
 				return;
@@ -270,10 +276,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			//Mac address is not in our arp table.
 			
 			//Record where the request came from so we know where to send the reply
-
-			
-			//Should we just broadcast all received requests here? Or rate limit
-			//if we know we just sent an request?
 			arpRequests.put(target, new ArpRequest(
 					new HostArpRequester(this, arp, sw.getId(), pi.getInPort()), false));
 						
@@ -283,13 +285,17 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 		else {
 			//We know the address, so send a reply
-			log.trace("Sending reply of {}", MACAddress.valueOf(mac).toString());
+			log.trace("Sending reply: {} => {} to host at {}/{}", new Object [] {
+					bytesToStringAddr(arp.getTargetProtocolAddress()),
+					MACAddress.valueOf(mac).toString(),
+					HexString.toHexString(sw.getId()), pi.getInPort()});
+			
 			sendArpReply(arp, sw.getId(), pi.getInPort(), mac);
 		}
 	}
 	
 	protected void handleArpReply(IOFSwitch sw, OFPacketIn pi, ARP arp){
-		log.trace("ARP reply recieved for {}, is {}, on {}/{}", new Object[] { 
+		log.trace("ARP reply recieved: {} => {}, on {}/{}", new Object[] { 
 				bytesToStringAddr(arp.getSenderProtocolAddress()),
 				HexString.toHexString(arp.getSenderHardwareAddress()),
 				HexString.toHexString(sw.getId()), pi.getInPort()});
@@ -431,6 +437,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			if (intf != null) {
 				sendArpRequestOutPort(arpRequest, intf.getDpid(), intf.getPort());
 			}
+			else {
+				log.debug("No interface found to send ARP request for {}", 
+						dstAddress.getHostAddress());
+			}
 		}
 	}
 	
@@ -514,6 +524,11 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	public void sendArpReply(ARP arpRequest, long dpid, short port, byte[] targetMac) {
+		log.trace("Sending reply {} => {} to {}", new Object[] {
+				bytesToStringAddr(arpRequest.getTargetProtocolAddress()),
+				HexString.toHexString(targetMac),
+				bytesToStringAddr(arpRequest.getSenderProtocolAddress())});
+		
 		ARP arpReply = new ARP();
 		arpReply.setHardwareType(ARP.HW_TYPE_ETHERNET)
 			.setProtocolType(ARP.PROTO_TYPE_IP)
@@ -549,6 +564,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
 		
 		if (sw == null) {
+			log.error("Switch {} not found when sending ARP reply", 
+					HexString.toHexString(dpid));
 			return;
 		}
 		
@@ -617,6 +634,15 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			// hosts if they're in the same subnet.
 			return false;
 		}
+	}
+	
+	private boolean originatedOutsideNetwork(long inDpid, short inPort) {
+		for (Interface intf : interfaces) {
+			if (intf.getDpid() == inDpid && intf.getPort() == inPort) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private boolean isInterfaceAddress(InetAddress address) {

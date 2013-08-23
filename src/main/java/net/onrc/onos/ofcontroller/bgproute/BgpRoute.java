@@ -305,7 +305,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		readGatewaysConfiguration(configFilename);
 		
-		proxyArp.setL3Mode(interfacePtrie, bgpdMacAddress);
+		proxyArp.setL3Mode(interfacePtrie, interfaces.values(), bgpdMacAddress);
 	}
 	
 	@Override
