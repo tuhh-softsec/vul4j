@@ -252,15 +252,15 @@
                             <systemProperties>
                                 <property>
                                     <name>de.intevation.lada.test.singleprobe</name>
-                                    <value>/home/rrenkert/single.laf</value>
+                                    <value>${basedir}/test/single.laf</value>
                                 </property>
                                 <property>
                                     <name>de.intevation.lada.test.incompleteprobe</name>
-                                    <value>/home/rrenkert/incomplete.laf</value>
+                                    <value>${basedir}/test/incomplete.laf</value>
                                 </property>
                                 <property>
                                     <name>de.intevation.lada.import</name>
-                                    <value>/opt/lada/config/import.json</value>
+                                    <value>${basedir}/config/import.json</value>
                                 </property>
                             </systemProperties>
                         </configuration>
