@@ -1,0 +1,67 @@
+%PROBE%
+UEBERTRAGUNGSFORMAT        "7"
+VERSION                    "0084"
+DATENBASIS_S               02
+NETZKENNUNG                "19"
+ERZEUGER                   "bv"
+MESSSTELLE                 "30021"
+MESSLABOR                  "30021"
+HAUPTPROBENNUMMER          "Beispiel_01"
+MESSPROGRAMM_S             "1"
+MESSPROGRAMM_LAND          "007"
+PROBENAHMEINSTITUTION      "001"
+PROBENART                  "S"
+ZEITBASIS_S                2
+URSPRUNGS_DATUM_UHRZEIT    20120906 0800
+PROBENAHME_DATUM_UHRZEIT_A 20120906 1000
+PROBENAHME_DATUM_UHRZEIT_E 20120906 1100
+UMWELTBEREICH_S            "N12"
+DESKRIPTOREN               "0101010207                "
+TESTDATEN                  1
+SZENARIO                   "dummy"
+P_HERKUNFTSLAND_S          00000000
+P_GEMEINDESCHLUESSEL       13071084
+P_ORTS_ZUSATZKENNZAHL      133
+P_KOORDINATEN_S            01 "3752892" "5967336"
+P_ORTS_ZUSATZCODE          "0200"
+P_ORTS_ZUSATZTEXT          "Testzusatztext 01"
+P_NUTS_CODE                "DE808"
+%URSPRUNGSORT%
+U_HERKUNFTSLAND_S          00000000
+U_GEMEINDESCHLUESSEL       13071005
+U_KOORDINATEN_S            05 "33363084" "5926966"
+U_NUTS_CODE                "DE80C"
+PROBENKOMMENTAR            "30021" 20120906 1354 "Testkommentar 01"
+PROBENZUSATZBESCHREIBUNG   "WAREN-L" 10.000E+00 "l"       0.00
+%MESSUNG%
+MESSUNGS_ID                01
+NEBENPROBENNUMMER          "0001"
+MESSMETHODE_S              "A1"
+BEARBEITUNGSSTATUS         "1110"
+MESS_DATUM_UHRZEIT         20120906 1200
+MESSZEIT_SEKUNDEN          00003600
+PEP_FLAG                   0
+ERFASSUNG_ABGESCHLOSSEN    1
+MESSWERT                   "Am 241" <1.000E-02 "Bq/l"      0.00
+MESSWERT                   "Pu 238" <2.000E-02 "Bq/l"      0.00
+MESSWERT                   "Pu 239" 1.230E-01 "Bq/l"      10.00
+KOMMENTAR                  "30021" 20120906 1355 "Testkommentar 01"
+KOMMENTAR                  "30021" 20120906 1356 "Testkommentar 02"
+%MESSUNG%
+MESSUNGS_ID                02
+NEBENPROBENNUMMER          "0002"
+MESSMETHODE_S              "G1"
+BEARBEITUNGSSTATUS         "1110"
+MESS_DATUM_UHRZEIT         20120906 1300
+MESSZEIT_SEKUNDEN          00007200
+PEP_FLAG                   0
+ERFASSUNG_ABGESCHLOSSEN    1
+MESSWERT                   "Ce 144" <1.000E-02 "Bq/l"      0.00
+MESSWERT                   "Co 60" 1.000E-01 "Bq/l"      20.00
+MESSWERT                   "Cs 134" <1.000E-01 "Bq/l"      0.00
+MESSWERT                   "Cs 137" 10.000E+00 "Bq/l"      10.00
+MESSWERT                   "I 131" <1.000E-02 "Bq/l"      0.00
+MESSWERT                   "K 40" 10.000E+01 "Bq/l"      10.00
+MESSWERT                   "Ru 103" <2.000E-02 "Bq/l"      0.00
+KOMMENTAR                  "30021" 20120906 1358 "Testkommentar 01"
+%ENDE%
