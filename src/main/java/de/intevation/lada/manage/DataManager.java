@@ -37,7 +37,8 @@ implements Manager
         IllegalArgumentException,
         EJBTransactionRolledbackException,
         TransactionRequiredException {
-        em.persist(object);
+        em.merge(object);
+        //em.persist(object);
     }
 
     /**
