@@ -31,7 +31,6 @@ public class TestLAFImporter
     private String incompleteProbe;
 
     @Before
-    @Ignore
     public void loadLafFiles() {
         String single = System.getProperty("de.intevation.lada.test.singleprobe");
         String incomplete =

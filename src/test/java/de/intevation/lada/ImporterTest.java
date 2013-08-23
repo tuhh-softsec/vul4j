@@ -12,6 +12,7 @@ import de.intevation.lada.importer.TestLAFImporter;
 @Ignore
 public class ImporterTest
 {
+    /*
     @Ignore
     public static void main(String[] args) {
         System.setProperty(
@@ -56,5 +57,5 @@ public class ImporterTest
 
         System.out.println("end.");
         return;
-    }
+    }*/
 }
