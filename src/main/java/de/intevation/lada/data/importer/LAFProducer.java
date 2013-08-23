@@ -2,17 +2,19 @@ package de.intevation.lada.data.importer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import de.intevation.lada.model.LKommentarM;
+import de.intevation.lada.model.LKommentarMId;
 import de.intevation.lada.model.LKommentarP;
 import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LMessungId;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LMesswertId;
 import de.intevation.lada.model.LOrt;
+import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbe;
 
 @Named("lafproducer")
@@ -34,17 +36,17 @@ implements Producer
     private List<EntryFormat> messungFormat;
     private List<EntryFormat> ortFormat;
 
+    @Inject
     private AttributeMapper mapper;
 
     public LAFProducer() {
-        this.mapper = new AttributeMapper();
         this.probe = new LProbe();
         this.pKommentare = new ArrayList<LKommentarP>();
         this.mKommentare = new ArrayList<LKommentarM>();
         this.messungen = new ArrayList<LMessung>();
         this.orte = new ArrayList<LOrt>();
         this.messwerte = new ArrayList<LMesswert>();
-        String fileName = System.getProperty("de.intevation.lada.import");
+        String fileName = System.getProperty("de.intevation.lada.importconfig");
         LAFFormat format = new LAFFormat();
         format.readConfigFile(fileName);
         probenFormat = format.getFormat("probe");
@@ -56,12 +58,21 @@ implements Producer
     public void addData(String key, Object values) {
         String lKey = key.toLowerCase();
         if(lKey.equals("probenkommentar")) {
+            LKommentarP kommentar = new LKommentarP();
+            kommentar.setProbeId(this.probe.getProbeId());
             this.pKommentare.add(
-                mapper.addAttribute(lKey, values, new LKommentarP()));
+                mapper.addAttribute(lKey, values, kommentar));
         }
         else if (lKey.equals("kommentar")) {
+            LKommentarMId id = new LKommentarMId();
+            id.setMessungsId(this.messung.getMessungsId());
+            id.setProbeId(this.probe.getProbeId());
+            LKommentarM kommentar = new LKommentarM();
+            kommentar.setId(id);
+            kommentar.setMessungsId(this.messung.getMessungsId());
+            kommentar.setProbeId(this.probe.getProbeId());
             this.mKommentare.add(
-                mapper.addAttribute(lKey, values, new LKommentarM()));
+                mapper.addAttribute(lKey, values, kommentar));
         }
         else if (lKey.equals("probenzusatzbeschreibung")) {
             //TODO: implement this!
@@ -75,8 +86,12 @@ implements Producer
             id.setMessungsId(this.messung.getId().getMessungsId());
             LMesswert m = new LMesswert();
             m.setId(id);
-            this.messwerte.add(
-                mapper.addAttribute(lKey, values, m));
+            m.setMessungsId(this.messung.getMessungsId());
+            m.setProbeId(this.probe.getProbeId());
+            LMesswert wert = mapper.addAttribute(lKey, values, m);
+            if (wert != null) {
+                this.messwerte.add(wert);
+            }
         }
         else if (isValidMessung(lKey, values.toString())) {
             this.messung = mapper.addAttribute(lKey, values, this.messung);
@@ -171,6 +186,7 @@ implements Producer
         LMessungId id = new LMessungId();
         id.setProbeId(this.probe.getProbeId());
         this.messung = new LMessung();
+        this.messung.setProbeId(this.probe.getProbeId());
         this.messung.setId(id);
     }
 

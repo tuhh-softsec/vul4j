@@ -4,12 +4,16 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 
+import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarM;
 import de.intevation.lada.model.LKommentarP;
 import de.intevation.lada.model.LMessung;
@@ -17,15 +21,22 @@ import de.intevation.lada.model.LMessungId;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.SMessEinheit;
+import de.intevation.lada.model.SMessgroesse;
+import de.intevation.lada.rest.Response;
 
-
+@Stateless
 public class AttributeMapper
 {
     @Inject
     private EntityManager em;
 
+    @Inject
+    @Named("readonlyrepository")
+    private Repository sRepository;
+
     public LProbe addAttribute(String key, Object value, LProbe probe) {
-        DateFormat format = new SimpleDateFormat("yyyyMMDD hhmm");
+        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if ("datenbasis_s".equals(key)) {
             Integer v = Integer.valueOf(value.toString());
             probe.setDatenbasisId(v);
@@ -39,6 +50,9 @@ public class AttributeMapper
         else if ("mpr_id".equals(key)) {
             Integer v = Integer.valueOf(value.toString());
             probe.setMprId(v);
+        }
+        else if ("netzkennung".equals(key)) {
+            probe.setNetzbetreiberId(value.toString());
         }
         else if ("messprogramm_land".equals(key)) {
             probe.setMplId(value.toString());
@@ -99,6 +113,8 @@ public class AttributeMapper
                 probe.setTest(false);
             }
         }
+        
+        probe.setProbenartId(1);
         return probe;
     }
 
@@ -107,7 +123,7 @@ public class AttributeMapper
         Object values,
         LKommentarP kommentar
     ) {
-        DateFormat format = new SimpleDateFormat("yyyyMMDD hhmm");
+        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         String v = values.toString();
         String erzeuger = v.substring(1, 5);
         String date = v.substring(8, 21);
@@ -130,7 +146,7 @@ public class AttributeMapper
         Object values,
         LKommentarM kommentar
     ) {
-        DateFormat format = new SimpleDateFormat("yyyyMMDD hhmm");
+        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         String v = values.toString();
         String erzeuger = v.substring(1, 5);
         String date = v.substring(8, 21);
@@ -153,11 +169,12 @@ public class AttributeMapper
         Object values,
         LMessung messung
     ) {
-        DateFormat format = new SimpleDateFormat("yyyyMMDD hhmm");
+        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if ("messungs_id".equals(key)) {
             LMessungId id = messung.getId();
             Integer v = Integer.valueOf(values.toString());
             id.setMessungsId(v);
+            messung.setMessungsId(v);
             messung.setId(id);
         }
         else if ("nebenprobennummer".equals(key)) {
@@ -203,9 +220,9 @@ public class AttributeMapper
         //TODO Does not perfectly match... Use better matching for floats.
         Matcher m = p.matcher(values.toString());
         if (m.matches()) {
-            String messgroesse = m.group(1);
+            String messgroesse = m.group(1).substring(1, m.group(1).length() - 1);
             String wert = m.group(2);
-            String einheit = m.group(3);
+            String einheit = m.group(3).substring(1, m.group(3).length() - 1);
             if (wert.startsWith(" <")) {
                 wert = wert.substring(2);
                 messwert.setGrenzwertueberschreitung(false);
@@ -216,6 +233,35 @@ public class AttributeMapper
             }
             float fWert = Float.valueOf(wert);
             messwert.setMesswert(fWert);
+            Response responseEinheit = sRepository.findAll(SMessEinheit.class);
+            List<SMessEinheit> einheiten = 
+                (List<SMessEinheit>)responseEinheit.getData();
+            boolean foundEinheit = false;
+            for (SMessEinheit e: einheiten) {
+                if(e.getEinheit().equals(einheit)) {
+                    foundEinheit = true;
+                    messwert.setMehId((int) e.getMehId());
+                }
+            }
+            if (!foundEinheit) {
+                return null;
+                //TODO: handle warning!
+            }
+            Response responseGroesse = sRepository.findAll(SMessgroesse.class);
+            List<SMessgroesse> messgroessen = 
+                (List<SMessgroesse>)responseGroesse.getData();
+            boolean foundGroesse = false;
+            for (SMessgroesse g: messgroessen) {
+                if(g.getMessgro0esse().equals(messgroesse)) {
+                    foundGroesse = true;
+                    messwert.setMessgroesseId(g.getMessgroesseId());
+                    messwert.getId().setMessgroesseId(g.getMessgroesseId());
+                }
+            }
+            if (!foundGroesse) {
+                return null;
+                //TODO: handle warning!
+            }
         }
         //TODO: Match the other values.
         return messwert;

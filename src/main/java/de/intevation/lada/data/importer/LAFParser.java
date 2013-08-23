@@ -12,6 +12,7 @@ import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LProbe;
 
 
 public class LAFParser {
@@ -20,8 +21,8 @@ public class LAFParser {
 
     private boolean dryRun;
 
-    //@Inject
-    //@Named("lafproducer")
+    @Inject
+    @Named("lafproducer")
     private Producer producer;
 
     List<LProbe> proben;
@@ -33,7 +34,7 @@ public class LAFParser {
 
     public LAFParser() {
         this.setDryRun(false);
-        this.producer = new LAFProducer();
+        //this.producer = new LAFProducer();
         this.proben = new ArrayList<LProbe>();
         this.messungen = new ArrayList<LMessung>();
         this.orte = new ArrayList<LOrt>();
@@ -45,6 +46,13 @@ public class LAFParser {
     public boolean parse(String laf)
     throws LAFParserException
     {
+        this.proben.clear();
+        this.messungen.clear();
+        this.orte.clear();
+        this.messwerte.clear();
+        this.probeKommentare.clear();
+        this.messungKommentare.clear();
+
         if (!laf.startsWith("%PROBE%\n")) {
             throw new LAFParserException("No %PROBE% at the begining.");
         }
@@ -131,6 +139,13 @@ public class LAFParser {
                         producer.newOrt();
                     }
                 }
+                if (headerString.contains("%ENDE%")) {
+                    if (!dryRun) {
+                        this.producer.newMessung();
+                        this.producer.newOrt();
+                    }
+                    return;
+                }
                 continue;
             }
             else if (current == '"' && !value) {
@@ -177,5 +192,47 @@ public class LAFParser {
 
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
+    }
+
+    /**
+     * @return the proben
+     */
+    public List<LProbe> getProben() {
+        return proben;
+    }
+
+    /**
+     * @return the messungen
+     */
+    public List<LMessung> getMessungen() {
+        return messungen;
+    }
+
+    /**
+     * @return the orte
+     */
+    public List<LOrt> getOrte() {
+        return orte;
+    }
+
+    /**
+     * @return the messwerte
+     */
+    public List<LMesswert> getMesswerte() {
+        return messwerte;
+    }
+
+    /**
+     * @return the probeKommentare
+     */
+    public List<LKommentarP> getProbeKommentare() {
+        return probeKommentare;
+    }
+
+    /**
+     * @return the messungKommentare
+     */
+    public List<LKommentarM> getMessungKommentare() {
+        return messungKommentare;
     }
 }

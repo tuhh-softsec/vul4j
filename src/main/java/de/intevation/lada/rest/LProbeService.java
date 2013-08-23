@@ -1,6 +1,10 @@
 package de.intevation.lada.rest;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -34,6 +38,7 @@ import de.intevation.lada.auth.Authorization;
 import de.intevation.lada.data.LProbeRepository;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
+import de.intevation.lada.data.importer.Importer;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.utils.QueryTools;
@@ -69,6 +74,10 @@ public class LProbeService {
     @Inject
     @Named("dataauthorization")
     private Authorization authorization;
+
+    @Inject
+    @Named("lafimporter")
+    private Importer importer;
 
     /**
      * The logger for this class.
@@ -261,6 +270,45 @@ public class LProbeService {
     public Response upload(MultipartFormDataInput input, @Context HttpHeaders header) {
         try {
             AuthenticationResponse auth = authentication.authorizedGroups(header);
+            if (!authentication.isAuthorizedUser(header)) {
+                return new Response(false, 698, null);
+            }
+
+            String name = "";
+            String content = "";
+            Map<String, List<InputPart>> data = input.getFormDataMap();
+            try {
+                List<InputPart> parts = input.getParts();
+                for (InputPart part: parts) {
+                    InputStream inStream = part.getBody(InputStream.class, null);
+                    MultivaluedMap<String, String> headers = part.getHeaders();
+                    String[] cDisp = headers.getFirst("content-disposition").split(";");
+                    for (String fName : cDisp) {
+                        if (fName.trim().startsWith("filename")) {
+                            String[] fileName = fName.split("=");
+                            name = fileName[1].trim().replace("\"", "");
+                        }
+                    }
+                    content = IOUtils.toString(inStream);
+                }
+            }
+            catch (IOException e) {
+                return new Response(false, 603, null);
+            }
+
+            boolean success = importer.importData(content, auth);
+            List<Object> respData = new LinkedList<Object>();
+            respData.add(importer.getErrors());
+            respData.add(importer.getWarnings());
+            Map<String, String> fileData = new HashMap<String, String>();
+            fileData.put("filename", name);
+            respData.add(fileData);
+            int code = 200;
+            if (!success) {
+                code = 660;
+            }
+            Response response = new Response(success, code, respData);
+            return response;
             // TODO: Check Authorisation. How should we check the
             // authorisation while importing? I think we must differ between
             // updating already existing proben and creating new proben. (ti)
@@ -272,7 +320,6 @@ public class LProbeService {
             //}
             // TODO: Response must contain a "file" attribute with the name of
             // the uploaded file.(ti) <2013-08-13 16:23> 
-            return new Response(true, 200, null);
             //return new Response(false, 698, null);
         }
         catch(AuthenticationException ae) {
