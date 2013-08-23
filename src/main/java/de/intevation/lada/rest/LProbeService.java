@@ -75,10 +75,6 @@ public class LProbeService {
     @Named("dataauthorization")
     private Authorization authorization;
 
-    @Inject
-    @Named("lafimporter")
-    private Importer importer;
-
     /**
      * The logger for this class.
      */
@@ -251,79 +247,6 @@ public class LProbeService {
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LProbeInfo>());
-        }
-    }
-    /**
-     * Import LProbe object.
-     * See
-     * http://howtodoinjava.com/2013/05/21/jax-rs-resteasy-file-upload-httpclient-example/
-     * for more details on the implementation.
-     *
-     * @param input MulitpartFormDataInput containing the file to upload.
-     * @param header    The HTTP header containing authorization information.
-     * @return Response object.
-     */
-    @POST
-    @Path("/import")
-    @Produces("application/json")
-    @Consumes("multipart/form-data")
-    public Response upload(MultipartFormDataInput input, @Context HttpHeaders header) {
-        try {
-            AuthenticationResponse auth = authentication.authorizedGroups(header);
-            if (!authentication.isAuthorizedUser(header)) {
-                return new Response(false, 698, null);
-            }
-
-            String name = "";
-            String content = "";
-            Map<String, List<InputPart>> data = input.getFormDataMap();
-            try {
-                List<InputPart> parts = input.getParts();
-                for (InputPart part: parts) {
-                    InputStream inStream = part.getBody(InputStream.class, null);
-                    MultivaluedMap<String, String> headers = part.getHeaders();
-                    String[] cDisp = headers.getFirst("content-disposition").split(";");
-                    for (String fName : cDisp) {
-                        if (fName.trim().startsWith("filename")) {
-                            String[] fileName = fName.split("=");
-                            name = fileName[1].trim().replace("\"", "");
-                        }
-                    }
-                    content = IOUtils.toString(inStream);
-                }
-            }
-            catch (IOException e) {
-                return new Response(false, 603, null);
-            }
-
-            boolean success = importer.importData(content, auth);
-            List<Object> respData = new LinkedList<Object>();
-            respData.add(importer.getErrors());
-            respData.add(importer.getWarnings());
-            Map<String, String> fileData = new HashMap<String, String>();
-            fileData.put("filename", name);
-            respData.add(fileData);
-            int code = 200;
-            if (!success) {
-                code = 660;
-            }
-            Response response = new Response(success, code, respData);
-            return response;
-            // TODO: Check Authorisation. How should we check the
-            // authorisation while importing? I think we must differ between
-            // updating already existing proben and creating new proben. (ti)
-            // <2013-08-13 16:24> 
-            //if (auth.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
-            //    auth.getMst().contains(probe.getMstId())) {
-            //    LProbe p = probe.toLProbe();
-            //    return repository.create(p);
-            //}
-            // TODO: Response must contain a "file" attribute with the name of
-            // the uploaded file.(ti) <2013-08-13 16:23> 
-            //return new Response(false, 698, null);
-        }
-        catch(AuthenticationException ae) {
-            return new Response(false, 699, null);
         }
     }
 }
