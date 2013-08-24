@@ -106,6 +106,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	//Forwarding uses priority 0, and the mac rewrite entries in ingress switches
 	//need to be higher priority than this otherwise the rewrite may not get done
 	protected final short SDNIP_PRIORITY = 10;
+	protected final short ARP_PRIORITY = 20;
 	
 	protected final short BGP_PORT = 179;
 	
@@ -996,9 +997,49 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
+	private void setupArpFlows() {
+		OFMatch match = new OFMatch();
+		match.setDataLayerType(Ethernet.TYPE_ARP);
+		match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
+		
+		OFFlowMod fm = new OFFlowMod();
+		fm.setMatch(match);
+		
+		OFActionOutput action = new OFActionOutput();
+		action.setPort(OFPort.OFPP_CONTROLLER.getValue());
+		action.setMaxLength((short)0xffff);
+		List<OFAction> actions = new ArrayList<OFAction>(1);
+		actions.add(action);
+		fm.setActions(actions);
+		
+		fm.setIdleTimeout((short)0)
+        .setHardTimeout((short)0)
+        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
+        .setCookie(0)
+        .setCommand(OFFlowMod.OFPFC_ADD)
+        .setPriority(ARP_PRIORITY)
+		.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
+		
+		for (String strdpid : switches){
+			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
+			if (sw == null) {
+				log.debug("Couldn't find switch to push ARP flow");
+			}
+			else {
+				try {
+					sw.write(fm, null);
+				} catch (IOException e) {
+					log.warn("Failure writing ARP flow to switch", e);
+				}
+			}
+		}
+	}
+	
 	private void beginRouting(){
 		log.debug("Topology is now ready, beginning routing function");
 		topoRouteTopology = topoRouteService.prepareShortestPathTopo();
+		
+		setupArpFlows();
 		
 		setupBgpPaths();
 		setupFullMesh();
