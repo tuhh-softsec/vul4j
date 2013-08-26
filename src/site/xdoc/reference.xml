@@ -668,7 +668,7 @@ someUrl=/cms/article123
 			<tr>
 			<td></td>
 			<td>rewriteabsoluteurl</td>
-			<td>Parle the included ressource for URLs and rewrite
+			<td>Parse the included ressource for URLs and rewrite
 			them with the current URL of the page</td>
 			<td>&lt;esi:include src="URI" rewriteabsoluteurl="true"
 			/&gt;</td>
