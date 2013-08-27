@@ -76,7 +76,7 @@ public class LAFExportService
                 ResponseBuilder response = Response.status(Status.FORBIDDEN);
                 return response.build();
             }
-            if (!authentication.hasAccess(header, probeId) ||
+            if (!authentication.hasAccess(header, probeId) &&
                 !authorization.isReadOnly(probeId)) {
                 ResponseBuilder response = Response.status(Status.FORBIDDEN);
                 return response.build();
