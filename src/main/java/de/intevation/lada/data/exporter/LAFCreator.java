@@ -18,9 +18,11 @@ import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
+import de.intevation.lada.model.LZusatzWert;
 import de.intevation.lada.model.Ort;
 import de.intevation.lada.model.SMessEinheit;
 import de.intevation.lada.model.SMessgroesse;
+import de.intevation.lada.model.SProbenZusatz;
 import de.intevation.lada.model.SProbenart;
 import de.intevation.lada.rest.Response;
 
@@ -52,6 +54,10 @@ implements Creator
     @Inject
     @Named("lkommentarRepository")
     private Repository pkommentarRepo;
+
+    @Inject
+    @Named("lzusatzwertrepository")
+    private Repository zusatzwertRepo;
 
     @Inject
     @Named("readonlyrepository")
@@ -91,6 +97,13 @@ implements Creator
         Response art = readonlyRepo.filter(artBuilder.getQuery());
         List<SProbenart> probenart = (List<SProbenart>)art.getData();
 
+        QueryBuilder<LZusatzWert> zusatzBuilder =
+            new QueryBuilder<LZusatzWert>(
+                zusatzwertRepo.getEntityManager(), LZusatzWert.class);
+        zusatzBuilder.and("probeId", probe.getProbeId());
+        Response zusatz = zusatzwertRepo.filter(zusatzBuilder.getQuery());
+        List<LZusatzWert> zusatzwerte = (List<LZusatzWert>)zusatz.getData();
+
         String laf = "";
         laf += probe.getDatenbasisId() == null ?
             "": lafLine("DATENBASIS_S", probe.getDatenbasisId().toString());
@@ -98,7 +111,7 @@ implements Creator
             "" : lafLine("NETZKENNUNG", probe.getNetzbetreiberId());
         laf += probe.getMstId() == null ?
             "" : lafLine("MESSSTELLE", probe.getMstId());
-        laf += lafLine("PROBEID", probe.getProbeId());
+        laf += lafLine("PROBE_ID", probe.getProbeId());
         laf += lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr());
         laf += probe.getBaId() == null ?
             "" : lafLine("MESSPROGRAMM_S", "\"" + probe.getBaId() + "\"");
@@ -125,12 +138,30 @@ implements Creator
             "" : lafLine("DESKRIPTOREN", "\"" + probe.getMediaDesk() + "\"");
         laf += probe.getTest() == Boolean.TRUE ?
             lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
+        for (LZusatzWert zw : zusatzwerte) {
+            laf += writeZusatzwert(zw);
+        }
         for (LKommentarP kp : kommentare) {
             laf += writeKommentar(kp);
         }
         laf += writeMessung(probe);
         laf += writeOrt(probe);
         return laf;
+    }
+
+    private String writeZusatzwert(LZusatzWert zw) {
+        QueryBuilder<SProbenZusatz> builder =
+            new QueryBuilder<SProbenZusatz>(
+                readonlyRepo.getEntityManager(), SProbenZusatz.class);
+        builder.and("pzsId", zw.getPzsId());
+        List<SProbenZusatz> zusaetze = 
+            (List<SProbenZusatz>)readonlyRepo.filter(builder.getQuery());
+
+        String value = "\"" + zusaetze.get(0).getBeschreibung() + "\"";
+        value += " " + zw.getMesswertPzs();
+        value += " " + zusaetze.get(0).getMehId();
+        value += " " + zw.getMessfehler();
+        return lafLine("PZB_S", value);
     }
 
     private String writeOrt(LProbeInfo probe) {
@@ -194,7 +225,7 @@ implements Creator
             kommBuilder.and("probeId", probe.getProbeId()).and("messungsId", m.getMessungsId());
             Response kommentar = mkommentarRepo.filter(kommBuilder.getQuery());
             List<LKommentarM> kommentare = (List<LKommentarM>)kommentar.getData();
-            laf += lafLine("MESSUNGSID", m.getMessungsId().toString());
+            laf += lafLine("MESSUNGS_ID", m.getMessungsId().toString());
             laf += lafLine("NEBENPROBENNUMMER", m.getNebenprobenNr());
             laf += m.getMesszeitpunkt() == null ?
                 "" : lafLine(
