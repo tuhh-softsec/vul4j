@@ -3,8 +3,12 @@ package de.intevation.lada.data.importer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +25,7 @@ import de.intevation.lada.model.LMessungId;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.model.SMessEinheit;
 import de.intevation.lada.model.SMessgroesse;
 import de.intevation.lada.rest.Response;
@@ -32,9 +37,20 @@ public class AttributeMapper
     private EntityManager em;
 
     @Inject
+    @Named("lproberepository")
+    private Repository probeRepo;
+
+    @Inject
     @Named("readonlyrepository")
     private Repository sRepository;
 
+    private List<ReportData> warnings;
+    private List<ReportData> errors;
+
+    public AttributeMapper() {
+        this.warnings = new ArrayList<ReportData>();
+        this.errors = new ArrayList<ReportData>();
+    }
     public LProbe addAttribute(String key, Object value, LProbe probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if ("datenbasis_s".equals(key)) {
@@ -42,6 +58,10 @@ public class AttributeMapper
             probe.setDatenbasisId(v);
         }
         else if ("probe_id".equals(key)) {
+            if (probeRepo.findById(LProbeInfo.class, value.toString()) != null) {
+                errors.add(new ReportData("probe_id", value.toString(), 662));
+                return null;
+            }
             probe.setProbeId(value.toString());
         }
         else if ("hauptprobennummer".equals(key)) {
@@ -280,5 +300,24 @@ public class AttributeMapper
             ort.setOrtsTyp(values.toString());
         }
         return ort;
+    }
+
+    /**
+     * @return the warnings
+     */
+    public List<ReportData> getWarnings() {
+        return warnings;
+    }
+
+    /**
+     * @return the errors
+     */
+    public List<ReportData> getErrors() {
+        return errors;
+    }
+
+    public void reset() {
+        errors.clear();
+        warnings.clear();
     }
 }

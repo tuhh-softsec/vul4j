@@ -1,7 +1,10 @@
 package de.intevation.lada.data.importer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,10 +39,15 @@ implements Producer
     private List<EntryFormat> messungFormat;
     private List<EntryFormat> ortFormat;
 
+    private Map<String, List<ReportData>> warnings;
+    private Map<String, List<ReportData>> errors;
+
     @Inject
     private AttributeMapper mapper;
 
     public LAFProducer() {
+        this.warnings = new HashMap<String, List<ReportData>>();
+        this.errors = new HashMap<String, List<ReportData>>();
         this.probe = new LProbe();
         this.pKommentare = new ArrayList<LKommentarP>();
         this.mKommentare = new ArrayList<LKommentarM>();
@@ -55,7 +63,8 @@ implements Producer
     }
 
     @Override
-    public void addData(String key, Object values) {
+    public void addData(String key, Object values)
+    throws LAFParserException {
         String lKey = key.toLowerCase();
         if(lKey.equals("probenkommentar")) {
             LKommentarP kommentar = new LKommentarP();
@@ -98,6 +107,10 @@ implements Producer
         }
         else if (isValidProbe(lKey, values.toString())) {
             this.probe = mapper.addAttribute(lKey, values, this.probe);
+            if (this.probe == null) {
+                this.errors.put(values.toString(), mapper.getErrors());
+                throw new LAFParserException(values.toString() + " exists");
+            }
         }
         else if (isValidOrt(lKey, values.toString())) {
             this.ort = mapper.addAttribute(lKey, values, this.ort);
@@ -169,6 +182,8 @@ implements Producer
 
     @Override
     public void reset() {
+        this.errors.clear();
+        this.warnings.clear();
         this.probe = new LProbe();
         this.messungen.clear();
         this.messung = null;
@@ -177,6 +192,7 @@ implements Producer
         this.messwerte.clear();
         this.mKommentare.clear();
         this.pKommentare.clear();
+        mapper.reset();
     }
 
     public void newMessung() {
@@ -196,5 +212,19 @@ implements Producer
         }
         this.ort = new LOrt();
         this.ort.setProbeId(this.probe.getProbeId());
+    }
+
+    /**
+     * @return the warnings
+     */
+    public Map<String, List<ReportData>> getWarnings() {
+        return this.warnings;
+    }
+
+    /**
+     * @return the errors
+     */
+    public Map<String, List<ReportData>> getErrors() {
+        return this.errors;
     }
 }

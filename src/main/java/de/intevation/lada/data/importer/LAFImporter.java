@@ -1,7 +1,9 @@
 package de.intevation.lada.data.importer;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,30 +71,33 @@ implements Importer
     @Named("lmesswertrepository")
     private Repository messwertRepository;
 
-    private Map<String, Map<String, Integer>> warnings;
-    private Map<String, Map<String, Integer>> errors;
+    private Map<String, List<ReportData>> warnings;
+    private Map<String, List<ReportData>> errors;
 
     public LAFImporter() {
-        warnings = new HashMap<String, Map<String, Integer>>();
-        errors = new HashMap<String, Map<String, Integer>>();
+        warnings = new HashMap<String, List<ReportData>>();
+        errors = new HashMap<String, List<ReportData>>();
     }
 
     /**
      * @return the warnings
      */
-    public Map<String, Map<String, Integer>> getWarnings() {
+    public Map<String, List<ReportData>> getWarnings() {
         return warnings;
     }
 
     /**
      * @return the errors
      */
-    public Map<String, Map<String, Integer>> getErrors() {
+    public Map<String, List<ReportData>> getErrors() {
         return errors;
     }
 
     @Override
     public boolean importData(String content, AuthenticationResponse auth) {
+        this.warnings.clear();
+        this.errors.clear();
+        this.parser.reset();
         try {
             boolean success = parser.parse(content);
             if (success) {
@@ -110,20 +115,22 @@ implements Importer
                 writeMesswerte(auth, messwerte);
             }
             else {
-                Map<String, Integer> err = new HashMap<String, Integer>();
-                err.put("no success", 660);
-                errors.put("parser", err);
+                List<ReportData> report = new ArrayList<ReportData>();
+                report.add( new ReportData("parser", "no success", 660));
+                errors.put("parser", report);
                 return false;
             }
         }
         catch (LAFParserException e) {
-            Map<String, Integer> err = new HashMap<String, Integer>();
-            err.put(e.getMessage(), 660);
-            errors.put("parser", err);
+            List<ReportData> report = new ArrayList<ReportData>();
+            report.add(new ReportData("parser", e.getMessage(), 660));
+            errors.put("parser", report);
             return false;
         }
-        Map<String, Map<String, Map<String, Integer>>> data =
-            new HashMap<String, Map<String,Map<String, Integer>>>();
+        Map<String, Map<String, List<ReportData>>> data =
+            new HashMap<String, Map<String, List<ReportData>>>();
+        this.warnings.putAll(this.parser.getWarnings());
+        this.errors.putAll(this.parser.getErrors());
         data.put("warnings", warnings);
         data.put("errors", errors);
         return true;
@@ -140,16 +147,17 @@ implements Importer
                     messungValidator.validate(messung, false);
                 messungRepository.create(messung);
                 if (warn != null) {
-                    warnings.put(
-                        messung.getMessungsId().toString(),
-                        warn);
+                    for (String key : warn.keySet()) {
+                       // warnings.put(messung.getProbeId(),
+                       // new ReportData(key, "", warn.get(key)));
+                    }
                 }
             }
             catch (ValidationException e) {
-                errors.put(messung.getProbeId(), e.getErrors());
-                warnings.put(
-                    messung.getProbeId(),
-                    e.getWarnings());
+                //errors.put(messung.getProbeId(), e.getErrors());
+                //warnings.put(
+                //    messung.getProbeId(),
+                //    e.getWarnings());
             }
         }
     }
@@ -165,16 +173,16 @@ implements Importer
                     messwertValidator.validate(messwert, false);
                 Response r = messwertRepository.create(messwert);
                 if (warn != null) {
-                    warnings.put(
-                        messwert.getProbeId(),
-                        warn);
+                //    warnings.put(
+                //        messwert.getProbeId(),
+                //        warn);
                 }
             }
             catch (ValidationException e) {
-                errors.put(messwert.getProbeId(), e.getErrors());
-                warnings.put(
-                    messwert.getProbeId(),
-                    e.getWarnings());
+                //errors.put(messwert.getProbeId(), e.getErrors());
+                //warnings.put(
+                //    messwert.getProbeId(),
+                //    e.getWarnings());
             }
         }
     }
@@ -193,7 +201,7 @@ implements Importer
                 err.put(
                     kommentar.getProbeId() + " - " +
                     kommentar.getkId(), 661);
-                errors.put("lkommentarp", err);
+                //errors.put("lkommentarp", err);
             }
         }
     }
@@ -224,14 +232,14 @@ implements Importer
                     ortValidator.validate(ort, false);
                 ortRepository.create(ort);
                 if (warn != null) {
-                    warnings.put(String.valueOf(ort.getOrtId()), warn);
+                  //  warnings.put(String.valueOf(ort.getOrtId()), warn);
                 }
             }
             catch (ValidationException e) {
-                errors.put(String.valueOf(ort.getOrtId()), e.getErrors());
-                warnings.put(
-                    String.valueOf(ort.getOrtId()),
-                    e.getWarnings());
+                //errors.put(String.valueOf(ort.getOrtId()), e.getErrors());
+                //warnings.put(
+                //    String.valueOf(ort.getOrtId()),
+                //    e.getWarnings());
             }
         }
     }
@@ -242,19 +250,19 @@ implements Importer
             if (!authorized(probe, auth)) {
                 Map<String, Integer> err = new HashMap<String, Integer>();
                 err.put("not authorized", 699);
-                errors.put(probe.getProbeId(), err);
+                //errors.put(probe.getProbeId(), err);
                 continue;
             }
             try {
                 Map<String, Integer> warn =
                     probeValidator.validate(probe, false);
                 if (warn != null) {
-                    warnings.put(probe.getProbeId(), warn);
+                  //  warnings.put(probe.getProbeId(), warn);
                 }
             }
             catch (ValidationException e) {
-                errors.put(probe.getProbeId(), e.getErrors());
-                warnings.put(probe.getProbeId(), e.getWarnings());
+                //errors.put(probe.getProbeId(), e.getErrors());
+                //warnings.put(probe.getProbeId(), e.getWarnings());
                 continue;
             }
             persist(probe);

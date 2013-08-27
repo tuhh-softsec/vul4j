@@ -1,7 +1,10 @@
 package de.intevation.lada.data.importer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,7 +35,12 @@ public class LAFParser {
     List<LKommentarP> probeKommentare;
     List<LKommentarM> messungKommentare;
 
+    private Map<String, List<ReportData>> warnings;
+    private Map<String, List<ReportData>> errors;
+
     public LAFParser() {
+        this.warnings = new HashMap<String, List<ReportData>>();
+        this.errors = new HashMap<String, List<ReportData>>();
         this.setDryRun(false);
         //this.producer = new LAFProducer();
         this.proben = new ArrayList<LProbe>();
@@ -64,11 +72,25 @@ public class LAFParser {
             if (nextPos > 0) {
                 single = laf.substring(0, nextPos + 1);
                 laf = laf.substring(nextPos + 1);
-                readAll(single);
+                try {
+                    readAll(single);
+                }
+                catch (LAFParserException lpe) {
+                    this.errors.putAll(producer.getErrors());
+                    this.producer.reset();
+                    continue;
+                }
             }
             else {
-                readAll(laf);
-                laf = "";
+                try {
+                    readAll(laf);
+                    laf = "";
+                }
+                catch (LAFParserException lpe) {
+                    this.errors.putAll(producer.getErrors());
+                    laf = "";
+                    continue;
+                }
             }
             if (!this.dryRun) {
                 proben.add(producer.getProbe());
@@ -234,5 +256,25 @@ public class LAFParser {
      */
     public List<LKommentarM> getMessungKommentare() {
         return messungKommentare;
+    }
+
+    /**
+     * @return the warnings
+     */
+    public Map<String, List<ReportData>> getWarnings() {
+        return warnings;
+    }
+
+    /**
+     * @return the errors
+     */
+    public Map<String, List<ReportData>> getErrors() {
+        return errors;
+    }
+
+    public void reset() {
+        producer.reset();
+        this.errors.clear();
+        this.warnings.clear();
     }
 }

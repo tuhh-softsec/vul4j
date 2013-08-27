@@ -88,12 +88,10 @@ public class LAFImportService
             }
 
             boolean success = importer.importData(content, auth);
-            List<Object> respData = new LinkedList<Object>();
-            respData.add(importer.getErrors());
-            respData.add(importer.getWarnings());
-            Map<String, String> fileData = new HashMap<String, String>();
-            fileData.put("filename", name);
-            respData.add(fileData);
+            Map<String, Object> respData = new HashMap<String,Object>();
+            respData.put("errors", importer.getErrors());
+            respData.put("warnings", importer.getWarnings());
+            respData.put("filename", name);
             int code = 200;
             if (!success) {
                 code = 660;
