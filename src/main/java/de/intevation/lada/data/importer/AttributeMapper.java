@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarM;
 import de.intevation.lada.model.LKommentarP;
@@ -26,8 +27,14 @@ import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
+import de.intevation.lada.model.LZusatzWert;
+import de.intevation.lada.model.Ort;
+import de.intevation.lada.model.SDatenbasis;
 import de.intevation.lada.model.SMessEinheit;
 import de.intevation.lada.model.SMessgroesse;
+import de.intevation.lada.model.SProbenZusatz;
+import de.intevation.lada.model.SProbenart;
+import de.intevation.lada.model.SUmwelt;
 import de.intevation.lada.rest.Response;
 
 @Stateless
@@ -39,6 +46,10 @@ public class AttributeMapper
     @Inject
     @Named("lproberepository")
     private Repository probeRepo;
+
+    @Inject
+    @Named("ortrepository")
+    private Repository ortRepo;
 
     @Inject
     @Named("readonlyrepository")
@@ -53,79 +64,125 @@ public class AttributeMapper
     }
     public LProbe addAttribute(String key, Object value, LProbe probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
-        if ("datenbasis_s".equals(key)) {
+        if ("datenbasis_s".equals(key) && probe.getDatenbasisId() == null) {
             Integer v = Integer.valueOf(value.toString());
             probe.setDatenbasisId(v);
         }
-        else if ("probe_id".equals(key)) {
-            if (probeRepo.findById(LProbeInfo.class, value.toString()) != null) {
-                errors.add(new ReportData("probe_id", value.toString(), 662));
+        else if ("datenbasis_s".equals(key) && probe.getDatenbasisId() != null){
+            this.warnings.add(new ReportData(key, value.toString(), 672));
+        }
+
+        if ("datenbasis".equals(key) && probe.getDatenbasisId() == null) {
+            QueryBuilder<SDatenbasis> builder =
+                new QueryBuilder<SDatenbasis>(
+                    this.sRepository.getEntityManager(), SDatenbasis.class);
+            builder.and("datenbasis", value.toString());
+            Response response = sRepository.filter(builder.getQuery());
+            List<SDatenbasis> datenbasis = (List<SDatenbasis>)response.getData();
+            Integer v = Integer.valueOf(datenbasis.get(0).getDatenbasisId());
+            probe.setDatenbasisId(v);
+        }
+        else if ("datenbasis".equals(key) && probe.getDatenbasisId() != null){
+            this.warnings.add(new ReportData(key, value.toString(), 672));
+        }
+
+        if ("probe_id".equals(key)) {
+            Response response =
+                probeRepo.findById(LProbeInfo.class, value.toString());
+            List<LProbeInfo> info = (List<LProbeInfo>)response.getData();
+            if (info != null && info.size() > 0) {
+                errors.add(new ReportData("probe_id", value.toString(), 671));
                 return null;
             }
             probe.setProbeId(value.toString());
         }
-        else if ("hauptprobennummer".equals(key)) {
+
+        if ("hauptprobennummer".equals(key)) {
             probe.setHauptprobenNr(value.toString());
         }
-        else if ("mpr_id".equals(key)) {
+
+        if ("mpr_id".equals(key)) {
             Integer v = Integer.valueOf(value.toString());
             probe.setMprId(v);
         }
-        else if ("netzkennung".equals(key)) {
+
+        if ("netzkennung".equals(key)) {
             probe.setNetzbetreiberId(value.toString());
         }
-        else if ("messprogramm_land".equals(key)) {
-            probe.setMplId(value.toString());
-        }
-        else if ("messstelle".equals(key)) {
+
+        if ("messstelle".equals(key)) {
             probe.setMstId(value.toString());
         }
-        else if ("betriebsart".equals(key)) {
+
+        if ("messprogramm_s".equals(key) && probe.getBaId() == null) {
             probe.setBaId(value.toString());
         }
-        else if ("soll_datum_uhrzeit_a".equals(key)) {
+        else if ("messprogramm_s".equals(key) && probe.getBaId() != null){
+            this.warnings.add(new ReportData(key, value.toString(), 672));
+        }
+
+        if ("soll_datum_uhrzeit_a".equals(key)) {
             try {
                 Date d = format.parse(value.toString());
                 probe.setSolldatumBeginn(d);
             }
             catch (ParseException e) {
-                //TODO handle warning.
+                this.warnings.add(new ReportData(key, value.toString(), 674));
             }
         }
-        else if ("soll_datum_uhrzeit_e".equals(key)) {
+        if ("soll_datum_uhrzeit_e".equals(key)) {
             try {
                 Date d = format.parse(value.toString());
                 probe.setSolldatumEnde(d);
             }
             catch (ParseException e) {
-                //TODO handle warning.
+                this.warnings.add(new ReportData(key, value.toString(), 674));
             }
         }
-        else if ("probenahme_datum_uhrzeit_a".equals(key)) {
+        if ("probenahme_datum_uhrzeit_a".equals(key)) {
             try {
                 Date d = format.parse(value.toString());
                 probe.setProbeentnahmeBeginn(d);
             }
             catch (ParseException e) {
-                //TODO handle warning.
+                this.warnings.add(new ReportData(key, value.toString(), 674));
             }
         }
-        else if ("probenahme_datum_uhrzeit_e".equals(key)) {
+        if ("probenahme_datum_uhrzeit_e".equals(key)) {
             try {
                 Date d = format.parse(value.toString());
                 probe.setProbeentnahmeEnde(d);
             }
             catch (ParseException e) {
-                //TODO handle warning.
+                this.warnings.add(new ReportData(key, value.toString(), 674));
             }
         }
-        else if ("umweltbereich_s".equals(key)) {
+
+        if ("umweltbereich_s".equals(key) && probe.getUmwId() == null) {
             probe.setUmwId(value.toString());
         }
-        else if ("deskriptoren".equals(key)) {
+        else if ("umweltbereich_s".equals(key) && probe.getUmwId() != null){
+            this.warnings.add(new ReportData(key, value.toString(), 672));
+        }
+        if ("umweltbereich_c".equals(key) && probe.getUmwId() == null) {
+            QueryBuilder<SUmwelt> builder =
+                new QueryBuilder<SUmwelt>(
+                    sRepository.getEntityManager(), SUmwelt.class);
+            int length = value.toString().length() > 80 ? 80 : value.toString().length();
+            builder.and("umweltBereich", value.toString().substring(0, length));
+            Response response = sRepository.filter(builder.getQuery());
+            List<SUmwelt> umw = (List<SUmwelt>)response.getData();
+            probe.setUmwId(umw.get(0).getUmwId());
+        }
+        else if ("umweltbereich_c".equals(key) && probe.getUmwId() != null){
+            this.warnings.add(new ReportData(key, value.toString(), 672));
+        }
+
+        if ("deskriptoren".equals(key)) {
             probe.setMediaDesk(value.toString());
         }
-        else if ("testdaten".equals(key)) {
+
+        if ("testdaten".equals(key)) {
             if (!value.toString().equals("0")) {
                 probe.setTest(true);
             }
@@ -133,8 +190,20 @@ public class AttributeMapper
                 probe.setTest(false);
             }
         }
-        
-        probe.setProbenartId(1);
+
+        if ("medium".equals(key)) {
+            probe.setMedia(value.toString());
+        }
+
+        if ("probenart".equals(key)) {
+            QueryBuilder<SProbenart> builder =
+                new QueryBuilder<SProbenart>(
+                    sRepository.getEntityManager(), SProbenart.class);
+            builder.and("probenart", value.toString());
+            Response response = sRepository.filter(builder.getQuery());
+            List<SProbenart> art = (List<SProbenart>)response.getData();
+            probe.setProbenartId(Integer.valueOf(art.get(0).getProbenartId()));
+        }
         return probe;
     }
 
@@ -153,7 +222,7 @@ public class AttributeMapper
             kommentar.setKDatum(d);
         }
         catch (ParseException e) {
-            //TODO: handle warning.
+            this.warnings.add(new ReportData(key, values.toString(), 674));
         }
         String text = v.substring(23, v.length() -1);
         kommentar.setErzeuger(erzeuger);
@@ -176,7 +245,7 @@ public class AttributeMapper
             kommentar.setKDatum(d);
         }
         catch (ParseException e) {
-            //TODO: handle warning.
+            this.warnings.add(new ReportData(key, values.toString(), 674));
         }
         String text = v.substring(23, v.length() -1);
         kommentar.setErzeuger(erzeuger);
@@ -206,7 +275,7 @@ public class AttributeMapper
                 messung.setMesszeitpunkt(d);
             }
             catch (ParseException e) {
-                //TODO: handle warnings.
+                this.warnings.add(new ReportData(key, values.toString(), 674));
             }
         }
         else if ("messzeit_sekunden".equals(key)) {
@@ -264,8 +333,8 @@ public class AttributeMapper
                 }
             }
             if (!foundEinheit) {
+                this.errors.add(new ReportData("messeinheit", "null", 673));
                 return null;
-                //TODO: handle warning!
             }
             Response responseGroesse = sRepository.findAll(SMessgroesse.class);
             List<SMessgroesse> messgroessen = 
@@ -279,8 +348,8 @@ public class AttributeMapper
                 }
             }
             if (!foundGroesse) {
+                this.errors.add(new ReportData("messgroesse", "null", 673));
                 return null;
-                //TODO: handle warning!
             }
         }
         //TODO: Match the other values.
@@ -296,12 +365,77 @@ public class AttributeMapper
             Integer v = Integer.valueOf(values.toString());
             ort.setOrtId(v);
         }
-        else if ("ort_typ".equals(key)) {
+        if ("ort_code".equals(key)) {
+            QueryBuilder<Ort> builder =
+                new QueryBuilder<Ort>(ortRepo.getEntityManager(), Ort.class);
+            builder.and("bezeichnung", values.toString());
+            Response response = ortRepo.filter(builder.getQuery());
+            List<Ort> orte = (List<Ort>)response.getData();
+            Integer v = Integer.valueOf(orte.get(0).getOrtId());
+            ort.setOrtId(v);
+        }
+        if ("ort_typ".equals(key)) {
             ort.setOrtsTyp(values.toString());
+        }
+        if ("ort_zusatz".equals(key)) {
+            ort.setOrtszusatztext(values.toString());
         }
         return ort;
     }
 
+    public LZusatzWert addAttribute(
+        String lKey,
+        Object values,
+        LZusatzWert wert
+    ) {
+        String v = values.toString().substring(1);
+        int ndx = v.indexOf("\"");
+        String groesse = v.substring(0, ndx);
+        v = v.substring(ndx + 2);
+        ndx = v.indexOf(" ");
+        String w = v.substring(0, ndx);
+        v = v.substring(ndx + 2);
+        ndx = v.indexOf("\"");
+        String einheit = v.substring(0, ndx);
+        String fehler = v.substring(ndx + 2);
+        QueryBuilder<SProbenZusatz> builder =
+            new QueryBuilder<SProbenZusatz>(
+                sRepository.getEntityManager(), SProbenZusatz.class);
+        builder.and("zusatzwert", groesse);
+        Response response = sRepository.filter(builder.getQuery());
+        List<SProbenZusatz> list = (List<SProbenZusatz>)response.getData();
+        if (list == null || list.isEmpty()) {
+            this.errors.add(new ReportData(lKey, "zusatzwert", 673));
+            return null;
+        }
+        wert.getId().setPzsId(list.get(0).getPzsId());
+        wert.setPzsId(list.get(0).getPzsId());
+        wert.setMesswertPzs(Float.valueOf(w));
+        wert.setMessfehler(Float.valueOf(fehler));
+        return wert;
+    }
+
+    public LZusatzWert addAttributeS(
+        String lKey,
+        Object values,
+        LZusatzWert wert
+    ) {
+        String v = values.toString().substring(1);
+        int ndx = v.indexOf("\"");
+        String groesse = v.substring(0, ndx);
+        v = v.substring(ndx + 2);
+        ndx = v.indexOf(" ");
+        String w = v.substring(0, ndx);
+        v = v.substring(ndx + 2);
+        ndx = v.indexOf(" ");
+        String einheit = v.substring(0, ndx);
+        String fehler = v.substring(ndx + 2);
+        wert.getId().setPzsId(groesse);
+        wert.setPzsId(groesse);
+        wert.setMesswertPzs(Float.valueOf(w));
+        wert.setMessfehler(Float.valueOf(fehler));
+        return wert;
+    }
     /**
      * @return the warnings
      */
@@ -317,7 +451,7 @@ public class AttributeMapper
     }
 
     public void reset() {
-        errors.clear();
-        warnings.clear();
+        errors = new ArrayList<ReportData>();
+        warnings = new ArrayList<ReportData>();
     }
 }

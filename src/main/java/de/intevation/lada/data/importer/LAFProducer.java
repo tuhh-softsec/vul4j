@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import de.intevation.lada.data.QueryBuilder;
+import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarM;
 import de.intevation.lada.model.LKommentarMId;
 import de.intevation.lada.model.LKommentarP;
@@ -19,11 +21,18 @@ import de.intevation.lada.model.LMesswertId;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LZusatzWert;
+import de.intevation.lada.model.LZusatzWertId;
+import de.intevation.lada.model.SProbenZusatz;
 
 @Named("lafproducer")
 public class LAFProducer
 implements Producer
 {
+
+    @Inject
+    @Named("readonlyrepository")
+    private Repository sRepository;
 
     private LProbe probe;
     private LMessung messung;
@@ -34,6 +43,7 @@ implements Producer
     private List<LMessung> messungen;
     private List<LOrt> orte;
     private List<LMesswert> messwerte;
+    private List<LZusatzWert> zusatzwerte;
 
     private List<EntryFormat> probenFormat;
     private List<EntryFormat> messungFormat;
@@ -84,10 +94,42 @@ implements Producer
                 mapper.addAttribute(lKey, values, kommentar));
         }
         else if (lKey.equals("probenzusatzbeschreibung")) {
-            //TODO: implement this!
+            LZusatzWertId zusatzId = new LZusatzWertId();
+            zusatzId.setProbeId(this.probe.getProbeId());
+            LZusatzWert wert = new LZusatzWert();
+            wert.setId(zusatzId);
+            LZusatzWert zusatzWert = mapper.addAttribute(lKey, values, wert);
+            if (zusatzWert != null) {
+                this.zusatzwerte.add(zusatzWert);
+            }
+            else {
+                List<ReportData> err = this.errors.get(probe.getProbeId());
+                if (err == null) {
+                    this.errors.put(probe.getProbeId(), mapper.getErrors());
+                }
+                else {
+                    err.addAll(mapper.getErrors());
+                }
+            }
         }
         else if (lKey.equals("pzb_s")) {
-            //TODO: implement this!
+            LZusatzWertId zusatzId = new LZusatzWertId();
+            zusatzId.setProbeId(this.probe.getProbeId());
+            LZusatzWert wert = new LZusatzWert();
+            wert.setId(zusatzId);
+            LZusatzWert zusatzWert = mapper.addAttributeS(lKey, values, wert);
+            if (zusatzWert != null) {
+                this.zusatzwerte.add(zusatzWert);
+            }
+            else {
+                List<ReportData> err = this.errors.get(probe.getProbeId());
+                if (err == null) {
+                    this.errors.put(probe.getProbeId(), mapper.getErrors());
+                }
+                else {
+                    err.addAll(mapper.getErrors());
+                }
+            }
         }
         else if (lKey.equals("messwert")) {
             LMesswertId id = new LMesswertId();
@@ -100,6 +142,15 @@ implements Producer
             LMesswert wert = mapper.addAttribute(lKey, values, m);
             if (wert != null) {
                 this.messwerte.add(wert);
+            }
+            else {
+                List<ReportData> err = this.errors.get(probe.getProbeId());
+                if (err == null) {
+                    this.errors.put(probe.getProbeId(), mapper.getErrors());
+                }
+                else {
+                    err.addAll(mapper.getErrors());
+                }
             }
         }
         else if (isValidMessung(lKey, values.toString())) {
@@ -181,17 +232,22 @@ implements Producer
     }
 
     @Override
+    public List<LZusatzWert> getZusatzwerte() {
+        return this.zusatzwerte;
+    }
+
+    @Override
     public void reset() {
-        this.errors.clear();
-        this.warnings.clear();
+        this.errors = new HashMap<String, List<ReportData>>();
+        this.warnings = new HashMap<String, List<ReportData>>();
         this.probe = new LProbe();
-        this.messungen.clear();
+        this.messungen = new ArrayList<LMessung>();
         this.messung = null;
-        this.orte.clear();
+        this.orte = new ArrayList<LOrt>();
         this.ort = null;
-        this.messwerte.clear();
-        this.mKommentare.clear();
-        this.pKommentare.clear();
+        this.messwerte = new ArrayList<LMesswert>();
+        this.mKommentare = new ArrayList<LKommentarM>();
+        this.pKommentare = new ArrayList<LKommentarP>();
         mapper.reset();
     }
 
@@ -218,6 +274,16 @@ implements Producer
      * @return the warnings
      */
     public Map<String, List<ReportData>> getWarnings() {
+        if (this.probe == null) {
+            return this.warnings;
+        }
+        List<ReportData> warn = this.warnings.get(probe.getProbeId());
+        if (warn == null) {
+            this.warnings.put(probe.getProbeId(), mapper.getWarnings());
+        }
+        else {
+            warn.addAll(mapper.getWarnings());
+        }
         return this.warnings;
     }
 
@@ -225,6 +291,16 @@ implements Producer
      * @return the errors
      */
     public Map<String, List<ReportData>> getErrors() {
+        if (this.probe == null) {
+            return this.errors;
+        }
+        List<ReportData> err = this.errors.get(this.probe.getProbeId());
+        if (err == null) {
+            this.errors.put(probe.getProbeId(), mapper.getErrors());
+        }
+        else {
+            err.addAll(mapper.getErrors());
+        }
         return this.errors;
     }
 }

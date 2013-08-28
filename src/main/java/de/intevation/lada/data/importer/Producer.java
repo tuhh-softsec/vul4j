@@ -9,6 +9,7 @@ import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LZusatzWert;
 
 
 public interface Producer
@@ -21,6 +22,7 @@ public interface Producer
     public List<LKommentarP> getProbenKommentare();
     public List<LKommentarM> getMessungsKommentare();
     public List<LMesswert> getMesswerte();
+    public List<LZusatzWert> getZusatzwerte();
     public void reset();
     public void newMessung();
     public void newOrt();

@@ -94,7 +94,7 @@ public class LAFImportService
             respData.put("filename", name);
             int code = 200;
             if (!success) {
-                code = 660;
+                code = 670;
             }
             Response response = new Response(success, code, respData);
             return response;

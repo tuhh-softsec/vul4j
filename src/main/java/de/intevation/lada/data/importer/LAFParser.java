@@ -2,20 +2,13 @@ package de.intevation.lada.data.importer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import de.intevation.lada.model.LKommentarM;
-import de.intevation.lada.model.LKommentarP;
-import de.intevation.lada.model.LMessung;
-import de.intevation.lada.model.LMesswert;
-import de.intevation.lada.model.LOrt;
-import de.intevation.lada.model.LProbe;
-import de.intevation.lada.model.LProbe;
+import de.intevation.lada.auth.AuthenticationResponse;
 
 
 public class LAFParser {
@@ -28,12 +21,9 @@ public class LAFParser {
     @Named("lafproducer")
     private Producer producer;
 
-    List<LProbe> proben;
-    List<LMessung> messungen;
-    List<LOrt> orte;
-    List<LMesswert> messwerte;
-    List<LKommentarP> probeKommentare;
-    List<LKommentarM> messungKommentare;
+    @Inject
+    @Named("lafwriter")
+    private Writer writer;
 
     private Map<String, List<ReportData>> warnings;
     private Map<String, List<ReportData>> errors;
@@ -42,25 +32,11 @@ public class LAFParser {
         this.warnings = new HashMap<String, List<ReportData>>();
         this.errors = new HashMap<String, List<ReportData>>();
         this.setDryRun(false);
-        //this.producer = new LAFProducer();
-        this.proben = new ArrayList<LProbe>();
-        this.messungen = new ArrayList<LMessung>();
-        this.orte = new ArrayList<LOrt>();
-        this.messwerte = new ArrayList<LMesswert>();
-        this.probeKommentare = new ArrayList<LKommentarP>();
-        this.messungKommentare = new ArrayList<LKommentarM>();
     }
 
-    public boolean parse(String laf)
+    public boolean parse(AuthenticationResponse auth, String laf)
     throws LAFParserException
     {
-        this.proben.clear();
-        this.messungen.clear();
-        this.orte.clear();
-        this.messwerte.clear();
-        this.probeKommentare.clear();
-        this.messungKommentare.clear();
-
         if (!laf.startsWith("%PROBE%\n")) {
             throw new LAFParserException("No %PROBE% at the begining.");
         }
@@ -74,9 +50,23 @@ public class LAFParser {
                 laf = laf.substring(nextPos + 1);
                 try {
                     readAll(single);
+                    this.warnings.putAll(producer.getWarnings());
+                    this.errors.putAll(producer.getErrors());
+                    writeAll(auth);
+                    this.producer.reset();
                 }
                 catch (LAFParserException lpe) {
-                    this.errors.putAll(producer.getErrors());
+                    Map<String, List<ReportData>> pErr = producer.getErrors();
+                    if (pErr.isEmpty()) {
+                        List<ReportData> err = new ArrayList<ReportData>();
+                        err.add(new ReportData("parser", lpe.getMessage(), 673));
+                        this.errors.put("parser", err);
+                        this.warnings.put("parser", new ArrayList<ReportData>());
+                    }
+                    else {
+                        this.errors.putAll(pErr);
+                        this.warnings.putAll(producer.getWarnings());
+                    }
                     this.producer.reset();
                     continue;
                 }
@@ -84,25 +74,63 @@ public class LAFParser {
             else {
                 try {
                     readAll(laf);
+                    this.warnings.putAll(producer.getWarnings());
+                    this.errors.putAll(producer.getErrors());
+                    writeAll(auth);
+                    this.producer.reset();
                     laf = "";
                 }
                 catch (LAFParserException lpe) {
-                    this.errors.putAll(producer.getErrors());
+                    Map<String, List<ReportData>> pErr = producer.getErrors();
+                    if (pErr.isEmpty()) {
+                        List<ReportData> err = new ArrayList<ReportData>();
+                        err.add(new ReportData("parser", lpe.getMessage(), 673));
+                        this.errors.put("parser", err);
+                        this.warnings.put("parser", new ArrayList<ReportData>());
+                    }
+                    else {
+                        this.errors.putAll(pErr);
+                        this.warnings.putAll(producer.getWarnings());
+                    }
+                    this.producer.reset();
                     laf = "";
                     continue;
                 }
             }
-            if (!this.dryRun) {
-                proben.add(producer.getProbe());
-                messungen.addAll(producer.getMessungen());
-                orte.addAll(producer.getOrte());
-                messwerte.addAll(producer.getMesswerte());
-                probeKommentare.addAll(producer.getProbenKommentare());
-                messungKommentare.addAll(producer.getMessungsKommentare());
-                producer.reset();
-            }
         }
         return parsed;
+    }
+
+    private void writeAll(AuthenticationResponse auth) {
+        String probeId = producer.getProbe().getProbeId();
+        boolean p = writer.writeProbe(auth, producer.getProbe());
+        if (!p) {
+            this.errors.put(probeId, writer.getErrors());
+            this.warnings.put(probeId, writer.getWarnings());
+            return;
+        }
+        writer.writeProbenKommentare(auth, producer.getProbenKommentare());
+        boolean m = writer.writeMessungen(auth, producer.getMessungen());
+        if (!m) {
+            return;
+        }
+        writer.writeOrte(auth, producer.getOrte());
+        writer.writeMessungKommentare(auth, producer.getMessungsKommentare());
+        writer.writeMesswerte(auth, producer.getMesswerte());
+        List<ReportData> err = this.errors.get(probeId);
+        if (err == null) {
+            this.errors.put(probeId, writer.getErrors());
+        }
+        else {
+            err.addAll(writer.getErrors());
+        }
+        List<ReportData> warn = this.warnings.get(probeId);
+        if (warn == null) {
+            this.warnings.put(probeId, writer.getWarnings());
+        }
+        else {
+            warn.addAll(writer.getWarnings());
+        }
     }
 
     private void readAll(String content)
@@ -140,7 +168,10 @@ public class LAFParser {
                 white = true;
                 continue;
             }
-            else if (current != ' ' && white) {
+            else if (current != ' ' &&
+                current != '\n' &&
+                current != '\r' &&
+                white) {
                 value = true;
                 white = false;
             }
@@ -188,7 +219,7 @@ public class LAFParser {
                 valueString = "";
                 continue;
             }
-            else if ((current == '\n' || current == '\r') && key) {
+            if ((current == '\n' || current == '\r') && (key || white)) {
                 throw new LAFParserException("No value for key: " + keyString);
             }
 
@@ -214,48 +245,6 @@ public class LAFParser {
 
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
-    }
-
-    /**
-     * @return the proben
-     */
-    public List<LProbe> getProben() {
-        return proben;
-    }
-
-    /**
-     * @return the messungen
-     */
-    public List<LMessung> getMessungen() {
-        return messungen;
-    }
-
-    /**
-     * @return the orte
-     */
-    public List<LOrt> getOrte() {
-        return orte;
-    }
-
-    /**
-     * @return the messwerte
-     */
-    public List<LMesswert> getMesswerte() {
-        return messwerte;
-    }
-
-    /**
-     * @return the probeKommentare
-     */
-    public List<LKommentarP> getProbeKommentare() {
-        return probeKommentare;
-    }
-
-    /**
-     * @return the messungKommentare
-     */
-    public List<LKommentarM> getMessungKommentare() {
-        return messungKommentare;
     }
 
     /**
