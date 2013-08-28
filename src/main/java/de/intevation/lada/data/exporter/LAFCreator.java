@@ -20,6 +20,7 @@ import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.model.LZusatzWert;
 import de.intevation.lada.model.Ort;
+import de.intevation.lada.model.SKoordinatenArt;
 import de.intevation.lada.model.SMessEinheit;
 import de.intevation.lada.model.SMessgroesse;
 import de.intevation.lada.model.SProbenZusatz;
@@ -187,6 +188,18 @@ implements Creator
             laf += lafLine("ORT_TYP", "\"" + o.getOrtsTyp() + "\"");
             laf += o.getOrtszusatztext() == null ? "":
                 lafLine("ORT_ZUSATZTEXT", "\"" + o.getOrtszusatztext() + "\"");
+            laf += lafLine("ORT_LAND_S", String.valueOf(ort.get(0).getStaatId()));
+            QueryBuilder<SKoordinatenArt> kaBuilder =
+                new QueryBuilder<SKoordinatenArt>(
+                    readonlyRepo.getEntityManager(), SKoordinatenArt.class);
+            kaBuilder.and("kdaId", ort.get(0).getKdaId());
+            Response kaResp = readonlyRepo.filter(kaBuilder.getQuery());
+            List<SKoordinatenArt> kas = (List<SKoordinatenArt>)kaResp.getData();
+            String koord = kas.get(0).getKoordinatenart() + " ";
+            koord += ort.get(0).getKoordXExtern() + " ";
+            koord += ort.get(0).getKoordYExtern();
+            laf += lafLine("ORT_KOORDINATEN_S", koord);
+            laf += lafLine("ORT_GEMEINDESCHLUESSEL", ort.get(0).getGemId());
         }
         return laf;
     }
