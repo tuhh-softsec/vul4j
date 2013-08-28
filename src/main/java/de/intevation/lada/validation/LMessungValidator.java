@@ -130,7 +130,8 @@ implements Validator
             throw new ValidationException(errors);
         }
         LProbeInfo probe = list.get(0);
-        if (probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt())) {
+        if (probe.getProbeentnahmeEnde() == null ||
+            probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt())) {
             warnings.put("messzeitpunkt", 661);
         }
     }
