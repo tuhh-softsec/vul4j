@@ -25,7 +25,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
-import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.restserver.IRestApiService;
@@ -71,24 +70,24 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
+import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
-									ITopologyListener, IOFSwitchListener,
-									IArpRequester {
+									ITopologyListener, IArpRequester,
+									IOFSwitchListener {
 	
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
 	protected IFloodlightProviderService floodlightProvider;
 	protected ITopologyService topology;
 	protected ITopoRouteService topoRouteService;
-	protected IDeviceService devices;
 	protected IRestApiService restApi;
 	
 	protected ProxyArpManager proxyArp;
 	
-	//protected static Ptree ptree;
-	protected IPatriciaTrie ptree;
+	protected IPatriciaTrie<RibEntry> ptree;
+	protected IPatriciaTrie<Interface> interfacePtrie;
 	protected BlockingQueue<RibUpdate> ribUpdates;
 	
 	protected String bgpdRestIp;
@@ -107,6 +106,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	//Forwarding uses priority 0, and the mac rewrite entries in ingress switches
 	//need to be higher priority than this otherwise the rewrite may not get done
 	protected final short SDNIP_PRIORITY = 10;
+	protected final short ARP_PRIORITY = 20;
 	
 	protected final short BGP_PORT = 179;
 	
@@ -117,6 +117,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected Map<String, Interface> interfaces;
 	protected Map<InetAddress, BgpPeer> bgpPeers;
 	protected SwitchPort bgpdAttachmentPoint;
+	protected MACAddress bgpdMacAddress;
 	
 	//True when all switches have connected
 	protected volatile boolean switchesConnected = false;
@@ -127,30 +128,17 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected SingletonTask topologyChangeDetectorTask;
 	
 	protected SetMultimap<InetAddress, RibUpdate> prefixesWaitingOnArp;
-	protected SetMultimap<InetAddress, PathUpdate> pathsWaitingOnArp;
+	
+	protected Map<InetAddress, Path> pathsWaitingOnArp;
 	
 	protected ExecutorService bgpUpdatesExecutor;
 	
+	protected Map<InetAddress, Path> pushedPaths;
+	protected Map<Prefix, Path> prefixToPath;
 	protected Multimap<Prefix, PushedFlowMod> pushedFlows;
 	
-	private class PushedFlowMod {
-		private long dpid;
-		private OFFlowMod flowMod;
+	protected volatile Map<Long, ?> topoRouteTopology = null;
 		
-		public PushedFlowMod(long dpid, OFFlowMod flowMod) {
-			this.dpid = dpid;
-			this.flowMod = flowMod;
-		}
-		
-		public long getDpid() {
-			return dpid;
-		}
-		
-		public OFFlowMod getFlowMod() {
-			return flowMod;
-		}
-	}
-	
 	protected class TopologyChangeDetector implements Runnable {
 		@Override
 		public void run() {
@@ -174,16 +162,18 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				}
 			}
 			
-			if (linkUpdates.isEmpty()){
-				//All updates have been seen in network map.
-				//We can check if topology is ready
-				log.debug("No known changes outstanding. Checking topology now");
-				checkStatus();
-			}
-			else {
-				//We know of some link updates that haven't propagated to the database yet
-				log.debug("Some changes not found in network map - {} links missing", linkUpdates.size());
-				topologyChangeDetectorTask.reschedule(TOPO_DETECTION_WAIT, TimeUnit.SECONDS);
+			if (!topologyReady) {
+				if (linkUpdates.isEmpty()){
+					//All updates have been seen in network map.
+					//We can check if topology is ready
+					log.debug("No known changes outstanding. Checking topology now");
+					checkStatus();
+				}
+				else {
+					//We know of some link updates that haven't propagated to the database yet
+					log.debug("Some changes not found in network map - {} links missing", linkUpdates.size());
+					topologyChangeDetectorTask.reschedule(TOPO_DETECTION_WAIT, TimeUnit.SECONDS);
+				}
 			}
 		}
 	}
@@ -209,6 +199,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					new Dpid(config.getBgpdAttachmentDpid()),
 					new Port(config.getBgpdAttachmentPort()));
 			
+			bgpdMacAddress = config.getBgpdMacAddress();
 		} catch (JsonParseException e) {
 			log.error("Error in JSON file", e);
 			System.exit(1);
@@ -218,6 +209,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		} catch (IOException e) {
 			log.error("Error reading JSON file", e);
 			System.exit(1);
+		}
+		
+		//Populate the interface Patricia Trie
+		for (Interface intf : interfaces.values()) {
+			Prefix prefix = new Prefix(intf.getIpAddress().getAddress(), intf.getPrefixLength());
+			interfacePtrie.put(prefix, intf);
 		}
 	}
 	
@@ -243,7 +240,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			= new ArrayList<Class<? extends IFloodlightService>>();
 		l.add(IFloodlightProviderService.class);
 		l.add(ITopologyService.class);
-		l.add(IDeviceService.class);
 		l.add(IRestApiService.class);
 		return l;
 	}
@@ -252,20 +248,19 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	public void init(FloodlightModuleContext context)
 			throws FloodlightModuleException {
 	    
-	    //ptree = new Ptree(32);
-		ptree = new PatriciaTrie(32);
+		ptree = new PatriciaTrie<RibEntry>(32);
+		interfacePtrie = new PatriciaTrie<Interface>(32);
 	    
 	    ribUpdates = new LinkedBlockingQueue<RibUpdate>();
 	    	
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		topology = context.getServiceImpl(ITopologyService.class);
-		devices = context.getServiceImpl(IDeviceService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology, devices);
+		proxyArp = new ProxyArpManager(floodlightProvider, topology);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -273,11 +268,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 		topoRouteService = new TopoRouteService("");
 		
-		pathsWaitingOnArp = Multimaps.synchronizedSetMultimap(
-				HashMultimap.<InetAddress, PathUpdate>create());
+		pathsWaitingOnArp = new HashMap<InetAddress, Path>();
 		prefixesWaitingOnArp = Multimaps.synchronizedSetMultimap(
 				HashMultimap.<InetAddress, RibUpdate>create());
 		
+		pushedPaths = new HashMap<InetAddress, Path>();
+		prefixToPath = new HashMap<Prefix, Path>();
 		pushedFlows = HashMultimap.<Prefix, PushedFlowMod>create();
 		
 		bgpUpdatesExecutor = Executors.newSingleThreadExecutor(
@@ -309,19 +305,30 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		log.debug("Config file set to {}", configFilename);
 		
 		readGatewaysConfiguration(configFilename);
-		// Test.
-		//test();
+		
+		proxyArp.setL3Mode(interfacePtrie, interfaces.values(), bgpdMacAddress);
+	}
+	
+	@Override
+	public void startUp(FloodlightModuleContext context) {
+		restApi.addRestletRoutable(new BgpRouteWebRoutable());
+		topology.addListener(this);
+		floodlightProvider.addOFSwitchListener(this);
+		
+		proxyArp.startUp();
+		
+		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
+		
+		//Retrieve the RIB from BGPd during startup
+		retrieveRib();
 	}
 
-	//public Ptree getPtree() {
-	public IPatriciaTrie getPtree() {
+	public IPatriciaTrie<RibEntry> getPtree() {
 		return ptree;
 	}
 	
 	public void clearPtree() {
-		//ptree = null;
-		//ptree = new Ptree(32);
-		ptree = new PatriciaTrie(32);
+		ptree = new PatriciaTrie<RibEntry>(32);
 	}
 	
 	public String getBGPdRestIp() {
@@ -331,105 +338,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	public String getRouterId() {
 		return routerId;
 	}
-	
-	// Return nexthop address as byte array.
-	/*
-	public RibEntry lookupRib(byte[] dest) {
-		if (ptree == null) {
-		    log.debug("lookupRib: ptree null");
-		    return null;
-		}
-		
-		PtreeNode node = ptree.match(dest, 32);
-		if (node == null) {
-            log.debug("lookupRib: ptree node null");
-			return null;
-		}
-		
-		if (node.rib == null) {
-            log.debug("lookupRib: ptree rib null");
-			return null;
-		}
-		
-		ptree.delReference(node);
-		
-		return node.rib;
-	}
-	*/
-	
-	/*
-	//TODO looks like this should be a unit test
-	@SuppressWarnings("unused")
-    private void test() throws UnknownHostException {
-		System.out.println("Here it is");
-		Prefix p = new Prefix("128.0.0.0", 8);
-		Prefix q = new Prefix("8.0.0.0", 8);
-		Prefix r = new Prefix("10.0.0.0", 24);
-		Prefix a = new Prefix("10.0.0.1", 32);
-	
-		ptree.acquire(p.getAddress(), p.getPrefixLength());
-		ptree.acquire(q.getAddress(), q.getPrefixLength());
-		ptree.acquire(r.getAddress(), r.getPrefixLength());
-	
-		System.out.println("Traverse start");
-		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)) {
-			Prefix p_result = new Prefix(node.key, node.keyBits);
-		}
-	
-		PtreeNode n = ptree.match(a.getAddress(), a.getPrefixLength());
-		if (n != null) {
-			System.out.println("Matched prefix for 10.0.0.1:");
-			Prefix x = new Prefix(n.key, n.keyBits);
-			ptree.delReference(n);
-		}
-		
-		n = ptree.lookup(p.getAddress(), p.getPrefixLength());
-		if (n != null) {
-			ptree.delReference(n);
-			ptree.delReference(n);
-		}
-		System.out.println("Traverse start");
-		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)) {
-			Prefix p_result = new Prefix(node.key, node.keyBits);
-		}
-		
-		n = ptree.lookup(q.getAddress(), q.getPrefixLength());
-		if (n != null) {
-			ptree.delReference(n);
-			ptree.delReference(n);
-		}
-		System.out.println("Traverse start");
-		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)) {
-			Prefix p_result = new Prefix(node.key, node.keyBits);
-		}
-		
-		n = ptree.lookup(r.getAddress(), r.getPrefixLength());
-		if (n != null) {
-			ptree.delReference(n);
-			ptree.delReference(n);
-		}
-		System.out.println("Traverse start");
-		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)) {
-			Prefix p_result = new Prefix(node.key, node.keyBits);
-		}
-
-	}
-	*/
-	
-	//TODO once the Ptree is object oriented this can go
-	/*
-	private String getPrefixFromPtree(PtreeNode node){
-        InetAddress address = null;
-        try {
-			address = InetAddress.getByAddress(node.key);
-		} catch (UnknownHostException e1) {
-			//Should never happen is the reverse conversion has already been done
-			log.error("Malformed IP address");
-			return "";
-		}
-        return address.toString() + "/" + node.rib.masklen;
-	}
-	*/
 	
 	private void retrieveRib(){
 		String url = "http://" + bgpdRestIp + "/wm/bgp/" + routerId;
@@ -469,21 +377,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				continue;
 			}
 			
-			//PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
 			RibEntry rib = new RibEntry(router_id, nexthop);
-			
-			/*
-			if (node.rib != null) {
-				node.rib = null;
-				ptree.delReference(node);
-			}
-			
-			node.rib = rib;
-			*/
-			
-			//ptree.put(p, rib);
-			
-			//addPrefixFlows(p, rib);
+
 			try {
 				ribUpdates.put(new RibUpdate(Operation.UPDATE, p, rib));
 			} catch (InterruptedException e) {
@@ -497,8 +392,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		try {
 			ribUpdates.put(update);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			log.debug(" ", e);
+			log.debug("Interrupted while putting on ribUpdates queue", e);
+			Thread.currentThread().interrupt();
 		}
 	}
 	
@@ -507,140 +402,114 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		log.debug("Processing prefix add {}", prefix);
 		
-		//PtreeNode node = ptree.acquire(prefix.getAddress(), prefix.getPrefixLength());
 		RibEntry rib = ptree.put(prefix, update.getRibEntry());
 		
-		//if (node.rib != null) {
 		if (rib != null && !rib.equals(update.getRibEntry())) {
 			//There was an existing nexthop for this prefix. This update supersedes that,
 			//so we need to remove the old flows for this prefix from the switches
-			deletePrefixFlows(prefix);
-			
-			//Then remove the old nexthop from the Ptree
-			//node.rib = null;
-			//ptree.delReference(node);
+			_processDeletePrefix(prefix, rib);
 		}
 		
-		//Put the new nexthop in the Ptree
-		//node.rib = update.getRibEntry();
-
-		//Push flows for the new <prefix, nexthop>
-		addPrefixFlows(prefix, update.getRibEntry());
+		if (update.getRibEntry().getNextHop().equals(
+				InetAddresses.forString("0.0.0.0"))) {
+			//Route originated by SDN domain
+			//We don't handle these at the moment
+			log.debug("Own route {} to {}", prefix, 
+					update.getRibEntry().getNextHop().getHostAddress());
+			return;
+		}
+		
+		_processRibAdd(update);
 	}
 	
-	public synchronized void processRibDelete(RibUpdate update) {
+	private void _processRibAdd(RibUpdate update) {
 		Prefix prefix = update.getPrefix();
+		RibEntry rib = update.getRibEntry();
 		
-		//PtreeNode node = ptree.lookup(prefix.getAddress(), prefix.getPrefixLength());
+		InetAddress dstIpAddress = rib.getNextHop();
 		
-		/* 
-		 * Remove the flows from the switches before the rib is lost
-		 * Theory: we could get a delete for a prefix not in the Ptree.
-		 * This would result in a null node being returned. We could get a delete for
-		 * a node that's not actually there, but is a aggregate node. This would result
-		 * in a non-null node with a null rib. Only a non-null node with a non-null
-		 * rib is an actual prefix in the Ptree.
-		 */
-
-		/*
-		if (node != null && node.rib != null) {
-			if (update.getRibEntry().equals(node.rib)) {
-				node.rib = null;
-				ptree.delReference(node);
-				
-				deletePrefixFlows(update.getPrefix());
+		//See if we know the MAC address of the next hop
+		byte[] nextHopMacAddress = proxyArp.getMacAddress(rib.getNextHop());
+		
+		//Find the attachment point (egress interface) of the next hop
+		Interface egressInterface = null;
+		if (bgpPeers.containsKey(dstIpAddress)) {
+			//Route to a peer
+			log.debug("Route to peer {}", dstIpAddress);
+			BgpPeer peer = bgpPeers.get(dstIpAddress);
+			egressInterface = interfaces.get(peer.getInterfaceName());
+		}
+		else {
+			//Route to non-peer
+			log.debug("Route to non-peer {}", dstIpAddress);
+			egressInterface = interfacePtrie.match(
+					new Prefix(dstIpAddress.getAddress(), 32));
+			if (egressInterface == null) {
+				log.warn("No outgoing interface found for {}", dstIpAddress.getHostAddress());
+				return;
 			}
 		}
-		*/
 		
-		if (ptree.remove(prefix, update.getRibEntry())) {
-			/*
-			 * Only delete flows if an entry was actually removed from the trie.
-			 * If no entry was removed, the <prefix, nexthop> wasn't there so
-			 * it's probably already been removed and we don't need to do anything
-			 */
-			deletePrefixFlows(prefix);
+		if (nextHopMacAddress == null) {
+			prefixesWaitingOnArp.put(dstIpAddress, 
+					new RibUpdate(Operation.UPDATE, prefix, rib));
+			proxyArp.sendArpRequest(dstIpAddress, this, true);
+			return;
+		}
+		else {
+			if (!bgpPeers.containsKey(dstIpAddress)) {
+				//If the prefix is for a non-peer we need to ensure there's a path,
+				//and push one if there isn't.
+				Path path = pushedPaths.get(dstIpAddress);
+				if (path == null) {
+					path = new Path(egressInterface, dstIpAddress);
+					setUpDataPath(path, MACAddress.valueOf(nextHopMacAddress));
+					pushedPaths.put(dstIpAddress, path);
+				}
+				
+				path.incrementUsers();
+				prefixToPath.put(prefix, path);
+			}
+			
+			//For all prefixes we need to add the first-hop mac-rewriting flows
+			addPrefixFlows(prefix, egressInterface, nextHopMacAddress);
 		}
 	}
 	
-	//TODO compatibility layer, used by beginRouting()
-	/*public void prefixAdded(PtreeNode node) {
-		Prefix prefix = null;
-		try {
-			prefix = new Prefix(node.key, node.rib.masklen);
-		} catch (IllegalArgumentException e) {
-			log.error(" ", e);
-		}
+	private void addPrefixFlows(Prefix prefix, Interface egressInterface, byte[] nextHopMacAddress) {		
+		log.debug("Adding flows for prefix {} added, next hop mac {}",
+				prefix, HexString.toHexString(nextHopMacAddress));
 
-		addPrefixFlows(prefix, node.rib);
-	}*/
-
-	private void addPrefixFlows(Prefix prefix, RibEntry rib) {
-		if (!topologyReady){
-			return;
-		}
-		
-		//TODO before we do anything, we have to check that the RIB entry is still in the
-		//Ptree because it could have been removed while we were waiting for ARP.
-		//I think we'll have to make prefixAdded and prefixDelete atomic as well
-		//to protect against the prefix getting deleted while where trying to add it
-
-		log.debug("New prefix {} added, next hop {}", 
-				prefix, rib.getNextHop().getHostAddress());
-		
-		//TODO this is wrong, we shouldn't be dealing with BGP peers here.
-		//We need to figure out where the device is attached and what its
-		//mac address is by learning. 
-		//The next hop is not necessarily the peer, and the peer's attachment
-		//point is not necessarily the next hop's attachment point.
-		BgpPeer peer = bgpPeers.get(rib.getNextHop());
-		
-		if (peer == null){
-			//TODO local router isn't in peers list so this will get thrown
-			//Need to work out what to do about local prefixes with next hop 0.0.0.0.
-			
-			//The other scenario is this is a route server route. In that
-			//case the next hop is not in our configuration
-			log.error("Couldn't find next hop router in router {} in config",
-					rib.getNextHop().getHostAddress());
-			return; //just quit out here? This is probably a configuration error
-		}
-		
-		//Get MAC address for peer from the ARP module
-		//TODO separate out the 'ask for MAC' bit to another method
-		byte[] peerMacAddress = proxyArp.getMacAddress(peer.getIpAddress());
-		if (peerMacAddress == null) {
-			//A RibUpdate is still a nice way to package them up
-			prefixesWaitingOnArp.put(peer.getIpAddress(), 
-					new RibUpdate(Operation.UPDATE, prefix, rib));
-			proxyArp.sendArpRequest(peer.getIpAddress(), this, true);
-			return;
-		}
-		
-		Interface peerInterface = interfaces.get(peer.getInterfaceName());
-
-		//Add a flow to rewrite mac for this prefix to all border switches
+		//Add a flow to rewrite mac for this prefix to all other border switches
 		for (Interface srcInterface : interfaces.values()) {
-			if (srcInterface == peerInterface) {
+			if (srcInterface == egressInterface) {
 				//Don't push a flow for the switch where this peer is attached
 				continue;
 			}
-						
-			DataPath shortestPath = topoRouteService.getShortestPath(
-					srcInterface.getSwitchPort(),
-					peerInterface.getSwitchPort());
+			
+			
+			DataPath shortestPath; 
+			if (topoRouteTopology == null) {
+				shortestPath = topoRouteService.getShortestPath(
+						srcInterface.getSwitchPort(),
+						egressInterface.getSwitchPort());
+			}
+			else {
+				shortestPath = topoRouteService.getTopoShortestPath(
+						topoRouteTopology, srcInterface.getSwitchPort(),
+						egressInterface.getSwitchPort());
+			}
 			
 			if (shortestPath == null){
 				log.debug("Shortest path between {} and {} not found",
 						srcInterface.getSwitchPort(),
-						peerInterface.getSwitchPort());
+						egressInterface.getSwitchPort());
 				return; // just quit here?
 			}
 			
 			//Set up the flow mod
-			OFFlowMod fm =
-	                (OFFlowMod) floodlightProvider.getOFMessageFactory()
-	                                              .getMessage(OFType.FLOW_MOD);
+			OFFlowMod fm = (OFFlowMod) floodlightProvider.getOFMessageFactory()
+					.getMessage(OFType.FLOW_MOD);
 			
 	        fm.setIdleTimeout((short)0)
 	        .setHardTimeout((short)0)
@@ -656,30 +525,16 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        match.setDataLayerType(Ethernet.TYPE_IPv4);
 	        match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
 	        
-	        /*
-	        InetAddress address = null;
-	        try {
-	        	address = InetAddress.getByAddress(prefix.getAddress());
-			} catch (UnknownHostException e1) {
-				//Should never happen is the reverse conversion has already been done
-				log.error("Malformed IP address");
-				return;
-			}*/
-	        
-	        //match.setFromCIDR(address.getHostAddress() + "/" + 
-	        //		prefix.getPrefixLength(), OFMatch.STR_NW_DST);
 	        match.setFromCIDR(prefix.toString(), OFMatch.STR_NW_DST);
 	        fm.setMatch(match);
 	        
 	        //Set up MAC rewrite action
 	        OFActionDataLayerDestination macRewriteAction = new OFActionDataLayerDestination();
-	        //TODO the peer's mac address is not necessarily the next hop's...
-	        macRewriteAction.setDataLayerAddress(peerMacAddress);
+	        macRewriteAction.setDataLayerAddress(nextHopMacAddress);
 	        
 	        //Set up output action
 	        OFActionOutput outputAction = new OFActionOutput();
 	        outputAction.setMaxLength((short)0xffff);
-	        
 	        Port outputPort = shortestPath.flowEntries().get(0).outPort();
 	        outputAction.setPort(outputPort.value());
 	        
@@ -697,7 +552,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             	continue;
             }
             
-            //TODO if prefix Added/Deleted are synchronized this shouldn't have to be
             pushedFlows.put(prefix, new PushedFlowMod(sw.getId(), fm));
             
             List<OFMessage> msglist = new ArrayList<OFMessage>();
@@ -711,20 +565,43 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
-	//TODO test next-hop changes
-	//TODO check delete/add synchronization
+	public synchronized void processRibDelete(RibUpdate update) {
+		Prefix prefix = update.getPrefix();
 		
-	private void deletePrefixFlows(Prefix prefix) {
-		if (!topologyReady) {
-			return;
+		if (ptree.remove(prefix, update.getRibEntry())) {
+			/*
+			 * Only delete flows if an entry was actually removed from the trie.
+			 * If no entry was removed, the <prefix, nexthop> wasn't there so
+			 * it's probably already been removed and we don't need to do anything
+			 */
+			_processDeletePrefix(prefix, update.getRibEntry());
 		}
+	}
+	
+	private void _processDeletePrefix(Prefix prefix, RibEntry ribEntry) {
+		deletePrefixFlows(prefix);
 		
-		log.debug("In deletePrefixFlows for {}", prefix);
-		
-		/*for (Map.Entry<Prefix, PushedFlowMod> entry : pushedFlows.entries()) {
-			log.debug("Pushed flow: {} => {}", entry.getKey(), entry.getValue());
-		}*/
-		
+		log.debug("Deleting {} to {}", prefix, ribEntry.getNextHop());
+		log.debug("is peer {}", bgpPeers.containsKey(ribEntry.getNextHop()));
+		if (!bgpPeers.containsKey(ribEntry.getNextHop())) {
+			log.debug("Getting path for route with non-peer nexthop");
+			//Path path = prefixToPath.get(prefix);
+			Path path = prefixToPath.remove(prefix);
+			
+			if (path == null) {
+				log.error("No path found for non-peer path");
+			}
+			
+			path.decrementUsers();
+			log.debug("users {}, permanent {}", path.getUsers(), path.isPermanent());
+			if (path.getUsers() <= 0 && !path.isPermanent()) {
+				deletePath(path);
+				pushedPaths.remove(path.getDstIpAddress());
+			}
+		}
+	}
+	
+	private void deletePrefixFlows(Prefix prefix) {	
 		Collection<PushedFlowMod> pushedFlowMods 
 				= pushedFlows.removeAll(prefix);
 		
@@ -736,28 +613,44 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					HexString.toHexString(((OFActionDataLayerDestination)pfm.getFlowMod().getActions().get(0))
 							.getDataLayerAddress())});
 			
-			OFFlowMod fm = pfm.getFlowMod();
-			
-			fm.setCommand(OFFlowMod.OFPFC_DELETE)
-			.setOutPort(OFPort.OFPP_NONE)
-			.setLengthU(OFFlowMod.MINIMUM_LENGTH);
-			
-			fm.getActions().clear();
-			
-			IOFSwitch sw = floodlightProvider.getSwitches().get(pfm.getDpid());
-			if (sw == null) {
-            	log.warn("Switch not found when pushing delete flow mod");
-            	continue;
-			}
-			
-			try {
-				sw.write(fm, null);
-				sw.flush();
-			} catch (IOException e) {
-				log.error("Failure writing flow mod", e);
-			}
+			sendDeleteFlowMod(pfm.getFlowMod(), pfm.getDpid());
 		}
 	}
+	
+	private void deletePath(Path path) {
+		for (PushedFlowMod pfm : path.getFlowMods()) {
+			log.debug("Pushing a DELETE flow mod to {}, dst MAC {}",
+					new Object[] {HexString.toHexString(pfm.getDpid()),
+					HexString.toHexString(pfm.getFlowMod().getMatch().getDataLayerDestination())
+			});
+			
+			sendDeleteFlowMod(pfm.getFlowMod(), pfm.getDpid());
+		}
+	}
+	
+	private void sendDeleteFlowMod(OFFlowMod addFlowMod, long dpid) {
+		addFlowMod.setCommand(OFFlowMod.OFPFC_DELETE_STRICT)
+		.setOutPort(OFPort.OFPP_NONE)
+		.setLengthU(OFFlowMod.MINIMUM_LENGTH);
+		
+		addFlowMod.getActions().clear();
+		
+		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
+		if (sw == null) {
+        	log.warn("Switch not found when pushing delete flow mod");
+        	return;
+		}
+		
+		try {
+			sw.write(addFlowMod, null);
+			sw.flush();
+		} catch (IOException e) {
+			log.error("Failure writing flow mod", e);
+		}
+	}
+	
+	//TODO test next-hop changes
+	//TODO check delete/add synchronization
 	
 	/*
 	 * On startup we need to calculate a full mesh of paths between all gateway
@@ -773,32 +666,56 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		for (BgpPeer peer : bgpPeers.values()) {
 			Interface peerInterface = interfaces.get(peer.getInterfaceName());
 			
+			//We know there's not already a Path here pushed, because this is
+			//called before all other routing
+			Path path = new Path(peerInterface, peer.getIpAddress());
+			path.setPermanent();
+			
 			//See if we know the MAC address of the peer. If not we can't
 			//do anything until we learn it
 			byte[] mac = proxyArp.getMacAddress(peer.getIpAddress());
 			if (mac == null) {
 				log.debug("Don't know MAC for {}", peer.getIpAddress().getHostAddress());
 				//Put in the pending paths list first
-				pathsWaitingOnArp.put(peer.getIpAddress(),
-						new PathUpdate(peerInterface, peer.getIpAddress()));
+				pathsWaitingOnArp.put(peer.getIpAddress(), path);
 				
 				proxyArp.sendArpRequest(peer.getIpAddress(), this, true);
 				continue;
 			}
 			
 			//If we know the MAC, lets go ahead and push the paths to this peer
-			calculateAndPushPath(peerInterface, MACAddress.valueOf(mac));
+			setUpDataPath(path, MACAddress.valueOf(mac));
 		}
 	}
 	
-	private void calculateAndPushPath(Interface dstInterface, MACAddress dstMacAddress) {
+	private void setUpDataPath(Path path, MACAddress dstMacAddress) {
+		calculateAndPushPath(path, dstMacAddress);
+	}
+	
+	private void calculateAndPushPath(Path path, MACAddress dstMacAddress) {
+		Interface dstInterface = path.getDstInterface();
+		
+		log.debug("Setting up path to {}, {}", path.getDstIpAddress().getHostAddress(),
+				dstMacAddress);
+		
+		List<PushedFlowMod> pushedFlows = new ArrayList<PushedFlowMod>();
+		
 		for (Interface srcInterface : interfaces.values()) {
 			if (dstInterface.equals(srcInterface.getName())){
 				continue;
 			}
 			
-			DataPath shortestPath = topoRouteService.getShortestPath(
-						srcInterface.getSwitchPort(), dstInterface.getSwitchPort()); 
+			DataPath shortestPath;
+			if (topoRouteTopology == null) {
+				log.debug("Using database topo");
+				shortestPath = topoRouteService.getShortestPath(
+						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
+			}
+			else {
+				log.debug("Using prepared topo");
+				shortestPath = topoRouteService.getTopoShortestPath(topoRouteTopology, 
+						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
+			}
 			
 			if (shortestPath == null){
 				log.debug("Shortest path between {} and {} not found",
@@ -806,11 +723,15 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				return; // just quit here?
 			}
 			
-			installPath(shortestPath.flowEntries(), dstMacAddress);
+			pushedFlows.addAll(installPath(shortestPath.flowEntries(), dstMacAddress));
 		}
+		
+		path.setFlowMods(pushedFlows);
 	}
 	
-	private void installPath(List<FlowEntry> flowEntries, MACAddress dstMacAddress){
+	private List<PushedFlowMod> installPath(List<FlowEntry> flowEntries, MACAddress dstMacAddress){
+		List<PushedFlowMod> flowMods = new ArrayList<PushedFlowMod>();
+		
 		//Set up the flow mod
 		OFFlowMod fm =
                 (OFFlowMod) floodlightProvider.getOFMessageFactory()
@@ -835,7 +756,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         	FlowEntry flowEntry = flowEntries.get(i);
            
             OFMatch match = new OFMatch();
-            //TODO Again using MAC address from configuration
             match.setDataLayerDestination(dstMacAddress.toBytes());
             match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
             ((OFActionOutput) fm.getActions().get(0)).setPort(flowEntry.outPort().value());
@@ -848,6 +768,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             	log.warn("Switch not found when pushing flow mod");
             	continue;
             }
+            
+            flowMods.add(new PushedFlowMod(sw.getId(), fm));
             
             List<OFMessage> msglist = new ArrayList<OFMessage>();
             msglist.add(fm);
@@ -864,6 +786,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
                 log.error("Failure cloning flow mod", e1);
             }
 		}
+        
+        return flowMods;
 	}
 	
 	private void setupBgpPaths(){
@@ -908,7 +832,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        
 	        //Common match fields
 	        forwardMatchSrc.setDataLayerType(Ethernet.TYPE_IPv4);
-	        //forwardMatch.setWildcards(forwardMatch.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
 	        forwardMatchSrc.setNetworkProtocol(IPv4.PROTOCOL_TCP);
 	        forwardMatchSrc.setTransportDestination(BGP_PORT);
 	        forwardMatchSrc.setWildcards(forwardMatchSrc.getWildcards() & ~OFMatch.OFPFW_IN_PORT
@@ -1024,30 +947,39 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		log.debug("Received ARP response: {} => {}", ipAddress.getHostAddress(), 
 				MACAddress.valueOf(macAddress).toString());
 		
-		Set<PathUpdate> pathsToPush = pathsWaitingOnArp.removeAll(ipAddress);
-		
-		for (PathUpdate update : pathsToPush) {
-			log.debug("Pushing path to {} at {} on {}", new Object[] {
-					update.getDstIpAddress().getHostAddress(), 
-					MACAddress.valueOf(macAddress),
-					update.getDstInterface().getSwitchPort()});
-			calculateAndPushPath(update.getDstInterface(), 
-					MACAddress.valueOf(macAddress));
-		}
-		
-		Set<RibUpdate> prefixesToPush = prefixesWaitingOnArp.removeAll(ipAddress);
-		
 		/*
 		 * We synchronize on this to prevent changes to the ptree while we're pushing
 		 * flows to the switches. If the ptree changes, the ptree and switches
 		 * could get out of sync. 
 		 */
 		synchronized (this) {
+			Path path = pathsWaitingOnArp.remove(ipAddress);
+			
+			if (path != null) {
+				log.debug("Pushing path to {} at {} on {}", new Object[] {
+						path.getDstIpAddress().getHostAddress(), 
+						MACAddress.valueOf(macAddress),
+						path.getDstInterface().getSwitchPort()});
+				//These paths should always be to BGP peers. Paths to non-peers are
+				//handled once the first prefix is ready to push
+				if (pushedPaths.containsKey(path.getDstInterface())) {
+					//A path already got pushed to this endpoint while we were waiting
+					//for ARP. We'll copy over the permanent attribute if it is set on this path.
+					if (path.isPermanent()) {
+						pushedPaths.get(path.getDstInterface()).setPermanent();
+					}
+				}
+				else {
+					setUpDataPath(path, MACAddress.valueOf(macAddress));
+					pushedPaths.put(path.getDstIpAddress(), path);
+				}
+			}
+			
+			Set<RibUpdate> prefixesToPush = prefixesWaitingOnArp.removeAll(ipAddress);
+			
 			for (RibUpdate update : prefixesToPush) {
 				//These will always be adds
 				
-				//addPrefixFlows(update.getPrefix(), update.getRibEntry());
-				//processRibAdd(update);
 				RibEntry rib = ptree.lookup(update.getPrefix()); 
 				if (rib != null && rib.equals(update.getRibEntry())) {
 					log.debug("Pushing prefix {} next hop {}", update.getPrefix(), 
@@ -1056,7 +988,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					//and the next hop is the same as our update. The prefix could 
 					//have been removed while we were waiting for the ARP, or the 
 					//next hop could have changed.
-					addPrefixFlows(update.getPrefix(), rib);
+					_processRibAdd(update);
 				} else {
 					log.debug("Received ARP response, but {},{} is no longer in ptree", 
 							update.getPrefix(), update.getRibEntry());
@@ -1065,37 +997,59 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
+	private void setupArpFlows() {
+		OFMatch match = new OFMatch();
+		match.setDataLayerType(Ethernet.TYPE_ARP);
+		match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
+		
+		OFFlowMod fm = new OFFlowMod();
+		fm.setMatch(match);
+		
+		OFActionOutput action = new OFActionOutput();
+		action.setPort(OFPort.OFPP_CONTROLLER.getValue());
+		action.setMaxLength((short)0xffff);
+		List<OFAction> actions = new ArrayList<OFAction>(1);
+		actions.add(action);
+		fm.setActions(actions);
+		
+		fm.setIdleTimeout((short)0)
+        .setHardTimeout((short)0)
+        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
+        .setCookie(0)
+        .setCommand(OFFlowMod.OFPFC_ADD)
+        .setPriority(ARP_PRIORITY)
+		.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
+		
+		for (String strdpid : switches){
+			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
+			if (sw == null) {
+				log.debug("Couldn't find switch to push ARP flow");
+			}
+			else {
+				try {
+					sw.write(fm, null);
+				} catch (IOException e) {
+					log.warn("Failure writing ARP flow to switch", e);
+				}
+			}
+		}
+	}
+	
 	private void beginRouting(){
 		log.debug("Topology is now ready, beginning routing function");
+		topoRouteTopology = topoRouteService.prepareShortestPathTopo();
+		
+		setupArpFlows();
+		
 		setupBgpPaths();
 		setupFullMesh();
-		
-		//Traverse ptree and create flows for all routes
-		/*
-		for (PtreeNode node = ptree.begin(); node != null; node = ptree.next(node)){
-			if (node.rib != null){
-				prefixAdded(node);
-			}
-		}
-		*/
-		
-		/*
-		synchronized (ptree) {
-			Iterator<IPatriciaTrie.Entry> it = ptree.iterator();
-			while (it.hasNext()) {
-				IPatriciaTrie.Entry entry = it.next();
-				addPrefixFlows(entry.getPrefix(), entry.getRib());
-			}
-		}
-		*/
-		
+
 		bgpUpdatesExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
 				doUpdatesThread();
 			}
 		});
-		
 	}
 	
 	private void checkSwitchesConnected(){
@@ -1131,8 +1085,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	private void checkStatus(){
-		log.debug("In checkStatus, swC {}, toRe {}", switchesConnected, topologyReady);
-		
 		if (!switchesConnected){
 			checkSwitchesConnected();
 		}
@@ -1144,19 +1096,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			beginRouting();
 		}
 	}
-	
-	@Override
-	public void startUp(FloodlightModuleContext context) {
-		restApi.addRestletRoutable(new BgpRouteWebRoutable());
-		floodlightProvider.addOFSwitchListener(this);
-		topology.addListener(this);
-		
-		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
-		
-		//Retrieve the RIB from BGPd during startup
-		retrieveRib();
-	}
-	
+
 	private void doUpdatesThread() {
 		boolean interrupted = false;
 		try {
@@ -1172,8 +1112,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 						break;
 					}
 				} catch (InterruptedException e) {
-					log.debug("interrupted", e);
+					log.debug("Interrupted while taking from updates queue", e);
 					interrupted = true;
+				} catch (Exception e) {
+					log.debug("exception", e);
 				}
 			}
 		} finally {
@@ -1184,7 +1126,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 
 	@Override
-	public void topologyChanged() {		
+	public void topologyChanged() {
+		if (topologyReady) {
+			return;
+		}
+		
 		boolean refreshNeeded = false;
 		for (LDUpdate ldu : topology.getLastLinkUpdates()){
 			if (!ldu.getOperation().equals(ILinkDiscovery.UpdateOperation.LINK_UPDATED)){
@@ -1202,27 +1148,33 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 		}
 		
-		if (refreshNeeded){
+		if (refreshNeeded && !topologyReady){
 			topologyChangeDetectorTask.reschedule(TOPO_DETECTION_WAIT, TimeUnit.SECONDS);
 		}
 	}
 
-	//TODO determine whether we need to listen for switch joins
 	@Override
 	public void addedSwitch(IOFSwitch sw) {
-		//checkStatus();
+		if (!topologyReady) {
+			sw.clearAllFlowMods();
+		}
 	}
 
 	@Override
 	public void removedSwitch(IOFSwitch sw) {
-		// TODO Auto-generated method stub	
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void switchPortChanged(Long switchId) {}
+	public void switchPortChanged(Long switchId) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public String getName() {
-		return "BgpRoute";
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

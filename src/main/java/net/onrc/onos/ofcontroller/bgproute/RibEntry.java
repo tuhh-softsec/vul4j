@@ -1,7 +1,8 @@
 package net.onrc.onos.ofcontroller.bgproute;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+
+import com.google.common.net.InetAddresses;
 
 public class RibEntry {
 	private InetAddress routerId;
@@ -13,12 +14,8 @@ public class RibEntry {
 	}
 	
 	public RibEntry(String routerId, String nextHop) {
-		try {
-			this.routerId = InetAddress.getByName(routerId);
-			this.nextHop = InetAddress.getByName(nextHop);
-		} catch (UnknownHostException e) {
-			throw new IllegalArgumentException("Invalid address format");
-		}
+		this.routerId = InetAddresses.forString(routerId);
+		this.nextHop = InetAddresses.forString(nextHop);
 	}
 	
 	public InetAddress getNextHop() {

@@ -7,7 +7,7 @@ public interface IBgpRouteService extends IFloodlightService {
 	//public RibEntry lookupRib(byte[] dest);
 
 	//public Ptree getPtree();
-	public IPatriciaTrie getPtree();
+	public IPatriciaTrie<RibEntry> getPtree();
 
 	public String getBGPdRestIp();
 

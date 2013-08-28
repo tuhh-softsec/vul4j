@@ -4,6 +4,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
+import com.google.common.net.InetAddresses;
+
 public class Prefix {
 	private final int MAX_BYTES = 4;
 	
@@ -31,11 +33,7 @@ public class Prefix {
 
 	public Prefix(String strAddress, int prefixLength) {
 		byte[] addr = null;
-		try {
-			addr = InetAddress.getByName(strAddress).getAddress();
-		} catch (UnknownHostException e) {
-			throw new IllegalArgumentException("Invalid IP inetAddress argument");
-		}
+		addr = InetAddresses.forString(strAddress).getAddress();
 				
 		if (addr == null || addr.length != MAX_BYTES || 
 				prefixLength < 0 || prefixLength > MAX_BYTES * Byte.SIZE) {

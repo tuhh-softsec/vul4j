@@ -41,8 +41,9 @@ Dependencies
     Edit file (ONOS-INSTALL-DIR)/start-cassandra.sh and set variable
     "CASSANDRA_DIR" to point to the Cassandra directory.
 
-Running ONOS
-------------
+Running ONOS with Cassandra as a separate process
+-------------------------------------------------
+[See below for information how to run ONOS with Embedded Cassandra]
 
 1. Start Zookeeper
 

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,18 +11,17 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class PatriciaTrieTest {
 
-	IPatriciaTrie ptrie;
+	IPatriciaTrie<RibEntry> ptrie;
 	Prefix[] prefixes;
 	Map<Prefix, RibEntry> mappings;
 	
 	@Before
 	public void setUp() throws Exception {
-		ptrie = new PatriciaTrie(32);
+		ptrie = new PatriciaTrie<RibEntry>(32);
 		mappings = new HashMap<Prefix, RibEntry>();
 		
 		prefixes = new Prefix[] {
@@ -50,7 +48,7 @@ public class PatriciaTrieTest {
 
 	@Test
 	public void testPut() {
-		IPatriciaTrie ptrie = new PatriciaTrie(32);
+		IPatriciaTrie<RibEntry> ptrie = new PatriciaTrie<RibEntry>(32);
 		
 		Prefix p1 = new Prefix("192.168.240.0", 20);
 		RibEntry r1 = new RibEntry("192.168.10.101", "192.168.60.2");
@@ -107,10 +105,27 @@ public class PatriciaTrieTest {
 		assertTrue(retval.equals(r2));
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void testMatch() {
-		fail("Not yet implemented");
+		Prefix p1 = new Prefix("192.168.10.30", 32);
+		Prefix p2 = new Prefix("192.168.10.30", 31);
+		Prefix p3 = new Prefix("192.168.8.241", 32);
+		Prefix p4 = new Prefix("1.0.0.0", 32);
+		Prefix p5 = new Prefix("192.168.8.0", 22);
+		Prefix p6 = new Prefix("192.168.8.0", 21);
+		
+		assertTrue(ptrie.match(p1).equals(mappings.get(prefixes[0])));
+		assertTrue(ptrie.match(p2).equals(mappings.get(prefixes[0])));
+		assertTrue(ptrie.match(p3).equals(mappings.get(prefixes[1])));
+		assertNull(ptrie.match(p4));
+		assertTrue(ptrie.match(p5).equals(mappings.get(prefixes[2])));
+		//System.out.println(ptrie.match(p6).getNextHop().getHostAddress());
+		assertTrue(ptrie.match(p6).equals(mappings.get(prefixes[8])));
+		
+		
+		//TODO more extensive tests
+		//fail("Not yet implemented");
 	}
 
 	@Test
@@ -169,19 +184,19 @@ public class PatriciaTrieTest {
 	public void testIterator() {		
 		int[] order = new int[] {7, 5, 3, 8, 2, 1, 0, 4, 6};
 		
-		Iterator<IPatriciaTrie.Entry> it = ptrie.iterator();
+		Iterator<IPatriciaTrie.Entry<RibEntry>> it = ptrie.iterator();
 		int i = 0;
 		assertTrue(it.hasNext());
 		while (it.hasNext()) {
-			IPatriciaTrie.Entry entry = it.next();
+			IPatriciaTrie.Entry<RibEntry> entry = it.next();
 			assertTrue(entry.getPrefix().equals(prefixes[order[i]]));
 			i++;
 		}
 		assertFalse(it.hasNext());
 		assertTrue(i == order.length);
 		
-		IPatriciaTrie pt = new PatriciaTrie(32);
-		Iterator<IPatriciaTrie.Entry> it2 = pt.iterator();
+		IPatriciaTrie<RibEntry> pt = new PatriciaTrie<RibEntry>(32);
+		Iterator<IPatriciaTrie.Entry<RibEntry>> it2 = pt.iterator();
 		assertFalse(it2.hasNext());
 		it.next(); //throws NoSuchElementException
 	}
