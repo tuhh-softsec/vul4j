@@ -133,7 +133,7 @@ implements Creator
         laf += probe.getUmwId() == null ?
             "" : lafLine("UMWELTBEREICH_S", probe.getUmwId());
         laf += probe.getMedia() == null ?
-            "" : lafLine("MEDIA", "\"" + probe.getMedia() + "\"");
+            "" : lafLine("MEDIUM", "\"" + probe.getMedia() + "\"");
         laf += probe.getMediaDesk() == null ?
             "" : lafLine("DESKRIPTOREN", "\"" + probe.getMediaDesk() + "\"");
         laf += probe.getTest() == Boolean.TRUE ?
