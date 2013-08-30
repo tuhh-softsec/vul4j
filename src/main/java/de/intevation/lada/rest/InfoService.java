@@ -89,6 +89,7 @@ public class InfoService
             for(String g : groups) {
                 if (first) {
                     gString += g;
+                    first = false;
                 }
                 else {
                     gString += ", " + g;
