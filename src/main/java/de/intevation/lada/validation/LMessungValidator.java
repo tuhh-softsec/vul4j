@@ -11,8 +11,10 @@ import javax.inject.Named;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMessung;
+import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
+import de.intevation.lada.model.SPflichtMessgroesse;
 import de.intevation.lada.rest.Response;
 
 /**
@@ -32,6 +34,14 @@ implements Validator
     @Inject
     @Named("lmessungrepository")
     private Repository messungRepository;
+
+    @Inject
+    @Named("lmesswertrepository")
+    private Repository messwertRepository;
+
+    @Inject
+    @Named("readonlyrepository")
+    private Repository readonlyRepository;
 
     /**
      * Validate a LMessung object.
@@ -56,10 +66,88 @@ implements Validator
 
         validateHasNebenprobenNr(messung, warnings);
         validateDatum(messung, warnings);
+        validateHasMesswert(messung, warnings);
+        validateMessgroesse(messung, warnings);
+        validatePflichtmessgroessen(messung, warnings);
         if (!update) {
             validateUniqueNebenprobenNr(messung, warnings);
         }
         return warnings;
+    }
+
+    private void validateHasMesswert(
+        LMessung messung,
+        Map<String, Integer> warnings) {
+        QueryBuilder<LMesswert> wertBuilder =
+            new QueryBuilder<LMesswert>(
+                messwertRepository.getEntityManager(), LMesswert.class);
+        wertBuilder.and("messungsId", messung.getMessungsId())
+            .and("probeId", messung.getProbeId());
+        Response wertResponse = messwertRepository.filter(wertBuilder.getQuery());
+        List<LMesswert> messwerte = (List<LMesswert>)wertResponse.getData();
+        if (messwerte == null || messwerte.isEmpty()) {
+            warnings.put("messwert", 631);
+        }
+    }
+
+    private void validatePflichtmessgroessen(
+        LMessung messung,
+        Map<String, Integer> warnings) {
+        QueryBuilder<SPflichtMessgroesse> builder =
+            new QueryBuilder<SPflichtMessgroesse>(
+                readonlyRepository.getEntityManager(),
+                SPflichtMessgroesse.class);
+        builder.and("mmtId", messung.getMmtId());
+        Response response = readonlyRepository.filter(builder.getQuery());
+        List<SPflichtMessgroesse> pflicht =
+            (List<SPflichtMessgroesse>)response.getData();
+
+        QueryBuilder<LMesswert> wertBuilder =
+            new QueryBuilder<LMesswert>(
+                messwertRepository.getEntityManager(), LMesswert.class);
+        wertBuilder.and("messungsId", messung.getMessungsId())
+            .and("probeId", messung.getProbeId());
+        Response wertResponse =
+            messwertRepository.filter(wertBuilder.getQuery());
+        List<LMesswert> messwerte = (List<LMesswert>)wertResponse.getData();
+        for (SPflichtMessgroesse p : pflicht) {
+            boolean hit = false;
+            for (LMesswert wert : messwerte) {
+                if (p.getMessgroesseId().equals(wert.getMessgroesseId())) {
+                    hit = true;
+                }
+            }
+            if (!hit) {
+                warnings.put("pflichtmessgroesse", 631);
+            }
+        }
+    }
+
+    private void validateMessgroesse(
+        LMessung messung,
+        Map<String, Integer> warnings
+    ) {
+        String mmt = messung.getMmtId();
+        QueryBuilder<LMesswert> builder =
+            new QueryBuilder<LMesswert>(
+                messwertRepository.getEntityManager(), LMesswert.class);
+        builder.and("messungsId", messung.getMessungsId())
+            .and("probeId", messung.getProbeId());
+        Response response = messwertRepository.filter(builder.getQuery());
+        List<LMesswert> messwerte = (List<LMesswert>)response.getData();
+        String query = "select messgroesse_id from S_mmt_messgroesse where mmt_id = " + mmt;
+        List<Object[]> results = readonlyRepository.getEntityManager().createNativeQuery(query).getResultList();
+        for(LMesswert messwert: messwerte) {
+            boolean hit = false;
+            for (Object[] row: results) {
+                if (messwert.getMessgroesseId().equals(row[0].toString())) {
+                    hit = true;
+                }
+            }
+            if (!hit) {
+                warnings.put("messgroesse", 632);
+            }
+        }
     }
 
     /**
