@@ -15,6 +15,9 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.auth.Authentication;
 import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.auth.AuthenticationResponse;
+import de.intevation.lada.data.QueryBuilder;
+import de.intevation.lada.data.Repository;
+import de.intevation.lada.model.SNetzBetreiber;
 
 class Info {
     String user;
@@ -62,6 +65,10 @@ public class InfoService
     @Named("ldapauth")
     private Authentication authentication;
 
+    @Inject
+    @Named("readonlyrepository")
+    private Repository readonlyRepo;
+
     /**
      * Request SQL-Queries
      *
@@ -84,15 +91,23 @@ public class InfoService
             String user = authentication.getUserName(headers);
             AuthenticationResponse ar = authentication.authorizedGroups(headers);
             List<String> groups = ar.getNetzbetreiber();
+            QueryBuilder<SNetzBetreiber> builder =
+                new QueryBuilder<SNetzBetreiber>(
+                    readonlyRepo.getEntityManager(), SNetzBetreiber.class);
+            for (String g : groups) {
+                builder.or("netzbetreiberId", g);
+            }
+            Response nResponse = readonlyRepo.filter(builder.getQuery());
+            List<SNetzBetreiber> netzbetr = (List<SNetzBetreiber>)nResponse.getData();
             String gString = "";
             boolean first = true;
-            for(String g : groups) {
+            for(SNetzBetreiber nb : netzbetr) {
                 if (first) {
-                    gString += g;
+                    gString += nb.getNetzbetreiber();
                     first = false;
                 }
                 else {
-                    gString += ", " + g;
+                    gString += ", " + nb.getNetzbetreiber();
                 }
             }
             //TODO: This is the best way to get the version.
