@@ -9,11 +9,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.sun.istack.Builder;
+
 import de.intevation.lada.data.LOrtRepository;
 import de.intevation.lada.data.LProbeRepository;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.rest.Response;
 
 /**
@@ -57,9 +60,7 @@ implements Validator
         validateEntnahmeOrt(p, warnings);
         validateProbenahmeBegin(p, warnings);
         validateUWB(p, warnings);
-        if (!update) {
-            validateHauptProbenNummer(p, warnings);
-        }
+        validateHauptProbenNummer(p, warnings);
         return warnings;
     }
 
@@ -72,6 +73,15 @@ implements Validator
      */
     private void validateHauptProbenNummer(LProbe p, Map<String, Integer> warnings)
     throws ValidationException {
+        Response pInfo =
+            probeRepository.findById(LProbeInfo.class, p.getProbeId());
+        List<LProbeInfo> pList = (List<LProbeInfo>)pInfo.getData();
+        if (!(pList == null) && !pList.isEmpty()) {
+            LProbeInfo probe = pList.get(0);
+            if (probe.getHauptprobenNr().equals(p.getHauptprobenNr())) {
+                return;
+            }
+        }
         String hpn = p.getHauptprobenNr();
         QueryBuilder<LProbe> builder =
             new QueryBuilder<LProbe>(
