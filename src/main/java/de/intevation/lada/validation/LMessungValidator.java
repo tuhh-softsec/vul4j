@@ -135,7 +135,7 @@ implements Validator
             .and("probeId", messung.getProbeId());
         Response response = messwertRepository.filter(builder.getQuery());
         List<LMesswert> messwerte = (List<LMesswert>)response.getData();
-        String query = "select messgroesse_id from S_mmt_messgroesse where mmt_id = " + mmt;
+        String query = "select messgroesse_id from \"S_mmt_messgroesse\" where mmt_id = '" + mmt + "'";
         List<Object[]> results = readonlyRepository.getEntityManager().createNativeQuery(query).getResultList();
         for(LMesswert messwert: messwerte) {
             boolean hit = false;
