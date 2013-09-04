@@ -25,11 +25,13 @@ implements Exporter
 
     @Override
     public InputStream export(
-        String probe,
+        List<String> proben,
         AuthenticationResponse auth
     ) {
         String laf = "";
-        laf += creator.create(probe);
+        for (String probeId: proben) {
+            laf += creator.create(probeId);
+        }
         InputStream in = new ByteArrayInputStream(laf.getBytes());
         try {
             in.close();

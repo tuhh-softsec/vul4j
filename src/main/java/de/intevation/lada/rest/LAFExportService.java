@@ -1,13 +1,15 @@
 package de.intevation.lada.rest;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.GET;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -51,26 +53,35 @@ public class LAFExportService
      * @param header    The HTTP header containing authorization information.
      * @return Response object.
      */
-    @GET
-    @Path("/laf/{id}")
+    @POST
+    @Path("/laf")
+    @Consumes("application/x-www-form-urlencoded")
     @Produces("text/plain")
     public Response download(
-        @PathParam("id") String probeId,
+        String proben,
         @Context HttpHeaders header
     ) {
         try {
+            String[] raw = proben.split("&");
+            List<String> probeIds = new ArrayList<String>();
+            for (int i = 0; i < raw.length; i++) {
+                String[] probe = raw[i].split("=");
+                probeIds.add(probe[1]);
+            }
             String fileName = "export.laf";
             AuthenticationResponse auth = authentication.authorizedGroups(header);
             if (!authentication.isAuthorizedUser(header)) {
                 ResponseBuilder response = Response.status(Status.FORBIDDEN);
                 return response.build();
             }
-            if (!authentication.hasAccess(header, probeId) &&
-                !authorization.isReadOnly(probeId)) {
-                ResponseBuilder response = Response.status(Status.FORBIDDEN);
-                return response.build();
+            for (int i = 0; i < probeIds.size(); i++) {
+                String probeId = probeIds.get(i);
+                if (!authentication.hasAccess(header, probeId) &&
+                    !authorization.isReadOnly(probeId)) {
+                    probeIds.remove(probeId);
+                }
             }
-            InputStream exported = exporter.export(probeId, auth);
+            InputStream exported = exporter.export(probeIds, auth);
             ResponseBuilder response = Response.ok((Object)exported);
             response.header(
                 "Content-Disposition",
