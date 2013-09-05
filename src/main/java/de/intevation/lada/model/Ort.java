@@ -35,7 +35,6 @@ public class Ort implements java.io.Serializable {
 	private Double longitude;
     private int staatId;
     private String gemId;
-    private int kdaId;
 
 	public Ort() {
 	}
@@ -193,14 +192,5 @@ public class Ort implements java.io.Serializable {
 
     public void setStaatId(int staatId) {
         this.staatId= staatId;
-    }
-
-    @Column(name = "kda_id")
-    public int getKdaId() {
-        return kdaId;
-    }
-
-    public void setKdaId(int kdaId) {
-        this.kdaId = kdaId;
     }
 }
