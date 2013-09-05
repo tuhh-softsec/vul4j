@@ -192,12 +192,11 @@ implements Creator
             QueryBuilder<SKoordinatenArt> kaBuilder =
                 new QueryBuilder<SKoordinatenArt>(
                     readonlyRepo.getEntityManager(), SKoordinatenArt.class);
-            kaBuilder.and("kdaId", ort.get(0).getKdaId());
-            Response kaResp = readonlyRepo.filter(kaBuilder.getQuery());
-            List<SKoordinatenArt> kas = (List<SKoordinatenArt>)kaResp.getData();
-            String koord = kas.get(0).getKoordinatenart() + " ";
-            koord += ort.get(0).getKoordXExtern() + " ";
-            koord += ort.get(0).getKoordYExtern();
+            String koord = "";
+            koord += ort.get(0).getLatitude() + " ";
+            koord += ort.get(0).getLongitude() + " ";
+            koord += "UTM (WGS84)";
+            //TODO: use table koordinatenart and koord*extern!
             laf += lafLine("ORT_KOORDINATEN_S", koord);
             laf += lafLine("ORT_GEMEINDESCHLUESSEL", ort.get(0).getGemId());
         }
