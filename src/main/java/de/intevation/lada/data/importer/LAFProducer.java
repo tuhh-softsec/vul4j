@@ -103,9 +103,10 @@ implements Producer
                 this.zusatzwerte.add(zusatzWert);
             }
             else {
-                List<ReportData> err = this.errors.get(probe.getProbeId());
+                String ekey = probe.getProbeId() == null ? "probeId" : probe.getProbeId();
+                List<ReportData> err = this.errors.get(ekey);
                 if (err == null) {
-                    this.errors.put(probe.getProbeId(), mapper.getErrors());
+                    this.errors.put(ekey, mapper.getErrors());
                 }
                 else {
                     err.addAll(mapper.getErrors());
@@ -122,9 +123,10 @@ implements Producer
                 this.zusatzwerte.add(zusatzWert);
             }
             else {
-                List<ReportData> err = this.errors.get(probe.getProbeId());
+                String ekey = probe.getProbeId() == null ? "probeId" : probe.getProbeId();
+                List<ReportData> err = this.errors.get(ekey);
                 if (err == null) {
-                    this.errors.put(probe.getProbeId(), mapper.getErrors());
+                    this.errors.put(ekey, mapper.getErrors());
                 }
                 else {
                     err.addAll(mapper.getErrors());
@@ -144,9 +146,10 @@ implements Producer
                 this.messwerte.add(wert);
             }
             else {
-                List<ReportData> err = this.errors.get(probe.getProbeId());
+                String ekey = probe.getProbeId() == null ? "probeId" : probe.getProbeId();
+                List<ReportData> err = this.errors.get(ekey);
                 if (err == null) {
-                    this.errors.put(probe.getProbeId(), mapper.getErrors());
+                    this.errors.put(ekey, mapper.getErrors());
                 }
                 else {
                     err.addAll(mapper.getErrors());
@@ -277,9 +280,10 @@ implements Producer
         if (this.probe == null) {
             return this.warnings;
         }
-        List<ReportData> warn = this.warnings.get(probe.getProbeId());
+        String key = probe.getProbeId() == null ? "probeId" : probe.getProbeId();
+        List<ReportData> warn = this.warnings.get(key);
         if (warn == null) {
-            this.warnings.put(probe.getProbeId(), mapper.getWarnings());
+            this.warnings.put(key, mapper.getWarnings());
         }
         else {
             warn.addAll(mapper.getWarnings());
@@ -294,9 +298,10 @@ implements Producer
         if (this.probe == null) {
             return this.errors;
         }
-        List<ReportData> err = this.errors.get(this.probe.getProbeId());
+        String key = probe.getProbeId() == null ? "probeId" : probe.getProbeId();
+        List<ReportData> err = this.errors.get(key);
         if (err == null) {
-            this.errors.put(probe.getProbeId(), mapper.getErrors());
+            this.errors.put(key, mapper.getErrors());
         }
         else {
             err.addAll(mapper.getErrors());
