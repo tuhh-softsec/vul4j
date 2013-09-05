@@ -54,6 +54,7 @@ public class LAFParser {
                     this.errors.putAll(producer.getErrors());
                     writeAll(auth);
                     this.producer.reset();
+                    this.writer.reset();
                 }
                 catch (LAFParserException lpe) {
                     Map<String, List<ReportData>> pErr = producer.getErrors();
@@ -78,6 +79,7 @@ public class LAFParser {
                     this.errors.putAll(producer.getErrors());
                     writeAll(auth);
                     this.producer.reset();
+                    this.writer.reset();
                     laf = "";
                 }
                 catch (LAFParserException lpe) {
@@ -102,7 +104,7 @@ public class LAFParser {
     }
 
     private void writeAll(AuthenticationResponse auth) {
-        String probeId = producer.getProbe().getProbeId();
+        String probeId = producer.getProbe().getProbeId() == null ? "probeId" : producer.getProbe().getProbeId();
         boolean p = writer.writeProbe(auth, producer.getProbe());
         if (!p) {
             this.errors.put(probeId, writer.getErrors());
@@ -263,7 +265,7 @@ public class LAFParser {
 
     public void reset() {
         producer.reset();
-        this.errors.clear();
-        this.warnings.clear();
+        this.errors = new HashMap<String, List<ReportData>>();
+        this.warnings = new HashMap<String, List<ReportData>>();
     }
 }
