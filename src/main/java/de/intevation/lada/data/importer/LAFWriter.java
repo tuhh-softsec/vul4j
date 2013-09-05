@@ -100,6 +100,13 @@ implements Writer
                     warnings.add(new ReportData(key, "validation", warn.get(key)));
                 }
             }
+            if (probe.getProbeId() == null) {
+                errors.add(new ReportData("probeId", "missing", 673));
+            }
+            return false;
+        }
+        if (probe.getProbeId() == null) {
+            errors.add(new ReportData("probeId", "missing", 673));
             return false;
         }
         persist(probe);
@@ -367,7 +374,6 @@ implements Writer
         return false;
     }
 
-    
     /**
      * @return the errors
      */
@@ -375,11 +381,15 @@ implements Writer
         return errors;
     }
 
-    
     /**
      * @return the warnings
      */
     public List<ReportData> getWarnings() {
         return warnings;
+    }
+
+    public void reset() {
+        this.warnings = new ArrayList<ReportData>();
+        this.errors = new ArrayList<ReportData>();
     }
 }

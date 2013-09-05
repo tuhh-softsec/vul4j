@@ -29,4 +29,5 @@ public interface Writer
         List<LMesswert> werte);
     public List<ReportData> getErrors();
     public List<ReportData> getWarnings();
+    public void reset();
 }
