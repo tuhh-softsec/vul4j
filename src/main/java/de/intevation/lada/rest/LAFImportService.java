@@ -84,6 +84,7 @@ public class LAFImportService
                 }
             }
             catch (IOException e) {
+                importer.reset();
                 return new Response(false, 603, null);
             }
 
@@ -97,9 +98,11 @@ public class LAFImportService
                 code = 670;
             }
             Response response = new Response(success, code, respData);
+            importer.reset();
             return response;
         }
         catch(AuthenticationException ae) {
+            importer.reset();
             return new Response(false, 699, null);
         }
     }

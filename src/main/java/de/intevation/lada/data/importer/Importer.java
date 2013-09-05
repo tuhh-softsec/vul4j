@@ -11,4 +11,5 @@ public interface Importer
     public boolean importData(String content, AuthenticationResponse auth);
     public Map<String, List<ReportData>> getErrors();
     public Map<String, List<ReportData>> getWarnings();
+    public void reset();
 }

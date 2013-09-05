@@ -121,4 +121,10 @@ implements Importer
         this.errors.putAll(this.parser.getErrors());
         return true;
     }
+
+    public void reset() {
+        parser.reset();
+        this.warnings = new HashMap<String, List<ReportData>>();
+        this.errors = new HashMap<String, List<ReportData>>();
+    }
 }
