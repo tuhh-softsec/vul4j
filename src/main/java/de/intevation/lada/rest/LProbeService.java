@@ -143,13 +143,17 @@ public class LProbeService {
         try {
             AuthenticationResponse auth =
                 authentication.authorizedGroups(header);
-            QueryBuilder<LProbeInfo> builder =
-                new QueryBuilder<LProbeInfo>(
-                    repository.getEntityManager(),
-                    LProbeInfo.class);
-
             MultivaluedMap<String, String> params = info.getQueryParameters();
             if (params.isEmpty() || !params.containsKey("qid")) {
+                QueryBuilder<LProbeInfo> builder =
+                    new QueryBuilder<LProbeInfo>(
+                        repository.getEntityManager(),
+                        LProbeInfo.class);
+                builder.or("fertig", true);
+                List<String> netzbetreiberIds = auth.getNetzbetreiber();
+                for (String netzbetreiberId: netzbetreiberIds) {
+                    builder.or("netzbetreiberId", netzbetreiberId);
+                }
                 return repository.filter(builder.getQuery());
             }
             String qid = params.getFirst("qid");
