@@ -26,6 +26,7 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LMesswertId;
+import de.intevation.lada.model.LProbe;
 
 /**
  * This class produces a RESTful service to read, write and update
@@ -158,10 +159,10 @@ public class LMesswertService
     /**
      * Delete a LMesswert object.
      *
-     * @param statusId     The object id.
-     * @param messungsId   The LProbe id.
-     * @param statusId     The LStatus id
-     * @param headers   The HTTP header containing authorization information.
+     * @param messgroesseId The messgroesse id.
+     * @param messungsId    The {@link LMessung} id.
+     * @param probeId       The {@link LProbe} id
+     * @param headers       The HTTP header containing authorization information.
      * @return Response object.
      */
     @DELETE

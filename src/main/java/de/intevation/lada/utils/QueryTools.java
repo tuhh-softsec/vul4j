@@ -16,9 +16,19 @@ import de.intevation.lada.model.query.QueryConfig;
 import de.intevation.lada.model.query.QueryFilter;
 import de.intevation.lada.model.query.ResultConfig;
 
-
+/**
+ * Utility class to handle the SQL query configuration.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class QueryTools
 {
+    /**
+     * Read the config file using the system property
+     * "de.intevation.lada.sqlconfig".
+     *
+     * @return The file content.
+     */
     public static String readConfigFile() {
         String file = System.getProperty("de.intevation.lada.sqlconfig");
         try {
@@ -31,6 +41,13 @@ public class QueryTools
         }
     }
 
+    /**
+     * Get the configuration objects.
+     * First reads the config file and creates {@link QueryConfig} objects
+     * from JSON.
+     *
+     * @return List of {@link QueryConfig} objects.
+     */
     public static List<QueryConfig> getConfig() {
         String content = readConfigFile();
         if (content == null) {
@@ -79,6 +96,14 @@ public class QueryTools
         return configs;
     }
 
+    /**
+     * Get a query by id.
+     * First reads the config file and returns the {@link QueryConfig}
+     * identified by the given id.
+     *
+     * @param id {@link QueryConfig} id.
+     * @return The query config as JSON object or null if no object was found.
+     */
     public static JSONObject getQueryById(String id) {
         try {
             String content = readConfigFile();

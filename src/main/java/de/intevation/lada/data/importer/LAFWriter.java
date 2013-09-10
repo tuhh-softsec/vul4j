@@ -24,6 +24,11 @@ import de.intevation.lada.model.Ort;
 import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
+/**
+ * Writer to persist new entities in the database.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Named("lafwriter")
 public class LAFWriter
 implements Writer
@@ -69,11 +74,22 @@ implements Writer
     private List<ReportData> errors;
     private List<ReportData> warnings;
 
+    /**
+     * Default constructor.
+     */
     public LAFWriter() {
         errors = new ArrayList<ReportData>();
         warnings = new ArrayList<ReportData>();
     }
 
+    /**
+     * Write a new {@link LProbe} object to the database using
+     * authorization and validation.
+     *
+     * @param auth      The authentication information.
+     * @param probe     The new {@link LProbe} object.
+     * @return success
+     */
     @Override
     public boolean writeProbe(AuthenticationResponse auth, LProbe probe) {
         if (!authorized(probe, auth)) {
@@ -113,6 +129,14 @@ implements Writer
         return true;
     }
 
+    /**
+     * Write new {@link LMessung} objects to the database using
+     * authorization and validation.
+     *
+     * @param auth      The authentication information.
+     * @param messungen The new {@link LMessung} objects.
+     * @return success
+     */
     @Override
     public boolean writeMessungen(
         AuthenticationResponse auth,
@@ -150,6 +174,13 @@ implements Writer
         return true;
     }
 
+    /**
+     * Write new {@link Ort} objects to the database.
+     *
+     * @param auth      The authentication information.
+     * @param orte      List of {@link Ort} objects.
+     * @return success
+     */
     @Override
     public boolean writeOrte(AuthenticationResponse auth, List<Ort> orte) {
         for (Ort ort :orte) {
@@ -158,6 +189,13 @@ implements Writer
         return true;
     }
 
+    /**
+     * Write new {@link LOrt} objects to the database using validation.
+     *
+     * @param auth  The authentication information.
+     * @param orte  List of {@link LOrt} objects.
+     * @return success
+     */
     @Override
     public boolean writeLOrte(AuthenticationResponse auth, List<LOrt> orte) {
         for(LOrt ort: orte) {
@@ -191,6 +229,13 @@ implements Writer
         return true;
     }
 
+    /**
+     * Write new {@link LKommentarP} objects to the database.
+     *
+     * @param auth          The authentication information.
+     * @param kommentare    List of {@link LKommentarP} objects.
+     * @return success
+     */
     @Override
     public boolean writeProbenKommentare(
         AuthenticationResponse auth,
@@ -202,6 +247,13 @@ implements Writer
         return true;
     }
 
+    /**
+     * Write new {@link LKommentarM} objects to the database.
+     *
+     * @param auth          The authentication information.
+     * @param kommentare    List of {@link LKommentarM} objects.
+     * @return success
+     */
     @Override
     public boolean writeMessungKommentare(
         AuthenticationResponse auth,
@@ -218,6 +270,13 @@ implements Writer
         return true;
     }
 
+    /**
+     * Write new {@link LMesswert} objects to the database using validation.
+     *
+     * @param auth      The authentication information.
+     * @param werte     List of {@link LMesswert} objects.
+     * @return success
+     */
     @Override
     public boolean writeMesswerte(
         AuthenticationResponse auth,
@@ -254,6 +313,11 @@ implements Writer
         return false;
     }
 
+    /**
+     * Persist a {@link LProbe} object.
+     *
+     * @param probe The {@link LProbe} object.
+     */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     private void persist(LProbe probe) {
         String queryColumns = "insert into l_probe (probe_id, ba_id, test," +
@@ -373,6 +437,14 @@ implements Writer
         insert.executeUpdate();
     }
 
+    /**
+     * Check if the user given in the authentication information is authorized
+     * to access the {@link LProbe} object.
+     *
+     * @param probe The {@link LProbe} object.
+     * @param auth  The authentication information.
+     * @return access
+     */
     private boolean authorized(LProbe probe, AuthenticationResponse auth) {
         if (auth.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
             auth.getMst().contains(probe.getMstId())) {
@@ -395,6 +467,9 @@ implements Writer
         return warnings;
     }
 
+    /**
+     * Reset the errors and warnings.
+     */
     public void reset() {
         this.warnings = new ArrayList<ReportData>();
         this.errors = new ArrayList<ReportData>();

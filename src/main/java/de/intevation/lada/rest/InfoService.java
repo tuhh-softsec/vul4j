@@ -49,8 +49,8 @@ class Info {
 }
 
 /**
- * This class produces a RESTful service to read, write and update
- * LOrt objects.
+ * This class produces a RESTful service to read information about the user and
+ * server
  *
  * @author <a href="mailto:torsten.irlaender@intevation.de">Torsten Irländer</a>
  */
@@ -70,9 +70,7 @@ public class InfoService
     private Repository readonlyRepo;
 
     /**
-     * Request SQL-Queries
-     *
-     * Query parameters are used for the filter in form of key-value pairs.
+     * Request User and Server information.
      *
      * @param info      The URL query parameters.
      * @param headers   The HTTP header containing authorization information.

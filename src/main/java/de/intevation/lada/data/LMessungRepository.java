@@ -56,7 +56,7 @@ public class LMessungRepository implements Repository
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria  The query filter.
+     * @param filter  The query filter.
      * @return Response opbject.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {
@@ -98,7 +98,7 @@ public class LMessungRepository implements Repository
     /**
      * Validate and persist a new LMessung object.
      *
-     * @param probe The new object
+     * @param object The new object
      * @return Response object.
      */
     public Response create(Object object) {

@@ -13,11 +13,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * The LAFFormat reads the config file
+ * (https://bfs-intern.intevation.de/Server/Importer) and creates format
+ * objects for each entry.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class LAFFormat
 {
     private JSONObject fileContent;
 
+    /**
+     * Reads the config file.
+     *
+     * @param fileName  Path to the config file.
+     * @return success
+     */
     public boolean readConfigFile(String fileName) {
         try {
             byte[] encoded = Files.readAllBytes(Paths.get(fileName));
@@ -35,6 +47,16 @@ public class LAFFormat
         }
     }
 
+    /**
+     * Returns a List of EntryFormat for the requested entity type.
+     * The Entity type can be one of:
+     * * "probe"
+     * * "messung"
+     * * "ort"
+     *
+     * @param dataType The entity type
+     * @return List of entry formats defined for the requested type.
+     */
     public List<EntryFormat> getFormat(String dataType) {
         List<EntryFormat> formats = new LinkedList<EntryFormat>();
         try {

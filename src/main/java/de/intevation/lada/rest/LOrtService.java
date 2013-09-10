@@ -25,6 +25,7 @@ import de.intevation.lada.auth.Authorization;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LOrt;
+import de.intevation.lada.model.LProbe;
 
 /**
  * This class produces a RESTful service to read, write and update
@@ -156,8 +157,8 @@ public class LOrtService
     /**
      * Delete a LOrt object.
      *
-     * @param pzsId     The object id.
-     * @param probeId   The LProbe id.
+     * @param ortId     The {@link LOrt} id.
+     * @param probeId   The {@link LProbe} id.
      * @param headers   The HTTP header containing authorization information.
      * @return Response object.
      */

@@ -43,15 +43,16 @@ public class LAFExportService
     @Inject
     @Named("lafexporter")
     private Exporter exporter;
+
     /**
-     * Import LProbe object.
-     * See
-     * http://howtodoinjava.com/2013/05/21/jax-rs-resteasy-file-upload-httpclient-example/
-     * for more details on the implementation.
+     * Export LProbe objects.
      *
-     * @param input MulitpartFormDataInput containing the file to upload.
+     * The service takes form url encoded POST data containing probe ids and
+     * exports the LProbe objects filtered by these ids.
+     *
+     * @param proben    Form data (url encoded) string with probe ids.
      * @param header    The HTTP header containing authorization information.
-     * @return Response object.
+     * @return The LAF file to export.
      */
     @POST
     @Path("/laf")

@@ -32,6 +32,12 @@ import de.intevation.lada.model.SProbenart;
 import de.intevation.lada.model.SUmwelt;
 import de.intevation.lada.rest.Response;
 
+/**
+ * The AttributeMapper is used to set object attributes via string based
+ * key value pairs. The key represents a member of an entity object.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Stateless
 public class AttributeMapper
 {
@@ -53,11 +59,22 @@ public class AttributeMapper
     private List<ReportData> warnings;
     private List<ReportData> errors;
 
+    /**
+     * Default constructor to create a new AttributeMapper object.
+     */
     public AttributeMapper() {
         this.warnings = new ArrayList<ReportData>();
         this.errors = new ArrayList<ReportData>();
     }
 
+    /**
+     * Add an attribute to the given LProbe object.
+     *
+     * @param key       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param probe     The entity object.
+     * @return The updated entity object.
+     */
     public LProbe addAttribute(String key, Object value, LProbe probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if ("datenbasis_s".equals(key) && probe.getDatenbasisId() == null) {
@@ -203,13 +220,21 @@ public class AttributeMapper
         return probe;
     }
 
+    /**
+     * Add an attribute to the given LKommentarP object.
+     *
+     * @param key       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param kommentar The entity object.
+     * @return The updated entity object.
+     */
     public LKommentarP addAttribute(
         String key,
-        Object values,
+        Object value,
         LKommentarP kommentar
     ) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
-        String v = values.toString();
+        String v = value.toString();
         String erzeuger = v.substring(1, 5);
         String date = v.substring(8, 21);
         Date d;
@@ -218,7 +243,7 @@ public class AttributeMapper
             kommentar.setKDatum(d);
         }
         catch (ParseException e) {
-            this.warnings.add(new ReportData(key, values.toString(), 674));
+            this.warnings.add(new ReportData(key, value.toString(), 674));
         }
         String text = v.substring(23, v.length() -1);
         kommentar.setErzeuger(erzeuger);
@@ -226,13 +251,21 @@ public class AttributeMapper
         return kommentar;
     }
 
+    /**
+     * Add an attribute to the given LKommentarM object.
+     *
+     * @param key       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param kommentar The entity object.
+     * @return The updated entity object.
+     */
     public LKommentarM addAttribute(
         String key,
-        Object values,
+        Object value,
         LKommentarM kommentar
     ) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
-        String v = values.toString();
+        String v = value.toString();
         String erzeuger = v.substring(1, 5);
         String date = v.substring(8, 21);
         Date d;
@@ -241,7 +274,7 @@ public class AttributeMapper
             kommentar.setKDatum(d);
         }
         catch (ParseException e) {
-            this.warnings.add(new ReportData(key, values.toString(), 674));
+            this.warnings.add(new ReportData(key, value.toString(), 674));
         }
         String text = v.substring(23, v.length() -1);
         kommentar.setErzeuger(erzeuger);
@@ -249,43 +282,51 @@ public class AttributeMapper
         return kommentar;
     }
 
+    /**
+     * Add an attribute to the given LMessung object.
+     *
+     * @param key       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param messung   The entity object.
+     * @return The updated entity object.
+     */
     public LMessung addAttribute(
         String key,
-        Object values,
+        Object value,
         LMessung messung
     ) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if ("messungs_id".equals(key)) {
             LMessungId id = messung.getId();
-            Integer v = Integer.valueOf(values.toString());
+            Integer v = Integer.valueOf(value.toString());
             id.setMessungsId(v);
             messung.setMessungsId(v);
             messung.setId(id);
         }
         else if ("nebenprobennummer".equals(key)) {
-            messung.setNebenprobenNr(values.toString());
+            messung.setNebenprobenNr(value.toString());
         }
         else if ("mess_datum_uhrzeit".equals(key)) {
             try {
-                Date d = format.parse(values.toString());
+                Date d = format.parse(value.toString());
                 messung.setMesszeitpunkt(d);
             }
             catch (ParseException e) {
-                this.warnings.add(new ReportData(key, values.toString(), 674));
+                this.warnings.add(new ReportData(key, value.toString(), 674));
             }
         }
         else if ("messzeit_sekunden".equals(key)) {
-            Integer i = Integer.valueOf(values.toString());
+            Integer i = Integer.valueOf(value.toString());
             messung.setMessdauer(i);
         }
         else if ("messmethode_s".equals(key)) {
-            messung.setMmtId(values.toString());
+            messung.setMmtId(value.toString());
         }
         else if ("bearbeitungsstatus".equals(key)) {
             //ignored.!?
         }
         else if ("erfassung_abgeschlossen".equals(key)) {
-            if(!values.toString().equals("0")) {
+            if(!value.toString().equals("0")) {
                 messung.setFertig(true);
             }
             else {
@@ -295,15 +336,23 @@ public class AttributeMapper
         return messung;
     }
 
+    /**
+     * Add an attribute to the given LMesswert object.
+     *
+     * @param key       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param messwert  The entity object.
+     * @return The updated entity object.
+     */
     public LMesswert addAttribute(
         String key,
-        Object values,
+        Object value,
         LMesswert messwert
     ) {
         Pattern p = Pattern.compile(
             "(\".+\")( .+ )(\".+\")( .*)( .{1,12})( .{1,9})(.{0,9})(.{0,3})");
         //TODO Does not perfectly match... Use better matching for floats.
-        Matcher m = p.matcher(values.toString());
+        Matcher m = p.matcher(value.toString());
         if (m.matches()) {
             String messgroesse = m.group(1).substring(1, m.group(1).length() - 1);
             String wert = m.group(2);
@@ -351,59 +400,76 @@ public class AttributeMapper
         return messwert;
     }
 
+    /**
+     * Add an attribute to the OrtCreator. The creator is used to build the
+     * two objects Ort and LOrt.
+     *
+     * @param key       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param ort       The creator object.
+     * @return The updated creator object.
+     */
     public OrtCreator addAttribute(
         String key,
-        Object values,
+        Object value,
         OrtCreator ort
     ) {
         if ("ort_code".equals(key)) {
-            ort.setOrtCode(values.toString());
+            ort.setOrtCode(value.toString());
         }
         if ("ort_typ".equals(key)) {
-            ort.setOrtTyp(values.toString());
+            ort.setOrtTyp(value.toString());
         }
         if ("ort_zusatz".equals(key)) {
-            ort.setZusatztext(values.toString());
+            ort.setZusatztext(value.toString());
         }
         if ("ort_land_lang".equals(key)) {
-            ort.setLandLang(values.toString());
+            ort.setLandLang(value.toString());
         }
         if ("ort_land_kurz".equals(key)) {
-            ort.setLandKurz(values.toString());
+            ort.setLandKurz(value.toString());
         }
         if ("ort_land_s".equals(key)) {
-            ort.setLandS(values.toString());
+            ort.setLandS(value.toString());
         }
         if ("ort_gemeindeschlüssel".equals(key)) {
-            ort.setGemSchluessel(values.toString());
+            ort.setGemSchluessel(value.toString());
         }
         if ("ort_bezeichnung".equals(key)) {
-            ort.setBezeichnung(values.toString());
+            ort.setBezeichnung(value.toString());
         }
         if ("ort_beschreibung".equals(key)) {
-            ort.setBeschreibung(values.toString());
+            ort.setBeschreibung(value.toString());
         }
         if ("ort_nuts_code".equals(key)) {
-            ort.setNuts(values.toString());
+            ort.setNuts(value.toString());
         }
         if ("ort_hoehe_land".equals(key)) {
-            ort.setHoehe(values.toString());
+            ort.setHoehe(value.toString());
         }
         if ("ort_koordinaten".equals(key)) {
-            ort.setKoordinaten(values.toString());
+            ort.setKoordinaten(value.toString());
         }
         if ("ort_koordinaten_s".equals(key)) {
-            ort.setKoordinatenS(values.toString());
+            ort.setKoordinatenS(value.toString());
         }
         return ort;
     }
 
+    /**
+     * Add an attribute to the given LZusatzwert object.
+     *
+     * @param lKey       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param wert      The entity object.
+     * @return The updated entity object.
+     */
     public LZusatzWert addAttribute(
         String lKey,
-        Object values,
+        Object value,
         LZusatzWert wert
     ) {
-        String v = values.toString().substring(1);
+        String v = value.toString().substring(1);
         int ndx = v.indexOf("\"");
         String groesse = v.substring(0, ndx);
         v = v.substring(ndx + 2);
@@ -430,12 +496,20 @@ public class AttributeMapper
         return wert;
     }
 
+    /**
+     * Add an attribute to the given LZusatzwert object.
+     *
+     * @param lKey       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param wert     The entity object.
+     * @return The updated entity object.
+     */
     public LZusatzWert addAttributeS(
         String lKey,
-        Object values,
+        Object value,
         LZusatzWert wert
     ) {
-        String v = values.toString().substring(1);
+        String v = value.toString().substring(1);
         int ndx = v.indexOf("\"");
         String groesse = v.substring(0, ndx);
         v = v.substring(ndx + 2);
@@ -451,6 +525,7 @@ public class AttributeMapper
         wert.setMessfehler(Float.valueOf(fehler));
         return wert;
     }
+
     /**
      * @return the warnings
      */

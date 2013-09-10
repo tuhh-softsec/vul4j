@@ -2,7 +2,17 @@ package de.intevation.lada.model.query;
 
 import java.util.List;
 
+import de.intevation.lada.model.LProbeInfo;
 
+/**
+ * Container for SQL query configuration.
+ *
+ * The server can filter {@link LProbeInfo} objects by configurable SQL queries
+ * as described in the project wiki (<link>https://bfs-intern.intevation.de/Server/Suche</link>).
+ * This container is used to store the config at runtime.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class QueryConfig
 {
     int id;
@@ -80,7 +90,7 @@ public class QueryConfig
     }
 
     /**
-     * @param filter the filter to set
+     * @param filters the filter to set
      */
     public void setFilters(List<QueryFilter> filters) {
         this.filters = filters;

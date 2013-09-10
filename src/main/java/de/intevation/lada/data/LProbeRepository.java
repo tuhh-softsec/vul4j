@@ -63,7 +63,7 @@ public class LProbeRepository implements Repository{
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria  The query filter
+     * @param filter  The query filter
      * @return Response object.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {
@@ -99,6 +99,7 @@ public class LProbeRepository implements Repository{
         }
         return new Response(true, 200, res);
     }
+
     /**
      * Get all objects.
      *
@@ -130,7 +131,7 @@ public class LProbeRepository implements Repository{
     /**
      * Validate and persist a new LProbe object.
      *
-     * @param probe The new LProbe object
+     * @param object    The new LProbe object
      * @return Response.
      */
     public Response create(Object object) {

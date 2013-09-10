@@ -12,7 +12,12 @@ import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LZusatzWert;
 import de.intevation.lada.model.Ort;
 
-
+/**
+ * Defines the interface for producers that create lada entities from
+ * key-value pairs.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public interface Producer
 {
     public void addData(String key, Object values)

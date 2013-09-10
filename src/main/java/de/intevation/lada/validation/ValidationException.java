@@ -55,7 +55,7 @@ extends Exception
     /**
      * Getter for the errors.
      *
-     * @return
+     * @return the errors
      */
     public Map<String, Integer> getErrors() {
         return errors;
@@ -64,7 +64,7 @@ extends Exception
     /**
      * Getter for the warnings.
      *
-     * @return
+     * @return the warnings
      */
     public Map<String, Integer> getWarnings() {
         return warnings;

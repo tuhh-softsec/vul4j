@@ -53,7 +53,7 @@ public class LKommentarPRepository implements Repository
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria  The query filter.
+     * @param filter  The query filter.
      * @return Response object.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {

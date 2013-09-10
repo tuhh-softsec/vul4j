@@ -1,34 +1,24 @@
 package de.intevation.lada.data.importer;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import de.intevation.lada.auth.AuthenticationResponse;
-import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
-import de.intevation.lada.model.LKommentarM;
-import de.intevation.lada.model.LKommentarP;
-import de.intevation.lada.model.LMessung;
-import de.intevation.lada.model.LMesswert;
-import de.intevation.lada.model.LOrt;
-import de.intevation.lada.model.LProbe;
-import de.intevation.lada.model.LProbeInfo;
-import de.intevation.lada.rest.Response;
-import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
+/**
+ * This importer uses the LAFParser to read data and create error/warning reports.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Named("lafimporter")
 @Stateless
 public class LAFImporter
@@ -76,6 +66,9 @@ implements Importer
     private Map<String, List<ReportData>> warnings;
     private Map<String, List<ReportData>> errors;
 
+    /**
+     * Default constructor.
+     */
     public LAFImporter() {
         warnings = new HashMap<String, List<ReportData>>();
         errors = new HashMap<String, List<ReportData>>();
@@ -95,6 +88,13 @@ implements Importer
         return errors;
     }
 
+    /**
+     * Import LAF formated data using authentication information.
+     *
+     * @param content   The LAF file content.
+     * @param auth      The authentication information.
+     * @return success.
+     */
     @Override
     public boolean importData(String content, AuthenticationResponse auth) {
         this.warnings.clear();
@@ -122,6 +122,10 @@ implements Importer
         return true;
     }
 
+    /**
+     * Reset the errors and warnings. Use this before calling importData()
+     * to have a clean error and warning report.
+     */
     public void reset() {
         parser.reset();
         this.warnings = new HashMap<String, List<ReportData>>();

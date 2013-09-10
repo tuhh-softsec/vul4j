@@ -70,7 +70,7 @@ public class SProbenartService
      * Request a single SProbenart via its id.
      *
      * @param id        The object id.
-     * @param header    The HTTP header containing authorization information.
+     * @param headers   The HTTP header containing authorization information.
      * @return Response object.
      */
     @GET

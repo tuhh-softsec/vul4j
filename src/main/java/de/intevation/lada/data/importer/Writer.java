@@ -11,7 +11,11 @@ import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.Ort;
 
-
+/**
+ * Defines the interface for database object writers.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public interface Writer
 {
     public boolean writeProbe(AuthenticationResponse auth, LProbe probe);

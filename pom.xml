@@ -7,8 +7,6 @@
     <artifactId>lada</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>Java EE 6 webapp project</name>
-    <description>A starter Java EE 6 webapp project for use on JBoss AS 7.1 / EAP 6, generated from the jboss-javaee6-webapp archetype</description>
 
     <properties>
         <!-- Explicitly declaring the source encoding eliminates the following 
@@ -362,4 +360,8 @@
             <url>http://www.hibernatespatial.org/repository</url>
         </repository>
     </repositories>
+    <name>Lada Server</name>
+    <description>Lada server application.
+
+The Lada server provides RESTful services to grant access to laboratory data using authentication and validation.</description>
 </project>

@@ -14,6 +14,7 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.auth.Authentication;
 import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.auth.Authorization;
+import de.intevation.lada.model.LProbe;
 
 /**
  * This class produces a RESTful service to get information about
@@ -39,7 +40,7 @@ public class AuthInfoService
     /**
      * Request information about access to probe objects
      *
-     * @param info      The URL query parameters.
+     * @param id        The {@link LProbe} id.
      * @param headers   The HTTP header containing authorization information.
      * @return Response object.
      */

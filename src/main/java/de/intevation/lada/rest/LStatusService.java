@@ -23,6 +23,8 @@ import de.intevation.lada.auth.Authentication;
 import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
+import de.intevation.lada.model.LMessung;
+import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LStatus;
 import de.intevation.lada.model.LStatusId;
 
@@ -56,7 +58,7 @@ public class LStatusService
      * Query parameters are used for the filter in form of key-value pairs.
      *
      * @param info      The URL query parameters.
-     * @param header    The HTTP header containing authorization information.
+     * @param headers   The HTTP header containing authorization information.
      * @return Response object.
      */
     @GET
@@ -148,9 +150,9 @@ public class LStatusService
      * Delete a LStatus object.
      *
      * @param statusId     The object id.
-     * @param messungsId   The LProbe id.
-     * @param statusId     The LStatus id
-     * @param headers   The HTTP header containing authorization information.
+     * @param messungsId   The {@link LMessung} id.
+     * @param probeId      The {@link LProbe} id
+     * @param headers      The HTTP header containing authorization information.
      * @return Response object.
      */
     @DELETE

@@ -55,7 +55,7 @@ public class LZusatzwertService
      * Query parameters are used for the filter in form of key-value pairs.
      *
      * @param info      The URL query parameters.
-     * @param header    The HTTP header containing authorization information.
+     * @param headers    The HTTP header containing authorization information.
      * @return Response object.
      */
     @GET

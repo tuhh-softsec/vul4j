@@ -76,7 +76,7 @@ public class OrtCreator
     }
 
     /**
-     * @param ortId the ortCode to set
+     * @param ortCode   the ortCode to set
      */
     public void setOrtCode(String ortCode) {
         this.ortCode = ortCode;

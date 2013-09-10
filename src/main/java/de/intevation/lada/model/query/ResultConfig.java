@@ -1,6 +1,11 @@
 package de.intevation.lada.model.query;
 
-
+/**
+ * Container for result configurations.
+ * Provides config for the client like column header, column with and data index.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class ResultConfig
 {
     String dataIndex;
@@ -8,9 +13,18 @@ public class ResultConfig
     Integer flex;
     Integer width;
 
+    /**
+     * Default constructor.
+     */
     public ResultConfig() {
     }
 
+    /**
+     * @param dataIndex The dataIndex
+     * @param header    The column header
+     * @param flex      Flexible with
+     * @param width     Width in px.
+     */
     public ResultConfig(String dataIndex, String header, Integer flex, Integer width) {
         this.dataIndex= dataIndex;
         this.header= header;
@@ -18,6 +32,11 @@ public class ResultConfig
         this.width = width;
     }
 
+    /**
+     * @param dataIndex The dataIndex
+     * @param header    The column header
+     * @param flex      Flexible with
+     */
     public ResultConfig(String dataIndex, String header, Integer flex) {
         this.dataIndex= dataIndex;
         this.header= header;
@@ -25,6 +44,10 @@ public class ResultConfig
         this.width = null;
     }
 
+    /**
+     * @param dataIndex The dataIndex
+     * @param header    The column header
+     */
     public ResultConfig(String dataIndex, String header) {
         this.dataIndex= dataIndex;
         this.header= header;

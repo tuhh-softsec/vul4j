@@ -27,6 +27,13 @@ import de.intevation.lada.model.SProbenZusatz;
 import de.intevation.lada.model.SProbenart;
 import de.intevation.lada.rest.Response;
 
+/**
+ * This creator produces a LAF conform String containing all information about
+ * a single {@link LProbe} object including subobjects like
+ * {@link LMessung}, {@link LMesswert}, {@link LKommentarP}...
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Named("lafcreator")
 public class LAFCreator
 implements Creator
@@ -64,6 +71,11 @@ implements Creator
     @Named("readonlyrepository")
     private Repository readonlyRepo;
 
+    /**
+     * Create the LAF conform String.
+     *
+     * @param probeId   The {@link LProbe} id.
+     */
     @Override
     public String create(String probeId) {
         String lafProbe = "%PROBE%\n";
@@ -71,6 +83,11 @@ implements Creator
         return lafProbe;
     }
 
+    /**
+     * Find the {@link LProbe} object and produce the LAF conform string.
+     * @param probeId The {@link LProbe} id.
+     * @return LAF conform string.
+     */
     private String probeToLAF(String probeId) {
         Response found = this.proben.findById(LProbe.class, probeId);
         if (found.getData() == null) {
@@ -82,6 +99,12 @@ implements Creator
         return lafProbe;
     }
 
+    /**
+     * Write the attributes and subobjects.
+     *
+     * @param probe The {@link LProbeInfo} object.
+     * @return LAF conform string.
+     */
     private String writeAttributes(LProbeInfo probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         QueryBuilder<LKommentarP> kommBuilder =
@@ -150,6 +173,12 @@ implements Creator
         return laf;
     }
 
+    /**
+     * Write {@link LZusatzWert} attributes.
+     *
+     * @param zw    The {@link LZusatzWert}.
+     * @return Single LAF line.
+     */
     private String writeZusatzwert(LZusatzWert zw) {
         QueryBuilder<SProbenZusatz> builder =
             new QueryBuilder<SProbenZusatz>(
@@ -165,6 +194,12 @@ implements Creator
         return lafLine("PZB_S", value);
     }
 
+    /**
+     * Write {@link LOrt} attributes.
+     *
+     * @param probe The {@link LProbeInfo} object.
+     * @return LAF conform string
+     */
     private String writeOrt(LProbeInfo probe) {
         QueryBuilder<LOrt> builder =
             new QueryBuilder<LOrt>(
@@ -203,6 +238,12 @@ implements Creator
         return laf;
     }
 
+    /**
+     * Write {@link LKommentarP} attributes.
+     *
+     * @param kp    The {@link LKommentarP} object.
+     * @return Single LAF line.
+     */
     private String writeKommentar(LKommentarP kp) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         String value = "\"" + kp.getErzeuger() + "\" " +
@@ -211,6 +252,12 @@ implements Creator
         return lafLine("PROBENKOMMENTAR", value);
     }
 
+    /**
+     * Write {@link LMessung} attributes.
+     *
+     * @param probe The {@link LProbeInfo} object.
+     * @return LAF conform string.
+     */
     private String writeMessung(LProbeInfo probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         // Get all messungen
@@ -257,6 +304,11 @@ implements Creator
         return laf;
     }
 
+    /**
+     * Write {@link LKommentarM} attributes.
+     * @param mk    The {@link LKommentarM} object.
+     * @return Single LAF line.
+     */
     private String writeKommentar(LKommentarM mk) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         String value = "\"" + mk.getErzeuger() + "\" " +
@@ -265,6 +317,11 @@ implements Creator
         return lafLine("KOMMENTAR", value);
     }
 
+    /**
+     * Write {@link LMesswert} attributes.
+     * @param mw    The {@link LMesswert} object.
+     * @return Single LAF line.
+     */
     private String writeMesswert(LMesswert mw) {
         QueryBuilder<SMessgroesse> builder =
             new QueryBuilder<SMessgroesse>(
@@ -295,6 +352,13 @@ implements Creator
         return lafLine("MESSWERT", value);
     }
 
+    /**
+     * Write a single LAF conform line from key and value.
+     *
+     * @param key   The key.
+     * @param value The value.
+     * @return LAF conform line.
+     */
     private String lafLine(String key, String value) {
         for (int i = key.length(); i < 30; i++) {
             key += " ";

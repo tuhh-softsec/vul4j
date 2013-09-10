@@ -34,7 +34,7 @@ public class ReadOnlyRepository implements Repository
     /**
      * Filter object list by the given criteria.
      *
-     * @param criteria  The filter query.
+     * @param filter  The filter query.
      * @return Response object.
      */
     public <T> Response filter(CriteriaQuery<T> filter) {

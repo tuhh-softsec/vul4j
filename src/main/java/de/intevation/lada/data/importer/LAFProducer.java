@@ -2,14 +2,12 @@ package de.intevation.lada.data.importer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarM;
 import de.intevation.lada.model.LKommentarMId;
@@ -20,12 +18,16 @@ import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LMesswertId;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
-import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LZusatzWert;
 import de.intevation.lada.model.LZusatzWertId;
 import de.intevation.lada.model.Ort;
-import de.intevation.lada.model.SProbenZusatz;
 
+/**
+ * The LAFProducer creates entity objects form key-value pairs using the
+ * AttributeMapper.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Named("lafproducer")
 public class LAFProducer
 implements Producer
@@ -57,6 +59,10 @@ implements Producer
     @Inject
     private AttributeMapper mapper;
 
+    /**
+     * Default contructor. Initializes the producer and reads the config file
+     * using the systemproperty "de.intevation.lada.importconfig".
+     */
     public LAFProducer() {
         this.warnings = new HashMap<String, List<ReportData>>();
         this.errors = new HashMap<String, List<ReportData>>();
@@ -74,6 +80,14 @@ implements Producer
         ortFormat = format.getFormat("ort");
     }
 
+    /**
+     * Add data to the producer.
+     * This triggers the producer to create a new object or add data to
+     * existing objects.
+     *
+     * @param key       The key.
+     * @param values    The value
+     */
     @Override
     public void addData(String key, Object values)
     throws LAFParserException {
@@ -173,6 +187,14 @@ implements Producer
         }
     }
 
+    /**
+     * Check if the key is defined in the config file and validate the value
+     * using the pattern defined for this key.
+     *
+     * @param key   The key.
+     * @param value The value.
+     * @return valid or not.
+     */
     private boolean isValidOrt(String key, String value) {
         for (EntryFormat ef: ortFormat) {
             if (ef.getKey().equals(key.toLowerCase())) {
@@ -184,6 +206,14 @@ implements Producer
         return false;
     }
 
+    /**
+     * Check if the key is defined in the config file and validate the value
+     * using the pattern defined for this key.
+     *
+     * @param key   The key.
+     * @param value The value.
+     * @return valid or not.
+     */
     private boolean isValidMessung(String key, String value) {
         for (EntryFormat ef: messungFormat) {
             if (ef.getKey().equals(key.toLowerCase())) {
@@ -195,6 +225,14 @@ implements Producer
         return false;
     }
 
+    /**
+     * Check if the key is defined in the config file and validate the value
+     * using the pattern defined for this key.
+     *
+     * @param key   The key.
+     * @param value The value.
+     * @return valid or not.
+     */
     private boolean isValidProbe(String key, String value) {
         for (EntryFormat ef: probenFormat) {
             if (ef.getKey().equals(key.toLowerCase())) {
@@ -206,45 +244,73 @@ implements Producer
         return false;
     }
 
+    /**
+     * @return the {@link LProbe} entity.
+     */
     @Override
     public LProbe getProbe() {
         return this.probe;
     }
 
+    /**
+     * @return List of {@link LMessung} entities.
+     */
     @Override
     public List<LMessung> getMessungen() {
         return this.messungen;
     }
 
+    /**
+     * @return List of {@link Ort} entities.
+     */
     @Override
     public List<Ort> getOrte() {
         return this.orte;
     }
 
+    /**
+     * @return List of {@link LOrt} entities.
+     */
     @Override
     public List<LOrt> getLOrte() {
         return this.lorte;
     }
+
+    /**
+     * @return List of {@link LKommentarP} entities.
+     */
     @Override
     public List<LKommentarP> getProbenKommentare() {
         return this.pKommentare;
     }
 
+    /**
+     * @return List of {@link LKommentarM} entities.
+     */
     @Override
     public List<LKommentarM> getMessungsKommentare() {
         return this.mKommentare;
     }
 
+    /**
+     * @return List of {@link LMesswert} entities.
+     */
     @Override
     public List<LMesswert> getMesswerte() {
         return this.messwerte;
     }
 
+    /**
+     * @return List of {@link LZusatzWert} entities.
+     */
     @Override
     public List<LZusatzWert> getZusatzwerte() {
         return this.zusatzwerte;
     }
 
+    /**
+     * Reset errors and warnings.
+     */
     @Override
     public void reset() {
         this.errors = new HashMap<String, List<ReportData>>();
@@ -261,6 +327,9 @@ implements Producer
         mapper.reset();
     }
 
+    /**
+     * Add the current {@link LMessung} entity to the List and create a new one.
+     */
     public void newMessung() {
         if (this.messung != null) {
             this.messungen.add(this.messung);
@@ -272,6 +341,10 @@ implements Producer
         this.messung.setId(id);
     }
 
+    /**
+     * Add the {@link Ort} and {@link LOrt} entities to the lists and create
+     * a new {@link OrtCreator}.
+     */
     public void newOrt() {
         if (this.ort != null) {
             Ort o = this.ort.toOrt();
@@ -328,6 +401,5 @@ implements Producer
         if (orte.isEmpty()) {
             return;
         }
-        
     }
 }

@@ -22,6 +22,11 @@ import de.intevation.lada.model.Ort;
 import de.intevation.lada.model.SVerwaltungseinheit;
 import de.intevation.lada.rest.Response;
 
+/**
+ * Validator for LOrt objects.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @ApplicationScoped
 @Named("lortvalidator")
 public class LOrtValidator
@@ -59,6 +64,13 @@ implements Validator
         return warnings;
     }
 
+    /**
+     * Check if the given lat/lon coordinates are within the area of the
+     * verwaltungseinheit.
+     *
+     * @param ort
+     * @param warnings
+     */
     private void validateVerwaltungseinheit(LOrt ort, Map<String, Integer> warnings) {
         if (!ort.getOrtsTyp().equals("E")) {
             return;

@@ -10,7 +10,11 @@ import javax.inject.Named;
 
 import de.intevation.lada.auth.AuthenticationResponse;
 
-
+/**
+ * This parser is used to read data in LAF based key-value pair structure.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class LAFParser {
 
     private static final String PROBE_NEXT = "\n%PROBE%";
@@ -28,12 +32,23 @@ public class LAFParser {
     private Map<String, List<ReportData>> warnings;
     private Map<String, List<ReportData>> errors;
 
+    /**
+     * Default constructor.
+     */
     public LAFParser() {
         this.warnings = new HashMap<String, List<ReportData>>();
         this.errors = new HashMap<String, List<ReportData>>();
         this.setDryRun(false);
     }
 
+    /**
+     * Read and parse the data and write the objects to the database.
+     *
+     * @param auth  Authentication information
+     * @param laf   The LAF formated data.
+     * @return success
+     * @throws LAFParserException
+     */
     public boolean parse(AuthenticationResponse auth, String laf)
     throws LAFParserException
     {
@@ -103,6 +118,11 @@ public class LAFParser {
         return parsed;
     }
 
+    /**
+     * Write all created objects to the database.
+     *
+     * @param auth  The authentication information.
+     */
     private void writeAll(AuthenticationResponse auth) {
         String probeId = producer.getProbe().getProbeId() == null ? "probeId" : producer.getProbe().getProbeId();
         boolean p = writer.writeProbe(auth, producer.getProbe());
@@ -136,6 +156,12 @@ public class LAFParser {
         }
     }
 
+    /**
+     * Read all attributes from a single probe block and create entity objects.
+     *
+     * @param content   Single probe block enclosed by %PROBE%
+     * @throws LAFParserException
+     */
     private void readAll(String content)
     throws LAFParserException
     {
@@ -242,10 +268,18 @@ public class LAFParser {
         }
     }
 
+    /**
+     * @return if objects are or not.
+     */
     public boolean isDryRun() {
         return dryRun;
     }
 
+    /**
+     * If set to true, no objects will be created and written to database.
+     *
+     * @param dryRun
+     */
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
     }
@@ -264,6 +298,9 @@ public class LAFParser {
         return errors;
     }
 
+    /**
+     * Reset errors and warnings.
+     */
     public void reset() {
         producer.reset();
         this.errors = new HashMap<String, List<ReportData>>();

@@ -27,6 +27,8 @@ import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarM;
 import de.intevation.lada.model.LKommentarMId;
+import de.intevation.lada.model.LMessung;
+import de.intevation.lada.model.LProbe;
 
 /**
  * This class produces a RESTful service to read, write and update
@@ -157,9 +159,9 @@ public class LKommentarMService
      * Delete a LKommentarM object.
      *
      * @param kId          The object id.
-     * @param messungsId   The LProbe id.
-     * @param statusId     The LStatus id
-     * @param headers   The HTTP header containing authorization information.
+     * @param messungsId   The {@link LMessung} id.
+     * @param probeId      The {@link LProbe} id
+     * @param headers      The HTTP header containing authorization information.
      * @return Response object.
      */
     @DELETE
