@@ -3,7 +3,6 @@ package de.intevation.lada.rest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +66,6 @@ public class LAFImportService
 
             String name = "";
             String content = "";
-            Map<String, List<InputPart>> data = input.getFormDataMap();
             try {
                 List<InputPart> parts = input.getParts();
                 for (InputPart part: parts) {
