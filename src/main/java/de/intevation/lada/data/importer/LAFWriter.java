@@ -2,7 +2,6 @@ package de.intevation.lada.data.importer;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import de.intevation.lada.auth.AuthenticationResponse;
-import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarM;
 import de.intevation.lada.model.LKommentarP;
@@ -22,8 +20,7 @@ import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
-import de.intevation.lada.model.LProbeInfo;
-import de.intevation.lada.rest.Response;
+import de.intevation.lada.model.Ort;
 import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
@@ -55,6 +52,9 @@ implements Writer
     private Repository messungRepository;
     @Inject
     @Named("lortrepository")
+    private Repository lortRepository;
+    @Inject
+    @Named("ortrepository")
     private Repository ortRepository;
     @Inject
     @Named("lkommentarRepository")
@@ -151,12 +151,20 @@ implements Writer
     }
 
     @Override
-    public boolean writeOrte(AuthenticationResponse auth, List<LOrt> orte) {
+    public boolean writeOrte(AuthenticationResponse auth, List<Ort> orte) {
+        for (Ort ort :orte) {
+            ortRepository.create(ort);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean writeLOrte(AuthenticationResponse auth, List<LOrt> orte) {
         for(LOrt ort: orte) {
             try {
                 Map<String, Integer> warn =
                     ortValidator.validate(ort, false);
-                ortRepository.create(ort);
+                lortRepository.create(ort);
                 if (warn != null) {
                     for (String key : warn.keySet()) {
                         warnings.add(
@@ -362,8 +370,7 @@ implements Writer
         if (probe.getSolldatumEnde() != null) {
             insert.setParameter("solldatum_ende", probe.getSolldatumEnde());
         }
-        int res = insert.executeUpdate();
-        int i = res;
+        insert.executeUpdate();
     }
 
     private boolean authorized(LProbe probe, AuthenticationResponse auth) {

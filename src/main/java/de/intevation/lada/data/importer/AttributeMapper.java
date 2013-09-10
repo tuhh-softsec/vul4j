@@ -5,10 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,11 +21,9 @@ import de.intevation.lada.model.LKommentarP;
 import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LMessungId;
 import de.intevation.lada.model.LMesswert;
-import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.model.LZusatzWert;
-import de.intevation.lada.model.Ort;
 import de.intevation.lada.model.SDatenbasis;
 import de.intevation.lada.model.SMessEinheit;
 import de.intevation.lada.model.SMessgroesse;
@@ -62,6 +57,7 @@ public class AttributeMapper
         this.warnings = new ArrayList<ReportData>();
         this.errors = new ArrayList<ReportData>();
     }
+
     public LProbe addAttribute(String key, Object value, LProbe probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if ("datenbasis_s".equals(key) && probe.getDatenbasisId() == null) {
@@ -352,33 +348,52 @@ public class AttributeMapper
                 return null;
             }
         }
-        //TODO: Match the other values.
         return messwert;
     }
 
-    public LOrt addAttribute(
+    public OrtCreator addAttribute(
         String key,
         Object values,
-        LOrt ort
+        OrtCreator ort
     ) {
-        if ("ort_id".equals(key)) {
-            Integer v = Integer.valueOf(values.toString());
-            ort.setOrtId(v);
-        }
         if ("ort_code".equals(key)) {
-            QueryBuilder<Ort> builder =
-                new QueryBuilder<Ort>(ortRepo.getEntityManager(), Ort.class);
-            builder.and("bezeichnung", values.toString());
-            Response response = ortRepo.filter(builder.getQuery());
-            List<Ort> orte = (List<Ort>)response.getData();
-            Integer v = Integer.valueOf(orte.get(0).getOrtId());
-            ort.setOrtId(v);
+            ort.setOrtCode(values.toString());
         }
         if ("ort_typ".equals(key)) {
-            ort.setOrtsTyp(values.toString());
+            ort.setOrtTyp(values.toString());
         }
         if ("ort_zusatz".equals(key)) {
-            ort.setOrtszusatztext(values.toString());
+            ort.setZusatztext(values.toString());
+        }
+        if ("ort_land_lang".equals(key)) {
+            ort.setLandLang(values.toString());
+        }
+        if ("ort_land_kurz".equals(key)) {
+            ort.setLandKurz(values.toString());
+        }
+        if ("ort_land_s".equals(key)) {
+            ort.setLandS(values.toString());
+        }
+        if ("ort_gemeindeschlüssel".equals(key)) {
+            ort.setGemSchluessel(values.toString());
+        }
+        if ("ort_bezeichnung".equals(key)) {
+            ort.setBezeichnung(values.toString());
+        }
+        if ("ort_beschreibung".equals(key)) {
+            ort.setBeschreibung(values.toString());
+        }
+        if ("ort_nuts_code".equals(key)) {
+            ort.setNuts(values.toString());
+        }
+        if ("ort_hoehe_land".equals(key)) {
+            ort.setHoehe(values.toString());
+        }
+        if ("ort_koordinaten".equals(key)) {
+            ort.setKoordinaten(values.toString());
+        }
+        if ("ort_koordinaten_s".equals(key)) {
+            ort.setKoordinatenS(values.toString());
         }
         return ort;
     }

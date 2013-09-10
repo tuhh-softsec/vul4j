@@ -23,6 +23,7 @@ import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LZusatzWert;
 import de.intevation.lada.model.LZusatzWertId;
+import de.intevation.lada.model.Ort;
 import de.intevation.lada.model.SProbenZusatz;
 
 @Named("lafproducer")
@@ -36,12 +37,13 @@ implements Producer
 
     private LProbe probe;
     private LMessung messung;
-    private LOrt ort;
+    private OrtCreator ort;
 
     private List<LKommentarP> pKommentare;
     private List<LKommentarM> mKommentare;
     private List<LMessung> messungen;
-    private List<LOrt> orte;
+    private List<LOrt> lorte;
+    private List<Ort> orte;
     private List<LMesswert> messwerte;
     private List<LZusatzWert> zusatzwerte;
 
@@ -62,7 +64,7 @@ implements Producer
         this.pKommentare = new ArrayList<LKommentarP>();
         this.mKommentare = new ArrayList<LKommentarM>();
         this.messungen = new ArrayList<LMessung>();
-        this.orte = new ArrayList<LOrt>();
+        this.lorte = new ArrayList<LOrt>();
         this.messwerte = new ArrayList<LMesswert>();
         String fileName = System.getProperty("de.intevation.lada.importconfig");
         LAFFormat format = new LAFFormat();
@@ -215,10 +217,14 @@ implements Producer
     }
 
     @Override
-    public List<LOrt> getOrte() {
+    public List<Ort> getOrte() {
         return this.orte;
     }
 
+    @Override
+    public List<LOrt> getLOrte() {
+        return this.lorte;
+    }
     @Override
     public List<LKommentarP> getProbenKommentare() {
         return this.pKommentare;
@@ -246,7 +252,8 @@ implements Producer
         this.probe = new LProbe();
         this.messungen = new ArrayList<LMessung>();
         this.messung = null;
-        this.orte = new ArrayList<LOrt>();
+        this.lorte = new ArrayList<LOrt>();
+        this.orte = new ArrayList<Ort>();
         this.ort = null;
         this.messwerte = new ArrayList<LMesswert>();
         this.mKommentare = new ArrayList<LKommentarM>();
@@ -267,9 +274,16 @@ implements Producer
 
     public void newOrt() {
         if (this.ort != null) {
-            this.orte.add(this.ort);
+            Ort o = this.ort.toOrt();
+            if (o != null) {
+                this.orte.add(o);
+            }
+            LOrt lo = this.ort.toLOrt();
+            if (lo != null) {
+                this.lorte.add(lo);
+            }
         }
-        this.ort = new LOrt();
+        this.ort = new OrtCreator();
         this.ort.setProbeId(this.probe.getProbeId());
     }
 
@@ -307,5 +321,13 @@ implements Producer
             err.addAll(mapper.getErrors());
         }
         return this.errors;
+    }
+
+    @Override
+    public void finishOrt() {
+        if (orte.isEmpty()) {
+            return;
+        }
+        
     }
 }

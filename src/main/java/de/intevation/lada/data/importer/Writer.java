@@ -9,6 +9,7 @@ import de.intevation.lada.model.LMessung;
 import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.Ort;
 
 
 public interface Writer
@@ -17,7 +18,8 @@ public interface Writer
     public boolean writeMessungen(
         AuthenticationResponse auth,
         List<LMessung> messungen);
-    public boolean writeOrte(AuthenticationResponse auth, List<LOrt> orte);
+    public boolean writeLOrte(AuthenticationResponse auth, List<LOrt> orte);
+    public boolean writeOrte(AuthenticationResponse auth, List<Ort> orte);
     public boolean writeProbenKommentare(
         AuthenticationResponse auth,
         List<LKommentarP> kommentare);

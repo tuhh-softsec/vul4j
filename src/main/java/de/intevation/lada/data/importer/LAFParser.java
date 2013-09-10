@@ -117,6 +117,7 @@ public class LAFParser {
             return;
         }
         writer.writeOrte(auth, producer.getOrte());
+        writer.writeLOrte(auth, producer.getLOrte());
         writer.writeMessungKommentare(auth, producer.getMessungsKommentare());
         writer.writeMesswerte(auth, producer.getMesswerte());
         List<ReportData> err = this.errors.get(probeId);
@@ -179,7 +180,7 @@ public class LAFParser {
             }
             else if (current == '%' && !header && !value) {
                 headerString = "";
-
+                producer.finishOrt();
                 key = false;
                 header = true;
             }

@@ -10,15 +10,18 @@ import de.intevation.lada.model.LMesswert;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LZusatzWert;
+import de.intevation.lada.model.Ort;
 
 
 public interface Producer
 {
     public void addData(String key, Object values)
         throws LAFParserException;
+    public void finishOrt();
     public LProbe getProbe();
     public List<LMessung> getMessungen();
-    public List<LOrt> getOrte();
+    public List<LOrt> getLOrte();
+    public List<Ort> getOrte();
     public List<LKommentarP> getProbenKommentare();
     public List<LKommentarM> getMessungsKommentare();
     public List<LMesswert> getMesswerte();
