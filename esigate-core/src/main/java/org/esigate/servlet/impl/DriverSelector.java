@@ -21,9 +21,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.impl.UriMapping;
 
 /**
  * This class handles support of legacy options for Driver selection.
@@ -89,12 +92,12 @@ public class DriverSelector {
 	 * @return provider name or null.
 	 * @throws HttpErrorPage 
 	 */
-	public Driver selectProvider(HttpServletRequest request) throws HttpErrorPage {
+	public Pair<Driver, UriMapping> selectProvider(HttpServletRequest request) throws HttpErrorPage {
 
 		String host = request.getHeader("Host");
 		String scheme = request.getScheme();
 
-		String relUrl = RequestUrl.getRelativeUrl(request);
+		String relUrl = RequestUrl.getRelativeUrl(request, null);
 
 		if (this.useMappings) {
 			return DriverFactory.getInstanceFor(scheme, host, relUrl);
@@ -112,7 +115,7 @@ public class DriverSelector {
 			}
 		}
 
-		return DriverFactory.getInstance(targetProvider);
+		return new ImmutablePair<Driver, UriMapping>(DriverFactory.getInstance(targetProvider), null );
 	}
 
 }

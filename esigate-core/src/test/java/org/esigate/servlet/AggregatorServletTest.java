@@ -124,7 +124,7 @@ public class AggregatorServletTest {
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request).getConfiguration()
+		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request).getLeft().getConfiguration()
 				.getInstanceName());
 
 		request = Mockito.mock(HttpServletRequest.class);
@@ -135,7 +135,7 @@ public class AggregatorServletTest {
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getHeader("Host")).thenReturn("sub.domain.com");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request).getConfiguration()
+		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request).getLeft().getConfiguration()
 				.getInstanceName());
 
 		request = Mockito.mock(HttpServletRequest.class);
@@ -145,7 +145,7 @@ public class AggregatorServletTest {
 		Mockito.when(request.getMethod()).thenReturn("GET");
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request).getConfiguration()
+		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request).getLeft().getConfiguration()
 				.getInstanceName());
 
 	}
@@ -178,34 +178,34 @@ public class AggregatorServletTest {
 		// Do testing
 		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getContextPath()).thenReturn("/test");
-		Mockito.when(request.getRequestURI()).thenReturn("test/servlet/request");
+		Mockito.when(request.getRequestURI()).thenReturn("/test/servlet/request");
 		Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
 		Mockito.when(request.getMethod()).thenReturn("GET");
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request).getConfiguration()
+		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request).getLeft().getConfiguration()
 				.getInstanceName());
 
 		request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getContextPath()).thenReturn("/test");
-		Mockito.when(request.getRequestURI()).thenReturn("test/servlet/request");
+		Mockito.when(request.getRequestURI()).thenReturn("/test/servlet/request");
 		Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
 		Mockito.when(request.getMethod()).thenReturn("GET");
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getHeader("Host")).thenReturn("sub.domain.com");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request).getConfiguration()
+		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request).getLeft().getConfiguration()
 				.getInstanceName());
 
 		request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getContextPath()).thenReturn("/test");
-		Mockito.when(request.getRequestURI()).thenReturn("test/servlet/request");
+		Mockito.when(request.getRequestURI()).thenReturn("/test/servlet/request");
 		Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
 		Mockito.when(request.getMethod()).thenReturn("GET");
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request).getConfiguration()
+		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request).getLeft().getConfiguration()
 				.getInstanceName());
 
 	}

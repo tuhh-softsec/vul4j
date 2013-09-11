@@ -53,9 +53,9 @@ public class UrlMappingDriverFactoryTest extends TestCase {
 
 		// Assert requests go to the right provider
 		Assert.assertEquals("provider1", DriverFactory.getInstanceFor("http", "localhost:8080", "/provider1/test")
-				.getConfiguration().getInstanceName());
+				.getLeft().getConfiguration().getInstanceName());
 		Assert.assertEquals("provider2", DriverFactory.getInstanceFor("http", "localhost:8080", "/provider2/test")
-				.getConfiguration().getInstanceName());
+				.getLeft().getConfiguration().getInstanceName());
 
 	}
 
@@ -79,9 +79,9 @@ public class UrlMappingDriverFactoryTest extends TestCase {
 
 		// Assert requests go to the right provider
 		Assert.assertEquals("provider1", DriverFactory.getInstanceFor("http", "www.remote.com", "/provider2/test")
-				.getConfiguration().getInstanceName());
+				.getLeft().getConfiguration().getInstanceName());
 		Assert.assertEquals("provider2", DriverFactory.getInstanceFor("http", "localhost:8080", "/provider1/test")
-				.getConfiguration().getInstanceName());
+				.getLeft().getConfiguration().getInstanceName());
 
 	}
 
@@ -105,9 +105,9 @@ public class UrlMappingDriverFactoryTest extends TestCase {
 
 		// Assert requests go to the right provider
 		Assert.assertEquals("provider1", DriverFactory.getInstanceFor("http", "www.remote.com", "/notMatching")
-				.getConfiguration().getInstanceName());
+				.getLeft().getConfiguration().getInstanceName());
 		Assert.assertEquals("provider2", DriverFactory.getInstanceFor("http", "localhost:8080", "/provider2/test")
-				.getConfiguration().getInstanceName());
+				.getLeft().getConfiguration().getInstanceName());
 
 	}
 	

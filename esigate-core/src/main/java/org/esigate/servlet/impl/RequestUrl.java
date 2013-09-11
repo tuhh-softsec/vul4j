@@ -16,6 +16,10 @@ package org.esigate.servlet.impl;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.esigate.impl.UriMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Utility class to work with Servlet request urls.
  * 
@@ -23,24 +27,50 @@ import javax.servlet.http.HttpServletRequest;
  * 
  */
 public class RequestUrl {
+	private static final Logger LOG = LoggerFactory.getLogger(RequestUrl.class);
 
 	/**
 	 * Get the relative url to the current servlet.
 	 * <p>
-	 * Uses the reuquest URI and removes : the context path and the servlet
-	 * path.
+	 * Uses the request URI and removes : the context path, the servlet path and
+	 * the mapping path if used.
 	 * 
 	 * @param request
 	 *            The current HTTP request
+	 * @param mapping
+	 *            matched mapping or null
 	 * @return the url, relative to the servlet mapping.
 	 */
-	public static String getRelativeUrl(HttpServletRequest request) {
-		String relUrl = request.getRequestURI();
-		relUrl = relUrl.substring(request.getContextPath().length());
-		if (request.getServletPath() != null) {
-			relUrl = relUrl.substring(request.getServletPath().length());
+	public static String getRelativeUrl(HttpServletRequest request, UriMapping mapping) {
+		// Raw request url
+		String relativeUrl = request.getRequestURI();
+		// Application (war) context path
+		String contextPath = request.getContextPath();
+		// Servlet mapping
+		String servletPath = request.getServletPath();
+		// Uri mapping
+		String mappingPath = (mapping == null ? null : mapping.getPath());
+
+		if (LOG.isDebugEnabled() || true) {
+			LOG.info("relativeUrl: {}, contextPath: {}, servletPath: {}, mappingPath: {}", new Object[] { relativeUrl,
+					contextPath, servletPath, mappingPath });
 		}
 
-		return relUrl;
+		// Remove application context path
+		if (contextPath != null && relativeUrl.startsWith(contextPath)) {
+			relativeUrl = relativeUrl.substring(contextPath.length());
+		}
+
+		// Remove servlet mapping path
+		if (servletPath != null && relativeUrl.startsWith(servletPath)) {
+			relativeUrl = relativeUrl.substring(servletPath.length());
+		}
+
+		// Remove mapping path
+		if (mappingPath != null && relativeUrl.startsWith(mappingPath)) {
+			relativeUrl = relativeUrl.substring(mappingPath.length());
+		}
+
+		return relativeUrl;
 	}
 }

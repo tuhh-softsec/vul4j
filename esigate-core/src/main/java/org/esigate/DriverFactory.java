@@ -27,6 +27,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.esigate.impl.IndexedInstances;
 import org.esigate.impl.UriMapping;
 import org.slf4j.Logger;
@@ -72,7 +74,7 @@ public class DriverFactory {
 					LOG.info("Scanning configuration {}", envPath);
 					inputStream = new FileInputStream(new File(envPath));
 				} catch (FileNotFoundException e) {
-					LOG.error("Can't read file {} (from -D"+PROP_CONF_LOCATION+")", envPath, e);
+					LOG.error("Can't read file {} (from -D" + PROP_CONF_LOCATION + ")", envPath, e);
 				}
 			}
 
@@ -233,13 +235,15 @@ public class DriverFactory {
 	 *            HTTP protocol
 	 * @param url
 	 *            The requested url
-	 * @return
+	 * @return a pair which contains the Driver to use with this request and the
+	 *         matched UriMapping.
 	 * @throws HttpErrorPage
 	 */
-	public static Driver getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
+	public static Pair<Driver, UriMapping> getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
 		for (UriMapping mapping : INSTANCES.getUrimappings().keySet()) {
 			if (mapping.matches(scheme, host, url)) {
-				return getInstance(INSTANCES.getUrimappings().get(mapping));
+				return new ImmutablePair<Driver, UriMapping>(getInstance(INSTANCES.getUrimappings().get(mapping)),
+						mapping);
 			}
 		}
 

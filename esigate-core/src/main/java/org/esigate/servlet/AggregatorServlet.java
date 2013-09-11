@@ -15,21 +15,6 @@
 
 package org.esigate.servlet;
 
-import java.io.IOException;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.esigate.DriverFactory;
-import org.esigate.HttpErrorPage;
-import org.esigate.servlet.impl.DriverSelector;
-import org.esigate.servlet.impl.RequestUrl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Servlet used to proxy requests from a remote application.
  * 
@@ -51,57 +36,6 @@ import org.slf4j.LoggerFactory;
  * @deprecated use {@link ProxyServlet} instead.
  */
 @Deprecated
-public class AggregatorServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(AggregatorServlet.class);
-	private DriverSelector driverSelector = new DriverSelector();
-
-	/**
-	 * This is mainly used for unit testing.
-	 * 
-	 * @return current Driver selector
-	 * 
-	 */
-	public DriverSelector getDriverSelector() {
-		return this.driverSelector;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException {
-		String relUrl = RequestUrl.getRelativeUrl(request);
-		LOG.debug("Aggregating {}", relUrl);
-
-		// Process ressource
-		HttpServletMediator mediator = new HttpServletMediator(request, response, getServletContext());
-		try {
-			this.driverSelector.selectProvider(request).proxy(relUrl, mediator.getHttpRequest());
-		} catch (HttpErrorPage e) {
-			mediator.sendResponse(e.getHttpResponse());
-		}
-	}
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-
-		// get selected provided from web.xml (deprecated)
-		this.driverSelector.setWebXmlProvider(config.getInitParameter("provider"));
-
-		// Load mappings from web.xml (deprecated)
-		this.driverSelector.setWebXmlProviders(config.getInitParameter("providers"));
-
-		this.driverSelector.setUseMappings("true".equalsIgnoreCase(config.getInitParameter("useMappings")));
-
-		// Force esigate configuration parsing to trigger errors right away (if
-		// any) and prevent delay on first call.
-		DriverFactory.ensureConfigured();
-
-	}
+public class AggregatorServlet extends ProxyServlet {
+	// This is now the same exact class than ProxyServlet
 }
