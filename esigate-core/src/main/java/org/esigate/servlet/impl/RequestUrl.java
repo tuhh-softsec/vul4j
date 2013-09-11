@@ -51,8 +51,8 @@ public class RequestUrl {
 		// Uri mapping
 		String mappingPath = (mapping == null ? null : mapping.getPath());
 
-		if (LOG.isDebugEnabled() || true) {
-			LOG.info("relativeUrl: {}, contextPath: {}, servletPath: {}, mappingPath: {}", new Object[] { relativeUrl,
+		if (LOG.isDebugEnabled() ) {
+			LOG.debug("relativeUrl: {}, contextPath: {}, servletPath: {}, mappingPath: {}", new Object[] { relativeUrl,
 					contextPath, servletPath, mappingPath });
 		}
 
