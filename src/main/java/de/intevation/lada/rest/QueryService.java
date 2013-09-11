@@ -1,10 +1,5 @@
 package de.intevation.lada.rest;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,16 +13,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import de.intevation.lada.auth.Authentication;
 import de.intevation.lada.auth.AuthenticationException;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.query.QueryConfig;
-import de.intevation.lada.model.query.QueryFilter;
-import de.intevation.lada.model.query.ResultConfig;
 import de.intevation.lada.utils.QueryTools;
 
 /**

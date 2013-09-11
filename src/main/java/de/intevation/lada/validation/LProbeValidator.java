@@ -9,8 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.sun.istack.Builder;
-
 import de.intevation.lada.data.LOrtRepository;
 import de.intevation.lada.data.LProbeRepository;
 import de.intevation.lada.data.QueryBuilder;

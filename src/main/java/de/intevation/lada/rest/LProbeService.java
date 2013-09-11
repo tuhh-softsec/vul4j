@@ -1,12 +1,7 @@
 package de.intevation.lada.rest;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -24,9 +19,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +30,6 @@ import de.intevation.lada.auth.Authorization;
 import de.intevation.lada.data.LProbeRepository;
 import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
-import de.intevation.lada.data.importer.Importer;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.utils.QueryTools;
