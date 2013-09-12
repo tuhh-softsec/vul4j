@@ -38,6 +38,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 import net.onrc.onos.ofcontroller.routing.TopoRouteService;
@@ -82,6 +83,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected IFloodlightProviderService floodlightProvider;
 	protected ITopologyService topology;
 	protected ITopoRouteService topoRouteService;
+	protected ILinkDiscoveryService linkDiscoveryService;
 	protected IRestApiService restApi;
 	
 	protected ProxyArpManager proxyArp;
@@ -256,6 +258,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		topology = context.getServiceImpl(ITopologyService.class);
+		linkDiscoveryService = context.getServiceImpl(ILinkDiscoveryService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
 		//TODO We'll initialise this here for now, but it should really be done as
@@ -1043,7 +1046,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		setupBgpPaths();
 		setupFullMesh();
-
+		
+		//Suppress link discovery on external-facing router ports
+		for (Interface intf : interfaces.values()) {
+			linkDiscoveryService.AddToSuppressLLDPs(intf.getDpid(), intf.getPort());
+		}
+		
 		bgpUpdatesExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
