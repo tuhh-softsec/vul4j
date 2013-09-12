@@ -2,6 +2,7 @@ package de.intevation.lada.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -33,6 +34,8 @@ import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.utils.QueryTools;
+import de.intevation.lada.validation.ValidationException;
+import de.intevation.lada.validation.Validator;
 
 /**
 * This class produces a RESTful service to read, write and update
@@ -66,6 +69,10 @@ public class LProbeService {
     @Named("dataauthorization")
     private Authorization authorization;
 
+    @Inject
+    @Named("lprobevalidator")
+    private Validator validator;
+
     /**
      * The logger for this class.
      */
@@ -96,6 +103,17 @@ public class LProbeService {
             if (probe.isEmpty()) {
                 return new Response(false, 601, new ArrayList<LProbeInfo>());
             }
+            LProbeInfo p = probe.get(0);
+            try {
+                Map<String, Integer> warn =
+                    validator.validate(p.toLProbe(), false);
+                response.setWarnings(warn);
+            }
+            catch (ValidationException e) {
+                response.setErrors(e.getErrors());
+                response.setWarnings(e.getWarnings());
+            }
+
             String nbId = probe.get(0).getNetzbetreiberId();
             String mstId = probe.get(0).getMstId();
             if (auth.getNetzbetreiber().contains(nbId) ||

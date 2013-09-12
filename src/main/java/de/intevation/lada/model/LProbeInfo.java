@@ -308,6 +308,7 @@ public class LProbeInfo implements Serializable {
 
     public LProbe toLProbe() {
         LProbe probe = new LProbe();
+        probe.setProbeId(probeId);
         probe.setMstId(mstId);
         probe.setUmwId(umwId);
         probe.setTest(test);
