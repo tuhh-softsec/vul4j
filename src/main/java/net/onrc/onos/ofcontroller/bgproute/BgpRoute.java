@@ -482,13 +482,23 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private void addPrefixFlows(Prefix prefix, Interface egressInterface, byte[] nextHopMacAddress) {		
 		log.debug("Adding flows for prefix {} added, next hop mac {}",
 				prefix, HexString.toHexString(nextHopMacAddress));
-
-		//Add a flow to rewrite mac for this prefix to all other border switches
-		for (Interface srcInterface : interfaces.values()) {
-			if (srcInterface == egressInterface) {
-				//Don't push a flow for the switch where this peer is attached
-				continue;
+		
+		//We only need one flow mod per switch, so pick one interface on each switch
+		Map<Long, Interface> srcInterfaces = new HashMap<Long, Interface>();
+		for (Interface intf : interfaces.values()) {
+			if (!srcInterfaces.containsKey(intf.getDpid()) 
+					&& intf != egressInterface) {
+				srcInterfaces.put(intf.getDpid(), intf);
 			}
+		}
+		
+		//Add a flow to rewrite mac for this prefix to all other border switches
+		//for (Interface srcInterface : interfaces.values()) {
+		for (Interface srcInterface : srcInterfaces.values()) {
+			//if (srcInterface == egressInterface) {
+				//Don't push a flow for the switch where this peer is attached
+				//continue;
+			//}
 			
 			
 			DataPath shortestPath; 
