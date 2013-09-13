@@ -585,21 +585,22 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		deletePrefixFlows(prefix);
 		
 		log.debug("Deleting {} to {}", prefix, ribEntry.getNextHop());
-		log.debug("is peer {}", bgpPeers.containsKey(ribEntry.getNextHop()));
+		
 		if (!bgpPeers.containsKey(ribEntry.getNextHop())) {
 			log.debug("Getting path for route with non-peer nexthop");
 			//Path path = prefixToPath.get(prefix);
 			Path path = prefixToPath.remove(prefix);
 			
-			if (path == null) {
-				log.error("No path found for non-peer path");
-			}
+			if (path != null) {
+				//path could be null if we added to the Ptree but didn't push
+				//flows yet because we were waiting to resolve ARP
 			
-			path.decrementUsers();
-			log.debug("users {}, permanent {}", path.getUsers(), path.isPermanent());
-			if (path.getUsers() <= 0 && !path.isPermanent()) {
-				deletePath(path);
-				pushedPaths.remove(path.getDstIpAddress());
+				path.decrementUsers();
+				log.debug("users {}, permanent {}", path.getUsers(), path.isPermanent());
+				if (path.getUsers() <= 0 && !path.isPermanent()) {
+					deletePath(path);
+					pushedPaths.remove(path.getDstIpAddress());
+				}
 			}
 		}
 	}
