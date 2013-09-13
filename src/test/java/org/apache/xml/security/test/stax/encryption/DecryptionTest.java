@@ -36,7 +36,6 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -68,6 +67,7 @@ import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.signature.TestSecurityEventListener;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,7 +82,6 @@ import org.w3c.dom.*;
 public class DecryptionTest extends org.junit.Assert {
 
     private XMLInputFactory xmlInputFactory;
-    private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory = TransformerFactory.newInstance();
     
     @Before
@@ -91,12 +90,6 @@ public class DecryptionTest extends org.junit.Assert {
 
         xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
-
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setIgnoringComments(false);
-        documentBuilderFactory.setCoalescing(false);
-        documentBuilderFactory.setIgnoringElementContentWhitespace(false);
     }
 
     @Test
@@ -105,7 +98,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -140,7 +133,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -161,7 +154,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -196,7 +189,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -216,7 +209,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -253,7 +246,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -273,7 +266,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -309,7 +302,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -337,7 +330,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -378,7 +371,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -404,7 +397,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -447,7 +440,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -473,7 +466,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -516,7 +509,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -538,7 +531,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -576,7 +569,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -596,7 +589,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -636,7 +629,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -656,7 +649,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -698,7 +691,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -718,7 +711,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -762,7 +755,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -784,7 +777,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -822,7 +815,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -839,9 +832,7 @@ public class DecryptionTest extends org.junit.Assert {
     public void testPhysicalRepresentation() throws Exception {
         final String DATA1 = 
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ns:root xmlns:ns=\"ns.com\"><ns:elem xmlns:ns2=\"ns2.com\">11</ns:elem></ns:root>";
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document document = db.parse(new ByteArrayInputStream(DATA1.getBytes("UTF8")));
         
         // Set up the Key
@@ -879,7 +870,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         
         // Check the element decrypted ok
         nodeList = document.getElementsByTagNameNS("ns.com", "elem");
@@ -904,9 +895,7 @@ public class DecryptionTest extends org.junit.Assert {
     public void testPhysicalRepresentation2() throws Exception {
         final String DATA1 = 
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ns:root xmlns=\"defns.com\" xmlns:ns=\"ns.com\"><elem xmlns=\"\">11</elem></ns:root>";
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document document = db.parse(new ByteArrayInputStream(DATA1.getBytes("UTF8")));
         
         // Set up the Key
@@ -944,7 +933,7 @@ public class DecryptionTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         
         // Check the element decrypted ok
         nodeList = document.getElementsByTagNameNS("", "elem");
@@ -1127,7 +1116,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument =
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
 
         for (int i = 0; i < 7; i++) {
@@ -1163,7 +1152,7 @@ public class DecryptionTest extends org.junit.Assert {
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         try {
-            document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
             fail("Exception expected");
         } catch (XMLStreamException e) {
             assertTrue(e.getCause() instanceof XMLSecurityException);
@@ -1178,7 +1167,7 @@ public class DecryptionTest extends org.junit.Assert {
         InputStream sourceDocument =
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
 
         // Set up the Key
@@ -1243,7 +1232,7 @@ public class DecryptionTest extends org.junit.Assert {
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         try {
-            document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         } catch (XMLStreamException e) {
             Assert.assertFalse(e.getMessage().contains("Unwrapping failed"));
         }

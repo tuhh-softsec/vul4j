@@ -23,7 +23,6 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.crypto.SecretKey;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -49,7 +48,6 @@ public class AbstractSignatureCreationTest extends org.junit.Assert {
     protected static String BASEDIR;
 
     protected XMLInputFactory xmlInputFactory;
-    protected DocumentBuilderFactory documentBuilderFactory;
 
     @Before
     public void setUp() throws Exception {
@@ -63,12 +61,6 @@ public class AbstractSignatureCreationTest extends org.junit.Assert {
 
         xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
-
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setIgnoringComments(false);
-        documentBuilderFactory.setCoalescing(false);
-        documentBuilderFactory.setIgnoringElementContentWhitespace(false);
     }
 
     /**

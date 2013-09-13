@@ -38,7 +38,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.xpath.XPath;
@@ -59,7 +58,6 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
     protected static String BASEDIR;
 
     protected XMLInputFactory xmlInputFactory;
-    protected DocumentBuilderFactory documentBuilderFactory;
     protected TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
     @Before
@@ -75,12 +73,6 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
 
         xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
-
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setIgnoringComments(false);
-        documentBuilderFactory.setCoalescing(false);
-        documentBuilderFactory.setIgnoringElementContentWhitespace(false);
     }
 
     /**

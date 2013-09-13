@@ -37,7 +37,6 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -64,6 +63,7 @@ import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.w3c.dom.Document;
@@ -81,7 +81,6 @@ public class XMLEncryption11Test extends org.junit.Assert {
     private int nodeCount = 0;
 
     private XMLInputFactory xmlInputFactory;
-    private DocumentBuilderFactory documentBuilderFactory;
 
     @Before
     public void setUp() throws Exception {
@@ -96,14 +95,8 @@ public class XMLEncryption11Test extends org.junit.Assert {
         xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
 
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setIgnoringComments(false);
-        documentBuilderFactory.setCoalescing(false);
-        documentBuilderFactory.setIgnoringElementContentWhitespace(false);
-
         String filename = "org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
-        DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(this.getClass().getClassLoader().getResourceAsStream(filename));
 
         cardNumber = retrieveCCNumber(doc);
@@ -441,7 +434,7 @@ public class XMLEncryption11Test extends org.junit.Assert {
 
         // Perform decryption
         try {
-            Document dd = decryptElementStAX(ed, rsaKey, (X509Certificate) cert);
+            decryptElementStAX(ed, rsaKey, (X509Certificate) cert);
         } catch (XMLStreamException e) {
             Assert.assertTrue(e.getCause() instanceof IOException);
             Assert.assertTrue(e.getCause().getCause() instanceof BadPaddingException);
@@ -456,7 +449,7 @@ public class XMLEncryption11Test extends org.junit.Assert {
      * decrypt it and return the resulting document
      */
     private Document decryptElement(String filename, Key rsaKey, X509Certificate rsaCert) throws Exception {
-        DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(this.getClass().getClassLoader().getResourceAsStream(filename));
 
         return decryptElement(doc, rsaKey, rsaCert);
@@ -489,7 +482,7 @@ public class XMLEncryption11Test extends org.junit.Assert {
         XMLStreamReader securityStreamReader =
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
-        return StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        return StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
     }
 
     /**
@@ -561,7 +554,7 @@ public class XMLEncryption11Test extends org.junit.Assert {
         xmlStreamWriter.close();
 
         Document document =
-                documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         NodeList nodeList = document.getElementsByTagNameNS("urn:example:po", "PaymentInfo");
         Assert.assertEquals(nodeList.getLength(), 0);

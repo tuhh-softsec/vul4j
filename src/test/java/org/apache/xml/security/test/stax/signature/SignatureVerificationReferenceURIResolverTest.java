@@ -47,6 +47,7 @@ import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.TestUtils;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
 import org.junit.Assert;
 import org.junit.Test;
@@ -65,7 +66,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InputStream sourceDocument =
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
 
         // Set up the Key
@@ -117,7 +118,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
 
         try {
             TestUtils.switchAllowNotSameDocumentReferences(true);
-            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
         }
@@ -129,7 +130,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InputStream sourceDocument =
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
 
         // Set up the Key
@@ -181,7 +182,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
 
         try {
             TestUtils.switchAllowNotSameDocumentReferences(true);
-            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
         }
@@ -205,7 +206,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
             InputStream sourceDocument =
                     this.getClass().getClassLoader().getResourceAsStream(
                             "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
             Document document = builder.parse(sourceDocument);
 
             // Set up the Key
@@ -256,7 +257,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
             InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
             XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
-            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -269,7 +270,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InputStream sourceDocument =
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
 
         // Set up the Key
@@ -331,7 +332,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
         XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
     }
 
     @Test
@@ -340,7 +341,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InputStream sourceDocument =
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
 
         // Set up the Key
@@ -402,7 +403,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
         XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
     }
 
     @Test
@@ -411,7 +412,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InputStream sourceDocument =
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
 
         // Set up the Key
@@ -466,6 +467,6 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
         XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
     }
 }

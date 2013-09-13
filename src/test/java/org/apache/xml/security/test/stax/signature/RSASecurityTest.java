@@ -31,7 +31,6 @@ import java.security.spec.KeySpec;
 import java.security.spec.RSAPublicKeySpec;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.TransformerFactory;
@@ -41,11 +40,11 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -64,7 +63,6 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
             "17";
     
     private XMLInputFactory xmlInputFactory;
-    private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory = TransformerFactory.newInstance();
     
     @Before
@@ -74,12 +72,6 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         
         xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
-        
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setIgnoringComments(false);
-        documentBuilderFactory.setCoalescing(false);
-        documentBuilderFactory.setIgnoringElementContentWhitespace(false);
     }
 
     @Test
@@ -88,7 +80,7 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "com/rsasecurity/bdournaee/certj201_enveloping.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // XMLUtils.outputDOM(document, System.out);
@@ -107,7 +99,7 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, null, getPublicKey(),
@@ -121,7 +113,7 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "com/rsasecurity/bdournaee/certj201_enveloped.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -144,7 +136,7 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, null, getPublicKey(),

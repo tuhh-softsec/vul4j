@@ -31,7 +31,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.TransformerFactory;
@@ -44,6 +43,7 @@ import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -64,7 +64,6 @@ public class ExclusiveC14NInteropTest extends org.junit.Assert {
             "92540127839696181660603196559927599444985269069164107041817893521317620801749269178254275499516782269048036232822187472000302495112526925817061777055402839811893512245205312429410597288465276425092799962454093795367121466944495977844096953319768287183660390415542263887700389610463126158583843139357076400271";
     
     private XMLInputFactory xmlInputFactory;
-    private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory = TransformerFactory.newInstance();
     
     @Before
@@ -74,12 +73,6 @@ public class ExclusiveC14NInteropTest extends org.junit.Assert {
         
         xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
-        
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setIgnoringComments(false);
-        documentBuilderFactory.setCoalescing(false);
-        documentBuilderFactory.setIgnoringElementContentWhitespace(false);
     }
     
 
@@ -88,7 +81,7 @@ public class ExclusiveC14NInteropTest extends org.junit.Assert {
         // Read in plaintext document
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream("interop/c14n/Y1/exc-signature.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -110,7 +103,7 @@ public class ExclusiveC14NInteropTest extends org.junit.Assert {
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
         XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
     }
     
     private static PublicKey getPublicKey() 

@@ -22,6 +22,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -35,6 +36,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -85,7 +87,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         //first child element must be the dsig:Signature @see SANTUARIO-324:
         NodeList nodeList = document.getDocumentElement().getChildNodes();
@@ -189,7 +191,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
 
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document =
-                documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         //first child element must be the dsig:Signature @see SANTUARIO-324:
         NodeList nodeList = document.getDocumentElement().getChildNodes();
@@ -246,7 +248,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -285,7 +287,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, key, properties.getSignatureSecureParts());
@@ -331,7 +333,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -382,7 +384,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -434,7 +436,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -479,7 +481,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -525,7 +527,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
 
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document =
-                documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         NodeList nodeList = document.getElementsByTagNameNS(XMLSecurityConstants.TAG_dsig_CanonicalizationMethod.getNamespaceURI(), XMLSecurityConstants.TAG_dsig_CanonicalizationMethod.getLocalPart());
         Assert.assertEquals(1, nodeList.getLength());
@@ -591,7 +593,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
 
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document =
-                documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         NodeList nodeList = document.getElementsByTagNameNS(XMLSecurityConstants.TAG_dsig_CanonicalizationMethod.getNamespaceURI(), XMLSecurityConstants.TAG_dsig_CanonicalizationMethod.getLocalPart());
         Assert.assertEquals(1, nodeList.getLength());
@@ -656,7 +658,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -702,7 +704,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
 
         //System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document =
-                documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         NodeList nodeList = document.getElementsByTagNameNS(XMLSecurityConstants.TAG_c14nExcl_InclusiveNamespaces.getNamespaceURI(), XMLSecurityConstants.TAG_c14nExcl_InclusiveNamespaces.getLocalPart());
         Assert.assertEquals(2, nodeList.getLength());
@@ -751,7 +753,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -796,7 +798,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -840,7 +842,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -884,7 +886,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
-            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -930,7 +932,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
 
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document =
-                documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());

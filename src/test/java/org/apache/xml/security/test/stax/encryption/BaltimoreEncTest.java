@@ -31,7 +31,6 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.TransformerFactory;
@@ -50,6 +49,7 @@ import org.apache.xml.security.test.stax.signature.TestSecurityEventListener;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -68,7 +68,6 @@ public class BaltimoreEncTest extends org.junit.Assert {
     private static PrivateKey rsaKey;
 
     private XMLInputFactory xmlInputFactory;
-    private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory = TransformerFactory.newInstance();
     
     @Before
@@ -78,12 +77,6 @@ public class BaltimoreEncTest extends org.junit.Assert {
         xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
 
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setIgnoringComments(false);
-        documentBuilderFactory.setCoalescing(false);
-        documentBuilderFactory.setIgnoringElementContentWhitespace(false);
-        
         String filename = 
                 "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml";
         String basedir = System.getProperty("basedir");
@@ -92,7 +85,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         }
         File f = new File(filename);
 
-        DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(new java.io.FileInputStream(f));
 
         cardNumber = retrieveCCNumber(doc);
@@ -120,7 +113,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -144,7 +137,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
 
         checkDecryptedDoc(document, true);
     }
@@ -155,7 +148,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes256-cbc-prop.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -179,7 +172,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
 
         checkDecryptedDoc(document, true);
     }
@@ -190,7 +183,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -214,7 +207,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
 
         checkDecryptedDoc(document, true);
     }
@@ -225,7 +218,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-tripledes-cbc-kw-aes128.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -249,7 +242,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
 
         checkDecryptedDoc(document, true);
     }
@@ -260,7 +253,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes128-cbc-rsa-1_5.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // XMLUtils.outputDOM(document, System.out);
@@ -280,7 +273,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
 
         checkDecryptedDoc(document, true);
     }
@@ -291,7 +284,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes128-cbc.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -315,7 +308,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
     }
     
     @Test
@@ -324,7 +317,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes256-cbc-kw-tripledes.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -348,7 +341,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
     }
     
     @Test
@@ -357,7 +350,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes192-cbc-kw-aes256.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // Set up the Key
@@ -381,7 +374,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
     }
     
     @Test
@@ -390,7 +383,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(
                         "ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
         // XMLUtils.outputDOM(document, System.out);
@@ -410,7 +403,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
          
-        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        document = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
     }
     
     /*

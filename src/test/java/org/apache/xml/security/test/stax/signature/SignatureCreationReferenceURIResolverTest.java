@@ -39,6 +39,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
 import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
 import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
 import org.junit.Assert;
 import org.junit.Test;
@@ -96,7 +97,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
         xmlStreamWriter.close();
 
         Document document =
-                documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -146,7 +147,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
         xmlStreamWriter.close();
 
         Document document =
-                documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
@@ -201,7 +202,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
             xmlStreamWriter.close();
 
             Document document =
-                    documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+                    XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
             // Verify using DOM
             verifyUsingDOM(document, cert, properties.getSignatureSecureParts(), resolverDirectHTTP);
@@ -246,7 +247,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
         xmlStreamWriter.close();
 
         Document document =
-                documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         NodeList nodeList = document.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Reference");
         Assert.assertEquals(1, nodeList.getLength());
