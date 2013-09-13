@@ -48,7 +48,7 @@ img {
 	width: 700px;
 	height: 200px;
 	margin: 0 auto;
-	background: url(images/img1.jpg) no-repeat;
+	background: url(images/img1.jpg?format=raw) no-repeat;
 }
 
 #header * {
@@ -78,7 +78,7 @@ img {
 	width: 700px;
 	height: 41px;
 	margin: 0 auto;
-	background: #37AEF2 url(images/img2.gif)
+	background: #37AEF2 url(images/img2.gif?format=raw)
 }
 
 #menu ul {
@@ -101,7 +101,7 @@ img {
 }
 
 #menu a:hover, #menu .active a {
-	background: url(images/img3.gif);
+	background: url(images/img3.gif?format=raw);
 	color: #FFFFFF;
 }
 
@@ -110,7 +110,7 @@ img {
 #content {
 	width: 700px;
 	margin: 0 auto;
-	background: url(images/img4.gif);
+	background: url(images/img4.gif?format=raw);
 }
 
 #colOne {
@@ -137,7 +137,7 @@ img {
 	width: 700px;
 	margin: 0 auto;
 	padding: 10px 0;
-	background: url(images/img6.gif) repeat-x;
+	background: url(images/img6.gif?format=raw) repeat-x;
 	font-size: smaller;
 }
 
