@@ -25,9 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.c14n.implementations.Canonicalizer11_OmitComments;
 import org.apache.xml.security.c14n.implementations.Canonicalizer11_WithComments;
@@ -37,6 +35,7 @@ import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitCom
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithComments;
 import org.apache.xml.security.c14n.implementations.CanonicalizerPhysical;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -245,15 +244,9 @@ public class Canonicalizer {
         java.io.IOException, org.xml.sax.SAXException, CanonicalizationException {
         InputStream bais = new ByteArrayInputStream(inputBytes);
         InputSource in = new InputSource(bais);
-        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-        dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
-
-        dfactory.setNamespaceAware(true);
 
         // needs to validate for ID attribute normalization
-        dfactory.setValidating(true);
-
-        DocumentBuilder db = dfactory.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(true);
 
         /*
          * for some of the test vectors from the specification,

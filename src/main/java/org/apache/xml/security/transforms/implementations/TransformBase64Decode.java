@@ -22,8 +22,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -34,6 +32,7 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -137,10 +136,7 @@ public class TransformBase64Decode extends TransformSpi {
             try {
                 //Exceptional case there is current not text case testing this(Before it was a
                 //a common case).
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
-                Document doc =
-                    dbf.newDocumentBuilder().parse(input.getOctetStream());
+                Document doc = XMLUtils.createDocumentBuilder(false).parse(input.getOctetStream());
 
                 Element rootNode = doc.getDocumentElement();
                 StringBuilder sb = new StringBuilder();

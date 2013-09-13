@@ -28,9 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -111,8 +109,6 @@ public class XMLSignatureInput {
    
     private boolean needsToBeExpanded = false;
     private OutputStream outputStream = null;
-    
-    private DocumentBuilderFactory dfactory;
     
     /**
      * Construct a XMLSignatureInput from an octet array.
@@ -551,13 +547,7 @@ public class XMLSignatureInput {
         
     void convertToNodes() throws CanonicalizationException, 
         ParserConfigurationException, IOException, SAXException {
-        if (dfactory == null) {
-            dfactory = DocumentBuilderFactory.newInstance();
-            dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
-            dfactory.setValidating(false);        
-            dfactory.setNamespaceAware(true);
-        }
-        DocumentBuilder db = dfactory.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         // select all nodes, also the comments.        
         try {
             db.setErrorHandler(new org.apache.xml.security.utils.IgnoreAllErrorHandler());

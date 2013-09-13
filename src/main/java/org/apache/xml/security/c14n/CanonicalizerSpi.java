@@ -22,9 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -59,13 +57,8 @@ public abstract class CanonicalizerSpi {
 
         java.io.InputStream bais = new ByteArrayInputStream(inputBytes);
         InputSource in = new InputSource(bais);
-        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-        dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
-
-        // needs to validate for ID attribute normalization
-        dfactory.setNamespaceAware(true);
-
-        DocumentBuilder db = dfactory.newDocumentBuilder();
+        
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
 
         Document document = db.parse(in);
         return this.engineCanonicalizeSubTree(document);

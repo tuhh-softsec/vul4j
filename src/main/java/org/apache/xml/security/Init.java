@@ -24,9 +24,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
@@ -158,13 +156,7 @@ public class Init {
     private static void fileInit(InputStream is) {
         try {
             /* read library configuration file */
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
-
-            dbf.setNamespaceAware(true);
-            dbf.setValidating(false);
-
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
             Document doc = db.parse(is);
             Node config = doc.getFirstChild();
             for (; config != null; config = config.getNextSibling()) {

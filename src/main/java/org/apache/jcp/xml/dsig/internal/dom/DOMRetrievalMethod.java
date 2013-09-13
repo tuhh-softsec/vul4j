@@ -37,7 +37,6 @@ import java.net.URISyntaxException;
 import java.security.Provider;
 import java.util.*;
 
-import javax.xml.XMLConstants;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dom.DOMURIReference;
@@ -233,10 +232,8 @@ public final class DOMRetrievalMethod extends DOMStructure
     {
         try {
             ApacheData data = (ApacheData)dereference(context);
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = 
+                org.apache.xml.security.utils.XMLUtils.createDocumentBuilder(false);
             Document doc = db.parse(new ByteArrayInputStream
                 (data.getXMLSignatureInput().getBytes()));
             Element kiElem = doc.getDocumentElement();

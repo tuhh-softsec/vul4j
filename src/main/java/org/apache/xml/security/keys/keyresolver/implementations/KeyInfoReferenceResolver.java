@@ -7,10 +7,8 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
 import javax.crypto.SecretKey;
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -267,10 +265,7 @@ public class KeyInfoReferenceResolver extends KeyResolverSpi {
      */
     private Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
             Document doc = db.parse(new ByteArrayInputStream(bytes));
             return doc.getDocumentElement();
         } catch (SAXException ex) {
