@@ -572,8 +572,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             try {
 				sw.write(msglist, null);
 				sw.flush();
+				Thread.sleep(0, 100000);
 			} catch (IOException e) {
 				log.error("Failure writing flow mod", e);
+			} catch (InterruptedException e) {
+				// TODO handle this properly
+				log.error("Interrupted", e);
 			}
 		}
 	}
