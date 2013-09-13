@@ -35,7 +35,6 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -51,6 +50,7 @@ import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.EncryptionConstants;
+import org.apache.xml.security.utils.XMLUtils;
 // import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -101,11 +101,6 @@ public class XMLEncryption11Test extends org.junit.Assert {
         }
         
         // Create the comparison strings
-        DocumentBuilderFactory dbf =
-            DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
-
         String filename = 
             "src/test/resources/org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
         String basedir = System.getProperty("basedir");
@@ -114,7 +109,7 @@ public class XMLEncryption11Test extends org.junit.Assert {
         }
         File f = new File(filename);
 
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(new java.io.FileInputStream(f));
 
         cardNumber = retrieveCCNumber(doc);
@@ -205,16 +200,12 @@ public class XMLEncryption11Test extends org.junit.Assert {
 
             // Perform encryption
             String filename = "src/test/resources/org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
-            javax.xml.parsers.DocumentBuilderFactory dbf =
-                javax.xml.parsers.DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
             if (basedir != null && !"".equals(basedir)) {
                 filename = basedir + "/" + filename;
             }
             File f = new File(filename);
 
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
             Document doc = db.parse(new java.io.FileInputStream(f));
 
             Key sessionKey = getSessionKey("http://www.w3.org/2009/xmlenc11#aes128-gcm");
@@ -311,16 +302,12 @@ public class XMLEncryption11Test extends org.junit.Assert {
 
             // Perform encryption
             String filename = "src/test/resources/org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
-            javax.xml.parsers.DocumentBuilderFactory dbf =
-                javax.xml.parsers.DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
             if (basedir != null && !"".equals(basedir)) {
                 filename = basedir + "/" + filename;
             }
             File f = new File(filename);
 
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
             Document doc = db.parse(new java.io.FileInputStream(f));
 
             Key sessionKey = getSessionKey("http://www.w3.org/2009/xmlenc11#aes192-gcm");
@@ -417,16 +404,12 @@ public class XMLEncryption11Test extends org.junit.Assert {
 
             // Perform encryption
             String filename = "src/test/resources/org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
-            javax.xml.parsers.DocumentBuilderFactory dbf =
-                javax.xml.parsers.DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
             if (basedir != null && !"".equals(basedir)) {
                 filename = basedir + "/" + filename;
             }
             File f = new File(filename);
 
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
             Document doc = db.parse(new java.io.FileInputStream(f));
 
             Key sessionKey = getSessionKey("http://www.w3.org/2009/xmlenc11#aes256-gcm");
@@ -523,16 +506,12 @@ public class XMLEncryption11Test extends org.junit.Assert {
 
             // Perform encryption
             String filename = "src/test/resources/org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
-            javax.xml.parsers.DocumentBuilderFactory dbf =
-                javax.xml.parsers.DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
             if (basedir != null && !"".equals(basedir)) {
                 filename = basedir + "/" + filename;
             }
             File f = new File(filename);
 
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
             Document doc = db.parse(new java.io.FileInputStream(f));
 
             Key sessionKey = getSessionKey("http://www.w3.org/2009/xmlenc11#aes256-gcm");
@@ -579,17 +558,13 @@ public class XMLEncryption11Test extends org.junit.Assert {
      */
     private Document decryptElement(String filename, Key rsaKey, X509Certificate rsaCert) throws Exception {
         // Parse the document in question
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
         String basedir = System.getProperty("basedir");
         if (basedir != null && !"".equals(basedir)) {
             filename = basedir + "/" + filename;
         }
         File f = new File(filename);
 
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(new java.io.FileInputStream(f));
         
         return decryptElement(doc, rsaKey, rsaCert);

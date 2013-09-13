@@ -21,9 +21,8 @@ package org.apache.xml.security.test.dom.c14n.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.xml.security.c14n.implementations.NameSpaceSymbTable;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 
@@ -31,7 +30,7 @@ public class NameSpaceSymbTableTest extends org.junit.Assert {
     static Attr node1,node2;
     static {
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            Document doc = XMLUtils.createDocumentBuilder(false).newDocument();
             node1 = doc.createAttributeNS("a","b");
             node2 = doc.createAttributeNS("b","c");
         } catch (Exception e) {

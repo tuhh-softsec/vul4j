@@ -40,13 +40,8 @@ public class X509DataTest extends org.junit.Assert {
     @org.junit.Test
     public void testAddX509SubjectName() throws Exception {
         Init.init();
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-        //XML Signature needs to be namespace aware
-        dbf.setNamespaceAware(true);
-
-        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         org.w3c.dom.Document doc = db.newDocument();
         XMLSignature sig = new XMLSignature(doc, "", XMLSignature.ALGO_ID_SIGNATURE_DSA);
         
@@ -76,13 +71,8 @@ public class X509DataTest extends org.junit.Assert {
     }
     
     private XMLSignature getSignature(byte[] s) throws Exception {
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-        //XML Signature needs to be namespace aware
-        dbf.setNamespaceAware(true);
-
-        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(new ByteArrayInputStream(s));
         Element el = (Element)doc.getFirstChild();
         return new XMLSignature(el, "");

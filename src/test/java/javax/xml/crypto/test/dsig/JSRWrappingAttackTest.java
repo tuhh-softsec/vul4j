@@ -25,8 +25,8 @@ import javax.xml.crypto.dsig.XMLSignatureException;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.crypto.test.KeySelectors;
 import javax.xml.crypto.test.dsig.SignatureValidator;
-import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -56,10 +56,7 @@ public class JSRWrappingAttackTest extends org.junit.Assert {
     public void testWrappingAttack() throws Exception {
         String file = "manifestSignatureWrapping.xml";
         
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        dbf.setValidating(false);
-        Document doc = dbf.newDocumentBuilder().parse(new File(dir, file));
+        Document doc = XMLUtils.createDocumentBuilder(false).parse(new File(dir, file));
         Element sigElement = SignatureValidator.getSignatureElement(doc);
         if (sigElement == null) {
             throw new Exception("Couldn't find signature Element");

@@ -21,10 +21,10 @@ package org.apache.xml.security.test.dom.keys;
 import java.io.FileInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.keys.content.KeyInfoReference;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,9 +41,7 @@ public class KeyInfoReferenceTest extends Assert {
     private final String uriControl = "http://www.example.org/keyinfo.xml";
 
     public KeyInfoReferenceTest() throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        documentBuilder = dbf.newDocumentBuilder();
+        documentBuilder = XMLUtils.createDocumentBuilder(false);
     }
 
     @org.junit.Test

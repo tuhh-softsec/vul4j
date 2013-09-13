@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
@@ -71,16 +70,11 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
             Canonicalizer20010315ExclusiveTest.class
         );
 
-    /** Field dbf */
-    DocumentBuilderFactory dbf;
-
     /** Field db */
     DocumentBuilder db;
 
     public Canonicalizer20010315ExclusiveTest() throws ParserConfigurationException {
-        this.dbf = DocumentBuilderFactory.newInstance();
-        this.dbf.setNamespaceAware(true);
-        this.db = this.dbf.newDocumentBuilder();
+        this.db = XMLUtils.createDocumentBuilder(false);
     }
 
     /**
@@ -381,7 +375,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
      */
     @org.junit.Test
     public void test24Aexcl() throws Exception {
-        Document doc = dbf.newDocumentBuilder ().newDocument ();
+        Document doc = XMLUtils.createDocumentBuilder(false).newDocument();
         Element local = doc.createElementNS("foo:bar", "dsig:local");
         Element test = doc.createElementNS("http://example.net", "etsi:test");
         Element elem2 = doc.createElementNS("http://example.net", "etsi:elem2");

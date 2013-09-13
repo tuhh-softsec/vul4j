@@ -51,9 +51,6 @@ import org.w3c.dom.Element;
  */
 public class ECDSASignatureTest extends org.junit.Assert {
 
-    private static org.slf4j.Logger log =
-        org.slf4j.LoggerFactory.getLogger(ECDSASignatureTest.class);
-
     private static final String BASEDIR = System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
     private static final String ECDSA_JKS = 
@@ -87,19 +84,10 @@ public class ECDSASignatureTest extends org.junit.Assert {
             }
         }
 
-        javax.xml.parsers.DocumentBuilderFactory dbf = 
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        log.info("dbf.isIgnoringComments() = " + dbf.isIgnoringComments());
-        log.info(
-             "dbf.isIgnoringElementContentWhitespace() = " 
-             + dbf.isIgnoringElementContentWhitespace()
-         );
-        
         //String id = "http://apache.org/xml/properties/dom/document-class-name";
         //dbf.setAttribute(id, IndexedDocument.class.getName());
         
-        db = dbf.newDocumentBuilder();
+        db = XMLUtils.createDocumentBuilder(false);
         org.apache.xml.security.Init.init();
     }
     

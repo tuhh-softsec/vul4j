@@ -22,12 +22,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-
 import org.apache.xml.security.c14n.implementations.Canonicalizer11;
 import org.apache.xml.security.c14n.implementations.Canonicalizer11_OmitComments;
+import org.apache.xml.security.utils.XMLUtils;
 
 /**
  * This is a test for Santuario-191:
@@ -63,9 +63,7 @@ public class Santuario191Test extends org.junit.Assert {
         //
         // Parse the Data
         //
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
+        db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(new ByteArrayInputStream(INPUT_DATA.getBytes("UTF8")));
         
         //

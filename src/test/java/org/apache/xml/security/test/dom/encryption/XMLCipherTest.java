@@ -36,7 +36,6 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -47,6 +46,7 @@ import org.apache.xml.security.encryption.EncryptionMethod;
 import org.apache.xml.security.encryption.CipherData;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.EncryptionConstants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.keys.KeyInfo;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -562,8 +562,7 @@ public class XMLCipherTest extends org.junit.Assert {
     public void testSameDocumentCipherReference() throws Exception {
 
         if (haveISOPadding) {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
 
             Document d = db.newDocument();
 
@@ -636,9 +635,7 @@ public class XMLCipherTest extends org.junit.Assert {
     public void testPhysicalRepresentation() throws Exception {
 
         if (haveISOPadding) {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
 
             byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
             DESedeKeySpec keySpec = new DESedeKeySpec(bits192);
@@ -791,10 +788,7 @@ public class XMLCipherTest extends org.junit.Assert {
         }
         File f = new File(filename);
 
-        DocumentBuilderFactory builderFactory = 
-            DocumentBuilderFactory.newInstance();
-        builderFactory.setNamespaceAware (true);
-        DocumentBuilder builder = builderFactory.newDocumentBuilder();
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(f); 
 
         XMLCipher keyCipher = XMLCipher.getInstance();
@@ -826,8 +820,7 @@ public class XMLCipherTest extends org.junit.Assert {
     private Document document() {
         Document d = null;
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
             File f = new File(documentName);
             d = db.parse(f);
         } catch (Exception e) {

@@ -36,7 +36,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.encryption.EncryptedData;
@@ -57,6 +56,7 @@ import org.apache.xml.security.keys.keyresolver.implementations.SingleKeyResolve
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.keys.storage.implementations.KeyStoreResolver;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -97,9 +97,7 @@ public class KeyResolverTest extends org.junit.Assert {
         KeyResolverSpi privateKeyResolver = new PrivateKeyResolver(ks, pwd);
         KeyResolverSpi secretKeyResolver = new SecretKeyResolver(ks, pwd);
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.newDocument();
 
         KeyInfo ki;
@@ -210,9 +208,7 @@ public class KeyResolverTest extends org.junit.Assert {
         }
         
         // Create a sample XML document
-        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = fac.newDocumentBuilder();
-        Document document = builder.newDocument();
+        Document document = XMLUtils.createDocumentBuilder(false).newDocument();
 
         Element rootElement = document.createElement("root");
         document.appendChild(rootElement);

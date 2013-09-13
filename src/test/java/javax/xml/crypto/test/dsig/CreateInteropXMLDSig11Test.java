@@ -21,6 +21,7 @@ package javax.xml.crypto.test.dsig;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 import java.util.Collections;
+
 import javax.xml.crypto.KeySelector;
 import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.*;
@@ -28,7 +29,8 @@ import javax.xml.crypto.dsig.dom.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.*;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.*;
 
 import javax.xml.crypto.test.KeySelectors;
@@ -75,9 +77,7 @@ public class CreateInteropXMLDSig11Test extends org.junit.Assert {
         rsakpg.initialize(2048);
         rsa2048 = rsakpg.generateKeyPair();
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
+        db = XMLUtils.createDocumentBuilder(false);
         // create common objects
         fac = XMLSignatureFactory.getInstance();
         KeyInfoFactory kifac = fac.getKeyInfoFactory();

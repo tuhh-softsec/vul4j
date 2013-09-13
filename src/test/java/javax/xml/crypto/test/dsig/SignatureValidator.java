@@ -23,10 +23,12 @@ package javax.xml.crypto.test.dsig;
 
 import java.io.*;
 import java.util.*;
+
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
@@ -52,10 +54,7 @@ public class SignatureValidator {
 
     public DOMValidateContext getValidateContext(String fn, KeySelector ks)
         throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        dbf.setValidating(false);
-        Document doc = dbf.newDocumentBuilder().parse(new File(dir, fn));
+        Document doc = XMLUtils.createDocumentBuilder(false).parse(new File(dir, fn));
         Element sigElement = getSignatureElement(doc);
         if (sigElement == null) {
             throw new Exception("Couldn't find signature Element");

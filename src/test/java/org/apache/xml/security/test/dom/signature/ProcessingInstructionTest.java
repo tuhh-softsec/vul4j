@@ -25,7 +25,6 @@ import java.net.URISyntaxException;
 import java.security.cert.X509Certificate;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -37,6 +36,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
@@ -63,10 +63,7 @@ public class ProcessingInstructionTest extends org.junit.Assert {
     @org.junit.Test
     public void testProcessingInstruction() throws Exception {
         String signatureFileName = dir + "upp_sign.xml";
-        DocumentBuilderFactory dbf = 
-            DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         File f = new File(signatureFileName);
         Document doc = db.parse(new java.io.FileInputStream(f));
         

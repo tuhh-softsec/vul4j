@@ -20,12 +20,13 @@ package org.apache.xml.security.test.dom.keys.content.x509;
 
 import java.io.File;
 import java.io.FileInputStream;
-import javax.xml.parsers.*;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 
 /**
  * Certificate parsing test.
@@ -45,9 +46,7 @@ public class XMLX509CertificateTest extends org.junit.Assert {
             SEP + "signature-x509-crt.xml");
 
         FileInputStream fis = new FileInputStream(f);
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        Document doc = dbf.newDocumentBuilder().parse(fis);
+        Document doc = XMLUtils.createDocumentBuilder(false).parse(fis);
         NodeList nl = doc.getElementsByTagNameNS
                 (Constants.SignatureSpecNS, "X509Certificate");
         XMLX509Certificate xmlCert = 

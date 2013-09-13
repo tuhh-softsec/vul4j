@@ -23,12 +23,12 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.keys.storage.implementations.SingleCertificateResolver;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,9 +45,7 @@ public class X509DigestResolverTest extends Assert {
     private StorageResolver storageResolver;
 
     public X509DigestResolverTest() throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        documentBuilder = dbf.newDocumentBuilder();
+        documentBuilder = XMLUtils.createDocumentBuilder(false);
 
         certControl = loadCertificate("cert-X509Digest.crt");
 

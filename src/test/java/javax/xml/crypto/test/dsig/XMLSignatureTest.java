@@ -24,6 +24,7 @@ package javax.xml.crypto.test.dsig;
 import java.io.*;
 import java.util.*;
 import java.security.*;
+
 import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dom.DOMStructure;
 import javax.xml.crypto.dsig.*;
@@ -31,9 +32,9 @@ import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.parsers.*;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.*;
 
 /**
@@ -304,9 +305,7 @@ public class XMLSignatureTest extends org.junit.Assert {
         File f = new File(base + "/src/test/resources/javax/xml/crypto/dsig/" +
             "signature-enveloping-rsa-template.xml");
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        Document doc = dbf.newDocumentBuilder().parse(new FileInputStream(f));
+        Document doc = XMLUtils.createDocumentBuilder(false).parse(new FileInputStream(f));
 
         // Find Signature element
         NodeList nl =

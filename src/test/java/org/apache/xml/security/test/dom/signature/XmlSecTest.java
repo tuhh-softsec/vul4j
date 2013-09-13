@@ -27,7 +27,6 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -40,6 +39,7 @@ import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -70,11 +70,7 @@ public class XmlSecTest extends org.junit.Assert {
     
     private void checkXmlSignatureSoftwareStack(boolean cert) throws Exception {
         Init.init();
-        DocumentBuilderFactory documentBuilderFactory = 
-            DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = 
-            documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = XMLUtils.createDocumentBuilder(false);
         Document testDocument = documentBuilder.newDocument();
 
         Element rootElement = 

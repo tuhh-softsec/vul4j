@@ -27,12 +27,12 @@ import java.security.Security;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.keys.content.DEREncodedKeyValue;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,9 +52,7 @@ public class DEREncodedKeyValueTest extends Assert {
     private final String idControl = "abc123";
 
     public DEREncodedKeyValueTest() throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        documentBuilder = dbf.newDocumentBuilder();
+        documentBuilder = XMLUtils.createDocumentBuilder(false);
 
         //
         // If the BouncyCastle provider is not installed, then try to load it 

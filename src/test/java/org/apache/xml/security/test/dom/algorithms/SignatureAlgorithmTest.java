@@ -21,11 +21,10 @@ package org.apache.xml.security.test.dom.algorithms;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 
 public class SignatureAlgorithmTest extends org.junit.Assert {
@@ -39,7 +38,7 @@ public class SignatureAlgorithmTest extends org.junit.Assert {
 
     @org.junit.Test
     public void testSameKeySeveralAlgorithmSigning() throws Exception {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Document doc = XMLUtils.createDocumentBuilder(false).newDocument();
         SignatureAlgorithm signatureAlgorithm = 
             new SignatureAlgorithm(doc, XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1);
         PrivateKey pk = KeyPairGenerator.getInstance("RSA").genKeyPair().getPrivate();

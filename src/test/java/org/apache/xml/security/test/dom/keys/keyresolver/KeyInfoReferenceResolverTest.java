@@ -26,13 +26,13 @@ import java.security.cert.X509Certificate;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,9 +46,7 @@ public class KeyInfoReferenceResolverTest extends Assert {
     private DocumentBuilder documentBuilder;
 
     public KeyInfoReferenceResolverTest() throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        documentBuilder = dbf.newDocumentBuilder();
+        documentBuilder = XMLUtils.createDocumentBuilder(false);
 
         if (!Init.isInitialized()) {
             Init.init();

@@ -25,22 +25,25 @@ import java.io.*;
 import java.security.*;
 import java.security.spec.*;
 import java.util.*;
+
 import javax.crypto.SecretKey;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.crypto.dsig.spec.*;
 import javax.xml.crypto.dom.*;
 import javax.xml.crypto.*;
+
 import java.math.BigInteger;
+
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -119,10 +122,7 @@ public class TestUtils {
     
     public static Document newDocument() {
         try {
-            DocumentBuilderFactory docFac =
-                DocumentBuilderFactory.newInstance();
-            docFac.setNamespaceAware(true);
-            DocumentBuilder docBuilder = docFac.newDocumentBuilder();
+            DocumentBuilder docBuilder = XMLUtils.createDocumentBuilder(false);
             return docBuilder.newDocument();
         } catch (Exception ex) {
             return null;
@@ -142,9 +142,7 @@ public class TestUtils {
                                                        String tag) 
         throws Exception {
         if (type.equalsIgnoreCase("dom")) {
-            DocumentBuilderFactory docFactory =
-                DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            DocumentBuilder docBuilder = XMLUtils.createDocumentBuilder(false);
             Document doc = docBuilder.parse(input);
             if (tag == null) {
                 return new DOMValidateContext

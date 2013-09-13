@@ -20,9 +20,11 @@ package javax.xml.crypto.test.dsig;
 
 import java.io.*;
 import java.security.Security;
+
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.*;
-import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.*;
 
 import javax.xml.crypto.test.KeySelectors;
@@ -46,14 +48,12 @@ public class SecureXSLTTest extends org.junit.Assert {
         String[] signatures =
             { "signature1.xml", "signature2.xml", "signature3.xml" };
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
         XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
         File f = new File("doc.xml");
         for (int i = 0; i < signatures.length; i++) {
             String signature = signatures[i];
             // System.out.println("Validating " + signature);
-            Document doc = dbf.newDocumentBuilder().parse
+            Document doc = XMLUtils.createDocumentBuilder(false).parse
                 (new FileInputStream(new File(baseDir, signature)));
 
             NodeList nl =

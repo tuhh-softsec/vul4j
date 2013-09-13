@@ -21,12 +21,12 @@ package org.apache.xml.security.test.dom.encryption;
 import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.encryption.Reference;
 import org.apache.xml.security.encryption.ReferenceList;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.utils.EncryptionConstants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,9 +39,7 @@ public class ReferenceListTest extends org.junit.Assert {
 
     public ReferenceListTest() throws Exception {
         org.apache.xml.security.Init.init();
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
+        db = XMLUtils.createDocumentBuilder(false);
     }
 
     @org.junit.Test

@@ -22,14 +22,15 @@
 package javax.xml.crypto.test.dsig.keyinfo;
 
 import java.util.*;
+
 import javax.xml.crypto.*;
 import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.keyinfo.*;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import org.apache.jcp.xml.dsig.internal.dom.DOMUtils;
+import org.apache.xml.security.utils.XMLUtils;
 
 /**
  * Unit test for javax.xml.crypto.dsig.keyinfo.KeyInfo
@@ -118,9 +119,7 @@ public class KeyInfoTest extends org.junit.Assert {
             fail("Should raise a NullPointerException");
         } catch (NullPointerException npe) {}
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        Document doc = dbf.newDocumentBuilder().newDocument();
+        Document doc = XMLUtils.createDocumentBuilder(false).newDocument();
         Element elem = doc.createElementNS("http://acme.org", "parent");
         doc.appendChild(elem);
         DOMStructure parent = new DOMStructure(elem);

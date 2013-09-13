@@ -33,7 +33,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -51,6 +50,7 @@ import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -81,11 +81,6 @@ public class BaltimoreEncTest extends org.junit.Assert {
      */
     public BaltimoreEncTest() throws Exception {
         // Create the comparison strings
-        DocumentBuilderFactory dbf =
-            DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
-
         String filename = 
             "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml";
         String basedir = System.getProperty("basedir");
@@ -94,7 +89,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         }
         File f = new File(filename);
 
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(new java.io.FileInputStream(f));
 
         cardNumber = retrieveCCNumber(doc);
@@ -389,17 +384,13 @@ public class BaltimoreEncTest extends org.junit.Assert {
 
         // Parse the document in question
 
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
         String basedir = System.getProperty("basedir");
         if (basedir != null && !"".equals(basedir)) {
             filename = basedir + "/" + filename;
         }
         File f = new File(filename);
 
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(new java.io.FileInputStream(f));
 
         // Now we have the document, lets build the XMLCipher element
@@ -433,17 +424,13 @@ public class BaltimoreEncTest extends org.junit.Assert {
         XMLCipher cipher;
 
         // Parse the document in question
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
         String basedir = System.getProperty("basedir");
         if (basedir != null && !"".equals(basedir)) {
             filename = basedir + "/" + filename;
         }
         File f = new File(filename);
 
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.parse(new java.io.FileInputStream(f));
 
         // Now we have the document, lets build the XMLCipher element

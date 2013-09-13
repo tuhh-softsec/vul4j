@@ -24,6 +24,7 @@ import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.MissingResourceFailureException;
 import org.apache.xml.security.test.dom.interop.InteropTestBase;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
 
@@ -67,12 +68,8 @@ public class ForbiddenReferenceTest extends InteropTestBase {
         }
 
         File f = new File(directory + "/" + file);
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-        dbf.setNamespaceAware(true);
-
-        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         org.w3c.dom.Document doc = db.parse(f);
 
         Element manifestElement =

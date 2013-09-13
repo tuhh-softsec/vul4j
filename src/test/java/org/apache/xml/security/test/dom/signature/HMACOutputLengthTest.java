@@ -19,17 +19,18 @@
 package org.apache.xml.security.test.dom.signature;
 
 import java.io.File;
+
 import javax.crypto.SecretKey;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 
 public class HMACOutputLengthTest extends org.junit.Assert {
     
@@ -37,17 +38,12 @@ public class HMACOutputLengthTest extends org.junit.Assert {
         org.slf4j.LoggerFactory.getLogger
             (HMACOutputLengthTest.class);
     
-    private static DocumentBuilderFactory dbf = null;
-
     private static final String BASEDIR = 
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
 
     public HMACOutputLengthTest() throws Exception {
         Init.init();
-        dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        dbf.setValidating(false);
     }
     
     @org.junit.Test
@@ -81,7 +77,7 @@ public class HMACOutputLengthTest extends org.junit.Assert {
     
     @org.junit.Test
     public void test_generate_hmac_sha1_40() throws Exception {
-        Document doc = dbf.newDocumentBuilder().newDocument();
+        Document doc = XMLUtils.createDocumentBuilder(false).newDocument();
         XMLSignature sig = 
             new XMLSignature(
                 doc, null, XMLSignature.ALGO_ID_MAC_HMAC_SHA1, 
@@ -105,7 +101,7 @@ public class HMACOutputLengthTest extends org.junit.Assert {
             new File(BASEDIR + SEP + "src/test/resources" + SEP + "javax" + SEP + "xml" 
                      + SEP + "crypto" + SEP + "dsig" + SEP, data);
 
-        Document doc = dbf.newDocumentBuilder().parse(file);
+        Document doc = XMLUtils.createDocumentBuilder(false).parse(file);
         NodeList nl =
             doc.getElementsByTagNameNS(Constants.SignatureSpecNS, "Signature");
         if (nl.getLength() == 0) {

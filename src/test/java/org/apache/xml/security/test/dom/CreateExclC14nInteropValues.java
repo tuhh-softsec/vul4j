@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.signature.ObjectContainer;
 import org.apache.xml.security.signature.XMLSignature;
@@ -51,11 +50,7 @@ public class CreateExclC14nInteropValues {
 
         org.apache.xml.security.Init.init();
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-        dbf.setNamespaceAware(true);
-
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         Document doc = db.newDocument();
         String directory = "data/org/apache/xml/security/c14n/outExcl/";
         File signatureFile = new File(directory + "apacheSignature.xml");

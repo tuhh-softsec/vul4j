@@ -24,6 +24,7 @@ import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.test.dom.interop.InteropTestBase;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
 
@@ -123,12 +124,8 @@ public class ExclusiveC14NInteropTest extends InteropTestBase {
         }
 
         File f = new File(directory + "/" + file);
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-        dbf.setNamespaceAware(true);
-
-        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         org.w3c.dom.Document doc = db.parse(f);
 
         Element sigElement =

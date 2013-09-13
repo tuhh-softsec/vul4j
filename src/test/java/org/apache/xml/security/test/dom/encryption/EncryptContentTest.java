@@ -27,7 +27,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerFactory;
 
 import org.apache.xml.security.algorithms.JCEMapper;
@@ -35,6 +34,7 @@ import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -73,9 +73,7 @@ public class EncryptContentTest extends org.junit.Assert {
 
     public EncryptContentTest() throws Exception {
         org.apache.xml.security.Init.init();
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
+        db = XMLUtils.createDocumentBuilder(false);
 
         byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
         DESedeKeySpec keySpec = new DESedeKeySpec(bits192);

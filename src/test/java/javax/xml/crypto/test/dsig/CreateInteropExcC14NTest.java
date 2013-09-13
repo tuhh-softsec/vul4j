@@ -25,15 +25,18 @@ import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.util.*;
+
 import javax.xml.crypto.dom.DOMStructure;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.*;
-import javax.xml.parsers.*;
+
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.*;
 
 import javax.xml.crypto.test.KeySelectors;
+import javax.xml.parsers.DocumentBuilder;
 
 /**
  * Test that recreates interop exc C14N test vectors
@@ -59,9 +62,7 @@ public class CreateInteropExcC14NTest extends org.junit.Assert {
         fac = XMLSignatureFactory.getInstance
             ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         kifac = fac.getKeyInfoFactory();
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
+        db = XMLUtils.createDocumentBuilder(false);
 
         // get key & self-signed certificate from keystore
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");

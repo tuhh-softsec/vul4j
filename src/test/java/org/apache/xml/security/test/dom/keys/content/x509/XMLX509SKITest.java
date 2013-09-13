@@ -20,9 +20,14 @@ package org.apache.xml.security.test.dom.keys.content.x509;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.security.cert.*;
+import java.security.cert.CertStore;
+import java.security.cert.CertificateFactory;
+import java.security.cert.CollectionCertStoreParameters;
+import java.security.cert.X509CertSelector;
+import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Collections;
+
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 
 /**

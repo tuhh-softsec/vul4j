@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
 public class Xpath2TransformationTest extends org.junit.Assert {
@@ -127,11 +128,8 @@ public class Xpath2TransformationTest extends org.junit.Assert {
         "   </edoc:Object>";
         
         ByteArrayInputStream is = new ByteArrayInputStream(sig.getBytes());
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
 
-        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
         org.w3c.dom.Document doc = db.parse(is);
         Element sigElement =
             (Element) doc.getElementsByTagNameNS(

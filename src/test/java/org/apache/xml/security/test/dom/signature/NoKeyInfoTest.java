@@ -20,8 +20,9 @@ package org.apache.xml.security.test.dom.signature;
 
 import java.io.File;
 import java.io.FileInputStream;
+
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -29,6 +30,7 @@ import org.apache.xml.security.Init;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 
 public class NoKeyInfoTest extends org.junit.Assert {
 
@@ -42,9 +44,7 @@ public class NoKeyInfoTest extends org.junit.Assert {
     private DocumentBuilder db;
 
     public NoKeyInfoTest() throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
+        db = XMLUtils.createDocumentBuilder(false);
     }
 
     @org.junit.Test

@@ -64,10 +64,7 @@ public class CreateSignatureTest extends org.junit.Assert {
     private javax.xml.parsers.DocumentBuilder db;
     
     public CreateSignatureTest() throws Exception {
-        javax.xml.parsers.DocumentBuilderFactory dbf = 
-            javax.xml.parsers.DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
+        db = XMLUtils.createDocumentBuilder(false);
         org.apache.xml.security.Init.init();
         kp = KeyPairGenerator.getInstance("RSA").genKeyPair();
     }

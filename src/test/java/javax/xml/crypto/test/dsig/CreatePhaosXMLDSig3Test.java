@@ -23,14 +23,17 @@ package javax.xml.crypto.test.dsig;
 
 import java.security.*;
 import java.util.*;
+
 import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.*;
 import javax.xml.crypto.dsig.spec.*;
-import javax.xml.parsers.*;
+
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.*;
 
 import javax.xml.crypto.test.KeySelectors;
+import javax.xml.parsers.DocumentBuilder;
 
 /**
  * Test that recreates Phaos XMLDSig-3 test vectors
@@ -52,9 +55,7 @@ public class CreatePhaosXMLDSig3Test extends org.junit.Assert {
     public CreatePhaosXMLDSig3Test() throws Exception {
         fac = XMLSignatureFactory.getInstance
             ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
+        db = XMLUtils.createDocumentBuilder(false);
     }
 
     @org.junit.Test
