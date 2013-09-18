@@ -1054,11 +1054,40 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
+	private void setupDefaultDropFlows() {
+		OFFlowMod fm = new OFFlowMod();
+		fm.setMatch(new OFMatch());
+		//No action means drop
+		
+		fm.setIdleTimeout((short)0)
+        .setHardTimeout((short)0)
+        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
+        .setCookie(0)
+        .setCommand(OFFlowMod.OFPFC_ADD)
+        .setPriority((short)0)
+		.setLengthU(OFFlowMod.MINIMUM_LENGTH);
+		
+		for (String strdpid : switches){
+			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
+			if (sw == null) {
+				log.debug("Couldn't find switch to push default deny flow");
+			}
+			else {
+				try {
+					sw.write(fm, null);
+				} catch (IOException e) {
+					log.warn("Failure writing default deny flow to switch", e);
+				}
+			}
+		}
+	}
+	
 	private void beginRouting(){
 		log.debug("Topology is now ready, beginning routing function");
 		topoRouteTopology = topoRouteService.prepareShortestPathTopo();
 		
 		setupArpFlows();
+		setupDefaultDropFlows();
 		
 		setupBgpPaths();
 		setupFullMesh();
