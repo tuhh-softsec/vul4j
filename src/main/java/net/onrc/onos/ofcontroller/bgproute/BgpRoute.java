@@ -38,6 +38,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 import net.onrc.onos.ofcontroller.routing.TopoRouteService;
@@ -82,6 +83,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected IFloodlightProviderService floodlightProvider;
 	protected ITopologyService topology;
 	protected ITopoRouteService topoRouteService;
+	protected ILinkDiscoveryService linkDiscoveryService;
 	protected IRestApiService restApi;
 	
 	protected ProxyArpManager proxyArp;
@@ -256,6 +258,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		topology = context.getServiceImpl(ITopologyService.class);
+		linkDiscoveryService = context.getServiceImpl(ILinkDiscoveryService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
 		//TODO We'll initialise this here for now, but it should really be done as
@@ -479,13 +482,23 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private void addPrefixFlows(Prefix prefix, Interface egressInterface, byte[] nextHopMacAddress) {		
 		log.debug("Adding flows for prefix {} added, next hop mac {}",
 				prefix, HexString.toHexString(nextHopMacAddress));
-
-		//Add a flow to rewrite mac for this prefix to all other border switches
-		for (Interface srcInterface : interfaces.values()) {
-			if (srcInterface == egressInterface) {
-				//Don't push a flow for the switch where this peer is attached
-				continue;
+		
+		//We only need one flow mod per switch, so pick one interface on each switch
+		Map<Long, Interface> srcInterfaces = new HashMap<Long, Interface>();
+		for (Interface intf : interfaces.values()) {
+			if (!srcInterfaces.containsKey(intf.getDpid()) 
+					&& intf != egressInterface) {
+				srcInterfaces.put(intf.getDpid(), intf);
 			}
+		}
+		
+		//Add a flow to rewrite mac for this prefix to all other border switches
+		//for (Interface srcInterface : interfaces.values()) {
+		for (Interface srcInterface : srcInterfaces.values()) {
+			//if (srcInterface == egressInterface) {
+				//Don't push a flow for the switch where this peer is attached
+				//continue;
+			//}
 			
 			
 			DataPath shortestPath; 
@@ -559,8 +572,13 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             try {
 				sw.write(msglist, null);
 				sw.flush();
+				//Thread.sleep(0, 100000);
+				Thread.sleep(1);
 			} catch (IOException e) {
 				log.error("Failure writing flow mod", e);
+			} catch (InterruptedException e) {
+				// TODO handle this properly
+				log.error("Interrupted", e);
 			}
 		}
 	}
@@ -582,21 +600,22 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		deletePrefixFlows(prefix);
 		
 		log.debug("Deleting {} to {}", prefix, ribEntry.getNextHop());
-		log.debug("is peer {}", bgpPeers.containsKey(ribEntry.getNextHop()));
+		
 		if (!bgpPeers.containsKey(ribEntry.getNextHop())) {
 			log.debug("Getting path for route with non-peer nexthop");
 			//Path path = prefixToPath.get(prefix);
 			Path path = prefixToPath.remove(prefix);
 			
-			if (path == null) {
-				log.error("No path found for non-peer path");
-			}
+			if (path != null) {
+				//path could be null if we added to the Ptree but didn't push
+				//flows yet because we were waiting to resolve ARP
 			
-			path.decrementUsers();
-			log.debug("users {}, permanent {}", path.getUsers(), path.isPermanent());
-			if (path.getUsers() <= 0 && !path.isPermanent()) {
-				deletePath(path);
-				pushedPaths.remove(path.getDstIpAddress());
+				path.decrementUsers();
+				log.debug("users {}, permanent {}", path.getUsers(), path.isPermanent());
+				if (path.getUsers() <= 0 && !path.isPermanent()) {
+					deletePath(path);
+					pushedPaths.remove(path.getDstIpAddress());
+				}
 			}
 		}
 	}
@@ -1035,15 +1054,49 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
+	private void setupDefaultDropFlows() {
+		OFFlowMod fm = new OFFlowMod();
+		fm.setMatch(new OFMatch());
+		//No action means drop
+		
+		fm.setIdleTimeout((short)0)
+        .setHardTimeout((short)0)
+        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
+        .setCookie(0)
+        .setCommand(OFFlowMod.OFPFC_ADD)
+        .setPriority((short)0)
+		.setLengthU(OFFlowMod.MINIMUM_LENGTH);
+		
+		for (String strdpid : switches){
+			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
+			if (sw == null) {
+				log.debug("Couldn't find switch to push default deny flow");
+			}
+			else {
+				try {
+					sw.write(fm, null);
+				} catch (IOException e) {
+					log.warn("Failure writing default deny flow to switch", e);
+				}
+			}
+		}
+	}
+	
 	private void beginRouting(){
 		log.debug("Topology is now ready, beginning routing function");
 		topoRouteTopology = topoRouteService.prepareShortestPathTopo();
 		
 		setupArpFlows();
+		setupDefaultDropFlows();
 		
 		setupBgpPaths();
 		setupFullMesh();
-
+		
+		//Suppress link discovery on external-facing router ports
+		for (Interface intf : interfaces.values()) {
+			linkDiscoveryService.AddToSuppressLLDPs(intf.getDpid(), intf.getPort());
+		}
+		
 		bgpUpdatesExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
