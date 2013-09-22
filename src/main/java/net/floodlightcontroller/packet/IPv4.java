@@ -31,6 +31,7 @@ import java.util.Map;
  *
  */
 public class IPv4 extends BasePacket {
+	public static final int ADDRESS_LENGTH = 4;
     public static final byte PROTOCOL_ICMP = 0x1;
     public static final byte PROTOCOL_TCP = 0x6;
     public static final byte PROTOCOL_UDP = 0x11;

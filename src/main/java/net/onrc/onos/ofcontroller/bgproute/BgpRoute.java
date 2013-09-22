@@ -76,7 +76,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
 									ITopologyListener, IArpRequester,
-									IOFSwitchListener {
+									IOFSwitchListener, ILayer3InfoService {
 	
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
@@ -158,7 +158,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 							ldu.getDst(), ldu.getDstPort());
 					
 					if (activeLinks.contains(l)){
-						log.debug("Not found: {}", l);
 						it.remove();
 					}
 				}
@@ -263,7 +262,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology);
+		proxyArp = new ProxyArpManager(floodlightProvider, topology, this);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -309,7 +308,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		readGatewaysConfiguration(configFilename);
 		
-		proxyArp.setL3Mode(interfacePtrie, interfaces.values(), bgpdMacAddress);
+		//proxyArp.setL3Mode(interfacePtrie, interfaces.values(), bgpdMacAddress);
 	}
 	
 	@Override
@@ -466,7 +465,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				Path path = pushedPaths.get(dstIpAddress);
 				if (path == null) {
 					path = new Path(egressInterface, dstIpAddress);
-					setUpDataPath(path, MACAddress.valueOf(nextHopMacAddress));
+					//setUpDataPath(path, MACAddress.valueOf(nextHopMacAddress));
+					calculateAndPushPath(path, MACAddress.valueOf(nextHopMacAddress));
 					pushedPaths.put(dstIpAddress, path);
 				}
 				
@@ -572,7 +572,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             try {
 				sw.write(msglist, null);
 				sw.flush();
-				//Thread.sleep(0, 100000);
+				
+				/*
+				 * XXX Rate limit hack!
+				 * This should be solved properly by adding a rate limiting
+				 * layer on top of the switches if we know they need it.
+				 */
 				Thread.sleep(1);
 			} catch (IOException e) {
 				log.error("Failure writing flow mod", e);
@@ -703,13 +708,16 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 			
 			//If we know the MAC, lets go ahead and push the paths to this peer
-			setUpDataPath(path, MACAddress.valueOf(mac));
+			//setUpDataPath(path, MACAddress.valueOf(mac));
+			calculateAndPushPath(path, MACAddress.valueOf(mac));
 		}
 	}
 	
+	/*
 	private void setUpDataPath(Path path, MACAddress dstMacAddress) {
 		calculateAndPushPath(path, dstMacAddress);
 	}
+	*/
 	
 	private void calculateAndPushPath(Path path, MACAddress dstMacAddress) {
 		Interface dstInterface = path.getDstInterface();
@@ -989,7 +997,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					}
 				}
 				else {
-					setUpDataPath(path, MACAddress.valueOf(macAddress));
+					//setUpDataPath(path, MACAddress.valueOf(macAddress));
+					calculateAndPushPath(path, MACAddress.valueOf(macAddress));
 					pushedPaths.put(path.getDstIpAddress(), path);
 				}
 			}
@@ -1214,20 +1223,54 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 
 	@Override
-	public void removedSwitch(IOFSwitch sw) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void removedSwitch(IOFSwitch sw) {}
 
 	@Override
-	public void switchPortChanged(Long switchId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void switchPortChanged(Long switchId) {}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "BgpRoute";
+	}
+	
+	/*
+	 * ILayer3InfoService methods
+	 */
+	
+	@Override
+	public boolean isInterfaceAddress(InetAddress address) {
+		Interface intf = interfacePtrie.match(new Prefix(address.getAddress(), 32));
+		return (intf != null && intf.getIpAddress().equals(address));
+	}
+	
+	@Override
+	public boolean inConnectedNetwork(InetAddress address) {
+		Interface intf = interfacePtrie.match(new Prefix(address.getAddress(), 32));
+		return (intf != null && !intf.getIpAddress().equals(address));
+	}
+	
+	@Override
+	public boolean fromExternalNetwork(long inDpid, short inPort) {
+		for (Interface intf : interfaces.values()) {
+			if (intf.getDpid() == inDpid && intf.getPort() == inPort) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public Interface getOutgoingInterface(InetAddress dstIpAddress) {
+		return interfacePtrie.match(new Prefix(dstIpAddress.getAddress(), 32));
+	}
+	
+	@Override
+	public boolean hasLayer3Configuration() {
+		return !interfaces.isEmpty();
+	}
+	
+	@Override
+	public MACAddress getRouterMacAddress() {
+		return bgpdMacAddress;
 	}
 }
