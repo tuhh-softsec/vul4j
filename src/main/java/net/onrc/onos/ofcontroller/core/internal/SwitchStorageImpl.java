@@ -227,6 +227,9 @@ public class SwitchStorageImpl implements ISwitchStorage {
         		IPortObject p = op.searchPort(dpid, port.getPortNumber());
         		if (p != null) {
             		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
+            		p.setState("ACTIVE");
+            		p.setPortState(port.getState());
+            		p.setDesc(port.getName());
             	} else {
             		p = op.newPort(dpid, port.getPortNumber());
             		p.setState("ACTIVE");
