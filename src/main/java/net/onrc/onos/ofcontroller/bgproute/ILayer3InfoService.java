@@ -10,7 +10,6 @@ import net.floodlightcontroller.util.MACAddress;
  *
  */
 public interface ILayer3InfoService {
-	//public Collection<Interface> getInterfaces();
 	public boolean isInterfaceAddress(InetAddress address);
 	public boolean inConnectedNetwork(InetAddress address);
 	public boolean fromExternalNetwork(long inDpid, short inPort);

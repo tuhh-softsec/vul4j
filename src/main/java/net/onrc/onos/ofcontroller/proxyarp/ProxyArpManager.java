@@ -42,7 +42,7 @@ import com.google.common.collect.SetMultimap;
 
 //TODO REST API to inspect ARP table
 public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
-	private static Logger log = LoggerFactory.getLogger(ProxyArpManager.class);
+	private final static Logger log = LoggerFactory.getLogger(ProxyArpManager.class);
 	
 	private final long ARP_ENTRY_TIMEOUT = 600000; //ms (== 10 mins)
 	
@@ -56,16 +56,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 
 	private SetMultimap<InetAddress, ArpRequest> arpRequests;
 	
-	//public enum Mode {L2_MODE, L3_MODE}
-	
-	//private Mode mode;
-	//private IPatriciaTrie<Interface> interfacePtrie = null;
-	//private Collection<Interface> interfaces = null;
-	//private MACAddress routerMacAddress = null;
-	//private SwitchPort bgpdAttachmentPoint = null;
-	
 	private class ArpRequest {
-		private IArpRequester requester;
+		private final IArpRequester requester;
 		private boolean retry;
 		private long requestTime;
 		
@@ -91,8 +83,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 		
 		public void dispatchReply(InetAddress ipAddress, byte[] replyMacAddress) {
-			log.debug("Dispatching reply for {} to {}", ipAddress.getHostAddress(), 
-					requester);
 			requester.arpResponse(ipAddress, replyMacAddress);
 		}
 	}
@@ -107,20 +97,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 
 		arpRequests = Multimaps.synchronizedSetMultimap(
 				HashMultimap.<InetAddress, ArpRequest>create());
-		
-		//mode = Mode.L2_MODE;
 	}
-	
-	/*
-	public void setL3Mode(IPatriciaTrie<Interface> interfacePtrie, 
-			Collection<Interface> interfaces, MACAddress routerMacAddress) {
-		this.interfacePtrie = interfacePtrie;
-		this.interfaces = interfaces;
-		this.routerMacAddress = routerMacAddress;
-
-		mode = Mode.L3_MODE;
-	}
-	*/
 	
 	public void startUp() {
 		Timer arpTimer = new Timer();
@@ -234,48 +211,26 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 
 		InetAddress target;
-		//InetAddress source;
 		try {
 			 target = InetAddress.getByAddress(arp.getTargetProtocolAddress());
-			 //source = InetAddress.getByAddress(arp.getSenderProtocolAddress());
 		} catch (UnknownHostException e) {
 			log.debug("Invalid address in ARP request", e);
 			return;
 		}
-		
-		//if (mode == Mode.L3_MODE) {
-			
-			//if (originatedOutsideNetwork(source)) {
-			//if (originatedOutsideNetwork(sw.getId(), pi.getInPort())) {
-			if (layer3.fromExternalNetwork(sw.getId(), pi.getInPort())) {
-				//If the request came from outside our network, we only care if
-				//it was a request for one of our interfaces.
-				//if (isInterfaceAddress(target)) {
-				if (layer3.isInterfaceAddress(target)) {
-					log.trace("ARP request for our interface. Sending reply {} => {}",
-							target.getHostAddress(), layer3.getRouterMacAddress().toString());
-					sendArpReply(arp, sw.getId(), pi.getInPort(), layer3.getRouterMacAddress().toBytes());
-				}
-				return;
+
+		if (layer3.fromExternalNetwork(sw.getId(), pi.getInPort())) {
+			//If the request came from outside our network, we only care if
+			//it was a request for one of our interfaces.
+			if (layer3.isInterfaceAddress(target)) {
+				log.trace("ARP request for our interface. Sending reply {} => {}",
+						target.getHostAddress(), layer3.getRouterMacAddress());
+				
+				sendArpReply(arp, sw.getId(), pi.getInPort(), 
+						layer3.getRouterMacAddress().toBytes());
 			}
 			
-			/*
-			Interface intf = interfacePtrie.match(new Prefix(target.getAddress(), 32));
-			//if (intf != null && target.equals(intf.getIpAddress())) {
-			if (intf != null) {
-				if (target.equals(intf.getIpAddress())) {
-					//ARP request for one of our interfaces, we can reply straight away
-					sendArpReply(arp, sw.getId(), pi.getInPort(), routerMacAddress.toBytes());
-				}
-				// If we didn't enter the above if block, then we found a matching
-				// interface for the target IP but the request wasn't for us.
-				// This is someone else ARPing for a different host in the subnet.
-				// We shouldn't do anything in this case - if we let processing continue
-				// we'll end up erroneously re-broadcasting an ARP for someone else.
-				return;
-			}
-			*/
-		//}
+			return;
+		}
 		
 		byte[] mac = lookupArpTable(arp.getTargetProtocolAddress());
 		
@@ -287,7 +242,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 					new HostArpRequester(this, arp, sw.getId(), pi.getInPort()), false));
 						
 			//Flood the request out edge ports
-			//broadcastArpRequestOutEdge(pi.getPacketData(), sw.getId(), pi.getInPort());
 			sendArpRequestToSwitches(target, pi.getPacketData(), sw.getId(), pi.getInPort());
 		}
 		else {
@@ -318,7 +272,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		try {
 			addr = InetAddress.getByAddress(arp.getSenderProtocolAddress());
 		} catch (UnknownHostException e) {
-			log.debug("Invalid address in ARP request", e);
+			log.debug("Invalid address in ARP reply", e);
 			return;
 		}
 		
@@ -331,7 +285,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			while (it.hasNext()) {
 				ArpRequest request = it.next();
 				it.remove();
-				//request.dispatchReply(addr, arp.getSenderHardwareAddress());
 				requestsToSend.add(request);
 			}
 		}
@@ -347,21 +300,22 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		try {
 			addr = InetAddress.getByAddress(ipAddress);
 		} catch (UnknownHostException e) {
-			log.warn("Unable to create InetAddress", e);
+			log.debug("Unable to create InetAddress", e);
 			return null;
 		}
 		
 		ArpTableEntry arpEntry = arpTable.get(addr);
 		
 		if (arpEntry == null){
-			//log.debug("MAC for {} unknown", bytesToStringAddr(ipAddress));
 			return null;
 		}
 		
 		if (System.currentTimeMillis() - arpEntry.getTimeLastSeen() 
 				> ARP_ENTRY_TIMEOUT){
 			//Entry has timed out so we'll remove it and return null
-			log.debug("Timing out old ARP entry for {}", inetAddressToString(ipAddress));
+			log.trace("Removing expired ARP entry for {}", 
+					inetAddressToString(ipAddress));
+			
 			arpTable.remove(addr);
 			return null;
 		}
@@ -374,7 +328,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		try {
 			addr = InetAddress.getByAddress(arp.getSenderProtocolAddress());
 		} catch (UnknownHostException e) {
-			log.warn("Unable to create InetAddress", e);
+			log.debug("Unable to create InetAddress", e);
 			return;
 		}
 		
@@ -410,69 +364,42 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			.setHardwareAddressLength((byte)Ethernet.DATALAYER_ADDRESS_LENGTH)
 			.setProtocolAddressLength((byte)IPv4.ADDRESS_LENGTH)
 			.setOpCode(ARP.OP_REQUEST)
-			//.setSenderHardwareAddress(bgpdMac)
-			//.setSenderHardwareAddress(routerMacAddress.toBytes())
-			//.setSenderProtocolAddress(zeroIpv4)
 			.setTargetHardwareAddress(zeroMac)
 			.setTargetProtocolAddress(ipAddress.getAddress());
 
 		MACAddress routerMacAddress = layer3.getRouterMacAddress();
-		byte[] senderMacAddress = null;
+		//TODO hack for now as it's unclear what the MAC address should be
+		byte[] senderMacAddress = genericNonZeroMac;
 		if (routerMacAddress != null) {
 			senderMacAddress = routerMacAddress.toBytes();
-		}
-		else {
-			//TODO hack for now as it's unclear what the MAC address should be
-			senderMacAddress = genericNonZeroMac;
 		}
 		arpRequest.setSenderHardwareAddress(senderMacAddress);
 		
 		byte[] senderIPAddress = zeroIpv4;
-		//if (mode == Mode.L3_MODE) {
-			//Interface intf = interfacePtrie.match(new Prefix(ipAddress.getAddress(), 32));
 		Interface intf = layer3.getOutgoingInterface(ipAddress);
 		if (intf != null) {
 			senderIPAddress = intf.getIpAddress().getAddress();
 		}
-		//}
 		
 		arpRequest.setSenderProtocolAddress(senderIPAddress);
 		
 		Ethernet eth = new Ethernet();
-		//eth.setSourceMACAddress(routerMacAddress.toBytes())
 		eth.setSourceMACAddress(senderMacAddress)
 			.setDestinationMACAddress(broadcastMac)
 			.setEtherType(Ethernet.TYPE_ARP)
 			.setPayload(arpRequest);
 		
-		//broadcastArpRequestOutEdge(eth.serialize(), 0, OFPort.OFPP_NONE.getValue());
 		sendArpRequestToSwitches(ipAddress, eth.serialize());
 	}
 	
 	private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest) {
-		sendArpRequestToSwitches(dstAddress, arpRequest, 0, OFPort.OFPP_NONE.getValue());
+		sendArpRequestToSwitches(dstAddress, arpRequest, 
+				0, OFPort.OFPP_NONE.getValue());
 	}
+	
 	private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest,
 			long inSwitch, short inPort) {
-		/*
-		if (mode == Mode.L2_MODE) {
-			//log.debug("mode is l2");
-			broadcastArpRequestOutEdge(arpRequest, inSwitch, inPort);
-		}
-		else if (mode == Mode.L3_MODE) {
-			//log.debug("mode is l3");
-			//TODO the case where it should be broadcast out all non-interface
-			//edge ports
-			Interface intf = interfacePtrie.match(new Prefix(dstAddress.getAddress(), 32));
-			if (intf != null) {
-				sendArpRequestOutPort(arpRequest, intf.getDpid(), intf.getPort());
-			}
-			else {
-				log.debug("No interface found to send ARP request for {}", 
-						dstAddress.getHostAddress());
-			}
-		}
-		*/
+
 		if (layer3.hasLayer3Configuration()) {
 			Interface intf = layer3.getOutgoingInterface(dstAddress);
 			if (intf != null) {
@@ -520,7 +447,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				}
 				
 				actions.add(new OFActionOutput(portNum));
-				//log.debug("Broadcasting out {}/{}", HexString.toHexString(sw.getId()), portNum);
 			}
 			
 			po.setActions(actions);
@@ -542,7 +468,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	private void sendArpRequestOutPort(byte[] arpRequest, long dpid, short port) {
-		log.debug("Sending ARP request out {}/{}", HexString.toHexString(dpid), port);
+		if (log.isTraceEnabled()) {
+			log.trace("Sending ARP request out {}/{}", 
+					HexString.toHexString(dpid), port);
+		}
 		
 		OFPacketOut po = new OFPacketOut();
 		po.setInPort(OFPort.OFPP_NONE)
@@ -560,7 +489,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
 		
 		if (sw == null) {
-			log.debug("Switch not found when sending ARP request");
+			log.warn("Switch not found when sending ARP request");
 			return;
 		}
 		
@@ -576,7 +505,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		try {
 			return InetAddress.getByAddress(bytes).getHostAddress();
 		} catch (UnknownHostException e) {
-			log.warn("Invalid IP address", e);
+			log.debug("Invalid IP address", e);
 			return "";
 		}
 	}
@@ -586,10 +515,12 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	 */
 	
 	public void sendArpReply(ARP arpRequest, long dpid, short port, byte[] targetMac) {
-		log.trace("Sending reply {} => {} to {}", new Object[] {
-				inetAddressToString(arpRequest.getTargetProtocolAddress()),
-				HexString.toHexString(targetMac),
-				inetAddressToString(arpRequest.getSenderProtocolAddress())});
+		if (log.isTraceEnabled()) {
+			log.trace("Sending reply {} => {} to {}", new Object[] {
+					inetAddressToString(arpRequest.getTargetProtocolAddress()),
+					HexString.toHexString(targetMac),
+					inetAddressToString(arpRequest.getSenderProtocolAddress())});
+		}
 		
 		ARP arpReply = new ARP();
 		arpReply.setHardwareType(ARP.HW_TYPE_ETHERNET)
@@ -626,17 +557,16 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
 		
 		if (sw == null) {
-			log.error("Switch {} not found when sending ARP reply", 
+			log.warn("Switch {} not found when sending ARP reply", 
 					HexString.toHexString(dpid));
 			return;
 		}
 		
 		try {
-			log.debug("Sending ARP reply to {}/{}", HexString.toHexString(sw.getId()), port);
 			sw.write(msgList, null);
 			sw.flush();
 		} catch (IOException e) {
-			log.warn("Failure writing packet out to switch", e);
+			log.error("Failure writing packet out to switch", e);
 		}
 	}
 
@@ -651,56 +581,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		arpRequests.put(ipAddress, new ArpRequest(requester, retry));
 		
 		//Sanity check to make sure we don't send a request for our own address
-		//if (!isInterfaceAddress(ipAddress)) {
 		if (!layer3.isInterfaceAddress(ipAddress)) {
 			sendArpRequestForAddress(ipAddress);
 		}
 	}
-	
-	/*
-	 * TODO These methods might be more suited to some kind of L3 information service
-	 * that ProxyArpManager could query, rather than having the information 
-	 * embedded in ProxyArpManager. There may be many modules that need L3 information.
-	 */
-	/*
-	private boolean originatedOutsideNetwork(InetAddress source) {
-		Interface intf = interfacePtrie.match(new Prefix(source.getAddress(), 32));
-		if (intf != null) {
-			if (intf.getIpAddress().equals(source)) {
-				// This request must have been originated by us (the controller)
-				return false;
-			}
-			else {
-				// Source was in one of our interface subnets, but wasn't us.
-				// It must be external.
-				return true;
-			}
-		}
-		else {
-			// Source is not in one of our interface subnets. It's probably a host
-			// in our network as we should only receive ARPs broadcast by external
-			// hosts if they're in the same subnet.
-			return false;
-		}
-	}
-	
-	private boolean originatedOutsideNetwork(long inDpid, short inPort) {
-		for (Interface intf : interfaces) {
-			if (intf.getDpid() == inDpid && intf.getPort() == inPort) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean isInterfaceAddress(InetAddress address) {
-		Interface intf = interfacePtrie.match(new Prefix(address.getAddress(), 32));
-		return (intf != null && intf.getIpAddress().equals(address));
-	}
-	
-	private boolean inInterfaceSubnet(InetAddress address) {
-		Interface intf = interfacePtrie.match(new Prefix(address.getAddress(), 32));
-		return (intf != null && !intf.getIpAddress().equals(address));
-	}
-	*/
 }
