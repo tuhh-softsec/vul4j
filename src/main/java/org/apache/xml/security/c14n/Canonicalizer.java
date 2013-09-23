@@ -35,6 +35,7 @@ import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitCom
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithComments;
 import org.apache.xml.security.c14n.implementations.CanonicalizerPhysical;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
+import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -151,7 +152,8 @@ public class Canonicalizer {
         }
 
         canonicalizerHash.put(
-            algorithmURI, (Class<? extends CanonicalizerSpi>)Class.forName(implementingClass)
+            algorithmURI, (Class<? extends CanonicalizerSpi>)
+            ClassLoaderUtils.loadClass(implementingClass, Canonicalizer.class)
         );
     }
     

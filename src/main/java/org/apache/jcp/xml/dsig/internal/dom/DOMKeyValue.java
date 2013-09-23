@@ -28,6 +28,7 @@ import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
 
+
 // import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -51,10 +52,11 @@ import java.security.spec.EllipticCurve;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.RSAPublicKeySpec;
-import org.w3c.dom.Element;
 
+import org.w3c.dom.Element;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.ClassLoaderUtils;
 
 /**
  * DOM-based implementation of KeyValue.
@@ -339,14 +341,14 @@ public abstract class DOMKeyValue<K extends PublicKey> extends BaseStructure imp
         }
 
         void getMethods() throws ClassNotFoundException, NoSuchMethodException {
-            Class<?> c  = Class.forName("sun.security.ec.ECParameters");
+            Class<?> c = ClassLoaderUtils.loadClass("sun.security.ec.ECParameters", DOMKeyValue.class);
             Class<?>[] params = new Class<?>[] { ECPoint.class, EllipticCurve.class };
             encodePoint = c.getMethod("encodePoint", params);
             params = new Class[] { ECParameterSpec.class };
             getCurveName = c.getMethod("getCurveName", params);
             params = new Class[] { byte[].class, EllipticCurve.class };
             decodePoint = c.getMethod("decodePoint", params);
-            c  = Class.forName("sun.security.ec.NamedCurve");
+            c = ClassLoaderUtils.loadClass("sun.security.ec.NamedCurve", DOMKeyValue.class);
             params = new Class[] { String.class };
             getECParameterSpec = c.getMethod("getECParameterSpec", params);
         }
