@@ -10,7 +10,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+
+import org.hibernate.HibernateException;
+import org.postgresql.util.PSQLException;
 
 import de.intevation.lada.auth.AuthenticationResponse;
 import de.intevation.lada.data.Repository;
@@ -125,7 +129,13 @@ implements Writer
             errors.add(new ReportData("probeId", "missing", 673));
             return false;
         }
-        persist(probe);
+        try {
+            persist(probe);
+        }
+        catch (PersistenceException e) {
+            errors.add(new ReportData("probe", "writing", 670));
+            return false;
+        }
         return true;
     }
 
@@ -319,7 +329,8 @@ implements Writer
      * @param probe The {@link LProbe} object.
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    private void persist(LProbe probe) {
+    private void persist(LProbe probe)
+    throws PersistenceException {
         String queryColumns = "insert into l_probe (probe_id, ba_id, test," +
             " datenbasis_id, netzbetreiber_id, mst_id, probenart_id, umw_id";
         String queryParameter = " values (:probe_id, :ba_id, :test," +
