@@ -762,6 +762,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         .setBufferId(OFPacketOut.BUFFER_ID_NONE)
         .setCookie(L2_FWD_COOKIE)
         .setCommand(OFFlowMod.OFPFC_ADD)
+        .setPriority(SDNIP_PRIORITY)
         .setActions(actions)
         .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
         
