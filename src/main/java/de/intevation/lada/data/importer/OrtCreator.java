@@ -2,6 +2,7 @@ package de.intevation.lada.data.importer;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -18,6 +19,7 @@ import de.intevation.lada.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
+@Stateless
 public class OrtCreator
 {
     @Inject
@@ -303,6 +305,61 @@ public class OrtCreator
     public void setKoordinatenS(String koordinatenS) {
         this.koordinatenS = koordinatenS;
     }
+
+    /**
+     * Add an attribute to the OrtCreator. The creator is used to build the
+     * two objects Ort and LOrt.
+     *
+     * @param key       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param ort       The creator object.
+     * @return The updated creator object.
+     */
+    public void addAttribute(
+        String key,
+        Object value
+    ) {
+        if ("ort_code".equals(key)) {
+            this.setOrtCode(value.toString());
+        }
+        if ("ort_typ".equals(key)) {
+            this.setOrtTyp(value.toString());
+        }
+        if ("ort_zusatz".equals(key)) {
+            this.setZusatztext(value.toString());
+        }
+        if ("ort_land_lang".equals(key)) {
+            this.setLandLang(value.toString());
+        }
+        if ("ort_land_kurz".equals(key)) {
+            this.setLandKurz(value.toString());
+        }
+        if ("ort_land_s".equals(key)) {
+            this.setLandS(value.toString());
+        }
+        if ("ort_gemeindeschlüssel".equals(key)) {
+            this.setGemSchluessel(value.toString());
+        }
+        if ("ort_bezeichnung".equals(key)) {
+            this.setBezeichnung(value.toString());
+        }
+        if ("ort_beschreibung".equals(key)) {
+            this.setBeschreibung(value.toString());
+        }
+        if ("ort_nuts_code".equals(key)) {
+            this.setNuts(value.toString());
+        }
+        if ("ort_hoehe_land".equals(key)) {
+            this.setHoehe(value.toString());
+        }
+        if ("ort_koordinaten".equals(key)) {
+            this.setKoordinaten(value.toString());
+        }
+        if ("ort_koordinaten_s".equals(key)) {
+            this.setKoordinatenS(value.toString());
+        }
+    }
+
 
     /**
      * Create the Ort object.
@@ -610,7 +667,8 @@ public class OrtCreator
      */
     public LOrt toLOrt() {
         if (this.ortId == null &&
-            (this.ortCode == null || this.ortCode.length() == 0)) {
+            (this.ortCode == null || this.ortCode.length() == 0) ||
+            this.probeId == null) {
             return null;
         }
         if(this.ortCode != null && this.ortCode.length() > 0) {
@@ -631,4 +689,25 @@ public class OrtCreator
         return ort;
     }
 
+    public void reset() {
+        this.beschreibung = null;
+        this.bezeichnung = null;
+        this.gemName = null;
+        this.gemSchluessel = null;
+        this.hoehe = null;
+        this.koord = null;
+        this.koordArt = null;
+        this.koordinaten = null;
+        this.koordinatenS = null;
+        this.koordS = null;
+        this.landKurz = null;
+        this.landLang = null;
+        this.landS = null;
+        this.nuts = null;
+        this.ortCode = null;
+        this.ortId = null;
+        this.ortTyp = null;
+        this.probeId = null;
+        this.zusatztext = null;
+    }
 }

@@ -39,6 +39,7 @@ implements Producer
 
     private LProbe probe;
     private LMessung messung;
+    @Inject
     private OrtCreator ort;
 
     private List<LKommentarP> pKommentare;
@@ -183,7 +184,7 @@ implements Producer
             }
         }
         else if (isValidOrt(lKey, values.toString())) {
-            this.ort = mapper.addAttribute(lKey, values, this.ort);
+            this.ort.addAttribute(lKey, values);
         }
     }
 
@@ -320,7 +321,7 @@ implements Producer
         this.messung = null;
         this.lorte = new ArrayList<LOrt>();
         this.orte = new ArrayList<Ort>();
-        this.ort = null;
+        this.ort.reset();
         this.messwerte = new ArrayList<LMesswert>();
         this.mKommentare = new ArrayList<LKommentarM>();
         this.pKommentare = new ArrayList<LKommentarP>();
@@ -356,7 +357,7 @@ implements Producer
                 this.lorte.add(lo);
             }
         }
-        this.ort = new OrtCreator();
+        this.ort.reset();
         this.ort.setProbeId(this.probe.getProbeId());
     }
 
