@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2011, Everit Kft.
+
+    All rights reserved.
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 3 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301  USA
+
+-->
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="org.everit.main.pu" transaction-type="JTA">
+
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <class>org.everit.token.entity.VerifyDataEntity</class>
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <!-- !!! DO NOT COMMIT THE CHANGES OF THESE SETTINGS !!! -->
+        <!-- ====================== BEGIN ===================== -->
+        <properties>
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="true" />
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false" />
+            <!-- ============================================================================================ -->
+            <!-- The value of the "hibernate.hbm2ddl.auto" property must be set to "validate" on live systems -->
+            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <!-- ============================================================================================ -->
+            <!-- Database configuration -->
+            <!-- H2 -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
+            <property name="javax.persistence.jdbc.user" value="sa" />
+            <property name="javax.persistence.jdbc.password" value="sa" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:abcentral;DB_CLOSE_DELAY=-1;MVCC=TRUE" />
+            <!-- NOTE: Using different database than mem:test and the MVCC=TRUE parameter is a quickfix for SQL Error: 50200, 
+                SQLState: HYT00 -->
+            <!-- PG -->
+            <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" /> <property name="javax.persistence.jdbc.driver" 
+                value="org.postgresql.Driver" /> <property name="javax.persistence.jdbc.user" value="advertbay" /> <property name="javax.persistence.jdbc.password" 
+                value="advertbay" /> <property name="javax.persistence.jdbc.url" value="localhost:5432:advertbay" /> -->
+            <!-- Database configuration END -->
+        </properties>
+        <!-- ======================= END ====================== -->
+
+    </persistence-unit>
+</persistence>

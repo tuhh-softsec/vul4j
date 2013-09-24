@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2011, Everit Kft.
+
+    All rights reserved.
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 3 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301  USA
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.everit</groupId>
+		<artifactId>oss</artifactId>
+		<version>4</version>
+	</parent>
+
+	<!-- <groupId>org.everit</groupId> -->
+	<artifactId>token</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>Everit token</name>
+	<description>Helper classes to be able to reference an OSGi service with a proxy object and hold method calls until a timeout if no service is available behind a proxy. You can see this kind of behaviour in the Blueprint spec.</description>
+
+	<properties>
+		<projectpath>verifiable-data</projectpath>
+	</properties>
+
+	<scm>
+		<connection>scm:git:git://github.com/everit-org/${projectpath}.git</connection>
+		<developerConnection>scm:git:https://github.com/everit-org/${projectpath}.git</developerConnection>
+		<url>https://github.com/everit-org/${projectpath}</url>
+	</scm>
+	<url>${everit.public.site.url}/mvnsites/${projectpath}</url>
+	<distributionManagement>
+		<site>
+			<id>everit.org</id>
+			<url>dav:${everit.public.site.url}/mvnsites/${projectpath}</url>
+		</site>
+	</distributionManagement>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://ci.everit.biz/jenkins/job/${projectpath}</url>
+	</ciManagement>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/everit-org/${projectpath}/issues</url>
+	</issueManagement>
+
+	<modules>
+		<module>api</module>
+		<module>entity</module>
+		<module>core</module>
+		<module>itests</module>
+	</modules>
+
+	<repositories>
+		<repository>
+			<id>everit.groups.public</id>
+			<name>Everit Public Repository Group</name>
+			<url>http://repository.everit.biz/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>everit.groups.proxy</id>
+			<name>Everit Proxy Repository Group</name>
+			<url>http://repository.everit.biz/nexus/content/groups/proxy</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+</project>

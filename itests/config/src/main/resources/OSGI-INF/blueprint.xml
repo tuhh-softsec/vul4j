@@ -1,0 +1,46 @@
+<!--
+
+    Copyright (c) 2011, Everit Kft.
+
+    All rights reserved.
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 3 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301  USA
+
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.1.0" xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.1.0">
+
+	<reference id="transactionManager" interface="javax.transaction.TransactionManager" />
+
+	<bean id="h2DataSourceBean" class="org.h2.jdbcx.JdbcDataSource">
+		<property name="URL" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1" />
+		<property name="user" value="sa" />
+		<property name="password" value="sa" />
+	</bean>
+
+	<bean id="hibernateTestsDataSourceBean" class="org.apache.commons.dbcp.managed.BasicManagedDataSource">
+		<property name="xaDataSourceInstance" ref="h2DataSourceBean" />
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+	<service id="hibernateTestsDataSourceService" ref="hibernateTestsDataSourceBean"
+		interface="javax.sql.DataSource">
+		<service-properties>
+			<entry key="osgi.jndi.service.name" value="jdbc/hibernatetestsdb" />
+		</service-properties>
+	</service>
+
+</blueprint>
