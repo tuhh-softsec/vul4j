@@ -100,7 +100,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	public void startUp() {
-		Timer arpTimer = new Timer();
+		Timer arpTimer = new Timer("arp-processing");
 		arpTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {

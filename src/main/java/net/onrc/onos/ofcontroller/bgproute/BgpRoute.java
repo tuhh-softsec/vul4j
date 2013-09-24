@@ -1053,7 +1053,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private void setupDefaultDropFlows() {
 		OFFlowMod fm = new OFFlowMod();
 		fm.setMatch(new OFMatch());
-		//No action means drop
+		fm.setActions(new ArrayList<OFAction>()); //No action means drop
 		
 		fm.setIdleTimeout((short)0)
         .setHardTimeout((short)0)
@@ -1063,14 +1063,52 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         .setPriority((short)0)
 		.setLengthU(OFFlowMod.MINIMUM_LENGTH);
 		
+		OFFlowMod fmLLDP;
+		OFFlowMod fmBDDP;
+		try {
+			 fmLLDP = fm.clone();
+			 fmBDDP = fm.clone();
+		} catch (CloneNotSupportedException e1) {
+			log.error("Error cloning flow mod", e1);
+			return;
+		}
+		
+		OFMatch matchLLDP = new OFMatch();
+		matchLLDP.setDataLayerType((short)0x8942);
+		matchLLDP.setWildcards(matchLLDP.getWildcards() & ~ OFMatch.OFPFW_DL_TYPE);
+		fmLLDP.setMatch(matchLLDP);
+		
+		OFMatch matchBDDP = new OFMatch();
+		matchBDDP.setDataLayerType((short)0x88cc);
+		matchBDDP.setWildcards(matchBDDP.getWildcards() & ~ OFMatch.OFPFW_DL_TYPE);
+		fmBDDP.setMatch(matchBDDP);
+		
+		OFActionOutput action = new OFActionOutput();
+		action.setPort(OFPort.OFPP_CONTROLLER.getValue());
+		action.setMaxLength((short)0xffff);
+		List<OFAction> actions = new ArrayList<OFAction>(1);
+		actions.add(action);
+		
+		fmLLDP.setActions(actions);
+		fmBDDP.setActions(actions);
+		
+		fmLLDP.setPriority(ARP_PRIORITY);
+		fmLLDP.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
+		fmBDDP.setPriority(ARP_PRIORITY);
+		fmBDDP.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
+		
 		for (String strdpid : switches){
 			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
 			if (sw == null) {
 				log.debug("Couldn't find switch to push default deny flow");
 			}
 			else {
+				List<OFMessage> msgList = new ArrayList<OFMessage>();
+				msgList.add(fm);
+				msgList.add(fmLLDP);
+				msgList.add(fmBDDP);
 				try {
-					sw.write(fm, null);
+					sw.write(msgList, null);
 				} catch (IOException e) {
 					log.warn("Failure writing default deny flow to switch", e);
 				}
