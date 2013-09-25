@@ -23,20 +23,20 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
 	xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.1.0"
 	xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.1.0">
-<!--
-	<bean id="verifyService" class="org.everit.verifiabledata.itests.core.service.VerifyServiceImpl">
+    
+	<bean id="tokenService" class="org.everit.token.core.TokenServiceImpl">
 		<jpa:context property="em" unitname="org.everit.main.pu" type="TRANSACTION" />
 		<tx:transaction method="*" />
 	</bean>
 	
-	<bean id="verifyTest" class="org.everit.token.itests.core.junit.VerifyTestImpl">
-		<property name="verifyService" ref="verifyService" />
+	<bean id="tokenServiceTest" class="org.everit.token.itests.core.TokenServiceTestImpl">
+		<property name="tokenService" ref="tokenService" />
 	</bean>
 
-	<service id="verifyTestService" interface="org.everit.token.itests.core.junit.VerifyTest" ref="verifyTest">
+	<service id="testTokenService" interface="org.everit.token.itests.core.TokenServiceTest" ref="tokenServiceTest">
 		<service-properties>
 			<entry key="osgitest" value="junit4" />
 		</service-properties>
 	</service>
--->
+
 </blueprint>
