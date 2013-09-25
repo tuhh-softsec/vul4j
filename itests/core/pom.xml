@@ -22,24 +22,24 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		 <groupId>org.everit.token</groupId>
+    <parent>
+        <groupId>org.everit.token</groupId>
         <artifactId>itests</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
-	</parent>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
 
-	<groupId>org.everit.token.itests</groupId>
-	<artifactId>org.everit.token.itests.core</artifactId>
+    <groupId>org.everit.token.itests</groupId>
+    <artifactId>org.everit.token.itests.core</artifactId>
+    
+    <packaging>bundle</packaging>
+    <name>Everit token itest Core</name>
+    <description>Everit token</description>
 
-	<packaging>bundle</packaging>
-	<name>Everit token itest Core</name>
-	<description>Everit token</description>
-
-	<build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -49,10 +49,10 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Import-Package>
-                           !org.osgi.service.blueprint,
-                           *
+                            !org.osgi.service.blueprint,
+                            *
                         </Import-Package>
-                        <Export-Package />
+                        <Export-Package></Export-Package>
                         <EOSGi-TestNum>3</EOSGi-TestNum>
                     </instructions>
                 </configuration>
@@ -60,7 +60,7 @@
             <plugin>
                 <groupId>org.everit.osgi.dev</groupId>
                 <artifactId>eosgi-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.1.0</version>
                 <executions>
                     <execution>
                         <id>integration-test</id>
@@ -78,15 +78,27 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> 
         </plugins>
     </build>
 
-	<dependencies>
-    
+    <dependencies>
+
         <dependency>
             <groupId>org.everit.token.itests</groupId>
             <artifactId>org.everit.token.itests.config</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.everit.token</groupId>
+            <artifactId>org.everit.token.core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+         <dependency>
+            <groupId>org.everit.token</groupId>
+            <artifactId>org.everit.token.api</artifactId>
             <version>${project.version}</version>
         </dependency>
         
@@ -102,13 +114,13 @@
             <artifactId>com.springsource.org.junit</artifactId>
             <version>4.9.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.everit.osgi.hibernate</groupId>
             <artifactId>org.everit.osgi.hibernate.adapter</artifactId>
-            <version>1.0.0</version>            
+            <version>1.0.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.everit.osgi.bundles</groupId>
             <artifactId>org.everit.osgi.bundles.org.apache.commons.dbcp</artifactId>
@@ -120,12 +132,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-<!--         <dependency> -->
-<!--             <groupId>org.everit.osgi.jdbc</groupId> -->
-<!--             <artifactId>org.everit.osgi.jdbc.h2</artifactId> -->
-<!--             <version>1.0.0</version> -->
-<!--         </dependency> -->
         
         <dependency>
             <groupId>org.apache.aries.blueprint</groupId>
@@ -142,7 +148,7 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.6.5</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.aries.transaction</groupId>
             <artifactId>org.apache.aries.transaction.manager</artifactId>
@@ -168,11 +174,11 @@
             <artifactId>org.apache.aries.jpa.blueprint.aries</artifactId>
             <version>1.0.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.everit.osgi.bundles</groupId>
             <artifactId>org.everit.osgi.bundles.org.osgi.service.cm</artifactId>
             <version>1.4.0</version>
         </dependency>
-	</dependencies>
+    </dependencies>
 </project>

@@ -51,7 +51,7 @@
 						<Import-Package>
 							*
 						</Import-Package>
-						<Export-Package></Export-Package>
+						<Export-Package>${project.artifactId}</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

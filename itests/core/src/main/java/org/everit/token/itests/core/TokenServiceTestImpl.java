@@ -77,9 +77,4 @@ public class TokenServiceTestImpl implements TokenServiceTest {
         Assert.assertTrue(actualDate.before(token.getRevocationDate()));
     }
 
-    // @Override
-    // public void testVerifyToken() {
-    //
-    // }
-
 }

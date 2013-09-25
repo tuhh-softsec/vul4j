@@ -33,8 +33,5 @@ public interface TokenServiceTest {
 
     @Test
     void testRevokeToken();
-    //
-    // @Test
-    // void testVerifyToken();
 
 }
