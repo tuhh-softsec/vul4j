@@ -52,12 +52,14 @@ public class TokenServiceTestImpl implements TokenServiceTest {
 
     @Override
     public void testCreateToken() {
+        System.out.println("testCreateToken");
         String createToken = tokenService.createToken(createValidityEndDate());
         Assert.assertFalse(createToken.equals(null));
     }
 
     @Override
     public void testGetToken() {
+        System.out.println("testGetToken");
         String createToken = tokenService.createToken(createValidityEndDate());
         Assert.assertFalse(createToken == null);
         Token token = tokenService.getToken(createToken);
@@ -67,6 +69,7 @@ public class TokenServiceTestImpl implements TokenServiceTest {
 
     @Override
     public void testRevokeToken() {
+        System.out.println("testRevokeToken");
         String createToken = tokenService.createToken(createValidityEndDate());
         Assert.assertFalse(createToken == null);
         Date actualDate = new Date();

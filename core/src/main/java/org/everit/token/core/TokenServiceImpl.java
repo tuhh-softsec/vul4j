@@ -128,6 +128,10 @@ public class TokenServiceImpl implements TokenService {
         return true;
     }
 
+    public void setEm(final EntityManager em) {
+        this.em = em;
+    }
+
     @Override
     public boolean verifyToken(final String uuid) {
         if (uuid == null) {
