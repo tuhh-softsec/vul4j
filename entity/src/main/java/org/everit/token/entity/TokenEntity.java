@@ -8,6 +8,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * The entity of the token.
+ */
 @Entity
 @Table(name = "TOKEN")
 public class TokenEntity {
@@ -27,12 +30,12 @@ public class TokenEntity {
     private Date creationDate;
 
     /**
-     * The experation date of the token. The token has been used to this date, if the revocation date or date of use
+     * The expiration date of the token. The token has been used to this date, if the revocation date or date of use
      * field is not filled out.
      */
     @Column(name = "EXPERATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date experationDate;
+    private Date expirationDate;
 
     /**
      * The revocation date of the token. If not used the token the field is filled in.
@@ -61,19 +64,19 @@ public class TokenEntity {
      *            the token UUID.
      * @param creationDate
      *            the creation date.
-     * @param experationDate
-     *            the experation date.
+     * @param expirationDate
+     *            the expiration date.
      * @param revocationDate
      *            the revocation date.
      * @param dateOfUse
      *            the date of used the token.
      */
-    public TokenEntity(final String tokenUuid, final Date creationDate, final Date experationDate,
+    public TokenEntity(final String tokenUuid, final Date creationDate, final Date expirationDate,
             final Date revocationDate, final Date dateOfUse) {
         super();
         this.tokenUuid = tokenUuid;
         this.creationDate = creationDate;
-        this.experationDate = experationDate;
+        this.expirationDate = expirationDate;
         this.revocationDate = revocationDate;
         this.dateOfUse = dateOfUse;
     }
@@ -86,8 +89,8 @@ public class TokenEntity {
         return dateOfUse;
     }
 
-    public Date getExperationDate() {
-        return experationDate;
+    public Date getExpirationDate() {
+        return expirationDate;
     }
 
     public Date getRevocationDate() {
@@ -106,8 +109,8 @@ public class TokenEntity {
         this.dateOfUse = dateOfUse;
     }
 
-    public void setExperationDate(final Date experationDate) {
-        this.experationDate = experationDate;
+    public void setExperationDate(final Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
     public void setRevocationDate(final Date revocationDate) {
