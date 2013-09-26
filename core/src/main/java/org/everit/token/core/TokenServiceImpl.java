@@ -80,10 +80,8 @@ public class TokenServiceImpl implements TokenService {
         TokenEntity token = getTokenEntity(uuid);
         if (token != null) {
             Date actualDate = new Date();
-            if (actualDate.getTime() > token.getExpirationDate().getTime()) {
-                if (revokeToken(token.getTokenUuid())) {
-                    token = getTokenEntity(uuid);
-                }
+            if ((actualDate.getTime() > token.getExpirationDate().getTime()) && revokeToken(token.getTokenUuid())) {
+                token = getTokenEntity(uuid);
             }
         }
         return convertTokenEntityToToken(token);
@@ -107,7 +105,8 @@ public class TokenServiceImpl implements TokenService {
         }
         boolean revoke = false;
         TokenEntity tokenEntity = getTokenEntity(uuid);
-        if ((tokenEntity != null) && (tokenEntity.getRevocationDate() == null) && (tokenEntity.getDateOfUse() == null)) {
+        if ((tokenEntity != null) && (tokenEntity.getRevocationDate() == null)
+                && (tokenEntity.getDateOfUse() == null)) {
             tokenEntity.setRevocationDate(new Date());
             em.merge(tokenEntity);
             em.flush();

@@ -21,7 +21,6 @@ package org.everit.token.itests.core;
  * MA 02110-1301  USA
  */
 
-import org.everit.token.api.TokenService;
 import org.junit.Test;
 
 /**
@@ -39,7 +38,7 @@ public interface TokenServiceTest {
      * Testing getTokens errors. Test method for testing {@link TokenService#getToken(String)}.
      */
     @Test
-    void TestErrorsGetToken();
+    void testErrorsFindToken();
 
     /**
      * Testing success create. Test method for testing {@link TokenService#createToken(java.util.Date)}.

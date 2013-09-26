@@ -37,6 +37,10 @@ import org.everit.token.api.dto.Token;
  */
 public class TokenServiceTestImpl implements TokenServiceTest {
 
+    private static final int LENGTH = 100;
+    /**
+     * The {@link TokenService} instance.
+     */
     private TokenService tokenService;
 
     /**
@@ -77,7 +81,7 @@ public class TokenServiceTestImpl implements TokenServiceTest {
     }
 
     @Override
-    public void TestErrorsGetToken() {
+    public void testErrorsFindToken() {
 
         String testUuuid = "abcde-fgre-234012";
         try {
@@ -99,14 +103,13 @@ public class TokenServiceTestImpl implements TokenServiceTest {
 
     @Override
     public void testSuccessGetToken() {
-        int length = 4;
         List<String> tokensUuid = new ArrayList<String>();
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < LENGTH; i++) {
             String createToken = tokenService.createToken(createValidityEndDate());
             Assert.assertFalse(createToken == null);
             tokensUuid.add(createToken);
         }
-        int index = new Random().nextInt(length);
+        int index = new Random().nextInt(LENGTH);
         Token token = tokenService.getToken(tokensUuid.get(index));
         Assert.assertFalse(token == null);
     }
@@ -140,7 +143,7 @@ public class TokenServiceTestImpl implements TokenServiceTest {
     @Override
     public void testTokens() {
         List<String> tokenUuids = new ArrayList<String>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < LENGTH; i++) {
             Date actualDate = new Date();
             Calendar validityEndDate = Calendar.getInstance();
             validityEndDate.setTime(actualDate);
@@ -149,14 +152,14 @@ public class TokenServiceTestImpl implements TokenServiceTest {
             Assert.assertFalse(expiriedToken == null);
             tokenUuids.add(expiriedToken);
         }
-        for (int i = 100; i < 200; i++) {
+        for (int i = LENGTH; i < (LENGTH + LENGTH); i++) {
             String expiriedToken = tokenService.createToken(createValidityEndDate());
             Assert.assertFalse(expiriedToken == null);
             tokenUuids.add(expiriedToken);
         }
 
         int j = 0;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < LENGTH; i++) {
             if (j == 0) {
                 Token token2 = tokenService.getToken(tokenUuids.get(i));
                 Assert.assertNotNull(token2);
@@ -170,7 +173,7 @@ public class TokenServiceTestImpl implements TokenServiceTest {
         }
 
         j = 0;
-        for (int i = 100; i < 200; i++) {
+        for (int i = LENGTH; i < (LENGTH + LENGTH); i++) {
             if (j == 0) {
                 boolean verifyToken = tokenService.verifyToken(tokenUuids.get(i));
                 Assert.assertTrue(verifyToken);
@@ -197,7 +200,6 @@ public class TokenServiceTestImpl implements TokenServiceTest {
         }
 
         Token token = tokenService.getToken(tokenUuids.get(0));
-        System.out.println(token.getUuid());
         Assert.assertFalse(token == null);
 
         String testUuuid = "abcde-fgre-234012";

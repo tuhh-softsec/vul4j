@@ -130,7 +130,7 @@ public class TokenEntity {
         this.dateOfUse = dateOfUse;
     }
 
-    public void setExperationDate(final Date expirationDate) {
+    public void setExpirationDate(final Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 

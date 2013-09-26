@@ -134,6 +134,12 @@
             <groupId>org.everit.osgi.hibernate</groupId>
             <artifactId>org.everit.osgi.hibernate.adapter</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>asm-all</artifactId>
+                    <groupId>org.ow2.asm</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
