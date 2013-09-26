@@ -2,6 +2,13 @@ package net.onrc.onos.ofcontroller.bgproute;
 
 import org.openflow.protocol.OFFlowMod;
 
+/**
+ * Wraps up a DPID and a OFFlowMod so we know how to delete
+ * the flow if we have to.
+ * 
+ * TODO This functionality should be handled by ONOS's flow layer in future.
+ *
+ */
 public class PushedFlowMod {
 	private long dpid;
 	private OFFlowMod flowMod;

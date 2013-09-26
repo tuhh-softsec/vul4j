@@ -3,9 +3,9 @@ package net.onrc.onos.ofcontroller.bgproute;
 public class RibUpdate {
 	public enum Operation {UPDATE, DELETE}; 
 	
-	private Operation operation;
-	private Prefix prefix;
-	private RibEntry ribEntry;
+	private final Operation operation;
+	private final Prefix prefix;
+	private final RibEntry ribEntry;
 	
 	public RibUpdate(Operation operation, Prefix prefix, RibEntry ribEntry) {
 		this.operation = operation;

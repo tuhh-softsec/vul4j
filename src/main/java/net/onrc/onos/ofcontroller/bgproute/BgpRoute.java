@@ -76,7 +76,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
 									ITopologyListener, IArpRequester,
-									IOFSwitchListener {
+									IOFSwitchListener, ILayer3InfoService {
 	
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
@@ -158,7 +158,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 							ldu.getDst(), ldu.getDstPort());
 					
 					if (activeLinks.contains(l)){
-						log.debug("Not found: {}", l);
 						it.remove();
 					}
 				}
@@ -263,7 +262,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology);
+		proxyArp = new ProxyArpManager(floodlightProvider, topology, this);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -308,8 +307,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		log.debug("Config file set to {}", configFilename);
 		
 		readGatewaysConfiguration(configFilename);
-		
-		proxyArp.setL3Mode(interfacePtrie, interfaces.values(), bgpdMacAddress);
 	}
 	
 	@Override
@@ -466,7 +463,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				Path path = pushedPaths.get(dstIpAddress);
 				if (path == null) {
 					path = new Path(egressInterface, dstIpAddress);
-					setUpDataPath(path, MACAddress.valueOf(nextHopMacAddress));
+					calculateAndPushPath(path, MACAddress.valueOf(nextHopMacAddress));
 					pushedPaths.put(dstIpAddress, path);
 				}
 				
@@ -493,14 +490,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 		
 		//Add a flow to rewrite mac for this prefix to all other border switches
-		//for (Interface srcInterface : interfaces.values()) {
 		for (Interface srcInterface : srcInterfaces.values()) {
-			//if (srcInterface == egressInterface) {
-				//Don't push a flow for the switch where this peer is attached
-				//continue;
-			//}
-			
-			
 			DataPath shortestPath; 
 			if (topoRouteTopology == null) {
 				shortestPath = topoRouteService.getShortestPath(
@@ -572,7 +562,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             try {
 				sw.write(msglist, null);
 				sw.flush();
-				//Thread.sleep(0, 100000);
+				
+				/*
+				 * XXX Rate limit hack!
+				 * This should be solved properly by adding a rate limiting
+				 * layer on top of the switches if we know they need it.
+				 */
 				Thread.sleep(1);
 			} catch (IOException e) {
 				log.error("Failure writing flow mod", e);
@@ -603,7 +598,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		if (!bgpPeers.containsKey(ribEntry.getNextHop())) {
 			log.debug("Getting path for route with non-peer nexthop");
-			//Path path = prefixToPath.get(prefix);
 			Path path = prefixToPath.remove(prefix);
 			
 			if (path != null) {
@@ -611,7 +605,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				//flows yet because we were waiting to resolve ARP
 			
 				path.decrementUsers();
-				log.debug("users {}, permanent {}", path.getUsers(), path.isPermanent());
 				if (path.getUsers() <= 0 && !path.isPermanent()) {
 					deletePath(path);
 					pushedPaths.remove(path.getDstIpAddress());
@@ -620,28 +613,37 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
-	private void deletePrefixFlows(Prefix prefix) {	
+	private void deletePrefixFlows(Prefix prefix) {
+		log.debug("Deleting flows for prefix {}", prefix);
+		
 		Collection<PushedFlowMod> pushedFlowMods 
 				= pushedFlows.removeAll(prefix);
 		
 		for (PushedFlowMod pfm : pushedFlowMods) {
-			log.debug("Pushing a DELETE flow mod to {}, matches prefix {} with mac-rewrite {}",
-					new Object[] {HexString.toHexString(pfm.getDpid()),
-					pfm.getFlowMod().getMatch().getNetworkDestination() + 
-					pfm.getFlowMod().getMatch().getNetworkDestinationMaskLen(),
-					HexString.toHexString(((OFActionDataLayerDestination)pfm.getFlowMod().getActions().get(0))
-							.getDataLayerAddress())});
+			if (log.isTraceEnabled()) {
+				log.trace("Pushing a DELETE flow mod to {}, matches prefix {} with mac-rewrite {}",
+						new Object[] {HexString.toHexString(pfm.getDpid()),
+						pfm.getFlowMod().getMatch().getNetworkDestination() + 
+						pfm.getFlowMod().getMatch().getNetworkDestinationMaskLen(),
+						HexString.toHexString(((OFActionDataLayerDestination)pfm.getFlowMod().getActions().get(0))
+								.getDataLayerAddress())});
+			}
 			
 			sendDeleteFlowMod(pfm.getFlowMod(), pfm.getDpid());
 		}
 	}
 	
 	private void deletePath(Path path) {
+		log.debug("Deleting flows for path to {}", 
+				path.getDstIpAddress().getHostAddress());
+		
 		for (PushedFlowMod pfm : path.getFlowMods()) {
-			log.debug("Pushing a DELETE flow mod to {}, dst MAC {}",
-					new Object[] {HexString.toHexString(pfm.getDpid()),
-					HexString.toHexString(pfm.getFlowMod().getMatch().getDataLayerDestination())
-			});
+			if (log.isTraceEnabled()) {
+				log.trace("Pushing a DELETE flow mod to {}, dst MAC {}",
+						new Object[] {HexString.toHexString(pfm.getDpid()),
+						HexString.toHexString(pfm.getFlowMod().getMatch().getDataLayerDestination())
+				});
+			}
 			
 			sendDeleteFlowMod(pfm.getFlowMod(), pfm.getDpid());
 		}
@@ -703,12 +705,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 			
 			//If we know the MAC, lets go ahead and push the paths to this peer
-			setUpDataPath(path, MACAddress.valueOf(mac));
+			calculateAndPushPath(path, MACAddress.valueOf(mac));
 		}
-	}
-	
-	private void setUpDataPath(Path path, MACAddress dstMacAddress) {
-		calculateAndPushPath(path, dstMacAddress);
 	}
 	
 	private void calculateAndPushPath(Path path, MACAddress dstMacAddress) {
@@ -726,20 +724,18 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			
 			DataPath shortestPath;
 			if (topoRouteTopology == null) {
-				log.debug("Using database topo");
 				shortestPath = topoRouteService.getShortestPath(
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 			}
 			else {
-				log.debug("Using prepared topo");
 				shortestPath = topoRouteService.getTopoShortestPath(topoRouteTopology, 
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 			}
 			
 			if (shortestPath == null){
-				log.debug("Shortest path between {} and {} not found",
+				log.warn("Shortest path between {} and {} not found",
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
-				return; // just quit here?
+				return;
 			}
 			
 			pushedFlows.addAll(installPath(shortestPath.flowEntries(), dstMacAddress));
@@ -766,6 +762,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         .setBufferId(OFPacketOut.BUFFER_ID_NONE)
         .setCookie(L2_FWD_COOKIE)
         .setCommand(OFFlowMod.OFPFC_ADD)
+        .setPriority(SDNIP_PRIORITY)
         .setActions(actions)
         .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
         
@@ -989,7 +986,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					}
 				}
 				else {
-					setUpDataPath(path, MACAddress.valueOf(macAddress));
+					calculateAndPushPath(path, MACAddress.valueOf(macAddress));
 					pushedPaths.put(path.getDstIpAddress(), path);
 				}
 			}
@@ -1057,7 +1054,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private void setupDefaultDropFlows() {
 		OFFlowMod fm = new OFFlowMod();
 		fm.setMatch(new OFMatch());
-		//No action means drop
+		fm.setActions(new ArrayList<OFAction>()); //No action means drop
 		
 		fm.setIdleTimeout((short)0)
         .setHardTimeout((short)0)
@@ -1067,14 +1064,52 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         .setPriority((short)0)
 		.setLengthU(OFFlowMod.MINIMUM_LENGTH);
 		
+		OFFlowMod fmLLDP;
+		OFFlowMod fmBDDP;
+		try {
+			 fmLLDP = fm.clone();
+			 fmBDDP = fm.clone();
+		} catch (CloneNotSupportedException e1) {
+			log.error("Error cloning flow mod", e1);
+			return;
+		}
+		
+		OFMatch matchLLDP = new OFMatch();
+		matchLLDP.setDataLayerType((short)0x8942);
+		matchLLDP.setWildcards(matchLLDP.getWildcards() & ~ OFMatch.OFPFW_DL_TYPE);
+		fmLLDP.setMatch(matchLLDP);
+		
+		OFMatch matchBDDP = new OFMatch();
+		matchBDDP.setDataLayerType((short)0x88cc);
+		matchBDDP.setWildcards(matchBDDP.getWildcards() & ~ OFMatch.OFPFW_DL_TYPE);
+		fmBDDP.setMatch(matchBDDP);
+		
+		OFActionOutput action = new OFActionOutput();
+		action.setPort(OFPort.OFPP_CONTROLLER.getValue());
+		action.setMaxLength((short)0xffff);
+		List<OFAction> actions = new ArrayList<OFAction>(1);
+		actions.add(action);
+		
+		fmLLDP.setActions(actions);
+		fmBDDP.setActions(actions);
+		
+		fmLLDP.setPriority(ARP_PRIORITY);
+		fmLLDP.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
+		fmBDDP.setPriority(ARP_PRIORITY);
+		fmBDDP.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
+		
 		for (String strdpid : switches){
 			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
 			if (sw == null) {
 				log.debug("Couldn't find switch to push default deny flow");
 			}
 			else {
+				List<OFMessage> msgList = new ArrayList<OFMessage>();
+				msgList.add(fm);
+				msgList.add(fmLLDP);
+				msgList.add(fmBDDP);
 				try {
-					sw.write(fm, null);
+					sw.write(msgList, null);
 				} catch (IOException e) {
 					log.warn("Failure writing default deny flow to switch", e);
 				}
@@ -1214,20 +1249,54 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 
 	@Override
-	public void removedSwitch(IOFSwitch sw) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void removedSwitch(IOFSwitch sw) {}
 
 	@Override
-	public void switchPortChanged(Long switchId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void switchPortChanged(Long switchId) {}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "BgpRoute";
+	}
+	
+	/*
+	 * ILayer3InfoService methods
+	 */
+	
+	@Override
+	public boolean isInterfaceAddress(InetAddress address) {
+		Interface intf = interfacePtrie.match(new Prefix(address.getAddress(), 32));
+		return (intf != null && intf.getIpAddress().equals(address));
+	}
+	
+	@Override
+	public boolean inConnectedNetwork(InetAddress address) {
+		Interface intf = interfacePtrie.match(new Prefix(address.getAddress(), 32));
+		return (intf != null && !intf.getIpAddress().equals(address));
+	}
+	
+	@Override
+	public boolean fromExternalNetwork(long inDpid, short inPort) {
+		for (Interface intf : interfaces.values()) {
+			if (intf.getDpid() == inDpid && intf.getPort() == inPort) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public Interface getOutgoingInterface(InetAddress dstIpAddress) {
+		return interfacePtrie.match(new Prefix(dstIpAddress.getAddress(), 32));
+	}
+	
+	@Override
+	public boolean hasLayer3Configuration() {
+		return !interfaces.isEmpty();
+	}
+	
+	@Override
+	public MACAddress getRouterMacAddress() {
+		return bgpdMacAddress;
 	}
 }

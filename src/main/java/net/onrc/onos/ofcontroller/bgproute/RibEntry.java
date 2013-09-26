@@ -5,8 +5,8 @@ import java.net.InetAddress;
 import com.google.common.net.InetAddresses;
 
 public class RibEntry {
-	private InetAddress routerId;
-	private InetAddress nextHop;
+	private final InetAddress routerId;
+	private final InetAddress nextHop;
 	
 	public RibEntry(InetAddress routerId, InetAddress nextHop) {
 		this.routerId = routerId;
