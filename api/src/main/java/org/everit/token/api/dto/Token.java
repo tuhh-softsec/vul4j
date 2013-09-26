@@ -69,7 +69,6 @@ public final class Token {
      */
     public Token(final String uuid, final Date creationDate, final Date expirationDate, final Date revocationDate,
             final Date dateOfUse) {
-        super();
         this.uuid = uuid;
         this.creationDate = creationDate;
         this.expirationDate = expirationDate;
