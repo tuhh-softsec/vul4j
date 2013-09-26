@@ -61,7 +61,7 @@
             <plugin>
                 <groupId>org.everit.osgi.dev</groupId>
                 <artifactId>eosgi-maven-plugin</artifactId>
-                <version>1.1.0</version>
+                <version>1.1.1-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>integration-test</id>
@@ -80,6 +80,10 @@
                                     </systemProperties>
                                 </environment>
                             </environments>
+                            <jacoco>
+                                <includes>org.everit.token.*</includes>
+                                <excludes>org.everit.token.itests.*</excludes>
+                            </jacoco>
                         </configuration>
                     </execution>
                 </executions>
@@ -130,6 +134,12 @@
             <groupId>org.everit.osgi.hibernate</groupId>
             <artifactId>org.everit.osgi.hibernate.adapter</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>asm-all</artifactId>
+                    <groupId>org.ow2.asm</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -192,5 +202,10 @@
             <version>1.4.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.everit.osgi.dev</groupId>
+            <artifactId>org.everit.osgi.dev.richconsole</artifactId>
+            <version>1.0.1</version>
+        </dependency>
     </dependencies>
 </project>

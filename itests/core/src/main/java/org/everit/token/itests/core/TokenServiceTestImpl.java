@@ -144,7 +144,7 @@ public class TokenServiceTestImpl implements TokenServiceTest {
             Date actualDate = new Date();
             Calendar validityEndDate = Calendar.getInstance();
             validityEndDate.setTime(actualDate);
-            validityEndDate.add(Calendar.MILLISECOND, 20);
+            validityEndDate.add(Calendar.MILLISECOND, 100);
             String expiriedToken = tokenService.createToken(validityEndDate.getTime());
             Assert.assertFalse(expiriedToken == null);
             tokenUuids.add(expiriedToken);
@@ -196,9 +196,28 @@ public class TokenServiceTestImpl implements TokenServiceTest {
             j++;
         }
 
+        Token token = tokenService.getToken(tokenUuids.get(0));
+        System.out.println(token.getUuid());
+        Assert.assertFalse(token == null);
+
         String testUuuid = "abcde-fgre-234012";
         boolean verifyToken = tokenService.verifyToken(testUuuid);
         Assert.assertFalse(verifyToken);
+
+        boolean revokeToken = tokenService.revokeToken(testUuuid);
+        Assert.assertFalse(revokeToken);
+
+        try {
+            tokenService.verifyToken(null);
+        } catch (IllegalArgumentException e) {
+            Assert.assertNotNull(e);
+        }
+
+        try {
+            tokenService.revokeToken(null);
+        } catch (IllegalArgumentException e) {
+            Assert.assertNotNull(e);
+        }
 
     }
 
