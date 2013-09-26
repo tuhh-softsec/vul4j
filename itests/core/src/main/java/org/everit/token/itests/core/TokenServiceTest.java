@@ -21,17 +21,55 @@ package org.everit.token.itests.core;
  * MA 02110-1301  USA
  */
 
+import org.everit.token.api.TokenService;
 import org.junit.Test;
 
+/**
+ * Test interface for testing {@link TokenService}.
+ */
 public interface TokenServiceTest {
 
+    /**
+     * Testing createToken errors. Test method for testing {@link TokenService#createToken(java.util.Date)}.
+     */
     @Test
-    void testCreateToken();
+    void testErrorsCreate();
 
+    /**
+     * Testing getTokens errors. Test method for testing {@link TokenService#getToken(String)}.
+     */
     @Test
-    void testGetToken();
+    void TestErrorsGetToken();
 
+    /**
+     * Testing success create. Test method for testing {@link TokenService#createToken(java.util.Date)}.
+     */
     @Test
-    void testRevokeToken();
+    void testSuccessCreate();
 
+    /**
+     * Testing success getToken. Test method for testing {@link TokenService#getToken(String)}.
+     */
+    @Test
+    void testSuccessGetToken();
+
+    /**
+     * Testin success revokeToken. Test method for testing {@link TokenService#revokeToken(String)}.
+     */
+    @Test
+    void testSuccessRevokeToken();
+
+    /**
+     * Testing success verifyToken. Test method for testing {@link TokenService#verifyToken(String)}.
+     */
+    @Test
+    void testSuccessVerifyToken();
+
+    /**
+     * Testing expiration token, usage token revoke, verify token. Test method for testing
+     * {@link TokenService#getToken(String)}, {@link TokenService#verifyToken(String)},
+     * {@link TokenService#revokeToken(String)}.
+     */
+    @Test
+    void testTokens();
 }

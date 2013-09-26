@@ -30,6 +30,9 @@ import org.everit.token.api.TokenService;
 import org.everit.token.api.dto.Token;
 import org.everit.token.entity.TokenEntity;
 
+/**
+ * Implementation of {@link TokenService}.
+ */
 public class TokenServiceImpl implements TokenService {
 
     /**
@@ -59,11 +62,11 @@ public class TokenServiceImpl implements TokenService {
             throw new IllegalArgumentException("Cannot be null the parameters.");
         }
         Date creationDate = new Date();
-        if (creationDate.after(validityEndDate)) {
-            // throw new exception (which expection?)
+        if (creationDate.getTime() > validityEndDate.getTime()) {
+            throw new IllegalArgumentException("The creation date is older than validity end date.");
         }
         UUID uuid = UUID.randomUUID();
-        while (!existUuuid(uuid.toString())) {
+        while (existUuuid(uuid.toString())) {
             uuid = UUID.randomUUID();
         }
         TokenEntity tokenEntity = new TokenEntity(uuid.toString(), creationDate, validityEndDate, null, null);
@@ -96,7 +99,7 @@ public class TokenServiceImpl implements TokenService {
         TokenEntity token = getTokenEntity(uuid);
         if (token != null) {
             Date actualDate = new Date();
-            if (actualDate.after(token.getExpirationDate())) {
+            if (actualDate.getTime() > token.getExpirationDate().getTime()) {
                 if (revokeToken(token.getTokenUuid())) {
                     token = getTokenEntity(uuid);
                 }
@@ -121,11 +124,15 @@ public class TokenServiceImpl implements TokenService {
         if (uuid == null) {
             throw new IllegalArgumentException("Cannot be null the parameters.");
         }
+        boolean revoke = false;
         TokenEntity tokenEntity = getTokenEntity(uuid);
-        tokenEntity.setRevocationDate(new Date());
-        em.refresh(tokenEntity);
-        em.flush();
-        return true;
+        if ((tokenEntity != null) && (tokenEntity.getRevocationDate() == null) && (tokenEntity.getDateOfUse() == null)) {
+            tokenEntity.setRevocationDate(new Date());
+            em.merge(tokenEntity);
+            em.flush();
+            revoke = true;
+        }
+        return revoke;
     }
 
     public void setEm(final EntityManager em) {
@@ -140,10 +147,10 @@ public class TokenServiceImpl implements TokenService {
         boolean verify = false;
         TokenEntity tokenEntity = getTokenEntity(uuid);
         Date actualDate = new Date();
-        if ((tokenEntity != null) && actualDate.before(tokenEntity.getExpirationDate())
+        if ((tokenEntity != null) && (actualDate.getTime() < tokenEntity.getExpirationDate().getTime())
                 && (tokenEntity.getDateOfUse() == null) && (tokenEntity.getRevocationDate() == null)) {
             tokenEntity.setDateOfUse(actualDate);
-            em.refresh(tokenEntity);
+            em.merge(tokenEntity);
             em.flush();
             verify = true;
         }
