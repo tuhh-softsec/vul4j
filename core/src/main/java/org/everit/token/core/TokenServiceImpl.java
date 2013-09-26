@@ -66,29 +66,10 @@ public class TokenServiceImpl implements TokenService {
             throw new IllegalArgumentException("The creation date is older than validity end date.");
         }
         UUID uuid = UUID.randomUUID();
-        while (existUuuid(uuid.toString())) {
-            uuid = UUID.randomUUID();
-        }
         TokenEntity tokenEntity = new TokenEntity(uuid.toString(), creationDate, validityEndDate, null, null);
         em.persist(tokenEntity);
         em.flush();
         return tokenEntity.getTokenUuid();
-    }
-
-    /**
-     * Checking the token UUID is exist.
-     * 
-     * @param uuid
-     *            the token UUID.
-     * @return <code>true</code> if exist the token UUID, otherwise false.
-     */
-    private boolean existUuuid(final String uuid) {
-        boolean exist = false;
-        TokenEntity token = getTokenEntity(uuid);
-        if (token != null) {
-            exist = true;
-        }
-        return exist;
     }
 
     @Override
