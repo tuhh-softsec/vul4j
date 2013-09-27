@@ -117,7 +117,7 @@ public class LProbeService {
             String nbId = probe.get(0).getNetzbetreiberId();
             String mstId = probe.get(0).getMstId();
             if (auth.getNetzbetreiber().contains(nbId) ||
-                probe.get(0).getFertig()) {
+                probe.get(0).getReadonly()) {
                 if (auth.getMst().contains(mstId)) {
                     return response;
                 }
@@ -158,7 +158,7 @@ public class LProbeService {
                     new QueryBuilder<LProbeInfo>(
                         repository.getEntityManager(),
                         LProbeInfo.class);
-                builder.or("fertig", true);
+                builder.or("readonly", true);
                 List<String> netzbetreiberIds = auth.getNetzbetreiber();
                 for (String netzbetreiberId: netzbetreiberIds) {
                     builder.or("netzbetreiberId", netzbetreiberId);
@@ -203,7 +203,7 @@ public class LProbeService {
                     subselect += "or netzbetreiber_id = '" + netzbetreiberId + "' ";
                 }
             }
-            subselect += "or fertig = true) as lp";
+            subselect += "or readonly = true) as lp";
             sql = sql.replace("l_probe", subselect);
             return lpr.filterFree(sql, filters, results, params);
         }

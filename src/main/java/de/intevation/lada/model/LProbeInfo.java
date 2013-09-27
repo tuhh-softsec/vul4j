@@ -53,9 +53,6 @@ public class LProbeInfo implements Serializable {
 	@Column(name="mst_id")
 	private String mstId;
 
-	@Column(name="nebenproben_nr", insertable = false, updatable = false)
-	private String nebenprobenNr;
-
 	@Column(name="netzbetreiber_id")
 	private String netzbetreiberId;
 
@@ -85,12 +82,6 @@ public class LProbeInfo implements Serializable {
 
 	@Column(name="umw_id")
 	private String umwId;
-
-	@Column(name="messmethode")
-	private String messmethode;
-
-	@Column(name="fertig")
-	private Boolean fertig;
 
 	@Column(name="readonly")
 	private Boolean readonly;
@@ -194,14 +185,6 @@ public class LProbeInfo implements Serializable {
 		this.mstId = mstId;
 	}
 
-	public String getNebenprobenNr() {
-		return this.nebenprobenNr;
-	}
-
-	public void setNebenprobenNr(String nebenprobenNr) {
-		this.nebenprobenNr = nebenprobenNr;
-	}
-
 	public String getNetzbetreiberId() {
 		return this.netzbetreiberId;
 	}
@@ -281,22 +264,6 @@ public class LProbeInfo implements Serializable {
 	public void setUmwId(String umwId) {
 		this.umwId = umwId;
 	}
-
-    public String getMessmethode() {
-        return messmethode;
-    }
-
-    public void setMessmethode(String messmethode) {
-        this.messmethode = messmethode;
-    }
-
-    public Boolean getFertig() {
-        return fertig;
-    }
-
-    public void setFertig(Boolean fertig) {
-        this.fertig = fertig;
-    }
 
     public Boolean getReadonly() {
         return readonly;
