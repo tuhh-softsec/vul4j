@@ -71,7 +71,8 @@ function start {
   done
 
 # Create a logback file if required
-  cat <<EOF_LOGBACK >${ONOS_LOGBACK}
+  if [ ! -f ${ONOS_LOGBACK} ]; then
+    cat <<EOF_LOGBACK >${ONOS_LOGBACK}
 <configuration scan="true" debug="true">
 <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 <encoder>
@@ -95,6 +96,7 @@ function start {
 </root>
 </configuration>
 EOF_LOGBACK
+  fi
 
   # Run floodlight
   echo "Starting ONOS controller ..."
