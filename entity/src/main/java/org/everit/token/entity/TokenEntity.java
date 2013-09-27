@@ -96,25 +96,29 @@ public class TokenEntity {
             final Date revocationDate, final Date dateOfUse) {
         super();
         this.tokenUuid = tokenUuid;
-        this.creationDate = creationDate;
-        this.expirationDate = expirationDate;
-        this.revocationDate = revocationDate;
-        this.dateOfUse = dateOfUse;
+        this.creationDate = (Date) creationDate.clone();
+        this.expirationDate = (Date) expirationDate.clone();
+        this.revocationDate = (Date) revocationDate.clone();
+        this.dateOfUse = (Date) dateOfUse.clone();
     }
 
     public Date getCreationDate() {
+        Date creationDate = (Date) this.creationDate.clone();
         return creationDate;
     }
 
     public Date getDateOfUse() {
+        Date dateOfUse = (Date) this.dateOfUse.clone();
         return dateOfUse;
     }
 
     public Date getExpirationDate() {
+        Date expirationDate = (Date) this.expirationDate.clone();
         return expirationDate;
     }
 
     public Date getRevocationDate() {
+        Date revocationDate = (Date) this.revocationDate.clone();
         return revocationDate;
     }
 
@@ -123,19 +127,19 @@ public class TokenEntity {
     }
 
     public void setCreationDate(final Date creationDate) {
-        this.creationDate = creationDate;
+        this.creationDate = (Date) creationDate.clone();
     }
 
     public void setDateOfUse(final Date dateOfUse) {
-        this.dateOfUse = dateOfUse;
+        this.dateOfUse = (Date) dateOfUse.clone();
     }
 
     public void setExpirationDate(final Date expirationDate) {
-        this.expirationDate = expirationDate;
+        this.expirationDate = (Date) expirationDate.clone();
     }
 
     public void setRevocationDate(final Date revocationDate) {
-        this.revocationDate = revocationDate;
+        this.revocationDate = (Date) revocationDate.clone();
     }
 
     public void setTokenUuid(final String tokenUuid) {
