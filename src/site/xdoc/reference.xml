@@ -621,23 +621,29 @@ someUrl=/cms/article123
 			<th>Usage</th>
 			<th>Examples</th>
 			<th>ESI 1.0</th>
-			<th>ESIGate</th>
+			<th>ESIGate 4</th>
+			<th>Akamai Edgesuite 5<a href="http://www.akamai.com/dl/technical_publications/akamai_esi_extensions.pdf" title="Source">*</a></th>
+			<th>Varnish 3<a href="https://www.varnish-cache.org/trac/wiki/ESIfeatures" title="Source">*</a></th>
 			</tr>
 			<tr>
 			<td>&lt;esi:include&gt;</td>
 			<td></td>
 			<td>Include a part of another page or the complete page</td>
 			<td>&lt;esi:include src="URI" /&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td></td>
 			<td>src</td>
 			<td>Url of the page to include</td>
 			<td>&lt;esi:include src=" $(PROVIDER...)URI" /&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -645,15 +651,19 @@ someUrl=/cms/article123
 			<td>Name of the fragment to retrieve</td>
 			<td>&lt;esi:include src="URI" fragment="NAME" /&gt;</td>
 			<td>No</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>No</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
 			<td>alt</td>
 			<td>Alternative if src cannot be fetched</td>
 			<td>&lt;esi:include src="URI" alt="URI" /&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -662,8 +672,10 @@ someUrl=/cms/article123
 			occurs (http code &gt; 400). If "display" will display the error page
 			retrieved.</td>
 			<td>&lt;esi:include src="URI" onerror="display" /&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -673,7 +685,9 @@ someUrl=/cms/article123
 			<td>&lt;esi:include src="URI" rewriteabsoluteurl="true"
 			/&gt;</td>
 			<td>No</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>No</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -684,7 +698,9 @@ someUrl=/cms/article123
 			<td>&lt;esi:include src="a.html"
 			stylesheet="s.xsl"&gt;...&lt;/esi:include&gt;</td>
 			<td>No</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes (different)</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -692,7 +708,9 @@ someUrl=/cms/article123
 			<td>xpath expression to retrieve</td>
 			<td>&lt;esi:include src="..." xpath="..." /&gt;</td>
 			<td>No</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>No</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:replace&gt;</td>
@@ -700,7 +718,9 @@ someUrl=/cms/article123
 			<td>Replace some part of the included ressource</td>
 			<td></td>
 			<td>No</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>No</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -709,18 +729,21 @@ someUrl=/cms/article123
 			<td>&lt;esi:replace
 			fragment="NAME"&gt;...&lt;/esi:replace&gt;</td>
 			<td>No</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>No</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
 			<td>expression</td>
-			<td>Regular expression to replace. For details about
-			regular expression syntax see
-			http://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html</td>
+			<td>Regular expression to replace. See <a href="http://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html" >regular expression syntax</a>
+			</td>
 			<td>&lt;esi:replace
 			expression="$(HTTP_HOST)"&gt;www.my_host.com&lt;/esi:replace&gt;</td>
 			<td>No</td>
 			<td>yes</td>
+			<td>No</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:fragment&gt;</td>
@@ -728,7 +751,9 @@ someUrl=/cms/article123
 			<td>Delimits a fragment</td>
 			<td>&lt;esi:fragment name="my_fragment"/&gt;</td>
 			<td>No</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>No</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -736,7 +761,9 @@ someUrl=/cms/article123
 			<td>name of the fragment</td>
 			<td></td>
 			<td>No</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>No</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:try&gt;</td>
@@ -746,16 +773,20 @@ someUrl=/cms/article123
 			code="404"&gt;...&lt;/esi:except&gt;&lt;esi:except
 			code="500"&gt;...&lt;/esi:except&gt;&lt;esi:except&gt;...&lt;/esi:except&gt;&lt;:esi:try&gt;
 			</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:attempt&gt;</td>
 			<td></td>
 			<td>The part to try to execute</td>
 			<td></td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:except&gt;</td>
@@ -763,16 +794,20 @@ someUrl=/cms/article123
 			<td>A block that will replace the attempt block in case
 			an exception occurs</td>
 			<td></td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
 			<td>code</td>
 			<td>Http return code that trigger this except block</td>
 			<td></td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:choose&gt;</td>
@@ -781,24 +816,30 @@ someUrl=/cms/article123
 			<td>&lt;esi:choose&gt; &lt;esi:when test="..."&gt; ...
 			&lt;/esi:when&gt; &lt;esi:when test="..."&gt; ... &lt;/esi:when&gt;
 			&lt;esi:otherwise&gt; ... &lt;/esi:otherwise&gt; &lt;/esi:choose&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:when&gt;</td>
 			<td></td>
 			<td>Condition</td>
 			<td></td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
 			<td>test</td>
 			<td>Expression to evaluate</td>
 			<td></td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:otherwise&gt;</td>
@@ -806,8 +847,10 @@ someUrl=/cms/article123
 			<td>Fallback if none of the previous conditions has
 			been fullfilled</td>
 			<td></td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:inline&gt;</td>
@@ -816,16 +859,20 @@ someUrl=/cms/article123
 			the cache and fetched</td>
 			<td>&lt;esi:inline name="URI" fetchable="{yes
 			no}"&gt;...&lt;/esi:inline&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
 			<td>name</td>
 			<td>name of the fragment</td>
 			<td></td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -833,16 +880,20 @@ someUrl=/cms/article123
 			<td>Whether the fragment is independantly fetchable by
 			name or not.</td>
 			<td></td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:comment&gt;</td>
 			<td></td>
 			<td>A comment that will be removed by the processor</td>
 			<td>&lt;esi:comment text="..." /&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:remove&gt;</td>
@@ -850,8 +901,10 @@ someUrl=/cms/article123
 			<td>A page fragment that will be removed by the
 			processor</td>
 			<td>&lt;esi:remove&gt; ... &lt;/esi:remove&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td>&lt;!--esi--&gt;</td>
@@ -859,8 +912,10 @@ someUrl=/cms/article123
 			<td>A html-commented fragment that will be uncommented
 			by the processor</td>
 			<td>&lt;!--esi ...--&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:vars&gt;</td>
@@ -868,12 +923,44 @@ someUrl=/cms/article123
 			<td>Delimits a fragment that may contain expressions to
 			evaluate</td>
 			<td>&lt;esi:vars&gt; ... &lt;/esi:vars&gt;</td>
-			<td>yes</td>
-			<td>yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>Yes</td>
+			<td>No</td>
+			
 			</tr>
 			</table>
+			<p>(If you find a mistake in this table, feel free to contact us.)</p>
+			<p>Please note that this table lists ESI 1.0 and Esigate additional tags only. Other implementations may have other additional tags (Akamai Edgesuite has).</p>
 			
-			<h1>Variable reference</h1>
+			</subsection>
+			<subsection name="Variable reference">
+			<p>Variable types</p>
+			<table>
+			<tr>
+			<th>Type</th>
+			<th>Syntax</th>
+			</tr>
+			<tr>
+			<td>String</td>
+			<td><code>$(VAR)</code> : value</td>
+			</tr>
+			<tr>
+			<td>List</td>
+			<td><code>$(VAR)</code> : complete list<br/>
+				<code>$(VAR{item})</code> : <em>true</em> if item exists in the list, <em>false</em> otherwise</td>
+			</tr>
+			
+						<tr>
+			<td>Dictionnary</td>
+			<td><code>$(VAR)</code> : complete list<br/>
+				<code>$(VAR{key})</code> : value of item <em>key</em> or an empty string if not found.<br/>
+				<code>$(VAR{key}|'default value')</code> : value of item <em>key</em> or <em>default value</em> if not found.</td>
+			</tr>
+			
+			</table>
+			
+			<p>Variables</p>
 			<table>
 			<tr>
 			<th>Variable Name</th>
@@ -885,37 +972,37 @@ someUrl=/cms/article123
 			<td>HTTP_ACCEPT_LANGUAGE</td>
 			<td>list</td>
 			<td>da, en-gb, en</td>
-			<td>yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td>HTTP_COOKIE</td>
 			<td>dictionary</td>
 			<td>id=571; visits=42</td>
-			<td>yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td>HTTP_HOST</td>
 			<td>String</td>
 			<td>esi.xyz.com</td>
-			<td>yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td>HTTP_REFERER</td>
 			<td>String</td>
 			<td>http://roberts.xyz.com/</td>
-			<td>yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td>HTTP_USER_AGENT</td>
 			<td>dictionary</td>
 			<td>Mozilla; MSIE 5.5</td>
-			<td>yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td>QUERY_STRING</td>
 			<td>dictionary</td>
 			<td>first=Robin&amp;last=Roberts</td>
-			<td>yes</td>
+			<td>Yes</td>
 			</tr>
 			<tr>
 			<td>PROVIDER</td>
