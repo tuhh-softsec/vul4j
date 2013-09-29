@@ -45,7 +45,7 @@
 			</subsection>
 			<subsection name="Xpath expressions and XSLT">
 				<p>
-					Tools are also provided to transform to retrieve and transform pages using regular 
+					Tools are also provided to retrieve and transform pages using regular 
 					expressions, xpath
 					expressions and to apply on-the-fly XSLT transformations. Xpath and XSLT can be used
 					even with malformed html documents.
@@ -351,7 +351,7 @@ theme.mappings=/css/*, /images/*
 				</tr>
 				<tr>
 					<td>viaHeader</td>
-					<td>Activates Viz header in HTTP responses.</td>
+					<td>Activates Via header in HTTP responses.</td>
 					<td>No</td>
 					<td>true</td>
 				</tr>
@@ -377,7 +377,7 @@ theme.mappings=/css/*, /images/*
 				</tr>
 				<tr>
 					<td>heuristicDefaultLifetimeSecs</td>
-					<td>Default lifetime of a cache entry if there is absolutely no information about it the http headers.</td>
+					<td>Default lifetime of a cache entry if there is absolutely no information about it in the http headers.</td>
 					<td>No</td>
 					<td>0</td>
 				</tr>
@@ -1463,9 +1463,9 @@ someUrl=/cms/article123
 					using separate browsers for each provider.
 				</p>
 				<p>
-					As a result, the only cookie viewed from the browser in the
+					As a result, the only cookie viewed from the browser is the
 					"jsessionid" corresponding to the user session used by ESIGate to
-					store the user context
+					store the user context.
 				</p>
 			</subsection>
 			<subsection name="Cookie forwarding, cookie discarding">

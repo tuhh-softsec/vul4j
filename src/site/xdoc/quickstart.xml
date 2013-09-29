@@ -56,7 +56,7 @@ esigate.mapping=/*
 				Now we put ESIGate server and esigate.properties in the same folder, open a console on this folder and launch the following command:
 			</p>
 <source>
-java -Desigate.config=esigate.properties -Dserver.port=8081 -jar esigate-server-.jar start
+java -Desigate.config=esigate.properties -Dserver.port=8081 -jar esigate-server.jar start
 </source>
 			<p>
 				You should now have ESIGate running on port 8081. Let's check by calling in a browser <a href="http://localhost:8081/hello/">http://localhost:8081/hello/</a>.
