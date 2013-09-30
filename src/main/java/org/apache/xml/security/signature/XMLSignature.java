@@ -373,8 +373,8 @@ public final class XMLSignature extends SignatureElementProxy {
 
         // If it exists use it, but it's not mandatory
         if (keyInfoElem != null 
-            && keyInfoElem.getNamespaceURI().equals(Constants.SignatureSpecNS) 
-            && keyInfoElem.getLocalName().equals(Constants._TAG_KEYINFO)) {
+            && Constants.SignatureSpecNS.equals(keyInfoElem.getNamespaceURI()) 
+            && Constants._TAG_KEYINFO.equals(keyInfoElem.getLocalName())) {
             this.keyInfo = new KeyInfo(keyInfoElem, baseURI);
             this.keyInfo.setSecureValidation(secureValidation);
         }
