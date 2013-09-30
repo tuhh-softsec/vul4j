@@ -3,6 +3,7 @@ package net.onrc.onos.ofcontroller.proxyarp;
 import java.net.InetAddress;
 
 import net.floodlightcontroller.packet.ARP;
+import net.floodlightcontroller.util.MACAddress;
 
 public interface IProxyArpService {
 	
@@ -16,7 +17,7 @@ public interface IProxyArpService {
 	 * @param port
 	 * @param targetMac
 	 */
-	public void sendArpReply(ARP arpRequest, long dpid, short port, byte[] targetMac);
+	public void sendArpReply(ARP arpRequest, long dpid, short port, MACAddress targetMac);
 	
 	/**
 	 * Returns the mac address if there is a valid entry in the cache.
@@ -24,7 +25,7 @@ public interface IProxyArpService {
 	 * @param ipAddress
 	 * @return
 	 */
-	public byte[] getMacAddress(InetAddress ipAddress);
+	public MACAddress getMacAddress(InetAddress ipAddress);
 	
 	/**
 	 * Tell the IProxyArpService to send an ARP request for the IP address.

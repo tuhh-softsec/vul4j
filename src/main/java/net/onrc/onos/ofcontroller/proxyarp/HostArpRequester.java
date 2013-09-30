@@ -3,6 +3,7 @@ package net.onrc.onos.ofcontroller.proxyarp;
 import java.net.InetAddress;
 
 import net.floodlightcontroller.packet.ARP;
+import net.floodlightcontroller.util.MACAddress;
 
 public class HostArpRequester implements IArpRequester {
 
@@ -21,7 +22,7 @@ public class HostArpRequester implements IArpRequester {
 	}
 
 	@Override
-	public void arpResponse(InetAddress ipAddress, byte[] macAddress) {
+	public void arpResponse(InetAddress ipAddress, MACAddress macAddress) {
 		arpService.sendArpReply(arpRequest, dpid, port, macAddress);
 	}
 

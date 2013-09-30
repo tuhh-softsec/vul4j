@@ -429,7 +429,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		InetAddress dstIpAddress = rib.getNextHop();
 		
 		//See if we know the MAC address of the next hop
-		byte[] nextHopMacAddress = proxyArp.getMacAddress(rib.getNextHop());
+		MACAddress nextHopMacAddress = proxyArp.getMacAddress(rib.getNextHop());
 		
 		//Find the attachment point (egress interface) of the next hop
 		Interface egressInterface = null;
@@ -463,7 +463,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				Path path = pushedPaths.get(dstIpAddress);
 				if (path == null) {
 					path = new Path(egressInterface, dstIpAddress);
-					calculateAndPushPath(path, MACAddress.valueOf(nextHopMacAddress));
+					calculateAndPushPath(path, nextHopMacAddress);
 					pushedPaths.put(dstIpAddress, path);
 				}
 				
@@ -476,9 +476,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
-	private void addPrefixFlows(Prefix prefix, Interface egressInterface, byte[] nextHopMacAddress) {		
+	private void addPrefixFlows(Prefix prefix, Interface egressInterface, MACAddress nextHopMacAddress) {		
 		log.debug("Adding flows for prefix {} added, next hop mac {}",
-				prefix, HexString.toHexString(nextHopMacAddress));
+				prefix, nextHopMacAddress);
 		
 		//We only need one flow mod per switch, so pick one interface on each switch
 		Map<Long, Interface> srcInterfaces = new HashMap<Long, Interface>();
@@ -533,7 +533,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        
 	        //Set up MAC rewrite action
 	        OFActionDataLayerDestination macRewriteAction = new OFActionDataLayerDestination();
-	        macRewriteAction.setDataLayerAddress(nextHopMacAddress);
+	        macRewriteAction.setDataLayerAddress(nextHopMacAddress.toBytes());
 	        
 	        //Set up output action
 	        OFActionOutput outputAction = new OFActionOutput();
@@ -694,8 +694,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			
 			//See if we know the MAC address of the peer. If not we can't
 			//do anything until we learn it
-			byte[] mac = proxyArp.getMacAddress(peer.getIpAddress());
-			if (mac == null) {
+			MACAddress macAddress = proxyArp.getMacAddress(peer.getIpAddress());
+			if (macAddress == null) {
 				log.debug("Don't know MAC for {}", peer.getIpAddress().getHostAddress());
 				//Put in the pending paths list first
 				pathsWaitingOnArp.put(peer.getIpAddress(), path);
@@ -705,7 +705,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 			
 			//If we know the MAC, lets go ahead and push the paths to this peer
-			calculateAndPushPath(path, MACAddress.valueOf(mac));
+			calculateAndPushPath(path, macAddress);
 		}
 	}
 	
@@ -959,9 +959,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	@Override
-	public void arpResponse(InetAddress ipAddress, byte[] macAddress) {
-		log.debug("Received ARP response: {} => {}", ipAddress.getHostAddress(), 
-				MACAddress.valueOf(macAddress).toString());
+	public void arpResponse(InetAddress ipAddress, MACAddress macAddress) {
+		log.debug("Received ARP response: {} => {}", 
+				ipAddress.getHostAddress(), macAddress);
 		
 		/*
 		 * We synchronize on this to prevent changes to the ptree while we're pushing
@@ -973,8 +973,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			
 			if (path != null) {
 				log.debug("Pushing path to {} at {} on {}", new Object[] {
-						path.getDstIpAddress().getHostAddress(), 
-						MACAddress.valueOf(macAddress),
+						path.getDstIpAddress().getHostAddress(), macAddress,
 						path.getDstInterface().getSwitchPort()});
 				//These paths should always be to BGP peers. Paths to non-peers are
 				//handled once the first prefix is ready to push
@@ -986,7 +985,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					}
 				}
 				else {
-					calculateAndPushPath(path, MACAddress.valueOf(macAddress));
+					calculateAndPushPath(path, macAddress);
 					pushedPaths.put(path.getDstIpAddress(), path);
 				}
 			}
