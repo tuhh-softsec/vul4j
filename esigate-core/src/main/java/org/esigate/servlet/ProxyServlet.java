@@ -58,7 +58,7 @@ public class ProxyServlet extends HttpServlet {
 	private DriverSelector driverSelector = new DriverSelector();
 
 	/**
-	 * This is mainly used for unit testing.
+	 * Get current Driver selector. This is mainly used for unit testing.
 	 * 
 	 * @return current Driver selector
 	 */
