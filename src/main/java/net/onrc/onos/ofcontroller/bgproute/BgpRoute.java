@@ -40,6 +40,7 @@ import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
+import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 import net.onrc.onos.ofcontroller.routing.TopoRouteService;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -76,7 +77,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
 									ITopologyListener, IArpRequester,
-									IOFSwitchListener, ILayer3InfoService {
+									IOFSwitchListener, ILayer3InfoService,
+									IProxyArpService {
 	
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
@@ -232,6 +234,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Map<Class<? extends IFloodlightService>, IFloodlightService> m 
 			= new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
 		m.put(IBgpRouteService.class, this);
+		m.put(IProxyArpService.class, this);
 		return m;
 	}
 
@@ -262,7 +265,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology, this);
+		proxyArp = new ProxyArpManager(floodlightProvider, topology, this, restApi);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -1297,5 +1300,28 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	@Override
 	public MACAddress getRouterMacAddress() {
 		return bgpdMacAddress;
+	}
+
+	/*
+	 * TODO This is a hack to get the REST API to work for ProxyArpManager.
+	 * The REST API is currently tied to the Floodlight module system and we
+	 * need to separate it to allow ONOS modules to use it. For now we will 
+	 * proxy calls through to the ProxyArpManager (which is not a Floodlight 
+	 * module) through this class which is a module.
+	 */
+	@Override
+	public MACAddress getMacAddress(InetAddress ipAddress) {
+		return proxyArp.getMacAddress(ipAddress);
+	}
+
+	@Override
+	public void sendArpRequest(InetAddress ipAddress, IArpRequester requester,
+			boolean retry) {
+		proxyArp.sendArpRequest(ipAddress, requester, retry);		
+	}
+
+	@Override
+	public List<String> getMappings() {
+		return proxyArp.getMappings();
 	}
 }

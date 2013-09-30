@@ -19,6 +19,7 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
+import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.bgproute.ILayer3InfoService;
@@ -39,7 +40,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 
-//TODO REST API to inspect ARP table
 public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private final static Logger log = LoggerFactory.getLogger(ProxyArpManager.class);
 	
@@ -50,6 +50,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private final IFloodlightProviderService floodlightProvider;
 	private final ITopologyService topology;
 	private final ILayer3InfoService layer3;
+	private final IRestApiService restApi;
 	
 	private final ArpCache arpCache;
 
@@ -103,10 +104,12 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	public ProxyArpManager(IFloodlightProviderService floodlightProvider,
-				ITopologyService topology, ILayer3InfoService layer3){
+				ITopologyService topology, ILayer3InfoService layer3,
+				IRestApiService restApi){
 		this.floodlightProvider = floodlightProvider;
 		this.topology = topology;
 		this.layer3 = layer3;
+		this.restApi = restApi;
 		
 		arpCache = new ArpCache();
 
@@ -115,6 +118,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	}
 	
 	public void startUp() {
+		restApi.addRestletRoutable(new ArpWebRoutable());
+		
 		Timer arpTimer = new Timer("arp-processing");
 		arpTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -551,5 +556,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		if (!layer3.isInterfaceAddress(ipAddress)) {
 			sendArpRequestForAddress(ipAddress);
 		}
+	}
+	
+	@Override
+	public List<String> getMappings() {
+		return arpCache.getMappings();
 	}
 }

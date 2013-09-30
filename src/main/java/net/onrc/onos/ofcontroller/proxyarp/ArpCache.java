@@ -1,7 +1,9 @@
 package net.onrc.onos.ofcontroller.proxyarp;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.floodlightcontroller.util.MACAddress;
@@ -20,10 +22,10 @@ import org.slf4j.LoggerFactory;
  * don't do this which means the cache memory size will never decrease. We already
  * have a periodic thread that can be used to do this in ProxyArpManager.
  */
-public class ArpCache {
+class ArpCache {
 	private final static Logger log = LoggerFactory.getLogger(ArpCache.class);
 	
-	private final long ARP_ENTRY_TIMEOUT = 60000; //ms (1 min)
+	private final static long ARP_ENTRY_TIMEOUT = 60000; //ms (1 min)
 	
 	//Protected by locking on the ArpCache object
 	private final Map<InetAddress, ArpCacheEntry> arpCache;
@@ -40,29 +42,28 @@ public class ArpCache {
 		public MACAddress getMacAddress() {
 			return macAddress;
 		}
-
-		public long getTimeLastSeen() {
-			return timeLastSeen;
-		}
 		
 		public void setTimeLastSeen(long time){
 			timeLastSeen = time;
 		}
+		
+		public boolean isExpired() {
+			return System.currentTimeMillis() - timeLastSeen > ARP_ENTRY_TIMEOUT;
+		}
 	}
 
-	public ArpCache() {
+	ArpCache() {
 		arpCache = new HashMap<InetAddress, ArpCacheEntry>();
 	}
 
-	public synchronized MACAddress lookup(InetAddress ipAddress){	
+	synchronized MACAddress lookup(InetAddress ipAddress){	
 		ArpCacheEntry arpEntry = arpCache.get(ipAddress);
 		
 		if (arpEntry == null){
 			return null;
 		}
 		
-		if (System.currentTimeMillis() - arpEntry.getTimeLastSeen() 
-				> ARP_ENTRY_TIMEOUT){
+		if (arpEntry.isExpired()) {
 			//Entry has timed out so we'll remove it and return null
 			log.trace("Removing expired ARP entry for {}", ipAddress.getHostAddress());
 			
@@ -73,7 +74,7 @@ public class ArpCache {
 		return arpEntry.getMacAddress();
 	}
 
-	public synchronized void update(InetAddress ipAddress, MACAddress macAddress){
+	synchronized void update(InetAddress ipAddress, MACAddress macAddress){
 		ArpCacheEntry arpEntry = arpCache.get(ipAddress);
 		
 		if (arpEntry != null && arpEntry.getMacAddress().equals(macAddress)){
@@ -82,5 +83,17 @@ public class ArpCache {
 		else {
 			arpCache.put(ipAddress, new ArpCacheEntry(macAddress));
 		}
+	}
+	
+	synchronized List<String> getMappings() {
+		List<String> result = new ArrayList<String>(arpCache.size());
+		
+		for (Map.Entry<InetAddress, ArpCacheEntry> entry : arpCache.entrySet()) {
+			result.add(entry.getKey().getHostAddress() + " => " + 
+					entry.getValue().getMacAddress().toString() + 
+					(entry.getValue().isExpired()?" : EXPIRED":" : VALID"));
+		}
+		
+		return result;
 	}
 }
