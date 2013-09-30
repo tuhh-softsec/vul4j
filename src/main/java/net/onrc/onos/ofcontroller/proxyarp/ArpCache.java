@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
  * Mappings time out after a short period of time (currently 1 min). We don't
  * try and refresh the mapping before the entry times out because as a controller
  * we don't know if the mapping is still needed.
- *
  */
 
 /* TODO clean out old ARP entries out of the cache periodically. We currently 

@@ -44,6 +44,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private final static Logger log = LoggerFactory.getLogger(ProxyArpManager.class);
 	
 	private final long ARP_TIMER_PERIOD = 60000; //ms (== 1 min) 
+	
+	private static final int ARP_REQUEST_TIMEOUT = 2000; //ms
 			
 	private final IFloodlightProviderService floodlightProvider;
 	private final ITopologyService topology;
@@ -71,8 +73,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 		
 		public boolean isExpired() {
-			return (System.currentTimeMillis() - requestTime) 
-					> IProxyArpService.ARP_REQUEST_TIMEOUT;
+			return (System.currentTimeMillis() - requestTime) > ARP_REQUEST_TIMEOUT;
 		}
 		
 		public boolean shouldRetry() {
@@ -81,6 +82,23 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		
 		public void dispatchReply(InetAddress ipAddress, MACAddress replyMacAddress) {
 			requester.arpResponse(ipAddress, replyMacAddress);
+		}
+	}
+	
+	private class HostArpRequester implements IArpRequester {
+		private final ARP arpRequest;
+		private final long dpid;
+		private final short port;
+		
+		public HostArpRequester(ARP arpRequest, long dpid, short port) {
+			this.arpRequest = arpRequest;
+			this.dpid = dpid;
+			this.port = port;
+		}
+
+		@Override
+		public void arpResponse(InetAddress ipAddress, MACAddress macAddress) {
+			ProxyArpManager.this.sendArpReply(arpRequest, dpid, port, macAddress);
 		}
 	}
 	
@@ -236,7 +254,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			
 			//Record where the request came from so we know where to send the reply
 			arpRequests.put(target, new ArpRequest(
-					new HostArpRequester(this, arp, sw.getId(), pi.getInPort()), false));
+					new HostArpRequester(arp, sw.getId(), pi.getInPort()), false));
 						
 			//Flood the request out edge ports
 			sendArpRequestToSwitches(target, pi.getPacketData(), sw.getId(), pi.getInPort());
@@ -450,21 +468,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 	}
 	
-	private String inetAddressToString(byte[] bytes) {
-		try {
-			return InetAddress.getByAddress(bytes).getHostAddress();
-		} catch (UnknownHostException e) {
-			log.debug("Invalid IP address", e);
-			return "";
-		}
-	}
-	
-	/*
-	 * IProxyArpService methods
-	 */
-	
-	@Override
-	public void sendArpReply(ARP arpRequest, long dpid, short port, MACAddress targetMac) {
+	private void sendArpReply(ARP arpRequest, long dpid, short port, MACAddress targetMac) {
 		if (log.isTraceEnabled()) {
 			log.trace("Sending reply {} => {} to {}", new Object[] {
 					inetAddressToString(arpRequest.getTargetProtocolAddress()),
@@ -519,6 +523,19 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			log.error("Failure writing packet out to switch", e);
 		}
 	}
+	
+	private String inetAddressToString(byte[] bytes) {
+		try {
+			return InetAddress.getByAddress(bytes).getHostAddress();
+		} catch (UnknownHostException e) {
+			log.debug("Invalid IP address", e);
+			return "";
+		}
+	}
+	
+	/*
+	 * IProxyArpService methods
+	 */
 
 	@Override
 	public MACAddress getMacAddress(InetAddress ipAddress) {
