@@ -9,6 +9,9 @@ import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.RenderEvent;
 import org.esigate.extension.Extension;
+import org.esigate.util.Parameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This extension processes ESI directives, like :
@@ -20,6 +23,9 @@ import org.esigate.extension.Extension;
  * @author Nicolas Richeton
  */
 public class Esi implements Extension, IEventListener {
+	private static final Logger LOG = LoggerFactory.getLogger(Esi.class);
+	private static Parameter THREADS = new Parameter("esi.threads", "0");
+	int threads;
 
 	@Override
 	public boolean event(EventDefinition id, Event event) {
@@ -33,6 +39,10 @@ public class Esi implements Extension, IEventListener {
 	@Override
 	public void init(Driver driver, Properties properties) {
 		driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);
+		
+		// Load configuration
+		this.threads = THREADS.getValueInt(properties);
+		LOG.info("{}", String.valueOf(this.threads));
 	}
 
 }
