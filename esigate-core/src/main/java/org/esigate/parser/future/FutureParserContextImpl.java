@@ -13,10 +13,11 @@
  *
  */
 
-package org.esigate.parser;
+package org.esigate.parser.future;
 
 import java.io.IOException;
 import java.util.Stack;
+import java.util.concurrent.Future;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
@@ -25,28 +26,32 @@ import org.esigate.HttpErrorPage;
 /**
  * 
  * The stack of tags corresponding to the current position in the document
+ * <p>
+ * This class is based on ParserContextImpl
  * 
- * @author Francois-Xavier Bonnet
+ * @see org.esigate.parser.ParserContextImpl
+ * 
+ * 
+ * @author Nicolas Richeton
  * 
  */
-class ParserContextImpl implements ParserContext {
+class FutureParserContextImpl implements FutureParserContext {
 	private final RootAdapter root;
 	private final HttpEntityEnclosingRequest httpRequest;
 	private final HttpResponse httpResponse;
 
 	private final Stack<Pair> stack = new Stack<Pair>();
 
-	ParserContextImpl(Appendable root, HttpEntityEnclosingRequest httpRequest, HttpResponse httpResponse) {
+	FutureParserContextImpl(FutureAppendable root, HttpEntityEnclosingRequest httpRequest, HttpResponse httpResponse) {
 		this.root = new RootAdapter(root);
 		this.httpRequest = httpRequest;
 		this.httpResponse = httpResponse;
 	}
 
-	@Override
 	public <T> T findAncestor(Class<T> type) {
 		T result = null;
 		for (int i = stack.size() - 1; i > -1; i--) {
-			Element currentElement = stack.elementAt(i).element;
+			FutureElement currentElement = stack.elementAt(i).element;
 			if (type.isInstance(currentElement)) {
 				result = type.cast(currentElement);
 				break;
@@ -61,26 +66,27 @@ class ParserContextImpl implements ParserContext {
 	}
 
 	/** {@inheritDoc} */
-	@Override
-	public boolean reportError(Exception e) {
+	public boolean reportError(FutureElement el, Exception e) {
 		boolean result = false;
-		for (int i = stack.size() - 1; i > -1; i--) {
-			Element element = stack.elementAt(i).element;
-			if (element.onError(e, this)) {
+		FutureElement current = el.getParent();
+		while (current != null) {
+			if (current.onError(e, this)) {
 				result = true;
 				break;
 			}
+			current = current.getParent();
 		}
+
 		return result;
 	}
 
-	void startElement(ElementType type, Element element, String tag) throws IOException, HttpErrorPage {
+	void startElement(FutureElementType type, FutureElement element, String tag) throws IOException, HttpErrorPage {
 		element.onTagStart(tag, this);
 		stack.push(new Pair(type, element));
 	}
 
 	void endElement(String tag) throws IOException, HttpErrorPage {
-		Element element = stack.pop().element;
+		FutureElement element = stack.pop().element;
 		element.onTagEnd(tag, this);
 	}
 
@@ -89,69 +95,64 @@ class ParserContextImpl implements ParserContext {
 	}
 
 	/** Writes characters into current writer. */
-	void characters(CharSequence cs) throws IOException {
-		characters(cs, 0, cs.length());
+	void characters(Future<CharSequence> csq) throws IOException {
+		getCurrent().characters(csq);
 	}
 
-	/** Writes characters into current writer. */
-	void characters(CharSequence csq, int start, int end) throws IOException {
-		getCurrent().characters(csq, start, end);
-	}
-
-	@Override
-	public Element getCurrent() {
+	public FutureElement getCurrent() {
 		return (!stack.isEmpty()) ? stack.peek().element : root;
 	}
 
-	@Override
 	public HttpEntityEnclosingRequest getHttpRequest() {
 		return this.httpRequest;
 	}
 
 	private static class Pair {
-		private final ElementType type;
-		private final Element element;
+		private final FutureElementType type;
+		private final FutureElement element;
 
-		public Pair(ElementType type, Element element) {
-			this.type = type;
+		public Pair(FutureElementType type2, FutureElement element) {
+			this.type = type2;
 			this.element = element;
 		}
 	}
 
-	private static class RootAdapter implements Element {
-		private final Appendable root;
+	private static class RootAdapter implements FutureElement {
+		private final FutureAppendable root;
 
-		public RootAdapter(Appendable root) {
+		public RootAdapter(FutureAppendable root) {
 			this.root = root;
 		}
 
-		@Override
-		public void onTagStart(String tag, ParserContext ctx) {
+		public void onTagStart(String tag, FutureParserContext ctx) {
 			// Nothing to do, this is the root tag
 		}
 
-		@Override
-		public void onTagEnd(String tag, ParserContext ctx) {
+		public void onTagEnd(String tag, FutureParserContext ctx) {
 			// Nothing to do, this is the root tag
 		}
 
-		@Override
-		public boolean onError(Exception e, ParserContext ctx) {
+		public boolean onError(Exception e, FutureParserContext ctx) {
 			return false;
 		}
 
-		@Override
-		public void characters(CharSequence csq, int start, int end) throws IOException {
-			this.root.append(csq, start, end);
+		public void characters(Future<CharSequence> csq) throws IOException {
+			this.root.enqueueAppend(csq);
 		}
 
-		@Override
 		public boolean isClosed() {
 			return false;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.esigate.parser.future.FutureElement#getParent()
+		 */
+		public FutureElement getParent() {
+			// Root parser has no parent.
+			return null;
+		}
 	}
 
-	@Override
 	public HttpResponse getHttpResponse() {
 		return this.httpResponse;
 	}

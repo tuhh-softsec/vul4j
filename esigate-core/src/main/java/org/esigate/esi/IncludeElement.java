@@ -112,10 +112,6 @@ class IncludeElement extends BaseElement {
 
 		// write accumulated data into parent
 		ctx.getCurrent().characters(buf, 0, buf.length());
-
-		buf = null;
-		fragmentReplacements = null;
-		regexpReplacements = null;
 	}
 
 	@Override

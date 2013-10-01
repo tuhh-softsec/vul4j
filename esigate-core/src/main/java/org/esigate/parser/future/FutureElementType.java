@@ -12,16 +12,20 @@
  * limitations under the License.
  *
  */
-package org.esigate.parser;
+package org.esigate.parser.future;
 
 /**
- * An element type. There must be one Element type for each type of tags the
- * parser has to look for in the pages
+ * An element type. There must be one FutureElement type for each type of tags
+ * the parser has to look for in the pages
+ * <p>
+ * This class is based on ElementType
  * 
- * @author Francois-Xavier Bonnet
+ * @see org.esigate.parser.ElementType
+ * 
+ * @author Nicolas Richeton
  * 
  */
-public interface ElementType {
+public interface FutureElementType {
 	/**
 	 * Detects an opening tag for this element type
 	 * 
@@ -43,5 +47,5 @@ public interface ElementType {
 	/**
 	 * @return A new instance of the corresponding element class
 	 */
-	public Element newInstance();
+	public FutureElement newInstance();
 }

@@ -12,9 +12,11 @@
  * limitations under the License.
  *
  */
-package org.esigate.esi;
+package org.esigate.extension.parallelesi;
 
-import org.esigate.parser.ElementType;
+import java.util.concurrent.Future;
+
+import org.esigate.parser.future.FutureElementType;
 
 /**
  * The comment element allows developers to comment their ESI instructions, without making the comments available in the
@@ -25,8 +27,7 @@ import org.esigate.parser.ElementType;
  * 
  */
 class CommentElement extends BaseElement {
-	public final static ElementType TYPE = new BaseElementType("<esi:comment", "</esi:comment") {
-		@Override
+	public final static FutureElementType TYPE = new BaseElementType("<esi:comment", "</esi:comment") {
 		public CommentElement newInstance() {
 			return new CommentElement();
 		}
@@ -36,7 +37,7 @@ class CommentElement extends BaseElement {
 	CommentElement() { }
 
 	@Override
-	public void characters(CharSequence csq, int start, int end) {
+	public void characters(Future<CharSequence> csq) {
 		// ignore element body
 	}
 }

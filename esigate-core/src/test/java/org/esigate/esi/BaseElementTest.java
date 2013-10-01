@@ -23,21 +23,10 @@ import org.esigate.parser.Element;
 import org.esigate.parser.ParserContext;
 
 public class BaseElementTest extends TestCase {
-	private BaseElement tested;
-
-	@Override
-	public void setUp() {
-		tested = new MockBaseElement();
-	}
-
-	@Override
-	public void tearDown() {
-		tested = null;
-	}
 
 	public void testOnTagStart() throws Exception {
 		final Tag parsed[] = new Tag[1];
-		tested = new MockBaseElement() {
+		BaseElement tested = new MockBaseElement() {
 			@Override
 			protected void parseTag(Tag tag, ParserContext ctx) {
 				parsed[0] = tag;
@@ -71,13 +60,13 @@ public class BaseElementTest extends TestCase {
 		assertEquals("value", parsed[0].getAttribute("name"));
 	}
 
-	private static class MockBaseElement extends BaseElement {
+	protected static class MockBaseElement extends BaseElement {
 		public MockBaseElement() {
 		}
 
 	}
 
-	private static class MockParserContext implements ParserContext {
+	protected static class MockParserContext implements ParserContext {
 		@Override
 		public HttpEntityEnclosingRequest getHttpRequest() {
 			return null;

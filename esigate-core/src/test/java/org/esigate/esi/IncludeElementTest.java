@@ -50,6 +50,27 @@ public class IncludeElementTest extends TestCase {
 		tested.render(request, page, out);
 		assertEquals("before test after", out.toString());
 	}
+	
+	public void testIncludeProvider10() throws IOException, HttpErrorPage {
+		int nb = 10;
+		
+		String page = "before ";
+		for( int i = 0; i < nb; i ++ ){
+			page = page+"<esi:include src=\"$(PROVIDER{mock})/test\" />";
+		}
+		page =page+ " after";
+		
+		StringWriter out = new StringWriter();
+		tested.render(request, page, out);
+		
+		String result = "before ";
+		for( int i = 0; i < nb; i ++ ){
+			result = result+"test";
+		}
+		result =result+ " after";
+		assertEquals(result, out.toString());
+	}
+	
 
 	public void testIncludeProviderLegacy() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$PROVIDER({mock})/test\" /> after";

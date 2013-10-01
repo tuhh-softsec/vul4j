@@ -12,9 +12,11 @@
  * limitations under the License.
  *
  */
-package org.esigate.esi;
+package org.esigate.extension.parallelesi;
 
-import org.esigate.parser.ElementType;
+import java.util.concurrent.Future;
+
+import org.esigate.parser.future.FutureElementType;
 
 /**
  * <p>
@@ -53,8 +55,7 @@ import org.esigate.parser.ElementType;
  * 
  */
 class RemoveElement extends BaseElement {
-	public final static ElementType TYPE = new BaseElementType("<esi:remove", "</esi:remove") {
-		@Override
+	public final static FutureElementType TYPE = new BaseElementType("<esi:remove", "</esi:remove") {
 		public RemoveElement newInstance() {
 			return new RemoveElement();
 		}
@@ -64,7 +65,7 @@ class RemoveElement extends BaseElement {
 	RemoveElement() { }
 
 	@Override
-	public void characters(CharSequence csq, int start, int end) {
+	public void characters(Future<CharSequence> csq) {
 		// ignore element body
 	}
 }

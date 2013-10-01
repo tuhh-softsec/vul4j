@@ -12,55 +12,53 @@
  * limitations under the License.
  *
  */
-package org.esigate.esi;
+package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.parser.Element;
-import org.esigate.parser.ParserContext;
+import org.esigate.parser.future.FutureElement;
+import org.esigate.parser.future.FutureParserContext;
 
-abstract class BaseElement implements Element {
+abstract class BaseElement implements FutureElement {
 	private boolean closed = false;
-	private Element parent = null;
+	private FutureElement parent = null;
 
 	protected BaseElement() {
 	}
 
 	/** Additional tag initialization callback. */
 	@SuppressWarnings("unused")
-	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+	protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
 		// Default implementation does nothing
 	}
 
-	@Override
 	public boolean isClosed() {
-		return closed;
+		return this.closed;
 	}
 
-	@Override
-	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+	public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
 		Tag tagObj = Tag.create(tag);
-		closed = tagObj.isOpenClosed();
-		parent = ctx.getCurrent();
+		this.closed = tagObj.isOpenClosed();
+		this.parent = ctx.getCurrent();
 		parseTag(tagObj, ctx);
 	}
 
-	@Override
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+		// Empty, implementation can customize this method with tag logic
 	}
 
-	@Override
-	public boolean onError(Exception e, ParserContext ctx) {
+	public boolean onError(Exception e, FutureParserContext ctx) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.esigate.parser.Element#characters(java.lang.CharSequence, int, int)
-	 */
-	@Override
-	public void characters(CharSequence csq, int start, int end) throws IOException {
-		parent.characters(csq, start, end);
+	public void characters(Future<CharSequence> csq) throws IOException {
+		this.parent.characters(csq);
+	}
+
+	public FutureElement getParent() {
+		return this.parent;
 	}
 
 }

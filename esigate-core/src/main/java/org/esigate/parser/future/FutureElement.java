@@ -12,19 +12,24 @@
  * limitations under the License.
  *
  */
-package org.esigate.parser;
+package org.esigate.parser.future;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 
 import org.esigate.HttpErrorPage;
 
 /**
  * An element represents a tag inside a document.
  * 
- * @author Francois-Xavier Bonnet
+ * <p>
+ * This class is based on Element
+ * 
+ * @see org.esigate.parser.Element
+ * @author Nicolas Richeton
  * 
  */
-public interface Element {
+public interface FutureElement {
 	/**
 	 * Method called by the parser when it finds an opening tag
 	 * 
@@ -35,7 +40,7 @@ public interface Element {
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
-	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage;
+	public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage;
 
 	/**
 	 * Method called by the parser when it finds the matching closing tag
@@ -46,7 +51,7 @@ public interface Element {
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage;
+	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage;
 
 	/**
 	 * @param e
@@ -54,27 +59,27 @@ public interface Element {
 	 * @return <code>true</code> if error has been handled by this element and
 	 *         it should not be propagated further.
 	 */
-	public boolean onError(Exception e, ParserContext ctx);
+	public boolean onError(Exception e, FutureParserContext ctx);
 
 	/**
 	 * Method called by the parser when it finds characters between starting and
 	 * closing tags.
 	 * 
 	 * @param csq
-	 *            the {@link CharSequence} to append
-	 * @param start
-	 *            the start index in the {@link CharSequence}. Allows to append
-	 *            only a subset of the {@link CharSequence}.
-	 * @param end
-	 *            the end index in the {@link CharSequence}. Allows to append
-	 *            only a subset of the {@link CharSequence}.
 	 * @throws IOException
 	 */
-	void characters(CharSequence csq, int start, int end) throws IOException;
+	void characters(Future<CharSequence> csq) throws IOException;
 
 	/**
 	 * @return Returns true if the tag is already closed, that means that it
 	 *         does not need a matching closing tag. Ex: &lt;br /&gt;
 	 */
-	public boolean isClosed();
+	boolean isClosed();
+
+	/**
+	 * Get the parent element of this element.
+	 * 
+	 * @return the parent Element or null if this item is the Root element.
+	 */
+	FutureElement getParent();
 }

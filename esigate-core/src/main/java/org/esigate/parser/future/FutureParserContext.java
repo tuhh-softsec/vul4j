@@ -13,7 +13,7 @@
  *
  */
 
-package org.esigate.parser;
+package org.esigate.parser.future;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
@@ -21,10 +21,14 @@ import org.apache.http.HttpResponse;
 
 /**
  * The current context used during parsing.
+ * <p>
+ * This class is based on ParserContext
  * 
- * @author Francois-Xavier Bonnet
+ * @see org.esigate.parser.ParserContext
+ * @author Nicolas Richeton
+ * 
  */
-public interface ParserContext {
+public interface FutureParserContext {
 
 	/** @return {@linkplain HttpRequest} associated with current processing. */
 	HttpEntityEnclosingRequest getHttpRequest();
@@ -37,9 +41,9 @@ public interface ParserContext {
 	 * @return <code>true</code> if error has been handled by this element and
 	 *         it should not be propagated further.
 	 */
-	boolean reportError(Exception e);
+	boolean reportError(FutureElement element, Exception e);
 
-	Element getCurrent();
+	FutureElement getCurrent();
 
 	<T> T findAncestor(Class<T> type);
 }

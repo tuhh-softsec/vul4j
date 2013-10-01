@@ -12,15 +12,14 @@
  * limitations under the License.
  *
  */
-package org.esigate.esi;
+package org.esigate.extension.parallelesi;
 
-import org.esigate.parser.ElementType;
-import org.esigate.parser.ParserContext;
+import org.esigate.parser.future.FutureElementType;
+import org.esigate.parser.future.FutureParserContext;
 
 class ChooseElement extends BaseElement {
 
-	public final static ElementType TYPE = new BaseElementType("<esi:choose", "</esi:choose") {
-		@Override
+	public final static FutureElementType TYPE = new BaseElementType("<esi:choose", "</esi:choose") {
 		public ChooseElement newInstance() {
 			return new ChooseElement();
 		}
@@ -30,10 +29,11 @@ class ChooseElement extends BaseElement {
 	private boolean condition;
 	private boolean hasConditionSet;
 
-	ChooseElement() { }
+	ChooseElement() {
+	}
 
 	@Override
-	protected void parseTag(Tag tag, ParserContext ctx) {
+	protected void parseTag(Tag tag, FutureParserContext ctx) {
 		condition = false;
 		hasConditionSet = false;
 	}
@@ -48,7 +48,8 @@ class ChooseElement extends BaseElement {
 
 	public void setCondition(boolean condition) {
 		this.condition = condition;
-		this.hasConditionSet |= condition; // set to true if anyone of conditions are true
+		this.hasConditionSet |= condition; // set to true if anyone of
+											// conditions are true
 	}
 
 }

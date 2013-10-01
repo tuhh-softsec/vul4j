@@ -12,11 +12,11 @@
  * limitations under the License.
  *
  */
-package org.esigate.esi;
+package org.esigate.extension.parallelesi;
 
-import org.esigate.parser.ElementType;
+import org.esigate.parser.future.FutureElementType;
 
-abstract class BaseElementType implements ElementType {
+abstract class BaseElementType implements FutureElementType {
 	private final String startTag;
 	private final String endTag;
 
@@ -25,14 +25,12 @@ abstract class BaseElementType implements ElementType {
 		this.endTag = endTag;
 	}
 
-	@Override
 	public final boolean isStartTag(String tag) {
-		return tag.startsWith(startTag);
+		return tag.startsWith(this.startTag);
 	}
 
-	@Override
 	public final boolean isEndTag(String tag) {
-		return tag.startsWith(endTag);
+		return tag.startsWith(this.endTag);
 	}
 
 }

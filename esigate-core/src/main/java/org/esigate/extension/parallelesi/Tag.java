@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.esigate.esi;
+package org.esigate.extension.parallelesi;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -13,13 +13,18 @@
  *
  */
 
-package org.esigate.esi;
+package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.parser.ElementType;
-import org.esigate.parser.ParserContext;
+import org.esigate.esi.EsiSyntaxError;
+import org.esigate.parser.future.CharSequenceFuture;
+import org.esigate.parser.future.FutureElementType;
+import org.esigate.parser.future.FutureParserContext;
+import org.esigate.parser.future.StringBuilderFutureAppendable;
 import org.esigate.vars.VariablesResolver;
 
 /**
@@ -29,41 +34,50 @@ import org.esigate.vars.VariablesResolver;
  */
 class ReplaceElement extends BaseElement {
 
-	public final static ElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
-		@Override
+	public final static FutureElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
 		public ReplaceElement newInstance() {
 			return new ReplaceElement();
 		}
 
 	};
 
-	private StringBuilder buf = null;
+	private StringBuilderFutureAppendable buf = null;
 	private String fragment;
 	private String regexp;
 
 	@Override
-	public void characters(CharSequence csq, int start, int end) {
-		buf.append(csq, start, end);
+	public void characters(Future<CharSequence> csq) throws IOException {
+		buf.enqueueAppend(csq);
 	}
 
 	@Override
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
 		IncludeElement parent = ctx.findAncestor(IncludeElement.class);
 		if (parent == null)
 			throw new EsiSyntaxError("<esi:replace> tag can only be used inside an <esi:include> tag");
-		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
+		String result;
+		try {
+			result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
+		} catch (InterruptedException e) {
+			throw new IOException(e);
+		} catch (ExecutionException e) {
+			if( e.getCause() instanceof HttpErrorPage ) {
+				throw (HttpErrorPage)e.getCause();
+			}
+			throw new IOException(e);
+		}
 		if (fragment != null) {
 			parent.addFragmentReplacement(fragment, (CharSequence) result);
 		} else if (regexp != null) {
 			parent.addRegexpReplacement(regexp, (CharSequence) result);
 		} else {
-			parent.characters(result, 0, result.length());
+			parent.characters(new CharSequenceFuture(result));
 		}
 	}
 
 	@Override
-	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		buf = new StringBuilder();
+	protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+		buf = new StringBuilderFutureAppendable();
 		fragment = tag.getAttribute("fragment");
 		regexp = tag.getAttribute("regexp");
 		if (regexp == null)

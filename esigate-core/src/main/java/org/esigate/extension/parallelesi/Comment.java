@@ -12,13 +12,13 @@
  * limitations under the License.
  *
  */
-package org.esigate.esi;
+package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.parser.ElementType;
-import org.esigate.parser.ParserContext;
+import org.esigate.parser.future.FutureElementType;
+import org.esigate.parser.future.FutureParserContext;
 
 /**
  * This is a special construct to allow HTML marked up with ESI to render without processing. ESI Processors will remove
@@ -30,8 +30,7 @@ import org.esigate.parser.ParserContext;
  * 
  */
 class Comment extends BaseElement {
-	public final static ElementType TYPE = new BaseElementType("<!--esi", "-->") {
-		@Override
+	public final static FutureElementType TYPE = new BaseElementType("<!--esi", "-->") {
 		public Comment newInstance() {
 			return new Comment();
 		}
@@ -41,7 +40,7 @@ class Comment extends BaseElement {
 	Comment() { }
 
 	@Override
-	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+	public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
 		// do not try to parse tag string
 		super.onTagStart("<esi!-->", ctx);
 	}
