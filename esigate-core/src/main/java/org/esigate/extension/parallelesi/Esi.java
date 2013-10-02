@@ -1,6 +1,8 @@
 package org.esigate.extension.parallelesi;
 
 import java.util.Properties;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.esigate.Driver;
 import org.esigate.events.Event;
@@ -24,13 +26,14 @@ import org.slf4j.LoggerFactory;
  */
 public class Esi implements Extension, IEventListener {
 	private static final Logger LOG = LoggerFactory.getLogger(Esi.class);
-	private static Parameter THREADS = new Parameter("esi.threads", "0");
-	int threads;
+	private static Parameter THREADS = new Parameter("esi_threads", "0");
+	private int threads;
+	private Executor executor;
 
 	@Override
 	public boolean event(EventDefinition id, Event event) {
 		RenderEvent renderEvent = (RenderEvent) event;
-		renderEvent.renderers.add(new EsiRenderer());
+		renderEvent.renderers.add(new EsiRenderer(this.executor));
 
 		// Continue processing
 		return true;
@@ -39,10 +42,17 @@ public class Esi implements Extension, IEventListener {
 	@Override
 	public void init(Driver driver, Properties properties) {
 		driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);
-		
+
 		// Load configuration
 		this.threads = THREADS.getValueInt(properties);
-		LOG.info("{}", String.valueOf(this.threads));
+		if (this.threads == 0) {
+			this.executor = null;
+			LOG.info("Linear ESI processing enabled.");
+		} else {
+			this.executor = Executors.newFixedThreadPool(this.threads);
+			LOG.info("Multi-threaded ESI processing using {} thread(s) enabled.", String.valueOf(this.threads));
+		}
+
 	}
 
 }

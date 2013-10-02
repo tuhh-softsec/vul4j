@@ -17,6 +17,7 @@ package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
@@ -35,7 +36,7 @@ public class ReplaceElementTest extends TestCase {
 	protected void setUp() throws IOException, HttpErrorPage {
 		MockDriver provider = new MockDriver("mock");
 		request = TestUtils.createRequest();
-		tested = new EsiRenderer();
+		tested = new EsiRenderer(Executors.newCachedThreadPool());
 		provider.initHttpRequestParams(request, null);
 	}
 

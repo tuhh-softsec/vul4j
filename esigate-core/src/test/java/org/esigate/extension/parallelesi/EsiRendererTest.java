@@ -16,6 +16,7 @@
 package org.esigate.extension.parallelesi;
 
 import java.io.StringWriter;
+import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
@@ -32,7 +33,7 @@ public class EsiRendererTest extends TestCase {
 	protected void setUp() throws Exception {
 		Driver provider = new MockDriver();
 		request = TestUtils.createRequest();
-		tested = new EsiRenderer();
+		tested = new EsiRenderer(Executors.newCachedThreadPool());
 		provider.initHttpRequestParams(request, null);
 	}
 

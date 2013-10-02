@@ -56,22 +56,27 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
 		this.futureBuilder = new FutureAppendableAdapter(this.builder);
 	}
 
+	@Override
 	public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
 		return this.futureBuilder.enqueueAppend(csq);
 	}
 
+	@Override
 	public FutureAppendable performAppends() throws IOException, HttpErrorPage {
 		return this.futureBuilder.performAppends();
 	}
 
+	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
 		return false;
 	}
 
+	@Override
 	public boolean isCancelled() {
 		return false;
 	}
 
+	@Override
 	public boolean isDone() {
 		return this.futureBuilder.hasPending();
 	}
@@ -81,6 +86,7 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
 	 * 
 	 * @see java.util.concurrent.Future#get()
 	 */
+	@Override
 	public CharSequence get() throws InterruptedException, ExecutionException {
 		try {
 			this.futureBuilder.performAppends();
@@ -97,6 +103,7 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
 	 * 
 	 * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
 	 */
+	@Override
 	public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
 			TimeoutException {
 		try {
@@ -114,6 +121,7 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
 	 * 
 	 * @see org.esigate.parser.future.FutureAppendable#hasPending()
 	 */
+	@Override
 	public boolean hasPending() {
 		return this.futureBuilder.hasPending();
 	}
@@ -124,6 +132,7 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
 	 * @see org.esigate.parser.future.FutureAppendable#performAppends(int,
 	 * java.util.concurrent.TimeUnit)
 	 */
+	@Override
 	public FutureAppendable performAppends(int timeout, TimeUnit unit) throws IOException, HttpErrorPage,
 			TimeoutException {
 		return this.futureBuilder.performAppends(timeout, unit);

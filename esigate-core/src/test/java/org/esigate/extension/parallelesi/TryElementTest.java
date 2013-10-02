@@ -16,6 +16,7 @@ package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
@@ -39,7 +40,7 @@ public class TryElementTest extends TestCase {
 		provider.addResource("http://www.foo.com/testWithoutFragment", "no fragment here");
 		request = TestUtils.createRequest();
 		provider.initHttpRequestParams(request, null);
-		tested = new EsiRenderer();
+		tested = new EsiRenderer(Executors.newCachedThreadPool());
 	}
 
 	public void testTry() throws IOException, HttpErrorPage {

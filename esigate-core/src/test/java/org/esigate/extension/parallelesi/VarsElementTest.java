@@ -17,6 +17,7 @@ package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
@@ -39,7 +40,7 @@ public class VarsElementTest extends TestCase {
 
 		request = TestUtils.createRequest();
 		provider.initHttpRequestParams(request, null);
-		tested = new EsiRenderer();
+		tested = new EsiRenderer(Executors.newCachedThreadPool());
 	}
 
 	public void testHttpHost() throws IOException, HttpErrorPage {

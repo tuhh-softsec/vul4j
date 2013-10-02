@@ -16,6 +16,8 @@
 package org.esigate.parser.future;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +41,7 @@ public class FutureParser {
 	private final FutureElementType[] elementTypes;
 	private HttpEntityEnclosingRequest httpRequest;
 	private HttpResponse httpResponse;
+	private Map<String, Object> data = null;
 
 	/**
 	 * Creates a Parser with a given regular expression pattern and
@@ -65,7 +68,7 @@ public class FutureParser {
 	 * @throws HttpErrorPage
 	 */
 	public void parse(CharSequence in, FutureAppendable out) throws IOException, HttpErrorPage {
-		FutureParserContextImpl ctx = new FutureParserContextImpl(out, this.httpRequest, this.httpResponse);
+		FutureParserContextImpl ctx = new FutureParserContextImpl(out, this.httpRequest, this.httpResponse, this.data);
 		Matcher matcher = this.pattern.matcher(in);
 		int currentPosition = 0;
 		while (matcher.find()) {
@@ -105,6 +108,14 @@ public class FutureParser {
 
 	public void setHttpRequest(HttpEntityEnclosingRequest httpRequest) {
 		this.httpRequest = httpRequest;
+	}
+
+	public void setData(String key, Object o) {
+		if (this.data == null) {
+			this.data = new HashMap<String, Object>();
+		}
+
+		this.data.put(key, o);
 	}
 
 }

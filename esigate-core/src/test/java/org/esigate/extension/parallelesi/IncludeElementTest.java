@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
@@ -41,7 +42,7 @@ public class IncludeElementTest extends TestCase {
 		provider.addResource("http://www.foo.com/test", "test");
 		request = TestUtils.createRequest();
 		provider.initHttpRequestParams(request, null);
-		tested = new EsiRenderer();
+		tested = new EsiRenderer(Executors.newCachedThreadPool());
 	}
 
 	public void testIncludeProvider() throws IOException, HttpErrorPage {
@@ -132,6 +133,11 @@ public class IncludeElementTest extends TestCase {
 	}
 
 	public void testIncludeInlineElement() throws IOException, HttpErrorPage {
+		
+		// Inline caching behavior is unspecified if using multi-threading. 
+		// Forcing single-thread processing.
+		EsiRenderer tested = tested = new EsiRenderer(null);
+		
 		String page = "before <esi:include src='$(PROVIDER{mock})/inline-cache' /> middle "
 				+ "<esi:inline name='$(PROVIDER{mock})/inline-cache' fetchable='false'>---inline cache item---</esi:inline>" + "<esi:include src='$(PROVIDER{mock})/inline-cache' /> after";
 		provider.addResource("/inline-cache", "---fetched inline cache item---");

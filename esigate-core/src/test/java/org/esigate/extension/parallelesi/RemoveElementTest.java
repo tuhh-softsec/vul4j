@@ -17,6 +17,7 @@ package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
@@ -38,7 +39,7 @@ public class RemoveElementTest extends TestCase {
 
 	public void testRemove() throws IOException, HttpErrorPage {
 		String page = "begin <esi:remove>some text to be removed</esi:remove> end";
-		EsiRenderer tested = new EsiRenderer();
+		EsiRenderer tested = new EsiRenderer(Executors.newCachedThreadPool());
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals("begin  end", out.toString());

@@ -24,10 +24,9 @@ import org.esigate.parser.future.FutureParserContext;
 
 public class BaseElementTest extends TestCase {
 
-
 	public void testOnTagStart() throws Exception {
 		final Tag parsed[] = new Tag[1];
-		BaseElement	tested = new MockBaseElement() {
+		BaseElement tested = new MockBaseElement() {
 			@Override
 			protected void parseTag(Tag tag, FutureParserContext ctx) {
 				parsed[0] = tag;
@@ -68,26 +67,34 @@ public class BaseElementTest extends TestCase {
 	}
 
 	protected static class MockFutureParserContext implements FutureParserContext {
+		@Override
 		public HttpEntityEnclosingRequest getHttpRequest() {
 			return null;
 		}
 
-		
-
+		@Override
 		public FutureElement getCurrent() {
 			return null;
 		}
 
+		@Override
 		public <T> T findAncestor(Class<T> type) {
 			return null;
 		}
 
+		@Override
 		public HttpResponse getHttpResponse() {
 			return null;
 		}
 
+		@Override
 		public boolean reportError(FutureElement element, Exception e) {
 			return false;
+		}
+
+		@Override
+		public Object getData(String key) {
+			return null;
 		}
 	}
 }

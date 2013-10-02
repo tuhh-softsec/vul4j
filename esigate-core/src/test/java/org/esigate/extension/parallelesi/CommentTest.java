@@ -17,6 +17,7 @@ package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
@@ -36,7 +37,7 @@ public class CommentTest extends TestCase {
 	protected void setUp() throws Exception {
 		Driver provider = new MockDriver();
 		request = TestUtils.createRequest();
-		tested = new EsiRenderer();
+		tested = new EsiRenderer(Executors.newCachedThreadPool());
 		provider.initHttpRequestParams(request, null);
 		MockDriver provider1 = new MockDriver("provider1");
 		provider1.addResource("/test", "replacement");

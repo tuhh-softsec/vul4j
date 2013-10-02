@@ -46,4 +46,15 @@ public interface FutureParserContext {
 	FutureElement getCurrent();
 
 	<T> T findAncestor(Class<T> type);
+
+
+
+	/**
+	 * Allow to get custom context data.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	Object getData(String key);
+
 }

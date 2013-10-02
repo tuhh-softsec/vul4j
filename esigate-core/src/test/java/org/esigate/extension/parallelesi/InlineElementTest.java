@@ -17,6 +17,7 @@ package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
@@ -40,7 +41,7 @@ public class InlineElementTest extends TestCase {
 
 	public void testInlineElement() throws IOException, HttpErrorPage {
 		String page = "begin <esi:inline name=\"someUri\" fetchable=\"yes\">inside inline</esi:inline>end";
-		EsiRenderer tested = new EsiRenderer();
+		EsiRenderer tested = new EsiRenderer(Executors.newCachedThreadPool());
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals("begin end", out.toString());

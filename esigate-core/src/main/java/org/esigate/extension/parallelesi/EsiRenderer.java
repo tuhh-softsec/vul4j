@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -50,6 +51,7 @@ import org.slf4j.LoggerFactory;
 public class EsiRenderer implements Renderer, FutureAppendable {
 
 	private final static Logger LOG = LoggerFactory.getLogger(EsiRenderer.class);
+	public final static String DATA_EXECUTOR = "executor";
 
 	private final static Pattern PATTERN = Pattern
 			.compile("(<esi:\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)/?>)|(</esi:[^>]*>)");
@@ -74,6 +76,8 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 
 	private FutureAppendableAdapter futureOut;
 
+	private Executor executor;
+
 	public String getName() {
 		return name;
 	}
@@ -84,10 +88,15 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 
 	/**
 	 * Constructor used to render a complete page
+	 * 
+	 * @param executor
+	 *            Executor to use for background operations or null if
+	 *            single-thread operations.
 	 */
-	public EsiRenderer() {
-		page = null;
-		name = null;
+	public EsiRenderer(Executor executor) {
+		this.page = null;
+		this.name = null;
+		this.executor = executor;
 	}
 
 	/**
@@ -98,11 +107,15 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 	 * 
 	 * @param page
 	 * @param name
+	 * @param executor
+	 *            Executor to use for background operations or null if
+	 *            single-thread operations.
 	 */
-	public EsiRenderer(String page, String name) {
+	public EsiRenderer(String page, String name, Executor executor) {
 		this.page = page;
 		this.name = name;
-		write = false;
+		this.write = false;
+		this.executor = executor;
 	}
 
 	public Map<String, CharSequence> getFragmentsToReplace() {
@@ -127,6 +140,7 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 			// Pass 1. Remove esi comments
 			StringBuilderFutureAppendable contentWithoutComments = new StringBuilderFutureAppendable();
 			parserComments.setHttpRequest(originalRequest);
+			parserComments.setData(DATA_EXECUTOR, this.executor);
 			parserComments.parse(content, contentWithoutComments);
 			CharSequence contentWithoutCommentsResult;
 
@@ -134,6 +148,7 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 
 			// Pass 2. Process ESI
 			parser.setHttpRequest(originalRequest);
+			parserComments.setData(DATA_EXECUTOR, this.executor);
 			parser.parse(contentWithoutCommentsResult, this);
 
 			if (name != null && this.found == false) {

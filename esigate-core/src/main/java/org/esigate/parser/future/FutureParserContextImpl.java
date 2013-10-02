@@ -16,6 +16,7 @@
 package org.esigate.parser.future;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.Future;
 
@@ -41,13 +42,16 @@ class FutureParserContextImpl implements FutureParserContext {
 	private final HttpResponse httpResponse;
 
 	private final Stack<Pair> stack = new Stack<Pair>();
+	private Map<String, Object> data ;
 
-	FutureParserContextImpl(FutureAppendable root, HttpEntityEnclosingRequest httpRequest, HttpResponse httpResponse) {
+	FutureParserContextImpl(FutureAppendable root, HttpEntityEnclosingRequest httpRequest, HttpResponse httpResponse, Map<String,Object> data) {
 		this.root = new RootAdapter(root);
 		this.httpRequest = httpRequest;
 		this.httpResponse = httpResponse;
+		this.data = data;
 	}
 
+	@Override
 	public <T> T findAncestor(Class<T> type) {
 		T result = null;
 		for (int i = stack.size() - 1; i > -1; i--) {
@@ -66,6 +70,7 @@ class FutureParserContextImpl implements FutureParserContext {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean reportError(FutureElement el, Exception e) {
 		boolean result = false;
 		FutureElement current = el.getParent();
@@ -99,10 +104,12 @@ class FutureParserContextImpl implements FutureParserContext {
 		getCurrent().characters(csq);
 	}
 
+	@Override
 	public FutureElement getCurrent() {
 		return (!stack.isEmpty()) ? stack.peek().element : root;
 	}
 
+	@Override
 	public HttpEntityEnclosingRequest getHttpRequest() {
 		return this.httpRequest;
 	}
@@ -124,36 +131,50 @@ class FutureParserContextImpl implements FutureParserContext {
 			this.root = root;
 		}
 
+		@Override
 		public void onTagStart(String tag, FutureParserContext ctx) {
 			// Nothing to do, this is the root tag
 		}
 
+		@Override
 		public void onTagEnd(String tag, FutureParserContext ctx) {
 			// Nothing to do, this is the root tag
 		}
 
+		@Override
 		public boolean onError(Exception e, FutureParserContext ctx) {
 			return false;
 		}
 
+		@Override
 		public void characters(Future<CharSequence> csq) throws IOException {
 			this.root.enqueueAppend(csq);
 		}
 
+		@Override
 		public boolean isClosed() {
 			return false;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.esigate.parser.future.FutureElement#getParent()
 		 */
+		@Override
 		public FutureElement getParent() {
 			// Root parser has no parent.
 			return null;
 		}
 	}
 
+	@Override
 	public HttpResponse getHttpResponse() {
 		return this.httpResponse;
+	}
+
+	@Override
+	public Object getData(String key) {
+		return this.data == null ? null : this.data.get(key);
 	}
 }
