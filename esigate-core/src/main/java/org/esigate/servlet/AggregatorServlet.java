@@ -38,4 +38,5 @@ package org.esigate.servlet;
 @Deprecated
 public class AggregatorServlet extends ProxyServlet {
 	// This is now the same exact class than ProxyServlet
+	private static final long serialVersionUID = 1L;
 }
