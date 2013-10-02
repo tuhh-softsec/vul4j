@@ -650,10 +650,10 @@ someUrl=/cms/article123
 			<td>fragment</td>
 			<td>Name of the fragment to retrieve</td>
 			<td>&lt;esi:include src="URI" fragment="NAME" /&gt;</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			<td>Yes</td>
-			<td>No</td>
-			<td>No</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -663,7 +663,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -675,7 +675,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -684,10 +684,10 @@ someUrl=/cms/article123
 			them with the current URL of the page</td>
 			<td>&lt;esi:include src="URI" rewriteabsoluteurl="true"
 			/&gt;</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			<td>Yes</td>
-			<td>No</td>
-			<td>No</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -697,30 +697,30 @@ someUrl=/cms/article123
 			resource and only if not found, on the remote server)</td>
 			<td>&lt;esi:include src="a.html"
 			stylesheet="s.xsl"&gt;...&lt;/esi:include&gt;</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			<td>Yes</td>
-			<td>Yes (different)</td>
-			<td>No</td>
+			<td>Yes</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
 			<td>xpath</td>
 			<td>xpath expression to retrieve</td>
 			<td>&lt;esi:include src="..." xpath="..." /&gt;</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			<td>Yes</td>
-			<td>No</td>
-			<td>No</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:replace&gt;</td>
 			<td></td>
 			<td>Replace some part of the included ressource</td>
 			<td></td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			<td>Yes</td>
-			<td>No</td>
-			<td>No</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -728,10 +728,10 @@ someUrl=/cms/article123
 			<td>Name of the fragment to replace</td>
 			<td>&lt;esi:replace
 			fragment="NAME"&gt;...&lt;/esi:replace&gt;</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			<td>Yes</td>
-			<td>No</td>
-			<td>No</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -740,30 +740,30 @@ someUrl=/cms/article123
 			</td>
 			<td>&lt;esi:replace
 			expression="$(HTTP_HOST)"&gt;www.my_host.com&lt;/esi:replace&gt;</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			<td>yes</td>
-			<td>No</td>
-			<td>No</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:fragment&gt;</td>
 			<td></td>
 			<td>Delimits a fragment</td>
 			<td>&lt;esi:fragment name="my_fragment"/&gt;</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			<td>Yes</td>
-			<td>No</td>
-			<td>No</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
 			<td>name</td>
 			<td>name of the fragment</td>
 			<td></td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			<td>Yes</td>
-			<td>No</td>
-			<td>No</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:try&gt;</td>
@@ -776,7 +776,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:attempt&gt;</td>
@@ -786,7 +786,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:except&gt;</td>
@@ -797,7 +797,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -807,7 +807,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:choose&gt;</td>
@@ -819,7 +819,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:when&gt;</td>
@@ -829,7 +829,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -839,7 +839,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:otherwise&gt;</td>
@@ -850,7 +850,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:inline&gt;</td>
@@ -862,7 +862,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -872,7 +872,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td></td>
@@ -883,7 +883,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:comment&gt;</td>
@@ -893,7 +893,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			<tr>
 			<td>&lt;esi:remove&gt;</td>
@@ -926,7 +926,7 @@ someUrl=/cms/article123
 			<td>Yes</td>
 			<td>Yes</td>
 			<td>Yes</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			
 			</tr>
 			</table>
@@ -1008,7 +1008,7 @@ someUrl=/cms/article123
 			<td>PROVIDER</td>
 			<td>dictionary</td>
 			<td>http://provider.com</td>
-			<td>No</td>
+			<td>&nbsp;</td>
 			</tr>
 			</table>
 			<p>
