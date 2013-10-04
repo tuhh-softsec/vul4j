@@ -128,6 +128,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		Map<Long, IOFSwitch> mySwitches =
 		    floodlightProvider.getSwitches();
 		if (mySwitches.isEmpty()) {
+			log.debug("No switches controlled");
 			return;
 		}
 		LinkedList<IFlowEntry> addFlowEntries =
@@ -271,6 +272,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		Map<Long, IOFSwitch> mySwitches =
 		    floodlightProvider.getSwitches();
 		if (mySwitches.isEmpty()) {
+			log.debug("No switches controlled");
 			return;
 		}
 		LinkedList<IFlowPath> deleteFlows = new LinkedList<IFlowPath>();
