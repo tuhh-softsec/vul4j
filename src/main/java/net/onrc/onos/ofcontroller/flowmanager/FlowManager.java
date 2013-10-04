@@ -127,6 +127,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		}
 		Map<Long, IOFSwitch> mySwitches =
 		    floodlightProvider.getSwitches();
+		if (mySwitches.isEmpty()) {
+			return;
+		}
 		LinkedList<IFlowEntry> addFlowEntries =
 		    new LinkedList<IFlowEntry>();
 		LinkedList<IFlowEntry> deleteFlowEntries =
@@ -267,6 +270,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		}
 		Map<Long, IOFSwitch> mySwitches =
 		    floodlightProvider.getSwitches();
+		if (mySwitches.isEmpty()) {
+			return;
+		}
 		LinkedList<IFlowPath> deleteFlows = new LinkedList<IFlowPath>();
 
 		boolean processed_measurement_flow = false;
