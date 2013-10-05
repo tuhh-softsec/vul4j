@@ -349,7 +349,7 @@ public class ZipOutputStream
                 deflate();
             }
 
-            entry.setSize( def.getTotalIn() );
+            entry.setSize( def.getBytesRead() );
             entry.setComprSize( def.getTotalOut() );
             entry.setCrc( realCrc );
 
