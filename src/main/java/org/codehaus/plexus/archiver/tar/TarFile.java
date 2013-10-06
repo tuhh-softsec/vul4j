@@ -9,13 +9,15 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.codehaus.plexus.archiver.ArchiveFile;
 
 
 /**
  * <p>Implementation of {@link ArchiveFile} for tar files.</p>
  * <p>Compared to
- * {@link ZipFile}, this one should be used with some care, due to the
+ * {@link org.apache.commons.compress.archivers.zip.ZipFile}, this one should be used with some care, due to the
  * nature of a tar file: While a zip file contains a catalog, a tar
  * file does not. In other words, the only way to read a tar file in
  * a performant manner is by iterating over it from the beginning to
@@ -23,9 +25,9 @@ import org.codehaus.plexus.archiver.ArchiveFile;
  * then you force to skip entries, until the requested entry is found.
  * This may require to reread the entire file!</p>
  * <p>In other words, the recommended use of this class is to use
- * {@link #getEntries()} and invoke {@link #getInputStream(TarEntry)}
+ * {@link #getEntries()} and invoke {@link #getInputStream(TarArchiveEntry)}
  * only for the current entry. Basically, this is to handle it like
- * {@link TarInputStream}.</p>
+ * {@link TarArchiveInputStream}.</p>
  * <p>The advantage of this class is that you may write code for the
  * {@link ArchiveFile}, which is valid for both tar files and zip files.</p>
  */
@@ -33,8 +35,8 @@ public class TarFile
     implements ArchiveFile
 {
     private final java.io.File file;
-    private TarInputStream inputStream;
-    private TarEntry currentEntry;
+    private TarArchiveInputStream inputStream;
+    private TarArchiveEntry currentEntry;
 
     /**
      * Creates a new instance with the given file.
@@ -46,12 +48,12 @@ public class TarFile
 
     /**
      * Implementation of {@link ArchiveFile#getEntries()}. Note, that there is
-     * an interaction between this method and {@link #getInputStream(TarEntry)},
-     * or {@link #getInputStream(org.codehaus.plexus.archiver.ArchiveFile.Entry)}:
+     * an interaction between this method and {@link #getInputStream(TarArchiveEntry)},
+     * or {@link #getInputStream(org.apache.commons.compress.archivers.ArchiveEntry)}:
      * If an input stream is opened for any other entry than the enumerations
      * current entry, then entries may be skipped.
      */
-    public Enumeration getEntries()
+    public Enumeration<org.apache.commons.compress.archivers.ArchiveEntry> getEntries()
         throws IOException
     {
         if ( inputStream != null )
@@ -59,7 +61,7 @@ public class TarFile
             close();
         }
         open();
-        return new Enumeration()
+        return new Enumeration<org.apache.commons.compress.archivers.ArchiveEntry>()
         {
             boolean currentEntryValid;
 
@@ -69,7 +71,7 @@ public class TarFile
                 {
                     try
                     {
-                        currentEntry = inputStream.getNextEntry();
+                        currentEntry = inputStream.getNextTarEntry();
                     }
                     catch ( IOException  e )
                     {
@@ -79,7 +81,7 @@ public class TarFile
                 return currentEntry != null;
             }
 
-            public Object nextElement()
+            public org.apache.commons.compress.archivers.ArchiveEntry nextElement()
             {
                 if ( currentEntry == null )
                 {
@@ -101,19 +103,19 @@ public class TarFile
         }
     }
 
-    public InputStream getInputStream( Entry entry )
+    public InputStream getInputStream( org.apache.commons.compress.archivers.ArchiveEntry entry )
         throws IOException
     {
-        return getInputStream( (TarEntry) entry );
+        return getInputStream(new TarArchiveEntry(entry.getName()));
     }
 
     /**
      * Returns an {@link InputStream} with the given entries
      * contents. This {@link InputStream} may be closed: Nothing
      * happens in that case, because an actual close would invalidate
-     * the underlying {@link TarInputStream}.
+     * the underlying {@link TarArchiveInputStream}.
      */
-    public InputStream getInputStream( TarEntry entry )
+    public InputStream getInputStream( TarArchiveEntry entry )
         throws IOException
     {
         if ( entry.equals( (Object) currentEntry )  &&  inputStream != null )
@@ -136,7 +138,7 @@ public class TarFile
         return new FileInputStream( file );
     }
     
-    private InputStream getInputStream( TarEntry entry, TarEntry currentEntry )
+    private InputStream getInputStream( TarArchiveEntry entry, TarArchiveEntry currentEntry )
         throws IOException
     {
         if ( currentEntry == null  ||  inputStream == null )
@@ -172,15 +174,15 @@ public class TarFile
     private void open()
         throws IOException
     {
-        inputStream = new TarInputStream( getInputStream( file ) );
+        inputStream = new TarArchiveInputStream( getInputStream( file ) );
     }
 
-    private boolean findEntry( TarEntry entry, TarEntry currentEntry)
+    private boolean findEntry( TarArchiveEntry entry, TarArchiveEntry currentEntry)
         throws IOException
     {
         for (;;)
         {
-            this.currentEntry = inputStream.getNextEntry();
+            this.currentEntry = inputStream.getNextTarEntry();
             if ( this.currentEntry == null
                     ||  (currentEntry != null  &&  this.currentEntry.equals( currentEntry ) ) )
             {

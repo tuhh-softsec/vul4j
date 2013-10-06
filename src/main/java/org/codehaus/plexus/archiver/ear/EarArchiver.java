@@ -17,11 +17,11 @@ package org.codehaus.plexus.archiver.ear;
  *
  */
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
-import org.codehaus.plexus.archiver.zip.ZipOutputStream;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class EarArchiver
         addDirectory( directoryName, "/", includes, excludes );
     }
 
-    protected void initZipOutputStream( ZipOutputStream zOut )
+    protected void initZipOutputStream( ZipArchiveOutputStream zOut )
         throws IOException, ArchiverException
     {
         // If no webxml file is specified, it's an error.
@@ -94,7 +94,7 @@ public class EarArchiver
     /**
      * Overridden from ZipArchiver class to deal with application.xml
      */
-    protected void zipFile( ArchiveEntry entry, ZipOutputStream zOut, String vPath, int mode )
+    protected void zipFile( ArchiveEntry entry, ZipArchiveOutputStream zOut, String vPath, int mode )
         throws IOException, ArchiverException
     {
         // If the file being added is META-INF/application.xml, we

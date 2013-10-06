@@ -39,12 +39,12 @@ import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
+
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
-import org.codehaus.plexus.archiver.zip.ZipEntry;
-import org.codehaus.plexus.archiver.zip.ZipFile;
-import org.codehaus.plexus.archiver.zip.ZipOutputStream;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.IOUtil;
@@ -284,7 +284,7 @@ public class JarArchiver
         indexJars.add( indexJar.getAbsolutePath() );
     }
 
-    protected void initZipOutputStream( ZipOutputStream zOut )
+    protected void initZipOutputStream( ZipArchiveOutputStream zOut )
         throws IOException, ArchiverException
     {
         if ( !skipWriting )
@@ -334,7 +334,7 @@ public class JarArchiver
         return finalManifest;
     }
 
-    private void writeManifest( ZipOutputStream zOut, Manifest manifest )
+    private void writeManifest( ZipArchiveOutputStream zOut, Manifest manifest )
         throws IOException, ArchiverException
     {
         for ( Enumeration e = manifest.getWarnings(); e.hasMoreElements(); )
@@ -352,7 +352,7 @@ public class JarArchiver
         super.initZipOutputStream( zOut );
     }
 
-    protected void finalizeZipOutputStream( ZipOutputStream zOut )
+    protected void finalizeZipOutputStream( ZipArchiveOutputStream zOut )
         throws IOException, ArchiverException
     {
         if ( index )
@@ -373,7 +373,7 @@ public class JarArchiver
      * @throws org.codehaus.plexus.archiver.ArchiverException
      *                     .
      */
-    private void createIndexList( ZipOutputStream zOut )
+    private void createIndexList( ZipArchiveOutputStream zOut )
         throws IOException, ArchiverException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -455,7 +455,7 @@ public class JarArchiver
     /**
      * Overridden from Zip class to deal with manifests and index lists.
      */
-    protected void zipFile( InputStream is, ZipOutputStream zOut, String vPath, long lastModified, File fromArchive,
+    protected void zipFile( InputStream is, ZipArchiveOutputStream zOut, String vPath, long lastModified, File fromArchive,
                             int mode )
         throws IOException, ArchiverException
     {
@@ -534,21 +534,21 @@ public class JarArchiver
             return true;
         }
 
-        ZipOutputStream zOut = null;
+        ZipArchiveOutputStream zOut = null;
         try
         {
             getLogger().debug( "Building MANIFEST-only jar: " + getDestFile().getAbsolutePath() );
             FileOutputStream out = new FileOutputStream( getDestFile() );
-            zOut = new ZipOutputStream( new BufferedOutputStream( out, 65536) );
+            zOut = new ZipArchiveOutputStream( new BufferedOutputStream( out, 65536) );
 
             zOut.setEncoding( getEncoding() );
             if ( isCompress() )
             {
-                zOut.setMethod( ZipOutputStream.DEFLATED );
+                zOut.setMethod( ZipArchiveOutputStream.DEFLATED );
             }
             else
             {
-                zOut.setMethod( ZipOutputStream.STORED );
+                zOut.setMethod( ZipArchiveOutputStream.STORED );
             }
             initZipOutputStream( zOut );
             finalizeZipOutputStream( zOut );
@@ -748,15 +748,15 @@ public class JarArchiver
         }
         else
         {
-            ZipFile zf = null;
+            org.apache.commons.compress.archivers.zip.ZipFile zf = null;
             try
             {
-                zf = new ZipFile( file, "utf-8" );
-                Enumeration<ZipEntry> entries = zf.getEntries();
+                zf = new org.apache.commons.compress.archivers.zip.ZipFile( file, "utf-8" );
+                Enumeration<ZipArchiveEntry> entries = zf.getEntries();
                 HashSet<String> dirSet = new HashSet<String>();
                 while ( entries.hasMoreElements() )
                 {
-                    ZipEntry ze = entries.nextElement();
+                    ZipArchiveEntry ze = entries.nextElement();
                     String name = ze.getName();
                     // avoid index for manifest-only jars.
                     if ( !name.equals( META_INF_NAME ) && !name.equals( META_INF_NAME + '/' ) && !name.equals(

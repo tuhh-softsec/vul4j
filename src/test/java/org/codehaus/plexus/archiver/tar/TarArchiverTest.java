@@ -24,6 +24,8 @@ package org.codehaus.plexus.archiver.tar;
  * SOFTWARE.
  */
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -98,59 +100,57 @@ public class TarArchiverTest
 
             tmpDir.mkdirs();
 
-            for ( int i = 0; i < executablePaths.length; i++ )
+            for ( String executablePath : executablePaths )
             {
-                writeFile( tmpDir, executablePaths[i], exeMode );
+                writeFile( tmpDir, executablePath, exeMode );
             }
 
-            for ( int i = 0; i < confPaths.length; i++ )
+            for ( String confPath : confPaths )
             {
-                writeFile( tmpDir, confPaths[i], confMode );
+                writeFile( tmpDir, confPath, confMode );
             }
 
-            for ( int i = 0; i < logPaths.length; i++ )
+            for ( String logPath : logPaths )
             {
-                writeFile( tmpDir, logPaths[i], logMode );
+                writeFile( tmpDir, logPath, logMode );
             }
 
             {
                 Map attributesByPath = PlexusIoResourceAttributeUtils.getFileAttributesByPath( tmpDir );
-                for ( int i = 0; i < executablePaths.length; i++ )
+                for ( String path : executablePaths )
                 {
-                    String path = executablePaths[i];
                     PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get( path );
                     if ( attrs == null )
                     {
-                        attrs =
-                            (PlexusIoResourceAttributes) attributesByPath.get( new File( tmpDir, path ).getAbsolutePath() );
+                        attrs = (PlexusIoResourceAttributes) attributesByPath.get(
+                            new File( tmpDir, path ).getAbsolutePath() );
                     }
 
                     assertNotNull( attrs );
                     assertEquals( "Wrong mode for: " + path + "; expected: " + exeMode, exeMode, attrs.getOctalMode() );
                 }
 
-                for ( int i = 0; i < confPaths.length; i++ )
+                for ( String path : confPaths )
                 {
-                    String path = confPaths[i];
                     PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get( path );
                     if ( attrs == null )
                     {
-                        attrs =
-                            (PlexusIoResourceAttributes) attributesByPath.get( new File( tmpDir, path ).getAbsolutePath() );
+                        attrs = (PlexusIoResourceAttributes) attributesByPath.get(
+                            new File( tmpDir, path ).getAbsolutePath() );
                     }
 
                     assertNotNull( attrs );
-                    assertEquals( "Wrong mode for: " + path + "; expected: " + confMode, confMode, attrs.getOctalMode() );
+                    assertEquals( "Wrong mode for: " + path + "; expected: " + confMode, confMode,
+                                  attrs.getOctalMode() );
                 }
 
-                for ( int i = 0; i < logPaths.length; i++ )
+                for ( String path : logPaths )
                 {
-                    String path = logPaths[i];
                     PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get( path );
                     if ( attrs == null )
                     {
-                        attrs =
-                            (PlexusIoResourceAttributes) attributesByPath.get( new File( tmpDir, path ).getAbsolutePath() );
+                        attrs = (PlexusIoResourceAttributes) attributesByPath.get(
+                            new File( tmpDir, path ).getAbsolutePath() );
                     }
 
                     assertNotNull( attrs );
@@ -178,37 +178,34 @@ public class TarArchiverTest
 
             TarFile tf = new TarFile( tarFile2 );
             
-            Map entriesByPath = new LinkedHashMap();
+            Map<String, TarArchiveEntry> entriesByPath = new LinkedHashMap<String, TarArchiveEntry>();
             for( Enumeration e = tf.getEntries(); e.hasMoreElements(); )
             {
-                TarEntry te = (TarEntry) e.nextElement();
+                TarArchiveEntry te = (TarArchiveEntry) e.nextElement();
                 entriesByPath.put( te.getName(), te );
             }
 
-            for ( int i = 0; i < executablePaths.length; i++ )
+            for ( String path : executablePaths )
             {
-                String path = executablePaths[i];
-                TarEntry te = (TarEntry) entriesByPath.get( path );
+                TarArchiveEntry te = entriesByPath.get( path );
 
                 int mode = te.getMode() & UnixStat.PERM_MASK;
 
                 assertEquals( "Wrong mode for: " + path + "; expected: " + exeMode, exeMode, mode );
             }
 
-            for ( int i = 0; i < confPaths.length; i++ )
+            for ( String path : confPaths )
             {
-                String path = confPaths[i];
-                TarEntry te = (TarEntry) entriesByPath.get( path );
+                TarArchiveEntry te = entriesByPath.get( path );
 
                 int mode = te.getMode() & UnixStat.PERM_MASK;
 
                 assertEquals( "Wrong mode for: " + path + "; expected: " + confMode, confMode, mode );
             }
 
-            for ( int i = 0; i < logPaths.length; i++ )
+            for ( String path : logPaths )
             {
-                String path = logPaths[i];
-                TarEntry te = (TarEntry) entriesByPath.get( path );
+                TarArchiveEntry te = entriesByPath.get( path );
 
                 int mode = te.getMode() & UnixStat.PERM_MASK;
 
@@ -289,12 +286,12 @@ public class TarArchiverTest
         archiver.setDestFile( getTestFile( "target/output/archive.tar" ) );
         archiver.createArchive();
 
-        TarInputStream tis;
+        TarArchiveInputStream tis;
 
-        tis = new TarInputStream( new BufferedInputStream( new FileInputStream( archiver.getDestFile() ) ) );
-        TarEntry te;
+        tis = new TarArchiveInputStream( new BufferedInputStream( new FileInputStream( archiver.getDestFile() ) ) );
+        TarArchiveEntry te;
 
-        while ( ( te = tis.getNextEntry() ) != null )
+        while ( ( te = tis.getNextTarEntry() ) != null )
         {
             if ( te.isDirectory() )
             {

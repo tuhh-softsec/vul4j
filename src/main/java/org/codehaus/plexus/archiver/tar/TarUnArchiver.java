@@ -17,6 +17,8 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
@@ -79,16 +81,16 @@ public class TarUnArchiver
     protected void execute()
         throws ArchiverException
     {
-        TarInputStream tis = null;
+        TarArchiveInputStream tis = null;
         try
         {
             getLogger().info( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
-            tis = new TarInputStream( compression.decompress( getSourceFile(),
+            tis = new TarArchiveInputStream( compression.decompress( getSourceFile(),
                                                               new BufferedInputStream(
                                                                   new FileInputStream( getSourceFile() ) ) ) );
-            TarEntry te;
+            TarArchiveEntry te;
 
-            while ( ( te = tis.getNextEntry() ) != null )
+            while ( ( te = tis.getNextTarEntry() ) != null )
             {
                 extractFile( getSourceFile(), getDestDirectory(), tis, te.getName(), te.getModTime(),
                              te.isDirectory(), te.getMode() != 0 ? te.getMode() : null);

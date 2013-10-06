@@ -17,6 +17,8 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
@@ -56,7 +58,7 @@ public class TarArchiver
 
     private TarOptions options = new TarOptions();
 
-    private TarOutputStream tOut;
+    private TarArchiveOutputStream tOut;
 
     /**
      *
@@ -178,21 +180,25 @@ public class TarArchiver
 
         getLogger().info( "Building tar: " + tarFile.getAbsolutePath() );
 
-        tOut = new TarOutputStream(
+        tOut = new TarArchiveOutputStream(
             compression.compress( new BufferedOutputStream( new FileOutputStream( tarFile ) ) ) );
-        tOut.setDebug( true );
+        //tOut.setDebug( true ); TODO: FInd out out about debug flag // KR
         if ( longFileMode.isTruncateMode() )
         {
-            tOut.setLongFileMode( TarOutputStream.LONGFILE_TRUNCATE );
+            tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_TRUNCATE );
+        }
+        else if ( longFileMode.isPosixMode() || longFileMode.isPosixWarnMode() )
+        {
+            tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_POSIX );
         }
         else if ( longFileMode.isFailMode() || longFileMode.isOmitMode() )
         {
-            tOut.setLongFileMode( TarOutputStream.LONGFILE_ERROR );
+            tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_ERROR );
         }
         else
         {
             // warn or GNU
-            tOut.setLongFileMode( TarOutputStream.LONGFILE_GNU );
+            tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_GNU );
         }
 
         longWarningGiven = false;
@@ -219,7 +225,7 @@ public class TarArchiver
      * @param vPath the path name of the file to tar
      * @throws IOException on error
      */
-    protected void tarFile( ArchiveEntry entry, TarOutputStream tOut, String vPath )
+    protected void tarFile( ArchiveEntry entry, TarArchiveOutputStream tOut, String vPath )
         throws ArchiverException, IOException
     {
         InputStream fIn = null;
@@ -249,7 +255,7 @@ public class TarArchiver
         int pathLength = vPath.length();
         try
         {
-            final TarEntry te;
+            final TarArchiveEntry te;
 			if (  !longFileMode.isGnuMode() && pathLength >= TarConstants.NAMELEN )
 			{
         		int maxPosixPathLen = TarConstants.NAMELEN + TarConstants.POSIX_PREFIXLEN;
@@ -257,11 +263,12 @@ public class TarArchiver
             	{
             		if ( pathLength > maxPosixPathLen )
             		{
-                        te = new TarEntry( vPath );
+                        te = new TarArchiveEntry( vPath );
             		}
             		else
             		{
-                        te = new PosixTarEntry( vPath );
+                        // TODO: Kr, how to handle posix ??
+                        te = new TarArchiveEntry( vPath );
             		}
             	}
             	else if ( longFileMode.isPosixWarnMode() )
@@ -275,11 +282,12 @@ public class TarArchiver
                                               + "successfully by GNU compatible tar commands" );
                             longWarningGiven = true;
                         }
-                        te = new TarEntry( vPath );
+                        te = new TarArchiveEntry( vPath );
             		}
             		else
             		{
-                        te = new PosixTarEntry( vPath );
+                        // TODO: Kr, how to handle posix ??
+                        te = new TarArchiveEntry( vPath );
             		}
             	}
             	else if ( longFileMode.isOmitMode() )
@@ -296,7 +304,7 @@ public class TarArchiver
                                           + "successfully by GNU compatible tar commands" );
                         longWarningGiven = true;
                     }
-                    te = new TarEntry( vPath );
+                    te = new TarArchiveEntry( vPath );
                 }
                 else if ( longFileMode.isFailMode() )
                 {
@@ -312,12 +320,12 @@ public class TarArchiver
         	{
         		/* Did not touch it, because this would change the following default tar format, however
         		 * GNU tar can untar POSIX tar, so I think we should us PosixTarEntry here instead. */
-                te = new TarEntry( vPath );
+                te = new TarArchiveEntry( vPath );
         	}
 
             long teLastModified = entry.getResource().getLastModified();
-            te.setModTime( teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
-                            : teLastModified );
+            te.setModTime(teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
+                    : teLastModified);
 
             if ( !entry.getResource().isDirectory() )
             {
@@ -352,7 +360,7 @@ public class TarArchiver
                 te.setGroupId( groupId );
             }
 
-            tOut.putNextEntry( te );
+            tOut.putArchiveEntry(te);
 
             if ( !entry.getResource().isDirectory() )
             {
@@ -368,7 +376,7 @@ public class TarArchiver
                 while ( count != -1 );
             }
 
-            tOut.closeEntry();
+            tOut.closeArchiveEntry();
         }
         finally
         {

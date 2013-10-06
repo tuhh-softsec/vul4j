@@ -39,7 +39,7 @@ public class ZipShortTest
      */
     public void testToBytes()
     {
-        ZipShort zs = new ZipShort( 0x1234 );
+        org.apache.commons.compress.archivers.zip.ZipShort zs = new org.apache.commons.compress.archivers.zip.ZipShort( 0x1234 );
         byte[] result = zs.getBytes();
         assertEquals( "length getBytes", 2, result.length );
         assertEquals( "first byte getBytes", 0x34, result[ 0 ] );
@@ -52,7 +52,7 @@ public class ZipShortTest
     public void testFromBytes()
     {
         byte[] val = new byte[]{0x34, 0x12};
-        ZipShort zs = new ZipShort( val );
+        org.apache.commons.compress.archivers.zip.ZipShort zs = new org.apache.commons.compress.archivers.zip.ZipShort( val );
         assertEquals( "value from bytes", 0x1234, zs.getValue() );
     }
 
@@ -61,9 +61,9 @@ public class ZipShortTest
      */
     public void testEquals()
     {
-        ZipShort zs = new ZipShort( 0x1234 );
-        ZipShort zs2 = new ZipShort( 0x1234 );
-        ZipShort zs3 = new ZipShort( 0x5678 );
+        org.apache.commons.compress.archivers.zip.ZipShort zs = new org.apache.commons.compress.archivers.zip.ZipShort( 0x1234 );
+        org.apache.commons.compress.archivers.zip.ZipShort zs2 = new org.apache.commons.compress.archivers.zip.ZipShort( 0x1234 );
+        org.apache.commons.compress.archivers.zip.ZipShort zs3 = new org.apache.commons.compress.archivers.zip.ZipShort( 0x5678 );
 
         assertTrue( "reflexive", zs.equals( zs ) );
 
@@ -81,7 +81,7 @@ public class ZipShortTest
      */
     public void testSign()
     {
-        ZipShort zs = new ZipShort( new byte[]{(byte) 0xFF, (byte) 0xFF} );
+        org.apache.commons.compress.archivers.zip.ZipShort zs = new org.apache.commons.compress.archivers.zip.ZipShort( new byte[]{(byte) 0xFF, (byte) 0xFF} );
         assertEquals( 0x0000FFFF, zs.getValue() );
     }
 

@@ -250,7 +250,7 @@ public abstract class AbstractArchiver
     public void addDirectory( final File directory )
         throws ArchiverException
     {
-        addDirectory( directory, "" );
+        addDirectory(directory, "");
     }
 
     public void addDirectory( final File directory, final String prefix )
@@ -262,7 +262,7 @@ public abstract class AbstractArchiver
     public void addDirectory( final File directory, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
-        addDirectory( directory, "", includes, excludes );
+        addDirectory(directory, "", includes, excludes);
     }
 
     public void addDirectory( final File directory, final String prefix, final String[] includes,
@@ -323,7 +323,7 @@ public abstract class AbstractArchiver
     {
         final int fileMode = getOverrideFileMode();
 
-        addFile( inputFile, destFileName, fileMode );
+        addFile(inputFile, destFileName, fileMode);
     }
 
     protected ArchiveEntry asArchiveEntry( final PlexusIoResource resource, final String destFileName,
@@ -686,7 +686,7 @@ public abstract class AbstractArchiver
     public void addResources( final PlexusIoResourceCollection collection )
         throws ArchiverException
     {
-        resources.add( collection );
+        resources.add(collection);
     }
 
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
@@ -727,7 +727,7 @@ public abstract class AbstractArchiver
     public void addArchivedFileSet( final File archiveFile, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
-        addArchivedFileSet( archiveFile, null, includes, excludes );
+        addArchivedFileSet(archiveFile, null, includes, excludes);
     }
 
     /**
@@ -768,7 +768,7 @@ public abstract class AbstractArchiver
         this.forced = forced;
     }
 
-    public void setArchiveFilters( final List filters )
+    public void setArchiveFilters(final List filters)
     {
         filterSupport = new FilterSupport( filters, getLogger() );
     }

@@ -26,6 +26,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
+
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -73,11 +75,11 @@ public abstract class AbstractZipUnArchiver
     private static class ZipEntryFileInfo
         implements PlexusIoResource
     {
-        private final ZipFile zipFile;
+        private final org.apache.commons.compress.archivers.zip.ZipFile  zipFile;
 
-        private final ZipEntry zipEntry;
+        private final ZipArchiveEntry zipEntry;
 
-        ZipEntryFileInfo( final ZipFile zipFile, final ZipEntry zipEntry )
+        ZipEntryFileInfo( final org.apache.commons.compress.archivers.zip.ZipFile zipFile, final ZipArchiveEntry zipEntry )
         {
             this.zipFile = zipFile;
             this.zipEntry = zipEntry;
@@ -132,14 +134,14 @@ public abstract class AbstractZipUnArchiver
         throws ArchiverException
     {
         getLogger().debug( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
-        ZipFile zf = null;
+        org.apache.commons.compress.archivers.zip.ZipFile zf = null;
         try
         {
-            zf = new ZipFile( getSourceFile(), encoding );
+            zf = new org.apache.commons.compress.archivers.zip.ZipFile( getSourceFile(), encoding );
             final Enumeration e = zf.getEntries();
             while ( e.hasMoreElements() )
             {
-                final ZipEntry ze = (ZipEntry) e.nextElement();
+                final ZipArchiveEntry ze = (ZipArchiveEntry) e.nextElement();
                 final ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zf, ze );
                 if ( !isSelected( ze.getName(), fileInfo ) )
                 {
@@ -247,17 +249,17 @@ public abstract class AbstractZipUnArchiver
     protected void execute( final String path, final File outputDirectory )
         throws ArchiverException
     {
-        ZipFile zipFile = null;
+        org.apache.commons.compress.archivers.zip.ZipFile zipFile = null;
 
         try
         {
-            zipFile = new ZipFile( getSourceFile(), encoding );
+            zipFile = new org.apache.commons.compress.archivers.zip.ZipFile( getSourceFile(), encoding );
 
             final Enumeration e = zipFile.getEntries();
 
             while ( e.hasMoreElements() )
             {
-                final ZipEntry ze = (ZipEntry) e.nextElement();
+                final ZipArchiveEntry ze = (ZipArchiveEntry) e.nextElement();
                 final ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zipFile, ze );
                 if ( !isSelected( ze.getName(), fileInfo ) )
                 {

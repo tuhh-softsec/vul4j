@@ -1,5 +1,6 @@
 package org.codehaus.plexus.archiver.zip;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.attributes.SimpleResourceAttributes;
@@ -14,11 +15,11 @@ public class ZipResource
     extends AbstractPlexusIoResourceWithAttributes
 {
 
-    private final ZipFile zipFile;
-    private final ZipEntry entry;
+    private final org.apache.commons.compress.archivers.zip.ZipFile zipFile;
+    private final ZipArchiveEntry entry;
     private PlexusIoResourceAttributes attributes;
 
-    public ZipResource( ZipFile zipFile, ZipEntry entry )
+    public ZipResource( org.apache.commons.compress.archivers.zip.ZipFile zipFile, ZipArchiveEntry entry )
     {
         this.zipFile = zipFile;
         this.entry = entry;
@@ -32,7 +33,7 @@ public class ZipResource
         setExisting( true );
         setFile( !dir );
         
-        long l = entry.getLastModificationTime();
+        long l = entry.getLastModifiedDate().getTime();
         setLastModified( l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l );
         setSize( dir ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize() );
     }

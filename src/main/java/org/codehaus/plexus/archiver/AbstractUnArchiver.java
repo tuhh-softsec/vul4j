@@ -129,7 +129,7 @@ public abstract class AbstractUnArchiver
         runArchiveFinalizers();
     }
 
-    public void setArchiveFilters( final List filters )
+    public void setArchiveFilters(final List filters)
     {
         filterSupport = new FilterSupport( filters, getLogger() );
     }

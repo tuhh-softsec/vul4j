@@ -18,6 +18,7 @@ package org.codehaus.plexus.archiver.zip;
  */
 
 import junit.framework.TestCase;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 
 /**
  * JUnit 3 testcases for org.apache.tools.zip.ZipEntry.
@@ -41,23 +42,23 @@ public class ZipEntryTest
      */
     public void testExtraFields()
     {
-        AsiExtraField a = new AsiExtraField();
+        org.apache.commons.compress.archivers.zip.AsiExtraField a = new org.apache.commons.compress.archivers.zip.AsiExtraField();
         a.setDirectory( true );
         a.setMode( 0755 );
-        UnrecognizedExtraField u = new UnrecognizedExtraField();
-        u.setHeaderId( new ZipShort( 1 ) );
+        org.apache.commons.compress.archivers.zip.UnrecognizedExtraField u = new org.apache.commons.compress.archivers.zip.UnrecognizedExtraField();
+        u.setHeaderId( new org.apache.commons.compress.archivers.zip.ZipShort( 1 ) );
         u.setLocalFileDataData( new byte[0] );
 
-        ZipEntry ze = new ZipEntry( "test/" );
-        ze.setExtraFields( new ZipExtraField[]{a, u} );
+        ZipArchiveEntry ze = new ZipArchiveEntry( "test/" );
+        ze.setExtraFields( new org.apache.commons.compress.archivers.zip.ZipExtraField[]{a, u} );
         byte[] data1 = ze.getExtra();
-        ZipExtraField[] result = ze.getExtraFields();
+        org.apache.commons.compress.archivers.zip.ZipExtraField[] result = ze.getExtraFields();
         assertEquals( "first pass", 2, result.length );
         assertSame( a, result[ 0 ] );
         assertSame( u, result[ 1 ] );
 
-        UnrecognizedExtraField u2 = new UnrecognizedExtraField();
-        u2.setHeaderId( new ZipShort( 1 ) );
+        org.apache.commons.compress.archivers.zip.UnrecognizedExtraField u2 = new org.apache.commons.compress.archivers.zip.UnrecognizedExtraField();
+        u2.setHeaderId( new org.apache.commons.compress.archivers.zip.ZipShort( 1 ) );
         u2.setLocalFileDataData( new byte[]{1} );
 
         ze.addExtraField( u2 );
@@ -68,14 +69,14 @@ public class ZipEntryTest
         assertSame( u2, result[ 1 ] );
         assertEquals( "length second pass", data1.length + 1, data2.length );
 
-        UnrecognizedExtraField u3 = new UnrecognizedExtraField();
-        u3.setHeaderId( new ZipShort( 2 ) );
+        org.apache.commons.compress.archivers.zip.UnrecognizedExtraField u3 = new org.apache.commons.compress.archivers.zip.UnrecognizedExtraField();
+        u3.setHeaderId( new org.apache.commons.compress.archivers.zip.ZipShort( 2 ) );
         u3.setLocalFileDataData( new byte[]{1} );
         ze.addExtraField( u3 );
         result = ze.getExtraFields();
         assertEquals( "third pass", 3, result.length );
 
-        ze.removeExtraField( new ZipShort( 1 ) );
+        ze.removeExtraField( new org.apache.commons.compress.archivers.zip.ZipShort( 1 ) );
         byte[] data3 = ze.getExtra();
         result = ze.getExtraFields();
         assertEquals( "fourth pass", 2, result.length );
@@ -85,7 +86,7 @@ public class ZipEntryTest
 
         try
         {
-            ze.removeExtraField( new ZipShort( 1 ) );
+            ze.removeExtraField( new org.apache.commons.compress.archivers.zip.ZipShort( 1 ) );
             fail( "should be no such element" );
         }
         catch ( java.util.NoSuchElementException nse )
@@ -95,7 +96,7 @@ public class ZipEntryTest
 
     public void testUnixMode()
     {
-        ZipEntry ze = new ZipEntry( "foo" );
+        ZipArchiveEntry ze = new ZipArchiveEntry( "foo" );
         assertEquals( 0, ze.getPlatform() );
         ze.setUnixMode( 0755 );
         assertEquals( 3, ze.getPlatform() );
@@ -109,7 +110,7 @@ public class ZipEntryTest
                       ( ze.getExternalAttributes() >> 16 ) & 0xFFFF );
         assertEquals( 1, ze.getExternalAttributes() & 0xFFFF );
 
-        ze = new ZipEntry( "foo/" );
+        ze = new ZipArchiveEntry( "foo/" );
         assertEquals( 0, ze.getPlatform() );
         ze.setUnixMode( 0777 );
         assertEquals( 3, ze.getPlatform() );

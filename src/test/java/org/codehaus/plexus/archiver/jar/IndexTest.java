@@ -19,10 +19,9 @@ package org.codehaus.plexus.archiver.jar;
 
 import java.io.BufferedInputStream;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
-import org.codehaus.plexus.archiver.zip.ZipEntry;
-import org.codehaus.plexus.archiver.zip.ZipFile;
 
 /**
  * @author Richard van der Hoff <richardv@mxtelecom.com>
@@ -53,8 +52,8 @@ public class IndexTest extends PlexusTestCase {
         archiver2.createArchive();
 
         // read the index file back and check it looks like it ought to
-        ZipFile zf = new ZipFile( archiver2.getDestFile() );
-        ZipEntry indexEntry = zf.getEntry("META-INF/INDEX.LIST");
+        org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archiver2.getDestFile() );
+        ZipArchiveEntry indexEntry = zf.getEntry("META-INF/INDEX.LIST");
         assertNotNull(indexEntry);
         BufferedInputStream bis = new BufferedInputStream(zf.getInputStream(indexEntry));
 
@@ -104,8 +103,8 @@ public class IndexTest extends PlexusTestCase {
         archiver2.createArchive();
 
         // read the index file back and check it looks like it ought to
-        ZipFile zf = new ZipFile( archiver2.getDestFile() );
-        ZipEntry indexEntry = zf.getEntry("META-INF/INDEX.LIST");
+        org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archiver2.getDestFile() );
+        ZipArchiveEntry indexEntry = zf.getEntry("META-INF/INDEX.LIST");
         assertNotNull(indexEntry);
         BufferedInputStream bis = new BufferedInputStream(zf.getInputStream(indexEntry));
 

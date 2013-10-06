@@ -18,11 +18,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.filters.JarSecurityFileFilter;
-import org.codehaus.plexus.archiver.zip.ZipEntry;
-import org.codehaus.plexus.archiver.zip.ZipFile;
 
 /**
  * @author Mike Cumings
@@ -54,7 +53,7 @@ public class SecurityFilterTest
         //filters.add( new JarSecurityFileSelector() );
         // Create our test jar with fake security files
         JarArchiver archiver = (JarArchiver) lookup( Archiver.ROLE, "jar" );
-        archiver.setArchiveFilters( filters );
+        archiver.setArchiveFilters(filters);
         for ( int i = 0; i < filteredFiles.length; i++ )
         {
             archiver.addFile( dummyContent, filteredFiles[i] );
@@ -68,15 +67,15 @@ public class SecurityFilterTest
 
         // Verify that the fake files were filtered out of the created jar and that
         // the legitimate files were not
-        ZipFile zf = new ZipFile( archiver.getDestFile() );
+        org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archiver.getDestFile() );
         for ( int i = 0; i < filteredFiles.length; i++ )
         {
-            ZipEntry entry = zf.getEntry( filteredFiles[i] );
+            ZipArchiveEntry entry = zf.getEntry( filteredFiles[i] );
             assertNull( "Entry was not filtered out: " + filteredFiles[i], entry );
         }
         for ( int i = 0; i < unFilteredFiles.length; i++ )
         {
-            ZipEntry entry = zf.getEntry( unFilteredFiles[i] );
+            ZipArchiveEntry entry = zf.getEntry( unFilteredFiles[i] );
             assertNotNull( "Entry was filtered out: " + unFilteredFiles[i], entry );
         }
     }

@@ -40,7 +40,7 @@ public class AsiExtraFieldTest
      */
     public void testModes()
     {
-        AsiExtraField a = new AsiExtraField();
+        org.apache.commons.compress.archivers.zip.AsiExtraField a = new org.apache.commons.compress.archivers.zip.AsiExtraField();
         a.setMode( 0123 );
         assertEquals( "plain file", 0100123, a.getMode() );
         a.setDirectory( true );
@@ -54,7 +54,7 @@ public class AsiExtraFieldTest
      */
     public void testContent()
     {
-        AsiExtraField a = new AsiExtraField();
+        org.apache.commons.compress.archivers.zip.AsiExtraField a = new org.apache.commons.compress.archivers.zip. AsiExtraField();
         a.setMode( 0123 );
         a.setUserId( 5 );
         a.setGroupId( 6 );
@@ -97,7 +97,7 @@ public class AsiExtraFieldTest
             0123, (byte) 0x80,                   // mode
             0, 0, 0, 0,                         // link length
             5, 0, 6, 0};                        // uid, gid
-        AsiExtraField a = new AsiExtraField();
+        org.apache.commons.compress.archivers.zip.AsiExtraField a = new org.apache.commons.compress.archivers.zip.AsiExtraField();
         a.parseFromLocalFileData( data, 0, data.length );
         assertEquals( "length plain file", data.length,
                       a.getLocalFileDataLength().getValue() );
@@ -112,7 +112,7 @@ public class AsiExtraFieldTest
             4, 0, 0, 0,                         // link length
             5, 0, 6, 0,                         // uid, gid
             (byte) 't', (byte) 'e', (byte) 's', (byte) 't'};
-        a = new AsiExtraField();
+        a = new org.apache.commons.compress.archivers.zip.AsiExtraField();
         a.parseFromLocalFileData( data, 0, data.length );
         assertEquals( "length link", data.length,
                       a.getLocalFileDataLength().getValue() );
@@ -127,7 +127,7 @@ public class AsiExtraFieldTest
             0123, (byte) 0x40,                         // mode
             0, 0, 0, 0,                               // link
             5, 0, 6, 0};                          // uid, gid
-        a = new AsiExtraField();
+        a = new org.apache.commons.compress.archivers.zip.AsiExtraField();
         a.parseFromLocalFileData( data, 0, data.length );
         assertEquals( "length dir", data.length,
                       a.getLocalFileDataLength().getValue() );
@@ -141,7 +141,7 @@ public class AsiExtraFieldTest
             0123, (byte) 0x40,                     // mode
             0, 0, 0, 0,                           // link
             5, 0, 6, 0};                          // uid, gid
-        a = new AsiExtraField();
+        a = new org.apache.commons.compress.archivers.zip.AsiExtraField();
         try
         {
             a.parseFromLocalFileData( data, 0, data.length );
