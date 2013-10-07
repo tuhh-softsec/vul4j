@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -205,6 +206,13 @@ public class ZipOutputStream
      * @since 1.14
      */
     private RandomAccessFile raf = null;
+
+    /**
+     * UTF-8 encoding name.
+     * 
+     * @since 2.4.5
+     */
+    private static final String UTF8 = "UTF-8";
 
     /**
      * Compression method for deflated entries.
@@ -607,6 +615,8 @@ public class ZipOutputStream
     static final byte[] Z20_bytes =  ZipShort.bytes( 20 );
     static final byte[] Z8_bytes =   ZipShort.bytes( 8 );
     static final byte[] Z10_bytes =   ZipShort.bytes( 10 );
+    static final byte[] Z2048_bytes =   ZipShort.bytes( 2048 );
+    static final byte[] Z2056_bytes =   ZipShort.bytes( 2056 );
     static final byte[] LFH_SIG_bytes =   LFH_SIG.getBytes();
     static final byte[] DD_SIG_bytes =   DD_SIG.getBytes();
     static final byte[] CFH_SIG_bytes =   CFH_SIG.getBytes();
@@ -650,12 +660,26 @@ public class ZipOutputStream
             writeOut( Z20_bytes );
 
             // bit3 set to signal, we use a data descriptor
-            writeOut( Z8_bytes );
+            if ( isLefRequired() )
+            {
+                writeOut(Z2056_bytes);
+            }
+            else
+            {
+                writeOut(Z8_bytes);
+            }
         }
         else
         {
             writeOut( Z10_bytes );
-            writeOut( ZERO );
+            if ( isLefRequired() )
+            {
+                writeOut(Z2048_bytes);
+            }
+            else
+            {
+                writeOut(ZERO);
+            }
         }
         written += 4;
 
@@ -749,12 +773,26 @@ public class ZipOutputStream
             writeOut( Z20_bytes );
 
             // bit3 set to signal, we use a data descriptor
-            writeOut( Z8_bytes );
+            if ( isLefRequired() )
+            {
+                writeOut( Z2056_bytes );
+            }
+            else
+            {
+                writeOut( Z8_bytes );
+            }
         }
         else
         {
             writeOut( Z10_bytes );
-            writeOut( ZERO );
+            if ( isLefRequired() )
+            {
+                writeOut( Z2048_bytes );
+            }
+            else
+            {
+                writeOut( ZERO );
+            }
         }
         written += 4;
 
@@ -955,4 +993,11 @@ public class ZipOutputStream
     {
         return ZipLong.bytes(value, longBuffer);
     }
+
+    private boolean isLefRequired() {
+        return encoding == null
+                && UTF8.equals(Charset.defaultCharset().name())
+                || (encoding != null && UTF8.equals(encoding));
+    }
+
 }
