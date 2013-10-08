@@ -18,9 +18,11 @@ package org.esigate.extension;
 import java.util.Properties;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.impl.client.cache.CachingHttpClient;
+import org.apache.http.protocol.ExecutionContext;
 import org.esigate.Driver;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
@@ -95,6 +97,9 @@ public class FragmentLogging implements Extension, IEventListener {
 						.getLastRequest(e.httpRequest, e.httpContext);
 
 				// Create log message
+				HttpHost targetHost = (HttpHost) e.httpContext
+						.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+
 				String requestLine = lastRequest.getRequestLine().toString();
 				String statusLine = e.httpResponse.getStatusLine().toString();
 
@@ -113,16 +118,32 @@ public class FragmentLogging implements Extension, IEventListener {
 				long time = System.currentTimeMillis()
 						- (Long) e.httpContext.removeAttribute(TIME);
 
-				String logMessage = driver.getConfiguration().getInstanceName()
-						+ " " + requestLine + " " + reqHeaders + " -> "
+				StringBuilder logMessage = new StringBuilder();
+				logMessage.append(driver.getConfiguration().getInstanceName());
+				logMessage.append(" ");
+				// Display target host, protocol and port
+				if (targetHost != null) {
+					logMessage.append(targetHost.getSchemeName());
+					logMessage.append("://");
+					logMessage.append(targetHost.getHostName());
+					
+					if (targetHost.getPort() != -1) {
+						logMessage.append(":");
+						logMessage.append(targetHost.getPort());
+					}
+					
+					logMessage.append(" - ");
+				}
+				
+				 logMessage .append(requestLine + " " + reqHeaders + " -> "
 						+ statusLine + " (" + time + " ms) " + cache + " "
-						+ respHeaders;
+						+ respHeaders);
 
 				// Log level according to status code.
 				if (statusCode >= 400)
-					LOG.warn(logMessage);
+					LOG.warn(logMessage.toString());
 				else
-					LOG.info(logMessage);
+					LOG.info(logMessage.toString());
 			}
 		}
 
