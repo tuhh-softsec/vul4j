@@ -98,9 +98,17 @@ public class FetchLogging implements Extension, IEventListener {
 
 				StringBuilder logMessage = new StringBuilder();
 				
-				// Add target host
+				// Display target host, protocol and port
 				if (targetHost != null) {
-					logMessage.append(targetHost.toHostString());
+					logMessage.append(targetHost.getSchemeName());
+					logMessage.append("://");
+					logMessage.append(targetHost.getHostName());
+					
+					if (targetHost.getPort() != -1) {
+						logMessage.append(":");
+						logMessage.append(targetHost.getPort());
+					}
+					
 					logMessage.append(" - ");
 				}
 				// Url
