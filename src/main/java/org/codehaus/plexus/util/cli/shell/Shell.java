@@ -48,6 +48,8 @@ public class Shell
 
     private boolean quotedArgumentsEnabled = true;
 
+    private boolean unconditionallyQuote = false;
+
     private String executable;
 
     private String workingDir;
@@ -67,6 +69,16 @@ public class Shell
     private char exeQuoteDelimiter = '\"';
 
     private String argumentEscapePattern = "\\%s";
+
+    /**
+     * Toggle unconditional quoting
+     *
+     * @param unconditionallyQuote
+     */
+    public void setUnconditionalQuoting(boolean unconditionallyQuote)
+    {
+        this.unconditionallyQuote = unconditionallyQuote;
+    }
 
     /**
      * Set the command to execute the shell (eg. COMMAND.COM, /bin/bash,...)
@@ -129,6 +141,19 @@ public class Shell
         return getRawCommandLine( executable, arguments );
     }
 
+    protected String quoteOneItem(String inputString, boolean isExecutable)
+    {
+        char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
+        return StringUtils.quoteAndEscape(
+            inputString,
+            isExecutable ? getExecutableQuoteDelimiter() : getArgumentQuoteDelimiter(),
+            escapeChars,
+            getQuotingTriggerChars(),
+            '\\',
+            unconditionallyQuote
+        );
+    }
+
     protected List<String> getRawCommandLine( String executable, String[] arguments )
     {
         List<String> commandLine = new ArrayList<String>();
@@ -144,9 +169,7 @@ public class Shell
 
             if ( isQuotedExecutableEnabled() )
             {
-                char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
-
-                sb.append( StringUtils.quoteAndEscape( getExecutable(), getExecutableQuoteDelimiter(), escapeChars, getQuotingTriggerChars(), '\\', false ) );
+                sb.append( quoteOneItem( getOriginalExecutable(), true ) );
             }
             else
             {
@@ -162,9 +185,7 @@ public class Shell
 
             if ( isQuotedArgumentsEnabled() )
             {
-                char[] escapeChars = getEscapeChars( isSingleQuotedArgumentEscaped(), isDoubleQuotedArgumentEscaped() );
-
-                sb.append( StringUtils.quoteAndEscape( arguments[i], getArgumentQuoteDelimiter(), escapeChars, getQuotingTriggerChars(), getArgumentEscapePattern(), false ) );
+                sb.append( quoteOneItem( arguments[i], false ) );
             }
             else
             {
@@ -278,7 +299,7 @@ public class Shell
             commandLine.addAll( getShellArgsList() );
         }
 
-        commandLine.addAll( getCommandLine( getExecutable(), arguments ) );
+        commandLine.addAll( getCommandLine( getOriginalExecutable(), arguments ) );
 
         return commandLine;
 

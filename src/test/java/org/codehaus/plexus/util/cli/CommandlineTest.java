@@ -16,6 +16,7 @@ package org.codehaus.plexus.util.cli;
  * limitations under the License.
  */
 
+import junit.framework.TestCase;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.StringUtils;
@@ -23,15 +24,7 @@ import org.codehaus.plexus.util.cli.shell.BourneShell;
 import org.codehaus.plexus.util.cli.shell.CmdShell;
 import org.codehaus.plexus.util.cli.shell.Shell;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-
-import junit.framework.TestCase;
+import java.io.*;
 
 public class CommandlineTest
     extends TestCase
@@ -252,7 +245,7 @@ public class CommandlineTest
 
         assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
-        String expectedShellCmd = "/bin/echo \'hello world\'";
+        String expectedShellCmd = "'/bin/echo' 'hello world'";
         if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             expectedShellCmd = "\\bin\\echo \'hello world\'";
@@ -282,12 +275,12 @@ public class CommandlineTest
 
         assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
-        String expectedShellCmd = "cd \"" + root.getAbsolutePath()
-                                  + "path with spaces\" && /bin/echo \'hello world\'";
+        String expectedShellCmd = "cd '" + root.getAbsolutePath()
+                                  + "path with spaces' && '/bin/echo' 'hello world'";
         if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
-            expectedShellCmd = "cd \"" + root.getAbsolutePath()
-                               + "path with spaces\" && \\bin\\echo \'hello world\'";
+            expectedShellCmd = "cd '" + root.getAbsolutePath()
+                               + "path with spaces' && '\\bin\\echo' 'hello world'";
         }
         assertEquals( expectedShellCmd, shellCommandline[2] );
     }
@@ -311,7 +304,7 @@ public class CommandlineTest
 
         assertEquals( "/bin/sh", shellCommandline[0] );
         assertEquals( "-c", shellCommandline[1] );
-        String expectedShellCmd = "/bin/echo \'hello world\'";
+        String expectedShellCmd = "'/bin/echo' ''\"'\"'hello world'\"'\"''";
         if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
         {
             expectedShellCmd = "\\bin\\echo \'hello world\'";
@@ -341,7 +334,7 @@ public class CommandlineTest
         }
         else
         {
-            assertEquals( "/usr/bin a b", shellCommandline[2] );
+            assertEquals( "'/usr/bin' 'a' 'b'", shellCommandline[2] );
         }
     }
 
@@ -384,6 +377,18 @@ public class CommandlineTest
         createAndCallScript( dir, "echo Quoted" );
 
         dir = new File( System.getProperty( "basedir" ), "target/test/quoted path'test" );
+        createAndCallScript( dir, "echo Quoted" );
+    }
+
+    /**
+     * Test an executable with shell-expandable content in its path.
+     *
+     * @throws Exception
+     */
+    public void testPathWithShellExpansionStrings()
+        throws Exception
+    {
+        File dir = new File( System.getProperty( "basedir" ), "target/test/dollar$test" );
         createAndCallScript( dir, "echo Quoted" );
     }
 

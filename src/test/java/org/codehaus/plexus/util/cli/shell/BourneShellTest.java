@@ -16,13 +16,12 @@ package org.codehaus.plexus.util.cli.shell;
  * limitations under the License.
  */
 
+import junit.framework.TestCase;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
 import java.util.Arrays;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 public class BourneShellTest
     extends TestCase
@@ -42,7 +41,7 @@ public class BourneShellTest
 
         String executable = StringUtils.join( sh.getShellCommandLine( new String[]{} ).iterator(), " " );
 
-        assertEquals( "/bin/sh -c cd /usr/local/bin && chmod", executable );
+        assertEquals( "/bin/sh -c cd '/usr/local/bin' && 'chmod'", executable );
     }
 
     public void testQuoteWorkingDirectoryAndExecutable_WDPathWithSingleQuotes()
@@ -54,7 +53,7 @@ public class BourneShellTest
 
         String executable = StringUtils.join( sh.getShellCommandLine( new String[]{} ).iterator(), " " );
 
-        assertEquals( "/bin/sh -c cd \"/usr/local/\'something else\'\" && chmod", executable );
+        assertEquals( "/bin/sh -c cd '/usr/local/'\"'\"'something else'\"'\"'' && 'chmod'", executable );
     }
 
     public void testQuoteWorkingDirectoryAndExecutable_WDPathWithSingleQuotes_BackslashFileSep()
@@ -66,7 +65,7 @@ public class BourneShellTest
 
         String executable = StringUtils.join( sh.getShellCommandLine( new String[]{} ).iterator(), " " );
 
-        assertEquals( "/bin/sh -c cd \"\\usr\\local\\\'something else\'\" && chmod", executable );
+        assertEquals( "/bin/sh -c cd '\\usr\\local\\\'\"'\"'something else'\"'\"'' && 'chmod'", executable );
     }
 
     public void testPreserveSingleQuotesOnArgument()
@@ -82,7 +81,7 @@ public class BourneShellTest
 
         String cli = StringUtils.join( shellCommandLine.iterator(), " " );
         System.out.println( cli );
-        assertTrue( cli.endsWith( args[0] ) );
+        assertTrue( cli.endsWith("''\"'\"'some arg with spaces'\"'\"''"));
     }
 
     public void testAddSingleQuotesOnArgumentWithSpaces()
@@ -114,7 +113,7 @@ public class BourneShellTest
 
         String cli = StringUtils.join( shellCommandLine.iterator(), " " );
         System.out.println( cli );
-        assertEquals("cd /usr/bin && chmod 'arg'\\''withquote'", shellCommandLine.get(shellCommandLine.size() - 1));
+        assertEquals("cd '/usr/bin' && 'chmod' 'arg'\"'\"'withquote'", shellCommandLine.get(shellCommandLine.size() - 1));
     }
 
     public void testArgumentsWithsemicolon()
@@ -146,7 +145,7 @@ public class BourneShellTest
 
         assertEquals( "/bin/sh", lines[0] );
         assertEquals( "-c", lines[1] );
-        assertEquals( "chmod --password ';password'", lines[2] );
+        assertEquals( "'chmod' '--password' ';password'", lines[2] );
 
         commandline = new Commandline( newShell() );
         commandline.setExecutable( "chmod" );
@@ -158,7 +157,7 @@ public class BourneShellTest
 
         assertEquals( "/bin/sh", lines[0] );
         assertEquals( "-c", lines[1] );
-        assertEquals( "chmod --password ';password'", lines[2] );
+        assertEquals( "'chmod' '--password' ';password'", lines[2] );
 
         commandline = new Commandline( new CmdShell() );
         commandline.getShell().setQuotedArgumentsEnabled( true );
@@ -206,7 +205,7 @@ public class BourneShellTest
 
         assertEquals( "/bin/sh", lines[0] );
         assertEquals( "-c", lines[1] );
-        assertEquals( "chmod ' ' '|' '&&' '||' ';' ';;' '&' '()' '<' '<<' '>' '>>' '*' '?' '[' ']' '{' '}' '`'",
+        assertEquals( "'chmod' ' ' '|' '&&' '||' ';' ';;' '&' '()' '<' '<<' '>' '>>' '*' '?' '[' ']' '{' '}' '`'",
                       lines[2] );
 
     }
