@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager REST API implementation: Get a single Flow state.
+ * Flow Manager REST API implementation: Get a single Flow state.
  *
  * The "{flow-id}" request attribute value is the Flow ID of the flow to get:
  *

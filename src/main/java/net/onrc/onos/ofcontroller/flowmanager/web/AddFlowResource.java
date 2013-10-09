@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager REST API implementation: Add a Flow with the Flow
+ * Flow Manager REST API implementation: Add a Flow with the Flow
  * Entries:
  *
  *   POST /wm/flow/add/json

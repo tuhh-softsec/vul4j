@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager REST API implementation: Get all Flow state.
+ * Flow Manager REST API implementation: Get all Flow state.
  *
  *   GET /wm/flow/getall/json"
  */

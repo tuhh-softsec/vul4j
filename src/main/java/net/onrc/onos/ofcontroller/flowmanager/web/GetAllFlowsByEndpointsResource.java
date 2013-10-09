@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager REST API implementation: Get all Flow state for given
+ * Flow Manager REST API implementation: Get all Flow state for given
  * source and destination switches and ports.
  *
  * The "{src-dpid}" request attribute value is the source DPID of the flows to
