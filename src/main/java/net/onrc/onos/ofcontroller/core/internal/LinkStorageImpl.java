@@ -144,7 +144,6 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public void deleteLink(Link lt) {
 		IPortObject vportSrc = null, vportDst = null;
-		int count = 0;
 		
 		log.debug("deleteLink(): {}", lt);
 		
@@ -161,15 +160,17 @@ public class LinkStorageImpl implements ILinkStorage {
      		// FIXME: This needs to remove all edges
          	
          	if (vportSrc != null && vportDst != null) {
-
-   /*      		for (Edge e : vportSrc.asVertex().getEdges(Direction.OUT)) {
+/*
+        		int count = 0;
+         		for (Edge e : vportSrc.asVertex().getEdges(Direction.OUT)) {
          			log.debug("deleteLink(): {} in {} out {}", 
          					new Object[]{e.getLabel(), e.getVertex(Direction.IN), e.getVertex(Direction.OUT)});
          			if (e.getLabel().equals("link") && e.getVertex(Direction.IN).equals(vportDst)) {
          				graph.removeEdge(e);
          				count++;
          			}
-         		}*/
+         		}
+*/
          		vportSrc.removeLink(vportDst);
         		dbop.commit();
             	log.debug("deleteLink(): deleted edges src {} dst {}", new Object[]{
