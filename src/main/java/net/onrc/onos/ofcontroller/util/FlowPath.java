@@ -1,7 +1,5 @@
 package net.onrc.onos.ofcontroller.util;
 
-import java.util.ArrayList;
-
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
