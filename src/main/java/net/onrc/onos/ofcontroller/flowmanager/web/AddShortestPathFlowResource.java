@@ -14,10 +14,23 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @short Flow Manager REST API implementation: Add a Flow by delegating
+ * the Shortest Path computation to ONOS:
+ *
+ *   POST /wm/flow/add-shortest-path/json
+ */
 public class AddShortestPathFlowResource extends ServerResource {
 
     protected static Logger log = LoggerFactory.getLogger(AddShortestPathFlowResource.class);
 
+    /**
+     * Implement the API.
+     *
+     * @param flowJson a string with the JSON representation of the Flow to
+     * add.
+     * @return the Flow ID of the added flow.
+     */
     @Post("json")
     public FlowId store(String flowJson) {
 	FlowId result = new FlowId();

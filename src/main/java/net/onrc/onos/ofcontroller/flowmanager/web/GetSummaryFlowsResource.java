@@ -11,9 +11,25 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @short Flow Manager REST API implementation: Get summary of all installed
+ * flows by all installers in a given range.
+ *
+ * The "{flow-id}" request attribute value is the Flow ID of the flow in the
+ * flow range to get.
+ * The "{max-flows}" request attribute value is the maximum number of flows
+ * to be returned.
+ *
+ *   GET /wm/flow/getsummary/{flow-id}/{max-flows}/json"
+ */
 public class GetSummaryFlowsResource extends ServerResource {
     protected static Logger log = LoggerFactory.getLogger(GetSummaryFlowsResource.class);
 
+    /**
+     * Implement the API.
+     *
+     * @return the collection of Flow states if any found, otherwise null.
+     */
     @Get("json")
     public ArrayList<IFlowPath> retrieve() {
     	ArrayList<IFlowPath> result = null;

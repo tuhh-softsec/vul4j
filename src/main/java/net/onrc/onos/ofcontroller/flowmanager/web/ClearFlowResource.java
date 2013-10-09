@@ -8,9 +8,22 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @short Flow Manager REST API implementation: Clear internal Flow state.
+ *
+ * The "{flow-id}" request attribute value can be either a specific Flow ID,
+ * or the keyword "all" to clear all Flows:
+ *
+ *   GET /wm/flow/clear/{flow-id}/json
+ */
 public class ClearFlowResource extends ServerResource {
     protected static Logger log = LoggerFactory.getLogger(ClearFlowResource.class);
 
+    /**
+     * Implement the API.
+     *
+     * @return true on success, otehrwise false.
+     */
     @Get("json")
     public Boolean retrieve() {
 	Boolean result = false;
