@@ -78,7 +78,12 @@ public class LProbeRepository implements Repository{
         MultivaluedMap<String, String> params) {
         Query query = em.createNativeQuery(sql);
         for (String filter: filters) {
-            query.setParameter(filter, params.get(filter));
+            List<String> param = params.get(filter);
+            List<String> clean = new ArrayList<String>();
+            for(String p : param) {
+                clean.add(p.replace(",", "|"));
+            }
+            query.setParameter(filter, clean);
         }
         List<Object[]> result = query.getResultList();
         List<Map<String, Object>> res = new ArrayList<Map<String, Object>>();

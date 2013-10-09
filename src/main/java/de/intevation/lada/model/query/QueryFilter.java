@@ -11,6 +11,7 @@ public class QueryFilter
     private String dataIndex;
     private String type;
     private String label;
+    private boolean multiSelect;
 
     /**
      * Default constructor.
@@ -71,5 +72,19 @@ public class QueryFilter
      */
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    /**
+     * @return the multiSelect
+     */
+    public boolean isMultiSelect() {
+        return multiSelect;
+    }
+
+    /**
+     * @param multiSelect the multiSelect to set
+     */
+    public void setMultiSelect(boolean multiSelect) {
+        this.multiSelect = multiSelect;
     }
 }

@@ -72,6 +72,7 @@ public class QueryTools
                     qFilter.setDataIndex(filter.getString("dataIndex"));
                     qFilter.setType(filter.getString("type"));
                     qFilter.setLabel(filter.getString("label"));
+                    qFilter.setMultiSelect(filter.optBoolean("multiselect", false));
                     qFilters.add(qFilter);
                 }
                 qConf.setFilters(qFilters);
