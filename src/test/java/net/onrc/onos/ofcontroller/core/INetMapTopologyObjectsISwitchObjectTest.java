@@ -13,6 +13,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.ofcontroller.core.internal.TestDatabaseManager;
+
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -146,16 +147,16 @@ public class INetMapTopologyObjectsISwitchObjectTest {
 	public void testGetPorts() {
 		String dpid = "00:00:00:00:00:00:0a:07";
 		Short portNumber = 1;
-		int testSwitchPortNumber = 1;
+		final int testSwitchPortNumber = 1;
 		ISwitchObject swObj = ope.newSwitch(dpid);
 		IPortObject portObj = ope.newPort(dpid, portNumber);
 
 		swObj.addPort(portObj);
 		int i = 0;
-		for(IPortObject port : swObj.getPorts()){
+		for(@SuppressWarnings("unused") IPortObject port : swObj.getPorts()){
 			i++;
 		}
-		assertEquals(testSwitchPortNumber, 1);
+		assertEquals(testSwitchPortNumber, i);
 	}
 	
 	/**
