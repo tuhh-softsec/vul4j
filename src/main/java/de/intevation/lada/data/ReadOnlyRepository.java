@@ -43,6 +43,21 @@ public class ReadOnlyRepository implements Repository
     }
 
     /**
+     * Filter object list by the given criteria.
+     *
+     * @param filter  The filter query.
+     * @return Response object.
+     */
+    public <T> Response filter(CriteriaQuery<T> filter, int size, int start) {
+        List<T> result = em.createQuery(filter).getResultList();
+        if (size > 0 && start > -1) {
+            List<T> newList = result.subList(start, size + start);
+            return new Response(true, 200, newList, result.size());
+        }
+        return new Response(true, 200, result);
+    }
+
+    /**
      * Get all objects of type <link>clazz</link>from database.
      *
      * @param clazz     The object type.

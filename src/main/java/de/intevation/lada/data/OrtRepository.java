@@ -171,4 +171,9 @@ public class OrtRepository implements Repository
         }
         return response;
     }
+
+    @Override
+    public <T> Response filter(CriteriaQuery<T> filter, int size, int start) {
+        return null;
+    }
 }

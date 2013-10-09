@@ -21,6 +21,8 @@ public interface Repository
 
     public <T> Response filter(CriteriaQuery<T> filter);
 
+    public <T> Response filter(CriteriaQuery<T> filter, int size, int start);
+
     public <T> Response findAll(Class<T> clazz);
 
     public <T> Response findById(Class<T> clazz, String id);

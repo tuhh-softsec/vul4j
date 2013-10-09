@@ -223,4 +223,9 @@ public class LProbeRepository implements Repository{
     public Response delete(Object object) {
         return null;
     }
+
+    @Override
+    public <T> Response filter(CriteriaQuery<T> filter, int size, int start) {
+        return null;
+    }
 }
