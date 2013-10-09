@@ -83,7 +83,7 @@ public interface INetMapTopologyService extends INetMapService {
 	     * See the documentation for method @ref prepareShortestPathTopo()
 	     * for additional information and usage.
 	     *
-	     * @shortestPathTopo the Shortest Path info handler to release.
+	     * @param shortestPathTopo the Shortest Path info handler to release.
 	     */
 	    void dropShortestPathTopo(Map<Long, ?> shortestPathTopo);
 
@@ -95,7 +95,7 @@ public interface INetMapTopologyService extends INetMapService {
 	     * See the documentation for method @ref prepareShortestPathTopo()
 	     * for additional information and usage.
 	     *
-	     * @paran shortestPathTopoHandler the Shortest Path info handler
+	     * @param shortestPathTopo the Shortest Path info handler
 	     * to use.
 	     * @param src the source in the shortest path computation.
 	     * @param dest the destination in the shortest path computation.

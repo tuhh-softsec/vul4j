@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager REST API implementation: Delete Flow state.
+ * Flow Manager REST API implementation: Delete Flow state.
  *
  * The "{flow-id}" request attribute value can be either a specific Flow ID,
  * or the keyword "all" to delete all Flows:

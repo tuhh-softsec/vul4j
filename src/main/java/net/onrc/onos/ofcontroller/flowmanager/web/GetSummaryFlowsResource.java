@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager REST API implementation: Get summary of all installed
+ * Flow Manager REST API implementation: Get summary of all installed
  * flows by all installers in a given range.
  *
  * The "{flow-id}" request attribute value is the Flow ID of the flow in the

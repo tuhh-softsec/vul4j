@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager REST API implementation: Get all Flow state for a given
+ * Flow Manager REST API implementation: Get all Flow state for a given
  * Installer ID and given source and destination switches and ports.
  *
  * The "{installer-id}" request attribute value is the Installer ID of the

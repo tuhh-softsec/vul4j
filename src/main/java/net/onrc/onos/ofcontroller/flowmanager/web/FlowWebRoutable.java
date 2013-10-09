@@ -7,7 +7,7 @@ import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
 /**
- * @short REST API implementation for the Flow Manager.
+ * REST API implementation for the Flow Manager.
  */
 public class FlowWebRoutable implements RestletRoutable {
     /**

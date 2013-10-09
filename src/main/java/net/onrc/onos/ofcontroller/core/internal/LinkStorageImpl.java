@@ -142,7 +142,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	
 	/**
 	 * Delete a record in the LinkStorage.
-	 * @param link Record to be deleted.
+	 * @param lt Record to be deleted.
 	 */
 	@Override
 	public void deleteLink(Link lt) {

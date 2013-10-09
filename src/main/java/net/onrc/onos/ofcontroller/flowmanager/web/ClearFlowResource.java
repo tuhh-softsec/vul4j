@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager REST API implementation: Clear internal Flow state.
+ * Flow Manager REST API implementation: Clear internal Flow state.
  *
  * The "{flow-id}" request attribute value can be either a specific Flow ID,
  * or the keyword "all" to clear all Flows:

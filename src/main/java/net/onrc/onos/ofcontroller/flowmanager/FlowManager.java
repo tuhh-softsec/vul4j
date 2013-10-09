@@ -65,7 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager class for handling the network flows.
+ * Flow Manager class for handling the network flows.
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
@@ -1212,7 +1212,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * Get summary of all installed flows by all installers in a given range.
      *
      * @param flowId the Flow ID of the first flow in the flow range to get.
-     * @param maxFlows: the maximum number of flows to be returned.
+     * @param maxFlows the maximum number of flows to be returned.
      * @return the Flow Paths if found, otherwise null.
      */
     @Override

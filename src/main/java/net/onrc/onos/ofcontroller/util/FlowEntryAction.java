@@ -1508,7 +1508,7 @@ public class FlowEntryAction {
      * Set the action to output to queue on a port.
      *
      * @param port the port to set.
-     * @param int queueId the queue ID to set.
+     * @param queueId the queue ID to set.
      */
     public void setActionEnqueue(Port port, int queueId) {
 	actionEnqueue = new ActionEnqueue(port, queueId);

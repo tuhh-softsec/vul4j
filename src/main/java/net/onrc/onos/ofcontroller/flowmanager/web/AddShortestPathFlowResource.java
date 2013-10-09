@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @short Flow Manager REST API implementation: Add a Flow by delegating
+ * Flow Manager REST API implementation: Add a Flow by delegating
  * the Shortest Path computation to ONOS:
  *
  *   POST /wm/flow/add-shortest-path/json

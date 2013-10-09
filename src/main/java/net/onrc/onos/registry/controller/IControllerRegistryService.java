@@ -80,7 +80,7 @@ public interface IControllerRegistryService extends IFloodlightService {
 	/**
 	 * Register a controller to the ONOS cluster. Must be called before
 	 * the registry can be used to take control of any switches.
-	 * @param controller A unique string ID identifying this controller
+	 * @param controllerId A unique string ID identifying this controller
 	 * in the cluster
 	 * @throws errors connecting to registry service, 
 	 * controllerId already registered
