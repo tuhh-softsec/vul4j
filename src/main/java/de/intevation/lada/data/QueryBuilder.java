@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -63,6 +64,25 @@ public class QueryBuilder<T>
     }
 
     /**
+     * Logical AND with like operation.
+     *
+     * @param id    The database column name.
+     * @param value The filter value
+     * @return The builder itself.
+     */
+    public QueryBuilder<T> andLike(String id, String value) {
+        Path<String> path = this.root.get(id);
+        Predicate p = this.builder.like(path, value);
+        if (this.filter != null) {
+            this.filter = this.builder.and(this.filter, p);
+        }
+        else {
+            this.filter = this.builder.and(p);
+        }
+        return this;
+    }
+
+    /**
      * Logical OR operation.
      *
      * @param id    The database column name
@@ -71,6 +91,25 @@ public class QueryBuilder<T>
      */
     public QueryBuilder<T> or(String id, Object value) {
         Predicate p = this.builder.equal(this.root.get(id), value);
+        if (this.filter != null) {
+            this.filter = this.builder.or(this.filter, p);
+        }
+        else {
+            this.filter = this.builder.or(p);
+        }
+        return this;
+    }
+
+    /**
+     * Logical OR with like operation.
+     *
+     * @param column    The database column name.
+     * @param value     The filter value
+     * @return The builder itself.
+     */
+    public QueryBuilder<T> orLike(String id, String value) {
+        Path<String> path = this.root.get(id);
+        Predicate p = this.builder.like(path, value);
         if (this.filter != null) {
             this.filter = this.builder.or(this.filter, p);
         }
