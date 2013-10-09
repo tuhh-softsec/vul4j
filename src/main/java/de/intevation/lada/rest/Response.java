@@ -28,6 +28,7 @@ public class Response implements java.io.Serializable {
     private Map<String, String> errors;
     private Map<String, String> warnings;
     private Boolean readonly;
+    private int totalCount;
 
     /**
      * Constructor to create a basic Response object.
@@ -43,6 +44,24 @@ public class Response implements java.io.Serializable {
         this.errors = new HashMap<String, String>();
         this.warnings = new HashMap<String, String>();
         this.readonly = Boolean.FALSE;
+        this.totalCount = 0;
+    }
+
+    /**
+     * Constructor to create a basic Response object.
+     *
+     * @param success   Information if the operation was successful.
+     * @param code      The return code.
+     * @param data      The data object wrapped by the response.
+     */
+    public Response(boolean success, int code, Object data, int totalCount) {
+        this.success = success;
+        this.message = Integer.toString(code);
+        this.data = data;
+        this.errors = new HashMap<String, String>();
+        this.warnings = new HashMap<String, String>();
+        this.readonly = Boolean.FALSE;
+        this.totalCount = totalCount;
     }
 
     public Boolean getSuccess() {
@@ -91,6 +110,20 @@ public class Response implements java.io.Serializable {
 
     public void setReadonly(Boolean readonly) {
         this.readonly = readonly;
+    }
+
+    /**
+     * @return the totalCount
+     */
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    /**
+     * @param totalCount the totalCount to set
+     */
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
     private HashMap<String, String> convertCodes(Map<String, Integer> codes) {
