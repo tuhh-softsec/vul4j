@@ -11,9 +11,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.auth.Authentication;
 import de.intevation.lada.auth.AuthenticationException;
+import de.intevation.lada.data.QueryBuilder;
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SVerwaltungseinheit;
 
@@ -46,7 +49,7 @@ public class SVerwaltungseinheitService
      * @param headers   The HTTP header containing authorization information.
      * @return Response object.
      */
-    @GET
+/*    @GET
     @Produces("text/json")
     public Response findAll(@Context HttpHeaders headers) {
         try {
@@ -59,7 +62,7 @@ public class SVerwaltungseinheitService
             return new Response(false, 699, new ArrayList<SVerwaltungseinheit>());
         }
     }
-
+*/
     /**
      * Request a SVerwaltungseinheit object via its id.
      *
@@ -82,6 +85,39 @@ public class SVerwaltungseinheitService
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<SVerwaltungseinheit>());
+        }
+    }
+
+    /**
+     * Request SVerwaltungseinheit objects filtered by the given criteria.
+     *
+     * @param filter    The filter string.
+     * @param headers   The HTTP header containing authorization information.
+     * @return Response object.
+     */
+    @GET
+    @Produces("text/json")
+    public Response filter(
+        @Context UriInfo info,
+        @Context HttpHeaders headers
+    ){
+        try {
+            if (!authentication.isAuthorizedUser(headers)) {
+                return new Response(false, 699, null);
+            }
+            MultivaluedMap<String, String> params = info.getQueryParameters();
+            if (params.isEmpty() || !params.containsKey("query")) {
+                return repository.findAll(SVerwaltungseinheit.class);
+            }
+            String filter = params.getFirst("query");
+            QueryBuilder<SVerwaltungseinheit> builder =
+                new QueryBuilder<SVerwaltungseinheit>(
+                    repository.getEntityManager(), SVerwaltungseinheit.class);
+            builder.andLike("bezeichnung", filter + "%");
+            return repository.filter(builder.getQuery());
+        }
+        catch(AuthenticationException ae) {
+            return new Response(false, 699, null);
         }
     }
 }
