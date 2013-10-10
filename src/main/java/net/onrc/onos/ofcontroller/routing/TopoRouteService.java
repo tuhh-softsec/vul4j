@@ -1,7 +1,5 @@
 package net.onrc.onos.ofcontroller.routing;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,8 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.pipes.PipeFunction;
-import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
 
 
 /**
