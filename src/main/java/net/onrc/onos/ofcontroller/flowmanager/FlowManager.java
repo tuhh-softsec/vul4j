@@ -878,7 +878,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
-	List<Thread> threads = new LinkedList<Thread>();
 	final ConcurrentLinkedQueue<FlowId> concurrentAllFlowIds =
 	    new ConcurrentLinkedQueue<FlowId>();
 
@@ -906,6 +905,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Create the threads to delete the Flow Paths
 	//
+	List<Thread> threads = new LinkedList<Thread>();
 	for (int i = 0; i < 10; i++) {
 	    Thread thread = new Thread(new Runnable() {
 		@Override
