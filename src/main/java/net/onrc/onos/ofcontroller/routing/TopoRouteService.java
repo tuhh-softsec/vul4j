@@ -505,7 +505,7 @@ public class TopoRouteService implements ITopoRouteService {
 	    String type = v.getProperty("type").toString();
 	    // System.out.println("type: " + type);
 	    if (type.equals("port")) {
-		String number = v.getProperty("number").toString();
+		//String number = v.getProperty("number").toString();
 		// System.out.println("number: " + number);
 
 		Object obj = v.getProperty("number");
