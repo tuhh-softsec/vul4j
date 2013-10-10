@@ -224,7 +224,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		return Command.CONTINUE;
 	}
 	
-	protected void handleArpRequest(IOFSwitch sw, OFPacketIn pi, ARP arp) {
+	private void handleArpRequest(IOFSwitch sw, OFPacketIn pi, ARP arp) {
 		if (log.isTraceEnabled()) {
 			log.trace("ARP request received for {}", 
 					inetAddressToString(arp.getTargetProtocolAddress()));
@@ -277,7 +277,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 	}
 	
-	protected void handleArpReply(IOFSwitch sw, OFPacketIn pi, ARP arp){
+	private void handleArpReply(IOFSwitch sw, OFPacketIn pi, ARP arp){
 		if (log.isTraceEnabled()) {
 			log.trace("ARP reply recieved: {} => {}, on {}/{}", new Object[] { 
 					inetAddressToString(arp.getSenderProtocolAddress()),

@@ -57,7 +57,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
-import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketOut;
 import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
@@ -140,6 +139,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected Map<InetAddress, Path> pushedPaths;
 	protected Map<Prefix, Path> prefixToPath;
 	protected Multimap<Prefix, PushedFlowMod> pushedFlows;
+	
+	private FlowCache flowCache;
 	
 	protected volatile Map<Long, ?> topoRouteTopology = null;
 		
@@ -280,6 +281,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		pushedPaths = new HashMap<InetAddress, Path>();
 		prefixToPath = new HashMap<Prefix, Path>();
 		pushedFlows = HashMultimap.<Prefix, PushedFlowMod>create();
+		
+		flowCache = new FlowCache(floodlightProvider);
 		
 		bgpUpdatesExecutor = Executors.newSingleThreadExecutor(
 				new ThreadFactoryBuilder().setNameFormat("bgp-updates-%d").build());
@@ -549,31 +552,16 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        actions.add(outputAction);
 	        fm.setActions(actions);
 	        
-	        //Write to switch
-	        IOFSwitch sw = floodlightProvider.getSwitches()
-	        			.get(srcInterface.getDpid());
-	        
-            if (sw == null){
-            	log.warn("Switch not found when pushing flow mod");
-            	continue;
-            }
-            
-            pushedFlows.put(prefix, new PushedFlowMod(sw.getId(), fm));
-            
-            List<OFMessage> msglist = new ArrayList<OFMessage>();
-            msglist.add(fm);
-            try {
-				sw.write(msglist, null);
-				sw.flush();
-				
-				/*
-				 * XXX Rate limit hack!
-				 * This should be solved properly by adding a rate limiting
-				 * layer on top of the switches if we know they need it.
-				 */
+	        pushedFlows.put(prefix, new PushedFlowMod(srcInterface.getDpid(), fm));
+	        flowCache.write(srcInterface.getDpid(), fm);
+
+			/*
+			 * XXX Rate limit hack!
+			 * This should be solved properly by adding a rate limiting
+			 * layer on top of the switches if we know they need it.
+			 */
+	        try {
 				Thread.sleep(1);
-			} catch (IOException e) {
-				log.error("Failure writing flow mod", e);
 			} catch (InterruptedException e) {
 				// TODO handle this properly
 				log.error("Interrupted", e);
@@ -653,24 +641,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	private void sendDeleteFlowMod(OFFlowMod addFlowMod, long dpid) {
-		addFlowMod.setCommand(OFFlowMod.OFPFC_DELETE_STRICT)
-		.setOutPort(OFPort.OFPP_NONE)
-		.setLengthU(OFFlowMod.MINIMUM_LENGTH);
-		
-		addFlowMod.getActions().clear();
-		
-		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
-		if (sw == null) {
-        	log.warn("Switch not found when pushing delete flow mod");
-        	return;
-		}
-		
-		try {
-			sw.write(addFlowMod, null);
-			sw.flush();
-		} catch (IOException e) {
-			log.error("Failure writing flow mod", e);
-		}
+		flowCache.delete(dpid, addFlowMod);
 	}
 	
 	//TODO test next-hop changes
@@ -741,7 +712,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				return;
 			}
 			
-			pushedFlows.addAll(installPath(shortestPath.flowEntries(), dstMacAddress));
+			List<PushedFlowMod> pushedFlowMods = installPath(shortestPath.flowEntries(), dstMacAddress);
+			pushedFlows.addAll(pushedFlowMods);
 		}
 		
 		path.setFlowMods(pushedFlows);
@@ -781,24 +753,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             
             fm.setMatch(match);
             
-            IOFSwitch sw = floodlightProvider.getSwitches().get(flowEntry.dpid().value());
+            flowMods.add(new PushedFlowMod(flowEntry.dpid().value(), fm));
             
-            if (sw == null){
-            	log.warn("Switch not found when pushing flow mod");
-            	continue;
-            }
-            
-            flowMods.add(new PushedFlowMod(sw.getId(), fm));
-            
-            List<OFMessage> msglist = new ArrayList<OFMessage>();
-            msglist.add(fm);
-            try {
-				sw.write(msglist, null);
-				sw.flush();
-			} catch (IOException e) {
-				log.error("Failure writing flow mod", e);
-			}
-            
+            flowCache.write(flowEntry.dpid().value(), fm);
+                        
             try {
                 fm = fm.clone();
             } catch (CloneNotSupportedException e1) {
@@ -852,7 +810,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        //Common match fields
 	        forwardMatchSrc.setDataLayerType(Ethernet.TYPE_IPv4);
 	        forwardMatchSrc.setNetworkProtocol(IPv4.PROTOCOL_TCP);
-	        forwardMatchSrc.setTransportDestination(BGP_PORT);
+	        //forwardMatchSrc.setTransportDestination(BGP_PORT);
 	        forwardMatchSrc.setWildcards(forwardMatchSrc.getWildcards() & ~OFMatch.OFPFW_IN_PORT
 	        				& ~OFMatch.OFPFW_DL_TYPE & ~OFMatch.OFPFW_NW_PROTO);
 	        
@@ -934,29 +892,15 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				((OFActionOutput)reverseIcmp.getActions().get(0))
 						.setPort(flowEntry.inPort().value());
 				reverseIcmp.setMatch(reverseIcmpMatch);
-		
-
-				IOFSwitch sw = floodlightProvider.getSwitches().get(flowEntry.dpid().value());
 				
-				if (sw == null) {
-					log.warn("Switch not found when pushing BGP paths");
-					return;
-				}
-				
-				List<OFMessage> msgList = new ArrayList<OFMessage>(2);
-				msgList.add(forwardFlowModSrc);
-				msgList.add(forwardFlowModDst);
-				msgList.add(reverseFlowModSrc);
-				msgList.add(reverseFlowModDst);
-				msgList.add(forwardIcmp);
-				msgList.add(reverseIcmp);
-				
-				try {
-					sw.write(msgList, null);
-					sw.flush();
-				} catch (IOException e) {
-					log.error("Failure writing flow mod", e);
-				}
+				List<OFFlowMod> flowModList = new ArrayList<OFFlowMod>(6);
+				flowModList.add(forwardFlowModSrc);
+				flowModList.add(forwardFlowModDst);
+				flowModList.add(reverseFlowModSrc);
+				flowModList.add(reverseFlowModDst);
+				flowModList.add(forwardIcmp);
+				flowModList.add(reverseIcmp);
+				flowCache.write(flowEntry.dpid().value(), flowModList);
 			}
 		}
 	}
@@ -1039,17 +983,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
 		
 		for (String strdpid : switches){
-			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
-			if (sw == null) {
-				log.debug("Couldn't find switch to push ARP flow");
-			}
-			else {
-				try {
-					sw.write(fm, null);
-				} catch (IOException e) {
-					log.warn("Failure writing ARP flow to switch", e);
-				}
-			}
+			flowCache.write(HexString.toLong(strdpid), fm);
 		}
 	}
 	
@@ -1100,22 +1034,13 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		fmBDDP.setPriority(ARP_PRIORITY);
 		fmBDDP.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
 		
+		List<OFFlowMod> flowModList = new ArrayList<OFFlowMod>(3); 
+		flowModList.add(fm);
+		flowModList.add(fmLLDP);
+		flowModList.add(fmBDDP);
+		
 		for (String strdpid : switches){
-			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
-			if (sw == null) {
-				log.debug("Couldn't find switch to push default deny flow");
-			}
-			else {
-				List<OFMessage> msgList = new ArrayList<OFMessage>();
-				msgList.add(fm);
-				msgList.add(fmLLDP);
-				msgList.add(fmBDDP);
-				try {
-					sw.write(msgList, null);
-				} catch (IOException e) {
-					log.warn("Failure writing default deny flow to switch", e);
-				}
-			}
+			flowCache.write(HexString.toLong(strdpid), flowModList);
 		}
 	}
 	
@@ -1248,6 +1173,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		if (!topologyReady) {
 			sw.clearAllFlowMods();
 		}
+		
+		flowCache.switchConnected(sw);
 	}
 
 	@Override
