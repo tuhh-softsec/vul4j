@@ -1647,7 +1647,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Remove the old Flow Entries, and add the new Flow Entries
 	//
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
-	LinkedList<IFlowEntry> deleteFlowEntries = new LinkedList<IFlowEntry>();
 	for (IFlowEntry flowEntryObj : flowEntries) {
 	    flowEntryObj.setUserState("FE_USER_DELETE");
 	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
