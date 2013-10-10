@@ -1606,7 +1606,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return true on success, otherwise false.
      */
     public boolean reconcileFlow(IFlowPath flowObj, DataPath newDataPath) {
-	Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
 
 	//
 	// Set the incoming port matching and the outgoing port output
