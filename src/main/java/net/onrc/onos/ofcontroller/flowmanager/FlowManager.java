@@ -1333,7 +1333,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries() {
     	Iterable<IFlowPath> flowPathsObj = null;
     	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
-    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
     	op.commit();
     	
@@ -1356,6 +1355,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     		flowPathsObjArray.add(flowObj);
     	}
     	/*
+    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
     	for (IFlowPath flowObj : flowPathsObj) {
     	    //
     	    // Extract the Flow state
