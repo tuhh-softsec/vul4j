@@ -11,15 +11,12 @@ implements Serializable
 {
     @Column(name = "probe_id", nullable = false)
     private String probeId;
-    @Column(name = "nebenproben_nr", nullable = false)
-    private String nebenprobenNr;
 
     public LProbeInfoId() {
     }
 
-    public LProbeInfoId(String probeId, String nebenprobenNr) {
+    public LProbeInfoId(String probeId) {
         this.probeId = probeId;
-        this.nebenprobenNr = nebenprobenNr;
     }
 
     public String getProbeId() {
@@ -28,14 +25,6 @@ implements Serializable
 
     public void setProbeId(String probeId) {
         this.probeId = probeId;
-    }
-
-    public String getNebenprobenNr() {
-        return this.nebenprobenNr;
-    }
-
-    public void setNebenprobenNr(String nebenprobenNr) {
-        this.nebenprobenNr = nebenprobenNr;
     }
 
     @Override
@@ -50,8 +39,7 @@ implements Serializable
 
         return ((this.getProbeId() == castOther.getProbeId()) || (this
                 .getProbeId() != null && castOther.getProbeId() != null && this
-                .getProbeId().equals(castOther.getProbeId())))
-                && (this.getNebenprobenNr() == castOther.getNebenprobenNr());
+                .getProbeId().equals(castOther.getProbeId())));
     }
 
     @Override
@@ -60,7 +48,7 @@ implements Serializable
 
         result = 37 * result
             + (getProbeId() == null ? 0 : this.getProbeId().hashCode());
-        result = 37 * result + this.getNebenprobenNr().hashCode();
+        result = 37 * result;
         return result;
     }
 }
