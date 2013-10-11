@@ -40,6 +40,7 @@ import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
+import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 import net.onrc.onos.ofcontroller.routing.TopoRouteService;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -56,7 +57,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
-import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketOut;
 import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
@@ -76,7 +76,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
 									ITopologyListener, IArpRequester,
-									IOFSwitchListener, ILayer3InfoService {
+									IOFSwitchListener, ILayer3InfoService,
+									IProxyArpService {
 	
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
@@ -138,6 +139,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected Map<InetAddress, Path> pushedPaths;
 	protected Map<Prefix, Path> prefixToPath;
 	protected Multimap<Prefix, PushedFlowMod> pushedFlows;
+	
+	private FlowCache flowCache;
 	
 	protected volatile Map<Long, ?> topoRouteTopology = null;
 		
@@ -232,6 +235,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Map<Class<? extends IFloodlightService>, IFloodlightService> m 
 			= new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
 		m.put(IBgpRouteService.class, this);
+		m.put(IProxyArpService.class, this);
 		return m;
 	}
 
@@ -262,7 +266,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology, this);
+		proxyArp = new ProxyArpManager(floodlightProvider, topology, this, restApi);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -277,6 +281,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		pushedPaths = new HashMap<InetAddress, Path>();
 		prefixToPath = new HashMap<Prefix, Path>();
 		pushedFlows = HashMultimap.<Prefix, PushedFlowMod>create();
+		
+		flowCache = new FlowCache(floodlightProvider);
 		
 		bgpUpdatesExecutor = Executors.newSingleThreadExecutor(
 				new ThreadFactoryBuilder().setNameFormat("bgp-updates-%d").build());
@@ -429,7 +435,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		InetAddress dstIpAddress = rib.getNextHop();
 		
 		//See if we know the MAC address of the next hop
-		byte[] nextHopMacAddress = proxyArp.getMacAddress(rib.getNextHop());
+		MACAddress nextHopMacAddress = proxyArp.getMacAddress(rib.getNextHop());
 		
 		//Find the attachment point (egress interface) of the next hop
 		Interface egressInterface = null;
@@ -463,7 +469,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				Path path = pushedPaths.get(dstIpAddress);
 				if (path == null) {
 					path = new Path(egressInterface, dstIpAddress);
-					calculateAndPushPath(path, MACAddress.valueOf(nextHopMacAddress));
+					calculateAndPushPath(path, nextHopMacAddress);
 					pushedPaths.put(dstIpAddress, path);
 				}
 				
@@ -476,9 +482,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
-	private void addPrefixFlows(Prefix prefix, Interface egressInterface, byte[] nextHopMacAddress) {		
+	private void addPrefixFlows(Prefix prefix, Interface egressInterface, MACAddress nextHopMacAddress) {		
 		log.debug("Adding flows for prefix {} added, next hop mac {}",
-				prefix, HexString.toHexString(nextHopMacAddress));
+				prefix, nextHopMacAddress);
 		
 		//We only need one flow mod per switch, so pick one interface on each switch
 		Map<Long, Interface> srcInterfaces = new HashMap<Long, Interface>();
@@ -533,7 +539,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        
 	        //Set up MAC rewrite action
 	        OFActionDataLayerDestination macRewriteAction = new OFActionDataLayerDestination();
-	        macRewriteAction.setDataLayerAddress(nextHopMacAddress);
+	        macRewriteAction.setDataLayerAddress(nextHopMacAddress.toBytes());
 	        
 	        //Set up output action
 	        OFActionOutput outputAction = new OFActionOutput();
@@ -546,31 +552,16 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        actions.add(outputAction);
 	        fm.setActions(actions);
 	        
-	        //Write to switch
-	        IOFSwitch sw = floodlightProvider.getSwitches()
-	        			.get(srcInterface.getDpid());
-	        
-            if (sw == null){
-            	log.warn("Switch not found when pushing flow mod");
-            	continue;
-            }
-            
-            pushedFlows.put(prefix, new PushedFlowMod(sw.getId(), fm));
-            
-            List<OFMessage> msglist = new ArrayList<OFMessage>();
-            msglist.add(fm);
-            try {
-				sw.write(msglist, null);
-				sw.flush();
-				
-				/*
-				 * XXX Rate limit hack!
-				 * This should be solved properly by adding a rate limiting
-				 * layer on top of the switches if we know they need it.
-				 */
+	        pushedFlows.put(prefix, new PushedFlowMod(srcInterface.getDpid(), fm));
+	        flowCache.write(srcInterface.getDpid(), fm);
+
+			/*
+			 * XXX Rate limit hack!
+			 * This should be solved properly by adding a rate limiting
+			 * layer on top of the switches if we know they need it.
+			 */
+	        try {
 				Thread.sleep(1);
-			} catch (IOException e) {
-				log.error("Failure writing flow mod", e);
 			} catch (InterruptedException e) {
 				// TODO handle this properly
 				log.error("Interrupted", e);
@@ -650,24 +641,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	private void sendDeleteFlowMod(OFFlowMod addFlowMod, long dpid) {
-		addFlowMod.setCommand(OFFlowMod.OFPFC_DELETE_STRICT)
-		.setOutPort(OFPort.OFPP_NONE)
-		.setLengthU(OFFlowMod.MINIMUM_LENGTH);
-		
-		addFlowMod.getActions().clear();
-		
-		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
-		if (sw == null) {
-        	log.warn("Switch not found when pushing delete flow mod");
-        	return;
-		}
-		
-		try {
-			sw.write(addFlowMod, null);
-			sw.flush();
-		} catch (IOException e) {
-			log.error("Failure writing flow mod", e);
-		}
+		flowCache.delete(dpid, addFlowMod);
 	}
 	
 	//TODO test next-hop changes
@@ -694,8 +668,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			
 			//See if we know the MAC address of the peer. If not we can't
 			//do anything until we learn it
-			byte[] mac = proxyArp.getMacAddress(peer.getIpAddress());
-			if (mac == null) {
+			MACAddress macAddress = proxyArp.getMacAddress(peer.getIpAddress());
+			if (macAddress == null) {
 				log.debug("Don't know MAC for {}", peer.getIpAddress().getHostAddress());
 				//Put in the pending paths list first
 				pathsWaitingOnArp.put(peer.getIpAddress(), path);
@@ -705,7 +679,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 			
 			//If we know the MAC, lets go ahead and push the paths to this peer
-			calculateAndPushPath(path, MACAddress.valueOf(mac));
+			calculateAndPushPath(path, macAddress);
 		}
 	}
 	
@@ -738,7 +712,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				return;
 			}
 			
-			pushedFlows.addAll(installPath(shortestPath.flowEntries(), dstMacAddress));
+			List<PushedFlowMod> pushedFlowMods = installPath(shortestPath.flowEntries(), dstMacAddress);
+			pushedFlows.addAll(pushedFlowMods);
 		}
 		
 		path.setFlowMods(pushedFlows);
@@ -778,24 +753,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             
             fm.setMatch(match);
             
-            IOFSwitch sw = floodlightProvider.getSwitches().get(flowEntry.dpid().value());
+            flowMods.add(new PushedFlowMod(flowEntry.dpid().value(), fm));
             
-            if (sw == null){
-            	log.warn("Switch not found when pushing flow mod");
-            	continue;
-            }
-            
-            flowMods.add(new PushedFlowMod(sw.getId(), fm));
-            
-            List<OFMessage> msglist = new ArrayList<OFMessage>();
-            msglist.add(fm);
-            try {
-				sw.write(msglist, null);
-				sw.flush();
-			} catch (IOException e) {
-				log.error("Failure writing flow mod", e);
-			}
-            
+            flowCache.write(flowEntry.dpid().value(), fm);
+                        
             try {
                 fm = fm.clone();
             } catch (CloneNotSupportedException e1) {
@@ -849,7 +810,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	        //Common match fields
 	        forwardMatchSrc.setDataLayerType(Ethernet.TYPE_IPv4);
 	        forwardMatchSrc.setNetworkProtocol(IPv4.PROTOCOL_TCP);
-	        forwardMatchSrc.setTransportDestination(BGP_PORT);
+	        //forwardMatchSrc.setTransportDestination(BGP_PORT);
 	        forwardMatchSrc.setWildcards(forwardMatchSrc.getWildcards() & ~OFMatch.OFPFW_IN_PORT
 	        				& ~OFMatch.OFPFW_DL_TYPE & ~OFMatch.OFPFW_NW_PROTO);
 	        
@@ -931,37 +892,23 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				((OFActionOutput)reverseIcmp.getActions().get(0))
 						.setPort(flowEntry.inPort().value());
 				reverseIcmp.setMatch(reverseIcmpMatch);
-		
-
-				IOFSwitch sw = floodlightProvider.getSwitches().get(flowEntry.dpid().value());
 				
-				if (sw == null) {
-					log.warn("Switch not found when pushing BGP paths");
-					return;
-				}
-				
-				List<OFMessage> msgList = new ArrayList<OFMessage>(2);
-				msgList.add(forwardFlowModSrc);
-				msgList.add(forwardFlowModDst);
-				msgList.add(reverseFlowModSrc);
-				msgList.add(reverseFlowModDst);
-				msgList.add(forwardIcmp);
-				msgList.add(reverseIcmp);
-				
-				try {
-					sw.write(msgList, null);
-					sw.flush();
-				} catch (IOException e) {
-					log.error("Failure writing flow mod", e);
-				}
+				List<OFFlowMod> flowModList = new ArrayList<OFFlowMod>(6);
+				flowModList.add(forwardFlowModSrc);
+				flowModList.add(forwardFlowModDst);
+				flowModList.add(reverseFlowModSrc);
+				flowModList.add(reverseFlowModDst);
+				flowModList.add(forwardIcmp);
+				flowModList.add(reverseIcmp);
+				flowCache.write(flowEntry.dpid().value(), flowModList);
 			}
 		}
 	}
 	
 	@Override
-	public void arpResponse(InetAddress ipAddress, byte[] macAddress) {
-		log.debug("Received ARP response: {} => {}", ipAddress.getHostAddress(), 
-				MACAddress.valueOf(macAddress).toString());
+	public void arpResponse(InetAddress ipAddress, MACAddress macAddress) {
+		log.debug("Received ARP response: {} => {}", 
+				ipAddress.getHostAddress(), macAddress);
 		
 		/*
 		 * We synchronize on this to prevent changes to the ptree while we're pushing
@@ -973,8 +920,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			
 			if (path != null) {
 				log.debug("Pushing path to {} at {} on {}", new Object[] {
-						path.getDstIpAddress().getHostAddress(), 
-						MACAddress.valueOf(macAddress),
+						path.getDstIpAddress().getHostAddress(), macAddress,
 						path.getDstInterface().getSwitchPort()});
 				//These paths should always be to BGP peers. Paths to non-peers are
 				//handled once the first prefix is ready to push
@@ -986,7 +932,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					}
 				}
 				else {
-					calculateAndPushPath(path, MACAddress.valueOf(macAddress));
+					calculateAndPushPath(path, macAddress);
 					pushedPaths.put(path.getDstIpAddress(), path);
 				}
 			}
@@ -1037,17 +983,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
 		
 		for (String strdpid : switches){
-			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
-			if (sw == null) {
-				log.debug("Couldn't find switch to push ARP flow");
-			}
-			else {
-				try {
-					sw.write(fm, null);
-				} catch (IOException e) {
-					log.warn("Failure writing ARP flow to switch", e);
-				}
-			}
+			flowCache.write(HexString.toLong(strdpid), fm);
 		}
 	}
 	
@@ -1098,22 +1034,13 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		fmBDDP.setPriority(ARP_PRIORITY);
 		fmBDDP.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
 		
+		List<OFFlowMod> flowModList = new ArrayList<OFFlowMod>(3); 
+		flowModList.add(fm);
+		flowModList.add(fmLLDP);
+		flowModList.add(fmBDDP);
+		
 		for (String strdpid : switches){
-			IOFSwitch sw = floodlightProvider.getSwitches().get(HexString.toLong(strdpid));
-			if (sw == null) {
-				log.debug("Couldn't find switch to push default deny flow");
-			}
-			else {
-				List<OFMessage> msgList = new ArrayList<OFMessage>();
-				msgList.add(fm);
-				msgList.add(fmLLDP);
-				msgList.add(fmBDDP);
-				try {
-					sw.write(msgList, null);
-				} catch (IOException e) {
-					log.warn("Failure writing default deny flow to switch", e);
-				}
-			}
+			flowCache.write(HexString.toLong(strdpid), flowModList);
 		}
 	}
 	
@@ -1246,6 +1173,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		if (!topologyReady) {
 			sw.clearAllFlowMods();
 		}
+		
+		flowCache.switchConnected(sw);
 	}
 
 	@Override
@@ -1298,5 +1227,28 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	@Override
 	public MACAddress getRouterMacAddress() {
 		return bgpdMacAddress;
+	}
+
+	/*
+	 * TODO This is a hack to get the REST API to work for ProxyArpManager.
+	 * The REST API is currently tied to the Floodlight module system and we
+	 * need to separate it to allow ONOS modules to use it. For now we will 
+	 * proxy calls through to the ProxyArpManager (which is not a Floodlight 
+	 * module) through this class which is a module.
+	 */
+	@Override
+	public MACAddress getMacAddress(InetAddress ipAddress) {
+		return proxyArp.getMacAddress(ipAddress);
+	}
+
+	@Override
+	public void sendArpRequest(InetAddress ipAddress, IArpRequester requester,
+			boolean retry) {
+		proxyArp.sendArpRequest(ipAddress, requester, retry);		
+	}
+
+	@Override
+	public List<String> getMappings() {
+		return proxyArp.getMappings();
 	}
 }
