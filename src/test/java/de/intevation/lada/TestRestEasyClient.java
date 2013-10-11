@@ -8,7 +8,7 @@ import org.jboss.resteasy.client.ClientResponse;
 
 public class TestRestEasyClient {
 
-    public static String baseURL = "https://bfs-lada.intevation.de/lada/server/rest/";
+    public static String baseURL = "https://bfs-lada.intevation.de/lada-0.6/server/rest/";
 
     public ClientResponse<String> getResponse(String url, boolean header){
         ClientRequest request = new ClientRequest(url);
@@ -83,8 +83,8 @@ public class TestRestEasyClient {
     }
     @Test
     public void testLProbenService() {
-        testHttpOK(baseURL + "proben?mstId=06010&umwId=N24");
-        testHttpForbidden(baseURL + "proben?mstId=06010&umwId=N24");
+        testHttpOK(baseURL + "proben?mst_id=06010&umw_id=N24&qid=2");
+        testHttpForbidden(baseURL + "proben?mst_id=06010&umw_id=N24&qid=2");
         ClientResponse<String> response = getResponse(baseURL + "proben/000007587685X", true);
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
