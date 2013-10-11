@@ -17,6 +17,7 @@ package org.esigate.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -92,9 +93,11 @@ public class ProxyFilter implements Filter {
 		ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(httpServletResponse);
 		chain.doFilter(httpServletRequest, wrappedResponse);
 		String result = wrappedResponse.getResult();
+		StringWriter stringWriter = new StringWriter();
 		if (result != null) {
 			try {
-				new EsiRenderer().render(mediator.getHttpRequest(), result, response.getWriter());
+				new EsiRenderer().render(mediator.getHttpRequest(), result, stringWriter);
+				response.getWriter().write(stringWriter.toString());
 			} catch (HttpErrorPage e) {
 				mediator.sendResponse(e.getHttpResponse());
 			}
