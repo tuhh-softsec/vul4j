@@ -303,6 +303,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	
 	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
 	
+		@SuppressWarnings("unchecked")
 		@Override
 		public Link compute(PathPipe<Vertex> pipe ) {
 			// TODO Auto-generated method stub
@@ -311,7 +312,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			short s_port = 0;
 			short d_port = 0;
 			List<Vertex> V = new ArrayList<Vertex>();
-			V = pipe.next();
+			V = (List<Vertex>)pipe.next();
 			Vertex src_sw = V.get(0);
 			Vertex dest_sw = V.get(3);
 			Vertex src_port = V.get(1);
