@@ -752,7 +752,7 @@ public class Controller implements IFloodlightProviderService,
                     }
                     if (is_core_switch) {
                         sw.setAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH, 
-                                        new Boolean(true));
+                                        true);
                     }
                 }
                 sw.removeAttribute(IOFSwitch.SWITCH_DESCRIPTION_FUTURE);
@@ -2358,7 +2358,7 @@ public class Controller implements IFloodlightProviderService,
                         // new controller node IP
                         addedControllerNodeIPs.put(controllerID, discoveredIP);
                     } 
-                    else if (curIP != discoveredIP) {
+                    else if (curIP.equals(discoveredIP)) {
                         // IP changed                    
                         removedControllerNodeIPs.put(controllerID, curIP);
                         addedControllerNodeIPs.put(controllerID, discoveredIP);
