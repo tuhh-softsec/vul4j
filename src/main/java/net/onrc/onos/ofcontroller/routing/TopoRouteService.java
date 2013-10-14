@@ -284,7 +284,7 @@ public class TopoRouteService implements ITopoRouteService {
     public DataPath getTopoShortestPath(Map<Long, ?> shortestPathTopoHandler,
 					SwitchPort src, SwitchPort dest) {
 	@SuppressWarnings("unchecked")
-	Map<Long, Node> shortestPathTopo = (Map)shortestPathTopoHandler;
+	Map<Long, Node> shortestPathTopo = (Map<Long, Node>)shortestPathTopoHandler;
 	DataPath result_data_path = new DataPath();
 
 	// Initialize the source and destination in the data path to return
