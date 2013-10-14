@@ -918,13 +918,13 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public Short getMatchVlanId() {return matchVlanId; }
 	
 		@Override
-		public void setMatchVlanId(Short matchVlanId) { matchVlanId = matchVlanId; }
+		public void setMatchVlanId(Short matchVlanId) { matchVlanIdToUpdate = matchVlanId; }
 
 		@Override
 		public Byte getMatchVlanPriority() {return matchVlanPriority; }
 	
 		@Override
-		public void setMatchVlanPriority(Byte matchVlanPriority) { matchVlanPriority = matchVlanPriority; }
+		public void setMatchVlanPriority(Byte matchVlanPriority) { matchVlanPriorityToUpdate = matchVlanPriority; }
 		
 		@Override
 		public String getMatchSrcIPv4Net() { return matchSrcIpaddr; }
@@ -942,13 +942,13 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public Byte getMatchIpProto() {return matchIpProto; }
 	
 		@Override
-		public void setMatchIpProto(Byte matchIpProto) { matchIpProto = matchIpProto; }
+		public void setMatchIpProto(Byte matchIpProto) { matchIpProtoToUpdate = matchIpProto; }
 
 		@Override
 		public Byte getMatchIpToS() {return matchIpToS; }
 	
 		@Override
-		public void setMatchIpToS(Byte matchIpToS) { matchIpToS = matchIpToS; }
+		public void setMatchIpToS(Byte matchIpToS) { matchIpToSToUpdate = matchIpToS; }
 
 		@Override
 		public Short getMatchSrcTcpUdpPort() {return matchSrcTcpUdpPort; }
