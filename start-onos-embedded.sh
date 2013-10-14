@@ -4,7 +4,7 @@
 if [ -z "${ONOS_HOME}" ]; then
         ONOS_HOME=`dirname $0`
 fi
-ONOS_LOGBACK="${ONOS_HOME}/logback.xml"
+ONOS_LOGBACK="${ONOS_HOME}/logback.`hostname`.xml"
 LOGDIR=${ONOS_HOME}/onos-logs
 ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
 PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
@@ -94,6 +94,7 @@ EOF_LOGBACK
 
   # XXX MVN has to run at the project top dir..
   cd ${ONOS_HOME}
+  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties\""
   ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
 
   echo "Waiting for ONOS to start..."

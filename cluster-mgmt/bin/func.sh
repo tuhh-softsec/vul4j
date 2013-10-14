@@ -34,6 +34,7 @@ zk () {
       while [ 1 ]; do
 #        nup=`dsh -g $basename "$ZK_DIR/bin/zkServer.sh status" | grep "Mode" | egrep "leader|follower" | wc -l`
         nup=`dsh -g $basename "cd ONOS; ./start-zk.sh status" | grep "Mode" | egrep "leader|follower|standalone" | wc -l`
+        echo "check status"
         if [ $nup == $nr_nodes ]; then
           echo "everybody's up: $nup up of of $nr_nodes"
           echo "ZK started"
