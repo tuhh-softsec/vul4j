@@ -3,6 +3,7 @@ package net.onrc.onos.ofcontroller.linkdiscovery.web;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import net.floodlightcontroller.routing.Link;
@@ -23,8 +24,9 @@ public class LinksResource extends ServerResource {
 
         if (ld != null) {
             links.putAll(ld.getLinks());
-            for (Link link: links.keySet()) {
-                LinkInfo info = links.get(link);
+            for(Entry<Link, LinkInfo> e : links.entrySet()) {
+                Link link = e.getKey();
+                LinkInfo info = e.getValue();
                 LinkWithType lwt = new LinkWithType(link,
                                                     info.getSrcPortState(),
                                                     info.getDstPortState(),
