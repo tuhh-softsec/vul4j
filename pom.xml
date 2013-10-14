@@ -34,6 +34,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <powermock.version>1.5</powermock.version>
     <restlet.version>2.1-RC1</restlet.version>
+    <github.global.server>github</github.global.server>
   </properties>
   <build>
     <plugins>
@@ -121,6 +122,49 @@
           <locale>en</locale>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.6.3.201306030806</version>
+        <configuration>
+          <destfile>${basedir}/target/jacoco/jacoco.exec</destfile>
+          <datafile>${basedir}/target/jacoco/jacoco.exec</datafile>
+        </configuration>
+        <executions>
+          <execution>
+            <id>jacoco-initialize</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-site</id>
+            <phase>package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.github</groupId>
+        <artifactId>site-maven-plugin</artifactId>
+        <version>0.8</version>
+        <configuration>
+          <message>Creating site for ${project.version}</message>
+          <dryRun>true</dryRun>
+          <repositoryName>ONOS</repositoryName>
+          <repositoryOwner>OPENNETWORKINGLAB</repositoryOwner>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+             <goal>site</goal>
+            </goals>
+            <phase>site</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <!-- for getting visualization reporting   -->
@@ -128,11 +172,13 @@
     <excludeDefaults>true</excludeDefaults>
     <outputDirectory>${project.build.directory}/site</outputDirectory>
     <plugins>
+      <!--
       <plugin>
         <groupId>org.apache.camel</groupId>
         <artifactId>guice-maven-plugin</artifactId>
         <version>2.11.0</version>
       </plugin>
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -145,6 +191,7 @@
           <reportSet>
             <reports>
               <report>dependencies</report>
+              <!--report>maven-emma-plugin</report-->
               <report>scm</report>
             </reports>
           </reportSet>
@@ -211,12 +258,12 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
-      <version>1.9.11</version>
+      <version>1.9.13</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.9.11</version>
+      <version>1.9.13</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -258,9 +305,9 @@
       <version>4.1.21</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.netty</groupId>
-      <artifactId>netty</artifactId>
-      <version>3.2.6.Final</version>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>4.0.8.Final</version>
     </dependency>
     <dependency>
       <groupId>args4j</groupId>

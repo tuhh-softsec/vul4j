@@ -42,12 +42,15 @@ import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction;
+import net.onrc.onos.ofcontroller.util.FlowEntryAction.*;
+import net.onrc.onos.ofcontroller.util.FlowEntryActions;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowEntrySwitchState;
 import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.FlowPathFlags;
 import net.onrc.onos.ofcontroller.util.IPv4Net;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
@@ -57,12 +60,13 @@ import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFPacketOut;
 import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
-import org.openflow.protocol.action.OFAction;
-import org.openflow.protocol.action.OFActionOutput;
+import org.openflow.protocol.action.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Flow Manager class for handling the network flows.
+ */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
     protected GraphDBOperation op;
@@ -95,11 +99,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private static String measurementFlowIdStr = "0x186a0";	// 100000
     private long modifiedMeasurementFlowTime = 0;
     //
-    private LinkedList<FlowPath> measurementStoredPaths = new LinkedList<FlowPath>();
-    private long measurementStartTimeProcessingPaths = 0;
-    private long measurementEndTimeProcessingPaths = 0;
-    Map<Long, ?> measurementShortestPathTopo = null;
-    private String measurementPerFlowStr = new String();
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
@@ -108,6 +107,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private ScheduledExecutorService mapReaderScheduler;
     private ScheduledExecutorService shortestPathReconcileScheduler;
 
+    /**
+     * Periodic task for reading the Flow Entries and pushing changes
+     * into the switches.
+     */
     final Runnable mapReader = new Runnable() {
 	    public void run() {
 		try {
@@ -130,6 +133,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		}
 		Map<Long, IOFSwitch> mySwitches =
 		    floodlightProvider.getSwitches();
+		if (mySwitches.isEmpty()) {
+			log.trace("No switches controlled");
+			return;
+		}
 		LinkedList<IFlowEntry> addFlowEntries =
 		    new LinkedList<IFlowEntry>();
 		LinkedList<IFlowEntry> deleteFlowEntries =
@@ -248,6 +255,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	};
 
+    /**
+     * Periodic task for reading the Flow Paths and recomputing the
+     * shortest paths.
+     */
     final Runnable shortestPathReconcile = new Runnable() {
 	    public void run() {
 		try {
@@ -270,6 +281,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		}
 		Map<Long, IOFSwitch> mySwitches =
 		    floodlightProvider.getSwitches();
+		if (mySwitches.isEmpty()) {
+			log.trace("No switches controlled");
+			return;
+		}
 		LinkedList<IFlowPath> deleteFlows = new LinkedList<IFlowPath>();
 
 		boolean processed_measurement_flow = false;
@@ -330,9 +345,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    Short srcPortShort = flowPathObj.getSrcPort();
 		    String dstDpidStr = flowPathObj.getDstSwitch();
 		    Short dstPortShort = flowPathObj.getDstPort();
+		    Long flowPathFlagsLong = flowPathObj.getFlowPathFlags();
 		    if ((srcPortShort == null) ||
 			(dstDpidStr == null) ||
-			(dstPortShort == null)) {
+			(dstPortShort == null) ||
+			(flowPathFlagsLong == null)) {
 			continue;
 		    }
 
@@ -341,6 +358,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    Port dstPort = new Port(dstPortShort);
 		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
 		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+		    FlowPathFlags flowPathFlags = new FlowPathFlags(flowPathFlagsLong);
 
 		    counterMyFlowPaths++;
 
@@ -363,6 +381,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			dataPath.setSrcPort(srcSwitchPort);
 			dataPath.setDstPort(dstSwitchPort);
 		    }
+		    dataPath.applyFlowPathFlags(flowPathFlags);
 
 		    String newDataPathSummaryStr = dataPath.dataPathSummary();
 		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
@@ -405,27 +424,38 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	};
 
-    //final ScheduledFuture<?> mapReaderHandle =
-	//mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
 
-    //final ScheduledFuture<?> shortestPathReconcileHandle =
-	//shortestPathReconcileScheduler.scheduleAtFixedRate(shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
-
+    /**
+     * Initialize the Flow Manager.
+     *
+     * @param conf the Graph Database configuration string.
+     */
     @Override
     public void init(String conf) {
     	op = new GraphDBOperation(conf);
 	topoRouteService = new TopoRouteService(conf);
     }
 
+    /**
+     * Shutdown the Flow Manager operation.
+     */
     public void finalize() {
     	close();
     }
 
+    /**
+     * Shutdown the Flow Manager operation.
+     */
     @Override
     public void close() {
     	op.close();
     }
 
+    /**
+     * Get the collection of offered module services.
+     *
+     * @return the collection of offered module services.
+     */
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
         Collection<Class<? extends IFloodlightService>> l = 
@@ -434,6 +464,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
         return l;
     }
 
+    /**
+     * Get the collection of implemented services.
+     *
+     * @return the collection of implemented services.
+     */
     @Override
     public Map<Class<? extends IFloodlightService>, IFloodlightService> 
 			       getServiceImpls() {
@@ -445,6 +480,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
         return m;
     }
 
+    /**
+     * Get the collection of modules this module depends on.
+     *
+     * @return the collection of modules this module depends on.
+     */
     @Override
     public Collection<Class<? extends IFloodlightService>> 
                                                     getModuleDependencies() {
@@ -455,6 +495,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
         return l;
     }
 
+    /**
+     * Initialize the module.
+     *
+     * @param context the module context to use for the initialization.
+     */
     @Override
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
@@ -469,10 +514,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	String conf = "/tmp/cassandra.titan";
 	this.init(conf);
 	
-		mapReaderScheduler = Executors.newScheduledThreadPool(1);
-		shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
+	mapReaderScheduler = Executors.newScheduledThreadPool(1);
+	shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
     }
 
+    /**
+     * Get the next Flow Entry ID to use.
+     *
+     * @return the next Flow Entry ID to use.
+     */
     private synchronized long getNextFlowEntryId() {
 	//
 	// Generate the next Flow Entry ID.
@@ -491,17 +541,22 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	return result;
     }
 
+    /**
+     * Startup module operation.
+     *
+     * @param context the module context to use for the startup.
+     */
     @Override
     public void startUp(FloodlightModuleContext context) {
-		restApi.addRestletRoutable(new FlowWebRoutable());
+	restApi.addRestletRoutable(new FlowWebRoutable());
 	
-		// Initialize the Flow Entry ID generator
-		nextFlowEntryIdPrefix = randomGenerator.nextInt();
+	// Initialize the Flow Entry ID generator
+	nextFlowEntryIdPrefix = randomGenerator.nextInt();
 		
-		mapReaderScheduler.scheduleAtFixedRate(
-				mapReader, 3, 3, TimeUnit.SECONDS);
-		shortestPathReconcileScheduler.scheduleAtFixedRate(
-				shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
+	mapReaderScheduler.scheduleAtFixedRate(
+			mapReader, 3, 3, TimeUnit.SECONDS);
+	shortestPathReconcileScheduler.scheduleAtFixedRate(
+			shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
     }
 
     /**
@@ -568,6 +623,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Set the Flow attributes:
 	// - flowPath.installerId()
+	// - flowPath.flowPathFlags()
 	// - flowPath.dataPath().srcPort()
 	// - flowPath.dataPath().dstPort()
 	// - flowPath.matchSrcMac()
@@ -581,8 +637,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - flowPath.matchIpToS()
 	// - flowPath.matchSrcTcpUdpPort()
 	// - flowPath.matchDstTcpUdpPort()
+	// - flowPath.flowEntryActions()
 	//
 	flowObj.setInstallerId(flowPath.installerId().toString());
+	flowObj.setFlowPathFlags(flowPath.flowPathFlags().flags());
 	flowObj.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
 	flowObj.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
@@ -619,6 +677,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	}
 	if (flowPath.flowEntryMatch().matchDstTcpUdpPort()) {
 	    flowObj.setMatchDstTcpUdpPort(flowPath.flowEntryMatch().dstTcpUdpPort());
+	}
+	if (! flowPath.flowEntryActions().actions().isEmpty()) {
+	    flowObj.setActions(flowPath.flowEntryActions().toString());
 	}
 
 	if (dataPathSummaryStr != null) {
@@ -713,8 +774,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - InPort edge
 	// - OutPort edge
 	//
-	// - flowEntry.flowEntryMatch()
-	// - flowEntry.flowEntryActions()
 	// - flowEntry.dpid()
 	// - flowEntry.flowEntryUserState()
 	// - flowEntry.flowEntrySwitchState()
@@ -731,10 +790,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - flowEntry.matchIpToS()
 	// - flowEntry.matchSrcTcpUdpPort()
 	// - flowEntry.matchDstTcpUdpPort()
-	// - flowEntry.actionOutput()
+	// - flowEntry.actionOutputPort()
+	// - flowEntry.actions()
 	//
-	ISwitchObject sw =
-	    op.searchSwitch(flowEntry.dpid().toString());
+	ISwitchObject sw = op.searchSwitch(flowEntry.dpid().toString());
 	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
 	flowEntryObj.setSwitch(sw);
 	if (flowEntry.flowEntryMatch().matchInPort()) {
@@ -778,15 +837,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    flowEntryObj.setMatchDstTcpUdpPort(flowEntry.flowEntryMatch().dstTcpUdpPort());
 	}
 
-	for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
+	for (FlowEntryAction fa : flowEntry.flowEntryActions().actions()) {
 	    if (fa.actionOutput() != null) {
 		IPortObject outport =
 		    op.searchPort(flowEntry.dpid().toString(),
 					      fa.actionOutput().port().value());
-		flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+		flowEntryObj.setActionOutputPort(fa.actionOutput().port().value());
 		flowEntryObj.setOutPort(outport);
 	    }
 	}
+	if (! flowEntry.flowEntryActions().isEmpty()) {
+	    flowEntryObj.setActions(flowEntry.flowEntryActions().toString());
+	}
+
 	// TODO: Hacks with hard-coded state names!
 	if (found)
 	    flowEntryObj.setUserState("FE_USER_MODIFY");
@@ -1146,21 +1209,22 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Get summary of all installed flows by all installers in a given range
+     * Get summary of all installed flows by all installers in a given range.
      *
-     * @param flowId the data path endpoints of the flows to get.
-     * @param maxFlows: the maximum number of flows to be returned
+     * @param flowId the Flow ID of the first flow in the flow range to get.
+     * @param maxFlows the maximum number of flows to be returned.
      * @return the Flow Paths if found, otherwise null.
      */
     @Override
     public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows) {
 
-		// TODO: The implementation below is not optimal:
-		// We fetch all flows, and then return only the subset that match
-		// the query conditions.
-		// We should use the appropriate Titan/Gremlin query to filter-out
-		// the flows as appropriate.
-		//
+	//
+	// TODO: The implementation below is not optimal:
+	// We fetch all flows, and then return only the subset that match
+	// the query conditions.
+	// We should use the appropriate Titan/Gremlin query to filter-out
+	// the flows as appropriate.
+	//
     	//ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
     	
     	ArrayList<IFlowPath> flowPathsWithoutFlowEntries = getAllFlowsWithoutFlowEntries();
@@ -1260,8 +1324,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	return flowPaths;
     }
-    
-    public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries(){
+
+    /**
+     * Get all Flows information, without the associated Flow Entries.
+     *
+     * @return all Flows information, without the associated Flow Entries.
+     */
+    public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries() {
     	Iterable<IFlowPath> flowPathsObj = null;
     	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
     	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
@@ -1314,6 +1383,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	String flowIdStr = flowObj.getFlowId();
 	String installerIdStr = flowObj.getInstallerId();
+	Long flowPathFlags = flowObj.getFlowPathFlags();
 	String srcSwitchStr = flowObj.getSrcSwitch();
 	Short srcPortShort = flowObj.getSrcPort();
 	String dstSwitchStr = flowObj.getDstSwitch();
@@ -1321,6 +1391,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	if ((flowIdStr == null) ||
 	    (installerIdStr == null) ||
+	    (flowPathFlags == null) ||
 	    (srcSwitchStr == null) ||
 	    (srcPortShort == null) ||
 	    (dstSwitchStr == null) ||
@@ -1332,6 +1403,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	FlowPath flowPath = new FlowPath();
 	flowPath.setFlowId(new FlowId(flowIdStr));
 	flowPath.setInstallerId(new CallerId(installerIdStr));
+	flowPath.setFlowPathFlags(new FlowPathFlags(flowPathFlags));
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
 	flowPath.dataPath().srcPort().setPort(new Port(srcPortShort));
 	flowPath.dataPath().dstPort().setDpid(new Dpid(dstSwitchStr));
@@ -1376,6 +1448,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		match.enableDstTcpUdpPort(matchDstTcpUdpPort);
 
 	    flowPath.setFlowEntryMatch(match);
+	}
+	//
+	// Extract the actions for the first Flow Entry
+	//
+	{
+	    String actionsStr = flowObj.getActions();
+	    if (actionsStr != null) {
+		FlowEntryActions flowEntryActions = new FlowEntryActions(actionsStr);
+		flowPath.setFlowEntryActions(flowEntryActions);
+	    }
 	}
 
 	//
@@ -1461,19 +1543,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Extract the actions
 	//
-	ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
-	Short actionOutputPort = flowEntryObj.getActionOutput();
-	if (actionOutputPort != null) {
-	    FlowEntryAction action = new FlowEntryAction();
-	    action.setActionOutput(new Port(actionOutputPort));
-	    actions.add(action);
-	}
+	FlowEntryActions actions = new FlowEntryActions();
+	String actionsStr = flowEntryObj.getActions();
+	if (actionsStr != null)
+	    actions = new FlowEntryActions(actionsStr);
 	flowEntry.setFlowEntryActions(actions);
 	flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
 	flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
 	//
-	// TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
-	// and FlowEntryErrorState.
+	// TODO: Take care of FlowEntryErrorState.
 	//
 	return flowEntry;
     }
@@ -1505,8 +1583,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	FlowPath computedFlowPath = new FlowPath();
 	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
 	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
+	computedFlowPath.setFlowPathFlags(new FlowPathFlags(flowPath.flowPathFlags().flags()));
 	computedFlowPath.setDataPath(dataPath);
 	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
+	computedFlowPath.setFlowEntryActions(new FlowEntryActions(flowPath.flowEntryActions()));
 
 	FlowId flowId = new FlowId();
 	String dataPathSummaryStr = dataPath.dataPathSummary();
@@ -1532,21 +1612,35 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Set the incoming port matching and the outgoing port output
 	// actions for each flow entry.
 	//
+	int idx = 0;
 	for (FlowEntry flowEntry : newDataPath.flowEntries()) {
 	    // Set the incoming port matching
 	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
 	    flowEntry.setFlowEntryMatch(flowEntryMatch);
 	    flowEntryMatch.enableInPort(flowEntry.inPort());
 
-	    // Set the outgoing port output action
-	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-	    if (flowEntryActions == null) {
-		flowEntryActions = new ArrayList<FlowEntryAction>();
-		flowEntry.setFlowEntryActions(flowEntryActions);
+	    //
+	    // Set the actions
+	    //
+	    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
+	    //
+	    // If the first Flow Entry, copy the Flow Path actions to it
+	    //
+	    if (idx == 0) {
+		String actionsStr = flowObj.getActions();
+		if (actionsStr != null) {
+		    FlowEntryActions flowActions = new FlowEntryActions(actionsStr);
+		    for (FlowEntryAction action : flowActions.actions())
+			flowEntryActions.addAction(action);
+		}
 	    }
+	    idx++;
+	    //
+	    // Add the outgoing port output action
+	    //
 	    FlowEntryAction flowEntryAction = new FlowEntryAction();
 	    flowEntryAction.setActionOutput(flowEntry.outPort());
-	    flowEntryActions.add(flowEntryAction);
+	    flowEntryActions.addAction(flowEntryAction);
 	}
 
 	//
@@ -1738,16 +1832,115 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Fetch the actions
 	//
-	// TODO: For now we support only the "OUTPUT" actions.
-	//
-	List<OFAction> actions = new ArrayList<OFAction>();
-	Short actionOutputPort = flowEntryObj.getActionOutput();
-	if (actionOutputPort != null) {
-	    OFActionOutput action = new OFActionOutput();
-	    // XXX: The max length is hard-coded for now
-	    action.setMaxLength((short)0xffff);
-	    action.setPort(actionOutputPort);
-	    actions.add(action);
+	Short actionOutputPort = null;
+	List<OFAction> openFlowActions = new ArrayList<OFAction>();
+	int actionsLen = 0;
+	FlowEntryActions flowEntryActions = null;
+	String actionsStr = flowEntryObj.getActions();
+	if (actionsStr != null)
+	    flowEntryActions = new FlowEntryActions(actionsStr);
+	for (FlowEntryAction action : flowEntryActions.actions()) {
+	    ActionOutput actionOutput = action.actionOutput();
+	    ActionSetVlanId actionSetVlanId = action.actionSetVlanId();
+	    ActionSetVlanPriority actionSetVlanPriority = action.actionSetVlanPriority();
+	    ActionStripVlan actionStripVlan = action.actionStripVlan();
+	    ActionSetEthernetAddr actionSetEthernetSrcAddr = action.actionSetEthernetSrcAddr();
+	    ActionSetEthernetAddr actionSetEthernetDstAddr = action.actionSetEthernetDstAddr();
+	    ActionSetIPv4Addr actionSetIPv4SrcAddr = action.actionSetIPv4SrcAddr();
+	    ActionSetIPv4Addr actionSetIPv4DstAddr = action.actionSetIPv4DstAddr();
+	    ActionSetIpToS actionSetIpToS = action.actionSetIpToS();
+	    ActionSetTcpUdpPort actionSetTcpUdpSrcPort = action.actionSetTcpUdpSrcPort();
+	    ActionSetTcpUdpPort actionSetTcpUdpDstPort = action.actionSetTcpUdpDstPort();
+	    ActionEnqueue actionEnqueue = action.actionEnqueue();
+
+	    if (actionOutput != null) {
+		actionOutputPort = actionOutput.port().value();
+		// XXX: The max length is hard-coded for now
+		OFActionOutput ofa =
+		    new OFActionOutput(actionOutput.port().value(),
+				       (short)0xffff);
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetVlanId != null) {
+		OFActionVirtualLanIdentifier ofa =
+		    new OFActionVirtualLanIdentifier(actionSetVlanId.vlanId());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetVlanPriority != null) {
+		OFActionVirtualLanPriorityCodePoint ofa =
+		    new OFActionVirtualLanPriorityCodePoint(actionSetVlanPriority.vlanPriority());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionStripVlan != null) {
+		if (actionStripVlan.stripVlan() == true) {
+		    OFActionStripVirtualLan ofa = new OFActionStripVirtualLan();
+		    openFlowActions.add(ofa);
+		    actionsLen += ofa.getLength();
+		}
+	    }
+
+	    if (actionSetEthernetSrcAddr != null) {
+		OFActionDataLayerSource ofa = 
+		    new OFActionDataLayerSource(actionSetEthernetSrcAddr.addr().toBytes());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetEthernetDstAddr != null) {
+		OFActionDataLayerDestination ofa =
+		    new OFActionDataLayerDestination(actionSetEthernetDstAddr.addr().toBytes());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIPv4SrcAddr != null) {
+		OFActionNetworkLayerSource ofa =
+		    new OFActionNetworkLayerSource(actionSetIPv4SrcAddr.addr().value());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIPv4DstAddr != null) {
+		OFActionNetworkLayerDestination ofa =
+		    new OFActionNetworkLayerDestination(actionSetIPv4DstAddr.addr().value());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIpToS != null) {
+		OFActionNetworkTypeOfService ofa =
+		    new OFActionNetworkTypeOfService(actionSetIpToS.ipToS());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetTcpUdpSrcPort != null) {
+		OFActionTransportLayerSource ofa =
+		    new OFActionTransportLayerSource(actionSetTcpUdpSrcPort.port());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetTcpUdpDstPort != null) {
+		OFActionTransportLayerDestination ofa =
+		    new OFActionTransportLayerDestination(actionSetTcpUdpDstPort.port());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionEnqueue != null) {
+		OFActionEnqueue ofa =
+		    new OFActionEnqueue(actionEnqueue.port().value(),
+					actionEnqueue.queueId());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
 	}
 
 	fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
@@ -1757,8 +1950,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    .setCookie(cookie)
 	    .setCommand(flowModCommand)
 	    .setMatch(match)
-	    .setActions(actions)
-	    .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
+	    .setActions(openFlowActions)
+	    .setLengthU(OFFlowMod.MINIMUM_LENGTH + actionsLen);
 	fm.setOutPort(OFPort.OFPP_NONE.getValue());
 	if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
 	    (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
@@ -1962,26 +2155,112 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Fetch the actions
 	//
-	// TODO: For now we support only the "OUTPUT" actions.
+	Short actionOutputPort = null;
+	List<OFAction> openFlowActions = new ArrayList<OFAction>();
+	int actionsLen = 0;
+	FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
 	//
-	fm.setOutPort(OFPort.OFPP_NONE.getValue());
-	List<OFAction> actions = new ArrayList<OFAction>();
-	ArrayList<FlowEntryAction> flowEntryActions =
-	    flowEntry.flowEntryActions();
-	for (FlowEntryAction flowEntryAction : flowEntryActions) {
-	    FlowEntryAction.ActionOutput actionOutput =
-		flowEntryAction.actionOutput();
+	for (FlowEntryAction action : flowEntryActions.actions()) {
+	    ActionOutput actionOutput = action.actionOutput();
+	    ActionSetVlanId actionSetVlanId = action.actionSetVlanId();
+	    ActionSetVlanPriority actionSetVlanPriority = action.actionSetVlanPriority();
+	    ActionStripVlan actionStripVlan = action.actionStripVlan();
+	    ActionSetEthernetAddr actionSetEthernetSrcAddr = action.actionSetEthernetSrcAddr();
+	    ActionSetEthernetAddr actionSetEthernetDstAddr = action.actionSetEthernetDstAddr();
+	    ActionSetIPv4Addr actionSetIPv4SrcAddr = action.actionSetIPv4SrcAddr();
+	    ActionSetIPv4Addr actionSetIPv4DstAddr = action.actionSetIPv4DstAddr();
+	    ActionSetIpToS actionSetIpToS = action.actionSetIpToS();
+	    ActionSetTcpUdpPort actionSetTcpUdpSrcPort = action.actionSetTcpUdpSrcPort();
+	    ActionSetTcpUdpPort actionSetTcpUdpDstPort = action.actionSetTcpUdpDstPort();
+	    ActionEnqueue actionEnqueue = action.actionEnqueue();
+
 	    if (actionOutput != null) {
-		short actionOutputPort = actionOutput.port().value();
-		OFActionOutput action = new OFActionOutput();
+		actionOutputPort = actionOutput.port().value();
 		// XXX: The max length is hard-coded for now
-		action.setMaxLength((short)0xffff);
-		action.setPort(actionOutputPort);
-		actions.add(action);
-		if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
-		    (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
-		    fm.setOutPort(actionOutputPort);
+		OFActionOutput ofa =
+		    new OFActionOutput(actionOutput.port().value(),
+				       (short)0xffff);
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetVlanId != null) {
+		OFActionVirtualLanIdentifier ofa =
+		    new OFActionVirtualLanIdentifier(actionSetVlanId.vlanId());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetVlanPriority != null) {
+		OFActionVirtualLanPriorityCodePoint ofa =
+		    new OFActionVirtualLanPriorityCodePoint(actionSetVlanPriority.vlanPriority());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionStripVlan != null) {
+		if (actionStripVlan.stripVlan() == true) {
+		    OFActionStripVirtualLan ofa = new OFActionStripVirtualLan();
+		    openFlowActions.add(ofa);
+		    actionsLen += ofa.getLength();
 		}
+	    }
+
+	    if (actionSetEthernetSrcAddr != null) {
+		OFActionDataLayerSource ofa = 
+		    new OFActionDataLayerSource(actionSetEthernetSrcAddr.addr().toBytes());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetEthernetDstAddr != null) {
+		OFActionDataLayerDestination ofa =
+		    new OFActionDataLayerDestination(actionSetEthernetDstAddr.addr().toBytes());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIPv4SrcAddr != null) {
+		OFActionNetworkLayerSource ofa =
+		    new OFActionNetworkLayerSource(actionSetIPv4SrcAddr.addr().value());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIPv4DstAddr != null) {
+		OFActionNetworkLayerDestination ofa =
+		    new OFActionNetworkLayerDestination(actionSetIPv4DstAddr.addr().value());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetIpToS != null) {
+		OFActionNetworkTypeOfService ofa =
+		    new OFActionNetworkTypeOfService(actionSetIpToS.ipToS());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetTcpUdpSrcPort != null) {
+		OFActionTransportLayerSource ofa =
+		    new OFActionTransportLayerSource(actionSetTcpUdpSrcPort.port());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionSetTcpUdpDstPort != null) {
+		OFActionTransportLayerDestination ofa =
+		    new OFActionTransportLayerDestination(actionSetTcpUdpDstPort.port());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
+	    }
+
+	    if (actionEnqueue != null) {
+		OFActionEnqueue ofa =
+		    new OFActionEnqueue(actionEnqueue.port().value(),
+					actionEnqueue.queueId());
+		openFlowActions.add(ofa);
+		actionsLen += ofa.getLength();
 	    }
 	}
 
@@ -1992,8 +2271,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    .setCookie(cookie)
 	    .setCommand(flowModCommand)
 	    .setMatch(match)
-	    .setActions(actions)
-	    .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
+	    .setActions(openFlowActions)
+	    .setLengthU(OFFlowMod.MINIMUM_LENGTH + actionsLen);
+	fm.setOutPort(OFPort.OFPP_NONE.getValue());
+	if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
+	    (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
+	    if (actionOutputPort != null)
+		fm.setOutPort(actionOutputPort);
+	}
 
 	//
 	// TODO: Set the following flag
@@ -2073,210 +2358,5 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// and removal of flow entries.
 	//
 	return (installRemoteFlowEntry(flowPath, flowEntry));
-    }
-
-    /**
-     * Store a path flow for measurement purpose.
-     *
-     * NOTE: The Flow Path argument does NOT contain flow entries.
-     * The Shortest Path is computed, and the corresponding Flow Entries
-     * are stored in the Flow Path.
-     *
-     * @param flowPath the Flow Path with the endpoints and the match
-     * conditions to store.
-     * @return the stored shortest-path flow on success, otherwise null.
-     */
-    @Override
-    public synchronized FlowPath measurementStorePathFlow(FlowPath flowPath) {
-	//
-	// Prepare the Shortest Path computation if the first Flow Path
-	//
-	if (measurementStoredPaths.isEmpty())
-	    measurementShortestPathTopo = topoRouteService.prepareShortestPathTopo();
-
-	//
-	// Compute the Shortest Path
-	//
-	DataPath dataPath =
-	    topoRouteService.getTopoShortestPath(measurementShortestPathTopo,
-						 flowPath.dataPath().srcPort(),
-						 flowPath.dataPath().dstPort());
-	if (dataPath == null) {
-	    // We need the DataPath to populate the Network MAP
-	    dataPath = new DataPath();
-	    dataPath.setSrcPort(flowPath.dataPath().srcPort());
-	    dataPath.setDstPort(flowPath.dataPath().dstPort());
-	}
-
-	//
-	// Set the incoming port matching and the outgoing port output
-	// actions for each flow entry.
-	//
-	for (FlowEntry flowEntry : dataPath.flowEntries()) {
-	    // Set the incoming port matching
-	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
-	    flowEntry.setFlowEntryMatch(flowEntryMatch);
-	    flowEntryMatch.enableInPort(flowEntry.inPort());
-
-	    // Set the outgoing port output action
-	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-	    if (flowEntryActions == null) {
-		flowEntryActions = new ArrayList<FlowEntryAction>();
-		flowEntry.setFlowEntryActions(flowEntryActions);
-	    }
-	    FlowEntryAction flowEntryAction = new FlowEntryAction();
-	    flowEntryAction.setActionOutput(flowEntry.outPort());
-	    flowEntryActions.add(flowEntryAction);
-	}
-
-	//
-	// Prepare the computed Flow Path
-	//
-	FlowPath computedFlowPath = new FlowPath();
-	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
-	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
-	computedFlowPath.setDataPath(dataPath);
-	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
-
-	//
-	// Add the computed Flow Path to the internal storage
-	//
-	measurementStoredPaths.add(computedFlowPath);
-
-	log.debug("Measurement storing path {}",
-		  computedFlowPath.flowId().toString());
-
-	return (computedFlowPath);
-    }
-
-    /**
-     * Install path flows for measurement purpose.
-     *
-     * @param numThreads the number of threads to use to install the path
-     * flows.
-     * @return true on success, otherwise false.
-     */
-    @Override
-    public boolean measurementInstallPaths(Integer numThreads) {
-	// Create a copy of the Flow Paths to install
-	final ConcurrentLinkedQueue<FlowPath> measurementProcessingPaths =
-	    new ConcurrentLinkedQueue<FlowPath>(measurementStoredPaths);
-
-	/**
-	 * A Thread-wrapper class for executing the threads and collecting
-	 * the measurement data.
-	 */
-	class MyThread extends Thread {
-	    public long[] execTime = new long[2000];
-	    public int samples = 0;
-	    public int threadId = -1;
-	    @Override
-	    public void run() {
-		while (true) {
-		    FlowPath flowPath = measurementProcessingPaths.poll();
-		    if (flowPath == null)
-			return;
-		    // Install the Flow Path
-		    FlowId flowId = new FlowId();
-		    String dataPathSummaryStr =
-			flowPath.dataPath().dataPathSummary();
-		    long startTime = System.nanoTime();
-		    addFlow(flowPath, flowId, dataPathSummaryStr);
-		    long endTime = System.nanoTime();
-		    execTime[samples] = endTime - startTime;
-		    samples++;
-		}
-	    }
-	};
-
-	List<MyThread> threads = new LinkedList<MyThread>();
-
-	log.debug("Measurement Installing {} flows",
-		  measurementProcessingPaths.size());
-
-	//
-	// Create the threads to install the Flow Paths
-	//
-	for (int i = 0; i < numThreads; i++) {
-	    MyThread thread = new MyThread();
-	    thread.threadId = i;
-	    threads.add(thread);
-	}
-
-	//
-	// Start processing
-	//
-	measurementEndTimeProcessingPaths = 0;
-	measurementStartTimeProcessingPaths = System.nanoTime();
-	for (Thread thread : threads) {
-	    thread.start();
-	}
-
-	// Wait for all threads to complete
-	for (Thread thread : threads) {
-	    try {
-		thread.join();
-	    } catch (InterruptedException e) {
-		log.debug("Exception waiting for a thread to install a Flow Path: ", e);
-	    }
-	}
-
-	// Record the end of processing
-	measurementEndTimeProcessingPaths = System.nanoTime();
-
-	//
-	// Prepare the string with measurement data per each Flow Path
-	// installation.
-	// The string is multiple lines: one line per Flow Path installation:
-	//    ThreadAndTimePerFlow <ThreadId> <TotalThreads> <Time(ns)>
-	//
-	measurementPerFlowStr = new String();
-	String eol = System.getProperty("line.separator");
-	for (MyThread thread : threads) {
-	    for (int i = 0; i < thread.samples; i++) {
-		measurementPerFlowStr += "ThreadAndTimePerFlow " + thread.threadId + " " + numThreads + " " + thread.execTime[i] + eol;
-	    }
-	}
-
-	return true;
-    }
-
-    /**
-     * Get the measurement time that took to install the path flows.
-     *
-     * @return the measurement time (in nanoseconds) it took to install
-     * the path flows.
-     */
-    @Override
-    public Long measurementGetInstallPathsTimeNsec() {
-	return new Long(measurementEndTimeProcessingPaths -
-			measurementStartTimeProcessingPaths);
-    }
-
-    /**
-     * Get the measurement install time per Flow.
-     *
-     * @return a multi-line string with the following format per line:
-     * ThreadAndTimePerFlow <ThreadId> <TotalThreads> <Time(ns)>
-     */
-    @Override
-    public String measurementGetPerFlowInstallTime() {
-	return new String(measurementPerFlowStr);
-    }
-
-    /**
-     * Clear the path flows stored for measurement purpose.
-     *
-     * @return true on success, otherwise false.
-     */
-    @Override
-    public boolean measurementClearAllPaths() {
-	measurementStoredPaths.clear();
-	topoRouteService.dropShortestPathTopo(measurementShortestPathTopo);
-	measurementStartTimeProcessingPaths = 0;
-	measurementEndTimeProcessingPaths = 0;
-	measurementPerFlowStr = new String();
-
-	return true;
     }
 }

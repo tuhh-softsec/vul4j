@@ -78,9 +78,9 @@ public class Port {
     }
 
     /**
-     * Constructor from another entry.
+     * Copy constructor.
      *
-     * @param other the other entry to use.
+     * @param other the object to copy from.
      */
     public Port(Port other) {
 	this.value = other.value();

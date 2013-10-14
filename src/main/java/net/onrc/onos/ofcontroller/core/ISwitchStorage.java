@@ -1,8 +1,5 @@
 package net.onrc.onos.ofcontroller.core;
 
-import java.util.Collection;
-
-
 import net.floodlightcontroller.core.IOFSwitch;
 
 import org.openflow.protocol.OFPhysicalPort;

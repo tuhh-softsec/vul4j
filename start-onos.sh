@@ -16,6 +16,8 @@ LOGS="$ONOS_LOG $PCAP_LOG"
 
 # Set JVM options
 JVM_OPTS=""
+## If you want JaCoCo Code Coverage reports... uncomment line below
+JVM_OPTS="$JVM_OPTS -javaagent:${ONOS_HOME}/lib/jacocoagent.jar=dumponexit=true,output=file,destfile=${LOGDIR}/jacoco.exec"
 JVM_OPTS="$JVM_OPTS -server -d64"
 #JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
 JVM_OPTS="$JVM_OPTS -Xmx1g -Xms1g -Xmn800m"
@@ -69,7 +71,8 @@ function start {
   done
 
 # Create a logback file if required
-  cat <<EOF_LOGBACK >${ONOS_LOGBACK}
+  if [ ! -f ${ONOS_LOGBACK} ]; then
+    cat <<EOF_LOGBACK >${ONOS_LOGBACK}
 <configuration scan="true" debug="true">
 <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 <encoder>
@@ -93,6 +96,7 @@ function start {
 </root>
 </configuration>
 EOF_LOGBACK
+  fi
 
   # Run floodlight
   echo "Starting ONOS controller ..."
@@ -134,7 +138,7 @@ function stop {
   pids="$flpid $tdpid"
   for p in ${pids}; do
     if [ x$p != "x" ]; then
-      kill -KILL $p
+      kill -TERM $p
       echo "Killed existing process (pid: $p)"
     fi
   done

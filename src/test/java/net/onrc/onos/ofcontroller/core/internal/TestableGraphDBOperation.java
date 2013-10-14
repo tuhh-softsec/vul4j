@@ -415,6 +415,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 	public static class TestFlowPath implements IFlowPath {
 		private String state,type,flowId,installerId,srcSw,dstSw;
+		private Long flowPathFlags;
 		private String dataPathSummary,userState;
 		private Short srcPort,dstPort;
 		private String matchSrcMac,matchDstMac;
@@ -424,11 +425,13 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private String matchSrcIpaddr,matchDstIpaddr;
 		private Byte matchIpProto, matchIpToS;
 		private Short matchSrcTcpUdpPort, matchDstTcpUdpPort;
+		private String actions;
 		
 		private List<IFlowEntry> entries;
 		private List<ISwitchObject> switches;
 
 		private String stateToUpdate,typeToUpdate,flowIdToUpdate,installerIdToUpdate,srcSwToUpdate,dstSwToUpdate;
+		private Long flowPathFlagsToUpdate;
 		private String dataPathSummaryToUpdate,userStateToUpdate;
 		private Short srcPortToUpdate,dstPortToUpdate;
 		private String matchSrcMacToUpdate,matchDstMacToUpdate;
@@ -438,6 +441,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private String matchSrcIpaddrToUpdate,matchDstIpaddrToUpdate;
 		private Byte matchIpProtoToUpdate, matchIpToSToUpdate;
 		private Short matchSrcTcpUdpPortToUpdate, matchDstTcpUdpPortToUpdate;
+		private String actionsToUpdate;
 
 		private List<IFlowEntry> flowsToAdd;
 		private List<IFlowEntry> flowsToRemove;
@@ -465,6 +469,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(typeToUpdate != null) { type = typeToUpdate; }
 			if(flowIdToUpdate != null) { flowId = flowIdToUpdate; }
 			if(installerIdToUpdate != null) { installerId = installerIdToUpdate; }
+			if(flowPathFlagsToUpdate != null) { flowPathFlags = flowPathFlagsToUpdate; }
 			if(srcSwToUpdate != null) { srcSw = srcSwToUpdate; }
 			if(dstSwToUpdate != null) { dstSw = dstSwToUpdate; }
 			if(dataPathSummaryToUpdate != null) { dataPathSummary = dataPathSummaryToUpdate; }
@@ -482,6 +487,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(matchIpToSToUpdate != null) { matchIpToS = matchIpToSToUpdate; }
 			if(matchSrcTcpUdpPortToUpdate != null) { matchSrcTcpUdpPort = matchSrcTcpUdpPortToUpdate; }
 			if(matchDstTcpUdpPortToUpdate != null) { matchDstTcpUdpPort = matchDstTcpUdpPortToUpdate; }
+			if(actionsToUpdate != null) { actions = actionsToUpdate; }
 		}
 		
 		public void rollback() {
@@ -493,6 +499,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			flowsToRemove.clear();
 			
 			stateToUpdate = typeToUpdate = flowIdToUpdate = installerIdToUpdate = null;
+			flowPathFlagsToUpdate = null;
 			srcSwToUpdate = dstSwToUpdate = dataPathSummaryToUpdate = userStateToUpdate = null;
 			srcPortToUpdate = dstPortToUpdate = null;
 			matchSrcMacToUpdate = matchDstMacToUpdate = null;
@@ -502,6 +509,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			matchSrcIpaddrToUpdate = matchDstIpaddrToUpdate = null;
 			matchIpProtoToUpdate = matchIpToSToUpdate = null;
 			matchSrcTcpUdpPortToUpdate = matchDstTcpUdpPortToUpdate = null;
+			actionsToUpdate = null;
 		}
 		
 		// Setter methods for test
@@ -509,6 +517,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setTypeForTest(String type) { this.type = type; }
 		public void setFlowIdForTest(String flowId) { this.flowId = flowId; }
 		public void setInstallerIdForTest(String installerId) { this.installerId = installerId; }
+		public void setFlowPathFlagsForTest(Long flowPathFlags) { this.flowPathFlags = flowPathFlags; }
 		public void setSrcSwForTest(String srcSw) { this.srcSw = srcSw; }
 		public void setDstSwForTest(String dstSw) { this.dstSw = dstSw; }
 		public void setDataPathSummaryForTest(String dataPathSummary) { this.dataPathSummary = dataPathSummary; }
@@ -526,6 +535,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setMatchIpToSForTest(Byte matchIpToS) { this.matchIpToS = matchIpToS; }
 		public void setMatchSrcTcpUdpPortForTest(Short matchSrcTcpUdpPort) { this.matchSrcTcpUdpPort = matchSrcTcpUdpPort; }
 		public void setMatchDstTcpUdpPortForTest(Short matchDstTcpUdpPort) { this.matchDstTcpUdpPort = matchDstTcpUdpPort; }
+		public void setActionsForTest(String actions) { this.actions = actions; }
 		public void addFlowEntryForTest(IFlowEntry entry) { entries.add(entry); }
 		public void addSwitchForTest(ISwitchObject sw) { switches.add(sw); }
 
@@ -558,6 +568,12 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public void setInstallerId(String installerId) { installerIdToUpdate = installerId; }
+
+		@Override
+		public Long getFlowPathFlags() { return flowPathFlags; }
+
+		@Override
+		public void setFlowPathFlags(Long flowPathFlags) { flowPathFlagsToUpdate = flowPathFlags; }
 
 		@Override
 		public String getSrcSwitch() { return srcSw; }
@@ -682,6 +698,13 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			matchDstTcpUdpPortToUpdate = matchDstTcpUdpPort; }
 
 		@Override
+		public String getActions() { return actions; }
+
+		@Override
+		public void setActions(String actions) {
+			actionsToUpdate = actions; }
+
+		@Override
 		public Iterable<ISwitchObject> getSwitches() { return switches; }
 
 		@Override
@@ -701,7 +724,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private String matchSrcIpaddr,matchDstIpaddr;
 		private Byte matchIpProto, matchIpToS;
 		private Short matchSrcTcpUdpPort, matchDstTcpUdpPort;
-		private Short actionOutput;
+		private Short actionOutputPort;
+		private String actions;
 		
 		private IFlowPath flowPath;
 		private ISwitchObject sw;
@@ -717,7 +741,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private String matchSrcIpaddrToUpdate,matchDstIpaddrToUpdate;
 		private Byte matchIpProtoToUpdate, matchIpToSToUpdate;
 		private Short matchSrcTcpUdpPortToUpdate, matchDstTcpUdpPortToUpdate;
-		private Short actionOutputToUpdate;
+		private Short actionOutputPortToUpdate;
+		private String actionsToUpdate;
 	
 		private IFlowPath flowPathToUpdate;
 		private ISwitchObject swToUpdate;
@@ -750,7 +775,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(matchIpToSToUpdate != null) { matchIpToS = matchIpToSToUpdate; }
 			if(matchSrcTcpUdpPortToUpdate != null) { matchSrcTcpUdpPort = matchSrcTcpUdpPortToUpdate; }
 			if(matchDstTcpUdpPortToUpdate != null) { matchDstTcpUdpPort = matchDstTcpUdpPortToUpdate; }
-			if(actionOutputToUpdate != null) { actionOutput = actionOutputToUpdate; }
+			if(actionOutputPortToUpdate != null) { actionOutputPort = actionOutputPortToUpdate; }
+			if(actionsToUpdate != null) { actions = actionsToUpdate; }
 			
 			if(flowPathToUpdate != null) { flowPath = flowPathToUpdate; }
 			if(swToUpdate != null) { sw = swToUpdate; }
@@ -775,7 +801,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			matchSrcIpaddrToUpdate = matchDstIpaddrToUpdate = null;
 			matchIpProtoToUpdate = matchIpToSToUpdate = null;
 			matchSrcTcpUdpPortToUpdate = matchDstTcpUdpPortToUpdate = null;
-			actionOutputToUpdate = null;
+			actionOutputPortToUpdate = null;
+			actionsToUpdate = null;
 			flowPathToUpdate = null;
 			swToUpdate = null;
 			inportToUpdate = outportToUpdate = null;
@@ -802,7 +829,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setMatchIpToSForTest(Byte matchIpToS) { this.matchIpToS = matchIpToS; }
 		public void setMatchSrcTcpUdpPortForTest(Short matchSrcTcpUdpPort) { this.matchSrcTcpUdpPort = matchSrcTcpUdpPort; }
 		public void setMatchDstTcpUdpPortForTest(Short matchDstTcpUdpPort) { this.matchDstTcpUdpPort = matchDstTcpUdpPort; }
-		public void setActionOutputForTest(Short actionOutput) { this.actionOutput = actionOutput; }
+		public void setActionOutputPortForTest(Short actionOutputPort) { this.actionOutputPort = actionOutputPort; }
+		public void setActionsForTest(String actions) { this.actions = actions; }
 		public void setFlowPathForTest(IFlowPath flowPath) { this.flowPath = flowPath; }
 		public void setSwitchForTest(ISwitchObject sw) { this.sw = sw; }
 		public void setInportForTest(IPortObject inport) { this.inport = inport; }
@@ -935,10 +963,16 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setMatchDstTcpUdpPort(Short matchDstTcpUdpPort) { matchDstTcpUdpPortToUpdate = matchDstTcpUdpPort; }
 	
 		@Override
-		public Short getActionOutput() { return actionOutput; }
+		public Short getActionOutputPort() { return actionOutputPort; }
 	
 		@Override
-		public void setActionOutput(Short actionOutput) { actionOutputToUpdate = actionOutput; }
+		public void setActionOutputPort(Short actionOutputPort) { actionOutputPortToUpdate = actionOutputPort; }
+
+		@Override
+		public String getActions() { return actions; }
+	
+		@Override
+		public void setActions(String actions) { actionsToUpdate = actions; }
 	
 		@Override
 		public IFlowPath getFlow() { return flowPath; }

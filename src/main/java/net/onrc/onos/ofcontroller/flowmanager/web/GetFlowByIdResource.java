@@ -9,9 +9,21 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Flow Manager REST API implementation: Get a single Flow state.
+ *
+ * The "{flow-id}" request attribute value is the Flow ID of the flow to get:
+ *
+ *   GET /wm/flow/get/{flow-id}/json
+ */
 public class GetFlowByIdResource extends ServerResource {
     protected static Logger log = LoggerFactory.getLogger(GetFlowByIdResource.class);
 
+    /**
+     * Implement the API.
+     *
+     * @return the Flow state if the flow is found, otherwise null.
+     */
     @Get("json")
     public FlowPath retrieve() {
 	FlowPath result = null;

@@ -28,6 +28,7 @@ import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction;
+import net.onrc.onos.ofcontroller.util.FlowEntryActions;
 import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.Port;
@@ -132,16 +133,12 @@ public class FlowManagerImpl implements IFlowManager {
 		    flowEntry.setOutPort(new Port(src_port.getNumber()));
 		    flowEntry.setFlowEntryMatch(new FlowEntryMatch());
 		    flowEntry.flowEntryMatch().enableInPort(flowEntry.inPort());
-		    
+
 		    // Set the outgoing port output action
-		    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-		    if (flowEntryActions == null) {
-			flowEntryActions = new ArrayList<FlowEntryAction>();
-			flowEntry.setFlowEntryActions(flowEntryActions);
-		    }
+		    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
 		    FlowEntryAction flowEntryAction = new FlowEntryAction();
 		    flowEntryAction.setActionOutput(flowEntry.outPort());
-		    flowEntryActions.add(flowEntryAction);
+		    flowEntryActions.addAction(flowEntryAction);
 		    dataPath.flowEntries().add(flowEntry);
 		    
 		    FlowPath flowPath = new FlowPath();
@@ -254,14 +251,10 @@ public class FlowManagerImpl implements IFlowManager {
 		    flowEntry.flowEntryMatch().enableInPort(flowEntry.inPort());
 		    
 		    // Set the outgoing port output action
-		    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-		    if (flowEntryActions == null) {
-			flowEntryActions = new ArrayList<FlowEntryAction>();
-			flowEntry.setFlowEntryActions(flowEntryActions);
-		    }
+		    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
 		    FlowEntryAction flowEntryAction = new FlowEntryAction();
 		    flowEntryAction.setActionOutput(flowEntry.outPort());
-		    flowEntryActions.add(flowEntryAction);
+		    flowEntryActions.addAction(flowEntryAction);
 		    dataPath.flowEntries().add(flowEntry);
 			continue;
 		    }
@@ -276,14 +269,10 @@ public class FlowManagerImpl implements IFlowManager {
 		    flowEntry.flowEntryMatch().enableInPort(flowEntry.inPort());
 		    
 		    // Set the outgoing port output action
-		    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-		    if (flowEntryActions == null) {
-			flowEntryActions = new ArrayList<FlowEntryAction>();
-			flowEntry.setFlowEntryActions(flowEntryActions);
-		    }
+		    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
 		    FlowEntryAction flowEntryAction = new FlowEntryAction();
 		    flowEntryAction.setActionOutput(flowEntry.outPort());
-		    flowEntryActions.add(flowEntryAction);
+		    flowEntryActions.addAction(flowEntryAction);
 		    dataPath.flowEntries().add(flowEntry);
 		    dataPath.flowEntries().add(flowEntry);
 		}

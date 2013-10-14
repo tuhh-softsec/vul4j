@@ -1,21 +1,13 @@
 package net.onrc.onos.ofcontroller.routing;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.easymock.EasyMock;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,29 +17,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.thinkaurelius.titan.core.TitanFactory;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngine;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
-import com.tinkerpop.pipes.PipeFunction;
-import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
-
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-
 import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.internal.TestDatabaseManager;
 import net.onrc.onos.ofcontroller.routing.TopoRouteService;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowPathFlags;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 /**
  * A class for testing the TopoRouteService class.
  * @see net.onrc.onos.ofcontroller.routing.TopoRouteService
- * @author Pavlin Radoslavov (pavlin@onlab.us)
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TitanFactory.class, GraphDBConnection.class, GraphDBOperation.class, TopoRouteService.class})
@@ -132,6 +114,20 @@ public class TopoRouteServiceTest {
 	String expectedResult = "1/00:00:00:00:00:00:0a:01/2;1/00:00:00:00:00:00:0a:03/2;2/00:00:00:00:00:00:0a:04/3;1/00:00:00:00:00:00:0a:06/1;";
 	assertEquals(dataPathSummaryStr, expectedResult);
 
+	// Test if we apply various Flow Path Flags
+	String expectedResult2 = "1/00:00:00:00:00:00:0a:03/2;2/00:00:00:00:00:00:0a:04/3;1/00:00:00:00:00:00:0a:06/1;";
+	String expectedResult3 = "1/00:00:00:00:00:00:0a:03/2;";
+	FlowPathFlags flowPathFlags2 = new FlowPathFlags("DISCARD_FIRST_HOP_ENTRY");
+	FlowPathFlags flowPathFlags3 = new FlowPathFlags("KEEP_ONLY_FIRST_HOP_ENTRY");
+	//
+	dataPath.applyFlowPathFlags(flowPathFlags2);
+	dataPathSummaryStr = dataPath.dataPathSummary();
+	assertEquals(dataPathSummaryStr, expectedResult2);
+	//
+	dataPath.applyFlowPathFlags(flowPathFlags3);
+	dataPathSummaryStr = dataPath.dataPathSummary();
+	assertEquals(dataPathSummaryStr, expectedResult3);
+
 	//
 	// Test Shortest-Path computation to non-existing destination
 	//
@@ -179,6 +175,20 @@ public class TopoRouteServiceTest {
 	// System.out.println(dataPathSummaryStr);
 	String expectedResult = "1/00:00:00:00:00:00:0a:01/2;1/00:00:00:00:00:00:0a:03/2;2/00:00:00:00:00:00:0a:04/3;1/00:00:00:00:00:00:0a:06/1;";
 	assertEquals(dataPathSummaryStr, expectedResult);
+
+	// Test if we apply various Flow Path Flags
+	String expectedResult2 = "1/00:00:00:00:00:00:0a:03/2;2/00:00:00:00:00:00:0a:04/3;1/00:00:00:00:00:00:0a:06/1;";
+	String expectedResult3 = "1/00:00:00:00:00:00:0a:03/2;";
+	FlowPathFlags flowPathFlags2 = new FlowPathFlags("DISCARD_FIRST_HOP_ENTRY");
+	FlowPathFlags flowPathFlags3 = new FlowPathFlags("KEEP_ONLY_FIRST_HOP_ENTRY");
+	//
+	dataPath.applyFlowPathFlags(flowPathFlags2);
+	dataPathSummaryStr = dataPath.dataPathSummary();
+	assertEquals(dataPathSummaryStr, expectedResult2);
+	//
+	dataPath.applyFlowPathFlags(flowPathFlags3);
+	dataPathSummaryStr = dataPath.dataPathSummary();
+	assertEquals(dataPathSummaryStr, expectedResult3);
 
 	//
 	// Test Shortest-Path computation to non-existing destination

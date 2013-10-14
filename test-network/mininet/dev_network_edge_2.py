@@ -124,7 +124,7 @@ def sdnnet(opt):
     sw=net.get('sw%02x.%02x' % (NWID,1))
     print "center sw", sw
     sw.attach('tap%02x_1' % NWID)
-    sw.attach('tap%02x_5' % NWID)
+    sw.attach('tap%02x_2' % NWID)
 
     for i in range (NR_NODES):
         host[i].defaultIntf().setIP('192.168.%d.%d/16' % (NWID,(int(i)+1))) 

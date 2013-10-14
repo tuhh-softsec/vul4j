@@ -129,8 +129,9 @@ def extract_flow_args(my_args):
   my_dst_port = my_args[5]
 
   #
-  # Extract the "match" and "action" arguments
+  # Extract the "flowPathFlags", "match" and "action" arguments
   #
+  flowPathFlags = 0L
   match = {}
   matchInPortEnabled = True		# NOTE: Enabled by default
   actions = []
@@ -149,7 +150,12 @@ def extract_flow_args(my_args):
     arg2 = my_args[idx]
     idx = idx + 1
 
-    if arg1 == "matchInPort":
+    if arg1 == "flowPathFlags":
+      if "DISCARD_FIRST_HOP_ENTRY" in arg2:
+	flowPathFlags = flowPathFlags + 0x1
+      if "KEEP_ONLY_FIRST_HOP_ENTRY" in arg2:
+	flowPathFlags = flowPathFlags + 0x2
+    elif arg1 == "matchInPort":
       # Just mark whether inPort matching is enabled
       matchInPortEnabled = arg2 in ['True', 'true']
       # inPort = {}
@@ -198,18 +204,19 @@ def extract_flow_args(my_args):
       match['dstTcpUdpPort'] = int(arg2, 0)
       # match['matchDstTcpUdpPort'] = True
     elif arg1 == "actionOutput":
-      # Just mark whether ACTION_OUTPUT action is enabled
+      # Mark whether ACTION_OUTPUT action is enabled
       actionOutputEnabled = arg2 in ['True', 'true']
-      #
-      # TODO: Complete the implementation for ACTION_OUTPUT
-      #   actionOutput = {}
-      #   outPort = {}
-      #   outPort['value'] = int(arg2, 0)
-      #   actionOutput['port'] = outPort
-      #   actionOutput['maxLen'] = int(arg3, 0)
-      #   action['actionOutput'] = actionOutput
-      #   # action['actionType'] = 'ACTION_OUTPUT'
-      #   actions.append(action)
+      # If ACTION_OUTPUT is explicitly enabled, add an entry with a fake
+      # port number. We need this entry to preserve the action ordering.
+      if actionOutputEnabled == True:
+        actionOutput = {}
+        outPort = {}
+        outPort['value'] = 0xffff
+        actionOutput['port'] = outPort
+        actionOutput['maxLen'] = 0
+        action['actionOutput'] = actionOutput
+        # action['actionType'] = 'ACTION_OUTPUT'
+        actions.append(action)
       #
     elif arg1 == "actionSetVlanId":
       vlanId = {}
@@ -302,6 +309,7 @@ def extract_flow_args(my_args):
     'my_src_port' : my_src_port,
     'my_dst_dpid' : my_dst_dpid,
     'my_dst_port' : my_dst_port,
+    'flowPathFlags' : flowPathFlags,
     'match' : match,
     'matchInPortEnabled' : matchInPortEnabled,
     'actions' : actions,
@@ -325,6 +333,7 @@ def compute_flow_path(parsed_args, data_path):
 
   my_flow_id = parsed_args['my_flow_id']
   my_installer_id = parsed_args['my_installer_id']
+  myFlowPathFlags = parsed_args['flowPathFlags']
   match = parsed_args['match']
   matchInPortEnabled = parsed_args['matchInPortEnabled']
   actions = parsed_args['actions']
@@ -335,10 +344,15 @@ def compute_flow_path(parsed_args, data_path):
   flow_id['value'] = my_flow_id
   installer_id = {}
   installer_id['value'] = my_installer_id
+  flowPathFlags = {}
+  flowPathFlags['flags'] = myFlowPathFlags
+
+  flowEntryActions = {}
 
   flow_path = {}
   flow_path['flowId'] = flow_id
   flow_path['installerId'] = installer_id
+  flow_path['flowPathFlags'] = flowPathFlags
 
   if (len(match) > 0):
     flow_path['flowEntryMatch'] = copy.deepcopy(match)
@@ -355,6 +369,11 @@ def compute_flow_path(parsed_args, data_path):
 	# match['matchInPort'] = True
       my_data_path['flowEntries'][idx]['flowEntryMatch'] = copy.deepcopy(match)
       idx = idx + 1
+
+
+  if (len(actions) > 0):
+    flowEntryActions['actions'] = copy.deepcopy(actions)
+    flow_path['flowEntryActions'] = flowEntryActions
 
   #
   # Set the actions for each flow entry
@@ -377,10 +396,11 @@ def compute_flow_path(parsed_args, data_path):
       action['actionOutput'] = copy.deepcopy(actionOutput)
       # action['actionType'] = 'ACTION_OUTPUT'
       actions.append(copy.deepcopy(action))
+      flowEntryActions = {}
+      flowEntryActions['actions'] = copy.deepcopy(actions)
 
-      my_data_path['flowEntries'][idx]['flowEntryActions'] = copy.deepcopy(actions)
+      my_data_path['flowEntries'][idx]['flowEntryActions'] = flowEntryActions
       idx = idx + 1
-
 
   flow_path['dataPath'] = my_data_path
   debug("Flow Path: %s" % flow_path)
@@ -461,7 +481,7 @@ def exec_processing_by_script(parsed_args):
 
 
 if __name__ == "__main__":
-  usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Match Conditions] [Actions]\n" % (sys.argv[0])
+  usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Flow Path Flags] [Match Conditions] [Actions]\n" % (sys.argv[0])
   usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Flags:\n"
   usage_msg = usage_msg + "        -m [monitorname]  Monitor and maintain the installed shortest path(s)\n"
@@ -471,6 +491,13 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "                          Otherwise, it is done by this script.\n"
   usage_msg = usage_msg + "        -f <filename>     Read the flow(s) to install from a file\n"
   usage_msg = usage_msg + "                          File format: one line per flow starting with <flow-id>\n"
+  usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "    Flow Path Flags:\n"
+  usage_msg = usage_msg + "        flowPathFlags <Flags> (flag names separated by ',')\n"
+  usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "        Known flags:\n"
+  usage_msg = usage_msg + "            DISCARD_FIRST_HOP_ENTRY    : Discard the first-hop flow entry\n"
+  usage_msg = usage_msg + "            KEEP_ONLY_FIRST_HOP_ENTRY  : Keep only the first-hop flow entry\n"
   usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Match Conditions:\n"
   usage_msg = usage_msg + "        matchInPort <True|False> (default to True)\n"
@@ -488,18 +515,17 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Actions:\n"
   usage_msg = usage_msg + "        actionOutput <True|False> (default to True)\n"
+  usage_msg = usage_msg + "        actionSetVlanId <VLAN ID>\n"
+  usage_msg = usage_msg + "        actionSetVlanPriority <VLAN priority>\n"
+  usage_msg = usage_msg + "        actionStripVlan <True|False>\n"
   usage_msg = usage_msg + "        actionSetEthernetSrcAddr <source MAC address>\n"
   usage_msg = usage_msg + "        actionSetEthernetDstAddr <destination MAC address>\n"
   usage_msg = usage_msg + "        actionSetIPv4SrcAddr <source IPv4 address>\n"
   usage_msg = usage_msg + "        actionSetIPv4DstAddr <destination IPv4 address>\n"
-  usage_msg = usage_msg + "\n"
-  usage_msg = usage_msg + "    Actions (not implemented yet):\n"
-  usage_msg = usage_msg + "        actionSetVlanId <VLAN ID>\n"
-  usage_msg = usage_msg + "        actionSetVlanPriority <VLAN priority>\n"
   usage_msg = usage_msg + "        actionSetIpToS <IP ToS (DSCP field, 6 bits)>\n"
   usage_msg = usage_msg + "        actionSetTcpUdpSrcPort <source TCP/UDP port>\n"
   usage_msg = usage_msg + "        actionSetTcpUdpDstPort <destination TCP/UDP port>\n"
-  usage_msg = usage_msg + "        actionStripVlan <True|False>\n"
+  usage_msg = usage_msg + "    Actions (not implemented yet):\n"
   usage_msg = usage_msg + "        actionEnqueue <dummy argument>\n"
 
   # app.debug = False;

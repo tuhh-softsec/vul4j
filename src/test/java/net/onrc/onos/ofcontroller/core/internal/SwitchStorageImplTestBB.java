@@ -15,7 +15,6 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflow.protocol.OFPhysicalPort;

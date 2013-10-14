@@ -1,7 +1,5 @@
 package net.onrc.onos.ofcontroller.routing;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,8 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.pipes.PipeFunction;
-import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
 
 
 /**
@@ -202,6 +198,10 @@ public class TopoRouteService implements ITopoRouteService {
 	    // The local Port info
 	    //
 	    for (Vertex myPortVertex : nodeVertex.getVertices(Direction.OUT, "on")) {
+		// Ignore inactive ports
+		if (! myPortVertex.getProperty("state").toString().equals("ACTIVE"))
+		    continue;
+
 		short myPort = 0;
 		Object obj = myPortVertex.getProperty("number");
 		if (obj instanceof Short) {
@@ -215,6 +215,10 @@ public class TopoRouteService implements ITopoRouteService {
 		// The neighbor Port info
 		//
 		for (Vertex neighborPortVertex : myPortVertex.getVertices(Direction.OUT, "link")) {
+		    // Ignore inactive ports
+		    if (! neighborPortVertex.getProperty("state").toString().equals("ACTIVE"))
+			continue;
+
 		    short neighborPort = 0;
 		    obj = neighborPortVertex.getProperty("number");
 		    if (obj instanceof Short) {
@@ -448,7 +452,15 @@ public class TopoRouteService implements ITopoRouteService {
 		break;
 	    }
 	    for (Vertex parentPort : nextVertex.getVertices(Direction.OUT, "on")) {
+		// Ignore inactive ports
+		if (! parentPort.getProperty("state").toString().equals("ACTIVE"))
+			continue;
+
 		for (Vertex childPort : parentPort.getVertices(Direction.OUT, "link")) {
+		    // Ignore inactive ports
+		    if (! childPort.getProperty("state").toString().equals("ACTIVE"))
+			continue;
+
 		    for (Vertex child : childPort.getVertices(Direction.IN, "on")) {
 			// Ignore inactive switches
 			String state = child.getProperty("state").toString();

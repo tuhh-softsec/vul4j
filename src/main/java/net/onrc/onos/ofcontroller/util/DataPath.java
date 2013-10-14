@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * The class representing the Data Path.
+ * The data forwarding path state from a source to a destination.
  */
 public class DataPath {
     private SwitchPort srcPort;		// The source port
@@ -73,6 +73,31 @@ public class DataPath {
     @JsonProperty("flowEntries")
     public void setFlowEntries(ArrayList<FlowEntry> flowEntries) {
 	this.flowEntries = flowEntries;
+    }
+
+    /**
+     * Apply Flow Path Flags to the pre-computed Data Path.
+     *
+     * @param flowPathFlags the Flow Path Flags to apply.
+     */
+    public void applyFlowPathFlags(FlowPathFlags flowPathFlags) {
+	if (flowPathFlags == null)
+	    return;		// Nothing to do
+
+	// Discard the first Flow Entry
+	if (flowPathFlags.isDiscardFirstHopEntry()) {
+	    if (flowEntries.size() > 0)
+		flowEntries.remove(0);
+	}
+
+	// Keep only the first Flow Entry
+	if (flowPathFlags.isKeepOnlyFirstHopEntry()) {
+	    if (flowEntries.size() > 1) {
+		FlowEntry flowEntry = flowEntries.get(0);
+		flowEntries.clear();
+		flowEntries.add(flowEntry);
+	    }
+	}
     }
 
     /**

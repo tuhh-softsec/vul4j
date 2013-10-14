@@ -23,6 +23,17 @@ public class IPv6Net {
     }
 
     /**
+     * Copy constructor.
+     *
+     * @param other the object to copy from.
+     */
+    public IPv6Net(IPv6Net other) {
+	if (other.address != null)
+	    this.address = new IPv6(other.address);
+	this.prefixLen = other.prefixLen;
+    }
+
+    /**
      * Constructor for a given address and prefix length.
      *
      * @param address the address to use.

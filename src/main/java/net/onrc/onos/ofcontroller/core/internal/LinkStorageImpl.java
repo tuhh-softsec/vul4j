@@ -15,10 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thinkaurelius.titan.core.TitanException;
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
 import com.tinkerpop.pipes.PipeFunction;
 import com.tinkerpop.pipes.transform.PathPipe;
 
@@ -142,7 +139,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	
 	/**
 	 * Delete a record in the LinkStorage.
-	 * @param link Record to be deleted.
+	 * @param lt Record to be deleted.
 	 */
 	@Override
 	public void deleteLink(Link lt) {
@@ -207,7 +204,7 @@ public class LinkStorageImpl implements ILinkStorage {
     	IPortObject srcPort = dbop.searchPort(HexString.toHexString(dpid), port);
     	ISwitchObject srcSw = srcPort.getSwitch();
     	
-    	if(srcSw != null) {
+    	if(srcSw != null && srcPort != null) {
         	for(IPortObject dstPort : srcPort.getLinkedPorts()) {
         		ISwitchObject dstSw = dstPort.getSwitch();
         		Link link = new Link(HexString.toLong(srcSw.getDPID()),

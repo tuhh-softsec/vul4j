@@ -8,9 +8,22 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Flow Manager REST API implementation: Delete Flow state.
+ *
+ * The "{flow-id}" request attribute value can be either a specific Flow ID,
+ * or the keyword "all" to delete all Flows:
+ *
+ *   GET /wm/flow/delete/{flow-id}/json
+ */
 public class DeleteFlowResource extends ServerResource {
     protected static Logger log = LoggerFactory.getLogger(DeleteFlowResource.class);
 
+    /**
+     * Implement the API.
+     *
+     * @return true on success, otehrwise false.
+     */
     @Get("json")
     public Boolean retrieve() {
 	Boolean result = false;

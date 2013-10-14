@@ -6,68 +6,57 @@ import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.openflow.util.HexString;
 
 import com.google.common.net.InetAddresses;
 
 public class Interface {
-	private String name;
-	private SwitchPort switchPort = null;
-	private long dpid;
-	private short port;
-	private InetAddress ipAddress;
-	private int prefixLength;
+	private final String name;
+	private final SwitchPort switchPort;
+	private final long dpid;
+	private final short port;
+	private final InetAddress ipAddress;
+	private final int prefixLength;
+	
+	@JsonCreator
+	public Interface (@JsonProperty("name") String name,
+					  @JsonProperty("dpid") String dpid,
+					  @JsonProperty("port") short port,
+					  @JsonProperty("ipAddress") String ipAddress,
+					  @JsonProperty("prefixLength") int prefixLength) {
+		this.name = name;
+		this.dpid = HexString.toLong(dpid);
+		this.port = port;
+		this.ipAddress = InetAddresses.forString(ipAddress);
+		this.prefixLength = prefixLength;
+		this.switchPort = new SwitchPort(new Dpid(this.dpid), new Port(this.port));
+	}
 	
 	public String getName() {
 		return name;
 	}
 
-	@JsonProperty("name")
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public synchronized SwitchPort getSwitchPort() {
-		if (switchPort == null){
-			switchPort = new SwitchPort(new Dpid(dpid), new Port(port));
-		}
-		return switchPort;
+	public SwitchPort getSwitchPort() {
+		//TODO SwitchPort, Dpid and Port are mutable, but they could probably
+		//be made immutable which would prevent the need to copy
+		return new SwitchPort(new Dpid(dpid), new Port(port));
 	}
 	
 	public long getDpid() {
 		return dpid;
 	}
 
-	@JsonProperty("dpid")
-	public void setDpid(String dpid) {
-		this.dpid = HexString.toLong(dpid);
-	}
-
 	public short getPort() {
 		return port;
-	}
-
-	@JsonProperty("port")
-	public void setPort(short port) {
-		this.port = port;
 	}
 
 	public InetAddress getIpAddress() {
 		return ipAddress;
 	}
 
-	@JsonProperty("ipAddress")
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = InetAddresses.forString(ipAddress);
-	}
-
 	public int getPrefixLength() {
 		return prefixLength;
-	}
-
-	@JsonProperty("prefixLength")
-	public void setPrefixLength(int prefixLength) {
-		this.prefixLength = prefixLength;
 	}
 }

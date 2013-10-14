@@ -8,7 +8,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.frames.Adjacency;
-import com.tinkerpop.frames.Incidence;
 import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.annotations.gremlin.GremlinGroovy;
 import com.tinkerpop.frames.annotations.gremlin.GremlinParam;
@@ -200,6 +199,13 @@ public interface IFlowPath extends IBaseObject {
 		@Property("installer_id")
 		public void setInstallerId(String installerId);
 
+		@JsonProperty("flowPathFlags")
+		@Property("flow_path_flags")
+		public Long getFlowPathFlags();
+
+		@Property("flow_path_flags")
+		public void setFlowPathFlags(Long flowPathFlags);
+
 		@JsonProperty("srcDpid")
 		@Property("src_switch")
 		public String getSrcSwitch();
@@ -246,6 +252,9 @@ public interface IFlowPath extends IBaseObject {
 		@Adjacency(label="flow", direction=Direction.IN)
 		public void removeFlowEntry(final IFlowEntry flowEntry);
 
+		//
+		// Matching fields
+		//
 		@JsonIgnore
 		@Property("matchSrcMac")
 		public String getMatchSrcMac();
@@ -323,6 +332,18 @@ public interface IFlowPath extends IBaseObject {
 		@Property("matchDstTcpUdpPort")
 		public void setMatchDstTcpUdpPort(Short matchDstTcpUdpPort);
 
+		//
+		// Action-related fields
+		//
+		@Property("actions")
+		public String getActions();
+
+		@Property("actions")
+		public void setActions(String actionsStr);
+
+		//
+		// Other fields
+		//
 		@JsonIgnore
 		@GremlinGroovy("it.in('flow').out('switch')")
 		public Iterable<ISwitchObject> getSwitches();
@@ -376,6 +397,9 @@ public interface IFlowEntry extends IBaseObject {
 		@Property("error_state_code")
 		public void setErrorStateCode(String errorStateCode);
 
+		//
+		// Matching fields
+		//
 		@Property("matchInPort")
 		public Short getMatchInPort();
 
@@ -448,12 +472,24 @@ public interface IFlowEntry extends IBaseObject {
 		@Property("matchDstTcpUdpPort")
 		public void setMatchDstTcpUdpPort(Short matchDstTcpUdpPort);
 
-		@Property("actionOutput")
-		public Short getActionOutput();
+		//
+		// Action-related fields
+		//
+		@Property("actionOutputPort")
+		public Short getActionOutputPort();
 
-		@Property("actionOutput")
-		public void setActionOutput(Short actionOutput);
+		@Property("actionOutputPort")
+		public void setActionOutputPort(Short actionOutputPort);
 
+		@Property("actions")
+		public String getActions();
+
+		@Property("actions")
+		public void setActions(String actionsStr);
+
+		//
+		// Other fields
+		//
 		@Adjacency(label="flow")
 		public IFlowPath getFlow();
 

@@ -1,24 +1,33 @@
 package net.onrc.onos.ofcontroller.bgproute;
 
+/*
+ * TODO This Ptree needs to be refactored if we're going to use it permenantly.
+ *
+ * The biggest problem is it leaks PTreeNode references - these need to stay within
+ * the Ptree as they contain data fundamental to the structure of the tree.
+ * You should put RIB entries in and get RIB entries out.
+ * Also we need to get rid of the referencing scheme to determine when to delete nodes.
+ * Deletes should be explicit, and there's no need to keep track of references if 
+ * we don't leak them out the the Ptree.
+ */
 public class Ptree {
-	int maxKeyBits;
-	int maxKeyOctets;
-	int refCount;
-	PtreeNode top;
-	byte maskBits[] = { (byte)0x00, (byte)0x80, (byte)0xc0, (byte)0xe0, (byte)0xf0, (byte)0xf8, (byte)0xfc, (byte)0xfe, (byte)0xff };
+	private int maxKeyBits;
+	private int maxKeyOctets;
+	//private int refCount;
+	private PtreeNode top;
+	private byte maskBits[] = { (byte)0x00, (byte)0x80, (byte)0xc0, (byte)0xe0, (byte)0xf0, (byte)0xf8, (byte)0xfc, (byte)0xfe, (byte)0xff };
 	
-	// Constructor.
-	Ptree(int max_key_bits) {
+	public Ptree(int max_key_bits) {
 		maxKeyBits = max_key_bits;
 		maxKeyOctets = bit_to_octet(max_key_bits); 
-		refCount = 0;
+		//refCount = 0;
 	}
 	
-	public PtreeNode acquire(byte [] key) {
+	public synchronized PtreeNode acquire(byte [] key) {
 		return acquire(key, maxKeyBits);
 	}
 	
-	public PtreeNode acquire(byte [] key, int key_bits) {
+	public synchronized PtreeNode acquire(byte [] key, int key_bits) {
 		if (key_bits > maxKeyBits) {
 			return null;
 		}
@@ -76,7 +85,7 @@ public class Ptree {
 		return addReference(add);
 	}
 
-	public PtreeNode lookup(byte [] key, int key_bits) {
+	public synchronized PtreeNode lookup(byte [] key, int key_bits) {
 		if (key_bits > maxKeyBits) {
 			return null;
 		}
@@ -99,7 +108,7 @@ public class Ptree {
 		return null;
 	}
 	
-	public PtreeNode match(byte [] key, int key_bits) {
+	public synchronized PtreeNode match(byte [] key, int key_bits) {
 		if (key_bits > maxKeyBits) {
 			return null;
 		}
@@ -127,14 +136,14 @@ public class Ptree {
 		return null;
 	}
 	
-	public PtreeNode begin() {
+	public synchronized PtreeNode begin() {
 		if (top == null) {
 			return null;
 		}
 		return addReference(top);
 	}
 	
-	public PtreeNode next(PtreeNode node) {
+	public synchronized PtreeNode next(PtreeNode node) {
 		PtreeNode next;
 		
 		if (node.left != null) {
@@ -175,7 +184,7 @@ public class Ptree {
 		return node;
 	}
 	
-	public void delReference(PtreeNode node) {
+	public synchronized void delReference(PtreeNode node) {
 		if (node.refCount > 0) {
 			node.refCount--;
 		}
@@ -277,10 +286,6 @@ public class Ptree {
 			add.key[j] = (byte)(node.key[j] & maskBits[add.keyBits % 8]);
 		
 		return add;
-	}
-	//add by linpp
-	private void clear() {
-	
 	}
 	
 	private void node_remove(PtreeNode node) {
