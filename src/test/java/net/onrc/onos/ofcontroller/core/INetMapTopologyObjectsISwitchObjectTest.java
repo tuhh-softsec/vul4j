@@ -226,7 +226,7 @@ public class INetMapTopologyObjectsISwitchObjectTest {
 		portObj.setDevice(devObj);
 		
 		int i = 0;
-		for(IDeviceObject dev : swObj.getDevices()){
+		for(@SuppressWarnings("unused") IDeviceObject dev : swObj.getDevices()){
 			i++;
 		}
 		assertEquals(i, numOfDev);
