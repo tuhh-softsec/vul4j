@@ -116,19 +116,18 @@ public class DataPath {
      * inPort/dpid/outPort;inPort/dpid/outPort;...
      */
     public String dataPathSummary() {
-	String resultStr = new String();
+	StringBuilder resultStr = new StringBuilder(5+1+20+1+5+1);
 	if (this.flowEntries != null) {
 	    for (FlowEntry flowEntry : this.flowEntries) {
 		// The data path summary string
-		resultStr = resultStr +
-		    flowEntry.inPort().toString() + "/"
-		    + flowEntry.dpid().toString() + "/" +
-		    flowEntry.outPort().toString() + ";";
+		resultStr.append(flowEntry.inPort().toString()).append('/')
+			.append(flowEntry.dpid().toString()).append('/')
+			.append(flowEntry.outPort().toString()).append(';');
 	    }
 	}
-	if (resultStr.isEmpty())
-	    resultStr = "X";		// Invalid shortest-path
-	return resultStr;
+	if (resultStr.length() == 0)
+	    resultStr.append("X");		// Invalid shortest-path
+	return resultStr.toString();
     }
 
     /**
