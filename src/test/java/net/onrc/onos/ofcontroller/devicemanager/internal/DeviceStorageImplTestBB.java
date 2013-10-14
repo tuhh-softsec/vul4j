@@ -214,11 +214,8 @@ public class DeviceStorageImplTestBB {
 				{
 
 					String portNumFromDB = port.getNumber().toString();
-					assertEquals(String.valueOf(portNum), portNumFromDB);						
+					assertEquals(String.valueOf(portNum), portNumFromDB);
 
-					ISwitchObject sw = port.getSwitch();
-					String str = sw.getDPID();
-					log.debug("");
 				}
 			}	
 
