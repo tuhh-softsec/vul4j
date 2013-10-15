@@ -1,0 +1,102 @@
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config
+	http://www.hazelcast.com/schema/config/hazelcast-config-3.0.xsd"
+	xmlns="http://www.hazelcast.com/schema/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <map name="*">
+
+    <!--
+    Number of sync-backups. If 1 is set as the backup-count for example,
+    then all entries of the map will be copied to another JVM for
+    ail-safety. Valid numbers are 0 (no backup), 1, 2, 3.
+    -->
+    <backup-count>0</backup-count>
+
+    <!--
+    Number of async-backups. If 1 is set as the backup-count for example,
+    then all entries of the map will be copied to another JVM for
+    fail-safety. Valid numbers are 0 (no backup), 1, 2, 3.
+    -->
+    <async-backup-count>3</async-backup-count>
+
+    <!--
+    Can we read the local backup entries? Default value is false for
+    strong consistency. Being able to read backup data will give you
+    greater performance.
+    -->
+    <read-backup-data>true</read-backup-data>
+
+    <near-cache>
+      <!--
+	  Maximum size of the near cache. When max size is reached,
+	  cache is evicted based on the policy defined.
+	  Any integer between 0 and Integer.MAX_VALUE. 0 means
+	  Integer.MAX_VALUE. Default is 0.
+      -->
+      <max-size>0</max-size>
+      <!--
+	  Maximum number of seconds for each entry to stay in the near cache.
+	  Entries that are older than <time-to-live-seconds> will get
+	  automatically evicted from the near cache.
+	  Any integer between 0 and Integer.MAX_VALUE. 0 means infinite.
+	  Default is 0.
+      -->
+      <time-to-live-seconds>0</time-to-live-seconds>
+
+      <!--
+	  Maximum number of seconds each entry can stay in the near cache as
+	  untouched (not-read).
+	  Entries that are not read (touched) more than <max-idle-seconds>
+	  value will get removed from the near cache.
+	  Any integer between 0 and Integer.MAX_VALUE. 0 means
+	  Integer.MAX_VALUE. Default is 0.
+      -->
+      <max-idle-seconds>0</max-idle-seconds>
+
+      <!--
+	  Valid values are:
+	  NONE (no extra eviction, <time-to-live-seconds> may still apply),
+	  LRU (Least Recently Used),
+	  LFU (Least Frequently Used).
+	  LRU is the default.
+	  Regardless of the eviction policy used, <time-to-live-seconds> will
+	  still apply.
+      -->
+      <eviction-policy>NONE</eviction-policy>
+
+      <!--
+	  Should the cached entries get evicted if the entries are changed
+	  (updated or removed).
+	  true of false. Default is true.
+      -->
+      <invalidate-on-change>true</invalidate-on-change>
+
+    </near-cache>
+  </map>
+
+  <topic name="*">
+    <global-ordering-enabled>false</global-ordering-enabled>
+  </topic>
+
+  <network>
+    <port auto-increment="true">5701</port>
+    <join>
+      <multicast enabled="true">
+	<multicast-group>224.2.2.3</multicast-group>
+	<multicast-port>54327</multicast-port>
+      </multicast>
+      <!--                                                                     
+      <tcp-ip enabled="false">                                                 
+        <member>machine1</member>                                              
+        <member>machine2</member>                                              
+        <member>machine3:5799</member>                                         
+        <member>192.168.1.0-7</member>                                         
+        <member>192.168.1.21</member>                                          
+      </tcp-ip>                                                                
+      -->
+      <aws enabled="false">
+      </aws>
+    </join>
+  </network>
+
+</hazelcast>
