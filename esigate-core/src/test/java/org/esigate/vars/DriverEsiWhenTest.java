@@ -68,6 +68,8 @@ public class DriverEsiWhenTest extends AbstractDriverTestCase {
 		addExpression(expected, "!(a==a)", false);
 		addExpression(expected, "!(a==b)", true);
 		addExpression(expected, "1==1", true);
+		addExpression(expected, "1==01", true);
+		addExpression(expected, "10==01", false);
 		addExpression(expected, "a==a", true);
 		addExpression(expected, "a==b", false);
 		addExpression(expected, "2>=1", true);
@@ -84,6 +86,8 @@ public class DriverEsiWhenTest extends AbstractDriverTestCase {
 		addExpression(expected, "2<=1", false);
 		addExpression(expected, "1<=2", true);
 		addExpression(expected, "$(HTTP_COOKIE{test-cookie})==test-cookie-value", true);
+		addExpression(expected, "$(HTTP_USER_AGENT{os})==MAC", true);
+		addExpression(expected, "$(HTTP_USER_AGENT{os})=='MAC'", true);
 		addExpression(expected, "$(HTTP_COOKIE{test-cookie})=='test-cookie-value'", true);
 		addExpression(expected, "$(HTTP_COOKIE{test-cookie})!='test-cookie-not-this-value'", true);
 
