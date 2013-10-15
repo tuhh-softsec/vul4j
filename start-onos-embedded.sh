@@ -21,11 +21,11 @@ JVM_OPTS="$JVM_OPTS -javaagent:lib/jamm-0.2.5.jar"
 JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 		-XX:+UseThreadPriorities \
 		-XX:ThreadPriorityPolicy=42 \
-                 -XX:+UseCompressedOops \
+		-XX:+UseCompressedOops \
 		-Dcassandra.compaction.priority=1 \
-            -Dcom.sun.management.jmxremote.port=7199 \
-              -Dcom.sun.management.jmxremote.ssl=false \
-              -Dcom.sun.management.jmxremote.authenticate=false"
+		-Dcom.sun.management.jmxremote.port=7199 \
+		-Dcom.sun.management.jmxremote.ssl=false \
+		-Dcom.sun.management.jmxremote.authenticate=false"
 
 #JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
 
