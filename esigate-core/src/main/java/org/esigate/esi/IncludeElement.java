@@ -88,21 +88,43 @@ class IncludeElement extends BaseElement {
 		String src = includeTag.getAttribute("src");
 		String alt = includeTag.getAttribute("alt");
 		boolean ignoreError = "continue".equals(includeTag.getAttribute("onerror"));
+		
+		Exception currentException = null;
+		// Handle src
 		try {
 			processPage(src, includeTag, ctx);
 		} catch (IOException e) {
-			if (alt != null) {
-				processPage(alt, includeTag, ctx);
-			} else if (!ignoreError && !ctx.reportError(e)) {
-				throw e;
-			}
+			currentException = e;
 		} catch (HttpErrorPage e) {
-			if (alt != null) {
+			currentException = e;
+		}
+
+		// Handle Alt
+		if (currentException != null && alt != null) {
+			// Reset exception
+			currentException = null;
+			try {
 				processPage(alt, includeTag, ctx);
-			} else if (!ignoreError && !ctx.reportError(e)) {
-				throw e;
+			} catch (IOException e) {
+				currentException = e;
+			} catch (HttpErrorPage e) {
+				currentException = e;
 			}
 		}
+
+		// Handle onerror
+		if (currentException != null && !ignoreError && !ctx.reportError(currentException)) {
+			if (currentException instanceof IOException) {
+				throw (IOException) currentException;
+			} else if (currentException instanceof HttpErrorPage) {
+				throw (HttpErrorPage) currentException;
+			}
+			throw new IllegalStateException(
+					"This type of exception is unexpected here. Should be IOException or HttpErrorPageException.",
+					currentException);
+
+		}
+		
 		// apply regexp replacements
 		if (!regexpReplacements.isEmpty()) {
 			for (Entry<String, CharSequence> entry : regexpReplacements.entrySet()) {
