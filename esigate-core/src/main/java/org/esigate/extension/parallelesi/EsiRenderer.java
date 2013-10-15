@@ -51,6 +51,9 @@ import org.slf4j.LoggerFactory;
 public class EsiRenderer implements Renderer, FutureAppendable {
 
 	private final static Logger LOG = LoggerFactory.getLogger(EsiRenderer.class);
+	/**
+	 * Key for the executor for future tasks. This is used with parser#setData().
+	 */
 	public final static String DATA_EXECUTOR = "executor";
 
 	private final static Pattern PATTERN = Pattern
