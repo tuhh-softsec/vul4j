@@ -34,6 +34,7 @@ JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 		-Dcom.sun.management.jmxremote.port=7189 \
 		-Dcom.sun.management.jmxremote.ssl=false \
 		-Dcom.sun.management.jmxremote.authenticate=false"
+JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 
 # Set ONOS core main class
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
