@@ -3,7 +3,6 @@ package net.onrc.onos.ofcontroller.core;
 import java.util.List;
 
 import net.floodlightcontroller.routing.Link;
-import net.floodlightcontroller.topology.NodePortTuple;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
@@ -29,11 +28,5 @@ public interface INetMapTopologyService extends INetMapService {
 		Iterable<IDeviceObject> getActiveDevices();
 		Iterable<IDeviceObject> getDevicesOnSwitch(String dpid);
 		Iterable<IDeviceObject> getDevicesOnSwitch(String dpid, short port_num);
-	}
-
-	public interface ITopoFlowService {
-		Boolean flowExists(NodePortTuple src, NodePortTuple dest);
-		List<NodePortTuple> getShortestFlowPath(NodePortTuple src, NodePortTuple dest);
-		
 	}
 }
