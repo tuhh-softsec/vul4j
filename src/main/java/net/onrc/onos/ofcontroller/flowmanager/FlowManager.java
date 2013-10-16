@@ -332,11 +332,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    if ((flowUserState != null)
 			&& flowUserState.equals("FE_USER_DELETE")) {
 			Iterable<IFlowEntry> flowEntries = flowPathObj.getFlowEntries();
-			boolean empty = true;	// TODO: an ugly hack
-			for (IFlowEntry flowEntryObj : flowEntries) {
-			    empty = false;
-			    break;
-			}
+			final boolean empty = !flowEntries.iterator().hasNext();
 			if (empty)
 			    deleteFlows.add(flowPathObj);
 		    }
