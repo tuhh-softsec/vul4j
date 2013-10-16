@@ -2,7 +2,9 @@ package org.esigate.extension.parallelesi;
 
 import java.util.Properties;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.esigate.Driver;
 import org.esigate.events.Event;
@@ -26,8 +28,11 @@ import org.slf4j.LoggerFactory;
  */
 public class Esi implements Extension, IEventListener {
 	private static final Logger LOG = LoggerFactory.getLogger(Esi.class);
-	private static Parameter THREADS = new Parameter("esi_threads", "0");
-	private int threads;
+	// esi_max_threads = 0 -> linear execution
+	private static Parameter THREADS = new Parameter("esi_max_threads", "0");
+	private static Parameter IDLE = new Parameter("esi_max_idle", "60");
+	private int maxThreads;
+	private int idle;
 	private Executor executor;
 
 	@Override
@@ -44,13 +49,18 @@ public class Esi implements Extension, IEventListener {
 		driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);
 
 		// Load configuration
-		this.threads = THREADS.getValueInt(properties);
-		if (this.threads == 0) {
+		this.maxThreads = THREADS.getValueInt(properties);
+		this.idle = IDLE.getValueInt(properties);
+
+		if (this.maxThreads == 0) {
 			this.executor = null;
 			LOG.info("Linear ESI processing enabled.");
 		} else {
-			this.executor = Executors.newFixedThreadPool(this.threads);
-			LOG.info("Multi-threaded ESI processing using {} thread(s) enabled.", String.valueOf(this.threads));
+			this.executor = new ThreadPoolExecutor(0, this.maxThreads, this.idle, TimeUnit.SECONDS,
+					new SynchronousQueue<Runnable>());
+
+			LOG.info("Multi-threaded ESI processing enabled. Thread limit: {}, max idle {}.",
+					String.valueOf(this.maxThreads), String.valueOf(this.idle));
 		}
 
 	}
