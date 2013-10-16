@@ -96,6 +96,11 @@ class AttemptElement extends BaseElement {
 
 	@Override
 	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		ctx.getCurrent().characters(new AttemptTask(ctx.findAncestor(TryElement.class), this.buf));
+		TryElement parent = ctx.findAncestor(TryElement.class);
+		if (parent != null) {
+			parent.setWrite(true);
+			ctx.getCurrent().characters(new AttemptTask(ctx.findAncestor(TryElement.class), this.buf));
+			parent.setWrite(false);
+		}
 	}
 }

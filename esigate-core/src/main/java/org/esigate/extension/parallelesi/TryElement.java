@@ -15,6 +15,9 @@
 
 package org.esigate.extension.parallelesi;
 
+import java.io.IOException;
+import java.util.concurrent.Future;
+
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.future.FutureElementType;
 import org.esigate.parser.future.FutureParserContext;
@@ -31,6 +34,7 @@ class TryElement extends BaseElement {
 	private boolean hasErrors;
 	private boolean exceptProcessed;
 	private int errorCode;
+	private boolean write = false;
 
 	TryElement() {
 	}
@@ -39,6 +43,12 @@ class TryElement extends BaseElement {
 	protected void parseTag(Tag tag, FutureParserContext ctx) {
 		this.hasErrors = false;
 		this.errorCode = 0;
+	}
+
+	@Override
+	public void characters(Future<CharSequence> csq) throws IOException {
+		if (write)
+			super.characters(csq);
 	}
 
 	public boolean hasErrors() {
@@ -56,7 +66,7 @@ class TryElement extends BaseElement {
 	public void setExceptProcessed(boolean exceptProcessed) {
 		this.exceptProcessed = exceptProcessed;
 	}
-	
+
 	@Override
 	public boolean onError(Exception e, FutureParserContext ctx) {
 		hasErrors = true;
@@ -66,4 +76,7 @@ class TryElement extends BaseElement {
 		return true;
 	}
 
+	public void setWrite(boolean write) {
+		this.write = write;
+	}
 }

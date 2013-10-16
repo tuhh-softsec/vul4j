@@ -50,7 +50,9 @@ class AttemptElement extends BaseElement {
 		// content in its direct parent.
 		TryElement parent = ctx.findAncestor(TryElement.class);
 		if (parent != null && !parent.hasErrors()) {
+			parent.setWrite(true);
 			ctx.getCurrent().characters(this.buf, 0, this.buf.length());
+			parent.setWrite(false);
 		}
 	}
 }

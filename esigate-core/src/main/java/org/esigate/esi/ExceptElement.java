@@ -16,6 +16,7 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
+import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 
@@ -44,10 +45,23 @@ class ExceptElement extends BaseElement {
 			parent.setExceptProcessed(processContent);
 		}
 	}
+	@Override
+	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		super.onTagStart(tag, ctx);
+		TryElement parent = ctx.findAncestor(TryElement.class);
+		parent.setWrite(true);
+	}
+	
+	@Override
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		super.onTagEnd(tag, ctx);
+		TryElement parent = ctx.findAncestor(TryElement.class);
+		parent.setWrite(false);
+	}
 
 	@Override
 	public void characters(CharSequence csq, int start, int end) throws IOException {
-		if (processContent) {
+		if (this.processContent ) {
 			super.characters(csq, start, end);
 		}
 	}

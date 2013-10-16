@@ -72,7 +72,6 @@ class ExceptElement extends BaseElement {
 		}
 	}
 
-
 	ExceptElement() {
 
 	}
@@ -83,14 +82,16 @@ class ExceptElement extends BaseElement {
 	protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException {
 		TryElement parent = ctx.findAncestor(TryElement.class);
 
-		ctx.getCurrent().characters(new ExceptTask(tag, parent));
-
+		if (parent != null) {
+			parent.setWrite(true);
+			ctx.getCurrent().characters(new ExceptTask(tag, parent));
+			parent.setWrite(false);
+		}
 	}
 
 	@Override
 	public void characters(Future<CharSequence> csq) throws IOException {
 		buf.enqueueAppend(csq);
-
 	}
 
 }

@@ -15,6 +15,8 @@
 
 package org.esigate.esi;
 
+import java.io.IOException;
+
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
@@ -28,7 +30,7 @@ class TryElement extends BaseElement {
 		}
 
 	};
-
+	private boolean write = false;
 	private boolean hasErrors;
 	private boolean exceptProcessed;
 	private int errorCode;
@@ -54,6 +56,12 @@ class TryElement extends BaseElement {
 		return exceptProcessed;
 	}
 
+	@Override
+	public void characters(CharSequence csq, int start, int end) throws IOException {
+		if (write)
+			super.characters(csq, start, end);
+	}
+
 	public void setExceptProcessed(boolean exceptProcessed) {
 		this.exceptProcessed = exceptProcessed;
 	}
@@ -67,4 +75,7 @@ class TryElement extends BaseElement {
 		return true;
 	}
 
+	public void setWrite(boolean write) {
+		this.write = write;
+	}
 }

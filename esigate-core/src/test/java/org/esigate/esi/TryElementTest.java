@@ -42,6 +42,37 @@ public class TryElementTest extends TestCase {
 		tested = new EsiRenderer();
 	}
 
+	/**
+	 * Ensure invalid markup is deleted
+	 * <p>
+	 * <code>
+	 * &lt;esi:try&gt;<br/> 
+	 * Invalid markup here<br/> 
+	 *  &lt;esi:attempt&gt;<br/> 
+	 *    &lt;esi:include ... &gt;<br/>  
+	 *   This line is valid and will be processed.<br/>  
+	 * &lt;/esi:attempt&gt;<br/>
+	 *     Invalid markup here<br/> 
+	 *  &lt;esi:except&gt;<br/> 
+	 *   This HTML line is valid and will be processed.<br/> 
+	 * &lt;/esi:except&gt;<br/> 
+	 * Invalid markup here 
+	 * </esi:try>
+	 * </code>
+	 * 
+	 * @throws IOException
+	 * @throws HttpErrorPage
+	 */
+	public void testInvalidMarkup() throws IOException, HttpErrorPage {
+		String page = "begin <esi:try> invalid "
+				+ "<esi:attempt> "
+				+ "<esi:include src='http://www.foo.com/test' /> abc <esi:include src=\"http://www.foo2.com/test\" /> cba"
+				+ "</esi:attempt>  invalid " + "<esi:except>inside except</esi:except>" + " invalid </esi:try> end";
+		StringWriter out = new StringWriter();
+		tested.render(request, page, out);
+		assertEquals("begin inside except end", out.toString());
+	}
+
 	public void testTry() throws IOException, HttpErrorPage {
 		String page = "begin <esi:try>" + "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>" + "</esi:try> end";
 		StringWriter out = new StringWriter();
