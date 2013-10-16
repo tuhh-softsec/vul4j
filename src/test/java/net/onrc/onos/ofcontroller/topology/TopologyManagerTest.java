@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.routing;
+package net.onrc.onos.ofcontroller.topology;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +33,7 @@ import net.onrc.onos.ofcontroller.util.SwitchPort;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TitanFactory.class, GraphDBConnection.class, GraphDBOperation.class, TopologyManager.class})
-public class TopoRouteServiceTest {
+public class TopologyManagerTest {
     String conf;
     private GraphDBConnection conn = null;
     private GraphDBOperation oper = null;
