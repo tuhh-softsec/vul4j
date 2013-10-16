@@ -18,15 +18,13 @@
  */
 package org.apache.xml.security.stax.securityToken;
 
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
-
-import javax.xml.namespace.QName;
 import java.security.Key;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.xml.security.exceptions.XMLSecurityException;
 
 /**
  * External view to a SecurityToken
@@ -76,7 +74,7 @@ public interface SecurityToken {
     SecurityToken getKeyWrappingToken() throws XMLSecurityException;
 
     List<? extends SecurityToken> getWrappedTokens() throws XMLSecurityException;
-
+    
     /**
      * Returns the KeyIdentifier
      *
@@ -87,27 +85,9 @@ public interface SecurityToken {
     SecurityTokenConstants.TokenType getTokenType();
 
     List<SecurityTokenConstants.TokenUsage> getTokenUsages();
-
-    /**
-     * Returns the absolute path to the XMLElement
-     *
-     * @return A list containing full qualified element names
-     */
-    List<QName> getElementPath();
-
-    /**
-     * Returns the first XMLEvent for this token
-     *
-     * @return
-     */
-    XMLSecEvent getXMLSecEvent();
-
-    /**
-     * Returns if the token is included in the message or not
-     * @return true if the token is included false otherwise
-     */
-    boolean isIncludedInMessage();
     
+    void addTokenUsage(SecurityTokenConstants.TokenUsage tokenUsage) throws XMLSecurityException;
+
     /**
      * Returns a SHA-1 Identifier that refers to this token
      * @return a SHA-1 Identifier that refers to this token

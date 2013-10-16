@@ -18,63 +18,53 @@
  */
 package org.apache.xml.security.stax.impl.securityToken;
 
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.InboundSecurityContext;
-import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
-import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
-import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
-
-import javax.crypto.SecretKey;
-import javax.xml.namespace.QName;
 import java.security.Key;
-import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.cert.X509Certificate;
 import java.security.interfaces.DSAKey;
 import java.security.interfaces.ECKey;
 import java.security.interfaces.RSAKey;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.crypto.SecretKey;
+import javax.xml.namespace.QName;
+
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.stax.ext.InboundSecurityContext;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
+import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
+import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 /**
  * @author $Author: coheigea $
  * @version $Revision: 1359731 $ $Date: 2012-07-10 16:39:40 +0100 (Tue, 10 Jul 2012) $
  */
-public abstract class AbstractInboundSecurityToken implements InboundSecurityToken {
+public abstract class AbstractInboundSecurityToken extends AbstractSecurityToken implements InboundSecurityToken {
 
     //prevent recursive key references
     private boolean invoked = false;
 
     private InboundSecurityContext inboundSecurityContext;
-    private final String id;
     private List<QName> elementPath;
     private XMLSecEvent xmlSecEvent;
     private SecurityTokenConstants.KeyIdentifier keyIdentifier;
     private final List<InboundSecurityToken> wrappedTokens = new ArrayList<InboundSecurityToken>();
     private InboundSecurityToken keyWrappingToken;
-    private final List<SecurityTokenConstants.TokenUsage> tokenUsages = new ArrayList<SecurityTokenConstants.TokenUsage>();
-    private final Map<String, Key> keyTable = new Hashtable<String, Key>();
-    private PublicKey publicKey;
-    private X509Certificate[] x509Certificates;
-    private boolean asymmetric = false;
     private boolean includedInMessage = false;
-    private String sha1Identifier;
 
     public AbstractInboundSecurityToken(
             InboundSecurityContext inboundSecurityContext, String id,
             SecurityTokenConstants.KeyIdentifier keyIdentifier, boolean includedInMessage) {
-
-        if (id == null || id.isEmpty()) {
-            throw new IllegalArgumentException("No id specified");
-        }
+        super(id);
 
         if (keyIdentifier == null) {
             throw new IllegalArgumentException("No keyIdentifier specified");
         }
 
         this.inboundSecurityContext = inboundSecurityContext;
-        this.id = id;
         this.keyIdentifier = keyIdentifier;
         this.includedInMessage = includedInMessage;
     }
@@ -95,11 +85,6 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
     }
 
     @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
     public List<QName> getElementPath() {
         return elementPath;
     }
@@ -115,28 +100,6 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
 
     public void setXMLSecEvent(XMLSecEvent xmlSecEvent) {
         this.xmlSecEvent = xmlSecEvent;
-    }
-
-    @Override
-    public boolean isAsymmetric() throws XMLSecurityException {
-        return asymmetric;
-    }
-
-    public void setSecretKey(String algorithmURI, Key key) {
-        if (algorithmURI == null) {
-            throw new IllegalArgumentException("algorithmURI must not be null");
-        }
-        if (key != null) {
-            this.keyTable.put(algorithmURI, key);
-        }
-        if (key instanceof PrivateKey) {
-            this.asymmetric = true;
-        }
-    }
-
-    @Override
-    public Map<String, Key> getSecretKey() throws XMLSecurityException {
-        return Collections.unmodifiableMap(keyTable);
     }
 
     protected Key getKey(String algorithmURI, XMLSecurityConstants.AlgorithmUsage algorithmUsage,
@@ -186,23 +149,6 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
         return key;
     }
 
-    public void setPublicKey(PublicKey publicKey) {
-        this.publicKey = publicKey;
-        this.asymmetric = true;
-    }
-
-    @Override
-    public PublicKey getPublicKey() throws XMLSecurityException {
-        if (this.publicKey != null) {
-            return this.publicKey;
-        }
-        X509Certificate[] x509Certificates = getX509Certificates();
-        if (x509Certificates != null && x509Certificates.length > 0) {
-            this.publicKey = x509Certificates[0].getPublicKey();
-        }
-        return this.publicKey;
-    }
-
     protected PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.AlgorithmUsage algorithmUsage,
                                   String correlationID) throws XMLSecurityException {
         return getPublicKey();
@@ -236,15 +182,6 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
         return publicKey;
     }
 
-    public void setX509Certificates(X509Certificate[] x509Certificates) {
-        this.x509Certificates = x509Certificates;
-    }
-
-    @Override
-    public X509Certificate[] getX509Certificates() throws XMLSecurityException {
-        return x509Certificates;
-    }
-
     @Override
     public void verify() throws XMLSecurityException {
     }
@@ -272,11 +209,6 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
     }
 
     @Override
-    public List<SecurityTokenConstants.TokenUsage> getTokenUsages() {
-        return tokenUsages;
-    }
-
-    @Override
     public InboundSecurityToken getKeyWrappingToken() throws XMLSecurityException {
         return keyWrappingToken;
     }
@@ -289,12 +221,5 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
     public boolean isIncludedInMessage() {
         return includedInMessage;
     }
-
-    public String getSha1Identifier() {
-        return sha1Identifier;
-    }
-
-    public void setSha1Identifier(String sha1Identifier) {
-        this.sha1Identifier = sha1Identifier;
-    }
+    
 }

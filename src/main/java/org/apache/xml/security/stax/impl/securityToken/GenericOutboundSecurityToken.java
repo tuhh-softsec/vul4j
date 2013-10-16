@@ -18,34 +18,31 @@
  */
 package org.apache.xml.security.stax.impl.securityToken;
 
+import java.security.Key;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
-
-import java.security.Key;
-import java.security.PublicKey;
-import java.security.cert.X509Certificate;
-import java.util.*;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants.KeyIdentifier;
 
 /**
  * @author $Author: $
  * @version $Revision: $ $Date: $
  */
-public class GenericOutboundSecurityToken implements OutboundSecurityToken {
+public class GenericOutboundSecurityToken extends AbstractSecurityToken implements OutboundSecurityToken {
 
-    private String id;
     private SecurityTokenConstants.TokenType tokenType;
     private Object processor;
     private final List<OutboundSecurityToken> wrappedTokens = new ArrayList<OutboundSecurityToken>();
     private OutboundSecurityToken keyWrappingToken;
-    private final Map<String, Key> keyTable = new Hashtable<String, Key>();
-    private PublicKey publicKey;
-    private X509Certificate[] x509Certificates;
-    private String sha1Identifier;
 
     public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType, Key key, X509Certificate[] x509Certificates) {
         this(id, tokenType, key);
-        this.x509Certificates = x509Certificates;
+        setX509Certificates(x509Certificates);
     }
 
     public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType, Key key) {
@@ -54,13 +51,8 @@ public class GenericOutboundSecurityToken implements OutboundSecurityToken {
     }
 
     public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType) {
-        this.id = id;
+        super(id);
         this.tokenType = tokenType;
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     @Override
@@ -85,31 +77,6 @@ public class GenericOutboundSecurityToken implements OutboundSecurityToken {
         return key;
     }
 
-    public void setSecretKey(String algorithmURI, Key key) {
-        if (algorithmURI == null) {
-            throw new IllegalArgumentException("algorithmURI must not be null");
-        }
-        if (key != null) {
-            this.keyTable.put(algorithmURI, key);
-        }
-    }
-
-    @Override
-    public PublicKey getPublicKey() throws XMLSecurityException {
-        if (this.publicKey != null) {
-            return this.publicKey;
-        }
-        if (this.x509Certificates != null && this.x509Certificates.length > 0) {
-            return this.publicKey = this.x509Certificates[0].getPublicKey();
-        }
-        return null;
-    }
-
-    @Override
-    public X509Certificate[] getX509Certificates() throws XMLSecurityException {
-        return this.x509Certificates;
-    }
-
     @Override
     public OutboundSecurityToken getKeyWrappingToken() throws XMLSecurityException {
         return keyWrappingToken;
@@ -129,16 +96,19 @@ public class GenericOutboundSecurityToken implements OutboundSecurityToken {
         wrappedTokens.add(securityToken);
     }
 
+    public void setTokenType(SecurityTokenConstants.TokenType tokenType) {
+        this.tokenType = tokenType;
+    }
+    
     @Override
     public SecurityTokenConstants.TokenType getTokenType() {
         return tokenType;
     }
-    
-    public String getSha1Identifier() {
-        return sha1Identifier;
+
+    @Override
+    public KeyIdentifier getKeyIdentifier() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    public void setSha1Identifier(String sha1Identifier) {
-        this.sha1Identifier = sha1Identifier;
-    }
 }

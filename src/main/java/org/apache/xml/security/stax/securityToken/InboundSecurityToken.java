@@ -18,12 +18,15 @@
  */
 package org.apache.xml.security.stax.securityToken;
 
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-
 import java.security.Key;
 import java.security.PublicKey;
 import java.util.List;
+
+import javax.xml.namespace.QName;
+
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 
 /**
  * This class represents the different token types which can occur in WS-Security
@@ -56,23 +59,33 @@ public interface InboundSecurityToken extends SecurityToken {
      */
     PublicKey getPublicKey(String algorithmURI, XMLSecurityConstants.AlgorithmUsage algorithmUsage, String correlationID) throws XMLSecurityException;
 
+    void addWrappedToken(InboundSecurityToken securityToken);
+    
     /**
      * Verifies the key if applicable
      *
      * @throws XMLSecurityException if the key couldn't be verified or the key isn't valid
      */
     void verify() throws XMLSecurityException;
+    
+    /**
+     * Returns the absolute path to the XMLElement
+     *
+     * @return A list containing full qualified element names
+     */
+    List<QName> getElementPath();
 
     /**
-     * Returns the key wrapping token
+     * Returns the first XMLEvent for this token
      *
-     * @return The wrapping SecurityToken
+     * @return
      */
-    InboundSecurityToken getKeyWrappingToken() throws XMLSecurityException;
+    XMLSecEvent getXMLSecEvent();
 
-    void addWrappedToken(InboundSecurityToken securityToken);
+    /**
+     * Returns if the token is included in the message or not
+     * @return true if the token is included false otherwise
+     */
+    boolean isIncludedInMessage();
 
-    List<? extends InboundSecurityToken> getWrappedTokens() throws XMLSecurityException;
-
-    void addTokenUsage(SecurityTokenConstants.TokenUsage tokenUsage) throws XMLSecurityException;
 }

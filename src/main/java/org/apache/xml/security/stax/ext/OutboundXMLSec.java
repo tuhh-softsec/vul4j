@@ -194,7 +194,7 @@ public class OutboundXMLSec {
         }
 
         final OutboundSecurityToken transportSecurityToken =
-                new GenericOutboundSecurityToken("", SecurityTokenConstants.DefaultToken, transportKey, transportCerts);
+                new GenericOutboundSecurityToken(IDGenerator.generateID(null), SecurityTokenConstants.DefaultToken, transportKey, transportCerts);
         
         // Now sort out the session key
         Key key = securityProperties.getEncryptionKey();

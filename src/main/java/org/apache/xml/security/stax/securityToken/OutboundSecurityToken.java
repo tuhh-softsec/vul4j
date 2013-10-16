@@ -18,25 +18,15 @@
  */
 package org.apache.xml.security.stax.securityToken;
 
-import org.apache.xml.security.exceptions.XMLSecurityException;
-
 import java.security.Key;
-import java.security.PublicKey;
-import java.security.cert.X509Certificate;
-import java.util.List;
+
+import org.apache.xml.security.exceptions.XMLSecurityException;
 
 /**
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public interface OutboundSecurityToken {
-
-    /**
-     * Returns the token id aka wsu:Id
-     *
-     * @return The id
-     */
-    String getId();
+public interface OutboundSecurityToken extends SecurityToken {
 
     /**
      * Returns the responsible processor for this token
@@ -52,38 +42,7 @@ public interface OutboundSecurityToken {
      * @throws XMLSecurityException if the key can't be loaded
      */
     Key getSecretKey(String algorithmURI) throws XMLSecurityException;
-
-    /**
-     * Returns the public key if one exists and already initialized, null otherwise
-     * @return
-     * @throws org.apache.xml.security.exceptions.XMLSecurityException
-     */
-    PublicKey getPublicKey() throws XMLSecurityException;
-
-    /**
-     * Returns the certificate chain if one exists for this token type
-     *
-     * @return The certificate chain
-     * @throws org.apache.xml.security.exceptions.XMLSecurityException if the certificates can't be retrieved
-     */
-    X509Certificate[] getX509Certificates() throws XMLSecurityException;
-
-    /**
-     * Returns the key wrapping token
-     *
-     * @return The wrapping SecurityToken
-     */
-    OutboundSecurityToken getKeyWrappingToken() throws XMLSecurityException;
-
-    List<OutboundSecurityToken> getWrappedTokens() throws XMLSecurityException;
-
+    
     void addWrappedToken(OutboundSecurityToken securityToken);
 
-    SecurityTokenConstants.TokenType getTokenType();
-    
-    /**
-     * Returns a SHA-1 Identifier that refers to this token
-     * @return a SHA-1 Identifier that refers to this token
-     */
-    String getSha1Identifier();
 }

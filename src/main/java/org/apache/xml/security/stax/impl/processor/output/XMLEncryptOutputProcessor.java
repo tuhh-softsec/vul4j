@@ -87,7 +87,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                             createInternalEncryptionOutputProcessor(
                                     encryptionPartDef, xmlSecStartElement,
                                     outputProcessorChain.getDocumentContext().getEncoding(),
-                                    securityToken.getKeyWrappingToken()
+                                    (OutboundSecurityToken)securityToken.getKeyWrappingToken()
                             );
                     internalEncryptionOutputProcessor.setXMLSecurityProperties(getSecurityProperties());
                     internalEncryptionOutputProcessor.setAction(getAction());
