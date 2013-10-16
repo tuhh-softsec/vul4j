@@ -282,7 +282,7 @@ public class TopologyManager implements ITopologyNetService {
     public DataPath getTopoShortestPath(Map<Long, ?> shortestPathTopoHandler,
 					SwitchPort src, SwitchPort dest) {
 	@SuppressWarnings("unchecked")
-	Map<Long, Node> shortestPathTopo = (Map)shortestPathTopoHandler;
+	Map<Long, Node> shortestPathTopo = (Map<Long, Node>)shortestPathTopoHandler;
 	DataPath result_data_path = new DataPath();
 
 	// Initialize the source and destination in the data path to return
@@ -503,7 +503,7 @@ public class TopologyManager implements ITopologyNetService {
 	    String type = v.getProperty("type").toString();
 	    // System.out.println("type: " + type);
 	    if (type.equals("port")) {
-		String number = v.getProperty("number").toString();
+		//String number = v.getProperty("number").toString();
 		// System.out.println("number: " + number);
 
 		Object obj = v.getProperty("number");

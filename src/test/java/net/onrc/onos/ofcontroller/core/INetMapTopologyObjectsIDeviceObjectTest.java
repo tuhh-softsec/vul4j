@@ -111,7 +111,6 @@ public class INetMapTopologyObjectsIDeviceObjectTest {
 		IPortObject portObj = ope.newPort(dpid, number);
 		IPortObject portObj2 = ope.newPort(dpid, number2);
 		
-		String ipaddr = "192.168.0.1";
 		IDeviceObject devObj = ope.newDevice();
 		
 		portObj.setDevice(devObj);
@@ -141,11 +140,8 @@ public class INetMapTopologyObjectsIDeviceObjectTest {
 	public void testSetRemoveHostPort() {
 		String dpid = "00:00:00:00:00:00:0a:07";
 		Short number = 1;	
-		Short number2 = 2;
 		IPortObject portObj = ope.newPort(dpid, number);
-		IPortObject portObj2 = ope.newPort(dpid, number2);
 		
-		String ipaddr = "192.168.0.1";
 		IDeviceObject devObj = ope.newDevice();
 		
 		devObj.setHostPort(portObj);
