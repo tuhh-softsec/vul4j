@@ -33,8 +33,8 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
+import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -73,7 +73,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected IRestApiService restApi;
     protected volatile IFloodlightProviderService floodlightProvider;
-    protected volatile ITopoRouteService topoRouteService;
+    protected volatile ITopologyNetService topologyNetService;
     protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
@@ -294,7 +294,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// Flow Paths this controller is responsible for.
 		//
 		Map<Long, ?> shortestPathTopo =
-		    topoRouteService.prepareShortestPathTopo();
+		    topologyNetService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = op.getAllFlowPaths();
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
@@ -372,9 +372,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // to avoid closing the transaction.
 		    //
 		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(shortestPathTopo,
-							     srcSwitchPort,
-							     dstSwitchPort);
+			topologyNetService.getTopoShortestPath(shortestPathTopo,
+							       srcSwitchPort,
+							       dstSwitchPort);
 		    if (dataPath == null) {
 			// We need the DataPath to compare the paths
 			dataPath = new DataPath();
@@ -399,7 +399,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    op.removeFlowPath(flowPathObj);
 		}
 
-		topoRouteService.dropShortestPathTopo(shortestPathTopo);
+		topologyNetService.dropShortestPathTopo(shortestPathTopo);
 
 		op.commit();
 
@@ -433,7 +433,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void init(String conf) {
     	op = new GraphDBOperation(conf);
-	topoRouteService = new TopologyManager(conf);
+	topologyNetService = new TopologyManager(conf);
     }
 
     /**

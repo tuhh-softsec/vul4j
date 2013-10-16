@@ -11,7 +11,6 @@ import java.util.Set;
 
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -87,9 +86,9 @@ class Node {
 };
 
 /**
- * A class for implementing Topology Route Service.
+ * A class for implementing Topology Network Service.
  */
-public class TopologyManager implements ITopoRouteService {
+public class TopologyManager implements ITopologyNetService {
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(TopologyManager.class);

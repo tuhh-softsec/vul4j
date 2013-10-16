@@ -34,7 +34,6 @@ import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.bgproute.RibUpdate.Operation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
@@ -42,6 +41,7 @@ import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
+import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -83,7 +83,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 	protected IFloodlightProviderService floodlightProvider;
 	protected ITopologyService topology;
-	protected ITopoRouteService topoRouteService;
+	protected ITopologyNetService topologyNetService;
 	protected ILinkDiscoveryService linkDiscoveryService;
 	protected IRestApiService restApi;
 	
@@ -142,7 +142,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	private FlowCache flowCache;
 	
-	protected volatile Map<Long, ?> topoRouteTopology = null;
+	protected volatile Map<Long, ?> shortestPathTopo = null;
 		
 	protected class TopologyChangeDetector implements Runnable {
 		@Override
@@ -272,7 +272,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		topologyChangeDetectorTask = new SingletonTask(executor, new TopologyChangeDetector());
 
-		topoRouteService = new TopologyManager("");
+		topologyNetService = new TopologyManager("");
 		
 		pathsWaitingOnArp = new HashMap<InetAddress, Path>();
 		prefixesWaitingOnArp = Multimaps.synchronizedSetMultimap(
@@ -498,14 +498,14 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		//Add a flow to rewrite mac for this prefix to all other border switches
 		for (Interface srcInterface : srcInterfaces.values()) {
 			DataPath shortestPath; 
-			if (topoRouteTopology == null) {
-				shortestPath = topoRouteService.getShortestPath(
+			if (shortestPathTopo == null) {
+				shortestPath = topologyNetService.getShortestPath(
 						srcInterface.getSwitchPort(),
 						egressInterface.getSwitchPort());
 			}
 			else {
-				shortestPath = topoRouteService.getTopoShortestPath(
-						topoRouteTopology, srcInterface.getSwitchPort(),
+				shortestPath = topologyNetService.getTopoShortestPath(
+						shortestPathTopo, srcInterface.getSwitchPort(),
 						egressInterface.getSwitchPort());
 			}
 			
@@ -697,12 +697,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 			
 			DataPath shortestPath;
-			if (topoRouteTopology == null) {
-				shortestPath = topoRouteService.getShortestPath(
+			if (shortestPathTopo == null) {
+				shortestPath = topologyNetService.getShortestPath(
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 			}
 			else {
-				shortestPath = topoRouteService.getTopoShortestPath(topoRouteTopology, 
+				shortestPath = topologyNetService.getTopoShortestPath(shortestPathTopo, 
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 			}
 			
@@ -771,7 +771,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		for (BgpPeer bgpPeer : bgpPeers.values()){
 			Interface peerInterface = interfaces.get(bgpPeer.getInterfaceName());
 			
-			DataPath path = topoRouteService.getShortestPath(
+			DataPath path = topologyNetService.getShortestPath(
 					peerInterface.getSwitchPort(), bgpdAttachmentPoint);
 			
 			if (path == null){
@@ -1046,7 +1046,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	private void beginRouting(){
 		log.debug("Topology is now ready, beginning routing function");
-		topoRouteTopology = topoRouteService.prepareShortestPathTopo();
+		shortestPathTopo = topologyNetService.prepareShortestPathTopo();
 		
 		setupArpFlows();
 		setupDefaultDropFlows();
@@ -1086,7 +1086,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					continue;
 				}
 				
-				DataPath shortestPath = topoRouteService.getShortestPath(
+				DataPath shortestPath = topologyNetService.getShortestPath(
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 				
 				if (shortestPath == null){
