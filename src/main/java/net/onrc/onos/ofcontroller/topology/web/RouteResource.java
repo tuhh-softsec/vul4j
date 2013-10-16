@@ -1,7 +1,7 @@
 package net.onrc.onos.ofcontroller.topology.web;
 
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
-import net.onrc.onos.ofcontroller.routing.TopoRouteService;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.Port;
@@ -18,7 +18,7 @@ public class RouteResource extends ServerResource {
 
     @Get("json")
     public DataPath retrieve() {
-        ITopoRouteService topoRouteService = new TopoRouteService("");
+        ITopoRouteService topoRouteService = new TopologyManager("");
 	if (topoRouteService == null) {
 	    log.debug("Topology Route Service not found");
 	    return null;

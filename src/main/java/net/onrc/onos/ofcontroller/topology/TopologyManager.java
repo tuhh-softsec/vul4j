@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.routing;
+package net.onrc.onos.ofcontroller.topology;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -89,11 +89,10 @@ class Node {
 /**
  * A class for implementing Topology Route Service.
  */
-public class TopoRouteService implements ITopoRouteService {
+public class TopologyManager implements ITopoRouteService {
 
     /** The logger. */
-    private static Logger log =
-	LoggerFactory.getLogger(TopoRouteService.class);
+    private static Logger log = LoggerFactory.getLogger(TopologyManager.class);
     
     protected GraphDBOperation op;
 
@@ -101,7 +100,7 @@ public class TopoRouteService implements ITopoRouteService {
     /**
      * Default constructor.
      */
-    public TopoRouteService() {
+    public TopologyManager() {
     }
 
     /**
@@ -110,7 +109,7 @@ public class TopoRouteService implements ITopoRouteService {
      * @param config the database configuration file to use for
      * the initialization.
      */
-    public TopoRouteService(String config) {
+    public TopologyManager(String config) {
 	this.init(config);
     }
 

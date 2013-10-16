@@ -73,7 +73,7 @@ import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.flowmanager.FlowManager;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
-import net.onrc.onos.ofcontroller.routing.TopoRouteService;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.StandaloneRegistry;
 
@@ -139,7 +139,7 @@ public class ControllerTest extends FloodlightTestCase {
         // Following added by ONOS
         // TODO replace with mock if further testing is needed.
         fmc.addService(IFlowService.class, new FlowManager() );
-        fmc.addService(ITopoRouteService.class, new TopoRouteService() );
+        fmc.addService(ITopoRouteService.class, new TopologyManager() );
         StandaloneRegistry sr = new StandaloneRegistry();
         fmc.addService(IControllerRegistryService.class, sr );
 

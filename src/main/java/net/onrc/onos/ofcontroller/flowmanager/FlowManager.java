@@ -35,7 +35,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
-import net.onrc.onos.ofcontroller.routing.TopoRouteService;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
@@ -433,7 +433,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void init(String conf) {
     	op = new GraphDBOperation(conf);
-	topoRouteService = new TopoRouteService(conf);
+	topoRouteService = new TopologyManager(conf);
     }
 
     /**
