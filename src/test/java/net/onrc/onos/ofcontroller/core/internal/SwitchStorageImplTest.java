@@ -23,7 +23,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.LoggerFactory;
 
 import com.thinkaurelius.titan.core.TitanFactory;
-import com.thinkaurelius.titan.core.TitanGraph;
 
 //Add Powermock preparation
 @RunWith(PowerMockRunner.class)
@@ -35,8 +34,6 @@ public class SwitchStorageImplTest {
 	String conf;
     private GraphDBConnection mockConn = null;
     private GraphDBOperation mockOpe = null;
-    private GraphDBOperation realOpe = null;
-    private TitanGraph titanGraph = null;
     ISwitchStorage swSt = null;
     
 	@Before
@@ -375,12 +372,10 @@ public class SwitchStorageImplTest {
 	 * Expect:
 	 * 	Should call rollback.
 	 */
-	//@Ignore
 	@Test
 	public void testDeleteSwitchException() {
 		String dpid = "00:00:00:00:00:00:0a:07";
 		String state = "ACTIVE";
-		String type = "";
 		
 		//Mock Switch
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
@@ -392,8 +387,8 @@ public class SwitchStorageImplTest {
 		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
-    	mockOpe.removeSwitch(mockISw);
-    	mockOpe.commit();
+		mockOpe.removeSwitch(mockISw);
+		mockOpe.commit();
 		expectLastCall().andThrow(new RuntimeException());
 		mockOpe.rollback();
 		mockOpe.close();
@@ -515,12 +510,10 @@ public class SwitchStorageImplTest {
 	 * Expect:
 	 * 	Nothing happens.
 	 */
-	//@Ignore
 	@Test
 	public void testAddPortAbnormalNoSwitch() {
 		String dpid = "00:00:00:00:00:00:0a:01";
 		short portNumber = 5;
-		String state = "ACTIVE";
 		String name = "port 5 at SEA switch";
 		
 		OFPhysicalPort portToAdd = new OFPhysicalPort();

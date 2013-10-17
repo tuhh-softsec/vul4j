@@ -9,10 +9,10 @@ public class FlowPathFlags {
     private long flags;
 
     // Discard the first-hop Flow Entry
-    private final long DISCARD_FIRST_HOP_ENTRY		= (1 << 0);
+    private static final long DISCARD_FIRST_HOP_ENTRY   = (1 << 0);
 
     // Keep only the first-hop Flow Entry
-    private final long KEEP_ONLY_FIRST_HOP_ENTRY	= (1 << 1);
+    private static final long KEEP_ONLY_FIRST_HOP_ENTRY = (1 << 1);
 
     /**
      * Default constructor.

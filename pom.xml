@@ -32,7 +32,7 @@
   </repositories>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <powermock.version>1.5</powermock.version>
+    <powermock.version>1.5.1</powermock.version>
     <restlet.version>2.1-RC1</restlet.version>
     <github.global.server>github</github.global.server>
   </properties>
@@ -240,6 +240,11 @@
     </dependency>
     -->
     <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>3.0.2</version>
+    </dependency>
+    <dependency>
       <groupId>net.sf.json-lib</groupId>
       <artifactId>json-lib</artifactId>
       <version>2.4</version>
@@ -344,7 +349,7 @@
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
-      <version>3.1</version>
+      <version>3.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>

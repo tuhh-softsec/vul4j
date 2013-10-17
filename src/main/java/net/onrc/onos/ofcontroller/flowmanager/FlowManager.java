@@ -33,9 +33,9 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
-import net.onrc.onos.ofcontroller.routing.TopoRouteService;
+import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
@@ -73,7 +73,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected IRestApiService restApi;
     protected volatile IFloodlightProviderService floodlightProvider;
-    protected volatile ITopoRouteService topoRouteService;
+    protected volatile ITopologyNetService topologyNetService;
     protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
@@ -294,7 +294,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// Flow Paths this controller is responsible for.
 		//
 		Map<Long, ?> shortestPathTopo =
-		    topoRouteService.prepareShortestPathTopo();
+		    topologyNetService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = op.getAllFlowPaths();
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
@@ -332,11 +332,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    if ((flowUserState != null)
 			&& flowUserState.equals("FE_USER_DELETE")) {
 			Iterable<IFlowEntry> flowEntries = flowPathObj.getFlowEntries();
-			boolean empty = true;	// TODO: an ugly hack
-			for (IFlowEntry flowEntryObj : flowEntries) {
-			    empty = false;
-			    break;
-			}
+			final boolean empty = !flowEntries.iterator().hasNext();
 			if (empty)
 			    deleteFlows.add(flowPathObj);
 		    }
@@ -372,9 +368,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // to avoid closing the transaction.
 		    //
 		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(shortestPathTopo,
-							     srcSwitchPort,
-							     dstSwitchPort);
+			topologyNetService.getTopoShortestPath(shortestPathTopo,
+							       srcSwitchPort,
+							       dstSwitchPort);
 		    if (dataPath == null) {
 			// We need the DataPath to compare the paths
 			dataPath = new DataPath();
@@ -399,7 +395,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    op.removeFlowPath(flowPathObj);
 		}
 
-		topoRouteService.dropShortestPathTopo(shortestPathTopo);
+		topologyNetService.dropShortestPathTopo(shortestPathTopo);
 
 		op.commit();
 
@@ -433,7 +429,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void init(String conf) {
     	op = new GraphDBOperation(conf);
-	topoRouteService = new TopoRouteService(conf);
+	topologyNetService = new TopologyManager(conf);
     }
 
     /**
@@ -878,7 +874,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
-	List<Thread> threads = new LinkedList<Thread>();
 	final ConcurrentLinkedQueue<FlowId> concurrentAllFlowIds =
 	    new ConcurrentLinkedQueue<FlowId>();
 
@@ -906,6 +901,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Create the threads to delete the Flow Paths
 	//
+	List<Thread> threads = new LinkedList<Thread>();
 	for (int i = 0; i < 10; i++) {
 	    Thread thread = new Thread(new Runnable() {
 		@Override
@@ -1333,7 +1329,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries() {
     	Iterable<IFlowPath> flowPathsObj = null;
     	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
-    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
     	op.commit();
     	
@@ -1356,6 +1351,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     		flowPathsObjArray.add(flowObj);
     	}
     	/*
+    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
     	for (IFlowPath flowObj : flowPathsObj) {
     	    //
     	    // Extract the Flow state
@@ -1606,7 +1602,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return true on success, otherwise false.
      */
     public boolean reconcileFlow(IFlowPath flowObj, DataPath newDataPath) {
-	Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
 
 	//
 	// Set the incoming port matching and the outgoing port output
@@ -1647,7 +1642,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Remove the old Flow Entries, and add the new Flow Entries
 	//
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
-	LinkedList<IFlowEntry> deleteFlowEntries = new LinkedList<IFlowEntry>();
 	for (IFlowEntry flowEntryObj : flowEntries) {
 	    flowEntryObj.setUserState("FE_USER_DELETE");
 	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
