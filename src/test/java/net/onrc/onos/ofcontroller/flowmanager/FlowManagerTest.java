@@ -885,7 +885,6 @@ public class FlowManagerTest {
 
 		// setup expectations
 		expectInitWithContext();
-		expect(floodlightProvider.getSwitches()).andReturn(null); // TODO: why is this needed?
 		expect(iFlowPath1.getFlowEntries()).andReturn(oldFlowEntries);
 		iFlowEntry1.setUserState("FE_USER_DELETE");
 		iFlowEntry1.setSwitchState("FE_SWITCH_NOT_UPDATED");
