@@ -12,49 +12,39 @@ public class Switch {
 	ACTIVE,
     }
 
-    private String type;	// The type from the database. TODO: Not needed
-    private String state;	// The state of the switch
-    private String dpid;	// The DPID of the switch
+    private Dpid dpid;			// The DPID of the switch
+    private SwitchState state;		// The state of the switch
 
     /**
      * Default constructor.
+     *
+     * NOTE: The default state for the switch is INACTIVE.
      */
     public Switch() {
+	this.dpid = new Dpid();
+	this.state = SwitchState.INACTIVE;
     }
 
     /**
-     * Get the type.
+     * Constructor for a given DPID.
      *
-     * @return the type.
-     */
-    @JsonProperty("type")
-    public String type() { return type; }
-
-    /**
-     * Set the type.
+     * NOTE: The state for the switch with a given DPID is ACTIVE.
      *
-     * @param type the type to use.
+     * @param dpid the DPID to use.
      */
-    @JsonProperty("type")
-    public void setType(String type) {
-	this.type = type;
+    public Switch(Dpid dpid) {
+	this.dpid = dpid;
+	this.state = SwitchState.ACTIVE;
     }
 
     /**
-     * Get the state.
+     * Constructor for a given DPID and Switch State.
      *
-     * @return the state.
+     * @param dpid the DPID to use.
+     * @param state the Switch State to use.
      */
-    @JsonProperty("state")
-    public String state() { return state; }
-
-    /**
-     * Set the state.
-     *
-     * @param state the state to use.
-     */
-    @JsonProperty("state")
-    public void setState(String state) {
+    public Switch(Dpid dpid, SwitchState state) {
+	this.dpid = dpid;
 	this.state = state;
     }
 
@@ -64,7 +54,7 @@ public class Switch {
      * @return the DPID.
      */
     @JsonProperty("dpid")
-    public String dpid() { return dpid; }
+    public Dpid dpid() { return dpid; }
 
     /**
      * Set the DPID.
@@ -72,20 +62,52 @@ public class Switch {
      * @param dpid the DPID to use.
      */
     @JsonProperty("dpid")
-    public void setDpid(String dpid) {
+    public void setDpid(Dpid dpid) {
 	this.dpid = dpid;
+    }
+
+    /**
+     * Get the state.
+     *
+     * @return the state.
+     */
+    @JsonProperty("state")
+    public SwitchState state() { return state; }
+
+    /**
+     * Set the state.
+     *
+     * @param state the state to use.
+     */
+    @JsonProperty("state")
+    public void setState(SwitchState state) {
+	this.state = state;
+    }
+
+    /**
+     * Set the Switch State to ACTIVE.
+     */
+    public void setStateActive() {
+	this.state = SwitchState.ACTIVE;
+    }
+
+    /**
+     * Set the Switch State to INACTIVE.
+     */
+    public void setStateInactive() {
+	this.state = SwitchState.INACTIVE;
     }
 
     /**
      * Convert the Switch value to a string.
      *
      * The string has the following form:
-     *  type/state/dpid
+     *  dpid/state
      *
      * @return the Switch value as a string.
      */
     @Override
     public String toString() {
-	return this.type + "/" + this.state + "/" + this.dpid;
+	return this.dpid.toString() + "/" + this.state.toString();
     }
 }
