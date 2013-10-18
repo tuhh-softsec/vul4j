@@ -87,7 +87,6 @@ import org.slf4j.LoggerFactory;
  * <p>
  * TODO:
  * <ul>
- * <li>Ensure esigate id is unique</li>
  * <li>Process caching directives</li>
  * <li>Inject HEADER_ENABLED_CAPABILITIES</li>
  * <li>Implement targeting</li>
@@ -130,7 +129,7 @@ public class Surrogate implements Extension, IEventListener {
 		this.capabilities = capEvent.capabilities.toArray(new String[] {});
 		LOG.info("Surrogate capabilities: {}", join(this.capabilities, " "));
 		// Build esigate token
-		this.esigateToken = "esigate=\"" + join(this.capabilities, " ") + "\"";
+		this.esigateToken = "=\"" + join(this.capabilities, " ") + "\"";
 
 		// Register for events.
 		driver.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
@@ -138,6 +137,28 @@ public class Surrogate implements Extension, IEventListener {
 		driver.getEventManager().register(EventManager.EVENT_PROXY_PRE, this);
 		driver.getEventManager().register(EventManager.EVENT_PROXY_POST, this);
 
+	}
+
+	/**
+	 * Return a new token, unique for the current Surrogate-Capability header.
+	 * <p>
+	 * Uses "esigate" and appends a number if necessary.
+	 * 
+	 * @param currentCapabilitiesHeader
+	 * @return unique token
+	 */
+	private static String getUniqueToken(String currentCapabilitiesHeader) {
+		String token = "esigate";
+
+		if (currentCapabilitiesHeader != null && currentCapabilitiesHeader.contains(token + "=\"")) {
+			int id = 2;
+			while (currentCapabilitiesHeader.contains(token + id + "=\"")) {
+				id++;
+			}
+			token = token + id;
+		}
+
+		return token;
 	}
 
 	@Override
@@ -157,6 +178,7 @@ public class Surrogate implements Extension, IEventListener {
 				archCapabilities.append(defaultString(h.getValue()));
 				archCapabilities.append(", ");
 			}
+			archCapabilities.append(getUniqueToken(h == null ? null : h.getValue()));
 			archCapabilities.append(this.esigateToken);
 			e.httpRequest.setHeader("Surrogate-Capabilities", archCapabilities.toString());
 		} else if (EventManager.EVENT_FETCH_POST.equals(id)) {

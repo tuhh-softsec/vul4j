@@ -43,7 +43,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
 		// Conf
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://provider/");
-		properties.put(Parameters.EXTENSIONS, Esi.class.getName()+"," + Surrogate.class.getName());
+		properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
 
 		// Setup remote server (provider) response.
 		IResponseHandler mockConnectionManager = new IResponseHandler() {
@@ -104,7 +104,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
 		// Conf
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://provider/");
-		properties.put(Parameters.EXTENSIONS, Esi.class.getName()+"," + Surrogate.class.getName());
+		properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
 
 		// Setup remote server (provider) response.
 		IResponseHandler mockConnectionManager = new IResponseHandler() {
@@ -130,6 +130,66 @@ public class SurrogateTest extends AbstractDriverTestCase {
 		// Proxy
 		HttpResponse response = driverProxy(driver, requestWithSurrogate);
 		Assert.assertFalse(response.containsHeader("Surrogate-Control"));
+
+	}
+
+	public void testSurrogateCapabilitiese() throws Exception {
+
+		// Conf
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://provider/");
+		properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+
+		// Setup remote server (provider) response.
+		IResponseHandler mockConnectionManager = new IResponseHandler() {
+
+			@Override
+			public HttpResponse execute(HttpRequest request) throws IOException {
+				Assert.assertEquals("esigate=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0 ESIGATE/4.0\"", request
+						.getFirstHeader("Surrogate-Capabilities").getValue());
+				return createHttpResponse().status(200).reason("OK").build();
+			}
+		};
+
+		Driver driver = createMockDriver(properties, mockConnectionManager);
+		HttpEntityEnclosingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
+				.mockMediator().build();
+		HttpResponse response = driverProxy(driver, requestWithSurrogate);
+
+	}
+
+	/**
+	 * 2.1 Surrogate-Capability Header
+	 * <p>
+	 * The name in each capability set identifies a device token, which uniquely
+	 * identifies the surrogate that appended it. Device tokens must be unique
+	 * within a request's Surrogate-Capabilities header.
+	 * 
+	 * @throws Exception
+	 */
+	public void testSurrogateCapabilitieseUniqueToken() throws Exception {
+
+		// Conf
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://provider/");
+		properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+
+		// Setup remote server (provider) response.
+		IResponseHandler mockConnectionManager = new IResponseHandler() {
+
+			@Override
+			public HttpResponse execute(HttpRequest request) throws IOException {
+				Assert.assertEquals(
+						"esigate=\"Surrogate/1.0\", esigate2=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0 ESIGATE/4.0\"",
+						request.getFirstHeader("Surrogate-Capabilities").getValue());
+				return createHttpResponse().status(200).reason("OK").build();
+			}
+		};
+
+		Driver driver = createMockDriver(properties, mockConnectionManager);
+		HttpEntityEnclosingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
+				.header("Surrogate-Capabilities", "esigate=\"Surrogate/1.0\"").mockMediator().build();
+		HttpResponse response = driverProxy(driver, requestWithSurrogate);
 
 	}
 
