@@ -14,15 +14,23 @@
  */
 package org.esigate.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Properties;
 
 import org.esigate.ConfigurationException;
 
+/**
+ * Utility methods for loading configuration parameters.
+ * 
+ * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
+ * 
+ */
 public class PropertiesUtil {
 	/**
-	 * Retrieves a property containing a comma separated list of values, trim them and return them as a Collection of String
+	 * Retrieves a property containing a comma separated list of values, trim
+	 * them and return them as a Collection of String
 	 * 
 	 * @param properties
 	 * @param propertyName
@@ -33,14 +41,16 @@ public class PropertiesUtil {
 	}
 
 	/**
-	 * Retrieves a property containing a comma separated list of values, trim them and return them as a Collection of String
+	 * Retrieves a property containing a comma separated list of values, trim
+	 * them and return them as a Collection of String
 	 * 
 	 * @param properties
 	 * @param propertyName
-	 * @param defaultValue 
+	 * @param defaultValue
 	 * @return the values
 	 */
-	public static Collection<String> getPropertyValueAsList(Properties properties, String propertyName, String defaultValue) {
+	public static Collection<String> getPropertyValueAsList(Properties properties, String propertyName,
+			String defaultValue) {
 		String propertyValue = properties.getProperty(propertyName);
 		if (propertyValue == null)
 			propertyValue = defaultValue;
@@ -51,8 +61,15 @@ public class PropertiesUtil {
 		return result;
 	}
 
+	/**
+	 * Return the provided comma-separated String as a collection. Order is
+	 * maintained.
+	 * 
+	 * @param list
+	 * @return Ordered collection
+	 */
 	private static Collection<String> toCollection(String list) {
-		Collection<String> result = new HashSet<String>();
+		Collection<String> result = new ArrayList<String>();
 		if (list != null) {
 			String values[] = list.split(",");
 			for (String value : values) {
@@ -63,18 +80,21 @@ public class PropertiesUtil {
 	}
 
 	/**
-	 * Populates a list based on 2 properties defining tokens to include and tokens to exclude.
+	 * Populates a list based on 2 properties defining tokens to include and
+	 * tokens to exclude.
 	 * 
 	 * @param list
 	 * @param properties
 	 * @param toAddPropertyName
 	 * @param toRemovePropertyName
 	 */
-	public static void populate(FilterList list, Properties properties, String toAddPropertyName, String toRemovePropertyName) {
+	public static void populate(FilterList list, Properties properties, String toAddPropertyName,
+			String toRemovePropertyName) {
 		Collection<String> toAdd = getPropertyValueAsList(properties, toAddPropertyName);
 		Collection<String> toRemove = getPropertyValueAsList(properties, toRemovePropertyName);
 		if (toAdd.contains("*") && toRemove.contains("*")) {
-			throw new ConfigurationException("cannot use * for " + toAddPropertyName + " and " + toRemovePropertyName + " at the same time");
+			throw new ConfigurationException("cannot use * for " + toAddPropertyName + " and " + toRemovePropertyName
+					+ " at the same time");
 		}
 		if (toRemove.contains("*")) {
 			list.remove(toRemove);
@@ -86,16 +106,18 @@ public class PropertiesUtil {
 	}
 
 	/**
-	 * Populates a list based on 2 properties defining tokens to include and tokens to exclude.
+	 * Populates a list based on 2 properties defining tokens to include and
+	 * tokens to exclude.
 	 * 
 	 * @param list
 	 * @param properties
 	 * @param toAddPropertyName
 	 * @param toRemovePropertyName
-	 * @param defaultToAddString 
-	 * @param defaultToRemoveString 
+	 * @param defaultToAddString
+	 * @param defaultToRemoveString
 	 */
-	public static void populate(FilterList list, Properties properties, String toAddPropertyName, String toRemovePropertyName, String defaultToAddString, String defaultToRemoveString) {
+	public static void populate(FilterList list, Properties properties, String toAddPropertyName,
+			String toRemovePropertyName, String defaultToAddString, String defaultToRemoveString) {
 		Collection<String> defaultToAdd = toCollection(defaultToAddString);
 		Collection<String> defaultToRemove = toCollection(defaultToRemoveString);
 		list.add(defaultToAdd);
@@ -103,7 +125,8 @@ public class PropertiesUtil {
 		Collection<String> toAdd = getPropertyValueAsList(properties, toAddPropertyName);
 		Collection<String> toRemove = getPropertyValueAsList(properties, toRemovePropertyName);
 		if (toAdd.contains("*") && toRemove.contains("*")) {
-			throw new ConfigurationException("cannot use * for " + toAddPropertyName + " and " + toRemovePropertyName + " at the same time");
+			throw new ConfigurationException("cannot use * for " + toAddPropertyName + " and " + toRemovePropertyName
+					+ " at the same time");
 		}
 		if (toRemove.contains("*")) {
 			list.remove(toRemove);
