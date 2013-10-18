@@ -1,4 +1,20 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.esigate.extension.parallelesi;
+
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -13,6 +29,8 @@ import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.RenderEvent;
 import org.esigate.extension.Extension;
+import org.esigate.extension.surrogate.CapabilitiesEvent;
+import org.esigate.extension.surrogate.Surrogate;
 import org.esigate.util.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +56,23 @@ public class Esi implements Extension, IEventListener {
 	@Override
 	public boolean event(EventDefinition id, Event event) {
 		RenderEvent renderEvent = (RenderEvent) event;
-		renderEvent.renderers.add(new EsiRenderer(this.executor));
+
+		boolean doEsi = true;
+
+		// ensure we should process esi
+		if (renderEvent.httpResponse.containsHeader(Surrogate.HEADER_ENABLED_CAPABILITIES)) {
+			String capabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.HEADER_ENABLED_CAPABILITIES)
+					.getValue();
+
+			if (!containsIgnoreCase(capabilities, "ESI/1.0") && !containsIgnoreCase(capabilities, "ESI-Inline/1.0")
+					&& !containsIgnoreCase(capabilities, "ESIGATE/4.0")) {
+				doEsi = false;
+			}
+		}
+
+		if (doEsi) {
+			renderEvent.renderers.add(new EsiRenderer(this.executor));
+		}
 
 		// Continue processing
 		return true;
@@ -47,6 +81,17 @@ public class Esi implements Extension, IEventListener {
 	@Override
 	public void init(Driver driver, Properties properties) {
 		driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);
+
+		driver.getEventManager().register(Surrogate.EVENT_SURROGATE_CAPABILITIES, new IEventListener() {
+			@Override
+			public boolean event(EventDefinition id, Event event) {
+				CapabilitiesEvent capEvent = (CapabilitiesEvent) event;
+				capEvent.capabilities.add("ESI/1.0");
+				capEvent.capabilities.add("ESI-Inline/1.0");
+				capEvent.capabilities.add("ESIGATE/4.0");
+				return true;
+			}
+		});
 
 		// Load configuration
 		this.maxThreads = THREADS.getValueInt(properties);

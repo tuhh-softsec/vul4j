@@ -24,6 +24,7 @@ import org.esigate.extension.FetchLogging;
 import org.esigate.extension.FragmentLogging;
 import org.esigate.extension.ResourceFixup;
 import org.esigate.extension.XPoweredBy;
+import org.esigate.extension.surrogate.Surrogate;
 import org.esigate.util.Parameter;
 
 /**
@@ -38,7 +39,8 @@ public interface Parameters {
 	public static final Parameter REMOTE_URL_BASE = new Parameter("remoteUrlBase", null);
 	public static final Parameter MAPPINGS = new Parameter("mappings", null);
 	public static final Parameter URI_ENCODING = new Parameter("uriEncoding", "ISO-8859-1");
-	public static final Parameter PARSABLE_CONTENT_TYPES = new Parameter("parsableContentTypes", "text/html, application/xhtml+xml");
+	public static final Parameter PARSABLE_CONTENT_TYPES = new Parameter("parsableContentTypes",
+			"text/html, application/xhtml+xml");
 
 	// Network settings
 	public final static Parameter MAX_CONNECTIONS_PER_HOST = new Parameter("maxConnectionsPerHost", "20");
@@ -53,10 +55,12 @@ public interface Parameters {
 
 	// Http headers
 	public static final Parameter PRESERVE_HOST = new Parameter("preserveHost", "false");
-	public static final Parameter DISCARD_REQUEST_HEADERS = new Parameter("discardRequestHeaders",
+	public static final Parameter DISCARD_REQUEST_HEADERS = new Parameter(
+			"discardRequestHeaders",
 			"Authorization,Connection,Content-Length,Cache-control,Cookie,Expect,Host,Max-Forwards,Pragma,Proxy-Authorization,TE,Trailer,Transfer-Encoding,Upgrade");
 	public static final Parameter FORWARD_REQUEST_HEADERS = new Parameter("forwardRequestHeaders", null);
-	public static final Parameter DISCARD_RESPONSE_HEADERS = new Parameter("discardResponseHeaders",
+	public static final Parameter DISCARD_RESPONSE_HEADERS = new Parameter(
+			"discardResponseHeaders",
 			"Connection,Content-Length,Content-MD5,Date,Keep-Alive,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticate");
 	public static final Parameter FORWARD_RESPONSE_HEADERS = new Parameter("forwardResponseHeaders", null);
 
@@ -71,22 +75,21 @@ public interface Parameters {
 	public static final Parameter VISIBLE_URL_BASE = new Parameter("visibleUrlBase", null);
 
 	// Load-balancing
-	public static final Parameter REMOTE_URL_BASE_STRATEGY = new Parameter("remoteUrlBaseStrategy", Parameters.ROUNDROBIN);
+	public static final Parameter REMOTE_URL_BASE_STRATEGY = new Parameter("remoteUrlBaseStrategy",
+			Parameters.ROUNDROBIN);
 	// Possible values for remoteUrlBaseStrategy
 	public static final String STICKYSESSION = "stickysession";
 	public static final String IPHASH = "iphash";
 	public static final String ROUNDROBIN = "roundrobin";
 
 	// Extensions
-	public static final Parameter EXTENSIONS = new Parameter("extensions",
-			FragmentLogging.class.getName() + ","
-					+ FetchLogging.class.getName() + ","
-			//		+ ErrorPages.class.getName() + ","
-					+ RemoteUserAuthenticationHandler.class.getName() + ","
-					+ Esi.class.getName() + "," + Aggregate.class.getName()
-					+ "," + ResourceFixup.class.getName() + ","
-					+ XPoweredBy.class.getName() );
-
+	public static final Parameter EXTENSIONS = new Parameter("extensions", FragmentLogging.class.getName() + ","
+			+ FetchLogging.class.getName()
+			+ ","
+			// + ErrorPages.class.getName() + ","
+			+ RemoteUserAuthenticationHandler.class.getName() + "," + Esi.class.getName() + ","
+			+ Aggregate.class.getName() + "," + ResourceFixup.class.getName() + "," + XPoweredBy.class.getName() + ","
+			+ Surrogate.class.getName());
 
 	// Cache settings
 	public final static Parameter USE_CACHE = new Parameter("useCache", "true");
@@ -101,7 +104,8 @@ public interface Parameters {
 
 	// Heuristic caching
 	public final static Parameter HEURISTIC_CACHING_ENABLED = new Parameter("heuristicCachingEnabled", "true");
-	// default value defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2.4
+	// default value defined in
+	// http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2.4
 	public final static Parameter HEURISTIC_COEFFICIENT = new Parameter("heuristicCoefficient", "0.1");
 	// when no cache directive at all, nothing is cached by default
 	public final static Parameter HEURISTIC_DEFAULT_LIFETIME_SECS = new Parameter("heuristicDefaultLifetimeSecs", "0");
@@ -111,7 +115,8 @@ public interface Parameters {
 	public final static Parameter STALE_IF_ERROR = new Parameter("staleIfError", "0");
 	public final static Parameter MIN_ASYNCHRONOUS_WORKERS = new Parameter("minAsynchronousWorkers", "0");
 	public final static Parameter MAX_ASYNCHRONOUS_WORKERS = new Parameter("maxAsynchronousWorkers", "0");
-	public final static Parameter ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS = new Parameter("asynchronousWorkerIdleLifetimeSecs", "60");
+	public final static Parameter ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS = new Parameter(
+			"asynchronousWorkerIdleLifetimeSecs", "60");
 	public final static Parameter MAX_UPDATE_RETRIES = new Parameter("maxUpdateRetries", "1");
 	public final static Parameter REVALIDATION_QUEUE_SIZE = new Parameter("revalidationQueueSize", "100");
 
