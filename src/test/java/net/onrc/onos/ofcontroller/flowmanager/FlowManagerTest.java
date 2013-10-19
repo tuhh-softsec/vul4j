@@ -19,7 +19,7 @@ import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
-import net.onrc.onos.ofcontroller.routing.TopoRouteService;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.*;
 
 import org.easymock.EasyMock;
@@ -43,7 +43,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class FlowManagerTest {
 	private static FloodlightModuleContext context;
 	private static IFloodlightProviderService floodlightProvider;
-	private static TopoRouteService topoRouteService;
+	private static TopologyManager topologyManager;
 	private static IRestApiService restApi;
 	private static GraphDBOperation op;
 	
@@ -68,7 +68,7 @@ public class FlowManagerTest {
 		// create mock objects
 		context = createMock(FloodlightModuleContext.class);
 		floodlightProvider = createMock(IFloodlightProviderService.class);
-		topoRouteService = createMock(TopoRouteService.class);
+		topologyManager = createMock(TopologyManager.class);
 		restApi = createMock(IRestApiService.class);
 		op = createMock(GraphDBOperation.class);
 
@@ -76,7 +76,7 @@ public class FlowManagerTest {
 		expect(context.getServiceImpl(IFloodlightProviderService.class)).andReturn(floodlightProvider);
 		expect(context.getServiceImpl(IRestApiService.class)).andReturn(restApi);
 		expectNew(GraphDBOperation.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(op);
-		expectNew(TopoRouteService.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(topoRouteService);
+		expectNew(TopologyManager.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(topologyManager);
 	}
 	
 	private IFlowPath createIFlowPathMock(long flowId, String installerID,
@@ -885,7 +885,6 @@ public class FlowManagerTest {
 
 		// setup expectations
 		expectInitWithContext();
-		expect(floodlightProvider.getSwitches()).andReturn(null); // TODO: why is this needed?
 		expect(iFlowPath1.getFlowEntries()).andReturn(oldFlowEntries);
 		iFlowEntry1.setUserState("FE_USER_DELETE");
 		iFlowEntry1.setSwitchState("FE_SWITCH_NOT_UPDATED");

@@ -33,9 +33,9 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
-import net.onrc.onos.ofcontroller.routing.TopoRouteService;
+import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
@@ -64,14 +64,16 @@ import org.openflow.protocol.action.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Flow Manager class for handling the network flows.
+ */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
     protected GraphDBOperation op;
 
     protected IRestApiService restApi;
     protected volatile IFloodlightProviderService floodlightProvider;
-    protected volatile ITopoRouteService topoRouteService;
+    protected volatile ITopologyNetService topologyNetService;
     protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
@@ -105,6 +107,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private ScheduledExecutorService mapReaderScheduler;
     private ScheduledExecutorService shortestPathReconcileScheduler;
 
+    /**
+     * Periodic task for reading the Flow Entries and pushing changes
+     * into the switches.
+     */
     final Runnable mapReader = new Runnable() {
 	    public void run() {
 		try {
@@ -249,6 +255,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	};
 
+    /**
+     * Periodic task for reading the Flow Paths and recomputing the
+     * shortest paths.
+     */
     final Runnable shortestPathReconcile = new Runnable() {
 	    public void run() {
 		try {
@@ -284,7 +294,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// Flow Paths this controller is responsible for.
 		//
 		Map<Long, ?> shortestPathTopo =
-		    topoRouteService.prepareShortestPathTopo();
+		    topologyNetService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = op.getAllFlowPaths();
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
@@ -322,11 +332,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    if ((flowUserState != null)
 			&& flowUserState.equals("FE_USER_DELETE")) {
 			Iterable<IFlowEntry> flowEntries = flowPathObj.getFlowEntries();
-			boolean empty = true;	// TODO: an ugly hack
-			for (IFlowEntry flowEntryObj : flowEntries) {
-			    empty = false;
-			    break;
-			}
+			final boolean empty = !flowEntries.iterator().hasNext();
 			if (empty)
 			    deleteFlows.add(flowPathObj);
 		    }
@@ -362,9 +368,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // to avoid closing the transaction.
 		    //
 		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(shortestPathTopo,
-							     srcSwitchPort,
-							     dstSwitchPort);
+			topologyNetService.getTopoShortestPath(shortestPathTopo,
+							       srcSwitchPort,
+							       dstSwitchPort);
 		    if (dataPath == null) {
 			// We need the DataPath to compare the paths
 			dataPath = new DataPath();
@@ -389,7 +395,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    op.removeFlowPath(flowPathObj);
 		}
 
-		topoRouteService.dropShortestPathTopo(shortestPathTopo);
+		topologyNetService.dropShortestPathTopo(shortestPathTopo);
 
 		op.commit();
 
@@ -414,27 +420,38 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	};
 
-    //final ScheduledFuture<?> mapReaderHandle =
-	//mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
 
-    //final ScheduledFuture<?> shortestPathReconcileHandle =
-	//shortestPathReconcileScheduler.scheduleAtFixedRate(shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
-
+    /**
+     * Initialize the Flow Manager.
+     *
+     * @param conf the Graph Database configuration string.
+     */
     @Override
     public void init(String conf) {
     	op = new GraphDBOperation(conf);
-	topoRouteService = new TopoRouteService(conf);
+	topologyNetService = new TopologyManager(conf);
     }
 
+    /**
+     * Shutdown the Flow Manager operation.
+     */
     public void finalize() {
     	close();
     }
 
+    /**
+     * Shutdown the Flow Manager operation.
+     */
     @Override
     public void close() {
     	op.close();
     }
 
+    /**
+     * Get the collection of offered module services.
+     *
+     * @return the collection of offered module services.
+     */
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
         Collection<Class<? extends IFloodlightService>> l = 
@@ -443,6 +460,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
         return l;
     }
 
+    /**
+     * Get the collection of implemented services.
+     *
+     * @return the collection of implemented services.
+     */
     @Override
     public Map<Class<? extends IFloodlightService>, IFloodlightService> 
 			       getServiceImpls() {
@@ -454,6 +476,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
         return m;
     }
 
+    /**
+     * Get the collection of modules this module depends on.
+     *
+     * @return the collection of modules this module depends on.
+     */
     @Override
     public Collection<Class<? extends IFloodlightService>> 
                                                     getModuleDependencies() {
@@ -464,6 +491,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
         return l;
     }
 
+    /**
+     * Initialize the module.
+     *
+     * @param context the module context to use for the initialization.
+     */
     @Override
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
@@ -478,10 +510,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	String conf = "/tmp/cassandra.titan";
 	this.init(conf);
 	
-		mapReaderScheduler = Executors.newScheduledThreadPool(1);
-		shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
+	mapReaderScheduler = Executors.newScheduledThreadPool(1);
+	shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
     }
 
+    /**
+     * Get the next Flow Entry ID to use.
+     *
+     * @return the next Flow Entry ID to use.
+     */
     private synchronized long getNextFlowEntryId() {
 	//
 	// Generate the next Flow Entry ID.
@@ -500,17 +537,22 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	return result;
     }
 
+    /**
+     * Startup module operation.
+     *
+     * @param context the module context to use for the startup.
+     */
     @Override
     public void startUp(FloodlightModuleContext context) {
-		restApi.addRestletRoutable(new FlowWebRoutable());
+	restApi.addRestletRoutable(new FlowWebRoutable());
 	
-		// Initialize the Flow Entry ID generator
-		nextFlowEntryIdPrefix = randomGenerator.nextInt();
+	// Initialize the Flow Entry ID generator
+	nextFlowEntryIdPrefix = randomGenerator.nextInt();
 		
-		mapReaderScheduler.scheduleAtFixedRate(
-				mapReader, 3, 3, TimeUnit.SECONDS);
-		shortestPathReconcileScheduler.scheduleAtFixedRate(
-				shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
+	mapReaderScheduler.scheduleAtFixedRate(
+			mapReader, 3, 3, TimeUnit.SECONDS);
+	shortestPathReconcileScheduler.scheduleAtFixedRate(
+			shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
     }
 
     /**
@@ -747,8 +789,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - flowEntry.actionOutputPort()
 	// - flowEntry.actions()
 	//
-	ISwitchObject sw =
-	    op.searchSwitch(flowEntry.dpid().toString());
+	ISwitchObject sw = op.searchSwitch(flowEntry.dpid().toString());
 	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
 	flowEntryObj.setSwitch(sw);
 	if (flowEntry.flowEntryMatch().matchInPort()) {
@@ -833,7 +874,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
-	List<Thread> threads = new LinkedList<Thread>();
 	final ConcurrentLinkedQueue<FlowId> concurrentAllFlowIds =
 	    new ConcurrentLinkedQueue<FlowId>();
 
@@ -861,6 +901,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Create the threads to delete the Flow Paths
 	//
+	List<Thread> threads = new LinkedList<Thread>();
 	for (int i = 0; i < 10; i++) {
 	    Thread thread = new Thread(new Runnable() {
 		@Override
@@ -1164,21 +1205,22 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Get summary of all installed flows by all installers in a given range
+     * Get summary of all installed flows by all installers in a given range.
      *
-     * @param flowId the data path endpoints of the flows to get.
-     * @param maxFlows: the maximum number of flows to be returned
+     * @param flowId the Flow ID of the first flow in the flow range to get.
+     * @param maxFlows the maximum number of flows to be returned.
      * @return the Flow Paths if found, otherwise null.
      */
     @Override
     public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows) {
 
-		// TODO: The implementation below is not optimal:
-		// We fetch all flows, and then return only the subset that match
-		// the query conditions.
-		// We should use the appropriate Titan/Gremlin query to filter-out
-		// the flows as appropriate.
-		//
+	//
+	// TODO: The implementation below is not optimal:
+	// We fetch all flows, and then return only the subset that match
+	// the query conditions.
+	// We should use the appropriate Titan/Gremlin query to filter-out
+	// the flows as appropriate.
+	//
     	//ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
     	
     	ArrayList<IFlowPath> flowPathsWithoutFlowEntries = getAllFlowsWithoutFlowEntries();
@@ -1278,11 +1320,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	return flowPaths;
     }
-    
-    public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries(){
+
+    /**
+     * Get all Flows information, without the associated Flow Entries.
+     *
+     * @return all Flows information, without the associated Flow Entries.
+     */
+    public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries() {
     	Iterable<IFlowPath> flowPathsObj = null;
     	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
-    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
     	op.commit();
     	
@@ -1305,6 +1351,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     		flowPathsObjArray.add(flowObj);
     	}
     	/*
+    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
     	for (IFlowPath flowObj : flowPathsObj) {
     	    //
     	    // Extract the Flow state
@@ -1555,7 +1602,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return true on success, otherwise false.
      */
     public boolean reconcileFlow(IFlowPath flowObj, DataPath newDataPath) {
-	Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
 
 	//
 	// Set the incoming port matching and the outgoing port output
@@ -1596,7 +1642,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Remove the old Flow Entries, and add the new Flow Entries
 	//
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
-	LinkedList<IFlowEntry> deleteFlowEntries = new LinkedList<IFlowEntry>();
 	for (IFlowEntry flowEntryObj : flowEntries) {
 	    flowEntryObj.setUserState("FE_USER_DELETE");
 	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");

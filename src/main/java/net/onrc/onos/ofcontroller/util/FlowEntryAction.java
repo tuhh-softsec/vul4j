@@ -48,7 +48,7 @@ public class FlowEntryAction {
     /**
      * Action structure for ACTION_OUTPUT: Output to switch port.
      */
-    public class ActionOutput {
+    public static class ActionOutput {
 	private Port port;	// Output port
 	private short maxLen;	// Max. length (in bytes) to send to controller
 				// if the port is set to PORT_CONTROLLER
@@ -198,7 +198,7 @@ public class FlowEntryAction {
     /**
      * Action structure for ACTION_SET_VLAN_VID: Set the 802.1q VLAN id
      */
-    public class ActionSetVlanId {
+    public static class ActionSetVlanId {
 	private short vlanId;		// The VLAN ID to set
 
 	/**
@@ -296,7 +296,7 @@ public class FlowEntryAction {
     /**
      * Action structure for ACTION_SET_VLAN_PCP: Set the 802.1q priority
      */
-    public class ActionSetVlanPriority {
+    public static class ActionSetVlanPriority {
 	private byte vlanPriority;	// The VLAN priority to set
 
 	/**
@@ -394,7 +394,7 @@ public class FlowEntryAction {
     /**
      * Action structure for ACTION_STRIP_VLAN: Strip the 802.1q header
      */
-    public class ActionStripVlan {
+    public static class ActionStripVlan {
 	private boolean stripVlan;	// If true, strip the VLAN header
 
 	/**
@@ -489,7 +489,7 @@ public class FlowEntryAction {
      * Action structure for ACTION_SET_DL_SRC and ACTION_SET_DL_DST:
      * Set the Ethernet source/destination address.
      */
-    public class ActionSetEthernetAddr {
+    public static class ActionSetEthernetAddr {
 	private MACAddress addr;	// The MAC address to set
 
 	/**
@@ -589,7 +589,7 @@ public class FlowEntryAction {
      * Action structure for ACTION_SET_NW_SRC and ACTION_SET_NW_DST:
      * Set the IPv4 source/destination address.
      */
-    public class ActionSetIPv4Addr {
+    public static class ActionSetIPv4Addr {
 	private IPv4 addr;		// The IPv4 address to set
 
 	/**
@@ -689,7 +689,7 @@ public class FlowEntryAction {
      * Action structure for ACTION_SET_NW_TOS:
      * Set the IP ToS (DSCP field, 6 bits).
      */
-    public class ActionSetIpToS {
+    public static class ActionSetIpToS {
 	private byte ipToS;	// The IP ToS to set DSCP field, 6 bits)
 
 	/**
@@ -788,7 +788,7 @@ public class FlowEntryAction {
      * Action structure for ACTION_SET_TP_SRC and ACTION_SET_TP_DST:
      * Set the TCP/UDP source/destination port.
      */
-    public class ActionSetTcpUdpPort {
+    public static class ActionSetTcpUdpPort {
 	private short port;		// The TCP/UDP port to set
 
 	/**
@@ -886,7 +886,7 @@ public class FlowEntryAction {
     /**
      * Action structure for ACTION_ENQUEUE: Output to queue on port.
      */
-    public class ActionEnqueue {
+    public static class ActionEnqueue {
 	private Port port;	// Port that queue belongs. Should
 				// refer to a valid physical port
 				// (i.e. < PORT_MAX) or PORT_IN_PORT
@@ -1508,7 +1508,7 @@ public class FlowEntryAction {
      * Set the action to output to queue on a port.
      *
      * @param port the port to set.
-     * @param int queueId the queue ID to set.
+     * @param queueId the queue ID to set.
      */
     public void setActionEnqueue(Port port, int queueId) {
 	actionEnqueue = new ActionEnqueue(port, queueId);

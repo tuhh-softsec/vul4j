@@ -15,10 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thinkaurelius.titan.core.TitanException;
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
 import com.tinkerpop.pipes.PipeFunction;
 import com.tinkerpop.pipes.transform.PathPipe;
 
@@ -142,12 +139,11 @@ public class LinkStorageImpl implements ILinkStorage {
 	
 	/**
 	 * Delete a record in the LinkStorage.
-	 * @param link Record to be deleted.
+	 * @param lt Record to be deleted.
 	 */
 	@Override
 	public void deleteLink(Link lt) {
 		IPortObject vportSrc = null, vportDst = null;
-		int count = 0;
 		
 		log.debug("deleteLink(): {}", lt);
 		
@@ -164,15 +160,17 @@ public class LinkStorageImpl implements ILinkStorage {
      		// FIXME: This needs to remove all edges
          	
          	if (vportSrc != null && vportDst != null) {
-
-   /*      		for (Edge e : vportSrc.asVertex().getEdges(Direction.OUT)) {
+/*
+        		int count = 0;
+         		for (Edge e : vportSrc.asVertex().getEdges(Direction.OUT)) {
          			log.debug("deleteLink(): {} in {} out {}", 
          					new Object[]{e.getLabel(), e.getVertex(Direction.IN), e.getVertex(Direction.OUT)});
          			if (e.getLabel().equals("link") && e.getVertex(Direction.IN).equals(vportDst)) {
          				graph.removeEdge(e);
          				count++;
          			}
-         		}*/
+         		}
+*/
          		vportSrc.removeLink(vportDst);
         		dbop.commit();
             	log.debug("deleteLink(): deleted edges src {} dst {}", new Object[]{
@@ -306,6 +304,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	
 	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
 	
+		@SuppressWarnings("unchecked")
 		@Override
 		public Link compute(PathPipe<Vertex> pipe ) {
 			// TODO Auto-generated method stub
@@ -314,7 +313,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			short s_port = 0;
 			short d_port = 0;
 			List<Vertex> V = new ArrayList<Vertex>();
-			V = pipe.next();
+			V = (List<Vertex>)pipe.next();
 			Vertex src_sw = V.get(0);
 			Vertex dest_sw = V.get(3);
 			Vertex src_port = V.get(1);

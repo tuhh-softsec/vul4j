@@ -68,7 +68,7 @@ public class FlowEntryActions {
     /**
      * Add a Flow Entry Action.
      *
-     * @param FlowEntryAction the Flow Entry Action to add.
+     * @param flowEntryAction the Flow Entry Action to add.
      */
     public void addAction(FlowEntryAction flowEntryAction) {
 	actions.add(flowEntryAction);

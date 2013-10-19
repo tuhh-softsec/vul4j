@@ -15,9 +15,31 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Flow Manager REST API implementation: Get all Flow state for a given
+ * Installer ID and given source and destination switches and ports.
+ *
+ * The "{installer-id}" request attribute value is the Installer ID of the
+ * flows to get.
+ * The "{src-dpid}" request attribute value is the source DPID of the flows to
+ * get.
+ * The "{src-port}" request attribute value is the source port of the flows to
+ * get.
+ * The "{dst-dpid}" request attribute value is the destination DPID of the
+ * flows to get.
+ * The "{dst-port}" request attribute value is the destination port of the
+ * flows to get.
+ *
+ *   GET /wm/flow/getall-by-installer-id/{installer-id}/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json"
+ */
 public class GetAllFlowsByInstallerIdResource extends ServerResource {
     protected static Logger log = LoggerFactory.getLogger(GetAllFlowsByInstallerIdResource.class);
 
+    /**
+     * Implement the API.
+     *
+     * @return the collection of Flow states if any found, otherwise null.
+     */
     @Get("json")
     public ArrayList<FlowPath> retrieve() {
 	ArrayList<FlowPath> result = null;

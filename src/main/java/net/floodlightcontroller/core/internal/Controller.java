@@ -75,7 +75,6 @@ import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
-import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
@@ -146,7 +145,7 @@ import org.slf4j.LoggerFactory;
  * - Detailed Port event: PORTCHANGED -> {PORTCHANGED, PORTADDED, PORTREMOVED} 
  *    Available as net.onrc.onos.ofcontroller.core.IOFSwitchPortListener
  * - Distributed ownership control of switch through RegistryService(IControllerRegistryService)
- * - Register ONOS services. (IFlowService, IControllerRegistryService)
+ * - Register ONOS services. (IControllerRegistryService)
  * - Additional DEBUG logs
  * - Try using hostname as controller ID, when ID was not explicitly given.
  */
@@ -188,7 +187,6 @@ public class Controller implements IFloodlightProviderService,
     protected IStorageSourceService storageSource;
     protected IPktInProcessingTimeService pktinProcTime;
     protected IThreadPoolService threadPool;
-    protected IFlowService flowService;
     protected IControllerRegistryService registryService;
     
     // Configuration options
@@ -403,10 +401,6 @@ public class Controller implements IFloodlightProviderService,
     
     public void setThreadPoolService(IThreadPoolService tp) {
         this.threadPool = tp;
-    }
-
-    public void setFlowService(IFlowService serviceImpl) {
-	this.flowService = serviceImpl;		
     }
 
 	public void setMastershipService(IControllerRegistryService serviceImpl) {
@@ -752,7 +746,7 @@ public class Controller implements IFloodlightProviderService,
                     }
                     if (is_core_switch) {
                         sw.setAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH, 
-                                        new Boolean(true));
+                                        true);
                     }
                 }
                 sw.removeAttribute(IOFSwitch.SWITCH_DESCRIPTION_FUTURE);
@@ -2358,7 +2352,7 @@ public class Controller implements IFloodlightProviderService,
                         // new controller node IP
                         addedControllerNodeIPs.put(controllerID, discoveredIP);
                     } 
-                    else if (curIP != discoveredIP) {
+                    else if (curIP.equals(discoveredIP)) {
                         // IP changed                    
                         removedControllerNodeIPs.put(controllerID, curIP);
                         addedControllerNodeIPs.put(controllerID, discoveredIP);

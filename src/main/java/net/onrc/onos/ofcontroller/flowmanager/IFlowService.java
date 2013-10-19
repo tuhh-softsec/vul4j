@@ -10,7 +10,7 @@ import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
 /**
- * @short Interface for providing Flow Service to other modules.
+ * Interface for providing Flow Service to other modules.
  */
 public interface IFlowService extends IFloodlightService {
     /**
@@ -88,8 +88,8 @@ public interface IFlowService extends IFloodlightService {
     /**
      * Get summary of all installed flows by all installers.
      *
-     * @param flowId: starting flow Id of the range
-     * @param maxFlows: number of flows to return
+     * @param flowId starting flow Id of the range
+     * @param maxFlows number of flows to return
      * @return the Flow Paths if found, otherwise null.
      */
     ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);

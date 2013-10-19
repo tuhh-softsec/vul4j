@@ -1,7 +1,5 @@
-package net.onrc.onos.ofcontroller.routing;
+package net.onrc.onos.ofcontroller.topology;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,7 +11,6 @@ import java.util.Set;
 
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -27,8 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.pipes.PipeFunction;
-import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
 
 
 /**
@@ -91,13 +86,12 @@ class Node {
 };
 
 /**
- * A class for implementing Topology Route Service.
+ * A class for implementing Topology Network Service.
  */
-public class TopoRouteService implements ITopoRouteService {
+public class TopologyManager implements ITopologyNetService {
 
     /** The logger. */
-    private static Logger log =
-	LoggerFactory.getLogger(TopoRouteService.class);
+    private static Logger log = LoggerFactory.getLogger(TopologyManager.class);
     
     protected GraphDBOperation op;
 
@@ -105,7 +99,7 @@ public class TopoRouteService implements ITopoRouteService {
     /**
      * Default constructor.
      */
-    public TopoRouteService() {
+    public TopologyManager() {
     }
 
     /**
@@ -114,7 +108,7 @@ public class TopoRouteService implements ITopoRouteService {
      * @param config the database configuration file to use for
      * the initialization.
      */
-    public TopoRouteService(String config) {
+    public TopologyManager(String config) {
 	this.init(config);
     }
 
@@ -288,7 +282,7 @@ public class TopoRouteService implements ITopoRouteService {
     public DataPath getTopoShortestPath(Map<Long, ?> shortestPathTopoHandler,
 					SwitchPort src, SwitchPort dest) {
 	@SuppressWarnings("unchecked")
-	Map<Long, Node> shortestPathTopo = (Map)shortestPathTopoHandler;
+	Map<Long, Node> shortestPathTopo = (Map<Long, Node>)shortestPathTopoHandler;
 	DataPath result_data_path = new DataPath();
 
 	// Initialize the source and destination in the data path to return
@@ -509,7 +503,7 @@ public class TopoRouteService implements ITopoRouteService {
 	    String type = v.getProperty("type").toString();
 	    // System.out.println("type: " + type);
 	    if (type.equals("port")) {
-		String number = v.getProperty("number").toString();
+		//String number = v.getProperty("number").toString();
 		// System.out.println("number: " + number);
 
 		Object obj = v.getProperty("number");

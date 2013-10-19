@@ -6,6 +6,9 @@ import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
+/**
+ * REST API implementation for the Flow Manager.
+ */
 public class FlowWebRoutable implements RestletRoutable {
     /**
      * Create the Restlet router and bind to the proper resources.
