@@ -1,5 +1,7 @@
 package net.onrc.onos.ofcontroller.topology;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,9 +11,17 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import net.floodlightcontroller.core.IFloodlightProviderService;
+import net.floodlightcontroller.core.module.FloodlightModuleContext;
+import net.floodlightcontroller.core.module.FloodlightModuleException;
+import net.floodlightcontroller.core.module.IFloodlightModule;
+import net.floodlightcontroller.core.module.IFloodlightService;
+
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
+import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -88,11 +98,11 @@ class Node {
 /**
  * A class for implementing Topology Network Service.
  */
-public class TopologyManager implements ITopologyNetService {
-
-    /** The logger. */
+public class TopologyManager implements IFloodlightModule,
+					ITopologyNetService {
     private static Logger log = LoggerFactory.getLogger(TopologyManager.class);
-    
+    protected IFloodlightProviderService floodlightProvider;
+
     protected GraphDBOperation op;
 
 
@@ -113,6 +123,16 @@ public class TopologyManager implements ITopologyNetService {
     }
 
     /**
+     * Set the database operation handler.
+     *
+     * @param init_op the database operation handler to use for the
+     * initialization.
+     */
+    public void setDbOperationHandler(GraphDBOperation init_op) {
+    	this.op = init_op;
+    }
+
+    /**
      * Init the module.
      *
      * @param config the database configuration file to use for
@@ -127,6 +147,13 @@ public class TopologyManager implements ITopologyNetService {
     }
 
     /**
+     * Shutdown the Topology Manager operation.
+     */
+    public void finalize() {
+	close();
+    }
+
+    /**
      * Close the service. It will close the corresponding database connection.
      */
     public void close() {
@@ -134,13 +161,72 @@ public class TopologyManager implements ITopologyNetService {
     }
 
     /**
-     * Set the database operation handler.
+     * Get the collection of offered module services.
      *
-     * @param init_op the database operation handler to use for the
-     * initialization.
+     * @return the collection of offered module services.
      */
-    public void setDbOperationHandler(GraphDBOperation init_op) {
-    	op = init_op;
+    @Override
+    public Collection<Class<? extends IFloodlightService>> getModuleServices() {
+        Collection<Class<? extends IFloodlightService>> l = 
+            new ArrayList<Class<? extends IFloodlightService>>();
+        l.add(ITopologyNetService.class);
+        return l;
+    }
+
+    /**
+     * Get the collection of implemented services.
+     *
+     * @return the collection of implemented services.
+     */
+    @Override
+    public Map<Class<? extends IFloodlightService>, IFloodlightService> 
+			       getServiceImpls() {
+        Map<Class<? extends IFloodlightService>,
+	    IFloodlightService> m = 
+            new HashMap<Class<? extends IFloodlightService>,
+	    IFloodlightService>();
+        m.put(ITopologyNetService.class, this);
+        return m;
+    }
+
+    /**
+     * Get the collection of modules this module depends on.
+     *
+     * @return the collection of modules this module depends on.
+     */
+    @Override
+    public Collection<Class<? extends IFloodlightService>> 
+                                                    getModuleDependencies() {
+	Collection<Class<? extends IFloodlightService>> l =
+	    new ArrayList<Class<? extends IFloodlightService>>();
+	l.add(IFloodlightProviderService.class);
+	l.add(INetworkGraphService.class);
+	l.add(IDatagridService.class);
+        return l;
+    }
+
+    /**
+     * Initialize the module.
+     *
+     * @param context the module context to use for the initialization.
+     */
+    @Override
+    public void init(FloodlightModuleContext context)
+	throws FloodlightModuleException {
+	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
+
+	String conf = "";
+	this.init(conf);
+    }
+
+    /**
+     * Startup module operation.
+     *
+     * @param context the module context to use for the startup.
+     */
+    @Override
+    public void startUp(FloodlightModuleContext context) {
+
     }
 
     /**
