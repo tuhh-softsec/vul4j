@@ -16,10 +16,13 @@
 package org.esigate;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Properties;
 
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpResponse;
+import org.esigate.test.http.HttpResponseBuilder;
 
 public class MockDriver extends Driver {
 	private final HashMap<String, String> resources = new HashMap<String, String>();
@@ -48,12 +51,17 @@ public class MockDriver extends Driver {
 	}
 
 	@Override
-	public String getResourceAsString(String relUrl, HttpEntityEnclosingRequest httpRequest) throws HttpErrorPage {
+	public HttpResponse getResource(String relUrl, HttpEntityEnclosingRequest httpRequest) throws HttpErrorPage {
 		String result = resources.get(relUrl);
+		
 		if (result == null) {
 			throw new HttpErrorPage(404, "Not found", "The page: " + relUrl + " does not exist");
 		}
-		return result;
+		try {
+			return new HttpResponseBuilder().status(200).reason("OK").entity(result).build();
+		} catch (UnsupportedEncodingException e) {
+			throw new HttpErrorPage(500,e.toString(),e.toString());
+		}
 	}
 
 }

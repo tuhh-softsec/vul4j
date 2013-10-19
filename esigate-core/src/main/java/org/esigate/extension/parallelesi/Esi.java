@@ -60,7 +60,7 @@ public class Esi implements Extension, IEventListener {
 		boolean doEsi = true;
 
 		// ensure we should process esi
-		if (renderEvent.httpResponse.containsHeader(Surrogate.HEADER_ENABLED_CAPABILITIES)) {
+		if (renderEvent.httpResponse != null && renderEvent.httpResponse.containsHeader(Surrogate.HEADER_ENABLED_CAPABILITIES)) {
 			String capabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.HEADER_ENABLED_CAPABILITIES)
 					.getValue();
 

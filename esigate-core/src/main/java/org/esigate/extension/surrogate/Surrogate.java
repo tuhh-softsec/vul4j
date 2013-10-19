@@ -21,6 +21,8 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.StringUtils.strip;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.http.Header;
@@ -88,7 +90,6 @@ import org.slf4j.LoggerFactory;
  * TODO:
  * <ul>
  * <li>Process caching directives</li>
- * <li>Inject HEADER_ENABLED_CAPABILITIES</li>
  * <li>Implement targeting</li>
  * </ul>
  * 
@@ -182,15 +183,7 @@ public class Surrogate implements Extension, IEventListener {
 			archCapabilities.append(this.esigateToken);
 			e.httpRequest.setHeader("Surrogate-Capabilities", archCapabilities.toString());
 		} else if (EventManager.EVENT_FETCH_POST.equals(id)) {
-			// Update caching policies
-			FetchEvent e = (FetchEvent) event;
-			Header h = e.httpRequest.getFirstHeader("Surrogate-Control");
-			if (h != null) {
-				if (h.getValue().indexOf("content=\"") >= 0) {
-					// Inject HEADER_ENABLED_CAPABILITIES
-				}
-			}
-
+			onPostFetch(event);
 		} else if (EventManager.EVENT_PROXY_PRE.equals(id)) {
 			ProxyEvent e = (ProxyEvent) event;
 			if (e.originalRequest.containsHeader("Surrogate-Capabilities")) {
@@ -210,6 +203,50 @@ public class Surrogate implements Extension, IEventListener {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Inject HEADER_ENABLED_CAPABILITIES into response.
+	 * <p/>
+	 * Update caching directives.
+	 * 
+	 * @param event
+	 */
+	private void onPostFetch(Event event) {
+		// Update caching policies
+		FetchEvent e = (FetchEvent) event;
+
+		if (!e.httpResponse.containsHeader("Surrogate-Control"))
+			return;
+
+		List<String> enabledCapabilities = new ArrayList<String>();
+		List<String> remainingCapabilities = new ArrayList<String>();
+
+		String controlHeader = e.httpResponse.getFirstHeader("Surrogate-Control").getValue();
+		String[] control = split(controlHeader, ",");
+
+		for (String directive : control) {
+			directive = strip(directive);
+			if (directive.startsWith("content=\"")) {
+				String[] content = split(directive.substring("content=\"".length(), directive.length() - 1), " ");
+
+				for (String contentCap : content) {
+					contentCap = strip(contentCap);
+					if (contains(this.capabilities, contentCap)) {
+						enabledCapabilities.add(contentCap);
+					} else {
+						remainingCapabilities.add(contentCap);
+					}
+
+				}
+
+			} else if (directive.startsWith("max-age=")) {
+				// TODO;
+			}
+
+		}
+
+		e.httpResponse.addHeader(HEADER_ENABLED_CAPABILITIES, join(enabledCapabilities, " "));
 	}
 
 	/**

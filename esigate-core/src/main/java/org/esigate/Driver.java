@@ -59,6 +59,7 @@ import org.slf4j.LoggerFactory;
  * @author Sylvain Sicard
  */
 public class Driver {
+	private static final String CACHE_RESPONSE_PREFIX = "response_";
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 	private final DriverConfiguration config;
 	private HttpClientHelper httpClientHelper;
@@ -123,10 +124,31 @@ public class Driver {
 		String resultingPageUrl = VariablesResolver.replaceAllVariables(pageUrl, originalRequest);
 
 		// Retrieve URL
-		String currentValue = getResourceAsString(resultingPageUrl, originalRequest);
+		HttpResponse response = null;
+		String currentValue = null;
+
+		// Get from cache to prevent multiple request to the same url if
+		// multiple fragments are used.
+		boolean cacheable = "GET".equalsIgnoreCase(originalRequest.getRequestLine().getMethod());
+		if (cacheable) {
+			currentValue = (String) originalRequest.getParams().getParameter(resultingPageUrl);
+			response = (HttpResponse) originalRequest.getParams().getParameter(CACHE_RESPONSE_PREFIX + resultingPageUrl);
+		}
+
+		// content and reponse were not in cache
+		if (currentValue == null) {
+			response = getResource(resultingPageUrl, originalRequest);
+			// Unzip
+			currentValue = HttpResponseUtils.toString(response, this.eventManager);
+			// Cache
+			if (cacheable) {
+				originalRequest.getParams().setParameter(resultingPageUrl, currentValue);
+				originalRequest.getParams().setParameter(CACHE_RESPONSE_PREFIX + resultingPageUrl, response);
+			}
+		}
 
 		// Apply renderers
-		currentValue = performRendering(pageUrl, originalRequest, currentValue, renderers);
+		currentValue = performRendering(pageUrl, originalRequest, response, currentValue, renderers);
 
 		// Output result
 		writer.append(currentValue);
@@ -302,7 +324,7 @@ public class Driver {
 		String currentValue = HttpResponseUtils.toString(response, this.eventManager);
 
 		// Perform rendering
-		currentValue = performRendering(pageUrl, originalRequest, currentValue, renderers);
+		currentValue = performRendering(pageUrl, originalRequest, response, currentValue, renderers);
 
 		// Generate the new response.
 		HttpEntity transformedHttpEntity = new StringEntity(currentValue, ContentType.get(response.getEntity()));
@@ -321,32 +343,33 @@ public class Driver {
 	 *            The remove url from which the body was retrieved.
 	 * @param originalRequest
 	 *            The request received by esigate.
+	 * @param response
+	 *            The Http Reponse.
 	 * @param body
-	 *            The response body which will be rendered.
+	 *            The body of the Http Response which will be rendered.
 	 * @param renderers
 	 *            list of renderers to apply.
 	 * @return The rendered response body.
 	 * @throws HttpErrorPage
 	 * @throws IOException
 	 */
-	private String performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, String body,
-			Renderer[] renderers) throws IOException, HttpErrorPage {
-
-		String currentBody = body;
-
+	private String performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, HttpResponse response,
+			String body, Renderer[] renderers) throws IOException, HttpErrorPage {
 		if (LOG.isInfoEnabled()) {
 			logAction("render", pageUrl, renderers);
 		}
-
 		// Start rendering
 		RenderEvent renderEvent = new RenderEvent();
 		renderEvent.originalRequest = originalRequest;
 		renderEvent.remoteUrl = pageUrl;
+		renderEvent.httpResponse = response;
 		// Create renderer list from parameters. Ensure at least 10
 		// additional
 		// renderers can be added at no cost.
 		renderEvent.renderers = new ArrayList<Renderer>(renderers.length + 10);
 		renderEvent.renderers.addAll(Arrays.asList(renderers));
+
+		String currentBody = body;
 
 		this.eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
 		for (Renderer renderer : renderEvent.renderers) {
@@ -360,40 +383,20 @@ public class Driver {
 	}
 
 	/**
-	 * This method returns the content of an url as a String. The result is
-	 * cached into the request scope in order not to send several requests if
-	 * you need several blocks in the same page to build the final page.
+	 * This method returns the content of an url as an HttpResponse.
 	 * 
 	 * @param url
 	 * @param originalRequest
 	 *            the target resource
-	 * @return the content of the url
+	 * @return the Http reponse
 	 * @throws HttpErrorPage
 	 */
-	protected String getResourceAsString(String url, HttpEntityEnclosingRequest originalRequest) throws HttpErrorPage {
-		String pageBody;
+	protected HttpResponse getResource(String url, HttpEntityEnclosingRequest originalRequest) throws HttpErrorPage {
 
 		String targetUrl = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
-
-		// Get from cache
-		boolean cacheable = "GET".equalsIgnoreCase(originalRequest.getRequestLine().getMethod());
-		if (cacheable) {
-			pageBody = (String) originalRequest.getParams().getParameter(targetUrl);
-			if (pageBody != null)
-				return pageBody;
-		}
-
 		GenericHttpRequest httpRequest = this.httpClientHelper.createHttpRequest(originalRequest, targetUrl, false);
-		HttpResponse httpResponse = execute(httpRequest);
 
-		// Unzip
-		pageBody = HttpResponseUtils.toString(httpResponse, this.eventManager);
-
-		// Cache
-		if (cacheable) {
-			originalRequest.getParams().setParameter(targetUrl, pageBody);
-		}
-		return pageBody;
+		return execute(httpRequest);
 	}
 
 	/**
