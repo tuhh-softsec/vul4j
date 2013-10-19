@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.floodlightlistener;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -44,8 +45,12 @@ import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
 
-public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener, IOFSwitchPortListener,
-		ILinkDiscoveryListener, IFloodlightModule {
+public class NetworkGraphPublisher implements IDeviceListener,
+					      IOFSwitchListener,
+					      IOFSwitchPortListener,
+					      ILinkDiscoveryListener,
+					      IFloodlightModule,
+					      INetworkGraphService {
 	
 	protected IDeviceStorage devStore;
 	protected ISwitchStorage swStore;
@@ -226,14 +231,20 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-		// TODO Auto-generated method stub
-		return null;
+		Collection<Class<? extends IFloodlightService>> l =
+		    new ArrayList<Class<? extends IFloodlightService>>();
+		l.add(INetworkGraphService.class);
+		return l;
 	}
 
 	@Override
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Class<? extends IFloodlightService>,
+		    IFloodlightService> m =
+		    new HashMap<Class<? extends IFloodlightService>,
+		    IFloodlightService>();
+		m.put(INetworkGraphService.class, this);
+		return m;
 	}
 
 	@Override
