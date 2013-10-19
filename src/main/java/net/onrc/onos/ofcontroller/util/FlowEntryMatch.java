@@ -16,7 +16,7 @@ public class FlowEntryMatch {
     /**
      * A class for storing a value to match.
      */
-    static class Field<T> {
+    public static class Field<T> {
 	/**
 	 * Default constructor.
 	 */

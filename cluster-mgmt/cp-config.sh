@@ -22,7 +22,7 @@ echo "Stopping Services"
 #dsh -g $basename 'cd ONOS; ./stop-cassandra stop'
 #dsh -g $basename '$ZK_DIR/bin/zkServer.sh stop'
 
-# authorized_keys  cassandra.yaml  hosts  id_rsa  id_rsa.pub  known_hosts  onlab-gui.pem  onlabkey.pem  onos.properties  zoo.cfg
+# authorized_keys  cassandra.yaml  hosts  id_rsa  id_rsa.pub  known_hosts  onlab-gui.pem  onlabkey.pem  zoo.cfg
 ## SSH Setting
 dsh -g $basename 'mkdir -m 700 .ssh' 
 for n in $SSH_COPY; do
