@@ -40,6 +40,7 @@ import net.onrc.onos.ofcontroller.core.internal.LinkStorageImpl;
 import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
@@ -132,18 +133,20 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 		switch (update.getOperation()) {
 			case LINK_REMOVED:
 				log.debug("LinkDiscoveryUpdate(): Removing link {}", lt);
-				linkStore.update(lt, DM_OPERATION.DELETE);
+				linkStore.deleteLink(lt);
 				// TODO: Move network map link removal here
 				// reconcile paths here
 //				IPortObject srcPort = conn.utils().searchPort(conn, HexString.toHexString(update.getSrc()), update.getSrcPort());
 				break;
 			case LINK_UPDATED:
 				log.debug("LinkDiscoveryUpdate(): Updating link {}", lt);
-				linkStore.update(lt, DM_OPERATION.UPDATE);
+				LinkInfo linfo = linkStore.getLinkInfo(lt);
+				// TODO update "linfo" using portState derived using "update"
+				linkStore.update(lt, linfo, DM_OPERATION.UPDATE);
 				break;
 			case LINK_ADDED:
 				log.debug("LinkDiscoveryUpdate(): Adding link {}", lt);
-				linkStore.update(lt, DM_OPERATION.INSERT);
+				linkStore.addLink(lt);
 				break;
 					
 			default:

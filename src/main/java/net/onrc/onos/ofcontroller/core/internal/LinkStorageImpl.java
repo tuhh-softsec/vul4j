@@ -20,12 +20,22 @@ import com.tinkerpop.pipes.PipeFunction;
 import com.tinkerpop.pipes.transform.PathPipe;
 
 /**
- * This is the class for storing the information of links into CassandraDB
+ * This is the class for storing the information of links into GraphDB
  */
 public class LinkStorageImpl implements ILinkStorage {
 	
 	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
 	protected GraphDBOperation dbop;
+
+	
+	/**
+	 * Initialize the object. Open LinkStorage using given configuration file.
+	 * @param conf Path (absolute path for now) to configuration file.
+	 */
+	@Override
+	public void init(String conf) {
+		this.dbop = new GraphDBOperation(conf);
+	}
 
 	/**
 	 * Update a record in the LinkStorage in a way provided by op.
@@ -33,19 +43,94 @@ public class LinkStorageImpl implements ILinkStorage {
 	 * @param op Operation to be done.
 	 */
 	@Override
-	public void update(Link link, DM_OPERATION op) {
-		update(link, (LinkInfo)null, op);
+	public void update(Link link, LinkInfo linkinfo, DM_OPERATION op) {
+		switch (op) {
+		case CREATE:
+		case INSERT:
+			addLinkImpl(link,op);
+			break;
+		case UPDATE:
+			if (linkinfo != null) {
+				setLinkInfo(link, linkinfo);
+			} else {
+				deleteLinkInfo(link);
+			}
+			break;
+		case DELETE:
+			deleteLink(link);
+			break;
+		}
 	}
 
+	@Override
+	public void addLink(Link link) {
+		addLinkImpl(link, DM_OPERATION.INSERT);
+	}
+	
 	/**
 	 * Update multiple records in the LinkStorage in a way provided by op.
 	 * @param links List of records to be updated.
 	 * @param op Operation to be done.
 	 */
 	@Override
-	public void update(List<Link> links, DM_OPERATION op) {
+	public void addLinks(List<Link> links) {
 		for (Link lt: links) {
-			update(lt, (LinkInfo)null, op);
+			addLinkImpl(lt, DM_OPERATION.INSERT);
+		}
+	}
+
+	/**
+		 * Delete a record in the LinkStorage.
+		 * @param lt Record to be deleted.
+		 */
+		@Override
+		public void deleteLink(Link lt) {
+			IPortObject vportSrc = null, vportDst = null;
+			
+			log.debug("deleteLink(): {}", lt);
+			
+	        try {
+	            // get source port vertex
+	         	String dpid = HexString.toHexString(lt.getSrc());
+	         	short port = lt.getSrcPort();
+	         	vportSrc = dbop.searchPort(dpid, port);
+	            
+	            // get dst port vertex
+	         	dpid = HexString.toHexString(lt.getDst());
+	         	port = lt.getDstPort();
+	         	vportDst = dbop.searchPort(dpid, port);
+	     		// FIXME: This needs to remove all edges
+	         	
+	         	if (vportSrc != null && vportDst != null) {
+	         		vportSrc.removeLink(vportDst);
+	        		dbop.commit();
+	            	log.debug("deleteLink(): deleted edges src {} dst {}", new Object[]{
+	            			lt, vportSrc, vportDst});
+	            	
+	        		// TODO publish DELETE_LINK event here
+	            } else {
+	            	log.error("deleteLink(): failed invalid vertices {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
+	            	dbop.rollback();
+	            }
+	         	
+	        } catch (TitanException e) {
+	            /*
+	             * retry till we succeed?
+	             */
+	        	log.error("deleteLink(): titan exception {} {}", new Object[]{lt, e.toString()});
+	        	dbop.rollback();
+	        	e.printStackTrace();
+	        }
+		}
+
+	/**
+	 * Delete multiple records in LinkStorage.
+	 * @param links List of records to be deleted.
+	 */
+	@Override
+	public void deleteLinks(List<Link> links) {
+		for (Link lt : links) {
+			deleteLink(lt);
 		}
 	}
 
@@ -55,30 +140,28 @@ public class LinkStorageImpl implements ILinkStorage {
 	 * @param linkinfo Meta-information of a link to be updated.
 	 * @param op Operation to be done.
 	 */
-	@Override
-	public void update(Link link, LinkInfo linkinfo, DM_OPERATION op) {
-		switch (op) {
-		case UPDATE:
-		case CREATE:
-		case INSERT:
-			updateLink(link, linkinfo, op);
-			break;
-		case DELETE:
-			deleteLink(link);
-			break;
-		}
+	private void setLinkInfo(Link link, LinkInfo linkinfo) {
+		// TODO implement this
+		
+		// TODO publish UPDATE_LINK event here
 	}
 	
+	private void deleteLinkInfo(Link link) {
+		// TODO implement this
+		
+		// TODO publish UPDATE_LINK event here
+	}
+
 	/**
 	 * Perform INSERT/CREATE/UPDATE operation to update the LinkStorage.
 	 * @param lt Record of a link to be updated.
 	 * @param linkinfo Meta-information of a link to be updated.
 	 * @param op Operation to be done. (only INSERT/CREATE/UPDATE is acceptable)
 	 */
-	public void updateLink(Link lt, LinkInfo linkinfo, DM_OPERATION op) {
+	private void addLinkImpl(Link lt, DM_OPERATION op) {
 		IPortObject vportSrc = null, vportDst = null;
 	
-		log.trace("updateLink(): op {} {} {}", new Object[]{op, lt, linkinfo});
+		log.trace("updateLink(): op {} {}", new Object[]{op, lt});
 		
         try {
             // get source port vertex
@@ -101,7 +184,6 @@ public class LinkStorageImpl implements ILinkStorage {
             	}
 
             	if (currLinks.contains(vportDst)) {
-            		// TODO: update linkinfo
             		if (op.equals(DM_OPERATION.INSERT) || op.equals(DM_OPERATION.CREATE)) {
             			log.debug("addOrUpdateLink(): failed link exists {} {} src {} dst {}", 
             					new Object[]{op, lt, vportSrc, vportDst});
@@ -111,6 +193,8 @@ public class LinkStorageImpl implements ILinkStorage {
 
             		dbop.commit();
             		log.debug("updateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
+            		
+            		// TODO publish ADD_LINK event here
             	}
             } else {
             	log.error("updateLink(): failed invalid vertices {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
@@ -126,78 +210,11 @@ public class LinkStorageImpl implements ILinkStorage {
 	}
 	
 	/**
-	 * Delete multiple records in LinkStorage.
-	 * @param links List of records to be deleted.
-	 */
-	@Override
-	public void deleteLinks(List<Link> links) {
-
-		for (Link lt : links) {
-			deleteLink(lt);
-		}
-	}
-	
-	/**
-	 * Delete a record in the LinkStorage.
-	 * @param lt Record to be deleted.
-	 */
-	@Override
-	public void deleteLink(Link lt) {
-		IPortObject vportSrc = null, vportDst = null;
-		
-		log.debug("deleteLink(): {}", lt);
-		
-        try {
-            // get source port vertex
-         	String dpid = HexString.toHexString(lt.getSrc());
-         	short port = lt.getSrcPort();
-         	vportSrc = dbop.searchPort(dpid, port);
-            
-            // get dst port vertex
-         	dpid = HexString.toHexString(lt.getDst());
-         	port = lt.getDstPort();
-         	vportDst = dbop.searchPort(dpid, port);
-     		// FIXME: This needs to remove all edges
-         	
-         	if (vportSrc != null && vportDst != null) {
-/*
-        		int count = 0;
-         		for (Edge e : vportSrc.asVertex().getEdges(Direction.OUT)) {
-         			log.debug("deleteLink(): {} in {} out {}", 
-         					new Object[]{e.getLabel(), e.getVertex(Direction.IN), e.getVertex(Direction.OUT)});
-         			if (e.getLabel().equals("link") && e.getVertex(Direction.IN).equals(vportDst)) {
-         				graph.removeEdge(e);
-         				count++;
-         			}
-         		}
-*/
-         		vportSrc.removeLink(vportDst);
-        		dbop.commit();
-            	log.debug("deleteLink(): deleted edges src {} dst {}", new Object[]{
-            			lt, vportSrc, vportDst});
-            	
-            } else {
-            	log.error("deleteLink(): failed invalid vertices {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
-            	dbop.rollback();
-            }
-         	
-        } catch (TitanException e) {
-            /*
-             * retry till we succeed?
-             */
-        	log.error("deleteLink(): titan exception {} {}", new Object[]{lt, e.toString()});
-        	dbop.rollback();
-        	e.printStackTrace();
-        }
-	}
-
-	/**
 	 * Get list of all links connected to the port specified by given DPID and port number.
 	 * @param dpid DPID of desired port.
 	 * @param port Port number of desired port.
 	 * @return List of links. Empty list if no port was found.
 	 */
-	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
     	List<Link> links = new ArrayList<Link>();
@@ -221,24 +238,13 @@ public class LinkStorageImpl implements ILinkStorage {
 	}
 	
 	/**
-	 * Initialize the object. Open LinkStorage using given configuration file.
-	 * @param conf Path (absolute path for now) to configuration file.
-	 */
-	@Override
-	public void init(String conf) {
-		//TODO extract the DB location from properties
-		this.dbop = new GraphDBOperation(conf);
-	}
-
-	/**
 	 * Delete records of the links connected to the port specified by given DPID and port number.
 	 * @param dpid DPID of desired port.
 	 * @param port Port number of desired port.
 	 */
-	// TODO: Fix me
 	@Override
 	public void deleteLinksOnPort(Long dpid, short port) {
-		List<Link> linksToDelete = getLinks(dpid,port);
+		List<Link> linksToDelete = getLinks(dpid, port);
 		
 		for(Link l : linksToDelete) {
 			deleteLink(l);
@@ -250,7 +256,6 @@ public class LinkStorageImpl implements ILinkStorage {
 	 * @param dpid DPID of desired switch.
 	 * @return List of links. Empty list if no port was found.
 	 */
-	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(String dpid) {
 		List<Link> links = new ArrayList<Link>();
@@ -302,12 +307,34 @@ public class LinkStorageImpl implements ILinkStorage {
 		return links;
 	}
 	
+	@Override
+	public LinkInfo getLinkInfo(Link link) {
+		// TODO implement this
+		return null;
+	}
+
+	/**
+	 * Finalize the object.
+	 */
+	public void finalize() {
+		close();
+	}
+
+	/**
+	 * Close LinkStorage.
+	 */
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+//		graph.shutdown();		
+	}
+
+	// TODO should be moved to TopoLinkServiceImpl (never used in this class)
 	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
 	
 		@SuppressWarnings("unchecked")
 		@Override
 		public Link compute(PathPipe<Vertex> pipe ) {
-			// TODO Auto-generated method stub
 			long s_dpid = 0;
 			long d_dpid = 0;
 			short s_port = 0;
@@ -327,22 +354,6 @@ public class LinkStorageImpl implements ILinkStorage {
 			
 			return l;
 		}
-	}
-	
-	/**
-	 * Finalize the object.
-	 */
-	public void finalize() {
-		close();
-	}
-
-	/**
-	 * Close LinkStorage.
-	 */
-	@Override
-	public void close() {
-		// TODO Auto-generated method stub
-//		graph.shutdown();		
 	}
 
 

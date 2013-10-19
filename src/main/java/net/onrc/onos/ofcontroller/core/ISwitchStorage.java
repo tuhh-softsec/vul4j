@@ -12,6 +12,10 @@ public interface ISwitchStorage extends INetMapStorage {
 	}
 	
 	/*
+	 * Initialize
+	 */
+	public void init(String conf);
+	/*
 	 * Update the switch details
 	 */
 	public void update(String dpid,SwitchState state, DM_OPERATION op);
@@ -19,6 +23,10 @@ public interface ISwitchStorage extends INetMapStorage {
 	 * Associate a port on switch
 	 */
 	public void addPort(String dpid, OFPhysicalPort port);
+	/*
+	 * Delete a port on a switch by num
+	 */
+	public void deletePort(String dpid, short port);
 	/*
 	 * Add a switch and all its associated ports
 	 */
@@ -31,14 +39,6 @@ public interface ISwitchStorage extends INetMapStorage {
 	 * Delete switch and associated ports
 	 */
 	public void deleteSwitch(String dpid);
-	/*
-	 * Delete a port on a switch by num
-	 */
-	public void deletePort(String dpid, short port);
-	/*
-	 * Initialize
-	 */
-	public void init(String conf);
 	
 
 }
