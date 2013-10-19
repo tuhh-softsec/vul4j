@@ -79,72 +79,72 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 									IOFSwitchListener, ILayer3InfoService,
 									IProxyArpService {
 	
-	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
+	private static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
-	protected IFloodlightProviderService floodlightProvider;
-	protected ITopologyService topology;
-	protected ITopologyNetService topologyNetService;
-	protected ILinkDiscoveryService linkDiscoveryService;
-	protected IRestApiService restApi;
+	private IFloodlightProviderService floodlightProvider;
+	private ITopologyService topology;
+	private ITopologyNetService topologyNetService;
+	private ILinkDiscoveryService linkDiscoveryService;
+	private IRestApiService restApi;
 	
-	protected ProxyArpManager proxyArp;
+	private ProxyArpManager proxyArp;
 	
-	protected IPatriciaTrie<RibEntry> ptree;
-	protected IPatriciaTrie<Interface> interfacePtrie;
-	protected BlockingQueue<RibUpdate> ribUpdates;
+	private IPatriciaTrie<RibEntry> ptree;
+	private IPatriciaTrie<Interface> interfacePtrie;
+	private BlockingQueue<RibUpdate> ribUpdates;
 	
-	protected String bgpdRestIp;
-	protected String routerId;
-	protected String configFilename = "config.json";
+	private String bgpdRestIp;
+	private String routerId;
+	private String configFilename = "config.json";
 	
 	//We need to identify our flows somehow. But like it says in LearningSwitch.java,
 	//the controller/OS should hand out cookie IDs to prevent conflicts.
-	protected final long APP_COOKIE = 0xa0000000000000L;
+	private final long APP_COOKIE = 0xa0000000000000L;
 	//Cookie for flows that do L2 forwarding within SDN domain to egress routers
-	protected final long L2_FWD_COOKIE = APP_COOKIE + 1;
+	private final long L2_FWD_COOKIE = APP_COOKIE + 1;
 	//Cookie for flows in ingress switches that rewrite the MAC address
-	protected final long MAC_RW_COOKIE = APP_COOKIE + 2;
+	private final long MAC_RW_COOKIE = APP_COOKIE + 2;
 	//Cookie for flows that setup BGP paths
-	protected final long BGP_COOKIE = APP_COOKIE + 3;
+	private final long BGP_COOKIE = APP_COOKIE + 3;
 	//Forwarding uses priority 0, and the mac rewrite entries in ingress switches
 	//need to be higher priority than this otherwise the rewrite may not get done
-	protected final short SDNIP_PRIORITY = 10;
-	protected final short ARP_PRIORITY = 20;
+	private final short SDNIP_PRIORITY = 10;
+	private final short ARP_PRIORITY = 20;
 	
-	protected final short BGP_PORT = 179;
+	private final short BGP_PORT = 179;
 	
-	protected final int TOPO_DETECTION_WAIT = 2; //seconds
+	private final int TOPO_DETECTION_WAIT = 2; //seconds
 	
 	//Configuration stuff
-	protected List<String> switches;
-	protected Map<String, Interface> interfaces;
-	protected Map<InetAddress, BgpPeer> bgpPeers;
-	protected SwitchPort bgpdAttachmentPoint;
-	protected MACAddress bgpdMacAddress;
+	private List<String> switches;
+	private Map<String, Interface> interfaces;
+	private Map<InetAddress, BgpPeer> bgpPeers;
+	private SwitchPort bgpdAttachmentPoint;
+	private MACAddress bgpdMacAddress;
 	
 	//True when all switches have connected
-	protected volatile boolean switchesConnected = false;
+	private volatile boolean switchesConnected = false;
 	//True when we have a full mesh of shortest paths between gateways
-	protected volatile boolean topologyReady = false;
+	private volatile boolean topologyReady = false;
 
-	protected ArrayList<LDUpdate> linkUpdates;
-	protected SingletonTask topologyChangeDetectorTask;
+	private ArrayList<LDUpdate> linkUpdates;
+	private SingletonTask topologyChangeDetectorTask;
 	
-	protected SetMultimap<InetAddress, RibUpdate> prefixesWaitingOnArp;
+	private SetMultimap<InetAddress, RibUpdate> prefixesWaitingOnArp;
 	
-	protected Map<InetAddress, Path> pathsWaitingOnArp;
+	private Map<InetAddress, Path> pathsWaitingOnArp;
 	
-	protected ExecutorService bgpUpdatesExecutor;
+	private ExecutorService bgpUpdatesExecutor;
 	
-	protected Map<InetAddress, Path> pushedPaths;
-	protected Map<Prefix, Path> prefixToPath;
-	protected Multimap<Prefix, PushedFlowMod> pushedFlows;
+	private Map<InetAddress, Path> pushedPaths;
+	private Map<Prefix, Path> prefixToPath;
+	private Multimap<Prefix, PushedFlowMod> pushedFlows;
 	
 	private FlowCache flowCache;
 	
-	protected volatile Map<Long, ?> shortestPathTopo = null;
+	private volatile Map<Long, ?> shortestPathTopo = null;
 
-	protected class TopologyChangeDetector implements Runnable {
+	private class TopologyChangeDetector implements Runnable {
 		@Override
 		public void run() {
 			log.debug("Running topology change detection task");
