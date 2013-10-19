@@ -64,8 +64,7 @@ public class TopologyManagerTest {
 	TestDatabaseManager.populateTestData(titanGraph);
 
 	// Prepare the TopologyManager instance
-	topologyManager = new TopologyManager();
-	topologyManager.setDbOperationHandler(oper);
+	topologyManager = new TopologyManager(oper);
     }
 
     /**

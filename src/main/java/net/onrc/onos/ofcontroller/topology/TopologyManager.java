@@ -123,13 +123,13 @@ public class TopologyManager implements IFloodlightModule,
     }
 
     /**
-     * Set the database operation handler.
+     * Constructor for a given database operation handler.
      *
-     * @param init_op the database operation handler to use for the
+     * @param handler the database operation handler to use for the
      * initialization.
      */
-    public void setDbOperationHandler(GraphDBOperation init_op) {
-    	this.op = init_op;
+    public TopologyManager(GraphDBOperation handler) {
+	this.op = handler;
     }
 
     /**
