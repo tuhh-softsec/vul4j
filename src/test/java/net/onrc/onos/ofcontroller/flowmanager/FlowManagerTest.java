@@ -696,7 +696,7 @@ public class FlowManagerTest {
 
 		// verify the test
 		verifyAll();
-		assertEquals(2, md.size());
+		assertEquals(3, md.size());
 		assertTrue(md.contains(IFloodlightProviderService.class));
 		assertTrue(md.contains(IRestApiService.class));
 	}

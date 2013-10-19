@@ -33,6 +33,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
@@ -469,9 +470,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public Map<Class<? extends IFloodlightService>, IFloodlightService> 
 			       getServiceImpls() {
         Map<Class<? extends IFloodlightService>,
-        IFloodlightService> m = 
-            new HashMap<Class<? extends IFloodlightService>,
-                IFloodlightService>();
+	    IFloodlightService> m =
+	    new HashMap<Class<? extends IFloodlightService>,
+	    IFloodlightService>();
         m.put(IFlowService.class, this);
         return m;
     }
@@ -487,6 +488,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	Collection<Class<? extends IFloodlightService>> l =
 	    new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFloodlightProviderService.class);
+	l.add(INetworkGraphService.class);
 	l.add(IRestApiService.class);
         return l;
     }
@@ -506,8 +508,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 					    EnumSet.of(OFType.FLOW_MOD),
 					    OFMESSAGE_DAMPER_TIMEOUT);
 
-	// TODO: An ugly hack!
-	String conf = "/tmp/cassandra.titan";
+	String conf = "";
 	this.init(conf);
 	
 	mapReaderScheduler = Executors.newScheduledThreadPool(1);
