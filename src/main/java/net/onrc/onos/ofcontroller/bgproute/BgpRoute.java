@@ -143,7 +143,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private FlowCache flowCache;
 	
 	protected volatile Map<Long, ?> topoRouteTopology = null;
-		
+	
 	protected class TopologyChangeDetector implements Runnable {
 		@Override
 		public void run() {
@@ -483,7 +483,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	private void addPrefixFlows(Prefix prefix, Interface egressInterface, MACAddress nextHopMacAddress) {		
-		log.debug("Adding flows for prefix {} added, next hop mac {}",
+		log.debug("Adding flows for prefix {}, next hop mac {}",
 				prefix, nextHopMacAddress);
 		
 		//We only need one flow mod per switch, so pick one interface on each switch
@@ -1120,10 +1120,22 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					RibUpdate update = ribUpdates.take();
 					switch (update.getOperation()){
 					case UPDATE:
-						processRibAdd(update);
+						if (validateUpdate(update)) {
+							processRibAdd(update);
+						}
+						else {
+							log.debug("Rib UPDATE out of order: {} via {}",
+									update.getPrefix(), update.getRibEntry().getNextHop());
+						}
 						break;
 					case DELETE:
-						processRibDelete(update);
+						if (validateUpdate(update)) {
+							processRibDelete(update);
+						}
+						else {
+							log.debug("Rib DELETE out of order: {} via {}",
+									update.getPrefix(), update.getRibEntry().getNextHop());
+						}
 						break;
 					}
 				} catch (InterruptedException e) {
@@ -1137,6 +1149,40 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			if (interrupted) {
 				Thread.currentThread().interrupt();
 			}
+		}
+	}
+	
+	private boolean validateUpdate(RibUpdate update) {
+		RibEntry newEntry = update.getRibEntry();
+		RibEntry oldEntry = ptree.lookup(update.getPrefix());
+		
+		//If there is no existing entry we must assume this is the most recent
+		//update. However this might not always be the case as we might have a
+		//POST then DELETE reordering.
+		//if (oldEntry == null || !newEntry.getNextHop().equals(oldEntry.getNextHop())) {
+		if (oldEntry == null) {
+			return true;
+		}
+		
+		// This handles the case where routes are gathered in the initial
+		// request because they don't have sequence number info
+		if (newEntry.getSysUpTime() == -1 && newEntry.getSequenceNum() == -1) {
+			return true;
+		}
+		
+		if (newEntry.getSysUpTime() > oldEntry.getSysUpTime()) {
+			return true;
+		}
+		else if (newEntry.getSysUpTime() == oldEntry.getSysUpTime()) {
+			if (newEntry.getSequenceNum() > oldEntry.getSequenceNum()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
 		}
 	}
 
