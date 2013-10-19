@@ -36,6 +36,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
+import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -294,8 +295,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
 		//
-		Map<Long, ?> shortestPathTopo =
-		    topologyNetService.prepareShortestPathTopo();
+		Topology topology = topologyNetService.newDatabaseTopology();
 		Iterable<IFlowPath> allFlowPaths = op.getAllFlowPaths();
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
@@ -360,18 +360,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    counterMyFlowPaths++;
 
 		    //
-		    // NOTE: Using here the regular getShortestPath() method
-		    // won't work here, because that method calls internally
-		    //  "conn.endTx(Transaction.COMMIT)", and that will
-		    // invalidate all handlers to the Titan database.
+		    // NOTE: Using here the regular getDatabaseShortestPath()
+		    // method won't work here, because that method calls
+		    // internally "conn.endTx(Transaction.COMMIT)", and that
+		    // will invalidate all handlers to the Titan database.
 		    // If we want to experiment with calling here
-		    // getShortestPath(), we need to refactor that code
+		    // getDatabaseShortestPath(), we need to refactor that code
 		    // to avoid closing the transaction.
 		    //
 		    DataPath dataPath =
-			topologyNetService.getTopoShortestPath(shortestPathTopo,
-							       srcSwitchPort,
-							       dstSwitchPort);
+			topologyNetService.getTopologyShortestPath(
+				topology,
+				srcSwitchPort,
+				dstSwitchPort);
 		    if (dataPath == null) {
 			// We need the DataPath to compare the paths
 			dataPath = new DataPath();
@@ -396,7 +397,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    op.removeFlowPath(flowPathObj);
 		}
 
-		topologyNetService.dropShortestPathTopo(shortestPathTopo);
+		topologyNetService.dropTopology(topology);
 
 		op.commit();
 

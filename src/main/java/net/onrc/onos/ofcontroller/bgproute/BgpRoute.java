@@ -42,6 +42,7 @@ import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
+import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -82,7 +83,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
 	protected IFloodlightProviderService floodlightProvider;
-	protected ITopologyService topology;
+	protected ITopologyService topologyService;
 	protected ITopologyNetService topologyNetService;
 	protected ILinkDiscoveryService linkDiscoveryService;
 	protected IRestApiService restApi;
@@ -142,7 +143,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	private FlowCache flowCache;
 	
-	protected volatile Map<Long, ?> shortestPathTopo = null;
+	protected volatile Topology topology = null;
 		
 	protected class TopologyChangeDetector implements Runnable {
 		@Override
@@ -260,13 +261,13 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	    	
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-		topology = context.getServiceImpl(ITopologyService.class);
+		topologyService = context.getServiceImpl(ITopologyService.class);
 		linkDiscoveryService = context.getServiceImpl(ILinkDiscoveryService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology, this, restApi);
+		proxyArp = new ProxyArpManager(floodlightProvider, topologyService, this, restApi);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -318,7 +319,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		restApi.addRestletRoutable(new BgpRouteWebRoutable());
-		topology.addListener(this);
+		topologyService.addListener(this);
 		floodlightProvider.addOFSwitchListener(this);
 		
 		proxyArp.startUp();
@@ -498,14 +499,14 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		//Add a flow to rewrite mac for this prefix to all other border switches
 		for (Interface srcInterface : srcInterfaces.values()) {
 			DataPath shortestPath; 
-			if (shortestPathTopo == null) {
-				shortestPath = topologyNetService.getShortestPath(
+			if (topology == null) {
+				shortestPath = topologyNetService.getDatabaseShortestPath(
 						srcInterface.getSwitchPort(),
 						egressInterface.getSwitchPort());
 			}
 			else {
-				shortestPath = topologyNetService.getTopoShortestPath(
-						shortestPathTopo, srcInterface.getSwitchPort(),
+				shortestPath = topologyNetService.getTopologyShortestPath(
+						topology, srcInterface.getSwitchPort(),
 						egressInterface.getSwitchPort());
 			}
 			
@@ -697,12 +698,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 			
 			DataPath shortestPath;
-			if (shortestPathTopo == null) {
-				shortestPath = topologyNetService.getShortestPath(
+			if (topology == null) {
+				shortestPath = topologyNetService.getDatabaseShortestPath(
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 			}
 			else {
-				shortestPath = topologyNetService.getTopoShortestPath(shortestPathTopo, 
+				shortestPath = topologyNetService.getTopologyShortestPath(topology, 
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 			}
 			
@@ -771,7 +772,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		for (BgpPeer bgpPeer : bgpPeers.values()){
 			Interface peerInterface = interfaces.get(bgpPeer.getInterfaceName());
 			
-			DataPath path = topologyNetService.getShortestPath(
+			DataPath path = topologyNetService.getDatabaseShortestPath(
 					peerInterface.getSwitchPort(), bgpdAttachmentPoint);
 			
 			if (path == null){
@@ -1046,7 +1047,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	private void beginRouting(){
 		log.debug("Topology is now ready, beginning routing function");
-		shortestPathTopo = topologyNetService.prepareShortestPathTopo();
+		topology = topologyNetService.newDatabaseTopology();
 		
 		setupArpFlows();
 		setupDefaultDropFlows();
@@ -1086,7 +1087,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					continue;
 				}
 				
-				DataPath shortestPath = topologyNetService.getShortestPath(
+				DataPath shortestPath = topologyNetService.getDatabaseShortestPath(
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 				
 				if (shortestPath == null){
@@ -1147,7 +1148,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 		
 		boolean refreshNeeded = false;
-		for (LDUpdate ldu : topology.getLastLinkUpdates()){
+		for (LDUpdate ldu : topologyService.getLastLinkUpdates()){
 			if (!ldu.getOperation().equals(ILinkDiscovery.UpdateOperation.LINK_UPDATED)){
 				//We don't need to recalculate anything for just link updates
 				//They happen very frequently

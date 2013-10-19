@@ -37,8 +37,9 @@ public class RouteResource extends ServerResource {
 	Port dstPort = new Port(Short.parseShort(dstPortStr));
         
 	DataPath result =
-	    topologyNetService.getShortestPath(new SwitchPort(srcDpid, srcPort),
-					       new SwitchPort(dstDpid, dstPort));
+	    topologyNetService.getDatabaseShortestPath(
+		new SwitchPort(srcDpid, srcPort),
+		new SwitchPort(dstDpid, dstPort));
 	if (result != null) {
 	    return result;
 	} else {
