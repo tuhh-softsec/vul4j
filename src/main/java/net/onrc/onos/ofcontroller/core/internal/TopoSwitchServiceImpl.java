@@ -18,7 +18,7 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	}
 
 	public TopoSwitchServiceImpl() {
-		this("/tmp/cassandra.titan");
+		this("");
 	}
 	
 	public void finalize() {
