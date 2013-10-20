@@ -121,6 +121,8 @@ public abstract class AbstractDriverTestCase extends TestCase {
 	 * @param d
 	 * @param request
 	 *            Request must have been created with a mediator.
+	 * @param renderers
+	 *            Renderers which will be applied on response entity.
 	 * @return the response
 	 * @throws IOException
 	 * @throws HttpErrorPage
