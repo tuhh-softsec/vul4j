@@ -976,22 +976,4 @@ public class FlowManagerTest {
 	public final void testRemoveFlowEntrySuccessNormally() {
 		fail("not yet implemented");
 	}
-
-	/**
-	 * Test method for {@link FlowManager#installRemoteFlowEntry(FlowPath, FlowEntry)}.
-	 * The method seems to be not implemented and not used for now.
-	 */
-	@Ignore @Test
-	public final void testInstallRemoteFlowEntrySuccessNormally() {
-		fail("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link FlowManager#removeRemoteFlowEntry(FlowPath, FlowEntry)}.
-	 * The method seems to be not implemented and not used for now.
-	 */
-	@Ignore @Test
-	public final void testRemoveRemoteFlowEntrySuccessNormally() {
-		fail("not yet implemented");
-	}
 }
