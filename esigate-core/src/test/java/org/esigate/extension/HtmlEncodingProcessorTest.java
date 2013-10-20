@@ -15,73 +15,49 @@
 package org.esigate.extension;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpStatus;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.HttpResponse;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
-import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
-import org.esigate.cookie.CookieManager;
-import org.esigate.events.EventManager;
-import org.esigate.http.HttpClientHelper;
 import org.esigate.test.TestUtils;
-import org.esigate.test.conn.MockConnectionManager;
+import org.esigate.test.conn.SequenceResponse;
+import org.esigate.test.driver.AbstractDriverTestCase;
 
-public class HtmlEncodingProcessorTest extends TestCase {
+public class HtmlEncodingProcessorTest extends AbstractDriverTestCase {
 
-	private Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager) {
-		return createMockDriver(properties, connectionManager, "tested");
-	}
-
-	private Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager, String name) {
-		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, null);
-
-		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(name), cookieManager, properties, connectionManager);
-		Driver driver = new Driver(name, properties, httpClientHelper);
-		DriverFactory.put(name, driver);
-		return driver;
-	}
-
-	
 	public void testBug184_HtmlEncodingProcessing() throws Exception {
-		doEncodingTest( "text/html","<html><head><meta charset=\"utf-8\" /></head><body>testéèà</body></html>" );
-		doEncodingTest( "text/html","<html><head><meta content=\"text/html; charset=utf-8\" ></head><body>testéèà</body></html>" );
-		doEncodingTest( "text/html","<html><head><metA content=\"text/html; charset=utf-8\" /></head><body>testéèà</body></html>" );
-		doEncodingTest( "text/html; charset=UTF-8","<html><head><metA content=\"text/html; charset=utf-8\" /></head><body>testéèà</body></html>" );
-		doEncodingTest( "text/html; charset=iso-8859-1","<html><head><metA content=\"text/html; charset=utf-8\" /></head><body>testéèà</body></html>" );
+		doEncodingTest("text/html", "<html><head><meta charset=\"utf-8\" /></head><body>testéèà</body></html>");
+		doEncodingTest("text/html",
+				"<html><head><meta content=\"text/html; charset=utf-8\" ></head><body>testéèà</body></html>");
+		doEncodingTest("text/html",
+				"<html><head><metA content=\"text/html; charset=utf-8\" /></head><body>testéèà</body></html>");
+		doEncodingTest("text/html; charset=UTF-8",
+				"<html><head><metA content=\"text/html; charset=utf-8\" /></head><body>testéèà</body></html>");
+		doEncodingTest("text/html; charset=iso-8859-1",
+				"<html><head><metA content=\"text/html; charset=utf-8\" /></head><body>testéèà</body></html>");
 	}
-	
-	private void doEncodingTest(String contentType, String s ) throws IOException, HttpErrorPage{
+
+	private void doEncodingTest(String contentType, String s) throws IOException, HttpErrorPage, URISyntaxException {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost/");
 		properties.put(Parameters.EXTENSIONS.name, HtmlCharsetProcessor.class.getName());
 
-		MockConnectionManager mockHttpClient = new MockConnectionManager();
-		BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion(
-				"HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
-		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
-		response.addHeader("Content-Type",contentType);
-		response.setEntity(new ByteArrayEntity(s.getBytes("utf-8")));
-		mockHttpClient.setResponse(response);
+		Driver driver = createMockDriver(
+				properties,
+				new SequenceResponse().reponse(createHttpResponse().status(200).reason("Ok")
+						.header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", contentType)
+						.entity(new ByteArrayEntity(s.getBytes("utf-8"))).build()));
 
-		Driver driver = createMockDriver(properties, mockHttpClient);
+		HttpEntityEnclosingRequest request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
 
-		HttpEntityEnclosingRequest request = TestUtils
-				.createRequest("http://test.mydomain.fr/foobar/");
+		HttpResponse response = driverProxy(driver, request);
 
-		driver.proxy("/foobar/", request);
-
-		assertEquals("Encoding should be added", s, 
-				EntityUtils.toString(TestUtils.getResponse(request).getEntity()));
+		assertEquals("Encoding should be added", s, EntityUtils.toString(response.getEntity()));
 	}
-	
 }
