@@ -34,8 +34,7 @@ public class HttpResponseBuilder {
 	List<Header> headers = new ArrayList<Header>();
 	HttpEntity entity = null;
 
-	public HttpResponseBuilder protocolVersion(
-			ProtocolVersion paramProtocolVersion) {
+	public HttpResponseBuilder protocolVersion(ProtocolVersion paramProtocolVersion) {
 		this.protocolVersion = paramProtocolVersion;
 		return this;
 	}
@@ -57,19 +56,19 @@ public class HttpResponseBuilder {
 
 	public HttpResponseBuilder entity(HttpEntity paramEntity) {
 		this.entity = paramEntity;
-		this.headers.add( this.entity.getContentType());
+		if (this.entity.getContentType() != null) {
+			this.headers.add(this.entity.getContentType());
+		}
 		return this;
 	}
 
-	public HttpResponseBuilder entity(String entityBody)
-			throws UnsupportedEncodingException {
+	public HttpResponseBuilder entity(String entityBody) throws UnsupportedEncodingException {
 		this.entity = new StringEntity(entityBody);
 		return this;
 	}
 
 	public HttpResponse build() {
-		BasicHttpResponse response = new BasicHttpResponse(
-				this.protocolVersion, this.status, this.reason);
+		BasicHttpResponse response = new BasicHttpResponse(this.protocolVersion, this.status, this.reason);
 
 		for (Header h : this.headers) {
 			response.addHeader(h.getName(), h.getValue());
