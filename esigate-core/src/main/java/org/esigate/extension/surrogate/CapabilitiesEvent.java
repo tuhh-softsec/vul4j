@@ -19,9 +19,16 @@ import java.util.List;
 
 import org.esigate.events.Event;
 
+/**
+ * This event is fired on startup to register all installed capabilities.
+ * 
+ * @author Nicolas Richeton
+ * 
+ */
 public class CapabilitiesEvent extends Event {
 	/**
-	 * 
+	 * Current capability list. An extension can update this list to declare
+	 * additional capabilities.
 	 */
-	public List<String> capabilities= new ArrayList<String>();
+	public List<String> capabilities = new ArrayList<String>();
 }
