@@ -15,45 +15,53 @@
 package org.esigate.test.conn;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 
 /**
- * A response handler, which returns HTTP reponses one after another.
- * <p>
- * Sends IllegalStateException if no reponse has been added, or if execute is
- * called too many times.
+ * 
+ * A response handler, which returns different HTTP reponses according to the
+ * requested URI.
+ * 
+ * Sends IllegalStateException if no reponse has been defined for the requested
+ * uri.
  * 
  * @author Nicolas Richeton
  * 
  */
-public class SequenceResponse implements IResponseHandler {
-	private int count = 0;
-	private List<HttpResponse> responses = new ArrayList<HttpResponse>();
+public class UriResponse implements IResponseHandler {
+	private Map<String, HttpResponse> responses = new HashMap<String, HttpResponse>();
 
 	@Override
 	public HttpResponse execute(HttpRequest request) throws IOException {
-
-		if (this.responses.size() <= this.count) {
-			throw new IllegalStateException("Unexpected request");
+		String uri = request.getRequestLine().getUri();
+		HttpResponse result = this.responses.get(uri);
+		if (result == null) {
+			throw new IllegalStateException("No response for uri: " + uri);
 		}
-
-		HttpResponse result = this.responses.get(this.count);
-		this.count++;
 		return result;
 	}
 
 	/**
 	 * Add a Http reponse.
 	 * 
+	 * <p>
+	 * <pre>
+	 * response( "http://host/path1", httpResponse )
+	 * </pre>
+	 * @param uri
+	 *            Full uri including protocol, host, port if any, path and query
+	 *            params.
+	 *            
+	 *            
 	 * @param response
 	 * @return this object
 	 */
-	public SequenceResponse reponse(HttpResponse response) {
-		this.responses.add(response);
+	public UriResponse reponse(String uri, HttpResponse response) {
+		this.responses.put(uri, response);
 		return this;
 	}
 

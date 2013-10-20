@@ -24,7 +24,6 @@ import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.RenderEvent;
-import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.SequenceResponse;
 import org.esigate.test.driver.AbstractDriverTestCase;
 import org.junit.Assert;
@@ -50,10 +49,10 @@ public class APITest extends AbstractDriverTestCase {
 		properties.put(Parameters.EXTENSIONS, AssertEventInit.class.getName());
 
 		// Setup remote server (provider) response.
-		IResponseHandler mockConnectionManager = new SequenceResponse().addReponse(createHttpResponse().status(200)
-				.reason("OK").header("Content-Type", "text/html; charset=utf-8").build());
-
-		Driver driver = createMockDriver(properties, mockConnectionManager);
+		Driver driver = createMockDriver(
+				properties,
+				new SequenceResponse().reponse(createHttpResponse().status(200).reason("OK")
+						.header("Content-Type", "text/html; charset=utf-8").build()));
 
 		HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
 				.build();
