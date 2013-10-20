@@ -27,6 +27,8 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
+
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
@@ -73,9 +75,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected GraphDBOperation op;
 
-    protected IRestApiService restApi;
     protected volatile IFloodlightProviderService floodlightProvider;
     protected volatile ITopologyNetService topologyNetService;
+    protected volatile IDatagridService datagridService;
+    protected IRestApiService restApi;
     protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
@@ -431,7 +434,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void init(String conf) {
     	op = new GraphDBOperation(conf);
-	topologyNetService = new TopologyManager(conf);
     }
 
     /**
@@ -490,6 +492,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFloodlightProviderService.class);
 	l.add(INetworkGraphService.class);
+	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
         return l;
     }
@@ -504,7 +507,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	throws FloodlightModuleException {
 	this.context = context;
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
+	topologyNetService = context.getServiceImpl(ITopologyNetService.class);
+	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
+
 	messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
 					    EnumSet.of(OFType.FLOW_MOD),
 					    OFMESSAGE_DAMPER_TIMEOUT);
