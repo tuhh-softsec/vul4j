@@ -81,6 +81,7 @@
             <exclude>**/*TestCase.java</exclude>
           -->
           </excludes>
+          <argLine>-XX:MaxPermSize=256m</argLine>
         </configuration>
       </plugin>
       <!-- exec:java -->
@@ -357,7 +358,7 @@
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
-      <version>3.2</version>
+      <version>3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>

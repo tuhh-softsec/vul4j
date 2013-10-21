@@ -105,8 +105,8 @@ public class DataPath {
      * computation.
      *
      * NOTE: This method assumes the DataPath was created by
-     * using FlowManager::getShortestPath() so the inPort and outPort
-     * of the Flow Entries are set.
+     * using the TopologyManager shortest path computation, so the inPort
+     * and outPort of the Flow Entries are set.
      * NOTE: This method is a temporary solution and will be removed
      * in the future.
      *

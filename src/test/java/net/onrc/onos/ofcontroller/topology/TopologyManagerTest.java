@@ -64,8 +64,7 @@ public class TopologyManagerTest {
 	TestDatabaseManager.populateTestData(titanGraph);
 
 	// Prepare the TopologyManager instance
-	topologyManager = new TopologyManager();
-	topologyManager.setDbOperationHandler(oper);
+	topologyManager = new TopologyManager(oper);
     }
 
     /**
@@ -78,12 +77,12 @@ public class TopologyManagerTest {
     }
 
     /**
-     * Test method TopologyManager.getTopoShortestPath()
+     * Test method TopologyManager.getTopologyShortestPath()
      *
-     * @see net.onrc.onos.ofcontroller.topology.TopologyManager#getTopoShortestPath
+     * @see net.onrc.onos.ofcontroller.topology.TopologyManager#getTopologyShortestPath
      */
     @Test
-    public void test_getTopoShortestPath() {
+    public void test_getTopologyShortestPath() {
 	DataPath dataPath = null;
 	String srcDpidStr = "00:00:00:00:00:00:0a:01";
 	String dstDpidStr = "00:00:00:00:00:00:0a:06";
@@ -103,11 +102,10 @@ public class TopologyManagerTest {
 	//
 	// Test a valid Shortest-Path computation
 	//
-	Map<Long, ?> shortestPathTopo =
-	    topologyManager.prepareShortestPathTopo();
-	dataPath = topologyManager.getTopoShortestPath(shortestPathTopo,
-						       srcSwitchPort,
-						       dstSwitchPort);
+	Topology topology = topologyManager.newDatabaseTopology();
+	dataPath = topologyManager.getTopologyShortestPath(topology,
+							   srcSwitchPort,
+							   dstSwitchPort);
 	assertTrue(dataPath != null);
 	String dataPathSummaryStr = dataPath.dataPathSummary();
 	// System.out.println(dataPathSummaryStr);
@@ -134,21 +132,21 @@ public class TopologyManagerTest {
 	String noSuchDpidStr = "ff:ff:00:00:00:00:0a:06";
 	Dpid noSuchDstDpid = new Dpid(noSuchDpidStr);
 	SwitchPort noSuchDstSwitchPort = new SwitchPort(noSuchDstDpid, dstPort);
-	dataPath = topologyManager.getTopoShortestPath(shortestPathTopo,
-						       srcSwitchPort,
-						       noSuchDstSwitchPort);
+	dataPath = topologyManager.getTopologyShortestPath(topology,
+							   srcSwitchPort,
+							   noSuchDstSwitchPort);
 	assertTrue(dataPath == null);
 
-	topologyManager.dropShortestPathTopo(shortestPathTopo);
+	topologyManager.dropTopology(topology);
     }
 
     /**
-     * Test method TopologyManager.getShortestPath()
+     * Test method TopologyManager.getDatabaseShortestPath()
      *
-     * @see net.onrc.onos.ofcontroller.routing.TopologyManager#getShortestPath
+     * @see net.onrc.onos.ofcontroller.routing.TopologyManager#getDatabaseShortestPath
      */
     @Test
-    public void test_getShortestPath() {
+    public void test_getDatabaseShortestPath() {
 	DataPath dataPath = null;
 	String srcDpidStr = "00:00:00:00:00:00:0a:01";
 	String dstDpidStr = "00:00:00:00:00:00:0a:06";
@@ -168,8 +166,8 @@ public class TopologyManagerTest {
 	//
 	// Test a valid Shortest-Path computation
 	//
-	dataPath = topologyManager.getShortestPath(srcSwitchPort,
-						   dstSwitchPort);
+	dataPath = topologyManager.getDatabaseShortestPath(srcSwitchPort,
+							   dstSwitchPort);
 	assertTrue(dataPath != null);
 	String dataPathSummaryStr = dataPath.dataPathSummary();
 	// System.out.println(dataPathSummaryStr);
@@ -197,8 +195,8 @@ public class TopologyManagerTest {
 	Dpid noSuchDstDpid = new Dpid(noSuchDpidStr);
 	SwitchPort noSuchDstSwitchPort = new SwitchPort(noSuchDstDpid, dstPort);
 
-	dataPath = topologyManager.getShortestPath(srcSwitchPort,
-						   noSuchDstSwitchPort);
+	dataPath = topologyManager.getDatabaseShortestPath(srcSwitchPort,
+							   noSuchDstSwitchPort);
 	assertTrue(dataPath == null);
     }
 

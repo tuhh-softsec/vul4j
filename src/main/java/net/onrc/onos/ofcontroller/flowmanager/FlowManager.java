@@ -27,14 +27,18 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
+
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
+import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -71,9 +75,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected GraphDBOperation op;
 
-    protected IRestApiService restApi;
     protected volatile IFloodlightProviderService floodlightProvider;
     protected volatile ITopologyNetService topologyNetService;
+    protected volatile IDatagridService datagridService;
+    protected IRestApiService restApi;
     protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
@@ -93,12 +98,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private static int nextFlowEntryIdPrefix = 0;
     private static int nextFlowEntryIdSuffix = 0;
     private static long nextFlowEntryId = 0;
-
-    // State for measurement purpose
-    private static long measurementFlowId = 100000;
-    private static String measurementFlowIdStr = "0x186a0";	// 100000
-    private long modifiedMeasurementFlowTime = 0;
-    //
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
@@ -143,10 +142,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    new LinkedList<IFlowEntry>();
 
 		//
-		// Fetch all Flow Entries which need to be updated and select only my Flow Entries
-		// that need to be updated into the switches.
+		// Fetch all Flow Entries which need to be updated and select
+		// only my Flow Entries that need to be updated into the
+		// switches.
 		//
-		boolean processed_measurement_flow = false;
 		Iterable<IFlowEntry> allFlowEntries =
 		    op.getAllSwitchNotUpdatedFlowEntries();
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
@@ -183,15 +182,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			addFlowEntries.add(flowEntryObj);
 		    }
 		    counterMyNotUpdatedFlowEntries++;
-		    // Code for measurement purpose
-		    // TODO: Commented-out for now
-		    /*
-		    {
-			if (flowObj.getFlowId().equals(measurementFlowIdStr)) {
-			    processed_measurement_flow = true;
-			}
-		    }
-		    */
 		}
 
 		//
@@ -233,14 +223,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		}
 
 		op.commit();
-
-		if (processed_measurement_flow) {
-		    long estimatedTime =
-			System.nanoTime() - modifiedMeasurementFlowTime;
-		    String logMsg = "MEASUREMENT: Pushed Flow delay: " +
-			(double)estimatedTime / 1000000000 + " sec";
-		    log.debug(logMsg);
-		}
 
 		long estimatedTime = System.nanoTime() - startTime;
 		double rate = 0.0;
@@ -287,14 +269,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		}
 		LinkedList<IFlowPath> deleteFlows = new LinkedList<IFlowPath>();
 
-		boolean processed_measurement_flow = false;
-
 		//
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
 		//
-		Map<Long, ?> shortestPathTopo =
-		    topologyNetService.prepareShortestPathTopo();
+		Topology topology = topologyNetService.newDatabaseTopology();
 		Iterable<IFlowPath> allFlowPaths = op.getAllFlowPaths();
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
@@ -359,18 +338,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    counterMyFlowPaths++;
 
 		    //
-		    // NOTE: Using here the regular getShortestPath() method
-		    // won't work here, because that method calls internally
-		    //  "conn.endTx(Transaction.COMMIT)", and that will
-		    // invalidate all handlers to the Titan database.
+		    // NOTE: Using here the regular getDatabaseShortestPath()
+		    // method won't work here, because that method calls
+		    // internally "conn.endTx(Transaction.COMMIT)", and that
+		    // will invalidate all handlers to the Titan database.
 		    // If we want to experiment with calling here
-		    // getShortestPath(), we need to refactor that code
+		    // getDatabaseShortestPath(), we need to refactor that code
 		    // to avoid closing the transaction.
 		    //
 		    DataPath dataPath =
-			topologyNetService.getTopoShortestPath(shortestPathTopo,
-							       srcSwitchPort,
-							       dstSwitchPort);
+			topologyNetService.getTopologyShortestPath(
+				topology,
+				srcSwitchPort,
+				dstSwitchPort);
 		    if (dataPath == null) {
 			// We need the DataPath to compare the paths
 			dataPath = new DataPath();
@@ -395,17 +375,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    op.removeFlowPath(flowPathObj);
 		}
 
-		topologyNetService.dropShortestPathTopo(shortestPathTopo);
+		topologyNetService.dropTopology(topology);
 
 		op.commit();
-
-		if (processed_measurement_flow) {
-		    long estimatedTime =
-			System.nanoTime() - modifiedMeasurementFlowTime;
-		    String logMsg = "MEASUREMENT: Pushed Flow delay: " +
-			(double)estimatedTime / 1000000000 + " sec";
-		    log.debug(logMsg);
-		}
 
 		long estimatedTime = System.nanoTime() - startTime;
 		double rate = 0.0;
@@ -429,7 +401,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void init(String conf) {
     	op = new GraphDBOperation(conf);
-	topologyNetService = new TopologyManager(conf);
     }
 
     /**
@@ -469,9 +440,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public Map<Class<? extends IFloodlightService>, IFloodlightService> 
 			       getServiceImpls() {
         Map<Class<? extends IFloodlightService>,
-        IFloodlightService> m = 
-            new HashMap<Class<? extends IFloodlightService>,
-                IFloodlightService>();
+	    IFloodlightService> m =
+	    new HashMap<Class<? extends IFloodlightService>,
+	    IFloodlightService>();
         m.put(IFlowService.class, this);
         return m;
     }
@@ -483,10 +454,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public Collection<Class<? extends IFloodlightService>> 
-                                                    getModuleDependencies() {
+				      getModuleDependencies() {
 	Collection<Class<? extends IFloodlightService>> l =
 	    new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFloodlightProviderService.class);
+	l.add(INetworkGraphService.class);
+	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
         return l;
     }
@@ -501,15 +474,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	throws FloodlightModuleException {
 	this.context = context;
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
+	topologyNetService = context.getServiceImpl(ITopologyNetService.class);
+	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
+
 	messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
 					    EnumSet.of(OFType.FLOW_MOD),
 					    OFMESSAGE_DAMPER_TIMEOUT);
 
-	// TODO: An ugly hack!
-	String conf = "/tmp/cassandra.titan";
-	this.init(conf);
-	
+	this.init("");
+
 	mapReaderScheduler = Executors.newScheduledThreadPool(1);
 	shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
     }
@@ -545,10 +519,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void startUp(FloodlightModuleContext context) {
 	restApi.addRestletRoutable(new FlowWebRoutable());
-	
+
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
-		
+
 	mapReaderScheduler.scheduleAtFixedRate(
 			mapReader, 3, 3, TimeUnit.SECONDS);
 	shortestPathReconcileScheduler.scheduleAtFixedRate(
@@ -570,25 +544,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public boolean addFlow(FlowPath flowPath, FlowId flowId,
 			   String dataPathSummaryStr) {
-	/*
-	 * TODO: Commented-out for now
-	if (flowPath.flowId().value() == measurementFlowId) {
-	    modifiedMeasurementFlowTime = System.nanoTime();
-	}
-	*/
-
 	IFlowPath flowObj = null;
 	boolean found = false;
 	try {
-	    if ((flowObj = op.searchFlowPath(flowPath.flowId()))
-		!= null) {
-		log.debug("Adding FlowPath with FlowId {}: found existing FlowPath",
-			  flowPath.flowId().toString());
+	    if ((flowObj = op.searchFlowPath(flowPath.flowId())) != null) {
 		found = true;
 	    } else {
 		flowObj = op.newFlowPath();
-		log.debug("Adding FlowPath with FlowId {}: creating new FlowPath",
-			  flowPath.flowId().toString());
 	    }
 	} catch (Exception e) {
 	    // TODO: handle exceptions
@@ -738,13 +700,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	try {
 	    if ((flowEntryObj =
 		 op.searchFlowEntry(flowEntry.flowEntryId())) != null) {
-		log.debug("Adding FlowEntry with FlowEntryId {}: found existing FlowEntry",
-			  flowEntry.flowEntryId().toString());
 		found = true;
 	    } else {
 		flowEntryObj = op.newFlowEntry();
-		log.debug("Adding FlowEntry with FlowEntryId {}: creating new FlowEntry",
-			  flowEntry.flowEntryId().toString());
 	    }
 	} catch (Exception e) {
 	    log.error(":addFlow FlowEntryId:{} failed",
@@ -942,13 +900,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
-	/*
-	 * TODO: Commented-out for now
-	if (flowId.value() == measurementFlowId) {
-	    modifiedMeasurementFlowTime = System.nanoTime();
-	}
-	*/
-
 	IFlowPath flowObj = null;
 	//
 	// We just mark the entries for deletion,
@@ -956,14 +907,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// it has been removed from the switches.
 	//
 	try {
-	    if ((flowObj = op.searchFlowPath(flowId))
-		!= null) {
-		log.debug("Deleting FlowPath with FlowId {}: found existing FlowPath",
-			  flowId.toString());
-	    } else {
-		log.debug("Deleting FlowPath with FlowId {}:  FlowPath not found",
-			  flowId.toString());
-	    }
+	    flowObj = op.searchFlowPath(flowId);
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    op.rollback();
@@ -1035,14 +979,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public boolean clearFlow(FlowId flowId) {
 	IFlowPath flowObj = null;
 	try {
-	    if ((flowObj = op.searchFlowPath(flowId))
-		!= null) {
-		log.debug("Clearing FlowPath with FlowId {}: found existing FlowPath",
-			  flowId.toString());
-	    } else {
-		log.debug("Clearing FlowPath with FlowId {}:  FlowPath not found",
-			  flowId.toString());
-	    }
+	    flowObj = op.searchFlowPath(flowId);
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    op.rollback();
@@ -1078,14 +1015,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public FlowPath getFlow(FlowId flowId) {
 	IFlowPath flowObj = null;
 	try {
-	    if ((flowObj = op.searchFlowPath(flowId))
-		!= null) {
-		log.debug("Get FlowPath with FlowId {}: found existing FlowPath",
-			  flowId.toString());
-	    } else {
-		log.debug("Get FlowPath with FlowId {}:  FlowPath not found",
-			  flowId.toString());
-	    }
+	    flowObj = op.searchFlowPath(flowId);
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    op.rollback();
@@ -1126,10 +1056,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	ArrayList<FlowPath> allFlows = getAllFlows();
 	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
-	if (allFlows == null) {
-	    log.debug("Get FlowPaths for installerId{} and dataPathEndpoints{}: no FlowPaths found", installerId, dataPathEndpoints);
+	if (allFlows == null)
 	    return flowPaths;
-	}
 
 	for (FlowPath flow : allFlows) {
 	    //
@@ -1146,12 +1074,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		continue;
 	    }
 	    flowPaths.add(flow);
-	}
-
-	if (flowPaths.isEmpty()) {
-	    log.debug("Get FlowPaths for installerId{} and dataPathEndpoints{}: no FlowPaths found", installerId, dataPathEndpoints);
-	} else {
-	    log.debug("Get FlowPaths for installerId{} and dataPathEndpoints{}: FlowPaths are found", installerId, dataPathEndpoints);
 	}
 
 	return flowPaths;
@@ -1172,13 +1094,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// We should use the appropriate Titan/Gremlin query to filter-out
 	// the flows as appropriate.
 	//
-    ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
-    ArrayList<FlowPath> allFlows = getAllFlows();
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+	ArrayList<FlowPath> allFlows = getAllFlows();
 
-	if (allFlows == null) {
-	    log.debug("Get FlowPaths for dataPathEndpoints{}: no FlowPaths found", dataPathEndpoints);
+	if (allFlows == null)
 	    return flowPaths;
-	}
 
 	for (FlowPath flow : allFlows) {
 	    //
@@ -1195,13 +1115,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    flowPaths.add(flow);
 	}
 
-	if (flowPaths.isEmpty()) {
-	    log.debug("Get FlowPaths for dataPathEndpoints{}: no FlowPaths found", dataPathEndpoints);
-	} else {
-	    log.debug("Get FlowPaths for dataPathEndpoints{}: FlowPaths are found", dataPathEndpoints);
-	}
-
-	return flowPaths;
+return flowPaths;
     }
 
     /**
@@ -1212,7 +1126,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the Flow Paths if found, otherwise null.
      */
     @Override
-    public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows) {
+    public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId,
+						   int maxFlows) {
 
 	//
 	// TODO: The implementation below is not optimal:
@@ -1221,64 +1136,28 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// We should use the appropriate Titan/Gremlin query to filter-out
 	// the flows as appropriate.
 	//
-    	//ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
-    	
-    	ArrayList<IFlowPath> flowPathsWithoutFlowEntries = getAllFlowsWithoutFlowEntries();
-    	
+    	ArrayList<IFlowPath> flowPathsWithoutFlowEntries =
+	    getAllFlowsWithoutFlowEntries();
+
     	Collections.sort(flowPathsWithoutFlowEntries, 
-    			new Comparator<IFlowPath>(){
-					@Override
-					public int compare(IFlowPath first, IFlowPath second) {
-						// TODO Auto-generated method stub
-						long result = new FlowId(first.getFlowId()).value()
-								- new FlowId(second.getFlowId()).value();
-						if (result > 0) return 1;
-						else if (result < 0) return -1;
-						else return 0;
-					}
-    			}
-    	);
+			 new Comparator<IFlowPath>() {
+			     @Override
+			     public int compare(IFlowPath first, IFlowPath second) {
+				 long result =
+				     new FlowId(first.getFlowId()).value()
+				     - new FlowId(second.getFlowId()).value();
+				 if (result > 0) {
+				     return 1;
+				 } else if (result < 0) {
+				     return -1;
+				 } else {
+				     return 0;
+				 }
+			     }
+			 }
+			 );
     	
     	return flowPathsWithoutFlowEntries;
-    	
-    	/*
-    	ArrayList<FlowPath> allFlows = getAllFlows();
-
-		if (allFlows == null) {
-		    log.debug("Get FlowPathsSummary for {} {}: no FlowPaths found", flowId, maxFlows);
-		    return flowPaths;
-		}
-	
-		Collections.sort(allFlows);
-		
-		for (FlowPath flow : allFlows) {
-		    flow.setFlowEntryMatch(null);
-			
-		    // start from desired flowId
-		    if (flow.flowId().value() < flowId.value()) {
-			continue;
-		    }
-			
-			// Summarize by making null flow entry fields that are not relevant to report
-			for (FlowEntry flowEntry : flow.dataPath().flowEntries()) {
-				flowEntry.setFlowEntryActions(null);
-				flowEntry.setFlowEntryMatch(null);
-			}
-			
-		    flowPaths.add(flow);
-		    if (maxFlows != 0 && flowPaths.size() >= maxFlows) {
-		    	break;
-		    }
-		}
-	
-		if (flowPaths.isEmpty()) {
-		    log.debug("Get FlowPathsSummary {} {}: no FlowPaths found", flowId, maxFlows);
-		} else {
-		    log.debug("Get FlowPathsSummary for {} {}: FlowPaths were found", flowId, maxFlows);
-		}
-	
-		return flowPaths;
-		*/
     }
     
     /**
@@ -1292,11 +1171,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
 	try {
-	    if ((flowPathsObj = op.getAllFlowPaths()) != null) {
-		log.debug("Get all FlowPaths: found FlowPaths");
-	    } else {
-		log.debug("Get all FlowPaths: no FlowPaths found");
-	    }
+	    flowPathsObj = op.getAllFlowPaths();
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    op.rollback();
@@ -1330,39 +1205,24 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     	Iterable<IFlowPath> flowPathsObj = null;
     	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
 
+	// TODO: Remove this op.commit() flow, because it is not needed?
     	op.commit();
-    	
+
     	try {
-    	    if ((flowPathsObj = op.getAllFlowPaths()) != null) {
-    		log.debug("Get all FlowPaths: found FlowPaths");
-    	    } else {
-    		log.debug("Get all FlowPaths: no FlowPaths found");
-    	    }
+    	    flowPathsObj = op.getAllFlowPaths();
     	} catch (Exception e) {
     	    // TODO: handle exceptions
     	    op.rollback();
     	    log.error(":getAllFlowPaths failed");
     	}
     	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
-    	    return new ArrayList<IFlowPath>();	// No Flows found
+    	    return flowPathsObjArray;		// No Flows found
     	}
     	
-    	for (IFlowPath flowObj : flowPathsObj){
-    		flowPathsObjArray.add(flowObj);
-    	}
-    	/*
-    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
-    	for (IFlowPath flowObj : flowPathsObj) {
-    	    //
-    	    // Extract the Flow state
-    	    //
-    	    FlowPath flowPath = extractFlowPath(flowObj);
-    	    if (flowPath != null)
-    		flowPaths.add(flowPath);
-    	}
-    	*/
+    	for (IFlowPath flowObj : flowPathsObj)
+	    flowPathsObjArray.add(flowObj);
 
-    	//conn.endTx(Transaction.COMMIT);
+    	// conn.endTx(Transaction.COMMIT);
 
     	return flowPathsObjArray;
     }
@@ -2317,40 +2177,5 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// and removal of flow entries.
 	//
 	return (installFlowEntry(mySwitch, flowPath, flowEntry));
-    }
-
-    /**
-     * Install a Flow Entry on a remote controller.
-     *
-     * TODO: We need it now: Jono
-     * - For now it will make a REST call to the remote controller.
-     * - Internally, it needs to know the name of the remote controller.
-     *
-     * @param flowPath the flow path for the flow entry to install.
-     * @param flowEntry the flow entry to install.
-     * @return true on success, otherwise false.
-     */
-    public boolean installRemoteFlowEntry(FlowPath flowPath,
-					  FlowEntry flowEntry) {
-	// TODO: We need it now: Jono
-	//  - For now it will make a REST call to the remote controller.
-	//  - Internally, it needs to know the name of the remote controller.
-	return true;
-    }
-
-    /**
-     * Remove a flow entry on a remote controller.
-     *
-     * @param flowPath the flow path for the flow entry to remove.
-     * @param flowEntry the flow entry to remove.
-     * @return true on success, otherwise false.
-     */
-    public boolean removeRemoteFlowEntry(FlowPath flowPath,
-					 FlowEntry flowEntry) {
-	//
-	// The installRemoteFlowEntry() method implements both installation
-	// and removal of flow entries.
-	//
-	return (installRemoteFlowEntry(flowPath, flowEntry));
     }
 }

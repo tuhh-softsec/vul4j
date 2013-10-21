@@ -696,7 +696,7 @@ public class FlowManagerTest {
 
 		// verify the test
 		verifyAll();
-		assertEquals(2, md.size());
+		assertEquals(4, md.size());
 		assertTrue(md.contains(IFloodlightProviderService.class));
 		assertTrue(md.contains(IRestApiService.class));
 	}
@@ -974,24 +974,6 @@ public class FlowManagerTest {
 	 */
 	@Ignore @Test
 	public final void testRemoveFlowEntrySuccessNormally() {
-		fail("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link FlowManager#installRemoteFlowEntry(FlowPath, FlowEntry)}.
-	 * The method seems to be not implemented and not used for now.
-	 */
-	@Ignore @Test
-	public final void testInstallRemoteFlowEntrySuccessNormally() {
-		fail("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link FlowManager#removeRemoteFlowEntry(FlowPath, FlowEntry)}.
-	 * The method seems to be not implemented and not used for now.
-	 */
-	@Ignore @Test
-	public final void testRemoveRemoteFlowEntrySuccessNormally() {
 		fail("not yet implemented");
 	}
 }
