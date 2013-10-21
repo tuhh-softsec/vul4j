@@ -12,7 +12,7 @@ public class BgpRouteWebRoutable implements RestletRoutable {
 		Router router = new Router(context);
 		router.attach("/json", BgpRouteResource.class);
 		router.attach("/rib/{dest}", BgpRouteResource.class);
-		router.attach("/{routerid}/{prefix}/{mask}/{nexthop}", BgpRouteResource.class);		
+		router.attach("/{sysuptime}/{sequence}/{routerid}/{prefix}/{mask}/{nexthop}", BgpRouteResource.class);		
 		router.attach("/{routerid}/{prefix}/{mask}/{nexthop}/synch", BgpRouteResourceSynch.class);
 		router.attach("/{routerid}/{capability}", BgpRouteResource.class);
 		return router;
