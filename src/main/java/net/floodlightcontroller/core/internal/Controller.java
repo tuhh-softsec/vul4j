@@ -2352,7 +2352,7 @@ public class Controller implements IFloodlightProviderService,
                         // new controller node IP
                         addedControllerNodeIPs.put(controllerID, discoveredIP);
                     } 
-                    else if (curIP.equals(discoveredIP)) {
+                    else if (!curIP.equals(discoveredIP)) {
                         // IP changed                    
                         removedControllerNodeIPs.put(controllerID, curIP);
                         addedControllerNodeIPs.put(controllerID, discoveredIP);
