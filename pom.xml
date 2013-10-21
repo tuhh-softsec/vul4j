@@ -139,7 +139,7 @@
 						</dependency>
 					</dependencies>
 					<configuration>
-						<goals>install source:jar javadoc:jar deploy site:site site:deploy</goals>
+						<goals>source:jar javadoc:jar deploy site:site site:deploy</goals>
 				
 						<arguments>-pl esigate-server,esigate-taglib,esigate-taglib-helper,esigate-jsf,esigate-wicket,esigate-cas,esigate-distribution -am</arguments>
 					</configuration>
