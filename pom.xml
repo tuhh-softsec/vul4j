@@ -116,7 +116,28 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>2.3.2</version>
+				<version>2.4.1</version>
+					<!--
+These dependencies are required : release plugin 2.4.1 depends on a previous version of svn plugin which has issues with svn+ssh. scm 1.8.1 is required
+-->
+					<dependencies>
+<dependency>
+<groupId>org.apache.maven.scm</groupId>
+<artifactId>maven-scm-provider-svnexe</artifactId>
+<version>1.8.1</version>
+</dependency>
+<dependency>
+<groupId>org.apache.maven.scm</groupId>
+<artifactId>maven-scm-api</artifactId>
+<version>1.8.1</version>
+</dependency>
+<dependency>
+<groupId>org.apache.maven.scm</groupId>
+<artifactId>maven-scm-providers-standard</artifactId>
+<type>pom</type>
+<version>1.8.1</version>
+</dependency>
+</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -285,7 +306,7 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
-				<version>2.2</version>
+				<version>2.4</version>
 			</extension>
 		</extensions>
 	</build>
@@ -602,7 +623,8 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
+						<version>1.4</version>
+							<executions>
 							<execution>
 								<id>sign-artifacts</id>
 								<phase>verify</phase>
