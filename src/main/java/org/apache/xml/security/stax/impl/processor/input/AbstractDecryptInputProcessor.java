@@ -51,6 +51,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.Attribute;
+
 import java.io.*;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -207,7 +208,10 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 //create a new Thread for streaming decryption
                 DecryptionThread decryptionThread =
                         new DecryptionThread(subInputProcessorChain, isSecurityHeaderEvent);
-                decryptionThread.setSecretKey(inboundSecurityToken.getSecretKey(algorithmURI, XMLSecurityConstants.Enc, encryptedDataType.getId()));
+                Key decryptionKey = 
+                    inboundSecurityToken.getSecretKey(algorithmURI, XMLSecurityConstants.Enc, encryptedDataType.getId());
+                decryptionKey = XMLSecurityUtils.prepareSecretKey(algorithmURI, decryptionKey.getEncoded());
+                decryptionThread.setSecretKey(decryptionKey);
                 decryptionThread.setSymmetricCipher(symCipher);
                 decryptionThread.setIvLength(ivLength);
                 XMLSecStartElement parentXMLSecStartElement = xmlSecStartElement.getParentXMLSecStartElement();

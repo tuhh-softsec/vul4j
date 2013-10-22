@@ -391,13 +391,13 @@ public class XMLSecurityUtils {
         }
         String keyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(symEncAlgo);
         SecretKeySpec keySpec;
-        if (size <= 0 || keyAlgorithm.startsWith("HmacSHA") && rawKey.length <= 64) {
-            keySpec = new SecretKeySpec(rawKey, keyAlgorithm);
-        } else {
+        if (size > 0 && !symEncAlgo.endsWith("gcm")) {
             keySpec = 
                 new SecretKeySpec(
                     rawKey, 0, rawKey.length > size ? size : rawKey.length, keyAlgorithm
                 );
+        } else {
+            keySpec = new SecretKeySpec(rawKey, keyAlgorithm);
         }
         return keySpec;
     }
