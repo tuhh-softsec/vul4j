@@ -16,7 +16,6 @@
 package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +28,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
@@ -82,7 +82,7 @@ class IncludeElement extends BaseElement {
 		@Override
 		public CharSequence call() throws IOException, HttpErrorPage {
 			LOG.debug("Starting include task {}", this.src);
-			StringWriter sw = new StringWriter();
+			StringBuilderWriter sw = new StringBuilderWriter();
 
 			Exception currentException = null;
 			// Handle src
