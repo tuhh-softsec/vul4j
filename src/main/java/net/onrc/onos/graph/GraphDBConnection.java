@@ -125,7 +125,7 @@ public class GraphDBConnection implements IDBConnection {
 	 * Return whether this connection is valid.
 	 */
 	public Boolean isValid() {
-		return (graph != null || graph.isOpen());
+		return (graph != null && graph.isOpen());
 	}
 
 	/**
