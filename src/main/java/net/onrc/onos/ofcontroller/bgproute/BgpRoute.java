@@ -695,7 +695,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		List<PushedFlowMod> pushedFlows = new ArrayList<PushedFlowMod>();
 		
 		for (Interface srcInterface : interfaces.values()) {
-			if (dstInterface.equals(srcInterface.getName())){
+			if (dstInterface.getName().equals(srcInterface.getName())){
 				continue;
 			}
 			
