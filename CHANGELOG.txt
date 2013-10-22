@@ -1,6 +1,8 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
-New in v2.0.0-SNAPSHOT:
+New in v2.0.0-beta:
+
+    The release notes are available here: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311231&version=12321867
 
 New in v1.5.4:
     Fixed SANTUARIO-351 - Avoid possible NPE in Unsync OutputStreams.
