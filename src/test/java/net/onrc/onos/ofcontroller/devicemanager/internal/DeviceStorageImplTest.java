@@ -40,7 +40,7 @@ import com.thinkaurelius.titan.core.TitanFactory;
 @PrepareForTest({TitanFactory.class, GraphDBConnection.class, GraphDBOperation.class, DeviceStorageImpl.class})
 public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	
-	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
+	protected final static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 	
 	String conf;
 	DeviceStorageImpl deviceImpl;

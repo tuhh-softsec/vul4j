@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class RouteResource extends ServerResource {
 
-    protected static Logger log = LoggerFactory.getLogger(RouteResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(RouteResource.class);
 
     @Get("json")
     public DataPath retrieve() {

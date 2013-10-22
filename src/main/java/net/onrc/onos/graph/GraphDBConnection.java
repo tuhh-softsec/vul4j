@@ -29,7 +29,7 @@ public class GraphDBConnection implements IDBConnection {
 		}
 	}
 
-	protected static Logger log = LoggerFactory
+	protected final static Logger log = LoggerFactory
 			.getLogger(GraphDBConnection.class);
 	private static GraphDBConnection singleton = new GraphDBConnection();
 	private static TitanGraph graph;

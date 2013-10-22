@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EventHistoryTopologyLinkResource extends ServerResource {
     // TODO - Move this to the DeviceManager Rest API
-    protected static Logger log = 
+    protected final static Logger log = 
             LoggerFactory.getLogger(EventHistoryTopologyLinkResource.class);
 
     @Get("json")

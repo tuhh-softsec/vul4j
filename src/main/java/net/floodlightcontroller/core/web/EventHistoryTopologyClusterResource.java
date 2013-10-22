@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EventHistoryTopologyClusterResource extends ServerResource {
     // TODO - Move this to the LinkDiscovery rest API
-    protected static Logger log = 
+    protected final static Logger log = 
             LoggerFactory.getLogger(EventHistoryTopologyClusterResource.class);
 
     @Get("json")

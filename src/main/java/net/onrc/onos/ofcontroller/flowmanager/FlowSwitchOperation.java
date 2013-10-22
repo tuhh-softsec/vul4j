@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * Class for performing Flow-related operations on the Switch.
  */
 class FlowSwitchOperation {
-    private static Logger log = LoggerFactory.getLogger(FlowSwitchOperation.class);
+    private final static Logger log = LoggerFactory.getLogger(FlowSwitchOperation.class);
     //
     // TODO: Values copied from elsewhere (class LearningSwitch).
     // The local copy should go away!

@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DpidDeserializer extends JsonDeserializer<Dpid> {
 
-    protected static Logger log = LoggerFactory.getLogger(DpidDeserializer.class);
+    protected final static Logger log = LoggerFactory.getLogger(DpidDeserializer.class);
 
     @Override
     public Dpid deserialize(JsonParser jp,

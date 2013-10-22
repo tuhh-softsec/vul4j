@@ -91,7 +91,7 @@ public class DeviceManagerImpl implements
 IDeviceService, IOFMessageListener, ITopologyListener,
 IFloodlightModule, IEntityClassListener,
 IFlowReconcileListener, IInfoProvider, IHAListener {
-    protected static Logger logger =
+    protected final static Logger logger =
             LoggerFactory.getLogger(DeviceManagerImpl.class);
 
     protected IFloodlightProviderService floodlightProvider;

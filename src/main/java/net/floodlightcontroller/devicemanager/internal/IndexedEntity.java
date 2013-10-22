@@ -19,7 +19,7 @@ public class IndexedEntity {
     protected EnumSet<DeviceField> keyFields;
     protected Entity entity;
     private int hashCode = 0;
-    protected static Logger logger =
+    protected final static Logger logger =
             LoggerFactory.getLogger(IndexedEntity.class);
     /**
      * Create a new {@link IndexedEntity} for the given {@link Entity} using 

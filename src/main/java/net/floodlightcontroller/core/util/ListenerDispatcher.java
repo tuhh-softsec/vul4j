@@ -34,7 +34,7 @@ import net.floodlightcontroller.core.annotations.LogMessageDoc;
  *
  */
 public class ListenerDispatcher<U, T extends IListener<U>> {
-    protected static Logger logger = LoggerFactory.getLogger(ListenerDispatcher.class);
+    protected final static Logger logger = LoggerFactory.getLogger(ListenerDispatcher.class);
     List<T> listeners = null;
     
     private void visit(List<T> newlisteners, U type, HashSet<T> visited, 

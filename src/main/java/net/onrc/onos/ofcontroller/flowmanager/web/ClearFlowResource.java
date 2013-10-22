@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *   GET /wm/flow/clear/{flow-id}/json
  */
 public class ClearFlowResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(ClearFlowResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(ClearFlowResource.class);
 
     /**
      * Implement the API.
