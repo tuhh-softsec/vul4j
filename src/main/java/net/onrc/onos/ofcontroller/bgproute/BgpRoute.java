@@ -122,6 +122,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private Map<InetAddress, BgpPeer> bgpPeers;
 	private SwitchPort bgpdAttachmentPoint;
 	private MACAddress bgpdMacAddress;
+	private short vlan;
 	
 	//True when all switches have connected
 	private volatile boolean switchesConnected = false;
@@ -183,8 +184,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
-	private void readGatewaysConfiguration(String gatewaysFilename){
-		File gatewaysFile = new File(gatewaysFilename);
+	private void readConfiguration(String configFilename){
+		File gatewaysFile = new File(configFilename);
 		ObjectMapper mapper = new ObjectMapper();
 		
 		try {
@@ -205,6 +206,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					new Port(config.getBgpdAttachmentPort()));
 			
 			bgpdMacAddress = config.getBgpdMacAddress();
+			vlan = config.getVlan();
 		} catch (JsonParseException e) {
 			log.error("Error in JSON file", e);
 			System.exit(1);
@@ -313,7 +315,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 		log.debug("Config file set to {}", configFilename);
 		
-		readGatewaysConfiguration(configFilename);
+		readConfiguration(configFilename);
 	}
 	
 	@Override
@@ -322,7 +324,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		topologyService.addListener(this);
 		floodlightProvider.addOFSwitchListener(this);
 		
-		proxyArp.startUp();
+		proxyArp.startUp(vlan);
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
 		
