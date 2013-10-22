@@ -151,7 +151,7 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 
 			// Pass 2. Process ESI
 			parser.setHttpRequest(originalRequest);
-			parserComments.setData(DATA_EXECUTOR, this.executor);
+			parser.setData(DATA_EXECUTOR, this.executor);
 			parser.parse(contentWithoutCommentsResult, this);
 
 			if (name != null && this.found == false) {
