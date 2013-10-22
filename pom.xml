@@ -16,15 +16,13 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.santuario</groupId>
     <artifactId>xmlsec</artifactId>
     <packaging>bundle</packaging>
     <name>Apache XML Security for Java</name>
-    <version>2.0.0-beta-SNAPSHOT</version>
+    <version>2.0.0-beta</version>
     <description>
         Apache XML Security for Java supports XML-Signature Syntax and Processing,
         W3C Recommendation 12 February 2002, and XML Encryption Syntax and
@@ -59,12 +57,12 @@
     </licenses>
     <scm>
         <connection>
-            scm:svn:http://svn.apache.org/repos/asf/santuario/xml-security-java/trunk/
+            scm:svn:http://svn.apache.org/repos/asf/santuario/xml-security-java/tags/xmlsec-2.0.0-beta
         </connection>
         <developerConnection>
-            scm:svn:https://svn.apache.org/repos/asf/santuario/xml-security-java/trunk/
+            scm:svn:https://svn.apache.org/repos/asf/santuario/xml-security-java/tags/xmlsec-2.0.0-beta
         </developerConnection>
-        <url>http://svn.apache.org/repos/asf/santuario/xml-security-java/trunk/</url>
+        <url>http://svn.apache.org/repos/asf/santuario/xml-security-java/tags/xmlsec-2.0.0-beta</url>
     </scm>
     <organization>
         <name>The Apache Software Foundation</name>
@@ -352,7 +350,7 @@
             <activation>
                 <property>
                     <name>release</name>
-                    <value></value>
+                    <value />
                 </property>
             </activation>
             <build>
@@ -426,7 +424,7 @@
         <commons.codec.version>1.7</commons.codec.version>
         <woodstox.core.asl.version>4.2.0</woodstox.core.asl.version>
         <jetty.version>8.1.4.v20120524</jetty.version>
-        <xmlsec.jaxb.context.class/>
+        <xmlsec.jaxb.context.class />
     </properties>
     
     <dependencies>
