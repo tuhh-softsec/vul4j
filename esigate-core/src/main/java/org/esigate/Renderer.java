@@ -30,11 +30,13 @@ public interface Renderer {
 	/**
 	 * Renders provided source and writes results to the output
 	 * 
+	 * 
 	 * @param originalRequest
 	 * @param src
 	 *            source to be rendered
 	 * @param out
-	 *            output destination
+	 *            output destination. This writer is not thread-safe, use proper
+	 *            synchronization if writing output from multiple threads.
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */

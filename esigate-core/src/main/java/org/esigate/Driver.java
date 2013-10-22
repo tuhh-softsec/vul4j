@@ -16,7 +16,6 @@
 package org.esigate;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
@@ -373,8 +373,9 @@ public class Driver {
 
 		this.eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
 		for (Renderer renderer : renderEvent.renderers) {
-			StringWriter stringWriter = new StringWriter();
+			StringBuilderWriter stringWriter = new StringBuilderWriter(1024);
 			renderer.render(originalRequest, currentBody, stringWriter);
+			stringWriter.close();
 			currentBody = stringWriter.toString();
 		}
 		this.eventManager.fire(EventManager.EVENT_RENDER_POST, renderEvent);
