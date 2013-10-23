@@ -50,7 +50,7 @@ public class HtmlEncodingProcessorTest extends AbstractDriverTestCase {
 
 		Driver driver = createMockDriver(
 				properties,
-				new SequenceResponse().reponse(createHttpResponse().status(200).reason("Ok")
+				new SequenceResponse().response(createHttpResponse().status(200).reason("Ok")
 						.header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", contentType)
 						.entity(new ByteArrayEntity(s.getBytes("utf-8"))).build()));
 
