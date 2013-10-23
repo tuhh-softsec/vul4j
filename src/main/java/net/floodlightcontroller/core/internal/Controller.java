@@ -152,7 +152,7 @@ import org.slf4j.LoggerFactory;
 public class Controller implements IFloodlightProviderService, 
             IStorageSourceListener {
     
-    protected static Logger log = LoggerFactory.getLogger(Controller.class);
+    protected final static Logger log = LoggerFactory.getLogger(Controller.class);
 
     private static final String ERROR_DATABASE = 
             "The controller could not communicate with the system database.";

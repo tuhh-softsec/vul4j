@@ -55,7 +55,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	protected IDeviceStorage devStore;
 	protected ISwitchStorage swStore;
 	protected ILinkStorage linkStore;
-	protected static Logger log;
+	protected final static Logger log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
 	protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
 	protected GraphDBOperation op;
@@ -265,7 +265,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		String conf = configMap.get(DBConfigFile);
 		op = new GraphDBOperation(conf);
 		
-		log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
 		floodlightProvider =
 	            context.getServiceImpl(IFloodlightProviderService.class);
 		deviceService = context.getServiceImpl(IDeviceService.class);

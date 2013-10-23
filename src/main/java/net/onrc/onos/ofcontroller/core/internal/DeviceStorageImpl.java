@@ -24,7 +24,7 @@ import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 public class DeviceStorageImpl implements IDeviceStorage {
 	
 	private GraphDBOperation ope;
-	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
+	protected final static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
 	/***
 	 * Initialize function. Before you use this class, please call this method

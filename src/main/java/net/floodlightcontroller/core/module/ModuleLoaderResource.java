@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author Rob Sherwood
  */
 public class ModuleLoaderResource extends ServerResource {
-    protected static Logger log = 
+    protected final static Logger log = 
             LoggerFactory.getLogger(ModuleLoaderResource.class);
     
     /**

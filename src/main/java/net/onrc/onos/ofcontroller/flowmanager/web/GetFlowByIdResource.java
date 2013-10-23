@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *   GET /wm/flow/get/{flow-id}/json
  */
 public class GetFlowByIdResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(GetFlowByIdResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(GetFlowByIdResource.class);
 
     /**
      * Implement the API.

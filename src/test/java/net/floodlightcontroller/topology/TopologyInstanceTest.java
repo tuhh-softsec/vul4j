@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TopologyInstanceTest {
-    protected static Logger log = LoggerFactory.getLogger(TopologyInstanceTest.class);
+    protected final static Logger log = LoggerFactory.getLogger(TopologyInstanceTest.class);
     protected TopologyManager topologyManager;
     protected FloodlightModuleContext fmc;
     protected MockFloodlightProvider mockFloodlightProvider;

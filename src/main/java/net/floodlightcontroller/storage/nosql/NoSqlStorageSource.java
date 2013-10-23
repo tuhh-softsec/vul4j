@@ -49,7 +49,7 @@ import net.floodlightcontroller.storage.StorageSourceNotification;
 import net.floodlightcontroller.storage.TypeMismatchStorageException;
 
 public abstract class NoSqlStorageSource extends AbstractStorageSource {
-    protected static Logger log = LoggerFactory.getLogger(NoSqlStorageSource.class);
+    protected final static Logger log = LoggerFactory.getLogger(NoSqlStorageSource.class);
 
     public enum ColumnIndexMode { NOT_INDEXED, RANGE_INDEXED, EQUALITY_INDEXED };
     

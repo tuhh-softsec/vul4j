@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *   GET /wm/flow/delete/{flow-id}/json
  */
 public class DeleteFlowResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(DeleteFlowResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(DeleteFlowResource.class);
 
     /**
      * Implement the API.

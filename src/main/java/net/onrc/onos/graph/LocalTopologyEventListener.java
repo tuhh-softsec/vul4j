@@ -14,7 +14,7 @@ import com.tinkerpop.blueprints.Vertex;
 
 public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	
-	protected static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
+	protected final static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
 	protected static GraphDBConnection conn;
 	
 	public LocalTopologyEventListener(GraphDBConnection conn) {

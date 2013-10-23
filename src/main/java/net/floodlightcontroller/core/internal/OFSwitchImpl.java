@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
 public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     // TODO: should we really do logging in the class or should we throw
     // exception that can then be handled by callers?
-    protected static Logger log = LoggerFactory.getLogger(OFSwitchImpl.class);
+    protected final static Logger log = LoggerFactory.getLogger(OFSwitchImpl.class);
 
     private static final String HA_CHECK_SWITCH = 
             "Check the health of the indicated switch.  If the problem " +

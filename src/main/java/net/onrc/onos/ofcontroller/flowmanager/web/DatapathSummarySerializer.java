@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DatapathSummarySerializer extends JsonSerializer<String>{
-	static Logger log = LoggerFactory.getLogger(DatapathSummarySerializer.class);
+	final static Logger log = LoggerFactory.getLogger(DatapathSummarySerializer.class);
 	
 	@Override
 	public void serialize(String datapathSummary, JsonGenerator jGen,

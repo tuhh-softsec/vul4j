@@ -32,7 +32,7 @@ import net.onrc.onos.ofcontroller.util.FlowId;
  *
  */
 public class TestableGraphDBOperation extends GraphDBOperation {
-	protected static Logger log = LoggerFactory.getLogger(TestableGraphDBOperation.class);
+	protected final static Logger log = LoggerFactory.getLogger(TestableGraphDBOperation.class);
 
 	protected List<TestSwitchObject> switches;
 	protected List<TestPortObject> ports;

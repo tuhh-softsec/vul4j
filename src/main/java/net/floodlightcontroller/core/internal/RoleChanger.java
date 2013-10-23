@@ -120,7 +120,7 @@ public class RoleChanger {
     protected Thread workerThread;
     protected long timeout;
     protected static long DEFAULT_TIMEOUT = 15L*1000*1000*1000L; // 15s
-    protected static Logger log = LoggerFactory.getLogger(RoleChanger.class);
+    protected final static Logger log = LoggerFactory.getLogger(RoleChanger.class);
     /** 
      * A queued task to be handled by the Role changer thread. 
      */

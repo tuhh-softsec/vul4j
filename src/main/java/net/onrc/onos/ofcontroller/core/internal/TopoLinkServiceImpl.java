@@ -18,7 +18,7 @@ import com.tinkerpop.gremlin.java.GremlinPipeline;
 public class TopoLinkServiceImpl implements ITopoLinkService {
 	
 	protected GraphDBOperation op;
-	protected static Logger log = LoggerFactory.getLogger(TopoLinkServiceImpl.class);
+	protected final static Logger log = LoggerFactory.getLogger(TopoLinkServiceImpl.class);
 
 	public void finalize() {
 		close();

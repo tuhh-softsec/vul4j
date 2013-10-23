@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * Class for performing Flow-related operations on the Database.
  */
 class FlowDatabaseOperation {
-    private static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
+    private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
 
     /**
      * Add a flow.
