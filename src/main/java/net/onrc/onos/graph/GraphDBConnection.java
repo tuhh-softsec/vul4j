@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
+import com.thinkaurelius.titan.diskstorage.StorageException;
 import com.tinkerpop.blueprints.TransactionalGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
@@ -133,15 +134,17 @@ public class GraphDBConnection implements IDBConnection {
 
 	/**
 	 * Commit changes for the graph operations.
+	 * @throws Exception 
 	 */
 	@Override
 	public void commit() {
-		try {
+//		// Should not catch exception here! 
+//		try {
 			graph.commit();
-		}
-		catch (Exception e) {
-			log.error("{}", e.toString());
-		}
+//		}
+//		catch (Exception e) {
+//			log.error("{}", e.toString());
+//		}
 	}
 
 	/**
@@ -149,12 +152,13 @@ public class GraphDBConnection implements IDBConnection {
 	 */
 	@Override
 	public void rollback() {
-		try {
+		// Should not catch exception here! 
+//		try {
 			graph.rollback();
-		}
-		catch (Exception e) {
-			log.error("{}", e.toString());
-		}
+//		}
+//		catch (Exception e) {
+//			log.error("{}", e.toString());
+//		}
 	}
 
 	/**
@@ -162,6 +166,10 @@ public class GraphDBConnection implements IDBConnection {
 	 */
 	@Override
 	public void close() {
-		commit();
+		try {
+			commit();
+		} catch (Exception e) {
+			log.error("{}", e.toString());
+		}
 	}
 }
