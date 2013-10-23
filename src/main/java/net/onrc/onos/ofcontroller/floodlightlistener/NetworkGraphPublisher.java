@@ -91,12 +91,17 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 		@Override
 		public void controlChanged(long dpid, boolean hasControl) {
-			// TODO Auto-generated method stub
-			
 			if (hasControl) {
 				log.debug("got control to set inactive sw {}", HexString.toHexString(dpid));
-				swStore.update(HexString.toHexString(dpid),SwitchState.INACTIVE, DM_OPERATION.UPDATE);
-			    registryService.releaseControl(dpid);	
+				try {
+					if (swStore.updateSwitch(HexString.toHexString(dpid), SwitchState.INACTIVE, DM_OPERATION.UPDATE)) {
+					    registryService.releaseControl(dpid);
+					    
+					    // TODO publish UPDATE_SWITCH event here
+					}
+				} catch (Exception e) {
+	                log.error("Error in SwitchCleanup:controlChanged ", e);
+				}
 			}						
 		}
     }
@@ -119,12 +124,12 @@ public class NetworkGraphPublisher implements IDeviceListener,
 				//	log.debug("sw {} is controlled by controller: {}",HexString.toHexString(dpid),controller);
 				}
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
+				log.debug("Caught NumberFormatException trying to requestControl in cleanup thread");
 				e.printStackTrace();
 			} catch (RegistryException e) {
 				log.debug("Caught RegistryException trying to requestControl in cleanup thread");
 				e.printStackTrace();
-			}			
+			}
 		}
     	op.close();
     }
@@ -138,22 +143,27 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		switch (update.getOperation()) {
 			case LINK_REMOVED:
 				log.debug("LinkDiscoveryUpdate(): Removing link {}", lt);
-				linkStore.deleteLink(lt);
-				// TODO: Move network map link removal here
-				// reconcile paths here
-//				IPortObject srcPort = conn.utils().searchPort(conn, HexString.toHexString(update.getSrc()), update.getSrcPort());
+				
+				if (linkStore.deleteLink(lt)) {
+				    // TODO publish DELETE_LINK event here
+				}
 				break;
 			case LINK_UPDATED:
 				log.debug("LinkDiscoveryUpdate(): Updating link {}", lt);
+				
 				LinkInfo linfo = linkStore.getLinkInfo(lt);
 				// TODO update "linfo" using portState derived using "update"
-				linkStore.update(lt, linfo, DM_OPERATION.UPDATE);
+				if (linkStore.update(lt, linfo, DM_OPERATION.UPDATE)) {
+				    // TODO publish UPDATE_LINK event here
+				}
 				break;
 			case LINK_ADDED:
 				log.debug("LinkDiscoveryUpdate(): Adding link {}", lt);
-				linkStore.addLink(lt);
+				
+				if (linkStore.addLink(lt)) {
+				    // TODO publish ADD_LINK event here
+				}
 				break;
-					
 			default:
 				break;
 		}
@@ -162,36 +172,41 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public void addedSwitch(IOFSwitch sw) {
-
 		if (registryService.hasControl(sw.getId())) {
-	        	swStore.addSwitch(sw);
+			if (swStore.addSwitch(sw)) {
+			    // TODO publish ADD_SWITCH event here
+			}
 		}
-
 	}
 
 	@Override
 	public void removedSwitch(IOFSwitch sw) {
-		// TODO Auto-generated method stub
-
+		if (registryService.hasControl(sw.getId())) {
+			if (swStore.deleteSwitch(sw.getStringId())) {
+			    // TODO publish DELETE_SWITCH event here
+			}
+		}
 	}
 
 	@Override
 	public void switchPortChanged(Long switchId) {
 		// TODO Auto-generated method stub
-
+		// NOTE: Event not needed here. This callback always coincide with add/remove callback.
 	}
 
 
 	@Override
 	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
-		// TODO Auto-generated method stub
-		swStore.addPort(HexString.toHexString(switchId), port);
+		if (swStore.addPort(HexString.toHexString(switchId), port)) {
+		    // TODO publish ADD_PORT event here
+		}
 	}
 
 	@Override
 	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
-		// TODO Auto-generated method stub
-		swStore.deletePort(HexString.toHexString(switchId), port.getPortNumber());		
+		if (swStore.deletePort(HexString.toHexString(switchId), port.getPortNumber())) {
+		    // TODO publish DELETE_PORT event here
+		}
 	}
 
 	@Override
@@ -201,7 +216,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public void deviceAdded(IDevice device) {
-		// TODO Auto-generated method stub
 		log.debug("{}:deviceAdded(): Adding device {}",this.getClass(),device.getMACAddressString());
 		devStore.addDevice(device);
 	}
@@ -214,16 +228,12 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public void deviceMoved(IDevice device) {
-		// TODO Auto-generated method stub
 		devStore.changeDeviceAttachments(device);
-
 	}
 
 	@Override
 	public void deviceIPV4AddrChanged(IDevice device) {
-		// TODO Auto-generated method stub
 		devStore.changeDeviceIPv4Address(device);
-
 	}
 
 	@Override
@@ -263,7 +273,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	@Override
 	public void init(FloodlightModuleContext context)
 			throws FloodlightModuleException {
-		// TODO Auto-generated method stub
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
 		op = new GraphDBOperation(conf);
@@ -291,7 +300,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public void startUp(FloodlightModuleContext context) {
-		// TODO Auto-generated method stub
 		Map<String, String> configMap = context.getConfigParams(this);
 		String cleanupNeeded = configMap.get(CleanupEnabled);
 

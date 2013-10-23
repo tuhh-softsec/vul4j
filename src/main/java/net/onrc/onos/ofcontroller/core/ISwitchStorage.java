@@ -18,27 +18,29 @@ public interface ISwitchStorage extends INetMapStorage {
 	/*
 	 * Update the switch details
 	 */
-	public void update(String dpid,SwitchState state, DM_OPERATION op);
-	/*
-	 * Associate a port on switch
-	 */
-	public void addPort(String dpid, OFPhysicalPort port);
-	/*
-	 * Delete a port on a switch by num
-	 */
-	public void deletePort(String dpid, short port);
+	public boolean updateSwitch(String dpid, SwitchState state, DM_OPERATION op);
 	/*
 	 * Add a switch and all its associated ports
 	 */
-	public void addSwitch(IOFSwitch sw);
+	public boolean addSwitch(IOFSwitch sw);
 	/*
 	 * Add a switch
 	 */
-	public void addSwitch(String dpid);
+	public boolean addSwitch(String dpid);
 	/*
 	 * Delete switch and associated ports
 	 */
-	public void deleteSwitch(String dpid);
-	
-
+	public boolean deleteSwitch(String dpid);
+	/*
+	 * Update the port details
+	 */
+	public boolean updatePort(String dpid, short port, int state, String desc);
+	/*
+	 * Associate a port on switch
+	 */
+	public boolean addPort(String dpid, OFPhysicalPort port);
+	/*
+	 * Delete a port on a switch by num
+	 */
+	public boolean deletePort(String dpid, short port);
 }

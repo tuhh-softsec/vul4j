@@ -1,8 +1,5 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBOperation;
@@ -17,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is the class for storing the information of switches into CassandraDB
+ * This is the class for storing the information of switches into GraphDB
  */
 public class SwitchStorageImpl implements ISwitchStorage {
 	protected GraphDBOperation op;
@@ -50,23 +47,12 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		op.close();		
 	}
 	
-	private void setStatus(String dpid, SwitchState state) {
-		ISwitchObject sw = op.searchSwitch(dpid);
-		
-		try {
-			if (sw != null) {
-				sw.setState(state.toString());
-				op.commit();
-				log.info("SwitchStorage:setStatus dpid:{} state: {} done", dpid, state);
-			    // TODO publish UPDATE_SWITCH event here
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-			op.rollback();
-			log.info("SwitchStorage:setStatus dpid:{} state: {} failed: switch not found", dpid, state);	
-		}
-	}
-
+	// Method designing policy:
+	//  op.commit() and op.rollback() MUST called in public (first-class) methods.
+	//  A first-class method MUST NOT call other first-class method.
+	//  Routine process should be implemented in private method.
+	//  A private method MUST NOT call commit or rollback.
+	
 	/***
 	 * This function is for updating the switch into the DB.
 	 * @param dpid The switch dpid you want to update from the DB
@@ -74,71 +60,221 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	 * @param dmope	The DM_OPERATION of the switch
 	 */
 	@Override
-	public void update(String dpid, SwitchState state, DM_OPERATION dmope) {
-		log.info("SwitchStorage:update dpid:{} state: {} ", dpid, state);
+	public boolean updateSwitch(String dpid, SwitchState state, DM_OPERATION dmope) {
+		boolean success = false;
+		ISwitchObject sw = null;
+		
+		log.info("SwitchStorage:update {} dpid:{}", dmope, dpid);
 	    switch(dmope) {
 	    	case UPDATE:
+            	try {
+		    		sw = op.searchSwitch(dpid);
+		    		if (sw != null) {
+			            	setSwitchStateImpl(sw, state);
+							op.commit();
+							success = true;
+		    		}
+				} catch (Exception e) {
+					op.rollback();
+					e.printStackTrace();
+					log.info("SwitchStorage:update {} dpid:{} failed", dmope, dpid);
+				}
+	    		break;
 	    	case INSERT:
 	    	case CREATE:
-	            addSwitch(dpid);
-	            if (state != SwitchState.ACTIVE) {
-	            	setStatus(dpid, state);
-	            }
+            	try {
+		            sw = addSwitchImpl(dpid);
+		            if (sw != null) {
+			            if (state != SwitchState.ACTIVE) {
+			            	setSwitchStateImpl(sw, state);
+			            }
+						op.commit();
+						success = true;
+		            }
+				} catch (Exception e) {
+					op.rollback();
+					e.printStackTrace();
+					log.info("SwitchStorage:update {} dpid:{} failed", dmope, dpid);
+				}
 	            break;
 	    	case DELETE:
-	            deleteSwitch(dpid);
+	            try {
+		    		sw = op.searchSwitch(dpid);
+		    		if (sw != null) {
+				            deleteSwitchImpl(sw);
+							op.commit();
+							success = true;
+		    		}
+				} catch (Exception e) {
+					op.rollback();
+					e.printStackTrace();
+					log.info("SwitchStorage:update {} dpid:{} failed", dmope, dpid);
+				}
 	            break;
 	    	default:
 	    }
+	    
+	    return success;
+	}
+	
+	@Override
+	public boolean addSwitch(IOFSwitch sw) {
+		boolean success = false;
+		
+		String dpid = sw.getStringId();
+		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
+		
+		try {
+			ISwitchObject curr = op.searchSwitch(dpid);
+			if (curr != null) {
+				//If existing the switch. set The SW state ACTIVE. 
+				log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
+				setSwitchStateImpl(curr, SwitchState.ACTIVE);
+			} else {
+				curr = addSwitchImpl(dpid);
+			}
+	
+			for (OFPhysicalPort port: sw.getPorts()) {
+				IPortObject p = op.searchPort(dpid, port.getPortNumber());
+				if (p != null) {
+		    		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
+		    		setPortStateImpl(p, port.getState(), port.getName());
+		    		p.setState("ACTIVE");
+				} else {
+					p = addPortImpl(curr, port.getPortNumber());
+					setPortStateImpl(p, port.getState(), port.getName());
+				}         		
+			}
+			op.commit();
+			success = true;
+		} catch (Exception e) {
+			op.rollback();
+			e.printStackTrace();
+			log.error("SwitchStorage:addSwitch dpid:{} failed", dpid);
+		}
+		
+		return success;
+	}
+
+	/***
+	 * This function is for adding the switch into the DB.
+	 * @param dpid The switch dpid you want to add into the DB.
+	 */
+	@Override
+	public boolean addSwitch(String dpid) {
+		boolean success = false;
+		
+		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
+		try {
+			ISwitchObject sw = op.searchSwitch(dpid);
+			if (sw != null) {
+				//If existing the switch. set The SW state ACTIVE. 
+				log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
+				setSwitchStateImpl(sw, SwitchState.ACTIVE);
+			} else {
+				addSwitchImpl(dpid);
+			}
+			op.commit();
+			success = true;
+		} catch (Exception e) {
+			op.rollback();
+			e.printStackTrace();
+			log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
+		}
+		
+		return success;
+	}
+
+	/***
+	 * This function is for deleting the switch into the DB.
+	 * @param dpid The switch dpid you want to delete from the DB.
+	 */
+	@Override
+	public boolean deleteSwitch(String dpid) {
+		boolean success = false;
+		
+		try {
+			ISwitchObject sw = op.searchSwitch(dpid);
+			if (sw != null) {
+				deleteSwitchImpl(sw);
+	        	op.commit();
+			}
+			success = true;
+		} catch (Exception e) {
+			op.rollback();
+			e.printStackTrace();
+			log.error("SwitchStorage:deleteSwitch {} failed", dpid);
+		}
+	
+		return success;
+	}
+
+	public boolean updatePort(String dpid, short portNum, int state, String desc) {
+		boolean success = false;
+		
+		try {
+			ISwitchObject sw = op.searchSwitch(dpid);
+	
+	        if (sw != null) {
+	        	IPortObject p = sw.getPort(portNum);
+	        	log.info("SwitchStorage:updatePort dpid:{} port:{}", dpid, portNum);
+	        	if (p != null) {
+	        		setPortStateImpl(p, state, desc);
+	        	}
+	        	op.commit();
+        		success = true;
+	        } else {
+	    		log.error("SwitchStorage:updatePort dpid:{} port:{} : failed switch does not exist", dpid, portNum);
+	        }
+		} catch (Exception e) {
+			op.rollback();
+			e.printStackTrace();
+			log.error("SwitchStorage:addPort dpid:{} port:{} failed", dpid, portNum);
+		}	
+
+		return success;
 	}
 
 	/***
 	 * This function is for adding the switch port into the DB.
 	 * @param dpid The switch dpid that has the port.
-	 * @param port The port you want to add the switch.
+	 * @param phport The port you want to add the switch.
 	 */
 	@Override
-	public void addPort(String dpid, OFPhysicalPort port) {
+	public boolean addPort(String dpid, OFPhysicalPort phport) {
+		boolean success = false;
 		
-	   if(((OFPortConfig.OFPPC_PORT_DOWN.getValue() & port.getConfig()) > 0) ||
-	    					((OFPortState.OFPPS_LINK_DOWN.getValue() & port.getState()) > 0)) {
-		     deletePort(dpid, port.getPortNumber());
-	         return;  
-	   }
+		if(((OFPortConfig.OFPPC_PORT_DOWN.getValue() & phport.getConfig()) > 0) ||
+				((OFPortState.OFPPS_LINK_DOWN.getValue() & phport.getState()) > 0)) {
+			// just dispatch to deletePort()
+			return deletePort(dpid, phport.getPortNumber());
+		}
 	
 		try {
 			ISwitchObject sw = op.searchSwitch(dpid);
 	
 	        if (sw != null) {
-	        	IPortObject p = op.searchPort(dpid, port.getPortNumber());
-	        	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port.getPortNumber());
+	        	IPortObject p = sw.getPort(phport.getPortNumber());
+	        	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, phport.getPortNumber());
 	        	if (p != null) {
-	        		log.error("SwitchStorage:addPort dpid:{} port:{} exists setting as ACTIVE", dpid, port.getPortNumber());
-	        		p.setState("ACTIVE");
-	        		p.setPortState(port.getState());
-	        		p.setDesc(port.getName());
-	        		op.commit();
-	        		
-	    		    // TODO publish UPDATE_PORT event here
+	        		setPortStateImpl(p, phport.getState(), phport.getName());
+	        		log.error("SwitchStorage:addPort dpid:{} port:{} exists setting as ACTIVE", dpid, phport.getPortNumber());
 	        	} else {
-	        		p = op.newPort(dpid, port.getPortNumber());
-	        		p.setState("ACTIVE");
-	        		p.setPortState(port.getState());
-	        		p.setDesc(port.getName());
-	        		sw.addPort(p);
-	        		op.commit();
-	        		
-	    		    // TODO publish ADD_PORT event here
+	        		addPortImpl(sw, phport.getPortNumber());
+	        		setPortStateImpl(p, phport.getState(), phport.getName());
 	        	}
+        		op.commit();
+        		success = true;
 	        } else {
-	    		log.error("SwitchStorage:addPort dpid:{} port:{} : failed switch does not exist", dpid, port.getPortNumber());
+	    		log.error("SwitchStorage:addPort dpid:{} port:{} : failed switch does not exist", dpid, phport.getPortNumber());
 	        }
 		} catch (Exception e) {
-			e.printStackTrace();
 			op.rollback();
-			log.error("SwitchStorage:addPort dpid:{} port:{} failed", dpid, port.getPortNumber());
+			e.printStackTrace();
+			log.error("SwitchStorage:addPort dpid:{} port:{} failed", dpid, phport.getPortNumber());
 		}	
-	
+
+		return success;
 	}
 
 	/***
@@ -147,111 +283,36 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	 * @param port The port you want to delete the switch.
 	 */
 	@Override
-	public void deletePort(String dpid, short port) {
+	public boolean deletePort(String dpid, short port) {
+		boolean success = false;
+		
 		try {
 			ISwitchObject sw = op.searchSwitch(dpid);
 	
 	        if (sw != null) {
-	        	IPortObject p = op.searchPort(dpid, port);
+	        	IPortObject p = sw.getPort(port);
 	            if (p != null) {
 	        		log.info("SwitchStorage:deletePort dpid:{} port:{} found and set INACTIVE", dpid, port);
-	        		p.setState("INACTIVE");
+	        		deletePortImpl(p);
 	        		op.commit();
-	    		    // TODO publish DELETE_PORT event here
 	        	}
 	        }
 		} catch (Exception e) {
-			e.printStackTrace();
 			op.rollback();
+			e.printStackTrace();
 			log.info("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
-		}	
-	}
-
-	@Override
-	public void addSwitch(IOFSwitch sw) {
-		String dpid = sw.getStringId();
-		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
-		
-		ISwitchObject curr = op.searchSwitch(dpid);
-		if (curr != null) {
-			//If existing the switch. set The SW state ACTIVE. 
-			log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
-			setSwitchStateImpl(curr, SwitchState.ACTIVE);
-		} else {
-			curr = addSwitchImpl(dpid);
 		}
 
-		try {
-			List<IPortObject> added_ports = new ArrayList<IPortObject>();
-			List<IPortObject> updated_ports = new ArrayList<IPortObject>();
-			for (OFPhysicalPort port: sw.getPorts()) {
-				IPortObject p = op.searchPort(dpid, port.getPortNumber());
-				if (p != null) {
-		    		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
-		    		p.setState("ACTIVE");
-		    		p.setPortState(port.getState());
-		    		p.setDesc(port.getName());
-		    		
-		       		added_ports.add(p);
-				} else {
-		    		p = op.newPort(dpid, port.getPortNumber());
-		    		p.setState("ACTIVE");
-		    		p.setPortState(port.getState());
-		    		p.setDesc(port.getName());           		
-		    		curr.addPort(p);
-		    		
-		       		updated_ports.add(p);
-				}         		
-			}
-	
-			op.commit();
-		    
-		    // TODO publish ADD_PORT event here
-		    // TODO publish UPDATE_PORT event here
-		} catch (Exception e) {
-			e.printStackTrace();
-			op.rollback();
-			log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
-		}		
+		return success;
 	}
 
-	/***
-	 * This function is for adding the switch into the DB.
-	 * @param dpid The switch dpid you want to add into the DB.
-	 */
-	@Override
-	public void addSwitch(String dpid) {
-		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
-		
-		ISwitchObject sw = op.searchSwitch(dpid);
-		if (sw != null) {
-			//If existing the switch. set The SW state ACTIVE. 
-			log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
-			setSwitchStateImpl(sw, SwitchState.ACTIVE);
-		} else {
-			addSwitchImpl(dpid);
-		}
-	}
-	
 	private ISwitchObject addSwitchImpl(String dpid) {
-		try {
+		if (dpid != null) {
 			ISwitchObject sw = op.newSwitch(dpid);
-			if (sw != null) {
-				sw.setState(SwitchState.ACTIVE.toString());
-				log.info("SwitchStorage:addSwitchImpl dpid:{} added", dpid);
-			} else {
-				log.error("switchStorage:addSwitchImpl dpid:{} failed", dpid);
-				throw new RuntimeException();
-			}
-
-            op.commit();
-            
-            // TODO publish ADD_SWITCH event here
-    		return sw;
-		} catch (Exception e) {
-			e.printStackTrace();
-			op.rollback();
-			log.info("SwitchStorage:addSwitchImpl dpid:{} failed", dpid);
+			sw.setState(SwitchState.ACTIVE.toString());
+			log.info("SwitchStorage:addSwitchImpl dpid:{} added", dpid);
+			return sw;
+		} else {
 			return null;
 		}
 	}
@@ -259,33 +320,48 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	private void setSwitchStateImpl(ISwitchObject sw, SwitchState state) {
 		if (sw != null && state != null) {
 			sw.setState(state.toString());
-            op.commit();
-            
-			// TODO publish UPDATE_SWITCH event here
+			log.info("SwitchStorage:setSwitchStateImpl dpid:{} updated {}",
+					sw.getDPID(), state.toString());
 		}
-	}
-
-	/***
-	 * This function is for deleting the switch into the DB.
-	 * @param dpid The switch dpid you want to delete from the DB.
-	 */
-	@Override
-	public void deleteSwitch(String dpid) {
-		try {
-			ISwitchObject sw = op.searchSwitch(dpid);
-            if (sw  != null) {
-            	op.removeSwitch(sw);
-            	op.commit();
-            	log.info("SwitchStorage:DeleteSwitch dpid:{} done", dpid);
-
-            	// TODO publish DELETE_SWITCH event here
-            }
-		} catch (Exception e) {
-			e.printStackTrace();
-			op.rollback();			
-			log.error("SwitchStorage:deleteSwitch {} failed", dpid);
-		}
-
 	}
 	
+	private void deleteSwitchImpl(ISwitchObject sw) {
+        if (sw  != null) {
+        	op.removeSwitch(sw);
+        	log.info("SwitchStorage:DeleteSwitchImpl dpid:{} done",
+        			sw.getDPID());
+        }
+	}
+
+	private IPortObject addPortImpl(ISwitchObject sw, short portNum) {
+		IPortObject p = op.newPort(sw.getDPID(), portNum);
+		p.setState("ACTIVE");
+		sw.addPort(p);
+    	log.info("SwitchStorage:addPortImpl dpid:{} port:{} done",
+    			sw.getDPID(), portNum);
+		
+		return p;
+	}
+
+	private void setPortStateImpl(IPortObject port, Integer state, String desc) {
+		if (port != null) {
+			if (state != null) {
+				port.setPortState(state);
+			}
+			if (desc != null) {
+				port.setDesc(desc);
+			}
+			
+	    	log.info("SwitchStorage:setPortStateImpl port:{} state:{} desc:{} done",
+	    			new Object[] {port.getPortId(), state, desc});
+		}
+	}
+	
+	private void deletePortImpl(IPortObject port) {
+		if (port != null) {
+			op.removePort(port);
+	    	log.info("SwitchStorage:deletePortImpl port:{} done",
+	    			port.getPortId());
+		}
+	}
 }

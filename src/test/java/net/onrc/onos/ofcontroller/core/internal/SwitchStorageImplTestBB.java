@@ -106,7 +106,7 @@ public class SwitchStorageImplTestBB {
 	public void testAddSwitchExisting() {
 		String dpid = "00:00:00:00:00:00:0a:06";
 		
-		swSt.update(dpid, SwitchState.INACTIVE, DM_OPERATION.UPDATE);
+		swSt.updateSwitch(dpid, SwitchState.INACTIVE, DM_OPERATION.UPDATE);
 		ISwitchObject sw = ope.searchSwitch(dpid);
 		assertTrue(sw != null);
 		assertEquals(sw.getState(), SwitchState.INACTIVE.toString());
@@ -136,7 +136,7 @@ public class SwitchStorageImplTestBB {
 		
 		ISwitchObject sw = ope.searchSwitch(dpid);
 		assertTrue(sw == null);
-		swSt.update(dpid, state, dmope);
+		swSt.updateSwitch(dpid, state, dmope);
 		ISwitchObject sw2 = ope.searchSwitch(dpid);
 		assertTrue(sw2 != null);
 		assertEquals(sw2.getState(), state.toString());
@@ -161,7 +161,7 @@ public class SwitchStorageImplTestBB {
 		
 		ISwitchObject sw = ope.searchSwitch(dpid);
 		assertTrue(sw != null);
-		swSt.update(dpid, state, dmope);
+		swSt.updateSwitch(dpid, state, dmope);
 		ISwitchObject sw2 = ope.searchSwitch(dpid);
 		assertTrue(sw2 == null);
 	}
