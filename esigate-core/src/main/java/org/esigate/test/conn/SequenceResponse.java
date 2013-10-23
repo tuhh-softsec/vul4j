@@ -47,12 +47,12 @@ public class SequenceResponse implements IResponseHandler {
 	}
 
 	/**
-	 * Add a Http reponse.
+	 * Add a Http response.
 	 * 
 	 * @param response
 	 * @return this object
 	 */
-	public SequenceResponse reponse(HttpResponse response) {
+	public SequenceResponse response(HttpResponse response) {
 		this.responses.add(response);
 		return this;
 	}

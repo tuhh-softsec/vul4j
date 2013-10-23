@@ -52,6 +52,8 @@ public class Esi implements Extension, IEventListener {
 	private int maxThreads;
 	private int idle;
 	private Executor executor;
+	static final String[] capabilities = new String[] { "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
+			"X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
 
 	@Override
 	public boolean event(EventDefinition id, Event event) {
@@ -60,14 +62,19 @@ public class Esi implements Extension, IEventListener {
 		boolean doEsi = true;
 
 		// ensure we should process esi
-		if (renderEvent.httpResponse != null && renderEvent.httpResponse.containsHeader(Surrogate.HEADER_ENABLED_CAPABILITIES)) {
-			String capabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.HEADER_ENABLED_CAPABILITIES)
+		if (renderEvent.httpResponse != null
+				&& renderEvent.httpResponse.containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
+			String enabledCapabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
 					.getValue();
 
-			if (!containsIgnoreCase(capabilities, "ESI/1.0") && !containsIgnoreCase(capabilities, "ESI-Inline/1.0")
-					&& !containsIgnoreCase(capabilities, "ESIGATE/4.0")) {
-				doEsi = false;
+			doEsi = false;
+			for (String capability : this.capabilities) {
+				if (containsIgnoreCase(enabledCapabilities, capability)) {
+					doEsi = true;
+					break;
+				}
 			}
+
 		}
 
 		if (doEsi) {
@@ -86,9 +93,9 @@ public class Esi implements Extension, IEventListener {
 			@Override
 			public boolean event(EventDefinition id, Event event) {
 				CapabilitiesEvent capEvent = (CapabilitiesEvent) event;
-				capEvent.capabilities.add("ESI/1.0");
-				capEvent.capabilities.add("ESI-Inline/1.0");
-				capEvent.capabilities.add("ESIGATE/4.0");
+				for (String capability : capabilities) {
+					capEvent.capabilities.add(capability);
+				}
 				return true;
 			}
 		});

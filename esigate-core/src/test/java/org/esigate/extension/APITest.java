@@ -51,7 +51,7 @@ public class APITest extends AbstractDriverTestCase {
 		// Setup remote server (provider) response.
 		Driver driver = createMockDriver(
 				properties,
-				new SequenceResponse().reponse(createHttpResponse().status(200).reason("OK")
+				new SequenceResponse().response(createHttpResponse().status(200).reason("OK")
 						.header("Content-Type", "text/html; charset=utf-8").build()));
 
 		HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()

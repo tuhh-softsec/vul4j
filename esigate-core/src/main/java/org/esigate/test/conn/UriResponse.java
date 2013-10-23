@@ -60,7 +60,7 @@ public class UriResponse implements IResponseHandler {
 	 * @param response
 	 * @return this object
 	 */
-	public UriResponse reponse(String uri, HttpResponse response) {
+	public UriResponse response(String uri, HttpResponse response) {
 		this.responses.put(uri, response);
 		return this;
 	}

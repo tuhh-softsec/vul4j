@@ -34,8 +34,8 @@ public class UriResponseTest {
 
 	@Test
 	public void testUri() throws ParseException, IOException {
-		UriResponse seq = new UriResponse().reponse("http://test/path1",
-				new HttpResponseBuilder().status(200).entity("OK 1").build()).reponse("http://test/path2",
+		UriResponse seq = new UriResponse().response("http://test/path1",
+				new HttpResponseBuilder().status(200).entity("OK 1").build()).response("http://test/path2",
 				new HttpResponseBuilder().status(200).entity("OK 2").build());
 
 		assertEquals("OK 1", EntityUtils.toString(seq

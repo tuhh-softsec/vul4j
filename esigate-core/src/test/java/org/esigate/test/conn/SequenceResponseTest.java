@@ -34,8 +34,8 @@ public class SequenceResponseTest {
 
 	@Test
 	public void testSequence() throws ParseException, IOException {
-		SequenceResponse seq = new SequenceResponse().reponse(
-				new HttpResponseBuilder().status(200).entity("OK 1").build()).reponse(
+		SequenceResponse seq = new SequenceResponse().response(
+				new HttpResponseBuilder().status(200).entity("OK 1").build()).response(
 				new HttpResponseBuilder().status(200).entity("OK 2").build());
 
 		assertEquals("OK 1", EntityUtils.toString(seq.execute(new HttpRequestBuilder().build()).getEntity()));
