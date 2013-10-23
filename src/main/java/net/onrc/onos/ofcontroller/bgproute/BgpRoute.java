@@ -493,7 +493,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Map<Long, Interface> srcInterfaces = new HashMap<Long, Interface>();
 		for (Interface intf : interfaces.values()) {
 			if (!srcInterfaces.containsKey(intf.getDpid()) 
-					&& intf != egressInterface) {
+					&& !intf.equals(egressInterface)) {
 				srcInterfaces.put(intf.getDpid(), intf);
 			}
 		}
@@ -695,7 +695,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		List<PushedFlowMod> pushedFlows = new ArrayList<PushedFlowMod>();
 		
 		for (Interface srcInterface : interfaces.values()) {
-			if (dstInterface.getName().equals(srcInterface.getName())){
+			if (dstInterface.equals(srcInterface)){
 				continue;
 			}
 			
@@ -1085,7 +1085,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private void checkTopologyReady(){
 		for (Interface dstInterface : interfaces.values()) {
 			for (Interface srcInterface : interfaces.values()) {			
-				if (dstInterface == srcInterface) {
+				if (dstInterface.equals(srcInterface)) {
 					continue;
 				}
 				
