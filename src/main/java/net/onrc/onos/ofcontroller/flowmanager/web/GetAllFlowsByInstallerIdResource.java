@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *   GET /wm/flow/getall-by-installer-id/{installer-id}/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json"
  */
 public class GetAllFlowsByInstallerIdResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(GetAllFlowsByInstallerIdResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(GetAllFlowsByInstallerIdResource.class);
 
     /**
      * Implement the API.

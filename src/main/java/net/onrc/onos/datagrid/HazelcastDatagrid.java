@@ -27,7 +27,7 @@ import com.hazelcast.instance.GroupProperties;
  * appropriate in a multi-node cluster.
  */
 public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
-    protected static Logger log = LoggerFactory.getLogger(HazelcastDatagrid.class);
+    protected final static Logger log = LoggerFactory.getLogger(HazelcastDatagrid.class);
     protected IFloodlightProviderService floodlightProvider;
 
     protected static final String HazelcastConfigFile = "datagridConfig";

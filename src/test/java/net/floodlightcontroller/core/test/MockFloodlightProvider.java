@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
 public class MockFloodlightProvider implements IFloodlightModule, IFloodlightProviderService {
-    protected static Logger log = LoggerFactory.getLogger(MockFloodlightProvider.class);
+    protected final static Logger log = LoggerFactory.getLogger(MockFloodlightProvider.class);
     protected ConcurrentMap<OFType, ListenerDispatcher<OFType,IOFMessageListener>> listeners;
     protected List<IOFSwitchListener> switchListeners;
     protected List<IHAListener> haListeners;

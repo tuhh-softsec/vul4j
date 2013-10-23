@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
 
 public class DeviceManagerImplTest extends FloodlightTestCase {
 
-    protected static Logger logger =
+    protected final static Logger logger =
             LoggerFactory.getLogger(DeviceManagerImplTest.class);
 
     protected OFPacketIn packetIn_1, packetIn_2, packetIn_3;

@@ -50,7 +50,7 @@ import net.floodlightcontroller.topology.ITopologyService;
  */
 @JsonSerialize(using=DeviceSerializer.class)
 public class Device implements IDevice {
-    protected static Logger log =
+    protected final static Logger log =
             LoggerFactory.getLogger(Device.class);
 
     protected Long deviceKey;

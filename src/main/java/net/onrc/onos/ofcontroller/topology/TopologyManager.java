@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TopologyManager implements IFloodlightModule,
 					ITopologyNetService {
-    private static Logger log = LoggerFactory.getLogger(TopologyManager.class);
+    private final static Logger log = LoggerFactory.getLogger(TopologyManager.class);
     protected IFloodlightProviderService floodlightProvider;
 
     protected GraphDBOperation dbHandler;

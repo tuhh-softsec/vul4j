@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StandaloneRegistry implements IFloodlightModule,
 		IControllerRegistryService {
-	protected static Logger log = LoggerFactory.getLogger(StandaloneRegistry.class);
+	protected final static Logger log = LoggerFactory.getLogger(StandaloneRegistry.class);
 	
 	protected IRestApiService restApi;
 	

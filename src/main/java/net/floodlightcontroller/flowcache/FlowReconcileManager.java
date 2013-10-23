@@ -35,7 +35,7 @@ public class FlowReconcileManager
         implements IFloodlightModule, IFlowReconcileService {
 
     /** The logger. */
-    private static Logger logger =
+    private final static Logger logger =
                         LoggerFactory.getLogger(FlowReconcileManager.class);
     
     /** Reference to dependent modules */

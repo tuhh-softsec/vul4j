@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class BgpRouteResource extends ServerResource {
 
-	protected static Logger log = LoggerFactory.getLogger(BgpRouteResource.class);
+	protected final static Logger log = LoggerFactory.getLogger(BgpRouteResource.class);
 
 	@Get
 	public String get(String fmJson) {

@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LinkStorageImpl.class, GraphDBConnection.class, GraphDBOperation.class})
 public class LinkStorageImplTest {
-	protected static Logger log = LoggerFactory.getLogger(LinkStorageImplTest.class);
+	protected final static Logger log = LoggerFactory.getLogger(LinkStorageImplTest.class);
 
 	private static ILinkStorage linkStorage;
 	

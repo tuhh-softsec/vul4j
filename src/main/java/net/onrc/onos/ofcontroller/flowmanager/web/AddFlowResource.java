@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AddFlowResource extends ServerResource {
 
-    protected static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
 
     /**
      * Implement the API.

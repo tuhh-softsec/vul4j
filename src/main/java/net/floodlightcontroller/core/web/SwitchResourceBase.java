@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class SwitchResourceBase extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(SwitchResourceBase.class);
+    protected final static Logger log = LoggerFactory.getLogger(SwitchResourceBase.class);
     
     public enum REQUESTTYPE {
         OFSTATS,

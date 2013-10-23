@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StorageNotifyResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(StorageNotifyResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(StorageNotifyResource.class);
     
     @Post("json")
     public Map<String,Object> notify(String entity) throws Exception {

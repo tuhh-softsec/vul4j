@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SwitchStorageImpl implements ISwitchStorage {
 	protected GraphDBOperation op;
-	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
+	protected final static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 	
 	/***
 	 * Initialize function. Before you use this class, please call this method

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	
 	private GraphDBOperation op;
-	protected static Logger log = LoggerFactory.getLogger(TopoSwitchServiceImpl.class);
+	protected final static Logger log = LoggerFactory.getLogger(TopoSwitchServiceImpl.class);
 
 	public TopoSwitchServiceImpl(String conf) {
 		op = new GraphDBOperation(conf);

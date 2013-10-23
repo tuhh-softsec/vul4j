@@ -23,7 +23,7 @@ import com.tinkerpop.pipes.transform.PathPipe;
  */
 public class LinkStorageImpl implements ILinkStorage {
 	
-	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
+	protected final static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
 	protected GraphDBOperation op;
 
 	
