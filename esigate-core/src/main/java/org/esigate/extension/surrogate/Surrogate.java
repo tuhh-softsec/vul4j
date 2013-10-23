@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of Edge-Arch specification 1.0. (Work in progress)
+ * Implementation of Edge-Arch specification 1.0.
  * 
  * <p>
  * See :
