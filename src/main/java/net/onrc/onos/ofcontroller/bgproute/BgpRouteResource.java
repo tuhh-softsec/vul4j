@@ -68,19 +68,27 @@ public class BgpRouteResource extends ServerResource {
 		IBgpRouteService bgpRoute = (IBgpRouteService) getContext().getAttributes().
 				get(IBgpRouteService.class.getCanonicalName());
 
+		String strSysuptime = (String) getRequestAttributes().get("sysuptime");
+		String strSequence = (String) getRequestAttributes().get("sequence");
 		String routerId = (String) getRequestAttributes().get("routerid");
 		String prefix = (String) getRequestAttributes().get("prefix");
 		String mask = (String) getRequestAttributes().get("mask");
 		String nexthop = (String) getRequestAttributes().get("nexthop");
 		String capability = (String) getRequestAttributes().get("capability");
+		
+		log.debug("sysuptime: {}", strSysuptime);
+		log.debug("sequence: {}", strSequence);
 
 		String reply = "";
 
 		if (capability == null) {
 			// this is a prefix add
 			Prefix p;
+			long sysUpTime, sequenceNum;
 			try {
 				p = new Prefix(prefix, Integer.valueOf(mask));
+				sysUpTime = Long.parseLong(strSysuptime);
+				sequenceNum = Long.parseLong(strSequence);
 			} catch (NumberFormatException e) {
 				reply = "[POST: mask format is wrong]";
 				log.info(reply);
@@ -91,7 +99,7 @@ public class BgpRouteResource extends ServerResource {
 				return reply + "\n";
 			}
 			
-			RibEntry rib = new RibEntry(routerId, nexthop);
+			RibEntry rib = new RibEntry(routerId, nexthop, sysUpTime, sequenceNum);
 
 			bgpRoute.newRibUpdate(new RibUpdate(Operation.UPDATE, p, rib));
 			
@@ -117,19 +125,27 @@ public class BgpRouteResource extends ServerResource {
 		IBgpRouteService bgpRoute = (IBgpRouteService)getContext().getAttributes().
 				get(IBgpRouteService.class.getCanonicalName());
 
+		String strSysuptime = (String) getRequestAttributes().get("sysuptime");
+		String strSequence = (String) getRequestAttributes().get("sequence");
 		String routerId = (String) getRequestAttributes().get("routerid");
 		String prefix = (String) getRequestAttributes().get("prefix");
 		String mask = (String) getRequestAttributes().get("mask");
 		String nextHop = (String) getRequestAttributes().get("nexthop");
 		String capability = (String) getRequestAttributes().get("capability");
 
+		log.debug("sysuptime: {}", strSysuptime);
+		log.debug("sequence: {}", strSequence);
+		
 		String reply = "";
 
 		if (capability == null) {
 			// this is a prefix delete
 			Prefix p;
+			long sysUpTime, sequenceNum;
 			try {
 				p = new Prefix(prefix, Integer.valueOf(mask));
+				sysUpTime = Long.parseLong(strSysuptime);
+				sequenceNum = Long.parseLong(strSequence);
 			} catch (NumberFormatException e) {
 				reply = "[DELE: mask format is wrong]";
 				log.info(reply);
@@ -140,7 +156,7 @@ public class BgpRouteResource extends ServerResource {
 				return reply + "\n";
 			}
 			
-			RibEntry r = new RibEntry(routerId, nextHop);
+			RibEntry r = new RibEntry(routerId, nextHop, sysUpTime, sequenceNum);
 			
 			bgpRoute.newRibUpdate(new RibUpdate(Operation.DELETE, p, r));
 			

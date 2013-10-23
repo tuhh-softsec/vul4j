@@ -15,10 +15,12 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
+import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.*;
 
@@ -38,12 +40,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * @author Toshio Koide
  */
+@Ignore
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({FlowManager.class, GraphDBOperation.class, System.class, Executors.class})
+@PrepareForTest({FlowManager.class, FlowDatabaseOperation.class, GraphDBOperation.class, System.class, Executors.class})
 public class FlowManagerTest {
 	private static FloodlightModuleContext context;
 	private static IFloodlightProviderService floodlightProvider;
 	private static TopologyManager topologyManager;
+	private static IDatagridService datagridService;
 	private static IRestApiService restApi;
 	private static GraphDBOperation op;
 	
@@ -69,11 +73,14 @@ public class FlowManagerTest {
 		context = createMock(FloodlightModuleContext.class);
 		floodlightProvider = createMock(IFloodlightProviderService.class);
 		topologyManager = createMock(TopologyManager.class);
+		datagridService = createMock(IDatagridService.class);
 		restApi = createMock(IRestApiService.class);
 		op = createMock(GraphDBOperation.class);
 
 		// setup expectations
 		expect(context.getServiceImpl(IFloodlightProviderService.class)).andReturn(floodlightProvider);
+		expect(context.getServiceImpl(ITopologyNetService.class)).andReturn(topologyManager);
+		expect(context.getServiceImpl(IDatagridService.class)).andReturn(datagridService);
 		expect(context.getServiceImpl(IRestApiService.class)).andReturn(restApi);
 		expectNew(GraphDBOperation.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(op);
 		expectNew(TopologyManager.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(topologyManager);
@@ -696,7 +703,7 @@ public class FlowManagerTest {
 
 		// verify the test
 		verifyAll();
-		assertEquals(2, md.size());
+		assertEquals(4, md.size());
 		assertTrue(md.contains(IFloodlightProviderService.class));
 		assertTrue(md.contains(IRestApiService.class));
 	}
@@ -974,24 +981,6 @@ public class FlowManagerTest {
 	 */
 	@Ignore @Test
 	public final void testRemoveFlowEntrySuccessNormally() {
-		fail("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link FlowManager#installRemoteFlowEntry(FlowPath, FlowEntry)}.
-	 * The method seems to be not implemented and not used for now.
-	 */
-	@Ignore @Test
-	public final void testInstallRemoteFlowEntrySuccessNormally() {
-		fail("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link FlowManager#removeRemoteFlowEntry(FlowPath, FlowEntry)}.
-	 * The method seems to be not implemented and not used for now.
-	 */
-	@Ignore @Test
-	public final void testRemoveRemoteFlowEntrySuccessNormally() {
 		fail("not yet implemented");
 	}
 }

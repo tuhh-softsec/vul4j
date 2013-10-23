@@ -42,6 +42,7 @@ import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
+import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -79,72 +80,72 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 									IOFSwitchListener, ILayer3InfoService,
 									IProxyArpService {
 	
-	protected static Logger log = LoggerFactory.getLogger(BgpRoute.class);
+	private static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
-	protected IFloodlightProviderService floodlightProvider;
-	protected ITopologyService topology;
-	protected ITopologyNetService topologyNetService;
-	protected ILinkDiscoveryService linkDiscoveryService;
-	protected IRestApiService restApi;
+	private IFloodlightProviderService floodlightProvider;
+	private ITopologyService topologyService;
+	private ITopologyNetService topologyNetService;
+	private ILinkDiscoveryService linkDiscoveryService;
+	private IRestApiService restApi;
 	
-	protected ProxyArpManager proxyArp;
+	private ProxyArpManager proxyArp;
 	
-	protected IPatriciaTrie<RibEntry> ptree;
-	protected IPatriciaTrie<Interface> interfacePtrie;
-	protected BlockingQueue<RibUpdate> ribUpdates;
+	private IPatriciaTrie<RibEntry> ptree;
+	private IPatriciaTrie<Interface> interfacePtrie;
+	private BlockingQueue<RibUpdate> ribUpdates;
 	
-	protected String bgpdRestIp;
-	protected String routerId;
-	protected String configFilename = "config.json";
+	private String bgpdRestIp;
+	private String routerId;
+	private String configFilename = "config.json";
 	
 	//We need to identify our flows somehow. But like it says in LearningSwitch.java,
 	//the controller/OS should hand out cookie IDs to prevent conflicts.
-	protected final long APP_COOKIE = 0xa0000000000000L;
+	private final long APP_COOKIE = 0xa0000000000000L;
 	//Cookie for flows that do L2 forwarding within SDN domain to egress routers
-	protected final long L2_FWD_COOKIE = APP_COOKIE + 1;
+	private final long L2_FWD_COOKIE = APP_COOKIE + 1;
 	//Cookie for flows in ingress switches that rewrite the MAC address
-	protected final long MAC_RW_COOKIE = APP_COOKIE + 2;
+	private final long MAC_RW_COOKIE = APP_COOKIE + 2;
 	//Cookie for flows that setup BGP paths
-	protected final long BGP_COOKIE = APP_COOKIE + 3;
+	private final long BGP_COOKIE = APP_COOKIE + 3;
 	//Forwarding uses priority 0, and the mac rewrite entries in ingress switches
 	//need to be higher priority than this otherwise the rewrite may not get done
-	protected final short SDNIP_PRIORITY = 10;
-	protected final short ARP_PRIORITY = 20;
+	private final short SDNIP_PRIORITY = 10;
+	private final short ARP_PRIORITY = 20;
 	
-	protected final short BGP_PORT = 179;
+	private final short BGP_PORT = 179;
 	
-	protected final int TOPO_DETECTION_WAIT = 2; //seconds
+	private final int TOPO_DETECTION_WAIT = 2; //seconds
 	
 	//Configuration stuff
-	protected List<String> switches;
-	protected Map<String, Interface> interfaces;
-	protected Map<InetAddress, BgpPeer> bgpPeers;
-	protected SwitchPort bgpdAttachmentPoint;
-	protected MACAddress bgpdMacAddress;
+	private List<String> switches;
+	private Map<String, Interface> interfaces;
+	private Map<InetAddress, BgpPeer> bgpPeers;
+	private SwitchPort bgpdAttachmentPoint;
+	private MACAddress bgpdMacAddress;
 	
 	//True when all switches have connected
-	protected volatile boolean switchesConnected = false;
+	private volatile boolean switchesConnected = false;
 	//True when we have a full mesh of shortest paths between gateways
-	protected volatile boolean topologyReady = false;
+	private volatile boolean topologyReady = false;
 
-	protected ArrayList<LDUpdate> linkUpdates;
-	protected SingletonTask topologyChangeDetectorTask;
+	private ArrayList<LDUpdate> linkUpdates;
+	private SingletonTask topologyChangeDetectorTask;
 	
-	protected SetMultimap<InetAddress, RibUpdate> prefixesWaitingOnArp;
+	private SetMultimap<InetAddress, RibUpdate> prefixesWaitingOnArp;
 	
-	protected Map<InetAddress, Path> pathsWaitingOnArp;
+	private Map<InetAddress, Path> pathsWaitingOnArp;
 	
-	protected ExecutorService bgpUpdatesExecutor;
+	private ExecutorService bgpUpdatesExecutor;
 	
-	protected Map<InetAddress, Path> pushedPaths;
-	protected Map<Prefix, Path> prefixToPath;
-	protected Multimap<Prefix, PushedFlowMod> pushedFlows;
+	private Map<InetAddress, Path> pushedPaths;
+	private Map<Prefix, Path> prefixToPath;
+	private Multimap<Prefix, PushedFlowMod> pushedFlows;
 	
 	private FlowCache flowCache;
 	
-	protected volatile Map<Long, ?> shortestPathTopo = null;
+	private volatile Topology topology = null;
 		
-	protected class TopologyChangeDetector implements Runnable {
+	private class TopologyChangeDetector implements Runnable {
 		@Override
 		public void run() {
 			log.debug("Running topology change detection task");
@@ -260,13 +261,13 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	    	
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-		topology = context.getServiceImpl(ITopologyService.class);
+		topologyService = context.getServiceImpl(ITopologyService.class);
 		linkDiscoveryService = context.getServiceImpl(ILinkDiscoveryService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topology, this, restApi);
+		proxyArp = new ProxyArpManager(floodlightProvider, topologyService, this, restApi);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -318,7 +319,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		restApi.addRestletRoutable(new BgpRouteWebRoutable());
-		topology.addListener(this);
+		topologyService.addListener(this);
 		floodlightProvider.addOFSwitchListener(this);
 		
 		proxyArp.startUp();
@@ -483,7 +484,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	private void addPrefixFlows(Prefix prefix, Interface egressInterface, MACAddress nextHopMacAddress) {		
-		log.debug("Adding flows for prefix {} added, next hop mac {}",
+		log.debug("Adding flows for prefix {}, next hop mac {}",
 				prefix, nextHopMacAddress);
 		
 		//We only need one flow mod per switch, so pick one interface on each switch
@@ -498,14 +499,14 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		//Add a flow to rewrite mac for this prefix to all other border switches
 		for (Interface srcInterface : srcInterfaces.values()) {
 			DataPath shortestPath; 
-			if (shortestPathTopo == null) {
-				shortestPath = topologyNetService.getShortestPath(
+			if (topology == null) {
+				shortestPath = topologyNetService.getDatabaseShortestPath(
 						srcInterface.getSwitchPort(),
 						egressInterface.getSwitchPort());
 			}
 			else {
-				shortestPath = topologyNetService.getTopoShortestPath(
-						shortestPathTopo, srcInterface.getSwitchPort(),
+				shortestPath = topologyNetService.getTopologyShortestPath(
+						topology, srcInterface.getSwitchPort(),
 						egressInterface.getSwitchPort());
 			}
 			
@@ -692,17 +693,17 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		List<PushedFlowMod> pushedFlows = new ArrayList<PushedFlowMod>();
 		
 		for (Interface srcInterface : interfaces.values()) {
-			if (dstInterface.equals(srcInterface.getName())){
+			if (dstInterface.getName().equals(srcInterface.getName())){
 				continue;
 			}
 			
 			DataPath shortestPath;
-			if (shortestPathTopo == null) {
-				shortestPath = topologyNetService.getShortestPath(
+			if (topology == null) {
+				shortestPath = topologyNetService.getDatabaseShortestPath(
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 			}
 			else {
-				shortestPath = topologyNetService.getTopoShortestPath(shortestPathTopo, 
+				shortestPath = topologyNetService.getTopologyShortestPath(topology, 
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 			}
 			
@@ -771,7 +772,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		for (BgpPeer bgpPeer : bgpPeers.values()){
 			Interface peerInterface = interfaces.get(bgpPeer.getInterfaceName());
 			
-			DataPath path = topologyNetService.getShortestPath(
+			DataPath path = topologyNetService.getDatabaseShortestPath(
 					peerInterface.getSwitchPort(), bgpdAttachmentPoint);
 			
 			if (path == null){
@@ -1046,7 +1047,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	private void beginRouting(){
 		log.debug("Topology is now ready, beginning routing function");
-		shortestPathTopo = topologyNetService.prepareShortestPathTopo();
+		topology = topologyNetService.newDatabaseTopology();
 		
 		setupArpFlows();
 		setupDefaultDropFlows();
@@ -1086,7 +1087,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					continue;
 				}
 				
-				DataPath shortestPath = topologyNetService.getShortestPath(
+				DataPath shortestPath = topologyNetService.getDatabaseShortestPath(
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 				
 				if (shortestPath == null){
@@ -1120,10 +1121,22 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					RibUpdate update = ribUpdates.take();
 					switch (update.getOperation()){
 					case UPDATE:
-						processRibAdd(update);
+						if (validateUpdate(update)) {
+							processRibAdd(update);
+						}
+						else {
+							log.debug("Rib UPDATE out of order: {} via {}",
+									update.getPrefix(), update.getRibEntry().getNextHop());
+						}
 						break;
 					case DELETE:
-						processRibDelete(update);
+						if (validateUpdate(update)) {
+							processRibDelete(update);
+						}
+						else {
+							log.debug("Rib DELETE out of order: {} via {}",
+									update.getPrefix(), update.getRibEntry().getNextHop());
+						}
 						break;
 					}
 				} catch (InterruptedException e) {
@@ -1139,6 +1152,40 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 		}
 	}
+	
+	private boolean validateUpdate(RibUpdate update) {
+		RibEntry newEntry = update.getRibEntry();
+		RibEntry oldEntry = ptree.lookup(update.getPrefix());
+		
+		//If there is no existing entry we must assume this is the most recent
+		//update. However this might not always be the case as we might have a
+		//POST then DELETE reordering.
+		//if (oldEntry == null || !newEntry.getNextHop().equals(oldEntry.getNextHop())) {
+		if (oldEntry == null) {
+			return true;
+		}
+		
+		// This handles the case where routes are gathered in the initial
+		// request because they don't have sequence number info
+		if (newEntry.getSysUpTime() == -1 && newEntry.getSequenceNum() == -1) {
+			return true;
+		}
+		
+		if (newEntry.getSysUpTime() > oldEntry.getSysUpTime()) {
+			return true;
+		}
+		else if (newEntry.getSysUpTime() == oldEntry.getSysUpTime()) {
+			if (newEntry.getSequenceNum() > oldEntry.getSequenceNum()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
 
 	@Override
 	public void topologyChanged() {
@@ -1147,7 +1194,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 		
 		boolean refreshNeeded = false;
-		for (LDUpdate ldu : topology.getLastLinkUpdates()){
+		for (LDUpdate ldu : topologyService.getLastLinkUpdates()){
 			if (!ldu.getOperation().equals(ILinkDiscovery.UpdateOperation.LINK_UPDATED)){
 				//We don't need to recalculate anything for just link updates
 				//They happen very frequently

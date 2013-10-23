@@ -87,9 +87,10 @@ public class GraphDBConnection implements IDBConnection {
 		return singleton;
 	}
 
-	/** 
+	/**
 	 * Get a FramedGraph instance of the graph.
 	 */
+	@Override
 	public FramedGraph<TitanGraph> getFramedGraph() {
 		if (isValid()) {
 			FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
@@ -115,6 +116,7 @@ public class GraphDBConnection implements IDBConnection {
 	/**
 	 * Add LocalGraphChangedLister for the graph.
 	 */
+	@Override
 	public void addEventListener(final LocalGraphChangedListener listener) {
 		EventTransactionalGraph<TitanGraph> eg = this.getEventGraph();
 		eg.addListener(listener);
@@ -124,13 +126,15 @@ public class GraphDBConnection implements IDBConnection {
 	/**
 	 * Return whether this connection is valid.
 	 */
+	@Override
 	public Boolean isValid() {
-		return (graph != null || graph.isOpen());
+		return (graph != null && graph.isOpen());
 	}
 
 	/**
 	 * Commit changes for the graph operations.
 	 */
+	@Override
 	public void commit() {
 		try {
 			graph.commit();
@@ -143,6 +147,7 @@ public class GraphDBConnection implements IDBConnection {
 	/**
 	 * Rollback changes for the graph operations.
 	 */
+	@Override
 	public void rollback() {
 		try {
 			graph.rollback();
@@ -155,6 +160,7 @@ public class GraphDBConnection implements IDBConnection {
 	/**
 	 * Close this database connection.
 	 */
+	@Override
 	public void close() {
 		commit();
 	}

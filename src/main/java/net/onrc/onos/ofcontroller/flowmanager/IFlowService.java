@@ -67,6 +67,13 @@ public interface IFlowService extends IFloodlightService {
     FlowPath getFlow(FlowId flowId);
 
     /**
+     * Get all installed flows by all installers.
+     *
+     * @return the Flow Paths if found, otherwise null.
+     */
+    ArrayList<FlowPath> getAllFlows();
+
+    /**
      * Get all previously added flows by a specific installer for a given
      * data path endpoints.
      *
@@ -94,13 +101,6 @@ public interface IFlowService extends IFloodlightService {
      */
     ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);
     
-    /**
-     * Get all installed flows by all installers.
-     *
-     * @return the Flow Paths if found, otherwise null.
-     */
-    ArrayList<FlowPath> getAllFlows();
-
     /**
      * Add and maintain a shortest-path flow.
      *
