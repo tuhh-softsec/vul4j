@@ -36,7 +36,7 @@ import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 public class FlowManagerImpl implements IFlowManager {
 	
-	protected static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
+	protected final static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
 	protected GraphDBOperation op;
 
 	@Override

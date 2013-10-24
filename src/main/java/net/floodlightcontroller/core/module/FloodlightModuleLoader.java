@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class FloodlightModuleLoader {
-    protected static Logger logger = 
+    protected final static Logger logger = 
             LoggerFactory.getLogger(FloodlightModuleLoader.class);
 
     protected static Map<Class<? extends IFloodlightService>,

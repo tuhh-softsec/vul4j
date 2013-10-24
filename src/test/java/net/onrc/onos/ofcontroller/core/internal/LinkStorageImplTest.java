@@ -1,8 +1,6 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +38,7 @@ import org.slf4j.LoggerFactory;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LinkStorageImpl.class, GraphDBConnection.class, GraphDBOperation.class})
 public class LinkStorageImplTest {
-	protected static Logger log = LoggerFactory.getLogger(LinkStorageImplTest.class);
+	protected final static Logger log = LoggerFactory.getLogger(LinkStorageImplTest.class);
 
 	private static ILinkStorage linkStorage;
 	
@@ -134,12 +132,41 @@ public class LinkStorageImplTest {
 		linkStorage.close();
 	}
 	
+
+	/**
+	 * Test if {@link LinkStorageImpl#addLink(Link)} can correctly creates a Link.
+	 */
+	@Test
+	public void testAddLink() {
+		Link linkToCreate = createFeasibleLink();
+		Link linkToVerify = createFeasibleLink();
+		
+		//Use the link storage API to add the link
+		linkStorage.addLink(linkToCreate);
+		doTestLinkExist(linkToVerify);
+	}
+	
+	/**
+	 * Test if {@link LinkStorageImpl#update(List, DM_OPERATION)} can correctly creates multiple Links.
+	 */
+	@Test
+	public void testAddLinks() {
+		List<Link> linksToCreate = createFeasibleLinks();
+		List<Link> linksToVerify = createFeasibleLinks();
+	
+		// Test creation of new links
+		linkStorage.addLinks(linksToCreate);
+		for(Link l : linksToVerify) {
+			doTestLinkExist(l);
+		}
+	}
+
 	// TODO: remove @Ignore after UPDATE method is implemented
 	/**
-	 * Test if {@link LinkStorageImpl#update(Link, LinkInfo, DM_OPERATION)} can correctly updates LinkInfo for a Link.
+	 * Test if {@link LinkStorageImpl#updateLinkInfo(Link, LinkInfo, DM_OPERATION)} can correctly updates LinkInfo for a Link.
 	 */
 	@Ignore @Test
-	public void testUpdate_UpdateSingleLink() {
+	public void testUpdate_Update() {
 		Link linkToUpdate= createExistingLink();
 		long currentTime = System.currentTimeMillis();
 		LinkInfo infoToUpdate = createFeasibleLinkInfo(currentTime);
@@ -154,12 +181,12 @@ public class LinkStorageImplTest {
 	 * Test if {@link LinkStorageImpl#update(Link, DM_OPERATION)} can correctly creates a Link.
 	 */
 	@Test
-	public void testUpdate_CreateSingleLink() {
+	public void testUpdate_Create() {
 		Link linkToCreate = createFeasibleLink();
 		Link linkToVerify = createFeasibleLink();
 		
 		//Use the link storage API to add the link
-		linkStorage.update(linkToCreate, ILinkStorage.DM_OPERATION.CREATE);
+		linkStorage.update(linkToCreate, null, ILinkStorage.DM_OPERATION.CREATE);
 		doTestLinkExist(linkToVerify);
 	}
 
@@ -167,12 +194,12 @@ public class LinkStorageImplTest {
 	 * Test if {@link LinkStorageImpl#update(Link, DM_OPERATION)}can correctly inserts a Link.
 	 */
 	@Test
-	public void testUpdate_InsertSingleLink(){
+	public void testUpdate_Insert(){
 		Link linkToInsert = createFeasibleLink();
 		Link linkToVerify = createFeasibleLink();
 		
 		//Use the link storage API to add the link
-		linkStorage.update(linkToInsert, ILinkStorage.DM_OPERATION.INSERT);
+		linkStorage.update(linkToInsert, null, ILinkStorage.DM_OPERATION.INSERT);
 		doTestLinkExist(linkToVerify);
 	}
 	
@@ -180,124 +207,15 @@ public class LinkStorageImplTest {
 	 * Test if {@link LinkStorageImpl#update(Link, DM_OPERATION)} can correctly deletes a Link.
 	 */
 	@Test
-	public void testUpdate_DeleteSingleLink(){
+	public void testUpdate_Delete(){
 		Link linkToDelete = createExistingLink();
 		Link linkToVerify = createExistingLink();
 
 		// Test deletion of existing link
-		linkStorage.update(linkToDelete, DM_OPERATION.DELETE);
+		linkStorage.update(linkToDelete, null, DM_OPERATION.DELETE);
 		doTestLinkNotExist(linkToVerify);
 	}
 
-	/**
-	 * Test if {@link LinkStorageImpl#update(List, DM_OPERATION)} can correctly creates multiple Links.
-	 */
-	@Test
-	public void testUpdate_CreateLinks(){
-		List<Link> linksToCreate = createFeasibleLinks();
-		List<Link> linksToVerify = createFeasibleLinks();
-
-		// Test creation of new links
-		linkStorage.update(linksToCreate, ILinkStorage.DM_OPERATION.CREATE);
-		for(Link l : linksToVerify) {
-			doTestLinkExist(l);
-		}
-	}
-
-	/**
-	 * Test if {@link LinkStorageImpl#update(List, DM_OPERATION)} can correctly inserts multiple Links.
-	 */
-	@Test
-	public void testUpdate_InsertLinks(){
-		List<Link> linksToInsert = createFeasibleLinks();
-		List<Link> linksToVerify = createFeasibleLinks();
-		
-		// Test insertion of new links
-		linkStorage.update(linksToInsert, ILinkStorage.DM_OPERATION.INSERT);
-		for(Link l : linksToVerify) {
-			doTestLinkExist(l);
-		}
-	}
-	
-	/**
-	 * Test if  {@link LinkStorageImpl#update(List, DM_OPERATION)} can correctly deletes multiple Links.
-	 */
-	@Test
-	public void testUpdate_DeleteLinks(){
-		List<Link> linksToDelete = createExistingLinks();
-		List<Link> linksToVerify = createExistingLinks();
-		
-		// Test deletion of existing links
-		linkStorage.update(linksToDelete, ILinkStorage.DM_OPERATION.DELETE);
-		for(Link l : linksToVerify) {
-			doTestLinkNotExist(l);
-		}
-	}
-	
-	// TODO: remove @Ignore after UPDATE method is implemented
-	/**
-	 * Test if {@link LinkStorageImpl#updateLink(Link, LinkInfo, DM_OPERATION)} can correctly updates LinkInfo for a Link.
-	 */
-	@Ignore @Test
-	public void testUpdateLink_Update() {
-		Link linkToUpdate= createExistingLink();
-		long currentTime = System.currentTimeMillis();
-		LinkInfo infoToUpdate = createFeasibleLinkInfo(currentTime);
-		LinkInfo infoToVerify = createFeasibleLinkInfo(currentTime);
-
-		linkStorage.updateLink(linkToUpdate, infoToUpdate, ILinkStorage.DM_OPERATION.UPDATE);
-		
-		doTestLinkHasStateOf(linkToUpdate, infoToVerify);
-	}
-	
-	/**
-	 * Test if {@link LinkStorageImpl#updateLink(Link, LinkInfo, DM_OPERATION)} can correctly creates a Link.
-	 */
-	@Test
-	public void testUpdateLink_Create() {
-		Link linkToCreate = createFeasibleLink();
-		Link linkToVerify = createFeasibleLink();
-		
-		//Use the link storage API to add the link
-		linkStorage.updateLink(linkToCreate, null, ILinkStorage.DM_OPERATION.CREATE);
-		doTestLinkExist(linkToVerify);
-	}
-	
-	/**
-	 * Test if {@link LinkStorageImpl#updateLink(Link, LinkInfo, DM_OPERATION)} can correctly inserts a Link.
-	 */
-	@Test
-	public void testUpdateLink_Insert() {
-		Link linkToInsert = createFeasibleLink();
-		Link linkToVerify = createFeasibleLink();
-		
-		//Use the link storage API to add the link
-		linkStorage.updateLink(linkToInsert, null, ILinkStorage.DM_OPERATION.INSERT);
-
-		doTestLinkExist(linkToVerify);
-	}
-	
-	// TODO: Check if addOrUpdateLink() should accept DELETE operation. If not, remove this test.
-	/**
-	 * Test if {@link LinkStorageImpl#updateLink(Link, LinkInfo, DM_OPERATION)} can correctly deletes a Link.
-	 */
-	@Ignore @Test
-	public void testUpdateLink_Delete() {
-		Link linkToDelete = createExistingLink();
-		Link linkToVerify = createExistingLink();
-
-		// Test deletion of existing link
-		linkStorage.updateLink(linkToDelete, null, DM_OPERATION.DELETE);
-		doTestLinkNotExist(linkToVerify);
-		
-		linkToDelete = createFeasibleLink();
-		linkToVerify = createFeasibleLink();
-
-		// Test deletion of not-existing link
-		linkStorage.updateLink(linkToDelete, null, DM_OPERATION.DELETE);
-		doTestLinkNotExist(linkToVerify);
-	}
-	
 	/**
 	 * Test if {@link LinkStorageImpl#getLinks(Long, short)} can correctly return Links connected to specific DPID and port.
 	 */
@@ -391,6 +309,14 @@ public class LinkStorageImplTest {
 		linkStorage.deleteLinksOnPort(linkToDelete.getSrc(), linkToDelete.getSrcPort());
 		
 		doTestLinkNotExist(linkToVerify);
+	}
+	
+	/**
+	 * Test if {@link LinkStorageImpl#getLinkInfo(Link)} can delete Links.
+	 */
+	@Ignore @Test
+	public void testGetLinkInfo() {
+		fail("not yet implemented");
 	}
 
 	/**

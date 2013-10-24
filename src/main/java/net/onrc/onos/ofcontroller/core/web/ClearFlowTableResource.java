@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ClearFlowTableResource extends ServerResource {
-	static Logger log = LoggerFactory.getLogger(ClearFlowTableResource.class);
+	final static Logger log = LoggerFactory.getLogger(ClearFlowTableResource.class);
 
 	@Post("json")
 	public List<String> ClearFlowTable(String jsonData){

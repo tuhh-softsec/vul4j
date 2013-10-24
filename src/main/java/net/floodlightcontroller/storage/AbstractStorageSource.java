@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 @LogMessageCategory("System Database")
 public abstract class AbstractStorageSource 
     implements IStorageSourceService, IFloodlightModule {
-    protected static Logger logger = LoggerFactory.getLogger(AbstractStorageSource.class);
+    protected final static Logger logger = LoggerFactory.getLogger(AbstractStorageSource.class);
 
     // Shared instance of the executor to use to execute the storage tasks.
     // We make this a single threaded executor, because if we used a thread pool

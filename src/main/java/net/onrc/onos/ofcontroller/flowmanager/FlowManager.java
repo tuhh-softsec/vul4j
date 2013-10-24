@@ -64,7 +64,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private static long nextFlowEntryId = 0;
 
     /** The logger. */
-    private static Logger log = LoggerFactory.getLogger(FlowManager.class);
+    private final static Logger log = LoggerFactory.getLogger(FlowManager.class);
 
     // The periodic task(s)
     private ScheduledExecutorService mapReaderScheduler;

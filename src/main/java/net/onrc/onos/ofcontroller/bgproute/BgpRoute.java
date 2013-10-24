@@ -80,7 +80,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 									IOFSwitchListener, ILayer3InfoService,
 									IProxyArpService {
 	
-	private static Logger log = LoggerFactory.getLogger(BgpRoute.class);
+	private final static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
 	private IFloodlightProviderService floodlightProvider;
 	private ITopologyService topologyService;

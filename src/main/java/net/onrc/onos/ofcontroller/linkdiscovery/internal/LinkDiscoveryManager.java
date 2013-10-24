@@ -127,7 +127,7 @@ implements IOFMessageListener, IOFSwitchListener,
 IStorageSourceListener, ILinkDiscoveryService,
 IFloodlightModule, IInfoProvider, IHAListener {
 	protected IFloodlightProviderService controller;
-    protected static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
+    protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
 
     // Names of table/fields for links in the storage API
     private static final String LINK_TABLE_NAME = "controller_link";

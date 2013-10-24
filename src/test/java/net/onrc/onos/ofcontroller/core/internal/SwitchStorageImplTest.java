@@ -115,6 +115,7 @@ public class SwitchStorageImplTest {
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(state);
 		mockISw.setState(state);
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
@@ -204,21 +205,18 @@ public class SwitchStorageImplTest {
 		
 		//Mock Switch
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
-		mockISw.setState("ACTIVE");
 		mockISw.setState(stateINACTIVE.toString());
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
-		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
-		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);	
-		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		mockOpe.commit();
 		mockOpe.close();
 		replay(mockOpe);
 		
 		swSt.init(conf);
-		swSt.update(dpid, stateINACTIVE, opUPDATE);
+		swSt.updateSwitch(dpid, stateINACTIVE, opUPDATE);
 	}
 	
 	/**
@@ -241,19 +239,17 @@ public class SwitchStorageImplTest {
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState("ACTIVE");
 		mockISw.setState(stateINACTIVE.toString());
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
-		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
 		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);	
-		mockOpe.commit();
-		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		mockOpe.commit();
 		mockOpe.close();
 		replay(mockOpe);
 		
 		swSt.init(conf);
-		swSt.update(dpid, stateINACTIVE, opCREATE);
+		swSt.updateSwitch(dpid, stateINACTIVE, opCREATE);
 	}
 	
 	/**
@@ -276,19 +272,17 @@ public class SwitchStorageImplTest {
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState("ACTIVE");
 		mockISw.setState(stateINACTIVE.toString());
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
-		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
 		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
-		mockOpe.commit();
-		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
 		mockOpe.commit();
 		mockOpe.close();
 		replay(mockOpe);
 		
 		swSt.init(conf);
-		swSt.update(dpid, stateINACTIVE, opINSERT);
+		swSt.updateSwitch(dpid, stateINACTIVE, opINSERT);
 	}
 	
 	/**
@@ -310,6 +304,7 @@ public class SwitchStorageImplTest {
 		//Mock Switch
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(stateACTIVE.toString());
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
@@ -324,7 +319,7 @@ public class SwitchStorageImplTest {
 		
 		swSt.init(conf);
 		swSt.addSwitch(dpid);
-		swSt.update(dpid, stateACTIVE, opDELETE);
+		swSt.updateSwitch(dpid, stateACTIVE, opDELETE);
 	}
 	
 	/**
@@ -344,6 +339,7 @@ public class SwitchStorageImplTest {
 		//Mock Switch
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(state);
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
@@ -380,6 +376,7 @@ public class SwitchStorageImplTest {
 		//Mock Switch
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(state);
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
@@ -432,6 +429,8 @@ public class SwitchStorageImplTest {
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(state);
 		mockISw.addPort(mockIPort);
+		expect(mockISw.getPort(anyShort())).andReturn(null);
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
@@ -439,7 +438,7 @@ public class SwitchStorageImplTest {
 		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
-		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+//		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
 		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		mockOpe.close();
@@ -464,7 +463,8 @@ public class SwitchStorageImplTest {
 		String dpid = "00:00:00:00:00:00:0a:01";
 		short portNumber = 5;
 		String swState = "ACTIVE";
-		String portState = "INACTIVE";
+//		String portState = "INACTIVE";
+		String portId = "5";
 		String name = "port 5 at SEA switch";
 		
 		OFPhysicalPort portToAdd = new OFPhysicalPort();
@@ -475,24 +475,27 @@ public class SwitchStorageImplTest {
 		
 		//Expectation of  mock Port
 		IPortObject mockIPort = createMock(IPortObject.class);
-		mockIPort.setState(portState);
-		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
-		mockIPort.setDesc(name);
+		expect(mockIPort.getPortId()).andReturn(portId);
+//		mockIPort.setState(portState);
+//		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
+//		mockIPort.setDesc(name);
 		replay(mockIPort);
 		
 		//Expectation of mock Switch
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(swState);
 //		mockISw.removePort(mockIPort);
+		expect(mockISw.getPort(anyShort())).andReturn(mockIPort);
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
 		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
 		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);	
-		mockOpe.commit();	
+		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
-		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
-//		mockOpe.removePort(mockIPort);
+//		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
+		mockOpe.removePort(mockIPort);
 		mockOpe.commit();
 		mockOpe.close();
 		replay(mockOpe);
@@ -528,6 +531,7 @@ public class SwitchStorageImplTest {
 		
 		//Expectation of mock Switch
 		ISwitchObject mockISw = createStrictMock(ISwitchObject.class);
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
@@ -572,6 +576,8 @@ public class SwitchStorageImplTest {
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(state);
 		mockISw.addPort(mockIPort);
+		expect(mockISw.getPort(portNumber)).andReturn(null);
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
@@ -579,7 +585,7 @@ public class SwitchStorageImplTest {
 		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
-		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+//		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
 		expect(mockOpe.newPort(dpid, portNumber)).andReturn(null);	
 		mockOpe.rollback();
 		mockOpe.close();
@@ -623,6 +629,8 @@ public class SwitchStorageImplTest {
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(state);
 		mockISw.addPort(mockIPort);
+		expect(mockISw.getPort(portNumber)).andReturn(null);
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
@@ -630,7 +638,7 @@ public class SwitchStorageImplTest {
 		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
-		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+//		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
 		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		expectLastCall().andThrow(new RuntimeException());
@@ -658,6 +666,7 @@ public class SwitchStorageImplTest {
 		short portNumber = 5;
 		String portState = "INACTIVE";
 		String swState = "ACTIVE";
+		String portId = "5";
 		String name = "port 5 at SEA switch";
 		
 		OFPhysicalPort portToAdd = new OFPhysicalPort();
@@ -669,31 +678,33 @@ public class SwitchStorageImplTest {
 		//Expectation of  mock Port
 		IPortObject mockIPort = createMock(IPortObject.class);
 		mockIPort.setState(swState);
-		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
+//		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
 		mockIPort.setDesc(name);
 		mockIPort.setState(portState);
+		expect(mockIPort.getPortId()).andReturn(portId);
 		replay(mockIPort);
 		
 		//Expectation of mock Switch
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(swState);
-		mockISw.addPort(mockIPort);
 //		mockISw.removePort(mockIPort);
+		expect(mockISw.getPort(portNumber)).andReturn(null);
+		mockISw.addPort(mockIPort);
+		expect(mockISw.getPort(portNumber)).andReturn(mockIPort);
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
-		
-
 		//Expectation of mock operation.
 		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
 		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
-		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+//		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
 		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
-		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
-//		mockOpe.removePort(mockIPort);
+//		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
+		mockOpe.removePort(mockIPort);
 		mockOpe.commit();
 		mockOpe.close();
 		replay(mockOpe);
@@ -719,6 +730,7 @@ public class SwitchStorageImplTest {
 		short portNumber = 5;
 		String swState = "ACTIVE";
 		String portState = "INACTIVE";
+		String portId = "5";
 		String name = "port 5 at SEA switch";
 		
 		OFPhysicalPort portToAdd = new OFPhysicalPort();
@@ -733,13 +745,18 @@ public class SwitchStorageImplTest {
 		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
 		mockIPort.setDesc(name);
 		mockIPort.setState(portState);
+		expect(mockIPort.getPortId()).andReturn(portId);
 		replay(mockIPort);
 		
 		//Expectation of mock Switch
 		ISwitchObject mockISw = createMock(ISwitchObject.class);
 		mockISw.setState(swState);
 		mockISw.addPort(mockIPort);
+		expect(mockISw.getPort(portNumber)).andReturn(null);
+		expect(mockISw.getPort(portNumber)).andReturn(mockIPort).anyTimes();
 //		mockISw.removePort(mockIPort);
+		
+		expect(mockISw.getDPID()).andReturn(dpid).anyTimes();
 		replay(mockISw);
 		
 		//Expectation of mock operation.
@@ -747,15 +764,15 @@ public class SwitchStorageImplTest {
 		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
-		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+//		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
 		expect(mockOpe.newPort(dpid, portNumber)).andReturn(mockIPort);	
 		mockOpe.commit();
 		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
-		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
-		mockOpe.commit(); // Cannot generate exception..need to revisit this test
-//		mockOpe.removePort(mockIPort);
-//		expectLastCall().andThrow(new RuntimeException());
-//		mockOpe.rollback();
+//		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
+//		mockOpe.commit(); // Cannot generate exception..need to revisit this test
+		mockOpe.removePort(mockIPort);
+		expectLastCall().andThrow(new RuntimeException());
+		mockOpe.rollback();
 		mockOpe.close();
 		replay(mockOpe);
 	

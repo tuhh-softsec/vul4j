@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  *   GET /wm/flow/getsummary/{flow-id}/{max-flows}/json"
  */
 public class GetSummaryFlowsResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(GetSummaryFlowsResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(GetSummaryFlowsResource.class);
 
     /**
      * Implement the API.

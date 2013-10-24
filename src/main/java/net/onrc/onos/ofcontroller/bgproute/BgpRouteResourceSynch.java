@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class BgpRouteResourceSynch extends ServerResource {
     
-	protected static Logger log = LoggerFactory
+	protected final static Logger log = LoggerFactory
             .getLogger(BgpRouteResource.class);
 	
 	@Post

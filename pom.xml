@@ -29,6 +29,12 @@
 	<enabled>false</enabled>
       </snapshots>
     </repository>
+    <!-- In Project repository -->
+    <repository>
+      <id>in-project</id>
+      <name>In Project Repo</name>
+      <url>file://${project.basedir}/repo</url>
+    </repository>
   </repositories>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -218,6 +224,18 @@
     </plugins>
   </reporting>
   <dependencies>
+    <!--
+    <dependency>
+      <groupId>com.esotericsoftware.kryo</groupId>
+      <artifactId>kryo</artifactId>
+      <version>2.22</version>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>net.onrc.onos</groupId>
+      <artifactId>kryo2</artifactId>
+      <version>2.22</version>
+    </dependency>
     <!-- ONOS's direct dependencies -->
     <dependency>
       <groupId>org.apache.cassandra</groupId>
