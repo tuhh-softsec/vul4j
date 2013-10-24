@@ -19,6 +19,18 @@ public class MACAddress {
     public static final int MAC_ADDRESS_LENGTH = 6;
     private byte[] address = new byte[MAC_ADDRESS_LENGTH];
 
+    /**
+     * Default constructor.
+     */
+    public MACAddress() {
+	this.address = new byte[] { 0, 0, 0, 0, 0, 0};
+    }
+
+    /**
+     * Constructor for a given address stored in a byte array.
+     *
+     * @param address the address stored in a byte array.
+     */
     public MACAddress(byte[] address) {
         this.address = Arrays.copyOf(address, MAC_ADDRESS_LENGTH);
     }
