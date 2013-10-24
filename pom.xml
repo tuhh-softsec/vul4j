@@ -21,14 +21,6 @@
       <name>Public online Restlet repository</name>
       <url>http://maven.restlet.org</url>
     </repository>
-    <repository>
-      <id>tinkerpop-repository</id>
-      <name>TinkerPop Maven2 Repository</name>
-      <url>http://tinkerpop.com/maven2</url>
-      <snapshots>
-	<enabled>false</enabled>
-      </snapshots>
-    </repository>
     <!-- In Project repository -->
     <repository>
       <id>in-project</id>
