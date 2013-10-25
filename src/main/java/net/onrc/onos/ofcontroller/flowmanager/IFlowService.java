@@ -114,5 +114,26 @@ public interface IFlowService extends IFloodlightService {
      * conditions to install.
      * @return the added shortest-path flow on success, otherwise null.
      */
-    public FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath);
+    FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath);
+
+    /**
+     * Receive a notification that a Flow is added.
+     *
+     * @param flowPath the flow that is added.
+     */
+    void notificationRecvFlowAdded(FlowPath flowPath);
+
+    /**
+     * Receive a notification that a Flow is removed.
+     *
+     * @param flowPath the flow that is removed.
+     */
+    void notificationRecvFlowRemoved(FlowPath flowPath);
+
+    /**
+     * Receive a notification that a Flow is updated.
+     *
+     * @param flowPath the flow that is updated.
+     */
+    void notificationRecvFlowUpdated(FlowPath flowPath);
 }

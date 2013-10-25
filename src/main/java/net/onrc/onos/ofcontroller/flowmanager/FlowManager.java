@@ -379,6 +379,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void close() {
+	datagridService.deregisterFlowService(this);
     	dbHandler.close();
     }
 
@@ -487,6 +488,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
 
+	datagridService.registerFlowService(this);
+	// TODO: Flow Paths not used yet
+	Collection<FlowPath> flowPaths = datagridService.getAllFlows();
+
 	mapReaderScheduler.scheduleAtFixedRate(
 			mapReader, 3, 3, TimeUnit.SECONDS);
 	shortestPathReconcileScheduler.scheduleAtFixedRate(
@@ -505,8 +510,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public boolean addFlow(FlowPath flowPath, FlowId flowId,
 			   String dataPathSummaryStr) {
-	return FlowDatabaseOperation.addFlow(this, dbHandler, flowPath, flowId,
-					     dataPathSummaryStr);
+	if (FlowDatabaseOperation.addFlow(this, dbHandler, flowPath, flowId,
+					  dataPathSummaryStr)) {
+	    datagridService.notificationSendFlowAdded(flowPath);
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -528,7 +537,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
-	return FlowDatabaseOperation.deleteAllFlows(dbHandler);
+	if (FlowDatabaseOperation.deleteAllFlows(dbHandler)) {
+	    datagridService.notificationSendAllFlowsRemoved();
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -539,7 +552,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
-	return FlowDatabaseOperation.deleteFlow(dbHandler, flowId);
+	if (FlowDatabaseOperation.deleteFlow(dbHandler, flowId)) {
+	    datagridService.notificationSendFlowRemoved(flowId);
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -549,7 +566,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean clearAllFlows() {
-	return FlowDatabaseOperation.clearAllFlows(dbHandler);
+	if (FlowDatabaseOperation.clearAllFlows(dbHandler)) {
+	    datagridService.notificationSendAllFlowsRemoved();
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -560,7 +581,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean clearFlow(FlowId flowId) {
-	return FlowDatabaseOperation.clearFlow(dbHandler, flowId);
+	if (FlowDatabaseOperation.clearFlow(dbHandler, flowId)) {
+	    datagridService.notificationSendFlowRemoved(flowId);
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -682,7 +707,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param newDataPath the new data path to use.
      * @return true on success, otherwise false.
      */
-    public boolean reconcileFlow(IFlowPath flowObj, DataPath newDataPath) {
+    private boolean reconcileFlow(IFlowPath flowObj, DataPath newDataPath) {
 
 	//
 	// Set the incoming port matching and the outgoing port output
@@ -745,7 +770,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param flowObjSet the set of flows that need to be reconciliated.
      */
-    public void reconcileFlows(Iterable<IFlowPath> flowObjSet) {
+    private void reconcileFlows(Iterable<IFlowPath> flowObjSet) {
 	if (! flowObjSet.iterator().hasNext())
 	    return;
 	// TODO: Not implemented/used yet.
@@ -759,7 +784,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param flowEntryObj the flow entry object to install.
      * @return true on success, otherwise false.
      */
-    public boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
+    private boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
 				    IFlowEntry flowEntryObj) {
 	return FlowSwitchOperation.installFlowEntry(
 		floodlightProvider.getOFMessageFactory(),
@@ -774,7 +799,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    public boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
+    private boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				    FlowEntry flowEntry) {
 	return FlowSwitchOperation.installFlowEntry(
 		floodlightProvider.getOFMessageFactory(),
@@ -789,12 +814,42 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
-    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
+    private boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				   FlowEntry flowEntry) {
 	//
 	// The installFlowEntry() method implements both installation
 	// and removal of flow entries.
 	//
 	return (installFlowEntry(mySwitch, flowPath, flowEntry));
+    }
+
+    /**
+     * Receive a notification that a Flow is added.
+     *
+     * @param flowPath the flow that is added.
+     */
+    @Override
+    public void notificationRecvFlowAdded(FlowPath flowPath) {
+	// TODO
+    }
+
+    /**
+     * Receive a notification that a Flow is removed.
+     *
+     * @param flowPath the flow that is removed.
+     */
+    @Override
+    public void notificationRecvFlowRemoved(FlowPath flowPath) {
+	// TODO
+    }
+
+    /**
+     * Receive a notification that a Flow is updated.
+     *
+     * @param flowPath the flow that is updated.
+     */
+    @Override
+    public void notificationRecvFlowUpdated(FlowPath flowPath) {
+	// TODO
     }
 }

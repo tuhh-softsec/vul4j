@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.cmpEq;
 import static org.powermock.api.easymock.PowerMock.*;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -904,7 +905,15 @@ public class FlowManagerTest {
 		replayAll();
 		
 		fm.init(context);
-		Boolean result = fm.reconcileFlow(iFlowPath1, dataPath);
+		// Use reflection to test the private method
+		// Boolean result = fm.reconcileFlow(iFlowPath1, dataPath);
+		Class fmClass = FlowManager.class;
+		Method method = fmClass.getDeclaredMethod(
+			"reconcileFlow",
+			new Class[] { IFlowPath.class, DataPath.class });
+		method.setAccessible(true);
+		Boolean result = (Boolean)method.invoke(fm,
+			new Object[] { iFlowPath1, dataPath });
 		
 		// verify the test
 		verifyAll();
@@ -958,7 +967,16 @@ public class FlowManagerTest {
 		replayAll();
 		
 		fm.init(context);
-		Boolean result = fm.installFlowEntry(iofSwitch, iFlowPath, iFlowEntry);
+		// Use reflection to test the private method
+		// Boolean result = fm.installFlowEntry(iofSwitch, iFlowPath, iFlowEntry);
+		Class fmClass = FlowManager.class;
+		Method method = fmClass.getDeclaredMethod(
+			"installFlowEntry",
+			new Class[] { IOFSwitch.class, IFlowPath.class, IFlowEntry.class });
+		method.setAccessible(true);
+		Boolean result = (Boolean)method.invoke(fm,
+			new Object[] { iofSwitch, iFlowPath, iFlowEntry });
+
 		
 		// verify the test
 		verifyAll();
