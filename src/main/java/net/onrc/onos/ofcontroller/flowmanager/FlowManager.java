@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -69,6 +71,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     // The periodic task(s)
     private ScheduledExecutorService mapReaderScheduler;
     private ScheduledExecutorService shortestPathReconcileScheduler;
+
+    // The queue with Flow Path updates
+    protected BlockingQueue<EventEntry<FlowPath>> flowPathEvents =
+	new LinkedBlockingQueue<EventEntry<FlowPath>>();
 
     /**
      * Periodic task for reading the Flow Entries and pushing changes
@@ -488,10 +494,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
 
+	// Register with the Datagrid Service and obtain the initial state
 	datagridService.registerFlowService(this);
-	// TODO: Flow Paths not used yet
 	Collection<FlowPath> flowPaths = datagridService.getAllFlows();
+	for (FlowPath flowPath : flowPaths) {
+	    EventEntry<FlowPath> eventEntry =
+		new EventEntry<FlowPath>(EventEntry.Type.ENTRY_ADD, flowPath);
+	    flowPathEvents.add(eventEntry);
+	}
 
+	// Schedule the periodic tasks
 	mapReaderScheduler.scheduleAtFixedRate(
 			mapReader, 3, 3, TimeUnit.SECONDS);
 	shortestPathReconcileScheduler.scheduleAtFixedRate(
