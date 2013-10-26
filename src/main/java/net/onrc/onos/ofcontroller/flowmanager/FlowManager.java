@@ -295,10 +295,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    Short srcPortShort = flowPathObj.getSrcPort();
 		    String dstDpidStr = flowPathObj.getDstSwitch();
 		    Short dstPortShort = flowPathObj.getDstPort();
+		    String flowPathTypeStr = flowPathObj.getFlowPathType();
 		    Long flowPathFlagsLong = flowPathObj.getFlowPathFlags();
 		    if ((srcPortShort == null) ||
 			(dstDpidStr == null) ||
 			(dstPortShort == null) ||
+			(flowPathTypeStr == null) ||
 			(flowPathFlagsLong == null)) {
 			continue;
 		    }
@@ -308,6 +310,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    Port dstPort = new Port(dstPortShort);
 		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
 		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+		    FlowPathType flowPathType = FlowPathType.valueOf(flowPathTypeStr);
 		    FlowPathFlags flowPathFlags = new FlowPathFlags(flowPathFlagsLong);
 
 		    counterMyFlowPaths++;
@@ -713,6 +716,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	FlowPath computedFlowPath = new FlowPath();
 	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
 	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
+	computedFlowPath.setFlowPathType(flowPath.flowPathType());
 	computedFlowPath.setFlowPathFlags(new FlowPathFlags(flowPath.flowPathFlags().flags()));
 	computedFlowPath.setDataPath(dataPath);
 	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));

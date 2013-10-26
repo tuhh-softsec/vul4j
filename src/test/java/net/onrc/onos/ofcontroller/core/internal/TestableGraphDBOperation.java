@@ -415,6 +415,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 	public static class TestFlowPath implements IFlowPath {
 		private String state,type,flowId,installerId,srcSw,dstSw;
+		private String flowPathType;
 		private Long flowPathFlags;
 		private String dataPathSummary,userState;
 		private Short srcPort,dstPort;
@@ -431,6 +432,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private List<ISwitchObject> switches;
 
 		private String stateToUpdate,typeToUpdate,flowIdToUpdate,installerIdToUpdate,srcSwToUpdate,dstSwToUpdate;
+		private String flowPathTypeToUpdate;
 		private Long flowPathFlagsToUpdate;
 		private String dataPathSummaryToUpdate,userStateToUpdate;
 		private Short srcPortToUpdate,dstPortToUpdate;
@@ -469,6 +471,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(typeToUpdate != null) { type = typeToUpdate; }
 			if(flowIdToUpdate != null) { flowId = flowIdToUpdate; }
 			if(installerIdToUpdate != null) { installerId = installerIdToUpdate; }
+			if(flowPathTypeToUpdate != null) { flowPathType = flowPathTypeToUpdate; }
 			if(flowPathFlagsToUpdate != null) { flowPathFlags = flowPathFlagsToUpdate; }
 			if(srcSwToUpdate != null) { srcSw = srcSwToUpdate; }
 			if(dstSwToUpdate != null) { dstSw = dstSwToUpdate; }
@@ -499,6 +502,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			flowsToRemove.clear();
 			
 			stateToUpdate = typeToUpdate = flowIdToUpdate = installerIdToUpdate = null;
+			flowPathTypeToUpdate = null;
 			flowPathFlagsToUpdate = null;
 			srcSwToUpdate = dstSwToUpdate = dataPathSummaryToUpdate = userStateToUpdate = null;
 			srcPortToUpdate = dstPortToUpdate = null;
@@ -517,6 +521,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setTypeForTest(String type) { this.type = type; }
 		public void setFlowIdForTest(String flowId) { this.flowId = flowId; }
 		public void setInstallerIdForTest(String installerId) { this.installerId = installerId; }
+		public void setFlowPathTypeForTest(String flowPathType) { this.flowPathType = flowPathType; }
 		public void setFlowPathFlagsForTest(Long flowPathFlags) { this.flowPathFlags = flowPathFlags; }
 		public void setSrcSwForTest(String srcSw) { this.srcSw = srcSw; }
 		public void setDstSwForTest(String dstSw) { this.dstSw = dstSw; }
@@ -568,6 +573,12 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public void setInstallerId(String installerId) { installerIdToUpdate = installerId; }
+
+		@Override
+		public String getFlowPathType() { return flowPathType; }
+
+		@Override
+		public void setFlowPathType(String flowPathType) { flowPathTypeToUpdate = flowPathType; }
 
 		@Override
 		public Long getFlowPathFlags() { return flowPathFlags; }

@@ -113,6 +113,7 @@ public class KryoFactory {
 	kryo.register(FlowId.class);
 	kryo.register(FlowPath.class);
 	kryo.register(FlowPathFlags.class);
+	kryo.register(FlowPathType.class);
 	kryo.register(IPv4.class);
 	kryo.register(IPv4Net.class);
 	kryo.register(IPv6.class);

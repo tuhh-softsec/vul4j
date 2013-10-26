@@ -104,6 +104,24 @@ public class INetMapTopologyObjectsIFlowPathTest {
 
 	/**
 	 * Desc:
+	 *  Test method for get and set FlowPathType method.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set the Flow Path Type.
+	 * 2. Should get the Flow Path Type.
+	 */
+	@Test
+	public void testSetGetFlowPathType() {
+		String flowId = "xx";
+		String flowPathType = "FP_TYPE_SHORTEST_PATH";
+		flowPath.setFlowId(flowId);
+		flowPath.setFlowPathType(flowPathType);
+		assertEquals(flowPath.getFlowPathType(), flowPathType);
+	}
+
+	/**
+	 * Desc:
 	 *  Test method for get and set FlowPathFlags method.
 	 * Condition:
 	 *  N/A

@@ -3,7 +3,6 @@ package net.onrc.onos.ofcontroller.util;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
-import net.onrc.onos.ofcontroller.util.FlowPathFlags;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -13,6 +12,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class FlowPath implements Comparable<FlowPath> {
     private FlowId flowId;		// The Flow ID
     private CallerId installerId;	// The Caller ID of the path installer
+    private FlowPathType flowPathType;	// The Flow Path type
     private FlowPathFlags flowPathFlags; // The Flow Path flags
     private DataPath dataPath;		// The data path
     private FlowEntryMatch flowEntryMatch; // Common Flow Entry Match for all
@@ -24,6 +24,7 @@ public class FlowPath implements Comparable<FlowPath> {
      * Default constructor.
      */
     public FlowPath() {
+	flowPathType = FlowPathType.FP_TYPE_UNKNOWN;
 	flowPathFlags = new FlowPathFlags();
 	dataPath = new DataPath();
 	flowEntryActions = new FlowEntryActions();
@@ -36,6 +37,7 @@ public class FlowPath implements Comparable<FlowPath> {
     	dataPath = new DataPath();
     	this.setFlowId(new FlowId(flowObj.getFlowId()));
     	this.setInstallerId(new CallerId(flowObj.getInstallerId()));
+	this.setFlowPathType(FlowPathType.valueOf(flowObj.getFlowPathType()));
 	this.setFlowPathFlags(new FlowPathFlags(flowObj.getFlowPathFlags()));
     	this.dataPath().srcPort().setDpid(new Dpid(flowObj.getSrcSwitch()));
     	this.dataPath().srcPort().setPort(new Port(flowObj.getSrcPort()));
@@ -221,6 +223,24 @@ public class FlowPath implements Comparable<FlowPath> {
     }
 
     /**
+     * Get the flow path type.
+     *
+     * @return the flow path type.
+     */
+    @JsonProperty("flowPathType")
+    public FlowPathType flowPathType() { return flowPathType; }
+
+    /**
+     * Set the flow path type.
+     *
+     * @param flowPathType the flow path type to set.
+     */
+    @JsonProperty("flowPathType")
+    public void setFlowPathType(FlowPathType flowPathType) {
+	this.flowPathType = flowPathType;
+    }
+
+    /**
      * Get the flow path flags.
      *
      * @return the flow path flags.
@@ -300,8 +320,8 @@ public class FlowPath implements Comparable<FlowPath> {
      * Convert the flow path to a string.
      *
      * The string has the following form:
-     *  [flowId=XXX installerId=XXX flowPathFlags=XXX dataPath=XXX
-     *   flowEntryMatch=XXX flowEntryActions=XXX]
+     *  [flowId=XXX installerId=XXX flowPathType = XXX flowPathFlags=XXX
+     *   dataPath=XXX flowEntryMatch=XXX flowEntryActions=XXX]
      *
      * @return the flow path as a string.
      */
@@ -309,6 +329,7 @@ public class FlowPath implements Comparable<FlowPath> {
     public String toString() {
 	String ret = "[flowId=" + this.flowId.toString();
 	ret += " installerId=" + this.installerId.toString();
+	ret += " flowPathType=" + this.flowPathType;
 	ret += " flowPathFlags=" + this.flowPathFlags.toString();
 	if (dataPath != null)
 	    ret += " dataPath=" + this.dataPath.toString();

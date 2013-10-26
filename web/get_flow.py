@@ -161,6 +161,7 @@ def parse_actions(actions):
 def print_flow_path(parsedResult):
   flowId = parsedResult['flowId']['value']
   installerId = parsedResult['installerId']['value']
+  flowPathType = parsedResult['flowPathType']
   flowPathFlags = parsedResult['flowPathFlags']['flags']
   srcSwitch = parsedResult['dataPath']['srcPort']['dpid']['value']
   srcPort = parsedResult['dataPath']['srcPort']['port']['value']
@@ -179,7 +180,7 @@ def print_flow_path(parsedResult):
       flowPathFlagsStr += ","
     flowPathFlagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY"
 
-  print "FlowPath: (flowId = %s installerId = %s flowPathFlags = 0x%x(%s) src = %s/%s dst = %s/%s)" % (flowId, installerId, flowPathFlags, flowPathFlagsStr, srcSwitch, srcPort, dstSwitch, dstPort)
+  print "FlowPath: (flowId = %s installerId = %s flowPathType = %s flowPathFlags = 0x%x(%s) src = %s/%s dst = %s/%s)" % (flowId, installerId, flowPathType, flowPathFlags, flowPathFlagsStr, srcSwitch, srcPort, dstSwitch, dstPort)
 
   #
   # Print the common match conditions

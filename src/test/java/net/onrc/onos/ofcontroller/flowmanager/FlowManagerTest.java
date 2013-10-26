@@ -88,11 +88,12 @@ public class FlowManagerTest {
 	}
 	
 	private IFlowPath createIFlowPathMock(long flowId, String installerID,
-			long flowPathFlags,
+			String flowPathType, long flowPathFlags,
 			long srcDpid, int srcPort, long dstDpid, int dstPort) {
 		IFlowPath iFlowPath = createNiceMock(IFlowPath.class);
 		expect(iFlowPath.getFlowId()).andReturn(new FlowId(flowId).toString()).anyTimes();
 		expect(iFlowPath.getInstallerId()).andReturn(installerID).anyTimes();
+		expect(iFlowPath.getFlowPathType()).andReturn(flowPathType).anyTimes();
 		expect(iFlowPath.getFlowPathFlags()).andReturn(new Long(flowPathFlags)).anyTimes();
 		expect(iFlowPath.getSrcSwitch()).andReturn(new Dpid(srcDpid).toString()).anyTimes();
 		expect(iFlowPath.getSrcPort()).andReturn(new Short((short)srcPort)).anyTimes();
@@ -102,13 +103,14 @@ public class FlowManagerTest {
 	}
 	
 	private FlowPath createTestFlowPath(long flowId, String installerId,
-			final long flowPathFlags,
+			String flowPathType, final long flowPathFlags,
 			final long srcDpid, final int srcPort,
-			final long dstDpid, final int dstPort			
+			final long dstDpid, final int dstPort
 			) {
 		FlowPath flowPath = new FlowPath();
 		flowPath.setFlowId(new FlowId(flowId));
 		flowPath.setInstallerId(new CallerId(installerId));
+		flowPath.setFlowPathType(FlowPathType.valueOf(flowPathType));
 		flowPath.setFlowPathFlags(new FlowPathFlags(flowPathFlags));
 		flowPath.setDataPath(new DataPath() {{
 			setSrcPort(new SwitchPort(new Dpid(srcDpid), new Port((short)srcPort)));
@@ -119,9 +121,9 @@ public class FlowManagerTest {
 	}
 	
 	private ArrayList<FlowPath> createTestFlowPaths() {
-		FlowPath flowPath1 = createTestFlowPath(1, "foo caller id", 0, 1, 1, 2, 2); 
-		FlowPath flowPath2 = createTestFlowPath(2, "caller id", 0, 1, 1, 2, 2); 
-		FlowPath flowPath3 = createTestFlowPath(3, "caller id", 0, 1, 5, 2, 2); 
+		FlowPath flowPath1 = createTestFlowPath(1, "foo caller id", "FP_TYPE_SHORTEST_PATH", 0, 1, 1, 2, 2); 
+		FlowPath flowPath2 = createTestFlowPath(2, "caller id", "FP_TYPE_SHORTEST_PATH", 0, 1, 1, 2, 2); 
+		FlowPath flowPath3 = createTestFlowPath(3, "caller id", "FP_TYPE_SHORTEST_PATH", 0, 1, 5, 2, 2); 
 
 		ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 		flowPaths.add(flowPath1);
@@ -194,6 +196,7 @@ public class FlowManagerTest {
 		FlowPath flowPath = new FlowPath();
 		flowPath.setFlowId(new FlowId(0x100));
 		flowPath.setInstallerId(new CallerId("installer id"));
+		flowPath.setFlowPathType(FlowPathType.valueOf("FP_TYPE_SHORTEST_PATH"));
 		flowPath.setFlowPathFlags(new FlowPathFlags(0));
 		flowPath.setDataPath(dataPath);
 		flowPath.setFlowEntryMatch(match);
@@ -205,6 +208,7 @@ public class FlowManagerTest {
 		createdFlowPath.setFlowId("0x100");
 		createdFlowPath.setType("flow");
 		createdFlowPath.setInstallerId("installer id");
+		createdFlowPath.setFlowPathType("FP_TYPE_SHORTEST_PATH");
 		createdFlowPath.setFlowPathFlags(new Long((long)0));
 		createdFlowPath.setSrcSwitch("00:00:00:00:00:00:12:34");
 		createdFlowPath.setSrcPort(new Short((short)1));
@@ -353,7 +357,7 @@ public class FlowManagerTest {
 	public final void testGetFlowSuccessNormally() throws Exception {
 		// instantiate required objects
 		FlowManager fm = new FlowManager();
-		IFlowPath iFlowPath = createIFlowPathMock(1, "caller id", 0, 1, 1, 2, 2); 
+		IFlowPath iFlowPath = createIFlowPathMock(1, "caller id", "FP_TYPE_SHORTEST_PATH", 0, 1, 1, 2, 2); 
 
 		// setup expectations
 		expectInitWithContext();
@@ -367,11 +371,13 @@ public class FlowManagerTest {
 		fm.init(context);
 		FlowPath flowPath = fm.getFlow(new FlowId(1));
 		String installerId = flowPath.installerId().toString();
+		String flowPathType = flowPath.flowPathType().toString();
 		long flowPathFlags = flowPath.flowPathFlags().flags();
 		
 		//verify the test
 		verifyAll();
 		assertEquals("caller id", installerId);
+		assertEquals("FP_TYPE_SHORTEST_PATH", flowPathType);
 		assertEquals(0L, flowPathFlags);
 	}
 	
@@ -454,9 +460,9 @@ public class FlowManagerTest {
 		final String getAllFlowsWithoutFlowEntries = "getAllFlowsWithoutFlowEntries";
 		// create mock objects
 		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, getAllFlowsWithoutFlowEntries);
-		IFlowPath flowPath1 = createIFlowPathMock(1, "", 0, 1, 2, 3, 4);
-		IFlowPath flowPath2 = createIFlowPathMock(5, "", 0, 2, 3, 4, 5);
-		IFlowPath flowPath3 = createIFlowPathMock(10, "", 0, 3, 4, 5, 6);
+		IFlowPath flowPath1 = createIFlowPathMock(1, "", "FP_TYPE_SHORTEST_PATH", 0, 1, 2, 3, 4);
+		IFlowPath flowPath2 = createIFlowPathMock(5, "", "FP_TYPE_SHORTEST_PATH", 0, 2, 3, 4, 5);
+		IFlowPath flowPath3 = createIFlowPathMock(10, "", "FP_TYPE_SHORTEST_PATH", 0, 3, 4, 5, 6);
 
 		// instantiate required objects
 		ArrayList<IFlowPath> flows = new ArrayList<IFlowPath>();
@@ -489,8 +495,8 @@ public class FlowManagerTest {
 	@Test
 	public final void testGetAllFlowsSuccessNormally() throws Exception {
 		// create mock objects
-		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", 0, 1, 1, 2, 2); 
-		IFlowPath iFlowPath2 = createIFlowPathMock(2, "caller id", 0, 2, 5, 3, 5);
+		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", "FP_TYPE_SHORTEST_PATH", 0, 1, 1, 2, 2); 
+		IFlowPath iFlowPath2 = createIFlowPathMock(2, "caller id", "FP_TYPE_SHORTEST_PATH", 0, 2, 5, 3, 5);
 		
 		// instantiate required objects
 		ArrayList<IFlowPath> flowPaths = new ArrayList<IFlowPath>();
@@ -541,6 +547,7 @@ public class FlowManagerTest {
 		FlowPath paramFlow = new FlowPath();
 		paramFlow.setFlowId(new FlowId(100));
 		paramFlow.setInstallerId(new CallerId("installer id"));
+		paramFlow.setFlowPathType(FlowPathType.valueOf("FP_TYPE_SHORTEST_PATH"));
 		paramFlow.setFlowPathFlags(new FlowPathFlags(0));
 		paramFlow.setDataPath(dataPath);
 		paramFlow.setFlowEntryMatch(match);
@@ -556,6 +563,7 @@ public class FlowManagerTest {
 						FlowPath flowPath = (FlowPath)EasyMock.getCurrentArguments()[0];
 						assertEquals(flowPath.flowId().value(), 100);
 						assertEquals(flowPath.installerId().toString(), "installer id");
+						assertEquals(flowPath.flowPathType().toString(), "PF_TYPE_SHORTEST_PATH");
 						assertEquals(flowPath.flowPathFlags().flags(), 0);
 						assertEquals(flowPath.dataPath().srcPort().toString(),
 								new SwitchPort(new Dpid(1), new Port((short)3)).toString());
@@ -577,6 +585,7 @@ public class FlowManagerTest {
 		verifyAll();
 		assertEquals(paramFlow.flowId().value(), resultFlow.flowId().value());
 		assertEquals(paramFlow.installerId().toString(), resultFlow.installerId().toString());
+		assertEquals(paramFlow.flowPathType().toString(), resultFlow.flowPathType().toString());
 		assertEquals(paramFlow.flowPathFlags().flags(), resultFlow.flowPathFlags().flags());
 		assertEquals(paramFlow.dataPath().toString(), resultFlow.dataPath().toString());
 		assertEquals(paramFlow.flowEntryMatch().toString(), resultFlow.flowEntryMatch().toString());
@@ -775,7 +784,7 @@ public class FlowManagerTest {
 	@Test
 	public final void testClearFlowSuccessNormally() throws Exception {
 		// create mock objects
-		IFlowPath flowPath = createIFlowPathMock(123, "id", 0, 1, 2, 3, 4);
+		IFlowPath flowPath = createIFlowPathMock(123, "id", "FP_TYPE_SHORTEST_PATH", 0, 1, 2, 3, 4);
 		IFlowEntry flowEntry1 = createMock(IFlowEntry.class);
 		IFlowEntry flowEntry2 = createMock(IFlowEntry.class);
 		IFlowEntry flowEntry3 = createMock(IFlowEntry.class);
@@ -818,8 +827,8 @@ public class FlowManagerTest {
 	@Test
 	public final void testGetAllFlowsWithoutFlowEntriesSuccessNormally() throws Exception {
 		// create mock objects
-		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", 0, 1, 1, 2, 2); 
-		IFlowPath iFlowPath2 = createIFlowPathMock(2, "caller id", 0, 2, 5, 3, 5);
+		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", "FP_TYPE_SHORTEST_PATH", 0, 1, 1, 2, 2); 
+		IFlowPath iFlowPath2 = createIFlowPathMock(2, "caller id", "FP_TYPE_SHORTEST_PATH", 0, 2, 5, 3, 5);
 		
 		// instantiate required objects
 		ArrayList<IFlowPath> flowPaths = new ArrayList<IFlowPath>();
@@ -855,7 +864,7 @@ public class FlowManagerTest {
 		final String addFlowEntry = "addFlowEntry";
 		
 		// create mock objects
-		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", 0, 1, 1, 2, 2);
+		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", "FP_TYPE_SHORTEST_PATH", 0, 1, 1, 2, 2);
 		IFlowEntry iFlowEntry1 = createMock(IFlowEntry.class);
 		IFlowEntry iFlowEntry2 = createMock(IFlowEntry.class);
 		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, addFlowEntry);
@@ -929,7 +938,7 @@ public class FlowManagerTest {
 	public final void testInstallFlowEntryWithIFlowPathSuccessNormally() throws Exception {
 		// create mock object
 		IOFSwitch iofSwitch = createNiceMock(IOFSwitch.class);
-		IFlowPath iFlowPath = createIFlowPathMock(1, "id", 0, 1, 2, 3, 4); 
+		IFlowPath iFlowPath = createIFlowPathMock(1, "id", "FP_TYPE_SHORTEST_PATH", 0, 1, 2, 3, 4); 
 		IFlowEntry iFlowEntry = createMock(IFlowEntry.class);
 		BasicFactory basicFactory = createMock(BasicFactory.class);
 		

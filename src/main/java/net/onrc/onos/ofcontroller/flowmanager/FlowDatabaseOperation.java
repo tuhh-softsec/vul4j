@@ -80,6 +80,7 @@ class FlowDatabaseOperation {
 	//
 	// Set the Flow attributes:
 	// - flowPath.installerId()
+	// - flowPath.flowPathType()
 	// - flowPath.flowPathFlags()
 	// - flowPath.dataPath().srcPort()
 	// - flowPath.dataPath().dstPort()
@@ -97,6 +98,7 @@ class FlowDatabaseOperation {
 	// - flowPath.flowEntryActions()
 	//
 	flowObj.setInstallerId(flowPath.installerId().toString());
+	flowObj.setFlowPathType(flowPath.flowPathType().toString());
 	flowObj.setFlowPathFlags(flowPath.flowPathFlags().flags());
 	flowObj.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
@@ -751,6 +753,7 @@ class FlowDatabaseOperation {
 	//
 	String flowIdStr = flowObj.getFlowId();
 	String installerIdStr = flowObj.getInstallerId();
+	String flowPathType = flowObj.getFlowPathType();
 	Long flowPathFlags = flowObj.getFlowPathFlags();
 	String srcSwitchStr = flowObj.getSrcSwitch();
 	Short srcPortShort = flowObj.getSrcPort();
@@ -759,6 +762,7 @@ class FlowDatabaseOperation {
 
 	if ((flowIdStr == null) ||
 	    (installerIdStr == null) ||
+	    (flowPathType == null) ||
 	    (flowPathFlags == null) ||
 	    (srcSwitchStr == null) ||
 	    (srcPortShort == null) ||
@@ -771,6 +775,7 @@ class FlowDatabaseOperation {
 	FlowPath flowPath = new FlowPath();
 	flowPath.setFlowId(new FlowId(flowIdStr));
 	flowPath.setInstallerId(new CallerId(installerIdStr));
+	flowPath.setFlowPathType(FlowPathType.valueOf(flowPathType));
 	flowPath.setFlowPathFlags(new FlowPathFlags(flowPathFlags));
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
 	flowPath.dataPath().srcPort().setPort(new Port(srcPortShort));
