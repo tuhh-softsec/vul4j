@@ -215,6 +215,7 @@ class IncludeElement extends BaseElement {
 	}
 
 	public final static FutureElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
+		@Override
 		public IncludeElement newInstance() {
 			return new IncludeElement();
 		}

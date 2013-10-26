@@ -33,6 +33,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.esigate.impl.IndexedInstances;
 import org.esigate.impl.UriMapping;
+import org.esigate.servlet.impl.HttpServletDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,12 +56,10 @@ public class DriverFactory {
 	private static final Logger LOG = LoggerFactory.getLogger(DriverFactory.class);
 
 	static {
-		String version = defaultIfBlank(DriverFactory.class.getPackage().getSpecificationVersion(),
-				"development version");
-		String rev = defaultIfBlank(DriverFactory.class.getPackage().getImplementationVersion(),
-				"unknown");
+		String version = defaultIfBlank(DriverFactory.class.getPackage().getSpecificationVersion(), "development version");
+		String rev = defaultIfBlank(DriverFactory.class.getPackage().getImplementationVersion(), "unknown");
 		LOG.info("Starting esigate {} rev. {}", version, rev);
-		
+
 		// Load default settings
 		configure();
 	}
@@ -93,8 +92,7 @@ public class DriverFactory {
 
 			// For backward compatibility
 			if (inputStream == null) {
-				LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"),
-						"driver.properties");
+				LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"), "driver.properties");
 				inputStream = DriverFactory.class.getResourceAsStream("driver.properties");
 			}
 			if (inputStream == null) {
@@ -115,8 +113,7 @@ public class DriverFactory {
 				extInputStream = DriverFactory.class.getResourceAsStream("/driver-ext.properties");
 			}
 			if (extInputStream == null) {
-				LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"),
-						"driver-ext.properties");
+				LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"), "driver-ext.properties");
 				extInputStream = DriverFactory.class.getResourceAsStream("driver-ext.properties");
 			}
 
@@ -186,15 +183,21 @@ public class DriverFactory {
 			Properties properties = new Properties();
 			properties.putAll(defaultProperties);
 			properties.putAll(entry.getValue());
-			newInstances.put(name, new Driver(name, properties));
+			newInstances.put(name, createDriver(name, properties));
 		}
-		if (newInstances.get(DEFAULT_INSTANCE_NAME) == null
-				&& Parameters.REMOTE_URL_BASE.getValueString(defaultProperties) != null) {
+		if (newInstances.get(DEFAULT_INSTANCE_NAME) == null && Parameters.REMOTE_URL_BASE.getValueString(defaultProperties) != null) {
 
-			newInstances.put(DEFAULT_INSTANCE_NAME, new Driver(DEFAULT_INSTANCE_NAME, defaultProperties));
+			newInstances.put(DEFAULT_INSTANCE_NAME, createDriver(DEFAULT_INSTANCE_NAME, defaultProperties));
 		}
 
 		INSTANCES = new IndexedInstances(newInstances);
+	}
+
+	private static Driver createDriver(String name, Properties properties) {
+		if (properties.getProperty("driverClass") == null || properties.getProperty("driverClass").equals(HttpClientDriver.class.getName()))
+			return new HttpClientDriver(name, properties);
+		else
+			return new HttpServletDriver(name, properties);
 	}
 
 	/**
@@ -205,7 +208,7 @@ public class DriverFactory {
 	 * @param props
 	 */
 	public static final void configure(String name, Properties props) {
-		setInstance(name, new Driver(name, props));
+		setInstance(name, createDriver(name, props));
 	}
 
 	/**
@@ -250,8 +253,7 @@ public class DriverFactory {
 	public static Pair<Driver, UriMapping> getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
 		for (UriMapping mapping : INSTANCES.getUrimappings().keySet()) {
 			if (mapping.matches(scheme, host, url)) {
-				return new ImmutablePair<Driver, UriMapping>(getInstance(INSTANCES.getUrimappings().get(mapping)),
-						mapping);
+				return new ImmutablePair<Driver, UriMapping>(getInstance(INSTANCES.getUrimappings().get(mapping)), mapping);
 			}
 		}
 

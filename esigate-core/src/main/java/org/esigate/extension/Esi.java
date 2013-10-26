@@ -38,7 +38,7 @@ public class Esi implements Extension, IEventListener {
 					.getValue();
 
 			doEsi = false;
-			for (String capability : this.capabilities) {
+			for (String capability : capabilities) {
 				if (containsIgnoreCase(enabledCapabilities, capability)) {
 					doEsi = true;
 					break;

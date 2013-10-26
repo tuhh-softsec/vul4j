@@ -41,11 +41,13 @@ public class FutureAppendableAdapter implements FutureAppendable {
 		this.futureList = new ArrayList<Future<CharSequence>>();
 	}
 
+	@Override
 	public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
 		this.futureList.add(csq);
 		return this;
 	}
 
+	@Override
 	public FutureAppendable performAppends(int timeout, TimeUnit unit) throws IOException, HttpErrorPage,
 			TimeoutException {
 
@@ -70,10 +72,12 @@ public class FutureAppendableAdapter implements FutureAppendable {
 		return this;
 	}
 
+	@Override
 	public boolean hasPending() {
 		return this.futureList.size() > 0;
 	}
 
+	@Override
 	public FutureAppendable performAppends() throws IOException, HttpErrorPage {
 		try {
 			for (Future<CharSequence> f : this.futureList) {

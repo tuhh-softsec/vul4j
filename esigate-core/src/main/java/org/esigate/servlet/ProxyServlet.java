@@ -67,14 +67,13 @@ public class ProxyServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		HttpServletMediator mediator = new HttpServletMediator(request, response, getServletContext());
 
 		try {
-			Pair<Driver, UriMapping> dm = this.driverSelector.selectProvider(request);
-			String relUrl = RequestUrl.getRelativeUrl(request, dm.getRight());
+			Pair<Driver, UriMapping> dm = this.driverSelector.selectProvider(request, true);
+			String relUrl = RequestUrl.getRelativeUrl(request, dm.getRight(), true);
 			LOG.debug("Proxying {}", relUrl);
 			dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
 		} catch (HttpErrorPage e) {

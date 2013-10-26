@@ -34,13 +34,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
-import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.events.impl.RenderEvent;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.GenericHttpRequest;
-import org.esigate.http.HttpClientHelper;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.ResourceUtils;
 import org.esigate.util.HttpRequestHelper;
@@ -58,15 +56,14 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  * @author Sylvain Sicard
  */
-public class Driver {
+public abstract class Driver {
 	private static final String CACHE_RESPONSE_PREFIX = "response_";
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
-	private final DriverConfiguration config;
-	private HttpClientHelper httpClientHelper;
+	protected final DriverConfiguration config;
 	private final Collection<String> parsableContentTypes;
-	private final EventManager eventManager;
+	protected final EventManager eventManager;
 
-	private Driver(Properties properties, String name, EventManager eventManagerParam) {
+	protected Driver(Properties properties, String name, EventManager eventManagerParam) {
 		this.eventManager = eventManagerParam;
 		this.config = new DriverConfiguration(name, properties);
 		this.parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueList(properties);
@@ -78,13 +75,6 @@ public class Driver {
 
 	public Driver(String name, Properties properties) {
 		this(properties, name, new EventManager(name));
-		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, this);
-		httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties);
-	}
-
-	public Driver(String name, Properties properties, HttpClientHelper httpClientHelper) {
-		this(properties, name, httpClientHelper.getEventManager());
-		this.httpClientHelper = httpClientHelper;
 	}
 
 	/**
@@ -256,8 +246,7 @@ public class Driver {
 			initHttpRequestParams(request, null);
 			HttpRequestHelper.setCharacterEncoding(request, this.config.getUriEncoding());
 			String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, e.originalRequest, true);
-			GenericHttpRequest httpRequest = this.httpClientHelper.createHttpRequest(request, url, true);
-			e.response = execute(httpRequest);
+			e.response = createAndExecuteRequest(request, url, true);
 
 			// Perform rendering
 			e.response = performRendering(relUrl, request, e.response, renderers);
@@ -292,6 +281,8 @@ public class Driver {
 		}
 	}
 
+	protected abstract HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean b) throws HttpErrorPage;
+
 	/**
 	 * Performs rendering on an HttpResponse.
 	 * <p>
@@ -310,8 +301,7 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 * @throws IOException
 	 */
-	private HttpResponse performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest,
-			HttpResponse response, Renderer[] renderers) throws HttpErrorPage, IOException {
+	protected HttpResponse performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, HttpResponse response, Renderer[] renderers) throws HttpErrorPage, IOException {
 
 		if (!isTextContentType(response)) {
 			LOG.debug("'{}' is binary on no transformation to apply: was forwarded without modification.", pageUrl);
@@ -393,11 +383,8 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 */
 	protected HttpResponse getResource(String url, HttpEntityEnclosingRequest originalRequest) throws HttpErrorPage {
-
 		String targetUrl = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
-		GenericHttpRequest httpRequest = this.httpClientHelper.createHttpRequest(originalRequest, targetUrl, false);
-
-		return execute(httpRequest);
+		return createAndExecuteRequest(originalRequest, targetUrl, false);
 	}
 
 	/**
@@ -416,23 +403,6 @@ public class Driver {
 	}
 
 	/**
-	 * Get current HTTP Client.
-	 * 
-	 * <p>
-	 * This method is not intended to get a WRITE access to the HTTP Client
-	 * configuration.
-	 * <p>
-	 * For the time being, changing HTTP Client configuration after getting
-	 * access through this method is <b>UNSUPPORTED</b> and <b>SHOULD NOT</b> be
-	 * used.
-	 * 
-	 * @return current HttpClient
-	 */
-	public HttpClientHelper getHttpClientHelper() {
-		return this.httpClientHelper;
-	}
-
-	/**
 	 * Check whether the given request's content-type corresponds to "parsable"
 	 * text.
 	 * 
@@ -440,7 +410,7 @@ public class Driver {
 	 *            the response to analyze depending on its content-type
 	 * @return true if this represents text or false if not
 	 */
-	private boolean isTextContentType(HttpResponse httpResponse) {
+	public boolean isTextContentType(HttpResponse httpResponse) {
 		String contentType = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpResponse);
 		return isTextContentType(contentType);
 	}
@@ -473,30 +443,6 @@ public class Driver {
 	 *            HTTP request to execute.
 	 * @return HTTP response.
 	 */
-	public HttpResponse executeSingleRequest(GenericHttpRequest httpRequest) {
-		return this.httpClientHelper.execute(httpRequest);
-	}
-
-	/**
-	 * Execute a HTTP request and handle errors as HttpErrorPage exceptions.
-	 * 
-	 * @param httpRequest
-	 *            HTTP request to execute.
-	 * @return HTTP response
-	 * @throws HttpErrorPage
-	 *             if server returned no response or if the response as an error
-	 *             status code.
-	 */
-	private HttpResponse execute(GenericHttpRequest httpRequest) throws HttpErrorPage {
-		HttpResponse httpResponse = executeSingleRequest(httpRequest);
-		// Handle errors.
-		if (httpResponse == null) {
-			throw new HttpErrorPage(500, "Request was cancelled by server", "Request was cancelled by server");
-		}
-		if (HttpResponseUtils.isError(httpResponse)) {
-			throw new HttpErrorPage(httpResponse);
-		}
-		return httpResponse;
-	}
+	public abstract HttpResponse executeSingleRequest(GenericHttpRequest httpRequest);
 
 }

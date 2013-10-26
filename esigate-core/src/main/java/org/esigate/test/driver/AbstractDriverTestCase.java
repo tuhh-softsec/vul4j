@@ -12,6 +12,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
+import org.esigate.HttpClientDriver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.Renderer;
@@ -89,7 +90,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
 
 		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(name), cookieManager, properties,
 				connectionManager);
-		Driver driver = new Driver(name, properties, httpClientHelper);
+		Driver driver = new HttpClientDriver(name, properties, httpClientHelper);
 		DriverFactory.put(name, driver);
 		return driver;
 	}

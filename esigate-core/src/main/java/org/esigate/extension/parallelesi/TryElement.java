@@ -25,6 +25,7 @@ import org.esigate.parser.future.FutureParserContext;
 class TryElement extends BaseElement {
 
 	public final static FutureElementType TYPE = new BaseElementType("<esi:try", "</esi:try") {
+		@Override
 		public TryElement newInstance() {
 			return new TryElement();
 		}

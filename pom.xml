@@ -660,6 +660,7 @@
 		<module>esigate-app-casified-aggregated2</module>
 		<module>esigate-app-casified-aggregator</module>
 		<module>esigate-app-facelet</module>
+		<module>esigate-app-servlet-filter</module>
 		<module>esigate-war</module>
 		<module>esigate-server</module>
 		<module>esigate-distribution</module>

@@ -18,10 +18,14 @@ package org.esigate.extension;
 import java.util.Properties;
 
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHttpResponse;
 import org.esigate.Driver;
 import org.esigate.Parameters;
-import org.esigate.test.conn.SequenceResponse;
+import org.esigate.test.TestUtils;
+import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.driver.AbstractDriverTestCase;
 
 public class DefaultCharsetTest extends AbstractDriverTestCase {
@@ -29,64 +33,84 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
 	public void testDefaultCharsetExt() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost/");
-		properties.put(Parameters.EXTENSIONS.name, "org.esigate.extension.DefaultCharset");
+		properties.put(Parameters.EXTENSIONS.name,
+				"org.esigate.extension.DefaultCharset");
 		properties.put(Parameters.USE_CACHE.name, "true");
 
-		Driver driver = createMockDriver(
-				properties,
-				new SequenceResponse().response(createHttpResponse().status(200).reason("Ok")
-						.header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
-						.entity("test").build()));
+		MockConnectionManager mockHttpClient = new MockConnectionManager();
+		BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion(
+				"HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
+		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
+		response.addHeader("Content-Type", "text/html");
+		response.setEntity(new StringEntity("test"));
+		mockHttpClient.setResponse(response);
 
-		HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
-				.build();
+		Driver driver = createMockDriver(properties, mockHttpClient);
 
-		HttpResponse response = driverProxy(driver, request);
+		HttpEntityEnclosingRequest request = TestUtils
+				.createRequest("http://test.mydomain.fr/foobar/");
+
+		driver.proxy("/foobar/", request);
 
 		assertEquals("Encoding should be added", "text/html; charset=ISO-8859-1",
-				response.getFirstHeader("Content-Type").getValue());
+				TestUtils.getResponse(request).getFirstHeader("Content-Type")
+						.getValue());
 	}
 
 	public void testDefaultCharsetExtConfig() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost/");
-		properties.put(Parameters.EXTENSIONS.name, "org.esigate.extension.DefaultCharset");
-		properties.put(Parameters.USE_CACHE.name, "false");
+		properties.put(Parameters.EXTENSIONS.name,
+				"org.esigate.extension.DefaultCharset");
+		// Does not work because of
+		// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=185
+		// properties.put(Parameters.USE_CACHE.name, "false");
 		properties.put("defaultCharset", "utf-8");
 
-		Driver driver = createMockDriver(
-				properties,
-				new SequenceResponse().response(createHttpResponse().status(200).reason("Ok")
-						.header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
-						.entity("test").build()));
+		MockConnectionManager mockHttpClient = new MockConnectionManager();
+		BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion(
+				"HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
+		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
+		response.addHeader("Content-Type", "text/html");
+		response.setEntity(new StringEntity("test"));
+		mockHttpClient.setResponse(response);
 
-		HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
-				.build();
+		Driver driver = createMockDriver(properties, mockHttpClient);
 
-		HttpResponse response = driverProxy(driver, request);
+		HttpEntityEnclosingRequest request = TestUtils
+				.createRequest("http://test.mydomain.fr/foobar/");
 
-		assertEquals("Encoding should be added", "text/html; charset=utf-8", response.getFirstHeader("Content-Type")
-				.getValue());
+		driver.proxy("/foobar/", request);
+
+		assertEquals("Encoding should be added",
+				"text/html; charset=utf-8", TestUtils.getResponse(request)
+						.getFirstHeader("Content-Type").getValue());
 	}
 
 	public void testDefaultCharsetExtNonParsable() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost/");
-		properties.put(Parameters.EXTENSIONS.name, "org.esigate.extension.DefaultCharset");
+		properties.put(Parameters.EXTENSIONS.name,
+				"org.esigate.extension.DefaultCharset");
 		properties.put(Parameters.USE_CACHE.name, "true");
 
-		Driver driver = createMockDriver(
-				properties,
-				new SequenceResponse().response(createHttpResponse().status(200).reason("Ok")
-						.header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/xml")
-						.entity("test").build()));
+		MockConnectionManager mockHttpClient = new MockConnectionManager();
+		BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion(
+				"HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
+		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
+		response.addHeader("Content-Type", "text/xml");
+		response.setEntity(new StringEntity("test"));
+		mockHttpClient.setResponse(response);
 
-		HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
-				.build();
+		Driver driver = createMockDriver(properties, mockHttpClient);
 
-		HttpResponse response = driverProxy(driver, request);
+		HttpEntityEnclosingRequest request = TestUtils
+				.createRequest("http://test.mydomain.fr/foobar/");
 
-		assertEquals("Encoding should be added", "text/xml", response.getFirstHeader("Content-Type").getValue());
+		driver.proxy("/foobar/", request);
+
+		assertEquals("Encoding should be added", "text/xml", TestUtils
+				.getResponse(request).getFirstHeader("Content-Type").getValue());
 	}
 
 }

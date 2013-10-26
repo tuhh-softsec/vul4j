@@ -25,10 +25,12 @@ abstract class BaseElementType implements FutureElementType {
 		this.endTag = endTag;
 	}
 
+	@Override
 	public final boolean isStartTag(String tag) {
 		return tag.startsWith(this.startTag);
 	}
 
+	@Override
 	public final boolean isEndTag(String tag) {
 		return tag.startsWith(this.endTag);
 	}

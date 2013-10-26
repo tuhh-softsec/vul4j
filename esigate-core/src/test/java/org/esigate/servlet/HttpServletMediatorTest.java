@@ -98,9 +98,6 @@ public class HttpServletMediatorTest extends TestCase {
 				this.byteOutputStream.write(b);
 			}
 
-			public ByteArrayOutputStream getOutputStream() {
-				return this.byteOutputStream;
-			}
 		};
 		when(response.getOutputStream()).thenReturn(outputStream);
 		ServletContext context = mock(ServletContext.class);

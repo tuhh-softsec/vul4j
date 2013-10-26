@@ -127,7 +127,7 @@ public class DriverTest extends TestCase {
 	public void testDefaultConfig() {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-		Driver driver = new Driver("dummy", properties);
+		Driver driver = new HttpClientDriver("dummy", properties);
 		// Parsable contentTypes
 		assertParsableContentType(driver, "text/html; charset=utf-8");
 		assertParsableContentType(driver, "application/xhtml+xml; charset=iso-8859-1");
@@ -149,20 +149,20 @@ public class DriverTest extends TestCase {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain");
-		Driver driver = new Driver("dummy", properties);
+		Driver driver = new HttpClientDriver("dummy", properties);
 		assertParsableContentType(driver, "text/plain");
 
 		properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain, text/html");
-		driver = new Driver("dummy", properties);
+		driver = new HttpClientDriver("dummy", properties);
 		assertParsableContentType(driver, "text/plain");
 		assertParsableContentType(driver, "text/html");
 
 		properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain, text/html,application/x");
-		driver = new Driver("dummy", properties);
+		driver = new HttpClientDriver("dummy", properties);
 		assertParsableContentType(driver, "text/plain");
 		assertParsableContentType(driver, "text/html");
 		assertParsableContentType(driver, "application/x");
@@ -262,7 +262,7 @@ public class DriverTest extends TestCase {
 
 		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(name), cookieManager, properties,
 				connectionManager);
-		Driver driver = new Driver(name, properties, httpClientHelper);
+		Driver driver = new HttpClientDriver(name, properties, httpClientHelper);
 		DriverFactory.put(name, driver);
 		return driver;
 	}

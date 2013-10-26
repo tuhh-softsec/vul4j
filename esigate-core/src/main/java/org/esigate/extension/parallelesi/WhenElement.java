@@ -30,6 +30,7 @@ import org.esigate.vars.VariablesResolver;
 class WhenElement extends BaseElement {
 
 	public final static FutureElementType TYPE = new BaseElementType("<esi:when", "</esi:when") {
+		@Override
 		public WhenElement newInstance() {
 			return new WhenElement();
 		}

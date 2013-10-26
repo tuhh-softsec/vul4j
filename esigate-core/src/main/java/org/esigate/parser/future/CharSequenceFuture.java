@@ -48,6 +48,7 @@ public class CharSequenceFuture implements Future<CharSequence> {
 	 * 
 	 * @see java.util.concurrent.Future#isDone()
 	 */
+	@Override
 	public boolean isDone() {
 		// This future is already done per implementation.
 		return true;
@@ -58,6 +59,7 @@ public class CharSequenceFuture implements Future<CharSequence> {
 	 * 
 	 * @see java.util.concurrent.Future#isCancelled()
 	 */
+	@Override
 	public boolean isCancelled() {
 		// Cannot ever been cancelled
 		return false;
@@ -68,6 +70,7 @@ public class CharSequenceFuture implements Future<CharSequence> {
 	 * 
 	 * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
 	 */
+	@Override
 	public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
 			TimeoutException {
 		// Get will never block, just use the default implementation.
@@ -79,6 +82,7 @@ public class CharSequenceFuture implements Future<CharSequence> {
 	 * 
 	 * @see java.util.concurrent.Future#get()
 	 */
+	@Override
 	public CharSequence get() throws InterruptedException, ExecutionException {
 		// Return the wrapped CharSequence.
 		return this.seq;
@@ -89,6 +93,7 @@ public class CharSequenceFuture implements Future<CharSequence> {
 	 * 
 	 * @see java.util.concurrent.Future#cancel(boolean)
 	 */
+	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
 		// Cannot be cancelled.
 		return false;

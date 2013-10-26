@@ -129,6 +129,7 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 		this.fragmentsToReplace = fragmentsToReplace;
 	}
 
+	@Override
 	public void render(HttpEntityEnclosingRequest originalRequest, String content, Writer out) throws IOException,
 			HttpErrorPage {
 		if (name != null) {
@@ -167,6 +168,7 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 		}
 	}
 
+	@Override
 	public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
 		if (this.write) {
 			this.futureOut.enqueueAppend(csq);
@@ -183,14 +185,17 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 
 	}
 
+	@Override
 	public FutureAppendable performAppends() throws IOException, HttpErrorPage {
 		return this.futureOut.performAppends();
 	}
 
+	@Override
 	public boolean hasPending() {
 		return this.futureOut.hasPending();
 	}
 
+	@Override
 	public FutureAppendable performAppends(int timeout, TimeUnit unit) throws IOException, HttpErrorPage,
 			TimeoutException {
 		return this.futureOut.performAppends(timeout, unit);

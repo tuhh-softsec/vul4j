@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>esigate-app-servlet-filter</artifactId>
+	<packaging>war</packaging>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.esigate</groupId>
+			<artifactId>esigate-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>esigate-app-servlet-filter</finalName>
+	</build>
+	<name>EsiGate servlet filter test</name>
+	<parent>
+		<artifactId>esigate</artifactId>
+		<version>5.0-SNAPSHOT</version>
+		<groupId>org.esigate</groupId>
+	</parent>
+</project>

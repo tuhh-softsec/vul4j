@@ -41,7 +41,7 @@ public class RequestUrl {
 	 *            matched mapping or null
 	 * @return the url, relative to the servlet mapping.
 	 */
-	public static String getRelativeUrl(HttpServletRequest request, UriMapping mapping) {
+	public static String getRelativeUrl(HttpServletRequest request, UriMapping mapping, boolean servlet) {
 		// Raw request url
 		String relativeUrl = request.getRequestURI();
 		// Application (war) context path
@@ -62,7 +62,7 @@ public class RequestUrl {
 		}
 
 		// Remove servlet mapping path
-		if (servletPath != null && relativeUrl.startsWith(servletPath)) {
+		if (servlet && servletPath != null && relativeUrl.startsWith(servletPath)) {
 			relativeUrl = relativeUrl.substring(servletPath.length());
 		}
 

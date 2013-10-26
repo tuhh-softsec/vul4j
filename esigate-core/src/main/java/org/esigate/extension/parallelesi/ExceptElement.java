@@ -27,6 +27,7 @@ import org.esigate.parser.future.StringBuilderFutureAppendable;
 class ExceptElement extends BaseElement {
 
 	public final static FutureElementType TYPE = new BaseElementType("<esi:except", "</esi:except") {
+		@Override
 		public ExceptElement newInstance() {
 			return new ExceptElement();
 		}
@@ -42,18 +43,22 @@ class ExceptElement extends BaseElement {
 			this.tag = tag;
 		}
 
+		@Override
 		public boolean cancel(boolean mayInterruptIfRunning) {
 			return false;
 		}
 
+		@Override
 		public boolean isCancelled() {
 			return false;
 		}
 
+		@Override
 		public boolean isDone() {
 			return true;
 		}
 
+		@Override
 		public CharSequence get() throws InterruptedException, ExecutionException {
 			int code = (tag.getAttribute("code") != null) ? Integer.parseInt(tag.getAttribute("code")) : -1;
 			boolean processContent = (parent.hasErrors() && !parent.exceptProcessed() && (code == -1 || code == parent
@@ -66,6 +71,7 @@ class ExceptElement extends BaseElement {
 			return "";
 		}
 
+		@Override
 		public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
 				TimeoutException {
 			return get();

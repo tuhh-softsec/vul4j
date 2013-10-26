@@ -28,6 +28,7 @@ import org.esigate.vars.VariablesResolver;
 
 class VarsElement extends BaseElement {
 	public final static FutureElementType TYPE = new BaseElementType("<esi:vars", "</esi:vars") {
+		@Override
 		public VarsElement newInstance() {
 			return new VarsElement();
 		}

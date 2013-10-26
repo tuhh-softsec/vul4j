@@ -31,6 +31,7 @@ import org.esigate.parser.future.FutureParserContext;
  */
 class Comment extends BaseElement {
 	public final static FutureElementType TYPE = new BaseElementType("<!--esi", "-->") {
+		@Override
 		public Comment newInstance() {
 			return new Comment();
 		}

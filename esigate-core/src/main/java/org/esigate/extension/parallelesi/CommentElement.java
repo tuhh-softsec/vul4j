@@ -28,6 +28,7 @@ import org.esigate.parser.future.FutureElementType;
  */
 class CommentElement extends BaseElement {
 	public final static FutureElementType TYPE = new BaseElementType("<esi:comment", "</esi:comment") {
+		@Override
 		public CommentElement newInstance() {
 			return new CommentElement();
 		}

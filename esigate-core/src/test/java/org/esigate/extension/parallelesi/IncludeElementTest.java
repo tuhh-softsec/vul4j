@@ -138,7 +138,7 @@ public class IncludeElementTest extends TestCase {
 
 		// Inline caching behavior is unspecified if using multi-threading.
 		// Forcing single-thread processing.
-		EsiRenderer tested = tested = new EsiRenderer(null);
+		EsiRenderer tested = new EsiRenderer(null);
 
 		String page = "before <esi:include src='$(PROVIDER{mock})/inline-cache' /> middle "
 				+ "<esi:inline name='$(PROVIDER{mock})/inline-cache' fetchable='false'>---inline cache item---</esi:inline>"

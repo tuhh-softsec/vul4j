@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.Enumeration;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -59,11 +60,8 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpServletMediator implements ContainerRequestMediator {
 	private static final String WARN_RESPONSE_ALREADY_SENT = "Attempt to write to the response, but it is already sent. The operation {} was discarded. "
-			+ "This usually means that esigate is configured "
-			+ "with stale-while-revalidate is enabled "
-			+ "AND backend is sending a cookie update which is not discarded by configuration. "
-			+ "This configuration is unsupported. Please update configuration to turn off stale-while-revalidate "
-			+ "or discard cookies. ";
+			+ "This usually means that esigate is configured " + "with stale-while-revalidate is enabled " + "AND backend is sending a cookie update which is not discarded by configuration. "
+			+ "This configuration is unsupported. Please update configuration to turn off stale-while-revalidate " + "or discard cookies. ";
 
 	private static final Logger LOG = LoggerFactory.getLogger(HttpServletMediator.class);
 
@@ -72,18 +70,21 @@ public class HttpServletMediator implements ContainerRequestMediator {
 	private final ServletContext servletContext;
 	private final HttpEntityEnclosingRequest httpRequest;
 	private boolean responseSent = false;
+	private final FilterChain filterChain;
 
-	public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
-			throws IOException {
+	public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws IOException {
+		this(request, response, servletContext, null);
+	}
+
+	public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext, FilterChain filterChain) throws IOException {
 		this.request = request;
 		this.response = response;
 		this.servletContext = servletContext;
+		this.filterChain = filterChain;
 		// create request line
-		String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(),
-				request.getRequestURI(), request.getQueryString(), null).toString();
+		String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(), request.getRequestURI(), request.getQueryString(), null).toString();
 		ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(request.getProtocol(), null);
-		BasicHttpEntityEnclosingRequest result = new BasicHttpEntityEnclosingRequest(new BasicRequestLine(
-				request.getMethod(), uri, protocolVersion));
+		BasicHttpEntityEnclosingRequest result = new BasicHttpEntityEnclosingRequest(new BasicRequestLine(request.getMethod(), uri, protocolVersion));
 		// copy headers
 		@SuppressWarnings("rawtypes")
 		Enumeration names = request.getHeaderNames();
@@ -204,6 +205,8 @@ public class HttpServletMediator implements ContainerRequestMediator {
 					response.setHeader(contentEncoding.getName(), contentEncoding.getValue());
 
 				httpEntity.writeTo(response.getOutputStream());
+			} else {
+				response.sendError(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 			}
 		} finally {
 			this.responseSent = true;
@@ -248,6 +251,18 @@ public class HttpServletMediator implements ContainerRequestMediator {
 	@Override
 	public HttpEntityEnclosingRequest getHttpRequest() {
 		return httpRequest;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public FilterChain getFilterChain() {
+		return filterChain;
 	}
 
 }

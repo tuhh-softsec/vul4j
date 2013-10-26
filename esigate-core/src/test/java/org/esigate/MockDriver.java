@@ -24,7 +24,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.test.http.HttpResponseBuilder;
 
-public class MockDriver extends Driver {
+public class MockDriver extends HttpClientDriver {
 	private final HashMap<String, String> resources = new HashMap<String, String>();
 
 	private final static Properties getDefaultProperties() {

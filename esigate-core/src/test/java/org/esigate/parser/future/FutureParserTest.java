@@ -58,11 +58,13 @@ public class FutureParserTest extends TestCase {
 	}
 
 	private static final FutureElementType SIMPLE = new MockElementType("<test:simple", "</test:simple") {
+		@Override
 		public FutureElement newInstance() {
 			return new SimpleElement();
 		}
 	};
 	private static final FutureElementType BODY = new MockElementType("<test:body", "</test:body") {
+		@Override
 		public FutureElement newInstance() {
 			return new BodyElement();
 		}
@@ -77,10 +79,12 @@ public class FutureParserTest extends TestCase {
 			this.endTag = endTag;
 		}
 
+		@Override
 		public final boolean isStartTag(String tag) {
 			return tag.startsWith(startTag);
 		}
 
+		@Override
 		public final boolean isEndTag(String tag) {
 			return tag.startsWith(endTag);
 		}
@@ -119,24 +123,30 @@ public class FutureParserTest extends TestCase {
 		public SimpleElement() {
 		}
 
+		@Override
 		public boolean isClosed() {
 			return closed;
 		}
 
+		@Override
 		public void onTagStart(String tag, FutureParserContext ctx) {
 			closed = tag.endsWith("/>");
 		}
 
+		@Override
 		public void onTagEnd(String tag, FutureParserContext ctx) throws IOException {
 		}
 
+		@Override
 		public void characters(Future<CharSequence> csq) throws IOException {
 		}
 
+		@Override
 		public boolean onError(Exception e, FutureParserContext ctx) {
 			return false;
 		}
 
+		@Override
 		public FutureElement getParent() {
 			return null;
 		}

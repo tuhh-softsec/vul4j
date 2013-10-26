@@ -34,10 +34,12 @@ abstract class BaseElement implements FutureElement {
 		// Default implementation does nothing
 	}
 
+	@Override
 	public boolean isClosed() {
 		return this.closed;
 	}
 
+	@Override
 	public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
 		Tag tagObj = Tag.create(tag);
 		this.closed = tagObj.isOpenClosed();
@@ -45,18 +47,22 @@ abstract class BaseElement implements FutureElement {
 		parseTag(tagObj, ctx);
 	}
 
+	@Override
 	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
 		// Empty, implementation can customize this method with tag logic
 	}
 
+	@Override
 	public boolean onError(Exception e, FutureParserContext ctx) {
 		return false;
 	}
 
+	@Override
 	public void characters(Future<CharSequence> csq) throws IOException {
 		this.parent.characters(csq);
 	}
 
+	@Override
 	public FutureElement getParent() {
 		return this.parent;
 	}

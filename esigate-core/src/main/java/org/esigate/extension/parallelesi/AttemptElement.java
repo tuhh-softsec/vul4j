@@ -38,6 +38,7 @@ import org.esigate.parser.future.StringBuilderFutureAppendable;
 class AttemptElement extends BaseElement {
 
 	public final static FutureElementType TYPE = new BaseElementType("<esi:attempt", "</esi:attempt") {
+		@Override
 		public AttemptElement newInstance() {
 			return new AttemptElement();
 		}
@@ -52,18 +53,22 @@ class AttemptElement extends BaseElement {
 			this.buffer = buf;
 		}
 
+		@Override
 		public boolean cancel(boolean mayInterruptIfRunning) {
 			return false;
 		}
 
+		@Override
 		public boolean isCancelled() {
 			return false;
 		}
 
+		@Override
 		public boolean isDone() {
 			return true;
 		}
 
+		@Override
 		public CharSequence get() throws InterruptedException, ExecutionException {
 			// Requires completion of all Future objects inside this tag, in
 			// order to trigger any error.
@@ -78,6 +83,7 @@ class AttemptElement extends BaseElement {
 			return "";
 		}
 
+		@Override
 		public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
 				TimeoutException {
 			return get();

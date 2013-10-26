@@ -35,6 +35,7 @@ import org.esigate.vars.VariablesResolver;
 class ReplaceElement extends BaseElement {
 
 	public final static FutureElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
+		@Override
 		public ReplaceElement newInstance() {
 			return new ReplaceElement();
 		}

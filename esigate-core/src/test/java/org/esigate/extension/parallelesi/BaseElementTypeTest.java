@@ -38,6 +38,7 @@ public class BaseElementTypeTest extends TestCase {
 			super(startTag, endTag);
 		}
 
+		@Override
 		public FutureElement newInstance() {
 			return null;
 		}

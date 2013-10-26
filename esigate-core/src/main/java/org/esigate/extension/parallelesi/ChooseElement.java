@@ -20,6 +20,7 @@ import org.esigate.parser.future.FutureParserContext;
 class ChooseElement extends BaseElement {
 
 	public final static FutureElementType TYPE = new BaseElementType("<esi:choose", "</esi:choose") {
+		@Override
 		public ChooseElement newInstance() {
 			return new ChooseElement();
 		}

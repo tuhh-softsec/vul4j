@@ -27,6 +27,8 @@ import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.impl.UriMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class handles support of legacy options for Driver selection.
@@ -42,7 +44,7 @@ import org.esigate.impl.UriMapping;
  * @author Nicolas Richeton
  */
 public class DriverSelector {
-
+	private static final Logger LOG = LoggerFactory.getLogger(DriverSelector.class);
 	private String webXmlProvider = null;
 	private Map<String, String> webXmlProviderMappings = null;
 	private boolean useMappings = false;
@@ -77,8 +79,7 @@ public class DriverSelector {
 			String[] providersArray = StringUtils.split(providers, ",");
 			for (String p : providersArray) {
 				String[] mapping = StringUtils.split(p, "=");
-				this.webXmlProviderMappings.put(StringUtils.trim(mapping[0].toLowerCase(Locale.ENGLISH)),
-						StringUtils.trim(mapping[1]));
+				this.webXmlProviderMappings.put(StringUtils.trim(mapping[0].toLowerCase(Locale.ENGLISH)), StringUtils.trim(mapping[1]));
 			}
 		}
 	}
@@ -90,32 +91,38 @@ public class DriverSelector {
 	 * 
 	 * @param request
 	 * @return provider name or null.
-	 * @throws HttpErrorPage 
+	 * @throws HttpErrorPage
 	 */
-	public Pair<Driver, UriMapping> selectProvider(HttpServletRequest request) throws HttpErrorPage {
+	public Pair<Driver, UriMapping> selectProvider(HttpServletRequest request, boolean servlet) throws HttpErrorPage {
 
 		String host = request.getHeader("Host");
 		String scheme = request.getScheme();
 
-		String relUrl = RequestUrl.getRelativeUrl(request, null);
+		String relUrl = RequestUrl.getRelativeUrl(request, null, servlet);
+
+		Pair<Driver, UriMapping> result;
 
 		if (this.useMappings) {
-			return DriverFactory.getInstanceFor(scheme, host, relUrl);
-		}
+			result = DriverFactory.getInstanceFor(scheme, host, relUrl);
+		} else {
 
-		// Select provider. null is valid (default)
-		String targetProvider = this.webXmlProvider;
+			// Select provider. null is valid (default)
+			String targetProvider = this.webXmlProvider;
 
-		if (this.webXmlProviderMappings != null) {
-			if (host != null) {
-				host = host.toLowerCase(Locale.ENGLISH);
-				String mapping = this.webXmlProviderMappings.get(host);
-				if (mapping != null)
-					targetProvider = mapping;
+			if (this.webXmlProviderMappings != null) {
+				if (host != null) {
+					host = host.toLowerCase(Locale.ENGLISH);
+					String mapping = this.webXmlProviderMappings.get(host);
+					if (mapping != null)
+						targetProvider = mapping;
+				}
 			}
-		}
 
-		return new ImmutablePair<Driver, UriMapping>(DriverFactory.getInstance(targetProvider), null );
+			result = new ImmutablePair<Driver, UriMapping>(DriverFactory.getInstance(targetProvider), null);
+		}
+		LOG.debug("Selected {} for scheme:{} host:{} relUrl:{}", result, scheme, host, relUrl);
+
+		return result;
 	}
 
 }

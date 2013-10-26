@@ -4,8 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.http.impl.cookie.DateParseException;
-
 
 public final class DateUtils {
 	
@@ -50,20 +48,14 @@ public final class DateUtils {
      * <code>2000</code> will be used.
      *
      * @return the parsed date
-     *
-     * @throws ParseException if none of the dataFormats could parse the dateValue
      */
     public static Date parseDate(
         String dateValue,
         String[] dateFormats,
         Date startDate
-    ) throws ParseException {
+    ) {
     	
-    	try {
-			return org.apache.http.impl.cookie.DateUtils.parseDate(dateValue, dateFormats, startDate);
-		} catch (DateParseException e) {
-			throw new ParseException(e.getMessage(), 0);
-		}
+			return org.apache.http.client.utils.DateUtils.parseDate(dateValue, dateFormats, startDate);
     }
 
     /**
@@ -74,7 +66,18 @@ public final class DateUtils {
      *
      */
     public static String formatDate(Date date) {
-        return org.apache.http.impl.cookie.DateUtils.formatDate(date);
+        return org.apache.http.client.utils.DateUtils.formatDate(date);
+    }
+
+    /**
+     * Formats the given date according to the RFC 1123 pattern.
+     *
+     * @param date The date to format.
+     * @return An RFC 1123 formatted date string.
+     *
+     */
+    public static String formatDate(long date) {
+        return org.apache.http.client.utils.DateUtils.formatDate(new Date(date));
     }
 
     /**
@@ -91,7 +94,7 @@ public final class DateUtils {
      * @see SimpleDateFormat
      */
     public static String formatDate(Date date, String pattern) {
-        return  org.apache.http.impl.cookie.DateUtils.formatDate(date, pattern);
+        return  org.apache.http.client.utils.DateUtils.formatDate(date, pattern);
     }
 
 }
