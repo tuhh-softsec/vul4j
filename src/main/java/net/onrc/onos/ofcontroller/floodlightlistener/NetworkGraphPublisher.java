@@ -25,6 +25,8 @@ import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.graph.IDBConnection;
@@ -42,6 +44,7 @@ import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
+import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
@@ -69,6 +72,8 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	protected final int CLEANUP_TASK_INTERVAL = 60; // 1 min
 	protected SingletonTask cleanupTask;
 	protected ILinkDiscoveryService linkDiscovery;
+
+	protected IDatagridService datagridService;
 	
 	/**
      *  Cleanup and synch switch state from registry
@@ -98,6 +103,15 @@ public class NetworkGraphPublisher implements IDeviceListener,
 					    registryService.releaseControl(dpid);
 					    
 					    // TODO publish UPDATE_SWITCH event here
+					    //
+					    // NOTE: Here we explicitly send
+					    // notification to remove the
+					    // switch, because it is inactive
+					    //
+					    TopologyElement topologyElement =
+						new TopologyElement(dpid);
+					    datagridService.notificationSendTopologyElementRemoved(topologyElement);
+
 					}
 				} catch (Exception e) {
 	                log.error("Error in SwitchCleanup:controlChanged ", e);
@@ -136,7 +150,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public void linkDiscoveryUpdate(LDUpdate update) {
-		// TODO Auto-generated method stub
 		Link lt = new Link(update.getSrc(),update.getSrcPort(),update.getDst(),update.getDstPort());
 		//log.debug("{}:LinkDicoveryUpdate(): Updating Link {}",this.getClass(), lt);
 		
@@ -146,6 +159,12 @@ public class NetworkGraphPublisher implements IDeviceListener,
 				
 				if (linkStore.deleteLink(lt)) {
 				    // TODO publish DELETE_LINK event here
+				    TopologyElement topologyElement =
+					new TopologyElement(update.getSrc(),
+							    update.getSrcPort(),
+							    update.getDst(),
+							    update.getDstPort());
+				    datagridService.notificationSendTopologyElementRemoved(topologyElement);
 				}
 				break;
 			case LINK_UPDATED:
@@ -155,6 +174,16 @@ public class NetworkGraphPublisher implements IDeviceListener,
 				// TODO update "linfo" using portState derived using "update"
 				if (linkStore.update(lt, linfo, DM_OPERATION.UPDATE)) {
 				    // TODO publish UPDATE_LINK event here
+				    //
+				    // TODO NOTE: Here we assume that updated
+				    // link is UP.
+				    //
+				    TopologyElement topologyElement =
+					new TopologyElement(update.getSrc(),
+							    update.getSrcPort(),
+							    update.getDst(),
+							    update.getDstPort());
+				    datagridService.notificationSendTopologyElementUpdated(topologyElement);
 				}
 				break;
 			case LINK_ADDED:
@@ -162,6 +191,12 @@ public class NetworkGraphPublisher implements IDeviceListener,
 				
 				if (linkStore.addLink(lt)) {
 				    // TODO publish ADD_LINK event here
+				    TopologyElement topologyElement =
+					new TopologyElement(update.getSrc(),
+							    update.getSrcPort(),
+							    update.getDst(),
+							    update.getDstPort());
+				    datagridService.notificationSendTopologyElementAdded(topologyElement);
 				}
 				break;
 			default:
@@ -175,6 +210,13 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		if (registryService.hasControl(sw.getId())) {
 			if (swStore.addSwitch(sw)) {
 			    // TODO publish ADD_SWITCH event here
+			    TopologyElement topologyElement =
+				new TopologyElement(sw.getId());
+			    // TODO: Add only ports that are UP?
+			    for (OFPhysicalPort port : sw.getPorts()) {
+				topologyElement.addSwitchPort(port.getPortNumber());
+			    }
+			    datagridService.notificationSendTopologyElementAdded(topologyElement);
 			}
 		}
 	}
@@ -184,13 +226,15 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		if (registryService.hasControl(sw.getId())) {
 			if (swStore.deleteSwitch(sw.getStringId())) {
 			    // TODO publish DELETE_SWITCH event here
+			    TopologyElement topologyElement =
+				new TopologyElement(sw.getId());
+			    datagridService.notificationSendTopologyElementRemoved(topologyElement);
 			}
 		}
 	}
 
 	@Override
 	public void switchPortChanged(Long switchId) {
-		// TODO Auto-generated method stub
 		// NOTE: Event not needed here. This callback always coincide with add/remove callback.
 	}
 
@@ -199,6 +243,9 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
 		if (swStore.addPort(HexString.toHexString(switchId), port)) {
 		    // TODO publish ADD_PORT event here
+		    TopologyElement topologyElement =
+			new TopologyElement(switchId, port.getPortNumber());
+		    datagridService.notificationSendTopologyElementAdded(topologyElement);
 		}
 	}
 
@@ -206,6 +253,9 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
 		if (swStore.deletePort(HexString.toHexString(switchId), port.getPortNumber())) {
 		    // TODO publish DELETE_PORT event here
+		    TopologyElement topologyElement =
+			new TopologyElement(switchId, port.getPortNumber());
+		    datagridService.notificationSendTopologyElementRemoved(topologyElement);
 		}
 	}
 
@@ -223,7 +273,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	@Override
 	public void deviceRemoved(IDevice device) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -266,6 +315,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	            new ArrayList<Class<? extends IFloodlightService>>();
 	        l.add(IFloodlightProviderService.class);
 	        l.add(IDeviceService.class);
+	        l.add(IDatagridService.class);
 	        l.add(IThreadPoolService.class);
 	        return l;
 	}
@@ -283,6 +333,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		linkDiscovery = context.getServiceImpl(ILinkDiscoveryService.class);
 		threadPool = context.getServiceImpl(IThreadPoolService.class);
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
+		datagridService = context.getServiceImpl(IDatagridService.class);
 		
 		devStore = new DeviceStorageImpl();
 		devStore.init(conf);
@@ -315,6 +366,11 @@ public class NetworkGraphPublisher implements IDeviceListener,
 				cleanupTask = new SingletonTask(ses, new SwitchCleanup());
 				cleanupTask.reschedule(CLEANUP_TASK_INTERVAL, TimeUnit.SECONDS);
 		}
+
+		//
+		// NOTE: No need to register with the Datagrid Service,
+		// because we don't need to receive any notifications from it.
+		//
 	}
 
 }
