@@ -25,11 +25,11 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
 import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.stream.events.*;
 import java.util.*;
 
 /**
@@ -41,94 +41,14 @@ import java.util.*;
 public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     private final OutputProcessorChain outputProcessorChain;
-    private final Deque<QName> startElementStack = new ArrayDeque<QName>();
-    private QName openStartElement = null;
-    private final List<XMLSecAttribute> currentAttributes = new ArrayList<XMLSecAttribute>();
-    private final Deque<Map<String, XMLSecNamespace>> nsStack;
-    private NamespaceContext namespaceContext;
-    private final NamespaceContext defaultNamespaceContext;
-    private boolean haveToWriteEndElement = false;
+    private Element elementStack = null;
+    private Element openStartElement = null;
+    private NSContext namespaceContext = new NSContext(null);
     private boolean endDocumentWritten = false;
+    private boolean haveToWriteEndElement = false;
 
     public XMLSecurityStreamWriter(OutputProcessorChain outputProcessorChain) {
         this.outputProcessorChain = outputProcessorChain;
-        nsStack = new ArrayDeque<Map<String, XMLSecNamespace>>();
-        nsStack.push(Collections.<String, XMLSecNamespace>emptyMap());
-
-        defaultNamespaceContext = new NamespaceContext() {
-            @Override
-            public String getNamespaceURI(String prefix) {
-                Iterator<Map<String, XMLSecNamespace>> stackIterator = nsStack.iterator();
-                while (stackIterator.hasNext()) {
-                    Map<String, XMLSecNamespace> next = stackIterator.next();
-                    Namespace ns = next.get(prefix);
-                    if (ns != null) {
-                        return ns.getNamespaceURI();
-                    }
-                }
-                if (namespaceContext != null) {
-                    return namespaceContext.getNamespaceURI(prefix);
-                }
-                return null;
-            }
-
-            @Override
-            public String getPrefix(String namespaceURI) {
-                Iterator<Map<String, XMLSecNamespace>> stackIterator = nsStack.iterator();
-                while (stackIterator.hasNext()) {
-                    Map<String, XMLSecNamespace> next = stackIterator.next();
-                    Iterator<Map.Entry<String, XMLSecNamespace>> mapIterator = next.entrySet().iterator();
-                    while (mapIterator.hasNext()) {
-                        Map.Entry<String, XMLSecNamespace> entry = mapIterator.next();
-                        if (namespaceURI.equals(entry.getValue().getNamespaceURI())) {
-                            return entry.getKey();
-                        }
-                    }
-                }
-                if (namespaceContext != null) {
-                    return namespaceContext.getPrefix(namespaceURI);
-                }
-                return null;
-            }
-
-            @Override
-            public Iterator<?> getPrefixes(String namespaceURI) {
-                List<String> prefixList = new ArrayList<String>(1);
-                if (namespaceContext != null) {
-                    @SuppressWarnings("unchecked")
-                    Iterator<String> iterator = namespaceContext.getPrefixes(namespaceURI);
-                    while (iterator.hasNext()) {
-                        String next = iterator.next();
-                        prefixList.add(next);
-                    }
-                }
-                Iterator<Map<String, XMLSecNamespace>> stackIterator = nsStack.descendingIterator();
-                while (stackIterator.hasNext()) {
-                    Map<String, XMLSecNamespace> next = stackIterator.next();
-                    Iterator<Map.Entry<String, XMLSecNamespace>> mapIterator = next.entrySet().iterator();
-                    while (mapIterator.hasNext()) {
-                        Map.Entry<String, XMLSecNamespace> entry = mapIterator.next();
-                        if (prefixList.contains(entry.getKey())) {
-                            prefixList.remove(entry.getKey());
-                        }
-                        if (namespaceURI.equals(entry.getValue().getNamespaceURI())) {
-                            prefixList.add(entry.getKey());
-                        }
-                    }
-                }
-                return Collections.unmodifiableList(prefixList).iterator();
-            }
-        };
-    }
-
-    private void putNamespaceOntoStack(String prefix, XMLSecNamespace namespace) {
-        Map<String, XMLSecNamespace> namespaceMap = nsStack.peek();
-        if (Collections.<String, XMLSecNamespace>emptyMap() == namespaceMap) {
-            nsStack.pop();
-            namespaceMap = new HashMap<String, XMLSecNamespace>();
-            nsStack.push(namespaceMap);
-        }
-        namespaceMap.put(prefix, namespace);
     }
 
     private void chainProcessEvent(XMLSecEvent xmlSecEvent) throws XMLStreamException {
@@ -144,80 +64,105 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
                         "you are using the javax.xml.transform.stax.StAXResult. Don't use " +
                         "it. It is buggy as hell.", e);
             }
-            //NB1: net.java.dev.stax-utils also doesn work: [Fatal Error] :4:425: Attribute "xmlns" was already specified for element ...
+            //NB1: net.java.dev.stax-utils also doesn work: [Fatal Error]
+            // :4:425: Attribute "xmlns" was already specified for element ...
             //NB2: The spring version also doesn't work...
-            //it seems it is not trivial to write a StAXResult because I couldn't find a implementation which passes the testcases...hmm
+            //it seems it is not trivial to write a StAXResult because I couldn't find an implementation
+            // which passes the testcases...hmm
             throw e;
         }
     }
 
     private void outputOpenStartElement() throws XMLStreamException {
         if (openStartElement != null) {
-            chainProcessEvent(XMLSecEventFactory.createXmlSecStartElement(openStartElement, currentAttributes, nsStack.peek().values()));
-            currentAttributes.clear();
+            chainProcessEvent(
+                    XMLSecEventFactory.createXmlSecStartElement(
+                            openStartElement.getQName(),
+                            openStartElement.getAttributes(),
+                            openStartElement.getNamespaces()));
             openStartElement = null;
         }
         if (haveToWriteEndElement) {
             haveToWriteEndElement = false;
             writeEndElement();
         }
-        nsStack.push(Collections.<String, XMLSecNamespace>emptyMap());
     }
 
     @Override
     public void writeStartElement(String localName) throws XMLStreamException {
         outputOpenStartElement();
-        QName qName = new QName(localName);
-        startElementStack.push(qName);
-        openStartElement = qName;
+
+        Element element;
+        if (elementStack == null) {
+            element = new Element(elementStack, namespaceContext,
+                    XMLConstants.NULL_NS_URI, localName, XMLConstants.DEFAULT_NS_PREFIX);
+        } else {
+            element = new Element(elementStack, XMLConstants.NULL_NS_URI, localName, XMLConstants.DEFAULT_NS_PREFIX);
+        }
+
+        elementStack = element;
+        openStartElement = element;
     }
 
     @Override
     public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
         outputOpenStartElement();
-        String prefix = getNamespaceContext().getPrefix(namespaceURI);
-        QName qName;
-        if (prefix == null) {
-            qName = new QName(namespaceURI, localName);
+
+        Element element;
+        if (elementStack == null) {
+            element = new Element(elementStack, namespaceContext,
+                    namespaceURI, localName, namespaceContext.getPrefix(namespaceURI));
         } else {
-            qName = new QName(namespaceURI, localName, prefix);
+            element = new Element(elementStack,
+                    namespaceURI, localName, elementStack.getNamespaceContext().getPrefix(namespaceURI));
         }
-        startElementStack.push(qName);
-        openStartElement = qName;
+
+        elementStack = element;
+        openStartElement = element;
     }
 
     @Override
     public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         outputOpenStartElement();
-        QName qName = new QName(namespaceURI, localName, prefix);
-        startElementStack.push(qName);
-        openStartElement = qName;
+
+        Element element;
+        if (elementStack == null) {
+            element = new Element(elementStack, namespaceContext, namespaceURI, localName, prefix);
+        } else {
+            element = new Element(elementStack, namespaceURI, localName, prefix);
+        }
+
+        elementStack = element;
+        openStartElement = element;
     }
 
     @Override
     public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
         writeStartElement(namespaceURI, localName);
+        openStartElement.setEmptyElement(true);
         haveToWriteEndElement = true;
     }
 
     @Override
     public void writeEmptyElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         writeStartElement(prefix, localName, namespaceURI);
+        openStartElement.setEmptyElement(true);
         haveToWriteEndElement = true;
     }
 
     @Override
     public void writeEmptyElement(String localName) throws XMLStreamException {
         writeStartElement(localName);
+        openStartElement.setEmptyElement(true);
         haveToWriteEndElement = true;
     }
 
     @Override
     public void writeEndElement() throws XMLStreamException {
         outputOpenStartElement();
-        QName element = startElementStack.pop();
-        nsStack.pop();
-        chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(element));
+        Element element = this.elementStack;
+        this.elementStack = this.elementStack.getParentElement();
+        chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(element.getQName()));
 
     }
 
@@ -225,10 +170,10 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
     public void writeEndDocument() throws XMLStreamException {
         if (!endDocumentWritten) {
             outputOpenStartElement();
-            Iterator<QName> startElements = startElementStack.iterator();
-            while (startElements.hasNext()) {
-                nsStack.pop();
-                chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(startElements.next()));
+            while (this.elementStack != null) {
+                Element element = this.elementStack;
+                this.elementStack = element.getParentElement();
+                chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(element.getQName()));
             }
             chainProcessEvent(XMLSecEventFactory.createXMLSecEndDocument());
             endDocumentWritten = true;
@@ -252,32 +197,54 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     @Override
     public void writeAttribute(String localName, String value) throws XMLStreamException {
-        currentAttributes.add(XMLSecEventFactory.createXMLSecAttribute(new QName(localName), value));
+        if (openStartElement == null) {
+            throw new XMLStreamException("No open start element.");
+        }
+        openStartElement.addAttribute(
+                XMLSecEventFactory.createXMLSecAttribute(
+                        new QName(localName), value));
     }
 
     @Override
-    public void writeAttribute(String prefix, String namespaceURI, String localName, String value) throws XMLStreamException {
-        currentAttributes.add(XMLSecEventFactory.createXMLSecAttribute(new QName(namespaceURI, localName, prefix), value));
+    public void writeAttribute(String prefix, String namespaceURI, String localName, String value)
+            throws XMLStreamException {
+        if (openStartElement == null) {
+            throw new XMLStreamException("No open start element.");
+        }
+        openStartElement.addAttribute(
+                XMLSecEventFactory.createXMLSecAttribute(
+                        new QName(namespaceURI, localName, prefix), value));
     }
 
     @Override
     public void writeAttribute(String namespaceURI, String localName, String value) throws XMLStreamException {
-        currentAttributes.add(XMLSecEventFactory.createXMLSecAttribute(new QName(namespaceURI, localName, getNamespaceContext().getPrefix(namespaceURI)), value));
+        if (openStartElement == null) {
+            throw new XMLStreamException("No open start element.");
+        }
+        openStartElement.addAttribute(
+                XMLSecEventFactory.createXMLSecAttribute(
+                        new QName(namespaceURI, localName, getNamespaceContext().getPrefix(namespaceURI)), value));
     }
 
     @Override
     public void writeNamespace(String prefix, String namespaceURI) throws XMLStreamException {
-        putNamespaceOntoStack(prefix, XMLSecEventFactory.createXMLSecNamespace(prefix, namespaceURI));
+        if (openStartElement == null) {
+            throw new XMLStreamException("No open start element.");
+        }
+        this.openStartElement.addNamespace(XMLSecEventFactory.createXMLSecNamespace(prefix, namespaceURI));
     }
 
     @Override
     public void writeDefaultNamespace(String namespaceURI) throws XMLStreamException {
-        //workaround for sun's stax parser:
-        if (this.openStartElement != null && this.openStartElement.getPrefix().equals("")) {
-            this.openStartElement = new QName(namespaceURI, openStartElement.getLocalPart(), "");
+        if (openStartElement == null) {
+            throw new XMLStreamException("No open start element.");
         }
-        putNamespaceOntoStack("", XMLSecEventFactory.createXMLSecNamespace(null, namespaceURI));
-
+        //workaround for sun's stax parser:
+        if (this.openStartElement.getElementPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+            this.openStartElement.setElementNamespace(namespaceURI);
+            this.openStartElement.setElementPrefix(XMLConstants.DEFAULT_NS_PREFIX);
+        }
+        this.openStartElement.addNamespace(XMLSecEventFactory.createXMLSecNamespace(null, namespaceURI));
     }
 
     @Override
@@ -289,7 +256,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
     @Override
     public void writeProcessingInstruction(String target) throws XMLStreamException {
         outputOpenStartElement();
-        chainProcessEvent(XMLSecEventFactory.createXMLSecProcessingInstruction(target, ""));
+        chainProcessEvent(XMLSecEventFactory.createXMLSecProcessingInstruction(target, XMLConstants.DEFAULT_NS_PREFIX));
     }
 
     @Override
@@ -306,7 +273,9 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     @Override
     public void writeDTD(String dtd) throws XMLStreamException {
-        outputOpenStartElement();
+        if (elementStack != null) {
+            throw new XMLStreamException("Not in prolog");
+        }
         chainProcessEvent(XMLSecEventFactory.createXMLSecDTD(dtd));
     }
 
@@ -350,20 +319,29 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     @Override
     public String getPrefix(String uri) throws XMLStreamException {
-        return defaultNamespaceContext.getPrefix(uri);
+        if (elementStack == null) {
+            return this.namespaceContext.getPrefix(uri);
+        } else {
+            return this.elementStack.getNamespaceContext().getPrefix(uri);
+        }
     }
 
     @Override
     public void setPrefix(String prefix, String uri) throws XMLStreamException {
-        putNamespaceOntoStack(prefix, XMLSecEventFactory.createXMLSecNamespace(prefix, uri));
-        if (openStartElement != null && openStartElement.getNamespaceURI().equals(uri)) {
-            openStartElement = new QName(openStartElement.getNamespaceURI(), openStartElement.getLocalPart(), prefix);
+        if (elementStack == null) {
+            this.namespaceContext.add(prefix, uri);
+        } else {
+            this.elementStack.getNamespaceContext().add(prefix, uri);
         }
     }
 
     @Override
     public void setDefaultNamespace(String uri) throws XMLStreamException {
-        putNamespaceOntoStack("", XMLSecEventFactory.createXMLSecNamespace("", uri));
+        if (elementStack == null) {
+            this.namespaceContext.add(XMLConstants.DEFAULT_NS_PREFIX, uri);
+        } else {
+            this.elementStack.getNamespaceContext().add(XMLConstants.DEFAULT_NS_PREFIX, uri);
+        }
     }
 
     @Override
@@ -371,16 +349,204 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         if (context == null) {
             throw new NullPointerException("context must not be null");
         }
-        this.namespaceContext = context;
+        this.namespaceContext = new NSContext(context);
     }
 
     @Override
     public NamespaceContext getNamespaceContext() {
-        return defaultNamespaceContext;
+        if (this.elementStack == null) {
+            return namespaceContext;
+        }
+        return elementStack.getNamespaceContext();
     }
 
     @Override
     public Object getProperty(String name) throws IllegalArgumentException {
         throw new IllegalArgumentException("Properties not supported");
+    }
+
+    private class Element {
+
+        private Element parentElement;
+
+        private QName qName;
+        private String elementName;
+        private String elementNamespace;
+        private String elementPrefix;
+        private boolean emptyElement;
+        private List<XMLSecNamespace> namespaces = Collections.emptyList();
+        private List<XMLSecAttribute> attributes = Collections.emptyList();
+
+        private NSContext namespaceContext;
+
+        public Element(Element parentElement,
+                       String elementNamespace, String elementName, String elementPrefix) {
+            this(parentElement, null, elementNamespace, elementName, elementPrefix);
+        }
+
+        public Element(Element parentElement, NSContext namespaceContext,
+                       String elementNamespace, String elementName, String elementPrefix) {
+            this.parentElement = parentElement;
+            this.namespaceContext = namespaceContext;
+            this.elementNamespace = elementNamespace;
+            this.elementName = elementName;
+            this.elementPrefix = elementPrefix;
+        }
+
+        private Element getParentElement() {
+            return parentElement;
+        }
+
+        private boolean isEmptyElement() {
+            return emptyElement;
+        }
+
+        private void setEmptyElement(boolean emptyElement) {
+            this.emptyElement = emptyElement;
+        }
+
+        private String getElementName() {
+            return elementName;
+        }
+
+        private void setElementName(String elementName) {
+            this.elementName = elementName;
+            this.qName = null;
+        }
+
+        private String getElementNamespace() {
+            return elementNamespace;
+        }
+
+        private void setElementNamespace(String elementNamespace) {
+            this.elementNamespace = elementNamespace;
+            this.qName = null;
+        }
+
+        private String getElementPrefix() {
+            return elementPrefix;
+        }
+
+        private void setElementPrefix(String elementPrefix) {
+            this.elementPrefix = elementPrefix;
+            this.qName = null;
+        }
+
+        private List<XMLSecNamespace> getNamespaces() {
+            return namespaces;
+        }
+
+        private void addNamespace(XMLSecNamespace namespace) {
+            if (this.namespaces == Collections.<XMLSecNamespace>emptyList()) {
+                this.namespaces = new ArrayList<XMLSecNamespace>(1);
+            }
+            this.namespaces.add(namespace);
+
+            //also add namespace to namespace-context
+            getNamespaceContext().add(namespace.getPrefix(), namespace.getNamespaceURI());
+        }
+
+        private List<XMLSecAttribute> getAttributes() {
+            return attributes;
+        }
+
+        private void addAttribute(XMLSecAttribute attribute) {
+            if (this.attributes == Collections.<XMLSecAttribute>emptyList()) {
+                this.attributes = new ArrayList<XMLSecAttribute>(1);
+            }
+            this.attributes.add(attribute);
+        }
+
+        private NSContext getNamespaceContext() {
+            if (this.namespaceContext == null) {
+                if (emptyElement) {
+                    this.namespaceContext = parentElement.getNamespaceContext();
+                } else if (parentElement != null) {
+                    this.namespaceContext = new NSContext(parentElement.getNamespaceContext());
+                } else {
+                    this.namespaceContext = new NSContext(null);
+                }
+            }
+            return this.namespaceContext;
+        }
+
+        private void setNamespaceContext(NSContext namespaceContext) {
+            this.namespaceContext = namespaceContext;
+        }
+
+        private QName getQName() {
+            if (this.qName == null) {
+                this.qName = new QName(this.getElementNamespace(), this.getElementName(), this.getElementPrefix());
+            }
+            return this.qName;
+        }
+    }
+
+    private class NSContext implements NamespaceContext {
+
+        private NamespaceContext parentNamespaceContext;
+        private List<String> prefixNsList = Collections.emptyList();
+
+        private NSContext(NamespaceContext parentNamespaceContext) {
+            this.parentNamespaceContext = parentNamespaceContext;
+        }
+
+        @Override
+        public String getNamespaceURI(String prefix) {
+            for (int i = 0; i < prefixNsList.size(); i += 2) {
+                String s = prefixNsList.get(i);
+                if (s.equals(prefix)) {
+                    return prefixNsList.get(i + 1);
+                }
+            }
+
+            if (parentNamespaceContext != null) {
+                return parentNamespaceContext.getNamespaceURI(prefix);
+            }
+            return null;
+        }
+
+        @Override
+        public String getPrefix(String namespaceURI) {
+            for (int i = 1; i < prefixNsList.size(); i += 2) {
+                String s = prefixNsList.get(i);
+                if (s.equals(namespaceURI)) {
+                    return prefixNsList.get(i - 1);
+                }
+            }
+
+            if (parentNamespaceContext != null) {
+                return parentNamespaceContext.getPrefix(namespaceURI);
+            }
+            return null;
+        }
+
+        @Override
+        public Iterator getPrefixes(String namespaceURI) {
+            List<String> prefixes = new ArrayList<String>(1);
+            for (int i = 1; i < prefixNsList.size(); i += 2) {
+                String s = prefixNsList.get(i);
+                if (s.equals(namespaceURI)) {
+                    prefixes.add(prefixNsList.get(i - 1));
+                }
+            }
+
+            if (parentNamespaceContext != null) {
+                @SuppressWarnings("unchecked")
+                Iterator<String> parentPrefixes = parentNamespaceContext.getPrefixes(namespaceURI);
+                while (parentPrefixes.hasNext()) {
+                    prefixes.add(parentPrefixes.next());
+                }
+            }
+            return prefixes.iterator();
+        }
+
+        private void add(String prefix, String namespace) {
+            if (this.prefixNsList == Collections.<String>emptyList()) {
+                this.prefixNsList = new ArrayList<String>(1);
+            }
+            this.prefixNsList.add(prefix);
+            this.prefixNsList.add(namespace);
+        }
     }
 }

@@ -20,7 +20,6 @@ package org.apache.xml.security.test.stax;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
-import org.apache.xml.security.stax.impl.InboundSecurityContextImpl;
 import org.apache.xml.security.stax.impl.OutboundSecurityContextImpl;
 import org.junit.Assert;
 import org.junit.Before;
