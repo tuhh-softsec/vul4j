@@ -1,6 +1,7 @@
 package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import com.esotericsoftware.kryo2.Kryo;
 
@@ -124,6 +125,8 @@ public class KryoFactory {
 
 	// Topology-related classes
 	kryo.register(TopologyElement.class);
+	kryo.register(TopologyElement.Type.class);
+	kryo.register(TreeMap.class);
 
 	return kryo;
     }
