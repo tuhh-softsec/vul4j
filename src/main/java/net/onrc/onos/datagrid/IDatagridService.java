@@ -5,6 +5,7 @@ import java.util.Collection;
 import net.floodlightcontroller.core.module.IFloodlightService;
 
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
+import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
@@ -62,4 +63,37 @@ public interface IDatagridService extends IFloodlightService {
      * Send a notification that all Flows are removed.
      */
     void notificationSendAllFlowsRemoved();
+
+    /**
+     * Get all Topology Elements that are currently in the datagrid.
+     *
+     * @return all Topology Elements that are currently in the datagrid.
+     */
+    Collection<TopologyElement> getAllTopologyElements();
+
+    /**
+     * Send a notification that a Topology Element is added.
+     *
+     * @param topologyElement the Topology Element that is added.
+     */
+    void notificationSendTopologyElementAdded(TopologyElement topologyElement);
+
+    /**
+     * Send a notification that a Topology Element is removed.
+     *
+     * @param topologyElement the Topology Element that is removed.
+     */
+    void notificationSendTopologyElementRemoved(TopologyElement topologyElement);
+
+    /**
+     * Send a notification that a Topology Element is updated.
+     *
+     * @param topologyElement the Topology Element that is updated.
+     */
+    void notificationSendTopologyElementUpdated(TopologyElement topologyElement);
+
+    /**
+     * Send a notification that all Topology Elements are removed.
+     */
+    void notificationSendAllTopologyElementsRemoved();
 }

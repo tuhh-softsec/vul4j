@@ -1,10 +1,13 @@
 package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.util.ArrayList;
+
 import com.esotericsoftware.kryo2.Kryo;
-import net.onrc.onos.ofcontroller.util.*;
 
 import net.floodlightcontroller.util.MACAddress;
+
+import net.onrc.onos.ofcontroller.util.*;
+import net.onrc.onos.ofcontroller.topology.TopologyElement;
 
 /**
  * Class factory for allocating Kryo instances for
@@ -81,6 +84,8 @@ public class KryoFactory {
 	// kryo.setReferences(false);
 	//
 	kryo.register(ArrayList.class);
+
+	// FlowPath and related classes
 	kryo.register(CallerId.class);
 	kryo.register(DataPath.class);
 	kryo.register(DataPathEndpoints.class);
@@ -116,6 +121,9 @@ public class KryoFactory {
 	kryo.register(Port.class);
 	kryo.register(Switch.class);
 	kryo.register(SwitchPort.class);
+
+	// Topology-related classes
+	kryo.register(TopologyElement.class);
 
 	return kryo;
     }

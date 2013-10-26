@@ -31,6 +31,7 @@ import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.Topology;
+import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.*;
 
 import org.openflow.protocol.OFType;
@@ -75,6 +76,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     // The queue with Flow Path updates
     protected BlockingQueue<EventEntry<FlowPath>> flowPathEvents =
 	new LinkedBlockingQueue<EventEntry<FlowPath>>();
+
+    // The queue with Topology Element updates
+    protected BlockingQueue<EventEntry<TopologyElement>> topologyEvents =
+	new LinkedBlockingQueue<EventEntry<TopologyElement>>();
 
     /**
      * Periodic task for reading the Flow Entries and pushing changes
@@ -494,8 +499,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
 
-	// Register with the Datagrid Service and obtain the initial state
+	// Register with the Datagrid Service
 	datagridService.registerFlowService(this);
+
+	// Obtain the initial Topology state
+	Collection<TopologyElement> topologyElements =
+	    datagridService.getAllTopologyElements();
+	for (TopologyElement topologyElement : topologyElements) {
+	    EventEntry<TopologyElement> eventEntry =
+		new EventEntry<TopologyElement>(EventEntry.Type.ENTRY_ADD, topologyElement);
+	    topologyEvents.add(eventEntry);
+	}
+
+	// Obtain the initial Flow state
 	Collection<FlowPath> flowPaths = datagridService.getAllFlows();
 	for (FlowPath flowPath : flowPaths) {
 	    EventEntry<FlowPath> eventEntry =
@@ -862,6 +878,36 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void notificationRecvFlowUpdated(FlowPath flowPath) {
+	// TODO
+    }
+
+    /**
+     * Receive a notification that a Topology Element is added.
+     *
+     * @param topologyElement the Topology Element that is added.
+     */
+    @Override
+    public void notificationRecvTopologyElementAdded(TopologyElement topologyElement) {
+	// TODO
+    }
+
+    /**
+     * Receive a notification that a Topology Element is removed.
+     *
+     * @param topologyElement the Topology Element that is removed.
+     */
+    @Override
+    public void notificationRecvTopologyElementRemoved(TopologyElement topologyElement) {
+	// TODO
+    }
+
+    /**
+     * Receive a notification that a Topology Element is updated.
+     *
+     * @param topologyElement the Topology Element that is updated.
+     */
+    @Override
+    public void notificationRecvTopologyElementUpdated(TopologyElement topologyElement) {
 	// TODO
     }
 }
