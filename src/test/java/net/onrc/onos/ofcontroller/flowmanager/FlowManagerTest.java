@@ -159,7 +159,7 @@ public class FlowManagerTest {
 		replayAll();
 
 		fm.init(context);
-		Boolean result = fm.addFlow(flowPath, flowId, "");
+		Boolean result = fm.addFlow(flowPath, flowId);
 
 		// verify the test
 		verifyAll();
@@ -167,7 +167,7 @@ public class FlowManagerTest {
 	}
 
 	/**
-	 * Test method for {@link FlowManager#addFlow(FlowPath, FlowId, String)}.
+	 * Test method for {@link FlowManager#addFlow(FlowPath, FlowId)}.
 	 * @throws Exception 
 	 */
 	@Test
@@ -228,7 +228,7 @@ public class FlowManagerTest {
 		replayAll();
 		
 		fm.init(context);
-		Boolean result = fm.addFlow(flowPath, new FlowId(0x100), "data path summary");
+		Boolean result = fm.addFlow(flowPath, new FlowId(0x100));
 
 		// verify the test
 		verifyAll();

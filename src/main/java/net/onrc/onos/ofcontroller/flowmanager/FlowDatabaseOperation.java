@@ -35,14 +35,11 @@ class FlowDatabaseOperation {
      * @param dbHandler the Graph Database handler to use.
      * @param flowPath the Flow Path to install.
      * @param flowId the return-by-reference Flow ID as assigned internally.
-     * @param dataPathSummaryStr the data path summary string if the added
-     * flow will be maintained internally, otherwise null.
      * @return true on success, otherwise false.
      */
     static boolean addFlow(FlowManager flowManager,
 			   GraphDBOperation dbHandler,
-			   FlowPath flowPath, FlowId flowId,
-			   String dataPathSummaryStr) {
+			   FlowPath flowPath, FlowId flowId) {
 	IFlowPath flowObj = null;
 	boolean found = false;
 	try {
@@ -140,12 +137,7 @@ class FlowDatabaseOperation {
 	if (! flowPath.flowEntryActions().actions().isEmpty()) {
 	    flowObj.setActions(flowPath.flowEntryActions().toString());
 	}
-
-	if (dataPathSummaryStr != null) {
-	    flowObj.setDataPathSummary(dataPathSummaryStr);
-	} else {
-	    flowObj.setDataPathSummary("");
-	}
+	flowObj.setDataPathSummary(flowPath.dataPath().dataPathSummary());
 
 	if (found)
 	    flowObj.setUserState("FE_USER_MODIFY");

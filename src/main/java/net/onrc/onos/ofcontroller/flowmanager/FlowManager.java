@@ -271,11 +271,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    if (mySwitch == null)
 			continue;	// Ignore: not my responsibility
 
-		    // Test the Data Path Summary string
-		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
-		    if (dataPathSummaryStr == null)
+		    // Test whether we need to maintain this flow
+		    String flowPathTypeStr = flowPathObj.getFlowPathType();
+		    if (flowPathTypeStr == null)
 			continue;	// Could be invalid entry?
-		    if (dataPathSummaryStr.isEmpty())
+		    if (! flowPathTypeStr.equals("FP_TYPE_SHORTEST_PATH"))
 			continue;	// No need to maintain this flow
 
 		    //
@@ -292,15 +292,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 
 		    // Fetch the fields needed to recompute the shortest path
+		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
 		    Short srcPortShort = flowPathObj.getSrcPort();
 		    String dstDpidStr = flowPathObj.getDstSwitch();
 		    Short dstPortShort = flowPathObj.getDstPort();
-		    String flowPathTypeStr = flowPathObj.getFlowPathType();
 		    Long flowPathFlagsLong = flowPathObj.getFlowPathFlags();
-		    if ((srcPortShort == null) ||
+		    if ((dataPathSummaryStr == null) ||
+			(srcPortShort == null) ||
 			(dstDpidStr == null) ||
 			(dstPortShort == null) ||
-			(flowPathTypeStr == null) ||
 			(flowPathFlagsLong == null)) {
 			continue;
 		    }
@@ -534,15 +534,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param flowPath the Flow Path to install.
      * @param flowId the return-by-reference Flow ID as assigned internally.
-     * @param dataPathSummaryStr the data path summary string if the added
-     * flow will be maintained internally, otherwise null.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean addFlow(FlowPath flowPath, FlowId flowId,
-			   String dataPathSummaryStr) {
-	if (FlowDatabaseOperation.addFlow(this, dbHandler, flowPath, flowId,
-					  dataPathSummaryStr)) {
+    public boolean addFlow(FlowPath flowPath, FlowId flowId) {
+	if (FlowDatabaseOperation.addFlow(this, dbHandler, flowPath, flowId)) {
 	    datagridService.notificationSendFlowAdded(flowPath);
 	    return true;
 	}
@@ -705,31 +701,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Instead, let the Flow reconciliation thread take care of it.
 	//
 
-	// We need the DataPath to populate the Network MAP
-	DataPath dataPath = new DataPath();
-	dataPath.setSrcPort(flowPath.dataPath().srcPort());
-	dataPath.setDstPort(flowPath.dataPath().dstPort());
-
-	//
-	// Prepare the computed Flow Path
-	//
-	FlowPath computedFlowPath = new FlowPath();
-	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
-	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
-	computedFlowPath.setFlowPathType(flowPath.flowPathType());
-	computedFlowPath.setFlowPathFlags(new FlowPathFlags(flowPath.flowPathFlags().flags()));
-	computedFlowPath.setDataPath(dataPath);
-	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
-	computedFlowPath.setFlowEntryActions(new FlowEntryActions(flowPath.flowEntryActions()));
-
 	FlowId flowId = new FlowId();
-	String dataPathSummaryStr = dataPath.dataPathSummary();
-	if (! addFlow(computedFlowPath, flowId, dataPathSummaryStr))
+	if (! addFlow(flowPath, flowId))
 	    return null;
 
-	// TODO: Mark the flow for maintenance purpose
-
-	return (computedFlowPath);
+	return (flowPath);
     }
 
     /**
