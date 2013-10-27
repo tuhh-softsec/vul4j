@@ -34,11 +34,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
+import org.esigate.RequestExecutor.RequestExecutorBuilder;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.events.impl.RenderEvent;
 import org.esigate.extension.ExtensionFactory;
-import org.esigate.http.GenericHttpRequest;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.ResourceUtils;
 import org.esigate.util.HttpRequestHelper;
@@ -56,25 +56,64 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  * @author Sylvain Sicard
  */
-public abstract class Driver {
+public class Driver {
 	private static final String CACHE_RESPONSE_PREFIX = "response_";
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
-	protected final DriverConfiguration config;
-	private final Collection<String> parsableContentTypes;
-	protected final EventManager eventManager;
+	private DriverConfiguration config;
+	private Collection<String> parsableContentTypes;
+	private EventManager eventManager;
+	private RequestExecutor requestExecutor;
 
-	protected Driver(Properties properties, String name, EventManager eventManagerParam) {
-		this.eventManager = eventManagerParam;
-		this.config = new DriverConfiguration(name, properties);
-		this.parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueList(properties);
+	public static class DriverBuilder {
+		private Driver driver = new Driver();
+		private String name;
+		private Properties properties;
+		private RequestExecutorBuilder requestExecutorBuilder;
 
-		// Load extensions.
-		ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, this);
+		public Driver build() {
+			if (name == null)
+				throw new ConfigurationException("name is mandatory");
+			if (properties == null)
+				throw new ConfigurationException("properties is mandatory");
+			if (requestExecutorBuilder == null)
+				requestExecutorBuilder = HttpClientDriver.builder();
+			if (driver.eventManager == null)
+				driver.eventManager = new EventManager(name);
+			driver.config = new DriverConfiguration(name, properties);
+			driver.parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueList(properties);
+			// Load extensions.
+			ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, driver);
+			driver.requestExecutor = requestExecutorBuilder.setDriver(driver).setEventManager(driver.getEventManager()).setProperties(properties).build();
+			return driver;
+		}
+
+		public DriverBuilder setName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public DriverBuilder setProperties(Properties properties) {
+			this.properties = properties;
+			return this;
+		}
+
+		public DriverBuilder setEventManager(EventManager eventManager) {
+			driver.eventManager = eventManager;
+			return this;
+		}
+
+		public DriverBuilder setRequestExecutorBuilder(RequestExecutorBuilder requestExecutorBuilder) {
+			this.requestExecutorBuilder = requestExecutorBuilder;
+			return this;
+		}
 
 	}
 
-	public Driver(String name, Properties properties) {
-		this(properties, name, new EventManager(name));
+	protected Driver() {
+	}
+
+	public static DriverBuilder builder() {
+		return new DriverBuilder();
 	}
 
 	/**
@@ -104,8 +143,7 @@ public abstract class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	public final void render(String pageUrl, Map<String, String> parameters, Appendable writer,
-			HttpEntityEnclosingRequest originalRequest, Renderer... renderers) throws IOException, HttpErrorPage {
+	public final void render(String pageUrl, Map<String, String> parameters, Appendable writer, HttpEntityEnclosingRequest originalRequest, Renderer... renderers) throws IOException, HttpErrorPage {
 
 		initHttpRequestParams(originalRequest, parameters);
 
@@ -172,8 +210,7 @@ public abstract class Driver {
 		for (Renderer renderer : renderers) {
 			rendererNames.add(renderer.getClass().getName());
 		}
-		LOG.info("render provider={} page= {} renderers={}", new Object[] { this.config.getInstanceName(), onUrl,
-				rendererNames });
+		LOG.info("{} provider={} page= {} renderers={}", action, this.config.getInstanceName(), onUrl, rendererNames);
 	}
 
 	/**
@@ -218,8 +255,7 @@ public abstract class Driver {
 	 * @throws HttpErrorPage
 	 *             If the page contains incorrect tags
 	 */
-	public void proxy(String relUrl, HttpEntityEnclosingRequest request, Renderer... renderers) throws IOException,
-			HttpErrorPage {
+	public void proxy(String relUrl, HttpEntityEnclosingRequest request, Renderer... renderers) throws IOException, HttpErrorPage {
 		// This is used to ensure EVENT_PROXY_POST is called once and only once.
 		// there are 3 different cases
 		// - Success -> the main code
@@ -246,7 +282,7 @@ public abstract class Driver {
 			initHttpRequestParams(request, null);
 			HttpRequestHelper.setCharacterEncoding(request, this.config.getUriEncoding());
 			String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, e.originalRequest, true);
-			e.response = createAndExecuteRequest(request, url, true);
+			e.response = requestExecutor.createAndExecuteRequest(request, url, true);
 
 			// Perform rendering
 			e.response = performRendering(relUrl, request, e.response, renderers);
@@ -281,8 +317,6 @@ public abstract class Driver {
 		}
 	}
 
-	protected abstract HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean b) throws HttpErrorPage;
-
 	/**
 	 * Performs rendering on an HttpResponse.
 	 * <p>
@@ -301,7 +335,7 @@ public abstract class Driver {
 	 * @throws HttpErrorPage
 	 * @throws IOException
 	 */
-	protected HttpResponse performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, HttpResponse response, Renderer[] renderers) throws HttpErrorPage, IOException {
+	private HttpResponse performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, HttpResponse response, Renderer[] renderers) throws HttpErrorPage, IOException {
 
 		if (!isTextContentType(response)) {
 			LOG.debug("'{}' is binary on no transformation to apply: was forwarded without modification.", pageUrl);
@@ -343,8 +377,7 @@ public abstract class Driver {
 	 * @throws HttpErrorPage
 	 * @throws IOException
 	 */
-	private String performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, HttpResponse response,
-			String body, Renderer[] renderers) throws IOException, HttpErrorPage {
+	private String performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, HttpResponse response, String body, Renderer[] renderers) throws IOException, HttpErrorPage {
 		if (LOG.isInfoEnabled()) {
 			logAction("render", pageUrl, renderers);
 		}
@@ -382,9 +415,9 @@ public abstract class Driver {
 	 * @return the Http reponse
 	 * @throws HttpErrorPage
 	 */
-	protected HttpResponse getResource(String url, HttpEntityEnclosingRequest originalRequest) throws HttpErrorPage {
+	private HttpResponse getResource(String url, HttpEntityEnclosingRequest originalRequest) throws HttpErrorPage {
 		String targetUrl = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
-		return createAndExecuteRequest(originalRequest, targetUrl, false);
+		return requestExecutor.createAndExecuteRequest(originalRequest, targetUrl, false);
 	}
 
 	/**
@@ -434,15 +467,8 @@ public abstract class Driver {
 		return false;
 	}
 
-	/**
-	 * Execute a HTTP request
-	 * <p>
-	 * No special handling.
-	 * 
-	 * @param httpRequest
-	 *            HTTP request to execute.
-	 * @return HTTP response.
-	 */
-	public abstract HttpResponse executeSingleRequest(GenericHttpRequest httpRequest);
+	public RequestExecutor getRequestExecutor() {
+		return requestExecutor;
+	}
 
 }

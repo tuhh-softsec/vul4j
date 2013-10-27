@@ -34,11 +34,11 @@ public class CommentTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		Driver provider = new MockDriver();
+		Driver provider = MockDriver.createDriver();
 		request = TestUtils.createRequest();
 		tested = new EsiRenderer();
 		provider.initHttpRequestParams(request, null);
-		MockDriver provider1 = new MockDriver("provider1");
+		MockDriver provider1 = MockDriver.createMockDriver("provider1");
 		provider1.addResource("/test", "replacement");
 	}
 

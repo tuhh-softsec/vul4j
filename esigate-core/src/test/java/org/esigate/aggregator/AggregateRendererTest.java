@@ -31,7 +31,7 @@ public class AggregateRendererTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		MockDriver provider = new MockDriver("mock");
+		MockDriver provider = MockDriver.createMockDriver("mock");
 		provider.addResource("/testInclude", "Test include");
 		provider.addResource("/testBlock", "before <!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$--> after");
 		provider.addResource("/testTemplate", "before <!--$begintemplate$mytemplate$-->some text goes here<!--$endtemplate$mytemplate$--> after");
@@ -43,7 +43,6 @@ public class AggregateRendererTest extends TestCase {
 		provider.addResource("/testNestedTemplate",
 				"before <!--$begintemplate$myblock$--> nested <!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$--> /nested <!--$endtemplate$myblock$--> after");
 		request = TestUtils.createRequest();
-		provider.initHttpRequestParams(request, null);
 		tested = new AggregateRenderer();
 	}
 

@@ -43,7 +43,7 @@ public class DefaultCookieManagerTest extends TestCase {
 		cookieManager = new DefaultCookieManager();
 		cookieManager.init(null, properties);
 		request = TestUtils.createRequest();
-		Driver driver = new MockDriver();
+		Driver driver = MockDriver.createDriver();
 		driver.initHttpRequestParams(request, null);
 	}
 
@@ -88,34 +88,32 @@ public class DefaultCookieManagerTest extends TestCase {
 
 	public void testRewriteDomain() {
 		assertEquals(null, DefaultCookieManager.rewriteDomain("provider1", "provider1", "www.foo.com"));
-		assertEquals(".foo.com",
-				DefaultCookieManager.rewriteDomain(".provider1.net", "www.provider1.net", "www.foo.com"));
-		assertEquals(".subdomain.foo.com", DefaultCookieManager.rewriteDomain(".subdomain1.provider1.net",
-				"www.subdomain1.provider1.net", "www.subdomain.foo.com"));
-		assertEquals(".foo.com",
-				DefaultCookieManager.rewriteDomain(".provider1.net", "www.provider1.net", "www.subdomain.foo.com"));
+		assertEquals(".foo.com", DefaultCookieManager.rewriteDomain(".provider1.net", "www.provider1.net", "www.foo.com"));
+		assertEquals(".subdomain.foo.com", DefaultCookieManager.rewriteDomain(".subdomain1.provider1.net", "www.subdomain1.provider1.net", "www.subdomain.foo.com"));
+		assertEquals(".foo.com", DefaultCookieManager.rewriteDomain(".provider1.net", "www.provider1.net", "www.subdomain.foo.com"));
 		assertEquals(null, DefaultCookieManager.rewriteDomain("www.provider1.net", "www.provider1.net", "www.foo.com"));
 		assertEquals(null, DefaultCookieManager.rewriteDomain("localhost", "localhost", "www.foo.com"));
 		assertEquals(null, DefaultCookieManager.rewriteDomain("127.0.0.1", "127.0.0.1", "www.foo.com"));
-		assertEquals(null, DefaultCookieManager.rewriteDomain("provider1.subdomain.net", "www.provider1.subdomain.net",
-				"www.foo.com"));
+		assertEquals(null, DefaultCookieManager.rewriteDomain("provider1.subdomain.net", "www.provider1.subdomain.net", "www.foo.com"));
 	}
 
 	/**
-	 * 0000232: Cookie management : ESIGate should replace in user's cookie store new cookies received instead of always adding them
+	 * 0000232: Cookie management : ESIGate should replace in user's cookie
+	 * store new cookies received instead of always adding them
+	 * 
 	 * @see "http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=232"
 	 * 
 	 */
 	public void testReplace() {
 		assertEquals(0, cookieManager.getCookies(request).size());
-		
+
 		// Add cookie
 		cookieManager.addCookie(new BasicClientCookie("b", "value1"), request);
 		assertEquals(1, cookieManager.getCookies(request).size());
-		
-		//Replace cookie value
+
+		// Replace cookie value
 		cookieManager.addCookie(new BasicClientCookie("b", "value2"), request);
-		
+
 		// Ensure cookie is replaced
 		assertEquals(1, cookieManager.getCookies(request).size());
 		assertEquals("value2", cookieManager.getCookies(request).get(0).getValue());

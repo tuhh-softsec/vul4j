@@ -12,8 +12,10 @@ import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
+import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.RequestExecutor;
 import org.esigate.events.EventManager;
 import org.esigate.http.GenericHttpRequest;
 import org.esigate.http.IOExceptionHandler;
@@ -24,21 +26,50 @@ import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpServletDriver extends Driver {
-	private final static Logger LOG = LoggerFactory.getLogger(HttpServletDriver.class);
+public class HttpServletDriver implements RequestExecutor {
+	private Driver driver;
 
-	protected HttpServletDriver(Properties properties, String name, EventManager eventManagerParam) {
-		super(properties, name, eventManagerParam);
+	private final static class HttpServletDriverBuilder implements RequestExecutorBuilder {
+		private HttpServletDriver httpServletDriver = new HttpServletDriver();
+
+		@Override
+		public RequestExecutorBuilder setEventManager(EventManager eventManager) {
+			return this;
+		}
+
+		@Override
+		public RequestExecutorBuilder setDriver(Driver driver) {
+			httpServletDriver.driver = driver;
+			return this;
+		}
+
+		@Override
+		public RequestExecutorBuilder setProperties(Properties properties) {
+			return this;
+		}
+
+		@Override
+		public RequestExecutor build() {
+			if (httpServletDriver.driver == null)
+				throw new ConfigurationException("driver is mandatory");
+			return httpServletDriver;
+		}
+
 	}
 
-	public HttpServletDriver(String name, Properties properties) {
-		super(name, properties);
+	public static RequestExecutorBuilder builder() {
+		return new HttpServletDriverBuilder();
+	}
+
+	private final static Logger LOG = LoggerFactory.getLogger(HttpServletDriver.class);
+
+	private HttpServletDriver() {
 	}
 
 	@Override
-	protected HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean proxy) throws HttpErrorPage {
+	public HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean proxy) throws HttpErrorPage {
 		HttpServletMediator mediator = (HttpServletMediator) HttpRequestHelper.getMediator(request);
-		ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(), this);
+		ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(), driver);
 		try {
 			if (proxy)
 				mediator.getFilterChain().doFilter(mediator.getRequest(), wrappedResponse);
@@ -58,7 +89,7 @@ public class HttpServletDriver extends Driver {
 	@Override
 	public HttpResponse executeSingleRequest(GenericHttpRequest request) {
 		HttpServletMediator mediator = (HttpServletMediator) HttpRequestHelper.getMediator(request);
-		ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(), this);
+		ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(), driver);
 		try {
 			mediator.getRequest().getRequestDispatcher(request.getRequestLine().getUri()).include(mediator.getRequest(), wrappedResponse);
 		} catch (IOException e) {

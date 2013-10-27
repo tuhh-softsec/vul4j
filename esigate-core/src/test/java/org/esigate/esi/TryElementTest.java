@@ -32,7 +32,7 @@ public class TryElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws IOException, HttpErrorPage {
-		MockDriver provider = new MockDriver("mock");
+		MockDriver provider = MockDriver.createMockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 		provider.addResource("http://www.foo.com/testFragment", "before fragment <esi:fragment name=\"fragmentFound\">FRAGMENT FOUND</esi:fragment> after fragment");
@@ -64,9 +64,7 @@ public class TryElementTest extends TestCase {
 	 * @throws HttpErrorPage
 	 */
 	public void testInvalidMarkup() throws IOException, HttpErrorPage {
-		String page = "begin <esi:try> invalid "
-				+ "<esi:attempt> "
-				+ "<esi:include src='http://www.foo.com/test' /> abc <esi:include src=\"http://www.foo2.com/test\" /> cba"
+		String page = "begin <esi:try> invalid " + "<esi:attempt> " + "<esi:include src='http://www.foo.com/test' /> abc <esi:include src=\"http://www.foo2.com/test\" /> cba"
 				+ "</esi:attempt>  invalid " + "<esi:except>inside except</esi:except>" + " invalid </esi:try> end";
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);

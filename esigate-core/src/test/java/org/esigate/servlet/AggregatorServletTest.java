@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.Assert;
 
+import org.esigate.Driver;
 import org.esigate.DriverFactory;
-import org.esigate.HttpClientDriver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.junit.Test;
@@ -83,7 +83,7 @@ public class AggregatorServletTest {
 		// Setup Esigate
 		Properties p = new Properties();
 		p.setProperty("remoteUrlBase", "test");
-		DriverFactory.put("single", new HttpClientDriver("single", p));
+		DriverFactory.put("single", Driver.builder().setName("single").setProperties(p).build());
 
 		// Init servlet
 		servlet.init(new TestServletConfig());
@@ -99,7 +99,7 @@ public class AggregatorServletTest {
 	 * 
 	 * @throws ServletException
 	 * @throws IOException
-	 * @throws HttpErrorPage 
+	 * @throws HttpErrorPage
 	 */
 	@Test
 	public void testProviderSelectionWebXml() throws ServletException, IOException, HttpErrorPage {
@@ -124,8 +124,7 @@ public class AggregatorServletTest {
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration()
-				.getInstanceName());
+		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
 
 		request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getContextPath()).thenReturn("/test");
@@ -135,8 +134,7 @@ public class AggregatorServletTest {
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getHeader("Host")).thenReturn("sub.domain.com");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration()
-				.getInstanceName());
+		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
 
 		request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getContextPath()).thenReturn("/test");
@@ -145,8 +143,7 @@ public class AggregatorServletTest {
 		Mockito.when(request.getMethod()).thenReturn("GET");
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration()
-				.getInstanceName());
+		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
 
 	}
 
@@ -155,7 +152,7 @@ public class AggregatorServletTest {
 	 * 
 	 * @throws ServletException
 	 * @throws IOException
-	 * @throws HttpErrorPage 
+	 * @throws HttpErrorPage
 	 */
 	@Test
 	public void testProviderSelectionEsigate() throws ServletException, IOException, HttpErrorPage {
@@ -171,7 +168,7 @@ public class AggregatorServletTest {
 		DriverFactory.configure(p);
 
 		AggregatorServlet servlet = new AggregatorServlet();
-		ServletConfig conf =	Mockito.mock(ServletConfig.class);
+		ServletConfig conf = Mockito.mock(ServletConfig.class);
 		Mockito.when(conf.getInitParameter("useMappings")).thenReturn("true");
 		servlet.init(conf);
 
@@ -184,8 +181,7 @@ public class AggregatorServletTest {
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration()
-				.getInstanceName());
+		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
 
 		request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getContextPath()).thenReturn("/test");
@@ -195,8 +191,7 @@ public class AggregatorServletTest {
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getHeader("Host")).thenReturn("sub.domain.com");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration()
-				.getInstanceName());
+		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
 
 		request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getContextPath()).thenReturn("/test");
@@ -205,8 +200,7 @@ public class AggregatorServletTest {
 		Mockito.when(request.getMethod()).thenReturn("GET");
 		Mockito.when(request.getServletPath()).thenReturn("servlet");
 		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration()
-				.getInstanceName());
+		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
 
 	}
 

@@ -34,7 +34,7 @@ public class VarsElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		MockDriver provider = new MockDriver("mock");
+		MockDriver provider = MockDriver.createMockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 

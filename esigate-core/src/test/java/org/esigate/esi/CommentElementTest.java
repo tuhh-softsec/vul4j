@@ -32,7 +32,7 @@ public class CommentElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		Driver provider = new MockDriver();
+		Driver provider = MockDriver.createDriver();
 		request = TestUtils.createRequest();
 		tested = new EsiRenderer();
 		provider.initHttpRequestParams(request, null);

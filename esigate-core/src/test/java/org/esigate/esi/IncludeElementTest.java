@@ -36,7 +36,7 @@ public class IncludeElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		provider = new MockDriver("mock");
+		provider = MockDriver.createMockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 		request = TestUtils.createRequest();
@@ -50,27 +50,26 @@ public class IncludeElementTest extends TestCase {
 		tested.render(request, page, out);
 		assertEquals("before test after", out.toString());
 	}
-	
+
 	public void testIncludeProvider10() throws IOException, HttpErrorPage {
 		int nb = 10;
-		
+
 		String page = "before ";
-		for( int i = 0; i < nb; i ++ ){
-			page = page+"<esi:include src=\"$(PROVIDER{mock})/test\" />";
+		for (int i = 0; i < nb; i++) {
+			page = page + "<esi:include src=\"$(PROVIDER{mock})/test\" />";
 		}
-		page =page+ " after";
-		
+		page = page + " after";
+
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
-		
+
 		String result = "before ";
-		for( int i = 0; i < nb; i ++ ){
-			result = result+"test";
+		for (int i = 0; i < nb; i++) {
+			result = result + "test";
 		}
-		result =result+ " after";
+		result = result + " after";
 		assertEquals(result, out.toString());
 	}
-	
 
 	public void testIncludeProviderLegacy() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$PROVIDER({mock})/test\" /> after";
@@ -162,7 +161,8 @@ public class IncludeElementTest extends TestCase {
 	}
 
 	public void testIncludeReplaceElementExpression() throws IOException, HttpErrorPage {
-		String page = "before <esi:include src='$(PROVIDER{mock})/include-replace' >" + "<esi:replace expression='replaceable-regexp'>$(HTTP_COOKIE{cookieName})</esi:replace>" + "</esi:include> after";
+		String page = "before <esi:include src='$(PROVIDER{mock})/include-replace' >" + "<esi:replace expression='replaceable-regexp'>$(HTTP_COOKIE{cookieName})</esi:replace>"
+				+ "</esi:include> after";
 		String includedPage = "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>" + " replaceable-regexp" + " incl-page-end-";
 		TestUtils.addCookie(new BasicClientCookie("cookieName", "regexp replaced"), request);
 		provider.addResource("/include-replace", includedPage);
@@ -213,7 +213,7 @@ public class IncludeElementTest extends TestCase {
 		tested.render(request, page, out);
 		assertEquals("before test after", out.toString());
 	}
-	
+
 	/**
 	 * Test src + alt + onerror combined.
 	 * <p>
@@ -281,7 +281,7 @@ public class IncludeElementTest extends TestCase {
 		defaultProps.setProperty("visibleUrlBase", visibleBaseURL);
 		defaultProps.setProperty("fixResources", "true");
 
-		provider = new MockDriver("mock", defaultProps);
+		provider = MockDriver.createMockDriver("mock", defaultProps);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\">"
 				+ "<a href=\"http://www.foo.com/context/test\">");
 		request = TestUtils.createRequest();
@@ -298,7 +298,7 @@ public class IncludeElementTest extends TestCase {
 		Properties defaultProps = new Properties();
 		defaultProps.setProperty(Parameters.REMOTE_URL_BASE.name, defaultBaseUrl);
 
-		provider = new MockDriver("mock", defaultProps);
+		provider = MockDriver.createMockDriver("mock", defaultProps);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\">"
 				+ "<a href=\"http://www.foo.com/context/test\">");
 		request = TestUtils.createRequest();
@@ -333,7 +333,7 @@ public class IncludeElementTest extends TestCase {
 		tested.render(request, page, out);
 		assertEquals("before -incl-page-start replacement incl-page-end- after", out.toString());
 	}
-	
+
 	public void testIncludeFragmentReplaceFragment() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src='$(PROVIDER{mock})/fragment' fragment='toInclude'><esi:replace fragment='toReplace'>replacement</esi:replace></esi:include> after";
 		String includedPage = "-incl-page-start <esi:fragment name='toInclude'>begin include <esi:fragment name='toReplace'>content to replace</esi:fragment> end include</esi:fragment> incl-page-end-";

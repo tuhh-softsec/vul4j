@@ -32,7 +32,7 @@ public class ReplaceElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws IOException, HttpErrorPage {
-		MockDriver provider = new MockDriver("mock");
+		MockDriver provider = MockDriver.createMockDriver("mock");
 		request = TestUtils.createRequest();
 		tested = new EsiRenderer();
 		provider.initHttpRequestParams(request, null);

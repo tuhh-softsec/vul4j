@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.esigate.Driver.DriverBuilder;
 import org.esigate.impl.IndexedInstances;
 import org.esigate.impl.UriMapping;
 import org.esigate.servlet.impl.HttpServletDriver;
@@ -194,10 +195,10 @@ public class DriverFactory {
 	}
 
 	private static Driver createDriver(String name, Properties properties) {
-		if (properties.getProperty("driverClass") == null || properties.getProperty("driverClass").equals(HttpClientDriver.class.getName()))
-			return new HttpClientDriver(name, properties);
-		else
-			return new HttpServletDriver(name, properties);
+		DriverBuilder builder = Driver.builder().setName(name).setProperties(properties);
+		if (properties.getProperty("driverClass") != null && properties.getProperty("driverClass").equals(HttpServletDriver.class.getName()))
+			builder.setRequestExecutorBuilder(HttpServletDriver.builder());
+		return builder.build();
 	}
 
 	/**

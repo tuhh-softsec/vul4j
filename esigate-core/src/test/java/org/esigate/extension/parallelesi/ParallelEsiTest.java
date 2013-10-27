@@ -44,7 +44,7 @@ public class ParallelEsiTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		this.provider = new MockDriver("mock");
+		this.provider = MockDriver.createMockDriver("mock");
 		this.provider.addResource("/test", "test");
 		this.request = TestUtils.createRequest();
 		this.provider.initHttpRequestParams(this.request, null);

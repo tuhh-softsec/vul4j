@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.cookie.CookieManager;
+import org.esigate.events.EventManager;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.GenericHttpRequest;
 import org.esigate.http.HttpClientHelper;
@@ -27,19 +28,59 @@ import org.esigate.http.HttpResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpClientDriver extends Driver {
+public class HttpClientDriver implements RequestExecutor {
+	public static final class HttpClientDriverBuilder implements RequestExecutorBuilder {
+		private HttpClientDriver httpClientDriver = new HttpClientDriver();
+		private EventManager eventManager;
+		private Properties properties;
+		private Driver driver;
+
+		@Override
+		public RequestExecutorBuilder setEventManager(EventManager eventManager) {
+			this.eventManager = eventManager;
+			return this;
+		}
+
+		@Override
+		public RequestExecutorBuilder setDriver(Driver driver) {
+			this.driver = driver;
+			return this;
+		}
+
+		@Override
+		public RequestExecutorBuilder setProperties(Properties properties) {
+			this.properties = properties;
+			return this;
+		}
+
+		public RequestExecutorBuilder setHttpClientHelper(HttpClientHelper httpClientHelper) {
+			httpClientDriver.httpClientHelper = httpClientHelper;
+			return this;
+		}
+
+		@Override
+		public RequestExecutor build() {
+			if (eventManager == null)
+				throw new ConfigurationException("eventManager is mandatory");
+			if (driver == null)
+				throw new ConfigurationException("driver is mandatory");
+			if (properties == null)
+				throw new ConfigurationException("properties is mandatory");
+			CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, driver);
+			if (httpClientDriver.httpClientHelper == null)
+				httpClientDriver.httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties);
+			return httpClientDriver;
+		}
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(HttpClientDriver.class);
 	private HttpClientHelper httpClientHelper;
 
-	public HttpClientDriver(String name, Properties properties) {
-		super(name, properties);
-		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, this);
-		httpClientHelper = new HttpClientHelper(getEventManager(), cookieManager, properties);
+	public static HttpClientDriverBuilder builder() {
+		return new HttpClientDriverBuilder();
 	}
 
-	public HttpClientDriver(String name, Properties properties, HttpClientHelper httpClientHelper) {
-		super(properties, name, httpClientHelper.getEventManager());
-		this.httpClientHelper = httpClientHelper;
+	private HttpClientDriver() {
 	}
 
 	/**
@@ -53,7 +94,7 @@ public class HttpClientDriver extends Driver {
 	 */
 	@Override
 	public HttpResponse executeSingleRequest(GenericHttpRequest httpRequest) {
-		return this.httpClientHelper.execute(httpRequest);
+		return httpClientHelper.execute(httpRequest);
 	}
 
 	/**
@@ -67,8 +108,8 @@ public class HttpClientDriver extends Driver {
 	 *             status code.
 	 */
 	@Override
-	protected HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest originalRequest, String targetUrl, boolean proxy) throws HttpErrorPage {
-		GenericHttpRequest httpRequest = this.httpClientHelper.createHttpRequest(originalRequest, targetUrl, proxy);
+	public HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest originalRequest, String targetUrl, boolean proxy) throws HttpErrorPage {
+		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, targetUrl, proxy);
 		HttpResponse httpResponse = executeSingleRequest(httpRequest);
 		if (httpResponse == null) {
 			throw new HttpErrorPage(500, "Request was cancelled by server", "Request was cancelled by server");

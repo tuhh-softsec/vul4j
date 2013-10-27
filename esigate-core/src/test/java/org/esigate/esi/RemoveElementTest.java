@@ -21,7 +21,6 @@ import java.io.StringWriter;
 import junit.framework.TestCase;
 
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.test.TestUtils;
@@ -31,7 +30,7 @@ public class RemoveElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		Driver provider = new MockDriver();
+		MockDriver provider = MockDriver.createMockDriver();
 		request = TestUtils.createRequest();
 		provider.initHttpRequestParams(request, null);
 	}

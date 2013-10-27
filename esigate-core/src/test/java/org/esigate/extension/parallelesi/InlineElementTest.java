@@ -32,7 +32,7 @@ public class InlineElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		provider = new MockDriver("mock");
+		provider = MockDriver.createMockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 		request = TestUtils.createRequest();

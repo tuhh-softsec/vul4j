@@ -8,7 +8,6 @@ import junit.framework.Assert;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
-import org.esigate.HttpClientDriver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.tags.BlockRenderer;
@@ -45,7 +44,7 @@ public class Bug101ConnectionReleaseTest {
 		properties.put(Parameters.SOCKET_TIMEOUT.name, "4000");
 		properties.put(Parameters.USE_CACHE.name, "false");
 
-		Driver driver = new HttpClientDriver("test", properties);
+		Driver driver = Driver.builder().setName("test").setProperties(properties).build();
 
 		long start = System.currentTimeMillis();
 		// Should take less than 500ms each

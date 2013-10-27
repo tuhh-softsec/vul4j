@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.test.TestUtils;
@@ -34,7 +33,7 @@ public class FutureParserTest extends TestCase {
 
 	@Override
 	protected void setUp() throws HttpErrorPage {
-		Driver provider = new MockDriver();
+		MockDriver provider = MockDriver.createMockDriver();
 		tested = new FutureParser(Pattern.compile("(<test:[^>]*>)|(</test:[^>]*>)"), SIMPLE, BODY);
 		HttpEntityEnclosingRequest request = TestUtils.createRequest("http://a.b?request=updated");
 		provider.initHttpRequestParams(request, null);
@@ -47,8 +46,7 @@ public class FutureParserTest extends TestCase {
 	}
 
 	public void testParse() throws IOException, HttpErrorPage, InterruptedException, ExecutionException {
-		String page = "begin " + "<test:simple name='ignored'> this text will be ignored </test:simple>"
-				+ "<test:body>this text should be {request} </test:body>" + "<test:unknown name='value' />"
+		String page = "begin " + "<test:simple name='ignored'> this text will be ignored </test:simple>" + "<test:body>this text should be {request} </test:body>" + "<test:unknown name='value' />"
 				+ "<test:simple name='also ignored'/>" + " end";
 		StringBuilderFutureAppendable sbf = new StringBuilderFutureAppendable();
 
@@ -101,14 +99,13 @@ public class FutureParserTest extends TestCase {
 		public void onTagEnd(String tag, FutureParserContext ctx) throws IOException {
 			String result;
 			try {
-				result = buf.get().toString().replaceAll("\\{request\\}",
-						HttpRequestHelper.getParameter(ctx.getHttpRequest(), "request"));
+				result = buf.get().toString().replaceAll("\\{request\\}", HttpRequestHelper.getParameter(ctx.getHttpRequest(), "request"));
 			} catch (InterruptedException e) {
-				throw new IOException (e);
+				throw new IOException(e);
 			} catch (ExecutionException e) {
-				throw new IOException (e);
+				throw new IOException(e);
 			}
-			ctx.getCurrent().characters(new CharSequenceFuture( result));
+			ctx.getCurrent().characters(new CharSequenceFuture(result));
 		}
 
 		@Override

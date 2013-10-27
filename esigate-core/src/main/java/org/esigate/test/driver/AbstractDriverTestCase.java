@@ -84,13 +84,12 @@ public abstract class AbstractDriverTestCase extends TestCase {
 	 *            name of the Driver instance
 	 * @return
 	 */
-	protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager,
-			String name) {
+	protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager, String name) {
 		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, null);
-
-		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(name), cookieManager, properties,
-				connectionManager);
-		Driver driver = new HttpClientDriver(name, properties, httpClientHelper);
+		EventManager eventManager = new EventManager(name);
+		HttpClientHelper httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties, connectionManager);
+		Driver driver = Driver.builder().setName(name).setProperties(properties).setEventManager(eventManager)
+				.setRequestExecutorBuilder(HttpClientDriver.builder().setHttpClientHelper(httpClientHelper)).build();
 		DriverFactory.put(name, driver);
 		return driver;
 	}
@@ -129,8 +128,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
 	 * @throws HttpErrorPage
 	 * @throws URISyntaxException
 	 */
-	public static HttpResponse driverProxy(Driver d, HttpEntityEnclosingRequest request, Renderer... renderers)
-			throws IOException, HttpErrorPage, URISyntaxException {
+	public static HttpResponse driverProxy(Driver d, HttpEntityEnclosingRequest request, Renderer... renderers) throws IOException, HttpErrorPage, URISyntaxException {
 		String uri = request.getRequestLine().getUri();
 		d.proxy(new URI(uri).getPath(), request, renderers);
 
