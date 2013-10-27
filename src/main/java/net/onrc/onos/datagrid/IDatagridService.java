@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 
-import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
+import net.onrc.onos.ofcontroller.flowmanager.IPathComputationService;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
@@ -14,22 +14,25 @@ import net.onrc.onos.ofcontroller.util.FlowPath;
  */
 public interface IDatagridService extends IFloodlightService {
     /**
-     * Register Flow Service for receiving Flow-related notifications.
+     * Register Path Computation Service for receiving Flow-related
+     * notifications.
      *
-     * NOTE: Only a single Flow Service can be registered.
+     * NOTE: Only a single Path Computation Service can be registered.
      *
-     * @param flowService the Flow Service to register.
+     * @param pathComputationService the Path Computation Service to register.
      */
-    void registerFlowService(IFlowService flowService);
+    void registerPathComputationService(IPathComputationService pathComputationService);
 
     /**
-     * De-register Flow Service for receiving Flow-related notifications.
+     * De-register Path Computation Service for receiving Flow-related
+     * notifications.
      *
-     * NOTE: Only a single Flow Service can be registered.
+     * NOTE: Only a single Path Computation Service can be registered.
      *
-     * @param flowService the Flow Service to de-register.
+     * @param pathComputationService the Path Computation Service to
+     * de-register.
      */
-    void deregisterFlowService(IFlowService flowService);
+    void deregisterPathComputationService(IPathComputationService pathComputationService);
 
     /**
      * Get all Flows that are currently in the datagrid.

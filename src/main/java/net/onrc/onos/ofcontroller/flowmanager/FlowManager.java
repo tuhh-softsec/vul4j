@@ -7,9 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +48,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected volatile IDatagridService datagridService;
     protected IRestApiService restApi;
     protected FloodlightModuleContext context;
+    protected PathComputation pathComputation;
 
     protected OFMessageDamper messageDamper;
 
@@ -72,14 +71,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     // The periodic task(s)
     private ScheduledExecutorService mapReaderScheduler;
     private ScheduledExecutorService shortestPathReconcileScheduler;
-
-    // The queue with Flow Path updates
-    protected BlockingQueue<EventEntry<FlowPath>> flowPathEvents =
-	new LinkedBlockingQueue<EventEntry<FlowPath>>();
-
-    // The queue with Topology Element updates
-    protected BlockingQueue<EventEntry<TopologyElement>> topologyEvents =
-	new LinkedBlockingQueue<EventEntry<TopologyElement>>();
 
     /**
      * Periodic task for reading the Flow Entries and pushing changes
@@ -393,7 +384,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void close() {
-	datagridService.deregisterFlowService(this);
+	datagridService.deregisterPathComputationService(pathComputation);
     	dbHandler.close();
     }
 
@@ -502,27 +493,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
 
-	// Register with the Datagrid Service
-	datagridService.registerFlowService(this);
+	//
+	// Create the Path Computation thread and register it with the
+	// Datagrid Service
+	//
+	pathComputation = new PathComputation(this, datagridService);
+	datagridService.registerPathComputationService(pathComputation);
 
-	// Obtain the initial Topology state
-	Collection<TopologyElement> topologyElements =
-	    datagridService.getAllTopologyElements();
-	for (TopologyElement topologyElement : topologyElements) {
-	    EventEntry<TopologyElement> eventEntry =
-		new EventEntry<TopologyElement>(EventEntry.Type.ENTRY_ADD, topologyElement);
-	    topologyEvents.add(eventEntry);
-	}
-
-	// Obtain the initial Flow state
-	Collection<FlowPath> flowPaths = datagridService.getAllFlows();
-	for (FlowPath flowPath : flowPaths) {
-	    EventEntry<FlowPath> eventEntry =
-		new EventEntry<FlowPath>(EventEntry.Type.ENTRY_ADD, flowPath);
-	    flowPathEvents.add(eventEntry);
-	}
-
-	// Schedule the periodic tasks
+	// Schedule the threads and periodic tasks
+	pathComputation.start();
 	mapReaderScheduler.scheduleAtFixedRate(
 			mapReader, 3, 3, TimeUnit.SECONDS);
 	shortestPathReconcileScheduler.scheduleAtFixedRate(
@@ -829,65 +808,5 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// and removal of flow entries.
 	//
 	return (installFlowEntry(mySwitch, flowPath, flowEntry));
-    }
-
-    /**
-     * Receive a notification that a Flow is added.
-     *
-     * @param flowPath the flow that is added.
-     */
-    @Override
-    public void notificationRecvFlowAdded(FlowPath flowPath) {
-	// TODO
-    }
-
-    /**
-     * Receive a notification that a Flow is removed.
-     *
-     * @param flowPath the flow that is removed.
-     */
-    @Override
-    public void notificationRecvFlowRemoved(FlowPath flowPath) {
-	// TODO
-    }
-
-    /**
-     * Receive a notification that a Flow is updated.
-     *
-     * @param flowPath the flow that is updated.
-     */
-    @Override
-    public void notificationRecvFlowUpdated(FlowPath flowPath) {
-	// TODO
-    }
-
-    /**
-     * Receive a notification that a Topology Element is added.
-     *
-     * @param topologyElement the Topology Element that is added.
-     */
-    @Override
-    public void notificationRecvTopologyElementAdded(TopologyElement topologyElement) {
-	// TODO
-    }
-
-    /**
-     * Receive a notification that a Topology Element is removed.
-     *
-     * @param topologyElement the Topology Element that is removed.
-     */
-    @Override
-    public void notificationRecvTopologyElementRemoved(TopologyElement topologyElement) {
-	// TODO
-    }
-
-    /**
-     * Receive a notification that a Topology Element is updated.
-     *
-     * @param topologyElement the Topology Element that is updated.
-     */
-    @Override
-    public void notificationRecvTopologyElementUpdated(TopologyElement topologyElement) {
-	// TODO
     }
 }
