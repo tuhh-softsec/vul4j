@@ -84,7 +84,11 @@ class PathComputation extends Thread implements IPathComputationService {
 		collection.add(eventEntry);
 		networkEvents.drainTo(collection);
 
-		// Demultiplex all events
+		//
+		// Demultiplex all events:
+		//  - EventEntry<TopologyElement>
+		//  - EventEntry<FlowPath>
+		//
 		for (EventEntry<?> event : collection) {
 		    if (event.eventData() instanceof TopologyElement) {
 			EventEntry<TopologyElement> topologyEventEntry =
@@ -97,6 +101,7 @@ class PathComputation extends Thread implements IPathComputationService {
 		    }
 		}
 		collection.clear();
+
 		// Process the events (if any)
 		processEvents();
 	    }
@@ -114,8 +119,7 @@ class PathComputation extends Thread implements IPathComputationService {
 
 	// TODO: Implement it!
 
-	System.out.println("PAVPAV: Topology Events = " + topologyEvents.size() + " Flow Path Events = " + flowPathEvents.size());
-
+	// Cleanup
 	topologyEvents.clear();
 	flowPathEvents.clear();
     }
