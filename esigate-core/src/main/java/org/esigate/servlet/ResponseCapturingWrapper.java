@@ -38,7 +38,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
-import org.esigate.Driver;
+import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpResponseUtils;
 import org.slf4j.Logger;
@@ -58,15 +58,15 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
 	private byte[] buffer;
 	private int bytesWritten = 0;
 	private boolean committed = false;
-	private Driver driver;
+	private ContentTypeHelper contentTypeHelper;
 
-	public ResponseCapturingWrapper(HttpServletResponse response, Driver driver) {
+	public ResponseCapturingWrapper(HttpServletResponse response, ContentTypeHelper contentTypeHelper) {
 		this.response = response;
 		this.characterEncoding = response.getCharacterEncoding();
 		this.bufferSize = response.getBufferSize();
 		if (this.bufferSize == 0)
 			this.bufferSize = DEFAULT_BUFFER_SIZE;
-		this.driver = driver;
+		this.contentTypeHelper = contentTypeHelper;
 	}
 
 	@Override
@@ -316,7 +316,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
 	}
 
 	private boolean hasToCaptureOutput() {
-		return driver.isTextContentType(httpClientResponse) || HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpClientResponse) == null;
+		return contentTypeHelper.isTextContentType(httpClientResponse) || HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpClientResponse) == null;
 	}
 
 	private void flushInternalBuffer() throws IOException {

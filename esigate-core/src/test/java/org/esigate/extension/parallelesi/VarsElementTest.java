@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class VarsElementTest extends TestCase {
@@ -34,7 +34,7 @@ public class VarsElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		MockDriver provider = MockDriver.createMockDriver("mock");
+		MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 

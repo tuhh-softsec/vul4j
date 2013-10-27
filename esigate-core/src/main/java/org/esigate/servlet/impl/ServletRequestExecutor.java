@@ -17,6 +17,7 @@ import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.RequestExecutor;
 import org.esigate.events.EventManager;
+import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.GenericHttpRequest;
 import org.esigate.http.IOExceptionHandler;
 import org.esigate.servlet.HttpServletMediator;
@@ -26,11 +27,12 @@ import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpServletDriver implements RequestExecutor {
+public class ServletRequestExecutor implements RequestExecutor {
 	private Driver driver;
+	private ContentTypeHelper contentTypeHelper;
 
 	private final static class HttpServletDriverBuilder implements RequestExecutorBuilder {
-		private HttpServletDriver httpServletDriver = new HttpServletDriver();
+		private ServletRequestExecutor servletRequestExecutor = new ServletRequestExecutor();
 
 		@Override
 		public RequestExecutorBuilder setEventManager(EventManager eventManager) {
@@ -39,7 +41,7 @@ public class HttpServletDriver implements RequestExecutor {
 
 		@Override
 		public RequestExecutorBuilder setDriver(Driver driver) {
-			httpServletDriver.driver = driver;
+			servletRequestExecutor.driver = driver;
 			return this;
 		}
 
@@ -50,9 +52,15 @@ public class HttpServletDriver implements RequestExecutor {
 
 		@Override
 		public RequestExecutor build() {
-			if (httpServletDriver.driver == null)
+			if (servletRequestExecutor.driver == null)
 				throw new ConfigurationException("driver is mandatory");
-			return httpServletDriver;
+			return servletRequestExecutor;
+		}
+
+		@Override
+		public RequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper) {
+			servletRequestExecutor.contentTypeHelper = contentTypeHelper;
+			return this;
 		}
 
 	}
@@ -61,15 +69,15 @@ public class HttpServletDriver implements RequestExecutor {
 		return new HttpServletDriverBuilder();
 	}
 
-	private final static Logger LOG = LoggerFactory.getLogger(HttpServletDriver.class);
+	private final static Logger LOG = LoggerFactory.getLogger(ServletRequestExecutor.class);
 
-	private HttpServletDriver() {
+	private ServletRequestExecutor() {
 	}
 
 	@Override
 	public HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean proxy) throws HttpErrorPage {
 		HttpServletMediator mediator = (HttpServletMediator) HttpRequestHelper.getMediator(request);
-		ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(), driver);
+		ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(), contentTypeHelper);
 		try {
 			if (proxy)
 				mediator.getFilterChain().doFilter(mediator.getRequest(), wrappedResponse);
@@ -89,7 +97,7 @@ public class HttpServletDriver implements RequestExecutor {
 	@Override
 	public HttpResponse executeSingleRequest(GenericHttpRequest request) {
 		HttpServletMediator mediator = (HttpServletMediator) HttpRequestHelper.getMediator(request);
-		ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(), driver);
+		ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(), contentTypeHelper);
 		try {
 			mediator.getRequest().getRequestDispatcher(request.getRequestLine().getUri()).include(mediator.getRequest(), wrappedResponse);
 		} catch (IOException e) {

@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.events.EventManager;
+import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.GenericHttpRequest;
 
 public interface RequestExecutor {
@@ -35,6 +36,8 @@ public interface RequestExecutor {
 		public RequestExecutorBuilder setDriver(Driver driver);
 
 		public RequestExecutorBuilder setProperties(Properties properties);
+		
+		public RequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper);
 
 		public RequestExecutor build();
 

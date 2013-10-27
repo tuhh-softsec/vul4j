@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class TryElementTest extends TestCase {
@@ -32,7 +32,7 @@ public class TryElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws IOException, HttpErrorPage {
-		MockDriver provider = MockDriver.createMockDriver("mock");
+		MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 		provider.addResource("http://www.foo.com/testFragment", "before fragment <esi:fragment name=\"fragmentFound\">FRAGMENT FOUND</esi:fragment> after fragment");

@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class AggregateRendererTest extends TestCase {
@@ -31,7 +31,7 @@ public class AggregateRendererTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		MockDriver provider = MockDriver.createMockDriver("mock");
+		MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
 		provider.addResource("/testInclude", "Test include");
 		provider.addResource("/testBlock", "before <!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$--> after");
 		provider.addResource("/testTemplate", "before <!--$begintemplate$mytemplate$-->some text goes here<!--$endtemplate$mytemplate$--> after");

@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 import org.esigate.util.HttpRequestHelper;
 
@@ -33,7 +33,7 @@ public class FutureParserTest extends TestCase {
 
 	@Override
 	protected void setUp() throws HttpErrorPage {
-		MockDriver provider = MockDriver.createMockDriver();
+		MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
 		tested = new FutureParser(Pattern.compile("(<test:[^>]*>)|(</test:[^>]*>)"), SIMPLE, BODY);
 		HttpEntityEnclosingRequest request = TestUtils.createRequest("http://a.b?request=updated");
 		provider.initHttpRequestParams(request, null);

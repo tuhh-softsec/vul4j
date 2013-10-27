@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class RemoveElementTest extends TestCase {
@@ -30,7 +30,7 @@ public class RemoveElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		MockDriver provider = MockDriver.createMockDriver();
+		MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
 		request = TestUtils.createRequest();
 		provider.initHttpRequestParams(request, null);
 	}

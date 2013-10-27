@@ -13,24 +13,26 @@
  *
  */
 
-package org.esigate;
+package org.esigate.http;
 
 import java.util.Properties;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.esigate.ConfigurationException;
+import org.esigate.Driver;
+import org.esigate.HttpErrorPage;
+import org.esigate.Parameters;
+import org.esigate.RequestExecutor;
 import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
 import org.esigate.extension.ExtensionFactory;
-import org.esigate.http.GenericHttpRequest;
-import org.esigate.http.HttpClientHelper;
-import org.esigate.http.HttpResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpClientDriver implements RequestExecutor {
+public class HttpClientRequestExecutor implements RequestExecutor {
 	public static final class HttpClientDriverBuilder implements RequestExecutorBuilder {
-		private HttpClientDriver httpClientDriver = new HttpClientDriver();
+		private HttpClientRequestExecutor httpClientDriver = new HttpClientRequestExecutor();
 		private EventManager eventManager;
 		private Properties properties;
 		private Driver driver;
@@ -71,16 +73,22 @@ public class HttpClientDriver implements RequestExecutor {
 				httpClientDriver.httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties);
 			return httpClientDriver;
 		}
+
+		@Override
+		public RequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
-	private static final Logger LOG = LoggerFactory.getLogger(HttpClientDriver.class);
+	private static final Logger LOG = LoggerFactory.getLogger(HttpClientRequestExecutor.class);
 	private HttpClientHelper httpClientHelper;
 
 	public static HttpClientDriverBuilder builder() {
 		return new HttpClientDriverBuilder();
 	}
 
-	private HttpClientDriver() {
+	private HttpClientRequestExecutor() {
 	}
 
 	/**

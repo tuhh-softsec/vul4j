@@ -34,7 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.esigate.Driver.DriverBuilder;
 import org.esigate.impl.IndexedInstances;
 import org.esigate.impl.UriMapping;
-import org.esigate.servlet.impl.HttpServletDriver;
+import org.esigate.servlet.impl.ServletRequestExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,8 +196,8 @@ public class DriverFactory {
 
 	private static Driver createDriver(String name, Properties properties) {
 		DriverBuilder builder = Driver.builder().setName(name).setProperties(properties);
-		if (properties.getProperty("driverClass") != null && properties.getProperty("driverClass").equals(HttpServletDriver.class.getName()))
-			builder.setRequestExecutorBuilder(HttpServletDriver.builder());
+		if (properties.getProperty("driverClass") != null && properties.getProperty("driverClass").equals(ServletRequestExecutor.class.getName()))
+			builder.setRequestExecutorBuilder(ServletRequestExecutor.builder());
 		return builder.build();
 	}
 

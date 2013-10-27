@@ -20,7 +20,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -28,7 +27,6 @@ import java.util.Properties;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
@@ -39,6 +37,8 @@ import org.esigate.events.EventManager;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.events.impl.RenderEvent;
 import org.esigate.extension.ExtensionFactory;
+import org.esigate.http.ContentTypeHelper;
+import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.ResourceUtils;
 import org.esigate.util.HttpRequestHelper;
@@ -60,9 +60,9 @@ public class Driver {
 	private static final String CACHE_RESPONSE_PREFIX = "response_";
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 	private DriverConfiguration config;
-	private Collection<String> parsableContentTypes;
 	private EventManager eventManager;
 	private RequestExecutor requestExecutor;
+	private ContentTypeHelper contentTypeHelper;
 
 	public static class DriverBuilder {
 		private Driver driver = new Driver();
@@ -76,11 +76,11 @@ public class Driver {
 			if (properties == null)
 				throw new ConfigurationException("properties is mandatory");
 			if (requestExecutorBuilder == null)
-				requestExecutorBuilder = HttpClientDriver.builder();
+				requestExecutorBuilder = HttpClientRequestExecutor.builder();
 			if (driver.eventManager == null)
 				driver.eventManager = new EventManager(name);
 			driver.config = new DriverConfiguration(name, properties);
-			driver.parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueList(properties);
+			driver.contentTypeHelper = new ContentTypeHelper(properties);
 			// Load extensions.
 			ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, driver);
 			driver.requestExecutor = requestExecutorBuilder.setDriver(driver).setEventManager(driver.getEventManager()).setProperties(properties).build();
@@ -337,7 +337,7 @@ public class Driver {
 	 */
 	private HttpResponse performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, HttpResponse response, Renderer[] renderers) throws HttpErrorPage, IOException {
 
-		if (!isTextContentType(response)) {
+		if (!contentTypeHelper.isTextContentType(response)) {
 			LOG.debug("'{}' is binary on no transformation to apply: was forwarded without modification.", pageUrl);
 			return response;
 		}
@@ -433,38 +433,6 @@ public class Driver {
 	 */
 	public DriverConfiguration getConfiguration() {
 		return this.config;
-	}
-
-	/**
-	 * Check whether the given request's content-type corresponds to "parsable"
-	 * text.
-	 * 
-	 * @param httpResponse
-	 *            the response to analyze depending on its content-type
-	 * @return true if this represents text or false if not
-	 */
-	public boolean isTextContentType(HttpResponse httpResponse) {
-		String contentType = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpResponse);
-		return isTextContentType(contentType);
-	}
-
-	/**
-	 * Check whether the given content-type corresponds to "parsable" text.
-	 * 
-	 * @param contentType
-	 *            the input content-type
-	 * @return true if this represents text or false if not
-	 */
-	protected boolean isTextContentType(String contentType) {
-		if (contentType != null) {
-			String lowerContentType = contentType.toLowerCase();
-			for (String textContentType : this.parsableContentTypes) {
-				if (lowerContentType.startsWith(textContentType)) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	public RequestExecutor getRequestExecutor() {

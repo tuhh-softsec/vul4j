@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class CommentTest extends TestCase {
@@ -34,11 +34,11 @@ public class CommentTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		MockDriver provider = MockDriver.createMockDriver();
+		MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
 		request = TestUtils.createRequest();
 		tested = new EsiRenderer(Executors.newCachedThreadPool());
 		provider.initHttpRequestParams(request, null);
-		MockDriver provider1 = MockDriver.createMockDriver("provider1");
+		MockRequestExecutor provider1 = MockRequestExecutor.createMockDriver("provider1");
 		provider1.addResource("/test", "replacement");
 	}
 

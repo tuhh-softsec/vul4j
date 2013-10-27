@@ -52,6 +52,7 @@ import org.esigate.extension.DefaultCharset;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientHelper;
+import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
 import org.esigate.test.TestUtils;
@@ -69,7 +70,7 @@ public class DriverTest extends TestCase {
 	protected void setUp() throws Exception {
 		mockConnectionManager = new MockConnectionManager();
 
-		MockDriver provider = MockDriver.createMockDriver("mock");
+		MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
 		provider.addResource("/testBlock", "abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
 		provider.addResource("/testTemplateFullPage", "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
 		provider.addResource("/testTemplate", "abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
@@ -113,51 +114,6 @@ public class DriverTest extends TestCase {
 		DriverFactory.getInstance("mock").render("/test$(varTemplate)", null, out, request, new TemplateRenderer("A", null, "/test$(varTemplate)"));
 		assertEquals("some text goes here", out.toString());
 
-	}
-
-	/** Test default configuration */
-	public void testDefaultConfig() {
-		Properties properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-		Driver driver = Driver.builder().setName("dummy").setProperties(properties).build();
-		// Parsable contentTypes
-		assertParsableContentType(driver, "text/html; charset=utf-8");
-		assertParsableContentType(driver, "application/xhtml+xml; charset=iso-8859-1");
-		assertNotParsableContentType(driver, "application/octet-stream");
-	}
-
-	private void assertParsableContentType(Driver driver, String contentType) {
-		assertTrue("Content-type should be considered as text", driver.isTextContentType(contentType));
-	}
-
-	private void assertNotParsableContentType(Driver driver, String contentType) {
-		assertFalse("Content-type should be considered as binary", driver.isTextContentType(contentType));
-	}
-
-	/**
-	 * Test property parsableContentTypes
-	 */
-	public void testParsableContentTypes() {
-		Properties properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain");
-		Driver driver = Driver.builder().setName("dummy").setProperties(properties).build();
-		assertParsableContentType(driver, "text/plain");
-
-		properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain, text/html");
-		driver = Driver.builder().setName("dummy").setProperties(properties).build();
-		assertParsableContentType(driver, "text/plain");
-		assertParsableContentType(driver, "text/html");
-
-		properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain, text/html,application/x");
-		driver = Driver.builder().setName("dummy").setProperties(properties).build();
-		assertParsableContentType(driver, "text/plain");
-		assertParsableContentType(driver, "text/html");
-		assertParsableContentType(driver, "application/x");
 	}
 
 	public void testHeadersPreservedWhenError500() throws Exception {
@@ -254,7 +210,7 @@ public class DriverTest extends TestCase {
 		EventManager eventManager = new EventManager(name);
 		HttpClientHelper httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties, connectionManager);
 		Driver driver = Driver.builder().setName(name).setProperties(properties).setEventManager(eventManager)
-				.setRequestExecutorBuilder(HttpClientDriver.builder().setHttpClientHelper(httpClientHelper)).build();
+				.setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setHttpClientHelper(httpClientHelper)).build();
 		DriverFactory.put(name, driver);
 		return driver;
 	}

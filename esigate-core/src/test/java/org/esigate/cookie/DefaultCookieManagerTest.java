@@ -27,7 +27,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.Parameters;
 import org.esigate.test.TestUtils;
 
@@ -43,7 +43,7 @@ public class DefaultCookieManagerTest extends TestCase {
 		cookieManager = new DefaultCookieManager();
 		cookieManager.init(null, properties);
 		request = TestUtils.createRequest();
-		Driver driver = MockDriver.createDriver();
+		Driver driver = MockRequestExecutor.createDriver();
 		driver.initHttpRequestParams(request, null);
 	}
 

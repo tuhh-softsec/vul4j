@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class EsiRendererTest extends TestCase {
@@ -30,7 +30,7 @@ public class EsiRendererTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		Driver provider = MockDriver.createDriver();
+		Driver provider = MockRequestExecutor.createDriver();
 		request = TestUtils.createRequest();
 		tested = new EsiRenderer();
 		provider.initHttpRequestParams(request, null);

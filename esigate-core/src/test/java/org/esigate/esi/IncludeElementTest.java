@@ -24,19 +24,19 @@ import junit.framework.TestCase;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.Parameters;
 import org.esigate.test.TestUtils;
 
 public class IncludeElementTest extends TestCase {
 
-	private MockDriver provider;
+	private MockRequestExecutor provider;
 	private HttpEntityEnclosingRequest request;
 	private EsiRenderer tested;
 
 	@Override
 	protected void setUp() throws Exception {
-		provider = MockDriver.createMockDriver("mock");
+		provider = MockRequestExecutor.createMockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 		request = TestUtils.createRequest();
@@ -281,7 +281,7 @@ public class IncludeElementTest extends TestCase {
 		defaultProps.setProperty("visibleUrlBase", visibleBaseURL);
 		defaultProps.setProperty("fixResources", "true");
 
-		provider = MockDriver.createMockDriver("mock", defaultProps);
+		provider = MockRequestExecutor.createMockDriver("mock", defaultProps);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\">"
 				+ "<a href=\"http://www.foo.com/context/test\">");
 		request = TestUtils.createRequest();
@@ -298,7 +298,7 @@ public class IncludeElementTest extends TestCase {
 		Properties defaultProps = new Properties();
 		defaultProps.setProperty(Parameters.REMOTE_URL_BASE.name, defaultBaseUrl);
 
-		provider = MockDriver.createMockDriver("mock", defaultProps);
+		provider = MockRequestExecutor.createMockDriver("mock", defaultProps);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\">"
 				+ "<a href=\"http://www.foo.com/context/test\">");
 		request = TestUtils.createRequest();

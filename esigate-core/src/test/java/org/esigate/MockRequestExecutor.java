@@ -24,14 +24,15 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.events.EventManager;
+import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.GenericHttpRequest;
 import org.esigate.test.http.HttpResponseBuilder;
 
-public class MockDriver implements RequestExecutor {
+public class MockRequestExecutor implements RequestExecutor {
 	private Driver driver;
 
 	public static class MockDriverBuilder implements RequestExecutorBuilder {
-		private MockDriver mockDriver = new MockDriver();
+		private MockRequestExecutor mockDriver = new MockRequestExecutor();
 
 		@Override
 		public RequestExecutorBuilder setEventManager(EventManager eventManager) {
@@ -58,11 +59,16 @@ public class MockDriver implements RequestExecutor {
 			return mockDriver;
 		}
 
+		@Override
+		public RequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper) {
+			return this;
+		}
+
 	}
 
 	private final HashMap<String, String> resources = new HashMap<String, String>();
 
-	private MockDriver() {
+	private MockRequestExecutor() {
 	}
 
 	private final static Properties getDefaultProperties() {
@@ -110,16 +116,16 @@ public class MockDriver implements RequestExecutor {
 		}
 	}
 
-	public static MockDriver createMockDriver(String name) {
-		return (MockDriver) createDriver(name).getRequestExecutor();
+	public static MockRequestExecutor createMockDriver(String name) {
+		return (MockRequestExecutor) createDriver(name).getRequestExecutor();
 	}
 
-	public static MockDriver createMockDriver(String name, Properties defaultProps) {
-		return (MockDriver) createDriver(name, defaultProps).getRequestExecutor();
+	public static MockRequestExecutor createMockDriver(String name, Properties defaultProps) {
+		return (MockRequestExecutor) createDriver(name, defaultProps).getRequestExecutor();
 	}
 
-	public static MockDriver createMockDriver() {
-		return (MockDriver) createDriver().getRequestExecutor();
+	public static MockRequestExecutor createMockDriver() {
+		return (MockRequestExecutor) createDriver().getRequestExecutor();
 	}
 
 	public static Driver createDriver() {

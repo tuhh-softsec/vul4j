@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +39,12 @@ import org.slf4j.LoggerFactory;
  */
 public class ParallelEsiTest extends TestCase {
 
-	private MockDriver provider;
+	private MockRequestExecutor provider;
 	private HttpEntityEnclosingRequest request;
 
 	@Override
 	protected void setUp() throws Exception {
-		this.provider = MockDriver.createMockDriver("mock");
+		this.provider = MockRequestExecutor.createMockDriver("mock");
 		this.provider.addResource("/test", "test");
 		this.request = TestUtils.createRequest();
 		this.provider.initHttpRequestParams(this.request, null);

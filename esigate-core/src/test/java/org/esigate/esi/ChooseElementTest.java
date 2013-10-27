@@ -24,7 +24,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class ChooseElementTest extends TestCase {
@@ -34,7 +34,7 @@ public class ChooseElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		Driver provider = MockDriver.createDriver();
+		Driver provider = MockRequestExecutor.createDriver();
 		request = TestUtils.createRequest();
 		tested = new EsiRenderer();
 		provider.initHttpRequestParams(request, null);
