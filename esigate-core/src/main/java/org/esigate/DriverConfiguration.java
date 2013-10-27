@@ -147,6 +147,8 @@ public class DriverConfiguration {
 	}
 
 	/**
+	 * Get the URI mappings for this driver instance
+	 * 
 	 * @return The URI mappings for this driver instance.
 	 */
 	public List<UriMapping> getUriMappings() {
