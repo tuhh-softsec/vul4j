@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.esigate.Driver.DriverBuilder;
@@ -196,8 +197,9 @@ public class DriverFactory {
 
 	private static Driver createDriver(String name, Properties properties) {
 		DriverBuilder builder = Driver.builder().setName(name).setProperties(properties);
-		if (properties.getProperty("driverClass") != null && properties.getProperty("driverClass").equals(ServletRequestExecutor.class.getName()))
+		if (StringUtils.equals(properties.getProperty("driverClass"), ServletRequestExecutor.class.getName())){
 			builder.setRequestExecutorBuilder(ServletRequestExecutor.builder());
+		}
 		return builder.build();
 	}
 
