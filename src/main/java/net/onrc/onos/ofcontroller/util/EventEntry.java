@@ -43,4 +43,13 @@ public class EventEntry<T> {
     public boolean isRemove() {
 	return (this.eventType == Type.ENTRY_REMOVE);
     }
+
+    /**
+     * Get the event-related data entry.
+     *
+     * @return the event-related data entry.
+     */
+    public T eventData() {
+	return this.eventData;
+    }
 }
