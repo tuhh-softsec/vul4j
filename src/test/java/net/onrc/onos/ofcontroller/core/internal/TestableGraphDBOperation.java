@@ -416,8 +416,9 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	public static class TestFlowPath implements IFlowPath {
 		private String state,type,flowId,installerId,srcSw,dstSw;
 		private String flowPathType;
+		private String flowPathUserState;
 		private Long flowPathFlags;
-		private String dataPathSummary,userState;
+		private String dataPathSummary;
 		private Short srcPort,dstPort;
 		private String matchSrcMac,matchDstMac;
 		private Short matchEthernetFrameType;
@@ -433,8 +434,9 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		private String stateToUpdate,typeToUpdate,flowIdToUpdate,installerIdToUpdate,srcSwToUpdate,dstSwToUpdate;
 		private String flowPathTypeToUpdate;
+		private String flowPathUserStateToUpdate;
 		private Long flowPathFlagsToUpdate;
-		private String dataPathSummaryToUpdate,userStateToUpdate;
+		private String dataPathSummaryToUpdate;
 		private Short srcPortToUpdate,dstPortToUpdate;
 		private String matchSrcMacToUpdate,matchDstMacToUpdate;
 		private Short matchEthernetFrameTypeToUpdate;
@@ -472,11 +474,11 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(flowIdToUpdate != null) { flowId = flowIdToUpdate; }
 			if(installerIdToUpdate != null) { installerId = installerIdToUpdate; }
 			if(flowPathTypeToUpdate != null) { flowPathType = flowPathTypeToUpdate; }
+			if(flowPathUserStateToUpdate != null) { flowPathUserState = flowPathUserStateToUpdate; }
 			if(flowPathFlagsToUpdate != null) { flowPathFlags = flowPathFlagsToUpdate; }
 			if(srcSwToUpdate != null) { srcSw = srcSwToUpdate; }
 			if(dstSwToUpdate != null) { dstSw = dstSwToUpdate; }
 			if(dataPathSummaryToUpdate != null) { dataPathSummary = dataPathSummaryToUpdate; }
-			if(userStateToUpdate != null) { userState = userStateToUpdate; }
 			if(srcPortToUpdate != null) { srcPort = srcPortToUpdate; }
 			if(dstPortToUpdate != null) { dstPort = dstPortToUpdate; }
 			if(matchSrcMacToUpdate != null) { matchSrcMac = matchSrcMacToUpdate; }
@@ -503,8 +505,9 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			
 			stateToUpdate = typeToUpdate = flowIdToUpdate = installerIdToUpdate = null;
 			flowPathTypeToUpdate = null;
+			flowPathUserStateToUpdate = null;
 			flowPathFlagsToUpdate = null;
-			srcSwToUpdate = dstSwToUpdate = dataPathSummaryToUpdate = userStateToUpdate = null;
+			srcSwToUpdate = dstSwToUpdate = dataPathSummaryToUpdate = null;
 			srcPortToUpdate = dstPortToUpdate = null;
 			matchSrcMacToUpdate = matchDstMacToUpdate = null;
 			matchEthernetFrameTypeToUpdate = null;
@@ -522,11 +525,11 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setFlowIdForTest(String flowId) { this.flowId = flowId; }
 		public void setInstallerIdForTest(String installerId) { this.installerId = installerId; }
 		public void setFlowPathTypeForTest(String flowPathType) { this.flowPathType = flowPathType; }
+		public void setFlowPathUserStateForTest(String flowPathUserState) { this.flowPathUserState = flowPathUserState; }
 		public void setFlowPathFlagsForTest(Long flowPathFlags) { this.flowPathFlags = flowPathFlags; }
 		public void setSrcSwForTest(String srcSw) { this.srcSw = srcSw; }
 		public void setDstSwForTest(String dstSw) { this.dstSw = dstSw; }
 		public void setDataPathSummaryForTest(String dataPathSummary) { this.dataPathSummary = dataPathSummary; }
-		public void setUserStateForTest(String userState) { this.userState = userState; }
 		public void setSrcPortForTest(Short srcPort) { this.srcPort = srcPort; }
 		public void setDstPortForTest(Short dstPort) { this.dstPort = dstPort; }
 		public void setMatchSrcMacForTest(String matchSrcMac) { this.matchSrcMac = matchSrcMac; }
@@ -579,6 +582,12 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public void setFlowPathType(String flowPathType) { flowPathTypeToUpdate = flowPathType; }
+
+		@Override
+		public String getFlowPathUserState() { return flowPathUserState; }
+
+		@Override
+		public void setFlowPathUserState(String flowPathUserState) { flowPathUserStateToUpdate = flowPathUserState; }
 
 		@Override
 		public Long getFlowPathFlags() { return flowPathFlags; }
@@ -717,12 +726,6 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public Iterable<ISwitchObject> getSwitches() { return switches; }
-
-		@Override
-		public String getUserState() { return userState; }
-
-		@Override
-		public void setUserState(String userState) { userStateToUpdate = userState; }
 	}
 
 	public static class TestFlowEntry implements IFlowEntry {

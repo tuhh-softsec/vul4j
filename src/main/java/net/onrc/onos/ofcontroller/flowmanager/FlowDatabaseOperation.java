@@ -78,6 +78,7 @@ class FlowDatabaseOperation {
 	// Set the Flow attributes:
 	// - flowPath.installerId()
 	// - flowPath.flowPathType()
+	// - flowPath.flowPathUserState()
 	// - flowPath.flowPathFlags()
 	// - flowPath.dataPath().srcPort()
 	// - flowPath.dataPath().dstPort()
@@ -96,6 +97,7 @@ class FlowDatabaseOperation {
 	//
 	flowObj.setInstallerId(flowPath.installerId().toString());
 	flowObj.setFlowPathType(flowPath.flowPathType().toString());
+	flowObj.setFlowPathUserState(flowPath.flowPathUserState().toString());
 	flowObj.setFlowPathFlags(flowPath.flowPathFlags().flags());
 	flowObj.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
@@ -140,9 +142,9 @@ class FlowDatabaseOperation {
 	flowObj.setDataPathSummary(flowPath.dataPath().dataPathSummary());
 
 	if (found)
-	    flowObj.setUserState("FE_USER_MODIFY");
+	    flowObj.setFlowPathUserState("FP_USER_MODIFY");
 	else
-	    flowObj.setUserState("FE_USER_ADD");
+	    flowObj.setFlowPathUserState("FP_USER_ADD");
 
 	// Flow edges:
 	//   HeadFE
@@ -421,7 +423,7 @@ class FlowDatabaseOperation {
 	// Find and mark for deletion all Flow Entries,
 	// and the Flow itself.
 	//
-	flowObj.setUserState("FE_USER_DELETE");
+	flowObj.setFlowPathUserState("FP_USER_DELETE");
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	boolean empty = true;	// TODO: an ugly hack
 	for (IFlowEntry flowEntryObj : flowEntries) {
@@ -746,6 +748,7 @@ class FlowDatabaseOperation {
 	String flowIdStr = flowObj.getFlowId();
 	String installerIdStr = flowObj.getInstallerId();
 	String flowPathType = flowObj.getFlowPathType();
+	String flowPathUserState = flowObj.getFlowPathUserState();
 	Long flowPathFlags = flowObj.getFlowPathFlags();
 	String srcSwitchStr = flowObj.getSrcSwitch();
 	Short srcPortShort = flowObj.getSrcPort();
@@ -755,6 +758,7 @@ class FlowDatabaseOperation {
 	if ((flowIdStr == null) ||
 	    (installerIdStr == null) ||
 	    (flowPathType == null) ||
+	    (flowPathUserState == null) ||
 	    (flowPathFlags == null) ||
 	    (srcSwitchStr == null) ||
 	    (srcPortShort == null) ||
@@ -768,6 +772,7 @@ class FlowDatabaseOperation {
 	flowPath.setFlowId(new FlowId(flowIdStr));
 	flowPath.setInstallerId(new CallerId(installerIdStr));
 	flowPath.setFlowPathType(FlowPathType.valueOf(flowPathType));
+	flowPath.setFlowPathUserState(FlowPathUserState.valueOf(flowPathUserState));
 	flowPath.setFlowPathFlags(new FlowPathFlags(flowPathFlags));
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
 	flowPath.dataPath().srcPort().setPort(new Port(srcPortShort));

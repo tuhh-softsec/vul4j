@@ -354,6 +354,7 @@ def compute_flow_path(parsed_args, data_path):
   flow_path['installerId'] = installer_id
   # NOTE: The 'flowPathType' might be rewritten later
   flow_path['flowPathType'] = 'FP_TYPE_EXPLICIT_PATH'
+  flow_path['flowPathUserState'] = 'FP_USER_ADD'
   flow_path['flowPathFlags'] = flowPathFlags
 
   if (len(match) > 0):

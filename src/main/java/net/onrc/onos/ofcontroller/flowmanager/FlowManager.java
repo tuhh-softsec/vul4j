@@ -273,9 +273,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // Test whether we need to complete the Flow cleanup,
 		    // if the Flow has been deleted by the user.
 		    //
-		    String flowUserState = flowPathObj.getUserState();
-		    if ((flowUserState != null)
-			&& flowUserState.equals("FE_USER_DELETE")) {
+		    String flowPathUserStateStr = flowPathObj.getFlowPathUserState();
+		    if ((flowPathUserStateStr != null)
+			&& flowPathUserStateStr.equals("FP_USER_DELETE")) {
 			Iterable<IFlowEntry> flowEntries = flowPathObj.getFlowEntries();
 			final boolean empty = !flowEntries.iterator().hasNext();
 			if (empty)
@@ -302,6 +302,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
 		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
 		    FlowPathType flowPathType = FlowPathType.valueOf(flowPathTypeStr);
+		    FlowPathUserState flowPathUserState = FlowPathUserState.valueOf(flowPathUserStateStr);
 		    FlowPathFlags flowPathFlags = new FlowPathFlags(flowPathFlagsLong);
 
 		    counterMyFlowPaths++;

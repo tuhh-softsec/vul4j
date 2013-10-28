@@ -122,6 +122,24 @@ public class INetMapTopologyObjectsIFlowPathTest {
 
 	/**
 	 * Desc:
+	 *  Test method for get and set FlowPathUserState method.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set the Flow Path User State.
+	 * 2. Should get the Flow Path User State.
+	 */
+	@Test
+	public void testSetGetFlowPathUserState() {
+		String flowId = "xx";
+		String flowPathUserState = "FP_USER_ADD";
+		flowPath.setFlowId(flowId);
+		flowPath.setFlowPathUserState(flowPathUserState);
+		assertEquals(flowPath.getFlowPathUserState(), flowPathUserState);
+	}
+
+	/**
+	 * Desc:
 	 *  Test method for get and set FlowPathFlags method.
 	 * Condition:
 	 *  N/A
@@ -473,24 +491,6 @@ public class INetMapTopologyObjectsIFlowPathTest {
 		assertEquals(flowPath.getMatchDstTcpUdpPort(), dstTcpUdpPort);
 	}
 
-	/**
-	 * Desc:
-	 *  Test method for set and get UserState.
-	 * Condition:
-	 *  N/A
-	 * Expect:
-	 * 1. Should set UserState.
-	 * 2. Should get UserState.
-	 */
-	@Test
-	public void testSetGetUserState() {
-		String flowId = "xx";
-		String userStatus = "Good";
-		flowPath.setFlowId(flowId);
-		flowPath.setUserState(userStatus);
-		assertEquals(flowPath.getUserState(), userStatus);
-	}
-	
 	/**
 	 * Desc:
 	 *  Test method for get Switches.
