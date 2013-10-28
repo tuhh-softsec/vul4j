@@ -59,12 +59,19 @@
 
 		<!-- Checks for Javadoc comments. -->
 		<!-- See http://checkstyle.sf.net/config_javadoc.html -->
-		<module name="JavadocMethod" />
-		<module name="JavadocType" />
+		<module name="JavadocMethod">
+			<property name="severity" value="warning" />
+		</module>
+		<module name="JavadocType">
+			<property name="severity" value="warning" />
+		</module>
 		<module name="JavadocVariable">
 			<property name="excludeScope" value="private" />
+			<property name="severity" value="warning" />
 		</module>
-		<module name="JavadocStyle" />
+		<module name="JavadocStyle">
+			<property name="severity" value="warning" />
+		</module>
 
 
 		<!-- Checks for Naming Conventions. -->
