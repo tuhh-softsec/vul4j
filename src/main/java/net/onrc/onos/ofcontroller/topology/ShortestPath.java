@@ -123,7 +123,7 @@ public class ShortestPath {
 	Port outPort;
 	for (Node.Link link: resultPath) {
 	    // Setup the outgoing port, and add the Flow Entry
-	    outPort = new Port(link.myPort);
+	    outPort = new Port((short)link.myPort);
 
 	    FlowEntry flowEntry = new FlowEntry();
 	    flowEntry.setDpid(new Dpid(link.me.nodeId));
@@ -132,7 +132,7 @@ public class ShortestPath {
 	    result_data_path.flowEntries().add(flowEntry);
 
 	    // Setup the next incoming port
-	    inPort = new Port(link.neighborPort);
+	    inPort = new Port((short)link.neighborPort);
 	}
 	if (resultPath.size() > 0) {
 	    // Add the last Flow Entry

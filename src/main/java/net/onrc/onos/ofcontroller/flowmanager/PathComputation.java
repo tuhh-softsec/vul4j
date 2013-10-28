@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.onrc.onos.datagrid.IDatagridService;
+import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.EventEntry;
 import net.onrc.onos.ofcontroller.util.FlowPath;
@@ -24,6 +25,7 @@ class PathComputation extends Thread implements IPathComputationService {
 
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
+    private Topology topology;			// The network topology
 
     // The queue with Flow Path and Topology Element updates
     private BlockingQueue<EventEntry<?>> networkEvents =
@@ -45,6 +47,7 @@ class PathComputation extends Thread implements IPathComputationService {
 		    IDatagridService datagridService) {
 	this.flowManager = flowManager;
 	this.datagridService = datagridService;
+	this.topology = new Topology();
     }
 
     /**
@@ -116,6 +119,22 @@ class PathComputation extends Thread implements IPathComputationService {
     private void processEvents() {
 	if (topologyEvents.isEmpty() && flowPathEvents.isEmpty())
 	    return;		// Nothing to do
+
+	//
+	// Add the topology events
+	//
+	boolean isTopologyModified = false;
+	for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
+	    TopologyElement topologyElement = eventEntry.eventData();
+	    switch (eventEntry.eventType()) {
+	    case ENTRY_ADD:
+		isTopologyModified = topology.addTopologyElement(topologyElement);
+		break;
+	    case ENTRY_REMOVE:
+		isTopologyModified = topology.removeTopologyElement(topologyElement);
+		break;
+	    }
+	}
 
 	// TODO: Implement it!
 
