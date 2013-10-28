@@ -30,8 +30,8 @@ public class RoundRobinBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrateg
 
 	@Override
 	public String getBaseURL(HttpRequest originalRequest) {
-		int incremented = counter.incrementAndGet();
-		int index = incremented % urls.length;
-		return urls[Math.abs(index)];
+		int incremented = this.counter.incrementAndGet();
+		int index = incremented % this.urls.length;
+		return this.urls[Math.abs(index)];
 	}
 }

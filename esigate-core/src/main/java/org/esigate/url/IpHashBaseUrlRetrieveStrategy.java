@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.esigate.url;
 
 import org.apache.http.HttpRequest;
@@ -28,14 +27,14 @@ public class IpHashBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
 
 	@Override
 	public String getBaseURL(HttpRequest originalRequest) {
-		int index = getHashCode(HttpRequestHelper.getMediator(originalRequest).getRemoteAddr()) % urls.length;
-		return urls[Math.abs(index)];
+		int index = getHashCode(HttpRequestHelper.getMediator(originalRequest).getRemoteAddr()) % this.urls.length;
+		return this.urls[Math.abs(index)];
 	}
 
 	private int getHashCode(String ip) {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((ip == null) ? 0 : ip.hashCode());
+		result = prime * result + (ip == null ? 0 : ip.hashCode());
 		return result;
 	}
 

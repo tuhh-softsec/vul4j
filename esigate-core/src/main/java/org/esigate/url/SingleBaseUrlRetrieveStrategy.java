@@ -28,7 +28,7 @@ public class SingleBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
 
 	@Override
 	public String getBaseURL(HttpRequest originalRequest) {
-		return baseUrl;
+		return this.baseUrl;
 	}
 
 }

@@ -31,6 +31,10 @@ public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStra
 		this.urls = urls;
 	}
 
+	private int generateIndex() {
+		return (int) (Math.random() * this.urls.length);
+	}
+
 	@Override
 	public String getBaseURL(HttpRequest originalRequest) {
 		ContainerRequestMediator mediator = HttpRequestHelper.getMediator(originalRequest);
@@ -49,7 +53,7 @@ public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStra
 				} catch (Exception e) {
 					index = -1;
 				}
-				if (index < 0 || index >= urls.length) {
+				if (index < 0 || index >= this.urls.length) {
 					toGenerate = true;
 				}
 			} else {
@@ -62,11 +66,7 @@ public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStra
 			mediator.addCookie(cookie);
 		}
 
-		return urls[index];
-	}
-
-	private int generateIndex() {
-		return (int) (Math.random() * urls.length);
+		return this.urls[index];
 	}
 
 	private Cookie getEsiSessionCookie(Cookie[] cookies) {
