@@ -59,7 +59,7 @@ import org.w3c.dom.Text;
  *
  * This includes:
  *
- * Constuct a <CODE>ds:Reference</CODE> from an {@link org.w3c.dom.Element}.
+ * Construct a <CODE>ds:Reference</CODE> from an {@link org.w3c.dom.Element}.
  *
  * <p>Create a new reference</p>
  * <pre>
