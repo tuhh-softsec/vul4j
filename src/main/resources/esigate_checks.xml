@@ -37,16 +37,16 @@
 
 	<!-- Checks for whitespace -->
 	<!-- See http://checkstyle.sf.net/config_whitespace.html -->
-<!-- 	<module name="FileTabCharacter" /> -->
+	<!-- <module name="FileTabCharacter" /> -->
 
 	<!-- Miscellaneous other checks. -->
 	<!-- See http://checkstyle.sf.net/config_misc.html -->
-	<module name="RegexpSingleline">
-		<property name="format" value="\s+$" />
-		<property name="minimum" value="0" />
-		<property name="maximum" value="0" />
-		<property name="message" value="Line has trailing spaces." />
-	</module>
+	<!-- <module name="RegexpSingleline"> -->
+	<!-- <property name="format" value="\s+$" /> -->
+	<!-- <property name="minimum" value="0" /> -->
+	<!-- <property name="maximum" value="0" /> -->
+	<!-- <property name="message" value="Line has trailing spaces." /> -->
+	<!-- </module> -->
 
 	<!-- Checks for Headers -->
 	<!-- See http://checkstyle.sf.net/config_header.html -->
@@ -61,7 +61,9 @@
 		<!-- See http://checkstyle.sf.net/config_javadoc.html -->
 		<module name="JavadocMethod" />
 		<module name="JavadocType" />
-		<module name="JavadocVariable" />
+		<module name="JavadocVariable">
+			<property name="excludeScope" value="private" />
+		</module>
 		<module name="JavadocStyle" />
 
 
@@ -140,7 +142,7 @@
 
 		<!-- Checks for class design -->
 		<!-- See http://checkstyle.sf.net/config_design.html -->
-		<module name="DesignForExtension" />
+		<!-- <module name="DesignForExtension" /> -->
 		<module name="FinalClass" />
 		<module name="HideUtilityClassConstructor" />
 		<module name="InterfaceIsType" />
