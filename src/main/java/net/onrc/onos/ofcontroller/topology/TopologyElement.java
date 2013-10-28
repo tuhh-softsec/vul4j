@@ -84,6 +84,17 @@ public class TopologyElement {
     }
 
     /**
+     * Get the Switch DPID.
+     *
+     * NOTE: Applies for Type.ELEMENT_SWITCH and Type.ELEMENT_PORT
+     *
+     * @return the Switch DPID.
+     */
+    public long getSwitch() {
+	return fromSwitchDpid;
+    }
+
+    /**
      * Get the Switch Ports.
      *
      * NOTE: Applies for Type.ELEMENT_SWITCH
@@ -103,17 +114,6 @@ public class TopologyElement {
      */
     public void addSwitchPort(int switchPort) {
 	switchPorts.put(switchPort, switchPort);
-    }
-
-    /**
-     * Get the Switch DPID.
-     *
-     * NOTE: Applies for Type.ELEMENT_SWITCH and Type.ELEMENT_PORT
-     *
-     * @return the Switch DPID.
-     */
-    public long getSwitch() {
-	return fromSwitchDpid;
     }
 
     /**
