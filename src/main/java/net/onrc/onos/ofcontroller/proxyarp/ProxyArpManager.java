@@ -22,7 +22,7 @@ import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.bgproute.ILayer3InfoService;
+import net.onrc.onos.ofcontroller.bgproute.IConfigInfoService;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
 
 import org.openflow.protocol.OFMessage;
@@ -47,17 +47,17 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	
 	private static final int ARP_REQUEST_TIMEOUT = 2000; //ms
 			
-	private final IFloodlightProviderService floodlightProvider;
-	private final ITopologyService topology;
-	private final ILayer3InfoService layer3;
-	private final IRestApiService restApi;
+	private IFloodlightProviderService floodlightProvider;
+	private ITopologyService topology;
+	private IConfigInfoService configService;
+	private IRestApiService restApi;
 	
 	private short vlan;
 	private static final short NO_VLAN = 0;
 	
-	private final ArpCache arpCache;
+	private ArpCache arpCache;
 
-	private final SetMultimap<InetAddress, ArpRequest> arpRequests;
+	private SetMultimap<InetAddress, ArpRequest> arpRequests;
 	
 	private static class ArpRequest {
 		private final IArpRequester requester;
@@ -106,12 +106,20 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		}
 	}
 	
+	/*
 	public ProxyArpManager(IFloodlightProviderService floodlightProvider,
-				ITopologyService topology, ILayer3InfoService layer3,
+				ITopologyService topology, IConfigInfoService configService,
 				IRestApiService restApi){
+
+	}
+	*/
+	
+	public void init(IFloodlightProviderService floodlightProvider,
+			ITopologyService topology, IConfigInfoService config,
+			IRestApiService restApi){
 		this.floodlightProvider = floodlightProvider;
 		this.topology = topology;
-		this.layer3 = layer3;
+		this.configService = config;
 		this.restApi = restApi;
 		
 		arpCache = new ArpCache();
@@ -120,11 +128,12 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				HashMultimap.<InetAddress, ArpRequest>create());
 	}
 	
-	public void startUp(short vlan) {
-		this.vlan = vlan;
+	public void startUp() {
+		this.vlan = configService.getVlan();
 		log.info("vlan set to {}", this.vlan);
 		
 		restApi.addRestletRoutable(new ArpWebRoutable());
+		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
 		Timer arpTimer = new Timer("arp-processing");
 		arpTimer.scheduleAtFixedRate(new TimerTask() {
@@ -244,15 +253,15 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			return;
 		}
 
-		if (layer3.fromExternalNetwork(sw.getId(), pi.getInPort())) {
+		if (configService.fromExternalNetwork(sw.getId(), pi.getInPort())) {
 			//If the request came from outside our network, we only care if
 			//it was a request for one of our interfaces.
-			if (layer3.isInterfaceAddress(target)) {
+			if (configService.isInterfaceAddress(target)) {
 				log.trace("ARP request for our interface. Sending reply {} => {}",
-						target.getHostAddress(), layer3.getRouterMacAddress());
+						target.getHostAddress(), configService.getRouterMacAddress());
 				
 				sendArpReply(arp, sw.getId(), pi.getInPort(), 
-						layer3.getRouterMacAddress());
+						configService.getRouterMacAddress());
 			}
 			
 			return;
@@ -345,7 +354,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			.setTargetHardwareAddress(zeroMac)
 			.setTargetProtocolAddress(ipAddress.getAddress());
 
-		MACAddress routerMacAddress = layer3.getRouterMacAddress();
+		MACAddress routerMacAddress = configService.getRouterMacAddress();
 		//TODO hack for now as it's unclear what the MAC address should be
 		byte[] senderMacAddress = genericNonZeroMac;
 		if (routerMacAddress != null) {
@@ -354,7 +363,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		arpRequest.setSenderHardwareAddress(senderMacAddress);
 		
 		byte[] senderIPAddress = zeroIpv4;
-		Interface intf = layer3.getOutgoingInterface(ipAddress);
+		Interface intf = configService.getOutgoingInterface(ipAddress);
 		if (intf != null) {
 			senderIPAddress = intf.getIpAddress().getAddress();
 		}
@@ -383,8 +392,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest,
 			long inSwitch, short inPort) {
 
-		if (layer3.hasLayer3Configuration()) {
-			Interface intf = layer3.getOutgoingInterface(dstAddress);
+		if (configService.hasLayer3Configuration()) {
+			Interface intf = configService.getOutgoingInterface(dstAddress);
 			if (intf != null) {
 				sendArpRequestOutPort(arpRequest, intf.getDpid(), intf.getPort());
 			}
@@ -571,7 +580,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		arpRequests.put(ipAddress, new ArpRequest(requester, retry));
 		
 		//Sanity check to make sure we don't send a request for our own address
-		if (!layer3.isInterfaceAddress(ipAddress)) {
+		if (!configService.isInterfaceAddress(ipAddress)) {
 			sendArpRequestForAddress(ipAddress);
 		}
 	}

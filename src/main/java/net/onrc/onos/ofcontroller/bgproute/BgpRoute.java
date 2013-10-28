@@ -40,7 +40,6 @@ import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
-import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
@@ -77,7 +76,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class BgpRoute implements IFloodlightModule, IBgpRouteService, 
 									ITopologyListener, IArpRequester,
-									IOFSwitchListener, ILayer3InfoService,
+									IOFSwitchListener, IConfigInfoService,
 									IProxyArpService {
 	
 	private final static Logger log = LoggerFactory.getLogger(BgpRoute.class);
@@ -88,7 +87,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private ILinkDiscoveryService linkDiscoveryService;
 	private IRestApiService restApi;
 	
-	private ProxyArpManager proxyArp;
+	private IProxyArpService proxyArp;
 	
 	private IPatriciaTrie<RibEntry> ptree;
 	private IPatriciaTrie<Interface> interfacePtrie;
@@ -230,6 +229,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Collection<Class<? extends IFloodlightService>> l 
 			= new ArrayList<Class<? extends IFloodlightService>>();
 		l.add(IBgpRouteService.class);
+		l.add(IConfigInfoService.class);
 		return l;
 	}
 
@@ -238,7 +238,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Map<Class<? extends IFloodlightService>, IFloodlightService> m 
 			= new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
 		m.put(IBgpRouteService.class, this);
-		m.put(IProxyArpService.class, this);
+		m.put(IConfigInfoService.class, this);
 		return m;
 	}
 
@@ -269,7 +269,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
-		proxyArp = new ProxyArpManager(floodlightProvider, topologyService, this, restApi);
+		//proxyArp = new ProxyArpManager(floodlightProvider, topologyService, this, restApi);
+		//proxyArp = new ProxyArpManager();
+		proxyArp = context.getServiceImpl(IProxyArpService.class);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -324,9 +326,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		topologyService.addListener(this);
 		floodlightProvider.addOFSwitchListener(this);
 		
-		proxyArp.startUp(vlan);
+		//proxyArp.startUp(vlan);
 		
-		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
+		//floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
 		
 		//Retrieve the RIB from BGPd during startup
 		retrieveRib();
@@ -1238,7 +1240,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	}
 	
 	/*
-	 * ILayer3InfoService methods
+	 * IConfigInfoService methods
 	 */
 	
 	@Override
@@ -1276,6 +1278,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	@Override
 	public MACAddress getRouterMacAddress() {
 		return bgpdMacAddress;
+	}
+	
+	@Override
+	public short getVlan() {
+		return vlan;
 	}
 
 	/*

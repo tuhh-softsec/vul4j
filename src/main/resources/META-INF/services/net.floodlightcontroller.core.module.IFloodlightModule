@@ -24,3 +24,4 @@ net.onrc.onos.ofcontroller.topology.TopologyManager
 net.onrc.onos.ofcontroller.bgproute.BgpRoute
 net.onrc.onos.registry.controller.ZookeeperRegistry
 net.onrc.onos.registry.controller.StandaloneRegistry
+net.onrc.onos.ofcontroller.core.module.ONOSModuleLoader
