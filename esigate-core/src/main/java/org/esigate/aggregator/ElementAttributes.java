@@ -3,28 +3,30 @@ package org.esigate.aggregator;
 import org.esigate.Driver;
 
 /**
- * Element Attributes
+ * Element Attributes.
+ * 
  * @author athaveau
  */
 class ElementAttributes {
 
     /**
-     * Driver attribut
+     * Driver attribut.
      */
     private Driver driver;
 
     /**
-     * page attribut
+     * page attribut.
      */
     private String page;
-    
+
     /**
-     * name attribut
+     * name attribut.
      */
     private String name;
 
     /**
-     * Constructor
+     * Constructor.
+     * 
      * @param driver
      * @param page
      * @param name
@@ -35,8 +37,6 @@ class ElementAttributes {
         this.name = name;
     }
 
-
-    
     public Driver getDriver() {
         return driver;
     }
@@ -48,6 +48,5 @@ class ElementAttributes {
     public String getPage() {
         return page;
     }
-
 
 }

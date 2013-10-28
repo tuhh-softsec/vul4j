@@ -1,6 +1,6 @@
 package org.esigate.aggregator;
 
-import java.io.IOException;
+import java.io.IOException; 
 
 import org.esigate.parser.Element;
 

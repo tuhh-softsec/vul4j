@@ -27,10 +27,10 @@ import org.esigate.util.HttpRequestHelper;
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
- * 
+ *  
  */
 public class UserContext {
-	private final static String USER_KEY = "user";
+	private static final  String USER_KEY = "user";
 	private final HttpRequest httpRequest;
 	private final String key;
 
@@ -59,7 +59,7 @@ public class UserContext {
 		setAttribute(USER_KEY, user);
 	}
 
-	/**
+	/*
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

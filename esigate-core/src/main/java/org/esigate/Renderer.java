@@ -27,18 +27,19 @@ import org.apache.http.HttpEntityEnclosingRequest;
  */
 public interface Renderer {
 
-	/**
-	 * Renders provided source and writes results to the output
-	 * 
-	 * 
-	 * @param originalRequest
-	 * @param src
-	 *            source to be rendered
-	 * @param out
-	 *            output destination. This writer is not thread-safe, use proper
-	 *            synchronization if writing output from multiple threads.
-	 * @throws IOException
-	 * @throws HttpErrorPage
-	 */
-	void render(HttpEntityEnclosingRequest originalRequest, String src, Writer out) throws IOException, HttpErrorPage;
+    /**
+     * Renders provided source and writes results to the output.
+     * 
+     * 
+     * @param originalRequest
+     *            request received by esigate.
+     * @param src
+     *            source to be rendered
+     * @param out
+     *            output destination. This writer is not thread-safe, use proper synchronization if writing output from
+     *            multiple threads.
+     * @throws IOException
+     * @throws HttpErrorPage 
+     */
+    void render(HttpEntityEnclosingRequest originalRequest, String src, Writer out) throws IOException, HttpErrorPage;
 }

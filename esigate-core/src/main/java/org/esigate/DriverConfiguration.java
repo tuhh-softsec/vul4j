@@ -30,13 +30,13 @@ import org.esigate.url.SingleBaseUrlRetrieveStrategy;
 import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
 
 /**
- * Driver configuration parameters
+ * Driver configuration parameters.
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  */
 public class DriverConfiguration {
-
+ 
 	private final String instanceName;
 	private final String uriEncoding;
 	private final boolean fixResources;
@@ -147,7 +147,7 @@ public class DriverConfiguration {
 	}
 
 	/**
-	 * Get the URI mappings for this driver instance
+	 * Get the URI mappings for this driver instance.
 	 * 
 	 * @return The URI mappings for this driver instance.
 	 */
