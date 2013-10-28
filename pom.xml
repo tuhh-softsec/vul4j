@@ -140,8 +140,10 @@
 					</dependencies>
 					<configuration>
 						<goals>source:jar javadoc:jar deploy site:site site:deploy</goals>
-				
-						<arguments>-pl esigate-server,esigate-taglib,esigate-taglib-helper,esigate-jsf,esigate-wicket,esigate-cas,esigate-distribution -am</arguments>
+
+						<arguments>-pl
+							esigate-server,esigate-taglib,esigate-taglib-helper,esigate-jsf,esigate-wicket,esigate-cas,esigate-distribution
+							-am</arguments>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -269,6 +271,15 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>cobertura-maven-plugin</artifactId>
 					<version>2.5.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>2.10</version>
+					<configuration>
+						<configLocation>../src/main/resources/esigate_checks.xml</configLocation>
+						<headerLocation>../src/main/resources/LICENSE-2.0.txt</headerLocation>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
