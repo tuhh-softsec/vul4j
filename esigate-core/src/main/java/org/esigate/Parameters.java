@@ -33,7 +33,7 @@ import org.esigate.util.Parameter;
  * @author Francois-Xavier Bonnet
  * 
  */
-interface Parameters {
+public interface Parameters {
 
 	// Core parameters
 	Parameter REMOTE_URL_BASE = new Parameter("remoteUrlBase", null);
