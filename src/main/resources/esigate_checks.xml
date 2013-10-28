@@ -60,16 +60,19 @@
 		<!-- Checks for Javadoc comments. -->
 		<!-- See http://checkstyle.sf.net/config_javadoc.html -->
 		<module name="JavadocMethod">
+			<property name="scope" value="public" />
 			<property name="severity" value="warning" />
 		</module>
 		<module name="JavadocType">
+			<property name="scope" value="public" />
 			<property name="severity" value="warning" />
 		</module>
 		<module name="JavadocVariable">
-			<property name="excludeScope" value="private" />
+			<property name="scope" value="public" />
 			<property name="severity" value="warning" />
 		</module>
 		<module name="JavadocStyle">
+			<property name="scope" value="public" />
 			<property name="severity" value="warning" />
 		</module>
 
@@ -90,7 +93,9 @@
 		<!-- Checks for imports -->
 		<!-- See http://checkstyle.sf.net/config_import.html -->
 		<module name="AvoidStarImport" />
-		<module name="IllegalImport" /> <!-- defaults to sun.* packages -->
+		<module name="IllegalImport"> <!-- defaults to sun.* packages -->
+			<property name="severity" value="warning" />
+		</module>
 		<module name="RedundantImport" />
 		<module name="UnusedImports" />
 
