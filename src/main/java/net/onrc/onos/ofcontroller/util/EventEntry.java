@@ -45,6 +45,15 @@ public class EventEntry<T> {
     }
 
     /**
+     * Get the event type.
+     *
+     * @return the event type.
+     */
+    public EventEntry.Type eventType() {
+	return this.eventType;
+    }
+
+    /**
      * Get the event-related data entry.
      *
      * @return the event-related data entry.
