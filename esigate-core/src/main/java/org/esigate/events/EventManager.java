@@ -17,17 +17,14 @@ import org.slf4j.LoggerFactory;
  * <p>
  * The following events are supported :
  * <p>
- * Proxy events : ESIGate process an incoming request (ESIGate configured as a
- * proxy).
+ * Proxy events : ESIGate process an incoming request (ESIGate configured as a proxy).
  * <uL>
- * <li>{@link EventManager#EVENT_PROXY_PRE} : before processing an incoming
- * request.</li>
- * <li>{@link EventManager#EVENT_PROXY_POST} : after processing an incoming
- * request.</li>
+ * <li>{@link EventManager#EVENT_PROXY_PRE} : before processing an incoming request.</li>
+ * <li>{@link EventManager#EVENT_PROXY_POST} : after processing an incoming request.</li>
  * </ul>
  * <p>
- * Fragment events : A fragment is required for inclusion (esi:include). ESIGate
- * will try to use its cache or fallback to an http call to the remote backend.
+ * Fragment events : A fragment is required for inclusion (esi:include). ESIGate will try to use its cache or fallback
+ * to an http call to the remote backend.
  * 
  * <ul>
  * <li>{@link EventManager#EVENT_FRAGMENT_PRE} : before retrieving a fragment.</li>
@@ -40,8 +37,7 @@ import org.slf4j.LoggerFactory;
  * <li>{@link EventManager#EVENT_FETCH_POST} : after we receive the response.</li>
  * </ul>
  * <p>
- * Render events : Renderers are applied to the current page. This event can be
- * used to inject additional renderers.
+ * Render events : Renderers are applied to the current page. This event can be used to inject additional renderers.
  * <ul>
  * <li>{@link EventManager#EVENT_RENDER_PRE} : before applying renderers</li>
  * <li>{@link EventManager#EVENT_RENDER_POST} : after applying renderers</li>
@@ -56,34 +52,33 @@ import org.slf4j.LoggerFactory;
  */
 public class EventManager {
 
-	public static EventDefinition EVENT_FRAGMENT_PRE = new EventDefinition(
-			"org.esigate.fragement-pre", EventDefinition.TYPE_DEFAULT);
-	public static EventDefinition EVENT_FRAGMENT_POST = new EventDefinition(
-			"org.esigate.fragment-post", EventDefinition.TYPE_POST);
+	public static final EventDefinition EVENT_FRAGMENT_PRE = new EventDefinition("org.esigate.fragement-pre",
+			EventDefinition.TYPE_DEFAULT);
+	public static final EventDefinition EVENT_FRAGMENT_POST = new EventDefinition("org.esigate.fragment-post",
+			EventDefinition.TYPE_POST);
 
-	public static EventDefinition EVENT_FETCH_PRE = new EventDefinition(
-			"org.esigate.fetch-pre", EventDefinition.TYPE_DEFAULT);
-	public static EventDefinition EVENT_FETCH_POST = new EventDefinition(
-			"org.esigate.fetch-post", EventDefinition.TYPE_POST);
+	public static final EventDefinition EVENT_FETCH_PRE = new EventDefinition("org.esigate.fetch-pre",
+			EventDefinition.TYPE_DEFAULT);
+	public static final EventDefinition EVENT_FETCH_POST = new EventDefinition("org.esigate.fetch-post",
+			EventDefinition.TYPE_POST);
 
-	public static EventDefinition EVENT_PROXY_PRE = new EventDefinition(
-			"org.esigate.proxy-pre", EventDefinition.TYPE_DEFAULT);
-	public static EventDefinition EVENT_PROXY_POST = new EventDefinition(
-			"org.esigate.proxy-post", EventDefinition.TYPE_POST);
+	public static final EventDefinition EVENT_PROXY_PRE = new EventDefinition("org.esigate.proxy-pre",
+			EventDefinition.TYPE_DEFAULT);
+	public static final EventDefinition EVENT_PROXY_POST = new EventDefinition("org.esigate.proxy-post",
+			EventDefinition.TYPE_POST);
 
-	public static EventDefinition EVENT_RENDER_PRE = new EventDefinition(
-			"org.esigate.render-pre", EventDefinition.TYPE_DEFAULT);
-	public static EventDefinition EVENT_RENDER_POST = new EventDefinition(
-			"org.esigate.render-post", EventDefinition.TYPE_POST);
+	public static final EventDefinition EVENT_RENDER_PRE = new EventDefinition("org.esigate.render-pre",
+			EventDefinition.TYPE_DEFAULT);
+	public static final EventDefinition EVENT_RENDER_POST = new EventDefinition("org.esigate.render-post",
+			EventDefinition.TYPE_POST);
 
-	public static EventDefinition EVENT_READ_ENTITY = new EventDefinition(
-			"org.esigate.readEntity.", EventDefinition.TYPE_DEFAULT);
-	
-	private static final Logger LOG = LoggerFactory
-			.getLogger(EventManager.class);
+	public static final EventDefinition EVENT_READ_ENTITY = new EventDefinition("org.esigate.readEntity.",
+			EventDefinition.TYPE_DEFAULT);
+
+	private static final Logger LOG = LoggerFactory.getLogger(EventManager.class);
 
 	private String driverId = null;
-	
+
 	public EventManager(String driverId) {
 		this.driverId = driverId;
 	}
@@ -91,19 +86,17 @@ public class EventManager {
 	/**
 	 * Listener mappings. This saves times when an event is fired.
 	 */
-	Map<EventDefinition, List<IEventListener>> listeners = new HashMap<EventDefinition, List<IEventListener>>();
+	private Map<EventDefinition, List<IEventListener>> listeners =
+			new HashMap<EventDefinition, List<IEventListener>>();
 	/**
-	 * Post events are stored in reverse order. This allows an extension to
-	 * enclose the whole processing.
+	 * Post events are stored in reverse order. This allows an extension to enclose the whole processing.
 	 */
-	Map<EventDefinition, List<IEventListener>> listenersPost = new HashMap<EventDefinition, List<IEventListener>>();
+	private Map<EventDefinition, List<IEventListener>> listenersPost =
+			new HashMap<EventDefinition, List<IEventListener>>();
 
-	private void register(
-			Map<EventDefinition, List<IEventListener>> listenerMappings,
-			EventDefinition eventDefinition, IEventListener listener,
-			boolean reverseOrder) {
-		List<IEventListener> eventListeners = listenerMappings
-				.get(eventDefinition);
+	private void register(Map<EventDefinition, List<IEventListener>> listenerMappings,
+			EventDefinition eventDefinition, IEventListener listener, boolean reverseOrder) {
+		List<IEventListener> eventListeners = listenerMappings.get(eventDefinition);
 
 		// Create listener list for this event
 		if (eventListeners == null) {
@@ -119,8 +112,8 @@ public class EventManager {
 		}
 
 		if (LOG.isInfoEnabled()) {
-			LOG.info("Registered {} on event {}/{}", new Object[] {
-					listener.getClass().getName(), driverId, eventDefinition });
+			LOG.info("Registered {} on event {}/{}", new Object[] { listener.getClass().getName(), driverId,
+					eventDefinition });
 		}
 	}
 
@@ -130,8 +123,7 @@ public class EventManager {
 	 * @param eventDefinition
 	 * @param listener
 	 */
-	public void register(EventDefinition eventDefinition,
-			IEventListener listener) {
+	public void register(EventDefinition eventDefinition, IEventListener listener) {
 		if (eventDefinition.getType() == EventDefinition.TYPE_POST) {
 			register(listenersPost, eventDefinition, listener, true);
 		} else {
@@ -153,11 +145,9 @@ public class EventManager {
 		}
 	}
 
-	private void fire(
-			Map<EventDefinition, List<IEventListener>> listenerMappings,
-			EventDefinition eventDefinition, Event eventDetails) {
-		List<IEventListener> eventListeners = listenerMappings
-				.get(eventDefinition);
+	private void fire(Map<EventDefinition, List<IEventListener>> listenerMappings, EventDefinition eventDefinition,
+			Event eventDetails) {
+		List<IEventListener> eventListeners = listenerMappings.get(eventDefinition);
 
 		// No listeners at all for this event
 		if (eventListeners == null)
@@ -166,8 +156,7 @@ public class EventManager {
 		// Loop on listeners
 		for (IEventListener el : eventListeners) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Running {} on event {}/{}", new Object[] { el,
-						driverId, eventDefinition });
+				LOG.debug("Running {} on event {}/{}", new Object[] { el, driverId, eventDefinition });
 			}
 
 			if (el.event(eventDefinition, eventDetails) == false)
@@ -182,8 +171,7 @@ public class EventManager {
 	 * @param eventDefinition
 	 * @param eventListener
 	 */
-	public void unregister(EventDefinition eventDefinition,
-			IEventListener eventListener) {
+	public void unregister(EventDefinition eventDefinition, IEventListener eventListener) {
 		if (eventDefinition.getType() == EventDefinition.TYPE_POST) {
 			unregister(listenersPost, eventDefinition, eventListener);
 		} else {
@@ -191,12 +179,10 @@ public class EventManager {
 		}
 	}
 
-	private void unregister(
-			Map<EventDefinition, List<IEventListener>> listenerMappings,
+	private void unregister(Map<EventDefinition, List<IEventListener>> listenerMappings,
 			EventDefinition eventDefinition, IEventListener listener) {
 
-		List<IEventListener> eventListeners = listenerMappings
-				.get(eventDefinition);
+		List<IEventListener> eventListeners = listenerMappings.get(eventDefinition);
 
 		// Not listeners at all for this event
 		if (eventListeners == null) {
@@ -206,8 +192,8 @@ public class EventManager {
 		boolean removed = eventListeners.remove(listener);
 
 		if (LOG.isInfoEnabled() && removed) {
-			LOG.info("Unregistered {} on event {}/{}", new Object[] {
-					listener.getClass().getName(), driverId, eventDefinition });
+			LOG.info("Unregistered {} on event {}/{}", new Object[] { listener.getClass().getName(), driverId,
+					eventDefinition });
 		}
 	}
 }
