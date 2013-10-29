@@ -315,6 +315,50 @@ public class FlowEntry {
     }
 
     /**
+     * Test whether two Flow Entries represent same points in a data path.
+     *
+     * NOTE: Two Flow Entries represent same points in a data path if
+     * the Switch DPID, incoming port and outgoing port are same.
+     *
+     * @param otherFlowEntry the other Flow Entry to compare with.
+     * @return true if the two Flow Entries represent same points in a
+     * data path, otherwise false.
+     */
+    public boolean isSameDataPath(FlowEntry otherFlowEntry) {
+	// Test the DPID
+	if (this.dpid.value() != otherFlowEntry.dpid().value())
+	    return false;
+
+	// Test the inPort
+	do {
+	    Port oldPort = this.inPort;
+	    Port newPort = otherFlowEntry.inPort();
+	    if ((oldPort != null) && (newPort != null) &&
+		(oldPort.value() == newPort.value())) {
+		break;
+	    }
+	    if ((oldPort == null) && (newPort == null))
+		break;
+	    return false;		// inPort is different
+	} while (false);
+
+	// Test the outPort
+	do {
+	    Port oldPort = this.outPort;
+	    Port newPort = otherFlowEntry.outPort();
+	    if ((oldPort != null) && (newPort != null) &&
+		(oldPort.value() == newPort.value())) {
+		break;
+	    }
+	    if ((oldPort == null) && (newPort == null))
+		break;
+	    return false;		// outPort is different
+	} while (false);
+
+	return true;
+    }
+
+    /**
      * Convert the flow entry to a string.
      *
      * The string has the following form:
