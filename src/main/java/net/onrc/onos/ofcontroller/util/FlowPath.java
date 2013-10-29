@@ -1,5 +1,7 @@
 package net.onrc.onos.ofcontroller.util;
 
+import java.util.ArrayList;
+
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
@@ -295,6 +297,15 @@ public class FlowPath implements Comparable<FlowPath> {
     @JsonProperty("dataPath")
     public void setDataPath(DataPath dataPath) {
 	this.dataPath = dataPath;
+    }
+
+    /**
+     * Get the data path flow entries.
+     *
+     * @return the data path flow entries.
+     */
+    public ArrayList<FlowEntry> flowEntries() {
+	return this.dataPath.flowEntries();
     }
 
     /**
