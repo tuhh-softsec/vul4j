@@ -15,6 +15,9 @@ import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.util.DataPath;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 import org.slf4j.Logger;
@@ -199,6 +202,80 @@ public class TopologyManager implements IFloodlightModule,
      */
     public void dropTopology(Topology topology) {
 	topology = null;
+    }
+
+    /**
+     * Compute the network path for a Flow.
+     *
+     * @param topology the topology handler to use.
+     * @param flowPath the Flow to compute the network path for.
+     * @return the data path with the computed path if found, otherwise null.
+     */
+    public static DataPath computeNetworkPath(Topology topology,
+					      FlowPath flowPath) {
+	//
+	// Compute the network path based on the desired Flow Path type
+	//
+	switch (flowPath.flowPathType()) {
+	case FP_TYPE_SHORTEST_PATH: {
+	    SwitchPort src = flowPath.dataPath().srcPort();
+	    SwitchPort dest = flowPath.dataPath().dstPort();
+	    return ShortestPath.getTopologyShortestPath(topology, src, dest);
+	}
+	case FP_TYPE_EXPLICIT_PATH:
+	    return flowPath.dataPath();
+	}
+
+	return null;
+    }
+
+    /**
+     * Test whether two Flow Entries represent same points in a data path.
+     *
+     * NOTE: Two Flow Entries represent same points in a data path if
+     * the Switch DPID, incoming port and outgoing port are same.
+     *
+     * NOTE: This method is specialized for shortest-path unicast paths,
+     * and probably should be moved somewhere else.
+     *
+     * @param oldFlowEntry the first Flow Entry to compare.
+     * @param newFlowEntry the second Flow Entry to compare.
+     * @return true if the two Flow Entries represent same points in a
+     * data path, otherwise false.
+     */
+    public static boolean isSameFlowEntryDataPath(FlowEntry oldFlowEntry,
+						  FlowEntry newFlowEntry) {
+	// Test the DPID
+	if (oldFlowEntry.dpid().value() != newFlowEntry.dpid().value())
+	    return false;
+
+	// Test the inPort
+	do {
+	    Port oldPort = oldFlowEntry.inPort();
+	    Port newPort = newFlowEntry.inPort();
+	    if ((oldPort != null) && (newPort != null) &&
+		(oldPort.value() == newPort.value())) {
+		break;
+	    }
+	    if ((oldPort == null) && (newPort == null))
+		break;
+	    return false;		// inPort is different
+	} while (false);
+
+	// Test the outPort
+	do {
+	    Port oldPort = oldFlowEntry.outPort();
+	    Port newPort = newFlowEntry.outPort();
+	    if ((oldPort != null) && (newPort != null) &&
+		(oldPort.value() == newPort.value())) {
+		break;
+	    }
+	    if ((oldPort == null) && (newPort == null))
+		break;
+	    return false;		// outPort is different
+	} while (false);
+
+	return true;
     }
 
     /**

@@ -15,6 +15,7 @@ import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.topology.ShortestPath;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.EventEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -239,7 +240,11 @@ class PathComputation extends Thread implements IPathComputationService {
 		modifiedFlowPaths.add(flowPath);
 	}
 
-	// TODO: Implement the rest: push the Flow Entries from modifiedFlowPaths!
+	//
+	// Push the Flow Entries that have been modified
+	//
+	// TODO: Uncomment the following to enable pushing of flow entries
+	// flowManager.pushModifiedFlowEntries(modifiedFlowPaths);
 
 	// Cleanup
 	topologyEvents.clear();
@@ -267,11 +272,9 @@ class PathComputation extends Thread implements IPathComputationService {
 
 	DataPath oldDataPath = flowPath.dataPath();
 
-	// Compute the new shortest path
-	DataPath newDataPath =
-	    ShortestPath.getTopologyShortestPath(topology,
-						 flowPath.dataPath().srcPort(),
-						 flowPath.dataPath().dstPort());
+	// Compute the new path
+	DataPath newDataPath = TopologyManager.computeNetworkPath(topology,
+								  flowPath);
 	if (newDataPath == null) {
 	    // We need the DataPath to compare the paths
 	    newDataPath = new DataPath();
@@ -279,7 +282,7 @@ class PathComputation extends Thread implements IPathComputationService {
 	newDataPath.applyFlowPathFlags(flowPath.flowPathFlags());
 
 	//
-	// Test whether the shortest path is same
+	// Test whether the new path is same
 	//
 	if (oldDataPath.flowEntries().size() !=
 	    newDataPath.flowEntries().size()) {
@@ -290,7 +293,8 @@ class PathComputation extends Thread implements IPathComputationService {
 	    while (oldIter.hasNext() && newIter.hasNext()) {
 		FlowEntry oldFlowEntry = oldIter.next();
 		FlowEntry newFlowEntry = newIter.next();
-		if (! newFlowEntry.isSameDataPath(oldFlowEntry)) {
+		if (! TopologyManager.isSameFlowEntryDataPath(oldFlowEntry,
+							      newFlowEntry)) {
 		    hasChanged = true;
 		    break;
 		}
@@ -300,7 +304,7 @@ class PathComputation extends Thread implements IPathComputationService {
 	    return hasChanged;
 
 	//
-	// Merge the changes in the shortest path:
+	// Merge the changes in the path:
 	//  - If a Flow Entry for a switch is in the old data path, but not
 	//    in the new data path, then mark it for deletion.
 	//  - If a Flow Entry for a switch is in the new data path, but not
@@ -348,7 +352,8 @@ class PathComputation extends Thread implements IPathComputationService {
 		oldFlowEntriesMap.get(newFlowEntry.dpid().value());
 
 	    if ((oldFlowEntry != null) &&
-		newFlowEntry.isSameDataPath(oldFlowEntry)) {
+		TopologyManager.isSameFlowEntryDataPath(oldFlowEntry,
+							newFlowEntry)) {
 		//
 		// Both Flow Entries are same
 		//
