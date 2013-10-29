@@ -518,6 +518,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean addFlow(FlowPath flowPath, FlowId flowId) {
+	//
+	// NOTE: We need to explicitly initialize the Flow Entry Switch State,
+	// in case the application didn't do it.
+	//
+	for (FlowEntry flowEntry : flowPath.flowEntries()) {
+	    if (flowEntry.flowEntrySwitchState() ==
+		FlowEntrySwitchState.FE_SWITCH_UNKNOWN) {
+		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
+	    }
+	}
+
 	if (FlowDatabaseOperation.addFlow(this, dbHandler, flowPath, flowId)) {
 	    datagridService.notificationSendFlowAdded(flowPath);
 	    return true;
@@ -703,6 +714,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	int idx = 0;
 	for (FlowEntry flowEntry : newDataPath.flowEntries()) {
+	    // Mark the Flow Entry as not updated in the switch
+	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 	    // Set the incoming port matching
 	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
 	    flowEntry.setFlowEntryMatch(flowEntryMatch);
@@ -809,5 +822,93 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// and removal of flow entries.
 	//
 	return (installFlowEntry(mySwitch, flowPath, flowEntry));
+    }
+
+    /**
+     * Push the modified Flow Entries of a collection of Flow Paths.
+     * Only the Flow Entries to switches controlled by this instance
+     * are pushed.
+     *
+     * NOTE: Currently, we write to both the Network MAP and the switches.
+     *
+     * @param modifiedFlowPaths the collection of Flow Paths with the modified
+     * Flow Entries.
+     */
+    public void pushModifiedFlowEntries(Collection<FlowPath> modifiedFlowPaths) {
+
+	// TODO: For now, the pushing of Flow Entries is disabled
+	if (true)
+	    return;
+
+	Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
+
+	for (FlowPath flowPath : modifiedFlowPaths) {
+	    IFlowPath flowObj = dbHandler.searchFlowPath(flowPath.flowId());
+	    if (flowObj == null) {
+		String logMsg = "Cannot find Network MAP entry for Flow Path " +
+		    flowPath.flowId();
+		log.error(logMsg);
+		continue;
+	    }
+
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		if (flowEntry.flowEntrySwitchState() !=
+		    FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
+		    continue;		// No need to update the entry
+		}
+
+		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+		if (mySwitch == null)
+		    continue;		// Ignore the entry: not my switch
+
+		//
+		// Assign the FlowEntry ID if needed
+		//
+		if ((flowEntry.flowEntryId() == null) ||
+		    (flowEntry.flowEntryId().value() == 0)) {
+		    long id = getNextFlowEntryId();
+		    flowEntry.setFlowEntryId(new FlowEntryId(id));
+		}
+
+		//
+		// Install the Flow Entry into the switch
+		//
+		if (! installFlowEntry(mySwitch, flowPath, flowEntry)) {
+		    String logMsg = "Cannot install Flow Entry " +
+			flowEntry.flowEntryId() +
+			" from Flow Path " + flowPath.flowId() +
+			" on switch " + flowEntry.dpid();
+		    log.error(logMsg);
+		    continue;
+		}
+
+		//
+		// NOTE: Here we assume that the switch has been successfully
+		// updated.
+		//
+		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+
+		//
+		// Write the Flow Entry to the Network Map
+		//
+		try {
+		    if (addFlowEntry(flowObj, flowEntry) == null) {
+			String logMsg = "Cannot write to Network MAP Flow Entry " +
+			    flowEntry.flowEntryId() +
+			    " from Flow Path " + flowPath.flowId() +
+			    " on switch " + flowEntry.dpid();
+			log.error(logMsg);
+			continue;
+		    }
+		} catch (Exception e) {
+		    String logMsg = "Exception writing Flow Entry to Network MAP";
+		    log.debug(logMsg);
+		    dbHandler.rollback();
+		    continue;
+		}
+	    }
+	}
+
+	dbHandler.commit();
     }
 }

@@ -309,7 +309,7 @@ class FlowDatabaseOperation {
 	    flowEntryObj.setUserState("FE_USER_MODIFY");
 	else
 	    flowEntryObj.setUserState("FE_USER_ADD");
-	flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
+	flowEntryObj.setSwitchState(flowEntry.flowEntrySwitchState().toString());
 	//
 	// TODO: Take care of the FlowEntryErrorState.
 	//

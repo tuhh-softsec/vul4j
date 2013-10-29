@@ -243,8 +243,7 @@ class PathComputation extends Thread implements IPathComputationService {
 	//
 	// Push the Flow Entries that have been modified
 	//
-	// TODO: Uncomment the following to enable pushing of flow entries
-	// flowManager.pushModifiedFlowEntries(modifiedFlowPaths);
+	flowManager.pushModifiedFlowEntries(modifiedFlowPaths);
 
 	// Cleanup
 	topologyEvents.clear();
