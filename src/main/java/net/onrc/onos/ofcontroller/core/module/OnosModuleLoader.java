@@ -13,11 +13,12 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyService;
-import net.onrc.onos.ofcontroller.bgproute.IConfigInfoService;
+import net.onrc.onos.ofcontroller.core.config.DefaultConfiguration;
+import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 
-public class ONOSModuleLoader implements IFloodlightModule {
+public class OnosModuleLoader implements IFloodlightModule {
 	private IFloodlightProviderService floodlightProvider;
 	private ITopologyService topology;
 	private IConfigInfoService config;
@@ -25,7 +26,7 @@ public class ONOSModuleLoader implements IFloodlightModule {
 
 	private ProxyArpManager arpManager;
 	
-	public ONOSModuleLoader() {
+	public OnosModuleLoader() {
 		arpManager = new ProxyArpManager();
 	}
 	
@@ -66,6 +67,9 @@ public class ONOSModuleLoader implements IFloodlightModule {
 		//This could be null because it's not mandatory to have an
 		//IConfigInfoService loaded.
 		config = context.getServiceImpl(IConfigInfoService.class);
+		if (config == null) {
+			config = new DefaultConfiguration();
+		}
 
 		arpManager.init(floodlightProvider, topology, config, restApi);
 	}

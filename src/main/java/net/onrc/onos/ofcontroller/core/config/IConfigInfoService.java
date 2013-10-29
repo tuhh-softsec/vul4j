@@ -1,8 +1,9 @@
-package net.onrc.onos.ofcontroller.bgproute;
+package net.onrc.onos.ofcontroller.core.config;
 
 import java.net.InetAddress;
 
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.ofcontroller.bgproute.Interface;
 import net.onrc.onos.ofcontroller.core.module.IOnosService;
 
 /**

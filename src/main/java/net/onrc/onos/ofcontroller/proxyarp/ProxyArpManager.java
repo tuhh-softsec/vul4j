@@ -22,8 +22,8 @@ import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.bgproute.IConfigInfoService;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
+import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
