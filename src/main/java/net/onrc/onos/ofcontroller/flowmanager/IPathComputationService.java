@@ -1,6 +1,7 @@
 package net.onrc.onos.ofcontroller.flowmanager;
 
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
 /**
@@ -10,23 +11,44 @@ public interface IPathComputationService {
     /**
      * Receive a notification that a Flow is added.
      *
-     * @param flowPath the flow that is added.
+     * @param flowPath the Flow that is added.
      */
     void notificationRecvFlowAdded(FlowPath flowPath);
 
     /**
      * Receive a notification that a Flow is removed.
      *
-     * @param flowPath the flow that is removed.
+     * @param flowPath the Flow that is removed.
      */
     void notificationRecvFlowRemoved(FlowPath flowPath);
 
     /**
      * Receive a notification that a Flow is updated.
      *
-     * @param flowPath the flow that is updated.
+     * @param flowPath the Flow that is updated.
      */
     void notificationRecvFlowUpdated(FlowPath flowPath);
+
+    /**
+     * Receive a notification that a FlowEntry is added.
+     *
+     * @param flowEntry the FlowEntry that is added.
+     */
+    void notificationRecvFlowEntryAdded(FlowEntry flowEntry);
+
+    /**
+     * Receive a notification that a FlowEntry is removed.
+     *
+     * @param flowEntry the FlowEntry that is removed.
+     */
+    void notificationRecvFlowEntryRemoved(FlowEntry flowEntry);
+
+    /**
+     * Receive a notification that a FlowEntry is updated.
+     *
+     * @param flowEntry the FlowEntry that is updated.
+     */
+    void notificationRecvFlowEntryUpdated(FlowEntry flowEntry);
 
     /**
      * Receive a notification that a Topology Element is added.

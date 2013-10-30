@@ -46,11 +46,13 @@ class PathComputation extends Thread implements IPathComputationService {
     private BlockingQueue<EventEntry<?>> networkEvents =
 	new LinkedBlockingQueue<EventEntry<?>>();
 
-    // The pending Topology and Flow Path events
+    // The pending Topology, FlowPath, and FlowEntry events
     private List<EventEntry<TopologyElement>> topologyEvents =
 	new LinkedList<EventEntry<TopologyElement>>();
     private List<EventEntry<FlowPath>> flowPathEvents =
 	new LinkedList<EventEntry<FlowPath>>();
+    private List<EventEntry<FlowEntry>> flowEntryEvents =
+	new LinkedList<EventEntry<FlowEntry>>();
 
     /**
      * Constructor for a given Flow Manager and Datagrid Service.
@@ -89,6 +91,16 @@ class PathComputation extends Thread implements IPathComputationService {
 		new EventEntry<FlowPath>(EventEntry.Type.ENTRY_ADD, flowPath);
 	    flowPathEvents.add(eventEntry);
 	}
+	//
+	// Obtain the initial FlowEntry state
+	//
+	Collection<FlowEntry> flowEntries = datagridService.getAllFlowEntries();
+	for (FlowEntry flowEntry : flowEntries) {
+	    EventEntry<FlowEntry> eventEntry =
+		new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
+	    flowEntryEvents.add(eventEntry);
+	}
+
 	// Process the events (if any)
 	processEvents();
 
@@ -106,6 +118,7 @@ class PathComputation extends Thread implements IPathComputationService {
 		// Demultiplex all events:
 		//  - EventEntry<TopologyElement>
 		//  - EventEntry<FlowPath>
+		//  - EventEntry<FlowEntry>
 		//
 		for (EventEntry<?> event : collection) {
 		    if (event.eventData() instanceof TopologyElement) {
@@ -116,6 +129,10 @@ class PathComputation extends Thread implements IPathComputationService {
 			EventEntry<FlowPath> flowPathEventEntry =
 			    (EventEntry<FlowPath>)event;
 			flowPathEvents.add(flowPathEventEntry);
+		    } else if (event.eventData() instanceof FlowEntry) {
+			EventEntry<FlowEntry> flowEntryEventEntry =
+			    (EventEntry<FlowEntry>)event;
+			flowEntryEvents.add(flowEntryEventEntry);
 		    }
 		}
 		collection.clear();
@@ -136,8 +153,13 @@ class PathComputation extends Thread implements IPathComputationService {
 	List<FlowPath> recomputeFlowPaths = new LinkedList<FlowPath>();
 	List<FlowPath> modifiedFlowPaths = new LinkedList<FlowPath>();
 
-	if (topologyEvents.isEmpty() && flowPathEvents.isEmpty())
+	// TODO: For now we don't use/process the FlowEntry events
+	flowEntryEvents.clear();
+
+	if (topologyEvents.isEmpty() && flowPathEvents.isEmpty() &&
+	    flowEntryEvents.isEmpty()) {
 	    return;		// Nothing to do
+	}
 
 	//
 	// Process the Flow Path events
@@ -422,7 +444,7 @@ class PathComputation extends Thread implements IPathComputationService {
     /**
      * Receive a notification that a Flow is added.
      *
-     * @param flowPath the flow that is added.
+     * @param flowPath the Flow that is added.
      */
     @Override
     public void notificationRecvFlowAdded(FlowPath flowPath) {
@@ -434,7 +456,7 @@ class PathComputation extends Thread implements IPathComputationService {
     /**
      * Receive a notification that a Flow is removed.
      *
-     * @param flowPath the flow that is removed.
+     * @param flowPath the Flow that is removed.
      */
     @Override
     public void notificationRecvFlowRemoved(FlowPath flowPath) {
@@ -446,13 +468,50 @@ class PathComputation extends Thread implements IPathComputationService {
     /**
      * Receive a notification that a Flow is updated.
      *
-     * @param flowPath the flow that is updated.
+     * @param flowPath the Flow that is updated.
      */
     @Override
     public void notificationRecvFlowUpdated(FlowPath flowPath) {
 	// NOTE: The ADD and UPDATE events are processed in same way
 	EventEntry<FlowPath> eventEntry =
 	    new EventEntry<FlowPath>(EventEntry.Type.ENTRY_ADD, flowPath);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowEntry is added.
+     *
+     * @param flowEntry the FlowEntry that is added.
+     */
+    @Override
+    public void notificationRecvFlowEntryAdded(FlowEntry flowEntry) {
+	EventEntry<FlowEntry> eventEntry =
+	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowEntry is removed.
+     *
+     * @param flowEntry the FlowEntry that is removed.
+     */
+    @Override
+    public void notificationRecvFlowEntryRemoved(FlowEntry flowEntry) {
+	EventEntry<FlowEntry> eventEntry =
+	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_REMOVE, flowEntry);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowEntry is updated.
+     *
+     * @param flowEntry the FlowEntry that is updated.
+     */
+    @Override
+    public void notificationRecvFlowEntryUpdated(FlowEntry flowEntry) {
+	// NOTE: The ADD and UPDATE events are processed in same way
+	EventEntry<FlowEntry> eventEntry =
+	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
 	networkEvents.add(eventEntry);
     }
 
