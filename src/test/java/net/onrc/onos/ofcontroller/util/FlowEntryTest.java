@@ -149,6 +149,23 @@ public class FlowEntryTest {
 	}
 
 	@Test
+	public void testIsValidFlowId(){
+		FlowEntry e = new FlowEntry();
+
+		// Test a Flow Entry with empty Flow ID
+		assertEquals("isValidFlowId", false, e.isValidFlowId() );
+
+		// Test a Flow Entry with invalid Flow ID
+		e.setFlowId(new FlowId());
+		assertEquals("isValidFlowId", false, e.isValidFlowId() );
+
+		// Test a Flow Entry with valid Flow ID
+		e.setFlowId(new FlowId(0x1));
+		assertEquals("isValidFlowId", true, e.isValidFlowId() );
+		assertEquals("isValidFlowId", true, entry.isValidFlowId() );
+	}
+
+	@Test
 	public void testFlowEntryId(){
 		assertEquals("flowEntryId", flowEntryId, entry.flowEntryId() );
 	}

@@ -116,6 +116,7 @@ public class FlowEntry {
 
     /**
      * Get the Flow ID.
+     *
      * @return the Flow ID.
      */
     @JsonIgnore
@@ -128,6 +129,17 @@ public class FlowEntry {
      */
     public void setFlowId(FlowId flowId) {
 	this.flowId = flowId;
+    }
+
+    /**
+     * Test whether the Flow ID is valid.
+     *
+     * @return true if the Flow ID is valid, otherwise false.
+     */
+    public boolean isValidFlowId() {
+	if (this.flowId == null)
+	    return false;
+	return (this.flowId.value() != 0);
     }
 
     /**
