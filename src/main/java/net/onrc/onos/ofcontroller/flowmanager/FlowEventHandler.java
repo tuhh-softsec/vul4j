@@ -244,10 +244,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    TopologyElement topologyElement = eventEntry.eventData();
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD:
-		isTopologyModified = topology.addTopologyElement(topologyElement);
+		isTopologyModified |= topology.addTopologyElement(topologyElement);
 		break;
 	    case ENTRY_REMOVE:
-		isTopologyModified = topology.removeTopologyElement(topologyElement);
+		isTopologyModified |= topology.removeTopologyElement(topologyElement);
 		break;
 	    }
 	}
