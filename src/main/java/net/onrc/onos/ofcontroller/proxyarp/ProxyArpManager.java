@@ -52,6 +52,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private final ILayer3InfoService layer3;
 	private final IRestApiService restApi;
 	
+	private short vlan;
+	private static final short NO_VLAN = 0;
+	
 	private final ArpCache arpCache;
 
 	private final SetMultimap<InetAddress, ArpRequest> arpRequests;
@@ -117,7 +120,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 				HashMultimap.<InetAddress, ArpRequest>create());
 	}
 	
-	public void startUp() {
+	public void startUp(short vlan) {
+		this.vlan = vlan;
+		log.info("vlan set to {}", this.vlan);
+		
 		restApi.addRestletRoutable(new ArpWebRoutable());
 		
 		Timer arpTimer = new Timer("arp-processing");
@@ -361,6 +367,11 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			.setEtherType(Ethernet.TYPE_ARP)
 			.setPayload(arpRequest);
 		
+		if (vlan != NO_VLAN) {
+			eth.setVlanID(vlan)
+			   .setPriorityCode((byte)0);
+		}
+		
 		sendArpRequestToSwitches(ipAddress, eth.serialize());
 	}
 	
@@ -492,11 +503,18 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 			.setTargetHardwareAddress(arpRequest.getSenderHardwareAddress())
 			.setTargetProtocolAddress(arpRequest.getSenderProtocolAddress());
 		
+
+		
 		Ethernet eth = new Ethernet();
 		eth.setDestinationMACAddress(arpRequest.getSenderHardwareAddress())
 			.setSourceMACAddress(targetMac.toBytes())
 			.setEtherType(Ethernet.TYPE_ARP)
 			.setPayload(arpReply);
+		
+		if (vlan != NO_VLAN) {
+			eth.setVlanID(vlan)
+			   .setPriorityCode((byte)0);
+		}
 		
 		List<OFAction> actions = new ArrayList<OFAction>();
 		actions.add(new OFActionOutput(port));
