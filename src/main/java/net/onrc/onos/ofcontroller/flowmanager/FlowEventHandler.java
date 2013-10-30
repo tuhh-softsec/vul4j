@@ -33,7 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for implementing the Path Computation and Path Maintenance.
+ * Class for FlowPath Maintenance.
+ * This class listens for FlowEvents to:
+ * - Maintain a local cache of the Network Topology.
+ * - Detect FlowPaths impacted by Topology change.
+ * - Recompute impacted FlowPath using cached Topology.
  */
 class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     /** The logger. */
@@ -386,6 +390,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// Test whether the Flow Path needs to be recomputed
 	//
 	switch (flowPath.flowPathType()) {
+	case FP_TYPE_UNKNOWN:
+	    return false;		// Can't recompute on Unknown FlowType
 	case FP_TYPE_SHORTEST_PATH:
 	    break;
 	case FP_TYPE_EXPLICIT_PATH:
