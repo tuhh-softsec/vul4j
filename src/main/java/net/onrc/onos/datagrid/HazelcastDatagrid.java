@@ -18,7 +18,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 
-import net.onrc.onos.ofcontroller.flowmanager.IPathComputationService;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
@@ -54,7 +54,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     private Config hazelcastConfig = null;
 
     private KryoFactory kryoFactory = new KryoFactory();
-    private IPathComputationService pathComputationService = null;
+    private IFlowEventHandlerService flowEventHandlerService = null;
 
     // State related to the Flow map
     protected static final String mapFlowName = "mapFlow";
@@ -98,7 +98,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    Input input = new Input(valueBytes);
 	    FlowPath flowPath = kryo.readObject(input, FlowPath.class);
 	    kryoFactory.deleteKryo(kryo);
-	    pathComputationService.notificationRecvFlowAdded(flowPath);
+	    flowEventHandlerService.notificationRecvFlowAdded(flowPath);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    Input input = new Input(valueBytes);
 	    FlowPath flowPath = kryo.readObject(input, FlowPath.class);
 	    kryoFactory.deleteKryo(kryo);
-	    pathComputationService.notificationRecvFlowRemoved(flowPath);
+	    flowEventHandlerService.notificationRecvFlowRemoved(flowPath);
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    Input input = new Input(valueBytes);
 	    FlowPath flowPath = kryo.readObject(input, FlowPath.class);
 	    kryoFactory.deleteKryo(kryo);
-	    pathComputationService.notificationRecvFlowUpdated(flowPath);
+	    flowEventHandlerService.notificationRecvFlowUpdated(flowPath);
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    Input input = new Input(valueBytes);
 	    FlowEntry flowEntry = kryo.readObject(input, FlowEntry.class);
 	    kryoFactory.deleteKryo(kryo);
-	    pathComputationService.notificationRecvFlowEntryAdded(flowEntry);
+	    flowEventHandlerService.notificationRecvFlowEntryAdded(flowEntry);
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    Input input = new Input(valueBytes);
 	    FlowEntry flowEntry = kryo.readObject(input, FlowEntry.class);
 	    kryoFactory.deleteKryo(kryo);
-	    pathComputationService.notificationRecvFlowEntryRemoved(flowEntry);
+	    flowEventHandlerService.notificationRecvFlowEntryRemoved(flowEntry);
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    Input input = new Input(valueBytes);
 	    FlowEntry flowEntry = kryo.readObject(input, FlowEntry.class);
 	    kryoFactory.deleteKryo(kryo);
-	    pathComputationService.notificationRecvFlowEntryUpdated(flowEntry);
+	    flowEventHandlerService.notificationRecvFlowEntryUpdated(flowEntry);
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    TopologyElement topologyElement =
 		kryo.readObject(input, TopologyElement.class);
 	    kryoFactory.deleteKryo(kryo);
-	    pathComputationService.notificationRecvTopologyElementAdded(topologyElement);
+	    flowEventHandlerService.notificationRecvTopologyElementAdded(topologyElement);
 	}
 
 	/**
@@ -269,7 +269,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    TopologyElement topologyElement =
 		kryo.readObject(input, TopologyElement.class);
 	    kryoFactory.deleteKryo(kryo);
-	    pathComputationService.notificationRecvTopologyElementRemoved(topologyElement);
+	    flowEventHandlerService.notificationRecvTopologyElementRemoved(topologyElement);
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    TopologyElement topologyElement =
 		kryo.readObject(input, TopologyElement.class);
 	    kryoFactory.deleteKryo(kryo);
-	    pathComputationService.notificationRecvTopologyElementUpdated(topologyElement);
+	    flowEventHandlerService.notificationRecvTopologyElementUpdated(topologyElement);
 	}
 
 	/**
@@ -415,16 +415,16 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
 
     /**
-     * Register Path Computation Service for receiving Flow-related
+     * Register Flow Event Handler Service for receiving Flow-related
      * notifications.
      *
-     * NOTE: Only a single Path Computation Service can be registered.
+     * NOTE: Only a single Flow Event Handler Service can be registered.
      *
-     * @param pathComputationService the Path Computation Service to register.
+     * @param flowEventHandlerService the Flow Event Handler Service to register.
      */
     @Override
-    public void registerPathComputationService(IPathComputationService pathComputationService) {
-	this.pathComputationService = pathComputationService;
+    public void registerFlowEventHandlerService(IFlowEventHandlerService flowEventHandlerService) {
+	this.flowEventHandlerService = flowEventHandlerService;
 
 	// Initialize the Flow-related map state
 	mapFlowListener = new MapFlowListener();
@@ -443,16 +443,16 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
 
     /**
-     * De-register Path Computation Service for receiving Flow-related
+     * De-register Flow Event Handler Service for receiving Flow-related
      * notifications.
      *
-     * NOTE: Only a single Path Computation Service can be registered.
+     * NOTE: Only a single Flow Event Handler Service can be registered.
      *
-     * @param pathComputationService the Path Computation Service to
+     * @param flowEventHandlerService the Flow Event Handler Service to
      * de-register.
      */
     @Override
-    public void deregisterPathComputationService(IPathComputationService pathComputationService) {
+    public void deregisterFlowEventHandlerService(IFlowEventHandlerService flowEventHandlerService) {
 	// Clear the Flow-related map state
 	mapFlow.removeEntryListener(mapFlowListenerId);
 	mapFlow = null;
@@ -468,7 +468,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	mapTopology = null;
 	mapTopologyListener = null;
 
-	this.pathComputationService = null;
+	this.flowEventHandlerService = null;
     }
 
     /**

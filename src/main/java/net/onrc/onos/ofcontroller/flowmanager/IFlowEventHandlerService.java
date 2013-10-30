@@ -5,9 +5,9 @@ import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
 /**
- * Interface for providing Path Computation Service to other modules.
+ * Interface for providing Flow Event Handler Service to other modules.
  */
-public interface IPathComputationService {
+public interface IFlowEventHandlerService {
     /**
      * Receive a notification that a Flow is added.
      *

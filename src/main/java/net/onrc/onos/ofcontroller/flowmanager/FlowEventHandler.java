@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Class for implementing the Path Computation and Path Maintenance.
  */
-class PathComputation extends Thread implements IPathComputationService {
+class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     /** The logger. */
-    private final static Logger log = LoggerFactory.getLogger(PathComputation.class);
+    private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
 
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
@@ -60,8 +60,8 @@ class PathComputation extends Thread implements IPathComputationService {
      * @param flowManager the Flow Manager to use.
      * @param datagridService the Datagrid Service to use.
      */
-    PathComputation(FlowManager flowManager,
-		    IDatagridService datagridService) {
+    FlowEventHandler(FlowManager flowManager,
+		     IDatagridService datagridService) {
 	this.flowManager = flowManager;
 	this.datagridService = datagridService;
 	this.topology = new Topology();

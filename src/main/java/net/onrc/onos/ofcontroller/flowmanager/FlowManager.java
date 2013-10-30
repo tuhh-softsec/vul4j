@@ -48,7 +48,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected volatile IDatagridService datagridService;
     protected IRestApiService restApi;
     protected FloodlightModuleContext context;
-    protected PathComputation pathComputation;
+    protected FlowEventHandler flowEventHandler;
 
     protected OFMessageDamper messageDamper;
 
@@ -385,7 +385,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void close() {
-	datagridService.deregisterPathComputationService(pathComputation);
+	datagridService.deregisterFlowEventHandlerService(flowEventHandler);
     	dbHandler.close();
     }
 
@@ -495,14 +495,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
 
 	//
-	// Create the Path Computation thread and register it with the
+	// Create the Flow Event Handler thread and register it with the
 	// Datagrid Service
 	//
-	pathComputation = new PathComputation(this, datagridService);
-	datagridService.registerPathComputationService(pathComputation);
+	flowEventHandler = new FlowEventHandler(this, datagridService);
+	datagridService.registerFlowEventHandlerService(flowEventHandler);
 
 	// Schedule the threads and periodic tasks
-	pathComputation.start();
+	flowEventHandler.start();
 	mapReaderScheduler.scheduleAtFixedRate(
 			mapReader, 3, 3, TimeUnit.SECONDS);
 	shortestPathReconcileScheduler.scheduleAtFixedRate(
