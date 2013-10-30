@@ -354,6 +354,9 @@ public class FlowEntry {
 	} else {
 		ret.append("[");
 	}
+	if ( flowId != null ) {
+		ret.append(" flowId=" + this.flowId.toString());
+	}
 	if ( flowEntryMatch != null ) {
 		ret.append(" flowEntryMatch=" + this.flowEntryMatch.toString());
 	}
