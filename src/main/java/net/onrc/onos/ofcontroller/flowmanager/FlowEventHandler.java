@@ -226,7 +226,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 		}
 
-		allFlowPaths.remove(existingFlowPath.flowId());
+		allFlowPaths.remove(existingFlowPath.flowId().value());
 		modifiedFlowPaths.add(existingFlowPath);
 
 		break;
