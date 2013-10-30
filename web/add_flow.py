@@ -352,6 +352,9 @@ def compute_flow_path(parsed_args, data_path):
   flow_path = {}
   flow_path['flowId'] = flow_id
   flow_path['installerId'] = installer_id
+  # NOTE: The 'flowPathType' might be rewritten later
+  flow_path['flowPathType'] = 'FP_TYPE_EXPLICIT_PATH'
+  flow_path['flowPathUserState'] = 'FP_USER_ADD'
   flow_path['flowPathFlags'] = flowPathFlags
 
   if (len(match) > 0):
@@ -440,6 +443,8 @@ def exec_monitoring_by_onos(parsed_args):
     parsed_args[idx]['actionOutputEnabled'] = False
 
     flow_path = compute_flow_path(parsed_args[idx], data_path)
+    flow_path['flowPathType'] = 'FP_TYPE_SHORTEST_PATH'
+
     add_shortest_path_flow(flow_path)
 
     idx = idx + 1

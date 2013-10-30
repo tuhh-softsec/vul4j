@@ -64,7 +64,7 @@ public class AddFlowResource extends ServerResource {
 
 	// Process the request
 	if (flowPath != null) {
-	    if (flowService.addFlow(flowPath, result, null) != true) {
+	    if (flowService.addFlow(flowPath, result) != true) {
 		result = new FlowId();		// Error: Return empty Flow Id
 	    }
 	}

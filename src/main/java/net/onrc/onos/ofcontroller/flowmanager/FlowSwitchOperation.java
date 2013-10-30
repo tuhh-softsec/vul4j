@@ -202,6 +202,8 @@ class FlowSwitchOperation {
 	String actionsStr = flowEntryObj.getActions();
 	if (actionsStr != null)
 	    flowEntryActions = new FlowEntryActions(actionsStr);
+	else
+	    flowEntryActions = new FlowEntryActions();
 	for (FlowEntryAction action : flowEntryActions.actions()) {
 	    ActionOutput actionOutput = action.actionOutput();
 	    ActionSetVlanId actionSetVlanId = action.actionSetVlanId();
@@ -655,6 +657,14 @@ class FlowSwitchOperation {
 	//
 	// Write the message to the switch
 	//
+	log.debug("MEASUREMENT: Installing flow entry " +
+		  flowEntry.flowEntryUserState() +
+		  " into switch DPID: " +
+		  mySwitch.getStringId() +
+		  " flowEntryId: " + flowEntry.flowEntryId().toString() +
+		  " srcMac: " + matchSrcMac + " dstMac: " + matchDstMac +
+		  " inPort: " + matchInPort + " outPort: " + actionOutputPort
+		  );
 	try {
 	    messageDamper.write(mySwitch, fm, null);
 	    mySwitch.flush();
