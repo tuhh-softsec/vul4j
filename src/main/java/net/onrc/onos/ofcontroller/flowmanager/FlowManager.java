@@ -519,7 +519,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public boolean addFlow(FlowPath flowPath, FlowId flowId) {
 	//
-	// NOTE: We need to explicitly initialize the Flow Entry Switch State,
+	// NOTE: We need to explicitly initialize some of the state,
 	// in case the application didn't do it.
 	//
 	for (FlowEntry flowEntry : flowPath.flowEntries()) {
@@ -527,6 +527,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		FlowEntrySwitchState.FE_SWITCH_UNKNOWN) {
 		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 	    }
+	    if (! flowEntry.isValidFlowId())
+		flowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
 	}
 
 	if (FlowDatabaseOperation.addFlow(this, dbHandler, flowPath, flowId)) {
@@ -707,6 +709,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return true on success, otherwise false.
      */
     private boolean reconcileFlow(IFlowPath flowObj, DataPath newDataPath) {
+	String flowIdStr = flowObj.getFlowId();
 
 	//
 	// Set the incoming port matching and the outgoing port output
@@ -714,6 +717,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	int idx = 0;
 	for (FlowEntry flowEntry : newDataPath.flowEntries()) {
+	    flowEntry.setFlowId(new FlowId(flowIdStr));
+
 	    // Mark the Flow Entry as not updated in the switch
 	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 	    // Set the incoming port matching
@@ -864,8 +869,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		// Assign the FlowEntry ID if needed
 		//
-		if ((flowEntry.flowEntryId() == null) ||
-		    (flowEntry.flowEntryId().value() == 0)) {
+		if (! flowEntry.isValidFlowEntryId()) {
 		    long id = getNextFlowEntryId();
 		    flowEntry.setFlowEntryId(new FlowEntryId(id));
 		}
@@ -887,6 +891,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// updated.
 		//
 		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+		//
+		// Write the Flow Entry to the Datagrid
+		//
+		switch (flowEntry.flowEntryUserState()) {
+		case FE_USER_ADD:
+		    datagridService.notificationSendFlowEntryAdded(flowEntry);
+		    break;
+		case FE_USER_MODIFY:
+		    datagridService.notificationSendFlowEntryUpdated(flowEntry);
+		    break;
+		case FE_USER_DELETE:
+		    datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+		    break;
+		}
 
 		//
 		// Write the Flow Entry to the Network Map
