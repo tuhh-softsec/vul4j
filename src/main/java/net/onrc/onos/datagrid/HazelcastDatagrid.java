@@ -17,7 +17,9 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.restserver.IRestApiService;
 
+import net.onrc.onos.datagrid.web.DatagridWebRoutable;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -48,6 +50,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 
     protected final static Logger log = LoggerFactory.getLogger(HazelcastDatagrid.class);
     protected IFloodlightProviderService floodlightProvider;
+    protected IRestApiService restApi;
 
     protected static final String HazelcastConfigFile = "datagridConfig";
     private HazelcastInstance hazelcastInstance = null;
@@ -385,6 +388,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	Collection<Class<? extends IFloodlightService>> l =
 	    new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFloodlightProviderService.class);
+	l.add(IRestApiService.class);
         return l;
     }
 
@@ -397,6 +401,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
+	restApi = context.getServiceImpl(IRestApiService.class);
 
 	// Get the configuration file name and configure the Datagrid
 	Map<String, String> configMap = context.getConfigParams(this);
@@ -412,6 +417,8 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     @Override
     public void startUp(FloodlightModuleContext context) {
 	hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfig);
+
+	restApi.addRestletRoutable(new DatagridWebRoutable());
     }
 
     /**
