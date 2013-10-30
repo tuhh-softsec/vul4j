@@ -119,7 +119,7 @@ public class FlowEntry {
      * @return the Flow ID.
      */
     @JsonIgnore
-    public FlowId getFlowId() { return flowId; }
+    public FlowId flowId() { return flowId; }
 
     /**
      * Set the Flow ID.
@@ -146,6 +146,17 @@ public class FlowEntry {
     @JsonProperty("flowEntryId")
     public void setFlowEntryId(FlowEntryId flowEntryId) {
 	this.flowEntryId = flowEntryId;
+    }
+
+    /**
+     * Test whether the Flow Entry ID is valid.
+     *
+     * @return true if the Flow Entry ID is valid, otherwise false.
+     */
+    public boolean isValidFlowEntryId() {
+	if (this.flowEntryId == null)
+	    return false;
+	return (this.flowEntryId.value() != 0);
     }
 
     /**
