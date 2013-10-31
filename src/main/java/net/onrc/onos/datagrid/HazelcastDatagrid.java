@@ -166,6 +166,12 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryAdded(EntryEvent event) {
+	    //
+	    // NOTE: Ignore Flow Entries Events originated by this instance
+	    //
+	    if (event.getMember().localMember())
+		return;
+
 	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
@@ -185,6 +191,12 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryRemoved(EntryEvent event) {
+	    //
+	    // NOTE: Ignore Flow Entries Events originated by this instance
+	    //
+	    if (event.getMember().localMember())
+		return;
+
 	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
@@ -204,6 +216,12 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryUpdated(EntryEvent event) {
+	    //
+	    // NOTE: Ignore Flow Entries Events originated by this instance
+	    //
+	    if (event.getMember().localMember())
+		return;
+
 	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
