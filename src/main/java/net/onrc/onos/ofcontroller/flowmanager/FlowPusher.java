@@ -1,21 +1,14 @@
 package net.onrc.onos.ofcontroller.flowmanager;
 
-import groovy.util.MapEntry;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 import org.openflow.protocol.OFMessage;
-import org.openflow.protocol.OFType;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.util.OFMessageDamper;
 
 /**
  * FlowPusher intermediates flow_mod sent from FlowManager/FlowSync to switches.
@@ -27,12 +20,18 @@ public class FlowPusher {
 	private FloodlightContext context;
 	private Thread thread;
 	
+	/**
+	 * Represents state of queue.
+	 * This is used for calculation of rate.
+	 * @author Naoki Shiota
+	 *
+	 */
 	private static class QueueState {
 		long last_sent_time = 0;
 		long last_sent_size = 0;
 		long max_rate;
 	}
-	
+
 	private Map<IOFSwitch, Queue<OFMessage> > queues =
 			new HashMap<IOFSwitch, Queue<OFMessage> >();
 	private Map<Queue<OFMessage>, QueueState> queue_states =
@@ -80,7 +79,7 @@ public class FlowPusher {
 				// sleep while all queues are empty
 				boolean sleep = true;
 				do {
-					// TODO
+					// TODO check if queues are empty
 				} while (sleep);
 			}
 		}
@@ -90,8 +89,11 @@ public class FlowPusher {
 		this.context = context;
 	}
 	
-	public void assignQueue(IOFSwitch sw, Queue<OFMessage> queue) {
+	public void assignQueue(IOFSwitch sw, Queue<OFMessage> queue, long max_rate) {
 		queues.put(sw, queue);
+		QueueState state = new QueueState();
+		state.max_rate = max_rate;
+		queue_states.put(queue, state);
 	}
 
 	public void startProcess() {
