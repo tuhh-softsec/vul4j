@@ -66,6 +66,29 @@ public class FlowEntryId {
     public void setValue(long value) {
 	this.value = value;
     }
+    
+    /**
+     * Returns true of the object is another Flow Entry ID with 
+     * the same value; otherwise, returns false.
+     * 
+     * @param Object to compare
+     */
+    @Override
+    public boolean equals(Object obj){
+	if(obj.getClass() == this.getClass()) {
+	    FlowEntryId entry = (FlowEntryId) obj;
+	    return this.value() == entry.value();
+	}
+	return false;
+    }
+    
+    /**
+     * Return the hash code of the Flow Entry ID
+     */
+    @Override
+    public int hashCode() {
+	return Long.valueOf(value).hashCode();
+    }
 
     /**
      * Convert the Flow Entry ID value to a hexadecimal string.
