@@ -1,6 +1,8 @@
 package net.onrc.onos.ofcontroller.topology;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 
 import net.onrc.onos.graph.GraphDBOperation;
@@ -353,7 +355,20 @@ public class Topology {
 	// Remove all ports one-by-one. This operation will also remove the
 	// incoming links originating from the neighbors.
 	//
-	for (Integer portId : node.ports().keySet())
+	// NOTE: We have to extract all Port IDs in advance, otherwise we
+	// cannot loop over the Ports collection and remove entries at the
+	// same time.
+	// TODO: If there is a large number of ports, the implementation
+	// below can be sub-optimal. It should be refactored as follows:
+	//   1. Modify removePort() to perform all the cleanup, except
+	//     removing the Port entry from the portsMap
+	//   2. Call portsMap.clear() at the end of this method
+	//   3. In all other methods: if removePort() is called somewhere else,
+	//      add an explicit removal of the Port entry from the portsMap.
+	//
+	List<Integer> allPortIdKeys = new LinkedList<Integer>();
+	allPortIdKeys.addAll(node.ports().keySet());
+	for (Integer portId : allPortIdKeys)
 	    node.removePort(portId);
 
 	nodesMap.remove(node.nodeId);
