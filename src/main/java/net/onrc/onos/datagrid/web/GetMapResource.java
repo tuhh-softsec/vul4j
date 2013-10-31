@@ -75,7 +75,7 @@ public class GetMapResource extends ServerResource {
 	    Collection<TopologyElement> topologyElements = datagridService.getAllTopologyElements();
 	    result += "Topology:\n";
 	    for (TopologyElement topologyElement : topologyElements) {
-		result += topologyElements.toString() + "\n";
+		result += topologyElement.toString() + "\n";
 	    }
 	}
 
