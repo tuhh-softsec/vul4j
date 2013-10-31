@@ -80,7 +80,7 @@ class Node {
      * @return the port if found, otherwise null.
      */
     public Integer getPort(int portId) {
-	return portsMap.get(nodeId);
+	return portsMap.get(portId);
     }
 
     /**
