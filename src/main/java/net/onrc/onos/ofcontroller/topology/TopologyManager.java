@@ -24,7 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class for implementing Topology Network Service.
+ * A class for obtaining Topology Snapshot
+ * and PathComputation.
+ *
+ * TODO: PathComputation part should be refactored out to separate class.
  */
 public class TopologyManager implements IFloodlightModule,
 					ITopologyNetService {
