@@ -33,8 +33,8 @@ import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.*;
-import org.w3c.dom.Element;
 
+import org.w3c.dom.Element;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 
@@ -144,6 +144,8 @@ public final class DOMExcC14NMethod extends ApacheCanonicalizer {
                 try {
                     apacheCanonicalizer = Canonicalizer.getInstance
                         (CanonicalizationMethod.EXCLUSIVE);
+                    boolean secVal = Utils.secureValidation(xc);
+                    apacheCanonicalizer.setSecureValidation(secVal);
                 } catch (InvalidCanonicalizerException ice) {
                     throw new TransformException
                         ("Couldn't find Canonicalizer for: " +

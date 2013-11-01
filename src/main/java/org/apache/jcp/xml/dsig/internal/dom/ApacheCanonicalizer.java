@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.util.Set;
+
 import javax.xml.crypto.*;
 import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.TransformException;
@@ -114,6 +115,8 @@ public abstract class ApacheCanonicalizer extends TransformService {
         if (apacheCanonicalizer == null) {
             try {
                 apacheCanonicalizer = Canonicalizer.getInstance(getAlgorithm());
+                boolean secVal = Utils.secureValidation(xc);
+                apacheCanonicalizer.setSecureValidation(secVal);
                 if (log.isDebugEnabled()) {
                     log.debug("Created canonicalizer for algorithm: " + getAlgorithm());
                 }
@@ -251,6 +254,9 @@ public abstract class ApacheCanonicalizer extends TransformService {
             }
         }
 
+        boolean secVal = Utils.secureValidation(xc);
+        in.setSecureValidation(secVal);
+        
         try {
             in = apacheTransform.performTransform(in, os);
             if (!in.isNodeSet() && !in.isElement()) {

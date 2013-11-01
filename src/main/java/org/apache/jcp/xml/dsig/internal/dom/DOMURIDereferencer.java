@@ -91,6 +91,7 @@ public class DOMURIDereferencer implements URIDereferencer {
                 }
                 
                 XMLSignatureInput result = new XMLSignatureInput(referencedElem);
+                result.setSecureValidation(secVal);
                 if (!uri.substring(1).startsWith("xpointer(id(")) {
                     result.setExcludeComments(true);
                 }

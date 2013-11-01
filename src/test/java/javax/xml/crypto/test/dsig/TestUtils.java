@@ -142,7 +142,7 @@ public class TestUtils {
                                                        String tag) 
         throws Exception {
         if (type.equalsIgnoreCase("dom")) {
-            DocumentBuilder docBuilder = XMLUtils.createDocumentBuilder(false);
+            DocumentBuilder docBuilder = XMLUtils.createDocumentBuilder(false, false);
             Document doc = docBuilder.parse(input);
             if (tag == null) {
                 return new DOMValidateContext

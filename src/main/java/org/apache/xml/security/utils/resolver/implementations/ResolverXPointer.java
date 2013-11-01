@@ -91,6 +91,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
         }
 
         XMLSignatureInput result = new XMLSignatureInput(resultNode);
+        result.setSecureValidation(context.secureValidation);
 
         result.setMIMEType("text/xml");
         if (context.baseUri != null && context.baseUri.length() > 0) {

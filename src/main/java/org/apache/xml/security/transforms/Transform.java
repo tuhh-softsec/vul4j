@@ -73,6 +73,7 @@ public final class Transform extends SignatureElementProxy {
         new ConcurrentHashMap<String, Class<? extends TransformSpi>>();
     
     private final TransformSpi transformSpi;
+    private boolean secureValidation;
     
     /**
      * Generates a Transform object that implements the specified 
@@ -300,6 +301,7 @@ public final class Transform extends SignatureElementProxy {
         XMLSignatureInput result = null;
 
         try {
+            transformSpi.secureValidation = secureValidation;
             result = transformSpi.enginePerformTransform(input, os, this);
         } catch (ParserConfigurationException ex) {
             Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
@@ -360,6 +362,14 @@ public final class Transform extends SignatureElementProxy {
             }
         }
         return newTransformSpi;
+    }
+
+    public boolean isSecureValidation() {
+        return secureValidation;
+    }
+
+    public void setSecureValidation(boolean secureValidation) {
+        this.secureValidation = secureValidation;
     }
 
 }

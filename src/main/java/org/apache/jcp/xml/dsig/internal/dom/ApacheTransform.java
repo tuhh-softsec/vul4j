@@ -28,10 +28,10 @@ import java.io.OutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Set;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
@@ -192,6 +192,8 @@ public abstract class ApacheTransform extends TransformService {
                 throw new TransformException(ex);
             }
         }
+        boolean secVal = Utils.secureValidation(xc);
+        in.setSecureValidation(secVal);
 
         try {
             if (os != null) {

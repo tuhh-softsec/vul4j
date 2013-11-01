@@ -103,6 +103,7 @@ public class ResolverFragment extends ResourceResolverSpi {
         }
 
         XMLSignatureInput result = new XMLSignatureInput(selectedElem);
+        result.setSecureValidation(context.secureValidation);
         result.setExcludeComments(true);
 
         result.setMIMEType("text/xml");

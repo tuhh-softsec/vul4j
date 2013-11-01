@@ -39,6 +39,7 @@ public abstract class CanonicalizerSpi {
 
     /** Reset the writer after a c14n */
     protected boolean reset = false;
+    protected boolean secureValidation;
     
     /**
      * Method canonicalize
@@ -58,7 +59,7 @@ public abstract class CanonicalizerSpi {
         java.io.InputStream bais = new ByteArrayInputStream(inputBytes);
         InputSource in = new InputSource(bais);
         
-        DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
+        DocumentBuilder db = XMLUtils.createDocumentBuilder(false, secureValidation);
 
         Document document = db.parse(in);
         return this.engineCanonicalizeSubTree(document);

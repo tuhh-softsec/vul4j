@@ -69,7 +69,7 @@ public class ForbiddenAlgorithmTest extends InteropTestBase {
 
         File f = new File(directory + "/" + file);
 
-        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
+        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false, false);
         org.w3c.dom.Document doc = db.parse(f);
 
         Element sigElement =

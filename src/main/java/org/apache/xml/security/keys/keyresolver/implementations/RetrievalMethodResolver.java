@@ -95,7 +95,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                 }
                 return null;
              }
-             Element e = obtainReferenceElement(resource);
+             Element e = obtainReferenceElement(resource, secureValidation);
 
              // Check to make sure that the reference is not to another RetrievalMethod
              // which points to this element
@@ -110,7 +110,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                  }
                  RetrievalMethod rm2 = new RetrievalMethod(e, baseURI);
                  XMLSignatureInput resource2 = resolveInput(rm2, baseURI, secureValidation);
-                 Element e2 = obtainReferenceElement(resource2);
+                 Element e2 = obtainReferenceElement(resource2, secureValidation);
                  if (e2 == element) {
                      if (log.isDebugEnabled()) {
                          log.debug("Error: Can't have RetrievalMethods pointing to each other");
@@ -165,7 +165,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                 return getRawCertificate(resource);
             }
             
-            Element e = obtainReferenceElement(resource);
+            Element e = obtainReferenceElement(resource, secureValidation);
 
             // Check to make sure that the reference is not to another RetrievalMethod
             // which points to this element
@@ -180,7 +180,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                 }
                 RetrievalMethod rm2 = new RetrievalMethod(e, baseURI);
                 XMLSignatureInput resource2 = resolveInput(rm2, baseURI, secureValidation);
-                Element e2 = obtainReferenceElement(resource2);
+                Element e2 = obtainReferenceElement(resource2, secureValidation);
                 if (e2 == element) {
                     if (log.isDebugEnabled()) {
                         log.debug("Error: Can't have RetrievalMethods pointing to each other");
@@ -258,7 +258,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         return null;
     }
     
-    private static Element obtainReferenceElement(XMLSignatureInput resource) 
+    private static Element obtainReferenceElement(XMLSignatureInput resource, boolean secureValidation) 
         throws CanonicalizationException, ParserConfigurationException, 
         IOException, SAXException, KeyResolverException {
         Element e;
@@ -270,7 +270,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         } else {
             // Retrieved resource is an inputStream
             byte inputBytes[] = resource.getBytes();
-            e = getDocFromBytes(inputBytes);
+            e = getDocFromBytes(inputBytes, secureValidation);
             // otherwise, we parse the resource, create an Element and delegate
             if (log.isDebugEnabled()) {
                 log.debug("we have to parse " + inputBytes.length + " bytes");
@@ -319,9 +319,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @return the Document Element after parsing bytes 
      * @throws KeyResolverException if something goes wrong
      */
-    private static Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
+    private static Element getDocFromBytes(byte[] bytes, boolean secureValidation) throws KeyResolverException {
         try {
-            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false, secureValidation);
             Document doc = db.parse(new ByteArrayInputStream(bytes));
             return doc.getDocumentElement();
         } catch (SAXException ex) {

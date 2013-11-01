@@ -56,7 +56,7 @@ public class JSRWrappingAttackTest extends org.junit.Assert {
     public void testWrappingAttack() throws Exception {
         String file = "manifestSignatureWrapping.xml";
         
-        Document doc = XMLUtils.createDocumentBuilder(false).parse(new File(dir, file));
+        Document doc = XMLUtils.createDocumentBuilder(false, false).parse(new File(dir, file));
         Element sigElement = SignatureValidator.getSignatureElement(doc);
         if (sigElement == null) {
             throw new Exception("Couldn't find signature Element");

@@ -153,7 +153,7 @@ public class XMLSignatureFactoryTest extends org.junit.Assert {
                  " for wrong inputs"); 
         }
 
-        DocumentBuilder docBuilder = XMLUtils.createDocumentBuilder(false);
+        DocumentBuilder docBuilder = XMLUtils.createDocumentBuilder(false, false);
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         File dir = new File(base + fs +

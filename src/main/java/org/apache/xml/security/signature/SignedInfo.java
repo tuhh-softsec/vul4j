@@ -177,7 +177,7 @@ public class SignedInfo extends Manifest {
         Element element, String baseURI, boolean secureValidation
     ) throws XMLSecurityException {
         // Parse the Reference children and Id attribute in the Manifest
-        super(reparseSignedInfoElem(element), baseURI, secureValidation);
+        super(reparseSignedInfoElem(element, secureValidation), baseURI, secureValidation);
 
         c14nMethod = XMLUtils.getNextElement(element.getFirstChild());
         signatureMethod = XMLUtils.getNextElement(c14nMethod.getNextSibling());
@@ -185,7 +185,7 @@ public class SignedInfo extends Manifest {
             new SignatureAlgorithm(signatureMethod, this.getBaseURI(), secureValidation);
     }
 
-    private static Element reparseSignedInfoElem(Element element)
+    private static Element reparseSignedInfoElem(Element element, boolean secureValidation)
         throws XMLSecurityException {
         /* 
          * If a custom canonicalizationMethod is used, canonicalize 
@@ -207,9 +207,11 @@ public class SignedInfo extends Manifest {
             try {
                 Canonicalizer c14nizer =
                     Canonicalizer.getInstance(c14nMethodURI);
+                c14nizer.setSecureValidation(secureValidation);
 
                 byte[] c14nizedBytes = c14nizer.canonicalizeSubtree(element);
-                javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false);        
+                javax.xml.parsers.DocumentBuilder db = 
+                    XMLUtils.createDocumentBuilder(false, secureValidation);        
                 Document newdoc =
                     db.parse(new ByteArrayInputStream(c14nizedBytes));
                 Node imported = 
@@ -267,6 +269,7 @@ public class SignedInfo extends Manifest {
         if (this.c14nizedBytes == null) {
             Canonicalizer c14nizer =
                 Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
+            c14nizer.setSecureValidation(isSecureValidation());
 
             this.c14nizedBytes =
                 c14nizer.canonicalizeSubtree(getElement());
@@ -288,6 +291,7 @@ public class SignedInfo extends Manifest {
         if (this.c14nizedBytes == null) {
             Canonicalizer c14nizer =
                 Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
+            c14nizer.setSecureValidation(isSecureValidation());
             c14nizer.setWriter(os);
             String inclusiveNamespaces = this.getInclusiveNamespaces();
 

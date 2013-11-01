@@ -83,6 +83,7 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
             }
             byte[] result = c14n.engineCanonicalize(input, inclusiveNamespaces);
             XMLSignatureInput output = new XMLSignatureInput(result);
+            output.setSecureValidation(secureValidation);
 
             return output;
         } catch (XMLSecurityException ex) {

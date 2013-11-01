@@ -109,10 +109,13 @@ public class TransformBase64Decode extends TransformSpi {
                 traverseElement((Element)el, sb);
                 if (os == null) {
                     byte[] decodedBytes = Base64.decode(sb.toString());            
-                    return new XMLSignatureInput(decodedBytes);
+                    XMLSignatureInput output = new XMLSignatureInput(decodedBytes);
+                    output.setSecureValidation(secureValidation);
+                    return output;
                 } 
                 Base64.decode(sb.toString(), os);
                 XMLSignatureInput output = new XMLSignatureInput((byte[])null);
+                output.setSecureValidation(secureValidation);
                 output.setOutputStream(os);
                 return output;
             }
@@ -121,7 +124,9 @@ public class TransformBase64Decode extends TransformSpi {
                 if (os == null) {
                     byte[] base64Bytes = input.getBytes();
                     byte[] decodedBytes = Base64.decode(base64Bytes);            
-                    return new XMLSignatureInput(decodedBytes);
+                    XMLSignatureInput output = new XMLSignatureInput(decodedBytes);
+                    output.setSecureValidation(secureValidation);
+                    return output;
                 } 
                 if (input.isByteArray() || input.isNodeSet()) {
                     Base64.decode(input.getBytes(), os);
@@ -129,6 +134,7 @@ public class TransformBase64Decode extends TransformSpi {
                     Base64.decode(new BufferedInputStream(input.getOctetStreamReal()), os);
                 }
                 XMLSignatureInput output = new XMLSignatureInput((byte[])null);
+                output.setSecureValidation(secureValidation);
                 output.setOutputStream(os);
                 return output;
             } 
@@ -136,13 +142,16 @@ public class TransformBase64Decode extends TransformSpi {
             try {
                 //Exceptional case there is current not text case testing this(Before it was a
                 //a common case).
-                Document doc = XMLUtils.createDocumentBuilder(false).parse(input.getOctetStream());
+                Document doc = 
+                    XMLUtils.createDocumentBuilder(false, secureValidation).parse(input.getOctetStream());
 
                 Element rootNode = doc.getDocumentElement();
                 StringBuilder sb = new StringBuilder();
                 traverseElement(rootNode, sb);
                 byte[] decodedBytes = Base64.decode(sb.toString());
-                return new XMLSignatureInput(decodedBytes);
+                XMLSignatureInput output = new XMLSignatureInput(decodedBytes);
+                output.setSecureValidation(secureValidation);
+                return output;
             } catch (ParserConfigurationException e) {
                 throw new TransformationException("c14n.Canonicalizer.Exception",e);
             } catch (SAXException e) {

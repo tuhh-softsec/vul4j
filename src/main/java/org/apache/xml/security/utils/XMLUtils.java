@@ -1025,8 +1025,17 @@ public class XMLUtils {
     }
     
     public static DocumentBuilder createDocumentBuilder(boolean validating) throws ParserConfigurationException {
+        return createDocumentBuilder(validating, true);
+    }
+    
+    public static DocumentBuilder createDocumentBuilder(
+        boolean validating, boolean disAllowDocTypeDeclarations
+    ) throws ParserConfigurationException {
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
         dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+        if (disAllowDocTypeDeclarations) {
+            dfactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        }
         dfactory.setValidating(validating);        
         dfactory.setNamespaceAware(true);
         

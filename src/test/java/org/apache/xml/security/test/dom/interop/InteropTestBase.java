@@ -58,7 +58,7 @@ public class InteropTestBase extends org.junit.Assert {
         String filename, ResourceResolverSpi resolver, boolean followManifests, byte[] hmacKey
     ) throws Exception {
         File f = new File(filename);
-        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
+        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false, false);
         org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
         
         XPathFactory xpf = XPathFactory.newInstance();
@@ -92,7 +92,7 @@ public class InteropTestBase extends org.junit.Assert {
     public boolean verify(String filename, ResourceResolverSpi resolver, boolean followManifests)
         throws Exception {
         File f = new File(filename);
-        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
+        javax.xml.parsers.DocumentBuilder db = XMLUtils.createDocumentBuilder(false, false);
         org.w3c.dom.Document doc = db.parse(f);
         
         XPathFactory xpf = XPathFactory.newInstance();

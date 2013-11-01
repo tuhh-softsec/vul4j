@@ -265,7 +265,7 @@ public class KeyInfoReferenceResolver extends KeyResolverSpi {
      */
     private Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
         try {
-            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false, secureValidation);
             Document doc = db.parse(new ByteArrayInputStream(bytes));
             return doc.getDocumentElement();
         } catch (SAXException ex) {

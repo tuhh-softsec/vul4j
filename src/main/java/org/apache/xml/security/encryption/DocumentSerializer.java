@@ -68,7 +68,7 @@ public class DocumentSerializer extends AbstractSerializer {
      */
     private Node deserialize(Node ctx, InputSource inputSource) throws XMLEncryptionException {
         try {
-            DocumentBuilder db = XMLUtils.createDocumentBuilder(false);
+            DocumentBuilder db = XMLUtils.createDocumentBuilder(false, secureValidation);
             Document d = db.parse(inputSource);
 
             Document contextDocument = null;

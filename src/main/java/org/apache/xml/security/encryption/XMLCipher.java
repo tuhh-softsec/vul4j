@@ -1090,6 +1090,9 @@ public class XMLCipher {
         if (algorithm == null) {
             throw new XMLEncryptionException("empty", "XMLCipher instance without transformation specified");
         }
+        if (serializer instanceof AbstractSerializer) {
+            ((AbstractSerializer)serializer).setSecureValidation(secureValidation);
+        }
 
         byte[] serializedOctets = null;
         if (serializedData == null) {
@@ -1590,6 +1593,9 @@ public class XMLCipher {
     private Document decryptElement(Element element) throws XMLEncryptionException {
         if (log.isDebugEnabled()) {
             log.debug("Decrypting element...");
+        }
+        if (serializer instanceof AbstractSerializer) {
+            ((AbstractSerializer)serializer).setSecureValidation(secureValidation);
         }
 
         if (cipherMode != DECRYPT_MODE) {

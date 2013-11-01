@@ -59,7 +59,9 @@ public class ResolverAnonymous extends ResourceResolverSpi {
     /** @inheritDoc */
     @Override
     public XMLSignatureInput engineResolveURI(ResourceResolverContext context) {
-        return new XMLSignatureInput(inStream);
+        XMLSignatureInput input = new XMLSignatureInput(inStream);
+        input.setSecureValidation(context.secureValidation);
+        return input;
     }
 
     /**    
