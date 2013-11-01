@@ -46,9 +46,14 @@ class Node {
     };
 
     public long nodeId;				// The node ID
-    public HashMap<Integer, Link> links;	// The links from this node (src Port ID -> Link)
-    private HashMap<Integer, Link> reverseLinksMap; // The links to this node (dst Port ID -> Link)
-    private HashMap<Integer, Integer> portsMap;	// The ports on this node (Port ID -> )
+    public HashMap<Integer, Link> links;	// The links from this node:
+						//     (src PortID -> Link)
+    private HashMap<Integer, Link> reverseLinksMap; // The links to this node:
+						//     (dst PortID -> Link)
+    private HashMap<Integer, Integer> portsMap;	// The ports on this node:
+						//     (PortID -> PortID)
+						// TODO: In the future will be:
+						//     (PortID -> Port)
 
     /**
      * Node constructor.
