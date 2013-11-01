@@ -75,6 +75,7 @@ public class TransformC14NExclusive extends TransformSpi {
 
             Canonicalizer20010315ExclOmitComments c14n =
                 new Canonicalizer20010315ExclOmitComments();
+            c14n.setSecureValidation(secureValidation);
             if (os != null) {
                 c14n.setWriter(os);
             }

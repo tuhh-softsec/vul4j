@@ -43,6 +43,7 @@ public class TransformC14N11 extends TransformSpi {
         XMLSignatureInput input, OutputStream os, Transform transform
     ) throws CanonicalizationException {   
         Canonicalizer11_OmitComments c14n = new Canonicalizer11_OmitComments();
+        c14n.setSecureValidation(secureValidation);
         if (os != null) {
             c14n.setWriter(os);
         }
