@@ -7,6 +7,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * NOTE: Currently this class is (almost) not used.
  */
 public class Switch {
+    /**
+     * The Switch state.
+     */
     public enum SwitchState {
 	INACTIVE,
 	ACTIVE,

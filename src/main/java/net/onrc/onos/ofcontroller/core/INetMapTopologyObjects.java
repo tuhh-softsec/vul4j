@@ -224,6 +224,20 @@ public interface IFlowPath extends IBaseObject {
 		@Property("installer_id")
 		public void setInstallerId(String installerId);
 
+		@JsonProperty("flowPathType")
+		@Property("flow_path_type")
+		public String getFlowPathType();
+
+		@Property("flow_path_type")
+		public void setFlowPathType(String flowPathType);
+
+		@JsonProperty("flowPathUserState")
+		@Property("user_state")
+		public String getFlowPathUserState();
+
+		@Property("user_state")
+		public void setFlowPathUserState(String userState);
+
 		@JsonProperty("flowPathFlags")
 		@Property("flow_path_flags")
 		public Long getFlowPathFlags();
@@ -376,13 +390,6 @@ public interface IFlowPath extends IBaseObject {
 		@JsonIgnore
 		@Property("state")
 		public String getState();
-
-		@JsonIgnore
-		@Property("user_state")
-		public String getUserState();
-
-		@Property("user_state")
-		public void setUserState(String userState);
 	}
 
 public interface IFlowEntry extends IBaseObject {

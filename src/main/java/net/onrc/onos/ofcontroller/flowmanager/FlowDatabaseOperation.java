@@ -35,14 +35,11 @@ class FlowDatabaseOperation {
      * @param dbHandler the Graph Database handler to use.
      * @param flowPath the Flow Path to install.
      * @param flowId the return-by-reference Flow ID as assigned internally.
-     * @param dataPathSummaryStr the data path summary string if the added
-     * flow will be maintained internally, otherwise null.
      * @return true on success, otherwise false.
      */
     static boolean addFlow(FlowManager flowManager,
 			   GraphDBOperation dbHandler,
-			   FlowPath flowPath, FlowId flowId,
-			   String dataPathSummaryStr) {
+			   FlowPath flowPath, FlowId flowId) {
 	IFlowPath flowObj = null;
 	boolean found = false;
 	try {
@@ -80,6 +77,8 @@ class FlowDatabaseOperation {
 	//
 	// Set the Flow attributes:
 	// - flowPath.installerId()
+	// - flowPath.flowPathType()
+	// - flowPath.flowPathUserState()
 	// - flowPath.flowPathFlags()
 	// - flowPath.dataPath().srcPort()
 	// - flowPath.dataPath().dstPort()
@@ -97,6 +96,8 @@ class FlowDatabaseOperation {
 	// - flowPath.flowEntryActions()
 	//
 	flowObj.setInstallerId(flowPath.installerId().toString());
+	flowObj.setFlowPathType(flowPath.flowPathType().toString());
+	flowObj.setFlowPathUserState(flowPath.flowPathUserState().toString());
 	flowObj.setFlowPathFlags(flowPath.flowPathFlags().flags());
 	flowObj.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
@@ -138,17 +139,12 @@ class FlowDatabaseOperation {
 	if (! flowPath.flowEntryActions().actions().isEmpty()) {
 	    flowObj.setActions(flowPath.flowEntryActions().toString());
 	}
-
-	if (dataPathSummaryStr != null) {
-	    flowObj.setDataPathSummary(dataPathSummaryStr);
-	} else {
-	    flowObj.setDataPathSummary("");
-	}
+	flowObj.setDataPathSummary(flowPath.dataPath().dataPathSummary());
 
 	if (found)
-	    flowObj.setUserState("FE_USER_MODIFY");
+	    flowObj.setFlowPathUserState("FP_USER_MODIFY");
 	else
-	    flowObj.setUserState("FE_USER_ADD");
+	    flowObj.setFlowPathUserState("FP_USER_ADD");
 
 	// Flow edges:
 	//   HeadFE
@@ -313,7 +309,7 @@ class FlowDatabaseOperation {
 	    flowEntryObj.setUserState("FE_USER_MODIFY");
 	else
 	    flowEntryObj.setUserState("FE_USER_ADD");
-	flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
+	flowEntryObj.setSwitchState(flowEntry.flowEntrySwitchState().toString());
 	//
 	// TODO: Take care of the FlowEntryErrorState.
 	//
@@ -427,7 +423,7 @@ class FlowDatabaseOperation {
 	// Find and mark for deletion all Flow Entries,
 	// and the Flow itself.
 	//
-	flowObj.setUserState("FE_USER_DELETE");
+	flowObj.setFlowPathUserState("FP_USER_DELETE");
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	boolean empty = true;	// TODO: an ugly hack
 	for (IFlowEntry flowEntryObj : flowEntries) {
@@ -751,6 +747,8 @@ class FlowDatabaseOperation {
 	//
 	String flowIdStr = flowObj.getFlowId();
 	String installerIdStr = flowObj.getInstallerId();
+	String flowPathType = flowObj.getFlowPathType();
+	String flowPathUserState = flowObj.getFlowPathUserState();
 	Long flowPathFlags = flowObj.getFlowPathFlags();
 	String srcSwitchStr = flowObj.getSrcSwitch();
 	Short srcPortShort = flowObj.getSrcPort();
@@ -759,6 +757,8 @@ class FlowDatabaseOperation {
 
 	if ((flowIdStr == null) ||
 	    (installerIdStr == null) ||
+	    (flowPathType == null) ||
+	    (flowPathUserState == null) ||
 	    (flowPathFlags == null) ||
 	    (srcSwitchStr == null) ||
 	    (srcPortShort == null) ||
@@ -771,6 +771,8 @@ class FlowDatabaseOperation {
 	FlowPath flowPath = new FlowPath();
 	flowPath.setFlowId(new FlowId(flowIdStr));
 	flowPath.setInstallerId(new CallerId(installerIdStr));
+	flowPath.setFlowPathType(FlowPathType.valueOf(flowPathType));
+	flowPath.setFlowPathUserState(FlowPathUserState.valueOf(flowPathUserState));
 	flowPath.setFlowPathFlags(new FlowPathFlags(flowPathFlags));
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
 	flowPath.dataPath().srcPort().setPort(new Port(srcPortShort));

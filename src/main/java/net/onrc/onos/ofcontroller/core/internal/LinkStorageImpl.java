@@ -119,11 +119,15 @@ public class LinkStorageImpl implements ILinkStorage {
 			if (addLinkImpl(link)) {
 				// Set LinkInfo only if linfo is non-null.
 				if (linfo != null && (! setLinkInfoImpl(link, linfo))) {
+					log.debug("Adding linkinfo failed: {}", link);
 					op.rollback();
 				}
 				op.commit();
 				success = true;
 			} else {
+				// If we fail here that's because the ports aren't added
+				// before we try to add the link
+				log.debug("Adding link failed: {}", link);
 				op.rollback();
 			}
 		} catch (Exception e) {

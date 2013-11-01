@@ -29,6 +29,7 @@ import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.Topology;
+import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.*;
 
 import org.openflow.protocol.OFType;
@@ -47,6 +48,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected volatile IDatagridService datagridService;
     protected IRestApiService restApi;
     protected FloodlightModuleContext context;
+    protected FlowEventHandler flowEventHandler;
 
     protected OFMessageDamper messageDamper;
 
@@ -260,20 +262,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    if (mySwitch == null)
 			continue;	// Ignore: not my responsibility
 
-		    // Test the Data Path Summary string
-		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
-		    if (dataPathSummaryStr == null)
+		    // Test whether we need to maintain this flow
+		    String flowPathTypeStr = flowPathObj.getFlowPathType();
+		    if (flowPathTypeStr == null)
 			continue;	// Could be invalid entry?
-		    if (dataPathSummaryStr.isEmpty())
+		    if (! flowPathTypeStr.equals("FP_TYPE_SHORTEST_PATH"))
 			continue;	// No need to maintain this flow
 
 		    //
 		    // Test whether we need to complete the Flow cleanup,
 		    // if the Flow has been deleted by the user.
 		    //
-		    String flowUserState = flowPathObj.getUserState();
-		    if ((flowUserState != null)
-			&& flowUserState.equals("FE_USER_DELETE")) {
+		    String flowPathUserStateStr = flowPathObj.getFlowPathUserState();
+		    if ((flowPathUserStateStr != null)
+			&& flowPathUserStateStr.equals("FP_USER_DELETE")) {
 			Iterable<IFlowEntry> flowEntries = flowPathObj.getFlowEntries();
 			final boolean empty = !flowEntries.iterator().hasNext();
 			if (empty)
@@ -281,11 +283,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 
 		    // Fetch the fields needed to recompute the shortest path
+		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
 		    Short srcPortShort = flowPathObj.getSrcPort();
 		    String dstDpidStr = flowPathObj.getDstSwitch();
 		    Short dstPortShort = flowPathObj.getDstPort();
 		    Long flowPathFlagsLong = flowPathObj.getFlowPathFlags();
-		    if ((srcPortShort == null) ||
+		    if ((dataPathSummaryStr == null) ||
+			(srcPortShort == null) ||
 			(dstDpidStr == null) ||
 			(dstPortShort == null) ||
 			(flowPathFlagsLong == null)) {
@@ -297,6 +301,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    Port dstPort = new Port(dstPortShort);
 		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
 		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+		    FlowPathType flowPathType = FlowPathType.valueOf(flowPathTypeStr);
+		    FlowPathUserState flowPathUserState = FlowPathUserState.valueOf(flowPathUserStateStr);
 		    FlowPathFlags flowPathFlags = new FlowPathFlags(flowPathFlagsLong);
 
 		    counterMyFlowPaths++;
@@ -379,6 +385,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void close() {
+	datagridService.deregisterFlowEventHandlerService(flowEventHandler);
     	dbHandler.close();
     }
 
@@ -487,6 +494,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
 
+	//
+	// Create the Flow Event Handler thread and register it with the
+	// Datagrid Service
+	//
+	flowEventHandler = new FlowEventHandler(this, datagridService);
+	datagridService.registerFlowEventHandlerService(flowEventHandler);
+
+	// Schedule the threads and periodic tasks
+	flowEventHandler.start();
 	mapReaderScheduler.scheduleAtFixedRate(
 			mapReader, 3, 3, TimeUnit.SECONDS);
 	shortestPathReconcileScheduler.scheduleAtFixedRate(
@@ -498,15 +514,28 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param flowPath the Flow Path to install.
      * @param flowId the return-by-reference Flow ID as assigned internally.
-     * @param dataPathSummaryStr the data path summary string if the added
-     * flow will be maintained internally, otherwise null.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean addFlow(FlowPath flowPath, FlowId flowId,
-			   String dataPathSummaryStr) {
-	return FlowDatabaseOperation.addFlow(this, dbHandler, flowPath, flowId,
-					     dataPathSummaryStr);
+    public boolean addFlow(FlowPath flowPath, FlowId flowId) {
+	//
+	// NOTE: We need to explicitly initialize some of the state,
+	// in case the application didn't do it.
+	//
+	for (FlowEntry flowEntry : flowPath.flowEntries()) {
+	    if (flowEntry.flowEntrySwitchState() ==
+		FlowEntrySwitchState.FE_SWITCH_UNKNOWN) {
+		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
+	    }
+	    if (! flowEntry.isValidFlowId())
+		flowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
+	}
+
+	if (FlowDatabaseOperation.addFlow(this, dbHandler, flowPath, flowId)) {
+	    datagridService.notificationSendFlowAdded(flowPath);
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -528,7 +557,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
-	return FlowDatabaseOperation.deleteAllFlows(dbHandler);
+	if (FlowDatabaseOperation.deleteAllFlows(dbHandler)) {
+	    datagridService.notificationSendAllFlowsRemoved();
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -539,7 +572,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
-	return FlowDatabaseOperation.deleteFlow(dbHandler, flowId);
+	if (FlowDatabaseOperation.deleteFlow(dbHandler, flowId)) {
+	    datagridService.notificationSendFlowRemoved(flowId);
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -549,7 +586,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean clearAllFlows() {
-	return FlowDatabaseOperation.clearAllFlows(dbHandler);
+	if (FlowDatabaseOperation.clearAllFlows(dbHandler)) {
+	    datagridService.notificationSendAllFlowsRemoved();
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -560,7 +601,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean clearFlow(FlowId flowId) {
-	return FlowDatabaseOperation.clearFlow(dbHandler, flowId);
+	if (FlowDatabaseOperation.clearFlow(dbHandler, flowId)) {
+	    datagridService.notificationSendFlowRemoved(flowId);
+	    return true;
+	}
+	return false;
     }
 
     /**
@@ -649,30 +694,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Instead, let the Flow reconciliation thread take care of it.
 	//
 
-	// We need the DataPath to populate the Network MAP
-	DataPath dataPath = new DataPath();
-	dataPath.setSrcPort(flowPath.dataPath().srcPort());
-	dataPath.setDstPort(flowPath.dataPath().dstPort());
-
-	//
-	// Prepare the computed Flow Path
-	//
-	FlowPath computedFlowPath = new FlowPath();
-	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
-	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
-	computedFlowPath.setFlowPathFlags(new FlowPathFlags(flowPath.flowPathFlags().flags()));
-	computedFlowPath.setDataPath(dataPath);
-	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
-	computedFlowPath.setFlowEntryActions(new FlowEntryActions(flowPath.flowEntryActions()));
-
 	FlowId flowId = new FlowId();
-	String dataPathSummaryStr = dataPath.dataPathSummary();
-	if (! addFlow(computedFlowPath, flowId, dataPathSummaryStr))
+	if (! addFlow(flowPath, flowId))
 	    return null;
 
-	// TODO: Mark the flow for maintenance purpose
-
-	return (computedFlowPath);
+	return (flowPath);
     }
 
     /**
@@ -682,7 +708,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param newDataPath the new data path to use.
      * @return true on success, otherwise false.
      */
-    public boolean reconcileFlow(IFlowPath flowObj, DataPath newDataPath) {
+    private boolean reconcileFlow(IFlowPath flowObj, DataPath newDataPath) {
+	String flowIdStr = flowObj.getFlowId();
 
 	//
 	// Set the incoming port matching and the outgoing port output
@@ -690,6 +717,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	int idx = 0;
 	for (FlowEntry flowEntry : newDataPath.flowEntries()) {
+	    flowEntry.setFlowId(new FlowId(flowIdStr));
+
+	    // Mark the Flow Entry as not updated in the switch
+	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 	    // Set the incoming port matching
 	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
 	    flowEntry.setFlowEntryMatch(flowEntryMatch);
@@ -745,7 +776,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param flowObjSet the set of flows that need to be reconciliated.
      */
-    public void reconcileFlows(Iterable<IFlowPath> flowObjSet) {
+    private void reconcileFlows(Iterable<IFlowPath> flowObjSet) {
 	if (! flowObjSet.iterator().hasNext())
 	    return;
 	// TODO: Not implemented/used yet.
@@ -759,7 +790,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param flowEntryObj the flow entry object to install.
      * @return true on success, otherwise false.
      */
-    public boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
+    private boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
 				    IFlowEntry flowEntryObj) {
 	return FlowSwitchOperation.installFlowEntry(
 		floodlightProvider.getOFMessageFactory(),
@@ -774,7 +805,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    public boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
+    private boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				    FlowEntry flowEntry) {
 	return FlowSwitchOperation.installFlowEntry(
 		floodlightProvider.getOFMessageFactory(),
@@ -789,12 +820,113 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
-    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
+    private boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				   FlowEntry flowEntry) {
 	//
 	// The installFlowEntry() method implements both installation
 	// and removal of flow entries.
 	//
 	return (installFlowEntry(mySwitch, flowPath, flowEntry));
+    }
+
+    /**
+     * Push the modified Flow Entries of a collection of Flow Paths.
+     * Only the Flow Entries to switches controlled by this instance
+     * are pushed.
+     *
+     * NOTE: Currently, we write to both the Network MAP and the switches.
+     *
+     * @param modifiedFlowPaths the collection of Flow Paths with the modified
+     * Flow Entries.
+     */
+    public void pushModifiedFlowEntries(Collection<FlowPath> modifiedFlowPaths) {
+
+	// TODO: For now, the pushing of Flow Entries is disabled
+	if (true)
+	    return;
+
+	Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
+
+	for (FlowPath flowPath : modifiedFlowPaths) {
+	    IFlowPath flowObj = dbHandler.searchFlowPath(flowPath.flowId());
+	    if (flowObj == null) {
+		String logMsg = "Cannot find Network MAP entry for Flow Path " +
+		    flowPath.flowId();
+		log.error(logMsg);
+		continue;
+	    }
+
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		if (flowEntry.flowEntrySwitchState() !=
+		    FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
+		    continue;		// No need to update the entry
+		}
+
+		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+		if (mySwitch == null)
+		    continue;		// Ignore the entry: not my switch
+
+		//
+		// Assign the FlowEntry ID if needed
+		//
+		if (! flowEntry.isValidFlowEntryId()) {
+		    long id = getNextFlowEntryId();
+		    flowEntry.setFlowEntryId(new FlowEntryId(id));
+		}
+
+		//
+		// Install the Flow Entry into the switch
+		//
+		if (! installFlowEntry(mySwitch, flowPath, flowEntry)) {
+		    String logMsg = "Cannot install Flow Entry " +
+			flowEntry.flowEntryId() +
+			" from Flow Path " + flowPath.flowId() +
+			" on switch " + flowEntry.dpid();
+		    log.error(logMsg);
+		    continue;
+		}
+
+		//
+		// NOTE: Here we assume that the switch has been successfully
+		// updated.
+		//
+		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+		//
+		// Write the Flow Entry to the Datagrid
+		//
+		switch (flowEntry.flowEntryUserState()) {
+		case FE_USER_ADD:
+		    datagridService.notificationSendFlowEntryAdded(flowEntry);
+		    break;
+		case FE_USER_MODIFY:
+		    datagridService.notificationSendFlowEntryUpdated(flowEntry);
+		    break;
+		case FE_USER_DELETE:
+		    datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+		    break;
+		}
+
+		//
+		// Write the Flow Entry to the Network Map
+		//
+		try {
+		    if (addFlowEntry(flowObj, flowEntry) == null) {
+			String logMsg = "Cannot write to Network MAP Flow Entry " +
+			    flowEntry.flowEntryId() +
+			    " from Flow Path " + flowPath.flowId() +
+			    " on switch " + flowEntry.dpid();
+			log.error(logMsg);
+			continue;
+		    }
+		} catch (Exception e) {
+		    String logMsg = "Exception writing Flow Entry to Network MAP";
+		    log.debug(logMsg);
+		    dbHandler.rollback();
+		    continue;
+		}
+	    }
+	}
+
+	dbHandler.commit();
     }
 }

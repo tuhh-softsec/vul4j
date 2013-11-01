@@ -137,9 +137,13 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			for (OFPhysicalPort port: sw.getPorts()) {
 				IPortObject p = op.searchPort(dpid, port.getPortNumber());
 				if (p != null) {
-		    		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
+		    		log.debug("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
 		    		setPortStateImpl(p, port.getState(), port.getName());
 		    		p.setState("ACTIVE");
+		    		if (curr.getPort(port.getPortNumber()) == null) {
+		    			// The port exists but the switch has no "on" link to it
+		    			curr.addPort(p);
+		    		}
 				} else {
 					p = addPortImpl(curr, port.getPortNumber());
 					setPortStateImpl(p, port.getState(), port.getName());
@@ -149,8 +153,9 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			success = true;
 		} catch (Exception e) {
 			op.rollback();
-			e.printStackTrace();
-			log.error("SwitchStorage:addSwitch dpid:{} failed", dpid);
+			//e.printStackTrace();
+			log.error("SwitchStorage:addSwitch dpid:{} failed: {}", dpid);
+			log.error("switch write error", e);
 		}
 		
 		return success;
@@ -160,6 +165,10 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	 * This function is for adding the switch into the DB.
 	 * @param dpid The switch dpid you want to add into the DB.
 	 */
+	// This method is only called by tests, so we probably don't need it.
+	// If we need both addSwitch interfaces, one should call the other
+	// rather than implementing the same logic twice.
+	@Deprecated 
 	@Override
 	public boolean addSwitch(String dpid) {
 		boolean success = false;

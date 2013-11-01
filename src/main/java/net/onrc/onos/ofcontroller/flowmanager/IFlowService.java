@@ -21,12 +21,9 @@ public interface IFlowService extends IFloodlightService {
      *
      * @param flowPath the Flow Path to install.
      * @param flowId the return-by-reference Flow ID as assigned internally.
-     * @param dataPathSummaryStr the data path summary string if the added
-     * flow will be maintained internally, otherwise null.
      * @return true on success, otherwise false.
      */
-    boolean addFlow(FlowPath flowPath, FlowId flowId,
-		    String dataPathSummaryStr);
+    boolean addFlow(FlowPath flowPath, FlowId flowId);
 
     /**
      * Delete all previously added flows.
@@ -114,5 +111,5 @@ public interface IFlowService extends IFloodlightService {
      * conditions to install.
      * @return the added shortest-path flow on success, otherwise null.
      */
-    public FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath);
+    FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath);
 }
