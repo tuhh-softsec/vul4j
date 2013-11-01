@@ -24,7 +24,8 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
 
 /**
- * A class for implementing the Shortest Path in a topology.
+ * Class to calculate a shortest DataPath between 2 SwitchPorts
+ * based on hops in Network Topology.
  */
 public class ShortestPath {
     /**

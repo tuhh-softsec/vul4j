@@ -195,4 +195,15 @@ public class TopologyElement {
 	assert(false);
 	return null;
     }
+
+    /**
+     * Convert the Topology Element to a string.
+     *
+     * @return the Topology Element as a string.
+     */
+    @Override
+    public String toString() {
+	// For now, we just return the Element ID.
+	return elementId();
+    }
 }

@@ -1,7 +1,9 @@
 package net.onrc.onos.ofcontroller.topology;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeMap;
 
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
@@ -44,9 +46,14 @@ class Node {
     };
 
     public long nodeId;				// The node ID
-    public HashMap<Integer, Link> links;	// The links from this node
-    private HashMap<Integer, Link> reverseLinksMap; // The links to this node
-    private HashMap<Integer, Integer> portsMap;	// The ports for this node
+    public TreeMap<Integer, Link> links;	// The links from this node:
+						//     (src PortID -> Link)
+    private TreeMap<Integer, Link> reverseLinksMap; // The links to this node:
+						//     (dst PortID -> Link)
+    private TreeMap<Integer, Integer> portsMap;	// The ports on this node:
+						//     (PortID -> PortID)
+						// TODO: In the future will be:
+						//     (PortID -> Port)
 
     /**
      * Node constructor.
@@ -55,9 +62,9 @@ class Node {
      */
     public Node(long nodeId) {
 	this.nodeId = nodeId;
-	links = new HashMap<Integer, Link>();
-	reverseLinksMap = new HashMap<Integer, Link>();
-	portsMap = new HashMap<Integer, Integer>();
+	links = new TreeMap<Integer, Link>();
+	reverseLinksMap = new TreeMap<Integer, Link>();
+	portsMap = new TreeMap<Integer, Integer>();
     }
 
     /**
@@ -78,7 +85,7 @@ class Node {
      * @return the port if found, otherwise null.
      */
     public Integer getPort(int portId) {
-	return portsMap.get(nodeId);
+	return portsMap.get(portId);
     }
 
     /**
@@ -120,7 +127,7 @@ class Node {
 
 	portsMap.remove(portId);
     }
-    
+
     /**
      * Get a link on a port to a neighbor.
      *
@@ -186,7 +193,7 @@ public class Topology {
      * Default constructor.
      */
     public Topology() {
-	nodesMap = new HashMap<Long, Node>();
+	nodesMap = new TreeMap<Long, Node>();
     }
 
     /**
@@ -353,7 +360,20 @@ public class Topology {
 	// Remove all ports one-by-one. This operation will also remove the
 	// incoming links originating from the neighbors.
 	//
-	for (Integer portId : node.ports().keySet())
+	// NOTE: We have to extract all Port IDs in advance, otherwise we
+	// cannot loop over the Ports collection and remove entries at the
+	// same time.
+	// TODO: If there is a large number of ports, the implementation
+	// below can be sub-optimal. It should be refactored as follows:
+	//   1. Modify removePort() to perform all the cleanup, except
+	//     removing the Port entry from the portsMap
+	//   2. Call portsMap.clear() at the end of this method
+	//   3. In all other methods: if removePort() is called somewhere else,
+	//      add an explicit removal of the Port entry from the portsMap.
+	//
+	List<Integer> allPortIdKeys = new LinkedList<Integer>();
+	allPortIdKeys.addAll(node.ports().keySet());
+	for (Integer portId : allPortIdKeys)
 	    node.removePort(portId);
 
 	nodesMap.remove(node.nodeId);

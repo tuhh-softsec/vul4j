@@ -7,12 +7,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.ofcontroller.topology.ShortestPath;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
@@ -33,7 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for implementing the Path Computation and Path Maintenance.
+ * Class for FlowPath Maintenance.
+ * This class listens for FlowEvents to:
+ * - Maintain a local cache of the Network Topology.
+ * - Detect FlowPaths impacted by Topology change.
+ * - Recompute impacted FlowPath using cached Topology.
  */
 class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     /** The logger. */
@@ -224,7 +226,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 		}
 
-		allFlowPaths.remove(existingFlowPath.flowId());
+		allFlowPaths.remove(existingFlowPath.flowId().value());
 		modifiedFlowPaths.add(existingFlowPath);
 
 		break;
@@ -240,10 +242,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    TopologyElement topologyElement = eventEntry.eventData();
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD:
-		isTopologyModified = topology.addTopologyElement(topologyElement);
+		isTopologyModified |= topology.addTopologyElement(topologyElement);
 		break;
 	    case ENTRY_REMOVE:
-		isTopologyModified = topology.removeTopologyElement(topologyElement);
+		isTopologyModified |= topology.removeTopologyElement(topologyElement);
 		break;
 	    }
 	}
@@ -386,6 +388,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// Test whether the Flow Path needs to be recomputed
 	//
 	switch (flowPath.flowPathType()) {
+	case FP_TYPE_UNKNOWN:
+	    return false;		// Can't recompute on Unknown FlowType
 	case FP_TYPE_SHORTEST_PATH:
 	    break;
 	case FP_TYPE_EXPLICIT_PATH:
