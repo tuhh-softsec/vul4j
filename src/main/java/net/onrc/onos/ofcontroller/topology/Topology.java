@@ -1,9 +1,9 @@
 package net.onrc.onos.ofcontroller.topology;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeMap;
 
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
@@ -46,11 +46,11 @@ class Node {
     };
 
     public long nodeId;				// The node ID
-    public HashMap<Integer, Link> links;	// The links from this node:
+    public TreeMap<Integer, Link> links;	// The links from this node:
 						//     (src PortID -> Link)
-    private HashMap<Integer, Link> reverseLinksMap; // The links to this node:
+    private TreeMap<Integer, Link> reverseLinksMap; // The links to this node:
 						//     (dst PortID -> Link)
-    private HashMap<Integer, Integer> portsMap;	// The ports on this node:
+    private TreeMap<Integer, Integer> portsMap;	// The ports on this node:
 						//     (PortID -> PortID)
 						// TODO: In the future will be:
 						//     (PortID -> Port)
@@ -62,9 +62,9 @@ class Node {
      */
     public Node(long nodeId) {
 	this.nodeId = nodeId;
-	links = new HashMap<Integer, Link>();
-	reverseLinksMap = new HashMap<Integer, Link>();
-	portsMap = new HashMap<Integer, Integer>();
+	links = new TreeMap<Integer, Link>();
+	reverseLinksMap = new TreeMap<Integer, Link>();
+	portsMap = new TreeMap<Integer, Integer>();
     }
 
     /**
@@ -193,7 +193,7 @@ public class Topology {
      * Default constructor.
      */
     public Topology() {
-	nodesMap = new HashMap<Long, Node>();
+	nodesMap = new TreeMap<Long, Node>();
     }
 
     /**
