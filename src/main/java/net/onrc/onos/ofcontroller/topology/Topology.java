@@ -46,9 +46,9 @@ class Node {
     };
 
     public long nodeId;				// The node ID
-    public HashMap<Integer, Link> links;	// The links from this node
-    private HashMap<Integer, Link> reverseLinksMap; // The links to this node
-    private HashMap<Integer, Integer> portsMap;	// The ports for this node
+    public HashMap<Integer, Link> links;	// The links from this node (src Port ID -> Link)
+    private HashMap<Integer, Link> reverseLinksMap; // The links to this node (dst Port ID -> Link)
+    private HashMap<Integer, Integer> portsMap;	// The ports on this node (Port ID -> )
 
     /**
      * Node constructor.
@@ -80,7 +80,7 @@ class Node {
      * @return the port if found, otherwise null.
      */
     public Integer getPort(int portId) {
-	return portsMap.get(nodeId);
+	return portsMap.get(portId);
     }
 
     /**
@@ -122,7 +122,7 @@ class Node {
 
 	portsMap.remove(portId);
     }
-    
+
     /**
      * Get a link on a port to a neighbor.
      *
