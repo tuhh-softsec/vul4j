@@ -19,9 +19,9 @@ import org.openflow.protocol.OFMessage;
 public class FlowQueueTable {
 	
 	public enum QueueState {
-		SYNCHRONIZED,
-		SYNCHRONIZING,
-		DELETED;		// not in work and to be deleted
+		READY,				// Synchronized and working
+		SYNCHRONIZING,		// Synchronization is running
+//		SUSPENDED,			// Synchronized but stopping sending messages
 	}
 	
 	private class QueueInfo {
@@ -29,9 +29,6 @@ public class FlowQueueTable {
 		
 		// Max rate of sending message (bytes/sec). 0 implies no limitation.
 		long max_rate = 0;
-		
-		// Is sending message suspended or not.
-		boolean suspended = false;
 	}
 	
 	private Map< IOFSwitch, Queue<OFMessage> > queues
@@ -139,46 +136,6 @@ public class FlowQueueTable {
 		}
 		
 		info.max_rate = rate;
-	}
-	
-	/**
-	 * Suspend sending message of a queue for given switch.
-	 * @param sw
-	 */
-	public void suspendQueue(IOFSwitch sw) {
-		setQueueSuspended(sw, true);
-	}
-	
-	/**
-	 * Resume sending message of a queue for given switch.
-	 * @param sw
-	 */
-	public void resumeQueue(IOFSwitch sw) {
-		setQueueSuspended(sw, false);
-	}
-
-	/**
-	 * Check if queue is suspended or not.
-	 * @param sw
-	 * @return
-	 */
-	public boolean isQueueSusupended(IOFSwitch sw) {
-		QueueInfo info = queue_info.get(sw);
-		if (info == null) {
-			// TODO error handling
-			return true;
-		}
-
-		return info.suspended;
-	}
-	
-	private void setQueueSuspended(IOFSwitch sw, boolean suspended) {
-		QueueInfo info = queue_info.get(sw);
-		if (info == null) {
-			return;
-		}
-		
-		info.suspended =suspended;
 	}
 	
 	/**

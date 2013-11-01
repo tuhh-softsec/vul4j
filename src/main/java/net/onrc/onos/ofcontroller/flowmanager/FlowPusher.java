@@ -9,6 +9,7 @@ import org.openflow.protocol.OFMessage;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.onrc.onos.ofcontroller.flowmanager.FlowQueueTable.QueueState;
 
 /**
  * FlowPusher intermediates flow_mod sent from FlowManager/FlowSync to switches.
@@ -45,7 +46,7 @@ public class FlowPusher {
 			while (true) {
 				for (IOFSwitch sw : flowQueueTable.getSwitches()) {
 					// Skip if queue is suspended
-					if (flowQueueTable.isQueueSusupended(sw)) {
+					if (flowQueueTable.getQueueState(sw) != QueueState.READY) {
 						continue;
 					}
 					
