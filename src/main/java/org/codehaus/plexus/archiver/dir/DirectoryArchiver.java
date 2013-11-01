@@ -119,9 +119,6 @@ public class DirectoryArchiver
             return;
         }
 
-        outFile.setLastModified( inLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
-                        : inLastModified );
-
         if ( !in.isDirectory() )
         {
             if ( !outFile.getParentFile().exists() )
@@ -158,6 +155,9 @@ public class DirectoryArchiver
                 throw new ArchiverException( "Unable to create directory or parent directory of " + outFile );
             }
         }
+
+        outFile.setLastModified( inLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
+                        : inLastModified );
     }
 
     protected void cleanUp()
