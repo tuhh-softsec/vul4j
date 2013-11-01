@@ -213,6 +213,8 @@ public abstract class ApacheCanonicalizer extends TransformService {
                 apacheTransform = 
                     new Transform(ownerDoc, getAlgorithm(), transformElem.getChildNodes());
                 apacheTransform.setElement(transformElem, xc.getBaseURI());
+                boolean secVal = Utils.secureValidation(xc);
+                apacheTransform.setSecureValidation(secVal);
                 if (log.isDebugEnabled()) {
                     log.debug("Created transform for algorithm: " + getAlgorithm());            
                 }
