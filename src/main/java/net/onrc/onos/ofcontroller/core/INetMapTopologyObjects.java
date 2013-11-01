@@ -149,12 +149,6 @@ public interface ISwitchObject extends IBaseObject{
 		@Property("dl_addr")
 		public void setMACAddress(String macaddr);
 		
-		@JsonProperty("ipv4")
-		@Property("nw_addr")
-		public String getIPAddress();
-		@Property("nw_addr")
-		public void setIPAddress(String ipaddr);
-		
 		@JsonIgnore
 		@Adjacency(label="host",direction = Direction.IN)
 		public Iterable<IPortObject> getAttachedPorts();
@@ -171,6 +165,23 @@ public interface ISwitchObject extends IBaseObject{
 		@GremlinGroovy("it.in('host').in('on')")
 		public Iterable<ISwitchObject> getSwitch();
 		
+		//
+		// IPv4 Addresses
+		//
+		@JsonProperty("ipv4addresses")
+		@Adjacency(label="hasAddress")
+		public Iterable<IIpv4Address> getIpv4Addresses();
+
+		@JsonIgnore
+		@GremlinGroovy("it.out('hasAddress').has('ipv4', ipv4Address)")
+		public IIpv4Address getIpv4Address(@GremlinParam("ipv4Address") final int ipv4Address);
+		
+		@Adjacency(label="hasAddress")
+		public void addIpv4Address(final IIpv4Address ipv4Address);
+		
+		@Adjacency(label="hasAddress")
+		public void removeIpv4Address(final IIpv4Address ipv4Address);
+		
 /*		@JsonProperty("dpid")
 		@GremlinGroovy("_().in('host').in('on').next().getProperty('dpid')")
 		public Iterable<String> getSwitchDPID();
@@ -183,7 +194,21 @@ public interface ISwitchObject extends IBaseObject{
 		@GremlinGroovy("_().in('host').in('on').path(){it.number}{it.dpid}")
 		public Iterable<SwitchPort> getAttachmentPoints();*/
 	}
-
+		
+	public interface IIpv4Address extends IBaseObject {
+		
+		@JsonProperty("ipv4")
+		@Property("ipv4_address")
+		public int getIpv4Address();
+		
+		@Property("ipv4_address")
+		public void setIpv4Address(int ipv4Address);
+		
+		@JsonIgnore
+		@GremlinGroovy("it.in('hasAddress')")
+		public IDeviceObject getDevice();
+	}
+	
 public interface IFlowPath extends IBaseObject {
 		@JsonProperty("flowId")
 		@Property("flow_id")

@@ -1,11 +1,14 @@
 package net.onrc.onos.graph;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IBaseObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
@@ -224,6 +227,44 @@ public class GraphDBOperation implements IDBOperation {
 	public void removeDevice(IDeviceObject dev) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		if (fg != null) fg.removeVertex(dev.asVertex());		
+	}
+	
+	public IIpv4Address newIpv4Address() {
+		return newVertex("ipv4Address", IIpv4Address.class);
+	}
+	
+	private <T extends IBaseObject> T newVertex(String type, Class<T> vertexType) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		T newVertex = fg.addVertex(null, vertexType);
+		if (newVertex != null) {
+			newVertex.setType(type);
+		}
+		return newVertex;
+	}
+	
+	public IIpv4Address searchIpv4Address(int intIpv4Address) {
+		return searchForVertex("ipv4_address", intIpv4Address, IIpv4Address.class);
+	}
+	
+	private <T> T searchForVertex(String propertyName, Object propertyValue, Class<T> vertexType) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		if (fg != null) {
+			Iterator<T> it = 
+					fg.getVertices(propertyName, propertyValue, vertexType).iterator();
+			if (it.hasNext()) {
+				return it.next();
+			}
+		}
+		return null;
+	}
+	
+	public IIpv4Address ensureIpv4Address(int intIpv4Address) {
+		IIpv4Address ipv4Vertex = searchIpv4Address(intIpv4Address);
+		if (ipv4Vertex == null) {
+			ipv4Vertex = newIpv4Address();
+			ipv4Vertex.setIpv4Address(intIpv4Address);
+		}
+		return ipv4Vertex;
 	}
 
 	/**

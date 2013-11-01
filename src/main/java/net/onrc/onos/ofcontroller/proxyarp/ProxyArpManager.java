@@ -17,7 +17,6 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
@@ -26,7 +25,10 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
+import net.onrc.onos.ofcontroller.core.IDeviceStorage;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
+import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -56,6 +58,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 	private IDeviceService deviceService;
 	private IConfigInfoService configService;
 	private IRestApiService restApi;
+	
+	private IDeviceStorage deviceStorage;
 	
 	private short vlan;
 	private static final short NO_VLAN = 0;
@@ -140,6 +144,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		
 		restApi.addRestletRoutable(new ArpWebRoutable());
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
+		
+		deviceStorage = new DeviceStorageImpl();
+		deviceStorage.init("");
 		
 		Timer arpTimer = new Timer("arp-processing");
 		arpTimer.scheduleAtFixedRate(new TimerTask() {
@@ -285,13 +292,15 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener {
 		//MACAddress macAddress = arpCache.lookup(target);
 		
 		//IDevice dstDevice = deviceService.fcStore.get(cntx, IDeviceService.CONTEXT_DST_DEVICE);
-		Iterator<? extends IDevice> it = deviceService.queryDevices(
-				null, null, InetAddresses.coerceToInteger(target), null, null);
+		//Iterator<? extends IDevice> it = deviceService.queryDevices(
+				//null, null, InetAddresses.coerceToInteger(target), null, null);
 		
-		IDevice targetDevice = null;
-		if (it.hasNext()) {
-			targetDevice = it.next();
-		}
+		//IDevice targetDevice = null;
+		//if (it.hasNext()) {
+			//targetDevice = it.next();
+		//}
+		IDeviceObject targetDevice = 
+				deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(target));
 		
 		if (targetDevice != null) {
 			//We have the device in our database, so send a reply

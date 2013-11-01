@@ -1,30 +1,31 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import net.floodlightcontroller.devicemanager.IDevice;
+import net.floodlightcontroller.devicemanager.SwitchPort;
+import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.ofcontroller.core.IDeviceStorage;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.thinkaurelius.titan.core.TitanException;
-import net.floodlightcontroller.devicemanager.IDevice;
-import net.floodlightcontroller.devicemanager.SwitchPort;
-import net.floodlightcontroller.packet.IPv4;
-import net.onrc.onos.graph.GraphDBOperation;
-import net.onrc.onos.ofcontroller.core.IDeviceStorage;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 
 /**
  * This is the class for storing the information of devices into CassandraDB
  * @author Pankaj
  */
 public class DeviceStorageImpl implements IDeviceStorage {
+	protected final static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 	
 	private GraphDBOperation ope;
-	protected final static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
 	/***
 	 * Initialize function. Before you use this class, please call this method
@@ -32,10 +33,10 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	 */
 	@Override
 	public void init(String conf) {
-		try{
+		try {
 			ope = new GraphDBOperation(conf);
-		} catch(Exception e) {
-			log.error(e.getMessage());
+		} catch (TitanException e) {
+			log.error("Couldn't open graph operation", e);
 		}
 	}	
 	
@@ -67,39 +68,31 @@ public class DeviceStorageImpl implements IDeviceStorage {
 		IDeviceObject obj = null;
  		try {
  			if ((obj = ope.searchDevice(device.getMACAddressString())) != null) {
- 				log.debug("Adding device {}: found existing device",device.getMACAddressString());
+ 				log.debug("Adding device {}: found existing device", device.getMACAddressString());
             } else {
             	obj = ope.newDevice();
-                log.debug("Adding device {}: creating new device",device.getMACAddressString());
+                log.debug("Adding device {}: creating new device", device.getMACAddressString());
             }
-	            changeDeviceAttachments(device, obj);
-	
-				String multiIntString = "";
-				for(Integer intValue : device.getIPv4Addresses()) {
-				   if (multiIntString == null || multiIntString.isEmpty()){
-				     multiIntString = IPv4.fromIPv4Address(intValue);
-				     multiIntString = "[" + IPv4.fromIPv4Address(intValue);
-				   }else{
-				        multiIntString += "," + IPv4.fromIPv4Address(intValue);
-				   }
-				}
-	 	            
-	            if(multiIntString.toString() != null && !multiIntString.toString().isEmpty()){
-	            	obj.setIPAddress(multiIntString + "]");
-	            }
-	            
-	 			obj.setMACAddress(device.getMACAddressString());
-	 			obj.setType("device");
-	 			obj.setState("ACTIVE");
-	 			ope.commit();
  			
-	 			log.debug("Adding device {}",device.getMACAddressString());
-		} catch (Exception e) {
+            changeDeviceAttachments(device, obj);
+	            
+            for (Integer intIpv4Address : device.getIPv4Addresses()) {
+            	obj.addIpv4Address(ope.ensureIpv4Address(intIpv4Address));
+            }
+            
+ 			obj.setMACAddress(device.getMACAddressString());
+ 			obj.setType("device");
+ 			obj.setState("ACTIVE");
+ 			ope.commit();
+		
+ 			//log.debug("Adding device {}",device.getMACAddressString());
+		} catch (TitanException e) {
 			ope.rollback();
 			log.error(":addDevice mac:{} failed", device.getMACAddressString());
 			obj = null;
-		}	
- 			return obj;		
+		}
+ 		
+		return obj;		
 	}
 
 	/***
@@ -125,7 +118,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
              	ope.commit();
             	log.error("DeviceStorage:removeDevice mac:{} done", device.getMACAddressString());
             }
-		} catch (Exception e) {
+		} catch (TitanException e) {
 			ope.rollback();
 			log.error("DeviceStorage:removeDevice mac:{} failed", device.getMACAddressString());
 		}
@@ -147,23 +140,15 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	 * @return IDeviceObject you want to get.
 	 */
 	@Override
-	public IDeviceObject getDeviceByIP(String ip) {
-		try
-		{
-			for(IDeviceObject dev : ope.getDevices()){
-				String ips;
-				if((ips = dev.getIPAddress()) != null){
-					String nw_addr_wob = ips.replace("[", "").replace("]", "");
-					ArrayList<String> iplists = Lists.newArrayList(nw_addr_wob.split(","));	
-					if(iplists.contains(ip)){
-						return dev;
-					}
-				}
+	public IDeviceObject getDeviceByIP(int ipv4Address) {
+		try {
+			IIpv4Address ipv4AddressVertex = ope.searchIpv4Address(ipv4Address);
+			if (ipv4AddressVertex != null) {
+				return ipv4AddressVertex.getDevice();
 			}
 			return null;
 		}
-		catch (Exception e)
-		{
+		catch (TitanException e) {
 			log.error("DeviceStorage:getDeviceByIP:{} failed");
 			return null;
 		}
@@ -178,14 +163,14 @@ public class DeviceStorageImpl implements IDeviceStorage {
 		IDeviceObject obj = null;
  		try {
             if ((obj = ope.searchDevice(device.getMACAddressString())) != null) {
-                log.debug("Changing device ports {}: found existing device",device.getMACAddressString());
+                log.debug("Changing device ports {}: found existing device", device.getMACAddressString());
                 changeDeviceAttachments(device, obj);
                 ope.commit();
             } else {
-   				log.debug("failed to search device...now adding {}",device.getMACAddressString());
+   				log.debug("failed to search device...now adding {}", device.getMACAddressString());
    				addDevice(device);
-            }            			
-		} catch (Exception e) {
+            }
+		} catch (TitanException e) {
 			ope.rollback();
 			log.error(":addDevice mac:{} failed", device.getMACAddressString());
 		}	
@@ -199,33 +184,33 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	public void changeDeviceAttachments(IDevice device, IDeviceObject obj) {
 		SwitchPort[] attachmentPoints = device.getAttachmentPoints();
 		List<IPortObject> attachedPorts = Lists.newArrayList(obj.getAttachedPorts());
-		
-        for (SwitchPort ap : attachmentPoints) {
-        	//Check weather there is the port
-          	 IPortObject port = ope.searchPort( HexString.toHexString(ap.getSwitchDPID()),
-												(short) ap.getPort());
-          	 log.debug("New Switch Port is {},{}", HexString.toHexString(ap.getSwitchDPID()),(short) ap.getPort());
-	       	 
-	       	 if(port != null){
-	   			if(attachedPorts.contains(port))
-	       		{
-		       		log.debug("This is the port you already attached {}: do nothing",device.getMACAddressString());
-		       		//This port will be remained, so remove from the removed port lists.
-		       		attachedPorts.remove(port);
-		       	} else {
-	     		   log.debug("Adding device {}: attaching to port",device.getMACAddressString());
-		       		port.setDevice(obj);  
-		        }
-	    	
-		       	log.debug("port number is {}", port.getNumber().toString());
-		        log.debug("port desc is {}", port.getDesc());  
-	       	 }
-        }      		 
-	            
-	    for (IPortObject port: attachedPorts) {
-            log.debug("Detouching the device {}: detouching from port",device.getMACAddressString());
-       		port.removeDevice(obj);
-        }
+
+		for (SwitchPort ap : attachmentPoints) {
+			//Check if there is the port
+			IPortObject port = ope.searchPort(HexString.toHexString(ap.getSwitchDPID()),
+					(short) ap.getPort());
+			log.debug("New Switch Port is {},{}", 
+					HexString.toHexString(ap.getSwitchDPID()), (short) ap.getPort());
+
+			if (port != null){
+				if (attachedPorts.contains(port)) {
+					log.debug("This is the port you already attached {}: do nothing", device.getMACAddressString());
+					//This port will be remained, so remove from the removed port lists.
+					attachedPorts.remove(port);
+				} else {
+					log.debug("Adding device {}: attaching to port", device.getMACAddressString());
+					port.setDevice(obj);  
+				}
+
+				log.debug("port number is {}", port.getNumber().toString());
+				log.debug("port desc is {}", port.getDesc());  
+			}
+		}      		 
+
+		for (IPortObject port: attachedPorts) {
+			log.debug("Detaching the device {}: detaching from port", device.getMACAddressString());
+			port.removeDevice(obj);
+		}
 	}
 
 	/***
@@ -234,22 +219,24 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	 */
 	@Override
 	public void changeDeviceIPv4Address(IDevice device) {
+		log.debug("Changing IP address for {} to {}", device.getMACAddressString(),
+				device.getIPv4Addresses());
 		IDeviceObject obj;
   		try {
   			if ((obj = ope.searchDevice(device.getMACAddressString())) != null) {
-
-  				String multiIntString = "";
-  				for(Integer intValue : device.getIPv4Addresses()){
-  				   if (multiIntString == null || multiIntString.isEmpty()){
-  				     multiIntString = "[" + IPv4.fromIPv4Address(intValue);
-  				   } else {
-  				        multiIntString += "," + IPv4.fromIPv4Address(intValue);
-  				   }
+  				for (int ipv4Address : device.getIPv4Addresses()) {
+  					if (obj.getIpv4Address(ipv4Address) == null) {
+  						IIpv4Address dbIpv4Address = ope.ensureIpv4Address(ipv4Address);
+  						obj.addIpv4Address(dbIpv4Address);
+  					}
   				}
   				
-  	            if(multiIntString != null && !multiIntString.isEmpty()){
-  	            	obj.setIPAddress(multiIntString + "]");
-  	            }
+  				List<Integer> deviceIpv4Addresses = Arrays.asList(device.getIPv4Addresses());
+  				for (IIpv4Address dbIpv4Address : obj.getIpv4Addresses()) {
+  					if (!deviceIpv4Addresses.contains(dbIpv4Address.getIpv4Address())) {
+  						obj.removeIpv4Address(dbIpv4Address);
+  					}
+  				}
   	            
               	ope.commit();
   			} else {
@@ -257,7 +244,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
             }		
   		} catch (TitanException e) {
   			ope.rollback();
-			log.error(":changeDeviceIPv4Address mac:{} failed due to exception {}", device.getMACAddressString(),e);
+			log.error(":changeDeviceIPv4Address mac:{} failed due to exception {}", device.getMACAddressString(), e);
 		}
 	}
 
