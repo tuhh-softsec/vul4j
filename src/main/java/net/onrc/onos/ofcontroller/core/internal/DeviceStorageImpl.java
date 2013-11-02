@@ -114,6 +114,10 @@ public class DeviceStorageImpl implements IDeviceStorage {
 		IDeviceObject dev;
 		try {
 			if ((dev = ope.searchDevice(device.getMACAddressString())) != null) {
+				for (IIpv4Address ipv4AddressVertex : dev.getIpv4Addresses()) {
+					ope.removeIpv4Address(ipv4AddressVertex);
+				}
+				
              	ope.removeDevice(dev);
              	ope.commit();
             	log.error("DeviceStorage:removeDevice mac:{} done", device.getMACAddressString());

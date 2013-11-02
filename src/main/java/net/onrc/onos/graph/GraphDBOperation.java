@@ -266,6 +266,11 @@ public class GraphDBOperation implements IDBOperation {
 		}
 		return ipv4Vertex;
 	}
+	
+	public void removeIpv4Address(IIpv4Address ipv4Address) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		fg.removeVertex(ipv4Address.asVertex());
+	}
 
 	/**
 	 * Create and return a flow path object.

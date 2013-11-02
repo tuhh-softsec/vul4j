@@ -273,6 +273,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	@Override
 	public void deviceRemoved(IDevice device) {
 		// TODO Auto-generated method stub
+		devStore.removeDevice(device);
 	}
 
 	@Override
