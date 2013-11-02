@@ -302,6 +302,38 @@ public class LinkStorageImpl implements ILinkStorage {
 	}
 
 	/**
+	 * Get list of all reverse links connected to the switch specified by
+	 * given DPID.
+	 * @param dpid DPID of desired switch.
+	 * @return List of reverse links. Empty list if no port was found.
+	 */
+	@Override
+	public List<Link> getReverseLinks(String dpid) {
+		List<Link> links = new ArrayList<Link>();
+
+		ISwitchObject srcSw = op.searchSwitch(dpid);
+		
+		if(srcSw != null) {
+			for(IPortObject srcPort : srcSw.getPorts()) {
+				for(IPortObject dstPort : srcPort.getReverseLinkedPorts()) {
+					ISwitchObject dstSw = dstPort.getSwitch();
+					if(dstSw != null) {
+		        		Link link = new Link(
+							HexString.toLong(dstSw.getDPID()),
+							dstPort.getNumber(),
+					
+							HexString.toLong(srcSw.getDPID()),
+							srcPort.getNumber());
+		        		links.add(link);
+					}
+				}
+			}
+		}
+		
+		return links;
+	}
+
+	/**
 	 * Get list of all links whose state is ACTIVE.
 	 * @return List of active links. Empty list if no port was found.
 	 */

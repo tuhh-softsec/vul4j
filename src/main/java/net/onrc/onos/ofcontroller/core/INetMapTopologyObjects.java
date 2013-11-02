@@ -129,6 +129,10 @@ public interface ISwitchObject extends IBaseObject{
 		@JsonIgnore
 		@Adjacency(label="link")
 		public Iterable<IPortObject> getLinkedPorts();
+
+		@JsonIgnore
+		@Adjacency(label="link",direction = Direction.IN)
+		public Iterable<IPortObject> getReverseLinkedPorts();
 		
 		@Adjacency(label="link")
 		public void removeLink(final IPortObject dest_port);
