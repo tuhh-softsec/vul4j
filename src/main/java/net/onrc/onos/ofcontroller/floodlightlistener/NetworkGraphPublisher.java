@@ -3,6 +3,7 @@ package net.onrc.onos.ofcontroller.floodlightlistener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -217,6 +218,19 @@ public class NetworkGraphPublisher implements IDeviceListener,
 				topologyElement.addSwitchPort(port.getPortNumber());
 			    }
 			    datagridService.notificationSendTopologyElementAdded(topologyElement);
+			    // Add all links that might be connected already
+			    List<Link> links = linkStore.getLinks(HexString.toHexString(sw.getId()));
+			    // Add all reverse links as well
+			    List<Link> reverseLinks = linkStore.getReverseLinks(HexString.toHexString(sw.getId()));
+			    links.addAll(reverseLinks);
+			    for (Link link : links) {
+				TopologyElement topologyElementLink =
+				    new TopologyElement(link.getSrc(),
+							link.getSrcPort(),
+							link.getDst(),
+							link.getDstPort());
+				datagridService.notificationSendTopologyElementAdded(topologyElementLink);
+			    }
 			}
 		}
 	}
