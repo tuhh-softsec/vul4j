@@ -21,24 +21,24 @@ import com.tinkerpop.frames.VertexFrame;
  */
 public interface INetMapTopologyObjects {
 	
-public interface IBaseObject extends VertexFrame {
+	public interface IBaseObject extends VertexFrame {
+		
+		@JsonProperty("state")
+		@Property("state")
+		public String getState();
+		
+		@Property("state")
+		public void setState(final String state);
+		
+		@JsonIgnore
+		@Property("type")
+		public String getType();
+		@Property("type")
+		public void setType(final String type);
+		
+	}
 	
-	@JsonProperty("state")
-	@Property("state")
-	public String getState();
-	
-	@Property("state")
-	public void setState(final String state);
-	
-	@JsonIgnore
-	@Property("type")
-	public String getType();
-	@Property("type")
-	public void setType(final String type);
-	
-}
-	
-public interface ISwitchObject extends IBaseObject{
+	public interface ISwitchObject extends IBaseObject{
 		
 		@JsonProperty("dpid")
 		@Property("dpid")
@@ -51,7 +51,7 @@ public interface ISwitchObject extends IBaseObject{
 		@Adjacency(label="on")
 		public Iterable<IPortObject> getPorts();
 
-// Requires Frames 2.3.0		
+		// Requires Frames 2.3.0		
 		@JsonIgnore
 		@GremlinGroovy("it.out('on').has('number',port_num)")
 		public IPortObject getPort(@GremlinParam("port_num") final short port_num);
@@ -104,7 +104,6 @@ public interface ISwitchObject extends IBaseObject{
 		public void setPortState(Integer s);
 		
 		@JsonIgnore
-//		@GremlinGroovy("it.in('on')")
 		@Adjacency(label="on",direction = Direction.IN)
 		public ISwitchObject getSwitch();
 				
@@ -136,9 +135,9 @@ public interface ISwitchObject extends IBaseObject{
 		@Adjacency(label="link")
 		public void setLinkPort(final IPortObject dest_port);			
 		
-//		@JsonIgnore
-//		@Adjacency(label="link")
-//		public Iterable<ILinkObject> getLinks();
+		// @JsonIgnore
+		// @Adjacency(label="link")
+		// public Iterable<ILinkObject> getLinks();
 	}
 	
 	public interface IDeviceObject extends IBaseObject {
@@ -146,6 +145,7 @@ public interface ISwitchObject extends IBaseObject{
 		@JsonProperty("mac")
 		@Property("dl_addr")
 		public String getMACAddress();
+		
 		@Property("dl_addr")
 		public void setMACAddress(String macaddr);
 		
@@ -173,7 +173,7 @@ public interface ISwitchObject extends IBaseObject{
 		public Iterable<IIpv4Address> getIpv4Addresses();
 
 		@JsonIgnore
-		@GremlinGroovy("it.out('hasAddress').has('ipv4', ipv4Address)")
+		@GremlinGroovy("it.out('hasAddress').has('ipv4_address', ipv4Address)")
 		public IIpv4Address getIpv4Address(@GremlinParam("ipv4Address") final int ipv4Address);
 		
 		@Adjacency(label="hasAddress")
@@ -209,7 +209,7 @@ public interface ISwitchObject extends IBaseObject{
 		public IDeviceObject getDevice();
 	}
 	
-public interface IFlowPath extends IBaseObject {
+	public interface IFlowPath extends IBaseObject {
 		@JsonProperty("flowId")
 		@Property("flow_id")
 		public String getFlowId();
@@ -392,7 +392,7 @@ public interface IFlowPath extends IBaseObject {
 		public String getState();
 	}
 
-public interface IFlowEntry extends IBaseObject {
+	public interface IFlowEntry extends IBaseObject {
 		@Property("flow_entry_id")
 		public String getFlowEntryId();
 

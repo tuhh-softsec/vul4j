@@ -75,10 +75,11 @@ public class DeviceStorageImpl implements IDeviceStorage {
             }
  			
             changeDeviceAttachments(device, obj);
-	            
-            for (Integer intIpv4Address : device.getIPv4Addresses()) {
+	        
+            changeDeviceIpv4Addresses(device, obj);
+            /*for (Integer intIpv4Address : device.getIPv4Addresses()) {
             	obj.addIpv4Address(ope.ensureIpv4Address(intIpv4Address));
-            }
+            }*/
             
  			obj.setMACAddress(device.getMACAddressString());
  			obj.setType("device");
@@ -228,19 +229,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 		IDeviceObject obj;
   		try {
   			if ((obj = ope.searchDevice(device.getMACAddressString())) != null) {
-  				for (int ipv4Address : device.getIPv4Addresses()) {
-  					if (obj.getIpv4Address(ipv4Address) == null) {
-  						IIpv4Address dbIpv4Address = ope.ensureIpv4Address(ipv4Address);
-  						obj.addIpv4Address(dbIpv4Address);
-  					}
-  				}
-  				
-  				List<Integer> deviceIpv4Addresses = Arrays.asList(device.getIPv4Addresses());
-  				for (IIpv4Address dbIpv4Address : obj.getIpv4Addresses()) {
-  					if (!deviceIpv4Addresses.contains(dbIpv4Address.getIpv4Address())) {
-  						obj.removeIpv4Address(dbIpv4Address);
-  					}
-  				}
+  				changeDeviceIpv4Addresses(device, obj);
   	            
               	ope.commit();
   			} else {
@@ -249,6 +238,22 @@ public class DeviceStorageImpl implements IDeviceStorage {
   		} catch (TitanException e) {
   			ope.rollback();
 			log.error(":changeDeviceIPv4Address mac:{} failed due to exception {}", device.getMACAddressString(), e);
+		}
+	}
+	
+	private void changeDeviceIpv4Addresses(IDevice device, IDeviceObject deviceObject) {
+		for (int ipv4Address : device.getIPv4Addresses()) {
+			if (deviceObject.getIpv4Address(ipv4Address) == null) {
+				IIpv4Address dbIpv4Address = ope.ensureIpv4Address(ipv4Address);
+				deviceObject.addIpv4Address(dbIpv4Address);
+			}
+		}
+			
+		List<Integer> deviceIpv4Addresses = Arrays.asList(device.getIPv4Addresses());
+		for (IIpv4Address dbIpv4Address : deviceObject.getIpv4Addresses()) {
+			if (!deviceIpv4Addresses.contains(dbIpv4Address.getIpv4Address())) {
+				deviceObject.removeIpv4Address(dbIpv4Address);
+			}
 		}
 	}
 
