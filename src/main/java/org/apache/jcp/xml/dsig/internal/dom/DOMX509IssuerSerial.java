@@ -24,6 +24,7 @@
  */
 package org.apache.jcp.xml.dsig.internal.dom;
 
+import javax.xml.crypto.MarshalException;
 import javax.xml.crypto.dsig.keyinfo.X509IssuerSerial;
 
 import java.math.BigInteger;
@@ -71,9 +72,11 @@ public final class DOMX509IssuerSerial extends BaseStructure
      *
      * @param isElem an X509IssuerSerial element
      */
-    public DOMX509IssuerSerial(Element isElem) {
-        Element iNElem = DOMUtils.getFirstChildElement(isElem);
-        Element sNElem = DOMUtils.getNextSiblingElement(iNElem);
+    public DOMX509IssuerSerial(Element isElem) throws MarshalException {
+        Element iNElem = DOMUtils.getFirstChildElement(isElem,
+                                                       "X509IssuerName");
+        Element sNElem = DOMUtils.getNextSiblingElement(iNElem,
+                                                        "X509SerialNumber");
         issuerName = iNElem.getFirstChild().getNodeValue();
         serialNumber = new BigInteger(sNElem.getFirstChild().getNodeValue());
     }

@@ -220,9 +220,11 @@ public abstract class DOMKeyValue<K extends PublicKey> extends BaseStructure imp
                         ("unable to create RSA KeyFactory: " + e.getMessage());
                 }
             }
-            Element modulusElem = DOMUtils.getFirstChildElement(kvtElem);
+            Element modulusElem = DOMUtils.getFirstChildElement(kvtElem,
+                                                                "Modulus");
             BigInteger modulus = decode(modulusElem);
-            Element exponentElem = DOMUtils.getNextSiblingElement(modulusElem);
+            Element exponentElem = DOMUtils.getNextSiblingElement(modulusElem,
+                                                                  "Exponent");
             BigInteger exponent = decode(exponentElem);
             RSAPublicKeySpec spec = new RSAPublicKeySpec(modulus, exponent);
             return (RSAPublicKey) generatePublicKey(rsakf, spec);
@@ -277,14 +279,14 @@ public abstract class DOMKeyValue<K extends PublicKey> extends BaseStructure imp
             BigInteger q = null;
             if (curElem.getLocalName().equals("P")) {
                 p = decode(curElem);
-                curElem = DOMUtils.getNextSiblingElement(curElem);
+                curElem = DOMUtils.getNextSiblingElement(curElem, "Q");
                 q = decode(curElem);
                 curElem = DOMUtils.getNextSiblingElement(curElem);
             } 
             BigInteger g = null;
             if (curElem.getLocalName().equals("G")) {
                 g = decode(curElem);
-                curElem = DOMUtils.getNextSiblingElement(curElem);
+                curElem = DOMUtils.getNextSiblingElement(curElem, "Y");
             }
             BigInteger y = decode(curElem);
             curElem = DOMUtils.getNextSiblingElement(curElem);
@@ -434,7 +436,7 @@ public abstract class DOMKeyValue<K extends PublicKey> extends BaseStructure imp
             } else {
                 throw new MarshalException("Invalid ECKeyValue");
             }
-            curElem = DOMUtils.getNextSiblingElement(curElem);
+            curElem = DOMUtils.getNextSiblingElement(curElem, "PublicKey");
             ECPoint ecPoint = null;
             try {
                 Object[] args = new Object[] { Base64.decode(curElem),
