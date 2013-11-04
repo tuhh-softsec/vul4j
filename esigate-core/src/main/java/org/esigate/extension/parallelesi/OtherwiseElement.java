@@ -28,48 +28,48 @@ import org.esigate.vars.VariablesResolver;
 
 class OtherwiseElement extends BaseElement {
 
-	public final static FutureElementType TYPE = new BaseElementType("<esi:otherwise", "</esi:otherwise") {
-		@Override
-		public OtherwiseElement newInstance() {
-			return new OtherwiseElement();
-		}
+    public static final FutureElementType TYPE = new BaseElementType("<esi:otherwise", "</esi:otherwise") {
+        @Override
+        public OtherwiseElement newInstance() {
+            return new OtherwiseElement();
+        }
 
-	};
+    };
 
-	private boolean active;
-	private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
+    private boolean active;
+    private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
 
-	OtherwiseElement() {
-	}
+    OtherwiseElement() {
+    }
 
-	@Override
-	protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		ChooseElement parent = ctx.findAncestor(ChooseElement.class);
-		active = (parent != null) && !parent.hadConditionSet();
-	}
+    @Override
+    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        ChooseElement parent = ctx.findAncestor(ChooseElement.class);
+        active = (parent != null) && !parent.hadConditionSet();
+    }
 
-	@Override
-	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		if (active) {
-			String result;
-			try {
-				result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
-			} catch (InterruptedException e) {
-				throw new IOException(e);
-			} catch (ExecutionException e) {
-				if( e.getCause() instanceof HttpErrorPage ) {
-					throw (HttpErrorPage)e.getCause();
-				}
-				throw new IOException(e);
-			}
-			super.characters(new CharSequenceFuture(result));
-		}
-	}
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        if (active) {
+            String result;
+            try {
+                result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
+            } catch (InterruptedException e) {
+                throw new IOException(e);
+            } catch (ExecutionException e) {
+                if (e.getCause() instanceof HttpErrorPage) {
+                    throw (HttpErrorPage) e.getCause();
+                }
+                throw new IOException(e);
+            }
+            super.characters(new CharSequenceFuture(result));
+        }
+    }
 
-	@Override
-	public void characters(Future<CharSequence> csq) throws IOException {
-		if (active) {
-			buf.enqueueAppend(csq);
-		}
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) throws IOException {
+        if (active) {
+            buf.enqueueAppend(csq);
+        }
+    }
 }

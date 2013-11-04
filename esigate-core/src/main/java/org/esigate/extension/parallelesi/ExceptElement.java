@@ -26,78 +26,78 @@ import org.esigate.parser.future.StringBuilderFutureAppendable;
 
 class ExceptElement extends BaseElement {
 
-	public final static FutureElementType TYPE = new BaseElementType("<esi:except", "</esi:except") {
-		@Override
-		public ExceptElement newInstance() {
-			return new ExceptElement();
-		}
+    public static final FutureElementType TYPE = new BaseElementType("<esi:except", "</esi:except") {
+        @Override
+        public ExceptElement newInstance() {
+            return new ExceptElement();
+        }
 
-	};
+    };
 
-	public class ExceptTask implements Future<CharSequence> {
-		TryElement parent;
-		Tag tag;
+    public class ExceptTask implements Future<CharSequence> {
+        private TryElement parent;
+        private Tag tag;
 
-		public ExceptTask(Tag tag, TryElement parent) {
-			this.parent = parent;
-			this.tag = tag;
-		}
+        public ExceptTask(Tag tag, TryElement parent) {
+            this.parent = parent;
+            this.tag = tag;
+        }
 
-		@Override
-		public boolean cancel(boolean mayInterruptIfRunning) {
-			return false;
-		}
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;
+        }
 
-		@Override
-		public boolean isCancelled() {
-			return false;
-		}
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
 
-		@Override
-		public boolean isDone() {
-			return true;
-		}
+        @Override
+        public boolean isDone() {
+            return true;
+        }
 
-		@Override
-		public CharSequence get() throws InterruptedException, ExecutionException {
-			int code = (tag.getAttribute("code") != null) ? Integer.parseInt(tag.getAttribute("code")) : -1;
-			boolean processContent = (parent.hasErrors() && !parent.exceptProcessed() && (code == -1 || code == parent
-					.getErrorCode()));
-			if (processContent) {
-				parent.setExceptProcessed(processContent);
-				return buf.get();
-			}
+        @Override
+        public CharSequence get() throws InterruptedException, ExecutionException {
+            int code = (tag.getAttribute("code") != null) ? Integer.parseInt(tag.getAttribute("code")) : -1;
+            boolean processContent = (parent.hasErrors() && !parent.exceptProcessed() && (code == -1 || code == parent
+                    .getErrorCode()));
+            if (processContent) {
+                parent.setExceptProcessed(processContent);
+                return buf.get();
+            }
 
-			return "";
-		}
+            return "";
+        }
 
-		@Override
-		public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
-				TimeoutException {
-			return get();
-		}
-	}
+        @Override
+        public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
+                TimeoutException {
+            return get();
+        }
+    }
 
-	ExceptElement() {
+    ExceptElement() {
 
-	}
+    }
 
-	StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
+    private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
 
-	@Override
-	protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException {
-		TryElement parent = ctx.findAncestor(TryElement.class);
+    @Override
+    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException {
+        TryElement parent = ctx.findAncestor(TryElement.class);
 
-		if (parent != null) {
-			parent.setWrite(true);
-			ctx.getCurrent().characters(new ExceptTask(tag, parent));
-			parent.setWrite(false);
-		}
-	}
+        if (parent != null) {
+            parent.setWrite(true);
+            ctx.getCurrent().characters(new ExceptTask(tag, parent));
+            parent.setWrite(false);
+        }
+    }
 
-	@Override
-	public void characters(Future<CharSequence> csq) throws IOException {
-		buf.enqueueAppend(csq);
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) throws IOException {
+        buf.enqueueAppend(csq);
+    }
 
 }

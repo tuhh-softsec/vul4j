@@ -30,19 +30,20 @@ import org.esigate.parser.ParserContext;
  * 
  */
 class Comment extends BaseElement {
-	public final static ElementType TYPE = new BaseElementType("<!--esi", "-->") {
-		@Override
-		public Comment newInstance() {
-			return new Comment();
-		}
+    public static final ElementType TYPE = new BaseElementType("<!--esi", "-->") {
+        @Override
+        public Comment newInstance() {
+            return new Comment();
+        }
 
-	};
+    };
 
-	Comment() { }
+    Comment() {
+    }
 
-	@Override
-	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		// do not try to parse tag string
-		super.onTagStart("<esi!-->", ctx);
-	}
+    @Override
+    public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+        // do not try to parse tag string
+        super.onTagStart("<esi!-->", ctx);
+    }
 }

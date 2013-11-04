@@ -23,46 +23,45 @@ import org.apache.http.HttpResponse;
 
 /**
  * 
- * A response handler, which returns different HTTP reponses according to the
- * requested URI.
+ * A response handler, which returns different HTTP reponses according to the requested URI.
  * 
- * Sends IllegalStateException if no reponse has been defined for the requested
- * uri.
+ * Sends IllegalStateException if no reponse has been defined for the requested uri.
  * 
  * @author Nicolas Richeton
  * 
  */
 public class UriResponse implements IResponseHandler {
-	private Map<String, HttpResponse> responses = new HashMap<String, HttpResponse>();
+    private Map<String, HttpResponse> responses = new HashMap<String, HttpResponse>();
 
-	@Override
-	public HttpResponse execute(HttpRequest request) throws IOException {
-		String uri = request.getRequestLine().getUri();
-		HttpResponse result = this.responses.get(uri);
-		if (result == null) {
-			throw new IllegalStateException("No response for uri: " + uri);
-		}
-		return result;
-	}
+    @Override
+    public HttpResponse execute(HttpRequest request) throws IOException {
+        String uri = request.getRequestLine().getUri();
+        HttpResponse result = this.responses.get(uri);
+        if (result == null) {
+            throw new IllegalStateException("No response for uri: " + uri);
+        }
+        return result;
+    }
 
-	/**
-	 * Add a Http reponse.
-	 * 
-	 * <p>
-	 * <pre>
-	 * response( "http://host/path1", httpResponse )
-	 * </pre>
-	 * @param uri
-	 *            Full uri including protocol, host, port if any, path and query
-	 *            params.
-	 *            
-	 *            
-	 * @param response
-	 * @return this object
-	 */
-	public UriResponse response(String uri, HttpResponse response) {
-		this.responses.put(uri, response);
-		return this;
-	}
+    /**
+     * Add a Http reponse.
+     * 
+     * <p>
+     * 
+     * <pre>
+     * response(&quot;http://host/path1&quot;, httpResponse)
+     * </pre>
+     * 
+     * @param uri
+     *            Full uri including protocol, host, port if any, path and query params.
+     * 
+     * 
+     * @param response
+     * @return this object
+     */
+    public UriResponse response(String uri, HttpResponse response) {
+        this.responses.put(uri, response);
+        return this;
+    }
 
 }

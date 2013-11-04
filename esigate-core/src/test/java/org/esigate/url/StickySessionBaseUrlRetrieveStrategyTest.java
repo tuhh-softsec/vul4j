@@ -25,40 +25,43 @@ import org.esigate.test.TestUtils;
 
 public class StickySessionBaseUrlRetrieveStrategyTest extends TestCase {
 
-	public void testGetBaseURL() {
-		final String baseUrls[] = new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
-		BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
-		int times = 100;
-		for (int i = 0; i < times; i++) {
-			HttpEntityEnclosingRequest request = TestUtils.createRequest();
-			Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, Integer.toString(i % baseUrls.length));
-			TestUtils.addCookie(cookie, request);
-			assertEquals(baseUrls[i % baseUrls.length], strategy.getBaseURL(request));
-		}
-	}
+    public void testGetBaseURL() {
+        final String[] baseUrls = new String[] { "http://example.com/test/", "http://example1.com/test/",
+                "http://example2.com/test/" };
+        BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
+        int times = 100;
+        for (int i = 0; i < times; i++) {
+            HttpEntityEnclosingRequest request = TestUtils.createRequest();
+            Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME,
+                    Integer.toString(i % baseUrls.length));
+            TestUtils.addCookie(cookie, request);
+            assertEquals(baseUrls[i % baseUrls.length], strategy.getBaseURL(request));
+        }
+    }
 
-	public void testGetBaseURLWithWrongIndex() {
-		final String baseUrls[] = new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
-		BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
+    public void testGetBaseURLWithWrongIndex() {
+        final String[] baseUrls = new String[] { "http://example.com/test/", "http://example1.com/test/",
+                "http://example2.com/test/" };
+        BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
 
-		HttpEntityEnclosingRequest request = TestUtils.createRequest();
-		Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "-1");
-		TestUtils.addCookie(cookie, request);
-		strategy.getBaseURL(request);
+        HttpEntityEnclosingRequest request = TestUtils.createRequest();
+        Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "-1");
+        TestUtils.addCookie(cookie, request);
+        strategy.getBaseURL(request);
 
-		request = TestUtils.createRequest();
-		cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "5");
-		TestUtils.addCookie(cookie, request);
-		strategy.getBaseURL(request);
+        request = TestUtils.createRequest();
+        cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "5");
+        TestUtils.addCookie(cookie, request);
+        strategy.getBaseURL(request);
 
-		request = TestUtils.createRequest();
-		cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, null);
-		TestUtils.addCookie(cookie, request);
-		strategy.getBaseURL(request);
+        request = TestUtils.createRequest();
+        cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, null);
+        TestUtils.addCookie(cookie, request);
+        strategy.getBaseURL(request);
 
-		request = TestUtils.createRequest();
-		cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "a");
-		TestUtils.addCookie(cookie, request);
-		strategy.getBaseURL(request);
-	}
+        request = TestUtils.createRequest();
+        cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "a");
+        TestUtils.addCookie(cookie, request);
+        strategy.getBaseURL(request);
+    }
 }

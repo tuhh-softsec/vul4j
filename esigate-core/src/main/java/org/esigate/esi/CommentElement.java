@@ -25,18 +25,19 @@ import org.esigate.parser.ElementType;
  * 
  */
 class CommentElement extends BaseElement {
-	public final static ElementType TYPE = new BaseElementType("<esi:comment", "</esi:comment") {
-		@Override
-		public CommentElement newInstance() {
-			return new CommentElement();
-		}
+    public static final ElementType TYPE = new BaseElementType("<esi:comment", "</esi:comment") {
+        @Override
+        public CommentElement newInstance() {
+            return new CommentElement();
+        }
 
-	};
+    };
 
-	CommentElement() { }
+    CommentElement() {
+    }
 
-	@Override
-	public void characters(CharSequence csq, int start, int end) {
-		// ignore element body
-	}
+    @Override
+    public void characters(CharSequence csq, int start, int end) {
+        // ignore element body
+    }
 }

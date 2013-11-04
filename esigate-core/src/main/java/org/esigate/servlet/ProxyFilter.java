@@ -37,40 +37,43 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProxyFilter implements Filter {
-	private static final Logger LOG = LoggerFactory.getLogger(ProxyFilter.class);
-	private DriverSelector driverSelector;
-	private FilterConfig config;
+    private static final Logger LOG = LoggerFactory.getLogger(ProxyFilter.class);
+    private DriverSelector driverSelector;
+    private FilterConfig config;
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		this.config = filterConfig;
-		// Force esigate configuration parsing to trigger errors right away (if
-		// any) and prevent delay on first call.
-		DriverFactory.ensureConfigured();
-		driverSelector = new DriverSelector();
-		driverSelector.setUseMappings(true);
-	}
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        this.config = filterConfig;
+        // Force esigate configuration parsing to trigger errors right away (if
+        // any) and prevent delay on first call.
+        DriverFactory.ensureConfigured();
+        driverSelector = new DriverSelector();
+        driverSelector.setUseMappings(true);
+    }
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-		HttpServletMediator mediator = new HttpServletMediator(httpServletRequest, httpServletResponse, config.getServletContext(), chain);
-		Pair<Driver, UriMapping> dm = null;
-		try {
-			dm = this.driverSelector.selectProvider(httpServletRequest, false);
-			String relUrl = RequestUrl.getRelativeUrl(httpServletRequest, dm.getRight(), false);
-			LOG.debug("Proxying {}", relUrl);
-			dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
-		} catch (HttpErrorPage e) {
-			if (!httpServletResponse.isCommitted())
-				mediator.sendResponse(e.getHttpResponse());
-		}
-	}
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+            ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        HttpServletMediator mediator = new HttpServletMediator(httpServletRequest, httpServletResponse,
+                config.getServletContext(), chain);
+        Pair<Driver, UriMapping> dm = null;
+        try {
+            dm = this.driverSelector.selectProvider(httpServletRequest, false);
+            String relUrl = RequestUrl.getRelativeUrl(httpServletRequest, dm.getRight(), false);
+            LOG.debug("Proxying {}", relUrl);
+            dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
+        } catch (HttpErrorPage e) {
+            if (!httpServletResponse.isCommitted()) {
+                mediator.sendResponse(e.getHttpResponse());
+            }
+        }
+    }
 
-	@Override
-	public void destroy() {
-		// Nothing to do
-	}
+    @Override
+    public void destroy() {
+        // Nothing to do
+    }
 
 }

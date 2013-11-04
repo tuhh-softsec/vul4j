@@ -29,20 +29,21 @@ import org.esigate.test.TestUtils;
 
 public class RoundRobinBaseUrlRetrieveStrategyTest extends TestCase {
 
-	public void testGetBaseURL() {
-		String baseUrls[] = new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
-		BaseUrlRetrieveStrategy strategy = new RoundRobinBaseUrlRetrieveStrategy(baseUrls);
-		HttpEntityEnclosingRequest request = TestUtils.createRequest();
-		int times = 5;
-		int requestsCount = baseUrls.length * times;
-		ConcurrentMap<String, AtomicInteger> counterMap = new ConcurrentHashMap<String, AtomicInteger>();
-		for (int i = 0; i < requestsCount; i++) {
-			String baseUrl = strategy.getBaseURL(request);
-			counterMap.putIfAbsent(baseUrl, new AtomicInteger(0));
-			counterMap.get(baseUrl).incrementAndGet();
-		}
-		for (String baseUrl : baseUrls) {
-			assertEquals(times, counterMap.get(baseUrl).get());
-		}
-	}
+    public void testGetBaseURL() {
+        String[] baseUrls = new String[] { "http://example.com/test/", "http://example1.com/test/",
+                "http://example2.com/test/" };
+        BaseUrlRetrieveStrategy strategy = new RoundRobinBaseUrlRetrieveStrategy(baseUrls);
+        HttpEntityEnclosingRequest request = TestUtils.createRequest();
+        int times = 5;
+        int requestsCount = baseUrls.length * times;
+        ConcurrentMap<String, AtomicInteger> counterMap = new ConcurrentHashMap<String, AtomicInteger>();
+        for (int i = 0; i < requestsCount; i++) {
+            String baseUrl = strategy.getBaseURL(request);
+            counterMap.putIfAbsent(baseUrl, new AtomicInteger(0));
+            counterMap.get(baseUrl).incrementAndGet();
+        }
+        for (String baseUrl : baseUrls) {
+            assertEquals(times, counterMap.get(baseUrl).get());
+        }
+    }
 }

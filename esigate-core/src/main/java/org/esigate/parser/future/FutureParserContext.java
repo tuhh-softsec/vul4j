@@ -16,7 +16,6 @@
 package org.esigate.parser.future;
 
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 
 /**
@@ -30,31 +29,28 @@ import org.apache.http.HttpResponse;
  */
 public interface FutureParserContext {
 
-	/** @return {@linkplain HttpRequest} associated with current processing. */
-	HttpEntityEnclosingRequest getHttpRequest();
+    /** @return {@linkplain org.apache.http.HttpRequest} associated with current processing. */
+    HttpEntityEnclosingRequest getHttpRequest();
 
-	/** @return {@linkplain HttpResponse} associated with current processing. */
-	HttpResponse getHttpResponse();
+    /** @return {@linkplain org.apache.http.HttpResponse} associated with current processing. */
+    HttpResponse getHttpResponse();
 
-	/**
-	 * @param e
-	 * @return <code>true</code> if error has been handled by this element and
-	 *         it should not be propagated further.
-	 */
-	boolean reportError(FutureElement element, Exception e);
+    /**
+     * @param e
+     * @return <code>true</code> if error has been handled by this element and it should not be propagated further.
+     */
+    boolean reportError(FutureElement element, Exception e);
 
-	FutureElement getCurrent();
+    FutureElement getCurrent();
 
-	<T> T findAncestor(Class<T> type);
+    <T> T findAncestor(Class<T> type);
 
-
-
-	/**
-	 * Allow to get custom context data.
-	 * 
-	 * @param key
-	 * @return
-	 */
-	Object getData(String key);
+    /**
+     * Allow to get custom context data.
+     * 
+     * @param key
+     * @return
+     */
+    Object getData(String key);
 
 }

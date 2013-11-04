@@ -24,31 +24,32 @@ import org.esigate.HttpErrorPage;
 
 public class BlockRendererTest extends TestCase {
 
-	public void testRenderBlockNull() throws IOException, HttpErrorPage {
-		BlockRenderer tested = new BlockRenderer(null, null);
-		tested.render(null, null, null);
-	}
+    public void testRenderBlockNull() throws IOException, HttpErrorPage {
+        BlockRenderer tested = new BlockRenderer(null, null);
+        tested.render(null, null, null);
+    }
 
-	public void testRenderBlock() throws IOException, HttpErrorPage {
-		final String expectedOutput = "abc some<!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$--> cdf hello";
-		Writer out = new StringWriter();
-		BlockRenderer tested = new BlockRenderer("myblock", null);
-		tested.render(null, expectedOutput, out);
-		assertEquals("some text goes here", out.toString());
-		// null name means whole page
-		out = new StringWriter();
-		tested = new BlockRenderer(null, null);
-		tested.render(null, expectedOutput, out);
-		assertEquals(expectedOutput, out.toString());
-	}
+    public void testRenderBlock() throws IOException, HttpErrorPage {
+        final String expectedOutput = "abc some"
+                + "<!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$-->" + " cdf hello";
+        Writer out = new StringWriter();
+        BlockRenderer tested = new BlockRenderer("myblock", null);
+        tested.render(null, expectedOutput, out);
+        assertEquals("some text goes here", out.toString());
+        // null name means whole page
+        out = new StringWriter();
+        tested = new BlockRenderer(null, null);
+        tested.render(null, expectedOutput, out);
+        assertEquals(expectedOutput, out.toString());
+    }
 
-	public void testUnknownTag() throws IOException, HttpErrorPage {
-		final String input = "abc some<!--$hello$world$-->some text goes here";
-		Writer out = new StringWriter();
-		BlockRenderer tested = new BlockRenderer(null, null);
-		tested.render(null, input, out);
-		// input should remain unchanged
-		assertEquals(input, out.toString());
-	}
+    public void testUnknownTag() throws IOException, HttpErrorPage {
+        final String input = "abc some<!--$hello$world$-->some text goes here";
+        Writer out = new StringWriter();
+        BlockRenderer tested = new BlockRenderer(null, null);
+        tested.render(null, input, out);
+        // input should remain unchanged
+        assertEquals(input, out.toString());
+    }
 
 }

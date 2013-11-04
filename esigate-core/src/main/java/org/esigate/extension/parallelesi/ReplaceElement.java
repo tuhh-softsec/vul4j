@@ -34,58 +34,60 @@ import org.esigate.vars.VariablesResolver;
  */
 class ReplaceElement extends BaseElement {
 
-	public final static FutureElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
-		@Override
-		public ReplaceElement newInstance() {
-			return new ReplaceElement();
-		}
+    public static final FutureElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
+        @Override
+        public ReplaceElement newInstance() {
+            return new ReplaceElement();
+        }
 
-	};
+    };
 
-	private StringBuilderFutureAppendable buf = null;
-	private String fragment;
-	private String regexp;
+    private StringBuilderFutureAppendable buf = null;
+    private String fragment;
+    private String regexp;
 
-	@Override
-	public void characters(Future<CharSequence> csq) throws IOException {
-		buf.enqueueAppend(csq);
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) throws IOException {
+        buf.enqueueAppend(csq);
+    }
 
-	@Override
-	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		IncludeElement parent = ctx.findAncestor(IncludeElement.class);
-		if (parent == null)
-			throw new EsiSyntaxError("<esi:replace> tag can only be used inside an <esi:include> tag");
-		String result;
-		try {
-			result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
-		} catch (InterruptedException e) {
-			throw new IOException(e);
-		} catch (ExecutionException e) {
-			if( e.getCause() instanceof HttpErrorPage ) {
-				throw (HttpErrorPage)e.getCause();
-			}
-			throw new IOException(e);
-		}
-		if (fragment != null) {
-			parent.addFragmentReplacement(fragment, (CharSequence) result);
-		} else if (regexp != null) {
-			parent.addRegexpReplacement(regexp, (CharSequence) result);
-		} else {
-			parent.characters(new CharSequenceFuture(result));
-		}
-	}
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        IncludeElement parent = ctx.findAncestor(IncludeElement.class);
+        if (parent == null) {
+            throw new EsiSyntaxError("<esi:replace> tag can only be used inside an <esi:include> tag");
+        }
+        String result;
+        try {
+            result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof HttpErrorPage) {
+                throw (HttpErrorPage) e.getCause();
+            }
+            throw new IOException(e);
+        }
+        if (fragment != null) {
+            parent.addFragmentReplacement(fragment, (CharSequence) result);
+        } else if (regexp != null) {
+            parent.addRegexpReplacement(regexp, (CharSequence) result);
+        } else {
+            parent.characters(new CharSequenceFuture(result));
+        }
+    }
 
-	@Override
-	protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		buf = new StringBuilderFutureAppendable();
-		fragment = tag.getAttribute("fragment");
-		regexp = tag.getAttribute("regexp");
-		if (regexp == null)
-			regexp = tag.getAttribute("expression");
-		if ((fragment == null && regexp == null) || (fragment != null && regexp != null)) {
-			throw new EsiSyntaxError("only one of 'fragment' and 'expression' attributes is allowed");
-		}
-	}
+    @Override
+    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        buf = new StringBuilderFutureAppendable();
+        fragment = tag.getAttribute("fragment");
+        regexp = tag.getAttribute("regexp");
+        if (regexp == null) {
+            regexp = tag.getAttribute("expression");
+        }
+        if ((fragment == null && regexp == null) || (fragment != null && regexp != null)) {
+            throw new EsiSyntaxError("only one of 'fragment' and 'expression' attributes is allowed");
+        }
+    }
 
 }

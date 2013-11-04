@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
+import org.apache.http.HttpStatus;
 import org.apache.http.protocol.ExecutionContext;
 import org.esigate.Driver;
 import org.esigate.events.Event;
@@ -33,8 +34,8 @@ import org.slf4j.LoggerFactory;
 /**
  * This extension logs requests to remote systems.
  * <p>
- * Be sure to put this extension as the first extension in order to log the
- * whole request time, including all extension processing.
+ * Be sure to put this extension as the first extension in order to log the whole request time, including all extension
+ * processing.
  * 
  * <p>
  * Log level is :
@@ -60,87 +61,83 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class FetchLogging implements Extension, IEventListener {
-	private static final String TIME = "org.esigate.time.external";
-	private static final Logger LOG = LoggerFactory
-			.getLogger(FetchLogging.class);
+    private static final String TIME = "org.esigate.time.external";
+    private static final Logger LOG = LoggerFactory.getLogger(FetchLogging.class);
 
-	@Override
-	public void init(Driver driver, Properties properties) {
-		driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
-		driver.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
-	}
+    @Override
+    public void init(Driver driver, Properties properties) {
+        driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
+        driver.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
+    }
 
-	@Override
-	public boolean event(EventDefinition id, Event event) {
+    @Override
+    public boolean event(EventDefinition id, Event event) {
 
-		FetchEvent e = (FetchEvent) event;
+        FetchEvent e = (FetchEvent) event;
 
-		if (EventManager.EVENT_FETCH_POST.equals(id)) {
-			int statusCode = e.httpResponse.getStatusLine().getStatusCode();
+        if (EventManager.EVENT_FETCH_POST.equals(id)) {
+            int statusCode = e.httpResponse.getStatusLine().getStatusCode();
 
-			// Log only if info or issue
-			if (LOG.isInfoEnabled() || statusCode >= 400) {
-				HttpRequest lastRequest = e.httpRequest;
+            // Log only if info or issue
+            if (LOG.isInfoEnabled() || statusCode >= HttpStatus.SC_BAD_REQUEST) {
+                HttpRequest lastRequest = e.httpRequest;
 
-				String url = lastRequest.getRequestLine().toString();
-				String status = e.httpResponse.getStatusLine().toString();
+                String url = lastRequest.getRequestLine().toString();
+                String status = e.httpResponse.getStatusLine().toString();
 
-				String reqHeaders = ArrayUtils.toString(lastRequest
-						.getAllHeaders());
-				String respHeaders = ArrayUtils.toString(e.httpResponse
-						.getAllHeaders());
+                String reqHeaders = ArrayUtils.toString(lastRequest.getAllHeaders());
+                String respHeaders = ArrayUtils.toString(e.httpResponse.getAllHeaders());
 
-				HttpHost targetHost = (HttpHost) e.httpContext
-						.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+                HttpHost targetHost = (HttpHost) e.httpContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 
-				long time = System.currentTimeMillis()
-						- (Long) e.httpContext.removeAttribute(TIME);
+                long time = System.currentTimeMillis() - (Long) e.httpContext.removeAttribute(TIME);
 
-				StringBuilder logMessage = new StringBuilder();
-				
-				// Display target host, protocol and port
-				if (targetHost != null) {
-					logMessage.append(targetHost.getSchemeName());
-					logMessage.append("://");
-					logMessage.append(targetHost.getHostName());
-					
-					if (targetHost.getPort() != -1) {
-						logMessage.append(":");
-						logMessage.append(targetHost.getPort());
-					}
-					
-					logMessage.append(" - ");
-				}
-				// Url
-				logMessage.append(url);
-				logMessage.append(" ");
-				
-				// request headers
-				logMessage.append(reqHeaders);
-				
-				// Response status
-				logMessage.append(" -> ");
-				logMessage.append(status);
-				
-				// Time
-				logMessage.append(" (" );
-				logMessage.append( time );
-				logMessage.append( " ms) ");
-				
-				// Response headers
-				logMessage.append(respHeaders);
+                StringBuilder logMessage = new StringBuilder();
 
-				if (statusCode >= 400)
-					LOG.warn(logMessage.toString());
-				else
-					LOG.info(logMessage.toString());
-			}
-		} else {
-			e.httpContext.setAttribute(TIME, System.currentTimeMillis());
-		}
+                // Display target host, protocol and port
+                if (targetHost != null) {
+                    logMessage.append(targetHost.getSchemeName());
+                    logMessage.append("://");
+                    logMessage.append(targetHost.getHostName());
 
-		// Continue processing
-		return true;
-	}
+                    if (targetHost.getPort() != -1) {
+                        logMessage.append(":");
+                        logMessage.append(targetHost.getPort());
+                    }
+
+                    logMessage.append(" - ");
+                }
+                // Url
+                logMessage.append(url);
+                logMessage.append(" ");
+
+                // request headers
+                logMessage.append(reqHeaders);
+
+                // Response status
+                logMessage.append(" -> ");
+                logMessage.append(status);
+
+                // Time
+                logMessage.append(" (");
+                logMessage.append(time);
+                logMessage.append(" ms) ");
+
+                // Response headers
+                logMessage.append(respHeaders);
+
+                if (statusCode >= HttpStatus.SC_BAD_REQUEST) {
+                    LOG.warn(logMessage.toString());
+                } else {
+                    LOG.info(logMessage.toString());
+                }
+            }
+        } else {
+            e.httpContext.setAttribute(TIME, System.currentTimeMillis());
+        }
+
+        // Continue processing
+        return true;
+    }
 
 }

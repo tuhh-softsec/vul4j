@@ -21,50 +21,50 @@ import org.apache.http.HttpRequest;
 import org.esigate.util.HttpRequestHelper;
 
 /**
- * User context that can be used in the master application to define the user
- * id. This context will be transmitted to the provider applications.<br />
+ * User context that can be used in the master application to define the user id. This context will be transmitted to
+ * the provider applications.<br />
  * There is one instance of user context associated with each session.
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
- *  
+ * 
  */
 public class UserContext {
-	private static final  String USER_KEY = "user";
-	private final HttpRequest httpRequest;
-	private final String key;
+    private static final String USER_KEY = "user";
+    private final HttpRequest httpRequest;
+    private final String key;
 
-	public UserContext(HttpRequest httpRequest, String key) {
-		this.httpRequest = httpRequest;
-		this.key = UserContext.class.getName() + "#" + key;
-	}
+    public UserContext(HttpRequest httpRequest, String key) {
+        this.httpRequest = httpRequest;
+        this.key = UserContext.class.getName() + "#" + key;
+    }
 
-	private String prefixAttributeName(String name) {
-		return key + "#" + name;
-	}
+    private String prefixAttributeName(String name) {
+        return key + "#" + name;
+    }
 
-	public Object getAttribute(String name) {
-		return HttpRequestHelper.getMediator(httpRequest).getSessionAttribute(prefixAttributeName(name));
-	}
+    public Object getAttribute(String name) {
+        return HttpRequestHelper.getMediator(httpRequest).getSessionAttribute(prefixAttributeName(name));
+    }
 
-	public void setAttribute(String name, Serializable value) {
-		HttpRequestHelper.getMediator(httpRequest).setSessionAttribute(prefixAttributeName(name), value);
-	}
+    public void setAttribute(String name, Serializable value) {
+        HttpRequestHelper.getMediator(httpRequest).setSessionAttribute(prefixAttributeName(name), value);
+    }
 
-	public String getUser() {
-		return (String) getAttribute(USER_KEY);
-	}
+    public String getUser() {
+        return (String) getAttribute(USER_KEY);
+    }
 
-	public void setUser(String user) {
-		setAttribute(USER_KEY, user);
-	}
+    public void setUser(String user) {
+        setAttribute(USER_KEY, user);
+    }
 
-	/*
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder result = new StringBuilder().append("User=").append(getUser());
-		return result.toString();
-	}
+    /*
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder().append("User=").append(getUser());
+        return result.toString();
+    }
 }

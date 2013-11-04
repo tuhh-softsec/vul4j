@@ -26,9 +26,9 @@ import org.esigate.HttpErrorPage;
  */
 public class EsiSyntaxError extends HttpErrorPage {
 
-	private static final long serialVersionUID = -6461207665346395033L;
+    private static final long serialVersionUID = -6461207665346395033L;
 
-	public EsiSyntaxError(String message) {
-		super(HttpStatus.SC_BAD_GATEWAY, "ESI syntax error", message);
-	}
+    public EsiSyntaxError(String message) {
+        super(HttpStatus.SC_BAD_GATEWAY, "ESI syntax error", message);
+    }
 }

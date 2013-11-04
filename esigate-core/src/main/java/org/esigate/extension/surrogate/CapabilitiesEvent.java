@@ -26,9 +26,8 @@ import org.esigate.events.Event;
  * 
  */
 public class CapabilitiesEvent extends Event {
-	/**
-	 * Current capability list. An extension can update this list to declare
-	 * additional capabilities.
-	 */
-	public List<String> capabilities = new ArrayList<String>();
+    /**
+     * Current capability list. An extension can update this list to declare additional capabilities.
+     */
+    public List<String> capabilities = new ArrayList<String>();
 }

@@ -39,10 +39,10 @@ public class Bug101ConnectionReleaseTest {
 	@Test
 	public void testConnectionLeak() throws IOException, HttpErrorPage {
 		Properties properties = new Properties();
-		properties.put(Parameters.MAX_CONNECTIONS_PER_HOST.name, "1");
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080/");
-		properties.put(Parameters.SOCKET_TIMEOUT.name, "4000");
-		properties.put(Parameters.USE_CACHE.name, "false");
+		properties.put(Parameters.MAX_CONNECTIONS_PER_HOST.getName(), "1");
+		properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080/");
+		properties.put(Parameters.SOCKET_TIMEOUT.getName(), "4000");
+		properties.put(Parameters.USE_CACHE.getName(), "false");
 
 		Driver driver = Driver.builder().setName("test").setProperties(properties).build();
 

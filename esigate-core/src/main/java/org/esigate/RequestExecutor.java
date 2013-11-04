@@ -25,22 +25,23 @@ import org.esigate.http.GenericHttpRequest;
 
 public interface RequestExecutor {
 
-	 HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean b) throws HttpErrorPage;
+    HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean b)
+            throws HttpErrorPage;
 
-	 HttpResponse executeSingleRequest(GenericHttpRequest httpRequest);
+    HttpResponse executeSingleRequest(GenericHttpRequest httpRequest);
 
-	public interface RequestExecutorBuilder {
+    public interface RequestExecutorBuilder {
 
-		 RequestExecutorBuilder setEventManager(EventManager eventManager);
+        RequestExecutorBuilder setEventManager(EventManager eventManager);
 
-		 RequestExecutorBuilder setDriver(Driver driver);
+        RequestExecutorBuilder setDriver(Driver driver);
 
-		 RequestExecutorBuilder setProperties(Properties properties);
-		
-		 RequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper);
+        RequestExecutorBuilder setProperties(Properties properties);
 
-		 RequestExecutor build();
+        RequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper);
 
-	}
+        RequestExecutor build();
+
+    }
 
 }

@@ -10,13 +10,13 @@ package org.esigate.events;
  */
 public interface IEventListener {
 
-	/**
-	 * Handle an event.
-	 * 
-	 * @param id
-	 * @param event
-	 * @return false to stop the processing of event listeners for this event
-	 */
-	boolean event(EventDefinition id, Event event);
+    /**
+     * Handle an event.
+     * 
+     * @param id
+     * @param event
+     * @return false to stop the processing of event listeners for this event
+     */
+    boolean event(EventDefinition id, Event event);
 
 }

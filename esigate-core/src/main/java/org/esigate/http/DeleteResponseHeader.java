@@ -31,34 +31,34 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class DeleteResponseHeader implements IEventListener {
-	private static final Logger LOG = LoggerFactory.getLogger(DeleteResponseHeader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DeleteResponseHeader.class);
 
-	private final String name;
+    private final String name;
 
-	/**
-	 * Delete header 'name'
-	 * 
-	 * @param name
-	 *            name of header to delete.
-	 */
-	public DeleteResponseHeader(String name) {
-		this.name = name;
-	}
+    /**
+     * Delete header 'name'.
+     * 
+     * @param name
+     *            name of header to delete.
+     */
+    public DeleteResponseHeader(String name) {
+        this.name = name;
+    }
 
-	@Override
-	public boolean event(EventDefinition id, Event event) {
-		ProxyEvent fEvent = (ProxyEvent) event;
-		if (fEvent.response != null && fEvent.response.containsHeader(this.name)) {
-			LOG.info("Deleting header {} ", this.name);
-			fEvent.response.removeHeaders(this.name);
-		}
-		if (fEvent.errorPage != null && fEvent.errorPage.getHttpResponse() != null
-				&& fEvent.errorPage.getHttpResponse().containsHeader(this.name)) {
-			LOG.info("Deleting header {} ", this.name);
-			fEvent.errorPage.getHttpResponse().removeHeaders(this.name);
-		}
+    @Override
+    public boolean event(EventDefinition id, Event event) {
+        ProxyEvent fEvent = (ProxyEvent) event;
+        if (fEvent.response != null && fEvent.response.containsHeader(this.name)) {
+            LOG.info("Deleting header {} ", this.name);
+            fEvent.response.removeHeaders(this.name);
+        }
+        if (fEvent.errorPage != null && fEvent.errorPage.getHttpResponse() != null
+                && fEvent.errorPage.getHttpResponse().containsHeader(this.name)) {
+            LOG.info("Deleting header {} ", this.name);
+            fEvent.errorPage.getHttpResponse().removeHeaders(this.name);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 }

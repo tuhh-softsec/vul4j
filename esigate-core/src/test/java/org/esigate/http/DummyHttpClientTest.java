@@ -17,38 +17,40 @@ package org.esigate.http;
 
 import java.io.IOException;
 
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-public class DummyHttpClientTest {
+public final class DummyHttpClientTest {
 
-	/**
-	 * @param args
-	 * @throws IOException
-	 * @throws ClientProtocolException
-	 */
-	public static void main(String[] args) throws ClientProtocolException, IOException {
-		CloseableHttpClient httpClient = HttpClients.custom().build();
+    private DummyHttpClientTest() {
 
-		HttpGet request = new HttpGet("http://localhost:8080/esigate-app-aggregated1/slow.jsp");
-		request.setConfig(RequestConfig.custom().setSocketTimeout(1000).build());
+    }
 
-		long start = System.currentTimeMillis();
-		// Should fail with socket timeout!
-		EntityUtils.consume(httpClient.execute(request).getEntity());
-		System.out.println("First request executed in " + (System.currentTimeMillis() - start) + " ms");
+    /**
+     * @param args
+     * @throws IOException
+     */
+    public static void main(String[] args) throws IOException {
+        CloseableHttpClient httpClient = HttpClients.custom().build();
 
-		request = new HttpGet("http://localhost:8080/esigate-app-aggregated1/slow.jsp");
-		request.setConfig(RequestConfig.custom().setSocketTimeout(1000).build());
+        HttpGet request = new HttpGet("http://localhost:8080/esigate-app-aggregated1/slow.jsp");
+        request.setConfig(RequestConfig.custom().setSocketTimeout(1000).build());
 
-		start = System.currentTimeMillis();
-		// Should fail with socket timeout!
-		EntityUtils.consume(httpClient.execute(request).getEntity());
-		System.out.println("Second request executed in " + (System.currentTimeMillis() - start) + " ms");
-	}
+        long start = System.currentTimeMillis();
+        // Should fail with socket timeout!
+        EntityUtils.consume(httpClient.execute(request).getEntity());
+        System.out.println("First request executed in " + (System.currentTimeMillis() - start) + " ms");
+
+        request = new HttpGet("http://localhost:8080/esigate-app-aggregated1/slow.jsp");
+        request.setConfig(RequestConfig.custom().setSocketTimeout(1000).build());
+
+        start = System.currentTimeMillis();
+        // Should fail with socket timeout!
+        EntityUtils.consume(httpClient.execute(request).getEntity());
+        System.out.println("Second request executed in " + (System.currentTimeMillis() - start) + " ms");
+    }
 
 }

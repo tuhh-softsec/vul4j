@@ -33,54 +33,54 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class MoveResponseHeader implements IEventListener {
-	private static final Logger LOG = LoggerFactory.getLogger(MoveResponseHeader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MoveResponseHeader.class);
 
-	private final String srcName;
-	private final String targetName;
+    private final String srcName;
+    private final String targetName;
 
-	/**
-	 * Move header srcName to targetName.
-	 * 
-	 * @param srcName
-	 *            source header name
-	 * @param targetName
-	 *            target header name
-	 */
-	public MoveResponseHeader(String srcName, String targetName) {
-		this.srcName = srcName;
-		this.targetName = targetName;
-	}
+    /**
+     * Move header srcName to targetName.
+     * 
+     * @param srcName
+     *            source header name
+     * @param targetName
+     *            target header name
+     */
+    public MoveResponseHeader(String srcName, String targetName) {
+        this.srcName = srcName;
+        this.targetName = targetName;
+    }
 
-	@Override
-	public boolean event(EventDefinition id, Event event) {
-		FragmentEvent fEvent = (FragmentEvent) event;
+    @Override
+    public boolean event(EventDefinition id, Event event) {
+        FragmentEvent fEvent = (FragmentEvent) event;
 
-		moveHeader(fEvent.httpResponse, this.srcName, this.targetName);
+        moveHeader(fEvent.httpResponse, this.srcName, this.targetName);
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * This method can be used directly to move an header.
-	 * 
-	 * @param response
-	 *            HTTP response
-	 * @param srcName
-	 *            source header name
-	 * @param targetName
-	 *            target header name
-	 */
-	public static void moveHeader(HttpResponse response, String srcName, String targetName) {
-		if (response.containsHeader(srcName)) {
-			LOG.info("Moving header {} to {}", srcName, targetName);
+    /**
+     * This method can be used directly to move an header.
+     * 
+     * @param response
+     *            HTTP response
+     * @param srcName
+     *            source header name
+     * @param targetName
+     *            target header name
+     */
+    public static void moveHeader(HttpResponse response, String srcName, String targetName) {
+        if (response.containsHeader(srcName)) {
+            LOG.info("Moving header {} to {}", srcName, targetName);
 
-			Header[] headers = response.getHeaders(srcName);
-			response.removeHeaders(targetName);
-			for (Header h : headers) {
-				response.addHeader(targetName, h.getValue());
-			}
-			response.removeHeaders(srcName);
-		}
-	}
+            Header[] headers = response.getHeaders(srcName);
+            response.removeHeaders(targetName);
+            for (Header h : headers) {
+                response.addHeader(targetName, h.getValue());
+            }
+            response.removeHeaders(srcName);
+        }
+    }
 
 }

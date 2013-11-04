@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import junit.framework.Assert;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.cookie.ClientCookie;
 import org.esigate.test.MockMediator;
 import org.esigate.test.conn.IResponseHandler;
@@ -29,47 +31,47 @@ import org.esigate.test.driver.AbstractDriverTestCase;
 import org.esigate.util.HttpRequestHelper;
 
 /**
- * Tests for Cookie behavior
+ * Tests for Cookie behavior.
  * 
  * @author Nicolas Richeton
  * 
  */
 public class DriverCookieTest extends AbstractDriverTestCase {
 
-	/**
-	 * Ensure Secure attribute is kept is connection uses https
-	 * 
-	 * @throws Exception
-	 */
-	public void testSecure() throws Exception {
+    /**
+     * Ensure Secure attribute is kept is connection uses https.
+     * 
+     * @throws Exception
+     */
+    public void testSecure() throws Exception {
 
-		// Conf
-		Properties properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://provider/");
-		properties.put(Parameters.FORWARD_COOKIES.name, "*");
+        // Conf
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
+        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
 
-		// Setup remote server (provider) response.
-		Driver driver = createMockDriver(properties, new IResponseHandler() {
-			@Override
-			public HttpResponse execute(HttpRequest request) throws IOException {
-				return createHttpResponse().status(200).reason("OK")
-						.header("Set-Cookie", "testcookie=testvalue; Secure").entity("test").build();
-			}
-		});
+        // Setup remote server (provider) response.
+        Driver driver = createMockDriver(properties, new IResponseHandler() {
+            @Override
+            public HttpResponse execute(HttpRequest request) throws IOException {
+                return createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                        .header("Set-Cookie", "testcookie=testvalue; Secure").entity("test").build();
+            }
+        });
 
-		// Https request : Cookie is forwarded as Secure
-		HttpEntityEnclosingRequest request = createHttpRequest().uri("https://test.mydomain.fr/foobar/").mockMediator()
-				.build();
+        // Https request : Cookie is forwarded as Secure
+        HttpEntityEnclosingRequest request = createHttpRequest().uri("https://test.mydomain.fr/foobar/").mockMediator()
+                .build();
 
-		driverProxy(driver, request);
-		MockMediator m = (MockMediator) HttpRequestHelper.getMediator(request);
-		Assert.assertTrue(((ClientCookie) m.getCookies()[0]).isSecure());
+        driverProxy(driver, request);
+        MockMediator m = (MockMediator) HttpRequestHelper.getMediator(request);
+        Assert.assertTrue(((ClientCookie) m.getCookies()[0]).isSecure());
 
-		// Http request : Cookie is forwarded as NOT secure
-		request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
-		driverProxy(driver, request);
-		m = (MockMediator) HttpRequestHelper.getMediator(request);
-		Assert.assertFalse(((ClientCookie) m.getCookies()[0]).isSecure());
-	}
+        // Http request : Cookie is forwarded as NOT secure
+        request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        driverProxy(driver, request);
+        m = (MockMediator) HttpRequestHelper.getMediator(request);
+        Assert.assertFalse(((ClientCookie) m.getCookies()[0]).isSecure());
+    }
 
 }

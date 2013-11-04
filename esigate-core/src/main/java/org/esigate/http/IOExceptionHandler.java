@@ -28,33 +28,38 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 
-public class IOExceptionHandler {
-	public final static HttpResponse toHttpResponse(IOException exception) {
-		if (exception instanceof HttpHostConnectException) {
-			int statusCode = HttpStatus.SC_BAD_GATEWAY;
-			String statusText = "Connection refused";
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		} else if (exception instanceof ConnectionPoolTimeoutException) {
-			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
-			String statusText = "Connection pool timeout";
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		} else if (exception instanceof ConnectTimeoutException) {
-			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
-			String statusText = "Connect timeout";
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		} else if (exception instanceof SocketTimeoutException) {
-			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
-			String statusText = "Socket timeout";
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		} else if (exception instanceof SocketException) {
-			int statusCode = HttpStatus.SC_BAD_GATEWAY;
-			String statusText = "Socket Exception";
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		} else {
-			int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-			String statusText = "Error retrieving URL";
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		}
-	}
+public final class IOExceptionHandler {
+
+    private IOExceptionHandler() {
+
+    }
+
+    public static HttpResponse toHttpResponse(IOException exception) {
+        if (exception instanceof HttpHostConnectException) {
+            int statusCode = HttpStatus.SC_BAD_GATEWAY;
+            String statusText = "Connection refused";
+            return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+        } else if (exception instanceof ConnectionPoolTimeoutException) {
+            int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
+            String statusText = "Connection pool timeout";
+            return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+        } else if (exception instanceof ConnectTimeoutException) {
+            int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
+            String statusText = "Connect timeout";
+            return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+        } else if (exception instanceof SocketTimeoutException) {
+            int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
+            String statusText = "Socket timeout";
+            return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+        } else if (exception instanceof SocketException) {
+            int statusCode = HttpStatus.SC_BAD_GATEWAY;
+            String statusText = "Socket Exception";
+            return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+        } else {
+            int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
+            String statusText = "Error retrieving URL";
+            return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+        }
+    }
 
 }

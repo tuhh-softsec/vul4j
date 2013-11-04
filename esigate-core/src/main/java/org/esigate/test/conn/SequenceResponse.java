@@ -24,37 +24,36 @@ import org.apache.http.HttpResponse;
 /**
  * A response handler, which returns HTTP reponses one after another.
  * <p>
- * Sends IllegalStateException if no reponse has been added, or if execute is
- * called too many times.
+ * Sends IllegalStateException if no reponse has been added, or if execute is called too many times.
  * 
  * @author Nicolas Richeton
  * 
  */
 public class SequenceResponse implements IResponseHandler {
-	private int count = 0;
-	private List<HttpResponse> responses = new ArrayList<HttpResponse>();
+    private int count = 0;
+    private List<HttpResponse> responses = new ArrayList<HttpResponse>();
 
-	@Override
-	public HttpResponse execute(HttpRequest request) throws IOException {
+    @Override
+    public HttpResponse execute(HttpRequest request) throws IOException {
 
-		if (this.responses.size() <= this.count) {
-			throw new IllegalStateException("Unexpected request");
-		}
+        if (this.responses.size() <= this.count) {
+            throw new IllegalStateException("Unexpected request");
+        }
 
-		HttpResponse result = this.responses.get(this.count);
-		this.count++;
-		return result;
-	}
+        HttpResponse result = this.responses.get(this.count);
+        this.count++;
+        return result;
+    }
 
-	/**
-	 * Add a Http response.
-	 * 
-	 * @param response
-	 * @return this object
-	 */
-	public SequenceResponse response(HttpResponse response) {
-		this.responses.add(response);
-		return this;
-	}
+    /**
+     * Add a Http response.
+     * 
+     * @param response
+     * @return this object
+     */
+    public SequenceResponse response(HttpResponse response) {
+        this.responses.add(response);
+        return this;
+    }
 
 }

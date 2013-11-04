@@ -17,22 +17,22 @@ package org.esigate.extension.parallelesi;
 import org.esigate.parser.future.FutureElementType;
 
 abstract class BaseElementType implements FutureElementType {
-	private final String startTag;
-	private final String endTag;
+    private final String startTag;
+    private final String endTag;
 
-	protected BaseElementType(String startTag, String endTag) {
-		this.startTag = startTag;
-		this.endTag = endTag;
-	}
+    protected BaseElementType(String startTag, String endTag) {
+        this.startTag = startTag;
+        this.endTag = endTag;
+    }
 
-	@Override
-	public final boolean isStartTag(String tag) {
-		return tag.startsWith(this.startTag);
-	}
+    @Override
+    public final boolean isStartTag(String tag) {
+        return tag.startsWith(this.startTag);
+    }
 
-	@Override
-	public final boolean isEndTag(String tag) {
-		return tag.startsWith(this.endTag);
-	}
+    @Override
+    public final boolean isEndTag(String tag) {
+        return tag.startsWith(this.endTag);
+    }
 
 }

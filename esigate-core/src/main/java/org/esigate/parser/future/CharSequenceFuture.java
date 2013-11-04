@@ -22,80 +22,78 @@ import java.util.concurrent.TimeoutException;
 /**
  * This class is a simple wrapper on a CharSequence.
  * <p>
- * This Future object already has it result and does not use any background
- * Thread and simply return the {@link CharSequence} provided at the
- * construction time.
+ * This Future object already has it result and does not use any background Thread and simply return the
+ * {@link CharSequence} provided at the construction time.
  * 
  * @author Nicolas Richeton
  * 
  */
 public class CharSequenceFuture implements Future<CharSequence> {
-	private final CharSequence seq;
+    private final CharSequence seq;
 
-	/**
-	 * Create a new Future object which will return the {@link CharSequence}
-	 * provided as parameter.
-	 * 
-	 * @param charSequence
-	 *            the sequence which will be returned on {@link #get()}
-	 */
-	public CharSequenceFuture(CharSequence charSequence) {
-		this.seq = charSequence;
-	}
+    /**
+     * Create a new Future object which will return the {@link CharSequence} provided as parameter.
+     * 
+     * @param charSequence
+     *            the sequence which will be returned on {@link #get()}
+     */
+    public CharSequenceFuture(CharSequence charSequence) {
+        this.seq = charSequence;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.Future#isDone()
-	 */
-	@Override
-	public boolean isDone() {
-		// This future is already done per implementation.
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.concurrent.Future#isDone()
+     */
+    @Override
+    public boolean isDone() {
+        // This future is already done per implementation.
+        return true;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.Future#isCancelled()
-	 */
-	@Override
-	public boolean isCancelled() {
-		// Cannot ever been cancelled
-		return false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.concurrent.Future#isCancelled()
+     */
+    @Override
+    public boolean isCancelled() {
+        // Cannot ever been cancelled
+        return false;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
-	 */
-	@Override
-	public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
-			TimeoutException {
-		// Get will never block, just use the default implementation.
-		return get();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
+     */
+    @Override
+    public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
+            TimeoutException {
+        // Get will never block, just use the default implementation.
+        return get();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.Future#get()
-	 */
-	@Override
-	public CharSequence get() throws InterruptedException, ExecutionException {
-		// Return the wrapped CharSequence.
-		return this.seq;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.concurrent.Future#get()
+     */
+    @Override
+    public CharSequence get() throws InterruptedException, ExecutionException {
+        // Return the wrapped CharSequence.
+        return this.seq;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.Future#cancel(boolean)
-	 */
-	@Override
-	public boolean cancel(boolean mayInterruptIfRunning) {
-		// Cannot be cancelled.
-		return false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.concurrent.Future#cancel(boolean)
+     */
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        // Cannot be cancelled.
+        return false;
+    }
 }

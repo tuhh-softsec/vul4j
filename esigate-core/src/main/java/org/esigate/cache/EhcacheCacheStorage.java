@@ -24,21 +24,21 @@ import org.apache.http.impl.client.cache.ehcache.EhcacheHttpCacheStorage;
 import org.esigate.Parameters;
 
 public class EhcacheCacheStorage extends CacheStorage {
-	public final static String DEFAULT_CACHE_NAME = "EsiGate";
+    public static final String DEFAULT_CACHE_NAME = "EsiGate";
 
-	@Override
-	public void init(Properties properties) {
-		String cacheName = Parameters.EHCACHE_CACHE_NAME_PROPERTY.getValueString(properties);
-		String configurationFileName = Parameters.EHCACHE_CONFIGURATION_FILE_PROPERTY.getValueString(properties);
-		// Loaded from the Classpath, default will use /ehcache.xml or if not found /ehcache-failsafe.xml
-		CacheManager cacheManager = CacheManager.create(configurationFileName);
-		Ehcache ehcache = cacheManager.getEhcache(cacheName);
-		if (ehcache == null) {
-			cacheManager.addCache(cacheName);
-			ehcache = cacheManager.getEhcache(cacheName);
-		}
-		CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
-		impl = new EhcacheHttpCacheStorage(ehcache, cacheConfig);
-	}
+    @Override
+    public void init(Properties properties) {
+        String cacheName = Parameters.EHCACHE_CACHE_NAME_PROPERTY.getValueString(properties);
+        String configurationFileName = Parameters.EHCACHE_CONFIGURATION_FILE_PROPERTY.getValueString(properties);
+        // Loaded from the Classpath, default will use /ehcache.xml or if not found /ehcache-failsafe.xml
+        CacheManager cacheManager = CacheManager.create(configurationFileName);
+        Ehcache ehcache = cacheManager.getEhcache(cacheName);
+        if (ehcache == null) {
+            cacheManager.addCache(cacheName);
+            ehcache = cacheManager.getEhcache(cacheName);
+        }
+        CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
+        setImpl(new EhcacheHttpCacheStorage(ehcache, cacheConfig));
+    }
 
 }

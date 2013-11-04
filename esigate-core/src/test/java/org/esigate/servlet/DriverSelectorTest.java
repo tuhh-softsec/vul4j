@@ -39,63 +39,65 @@ import org.mockito.Mockito;
  */
 public class DriverSelectorTest extends TestCase {
 
-	/**
-	 * Test setting a unique Driver instance for a servlet (web.xml)
-	 * 
-	 * @throws HttpErrorPage
-	 */
-	@Test
-	public void testWebXmlProviderSelection() throws HttpErrorPage {
-		// Setup default
-		Properties properties = new Properties();
-		properties.setProperty("default." + Parameters.REMOTE_URL_BASE.name, "http://example2.com");
-		DriverFactory.configure(properties);
+    /**
+     * Test setting a unique Driver instance for a servlet (web.xml).
+     * 
+     * @throws HttpErrorPage
+     */
+    @Test
+    public void testWebXmlProviderSelection() throws HttpErrorPage {
+        // Setup default
+        Properties properties = new Properties();
+        properties.setProperty("default." + Parameters.REMOTE_URL_BASE.getName(), "http://example2.com");
+        DriverFactory.configure(properties);
 
-		DriverSelector ds = new DriverSelector();
-		ds.setWebXmlProvider("default");
+        DriverSelector ds = new DriverSelector();
+        ds.setWebXmlProvider("default");
 
-		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com:8080");
-		Mockito.when(request.getContextPath()).thenReturn("/");
-		Mockito.when(request.getRequestURI()).thenReturn("test/");
-		Assert.assertEquals("default", ds.selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
-	}
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com:8080");
+        Mockito.when(request.getContextPath()).thenReturn("/");
+        Mockito.when(request.getRequestURI()).thenReturn("test/");
+        Assert.assertEquals("default", ds.selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
+    }
 
-	/**
-	 * Test setting a host-based mapping for a servlet. (web.xml)
-	 * 
-	 * @throws HttpErrorPage
-	 */
-	@Test
-	public void testWebXmlProvidersSelection() throws HttpErrorPage {
-		Properties properties = new Properties();
-		properties.setProperty("default." + Parameters.REMOTE_URL_BASE.name, "http://example2.com");
-		properties.setProperty("aggregated1." + Parameters.REMOTE_URL_BASE.name, "http://example2.com");
-		properties.setProperty("aggregated2." + Parameters.REMOTE_URL_BASE.name, "http://example2.com");
-		DriverFactory.configure(properties);
+    /**
+     * Test setting a host-based mapping for a servlet. (web.xml)
+     * 
+     * @throws HttpErrorPage
+     */
+    @Test
+    public void testWebXmlProvidersSelection() throws HttpErrorPage {
+        Properties properties = new Properties();
+        properties.setProperty("default." + Parameters.REMOTE_URL_BASE.getName(), "http://example2.com");
+        properties.setProperty("aggregated1." + Parameters.REMOTE_URL_BASE.getName(), "http://example2.com");
+        properties.setProperty("aggregated2." + Parameters.REMOTE_URL_BASE.getName(), "http://example2.com");
+        DriverFactory.configure(properties);
 
-		DriverSelector ds = new DriverSelector();
-		ds.setWebXmlProviders("sub1.domain.com=aggregated1,sub2.domain.com:8080=aggregated2");
-		ds.setWebXmlProvider("default");
+        DriverSelector ds = new DriverSelector();
+        ds.setWebXmlProviders("sub1.domain.com=aggregated1,sub2.domain.com:8080=aggregated2");
+        ds.setWebXmlProvider("default");
 
-		HttpServletRequest request1 = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request1.getHeader("Host")).thenReturn("sub2.domain.com:8080");
-		Mockito.when(request1.getContextPath()).thenReturn("/");
-		Mockito.when(request1.getRequestURI()).thenReturn("test/");
-		Assert.assertEquals("aggregated2", ds.selectProvider(request1, true).getLeft().getConfiguration().getInstanceName());
+        HttpServletRequest request1 = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request1.getHeader("Host")).thenReturn("sub2.domain.com:8080");
+        Mockito.when(request1.getContextPath()).thenReturn("/");
+        Mockito.when(request1.getRequestURI()).thenReturn("test/");
+        Assert.assertEquals("aggregated2", ds.selectProvider(request1, true).getLeft().getConfiguration()
+                .getInstanceName());
 
-		HttpServletRequest request2 = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request2.getHeader("Host")).thenReturn("sub1.domain.com");
-		Mockito.when(request2.getContextPath()).thenReturn("/");
-		Mockito.when(request2.getRequestURI()).thenReturn("test/");
-		Assert.assertEquals("aggregated1", ds.selectProvider(request2, true).getLeft().getConfiguration().getInstanceName());
+        HttpServletRequest request2 = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request2.getHeader("Host")).thenReturn("sub1.domain.com");
+        Mockito.when(request2.getContextPath()).thenReturn("/");
+        Mockito.when(request2.getRequestURI()).thenReturn("test/");
+        Assert.assertEquals("aggregated1", ds.selectProvider(request2, true).getLeft().getConfiguration()
+                .getInstanceName());
 
-		HttpServletRequest request3 = Mockito.mock(HttpServletRequest.class);
-		// Other port
-		Mockito.when(request3.getHeader("Host")).thenReturn("sub2.domain.com:8082");
-		Mockito.when(request3.getContextPath()).thenReturn("/");
-		Mockito.when(request3.getRequestURI()).thenReturn("test/");
-		Assert.assertEquals("default", ds.selectProvider(request3, true).getLeft().getConfiguration().getInstanceName());
-	}
+        HttpServletRequest request3 = Mockito.mock(HttpServletRequest.class);
+        // Other port
+        Mockito.when(request3.getHeader("Host")).thenReturn("sub2.domain.com:8082");
+        Mockito.when(request3.getContextPath()).thenReturn("/");
+        Mockito.when(request3.getRequestURI()).thenReturn("test/");
+        Assert.assertEquals("default", ds.selectProvider(request3, true).getLeft().getConfiguration().getInstanceName());
+    }
 
 }

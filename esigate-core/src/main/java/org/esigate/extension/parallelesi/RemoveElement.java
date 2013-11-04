@@ -55,18 +55,19 @@ import org.esigate.parser.future.FutureElementType;
  * 
  */
 class RemoveElement extends BaseElement {
-	public final static FutureElementType TYPE = new BaseElementType("<esi:remove", "</esi:remove") {
-		@Override
-		public RemoveElement newInstance() {
-			return new RemoveElement();
-		}
+    public static final FutureElementType TYPE = new BaseElementType("<esi:remove", "</esi:remove") {
+        @Override
+        public RemoveElement newInstance() {
+            return new RemoveElement();
+        }
 
-	};
+    };
 
-	RemoveElement() { }
+    RemoveElement() {
+    }
 
-	@Override
-	public void characters(Future<CharSequence> csq) {
-		// ignore element body
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) {
+        // ignore element body
+    }
 }

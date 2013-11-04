@@ -54,85 +54,88 @@ import org.xml.sax.SAXException;
  * @author Francois-Xavier Bonnet
  */
 public class XsltRenderer implements Renderer {
-	private final static TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
-	private Transformer transformer;
+    private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
+    private Transformer transformer;
 
-	/**
-	 * @param template
-	 *            The path to the xsl template, relative to the context root
-	 * @param driver
-	 *            driver
-	 * @param originalRequest
-	 * @throws IOException
-	 *             If an error occurs while writing to the output
-	 * @throws HttpErrorPage
-	 */
-	public XsltRenderer(String template, Driver driver, HttpEntityEnclosingRequest originalRequest) throws IOException, HttpErrorPage {
-		try {
-			InputStream templateStream = HttpRequestHelper.getMediator(originalRequest).getResourceAsStream(template);
-			if (templateStream == null)
-				throw new ProcessingFailedException("Template " + template + " not found");
-			transformer = createTransformer(templateStream);
-		} catch (Exception e) {
-			StringBuilder templateStringBuilder = new StringBuilder();
-			driver.render(template, null, templateStringBuilder, originalRequest);
-			transformer = createTransformer(IOUtils.toInputStream(templateStringBuilder));
-		}
-	}
+    /**
+     * @param template
+     *            The path to the xsl template, relative to the context root
+     * @param driver
+     *            driver
+     * @param originalRequest
+     * @throws IOException
+     *             If an error occurs while writing to the output
+     * @throws HttpErrorPage
+     */
+    public XsltRenderer(String template, Driver driver, HttpEntityEnclosingRequest originalRequest) throws IOException,
+            HttpErrorPage {
+        try {
+            InputStream templateStream = HttpRequestHelper.getMediator(originalRequest).getResourceAsStream(template);
+            if (templateStream == null) {
+                throw new ProcessingFailedException("Template " + template + " not found");
+            }
+            transformer = createTransformer(templateStream);
+        } catch (Exception e) {
+            StringBuilder templateStringBuilder = new StringBuilder();
+            driver.render(template, null, templateStringBuilder, originalRequest);
+            transformer = createTransformer(IOUtils.toInputStream(templateStringBuilder));
+        }
+    }
 
-	/**
-	 * @param template
-	 *            The path to the xsl template, relative to the context root
-	 * @param request
-	 *            HttpRequest
-	 * @throws IOException
-	 *             If an error occurs while writing to the output
-	 */
-	public XsltRenderer(String template, HttpRequest request) throws IOException {
-		InputStream templateStream = HttpRequestHelper.getMediator(request).getResourceAsStream(template);
-		if (templateStream == null)
-			throw new ProcessingFailedException("Template " + template + " not found");
-		transformer = createTransformer(templateStream);
-	}
+    /**
+     * @param template
+     *            The path to the xsl template, relative to the context root
+     * @param request
+     *            HttpRequest
+     * @throws IOException
+     *             If an error occurs while writing to the output
+     */
+    public XsltRenderer(String template, HttpRequest request) throws IOException {
+        InputStream templateStream = HttpRequestHelper.getMediator(request).getResourceAsStream(template);
+        if (templateStream == null) {
+            throw new ProcessingFailedException("Template " + template + " not found");
+        }
+        transformer = createTransformer(templateStream);
+    }
 
-	/**
-	 * @param xsl
-	 *            The xsl template to apply as a String
-	 * @throws IOException
-	 *             If an error occurs while writing to the output
-	 */
-	public XsltRenderer(String xsl) throws IOException {
-		InputStream templateStream = IOUtils.toInputStream(xsl);
-		transformer = createTransformer(templateStream);
-	}
+    /**
+     * @param xsl
+     *            The xsl template to apply as a String
+     * @throws IOException
+     *             If an error occurs while writing to the output
+     */
+    public XsltRenderer(String xsl) throws IOException {
+        InputStream templateStream = IOUtils.toInputStream(xsl);
+        transformer = createTransformer(templateStream);
+    }
 
-	private static Transformer createTransformer(InputStream templateStream) throws IOException {
-		try {
-			return TRANSFORMER_FACTORY.newTransformer(new StreamSource(templateStream));
-		} catch (TransformerConfigurationException e) {
-			throw new ProcessingFailedException("Failed to create XSLT template", e);
-		} finally {
-			templateStream.close();
-		}
-	}
+    private static Transformer createTransformer(InputStream templateStream) throws IOException {
+        try {
+            return TRANSFORMER_FACTORY.newTransformer(new StreamSource(templateStream));
+        } catch (TransformerConfigurationException e) {
+            throw new ProcessingFailedException("Failed to create XSLT template", e);
+        } finally {
+            templateStream.close();
+        }
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
-		try {
-			HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder();
-			htmlDocumentBuilder.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
-			Document document = htmlDocumentBuilder.parse(new InputSource(new StringReader(src)));
-			Source source = new DOMSource(document);
-			DOMResult result = new DOMResult();
-			transformer.transform(source, result);
-			XhtmlSerializer serializer = new XhtmlSerializer(out);
-			Dom2Sax dom2Sax = new Dom2Sax(serializer, serializer);
-			dom2Sax.parse(result.getNode());
-		} catch (TransformerException e) {
-			throw new ProcessingFailedException("Failed to transform source", e);
-		} catch (SAXException e) {
-			throw new ProcessingFailedException("Failed serialize transformation result", e);
-		}
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
+        try {
+            HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder();
+            htmlDocumentBuilder.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
+            Document document = htmlDocumentBuilder.parse(new InputSource(new StringReader(src)));
+            Source source = new DOMSource(document);
+            DOMResult result = new DOMResult();
+            transformer.transform(source, result);
+            XhtmlSerializer serializer = new XhtmlSerializer(out);
+            Dom2Sax dom2Sax = new Dom2Sax(serializer, serializer);
+            dom2Sax.parse(result.getNode());
+        } catch (TransformerException e) {
+            throw new ProcessingFailedException("Failed to transform source", e);
+        } catch (SAXException e) {
+            throw new ProcessingFailedException("Failed serialize transformation result", e);
+        }
+    }
 }

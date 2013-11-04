@@ -24,12 +24,12 @@ import org.esigate.extension.Extension;
 
 public interface CookieManager extends Extension {
 
-	public void addCookie(Cookie cookie, HttpRequest resourceContext);
+    void addCookie(Cookie cookie, HttpRequest resourceContext);
 
-	public List<Cookie> getCookies(HttpRequest resourceContext);
+    List<Cookie> getCookies(HttpRequest resourceContext);
 
-	public boolean clearExpired(Date date, HttpRequest resourceContext);
+    boolean clearExpired(Date date, HttpRequest resourceContext);
 
-	public void clear(HttpRequest resourceContext);
+    void clear(HttpRequest resourceContext);
 
 }

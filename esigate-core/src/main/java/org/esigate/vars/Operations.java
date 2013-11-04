@@ -23,191 +23,195 @@ import java.util.ArrayList;
  * @author Nicolas Richeton
  * 
  */
-public class Operations {
+public final class Operations {
 
-	private static boolean executeOperation(String op) {
+    private Operations() {
 
-		int i;
-		Double dop1, dop2;
-		String op1, op2;
+    }
 
-		try {
-			if (op.indexOf("==") != -1) {
-				i = op.indexOf("==");
-				op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
-				op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
+    private static boolean executeOperation(String op) {
 
-				dop1 = getOperandAsNumeric(op1);
-				dop2 = getOperandAsNumeric(op2);
-				if (dop1 != null && dop2 != null) {
-					return dop1.equals(dop2);
-				}
+        int i;
+        Double dop1, dop2;
+        String op1, op2;
 
-				return op1.equals(op2);
+        try {
+            if (op.indexOf("==") != -1) {
+                i = op.indexOf("==");
+                op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
+                op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
 
-			} else if (op.indexOf("!=") != -1) {
-				i = op.indexOf("!=");
-				op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
-				op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
+                dop1 = getOperandAsNumeric(op1);
+                dop2 = getOperandAsNumeric(op2);
+                if (dop1 != null && dop2 != null) {
+                    return dop1.equals(dop2);
+                }
 
-				dop1 = getOperandAsNumeric(op1);
-				dop2 = getOperandAsNumeric(op2);
-				if (dop1 != null && dop2 != null) {
-					return !dop1.equals(dop2);
-				}
+                return op1.equals(op2);
 
-				return !op1.equals(op2);
+            } else if (op.indexOf("!=") != -1) {
+                i = op.indexOf("!=");
+                op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
+                op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
 
-			} else if (op.indexOf(">=") != -1) {
-				i = op.indexOf(">=");
-				op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
-				op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
+                dop1 = getOperandAsNumeric(op1);
+                dop2 = getOperandAsNumeric(op2);
+                if (dop1 != null && dop2 != null) {
+                    return !dop1.equals(dop2);
+                }
 
-				dop1 = getOperandAsNumeric(op1);
-				dop2 = getOperandAsNumeric(op2);
-				if (dop1 != null && dop2 != null) {
-					return dop1.doubleValue() >= dop2.doubleValue();
-				}
-				int cmp = op1.compareTo(op2);
-				return cmp >= 0;
+                return !op1.equals(op2);
 
-			} else if (op.indexOf("<=") != -1) {
-				i = op.indexOf("<=");
-				op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
-				op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
+            } else if (op.indexOf(">=") != -1) {
+                i = op.indexOf(">=");
+                op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
+                op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
 
-				dop1 = getOperandAsNumeric(op1);
-				dop2 = getOperandAsNumeric(op2);
-				if (dop1 != null && dop2 != null) {
-					return dop1.doubleValue() <= dop2.doubleValue();
-				}
+                dop1 = getOperandAsNumeric(op1);
+                dop2 = getOperandAsNumeric(op2);
+                if (dop1 != null && dop2 != null) {
+                    return dop1.doubleValue() >= dop2.doubleValue();
+                }
+                int cmp = op1.compareTo(op2);
+                return cmp >= 0;
 
-				int cmp = op1.compareTo(op2);
-				return cmp <= 0;
+            } else if (op.indexOf("<=") != -1) {
+                i = op.indexOf("<=");
+                op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
+                op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
 
-			} else if (op.indexOf(">") != -1) {
-				i = op.indexOf(">");
-				op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
-				op2 = VarUtils.removeSimpleQuotes(op.substring(i + 1));
+                dop1 = getOperandAsNumeric(op1);
+                dop2 = getOperandAsNumeric(op2);
+                if (dop1 != null && dop2 != null) {
+                    return dop1.doubleValue() <= dop2.doubleValue();
+                }
 
-				dop1 = getOperandAsNumeric(op1);
-				dop2 = getOperandAsNumeric(op2);
-				if (dop1 != null && dop2 != null) {
-					return dop1.doubleValue() > dop2.doubleValue();
-				}
+                int cmp = op1.compareTo(op2);
+                return cmp <= 0;
 
-				int cmp = op1.compareTo(op2);
-				return cmp > 0;
-			} else if (op.indexOf("<") != -1) {
-				i = op.indexOf("<");
-				op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
-				op2 = VarUtils.removeSimpleQuotes(op.substring(i + 1));
+            } else if (op.indexOf(">") != -1) {
+                i = op.indexOf(">");
+                op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
+                op2 = VarUtils.removeSimpleQuotes(op.substring(i + 1));
 
-				dop1 = getOperandAsNumeric(op1);
-				dop2 = getOperandAsNumeric(op2);
-				if (dop1 != null && dop2 != null) {
-					return dop1.doubleValue() < dop2.doubleValue();
-				}
+                dop1 = getOperandAsNumeric(op1);
+                dop2 = getOperandAsNumeric(op2);
+                if (dop1 != null && dop2 != null) {
+                    return dop1.doubleValue() > dop2.doubleValue();
+                }
 
-				int cmp = op1.compareTo(op2);
-				return cmp < 0;
-			}
-		} catch (Exception e) {
-			return false;
-		}
+                int cmp = op1.compareTo(op2);
+                return cmp > 0;
+            } else if (op.indexOf("<") != -1) {
+                i = op.indexOf("<");
+                op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
+                op2 = VarUtils.removeSimpleQuotes(op.substring(i + 1));
 
-		return false;
-	}
+                dop1 = getOperandAsNumeric(op1);
+                dop2 = getOperandAsNumeric(op2);
+                if (dop1 != null && dop2 != null) {
+                    return dop1.doubleValue() < dop2.doubleValue();
+                }
 
-	private static boolean executeOperations(ArrayList<String> operands, ArrayList<String> operations) {
-		boolean res = false;
-		ArrayList<Boolean> results = new ArrayList<Boolean>();
+                int cmp = op1.compareTo(op2);
+                return cmp < 0;
+            }
+        } catch (Exception e) {
+            return false;
+        }
 
-		try {
-			for (String op : operands) {
-				results.add(executeOperation(op));
-			}
+        return false;
+    }
 
-			if (results.size() == 1) {
-				if (operations.size() == 1 && operations.get(0).equals("!")) {
-					return !results.get(0);
-				} else {
-					return results.get(0);
-				}
-			}
+    private static boolean executeOperations(ArrayList<String> operands, ArrayList<String> operations) {
+        boolean res = false;
+        ArrayList<Boolean> results = new ArrayList<Boolean>();
 
-			int i = 1;
-			res = results.get(0);
-			for (String op : operations) {
-				if (op.equals("&")) {
-					res = res && results.get(i);
-				} else if (op.equals("|")) {
-					res = res || results.get(i);
-				} else {
-					res = false;
-				}
-				i++;
-			}
-		} catch (Exception e) {
-			return false;
-		}
+        try {
+            for (String op : operands) {
+                results.add(executeOperation(op));
+            }
 
-		return res;
-	}
+            if (results.size() == 1) {
+                if (operations.size() == 1 && operations.get(0).equals("!")) {
+                    return !results.get(0);
+                } else {
+                    return results.get(0);
+                }
+            }
 
-	/**
-	 * Get an operand as a numeric type.
-	 * 
-	 * @param op
-	 *            operand as String
-	 * @return Double value or null if op is not numeric
-	 */
-	private static Double getOperandAsNumeric(String op) {
-		Double d = null;
-		try {
-			d = Double.valueOf(op);
-		} catch (Exception e) {
-			// Null is returned if not numeric.
-		}
-		return d;
-	}
+            int i = 1;
+            res = results.get(0);
+            for (String op : operations) {
+                if (op.equals("&")) {
+                    res = res && results.get(i);
+                } else if (op.equals("|")) {
+                    res = res || results.get(i);
+                } else {
+                    res = false;
+                }
+                i++;
+            }
+        } catch (Exception e) {
+            return false;
+        }
 
-	public static boolean processOperators(String test) {
+        return res;
+    }
 
-		if (test == null || test.equals("")) {
-			return false;
-		}
+    /**
+     * Get an operand as a numeric type.
+     * 
+     * @param op
+     *            operand as String
+     * @return Double value or null if op is not numeric
+     */
+    private static Double getOperandAsNumeric(String op) {
+        Double d = null;
+        try {
+            d = Double.valueOf(op);
+        } catch (Exception e) {
+            // Null is returned if not numeric.
+        }
+        return d;
+    }
 
-		ArrayList<String> operands = new ArrayList<String>();
-		ArrayList<String> operations = new ArrayList<String>();
+    public static boolean processOperators(String test) {
 
-		String s = test.replaceAll(" ", "");
-		if (s.startsWith("!")) {
-			operations.add("!");
-		}
-		if (s.indexOf('(') == -1) {
-			s = "(" + s + ")";
-		}
+        if (test == null || test.equals("")) {
+            return false;
+        }
 
-		// allocate (...)
-		try {
-			while (s.length() > 0) {
-				int sbIndex = s.indexOf(')');
-				operands.add(s.substring(s.indexOf('(') + 1, sbIndex));
-				if (s.length() > sbIndex + 1) {
-					String oper = s.substring(sbIndex + 1, s.substring(sbIndex).indexOf('(') + sbIndex);
-					operations.add(oper);
-					s = s.substring(sbIndex + 2);
-				} else {
-					s = "";
-				}
+        ArrayList<String> operands = new ArrayList<String>();
+        ArrayList<String> operations = new ArrayList<String>();
 
-			}
-		} catch (Exception e) {
-			return false;
-		}
+        String s = test.replaceAll(" ", "");
+        if (s.startsWith("!")) {
+            operations.add("!");
+        }
+        if (s.indexOf('(') == -1) {
+            s = "(" + s + ")";
+        }
 
-		return executeOperations(operands, operations);
-	}
+        // allocate (...)
+        try {
+            while (s.length() > 0) {
+                int sbIndex = s.indexOf(')');
+                operands.add(s.substring(s.indexOf('(') + 1, sbIndex));
+                if (s.length() > sbIndex + 1) {
+                    String oper = s.substring(sbIndex + 1, s.substring(sbIndex).indexOf('(') + sbIndex);
+                    operations.add(oper);
+                    s = s.substring(sbIndex + 2);
+                } else {
+                    s = "";
+                }
+
+            }
+        } catch (Exception e) {
+            return false;
+        }
+
+        return executeOperations(operands, operations);
+    }
 
 }

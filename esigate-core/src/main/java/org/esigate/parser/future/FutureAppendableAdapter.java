@@ -33,70 +33,70 @@ import org.esigate.HttpErrorPage;
  */
 public class FutureAppendableAdapter implements FutureAppendable {
 
-	private Appendable out;
-	private List<Future<CharSequence>> futureList;
+    private Appendable out;
+    private List<Future<CharSequence>> futureList;
 
-	public FutureAppendableAdapter(Appendable out) {
-		this.out = out;
-		this.futureList = new ArrayList<Future<CharSequence>>();
-	}
+    public FutureAppendableAdapter(Appendable out) {
+        this.out = out;
+        this.futureList = new ArrayList<Future<CharSequence>>();
+    }
 
-	@Override
-	public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
-		this.futureList.add(csq);
-		return this;
-	}
+    @Override
+    public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
+        this.futureList.add(csq);
+        return this;
+    }
 
-	@Override
-	public FutureAppendable performAppends(int timeout, TimeUnit unit) throws IOException, HttpErrorPage,
-			TimeoutException {
+    @Override
+    public FutureAppendable performAppends(int timeout, TimeUnit unit) throws IOException, HttpErrorPage,
+            TimeoutException {
 
-		try {
-			for (Future<CharSequence> f : this.futureList) {
-				CharSequence csq = f.get(timeout, unit);
-				this.out.append(csq);
-			}
-		} catch (CancellationException e) {
-			throw new IOException(e);
-		} catch (InterruptedException e) {
-			throw new IOException(e);
-		} catch (ExecutionException e) {
-			// HttpErrorPage must be
-			if (e.getCause() instanceof HttpErrorPage) {
-				throw (HttpErrorPage) e.getCause();
-			}
-			throw new IOException(e);
-		}
+        try {
+            for (Future<CharSequence> f : this.futureList) {
+                CharSequence csq = f.get(timeout, unit);
+                this.out.append(csq);
+            }
+        } catch (CancellationException e) {
+            throw new IOException(e);
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        } catch (ExecutionException e) {
+            // HttpErrorPage must be
+            if (e.getCause() instanceof HttpErrorPage) {
+                throw (HttpErrorPage) e.getCause();
+            }
+            throw new IOException(e);
+        }
 
-		this.futureList.clear();
-		return this;
-	}
+        this.futureList.clear();
+        return this;
+    }
 
-	@Override
-	public boolean hasPending() {
-		return this.futureList.size() > 0;
-	}
+    @Override
+    public boolean hasPending() {
+        return this.futureList.size() > 0;
+    }
 
-	@Override
-	public FutureAppendable performAppends() throws IOException, HttpErrorPage {
-		try {
-			for (Future<CharSequence> f : this.futureList) {
-				CharSequence csq = f.get();
-				this.out.append(csq);
-			}
-		} catch (CancellationException e) {
-			throw new IOException(e);
-		} catch (InterruptedException e) {
-			throw new IOException(e);
-		} catch (ExecutionException e) {
-			// HttpErrorPage must be
-			if (e.getCause() instanceof HttpErrorPage) {
-				throw (HttpErrorPage) e.getCause();
-			}
-			throw new IOException(e);
-		}
+    @Override
+    public FutureAppendable performAppends() throws IOException, HttpErrorPage {
+        try {
+            for (Future<CharSequence> f : this.futureList) {
+                CharSequence csq = f.get();
+                this.out.append(csq);
+            }
+        } catch (CancellationException e) {
+            throw new IOException(e);
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        } catch (ExecutionException e) {
+            // HttpErrorPage must be
+            if (e.getCause() instanceof HttpErrorPage) {
+                throw (HttpErrorPage) e.getCause();
+            }
+            throw new IOException(e);
+        }
 
-		this.futureList.clear();
-		return this;
-	}
+        this.futureList.clear();
+        return this;
+    }
 }

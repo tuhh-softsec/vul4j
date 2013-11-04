@@ -45,76 +45,76 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class Esi implements Extension, IEventListener {
-	private static final Logger LOG = LoggerFactory.getLogger(Esi.class);
-	// esi_max_threads = 0 -> linear execution
-	private static Parameter THREADS = new Parameter("esi_max_threads", "0");
-	private static Parameter IDLE = new Parameter("esi_max_idle", "60");
-	private int maxThreads;
-	private int idle;
-	private Executor executor;
-	static final String[] capabilities = new String[] { "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
-			"X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
+    private static final Logger LOG = LoggerFactory.getLogger(Esi.class);
+    // esi_max_threads = 0 -> linear execution
+    private static final Parameter THREADS = new Parameter("esi_max_threads", "0");
+    private static final Parameter IDLE = new Parameter("esi_max_idle", "60");
+    private int maxThreads;
+    private int idle;
+    private Executor executor;
+    static final String[] CAPABILITIES = new String[] { "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
+            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
 
-	@Override
-	public boolean event(EventDefinition id, Event event) {
-		RenderEvent renderEvent = (RenderEvent) event;
+    @Override
+    public boolean event(EventDefinition id, Event event) {
+        RenderEvent renderEvent = (RenderEvent) event;
 
-		boolean doEsi = true;
+        boolean doEsi = true;
 
-		// ensure we should process esi
-		if (renderEvent.httpResponse != null
-				&& renderEvent.httpResponse.containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
-			String enabledCapabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
-					.getValue();
+        // ensure we should process esi
+        if (renderEvent.httpResponse != null
+                && renderEvent.httpResponse.containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
+            String enabledCapabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
+                    .getValue();
 
-			doEsi = false;
-			for (String capability : capabilities) {
-				if (containsIgnoreCase(enabledCapabilities, capability)) {
-					doEsi = true;
-					break;
-				}
-			}
+            doEsi = false;
+            for (String capability : CAPABILITIES) {
+                if (containsIgnoreCase(enabledCapabilities, capability)) {
+                    doEsi = true;
+                    break;
+                }
+            }
 
-		}
+        }
 
-		if (doEsi) {
-			renderEvent.renderers.add(new EsiRenderer(this.executor));
-		}
+        if (doEsi) {
+            renderEvent.renderers.add(new EsiRenderer(this.executor));
+        }
 
-		// Continue processing
-		return true;
-	}
+        // Continue processing
+        return true;
+    }
 
-	@Override
-	public void init(Driver driver, Properties properties) {
-		driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);
+    @Override
+    public void init(Driver driver, Properties properties) {
+        driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);
 
-		driver.getEventManager().register(Surrogate.EVENT_SURROGATE_CAPABILITIES, new IEventListener() {
-			@Override
-			public boolean event(EventDefinition id, Event event) {
-				CapabilitiesEvent capEvent = (CapabilitiesEvent) event;
-				for (String capability : capabilities) {
-					capEvent.capabilities.add(capability);
-				}
-				return true;
-			}
-		});
+        driver.getEventManager().register(Surrogate.EVENT_SURROGATE_CAPABILITIES, new IEventListener() {
+            @Override
+            public boolean event(EventDefinition id, Event event) {
+                CapabilitiesEvent capEvent = (CapabilitiesEvent) event;
+                for (String capability : CAPABILITIES) {
+                    capEvent.capabilities.add(capability);
+                }
+                return true;
+            }
+        });
 
-		// Load configuration
-		this.maxThreads = THREADS.getValueInt(properties);
-		this.idle = IDLE.getValueInt(properties);
+        // Load configuration
+        this.maxThreads = THREADS.getValueInt(properties);
+        this.idle = IDLE.getValueInt(properties);
 
-		if (this.maxThreads == 0) {
-			this.executor = null;
-			LOG.info("Linear ESI processing enabled.");
-		} else {
-			this.executor = new ThreadPoolExecutor(0, this.maxThreads, this.idle, TimeUnit.SECONDS,
-					new SynchronousQueue<Runnable>());
+        if (this.maxThreads == 0) {
+            this.executor = null;
+            LOG.info("Linear ESI processing enabled.");
+        } else {
+            this.executor = new ThreadPoolExecutor(0, this.maxThreads, this.idle, TimeUnit.SECONDS,
+                    new SynchronousQueue<Runnable>());
 
-			LOG.info("Multi-threaded ESI processing enabled. Thread limit: {}, max idle {}.",
-					String.valueOf(this.maxThreads), String.valueOf(this.idle));
-		}
+            LOG.info("Multi-threaded ESI processing enabled. Thread limit: {}, max idle {}.",
+                    String.valueOf(this.maxThreads), String.valueOf(this.idle));
+        }
 
-	}
+    }
 
 }

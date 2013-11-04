@@ -23,48 +23,48 @@ import org.esigate.Parameters;
 
 public class ContentTypeHelperTest extends TestCase {
 
-	/** Test default configuration */
-	public void testDefaultConfig() {
-		Properties properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-		ContentTypeHelper contentTypeHelper = new ContentTypeHelper(properties);
-		// Parsable contentTypes
-		assertParsableContentType(contentTypeHelper, "text/html; charset=utf-8");
-		assertParsableContentType(contentTypeHelper, "application/xhtml+xml; charset=iso-8859-1");
-		assertNotParsableContentType(contentTypeHelper, "application/octet-stream");
-	}
+    /** Test default configuration. */
+    public void testDefaultConfig() {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
+        ContentTypeHelper contentTypeHelper = new ContentTypeHelper(properties);
+        // Parsable contentTypes
+        assertParsableContentType(contentTypeHelper, "text/html; charset=utf-8");
+        assertParsableContentType(contentTypeHelper, "application/xhtml+xml; charset=iso-8859-1");
+        assertNotParsableContentType(contentTypeHelper, "application/octet-stream");
+    }
 
-	private void assertParsableContentType(ContentTypeHelper contentTypeHelper, String contentType) {
-		assertTrue("Content-type should be considered as text", contentTypeHelper.isTextContentType(contentType));
-	}
+    private void assertParsableContentType(ContentTypeHelper contentTypeHelper, String contentType) {
+        assertTrue("Content-type should be considered as text", contentTypeHelper.isTextContentType(contentType));
+    }
 
-	private void assertNotParsableContentType(ContentTypeHelper contentTypeHelper, String contentType) {
-		assertFalse("Content-type should be considered as binary", contentTypeHelper.isTextContentType(contentType));
-	}
+    private void assertNotParsableContentType(ContentTypeHelper contentTypeHelper, String contentType) {
+        assertFalse("Content-type should be considered as binary", contentTypeHelper.isTextContentType(contentType));
+    }
 
-	/**
-	 * Test property parsableContentTypes
-	 */
-	public void testParsableContentTypes() {
-		Properties properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain");
-		ContentTypeHelper contentTypeHelper = new ContentTypeHelper(properties);
-		assertParsableContentType(contentTypeHelper, "text/plain");
+    /**
+     * Test property parsableContentTypes.
+     */
+    public void testParsableContentTypes() {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
+        properties.put(Parameters.PARSABLE_CONTENT_TYPES.getName(), "text/plain");
+        ContentTypeHelper contentTypeHelper = new ContentTypeHelper(properties);
+        assertParsableContentType(contentTypeHelper, "text/plain");
 
-		properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain, text/html");
-		contentTypeHelper = new ContentTypeHelper(properties);
-		assertParsableContentType(contentTypeHelper, "text/plain");
-		assertParsableContentType(contentTypeHelper, "text/html");
+        properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
+        properties.put(Parameters.PARSABLE_CONTENT_TYPES.getName(), "text/plain, text/html");
+        contentTypeHelper = new ContentTypeHelper(properties);
+        assertParsableContentType(contentTypeHelper, "text/plain");
+        assertParsableContentType(contentTypeHelper, "text/html");
 
-		properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain, text/html,application/x");
-		contentTypeHelper = new ContentTypeHelper(properties);
-		assertParsableContentType(contentTypeHelper, "text/plain");
-		assertParsableContentType(contentTypeHelper, "text/html");
-		assertParsableContentType(contentTypeHelper, "application/x");
-	}
+        properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
+        properties.put(Parameters.PARSABLE_CONTENT_TYPES.getName(), "text/plain, text/html,application/x");
+        contentTypeHelper = new ContentTypeHelper(properties);
+        assertParsableContentType(contentTypeHelper, "text/plain");
+        assertParsableContentType(contentTypeHelper, "text/html");
+        assertParsableContentType(contentTypeHelper, "application/x");
+    }
 }

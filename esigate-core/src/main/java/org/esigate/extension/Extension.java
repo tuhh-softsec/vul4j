@@ -30,13 +30,14 @@ import org.esigate.Driver;
  */
 public interface Extension {
 
-	/**
-	 * Initialize the extension using the given properties.
-	 * <p>
-	 * Extensions may register to events during the init phase.
-	 * @param driver 
-	 * 
-	 * @param properties
-	 */
-	public void init(Driver driver, Properties properties);
+    /**
+     * Initialize the extension using the given properties.
+     * <p>
+     * Extensions may register to events during the init phase.
+     * 
+     * @param driver
+     * 
+     * @param properties
+     */
+    void init(Driver driver, Properties properties);
 }

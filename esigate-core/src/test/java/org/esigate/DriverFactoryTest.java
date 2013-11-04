@@ -29,75 +29,75 @@ import org.esigate.util.HttpRequestHelper;
 
 public class DriverFactoryTest extends TestCase {
 
-	@Override
-	protected void setUp() {
-		DriverFactory.configure(new Properties());
-	}
+    @Override
+    protected void setUp() {
+        DriverFactory.configure(new Properties());
+    }
 
-	public void testConfigureStringProperties1() throws HttpErrorPage {
-		String id = "foo";
-		try {
-			DriverFactory.getInstance(id);
-			fail("should throw ConfigurationException as there should be no provider named " + id);
-		} catch (ConfigurationException e) {
-			// expected behavior
-		}
+    public void testConfigureStringProperties1() throws HttpErrorPage {
+        String id = "foo";
+        try {
+            DriverFactory.getInstance(id);
+            fail("should throw ConfigurationException as there should be no provider named " + id);
+        } catch (ConfigurationException e) {
+            // expected behavior
+        }
 
-		Properties props = new Properties();
-		props.setProperty(Parameters.REMOTE_URL_BASE.name, "http://base.url");
-		DriverFactory.configure(id, props);
-		Driver instance = DriverFactory.getInstance(id);
-		assertNotNull(instance);
+        Properties props = new Properties();
+        props.setProperty(Parameters.REMOTE_URL_BASE.getName(), "http://base.url");
+        DriverFactory.configure(id, props);
+        Driver instance = DriverFactory.getInstance(id);
+        assertNotNull(instance);
 
-		HttpRequest request = TestUtils.createRequest();
-		instance.initHttpRequestParams(request, null);
-		assertEquals("http://base.url", HttpRequestHelper.getBaseUrl(request).toString());
-	}
+        HttpRequest request = TestUtils.createRequest();
+        instance.initHttpRequestParams(request, null);
+        assertEquals("http://base.url", HttpRequestHelper.getBaseUrl(request).toString());
+    }
 
-	public void testMergeProperties() {
-		String defaultBaseUrl = "http://basedefault.url";
-		String extendedBaseUrl = "http://baseextended.url";
+    public void testMergeProperties() {
+        String defaultBaseUrl = "http://basedefault.url";
+        String extendedBaseUrl = "http://baseextended.url";
 
-		Properties defaultProps = new Properties();
-		defaultProps.setProperty("default." + Parameters.REMOTE_URL_BASE.name, defaultBaseUrl);
-		defaultProps.setProperty("default." + Parameters.URI_ENCODING.name, "ISO-8859-1");
+        Properties defaultProps = new Properties();
+        defaultProps.setProperty("default." + Parameters.REMOTE_URL_BASE.getName(), defaultBaseUrl);
+        defaultProps.setProperty("default." + Parameters.URI_ENCODING.getName(), "ISO-8859-1");
 
-		Properties extendedProps = new Properties();
-		extendedProps.setProperty("default." + Parameters.REMOTE_URL_BASE.name, extendedBaseUrl);
-		extendedProps.setProperty("default." + Parameters.URI_ENCODING.name, "UTF-8");
+        Properties extendedProps = new Properties();
+        extendedProps.setProperty("default." + Parameters.REMOTE_URL_BASE.getName(), extendedBaseUrl);
+        extendedProps.setProperty("default." + Parameters.URI_ENCODING.getName(), "UTF-8");
 
-		URL dir = this.getClass().getResource("DriverFactoryTest.class");
-		File file = new File(dir.getPath());
-		File classPathFile = file.getParentFile();
-		File extFolder = classPathFile.getParentFile().getParentFile();
+        URL dir = this.getClass().getResource("DriverFactoryTest.class");
+        File file = new File(dir.getPath());
+        File classPathFile = file.getParentFile();
+        File extFolder = classPathFile.getParentFile().getParentFile();
 
-		File driverPropsFile = new File(classPathFile + File.separator + "driver.properties");
-		File extendedPropsFile = new File(extFolder + File.separator + "driver-ext.properties");
+        File driverPropsFile = new File(classPathFile + File.separator + "driver.properties");
+        File extendedPropsFile = new File(extFolder + File.separator + "driver-ext.properties");
 
-		try {
-			FileOutputStream defaultOutputStream = new FileOutputStream(driverPropsFile);
-			FileOutputStream extOutputStream = new FileOutputStream(extendedPropsFile);
-			defaultProps.store(defaultOutputStream, "driver.properties");
-			extendedProps.store(extOutputStream, "driver-ext.properties");
+        try {
+            FileOutputStream defaultOutputStream = new FileOutputStream(driverPropsFile);
+            FileOutputStream extOutputStream = new FileOutputStream(extendedPropsFile);
+            defaultProps.store(defaultOutputStream, "driver.properties");
+            extendedProps.store(extOutputStream, "driver-ext.properties");
 
-			defaultOutputStream.close();
-			extOutputStream.close();
+            defaultOutputStream.close();
+            extOutputStream.close();
 
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
 
-		try {
-			DriverFactory.configure();
-			Driver driver = DriverFactory.getInstance();
-			assertEquals("UTF-8", driver.getConfiguration().getUriEncoding());
-		} catch (Exception e) {
-			fail(e.getMessage());
-		} finally {
-			driverPropsFile.deleteOnExit();
-			extendedPropsFile.deleteOnExit();
-			DriverFactory.configure();
-		}
+        try {
+            DriverFactory.configure();
+            Driver driver = DriverFactory.getInstance();
+            assertEquals("UTF-8", driver.getConfiguration().getUriEncoding());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        } finally {
+            driverPropsFile.deleteOnExit();
+            extendedPropsFile.deleteOnExit();
+            DriverFactory.configure();
+        }
 
-	}
+    }
 }

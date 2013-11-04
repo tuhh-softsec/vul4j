@@ -22,48 +22,44 @@ import org.esigate.events.Event;
 import org.esigate.http.GenericHttpRequest;
 
 /**
- * Fragment event : when a fragment (a complete or partial page) is required for
- * rendering.
+ * Fragment event : when a fragment (a complete or partial page) is required for rendering.
  * 
  * <p>
- * This event may trigger a fetch event in case of a cache miss. If the cache
- * already contains a non stale version of the response, the fragment is
- * retrieved from the cache.
+ * This event may trigger a fetch event in case of a cache miss. If the cache already contains a non stale version of
+ * the response, the fragment is retrieved from the cache.
  * 
  * <p>
- * In proxy mode, the first fragment is a complete page, and following fragments
- * are complete and/or partial page according to ESI directives.
+ * In proxy mode, the first fragment is a complete page, and following fragments are complete and/or partial page
+ * according to ESI directives.
  * 
  * @author Nicolas Richeton
  * 
  */
 public class FragmentEvent extends Event {
 
-	/**
-	 * The response data.
-	 * <p>
-	 * May be null if the request has not been executed yet. If this case,
-	 * setting a response cancels the HTTP call and use the given object
-	 * instead.
-	 * 
-	 */
-	public HttpResponse httpResponse;
-	/**
-	 * The request context
-	 */
-	public HttpContext httpContext;
-	/**
-	 * The new HTTP call details.
-	 * <p>
-	 * This object can been updated during pre-event processing and the HTTP
-	 * call will use the updated object.
-	 */
-	public GenericHttpRequest httpRequest;
+    /**
+     * The response data.
+     * <p>
+     * May be null if the request has not been executed yet. If this case, setting a response cancels the HTTP call and
+     * use the given object instead.
+     * 
+     */
+    public HttpResponse httpResponse;
+    /**
+     * The request context.
+     */
+    public HttpContext httpContext;
+    /**
+     * The new HTTP call details.
+     * <p>
+     * This object can been updated during pre-event processing and the HTTP call will use the updated object.
+     */
+    public GenericHttpRequest httpRequest;
 
-	/**
-	 * The request which was received by ESIgate.
-	 * <p>
-	 * It is ready only and not intended to be altered.
-	 */
-	public HttpEntityEnclosingRequest originalRequest;
+    /**
+     * The request which was received by ESIgate.
+     * <p>
+     * It is ready only and not intended to be altered.
+     */
+    public HttpEntityEnclosingRequest originalRequest;
 }

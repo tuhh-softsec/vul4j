@@ -25,21 +25,21 @@ import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class EsiRendererTest extends TestCase {
-	private HttpEntityEnclosingRequest request;
-	private EsiRenderer tested;
+    private HttpEntityEnclosingRequest request;
+    private EsiRenderer tested;
 
-	@Override
-	protected void setUp() throws Exception {
-		Driver provider = MockRequestExecutor.createDriver();
-		request = TestUtils.createRequest();
-		tested = new EsiRenderer();
-		provider.initHttpRequestParams(request, null);
-	}
+    @Override
+    protected void setUp() throws Exception {
+        Driver provider = MockRequestExecutor.createDriver();
+        request = TestUtils.createRequest();
+        tested = new EsiRenderer();
+        provider.initHttpRequestParams(request, null);
+    }
 
-	public void testFragmentTagsShouldBeRemoved() throws Exception {
-		String page = "begin <esi:fragment name=\"test\">content</esi:fragment> end";
-		StringWriter out = new StringWriter();
-		tested.render(request, page, out);
-		assertEquals("begin content end", out.toString());
-	}
+    public void testFragmentTagsShouldBeRemoved() throws Exception {
+        String page = "begin <esi:fragment name=\"test\">content</esi:fragment> end";
+        StringWriter out = new StringWriter();
+        tested.render(request, page, out);
+        assertEquals("begin content end", out.toString());
+    }
 }

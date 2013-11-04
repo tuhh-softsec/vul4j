@@ -15,7 +15,7 @@ import org.esigate.extension.surrogate.CapabilitiesEvent;
 import org.esigate.extension.surrogate.Surrogate;
 
 /**
- * This extension processes ESI directives, like :
+ * This extension processes ESI directives. Ex:
  * <p>
  * &lt;esi:include src="$(PROVIDER{cms})/news" fragment="news_1"/>
  * 
@@ -23,51 +23,51 @@ import org.esigate.extension.surrogate.Surrogate;
  * @author Nicolas Richeton
  */
 public class Esi implements Extension, IEventListener {
-	static final String[] capabilities = new String[] { "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
-		"X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
+    static final String[] CAPABILITIES = new String[] { "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
+            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
 
-	@Override
-	public boolean event(EventDefinition id, Event event) {
-		RenderEvent renderEvent = (RenderEvent) event;
-		boolean doEsi = true;
+    @Override
+    public boolean event(EventDefinition id, Event event) {
+        RenderEvent renderEvent = (RenderEvent) event;
+        boolean doEsi = true;
 
-		// ensure we should process esi
-		if (renderEvent.httpResponse != null
-				&& renderEvent.httpResponse.containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
-			String enabledCapabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
-					.getValue();
+        // ensure we should process esi
+        if (renderEvent.httpResponse != null
+                && renderEvent.httpResponse.containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
+            String enabledCapabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
+                    .getValue();
 
-			doEsi = false;
-			for (String capability : capabilities) {
-				if (containsIgnoreCase(enabledCapabilities, capability)) {
-					doEsi = true;
-					break;
-				}
-			}
-		}
+            doEsi = false;
+            for (String capability : CAPABILITIES) {
+                if (containsIgnoreCase(enabledCapabilities, capability)) {
+                    doEsi = true;
+                    break;
+                }
+            }
+        }
 
-		if (doEsi) {
-			renderEvent.renderers.add(new EsiRenderer());
-		}
+        if (doEsi) {
+            renderEvent.renderers.add(new EsiRenderer());
+        }
 
-		// Continue processing
-		return true;
-	}
+        // Continue processing
+        return true;
+    }
 
-	@Override
-	public void init(Driver driver, Properties properties) {
-		driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);
+    @Override
+    public void init(Driver driver, Properties properties) {
+        driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);
 
-		driver.getEventManager().register(Surrogate.EVENT_SURROGATE_CAPABILITIES, new IEventListener() {
-			@Override
-			public boolean event(EventDefinition id, Event event) {
-				CapabilitiesEvent capEvent = (CapabilitiesEvent) event;
-				for (String capability : capabilities) {
-					capEvent.capabilities.add(capability);
-				}
-				return true;
-			}
-		});
-	}
+        driver.getEventManager().register(Surrogate.EVENT_SURROGATE_CAPABILITIES, new IEventListener() {
+            @Override
+            public boolean event(EventDefinition id, Event event) {
+                CapabilitiesEvent capEvent = (CapabilitiesEvent) event;
+                for (String capability : CAPABILITIES) {
+                    capEvent.capabilities.add(capability);
+                }
+                return true;
+            }
+        });
+    }
 
 }

@@ -47,7 +47,7 @@ import org.esigate.parser.Parser;
  */
 public class AggregateRenderer implements Renderer, Appendable {
     /** Generic pattern for all the tags we want to look for. */
-    private static final  Pattern PATTERN = Pattern.compile("<!--\\$[^>]*\\$-->");
+    private static final Pattern PATTERN = Pattern.compile("<!--\\$[^>]*\\$-->");
 
     private final Parser parser = new Parser(PATTERN, IncludeBlockElement.TYPE, IncludeTemplateElement.TYPE,
             PutElement.TYPE);

@@ -27,39 +27,39 @@ import org.esigate.parser.future.StringBuilderFutureAppendable;
 import org.esigate.vars.VariablesResolver;
 
 class VarsElement extends BaseElement {
-	public final static FutureElementType TYPE = new BaseElementType("<esi:vars", "</esi:vars") {
-		@Override
-		public VarsElement newInstance() {
-			return new VarsElement();
-		}
+    public static final FutureElementType TYPE = new BaseElementType("<esi:vars", "</esi:vars") {
+        @Override
+        public VarsElement newInstance() {
+            return new VarsElement();
+        }
 
-	};
+    };
 
-	private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
+    private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
 
-	VarsElement() {
-	}
+    VarsElement() {
+    }
 
-	@Override
-	public void characters(Future<CharSequence> csq) throws IOException {
-		buf.enqueueAppend(csq);
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) throws IOException {
+        buf.enqueueAppend(csq);
+    }
 
-	@Override
-	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		buf.performAppends();
-		String result;
-		try {
-			result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
-		} catch (InterruptedException e) {
-			throw new IOException(e);
-		} catch (ExecutionException e) {
-			if( e.getCause() instanceof HttpErrorPage ) {
-				throw (HttpErrorPage)e.getCause();
-			}
-			throw new IOException(e);
-		}
-		ctx.getCurrent().characters(new CharSequenceFuture( result ));
-	}
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        buf.performAppends();
+        String result;
+        try {
+            result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof HttpErrorPage) {
+                throw (HttpErrorPage) e.getCause();
+            }
+            throw new IOException(e);
+        }
+        ctx.getCurrent().characters(new CharSequenceFuture(result));
+    }
 
 }

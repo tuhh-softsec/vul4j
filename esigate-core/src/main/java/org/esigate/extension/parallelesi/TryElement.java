@@ -24,60 +24,61 @@ import org.esigate.parser.future.FutureParserContext;
 
 class TryElement extends BaseElement {
 
-	public final static FutureElementType TYPE = new BaseElementType("<esi:try", "</esi:try") {
-		@Override
-		public TryElement newInstance() {
-			return new TryElement();
-		}
+    public static final FutureElementType TYPE = new BaseElementType("<esi:try", "</esi:try") {
+        @Override
+        public TryElement newInstance() {
+            return new TryElement();
+        }
 
-	};
+    };
 
-	private boolean hasErrors;
-	private boolean exceptProcessed;
-	private int errorCode;
-	private boolean write = false;
+    private boolean hasErrors;
+    private boolean exceptProcessed;
+    private int errorCode;
+    private boolean write = false;
 
-	TryElement() {
-	}
+    TryElement() {
+    }
 
-	@Override
-	protected void parseTag(Tag tag, FutureParserContext ctx) {
-		this.hasErrors = false;
-		this.errorCode = 0;
-	}
+    @Override
+    protected void parseTag(Tag tag, FutureParserContext ctx) {
+        this.hasErrors = false;
+        this.errorCode = 0;
+    }
 
-	@Override
-	public void characters(Future<CharSequence> csq) throws IOException {
-		if (write)
-			super.characters(csq);
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) throws IOException {
+        if (write) {
+            super.characters(csq);
+        }
+    }
 
-	public boolean hasErrors() {
-		return hasErrors;
-	}
+    public boolean hasErrors() {
+        return hasErrors;
+    }
 
-	public int getErrorCode() {
-		return errorCode;
-	}
+    public int getErrorCode() {
+        return errorCode;
+    }
 
-	public boolean exceptProcessed() {
-		return exceptProcessed;
-	}
+    public boolean exceptProcessed() {
+        return exceptProcessed;
+    }
 
-	public void setExceptProcessed(boolean exceptProcessed) {
-		this.exceptProcessed = exceptProcessed;
-	}
+    public void setExceptProcessed(boolean exceptProcessed) {
+        this.exceptProcessed = exceptProcessed;
+    }
 
-	@Override
-	public boolean onError(Exception e, FutureParserContext ctx) {
-		hasErrors = true;
-		if (e instanceof HttpErrorPage) {
-			errorCode = ((HttpErrorPage) e).getHttpResponse().getStatusLine().getStatusCode();
-		}
-		return true;
-	}
+    @Override
+    public boolean onError(Exception e, FutureParserContext ctx) {
+        hasErrors = true;
+        if (e instanceof HttpErrorPage) {
+            errorCode = ((HttpErrorPage) e).getHttpResponse().getStatusLine().getStatusCode();
+        }
+        return true;
+    }
 
-	public void setWrite(boolean write) {
-		this.write = write;
-	}
+    public void setWrite(boolean write) {
+        this.write = write;
+    }
 }

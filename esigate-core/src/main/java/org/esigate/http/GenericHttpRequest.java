@@ -23,47 +23,47 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicRequestLine;
 
 /**
- * Allows request line / uri modification after request creation. 
+ * Allows request line / uri modification after request creation.
  * 
  * @author fxbonnet
- *
+ * 
  */
 public class GenericHttpRequest extends BasicHttpEntityEnclosingRequest implements Configurable {
 
-	private RequestLine requestLine;
-	private RequestConfig requestConfig;
+    private RequestLine requestLine;
+    private RequestConfig requestConfig;
 
-	public GenericHttpRequest(String method, String uri, ProtocolVersion version) {
-		super(method, uri, version);
-		requestLine = new BasicRequestLine(method, uri, version);
-	}
+    public GenericHttpRequest(String method, String uri, ProtocolVersion version) {
+        super(method, uri, version);
+        requestLine = new BasicRequestLine(method, uri, version);
+    }
 
-	public void setUri(String uri) {
-		requestLine = new BasicRequestLine(requestLine.getMethod(), uri, requestLine.getProtocolVersion());
-	}
+    public void setUri(String uri) {
+        requestLine = new BasicRequestLine(requestLine.getMethod(), uri, requestLine.getProtocolVersion());
+    }
 
-	@Override
-	public ProtocolVersion getProtocolVersion() {
-		return requestLine.getProtocolVersion();
-	}
+    @Override
+    public ProtocolVersion getProtocolVersion() {
+        return requestLine.getProtocolVersion();
+    }
 
-	@Override
-	public RequestLine getRequestLine() {
-		return requestLine;
-	}
+    @Override
+    public RequestLine getRequestLine() {
+        return requestLine;
+    }
 
-	@Override
-	public String toString() {
-		return requestLine.toString();
-	}
+    @Override
+    public String toString() {
+        return requestLine.toString();
+    }
 
-	@Override
-	public RequestConfig getConfig() {
-		return requestConfig;
-	}
+    @Override
+    public RequestConfig getConfig() {
+        return requestConfig;
+    }
 
-	public void setConfig(RequestConfig requestConfig) {
-		this.requestConfig = requestConfig;
-	}
+    public void setConfig(RequestConfig requestConfig) {
+        this.requestConfig = requestConfig;
+    }
 
 }

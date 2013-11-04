@@ -19,23 +19,23 @@ import org.esigate.api.BaseUrlRetrieveStrategy;
 import org.esigate.util.HttpRequestHelper;
 
 public class IpHashBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
-	private final String[] urls;
+    private final String[] urls;
 
-	public IpHashBaseUrlRetrieveStrategy(String[] urls) {
-		this.urls = urls;
-	}
+    public IpHashBaseUrlRetrieveStrategy(String[] urls) {
+        this.urls = urls;
+    }
 
-	@Override
-	public String getBaseURL(HttpRequest originalRequest) {
-		int index = getHashCode(HttpRequestHelper.getMediator(originalRequest).getRemoteAddr()) % this.urls.length;
-		return this.urls[Math.abs(index)];
-	}
+    @Override
+    public String getBaseURL(HttpRequest originalRequest) {
+        int index = getHashCode(HttpRequestHelper.getMediator(originalRequest).getRemoteAddr()) % this.urls.length;
+        return this.urls[Math.abs(index)];
+    }
 
-	private int getHashCode(String ip) {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (ip == null ? 0 : ip.hashCode());
-		return result;
-	}
+    private int getHashCode(String ip) {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (ip == null ? 0 : ip.hashCode());
+        return result;
+    }
 
 }

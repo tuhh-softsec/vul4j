@@ -39,110 +39,108 @@ import org.slf4j.LoggerFactory;
  */
 public class ParallelEsiTest extends TestCase {
 
-	private MockRequestExecutor provider;
-	private HttpEntityEnclosingRequest request;
+    private MockRequestExecutor provider;
+    private HttpEntityEnclosingRequest request;
 
-	@Override
-	protected void setUp() throws Exception {
-		this.provider = MockRequestExecutor.createMockDriver("mock");
-		this.provider.addResource("/test", "test");
-		this.request = TestUtils.createRequest();
-		this.provider.initHttpRequestParams(this.request, null);
-	}
+    @Override
+    protected void setUp() throws Exception {
+        this.provider = MockRequestExecutor.createMockDriver("mock");
+        this.provider.addResource("/test", "test");
+        this.request = TestUtils.createRequest();
+        this.provider.initHttpRequestParams(this.request, null);
+    }
 
-	/**
-	 * This tests uses a blocking executor and ensure all includes are started
-	 * in a new thread before running them.
-	 * 
-	 * @throws IOException
-	 * @throws HttpErrorPage
-	 */
-	public void testParallelInclude() throws IOException, HttpErrorPage {
-		// ESI executor
-		final BlockingExecutor exe = new BlockingExecutor();
-		EsiRenderer tested = new EsiRenderer(exe);
+    /**
+     * This tests uses a blocking executor and ensure all includes are started in a new thread before running them.
+     * 
+     * @throws IOException
+     * @throws HttpErrorPage
+     */
+    public void testParallelInclude() throws IOException, HttpErrorPage {
+        // ESI executor
+        final BlockingExecutor exe = new BlockingExecutor();
+        EsiRenderer tested = new EsiRenderer(exe);
 
-		// Build page and expected result
-		StringBuilder expect = new StringBuilder(100 * 128);
-		StringBuilder page = new StringBuilder(100 * 128);
-		page.append("before ");
-		expect.append("before ");
-		for (int i = 0; i < 100; i++) {
-			page.append("<esi:include src=\"$(PROVIDER{mock})/test\" />");
-			expect.append("test");
-		}
-		page.append(" after");
-		expect.append(" after");
+        // Build page and expected result
+        StringBuilder expect = new StringBuilder(100 * 128);
+        StringBuilder page = new StringBuilder(100 * 128);
+        page.append("before ");
+        expect.append("before ");
+        for (int i = 0; i < 100; i++) {
+            page.append("<esi:include src=\"$(PROVIDER{mock})/test\" />");
+            expect.append("test");
+        }
+        page.append(" after");
+        expect.append(" after");
 
-		// This watches over the blocking executor and release execution when
-		// all includes are added.
-		Runnable r = new Runnable() {
-			@Override
-			public void run() {
-				boolean quit = false;
-				while (!quit) {
-					if (exe.getCount() == 100) {
-						exe.perform();
-						quit = true;
-					}
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		ExecutorService watchDog = Executors.newSingleThreadExecutor();
-		watchDog.execute(r);
+        // This watches over the blocking executor and release execution when
+        // all includes are added.
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                boolean quit = false;
+                while (!quit) {
+                    if (exe.getCount() == 100) {
+                        exe.perform();
+                        quit = true;
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        ExecutorService watchDog = Executors.newSingleThreadExecutor();
+        watchDog.execute(r);
 
-		StringBuilderWriter out = new StringBuilderWriter();
-		tested.render(this.request, page.toString(), out);
+        StringBuilderWriter out = new StringBuilderWriter();
+        tested.render(this.request, page.toString(), out);
 
-		// close
-		out.close();
-		watchDog.shutdown();
+        // close
+        out.close();
+        watchDog.shutdown();
 
-		// Asserts
-		assertEquals(100, exe.getCount());
-		assertEquals(expect.toString(), out.toString());
-	}
+        // Asserts
+        assertEquals(100, exe.getCount());
+        assertEquals(expect.toString(), out.toString());
+    }
 
-	/**
-	 * A blocking executor which will not start runnable unless
-	 * {@link #perform()} is called.
-	 * 
-	 * @author nricheto
-	 * 
-	 */
-	static class BlockingExecutor implements Executor {
-		private static final Logger LOG = LoggerFactory.getLogger(BlockingExecutor.class);
-		List<Runnable> runnables = new ArrayList<Runnable>();
+    /**
+     * A blocking executor which will not start runnable unless {@link #perform()} is called.
+     * 
+     * @author nricheto
+     * 
+     */
+    static class BlockingExecutor implements Executor {
+        private static final Logger LOG = LoggerFactory.getLogger(BlockingExecutor.class);
+        private List<Runnable> runnables = new ArrayList<Runnable>();
 
-		@Override
-		public void execute(Runnable command) {
-			LOG.info("Adding command {}", command);
-			this.runnables.add(command);
-		}
+        @Override
+        public void execute(Runnable command) {
+            LOG.info("Adding command {}", command);
+            this.runnables.add(command);
+        }
 
-		/**
-		 * Start thread execution
-		 */
-		public void perform() {
-			Executor exe = Executors.newCachedThreadPool();
-			for (Runnable r : this.runnables) {
-				exe.execute(r);
-			}
-		}
+        /**
+         * Start thread execution
+         */
+        public void perform() {
+            Executor exe = Executors.newCachedThreadPool();
+            for (Runnable r : this.runnables) {
+                exe.execute(r);
+            }
+        }
 
-		/**
-		 * Get current number of Runnable queued.
-		 * 
-		 * @return current number of Runnable queued.
-		 */
-		public int getCount() {
-			return this.runnables.size();
-		}
-	}
+        /**
+         * Get current number of Runnable queued.
+         * 
+         * @return current number of Runnable queued.
+         */
+        public int getCount() {
+            return this.runnables.size();
+        }
+    }
 
 }

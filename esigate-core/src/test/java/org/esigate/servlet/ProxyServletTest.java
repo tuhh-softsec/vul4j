@@ -34,173 +34,181 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
- * Test the proxy servlet for driver selection (url mapping) for both web.xml
- * configuration (legacy) and esigate.properties.
+ * Test the proxy servlet for driver selection (url mapping) for both web.xml configuration (legacy) and
+ * esigate.properties.
  * 
  * @author Nicolas Richeton
  * 
  */
 public class ProxyServletTest {
 
-	protected class TestServletConfig implements ServletConfig {
-		@Override
-		public String getServletName() {
-			return "aggregator";
-		}
+    protected class TestServletConfig implements ServletConfig {
+        @Override
+        public String getServletName() {
+            return "aggregator";
+        }
 
-		@Override
-		public ServletContext getServletContext() {
-			return null;
-		}
+        @Override
+        public ServletContext getServletContext() {
+            return null;
+        }
 
-		@Override
-		public Enumeration getInitParameterNames() {
-			return null;
-		}
+        @Override
+        public Enumeration getInitParameterNames() {
+            return null;
+        }
 
-		@Override
-		public String getInitParameter(String name) {
-			if (name.equals("provider"))
-				return "single";
+        @Override
+        public String getInitParameter(String name) {
+            if (name.equals("provider")) {
+                return "single";
+            }
 
-			if (name.equals("providers"))
-				return "suB.domaiN.com=provider1,sub2.domAin.com=provider2";
+            if (name.equals("providers")) {
+                return "suB.domaiN.com=provider1,sub2.domAin.com=provider2";
+            }
 
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 
-	/**
-	 * Test Reading configuration from web.xml
-	 * 
-	 * @throws ServletException
-	 */
-	@Test
-	public void testConfig() throws ServletException {
-		ProxyServlet servlet = new ProxyServlet();
+    /**
+     * Test Reading configuration from web.xml.
+     * 
+     * @throws ServletException
+     */
+    @Test
+    public void testConfig() throws ServletException {
+        ProxyServlet servlet = new ProxyServlet();
 
-		// Setup Esigate
-		Properties p = new Properties();
-		p.setProperty("remoteUrlBase", "test");
-		DriverFactory.put("single", Driver.builder().setName("single").setProperties(p).build());
+        // Setup Esigate
+        Properties p = new Properties();
+        p.setProperty("remoteUrlBase", "test");
+        DriverFactory.put("single", Driver.builder().setName("single").setProperties(p).build());
 
-		// Init servlet
-		servlet.init(new TestServletConfig());
+        // Init servlet
+        servlet.init(new TestServletConfig());
 
-		// Ensure config is loaded
-		Assert.assertEquals("provider1", servlet.getDriverSelector().getWebXmlProviderMappings().get("sub.domain.com"));
-		Assert.assertEquals("provider2", servlet.getDriverSelector().getWebXmlProviderMappings().get("sub2.domain.com"));
+        // Ensure config is loaded
+        Assert.assertEquals("provider1", servlet.getDriverSelector().getWebXmlProviderMappings().get("sub.domain.com"));
+        Assert.assertEquals("provider2", servlet.getDriverSelector().getWebXmlProviderMappings().get("sub2.domain.com"));
 
-	}
+    }
 
-	/**
-	 * Test provider selection based on web.xml configuration.
-	 * 
-	 * @throws ServletException
-	 * @throws IOException
-	 * @throws HttpErrorPage
-	 */
-	@Test
-	public void testProviderSelectionWebXml() throws ServletException, IOException, HttpErrorPage {
+    /**
+     * Test provider selection based on web.xml configuration.
+     * 
+     * @throws ServletException
+     * @throws IOException
+     * @throws HttpErrorPage
+     */
+    @Test
+    public void testProviderSelectionWebXml() throws ServletException, IOException, HttpErrorPage {
 
-		// Setup Esigate
-		Properties p = new Properties();
-		p.setProperty("provider1." + Parameters.REMOTE_URL_BASE, "test");
-		p.setProperty("provider2." + Parameters.REMOTE_URL_BASE, "test");
-		p.setProperty("single." + Parameters.REMOTE_URL_BASE, "test");
-		DriverFactory.configure(p);
+        // Setup Esigate
+        Properties p = new Properties();
+        p.setProperty("provider1." + Parameters.REMOTE_URL_BASE, "test");
+        p.setProperty("provider2." + Parameters.REMOTE_URL_BASE, "test");
+        p.setProperty("single." + Parameters.REMOTE_URL_BASE, "test");
+        DriverFactory.configure(p);
 
-		// Init servlet
-		ProxyServlet servlet = new ProxyServlet();
-		servlet.init(new TestServletConfig());
+        // Init servlet
+        ProxyServlet servlet = new ProxyServlet();
+        servlet.init(new TestServletConfig());
 
-		// Do testing
-		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request.getContextPath()).thenReturn("/test");
-		Mockito.when(request.getRequestURI()).thenReturn("test/servlet/request");
-		Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
-		Mockito.when(request.getMethod()).thenReturn("GET");
-		Mockito.when(request.getServletPath()).thenReturn("servlet");
-		Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com");
-		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
+        // Do testing
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getContextPath()).thenReturn("/test");
+        Mockito.when(request.getRequestURI()).thenReturn("test/servlet/request");
+        Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
+        Mockito.when(request.getMethod()).thenReturn("GET");
+        Mockito.when(request.getServletPath()).thenReturn("servlet");
+        Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com");
+        Mockito.when(request.getScheme()).thenReturn("http");
+        Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request, true).getLeft()
+                .getConfiguration().getInstanceName());
 
-		request = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request.getContextPath()).thenReturn("/test");
-		Mockito.when(request.getRequestURI()).thenReturn("test/servlet/request");
-		Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
-		Mockito.when(request.getMethod()).thenReturn("GET");
-		Mockito.when(request.getServletPath()).thenReturn("servlet");
-		Mockito.when(request.getHeader("Host")).thenReturn("sub.domain.com");
-		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
+        request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getContextPath()).thenReturn("/test");
+        Mockito.when(request.getRequestURI()).thenReturn("test/servlet/request");
+        Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
+        Mockito.when(request.getMethod()).thenReturn("GET");
+        Mockito.when(request.getServletPath()).thenReturn("servlet");
+        Mockito.when(request.getHeader("Host")).thenReturn("sub.domain.com");
+        Mockito.when(request.getScheme()).thenReturn("http");
+        Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request, true).getLeft()
+                .getConfiguration().getInstanceName());
 
-		request = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request.getContextPath()).thenReturn("/test");
-		Mockito.when(request.getRequestURI()).thenReturn("test/servlet/request");
-		Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
-		Mockito.when(request.getMethod()).thenReturn("GET");
-		Mockito.when(request.getServletPath()).thenReturn("servlet");
-		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
+        request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getContextPath()).thenReturn("/test");
+        Mockito.when(request.getRequestURI()).thenReturn("test/servlet/request");
+        Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
+        Mockito.when(request.getMethod()).thenReturn("GET");
+        Mockito.when(request.getServletPath()).thenReturn("servlet");
+        Mockito.when(request.getScheme()).thenReturn("http");
+        Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request, true).getLeft()
+                .getConfiguration().getInstanceName());
 
-	}
+    }
 
-	/**
-	 * Test provider selection based on esigate.properties configuration.
-	 * 
-	 * @throws ServletException
-	 * @throws IOException
-	 * @throws HttpErrorPage
-	 */
-	@Test
-	public void testProviderSelectionEsigate() throws ServletException, IOException, HttpErrorPage {
+    /**
+     * Test provider selection based on esigate.properties configuration.
+     * 
+     * @throws ServletException
+     * @throws IOException
+     * @throws HttpErrorPage
+     */
+    @Test
+    public void testProviderSelectionEsigate() throws ServletException, IOException, HttpErrorPage {
 
-		// Setup Esigate
-		Properties p = new Properties();
-		p.setProperty("provider1." + Parameters.REMOTE_URL_BASE, "test");
-		p.setProperty("provider1." + Parameters.MAPPINGS, "http://sub.domain.com/*");
-		p.setProperty("provider2." + Parameters.REMOTE_URL_BASE, "test");
-		p.setProperty("provider2." + Parameters.MAPPINGS, "http://sub2.domain.com/*");
-		p.setProperty("single." + Parameters.REMOTE_URL_BASE, "test");
-		p.setProperty("single." + Parameters.MAPPINGS, "*");
-		DriverFactory.configure(p);
+        // Setup Esigate
+        Properties p = new Properties();
+        p.setProperty("provider1." + Parameters.REMOTE_URL_BASE, "test");
+        p.setProperty("provider1." + Parameters.MAPPINGS, "http://sub.domain.com/*");
+        p.setProperty("provider2." + Parameters.REMOTE_URL_BASE, "test");
+        p.setProperty("provider2." + Parameters.MAPPINGS, "http://sub2.domain.com/*");
+        p.setProperty("single." + Parameters.REMOTE_URL_BASE, "test");
+        p.setProperty("single." + Parameters.MAPPINGS, "*");
+        DriverFactory.configure(p);
 
-		ProxyServlet servlet = new ProxyServlet();
-		ServletConfig conf = Mockito.mock(ServletConfig.class);
-		Mockito.when(conf.getInitParameter("useMappings")).thenReturn("true");
-		servlet.init(conf);
+        ProxyServlet servlet = new ProxyServlet();
+        ServletConfig conf = Mockito.mock(ServletConfig.class);
+        Mockito.when(conf.getInitParameter("useMappings")).thenReturn("true");
+        servlet.init(conf);
 
-		// Do testing
-		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request.getContextPath()).thenReturn("/test");
-		Mockito.when(request.getRequestURI()).thenReturn("/test/servlet/request");
-		Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
-		Mockito.when(request.getMethod()).thenReturn("GET");
-		Mockito.when(request.getServletPath()).thenReturn("servlet");
-		Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com");
-		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
+        // Do testing
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getContextPath()).thenReturn("/test");
+        Mockito.when(request.getRequestURI()).thenReturn("/test/servlet/request");
+        Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
+        Mockito.when(request.getMethod()).thenReturn("GET");
+        Mockito.when(request.getServletPath()).thenReturn("servlet");
+        Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com");
+        Mockito.when(request.getScheme()).thenReturn("http");
+        Assert.assertEquals("provider2", servlet.getDriverSelector().selectProvider(request, true).getLeft()
+                .getConfiguration().getInstanceName());
 
-		request = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request.getContextPath()).thenReturn("/test");
-		Mockito.when(request.getRequestURI()).thenReturn("/test/servlet/request");
-		Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
-		Mockito.when(request.getMethod()).thenReturn("GET");
-		Mockito.when(request.getServletPath()).thenReturn("servlet");
-		Mockito.when(request.getHeader("Host")).thenReturn("sub.domain.com");
-		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
+        request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getContextPath()).thenReturn("/test");
+        Mockito.when(request.getRequestURI()).thenReturn("/test/servlet/request");
+        Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
+        Mockito.when(request.getMethod()).thenReturn("GET");
+        Mockito.when(request.getServletPath()).thenReturn("servlet");
+        Mockito.when(request.getHeader("Host")).thenReturn("sub.domain.com");
+        Mockito.when(request.getScheme()).thenReturn("http");
+        Assert.assertEquals("provider1", servlet.getDriverSelector().selectProvider(request, true).getLeft()
+                .getConfiguration().getInstanceName());
 
-		request = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request.getContextPath()).thenReturn("/test");
-		Mockito.when(request.getRequestURI()).thenReturn("/test/servlet/request");
-		Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
-		Mockito.when(request.getMethod()).thenReturn("GET");
-		Mockito.when(request.getServletPath()).thenReturn("servlet");
-		Mockito.when(request.getScheme()).thenReturn("http");
-		Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request, true).getLeft().getConfiguration().getInstanceName());
+        request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getContextPath()).thenReturn("/test");
+        Mockito.when(request.getRequestURI()).thenReturn("/test/servlet/request");
+        Mockito.when(request.getProtocol()).thenReturn("HTTP/1.1");
+        Mockito.when(request.getMethod()).thenReturn("GET");
+        Mockito.when(request.getServletPath()).thenReturn("servlet");
+        Mockito.when(request.getScheme()).thenReturn("http");
+        Assert.assertEquals("single", servlet.getDriverSelector().selectProvider(request, true).getLeft()
+                .getConfiguration().getInstanceName());
 
-	}
+    }
 
 }

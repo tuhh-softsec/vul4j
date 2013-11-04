@@ -22,10 +22,9 @@ package org.esigate.servlet;
  * Parameters are :
  * <ul>
  * <li>provider (optional - deprecated): single provider name</li>
- * <li>providers (optional - deprecated): comma-separated list of provider
- * mappings based on host requested. Format is: host1=provider,host2=provider2</li>
- * <li>useMappings (optional - recommended): true or false : use mappings from
- * esigate.properties</li>
+ * <li>providers (optional - deprecated): comma-separated list of provider mappings based on host requested. Format is:
+ * host1=provider,host2=provider2</li>
+ * <li>useMappings (optional - recommended): true or false : use mappings from esigate.properties</li>
  * </ul>
  * 
  * <p>
@@ -37,6 +36,6 @@ package org.esigate.servlet;
  */
 @Deprecated
 public class AggregatorServlet extends ProxyServlet {
-	// This is now the same exact class than ProxyServlet
-	private static final long serialVersionUID = 1L;
+    // This is now the same exact class than ProxyServlet
+    private static final long serialVersionUID = 1L;
 }

@@ -26,11 +26,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This extension reloads configuration when esigate.properties is updated.
  * <p>
- * This only works on configuration defined using "esigate.config" system
- * property.
+ * This only works on configuration defined using "esigate.config" system property.
  * <p>
- * The polling frequency can be set by adding the following property to esigate
- * configuration : <code>
+ * The polling frequency can be set by adding the following property to esigate configuration : <code>
  * &lt;driverid&gt;.configReloadDelay
  * </code>
  * <p>
@@ -42,89 +40,89 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ConfigReloadOnChange implements Extension {
-	private static final long DEFAULT_RELOAD_DELAY = 5000;
-	/**
-	 * The wait time (ms) between to check for configuration change.
-	 * 
-	 */
-	public static Parameter CONFIG_RELOAD_DELAY = new Parameter("configReloadDelay",
-			String.valueOf(DEFAULT_RELOAD_DELAY));
+    private static final long DEFAULT_RELOAD_DELAY = 5000;
+    /**
+     * The wait time (ms) between to check for configuration change.
+     * 
+     */
+    public static final Parameter CONFIG_RELOAD_DELAY = new Parameter("configReloadDelay",
+            String.valueOf(DEFAULT_RELOAD_DELAY));
 
-	// Do not poll too fast. (ms).
-	private static final int SPEED_LIMIT = 100;
-	protected static final Logger LOG = LoggerFactory.getLogger(ConfigReloadOnChange.class);
+    // Do not poll too fast. (ms).
+    private static final int SPEED_LIMIT = 100;
+    protected static final Logger LOG = LoggerFactory.getLogger(ConfigReloadOnChange.class);
 
-	protected static File configuration = null;
-	protected static long lastModified = -1;
-	protected static long delay = DEFAULT_RELOAD_DELAY;
+    private static File configuration = null;
+    private static long lastModified = -1;
+    private static long delay = DEFAULT_RELOAD_DELAY;
 
-	// this variable will be used in the future, when extension supports
-	// shutdown event.
-	protected static boolean stop = false;
+    // this variable will be used in the future, when extension supports
+    // shutdown event.
+    private static boolean stop = false;
 
-	static Thread fileWatcher = new Thread() {
-		@Override
-		public void run() {
-			while (!stop) {
-				if (configuration != null && configuration.exists()) {
-					if (configuration.lastModified() != lastModified) {
-						lastModified = configuration.lastModified();
+    private static Thread fileWatcher = new Thread() {
+        @Override
+        public void run() {
+            while (!stop) {
+                if (configuration != null && configuration.exists()) {
+                    if (configuration.lastModified() != lastModified) {
+                        lastModified = configuration.lastModified();
 
-						// Reload
-						LOG.warn("Configuration file changed : reloading.");
-						DriverFactory.configure();
-					}
-				}
+                        // Reload
+                        LOG.warn("Configuration file changed : reloading.");
+                        DriverFactory.configure();
+                    }
+                }
 
-				// Wait before checking again
-				try {
-					Thread.sleep(delay);
-				} catch (InterruptedException e) {
-					stop = true;
-					LOG.warn("Watching interrupted.");
-				}
-			}
+                // Wait before checking again
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    stop = true;
+                    LOG.warn("Watching interrupted.");
+                }
+            }
 
-			LOG.info("Stopped watching {}.", configuration.getAbsoluteFile());
-		}
-	};
+            LOG.info("Stopped watching {}.", configuration.getAbsoluteFile());
+        }
+    };
 
-	@Override
-	public void init(Driver driver, Properties properties) {
+    @Override
+    public void init(Driver driver, Properties properties) {
 
-		// Do nothing if configuration is loaded from the classpath
-		if (configuration == null) {
-			LOG.warn("Cannot reload configuration from classpath. Please use -D" + DriverFactory.PROP_CONF_LOCATION);
-			return;
-		}
+        // Do nothing if configuration is loaded from the classpath
+        if (configuration == null) {
+            LOG.warn("Cannot reload configuration from classpath. Please use -D" + DriverFactory.PROP_CONF_LOCATION);
+            return;
+        }
 
-		// Load configuration
-		try {
-			// Try to convert as long
-			long configDelay = CONFIG_RELOAD_DELAY.getValueLong(properties);
+        // Load configuration
+        try {
+            // Try to convert as long
+            long configDelay = CONFIG_RELOAD_DELAY.getValueLong(properties);
 
-			// Do not watch faster than SPEED_LIMIT
-			if (configDelay < SPEED_LIMIT) {
-				delay = SPEED_LIMIT;
-			}
-		} catch (NumberFormatException e) {
-			LOG.warn("Unable to convert {}={} as number", CONFIG_RELOAD_DELAY.name,
-					CONFIG_RELOAD_DELAY.getValueString(properties));
-		}
+            // Do not watch faster than SPEED_LIMIT
+            if (configDelay < SPEED_LIMIT) {
+                delay = SPEED_LIMIT;
+            }
+        } catch (NumberFormatException e) {
+            LOG.warn("Unable to convert {}={} as number", CONFIG_RELOAD_DELAY.getName(),
+                    CONFIG_RELOAD_DELAY.getValueString(properties));
+        }
 
-		LOG.info("Will reload configuration every {}ms if {} is modified", Long.valueOf(delay),
-				configuration.getAbsoluteFile());
-	}
+        LOG.info("Will reload configuration every {}ms if {} is modified", Long.valueOf(delay),
+                configuration.getAbsoluteFile());
+    }
 
-	// This static block ensure thread is started only once.
-	static {
-		String envPath = System.getProperty("esigate.config");
-		if (envPath != null) {
-			configuration = new File(envPath);
-		}
+    // This static block ensure thread is started only once.
+    static {
+        String envPath = System.getProperty("esigate.config");
+        if (envPath != null) {
+            configuration = new File(envPath);
+        }
 
-		// Start watcher
-		fileWatcher.start();
-	}
+        // Start watcher
+        fileWatcher.start();
+    }
 
 }

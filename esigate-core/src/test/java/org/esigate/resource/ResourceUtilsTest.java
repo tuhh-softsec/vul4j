@@ -26,21 +26,22 @@ import org.esigate.test.TestUtils;
 
 public class ResourceUtilsTest extends TestCase {
 
-	public void testGetHttpUrlWithQueryString() throws Exception {
-		Properties props = new Properties();
-		props.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
-		Driver driver = Driver.builder().setName("test").setProperties(props).build();
-		HttpEntityEnclosingRequest request = TestUtils.createRequest("http://bar.com");
-		driver.initHttpRequestParams(request, null);
-		assertEquals("http://www.foo.com/test", ResourceUtils.getHttpUrlWithQueryString("/test", request, true));
-	}
+    public void testGetHttpUrlWithQueryString() throws Exception {
+        Properties props = new Properties();
+        props.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com/");
+        Driver driver = Driver.builder().setName("test").setProperties(props).build();
+        HttpEntityEnclosingRequest request = TestUtils.createRequest("http://bar.com");
+        driver.initHttpRequestParams(request, null);
+        assertEquals("http://www.foo.com/test", ResourceUtils.getHttpUrlWithQueryString("/test", request, true));
+    }
 
-	public void testGetHttpUrlWithQueryStringAbsoluteurl() throws Exception {
-		Properties props = new Properties();
-		props.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
-		Driver driver = Driver.builder().setName("test").setProperties(props).build();
-		HttpEntityEnclosingRequest request = TestUtils.createRequest("http://bar.com");
-		driver.initHttpRequestParams(request, null);
-		assertEquals("http://www.bar.com/test", ResourceUtils.getHttpUrlWithQueryString("http://www.bar.com/test", request, true));
-	}
+    public void testGetHttpUrlWithQueryStringAbsoluteurl() throws Exception {
+        Properties props = new Properties();
+        props.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com/");
+        Driver driver = Driver.builder().setName("test").setProperties(props).build();
+        HttpEntityEnclosingRequest request = TestUtils.createRequest("http://bar.com");
+        driver.initHttpRequestParams(request, null);
+        assertEquals("http://www.bar.com/test",
+                ResourceUtils.getHttpUrlWithQueryString("http://www.bar.com/test", request, true));
+    }
 }

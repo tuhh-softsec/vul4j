@@ -12,11 +12,13 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.extension;
 
 import java.util.Properties;
 
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpStatus;
 import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.events.Event;
@@ -36,52 +38,52 @@ import org.junit.Assert;
  */
 public class APITest extends AbstractDriverTestCase {
 
-	/**
-	 * Ensure all events are correctly initialized.
-	 * 
-	 * @throws Exception
-	 */
-	public void testEventInit() throws Exception {
+    /**
+     * Ensure all events are correctly initialized.
+     * 
+     * @throws Exception
+     */
+    public void testEventInit() throws Exception {
 
-		// Conf
-		Properties properties = new Properties();
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://provider/");
-		properties.put(Parameters.EXTENSIONS, AssertEventInit.class.getName());
+        // Conf
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
+        properties.put(Parameters.EXTENSIONS, AssertEventInit.class.getName());
 
-		// Setup remote server (provider) response.
-		Driver driver = createMockDriver(
-				properties,
-				new SequenceResponse().response(createHttpResponse().status(200).reason("OK")
-						.header("Content-Type", "text/html; charset=utf-8").build()));
+        // Setup remote server (provider) response.
+        Driver driver = createMockDriver(
+                properties,
+                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                        .header("Content-Type", "text/html; charset=utf-8").build()));
 
-		HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
-				.build();
+        HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
+                .build();
 
-		driverProxy(driver, request);
+        driverProxy(driver, request);
 
-	}
+    }
 
-	/**
-	 * Ensure all events are correctly initialized.
-	 * 
-	 */
-	public static class AssertEventInit implements Extension {
+    /**
+     * Ensure all events are correctly initialized.
+     * 
+     */
+    public static class AssertEventInit implements Extension {
 
-		@Override
-		public void init(Driver driver, Properties properties) {
-			driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, new IEventListener() {
+        @Override
+        public void init(Driver driver, Properties properties) {
+            driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, new IEventListener() {
 
-				@Override
-				public boolean event(EventDefinition id, Event event) {
-					RenderEvent revent = (RenderEvent) event;
-					Assert.assertNotNull("httpResponse should not be null", revent.httpResponse);
-					Assert.assertNotNull("originalRequest should not be null", revent.originalRequest);
-					Assert.assertNotNull("renderers should not be null", revent.renderers);
-					return true;
-				}
-			});
+                @Override
+                public boolean event(EventDefinition id, Event event) {
+                    RenderEvent revent = (RenderEvent) event;
+                    Assert.assertNotNull("httpResponse should not be null", revent.httpResponse);
+                    Assert.assertNotNull("originalRequest should not be null", revent.originalRequest);
+                    Assert.assertNotNull("renderers should not be null", revent.renderers);
+                    return true;
+                }
+            });
 
-		}
+        }
 
-	}
+    }
 }

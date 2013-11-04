@@ -29,54 +29,55 @@ import org.esigate.vars.VariablesResolver;
 
 class WhenElement extends BaseElement {
 
-	public final static FutureElementType TYPE = new BaseElementType("<esi:when", "</esi:when") {
-		@Override
-		public WhenElement newInstance() {
-			return new WhenElement();
-		}
+    public static final FutureElementType TYPE = new BaseElementType("<esi:when", "</esi:when") {
+        @Override
+        public WhenElement newInstance() {
+            return new WhenElement();
+        }
 
-	};
+    };
 
-	private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
-	private boolean active = false;
+    private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
+    private boolean active = false;
 
-	WhenElement() {
-	}
+    WhenElement() {
+    }
 
-	@Override
-	protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		String test = tag.getAttribute("test");
-		ChooseElement parent = ctx.findAncestor(ChooseElement.class);
-		if (test != null && parent != null) {
-			// no other 'when' were active before
-			active = !parent.hadConditionSet();
-			parent.setCondition(Operations.processOperators(VariablesResolver.replaceAllVariables(test, ctx.getHttpRequest())));
-			active &= parent.isCondition();
-		}
-	}
+    @Override
+    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        String test = tag.getAttribute("test");
+        ChooseElement parent = ctx.findAncestor(ChooseElement.class);
+        if (test != null && parent != null) {
+            // no other 'when' were active before
+            active = !parent.hadConditionSet();
+            parent.setCondition(Operations.processOperators(VariablesResolver.replaceAllVariables(test,
+                    ctx.getHttpRequest())));
+            active &= parent.isCondition();
+        }
+    }
 
-	@Override
-	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		if (active) {
-			String result;
-			try {
-				result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
-			} catch (InterruptedException e) {
-				throw new IOException(e);
-			} catch (ExecutionException e) {
-				if( e.getCause() instanceof HttpErrorPage ) {
-					throw (HttpErrorPage)e.getCause();
-				}
-				throw new IOException(e);
-			}
-			super.characters(new CharSequenceFuture(result));
-		}
-	}
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        if (active) {
+            String result;
+            try {
+                result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
+            } catch (InterruptedException e) {
+                throw new IOException(e);
+            } catch (ExecutionException e) {
+                if (e.getCause() instanceof HttpErrorPage) {
+                    throw (HttpErrorPage) e.getCause();
+                }
+                throw new IOException(e);
+            }
+            super.characters(new CharSequenceFuture(result));
+        }
+    }
 
-	@Override
-	public void characters(Future<CharSequence> csq) throws IOException {
-		if (active) {
-			buf.enqueueAppend(csq);
-		}
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) throws IOException {
+        if (active) {
+            buf.enqueueAppend(csq);
+        }
+    }
 }

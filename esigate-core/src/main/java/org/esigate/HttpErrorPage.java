@@ -84,8 +84,7 @@ public class HttpErrorPage extends Exception {
      */
     public HttpErrorPage(int statusCode, String statusMessage, String content) {
         super(statusCode + " " + statusMessage);
-        this.httpResponse =
-                new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
+        this.httpResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
         try {
             this.httpResponse.setEntity(new StringEntity(content, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
@@ -103,8 +102,7 @@ public class HttpErrorPage extends Exception {
      */
     public HttpErrorPage(int statusCode, String statusMessage, Exception exception) {
         super(statusCode + " " + statusMessage, exception);
-        this.httpResponse =
-                new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
+        this.httpResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
         StringBuilderWriter out = new StringBuilderWriter(512);
         PrintWriter pw = new PrintWriter(out);
         exception.printStackTrace(pw);

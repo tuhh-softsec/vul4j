@@ -18,34 +18,34 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.apache.http.ParseException;
+import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.esigate.test.http.HttpRequestBuilder;
 import org.esigate.test.http.HttpResponseBuilder;
 import org.junit.Test;
 
 /**
- * Tests on SequenceResponse
+ * Tests on SequenceResponse.
  * 
  * @author Nicolas Richeton
  * 
  */
 public class SequenceResponseTest {
 
-	@Test
-	public void testSequence() throws ParseException, IOException {
-		SequenceResponse seq = new SequenceResponse().response(
-				new HttpResponseBuilder().status(200).entity("OK 1").build()).response(
-				new HttpResponseBuilder().status(200).entity("OK 2").build());
+    @Test
+    public void testSequence() throws IOException {
+        SequenceResponse seq = new SequenceResponse().response(
+                new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 1").build()).response(
+                new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 2").build());
 
-		assertEquals("OK 1", EntityUtils.toString(seq.execute(new HttpRequestBuilder().build()).getEntity()));
-		assertEquals("OK 2", EntityUtils.toString(seq.execute(new HttpRequestBuilder().build()).getEntity()));
+        assertEquals("OK 1", EntityUtils.toString(seq.execute(new HttpRequestBuilder().build()).getEntity()));
+        assertEquals("OK 2", EntityUtils.toString(seq.execute(new HttpRequestBuilder().build()).getEntity()));
 
-		try {
-			seq.execute(new HttpRequestBuilder().build());
-			fail("Should send an exception");
-		} catch (IllegalStateException e) {
-			// OK
-		}
-	}
+        try {
+            seq.execute(new HttpRequestBuilder().build());
+            fail("Should send an exception");
+        } catch (IllegalStateException e) {
+            // OK
+        }
+    }
 }

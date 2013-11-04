@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpStatus;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.parser.future.FutureAppendable;
@@ -35,11 +36,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Retrieves a resource from the provider application and parses it to find ESI
- * tags to be replaced by contents from other applications.
+ * Retrieves a resource from the provider application and parses it to find ESI tags to be replaced by contents from
+ * other applications.
  * 
- * For more information about ESI language specification, see <a
- * href="http://www.w3.org/TR/esi-lang">Edge Side Include</a>
+ * For more information about ESI language specification, see <a href="http://www.w3.org/TR/esi-lang">Edge Side
+ * Include</a>
  * 
  * <p>
  * This class is based on EsiRenderer
@@ -50,155 +51,153 @@ import org.slf4j.LoggerFactory;
  */
 public class EsiRenderer implements Renderer, FutureAppendable {
 
-	private final static Logger LOG = LoggerFactory.getLogger(EsiRenderer.class);
-	/**
-	 * Key for the executor for future tasks. This is used with parser#setData().
-	 */
-	public final static String DATA_EXECUTOR = "executor";
+    private static final Logger LOG = LoggerFactory.getLogger(EsiRenderer.class);
+    /**
+     * Key for the executor for future tasks. This is used with parser#setData().
+     */
+    public static final String DATA_EXECUTOR = "executor";
 
-	private final static Pattern PATTERN = Pattern
-			.compile("(<esi:\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)/?>)|(</esi:[^>]*>)");
-	private final static Pattern PATTERN_COMMENTS = Pattern.compile("(<!--esi)|(-->)");
+    private static final Pattern PATTERN = Pattern
+            .compile("(<esi:\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)/?>)|(</esi:[^>]*>)");
+    private static final Pattern PATTERN_COMMENTS = Pattern.compile("(<!--esi)|(-->)");
 
-	private final FutureParser parser = new FutureParser(PATTERN, IncludeElement.TYPE, CommentElement.TYPE,
-			RemoveElement.TYPE, VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE, OtherwiseElement.TYPE,
-			TryElement.TYPE, AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE, ReplaceElement.TYPE,
-			FragmentElement.TYPE);
+    private final FutureParser parser = new FutureParser(PATTERN, IncludeElement.TYPE, CommentElement.TYPE,
+            RemoveElement.TYPE, VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE, OtherwiseElement.TYPE,
+            TryElement.TYPE, AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE, ReplaceElement.TYPE,
+            FragmentElement.TYPE);
 
-	private final FutureParser parserComments = new FutureParser(PATTERN_COMMENTS, Comment.TYPE);
+    private final FutureParser parserComments = new FutureParser(PATTERN_COMMENTS, Comment.TYPE);
 
-	private Map<String, CharSequence> fragmentsToReplace;
+    private Map<String, CharSequence> fragmentsToReplace;
 
-	private final String page;
+    private final String page;
 
-	private final String name;
+    private final String name;
 
-	private boolean write = true;
+    private boolean write = true;
 
-	private boolean found = false;
+    private boolean found = false;
 
-	private FutureAppendableAdapter futureOut;
+    private FutureAppendableAdapter futureOut;
 
-	private Executor executor;
+    private Executor executor;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setWrite(boolean write) {
-		this.write = write;
-	}
+    public void setWrite(boolean write) {
+        this.write = write;
+    }
 
-	/**
-	 * Constructor used to render a complete page
-	 * 
-	 * @param executor
-	 *            Executor to use for background operations or null if
-	 *            single-thread operations.
-	 */
-	public EsiRenderer(Executor executor) {
-		this.page = null;
-		this.name = null;
-		this.executor = executor;
-	}
+    /**
+     * Constructor used to render a complete page.
+     * 
+     * @param executor
+     *            Executor to use for background operations or null if single-thread operations.
+     */
+    public EsiRenderer(Executor executor) {
+        this.page = null;
+        this.name = null;
+        this.executor = executor;
+    }
 
-	/**
-	 * Constructor used to render a fragment Retrieves a fragment inside a page.<br />
-	 * 
-	 * Extracts html between <code>&lt;esi:fragment name="myFragment"&gt;</code>
-	 * and <code>&lt;/esi:fragment&gt;</code>
-	 * 
-	 * @param page
-	 * @param name
-	 * @param executor
-	 *            Executor to use for background operations or null if
-	 *            single-thread operations.
-	 */
-	public EsiRenderer(String page, String name, Executor executor) {
-		this.page = page;
-		this.name = name;
-		this.write = false;
-		this.executor = executor;
-	}
+    /**
+     * Constructor used to render a fragment Retrieves a fragment inside a page.<br />
+     * 
+     * Extracts html between <code>&lt;esi:fragment name="myFragment"&gt;</code> and <code>&lt;/esi:fragment&gt;</code>
+     * 
+     * @param page
+     * @param name
+     * @param executor
+     *            Executor to use for background operations or null if single-thread operations.
+     */
+    public EsiRenderer(String page, String name, Executor executor) {
+        this.page = page;
+        this.name = name;
+        this.write = false;
+        this.executor = executor;
+    }
 
-	public Map<String, CharSequence> getFragmentsToReplace() {
-		return fragmentsToReplace;
-	}
+    public Map<String, CharSequence> getFragmentsToReplace() {
+        return fragmentsToReplace;
+    }
 
-	public void setFragmentsToReplace(Map<String, CharSequence> fragmentsToReplace) {
-		this.fragmentsToReplace = fragmentsToReplace;
-	}
+    public void setFragmentsToReplace(Map<String, CharSequence> fragmentsToReplace) {
+        this.fragmentsToReplace = fragmentsToReplace;
+    }
 
-	@Override
-	public void render(HttpEntityEnclosingRequest originalRequest, String content, Writer out) throws IOException,
-			HttpErrorPage {
-		if (name != null) {
-			LOG.debug("Rendering fragment {} in page {}", name, page);
-		}
-		this.futureOut = new FutureAppendableAdapter(out);
-		if (content == null) {
-			return;
-		}
+    @Override
+    public void render(HttpEntityEnclosingRequest originalRequest, String content, Writer out) throws IOException,
+            HttpErrorPage {
+        if (name != null) {
+            LOG.debug("Rendering fragment {} in page {}", name, page);
+        }
+        this.futureOut = new FutureAppendableAdapter(out);
+        if (content == null) {
+            return;
+        }
 
-		try {
-			// Pass 1. Remove esi comments
-			StringBuilderFutureAppendable contentWithoutComments = new StringBuilderFutureAppendable();
-			parserComments.setHttpRequest(originalRequest);
-			parserComments.setData(DATA_EXECUTOR, this.executor);
-			parserComments.parse(content, contentWithoutComments);
-			CharSequence contentWithoutCommentsResult;
+        try {
+            // Pass 1. Remove esi comments
+            StringBuilderFutureAppendable contentWithoutComments = new StringBuilderFutureAppendable();
+            parserComments.setHttpRequest(originalRequest);
+            parserComments.setData(DATA_EXECUTOR, this.executor);
+            parserComments.parse(content, contentWithoutComments);
+            CharSequence contentWithoutCommentsResult;
 
-			contentWithoutCommentsResult = contentWithoutComments.get();
+            contentWithoutCommentsResult = contentWithoutComments.get();
 
-			// Pass 2. Process ESI
-			parser.setHttpRequest(originalRequest);
-			parser.setData(DATA_EXECUTOR, this.executor);
-			parser.parse(contentWithoutCommentsResult, this);
+            // Pass 2. Process ESI
+            parser.setHttpRequest(originalRequest);
+            parser.setData(DATA_EXECUTOR, this.executor);
+            parser.parse(contentWithoutCommentsResult, this);
 
-			if (name != null && this.found == false) {
-				throw new HttpErrorPage(502, "Fragment " + name + " not found", "Fragment " + name + " not found");
-			}
+            if (name != null && !this.found) {
+                throw new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, "Fragment " + name + " not found", "Fragment "
+                        + name + " not found");
+            }
 
-			this.futureOut.performAppends();
+            this.futureOut.performAppends();
 
-		} catch (InterruptedException e) {
-			throw new IOException(e);
-		} catch (ExecutionException e) {
-			throw new IOException(e);
-		}
-	}
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        } catch (ExecutionException e) {
+            throw new IOException(e);
+        }
+    }
 
-	@Override
-	public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
-		if (this.write) {
-			this.futureOut.enqueueAppend(csq);
-		}
-		return this;
-	}
+    @Override
+    public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
+        if (this.write) {
+            this.futureOut.enqueueAppend(csq);
+        }
+        return this;
+    }
 
-	public boolean isWrite() {
-		return this.write;
-	}
+    public boolean isWrite() {
+        return this.write;
+    }
 
-	public void setFound(boolean found) {
-		this.found = found;
+    public void setFound(boolean found) {
+        this.found = found;
 
-	}
+    }
 
-	@Override
-	public FutureAppendable performAppends() throws IOException, HttpErrorPage {
-		return this.futureOut.performAppends();
-	}
+    @Override
+    public FutureAppendable performAppends() throws IOException, HttpErrorPage {
+        return this.futureOut.performAppends();
+    }
 
-	@Override
-	public boolean hasPending() {
-		return this.futureOut.hasPending();
-	}
+    @Override
+    public boolean hasPending() {
+        return this.futureOut.hasPending();
+    }
 
-	@Override
-	public FutureAppendable performAppends(int timeout, TimeUnit unit) throws IOException, HttpErrorPage,
-			TimeoutException {
-		return this.futureOut.performAppends(timeout, unit);
-	}
+    @Override
+    public FutureAppendable performAppends(int timeout, TimeUnit unit) throws IOException, HttpErrorPage,
+            TimeoutException {
+        return this.futureOut.performAppends(timeout, unit);
+    }
 
 }

@@ -20,15 +20,15 @@ import org.esigate.api.BaseUrlRetrieveStrategy;
 
 public class SingleBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
 
-	private final String baseUrl;
+    private final String baseUrl;
 
-	public SingleBaseUrlRetrieveStrategy(String baseUrl) {
-		this.baseUrl = baseUrl;
-	}
+    public SingleBaseUrlRetrieveStrategy(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
 
-	@Override
-	public String getBaseURL(HttpRequest originalRequest) {
-		return this.baseUrl;
-	}
+    @Override
+    public String getBaseURL(HttpRequest originalRequest) {
+        return this.baseUrl;
+    }
 
 }

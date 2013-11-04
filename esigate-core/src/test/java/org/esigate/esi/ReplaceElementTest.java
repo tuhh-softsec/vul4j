@@ -27,25 +27,25 @@ import org.esigate.test.TestUtils;
 
 public class ReplaceElementTest extends TestCase {
 
-	private EsiRenderer tested;
-	private HttpEntityEnclosingRequest request;
+    private EsiRenderer tested;
+    private HttpEntityEnclosingRequest request;
 
-	@Override
-	protected void setUp() throws IOException, HttpErrorPage {
-		MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
-		request = TestUtils.createRequest();
-		tested = new EsiRenderer();
-		provider.initHttpRequestParams(request, null);
-	}
+    @Override
+    protected void setUp() throws IOException, HttpErrorPage {
+        MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
+        request = TestUtils.createRequest();
+        tested = new EsiRenderer();
+        provider.initHttpRequestParams(request, null);
+    }
 
-	public void testErrorIfNotInsideIncludeTag() throws IOException, HttpErrorPage {
-		String page = "begin <esi:replace fragment=\"test\">test</esi:replace> end";
-		StringWriter out = new StringWriter();
-		try {
-			tested.render(request, page, out);
-		} catch (EsiSyntaxError e) {
-			return;
-		}
-		fail("We should have had a EsiSyntaxError");
-	}
+    public void testErrorIfNotInsideIncludeTag() throws IOException, HttpErrorPage {
+        String page = "begin <esi:replace fragment=\"test\">test</esi:replace> end";
+        StringWriter out = new StringWriter();
+        try {
+            tested.render(request, page, out);
+        } catch (EsiSyntaxError e) {
+            return;
+        }
+        fail("We should have had a EsiSyntaxError");
+    }
 }

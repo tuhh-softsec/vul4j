@@ -22,49 +22,49 @@ import org.esigate.parser.future.FutureElement;
 import org.esigate.parser.future.FutureParserContext;
 
 abstract class BaseElement implements FutureElement {
-	private boolean closed = false;
-	private FutureElement parent = null;
+    private boolean closed = false;
+    private FutureElement parent = null;
 
-	protected BaseElement() {
-	}
+    protected BaseElement() {
+    }
 
-	/** Additional tag initialization callback. */
-	@SuppressWarnings("unused")
-	protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		// Default implementation does nothing
-	}
+    /** Additional tag initialization callback. */
+    @SuppressWarnings("unused")
+    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        // Default implementation does nothing
+    }
 
-	@Override
-	public boolean isClosed() {
-		return this.closed;
-	}
+    @Override
+    public boolean isClosed() {
+        return this.closed;
+    }
 
-	@Override
-	public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		Tag tagObj = Tag.create(tag);
-		this.closed = tagObj.isOpenClosed();
-		this.parent = ctx.getCurrent();
-		parseTag(tagObj, ctx);
-	}
+    @Override
+    public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        Tag tagObj = Tag.create(tag);
+        this.closed = tagObj.isOpenClosed();
+        this.parent = ctx.getCurrent();
+        parseTag(tagObj, ctx);
+    }
 
-	@Override
-	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		// Empty, implementation can customize this method with tag logic
-	}
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        // Empty, implementation can customize this method with tag logic
+    }
 
-	@Override
-	public boolean onError(Exception e, FutureParserContext ctx) {
-		return false;
-	}
+    @Override
+    public boolean onError(Exception e, FutureParserContext ctx) {
+        return false;
+    }
 
-	@Override
-	public void characters(Future<CharSequence> csq) throws IOException {
-		this.parent.characters(csq);
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) throws IOException {
+        this.parent.characters(csq);
+    }
 
-	@Override
-	public FutureElement getParent() {
-		return this.parent;
-	}
+    @Override
+    public FutureElement getParent() {
+        return this.parent;
+    }
 
 }

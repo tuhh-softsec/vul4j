@@ -18,36 +18,36 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.apache.http.ParseException;
+import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.esigate.test.http.HttpRequestBuilder;
 import org.esigate.test.http.HttpResponseBuilder;
 import org.junit.Test;
 
 /**
- * Tests on UriResponse
+ * Tests on UriResponse.
  * 
  * @author Nicolas Richeton
  * 
  */
 public class UriResponseTest {
 
-	@Test
-	public void testUri() throws ParseException, IOException {
-		UriResponse seq = new UriResponse().response("http://test/path1",
-				new HttpResponseBuilder().status(200).entity("OK 1").build()).response("http://test/path2",
-				new HttpResponseBuilder().status(200).entity("OK 2").build());
+    @Test
+    public void testUri() throws IOException {
+        UriResponse seq = new UriResponse().response("http://test/path1",
+                new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 1").build()).response(
+                "http://test/path2", new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 2").build());
 
-		assertEquals("OK 1", EntityUtils.toString(seq
-				.execute(new HttpRequestBuilder().uri("http://test/path1").build()).getEntity()));
-		assertEquals("OK 2", EntityUtils.toString(seq
-				.execute(new HttpRequestBuilder().uri("http://test/path2").build()).getEntity()));
+        assertEquals("OK 1", EntityUtils.toString(seq
+                .execute(new HttpRequestBuilder().uri("http://test/path1").build()).getEntity()));
+        assertEquals("OK 2", EntityUtils.toString(seq
+                .execute(new HttpRequestBuilder().uri("http://test/path2").build()).getEntity()));
 
-		try {
-			seq.execute(new HttpRequestBuilder().uri("http://test/path3").build());
-			fail("Should send an exception");
-		} catch (IllegalStateException e) {
-			// OK
-		}
-	}
+        try {
+            seq.execute(new HttpRequestBuilder().uri("http://test/path3").build());
+            fail("Should send an exception");
+        } catch (IllegalStateException e) {
+            // OK
+        }
+    }
 }

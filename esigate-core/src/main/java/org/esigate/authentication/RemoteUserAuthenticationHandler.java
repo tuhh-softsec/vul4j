@@ -24,42 +24,41 @@ import org.esigate.http.GenericHttpRequest;
 import org.esigate.util.HttpRequestHelper;
 
 /**
- * AuthenticationHandler implementation that retrieves the user passed by the
- * servlet container or set manually into the RequestContext and transmits it as
- * a HTTP header X_REMOTE_USER in all requests
+ * AuthenticationHandler implementation that retrieves the user passed by the servlet container or set manually into the
+ * RequestContext and transmits it as a HTTP header X_REMOTE_USER in all requests.
  * 
  * @author Francois-Xavier Bonnet
  * 
  */
 public class RemoteUserAuthenticationHandler extends GenericAuthentificationHandler {
 
-	@Override
-	public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
-		return false;
-	}
+    @Override
+    public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
+        return false;
+    }
 
-	@Override
-	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
-		UserContext userContext = HttpRequestHelper.getUserContext(httpRequest);
-		String remoteUser = null;
-		if (userContext != null && userContext.getUser() != null) {
-			remoteUser = userContext.getUser();
-		} else {
-			remoteUser = HttpRequestHelper.getMediator(httpRequest).getRemoteUser();
-		}
-		if (remoteUser != null) {
-			request.addHeader("X_REMOTE_USER", remoteUser);
-		}
-	}
+    @Override
+    public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
+        UserContext userContext = HttpRequestHelper.getUserContext(httpRequest);
+        String remoteUser = null;
+        if (userContext != null && userContext.getUser() != null) {
+            remoteUser = userContext.getUser();
+        } else {
+            remoteUser = HttpRequestHelper.getMediator(httpRequest).getRemoteUser();
+        }
+        if (remoteUser != null) {
+            request.addHeader("X_REMOTE_USER", remoteUser);
+        }
+    }
 
-	@Override
-	public void init(Properties properties) {
-		// Nothing to do
-	}
+    @Override
+    public void init(Properties properties) {
+        // Nothing to do
+    }
 
-	@Override
-	public boolean beforeProxy(HttpRequest httpRequest) {
-		return true;
-	}
+    @Override
+    public boolean beforeProxy(HttpRequest httpRequest) {
+        return true;
+    }
 
 }

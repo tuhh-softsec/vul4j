@@ -44,72 +44,71 @@ import org.esigate.http.MockHttpServletRequestBuilder;
 import org.esigate.test.http.HttpResponseBuilder;
 
 public class HttpServletMediatorTest extends TestCase {
-	private SimpleDateFormat format;
+    private SimpleDateFormat format;
 
-	@Override
-	protected void setUp() throws Exception {
-		format = new SimpleDateFormat(DateUtils.PATTERN_RFC1123, Locale.US);
-		format.setTimeZone(TimeZone.getTimeZone("GMT"));
-		super.setUp();
-	}
+    @Override
+    protected void setUp() throws Exception {
+        format = new SimpleDateFormat(DateUtils.PATTERN_RFC1123, Locale.US);
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        super.setUp();
+    }
 
-	public void testRewriteCookieExpires() throws Exception {
-		CookieSpec cookieSpec = new BrowserCompatSpec();
-		String expires = format.format(new Date(System.currentTimeMillis() + 86400000));
-		Header header = new BasicHeader("Set-Cookie", "K_lm_66638=121203111217326896; Domain=.foo.com; Expires="
-				+ expires + "; Path=/");
-		CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
-		Cookie src = cookieSpec.parse(header, origin).get(0);
-		javax.servlet.http.Cookie result = HttpServletMediator.rewriteCookie(src);
-		assertTrue(result.getMaxAge() > 86398);
-		assertTrue(result.getMaxAge() < 86401);
-	}
+    public void testRewriteCookieExpires() throws Exception {
+        CookieSpec cookieSpec = new BrowserCompatSpec();
+        String expires = format.format(new Date(System.currentTimeMillis() + 86400000));
+        Header header = new BasicHeader("Set-Cookie", "K_lm_66638=121203111217326896; Domain=.foo.com; Expires="
+                + expires + "; Path=/");
+        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        Cookie src = cookieSpec.parse(header, origin).get(0);
+        javax.servlet.http.Cookie result = HttpServletMediator.rewriteCookie(src);
+        assertTrue(result.getMaxAge() > 86398);
+        assertTrue(result.getMaxAge() < 86401);
+    }
 
-	public void testRewriteCookieExpiresLongTime() throws Exception {
-		CookieSpec cookieSpec = new BrowserCompatSpec();
-		String expires = format.format(new Date(System.currentTimeMillis() + 15552000000l));
-		Header header = new BasicHeader("Set-Cookie", "K_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
-				+ "; Path=/");
-		CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
-		Cookie src = cookieSpec.parse(header, origin).get(0);
-		javax.servlet.http.Cookie result = HttpServletMediator.rewriteCookie(src);
-		assertTrue(result.getMaxAge() > 15551998);
-		assertTrue(result.getMaxAge() < 15552001);
-	}
+    public void testRewriteCookieExpiresLongTime() throws Exception {
+        CookieSpec cookieSpec = new BrowserCompatSpec();
+        String expires = format.format(new Date(System.currentTimeMillis() + 15552000000L));
+        Header header = new BasicHeader("Set-Cookie", "K_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
+                + "; Path=/");
+        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        Cookie src = cookieSpec.parse(header, origin).get(0);
+        javax.servlet.http.Cookie result = HttpServletMediator.rewriteCookie(src);
+        assertTrue(result.getMaxAge() > 15551998);
+        assertTrue(result.getMaxAge() < 15552001);
+    }
 
-	/**
-	 * Ensure there is no exception when trying to create a session outside of a
-	 * request (during background revalidation). Expected behavior is no
-	 * exception, but value not set.
-	 * 
-	 * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=229"
-	 * @throws Exception
-	 */
-	public void testSetAttributeNoSession() throws Exception {
-		HttpServletRequest request = new MockHttpServletRequestBuilder().protocolVersion("HTTP/1.0").method("GET")
-				.session(null).build();
-		HttpServletResponse response = mock(HttpServletResponse.class);
-		ServletOutputStream outputStream = new ServletOutputStream() {
+    /**
+     * Ensure there is no exception when trying to create a session outside of a request (during background
+     * revalidation). Expected behavior is no exception, but value not set.
+     * 
+     * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=229"
+     * @throws Exception
+     */
+    public void testSetAttributeNoSession() throws Exception {
+        HttpServletRequest request = new MockHttpServletRequestBuilder().protocolVersion("HTTP/1.0").method("GET")
+                .session(null).build();
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ServletOutputStream outputStream = new ServletOutputStream() {
 
-			ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+            private ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
 
-			@Override
-			public void write(int b) throws IOException {
-				this.byteOutputStream.write(b);
-			}
+            @Override
+            public void write(int b) throws IOException {
+                this.byteOutputStream.write(b);
+            }
 
-		};
-		when(response.getOutputStream()).thenReturn(outputStream);
-		ServletContext context = mock(ServletContext.class);
+        };
+        when(response.getOutputStream()).thenReturn(outputStream);
+        ServletContext context = mock(ServletContext.class);
 
-		HttpServletMediator mediator = new HttpServletMediator(request, response, context);
-		mediator.sendResponse(new HttpResponseBuilder().entity("Response").build());
+        HttpServletMediator mediator = new HttpServletMediator(request, response, context);
+        mediator.sendResponse(new HttpResponseBuilder().entity("Response").build());
 
-		mediator.setSessionAttribute("test", "value");
+        mediator.setSessionAttribute("test", "value");
 
-		// Previous method should have no effect since session cannot be
-		// created.
-		Assert.assertNull(mediator.getSessionAttribute("test"));
-	}
+        // Previous method should have no effect since session cannot be
+        // created.
+        Assert.assertNull(mediator.getSessionAttribute("test"));
+    }
 
 }

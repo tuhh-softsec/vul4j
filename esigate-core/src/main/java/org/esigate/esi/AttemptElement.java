@@ -21,38 +21,37 @@ import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 
 /**
- * Implementation of the <esi:attempt/> tag. This tag must be enclosed by a
- * <esi:try/>
+ * Implementation of the <esi:attempt/> tag. This tag must be enclosed by a <esi:try/>
  * 
  */
 class AttemptElement extends BaseElement {
 
-	public final static ElementType TYPE = new BaseElementType("<esi:attempt", "</esi:attempt") {
-		@Override
-		public AttemptElement newInstance() {
-			return new AttemptElement();
-		}
-	};
+    public static final ElementType TYPE = new BaseElementType("<esi:attempt", "</esi:attempt") {
+        @Override
+        public AttemptElement newInstance() {
+            return new AttemptElement();
+        }
+    };
 
-	private StringBuilder buf = new StringBuilder();
+    private StringBuilder buf = new StringBuilder();
 
-	@Override
-	public void characters(CharSequence csq, int start, int end) throws IOException {
-		// Buffer all content inside this tag.
-		this.buf.append(csq, start, end);
-	}
+    @Override
+    public void characters(CharSequence csq, int start, int end) throws IOException {
+        // Buffer all content inside this tag.
+        this.buf.append(csq, start, end);
+    }
 
-	@Override
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
 
-		// Ensure no error has been flagged on the parent <esi:try/> tag.
-		// This means the attempt was successful and we can write the tag
-		// content in its direct parent.
-		TryElement parent = ctx.findAncestor(TryElement.class);
-		if (parent != null && !parent.hasErrors()) {
-			parent.setWrite(true);
-			ctx.getCurrent().characters(this.buf, 0, this.buf.length());
-			parent.setWrite(false);
-		}
-	}
+        // Ensure no error has been flagged on the parent <esi:try/> tag.
+        // This means the attempt was successful and we can write the tag
+        // content in its direct parent.
+        TryElement parent = ctx.findAncestor(TryElement.class);
+        if (parent != null && !parent.hasErrors()) {
+            parent.setWrite(true);
+            ctx.getCurrent().characters(this.buf, 0, this.buf.length());
+            parent.setWrite(false);
+        }
+    }
 }

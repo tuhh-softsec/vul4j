@@ -37,105 +37,106 @@ import org.esigate.test.http.HttpResponseBuilder;
  */
 public abstract class AbstractDriverTestCase extends TestCase {
 
-	/**
-	 * Create a Driver instance with a custom response handler.
-	 * 
-	 * @param properties
-	 * @param responseHandler
-	 * @return
-	 */
-	protected static Driver createMockDriver(Properties properties, IResponseHandler responseHandler) {
-		MockConnectionManager connManager = new MockConnectionManager();
-		connManager.setResponseHandler(responseHandler);
-		return createMockDriver(properties, connManager);
-	}
+    /**
+     * Create a Driver instance with a custom response handler.
+     * 
+     * @param properties
+     * @param responseHandler
+     * @return
+     */
+    protected static Driver createMockDriver(Properties properties, IResponseHandler responseHandler) {
+        MockConnectionManager connManager = new MockConnectionManager();
+        connManager.setResponseHandler(responseHandler);
+        return createMockDriver(properties, connManager);
+    }
 
-	/**
-	 * Create a Driver instance which will always return the same response from
-	 * backend.
-	 * 
-	 * @param properties
-	 * @param response
-	 * @return
-	 */
-	protected static Driver createMockDriver(Properties properties, HttpResponse response) {
-		MockConnectionManager connManager = new MockConnectionManager();
-		connManager.setResponse(response);
-		return createMockDriver(properties, connManager);
-	}
+    /**
+     * Create a Driver instance which will always return the same response from backend.
+     * 
+     * @param properties
+     * @param response
+     * @return
+     */
+    protected static Driver createMockDriver(Properties properties, HttpResponse response) {
+        MockConnectionManager connManager = new MockConnectionManager();
+        connManager.setResponse(response);
+        return createMockDriver(properties, connManager);
+    }
 
-	/**
-	 * Create a Driver instance with a custom connection Manager.
-	 * 
-	 * @param properties
-	 * @param connectionManager
-	 * @return
-	 */
-	protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager) {
-		return createMockDriver(properties, connectionManager, "tested");
-	}
+    /**
+     * Create a Driver instance with a custom connection Manager.
+     * 
+     * @param properties
+     * @param connectionManager
+     * @return
+     */
+    protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager) {
+        return createMockDriver(properties, connectionManager, "tested");
+    }
 
-	/**
-	 * Create a Driver instance with a custom connection Manager.
-	 * 
-	 * @param properties
-	 * @param connectionManager
-	 * @param name
-	 *            name of the Driver instance
-	 * @return
-	 */
-	protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager, String name) {
-		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, null);
-		EventManager eventManager = new EventManager(name);
-		HttpClientHelper httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties, connectionManager);
-		Driver driver = Driver.builder().setName(name).setProperties(properties).setEventManager(eventManager)
-				.setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setHttpClientHelper(httpClientHelper)).build();
-		DriverFactory.put(name, driver);
-		return driver;
-	}
+    /**
+     * Create a Driver instance with a custom connection Manager.
+     * 
+     * @param properties
+     * @param connectionManager
+     * @param name
+     *            name of the Driver instance
+     * @return
+     */
+    protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager,
+            String name) {
+        CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, null);
+        EventManager eventManager = new EventManager(name);
+        HttpClientHelper httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties,
+                connectionManager);
+        Driver driver = Driver.builder().setName(name).setProperties(properties).setEventManager(eventManager)
+                .setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setHttpClientHelper(httpClientHelper))
+                .build();
+        DriverFactory.put(name, driver);
+        return driver;
+    }
 
-	/**
-	 * Create a fluent-style builder for HttpResponse.
-	 * 
-	 * @return a HttpResponseBuilder
-	 */
-	public static HttpResponseBuilder createHttpResponse() {
-		return new HttpResponseBuilder();
-	}
+    /**
+     * Create a fluent-style builder for HttpResponse.
+     * 
+     * @return a HttpResponseBuilder
+     */
+    public static HttpResponseBuilder createHttpResponse() {
+        return new HttpResponseBuilder();
+    }
 
-	/**
-	 * Create a fluent-style builder for HttpRequest.
-	 * 
-	 * @return a HttpRequestBuilder
-	 */
-	public static HttpRequestBuilder createHttpRequest() {
-		return new HttpRequestBuilder();
-	}
+    /**
+     * Create a fluent-style builder for HttpRequest.
+     * 
+     * @return a HttpRequestBuilder
+     */
+    public static HttpRequestBuilder createHttpRequest() {
+        return new HttpRequestBuilder();
+    }
 
-	/**
-	 * Execute
-	 * {@link Driver#proxy(String, HttpEntityEnclosingRequest, Renderer...)} on
-	 * an HttpRequest
-	 * 
-	 * 
-	 * @param d
-	 * @param request
-	 *            Request must have been created with a mediator.
-	 * @param renderers
-	 *            Renderers which will be applied on response entity.
-	 * @return the response
-	 * @throws IOException
-	 * @throws HttpErrorPage
-	 * @throws URISyntaxException
-	 */
-	public static HttpResponse driverProxy(Driver d, HttpEntityEnclosingRequest request, Renderer... renderers) throws IOException, HttpErrorPage, URISyntaxException {
-		String uri = request.getRequestLine().getUri();
-		d.proxy(new URI(uri).getPath(), request, renderers);
+    /**
+     * Execute {@link Driver#proxy(String, HttpEntityEnclosingRequest, Renderer...)} on an HttpRequest.
+     * 
+     * 
+     * @param d
+     * @param request
+     *            Request must have been created with a mediator.
+     * @param renderers
+     *            Renderers which will be applied on response entity.
+     * @return the response
+     * @throws IOException
+     * @throws HttpErrorPage
+     * @throws URISyntaxException
+     */
+    public static HttpResponse driverProxy(Driver d, HttpEntityEnclosingRequest request, Renderer... renderers)
+            throws IOException, HttpErrorPage, URISyntaxException {
+        String uri = request.getRequestLine().getUri();
+        d.proxy(new URI(uri).getPath(), request, renderers);
 
-		return TestUtils.getResponse(request);
+        return TestUtils.getResponse(request);
 
-		// This is work in progress. Commenting right now.
-		// return d.proxy(new URI(uri).getPath(), request);
-	}
+        // This is work in progress. Commenting right now.
+        // return d.proxy(new URI(uri).getPath(), request);
+    }
 
 }

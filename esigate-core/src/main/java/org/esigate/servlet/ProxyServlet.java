@@ -40,10 +40,9 @@ import org.slf4j.LoggerFactory;
  * Parameters are :
  * <ul>
  * <li>provider (optional - deprecated): single provider name</li>
- * <li>providers (optional - deprecated): comma-separated list of provider
- * mappings based on host requested. Format is: host1=provider,host2=provider2</li>
- * <li>useMappings (optional - recommended): true or false : use mappings from
- * esigate.properties</li>
+ * <li>providers (optional - deprecated): comma-separated list of provider mappings based on host requested. Format is:
+ * host1=provider,host2=provider2</li>
+ * <li>useMappings (optional - recommended): true or false : use mappings from esigate.properties</li>
  * </ul>
  * 
  * <p>
@@ -53,50 +52,51 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class ProxyServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(ProxyServlet.class);
-	private DriverSelector driverSelector = new DriverSelector();
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(ProxyServlet.class);
+    private DriverSelector driverSelector = new DriverSelector();
 
-	/**
-	 * Get current Driver selector. This is mainly used for unit testing.
-	 * 
-	 * @return current Driver selector
-	 */
-	public DriverSelector getDriverSelector() {
-		return this.driverSelector;
-	}
+    /**
+     * Get current Driver selector. This is mainly used for unit testing.
+     * 
+     * @return current Driver selector
+     */
+    public DriverSelector getDriverSelector() {
+        return this.driverSelector;
+    }
 
-	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		HttpServletMediator mediator = new HttpServletMediator(request, response, getServletContext());
+        HttpServletMediator mediator = new HttpServletMediator(request, response, getServletContext());
 
-		try {
-			Pair<Driver, UriMapping> dm = this.driverSelector.selectProvider(request, true);
-			String relUrl = RequestUrl.getRelativeUrl(request, dm.getRight(), true);
-			LOG.debug("Proxying {}", relUrl);
-			dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
-		} catch (HttpErrorPage e) {
-			mediator.sendResponse(e.getHttpResponse());
-		}
-	}
+        try {
+            Pair<Driver, UriMapping> dm = this.driverSelector.selectProvider(request, true);
+            String relUrl = RequestUrl.getRelativeUrl(request, dm.getRight(), true);
+            LOG.debug("Proxying {}", relUrl);
+            dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
+        } catch (HttpErrorPage e) {
+            mediator.sendResponse(e.getHttpResponse());
+        }
+    }
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
 
-		// get selected provided from web.xml (deprecated)
-		this.driverSelector.setWebXmlProvider(config.getInitParameter("provider"));
+        // get selected provided from web.xml (deprecated)
+        this.driverSelector.setWebXmlProvider(config.getInitParameter("provider"));
 
-		// Load mappings from web.xml (deprecated)
-		this.driverSelector.setWebXmlProviders(config.getInitParameter("providers"));
+        // Load mappings from web.xml (deprecated)
+        this.driverSelector.setWebXmlProviders(config.getInitParameter("providers"));
 
-		this.driverSelector.setUseMappings("true".equalsIgnoreCase(config.getInitParameter("useMappings")));
+        this.driverSelector.setUseMappings("true".equalsIgnoreCase(config.getInitParameter("useMappings")));
 
-		// Force esigate configuration parsing to trigger errors right away (if
-		// any) and prevent delay on first call.
-		DriverFactory.ensureConfigured();
+        // Force esigate configuration parsing to trigger errors right away (if
+        // any) and prevent delay on first call.
+        DriverFactory.ensureConfigured();
 
-	}
+    }
 
 }

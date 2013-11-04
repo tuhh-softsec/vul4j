@@ -24,52 +24,55 @@ import org.esigate.test.TestUtils;
 
 public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
 
-	public void testGetBaseURLRandom() {
-		String baseUrls[] = new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
-		BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
-		HttpEntityEnclosingRequest request = TestUtils.createRequest();
-		strategy.getBaseURL(request);
-	}
+    public void testGetBaseURLRandom() {
+        String[] baseUrls = new String[] { "http://example.com/test/", "http://example1.com/test/",
+                "http://example2.com/test/" };
+        BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
+        HttpEntityEnclosingRequest request = TestUtils.createRequest();
+        strategy.getBaseURL(request);
+    }
 
-	public void testGetBaseURLInvalidIp() {
-		String baseUrls[] = new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
-		BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
-		HttpEntityEnclosingRequest request = TestUtils.createRequest();
-		TestUtils.setRemoteAddr("", request);
-		strategy.getBaseURL(request);
-		request = TestUtils.createRequest();
-		TestUtils.setRemoteAddr(null, request);
-		strategy.getBaseURL(request);
-		request = TestUtils.createRequest();
-		TestUtils.setRemoteAddr("not_ip", request);
-		strategy.getBaseURL(request);
-		request = TestUtils.createRequest();
-		TestUtils.setRemoteAddr("a.b.c.d", request);
-		strategy.getBaseURL(request);
-	}
+    public void testGetBaseURLInvalidIp() {
+        String[] baseUrls = new String[] { "http://example.com/test/", "http://example1.com/test/",
+                "http://example2.com/test/" };
+        BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
+        HttpEntityEnclosingRequest request = TestUtils.createRequest();
+        TestUtils.setRemoteAddr("", request);
+        strategy.getBaseURL(request);
+        request = TestUtils.createRequest();
+        TestUtils.setRemoteAddr(null, request);
+        strategy.getBaseURL(request);
+        request = TestUtils.createRequest();
+        TestUtils.setRemoteAddr("not_ip", request);
+        strategy.getBaseURL(request);
+        request = TestUtils.createRequest();
+        TestUtils.setRemoteAddr("a.b.c.d", request);
+        strategy.getBaseURL(request);
+    }
 
-	public void testGetBaseURLSameIpSameBaseUrl() {
-		String baseUrls[] = new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
-		BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
-		int times = 100;
-		for (int i = 0; i < times; i++) {
-			HttpEntityEnclosingRequest request = TestUtils.createRequest();
-			String ip = getRandomIp();
-			TestUtils.setRemoteAddr(ip, request);
-			String baseURL1 = strategy.getBaseURL(request);
-			String baseURL2 = strategy.getBaseURL(request);
-			String baseURL3 = strategy.getBaseURL(request);
-			assertEquals(baseURL1, baseURL2);
-			assertEquals(baseURL1, baseURL3);
-		}
+    public void testGetBaseURLSameIpSameBaseUrl() {
+        String[] baseUrls = new String[] { "http://example.com/test/", "http://example1.com/test/",
+                "http://example2.com/test/" };
+        BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
+        int times = 100;
+        for (int i = 0; i < times; i++) {
+            HttpEntityEnclosingRequest request = TestUtils.createRequest();
+            String ip = getRandomIp();
+            TestUtils.setRemoteAddr(ip, request);
+            String baseURL1 = strategy.getBaseURL(request);
+            String baseURL2 = strategy.getBaseURL(request);
+            String baseURL3 = strategy.getBaseURL(request);
+            assertEquals(baseURL1, baseURL2);
+            assertEquals(baseURL1, baseURL3);
+        }
 
-	}
+    }
 
-	private String getRandomIp() {
-		String[] arr = new String[4];
-		for (int i = 0; i < 4; i++) {
-			arr[i] = Integer.toString((int) (Math.random() * 256));
-		}
-		return StringUtils.join(arr, ".");
-	}
+    private String getRandomIp() {
+        String[] arr = new String[4];
+        for (int i = 0; i < 4; i++) {
+            arr[i] = Integer.toString((int) (Math.random() * 256));
+        }
+        return StringUtils.join(arr, ".");
+    }
 }

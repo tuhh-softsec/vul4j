@@ -29,48 +29,50 @@ import org.esigate.vars.VariablesResolver;
  */
 class ReplaceElement extends BaseElement {
 
-	public final static ElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
-		@Override
-		public ReplaceElement newInstance() {
-			return new ReplaceElement();
-		}
+    public static final ElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
+        @Override
+        public ReplaceElement newInstance() {
+            return new ReplaceElement();
+        }
 
-	};
+    };
 
-	private StringBuilder buf = null;
-	private String fragment;
-	private String regexp;
+    private StringBuilder buf = null;
+    private String fragment;
+    private String regexp;
 
-	@Override
-	public void characters(CharSequence csq, int start, int end) {
-		buf.append(csq, start, end);
-	}
+    @Override
+    public void characters(CharSequence csq, int start, int end) {
+        buf.append(csq, start, end);
+    }
 
-	@Override
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		IncludeElement parent = ctx.findAncestor(IncludeElement.class);
-		if (parent == null)
-			throw new EsiSyntaxError("<esi:replace> tag can only be used inside an <esi:include> tag");
-		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
-		if (fragment != null) {
-			parent.addFragmentReplacement(fragment, (CharSequence) result);
-		} else if (regexp != null) {
-			parent.addRegexpReplacement(regexp, (CharSequence) result);
-		} else {
-			parent.characters(result, 0, result.length());
-		}
-	}
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+        IncludeElement parent = ctx.findAncestor(IncludeElement.class);
+        if (parent == null) {
+            throw new EsiSyntaxError("<esi:replace> tag can only be used inside an <esi:include> tag");
+        }
+        String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
+        if (fragment != null) {
+            parent.addFragmentReplacement(fragment, (CharSequence) result);
+        } else if (regexp != null) {
+            parent.addRegexpReplacement(regexp, (CharSequence) result);
+        } else {
+            parent.characters(result, 0, result.length());
+        }
+    }
 
-	@Override
-	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		buf = new StringBuilder();
-		fragment = tag.getAttribute("fragment");
-		regexp = tag.getAttribute("regexp");
-		if (regexp == null)
-			regexp = tag.getAttribute("expression");
-		if ((fragment == null && regexp == null) || (fragment != null && regexp != null)) {
-			throw new EsiSyntaxError("only one of 'fragment' and 'expression' attributes is allowed");
-		}
-	}
+    @Override
+    protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+        buf = new StringBuilder();
+        fragment = tag.getAttribute("fragment");
+        regexp = tag.getAttribute("regexp");
+        if (regexp == null) {
+            regexp = tag.getAttribute("expression");
+        }
+        if ((fragment == null && regexp == null) || (fragment != null && regexp != null)) {
+            throw new EsiSyntaxError("only one of 'fragment' and 'expression' attributes is allowed");
+        }
+    }
 
 }

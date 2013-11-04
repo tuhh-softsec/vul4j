@@ -30,12 +30,12 @@ import org.esigate.events.Event;
  */
 public class RenderEvent extends Event {
 
-	public List<Renderer> renderers;
-	public String remoteUrl;
-	public HttpRequest originalRequest;
-	
-	/**
-	 * The response from backend, including headers.
-	 */
-	public HttpResponse httpResponse;
+    public List<Renderer> renderers;
+    public String remoteUrl;
+    public HttpRequest originalRequest;
+
+    /**
+     * The response from backend, including headers.
+     */
+    public HttpResponse httpResponse;
 }

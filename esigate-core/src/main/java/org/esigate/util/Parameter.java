@@ -19,63 +19,75 @@ import java.util.Collection;
 import java.util.Properties;
 
 public final class Parameter {
-	public final String name;
-	public final String defaultValue;
+    private final String name;
+    private final String defaultValue;
 
-	@Override
-	public boolean equals(Object obj) {
-		return this.name.equals(obj);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return this.name.equals(obj);
+    }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+    @Override
+    public String toString() {
+        return this.name;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.name.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
 
-	public Parameter(String name, String defaultValue) {
-		this.name = name;
-		this.defaultValue = defaultValue;
-	}
+    public Parameter(String name, String defaultValue) {
+        this.name = name;
+        this.defaultValue = defaultValue;
+    }
 
-	public int getValueInt(Properties properties) {
-		int defaultValueInt = 0;
-		if (defaultValue != null)
-			defaultValueInt = Integer.parseInt(defaultValue);
-		return PropertiesUtil.getPropertyValue(properties, name, defaultValueInt);
-	}
+    public int getValueInt(Properties properties) {
+        int defaultValueInt = 0;
+        if (defaultValue != null) {
+            defaultValueInt = Integer.parseInt(defaultValue);
+        }
+        return PropertiesUtil.getPropertyValue(properties, name, defaultValueInt);
+    }
 
-	public boolean getValueBoolean(Properties properties) {
-		boolean defaultValueBoolean = false;
-		if (defaultValue != null)
-			defaultValueBoolean = Boolean.parseBoolean(defaultValue);
-		return PropertiesUtil.getPropertyValue(properties, name, defaultValueBoolean);
-	}
+    public boolean getValueBoolean(Properties properties) {
+        boolean defaultValueBoolean = false;
+        if (defaultValue != null) {
+            defaultValueBoolean = Boolean.parseBoolean(defaultValue);
+        }
+        return PropertiesUtil.getPropertyValue(properties, name, defaultValueBoolean);
+    }
 
-	public float getValueFloat(Properties properties) {
-		float defaultValueFloat = 0;
-		if (defaultValue != null)
-			defaultValueFloat = Float.parseFloat(defaultValue);
-		return PropertiesUtil.getPropertyValue(properties, name, defaultValueFloat);
-	}
+    public float getValueFloat(Properties properties) {
+        float defaultValueFloat = 0;
+        if (defaultValue != null) {
+            defaultValueFloat = Float.parseFloat(defaultValue);
+        }
+        return PropertiesUtil.getPropertyValue(properties, name, defaultValueFloat);
+    }
 
-	public long getValueLong(Properties properties) {
-		long defaultValueLong = 0;
-		if (defaultValue != null)
-			defaultValueLong = Long.parseLong(defaultValue);
-		return PropertiesUtil.getPropertyValue(properties, name, defaultValueLong);
-	}
+    public long getValueLong(Properties properties) {
+        long defaultValueLong = 0;
+        if (defaultValue != null) {
+            defaultValueLong = Long.parseLong(defaultValue);
+        }
+        return PropertiesUtil.getPropertyValue(properties, name, defaultValueLong);
+    }
 
-	public String getValueString(Properties properties) {
-		return PropertiesUtil.getPropertyValue(properties, name, defaultValue);
-	}
+    public String getValueString(Properties properties) {
+        return PropertiesUtil.getPropertyValue(properties, name, defaultValue);
+    }
 
-	public Collection<String> getValueList(Properties properties) {
-		return PropertiesUtil.getPropertyValueAsList(properties, name, defaultValue);
-	}
+    public Collection<String> getValueList(Properties properties) {
+        return PropertiesUtil.getPropertyValueAsList(properties, name, defaultValue);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
 
 }

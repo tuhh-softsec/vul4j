@@ -26,29 +26,29 @@ import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class InlineElementTest extends TestCase {
-	private MockRequestExecutor provider;
-	private HttpEntityEnclosingRequest request;
+    private MockRequestExecutor provider;
+    private HttpEntityEnclosingRequest request;
 
-	@Override
-	protected void setUp() throws Exception {
-		provider = MockRequestExecutor.createMockDriver("mock");
-		provider.addResource("/test", "test");
-		provider.addResource("http://www.foo.com/test", "test");
-		request = TestUtils.createRequest();
-		provider.initHttpRequestParams(request, null);
-	}
+    @Override
+    protected void setUp() throws Exception {
+        provider = MockRequestExecutor.createMockDriver("mock");
+        provider.addResource("/test", "test");
+        provider.addResource("http://www.foo.com/test", "test");
+        request = TestUtils.createRequest();
+        provider.initHttpRequestParams(request, null);
+    }
 
-	public void testInlineElement() throws IOException, HttpErrorPage {
-		String page = "begin <esi:inline name=\"someUri\" fetchable=\"yes\">inside inline</esi:inline>end";
-		EsiRenderer tested = new EsiRenderer();
-		StringWriter out = new StringWriter();
-		tested.render(request, page, out);
-		assertEquals("begin end", out.toString());
-		InlineCache actual = InlineCache.getFragment("someUri");
-		assertNotNull(actual);
-		assertEquals(true, actual.isFetchable());
-		assertEquals(false, actual.isExpired());
-		assertEquals("inside inline", actual.getFragment());
-	}
+    public void testInlineElement() throws IOException, HttpErrorPage {
+        String page = "begin <esi:inline name=\"someUri\" fetchable=\"yes\">inside inline</esi:inline>end";
+        EsiRenderer tested = new EsiRenderer();
+        StringWriter out = new StringWriter();
+        tested.render(request, page, out);
+        assertEquals("begin end", out.toString());
+        InlineCache actual = InlineCache.getFragment("someUri");
+        assertNotNull(actual);
+        assertEquals(true, actual.isFetchable());
+        assertEquals(false, actual.isExpired());
+        assertEquals("inside inline", actual.getFragment());
+    }
 
 }

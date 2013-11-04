@@ -21,27 +21,24 @@ import org.esigate.HttpErrorPage;
 import org.esigate.events.Event;
 
 /**
- * Proxy Event : Requests received by ESIGate in proxy mode ( standalone
- * application).
+ * Proxy Event : Requests received by ESIGate in proxy mode ( standalone application).
  * 
  * @author Nicolas Richeton
  * 
  */
 public class ProxyEvent extends Event {
-	/**
-	 * The request which was received by ESIgate.
-	 */
-	public HttpRequest originalRequest;
+    /**
+     * The request which was received by ESIgate.
+     */
+    public HttpRequest originalRequest;
 
-	/**
-	 * The current response. May be null if no reponse has be created yet or in
-	 * case of error.
-	 */
-	public HttpResponse response = null;
+    /**
+     * The current response. May be null if no reponse has be created yet or in case of error.
+     */
+    public HttpResponse response = null;
 
-	/**
-	 * The current error page. If not null, an error as occured and the error
-	 * page will be sent instead of the response.
-	 */
-	public HttpErrorPage errorPage = null;
+    /**
+     * The current error page. If not null, an error as occured and the error page will be sent instead of the response.
+     */
+    public HttpErrorPage errorPage = null;
 }

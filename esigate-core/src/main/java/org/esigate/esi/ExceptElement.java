@@ -22,48 +22,49 @@ import org.esigate.parser.ParserContext;
 
 class ExceptElement extends BaseElement {
 
-	public final static ElementType TYPE = new BaseElementType("<esi:except", "</esi:except") {
-		@Override
-		public ExceptElement newInstance() {
-			return new ExceptElement();
-		}
+    public static final ElementType TYPE = new BaseElementType("<esi:except", "</esi:except") {
+        @Override
+        public ExceptElement newInstance() {
+            return new ExceptElement();
+        }
 
-	};
+    };
 
-	private boolean processContent;
+    private boolean processContent;
 
-	ExceptElement() { }
+    ExceptElement() {
+    }
 
-	@Override
-	protected void parseTag(Tag tag, ParserContext ctx) {
-		TryElement parent = ctx.findAncestor(TryElement.class);
-		int code = (tag.getAttribute("code") != null) ? Integer.parseInt(tag.getAttribute("code")) : -1;
-		processContent = (parent.hasErrors() 
-				&& !parent.exceptProcessed() 
-				&& (code == -1 || code == parent.getErrorCode()));
-		if (processContent) {
-			parent.setExceptProcessed(processContent);
-		}
-	}
-	@Override
-	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		super.onTagStart(tag, ctx);
-		TryElement parent = ctx.findAncestor(TryElement.class);
-		parent.setWrite(true);
-	}
-	
-	@Override
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		super.onTagEnd(tag, ctx);
-		TryElement parent = ctx.findAncestor(TryElement.class);
-		parent.setWrite(false);
-	}
+    @Override
+    protected void parseTag(Tag tag, ParserContext ctx) {
+        TryElement parent = ctx.findAncestor(TryElement.class);
+        int code = (tag.getAttribute("code") != null) ? Integer.parseInt(tag.getAttribute("code")) : -1;
+        processContent = (parent.hasErrors() && !parent.exceptProcessed() && (code == -1 || code == parent
+                .getErrorCode()));
+        if (processContent) {
+            parent.setExceptProcessed(processContent);
+        }
+    }
 
-	@Override
-	public void characters(CharSequence csq, int start, int end) throws IOException {
-		if (this.processContent ) {
-			super.characters(csq, start, end);
-		}
-	}
+    @Override
+    public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+        super.onTagStart(tag, ctx);
+        TryElement parent = ctx.findAncestor(TryElement.class);
+        parent.setWrite(true);
+    }
+
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+        super.onTagEnd(tag, ctx);
+        TryElement parent = ctx.findAncestor(TryElement.class);
+        parent.setWrite(false);
+    }
+
+    @Override
+    public void characters(CharSequence csq, int start, int end) throws IOException {
+        if (this.processContent) {
+            super.characters(csq, start, end);
+        }
+    }
 
 }

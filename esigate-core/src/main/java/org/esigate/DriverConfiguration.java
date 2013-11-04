@@ -36,123 +36,123 @@ import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
  * @author Nicolas Richeton
  */
 public class DriverConfiguration {
- 
-	private final String instanceName;
-	private final String uriEncoding;
-	private final boolean fixResources;
-	private final String visibleBaseURL;
-	private final int fixMode;
-	private final Properties properties;
-	private final boolean preserveHost;
-	private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
-	private final boolean isVisibleBaseURLEmpty;
-	private final List<UriMapping> uriMappings;
 
-	public DriverConfiguration(String instanceName, Properties props) {
-		this.instanceName = instanceName;
-		baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
-		uriEncoding = Parameters.URI_ENCODING.getValueString(props);
-		preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
-		fixResources = Parameters.FIX_RESOURCES.getValueBoolean(props);
-		visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValueString(props);
-		isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
-		if ("absolute".equalsIgnoreCase(Parameters.FIX_MODE.getValueString(props))) {
-			this.fixMode = ResourceFixupRenderer.ABSOLUTE;
-		} else {
-			this.fixMode = ResourceFixupRenderer.RELATIVE;
-		}
+    private final String instanceName;
+    private final String uriEncoding;
+    private final boolean fixResources;
+    private final String visibleBaseURL;
+    private final int fixMode;
+    private final Properties properties;
+    private final boolean preserveHost;
+    private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
+    private final boolean isVisibleBaseURLEmpty;
+    private final List<UriMapping> uriMappings;
 
-		this.uriMappings = parseMappings(props);
-		properties = props;
-	}
+    public DriverConfiguration(String instanceName, Properties props) {
+        this.instanceName = instanceName;
+        baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
+        uriEncoding = Parameters.URI_ENCODING.getValueString(props);
+        preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
+        fixResources = Parameters.FIX_RESOURCES.getValueBoolean(props);
+        visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValueString(props);
+        isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
+        if ("absolute".equalsIgnoreCase(Parameters.FIX_MODE.getValueString(props))) {
+            this.fixMode = ResourceFixupRenderer.ABSOLUTE;
+        } else {
+            this.fixMode = ResourceFixupRenderer.RELATIVE;
+        }
 
-	/**
-	 * Read the "Mappings" parameter and create the corresponding UriMapping
-	 * rules.
-	 * 
-	 * @param props
-	 * @return The mapping rules for this driver instance.
-	 */
-	private static List<UriMapping> parseMappings(Properties props) {
-		List<UriMapping> mappings = new ArrayList<UriMapping>();
+        this.uriMappings = parseMappings(props);
+        properties = props;
+    }
 
-		Collection<String> mappingsParam = Parameters.MAPPINGS.getValueList(props);
-		for (String mappingParam : mappingsParam) {
-			mappings.add(UriMapping.create(mappingParam));
-		}
+    /**
+     * Read the "Mappings" parameter and create the corresponding UriMapping rules.
+     * 
+     * @param props
+     * @return The mapping rules for this driver instance.
+     */
+    private static List<UriMapping> parseMappings(Properties props) {
+        List<UriMapping> mappings = new ArrayList<UriMapping>();
 
-		return mappings;
-	}
+        Collection<String> mappingsParam = Parameters.MAPPINGS.getValueList(props);
+        for (String mappingParam : mappingsParam) {
+            mappings.add(UriMapping.create(mappingParam));
+        }
 
-	private BaseUrlRetrieveStrategy getBaseUrlRetrieveSession(Properties props) {
-		BaseUrlRetrieveStrategy urlStrategy = null;
-		String baseURLs = Parameters.REMOTE_URL_BASE.getValueString(props);
-		if (StringUtils.isEmpty(baseURLs))
-			throw new ConfigurationException(Parameters.REMOTE_URL_BASE.name
-					+ " property cannot be empty for instance '" + instanceName + "'");
-		String[] urls = StringUtils.split(baseURLs, ",");
-		if (1 == urls.length) {
-			String baseURL = StringUtils.trimToEmpty(urls[0]);
-			urlStrategy = new SingleBaseUrlRetrieveStrategy(baseURL);
-		} else if (urls.length > 0) {
-			String[] urlArr = new String[urls.length];
-			for (int i = 0; i < urls.length; i++) {
-				String baseURL = StringUtils.trimToEmpty(urls[i]);
-				urlArr[i] = baseURL;
-			}
-			String strategy = Parameters.REMOTE_URL_BASE_STRATEGY.getValueString(props);
-			if (Parameters.ROUNDROBIN.equalsIgnoreCase(strategy)) {
-				urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(urlArr);
-			} else if (Parameters.IPHASH.equalsIgnoreCase(strategy)) {
-				urlStrategy = new IpHashBaseUrlRetrieveStrategy(urlArr);
-			} else if (Parameters.STICKYSESSION.equalsIgnoreCase(strategy)) {
-				urlStrategy = new StickySessionBaseUrlRetrieveStrategy(urlArr);
-			} else {
-				throw new ConfigurationException("No such BaseUrlRetrieveStrategy '" + strategy + "'");
-			}
-		}
-		return urlStrategy;
-	}
+        return mappings;
+    }
 
-	public int getFixMode() {
-		return fixMode;
-	}
+    private BaseUrlRetrieveStrategy getBaseUrlRetrieveSession(Properties props) {
+        BaseUrlRetrieveStrategy urlStrategy = null;
+        String baseURLs = Parameters.REMOTE_URL_BASE.getValueString(props);
+        if (StringUtils.isEmpty(baseURLs)) {
+            throw new ConfigurationException(Parameters.REMOTE_URL_BASE.getName()
+                    + " property cannot be empty for instance '" + instanceName + "'");
+        }
+        String[] urls = StringUtils.split(baseURLs, ",");
+        if (1 == urls.length) {
+            String baseURL = StringUtils.trimToEmpty(urls[0]);
+            urlStrategy = new SingleBaseUrlRetrieveStrategy(baseURL);
+        } else if (urls.length > 0) {
+            String[] urlArr = new String[urls.length];
+            for (int i = 0; i < urls.length; i++) {
+                String baseURL = StringUtils.trimToEmpty(urls[i]);
+                urlArr[i] = baseURL;
+            }
+            String strategy = Parameters.REMOTE_URL_BASE_STRATEGY.getValueString(props);
+            if (Parameters.ROUNDROBIN.equalsIgnoreCase(strategy)) {
+                urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(urlArr);
+            } else if (Parameters.IPHASH.equalsIgnoreCase(strategy)) {
+                urlStrategy = new IpHashBaseUrlRetrieveStrategy(urlArr);
+            } else if (Parameters.STICKYSESSION.equalsIgnoreCase(strategy)) {
+                urlStrategy = new StickySessionBaseUrlRetrieveStrategy(urlArr);
+            } else {
+                throw new ConfigurationException("No such BaseUrlRetrieveStrategy '" + strategy + "'");
+            }
+        }
+        return urlStrategy;
+    }
 
-	public boolean isFixResources() {
-		return fixResources;
-	}
+    public int getFixMode() {
+        return fixMode;
+    }
 
-	public String getVisibleBaseURL(String currentBaseUrl) {
-		return isVisibleBaseURLEmpty ? currentBaseUrl : visibleBaseURL;
-	}
+    public boolean isFixResources() {
+        return fixResources;
+    }
 
-	public boolean isPreserveHost() {
-		return preserveHost;
-	}
+    public String getVisibleBaseURL(String currentBaseUrl) {
+        return isVisibleBaseURLEmpty ? currentBaseUrl : visibleBaseURL;
+    }
 
-	public String getInstanceName() {
-		return instanceName;
-	}
+    public boolean isPreserveHost() {
+        return preserveHost;
+    }
 
-	public String getUriEncoding() {
-		return uriEncoding;
-	}
+    public String getInstanceName() {
+        return instanceName;
+    }
 
-	public Properties getProperties() {
-		return properties;
-	}
+    public String getUriEncoding() {
+        return uriEncoding;
+    }
 
-	public BaseUrlRetrieveStrategy getBaseUrlRetrieveStrategy() {
-		return baseUrlRetrieveStrategy;
-	}
+    public Properties getProperties() {
+        return properties;
+    }
 
-	/**
-	 * Get the URI mappings for this driver instance.
-	 * 
-	 * @return The URI mappings for this driver instance.
-	 */
-	public List<UriMapping> getUriMappings() {
-		return this.uriMappings;
-	}
+    public BaseUrlRetrieveStrategy getBaseUrlRetrieveStrategy() {
+        return baseUrlRetrieveStrategy;
+    }
+
+    /**
+     * Get the URI mappings for this driver instance.
+     * 
+     * @return The URI mappings for this driver instance.
+     */
+    public List<UriMapping> getUriMappings() {
+        return this.uriMappings;
+    }
 
 }

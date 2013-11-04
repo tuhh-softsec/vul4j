@@ -42,55 +42,55 @@ import org.apache.http.message.BasicHttpResponse;
  */
 public class HttpResponseBuilder {
 
-	private ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
-	private int status = HttpStatus.SC_OK;
-	private String reason = "Ok";
-	private List<Header> headers = new ArrayList<Header>();
-	private HttpEntity entity = null;
+    private ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
+    private int status = HttpStatus.SC_OK;
+    private String reason = "Ok";
+    private List<Header> headers = new ArrayList<Header>();
+    private HttpEntity entity = null;
 
-	public HttpResponse build() {
-		BasicHttpResponse response = new BasicHttpResponse(this.protocolVersion, this.status, this.reason);
+    public HttpResponse build() {
+        BasicHttpResponse response = new BasicHttpResponse(this.protocolVersion, this.status, this.reason);
 
-		for (Header h : this.headers) {
-			response.addHeader(h.getName(), h.getValue());
-		}
+        for (Header h : this.headers) {
+            response.addHeader(h.getName(), h.getValue());
+        }
 
-		if (this.entity != null) {
-			response.setEntity(this.entity);
-		}
-		return response;
-	}
+        if (this.entity != null) {
+            response.setEntity(this.entity);
+        }
+        return response;
+    }
 
-	public HttpResponseBuilder entity(HttpEntity paramEntity) {
-		this.entity = paramEntity;
-		if (this.entity.getContentType() != null) {
-			this.headers.add(this.entity.getContentType());
-		}
-		return this;
-	}
+    public HttpResponseBuilder entity(HttpEntity paramEntity) {
+        this.entity = paramEntity;
+        if (this.entity.getContentType() != null) {
+            this.headers.add(this.entity.getContentType());
+        }
+        return this;
+    }
 
-	public HttpResponseBuilder entity(String entityBody) throws UnsupportedEncodingException {
-		this.entity = new StringEntity(entityBody);
-		return this;
-	}
+    public HttpResponseBuilder entity(String entityBody) throws UnsupportedEncodingException {
+        this.entity = new StringEntity(entityBody);
+        return this;
+    }
 
-	public HttpResponseBuilder header(String name, String value) {
-		this.headers.add(new BasicHeader(name, value));
-		return this;
-	}
+    public HttpResponseBuilder header(String name, String value) {
+        this.headers.add(new BasicHeader(name, value));
+        return this;
+    }
 
-	public HttpResponseBuilder protocolVersion(ProtocolVersion paramProtocolVersion) {
-		this.protocolVersion = paramProtocolVersion;
-		return this;
-	}
+    public HttpResponseBuilder protocolVersion(ProtocolVersion paramProtocolVersion) {
+        this.protocolVersion = paramProtocolVersion;
+        return this;
+    }
 
-	public HttpResponseBuilder reason(String paramReason) {
-		this.reason = paramReason;
-		return this;
-	}
+    public HttpResponseBuilder reason(String paramReason) {
+        this.reason = paramReason;
+        return this;
+    }
 
-	public HttpResponseBuilder status(int paramStatus) {
-		this.status = paramStatus;
-		return this;
-	}
+    public HttpResponseBuilder status(int paramStatus) {
+        this.status = paramStatus;
+        return this;
+    }
 }

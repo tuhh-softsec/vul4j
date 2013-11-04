@@ -37,92 +37,93 @@ import org.slf4j.LoggerFactory;
  * <ol>
  * <li>providers mapping (host-based) in web.xml</li>
  * <li>provider mapping (servlet based) in web.xml</li>
- * <li>provider mapping in configuration file (eg. instance.mappings=/* in
- * esigate.properties)</li>
+ * <li>provider mapping in configuration file (eg. instance.mappings=/* in esigate.properties)</li>
  * </ol>
  * 
  * @author Nicolas Richeton
  */
 public class DriverSelector {
-	private static final Logger LOG = LoggerFactory.getLogger(DriverSelector.class);
-	private String webXmlProvider = null;
-	private Map<String, String> webXmlProviderMappings = null;
-	private boolean useMappings = false;
+    private static final Logger LOG = LoggerFactory.getLogger(DriverSelector.class);
+    private String webXmlProvider = null;
+    private Map<String, String> webXmlProviderMappings = null;
+    private boolean useMappings = false;
 
-	public void setUseMappings(boolean useConfiguration) {
-		this.useMappings = useConfiguration;
-	}
+    public void setUseMappings(boolean useConfiguration) {
+        this.useMappings = useConfiguration;
+    }
 
-	public boolean isUseMappings() {
-		return this.useMappings;
-	}
+    public boolean isUseMappings() {
+        return this.useMappings;
+    }
 
-	public Map<String, String> getWebXmlProviderMappings() {
-		return this.webXmlProviderMappings;
-	}
+    public Map<String, String> getWebXmlProviderMappings() {
+        return this.webXmlProviderMappings;
+    }
 
-	public String getWebXmlProvider() {
-		return this.webXmlProvider;
-	}
+    public String getWebXmlProvider() {
+        return this.webXmlProvider;
+    }
 
-	public DriverSelector() {
+    public DriverSelector() {
 
-	}
+    }
 
-	public void setWebXmlProvider(String provider) {
-		this.webXmlProvider = provider;
-	}
+    public void setWebXmlProvider(String provider) {
+        this.webXmlProvider = provider;
+    }
 
-	public void setWebXmlProviders(String providers) {
-		if (providers != null) {
-			this.webXmlProviderMappings = new HashMap<String, String>();
-			String[] providersArray = StringUtils.split(providers, ",");
-			for (String p : providersArray) {
-				String[] mapping = StringUtils.split(p, "=");
-				this.webXmlProviderMappings.put(StringUtils.trim(mapping[0].toLowerCase(Locale.ENGLISH)), StringUtils.trim(mapping[1]));
-			}
-		}
-	}
+    public void setWebXmlProviders(String providers) {
+        if (providers != null) {
+            this.webXmlProviderMappings = new HashMap<String, String>();
+            String[] providersArray = StringUtils.split(providers, ",");
+            for (String p : providersArray) {
+                String[] mapping = StringUtils.split(p, "=");
+                this.webXmlProviderMappings.put(StringUtils.trim(mapping[0].toLowerCase(Locale.ENGLISH)),
+                        StringUtils.trim(mapping[1]));
+            }
+        }
+    }
 
-	/**
-	 * Select the provider for this request.
-	 * <p>
-	 * Perform selection based on the Host header.
-	 * 
-	 * @param request
-	 * @return provider name or null.
-	 * @throws HttpErrorPage
-	 */
-	public Pair<Driver, UriMapping> selectProvider(HttpServletRequest request, boolean servlet) throws HttpErrorPage {
+    /**
+     * Select the provider for this request.
+     * <p>
+     * Perform selection based on the Host header.
+     * 
+     * @param request
+     * @return provider name or null.
+     * @throws HttpErrorPage
+     */
+    public Pair<Driver, UriMapping> selectProvider(HttpServletRequest request, boolean servlet) throws HttpErrorPage {
 
-		String host = request.getHeader("Host");
-		String scheme = request.getScheme();
+        String host = request.getHeader("Host");
+        String scheme = request.getScheme();
 
-		String relUrl = RequestUrl.getRelativeUrl(request, null, servlet);
+        String relUrl = RequestUrl.getRelativeUrl(request, null, servlet);
 
-		Pair<Driver, UriMapping> result;
+        Pair<Driver, UriMapping> result;
 
-		if (this.useMappings) {
-			result = DriverFactory.getInstanceFor(scheme, host, relUrl);
-		} else {
+        if (this.useMappings) {
+            result = DriverFactory.getInstanceFor(scheme, host, relUrl);
+        } else {
 
-			// Select provider. null is valid (default)
-			String targetProvider = this.webXmlProvider;
+            // Select provider. null is valid (default)
+            String targetProvider = this.webXmlProvider;
 
-			if (this.webXmlProviderMappings != null) {
-				if (host != null) {
-					host = host.toLowerCase(Locale.ENGLISH);
-					String mapping = this.webXmlProviderMappings.get(host);
-					if (mapping != null)
-						targetProvider = mapping;
-				}
-			}
+            if (this.webXmlProviderMappings != null) {
+                if (host != null) {
+                    host = host.toLowerCase(Locale.ENGLISH);
+                    String mapping = this.webXmlProviderMappings.get(host);
+                    if (mapping != null) {
+                        targetProvider = mapping;
+                    }
+                }
+            }
 
-			result = new ImmutablePair<Driver, UriMapping>(DriverFactory.getInstance(targetProvider), null);
-		}
-		LOG.debug("Selected {} for scheme:{} host:{} relUrl:{}", result, scheme, host, relUrl);
+            result = new ImmutablePair<Driver, UriMapping>(DriverFactory.getInstance(targetProvider), null);
+        }
+        LOG.debug("Selected {} for scheme:{} host:{} relUrl:{}", result, scheme, host, relUrl);
 
-		return result;
-	}
+        return result;
+    }
 
 }

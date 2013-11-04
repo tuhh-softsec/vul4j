@@ -39,7 +39,7 @@ public interface Renderer {
      *            output destination. This writer is not thread-safe, use proper synchronization if writing output from
      *            multiple threads.
      * @throws IOException
-     * @throws HttpErrorPage 
+     * @throws HttpErrorPage
      */
     void render(HttpEntityEnclosingRequest originalRequest, String src, Writer out) throws IOException, HttpErrorPage;
 }

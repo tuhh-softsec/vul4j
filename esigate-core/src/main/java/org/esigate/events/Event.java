@@ -1,6 +1,5 @@
 package org.esigate.events;
 
-
 /**
  * This class contains the common attributes for all events.
  * 
@@ -9,10 +8,10 @@ package org.esigate.events;
  */
 public abstract class Event {
 
-	/**
-	 * Immediately stop request processing. Depending of the current state, this
-	 * may render the current response (if available) or else render an error page.
-	 */
-	public boolean exit = false;
+    /**
+     * Immediately stop request processing. Depending of the current state, this may render the current response (if
+     * available) or else render an error page.
+     */
+    public boolean exit = false;
 
 }

@@ -27,41 +27,41 @@ import org.esigate.util.UriUtils;
 
 class InlineElement extends BaseElement {
 
-	public final static FutureElementType TYPE = new BaseElementType("<esi:inline", "</esi:inline") {
-		@Override
-		public InlineElement newInstance() {
-			return new InlineElement();
-		}
+    public static final FutureElementType TYPE = new BaseElementType("<esi:inline", "</esi:inline") {
+        @Override
+        public InlineElement newInstance() {
+            return new InlineElement();
+        }
 
-	};
+    };
 
-	private String uri;
-	private boolean fetchable;
-	private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
+    private String uri;
+    private boolean fetchable;
+    private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
 
-	InlineElement() {
-	}
+    InlineElement() {
+    }
 
-	@Override
-	protected void parseTag(Tag tag, FutureParserContext ctx) {
-		this.uri = tag.getAttribute("name");
-		this.fetchable = "yes".equalsIgnoreCase(tag.getAttribute("fetchable"));
-	}
+    @Override
+    protected void parseTag(Tag tag, FutureParserContext ctx) {
+        this.uri = tag.getAttribute("name");
+        this.fetchable = "yes".equalsIgnoreCase(tag.getAttribute("fetchable"));
+    }
 
-	@Override
-	public void characters(Future<CharSequence> csq) throws IOException {
-		buf.enqueueAppend(csq);
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) throws IOException {
+        buf.enqueueAppend(csq);
+    }
 
-	@Override
-	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		String originalUrl = UriUtils.createUri(ctx.getHttpRequest().getRequestLine().getUri()).getPath();
-		try {
-			InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.get().toString());
-		} catch (InterruptedException e) {
-			throw new IOException(e);
-		} catch (ExecutionException e) {
-			throw new IOException(e);
-		}
-	}
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        String originalUrl = UriUtils.createUri(ctx.getHttpRequest().getRequestLine().getUri()).getPath();
+        try {
+            InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.get().toString());
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        } catch (ExecutionException e) {
+            throw new IOException(e);
+        }
+    }
 }

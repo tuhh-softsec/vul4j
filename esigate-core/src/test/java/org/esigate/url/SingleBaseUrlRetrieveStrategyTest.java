@@ -23,11 +23,11 @@ import org.esigate.test.TestUtils;
 
 public class SingleBaseUrlRetrieveStrategyTest extends TestCase {
 
-	public void testGetBaseURL() {
-		String baseUrl = "http://example.com/test/";
-		BaseUrlRetrieveStrategy strategy = new SingleBaseUrlRetrieveStrategy(baseUrl);
-		HttpEntityEnclosingRequest request = TestUtils.createRequest();
-		String baseURL2 = strategy.getBaseURL(request);
-		assertEquals(baseUrl, baseURL2);
-	}
+    public void testGetBaseURL() {
+        String baseUrl = "http://example.com/test/";
+        BaseUrlRetrieveStrategy strategy = new SingleBaseUrlRetrieveStrategy(baseUrl);
+        HttpEntityEnclosingRequest request = TestUtils.createRequest();
+        String baseURL2 = strategy.getBaseURL(request);
+        assertEquals(baseUrl, baseURL2);
+    }
 }

@@ -49,233 +49,236 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class IncludeElement extends BaseElement {
-	private static final String PROVIDER_PATTERN = "$(PROVIDER{";
-	private static final String LEGACY_PROVIDER_PATTERN = "$PROVIDER({";
+    private static final String PROVIDER_PATTERN = "$(PROVIDER{";
+    private static final String LEGACY_PROVIDER_PATTERN = "$PROVIDER({";
 
-	protected static final Logger LOG = LoggerFactory.getLogger(IncludeElement.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(IncludeElement.class);
 
-	public static class IncludeTask implements Callable<CharSequence> {
-		String src;
-		String alt;
-		FutureParserContext ctx;
-		private boolean ignoreError;
-		FutureElement current;
-		Tag includeTag;
-		private Map<String, CharSequence> fragmentReplacements;
-		private Map<String, CharSequence> regexpReplacements;
-		private Executor executor;
+    public static class IncludeTask implements Callable<CharSequence> {
+        private String src;
+        private String alt;
+        private FutureParserContext ctx;
+        private boolean ignoreError;
+        private FutureElement current;
+        private Tag includeTag;
+        private Map<String, CharSequence> fragmentReplacements;
+        private Map<String, CharSequence> regexpReplacements;
+        private Executor executor;
 
-		public IncludeTask(Tag includeTag, String src, String alt, FutureParserContext ctx, FutureElement current,
-				boolean ignoreError, Map<String, CharSequence> fragmentReplacements,
-				Map<String, CharSequence> regexpReplacements, Executor executor) {
-			this.src = src;
-			this.alt = alt;
-			this.ctx = ctx;
-			this.ignoreError = ignoreError;
-			this.current = current;
-			this.includeTag = includeTag;
-			this.fragmentReplacements = fragmentReplacements;
-			this.regexpReplacements = regexpReplacements;
-			this.executor = executor;
-		}
+        public IncludeTask(Tag includeTag, String src, String alt, FutureParserContext ctx, FutureElement current,
+                boolean ignoreError, Map<String, CharSequence> fragmentReplacements,
+                Map<String, CharSequence> regexpReplacements, Executor executor) {
+            this.src = src;
+            this.alt = alt;
+            this.ctx = ctx;
+            this.ignoreError = ignoreError;
+            this.current = current;
+            this.includeTag = includeTag;
+            this.fragmentReplacements = fragmentReplacements;
+            this.regexpReplacements = regexpReplacements;
+            this.executor = executor;
+        }
 
-		@Override
-		public CharSequence call() throws IOException, HttpErrorPage {
-			LOG.debug("Starting include task {}", this.src);
-			StringBuilderWriter sw = new StringBuilderWriter();
+        @Override
+        public CharSequence call() throws IOException, HttpErrorPage {
+            LOG.debug("Starting include task {}", this.src);
+            StringBuilderWriter sw = new StringBuilderWriter();
 
-			Exception currentException = null;
-			// Handle src
-			try {
-				processPage(this.src, includeTag, this.ctx, sw);
-			} catch (IOException e) {
-				currentException = e;
-			} catch (HttpErrorPage e) {
-				currentException = e;
-			}
+            Exception currentException = null;
+            // Handle src
+            try {
+                processPage(this.src, includeTag, this.ctx, sw);
+            } catch (IOException e) {
+                currentException = e;
+            } catch (HttpErrorPage e) {
+                currentException = e;
+            }
 
-			// Handle Alt
-			if (currentException != null && alt != null) {
-				// Reset exception
-				currentException = null;
-				try {
-					processPage(alt, includeTag, ctx, sw);
-				} catch (IOException e) {
-					currentException = e;
-				} catch (HttpErrorPage e) {
-					currentException = e;
-				}
-			}
+            // Handle Alt
+            if (currentException != null && alt != null) {
+                // Reset exception
+                currentException = null;
+                try {
+                    processPage(alt, includeTag, ctx, sw);
+                } catch (IOException e) {
+                    currentException = e;
+                } catch (HttpErrorPage e) {
+                    currentException = e;
+                }
+            }
 
-			// Handle onerror
-			if (currentException != null && !ignoreError && !ctx.reportError(current, currentException)) {
-				if (currentException instanceof IOException) {
-					throw (IOException) currentException;
-				} else if (currentException instanceof HttpErrorPage) {
-					throw (HttpErrorPage) currentException;
-				}
-				throw new IllegalStateException(
-						"This type of exception is unexpected here. Should be IOException or HttpErrorPageException.",
-						currentException);
+            // Handle onerror
+            if (currentException != null && !ignoreError && !ctx.reportError(current, currentException)) {
+                if (currentException instanceof IOException) {
+                    throw (IOException) currentException;
+                } else if (currentException instanceof HttpErrorPage) {
+                    throw (HttpErrorPage) currentException;
+                }
+                throw new IllegalStateException(
+                        "This type of exception is unexpected here. Should be IOException or HttpErrorPageException.",
+                        currentException);
 
-			}
+            }
 
-			// apply regexp replacements
-			String result = sw.toString();
+            // apply regexp replacements
+            String result = sw.toString();
 
-			if (!regexpReplacements.isEmpty()) {
-				for (Entry<String, CharSequence> entry : regexpReplacements.entrySet()) {
+            if (!regexpReplacements.isEmpty()) {
+                for (Entry<String, CharSequence> entry : regexpReplacements.entrySet()) {
 
-					result = Pattern.compile(entry.getKey()).matcher(result).replaceAll(entry.getValue().toString());
-				}
-			}
+                    result = Pattern.compile(entry.getKey()).matcher(result).replaceAll(entry.getValue().toString());
+                }
+            }
 
-			return result;
-		}
+            return result;
+        }
 
-		void processPage(String src, Tag tag, FutureParserContext ctx, Appendable out) throws IOException,
-				HttpErrorPage {
-			String fragment = tag.getAttribute("fragment");
-			String xpath = tag.getAttribute("xpath");
-			String xslt = tag.getAttribute("stylesheet");
-			boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
+        void processPage(String src, Tag tag, FutureParserContext ctx, Appendable out) throws IOException,
+                HttpErrorPage {
+            String fragment = tag.getAttribute("fragment");
+            String xpath = tag.getAttribute("xpath");
+            String xslt = tag.getAttribute("stylesheet");
+            boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 
-			HttpEntityEnclosingRequest httpRequest = ctx.getHttpRequest();
-			List<Renderer> rendererList = new ArrayList<Renderer>();
-			Driver driver;
-			String page;
+            HttpEntityEnclosingRequest httpRequest = ctx.getHttpRequest();
+            List<Renderer> rendererList = new ArrayList<Renderer>();
+            Driver driver;
+            String page;
 
-			int idx = src.indexOf(PROVIDER_PATTERN);
-			int idxLegacyPattern = src.indexOf(LEGACY_PROVIDER_PATTERN);
-			if (idx < 0 && idxLegacyPattern < 0) {
-				page = src;
-				driver = HttpRequestHelper.getDriver(httpRequest);
-			} else if (idx >= 0) {
-				int startIdx = idx + PROVIDER_PATTERN.length();
-				int endIndex = src.indexOf("})", startIdx);
-				String provider = src.substring(startIdx, endIndex);
-				page = src.substring(endIndex + "})".length());
-				driver = DriverFactory.getInstance(provider);
-			} else {
-				int startIdx = idxLegacyPattern + PROVIDER_PATTERN.length();
-				int endIndex = src.indexOf("})", startIdx);
-				String provider = src.substring(startIdx, endIndex);
-				page = src.substring(endIndex + "})".length());
-				driver = DriverFactory.getInstance(provider);
-			}
+            int idx = src.indexOf(PROVIDER_PATTERN);
+            int idxLegacyPattern = src.indexOf(LEGACY_PROVIDER_PATTERN);
+            if (idx < 0 && idxLegacyPattern < 0) {
+                page = src;
+                driver = HttpRequestHelper.getDriver(httpRequest);
+            } else if (idx >= 0) {
+                int startIdx = idx + PROVIDER_PATTERN.length();
+                int endIndex = src.indexOf("})", startIdx);
+                String provider = src.substring(startIdx, endIndex);
+                page = src.substring(endIndex + "})".length());
+                driver = DriverFactory.getInstance(provider);
+            } else {
+                int startIdx = idxLegacyPattern + PROVIDER_PATTERN.length();
+                int endIndex = src.indexOf("})", startIdx);
+                String provider = src.substring(startIdx, endIndex);
+                page = src.substring(endIndex + "})".length());
+                driver = DriverFactory.getInstance(provider);
+            }
 
-			if (rewriteAbsoluteUrl) {
-				Map<String, String> replaceRules = new HashMap<String, String>();
-				String baseUrl = HttpRequestHelper.getBaseUrl(httpRequest).toString();
-				String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL(baseUrl);
+            if (rewriteAbsoluteUrl) {
+                Map<String, String> replaceRules = new HashMap<String, String>();
+                String baseUrl = HttpRequestHelper.getBaseUrl(httpRequest).toString();
+                String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL(baseUrl);
 
-				String contextBaseUrl;
-				String contextVisibleBaseUrl;
-				contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
-				if (visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)) {
-					contextVisibleBaseUrl = UriUtils.createUri(visibleBaseUrl).getPath();
-					replaceRules.put("href=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "href=$1" + contextVisibleBaseUrl
-							+ "$2$3");
-					replaceRules.put("src=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "src=$1" + contextVisibleBaseUrl
-							+ "$2$3");
-					replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
-					replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
-				} else {
-					contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
-					replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
-					replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
-				}
+                String contextBaseUrl;
+                String contextVisibleBaseUrl;
+                contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+                if (visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)) {
+                    contextVisibleBaseUrl = UriUtils.createUri(visibleBaseUrl).getPath();
+                    replaceRules.put("href=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "href=$1" + contextVisibleBaseUrl
+                            + "$2$3");
+                    replaceRules.put("src=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "src=$1" + contextVisibleBaseUrl
+                            + "$2$3");
+                    replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
+                    replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
+                } else {
+                    contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+                    replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
+                    replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
+                }
 
-				rendererList.add(new ReplaceRenderer(replaceRules));
-			}
+                rendererList.add(new ReplaceRenderer(replaceRules));
+            }
 
-			page = VariablesResolver.replaceAllVariables(page, httpRequest);
-			InlineCache ic = InlineCache.getFragment(src);
-			if (ic != null && !ic.isExpired()) {
-				String cache = ic.getFragment();
-				out.append(cache);
-			} else {
-				EsiRenderer esiRenderer;
-				if (fragment != null)
-					esiRenderer = new EsiRenderer(page, fragment, executor);
-				else
-					esiRenderer = new EsiRenderer(executor);
-				if (fragmentReplacements != null && !fragmentReplacements.isEmpty())
-					esiRenderer.setFragmentsToReplace(fragmentReplacements);
-				rendererList.add(esiRenderer);
-				if (xpath != null) {
-					rendererList.add(new XpathRenderer(xpath));
-				} else if (xslt != null) {
-					rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
-				}
-				driver.render(page, null, out, httpRequest, rendererList.toArray(new Renderer[rendererList.size()]));
-			}
-		}
+            page = VariablesResolver.replaceAllVariables(page, httpRequest);
+            InlineCache ic = InlineCache.getFragment(src);
+            if (ic != null && !ic.isExpired()) {
+                String cache = ic.getFragment();
+                out.append(cache);
+            } else {
+                EsiRenderer esiRenderer;
+                if (fragment != null) {
+                    esiRenderer = new EsiRenderer(page, fragment, executor);
+                } else {
+                    esiRenderer = new EsiRenderer(executor);
+                }
+                if (fragmentReplacements != null && !fragmentReplacements.isEmpty()) {
+                    esiRenderer.setFragmentsToReplace(fragmentReplacements);
+                }
+                rendererList.add(esiRenderer);
+                if (xpath != null) {
+                    rendererList.add(new XpathRenderer(xpath));
+                } else if (xslt != null) {
+                    rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
+                }
+                driver.render(page, null, out, httpRequest, rendererList.toArray(new Renderer[rendererList.size()]));
+            }
+        }
 
-	}
+    }
 
-	public final static FutureElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
-		@Override
-		public IncludeElement newInstance() {
-			return new IncludeElement();
-		}
+    public static final FutureElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
+        @Override
+        public IncludeElement newInstance() {
+            return new IncludeElement();
+        }
 
-	};
+    };
 
-	private StringBuilderFutureAppendable buf;
-	private Map<String, CharSequence> fragmentReplacements;
-	private Map<String, CharSequence> regexpReplacements;
-	private Tag includeTag;
-	private boolean write = false;
+    private StringBuilderFutureAppendable buf;
+    private Map<String, CharSequence> fragmentReplacements;
+    private Map<String, CharSequence> regexpReplacements;
+    private Tag includeTag;
+    private boolean write = false;
 
-	IncludeElement() {
-	}
+    IncludeElement() {
+    }
 
-	@Override
-	public void characters(Future<CharSequence> csq) throws IOException {
-		if (write)
-			buf.enqueueAppend(csq);
-	}
+    @Override
+    public void characters(Future<CharSequence> csq) throws IOException {
+        if (write) {
+            buf.enqueueAppend(csq);
+        }
+    }
 
-	@Override
-	public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		write = true;
-		String src = includeTag.getAttribute("src");
-		String alt = includeTag.getAttribute("alt");
-		boolean ignoreError = "continue".equals(includeTag.getAttribute("onerror"));
-		FutureElement current = ctx.getCurrent();
-		// write accumulated data into parent
-		Executor executor = (Executor) ctx.getData(EsiRenderer.DATA_EXECUTOR);
-		Future<CharSequence> result = null;
-		IncludeTask task = new IncludeTask(includeTag, src, alt, ctx, current, ignoreError, fragmentReplacements,
-				regexpReplacements, executor);
-		if (executor == null) {
-			// No threads.
-			CharSequence content = task.call();
-			result = new CharSequenceFuture(content);
-		} else {
-			// Start processing in a new thread.
-			RunnableFuture<CharSequence> r = new FutureTask<CharSequence>(task);
-			executor.execute(r);
-			result = r;
-		}
-		ctx.getCurrent().characters(result);
-	}
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        write = true;
+        String src = includeTag.getAttribute("src");
+        String alt = includeTag.getAttribute("alt");
+        boolean ignoreError = "continue".equals(includeTag.getAttribute("onerror"));
+        FutureElement current = ctx.getCurrent();
+        // write accumulated data into parent
+        Executor executor = (Executor) ctx.getData(EsiRenderer.DATA_EXECUTOR);
+        Future<CharSequence> result = null;
+        IncludeTask task = new IncludeTask(includeTag, src, alt, ctx, current, ignoreError, fragmentReplacements,
+                regexpReplacements, executor);
+        if (executor == null) {
+            // No threads.
+            CharSequence content = task.call();
+            result = new CharSequenceFuture(content);
+        } else {
+            // Start processing in a new thread.
+            RunnableFuture<CharSequence> r = new FutureTask<CharSequence>(task);
+            executor.execute(r);
+            result = r;
+        }
+        ctx.getCurrent().characters(result);
+    }
 
-	@Override
-	protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-		buf = new StringBuilderFutureAppendable();
-		fragmentReplacements = new HashMap<String, CharSequence>();
-		regexpReplacements = new HashMap<String, CharSequence>();
-		includeTag = tag;
-	}
+    @Override
+    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+        buf = new StringBuilderFutureAppendable();
+        fragmentReplacements = new HashMap<String, CharSequence>();
+        regexpReplacements = new HashMap<String, CharSequence>();
+        includeTag = tag;
+    }
 
-	void addFragmentReplacement(String fragment, CharSequence replacement) {
-		fragmentReplacements.put(fragment, replacement);
-	}
+    void addFragmentReplacement(String fragment, CharSequence replacement) {
+        fragmentReplacements.put(fragment, replacement);
+    }
 
-	void addRegexpReplacement(String regexp, CharSequence replacement) {
-		regexpReplacements.put(regexp, replacement);
-	}
+    void addRegexpReplacement(String regexp, CharSequence replacement) {
+        regexpReplacements.put(regexp, replacement);
+    }
 
 }

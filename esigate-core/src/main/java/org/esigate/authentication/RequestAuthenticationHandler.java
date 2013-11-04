@@ -28,21 +28,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Forward session and/or request attributes as HTTP request headers. Best when
- * ESIGate is used in embedded mode.
+ * Forward session and/or request attributes as HTTP request headers. Best when ESIGate is used in embedded mode.
  * <p>
- * Example : Forward the "username" session attribute as "X-ATTR-username" in
- * the request fetching remote content.
+ * Example : Forward the "username" session attribute as "X-ATTR-username" in the request fetching remote content.
  * <p>
  * Configuration uses the following attributes from driver.properties :
  * <p>
  * <ul>
  * <li>
- * <b>forwardSessionAttributes</b>: comma separated list of session attributes
- * which will be forwarded.</li>
+ * <b>forwardSessionAttributes</b>: comma separated list of session attributes which will be forwarded.</li>
  * <li>
- * <b>forwardRequestAttributes</b>: comma separated list of request attributes
- * which will be forwarded.</li>
+ * <b>forwardRequestAttributes</b>: comma separated list of request attributes which will be forwarded.</li>
  * <li><b>headerPrefix</b> : header prefix. Default is "X-ATTR-"</li>
  * </ul>
  * <p>
@@ -52,78 +48,78 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class RequestAuthenticationHandler extends GenericAuthentificationHandler {
-	private final static Logger logger = LoggerFactory.getLogger(RequestAuthenticationHandler.class);
-	private final List<String> sessionAttributes = new ArrayList<String>();
-	private final List<String> requestAttributes = new ArrayList<String>();
-	private String headerPrefix = "X-ATTR-";
+    private static final Logger LOG = LoggerFactory.getLogger(RequestAuthenticationHandler.class);
+    private final List<String> sessionAttributes = new ArrayList<String>();
+    private final List<String> requestAttributes = new ArrayList<String>();
+    private String headerPrefix = "X-ATTR-";
 
-	@Override
-	public boolean beforeProxy(HttpRequest httpRequest) {
-		return true;
-	}
+    @Override
+    public boolean beforeProxy(HttpRequest httpRequest) {
+        return true;
+    }
 
-	@Override
-	public void init(Properties properties) {
-		// Attributes for session
-		String sessionAttributesProperty = properties.getProperty("forwardSessionAttributes");
-		if (sessionAttributesProperty != null) {
-			String attributes[] = sessionAttributesProperty.split(",");
-			for (String attribute : attributes) {
-				this.sessionAttributes.add(attribute.trim());
-				if (logger.isInfoEnabled()) {
-					logger.info("Forwading session attribute: " + attribute);
-				}
-			}
-		}
+    @Override
+    public void init(Properties properties) {
+        // Attributes for session
+        String sessionAttributesProperty = properties.getProperty("forwardSessionAttributes");
+        if (sessionAttributesProperty != null) {
+            String[] attributes = sessionAttributesProperty.split(",");
+            for (String attribute : attributes) {
+                this.sessionAttributes.add(attribute.trim());
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Forwading session attribute: " + attribute);
+                }
+            }
+        }
 
-		// Attributes for request
-		String requestAttributesProperty = (String) properties.get("forwardRequestAttributes");
-		if (requestAttributesProperty != null) {
-			String attributes[] = requestAttributesProperty.split(",");
-			for (String attribute : attributes) {
-				this.requestAttributes.add(attribute.trim());
-				if (logger.isInfoEnabled()) {
-					logger.info("Forwading request attribute: " + attribute);
-				}
-			}
-		}
+        // Attributes for request
+        String requestAttributesProperty = (String) properties.get("forwardRequestAttributes");
+        if (requestAttributesProperty != null) {
+            String[] attributes = requestAttributesProperty.split(",");
+            for (String attribute : attributes) {
+                this.requestAttributes.add(attribute.trim());
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Forwading request attribute: " + attribute);
+                }
+            }
+        }
 
-		// Prefix name
-		String headerPrefixProperty = (String) properties.get("headerPrefix");
-		if (headerPrefixProperty != null) {
-			this.headerPrefix = headerPrefixProperty;
-		}
-	}
+        // Prefix name
+        String headerPrefixProperty = (String) properties.get("headerPrefix");
+        if (headerPrefixProperty != null) {
+            this.headerPrefix = headerPrefixProperty;
+        }
+    }
 
-	@Override
-	public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
-		return false;
-	}
+    @Override
+    public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
+        return false;
+    }
 
-	@Override
-	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
-		logger.debug("preRequest");
+    @Override
+    public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
+        LOG.debug("preRequest");
 
-		// Process session
-		ContainerRequestMediator mediator = HttpRequestHelper.getMediator(httpRequest);
-		for (String attribute : this.sessionAttributes) {
-			String value = (String) mediator.getSessionAttribute(attribute);
-			if (value != null) {
-				logger.debug("Adding session attribute {} ({}) as header ({}{})", attribute, value, this.headerPrefix,
-						attribute);
-				request.addHeader(this.headerPrefix + attribute, value);
-			}
-		}
+        // Process session
+        ContainerRequestMediator mediator = HttpRequestHelper.getMediator(httpRequest);
+        for (String attribute : this.sessionAttributes) {
+            String value = (String) mediator.getSessionAttribute(attribute);
+            if (value != null) {
+                LOG.debug("Adding session attribute {} ({}) as header ({}{})", attribute, value, this.headerPrefix,
+                        attribute);
+                request.addHeader(this.headerPrefix + attribute, value);
+            }
+        }
 
-		// Process request
-		for (String attribute : this.requestAttributes) {
-			String value = (String) httpRequest.getParams().getParameter(attribute);
-			if (value != null) {
-				logger.debug("Adding request attribute {} ({}) as header ({}{})", attribute, value, this.headerPrefix,
-						attribute);
-				request.addHeader(this.headerPrefix + attribute, value);
-			}
-		}
-	}
+        // Process request
+        for (String attribute : this.requestAttributes) {
+            String value = (String) httpRequest.getParams().getParameter(attribute);
+            if (value != null) {
+                LOG.debug("Adding request attribute {} ({}) as header ({}{})", attribute, value, this.headerPrefix,
+                        attribute);
+                request.addHeader(this.headerPrefix + attribute, value);
+            }
+        }
+    }
 
 }

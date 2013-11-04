@@ -47,222 +47,236 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This mediator converts esigate request/responses to Servlet
- * request/responses.
+ * This mediator converts esigate request/responses to Servlet request/responses.
  * <p>
- * When converting requests, a mediator instance is attached to the request and
- * can be retrieved any time in esigate code, usually to update session and
- * cookies.
+ * When converting requests, a mediator instance is attached to the request and can be retrieved any time in esigate
+ * code, usually to update session and cookies.
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  * 
  */
 public class HttpServletMediator implements ContainerRequestMediator {
-	private static final String WARN_RESPONSE_ALREADY_SENT = "Attempt to write to the response, but it is already sent. The operation {} was discarded. "
-			+ "This usually means that esigate is configured " + "with stale-while-revalidate is enabled " + "AND backend is sending a cookie update which is not discarded by configuration. "
-			+ "This configuration is unsupported. Please update configuration to turn off stale-while-revalidate " + "or discard cookies. ";
+    private static final String WARN_RESPONSE_ALREADY_SENT = "Attempt to write to the response, but it is already sent. The operation {} was discarded. "
+            + "This usually means that esigate is configured "
+            + "with stale-while-revalidate is enabled "
+            + "AND backend is sending a cookie update which is not discarded by configuration. "
+            + "This configuration is unsupported. Please update configuration to turn off stale-while-revalidate "
+            + "or discard cookies. ";
 
-	private static final Logger LOG = LoggerFactory.getLogger(HttpServletMediator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HttpServletMediator.class);
 
-	private final HttpServletRequest request;
-	private final HttpServletResponse response;
-	private final ServletContext servletContext;
-	private final HttpEntityEnclosingRequest httpRequest;
-	private boolean responseSent = false;
-	private final FilterChain filterChain;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
+    private final ServletContext servletContext;
+    private final HttpEntityEnclosingRequest httpRequest;
+    private boolean responseSent = false;
+    private final FilterChain filterChain;
 
-	public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws IOException {
-		this(request, response, servletContext, null);
-	}
+    public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
+            throws IOException {
+        this(request, response, servletContext, null);
+    }
 
-	public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext, FilterChain filterChain) throws IOException {
-		this.request = request;
-		this.response = response;
-		this.servletContext = servletContext;
-		this.filterChain = filterChain;
-		// create request line
-		String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(), request.getRequestURI(), request.getQueryString(), null).toString();
-		ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(request.getProtocol(), null);
-		BasicHttpEntityEnclosingRequest result = new BasicHttpEntityEnclosingRequest(new BasicRequestLine(request.getMethod(), uri, protocolVersion));
-		// copy headers
-		@SuppressWarnings("rawtypes")
-		Enumeration names = request.getHeaderNames();
-		while (names.hasMoreElements()) {
-			String name = (String) names.nextElement();
-			@SuppressWarnings("rawtypes")
-			Enumeration values = request.getHeaders(name);
-			while (values.hasMoreElements()) {
-				String value = (String) values.nextElement();
-				result.addHeader(name, value);
-			}
-		}
-		// create entity
-		ServletInputStream inputStream = request.getInputStream();
-		if (inputStream != null) {
-			// Copy entity-related headers
-			String contentLengthHeader = request.getHeader(HttpHeaders.CONTENT_LENGTH);
-			long contentLength = (contentLengthHeader != null) ? Long.parseLong(contentLengthHeader) : -1;
-			InputStreamEntity entity = new InputStreamEntity(inputStream, contentLength);
-			String contentTypeHeader = request.getContentType();
-			if (contentTypeHeader != null)
-				entity.setContentType(contentTypeHeader);
-			String contentEncodingHeader = request.getCharacterEncoding();
-			if (contentEncodingHeader != null)
-				entity.setContentEncoding(contentEncodingHeader);
-			result.setEntity(entity);
-		}
-		HttpRequestHelper.setMediator(result, this);
-		this.httpRequest = result;
-	}
+    public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext,
+            FilterChain filterChain) throws IOException {
+        this.request = request;
+        this.response = response;
+        this.servletContext = servletContext;
+        this.filterChain = filterChain;
+        // create request line
+        String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(),
+                request.getRequestURI(), request.getQueryString(), null).toString();
+        ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(request.getProtocol(), null);
+        BasicHttpEntityEnclosingRequest result = new BasicHttpEntityEnclosingRequest(new BasicRequestLine(
+                request.getMethod(), uri, protocolVersion));
+        // copy headers
+        @SuppressWarnings("rawtypes")
+        Enumeration names = request.getHeaderNames();
+        while (names.hasMoreElements()) {
+            String name = (String) names.nextElement();
+            @SuppressWarnings("rawtypes")
+            Enumeration values = request.getHeaders(name);
+            while (values.hasMoreElements()) {
+                String value = (String) values.nextElement();
+                result.addHeader(name, value);
+            }
+        }
+        // create entity
+        ServletInputStream inputStream = request.getInputStream();
+        if (inputStream != null) {
+            // Copy entity-related headers
+            String contentLengthHeader = request.getHeader(HttpHeaders.CONTENT_LENGTH);
+            long contentLength = (contentLengthHeader != null) ? Long.parseLong(contentLengthHeader) : -1;
+            InputStreamEntity entity = new InputStreamEntity(inputStream, contentLength);
+            String contentTypeHeader = request.getContentType();
+            if (contentTypeHeader != null) {
+                entity.setContentType(contentTypeHeader);
+            }
+            String contentEncodingHeader = request.getCharacterEncoding();
+            if (contentEncodingHeader != null) {
+                entity.setContentEncoding(contentEncodingHeader);
+            }
+            result.setEntity(entity);
+        }
+        HttpRequestHelper.setMediator(result, this);
+        this.httpRequest = result;
+    }
 
-	@Override
-	public Cookie[] getCookies() {
-		javax.servlet.http.Cookie[] src = request.getCookies();
-		Cookie result[] = null;
-		if (src != null) {
-			result = new Cookie[src.length];
-			for (int i = 0; i < src.length; i++) {
-				javax.servlet.http.Cookie c = src[i];
-				BasicClientCookie dest = new BasicClientCookie(c.getName(), c.getValue());
-				dest.setSecure(c.getSecure());
-				dest.setDomain(c.getDomain());
-				dest.setPath(c.getPath());
-				dest.setComment(c.getComment());
-				dest.setVersion(c.getVersion());
-				result[i] = dest;
-			}
-		}
-		return result;
-	}
+    @Override
+    public Cookie[] getCookies() {
+        javax.servlet.http.Cookie[] src = request.getCookies();
+        Cookie[] result = null;
+        if (src != null) {
+            result = new Cookie[src.length];
+            for (int i = 0; i < src.length; i++) {
+                javax.servlet.http.Cookie c = src[i];
+                BasicClientCookie dest = new BasicClientCookie(c.getName(), c.getValue());
+                dest.setSecure(c.getSecure());
+                dest.setDomain(c.getDomain());
+                dest.setPath(c.getPath());
+                dest.setComment(c.getComment());
+                dest.setVersion(c.getVersion());
+                result[i] = dest;
+            }
+        }
+        return result;
+    }
 
-	@Override
-	public void addCookie(Cookie src) {
-		if (this.responseSent) {
-			LOG.warn(WARN_RESPONSE_ALREADY_SENT, "Create cookie '" + src.getName() + "'");
-			return;
-		}
+    @Override
+    public void addCookie(Cookie src) {
+        if (this.responseSent) {
+            LOG.warn(WARN_RESPONSE_ALREADY_SENT, "Create cookie '" + src.getName() + "'");
+            return;
+        }
 
-		this.response.addCookie(rewriteCookie(src));
-	}
+        this.response.addCookie(rewriteCookie(src));
+    }
 
-	static javax.servlet.http.Cookie rewriteCookie(Cookie src) {
-		javax.servlet.http.Cookie servletCookie = new javax.servlet.http.Cookie(src.getName(), src.getValue());
+    static javax.servlet.http.Cookie rewriteCookie(Cookie src) {
+        javax.servlet.http.Cookie servletCookie = new javax.servlet.http.Cookie(src.getName(), src.getValue());
 
-		if (src.getDomain() != null)
-			servletCookie.setDomain(src.getDomain());
-		servletCookie.setPath(src.getPath());
-		servletCookie.setSecure(src.isSecure());
-		servletCookie.setComment(src.getComment());
-		servletCookie.setVersion(src.getVersion());
-		if (src.getExpiryDate() != null) {
-			int maxAge = (int) ((src.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000);
-			// According to Cookie class specification, a negative value
-			// would be considered as no value. That is not what we want!
-			if (maxAge < 0) {
-				maxAge = 0;
-			}
-			servletCookie.setMaxAge(maxAge);
-		}
-		return servletCookie;
-	}
+        if (src.getDomain() != null) {
+            servletCookie.setDomain(src.getDomain());
+        }
+        servletCookie.setPath(src.getPath());
+        servletCookie.setSecure(src.isSecure());
+        servletCookie.setComment(src.getComment());
+        servletCookie.setVersion(src.getVersion());
+        if (src.getExpiryDate() != null) {
+            int maxAge = (int) ((src.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000);
+            // According to Cookie class specification, a negative value
+            // would be considered as no value. That is not what we want!
+            if (maxAge < 0) {
+                maxAge = 0;
+            }
+            servletCookie.setMaxAge(maxAge);
+        }
+        return servletCookie;
+    }
 
-	@Override
-	public String getRemoteAddr() {
-		return request.getRemoteAddr();
-	}
+    @Override
+    public String getRemoteAddr() {
+        return request.getRemoteAddr();
+    }
 
-	@Override
-	public String getRemoteUser() {
-		return request.getRemoteUser();
-	}
+    @Override
+    public String getRemoteUser() {
+        return request.getRemoteUser();
+    }
 
-	@Override
-	public Principal getUserPrincipal() {
-		return request.getUserPrincipal();
-	}
+    @Override
+    public Principal getUserPrincipal() {
+        return request.getUserPrincipal();
+    }
 
-	@Override
-	public void sendResponse(HttpResponse httpResponse) throws IOException {
+    @Override
+    public void sendResponse(HttpResponse httpResponse) throws IOException {
 
-		try {
-			response.setStatus(httpResponse.getStatusLine().getStatusCode());
-			for (Header header : httpResponse.getAllHeaders()) {
-				String name = header.getName();
-				String value = header.getValue();
-				response.addHeader(name, value);
-			}
-			HttpEntity httpEntity = httpResponse.getEntity();
-			if (httpEntity != null) {
-				long contentLength = httpEntity.getContentLength();
-				if (contentLength > -1 && contentLength < Integer.MAX_VALUE)
-					response.setContentLength((int) contentLength);
-				Header contentType = httpEntity.getContentType();
-				if (contentType != null)
-					response.setContentType(contentType.getValue());
-				Header contentEncoding = httpEntity.getContentEncoding();
-				if (contentEncoding != null)
-					response.setHeader(contentEncoding.getName(), contentEncoding.getValue());
+        try {
+            response.setStatus(httpResponse.getStatusLine().getStatusCode());
+            for (Header header : httpResponse.getAllHeaders()) {
+                String name = header.getName();
+                String value = header.getValue();
+                response.addHeader(name, value);
+            }
+            HttpEntity httpEntity = httpResponse.getEntity();
+            if (httpEntity != null) {
+                long contentLength = httpEntity.getContentLength();
+                if (contentLength > -1 && contentLength < Integer.MAX_VALUE) {
+                    response.setContentLength((int) contentLength);
+                }
+                Header contentType = httpEntity.getContentType();
+                if (contentType != null) {
+                    response.setContentType(contentType.getValue());
+                }
+                Header contentEncoding = httpEntity.getContentEncoding();
+                if (contentEncoding != null) {
+                    response.setHeader(contentEncoding.getName(), contentEncoding.getValue());
+                }
 
-				httpEntity.writeTo(response.getOutputStream());
-			} else {
-				response.sendError(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
-			}
-		} finally {
-			this.responseSent = true;
-		}
-	}
+                httpEntity.writeTo(response.getOutputStream());
+            } else {
+                response.sendError(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine()
+                        .getReasonPhrase());
+            }
+        } finally {
+            this.responseSent = true;
+        }
+    }
 
-	@Override
-	public void setSessionAttribute(String key, Serializable value) {
+    @Override
+    public void setSessionAttribute(String key, Serializable value) {
 
-		if (this.responseSent) {
-			LOG.warn(WARN_RESPONSE_ALREADY_SENT, "Set session attribute '" + key + "'");
-			return;
-		}
+        if (this.responseSent) {
+            LOG.warn(WARN_RESPONSE_ALREADY_SENT, "Set session attribute '" + key + "'");
+            return;
+        }
 
-		HttpSession session = this.request.getSession();
-		session.setAttribute(key, value);
+        HttpSession session = this.request.getSession();
+        session.setAttribute(key, value);
 
-	}
+    }
 
-	@Override
-	public Serializable getSessionAttribute(String key) {
-		HttpSession session = this.request.getSession(false);
-		if (session == null)
-			return null;
-		return (Serializable) session.getAttribute(key);
-	}
+    @Override
+    public Serializable getSessionAttribute(String key) {
+        HttpSession session = this.request.getSession(false);
+        if (session == null) {
+            return null;
+        }
+        return (Serializable) session.getAttribute(key);
+    }
 
-	@Override
-	public InputStream getResourceAsStream(String path) {
-		return servletContext.getResourceAsStream(path);
-	}
+    @Override
+    public InputStream getResourceAsStream(String path) {
+        return servletContext.getResourceAsStream(path);
+    }
 
-	@Override
-	@Deprecated
-	public String getSessionId() {
-		HttpSession session = request.getSession(false);
-		if (session != null)
-			return session.getId();
-		return null;
-	}
+    @Override
+    @Deprecated
+    public String getSessionId() {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            return session.getId();
+        }
+        return null;
+    }
 
-	@Override
-	public HttpEntityEnclosingRequest getHttpRequest() {
-		return httpRequest;
-	}
+    @Override
+    public HttpEntityEnclosingRequest getHttpRequest() {
+        return httpRequest;
+    }
 
-	public HttpServletResponse getResponse() {
-		return response;
-	}
+    public HttpServletResponse getResponse() {
+        return response;
+    }
 
-	public HttpServletRequest getRequest() {
-		return request;
-	}
+    public HttpServletRequest getRequest() {
+        return request;
+    }
 
-	public FilterChain getFilterChain() {
-		return filterChain;
-	}
+    public FilterChain getFilterChain() {
+        return filterChain;
+    }
 
 }

@@ -32,6 +32,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.HttpStatus;
 import org.esigate.Driver.DriverBuilder;
 import org.esigate.impl.IndexedInstances;
 import org.esigate.impl.UriMapping;
@@ -46,275 +47,275 @@ import org.slf4j.LoggerFactory;
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  */
-public class DriverFactory {
+public final class DriverFactory {
 
-	/**
-	 * System property used to specify of esigate configuration, outside of the
-	 * classpath.
-	 */
-	public static final String PROP_CONF_LOCATION = "esigate.config";
-	private static IndexedInstances INSTANCES = new IndexedInstances(new HashMap<String, Driver>());
-	private static final String DEFAULT_INSTANCE_NAME = "default";
-	private static final Logger LOG = LoggerFactory.getLogger(DriverFactory.class);
+    /**
+     * System property used to specify of esigate configuration, outside of the classpath.
+     */
+    public static final String PROP_CONF_LOCATION = "esigate.config";
+    private static IndexedInstances instances = new IndexedInstances(new HashMap<String, Driver>());
+    private static final String DEFAULT_INSTANCE_NAME = "default";
+    private static final Logger LOG = LoggerFactory.getLogger(DriverFactory.class);
 
-	static {
-		String version = defaultIfBlank(DriverFactory.class.getPackage().getSpecificationVersion(), "development version");
-		String rev = defaultIfBlank(DriverFactory.class.getPackage().getImplementationVersion(), "unknown");
-		LOG.info("Starting esigate {} rev. {}", version, rev);
+    static {
+        String version = defaultIfBlank(DriverFactory.class.getPackage().getSpecificationVersion(),
+                "development version");
+        String rev = defaultIfBlank(DriverFactory.class.getPackage().getImplementationVersion(), "unknown");
+        LOG.info("Starting esigate {} rev. {}", version, rev);
 
-		// Load default settings
-		configure();
-	}
+        // Load default settings
+        configure();
+    }
 
-	private DriverFactory() {
+    private DriverFactory() {
 
-	}
+    }
 
-	/** Loads all instances according to default configuration file */
-	public final static void configure() {
-		InputStream inputStream = null;
-		InputStream extInputStream = null;
+    /** Loads all instances according to default configuration file. */
+    public static void configure() {
+        InputStream inputStream = null;
+        InputStream extInputStream = null;
 
-		try {
-			// Load from environment
-			String envPath = System.getProperty(PROP_CONF_LOCATION);
-			if (envPath != null) {
-				try {
-					LOG.info("Scanning configuration {}", envPath);
-					inputStream = new FileInputStream(new File(envPath));
-				} catch (FileNotFoundException e) {
-					LOG.error("Can't read file {} (from -D" + PROP_CONF_LOCATION + ")", envPath, e);
-				}
-			}
+        try {
+            // Load from environment
+            String envPath = System.getProperty(PROP_CONF_LOCATION);
+            if (envPath != null) {
+                try {
+                    LOG.info("Scanning configuration {}", envPath);
+                    inputStream = new FileInputStream(new File(envPath));
+                } catch (FileNotFoundException e) {
+                    LOG.error("Can't read file {} (from -D" + PROP_CONF_LOCATION + ")", envPath, e);
+                }
+            }
 
-			if (inputStream == null) {
-				LOG.info("Scanning configuration {}", "/esigate.properties");
-				inputStream = DriverFactory.class.getResourceAsStream("/esigate.properties");
-			}
+            if (inputStream == null) {
+                LOG.info("Scanning configuration {}", "/esigate.properties");
+                inputStream = DriverFactory.class.getResourceAsStream("/esigate.properties");
+            }
 
-			// For backward compatibility
-			if (inputStream == null) {
-				LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"), "driver.properties");
-				inputStream = DriverFactory.class.getResourceAsStream("driver.properties");
-			}
-			if (inputStream == null) {
-				LOG.info("Scanning configuration {}", "/net/webassembletool/driver.properties");
-				inputStream = DriverFactory.class.getResourceAsStream("/net/webassembletool/driver.properties");
-			}
+            // For backward compatibility
+            if (inputStream == null) {
+                LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"),
+                        "driver.properties");
+                inputStream = DriverFactory.class.getResourceAsStream("driver.properties");
+            }
+            if (inputStream == null) {
+                LOG.info("Scanning configuration {}", "/net/webassembletool/driver.properties");
+                inputStream = DriverFactory.class.getResourceAsStream("/net/webassembletool/driver.properties");
+            }
 
-			if (inputStream == null)
-				throw new ConfigurationException("esigate.properties configuration file was not found in the classpath");
+            if (inputStream == null) {
+                throw new ConfigurationException("esigate.properties configuration file was not found in the classpath");
+            }
 
-			// load driver-ext.properties if exists
-			LOG.info("Scanning configuration {}", "/esigate-ext.properties");
-			extInputStream = DriverFactory.class.getClassLoader().getResourceAsStream("/esigate-ext.properties");
+            // load driver-ext.properties if exists
+            LOG.info("Scanning configuration {}", "/esigate-ext.properties");
+            extInputStream = DriverFactory.class.getClassLoader().getResourceAsStream("/esigate-ext.properties");
 
-			// For backward compatibility
-			if (extInputStream == null) {
-				LOG.info("Scanning configuration {}", "/driver-ext.properties");
-				extInputStream = DriverFactory.class.getResourceAsStream("/driver-ext.properties");
-			}
-			if (extInputStream == null) {
-				LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"), "driver-ext.properties");
-				extInputStream = DriverFactory.class.getResourceAsStream("driver-ext.properties");
-			}
+            // For backward compatibility
+            if (extInputStream == null) {
+                LOG.info("Scanning configuration {}", "/driver-ext.properties");
+                extInputStream = DriverFactory.class.getResourceAsStream("/driver-ext.properties");
+            }
+            if (extInputStream == null) {
+                LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"),
+                        "driver-ext.properties");
+                extInputStream = DriverFactory.class.getResourceAsStream("driver-ext.properties");
+            }
 
-			Properties merged = new Properties();
-			if (inputStream != null) {
-				Properties props = new Properties();
-				props.load(inputStream);
-				merged.putAll(props);
-			}
+            Properties merged = new Properties();
+            if (inputStream != null) {
+                Properties props = new Properties();
+                props.load(inputStream);
+                merged.putAll(props);
+            }
 
-			if (extInputStream != null) {
-				Properties extProps = new Properties();
-				extProps.load(extInputStream);
-				merged.putAll(extProps);
-			}
+            if (extInputStream != null) {
+                Properties extProps = new Properties();
+                extProps.load(extInputStream);
+                merged.putAll(extProps);
+            }
 
-			configure(merged);
-		} catch (IOException e) {
-			throw new ConfigurationException("Error loading configuration", e);
-		} finally {
-			try {
-				if (inputStream != null) {
-					inputStream.close();
-				}
+            configure(merged);
+        } catch (IOException e) {
+            throw new ConfigurationException("Error loading configuration", e);
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
 
-				if (extInputStream != null) {
-					extInputStream.close();
-				}
-			} catch (IOException e) {
-				throw new ConfigurationException("failed to close stream", e);
-			}
-		}
-	}
+                if (extInputStream != null) {
+                    extInputStream.close();
+                }
+            } catch (IOException e) {
+                throw new ConfigurationException("failed to close stream", e);
+            }
+        }
+    }
 
-	/**
-	 * Loads all instancies according to the properties parameter
-	 * 
-	 * @param props
-	 *            properties to use for configuration
-	 */
-	public final static void configure(Properties props) {
-		Properties defaultProperties = new Properties();
+    /**
+     * Loads all instancies according to the properties parameter.
+     * 
+     * @param props
+     *            properties to use for configuration
+     */
+    public static void configure(Properties props) {
+        Properties defaultProperties = new Properties();
 
-		HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
-		for (Enumeration<?> enumeration = props.propertyNames(); enumeration.hasMoreElements();) {
-			String propertyName = (String) enumeration.nextElement();
-			String value = props.getProperty(propertyName);
-			int idx = propertyName.lastIndexOf('.');
-			if (idx < 0) {
-				defaultProperties.put(propertyName, value);
-			} else {
-				String prefix = propertyName.substring(0, idx);
-				String name = propertyName.substring(idx + 1);
-				Properties driverProperties = driversProps.get(prefix);
-				if (driverProperties == null) {
-					driverProperties = new Properties();
-					driversProps.put(prefix, driverProperties);
-				}
-				driverProperties.put(name, value);
-			}
-		}
+        HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
+        for (Enumeration<?> enumeration = props.propertyNames(); enumeration.hasMoreElements();) {
+            String propertyName = (String) enumeration.nextElement();
+            String value = props.getProperty(propertyName);
+            int idx = propertyName.lastIndexOf('.');
+            if (idx < 0) {
+                defaultProperties.put(propertyName, value);
+            } else {
+                String prefix = propertyName.substring(0, idx);
+                String name = propertyName.substring(idx + 1);
+                Properties driverProperties = driversProps.get(prefix);
+                if (driverProperties == null) {
+                    driverProperties = new Properties();
+                    driversProps.put(prefix, driverProperties);
+                }
+                driverProperties.put(name, value);
+            }
+        }
 
-		// Merge with default properties
-		Map<String, Driver> newInstances = new HashMap<String, Driver>();
-		for (Entry<String, Properties> entry : driversProps.entrySet()) {
-			String name = entry.getKey();
-			Properties properties = new Properties();
-			properties.putAll(defaultProperties);
-			properties.putAll(entry.getValue());
-			newInstances.put(name, createDriver(name, properties));
-		}
-		if (newInstances.get(DEFAULT_INSTANCE_NAME) == null && Parameters.REMOTE_URL_BASE.getValueString(defaultProperties) != null) {
+        // Merge with default properties
+        Map<String, Driver> newInstances = new HashMap<String, Driver>();
+        for (Entry<String, Properties> entry : driversProps.entrySet()) {
+            String name = entry.getKey();
+            Properties properties = new Properties();
+            properties.putAll(defaultProperties);
+            properties.putAll(entry.getValue());
+            newInstances.put(name, createDriver(name, properties));
+        }
+        if (newInstances.get(DEFAULT_INSTANCE_NAME) == null
+                && Parameters.REMOTE_URL_BASE.getValueString(defaultProperties) != null) {
 
-			newInstances.put(DEFAULT_INSTANCE_NAME, createDriver(DEFAULT_INSTANCE_NAME, defaultProperties));
-		}
+            newInstances.put(DEFAULT_INSTANCE_NAME, createDriver(DEFAULT_INSTANCE_NAME, defaultProperties));
+        }
 
-		INSTANCES = new IndexedInstances(newInstances);
-	}
+        instances = new IndexedInstances(newInstances);
+    }
 
-	private static Driver createDriver(String name, Properties properties) {
-		DriverBuilder builder = Driver.builder().setName(name).setProperties(properties);
-		if (StringUtils.equals(properties.getProperty("driverClass"), ServletRequestExecutor.class.getName())){
-			builder.setRequestExecutorBuilder(ServletRequestExecutor.builder());
-		}
-		return builder.build();
-	}
+    private static Driver createDriver(String name, Properties properties) {
+        DriverBuilder builder = Driver.builder().setName(name).setProperties(properties);
+        if (StringUtils.equals(properties.getProperty("driverClass"), ServletRequestExecutor.class.getName())) {
+            builder.setRequestExecutorBuilder(ServletRequestExecutor.builder());
+        }
+        return builder.build();
+    }
 
-	/**
-	 * Registers new {@linkplain Driver} under provided name with specified
-	 * properties.
-	 * 
-	 * @param name
-	 * @param props
-	 */
-	public static final void configure(String name, Properties props) {
-		setInstance(name, createDriver(name, props));
-	}
+    /**
+     * Registers new {@linkplain Driver} under provided name with specified properties.
+     * 
+     * @param name
+     * @param props
+     */
+    public static void configure(String name, Properties props) {
+        setInstance(name, createDriver(name, props));
+    }
 
-	/**
-	 * Retrieves the default instance of this class that is configured according
-	 * to the properties file (driver.properties)
-	 * 
-	 * @param instanceName
-	 *            The name of the instance (corresponding to the prefix in the
-	 *            driver.properties file)
-	 * 
-	 * @return the named instance
-	 */
-	public final static Driver getInstance(String instanceName) {
-		if (instanceName == null)
-			instanceName = DEFAULT_INSTANCE_NAME;
-		if (INSTANCES.getInstances().isEmpty()) {
-			throw new ConfigurationException("Driver has not been configured and driver.properties file was not found");
-		}
-		Driver instance = INSTANCES.getInstances().get(instanceName);
-		if (instance == null) {
-			throw new ConfigurationException("No configuration properties found for factory : " + instanceName);
-		}
-		return instance;
-	}
+    /**
+     * Retrieves the default instance of this class that is configured according to the properties file
+     * (driver.properties).
+     * 
+     * @param instanceName
+     *            The name of the instance (corresponding to the prefix in the driver.properties file)
+     * 
+     * @return the named instance
+     */
+    public static Driver getInstance(String instanceName) {
+        if (instanceName == null) {
+            instanceName = DEFAULT_INSTANCE_NAME;
+        }
+        if (instances.getInstances().isEmpty()) {
+            throw new ConfigurationException("Driver has not been configured and driver.properties file was not found");
+        }
+        Driver instance = instances.getInstances().get(instanceName);
+        if (instance == null) {
+            throw new ConfigurationException("No configuration properties found for factory : " + instanceName);
+        }
+        return instance;
+    }
 
-	/**
-	 * Retrieve the Driver instance which should process the request as
-	 * described in the parameters, based on the mappings declared in
-	 * configuration.
-	 * 
-	 * @param scheme
-	 *            The scheme of the request : http or https
-	 * @param host
-	 *            The host of the request, as provided in the Host header of the
-	 *            HTTP protocol
-	 * @param url
-	 *            The requested url
-	 * @return a pair which contains the Driver to use with this request and the
-	 *         matched UriMapping.
-	 * @throws HttpErrorPage
-	 */
-	public static Pair<Driver, UriMapping> getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
-		for (UriMapping mapping : INSTANCES.getUrimappings().keySet()) {
-			if (mapping.matches(scheme, host, url)) {
-				return new ImmutablePair<Driver, UriMapping>(getInstance(INSTANCES.getUrimappings().get(mapping)), mapping);
-			}
-		}
+    /**
+     * Retrieve the Driver instance which should process the request as described in the parameters, based on the
+     * mappings declared in configuration.
+     * 
+     * @param scheme
+     *            The scheme of the request : http or https
+     * @param host
+     *            The host of the request, as provided in the Host header of the HTTP protocol
+     * @param url
+     *            The requested url
+     * @return a pair which contains the Driver to use with this request and the matched UriMapping.
+     * @throws HttpErrorPage
+     */
+    public static Pair<Driver, UriMapping> getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
+        for (UriMapping mapping : instances.getUrimappings().keySet()) {
+            if (mapping.matches(scheme, host, url)) {
+                return new ImmutablePair<Driver, UriMapping>(getInstance(instances.getUrimappings().get(mapping)),
+                        mapping);
+            }
+        }
 
-		// If no match, return default instance.
-		throw new HttpErrorPage(404, "Not found", "No mapping defined for this url.");
-	}
+        // If no match, return default instance.
+        throw new HttpErrorPage(HttpStatus.SC_NOT_FOUND, "Not found", "No mapping defined for this url.");
+    }
 
-	/**
-	 * Retrieves the default instance of this class that is configured according
-	 * to the properties file (driver.properties)
-	 * 
-	 * @return the default instance
-	 */
-	public final static Driver getInstance() {
-		return getInstance(DEFAULT_INSTANCE_NAME);
-	}
+    /**
+     * Retrieves the default instance of this class that is configured according to the properties file
+     * (driver.properties).
+     * 
+     * @return the default instance
+     */
+    public static Driver getInstance() {
+        return getInstance(DEFAULT_INSTANCE_NAME);
+    }
 
-	/**
-	 * Method used to inject providers. Useful mainly for unit testing purpose
-	 * 
-	 * @param instanceName
-	 *            The name of the provider
-	 * @param instance
-	 *            The instance
-	 */
-	public final static void put(String instanceName, Driver instance) {
-		setInstance(instanceName, instance);
-	}
+    /**
+     * Method used to inject providers. Useful mainly for unit testing purpose
+     * 
+     * @param instanceName
+     *            The name of the provider
+     * @param instance
+     *            The instance
+     */
+    public static void put(String instanceName, Driver instance) {
+        setInstance(instanceName, instance);
+    }
 
-	/**
-	 * Add/replace instance in current instance map. Work on a copy of the
-	 * current map and replace it atomically.
-	 * 
-	 * @param instanceName
-	 * @param d
-	 */
-	private static final void setInstance(String instanceName, Driver d) {
-		// Copy current instances
-		Map<String, Driver> newInstances = new HashMap<String, Driver>();
-		synchronized (INSTANCES) {
-			Set<String> keys = INSTANCES.getInstances().keySet();
+    /**
+     * Add/replace instance in current instance map. Work on a copy of the current map and replace it atomically.
+     * 
+     * @param instanceName
+     * @param d
+     */
+    private static void setInstance(String instanceName, Driver d) {
+        // Copy current instances
+        Map<String, Driver> newInstances = new HashMap<String, Driver>();
+        synchronized (instances) {
+            Set<String> keys = instances.getInstances().keySet();
 
-			for (String key : keys) {
-				newInstances.put(key, INSTANCES.getInstances().get(key));
-			}
-		}
+            for (String key : keys) {
+                newInstances.put(key, instances.getInstances().get(key));
+            }
+        }
 
-		// Add new instance
-		newInstances.put(instanceName, d);
+        // Add new instance
+        newInstances.put(instanceName, d);
 
-		INSTANCES = new IndexedInstances(newInstances);
-	}
+        instances = new IndexedInstances(newInstances);
+    }
 
-	/**
-	 * Ensure configuration has been loaded at least once. Helps to prevent
-	 * delay on first call because of initialization.
-	 */
-	public static void ensureConfigured() {
-		// Just trigger static init.
-	}
+    /**
+     * Ensure configuration has been loaded at least once. Helps to prevent delay on first call because of
+     * initialization.
+     */
+    public static void ensureConfigured() {
+        // Just trigger static init.
+    }
 }
