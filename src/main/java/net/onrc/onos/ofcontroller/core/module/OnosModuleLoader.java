@@ -16,6 +16,8 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.onrc.onos.ofcontroller.core.config.DefaultConfiguration;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
+import net.onrc.onos.ofcontroller.forwarding.Forwarding;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 
@@ -25,11 +27,14 @@ public class OnosModuleLoader implements IFloodlightModule {
 	private IDeviceService deviceService;
 	private IConfigInfoService config;
 	private IRestApiService restApi;
+	private IFlowService flowService;
 
 	private ProxyArpManager arpManager;
+	private Forwarding forwarding;
 	
 	public OnosModuleLoader() {
 		arpManager = new ProxyArpManager();
+		forwarding = new Forwarding();
 	}
 	
 	@Override
@@ -57,6 +62,7 @@ public class OnosModuleLoader implements IFloodlightModule {
 		dependencies.add(IDeviceService.class);
 		//dependencies.add(IConfigInfoService.class);
 		dependencies.add(IRestApiService.class);
+		dependencies.add(IFlowService.class);
 		return dependencies;
 	}
 
@@ -67,6 +73,7 @@ public class OnosModuleLoader implements IFloodlightModule {
 		topology = context.getServiceImpl(ITopologyService.class);
 		deviceService = context.getServiceImpl(IDeviceService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
+		flowService = context.getServiceImpl(IFlowService.class);
 		
 		//This could be null because it's not mandatory to have an
 		//IConfigInfoService loaded.
@@ -76,11 +83,13 @@ public class OnosModuleLoader implements IFloodlightModule {
 		}
 
 		arpManager.init(floodlightProvider, topology, deviceService, config, restApi);
+		forwarding.init(floodlightProvider, flowService);
 	}
 
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		arpManager.startUp();
+		forwarding.startUp();
 	}
 
 }
