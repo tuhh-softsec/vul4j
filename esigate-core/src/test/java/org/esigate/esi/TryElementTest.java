@@ -65,10 +65,10 @@ public class TryElementTest extends TestCase {
      * @throws HttpErrorPage
      */
     public void testInvalidMarkup() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try> invalid "
-                + "<esi:attempt> "
-                + "<esi:include src='http://www.foo.com/test' /> abc <esi:include src=\"http://www.foo2.com/test\" /> cba"
-                + "</esi:attempt>  invalid " + "<esi:except>inside except</esi:except>" + " invalid </esi:try> end";
+        String page = "begin <esi:try> invalid " + "<esi:attempt> "
+                + "<esi:include src='http://www.foo.com/test' /> abc "
+                + "<esi:include src=\"http://www.foo2.com/test\" />" + " cba" + "</esi:attempt>  invalid "
+                + "<esi:except>inside except</esi:except>" + " invalid </esi:try> end";
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin inside except end", out.toString());
@@ -110,10 +110,9 @@ public class TryElementTest extends TestCase {
     }
 
     public void testExcept2() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>"
-                + "<esi:attempt> "
-                + "<esi:include src='http://www.foo.com/test' /> abc <esi:include src=\"http://www.foo2.com/test\" /> cba"
-                + "</esi:attempt>" + "<esi:except>inside except</esi:except>" + "</esi:try> end";
+        String page = "begin <esi:try>" + "<esi:attempt> " + "<esi:include src='http://www.foo.com/test' /> abc "
+                + "<esi:include src=\"http://www.foo2.com/test\" /> cba" + "</esi:attempt>"
+                + "<esi:except>inside except</esi:except>" + "</esi:try> end";
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin inside except end", out.toString());
@@ -143,20 +142,18 @@ public class TryElementTest extends TestCase {
     }
 
     public void testTryCatchFragmentNotFound() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>"
-                + "<esi:attempt> "
-                + "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' fragment='fragmentNotFound'/> cba</esi:attempt>"
-                + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>" + "</esi:try> end";
+        String page = "begin <esi:try>" + "<esi:attempt> "
+                + "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' fragment='fragmentNotFound'/>" + " cba"
+                + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>" + "</esi:try> end";
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin NOT FOUND end", out.toString());
     }
 
     public void testTryFragmentNotFound() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>"
-                + "<esi:attempt> "
-                + "<esi:attempt>abc<esi:include src='http://www.foo.com/testFragment' fragment='fragmentFound'/> cba</esi:attempt>"
-                + "</esi:attempt>" + "</esi:try>end";
+        String page = "begin <esi:try>" + "<esi:attempt> "
+                + "<esi:attempt>abc<esi:include src='http://www.foo.com/testFragment' fragment='fragmentFound'/>"
+                + " cba" + "</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin  abcFRAGMENT FOUND cbaend", out.toString());
@@ -165,8 +162,8 @@ public class TryElementTest extends TestCase {
     public void testTryFragmentNotFound2() throws IOException, HttpErrorPage {
         String page = "begin <esi:try>"
                 + "<esi:attempt> "
-                + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/> cba</esi:attempt>"
-                + "</esi:attempt>" + "</esi:try>end";
+                + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
+                + " cba</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin end", out.toString());
@@ -175,8 +172,8 @@ public class TryElementTest extends TestCase {
     public void testTryCatchFragmentNotFound2() throws IOException, HttpErrorPage {
         String page = "begin <esi:try>"
                 + "<esi:attempt> "
-                + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/> cba</esi:attempt>"
-                + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>" + "</esi:try>end";
+                + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
+                + " cba" + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>" + "</esi:try>end";
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin NOT FOUNDend", out.toString());

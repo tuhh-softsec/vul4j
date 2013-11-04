@@ -57,8 +57,8 @@ public class CacheAdapter {
         staleWhileRevalidate = Parameters.STALE_WHILE_REVALIDATE.getValueInt(properties);
         int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValueInt(properties);
         if (staleWhileRevalidate > 0 && maxAsynchronousWorkers == 0) {
-            throw new ConfigurationException(
-                    "You must set a positive value for maxAsynchronousWorkers in order to enable background revalidation (staleWhileRevalidate)");
+            throw new ConfigurationException("You must set a positive value for maxAsynchronousWorkers "
+                    + "in order to enable background revalidation (staleWhileRevalidate)");
         }
         ttl = Parameters.TTL.getValueInt(properties);
         xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);

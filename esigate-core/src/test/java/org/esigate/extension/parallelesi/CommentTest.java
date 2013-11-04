@@ -65,7 +65,9 @@ public class CommentTest extends TestCase {
      * @throws Exception
      */
     public void testCommentedEsiTags() throws Exception {
-        String page = "begin <!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>--> end";
+        String page = "begin "
+                + "<!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>-->"
+                + " end";
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin replacement end", out.toString());

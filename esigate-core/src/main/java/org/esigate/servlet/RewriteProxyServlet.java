@@ -68,7 +68,8 @@ import org.slf4j.LoggerFactory;
  * 01.portRewrite=8443<br/>
  * # Target providers (must be configured in driver.properties) </br>
  * 01.provider=application1<br/>
- * #If no provider has been specified, the request will be redirected (default 302) to the rewrited location. You can specified a specific response code like this :<br/>
+ * #If no provider has been specified, the request will be redirected (default 302) to the rewrited location.
+ * You can specified a specific response code like this :<br/>
  * 01.redirect=301 : the response code must be in the range 300-400.<br/>
  * <br/>
  * # Rule 2 <br/>

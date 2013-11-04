@@ -50,10 +50,9 @@ public class UriUtilsTest extends TestCase {
     }
 
     public void testRemoveSessionId6() {
-        simpleRemoveTest(
-                "84FF5970F8A92E41F752F8A15F736727",
-                "<a href=\"/test;jsessionid=84FF5970F8A92E41F752F8A15F736727\">/test;jsessionid=84FF5970F8A92E41F752F8A15F736727</a>",
-                "<a href=\"/test\">/test</a>");
+        simpleRemoveTest("84FF5970F8A92E41F752F8A15F736727",
+                "<a href=\"/test;jsessionid=84FF5970F8A92E41F752F8A15F736727\">"
+                        + "/test;jsessionid=84FF5970F8A92E41F752F8A15F736727" + "</a>", "<a href=\"/test\">/test</a>");
     }
 
     public void testTranslate() throws Exception {

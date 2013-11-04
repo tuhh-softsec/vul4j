@@ -126,8 +126,9 @@ public class SurrogateTest extends AbstractDriverTestCase {
             @Override
             public HttpResponse execute(HttpRequest request) throws IOException {
                 Assert.assertEquals(
-                        "esigate=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0 X-ESI-Fragment/1.0 X-ESI-Replace/1.0 X-ESI-XSLT/1.0 ESIGATE/4.0\"",
-                        request.getFirstHeader("Surrogate-Capabilities").getValue());
+                        "esigate=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0 X-ESI-Fragment/1.0 X-ESI-Replace/1.0 "
+                                + "X-ESI-XSLT/1.0 ESIGATE/4.0\"", request.getFirstHeader("Surrogate-Capabilities")
+                                .getValue());
                 return createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
             }
         });
@@ -158,7 +159,8 @@ public class SurrogateTest extends AbstractDriverTestCase {
             @Override
             public HttpResponse execute(HttpRequest request) throws IOException {
                 Assert.assertEquals(
-                        "esigate=\"Surrogate/1.0\", esigate2=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0 X-ESI-Fragment/1.0 X-ESI-Replace/1.0 X-ESI-XSLT/1.0 ESIGATE/4.0\"",
+                        "esigate=\"Surrogate/1.0\", esigate2=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0 X-ESI-Fragment/1.0 "
+                                + "X-ESI-Replace/1.0 X-ESI-XSLT/1.0 ESIGATE/4.0\"",
                         request.getFirstHeader("Surrogate-Capabilities").getValue());
                 return createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
             }

@@ -105,7 +105,8 @@ public final class DriverFactory {
             }
 
             if (inputStream == null) {
-                throw new ConfigurationException("esigate.properties configuration file was not found in the classpath");
+                throw new ConfigurationException("esigate.properties configuration file "
+                        + "was not found in the classpath");
             }
 
             // load driver-ext.properties if exists

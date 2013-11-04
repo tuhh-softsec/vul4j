@@ -57,9 +57,9 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class HttpServletMediator implements ContainerRequestMediator {
-    private static final String WARN_RESPONSE_ALREADY_SENT = "Attempt to write to the response, but it is already sent. The operation {} was discarded. "
-            + "This usually means that esigate is configured "
-            + "with stale-while-revalidate is enabled "
+    private static final String WARN_RESPONSE_ALREADY_SENT = "Attempt to write to the response, "
+            + "but it is already sent. The operation {} was discarded. "
+            + "This usually means that esigate is configured " + "with stale-while-revalidate is enabled "
             + "AND backend is sending a cookie update which is not discarded by configuration. "
             + "This configuration is unsupported. Please update configuration to turn off stale-while-revalidate "
             + "or discard cookies. ";

@@ -77,7 +77,8 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
                 .uri("http://test.mydomain.fr/foobar/?test=esigate&test2=esigate2")
                 .header("Referer", "http://www.esigate.org")
                 .header("User-Agent",
-                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1")
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/536.30.1 "
+                                + "(KHTML, like Gecko) Version/6.0.5 Safari/536.30.1")
                 .header("Accept-Language", "da, en-gb;q=0.8, en;q=0.7").cookie("test-cookie", "test-cookie-value")
                 .cookie("test-cookie2", "test-cookie-value2").mockMediator().build();
 

@@ -79,9 +79,9 @@ public class VarsElementTest extends TestCase {
 
     public void testUserAgent() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>" + "$(HTTP_USER_AGENT{os})" + "</esi:vars> end";
-        request.setHeader(
-                "User-Agent",
-                "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 GTB7.1 ( .NET CLR 3.5.30729)");
+        request.setHeader("User-Agent",
+                "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 GTB7.1 "
+                        + "( .NET CLR 3.5.30729)");
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin WIN end", out.toString());
