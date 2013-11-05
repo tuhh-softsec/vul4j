@@ -213,11 +213,16 @@ public class NetworkGraphPublisher implements IDeviceListener,
 			    // TODO publish ADD_SWITCH event here
 			    TopologyElement topologyElement =
 				new TopologyElement(sw.getId());
+			    datagridService.notificationSendTopologyElementAdded(topologyElement);
+			    // Add the ports
 			    // TODO: Add only ports that are UP?
 			    for (OFPhysicalPort port : sw.getPorts()) {
-				topologyElement.addSwitchPort(port.getPortNumber());
+				TopologyElement topologyElementPort =
+				    new TopologyElement(sw.getId(),
+							port.getPortNumber());
+				datagridService.notificationSendTopologyElementAdded(topologyElementPort);
 			    }
-			    datagridService.notificationSendTopologyElementAdded(topologyElement);
+
 			    // Add all links that might be connected already
 			    List<Link> links = linkStore.getLinks(HexString.toHexString(sw.getId()));
 			    // Add all reverse links as well
