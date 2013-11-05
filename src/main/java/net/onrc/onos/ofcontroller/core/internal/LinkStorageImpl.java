@@ -131,6 +131,7 @@ public class LinkStorageImpl implements ILinkStorage {
 				op.rollback();
 			}
 		} catch (Exception e) {
+			op.rollback();
 			e.printStackTrace();
 			log.error("LinkStorageImpl:addLink link:{} linfo:{} failed", link, linfo);
 		}
@@ -157,6 +158,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			op.commit();
 			success = true;
 		} catch (Exception e) {
+			op.rollback();
 			e.printStackTrace();
 			log.error("LinkStorageImpl:addLinks link:s{} failed", links);
 		}
@@ -239,8 +241,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	    for(IPortObject dstPort : srcPort.getLinkedPorts()) {
 		ISwitchObject dstSw = dstPort.getSwitch();
 		if (dstSw != null) {
-		    Link link = new Link(HexString.toLong(srcSw.getDPID()),
-					 srcPort.getNumber(),
+		    Link link = new Link(dpid, port,
 					 HexString.toLong(dstSw.getDPID()),
 					 dstPort.getNumber());
 		    links.add(link);
@@ -271,8 +272,7 @@ public class LinkStorageImpl implements ILinkStorage {
 		if (dstSw != null) {
 		    Link link = new Link(HexString.toLong(dstSw.getDPID()),
 					 dstPort.getNumber(),
-					 HexString.toLong(srcSw.getDPID()),
-					 srcPort.getNumber());
+					 dpid, port);
 		    links.add(link);
 		}
 	    }
@@ -324,10 +324,10 @@ public class LinkStorageImpl implements ILinkStorage {
 				for(IPortObject dstPort : srcPort.getLinkedPorts()) {
 					ISwitchObject dstSw = dstPort.getSwitch();
 					if(dstSw != null) {
-		        		Link link = new Link(HexString.toLong(srcSw.getDPID()),
+					    Link link = new Link(HexString.toLong(dpid),
 		        				srcPort.getNumber(),
 		        				HexString.toLong(dstSw.getDPID()),
-		        				dstPort.getNumber());
+							dstPort.getNumber());
 		        		links.add(link);
 					}
 				}
@@ -358,7 +358,7 @@ public class LinkStorageImpl implements ILinkStorage {
 							HexString.toLong(dstSw.getDPID()),
 							dstPort.getNumber(),
 					
-							HexString.toLong(srcSw.getDPID()),
+							HexString.toLong(dpid),
 							srcPort.getNumber());
 		        		links.add(link);
 					}
