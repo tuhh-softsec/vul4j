@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.flowmanager;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -16,6 +17,7 @@ import org.openflow.protocol.OFMessage;
  * @author Naoki Shiota
  *
  */
+@Deprecated
 public class FlowQueueTable {
 	
 	public enum QueueState {
@@ -42,19 +44,16 @@ public class FlowQueueTable {
 
 	/**
 	 * Add flow queue for given switch.
-	 * Note queue should be given by caller so that caller can select data
-	 * structure suitable for its processing.
 	 * @param sw
-	 * @param queue
 	 */
-	public void addSwitchQueue(IOFSwitch sw, Queue<OFMessage> queue) {
+	public void addSwitchQueue(IOFSwitch sw) {
 		QueueInfo info = new QueueInfo();
 		
 		if (queues.containsKey(sw)) {
 			return;
 		}
 		
-		queues.put(sw, queue);
+		queues.put(sw, new ArrayDeque<OFMessage>());
 		queue_info.put(sw, info);
 	}
 	

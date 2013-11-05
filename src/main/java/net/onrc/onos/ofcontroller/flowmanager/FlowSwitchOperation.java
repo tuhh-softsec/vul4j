@@ -36,11 +36,14 @@ class FlowSwitchOperation {
     public static final short FLOWMOD_DEFAULT_IDLE_TIMEOUT = 0;	// infinity
     public static final short FLOWMOD_DEFAULT_HARD_TIMEOUT = 0;	// infinite
 
+    // TODO add Pusher instance member
+    // 
+    
     /**
      * Install a Flow Entry on a switch.
      *
      * @param messageFactory the OpenFlow message factory to use.
-     * @maram messageDamper the OpenFlow message damper to use.
+     * @param messageDamper the OpenFlow message damper to use.
      * @param mySwitch the switch to install the Flow Entry into.
      * @param flowObj the flow path object for the flow entry to install.
      * @param flowEntryObj the flow entry object to install.
