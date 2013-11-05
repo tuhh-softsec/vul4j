@@ -18,7 +18,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.util.OFMessageDamper;
 
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
@@ -32,7 +31,6 @@ import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.*;
 
-import org.openflow.protocol.OFType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,15 +48,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected FloodlightModuleContext context;
     protected PathComputation pathComputation;
 
-    protected OFMessageDamper messageDamper;
-
-    //
-    // TODO: Values copied from elsewhere (class LearningSwitch).
-    // The local copy should go away!
-    //
-    protected static final int OFMESSAGE_DAMPER_CAPACITY = 50000; // TODO: find sweet spot
-    protected static final int OFMESSAGE_DAMPER_TIMEOUT = 250;	// ms
-
+    protected FlowPusher pusher;
+    
     // Flow Entry ID generation state
     private static Random randomGenerator = new Random();
     private static int nextFlowEntryIdPrefix = 0;
@@ -387,6 +378,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public void close() {
 	datagridService.deregisterPathComputationService(pathComputation);
     	dbHandler.close();
+    	pusher.stop();
     }
 
     /**
@@ -448,15 +440,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	topologyNetService = context.getServiceImpl(ITopologyNetService.class);
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
-
-	messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
-					    EnumSet.of(OFType.FLOW_MOD),
-					    OFMESSAGE_DAMPER_TIMEOUT);
-
+	
+	pusher = new FlowPusher();
+	pusher.init(null, floodlightProvider.getOFMessageFactory(), null);
 	this.init("");
 
 	mapReaderScheduler = Executors.newScheduledThreadPool(1);
 	shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
+	
+	pusher.start();
     }
 
     /**
@@ -787,9 +779,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     private boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
 				    IFlowEntry flowEntryObj) {
-	return FlowSwitchOperation.installFlowEntry(
-		floodlightProvider.getOFMessageFactory(),
-		messageDamper, mySwitch, flowObj, flowEntryObj);
+    	log.debug("Flow is sent to pusher : dpid({}) flow_id({})", mySwitch.getId(), flowEntryObj.getFlowEntryId());
+    	return pusher.send(mySwitch, flowObj, flowEntryObj);
     }
 
     /**
@@ -802,9 +793,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     private boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				    FlowEntry flowEntry) {
-	return FlowSwitchOperation.installFlowEntry(
-		floodlightProvider.getOFMessageFactory(),
-		messageDamper, mySwitch, flowPath, flowEntry);
+    	log.debug("Flow is sent to pusher : dpid({}) flow_id({})", mySwitch.getId(), flowEntry.getFlowId());
+    	// TODO  handle this installation by FlowPusher
+    	
+//	return FlowSwitchOperation.installFlowEntry(
+//		floodlightProvider.getOFMessageFactory(),
+//		messageDamper, mySwitch, flowPath, flowEntry);
+    	
+    	return true;
     }
 
     /**
