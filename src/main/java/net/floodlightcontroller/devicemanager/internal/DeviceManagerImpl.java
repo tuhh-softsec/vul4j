@@ -197,7 +197,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
     protected Set<IDeviceListener> deviceListeners;
 
     public enum DeviceUpdateType {
-        ADD, DELETE, CHANGE;
+        ADD, DELETE, CHANGE, MOVED;
     }
     
     /**
@@ -268,6 +268,9 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
                             }
                         }
                         break;
+                    case MOVED:
+                    	listener.deviceMoved(device);
+                    	break;
                 }
             }
 		}
@@ -1711,9 +1714,11 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
      * @param updates the updates to process.
      */
     protected void sendDeviceMovedNotification(Device d) {
-        for (IDeviceListener listener : deviceListeners) {
+        /*for (IDeviceListener listener : deviceListeners) {
             listener.deviceMoved(d);
-        }
+        }*/
+    	floodlightProvider.publishUpdate(
+    			new DeviceUpdate(d, DeviceUpdateType.MOVED, null));
     }
     
     /**
