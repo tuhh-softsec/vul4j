@@ -850,7 +850,7 @@ class FlowDatabaseOperation {
      * @param flowEntryObj the object to extract the Flow Entry State from.
      * @return the extracted Flow Entry State.
      */
-    private static FlowEntry extractFlowEntry(IFlowEntry flowEntryObj) {
+    public static FlowEntry extractFlowEntry(IFlowEntry flowEntryObj) {
 	String flowEntryIdStr = flowEntryObj.getFlowEntryId();
 	String switchDpidStr = flowEntryObj.getSwitchDpid();
 	String userState = flowEntryObj.getUserState();
@@ -860,7 +860,7 @@ class FlowDatabaseOperation {
 	    (switchDpidStr == null) ||
 	    (userState == null) ||
 	    (switchState == null)) {
-	    // TODO: A work-around, becauuse of some bogus database objects
+	    // TODO: A work-around, because of some bogus database objects
 	    return null;
 	}
 

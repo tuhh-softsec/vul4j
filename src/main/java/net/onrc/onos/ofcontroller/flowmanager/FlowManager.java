@@ -702,7 +702,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     /**
      * Reconcile a flow.
      *
-     * @param flowObj the flow that needs to be reconciliated.
+     * @param flowObj the flow that needs to be reconciled.
      * @param newDataPath the new data path to use.
      * @return true on success, otherwise false.
      */
