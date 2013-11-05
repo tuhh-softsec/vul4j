@@ -44,6 +44,14 @@ public interface ILinkStorage extends INetMapStorage {
 	 */
 	public List<Link> getLinks(Long dpid, short port);
 
+	/**
+	 * Get list of all reverse links connected to the port specified by given DPID and port number.
+	 * @param dpid DPID of desired port.
+	 * @param port Port number of desired port.
+	 * @return List of reverse links. Empty list if no port was found.
+	 */
+	public List<Link> getReverseLinks(Long dpid, short port);
+
 	public List<Link> getLinks(String dpid);
 
 	/**

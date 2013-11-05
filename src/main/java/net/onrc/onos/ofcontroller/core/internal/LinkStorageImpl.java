@@ -235,12 +235,42 @@ public class LinkStorageImpl implements ILinkStorage {
     	if(srcSw != null && srcPort != null) {
         	for(IPortObject dstPort : srcPort.getLinkedPorts()) {
         		ISwitchObject dstSw = dstPort.getSwitch();
-        		Link link = new Link(HexString.toLong(srcSw.getDPID()),
-        				srcPort.getNumber(),
-        				HexString.toLong(dstSw.getDPID()),
-        				dstPort.getNumber());
-    		
-        		links.add(link);
+			if (dstSw != null) {
+				Link link = new Link(HexString.toLong(srcSw.getDPID()),
+						     srcPort.getNumber(),
+						     HexString.toLong(dstSw.getDPID()),
+						     dstPort.getNumber());
+				links.add(link);
+			}
+        	}
+    	}
+    	
+     	return links;
+	}
+
+	/**
+	 * Get list of all reverse links connected to the port specified by given DPID and port number.
+	 * @param dpid DPID of desired port.
+	 * @param port Port number of desired port.
+	 * @return List of reverse links. Empty list if no port was found.
+	 */
+	@Override
+	public List<Link> getReverseLinks(Long dpid, short port) {
+    	List<Link> links = new ArrayList<Link>();
+    	
+    	IPortObject srcPort = op.searchPort(HexString.toHexString(dpid), port);
+    	ISwitchObject srcSw = srcPort.getSwitch();
+    	
+    	if(srcSw != null && srcPort != null) {
+        	for(IPortObject dstPort : srcPort.getReverseLinkedPorts()) {
+        		ISwitchObject dstSw = dstPort.getSwitch();
+			if (dstSw != null) {
+			    Link link = new Link(HexString.toLong(dstSw.getDPID()),
+						 dstPort.getNumber(),
+						 HexString.toLong(srcSw.getDPID()),
+						 srcPort.getNumber());
+			    links.add(link);
+			}
         	}
     	}
     	
