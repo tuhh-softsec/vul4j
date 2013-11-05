@@ -868,7 +868,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	    boolean isFlowEntryDeleted = false;
 	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
-		System.out.println("PAVPAV: P40: Updating Flow Entry: " + flowEntry.toString());
+		log.debug("Updating Flow Entry: {}", flowEntry.toString());
 
 		if (flowEntry.flowEntrySwitchState() !=
 		    FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
