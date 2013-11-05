@@ -77,9 +77,6 @@ public class DeviceStorageImpl implements IDeviceStorage {
             changeDeviceAttachments(device, obj);
 	        
             changeDeviceIpv4Addresses(device, obj);
-            /*for (Integer intIpv4Address : device.getIPv4Addresses()) {
-            	obj.addIpv4Address(ope.ensureIpv4Address(intIpv4Address));
-            }*/
             
  			obj.setMACAddress(device.getMACAddressString());
  			obj.setType("device");
@@ -89,7 +86,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
  			//log.debug("Adding device {}",device.getMACAddressString());
 		} catch (TitanException e) {
 			ope.rollback();
-			log.error(":addDevice mac:{} failed", device.getMACAddressString());
+			log.error("Adding device {} failed", device.getMACAddressString(), e);
 			obj = null;
 		}
  		
