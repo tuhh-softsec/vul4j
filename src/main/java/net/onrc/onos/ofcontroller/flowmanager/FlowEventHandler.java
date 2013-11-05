@@ -74,6 +74,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     }
 
     /**
+     * Get the network topology.
+     *
+     * @return the network topology.
+     */
+    protected Topology getTopology() { return this.topology; }
+
+    /**
      * Run the thread.
      */
     @Override

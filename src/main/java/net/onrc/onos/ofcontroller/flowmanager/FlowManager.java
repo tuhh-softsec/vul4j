@@ -714,6 +714,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Get the network topology.
+     *
+     * @return the network topology.
+     */
+    public Topology getTopology() {
+	return flowEventHandler.getTopology();
+    }
+
+    /**
      * Reconcile a flow.
      *
      * @param flowObj the flow that needs to be reconciliated.

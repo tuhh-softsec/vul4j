@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
 import net.onrc.onos.ofcontroller.util.FlowId;
@@ -112,4 +113,11 @@ public interface IFlowService extends IFloodlightService {
      * @return the added shortest-path flow on success, otherwise null.
      */
     FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath);
+
+    /**
+     * Get the network topology.
+     *
+     * @return the network topology.
+     */
+    Topology getTopology();
 }
