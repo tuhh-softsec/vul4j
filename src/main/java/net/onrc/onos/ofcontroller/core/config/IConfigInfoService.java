@@ -1,15 +1,17 @@
-package net.onrc.onos.ofcontroller.bgproute;
+package net.onrc.onos.ofcontroller.core.config;
 
 import java.net.InetAddress;
 
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.ofcontroller.bgproute.Interface;
+import net.onrc.onos.ofcontroller.core.module.IOnosService;
 
 /**
  * Provides information about the layer 3 properties of the network.
  * This is based on IP addresses configured on ports in the network.
  *
  */
-public interface ILayer3InfoService {
+public interface IConfigInfoService extends IOnosService {
 	public boolean isInterfaceAddress(InetAddress address);
 	public boolean inConnectedNetwork(InetAddress address);
 	public boolean fromExternalNetwork(long inDpid, short inPort);
@@ -32,4 +34,15 @@ public interface ILayer3InfoService {
 	public boolean hasLayer3Configuration();
 	
 	public MACAddress getRouterMacAddress();
+	
+	/**
+	* We currently have basic vlan support for the situation when the contr
+	* is running within a single vlan. In this case, packets sent from the 
+	* controller (e.g. ARP) need to be tagged with that vlan.
+	* @return The vlan id configured in the config file, 
+	* or 0 if no vlan is configured.
+	*/
+	public short getVlan();
+
+
 }

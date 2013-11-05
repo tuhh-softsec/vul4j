@@ -47,7 +47,7 @@ public class Configuration {
 	public void setBgpdMacAddress(String strMacAddress) {
 		this.bgpdMacAddress = MACAddress.valueOf(strMacAddress);
 	}
-
+	
 	public List<String> getSwitches() {
 		return Collections.unmodifiableList(switches);
 	}
@@ -65,7 +65,7 @@ public class Configuration {
 	public void setSwitches(List<String> switches) {
 		this.switches = switches;
 	}
-
+	
 	public List<Interface> getInterfaces() {
 		return Collections.unmodifiableList(interfaces);
 	}

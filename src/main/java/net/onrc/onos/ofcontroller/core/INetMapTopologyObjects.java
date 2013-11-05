@@ -21,24 +21,24 @@ import com.tinkerpop.frames.VertexFrame;
  */
 public interface INetMapTopologyObjects {
 	
-public interface IBaseObject extends VertexFrame {
+	public interface IBaseObject extends VertexFrame {
+		
+		@JsonProperty("state")
+		@Property("state")
+		public String getState();
+		
+		@Property("state")
+		public void setState(final String state);
+		
+		@JsonIgnore
+		@Property("type")
+		public String getType();
+		@Property("type")
+		public void setType(final String type);
+		
+	}
 	
-	@JsonProperty("state")
-	@Property("state")
-	public String getState();
-	
-	@Property("state")
-	public void setState(final String state);
-	
-	@JsonIgnore
-	@Property("type")
-	public String getType();
-	@Property("type")
-	public void setType(final String type);
-	
-}
-	
-public interface ISwitchObject extends IBaseObject{
+	public interface ISwitchObject extends IBaseObject{
 		
 		@JsonProperty("dpid")
 		@Property("dpid")
@@ -51,7 +51,7 @@ public interface ISwitchObject extends IBaseObject{
 		@Adjacency(label="on")
 		public Iterable<IPortObject> getPorts();
 
-// Requires Frames 2.3.0		
+		// Requires Frames 2.3.0		
 		@JsonIgnore
 		@GremlinGroovy("it.out('on').has('number',port_num)")
 		public IPortObject getPort(@GremlinParam("port_num") final short port_num);
@@ -104,7 +104,6 @@ public interface ISwitchObject extends IBaseObject{
 		public void setPortState(Integer s);
 		
 		@JsonIgnore
-//		@GremlinGroovy("it.in('on')")
 		@Adjacency(label="on",direction = Direction.IN)
 		public ISwitchObject getSwitch();
 				
@@ -140,9 +139,9 @@ public interface ISwitchObject extends IBaseObject{
 		@Adjacency(label="link")
 		public void setLinkPort(final IPortObject dest_port);			
 		
-//		@JsonIgnore
-//		@Adjacency(label="link")
-//		public Iterable<ILinkObject> getLinks();
+		// @JsonIgnore
+		// @Adjacency(label="link")
+		// public Iterable<ILinkObject> getLinks();
 	}
 	
 	public interface IDeviceObject extends IBaseObject {
@@ -150,14 +149,9 @@ public interface ISwitchObject extends IBaseObject{
 		@JsonProperty("mac")
 		@Property("dl_addr")
 		public String getMACAddress();
+		
 		@Property("dl_addr")
 		public void setMACAddress(String macaddr);
-		
-		@JsonProperty("ipv4")
-		@Property("nw_addr")
-		public String getIPAddress();
-		@Property("nw_addr")
-		public void setIPAddress(String ipaddr);
 		
 		@JsonIgnore
 		@Adjacency(label="host",direction = Direction.IN)
@@ -175,6 +169,23 @@ public interface ISwitchObject extends IBaseObject{
 		@GremlinGroovy("it.in('host').in('on')")
 		public Iterable<ISwitchObject> getSwitch();
 		
+		//
+		// IPv4 Addresses
+		//
+		@JsonProperty("ipv4addresses")
+		@Adjacency(label="hasAddress")
+		public Iterable<IIpv4Address> getIpv4Addresses();
+
+		@JsonIgnore
+		@GremlinGroovy("it.out('hasAddress').has('ipv4_address', ipv4Address)")
+		public IIpv4Address getIpv4Address(@GremlinParam("ipv4Address") final int ipv4Address);
+		
+		@Adjacency(label="hasAddress")
+		public void addIpv4Address(final IIpv4Address ipv4Address);
+		
+		@Adjacency(label="hasAddress")
+		public void removeIpv4Address(final IIpv4Address ipv4Address);
+		
 /*		@JsonProperty("dpid")
 		@GremlinGroovy("_().in('host').in('on').next().getProperty('dpid')")
 		public Iterable<String> getSwitchDPID();
@@ -187,8 +198,22 @@ public interface ISwitchObject extends IBaseObject{
 		@GremlinGroovy("_().in('host').in('on').path(){it.number}{it.dpid}")
 		public Iterable<SwitchPort> getAttachmentPoints();*/
 	}
-
-public interface IFlowPath extends IBaseObject {
+		
+	public interface IIpv4Address extends IBaseObject {
+		
+		@JsonProperty("ipv4")
+		@Property("ipv4_address")
+		public int getIpv4Address();
+		
+		@Property("ipv4_address")
+		public void setIpv4Address(int ipv4Address);
+		
+		@JsonIgnore
+		@GremlinGroovy("it.in('hasAddress')")
+		public IDeviceObject getDevice();
+	}
+	
+	public interface IFlowPath extends IBaseObject {
 		@JsonProperty("flowId")
 		@Property("flow_id")
 		public String getFlowId();
@@ -371,7 +396,7 @@ public interface IFlowPath extends IBaseObject {
 		public String getState();
 	}
 
-public interface IFlowEntry extends IBaseObject {
+	public interface IFlowEntry extends IBaseObject {
 		@Property("flow_entry_id")
 		public String getFlowEntryId();
 

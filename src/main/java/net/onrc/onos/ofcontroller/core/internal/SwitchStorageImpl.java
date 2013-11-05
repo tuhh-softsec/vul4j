@@ -343,6 +343,11 @@ public class SwitchStorageImpl implements ISwitchStorage {
         }
 	}
 
+	// TODO There's an issue here where a port with that ID could already
+	// exist when we try to add this one (because it's left over from an
+	// old topology). We need to remove an old port with the same ID when
+	// we add the new port. Also it seems that old ports like this are 
+	// never cleaned up and will remain in the DB in the ACTIVE state forever.
 	private IPortObject addPortImpl(ISwitchObject sw, short portNum) {
 		IPortObject p = op.newPort(sw.getDPID(), portNum);
 		p.setState("ACTIVE");

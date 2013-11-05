@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
-import com.thinkaurelius.titan.diskstorage.StorageException;
 import com.tinkerpop.blueprints.TransactionalGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
@@ -81,6 +80,9 @@ public class GraphDBConnection implements IDBConnection {
 			}
 			if (!s.contains("switch_state")) {
 				graph.createKeyIndex("switch_state", Vertex.class);
+			}
+			if (!s.contains("ipv4_address")) {
+				graph.createKeyIndex("ipv4_address", Vertex.class);
 			}
 			graph.commit();
 			eg = new EventTransactionalGraph<TitanGraph>(graph);
