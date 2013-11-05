@@ -213,14 +213,6 @@ public class Topology {
 		node = addNode(topologyElement.getSwitch());
 		isModified = true;
 	    }
-	    // Add the ports for the switch
-	    for (Integer portId : topologyElement.getSwitchPorts().values()) {
-		Integer port = node.getPort(portId);
-		if (port == null) {
-		    node.addPort(portId);
-		    isModified = true;
-		}
-	    }
 	    break;
 	}
 	case ELEMENT_PORT: {

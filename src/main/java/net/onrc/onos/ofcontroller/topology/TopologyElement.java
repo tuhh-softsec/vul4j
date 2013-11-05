@@ -24,9 +24,6 @@ public class TopologyElement {
     private long toSwitchDpid = 0;	// The Neighbor Switch DPID
     private int toSwitchPort = 0;	// The Neighbor Switch Port
 
-    // All (known) ports for a Switch
-    private Map<Integer, Integer> switchPorts = new TreeMap<Integer, Integer>();
-
     /**
      * Default constructor.
      */
@@ -92,28 +89,6 @@ public class TopologyElement {
      */
     public long getSwitch() {
 	return fromSwitchDpid;
-    }
-
-    /**
-     * Get the Switch Ports.
-     *
-     * NOTE: Applies for Type.ELEMENT_SWITCH
-     *
-     * @return the collection of Switch Ports.
-     */
-    public Map<Integer, Integer> getSwitchPorts() {
-	return switchPorts;
-    }
-
-    /**
-     * Add a Switch Port.
-     *
-     * NOTE: Applies for Type.ELEMENT_SWITCH
-     *
-     * @param switchPort the Switch Port to add.
-     */
-    public void addSwitchPort(int switchPort) {
-	switchPorts.put(switchPort, switchPort);
     }
 
     /**
