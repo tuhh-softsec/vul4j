@@ -1025,18 +1025,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	}
 	// Try to commit to the database
-	for (int i = 0; i < 3; i++) {
-	    try {
-		dbHandlerInner.commit();
-		break;
-	    } catch (Exception e) {
-		log.debug("Exception during commit of Flow Entries to Network MAP", e);
-		try {
-		    Thread.sleep(10);
-		} catch (InterruptedException e2) {
-		    e2.printStackTrace();
-		}
-	    }
+	try {
+	    dbHandlerInner.commit();
+	} catch (Exception e) {
+	    log.debug("Exception during commit of Flow Entries to Network MAP", e);
+	    dbHandlerInner.rollback();
 	}
     }
 }
