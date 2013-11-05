@@ -232,8 +232,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	        	log.info("SwitchStorage:updatePort dpid:{} port:{}", dpid, portNum);
 	        	if (p != null) {
 	        		setPortStateImpl(p, state, desc);
+				op.commit();
 	        	}
-	        	op.commit();
         		success = true;
 	        } else {
 	    		log.error("SwitchStorage:updatePort dpid:{} port:{} : failed switch does not exist", dpid, portNum);
