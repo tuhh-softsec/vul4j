@@ -162,6 +162,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private ISwitchObject sw;
 		
 		private List<IPortObject> linkedPorts;
+		private List<IPortObject> reverseLinkedPorts;
 		private List<IDeviceObject> devices;
 		private List<IFlowEntry> inflows,outflows;
 		
@@ -179,6 +180,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			type = "port";
 
 			linkedPorts = new ArrayList<IPortObject>();
+			reverseLinkedPorts = new ArrayList<IPortObject>();
 			linkedPortsToAdd = new ArrayList<IPortObject>();
 			linkedPortsToRemove = new ArrayList<IPortObject>();
 			devices = new ArrayList<IDeviceObject>();
@@ -287,6 +289,9 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public Iterable<IPortObject> getLinkedPorts() { return linkedPorts; }
+
+		@Override
+		public Iterable<IPortObject> getReverseLinkedPorts() { return reverseLinkedPorts; }
 
 		@Override
 		public void removeLink(IPortObject dest_port) { linkedPortsToRemove.add(dest_port); }

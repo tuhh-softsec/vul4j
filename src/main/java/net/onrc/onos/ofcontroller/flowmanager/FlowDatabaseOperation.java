@@ -326,6 +326,44 @@ class FlowDatabaseOperation {
     }
 
     /**
+     * Delete a flow entry from the Network MAP.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowObj the corresponding Flow Path object for the Flow Entry.
+     * @param flowEntry the Flow Entry to delete.
+     * @return true on success, otherwise false.
+     */
+    static boolean deleteFlowEntry(GraphDBOperation dbHandler,
+				   IFlowPath flowObj,
+				   FlowEntry flowEntry) {
+	IFlowEntry flowEntryObj = null;
+	try {
+	    flowEntryObj = dbHandler.searchFlowEntry(flowEntry.flowEntryId());
+	} catch (Exception e) {
+	    log.error(":deleteFlowEntry FlowEntryId:{} failed",
+		      flowEntry.flowEntryId().toString());
+	    return false;
+	}
+	//
+	// TODO: Don't print an error for now, because multiple controller
+	// instances might be deleting the same flow entry.
+	//
+	/*
+	if (flowEntryObj == null) {
+	    log.error(":deleteFlowEntry FlowEntryId:{} failed: FlowEntry object not found",
+		      flowEntry.flowEntryId().toString());
+	    return false;
+	}
+	*/
+	if (flowEntryObj == null)
+	    return true;
+
+	flowObj.removeFlowEntry(flowEntryObj);
+	dbHandler.removeFlowEntry(flowEntryObj);
+	return true;
+    }
+
+    /**
      * Delete all previously added flows.
      *
      * @param dbHandler the Graph Database handler to use.

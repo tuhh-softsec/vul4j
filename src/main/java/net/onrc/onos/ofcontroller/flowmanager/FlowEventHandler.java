@@ -74,6 +74,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     }
 
     /**
+     * Get the network topology.
+     *
+     * @return the network topology.
+     */
+    protected Topology getTopology() { return this.topology; }
+
+    /**
      * Run the thread.
      */
     @Override
@@ -107,7 +114,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    flowEntryEvents.add(eventEntry);
 	}
 
-	// Process the events (if any)
+	// Process the initial events (if any)
 	processEvents();
 
 	//
@@ -169,6 +176,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	//
 	for (EventEntry<FlowPath> eventEntry : flowPathEvents) {
 	    FlowPath flowPath = eventEntry.eventData();
+
+	    log.debug("Flow Event: {} {}", eventEntry.eventType(),
+		      flowPath.toString());
 
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD: {
@@ -240,6 +250,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	boolean isTopologyModified = false;
 	for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
 	    TopologyElement topologyElement = eventEntry.eventData();
+
+	    log.debug("Topology Event: {} {}", eventEntry.eventType(),
+		      topologyElement.toString());
+
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD:
 		isTopologyModified |= topology.addTopologyElement(topologyElement);
@@ -462,7 +476,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    FlowEntry newFlowEntry =
 		newFlowEntriesMap.get(oldFlowEntry.dpid().value());
 	    if (newFlowEntry == null) {
-		// The old Flow Entry should be deleted
+		// The old Flow Entry should be deleted: not on the path
 		oldFlowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
 		oldFlowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 		deletedFlowEntries.add(oldFlowEntry);
@@ -490,7 +504,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	    if (oldFlowEntry != null) {
 		//
-		// The old Flow Entry should be deleted
+		// The old Flow Entry should be deleted: path diverges
 		//
 		oldFlowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
 		oldFlowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
@@ -545,8 +559,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// Note that the Flow Entries that will be deleted are added at
 	// the end.
 	//
-	for (FlowEntry flowEntry : deletedFlowEntries)
-	    finalFlowEntries.add(flowEntry);
+	finalFlowEntries.addAll(deletedFlowEntries);
 	flowPath.dataPath().setFlowEntries(finalFlowEntries);
 
 	return hasChanged;

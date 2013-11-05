@@ -306,6 +306,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	        		op.commit();
 	        	}
 	        }
+		success = true;
 		} catch (Exception e) {
 			op.rollback();
 			e.printStackTrace();
