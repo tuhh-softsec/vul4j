@@ -39,6 +39,7 @@ import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.ofcontroller.proxyarp.BgpProxyArpManager;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
@@ -88,7 +89,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private ILinkDiscoveryService linkDiscoveryService;
 	private IRestApiService restApi;
 	
-	private IProxyArpService proxyArp;
+	private BgpProxyArpManager proxyArp;
 	
 	private IPatriciaTrie<RibEntry> ptree;
 	private IPatriciaTrie<Interface> interfacePtrie;
@@ -271,8 +272,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		//TODO We'll initialise this here for now, but it should really be done as
 		//part of the controller core
 		//proxyArp = new ProxyArpManager(floodlightProvider, topologyService, this, restApi);
-		//proxyArp = new ProxyArpManager();
-		proxyArp = context.getServiceImpl(IProxyArpService.class);
+		proxyArp = new BgpProxyArpManager();
+		proxyArp.init(floodlightProvider, topologyService, this, restApi);
+		//proxyArp = context.getServiceImpl(IProxyArpService.class);
 		
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -327,7 +329,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		topologyService.addListener(this);
 		floodlightProvider.addOFSwitchListener(this);
 		
-		//proxyArp.startUp(vlan);
+		proxyArp.startUp();
 		
 		//floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
 		
