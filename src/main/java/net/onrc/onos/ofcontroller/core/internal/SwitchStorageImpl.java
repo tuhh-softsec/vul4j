@@ -1,5 +1,8 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBOperation;
@@ -314,6 +317,26 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		}
 
 		return success;
+	}
+
+	/**
+	 * Get list of all ports on the switch specified by given DPID.
+	 *
+	 * @param dpid DPID of desired switch.
+	 * @return List of port IDs. Empty list if no port was found.
+	 */
+	@Override
+	public List<Short> getPorts(String dpid) {
+	    List<Short> ports = new ArrayList<Short>();
+
+	    ISwitchObject srcSw = op.searchSwitch(dpid);
+	    if (srcSw != null) {
+		for (IPortObject srcPort : srcSw.getPorts()) {
+		    ports.add(srcPort.getNumber());
+		}
+	    }
+
+	    return ports;
 	}
 
 	private ISwitchObject addSwitchImpl(String dpid) {
