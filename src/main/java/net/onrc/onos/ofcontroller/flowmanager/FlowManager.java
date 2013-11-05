@@ -41,7 +41,8 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
-    protected GraphDBOperation dbHandler;
+    protected GraphDBOperation dbHandlerApi;
+    protected GraphDBOperation dbHandlerInner;
 
     protected volatile IFloodlightProviderService floodlightProvider;
     protected volatile ITopologyNetService topologyNetService;
@@ -82,7 +83,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    runImpl();
 		} catch (Exception e) {
 		    log.debug("Exception processing All Flow Entries from the Network MAP: ", e);
-		    dbHandler.rollback();
+		    dbHandlerInner.rollback();
 		    return;
 		}
 	    }
@@ -113,7 +114,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// switches.
 		//
 		Iterable<IFlowEntry> allFlowEntries =
-		    dbHandler.getAllSwitchNotUpdatedFlowEntries();
+		    dbHandlerInner.getAllSwitchNotUpdatedFlowEntries();
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    counterAllFlowEntries++;
 
@@ -126,7 +127,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			continue;	// Ignore the entry: not my switch
 
 		    IFlowPath flowObj =
-			dbHandler.getFlowPathByFlowEntry(flowEntryObj);
+			dbHandlerInner.getFlowPathByFlowEntry(flowEntryObj);
 		    if (flowObj == null)
 			continue;		// Should NOT happen
 		    if (flowObj.getFlowId() == null)
@@ -155,7 +156,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		for (IFlowEntry flowEntryObj : addFlowEntries) {
 		    IFlowPath flowObj =
-			dbHandler.getFlowPathByFlowEntry(flowEntryObj);
+			dbHandlerInner.getFlowPathByFlowEntry(flowEntryObj);
 		    if (flowObj == null)
 			continue;		// Should NOT happen
 		    if (flowObj.getFlowId() == null)
@@ -179,16 +180,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		while (! deleteFlowEntries.isEmpty()) {
 		    IFlowEntry flowEntryObj = deleteFlowEntries.poll();
 		    IFlowPath flowObj =
-			dbHandler.getFlowPathByFlowEntry(flowEntryObj);
+			dbHandlerInner.getFlowPathByFlowEntry(flowEntryObj);
 		    if (flowObj == null) {
 			log.debug("Did not find FlowPath to be deleted");
 			continue;
 		    }
 		    flowObj.removeFlowEntry(flowEntryObj);
-		    dbHandler.removeFlowEntry(flowEntryObj);
+		    dbHandlerInner.removeFlowEntry(flowEntryObj);
 		}
 
-		dbHandler.commit();
+		dbHandlerInner.commit();
 
 		long estimatedTime = System.nanoTime() - startTime;
 		double rate = 0.0;
@@ -213,7 +214,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    runImpl();
 		} catch (Exception e) {
 		    log.debug("Exception processing All Flows from the Network MAP: ", e);
-		    dbHandler.rollback();
+		    dbHandlerInner.rollback();
 		    return;
 		}
 	    }
@@ -240,7 +241,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// Flow Paths this controller is responsible for.
 		//
 		Topology topology = topologyNetService.newDatabaseTopology();
-		Iterable<IFlowPath> allFlowPaths = dbHandler.getAllFlowPaths();
+		Iterable<IFlowPath> allFlowPaths = dbHandlerInner.getAllFlowPaths();
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
 		    if (flowPathObj == null)
@@ -342,12 +343,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		while (! deleteFlows.isEmpty()) {
 		    IFlowPath flowPathObj = deleteFlows.poll();
-		    dbHandler.removeFlowPath(flowPathObj);
+		    dbHandlerInner.removeFlowPath(flowPathObj);
 		}
 
 		topologyNetService.dropTopology(topology);
 
-		dbHandler.commit();
+		dbHandlerInner.commit();
 
 		long estimatedTime = System.nanoTime() - startTime;
 		double rate = 0.0;
@@ -370,7 +371,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void init(String conf) {
-    	dbHandler = new GraphDBOperation(conf);
+    	dbHandlerApi = new GraphDBOperation(conf);
+    	dbHandlerInner = new GraphDBOperation(conf);
     }
 
     /**
@@ -386,7 +388,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void close() {
 	datagridService.deregisterFlowEventHandlerService(flowEventHandler);
-    	dbHandler.close();
+    	dbHandlerApi.close();
+    	dbHandlerInner.close();
     }
 
     /**
@@ -531,7 +534,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
 	}
 
-	if (FlowDatabaseOperation.addFlow(this, dbHandler, flowPath, flowId)) {
+	if (FlowDatabaseOperation.addFlow(this, dbHandlerApi, flowPath, flowId)) {
 	    datagridService.notificationSendFlowAdded(flowPath);
 	    return true;
 	}
@@ -546,8 +549,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the added Flow Entry object on success, otherwise null.
      */
     private IFlowEntry addFlowEntry(IFlowPath flowObj, FlowEntry flowEntry) {
-	return FlowDatabaseOperation.addFlowEntry(this, dbHandler, flowObj,
-						  flowEntry);
+	return FlowDatabaseOperation.addFlowEntry(this, dbHandlerInner,
+						  flowObj, flowEntry);
     }
 
     /**
@@ -558,8 +561,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return true on success, otherwise false.
      */
     private boolean deleteFlowEntry(IFlowPath flowObj, FlowEntry flowEntry) {
-	return FlowDatabaseOperation.deleteFlowEntry(dbHandler, flowObj,
-						     flowEntry);
+	return FlowDatabaseOperation.deleteFlowEntry(dbHandlerInner,
+						     flowObj, flowEntry);
     }
 
     /**
@@ -569,7 +572,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
-	if (FlowDatabaseOperation.deleteAllFlows(dbHandler)) {
+	if (FlowDatabaseOperation.deleteAllFlows(dbHandlerApi)) {
 	    datagridService.notificationSendAllFlowsRemoved();
 	    return true;
 	}
@@ -584,7 +587,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
-	if (FlowDatabaseOperation.deleteFlow(dbHandler, flowId)) {
+	if (FlowDatabaseOperation.deleteFlow(dbHandlerApi, flowId)) {
 	    datagridService.notificationSendFlowRemoved(flowId);
 	    return true;
 	}
@@ -598,7 +601,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean clearAllFlows() {
-	if (FlowDatabaseOperation.clearAllFlows(dbHandler)) {
+	if (FlowDatabaseOperation.clearAllFlows(dbHandlerApi)) {
 	    datagridService.notificationSendAllFlowsRemoved();
 	    return true;
 	}
@@ -613,7 +616,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean clearFlow(FlowId flowId) {
-	if (FlowDatabaseOperation.clearFlow(dbHandler, flowId)) {
+	if (FlowDatabaseOperation.clearFlow(dbHandlerApi, flowId)) {
 	    datagridService.notificationSendFlowRemoved(flowId);
 	    return true;
 	}
@@ -628,7 +631,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public FlowPath getFlow(FlowId flowId) {
-	return FlowDatabaseOperation.getFlow(dbHandler, flowId);
+	return FlowDatabaseOperation.getFlow(dbHandlerApi, flowId);
     }
 
     /**
@@ -638,7 +641,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public ArrayList<FlowPath> getAllFlows() {
-	return FlowDatabaseOperation.getAllFlows(dbHandler);
+	return FlowDatabaseOperation.getAllFlows(dbHandlerApi);
     }
 
     /**
@@ -652,7 +655,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public ArrayList<FlowPath> getAllFlows(CallerId installerId,
 					   DataPathEndpoints dataPathEndpoints) {
-	return FlowDatabaseOperation.getAllFlows(dbHandler, installerId,
+	return FlowDatabaseOperation.getAllFlows(dbHandlerApi, installerId,
 						 dataPathEndpoints);
     }
 
@@ -664,7 +667,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public ArrayList<FlowPath> getAllFlows(DataPathEndpoints dataPathEndpoints) {
-	return FlowDatabaseOperation.getAllFlows(dbHandler, dataPathEndpoints);
+	return FlowDatabaseOperation.getAllFlows(dbHandlerApi,
+						 dataPathEndpoints);
     }
 
     /**
@@ -677,7 +681,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId,
 						   int maxFlows) {
-	return FlowDatabaseOperation.getAllFlowsSummary(dbHandler, flowId,
+	return FlowDatabaseOperation.getAllFlowsSummary(dbHandlerApi, flowId,
 							maxFlows);
     }
     
@@ -687,7 +691,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return all Flows information, without the associated Flow Entries.
      */
     public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries() {
-	return FlowDatabaseOperation.getAllFlowsWithoutFlowEntries(dbHandler);
+	return FlowDatabaseOperation.getAllFlowsWithoutFlowEntries(dbHandlerApi);
     }
 
     /**
@@ -865,6 +869,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (true)
 	    return;
 
+	if (modifiedFlowPaths.isEmpty())
+	    return;
+
 	Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
 
 	for (FlowPath flowPath : modifiedFlowPaths) {
@@ -873,7 +880,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    // NOTE: The Flow Path might not be found if the Flow was just
 	    // removed by some other controller instance.
 	    //
-	    IFlowPath flowObj = dbHandler.searchFlowPath(flowPath.flowId());
+	    IFlowPath flowObj = dbHandlerInner.searchFlowPath(flowPath.flowId());
 
 	    boolean isFlowEntryDeleted = false;
 	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
@@ -932,6 +939,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// instance to handle the cleanup of such orphaned flow
 		// entries.
 		//
+		if (mySwitch == null) {
+		    if (flowEntry.flowEntryUserState() !=
+			FlowEntryUserState.FE_USER_DELETE) {
+			continue;
+		    }
+		    if (! flowEntry.isValidFlowEntryId())
+			continue;
+		}
 
 		//
 		// Write the Flow Entry to the Datagrid
@@ -955,14 +970,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		// Write the Flow Entry to the Network Map
 		//
-		if (mySwitch == null) {
-		    if (flowEntry.flowEntryUserState() !=
-			FlowEntryUserState.FE_USER_DELETE) {
-			continue;
-		    }
-		    if (! flowEntry.isValidFlowEntryId())
-			continue;
-		}
 		if (flowObj == null) {
 		    String logMsg = "Cannot find Network MAP entry for Flow Path " + flowPath.flowId();
 		    continue;
@@ -991,9 +998,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			break;
 		    }
 		} catch (Exception e) {
-		    String logMsg = "Exception writing Flow Entry to Network MAP";
-		    log.debug(logMsg);
-		    dbHandler.rollback();
+		    log.debug("Exception writing Flow Entry to Network MAP: ", e);
+		    dbHandlerInner.rollback();
 		    continue;
 		}
 	    }
@@ -1018,7 +1024,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowPath.dataPath().setFlowEntries(newFlowEntries);
 	    }
 	}
-
-	dbHandler.commit();
+	// Try to commit to the database
+	try {
+	    dbHandlerInner.commit();
+	} catch (Exception e) {
+	    log.debug("Exception during commit of Flow Entries to Network MAP", e);
+	    dbHandlerInner.rollback();
+	}
     }
 }

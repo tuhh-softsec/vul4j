@@ -131,6 +131,7 @@ public class LinkStorageImpl implements ILinkStorage {
 				op.rollback();
 			}
 		} catch (Exception e) {
+			op.rollback();
 			e.printStackTrace();
 			log.error("LinkStorageImpl:addLink link:{} linfo:{} failed", link, linfo);
 		}
@@ -157,6 +158,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			op.commit();
 			success = true;
 		} catch (Exception e) {
+			op.rollback();
 			e.printStackTrace();
 			log.error("LinkStorageImpl:addLinks link:s{} failed", links);
 		}
@@ -227,24 +229,54 @@ public class LinkStorageImpl implements ILinkStorage {
 	 */
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
-    	List<Link> links = new ArrayList<Link>();
+	    List<Link> links = new ArrayList<Link>();
+
+	    IPortObject srcPort = op.searchPort(HexString.toHexString(dpid), port);
+	    if (srcPort == null)
+		return links;
+	    ISwitchObject srcSw = srcPort.getSwitch();
+	    if (srcSw == null)
+		return links;
     	
-    	IPortObject srcPort = op.searchPort(HexString.toHexString(dpid), port);
-    	ISwitchObject srcSw = srcPort.getSwitch();
+	    for(IPortObject dstPort : srcPort.getLinkedPorts()) {
+		ISwitchObject dstSw = dstPort.getSwitch();
+		if (dstSw != null) {
+		    Link link = new Link(dpid, port,
+					 HexString.toLong(dstSw.getDPID()),
+					 dstPort.getNumber());
+		    links.add(link);
+		}
+	    }
+	    return links;
+	}
+
+	/**
+	 * Get list of all reverse links connected to the port specified by given DPID and port number.
+	 * @param dpid DPID of desired port.
+	 * @param port Port number of desired port.
+	 * @return List of reverse links. Empty list if no port was found.
+	 */
+	@Override
+	public List<Link> getReverseLinks(Long dpid, short port) {
+	    List<Link> links = new ArrayList<Link>();
     	
-    	if(srcSw != null && srcPort != null) {
-        	for(IPortObject dstPort : srcPort.getLinkedPorts()) {
-        		ISwitchObject dstSw = dstPort.getSwitch();
-        		Link link = new Link(HexString.toLong(srcSw.getDPID()),
-        				srcPort.getNumber(),
-        				HexString.toLong(dstSw.getDPID()),
-        				dstPort.getNumber());
-    		
-        		links.add(link);
-        	}
-    	}
+	    IPortObject srcPort = op.searchPort(HexString.toHexString(dpid), port);
+	    if (srcPort == null)
+		return links;
+	    ISwitchObject srcSw = srcPort.getSwitch();
+	    if (srcSw == null)
+		return links;
     	
-     	return links;
+	    for(IPortObject dstPort : srcPort.getReverseLinkedPorts()) {
+		ISwitchObject dstSw = dstPort.getSwitch();
+		if (dstSw != null) {
+		    Link link = new Link(HexString.toLong(dstSw.getDPID()),
+					 dstPort.getNumber(),
+					 dpid, port);
+		    links.add(link);
+		}
+	    }
+	    return links;
 	}
 	
 	/**
@@ -292,10 +324,10 @@ public class LinkStorageImpl implements ILinkStorage {
 				for(IPortObject dstPort : srcPort.getLinkedPorts()) {
 					ISwitchObject dstSw = dstPort.getSwitch();
 					if(dstSw != null) {
-		        		Link link = new Link(HexString.toLong(srcSw.getDPID()),
+					    Link link = new Link(HexString.toLong(dpid),
 		        				srcPort.getNumber(),
 		        				HexString.toLong(dstSw.getDPID()),
-		        				dstPort.getNumber());
+							dstPort.getNumber());
 		        		links.add(link);
 					}
 				}
@@ -326,7 +358,7 @@ public class LinkStorageImpl implements ILinkStorage {
 							HexString.toLong(dstSw.getDPID()),
 							dstPort.getNumber(),
 					
-							HexString.toLong(srcSw.getDPID()),
+							HexString.toLong(dpid),
 							srcPort.getNumber());
 		        		links.add(link);
 					}
