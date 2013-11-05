@@ -121,7 +121,7 @@ class Node {
 	Link reverseLink = reverseLinksMap.get(portId);
 	if (reverseLink != null) {
 	    // NOTE: reverseLink.myPort is the neighbor's outgoing port
-	    reverseLink.neighbor.removeLink(reverseLink.myPort);
+	    reverseLink.me.removeLink(reverseLink.myPort);
 	    removeReverseLink(reverseLink);
 	}
 
