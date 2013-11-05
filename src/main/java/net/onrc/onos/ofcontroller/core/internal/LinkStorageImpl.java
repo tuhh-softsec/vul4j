@@ -227,25 +227,26 @@ public class LinkStorageImpl implements ILinkStorage {
 	 */
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
-    	List<Link> links = new ArrayList<Link>();
+	    List<Link> links = new ArrayList<Link>();
+
+	    IPortObject srcPort = op.searchPort(HexString.toHexString(dpid), port);
+	    if (srcPort == null)
+		return links;
+	    ISwitchObject srcSw = srcPort.getSwitch();
+	    if (srcSw == null)
+		return links;
     	
-    	IPortObject srcPort = op.searchPort(HexString.toHexString(dpid), port);
-    	ISwitchObject srcSw = srcPort.getSwitch();
-    	
-    	if(srcSw != null && srcPort != null) {
-        	for(IPortObject dstPort : srcPort.getLinkedPorts()) {
-        		ISwitchObject dstSw = dstPort.getSwitch();
-			if (dstSw != null) {
-				Link link = new Link(HexString.toLong(srcSw.getDPID()),
-						     srcPort.getNumber(),
-						     HexString.toLong(dstSw.getDPID()),
-						     dstPort.getNumber());
-				links.add(link);
-			}
-        	}
-    	}
-    	
-     	return links;
+	    for(IPortObject dstPort : srcPort.getLinkedPorts()) {
+		ISwitchObject dstSw = dstPort.getSwitch();
+		if (dstSw != null) {
+		    Link link = new Link(HexString.toLong(srcSw.getDPID()),
+					 srcPort.getNumber(),
+					 HexString.toLong(dstSw.getDPID()),
+					 dstPort.getNumber());
+		    links.add(link);
+		}
+	    }
+	    return links;
 	}
 
 	/**
@@ -256,25 +257,26 @@ public class LinkStorageImpl implements ILinkStorage {
 	 */
 	@Override
 	public List<Link> getReverseLinks(Long dpid, short port) {
-    	List<Link> links = new ArrayList<Link>();
+	    List<Link> links = new ArrayList<Link>();
     	
-    	IPortObject srcPort = op.searchPort(HexString.toHexString(dpid), port);
-    	ISwitchObject srcSw = srcPort.getSwitch();
+	    IPortObject srcPort = op.searchPort(HexString.toHexString(dpid), port);
+	    if (srcPort == null)
+		return links;
+	    ISwitchObject srcSw = srcPort.getSwitch();
+	    if (srcSw == null)
+		return links;
     	
-    	if(srcSw != null && srcPort != null) {
-        	for(IPortObject dstPort : srcPort.getReverseLinkedPorts()) {
-        		ISwitchObject dstSw = dstPort.getSwitch();
-			if (dstSw != null) {
-			    Link link = new Link(HexString.toLong(dstSw.getDPID()),
-						 dstPort.getNumber(),
-						 HexString.toLong(srcSw.getDPID()),
-						 srcPort.getNumber());
-			    links.add(link);
-			}
-        	}
-    	}
-    	
-     	return links;
+	    for(IPortObject dstPort : srcPort.getReverseLinkedPorts()) {
+		ISwitchObject dstSw = dstPort.getSwitch();
+		if (dstSw != null) {
+		    Link link = new Link(HexString.toLong(dstSw.getDPID()),
+					 dstPort.getNumber(),
+					 HexString.toLong(srcSw.getDPID()),
+					 srcPort.getNumber());
+		    links.add(link);
+		}
+	    }
+	    return links;
 	}
 	
 	/**
