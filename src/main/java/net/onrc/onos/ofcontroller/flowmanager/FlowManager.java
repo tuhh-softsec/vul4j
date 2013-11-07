@@ -41,6 +41,12 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
+    //
+    // TODO: A temporary variable to switch between the poll-based and
+    // notification mechanism for the Flow Manager.
+    //
+    private final static boolean enableNotifications = false;
+
     protected GraphDBOperation dbHandlerApi;
     protected GraphDBOperation dbHandlerInner;
 
@@ -506,10 +512,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	// Schedule the threads and periodic tasks
 	flowEventHandler.start();
-	mapReaderScheduler.scheduleAtFixedRate(
+	if (! enableNotifications) {
+	    mapReaderScheduler.scheduleAtFixedRate(
 			mapReader, 3, 3, TimeUnit.SECONDS);
-	shortestPathReconcileScheduler.scheduleAtFixedRate(
+	    shortestPathReconcileScheduler.scheduleAtFixedRate(
 			shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
+	}
     }
 
     /**
@@ -874,7 +882,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public void pushModifiedFlowEntriesToSwitches(
 			Collection<FlowPathEntryPair> modifiedFlowEntries) {
 	// TODO: For now, the pushing of Flow Entries is disabled
-	if (true)
+	if (! enableNotifications)
 	    return;
 
 	if (modifiedFlowEntries.isEmpty())
@@ -920,7 +928,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public void pushModifiedFlowEntriesToDatagrid(
 			Collection<FlowPathEntryPair> modifiedFlowEntries) {
 	// TODO: For now, the pushing of Flow Entries is disabled
-	if (true)
+	if (! enableNotifications)
 	    return;
 
 	if (modifiedFlowEntries.isEmpty())
@@ -987,7 +995,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public void pushModifiedFlowEntriesToDatabase(
 		Collection<FlowPathEntryPair> modifiedFlowEntries) {
 	// TODO: For now, the pushing of Flow Entries is disabled
-	if (true)
+	if (! enableNotifications)
 	    return;
 
 	if (modifiedFlowEntries.isEmpty())
