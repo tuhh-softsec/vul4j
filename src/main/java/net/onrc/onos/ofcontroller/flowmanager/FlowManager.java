@@ -869,61 +869,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * NOTE: Only the Flow Entries to switches controlled by this instance
      * are pushed.
      *
-     * @param modifiedFlowPaths the collection of Flow Paths with the modified
-     * Flow Entries.
-     */
-    public void pushModifiedFlowEntriesToSwitches(
-			Collection<FlowPath> modifiedFlowPaths) {
-	// TODO: For now, the pushing of Flow Entries is disabled
-	if (true)
-	    return;
-
-	if (modifiedFlowPaths.isEmpty())
-	    return;
-
-	Map<Long, IOFSwitch> mySwitches = getMySwitches();
-
-	for (FlowPath flowPath : modifiedFlowPaths) {
-	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
-		log.debug("Updating Flow Entry: {}", flowEntry.toString());
-
-		if (flowEntry.flowEntrySwitchState() !=
-		    FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
-		    continue;		// No need to update the entry
-		}
-
-		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
-		if (mySwitch == null)
-		    continue;
-
-		//
-		// Install the Flow Entry into the switch
-		//
-		if (! installFlowEntry(mySwitch, flowPath, flowEntry)) {
-		    String logMsg = "Cannot install Flow Entry " +
-			flowEntry.flowEntryId() +
-			" from Flow Path " + flowPath.flowId() +
-			" on switch " + flowEntry.dpid();
-		    log.error(logMsg);
-		    continue;
-		}
-
-		//
-		// NOTE: Here we assume that the switch has been
-		// successfully updated.
-		//
-		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
-	    }
-	}
-    }
-
-    /**
-     * Push modified Flow Entries to the datagrid.
-     *
      * @param modifiedFlowEntries the collection of modified Flow Entries.
      */
-    public void pushModifiedFlowEntriesToDatagrid(
-			Collection<FlowEntry> modifiedFlowEntries) {
+    public void pushModifiedFlowEntriesToSwitches(
+			Collection<FlowPathEntryPair> modifiedFlowEntries) {
 	// TODO: For now, the pushing of Flow Entries is disabled
 	if (true)
 	    return;
@@ -933,7 +882,55 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
-	for (FlowEntry flowEntry : modifiedFlowEntries) {
+	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
+	    FlowPath flowPath = flowPair.flowPath;
+	    FlowEntry flowEntry = flowPair.flowEntry;
+
+	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+	    if (mySwitch == null)
+		continue;
+
+	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry.toString());
+
+	    //
+	    // Install the Flow Entry into the switch
+	    //
+	    if (! installFlowEntry(mySwitch, flowPath, flowEntry)) {
+		String logMsg = "Cannot install Flow Entry " +
+		    flowEntry.flowEntryId() +
+		    " from Flow Path " + flowPath.flowId() +
+		    " on switch " + flowEntry.dpid();
+		log.error(logMsg);
+		continue;
+	    }
+
+	    //
+	    // NOTE: Here we assume that the switch has been
+	    // successfully updated.
+	    //
+	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+	}
+    }
+
+    /**
+     * Push modified Flow Entries to the datagrid.
+     *
+     * @param modifiedFlowEntries the collection of modified Flow Entries.
+     */
+    public void pushModifiedFlowEntriesToDatagrid(
+			Collection<FlowPathEntryPair> modifiedFlowEntries) {
+	// TODO: For now, the pushing of Flow Entries is disabled
+	if (true)
+	    return;
+
+	if (modifiedFlowEntries.isEmpty())
+	    return;
+
+	Map<Long, IOFSwitch> mySwitches = getMySwitches();
+
+	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
+	    FlowEntry flowEntry = flowPair.flowEntry;
+
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 
 	    //
@@ -956,6 +953,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    continue;
 	    }
 
+	    log.debug("Pushing Flow Entry To Datagrid: {}", flowEntry.toString());
 	    //
 	    // Write the Flow Entry to the Datagrid
 	    //
@@ -980,10 +978,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     /**
      * Push Flow Entries to the Network MAP.
      *
+     * NOTE: The Flow Entries are pushed only on the instance responsible
+     * for the first switch. This is to avoid database errors when multiple
+     * instances are writing Flow Entries for the same Flow Path.
+     *
      * @param modifiedFlowEntries the collection of Flow Entries to push.
      */
     public void pushModifiedFlowEntriesToDatabase(
-		Collection<FlowEntry> modifiedFlowEntries) {
+		Collection<FlowPathEntryPair> modifiedFlowEntries) {
 	// TODO: For now, the pushing of Flow Entries is disabled
 	if (true)
 	    return;
@@ -993,40 +995,30 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
-	for (FlowEntry flowEntry : modifiedFlowEntries) {
-	    if (! flowEntry.isValidFlowId()) {
-		// Shouldn't happen
-		log.error("Cannot push Flow Entry to database: invalid Flow ID: {}", flowEntry.toString());
+	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
+	    FlowPath flowPath = flowPair.flowPath;
+	    FlowEntry flowEntry = flowPair.flowEntry;
+
+	    if (! flowEntry.isValidFlowEntryId())
 		continue;
-	    }
-
-	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 
 	    //
-	    // TODO: For now Flow Entries are removed by all instances,
-	    // even if this Flow Entry is not for our switches.
+	    // Push the changes only on the instance responsible for the
+	    // first switch.
 	    //
-	    // This is needed to handle the case a switch going down:
-	    // it has no Master controller instance, hence no
-	    // controller instance will cleanup its flow entries.
-	    // This is sub-optimal: we need to elect a controller
-	    // instance to handle the cleanup of such orphaned flow
-	    // entries.
-	    //
-	    if (mySwitch == null) {
-		if (flowEntry.flowEntryUserState() !=
-		    FlowEntryUserState.FE_USER_DELETE) {
-		    continue;
-		}
-		if (! flowEntry.isValidFlowEntryId())
-		    continue;
-	    }
+	    Dpid srcDpid = flowPath.dataPath().srcPort().dpid();
+	    IOFSwitch mySrcSwitch = mySwitches.get(srcDpid.value());
+	    if (mySrcSwitch == null)
+		continue;
 
+	    log.debug("Pushing Flow Entry To Database: {}", flowEntry.toString());
 	    //
 	    // Write the Flow Entry to the Network Map
 	    //
-	    // NOTE: We try a number of times; apparently, if other instances
-	    // are writing at the same time this will trigger an error.
+	    // NOTE: We try a number of times, in case somehow some other
+	    // instances are writing at the same time.
+	    // Apparently, if other instances are writing at the same time
+	    // this will trigger an error.
 	    //
 	    for (int i = 0; i < 6; i++) {
 		try {
