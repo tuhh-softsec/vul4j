@@ -101,6 +101,41 @@ public class DataPath {
     }
 
     /**
+     * Remove Flow Entries that were deleted.
+     */
+    public void removeDeletedFlowEntries() {
+	//
+	// NOTE: We create a new ArrayList, and add only the Flow Entries
+	// that are NOT FE_USER_DELETE.
+	// This is sub-optimal: if it adds notable processing cost,
+	// the Flow Entries container should be changed to LinkedList
+	// or some other container that has O(1) cost of removing an entry.
+	//
+
+	// Test first whether any Flow Entry was deleted
+	boolean foundDeletedFlowEntry = false;
+	for (FlowEntry flowEntry : this.flowEntries) {
+	    if (flowEntry.flowEntryUserState() ==
+		FlowEntryUserState.FE_USER_DELETE) {
+		foundDeletedFlowEntry = true;
+		break;
+	    }
+	}
+	if (! foundDeletedFlowEntry)
+	    return;			// Nothing to do
+
+	// Create a new collection and exclude the deleted flow entries
+	ArrayList<FlowEntry> newFlowEntries = new ArrayList<FlowEntry>();
+	for (FlowEntry flowEntry : this.flowEntries()) {
+	    if (flowEntry.flowEntryUserState() !=
+		FlowEntryUserState.FE_USER_DELETE) {
+		newFlowEntries.add(flowEntry);
+	    }
+	}
+	setFlowEntries(newFlowEntries);
+    }
+
+    /**
      * Get a string with the summary of the shortest-path data path
      * computation.
      *
