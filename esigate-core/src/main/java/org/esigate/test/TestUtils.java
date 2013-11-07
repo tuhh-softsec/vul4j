@@ -20,6 +20,7 @@ import java.io.IOException;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
+import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.util.HttpRequestHelper;
@@ -38,8 +39,20 @@ public final class TestUtils {
         return new MockMediator().getHttpRequest();
     }
 
+    public static HttpEntityEnclosingRequest createRequest(Driver driver) throws HttpErrorPage {
+        HttpEntityEnclosingRequest request = new MockMediator().getHttpRequest();
+        driver.initHttpRequestParams(request, null);
+        return request;
+    }
+
     public static HttpEntityEnclosingRequest createRequest(String uri) {
         return new MockMediator(uri).getHttpRequest();
+    }
+
+    public static HttpEntityEnclosingRequest createRequest(String uri, Driver driver) throws HttpErrorPage {
+        HttpEntityEnclosingRequest request = new MockMediator(uri).getHttpRequest();
+        driver.initHttpRequestParams(request, null);
+        return request;
     }
 
     public static HttpResponse getResponse(HttpEntityEnclosingRequest request) {

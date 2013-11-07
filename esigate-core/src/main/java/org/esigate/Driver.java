@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  * @author Sylvain Sicard
  */
-public class Driver {
+public final class Driver {
     private static final String CACHE_RESPONSE_PREFIX = "response_";
     private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
     private DriverConfiguration config;
@@ -80,14 +80,12 @@ public class Driver {
             if (requestExecutorBuilder == null) {
                 requestExecutorBuilder = HttpClientRequestExecutor.builder();
             }
-            if (driver.eventManager == null) {
-                driver.eventManager = new EventManager(name);
-            }
+            driver.eventManager = new EventManager(name);
             driver.config = new DriverConfiguration(name, properties);
             driver.contentTypeHelper = new ContentTypeHelper(properties);
             // Load extensions.
             ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, driver);
-            driver.requestExecutor = requestExecutorBuilder.setDriver(driver).setEventManager(driver.getEventManager())
+            driver.requestExecutor = requestExecutorBuilder.setDriver(driver).setEventManager(driver.eventManager)
                     .setProperties(properties).build();
             return driver;
         }
@@ -99,11 +97,6 @@ public class Driver {
 
         public DriverBuilder setProperties(Properties properties) {
             this.properties = properties;
-            return this;
-        }
-
-        public DriverBuilder setEventManager(EventManager eventManager) {
-            driver.eventManager = eventManager;
             return this;
         }
 
@@ -148,7 +141,7 @@ public class Driver {
      * @throws HttpErrorPage
      *             If an Exception occurs while retrieving the template
      */
-    public final void render(String pageUrl, Map<String, String> parameters, Appendable writer,
+    public void render(String pageUrl, Map<String, String> parameters, Appendable writer,
             HttpEntityEnclosingRequest originalRequest, Renderer... renderers) throws IOException, HttpErrorPage {
 
         initHttpRequestParams(originalRequest, parameters);
@@ -172,7 +165,8 @@ public class Driver {
 
         // content and reponse were not in cache
         if (currentValue == null) {
-            response = getResource(resultingPageUrl, originalRequest);
+            String targetUrl = ResourceUtils.getHttpUrlWithQueryString(resultingPageUrl, originalRequest, false);
+            response = requestExecutor.createAndExecuteRequest(originalRequest, targetUrl, false);
             // Unzip
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
@@ -181,6 +175,8 @@ public class Driver {
                 originalRequest.getParams().setParameter(CACHE_RESPONSE_PREFIX + resultingPageUrl, response);
             }
         }
+
+        logAction("render", pageUrl, renderers);
 
         // Apply renderers
         currentValue = performRendering(pageUrl, originalRequest, response, currentValue, renderers);
@@ -212,11 +208,14 @@ public class Driver {
      * 
      */
     private void logAction(String action, String onUrl, Renderer[] renderers) {
-        List<String> rendererNames = new ArrayList<String>(renderers.length);
-        for (Renderer renderer : renderers) {
-            rendererNames.add(renderer.getClass().getName());
+        if (LOG.isInfoEnabled()) {
+            List<String> rendererNames = new ArrayList<String>(renderers.length);
+            for (Renderer renderer : renderers) {
+                rendererNames.add(renderer.getClass().getName());
+            }
+            LOG.info("{} provider={} page= {} renderers={}", action, this.config.getInstanceName(), onUrl,
+                    rendererNames);
         }
-        LOG.info("{} provider={} page= {} renderers={}", action, this.config.getInstanceName(), onUrl, rendererNames);
     }
 
     /**
@@ -279,9 +278,7 @@ public class Driver {
                 return;
             }
 
-            if (LOG.isInfoEnabled()) {
-                logAction("proxy", relUrl, renderers);
-            }
+            logAction("proxy", relUrl, renderers);
 
             initHttpRequestParams(request, null);
             HttpRequestHelper.setCharacterEncoding(request, this.config.getUriEncoding());
@@ -382,9 +379,6 @@ public class Driver {
      */
     private String performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, HttpResponse response,
             String body, Renderer[] renderers) throws IOException, HttpErrorPage {
-        if (LOG.isInfoEnabled()) {
-            logAction("render", pageUrl, renderers);
-        }
         // Start rendering
         RenderEvent renderEvent = new RenderEvent();
         renderEvent.originalRequest = originalRequest;
@@ -408,20 +402,6 @@ public class Driver {
         this.eventManager.fire(EventManager.EVENT_RENDER_POST, renderEvent);
 
         return currentBody;
-    }
-
-    /**
-     * This method returns the content of an url as an HttpResponse.
-     * 
-     * @param url
-     * @param originalRequest
-     *            the target resource
-     * @return the Http reponse
-     * @throws HttpErrorPage
-     */
-    private HttpResponse getResource(String url, HttpEntityEnclosingRequest originalRequest) throws HttpErrorPage {
-        String targetUrl = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
-        return requestExecutor.createAndExecuteRequest(originalRequest, targetUrl, false);
     }
 
     /**

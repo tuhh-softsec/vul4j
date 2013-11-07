@@ -13,12 +13,7 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
-import org.esigate.Parameters;
 import org.esigate.Renderer;
-import org.esigate.cookie.CookieManager;
-import org.esigate.events.EventManager;
-import org.esigate.extension.ExtensionFactory;
-import org.esigate.http.HttpClientHelper;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
@@ -85,12 +80,8 @@ public abstract class AbstractDriverTestCase extends TestCase {
      */
     protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager,
             String name) {
-        CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, null);
-        EventManager eventManager = new EventManager(name);
-        HttpClientHelper httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties,
-                connectionManager);
-        Driver driver = Driver.builder().setName(name).setProperties(properties).setEventManager(eventManager)
-                .setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setHttpClientHelper(httpClientHelper))
+        Driver driver = Driver.builder().setName(name).setProperties(properties)
+                .setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setConnectionManager(connectionManager))
                 .build();
         DriverFactory.put(name, driver);
         return driver;

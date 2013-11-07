@@ -28,7 +28,7 @@ public interface RequestExecutor {
     HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean b)
             throws HttpErrorPage;
 
-    HttpResponse executeSingleRequest(GenericHttpRequest httpRequest);
+    HttpResponse execute(GenericHttpRequest httpRequest);
 
     public interface RequestExecutorBuilder {
 

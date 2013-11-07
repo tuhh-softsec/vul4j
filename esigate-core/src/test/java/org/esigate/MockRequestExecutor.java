@@ -111,7 +111,7 @@ public final class MockRequestExecutor implements RequestExecutor {
     }
 
     @Override
-    public HttpResponse executeSingleRequest(GenericHttpRequest httpRequest) {
+    public HttpResponse execute(GenericHttpRequest httpRequest) {
         try {
             return getResource(httpRequest.getRequestLine().getUri());
         } catch (HttpErrorPage e) {

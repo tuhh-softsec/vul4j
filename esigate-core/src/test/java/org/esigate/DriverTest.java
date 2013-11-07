@@ -45,13 +45,9 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.api.ContainerRequestMediator;
-import org.esigate.cookie.CookieManager;
 import org.esigate.esi.EsiRenderer;
-import org.esigate.events.EventManager;
 import org.esigate.extension.DefaultCharset;
-import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.DateUtils;
-import org.esigate.http.HttpClientHelper;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
@@ -221,12 +217,8 @@ public class DriverTest extends TestCase {
     }
 
     private Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager, String name) {
-        CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, null);
-        EventManager eventManager = new EventManager(name);
-        HttpClientHelper httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties,
-                connectionManager);
-        Driver driver = Driver.builder().setName(name).setProperties(properties).setEventManager(eventManager)
-                .setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setHttpClientHelper(httpClientHelper))
+        Driver driver = Driver.builder().setName(name).setProperties(properties)
+                .setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setConnectionManager(connectionManager))
                 .build();
         DriverFactory.put(name, driver);
         return driver;

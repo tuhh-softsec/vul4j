@@ -115,7 +115,7 @@ public final class ServletRequestExecutor implements RequestExecutor {
     }
 
     @Override
-    public HttpResponse executeSingleRequest(GenericHttpRequest request) {
+    public HttpResponse execute(GenericHttpRequest request) {
         HttpServletMediator mediator = (HttpServletMediator) HttpRequestHelper.getMediator(request);
         ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(),
                 contentTypeHelper);
