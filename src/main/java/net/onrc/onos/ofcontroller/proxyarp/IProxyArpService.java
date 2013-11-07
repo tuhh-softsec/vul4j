@@ -3,11 +3,11 @@ package net.onrc.onos.ofcontroller.proxyarp;
 import java.net.InetAddress;
 import java.util.List;
 
-import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.ofcontroller.core.module.IOnosService;
 
 //Extends IFloodlightService so we can access it from REST API resources
-public interface IProxyArpService extends IFloodlightService{
+public interface IProxyArpService extends IOnosService{
 	/**
 	 * Returns the MAC address if there is a valid entry in the cache.
 	 * Otherwise returns null.
