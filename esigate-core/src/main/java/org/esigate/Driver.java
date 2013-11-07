@@ -86,7 +86,7 @@ public final class Driver {
             // Load extensions.
             ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, driver);
             driver.requestExecutor = requestExecutorBuilder.setDriver(driver).setEventManager(driver.eventManager)
-                    .setProperties(properties).build();
+                    .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper).build();
             return driver;
         }
 
@@ -420,6 +420,11 @@ public final class Driver {
 
     public RequestExecutor getRequestExecutor() {
         return requestExecutor;
+    }
+
+    @Override
+    public String toString() {
+        return "driver:" + config.getInstanceName();
     }
 
 }
