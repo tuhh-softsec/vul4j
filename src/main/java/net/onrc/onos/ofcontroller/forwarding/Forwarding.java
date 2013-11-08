@@ -13,12 +13,12 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
-import net.onrc.onos.ofcontroller.flowmanager.FlowManager;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathType;
@@ -41,6 +41,9 @@ public class Forwarding implements IOFMessageListener {
 	
 	private IDeviceStorage deviceStorage;
 	private TopologyManager topologyService;
+	
+	// TODO Flow IDs should be globally managed
+	private long currentId = 1;
 	
 	public Forwarding() {
 		
@@ -92,8 +95,9 @@ public class Forwarding implements IOFMessageListener {
 		Ethernet eth = IFloodlightProviderService.bcStore.
 				get(cntx, IFloodlightProviderService.CONTEXT_PI_PAYLOAD);
 		
-		// We don't want to handle broadcast traffic
-		if (eth.isBroadcast()) {
+		// We only want to handle unicast IPv4
+		if (eth.isBroadcast() || eth.isMulticast() || 
+				eth.getEtherType() != Ethernet.TYPE_IPv4) {
 			return Command.CONTINUE;
 		}
 		
@@ -139,19 +143,25 @@ public class Forwarding implements IOFMessageListener {
 		MACAddress srcMacAddress = MACAddress.valueOf(eth.getSourceMACAddress());
 		MACAddress dstMacAddress = MACAddress.valueOf(eth.getDestinationMACAddress());
 		
-		FlowId flowId = new FlowId(1L); //dummy flow ID
+		DataPath dataPath = new DataPath();
+		dataPath.setSrcPort(srcSwitchPort);
+		dataPath.setDstPort(dstSwitchPort);
+		
+		FlowId flowId = new FlowId(currentId++); //dummy flow ID
 		FlowPath flowPath = new FlowPath();
 		flowPath.setFlowId(flowId);
 		flowPath.setInstallerId(new CallerId("Forwarding"));
 		flowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
 		flowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
+		flowPath.setFlowEntryMatch(new FlowEntryMatch());
 		flowPath.flowEntryMatch().enableSrcMac(srcMacAddress);
 		flowPath.flowEntryMatch().enableDstMac(dstMacAddress);
 		// For now just forward IPv4 packets. This prevents accidentally
 		// other stuff like ARP.
 		flowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
+		flowPath.setDataPath(dataPath);
+		
 		flowService.addFlow(flowPath, flowId);
-		//flowService.addAndMaintainShortestPathFlow(shortestPath.)
 	}
 
 }
