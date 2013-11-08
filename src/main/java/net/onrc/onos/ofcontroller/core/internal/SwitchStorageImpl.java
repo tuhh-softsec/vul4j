@@ -62,6 +62,14 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	 * @param state The state of the switch like ACTIVE, INACTIVE
 	 * @param dmope	The DM_OPERATION of the switch
 	 */
+	/*
+	 * Jono, 11/8/2013
+	 * We don't need this update method that demultiplexes DM_OPERATIONS,
+	 * we can have clients just call the required methods directly.
+	 * We especially don't need this update method to re-implement 
+	 * the functions of other methods.
+	 */
+	@Deprecated
 	@Override
 	public boolean updateSwitch(String dpid, SwitchState state, DM_OPERATION dmope) {
 		boolean success = false;
@@ -191,7 +199,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		} catch (Exception e) {
 			op.rollback();
 			e.printStackTrace();
-			log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
+			log.error("SwitchStorage:addSwitch dpid:{} failed", dpid, e);
 		}
 		
 		return success;
@@ -218,6 +226,32 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			log.error("SwitchStorage:deleteSwitch {} failed", dpid);
 		}
 	
+		return success;
+	}
+	
+	public boolean deactivateSwitch(String dpid) {
+		boolean success = false;
+		
+		try {
+			ISwitchObject switchObject = op.searchSwitch(dpid);
+			if (switchObject != null) {
+				setSwitchStateImpl(switchObject, SwitchState.INACTIVE);
+				
+				for (IPortObject portObject : switchObject.getPorts()) {
+					portObject.setState("INACTIVE");
+				}
+				op.commit();
+				success = true;
+			}
+			else {
+				log.warn("Switch {} not found when trying to deactivate", dpid);
+			}
+		} catch (Exception e) {
+			// TODO what type of exception is thrown when we can't commit?
+			op.rollback();
+			log.error("SwitchStorage:deactivateSwitch {} failed", dpid, e);
+		}
+		
 		return success;
 	}
 
@@ -259,6 +293,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		if(((OFPortConfig.OFPPC_PORT_DOWN.getValue() & phport.getConfig()) > 0) ||
 				((OFPortState.OFPPS_LINK_DOWN.getValue() & phport.getState()) > 0)) {
 			// just dispatch to deletePort()
+			// TODO This is wrong. We need to make sure the port is in the
+			// DB with the correct info and port state.
 			return deletePort(dpid, phport.getPortNumber());
 		}
 	
@@ -305,7 +341,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	        	IPortObject p = sw.getPort(port);
 	            if (p != null) {
 	        		log.info("SwitchStorage:deletePort dpid:{} port:{} found and set INACTIVE", dpid, port);
-	        		deletePortImpl(p);
+	        		//deletePortImpl(p);
+	        		p.setState("INACTIVE");
 	        		op.commit();
 	        	}
 	        }
@@ -313,7 +350,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		} catch (Exception e) {
 			op.rollback();
 			e.printStackTrace();
-			log.info("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
+			log.error("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
 		}
 
 		return success;
