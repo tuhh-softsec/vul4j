@@ -108,7 +108,8 @@ public class NetworkGraphPublisher implements IDeviceListener,
 					List<Link> reverseLinks = linkStore.getReverseLinks(HexString.toHexString(dpid));
 					links.addAll(reverseLinks);
 
-					if (swStore.updateSwitch(HexString.toHexString(dpid), SwitchState.INACTIVE, DM_OPERATION.UPDATE)) {
+					//if (swStore.updateSwitch(HexString.toHexString(dpid), SwitchState.INACTIVE, DM_OPERATION.UPDATE)) {
+					if (swStore.deactivateSwitch(HexString.toHexString(dpid))) {
 					    registryService.releaseControl(dpid);
 					    
 					    // TODO publish UPDATE_SWITCH event here
@@ -268,6 +269,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public void removedSwitch(IOFSwitch sw) {
+		/*
 		if (registryService.hasControl(sw.getId())) {
 			// Get the affected ports
 			List<Short> ports = swStore.getPorts(HexString.toHexString(sw.getId()));
@@ -300,6 +302,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 			    }
 			}
 		}
+		*/
 	}
 
 	@Override
