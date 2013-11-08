@@ -82,7 +82,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
      *
      * The datagrid map is:
      *  - Key : Flow ID (Long)
-     *  - Value : Serialized Flow (byte[])
+     *  - Value : Serialized FlowPath (byte[])
      */
     class MapFlowListener implements EntryListener<Long, byte[]> {
 	/**
