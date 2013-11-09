@@ -20,17 +20,17 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>9.0.3.v20130506</version>
+			<version>${jetty.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.0.3.v20130506</version>
+			<version>${jetty.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
-			<version>9.0.3.v20130506</version>
+			<version>${jetty.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -155,4 +155,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<properties>
+		<jetty.version>9.1.0.RC1</jetty.version>
+	</properties>
 </project>
