@@ -36,6 +36,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.esigate.server.metrics.InstrumentedServerConnector;
 
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.jetty9.InstrumentedConnectionFactory;
 import com.codahale.metrics.jetty9.InstrumentedHandler;
 import com.codahale.metrics.jetty9.InstrumentedQueuedThreadPool;
 
@@ -44,221 +46,233 @@ import com.codahale.metrics.jetty9.InstrumentedQueuedThreadPool;
  * 
  * 
  * <p>
- * Inspiration from Ole Christian Rynning
- * (http://open.bekk.no/embedded-jetty-7-webapp-executable-with-maven/)
+ * Inspiration from Ole Christian Rynning (http://open.bekk.no/embedded-jetty-7-webapp-executable-with-maven/)
  * 
  * @author Nicolas Richeton
  * 
  */
-public class EsigateServer {
+public final class EsigateServer {
 
-	private static String contextPath;
-	protected static int controlPort;
-	private static String extraClasspath;
-	private static long idleTimeout = 0;
-	private static int maxThreads = 0;
-	private static int minThreads = 0;
-	private static int outputBufferSize = 0;
-	private static int port;
-	private final static int PROPERTY_DEFAULT_CONTROL_PORT = 8081;
-	private final static int PROPERTY_DEFAULT_HTTP_PORT = 8080;
-	private final static String PROPERTY_PREFIX = "server.";
+    private static String contextPath;
+    protected static int controlPort;
+    private static String extraClasspath;
+    private static long idleTimeout = 0;
+    private static int maxThreads = 0;
+    private static int minThreads = 0;
+    private static int outputBufferSize = 0;
+    private static int port;
+    private static final int PROPERTY_DEFAULT_CONTROL_PORT = 8081;
+    private static final int PROPERTY_DEFAULT_HTTP_PORT = 8080;
+    private static final String PROPERTY_PREFIX = "server.";
+    private static Server srv = null;
 
-	/**
-	 * Get an integer from System properties
-	 * 
-	 * @param prefix
-	 * @param name
-	 * @param defaultValue
-	 * @return
-	 */
-	private static int getProperty(String prefix, String name, int defaultValue) {
-		int result = defaultValue;
+    private EsigateServer() {
 
-		try {
-			result = Integer.parseInt(System.getProperty(prefix + name));
-		} catch (NumberFormatException e) {
-			System.err.println("Value for " + prefix + name + " must be an integer. Using default " + defaultValue);
-		}
-		return result;
-	}
+    }
 
-	/**
-	 * Get String from System properties
-	 * 
-	 * @param prefix
-	 * @param name
-	 * @param defaultValue
-	 * @return
-	 */
-	private static String getProperty(String prefix, String name, String defaultValue) {
-		return System.getProperty(prefix + name, defaultValue);
-	}
+    /**
+     * Get an integer from System properties
+     * 
+     * @param prefix
+     * @param name
+     * @param defaultValue
+     * @return
+     */
+    private static int getProperty(String prefix, String name, int defaultValue) {
+        int result = defaultValue;
 
-	public static void init() {
+        try {
+            result = Integer.parseInt(System.getProperty(prefix + name));
+        } catch (NumberFormatException e) {
+            System.err.println("Value for " + prefix + name + " must be an integer. Using default " + defaultValue);
+        }
+        return result;
+    }
 
-		// Get configuration
+    /**
+     * Get String from System properties
+     * 
+     * @param prefix
+     * @param name
+     * @param defaultValue
+     * @return
+     */
+    private static String getProperty(String prefix, String name, String defaultValue) {
+        return System.getProperty(prefix + name, defaultValue);
+    }
 
-		// Read from "server.properties" or custom file.
-		String configFile = null;
-		try {
-			configFile = System.getProperty(PROPERTY_PREFIX + "config", "server.properties");
-			System.out.println("Loading server configuration from " + configFile);
+    /**
+     * Read server configuration from System properties and from server.properties.
+     */
+    public static void init() {
 
-			Properties serverProperties = new Properties();
+        // Get configuration
 
-			try (InputStream is = new FileInputStream(configFile);) {
-				serverProperties.load(is);
-			}
+        // Read from "server.properties" or custom file.
+        String configFile = null;
+        try {
+            configFile = System.getProperty(PROPERTY_PREFIX + "config", "server.properties");
+            System.out.println("Loading server configuration from " + configFile);
 
-			for (Object prop : serverProperties.keySet()) {
-				String serverPropertyName = (String) prop;
-				System.setProperty(PROPERTY_PREFIX + serverPropertyName,
-						serverProperties.getProperty(serverPropertyName));
-			}
-		} catch (FileNotFoundException e) {
-			System.out.println(configFile + " not found.");
-		} catch (IOException e) {
-			System.out.println("Unexpected error reading " + configFile);
-		}
+            Properties serverProperties = new Properties();
 
-		// Read system properties
-		System.out.println("Using configuration provided using '-D' parameter and/or default values");
-		EsigateServer.port = getProperty(PROPERTY_PREFIX, "port", PROPERTY_DEFAULT_HTTP_PORT);
-		EsigateServer.controlPort = getProperty(PROPERTY_PREFIX, "controlPort", PROPERTY_DEFAULT_CONTROL_PORT);
-		EsigateServer.contextPath = getProperty(PROPERTY_PREFIX, "contextPath", "/");
-		EsigateServer.extraClasspath = getProperty(PROPERTY_PREFIX, "extraClasspath", null);
-		EsigateServer.maxThreads = getProperty(PROPERTY_PREFIX, "maxThreads", 500);
-		EsigateServer.minThreads = getProperty(PROPERTY_PREFIX, "minThreads", 40);
-		EsigateServer.outputBufferSize = getProperty(PROPERTY_PREFIX, "outputBufferSize", 8 * 1024);
-		EsigateServer.idleTimeout = getProperty(PROPERTY_PREFIX, "idleTimeout", 30 * 1000);
-	}
+            try (InputStream is = new FileInputStream(configFile);) {
+                serverProperties.load(is);
+            }
 
-	/**
-	 * Esigate Server entry point.
-	 * 
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception {
+            for (Object prop : serverProperties.keySet()) {
+                String serverPropertyName = (String) prop;
+                System.setProperty(PROPERTY_PREFIX + serverPropertyName,
+                        serverProperties.getProperty(serverPropertyName));
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(configFile + " not found.");
+        } catch (IOException e) {
+            System.out.println("Unexpected error reading " + configFile);
+        }
 
-		if (args.length < 1) {
-			EsigateServer.usage();
-			return;
-		}
+        // Read system properties
+        System.out.println("Using configuration provided using '-D' parameter and/or default values");
+        EsigateServer.port = getProperty(PROPERTY_PREFIX, "port", PROPERTY_DEFAULT_HTTP_PORT);
+        EsigateServer.controlPort = getProperty(PROPERTY_PREFIX, "controlPort", PROPERTY_DEFAULT_CONTROL_PORT);
+        EsigateServer.contextPath = getProperty(PROPERTY_PREFIX, "contextPath", "/");
+        EsigateServer.extraClasspath = getProperty(PROPERTY_PREFIX, "extraClasspath", null);
+        EsigateServer.maxThreads = getProperty(PROPERTY_PREFIX, "maxThreads", 500);
+        EsigateServer.minThreads = getProperty(PROPERTY_PREFIX, "minThreads", 40);
+        EsigateServer.outputBufferSize = getProperty(PROPERTY_PREFIX, "outputBufferSize", 8 * 1024);
+        EsigateServer.idleTimeout = getProperty(PROPERTY_PREFIX, "idleTimeout", 30 * 1000);
+    }
 
-		switch (args[0]) {
-		case "start":
-			EsigateServer.init();
-			EsigateServer.start();
-			break;
+    /**
+     * Esigate Server entry point.
+     * 
+     * @param args
+     *            command line arguments.
+     * @throws Exception
+     *             when server cannot be started.
+     */
+    public static void main(String[] args) throws Exception {
 
-		case "stop":
-			EsigateServer.stop();
-			break;
+        if (args.length < 1) {
+            EsigateServer.usage();
+            return;
+        }
 
-		default:
-			EsigateServer.usage();
-			break;
-		}
-	}
+        switch (args[0]) {
+        case "start":
+            EsigateServer.init();
+            EsigateServer.start();
+            break;
 
-	private static void resetTempDirectory(WebAppContext context, String currentDir) throws IOException {
-		File workDir;
-		// Currently disabled because this may be dangerous.
-		// if (EsigateServer.workPath != null) {
-		// workDir = new File(EsigateServer.workPath);
-		// } else {
-		workDir = new File(currentDir, "work");
-		// }
-		FileUtils.deleteDirectory(workDir);
-		context.setTempDirectory(workDir);
-	}
+        case "stop":
+            EsigateServer.stop();
+            break;
 
-	/**
-	 * Create and start server.
-	 * 
-	 * @throws Exception
-	 */
-	private static void start() throws Exception {
-		MetricRegistry registry = new MetricRegistry();
-		QueuedThreadPool threadPool = new InstrumentedQueuedThreadPool(registry);
-		threadPool.setName("esigate");
-		threadPool.setMaxThreads(maxThreads);
-		threadPool.setMinThreads(minThreads);
+        default:
+            EsigateServer.usage();
+            break;
+        }
+    }
 
-		Server srv = new Server(threadPool);
-		srv.setStopAtShutdown(true);
-		srv.setStopTimeout(5000);
+    private static void resetTempDirectory(WebAppContext context, String currentDir) throws IOException {
+        File workDir;
+        // Currently disabled because this may be dangerous.
+        // if (EsigateServer.workPath != null) {
+        // workDir = new File(EsigateServer.workPath);
+        // } else {
+        workDir = new File(currentDir, "work");
+        // }
+        FileUtils.deleteDirectory(workDir);
+        context.setTempDirectory(workDir);
+    }
 
-		// HTTP Configuration
-		HttpConfiguration http_config = new HttpConfiguration();
-		http_config.setOutputBufferSize(outputBufferSize);
-		http_config.setSendServerVersion(false);
+    /**
+     * Create and start server.
+     * 
+     * @throws Exception
+     *             when server cannot be started.
+     */
+    public static void start() throws Exception {
+        MetricRegistry registry = new MetricRegistry();
 
-		try (ServerConnector connector = new InstrumentedServerConnector("main", EsigateServer.port, srv, registry,
-				new HttpConnectionFactory(http_config)); ServerConnector controlConnector = new ServerConnector(srv)) {
+        QueuedThreadPool threadPool = new InstrumentedQueuedThreadPool(registry);
+        threadPool.setName("esigate");
+        threadPool.setMaxThreads(maxThreads);
+        threadPool.setMinThreads(minThreads);
 
-			// Main connector
-			connector.setIdleTimeout(EsigateServer.idleTimeout);
-			connector.setSoLingerTime(-1);
-			connector.setName("main");
+        srv = new Server(threadPool);
+        srv.setStopAtShutdown(true);
+        srv.setStopTimeout(5000);
 
-			// Control connector
-			controlConnector.setHost("127.0.0.1");
-			controlConnector.setPort(EsigateServer.controlPort);
-			controlConnector.setName("control");
+        // HTTP Configuration
+        HttpConfiguration httpConfig = new HttpConfiguration();
+        httpConfig.setOutputBufferSize(outputBufferSize);
+        httpConfig.setSendServerVersion(false);
+        Timer processTime = registry.timer("processTime");
 
-			srv.setConnectors(new Connector[] { connector, controlConnector });
-			// War
-			ProtectionDomain protectionDomain = EsigateServer.class.getProtectionDomain();
-			String warFile = protectionDomain.getCodeSource().getLocation().toExternalForm();
-			String currentDir = new File(protectionDomain.getCodeSource().getLocation().getPath()).getParent();
+        try (ServerConnector connector = new InstrumentedServerConnector("main", EsigateServer.port, srv, registry,
+                new InstrumentedConnectionFactory(new HttpConnectionFactory(httpConfig), processTime));
+                ServerConnector controlConnector = new ServerConnector(srv)) {
 
-			WebAppContext context = new WebAppContext(warFile, EsigateServer.contextPath);
-			context.setServer(srv);
+            // Main connector
+            connector.setIdleTimeout(EsigateServer.idleTimeout);
+            connector.setSoLingerTime(-1);
+            connector.setName("main");
 
-			// Add extra classpath (allows to add extensions).
-			if (EsigateServer.extraClasspath != null) {
-				context.setExtraClasspath(EsigateServer.extraClasspath);
-			}
-			resetTempDirectory(context, currentDir);
+            // Control connector
+            controlConnector.setHost("127.0.0.1");
+            controlConnector.setPort(EsigateServer.controlPort);
+            controlConnector.setName("control");
 
-			// Add the handlers
-			HandlerCollection handlers = new HandlerList();
-			// control handler must be the first one.
-			// Work in progress, currently disabled.
-			handlers.addHandler(new ControlHandler(registry));
-			InstrumentedHandler ih = new InstrumentedHandler(registry);
-			ih.setName("main");
-			ih.setHandler(context);
-			handlers.addHandler(ih);
+            srv.setConnectors(new Connector[] { connector, controlConnector });
+            // War
+            ProtectionDomain protectionDomain = EsigateServer.class.getProtectionDomain();
+            String warFile = protectionDomain.getCodeSource().getLocation().toExternalForm();
+            String currentDir = new File(protectionDomain.getCodeSource().getLocation().getPath()).getParent();
 
-			srv.setHandler(handlers);
+            WebAppContext context = new WebAppContext(warFile, EsigateServer.contextPath);
+            context.setServer(srv);
 
-			srv.start();
-			srv.join();
-		}
+            // Add extra classpath (allows to add extensions).
+            if (EsigateServer.extraClasspath != null) {
+                context.setExtraClasspath(EsigateServer.extraClasspath);
+            }
+            resetTempDirectory(context, currentDir);
 
-	}
+            // Add the handlers
+            HandlerCollection handlers = new HandlerList();
+            // control handler must be the first one.
+            // Work in progress, currently disabled.
+            handlers.addHandler(new ControlHandler(registry));
+            InstrumentedHandler ih = new InstrumentedHandler(registry);
+            ih.setName("main");
+            ih.setHandler(context);
+            handlers.addHandler(ih);
 
-	/**
-	 * Send a shutdown request to esigate server
-	 */
-	private static void stop() {
-		ControlHandler.shutdown(EsigateServer.controlPort);
-	}
+            srv.setHandler(handlers);
+            srv.start();
+            srv.join();
+        }
 
-	/**
-	 * Display usage informations.
-	 */
-	private static void usage() {
-		StringBuffer usageText = new StringBuffer();
-		usageText.append("Usage: java -Desigate.config=esigate.properties -jar esigate-server.jar [start|stop]\n\t");
-		usageText.append("start    Start the server (default)\n\t");
-		usageText.append("stop     Stop the server gracefully\n\t");
+    }
 
-		System.out.println(usageText.toString());
-		System.exit(-1);
-	}
+    /**
+     * Send a shutdown request to esigate server.
+     */
+    public static void stop() {
+        ControlHandler.shutdown(EsigateServer.controlPort);
+    }
+
+    /**
+     * Display usage informations.
+     */
+    private static void usage() {
+        StringBuffer usageText = new StringBuffer();
+        usageText.append("Usage: java -Desigate.config=esigate.properties -jar esigate-server.jar [start|stop]\n\t");
+        usageText.append("start    Start the server (default)\n\t");
+        usageText.append("stop     Stop the server gracefully\n\t");
+
+        System.out.println(usageText.toString());
+        System.exit(-1);
+    }
 }
