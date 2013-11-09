@@ -252,8 +252,21 @@ public final class EsigateServer {
             srv.setHandler(handlers);
             srv.start();
             srv.join();
+
         }
 
+    }
+
+    /**
+     * Check if server is started.
+     * 
+     * @return true if started.
+     */
+    public static boolean isStarted() {
+        if (srv == null) {
+            return false;
+        }
+        return srv.isStarted();
     }
 
     /**

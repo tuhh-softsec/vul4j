@@ -22,7 +22,13 @@ public class EsigateServerTest {
     public void testControlConnection() throws Exception {
         Executors.newSingleThreadExecutor().execute(new EsigateServerRunnable());
 
-        Thread.sleep(500);
+        for (int i = 0; i < 50; i++) {
+            if (EsigateServer.isStarted()) {
+                break;
+            } else {
+                Thread.sleep(100);
+            }
+        }
         WebConversation webConversation;
 
         webConversation = new WebConversation();
