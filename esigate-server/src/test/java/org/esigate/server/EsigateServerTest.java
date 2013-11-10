@@ -51,7 +51,7 @@ public class EsigateServerTest {
         assertTrue(StatusReader.getLong(resp.getText(), "Uptime") > 0);
         assertTrue(StatusReader.getDouble(resp.getText(), "CPULoad") > 0);
         assertEquals(0, StatusReader.getLong(resp.getText(), "Total Accesses").longValue());
-        assertEquals(0, StatusReader.getDouble(resp.getText(), "ReqPerSec"));
+        assertEquals(0d, StatusReader.getDouble(resp.getText(), "ReqPerSec"));
         EsigateServer.stop();
     }
 
