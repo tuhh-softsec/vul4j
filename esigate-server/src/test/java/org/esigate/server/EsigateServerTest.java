@@ -1,6 +1,7 @@
 package org.esigate.server;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import org.junit.Test;
@@ -41,6 +42,7 @@ public class EsigateServerTest extends AbstractEsigateServerTest {
 
         assertEquals(STATUS_OK, resp.getResponseCode());
         System.out.println(resp.getText());
+        assertFalse(resp.getText().contains("Esigate Server Status"));
 
         assertTrue(StatusReader.getLong(resp.getText(), "Uptime") > 0);
         assertTrue(StatusReader.getDouble(resp.getText(), "CPULoad") > 0);
@@ -67,6 +69,7 @@ public class EsigateServerTest extends AbstractEsigateServerTest {
         WebResponse resp = webConversation.getResponse(req);
 
         assertEquals(STATUS_OK, resp.getResponseCode());
+        assertTrue(resp.getText().contains("Esigate Server Status"));
         System.out.println(resp.getText());
     }
 

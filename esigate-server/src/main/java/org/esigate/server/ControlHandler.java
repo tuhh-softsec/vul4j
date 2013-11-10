@@ -131,24 +131,27 @@ public class ControlHandler extends AbstractHandler {
 
             case URL_STATUS:
                 if ("GET".equals(serverRequest.getMethod())) {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    try (Writer sos = response.getWriter()) {
-                        Map<String, Object> status = getServerStatus();
-                        for (String key : status.keySet()) {
-                            sos.append(key + ": " + status.get(key) + "\n");
+
+                    if (request.getParameter("auto") != null) {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        try (Writer sos = response.getWriter()) {
+                            Map<String, Object> status = getServerStatus();
+                            for (String key : status.keySet()) {
+                                sos.append(key + ": " + status.get(key) + "\n");
+                            }
+                        }
+
+                    } else {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        try (Writer sos = response.getWriter()) {
+                            sos.append("Esigate Server Status\n");
+                            Map<String, Object> status = getServerStatus();
+                            for (String key : status.keySet()) {
+                                sos.append(key + ": " + status.get(key) + "\n");
+                            }
                         }
                     }
 
-                }
-                break;
-
-            case URL_STATUS_AUTO:
-                response.setStatus(HttpServletResponse.SC_OK);
-                try (Writer sos = response.getWriter()) {
-                    Map<String, Object> status = getServerStatus();
-                    for (String key : status.keySet()) {
-                        sos.append(key + ": " + status.get(key) + "\n");
-                    }
                 }
                 break;
 
