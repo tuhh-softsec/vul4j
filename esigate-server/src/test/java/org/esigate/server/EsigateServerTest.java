@@ -3,11 +3,6 @@ package org.esigate.server;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -21,49 +16,19 @@ import com.meterware.httpunit.WebResponse;
  * @author Nicolas Richeton
  * 
  */
-public class EsigateServerTest {
-    static final int WAIT_RETRIES = 50;
-    static final int WAIT_SLEEP = 100;
+public class EsigateServerTest extends AbstractEsigateServerTest {
+
     static final int STATUS_OK = 200;
-
-    private ExecutorService executor = null;
-
-    /**
-     * Start esigate server before each test.
-     * 
-     */
-    @Before
-    public void setUp() {
-        this.executor = Executors.newSingleThreadExecutor();
-        this.executor.execute(new EsigateServerRunnable());
-        for (int i = 0; i < WAIT_RETRIES; i++) {
-            if (EsigateServer.isStarted()) {
-                break;
-            }
-            try {
-                Thread.sleep(WAIT_SLEEP);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Stops esigate server.
-     */
-    @After
-    public void tearDown() {
-        EsigateServer.stop();
-        this.executor.shutdown();
-
-    }
+    static final int STATUS_NOTFOUND = 404;
 
     /**
      * Test control handler.
      * 
      * @throws Exception
+     *             on error.
      */
     @Test
+    @SuppressWarnings("static-method")
     public void testControlConnection() throws Exception {
 
         WebConversation webConversation;
@@ -81,6 +46,26 @@ public class EsigateServerTest {
         assertEquals(0, StatusReader.getLong(resp.getText(), "Total Accesses").longValue());
         assertEquals(0d, StatusReader.getDouble(resp.getText(), "ReqPerSec"));
 
+    }
+
+    /**
+     * Ensure control handler only process requests on control port.
+     * 
+     * @throws Exception
+     *             on error.
+     */
+    @SuppressWarnings("static-method")
+    @Test
+    public void testControlConnectionPort() throws Exception {
+
+        WebConversation webConversation;
+
+        webConversation = new WebConversation();
+        webConversation.setExceptionsThrownOnErrorStatus(false);
+        WebRequest req = new GetMethodWebRequest("http://localhost:8080/server-status?auto");
+        WebResponse resp = webConversation.getResponse(req);
+
+        assertEquals(STATUS_NOTFOUND, resp.getResponseCode());
     }
 
 }
