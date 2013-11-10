@@ -3,8 +3,11 @@ package org.esigate.server;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -23,6 +26,38 @@ public class EsigateServerTest {
     static final int WAIT_SLEEP = 100;
     static final int STATUS_OK = 200;
 
+    private ExecutorService executor = null;
+
+    /**
+     * Start esigate server before each test.
+     * 
+     */
+    @Before
+    public void setUp() {
+        this.executor = Executors.newSingleThreadExecutor();
+        this.executor.execute(new EsigateServerRunnable());
+        for (int i = 0; i < WAIT_RETRIES; i++) {
+            if (EsigateServer.isStarted()) {
+                break;
+            }
+            try {
+                Thread.sleep(WAIT_SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Stops esigate server.
+     */
+    @After
+    public void tearDown() {
+        EsigateServer.stop();
+        this.executor.shutdown();
+
+    }
+
     /**
      * Test control handler.
      * 
@@ -30,14 +65,7 @@ public class EsigateServerTest {
      */
     @Test
     public void testControlConnection() throws Exception {
-        Executors.newSingleThreadExecutor().execute(new EsigateServerRunnable());
 
-        for (int i = 0; i < WAIT_RETRIES; i++) {
-            if (EsigateServer.isStarted()) {
-                break;
-            }
-            Thread.sleep(WAIT_SLEEP);
-        }
         WebConversation webConversation;
 
         webConversation = new WebConversation();
@@ -52,7 +80,7 @@ public class EsigateServerTest {
         assertTrue(StatusReader.getDouble(resp.getText(), "CPULoad") > 0);
         assertEquals(0, StatusReader.getLong(resp.getText(), "Total Accesses").longValue());
         assertEquals(0d, StatusReader.getDouble(resp.getText(), "ReqPerSec"));
-        EsigateServer.stop();
+
     }
 
 }
