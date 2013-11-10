@@ -28,69 +28,69 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 
 public class InstrumentedServerConnector extends ServerConnector {
-	private Meter accepts, connects, disconnects;
-	private Counter connections;
+    private Meter accepts, connects, disconnects;
+    private Counter connections;
 
-	/**
-	 * Jetty 9 ServerConnector instrumented with Metrics.
-	 * 
-	 * @param id
-	 *            connector id, will be used as prefix for metrics.
-	 * @param port
-	 *            this port will be set with ServerConnector#setPort().
-	 * @param server
-	 *            Jetty server.
-	 */
-	public InstrumentedServerConnector(String id, int port, @Name("server") Server server, MetricRegistry registry) {
-		super(server);
-		instrument(id, port, registry);
-	}
+    /**
+     * Jetty 9 ServerConnector instrumented with Metrics.
+     * 
+     * @param id
+     *            connector id, will be used as prefix for metrics.
+     * @param port
+     *            this port will be set with ServerConnector#setPort().
+     * @param server
+     *            Jetty server.
+     */
+    public InstrumentedServerConnector(String id, int port, @Name("server") Server server, MetricRegistry registry) {
+        super(server);
+        instrument(id, port, registry);
+    }
 
-	public InstrumentedServerConnector(String id, int port, @Name("server") Server server, MetricRegistry registry,
-			@Name("factories") ConnectionFactory... factories) {
-		super(server, factories);
-		instrument(id, port, registry);
-	}
+    public InstrumentedServerConnector(String id, int port, @Name("server") Server server, MetricRegistry registry,
+            @Name("factories") ConnectionFactory... factories) {
+        super(server, factories);
+        instrument(id, port, registry);
+    }
 
-	public InstrumentedServerConnector(String id, int port, @Name("server") Server server,
-			@Name("sslContextFactory") SslContextFactory sslContextFactory, MetricRegistry registry) {
-		super(server, sslContextFactory);
-		instrument(id, port, registry);
-	}
+    public InstrumentedServerConnector(String id, int port, @Name("server") Server server,
+            @Name("sslContextFactory") SslContextFactory sslContextFactory, MetricRegistry registry) {
+        super(server, sslContextFactory);
+        instrument(id, port, registry);
+    }
 
-	@Override
-	public void accept(int acceptorID) throws IOException {
-		super.accept(acceptorID);
-		this.accepts.mark();
-	}
+    @Override
+    public void accept(int acceptorID) throws IOException {
+        super.accept(acceptorID);
+        this.accepts.mark();
+    }
 
-	@Override
-	public void close() {
-		super.close();
-		this.disconnects.mark();
-		this.connections.dec();
-	}
+    @Override
+    public void close() {
+        super.close();
+        this.disconnects.mark();
+        this.connections.dec();
+    }
 
-	/**
-	 * Create metrics.
-	 * 
-	 * @param id
-	 * @param port
-	 * @param registry
-	 */
-	private void instrument(String id, int port, MetricRegistry registry) {
-		this.setPort(port);
-		this.accepts = registry.meter(id + "-accepts");
-		this.connects = registry.meter(id + "-connects");
-		this.disconnects = registry.meter(id + "-disconnects");
-		this.connections = registry.counter(id + "-active-connections");
+    /**
+     * Create metrics.
+     * 
+     * @param id
+     * @param port
+     * @param registry
+     */
+    private void instrument(String id, int port, MetricRegistry registry) {
+        this.setPort(port);
+        this.accepts = registry.meter(id + "-accepts");
+        this.connects = registry.meter(id + "-connects");
+        this.disconnects = registry.meter(id + "-disconnects");
+        this.connections = registry.counter(id + "-active-connections");
 
-	}
+    }
 
-	@Override
-	public void open() throws IOException {
-		this.connections.inc();
-		super.open();
-		this.connects.mark();
-	}
+    @Override
+    public void open() throws IOException {
+        this.connections.inc();
+        super.open();
+        this.connects.mark();
+    }
 }
