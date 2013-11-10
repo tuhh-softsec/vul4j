@@ -27,4 +27,20 @@ public class FetchEvent extends Event {
      * The new HTTP call details.
      */
     public HttpRequest httpRequest = null;
+
+    private final boolean proxy;
+
+    public FetchEvent(boolean proxy) {
+        this.proxy = proxy;
+    }
+
+    /**
+     * Proxy or include mode.
+     * 
+     * @return true if proxy mode
+     */
+    public boolean isProxy() {
+        return proxy;
+    }
+
 }

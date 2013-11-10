@@ -427,4 +427,8 @@ public final class Driver {
         return "driver:" + config.getInstanceName();
     }
 
+    public ContentTypeHelper getContentTypeHelper() {
+        return contentTypeHelper;
+    }
+
 }

@@ -29,14 +29,12 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpStatus;
 import org.esigate.Driver.DriverBuilder;
 import org.esigate.impl.IndexedInstances;
 import org.esigate.impl.UriMapping;
-import org.esigate.servlet.impl.ServletRequestExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -203,9 +201,6 @@ public final class DriverFactory {
 
     private static Driver createDriver(String name, Properties properties) {
         DriverBuilder builder = Driver.builder().setName(name).setProperties(properties);
-        if (StringUtils.equals(properties.getProperty("driverClass"), ServletRequestExecutor.class.getName())) {
-            builder.setRequestExecutorBuilder(ServletRequestExecutor.builder());
-        }
         return builder.build();
     }
 

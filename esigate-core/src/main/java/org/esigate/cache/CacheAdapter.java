@@ -21,7 +21,6 @@ import java.util.Properties;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
@@ -37,7 +36,9 @@ import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
+import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.DateUtils;
+import org.esigate.http.HttpClientRequestExecutor;
 
 /**
  * This class is changes the behavior of the HttpCache by transforming the headers in the requests or response.
@@ -75,14 +76,20 @@ public class CacheAdapter {
         @Override
         public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
                 HttpClientContext clientContext, HttpExecutionAware execAware) throws IOException, HttpException {
-            if (transformRequest(request, clientContext)) {
-                CloseableHttpResponse response = wrapped.execute(route, request, clientContext, execAware);
-                transformResponse(request, response, clientContext);
-                return response;
+            FetchEvent fetchEvent = transformRequest(request, clientContext);
+            CloseableHttpResponse response = null;
+            if (fetchEvent == null || !fetchEvent.exit) {
+                response = wrapped.execute(route, request, clientContext, execAware);
+            } else {
+                if (fetchEvent.httpResponse != null) {
+                    response = new BasicCloseableHttpResponse(fetchEvent.httpResponse);
+                }
             }
+            if (response != null)
+                transformResponse(request, response, clientContext);
             // TODO: returning null may be hard. However, this only happens if
             // an extension cancels the request. Need to think on the usecase.
-            return null;
+            return response;
         }
 
         /**
@@ -92,9 +99,9 @@ public class CacheAdapter {
          * 
          * @return true if we should process with the request.
          */
-        abstract boolean transformRequest(HttpRequest httpRequest, HttpContext context);
+        abstract FetchEvent transformRequest(HttpRequest httpRequest, HttpContext context);
 
-        abstract void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context);
+        abstract void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse, HttpContext context);
 
     }
 
@@ -106,15 +113,15 @@ public class CacheAdapter {
              * the cache just by making a refresh in the browser.
              */
             @Override
-            boolean transformRequest(HttpRequest httpRequest, HttpContext context) {
-                return true;
+            FetchEvent transformRequest(HttpRequest httpRequest, HttpContext context) {
+                return null;
             }
 
             /**
              * Restores the real http status code if it has been hidden to HttpCache
              */
             @Override
-            void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context) {
+            void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse, HttpContext context) {
                 // Remove previously added Cache-control header
                 if (httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")
                         && (staleWhileRevalidate > 0 || staleIfError > 0)) {
@@ -156,9 +163,10 @@ public class CacheAdapter {
              * Fire pre-Fetch event
              */
             @Override
-            boolean transformRequest(HttpRequest httpRequest, HttpContext context) {
+            FetchEvent transformRequest(HttpRequest httpRequest, HttpContext context) {
                 // Create request event
-                FetchEvent e = new FetchEvent();
+                FetchEvent e = new FetchEvent(httpRequest.getParams().getBooleanParameter(
+                        HttpClientRequestExecutor.PROXY, false));
                 e.httpRequest = httpRequest;
                 e.httpResponse = null;
                 e.httpContext = context;
@@ -167,7 +175,7 @@ public class CacheAdapter {
                 eventManager.fire(EventManager.EVENT_FETCH_PRE, e);
 
                 // Continue if exist is not requested
-                return !e.exit;
+                return e;
             }
 
             /**
@@ -176,10 +184,11 @@ public class CacheAdapter {
              * "stale-while-revalidate" and "stale-if-error" cache-control directives depending on the configuration.
              */
             @Override
-            void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context) {
+            void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse, HttpContext context) {
 
                 // Create request event
-                FetchEvent e = new FetchEvent();
+                FetchEvent e = new FetchEvent(httpRequest.getParams().getBooleanParameter(
+                        HttpClientRequestExecutor.PROXY, false));
                 e.httpRequest = httpRequest;
                 e.httpResponse = httpResponse;
                 e.httpContext = context;

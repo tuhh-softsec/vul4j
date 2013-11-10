@@ -75,6 +75,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             "POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
     private static final String ORIGINAL_REQUEST_KEY = "ORIGINAL_REQUEST";
     private static final String TARGET_HOST = "TARGET_HOST";
+    public static final String PROXY = "PROXY";
     private boolean preserveHost;
     private CookieManager cookieManager;
     private HttpClient httpClient;
@@ -268,6 +269,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         httpRequest.getParams().setParameter(ExecutionContext.HTTP_REQUEST, httpRequest);
 
         httpRequest.setHeader(HttpHeaders.HOST, virtualHost.toHostString());
+
+        httpRequest.getParams().setBooleanParameter(PROXY, proxy);
 
         return httpRequest;
     }
