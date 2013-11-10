@@ -22,6 +22,34 @@ public class EsigateServerTest extends AbstractEsigateServerTest {
     static final int STATUS_NOTFOUND = 404;
 
     /**
+     * Test control handler (auto mode).
+     * 
+     * @throws Exception
+     *             on error.
+     */
+    @Test
+    @SuppressWarnings("static-method")
+    public void testControlConnectionAuto() throws Exception {
+
+        WebConversation webConversation;
+
+        webConversation = new WebConversation();
+        webConversation.setExceptionsThrownOnErrorStatus(false);
+        WebRequest req = new GetMethodWebRequest("http://localhost:8081/server-status");
+        req.setParameter("auto", "");
+        WebResponse resp = webConversation.getResponse(req);
+
+        assertEquals(STATUS_OK, resp.getResponseCode());
+        System.out.println(resp.getText());
+
+        assertTrue(StatusReader.getLong(resp.getText(), "Uptime") > 0);
+        assertTrue(StatusReader.getDouble(resp.getText(), "CPULoad") > 0);
+        assertEquals(0, StatusReader.getLong(resp.getText(), "Total Accesses").longValue());
+        assertEquals(0d, StatusReader.getDouble(resp.getText(), "ReqPerSec"));
+
+    }
+
+    /**
      * Test control handler.
      * 
      * @throws Exception
@@ -35,17 +63,11 @@ public class EsigateServerTest extends AbstractEsigateServerTest {
 
         webConversation = new WebConversation();
         webConversation.setExceptionsThrownOnErrorStatus(false);
-        WebRequest req = new GetMethodWebRequest("http://localhost:8081/server-status?auto");
+        WebRequest req = new GetMethodWebRequest("http://localhost:8081/server-status");
         WebResponse resp = webConversation.getResponse(req);
 
         assertEquals(STATUS_OK, resp.getResponseCode());
         System.out.println(resp.getText());
-
-        assertTrue(StatusReader.getLong(resp.getText(), "Uptime") > 0);
-        assertTrue(StatusReader.getDouble(resp.getText(), "CPULoad") > 0);
-        assertEquals(0, StatusReader.getLong(resp.getText(), "Total Accesses").longValue());
-        assertEquals(0d, StatusReader.getDouble(resp.getText(), "ReqPerSec"));
-
     }
 
     /**
