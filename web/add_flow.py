@@ -491,7 +491,7 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "    Flags:\n"
   usage_msg = usage_msg + "        -m [monitorname]  Monitor and maintain the installed shortest path(s)\n"
   usage_msg = usage_msg + "                          If 'monitorname' is specified and is set to 'ONOS'\n"
-  usage_msg = usage_msg + "                          ((case insensitive), then the flow generation and\n"
+  usage_msg = usage_msg + "                          (case insensitive), then the flow generation and\n"
   usage_msg = usage_msg + "                          maintanenance is done by ONOS itself.\n"
   usage_msg = usage_msg + "                          Otherwise, it is done by this script.\n"
   usage_msg = usage_msg + "        -f <filename>     Read the flow(s) to install from a file\n"
