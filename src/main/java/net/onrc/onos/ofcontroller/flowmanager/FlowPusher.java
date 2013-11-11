@@ -47,8 +47,6 @@ public class FlowPusher {
     public static final short PRIORITY_DEFAULT = 100;
     public static final short FLOWMOD_DEFAULT_IDLE_TIMEOUT = 0;	// infinity
     public static final short FLOWMOD_DEFAULT_HARD_TIMEOUT = 0;	// infinite
-    
-    
 
 	public enum QueueState {
 		READY,
@@ -59,7 +57,7 @@ public class FlowPusher {
 		QueueState state;
 		
 		// Max rate of sending message (bytes/sec). 0 implies no limitation.
-		long max_rate = Long.MAX_VALUE;
+		long max_rate = 0;	// 0 indicates no limitation
 		long last_sent_time = 0;
 		long last_sent_size = 0;
 		
@@ -69,6 +67,11 @@ public class FlowPusher {
 		 * @return true if within the rate
 		 */
 		boolean isSendable(long current) {
+			if (max_rate == 0) {
+				// no limitation
+				return true;
+			}
+			
 			long rate = last_sent_size / (current - last_sent_time);
 			
 			if (rate < max_rate) {
@@ -122,14 +125,11 @@ public class FlowPusher {
 						continue;
 					}
 					
+					// check sending rate and determine it to be sent or not
+					long current_time = System.nanoTime();
+					
 					synchronized (queue) {
-						log.debug("Queue size : {}", queue.size());
-						
-						// check sending rate and determine it to be sent or not
-						long current_time = System.nanoTime();
-						
 						if (queue.isSendable(current_time)) {
-							// TODO send multiple messages at once
 							while (! queue.isEmpty()) {
 								OFMessage msg = queue.poll();
 								
@@ -159,6 +159,7 @@ public class FlowPusher {
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						log.error("Thread.sleep failed");
 					}
 				}
 				
@@ -168,6 +169,7 @@ public class FlowPusher {
 					log.debug("Pusher Process finished.");
 					return;
 				}
+
 			}
 		}
 	}
@@ -202,35 +204,50 @@ public class FlowPusher {
 	 * Suspend processing a queue related to given switch.
 	 * @param sw
 	 */
-	public void suspend(IOFSwitch sw) {
+	public boolean suspend(IOFSwitch sw) {
 		SwitchQueue queue = getQueue(sw);
 		
 		if (queue == null) {
-			return;
+			return false;
 		}
 		
 		synchronized (queue) {
 			if (queue.state == QueueState.READY) {
 				queue.state = QueueState.SUSPENDED;
+				return true;
 			}
+			return false;
 		}
 	}
 
 	/**
 	 * Resume processing a queue related to given switch.
 	 */
-	public void resume(IOFSwitch sw) {
+	public boolean resume(IOFSwitch sw) {
 		SwitchQueue queue = getQueue(sw);
 		
 		if (queue == null) {
-			return;
+			return false;
 		}
 		
 		synchronized (queue) {
 			if (queue.state == QueueState.SUSPENDED) {
 				queue.state = QueueState.READY;
+				return true;
 			}
+			return false;
 		}
+	}
+	
+	public boolean isSuspended(IOFSwitch sw) {
+		SwitchQueue queue = getQueue(sw);
+		
+		if (queue == null) {
+			// TODO Is true suitable for this case?
+			return true;
+		}
+		
+		return (queue.state == QueueState.SUSPENDED);
 	}
 
 	/**
@@ -268,6 +285,8 @@ public class FlowPusher {
 			}
 		}
 		
+		log.debug("Message is pushed : {}", msg);
+		
 		synchronized (queue) {
 			queue.add(msg);
 		}
@@ -285,6 +304,7 @@ public class FlowPusher {
 	 * @return
 	 */
 	public boolean send(IOFSwitch sw, IFlowPath flowObj, IFlowEntry flowEntryObj) {
+		log.debug("sending : {}, {}", sw, flowObj);
 		String flowEntryIdStr = flowEntryObj.getFlowEntryId();
 		if (flowEntryIdStr == null)
 		    return false;

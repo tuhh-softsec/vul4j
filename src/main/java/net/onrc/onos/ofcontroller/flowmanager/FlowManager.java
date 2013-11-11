@@ -18,7 +18,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
-
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
@@ -31,13 +30,15 @@ import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.*;
 
+import org.openflow.protocol.OFMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Flow Manager class for handling the network flows.
  */
-public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
+public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage,
+	IFlowPusherService {
 
     protected GraphDBOperation dbHandler;
 
@@ -106,6 +107,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		Iterable<IFlowEntry> allFlowEntries =
 		    dbHandler.getAllSwitchNotUpdatedFlowEntries();
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
+			log.debug("flowEntryobj : {}", flowEntryObj);
+			
 		    counterAllFlowEntries++;
 
 		    String dpidStr = flowEntryObj.getSwitchDpid();
@@ -140,6 +143,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 		    counterMyNotUpdatedFlowEntries++;
 		}
+		
+		log.debug("addFlowEntries : {}", addFlowEntries);
 
 		//
 		// Process the Flow Entries that need to be added
@@ -443,12 +448,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	
 	pusher = new FlowPusher();
 	pusher.init(null, floodlightProvider.getOFMessageFactory(), null);
+	
 	this.init("");
 
 	mapReaderScheduler = Executors.newScheduledThreadPool(1);
 	shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
-	
-	pusher.start();
     }
 
     /**
@@ -485,6 +489,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
+
+	pusher.start();
 
 	//
 	// Create the Path Computation thread and register it with the
@@ -779,7 +785,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     private boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
 				    IFlowEntry flowEntryObj) {
-    	log.debug("Flow is sent to pusher : dpid({}) flow_id({})", mySwitch.getId(), flowEntryObj.getFlowEntryId());
     	return pusher.send(mySwitch, flowObj, flowEntryObj);
     }
 
@@ -907,4 +912,44 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	dbHandler.commit();
     }
+
+	@Override
+	public void addMessage(long dpid, OFMessage msg) {
+		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
+		if (sw == null) {
+			return;
+		}
+		
+		pusher.send(sw, msg);
+	}
+
+	@Override
+	public boolean suspend(long dpid) {
+		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
+		if (sw == null) {
+			return false;
+		}
+		
+		return pusher.suspend(sw);
+	}
+
+	@Override
+	public boolean resume(long dpid) {
+		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
+		if (sw == null) {
+			return false;
+		}
+		
+		return pusher.resume(sw);
+	}
+
+	@Override
+	public boolean isSuspended(long dpid) {
+		IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
+		if (sw == null) {
+			return false;
+		}
+		
+		return pusher.isSuspended(sw);
+	}
 }
