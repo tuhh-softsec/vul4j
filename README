@@ -1,0 +1,27 @@
+Lada-Server
+===========
+
+Installation
+------------
+Zur Installation der Lada-Anwendung müssen folgende Schritte unternommen werden:
+
+mvn clean compile package
+cd /opt/jboss-as-7.1.1.Final/standalone/deployments
+cp /path/where/the/war/file/is/lada.war .
+touch lada.war.dodeploy
+
+Zum Aktualisieren der Anwendung genügt es, wenn die lada.war Datei aktualisiert
+wird.
+
+Die Anwendung ist dann unter dem Pfad "/lada" (abhängig vom Archivnamen)
+erreichbar.
+
+Dokumenation
+------------
+Die Entwicklerdokumentation (Javadoc) kann mit dem folgenden Befehl im
+Verzeichnis der Serveranwendung erzeugt werden:
+
+mvn javadoc:javadoc
+
+Der Ordner 'target' enthält dann die Dokumentation im HTML-Format in dem
+Verzeichnis 'site/apidocs'.
