@@ -67,7 +67,15 @@ public class MultiInputStream extends InputStream {
 
     @Override
     public long skip(long n) throws IOException {
-        throw new UnsupportedOperationException("skip() not supported");
+        throw new IOException("skip() not supported");
+    }
+    
+    @Override
+    public int available() throws IOException {
+        if (inputStreamIndex < inputStreamCount) {
+            return inputStreams[inputStreamIndex].available();
+        }
+        return 0;
     }
 
     @Override

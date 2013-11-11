@@ -204,6 +204,14 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 final String algorithmURI = encryptedDataType.getEncryptionMethod().getAlgorithm();
                 final int ivLength = JCEAlgorithmMapper.getIVLengthFromURI(algorithmURI) / 8;
                 Cipher symCipher = getCipher(algorithmURI);
+                
+                if (encryptedDataType.getCipherData().getCipherReference() != null) {
+                    handleCipherReference(inputProcessorChain, encryptedDataType, symCipher, inboundSecurityToken);
+                    subInputProcessorChain.reset();
+                    return isSecurityHeaderEvent
+                        ? subInputProcessorChain.processHeaderEvent()
+                        : subInputProcessorChain.processEvent();
+                }
 
                 //create a new Thread for streaming decryption
                 DecryptionThread decryptionThread =
@@ -434,7 +442,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             if (++count >= 50) {
                 throw new XMLSecurityException("stax.xmlStructureSizeExceeded", 50);
             }
-            
+
+            //the keyInfoCount is necessary to prevent early while-loop abort when the KeyInfo also contains a CipherValue.
             if (encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.START_ELEMENT
                 && encryptedDataXMLSecEvent.asStartElement().getName().equals(
                         XMLSecurityConstants.TAG_dsig_KeyInfo)) {
@@ -445,8 +454,10 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 keyInfoCount--;
             }
         }
-        while (!(encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.START_ELEMENT
+        while (!((encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.START_ELEMENT
                 && encryptedDataXMLSecEvent.asStartElement().getName().equals(XMLSecurityConstants.TAG_xenc_CipherValue)
+                || encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.END_ELEMENT
+                && encryptedDataXMLSecEvent.asEndElement().getName().equals(XMLSecurityConstants.TAG_xenc_EncryptedData))
                 && keyInfoCount == 0));
 
         xmlSecEvents.push(XMLSecEventFactory.createXmlSecEndElement(XMLSecurityConstants.TAG_xenc_CipherValue));
@@ -500,6 +511,10 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                                                    XMLSecStartElement parentXMLSecStartElement,
                                                    InboundSecurityToken inboundSecurityToken,
                                                    EncryptedDataType encryptedDataType) throws XMLSecurityException;
+
+    protected abstract void handleCipherReference(InputProcessorChain inputProcessorChain,
+                                                  EncryptedDataType encryptedDataType, Cipher cipher,
+                                                  InboundSecurityToken inboundSecurityToken) throws XMLSecurityException;
 
     protected ReferenceType matchesReferenceId(XMLSecStartElement xmlSecStartElement) {
         Attribute refId = getReferenceIDAttribute(xmlSecStartElement);

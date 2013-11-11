@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.processor.output;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_Excl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -72,56 +73,66 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
     }
 
     protected void doFinalInternal(OutputProcessorChain outputProcessorChain) throws XMLSecurityException, XMLStreamException {
-        List<SignaturePartDef> signaturePartDefs = getSignaturePartDefList();
-
-        Map<Object, SecurePart> dynamicSecureParts = outputProcessorChain.getSecurityContext().getAsMap(XMLSecurityConstants.SIGNATURE_PARTS);
+        Map<Object, SecurePart> dynamicSecureParts =
+                outputProcessorChain.getSecurityContext().getAsMap(XMLSecurityConstants.SIGNATURE_PARTS);
         Iterator<Map.Entry<Object, SecurePart>> securePartsMapIterator = dynamicSecureParts.entrySet().iterator();
         while (securePartsMapIterator.hasNext()) {
             Map.Entry<Object, SecurePart> securePartEntry = securePartsMapIterator.next();
             final SecurePart securePart = securePartEntry.getValue();
-            final String externalReference = securePart.getExternalReference();
-            if (externalReference != null) {
-                ResourceResolver resourceResolver = ResourceResolverMapper.getResourceResolver(externalReference, outputProcessorChain.getDocumentContext().getBaseURI());
-
-                DigestOutputStream digestOutputStream = createMessageDigestOutputStream(securePart.getDigestMethod());
-                InputStream inputStream = resourceResolver.getInputStreamFromExternalReference();
-
-                SignaturePartDef signaturePartDef = new SignaturePartDef();
-                signaturePartDef.setSecurePart(securePart);
-                signaturePartDef.setSigRefId(externalReference);
-                signaturePartDef.setExternalResource(true);
-                signaturePartDef.setTransforms(securePart.getTransforms());
-                String digestMethod = securePart.getDigestMethod();
-                if (digestMethod == null) {
-                    digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
-                }
-                signaturePartDef.setDigestAlgo(digestMethod);
-                signaturePartDefs.add(signaturePartDef);
-
-                try {
-                    if (securePart.getTransforms() != null) {
-                        signaturePartDef.setExcludeVisibleC14Nprefixes(true);
-                        Transformer transformer = buildTransformerChain(digestOutputStream, signaturePartDef, null);
-                        transformer.transform(inputStream);
-                        transformer.doFinal();
-                    } else {
-                        XMLSecurityUtils.copy(inputStream, digestOutputStream);
-                    }
-                    digestOutputStream.close();
-                } catch (IOException e) {
-                    throw new XMLSecurityException(e);
-                }
-
-                String calculatedDigest = new String(Base64.encodeBase64(digestOutputStream.getDigestValue()));
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Calculated Digest: " + calculatedDigest);
-                }
-
-                signaturePartDef.setDigestValue(calculatedDigest);
+            if (securePart.getExternalReference() != null) {
+                digestExternalReference(outputProcessorChain, securePart);
             }
         }
 
         verifySignatureParts(outputProcessorChain);
+    }
+
+    protected void digestExternalReference(
+            OutputProcessorChain outputProcessorChain, SecurePart securePart)
+            throws XMLSecurityException, XMLStreamException {
+
+        final String externalReference = securePart.getExternalReference();
+        ResourceResolver resourceResolver =
+                ResourceResolverMapper.getResourceResolver(
+                        externalReference, outputProcessorChain.getDocumentContext().getBaseURI());
+
+        String digestAlgo = securePart.getDigestMethod();
+        if (digestAlgo == null) {
+            digestAlgo = getSecurityProperties().getSignatureDigestAlgorithm();
+        }
+
+        DigestOutputStream digestOutputStream = createMessageDigestOutputStream(digestAlgo);
+        InputStream inputStream = resourceResolver.getInputStreamFromExternalReference();
+
+        SignaturePartDef signaturePartDef = new SignaturePartDef();
+        signaturePartDef.setSecurePart(securePart);
+        signaturePartDef.setSigRefId(externalReference);
+        signaturePartDef.setExternalResource(true);
+        signaturePartDef.setTransforms(securePart.getTransforms());
+        signaturePartDef.setDigestAlgo(digestAlgo);
+
+        try {
+            if (securePart.getTransforms() != null) {
+                signaturePartDef.setExcludeVisibleC14Nprefixes(true);
+                Transformer transformer = buildTransformerChain(digestOutputStream, signaturePartDef, null);
+                transformer.transform(inputStream);
+                transformer.doFinal();
+            } else {
+                XMLSecurityUtils.copy(inputStream, digestOutputStream);
+            }
+            digestOutputStream.close();
+        } catch (IOException e) {
+            throw new XMLSecurityException(e);
+        }
+
+        String calculatedDigest = new String(Base64.encodeBase64(digestOutputStream.getDigestValue()));
+        if (logger.isDebugEnabled()) {
+            logger.debug("Calculated Digest: " + calculatedDigest);
+        }
+
+        signaturePartDef.setDigestValue(calculatedDigest);
+
+        getSignaturePartDefList().add(signaturePartDef);
     }
 
     protected void verifySignatureParts(OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
@@ -155,7 +166,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         this.activeInternalSignatureOutputProcessor = activeInternalSignatureOutputProcessor;
     }
 
-    private DigestOutputStream createMessageDigestOutputStream(String digestAlgorithm)
+    protected DigestOutputStream createMessageDigestOutputStream(String digestAlgorithm)
             throws XMLSecurityException {
 
         String jceName = JCEAlgorithmMapper.translateURItoJCEID(digestAlgorithm);
@@ -195,9 +206,9 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         for (int i = transforms.length - 1; i >= 0; i--) {
             String transform = transforms[i];
 
-            List<String> inclusiveNamespacePrefixes = null;
+            Map<String, Object> transformerProperties = null;
             if (getSecurityProperties().isAddExcC14NInclusivePrefixes() &&
-                    XMLSecurityConstants.NS_C14N_EXCL.equals(transform)) {
+                    XMLSecurityConstants.NS_C14N_EXCL_OMIT_COMMENTS.equals(transform)) {
 
                 Set<String> prefixSet = XMLSecurityUtils.getExcC14NInclusiveNamespacePrefixes(
                         xmlSecStartElement, signaturePartDef.isExcludeVisibleC14Nprefixes()
@@ -210,16 +221,19 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                     }
                     prefixes.append(prefix);
                 }
-                inclusiveNamespacePrefixes = new ArrayList<String>(prefixSet);
                 signaturePartDef.setInclusiveNamespacesPrefixes(prefixes.toString());
+                List<String> inclusiveNamespacePrefixes = new ArrayList<String>(prefixSet);
+                transformerProperties = new HashMap<String, Object>();
+                transformerProperties.put(
+                        Canonicalizer20010315_Excl.INCLUSIVE_NAMESPACES_PREFIX_LIST, inclusiveNamespacePrefixes);
             }
 
             if (parentTransformer != null) {
                 parentTransformer = XMLSecurityUtils.getTransformer(
-                        parentTransformer, null, transform, XMLSecurityConstants.DIRECTION.OUT);
+                        parentTransformer, null, transformerProperties, transform, XMLSecurityConstants.DIRECTION.OUT);
             } else {
                 parentTransformer = XMLSecurityUtils.getTransformer(
-                        inclusiveNamespacePrefixes, outputStream, transform, XMLSecurityConstants.DIRECTION.OUT);
+                        null, outputStream, transformerProperties, transform, XMLSecurityConstants.DIRECTION.OUT);
             }
         }
         return parentTransformer;

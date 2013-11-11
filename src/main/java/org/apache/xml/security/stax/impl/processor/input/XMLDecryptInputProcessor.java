@@ -20,6 +20,7 @@ package org.apache.xml.security.stax.impl.processor.input;
 
 import java.util.List;
 
+import javax.crypto.Cipher;
 import javax.xml.namespace.QName;
 
 import org.apache.xml.security.binding.xmlenc.EncryptedDataType;
@@ -79,6 +80,12 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
         contentEncryptedElementSecurityEvent.setSecurityToken(inboundSecurityToken);
         contentEncryptedElementSecurityEvent.setCorrelationID(encryptedDataType.getId());
         inputProcessorChain.getSecurityContext().registerSecurityEvent(contentEncryptedElementSecurityEvent);
+    }
+
+    @Override
+    protected void handleCipherReference(InputProcessorChain inputProcessorChain, EncryptedDataType encryptedDataType,
+                                         Cipher cipher, InboundSecurityToken inboundSecurityToken) throws XMLSecurityException {
+        throw new XMLSecurityException("errorMessages.NotYetImplementedException");
     }
 
     /**

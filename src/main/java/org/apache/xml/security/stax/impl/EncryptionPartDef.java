@@ -35,6 +35,8 @@ public class EncryptionPartDef {
     private Key symmetricKey;
     private String keyId;
     private String encRefId;
+    private String cipherReferenceId;
+    private String mimeType;
 
     public SecurePart getSecurePart() {
         return securePart;
@@ -74,5 +76,21 @@ public class EncryptionPartDef {
 
     public void setEncRefId(String encRefId) {
         this.encRefId = encRefId;
+    }
+
+    public String getCipherReferenceId() {
+        return cipherReferenceId;
+    }
+
+    public void setCipherReferenceId(String cipherReferenceId) {
+        this.cipherReferenceId = cipherReferenceId;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 }

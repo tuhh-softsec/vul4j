@@ -64,8 +64,8 @@ public class SecurePart {
     private String idToSign;
     private String idToReference;
     private String externalReference;
-    private String[] transforms = new String[]{XMLSecurityConstants.NS_C14N_EXCL};
-    private String digestMethod = XMLSecurityConstants.NS_XMLDSIG_SHA1;
+    private String[] transforms;
+    private String digestMethod;
     private boolean required = true;
 
     public SecurePart(QName name, Modifier modifier) {
@@ -99,6 +99,11 @@ public class SecurePart {
 
     public SecurePart(String externalReference) {
         this.externalReference = externalReference;
+    }
+
+    public SecurePart(String externalReference, Modifier modifier) {
+        this.externalReference = externalReference;
+        this.modifier = modifier;
     }
 
     public SecurePart(String externalReference, String[] transforms, String digestMethod) {

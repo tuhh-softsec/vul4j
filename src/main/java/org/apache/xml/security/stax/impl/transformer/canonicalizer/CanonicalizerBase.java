@@ -77,8 +77,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
+    public void setProperties(Map<String, Object> properties) throws XMLSecurityException {
         throw new UnsupportedOperationException("InclusiveNamespace-PrefixList not supported");
     }
 

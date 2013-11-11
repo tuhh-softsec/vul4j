@@ -73,12 +73,14 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
                     SignaturePartDef signaturePartDef = new SignaturePartDef();
                     signaturePartDef.setSecurePart(securePart);
                     signaturePartDef.setTransforms(securePart.getTransforms());
-                    signaturePartDef.setExcludeVisibleC14Nprefixes(true);
-                    String digestMethod = securePart.getDigestMethod();
-                    if (digestMethod == null) {
-                        digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
+                    if (signaturePartDef.getTransforms() == null) {
+                        signaturePartDef.setTransforms(new String[]{XMLSecurityConstants.NS_C14N_EXCL_OMIT_COMMENTS});
                     }
-                    signaturePartDef.setDigestAlgo(digestMethod);
+                    signaturePartDef.setExcludeVisibleC14Nprefixes(true);
+                    signaturePartDef.setDigestAlgo(securePart.getDigestMethod());
+                    if (signaturePartDef.getDigestAlgo() == null) {
+                        signaturePartDef.setDigestAlgo(getSecurityProperties().getSignatureDigestAlgorithm());
+                    }
 
                     if (securePart.getIdToSign() == null) {
                         signaturePartDef.setGenerateXPointer(securePart.isGenerateXPointer());

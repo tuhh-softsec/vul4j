@@ -29,7 +29,7 @@ import org.apache.xml.security.stax.impl.util.UnsynchronizedByteArrayOutputStrea
 
 import javax.xml.stream.*;
 import java.io.*;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author $Author: $
@@ -43,7 +43,6 @@ public class TransformIdentity implements Transformer {
     private XMLEventWriter xmlEventWriterForOutputStream;
     private Transformer transformer;
     private ChildOutputMethod childOutputMethod;
-    private List list;
 
     protected static XMLOutputFactory getXmlOutputFactory() {
         synchronized(TransformIdentity.class) {
@@ -98,12 +97,8 @@ public class TransformIdentity implements Transformer {
     }
 
     @Override
-    public void setList(List list) throws XMLSecurityException {
-        this.list = list;
-    }
-
-    protected List getList() {
-        return list;
+    public void setProperties(Map<String, Object> properties) throws XMLSecurityException {
+        throw new UnsupportedOperationException("no properties supported");
     }
 
     @Override

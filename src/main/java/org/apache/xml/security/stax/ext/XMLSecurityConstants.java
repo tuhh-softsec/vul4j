@@ -194,12 +194,15 @@ public class XMLSecurityConstants {
     public static final QName TAG_xenc_EncryptionProperties = new QName(NS_XMLENC, "EncryptionProperties", PREFIX_XENC);
     public static final QName TAG_xenc_CipherData = new QName(NS_XMLENC, "CipherData", PREFIX_XENC);
     public static final QName TAG_xenc_CipherValue = new QName(NS_XMLENC, "CipherValue", PREFIX_XENC);
+    public static final QName TAG_xenc_CipherReference = new QName(NS_XMLENC, "CipherReference", PREFIX_XENC);
     public static final QName TAG_xenc_ReferenceList = new QName(NS_XMLENC, "ReferenceList", PREFIX_XENC);
     public static final QName TAG_xenc_DataReference = new QName(NS_XMLENC, "DataReference", PREFIX_XENC);
     public static final QName ATT_NULL_URI = new QName(null, "URI");
 
     public static final QName TAG_xenc_EncryptedData = new QName(NS_XMLENC, "EncryptedData", PREFIX_XENC);
-    
+
+    public static final QName TAG_xenc_Transforms = new QName(NS_XMLENC, "Transforms", PREFIX_XENC);
+
     public static final String PREFIX_WSSE11 = "wsse11";
     public static final QName TAG_wsse11_EncryptedHeader = new QName(NS_WSSE11, "EncryptedHeader", PREFIX_WSSE11);
 

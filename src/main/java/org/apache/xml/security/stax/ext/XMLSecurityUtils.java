@@ -111,8 +111,9 @@ public class XMLSecurityUtils {
         return Thread.currentThread().getContextClassLoader().loadClass(className);
     }
 
-    public static Transformer getTransformer(Object methodParameter1, Object methodParameter2, String algorithm,
-                                             XMLSecurityConstants.DIRECTION direction) throws XMLSecurityException {
+    public static Transformer getTransformer(
+            Transformer transformer, OutputStream outputStream, Map<String, Object> properties, String algorithm,
+            XMLSecurityConstants.DIRECTION direction) throws XMLSecurityException {
 
         @SuppressWarnings("unchecked")
         Class<Transformer> transformerClass = (Class<Transformer>) TransformerAlgorithmMapper.getTransformerClass(algorithm, direction);
@@ -120,13 +121,13 @@ public class XMLSecurityUtils {
 
         try {
             childTransformer = transformerClass.newInstance();
-            if (methodParameter2 != null) {
-                if (methodParameter1 != null) {
-                    childTransformer.setList((List<?>) methodParameter1);
-                }
-                childTransformer.setOutputStream((OutputStream) methodParameter2);
+            if (properties != null) {
+                childTransformer.setProperties(properties);
+            }
+            if (outputStream != null) {
+                childTransformer.setOutputStream(outputStream);
             } else {
-                childTransformer.setTransformer((Transformer) methodParameter1);
+                childTransformer.setTransformer(transformer);
             }
         } catch (InstantiationException e) {
             throw new XMLSecurityException(e);

@@ -29,6 +29,9 @@ import java.util.*;
  */
 public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
 
+    public static final String INCLUSIVE_NAMESPACES_PREFIX_LIST = "inclusiveNamespacePrefixList";
+    public static final String PROPAGATE_DEFAULT_NAMESPACE = "propagateDefaultNamespace";
+
     protected ArrayList<String> inclusiveNamespaces = null;
     protected boolean propagateDefaultNamespace = false;
 
@@ -38,12 +41,12 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
-        this.inclusiveNamespaces = getPrefixList(list);
-    }
-
-    public void setPropagateDefaultNamespace(boolean propagateDefaultNamespace) {
-        this.propagateDefaultNamespace = propagateDefaultNamespace;
+    public void setProperties(Map<String, Object> properties) throws XMLSecurityException {
+        this.inclusiveNamespaces = getPrefixList((List<String>)properties.get(INCLUSIVE_NAMESPACES_PREFIX_LIST));
+        Boolean propagateDfltNs = (Boolean)properties.get(PROPAGATE_DEFAULT_NAMESPACE);
+        if (propagateDfltNs != null) {
+            propagateDefaultNamespace = propagateDfltNs;
+        }
     }
 
     protected static ArrayList<String> getPrefixList(List<String> inclusiveNamespaces) {
@@ -103,9 +106,8 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
         }
 
         if (this.inclusiveNamespaces != null) {
-            final Iterator<String> iterator = this.inclusiveNamespaces.iterator();
-            while (iterator.hasNext()) {
-                final String prefix = iterator.next();
+            for (int i = 0; i < inclusiveNamespaces.size(); i++) {
+                final String prefix = inclusiveNamespaces.get(i);
                 String ns = xmlSecStartElement.getNamespaceURI(prefix);
                 if (ns == null && prefix.isEmpty()) {
                     ns = "";

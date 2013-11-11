@@ -24,7 +24,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author $Author$
@@ -36,7 +36,7 @@ public interface Transformer {
 
     void setTransformer(Transformer transformer) throws XMLSecurityException;
 
-    void setList(List<?> list) throws XMLSecurityException;
+    void setProperties(Map<String, Object> properties) throws XMLSecurityException;
 
     XMLSecurityConstants.TransformMethod getPreferredTransformMethod(XMLSecurityConstants.TransformMethod forInput);
 

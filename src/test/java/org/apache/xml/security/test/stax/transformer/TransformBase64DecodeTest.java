@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author $Author$
@@ -72,7 +73,7 @@ public class TransformBase64DecodeTest extends org.junit.Assert {
             }
 
             @Override
-            public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
+            public void setProperties(Map<String, Object> properties) throws XMLSecurityException {
             }
 
             @Override
@@ -137,7 +138,7 @@ public class TransformBase64DecodeTest extends org.junit.Assert {
             }
 
             @Override
-            public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
+            public void setProperties(Map<String, Object> properties) throws XMLSecurityException {
             }
 
             @Override
@@ -248,7 +249,7 @@ public class TransformBase64DecodeTest extends org.junit.Assert {
             }
 
             @Override
-            public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
+            public void setProperties(Map<String, Object> properties) throws XMLSecurityException {
             }
 
             @Override
@@ -296,7 +297,7 @@ public class TransformBase64DecodeTest extends org.junit.Assert {
             }
 
             @Override
-            public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
+            public void setProperties(Map<String, Object> properties) throws XMLSecurityException {
             }
 
             @Override

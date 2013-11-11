@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.processor.input;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_Excl;
 import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -198,6 +199,8 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
     @Override
     public void doFinal(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
+        //first call must be (order matters!):
+        inputProcessorChain.doFinal();
 
         for (int i = 0; i < sameDocumentReferences.size(); i++) {
             KeyValue<ResourceResolver, ReferenceType> keyValue = sameDocumentReferences.get(i);
@@ -209,7 +212,10 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         if (externalReferences.size() > 0) {
             for (int i = 0; i < externalReferences.size(); i++) {
                 KeyValue<ResourceResolver, ReferenceType> keyValue = externalReferences.get(i);
-                verifyExternalReference(inputProcessorChain, keyValue.getKey(), keyValue.getValue());
+                verifyExternalReference(
+                        inputProcessorChain,
+                        keyValue.getKey().getInputStreamFromExternalReference(),
+                        keyValue.getValue());
                 processedReferences.add(keyValue.getValue());
             }
 
@@ -220,8 +226,6 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                 }
             }
         }
-
-        inputProcessorChain.doFinal();
     }
 
     protected InternalSignatureReferenceVerifier getSignatureReferenceVerifier(
@@ -230,36 +234,35 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         return new InternalSignatureReferenceVerifier(securityProperties, inputProcessorChain, referenceType, startElement);
     }
 
-    private void verifyExternalReference(InputProcessorChain inputProcessorChain, ResourceResolver resourceResolver,
+    protected void verifyExternalReference(InputProcessorChain inputProcessorChain, InputStream inputStream,
                                          ReferenceType referenceType) throws XMLSecurityException, XMLStreamException {
 
-        DigestOutputStream digestOutputStream;
-        OutputStream bufferedDigestOutputStream;
-        Transformer transformer;
-
-        InputStream inputStream = new BufferedInputStream(resourceResolver.getInputStreamFromExternalReference());
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
         try {
-            digestOutputStream = createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
-            bufferedDigestOutputStream = new UnsynchronizedBufferedOutputStream(digestOutputStream);
+            DigestOutputStream digestOutputStream =
+                    createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
+            UnsynchronizedBufferedOutputStream bufferedDigestOutputStream =
+                    new UnsynchronizedBufferedOutputStream(digestOutputStream);
 
             if (referenceType.getTransforms() != null) {
-                transformer = buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain, null);
-                transformer.transform(inputStream);
+                Transformer transformer =
+                        buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain, null);
+                transformer.transform(bufferedInputStream);
                 bufferedDigestOutputStream.close();
             } else {
-                XMLSecurityUtils.copy(inputStream, bufferedDigestOutputStream);
+                XMLSecurityUtils.copy(bufferedInputStream, bufferedDigestOutputStream);
                 bufferedDigestOutputStream.close();
             }
+            compareDigest(digestOutputStream.getDigestValue(), referenceType);
         } catch (IOException e) {
             throw new XMLSecurityException(e);
         } finally {
             try {
-                inputStream.close();
+                bufferedInputStream.close();
             } catch (IOException e) {
                 logger.warn("Could not close external resource input stream, ignored.");
             }
         }
-        compareDigest(digestOutputStream.getDigestValue(), referenceType);
     }
 
     protected DigestOutputStream createMessageDigestOutputStream(ReferenceType referenceType, InboundSecurityContext inboundSecurityContext)
@@ -333,12 +336,6 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         for (int i = transformTypeList.size() - 1; i >= 0; i--) {
             TransformType transformType = transformTypeList.get(i);
 
-            InclusiveNamespaces inclusiveNamespacesType =
-                    XMLSecurityUtils.getQNameType(transformType.getContent(),
-                            XMLSecurityConstants.TAG_c14nExcl_InclusiveNamespaces);
-            List<String> inclusiveNamespaces = inclusiveNamespacesType != null
-                    ? inclusiveNamespacesType.getPrefixList()
-                    : null;
             String algorithm = transformType.getAlgorithm();
 
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
@@ -347,19 +344,31 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
             inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
 
+            InclusiveNamespaces inclusiveNamespacesType =
+                    XMLSecurityUtils.getQNameType(transformType.getContent(),
+                            XMLSecurityConstants.TAG_c14nExcl_InclusiveNamespaces);
+
+            Map<String, Object> transformerProperties = null;
+            if (inclusiveNamespacesType != null) {
+                transformerProperties = new HashMap<String, Object>();
+                transformerProperties.put(
+                        Canonicalizer20010315_Excl.INCLUSIVE_NAMESPACES_PREFIX_LIST,
+                        inclusiveNamespacesType.getPrefixList());
+            }
+
             if (parentTransformer != null) {
                 parentTransformer = XMLSecurityUtils.getTransformer(
-                        parentTransformer, inclusiveNamespaces, algorithm, XMLSecurityConstants.DIRECTION.IN);
+                        parentTransformer, null, transformerProperties, algorithm, XMLSecurityConstants.DIRECTION.IN);
             } else {
                 parentTransformer =
                         XMLSecurityUtils.getTransformer(
-                                inclusiveNamespaces, outputStream, algorithm, XMLSecurityConstants.DIRECTION.IN);
+                                null, outputStream, transformerProperties, algorithm, XMLSecurityConstants.DIRECTION.IN);
             }
         }
         return parentTransformer;
     }
 
-    private void compareDigest(byte[] calculatedDigest, ReferenceType referenceType) throws XMLSecurityException {
+    protected void compareDigest(byte[] calculatedDigest, ReferenceType referenceType) throws XMLSecurityException {
         if (logger.isDebugEnabled()) {
             logger.debug("Calculated Digest: " + new String(Base64.encodeBase64(calculatedDigest)));
             logger.debug("Stored Digest: " + new String(Base64.encodeBase64(referenceType.getDigestValue())));

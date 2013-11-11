@@ -24,6 +24,7 @@ import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.binding.xmldsig.SignedInfoType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
+import org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_Excl;
 import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
@@ -41,10 +42,7 @@ import java.io.OutputStream;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author $Author$
@@ -152,6 +150,7 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
         Transformer transformer = XMLSecurityUtils.getTransformer(
                 null,
                 unsynchronizedByteArrayOutputStream,
+                null,
                 signatureType.getSignedInfo().getCanonicalizationMethod().getAlgorithm(),
                 XMLSecurityConstants.DIRECTION.IN);
 
@@ -309,12 +308,18 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
                                 canonicalizationMethodType.getContent(),
                                 XMLSecurityConstants.TAG_c14nExcl_InclusiveNamespaces
                         );
-                List<String> inclusiveNamespaces = inclusiveNamespacesType != null
-                        ? inclusiveNamespacesType.getPrefixList()
-                        : null;
+
+                Map<String, Object> transformerProperties = null;
+                if (inclusiveNamespacesType != null) {
+                    transformerProperties = new HashMap<String, Object>();
+                    transformerProperties.put(
+                            Canonicalizer20010315_Excl.INCLUSIVE_NAMESPACES_PREFIX_LIST,
+                            inclusiveNamespacesType.getPrefixList());
+                }
                 transformer = XMLSecurityUtils.getTransformer(
-                        inclusiveNamespaces,
+                        null,
                         this.bufferedSignerOutputStream,
+                        transformerProperties,
                         canonicalizationMethodType.getAlgorithm(),
                         XMLSecurityConstants.DIRECTION.IN);
             } catch (NoSuchAlgorithmException e) {
