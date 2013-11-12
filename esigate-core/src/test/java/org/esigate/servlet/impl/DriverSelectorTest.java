@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.esigate.servlet;
+package org.esigate.servlet.impl;
 
 import java.util.Properties;
 

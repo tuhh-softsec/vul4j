@@ -1,4 +1,4 @@
-package org.esigate.servlet;
+package org.esigate.servlet.impl;
 
 import java.util.Properties;
 
@@ -8,6 +8,8 @@ import junit.framework.TestCase;
 
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.HttpResponseUtils;
+import org.esigate.servlet.MockHttpServletResponse;
+import org.esigate.servlet.impl.ResponseCapturingWrapper;
 
 public class ResponseCapturingWrapperTest extends TestCase {
 

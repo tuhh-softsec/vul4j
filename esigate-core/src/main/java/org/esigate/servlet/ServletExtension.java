@@ -13,7 +13,7 @@
  *
  */
 
-package org.esigate.servlet.impl;
+package org.esigate.servlet;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,19 +22,18 @@ import java.util.Properties;
 import javax.servlet.ServletException;
 
 import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.api.ContainerRequestMediator;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.extension.Extension;
-import org.esigate.http.BasicCloseableHttpResponse;
-import org.esigate.servlet.HttpServletMediator;
-import org.esigate.servlet.ResponseCapturingWrapper;
+import org.esigate.servlet.impl.ResponseCapturingWrapper;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 
@@ -51,25 +50,30 @@ public class ServletExtension implements Extension, IEventListener {
     public boolean event(EventDefinition id, Event event) {
         FetchEvent fetchEvent = (FetchEvent) event;
         if (EventManager.EVENT_FETCH_PRE.equals(id)) {
-            HttpServletMediator mediator = (HttpServletMediator) HttpRequestHelper.getMediator(fetchEvent.httpRequest);
-            ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(mediator.getResponse(),
-                    driver.getContentTypeHelper());
-            CloseableHttpResponse result;
-            try {
-                if (fetchEvent.isProxy()) {
-                    mediator.getFilterChain().doFilter(mediator.getRequest(), wrappedResponse);
-                } else {
-                    mediator.getRequest().getRequestDispatcher(getRelUrl(fetchEvent.httpRequest))
-                            .forward(mediator.getRequest(), wrappedResponse);
+            ContainerRequestMediator mediator = HttpRequestHelper.getMediator(fetchEvent.httpRequest);
+            HttpResponse result;
+            if (!(mediator instanceof HttpServletMediator)) {
+                String message = ServletExtension.class.getName() + " can be used only insite a java servlet engine";
+                result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, message, message).getHttpResponse();
+            } else {
+                HttpServletMediator httpServletMediator = (HttpServletMediator) mediator;
+                ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
+                        httpServletMediator.getResponse(), driver.getContentTypeHelper());
+                try {
+                    if (fetchEvent.isProxy()) {
+                        httpServletMediator.getFilterChain()
+                                .doFilter(httpServletMediator.getRequest(), wrappedResponse);
+                    } else {
+                        httpServletMediator.getRequest().getRequestDispatcher(getRelUrl(fetchEvent.httpRequest))
+                                .forward(httpServletMediator.getRequest(), wrappedResponse);
+                    }
+                } catch (IOException e) {
+                    result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, e.getMessage(), e).getHttpResponse();
+                } catch (ServletException e) {
+                    result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, e.getMessage(), e).getHttpResponse();
                 }
-            } catch (IOException e) {
-                result = new BasicCloseableHttpResponse(
-                        new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, e.getMessage(), e).getHttpResponse());
-            } catch (ServletException e) {
-                result = new BasicCloseableHttpResponse(
-                        new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, e.getMessage(), e).getHttpResponse());
+                result = wrappedResponse.getResponse();
             }
-            result = new BasicCloseableHttpResponse(wrappedResponse.getResponse());
             fetchEvent.httpResponse = result;
             // Stop execution
             fetchEvent.exit = true;

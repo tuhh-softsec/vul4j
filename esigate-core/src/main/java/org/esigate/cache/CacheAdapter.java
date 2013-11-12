@@ -36,7 +36,6 @@ import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
-import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientRequestExecutor;
 

@@ -1,4 +1,4 @@
-package org.esigate.http;
+package org.esigate.cache;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -12,7 +12,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.params.HttpParams;
 
-public class BasicCloseableHttpResponse implements CloseableHttpResponse {
+class BasicCloseableHttpResponse implements CloseableHttpResponse {
     private final HttpResponse httpResponse;
 
     public BasicCloseableHttpResponse(HttpResponse httpResponse) {

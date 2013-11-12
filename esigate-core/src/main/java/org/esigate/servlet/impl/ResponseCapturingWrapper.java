@@ -13,7 +13,7 @@
  *
  */
 
-package org.esigate.servlet;
+package org.esigate.servlet.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
