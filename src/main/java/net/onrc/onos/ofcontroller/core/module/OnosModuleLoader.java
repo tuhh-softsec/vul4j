@@ -11,9 +11,9 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyService;
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.config.DefaultConfiguration;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
@@ -24,10 +24,10 @@ import net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager;
 public class OnosModuleLoader implements IFloodlightModule {
 	private IFloodlightProviderService floodlightProvider;
 	private ITopologyService topology;
-	private IDeviceService deviceService;
 	private IConfigInfoService config;
 	private IRestApiService restApi;
 	private IFlowService flowService;
+	private IDatagridService datagrid;
 
 	private ProxyArpManager arpManager;
 	private Forwarding forwarding;
@@ -59,10 +59,9 @@ public class OnosModuleLoader implements IFloodlightModule {
 				new ArrayList<Class<? extends IFloodlightService>>();
 		dependencies.add(IFloodlightProviderService.class);
 		dependencies.add(ITopologyService.class);
-		dependencies.add(IDeviceService.class);
-		//dependencies.add(IConfigInfoService.class);
 		dependencies.add(IRestApiService.class);
 		dependencies.add(IFlowService.class);
+		dependencies.add(IDatagridService.class);
 		return dependencies;
 	}
 
@@ -71,9 +70,9 @@ public class OnosModuleLoader implements IFloodlightModule {
 			throws FloodlightModuleException {
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		topology = context.getServiceImpl(ITopologyService.class);
-		deviceService = context.getServiceImpl(IDeviceService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
 		flowService = context.getServiceImpl(IFlowService.class);
+		datagrid = context.getServiceImpl(IDatagridService.class);
 		
 		//This could be null because it's not mandatory to have an
 		//IConfigInfoService loaded.
@@ -82,7 +81,7 @@ public class OnosModuleLoader implements IFloodlightModule {
 			config = new DefaultConfiguration();
 		}
 
-		arpManager.init(floodlightProvider, topology, deviceService, config, restApi);
+		arpManager.init(floodlightProvider, topology, datagrid, config, restApi);
 		forwarding.init(floodlightProvider, flowService);
 	}
 
