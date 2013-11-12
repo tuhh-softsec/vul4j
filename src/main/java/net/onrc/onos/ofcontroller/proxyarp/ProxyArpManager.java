@@ -250,9 +250,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
                 IFloodlightProviderService.CONTEXT_PI_PAYLOAD);
 		
 		if (eth.getEtherType() == Ethernet.TYPE_ARP){
-			ARP arp = (ARP) eth.getPayload();
-			log.debug("etharp {}", arp);	
+			log.debug("is arp");
+			ARP arp = (ARP) eth.getPayload();	
 			if (arp.getOpCode() == ARP.OP_REQUEST) {
+				log.debug("is request");
 				//TODO check what the DeviceManager does about propagating
 				//or swallowing ARPs. We want to go after DeviceManager in the
 				//chain but we really need it to CONTINUE ARP packets so we can
@@ -260,6 +261,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 				handleArpRequest(sw, pi, arp, eth);
 			}
 			else if (arp.getOpCode() == ARP.OP_REPLY) {
+				log.debug("is reply");
 				//handleArpReply(sw, pi, arp);
 			}
 		}
@@ -299,14 +301,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		
 		//MACAddress macAddress = arpCache.lookup(target);
 		
-		//IDevice dstDevice = deviceService.fcStore.get(cntx, IDeviceService.CONTEXT_DST_DEVICE);
-		//Iterator<? extends IDevice> it = deviceService.queryDevices(
-				//null, null, InetAddresses.coerceToInteger(target), null, null);
-		
-		//IDevice targetDevice = null;
-		//if (it.hasNext()) {
-			//targetDevice = it.next();
-		//}
 		IDeviceObject targetDevice = 
 				deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(target));
 		
@@ -333,7 +327,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			arpRequests.put(target, new ArpRequest(
 					new HostArpRequester(arp, sw.getId(), pi.getInPort()), false));
 			
-			sendArpRequestToEdge(eth, pi);
+			sendToOtherNodes(eth, pi);
 		}
 		
 		/*if (macAddress == null){
@@ -479,25 +473,13 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		}
 	}
 	
-	private void sendArpRequestToEdge(Ethernet arpRequest, OFPacketIn pi) {
-		// Pull the topology from the network map and find edge ports
-		/*for (ISwitchObject swObject : topoSwitchService.getActiveSwitches()) {
-			//List<Link> linksOnSwitch = topoLinkService.getLinksOnSwitch(swObject.getDPID());
-			
-			Set<IPortObject> edgePorts = new HashSet<IPortObject>();
-			
-			for (IPortObject portObject : swObject.getPorts()) {
-				if (!portObject.getLinkedPorts().iterator().hasNext()) {
-					edgePorts.add(portObject);
-				}
-			}
-			
-			
-		}*/
-		//log.debug("Sending ARP request for {} to other ONOS instances",
-				//HexString.toHexString(arpRequest.getTargetProtocolAddress()));
-		//log.debug("Sent request bytes: {}", );
-		datagrid.sendArpRequest(arpRequest.serialize());
+	private void sendToOtherNodes(Ethernet eth, OFPacketIn pi) {
+		ARP arp = (ARP) eth.getPayload();
+		if (log.isTraceEnabled()) {
+			log.trace("Sending ARP request for {} to other ONOS instances",
+					HexString.toHexString(arp.getTargetProtocolAddress()));
+		}
+		datagrid.sendArpRequest(eth.serialize());
 	}
 	
 	private void broadcastArpRequestOutEdge(byte[] arpRequest, long inSwitch, short inPort) {
