@@ -785,7 +785,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     private boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
 				    IFlowEntry flowEntryObj) {
-    	return pusher.send(mySwitch, flowObj, flowEntryObj);
+    	return pusher.add(mySwitch, flowObj, flowEntryObj);
     }
 
     /**
@@ -798,14 +798,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     private boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				    FlowEntry flowEntry) {
-    	log.debug("Flow is sent to pusher : dpid({}) flow_id({})", mySwitch.getId(), flowEntry.getFlowId());
-    	// TODO  handle this installation by FlowPusher
-    	
-//	return FlowSwitchOperation.installFlowEntry(
-//		floodlightProvider.getOFMessageFactory(),
-//		messageDamper, mySwitch, flowPath, flowEntry);
-    	
-    	return true;
+    	return pusher.add(mySwitch, flowPath, flowEntry);
     }
 
     /**
@@ -920,7 +913,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			return;
 		}
 		
-		pusher.send(sw, msg);
+		pusher.add(sw, msg);
 	}
 
 	@Override
