@@ -368,20 +368,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 * @param event the notification event for the entry.
 		 */
 		public void entryRemoved(EntryEvent<byte[], byte[]> event) {
-		    /*
-			String keyString = (String)event.getKey();
-		    byte[] valueBytes = (byte[])event.getValue();
-	
-		    //
-		    // Decode the value and deliver the notification
-		    //
-		    Kryo kryo = kryoFactory.newKryo();
-		    Input input = new Input(valueBytes);
-		    TopologyElement topologyElement =
-			kryo.readObject(input, TopologyElement.class);
-		    kryoFactory.deleteKryo(kryo);
-		    flowEventHandlerService.notificationRecvTopologyElementRemoved(topologyElement);
-		    */
+			// Not used
 		}
 	
 		/**
@@ -390,20 +377,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 * @param event the notification event for the entry.
 		 */
 		public void entryUpdated(EntryEvent<byte[], byte[]> event) {
-			/*
-		    String keyString = (String)event.getKey();
-		    byte[] valueBytes = (byte[])event.getValue();
-	
-		    //
-		    // Decode the value and deliver the notification
-		    //
-		    Kryo kryo = kryoFactory.newKryo();
-		    Input input = new Input(valueBytes);
-		    TopologyElement topologyElement =
-			kryo.readObject(input, TopologyElement.class);
-		    kryoFactory.deleteKryo(kryo);
-		    flowEventHandlerService.notificationRecvTopologyElementUpdated(topologyElement);
-		    */
+			// Not used
 		}
 	
 		/**
@@ -412,7 +386,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 * @param event the notification event for the entry.
 		 */
 		public void entryEvicted(EntryEvent<byte[], byte[]> event) {
-		    // NOTE: We don't use eviction for this map
+		    // Not used
 		}
     }
 
