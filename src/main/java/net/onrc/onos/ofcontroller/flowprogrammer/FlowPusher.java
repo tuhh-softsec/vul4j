@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.flowmanager;
+package net.onrc.onos.ofcontroller.flowprogrammer;
 
 import java.io.IOException;
 import java.util.ArrayDeque;

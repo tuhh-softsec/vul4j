@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.flowmanager;
+package net.onrc.onos.ofcontroller.flowprogrammer;
 
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.IFloodlightService;
