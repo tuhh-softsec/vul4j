@@ -48,8 +48,12 @@ public class FlowPusher {
     protected static final int OFMESSAGE_DAMPER_CAPACITY = 50000; // TODO: find sweet spot
     protected static final int OFMESSAGE_DAMPER_TIMEOUT = 250;	// ms
     
-    protected static final long SLEEP_MILLI_SEC = 3;
+    // Interval of sleep when queue is empty
+    protected static final long SLEEP_MILLI_SEC = 10;
     protected static final int SLEEP_NANO_SEC = 0;
+    
+    // Number of messages sent to switch at once
+    protected static final int MAX_MESSAGE_SEND = 100;
 
     public static final short PRIORITY_DEFAULT = 100;
     public static final short FLOWMOD_DEFAULT_IDLE_TIMEOUT = 0;	// infinity
@@ -139,8 +143,15 @@ public class FlowPusher {
 					
 					synchronized (queue) {
 						if (queue.isSendable(current_time)) {
-							// TODO limit number of messages to be sent at once
+							int i = 0;
 							while (! queue.isEmpty()) {
+								// Number of messages excess the limit
+								if (++i >= MAX_MESSAGE_SEND) {
+									// Messages remains in queue
+									isMsgAdded = true;
+									break;
+								}
+								
 								OFMessage msg = queue.poll();
 								
 								// if need to send, call IOFSwitch#write()
@@ -149,8 +160,8 @@ public class FlowPusher {
 									log.debug("Pusher sends message : {}", msg);
 									size += msg.getLength();
 								} catch (IOException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
+									log.error("Exception in sending message ({}) : {}", msg, e);
 								}
 							}
 							sw.flush();
@@ -164,7 +175,6 @@ public class FlowPusher {
 					try {
 						Thread.sleep(SLEEP_MILLI_SEC, SLEEP_NANO_SEC);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						log.error("Thread.sleep failed");
 					}
