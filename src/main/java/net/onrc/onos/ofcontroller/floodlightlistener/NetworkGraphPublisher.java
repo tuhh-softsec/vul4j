@@ -3,6 +3,7 @@ package net.onrc.onos.ofcontroller.floodlightlistener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -99,7 +100,16 @@ public class NetworkGraphPublisher implements IDeviceListener,
 			if (hasControl) {
 				log.debug("got control to set inactive sw {}", HexString.toHexString(dpid));
 				try {
-					if (swStore.updateSwitch(HexString.toHexString(dpid), SwitchState.INACTIVE, DM_OPERATION.UPDATE)) {
+					// Get the affected ports
+					List<Short> ports = swStore.getPorts(HexString.toHexString(dpid));
+					// Get the affected links
+					List<Link> links = linkStore.getLinks(HexString.toHexString(dpid));
+					// Get the affected reverse links
+					List<Link> reverseLinks = linkStore.getReverseLinks(HexString.toHexString(dpid));
+					links.addAll(reverseLinks);
+
+					//if (swStore.updateSwitch(HexString.toHexString(dpid), SwitchState.INACTIVE, DM_OPERATION.UPDATE)) {
+					if (swStore.deactivateSwitch(HexString.toHexString(dpid))) {
 					    registryService.releaseControl(dpid);
 					    
 					    // TODO publish UPDATE_SWITCH event here
@@ -112,6 +122,21 @@ public class NetworkGraphPublisher implements IDeviceListener,
 						new TopologyElement(dpid);
 					    datagridService.notificationSendTopologyElementRemoved(topologyElement);
 
+					    // Publish: remove the affected ports
+					    for (Short port : ports) {
+						TopologyElement topologyElementPort =
+						    new TopologyElement(dpid, port);
+						datagridService.notificationSendTopologyElementRemoved(topologyElementPort);
+					    }
+					    // Publish: remove the affected links
+					    for (Link link : links) {
+						TopologyElement topologyElementLink =
+						    new TopologyElement(link.getSrc(),
+									link.getSrcPort(),
+									link.getDst(),
+									link.getDstPort());
+						datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
+					    }
 					}
 				} catch (Exception e) {
 	                log.error("Error in SwitchCleanup:controlChanged ", e);
@@ -212,25 +237,72 @@ public class NetworkGraphPublisher implements IDeviceListener,
 			    // TODO publish ADD_SWITCH event here
 			    TopologyElement topologyElement =
 				new TopologyElement(sw.getId());
+			    datagridService.notificationSendTopologyElementAdded(topologyElement);
+
+			    // Publish: add the ports
 			    // TODO: Add only ports that are UP?
 			    for (OFPhysicalPort port : sw.getPorts()) {
-				topologyElement.addSwitchPort(port.getPortNumber());
+				TopologyElement topologyElementPort =
+				    new TopologyElement(sw.getId(),
+							port.getPortNumber());
+				datagridService.notificationSendTopologyElementAdded(topologyElementPort);
 			    }
-			    datagridService.notificationSendTopologyElementAdded(topologyElement);
+
+			    // Add all links that might be connected already
+			    List<Link> links = linkStore.getLinks(HexString.toHexString(sw.getId()));
+			    // Add all reverse links as well
+			    List<Link> reverseLinks = linkStore.getReverseLinks(HexString.toHexString(sw.getId()));
+			    links.addAll(reverseLinks);
+
+			    // Publish: add the links
+			    for (Link link : links) {
+				TopologyElement topologyElementLink =
+				    new TopologyElement(link.getSrc(),
+							link.getSrcPort(),
+							link.getDst(),
+							link.getDstPort());
+				datagridService.notificationSendTopologyElementAdded(topologyElementLink);
+			    }
 			}
 		}
 	}
 
 	@Override
 	public void removedSwitch(IOFSwitch sw) {
+		/*
 		if (registryService.hasControl(sw.getId())) {
+			// Get the affected ports
+			List<Short> ports = swStore.getPorts(HexString.toHexString(sw.getId()));
+			// Get the affected links
+			List<Link> links = linkStore.getLinks(HexString.toHexString(sw.getId()));
+			// Get the affected reverse links
+			List<Link> reverseLinks = linkStore.getReverseLinks(HexString.toHexString(sw.getId()));
+			links.addAll(reverseLinks);
+
 			if (swStore.deleteSwitch(sw.getStringId())) {
 			    // TODO publish DELETE_SWITCH event here
 			    TopologyElement topologyElement =
 				new TopologyElement(sw.getId());
 			    datagridService.notificationSendTopologyElementRemoved(topologyElement);
+
+			    // Publish: remove the affected ports
+			    for (Short port : ports) {
+				TopologyElement topologyElementPort =
+				    new TopologyElement(sw.getId(), port);
+				datagridService.notificationSendTopologyElementRemoved(topologyElementPort);
+			    }
+			    // Publish: remove the affected links
+			    for (Link link : links) {
+				TopologyElement topologyElementLink =
+				    new TopologyElement(link.getSrc(),
+							link.getSrcPort(),
+							link.getDst(),
+							link.getDstPort());
+				datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
+			    }
 			}
 		}
+		*/
 	}
 
 	@Override
@@ -246,16 +318,48 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		    TopologyElement topologyElement =
 			new TopologyElement(switchId, port.getPortNumber());
 		    datagridService.notificationSendTopologyElementAdded(topologyElement);
+
+		    // Add all links that might be connected already
+		    List<Link> links = linkStore.getLinks(switchId, port.getPortNumber());
+		    // Add all reverse links as well
+		    List<Link> reverseLinks = linkStore.getReverseLinks(switchId, port.getPortNumber());
+		    links.addAll(reverseLinks);
+
+		    // Publish: add the links
+		    for (Link link : links) {
+			TopologyElement topologyElementLink =
+			    new TopologyElement(link.getSrc(),
+						link.getSrcPort(),
+						link.getDst(),
+						link.getDstPort());
+			datagridService.notificationSendTopologyElementAdded(topologyElementLink);
+		    }
 		}
 	}
 
 	@Override
 	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
+		// Remove all links that might be connected already
+		List<Link> links = linkStore.getLinks(switchId, port.getPortNumber());
+		// Remove all reverse links as well
+		List<Link> reverseLinks = linkStore.getReverseLinks(switchId, port.getPortNumber());
+		links.addAll(reverseLinks);
+
 		if (swStore.deletePort(HexString.toHexString(switchId), port.getPortNumber())) {
 		    // TODO publish DELETE_PORT event here
 		    TopologyElement topologyElement =
 			new TopologyElement(switchId, port.getPortNumber());
 		    datagridService.notificationSendTopologyElementRemoved(topologyElement);
+
+		    // Publish: remove the links
+		    for (Link link : links) {
+			TopologyElement topologyElementLink =
+			    new TopologyElement(link.getSrc(),
+						link.getSrcPort(),
+						link.getDst(),
+						link.getDstPort());
+			datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
+		    }
 		}
 	}
 
@@ -273,6 +377,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	@Override
 	public void deviceRemoved(IDevice device) {
 		// TODO Auto-generated method stub
+		devStore.removeDevice(device);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.topology.web;
 
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -18,9 +19,20 @@ public class RouteResource extends ServerResource {
 
     @Get("json")
     public DataPath retrieve() {
-        ITopologyNetService topologyNetService = new TopologyManager("");
+	// Get the services that are needed for the computation
+	ITopologyNetService topologyNetService =
+	    (ITopologyNetService)getContext().getAttributes().
+	    get(ITopologyNetService.class.getCanonicalName());
+	IFlowService flowService =
+	    (IFlowService)getContext().getAttributes().
+	    get(IFlowService.class.getCanonicalName());
+
 	if (topologyNetService == null) {
 	    log.debug("Topology Net Service not found");
+	    return null;
+	}
+	if (flowService == null) {
+	    log.debug("Flow Service not found");
 	    return null;
 	}
         
@@ -37,7 +49,8 @@ public class RouteResource extends ServerResource {
 	Port dstPort = new Port(Short.parseShort(dstPortStr));
         
 	DataPath result =
-	    topologyNetService.getDatabaseShortestPath(
+	    topologyNetService.getTopologyShortestPath(
+		flowService.getTopology(),
 		new SwitchPort(srcDpid, srcPort),
 		new SwitchPort(dstDpid, dstPort));
 	if (result != null) {

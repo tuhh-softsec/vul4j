@@ -87,6 +87,7 @@ public class GraphDBConnectionTest {
 		graph.createKeyIndex("flow_id", Vertex.class);
 		graph.createKeyIndex("flow_entry_id", Vertex.class);
 		graph.createKeyIndex("switch_state", Vertex.class);
+		graph.createKeyIndex("ipv4_address", Vertex.class);
 		graph.commit();
 		expectNew(EventTransactionalGraph.class, graph).andReturn(eg);
 	}

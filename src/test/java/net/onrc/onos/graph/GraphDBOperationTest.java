@@ -3,16 +3,19 @@
  */
 package net.onrc.onos.graph;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.TestCase;
-
-import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
@@ -25,12 +28,14 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.google.common.net.InetAddresses;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
@@ -334,14 +339,14 @@ public class GraphDBOperationTest extends TestCase {
 		
 		IDeviceObject device = op.newDevice();
 		device.setMACAddress("11:22:33:44:55:66");
-		device.setIPAddress("192.168.1.1");
+		//device.setIPAddress("192.168.1.1");
 		op.commit();
 		
 		Iterator<Vertex> vertices = testdb.getVertices("type", "device").iterator();
 		assertTrue(vertices.hasNext());
 		Vertex v = vertices.next();
 		assertEquals("11:22:33:44:55:66", v.getProperty("dl_addr").toString());
-		assertEquals("192.168.1.1", v.getProperty("nw_addr").toString());
+		//assertEquals("192.168.1.1", v.getProperty("nw_addr").toString());
 	}
 
 	/**
@@ -394,6 +399,53 @@ public class GraphDBOperationTest extends TestCase {
 		op.removeDevice(op.searchDevice("11:22:33:44:55:66"));
 		op.commit();
 		assertNull(op.searchDevice("11:22:33:44:55:66"));
+	}
+	
+	/**
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#newIpv4Address(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IIpv4Address)}.
+	 */
+	@Test
+	public final void testNewIpv4Address() {
+		int intIpv4Address = InetAddresses.coerceToInteger(InetAddresses.forString("192.168.10.1"));
+		
+		assertFalse(testdb.getVertices("type", "ipv4Address").iterator().hasNext());
+		
+		IIpv4Address ipv4Address = op.newIpv4Address();
+		ipv4Address.setIpv4Address(intIpv4Address);
+		//device.setIPAddress("192.168.1.1");
+		op.commit();
+		
+		Iterator<Vertex> vertices = testdb.getVertices("type", "ipv4Address").iterator();
+		assertTrue(vertices.hasNext());
+		Vertex v = vertices.next();
+		assertEquals(intIpv4Address, ((Integer) v.getProperty("ipv4_address")).intValue());
+	}
+	
+	/**
+	 * Test method for {@link net.onrc.onos.graph.GraphDBOperation#searchIpv4Address(net.onrc.onos.graph.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IIpv4Address)}.
+	 */
+	@Test
+	public final void testSearchIpv4Address() {
+		int addr1 = InetAddresses.coerceToInteger(InetAddresses.forString("192.168.20.1"));
+		int addr2 = InetAddresses.coerceToInteger(InetAddresses.forString("59.203.2.15"));
+		
+		assertNull(op.searchIpv4Address(addr1));
+		assertNull(op.searchIpv4Address(addr2));
+
+		op.newIpv4Address().setIpv4Address(addr1);
+		op.commit();
+		
+		IIpv4Address ipv4Address = op.searchIpv4Address(addr1);
+		assertNotNull(ipv4Address);
+		assertEquals(addr1, ipv4Address.getIpv4Address());
+		
+		assertNull(op.searchIpv4Address(addr2));
+	}
+	
+	@Ignore
+	@Test
+	public final void testEnsureIpv4Address() {
+		// TODO not yet implemented
 	}
 
 	/**

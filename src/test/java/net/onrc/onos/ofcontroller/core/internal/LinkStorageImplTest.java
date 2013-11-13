@@ -256,6 +256,21 @@ public class LinkStorageImplTest {
 		Link linkToVerifyNot = createFeasibleLink();
 		assertFalse(links.contains(linkToVerifyNot));
 	}
+
+	/**
+	 * Test if {@link LinkStorageImpl#getReverseLinks(String)} can correctly return Links connected to specific MAC address.
+	 */
+	@Test
+	public void testGetReverseLinks_ByString() {
+		Link linkToVeryfy = createExistingLink();
+		String dpid = HexString.toHexString(linkToVeryfy.getDst());
+		
+		List<Link> links = linkStorage.getReverseLinks(dpid);
+		assertTrue(links.contains(linkToVeryfy));
+
+		Link linkToVerifyNot = createFeasibleLink();
+		assertFalse(links.contains(linkToVerifyNot));
+	}
 	
 	/**
 	 * Test if {@link LinkStorageImpl#deleteLink(Link)} can correctly delete a Link.
@@ -447,6 +462,35 @@ public class LinkStorageImplTest {
 	}
 
 	/**
+	 * Class defines a function called back when {@link IPortObject#getReverseLinkedPorts()} is called.
+	 * @author Naoki Shiota
+	 *
+	 */
+	private class GetReverseLinkedPortsCallback implements IAnswer< Iterable<IPortObject> > {
+		private long dpid;
+		private short port;
+		
+		public GetReverseLinkedPortsCallback(long dpid, short port) {
+			this.dpid = dpid;
+			this.port = port;
+		}
+
+		@Override
+		public Iterable<IPortObject> answer() throws Throwable {
+			List<IPortObject> ports = new ArrayList<IPortObject>();
+
+			for(Link lk : links) {
+				if(lk.getDst() == dpid && lk.getDstPort() == port) {
+					ports.add(createMockPort(lk.getSrc(), lk.getSrcPort()));
+				}
+			}
+
+			return ports;
+		}
+		
+	}
+
+	/**
 	 * Class defines a function called back when {@link LinkStorageImplTest} is called.
 	 * @author Naoki Shiota
 	 *
@@ -567,6 +611,9 @@ public class LinkStorageImplTest {
 		
 		// Mock getLinkPorts() method
 		EasyMock.expect(mockPort.getLinkedPorts()).andAnswer(new GetLinkedPortsCallback(dpid, number)).anyTimes();
+
+		// Mock getReverseLinkPorts() method
+		EasyMock.expect(mockPort.getReverseLinkedPorts()).andAnswer(new GetReverseLinkedPortsCallback(dpid, number)).anyTimes();
 		
 		// Mock getSwitch() method
 		EasyMock.expect(mockPort.getSwitch()).andAnswer(new GetSwitchCallback(dpid)).anyTimes();

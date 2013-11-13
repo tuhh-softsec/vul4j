@@ -43,7 +43,25 @@ public interface ILinkStorage extends INetMapStorage {
 	 *  If only dpid is set all links associated with Switch are retrieved
 	 */
 	public List<Link> getLinks(Long dpid, short port);
+
+	/**
+	 * Get list of all reverse links connected to the port specified by given DPID and port number.
+	 * @param dpid DPID of desired port.
+	 * @param port Port number of desired port.
+	 * @return List of reverse links. Empty list if no port was found.
+	 */
+	public List<Link> getReverseLinks(Long dpid, short port);
+
 	public List<Link> getLinks(String dpid);
+
+	/**
+	 * Get list of all reverse links connected to the switch specified by
+	 * given DPID.
+	 * @param dpid DPID of desired switch.
+	 * @return List of reverse links. Empty list if no port was found.
+	 */
+	public List<Link> getReverseLinks(String dpid);
+
 	public List<Link> getActiveLinks();
 
 	public LinkInfo getLinkInfo(Link link);

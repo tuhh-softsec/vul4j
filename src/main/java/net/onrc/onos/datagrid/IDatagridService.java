@@ -4,8 +4,10 @@ import java.util.Collection;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 
-import net.onrc.onos.ofcontroller.flowmanager.IPathComputationService;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
@@ -14,25 +16,25 @@ import net.onrc.onos.ofcontroller.util.FlowPath;
  */
 public interface IDatagridService extends IFloodlightService {
     /**
-     * Register Path Computation Service for receiving Flow-related
+     * Register Flow Event Handler Service for receiving Flow-related
      * notifications.
      *
-     * NOTE: Only a single Path Computation Service can be registered.
+     * NOTE: Only a single Flow Event Handler Service can be registered.
      *
-     * @param pathComputationService the Path Computation Service to register.
+     * @param flowEventHandlerService the Flow Event Handler Service to register.
      */
-    void registerPathComputationService(IPathComputationService pathComputationService);
+    void registerFlowEventHandlerService(IFlowEventHandlerService flowEventHandlerService);
 
     /**
-     * De-register Path Computation Service for receiving Flow-related
+     * De-register Flow Event Handler Service for receiving Flow-related
      * notifications.
      *
-     * NOTE: Only a single Path Computation Service can be registered.
+     * NOTE: Only a single Flow Event Handler Service can be registered.
      *
-     * @param pathComputationService the Path Computation Service to
+     * @param flowEventHandlerService the Flow Event Handler Service to
      * de-register.
      */
-    void deregisterPathComputationService(IPathComputationService pathComputationService);
+    void deregisterFlowEventHandlerService(IFlowEventHandlerService flowEventHandlerService);
 
     /**
      * Get all Flows that are currently in the datagrid.
@@ -44,21 +46,21 @@ public interface IDatagridService extends IFloodlightService {
     /**
      * Send a notification that a Flow is added.
      *
-     * @param flowPath the flow that is added.
+     * @param flowPath the Flow that is added.
      */
     void notificationSendFlowAdded(FlowPath flowPath);
 
     /**
      * Send a notification that a Flow is removed.
      *
-     * @param flowId the Flow ID of the flow that is removed.
+     * @param flowId the Flow ID of the Flow that is removed.
      */
     void notificationSendFlowRemoved(FlowId flowId);
 
     /**
      * Send a notification that a Flow is updated.
      *
-     * @param flowPath the flow that is updated.
+     * @param flowPath the Flow that is updated.
      */
     void notificationSendFlowUpdated(FlowPath flowPath);
 
@@ -66,6 +68,39 @@ public interface IDatagridService extends IFloodlightService {
      * Send a notification that all Flows are removed.
      */
     void notificationSendAllFlowsRemoved();
+
+    /**
+     * Get all Flow Entries that are currently in the datagrid.
+     *
+     * @return all Flow Entries that are currently in the datagrid.
+     */
+    Collection<FlowEntry> getAllFlowEntries();
+
+    /**
+     * Send a notification that a FlowEntry is added.
+     *
+     * @param flowEntry the FlowEntry that is added.
+     */
+    void notificationSendFlowEntryAdded(FlowEntry flowEntry);
+
+    /**
+     * Send a notification that a FlowEntry is removed.
+     *
+     * @param flowEntryId the FlowEntry ID of the FlowEntry that is removed.
+     */
+    void notificationSendFlowEntryRemoved(FlowEntryId flowEntryId);
+
+    /**
+     * Send a notification that a FlowEntry is updated.
+     *
+     * @param flowEntry the FlowEntry that is updated.
+     */
+    void notificationSendFlowEntryUpdated(FlowEntry flowEntry);
+
+    /**
+     * Send a notification that all Flow Entries are removed.
+     */
+    void notificationSendAllFlowEntriesRemoved();
 
     /**
      * Get all Topology Elements that are currently in the datagrid.
