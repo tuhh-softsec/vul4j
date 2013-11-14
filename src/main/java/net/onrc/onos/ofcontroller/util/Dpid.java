@@ -13,76 +13,76 @@ import org.openflow.util.HexString;
 @JsonDeserialize(using=DpidDeserializer.class)
 @JsonSerialize(using=DpidSerializer.class)
 public class Dpid {
-	static public long UNKNOWN = 0;
+    static public long UNKNOWN = 0;
 
-	private long value;
+    private long value;
 
-	/**
-	 * Default constructor.
-	 */
-	public Dpid() {
-		this.value = Dpid.UNKNOWN;
-	}
+    /**
+     * Default constructor.
+     */
+    public Dpid() {
+	this.value = Dpid.UNKNOWN;
+    }
 
-	/**
-	 * Constructor from a long value.
-	 *
-	 * @param value the value to use.
-	 */
-	public Dpid(long value) {
-		this.value = value;
-	}
+    /**
+     * Constructor from a long value.
+     *
+     * @param value the value to use.
+     */
+    public Dpid(long value) {
+	this.value = value;
+    }
 
-	/**
-	 * Constructor from a string.
-	 *
-	 * @param value the value to use.
-	 */
-	public Dpid(String value) {
-		this.value = HexString.toLong(value);
-	}
+    /**
+     * Constructor from a string.
+     *
+     * @param value the value to use.
+     */
+    public Dpid(String value) {
+	this.value = HexString.toLong(value);
+    }
 
-	/**
-	 * Get the value of the DPID.
-	 *
-	 * @return the value of the DPID.
-	 */
-	public long value() { return value; }
+    /**
+     * Get the value of the DPID.
+     *
+     * @return the value of the DPID.
+     */
+    public long value() { return value; }
 
-	/**
-	 * Set the value of the DPID.
-	 *
-	 * @param value the value to set.
-	 */
-	public void setValue(long value) {
-		this.value = value;
-	}
+    /**
+     * Set the value of the DPID.
+     *
+     * @param value the value to set.
+     */
+    public void setValue(long value) {
+	this.value = value;
+    }
 
-	/**
-	 * Convert the DPID value to a ':' separated hexadecimal string.
-	 *
-	 * @return the DPID value as a ':' separated hexadecimal string.
-	 */
-	@Override
-	public String toString() {
-		return HexString.toHexString(this.value);
-	}
+    /**
+     * Convert the DPID value to a ':' separated hexadecimal string.
+     *
+     * @return the DPID value as a ':' separated hexadecimal string.
+     */
+    @Override
+    public String toString() {
+	return HexString.toHexString(this.value);
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		if (!(other instanceof Dpid)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object other) {
+    	if (!(other instanceof Dpid)) {
+    		return false;
+    	}
 
-		Dpid otherDpid = (Dpid) other;
+    	Dpid otherDpid = (Dpid) other;
 
-		return value == otherDpid.value;
-	}
+    	return value == otherDpid.value;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 17;
-		hash += 31 * hash + (int)(value ^ value >>> 32); 
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+    	int hash = 17;
+    	hash += 31 * hash + (int)(value ^ value >>> 32); 
+    	return hash;
+    }
 }

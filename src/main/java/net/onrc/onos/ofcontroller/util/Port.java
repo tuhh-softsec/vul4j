@@ -7,148 +7,147 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 
 public class Port {
-	/**
-	 * Special port values.
-	 *
-	 * Those values are taken as-is from the OpenFlow-v1.0.0 specification
-	 * (pp 18-19).
-	 */
-	// This is a duplicate of the OFPort enum in OpenflowJ.
-	// TODO Can we remove this?
-	public enum PortValues {
-		/* Maximum number of physical switch ports. */
-		PORT_MAX		((short)0xff00),
+    /**
+     * Special port values.
+     *
+     * Those values are taken as-is from the OpenFlow-v1.0.0 specification
+     * (pp 18-19).
+     */
+    public enum PortValues {
+	/* Maximum number of physical switch ports. */
+	PORT_MAX		((short)0xff00),
 
-		/* Fake output "ports". */
+	/* Fake output "ports". */
 
-		/* Send the packet out the input port. This
+	/* Send the packet out the input port. This
 	   virtual port must be explicitly used
 	   in order to send back out of the input
 	   port. */
-		PORT_IN_PORT		((short)0xfff8),
+	PORT_IN_PORT		((short)0xfff8),
 
-		/* Perform actions in flow table.
+	/* Perform actions in flow table.
 	   NB: This can only be the destination
 	   port for packet-out messages. */
-		PORT_TABLE		((short)0xfff9),
+	PORT_TABLE		((short)0xfff9),
 
-		/* Process with normal L2/L3 switching. */
-		PORT_NORMAL		((short)0xfffa),
+	/* Process with normal L2/L3 switching. */
+	PORT_NORMAL		((short)0xfffa),
 
-		/* All physical ports except input port and
+	/* All physical ports except input port and
 	   those disabled by STP. */
-		PORT_FLOOD		((short)0xfffb),
+	PORT_FLOOD		((short)0xfffb),
 
-		/* All physical ports except input port. */
-		PORT_ALL		((short)0xfffc),
+	/* All physical ports except input port. */
+	PORT_ALL		((short)0xfffc),
 
-		/* Send to controller. */
-		PORT_CONTROLLER		((short)0xfffd),
+	/* Send to controller. */
+	PORT_CONTROLLER		((short)0xfffd),
 
-		/* Local openflow "port". */
-		PORT_LOCAL		((short)0xfffe),
+	/* Local openflow "port". */
+	PORT_LOCAL		((short)0xfffe),
 
-		/* Not associated with a physical port. */
-		PORT_NONE		((short)0xffff);
+	/* Not associated with a physical port. */
+	PORT_NONE		((short)0xffff);
 
-		private final short value;	// The value
-
-		/**
-		 * Constructor for a given value.
-		 *
-		 * @param value the value to use for the initialization.
-		 */
-		private PortValues(short value) {
-			this.value = value;
-		}
-
-		/**
-		 * Get the value as a short integer.
-		 *
-		 * @return the value as a short integer.
-		 */
-		private short value() { return this.value; }
-	}
-
-	private short value;
+	private final short value;	// The value
 
 	/**
-	 * Default constructor.
-	 */
-	public Port() {
-		this.value = 0;
-	}
-
-	/**
-	 * Copy constructor.
+	 * Constructor for a given value.
 	 *
-	 * @param other the object to copy from.
+	 * @param value the value to use for the initialization.
 	 */
-	public Port(Port other) {
-		this.value = other.value();
+	private PortValues(short value) {
+	    this.value = value;
 	}
 
 	/**
-	 * Constructor from a short integer value.
+	 * Get the value as a short integer.
 	 *
-	 * @param value the value to use.
+	 * @return the value as a short integer.
 	 */
-	public Port(short value) {
-		this.value = value;
-	}
+	private short value() { return this.value; }
+    }
 
-	/**
-	 * Constructor from a PortValues enum value.
-	 *
-	 * @param value the value to use.
-	 */
-	public Port(PortValues value) {
-		this.value = value.value();
-	}
+    private short value;
 
-	/**
-	 * Get the value of the port.
-	 *
-	 * @return the value of the port.
-	 */
-	@JsonProperty("value")
-	public short value() { return value; }
+    /**
+     * Default constructor.
+     */
+    public Port() {
+	this.value = 0;
+    }
 
-	/**
-	 * Set the value of the port.
-	 *
-	 * @param value the value to set.
-	 */
-	@JsonProperty("value")
-	public void setValue(short value) {
-		this.value = value;
-	}
+    /**
+     * Copy constructor.
+     *
+     * @param other the object to copy from.
+     */
+    public Port(Port other) {
+	this.value = other.value();
+    }
 
-	/**
-	 * Convert the port value to a string.
-	 *
-	 * @return the port value as a string.
-	 */
-	@Override
-	public String toString() {
-		return Short.toString(this.value);
-	}
+    /**
+     * Constructor from a short integer value.
+     *
+     * @param value the value to use.
+     */
+    public Port(short value) {
+	this.value = value;
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		if (!(other instanceof Port)) {
-			return false;
-		}
+    /**
+     * Constructor from a PortValues enum value.
+     *
+     * @param value the value to use.
+     */
+    public Port(PortValues value) {
+	this.value = value.value();
+    }
 
-		Port otherPort = (Port) other;
+    /**
+     * Get the value of the port.
+     *
+     * @return the value of the port.
+     */
+    @JsonProperty("value")
+    public short value() { return value; }
 
-		return value == otherPort.value;
-	}
+    /**
+     * Set the value of the port.
+     *
+     * @param value the value to set.
+     */
+    @JsonProperty("value")
+    public void setValue(short value) {
+	this.value = value;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 17;
-		hash += 31 * hash + (int)value; 
-		return hash;
-	}
+    /**
+     * Convert the port value to a string.
+     *
+     * @return the port value as a string.
+     */
+    @Override
+    public String toString() {
+	return Short.toString(this.value);
+    }
+    
+
+    @Override
+    public boolean equals(Object other) {
+    	if (!(other instanceof Port)) {
+    		return false;
+    	}
+
+    	Port otherPort = (Port) other;
+
+    	return value == otherPort.value;
+    }
+
+    @Override
+    public int hashCode() {
+    	int hash = 17;
+    	hash += 31 * hash + (int)value; 
+    	return hash;
+    }
 }
