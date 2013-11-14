@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.forwarding;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import net.floodlightcontroller.core.FloodlightContext;
@@ -8,6 +9,7 @@ import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
@@ -38,6 +40,7 @@ public class Forwarding implements IOFMessageListener {
 
 	private IFloodlightProviderService floodlightProvider;
 	private IFlowService flowService;
+	private IDatagridService datagridService;
 	
 	private IDeviceStorage deviceStorage;
 	private TopologyManager topologyService;
@@ -50,9 +53,10 @@ public class Forwarding implements IOFMessageListener {
 	}
 	
 	public void init(IFloodlightProviderService floodlightProvider, 
-			IFlowService flowService) {
+			IFlowService flowService, IDatagridService datagridService) {
 		this.floodlightProvider = floodlightProvider;
 		this.flowService = flowService;
+		this.datagridService = datagridService;
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
@@ -131,17 +135,21 @@ public class Forwarding implements IOFMessageListener {
 				new Dpid(sw.getId()), new Port(pi.getInPort())); 
 		SwitchPort dstSwitchPort = new SwitchPort(
 				new Dpid(destinationDpid), new Port(destinationPort)); 
-		DataPath shortestPath = 
-				topologyService.getDatabaseShortestPath(srcSwitchPort, dstSwitchPort);
+				
+		MACAddress srcMacAddress = MACAddress.valueOf(eth.getSourceMACAddress());
+		MACAddress dstMacAddress = MACAddress.valueOf(eth.getDestinationMACAddress());
 		
-		if (shortestPath == null) {
-			log.debug("Shortest path not found between {} and {}", 
-					srcSwitchPort, dstSwitchPort);
+		if (flowExists(srcSwitchPort, srcMacAddress, 
+				dstSwitchPort, dstMacAddress)) {
+			log.debug("Not adding flow because it already exists");
+			
+			// Don't do anything if the flow already exists
 			return;
 		}
 		
-		MACAddress srcMacAddress = MACAddress.valueOf(eth.getSourceMACAddress());
-		MACAddress dstMacAddress = MACAddress.valueOf(eth.getDestinationMACAddress());
+		log.debug("Adding new flow between {} at {} and {} at {}",
+				new Object[]{srcMacAddress, srcSwitchPort, dstMacAddress, dstSwitchPort});
+		
 		
 		DataPath dataPath = new DataPath();
 		dataPath.setSrcPort(srcSwitchPort);
@@ -162,6 +170,32 @@ public class Forwarding implements IOFMessageListener {
 		flowPath.setDataPath(dataPath);
 		
 		flowService.addFlow(flowPath, flowId);
+	}
+	
+	private boolean flowExists(SwitchPort srcPort, MACAddress srcMac, 
+			SwitchPort dstPort, MACAddress dstMac) {
+		for (FlowPath flow : datagridService.getAllFlows()) {
+			FlowEntryMatch match = flow.flowEntryMatch();
+			// TODO implement FlowEntryMatch.equals();
+			// This is painful to do properly without support in the FlowEntryMatch
+			boolean same = true;
+			if (!match.srcMac().equals(srcMac) ||
+				!match.dstMac().equals(dstMac)) {
+				same = false;
+			}
+			if (!flow.dataPath().srcPort().equals(srcPort) || 
+				!flow.dataPath().dstPort().equals(dstPort)) {
+				same = false;
+			}
+			
+			if (same) {
+				log.debug("found flow entry that's the same {}-{}:::{}-{}",
+						new Object[] {srcPort, srcMac, dstPort, dstMac});
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

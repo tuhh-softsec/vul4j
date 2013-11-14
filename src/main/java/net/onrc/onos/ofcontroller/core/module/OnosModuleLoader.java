@@ -82,7 +82,7 @@ public class OnosModuleLoader implements IFloodlightModule {
 		}
 
 		arpManager.init(floodlightProvider, topology, datagrid, config, restApi);
-		forwarding.init(floodlightProvider, flowService);
+		forwarding.init(floodlightProvider, flowService, datagrid);
 	}
 
 	@Override
