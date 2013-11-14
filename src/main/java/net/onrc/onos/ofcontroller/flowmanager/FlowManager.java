@@ -473,6 +473,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @return the next Flow Entry ID to use.
      */
+    @Override
     public synchronized long getNextFlowEntryId() {
 	//
 	// Generate the next Flow Entry ID.

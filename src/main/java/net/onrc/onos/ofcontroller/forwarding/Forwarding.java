@@ -1,6 +1,5 @@
 package net.onrc.onos.ofcontroller.forwarding;
 
-import java.util.Collection;
 import java.util.Iterator;
 
 import net.floodlightcontroller.core.FloodlightContext;
@@ -44,9 +43,6 @@ public class Forwarding implements IOFMessageListener {
 	
 	private IDeviceStorage deviceStorage;
 	private TopologyManager topologyService;
-	
-	// TODO Flow IDs should be globally managed
-	private long currentId = 1;
 	
 	public Forwarding() {
 		
@@ -155,7 +151,7 @@ public class Forwarding implements IOFMessageListener {
 		dataPath.setSrcPort(srcSwitchPort);
 		dataPath.setDstPort(dstSwitchPort);
 		
-		FlowId flowId = new FlowId(currentId++); //dummy flow ID
+		FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
 		FlowPath flowPath = new FlowPath();
 		flowPath.setFlowId(flowId);
 		flowPath.setInstallerId(new CallerId("Forwarding"));
