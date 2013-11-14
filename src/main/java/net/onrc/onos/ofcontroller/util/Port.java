@@ -131,4 +131,23 @@ public class Port {
     public String toString() {
 	return Short.toString(this.value);
     }
+    
+
+    @Override
+    public boolean equals(Object other) {
+    	if (!(other instanceof Port)) {
+    		return false;
+    	}
+
+    	Port otherPort = (Port) other;
+
+    	return value == otherPort.value;
+    }
+
+    @Override
+    public int hashCode() {
+    	int hash = 17;
+    	hash += 31 * hash + (int)value; 
+    	return hash;
+    }
 }
