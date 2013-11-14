@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
@@ -56,8 +57,10 @@ public class HeaderManager {
         // By default all headers are forwarded
         requestHeadersFilterList.add(Collections.singletonList("*"));
         responseHeadersFilterList.add(Collections.singletonList("*"));
-        PropertiesUtil.populate(requestHeadersFilterList, properties, Parameters.FORWARD_REQUEST_HEADERS.getName(),
-                Parameters.DISCARD_REQUEST_HEADERS.getName(), "", Parameters.DISCARD_REQUEST_HEADERS.getDefaultValue());
+        PropertiesUtil
+                .populate(requestHeadersFilterList, properties, Parameters.FORWARD_REQUEST_HEADERS.getName(),
+                        Parameters.DISCARD_REQUEST_HEADERS.getName(), "",
+                        Parameters.DISCARD_REQUEST_HEADERS.getDefaultValue());
         PropertiesUtil.populate(responseHeadersFilterList, properties, Parameters.FORWARD_RESPONSE_HEADERS.getName(),
                 Parameters.DISCARD_RESPONSE_HEADERS.getName(), "",
                 Parameters.DISCARD_RESPONSE_HEADERS.getDefaultValue());
@@ -96,13 +99,30 @@ public class HeaderManager {
         }
         // process X-Forwarded-For header (is missing in request and not
         // blacklisted) -> use remote address instead
-        String remoteAddr = HttpRequestHelper.getMediator(originalRequest).getRemoteAddr();
-        if (HttpRequestHelper.getFirstHeader("X-Forwarded-For", originalRequest) == null
-                && isForwardedRequestHeader("X-Forwarded-For") && remoteAddr != null) {
-            httpRequest.addHeader("X-Forwarded-For", remoteAddr);
+
+        if (isForwardedRequestHeader("X-Forwarded-For")) {
+            String remoteAddr = HttpRequestHelper.getMediator(originalRequest).getRemoteAddr();
+
+            if (remoteAddr != null) {
+                String forwardedFor = HttpRequestHelper.getFirstHeader("X-Forwarded-For", originalRequest);
+
+                if (forwardedFor == null) {
+                    forwardedFor = remoteAddr;
+                } else {
+                    forwardedFor = forwardedFor + ", " + remoteAddr;
+                }
+
+                httpRequest.setHeader("X-Forwarded-For", forwardedFor);
+            }
         }
-        // add X-Forwarded-Proto header
-        httpRequest.addHeader("X-Forwarded-Proto", UriUtils.extractScheme(originalRequest.getRequestLine().getUri()));
+
+        if (isForwardedRequestHeader("X-Forwarded-Proto")) {
+            if (HttpRequestHelper.getFirstHeader("X-Forwarded-Proto", originalRequest) == null) {
+                // add X-Forwarded-Proto header
+                httpRequest.addHeader("X-Forwarded-Proto",
+                        UriUtils.extractScheme(originalRequest.getRequestLine().getUri()));
+            }
+        }
     }
 
     /**
