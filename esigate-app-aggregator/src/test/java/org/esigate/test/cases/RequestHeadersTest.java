@@ -40,21 +40,17 @@ public class RequestHeadersTest extends TestCase {
 
 	public void assertHeaderDiscarded(String name) throws Exception {
 		String resp = sendRequestWithHeader(name, "dummy");
-		assertEquals("HTTP header " + name + " should not be forwarded", "",
-				resp);
+		assertEquals("HTTP header " + name + " should not be forwarded", "", resp);
 	}
 
 	public void assertHeaderForwarded(String name) throws Exception {
 		String resp = sendRequestWithHeader(name, "dummy");
-		assertEquals("HTTP header " + name + " should be forwarded",
-				name.toLowerCase() + ": dummy", resp);
+		assertEquals("HTTP header " + name + " should be forwarded", name.toLowerCase() + ": dummy", resp);
 	}
 
-	public String sendRequestWithHeader(String name, String value)
-			throws Exception {
+	public String sendRequestWithHeader(String name, String value) throws Exception {
 		WebConversation webConversation = new WebConversation();
-		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
-				+ "nocache/ag1/request-headers.jsp?name=" + name);
+		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "nocache/ag1/request-headers.jsp?name=" + name);
 		req.setHeaderField(name, value);
 		WebResponse resp = webConversation.getResponse(req);
 		return resp.getText();
@@ -101,8 +97,8 @@ public class RequestHeadersTest extends TestCase {
 	 */
 	public void testContentEncoding() throws Exception {
 		String resp = sendRequestWithHeader("Content-Encoding", "gzip");
-		assertEquals("Content-Encoding request header should be forwarded",
-				"content-encoding: gzip", resp.toLowerCase());
+		assertEquals("Content-Encoding request header should be forwarded", "content-encoding: gzip",
+				resp.toLowerCase());
 	}
 
 	/**
@@ -131,9 +127,8 @@ public class RequestHeadersTest extends TestCase {
 				+ "nocache/ag1/request-headers.jsp?name=Content-Length");
 		WebResponse resp = webConversation.getResponse(req);
 		String result = resp.getText();
-		assertEquals(
-				"Content-Length request header should be set for POST requests",
-				"content-length: 0", result.toLowerCase());
+		assertEquals("Content-Length request header should be set for POST requests", "content-length: 0",
+				result.toLowerCase());
 	}
 
 	/**
@@ -165,8 +160,7 @@ public class RequestHeadersTest extends TestCase {
 		// In driver.properties, cookie "test0" is supposed to be forwarded but
 		// not test4
 		String resp = sendRequestWithHeader("Cookie", "test0=dummy,test4=dummy");
-		assertEquals(
-				"HTTP header Cookie should not be forwarded as is due to cookies filtering",
+		assertEquals("HTTP header Cookie should not be forwarded as is due to cookies filtering",
 				"cookie: test0=dummy", resp.toLowerCase());
 	}
 
@@ -198,24 +192,20 @@ public class RequestHeadersTest extends TestCase {
 
 	public void testHost() throws Exception {
 		WebConversation webConversation = new WebConversation();
-		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH.replace(
-				"localhost", "127.0.0.1")
+		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH.replace("localhost", "127.0.0.1")
 				+ "nocache/ag1/request-headers.jsp?name=host");
 		req.setHeaderField("Host", "127.0.0.1:8080");
 		WebResponse resp = webConversation.getResponse(req);
 		String result = resp.getText();
-		assertEquals(
-				"As 'preserveHost' is not set to 'true', Host should be the one defined in "
-						+ "driver.properties, not the one defined in the request",
-				"host: localhost:8080", result.toLowerCase());
-		req = new GetMethodWebRequest(APPLICATION_PATH.replace("localhost",
-				"127.0.0.1") + "preservehost/request-headers.jsp?name=host");
+		assertEquals("As 'preserveHost' is not set to 'true', Host should be the one defined in "
+				+ "driver.properties, not the one defined in the request", "host: localhost:8080", result.toLowerCase());
+		req = new GetMethodWebRequest(APPLICATION_PATH.replace("localhost", "127.0.0.1")
+				+ "preservehost/request-headers.jsp?name=host");
 		req.setHeaderField("Host", "127.0.0.1:8080");
 		resp = webConversation.getResponse(req);
 		result = resp.getText();
-		assertEquals(
-				"As 'preserveHost' is set to 'true', Host should be forwarded",
-				"host: 127.0.0.1:8080", result.toLowerCase());
+		assertEquals("As 'preserveHost' is set to 'true', Host should be forwarded", "host: 127.0.0.1:8080",
+				result.toLowerCase());
 	}
 
 	/**
@@ -270,12 +260,9 @@ public class RequestHeadersTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testReferer() throws Exception {
-		String result = sendRequestWithHeader("Referer", APPLICATION_PATH
-				+ "nocache/ag1/dummy");
-		assertEquals(
-				"Referer should be rewritten ('aggregator' replaced with 'aggregated1')",
-				"referer: http://localhost:8080/esigate-app-aggregated1/dummy",
-				result.toLowerCase());
+		String result = sendRequestWithHeader("Referer", APPLICATION_PATH + "nocache/ag1/dummy");
+		assertEquals("Referer should be rewritten ('aggregator' replaced with 'aggregated1')",
+				"referer: http://localhost:8080/esigate-app-aggregated1/dummy", result.toLowerCase());
 	}
 
 	public void testTe() throws Exception {
@@ -335,7 +322,9 @@ public class RequestHeadersTest extends TestCase {
 	}
 
 	public void testXForwardedFor() throws Exception {
-		assertHeaderForwarded("X-Forwarded-For");
+		String name = "X-Forwarded-For";
+		String resp = sendRequestWithHeader(name, "dummy");
+		assertEquals("HTTP header " + name + " should be forwarded", name.toLowerCase() + ": dummy, 127.0.0.1", resp);
 	}
 
 	public void testXForwardedForNotPresent() throws Exception {
@@ -343,8 +332,7 @@ public class RequestHeadersTest extends TestCase {
 		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
 				+ "nocache/ag1/request-headers.jsp?name=X-Forwarded-For");
 		WebResponse resp = webConversation.getResponse(req);
-		if (!resp.getText().toLowerCase()
-				.startsWith("x-forwarded-for: 127.0.0.1")) {
+		if (!resp.getText().toLowerCase().startsWith("x-forwarded-for: 127.0.0.1")) {
 			fail("X-Forwarded-For header should be generated if not present in request. Header value: '"
 					+ resp.getText() + "'");
 		}
