@@ -53,7 +53,11 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 
 	@Override
 	public Iterable<IPortObject> getPortsOnSwitch(String dpid) {
-		// TODO Auto-generated method stub
+		op.close(); //Commit to ensure we see latest data
+		ISwitchObject switchObject = op.searchSwitch(dpid);
+		if (switchObject != null) {
+			return switchObject.getPorts();
+		}
 		return null;
 	}
 

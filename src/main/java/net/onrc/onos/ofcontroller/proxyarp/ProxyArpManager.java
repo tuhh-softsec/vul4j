@@ -27,10 +27,13 @@ import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
+import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
+import net.onrc.onos.ofcontroller.core.internal.TopoSwitchServiceImpl;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -63,7 +66,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	private IRestApiService restApi;
 	
 	private IDeviceStorage deviceStorage;
-	private ITopoSwitchService topoSwitchService;
+	private volatile ITopoSwitchService topoSwitchService;
 	private ITopoLinkService topoLinkService;
 	
 	private short vlan;
@@ -141,6 +144,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
 		arpRequests = Multimaps.synchronizedSetMultimap(
 				HashMultimap.<InetAddress, ArpRequest>create());
+		
+		topoSwitchService = new TopoSwitchServiceImpl();
+		topoLinkService = new TopoLinkServiceImpl();
 	}
 	
 	public void startUp() {
@@ -477,7 +483,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		ARP arp = (ARP) eth.getPayload();
 		if (log.isTraceEnabled()) {
 			log.trace("Sending ARP request for {} to other ONOS instances",
-					HexString.toHexString(arp.getTargetProtocolAddress()));
+					inetAddressToString(arp.getTargetProtocolAddress()));
 		}
 		datagrid.sendArpRequest(eth.serialize());
 	}
@@ -523,6 +529,44 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			
 			try {
 				sw.write(msgList, null);
+				sw.flush();
+			} catch (IOException e) {
+				log.error("Failure writing packet out to switch", e);
+			}
+		}
+	}
+	
+	private void broadcastArpRequestOutMyEdge(byte[] arpRequest) {
+		for (IOFSwitch sw : floodlightProvider.getSwitches().values()) {
+			
+			OFPacketOut po = new OFPacketOut();
+			po.setInPort(OFPort.OFPP_NONE)
+			.setBufferId(-1)
+			.setPacketData(arpRequest);
+			
+			List<OFAction> actions = new ArrayList<OFAction>();
+			
+			Iterable<IPortObject> ports 
+				= topoSwitchService.getPortsOnSwitch(sw.getStringId());
+			if (ports == null) {
+				continue;
+			}
+			
+			for (IPortObject portObject : ports) {
+				if (!portObject.getLinkedPorts().iterator().hasNext()) {
+					actions.add(new OFActionOutput(portObject.getNumber()));
+				}
+			}
+			
+			po.setActions(actions);
+			short actionsLength = (short) 
+					(actions.size() * OFActionOutput.MINIMUM_LENGTH);
+			po.setActionsLength(actionsLength);
+			po.setLengthU(OFPacketOut.MINIMUM_LENGTH + actionsLength 
+					+ arpRequest.length);
+			
+			try {
+				sw.write(po, null);
 				sw.flush();
 			} catch (IOException e) {
 				log.error("Failure writing packet out to switch", e);
@@ -668,6 +712,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	@Override
 	public void arpRequestNotification(byte[] arpRequest) {
 		log.debug("Received ARP notification from other instances");
-		broadcastArpRequestOutEdge(arpRequest, Long.MAX_VALUE, Short.MAX_VALUE);
+		//broadcastArpRequestOutEdge(arpRequest, Long.MAX_VALUE, Short.MAX_VALUE);
+		broadcastArpRequestOutMyEdge(arpRequest);
 	}
 }
