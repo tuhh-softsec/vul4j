@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
@@ -74,6 +73,18 @@ public class HeaderManager {
         return responseHeadersFilterList.contains(headerName);
     }
 
+    /**
+     * Copy header from originalRequest to httpRequest.
+     * <p>
+     * Referer is rewritten. X-Forwarded-* headers are updated.
+     * 
+     * @param originalRequest
+     *            source request
+     * @param httpRequest
+     *            destination request
+     * @throws HttpErrorPage
+     *             if one of the header value is invalid.
+     */
     public void copyHeaders(HttpRequest originalRequest, HttpRequest httpRequest) throws HttpErrorPage {
         String originalUri = originalRequest.getRequestLine().getUri();
         String uri = httpRequest.getRequestLine().getUri();
@@ -175,7 +186,7 @@ public class HeaderManager {
                             // url=http://www.w3.org/pub/WWW/People.html
                             int urlPosition = value.indexOf("url=");
                             if (urlPosition >= 0) {
-                                String urlValue = value.substring(urlPosition + 4);
+                                String urlValue = value.substring(urlPosition + "url=".length());
 
                                 String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
                                 targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
