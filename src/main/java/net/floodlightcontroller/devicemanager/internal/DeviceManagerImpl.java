@@ -39,21 +39,22 @@ import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
+import net.floodlightcontroller.core.IFloodlightProviderService.Role;
 import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.core.IFloodlightProviderService.Role;
+import net.floodlightcontroller.core.IUpdate;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
 import net.floodlightcontroller.devicemanager.IDevice;
+import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.devicemanager.IEntityClass;
 import net.floodlightcontroller.devicemanager.IEntityClassListener;
 import net.floodlightcontroller.devicemanager.IEntityClassifierService;
-import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.floodlightcontroller.devicemanager.web.DeviceRoutable;
 import net.floodlightcontroller.flowcache.IFlowReconcileListener;
@@ -71,8 +72,6 @@ import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MultiIterator;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
-import static net.floodlightcontroller.devicemanager.internal.
-DeviceManagerImpl.DeviceUpdate.Change.*;
 
 import org.openflow.protocol.OFMatchWithSwDpid;
 import org.openflow.protocol.OFMessage;
@@ -197,14 +196,14 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
      */
     protected Set<IDeviceListener> deviceListeners;
 
+    public enum DeviceUpdateType {
+        ADD, DELETE, CHANGE, MOVED;
+    }
+    
     /**
      * A device update event to be dispatched
      */
-    protected static class DeviceUpdate {
-        public enum Change {
-            ADD, DELETE, CHANGE;
-        }
-
+    protected class DeviceUpdate implements IUpdate {
         /**
          * The affected device
          */
@@ -213,18 +212,18 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
         /**
          * The change that was made
          */
-        protected Change change;
+        protected DeviceUpdateType updateType;
 
         /**
          * If not added, then this is the list of fields changed
          */
         protected EnumSet<DeviceField> fieldsChanged;
 
-        public DeviceUpdate(IDevice device, Change change,
+        public DeviceUpdate(IDevice device, DeviceUpdateType updateType,
                             EnumSet<DeviceField> fieldsChanged) {
             super();
             this.device = device;
-            this.change = change;
+            this.updateType = updateType;
             this.fieldsChanged = fieldsChanged;
         }
 
@@ -232,9 +231,49 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
         public String toString() {
             String devIdStr = device.getEntityClass().getName() + "::" +
                     device.getMACAddressString();
-            return "DeviceUpdate [device=" + devIdStr + ", change=" + change
+            return "DeviceUpdate [device=" + devIdStr + ", updateType=" + updateType
                    + ", fieldsChanged=" + fieldsChanged + "]";
         }
+
+		@Override
+		public void dispatch() {
+			if (logger.isTraceEnabled()) {
+                logger.trace("Dispatching device update: {}", this);
+            }
+            for (IDeviceListener listener : deviceListeners) {
+                switch (updateType) {
+                    case ADD:
+                        listener.deviceAdded(device);
+                        break;
+                    case DELETE:
+                        listener.deviceRemoved(device);
+                        break;
+                    case CHANGE:
+                        for (DeviceField field : fieldsChanged) {
+                            switch (field) {
+                                case IPV4:
+                                    listener.deviceIPV4AddrChanged(device);
+                                    break;
+                                case SWITCH:
+                                case PORT:
+                                    //listener.deviceMoved(update.device);
+                                    break;
+                                case VLAN:
+                                    listener.deviceVlanChanged(device);
+                                    break;
+                                default:
+                                    logger.debug("Unknown device field changed {}",
+                                                fieldsChanged.toString());
+                                    break;
+                            }
+                        }
+                        break;
+                    case MOVED:
+                    	listener.deviceMoved(device);
+                    	break;
+                }
+            }
+		}
         
     }
 
@@ -1104,7 +1143,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
                 // generate new device update
                 deviceUpdates =
                         updateUpdates(deviceUpdates,
-                                      new DeviceUpdate(device, ADD, null));
+                                      new DeviceUpdate(device, DeviceUpdateType.ADD, null));
 
                 break;
             }
@@ -1162,7 +1201,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
                 if (changedFields.size() > 0)
                     deviceUpdates =
                     updateUpdates(deviceUpdates,
-                                  new DeviceUpdate(newDevice, CHANGE,
+                                  new DeviceUpdate(newDevice, DeviceUpdateType.CHANGE,
                                                    changedFields));
 
                 // update the device map with a replace call
@@ -1211,7 +1250,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
                 // generate new device update
                 deviceUpdates =
                         updateUpdates(deviceUpdates,
-                                      new DeviceUpdate(dev, DELETE, null));
+                                      new DeviceUpdate(dev, DeviceUpdateType.DELETE, null));
             }
         }
 
@@ -1267,6 +1306,15 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
      * @param updates the updates to process.
      */
     protected void processUpdates(Queue<DeviceUpdate> updates) {
+    	if (updates == null) {
+    		return;
+    	}
+    	
+    	DeviceUpdate update;
+    	while (null != (update = updates.poll())) {
+    		floodlightProvider.publishUpdate(update);
+    	}
+    	/*
         if (updates == null) return;
         DeviceUpdate update = null;
         while (null != (update = updates.poll())) {
@@ -1304,6 +1352,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
                 }
             }
         }
+        */
     }
     
     /**
@@ -1481,7 +1530,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
                         changedFields.addAll(findChangedFields(newDevice, e));
                     }
                     if (changedFields.size() > 0)
-                        deviceUpdates.add(new DeviceUpdate(d, CHANGE,
+                        deviceUpdates.add(new DeviceUpdate(d, DeviceUpdateType.CHANGE,
                                                            changedFields));
 
                     if (!deviceMap.replace(newDevice.getDeviceKey(),
@@ -1495,7 +1544,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
                             continue;
                     }
                 } else {
-                    deviceUpdates.add(new DeviceUpdate(d, DELETE, null));
+                    deviceUpdates.add(new DeviceUpdate(d, DeviceUpdateType.DELETE, null));
                     if (!deviceMap.remove(d.getDeviceKey(), d))
                         // concurrent modification; try again
                         // need to use device that is the map now for the next
@@ -1665,9 +1714,11 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
      * @param updates the updates to process.
      */
     protected void sendDeviceMovedNotification(Device d) {
-        for (IDeviceListener listener : deviceListeners) {
+        /*for (IDeviceListener listener : deviceListeners) {
             listener.deviceMoved(d);
-        }
+        }*/
+    	floodlightProvider.publishUpdate(
+    			new DeviceUpdate(d, DeviceUpdateType.MOVED, null));
     }
     
     /**
@@ -1705,8 +1756,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
                 new LinkedList<DeviceUpdate>();
         // delete this device and then re-learn all the entities
         this.deleteDevice(device);
-        deviceUpdates.add(new DeviceUpdate(device, 
-                DeviceUpdate.Change.DELETE, null));
+        deviceUpdates.add(new DeviceUpdate(device, DeviceUpdateType.DELETE, null));
         if (!deviceUpdates.isEmpty())
             processUpdates(deviceUpdates);
         for (Entity entity: device.entities ) {

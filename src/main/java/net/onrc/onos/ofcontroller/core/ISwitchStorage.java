@@ -1,5 +1,7 @@
 package net.onrc.onos.ofcontroller.core;
 
+import java.util.List;
+
 import net.floodlightcontroller.core.IOFSwitch;
 
 import org.openflow.protocol.OFPhysicalPort;
@@ -32,6 +34,10 @@ public interface ISwitchStorage extends INetMapStorage {
 	 */
 	public boolean deleteSwitch(String dpid);
 	/*
+	 * Deactivate the switch and associated ports
+	 */
+	public boolean deactivateSwitch(String dpid);
+	/*
 	 * Update the port details
 	 */
 	public boolean updatePort(String dpid, short port, int state, String desc);
@@ -43,4 +49,12 @@ public interface ISwitchStorage extends INetMapStorage {
 	 * Delete a port on a switch by num
 	 */
 	public boolean deletePort(String dpid, short port);
+
+	/**
+	 * Get list of all ports on the switch specified by given DPID.
+	 *
+	 * @param dpid DPID of desired switch.
+	 * @return List of port IDs. Empty list if no port was found.
+	 */
+	public List<Short> getPorts(String dpid);
 }

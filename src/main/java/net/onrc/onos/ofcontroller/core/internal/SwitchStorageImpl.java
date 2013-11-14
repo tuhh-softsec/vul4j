@@ -1,5 +1,8 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBOperation;
@@ -59,6 +62,14 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	 * @param state The state of the switch like ACTIVE, INACTIVE
 	 * @param dmope	The DM_OPERATION of the switch
 	 */
+	/*
+	 * Jono, 11/8/2013
+	 * We don't need this update method that demultiplexes DM_OPERATIONS,
+	 * we can have clients just call the required methods directly.
+	 * We especially don't need this update method to re-implement 
+	 * the functions of other methods.
+	 */
+	@Deprecated
 	@Override
 	public boolean updateSwitch(String dpid, SwitchState state, DM_OPERATION dmope) {
 		boolean success = false;
@@ -137,9 +148,13 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			for (OFPhysicalPort port: sw.getPorts()) {
 				IPortObject p = op.searchPort(dpid, port.getPortNumber());
 				if (p != null) {
-		    		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
+		    		log.debug("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
 		    		setPortStateImpl(p, port.getState(), port.getName());
 		    		p.setState("ACTIVE");
+		    		if (curr.getPort(port.getPortNumber()) == null) {
+		    			// The port exists but the switch has no "on" link to it
+		    			curr.addPort(p);
+		    		}
 				} else {
 					p = addPortImpl(curr, port.getPortNumber());
 					setPortStateImpl(p, port.getState(), port.getName());
@@ -149,8 +164,9 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			success = true;
 		} catch (Exception e) {
 			op.rollback();
-			e.printStackTrace();
-			log.error("SwitchStorage:addSwitch dpid:{} failed", dpid);
+			//e.printStackTrace();
+			log.error("SwitchStorage:addSwitch dpid:{} failed: {}", dpid);
+			log.error("switch write error", e);
 		}
 		
 		return success;
@@ -160,6 +176,10 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	 * This function is for adding the switch into the DB.
 	 * @param dpid The switch dpid you want to add into the DB.
 	 */
+	// This method is only called by tests, so we probably don't need it.
+	// If we need both addSwitch interfaces, one should call the other
+	// rather than implementing the same logic twice.
+	@Deprecated 
 	@Override
 	public boolean addSwitch(String dpid) {
 		boolean success = false;
@@ -179,7 +199,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		} catch (Exception e) {
 			op.rollback();
 			e.printStackTrace();
-			log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
+			log.error("SwitchStorage:addSwitch dpid:{} failed", dpid, e);
 		}
 		
 		return success;
@@ -208,6 +228,32 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	
 		return success;
 	}
+	
+	public boolean deactivateSwitch(String dpid) {
+		boolean success = false;
+		
+		try {
+			ISwitchObject switchObject = op.searchSwitch(dpid);
+			if (switchObject != null) {
+				setSwitchStateImpl(switchObject, SwitchState.INACTIVE);
+				
+				for (IPortObject portObject : switchObject.getPorts()) {
+					portObject.setState("INACTIVE");
+				}
+				op.commit();
+				success = true;
+			}
+			else {
+				log.warn("Switch {} not found when trying to deactivate", dpid);
+			}
+		} catch (Exception e) {
+			// TODO what type of exception is thrown when we can't commit?
+			op.rollback();
+			log.error("SwitchStorage:deactivateSwitch {} failed", dpid, e);
+		}
+		
+		return success;
+	}
 
 	public boolean updatePort(String dpid, short portNum, int state, String desc) {
 		boolean success = false;
@@ -220,8 +266,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	        	log.info("SwitchStorage:updatePort dpid:{} port:{}", dpid, portNum);
 	        	if (p != null) {
 	        		setPortStateImpl(p, state, desc);
+				op.commit();
 	        	}
-	        	op.commit();
         		success = true;
 	        } else {
 	    		log.error("SwitchStorage:updatePort dpid:{} port:{} : failed switch does not exist", dpid, portNum);
@@ -247,6 +293,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		if(((OFPortConfig.OFPPC_PORT_DOWN.getValue() & phport.getConfig()) > 0) ||
 				((OFPortState.OFPPS_LINK_DOWN.getValue() & phport.getState()) > 0)) {
 			// just dispatch to deletePort()
+			// TODO This is wrong. We need to make sure the port is in the
+			// DB with the correct info and port state.
 			return deletePort(dpid, phport.getPortNumber());
 		}
 	
@@ -293,17 +341,39 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	        	IPortObject p = sw.getPort(port);
 	            if (p != null) {
 	        		log.info("SwitchStorage:deletePort dpid:{} port:{} found and set INACTIVE", dpid, port);
-	        		deletePortImpl(p);
+	        		//deletePortImpl(p);
+	        		p.setState("INACTIVE");
 	        		op.commit();
 	        	}
 	        }
+		success = true;
 		} catch (Exception e) {
 			op.rollback();
 			e.printStackTrace();
-			log.info("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
+			log.error("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
 		}
 
 		return success;
+	}
+
+	/**
+	 * Get list of all ports on the switch specified by given DPID.
+	 *
+	 * @param dpid DPID of desired switch.
+	 * @return List of port IDs. Empty list if no port was found.
+	 */
+	@Override
+	public List<Short> getPorts(String dpid) {
+	    List<Short> ports = new ArrayList<Short>();
+
+	    ISwitchObject srcSw = op.searchSwitch(dpid);
+	    if (srcSw != null) {
+		for (IPortObject srcPort : srcSw.getPorts()) {
+		    ports.add(srcPort.getNumber());
+		}
+	    }
+
+	    return ports;
 	}
 
 	private ISwitchObject addSwitchImpl(String dpid) {
@@ -333,6 +403,11 @@ public class SwitchStorageImpl implements ISwitchStorage {
         }
 	}
 
+	// TODO There's an issue here where a port with that ID could already
+	// exist when we try to add this one (because it's left over from an
+	// old topology). We need to remove an old port with the same ID when
+	// we add the new port. Also it seems that old ports like this are 
+	// never cleaned up and will remain in the DB in the ACTIVE state forever.
 	private IPortObject addPortImpl(ISwitchObject sw, short portNum) {
 		IPortObject p = op.newPort(sw.getDPID(), portNum);
 		p.setState("ACTIVE");

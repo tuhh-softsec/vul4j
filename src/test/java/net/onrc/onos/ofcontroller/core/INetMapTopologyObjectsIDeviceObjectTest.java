@@ -1,16 +1,19 @@
 package net.onrc.onos.ofcontroller.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
 import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.ofcontroller.core.internal.TestDatabaseManager;
+
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -18,9 +21,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.slf4j.LoggerFactory;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.slf4j.LoggerFactory;
 
+import com.google.common.net.InetAddresses;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 
@@ -89,10 +93,12 @@ public class INetMapTopologyObjectsIDeviceObjectTest {
 	 */
 	@Test
 	public void testSetGetIPAddress() {
-		String ipaddr = "192.168.0.1";
+		int ipaddr = InetAddresses.coerceToInteger(InetAddresses.forString("192.168.0.1"));
 		IDeviceObject devObj = ope.newDevice();
-		devObj.setIPAddress(ipaddr);
-		assertEquals(devObj.getIPAddress(), ipaddr);
+		IIpv4Address ipv4Address = ope.newIpv4Address();
+		ipv4Address.setIpv4Address(ipaddr);
+		devObj.addIpv4Address(ipv4Address);
+		assertEquals(devObj.getIpv4Address(ipaddr), ipv4Address);
 	}
 	
 	/**

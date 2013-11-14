@@ -7,12 +7,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.ofcontroller.topology.ShortestPath;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
@@ -21,9 +20,11 @@ import net.onrc.onos.ofcontroller.util.EventEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction;
 import net.onrc.onos.ofcontroller.util.FlowEntryActions;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowEntrySwitchState;
 import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
+import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 
@@ -31,26 +32,63 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for implementing the Path Computation and Path Maintenance.
+ * A class for storing a pair of Flow Path and a Flow Entry.
  */
-class PathComputation extends Thread implements IPathComputationService {
+class FlowPathEntryPair {
+    protected FlowPath flowPath;
+    protected FlowEntry flowEntry;
+
+    protected FlowPathEntryPair(FlowPath flowPath, FlowEntry flowEntry) {
+	this.flowPath = flowPath;
+	this.flowEntry = flowEntry;
+    }
+}
+
+/**
+ * Class for FlowPath Maintenance.
+ * This class listens for FlowEvents to:
+ * - Maintain a local cache of the Network Topology.
+ * - Detect FlowPaths impacted by Topology change.
+ * - Recompute impacted FlowPath using cached Topology.
+ */
+class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     /** The logger. */
-    private final static Logger log = LoggerFactory.getLogger(PathComputation.class);
+    private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
 
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
     private Topology topology;			// The network topology
     private Map<Long, FlowPath> allFlowPaths = new HashMap<Long, FlowPath>();
+    private Map<Long, FlowEntry> unmatchedFlowEntryAdd =
+	new HashMap<Long, FlowEntry>();
 
     // The queue with Flow Path and Topology Element updates
     private BlockingQueue<EventEntry<?>> networkEvents =
 	new LinkedBlockingQueue<EventEntry<?>>();
 
-    // The pending Topology and Flow Path events
+    // The pending Topology, FlowPath, and FlowEntry events
     private List<EventEntry<TopologyElement>> topologyEvents =
 	new LinkedList<EventEntry<TopologyElement>>();
     private List<EventEntry<FlowPath>> flowPathEvents =
 	new LinkedList<EventEntry<FlowPath>>();
+    private List<EventEntry<FlowEntry>> flowEntryEvents =
+	new LinkedList<EventEntry<FlowEntry>>();
+
+    //
+    // Transient state for processing the Flow Paths:
+    //  - The new Flow Paths
+    //  - The Flow Paths that should be recomputed
+    //  - The Flow Paths with modified Flow Entries
+    //  - The Flow Entries that were updated
+    //
+    private List<FlowPath> newFlowPaths = new LinkedList<FlowPath>();
+    private List<FlowPath> recomputeFlowPaths = new LinkedList<FlowPath>();
+    private List<FlowPath> modifiedFlowPaths = new LinkedList<FlowPath>();
+    private List<FlowPathEntryPair> updatedFlowEntries =
+	new LinkedList<FlowPathEntryPair>();
+    private List<FlowPathEntryPair> unmatchedDeleteFlowEntries =
+	new LinkedList<FlowPathEntryPair>();
+
 
     /**
      * Constructor for a given Flow Manager and Datagrid Service.
@@ -58,18 +96,24 @@ class PathComputation extends Thread implements IPathComputationService {
      * @param flowManager the Flow Manager to use.
      * @param datagridService the Datagrid Service to use.
      */
-    PathComputation(FlowManager flowManager,
-		    IDatagridService datagridService) {
+    FlowEventHandler(FlowManager flowManager,
+		     IDatagridService datagridService) {
 	this.flowManager = flowManager;
 	this.datagridService = datagridService;
 	this.topology = new Topology();
     }
 
     /**
-     * Run the thread.
+     * Get the network topology.
+     *
+     * @return the network topology.
      */
-    @Override
-    public void run() {
+    protected Topology getTopology() { return this.topology; }
+
+    /**
+     * Startup processing.
+     */
+    private void startup() {
 	//
 	// Obtain the initial Topology state
 	//
@@ -89,8 +133,26 @@ class PathComputation extends Thread implements IPathComputationService {
 		new EventEntry<FlowPath>(EventEntry.Type.ENTRY_ADD, flowPath);
 	    flowPathEvents.add(eventEntry);
 	}
-	// Process the events (if any)
+	//
+	// Obtain the initial FlowEntry state
+	//
+	Collection<FlowEntry> flowEntries = datagridService.getAllFlowEntries();
+	for (FlowEntry flowEntry : flowEntries) {
+	    EventEntry<FlowEntry> eventEntry =
+		new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
+	    flowEntryEvents.add(eventEntry);
+	}
+
+	// Process the initial events (if any)
 	processEvents();
+    }
+
+    /**
+     * Run the thread.
+     */
+    @Override
+    public void run() {
+	startup();
 
 	//
 	// The main loop
@@ -106,6 +168,7 @@ class PathComputation extends Thread implements IPathComputationService {
 		// Demultiplex all events:
 		//  - EventEntry<TopologyElement>
 		//  - EventEntry<FlowPath>
+		//  - EventEntry<FlowEntry>
 		//
 		for (EventEntry<?> event : collection) {
 		    if (event.eventData() instanceof TopologyElement) {
@@ -116,6 +179,10 @@ class PathComputation extends Thread implements IPathComputationService {
 			EventEntry<FlowPath> flowPathEventEntry =
 			    (EventEntry<FlowPath>)event;
 			flowPathEvents.add(flowPathEventEntry);
+		    } else if (event.eventData() instanceof FlowEntry) {
+			EventEntry<FlowEntry> flowEntryEventEntry =
+			    (EventEntry<FlowEntry>)event;
+			flowEntryEvents.add(flowEntryEventEntry);
 		    }
 		}
 		collection.clear();
@@ -132,18 +199,122 @@ class PathComputation extends Thread implements IPathComputationService {
      * Process the events (if any)
      */
     private void processEvents() {
-	List<FlowPath> newFlowPaths = new LinkedList<FlowPath>();
-	List<FlowPath> recomputeFlowPaths = new LinkedList<FlowPath>();
-	List<FlowPath> modifiedFlowPaths = new LinkedList<FlowPath>();
+	List<FlowPathEntryPair> modifiedFlowEntries;
 
-	if (topologyEvents.isEmpty() && flowPathEvents.isEmpty())
+	if (topologyEvents.isEmpty() && flowPathEvents.isEmpty() &&
+	    flowEntryEvents.isEmpty()) {
 	    return;		// Nothing to do
+	}
+
+	processFlowPathEvents();
+	processTopologyEvents();
+	//
+	// Add all new Flows: should be done after processing the Flow Path
+	// and Topology events.
+	//
+	for (FlowPath flowPath : newFlowPaths) {
+	    allFlowPaths.put(flowPath.flowId().value(), flowPath);
+	}
+
+	processFlowEntryEvents();
+
+	// Recompute all affected Flow Paths and keep only the modified
+	for (FlowPath flowPath : recomputeFlowPaths) {
+	    if (recomputeFlowPath(flowPath))
+		modifiedFlowPaths.add(flowPath);
+	}
+
+	modifiedFlowEntries = extractModifiedFlowEntries(modifiedFlowPaths);
+
+	// Assign missing Flow Entry IDs
+	assignFlowEntryId(modifiedFlowEntries);
 
 	//
-	// Process the Flow Path events
+	// Push the modified Flow Entries to switches, datagrid and database
+	//
+	flowManager.pushModifiedFlowEntriesToSwitches(modifiedFlowEntries);
+	flowManager.pushModifiedFlowEntriesToDatagrid(modifiedFlowEntries);
+	flowManager.pushModifiedFlowEntriesToDatabase(modifiedFlowEntries);
+	flowManager.pushModifiedFlowEntriesToDatabase(updatedFlowEntries);
+	flowManager.pushModifiedFlowEntriesToDatabase(unmatchedDeleteFlowEntries);
+
+	//
+	// Remove Flow Entries that were deleted
+	//
+	for (FlowPath flowPath : modifiedFlowPaths)
+	    flowPath.dataPath().removeDeletedFlowEntries();
+
+	// Cleanup
+	topologyEvents.clear();
+	flowPathEvents.clear();
+	flowEntryEvents.clear();
+	//
+	newFlowPaths.clear();
+	recomputeFlowPaths.clear();
+	modifiedFlowPaths.clear();
+	updatedFlowEntries.clear();
+	unmatchedDeleteFlowEntries.clear();
+    }
+
+    /**
+     * Extract the modified Flow Entries.
+     */
+    private List<FlowPathEntryPair> extractModifiedFlowEntries(
+					List<FlowPath> modifiedFlowPaths) {
+	List<FlowPathEntryPair> modifiedFlowEntries =
+	    new LinkedList<FlowPathEntryPair>();
+
+	// Extract only the modified Flow Entries
+	for (FlowPath flowPath : modifiedFlowPaths) {
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		if (flowEntry.flowEntrySwitchState() ==
+		    FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
+		    FlowPathEntryPair flowPair =
+			new FlowPathEntryPair(flowPath, flowEntry);
+		    modifiedFlowEntries.add(flowPair);
+		}
+	    }
+	}
+	return modifiedFlowEntries;
+    }
+
+    /**
+     * Assign the Flow Entry ID as needed.
+     */
+    private void assignFlowEntryId(List<FlowPathEntryPair> modifiedFlowEntries) {
+	if (modifiedFlowEntries.isEmpty())
+	    return;
+
+	Map<Long, IOFSwitch> mySwitches = flowManager.getMySwitches();
+
+	//
+	// Assign the Flow Entry ID only for Flow Entries for my switches
+	//
+	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
+	    FlowEntry flowEntry = flowPair.flowEntry;
+	    // Update the Flow Entries only for my switches
+	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+	    if (mySwitch == null)
+		continue;
+	    if (! flowEntry.isValidFlowEntryId()) {
+		long id = flowManager.getNextFlowEntryId();
+		flowEntry.setFlowEntryId(new FlowEntryId(id));
+	    }
+	}
+    }
+
+    /**
+     * Process the Flow Path events.
+     */
+    private void processFlowPathEvents() {
+	//
+	// Process all Flow Path events and update the appropriate state
 	//
 	for (EventEntry<FlowPath> eventEntry : flowPathEvents) {
 	    FlowPath flowPath = eventEntry.eventData();
+
+	    log.debug("Flow Event: {} {}", eventEntry.eventType(),
+		      flowPath.toString());
 
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD: {
@@ -201,26 +372,35 @@ class PathComputation extends Thread implements IPathComputationService {
 		    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 		}
 
-		allFlowPaths.remove(existingFlowPath.flowId());
+		allFlowPaths.remove(existingFlowPath.flowId().value());
 		modifiedFlowPaths.add(existingFlowPath);
 
 		break;
 	    }
 	    }
 	}
+    }
 
+    /**
+     * Process the Topology events.
+     */
+    private void processTopologyEvents() {
 	//
-	// Process the topology events
+	// Process all Topology events and update the appropriate state
 	//
 	boolean isTopologyModified = false;
 	for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
 	    TopologyElement topologyElement = eventEntry.eventData();
+
+	    log.debug("Topology Event: {} {}", eventEntry.eventType(),
+		      topologyElement.toString());
+
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD:
-		isTopologyModified = topology.addTopologyElement(topologyElement);
+		isTopologyModified |= topology.addTopologyElement(topologyElement);
 		break;
 	    case ENTRY_REMOVE:
-		isTopologyModified = topology.removeTopologyElement(topologyElement);
+		isTopologyModified |= topology.removeTopologyElement(topologyElement);
 		break;
 	    }
 	}
@@ -228,26 +408,174 @@ class PathComputation extends Thread implements IPathComputationService {
 	    // TODO: For now, if the topology changes, we recompute all Flows
 	    recomputeFlowPaths.addAll(allFlowPaths.values());
 	}
+    }
 
-	// Add all new Flows
-	for (FlowPath flowPath : newFlowPaths) {
-	    allFlowPaths.put(flowPath.flowId().value(), flowPath);
-	}
+    /**
+     * Process the Flow Entry events.
+     */
+    private void processFlowEntryEvents() {
+	FlowPathEntryPair flowPair;
+	FlowPath flowPath;
+	FlowEntry updatedFlowEntry;
 
-	// Recompute all affected Flow Paths and keep only the modified
-	for (FlowPath flowPath : recomputeFlowPaths) {
-	    if (recomputeFlowPath(flowPath))
-		modifiedFlowPaths.add(flowPath);
+	//
+	// Update Flow Entries with previously unmatched Flow Entry updates
+	//
+	if (! unmatchedFlowEntryAdd.isEmpty()) {
+	    Map<Long, FlowEntry> remainingUpdates = new HashMap<Long, FlowEntry>();
+	    for (FlowEntry flowEntry : unmatchedFlowEntryAdd.values()) {
+		flowPath = allFlowPaths.get(flowEntry.flowId().value());
+		if (flowPath == null)
+		    continue;
+		updatedFlowEntry = updateFlowEntryAdd(flowPath, flowEntry);
+		if (updatedFlowEntry == null) {
+		    remainingUpdates.put(flowEntry.flowEntryId().value(),
+					 flowEntry);
+		    continue;
+		}
+		flowPair = new FlowPathEntryPair(flowPath, updatedFlowEntry);
+		updatedFlowEntries.add(flowPair);
+	    }
+	    unmatchedFlowEntryAdd = remainingUpdates;
 	}
 
 	//
-	// Push the Flow Entries that have been modified
+	// Process all Flow Entry events and update the appropriate state
 	//
-	flowManager.pushModifiedFlowEntries(modifiedFlowPaths);
+	for (EventEntry<FlowEntry> eventEntry : flowEntryEvents) {
+	    FlowEntry flowEntry = eventEntry.eventData();
 
-	// Cleanup
-	topologyEvents.clear();
-	flowPathEvents.clear();
+	    log.debug("Flow Entry Event: {} {}", eventEntry.eventType(),
+		      flowEntry.toString());
+
+	    if ((! flowEntry.isValidFlowId()) ||
+		(! flowEntry.isValidFlowEntryId())) {
+		continue;
+	    }
+
+	    switch (eventEntry.eventType()) {
+	    case ENTRY_ADD:
+		flowPath = allFlowPaths.get(flowEntry.flowId().value());
+		if (flowPath == null) {
+		    // Flow Path not found: keep the entry for later matching
+		    unmatchedFlowEntryAdd.put(flowEntry.flowEntryId().value(),
+					      flowEntry);
+		    break;
+		}
+		updatedFlowEntry = updateFlowEntryAdd(flowPath, flowEntry);
+		if (updatedFlowEntry == null) {
+		    // Flow Entry not found: keep the entry for later matching
+		    unmatchedFlowEntryAdd.put(flowEntry.flowEntryId().value(),
+					      flowEntry);
+		    break;
+		}
+		// Add the updated entry to the list of updated Flow Entries
+		flowPair = new FlowPathEntryPair(flowPath, updatedFlowEntry);
+		updatedFlowEntries.add(flowPair);
+		break;
+
+	    case ENTRY_REMOVE:
+		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
+		if (unmatchedFlowEntryAdd.remove(flowEntry.flowEntryId().value()) != null) {
+		    continue;		// Match found
+		}
+						 
+		flowPath = allFlowPaths.get(flowEntry.flowId().value());
+		if (flowPath == null) {
+		    // Flow Path not found: ignore the update
+		    break;
+		}
+		updatedFlowEntry = updateFlowEntryRemove(flowPath, flowEntry);
+		if (updatedFlowEntry == null) {
+		    // Flow Entry not found: add to list of deleted entries
+		    flowPair = new FlowPathEntryPair(flowPath, flowEntry);
+		    unmatchedDeleteFlowEntries.add(flowPair);
+		    break;
+		}
+		flowPair = new FlowPathEntryPair(flowPath, updatedFlowEntry);
+		updatedFlowEntries.add(flowPair);
+		break;
+	    }
+	}
+    }
+
+    /**
+     * Update a Flow Entry because of an external ENTRY_ADD event.
+     *
+     * @param flowPath the FlowPath for the Flow Entry to update.
+     * @param flowEntry the FlowEntry with the new state.
+     * @return the updated Flow Entry if found, otherwise null.
+     */
+    private FlowEntry updateFlowEntryAdd(FlowPath flowPath,
+					 FlowEntry flowEntry) {
+	//
+	// Iterate over all Flow Entries and find a match.
+	//
+	for (FlowEntry localFlowEntry : flowPath.flowEntries()) {
+	    if (! TopologyManager.isSameFlowEntryDataPath(localFlowEntry,
+							  flowEntry)) {
+		continue;
+	    }
+
+	    //
+	    // Local Flow Entry match found
+	    //
+	    if (localFlowEntry.isValidFlowEntryId()) {
+		if (localFlowEntry.flowEntryId().value() !=
+		    flowEntry.flowEntryId().value()) {
+		    //
+		    // Find a local Flow Entry, but the Flow Entry ID doesn't
+		    // match. Keep looking.
+		    //
+		    continue;
+		}
+	    } else {
+		// Update the Flow Entry ID
+		FlowEntryId flowEntryId =
+		    new FlowEntryId(flowEntry.flowEntryId().value());
+		localFlowEntry.setFlowEntryId(flowEntryId);
+	    }
+
+	    //
+	    // Update the local Flow Entry.
+	    //
+	    localFlowEntry.setFlowEntryUserState(flowEntry.flowEntryUserState());
+	    localFlowEntry.setFlowEntrySwitchState(flowEntry.flowEntrySwitchState());
+	    return localFlowEntry;
+	}
+
+	return null;		// Entry not found
+    }
+
+    /**
+     * Update a Flow Entry because of an external ENTRY_REMOVE event.
+     *
+     * @param flowPath the FlowPath for the Flow Entry to update.
+     * @param flowEntry the FlowEntry with the new state.
+     * @return the updated Flow Entry if found, otherwise null.
+     */
+    private FlowEntry updateFlowEntryRemove(FlowPath flowPath,
+					    FlowEntry flowEntry) {
+	//
+	// Iterate over all Flow Entries and find a match based on
+	// the Flow Entry ID.
+	//
+	for (FlowEntry localFlowEntry : flowPath.flowEntries()) {
+	    if (! localFlowEntry.isValidFlowEntryId())
+		continue;
+	    if (localFlowEntry.flowEntryId().value() !=
+		flowEntry.flowEntryId().value()) {
+		    continue;
+	    }
+	    //
+	    // Update the local Flow Entry.
+	    //
+	    localFlowEntry.setFlowEntryUserState(flowEntry.flowEntryUserState());
+	    localFlowEntry.setFlowEntrySwitchState(flowEntry.flowEntrySwitchState());
+	    return localFlowEntry;
+	}
+
+	return null;		// Entry not found
     }
 
     /**
@@ -263,6 +591,8 @@ class PathComputation extends Thread implements IPathComputationService {
 	// Test whether the Flow Path needs to be recomputed
 	//
 	switch (flowPath.flowPathType()) {
+	case FP_TYPE_UNKNOWN:
+	    return false;		// Can't recompute on Unknown FlowType
 	case FP_TYPE_SHORTEST_PATH:
 	    break;
 	case FP_TYPE_EXPLICIT_PATH:
@@ -335,7 +665,7 @@ class PathComputation extends Thread implements IPathComputationService {
 	    FlowEntry newFlowEntry =
 		newFlowEntriesMap.get(oldFlowEntry.dpid().value());
 	    if (newFlowEntry == null) {
-		// The old Flow Entry should be deleted
+		// The old Flow Entry should be deleted: not on the path
 		oldFlowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
 		oldFlowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 		deletedFlowEntries.add(oldFlowEntry);
@@ -363,7 +693,7 @@ class PathComputation extends Thread implements IPathComputationService {
 
 	    if (oldFlowEntry != null) {
 		//
-		// The old Flow Entry should be deleted
+		// The old Flow Entry should be deleted: path diverges
 		//
 		oldFlowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
 		oldFlowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
@@ -373,6 +703,12 @@ class PathComputation extends Thread implements IPathComputationService {
 	    //
 	    // Add the new Flow Entry
 	    //
+	    //
+	    // NOTE: Assign only the Flow ID.
+	    // The Flow Entry ID is assigned later only for the Flow Entries
+	    // this instance is responsible for.
+	    //
+	    newFlowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
 
 	    // Set the incoming port matching
 	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
@@ -412,8 +748,7 @@ class PathComputation extends Thread implements IPathComputationService {
 	// Note that the Flow Entries that will be deleted are added at
 	// the end.
 	//
-	for (FlowEntry flowEntry : deletedFlowEntries)
-	    finalFlowEntries.add(flowEntry);
+	finalFlowEntries.addAll(deletedFlowEntries);
 	flowPath.dataPath().setFlowEntries(finalFlowEntries);
 
 	return hasChanged;
@@ -422,7 +757,7 @@ class PathComputation extends Thread implements IPathComputationService {
     /**
      * Receive a notification that a Flow is added.
      *
-     * @param flowPath the flow that is added.
+     * @param flowPath the Flow that is added.
      */
     @Override
     public void notificationRecvFlowAdded(FlowPath flowPath) {
@@ -434,7 +769,7 @@ class PathComputation extends Thread implements IPathComputationService {
     /**
      * Receive a notification that a Flow is removed.
      *
-     * @param flowPath the flow that is removed.
+     * @param flowPath the Flow that is removed.
      */
     @Override
     public void notificationRecvFlowRemoved(FlowPath flowPath) {
@@ -446,13 +781,50 @@ class PathComputation extends Thread implements IPathComputationService {
     /**
      * Receive a notification that a Flow is updated.
      *
-     * @param flowPath the flow that is updated.
+     * @param flowPath the Flow that is updated.
      */
     @Override
     public void notificationRecvFlowUpdated(FlowPath flowPath) {
 	// NOTE: The ADD and UPDATE events are processed in same way
 	EventEntry<FlowPath> eventEntry =
 	    new EventEntry<FlowPath>(EventEntry.Type.ENTRY_ADD, flowPath);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowEntry is added.
+     *
+     * @param flowEntry the FlowEntry that is added.
+     */
+    @Override
+    public void notificationRecvFlowEntryAdded(FlowEntry flowEntry) {
+	EventEntry<FlowEntry> eventEntry =
+	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowEntry is removed.
+     *
+     * @param flowEntry the FlowEntry that is removed.
+     */
+    @Override
+    public void notificationRecvFlowEntryRemoved(FlowEntry flowEntry) {
+	EventEntry<FlowEntry> eventEntry =
+	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_REMOVE, flowEntry);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowEntry is updated.
+     *
+     * @param flowEntry the FlowEntry that is updated.
+     */
+    @Override
+    public void notificationRecvFlowEntryUpdated(FlowEntry flowEntry) {
+	// NOTE: The ADD and UPDATE events are processed in same way
+	EventEntry<FlowEntry> eventEntry =
+	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
 	networkEvents.add(eventEntry);
     }
 

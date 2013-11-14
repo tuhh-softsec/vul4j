@@ -19,6 +19,7 @@ import net.onrc.onos.graph.IDBConnection;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
@@ -162,6 +163,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private ISwitchObject sw;
 		
 		private List<IPortObject> linkedPorts;
+		private List<IPortObject> reverseLinkedPorts;
 		private List<IDeviceObject> devices;
 		private List<IFlowEntry> inflows,outflows;
 		
@@ -179,6 +181,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			type = "port";
 
 			linkedPorts = new ArrayList<IPortObject>();
+			reverseLinkedPorts = new ArrayList<IPortObject>();
 			linkedPortsToAdd = new ArrayList<IPortObject>();
 			linkedPortsToRemove = new ArrayList<IPortObject>();
 			devices = new ArrayList<IDeviceObject>();
@@ -289,6 +292,9 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public Iterable<IPortObject> getLinkedPorts() { return linkedPorts; }
 
 		@Override
+		public Iterable<IPortObject> getReverseLinkedPorts() { return reverseLinkedPorts; }
+
+		@Override
 		public void removeLink(IPortObject dest_port) { linkedPortsToRemove.add(dest_port); }
 
 		@Override
@@ -311,6 +317,14 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		}
 	}
 		
+	/*
+	 * Note by Jono, 11/4/2013
+	 * I changed the interface of IDeviceObject but I didn't spend the
+	 * time to update this class, because I can't see where this is used.
+	 * I think this whole file is a candidate for deletion if it is not
+	 * used anywhere - the graphDB objects are tested elsewhere by the
+	 * tests in net.onrc.onos.ofcontroller.core.*
+	 */
 	public static class TestDeviceObject implements IDeviceObject {
 		private String state,type,mac,ipaddr;
 		private List<IPortObject> ports;
@@ -393,11 +407,11 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		@Override
 		public void setMACAddress(String macaddr) { macToUpdate = macaddr; }
 	
-		@Override
-		public String getIPAddress() { return ipaddr; }
+		//@Override
+		//public String getIPAddress() { return ipaddr; }
 	
-		@Override
-		public void setIPAddress(String ipaddr) { ipaddrToUpdate = ipaddr; }
+		//@Override
+		//public void setIPAddress(String ipaddr) { ipaddrToUpdate = ipaddr; }
 	
 		@Override
 		public Iterable<IPortObject> getAttachedPorts() {
@@ -411,6 +425,30 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 		@Override
 		public Iterable<ISwitchObject> getSwitch() { return switches; }
+
+		@Override
+		public Iterable<IIpv4Address> getIpv4Addresses() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IIpv4Address getIpv4Address(int ipv4Address) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void addIpv4Address(IIpv4Address ipv4Address) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeIpv4Address(IIpv4Address ipv4Address) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 	public static class TestFlowPath implements IFlowPath {
