@@ -37,7 +37,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
      * 
      * @param properties
      * @param responseHandler
-     * @return
+     * @return new Driver object
      */
     protected static Driver createMockDriver(Properties properties, IResponseHandler responseHandler) {
         MockConnectionManager connManager = new MockConnectionManager();
@@ -63,7 +63,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
      * 
      * @param properties
      * @param connectionManager
-     * @return
+     * @return new Driver object
      */
     protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager) {
         return createMockDriver(properties, connectionManager, "tested");
@@ -76,13 +76,16 @@ public abstract class AbstractDriverTestCase extends TestCase {
      * @param connectionManager
      * @param name
      *            name of the Driver instance
-     * @return
+     * @return new Driver object
      */
     protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager,
             String name) {
-        Driver driver = Driver.builder().setName(name).setProperties(properties)
-                .setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setConnectionManager(connectionManager))
-                .build();
+        Driver driver =
+                Driver.builder()
+                        .setName(name)
+                        .setProperties(properties)
+                        .setRequestExecutorBuilder(
+                                HttpClientRequestExecutor.builder().setConnectionManager(connectionManager)).build();
         DriverFactory.put(name, driver);
         return driver;
     }
@@ -110,6 +113,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
      * 
      * 
      * @param d
+     *            esigate driver
      * @param request
      *            Request must have been created with a mediator.
      * @param renderers
