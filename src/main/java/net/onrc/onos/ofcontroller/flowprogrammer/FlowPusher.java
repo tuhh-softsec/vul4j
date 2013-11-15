@@ -38,7 +38,7 @@ import net.onrc.onos.ofcontroller.util.Port;
  * @author Naoki Shiota
  *
  */
-public class FlowPusher {
+public class FlowPusher implements IFlowPusherService {
     private final static Logger log = LoggerFactory.getLogger(FlowPusher.class);
 
     // NOTE: Below are moved from FlowManager.
@@ -236,6 +236,7 @@ public class FlowPusher {
 	 * Suspend processing a queue related to given switch.
 	 * @param sw
 	 */
+	@Override
 	public boolean suspend(IOFSwitch sw) {
 		SwitchQueue queue = getQueue(sw);
 		
@@ -255,6 +256,7 @@ public class FlowPusher {
 	/**
 	 * Resume processing a queue related to given switch.
 	 */
+	@Override
 	public boolean resume(IOFSwitch sw) {
 		SwitchQueue queue = getQueue(sw);
 		
@@ -271,6 +273,7 @@ public class FlowPusher {
 		}
 	}
 	
+	@Override
 	public boolean isSuspended(IOFSwitch sw) {
 		SwitchQueue queue = getQueue(sw);
 		
@@ -313,6 +316,7 @@ public class FlowPusher {
 	 * @param sw
 	 * @param msg
 	 */
+	@Override
 	public boolean add(IOFSwitch sw, OFMessage msg) {
 		FlowPusherProcess proc = getProcess(sw);
 		SwitchQueue queue = proc.queues.get(sw);
@@ -342,6 +346,7 @@ public class FlowPusher {
 	 * @param flowEntryObj
 	 * @return
 	 */
+	@Override
 	public boolean add(IOFSwitch sw, IFlowPath flowObj, IFlowEntry flowEntryObj) {
 		log.debug("sending : {}, {}", sw, flowObj);
 		String flowEntryIdStr = flowEntryObj.getFlowEntryId();
@@ -646,6 +651,7 @@ public class FlowPusher {
 		return true;
 	}
 	
+	@Override
 	public boolean add(IOFSwitch sw, FlowPath flowPath, FlowEntry flowEntry) {
 		//
 		// Create the OpenFlow Flow Modification Entry to push

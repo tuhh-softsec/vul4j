@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.flowmanager;
+package net.onrc.onos.ofcontroller.flowprogrammer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +37,9 @@ import org.openflow.protocol.statistics.OFStatisticsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+import com.tinkerpop.blueprints.Direction;
+
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchListener;
@@ -44,9 +47,13 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.restserver.IRestApiService;
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.core.module.IOnosService;
+import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction;
 import net.onrc.onos.ofcontroller.util.FlowEntryActions;
@@ -60,14 +67,17 @@ import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetTcpUdpPort;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetVlanId;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetVlanPriority;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionStripVlan;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
-public class FlowSynchronizer implements IOFSwitchListener,
-					 IFlowSyncService {
+public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
 
-    protected GraphDBOperation dbHandler = new GraphDBOperation(""); //TODO: conf
     protected static Logger log = LoggerFactory.getLogger(FlowSynchronizer.class);
     protected IFloodlightProviderService floodlightProvider;
-    protected Map<IOFSwitch, Thread> switchThread = new HashMap<IOFSwitch, Thread>();
+    protected IControllerRegistryService registryService;
+    protected IFlowPusherService pusher;
+    
+    private GraphDBOperation dbHandler;
+    private Map<IOFSwitch, Thread> switchThread = new HashMap<IOFSwitch, Thread>();
     
     protected class Synchroizer implements Runnable {
 	IOFSwitch sw;
@@ -76,7 +86,24 @@ public class FlowSynchronizer implements IOFSwitchListener,
 	public Synchroizer(IOFSwitch sw) {
 	    this.sw = sw;
 	    Dpid dpid = new Dpid(sw.getId());
+//	    try {
+//		System.out.println("sleep....");
+//		Thread.sleep(5000);
+//	    } catch (InterruptedException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	    }
+	    System.out.println("getting db switch: " + dpid);
 	    this.swObj = dbHandler.searchSwitch(dpid.toString());
+	    System.out.println("switch vertex: " + swObj);
+	    System.out.println(this.swObj.getState());
+	    System.out.println(Lists.newArrayList(swObj.asVertex().getEdges(Direction.BOTH, "")));
+	    System.out.println(Lists.newArrayList(this.swObj.getFlowEntries()));
+	    for(IFlowEntry fe : dbHandler.getAllFlowEntries()){
+		System.out.println(fe.getSwitch() + " " + fe.getSwitchDpid());
+	    }
+	    System.out.println(Lists.newArrayList(dbHandler.getAllFlowEntries()));
+	    return; 
 	}
 	
 	@Override
@@ -129,15 +156,18 @@ public class FlowSynchronizer implements IOFSwitchListener,
 		      "Flow entries skipped " + skipped);
 	}
 	
+	//TODO: replace this with FlowPusher
 	private void writeToSwitch(OFMessage msg) {
-	    try {
-		sw.write(msg, null); // TODO: what is context?
-		sw.flush();
-	    } catch (IOException e) {
-		// TODO Auto-generated catch block
-		System.out.println("ERROR*****");
-		e.printStackTrace();
-	    } 
+//	    try {
+//		sw.write(msg, null); // TODO: what is context?
+//		sw.flush();
+//	    } catch (IOException e) {
+//		// TODO Auto-generated catch block
+//		System.out.println("ERROR*****");
+//		e.printStackTrace();
+//	    } 
+	    System.out.println("write to sw....");
+	    pusher.add(sw, msg);
 	}
 	
 	private Set<FlowEntryWrapper> getFlowEntriesFromGraph() {
@@ -146,6 +176,7 @@ public class FlowSynchronizer implements IOFSwitchListener,
 		FlowEntryWrapper fe = new FlowEntryWrapper(entry);
 		entries.add(fe);
 	    }
+	    System.out.println("Got " + entries.size() + " entries from graph");
 	    return entries;	    
 	}
 	
@@ -202,14 +233,17 @@ public class FlowSynchronizer implements IOFSwitchListener,
 	t.start();
 	switchThread.put(sw, t);
     }
-    
+        
     @Override
     public void addedSwitch(IOFSwitch sw) {
 	// TODO Auto-generated method stub
 	System.out.println("added switch in flow sync: " + sw);
 	
 	// TODO: look at how this is spawned
-	synchronize(sw);
+//	if (registryService.hasControl(sw.getId())) {
+
+	    synchronize(sw);
+//	}
     }
 
     @Override
@@ -226,7 +260,6 @@ public class FlowSynchronizer implements IOFSwitchListener,
     @Override
     public void switchPortChanged(Long switchId) {
 	// TODO Auto-generated method stub
-
     }
 
     @Override
@@ -234,23 +267,26 @@ public class FlowSynchronizer implements IOFSwitchListener,
 	// TODO Auto-generated method stub
 	return "FlowSynchronizer";
     }
+    
+    public FlowSynchronizer() {
+	System.out.println("Initializing FlowSync...");
+	dbHandler = new GraphDBOperation("");
+    }
 
-    /*
-    @Override
+    
+    //@Override
     public void init(FloodlightModuleContext context)
 	    throws FloodlightModuleException {
-	// TODO Auto-generated method stub
 	System.out.println("********* Starting flow sync....");
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-	System.out.println(context.getAllServices());	
+	registryService = context.getServiceImpl(IControllerRegistryService.class);
+	pusher = context.getServiceImpl(IFlowPusherService.class);
     }
 
-    @Override
+    //@Override
     public void startUp(FloodlightModuleContext context) {
-	// TODO Auto-generated method stub
 	floodlightProvider.addOFSwitchListener(this);
     }
-    */
 
 }
 

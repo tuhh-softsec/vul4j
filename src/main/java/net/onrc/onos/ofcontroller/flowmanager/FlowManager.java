@@ -2,7 +2,6 @@ package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -18,7 +17,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.util.OFMessageDamper;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
@@ -26,13 +24,11 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
-import net.onrc.onos.ofcontroller.flowprogrammer.FlowPusher;
+import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.Topology;
-import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.*;
 
-import org.openflow.protocol.OFType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +53,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected FloodlightModuleContext context;
     protected FlowEventHandler flowEventHandler;
 
-    protected FlowPusher pusher;
-    private static final int NUM_PUSHER_THREAD = 1;
+    protected IFlowPusherService pusher;
     
 //	LEGACY
 //    protected OFMessageDamper messageDamper;
@@ -467,8 +462,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 //					    EnumSet.of(OFType.FLOW_MOD),
 //					    OFMESSAGE_DAMPER_TIMEOUT);
 
-	pusher = new FlowPusher(NUM_PUSHER_THREAD);
-	pusher.init(null, floodlightProvider.getOFMessageFactory(), null);
+	pusher = context.getServiceImpl(IFlowPusherService.class);
+
 	this.init("");
 
 	mapReaderScheduler = Executors.newScheduledThreadPool(1);
@@ -509,8 +504,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
-
-	pusher.start();
 	
 	//
 	// Create the Flow Event Handler thread and register it with the
