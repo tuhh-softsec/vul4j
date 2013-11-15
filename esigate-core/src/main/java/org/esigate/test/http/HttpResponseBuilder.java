@@ -48,6 +48,11 @@ public class HttpResponseBuilder {
     private List<Header> headers = new ArrayList<Header>();
     private HttpEntity entity = null;
 
+    /**
+     * Build the HTTP response using all data previously set on this builder and/or use defaults.
+     * 
+     * @return The HTTP response
+     */
     public HttpResponse build() {
         BasicHttpResponse response = new BasicHttpResponse(this.protocolVersion, this.status, this.reason);
 
@@ -89,6 +94,13 @@ public class HttpResponseBuilder {
         return this;
     }
 
+    /**
+     * Set HTTP Status.
+     * 
+     * @param paramStatus
+     *            the response status.
+     * @return this builder
+     */
     public HttpResponseBuilder status(int paramStatus) {
         this.status = paramStatus;
         return this;
