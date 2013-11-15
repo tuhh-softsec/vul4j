@@ -75,111 +75,113 @@ public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
     protected IFloodlightProviderService floodlightProvider;
     protected IControllerRegistryService registryService;
     protected IFlowPusherService pusher;
-    
+
     private GraphDBOperation dbHandler;
     private Map<IOFSwitch, Thread> switchThread = new HashMap<IOFSwitch, Thread>();
-    
+
+    public FlowSynchronizer() {
+	dbHandler = new GraphDBOperation("");
+    }
+
+    public void synchronize(IOFSwitch sw) {
+	Synchroizer sync = new Synchroizer(sw);
+	Thread t = new Thread(sync);
+	t.start();
+	switchThread.put(sw, t);
+    }
+
+    @Override
+    public void addedSwitch(IOFSwitch sw) {
+	log.debug("Switch added: {}", sw.getId());
+
+	if (registryService.hasControl(sw.getId())) {
+	    synchronize(sw);
+	}
+    }
+
+    @Override
+    public void removedSwitch(IOFSwitch sw) {
+	log.debug("Switch removed: {}", sw.getId());
+
+	Thread t = switchThread.remove(sw);
+	if(t != null) {
+	    t.interrupt();
+	}
+
+    }
+
+    @Override
+    public void switchPortChanged(Long switchId) {
+	// TODO Auto-generated method stub
+    }
+
+    @Override
+    public String getName() {
+	return "FlowSynchronizer";
+    }
+
+    //@Override
+    public void init(FloodlightModuleContext context)
+	    throws FloodlightModuleException {
+	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
+	registryService = context.getServiceImpl(IControllerRegistryService.class);
+	pusher = context.getServiceImpl(IFlowPusherService.class);
+    }
+
+    //@Override
+    public void startUp(FloodlightModuleContext context) {
+	floodlightProvider.addOFSwitchListener(this);
+    }
+
     protected class Synchroizer implements Runnable {
 	IOFSwitch sw;
 	ISwitchObject swObj;
-	
+
 	public Synchroizer(IOFSwitch sw) {
 	    this.sw = sw;
 	    Dpid dpid = new Dpid(sw.getId());
-//	    try {
-//		System.out.println("sleep....");
-//		Thread.sleep(5000);
-//	    } catch (InterruptedException e) {
-//		// TODO Auto-generated catch block
-//		e.printStackTrace();
-//	    }
-	    System.out.println("getting db switch: " + dpid);
 	    this.swObj = dbHandler.searchSwitch(dpid.toString());
-	    System.out.println("switch vertex: " + swObj);
-	    System.out.println(this.swObj.getState());
-	    System.out.println(Lists.newArrayList(swObj.asVertex().getEdges(Direction.BOTH, "")));
-	    System.out.println(Lists.newArrayList(this.swObj.getFlowEntries()));
-	    for(IFlowEntry fe : dbHandler.getAllFlowEntries()){
-		System.out.println(fe.getSwitch() + " " + fe.getSwitchDpid());
-	    }
-	    System.out.println(Lists.newArrayList(dbHandler.getAllFlowEntries()));
-	    return; 
 	}
-	
+
 	@Override
 	public void run() {
-	    //TODO: use a FlowEntryId, FlowEntry HashMap
 	    Set<FlowEntryWrapper> graphEntries = getFlowEntriesFromGraph();
 	    Set<FlowEntryWrapper> switchEntries = getFlowEntriesFromSwitch();
 	    compare(graphEntries, switchEntries);
 	}
-	
+
 	private void compare(Set<FlowEntryWrapper> graphEntries, Set<FlowEntryWrapper> switchEntries) {
-	    
-	    /* old impl
-	    System.out.println("graph entries: " + graphEntries);
-            System.out.println("switch entries: " + switchEntries);
-	    Set<FlowEntryWrapper> entriesToAdd = new HashSet<FlowEntryWrapper>(graphEntries);
-	    entriesToAdd.removeAll(switchEntries);
-	    Set<FlowEntryWrapper> entriesToRemove = switchEntries;
-	    entriesToRemove.removeAll(graphEntries);
-	    System.out.println("add: " + entriesToAdd);
-	    System.out.println("remove: " + entriesToRemove);
-	    //FlowDatabaseOperation for converting flowentries
-	    */
-	    
-	    /* TODO: new implementation with graph */
 	    int added = 0, removed = 0, skipped = 0;
 	    for(FlowEntryWrapper entry : switchEntries) {
-	    	if(graphEntries.contains(entry)) {
-	    	    graphEntries.remove(entry);
-	    	    System.out.println("** skipping entry " + entry.id);
-	    	    skipped++;
-	    	}
-	    	else {
-	    	    // remove fid from the switch
-	    	    System.out.println("** remove entry " + entry.id);
-	    	    // TODO: use remove strict message
-	    	    writeToSwitch(entry.getOFMessage());
-	    	    removed++;
-	    	}
+		if(graphEntries.contains(entry)) {
+		    graphEntries.remove(entry);
+		    skipped++;
+		}
+		else {
+		    // remove flow entry from the switch
+		    entry.removeFromSwitch(sw);
+		    removed++;
+		}
 	    }
 	    for(FlowEntryWrapper entry : graphEntries) {
-	    	// add fid to switch
-		System.out.println("** add entry " + entry.id);
-		// TODO: use modify strict message
-		writeToSwitch(entry.getOFMessage());
+		// add flow entry to switch
+		entry.addToSwitch(sw);
 		added++;
 	    }	  
 	    log.debug("Flow entries added "+ added + ", " +
 		      "Flow entries removed "+ removed + ", " +
 		      "Flow entries skipped " + skipped);
 	}
-	
-	//TODO: replace this with FlowPusher
-	private void writeToSwitch(OFMessage msg) {
-//	    try {
-//		sw.write(msg, null); // TODO: what is context?
-//		sw.flush();
-//	    } catch (IOException e) {
-//		// TODO Auto-generated catch block
-//		System.out.println("ERROR*****");
-//		e.printStackTrace();
-//	    } 
-	    System.out.println("write to sw....");
-	    pusher.add(sw, msg);
-	}
-	
+
 	private Set<FlowEntryWrapper> getFlowEntriesFromGraph() {
 	    Set<FlowEntryWrapper> entries = new HashSet<FlowEntryWrapper>();
 	    for(IFlowEntry entry : swObj.getFlowEntries()) {
 		FlowEntryWrapper fe = new FlowEntryWrapper(entry);
 		entries.add(fe);
 	    }
-	    System.out.println("Got " + entries.size() + " entries from graph");
 	    return entries;	    
 	}
-	
+
 	private Set<FlowEntryWrapper> getFlowEntriesFromSwitch() {
 
 	    int lengthU = 0;
@@ -214,361 +216,91 @@ public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	    }
-	    
+
 	    Set<FlowEntryWrapper> results = new HashSet<FlowEntryWrapper>();
 	    for(OFStatistics result : entries){
-		//System.out.println(result.getClass());
 		OFFlowStatisticsReply entry = (OFFlowStatisticsReply) result;
 		FlowEntryWrapper fe = new FlowEntryWrapper(entry);
 		results.add(fe);
 	    }
 	    return results;
 	}
-	
-    }
-    
-    public void synchronize(IOFSwitch sw) {
-	Synchroizer sync = new Synchroizer(sw);
-	Thread t = new Thread(sync);
-	t.start();
-	switchThread.put(sw, t);
-    }
-        
-    @Override
-    public void addedSwitch(IOFSwitch sw) {
-	// TODO Auto-generated method stub
-	System.out.println("added switch in flow sync: " + sw);
-	
-	// TODO: look at how this is spawned
-//	if (registryService.hasControl(sw.getId())) {
 
-	    synchronize(sw);
-//	}
     }
 
-    @Override
-    public void removedSwitch(IOFSwitch sw) {
-	// TODO Auto-generated method stub
-	System.out.println("removed switch in flow sync: " + sw);
-	Thread t = switchThread.remove(sw);
-	if(t != null) {
-	    t.interrupt();
+    class FlowEntryWrapper {
+	FlowEntryId id;
+	IFlowEntry iflowEntry;
+	OFFlowStatisticsReply statisticsReply;
+
+	public FlowEntryWrapper(IFlowEntry entry) {
+	    iflowEntry = entry;
+	    id = new FlowEntryId(entry.getFlowEntryId());
 	}
 
-    }
+	public FlowEntryWrapper(OFFlowStatisticsReply entry) {
+	    statisticsReply = entry;
+	    id = new FlowEntryId(entry.getCookie());
+	}
 
-    @Override
-    public void switchPortChanged(Long switchId) {
-	// TODO Auto-generated method stub
-    }
+	public void addToSwitch(IOFSwitch sw) {
+	    if(iflowEntry != null) {
+		pusher.add(sw, iflowEntry.getFlow(), iflowEntry);
+	    }
+	    else if(statisticsReply != null) {
+		log.error("Adding existing flow entry {} to sw {}", 
+			  statisticsReply.getCookie(), sw.getId());
+	    }
+	}
+	
+	public void removeFromSwitch(IOFSwitch sw){
+	    if(iflowEntry != null) {
+		log.error("Removing non-existent flow entry {} from sw {}", 
+			  iflowEntry.getFlowEntryId(), sw.getId());
 
-    @Override
-    public String getName() {
-	// TODO Auto-generated method stub
-	return "FlowSynchronizer";
-    }
-    
-    public FlowSynchronizer() {
-	System.out.println("Initializing FlowSync...");
-	dbHandler = new GraphDBOperation("");
-    }
+	    }
+	    else if(statisticsReply != null) {
+		// Convert Statistics Reply to Flow Mod, then write it
+		OFFlowMod fm = new OFFlowMod();
+		fm.setCookie(statisticsReply.getCookie());
+		fm.setCommand(OFFlowMod.OFPFC_DELETE_STRICT);
+		fm.setLengthU(OFFlowMod.MINIMUM_LENGTH);
+		fm.setMatch(statisticsReply.getMatch());
+		fm.setPriority(statisticsReply.getPriority());
+		fm.setOutPort(OFPort.OFPP_NONE);
+		pusher.add(sw, fm);
+	    }
+	}
 
-    
-    //@Override
-    public void init(FloodlightModuleContext context)
-	    throws FloodlightModuleException {
-	System.out.println("********* Starting flow sync....");
-	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-	registryService = context.getServiceImpl(IControllerRegistryService.class);
-	pusher = context.getServiceImpl(IFlowPusherService.class);
-    }
+	/**
+	 * Return the hash code of the Flow Entry ID
+	 */
+	@Override
+	public int hashCode() {
+	    return id.hashCode();
+	}
 
-    //@Override
-    public void startUp(FloodlightModuleContext context) {
-	floodlightProvider.addOFSwitchListener(this);
-    }
+	/**
+	 * Returns true of the object is another Flow Entry ID with 
+	 * the same value; otherwise, returns false.
+	 * 
+	 * @param Object to compare
+	 */
+	@Override
+	public boolean equals(Object obj){
+	    if(obj.getClass() == this.getClass()) {
+		FlowEntryWrapper entry = (FlowEntryWrapper) obj;
+		// TODO: we need to actually compare the match + actions
+		return this.id.equals(entry.id);
+	    }
+	    return false;
+	}
 
+	@Override
+	public String toString() {
+	    return id.toString();
+	}
+    }
 }
 
-class FlowEntryWrapper {
-    FlowEntryId id;
-    IFlowEntry iflow;
-    OFFlowStatisticsReply stat;
-    
-    public FlowEntryWrapper(IFlowEntry entry) {
-	// TODO Auto-generated constructor stub
-	iflow = entry;
-	id = new FlowEntryId(entry.getFlowEntryId());
-    }
-    
-    public FlowEntryWrapper(OFFlowStatisticsReply entry) {
-	stat = entry;
-	id = new FlowEntryId(entry.getCookie());
-    }
-    
-    public OFMessage getOFMessage() {
-	if(iflow != null) {
-	    //convert iflow
-	    OFFlowMod fm = new OFFlowMod();
-	    fm.setCommand(OFFlowMod.OFPFC_MODIFY_STRICT);
-	    
-	    // ************* COPIED
-	    OFMatch match = new OFMatch();
-		match.setWildcards(OFMatch.OFPFW_ALL);
 
-		// Match the Incoming Port
-		Short matchInPort = iflow.getMatchInPort();
-		if (matchInPort != null) {
-		    match.setInputPort(matchInPort);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
-		}
-
-		// Match the Source MAC address
-		String matchSrcMac = iflow.getMatchSrcMac();
-		if (matchSrcMac != null) {
-		    match.setDataLayerSource(matchSrcMac);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
-		}
-
-		// Match the Destination MAC address
-		String matchDstMac = iflow.getMatchDstMac();
-		if (matchDstMac != null) {
-		    match.setDataLayerDestination(matchDstMac);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
-		}
-
-		// Match the Ethernet Frame Type
-		Short matchEthernetFrameType = iflow.getMatchEthernetFrameType();
-		if (matchEthernetFrameType != null) {
-		    match.setDataLayerType(matchEthernetFrameType);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
-		}
-
-		// Match the VLAN ID
-		Short matchVlanId = iflow.getMatchVlanId();
-		if (matchVlanId != null) {
-		    match.setDataLayerVirtualLan(matchVlanId);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_VLAN);
-		}
-
-		// Match the VLAN priority
-		Byte matchVlanPriority = iflow.getMatchVlanPriority();
-		if (matchVlanPriority != null) {
-		    match.setDataLayerVirtualLanPriorityCodePoint(matchVlanPriority);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_VLAN_PCP);
-		}
-
-		// Match the Source IPv4 Network prefix
-		String matchSrcIPv4Net = iflow.getMatchSrcIPv4Net();
-		if (matchSrcIPv4Net != null) {
-		    match.setFromCIDR(matchSrcIPv4Net, OFMatch.STR_NW_SRC);
-		}
-
-		// Natch the Destination IPv4 Network prefix
-		String matchDstIPv4Net = iflow.getMatchDstIPv4Net();
-		if (matchDstIPv4Net != null) {
-		    match.setFromCIDR(matchDstIPv4Net, OFMatch.STR_NW_DST);
-		}
-
-		// Match the IP protocol
-		Byte matchIpProto = iflow.getMatchIpProto();
-		if (matchIpProto != null) {
-		    match.setNetworkProtocol(matchIpProto);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_NW_PROTO);
-		}
-
-		// Match the IP ToS (DSCP field, 6 bits)
-		Byte matchIpToS = iflow.getMatchIpToS();
-		if (matchIpToS != null) {
-		    match.setNetworkTypeOfService(matchIpToS);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_NW_TOS);
-		}
-
-		// Match the Source TCP/UDP port
-		Short matchSrcTcpUdpPort = iflow.getMatchSrcTcpUdpPort();
-		if (matchSrcTcpUdpPort != null) {
-		    match.setTransportSource(matchSrcTcpUdpPort);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_TP_SRC);
-		}
-
-		// Match the Destination TCP/UDP port
-		Short matchDstTcpUdpPort = iflow.getMatchDstTcpUdpPort();
-		if (matchDstTcpUdpPort != null) {
-		    match.setTransportDestination(matchDstTcpUdpPort);
-		    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_TP_DST);
-		}
-		
-		//
-		// Fetch the actions
-		//
-//		Short actionOutputPort = null;
-		List<OFAction> openFlowActions = new ArrayList<OFAction>();
-		int actionsLen = 0;
-		FlowEntryActions flowEntryActions = null;
-		String actionsStr = iflow.getActions();
-		if (actionsStr != null)
-		    flowEntryActions = new FlowEntryActions(actionsStr);
-		for (FlowEntryAction action : flowEntryActions.actions()) {
-//		    ActionOutput actionOutput = action.actionOutput();
-		    ActionSetVlanId actionSetVlanId = action.actionSetVlanId();
-		    ActionSetVlanPriority actionSetVlanPriority = action.actionSetVlanPriority();
-		    ActionStripVlan actionStripVlan = action.actionStripVlan();
-		    ActionSetEthernetAddr actionSetEthernetSrcAddr = action.actionSetEthernetSrcAddr();
-		    ActionSetEthernetAddr actionSetEthernetDstAddr = action.actionSetEthernetDstAddr();
-		    ActionSetIPv4Addr actionSetIPv4SrcAddr = action.actionSetIPv4SrcAddr();
-		    ActionSetIPv4Addr actionSetIPv4DstAddr = action.actionSetIPv4DstAddr();
-		    ActionSetIpToS actionSetIpToS = action.actionSetIpToS();
-		    ActionSetTcpUdpPort actionSetTcpUdpSrcPort = action.actionSetTcpUdpSrcPort();
-		    ActionSetTcpUdpPort actionSetTcpUdpDstPort = action.actionSetTcpUdpDstPort();
-		    ActionEnqueue actionEnqueue = action.actionEnqueue();
-
-//		    if (actionOutput != null) {
-//			actionOutputPort = actionOutput.port().value();
-//			// XXX: The max length is hard-coded for now
-//			OFActionOutput ofa =
-//			    new OFActionOutput(actionOutput.port().value(),
-//					       (short)0xffff);
-//			openFlowActions.add(ofa);
-//			actionsLen += ofa.getLength();
-//		    }
-
-		    if (actionSetVlanId != null) {
-			OFActionVirtualLanIdentifier ofa =
-			    new OFActionVirtualLanIdentifier(actionSetVlanId.vlanId());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-
-		    if (actionSetVlanPriority != null) {
-			OFActionVirtualLanPriorityCodePoint ofa =
-			    new OFActionVirtualLanPriorityCodePoint(actionSetVlanPriority.vlanPriority());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-
-		    if (actionStripVlan != null) {
-			if (actionStripVlan.stripVlan() == true) {
-			    OFActionStripVirtualLan ofa = new OFActionStripVirtualLan();
-			    openFlowActions.add(ofa);
-			    actionsLen += ofa.getLength();
-			}
-		    }
-
-		    if (actionSetEthernetSrcAddr != null) {
-			OFActionDataLayerSource ofa = 
-			    new OFActionDataLayerSource(actionSetEthernetSrcAddr.addr().toBytes());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-
-		    if (actionSetEthernetDstAddr != null) {
-			OFActionDataLayerDestination ofa =
-			    new OFActionDataLayerDestination(actionSetEthernetDstAddr.addr().toBytes());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-
-		    if (actionSetIPv4SrcAddr != null) {
-			OFActionNetworkLayerSource ofa =
-			    new OFActionNetworkLayerSource(actionSetIPv4SrcAddr.addr().value());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-
-		    if (actionSetIPv4DstAddr != null) {
-			OFActionNetworkLayerDestination ofa =
-			    new OFActionNetworkLayerDestination(actionSetIPv4DstAddr.addr().value());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-
-		    if (actionSetIpToS != null) {
-			OFActionNetworkTypeOfService ofa =
-			    new OFActionNetworkTypeOfService(actionSetIpToS.ipToS());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-
-		    if (actionSetTcpUdpSrcPort != null) {
-			OFActionTransportLayerSource ofa =
-			    new OFActionTransportLayerSource(actionSetTcpUdpSrcPort.port());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-
-		    if (actionSetTcpUdpDstPort != null) {
-			OFActionTransportLayerDestination ofa =
-			    new OFActionTransportLayerDestination(actionSetTcpUdpDstPort.port());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-
-		    if (actionEnqueue != null) {
-			OFActionEnqueue ofa =
-			    new OFActionEnqueue(actionEnqueue.port().value(),
-						actionEnqueue.queueId());
-			openFlowActions.add(ofa);
-			actionsLen += ofa.getLength();
-		    }
-		}
-
-		fm.setIdleTimeout((short) 0)
-		    .setHardTimeout((short) 0)
-		    .setPriority((short) 100)
-		    .setBufferId(OFPacketOut.BUFFER_ID_NONE);
-		fm
-		    .setCookie(id.value())
-		    .setMatch(match)
-		    .setActions(openFlowActions)
-		    .setLengthU(OFFlowMod.MINIMUM_LENGTH + actionsLen);
-		fm.setOutPort(OFPort.OFPP_NONE.getValue());
-		
-	    // ********* END COPIED
-	    
-	    return fm;
-	}
-	else if(stat != null) {
-	    // convert stat
-	    OFFlowMod fm = new OFFlowMod();
-	    fm.setCookie(stat.getCookie());
-	    fm.setCommand(OFFlowMod.OFPFC_DELETE_STRICT);
-	    fm.setLengthU(OFFlowMod.MINIMUM_LENGTH);
-	    fm.setMatch(stat.getMatch());
-	    fm.setPriority(stat.getPriority());
-	    fm.setOutPort(OFPort.OFPP_NONE);
-//	    fm.setActions(stat.getActions());
-//	    fm.setIdleTimeout(stat.getIdleTimeout());
-//	    fm.setHardTimeout(stat.getHardTimeout());
-	    return fm;
-	}
-	return null;
-    }
-    
-    /**
-     * Return the hash code of the Flow Entry ID
-     */
-    @Override
-    public int hashCode() {
-	return id.hashCode();
-    }
-
-    /**
-     * Returns true of the object is another Flow Entry ID with 
-     * the same value; otherwise, returns false.
-     * 
-     * @param Object to compare
-     */
-    @Override
-    public boolean equals(Object obj){
-	if(obj.getClass() == this.getClass()) {
-	    FlowEntryWrapper entry = (FlowEntryWrapper) obj;
-	    return this.id.equals(entry.id);
-	}
-	return false;
-    }
-    
-    @Override
-    public String toString() {
-	return id.toString();
-    }
-}
