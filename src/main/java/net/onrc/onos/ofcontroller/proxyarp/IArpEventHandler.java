@@ -7,5 +7,5 @@ public interface IArpEventHandler {
 	 * @param id The string ID of the ARP request
 	 * @param arpRequest The ARP request packet
 	 */
-	public void arpRequestNotification(byte[] arpRequest);
+	public void arpRequestNotification(ArpMessage arpMessage);
 }

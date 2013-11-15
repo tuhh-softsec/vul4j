@@ -18,6 +18,7 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.web.DatagridWebRoutable;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
+import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -81,7 +82,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     
     // State related to the ARP map
     protected static final String arpMapName = "arpMap";
-    private IMap<byte[], byte[]> arpMap = null;
+    private IMap<ArpMessage, byte[]> arpMap = null;
     private List<IArpEventHandler> arpEventHandlers = new ArrayList<IArpEventHandler>();
     private final byte[] dummyByte = {0};
 
@@ -338,13 +339,13 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
      *  - Key: Request ID (String)
      *  - Value: ARP request packet (byte[])
      */
-    class ArpMapListener implements EntryListener<byte[], byte[]> {
+    class ArpMapListener implements EntryListener<ArpMessage, byte[]> {
 		/**
 		 * Receive a notification that an entry is added.
 		 *
 		 * @param event the notification event for the entry.
 		 */
-		public void entryAdded(EntryEvent<byte[], byte[]> event) {
+		public void entryAdded(EntryEvent<ArpMessage, byte[]> event) {
 		    for (IArpEventHandler arpEventHandler : arpEventHandlers) {
 		    	arpEventHandler.arpRequestNotification(event.getKey());
 		    }
@@ -367,7 +368,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
-		public void entryRemoved(EntryEvent<byte[], byte[]> event) {
+		public void entryRemoved(EntryEvent<ArpMessage, byte[]> event) {
 			// Not used
 		}
 	
@@ -376,7 +377,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
-		public void entryUpdated(EntryEvent<byte[], byte[]> event) {
+		public void entryUpdated(EntryEvent<ArpMessage, byte[]> event) {
 			// Not used
 		}
 	
@@ -385,7 +386,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
-		public void entryEvicted(EntryEvent<byte[], byte[]> event) {
+		public void entryEvicted(EntryEvent<ArpMessage, byte[]> event) {
 		    // Not used
 		}
     }
@@ -866,8 +867,8 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
     
     @Override
-    public void sendArpRequest(byte[] arpRequest) {
-    	log.debug("ARP bytes: {}", HexString.toHexString(arpRequest));
-     	arpMap.putAsync(arpRequest, dummyByte, 1L, TimeUnit.MILLISECONDS);
+    public void sendArpRequest(ArpMessage arpMessage) {
+    	//log.debug("ARP bytes: {}", HexString.toHexString(arpRequest));
+     	arpMap.putAsync(arpMessage, dummyByte, 1L, TimeUnit.MILLISECONDS);
     }
 }

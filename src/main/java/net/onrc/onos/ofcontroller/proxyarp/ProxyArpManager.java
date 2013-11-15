@@ -17,6 +17,7 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
@@ -481,11 +482,21 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	
 	private void sendToOtherNodes(Ethernet eth, OFPacketIn pi) {
 		ARP arp = (ARP) eth.getPayload();
+		
 		if (log.isTraceEnabled()) {
 			log.trace("Sending ARP request for {} to other ONOS instances",
 					inetAddressToString(arp.getTargetProtocolAddress()));
 		}
-		datagrid.sendArpRequest(eth.serialize());
+		
+		InetAddress targetAddress;
+		try {
+			targetAddress = InetAddress.getByAddress(arp.getTargetProtocolAddress());
+		} catch (UnknownHostException e) {
+			log.error("Unknown host", e);
+			return;
+		}
+		
+		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize()));
 	}
 	
 	private void broadcastArpRequestOutEdge(byte[] arpRequest, long inSwitch, short inPort) {
@@ -710,9 +721,48 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	 */
 	
 	@Override
-	public void arpRequestNotification(byte[] arpRequest) {
+	public void arpRequestNotification(ArpMessage arpMessage) {
 		log.debug("Received ARP notification from other instances");
-		//broadcastArpRequestOutEdge(arpRequest, Long.MAX_VALUE, Short.MAX_VALUE);
-		broadcastArpRequestOutMyEdge(arpRequest);
+		
+		switch (arpMessage.getType()){
+		case REQUEST:
+			broadcastArpRequestOutMyEdge(arpMessage.getPacket());
+			break;
+		case REPLY:
+			sendArpReplyToWaitingRequesters(arpMessage.getAddress());
+			break;
+		}
+	}
+	
+	private void sendArpReplyToWaitingRequesters(InetAddress address) {
+		log.debug("Sending ARP reply for {} to requesters", 
+				address.getHostAddress());
+		
+		//See if anyone's waiting for this ARP reply
+		Set<ArpRequest> requests = arpRequests.get(address);
+		
+		//Synchronize on the Multimap while using an iterator for one of the sets
+		List<ArpRequest> requestsToSend = new ArrayList<ArpRequest>(requests.size());
+		synchronized (arpRequests) {
+			Iterator<ArpRequest> it = requests.iterator();
+			while (it.hasNext()) {
+				ArpRequest request = it.next();
+				it.remove();
+				requestsToSend.add(request);
+			}
+		}
+		
+		IDeviceObject deviceObject = deviceStorage.getDeviceByIP(
+				InetAddresses.coerceToInteger(address));
+		
+		MACAddress mac = MACAddress.valueOf(deviceObject.getMACAddress());
+		
+		log.debug("Found {} at {} in network map", 
+				address.getHostAddress(), mac);
+		
+		//Don't hold an ARP lock while dispatching requests
+		for (ArpRequest request : requestsToSend) {
+			request.dispatchReply(address, mac);
+		}
 	}
 }
