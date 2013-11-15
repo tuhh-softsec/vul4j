@@ -108,31 +108,28 @@ public class HeaderManager {
                 httpRequest.addHeader(header);
             }
         }
-        // process X-Forwarded-For header (is missing in request and not
-        // blacklisted) -> use remote address instead
+        // process X-Forwarded-For header 
+        String remoteAddr = HttpRequestHelper.getMediator(originalRequest).getRemoteAddr();
 
-        if (isForwardedRequestHeader("X-Forwarded-For")) {
-            String remoteAddr = HttpRequestHelper.getMediator(originalRequest).getRemoteAddr();
-
-            if (remoteAddr != null) {
-                String forwardedFor = HttpRequestHelper.getFirstHeader("X-Forwarded-For", originalRequest);
-
-                if (forwardedFor == null) {
-                    forwardedFor = remoteAddr;
-                } else {
-                    forwardedFor = forwardedFor + ", " + remoteAddr;
-                }
-
-                httpRequest.setHeader("X-Forwarded-For", forwardedFor);
+        if (remoteAddr != null) {
+            String forwardedFor = null;
+            if (httpRequest.containsHeader("X-Forwarded-For")) {
+                forwardedFor = httpRequest.getFirstHeader("X-Forwarded-For").getValue();
             }
+
+            if (forwardedFor == null) {
+                forwardedFor = remoteAddr;
+            } else {
+                forwardedFor = forwardedFor + ", " + remoteAddr;
+            }
+
+            httpRequest.setHeader("X-Forwarded-For", forwardedFor);
         }
 
-        if (isForwardedRequestHeader("X-Forwarded-Proto")) {
-            if (HttpRequestHelper.getFirstHeader("X-Forwarded-Proto", originalRequest) == null) {
-                // add X-Forwarded-Proto header
-                httpRequest.addHeader("X-Forwarded-Proto",
-                        UriUtils.extractScheme(originalRequest.getRequestLine().getUri()));
-            }
+        // Process X-Forwarded-Proto header
+        if (!httpRequest.containsHeader("X-Forwarded-Proto")) {
+            httpRequest.addHeader("X-Forwarded-Proto",
+                    UriUtils.extractScheme(originalRequest.getRequestLine().getUri()));
         }
     }
 
