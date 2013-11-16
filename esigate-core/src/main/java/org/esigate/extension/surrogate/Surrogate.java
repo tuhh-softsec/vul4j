@@ -96,6 +96,11 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class Surrogate implements Extension, IEventListener {
+    /**
+     * 
+     */
+    private static final int BUF_SIZE_CAPABILITIES = 128;
+
     private static final String H_SURROGATE_CONTROL = "Surrogate-Control";
 
     private static final String H_SURROGATE_CAPABILITIES = "Surrogate-Capabilities";
@@ -158,6 +163,7 @@ public class Surrogate implements Extension, IEventListener {
      * Uses "esigate" and appends a number if necessary.
      * 
      * @param currentCapabilitiesHeader
+     *            existing header which may contains tokens of other proxies (including other esigate instances).
      * @return unique token
      */
     private static String getUniqueToken(String currentCapabilitiesHeader) {
@@ -182,7 +188,7 @@ public class Surrogate implements Extension, IEventListener {
             FetchEvent e = (FetchEvent) event;
             Header h = e.httpRequest.getFirstHeader(H_SURROGATE_CAPABILITIES);
 
-            StringBuilder archCapabilities = new StringBuilder(128);
+            StringBuilder archCapabilities = new StringBuilder(BUF_SIZE_CAPABILITIES);
             if (h != null && !isEmpty(h.getValue())) {
                 archCapabilities.append(defaultString(h.getValue()));
                 archCapabilities.append(", ");
@@ -226,6 +232,7 @@ public class Surrogate implements Extension, IEventListener {
      * </ul>
      * 
      * @param event
+     *            Incoming fetch event.
      */
     private void onPostFetch(Event event) {
         // Update caching policies
@@ -290,9 +297,12 @@ public class Surrogate implements Extension, IEventListener {
     }
 
     /**
-     * Remove Surrogate-Control header or replace by its new value
+     * Remove Surrogate-Control header or replace by its new value.
      * 
      * @param response
+     *            backend HTTP response.
+     * @param keepHeader
+     *            should the Surrogate-Control header be forwarded to the client.
      */
     private static void processSurrogateControlContent(HttpResponse response, boolean keepHeader) {
         if (!response.containsHeader(H_SURROGATE_CONTROL)) {
