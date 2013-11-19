@@ -99,4 +99,7 @@
     </join>
   </network>
 
+  <properties>
+    <property name="hazelcast.logging.type">slf4j</property>
+  </properties>
 </hazelcast>

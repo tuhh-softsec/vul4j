@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
+import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -153,5 +154,5 @@ public interface IDatagridService extends IFloodlightService {
      * Send an ARP request to other ONOS instances
      * @param arpRequest The request packet to send
      */
-    public void sendArpRequest(byte[] arpRequest);
+    public void sendArpRequest(ArpMessage arpMessage);
 }
