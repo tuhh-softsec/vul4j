@@ -11,6 +11,8 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 
 public class FlowProgrammer implements IFloodlightModule {
+	private static final boolean enableFlowSync = false;
+	
     protected volatile IFloodlightProviderService floodlightProvider;
 
     protected FlowPusher pusher;
@@ -20,7 +22,9 @@ public class FlowProgrammer implements IFloodlightModule {
         
     public FlowProgrammer() {
 	pusher = new FlowPusher(NUM_PUSHER_THREAD);
+	if (enableFlowSync) {
 	synchronizer = new FlowSynchronizer();
+	}
     }
     
     @Override
@@ -28,13 +32,17 @@ public class FlowProgrammer implements IFloodlightModule {
 	    throws FloodlightModuleException {
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	pusher.init(null, floodlightProvider.getOFMessageFactory(), null);
+	if (enableFlowSync) {
 	synchronizer.init(context);
+	}
     }
 
     @Override
     public void startUp(FloodlightModuleContext context) {
 	pusher.start();
+	if (enableFlowSync) {
 	synchronizer.startUp(context);
+	}
     }
 
     @Override
@@ -42,7 +50,9 @@ public class FlowProgrammer implements IFloodlightModule {
 	Collection<Class<? extends IFloodlightService>> l = 
 		new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFlowPusherService.class);
+	if (enableFlowSync) {
 	l.add(IFlowSyncService.class);
+	}
 	return l;
     }
 
@@ -53,7 +63,9 @@ public class FlowProgrammer implements IFloodlightModule {
 	    new HashMap<Class<? extends IFloodlightService>,
 	    IFloodlightService>();
 	m.put(IFlowPusherService.class, pusher);
-	m.put(IFlowSyncService.class, synchronizer);	
+	if (enableFlowSync) {
+	m.put(IFlowSyncService.class, synchronizer);
+	}
 	return m;
     }
 

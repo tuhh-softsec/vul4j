@@ -33,8 +33,8 @@ import net.onrc.onos.ofcontroller.util.IPv4Net;
 import net.onrc.onos.ofcontroller.util.Port;
 
 /**
- * FlowPusher intermediates flow_mod sent from FlowManager/FlowSync to switches.
- * FlowPusher controls the rate of sending flow_mods so that connection doesn't overflow.
+ * FlowPusher intermediates FlowManager/FlowSynchronizer and switches to push OpenFlow
+ * messages to switches in proper rate.
  * @author Naoki Shiota
  *
  */
@@ -64,6 +64,7 @@ public class FlowPusher implements IFlowPusherService {
 		SUSPENDED,
 	}
 	
+	@SuppressWarnings("serial")
 	private class SwitchQueue extends ArrayDeque<OFMessage> {
 		QueueState state;
 		
@@ -107,6 +108,11 @@ public class FlowPusher implements IFlowPusherService {
 	
 	private int number_thread = 1;
 	
+	/**
+	 * Main thread that reads messages from queues and sends them to switches.
+	 * @author Naoki Shiota
+	 *
+	 */
 	private class FlowPusherProcess implements Runnable {
 		private Map<IOFSwitch,SwitchQueue> queues
 		= new HashMap<IOFSwitch,SwitchQueue>();
@@ -233,7 +239,7 @@ public class FlowPusher implements IFlowPusherService {
 	}
 	
 	/**
-	 * Suspend processing a queue related to given switch.
+	 * Suspend sending messages to switch.
 	 * @param sw
 	 */
 	@Override
@@ -254,7 +260,7 @@ public class FlowPusher implements IFlowPusherService {
 	}
 
 	/**
-	 * Resume processing a queue related to given switch.
+	 * Resume sending messages to switch.
 	 */
 	@Override
 	public boolean resume(IOFSwitch sw) {
@@ -273,6 +279,9 @@ public class FlowPusher implements IFlowPusherService {
 		}
 	}
 	
+	/**
+	 * Check if given switch is suspended.
+	 */
 	@Override
 	public boolean isSuspended(IOFSwitch sw) {
 		SwitchQueue queue = getQueue(sw);
@@ -286,7 +295,7 @@ public class FlowPusher implements IFlowPusherService {
 	}
 
 	/**
-	 * End processing queue and exit thread.
+	 * Stop processing queue and exit thread.
 	 */
 	public void stop() {
 		if (threadMap == null) {
@@ -300,6 +309,11 @@ public class FlowPusher implements IFlowPusherService {
 		}
 	}
 	
+	/**
+	 * Set sending rate to a switch.
+	 * @param sw Switch.
+	 * @param rate Rate in bytes/sec.
+	 */
 	public void setRate(IOFSwitch sw, long rate) {
 		SwitchQueue queue = getQueue(sw);
 		if (queue == null) {
@@ -313,8 +327,9 @@ public class FlowPusher implements IFlowPusherService {
 	
 	/**
 	 * Add OFMessage to the queue related to given switch.
-	 * @param sw
-	 * @param msg
+	 * @param sw Switch to which message is sent.
+	 * @param msg Message to be sent.
+	 * @return true if succeed.
 	 */
 	@Override
 	public boolean add(IOFSwitch sw, OFMessage msg) {
@@ -341,10 +356,10 @@ public class FlowPusher implements IFlowPusherService {
 	
 	/**
 	 * Create OFMessage from given flow information and add it to the queue.
-	 * @param sw
-	 * @param flowObj
-	 * @param flowEntryObj
-	 * @return
+	 * @param sw Switch to which message is sent.
+	 * @param flowObj FlowPath.
+	 * @param flowEntryObj FlowEntry.
+	 * @return true if succeed.
 	 */
 	@Override
 	public boolean add(IOFSwitch sw, IFlowPath flowObj, IFlowEntry flowEntryObj) {
@@ -651,6 +666,13 @@ public class FlowPusher implements IFlowPusherService {
 		return true;
 	}
 	
+	/**
+	 * Create OFMessage from given flow information and add it to the queue.
+	 * @param sw Switch to which message is sent.
+	 * @param flowPath FlowPath.
+	 * @param flowEntry FlowEntry.
+	 * @return true if secceed.
+	 */
 	@Override
 	public boolean add(IOFSwitch sw, FlowPath flowPath, FlowEntry flowEntry) {
 		//
