@@ -93,14 +93,16 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
             Map.Entry<Object, SecurePart> securePartEntry = securePartsMapIterator.next();
             final SecurePart securePart = securePartEntry.getValue();
 
-            for (int i = 0; encryptionPartDefs != null && i < encryptionPartDefs.size(); i++) {
-                EncryptionPartDef encryptionPartDef = encryptionPartDefs.get(i);
-
-                if (encryptionPartDef.getSecurePart() == securePart) {
-                    continue loop;
+            if (securePart.isRequired()) {
+                for (int i = 0; encryptionPartDefs != null && i < encryptionPartDefs.size(); i++) {
+                    EncryptionPartDef encryptionPartDef = encryptionPartDefs.get(i);
+    
+                    if (encryptionPartDef.getSecurePart() == securePart) {
+                        continue loop;
+                    }
                 }
+                throw new XMLSecurityException("stax.encryption.securePartNotFound", securePart.getName());
             }
-            throw new XMLSecurityException("stax.encryption.securePartNotFound", securePart.getName());
         }
     }
 
