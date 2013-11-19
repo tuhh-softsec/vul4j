@@ -3,8 +3,8 @@ package net.onrc.onos.datagrid;
 import java.util.Collection;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
-
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
+import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
@@ -36,6 +36,20 @@ public interface IDatagridService extends IFloodlightService {
      */
     void deregisterFlowEventHandlerService(IFlowEventHandlerService flowEventHandlerService);
 
+    /**
+     * Register event handler for ARP events.
+     * 
+     * @param arpEventHandler The ARP event handler to register.
+     */
+    public void registerArpEventHandler(IArpEventHandler arpEventHandler);
+    
+    /**
+     * De-register event handler service for ARP events.
+     * 
+     * @param arpEventHandler The ARP event handler to de-register.
+     */
+    public void deregisterArpEventHandler(IArpEventHandler arpEventHandler);
+    
     /**
      * Get all Flows that are currently in the datagrid.
      *
@@ -134,4 +148,10 @@ public interface IDatagridService extends IFloodlightService {
      * Send a notification that all Topology Elements are removed.
      */
     void notificationSendAllTopologyElementsRemoved();
+    
+    /**
+     * Send an ARP request to other ONOS instances
+     * @param arpRequest The request packet to send
+     */
+    public void sendArpRequest(byte[] arpRequest);
 }

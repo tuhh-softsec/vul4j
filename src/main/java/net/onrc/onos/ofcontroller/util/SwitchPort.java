@@ -85,4 +85,25 @@ public class SwitchPort {
     public String toString() {
 	return this.dpid.toString() + "/" + this.port;
     }
+    
+
+    @Override
+    public boolean equals(Object other) {
+    	if (!(other instanceof SwitchPort)) {
+    		return false;
+    	}
+
+    	SwitchPort otherSwitchPort = (SwitchPort) other;
+
+    	return (dpid.equals(otherSwitchPort.dpid) &&
+    			port.equals(otherSwitchPort.port));
+    }
+
+    @Override
+    public int hashCode() {
+    	int hash = 17;
+    	hash += 31 * hash + dpid.hashCode();
+    	hash += 31 * hash + port.hashCode();
+    	return hash;
+    }
 }
