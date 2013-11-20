@@ -17,6 +17,7 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
@@ -27,10 +28,13 @@ import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
+import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
+import net.onrc.onos.ofcontroller.core.internal.TopoSwitchServiceImpl;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -63,7 +67,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	private IRestApiService restApi;
 	
 	private IDeviceStorage deviceStorage;
-	private ITopoSwitchService topoSwitchService;
+	private volatile ITopoSwitchService topoSwitchService;
 	private ITopoLinkService topoLinkService;
 	
 	private short vlan;
@@ -141,6 +145,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
 		arpRequests = Multimaps.synchronizedSetMultimap(
 				HashMultimap.<InetAddress, ArpRequest>create());
+		
+		topoSwitchService = new TopoSwitchServiceImpl();
+		topoLinkService = new TopoLinkServiceImpl();
 	}
 	
 	public void startUp() {
@@ -475,11 +482,21 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	
 	private void sendToOtherNodes(Ethernet eth, OFPacketIn pi) {
 		ARP arp = (ARP) eth.getPayload();
+		
 		if (log.isTraceEnabled()) {
 			log.trace("Sending ARP request for {} to other ONOS instances",
-					HexString.toHexString(arp.getTargetProtocolAddress()));
+					inetAddressToString(arp.getTargetProtocolAddress()));
 		}
-		datagrid.sendArpRequest(eth.serialize());
+		
+		InetAddress targetAddress;
+		try {
+			targetAddress = InetAddress.getByAddress(arp.getTargetProtocolAddress());
+		} catch (UnknownHostException e) {
+			log.error("Unknown host", e);
+			return;
+		}
+		
+		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize()));
 	}
 	
 	private void broadcastArpRequestOutEdge(byte[] arpRequest, long inSwitch, short inPort) {
@@ -523,6 +540,44 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			
 			try {
 				sw.write(msgList, null);
+				sw.flush();
+			} catch (IOException e) {
+				log.error("Failure writing packet out to switch", e);
+			}
+		}
+	}
+	
+	private void broadcastArpRequestOutMyEdge(byte[] arpRequest) {
+		for (IOFSwitch sw : floodlightProvider.getSwitches().values()) {
+			
+			OFPacketOut po = new OFPacketOut();
+			po.setInPort(OFPort.OFPP_NONE)
+			.setBufferId(-1)
+			.setPacketData(arpRequest);
+			
+			List<OFAction> actions = new ArrayList<OFAction>();
+			
+			Iterable<IPortObject> ports 
+				= topoSwitchService.getPortsOnSwitch(sw.getStringId());
+			if (ports == null) {
+				continue;
+			}
+			
+			for (IPortObject portObject : ports) {
+				if (!portObject.getLinkedPorts().iterator().hasNext()) {
+					actions.add(new OFActionOutput(portObject.getNumber()));
+				}
+			}
+			
+			po.setActions(actions);
+			short actionsLength = (short) 
+					(actions.size() * OFActionOutput.MINIMUM_LENGTH);
+			po.setActionsLength(actionsLength);
+			po.setLengthU(OFPacketOut.MINIMUM_LENGTH + actionsLength 
+					+ arpRequest.length);
+			
+			try {
+				sw.write(po, null);
 				sw.flush();
 			} catch (IOException e) {
 				log.error("Failure writing packet out to switch", e);
@@ -666,8 +721,48 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	 */
 	
 	@Override
-	public void arpRequestNotification(byte[] arpRequest) {
+	public void arpRequestNotification(ArpMessage arpMessage) {
 		log.debug("Received ARP notification from other instances");
-		broadcastArpRequestOutEdge(arpRequest, Long.MAX_VALUE, Short.MAX_VALUE);
+		
+		switch (arpMessage.getType()){
+		case REQUEST:
+			broadcastArpRequestOutMyEdge(arpMessage.getPacket());
+			break;
+		case REPLY:
+			sendArpReplyToWaitingRequesters(arpMessage.getAddress());
+			break;
+		}
+	}
+	
+	private void sendArpReplyToWaitingRequesters(InetAddress address) {
+		log.debug("Sending ARP reply for {} to requesters", 
+				address.getHostAddress());
+		
+		//See if anyone's waiting for this ARP reply
+		Set<ArpRequest> requests = arpRequests.get(address);
+		
+		//Synchronize on the Multimap while using an iterator for one of the sets
+		List<ArpRequest> requestsToSend = new ArrayList<ArpRequest>(requests.size());
+		synchronized (arpRequests) {
+			Iterator<ArpRequest> it = requests.iterator();
+			while (it.hasNext()) {
+				ArpRequest request = it.next();
+				it.remove();
+				requestsToSend.add(request);
+			}
+		}
+		
+		IDeviceObject deviceObject = deviceStorage.getDeviceByIP(
+				InetAddresses.coerceToInteger(address));
+		
+		MACAddress mac = MACAddress.valueOf(deviceObject.getMACAddress());
+		
+		log.debug("Found {} at {} in network map", 
+				address.getHostAddress(), mac);
+		
+		//Don't hold an ARP lock while dispatching requests
+		for (ArpRequest request : requestsToSend) {
+			request.dispatchReply(address, mac);
+		}
 	}
 }

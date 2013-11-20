@@ -3,12 +3,35 @@ package net.onrc.onos.ofcontroller.util.serializers;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import com.esotericsoftware.kryo2.Kryo;
-
 import net.floodlightcontroller.util.MACAddress;
-
-import net.onrc.onos.ofcontroller.util.*;
+import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
+import net.onrc.onos.ofcontroller.util.CallerId;
+import net.onrc.onos.ofcontroller.util.DataPath;
+import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
+import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowEntryAction;
+import net.onrc.onos.ofcontroller.util.FlowEntryActions;
+import net.onrc.onos.ofcontroller.util.FlowEntryErrorState;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
+import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
+import net.onrc.onos.ofcontroller.util.FlowEntrySwitchState;
+import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
+import net.onrc.onos.ofcontroller.util.FlowId;
+import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.FlowPathFlags;
+import net.onrc.onos.ofcontroller.util.FlowPathType;
+import net.onrc.onos.ofcontroller.util.FlowPathUserState;
+import net.onrc.onos.ofcontroller.util.IPv4;
+import net.onrc.onos.ofcontroller.util.IPv4Net;
+import net.onrc.onos.ofcontroller.util.IPv6;
+import net.onrc.onos.ofcontroller.util.IPv6Net;
+import net.onrc.onos.ofcontroller.util.Port;
+import net.onrc.onos.ofcontroller.util.Switch;
+import net.onrc.onos.ofcontroller.util.SwitchPort;
+
+import com.esotericsoftware.kryo2.Kryo;
 
 /**
  * Class factory for allocating Kryo instances for
@@ -129,6 +152,9 @@ public class KryoFactory {
 	kryo.register(TopologyElement.class);
 	kryo.register(TopologyElement.Type.class);
 	kryo.register(TreeMap.class);
+	
+	//ARP message
+	kryo.register(ArpMessage.class);
 
 	return kryo;
     }
