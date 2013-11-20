@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.threadpool.IThreadPoolService;
 
 public class FlowProgrammer implements IFloodlightModule {
-	private static final boolean enableFlowSync = false;
+	private static final boolean enableFlowSync = true;
 	
     protected volatile IFloodlightProviderService floodlightProvider;
 
@@ -31,7 +33,7 @@ public class FlowProgrammer implements IFloodlightModule {
     public void init(FloodlightModuleContext context)
 	    throws FloodlightModuleException {
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-	pusher.init(null, floodlightProvider.getOFMessageFactory(), null);
+	pusher.init(null, context, floodlightProvider.getOFMessageFactory(), null);
 	if (enableFlowSync) {
 	synchronizer.init(context);
 	}
