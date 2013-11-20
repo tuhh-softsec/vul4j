@@ -19,7 +19,6 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.util.OFMessageDamper;
-
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
@@ -27,9 +26,9 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
+import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.Topology;
-import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.*;
 
 import org.openflow.protocol.OFType;
@@ -46,6 +45,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     // notification mechanism for the Flow Manager.
     //
     private final static boolean enableNotifications = false;
+    
+    // flag to use FlowPusher instead of FlowSwitchOperation/MessageDamper
+    private final static boolean enableFlowPusher = false;
 
     protected GraphDBOperation dbHandlerApi;
     protected GraphDBOperation dbHandlerInner;
@@ -57,8 +59,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected FloodlightModuleContext context;
     protected FlowEventHandler flowEventHandler;
 
+    protected IFlowPusherService pusher;
+    
     protected OFMessageDamper messageDamper;
-
+    
     //
     // TODO: Values copied from elsewhere (class LearningSwitch).
     // The local copy should go away!
@@ -122,6 +126,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		Iterable<IFlowEntry> allFlowEntries =
 		    dbHandlerInner.getAllSwitchNotUpdatedFlowEntries();
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
+			log.debug("flowEntryobj : {}", flowEntryObj);
+			
 		    counterAllFlowEntries++;
 
 		    String dpidStr = flowEntryObj.getSwitchDpid();
@@ -156,6 +162,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 		    counterMyNotUpdatedFlowEntries++;
 		}
+		
+		log.debug("addFlowEntries : {}", addFlowEntries);
 
 		//
 		// Process the Flow Entries that need to be added
@@ -458,9 +466,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
 
-	messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
-					    EnumSet.of(OFType.FLOW_MOD),
-					    OFMESSAGE_DAMPER_TIMEOUT);
+	if (enableFlowPusher) {
+		pusher = context.getServiceImpl(IFlowPusherService.class);
+	} else {
+		messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
+	    EnumSet.of(OFType.FLOW_MOD),
+	    OFMESSAGE_DAMPER_TIMEOUT);
+	}
 
 	this.init("");
 
@@ -503,7 +515,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
-
+	
 	//
 	// Create the Flow Event Handler thread and register it with the
 	// Datagrid Service
@@ -747,7 +759,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     /**
      * Reconcile a flow.
      *
-     * @param flowObj the flow that needs to be reconciliated.
+     * @param flowObj the flow that needs to be reconciled.
      * @param newDataPath the new data path to use.
      * @return true on success, otherwise false.
      */
@@ -835,9 +847,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     private boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
 				    IFlowEntry flowEntryObj) {
-	return FlowSwitchOperation.installFlowEntry(
-		floodlightProvider.getOFMessageFactory(),
-		messageDamper, mySwitch, flowObj, flowEntryObj);
+    	if (enableFlowPusher) {
+        	return pusher.add(mySwitch, flowObj, flowEntryObj);
+    	} else {
+    		return FlowSwitchOperation.installFlowEntry(
+    			floodlightProvider.getOFMessageFactory(),
+    			messageDamper, mySwitch, flowObj, flowEntryObj);
+    	}
     }
 
     /**
@@ -850,9 +866,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     private boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				    FlowEntry flowEntry) {
-	return FlowSwitchOperation.installFlowEntry(
-		floodlightProvider.getOFMessageFactory(),
-		messageDamper, mySwitch, flowPath, flowEntry);
+    	if (enableFlowPusher) {
+        	return pusher.add(mySwitch, flowPath, flowEntry);
+    	} else {
+    		return FlowSwitchOperation.installFlowEntry(
+    		floodlightProvider.getOFMessageFactory(),
+    		messageDamper, mySwitch, flowPath, flowEntry);
+    	}
     }
 
     /**

@@ -274,6 +274,7 @@ public class FlowManagerImpl implements IFlowManager {
 		    flowEntryAction.setActionOutput(flowEntry.outPort());
 		    flowEntryActions.addAction(flowEntryAction);
 		    dataPath.flowEntries().add(flowEntry);
+		    // TODO (BOC): why is this twice?
 		    dataPath.flowEntries().add(flowEntry);
 		}
 
