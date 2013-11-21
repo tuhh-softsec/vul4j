@@ -20,6 +20,7 @@ net.floodlightcontroller.core.test.MockFloodlightProvider
 net.floodlightcontroller.core.test.MockThreadPoolService
 net.onrc.onos.datagrid.HazelcastDatagrid
 net.onrc.onos.ofcontroller.flowmanager.FlowManager
+net.onrc.onos.ofcontroller.flowprogrammer.FlowProgrammer
 net.onrc.onos.ofcontroller.topology.TopologyManager
 net.onrc.onos.ofcontroller.bgproute.BgpRoute
 net.onrc.onos.registry.controller.ZookeeperRegistry
