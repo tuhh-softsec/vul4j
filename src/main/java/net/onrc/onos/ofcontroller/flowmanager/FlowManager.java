@@ -44,7 +44,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     // TODO: A temporary variable to switch between the poll-based and
     // notification mechanism for the Flow Manager.
     //
-    private final static boolean enableNotifications = false;
+    private final static boolean enableNotifications = true;
     
     // flag to use FlowPusher instead of FlowSwitchOperation/MessageDamper
     private final static boolean enableFlowPusher = false;
@@ -593,11 +593,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
+	//
+	// TODO: In the notification-based implementation,
+	// deleteFlow() is implemented by using clearFlow()
+	//
+	return clearAllFlows();
+
+	/*
 	if (FlowDatabaseOperation.deleteAllFlows(dbHandlerApi)) {
 	    datagridService.notificationSendAllFlowsRemoved();
 	    return true;
 	}
 	return false;
+	*/
     }
 
     /**
@@ -608,11 +616,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
+	//
+	// TODO: In the notification-based implementation,
+	// deleteFlow() is implemented by using clearFlow()
+	//
+	return clearFlow(flowId);
+	/*
 	if (FlowDatabaseOperation.deleteFlow(dbHandlerApi, flowId)) {
 	    datagridService.notificationSendFlowRemoved(flowId);
 	    return true;
 	}
 	return false;
+	*/
     }
 
     /**
