@@ -44,7 +44,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     // TODO: A temporary variable to switch between the poll-based and
     // notification mechanism for the Flow Manager.
     //
-    private final static boolean enableNotifications = false;
+    private final static boolean enableNotifications = true;
     
     // flag to use FlowPusher instead of FlowSwitchOperation/MessageDamper
     private final static boolean enableFlowPusher = false;
