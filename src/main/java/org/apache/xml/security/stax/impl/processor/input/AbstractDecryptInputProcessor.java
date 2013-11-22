@@ -527,6 +527,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
     @Override
     public void doFinal(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
+        inputProcessorChain.doFinal();
+
         //here we check if all references where processed.
         if (references != null) {
             Iterator<Map.Entry<String, ReferenceType>> refEntryIterator = this.references.entrySet().iterator();
@@ -537,7 +539,6 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 }
             }
         }
-        inputProcessorChain.doFinal();
     }
 
     /**

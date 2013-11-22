@@ -37,6 +37,10 @@ public interface ProcessorChain {
 
     /**
      * Will finally be called when the whole document is processed
+     * Important note: Every processor in the chain has to call doFinal() in its own doFinal() method.
+     * InputProcessors should call it before doing other stuff to keep the processing order. Remember the
+     * input-chain is in principle processed in the reverse order since we "leech" the events through the chain.
+     * So that means that we should do the same for the doFinal method, otherwise we may run into troubles.
      *
      * @throws XMLStreamException   thrown when a streaming error occurs
      * @throws XMLSecurityException thrown when a Security failure occurs

@@ -199,7 +199,6 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
     @Override
     public void doFinal(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
-        //first call must be (order matters!):
         inputProcessorChain.doFinal();
 
         for (int i = 0; i < sameDocumentReferences.size(); i++) {
