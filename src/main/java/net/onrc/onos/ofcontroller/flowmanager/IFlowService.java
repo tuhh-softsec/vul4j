@@ -42,21 +42,6 @@ public interface IFlowService extends IFloodlightService {
     boolean deleteFlow(FlowId flowId);
 
     /**
-     * Clear the state for all previously added flows.
-     *
-     * @return true on success, otherwise false.
-     */
-    boolean clearAllFlows();
-
-    /**
-     * Clear the state for a previously added flow.
-     *
-     * @param flowId the Flow ID of the flow to clear.
-     * @return true on success, otherwise false.
-     */
-    boolean clearFlow(FlowId flowId);
-
-    /**
      * Get a previously added flow.
      *
      * @param flowId the Flow ID of the flow to get.

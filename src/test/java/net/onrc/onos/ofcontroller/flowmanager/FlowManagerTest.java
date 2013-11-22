@@ -239,49 +239,48 @@ public class FlowManagerTest {
 		verifyAll();
 		assertTrue(result);
 	}
-	
+
 	/**
-	 * Test method for {@link FlowManager#deleteAllFlows()}.
-	 * @throws Exception 
+	 * Test method for {@link FlowManager#deleteFlow(FlowId)}.
+	 * @throws Exception
 	 */
 	@Test
-	public final void testDeleteAllFlowsSuccessNormally() throws Exception {
+	public final void testDeleteFlowSuccessNormally() throws Exception {
 		// create mock objects
-		IFlowPath flowPath1 = createNiceMock(IFlowPath.class);
-		IFlowPath flowPath2 = createNiceMock(IFlowPath.class);
+		IFlowPath flowPath = createIFlowPathMock(123, "id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 2, 3, 4);
+		IFlowEntry flowEntry1 = createMock(IFlowEntry.class);
+		IFlowEntry flowEntry2 = createMock(IFlowEntry.class);
+		IFlowEntry flowEntry3 = createMock(IFlowEntry.class);
 		
 		// instantiate required objects
-		ArrayList<IFlowPath> flowPaths = new ArrayList<IFlowPath>();
-		flowPaths.add(flowPath1);
-		flowPaths.add(flowPath2);
 		FlowManager fm = new FlowManager();
-		
+		FlowId flowId = new FlowId(123);
+		ArrayList<IFlowEntry> flowEntries = new ArrayList<IFlowEntry>();
+		flowEntries.add(flowEntry1);
+		flowEntries.add(flowEntry2);
+		flowEntries.add(flowEntry3);
+
 		// setup expectations
 		expectInitWithContext();
-		expect(op.getAllFlowPaths()).andReturn(flowPaths);
-
-		expect(flowPath1.getFlowId()).andReturn("1").anyTimes();
-		expect(op.searchFlowPath(cmpEq(new FlowId(1)))).andReturn(flowPath1);
-		expect(flowPath1.getFlowEntries()).andReturn(new ArrayList<IFlowEntry>());
-		op.removeFlowPath(flowPath1);
-		
-		expect(flowPath2.getFlowId()).andReturn("2").anyTimes();
-		expect(op.searchFlowPath(cmpEq(new FlowId(2)))).andReturn(flowPath2);
-		expect(flowPath2.getFlowEntries()).andReturn(new ArrayList<IFlowEntry>());
-		op.removeFlowPath(flowPath2);
-
+		expect(op.searchFlowPath(cmpEq(flowId))).andReturn(flowPath);
+		expect(flowPath.getFlowEntries()).andReturn(flowEntries);
+		flowPath.removeFlowEntry(flowEntry1);
+		flowPath.removeFlowEntry(flowEntry2);
+		flowPath.removeFlowEntry(flowEntry3);
+		op.removeFlowEntry(flowEntry1);
+		op.removeFlowEntry(flowEntry2);
+		op.removeFlowEntry(flowEntry3);
+		op.removeFlowPath(flowPath);
 		op.commit();
-		expectLastCall().anyTimes();
 
 		// start the test
 		replayAll();
 		
 		fm.init(context);
-		Boolean result = fm.deleteAllFlows();
+		fm.deleteFlow(flowId);
 
 		// verify the test
 		verifyAll();
-		assertTrue(result);
 	}
 	
 	/**
@@ -316,16 +315,16 @@ public class FlowManagerTest {
 	}
 	
 	/**
-	 * Test method for {@link FlowManager#clearAllFlows()}.
+	 * Test method for {@link FlowManager#deleteAllFlows()}.
 	 * @throws Exception 
 	 */
 	@Test
-	public final void testClearAllFlowsSuccessNormally() throws Exception {
+	public final void testDeleteAllFlowsSuccessNormally() throws Exception {
 		// create mock objects
 		IFlowPath flowPath1 = createNiceMock(IFlowPath.class);
 		IFlowPath flowPath2 = createNiceMock(IFlowPath.class);
 		IFlowPath flowPath3 = createNiceMock(IFlowPath.class);
-		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, "clearFlow");
+		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, "deleteFlow");
 		
 		// instantiate required objects
 		ArrayList<IFlowPath> flowPaths = new ArrayList<IFlowPath>();
@@ -340,16 +339,16 @@ public class FlowManagerTest {
 		expect(flowPath1.getFlowId()).andReturn(new FlowId(1).toString());
 		expect(flowPath2.getFlowId()).andReturn(null);
 		expect(flowPath3.getFlowId()).andReturn(new FlowId(3).toString());
-		expect(fm.clearFlow(cmpEq(new FlowId(1)))).andReturn(true);
-		expect(fm.clearFlow(cmpEq(new FlowId(3)))).andReturn(true);
+		expect(fm.deleteFlow(cmpEq(new FlowId(1)))).andReturn(true);
+		expect(fm.deleteFlow(cmpEq(new FlowId(3)))).andReturn(true);
 		
 		// start the test
 		replayAll();
 
 		fm.init(context);
-		Boolean result = fm.clearAllFlows();
+		Boolean result = fm.deleteAllFlows();
 		
-		//verify the test
+		// verify the test
 		verifyAll();
 		assertTrue(result);
 	}
@@ -785,50 +784,6 @@ public class FlowManagerTest {
 	
 	
 	// other methods
-	
-	
-	/**
-	 * Test method for {@link FlowManager#clearFlow(FlowId)}.
-	 * @throws Exception
-	 */
-	@Test
-	public final void testClearFlowSuccessNormally() throws Exception {
-		// create mock objects
-		IFlowPath flowPath = createIFlowPathMock(123, "id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 2, 3, 4);
-		IFlowEntry flowEntry1 = createMock(IFlowEntry.class);
-		IFlowEntry flowEntry2 = createMock(IFlowEntry.class);
-		IFlowEntry flowEntry3 = createMock(IFlowEntry.class);
-		
-		// instantiate required objects
-		FlowManager fm = new FlowManager();
-		FlowId flowId = new FlowId(123);
-		ArrayList<IFlowEntry> flowEntries = new ArrayList<IFlowEntry>();
-		flowEntries.add(flowEntry1);
-		flowEntries.add(flowEntry2);
-		flowEntries.add(flowEntry3);
-
-		// setup expectations
-		expectInitWithContext();
-		expect(op.searchFlowPath(cmpEq(flowId))).andReturn(flowPath);
-		expect(flowPath.getFlowEntries()).andReturn(flowEntries);
-		flowPath.removeFlowEntry(flowEntry1);
-		flowPath.removeFlowEntry(flowEntry2);
-		flowPath.removeFlowEntry(flowEntry3);
-		op.removeFlowEntry(flowEntry1);
-		op.removeFlowEntry(flowEntry2);
-		op.removeFlowEntry(flowEntry3);
-		op.removeFlowPath(flowPath);
-		op.commit();
-
-		// start the test
-		replayAll();
-		
-		fm.init(context);
-		fm.clearFlow(flowId);
-
-		// verify the test
-		verifyAll();
-	}
 	
 	/**
 	 * Test method for {@link FlowManager#getAllFlowsWithoutFlowEntries()}.

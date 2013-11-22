@@ -370,122 +370,6 @@ class FlowDatabaseOperation {
      * @return true on success, otherwise false.
      */
     static boolean deleteAllFlows(GraphDBOperation dbHandler) {
-	final ConcurrentLinkedQueue<FlowId> concurrentAllFlowIds =
-	    new ConcurrentLinkedQueue<FlowId>();
-
-	// Get all Flow IDs
-	Iterable<IFlowPath> allFlowPaths = dbHandler.getAllFlowPaths();
-	for (IFlowPath flowPathObj : allFlowPaths) {
-	    if (flowPathObj == null)
-		continue;
-	    String flowIdStr = flowPathObj.getFlowId();
-	    if (flowIdStr == null)
-		continue;
-	    FlowId flowId = new FlowId(flowIdStr);
-	    concurrentAllFlowIds.add(flowId);
-	}
-
-	// Delete all flows one-by-one
-	for (FlowId flowId : concurrentAllFlowIds)
-	    deleteFlow(dbHandler, flowId);
-
-	/*
-	 * TODO: A faster mechanism to delete the Flow Paths by using
-	 * a number of threads. Commented-out for now.
-	 */
-	/*
-	//
-	// Create the threads to delete the Flow Paths
-	//
-	List<Thread> threads = new LinkedList<Thread>();
-	for (int i = 0; i < 10; i++) {
-	    Thread thread = new Thread(new Runnable() {
-		@Override
-		public void run() {
-		    while (true) {
-			FlowId flowId = concurrentAllFlowIds.poll();
-			if (flowId == null)
-			    return;
-			deleteFlow(dbHandler, flowId);
-		    }
-		}}, "Delete All Flow Paths");
-	    threads.add(thread);
-	}
-
-	// Start processing
-	for (Thread thread : threads) {
-	    thread.start();
-	}
-
-	// Wait for all threads to complete
-	for (Thread thread : threads) {
-	    try {
-		thread.join();
-	    } catch (InterruptedException e) {
-		log.debug("Exception waiting for a thread to delete a Flow Path: ", e);
-	    }
-	}
-	*/
-
-	return true;
-    }
-
-    /**
-     * Delete a previously added flow.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param flowId the Flow ID of the flow to delete.
-     * @return true on success, otherwise false.
-     */
-    static boolean deleteFlow(GraphDBOperation dbHandler, FlowId flowId) {
-	IFlowPath flowObj = null;
-	//
-	// We just mark the entries for deletion,
-	// and let the switches remove each individual entry after
-	// it has been removed from the switches.
-	//
-	try {
-	    flowObj = dbHandler.searchFlowPath(flowId);
-	} catch (Exception e) {
-	    // TODO: handle exceptions
-	    dbHandler.rollback();
-	    log.error(":deleteFlow FlowId:{} failed", flowId.toString());
-	    return false;
-	}
-	if (flowObj == null) {
-	    dbHandler.commit();
-	    return true;		// OK: No such flow
-	}
-
-	//
-	// Find and mark for deletion all Flow Entries,
-	// and the Flow itself.
-	//
-	flowObj.setFlowPathUserState("FP_USER_DELETE");
-	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
-	boolean empty = true;	// TODO: an ugly hack
-	for (IFlowEntry flowEntryObj : flowEntries) {
-	    empty = false;
-	    // flowObj.removeFlowEntry(flowEntryObj);
-	    // conn.utils().removeFlowEntry(conn, flowEntryObj);
-	    flowEntryObj.setUserState("FE_USER_DELETE");
-	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
-	}
-	// Remove from the database empty flows
-	if (empty)
-	    dbHandler.removeFlowPath(flowObj);
-	dbHandler.commit();
-
-	return true;
-    }
-
-    /**
-     * Clear the state for all previously added flows.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @return true on success, otherwise false.
-     */
-    static boolean clearAllFlows(GraphDBOperation dbHandler) {
 	List<FlowId> allFlowIds = new LinkedList<FlowId>();
 
 	// Get all Flow IDs
@@ -500,29 +384,29 @@ class FlowDatabaseOperation {
 	    allFlowIds.add(flowId);
 	}
 
-	// Clear all flows one-by-one
+	// Delete all flows one-by-one
 	for (FlowId flowId : allFlowIds) {
-	    clearFlow(dbHandler, flowId);
+	    deleteFlow(dbHandler, flowId);
 	}
 
 	return true;
     }
 
     /**
-     * Clear the state for a previously added flow.
+     * Delete a previously added flow.
      *
      * @param dbHandler the Graph Database handler to use.
-     * @param flowId the Flow ID of the flow to clear.
+     * @param flowId the Flow ID of the flow to delete.
      * @return true on success, otherwise false.
      */
-    static boolean clearFlow(GraphDBOperation dbHandler, FlowId flowId) {
+    static boolean deleteFlow(GraphDBOperation dbHandler, FlowId flowId) {
 	IFlowPath flowObj = null;
 	try {
 	    flowObj = dbHandler.searchFlowPath(flowId);
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    dbHandler.rollback();
-	    log.error(":clearFlow FlowId:{} failed", flowId.toString());
+	    log.error(":deleteFlow FlowId:{} failed", flowId.toString());
 	    return false;
 	}
 	if (flowObj == null) {

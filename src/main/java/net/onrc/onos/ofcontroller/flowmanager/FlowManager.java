@@ -287,19 +287,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
-	//
-	// TODO: In the notification-based implementation,
-	// deleteFlow() is implemented by using clearFlow()
-	//
-	return clearAllFlows();
-
-	/*
 	if (FlowDatabaseOperation.deleteAllFlows(dbHandlerApi)) {
 	    datagridService.notificationSendAllFlowsRemoved();
 	    return true;
 	}
 	return false;
-	*/
     }
 
     /**
@@ -310,43 +302,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
-	//
-	// TODO: In the notification-based implementation,
-	// deleteFlow() is implemented by using clearFlow()
-	//
-	return clearFlow(flowId);
-	/*
 	if (FlowDatabaseOperation.deleteFlow(dbHandlerApi, flowId)) {
-	    datagridService.notificationSendFlowRemoved(flowId);
-	    return true;
-	}
-	return false;
-	*/
-    }
-
-    /**
-     * Clear the state for all previously added flows.
-     *
-     * @return true on success, otherwise false.
-     */
-    @Override
-    public boolean clearAllFlows() {
-	if (FlowDatabaseOperation.clearAllFlows(dbHandlerApi)) {
-	    datagridService.notificationSendAllFlowsRemoved();
-	    return true;
-	}
-	return false;
-    }
-
-    /**
-     * Clear the state for a previously added flow.
-     *
-     * @param flowId the Flow ID of the flow to clear.
-     * @return true on success, otherwise false.
-     */
-    @Override
-    public boolean clearFlow(FlowId flowId) {
-	if (FlowDatabaseOperation.clearFlow(dbHandlerApi, flowId)) {
 	    datagridService.notificationSendFlowRemoved(flowId);
 	    return true;
 	}
