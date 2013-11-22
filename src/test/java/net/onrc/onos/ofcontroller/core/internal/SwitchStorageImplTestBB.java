@@ -7,7 +7,6 @@ import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
-import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
@@ -35,6 +34,7 @@ public class SwitchStorageImplTestBB {
 	protected static org.slf4j.Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
 	String conf;
+        String dbStore;
     private GraphDBConnection conn = null;
     private GraphDBOperation ope = null;
     private TitanGraph titanGraph = null;
@@ -45,6 +45,7 @@ public class SwitchStorageImplTestBB {
 		
 		swSt = new SwitchStorageImpl();
 		conf = "/dummy/path/to/db";
+                dbStore ="dummyStore";
 		
 		// Make mock cassandra DB
 		// Replace TitanFactory.open() to return mock DB
@@ -57,7 +58,7 @@ public class SwitchStorageImplTestBB {
 		conn = GraphDBConnection.getInstance(conf);
 		ope = new GraphDBOperation(conn);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 	}
 
 	@After

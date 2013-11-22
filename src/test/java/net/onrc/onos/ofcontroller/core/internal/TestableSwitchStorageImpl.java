@@ -18,9 +18,9 @@ public class TestableSwitchStorageImpl extends SwitchStorageImpl {
 	}
 	
 	@Override
-	public void init(String conf){
+	public void init(final String dbStore, final String conf){
         
-		super.init(conf);
+		super.init(dbStore, conf);
 		
 	}
 }

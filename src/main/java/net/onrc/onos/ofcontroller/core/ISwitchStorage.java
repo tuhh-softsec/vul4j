@@ -38,7 +38,7 @@ public interface ISwitchStorage extends INetMapStorage {
 	/*
 	 * Initialize
 	 */
-	public void init(String conf);
+	public void init(final String dbStore, final String conf);
 	
 
 }

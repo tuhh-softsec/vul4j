@@ -40,6 +40,7 @@ public class DeviceStorageImplTestBB {
 	protected static org.slf4j.Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
 	String conf;
+        String dbStore;
     private GraphDBConnection conn = null;
     private GraphDBOperation ope = null;
     private TitanGraph titanGraph = null;
@@ -50,6 +51,7 @@ public class DeviceStorageImplTestBB {
 		
 		deviceImpl = new DeviceStorageImpl();
 		conf = "/dummy/path/to/db";
+                dbStore = "dummyStore";
 		
 		// Make mock cassandra DB
 		// Replace TitanFactory.open() to return mock DB
@@ -62,7 +64,7 @@ public class DeviceStorageImplTestBB {
 		conn = GraphDBConnection.getInstance(conf);
 		ope = new GraphDBOperation(conn);
 		
-		deviceImpl.init(conf);
+		deviceImpl.init(dbStore, conf);
 	}
 
 	@After

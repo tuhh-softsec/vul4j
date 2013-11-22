@@ -18,7 +18,7 @@ public class RouteResource extends ServerResource {
 
     @Get("json")
     public DataPath retrieve() {
-        ITopoRouteService topoRouteService = new TopoRouteService("");
+        ITopoRouteService topoRouteService = new TopoRouteService("titan", "");
 	if (topoRouteService == null) {
 	    log.debug("Topology Route Service not found");
 	    return null;

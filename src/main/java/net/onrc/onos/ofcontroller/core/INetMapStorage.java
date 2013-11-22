@@ -14,6 +14,6 @@ public interface INetMapStorage {
 		DELETE, // Delete the object
 		UPDATE  // Update the object if exists or CREATE/INSERT if does not exist
 	}
-	public void init(String conf);
+	public void init(final String dbStore, final String conf);
 	public void close();
 }

@@ -33,6 +33,7 @@ public class SwitchStorageImplTest {
 	protected static org.slf4j.Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
 	String conf;
+        String dbStore;
     private GraphDBConnection mockConn = null;
     private GraphDBOperation mockOpe = null;
     private GraphDBOperation realOpe = null;
@@ -43,6 +44,7 @@ public class SwitchStorageImplTest {
 	public void setUp() throws Exception {
 		
 		swSt = new SwitchStorageImpl();
+                dbStore = "dummyStore";
 		conf = "/dummy/path/to/db";
 		
         // Make mock cassandra DB
@@ -96,7 +98,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 	}
 	
@@ -129,7 +131,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.addSwitch(dpid);
 	}
@@ -153,7 +155,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 	}
 	
@@ -185,7 +187,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 	}
 	
@@ -220,7 +222,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.update(dpid, stateINACTIVE, opUPDATE);
 	}
 	
@@ -255,7 +257,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.update(dpid, stateINACTIVE, opCREATE);
 	}
 	
@@ -290,7 +292,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.update(dpid, stateINACTIVE, opINSERT);
 	}
 	
@@ -325,7 +327,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.update(dpid, stateACTIVE, opDELETE);
 	}
@@ -359,7 +361,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.deleteSwitch(dpid);
 		
@@ -399,7 +401,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.deleteSwitch(dpid);
 	}
@@ -450,7 +452,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.addPort(dpid, portToAdd);
 	}
@@ -502,7 +504,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.addPort(dpid, portToAdd);
 	}
@@ -542,7 +544,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addPort(dpid, portToAdd);
 	}
 	
@@ -592,7 +594,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.addPort(dpid, portToAdd);
 	}
@@ -645,7 +647,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.addPort(dpid, portToAdd);
 	}
@@ -705,7 +707,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.addPort(dpid, portToAdd);
 		swSt.deletePort(dpid, portNumber);
@@ -766,7 +768,7 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 	
-		swSt.init(conf);
+		swSt.init(dbStore, conf);
 		swSt.addSwitch(dpid);
 		swSt.addPort(dpid, portToAdd);
 		swSt.deletePort(dpid, portNumber);

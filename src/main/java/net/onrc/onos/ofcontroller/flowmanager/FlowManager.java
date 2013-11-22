@@ -27,7 +27,8 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
-import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.DBOperation;
+import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
@@ -69,7 +70,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
-    protected GraphDBOperation op;
+    protected DBOperation op;
 
     protected IRestApiService restApi;
     protected volatile IFloodlightProviderService floodlightProvider;
@@ -431,9 +432,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param conf the Graph Database configuration string.
      */
     @Override
-    public void init(String conf) {
-    	op = new GraphDBOperation(conf);
-	topoRouteService = new TopoRouteService(conf);
+    public void init(final String dbStore, final String conf) {
+    	op = GraphDBManager.getDBOperation(dbStore, conf);
+	topoRouteService = new TopoRouteService(dbStore, conf);
     }
 
     /**
@@ -512,7 +513,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	// TODO: An ugly hack!
 	String conf = "/tmp/cassandra.titan";
-	this.init(conf);
+	this.init("titan", conf);
 	
 	mapReaderScheduler = Executors.newScheduledThreadPool(1);
 	shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);

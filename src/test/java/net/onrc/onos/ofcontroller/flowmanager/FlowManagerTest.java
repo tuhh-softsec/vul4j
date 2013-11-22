@@ -594,7 +594,7 @@ public class FlowManagerTest {
 		// start the test
 		replayAll();
 		
-		fm.init("/dummy/path");
+		fm.init("dummy_store", "/dummy/path");
 		
 		// verify the test
 		verifyAll();

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
+import net.onrc.onos.graph.GraphDBManager;
 
 
 /**
@@ -48,7 +49,7 @@ class Node {
 	 * @param me the node this link originates from.
 	 * @param the neighbor node on the other side of the link.
 	 * @param myPort local port number for the link.
-	 * @param neighborPort neighrobr port number for the link.
+	 * @param neighborPort neighbor port number for the link.
 	 */
 	public Link(Node me, Node neighbor, short myPort, short neighborPort) {
 	    this.me = me;
@@ -95,7 +96,7 @@ public class TopoRouteService implements ITopoRouteService {
     private static Logger log =
 	LoggerFactory.getLogger(TopoRouteService.class);
     
-    protected GraphDBOperation op;
+    protected DBOperation op;
 
 
     /**
@@ -110,8 +111,8 @@ public class TopoRouteService implements ITopoRouteService {
      * @param config the database configuration file to use for
      * the initialization.
      */
-    public TopoRouteService(String config) {
-	this.init(config);
+    public TopoRouteService(final String dbStore, final String config) {
+	this.init(dbStore, config);
     }
 
     /**
@@ -120,9 +121,9 @@ public class TopoRouteService implements ITopoRouteService {
      * @param config the database configuration file to use for
      * the initialization.
      */
-    public void init(String config) {
+    public void init(final String dbStore, final String config) {
 	try {
-	    op = new GraphDBOperation(config);
+	    op = GraphDBManager.getDBOperation(dbStore, config);
 	} catch (Exception e) {
 	    log.error(e.getMessage());
 	}
@@ -141,7 +142,7 @@ public class TopoRouteService implements ITopoRouteService {
      * @param init_op the database operation handler to use for the
      * initialization.
      */
-    public void setDbOperationHandler(GraphDBOperation init_op) {
+    public void setDbOperationHandler(DBOperation init_op) {
     	op = init_op;
     }
 

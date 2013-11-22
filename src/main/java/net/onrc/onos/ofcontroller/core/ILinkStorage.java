@@ -48,6 +48,6 @@ public interface ILinkStorage extends INetMapStorage {
 	/*
 	 * Init with Storage conf
 	 */
-	public void init(String conf);
+	public void init(final String dbStore, final String conf);
 
 }

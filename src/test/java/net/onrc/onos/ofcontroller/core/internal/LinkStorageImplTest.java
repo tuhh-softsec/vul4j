@@ -120,7 +120,7 @@ public class LinkStorageImplTest {
 		mockToPortInfoMap = new HashMap<IPortObject,PortInfo>();
 		
 		linkStorage = new LinkStorageImpl();
-		linkStorage.init("/dummy/path/to/conf");
+		linkStorage.init("dummyStore", "/dummy/path/to/conf");
 		
 		initLinks();
 	}

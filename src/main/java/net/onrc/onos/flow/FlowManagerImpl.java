@@ -18,7 +18,7 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
 
 import net.floodlightcontroller.core.IOFSwitch;
-import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.graph.LocalTopologyEventListener;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
@@ -37,7 +37,7 @@ import net.onrc.onos.ofcontroller.util.SwitchPort;
 public class FlowManagerImpl implements IFlowManager {
 	
 	protected static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
-	protected GraphDBOperation op;
+	protected DBOperation op;
 
 	@Override
 	public void createFlow(IPortObject src_port, IPortObject dest_port) {
@@ -85,10 +85,8 @@ public class FlowManagerImpl implements IFlowManager {
 		String dst_dpid = flow.getDstSwitch();
 		Short src_port = flow.getSrcPort();
 		Short dst_port = flow.getDstPort();
-		IPortObject src = null;
-		IPortObject dst = null;
-		src = op.searchPort(src_dpid, src_port);
-		dst = op.searchPort(dst_dpid, dst_port);
+		IPortObject src = op.searchPort(src_dpid, src_port);
+		IPortObject dst = op.searchPort(dst_dpid, dst_port);
 		if (src != null && dst != null) {
 			FlowPath newFlow = this.computeFlowPath(src,dst);
 			installFlow(newFlow);

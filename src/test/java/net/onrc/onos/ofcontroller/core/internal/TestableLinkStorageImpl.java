@@ -2,7 +2,6 @@ package net.onrc.onos.ofcontroller.core.internal;
 
 import java.util.Set;
 
-import net.onrc.onos.ofcontroller.core.internal.LinkStorageImpl;
 
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
@@ -26,7 +25,7 @@ public class TestableLinkStorageImpl extends LinkStorageImpl {
 	}
 	
 	@Override
-	public void init(String conf){
+	public void init(final String dbStore, final String conf){
         Set<String> s = graph.getIndexedKeys(Vertex.class);
         if (!s.contains("dpid")) {
            graph.createKeyIndex("dpid", Vertex.class);

@@ -43,6 +43,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 	
 	String conf;
+        String dbStore;
 	DeviceStorageImpl deviceImpl;
     private GraphDBConnection mockConn;
     private GraphDBOperation mockOpe;
@@ -51,6 +52,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	public void setUp() throws Exception {
 	    deviceImpl = new DeviceStorageImpl();	
 		conf = "/dummy/path/to/db";
+                dbStore = "dummyStore";
 				
 		PowerMock.mockStatic(GraphDBConnection.class);
 		mockConn = createMock(GraphDBConnection.class);
@@ -155,7 +157,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			mockOpe.commit();
 			replay(mockOpe);				
 			
-			deviceImpl.init(conf);
+			deviceImpl.init(dbStore, conf);
 			
 			//Add the device
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
@@ -233,7 +235,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			mockOpe.commit();
 			replay(mockOpe);				
 			
-			deviceImpl.init(conf);
+			deviceImpl.init(dbStore, conf);
 			
 			//Add the device
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
@@ -325,7 +327,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			mockOpe.commit();
 			replay(mockOpe);				
 			
-			deviceImpl.init(conf);
+			deviceImpl.init(dbStore, conf);
 			
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
 			assertNotNull(obj);
@@ -414,7 +416,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			expect(mockOpe.searchDevice(macAddr)).andReturn(null);
 			replay(mockOpe);				
 			
-			deviceImpl.init(conf);
+			deviceImpl.init(dbStore, conf);
 			
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
 			assertNotNull(obj);
@@ -498,7 +500,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			expect(mockOpe.searchDevice(macAddr)).andReturn(mockIDev);
 			replay(mockOpe);				
 			
-			deviceImpl.init(conf);
+			deviceImpl.init(dbStore, conf);
 			
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
 			assertNotNull(obj);
@@ -587,7 +589,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			expect(mockOpe.getDevices()).andReturn(deviceList).times(2);
 			replay(mockOpe);				
 			
-			deviceImpl.init(conf);
+			deviceImpl.init(dbStore, conf);
 	
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
 			assertNotNull(obj);
@@ -724,7 +726,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			mockOpe.commit();
 			replay(mockOpe);				
 			
-			deviceImpl.init(conf);
+			deviceImpl.init(dbStore, conf);
 	
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
 			assertNotNull(obj);
@@ -818,7 +820,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			mockOpe.commit();
 			replay(mockOpe);				
 			
-			deviceImpl.init(conf);
+			deviceImpl.init(dbStore, conf);
 			
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
 			assertNotNull(obj);

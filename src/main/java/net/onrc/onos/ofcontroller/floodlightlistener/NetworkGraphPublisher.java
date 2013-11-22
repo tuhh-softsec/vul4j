@@ -24,8 +24,9 @@ import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
-import net.onrc.onos.graph.GraphDBConnection;
-import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.DBOperation;
+import net.onrc.onos.graph.DBConnection;
+import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.graph.IDBConnection;
 import net.onrc.onos.graph.LocalTopologyEventListener;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
@@ -53,9 +54,10 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 	protected static Logger log;
 	protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
-	protected GraphDBOperation op;
+	protected DBOperation op;
 	
 	protected static final String DBConfigFile = "dbconf";
+        protected static final String GraphDBStore = "graph_db_store";
 	protected static final String CleanupEnabled = "EnableCleanup";
 	protected IThreadPoolService threadPool;
 	protected IFloodlightProviderService floodlightProvider;
@@ -252,7 +254,8 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 		// TODO Auto-generated method stub
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
-		op = new GraphDBOperation(conf);
+                String dbStore = configMap.get(GraphDBStore);
+		op = GraphDBManager.getDBOperation(dbStore, conf);
 		
 		log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
 		floodlightProvider =
@@ -263,13 +266,13 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 		
 		devStore = new DeviceStorageImpl();
-		devStore.init(conf);
+		devStore.init(dbStore, conf);
 		
 		swStore = new SwitchStorageImpl();
-		swStore.init(conf);
+		swStore.init(dbStore, conf);
 		
 		linkStore = new LinkStorageImpl();
-		linkStore.init(conf);
+		linkStore.init(dbStore, conf);
 				
 		log.debug("Initializing NetworkGraphPublisher module with {}", conf);
 		
@@ -287,7 +290,7 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 		
 		log.debug("Adding EventListener");
 		IDBConnection conn = op.getDBConnection();
-		conn.addEventListener(new LocalTopologyEventListener((GraphDBConnection) conn));
+		conn.addEventListener(new LocalTopologyEventListener((DBConnection) conn));
 	       // Setup the Cleanup task. 
 		if (cleanupNeeded == null || !cleanupNeeded.equals("False")) {
 				ScheduledExecutorService ses = threadPool.getScheduledExecutor();

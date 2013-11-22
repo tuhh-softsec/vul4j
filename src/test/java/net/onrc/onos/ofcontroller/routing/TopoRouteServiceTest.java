@@ -17,10 +17,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.thinkaurelius.titan.core.TitanFactory;
+import net.onrc.onos.graph.DBConnection;
+import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.graph.GraphDBConnection;
+import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.internal.TestDatabaseManager;
-import net.onrc.onos.ofcontroller.routing.TopoRouteService;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowPathFlags;
@@ -35,8 +37,9 @@ import net.onrc.onos.ofcontroller.util.SwitchPort;
 @PrepareForTest({TitanFactory.class, GraphDBConnection.class, GraphDBOperation.class, TopoRouteService.class})
 public class TopoRouteServiceTest {
     String conf;
-    private GraphDBConnection conn = null;
-    private GraphDBOperation oper = null;
+    String dbStore;
+    private DBConnection conn = null;
+    private DBOperation oper = null;
     private TitanGraph titanGraph = null;
     private TopoRouteService topoRouteService = null;
 
@@ -45,6 +48,7 @@ public class TopoRouteServiceTest {
      */
     @Before
     public void setUp() throws Exception {
+        dbStore = "dummyStore";
 	conf = "/dummy/path/to/db";
 
 	//
@@ -56,9 +60,9 @@ public class TopoRouteServiceTest {
 	EasyMock.expect(TitanFactory.open((String)EasyMock.anyObject())).andReturn(titanGraph);
 	PowerMock.replay(TitanFactory.class);
 
+        oper = GraphDBManager.getDBOperation(dbStore, conf);
 	// Create the connection to the database
-	conn = GraphDBConnection.getInstance(conf);
-	oper = new GraphDBOperation(conn);
+	conn = GraphDBManager.getConnection(dbStore, conf);
 
 	// Populate the database
 	TestDatabaseManager.populateTestData(titanGraph);
