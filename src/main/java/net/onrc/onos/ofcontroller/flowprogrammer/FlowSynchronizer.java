@@ -2,7 +2,6 @@ package net.onrc.onos.ofcontroller.flowprogrammer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,23 +12,8 @@ import java.util.concurrent.Future;
 
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
-import org.openflow.protocol.OFMessage;
-import org.openflow.protocol.OFPacketOut;
 import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFStatisticsRequest;
-import org.openflow.protocol.action.OFAction;
-import org.openflow.protocol.action.OFActionDataLayerDestination;
-import org.openflow.protocol.action.OFActionDataLayerSource;
-import org.openflow.protocol.action.OFActionEnqueue;
-import org.openflow.protocol.action.OFActionNetworkLayerDestination;
-import org.openflow.protocol.action.OFActionNetworkLayerSource;
-import org.openflow.protocol.action.OFActionNetworkTypeOfService;
-import org.openflow.protocol.action.OFActionOutput;
-import org.openflow.protocol.action.OFActionStripVirtualLan;
-import org.openflow.protocol.action.OFActionTransportLayerDestination;
-import org.openflow.protocol.action.OFActionTransportLayerSource;
-import org.openflow.protocol.action.OFActionVirtualLanIdentifier;
-import org.openflow.protocol.action.OFActionVirtualLanPriorityCodePoint;
 import org.openflow.protocol.statistics.OFFlowStatisticsReply;
 import org.openflow.protocol.statistics.OFFlowStatisticsRequest;
 import org.openflow.protocol.statistics.OFStatistics;
@@ -37,36 +21,16 @@ import org.openflow.protocol.statistics.OFStatisticsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-import com.tinkerpop.blueprints.Direction;
-
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchListener;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
-import net.floodlightcontroller.core.module.IFloodlightModule;
-import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.restserver.IRestApiService;
-import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.module.IOnosService;
-import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.util.Dpid;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction;
-import net.onrc.onos.ofcontroller.util.FlowEntryActions;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionEnqueue;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionOutput;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetEthernetAddr;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetIPv4Addr;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetIpToS;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetTcpUdpPort;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetVlanId;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetVlanPriority;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionStripVlan;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
@@ -86,8 +50,8 @@ public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
     public void synchronize(IOFSwitch sw) {
 	Synchroizer sync = new Synchroizer(sw);
 	Thread t = new Thread(sync);
-	t.start();
 	switchThread.put(sw, t);
+	t.start();
     }
 
     @Override
