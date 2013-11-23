@@ -101,12 +101,47 @@ public class DataPath {
     }
 
     /**
+     * Remove Flow Entries that were deleted.
+     */
+    public void removeDeletedFlowEntries() {
+	//
+	// NOTE: We create a new ArrayList, and add only the Flow Entries
+	// that are NOT FE_USER_DELETE.
+	// This is sub-optimal: if it adds notable processing cost,
+	// the Flow Entries container should be changed to LinkedList
+	// or some other container that has O(1) cost of removing an entry.
+	//
+
+	// Test first whether any Flow Entry was deleted
+	boolean foundDeletedFlowEntry = false;
+	for (FlowEntry flowEntry : this.flowEntries) {
+	    if (flowEntry.flowEntryUserState() ==
+		FlowEntryUserState.FE_USER_DELETE) {
+		foundDeletedFlowEntry = true;
+		break;
+	    }
+	}
+	if (! foundDeletedFlowEntry)
+	    return;			// Nothing to do
+
+	// Create a new collection and exclude the deleted flow entries
+	ArrayList<FlowEntry> newFlowEntries = new ArrayList<FlowEntry>();
+	for (FlowEntry flowEntry : this.flowEntries()) {
+	    if (flowEntry.flowEntryUserState() !=
+		FlowEntryUserState.FE_USER_DELETE) {
+		newFlowEntries.add(flowEntry);
+	    }
+	}
+	setFlowEntries(newFlowEntries);
+    }
+
+    /**
      * Get a string with the summary of the shortest-path data path
      * computation.
      *
      * NOTE: This method assumes the DataPath was created by
-     * using FlowManager::getShortestPath() so the inPort and outPort
-     * of the Flow Entries are set.
+     * using the TopologyManager shortest path computation, so the inPort
+     * and outPort of the Flow Entries are set.
      * NOTE: This method is a temporary solution and will be removed
      * in the future.
      *
@@ -116,19 +151,18 @@ public class DataPath {
      * inPort/dpid/outPort;inPort/dpid/outPort;...
      */
     public String dataPathSummary() {
-	String resultStr = new String();
+	StringBuilder resultStr = new StringBuilder(5+1+20+1+5+1);
 	if (this.flowEntries != null) {
 	    for (FlowEntry flowEntry : this.flowEntries) {
 		// The data path summary string
-		resultStr = resultStr +
-		    flowEntry.inPort().toString() + "/"
-		    + flowEntry.dpid().toString() + "/" +
-		    flowEntry.outPort().toString() + ";";
+		resultStr.append(flowEntry.inPort().toString()).append('/')
+			.append(flowEntry.dpid().toString()).append('/')
+			.append(flowEntry.outPort().toString()).append(';');
 	    }
 	}
-	if (resultStr.isEmpty())
-	    resultStr = "X";		// Invalid shortest-path
-	return resultStr;
+	if (resultStr.length() == 0)
+	    resultStr.append("X");		// Invalid shortest-path
+	return resultStr.toString();
     }
 
     /**

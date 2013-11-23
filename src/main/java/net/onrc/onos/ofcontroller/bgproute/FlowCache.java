@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FlowCache {
-	private static Logger log = LoggerFactory.getLogger(FlowCache.class);
+	private final static Logger log = LoggerFactory.getLogger(FlowCache.class);
 	
 	private IFloodlightProviderService floodlightProvider;
 	

@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 public class StaticFlowEntryPusher 
     implements IOFSwitchListener, IFloodlightModule, IStaticFlowEntryPusherService,
         IStorageSourceListener, IOFMessageListener, IHAListener {
-    protected static Logger log = LoggerFactory.getLogger(StaticFlowEntryPusher.class);
+    protected final static Logger log = LoggerFactory.getLogger(StaticFlowEntryPusher.class);
     public static final String StaticFlowName = "staticflowentry";
     
     public static final int STATIC_FLOW_APP_ID = 10;

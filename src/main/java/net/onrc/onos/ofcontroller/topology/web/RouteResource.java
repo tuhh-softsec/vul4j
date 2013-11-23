@@ -1,7 +1,8 @@
 package net.onrc.onos.ofcontroller.topology.web;
 
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
-import net.onrc.onos.ofcontroller.routing.TopoRouteService;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
+import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.Port;
@@ -14,13 +15,30 @@ import org.slf4j.LoggerFactory;
 
 public class RouteResource extends ServerResource {
 
-    protected static Logger log = LoggerFactory.getLogger(RouteResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(RouteResource.class);
 
     @Get("json")
     public DataPath retrieve() {
+<<<<<<< HEAD
         ITopoRouteService topoRouteService = new TopoRouteService("titan", "");
 	if (topoRouteService == null) {
 	    log.debug("Topology Route Service not found");
+=======
+	// Get the services that are needed for the computation
+	ITopologyNetService topologyNetService =
+	    (ITopologyNetService)getContext().getAttributes().
+	    get(ITopologyNetService.class.getCanonicalName());
+	IFlowService flowService =
+	    (IFlowService)getContext().getAttributes().
+	    get(IFlowService.class.getCanonicalName());
+
+	if (topologyNetService == null) {
+	    log.debug("Topology Net Service not found");
+	    return null;
+	}
+	if (flowService == null) {
+	    log.debug("Flow Service not found");
+>>>>>>> master
 	    return null;
 	}
         
@@ -37,8 +55,10 @@ public class RouteResource extends ServerResource {
 	Port dstPort = new Port(Short.parseShort(dstPortStr));
         
 	DataPath result =
-	    topoRouteService.getShortestPath(new SwitchPort(srcDpid, srcPort),
-					     new SwitchPort(dstDpid, dstPort));
+	    topologyNetService.getTopologyShortestPath(
+		flowService.getTopology(),
+		new SwitchPort(srcDpid, srcPort),
+		new SwitchPort(dstDpid, dstPort));
 	if (result != null) {
 	    return result;
 	} else {

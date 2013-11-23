@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *   GET /wm/flow/getall-by-endpoints/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json"
  */
 public class GetAllFlowsByEndpointsResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(GetAllFlowsByEndpointsResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(GetAllFlowsByEndpointsResource.class);
 
     /**
      * Implement the API.

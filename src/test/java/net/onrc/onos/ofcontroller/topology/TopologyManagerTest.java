@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.routing;
+package net.onrc.onos.ofcontroller.topology;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,6 +23,7 @@ import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.internal.TestDatabaseManager;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowPathFlags;
@@ -30,18 +31,18 @@ import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 /**
- * A class for testing the TopoRouteService class.
- * @see net.onrc.onos.ofcontroller.routing.TopoRouteService
+ * A class for testing the TopologyManager class.
+ * @see net.onrc.onos.ofcontroller.topology.TopologyManager
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TitanFactory.class, GraphDBConnection.class, GraphDBOperation.class, TopoRouteService.class})
-public class TopoRouteServiceTest {
+@PrepareForTest({TitanFactory.class, GraphDBConnection.class, GraphDBOperation.class, TopologyManager.class})
+public class TopologyManagerTest {
     String conf;
     String dbStore;
     private DBConnection conn = null;
     private DBOperation oper = null;
     private TitanGraph titanGraph = null;
-    private TopoRouteService topoRouteService = null;
+    private TopologyManager topologyManager = null;
 
     /**
      * Setup the tests.
@@ -67,9 +68,8 @@ public class TopoRouteServiceTest {
 	// Populate the database
 	TestDatabaseManager.populateTestData(titanGraph);
 
-	// Prepare the TopoRouteService instance
-	topoRouteService = new TopoRouteService();
-	topoRouteService.setDbOperationHandler(oper);
+	// Prepare the TopologyManager instance
+	topologyManager = new TopologyManager(oper);
     }
 
     /**
@@ -82,12 +82,12 @@ public class TopoRouteServiceTest {
     }
 
     /**
-     * Test method TopoRouteService.getTopoShortestPath()
+     * Test method TopologyManager.getTopologyShortestPath()
      *
-     * @see net.onrc.onos.ofcontroller.routing.TopoRouteService#getTopoShortestPath
+     * @see net.onrc.onos.ofcontroller.topology.TopologyManager#getTopologyShortestPath
      */
     @Test
-    public void test_getTopoShortestPath() {
+    public void test_getTopologyShortestPath() {
 	DataPath dataPath = null;
 	String srcDpidStr = "00:00:00:00:00:00:0a:01";
 	String dstDpidStr = "00:00:00:00:00:00:0a:06";
@@ -107,11 +107,10 @@ public class TopoRouteServiceTest {
 	//
 	// Test a valid Shortest-Path computation
 	//
-	Map<Long, ?> shortestPathTopo =
-	    topoRouteService.prepareShortestPathTopo();
-	dataPath = topoRouteService.getTopoShortestPath(shortestPathTopo,
-							srcSwitchPort,
-							dstSwitchPort);
+	Topology topology = topologyManager.newDatabaseTopology();
+	dataPath = topologyManager.getTopologyShortestPath(topology,
+							   srcSwitchPort,
+							   dstSwitchPort);
 	assertTrue(dataPath != null);
 	String dataPathSummaryStr = dataPath.dataPathSummary();
 	// System.out.println(dataPathSummaryStr);
@@ -138,21 +137,21 @@ public class TopoRouteServiceTest {
 	String noSuchDpidStr = "ff:ff:00:00:00:00:0a:06";
 	Dpid noSuchDstDpid = new Dpid(noSuchDpidStr);
 	SwitchPort noSuchDstSwitchPort = new SwitchPort(noSuchDstDpid, dstPort);
-	dataPath = topoRouteService.getTopoShortestPath(shortestPathTopo,
-							srcSwitchPort,
-							noSuchDstSwitchPort);
+	dataPath = topologyManager.getTopologyShortestPath(topology,
+							   srcSwitchPort,
+							   noSuchDstSwitchPort);
 	assertTrue(dataPath == null);
 
-	topoRouteService.dropShortestPathTopo(shortestPathTopo);
+	topologyManager.dropTopology(topology);
     }
 
     /**
-     * Test method TopoRouteService.getShortestPath()
+     * Test method TopologyManager.getDatabaseShortestPath()
      *
-     * @see net.onrc.onos.ofcontroller.routing.TopoRouteService#getShortestPath
+     * @see net.onrc.onos.ofcontroller.routing.TopologyManager#getDatabaseShortestPath
      */
     @Test
-    public void test_getShortestPath() {
+    public void test_getDatabaseShortestPath() {
 	DataPath dataPath = null;
 	String srcDpidStr = "00:00:00:00:00:00:0a:01";
 	String dstDpidStr = "00:00:00:00:00:00:0a:06";
@@ -172,8 +171,8 @@ public class TopoRouteServiceTest {
 	//
 	// Test a valid Shortest-Path computation
 	//
-	dataPath = topoRouteService.getShortestPath(srcSwitchPort,
-						dstSwitchPort);
+	dataPath = topologyManager.getDatabaseShortestPath(srcSwitchPort,
+							   dstSwitchPort);
 	assertTrue(dataPath != null);
 	String dataPathSummaryStr = dataPath.dataPathSummary();
 	// System.out.println(dataPathSummaryStr);
@@ -201,15 +200,15 @@ public class TopoRouteServiceTest {
 	Dpid noSuchDstDpid = new Dpid(noSuchDpidStr);
 	SwitchPort noSuchDstSwitchPort = new SwitchPort(noSuchDstDpid, dstPort);
 
-	dataPath = topoRouteService.getShortestPath(srcSwitchPort,
-						    noSuchDstSwitchPort);
+	dataPath = topologyManager.getDatabaseShortestPath(srcSwitchPort,
+							   noSuchDstSwitchPort);
 	assertTrue(dataPath == null);
     }
 
     /**
-     * Test method TopoRouteService.routeExists()
+     * Test method TopologyManager.routeExists()
      *
-     * @see net.onrc.onos.ofcontroller.routing.TopoRouteService#routeExists
+     * @see net.onrc.onos.ofcontroller.routing.TopologyManager#routeExists
      */
     @Test
     public void test_routeExists() {
@@ -232,7 +231,7 @@ public class TopoRouteServiceTest {
 	//
 	// Test a valid route
 	//
-	result = topoRouteService.routeExists(srcSwitchPort, dstSwitchPort);
+	result = topologyManager.routeExists(srcSwitchPort, dstSwitchPort);
 	assertTrue(result == true);
 
 	//
@@ -241,8 +240,8 @@ public class TopoRouteServiceTest {
 	String noSuchDpidStr = "ff:ff:00:00:00:00:0a:06";
 	Dpid noSuchDstDpid = new Dpid(noSuchDpidStr);
 	SwitchPort noSuchDstSwitchPort = new SwitchPort(noSuchDstDpid, dstPort);
-	result = topoRouteService.routeExists(srcSwitchPort,
-					      noSuchDstSwitchPort);
+	result = topologyManager.routeExists(srcSwitchPort,
+					     noSuchDstSwitchPort);
 	assertTrue(result != true);
     }
 }

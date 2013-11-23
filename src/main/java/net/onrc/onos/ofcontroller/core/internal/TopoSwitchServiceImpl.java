@@ -11,14 +11,14 @@ import org.slf4j.LoggerFactory;
 public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	
 	private GraphDBOperation op;
-	protected static Logger log = LoggerFactory.getLogger(TopoSwitchServiceImpl.class);
+	protected final static Logger log = LoggerFactory.getLogger(TopoSwitchServiceImpl.class);
 
 	public TopoSwitchServiceImpl(String conf) {
 		op = new GraphDBOperation(conf);
 	}
 
 	public TopoSwitchServiceImpl() {
-		this("/tmp/cassandra.titan");
+		this("");
 	}
 	
 	public void finalize() {
@@ -53,7 +53,11 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 
 	@Override
 	public Iterable<IPortObject> getPortsOnSwitch(String dpid) {
-		// TODO Auto-generated method stub
+		op.close(); //Commit to ensure we see latest data
+		ISwitchObject switchObject = op.searchSwitch(dpid);
+		if (switchObject != null) {
+			return switchObject.getPorts();
+		}
 		return null;
 	}
 

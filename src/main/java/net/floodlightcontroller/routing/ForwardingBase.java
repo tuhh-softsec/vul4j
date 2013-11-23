@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
 public abstract class ForwardingBase 
     implements IOFMessageListener, IDeviceListener {
     
-    protected static Logger log =
+    protected final static Logger log =
             LoggerFactory.getLogger(ForwardingBase.class);
 
     protected static int OFMESSAGE_DAMPER_CAPACITY = 50000; // TODO: find sweet spot

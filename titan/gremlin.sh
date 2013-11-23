@@ -4,9 +4,18 @@ if [ -z "${MVN}" ]; then
     MVN="mvn"
 fi
 
+BASE_DIR=`dirname $0`
 ONOS_DIR="`dirname $0`/.."
 #CP=$( echo `dirname $0`/../lib/*.jar `dirname $0`/../lib/titan/*.jar . | sed 's/ /:/g')
-CP=`${MVN} -f ${ONOS_DIR}/pom.xml dependency:build-classpath -Dmdep.outputFile=/dev/stdout -l /dev/stderr`
+#CP=`${MVN} -f ${ONOS_DIR}/pom.xml dependency:build-classpath -Dmdep.outputFile=/dev/stdout -l /dev/stderr`
+
+# Use a python script to parse the classpath out of the .classpath file
+CP=`${BASE_DIR}/../scripts/parse-classpath.py`
+
+if [[ "$CP" == *"Error reading classpath file"* ]]; then
+    echo $CP
+    exit 1
+fi
 
 # Find Java 
 if [ "$JAVA_HOME" = "" ] ; then
@@ -36,7 +45,9 @@ else
   if [ "$1" = "-v" ]; then
     $JAVA $JAVA_OPTIONS -cp $CP:$CLASSPATH com.tinkerpop.gremlin.Version
   else
+    pushd $BASE_DIR >/dev/null
     $JAVA $JAVA_OPTIONS -cp $CP:$CLASSPATH com.thinkaurelius.titan.tinkerpop.gremlin.Console
+    popd >/dev/null
   fi
 fi
 

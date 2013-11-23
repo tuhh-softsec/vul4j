@@ -4,7 +4,7 @@
 if [ -z "${ONOS_HOME}" ]; then
         ONOS_HOME=`dirname $0`
 fi
-ONOS_LOGBACK="${ONOS_HOME}/logback.xml"
+ONOS_LOGBACK="${ONOS_HOME}/logback.`hostname`.xml"
 LOGDIR=${ONOS_HOME}/onos-logs
 ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
 PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
@@ -21,11 +21,12 @@ JVM_OPTS="$JVM_OPTS -javaagent:lib/jamm-0.2.5.jar"
 JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 		-XX:+UseThreadPriorities \
 		-XX:ThreadPriorityPolicy=42 \
-                 -XX:+UseCompressedOops \
+		-XX:+UseCompressedOops \
 		-Dcassandra.compaction.priority=1 \
-            -Dcom.sun.management.jmxremote.port=7199 \
-              -Dcom.sun.management.jmxremote.ssl=false \
-              -Dcom.sun.management.jmxremote.authenticate=false"
+		-Dcom.sun.management.jmxremote.port=7199 \
+		-Dcom.sun.management.jmxremote.ssl=false \
+		-Dcom.sun.management.jmxremote.authenticate=false"
+JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 
 #JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
 
@@ -95,6 +96,7 @@ EOF_LOGBACK
 
   # XXX MVN has to run at the project top dir..
   cd ${ONOS_HOME}
+  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties\""
   ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
 
   echo "Waiting for ONOS to start..."

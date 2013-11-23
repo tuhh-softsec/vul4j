@@ -27,35 +27,35 @@ public class HexString {
      */
     public static String toHexString(byte[] bytes) {
         int i;
-        String ret = "";
+        StringBuilder ret = new StringBuilder(8*2+7);
         String tmp;
         for(i=0; i< bytes.length; i++) {
             if(i> 0)
-                ret += ":";
+                ret.append(':');
             tmp = Integer.toHexString(U8.f(bytes[i]));
             if (tmp.length() == 1)
-                ret += "0";
-            ret += tmp; 
+                ret.append('0');
+            ret.append(tmp);
         }
-        return ret;
+        return ret.toString();
     }
     
     public static String toHexString(long val, int padTo) {
         char arr[] = Long.toHexString(val).toCharArray();
-        String ret = "";
+        StringBuilder ret = new StringBuilder(8*2+7);
         // prepend the right number of leading zeros
         int i = 0;
         for (; i < (padTo * 2 - arr.length); i++) {
-            ret += "0";
+            ret.append('0');
             if ((i % 2) == 1)
-                ret += ":";
+                ret.append(':');
         }
         for (int j = 0; j < arr.length; j++) {
-            ret += arr[j];
+            ret.append(arr[j]);
             if ((((i + j) % 2) == 1) && (j < (arr.length - 1)))
-                ret += ":";
+                ret.append(':');
         }
-        return ret;        
+        return ret.toString();
     }
    
     public static String toHexString(long val) {

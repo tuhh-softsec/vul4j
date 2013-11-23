@@ -38,7 +38,7 @@ public class TopologyInstance {
     public static final int MAX_PATH_WEIGHT = Integer.MAX_VALUE - MAX_LINK_WEIGHT - 1;
     public static final int PATH_CACHE_SIZE = 1000;
 
-    protected static Logger log = LoggerFactory.getLogger(TopologyInstance.class);
+    protected final static Logger log = LoggerFactory.getLogger(TopologyInstance.class);
 
     protected Map<Long, Set<Short>> switchPorts; // Set of ports for each switch
     /** Set of switch ports that are marked as blocked.  A set of blocked

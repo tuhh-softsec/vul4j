@@ -36,7 +36,7 @@ import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 public class FlowManagerImpl implements IFlowManager {
 	
-	protected static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
+	protected final static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
 	protected DBOperation op;
 
 	@Override
@@ -208,7 +208,7 @@ public class FlowManagerImpl implements IFlowManager {
 		    String type = v.getProperty("type").toString();
 		    // System.out.println("type: " + type);
 		    if (type.equals("port")) {
-			String number = v.getProperty("number").toString();
+			//String number = v.getProperty("number").toString();
 			// System.out.println("number: " + number);
 
 			Object obj = v.getProperty("number");
@@ -272,6 +272,7 @@ public class FlowManagerImpl implements IFlowManager {
 		    flowEntryAction.setActionOutput(flowEntry.outPort());
 		    flowEntryActions.addAction(flowEntryAction);
 		    dataPath.flowEntries().add(flowEntry);
+		    // TODO (BOC): why is this twice?
 		    dataPath.flowEntries().add(flowEntry);
 		}
 

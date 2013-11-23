@@ -6,7 +6,6 @@ echo "All Link Up"
 $DIR/scripts/all-linkup.sh
 echo "Delete Flows"
 $DIR/web/delete_flow.py 201 300
-$DIR/web/clear_flow.py 201 300
 echo "Adding Flows"
 $DIR/web/add_flow.py -m onos -f $DIR/web/flowdef_demo_start.txt
 ssh -i ~/.ssh/onlabkey.pem  ${basename}5 'ONOS/start-onos.sh stop'

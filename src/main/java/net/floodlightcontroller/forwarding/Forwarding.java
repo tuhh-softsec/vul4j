@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
 
 @LogMessageCategory("Flow Programming")
 public class Forwarding extends ForwardingBase implements IFloodlightModule {
-    protected static Logger log = LoggerFactory.getLogger(Forwarding.class);
+    protected final static Logger log = LoggerFactory.getLogger(Forwarding.class);
 
     @Override
     @LogMessageDoc(level="ERROR",

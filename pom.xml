@@ -21,13 +21,11 @@
       <name>Public online Restlet repository</name>
       <url>http://maven.restlet.org</url>
     </repository>
+    <!-- In Project repository -->
     <repository>
-      <id>tinkerpop-repository</id>
-      <name>TinkerPop Maven2 Repository</name>
-      <url>http://tinkerpop.com/maven2</url>
-      <snapshots>
-	<enabled>false</enabled>
-      </snapshots>
+      <id>in-project</id>
+      <name>In Project Repo</name>
+      <url>file://${project.basedir}/repo</url>
     </repository>
   </repositories>
   <properties>
@@ -81,6 +79,7 @@
             <exclude>**/*TestCase.java</exclude>
           -->
           </excludes>
+          <argLine>-XX:MaxPermSize=256m</argLine>
         </configuration>
       </plugin>
       <!-- exec:java -->
@@ -165,6 +164,14 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+	<artifactId>maven-assembly-plugin</artifactId>
+	<configuration>
+	  <descriptorRefs>
+	    <descriptorRef>jar-with-dependencies</descriptorRef>
+	  </descriptorRefs>
+	</configuration>
+      </plugin>
     </plugins>
   </build>
   <!-- for getting visualization reporting   -->
@@ -209,6 +216,18 @@
     </plugins>
   </reporting>
   <dependencies>
+    <!--
+    <dependency>
+      <groupId>com.esotericsoftware.kryo</groupId>
+      <artifactId>kryo</artifactId>
+      <version>2.22</version>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>net.onrc.onos</groupId>
+      <artifactId>kryo2</artifactId>
+      <version>2.22</version>
+    </dependency>
     <!-- ONOS's direct dependencies -->
     <dependency>
       <groupId>org.apache.cassandra</groupId>
@@ -236,6 +255,11 @@
       <groupId>com.tinkerpop.blueprints</groupId>
       <artifactId>blueprints-core</artifactId>
       <version>2.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>com.hazelcast</groupId>

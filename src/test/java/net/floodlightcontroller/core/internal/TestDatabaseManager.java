@@ -8,9 +8,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
@@ -18,6 +17,7 @@ import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.io.graphml.GraphMLReader;
 
+@SuppressWarnings("deprecation")
 public class TestDatabaseManager {
 	private static final String testDbLocation = "/tmp/onos-testdb";
 	

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class RestApiServer
     implements IFloodlightModule, IRestApiService {
-    protected static Logger logger = LoggerFactory.getLogger(RestApiServer.class);
+    protected final static Logger logger = LoggerFactory.getLogger(RestApiServer.class);
     protected List<RestletRoutable> restlets;
     protected FloodlightModuleContext fmlContext;
     protected int restPort = 8080;

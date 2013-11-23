@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AddShortestPathFlowResource extends ServerResource {
 
-    protected static Logger log = LoggerFactory.getLogger(AddShortestPathFlowResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(AddShortestPathFlowResource.class);
 
     /**
      * Implement the API.

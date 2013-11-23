@@ -17,6 +17,7 @@ import com.tinkerpop.blueprints.Vertex;
  *
  */
 
+@SuppressWarnings("deprecation")
 public class TestableLinkStorageImpl extends LinkStorageImpl {
 	protected TitanGraph graph;
 

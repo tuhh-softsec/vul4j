@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AddFlowResource extends ServerResource {
 
-    protected static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
 
     /**
      * Implement the API.
@@ -64,7 +64,7 @@ public class AddFlowResource extends ServerResource {
 
 	// Process the request
 	if (flowPath != null) {
-	    if (flowService.addFlow(flowPath, result, null) != true) {
+	    if (flowService.addFlow(flowPath, result) != true) {
 		result = new FlowId();		// Error: Return empty Flow Id
 	    }
 	}

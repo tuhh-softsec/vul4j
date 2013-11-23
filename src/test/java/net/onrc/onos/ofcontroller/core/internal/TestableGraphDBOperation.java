@@ -19,6 +19,7 @@ import net.onrc.onos.graph.IDBConnection;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
@@ -32,7 +33,7 @@ import net.onrc.onos.ofcontroller.util.FlowId;
  *
  */
 public class TestableGraphDBOperation extends GraphDBOperation {
-	protected static Logger log = LoggerFactory.getLogger(TestableGraphDBOperation.class);
+	protected final static Logger log = LoggerFactory.getLogger(TestableGraphDBOperation.class);
 
 	protected List<TestSwitchObject> switches;
 	protected List<TestPortObject> ports;
@@ -162,6 +163,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private ISwitchObject sw;
 		
 		private List<IPortObject> linkedPorts;
+		private List<IPortObject> reverseLinkedPorts;
 		private List<IDeviceObject> devices;
 		private List<IFlowEntry> inflows,outflows;
 		
@@ -179,6 +181,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			type = "port";
 
 			linkedPorts = new ArrayList<IPortObject>();
+			reverseLinkedPorts = new ArrayList<IPortObject>();
 			linkedPortsToAdd = new ArrayList<IPortObject>();
 			linkedPortsToRemove = new ArrayList<IPortObject>();
 			devices = new ArrayList<IDeviceObject>();
@@ -289,6 +292,9 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public Iterable<IPortObject> getLinkedPorts() { return linkedPorts; }
 
 		@Override
+		public Iterable<IPortObject> getReverseLinkedPorts() { return reverseLinkedPorts; }
+
+		@Override
 		public void removeLink(IPortObject dest_port) { linkedPortsToRemove.add(dest_port); }
 
 		@Override
@@ -311,6 +317,14 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		}
 	}
 		
+	/*
+	 * Note by Jono, 11/4/2013
+	 * I changed the interface of IDeviceObject but I didn't spend the
+	 * time to update this class, because I can't see where this is used.
+	 * I think this whole file is a candidate for deletion if it is not
+	 * used anywhere - the graphDB objects are tested elsewhere by the
+	 * tests in net.onrc.onos.ofcontroller.core.*
+	 */
 	public static class TestDeviceObject implements IDeviceObject {
 		private String state,type,mac,ipaddr;
 		private List<IPortObject> ports;
@@ -393,11 +407,11 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		@Override
 		public void setMACAddress(String macaddr) { macToUpdate = macaddr; }
 	
-		@Override
-		public String getIPAddress() { return ipaddr; }
+		//@Override
+		//public String getIPAddress() { return ipaddr; }
 	
-		@Override
-		public void setIPAddress(String ipaddr) { ipaddrToUpdate = ipaddr; }
+		//@Override
+		//public void setIPAddress(String ipaddr) { ipaddrToUpdate = ipaddr; }
 	
 		@Override
 		public Iterable<IPortObject> getAttachedPorts() {
@@ -411,12 +425,38 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 		@Override
 		public Iterable<ISwitchObject> getSwitch() { return switches; }
+
+		@Override
+		public Iterable<IIpv4Address> getIpv4Addresses() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IIpv4Address getIpv4Address(int ipv4Address) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void addIpv4Address(IIpv4Address ipv4Address) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeIpv4Address(IIpv4Address ipv4Address) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 	public static class TestFlowPath implements IFlowPath {
 		private String state,type,flowId,installerId,srcSw,dstSw;
+		private String flowPathType;
+		private String flowPathUserState;
 		private Long flowPathFlags;
-		private String dataPathSummary,userState;
+		private String dataPathSummary;
 		private Short srcPort,dstPort;
 		private String matchSrcMac,matchDstMac;
 		private Short matchEthernetFrameType;
@@ -431,8 +471,10 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private List<ISwitchObject> switches;
 
 		private String stateToUpdate,typeToUpdate,flowIdToUpdate,installerIdToUpdate,srcSwToUpdate,dstSwToUpdate;
+		private String flowPathTypeToUpdate;
+		private String flowPathUserStateToUpdate;
 		private Long flowPathFlagsToUpdate;
-		private String dataPathSummaryToUpdate,userStateToUpdate;
+		private String dataPathSummaryToUpdate;
 		private Short srcPortToUpdate,dstPortToUpdate;
 		private String matchSrcMacToUpdate,matchDstMacToUpdate;
 		private Short matchEthernetFrameTypeToUpdate;
@@ -469,11 +511,12 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(typeToUpdate != null) { type = typeToUpdate; }
 			if(flowIdToUpdate != null) { flowId = flowIdToUpdate; }
 			if(installerIdToUpdate != null) { installerId = installerIdToUpdate; }
+			if(flowPathTypeToUpdate != null) { flowPathType = flowPathTypeToUpdate; }
+			if(flowPathUserStateToUpdate != null) { flowPathUserState = flowPathUserStateToUpdate; }
 			if(flowPathFlagsToUpdate != null) { flowPathFlags = flowPathFlagsToUpdate; }
 			if(srcSwToUpdate != null) { srcSw = srcSwToUpdate; }
 			if(dstSwToUpdate != null) { dstSw = dstSwToUpdate; }
 			if(dataPathSummaryToUpdate != null) { dataPathSummary = dataPathSummaryToUpdate; }
-			if(userStateToUpdate != null) { userState = userStateToUpdate; }
 			if(srcPortToUpdate != null) { srcPort = srcPortToUpdate; }
 			if(dstPortToUpdate != null) { dstPort = dstPortToUpdate; }
 			if(matchSrcMacToUpdate != null) { matchSrcMac = matchSrcMacToUpdate; }
@@ -499,8 +542,10 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			flowsToRemove.clear();
 			
 			stateToUpdate = typeToUpdate = flowIdToUpdate = installerIdToUpdate = null;
+			flowPathTypeToUpdate = null;
+			flowPathUserStateToUpdate = null;
 			flowPathFlagsToUpdate = null;
-			srcSwToUpdate = dstSwToUpdate = dataPathSummaryToUpdate = userStateToUpdate = null;
+			srcSwToUpdate = dstSwToUpdate = dataPathSummaryToUpdate = null;
 			srcPortToUpdate = dstPortToUpdate = null;
 			matchSrcMacToUpdate = matchDstMacToUpdate = null;
 			matchEthernetFrameTypeToUpdate = null;
@@ -517,11 +562,12 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setTypeForTest(String type) { this.type = type; }
 		public void setFlowIdForTest(String flowId) { this.flowId = flowId; }
 		public void setInstallerIdForTest(String installerId) { this.installerId = installerId; }
+		public void setFlowPathTypeForTest(String flowPathType) { this.flowPathType = flowPathType; }
+		public void setFlowPathUserStateForTest(String flowPathUserState) { this.flowPathUserState = flowPathUserState; }
 		public void setFlowPathFlagsForTest(Long flowPathFlags) { this.flowPathFlags = flowPathFlags; }
 		public void setSrcSwForTest(String srcSw) { this.srcSw = srcSw; }
 		public void setDstSwForTest(String dstSw) { this.dstSw = dstSw; }
 		public void setDataPathSummaryForTest(String dataPathSummary) { this.dataPathSummary = dataPathSummary; }
-		public void setUserStateForTest(String userState) { this.userState = userState; }
 		public void setSrcPortForTest(Short srcPort) { this.srcPort = srcPort; }
 		public void setDstPortForTest(Short dstPort) { this.dstPort = dstPort; }
 		public void setMatchSrcMacForTest(String matchSrcMac) { this.matchSrcMac = matchSrcMac; }
@@ -568,6 +614,18 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public void setInstallerId(String installerId) { installerIdToUpdate = installerId; }
+
+		@Override
+		public String getFlowPathType() { return flowPathType; }
+
+		@Override
+		public void setFlowPathType(String flowPathType) { flowPathTypeToUpdate = flowPathType; }
+
+		@Override
+		public String getFlowPathUserState() { return flowPathUserState; }
+
+		@Override
+		public void setFlowPathUserState(String flowPathUserState) { flowPathUserStateToUpdate = flowPathUserState; }
 
 		@Override
 		public Long getFlowPathFlags() { return flowPathFlags; }
@@ -706,12 +764,6 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public Iterable<ISwitchObject> getSwitches() { return switches; }
-
-		@Override
-		public String getUserState() { return userState; }
-
-		@Override
-		public void setUserState(String userState) { userStateToUpdate = userState; }
 	}
 
 	public static class TestFlowEntry implements IFlowEntry {
@@ -918,13 +970,13 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public Short getMatchVlanId() {return matchVlanId; }
 	
 		@Override
-		public void setMatchVlanId(Short matchVlanId) { matchVlanId = matchVlanId; }
+		public void setMatchVlanId(Short matchVlanId) { matchVlanIdToUpdate = matchVlanId; }
 
 		@Override
 		public Byte getMatchVlanPriority() {return matchVlanPriority; }
 	
 		@Override
-		public void setMatchVlanPriority(Byte matchVlanPriority) { matchVlanPriority = matchVlanPriority; }
+		public void setMatchVlanPriority(Byte matchVlanPriority) { matchVlanPriorityToUpdate = matchVlanPriority; }
 		
 		@Override
 		public String getMatchSrcIPv4Net() { return matchSrcIpaddr; }
@@ -942,13 +994,13 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public Byte getMatchIpProto() {return matchIpProto; }
 	
 		@Override
-		public void setMatchIpProto(Byte matchIpProto) { matchIpProto = matchIpProto; }
+		public void setMatchIpProto(Byte matchIpProto) { matchIpProtoToUpdate = matchIpProto; }
 
 		@Override
 		public Byte getMatchIpToS() {return matchIpToS; }
 	
 		@Override
-		public void setMatchIpToS(Byte matchIpToS) { matchIpToS = matchIpToS; }
+		public void setMatchIpToS(Byte matchIpToS) { matchIpToSToUpdate = matchIpToS; }
 
 		@Override
 		public Short getMatchSrcTcpUdpPort() {return matchSrcTcpUdpPort; }

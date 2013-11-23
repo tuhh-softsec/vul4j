@@ -59,4 +59,31 @@ public class Interface {
 	public int getPrefixLength() {
 		return prefixLength;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || !(other instanceof Interface)) {
+			return false;
+		}
+		
+		Interface otherInterface = (Interface)other;
+		
+		//Don't check switchPort as it's comprised of dpid and port
+		return (name.equals(otherInterface.name)) &&
+				(dpid == otherInterface.dpid) &&
+				(port == otherInterface.port) &&
+				(ipAddress.equals(otherInterface.ipAddress)) &&
+				(prefixLength == otherInterface.prefixLength);
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 17;
+		hash = 31 * hash + name.hashCode();
+		hash = 31 * hash + (int)(dpid ^ dpid >>> 32);
+		hash = 31 * hash + (int)port;
+		hash = 31 * hash + ipAddress.hashCode();
+		hash = 31 * hash + prefixLength;
+		return hash;
+	}
 }
