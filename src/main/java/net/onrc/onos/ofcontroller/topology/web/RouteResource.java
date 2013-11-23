@@ -19,11 +19,6 @@ public class RouteResource extends ServerResource {
 
     @Get("json")
     public DataPath retrieve() {
-<<<<<<< HEAD
-        ITopoRouteService topoRouteService = new TopoRouteService("titan", "");
-	if (topoRouteService == null) {
-	    log.debug("Topology Route Service not found");
-=======
 	// Get the services that are needed for the computation
 	ITopologyNetService topologyNetService =
 	    (ITopologyNetService)getContext().getAttributes().
@@ -38,7 +33,6 @@ public class RouteResource extends ServerResource {
 	}
 	if (flowService == null) {
 	    log.debug("Flow Service not found");
->>>>>>> master
 	    return null;
 	}
         
