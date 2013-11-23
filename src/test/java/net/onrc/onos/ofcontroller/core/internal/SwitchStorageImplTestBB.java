@@ -5,11 +5,6 @@ import static org.junit.Assert.assertTrue;
 import net.floodlightcontroller.core.internal.TestDatabaseManager;
 import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBOperation;
-<<<<<<< HEAD
-import net.onrc.onos.ofcontroller.core.ISwitchStorage;
-import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
-=======
->>>>>>> master
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;

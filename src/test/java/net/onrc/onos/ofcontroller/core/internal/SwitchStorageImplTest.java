@@ -219,13 +219,8 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-<<<<<<< HEAD
 		swSt.init(dbStore, conf);
-		swSt.update(dpid, stateINACTIVE, opUPDATE);
-=======
-		swSt.init(conf);
 		swSt.updateSwitch(dpid, stateINACTIVE, opUPDATE);
->>>>>>> master
 	}
 	
 	/**
@@ -257,13 +252,8 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-<<<<<<< HEAD
 		swSt.init(dbStore, conf);
-		swSt.update(dpid, stateINACTIVE, opCREATE);
-=======
-		swSt.init(conf);
 		swSt.updateSwitch(dpid, stateINACTIVE, opCREATE);
->>>>>>> master
 	}
 	
 	/**
@@ -295,13 +285,8 @@ public class SwitchStorageImplTest {
 		mockOpe.close();
 		replay(mockOpe);
 		
-<<<<<<< HEAD
 		swSt.init(dbStore, conf);
-		swSt.update(dpid, stateINACTIVE, opINSERT);
-=======
-		swSt.init(conf);
 		swSt.updateSwitch(dpid, stateINACTIVE, opINSERT);
->>>>>>> master
 	}
 	
 	/**

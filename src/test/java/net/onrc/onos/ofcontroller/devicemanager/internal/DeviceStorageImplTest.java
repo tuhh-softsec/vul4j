@@ -71,7 +71,7 @@ public class DeviceStorageImplTest{
         // Replace the conf to dummy conf
 		// String conf = "/tmp/cassandra.titan";
 
-		deviceImpl.init(conf);
+		deviceImpl.init(dbStore, conf);
 
 	}
 
