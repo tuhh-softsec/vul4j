@@ -365,21 +365,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the Flow Paths if found, otherwise null.
      */
     @Override
-    public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId,
-						   int maxFlows) {
+    public ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId,
+						  int maxFlows) {
 	return FlowDatabaseOperation.getAllFlowsSummary(dbHandlerApi, flowId,
 							maxFlows);
     }
     
-    /**
-     * Get all Flows information, without the associated Flow Entries.
-     *
-     * @return all Flows information, without the associated Flow Entries.
-     */
-    public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries() {
-	return FlowDatabaseOperation.getAllFlowsWithoutFlowEntries(dbHandlerApi);
-    }
-
     /**
      * Add and maintain a shortest-path flow.
      *

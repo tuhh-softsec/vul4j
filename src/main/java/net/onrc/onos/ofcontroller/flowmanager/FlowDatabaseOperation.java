@@ -590,9 +590,9 @@ class FlowDatabaseOperation {
      * @param maxFlows the maximum number of flows to be returned.
      * @return the Flow Paths if found, otherwise null.
      */
-    static ArrayList<IFlowPath> getAllFlowsSummary(GraphDBOperation dbHandler,
-						   FlowId flowId,
-						   int maxFlows) {
+    static ArrayList<FlowPath> getAllFlowsSummary(GraphDBOperation dbHandler,
+						  FlowId flowId,
+						  int maxFlows) {
 	//
 	// TODO: The implementation below is not optimal:
 	// We fetch all flows, and then return only the subset that match
@@ -600,61 +600,32 @@ class FlowDatabaseOperation {
 	// We should use the appropriate Titan/Gremlin query to filter-out
 	// the flows as appropriate.
 	//
-    	ArrayList<IFlowPath> flowPathsWithoutFlowEntries =
-	    getAllFlowsWithoutFlowEntries(dbHandler);
-
-    	Collections.sort(flowPathsWithoutFlowEntries, 
-			 new Comparator<IFlowPath>() {
-			     @Override
-			     public int compare(IFlowPath first, IFlowPath second) {
-				 long result =
-				     new FlowId(first.getFlowId()).value()
-				     - new FlowId(second.getFlowId()).value();
-				 if (result > 0) {
-				     return 1;
-				 } else if (result < 0) {
-				     return -1;
-				 } else {
-				     return 0;
-				 }
-			     }
-			 }
-			 );
-    	
-    	return flowPathsWithoutFlowEntries;
+    	ArrayList<FlowPath> flowPaths = getAllFlowsWithDataPathSummary(dbHandler);
+    	Collections.sort(flowPaths);
+    	return flowPaths;
     }
 
     /**
-     * Get all Flows information, without the associated Flow Entries.
+     * Get all Flows information, with Data Path summary for the Flow Entries.
      *
      * @param dbHandler the Graph Database handler to use.
-     * @return all Flows information, without the associated Flow Entries.
+     * @return all Flows information, with Data Path summary for the Flow
+     * Entries.
      */
-    static ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries(GraphDBOperation dbHandler) {
-    	Iterable<IFlowPath> flowPathsObj = null;
-    	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
+    static ArrayList<FlowPath> getAllFlowsWithDataPathSummary(GraphDBOperation dbHandler) {
+    	ArrayList<FlowPath> flowPaths = getAllFlows(dbHandler);
 
-	// TODO: Remove this op.commit() flow, because it is not needed?
-    	dbHandler.commit();
+	// Truncate each Flow Path and Flow Entry
+	for (FlowPath flowPath : flowPaths) {
+	    flowPath.setFlowEntryMatch(null);
+	    flowPath.setFlowEntryActions(null);
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		flowEntry.setFlowEntryMatch(null);
+		flowEntry.setFlowEntryActions(null);
+	    }
+	}
 
-    	try {
-    	    flowPathsObj = dbHandler.getAllFlowPaths();
-    	} catch (Exception e) {
-    	    // TODO: handle exceptions
-    	    dbHandler.rollback();
-    	    log.error(":getAllFlowPaths failed");
-	    return flowPathsObjArray;		// No Flows found
-    	}
-    	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
-    	    return flowPathsObjArray;		// No Flows found
-    	}
-
-    	for (IFlowPath flowObj : flowPathsObj)
-	    flowPathsObjArray.add(flowObj);
-
-    	// conn.endTx(Transaction.COMMIT);
-
-    	return flowPathsObjArray;
+    	return flowPaths;
     }
 
     /**
