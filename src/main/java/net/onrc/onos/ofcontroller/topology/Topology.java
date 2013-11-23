@@ -13,6 +13,7 @@ import org.openflow.util.HexString;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
+import net.onrc.onos.graph.DBOperation;
 
 /**
  * A class for storing Node and Link information for fast computation
@@ -376,7 +377,7 @@ public class Topology {
      *
      * @param dbHandler the Graph Database handler to use.
      */
-    public void readFromDatabase(GraphDBOperation dbHandler) {
+    public void readFromDatabase(DBOperation dbHandler) {
 	//
 	// Fetch the relevant info from the Switch and Port vertices
 	// from the Titan Graph.

@@ -57,9 +57,9 @@ public class Forwarding implements IOFMessageListener {
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
 		deviceStorage = new DeviceStorageImpl();
-		deviceStorage.init("");
+		deviceStorage.init("","");
 		topologyService = new TopologyManager();
-		topologyService.init("");
+		topologyService.init("","");
 	}
 	
 	public void startUp() {

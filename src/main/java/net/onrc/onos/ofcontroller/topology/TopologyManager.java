@@ -12,6 +12,8 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 
 import net.onrc.onos.datagrid.IDatagridService;
+import net.onrc.onos.graph.DBOperation;
+import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -34,7 +36,7 @@ public class TopologyManager implements IFloodlightModule,
     private final static Logger log = LoggerFactory.getLogger(TopologyManager.class);
     protected IFloodlightProviderService floodlightProvider;
 
-    protected GraphDBOperation dbHandler;
+    protected DBOperation dbHandler;
 
 
     /**
@@ -50,7 +52,7 @@ public class TopologyManager implements IFloodlightModule,
      * the initialization.
      */
     public TopologyManager(String config) {
-	this.init(config);
+	this.init("",config);
     }
 
     /**
@@ -59,19 +61,19 @@ public class TopologyManager implements IFloodlightModule,
      * @param dbHandler the database operation handler to use for the
      * initialization.
      */
-    public TopologyManager(GraphDBOperation dbHandler) {
+    public TopologyManager(DBOperation dbHandler) {
 	this.dbHandler = dbHandler;
     }
 
     /**
      * Init the module.
-     *
+     * @param 
      * @param config the database configuration file to use for
      * the initialization.
      */
-    public void init(String config) {
+    public void init(final String dbStore, String config) {
 	try {
-	    dbHandler = new GraphDBOperation(config);
+	    dbHandler = GraphDBManager.getDBOperation(dbStore, config);
 	} catch (Exception e) {
 	    log.error(e.getMessage());
 	}
@@ -147,7 +149,7 @@ public class TopologyManager implements IFloodlightModule,
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 
 	String conf = "";
-	this.init(conf);
+	this.init("",conf);
     }
 
     /**

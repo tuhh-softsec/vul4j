@@ -143,7 +143,7 @@ public class BgpProxyArpManager implements IProxyArpService, IOFMessageListener 
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
 		deviceStorage = new DeviceStorageImpl();
-		deviceStorage.init("");
+		deviceStorage.init("","");
 		
 		Timer arpTimer = new Timer("arp-processing");
 		arpTimer.scheduleAtFixedRate(new TimerTask() {

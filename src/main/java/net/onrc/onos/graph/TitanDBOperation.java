@@ -10,6 +10,7 @@ import com.tinkerpop.frames.FramedGraph;
 import com.tinkerpop.frames.structures.FramedVertexIterable;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.*;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
@@ -82,8 +83,17 @@ public class TitanDBOperation extends DBOperation {
             fg.removeVertex(dev.asVertex());
         }
     }
-
-
+	
+	/**
+         * Create and return a flow path object.
+         */
+        public IFlowPath newFlowPath() {
+                FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+                IFlowPath flowPath = fg.addVertex(null, IFlowPath.class);
+                if (flowPath != null) flowPath.setType("flow");
+                return flowPath;
+        }
+	
     @Override
     public IFlowPath searchFlowPath(FlowId flowId) {
         FramedGraph<TitanGraph> fg = conn.getFramedGraph();

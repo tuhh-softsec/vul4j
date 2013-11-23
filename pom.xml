@@ -8,7 +8,7 @@
   <artifactId>onos</artifactId>
   <version>0.1.0</version>
   <packaging>jar</packaging>
-  <name>ONOS</name>
+  <name>ONOS-RAMLCloud</name>
   <url>http://onlab.us/</url>
   <repositories>
     <repository>

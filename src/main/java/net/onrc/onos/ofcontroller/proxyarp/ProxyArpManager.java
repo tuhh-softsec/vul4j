@@ -160,7 +160,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		datagrid.registerArpEventHandler(this);
 		
 		deviceStorage = new DeviceStorageImpl();
-		deviceStorage.init("");
+		deviceStorage.init("","");
 		
 		Timer arpTimer = new Timer("arp-processing");
 		arpTimer.scheduleAtFixedRate(new TimerTask() {

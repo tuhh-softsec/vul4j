@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.graph.DBOperation;
 
 import net.onrc.onos.graph.GraphDBOperation;
 
@@ -38,7 +39,7 @@ class FlowDatabaseOperation {
      * @return true on success, otherwise false.
      */
     static boolean addFlow(FlowManager flowManager,
-			   GraphDBOperation dbHandler,
+			   DBOperation dbHandler,
 			   FlowPath flowPath, FlowId flowId) {
 	IFlowPath flowObj = null;
 	boolean found = false;
@@ -180,7 +181,7 @@ class FlowDatabaseOperation {
      * @return the added Flow Entry object on success, otherwise null.
      */
     static IFlowEntry addFlowEntry(FlowManager flowManager,
-				   GraphDBOperation dbHandler,
+				   DBOperation dbHandler,
 				   IFlowPath flowObj,
 				   FlowEntry flowEntry) {
 	// Flow edges
@@ -333,7 +334,7 @@ class FlowDatabaseOperation {
      * @param flowEntry the Flow Entry to delete.
      * @return true on success, otherwise false.
      */
-    static boolean deleteFlowEntry(GraphDBOperation dbHandler,
+    static boolean deleteFlowEntry(DBOperation dbHandler,
 				   IFlowPath flowObj,
 				   FlowEntry flowEntry) {
 	IFlowEntry flowEntryObj = null;
@@ -369,7 +370,7 @@ class FlowDatabaseOperation {
      * @param dbHandler the Graph Database handler to use.
      * @return true on success, otherwise false.
      */
-    static boolean deleteAllFlows(GraphDBOperation dbHandler) {
+    static boolean deleteAllFlows(DBOperation dbHandler) {
 	List<FlowId> allFlowIds = new LinkedList<FlowId>();
 
 	// Get all Flow IDs
@@ -399,7 +400,7 @@ class FlowDatabaseOperation {
      * @param flowId the Flow ID of the flow to delete.
      * @return true on success, otherwise false.
      */
-    static boolean deleteFlow(GraphDBOperation dbHandler, FlowId flowId) {
+    static boolean deleteFlow(DBOperation dbHandler, FlowId flowId) {
 	IFlowPath flowObj = null;
 	try {
 	    flowObj = dbHandler.searchFlowPath(flowId);
@@ -436,7 +437,7 @@ class FlowDatabaseOperation {
      * @param flowId the Flow ID of the flow to get.
      * @return the Flow Path if found, otherwise null.
      */
-    static FlowPath getFlow(GraphDBOperation dbHandler, FlowId flowId) {
+    static FlowPath getFlow(DBOperation dbHandler, FlowId flowId) {
 	IFlowPath flowObj = null;
 	try {
 	    flowObj = dbHandler.searchFlowPath(flowId);
@@ -466,7 +467,7 @@ class FlowDatabaseOperation {
      * @param dbHandler the Graph Database handler to use.
      * @return the Flow Paths if found, otherwise null.
      */
-    static ArrayList<FlowPath> getAllFlows(GraphDBOperation dbHandler) {
+    static ArrayList<FlowPath> getAllFlows(DBOperation dbHandler) {
 	Iterable<IFlowPath> flowPathsObj = null;
 	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
@@ -506,7 +507,7 @@ class FlowDatabaseOperation {
      * @param dataPathEndpoints the data path endpoints of the flow to get.
      * @return the Flow Paths if found, otherwise null.
      */
-    static ArrayList<FlowPath> getAllFlows(GraphDBOperation dbHandler,
+    static ArrayList<FlowPath> getAllFlows(DBOperation dbHandler,
 					   CallerId installerId,
 					   DataPathEndpoints dataPathEndpoints) {
 	//
@@ -549,7 +550,7 @@ class FlowDatabaseOperation {
      * @param dataPathEndpoints the data path endpoints of the flows to get.
      * @return the Flow Paths if found, otherwise null.
      */
-    static ArrayList<FlowPath> getAllFlows(GraphDBOperation dbHandler,
+    static ArrayList<FlowPath> getAllFlows(DBOperation dbHandler,
 					   DataPathEndpoints dataPathEndpoints) {
 	//
 	// TODO: The implementation below is not optimal:
@@ -590,7 +591,7 @@ class FlowDatabaseOperation {
      * @param maxFlows the maximum number of flows to be returned.
      * @return the Flow Paths if found, otherwise null.
      */
-    static ArrayList<IFlowPath> getAllFlowsSummary(GraphDBOperation dbHandler,
+    static ArrayList<IFlowPath> getAllFlowsSummary(DBOperation dbHandler,
 						   FlowId flowId,
 						   int maxFlows) {
 	//
@@ -630,7 +631,7 @@ class FlowDatabaseOperation {
      * @param dbHandler the Graph Database handler to use.
      * @return all Flows information, without the associated Flow Entries.
      */
-    static ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries(GraphDBOperation dbHandler) {
+    static ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries(DBOperation dbHandler) {
     	Iterable<IFlowPath> flowPathsObj = null;
     	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
 

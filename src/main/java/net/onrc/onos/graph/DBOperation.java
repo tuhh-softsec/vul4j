@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IBaseObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
@@ -182,5 +184,47 @@ public abstract class DBOperation implements IDBOperation {
         }
         return flowEntry;
     }
+    
+    	
+	public IIpv4Address newIpv4Address() {
+		return newVertex("ipv4Address", IIpv4Address.class);
+	}
+	private <T extends IBaseObject> T newVertex(String type, Class<T> vertexType) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		T newVertex = fg.addVertex(null, vertexType);
+		if (newVertex != null) {
+			newVertex.setType(type);
+		}
+		return newVertex;
+	}
+	
+	public IIpv4Address searchIpv4Address(int intIpv4Address) {
+		return searchForVertex("ipv4_address", intIpv4Address, IIpv4Address.class);
+	}
+	
+	
+	public IIpv4Address ensureIpv4Address(int intIpv4Address) {
+		IIpv4Address ipv4Vertex = searchIpv4Address(intIpv4Address);
+		if (ipv4Vertex == null) {
+			ipv4Vertex = newIpv4Address();
+			ipv4Vertex.setIpv4Address(intIpv4Address);
+		}
+		return ipv4Vertex;
+	}	
+
+	
+	private <T> T searchForVertex(String propertyName, Object propertyValue, Class<T> vertexType) {
+		if (conn.getFramedGraph() != null) {
+			Iterator<T> it = conn.getFramedGraph().getVertices(propertyName, propertyValue, vertexType).iterator();
+			if (it.hasNext()) {
+				return it.next();
+			}
+		}
+		return null;
+	}
+
+	public void removeIpv4Address(IIpv4Address ipv4Address) {
+		conn.getFramedGraph().removeVertex(ipv4Address.asVertex());
+	}
 
 }

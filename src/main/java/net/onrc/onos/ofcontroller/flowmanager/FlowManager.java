@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
     // flag to use FlowPusher instead of FlowSwitchOperation/MessageDamper
     private final static boolean enableFlowPusher = false;
-
-    protected DBOperation op;
+    protected DBOperation dbHandlerApi;
+    protected DBOperation dbHandlerInner;
 
     protected volatile IFloodlightProviderService floodlightProvider;
     protected volatile IDatagridService datagridService;
@@ -82,8 +82,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void init(final String dbStore, final String conf) {
-    	op = GraphDBManager.getDBOperation(dbStore, conf);
-	topoRouteService = new TopoRouteService(dbStore, conf);
+	dbHandlerApi = GraphDBManager.getDBOperation(dbStore, conf);
+	dbHandlerInner = GraphDBManager.getDBOperation(dbStore, conf);
+	
     }
 
     /**
