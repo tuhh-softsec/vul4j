@@ -136,6 +136,7 @@ public class FlowEntry {
      *
      * @return true if the Flow ID is valid, otherwise false.
      */
+    @JsonIgnore
     public boolean isValidFlowId() {
 	if (this.flowId == null)
 	    return false;
@@ -165,6 +166,7 @@ public class FlowEntry {
      *
      * @return true if the Flow Entry ID is valid, otherwise false.
      */
+    @JsonIgnore
     public boolean isValidFlowEntryId() {
 	if (this.flowEntryId == null)
 	    return false;
