@@ -17,8 +17,10 @@ package org.esigate.server;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -60,7 +62,16 @@ public class EsigateServerTest extends AbstractEsigateServerTest {
         assertFalse(resp.getText().contains("Esigate Server Status"));
 
         assertTrue(StatusReader.getLong(resp.getText(), "Uptime") > 0);
-        assertTrue(StatusReader.getDouble(resp.getText(), "CPULoad") > 0);
+        Double cpuLoad = StatusReader.getDouble(resp.getText(), "CPULoad");
+        if (cpuLoad != null) {
+            assertTrue(cpuLoad > 0);
+        }
+
+        // On Windows, Cpuload is unsupported. Do not assert on this system.
+        if (!StringUtils.containsIgnoreCase(System.getProperty("os.name"), "win")) {
+            assertNotNull(cpuLoad);
+        }
+
         assertEquals(0, StatusReader.getLong(resp.getText(), "Total Accesses").longValue());
         assertEquals(0d, StatusReader.getDouble(resp.getText(), "ReqPerSec"));
 

@@ -208,7 +208,10 @@ public class ControlHandler extends AbstractHandler {
         result.put("Uptime", new Long(ManagementFactory.getRuntimeMXBean().getUptime()));
 
         // Get CPULoad
-        result.put("CPULoad", new Double(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()));
+        Double cpuLoad = new Double(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
+        if (cpuLoad.doubleValue() >= 0d) {
+            result.put("CPULoad", cpuLoad);
+        }
 
         return result;
 
