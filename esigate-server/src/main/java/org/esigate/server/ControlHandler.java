@@ -88,7 +88,7 @@ public class ControlHandler extends AbstractHandler {
     }
 
     private static boolean fromControlConnection(Request serverRequest) {
-        return EsigateServer.controlPort == serverRequest.getLocalPort();
+        return EsigateServer.getControlPort() == serverRequest.getLocalPort();
     }
 
     /**

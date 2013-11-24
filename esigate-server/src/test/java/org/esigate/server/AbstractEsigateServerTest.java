@@ -14,9 +14,11 @@
  */
 package org.esigate.server;
 
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.eclipse.jetty.server.Handler;
 import org.junit.After;
 import org.junit.Before;
 
@@ -29,9 +31,47 @@ import org.junit.Before;
  * 
  */
 public class AbstractEsigateServerTest {
+    private static final int DEFAULT_BACKEND_PORT = 8082;
+    private static final int DEFAULT_CONTROL_PORT = 8081;
+    private static final int DEFAULT_MAIN_PORT = 8080;
     static final int WAIT_RETRIES = 50;
     static final int WAIT_SLEEP = 100;
-    private ExecutorService executor = null;
+    private ExecutorService esigateExecutor = null;
+    private ExecutorService backendExecutor = null;
+    private int esigatePort;
+    private int esigateControlPort;
+    private int backendPort;
+    private Handler backendHandler;
+    private BackendServerRunnable backendServerRunnable = null;
+
+    /**
+     * Starts esigate instance on default ports : 8080 for main connection and 8081 for control connection.
+     */
+    public AbstractEsigateServerTest() {
+        this(DEFAULT_MAIN_PORT, DEFAULT_CONTROL_PORT, DEFAULT_BACKEND_PORT, null);
+    }
+
+    /**
+     * Starts esigate using the provided ports.
+     * <p>
+     * If backendHandler is not null, also starts a backend server on backendPort, which uses this handler to process
+     * requests. This allows complete testing of esigate.
+     * 
+     * @param esigatePort
+     *            port for the main connection.
+     * @param esigateControlPort
+     *            port for the control/status connection.
+     * @param backendPort
+     *            port for the backend server (provider).
+     * @param backendHandler
+     *            handler for the backend server.
+     */
+    public AbstractEsigateServerTest(int esigatePort, int esigateControlPort, int backendPort, Handler backendHandler) {
+        this.esigatePort = esigatePort;
+        this.esigateControlPort = esigateControlPort;
+        this.backendPort = backendPort;
+        this.backendHandler = backendHandler;
+    }
 
     /**
      * Start esigate server before each test.
@@ -39,8 +79,13 @@ public class AbstractEsigateServerTest {
      */
     @Before
     public void setUp() {
-        this.executor = Executors.newSingleThreadExecutor();
-        this.executor.execute(new EsigateServerRunnable());
+
+        Properties p = new Properties();
+        p.setProperty("controlPort", "" + this.esigateControlPort);
+        p.setProperty("port", "" + this.esigatePort);
+
+        this.esigateExecutor = Executors.newSingleThreadExecutor();
+        this.esigateExecutor.execute(new EsigateServerRunnable(p));
         for (int i = 0; i < WAIT_RETRIES; i++) {
             if (EsigateServer.isStarted()) {
                 break;
@@ -51,6 +96,22 @@ public class AbstractEsigateServerTest {
                 e.printStackTrace();
             }
         }
+
+        if (this.backendHandler != null) {
+            this.backendServerRunnable = new BackendServerRunnable(this.backendPort, this.backendHandler);
+            this.backendExecutor = Executors.newSingleThreadExecutor();
+            this.backendExecutor.execute(this.backendServerRunnable);
+            for (int i = 0; i < WAIT_RETRIES; i++) {
+                if (this.backendServerRunnable.isStarted()) {
+                    break;
+                }
+                try {
+                    Thread.sleep(WAIT_SLEEP);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -59,8 +120,34 @@ public class AbstractEsigateServerTest {
     @After
     public void tearDown() {
         EsigateServer.stop();
-        this.executor.shutdown();
+        this.esigateExecutor.shutdown();
 
     }
 
+    /**
+     * Get the current backend port.
+     * 
+     * @return current port.
+     */
+    public int getBackendPort() {
+        return this.backendPort;
+    }
+
+    /**
+     * Get the current esigate control connection port.
+     * 
+     * @return current port.
+     */
+    public int getEsigateControlPort() {
+        return this.esigateControlPort;
+    }
+
+    /**
+     * Get the current esigate main connection port.
+     * 
+     * @return current port.
+     */
+    public int getEsigatePort() {
+        return this.esigatePort;
+    }
 }

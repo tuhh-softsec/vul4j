@@ -14,6 +14,8 @@
  */
 package org.esigate.server;
 
+import java.util.Properties;
+ 
 /**
  * Starts esigate server.
  * 
@@ -21,9 +23,22 @@ package org.esigate.server;
  * 
  */
 public final class EsigateServerRunnable implements Runnable {
+
+    private Properties configuration;
+
+    /**
+     * Starts esigate-server using the provided configuration. Same as using -D or server.properties.
+     * 
+     * @param configuration
+     *            configuration to use.
+     */
+    public EsigateServerRunnable(Properties configuration) {
+        this.configuration = configuration;
+    }
+
     @Override
     public void run() {
-        EsigateServer.init();
+        EsigateServer.init(this.configuration);
         try {
             EsigateServer.start();
         } catch (Exception e) {

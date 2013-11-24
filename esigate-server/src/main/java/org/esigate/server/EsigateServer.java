@@ -54,7 +54,7 @@ import com.codahale.metrics.jetty9.InstrumentedQueuedThreadPool;
 public final class EsigateServer {
 
     private static String contextPath;
-    protected static int controlPort;
+    private static int controlPort;
     private static String extraClasspath;
     private static long idleTimeout = 0;
     private static int maxThreads = 0;
@@ -110,25 +110,35 @@ public final class EsigateServer {
 
         // Read from "server.properties" or custom file.
         String configFile = null;
+        Properties serverProperties = new Properties();
         try {
             configFile = System.getProperty(PROPERTY_PREFIX + "config", "server.properties");
             System.out.println("Loading server configuration from " + configFile);
-
-            Properties serverProperties = new Properties();
 
             try (InputStream is = new FileInputStream(configFile);) {
                 serverProperties.load(is);
             }
 
-            for (Object prop : serverProperties.keySet()) {
-                String serverPropertyName = (String) prop;
-                System.setProperty(PROPERTY_PREFIX + serverPropertyName,
-                        serverProperties.getProperty(serverPropertyName));
-            }
         } catch (FileNotFoundException e) {
             System.out.println(configFile + " not found.");
         } catch (IOException e) {
             System.out.println("Unexpected error reading " + configFile);
+        }
+
+        init(serverProperties);
+    }
+
+    /**
+     * Set the provided server configuration then read configuration from System properties or load defaults.
+     * 
+     * @param configuration
+     *            configuration to use.
+     */
+    public static void init(Properties configuration) {
+
+        for (Object prop : configuration.keySet()) {
+            String serverPropertyName = (String) prop;
+            System.setProperty(PROPERTY_PREFIX + serverPropertyName, configuration.getProperty(serverPropertyName));
         }
 
         // Read system properties
@@ -141,6 +151,15 @@ public final class EsigateServer {
         EsigateServer.minThreads = getProperty(PROPERTY_PREFIX, "minThreads", 40);
         EsigateServer.outputBufferSize = getProperty(PROPERTY_PREFIX, "outputBufferSize", 8 * 1024);
         EsigateServer.idleTimeout = getProperty(PROPERTY_PREFIX, "idleTimeout", 30 * 1000);
+    }
+
+    /**
+     * Returns current control port.
+     * 
+     * @return current control port.
+     */
+    public static int getControlPort() {
+        return controlPort;
     }
 
     /**
@@ -218,6 +237,7 @@ public final class EsigateServer {
             connector.setIdleTimeout(EsigateServer.idleTimeout);
             connector.setSoLingerTime(-1);
             connector.setName("main");
+            connector.setAcceptQueueSize(200);
 
             // Control connector
             controlConnector.setHost("127.0.0.1");
