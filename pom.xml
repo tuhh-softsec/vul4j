@@ -142,7 +142,7 @@
 						<goals>source:jar javadoc:jar deploy site:site site:deploy</goals>
 
 						<arguments>-pl
-							esigate-server,esigate-taglib,esigate-taglib-helper,esigate-jsf,esigate-wicket,esigate-cas,esigate-distribution
+							esigate-server,esigate-cas,esigate-distribution
 							-am</arguments>
 					</configuration>
 				</plugin>
