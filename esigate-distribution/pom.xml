@@ -15,22 +15,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
-			<artifactId>esigate-taglib</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-taglib-helper</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-jsf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-wicket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
 			<artifactId>esigate-cas</artifactId>
 		</dependency>
 		<dependency>
