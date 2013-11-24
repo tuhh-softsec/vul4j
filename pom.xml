@@ -341,16 +341,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.esigate</groupId>
-				<artifactId>esigate-taglib</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.esigate</groupId>
-				<artifactId>esigate-taglib-helper</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.esigate</groupId>
 				<artifactId>esigate-jsf</artifactId>
 				<version>${project.version}</version>
 			</dependency>

@@ -29,6 +29,10 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>org.esigate</groupId>
+			<artifactId>esigate-core</artifactId>
+		</dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -37,9 +41,5 @@
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-taglib-helper</artifactId>
-		</dependency>
 	</dependencies>
 </project>
