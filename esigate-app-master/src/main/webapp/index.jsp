@@ -9,22 +9,24 @@
 </head>
 <body>
 <ul>
+	<li><a href="base.jsp">Base tag example</a></li>
 	<li><a href="block.jsp">Block example</a></li>
+	<li><a href="blockabsolute.jsp">Block example with absolute url</a></li>
+	<li><a href="blocks.jsp">Blocks example</a></li>
+	<li><a href="blockvariables.jsp">Blocks with variables example</a></li>
+	<li><a href="error500.jsp">Error 500 example</a></li>
 	<li><a href="replaceblock.jsp">Block &amp; Replace example</a></li>
+	<li><a href="replacetemplate.jsp">Template &amp; Replace example</a></li>
+	<li><a href="replaceXml.jsp">Xml &amp; Replace example</a></li>
 	<li><a href="template.jsp">Template example</a></li>
 	<li><a href="templatemultipleparams.jsp">Template example with multiple params with the same name</a></li>
-	<li><a href="replacetemplate.jsp">Template &amp; Replace example</a></li>
-	<li><a href="base.jsp">Base tag example</a></li>
-	<li><a href="proxy.jsp">Proxy servlet example</a></li>
-	<li><a href="images/smile_motoriste.bmp">Big file thru proxy servlet example</a></li>
-	<li><a href="user.jsp">User example</a></li>
 	<li><a href="timeout.jsp">Timeout example</a></li>
-	<li><a href="error500.jsp">Error 500 example</a></li>
-	<li><a href="images/redirect.jsp">Redirect thru proxy servlet example</a></li>
+	<li><a href="user.jsp">User example</a></li>
 	<li><a href="xml.jsp">xslt and xpath example</a></li>
-	<li><a href="images/host.jsp">preserveHost example</a></li>
-	<li><a href="blockabsolute.jsp">Block example with absolute url</a></li>
 	<li><a href="vary.jsp">Block example with vary header</a></li>
+	<li><a href="images/redirect.jsp">Redirect thru proxy servlet example</a></li>
+	<li><a href="images/smile_motoriste.bmp">Big file thru proxy servlet example</a></li>
+	<li><a href="images/host.jsp">preserveHost example</a></li>
 </ul>
 </body>
 </html>

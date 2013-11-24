@@ -15,10 +15,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
-			<artifactId>esigate-taglib</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-provider</artifactId>
 			<scope>provided</scope>
             <type>war</type>

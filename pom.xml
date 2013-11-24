@@ -656,10 +656,6 @@
 	</profiles>
 	<modules>
 		<module>esigate-core</module>
-		<module>esigate-taglib</module>
-		<module>esigate-taglib-helper</module>
-		<module>esigate-jsf</module>
-		<module>esigate-wicket</module>
 		<module>esigate-cas</module>
 		<module>esigate-app-provider</module>
 		<module>esigate-app-master</module>
@@ -670,7 +666,6 @@
 		<module>esigate-app-casified-aggregated1</module>
 		<module>esigate-app-casified-aggregated2</module>
 		<module>esigate-app-casified-aggregator</module>
-		<module>esigate-app-facelet</module>
 		<module>esigate-app-servlet-filter</module>
 		<module>esigate-war</module>
 		<module>esigate-server</module>
