@@ -20,6 +20,7 @@ package org.apache.xml.security.test.stax.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -76,10 +77,9 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
                 new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
         properties.addSignaturePart(securePart);
 
-        securePart = new SecurePart(
-                "file://" +
-                        BASEDIR +
-                        "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml",
+        File file = new File(BASEDIR +
+                             "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml").getCanonicalFile();
+        securePart = new SecurePart(file.toURI().toString(),
                 new String[]{"http://www.w3.org/TR/2001/REC-xml-c14n-20010315"},
                 XMLSecurityConstants.NS_XMLDSIG_SHA1);
         properties.addSignaturePart(securePart);
@@ -126,10 +126,9 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
                 new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
         properties.addSignaturePart(securePart);
 
-        securePart = new SecurePart(
-                "file://" +
-                        BASEDIR +
-                        "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class",
+        File file = new File(BASEDIR +
+                             "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class").getCanonicalFile();
+        securePart = new SecurePart(file.toURI().toString(),
                 null,
                 XMLSecurityConstants.NS_XMLDSIG_SHA1);
         properties.addSignaturePart(securePart);
