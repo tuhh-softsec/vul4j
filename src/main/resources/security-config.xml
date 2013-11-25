@@ -10,6 +10,7 @@
         <Property NAME="AllowMD5Algorithm" VAL="false"/>
         <Property NAME="AllowNotSameDocumentReferences" VAL="false"/>
         <Property NAME="MaximumAllowedXMLStructureDepth" VAL="100"/>
+        <Property NAME="MaximumAllowedEncryptedDataEvents" VAL="100"/>
         <Property NAME="DefaultLanguageCode" VAL="en"/>
         <Property NAME="DefaultCountryCode" VAL="US"/>
     </Properties>

@@ -70,6 +70,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
     protected static final Integer maximumAllowedXMLStructureDepth =
             Integer.valueOf(ConfigurationProperties.getProperty("MaximumAllowedXMLStructureDepth"));
+    protected static final Integer maximumAllowedEncryptedDataEvents =
+        Integer.valueOf(ConfigurationProperties.getProperty("MaximumAllowedEncryptedDataEvents"));
 
     private final KeyInfoType keyInfoType;
     private final Map<String, ReferenceType> references;
@@ -439,8 +441,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             }
 
             xmlSecEvents.push(encryptedDataXMLSecEvent);
-            if (++count >= 50) {
-                throw new XMLSecurityException("stax.xmlStructureSizeExceeded", 50);
+            if (++count >= maximumAllowedEncryptedDataEvents) {
+                throw new XMLSecurityException("stax.xmlStructureSizeExceeded", maximumAllowedEncryptedDataEvents);
             }
 
             //the keyInfoCount is necessary to prevent early while-loop abort when the KeyInfo also contains a CipherValue.
