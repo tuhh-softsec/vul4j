@@ -30,6 +30,7 @@ import java.util.List;
  */
 public abstract class AbstractSecuredElementSecurityEvent extends AbstractElementSecurityEvent {
 
+    private boolean attachment;
     private boolean signed;
     private boolean encrypted;
     private SecurityToken securityToken;
@@ -81,5 +82,13 @@ public abstract class AbstractSecuredElementSecurityEvent extends AbstractElemen
 
     public void setEncrypted(boolean encrypted) {
         this.encrypted = encrypted;
+    }
+
+    public boolean isAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(boolean attachment) {
+        this.attachment = attachment;
     }
 }
