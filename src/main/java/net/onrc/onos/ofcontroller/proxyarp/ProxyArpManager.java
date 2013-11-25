@@ -17,7 +17,6 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
@@ -35,6 +34,9 @@ import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 import net.onrc.onos.ofcontroller.core.internal.TopoSwitchServiceImpl;
+import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.Port;
+import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -246,21 +248,14 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	public Command receive(
 			IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
 		
-		//if (msg.getType() != OFType.PACKET_IN){
-			//return Command.CONTINUE;
-		//}
-		log.debug("received packet");
-		
 		OFPacketIn pi = (OFPacketIn) msg;
 		
 		Ethernet eth = IFloodlightProviderService.bcStore.get(cntx, 
                 IFloodlightProviderService.CONTEXT_PI_PAYLOAD);
 		
 		if (eth.getEtherType() == Ethernet.TYPE_ARP){
-			log.debug("is arp");
 			ARP arp = (ARP) eth.getPayload();	
 			if (arp.getOpCode() == ARP.OP_REQUEST) {
-				log.debug("is request");
 				//TODO check what the DeviceManager does about propagating
 				//or swallowing ARPs. We want to go after DeviceManager in the
 				//chain but we really need it to CONTINUE ARP packets so we can
@@ -268,7 +263,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 				handleArpRequest(sw, pi, arp, eth);
 			}
 			else if (arp.getOpCode() == ARP.OP_REPLY) {
-				log.debug("is reply");
 				//handleArpReply(sw, pi, arp);
 			}
 		}
@@ -548,6 +542,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	}
 	
 	private void broadcastArpRequestOutMyEdge(byte[] arpRequest) {
+		List<SwitchPort> switchPorts = new ArrayList<SwitchPort>();
+		
 		for (IOFSwitch sw : floodlightProvider.getSwitches().values()) {
 			
 			OFPacketOut po = new OFPacketOut();
@@ -565,6 +561,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			
 			for (IPortObject portObject : ports) {
 				if (!portObject.getLinkedPorts().iterator().hasNext()) {
+					switchPorts.add(new SwitchPort(new Dpid(sw.getId()), 
+							new Port(portObject.getNumber())));
 					actions.add(new OFActionOutput(portObject.getNumber()));
 				}
 			}
@@ -583,6 +581,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 				log.error("Failure writing packet out to switch", e);
 			}
 		}
+		
+		log.debug("Broadcast ARP request for to: {}", switchPorts);
 	}
 	
 	private void sendArpRequestOutPort(byte[] arpRequest, long dpid, short port) {
@@ -722,13 +722,17 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	
 	@Override
 	public void arpRequestNotification(ArpMessage arpMessage) {
-		log.debug("Received ARP notification from other instances");
+		//log.debug("Received ARP notification from other instances");
 		
 		switch (arpMessage.getType()){
 		case REQUEST:
+			log.debug("Received ARP request notification for {}", 
+					arpMessage.getAddress());
 			broadcastArpRequestOutMyEdge(arpMessage.getPacket());
 			break;
 		case REPLY:
+			log.debug("Received ARP reply notification for {}",
+					arpMessage.getAddress());
 			sendArpReplyToWaitingRequesters(arpMessage.getAddress());
 			break;
 		}
