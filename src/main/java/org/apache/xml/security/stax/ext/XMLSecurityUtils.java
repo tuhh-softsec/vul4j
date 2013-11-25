@@ -66,7 +66,7 @@ public class XMLSecurityUtils {
      * @return The reference without a leading #
      */
     public static String dropReferenceMarker(String reference) {
-        if (reference.startsWith("#")) {
+        if (reference != null && reference.length() > 0 && reference.charAt(0) == '#') {
             return reference.substring(1);
         }
         return reference;

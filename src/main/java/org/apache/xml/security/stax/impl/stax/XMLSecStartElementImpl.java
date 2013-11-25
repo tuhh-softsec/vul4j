@@ -25,6 +25,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
+
 import java.util.*;
 
 /**
@@ -195,6 +196,7 @@ public class XMLSecStartElementImpl extends XMLSecEventBaseImpl implements XMLSe
                 return null;
             }
 
+            @SuppressWarnings("rawtypes")
             @Override
             public Iterator getPrefixes(String namespaceURI) {
 

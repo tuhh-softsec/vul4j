@@ -81,7 +81,7 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
 
             inboundSecurityToken.addTokenUsage(SecurityTokenConstants.TokenUsage_Signature);
 
-            TokenSecurityEvent tokenSecurityEvent = XMLSecurityUtils.createTokenSecurityEvent(inboundSecurityToken, signatureType.getId());
+            TokenSecurityEvent<?> tokenSecurityEvent = XMLSecurityUtils.createTokenSecurityEvent(inboundSecurityToken, signatureType.getId());
             inboundSecurityContext.registerSecurityEvent(tokenSecurityEvent);
 
             return inboundSecurityToken;

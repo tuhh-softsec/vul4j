@@ -30,6 +30,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import java.util.*;
 
 /**
@@ -397,21 +398,12 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
             return parentElement;
         }
 
-        private boolean isEmptyElement() {
-            return emptyElement;
-        }
-
         private void setEmptyElement(boolean emptyElement) {
             this.emptyElement = emptyElement;
         }
 
         private String getElementName() {
             return elementName;
-        }
-
-        private void setElementName(String elementName) {
-            this.elementName = elementName;
-            this.qName = null;
         }
 
         private String getElementNamespace() {
@@ -470,10 +462,6 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
             return this.namespaceContext;
         }
 
-        private void setNamespaceContext(NSContext namespaceContext) {
-            this.namespaceContext = namespaceContext;
-        }
-
         private QName getQName() {
             if (this.qName == null) {
                 this.qName = new QName(this.getElementNamespace(), this.getElementName(), this.getElementPrefix());
@@ -521,6 +509,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
             return null;
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public Iterator getPrefixes(String namespaceURI) {
             List<String> prefixes = new ArrayList<String>(1);

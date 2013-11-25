@@ -143,7 +143,6 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
     protected List<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
                                                                       final C14NStack<XMLSecEvent> outputStack) {
         List<XMLSecAttribute> utilizedAttributes = Collections.emptyList();
-        @SuppressWarnings("unchecked")
         List<XMLSecAttribute> comparableAttributes = xmlSecStartElement.getOnElementDeclaredAttributes();
         for (int i = 0; i < comparableAttributes.size(); i++) {
             XMLSecAttribute comparableAttribute = comparableAttributes.get(i);

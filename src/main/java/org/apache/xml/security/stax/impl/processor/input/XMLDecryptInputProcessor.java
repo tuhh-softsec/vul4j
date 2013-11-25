@@ -59,7 +59,7 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
     ) throws XMLSecurityException {
         inboundSecurityToken.addTokenUsage(SecurityTokenConstants.TokenUsage_Encryption);
 
-        TokenSecurityEvent tokenSecurityEvent = XMLSecurityUtils.createTokenSecurityEvent(inboundSecurityToken, encryptedDataType.getId());
+        TokenSecurityEvent<?> tokenSecurityEvent = XMLSecurityUtils.createTokenSecurityEvent(inboundSecurityToken, encryptedDataType.getId());
         inboundSecurityContext.registerSecurityEvent(tokenSecurityEvent);
     }
 
