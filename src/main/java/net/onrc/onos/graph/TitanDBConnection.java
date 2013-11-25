@@ -119,7 +119,4 @@ public class TitanDBConnection extends DBConnection {
             return null;
         }
     }
-
-    private TitanDBConnection() {
-    }
 }
