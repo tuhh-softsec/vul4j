@@ -416,25 +416,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * Install a Flow Entry on a switch.
      *
      * @param mySwitch the switch to install the Flow Entry into.
-     * @param flowObj the flow path object for the flow entry to install.
-     * @param flowEntryObj the flow entry object to install.
-     * @return true on success, otherwise false.
-     */
-    private boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
-				    IFlowEntry flowEntryObj) {
-    	if (enableFlowPusher) {
-	    return pusher.add(mySwitch, flowObj, flowEntryObj);
-    	} else {
-	    return FlowSwitchOperation.installFlowEntry(
-		floodlightProvider.getOFMessageFactory(),
-		messageDamper, mySwitch, flowObj, flowEntryObj);
-    	}
-    }
-
-    /**
-     * Install a Flow Entry on a switch.
-     *
-     * @param mySwitch the switch to install the Flow Entry into.
      * @param flowPath the flow path for the flow entry to install.
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
