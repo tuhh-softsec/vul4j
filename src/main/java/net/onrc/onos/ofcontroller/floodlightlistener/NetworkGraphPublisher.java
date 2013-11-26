@@ -439,7 +439,11 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
                 String dbStore = configMap.get(GraphDBStore);
+		System.out.println("conf" + conf + "dbStore" + dbStore);
 		op = GraphDBManager.getDBOperation(dbStore, conf);
+		if (op == null) {
+		    System.out.println("publisher op is null");
+		}
 		
 		floodlightProvider =
 	            context.getServiceImpl(IFloodlightProviderService.class);

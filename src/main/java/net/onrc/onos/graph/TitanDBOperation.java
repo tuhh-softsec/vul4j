@@ -143,6 +143,7 @@ public class TitanDBOperation extends DBOperation {
 
     @Override
     public IDBConnection getDBConnection() {
+	System.out.println("TitangetDBConnection");
         return conn;
     }
 
