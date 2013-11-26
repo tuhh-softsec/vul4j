@@ -43,7 +43,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 
     @Override
     public void synchronize(IOFSwitch sw) {
-	Synchroizer sync = new Synchroizer(sw);
+	Synchronizer sync = new Synchronizer(sw);
 	Thread t = new Thread(sync);
 	switchThreads.put(sw, t);
 	t.start();
@@ -61,11 +61,11 @@ public class FlowSynchronizer implements IFlowSyncService {
 	pusher = pusherService;
     }
 
-    protected class Synchroizer implements Runnable {
+    protected class Synchronizer implements Runnable {
 	IOFSwitch sw;
 	ISwitchObject swObj;
 
-	public Synchroizer(IOFSwitch sw) {
+	public Synchronizer(IOFSwitch sw) {
 	    this.sw = sw;
 	    Dpid dpid = new Dpid(sw.getId());
 	    this.swObj = dbHandler.searchSwitch(dpid.toString());
