@@ -1,6 +1,7 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
-import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.DBOperation;
+import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService;
@@ -10,15 +11,15 @@ import org.slf4j.LoggerFactory;
 
 public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	
-	private GraphDBOperation op;
+	private DBOperation dbop;
 	protected final static Logger log = LoggerFactory.getLogger(TopoSwitchServiceImpl.class);
 
-	public TopoSwitchServiceImpl(String conf) {
-		op = new GraphDBOperation(conf);
+	public TopoSwitchServiceImpl(final String dbStore, String conf) {
+		dbop = GraphDBManager.getDBOperation(dbStore, conf);
 	}
 
 	public TopoSwitchServiceImpl() {
-		this("");
+		this("","");
 	}
 	
 	public void finalize() {
@@ -27,34 +28,34 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	
 	@Override
 	public void close() {
-		op.close();
+		dbop.close();
 	}
 	
 	@Override
 	public Iterable<ISwitchObject> getActiveSwitches() {
 		// TODO Auto-generated method stub
-		op.close(); //Commit to ensure we see latest data
-		return op.getActiveSwitches();
+		dbop.close(); //Commit to ensure we see latest data
+		return dbop.getActiveSwitches();
 	}
 
 	@Override
 	public Iterable<ISwitchObject> getAllSwitches() {
 		// TODO Auto-generated method stub
-		op.close(); //Commit to ensure we see latest data
-		return op.getAllSwitches();
+		dbop.close(); //Commit to ensure we see latest data
+		return dbop.getAllSwitches();
 	}
 
 	@Override
 	public Iterable<ISwitchObject> getInactiveSwitches() {
 		// TODO Auto-generated method stub
-		op.close(); //Commit to ensure we see latest data
-		return op.getInactiveSwitches();
+		dbop.close(); //Commit to ensure we see latest data
+		return dbop.getInactiveSwitches();
 	}
 
 	@Override
 	public Iterable<IPortObject> getPortsOnSwitch(String dpid) {
-		op.close(); //Commit to ensure we see latest data
-		ISwitchObject switchObject = op.searchSwitch(dpid);
+		dbop.close(); //Commit to ensure we see latest data
+		ISwitchObject switchObject = dbop.searchSwitch(dpid);
 		if (switchObject != null) {
 			return switchObject.getPorts();
 		}
