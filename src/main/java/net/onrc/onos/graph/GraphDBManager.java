@@ -25,7 +25,7 @@ public class GraphDBManager {
     }
 
     public static DBOperation getDBOperation(final String dbStore, final String dbConfigFile) {
-        if (operation == null){
+        if (operation == null) {
 	    if (dbStore.equals("ramcloud")) {
 		operation = new RamCloudDBOperation();
 	    } else if (dbStore.equals("titan")) {

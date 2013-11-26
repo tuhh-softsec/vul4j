@@ -11,15 +11,15 @@ import org.slf4j.LoggerFactory;
 
 public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	
-	private DBOperation dbop;
+	private DBOperation op;
 	protected final static Logger log = LoggerFactory.getLogger(TopoSwitchServiceImpl.class);
 
 	public TopoSwitchServiceImpl(final String dbStore, String conf) {
-		dbop = GraphDBManager.getDBOperation(dbStore, conf);
+		op = GraphDBManager.getDBOperation(dbStore, conf);;
 	}
 
 	public TopoSwitchServiceImpl() {
-		this("titan","/tmp/cassandra.titan");
+		this("","");
 	}
 	
 	public void finalize() {
@@ -28,34 +28,34 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	
 	@Override
 	public void close() {
-		dbop.close();
+		op.close();
 	}
 	
 	@Override
 	public Iterable<ISwitchObject> getActiveSwitches() {
 		// TODO Auto-generated method stub
-		dbop.close(); //Commit to ensure we see latest data
-		return dbop.getActiveSwitches();
+		op.close(); //Commit to ensure we see latest data
+		return op.getActiveSwitches();
 	}
 
 	@Override
 	public Iterable<ISwitchObject> getAllSwitches() {
 		// TODO Auto-generated method stub
-		dbop.close(); //Commit to ensure we see latest data
-		return dbop.getAllSwitches();
+		op.close(); //Commit to ensure we see latest data
+		return op.getAllSwitches();
 	}
 
 	@Override
 	public Iterable<ISwitchObject> getInactiveSwitches() {
 		// TODO Auto-generated method stub
-		dbop.close(); //Commit to ensure we see latest data
-		return dbop.getInactiveSwitches();
+		op.close(); //Commit to ensure we see latest data
+		return op.getInactiveSwitches();
 	}
 
 	@Override
 	public Iterable<IPortObject> getPortsOnSwitch(String dpid) {
-		dbop.close(); //Commit to ensure we see latest data
-		ISwitchObject switchObject = dbop.searchSwitch(dpid);
+		op.close(); //Commit to ensure we see latest data
+		ISwitchObject switchObject = op.searchSwitch(dpid);
 		if (switchObject != null) {
 			return switchObject.getPorts();
 		}

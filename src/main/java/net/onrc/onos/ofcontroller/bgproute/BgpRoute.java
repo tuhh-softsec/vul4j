@@ -280,7 +280,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		topologyChangeDetectorTask = new SingletonTask(executor, new TopologyChangeDetector());
 
-		topologyNetService = new TopologyManager("");
+		topologyNetService = new TopologyManager(context);
 		
 		pathsWaitingOnArp = new HashMap<InetAddress, Path>();
 		prefixesWaitingOnArp = Multimaps.synchronizedSetMultimap(
