@@ -28,6 +28,14 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 
+/**
+ * FlowSynchronizer is an implementation of FlowSyncService.
+ * In addition to IFlowSyncService, FlowSynchronizer periodically reads flow tables from
+ * switches and compare them with GraphDB to drop unnecessary flows and/or to install
+ * missing flows.
+ * @author Brian
+ *
+ */
 public class FlowSynchronizer implements IFlowSyncService {
 
     private static Logger log = LoggerFactory.getLogger(FlowSynchronizer.class);
@@ -57,11 +65,20 @@ public class FlowSynchronizer implements IFlowSyncService {
 	}	
     }
 
+    /**
+     * Initialize Synchronizer.
+     * @param pusherService FlowPusherService used for sending messages.
+     */
     public void init(IFlowPusherService pusherService) {
 	pusher = pusherService;
     }
 
-    protected class Synchronizer implements Runnable {
+    /**
+     * Synchronizer represents main thread of synchronization.
+     * @author Brian
+     *
+     */
+	protected class Synchronizer implements Runnable {
 	IOFSwitch sw;
 	ISwitchObject swObj;
 
@@ -81,6 +98,12 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    //pusher.resume(sw);
 	}
 
+	/**
+	 * Compare flows entries in GraphDB and switch to pick up necessary messages.
+	 * After picking up, picked messages are added to FlowPusher.
+	 * @param graphEntries Flow entries in GraphDB.
+	 * @param switchEntries Flow entries in switch.
+	 */
 	private void compare(Set<FlowEntryWrapper> graphEntries, Set<FlowEntryWrapper> switchEntries) {
 	    int added = 0, removed = 0, skipped = 0;
 	    for(FlowEntryWrapper entry : switchEntries) {
@@ -104,6 +127,10 @@ public class FlowSynchronizer implements IFlowSyncService {
 		      "Flow entries skipped " + skipped);
 	}
 
+	/**
+	 * Read GraphDB to get FlowEntries associated with a switch.
+	 * @return set of FlowEntries
+	 */
 	private Set<FlowEntryWrapper> getFlowEntriesFromGraph() {
 	    Set<FlowEntryWrapper> entries = new HashSet<FlowEntryWrapper>();
 	    for(IFlowEntry entry : swObj.getFlowEntries()) {
@@ -113,6 +140,10 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    return entries;	    
 	}
 
+	/**
+	 * Read flow table from switch and derive FlowEntries from table.
+	 * @return set of FlowEntries
+	 */
 	private Set<FlowEntryWrapper> getFlowEntriesFromSwitch() {
 
 	    int lengthU = 0;
@@ -159,6 +190,12 @@ public class FlowSynchronizer implements IFlowSyncService {
 
     }
 
+    /**
+     * FlowEntryWrapper represents abstract FlowEntry which is embodied by IFlowEntry
+     * (from GraphDB) or OFFlowStatisticsReply (from switch).
+     * @author Brian
+     *
+     */
     class FlowEntryWrapper {
 	FlowEntryId id;
 	IFlowEntry iflowEntry;
@@ -174,6 +211,10 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    id = new FlowEntryId(entry.getCookie());
 	}
 
+	/**
+	 * Install this FlowEntry to a switch via FlowPusher.
+	 * @param sw Switch to which flow will be installed.
+	 */
 	public void addToSwitch(IOFSwitch sw) {
 	    if(iflowEntry != null) {
 		pusher.add(sw, iflowEntry.getFlow(), iflowEntry);
@@ -184,6 +225,10 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    }
 	}
 	
+	/**
+	 * Remove this FlowEntry from a switch via FlowPusher.
+	 * @param sw Switch from which flow will be removed.
+	 */
 	public void removeFromSwitch(IOFSwitch sw){
 	    if(iflowEntry != null) {
 		log.error("Removing non-existent flow entry {} from sw {}", 
@@ -216,6 +261,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 * the same value; otherwise, returns false.
 	 * 
 	 * @param Object to compare
+	 * @return true if the object has the same Flow Entry ID.
 	 */
 	@Override
 	public boolean equals(Object obj){

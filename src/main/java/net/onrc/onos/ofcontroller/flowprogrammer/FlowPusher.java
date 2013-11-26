@@ -40,26 +40,26 @@ import net.onrc.onos.ofcontroller.util.IPv4Net;
 import net.onrc.onos.ofcontroller.util.Port;
 
 /**
- * FlowPusher intermediates FlowManager/FlowSynchronizer and switches to push OpenFlow
- * messages to switches in proper rate.
+ * FlowPusher is a implementation of FlowPusherService.
+ * FlowPusher assigns one message queue instance for each one switch.
+ * Number of message processing threads is configurable by constructor, and
+ * one thread can handle multiple message queues. Each queue will be assigned to 
+ * a thread according to hash function defined by getHash().
+ * Each processing thread reads messages from queues and sends it to switches
+ * in round-robin. Processing thread also calculates rate of sending to suppress
+ * excessive message sending.
  * @author Naoki Shiota
  *
  */
 public class FlowPusher implements IFlowPusherService, IOFMessageListener {
     private final static Logger log = LoggerFactory.getLogger(FlowPusher.class);
 
-    private static boolean barrierIfEmpty = false;
-    
     // NOTE: Below are moved from FlowManager.
     // TODO: Values copied from elsewhere (class LearningSwitch).
     // The local copy should go away!
     //
     protected static final int OFMESSAGE_DAMPER_CAPACITY = 50000; // TODO: find sweet spot
     protected static final int OFMESSAGE_DAMPER_TIMEOUT = 250;	// ms
-    
-    // Interval of sleep when queue is empty
-    protected static final long SLEEP_MILLI_SEC = 10;
-    protected static final int SLEEP_NANO_SEC = 0;
     
     // Number of messages sent to switch at once
     protected static final int MAX_MESSAGE_SEND = 100;
@@ -74,7 +74,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 	}
 	
 	/**
-	 * Message queue attached to a switch.
+	 * SwitchQueue represents message queue attached to a switch.
 	 * This consists of queue itself and variables used for limiting sending rate.
 	 * @author Naoki Shiota
 	 *
@@ -83,10 +83,13 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 	private class SwitchQueue extends ArrayDeque<OFMessage> {
 		QueueState state;
 		
-		// Max rate of sending message (bytes/sec). 0 implies no limitation.
+		// Max rate of sending message (bytes/ms). 0 implies no limitation.
 		long max_rate = 0;	// 0 indicates no limitation
 		long last_sent_time = 0;
 		long last_sent_size = 0;
+		
+		// "To be deleted" flag
+		boolean toBeDeleted = false;
 		
 		/**
 		 * Check if sending rate is within the rate
@@ -125,7 +128,10 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 	private FloodlightContext context = null;
 	private BasicFactory factory = null;
+	
+	// Map of threads versus dpid
 	private Map<Long, FlowPusherThread> threadMap = null;
+	// Map of Future objects versus dpid and transaction ID.
 	private Map<Long, Map<Integer, OFBarrierReplyFuture>>
 		barrierFutures = new HashMap<Long, Map<Integer, OFBarrierReplyFuture>>();
 	
@@ -138,14 +144,12 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 	 */
 	private class FlowPusherThread extends Thread {
 		private Map<IOFSwitch,SwitchQueue> queues
-		= new HashMap<IOFSwitch,SwitchQueue>();
+			= new HashMap<IOFSwitch,SwitchQueue>();
 		
 		private Semaphore mutex = new Semaphore(0);
 		
 		@Override
 		public void run() {
-			log.debug("Begin Flow Pusher Process");
-			
 			while (true) {
 				try {
 					// wait for message pushed to queue
@@ -172,7 +176,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 					}
 					
 					// check sending rate and determine it to be sent or not
-					long current_time = System.nanoTime();
+					long current_time = System.currentTimeMillis();
 					long size = 0;
 					
 					synchronized (queue) {
@@ -200,8 +204,13 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 							sw.flush();
 							queue.logSentData(current_time, size);
 							
-							if (queue.isEmpty() && barrierIfEmpty) {
-								barrier(sw);
+							if (queue.isEmpty()) {
+								// remove queue if flagged to be.
+								if (queue.toBeDeleted) {
+									synchronized (queues) {
+										queues.remove(sw);
+									}
+								}
 							}
 						}
 					}
@@ -247,7 +256,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		if (damper != null) {
 			messageDamper = damper;
 		} else {
-			// use default value
+			// use default values
 			messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
 				    EnumSet.of(OFType.FLOW_MOD),
 				    OFMESSAGE_DAMPER_TIMEOUT);
@@ -272,10 +281,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		}
 	}
 	
-	/**
-	 * Suspend sending messages to switch.
-	 * @param sw
-	 */
 	@Override
 	public boolean suspend(IOFSwitch sw) {
 		SwitchQueue queue = getQueue(sw);
@@ -293,9 +298,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		}
 	}
 
-	/**
-	 * Resume sending messages to switch.
-	 */
 	@Override
 	public boolean resume(IOFSwitch sw) {
 		SwitchQueue queue = getQueue(sw);
@@ -313,9 +315,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		}
 	}
 	
-	/**
-	 * Check if given switch is suspended.
-	 */
 	@Override
 	public boolean isSuspended(IOFSwitch sw) {
 		SwitchQueue queue = getQueue(sw);
@@ -341,11 +340,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		}
 	}
 	
-	/**
-	 * Set sending rate to a switch.
-	 * @param sw Switch.
-	 * @param rate Rate in bytes/sec.
-	 */
+	@Override
 	public void setRate(IOFSwitch sw, long rate) {
 		SwitchQueue queue = getQueue(sw);
 		if (queue == null) {
@@ -356,24 +351,62 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 			queue.max_rate = rate;
 		}
 	}
+
+	@Override
+	public boolean createQueue(IOFSwitch sw) {
+		SwitchQueue queue = getQueue(sw);
+		if (queue != null) {
+			return false;
+		}
+		
+		FlowPusherThread proc = getProcess(sw);
+		queue = new SwitchQueue();
+		queue.state = QueueState.READY;
+		synchronized (proc) {
+			proc.queues.put(sw, queue);
+		}
+		
+		return true;
+	}
+
+	@Override
+	public boolean deleteQueue(IOFSwitch sw) {
+		return deleteQueue(sw, false);
+	}
 	
-	/**
-	 * Add OFMessage to queue of the switch.
-	 * @param sw Switch to which message is sent.
-	 * @param msg Message to be sent.
-	 * @return true if succeed.
-	 */
+	@Override
+	public boolean deleteQueue(IOFSwitch sw, boolean forceStop) {
+		FlowPusherThread proc = getProcess(sw);
+		
+		if (forceStop) {
+			synchronized (proc.queues) {
+				SwitchQueue queue = proc.queues.remove(sw);
+				if (queue == null) {
+					return false;
+				}
+			}
+			return true;
+		} else {
+			SwitchQueue queue = getQueue(sw);
+			if (queue == null) {
+				return false;
+			}
+			synchronized (queue) {
+				queue.toBeDeleted = true;
+			}
+			return true;
+		}
+	}
+	
 	@Override
 	public boolean add(IOFSwitch sw, OFMessage msg) {
 		FlowPusherThread proc = getProcess(sw);
 		SwitchQueue queue = proc.queues.get(sw);
 
+		// create queue at first addition of message
 		if (queue == null) {
-			queue = new SwitchQueue();
-			queue.state = QueueState.READY;
-			synchronized (proc) {
-				proc.queues.put(sw, queue);
-			}
+			createQueue(sw);
+			queue = getQueue(sw);
 		}
 		
 		synchronized (queue) {
@@ -388,13 +421,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		return true;
 	}
 	
-	/**
-	 * Create OFMessage from given flow information and add it to the queue.
-	 * @param sw Switch to which message is sent.
-	 * @param flowObj FlowPath.
-	 * @param flowEntryObj FlowEntry.
-	 * @return true if succeed.
-	 */
 	@Override
 	public boolean add(IOFSwitch sw, IFlowPath flowObj, IFlowEntry flowEntryObj) {
 		log.debug("sending : {}, {}", sw, flowObj);
@@ -700,13 +726,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		return true;
 	}
 	
-	/**
-	 * Create OFMessage from given flow information and add it to the queue.
-	 * @param sw Switch to which message is sent.
-	 * @param flowPath FlowPath.
-	 * @param flowEntry FlowEntry.
-	 * @return true if secceed.
-	 */
 	@Override
 	public boolean add(IOFSwitch sw, FlowPath flowPath, FlowEntry flowEntry) {
 		//
@@ -1061,12 +1080,16 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 				barrierFutures.put(sw.getId(), map);
 			}
 			map.put(msg.getXid(), future);
-			log.debug("Inserted future for {}", msg.getXid());
 		}
 		
 		return future;
 	}
 
+	/**
+	 * Get a queue attached to a switch.
+	 * @param sw Switch object
+	 * @return Queue object
+	 */
 	protected SwitchQueue getQueue(IOFSwitch sw) {
 		if (sw == null)  {
 			return null;
@@ -1075,12 +1098,22 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		return getProcess(sw).queues.get(sw);
 	}
 	
+	/**
+	 * Get a hash value correspondent to a switch.
+	 * @param sw Switch object
+	 * @return Hash value
+	 */
 	protected long getHash(IOFSwitch sw) {
 		// This code assumes DPID is sequentially assigned.
 		// TODO consider equalization algorithm
 		return sw.getId() % number_thread;
 	}
-	
+
+	/**
+	 * Get a Thread object which processes the queue attached to a switch.
+	 * @param sw Switch object
+	 * @return Thread object
+	 */
 	protected FlowPusherThread getProcess(IOFSwitch sw) {
 		long hash = getHash(sw);
 		
@@ -1119,4 +1152,5 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		
 		return Command.CONTINUE;
 	}
+
 }
