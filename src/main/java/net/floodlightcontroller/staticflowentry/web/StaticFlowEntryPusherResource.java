@@ -17,21 +17,14 @@
 
 package net.floodlightcontroller.staticflowentry.web;
 
-import java.io.IOException;
 import java.util.Map;
 
-import org.restlet.resource.Delete;
-import org.restlet.resource.Post;
+import net.floodlightcontroller.core.annotations.LogMessageCategory;
+import net.floodlightcontroller.staticflowentry.StaticFlowEntryPusher;
+
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-import net.floodlightcontroller.core.annotations.LogMessageCategory;
-import net.floodlightcontroller.core.annotations.LogMessageDoc;
-import net.floodlightcontroller.staticflowentry.StaticFlowEntries;
-import net.floodlightcontroller.staticflowentry.StaticFlowEntryPusher;
-import net.floodlightcontroller.storage.IStorageSourceService;
 
 /**
  * Pushes a static flow entry to the storage source
@@ -81,6 +74,7 @@ public class StaticFlowEntryPusherResource extends ServerResource {
      * @param fmJson The Static Flow Pusher entry in JSON format.
      * @return A string status message
      */
+    /*
     @Post
     @LogMessageDoc(level="ERROR",
         message="Error parsing push flow mod request: {request}",
@@ -139,4 +133,5 @@ public class StaticFlowEntryPusherResource extends ServerResource {
         storageSource.deleteRowAsync(StaticFlowEntryPusher.TABLE_NAME, fmName);
         return "{\"status\" : \"Entry " + fmName + " deleted\"}";
     }
+    */
 }

@@ -13,7 +13,6 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
@@ -44,8 +43,7 @@ public class FloodlightProvider implements IFloodlightModule {
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
         Collection<Class<? extends IFloodlightService>> dependencies =
-            new ArrayList<Class<? extends IFloodlightService>>(4);
-        dependencies.add(IStorageSourceService.class);
+            new ArrayList<Class<? extends IFloodlightService>>(5);
         dependencies.add(IPktInProcessingTimeService.class);
         dependencies.add(IRestApiService.class);
         dependencies.add(ICounterStoreService.class);
@@ -58,8 +56,6 @@ public class FloodlightProvider implements IFloodlightModule {
 
     @Override
     public void init(FloodlightModuleContext context) throws FloodlightModuleException {
-       controller.setStorageSourceService(
-           context.getServiceImpl(IStorageSourceService.class));
        controller.setPktInProcessingService(
            context.getServiceImpl(IPktInProcessingTimeService.class));
        controller.setCounterStore(

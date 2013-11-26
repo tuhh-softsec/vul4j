@@ -66,7 +66,6 @@ import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.packet.UDP;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
@@ -95,7 +94,6 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
 
     protected IFloodlightProviderService floodlightProvider;
     protected ITopologyService topology;
-    protected IStorageSourceService storageSource;
     protected IRestApiService restApi;
     protected IThreadPoolService threadPool;
     protected IFlowReconcileService flowReconcileMgr;
@@ -686,7 +684,6 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
         Collection<Class<? extends IFloodlightService>> l =
                 new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFloodlightProviderService.class);
-        l.add(IStorageSourceService.class);
         l.add(ITopologyService.class);
         l.add(IRestApiService.class);
         l.add(IThreadPoolService.class);
@@ -707,8 +704,6 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
 
         this.floodlightProvider =
                 fmc.getServiceImpl(IFloodlightProviderService.class);
-        this.storageSource =
-                fmc.getServiceImpl(IStorageSourceService.class);
         this.topology =
                 fmc.getServiceImpl(ITopologyService.class);
         this.restApi = fmc.getServiceImpl(IRestApiService.class);

@@ -17,18 +17,15 @@
 
 package net.onrc.onos.ofcontroller.linkdiscovery.internal;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
@@ -39,8 +36,6 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.restserver.RestApiServer;
 import net.floodlightcontroller.routing.IRoutingService;
 import net.floodlightcontroller.routing.Link;
-import net.floodlightcontroller.storage.IStorageSourceService;
-import net.floodlightcontroller.storage.memory.MemoryStorageSource;
 import net.floodlightcontroller.test.FloodlightTestCase;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.ITopologyService;
@@ -49,7 +44,11 @@ import net.floodlightcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
-import net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -75,11 +74,12 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
             isClearLinksCalled = false;
         }
 
+        /*
         @Override
         protected void clearAllLinks() {
             isClearLinksCalled = true;
             super.clearAllLinks();
-        }
+        }*/
     }
     
     public LinkDiscoveryManager getTopology() {
@@ -106,7 +106,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         cntx.addService(IRoutingService.class, routingEngine);
         cntx.addService(ILinkDiscoveryService.class, ldm);
         cntx.addService(ITopologyService.class, ldm);
-        cntx.addService(IStorageSourceService.class, new MemoryStorageSource());
+        //cntx.addService(IStorageSourceService.class, new MemoryStorageSource());
         cntx.addService(IFloodlightProviderService.class, getMockFloodlightProvider());
         restApi.init(cntx);
         tp.init(cntx);
@@ -426,7 +426,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         getMockFloodlightProvider().dispatchRoleChanged(Role.SLAVE, Role.MASTER);
         // check that lldps were sent
         assertTrue(ldm.isSendLLDPsCalled);
-        assertTrue(ldm.isClearLinksCalled);
+        //assertTrue(ldm.isClearLinksCalled);
         ldm.reset();
     }
 }

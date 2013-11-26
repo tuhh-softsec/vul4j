@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
@@ -29,12 +26,7 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.AppCookie;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.staticflowentry.web.StaticFlowEntryWebRoutable;
-import net.floodlightcontroller.staticflowentry.IStaticFlowEntryPusherService;
-import net.floodlightcontroller.storage.IResultSet;
-import net.floodlightcontroller.storage.IStorageSourceService;
-import net.floodlightcontroller.storage.IStorageSourceListener;
 
-import net.floodlightcontroller.storage.StorageException;
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFFlowRemoved;
 import org.openflow.protocol.OFMatch;
@@ -54,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StaticFlowEntryPusher 
     implements IOFSwitchListener, IFloodlightModule, IStaticFlowEntryPusherService,
-        IStorageSourceListener, IOFMessageListener, IHAListener {
+        /*IStorageSourceListener,*/ IOFMessageListener, IHAListener {
     protected final static Logger log = LoggerFactory.getLogger(StaticFlowEntryPusher.class);
     public static final String StaticFlowName = "staticflowentry";
     
@@ -93,7 +85,7 @@ public class StaticFlowEntryPusher
  
 
     protected IFloodlightProviderService floodlightProvider;
-    protected IStorageSourceService storageSource;
+    //protected IStorageSourceService storageSource;
     protected IRestApiService restApi;
 
     // Map<DPID, Map<Name, FlowMod>> ; FlowMod can be null to indicate non-active
@@ -140,9 +132,11 @@ public class StaticFlowEntryPusher
         this.floodlightProvider = floodlightProvider;
     }
 
+    /*
     public void setStorageSource(IStorageSourceService storageSource) {
         this.storageSource = storageSource;
     }
+    */
 
     /**
      * Reads from our entriesFromStorage for the specified switch and
@@ -201,6 +195,7 @@ public class StaticFlowEntryPusher
      * 
      * @return
      */
+    /*
     @LogMessageDoc(level="ERROR",
             message="failed to access storage: {reason}",
             explanation="Could not retrieve static flows from the system " +
@@ -224,6 +219,7 @@ public class StaticFlowEntryPusher
         }
         return entries;
     }
+    */
 
     /**
      * Take a single row, turn it into a flowMod, and add it to the
@@ -341,7 +337,7 @@ public class StaticFlowEntryPusher
     /**
      * This handles both rowInsert() and rowUpdate()
      */
-    
+    /*
     @Override
     public void rowsModified(String tableName, Set<Object> rowKeys) {
         log.debug("Modifying Table {}", tableName);
@@ -396,6 +392,7 @@ public class StaticFlowEntryPusher
             deleteStaticFlowEntry((String) obj);
         }
     }
+    */
     
     @LogMessageDoc(level="ERROR",
             message="inconsistent internal state: no switch has rule {rule}",
@@ -564,7 +561,7 @@ public class StaticFlowEntryPusher
         Collection<Class<? extends IFloodlightService>> l = 
                 new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFloodlightProviderService.class);
-        l.add(IStorageSourceService.class);
+        //l.add(IStorageSourceService.class);
         l.add(IRestApiService.class);
         return l;
     }
@@ -574,8 +571,8 @@ public class StaticFlowEntryPusher
             throws FloodlightModuleException {
         floodlightProvider =
             context.getServiceImpl(IFloodlightProviderService.class);
-        storageSource =
-            context.getServiceImpl(IStorageSourceService.class);
+        //storageSource =
+            //context.getServiceImpl(IStorageSourceService.class);
         restApi =
             context.getServiceImpl(IRestApiService.class);
     }
@@ -587,11 +584,11 @@ public class StaticFlowEntryPusher
         floodlightProvider.addHAListener(this);
         
         // assumes no switches connected at startup()
-        storageSource.createTable(TABLE_NAME, null);
-        storageSource.setTablePrimaryKeyName(TABLE_NAME, COLUMN_NAME);
-        storageSource.addListener(TABLE_NAME, this);
-        entriesFromStorage = readEntriesFromStorage(); 
-        entry2dpid = computeEntry2DpidMap(entriesFromStorage);
+        //storageSource.createTable(TABLE_NAME, null);
+        //storageSource.setTablePrimaryKeyName(TABLE_NAME, COLUMN_NAME);
+        //storageSource.addListener(TABLE_NAME, this);
+        //entriesFromStorage = readEntriesFromStorage(); 
+        //entry2dpid = computeEntry2DpidMap(entriesFromStorage);
         restApi.addRestletRoutable(new StaticFlowEntryWebRoutable());
     }
 
@@ -607,12 +604,12 @@ public class StaticFlowEntryPusher
             entriesFromStorage.put(swDpid, switchEntries);
         }
         switchEntries.put(name, fm);
-        storageSource.insertRowAsync(TABLE_NAME, fmMap);
+        //storageSource.insertRowAsync(TABLE_NAME, fmMap);
     }
 
     @Override
     public void deleteFlow(String name) {
-        storageSource.deleteRowAsync(TABLE_NAME, name);
+        //storageSource.deleteRowAsync(TABLE_NAME, name);
         // TODO - What if there is a delay in storage?
     }
     
@@ -653,7 +650,7 @@ public class StaticFlowEntryPusher
                 if (oldRole == Role.SLAVE) {
                     log.debug("Re-reading static flows from storage due " +
                             "to HA change from SLAVE->MASTER");
-                    entriesFromStorage = readEntriesFromStorage(); 
+                    //entriesFromStorage = readEntriesFromStorage(); 
                     entry2dpid = computeEntry2DpidMap(entriesFromStorage);
                 }
                 break;

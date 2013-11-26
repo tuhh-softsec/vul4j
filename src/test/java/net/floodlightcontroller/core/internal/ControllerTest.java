@@ -33,9 +33,7 @@ import static org.easymock.EasyMock.verify;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +42,6 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.FloodlightProvider;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
-import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -65,8 +62,6 @@ import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.perfmon.PktInProcessingTime;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.restserver.RestApiServer;
-import net.floodlightcontroller.storage.IStorageSourceService;
-import net.floodlightcontroller.storage.memory.MemoryStorageSource;
 import net.floodlightcontroller.test.FloodlightTestCase;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
@@ -121,8 +116,8 @@ public class ControllerTest extends FloodlightTestCase {
         controller = (Controller)cm.getServiceImpls().get(IFloodlightProviderService.class);
         fmc.addService(IFloodlightProviderService.class, controller);
         
-        MemoryStorageSource memstorage = new MemoryStorageSource();
-        fmc.addService(IStorageSourceService.class, memstorage);
+        //MemoryStorageSource memstorage = new MemoryStorageSource();
+        //fmc.addService(IStorageSourceService.class, memstorage);
         
         RestApiServer restApi = new RestApiServer();
         fmc.addService(IRestApiService.class, restApi);
@@ -146,13 +141,13 @@ public class ControllerTest extends FloodlightTestCase {
         
         ppt.init(fmc);
         restApi.init(fmc);
-        memstorage.init(fmc);
+        //memstorage.init(fmc);
         cm.init(fmc);
         tp.init(fmc);
         sr.init(fmc);
         ppt.startUp(fmc);
         restApi.startUp(fmc);
-        memstorage.startUp(fmc);
+        //memstorage.startUp(fmc);
         cm.startUp(fmc);
         tp.startUp(fmc);
         sr.startUp(fmc);
@@ -183,10 +178,12 @@ public class ControllerTest extends FloodlightTestCase {
                 
         expect(sw.getId()).andReturn(dpid).anyTimes();
         expect(sw.getStringId()).andReturn(dpidString).anyTimes();
-        expect(sw.getConnectedSince()).andReturn(new Date());
-        Channel channel = createMock(Channel.class);
-        expect(sw.getChannel()).andReturn(channel);
-        expect(channel.getRemoteAddress()).andReturn(null);
+        
+        //Now we don't write to storage these methods aren't called
+        //expect(sw.getConnectedSince()).andReturn(new Date());
+        //Channel channel = createMock(Channel.class);
+        //expect(sw.getChannel()).andReturn(channel);
+        //expect(channel.getRemoteAddress()).andReturn(null);
 
         expect(sw.getCapabilities()).andReturn(0).anyTimes();
         expect(sw.getBuffers()).andReturn(0).anyTimes();
@@ -403,21 +400,22 @@ public class ControllerTest extends FloodlightTestCase {
         IOFSwitch newsw = createMock(IOFSwitch.class);
         expect(newsw.getId()).andReturn(0L).anyTimes();
         expect(newsw.getStringId()).andReturn("00:00:00:00:00:00:00").anyTimes();
-        expect(newsw.getConnectedSince()).andReturn(new Date());
-        Channel channel2 = createMock(Channel.class);
-        expect(newsw.getChannel()).andReturn(channel2);
-        expect(channel2.getRemoteAddress()).andReturn(null);
-        expect(newsw.getPorts()).andReturn(new ArrayList<OFPhysicalPort>());
+        //Now we don't write to storage, these methods aren't called
+        //expect(newsw.getConnectedSince()).andReturn(new Date());
+        //Channel channel2 = createMock(Channel.class);
+        //expect(newsw.getChannel()).andReturn(channel2);
+        //expect(channel2.getRemoteAddress()).andReturn(null);
+        //expect(newsw.getPorts()).andReturn(new ArrayList<OFPhysicalPort>());
         expect(newsw.getCapabilities()).andReturn(0).anyTimes();
         expect(newsw.getBuffers()).andReturn(0).anyTimes();
         expect(newsw.getTables()).andReturn((byte)0).anyTimes();
         expect(newsw.getActions()).andReturn(0).anyTimes();
         controller.activeSwitches.put(0L, oldsw);
-        replay(newsw, channel, channel2);
+        replay(newsw, channel);//, channel2);
 
         controller.addSwitch(newsw);
 
-        verify(newsw, channel, channel2);
+        verify(newsw, channel);//, channel2);
     }
     
     @Test
@@ -483,7 +481,7 @@ public class ControllerTest extends FloodlightTestCase {
         }
     }
     
-
+    /*
     private Map<String,Object> getFakeControllerIPRow(String id, String controllerId, 
             String type, int number, String discoveredIP ) {
         HashMap<String, Object> row = new HashMap<String,Object>();
@@ -494,6 +492,7 @@ public class ControllerTest extends FloodlightTestCase {
         row.put(Controller.CONTROLLER_INTERFACE_DISCOVERED_IP, discoveredIP);
         return row;
     }
+    */
 
     /**
      * Test notifications for controller node IP changes. This requires
@@ -507,6 +506,7 @@ public class ControllerTest extends FloodlightTestCase {
      * 
      * @throws Exception
      */
+    /*
     @Test
     public void testControllerNodeIPChanges() throws Exception {
         class DummyHAListener implements IHAListener {
@@ -617,7 +617,9 @@ public class ControllerTest extends FloodlightTestCase {
             listener.do_assert(4, expectedCurMap, expectedAddedMap, expectedRemovedMap);
         }
     }
+    */
     
+    /*
     @Test
     public void testGetControllerNodeIPs() {
         HashMap<String,String> expectedCurMap = new HashMap<String, String>();
@@ -633,6 +635,7 @@ public class ControllerTest extends FloodlightTestCase {
         assertEquals("expectedControllerNodeIPs is not as expected", 
                 expectedCurMap, controller.getControllerNodeIPs());
     }
+    */
     
     @Test
     public void testSetRoleNull() {

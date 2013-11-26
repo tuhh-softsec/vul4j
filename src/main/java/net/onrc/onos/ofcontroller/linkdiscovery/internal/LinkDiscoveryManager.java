@@ -18,7 +18,6 @@
 package net.onrc.onos.ofcontroller.linkdiscovery.internal;
 
 import java.io.IOException;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -63,24 +62,17 @@ import net.floodlightcontroller.packet.LLDP;
 import net.floodlightcontroller.packet.LLDPTLV;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.routing.Link;
-import net.floodlightcontroller.storage.IResultSet;
-import net.floodlightcontroller.storage.IStorageSourceListener;
-import net.floodlightcontroller.storage.IStorageSourceService;
-import net.floodlightcontroller.storage.OperatorPredicate;
-import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.util.EventHistory;
 import net.floodlightcontroller.util.EventHistory.EvAction;
 import net.onrc.onos.ofcontroller.core.IOnosRemoteSwitch;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.UpdateOperation;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LinkType;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.SwitchType;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.UpdateOperation;
 import net.onrc.onos.ofcontroller.linkdiscovery.web.LinkDiscoveryWebRoutable;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
@@ -124,11 +116,12 @@ import org.slf4j.LoggerFactory;
 @LogMessageCategory("Network Topology")
 public class LinkDiscoveryManager
 implements IOFMessageListener, IOFSwitchListener, 
-IStorageSourceListener, ILinkDiscoveryService,
+ILinkDiscoveryService,
 IFloodlightModule, IInfoProvider, IHAListener {
 	protected IFloodlightProviderService controller;
     protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
 
+    /*
     // Names of table/fields for links in the storage API
     private static final String LINK_TABLE_NAME = "controller_link";
     private static final String LINK_ID = "id";
@@ -142,9 +135,9 @@ IFloodlightModule, IInfoProvider, IHAListener {
     private static final String LINK_TYPE = "link_type";
     private static final String SWITCH_CONFIG_TABLE_NAME = "controller_switchconfig";
     private static final String SWITCH_CONFIG_CORE_SWITCH = "core_switch";
+	*/
 
     protected IFloodlightProviderService floodlightProvider;
-    protected IStorageSourceService storageSource;
     protected IThreadPoolService threadPool;
     protected IRestApiService restApi;
     // Registry Service for ONOS
@@ -1063,8 +1056,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 // Add to portNOFLinks if the unicast valid time is null
                 if (newInfo.getUnicastValidTime() == null)
                     addLinkToBroadcastDomain(lt);
-
-                writeLinkToStorage(lt, newInfo);
                 
                 // ONOS: Distinguish added event separately from updated event
                 updateOperation = UpdateOperation.LINK_ADDED;
@@ -1117,11 +1108,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                         newInfo.getDstPortState().intValue() !=
                         oldInfo.getDstPortState().intValue())
                     linkChanged = true;
-
-                // Write changes to storage. This will always write the updated
-                // valid time, plus the port states if they've changed (i.e. if
-                // they weren't set to null in the previous block of code.
-                writeLinkToStorage(lt, newInfo);
 
                 if (linkChanged) {
                     updateOperation = getUpdateOperation(newInfo.getSrcPortState(),
@@ -1208,9 +1194,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                                0, 0, // Port states
                                ILinkDiscovery.LinkType.INVALID_LINK,
                                EvAction.LINK_DELETED, reason);
-
-                // remove link from storage.
-                removeLinkFromStorage(lt);
 
                 // TODO  Whenever link is removed, it has to checked if
                 // the switchports must be added to quarantine.
@@ -1304,7 +1287,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                                                      getLinkType(lt, linkInfo),
                                                      operation));
                             controller.publishUpdate(update);
-                            writeLinkToStorage(lt, linkInfo);
+                            
                             linkInfoChanged = true;
                         }
                     }
@@ -1582,9 +1565,11 @@ IFloodlightModule, IInfoProvider, IHAListener {
     /**
      * Deletes all links from storage
      */
+    /*
     void clearAllLinks() {
         storageSource.deleteRowsAsync(LINK_TABLE_NAME, null);
     }
+    */
 
     /**
      * Gets the storage key for a LinkTuple
@@ -1603,6 +1588,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
      * @param lt The LinkTuple to write
      * @param linkInfo The LinkInfo to write
      */
+    /*
     protected void writeLinkToStorage(Link lt, LinkInfo linkInfo) {
         LinkType type = getLinkType(lt, linkInfo);
 
@@ -1661,39 +1647,18 @@ IFloodlightModule, IInfoProvider, IHAListener {
         }
         storageSource.updateRowAsync(LINK_TABLE_NAME, rowValues);
     }
-
-    public Long readLinkValidTime(Link lt) {
-        // FIXME: We're not currently using this right now, but if we start
-        // to use this again, we probably shouldn't use it in its current
-        // form, because it's doing synchronous storage calls. Depending
-        // on the context this may still be OK, but if it's being called
-        // on the packet in processing thread it should be reworked to
-        // use asynchronous storage calls.
-        Long validTime = null;
-        IResultSet resultSet = null;
-        try {
-            String[] columns = { LINK_VALID_TIME };
-            String id = getLinkId(lt);
-            resultSet = storageSource.executeQuery(LINK_TABLE_NAME, columns,
-                                                   new OperatorPredicate(LINK_ID, OperatorPredicate.Operator.EQ, id), null);
-            if (resultSet.next())
-                validTime = resultSet.getLong(LINK_VALID_TIME);
-        }
-        finally {
-            if (resultSet != null)
-                resultSet.close();
-        }
-        return validTime;
-    }
+    */
 
     /**
      * Removes a link from storage using an asynchronous call.
      * @param lt The LinkTuple to delete.
      */
+    /*
     protected void removeLinkFromStorage(Link lt) {
         String id = getLinkId(lt);
         storageSource.deleteRowAsync(LINK_TABLE_NAME, id);
     }
+    */
 
     @Override
     public void addListener(ILinkDiscoveryListener listener) {
@@ -1718,22 +1683,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         this.linkDiscoveryAware.remove(linkDiscoveryAwareComponent);
     }
 
-    /**
-     * Sets the IStorageSource to use for ITology
-     * @param storageSource the storage source to use
-     */
-    public void setStorageSource(IStorageSourceService storageSource) {
-        this.storageSource = storageSource;
-    }
-
-    /**
-     * Gets the storage source for this ITopology
-     * @return The IStorageSource ITopology is writing to
-     */
-    public IStorageSourceService getStorageSource() {
-        return storageSource;
-    }
-
     @Override
     public boolean isCallbackOrderingPrereq(OFType type, String name) {
         return false;
@@ -1744,6 +1693,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         return false;
     }
 
+    /*
     @Override
     public void rowsModified(String tableName, Set<Object> rowKeys) {
         Map<Long, IOFSwitch> switches = floodlightProvider.getSwitches();
@@ -1804,11 +1754,14 @@ IFloodlightModule, IInfoProvider, IHAListener {
             }
         }
     }
+    */
 
+    /*
     @Override
     public void rowsDeleted(String tableName, Set<Object> rowKeys) {
         // Ignore delete events, the switch delete will do the right thing on it's own
     }
+    */
 
     // IFloodlightModule classes
 
@@ -1838,7 +1791,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         Collection<Class<? extends IFloodlightService>> l = 
                 new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFloodlightProviderService.class);
-        l.add(IStorageSourceService.class);
         l.add(IThreadPoolService.class);
         l.add(IRestApiService.class);
         // Added by ONOS
@@ -1850,7 +1802,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
     public void init(FloodlightModuleContext context)
             throws FloodlightModuleException {
         floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-        storageSource = context.getServiceImpl(IStorageSourceService.class);
         threadPool = context.getServiceImpl(IThreadPoolService.class);
         restApi = context.getServiceImpl(IRestApiService.class);
         // Added by ONOS
@@ -1906,23 +1857,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 recommendation=LogMessageDoc.CHECK_SWITCH)
     })
     public void startUp(FloodlightModuleContext context) {
-        // Create our storage tables
-        if (storageSource == null) {
-            log.error("No storage source found.");
-            return;
-        }
-
-        storageSource.createTable(LINK_TABLE_NAME, null);
-        storageSource.setTablePrimaryKeyName(LINK_TABLE_NAME, LINK_ID);
-        storageSource.deleteMatchingRows(LINK_TABLE_NAME, null);
-        // Register for storage updates for the switch table
-        try {
-            storageSource.addListener(SWITCH_CONFIG_TABLE_NAME, this);
-        } catch (StorageException ex) {
-            log.error("Error in installing listener for " +
-            		  "switch table {}", SWITCH_CONFIG_TABLE_NAME);
-        }
-
         ScheduledExecutorService ses = threadPool.getScheduledExecutor();
         controller =
                 context.getServiceImpl(IFloodlightProviderService.class);
@@ -1933,10 +1867,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
             public void run() {
                 try {
                     discoverLinks();
-                } catch (StorageException e) {
-                    log.error("Storage exception in LLDP send timer; " + 
-                            "terminating process", e);
-                    floodlightProvider.terminate();
                 } catch (Exception e) {
                     log.error("Exception in LLDP send timer.", e);
                 } finally {
@@ -2085,7 +2015,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                         log.trace("Sending LLDPs " +
                                 "to HA change from SLAVE->MASTER");
                     }
-                    clearAllLinks();
+                    //clearAllLinks();
                     log.debug("Role Change to Master: Rescheduling discovery task.");
                     discoveryTask.reschedule(1, TimeUnit.MICROSECONDS);
                 }
