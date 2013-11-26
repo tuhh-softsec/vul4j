@@ -140,7 +140,7 @@ public class FlowEntry {
     public boolean isValidFlowId() {
 	if (this.flowId == null)
 	    return false;
-	return (this.flowId.value() != 0);
+	return (this.flowId.isValid());
     }
 
     /**
@@ -170,7 +170,7 @@ public class FlowEntry {
     public boolean isValidFlowEntryId() {
 	if (this.flowEntryId == null)
 	    return false;
-	return (this.flowEntryId.value() != 0);
+	return (this.flowEntryId.isValid());
     }
 
     /**
