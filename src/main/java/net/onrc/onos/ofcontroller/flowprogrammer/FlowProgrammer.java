@@ -7,18 +7,14 @@ import java.util.Map;
 
 import org.openflow.protocol.OFFlowRemoved;
 import org.openflow.protocol.OFMessage;
-import org.openflow.protocol.OFPacketIn;
 import org.openflow.protocol.OFType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.esotericsoftware.minlog.Log;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFSwitchListener;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
@@ -30,6 +26,7 @@ public class FlowProgrammer implements IFloodlightModule,
 				       IOFMessageListener,
 				       IOFSwitchListener {
     
+    private static final boolean enableFlowSync = false;
     protected static Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
     protected volatile IFloodlightProviderService floodlightProvider;
     protected volatile IControllerRegistryService registryService;
@@ -42,7 +39,9 @@ public class FlowProgrammer implements IFloodlightModule,
         
     public FlowProgrammer() {
 	pusher = new FlowPusher(NUM_PUSHER_THREAD);
-	synchronizer = new FlowSynchronizer();
+	if (enableFlowSync) {
+	    synchronizer = new FlowSynchronizer();
+	}
     }
     
     @Override
@@ -51,7 +50,9 @@ public class FlowProgrammer implements IFloodlightModule,
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	registryService = context.getServiceImpl(IControllerRegistryService.class);
 	pusher.init(null, floodlightProvider.getOFMessageFactory(), null);
-	synchronizer.init(pusher);
+	if (enableFlowSync) {
+	    synchronizer.init(pusher);
+	}
     }
 
     @Override
@@ -66,7 +67,9 @@ public class FlowProgrammer implements IFloodlightModule,
 	Collection<Class<? extends IFloodlightService>> l = 
 		new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFlowPusherService.class);
-	l.add(IFlowSyncService.class);
+	if (enableFlowSync) {
+	    l.add(IFlowSyncService.class);
+	}
 	return l;
     }
 
@@ -77,7 +80,9 @@ public class FlowProgrammer implements IFloodlightModule,
 	    new HashMap<Class<? extends IFloodlightService>,
 	    IFloodlightService>();
 	m.put(IFlowPusherService.class, pusher);
-	m.put(IFlowSyncService.class, synchronizer);	
+	if (enableFlowSync) {
+	    m.put(IFlowSyncService.class, synchronizer);
+	}
 	return m;
     }
 
@@ -125,7 +130,7 @@ public class FlowProgrammer implements IFloodlightModule,
     public void addedSwitch(IOFSwitch sw) {
 	log.debug("Switch added: {}", sw.getId());
 
-	if (registryService.hasControl(sw.getId())) {
+	if (enableFlowSync && registryService.hasControl(sw.getId())) {
 	    synchronizer.synchronize(sw);
 	}
     }
@@ -134,7 +139,9 @@ public class FlowProgrammer implements IFloodlightModule,
     public void removedSwitch(IOFSwitch sw) {
 	log.debug("Switch removed: {}", sw.getId());
 	
-	synchronizer.interrupt(sw);
+	if (enableFlowSync) {
+	    synchronizer.interrupt(sw);
+	}
     }
 
     @Override

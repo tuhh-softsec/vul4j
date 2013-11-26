@@ -8,17 +8,18 @@ import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
-import net.onrc.onos.ofcontroller.flowmanager.FlowManager;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathType;
@@ -38,6 +39,7 @@ public class Forwarding implements IOFMessageListener {
 
 	private IFloodlightProviderService floodlightProvider;
 	private IFlowService flowService;
+	private IDatagridService datagridService;
 	
 	private IDeviceStorage deviceStorage;
 	private TopologyManager topologyService;
@@ -47,9 +49,10 @@ public class Forwarding implements IOFMessageListener {
 	}
 	
 	public void init(IFloodlightProviderService floodlightProvider, 
-			IFlowService flowService) {
+			IFlowService flowService, IDatagridService datagridService) {
 		this.floodlightProvider = floodlightProvider;
 		this.flowService = flowService;
+		this.datagridService = datagridService;
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
@@ -92,8 +95,9 @@ public class Forwarding implements IOFMessageListener {
 		Ethernet eth = IFloodlightProviderService.bcStore.
 				get(cntx, IFloodlightProviderService.CONTEXT_PI_PAYLOAD);
 		
-		// We don't want to handle broadcast traffic
-		if (eth.isBroadcast()) {
+		// We only want to handle unicast IPv4
+		if (eth.isBroadcast() || eth.isMulticast() || 
+				eth.getEtherType() != Ethernet.TYPE_IPv4) {
 			return Command.CONTINUE;
 		}
 		
@@ -127,31 +131,67 @@ public class Forwarding implements IOFMessageListener {
 				new Dpid(sw.getId()), new Port(pi.getInPort())); 
 		SwitchPort dstSwitchPort = new SwitchPort(
 				new Dpid(destinationDpid), new Port(destinationPort)); 
-		DataPath shortestPath = 
-				topologyService.getDatabaseShortestPath(srcSwitchPort, dstSwitchPort);
-		
-		if (shortestPath == null) {
-			log.debug("Shortest path not found between {} and {}", 
-					srcSwitchPort, dstSwitchPort);
-			return;
-		}
-		
+				
 		MACAddress srcMacAddress = MACAddress.valueOf(eth.getSourceMACAddress());
 		MACAddress dstMacAddress = MACAddress.valueOf(eth.getDestinationMACAddress());
 		
-		FlowId flowId = new FlowId(1L); //dummy flow ID
+		if (flowExists(srcSwitchPort, srcMacAddress, 
+				dstSwitchPort, dstMacAddress)) {
+			log.debug("Not adding flow because it already exists");
+			
+			// Don't do anything if the flow already exists
+			return;
+		}
+		
+		log.debug("Adding new flow between {} at {} and {} at {}",
+				new Object[]{srcMacAddress, srcSwitchPort, dstMacAddress, dstSwitchPort});
+		
+		
+		DataPath dataPath = new DataPath();
+		dataPath.setSrcPort(srcSwitchPort);
+		dataPath.setDstPort(dstSwitchPort);
+		
+		FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
 		FlowPath flowPath = new FlowPath();
 		flowPath.setFlowId(flowId);
 		flowPath.setInstallerId(new CallerId("Forwarding"));
 		flowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
 		flowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
+		flowPath.setFlowEntryMatch(new FlowEntryMatch());
 		flowPath.flowEntryMatch().enableSrcMac(srcMacAddress);
 		flowPath.flowEntryMatch().enableDstMac(dstMacAddress);
 		// For now just forward IPv4 packets. This prevents accidentally
 		// other stuff like ARP.
 		flowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
+		flowPath.setDataPath(dataPath);
+		
 		flowService.addFlow(flowPath, flowId);
-		//flowService.addAndMaintainShortestPathFlow(shortestPath.)
+	}
+	
+	private boolean flowExists(SwitchPort srcPort, MACAddress srcMac, 
+			SwitchPort dstPort, MACAddress dstMac) {
+		for (FlowPath flow : datagridService.getAllFlows()) {
+			FlowEntryMatch match = flow.flowEntryMatch();
+			// TODO implement FlowEntryMatch.equals();
+			// This is painful to do properly without support in the FlowEntryMatch
+			boolean same = true;
+			if (!match.srcMac().equals(srcMac) ||
+				!match.dstMac().equals(dstMac)) {
+				same = false;
+			}
+			if (!flow.dataPath().srcPort().equals(srcPort) || 
+				!flow.dataPath().dstPort().equals(dstPort)) {
+				same = false;
+			}
+			
+			if (same) {
+				log.debug("found flow entry that's the same {}-{}:::{}-{}",
+						new Object[] {srcPort, srcMac, dstPort, dstMac});
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

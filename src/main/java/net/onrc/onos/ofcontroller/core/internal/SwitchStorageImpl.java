@@ -6,9 +6,10 @@ import java.util.List;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.graph.GraphDBConnection;
 import net.onrc.onos.graph.GraphDBOperation;
-import net.onrc.onos.ofcontroller.core.ISwitchStorage;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 
 import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.protocol.OFPhysicalPort.OFPortConfig;
@@ -146,7 +147,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			}
 	
 			for (OFPhysicalPort port: sw.getPorts()) {
-				IPortObject p = op.searchPort(dpid, port.getPortNumber());
+				addPort(dpid, port);
+				/*IPortObject p = op.searchPort(dpid, port.getPortNumber());
 				if (p != null) {
 		    		log.debug("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
 		    		setPortStateImpl(p, port.getState(), port.getName());
@@ -158,7 +160,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 				} else {
 					p = addPortImpl(curr, port.getPortNumber());
 					setPortStateImpl(p, port.getState(), port.getName());
-				}         		
+				} */        		
 			}
 			op.commit();
 			success = true;
@@ -290,6 +292,9 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	public boolean addPort(String dpid, OFPhysicalPort phport) {
 		boolean success = false;
 		
+		DeviceStorageImpl deviceStorage = new DeviceStorageImpl();
+		deviceStorage.init("");
+		
 		if(((OFPortConfig.OFPPC_PORT_DOWN.getValue() & phport.getConfig()) > 0) ||
 				((OFPortState.OFPPS_LINK_DOWN.getValue() & phport.getState()) > 0)) {
 			// just dispatch to deletePort()
@@ -306,6 +311,18 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	        	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, phport.getPortNumber());
 	        	if (p != null) {
 	        		setPortStateImpl(p, phport.getState(), phport.getName());
+	        		
+	        		if (sw.getPort(phport.getPortNumber()) == null) {
+		    			// The port exists but the switch has no "on" link to it
+		    			sw.addPort(p);
+		    		}
+	        		
+	        		// XXX for now delete devices when we change a port to prevent
+	        		// having stale devices.
+	        		for (IDeviceObject deviceObject : p.getDevices()) {
+	        			deviceStorage.removeDevice(deviceObject);
+	        		}
+	        		
 	        		log.error("SwitchStorage:addPort dpid:{} port:{} exists setting as ACTIVE", dpid, phport.getPortNumber());
 	        	} else {
 	        		addPortImpl(sw, phport.getPortNumber());
@@ -334,6 +351,9 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	public boolean deletePort(String dpid, short port) {
 		boolean success = false;
 		
+		DeviceStorageImpl deviceStorage = new DeviceStorageImpl();
+		deviceStorage.init("");
+		
 		try {
 			ISwitchObject sw = op.searchSwitch(dpid);
 	
@@ -343,10 +363,17 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	        		log.info("SwitchStorage:deletePort dpid:{} port:{} found and set INACTIVE", dpid, port);
 	        		//deletePortImpl(p);
 	        		p.setState("INACTIVE");
+	        		
+	        		// XXX for now delete devices when we change a port to prevent
+	        		// having stale devices.
+	        		for (IDeviceObject d : p.getDevices()) {
+	        			deviceStorage.removeDevice(d);
+	        		}
 	        		op.commit();
 	        	}
 	        }
-		success = true;
+	        
+	        success = true;
 		} catch (Exception e) {
 			op.rollback();
 			e.printStackTrace();

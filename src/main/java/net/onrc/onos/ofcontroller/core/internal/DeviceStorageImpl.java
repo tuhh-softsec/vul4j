@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.google.common.net.InetAddresses;
 import com.thinkaurelius.titan.core.TitanException;
 
 /**
@@ -23,7 +25,7 @@ import com.thinkaurelius.titan.core.TitanException;
  * @author Pankaj
  */
 public class DeviceStorageImpl implements IDeviceStorage {
-	protected final static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
+	protected final static Logger log = LoggerFactory.getLogger(DeviceStorageImpl.class);
 	
 	private GraphDBOperation ope;
 
@@ -110,19 +112,26 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	@Override
 	public void removeDevice(IDevice device) {
 		IDeviceObject dev;
+		
+		if ((dev = ope.searchDevice(device.getMACAddressString())) != null) {
+			removeDevice(dev);
+		}
+	}
+	
+	public void removeDevice(IDeviceObject deviceObject) {
+		String deviceMac = deviceObject.getMACAddress();
+
+		for (IIpv4Address ipv4AddressVertex : deviceObject.getIpv4Addresses()) {
+			ope.removeIpv4Address(ipv4AddressVertex);
+		}
+
 		try {
-			if ((dev = ope.searchDevice(device.getMACAddressString())) != null) {
-				for (IIpv4Address ipv4AddressVertex : dev.getIpv4Addresses()) {
-					ope.removeIpv4Address(ipv4AddressVertex);
-				}
-				
-             	ope.removeDevice(dev);
-             	ope.commit();
-            	log.error("DeviceStorage:removeDevice mac:{} done", device.getMACAddressString());
-            }
+			ope.removeDevice(deviceObject);
+			ope.commit();
+			log.error("DeviceStorage:removeDevice mac:{} done", deviceMac);
 		} catch (TitanException e) {
 			ope.rollback();
-			log.error("DeviceStorage:removeDevice mac:{} failed", device.getMACAddressString());
+			log.error("DeviceStorage:removeDevice mac:{} failed", deviceMac);
 		}
 	}
 
@@ -212,6 +221,14 @@ public class DeviceStorageImpl implements IDeviceStorage {
 		for (IPortObject port: attachedPorts) {
 			log.debug("Detaching the device {}: detaching from port", device.getMACAddressString());
 			port.removeDevice(obj);
+			
+			if (!obj.getAttachedPorts().iterator().hasNext()) {
+				// XXX If there are no more ports attached to the device,
+				// delete it. Otherwise we have a situation where the
+				// device remains forever with an IP address attached.
+				// When we implement device probing we should get rid of this.
+				removeDevice(obj);
+			}
 		}
 	}
 
@@ -239,9 +256,30 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	}
 	
 	private void changeDeviceIpv4Addresses(IDevice device, IDeviceObject deviceObject) {
+		List<String> dbIpv4Addresses = new ArrayList<String>();
+		for (IIpv4Address ipv4Vertex : deviceObject.getIpv4Addresses()) {
+			dbIpv4Addresses.add(InetAddresses.fromInteger(ipv4Vertex.getIpv4Address()).getHostAddress());
+		}
+		
+		List<String> memIpv4Addresses = new ArrayList<String>();
+		for (int addr : device.getIPv4Addresses()) {
+			memIpv4Addresses.add(InetAddresses.fromInteger(addr).getHostAddress());
+		}
+		
+		log.debug("Device IP addresses {}, database IP addresses {}",
+				memIpv4Addresses, dbIpv4Addresses);
+		
 		for (int ipv4Address : device.getIPv4Addresses()) {
 			if (deviceObject.getIpv4Address(ipv4Address) == null) {
 				IIpv4Address dbIpv4Address = ope.ensureIpv4Address(ipv4Address);
+				
+				IDeviceObject oldDevice = dbIpv4Address.getDevice();
+				if (oldDevice != null) {
+					oldDevice.removeIpv4Address(dbIpv4Address);
+				}
+				
+				log.debug("Adding IP address {}", 
+						InetAddresses.fromInteger(ipv4Address).getHostAddress());
 				deviceObject.addIpv4Address(dbIpv4Address);
 			}
 		}
@@ -249,6 +287,9 @@ public class DeviceStorageImpl implements IDeviceStorage {
 		List<Integer> deviceIpv4Addresses = Arrays.asList(device.getIPv4Addresses());
 		for (IIpv4Address dbIpv4Address : deviceObject.getIpv4Addresses()) {
 			if (!deviceIpv4Addresses.contains(dbIpv4Address.getIpv4Address())) {
+				log.debug("Removing IP address {}",
+						InetAddresses.fromInteger(dbIpv4Address.getIpv4Address())
+						.getHostAddress());
 				deviceObject.removeIpv4Address(dbIpv4Address);
 			}
 		}

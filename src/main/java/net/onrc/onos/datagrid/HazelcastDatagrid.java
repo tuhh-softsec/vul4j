@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.esotericsoftware.kryo2.Kryo;
-import com.esotericsoftware.kryo2.io.Input;
-import com.esotericsoftware.kryo2.io.Output;
+import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
@@ -18,9 +16,10 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
-
 import net.onrc.onos.datagrid.web.DatagridWebRoutable;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
+import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
+import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
@@ -28,9 +27,13 @@ import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
+import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo2.io.Input;
+import com.esotericsoftware.kryo2.io.Output;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.core.EntryEvent;
@@ -76,6 +79,12 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     private IMap<String, byte[]> mapTopology = null;
     private MapTopologyListener mapTopologyListener = null;
     private String mapTopologyListenerId = null;
+    
+    // State related to the ARP map
+    protected static final String arpMapName = "arpMap";
+    private IMap<ArpMessage, byte[]> arpMap = null;
+    private List<IArpEventHandler> arpEventHandlers = new ArrayList<IArpEventHandler>();
+    private final byte[] dummyByte = {0};
 
     /**
      * Class for receiving notifications for Flow state.
@@ -322,6 +331,65 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    // NOTE: We don't use eviction for this map
 	}
     }
+    
+    /**
+     * Class for receiving notifications for ARP requests.
+     *
+     * The datagrid map is:
+     *  - Key: Request ID (String)
+     *  - Value: ARP request packet (byte[])
+     */
+    class ArpMapListener implements EntryListener<ArpMessage, byte[]> {
+		/**
+		 * Receive a notification that an entry is added.
+		 *
+		 * @param event the notification event for the entry.
+		 */
+		public void entryAdded(EntryEvent<ArpMessage, byte[]> event) {
+		    for (IArpEventHandler arpEventHandler : arpEventHandlers) {
+		    	arpEventHandler.arpRequestNotification(event.getKey());
+		    }
+		    
+		    //
+		    // Decode the value and deliver the notification
+		    //
+		    /*
+		    Kryo kryo = kryoFactory.newKryo();
+		    Input input = new Input(valueBytes);
+		    TopologyElement topologyElement =
+			kryo.readObject(input, TopologyElement.class);
+		    kryoFactory.deleteKryo(kryo);
+		    flowEventHandlerService.notificationRecvTopologyElementAdded(topologyElement);
+		    */
+		}
+	
+		/**
+		 * Receive a notification that an entry is removed.
+		 *
+		 * @param event the notification event for the entry.
+		 */
+		public void entryRemoved(EntryEvent<ArpMessage, byte[]> event) {
+			// Not used
+		}
+	
+		/**
+		 * Receive a notification that an entry is updated.
+		 *
+		 * @param event the notification event for the entry.
+		 */
+		public void entryUpdated(EntryEvent<ArpMessage, byte[]> event) {
+			// Not used
+		}
+	
+		/**
+		 * Receive a notification that an entry is evicted.
+		 *
+		 * @param event the notification event for the entry.
+		 */
+		public void entryEvicted(EntryEvent<ArpMessage, byte[]> event) {
+		    // Not used
+		}
+    }
 
     /**
      * Initialize the Hazelcast Datagrid operation.
@@ -437,6 +505,9 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfig);
 
 	restApi.addRestletRoutable(new DatagridWebRoutable());
+	
+	arpMap = hazelcastInstance.getMap(arpMapName);
+	arpMap.addEntryListener(new ArpMapListener(), true);
     }
 
     /**
@@ -495,7 +566,19 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 
 	this.flowEventHandlerService = null;
     }
-
+    
+    @Override
+    public void registerArpEventHandler(IArpEventHandler arpEventHandler) {
+    	if (arpEventHandler != null) {
+    		arpEventHandlers.add(arpEventHandler);
+    	}
+    }
+    
+    @Override
+    public void deregisterArpEventHandler(IArpEventHandler arpEventHandler) {
+    	arpEventHandlers.remove(arpEventHandler);
+    }
+    
     /**
      * Get all Flows that are currently in the datagrid.
      *
@@ -781,5 +864,11 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	for (String key : keySet) {
 	    mapTopology.removeAsync(key);
 	}
+    }
+    
+    @Override
+    public void sendArpRequest(ArpMessage arpMessage) {
+    	//log.debug("ARP bytes: {}", HexString.toHexString(arpRequest));
+     	arpMap.putAsync(arpMessage, dummyByte, 1L, TimeUnit.MILLISECONDS);
     }
 }

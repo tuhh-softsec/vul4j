@@ -67,4 +67,22 @@ public class Dpid {
     public String toString() {
 	return HexString.toHexString(this.value);
     }
+
+    @Override
+    public boolean equals(Object other) {
+    	if (!(other instanceof Dpid)) {
+    		return false;
+    	}
+
+    	Dpid otherDpid = (Dpid) other;
+
+    	return value == otherDpid.value;
+    }
+
+    @Override
+    public int hashCode() {
+    	int hash = 17;
+    	hash += 31 * hash + (int)(value ^ value >>> 32); 
+    	return hash;
+    }
 }

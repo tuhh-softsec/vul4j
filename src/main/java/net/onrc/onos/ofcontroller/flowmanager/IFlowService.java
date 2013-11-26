@@ -120,4 +120,12 @@ public interface IFlowService extends IFloodlightService {
      * @return the network topology.
      */
     Topology getTopology();
+    
+    /**
+     * Get a globally unique flow ID from the flow service.
+     * NOTE: Not currently guaranteed to be globally unique.
+     * 
+     * @return unique flow ID
+     */
+    public long getNextFlowEntryId();
 }

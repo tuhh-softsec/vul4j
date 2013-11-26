@@ -126,6 +126,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		Iterable<IFlowEntry> allFlowEntries =
 		    dbHandlerInner.getAllSwitchNotUpdatedFlowEntries();
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
+			log.debug("flowEntryobj : {}", flowEntryObj);
+			
 		    counterAllFlowEntries++;
 
 		    String dpidStr = flowEntryObj.getSwitchDpid();
@@ -160,6 +162,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 		    counterMyNotUpdatedFlowEntries++;
 		}
+		
+		log.debug("addFlowEntries : {}", addFlowEntries);
 
 		//
 		// Process the Flow Entries that need to be added
@@ -481,6 +485,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @return the next Flow Entry ID to use.
      */
+    @Override
     public synchronized long getNextFlowEntryId() {
 	//
 	// Generate the next Flow Entry ID.
