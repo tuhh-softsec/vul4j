@@ -33,7 +33,7 @@ public class GraphDBManager {
         if (operation != null) {
             operation.conn = GraphDBManager.getConnection(dbStore, dbConfigFile);
         }
-        return null;
+        return operation;
     }
 
     public static DBConnection getConnection(final String dbStore, final String dbConfigFile) {
