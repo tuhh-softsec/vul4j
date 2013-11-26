@@ -121,22 +121,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
 	protected IFloodlightProviderService controller;
     protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
 
-    /*
-    // Names of table/fields for links in the storage API
-    private static final String LINK_TABLE_NAME = "controller_link";
-    private static final String LINK_ID = "id";
-    private static final String LINK_SRC_SWITCH = "src_switch_id";
-    private static final String LINK_SRC_PORT = "src_port";
-    private static final String LINK_SRC_PORT_STATE = "src_port_state";
-    private static final String LINK_DST_SWITCH = "dst_switch_id";
-    private static final String LINK_DST_PORT = "dst_port";
-    private static final String LINK_DST_PORT_STATE = "dst_port_state";
-    private static final String LINK_VALID_TIME = "valid_time";
-    private static final String LINK_TYPE = "link_type";
-    private static final String SWITCH_CONFIG_TABLE_NAME = "controller_switchconfig";
-    private static final String SWITCH_CONFIG_CORE_SWITCH = "core_switch";
-	*/
-
     protected IFloodlightProviderService floodlightProvider;
     protected IThreadPoolService threadPool;
     protected IRestApiService restApi;
@@ -239,26 +223,24 @@ IFloodlightModule, IInfoProvider, IHAListener {
 	            recommendation=LogMessageDoc.GENERIC_ACTION)
 		@Override
 		public void dispatch() {
-			 if (linkDiscoveryAware != null) {
-	                if (log.isTraceEnabled()) {
-	                    log.trace("Dispatching link discovery update {} {} {} {} {} for {}",
-	                              new Object[]{this.getOperation(),
-	                                           HexString.toHexString(this.getSrc()), this.getSrcPort(),
-	                                           HexString.toHexString(this.getDst()), this.getDstPort(),
-	                                           linkDiscoveryAware});
-	                }
-	                try {
-	                    for (ILinkDiscoveryListener lda : linkDiscoveryAware) { // order maintained
-	                        lda.linkDiscoveryUpdate(this);
-	                    }
-	                }
-	                catch (Exception e) {
-	                    log.error("Error in link discovery updates loop", e);
-	                }
-	            }
-			
+			if (linkDiscoveryAware != null) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Dispatching link discovery update {} {} {} {} {} for {}",
+                              new Object[]{this.getOperation(),
+                                           HexString.toHexString(this.getSrc()), this.getSrcPort(),
+                                           HexString.toHexString(this.getDst()), this.getDstPort(),
+                                           linkDiscoveryAware});
+                }
+                try {
+                    for (ILinkDiscoveryListener lda : linkDiscoveryAware) { // order maintained
+                        lda.linkDiscoveryUpdate(this);
+                    }
+                }
+                catch (Exception e) {
+                    log.error("Error in link discovery updates loop", e);
+                }
+            }
 		}
-    	
     }
 
     /**
@@ -1561,105 +1543,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         }
     }
 
-    // STORAGE METHODS
-    /**
-     * Deletes all links from storage
-     */
-    /*
-    void clearAllLinks() {
-        storageSource.deleteRowsAsync(LINK_TABLE_NAME, null);
-    }
-    */
-
-    /**
-     * Gets the storage key for a LinkTuple
-     * @param lt The LinkTuple to get
-     * @return The storage key as a String
-     */
-    private String getLinkId(Link lt) {
-        return HexString.toHexString(lt.getSrc()) +
-                "-" + lt.getSrcPort() + "-" +
-                HexString.toHexString(lt.getDst())+
-                "-" + lt.getDstPort();
-    }
-
-    /**
-     * Writes a LinkTuple and corresponding LinkInfo to storage
-     * @param lt The LinkTuple to write
-     * @param linkInfo The LinkInfo to write
-     */
-    /*
-    protected void writeLinkToStorage(Link lt, LinkInfo linkInfo) {
-        LinkType type = getLinkType(lt, linkInfo);
-
-        // Write only direct links.  Do not write links to external
-        // L2 network.
-        // if (type != LinkType.DIRECT_LINK && type != LinkType.TUNNEL) {
-        //    return;
-        // }
-
-        Map<String, Object> rowValues = new HashMap<String, Object>();
-        String id = getLinkId(lt);
-        rowValues.put(LINK_ID, id);
-        rowValues.put(LINK_VALID_TIME, linkInfo.getUnicastValidTime());
-        String srcDpid = HexString.toHexString(lt.getSrc());
-        rowValues.put(LINK_SRC_SWITCH, srcDpid);
-        rowValues.put(LINK_SRC_PORT, lt.getSrcPort());
-
-        if (type == LinkType.DIRECT_LINK)
-            rowValues.put(LINK_TYPE, "internal");
-        else if (type == LinkType.MULTIHOP_LINK) 
-            rowValues.put(LINK_TYPE, "external");
-        else if (type == LinkType.TUNNEL) 
-            rowValues.put(LINK_TYPE, "tunnel"); 
-        else rowValues.put(LINK_TYPE, "invalid");
-
-        if (linkInfo.linkStpBlocked()) {
-            if (log.isTraceEnabled()) {
-                log.trace("writeLink, link {}, info {}, srcPortState Blocked",
-                          lt, linkInfo);
-            }
-            rowValues.put(LINK_SRC_PORT_STATE,
-                          OFPhysicalPort.OFPortState.OFPPS_STP_BLOCK.getValue());
-        } else {
-            if (log.isTraceEnabled()) {
-                log.trace("writeLink, link {}, info {}, srcPortState {}",
-                          new Object[]{ lt, linkInfo, linkInfo.getSrcPortState() });
-            }
-            rowValues.put(LINK_SRC_PORT_STATE, linkInfo.getSrcPortState());
-        }
-        String dstDpid = HexString.toHexString(lt.getDst());
-        rowValues.put(LINK_DST_SWITCH, dstDpid);
-        rowValues.put(LINK_DST_PORT, lt.getDstPort());
-        if (linkInfo.linkStpBlocked()) {
-            if (log.isTraceEnabled()) {
-                log.trace("writeLink, link {}, info {}, dstPortState Blocked",
-                          lt, linkInfo);
-            }
-            rowValues.put(LINK_DST_PORT_STATE,
-                          OFPhysicalPort.OFPortState.OFPPS_STP_BLOCK.getValue());
-        } else {
-            if (log.isTraceEnabled()) {
-                log.trace("writeLink, link {}, info {}, dstPortState {}",
-                          new Object[]{ lt, linkInfo, linkInfo.getDstPortState() });
-            }
-            rowValues.put(LINK_DST_PORT_STATE, linkInfo.getDstPortState());
-        }
-        storageSource.updateRowAsync(LINK_TABLE_NAME, rowValues);
-    }
-    */
-
-    /**
-     * Removes a link from storage using an asynchronous call.
-     * @param lt The LinkTuple to delete.
-     */
-    /*
-    protected void removeLinkFromStorage(Link lt) {
-        String id = getLinkId(lt);
-        storageSource.deleteRowAsync(LINK_TABLE_NAME, id);
-    }
-    */
-
     @Override
     public void addListener(ILinkDiscoveryListener listener) {
         linkDiscoveryAware.add(listener);
@@ -1692,76 +1575,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
     public boolean isCallbackOrderingPostreq(OFType type, String name) {
         return false;
     }
-
-    /*
-    @Override
-    public void rowsModified(String tableName, Set<Object> rowKeys) {
-        Map<Long, IOFSwitch> switches = floodlightProvider.getSwitches();
-        ArrayList<IOFSwitch> updated_switches = new ArrayList<IOFSwitch>();
-        for(Object key: rowKeys) {
-            Long swId = new Long(HexString.toLong((String)key));
-            if (switches.containsKey(swId)) {
-                IOFSwitch sw = switches.get(swId);
-                boolean curr_status = sw.hasAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH);
-                boolean new_status =  false;
-                IResultSet resultSet = null;
-
-                try {
-                    resultSet = storageSource.getRow(tableName, key);
-                    for (Iterator<IResultSet> it = resultSet.iterator(); it.hasNext();) {
-                        // In case of multiple rows, use the status in last row?
-                        Map<String, Object> row = it.next().getRow();
-                        if (row.containsKey(SWITCH_CONFIG_CORE_SWITCH)) {
-                            new_status = ((String)row.get(SWITCH_CONFIG_CORE_SWITCH)).equals("true");
-                        }
-                    }
-                }
-                finally {
-                    if (resultSet != null)
-                        resultSet.close();
-                }
-
-                if (curr_status != new_status) {
-                    updated_switches.add(sw);
-                }
-            } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("Update for switch which has no entry in switch " +
-                            "list (dpid={}), a delete action.", (String)key);
-                }
-            }
-        }
-
-        for (IOFSwitch sw : updated_switches) {
-            // Set SWITCH_IS_CORE_SWITCH to it's inverse value
-            if (sw.hasAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH)) {
-                sw.removeAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH);
-                if (log.isTraceEnabled()) {
-                    log.trace("SWITCH_IS_CORE_SWITCH set to False for {}", sw);
-                }
-                LinkUpdate update = new LinkUpdate(new LDUpdate(sw.getId(), SwitchType.BASIC_SWITCH,
-                                         UpdateOperation.SWITCH_UPDATED));
-                controller.publishUpdate(update);
-            }
-            else {
-                sw.setAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH, new Boolean(true));
-                if (log.isTraceEnabled()) {
-                    log.trace("SWITCH_IS_CORE_SWITCH set to True for {}", sw);
-                }
-                LinkUpdate update = new LinkUpdate(new LDUpdate(sw.getId(), SwitchType.CORE_SWITCH,
-                                         UpdateOperation.SWITCH_UPDATED));
-                controller.publishUpdate(update);
-            }
-        }
-    }
-    */
-
-    /*
-    @Override
-    public void rowsDeleted(String tableName, Set<Object> rowKeys) {
-        // Ignore delete events, the switch delete will do the right thing on it's own
-    }
-    */
 
     // IFloodlightModule classes
 

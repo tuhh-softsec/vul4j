@@ -73,13 +73,6 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
             isSendLLDPsCalled = false;
             isClearLinksCalled = false;
         }
-
-        /*
-        @Override
-        protected void clearAllLinks() {
-            isClearLinksCalled = true;
-            super.clearAllLinks();
-        }*/
     }
     
     public LinkDiscoveryManager getTopology() {
@@ -106,7 +99,6 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         cntx.addService(IRoutingService.class, routingEngine);
         cntx.addService(ILinkDiscoveryService.class, ldm);
         cntx.addService(ITopologyService.class, ldm);
-        //cntx.addService(IStorageSourceService.class, new MemoryStorageSource());
         cntx.addService(IFloodlightProviderService.class, getMockFloodlightProvider());
         restApi.init(cntx);
         tp.init(cntx);
@@ -426,7 +418,6 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         getMockFloodlightProvider().dispatchRoleChanged(Role.SLAVE, Role.MASTER);
         // check that lldps were sent
         assertTrue(ldm.isSendLLDPsCalled);
-        //assertTrue(ldm.isClearLinksCalled);
         ldm.reset();
     }
 }

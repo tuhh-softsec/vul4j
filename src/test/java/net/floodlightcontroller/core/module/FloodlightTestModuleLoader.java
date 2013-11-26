@@ -19,8 +19,6 @@ public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
 	protected final static Logger log = LoggerFactory.getLogger(FloodlightTestModuleLoader.class);
 	
 	// List of default modules to use unless specified otherwise
-	//public static final Class<? extends IFloodlightModule> DEFAULT_STORAGE_SOURCE =
-			//MemoryStorageSource.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_FLOODLIGHT_PRPOVIDER =
 			MockFloodlightProvider.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_TOPOLOGY_PROVIDER =
@@ -42,7 +40,6 @@ public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
 		DEFAULT_MODULE_LIST = new ArrayList<Class<? extends IFloodlightModule>>();
 		DEFAULT_MODULE_LIST.add(DEFAULT_DEVICE_SERVICE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_FLOODLIGHT_PRPOVIDER);
-		//DEFAULT_MODULE_LIST.add(DEFAULT_STORAGE_SOURCE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_TOPOLOGY_PROVIDER);
 		DEFAULT_MODULE_LIST.add(DEFAULT_COUNTER_STORE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_THREADPOOL);

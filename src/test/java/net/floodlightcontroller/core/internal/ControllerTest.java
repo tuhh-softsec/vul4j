@@ -32,7 +32,6 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -116,9 +115,6 @@ public class ControllerTest extends FloodlightTestCase {
         controller = (Controller)cm.getServiceImpls().get(IFloodlightProviderService.class);
         fmc.addService(IFloodlightProviderService.class, controller);
         
-        //MemoryStorageSource memstorage = new MemoryStorageSource();
-        //fmc.addService(IStorageSourceService.class, memstorage);
-        
         RestApiServer restApi = new RestApiServer();
         fmc.addService(IRestApiService.class, restApi);
         
@@ -141,13 +137,11 @@ public class ControllerTest extends FloodlightTestCase {
         
         ppt.init(fmc);
         restApi.init(fmc);
-        //memstorage.init(fmc);
         cm.init(fmc);
         tp.init(fmc);
         sr.init(fmc);
         ppt.startUp(fmc);
         restApi.startUp(fmc);
-        //memstorage.startUp(fmc);
         cm.startUp(fmc);
         tp.startUp(fmc);
         sr.startUp(fmc);
@@ -480,19 +474,6 @@ public class ControllerTest extends FloodlightTestCase {
                     switchListener.nPortChanged == 1);
         }
     }
-    
-    /*
-    private Map<String,Object> getFakeControllerIPRow(String id, String controllerId, 
-            String type, int number, String discoveredIP ) {
-        HashMap<String, Object> row = new HashMap<String,Object>();
-        row.put(Controller.CONTROLLER_INTERFACE_ID, id);
-        row.put(Controller.CONTROLLER_INTERFACE_CONTROLLER_ID, controllerId);
-        row.put(Controller.CONTROLLER_INTERFACE_TYPE, type);
-        row.put(Controller.CONTROLLER_INTERFACE_NUMBER, number);
-        row.put(Controller.CONTROLLER_INTERFACE_DISCOVERED_IP, discoveredIP);
-        return row;
-    }
-    */
 
     /**
      * Test notifications for controller node IP changes. This requires
