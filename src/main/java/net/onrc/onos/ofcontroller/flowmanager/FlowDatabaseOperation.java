@@ -189,8 +189,7 @@ class FlowDatabaseOperation {
 	//
 	// Assign the FlowEntry ID.
 	//
-	if ((flowEntry.flowEntryId() == null) ||
-	    (flowEntry.flowEntryId().value() == 0)) {
+	if (! flowEntry.isValidFlowEntryId()) {
 	    long id = flowManager.getNextFlowEntryId();
 	    flowEntry.setFlowEntryId(new FlowEntryId(id));
 	}
