@@ -451,6 +451,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     /**
      * Inform the Flow Manager that a Flow Entry on switch expired.
      *
+     * @param sw the switch the Flow Entry expired on.
      * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
     public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId) {
