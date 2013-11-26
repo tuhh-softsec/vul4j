@@ -20,6 +20,7 @@ package org.apache.xml.security.test.stax.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -81,9 +82,11 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         // Sign using DOM
         List<String> localNames = new ArrayList<String>();
         localNames.add("PaymentInfo");
+        File file = new File(BASEDIR +
+                "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml").getCanonicalFile();
 
         ReferenceInfo referenceInfo = new ReferenceInfo(
-                "file://" + BASEDIR + "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml",
+                file.toURI().toString(),
                 new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
                 "http://www.w3.org/2000/09/xmldsig#sha1",
                 false
@@ -146,8 +149,11 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         List<String> localNames = new ArrayList<String>();
         localNames.add("PaymentInfo");
 
+        File file = new File(BASEDIR +
+                "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class").getCanonicalFile();
+        
         ReferenceInfo referenceInfo = new ReferenceInfo(
-                "file://" + BASEDIR + "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class",
+                file.toURI().toString(),
                 null,
                 "http://www.w3.org/2000/09/xmldsig#sha1",
                 true
