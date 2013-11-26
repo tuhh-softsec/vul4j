@@ -6,6 +6,7 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
@@ -112,4 +113,11 @@ public interface IFlowService extends IFloodlightService {
      * @return unique flow ID
      */
     public long getNextFlowEntryId();
+
+    /**
+     * Inform the Flow Manager that a Flow Entry on switch expired.
+     *
+     * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
+     */
+    public void flowEntryOnSwitchExpired(FlowEntryId flowEntryId);
 }
