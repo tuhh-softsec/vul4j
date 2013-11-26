@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.util.ArrayList;
 
+import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.CallerId;
@@ -119,5 +120,5 @@ public interface IFlowService extends IFloodlightService {
      *
      * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
-    public void flowEntryOnSwitchExpired(FlowEntryId flowEntryId);
+    public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId);
 }
