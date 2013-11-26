@@ -37,7 +37,7 @@ public class TitanDBOperation extends DBOperation {
 
     @Override
     public IPortObject newPort(String dpid, Short portNum) {
-        return newPort(dpid, portNum);
+        return super.newPort(dpid, portNum);
     }
     
     @Override
