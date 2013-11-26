@@ -5,22 +5,32 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openflow.protocol.OFFlowRemoved;
+import org.openflow.protocol.OFMessage;
+import org.openflow.protocol.OFType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
+import net.floodlightcontroller.core.IOFMessageListener;
+import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.core.IOFSwitchListener;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
-public class FlowProgrammer implements IFloodlightModule {
+public class FlowProgrammer implements IFloodlightModule, 
+				       IOFMessageListener,
+				       IOFSwitchListener {
     @SuppressWarnings("unused")
-	private final static Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
-
-	private static final boolean enableFlowSync = false;
-	
+    private static final boolean enableFlowSync = false;
+    protected static Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
     protected volatile IFloodlightProviderService floodlightProvider;
+    protected volatile IControllerRegistryService registryService;
+
 
     protected FlowPusher pusher;
     private static final int NUM_PUSHER_THREAD = 1;
@@ -30,7 +40,7 @@ public class FlowProgrammer implements IFloodlightModule {
     public FlowProgrammer() {
 	pusher = new FlowPusher(NUM_PUSHER_THREAD);
 	if (enableFlowSync) {
-	synchronizer = new FlowSynchronizer();
+	    synchronizer = new FlowSynchronizer();
 	}
     }
     
@@ -38,18 +48,18 @@ public class FlowProgrammer implements IFloodlightModule {
     public void init(FloodlightModuleContext context)
 	    throws FloodlightModuleException {
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
+	registryService = context.getServiceImpl(IControllerRegistryService.class);
 	pusher.init(null, context, floodlightProvider.getOFMessageFactory(), null);
 	if (enableFlowSync) {
-	synchronizer.init(context);
+	    synchronizer.init(pusher);
 	}
     }
 
     @Override
     public void startUp(FloodlightModuleContext context) {
 	pusher.start();
-	if (enableFlowSync) {
-	synchronizer.startUp(context);
-	}
+	floodlightProvider.addOFMessageListener(OFType.FLOW_REMOVED, this);
+	floodlightProvider.addOFSwitchListener(this);
     }
 
     @Override
@@ -58,7 +68,7 @@ public class FlowProgrammer implements IFloodlightModule {
 		new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFlowPusherService.class);
 	if (enableFlowSync) {
-	l.add(IFlowSyncService.class);
+	    l.add(IFlowSyncService.class);
 	}
 	return l;
     }
@@ -71,7 +81,7 @@ public class FlowProgrammer implements IFloodlightModule {
 	    IFloodlightService>();
 	m.put(IFlowPusherService.class, pusher);
 	if (enableFlowSync) {
-	m.put(IFlowSyncService.class, synchronizer);
+	    m.put(IFlowSyncService.class, synchronizer);
 	}
 	return m;
     }
@@ -82,6 +92,61 @@ public class FlowProgrammer implements IFloodlightModule {
 		new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFloodlightProviderService.class);
 	return l;
+    }
+
+    @Override
+    public String getName() {
+	// TODO Auto-generated method stub
+	return "FlowProgrammer";
+    }
+
+    @Override
+    public boolean isCallbackOrderingPrereq(OFType type, String name) {
+	// TODO Auto-generated method stub
+	return false;
+    }
+
+    @Override
+    public boolean isCallbackOrderingPostreq(OFType type, String name) {
+	// TODO Auto-generated method stub
+	return false;
+    }
+
+    @Override
+    public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
+	switch (msg.getType()) {
+	case FLOW_REMOVED:
+	    OFFlowRemoved flowMsg = (OFFlowRemoved) msg;
+	    log.debug("Got flow removed from "+ sw.getId() +": "+ flowMsg.getCookie());
+	    break;
+	default:
+	    break;
+	}
+
+	return Command.CONTINUE;
+    }
+
+    @Override
+    public void addedSwitch(IOFSwitch sw) {
+	log.debug("Switch added: {}", sw.getId());
+
+	if (enableFlowSync && registryService.hasControl(sw.getId())) {
+	    synchronizer.synchronize(sw);
+	}
+    }
+
+    @Override
+    public void removedSwitch(IOFSwitch sw) {
+	log.debug("Switch removed: {}", sw.getId());
+	
+	if (enableFlowSync) {
+	    synchronizer.interrupt(sw);
+	}
+    }
+
+    @Override
+    public void switchPortChanged(Long switchId) {
+	// TODO Auto-generated method stub
     }
     
 }

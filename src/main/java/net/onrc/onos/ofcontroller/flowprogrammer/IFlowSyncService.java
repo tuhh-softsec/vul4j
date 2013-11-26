@@ -10,4 +10,6 @@ import net.floodlightcontroller.core.module.IFloodlightService;
  */
 public interface IFlowSyncService extends IFloodlightService {
     public void synchronize(IOFSwitch sw);
+    
+    public void interrupt(IOFSwitch sw);
 }
