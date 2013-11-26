@@ -15,7 +15,8 @@ import java.util.Map;
  */
 public class GraphDBManager {
     private static ThreadLocal<HashMap<String, DBConnection>> connections = new ThreadLocal<HashMap<String, DBConnection>>();
-
+    private static DBOperation operation = null;
+    
     static Map<String, DBConnection> getConnectionMap() {
         if (connections.get() == null) {
             connections.set(new HashMap<String, DBConnection>());
@@ -24,15 +25,16 @@ public class GraphDBManager {
     }
 
     public static DBOperation getDBOperation(final String dbStore, final String dbConfigFile) {
-        DBOperation operation = null;
-        if (dbStore.equals("ramcloud")) {
-            operation = new RamCloudDBOperation();
-        } else if (dbStore.equals("titan")) {
-            operation = new TitanDBOperation();
-        }
-        if (operation != null) {
-            operation.conn = GraphDBManager.getConnection(dbStore, dbConfigFile);
-        }
+        if (operation == null){
+	    if (dbStore.equals("ramcloud")) {
+		operation = new RamCloudDBOperation();
+	    } else if (dbStore.equals("titan")) {
+		operation = new TitanDBOperation();
+	    }
+	    if (operation != null) {
+		operation.conn = GraphDBManager.getConnection(dbStore, dbConfigFile);
+	    }
+	}
         return operation;
     }
 

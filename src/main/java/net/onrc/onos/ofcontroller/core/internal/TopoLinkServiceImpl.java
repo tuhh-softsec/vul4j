@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.floodlightcontroller.routing.Link;
-import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
 import net.onrc.onos.ofcontroller.core.internal.LinkStorageImpl.ExtractLink;
@@ -14,10 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
+import net.onrc.onos.graph.GraphDBManager;
 
 public class TopoLinkServiceImpl implements ITopoLinkService {
 	
-	protected GraphDBOperation op;
+	protected DBOperation dbop;
 	protected final static Logger log = LoggerFactory.getLogger(TopoLinkServiceImpl.class);
 
 	public void finalize() {
@@ -26,15 +27,15 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 	
 	@Override
 	public void close() {
-		op.close();
+		dbop.close();
 	}
  
 	@Override
 	public List<Link> getActiveLinks() {
 		// TODO Auto-generated method stub
-		op = new GraphDBOperation("");
-		op.commit(); //Commit to ensure we see latest data
-		Iterable<ISwitchObject> switches = op.getActiveSwitches();
+		dbop = GraphDBManager.getDBOperation("", "");
+		dbop.commit(); //Commit to ensure we see latest data
+		Iterable<ISwitchObject> switches = dbop.getActiveSwitches();
 		List<Link> links = new ArrayList<Link>(); 
 		for (ISwitchObject sw : switches) {
 			GremlinPipeline<Vertex, Link> pipe = new GremlinPipeline<Vertex, Link>();
@@ -50,7 +51,7 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 			}
 						
 		}
-		op.commit();
+		dbop.commit();
 		return links;
 	}
 
@@ -58,7 +59,7 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 	public List<Link> getLinksOnSwitch(String dpid) {
 		// TODO Auto-generated method stub
 		List<Link> links = new ArrayList<Link>(); 
-		ISwitchObject sw = op.searchSwitch(dpid);
+		ISwitchObject sw = dbop.searchSwitch(dpid);
 		GremlinPipeline<Vertex, Link> pipe = new GremlinPipeline<Vertex, Link>();
 		ExtractLink extractor = new ExtractLink();
 
