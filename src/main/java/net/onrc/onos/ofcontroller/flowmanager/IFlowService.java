@@ -3,7 +3,6 @@ package net.onrc.onos.ofcontroller.flowmanager;
 import java.util.ArrayList;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
@@ -40,21 +39,6 @@ public interface IFlowService extends IFloodlightService {
      * @return true on success, otherwise false.
      */
     boolean deleteFlow(FlowId flowId);
-
-    /**
-     * Clear the state for all previously added flows.
-     *
-     * @return true on success, otherwise false.
-     */
-    boolean clearAllFlows();
-
-    /**
-     * Clear the state for a previously added flow.
-     *
-     * @param flowId the Flow ID of the flow to clear.
-     * @return true on success, otherwise false.
-     */
-    boolean clearFlow(FlowId flowId);
 
     /**
      * Get a previously added flow.
@@ -97,7 +81,7 @@ public interface IFlowService extends IFloodlightService {
      * @param maxFlows number of flows to return
      * @return the Flow Paths if found, otherwise null.
      */
-    ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);
+    ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);
     
     /**
      * Add and maintain a shortest-path flow.

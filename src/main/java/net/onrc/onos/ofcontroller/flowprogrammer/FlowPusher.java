@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
 
 import org.openflow.protocol.*;
 import org.openflow.protocol.action.*;
@@ -16,7 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.floodlightcontroller.core.FloodlightContext;
+import net.floodlightcontroller.core.IFloodlightProviderService;
+import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.core.internal.OFMessageFuture;
+import net.floodlightcontroller.core.module.FloodlightModuleContext;
+import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
@@ -38,9 +45,11 @@ import net.onrc.onos.ofcontroller.util.Port;
  * @author Naoki Shiota
  *
  */
-public class FlowPusher implements IFlowPusherService {
+public class FlowPusher implements IFlowPusherService, IOFMessageListener {
     private final static Logger log = LoggerFactory.getLogger(FlowPusher.class);
 
+    private static boolean barrierIfEmpty = false;
+    
     // NOTE: Below are moved from FlowManager.
     // TODO: Values copied from elsewhere (class LearningSwitch).
     // The local copy should go away!
@@ -64,6 +73,12 @@ public class FlowPusher implements IFlowPusherService {
 		SUSPENDED,
 	}
 	
+	/**
+	 * Message queue attached to a switch.
+	 * This consists of queue itself and variables used for limiting sending rate.
+	 * @author Naoki Shiota
+	 *
+	 */
 	@SuppressWarnings("serial")
 	private class SwitchQueue extends ArrayDeque<OFMessage> {
 		QueueState state;
@@ -84,15 +99,20 @@ public class FlowPusher implements IFlowPusherService {
 				return true;
 			}
 			
-			long rate = last_sent_size / (current - last_sent_time);
-			
-			if (rate < max_rate) {
-				return true;
-			} else {
+			if (current == last_sent_time) {
 				return false;
 			}
+			
+			// Check if sufficient time (from aspect of rate) elapsed or not.
+			long rate = last_sent_size / (current - last_sent_time);
+			return (rate < max_rate);
 		}
 		
+		/**
+		 * Log time and size of last sent data.
+		 * @param current Time to be sent.
+		 * @param size Size of sent data (in bytes).
+		 */
 		void logSentData(long current, long size) {
 			last_sent_time = current;
 			last_sent_size = size;
@@ -100,11 +120,14 @@ public class FlowPusher implements IFlowPusherService {
 		
 	}
 	
-	private OFMessageDamper messageDamper;
+	private OFMessageDamper messageDamper = null;
+	private IThreadPoolService threadPool = null;
 
 	private FloodlightContext context = null;
 	private BasicFactory factory = null;
-	private Map<Long, FlowPusherProcess> threadMap = null;
+	private Map<Long, FlowPusherThread> threadMap = null;
+	private Map<Long, Map<Integer, OFBarrierReplyFuture>>
+		barrierFutures = new HashMap<Long, Map<Integer, OFBarrierReplyFuture>>();
 	
 	private int number_thread = 1;
 	
@@ -113,25 +136,30 @@ public class FlowPusher implements IFlowPusherService {
 	 * @author Naoki Shiota
 	 *
 	 */
-	private class FlowPusherProcess implements Runnable {
+	private class FlowPusherThread extends Thread {
 		private Map<IOFSwitch,SwitchQueue> queues
 		= new HashMap<IOFSwitch,SwitchQueue>();
 		
-		private boolean isStopped = false;
-		private boolean isMsgAdded = false;
+		private Semaphore mutex = new Semaphore(0);
 		
 		@Override
 		public void run() {
 			log.debug("Begin Flow Pusher Process");
 			
 			while (true) {
+				try {
+					// wait for message pushed to queue
+					mutex.acquire();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					log.debug("FlowPusherThread is interrupted");
+					return;
+				}
+				
 				Set< Map.Entry<IOFSwitch,SwitchQueue> > entries;
 				synchronized (queues) {
 					entries = queues.entrySet();
 				}
-				
-				// Set taint flag to false at this moment.
-				isMsgAdded = false;
 				
 				for (Map.Entry<IOFSwitch,SwitchQueue> entry : entries) {
 					IOFSwitch sw = entry.getKey();
@@ -152,15 +180,14 @@ public class FlowPusher implements IFlowPusherService {
 							int i = 0;
 							while (! queue.isEmpty()) {
 								// Number of messages excess the limit
-								if (++i >= MAX_MESSAGE_SEND) {
+								if (i >= MAX_MESSAGE_SEND) {
 									// Messages remains in queue
-									isMsgAdded = true;
+									mutex.release();
 									break;
 								}
+								++i;
 								
 								OFMessage msg = queue.poll();
-								
-								// if need to send, call IOFSwitch#write()
 								try {
 									messageDamper.write(sw, msg, context);
 									log.debug("Pusher sends message : {}", msg);
@@ -172,42 +199,50 @@ public class FlowPusher implements IFlowPusherService {
 							}
 							sw.flush();
 							queue.logSentData(current_time, size);
+							
+							if (queue.isEmpty() && barrierIfEmpty) {
+								barrier(sw);
+							}
 						}
 					}
 				}
-				
-				// sleep while all queues are empty
-				while (! (isMsgAdded || isStopped)) {
-					try {
-						Thread.sleep(SLEEP_MILLI_SEC, SLEEP_NANO_SEC);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-						log.error("Thread.sleep failed");
-					}
-				}
-				
-				log.debug("Exit sleep loop.");
-				
-				if (isStopped) {
-					log.debug("Pusher Process finished.");
-					return;
-				}
-
 			}
 		}
 	}
 	
+	/**
+	 * Initialize object with one thread.
+	 */
 	public FlowPusher() {
-		
 	}
 	
+	/**
+	 * Initialize object with threads of given number.
+	 * @param number_thread Number of threads to handle messages.
+	 */
 	public FlowPusher(int number_thread) {
 		this.number_thread = number_thread;
 	}
 	
-	public void init(FloodlightContext context, BasicFactory factory, OFMessageDamper damper) {
+	/**
+	 * Set parameters needed for sending messages.
+	 * @param context FloodlightContext used for sending messages.
+	 *        If null, FlowPusher uses default context.
+	 * @param modContext FloodlightModuleContext used for acquiring
+	 *        ThreadPoolService and registering MessageListener.
+	 * @param factory Factory object to create OFMessage objects.
+	 * @param damper Message damper used for sending messages.
+	 *        If null, FlowPusher creates its own damper object.
+	 */
+	public void init(FloodlightContext context,
+			FloodlightModuleContext modContext,
+			BasicFactory factory,
+			OFMessageDamper damper) {
 		this.context = context;
 		this.factory = factory;
+		this.threadPool = modContext.getServiceImpl(IThreadPoolService.class);
+		IFloodlightProviderService flservice = modContext.getServiceImpl(IFloodlightProviderService.class);
+		flservice.addOFMessageListener(OFType.BARRIER_REPLY, this);
 		
 		if (damper != null) {
 			messageDamper = damper;
@@ -228,12 +263,11 @@ public class FlowPusher implements IFlowPusherService {
 			return;
 		}
 		
-		threadMap = new HashMap<Long,FlowPusherProcess>();
+		threadMap = new HashMap<Long,FlowPusherThread>();
 		for (long i = 0; i < number_thread; ++i) {
-			FlowPusherProcess runnable = new FlowPusherProcess();
-			threadMap.put(i, runnable);
+			FlowPusherThread thread = new FlowPusherThread();
 			
-			Thread thread = new Thread(runnable);
+			threadMap.put(i, thread);
 			thread.start();
 		}
 	}
@@ -302,10 +336,8 @@ public class FlowPusher implements IFlowPusherService {
 			return;
 		}
 		
-		for (FlowPusherProcess runnable : threadMap.values()) {
-			if (! runnable.isStopped) {
-				runnable.isStopped = true;
-			}
+		for (FlowPusherThread t : threadMap.values()) {
+			t.interrupt();
 		}
 	}
 	
@@ -326,14 +358,14 @@ public class FlowPusher implements IFlowPusherService {
 	}
 	
 	/**
-	 * Add OFMessage to the queue related to given switch.
+	 * Add OFMessage to queue of the switch.
 	 * @param sw Switch to which message is sent.
 	 * @param msg Message to be sent.
 	 * @return true if succeed.
 	 */
 	@Override
 	public boolean add(IOFSwitch sw, OFMessage msg) {
-		FlowPusherProcess proc = getProcess(sw);
+		FlowPusherThread proc = getProcess(sw);
 		SwitchQueue queue = proc.queues.get(sw);
 
 		if (queue == null) {
@@ -349,8 +381,10 @@ public class FlowPusher implements IFlowPusherService {
 			log.debug("Message is pushed : {}", msg);
 		}
 		
-		proc.isMsgAdded = true;
-		
+		if (proc.mutex.availablePermits() == 0) {
+			proc.mutex.release();
+		}
+
 		return true;
 	}
 	
@@ -984,8 +1018,56 @@ public class FlowPusher implements IFlowPusherService {
 		
 		return add(sw,fm);
 	}
+	
+	@Override
+	public OFBarrierReply barrier(IOFSwitch sw) {
+		OFMessageFuture<OFBarrierReply> future = barrierAsync(sw);
+		if (future == null) {
+			return null;
+		}
+		
+		try {
+			return future.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			log.error("InterruptedException: {}", e);
+			return null;
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+			log.error("ExecutionException: {}", e);
+			return null;
+		}
+	}
 
-	private SwitchQueue getQueue(IOFSwitch sw) {
+	@Override
+	public OFBarrierReplyFuture barrierAsync(IOFSwitch sw) {
+		// TODO creation of message and future should be moved to OFSwitchImpl
+
+		if (sw == null) {
+			return null;
+		}
+		
+		OFBarrierRequest msg = (OFBarrierRequest) factory.getMessage(OFType.BARRIER_REQUEST);
+		msg.setXid(sw.getNextTransactionId());
+		add(sw, msg);
+
+		// TODO create Future object of message
+		OFBarrierReplyFuture future = new OFBarrierReplyFuture(threadPool, sw, msg.getXid());
+
+		synchronized (barrierFutures) {
+			Map<Integer,OFBarrierReplyFuture> map = barrierFutures.get(sw.getId());
+			if (map == null) {
+				map = new HashMap<Integer,OFBarrierReplyFuture>();
+				barrierFutures.put(sw.getId(), map);
+			}
+			map.put(msg.getXid(), future);
+			log.debug("Inserted future for {}", msg.getXid());
+		}
+		
+		return future;
+	}
+
+	protected SwitchQueue getQueue(IOFSwitch sw) {
 		if (sw == null)  {
 			return null;
 		}
@@ -993,14 +1075,48 @@ public class FlowPusher implements IFlowPusherService {
 		return getProcess(sw).queues.get(sw);
 	}
 	
-	private long getHash(IOFSwitch sw) {
-		// TODO should consider equalization algorithm
+	protected long getHash(IOFSwitch sw) {
+		// This code assumes DPID is sequentially assigned.
+		// TODO consider equalization algorithm
 		return sw.getId() % number_thread;
 	}
 	
-	private FlowPusherProcess getProcess(IOFSwitch sw) {
+	protected FlowPusherThread getProcess(IOFSwitch sw) {
 		long hash = getHash(sw);
 		
 		return threadMap.get(hash);
+	}
+
+	@Override
+	public String getName() {
+		return "flowpusher";
+	}
+
+	@Override
+	public boolean isCallbackOrderingPrereq(OFType type, String name) {
+		return false;
+	}
+
+	@Override
+	public boolean isCallbackOrderingPostreq(OFType type, String name) {
+		return false;
+	}
+
+	@Override
+	public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
+		Map<Integer,OFBarrierReplyFuture> map = barrierFutures.get(sw.getId());
+		if (map == null) {
+			return Command.CONTINUE;
+		}
+		
+		OFBarrierReplyFuture future = map.get(msg.getXid());
+		if (future == null) {
+			return Command.CONTINUE;
+		}
+		
+		log.debug("Received BARRIER_REPLY : {}", msg);
+		future.deliverFuture(sw, msg);
+		
+		return Command.CONTINUE;
 	}
 }

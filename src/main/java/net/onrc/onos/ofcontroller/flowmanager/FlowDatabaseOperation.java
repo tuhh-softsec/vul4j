@@ -189,8 +189,7 @@ class FlowDatabaseOperation {
 	//
 	// Assign the FlowEntry ID.
 	//
-	if ((flowEntry.flowEntryId() == null) ||
-	    (flowEntry.flowEntryId().value() == 0)) {
+	if (! flowEntry.isValidFlowEntryId()) {
 	    long id = flowManager.getNextFlowEntryId();
 	    flowEntry.setFlowEntryId(new FlowEntryId(id));
 	}
@@ -370,122 +369,6 @@ class FlowDatabaseOperation {
      * @return true on success, otherwise false.
      */
     static boolean deleteAllFlows(GraphDBOperation dbHandler) {
-	final ConcurrentLinkedQueue<FlowId> concurrentAllFlowIds =
-	    new ConcurrentLinkedQueue<FlowId>();
-
-	// Get all Flow IDs
-	Iterable<IFlowPath> allFlowPaths = dbHandler.getAllFlowPaths();
-	for (IFlowPath flowPathObj : allFlowPaths) {
-	    if (flowPathObj == null)
-		continue;
-	    String flowIdStr = flowPathObj.getFlowId();
-	    if (flowIdStr == null)
-		continue;
-	    FlowId flowId = new FlowId(flowIdStr);
-	    concurrentAllFlowIds.add(flowId);
-	}
-
-	// Delete all flows one-by-one
-	for (FlowId flowId : concurrentAllFlowIds)
-	    deleteFlow(dbHandler, flowId);
-
-	/*
-	 * TODO: A faster mechanism to delete the Flow Paths by using
-	 * a number of threads. Commented-out for now.
-	 */
-	/*
-	//
-	// Create the threads to delete the Flow Paths
-	//
-	List<Thread> threads = new LinkedList<Thread>();
-	for (int i = 0; i < 10; i++) {
-	    Thread thread = new Thread(new Runnable() {
-		@Override
-		public void run() {
-		    while (true) {
-			FlowId flowId = concurrentAllFlowIds.poll();
-			if (flowId == null)
-			    return;
-			deleteFlow(dbHandler, flowId);
-		    }
-		}}, "Delete All Flow Paths");
-	    threads.add(thread);
-	}
-
-	// Start processing
-	for (Thread thread : threads) {
-	    thread.start();
-	}
-
-	// Wait for all threads to complete
-	for (Thread thread : threads) {
-	    try {
-		thread.join();
-	    } catch (InterruptedException e) {
-		log.debug("Exception waiting for a thread to delete a Flow Path: ", e);
-	    }
-	}
-	*/
-
-	return true;
-    }
-
-    /**
-     * Delete a previously added flow.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param flowId the Flow ID of the flow to delete.
-     * @return true on success, otherwise false.
-     */
-    static boolean deleteFlow(GraphDBOperation dbHandler, FlowId flowId) {
-	IFlowPath flowObj = null;
-	//
-	// We just mark the entries for deletion,
-	// and let the switches remove each individual entry after
-	// it has been removed from the switches.
-	//
-	try {
-	    flowObj = dbHandler.searchFlowPath(flowId);
-	} catch (Exception e) {
-	    // TODO: handle exceptions
-	    dbHandler.rollback();
-	    log.error(":deleteFlow FlowId:{} failed", flowId.toString());
-	    return false;
-	}
-	if (flowObj == null) {
-	    dbHandler.commit();
-	    return true;		// OK: No such flow
-	}
-
-	//
-	// Find and mark for deletion all Flow Entries,
-	// and the Flow itself.
-	//
-	flowObj.setFlowPathUserState("FP_USER_DELETE");
-	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
-	boolean empty = true;	// TODO: an ugly hack
-	for (IFlowEntry flowEntryObj : flowEntries) {
-	    empty = false;
-	    // flowObj.removeFlowEntry(flowEntryObj);
-	    // conn.utils().removeFlowEntry(conn, flowEntryObj);
-	    flowEntryObj.setUserState("FE_USER_DELETE");
-	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
-	}
-	// Remove from the database empty flows
-	if (empty)
-	    dbHandler.removeFlowPath(flowObj);
-	dbHandler.commit();
-
-	return true;
-    }
-
-    /**
-     * Clear the state for all previously added flows.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @return true on success, otherwise false.
-     */
-    static boolean clearAllFlows(GraphDBOperation dbHandler) {
 	List<FlowId> allFlowIds = new LinkedList<FlowId>();
 
 	// Get all Flow IDs
@@ -500,29 +383,29 @@ class FlowDatabaseOperation {
 	    allFlowIds.add(flowId);
 	}
 
-	// Clear all flows one-by-one
+	// Delete all flows one-by-one
 	for (FlowId flowId : allFlowIds) {
-	    clearFlow(dbHandler, flowId);
+	    deleteFlow(dbHandler, flowId);
 	}
 
 	return true;
     }
 
     /**
-     * Clear the state for a previously added flow.
+     * Delete a previously added flow.
      *
      * @param dbHandler the Graph Database handler to use.
-     * @param flowId the Flow ID of the flow to clear.
+     * @param flowId the Flow ID of the flow to delete.
      * @return true on success, otherwise false.
      */
-    static boolean clearFlow(GraphDBOperation dbHandler, FlowId flowId) {
+    static boolean deleteFlow(GraphDBOperation dbHandler, FlowId flowId) {
 	IFlowPath flowObj = null;
 	try {
 	    flowObj = dbHandler.searchFlowPath(flowId);
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    dbHandler.rollback();
-	    log.error(":clearFlow FlowId:{} failed", flowId.toString());
+	    log.error(":deleteFlow FlowId:{} failed", flowId.toString());
 	    return false;
 	}
 	if (flowObj == null) {
@@ -706,9 +589,9 @@ class FlowDatabaseOperation {
      * @param maxFlows the maximum number of flows to be returned.
      * @return the Flow Paths if found, otherwise null.
      */
-    static ArrayList<IFlowPath> getAllFlowsSummary(GraphDBOperation dbHandler,
-						   FlowId flowId,
-						   int maxFlows) {
+    static ArrayList<FlowPath> getAllFlowsSummary(GraphDBOperation dbHandler,
+						  FlowId flowId,
+						  int maxFlows) {
 	//
 	// TODO: The implementation below is not optimal:
 	// We fetch all flows, and then return only the subset that match
@@ -716,61 +599,32 @@ class FlowDatabaseOperation {
 	// We should use the appropriate Titan/Gremlin query to filter-out
 	// the flows as appropriate.
 	//
-    	ArrayList<IFlowPath> flowPathsWithoutFlowEntries =
-	    getAllFlowsWithoutFlowEntries(dbHandler);
-
-    	Collections.sort(flowPathsWithoutFlowEntries, 
-			 new Comparator<IFlowPath>() {
-			     @Override
-			     public int compare(IFlowPath first, IFlowPath second) {
-				 long result =
-				     new FlowId(first.getFlowId()).value()
-				     - new FlowId(second.getFlowId()).value();
-				 if (result > 0) {
-				     return 1;
-				 } else if (result < 0) {
-				     return -1;
-				 } else {
-				     return 0;
-				 }
-			     }
-			 }
-			 );
-    	
-    	return flowPathsWithoutFlowEntries;
+    	ArrayList<FlowPath> flowPaths = getAllFlowsWithDataPathSummary(dbHandler);
+    	Collections.sort(flowPaths);
+    	return flowPaths;
     }
 
     /**
-     * Get all Flows information, without the associated Flow Entries.
+     * Get all Flows information, with Data Path summary for the Flow Entries.
      *
      * @param dbHandler the Graph Database handler to use.
-     * @return all Flows information, without the associated Flow Entries.
+     * @return all Flows information, with Data Path summary for the Flow
+     * Entries.
      */
-    static ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries(GraphDBOperation dbHandler) {
-    	Iterable<IFlowPath> flowPathsObj = null;
-    	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
+    static ArrayList<FlowPath> getAllFlowsWithDataPathSummary(GraphDBOperation dbHandler) {
+    	ArrayList<FlowPath> flowPaths = getAllFlows(dbHandler);
 
-	// TODO: Remove this op.commit() flow, because it is not needed?
-    	dbHandler.commit();
+	// Truncate each Flow Path and Flow Entry
+	for (FlowPath flowPath : flowPaths) {
+	    flowPath.setFlowEntryMatch(null);
+	    flowPath.setFlowEntryActions(null);
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		flowEntry.setFlowEntryMatch(null);
+		flowEntry.setFlowEntryActions(null);
+	    }
+	}
 
-    	try {
-    	    flowPathsObj = dbHandler.getAllFlowPaths();
-    	} catch (Exception e) {
-    	    // TODO: handle exceptions
-    	    dbHandler.rollback();
-    	    log.error(":getAllFlowPaths failed");
-	    return flowPathsObjArray;		// No Flows found
-    	}
-    	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
-    	    return flowPathsObjArray;		// No Flows found
-    	}
-
-    	for (IFlowPath flowObj : flowPathsObj)
-	    flowPathsObjArray.add(flowObj);
-
-    	// conn.endTx(Transaction.COMMIT);
-
-    	return flowPathsObjArray;
+    	return flowPaths;
     }
 
     /**

@@ -9,7 +9,6 @@ echo "link up done"
 
 echo "cleanup excess flows"
 $DIR/web/delete_flow.py 201 300
-$DIR/web/clear_flow.py 201 300
 echo "cleanup excess flows done"
 echo "Adding 200 flows"
 $DIR/web/add_flow.py -m onos -f $DIR/web/flowdef_demo_start.txt

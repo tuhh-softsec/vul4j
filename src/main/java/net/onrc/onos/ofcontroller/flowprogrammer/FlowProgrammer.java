@@ -25,7 +25,7 @@ import net.onrc.onos.registry.controller.IControllerRegistryService;
 public class FlowProgrammer implements IFloodlightModule, 
 				       IOFMessageListener,
 				       IOFSwitchListener {
-    
+    @SuppressWarnings("unused")
     private static final boolean enableFlowSync = false;
     protected static Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
     protected volatile IFloodlightProviderService floodlightProvider;
@@ -49,7 +49,7 @@ public class FlowProgrammer implements IFloodlightModule,
 	    throws FloodlightModuleException {
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	registryService = context.getServiceImpl(IControllerRegistryService.class);
-	pusher.init(null, floodlightProvider.getOFMessageFactory(), null);
+	pusher.init(null, context, floodlightProvider.getOFMessageFactory(), null);
 	if (enableFlowSync) {
 	    synchronizer.init(pusher);
 	}
@@ -149,5 +149,4 @@ public class FlowProgrammer implements IFloodlightModule,
 	// TODO Auto-generated method stub
     }
     
-
 }

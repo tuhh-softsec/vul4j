@@ -121,18 +121,23 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	public void removeDevice(IDeviceObject deviceObject) {
 		String deviceMac = deviceObject.getMACAddress();
 
-		for (IIpv4Address ipv4AddressVertex : deviceObject.getIpv4Addresses()) {
-			ope.removeIpv4Address(ipv4AddressVertex);
-		}
+		removeDeviceImpl(deviceObject);
 
 		try {
-			ope.removeDevice(deviceObject);
 			ope.commit();
-			log.error("DeviceStorage:removeDevice mac:{} done", deviceMac);
+			log.debug("DeviceStorage:removeDevice mac:{} done", deviceMac);
 		} catch (TitanException e) {
 			ope.rollback();
 			log.error("DeviceStorage:removeDevice mac:{} failed", deviceMac);
 		}
+	}
+	
+	public void removeDeviceImpl(IDeviceObject deviceObject) {
+		for (IIpv4Address ipv4AddressVertex : deviceObject.getIpv4Addresses()) {
+			ope.removeIpv4Address(ipv4AddressVertex);
+		}
+		
+		ope.removeDevice(deviceObject);
 	}
 
 	/***
