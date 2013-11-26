@@ -11,6 +11,15 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
+/**
+ * FlowPusherService is a service to send message to switches in proper rate.
+ * Conceptually a queue is attached to each switch, and FlowPusherService
+ * read a message from queue and send it to switch in order.
+ * To guarantee message has been installed, FlowPusherService can add barrier
+ * message to queue and can notify when barrier message is sent to switch.
+ * @author Naoki Shiota
+ *
+ */
 public interface IFlowPusherService extends IFloodlightService {
 	/**
 	 * Create a queue correspondent to the switch.
@@ -31,11 +40,13 @@ public interface IFlowPusherService extends IFloodlightService {
 	 * Delete a queue correspondent to the switch.
 	 * By setting force flag on, queue will be deleted immediately.
 	 * @param sw Switch of which queue is deleted.
-	 * @param force If this flag is on, queue will be deleted immediately
-	 *        regardless of any messages in the queue.
-	 * @return true if queue is successfully deleted.
+	 * @param forceStop If this flag is set to true, queue will be deleted
+	 *        immediately regardless of any messages in the queue.
+	 *        If false, all messages will be sent to switch and queue will
+	 *        be deleted after that.
+	 * @return true if queue is successfully deleted or flagged to be deleted.
 	 */
-	boolean deleteQueue(IOFSwitch sw, boolean force);
+	boolean deleteQueue(IOFSwitch sw, boolean forceStop);
 	
 	/**
 	 * Add a message to the queue of the switch.

@@ -29,11 +29,10 @@ import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 
 /**
- * FlowSynchronizer is a sub-module of FlowProgrammer to keep switches' flow table
- * synchronized with GraphDB. FlowSynchronizer periodically read flow tables from
+ * FlowSynchronizer is an implementation of FlowSyncService.
+ * In addition to IFlowSyncService, FlowSynchronizer periodically reads flow tables from
  * switches and compare them with GraphDB to drop unnecessary flows and/or to install
- * missing flows. FlowSynchronizer also watch the event of addition/deletion of switches
- * and start synchronization.
+ * missing flows.
  * @author Brian
  *
  */
@@ -66,6 +65,10 @@ public class FlowSynchronizer implements IFlowSyncService {
 	}	
     }
 
+    /**
+     * Initialize Synchronizer.
+     * @param pusherService FlowPusherService used for sending messages.
+     */
     public void init(IFlowPusherService pusherService) {
 	pusher = pusherService;
     }
@@ -210,7 +213,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 
 	/**
 	 * Install this FlowEntry to a switch via FlowPusher.
-	 * @param sw
+	 * @param sw Switch to which flow will be installed.
 	 */
 	public void addToSwitch(IOFSwitch sw) {
 	    if(iflowEntry != null) {
@@ -224,7 +227,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	
 	/**
 	 * Remove this FlowEntry from a switch via FlowPusher.
-	 * @param sw
+	 * @param sw Switch from which flow will be removed.
 	 */
 	public void removeFromSwitch(IOFSwitch sw){
 	    if(iflowEntry != null) {
@@ -258,6 +261,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 * the same value; otherwise, returns false.
 	 * 
 	 * @param Object to compare
+	 * @return true if the object has the same Flow Entry ID.
 	 */
 	@Override
 	public boolean equals(Object obj){
