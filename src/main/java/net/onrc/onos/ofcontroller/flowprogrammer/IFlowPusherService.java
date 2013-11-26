@@ -13,6 +13,31 @@ import net.onrc.onos.ofcontroller.util.FlowPath;
 
 public interface IFlowPusherService extends IFloodlightService {
 	/**
+	 * Create a queue correspondent to the switch.
+	 * @param sw Switch to which new queue is attached.
+	 * @return true if new queue is successfully created.
+	 */
+	boolean createQueue(IOFSwitch sw);
+
+	/**
+	 * Delete a queue correspondent to the switch.
+	 * Messages remains in queue will be all sent before queue is deleted.
+	 * @param sw Switch of which queue is deleted.
+	 * @return true if queue is successfully deleted.
+	 */
+	boolean deleteQueue(IOFSwitch sw);
+	
+	/**
+	 * Delete a queue correspondent to the switch.
+	 * By setting force flag on, queue will be deleted immediately.
+	 * @param sw Switch of which queue is deleted.
+	 * @param force If this flag is on, queue will be deleted immediately
+	 *        regardless of any messages in the queue.
+	 * @return true if queue is successfully deleted.
+	 */
+	boolean deleteQueue(IOFSwitch sw, boolean force);
+	
+	/**
 	 * Add a message to the queue of the switch.
 	 * @param sw Switch to which message is pushed.
 	 * @param msg Message object to be added.
@@ -38,6 +63,13 @@ public interface IFlowPusherService extends IFloodlightService {
 	 */
 	boolean add(IOFSwitch sw, IFlowPath flowObj, IFlowEntry flowEntryObj);
 
+	/**
+	 * Set sending rate to a switch.
+	 * @param sw Switch.
+	 * @param rate Rate in bytes/ms.
+	 */
+	public void setRate(IOFSwitch sw, long rate);
+	
 	/**
 	 * Add BARRIER message to queue and wait for reply.
 	 * @param sw Switch to which barrier message is pushed.

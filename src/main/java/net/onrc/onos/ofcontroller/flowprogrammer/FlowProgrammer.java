@@ -22,10 +22,19 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
+/**
+ * FlowProgrammer is a module responsible to maintain flows installed to switches.
+ * FlowProgrammer consists of FlowPusher and FlowSynchronizer.
+ * FlowPusher manages the rate of installation, and FlowSynchronizer synchronizez
+ * flows between GraphDB and switches.
+ * @author Brian
+ *
+ */
 public class FlowProgrammer implements IFloodlightModule, 
 				       IOFMessageListener,
 				       IOFSwitchListener {
     @SuppressWarnings("unused")
+    // flag to enable FlowSynchronizer
     private static final boolean enableFlowSync = false;
     protected static Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
     protected volatile IFloodlightProviderService floodlightProvider;
@@ -36,7 +45,7 @@ public class FlowProgrammer implements IFloodlightModule,
     private static final int NUM_PUSHER_THREAD = 1;
 
     protected FlowSynchronizer synchronizer;
-        
+    
     public FlowProgrammer() {
 	pusher = new FlowPusher(NUM_PUSHER_THREAD);
 	if (enableFlowSync) {
