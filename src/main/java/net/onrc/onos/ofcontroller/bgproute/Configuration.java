@@ -12,6 +12,7 @@ public class Configuration {
 	private long bgpdAttachmentDpid;
 	private short bgpdAttachmentPort;
 	private MACAddress bgpdMacAddress;
+	private short vlan;
 	private List<String> switches;
 	private List<Interface> interfaces;
 	private List<BgpPeer> peers;
@@ -46,16 +47,25 @@ public class Configuration {
 	public void setBgpdMacAddress(String strMacAddress) {
 		this.bgpdMacAddress = MACAddress.valueOf(strMacAddress);
 	}
-
+	
 	public List<String> getSwitches() {
 		return Collections.unmodifiableList(switches);
+	}
+	
+	@JsonProperty("vlan")
+	public void setVlan(short vlan) {
+		this.vlan = vlan;
+	}
+	
+	public short getVlan() {
+		return vlan;
 	}
 
 	@JsonProperty("switches")
 	public void setSwitches(List<String> switches) {
 		this.switches = switches;
 	}
-
+	
 	public List<Interface> getInterfaces() {
 		return Collections.unmodifiableList(interfaces);
 	}

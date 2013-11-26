@@ -19,7 +19,7 @@ import net.floodlightcontroller.storage.memory.MemoryStorageSource;
 import net.floodlightcontroller.topology.TopologyManager;
 
 public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
-	protected static Logger log = LoggerFactory.getLogger(FloodlightTestModuleLoader.class);
+	protected final static Logger log = LoggerFactory.getLogger(FloodlightTestModuleLoader.class);
 	
 	// List of default modules to use unless specified otherwise
 	public static final Class<? extends IFloodlightModule> DEFAULT_STORAGE_SOURCE =

@@ -61,7 +61,7 @@ public class TopologyManager implements
         IRoutingService, ILinkDiscoveryListener,
         IOFMessageListener, IHAListener {
 
-    protected static Logger log = LoggerFactory.getLogger(TopologyManager.class);
+    protected final static Logger log = LoggerFactory.getLogger(TopologyManager.class);
 
     public static final String CONTEXT_TUNNEL_ENABLED = 
             "com.bigswitch.floodlight.topologymanager.tunnelEnabled";

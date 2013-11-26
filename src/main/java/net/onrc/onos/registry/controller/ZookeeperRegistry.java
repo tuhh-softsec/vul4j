@@ -49,7 +49,7 @@ import com.netflix.curator.x.discovery.ServiceInstance;
  */
 public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistryService {
 
-	protected static Logger log = LoggerFactory.getLogger(ZookeeperRegistry.class);
+	protected final static Logger log = LoggerFactory.getLogger(ZookeeperRegistry.class);
 	protected String controllerId = null;
 	
 	protected IRestApiService restApi;

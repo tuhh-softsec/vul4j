@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -128,7 +127,7 @@ implements IOFMessageListener, IOFSwitchListener,
 IStorageSourceListener, ILinkDiscoveryService,
 IFloodlightModule, IInfoProvider, IHAListener {
 	protected IFloodlightProviderService controller;
-    protected static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
+    protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
 
     // Names of table/fields for links in the storage API
     private static final String LINK_TABLE_NAME = "controller_link";
@@ -1393,7 +1392,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
     /**
      * When a switch disconnects we remove any links from our map and notify.
-     * @param The id of the switch
      */
     @Override
     public void removedSwitch(IOFSwitch iofSwitch) {

@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import net.onrc.onos.ofcontroller.util.serializers.FlowIdDeserializer;
 import net.onrc.onos.ofcontroller.util.serializers.FlowIdSerializer;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -20,7 +21,7 @@ public class FlowId implements Comparable<FlowId> {
      * Default constructor.
      */
     public FlowId() {
-	this.value = 0;
+	this.value = -1;
     }
 
     /**
@@ -65,6 +66,16 @@ public class FlowId implements Comparable<FlowId> {
      */
     public void setValue(long value) {
 	this.value = value;
+    }
+
+    /**
+     * Test whether the Flow ID is valid.
+     *
+     * @return true if the Flow ID is valid, otherwise false.
+     */
+    @JsonIgnore
+    public boolean isValid() {
+	return (this.value() != -1);
     }
 
     /**

@@ -40,7 +40,7 @@ import net.floodlightcontroller.storage.IStorageSourceService;
  */
 @LogMessageCategory("Static Flow Pusher")
 public class StaticFlowEntryPusherResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(StaticFlowEntryPusherResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(StaticFlowEntryPusherResource.class);
     
     /**
      * Checks to see if the user matches IP information without

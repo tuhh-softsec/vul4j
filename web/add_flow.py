@@ -352,6 +352,9 @@ def compute_flow_path(parsed_args, data_path):
   flow_path = {}
   flow_path['flowId'] = flow_id
   flow_path['installerId'] = installer_id
+  # NOTE: The 'flowPathType' might be rewritten later
+  flow_path['flowPathType'] = 'FP_TYPE_EXPLICIT_PATH'
+  flow_path['flowPathUserState'] = 'FP_USER_ADD'
   flow_path['flowPathFlags'] = flowPathFlags
 
   if (len(match) > 0):
@@ -440,6 +443,8 @@ def exec_monitoring_by_onos(parsed_args):
     parsed_args[idx]['actionOutputEnabled'] = False
 
     flow_path = compute_flow_path(parsed_args[idx], data_path)
+    flow_path['flowPathType'] = 'FP_TYPE_SHORTEST_PATH'
+
     add_shortest_path_flow(flow_path)
 
     idx = idx + 1
@@ -486,7 +491,7 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "    Flags:\n"
   usage_msg = usage_msg + "        -m [monitorname]  Monitor and maintain the installed shortest path(s)\n"
   usage_msg = usage_msg + "                          If 'monitorname' is specified and is set to 'ONOS'\n"
-  usage_msg = usage_msg + "                          ((case insensitive), then the flow generation and\n"
+  usage_msg = usage_msg + "                          (case insensitive), then the flow generation and\n"
   usage_msg = usage_msg + "                          maintanenance is done by ONOS itself.\n"
   usage_msg = usage_msg + "                          Otherwise, it is done by this script.\n"
   usage_msg = usage_msg + "        -f <filename>     Read the flow(s) to install from a file\n"

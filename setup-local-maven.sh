@@ -4,6 +4,9 @@ if [ -z "${MVN}" ]; then
     MVN="mvn"
 fi
 
+# Kryo2 workaround
+${MVN} -f kryo2/pom.xml package exec:exec
+
 ${MVN} install:install-file -Dfile=./lib/curator-framework-1.3.5-SNAPSHOT.jar -DgroupId=com.netflix.curator -DartifactId=curator-framework -Dversion=1.3.5-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
 ${MVN} install:install-file -Dfile=./lib/curator-client-1.3.5-SNAPSHOT.jar -DgroupId=com.netflix.curator -DartifactId=curator-client -Dversion=1.3.5-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
 ${MVN} install:install-file -Dfile=./lib/curator-recipes-1.3.5-SNAPSHOT.jar -DgroupId=com.netflix.curator -DartifactId=curator-recipes -Dversion=1.3.5-SNAPSHOT -Dpackaging=jar -DgeneratePom=true

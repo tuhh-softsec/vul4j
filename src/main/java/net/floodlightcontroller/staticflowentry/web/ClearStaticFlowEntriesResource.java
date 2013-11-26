@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ClearStaticFlowEntriesResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(ClearStaticFlowEntriesResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(ClearStaticFlowEntriesResource.class);
     
     @Get
     public void ClearStaticFlowEntries() {

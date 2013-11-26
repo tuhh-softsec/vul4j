@@ -2,8 +2,8 @@ package net.onrc.onos.ofcontroller.flowmanager.web;
 
 import java.util.ArrayList;
 
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
+import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
 import org.restlet.resource.Get;
@@ -11,12 +11,28 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Flow Manager REST API implementation: Get summary of all installed
+ * flows by all installers in a given range.
+ *
+ * The "{flow-id}" request attribute value is the Flow ID of the flow in the
+ * flow range to get.
+ * The "{max-flows}" request attribute value is the maximum number of flows
+ * to be returned.
+ *
+ *   GET /wm/flow/getsummary/{flow-id}/{max-flows}/json"
+ */
 public class GetSummaryFlowsResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(GetSummaryFlowsResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(GetSummaryFlowsResource.class);
 
+    /**
+     * Implement the API.
+     *
+     * @return the collection of Flow states if any found, otherwise null.
+     */
     @Get("json")
-    public ArrayList<IFlowPath> retrieve() {
-    	ArrayList<IFlowPath> result = null;
+    public ArrayList<FlowPath> retrieve() {
+    	ArrayList<FlowPath> result = null;
     	
     	FlowId flowId;
     	int maxFlows = 0;

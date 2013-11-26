@@ -55,6 +55,7 @@ public class GraphDBConnectionTest {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	private void expectDBConnectionAvailable() throws Exception {
 		isGraphOpen = false;
 		
@@ -62,7 +63,7 @@ public class GraphDBConnectionTest {
 		mockStatic(TitanFactory.class);
 		mockStatic(EventTransactionalGraph.class);
 		graph = createMock(TitanGraph.class);
-		eg = createMock(EventTransactionalGraph.class);
+		eg = (EventTransactionalGraph<TitanGraph>)createMock(EventTransactionalGraph.class);
 		
 		// setup expectations
 		expect(graph.isOpen()).andAnswer(new IAnswer<Boolean>() {
@@ -86,6 +87,7 @@ public class GraphDBConnectionTest {
 		graph.createKeyIndex("flow_id", Vertex.class);
 		graph.createKeyIndex("flow_entry_id", Vertex.class);
 		graph.createKeyIndex("switch_state", Vertex.class);
+		graph.createKeyIndex("ipv4_address", Vertex.class);
 		graph.commit();
 		expectNew(EventTransactionalGraph.class, graph).andReturn(eg);
 	}

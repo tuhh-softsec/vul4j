@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author readams
  */
 public class AllSwitchStatisticsResource extends SwitchResourceBase {
-    protected static Logger log = 
+    protected final static Logger log = 
         LoggerFactory.getLogger(AllSwitchStatisticsResource.class);
     
     @Get("json")

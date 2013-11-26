@@ -47,7 +47,7 @@ import org.openflow.util.HexString;
  */
 @LogMessageCategory("Static Flow Pusher")
 public class StaticFlowEntries {
-    protected static Logger log = LoggerFactory.getLogger(StaticFlowEntries.class);
+    protected final static Logger log = LoggerFactory.getLogger(StaticFlowEntries.class);
     
     private static class SubActionStruct {
         OFAction action;

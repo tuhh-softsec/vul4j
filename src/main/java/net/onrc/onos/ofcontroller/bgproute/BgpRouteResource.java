@@ -13,22 +13,8 @@ import org.slf4j.LoggerFactory;
 
 public class BgpRouteResource extends ServerResource {
 
-	protected static Logger log = LoggerFactory.getLogger(BgpRouteResource.class);
+	protected final static Logger log = LoggerFactory.getLogger(BgpRouteResource.class);
 
-	private String addrToString(byte [] addr) {
-		String str = "";
-
-		for (int i = 0; i < 4; i++) {
-			int val = (addr[i] & 0xff);
-			str += val;
-			if (i != 3)
-				str += ".";
-		}
-
-		return str;
-	}
-
-	//@SuppressWarnings("unused")
 	@Get
 	public String get(String fmJson) {
 		String dest = (String) getRequestAttributes().get("dest");
@@ -38,44 +24,22 @@ public class BgpRouteResource extends ServerResource {
 
 		if (dest != null) {
 			//TODO Needs to be changed to use the new RestClient.get().
-			
-			
-			//Prefix p;
-			//try {
-			//	p = new Prefix(dest, 32);
-			//} catch (UnknownHostException e) {
-			//if (p == null) {
-			//	return "[GET]: dest address format is wrong";
-			//}
 
 			// the dest here refers to router-id
 			//bgpdRestIp includes port number, such as 1.1.1.1:8080
 			String BGPdRestIp = bgpRoute.getBGPdRestIp();
 			String url="http://"+BGPdRestIp+"/wm/bgp/"+dest;
 
-			RestClient.get(url);
+			//Doesn't actually do anything with the response
+			RestClient.get(url); 
 			
 			output="Get rib from bgpd finished!\n";
 			return output;
 		} 
 		else {
-			//Ptree ptree = bgpRoute.getPtree();
 			IPatriciaTrie<RibEntry> ptree = bgpRoute.getPtree();
 			output += "{\n  \"rib\": [\n";
 			boolean printed = false;
-			
-			/*
-			for (PtreeNode node = ptree.begin(); node!= null; node = ptree.next(node)) {
-				if (node.rib == null) {
-					continue;
-				}
-				if (printed == true) {
-					output += ",\n";
-				}
-				output += "    {\"prefix\": \"" + addrToString(node.key) + "/" + node.keyBits +"\", ";
-				output += "\"nexthop\": \"" + addrToString(node.rib.nextHop.getAddress()) +"\"}";
-				printed = true;
-			}*/
 			
 			synchronized(ptree) {
 				Iterator<IPatriciaTrie.Entry<RibEntry>> it = ptree.iterator();
@@ -88,55 +52,43 @@ public class BgpRouteResource extends ServerResource {
 					
 					output += "    {\"prefix\": \"" + entry.getPrefix() +"\", ";
 					output += "\"nexthop\": \"" + entry.getValue().getNextHop().getHostAddress() +"\"}";
-					//output += ",\n";
 					
 					printed = true;
 				}
 			}
 			
-			//output += "{\"router_id\": \"" + addrToString(node.rib.routerId.getAddress()) +"\"}\n";
 			output += "\n  ]\n}\n";
 		}
 		
 		return output;
 	}
 
-	//unused?
-	/*
-	public static ByteBuffer toByteBuffer(String value) throws UnsupportedEncodingException {
-		return ByteBuffer.wrap(value.getBytes("UTF-8"));
-	}
-	*/
-
-	//unused?
-	/*
-	public static String toString(ByteBuffer buffer) throws UnsupportedEncodingException {
-		byte[] bytes = new byte[buffer.remaining()];
-		buffer.get(bytes);
-		return new String(bytes, "UTF-8");
-	}
-	*/
-
 	@Post
 	public String store(String fmJson) {
 		IBgpRouteService bgpRoute = (IBgpRouteService) getContext().getAttributes().
 				get(IBgpRouteService.class.getCanonicalName());
 
-		//Ptree ptree = bgpRoute.getPtree();
-
+		String strSysuptime = (String) getRequestAttributes().get("sysuptime");
+		String strSequence = (String) getRequestAttributes().get("sequence");
 		String routerId = (String) getRequestAttributes().get("routerid");
 		String prefix = (String) getRequestAttributes().get("prefix");
 		String mask = (String) getRequestAttributes().get("mask");
 		String nexthop = (String) getRequestAttributes().get("nexthop");
 		String capability = (String) getRequestAttributes().get("capability");
+		
+		log.debug("sysuptime: {}", strSysuptime);
+		log.debug("sequence: {}", strSequence);
 
 		String reply = "";
 
 		if (capability == null) {
 			// this is a prefix add
 			Prefix p;
+			long sysUpTime, sequenceNum;
 			try {
 				p = new Prefix(prefix, Integer.valueOf(mask));
+				sysUpTime = Long.parseLong(strSysuptime);
+				sequenceNum = Long.parseLong(strSequence);
 			} catch (NumberFormatException e) {
 				reply = "[POST: mask format is wrong]";
 				log.info(reply);
@@ -147,21 +99,9 @@ public class BgpRouteResource extends ServerResource {
 				return reply + "\n";
 			}
 			
-			RibEntry rib = new RibEntry(routerId, nexthop);
+			RibEntry rib = new RibEntry(routerId, nexthop, sysUpTime, sequenceNum);
 
 			bgpRoute.newRibUpdate(new RibUpdate(Operation.UPDATE, p, rib));
-			
-			/*
-			PtreeNode node = ptree.acquire(p.getAddress(), p.getPrefixLength());
-			
-			if (node.rib != null) {
-				node.rib = null;
-				ptree.delReference(node);
-			}
-			node.rib = rib;
-
-			bgpRoute.prefixAdded(node);
-			*/
 			
 			reply = "[POST: " + prefix + "/" + mask + ":" + nexthop + "]";
 			log.info(reply);
@@ -185,21 +125,27 @@ public class BgpRouteResource extends ServerResource {
 		IBgpRouteService bgpRoute = (IBgpRouteService)getContext().getAttributes().
 				get(IBgpRouteService.class.getCanonicalName());
 
-		//Ptree ptree = bgpRoute.getPtree();
-
+		String strSysuptime = (String) getRequestAttributes().get("sysuptime");
+		String strSequence = (String) getRequestAttributes().get("sequence");
 		String routerId = (String) getRequestAttributes().get("routerid");
 		String prefix = (String) getRequestAttributes().get("prefix");
 		String mask = (String) getRequestAttributes().get("mask");
 		String nextHop = (String) getRequestAttributes().get("nexthop");
 		String capability = (String) getRequestAttributes().get("capability");
 
+		log.debug("sysuptime: {}", strSysuptime);
+		log.debug("sequence: {}", strSequence);
+		
 		String reply = "";
 
 		if (capability == null) {
 			// this is a prefix delete
 			Prefix p;
+			long sysUpTime, sequenceNum;
 			try {
 				p = new Prefix(prefix, Integer.valueOf(mask));
+				sysUpTime = Long.parseLong(strSysuptime);
+				sequenceNum = Long.parseLong(strSequence);
 			} catch (NumberFormatException e) {
 				reply = "[DELE: mask format is wrong]";
 				log.info(reply);
@@ -210,32 +156,9 @@ public class BgpRouteResource extends ServerResource {
 				return reply + "\n";
 			}
 			
-			RibEntry r = new RibEntry(routerId, nextHop);
+			RibEntry r = new RibEntry(routerId, nextHop, sysUpTime, sequenceNum);
 			
 			bgpRoute.newRibUpdate(new RibUpdate(Operation.DELETE, p, r));
-			
-			/*
-			PtreeNode node = ptree.lookup(p.getAddress(), p.getPrefixLength());
-			
-			//Remove the flows from the switches before the rib is lost
-			//Theory: we could get a delete for a prefix not in the Ptree.
-			//This would result in a null node being returned. We could get a delete for
-			//a node that's not actually there, but is a aggregate node. This would result
-			//in a non-null node with a null rib. Only a non-null node with a non-null
-			//rib is an actual prefix in the Ptree.
-			if (node != null && node.rib != null){
-				bgpRoute.prefixDeleted(node);
-			}
-
-			
-
-			if (node != null && node.rib != null) {
-				if (r.equals(node.rib)) {
-					node.rib = null;
-					ptree.delReference(node);					
-				}
-			}
-			*/
 			
 			reply =reply + "[DELE: " + prefix + "/" + mask + ":" + nextHop + "]";
 		}

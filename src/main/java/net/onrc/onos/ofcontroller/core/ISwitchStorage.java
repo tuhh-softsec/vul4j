@@ -1,7 +1,6 @@
 package net.onrc.onos.ofcontroller.core;
 
-import java.util.Collection;
-
+import java.util.List;
 
 import net.floodlightcontroller.core.IOFSwitch;
 
@@ -15,33 +14,47 @@ public interface ISwitchStorage extends INetMapStorage {
 	}
 	
 	/*
-	 * Update the switch details
-	 */
-	public void update(String dpid,SwitchState state, DM_OPERATION op);
-	/*
-	 * Associate a port on switch
-	 */
-	public void addPort(String dpid, OFPhysicalPort port);
-	/*
-	 * Add a switch and all its associated ports
-	 */
-	public void addSwitch(IOFSwitch sw);
-	/*
-	 * Add a switch
-	 */
-	public void addSwitch(String dpid);
-	/*
-	 * Delete switch and associated ports
-	 */
-	public void deleteSwitch(String dpid);
-	/*
-	 * Delete a port on a switch by num
-	 */
-	public void deletePort(String dpid, short port);
-	/*
 	 * Initialize
 	 */
 	public void init(String conf);
-	
+	/*
+	 * Update the switch details
+	 */
+	public boolean updateSwitch(String dpid, SwitchState state, DM_OPERATION op);
+	/*
+	 * Add a switch and all its associated ports
+	 */
+	public boolean addSwitch(IOFSwitch sw);
+	/*
+	 * Add a switch
+	 */
+	public boolean addSwitch(String dpid);
+	/*
+	 * Delete switch and associated ports
+	 */
+	public boolean deleteSwitch(String dpid);
+	/*
+	 * Deactivate the switch and associated ports
+	 */
+	public boolean deactivateSwitch(String dpid);
+	/*
+	 * Update the port details
+	 */
+	public boolean updatePort(String dpid, short port, int state, String desc);
+	/*
+	 * Associate a port on switch
+	 */
+	public boolean addPort(String dpid, OFPhysicalPort port);
+	/*
+	 * Delete a port on a switch by num
+	 */
+	public boolean deletePort(String dpid, short port);
 
+	/**
+	 * Get list of all ports on the switch specified by given DPID.
+	 *
+	 * @param dpid DPID of desired switch.
+	 * @return List of port IDs. Empty list if no port was found.
+	 */
+	public List<Short> getPorts(String dpid);
 }

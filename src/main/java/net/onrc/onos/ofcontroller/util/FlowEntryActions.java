@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.util;
 
 import java.util.ArrayList;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -68,7 +69,7 @@ public class FlowEntryActions {
     /**
      * Add a Flow Entry Action.
      *
-     * @param FlowEntryAction the Flow Entry Action to add.
+     * @param flowEntryAction the Flow Entry Action to add.
      */
     public void addAction(FlowEntryAction flowEntryAction) {
 	actions.add(flowEntryAction);
@@ -79,6 +80,7 @@ public class FlowEntryActions {
      *
      * @return true if the set of actions is empty, otherwise false.
      */
+    @JsonIgnore
     public Boolean isEmpty() {
 	return actions.isEmpty();
     }

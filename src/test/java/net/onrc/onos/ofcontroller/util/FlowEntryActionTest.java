@@ -19,7 +19,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionOutputActionOutput(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionOutput actout = act.new ActionOutput(new Port((short)42));
+		ActionOutput actout = new FlowEntryAction.ActionOutput(new Port((short)42));
 		act.setActionOutput(actout);
 
 		assertEquals("action output",FlowEntryAction.ActionValues.ACTION_OUTPUT , act.actionType());
@@ -68,7 +68,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionSetVlanIdActionSetVlanId(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionSetVlanId actVlan = act.new ActionSetVlanId((short)42);
+		ActionSetVlanId actVlan = new FlowEntryAction.ActionSetVlanId((short)42);
 		act.setActionSetVlanId(actVlan);
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_SET_VLAN_VID , act.actionType());
@@ -100,7 +100,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionSetVlanPriorityActionSetVlanPriority(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionSetVlanPriority actVlan = act.new ActionSetVlanPriority((byte)42);
+		ActionSetVlanPriority actVlan = new FlowEntryAction.ActionSetVlanPriority((byte)42);
 		act.setActionSetVlanPriority(actVlan);
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_SET_VLAN_PCP , act.actionType());
@@ -132,7 +132,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionStripVlanActionStripVlan(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionStripVlan actVlan = act.new ActionStripVlan();
+		ActionStripVlan actVlan = new FlowEntryAction.ActionStripVlan();
 		act.setActionStripVlan(actVlan);
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_STRIP_VLAN , act.actionType());
@@ -165,7 +165,7 @@ public class FlowEntryActionTest {
 	public void testSetActionSetEthernetSrcAddrActionSetEthernetAddr(){
 		FlowEntryAction act = new FlowEntryAction();
 		byte[] mac = { 1, 2, 3, 4, 5, 6 };
-		ActionSetEthernetAddr setEth = act.new ActionSetEthernetAddr(new MACAddress(mac));
+		ActionSetEthernetAddr setEth = new FlowEntryAction.ActionSetEthernetAddr(new MACAddress(mac));
 		act.setActionSetEthernetSrcAddr( setEth );
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_SET_DL_SRC , act.actionType());
@@ -200,7 +200,7 @@ public class FlowEntryActionTest {
 	public void testSetActionSetEthernetDstAddrActionSetEthernetAddr(){
 		FlowEntryAction act = new FlowEntryAction();
 		byte[] mac = { 1, 2, 3, 4, 5, 6 };
-		ActionSetEthernetAddr setEth = act.new ActionSetEthernetAddr(new MACAddress(mac));
+		ActionSetEthernetAddr setEth = new FlowEntryAction.ActionSetEthernetAddr(new MACAddress(mac));
 		act.setActionSetEthernetDstAddr( setEth );
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_SET_DL_DST , act.actionType());
@@ -233,7 +233,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionSetIPv4SrcAddrActionSetIPv4Addr(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionSetIPv4Addr setIp = act.new ActionSetIPv4Addr(new IPv4("127.0.0.1"));
+		ActionSetIPv4Addr setIp = new FlowEntryAction.ActionSetIPv4Addr(new IPv4("127.0.0.1"));
 		act.setActionSetIPv4SrcAddr( setIp );
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_SET_NW_SRC , act.actionType());
@@ -266,7 +266,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionSetIPv4DstAddrActionSetIPv4Addr(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionSetIPv4Addr setIp = act.new ActionSetIPv4Addr(new IPv4("127.0.0.1"));
+		ActionSetIPv4Addr setIp = new FlowEntryAction.ActionSetIPv4Addr(new IPv4("127.0.0.1"));
 		act.setActionSetIPv4DstAddr( setIp );
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_SET_NW_DST , act.actionType());
@@ -298,7 +298,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionSetIpToSActionSetIpToS(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionSetIpToS setIpTos = act.new ActionSetIpToS((byte)42);
+		ActionSetIpToS setIpTos = new FlowEntryAction.ActionSetIpToS((byte)42);
 		act.setActionSetIpToS( setIpTos );
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_SET_NW_TOS , act.actionType());
@@ -330,7 +330,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionSetTcpUdpSrcPortActionSetTcpUdpPort(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionSetTcpUdpPort setPorts = act.new ActionSetTcpUdpPort((short)42);
+		ActionSetTcpUdpPort setPorts = new FlowEntryAction.ActionSetTcpUdpPort((short)42);
 		act.setActionSetTcpUdpSrcPort( setPorts );
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_SET_TP_SRC , act.actionType());
@@ -362,7 +362,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionSetTcpUdpDstPortActionSetTcpUdpPort(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionSetTcpUdpPort setPorts = act.new ActionSetTcpUdpPort((short)42);
+		ActionSetTcpUdpPort setPorts = new FlowEntryAction.ActionSetTcpUdpPort((short)42);
 		act.setActionSetTcpUdpDstPort( setPorts );
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_SET_TP_DST , act.actionType());
@@ -394,7 +394,7 @@ public class FlowEntryActionTest {
 	@Test
 	public void testSetActionEnqueueActionEnqueue(){
 		FlowEntryAction act = new FlowEntryAction();
-		ActionEnqueue enq = act.new ActionEnqueue(new Port((short)42), 1);
+		ActionEnqueue enq = new FlowEntryAction.ActionEnqueue(new Port((short)42), 1);
 		act.setActionEnqueue( enq );
 
 		assertEquals("action type",FlowEntryAction.ActionValues.ACTION_ENQUEUE , act.actionType());

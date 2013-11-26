@@ -29,7 +29,7 @@ public class GraphDBConnection implements IDBConnection {
 		}
 	}
 
-	protected static Logger log = LoggerFactory
+	protected final static Logger log = LoggerFactory
 			.getLogger(GraphDBConnection.class);
 	private static GraphDBConnection singleton = new GraphDBConnection();
 	private static TitanGraph graph;
@@ -81,15 +81,19 @@ public class GraphDBConnection implements IDBConnection {
 			if (!s.contains("switch_state")) {
 				graph.createKeyIndex("switch_state", Vertex.class);
 			}
+			if (!s.contains("ipv4_address")) {
+				graph.createKeyIndex("ipv4_address", Vertex.class);
+			}
 			graph.commit();
 			eg = new EventTransactionalGraph<TitanGraph>(graph);
 		}
 		return singleton;
 	}
 
-	/** 
+	/**
 	 * Get a FramedGraph instance of the graph.
 	 */
+	@Override
 	public FramedGraph<TitanGraph> getFramedGraph() {
 		if (isValid()) {
 			FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
@@ -115,6 +119,7 @@ public class GraphDBConnection implements IDBConnection {
 	/**
 	 * Add LocalGraphChangedLister for the graph.
 	 */
+	@Override
 	public void addEventListener(final LocalGraphChangedListener listener) {
 		EventTransactionalGraph<TitanGraph> eg = this.getEventGraph();
 		eg.addListener(listener);
@@ -124,38 +129,49 @@ public class GraphDBConnection implements IDBConnection {
 	/**
 	 * Return whether this connection is valid.
 	 */
+	@Override
 	public Boolean isValid() {
-		return (graph != null || graph.isOpen());
+		return (graph != null && graph.isOpen());
 	}
 
 	/**
 	 * Commit changes for the graph operations.
+	 * @throws Exception 
 	 */
+	@Override
 	public void commit() {
-		try {
+//		// Should not catch exception here! 
+//		try {
 			graph.commit();
-		}
-		catch (Exception e) {
-			log.error("{}", e.toString());
-		}
+//		}
+//		catch (Exception e) {
+//			log.error("{}", e.toString());
+//		}
 	}
 
 	/**
 	 * Rollback changes for the graph operations.
 	 */
+	@Override
 	public void rollback() {
-		try {
+		// Should not catch exception here! 
+//		try {
 			graph.rollback();
-		}
-		catch (Exception e) {
-			log.error("{}", e.toString());
-		}
+//		}
+//		catch (Exception e) {
+//			log.error("{}", e.toString());
+//		}
 	}
 
 	/**
 	 * Close this database connection.
 	 */
+	@Override
 	public void close() {
-		commit();
+		try {
+			commit();
+		} catch (Exception e) {
+			log.error("{}", e.toString());
+		}
 	}
 }

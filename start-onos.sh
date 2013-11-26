@@ -30,10 +30,11 @@ JVM_OPTS="$JVM_OPTS -XX:OnError=crash-logger" ;# For dumping core
 JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 		-XX:+UseThreadPriorities \
 		-XX:ThreadPriorityPolicy=42 \
-                 -XX:+UseCompressedOops \
-            -Dcom.sun.management.jmxremote.port=7189 \
-              -Dcom.sun.management.jmxremote.ssl=false \
-              -Dcom.sun.management.jmxremote.authenticate=false"
+		-XX:+UseCompressedOops \
+		-Dcom.sun.management.jmxremote.port=7189 \
+		-Dcom.sun.management.jmxremote.ssl=false \
+		-Dcom.sun.management.jmxremote.authenticate=false"
+JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 
 # Set ONOS core main class
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
@@ -71,7 +72,8 @@ function start {
   done
 
 # Create a logback file if required
-  cat <<EOF_LOGBACK >${ONOS_LOGBACK}
+  if [ ! -f ${ONOS_LOGBACK} ]; then
+    cat <<EOF_LOGBACK >${ONOS_LOGBACK}
 <configuration scan="true" debug="true">
 <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 <encoder>
@@ -95,6 +97,7 @@ function start {
 </root>
 </configuration>
 EOF_LOGBACK
+  fi
 
   # Run floodlight
   echo "Starting ONOS controller ..."

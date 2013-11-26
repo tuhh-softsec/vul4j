@@ -6,6 +6,9 @@ import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
+/**
+ * REST API implementation for the Flow Manager.
+ */
 public class FlowWebRoutable implements RestletRoutable {
     /**
      * Create the Restlet router and bind to the proper resources.
@@ -15,7 +18,6 @@ public class FlowWebRoutable implements RestletRoutable {
         Router router = new Router(context);
         router.attach("/add/json", AddFlowResource.class);
         router.attach("/add-shortest-path/json", AddShortestPathFlowResource.class);
-        router.attach("/clear/{flow-id}/json", ClearFlowResource.class);
         router.attach("/delete/{flow-id}/json", DeleteFlowResource.class);
         router.attach("/get/{flow-id}/json", GetFlowByIdResource.class);
         router.attach("/getall-by-installer-id/{installer-id}/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json", GetAllFlowsByInstallerIdResource.class);

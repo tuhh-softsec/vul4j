@@ -14,10 +14,23 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Flow Manager REST API implementation: Add a Flow with the Flow
+ * Entries:
+ *
+ *   POST /wm/flow/add/json
+ */
 public class AddFlowResource extends ServerResource {
 
-    protected static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
 
+    /**
+     * Implement the API.
+     *
+     * @param flowJson a string with the JSON representation of the Flow to
+     * add.
+     * @return the Flow ID of the added flow.
+     */
     @Post("json")
     public FlowId store(String flowJson) {
 	FlowId result = new FlowId();
@@ -51,7 +64,7 @@ public class AddFlowResource extends ServerResource {
 
 	// Process the request
 	if (flowPath != null) {
-	    if (flowService.addFlow(flowPath, result, null) != true) {
+	    if (flowService.addFlow(flowPath, result) != true) {
 		result = new FlowId();		// Error: Return empty Flow Id
 	    }
 	}

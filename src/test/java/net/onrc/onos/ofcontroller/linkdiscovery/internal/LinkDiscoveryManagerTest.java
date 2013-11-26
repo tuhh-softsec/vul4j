@@ -58,7 +58,7 @@ import net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager;
 public class LinkDiscoveryManagerTest extends FloodlightTestCase {
 
     private TestLinkDiscoveryManager ldm;
-    protected static Logger log = LoggerFactory.getLogger(LinkDiscoveryManagerTest.class);
+    protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManagerTest.class);
     
     public class TestLinkDiscoveryManager extends LinkDiscoveryManager {
         public boolean isSendLLDPsCalled = false;

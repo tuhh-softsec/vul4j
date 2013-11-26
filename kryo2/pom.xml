@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.onrc.onos</groupId>
+  <artifactId>kryo2</artifactId>
+  <version>2.22</version>
+  <packaging>jar</packaging>
+
+  <name>kyro2</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.esotericsoftware.kryo</groupId>
+      <artifactId>kryo</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>com.esotericsoftware.kryo</pattern>
+                  <shadedPattern>com.esotericsoftware.kryo2</shadedPattern>
+                  <excludes>
+                  </excludes>
+                </relocation>
+              </relocations>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <id>kryo2</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+            <configuration>
+              <executable>mvn</executable>
+              <commandlineArgs>install:install-file -DlocalRepositoryPath=${basedir}/../repo -DcreateChecksum=true -Dpackaging=jar -Dfile=${basedir}/target/${project.build.finalName}.jar -DgroupId=${project.groupId} -DartifactId=${project.artifactId} -Dversion=${project.version}</commandlineArgs>
+            </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

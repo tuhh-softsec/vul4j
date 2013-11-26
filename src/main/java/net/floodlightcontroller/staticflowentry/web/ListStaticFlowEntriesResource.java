@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ListStaticFlowEntriesResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(ListStaticFlowEntriesResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(ListStaticFlowEntriesResource.class);
     
     @Get
     public Map<String, Map<String, OFFlowMod>> ListStaticFlowEntries() {

@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.cmpEq;
 import static org.powermock.api.easymock.PowerMock.*;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -15,11 +16,13 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
-import net.onrc.onos.ofcontroller.routing.TopoRouteService;
+import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
+import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.*;
 
 import org.easymock.EasyMock;
@@ -38,12 +41,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * @author Toshio Koide
  */
+@Ignore
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({FlowManager.class, GraphDBOperation.class, System.class, Executors.class})
+@PrepareForTest({FlowManager.class, FlowDatabaseOperation.class, GraphDBOperation.class, System.class, Executors.class})
 public class FlowManagerTest {
 	private static FloodlightModuleContext context;
 	private static IFloodlightProviderService floodlightProvider;
-	private static TopoRouteService topoRouteService;
+	private static TopologyManager topologyManager;
+	private static IDatagridService datagridService;
 	private static IRestApiService restApi;
 	private static GraphDBOperation op;
 	
@@ -68,23 +73,29 @@ public class FlowManagerTest {
 		// create mock objects
 		context = createMock(FloodlightModuleContext.class);
 		floodlightProvider = createMock(IFloodlightProviderService.class);
-		topoRouteService = createMock(TopoRouteService.class);
+		topologyManager = createMock(TopologyManager.class);
+		datagridService = createMock(IDatagridService.class);
 		restApi = createMock(IRestApiService.class);
 		op = createMock(GraphDBOperation.class);
 
 		// setup expectations
 		expect(context.getServiceImpl(IFloodlightProviderService.class)).andReturn(floodlightProvider);
+		expect(context.getServiceImpl(ITopologyNetService.class)).andReturn(topologyManager);
+		expect(context.getServiceImpl(IDatagridService.class)).andReturn(datagridService);
 		expect(context.getServiceImpl(IRestApiService.class)).andReturn(restApi);
 		expectNew(GraphDBOperation.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(op);
-		expectNew(TopoRouteService.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(topoRouteService);
+		expectNew(TopologyManager.class, new Class<?>[] {String.class}, EasyMock.isA(String.class)).andReturn(topologyManager);
 	}
 	
 	private IFlowPath createIFlowPathMock(long flowId, String installerID,
-			long flowPathFlags,
-			long srcDpid, int srcPort, long dstDpid, int dstPort) {
+			String flowPathType, String flowPathUserState,
+			long flowPathFlags, long srcDpid, int srcPort,
+			long dstDpid, int dstPort) {
 		IFlowPath iFlowPath = createNiceMock(IFlowPath.class);
 		expect(iFlowPath.getFlowId()).andReturn(new FlowId(flowId).toString()).anyTimes();
 		expect(iFlowPath.getInstallerId()).andReturn(installerID).anyTimes();
+		expect(iFlowPath.getFlowPathType()).andReturn(flowPathType).anyTimes();
+		expect(iFlowPath.getFlowPathUserState()).andReturn(flowPathUserState).anyTimes();
 		expect(iFlowPath.getFlowPathFlags()).andReturn(new Long(flowPathFlags)).anyTimes();
 		expect(iFlowPath.getSrcSwitch()).andReturn(new Dpid(srcDpid).toString()).anyTimes();
 		expect(iFlowPath.getSrcPort()).andReturn(new Short((short)srcPort)).anyTimes();
@@ -94,13 +105,16 @@ public class FlowManagerTest {
 	}
 	
 	private FlowPath createTestFlowPath(long flowId, String installerId,
+			String flowPathType, String flowPathUserState,
 			final long flowPathFlags,
 			final long srcDpid, final int srcPort,
-			final long dstDpid, final int dstPort			
+			final long dstDpid, final int dstPort
 			) {
 		FlowPath flowPath = new FlowPath();
 		flowPath.setFlowId(new FlowId(flowId));
 		flowPath.setInstallerId(new CallerId(installerId));
+		flowPath.setFlowPathType(FlowPathType.valueOf(flowPathType));
+		flowPath.setFlowPathUserState(FlowPathUserState.valueOf(flowPathUserState));
 		flowPath.setFlowPathFlags(new FlowPathFlags(flowPathFlags));
 		flowPath.setDataPath(new DataPath() {{
 			setSrcPort(new SwitchPort(new Dpid(srcDpid), new Port((short)srcPort)));
@@ -111,9 +125,9 @@ public class FlowManagerTest {
 	}
 	
 	private ArrayList<FlowPath> createTestFlowPaths() {
-		FlowPath flowPath1 = createTestFlowPath(1, "foo caller id", 0, 1, 1, 2, 2); 
-		FlowPath flowPath2 = createTestFlowPath(2, "caller id", 0, 1, 1, 2, 2); 
-		FlowPath flowPath3 = createTestFlowPath(3, "caller id", 0, 1, 5, 2, 2); 
+		FlowPath flowPath1 = createTestFlowPath(1, "foo caller id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 1, 2, 2); 
+		FlowPath flowPath2 = createTestFlowPath(2, "caller id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 1, 2, 2); 
+		FlowPath flowPath3 = createTestFlowPath(3, "caller id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 5, 2, 2); 
 
 		ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 		flowPaths.add(flowPath1);
@@ -149,7 +163,7 @@ public class FlowManagerTest {
 		replayAll();
 
 		fm.init(context);
-		Boolean result = fm.addFlow(flowPath, flowId, "");
+		Boolean result = fm.addFlow(flowPath, flowId);
 
 		// verify the test
 		verifyAll();
@@ -157,7 +171,7 @@ public class FlowManagerTest {
 	}
 
 	/**
-	 * Test method for {@link FlowManager#addFlow(FlowPath, FlowId, String)}.
+	 * Test method for {@link FlowManager#addFlow(FlowPath, FlowId)}.
 	 * @throws Exception 
 	 */
 	@Test
@@ -186,6 +200,8 @@ public class FlowManagerTest {
 		FlowPath flowPath = new FlowPath();
 		flowPath.setFlowId(new FlowId(0x100));
 		flowPath.setInstallerId(new CallerId("installer id"));
+		flowPath.setFlowPathType(FlowPathType.valueOf("FP_TYPE_SHORTEST_PATH"));
+		flowPath.setFlowPathUserState(FlowPathUserState.valueOf("FP_USER_ADD"));
 		flowPath.setFlowPathFlags(new FlowPathFlags(0));
 		flowPath.setDataPath(dataPath);
 		flowPath.setFlowEntryMatch(match);
@@ -197,13 +213,14 @@ public class FlowManagerTest {
 		createdFlowPath.setFlowId("0x100");
 		createdFlowPath.setType("flow");
 		createdFlowPath.setInstallerId("installer id");
+		createdFlowPath.setFlowPathType("FP_TYPE_SHORTEST_PATH");
+		createdFlowPath.setFlowPathUserState("FP_USER_ADD");
 		createdFlowPath.setFlowPathFlags(new Long((long)0));
 		createdFlowPath.setSrcSwitch("00:00:00:00:00:00:12:34");
 		createdFlowPath.setSrcPort(new Short((short)1));
 		createdFlowPath.setDstSwitch("00:00:00:00:00:00:56:78");
 		createdFlowPath.setDstPort(new Short((short)2));
 		createdFlowPath.setDataPathSummary("data path summary");
-		createdFlowPath.setUserState("FE_USER_ADD");
 		
 		expectPrivate(fm, addFlowEntry, createdFlowPath, flowEntry1)
 			.andReturn(createdFlowEntry1);
@@ -216,55 +233,54 @@ public class FlowManagerTest {
 		replayAll();
 		
 		fm.init(context);
-		Boolean result = fm.addFlow(flowPath, new FlowId(0x100), "data path summary");
+		Boolean result = fm.addFlow(flowPath, new FlowId(0x100));
 
 		// verify the test
 		verifyAll();
 		assertTrue(result);
 	}
-	
+
 	/**
-	 * Test method for {@link FlowManager#deleteAllFlows()}.
-	 * @throws Exception 
+	 * Test method for {@link FlowManager#deleteFlow(FlowId)}.
+	 * @throws Exception
 	 */
 	@Test
-	public final void testDeleteAllFlowsSuccessNormally() throws Exception {
+	public final void testDeleteFlowSuccessNormally() throws Exception {
 		// create mock objects
-		IFlowPath flowPath1 = createNiceMock(IFlowPath.class);
-		IFlowPath flowPath2 = createNiceMock(IFlowPath.class);
+		IFlowPath flowPath = createIFlowPathMock(123, "id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 2, 3, 4);
+		IFlowEntry flowEntry1 = createMock(IFlowEntry.class);
+		IFlowEntry flowEntry2 = createMock(IFlowEntry.class);
+		IFlowEntry flowEntry3 = createMock(IFlowEntry.class);
 		
 		// instantiate required objects
-		ArrayList<IFlowPath> flowPaths = new ArrayList<IFlowPath>();
-		flowPaths.add(flowPath1);
-		flowPaths.add(flowPath2);
 		FlowManager fm = new FlowManager();
-		
+		FlowId flowId = new FlowId(123);
+		ArrayList<IFlowEntry> flowEntries = new ArrayList<IFlowEntry>();
+		flowEntries.add(flowEntry1);
+		flowEntries.add(flowEntry2);
+		flowEntries.add(flowEntry3);
+
 		// setup expectations
 		expectInitWithContext();
-		expect(op.getAllFlowPaths()).andReturn(flowPaths);
-
-		expect(flowPath1.getFlowId()).andReturn("1").anyTimes();
-		expect(op.searchFlowPath(cmpEq(new FlowId(1)))).andReturn(flowPath1);
-		expect(flowPath1.getFlowEntries()).andReturn(new ArrayList<IFlowEntry>());
-		op.removeFlowPath(flowPath1);
-		
-		expect(flowPath2.getFlowId()).andReturn("2").anyTimes();
-		expect(op.searchFlowPath(cmpEq(new FlowId(2)))).andReturn(flowPath2);
-		expect(flowPath2.getFlowEntries()).andReturn(new ArrayList<IFlowEntry>());
-		op.removeFlowPath(flowPath2);
-
+		expect(op.searchFlowPath(cmpEq(flowId))).andReturn(flowPath);
+		expect(flowPath.getFlowEntries()).andReturn(flowEntries);
+		flowPath.removeFlowEntry(flowEntry1);
+		flowPath.removeFlowEntry(flowEntry2);
+		flowPath.removeFlowEntry(flowEntry3);
+		op.removeFlowEntry(flowEntry1);
+		op.removeFlowEntry(flowEntry2);
+		op.removeFlowEntry(flowEntry3);
+		op.removeFlowPath(flowPath);
 		op.commit();
-		expectLastCall().anyTimes();
 
 		// start the test
 		replayAll();
 		
 		fm.init(context);
-		Boolean result = fm.deleteAllFlows();
+		fm.deleteFlow(flowId);
 
 		// verify the test
 		verifyAll();
-		assertTrue(result);
 	}
 	
 	/**
@@ -299,16 +315,16 @@ public class FlowManagerTest {
 	}
 	
 	/**
-	 * Test method for {@link FlowManager#clearAllFlows()}.
+	 * Test method for {@link FlowManager#deleteAllFlows()}.
 	 * @throws Exception 
 	 */
 	@Test
-	public final void testClearAllFlowsSuccessNormally() throws Exception {
+	public final void testDeleteAllFlowsSuccessNormally() throws Exception {
 		// create mock objects
 		IFlowPath flowPath1 = createNiceMock(IFlowPath.class);
 		IFlowPath flowPath2 = createNiceMock(IFlowPath.class);
 		IFlowPath flowPath3 = createNiceMock(IFlowPath.class);
-		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, "clearFlow");
+		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, "deleteFlow");
 		
 		// instantiate required objects
 		ArrayList<IFlowPath> flowPaths = new ArrayList<IFlowPath>();
@@ -323,16 +339,16 @@ public class FlowManagerTest {
 		expect(flowPath1.getFlowId()).andReturn(new FlowId(1).toString());
 		expect(flowPath2.getFlowId()).andReturn(null);
 		expect(flowPath3.getFlowId()).andReturn(new FlowId(3).toString());
-		expect(fm.clearFlow(cmpEq(new FlowId(1)))).andReturn(true);
-		expect(fm.clearFlow(cmpEq(new FlowId(3)))).andReturn(true);
+		expect(fm.deleteFlow(cmpEq(new FlowId(1)))).andReturn(true);
+		expect(fm.deleteFlow(cmpEq(new FlowId(3)))).andReturn(true);
 		
 		// start the test
 		replayAll();
 
 		fm.init(context);
-		Boolean result = fm.clearAllFlows();
+		Boolean result = fm.deleteAllFlows();
 		
-		//verify the test
+		// verify the test
 		verifyAll();
 		assertTrue(result);
 	}
@@ -345,7 +361,7 @@ public class FlowManagerTest {
 	public final void testGetFlowSuccessNormally() throws Exception {
 		// instantiate required objects
 		FlowManager fm = new FlowManager();
-		IFlowPath iFlowPath = createIFlowPathMock(1, "caller id", 0, 1, 1, 2, 2); 
+		IFlowPath iFlowPath = createIFlowPathMock(1, "caller id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 1, 2, 2); 
 
 		// setup expectations
 		expectInitWithContext();
@@ -359,11 +375,15 @@ public class FlowManagerTest {
 		fm.init(context);
 		FlowPath flowPath = fm.getFlow(new FlowId(1));
 		String installerId = flowPath.installerId().toString();
+		String flowPathType = flowPath.flowPathType().toString();
+		String flowPathUserState = flowPath.flowPathUserState().toString();
 		long flowPathFlags = flowPath.flowPathFlags().flags();
 		
 		//verify the test
 		verifyAll();
 		assertEquals("caller id", installerId);
+		assertEquals("FP_TYPE_SHORTEST_PATH", flowPathType);
+		assertEquals("FP_USER_ADD", flowPathUserState);
 		assertEquals(0L, flowPathFlags);
 	}
 	
@@ -443,35 +463,35 @@ public class FlowManagerTest {
 	 */
 	@Test
 	public final void testGetAllFlowsSummarySuccessNormally() throws Exception {
-		final String getAllFlowsWithoutFlowEntries = "getAllFlowsWithoutFlowEntries";
+		final String getAllFlowsWithDataPathSummary = "getAllFlowsWithDataPathSummary";
 		// create mock objects
-		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, getAllFlowsWithoutFlowEntries);
-		IFlowPath flowPath1 = createIFlowPathMock(1, "", 0, 1, 2, 3, 4);
-		IFlowPath flowPath2 = createIFlowPathMock(5, "", 0, 2, 3, 4, 5);
-		IFlowPath flowPath3 = createIFlowPathMock(10, "", 0, 3, 4, 5, 6);
+		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, getAllFlowsWithDataPathSummary);
+		FlowPath flowPath1 = createTestFlowPath(1, "", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 2, 3, 4);
+		FlowPath flowPath2 = createTestFlowPath(5, "", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 2, 3, 4, 5);
+		FlowPath flowPath3 = createTestFlowPath(10, "", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 3, 4, 5, 6);
 
 		// instantiate required objects
-		ArrayList<IFlowPath> flows = new ArrayList<IFlowPath>();
+		ArrayList<FlowPath> flows = new ArrayList<FlowPath>();
 		flows.add(flowPath3);
 		flows.add(flowPath1);
 		flows.add(flowPath2);
 		
 		// setup expectations
 		expectInitWithContext();
-		expectPrivate(fm, getAllFlowsWithoutFlowEntries).andReturn(flows);
+		expectPrivate(fm, getAllFlowsWithDataPathSummary).andReturn(flows);
 
 		// start the test
 		replayAll();
 		
 		fm.init(context);
-		ArrayList<IFlowPath> returnedFlows = fm.getAllFlowsSummary(null, 0);
+		ArrayList<FlowPath> returnedFlows = fm.getAllFlowsSummary(null, 0);
 		
 		// verify the test
 		verifyAll();
 		assertEquals(3, returnedFlows.size());
-		assertEquals(1, new FlowId(returnedFlows.get(0).getFlowId()).value());
-		assertEquals(5, new FlowId(returnedFlows.get(1).getFlowId()).value());
-		assertEquals(10, new FlowId(returnedFlows.get(2).getFlowId()).value());
+		assertEquals(1, new FlowId(returnedFlows.get(0).flowId().value()).value());
+		assertEquals(5, new FlowId(returnedFlows.get(1).flowId().value()).value());
+		assertEquals(10, new FlowId(returnedFlows.get(2).flowId().value()).value());
 	}
 
 	/**
@@ -481,8 +501,8 @@ public class FlowManagerTest {
 	@Test
 	public final void testGetAllFlowsSuccessNormally() throws Exception {
 		// create mock objects
-		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", 0, 1, 1, 2, 2); 
-		IFlowPath iFlowPath2 = createIFlowPathMock(2, "caller id", 0, 2, 5, 3, 5);
+		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 1, 2, 2); 
+		IFlowPath iFlowPath2 = createIFlowPathMock(2, "caller id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 2, 5, 3, 5);
 		
 		// instantiate required objects
 		ArrayList<IFlowPath> flowPaths = new ArrayList<IFlowPath>();
@@ -533,6 +553,8 @@ public class FlowManagerTest {
 		FlowPath paramFlow = new FlowPath();
 		paramFlow.setFlowId(new FlowId(100));
 		paramFlow.setInstallerId(new CallerId("installer id"));
+		paramFlow.setFlowPathType(FlowPathType.valueOf("FP_TYPE_SHORTEST_PATH"));
+		paramFlow.setFlowPathUserState(FlowPathUserState.valueOf("FP_USER_ADD"));
 		paramFlow.setFlowPathFlags(new FlowPathFlags(0));
 		paramFlow.setDataPath(dataPath);
 		paramFlow.setFlowEntryMatch(match);
@@ -548,6 +570,8 @@ public class FlowManagerTest {
 						FlowPath flowPath = (FlowPath)EasyMock.getCurrentArguments()[0];
 						assertEquals(flowPath.flowId().value(), 100);
 						assertEquals(flowPath.installerId().toString(), "installer id");
+						assertEquals(flowPath.flowPathType().toString(), "PF_TYPE_SHORTEST_PATH");
+						assertEquals(flowPath.flowPathUserState().toString(), "PF_USER_STATE");
 						assertEquals(flowPath.flowPathFlags().flags(), 0);
 						assertEquals(flowPath.dataPath().srcPort().toString(),
 								new SwitchPort(new Dpid(1), new Port((short)3)).toString());
@@ -569,6 +593,8 @@ public class FlowManagerTest {
 		verifyAll();
 		assertEquals(paramFlow.flowId().value(), resultFlow.flowId().value());
 		assertEquals(paramFlow.installerId().toString(), resultFlow.installerId().toString());
+		assertEquals(paramFlow.flowPathType().toString(), resultFlow.flowPathType().toString());
+		assertEquals(paramFlow.flowPathUserState().toString(), resultFlow.flowPathUserState().toString());
 		assertEquals(paramFlow.flowPathFlags().flags(), resultFlow.flowPathFlags().flags());
 		assertEquals(paramFlow.dataPath().toString(), resultFlow.dataPath().toString());
 		assertEquals(paramFlow.flowEntryMatch().toString(), resultFlow.flowEntryMatch().toString());
@@ -696,7 +722,7 @@ public class FlowManagerTest {
 
 		// verify the test
 		verifyAll();
-		assertEquals(2, md.size());
+		assertEquals(4, md.size());
 		assertTrue(md.contains(IFloodlightProviderService.class));
 		assertTrue(md.contains(IRestApiService.class));
 	}
@@ -759,85 +785,6 @@ public class FlowManagerTest {
 	
 	// other methods
 	
-	
-	/**
-	 * Test method for {@link FlowManager#clearFlow(FlowId)}.
-	 * @throws Exception
-	 */
-	@Test
-	public final void testClearFlowSuccessNormally() throws Exception {
-		// create mock objects
-		IFlowPath flowPath = createIFlowPathMock(123, "id", 0, 1, 2, 3, 4);
-		IFlowEntry flowEntry1 = createMock(IFlowEntry.class);
-		IFlowEntry flowEntry2 = createMock(IFlowEntry.class);
-		IFlowEntry flowEntry3 = createMock(IFlowEntry.class);
-		
-		// instantiate required objects
-		FlowManager fm = new FlowManager();
-		FlowId flowId = new FlowId(123);
-		ArrayList<IFlowEntry> flowEntries = new ArrayList<IFlowEntry>();
-		flowEntries.add(flowEntry1);
-		flowEntries.add(flowEntry2);
-		flowEntries.add(flowEntry3);
-
-		// setup expectations
-		expectInitWithContext();
-		expect(op.searchFlowPath(cmpEq(flowId))).andReturn(flowPath);
-		expect(flowPath.getFlowEntries()).andReturn(flowEntries);
-		flowPath.removeFlowEntry(flowEntry1);
-		flowPath.removeFlowEntry(flowEntry2);
-		flowPath.removeFlowEntry(flowEntry3);
-		op.removeFlowEntry(flowEntry1);
-		op.removeFlowEntry(flowEntry2);
-		op.removeFlowEntry(flowEntry3);
-		op.removeFlowPath(flowPath);
-		op.commit();
-
-		// start the test
-		replayAll();
-		
-		fm.init(context);
-		fm.clearFlow(flowId);
-
-		// verify the test
-		verifyAll();
-	}
-	
-	/**
-	 * Test method for {@link FlowManager#getAllFlowsWithoutFlowEntries()}.
-	 * @throws Exception 
-	 */
-	@Test
-	public final void testGetAllFlowsWithoutFlowEntriesSuccessNormally() throws Exception {
-		// create mock objects
-		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", 0, 1, 1, 2, 2); 
-		IFlowPath iFlowPath2 = createIFlowPathMock(2, "caller id", 0, 2, 5, 3, 5);
-		
-		// instantiate required objects
-		ArrayList<IFlowPath> flowPaths = new ArrayList<IFlowPath>();
-		flowPaths.add(iFlowPath1);
-		flowPaths.add(iFlowPath2);
-		FlowManager fm = new FlowManager();
-		
-		// setup expectations
-		expectInitWithContext();
-		op.commit();
-		expect(op.getAllFlowPaths()).andReturn(flowPaths);
-		
-		// start the test
-		replayAll();
-		
-		fm.init(context);
-		ArrayList<IFlowPath> result = fm.getAllFlowsWithoutFlowEntries();
-		
-		// verify the test
-		verifyAll();
-		assertEquals(iFlowPath1, result.get(0));
-		assertEquals(iFlowPath2, result.get(1));
-		
-		// TODO: does this method just return the replica of the flow paths?
-	}
-	
 	/**
 	 * Test method for {@link FlowManager#reconcileFlow(IFlowPath, DataPath)}.
 	 * @throws Exception
@@ -847,7 +794,7 @@ public class FlowManagerTest {
 		final String addFlowEntry = "addFlowEntry";
 		
 		// create mock objects
-		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", 0, 1, 1, 2, 2);
+		IFlowPath iFlowPath1 = createIFlowPathMock(1, "caller id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 1, 2, 2);
 		IFlowEntry iFlowEntry1 = createMock(IFlowEntry.class);
 		IFlowEntry iFlowEntry2 = createMock(IFlowEntry.class);
 		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, addFlowEntry);
@@ -885,7 +832,6 @@ public class FlowManagerTest {
 
 		// setup expectations
 		expectInitWithContext();
-		expect(floodlightProvider.getSwitches()).andReturn(null); // TODO: why is this needed?
 		expect(iFlowPath1.getFlowEntries()).andReturn(oldFlowEntries);
 		iFlowEntry1.setUserState("FE_USER_DELETE");
 		iFlowEntry1.setSwitchState("FE_SWITCH_NOT_UPDATED");
@@ -898,7 +844,15 @@ public class FlowManagerTest {
 		replayAll();
 		
 		fm.init(context);
-		Boolean result = fm.reconcileFlow(iFlowPath1, dataPath);
+		// Use reflection to test the private method
+		// Boolean result = fm.reconcileFlow(iFlowPath1, dataPath);
+		Class fmClass = FlowManager.class;
+		Method method = fmClass.getDeclaredMethod(
+			"reconcileFlow",
+			new Class[] { IFlowPath.class, DataPath.class });
+		method.setAccessible(true);
+		Boolean result = (Boolean)method.invoke(fm,
+			new Object[] { iFlowPath1, dataPath });
 		
 		// verify the test
 		verifyAll();
@@ -914,7 +868,7 @@ public class FlowManagerTest {
 	public final void testInstallFlowEntryWithIFlowPathSuccessNormally() throws Exception {
 		// create mock object
 		IOFSwitch iofSwitch = createNiceMock(IOFSwitch.class);
-		IFlowPath iFlowPath = createIFlowPathMock(1, "id", 0, 1, 2, 3, 4); 
+		IFlowPath iFlowPath = createIFlowPathMock(1, "id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 2, 3, 4); 
 		IFlowEntry iFlowEntry = createMock(IFlowEntry.class);
 		BasicFactory basicFactory = createMock(BasicFactory.class);
 		
@@ -952,7 +906,16 @@ public class FlowManagerTest {
 		replayAll();
 		
 		fm.init(context);
-		Boolean result = fm.installFlowEntry(iofSwitch, iFlowPath, iFlowEntry);
+		// Use reflection to test the private method
+		// Boolean result = fm.installFlowEntry(iofSwitch, iFlowPath, iFlowEntry);
+		Class fmClass = FlowManager.class;
+		Method method = fmClass.getDeclaredMethod(
+			"installFlowEntry",
+			new Class[] { IOFSwitch.class, IFlowPath.class, IFlowEntry.class });
+		method.setAccessible(true);
+		Boolean result = (Boolean)method.invoke(fm,
+			new Object[] { iofSwitch, iFlowPath, iFlowEntry });
+
 		
 		// verify the test
 		verifyAll();
@@ -975,24 +938,6 @@ public class FlowManagerTest {
 	 */
 	@Ignore @Test
 	public final void testRemoveFlowEntrySuccessNormally() {
-		fail("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link FlowManager#installRemoteFlowEntry(FlowPath, FlowEntry)}.
-	 * The method seems to be not implemented and not used for now.
-	 */
-	@Ignore @Test
-	public final void testInstallRemoteFlowEntrySuccessNormally() {
-		fail("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link FlowManager#removeRemoteFlowEntry(FlowPath, FlowEntry)}.
-	 * The method seems to be not implemented and not used for now.
-	 */
-	@Ignore @Test
-	public final void testRemoveRemoteFlowEntrySuccessNormally() {
 		fail("not yet implemented");
 	}
 }

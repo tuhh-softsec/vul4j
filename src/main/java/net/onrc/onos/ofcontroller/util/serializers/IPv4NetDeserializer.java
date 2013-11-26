@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class IPv4NetDeserializer extends JsonDeserializer<IPv4Net> {
 
-    protected static Logger log = LoggerFactory.getLogger(IPv4NetDeserializer.class);
+    protected final static Logger log = LoggerFactory.getLogger(IPv4NetDeserializer.class);
 
     @Override
     public IPv4Net deserialize(JsonParser jp,

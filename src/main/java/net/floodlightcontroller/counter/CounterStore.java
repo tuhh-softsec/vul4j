@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class CounterStore implements IFloodlightModule, ICounterStoreService {
-    protected static Logger log = LoggerFactory.getLogger(CounterStore.class);
+    protected final static Logger log = LoggerFactory.getLogger(CounterStore.class);
 
     public enum NetworkLayer {
         L2, L3, L4

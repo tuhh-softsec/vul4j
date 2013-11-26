@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @author readams
  */
 public class SwitchStatisticsResource extends SwitchResourceBase {
-    protected static Logger log = 
+    protected final static Logger log = 
         LoggerFactory.getLogger(SwitchStatisticsResource.class);
 
     @Get("json")

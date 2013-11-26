@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class RestClient {
-	protected static Logger log = LoggerFactory.getLogger(RestClient.class);
+	protected final static Logger log = LoggerFactory.getLogger(RestClient.class);
 
 	public static String get(String str) {
 		StringBuilder response = new StringBuilder();

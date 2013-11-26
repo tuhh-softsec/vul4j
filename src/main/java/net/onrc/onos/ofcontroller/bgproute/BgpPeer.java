@@ -7,24 +7,20 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import com.google.common.net.InetAddresses;
 
 public class BgpPeer {
-	private String interfaceName;
-	private InetAddress ipAddress;
+	private final String interfaceName;
+	private final InetAddress ipAddress;
+	
+	public BgpPeer(@JsonProperty("interface") String interfaceName,
+				   @JsonProperty("ipAddress") String ipAddress) {
+		this.interfaceName = interfaceName;
+		this.ipAddress = InetAddresses.forString(ipAddress);
+	}
 	
 	public String getInterfaceName() {
 		return interfaceName;
 	}
-	
-	@JsonProperty("interface")
-	public void setInterfaceName(String interfaceName) {
-		this.interfaceName = interfaceName;
-	}
-	
+
 	public InetAddress getIpAddress() {
 		return ipAddress;
-	}
-	
-	@JsonProperty("ipAddress")
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = InetAddresses.forString(ipAddress);
 	}
 }
