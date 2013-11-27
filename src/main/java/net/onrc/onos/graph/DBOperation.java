@@ -41,9 +41,8 @@ public abstract class DBOperation implements IDBOperation {
         return null;
     }
 
-    @Override
-    public ISwitchObject newSwitch(final String dpid) {
-        ISwitchObject obj = (ISwitchObject) conn.getFramedGraph().addVertex(null, ISwitchObject.class);
+    public ISwitchObject newSwitch(final String dpid, final FramedGraph fg) {
+        ISwitchObject obj = (ISwitchObject) fg.addVertex(null, ISwitchObject.class);
         if (obj != null) {
             obj.setType("switch");
             obj.setDPID(dpid);
@@ -82,9 +81,8 @@ public abstract class DBOperation implements IDBOperation {
         conn.getFramedGraph().removeVertex(sw.asVertex());
     }
 
-    @Override
-    public IPortObject newPort(String dpid, Short portNum) {
-        IPortObject obj = (IPortObject) conn.getFramedGraph().addVertex(null, IPortObject.class);
+    public IPortObject newPort(String dpid, Short portNum, final FramedGraph fg) {
+        IPortObject obj = (IPortObject) fg.addVertex(null, IPortObject.class);
         if (obj != null) {
             obj.setType("port");
             String id = dpid + portNum.toString();

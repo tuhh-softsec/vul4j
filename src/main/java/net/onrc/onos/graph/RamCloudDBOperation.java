@@ -140,8 +140,20 @@ public class RamCloudDBOperation extends DBOperation {
     }
     
     @Override
+    public ISwitchObject newSwitch(final String dpid) {
+        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
+	return super.newSwitch(dpid, fg);
+    }
+    
+    @Override
     public IDeviceObject newDevice() {
 	FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
 	return super.newDevice(fg);
+    }
+    
+    @Override
+    public IPortObject newPort(String dpid, Short portNum) {
+	FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
+	return super.newPort(dpid, portNum, fg);
     }
 }

@@ -142,9 +142,21 @@ public class TitanDBOperation extends DBOperation {
     }
     
     @Override
+    public ISwitchObject newSwitch(final String dpid) {
+        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+	return super.newSwitch(dpid, fg);
+    }
+    
+    @Override
     public IDeviceObject newDevice() {
 	FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 	return super.newDevice(fg);
+    }
+    
+    @Override
+    public IPortObject newPort(String dpid, Short portNum) {
+	FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+	return super.newPort(dpid, portNum, fg);
     }
 
 }
