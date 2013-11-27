@@ -10,6 +10,8 @@ import java.io.File;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -17,6 +19,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class RamCloudDBConnection extends DBConnection {
     private RamCloudGraph graph;
+    private static Logger log = LoggerFactory.getLogger(RamCloudDBConnection.class);
 
     public RamCloudDBConnection(final String dbConfigFile) {
         System.out.println("dbconfigfile is + "+ dbConfigFile);
@@ -27,32 +30,46 @@ public class RamCloudDBConnection extends DBConnection {
     
     @Override
     public FramedGraph getFramedGraph() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isValid()) {
+            FramedGraph<RamCloudGraph> fg = new FramedGraph<RamCloudGraph>(graph);
+            return fg;
+        } else {
+            log.error("new FramedGraph failed");
+            return null;
+        }
     }
 
     @Override
     public void addEventListener(LocalGraphChangedListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //TO-DO
     }
 
     @Override
     public Boolean isValid() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (graph != null);
     }
 
     @Override
     public void commit() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            graph.commit();
+        } catch (Exception e) {
+            log.error("{}", e.toString());
+        }
     }
 
     @Override
     public void rollback() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            graph.rollback();
+        } catch (Exception e) {
+            log.error("{}", e.toString());
+        }
     }
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        commit();
     }
     
      private static final Configuration getConfiguration(final File dirOrFile) {

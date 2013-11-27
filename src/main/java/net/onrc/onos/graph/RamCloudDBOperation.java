@@ -4,15 +4,14 @@
  */
 package net.onrc.onos.graph;
 
-import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.impls.ramcloud.RamCloudGraph;
 import com.tinkerpop.frames.FramedGraph;
-import java.io.File;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import org.apache.commons.configuration.Configuration;
@@ -24,49 +23,29 @@ import org.apache.commons.configuration.Configuration;
 public class RamCloudDBOperation extends DBOperation {
 
     public RamCloudDBOperation() {
-        //Configuration configuration= getConfiguration(new File(dbConfigFile));
-        //final String coordinatorURL = configuration.getProperty("connect.coordinator");
     }
 
     @Override
-    public INetMapTopologyObjects.ISwitchObject searchSwitch(String dpid) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ISwitchObject searchSwitch(String dpid) {
+        final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
+
+        return searchSwitch(dpid, fg);
     }
 
     @Override
-    public INetMapTopologyObjects.ISwitchObject searchActiveSwitch(String dpid) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Iterable<INetMapTopologyObjects.ISwitchObject> getActiveSwitches() {
+    public Iterable<ISwitchObject> getActiveSwitches() {
         final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
         
         return getActiveSwitches(fg);
     }
 
     @Override
-    public Iterable<INetMapTopologyObjects.ISwitchObject> getAllSwitches() {
+    public Iterable<ISwitchObject> getAllSwitches() {
         return getAllSwitches(conn.getFramedGraph());
     }
 
     @Override
-    public Iterable<INetMapTopologyObjects.ISwitchObject> getInactiveSwitches() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Iterable<INetMapTopologyObjects.IFlowEntry> getAllSwitchNotUpdatedFlowEntries() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void removeSwitch(INetMapTopologyObjects.ISwitchObject sw) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public INetMapTopologyObjects.IPortObject newPort(Short portNumber) {
+    public IPortObject newPort(Short portNumber) {
         final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
         IPortObject obj = fg.addVertex(null, IPortObject.class);
         if (obj != null) {
@@ -77,7 +56,7 @@ public class RamCloudDBOperation extends DBOperation {
     }
 
     @Override
-    public INetMapTopologyObjects.IPortObject newPort(String dpid, Short portNum) {
+    public IPortObject newPort(String dpid, Short portNum) {
         return super.newPort(dpid, portNum);
     }
 
@@ -94,7 +73,6 @@ public class RamCloudDBOperation extends DBOperation {
             fg.removeVertex(port.asVertex());
         }
     }
-
 
     @Override
     public IDeviceObject searchDevice(String macAddr) {
@@ -118,7 +96,7 @@ public class RamCloudDBOperation extends DBOperation {
 
 
     @Override
-    public INetMapTopologyObjects.IFlowPath searchFlowPath(FlowId flowId) {
+    public IFlowPath searchFlowPath(FlowId flowId) {
         FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
         return searchFlowPath(flowId, fg);
     }
@@ -130,7 +108,7 @@ public class RamCloudDBOperation extends DBOperation {
     }
 
     @Override
-    public void removeFlowPath(INetMapTopologyObjects.IFlowPath flowPath) {
+    public void removeFlowPath(IFlowPath flowPath) {
         FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
         fg.removeVertex(flowPath.asVertex());
     }
@@ -142,18 +120,25 @@ public class RamCloudDBOperation extends DBOperation {
     }
 
     @Override
-    public INetMapTopologyObjects.IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
+        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
+
+        return fg.getVertices("flow_entry_id", flowEntryId.toString()).iterator().hasNext()
+                ? fg.getVertices("flow_entry_id", flowEntryId.toString(),
+                IFlowEntry.class).iterator().next() : null;
     }
 
     @Override
-    public Iterable<INetMapTopologyObjects.IFlowEntry> getAllFlowEntries() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Iterable<IFlowEntry> getAllFlowEntries() {
+        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
+
+        return fg.getVertices("type", "flow_entry", IFlowEntry.class);
     }
 
     @Override
-    public void removeFlowEntry(INetMapTopologyObjects.IFlowEntry flowEntry) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void removeFlowEntry(IFlowEntry flowEntry) {
+        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
+        fg.removeVertex(flowEntry.asVertex());
     }
 
     @Override
@@ -163,16 +148,16 @@ public class RamCloudDBOperation extends DBOperation {
 
     @Override
     public void commit() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        conn.commit();
     }
 
     @Override
     public void rollback() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        conn.rollback();
     }
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        conn.close();
     }
 }
