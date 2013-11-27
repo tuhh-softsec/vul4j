@@ -8,7 +8,7 @@ import org.restlet.resource.Get;
 /**
  * FlowProgrammer REST API implementation: Resume sending message to switch.
  *
- *   GET /wm/fprog/resume/{dpid}/json"
+ *   GET /wm/fprog/pusher/resume/{dpid}/json"
  */
 public class ResumePusherResource extends PusherResource {
     /**
