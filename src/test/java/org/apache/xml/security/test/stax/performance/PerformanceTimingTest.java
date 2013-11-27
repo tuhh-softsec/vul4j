@@ -18,7 +18,9 @@
  */
 package org.apache.xml.security.test.stax.performance;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,6 +32,7 @@ import java.util.TreeMap;
  * @author $Author: $
  * @version $Revision: $ $Date: $
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PerformanceTimingTest extends AbstractPerformanceTest {
 
     private static final int runs = 40;
@@ -45,7 +48,7 @@ public class PerformanceTimingTest extends AbstractPerformanceTest {
     }
 
     @Test
-    public void testOutboundSignatureTimePerformance() throws Exception {
+    public void testRunFirstOutboundSignatureTimePerformance() throws Exception {
         System.out.println("Testing Outbound Signature Time Performance");
         FileWriter outSignatureSamplesWriter = new FileWriter("target/signatureOutTimeSamples.txt", false);
         for (int i = 1; i <= runs; i++) {
@@ -73,7 +76,7 @@ public class PerformanceTimingTest extends AbstractPerformanceTest {
     }
 
     @Test
-    public void testInboundSignatureTimePerformance() throws Exception {
+    public void testRunSecondInboundSignatureTimePerformance() throws Exception {
         System.out.println("Testing Inbound Signature Time Performance");
         FileWriter inSignatureSamplesWriter = new FileWriter("target/signatureInTimeSamples.txt", false);
 
@@ -103,7 +106,7 @@ public class PerformanceTimingTest extends AbstractPerformanceTest {
     }
 
     @Test
-    public void testOutboundEncryptionTimePerformance() throws Exception {
+    public void testRunFirstOutboundEncryptionTimePerformance() throws Exception {
         System.out.println("Testing Outbound Encryption Time Performance");
         FileWriter outEncryptionSamplesWriter = new FileWriter("target/encryptionOutTimeSamples.txt", false);
         for (int i = 1; i <= runs; i++) {
@@ -131,7 +134,7 @@ public class PerformanceTimingTest extends AbstractPerformanceTest {
     }
 
     @Test
-    public void testInboundDecryptionTimePerformance() throws Exception {
+    public void testRunSecondInboundDecryptionTimePerformance() throws Exception {
         System.out.println("Testing Inbound Decryption Time Performance");
         FileWriter inEncryptionSamplesWriter = new FileWriter("target/encryptionInTimeSamples.txt", false);
 

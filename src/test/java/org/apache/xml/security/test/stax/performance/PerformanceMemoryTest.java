@@ -18,7 +18,9 @@
  */
 package org.apache.xml.security.test.stax.performance;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,6 +30,7 @@ import java.util.*;
  * @author $Author: $
  * @version $Revision: $ $Date: $
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PerformanceMemoryTest extends AbstractPerformanceTest {
 
     private static final int runs = 40;
@@ -44,7 +47,7 @@ public class PerformanceMemoryTest extends AbstractPerformanceTest {
     }
 
     @Test
-    public void testOutboundSignatureMemoryPerformance() throws Exception {
+    public void testRunFirstOutboundSignatureMemoryPerformance() throws Exception {
         System.out.println("Testing Outbound Signature Memory Performance");
         FileWriter outSignatureSamplesWriter = new FileWriter("target/signatureOutMemorySamples.txt", false);
         for (int i = 1; i <= runs; i++) {
@@ -82,7 +85,7 @@ public class PerformanceMemoryTest extends AbstractPerformanceTest {
     }
 
     @Test
-    public void testInboundSignatureMemoryPerformance() throws Exception {
+    public void testRunSecondInboundSignatureMemoryPerformance() throws Exception {
         System.out.println("Testing Inbound Signature Memory Performance");
         FileWriter inSignatureSamplesWriter = new FileWriter("target/signatureInMemorySamples.txt", false);
 
@@ -122,7 +125,7 @@ public class PerformanceMemoryTest extends AbstractPerformanceTest {
     }
 
     @Test
-    public void testOutboundEncryptionMemoryPerformance() throws Exception {
+    public void testRunFirstOutboundEncryptionMemoryPerformance() throws Exception {
         System.out.println("Testing Outbound Encryption Memory Performance");
         FileWriter outEncryptionSamplesWriter = new FileWriter("target/encryptionOutMemorySamples.txt", false);
         for (int i = 1; i <= runs; i++) {
@@ -160,7 +163,7 @@ public class PerformanceMemoryTest extends AbstractPerformanceTest {
     }
 
     @Test
-    public void testInboundDecryptionMemoryPerformance() throws Exception {
+    public void testRunSecondInboundDecryptionMemoryPerformance() throws Exception {
         System.out.println("Testing Inbound Decryption Memory Performance");
         FileWriter inEncryptionSamplesWriter = new FileWriter("target/encryptionInMemorySamples.txt", false);
 
