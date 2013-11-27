@@ -1069,11 +1069,8 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		
 		OFBarrierRequest msg = (OFBarrierRequest) factory.getMessage(OFType.BARRIER_REQUEST);
 		msg.setXid(sw.getNextTransactionId());
-		add(sw, msg);
 
-		// TODO create Future object of message
 		OFBarrierReplyFuture future = new OFBarrierReplyFuture(threadPool, sw, msg.getXid());
-
 		synchronized (barrierFutures) {
 			Map<Integer,OFBarrierReplyFuture> map = barrierFutures.get(sw.getId());
 			if (map == null) {
@@ -1082,6 +1079,8 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 			}
 			map.put(msg.getXid(), future);
 		}
+		
+		add(sw, msg);
 		
 		return future;
 	}
@@ -1140,11 +1139,13 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 	public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
 		Map<Integer,OFBarrierReplyFuture> map = barrierFutures.get(sw.getId());
 		if (map == null) {
+			log.debug("null map for {} : {}", sw.getId(), barrierFutures);
 			return Command.CONTINUE;
 		}
 		
 		OFBarrierReplyFuture future = map.get(msg.getXid());
 		if (future == null) {
+			log.debug("null future for {} : {}", msg.getXid(), map);
 			return Command.CONTINUE;
 		}
 		
