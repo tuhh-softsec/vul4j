@@ -40,7 +40,9 @@ public class RamCloudDBOperation extends DBOperation {
 
     @Override
     public Iterable<INetMapTopologyObjects.ISwitchObject> getActiveSwitches() {
-        return getActiveSwitches(conn.getFramedGraph());
+        final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
+        
+        return getActiveSwitches(fg);
     }
 
     @Override
@@ -65,12 +67,18 @@ public class RamCloudDBOperation extends DBOperation {
 
     @Override
     public INetMapTopologyObjects.IPortObject newPort(Short portNumber) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
+        IPortObject obj = fg.addVertex(null, IPortObject.class);
+        if (obj != null) {
+            obj.setType("port");
+            obj.setNumber(portNumber);
+        }
+        return obj;
     }
 
     @Override
     public INetMapTopologyObjects.IPortObject newPort(String dpid, Short portNum) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return super.newPort(dpid, portNum);
     }
 
     @Override
@@ -150,7 +158,7 @@ public class RamCloudDBOperation extends DBOperation {
 
     @Override
     public IDBConnection getDBConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return conn;
     }
 
     @Override
