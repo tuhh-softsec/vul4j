@@ -138,4 +138,10 @@ public class RamCloudDBOperation extends DBOperation {
     public void close() {
         conn.close();
     }
+    
+    @Override
+    public IDeviceObject newDevice() {
+	FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
+	return super.newDevice(fg);
+    }
 }

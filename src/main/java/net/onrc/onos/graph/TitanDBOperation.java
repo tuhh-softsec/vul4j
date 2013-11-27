@@ -140,4 +140,11 @@ public class TitanDBOperation extends DBOperation {
     public void close() {
         conn.close();
     }
+    
+    @Override
+    public IDeviceObject newDevice() {
+	FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+	return super.newDevice(fg);
+    }
+
 }

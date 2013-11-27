@@ -116,9 +116,8 @@ public abstract class DBOperation implements IDBOperation {
 
     }
 
-    @Override
-    public IDeviceObject newDevice() {
-        IDeviceObject obj = (IDeviceObject) conn.getFramedGraph().addVertex(null, IDeviceObject.class);
+    public IDeviceObject newDevice(final FramedGraph fg) {
+        IDeviceObject obj = (IDeviceObject) fg.addVertex(null, IDeviceObject.class);
         if (obj != null) {
             obj.setType("device");
         }
