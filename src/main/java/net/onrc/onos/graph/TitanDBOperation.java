@@ -34,11 +34,6 @@ public class TitanDBOperation extends DBOperation {
 
         return searchSwitch(dpid, fg);
     }
-
-    @Override
-    public IPortObject newPort(String dpid, Short portNum) {
-        return super.newPort(dpid, portNum);
-    }
     
     @Override
     public Iterable<ISwitchObject> getActiveSwitches() {

@@ -56,11 +56,6 @@ public class RamCloudDBOperation extends DBOperation {
     }
 
     @Override
-    public IPortObject newPort(String dpid, Short portNum) {
-        return super.newPort(dpid, portNum);
-    }
-
-    @Override
     public IPortObject searchPort(String dpid, Short number) {
         final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
         return searchPort(dpid, number, fg);
