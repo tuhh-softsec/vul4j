@@ -26,40 +26,6 @@ public class RamCloudDBOperation extends DBOperation {
     }
 
     @Override
-    public Iterable<ISwitchObject> getAllSwitches() {
-        return getAllSwitches(conn.getFramedGraph());
-    }
-
-    @Override
-    public void removePort(INetMapTopologyObjects.IPortObject port) {
-        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-        if (fg != null) {
-            fg.removeVertex(port.asVertex());
-        }
-    }
-
-    @Override
-    public IDeviceObject searchDevice(String macAddr) {
-        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-        return searchDevice(macAddr, fg);
-    }
-
-    @Override
-    public Iterable<IDeviceObject> getDevices() {
-        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-        return fg != null ? fg.getVertices("type", "device", IDeviceObject.class) : null;
-    }
-
-    @Override
-    public void removeDevice(IDeviceObject dev) {
-        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-        if (fg != null) {
-            fg.removeVertex(dev.asVertex());
-        }
-    }
-
-
-    @Override
     public IFlowPath searchFlowPath(FlowId flowId) {
         FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
         return searchFlowPath(flowId, fg);

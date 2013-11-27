@@ -22,42 +22,12 @@ import net.onrc.onos.ofcontroller.util.FlowId;
  * @author nickkaranatsios
  */
 public class TitanDBOperation extends DBOperation {
-
-    @Override
-    public void removePort(IPortObject port) {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        if (fg != null) {
-            fg.removeVertex(port.asVertex());
-        }
-    }
-
-    @Override
-    public IDeviceObject searchDevice(String macAddr) {
-        // TODO Auto-generated method stub
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        return searchDevice(macAddr, fg);
-    }
-
-    @Override
-    public Iterable<IDeviceObject> getDevices() {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        return fg != null ? fg.getVertices("type", "device", IDeviceObject.class) : null;
-    }
-
-    @Override
-    public void removeDevice(IDeviceObject dev) {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        if (fg != null) {
-            fg.removeVertex(dev.asVertex());
-        }
-    }
 	
     @Override
     public IFlowPath searchFlowPath(FlowId flowId) {
         FramedGraph<TitanGraph> fg = conn.getFramedGraph();
         return searchFlowPath(flowId, fg);
     }
-
 
     @Override
     public Iterable<IFlowPath> getAllFlowPaths() {
