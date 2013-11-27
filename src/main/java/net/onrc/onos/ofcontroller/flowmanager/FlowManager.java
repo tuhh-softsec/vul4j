@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
     // flag to use FlowPusher instead of FlowSwitchOperation/MessageDamper
-    private final static boolean enableFlowPusher = false;
+    private final static boolean enableFlowPusher = true;
 
     protected GraphDBOperation dbHandlerApi;
     protected GraphDBOperation dbHandlerInner;
