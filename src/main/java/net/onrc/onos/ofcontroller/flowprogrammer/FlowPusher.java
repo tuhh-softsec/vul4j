@@ -327,6 +327,13 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		synchronized (queue) {
 			if (queue.state == QueueState.SUSPENDED) {
 				queue.state = QueueState.READY;
+				
+				// Latch down if queue is not empty
+				FlowPusherThread thread = getProcess(sw);
+				if (! queue.isEmpty() &&
+						thread.mutex.availablePermits() == 0) {
+					thread.mutex.release();
+				}
 				return true;
 			}
 			return false;
