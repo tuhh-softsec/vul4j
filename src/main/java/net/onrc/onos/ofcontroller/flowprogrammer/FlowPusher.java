@@ -348,6 +348,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		}
 		
 		if (rate > 0) {
+			log.debug("rate for {} is set to {}", sw.getId(), rate);
 			queue.max_rate = rate;
 		}
 	}
