@@ -45,17 +45,6 @@ public class RamCloudDBOperation extends DBOperation {
     }
 
     @Override
-    public IPortObject newPort(Short portNumber) {
-        final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-        IPortObject obj = fg.addVertex(null, IPortObject.class);
-        if (obj != null) {
-            obj.setType("port");
-            obj.setNumber(portNumber);
-        }
-        return obj;
-    }
-
-    @Override
     public IPortObject searchPort(String dpid, Short number) {
         final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
         return searchPort(dpid, number, fg);
@@ -106,12 +95,6 @@ public class RamCloudDBOperation extends DBOperation {
     public void removeFlowPath(IFlowPath flowPath) {
         FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
         fg.removeVertex(flowPath.asVertex());
-    }
-
-    @Override
-    public IFlowEntry newFlowEntry() {
-        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-        return newFlowEntry(fg);
     }
 
     @Override

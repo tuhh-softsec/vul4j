@@ -79,16 +79,6 @@ public class TitanDBOperation extends DBOperation {
         }
     }
 	
-	/**
-         * Create and return a flow path object.
-         */
-        public IFlowPath newFlowPath() {
-                FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-                IFlowPath flowPath = fg.addVertex(null, IFlowPath.class);
-                if (flowPath != null) flowPath.setType("flow");
-                return flowPath;
-        }
-	
     @Override
     public IFlowPath searchFlowPath(FlowId flowId) {
         FramedGraph<TitanGraph> fg = conn.getFramedGraph();
@@ -106,12 +96,6 @@ public class TitanDBOperation extends DBOperation {
     public void removeFlowPath(IFlowPath flowPath) {
         FramedGraph<TitanGraph> fg = conn.getFramedGraph();
         fg.removeVertex(flowPath.asVertex());
-    }
-
-    @Override
-    public IFlowEntry newFlowEntry() {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        return newFlowEntry(fg);
     }
 
     @Override
@@ -155,21 +139,5 @@ public class TitanDBOperation extends DBOperation {
     @Override
     public void close() {
         conn.close();
-    }
-
-    /**
-     * Create a port having specified port number.
-     *
-     * @param portNumber port number
-     */
-    @Deprecated
-    public IPortObject newPort(Short portNumber) {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        IPortObject obj = fg.addVertex(null, IPortObject.class);
-        if (obj != null) {
-            obj.setType("port");
-            obj.setNumber(portNumber);
-        }
-        return obj;
     }
 }
