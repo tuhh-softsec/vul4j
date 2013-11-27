@@ -960,7 +960,7 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
   parsedResult = json.loads(result)
   if len(parsedResult) > 0:
     if parsedResult[-1].has_key('flowId'):
-      flow_nr = int(parsedResult[-1]['flowId'], 16)
+      flow_nr = int(parsedResult[-1]['flowId']['value'], 16)
   else:
     flow_nr = -1  # first flow
     print "first flow"
