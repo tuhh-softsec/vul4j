@@ -23,32 +23,6 @@ import net.onrc.onos.ofcontroller.util.FlowId;
  */
 public class TitanDBOperation extends DBOperation {
 
-    /**
-     * Search and get a switch object with DPID.
-     *
-     * @param dpid DPID of the switch
-     */
-    @Override
-    public ISwitchObject searchSwitch(String dpid) {
-        final FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-
-        return searchSwitch(dpid, fg);
-    }
-    
-    @Override
-    public Iterable<ISwitchObject> getActiveSwitches() {
-        final FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        
-        return getActiveSwitches(fg);
-    }
-
-    @Override
-    public IPortObject searchPort(String dpid, Short number) {
-        final FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        return searchPort(dpid, number, fg);
-    }
-
-
     @Override
     public void removePort(IPortObject port) {
         FramedGraph<TitanGraph> fg = conn.getFramedGraph();
@@ -57,7 +31,6 @@ public class TitanDBOperation extends DBOperation {
         }
     }
 
-  
     @Override
     public IDeviceObject searchDevice(String macAddr) {
         // TODO Auto-generated method stub
@@ -121,12 +94,6 @@ public class TitanDBOperation extends DBOperation {
     }
 
     @Override
-    public IDBConnection getDBConnection() {
-	System.out.println("TitangetDBConnection");
-        return conn;
-    }
-
-    @Override
     public void commit() {
         conn.commit();
     }
@@ -140,23 +107,4 @@ public class TitanDBOperation extends DBOperation {
     public void close() {
         conn.close();
     }
-    
-    @Override
-    public ISwitchObject newSwitch(final String dpid) {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-	return super.newSwitch(dpid, fg);
-    }
-    
-    @Override
-    public IDeviceObject newDevice() {
-	FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-	return super.newDevice(fg);
-    }
-    
-    @Override
-    public IPortObject newPort(String dpid, Short portNum) {
-	FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-	return super.newPort(dpid, portNum, fg);
-    }
-
 }

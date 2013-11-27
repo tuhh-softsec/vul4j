@@ -41,8 +41,9 @@ public abstract class DBOperation implements IDBOperation {
         return null;
     }
 
-    public ISwitchObject newSwitch(final String dpid, final FramedGraph fg) {
-        ISwitchObject obj = (ISwitchObject) fg.addVertex(null, ISwitchObject.class);
+    @Override
+    public ISwitchObject newSwitch(final String dpid) {
+        ISwitchObject obj = (ISwitchObject) conn.getFramedGraph().addVertex(null, ISwitchObject.class);
         if (obj != null) {
             obj.setType("switch");
             obj.setDPID(dpid);
@@ -81,8 +82,9 @@ public abstract class DBOperation implements IDBOperation {
         conn.getFramedGraph().removeVertex(sw.asVertex());
     }
 
-    public IPortObject newPort(String dpid, Short portNum, final FramedGraph fg) {
-        IPortObject obj = (IPortObject) fg.addVertex(null, IPortObject.class);
+    @Override
+    public IPortObject newPort(String dpid, Short portNum) {
+        IPortObject obj = (IPortObject) conn.getFramedGraph().addVertex(null, IPortObject.class);
         if (obj != null) {
             obj.setType("port");
             String id = dpid + portNum.toString();
@@ -107,15 +109,17 @@ public abstract class DBOperation implements IDBOperation {
         return obj;
     }
 
-    public IPortObject searchPort(String dpid, Short number, final FramedGraph fg) {
+    @Override
+    public IPortObject searchPort(String dpid, Short number) {
         String id = dpid + number.toString();
-        return (fg != null && fg.getVertices("port_id", id).iterator().hasNext())
-                ? (IPortObject) fg.getVertices("port_id", id, IPortObject.class).iterator().next() : null;
+        return (conn.getFramedGraph() != null && conn.getFramedGraph().getVertices("port_id", id).iterator().hasNext())
+                ? (IPortObject) conn.getFramedGraph().getVertices("port_id", id, IPortObject.class).iterator().next() : null;
 
     }
 
-    public IDeviceObject newDevice(final FramedGraph fg) {
-        IDeviceObject obj = (IDeviceObject) fg.addVertex(null, IDeviceObject.class);
+    @Override
+    public IDeviceObject newDevice() {
+        IDeviceObject obj = (IDeviceObject) conn.getFramedGraph().addVertex(null, IDeviceObject.class);
         if (obj != null) {
             obj.setType("device");
         }
@@ -145,14 +149,20 @@ public abstract class DBOperation implements IDBOperation {
     }
 
 
-    
-    protected ISwitchObject searchSwitch(final String dpid, final FramedGraph fg) {
-        return (fg != null && fg.getVertices("dpid", dpid).iterator().hasNext())
-                ? (ISwitchObject) (fg.getVertices("dpid", dpid, ISwitchObject.class).iterator().next()) : null;
+    /**
+     * Search and get a switch object with DPID.
+     *
+     * @param dpid DPID of the switch
+     */
+    @Override
+    public ISwitchObject searchSwitch(final String dpid) {
+        return (conn.getFramedGraph() != null && conn.getFramedGraph().getVertices("dpid", dpid).iterator().hasNext())
+                ? (ISwitchObject) (conn.getFramedGraph().getVertices("dpid", dpid, ISwitchObject.class).iterator().next()) : null;
     }
 
-    protected Iterable<ISwitchObject> getActiveSwitches(final FramedGraph fg) {
-        Iterable<ISwitchObject> switches = fg.getVertices("type", "switch", ISwitchObject.class);
+    @Override
+    public Iterable<ISwitchObject> getActiveSwitches() {
+        Iterable<ISwitchObject> switches = conn.getFramedGraph().getVertices("type", "switch", ISwitchObject.class);
         List<ISwitchObject> activeSwitches = new ArrayList<ISwitchObject>();
 
         for (ISwitchObject sw : switches) {
@@ -244,4 +254,9 @@ public abstract class DBOperation implements IDBOperation {
 		conn.getFramedGraph().removeVertex(ipv4Address.asVertex());
 	}
 
+	
+	@Override
+	public IDBConnection getDBConnection() {
+	    return conn;
+	}	
 }

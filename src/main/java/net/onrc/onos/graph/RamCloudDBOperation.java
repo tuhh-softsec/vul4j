@@ -26,28 +26,8 @@ public class RamCloudDBOperation extends DBOperation {
     }
 
     @Override
-    public ISwitchObject searchSwitch(String dpid) {
-        final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-
-        return searchSwitch(dpid, fg);
-    }
-
-    @Override
-    public Iterable<ISwitchObject> getActiveSwitches() {
-        final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-        
-        return getActiveSwitches(fg);
-    }
-
-    @Override
     public Iterable<ISwitchObject> getAllSwitches() {
         return getAllSwitches(conn.getFramedGraph());
-    }
-
-    @Override
-    public IPortObject searchPort(String dpid, Short number) {
-        final FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-        return searchPort(dpid, number, fg);
     }
 
     @Override
@@ -120,11 +100,6 @@ public class RamCloudDBOperation extends DBOperation {
     }
 
     @Override
-    public IDBConnection getDBConnection() {
-        return conn;
-    }
-
-    @Override
     public void commit() {
         conn.commit();
     }
@@ -137,23 +112,5 @@ public class RamCloudDBOperation extends DBOperation {
     @Override
     public void close() {
         conn.close();
-    }
-    
-    @Override
-    public ISwitchObject newSwitch(final String dpid) {
-        FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-	return super.newSwitch(dpid, fg);
-    }
-    
-    @Override
-    public IDeviceObject newDevice() {
-	FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-	return super.newDevice(fg);
-    }
-    
-    @Override
-    public IPortObject newPort(String dpid, Short portNum) {
-	FramedGraph<RamCloudGraph> fg = conn.getFramedGraph();
-	return super.newPort(dpid, portNum, fg);
     }
 }
