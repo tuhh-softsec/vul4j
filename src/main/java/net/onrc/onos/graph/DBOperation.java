@@ -4,7 +4,6 @@
  */
 package net.onrc.onos.graph;
 
-import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
 import com.tinkerpop.frames.structures.FramedVertexIterable;
@@ -233,8 +232,7 @@ public abstract class DBOperation implements IDBOperation {
 		return newVertex("ipv4Address", IIpv4Address.class);
 	}
 	private <T extends IBaseObject> T newVertex(String type, Class<T> vertexType) {
-		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-		T newVertex = fg.addVertex(null, vertexType);
+		T newVertex = (T) conn.getFramedGraph().addVertex(null, vertexType);
 		if (newVertex != null) {
 			newVertex.setType(type);
 		}
