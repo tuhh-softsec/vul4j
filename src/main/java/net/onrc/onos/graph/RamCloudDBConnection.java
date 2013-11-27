@@ -21,6 +21,7 @@ public class RamCloudDBConnection extends DBConnection {
     public RamCloudDBConnection(final String dbConfigFile) {
         System.out.println("dbconfigfile is + "+ dbConfigFile);
         final String coordinatorURL = open(getConfiguration(new File(dbConfigFile)));
+	System.out.println("coordinatorURL "+ coordinatorURL);
         graph = new RamCloudGraph(coordinatorURL);
     }
     
