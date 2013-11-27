@@ -30,6 +30,7 @@ public class RamCloudDBConnection extends DBConnection {
     
     @Override
     public FramedGraph getFramedGraph() {
+	System.out.println("RamCloud getFramedGraph");
         if (isValid()) {
             FramedGraph<RamCloudGraph> fg = new FramedGraph<RamCloudGraph>(graph);
             return fg;
