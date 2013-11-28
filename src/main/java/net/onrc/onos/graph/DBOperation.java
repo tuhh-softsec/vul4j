@@ -30,6 +30,10 @@ public abstract class DBOperation implements IDBOperation {
 
 	protected DBConnection conn;
 
+	/**
+	 * Search and get an active switch object with DPID.
+	 * @param dpid DPID of the switch 
+	 */
 	@Override
 	public ISwitchObject searchActiveSwitch(String dpid) {
 	    ISwitchObject sw = searchSwitch(dpid);
@@ -39,7 +43,11 @@ public abstract class DBOperation implements IDBOperation {
 	    }
 	    return null;
 	}
-
+	
+	/**
+	 * Create a new switch and return the created switch object.
+	 * @param dpid DPID of the switch
+	 */
 	@Override
 	public ISwitchObject newSwitch(final String dpid) {
 	    ISwitchObject obj = (ISwitchObject) conn.getFramedGraph().addVertex(null, ISwitchObject.class);
@@ -49,13 +57,19 @@ public abstract class DBOperation implements IDBOperation {
 	    }
 	    return obj;
 	}
-
+	
+	/**
+	 * Get all switch objects.
+	 */
 	@Override
 	public Iterable<ISwitchObject> getAllSwitches() {
 	    Iterable<ISwitchObject> switches = conn.getFramedGraph().getVertices("type", "switch", ISwitchObject.class);
 	    return switches;
 	}
 
+	/**
+	 * Get all inactive switch objects.
+	 */
 	@Override
 	public Iterable<ISwitchObject> getInactiveSwitches() {
 	    Iterable<ISwitchObject> switches = conn.getFramedGraph().getVertices("type", "switch", ISwitchObject.class);
@@ -68,7 +82,10 @@ public abstract class DBOperation implements IDBOperation {
 	    }
 	    return inactiveSwitches;
 	}
-
+	
+	/**
+	 * Get all flow entries objects where their switches are not updated.
+	 */
 	@Override
 	public Iterable<INetMapTopologyObjects.IFlowEntry> getAllSwitchNotUpdatedFlowEntries() {
 	    //TODO: Should use an enum for flow_switch_state
@@ -76,6 +93,10 @@ public abstract class DBOperation implements IDBOperation {
 
 	}
 
+	/**
+	 * Remove specified switch.
+	 * @param sw switch object to remove
+	 */
 	@Override
 	public void removeSwitch(ISwitchObject sw) {
 	    conn.getFramedGraph().removeVertex(sw.asVertex());
@@ -108,6 +129,11 @@ public abstract class DBOperation implements IDBOperation {
 	    return obj;
 	}
 
+	/**
+	 * Search and get a port object of specified switch and port number.
+	 * @param dpid DPID of a switch
+	 * @param number port number of the switch's port
+	 */
 	@Override
 	public IPortObject searchPort(String dpid, Short number) {
 	    String id = dpid + number.toString();
@@ -116,6 +142,10 @@ public abstract class DBOperation implements IDBOperation {
 
 	}
 
+	/**
+	 * Remove the specified switch port.
+	 * @param port switch port object to remove
+	 */
 	@Override
 	public void removePort(IPortObject port) {
 	    if (conn.getFramedGraph() != null) {
@@ -123,6 +153,9 @@ public abstract class DBOperation implements IDBOperation {
 	    }
 	}
 
+	/**
+	 * Create and return a device object.
+	 */
 	@Override
 	public IDeviceObject newDevice() {
 	    IDeviceObject obj = (IDeviceObject) conn.getFramedGraph().addVertex(null, IDeviceObject.class);
@@ -132,12 +165,18 @@ public abstract class DBOperation implements IDBOperation {
 	    return obj;
 	}
 
+	/**
+	 * Get all devices.
+	 */
 	@Override
 	public Iterable<IDeviceObject> getDevices() {
 	    return conn.getFramedGraph() != null ? conn.getFramedGraph().getVertices("type", "device", IDeviceObject.class) : null;
 	}
 
-
+	/**
+	 * Remove the specified device.
+	 * @param dev a device object to remove
+	 */
 	@Override
 	public void removeDevice(IDeviceObject dev) {
 	    if (conn.getFramedGraph() != null) {
@@ -148,7 +187,6 @@ public abstract class DBOperation implements IDBOperation {
 	/**
 	* Create and return a flow path object.
 	*/
-
 	@Override
 	public IFlowPath newFlowPath() {
 	    IFlowPath flowPath = (IFlowPath)conn.getFramedGraph().addVertex(null, IFlowPath.class);
@@ -158,6 +196,10 @@ public abstract class DBOperation implements IDBOperation {
 	    return flowPath;
 	}
 
+	/**
+	 * Get a flow path object with a flow entry.
+	 * @param flowEntry flow entry object
+	 */
 	@Override
 	public IFlowPath getFlowPathByFlowEntry(INetMapTopologyObjects.IFlowEntry flowEntry) {
 	    GremlinPipeline<Vertex, IFlowPath> pipe = new GremlinPipeline<Vertex, IFlowPath>();
@@ -179,6 +221,9 @@ public abstract class DBOperation implements IDBOperation {
 		    ? (ISwitchObject) (conn.getFramedGraph().getVertices("dpid", dpid, ISwitchObject.class).iterator().next()) : null;
 	}
 
+	/**
+	 * Get all active switch objects.
+	 */
 	@Override
 	public Iterable<ISwitchObject> getActiveSwitches() {
 	    Iterable<ISwitchObject> switches = conn.getFramedGraph().getVertices("type", "switch", ISwitchObject.class);
@@ -192,6 +237,10 @@ public abstract class DBOperation implements IDBOperation {
 	    return activeSwitches;
 	}
 
+	/**
+	 * Search and get a device object having specified MAC address.
+	 * @param macAddr MAC address to search and get
+	 */
 	@Override
 	public IDeviceObject searchDevice(String macAddr) {
 	    return (conn.getFramedGraph() != null && conn.getFramedGraph().getVertices("dl_addr", macAddr).iterator().hasNext())
@@ -199,12 +248,19 @@ public abstract class DBOperation implements IDBOperation {
 
 	}
 
+	/**
+	 * Search and get a flow path object with specified flow ID.
+	 * @param flowId flow ID to search
+	 */
 	protected IFlowPath searchFlowPath(final FlowId flowId, final FramedGraph fg) {
 	    return fg.getVertices("flow_id", flowId.toString()).iterator().hasNext()
 		    ? (IFlowPath) fg.getVertices("flow_id", flowId.toString(),
 		    IFlowPath.class).iterator().next() : null;
 	}
 
+	/**
+	 * Get all flow path objects.
+	 */
 	protected Iterable<IFlowPath> getAllFlowPaths(final FramedGraph fg) {
 	    Iterable<IFlowPath> flowPaths = fg.getVertices("type", "flow", IFlowPath.class);
 
@@ -217,7 +273,10 @@ public abstract class DBOperation implements IDBOperation {
 	    }
 	    return nonNullFlows;
 	}
-
+	
+	/**
+	 * Create and return a flow entry object.
+	 */
 	@Override
 	public IFlowEntry newFlowEntry() {
 	    IFlowEntry flowEntry = (IFlowEntry) conn.getFramedGraph().addVertex(null, IFlowEntry.class);
@@ -231,6 +290,7 @@ public abstract class DBOperation implements IDBOperation {
 	public IIpv4Address newIpv4Address() {
 		return newVertex("ipv4Address", IIpv4Address.class);
 	}
+	
 	private <T extends IBaseObject> T newVertex(String type, Class<T> vertexType) {
 		T newVertex = (T) conn.getFramedGraph().addVertex(null, vertexType);
 		if (newVertex != null) {
