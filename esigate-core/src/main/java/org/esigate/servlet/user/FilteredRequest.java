@@ -36,22 +36,24 @@ public class FilteredRequest extends HttpServletRequestWrapper {
     @Override
     public String getRemoteUser() {
         String user = getHeader("X_REMOTE_USER");
-        if (user != null)
+        if (user != null) {
             return user;
-        else
+        } else {
             return super.getRemoteUser();
+        }
     }
 
     @Override
     public Principal getUserPrincipal() {
         String user = getRemoteUser();
-        if (user != null)
+        if (user != null) {
             return new Principal() {
                 public String getName() {
                     return getRemoteUser();
                 }
             };
-        else
+        } else {
             return null;
+        }
     }
 }

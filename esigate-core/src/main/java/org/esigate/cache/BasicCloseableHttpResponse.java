@@ -60,7 +60,7 @@ class BasicCloseableHttpResponse implements CloseableHttpResponse {
     }
 
     @Override
-    public void setStatusCode(int code) throws IllegalStateException {
+    public void setStatusCode(int code) {
         httpResponse.setStatusCode(code);
     }
 
@@ -75,7 +75,7 @@ class BasicCloseableHttpResponse implements CloseableHttpResponse {
     }
 
     @Override
-    public void setReasonPhrase(String reason) throws IllegalStateException {
+    public void setReasonPhrase(String reason) {
         httpResponse.setReasonPhrase(reason);
     }
 

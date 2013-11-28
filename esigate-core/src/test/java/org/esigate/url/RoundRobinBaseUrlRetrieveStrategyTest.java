@@ -30,8 +30,8 @@ import org.esigate.test.TestUtils;
 public class RoundRobinBaseUrlRetrieveStrategyTest extends TestCase {
 
     public void testGetBaseURL() {
-        String[] baseUrls = new String[] { "http://example.com/test/", "http://example1.com/test/",
-                "http://example2.com/test/" };
+        String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
+                "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new RoundRobinBaseUrlRetrieveStrategy(baseUrls);
         HttpEntityEnclosingRequest request = TestUtils.createRequest();
         int times = 5;

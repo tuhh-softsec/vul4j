@@ -90,7 +90,8 @@ public class EventManager {
     /**
      * Post events are stored in reverse order. This allows an extension to enclose the whole processing.
      */
-    private Map<EventDefinition, List<IEventListener>> listenersPost = new HashMap<EventDefinition, List<IEventListener>>();
+    private Map<EventDefinition, List<IEventListener>> listenersPost = new HashMap<EventDefinition,
+            List<IEventListener>>();
 
     private void register(Map<EventDefinition, List<IEventListener>> listenerMappings, EventDefinition eventDefinition,
             IEventListener listener, boolean reverseOrder) {
@@ -110,8 +111,8 @@ public class EventManager {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info("Registered {} on event {}/{}", new Object[] { listener.getClass().getName(), driverId,
-                    eventDefinition });
+            LOG.info("Registered {} on event {}/{}", new Object[] {listener.getClass().getName(), driverId,
+                    eventDefinition});
         }
     }
 
@@ -155,7 +156,7 @@ public class EventManager {
         // Loop on listeners
         for (IEventListener el : eventListeners) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Running {} on event {}/{}", new Object[] { el, driverId, eventDefinition });
+                LOG.debug("Running {} on event {}/{}", new Object[] {el, driverId, eventDefinition});
             }
 
             if (!el.event(eventDefinition, eventDetails)) {
@@ -192,8 +193,8 @@ public class EventManager {
         boolean removed = eventListeners.remove(listener);
 
         if (LOG.isInfoEnabled() && removed) {
-            LOG.info("Unregistered {} on event {}/{}", new Object[] { listener.getClass().getName(), driverId,
-                    eventDefinition });
+            LOG.info("Unregistered {} on event {}/{}", new Object[] {listener.getClass().getName(), driverId,
+                    eventDefinition});
         }
     }
 }

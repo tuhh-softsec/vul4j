@@ -55,8 +55,8 @@ public final class RequestUrl {
         String mappingPath = (mapping == null ? null : mapping.getPath());
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("relativeUrl: {}, contextPath: {}, servletPath: {}, mappingPath: {}", new Object[] { relativeUrl,
-                    contextPath, servletPath, mappingPath });
+            LOG.debug("relativeUrl: {}, contextPath: {}, servletPath: {}, mappingPath: {}", new Object[] {relativeUrl,
+                    contextPath, servletPath, mappingPath});
         }
 
         // Remove application context path

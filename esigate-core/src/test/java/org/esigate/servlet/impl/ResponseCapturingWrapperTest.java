@@ -9,7 +9,6 @@ import junit.framework.TestCase;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.servlet.MockHttpServletResponse;
-import org.esigate.servlet.impl.ResponseCapturingWrapper;
 
 public class ResponseCapturingWrapperTest extends TestCase {
 

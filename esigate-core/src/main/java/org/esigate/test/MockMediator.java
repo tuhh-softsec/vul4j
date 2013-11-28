@@ -106,7 +106,8 @@ public class MockMediator implements ContainerRequestMediator {
         this.httpResponse.setHeaders(response.getAllHeaders());
         HttpEntity entity = response.getEntity();
         if (entity != null) {
-            ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity), ContentType.get(entity));
+            ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity),
+                    ContentType.get(entity));
             if (entity.getContentEncoding() != null) {
                 copiedEntity.setContentEncoding(entity.getContentEncoding());
             }

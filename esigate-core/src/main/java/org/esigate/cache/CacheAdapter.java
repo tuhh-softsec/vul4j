@@ -84,8 +84,9 @@ public class CacheAdapter {
                     response = new BasicCloseableHttpResponse(fetchEvent.httpResponse);
                 }
             }
-            if (response != null)
+            if (response != null) {
                 transformResponse(request, response, clientContext);
+            }
             // TODO: returning null may be hard. However, this only happens if
             // an extension cancels the request. Need to think on the usecase.
             return response;
@@ -100,7 +101,8 @@ public class CacheAdapter {
          */
         abstract FetchEvent transformRequest(HttpRequest httpRequest, HttpContext context);
 
-        abstract void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse, HttpContext context);
+        abstract void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse,
+                HttpContext context);
 
     }
 

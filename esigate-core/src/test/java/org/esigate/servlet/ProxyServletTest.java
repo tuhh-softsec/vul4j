@@ -91,7 +91,8 @@ public class ProxyServletTest {
 
         // Ensure config is loaded
         Assert.assertEquals("provider1", servlet.getDriverSelector().getWebXmlProviderMappings().get("sub.domain.com"));
-        Assert.assertEquals("provider2", servlet.getDriverSelector().getWebXmlProviderMappings().get("sub2.domain.com"));
+        Assert.assertEquals("provider2", servlet.getDriverSelector().getWebXmlProviderMappings()
+                .get("sub2.domain.com"));
 
     }
 

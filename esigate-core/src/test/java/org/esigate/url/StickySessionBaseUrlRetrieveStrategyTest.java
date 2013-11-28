@@ -26,8 +26,8 @@ import org.esigate.test.TestUtils;
 public class StickySessionBaseUrlRetrieveStrategyTest extends TestCase {
 
     public void testGetBaseURL() {
-        final String[] baseUrls = new String[] { "http://example.com/test/", "http://example1.com/test/",
-                "http://example2.com/test/" };
+        final String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
+                "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
         int times = 100;
         for (int i = 0; i < times; i++) {
@@ -40,8 +40,8 @@ public class StickySessionBaseUrlRetrieveStrategyTest extends TestCase {
     }
 
     public void testGetBaseURLWithWrongIndex() {
-        final String[] baseUrls = new String[] { "http://example.com/test/", "http://example1.com/test/",
-                "http://example2.com/test/" };
+        final String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
+                "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
 
         HttpEntityEnclosingRequest request = TestUtils.createRequest();

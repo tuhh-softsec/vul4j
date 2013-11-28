@@ -126,7 +126,8 @@ public final class Parameters {
 
     // EhCache
     public static final Parameter EHCACHE_CACHE_NAME_PROPERTY = new Parameter("ehcache.cacheName", "esigate");
-    public static final Parameter EHCACHE_CONFIGURATION_FILE_PROPERTY = new Parameter("ehcache.configurationFile", null);
+    public static final Parameter EHCACHE_CONFIGURATION_FILE_PROPERTY = new Parameter("ehcache.configurationFile",
+            null);
 
     // MemCached
     public static final Parameter MEMCACHED_SERVERS_PROPERTY = new Parameter("memcached.servers", null);

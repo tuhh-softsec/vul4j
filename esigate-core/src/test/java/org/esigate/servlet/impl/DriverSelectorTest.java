@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
-import org.esigate.servlet.impl.DriverSelector;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -97,7 +96,8 @@ public class DriverSelectorTest extends TestCase {
         Mockito.when(request3.getHeader("Host")).thenReturn("sub2.domain.com:8082");
         Mockito.when(request3.getContextPath()).thenReturn("/");
         Mockito.when(request3.getRequestURI()).thenReturn("test/");
-        Assert.assertEquals("default", ds.selectProvider(request3, true).getLeft().getConfiguration().getInstanceName());
+        Assert.assertEquals("default", ds.selectProvider(request3, true).getLeft().getConfiguration()
+                .getInstanceName());
     }
 
 }

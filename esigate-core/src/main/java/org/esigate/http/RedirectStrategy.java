@@ -32,7 +32,8 @@ public class RedirectStrategy extends DefaultRedirectStrategy {
     private static final String LAST_REQUEST = "LAST_REQUEST";
 
     @Override
-    public URI getLocationURI(HttpRequest request, HttpResponse response, HttpContext context) throws ProtocolException {
+    public URI getLocationURI(HttpRequest request, HttpResponse response, HttpContext context)
+            throws ProtocolException {
         URI redirectLocation = super.getLocationURI(request, response, context);
         if (LOG.isInfoEnabled()) {
             LOG.info(request.getRequestLine() + " -> " + response.getStatusLine()

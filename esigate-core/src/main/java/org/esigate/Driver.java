@@ -302,7 +302,8 @@ public final class Driver {
 
             // On error returned by the proxy request, perform rendering on the
             // error page.
-            e.errorPage = new HttpErrorPage(performRendering(relUrl, request, e.errorPage.getHttpResponse(), renderers));
+            e.errorPage = new HttpErrorPage(performRendering(relUrl, request,
+                    e.errorPage.getHttpResponse(), renderers));
 
             // Event post-proxy
             // This must be done before throwing exception to ensure response
