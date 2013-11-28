@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 public class ProxyFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(ProxyFilter.class);
-    private DriverSelector driverSelector;
     private FilterConfig config;
 
     @Override
@@ -47,8 +46,6 @@ public class ProxyFilter implements Filter {
         // Force esigate configuration parsing to trigger errors right away (if
         // any) and prevent delay on first call.
         DriverFactory.ensureConfigured();
-        driverSelector = new DriverSelector();
-        driverSelector.setUseMappings(true);
     }
 
     @Override
@@ -60,7 +57,7 @@ public class ProxyFilter implements Filter {
                 config.getServletContext(), chain);
         Pair<Driver, UriMapping> dm = null;
         try {
-            dm = this.driverSelector.selectProvider(httpServletRequest, false);
+            dm = DriverSelector.selectProvider(httpServletRequest, false);
             String relUrl = RequestUrl.getRelativeUrl(httpServletRequest, dm.getRight(), false);
             LOG.debug("Proxying {}", relUrl);
             dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
