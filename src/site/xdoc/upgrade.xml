@@ -31,15 +31,136 @@
 					ResourceFixup)
 				</p>
 			</subsection>
-			<subsection name="Aggregator servlet">
+			<subsection name="Servlets and servlet filter">
 				<p>
-					The aggregator servlet is now deprecated : you should use the proxy
-					servlet instead. Both now have the same behavior and parameters.
-					Simply rename
-					<b>org.esigate.servlet.AggregatorServlet</b>
-					to
-					<b>org.esigate.servlet.ProxyServlet</b>
-</p>
+					The aggregator and proxy servlet have been replaced by a servlet filter
+					that enables more complex url mappings and supports local and 
+					cross-context providers.
+				</p>
+				<p>
+					All the servlets have to be replaced by a unique servlet filter for example:
+				</p>
+				<source><![CDATA[
+<servlet>
+	<servlet-name>provider1</servlet-name>
+	<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
+	<init-param>
+		<param-name>provider</param-name>
+		<param-value>provider1</param-value>
+	</init-param>
+</servlet>
+<servlet>
+	<servlet-name>provider2</servlet-name>
+	<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
+	<init-param>
+		<param-name>provider</param-name>
+		<param-value>provider2</param-value>
+	</init-param>
+</servlet>
+<servlet-mapping>
+	<servlet-name>provider1</servlet-name>
+	<url-pattern>/*</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+	<servlet-name>provider2</servlet-name>
+	<url-pattern>/provider2/*</url-pattern>
+</servlet-mapping>
+				]]></source>
+				<p>
+					Will be replaced by:
+				</p>
+				<source><![CDATA[
+<filter>
+	<filter-name>EsiGate</filter-name>
+	<filter-class>org.esigate.servlet.ProxyFilter</filter-class>
+</filter>
+<filter-mapping>
+	<filter-name>EsiGate</filter-name>
+	<url-pattern>/*</url-pattern>
+</filter-mapping>
+				]]></source>
+				<p>
+					And the url mappings have to be moved to esigate.properties file:
+				</p>
+				<source><![CDATA[
+provider1.remoteUrlBase=http://host1/
+provider1.mappings=*
+
+provider1.remoteUrlBase=http://host2/
+provider2.mappings=/provider2/*
+				]]></source>
+				
+			</subsection>
+
+			<subsection name="JSP taglib">
+				<p>
+					JSP taglib has been removed. It can be replaced by the servlet filter (see above)
+					combined with ESI tags. The advantage is that this is compatible with any
+					presentation framework like JSP, JSF components or Wicket components.
+				</p>
+				<p>
+					Here are some examples of JSP tags and their equivalent in ESI tags.
+				</p>
+				<p>JSP taglib:</p>
+				<source><![CDATA[
+<%@taglib uri="http://www.esigate.org/taglib" prefix="assemble"%>
+				]]></source>
+				<p>Equivalent ESI tag:</p>
+				<source><![CDATA[
+ 
+				]]></source>
+				<p>JSP taglib:</p>
+				<source><![CDATA[
+<assemble:includeBase page="block.jsp" />
+				]]></source>
+				<p>Equivalent ESI tag:</p>
+				<source><![CDATA[
+<esi:vars><base href="$(PROVIDER{default})block.jsp" /></esi:vars>
+				]]></source>
+				<p>JSP taglib:</p>
+				<source><![CDATA[
+<assemble:includeblock page="block.jsp" name="block1" />
+				]]></source>
+				<p>Equivalent ESI tag:</p>
+				<source><![CDATA[
+<esi:include src="$(PROVIDER{default})block.jsp" fragment="block1" />
+				]]></source>
+				<p>JSP taglib:</p>
+				<source><![CDATA[
+<assemble:includeblock page="error500.jsp" name="block1" />
+				]]></source>
+				<p>Equivalent ESI tag (Note: default Exception handling is different in ESI tags, that
+				is why we need some code to reproduce exactly the same behavior):</p>
+				<source><![CDATA[
+<esi:try>
+<esi:attempt><esi:include src="$(PROVIDER{default})error500.jsp" fragment="block1" /></esi:attempt>
+<esi:except code="500">500 Internal_Server_Error</esi:except>
+</esi:try>
+				]]></source>
+				<p>JSP taglib:</p>
+				<source><![CDATA[
+<assemble:include-xml source="xml-page.xml" xpath="//html:div/html:div">
+	<assemble:replace expression ="Item">New Item</assemble:replace>
+</assemble:include-xml>
+				]]></source>
+				<p>Equivalent ESI tag:</p>
+				<source><![CDATA[
+<esi:include src="$(PROVIDER{default})xml-page.xml" xpath="//html:div/html:div">
+	<esi:replace expression ="Item">New Item</esi:replace>
+</esi:include>
+				]]></source>
+				<p>JSP taglib:</p>
+				<source><![CDATA[
+<assemble:include-xml source="xml-page.xml" template="/WEB-INF/xml-template.xslt" >
+	<assemble:replace expression ="Item">New Item</assemble:replace>
+</assemble:include-xml>
+				]]></source>
+				<p>Equivalent ESI tag:</p>
+				<source><![CDATA[
+<esi:include src="$(PROVIDER{default})xml-page.xml" stylesheet="/WEB-INF/xml-template.xslt" >
+	<esi:replace expression ="Item">New Item</esi:replace>
+</esi:include>
+				]]></source>
 			</subsection>
 
 			<subsection name="Cache">
