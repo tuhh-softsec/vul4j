@@ -16,9 +16,9 @@
 package org.esigate.servlet;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Properties;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.http.HttpResponse;
@@ -33,15 +33,16 @@ import org.esigate.events.impl.FetchEvent;
 import org.esigate.extension.Extension;
 import org.esigate.servlet.impl.ResponseCapturingWrapper;
 import org.esigate.util.HttpRequestHelper;
-import org.esigate.util.UriUtils;
 
 public class ServletExtension implements Extension, IEventListener {
     private Driver driver;
+    private String context;
 
     @Override
     public void init(Driver driver, Properties properties) {
         this.driver = driver;
         driver.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
+        context = properties.getProperty("context");
     }
 
     @Override
@@ -49,18 +50,17 @@ public class ServletExtension implements Extension, IEventListener {
         FetchEvent fetchEvent = (FetchEvent) event;
         if (EventManager.EVENT_FETCH_PRE.equals(id)) {
             String uriString = fetchEvent.httpRequest.getRequestLine().getUri();
+            String baseUrl = HttpRequestHelper.getBaseUrl(fetchEvent.httpRequest).toString();
             if (!uriString.startsWith(HttpRequestHelper.getBaseUrl(fetchEvent.httpRequest).toString())) {
                 // Non local absolute uri
                 return true;
             } else {
-                URI uri = UriUtils.createUri(uriString);
-                String relUrl = uri.getPath();
+                String relUrl = uriString.substring(baseUrl.length());
+                if (!relUrl.startsWith("/")){
+                    relUrl = "/" + relUrl;
+                }
                 HttpServletMediator mediator = (HttpServletMediator) HttpRequestHelper
                         .getMediator(fetchEvent.httpRequest);
-                relUrl = relUrl.substring(mediator.getRequest().getContextPath().length());
-                if (uri.getRawQuery() != null) {
-                    relUrl += "?" + uri.getRawQuery();
-                }
                 HttpResponse result;
                 if (!(mediator instanceof HttpServletMediator)) {
                     String message = ServletExtension.class.getName()
@@ -72,18 +72,47 @@ public class ServletExtension implements Extension, IEventListener {
                             httpServletMediator.getResponse(), driver.getContentTypeHelper());
                     try {
                         if (fetchEvent.isProxy()) {
-                            httpServletMediator.getFilterChain().doFilter(httpServletMediator.getRequest(),
-                                    wrappedResponse);
+                            if (context == null) {
+                                httpServletMediator.getFilterChain().doFilter(httpServletMediator.getRequest(),
+                                        wrappedResponse);
+                                result = wrappedResponse.getResponse();
+                            } else {
+                                ServletContext crossContext = httpServletMediator.getServletContext().getContext(
+                                        context);
+                                if (crossContext == null) {
+                                    String message = "Context " + context + " does not exist or cross context disabled";
+                                    result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, message, message)
+                                            .getHttpResponse();
+                                } else {
+                                    crossContext.getRequestDispatcher(relUrl).forward(httpServletMediator.getRequest(),
+                                            wrappedResponse);
+                                    result = wrappedResponse.getResponse();
+                                }
+                            }
                         } else {
-                            httpServletMediator.getRequest().getRequestDispatcher(relUrl)
-                                    .forward(httpServletMediator.getRequest(), wrappedResponse);
+                            if (context == null) {
+                                httpServletMediator.getRequest().getRequestDispatcher(relUrl)
+                                        .forward(httpServletMediator.getRequest(), wrappedResponse);
+                                result = wrappedResponse.getResponse();
+                            } else {
+                                ServletContext crossContext = httpServletMediator.getServletContext().getContext(
+                                        context);
+                                if (crossContext == null) {
+                                    String message = "Context " + context + " does not exist or cross context disabled";
+                                    result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, message, message)
+                                            .getHttpResponse();
+                                } else {
+                                    crossContext.getRequestDispatcher(relUrl).include(httpServletMediator.getRequest(),
+                                            wrappedResponse);
+                                    result = wrappedResponse.getResponse();
+                                }
+                            }
                         }
                     } catch (IOException e) {
                         result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, e.getMessage(), e).getHttpResponse();
                     } catch (ServletException e) {
                         result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, e.getMessage(), e).getHttpResponse();
                     }
-                    result = wrappedResponse.getResponse();
                 }
                 fetchEvent.httpResponse = result;
                 // Stop execution

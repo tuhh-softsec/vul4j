@@ -135,6 +135,10 @@ public class AggregatorTest extends TestCase {
         doSimpleTest("local/local.jsp");
     }
 
+    public void testLocalPageWithEsiIncludeCrossContext() throws Exception {
+        doSimpleTest("local/local-crosscontext.jsp");
+    }
+
     public void testMixedEncodings() throws Exception {
         doSimpleTest("template-mixed-encodings.jsp");
     }
@@ -187,6 +191,10 @@ public class AggregatorTest extends TestCase {
         assertEquals("should be only one location: " + Arrays.asList(locations), 1, locations.length);
         assertEquals("Redirect header did not match", "http://localhost:8080/esigate-app-aggregator/redirected.jsp",
                 locations[0]);
+    }
+
+    public void testRemotePageWithCrosscontextEsiInclude() throws Exception {
+        doSimpleTest("crosscontext/include-crosscontext.jsp");
     }
 
     public void testRemotePageWithLocalEsiInclude() throws Exception {

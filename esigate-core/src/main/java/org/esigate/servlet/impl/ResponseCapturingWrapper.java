@@ -380,4 +380,8 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
         }
         return httpClientResponse;
     }
+
+    public int getStatus() {
+        return httpClientResponse.getStatusLine().getStatusCode();
+    }
 }

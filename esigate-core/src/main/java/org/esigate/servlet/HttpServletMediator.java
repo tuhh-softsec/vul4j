@@ -279,4 +279,8 @@ public class HttpServletMediator implements ContainerRequestMediator {
         return filterChain;
     }
 
+    ServletContext getServletContext() {
+        return servletContext;
+    }
+
 }
