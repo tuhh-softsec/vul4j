@@ -41,12 +41,15 @@ class FlowDatabaseOperation {
     static boolean addFlow(FlowManager flowManager,
 			   DBOperation dbHandler,
 			   FlowPath flowPath, FlowId flowId) {
+	System.out.println("addFlow");
 	IFlowPath flowObj = null;
 	boolean found = false;
 	try {
 	    if ((flowObj = dbHandler.searchFlowPath(flowPath.flowId())) != null) {
+		System.out.println("found = true");
 		found = true;
 	    } else {
+		System.out.println("found = false");
 		flowObj = dbHandler.newFlowPath();
 	    }
 	} catch (Exception e) {

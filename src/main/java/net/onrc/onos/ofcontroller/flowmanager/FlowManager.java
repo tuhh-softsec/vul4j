@@ -694,6 +694,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // NOTE: The Flow Path might not be found if the Flow was
 		    // just removed by some other controller instance.
 		    //
+		    System.out.println("writeModifiedFlowEntriesToDatabase");
 		    IFlowPath flowObj =
 			dbHandlerInner.searchFlowPath(flowEntry.flowId());
 		    if (flowObj == null) {
