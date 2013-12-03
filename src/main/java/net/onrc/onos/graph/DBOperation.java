@@ -190,6 +190,7 @@ public abstract class DBOperation implements IDBOperation {
 	*/
 	@Override
 	public IFlowPath newFlowPath() {
+	    System.out.println("newFlowPath");
 	    IFlowPath flowPath = (IFlowPath)conn.getFramedGraph().addVertex(null, IFlowPath.class);
 	    if (flowPath != null) {
 		flowPath.setType("flow");
@@ -255,6 +256,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IFlowPath searchFlowPath(final FlowId flowId) {
+	    System.out.println("searchFlowPath");
 	    return conn.getFramedGraph().getVertices("flow_id", flowId.toString()).iterator().hasNext()
 		    ? (IFlowPath) conn.getFramedGraph().getVertices("flow_id", flowId.toString(),
 		    IFlowPath.class).iterator().next() : null;
@@ -265,6 +267,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public Iterable<IFlowPath> getAllFlowPaths() {
+	    System.out.println("getAllFlowPaths");
 	    Iterable<IFlowPath> flowPaths = conn.getFramedGraph().getVertices("type", "flow", IFlowPath.class);
 
 	    List<IFlowPath> nonNullFlows = new ArrayList<IFlowPath>();
@@ -292,6 +295,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
+	    System.out.println("searchFlowEntry");
 	    return conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString()).iterator().hasNext()
 		    ? (IFlowEntry)conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString(),
 		    IFlowEntry.class).iterator().next() : null;
@@ -319,6 +323,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IFlowEntry newFlowEntry() {
+	    System.out.println("newFlowEntry");
 	    IFlowEntry flowEntry = (IFlowEntry) conn.getFramedGraph().addVertex(null, IFlowEntry.class);
 	    if (flowEntry != null) {
 		flowEntry.setType("flow_entry");

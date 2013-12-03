@@ -45,7 +45,9 @@ class FlowDatabaseOperation {
 	IFlowPath flowObj = null;
 	boolean found = false;
 	try {
-	    if ((flowObj = dbHandler.searchFlowPath(flowPath.flowId())) != null) {
+	    flowObj = dbHandler.searchFlowPath(flowPath.flowId());
+	    System.out.println("flowObj : " + flowObj);
+	    if (flowObj != null) {
 		System.out.println("found = true");
 		found = true;
 	    } else {
