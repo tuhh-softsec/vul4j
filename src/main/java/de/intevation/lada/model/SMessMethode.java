@@ -20,7 +20,7 @@ implements java.io.Serializable
 
     private String        mmtId;
     private String        beschreibung;
-    private String        messmethhode;
+    private String        messmethode;
 
     public SMessMethode() {
     }
@@ -32,10 +32,10 @@ implements java.io.Serializable
     public SMessMethode(
         String mmtId,
         String beschreibung,
-        String messmethhode) {
+        String messmethode) {
         this.mmtId = mmtId;
         this.beschreibung = beschreibung;
-        this.messmethhode = messmethhode;
+        this.messmethode = messmethode;
     }
 
     @Id
@@ -57,12 +57,12 @@ implements java.io.Serializable
         this.beschreibung = beschreibung;
     }
 
-    @Column(name = "messmethhode", length = 50)
-    public String getMessmethhode() {
-        return this.messmethhode;
+    @Column(name = "messmethode", length = 50)
+    public String getMessmethode() {
+        return this.messmethode;
     }
 
-    public void setMessmethhode(String messmethhode) {
-        this.messmethhode = messmethhode;
+    public void setMessmethode(String messmethode) {
+        this.messmethode = messmethode;
     }
 }

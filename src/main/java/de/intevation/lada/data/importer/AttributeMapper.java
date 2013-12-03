@@ -386,7 +386,7 @@ public class AttributeMapper
                 (List<SMessgroesse>)responseGroesse.getData();
             boolean foundGroesse = false;
             for (SMessgroesse g: messgroessen) {
-                if(g.getMessgro0esse().equals(messgroesse)) {
+                if(g.getMessgroesse().equals(messgroesse)) {
                     foundGroesse = true;
                     messwert.setMessgroesseId(g.getMessgroesseId());
                     messwert.getId().setMessgroesseId(g.getMessgroesseId());

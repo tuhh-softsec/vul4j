@@ -16,7 +16,7 @@ public class SMessgroesse implements java.io.Serializable {
 
 	private int messgroesseId;
 	private String beschreibung;
-	private String messgro0esse;
+	private String messgroesse;
 	private String defaultFarbe;
 	private String idfNuklidKey;
 	private Character istLeitnuklid;
@@ -28,7 +28,7 @@ public class SMessgroesse implements java.io.Serializable {
 
 	public SMessgroesse(int messgroesseId, String messgro0esse) {
 		this.messgroesseId = messgroesseId;
-		this.messgro0esse = messgro0esse;
+		this.messgroesse = messgro0esse;
 	}
 
 	public SMessgroesse(int messgroesseId, String beschreibung,
@@ -36,7 +36,7 @@ public class SMessgroesse implements java.io.Serializable {
 			Character istLeitnuklid, Long eudfNuklidId, String kennungBvl) {
 		this.messgroesseId = messgroesseId;
 		this.beschreibung = beschreibung;
-		this.messgro0esse = messgro0esse;
+		this.messgroesse = messgro0esse;
 		this.defaultFarbe = defaultFarbe;
 		this.idfNuklidKey = idfNuklidKey;
 		this.istLeitnuklid = istLeitnuklid;
@@ -63,13 +63,13 @@ public class SMessgroesse implements java.io.Serializable {
 		this.beschreibung = beschreibung;
 	}
 
-	@Column(name = "messgro0esse", nullable = false, length = 50)
-	public String getMessgro0esse() {
-		return this.messgro0esse;
+	@Column(name = "messgroesse", nullable = false, length = 50)
+	public String getMessgroesse() {
+		return this.messgroesse;
 	}
 
-	public void setMessgro0esse(String messgro0esse) {
-		this.messgro0esse = messgro0esse;
+	public void setMessgroesse(String messgro0esse) {
+		this.messgroesse = messgro0esse;
 	}
 
 	@Column(name = "default_farbe", length = 9)

@@ -334,7 +334,7 @@ implements Creator
         einheitBuilder.and("mehId", mw.getMehId());
         Response re = readonlyRepo.filter(einheitBuilder.getQuery());
         List<SMessEinheit> me = (List<SMessEinheit>)re.getData();
-        String value = "\"" + sm.get(0).getMessgro0esse() + "\"";
+        String value = "\"" + sm.get(0).getMessgroesse() + "\"";
         if (mw.getGrenzwertueberschreitung() != null &&
             !mw.getGrenzwertueberschreitung()) {
             value += " <";
