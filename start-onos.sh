@@ -160,7 +160,7 @@ function check_db {
 case "$1" in
   start)
     stop
-    check_db
+#    check_db
     start 
     ;;
   startifdown)

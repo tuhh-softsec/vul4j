@@ -24,7 +24,8 @@ public class RamCloudDBConnection extends DBConnection {
     public RamCloudDBConnection(final String dbConfigFile) {
         final String coordinatorURL = open(getConfiguration(new File(dbConfigFile)));
 	System.out.println("coordinatorURL "+ coordinatorURL);
-        graph = new RamCloudGraph(coordinatorURL);
+        //graph = new RamCloudGraph(coordinatorURL);
+	graph = new RamCloudGraph("fast+udp:host=10.128.100.36,port=12246");
     }
     
     @Override
