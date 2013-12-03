@@ -720,9 +720,18 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    //
 	    newFlowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
 
-	    // Set the incoming port matching
-	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
+	    //
+	    // Allocate the FlowEntryMatch by copying the default one
+	    // from the FlowPath (if set).
+	    //
+	    FlowEntryMatch flowEntryMatch = null;
+	    if (flowPath.flowEntryMatch() != null)
+		flowEntryMatch = new FlowEntryMatch(flowPath.flowEntryMatch());
+	    else
+		flowEntryMatch = new FlowEntryMatch();
 	    newFlowEntry.setFlowEntryMatch(flowEntryMatch);
+
+	    // Set the incoming port matching
 	    flowEntryMatch.enableInPort(newFlowEntry.inPort());
 
 	    //
