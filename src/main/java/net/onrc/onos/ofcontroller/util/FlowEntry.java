@@ -136,10 +136,11 @@ public class FlowEntry {
      *
      * @return true if the Flow ID is valid, otherwise false.
      */
+    @JsonIgnore
     public boolean isValidFlowId() {
 	if (this.flowId == null)
 	    return false;
-	return (this.flowId.value() != 0);
+	return (this.flowId.isValid());
     }
 
     /**
@@ -165,10 +166,11 @@ public class FlowEntry {
      *
      * @return true if the Flow Entry ID is valid, otherwise false.
      */
+    @JsonIgnore
     public boolean isValidFlowEntryId() {
 	if (this.flowEntryId == null)
 	    return false;
-	return (this.flowEntryId.value() != 0);
+	return (this.flowEntryId.isValid());
     }
 
     /**

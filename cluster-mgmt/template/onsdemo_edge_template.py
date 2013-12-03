@@ -65,7 +65,7 @@ class SDNTopo( Topo ):
             switch.append(sw)
 
         for i in range (NR_NODES):
-            host.append(self.addHost( 'host%d' % (int(i)+1) ))
+            host.append(self.addHost( 'host%d.%d' % (NWID, int(i)+1) ))
 
         for i in range (NR_NODES):
             self.addLink(host[i], switch[i])
@@ -117,7 +117,7 @@ def sdnnet(opt):
 
     host = []
     for i in range (NR_NODES):
-      host.append(net.get( 'host%d' % (int(i)+1) ))
+      host.append(net.get( 'host%d.%d' % (NWID, (int(i)+1)) ))
 
     net.start()
 

@@ -2,8 +2,8 @@ package net.onrc.onos.ofcontroller.flowmanager.web;
 
 import java.util.ArrayList;
 
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
+import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
 import org.restlet.resource.Get;
@@ -31,8 +31,8 @@ public class GetSummaryFlowsResource extends ServerResource {
      * @return the collection of Flow states if any found, otherwise null.
      */
     @Get("json")
-    public ArrayList<IFlowPath> retrieve() {
-    	ArrayList<IFlowPath> result = null;
+    public ArrayList<FlowPath> retrieve() {
+    	ArrayList<FlowPath> result = null;
     	
     	FlowId flowId;
     	int maxFlows = 0;

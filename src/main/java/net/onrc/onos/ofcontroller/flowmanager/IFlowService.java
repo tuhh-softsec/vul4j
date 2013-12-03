@@ -2,11 +2,12 @@ package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.util.ArrayList;
 
+import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
@@ -82,7 +83,7 @@ public interface IFlowService extends IFloodlightService {
      * @param maxFlows number of flows to return
      * @return the Flow Paths if found, otherwise null.
      */
-    ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);
+    ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);
     
     /**
      * Add and maintain a shortest-path flow.
@@ -113,4 +114,12 @@ public interface IFlowService extends IFloodlightService {
      * @return unique flow ID
      */
     public long getNextFlowEntryId();
+
+    /**
+     * Inform the Flow Manager that a Flow Entry on switch expired.
+     *
+     * @param sw the switch the Flow Entry expired on.
+     * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
+     */
+    public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId);
 }

@@ -2,7 +2,6 @@ package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -53,15 +52,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected IFlowPusherService pusher;
     
-    protected OFMessageDamper messageDamper;
-    
-    //
-    // TODO: Values copied from elsewhere (class LearningSwitch).
-    // The local copy should go away!
-    //
-    protected static final int OFMESSAGE_DAMPER_CAPACITY = 50000; // TODO: find sweet spot
-    protected static final int OFMESSAGE_DAMPER_TIMEOUT = 250;	// ms
-
     // Flow Entry ID generation state
     private static Random randomGenerator = new Random();
     private static int nextFlowEntryIdPrefix = 0;
@@ -165,14 +155,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
-
-	if (enableFlowPusher) {
-	    pusher = context.getServiceImpl(IFlowPusherService.class);
-	} else {
-	    messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
-	    EnumSet.of(OFType.FLOW_MOD),
-	    OFMESSAGE_DAMPER_TIMEOUT);
-	}
+	pusher = context.getServiceImpl(IFlowPusherService.class);
 
 	this.init("","");
     }
@@ -369,21 +352,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the Flow Paths if found, otherwise null.
      */
     @Override
-    public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId,
-						   int maxFlows) {
+    public ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId,
+						  int maxFlows) {
 	return FlowDatabaseOperation.getAllFlowsSummary(dbHandlerApi, flowId,
 							maxFlows);
     }
     
-    /**
-     * Get all Flows information, without the associated Flow Entries.
-     *
-     * @return all Flows information, without the associated Flow Entries.
-     */
-    public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries() {
-	return FlowDatabaseOperation.getAllFlowsWithoutFlowEntries(dbHandlerApi);
-    }
-
     /**
      * Add and maintain a shortest-path flow.
      *
@@ -426,58 +400,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Install a Flow Entry on a switch.
+     * Inform the Flow Manager that a Flow Entry on switch expired.
      *
-     * @param mySwitch the switch to install the Flow Entry into.
-     * @param flowObj the flow path object for the flow entry to install.
-     * @param flowEntryObj the flow entry object to install.
-     * @return true on success, otherwise false.
+     * @param sw the switch the Flow Entry expired on.
+     * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
-    private boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
-				    IFlowEntry flowEntryObj) {
-    	if (enableFlowPusher) {
-	    return pusher.add(mySwitch, flowObj, flowEntryObj);
-    	} else {
-	    return FlowSwitchOperation.installFlowEntry(
-		floodlightProvider.getOFMessageFactory(),
-		messageDamper, mySwitch, flowObj, flowEntryObj);
-    	}
-    }
-
-    /**
-     * Install a Flow Entry on a switch.
-     *
-     * @param mySwitch the switch to install the Flow Entry into.
-     * @param flowPath the flow path for the flow entry to install.
-     * @param flowEntry the flow entry to install.
-     * @return true on success, otherwise false.
-     */
-    private boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
-				    FlowEntry flowEntry) {
-    	if (enableFlowPusher) {
-	    return pusher.add(mySwitch, flowPath, flowEntry);
-    	} else {
-	    return FlowSwitchOperation.installFlowEntry(
-		floodlightProvider.getOFMessageFactory(),
-		messageDamper, mySwitch, flowPath, flowEntry);
-    	}
-    }
-
-    /**
-     * Remove a Flow Entry from a switch.
-     *
-     * @param mySwitch the switch to remove the Flow Entry from.
-     * @param flowPath the flow path for the flow entry to remove.
-     * @param flowEntry the flow entry to remove.
-     * @return true on success, otherwise false.
-     */
-    private boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
-				   FlowEntry flowEntry) {
-	//
-	// The installFlowEntry() method implements both installation
-	// and removal of flow entries.
-	//
-	return (installFlowEntry(mySwitch, flowPath, flowEntry));
+    public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId) {
+	// TODO: Not implemented yet
     }
 
     /**
@@ -506,9 +435,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry.toString());
 
 	    //
-	    // Install the Flow Entry into the switch
+	    // Push the Flow Entry into the switch
 	    //
-	    if (! installFlowEntry(mySwitch, flowPath, flowEntry)) {
+	    if (! pusher.add(mySwitch, flowPath, flowEntry)) {
 		String logMsg = "Cannot install Flow Entry " +
 		    flowEntry.flowEntryId() +
 		    " from Flow Path " + flowPath.flowId() +
@@ -540,6 +469,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
 	    FlowEntry flowEntry = flowPair.flowEntry;
 
+	    if (! flowEntry.isValidFlowEntryId())
+		continue;
+
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 
 	    //
@@ -558,8 +490,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    FlowEntryUserState.FE_USER_DELETE) {
 		    continue;
 		}
-		if (! flowEntry.isValidFlowEntryId())
-		    continue;
 	    }
 
 	    log.debug("Pushing Flow Entry To Datagrid: {}", flowEntry.toString());
