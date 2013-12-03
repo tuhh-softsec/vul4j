@@ -171,18 +171,28 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		//  - EventEntry<FlowEntry>
 		//
 		for (EventEntry<?> event : collection) {
+		    // Topology event
 		    if (event.eventData() instanceof TopologyElement) {
 			EventEntry<TopologyElement> topologyEventEntry =
 			    (EventEntry<TopologyElement>)event;
 			topologyEvents.add(topologyEventEntry);
-		    } else if (event.eventData() instanceof FlowPath) {
+			continue;
+		    }
+
+		    // FlowPath event
+		    if (event.eventData() instanceof FlowPath) {
 			EventEntry<FlowPath> flowPathEventEntry =
 			    (EventEntry<FlowPath>)event;
 			flowPathEvents.add(flowPathEventEntry);
-		    } else if (event.eventData() instanceof FlowEntry) {
+			continue;
+		    }
+
+		    // FlowEntry event
+		    if (event.eventData() instanceof FlowEntry) {
 			EventEntry<FlowEntry> flowEntryEventEntry =
 			    (EventEntry<FlowEntry>)event;
 			flowEntryEvents.add(flowEntryEventEntry);
+			continue;
 		    }
 		}
 		collection.clear();
@@ -710,9 +720,18 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    //
 	    newFlowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
 
-	    // Set the incoming port matching
-	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
+	    //
+	    // Allocate the FlowEntryMatch by copying the default one
+	    // from the FlowPath (if set).
+	    //
+	    FlowEntryMatch flowEntryMatch = null;
+	    if (flowPath.flowEntryMatch() != null)
+		flowEntryMatch = new FlowEntryMatch(flowPath.flowEntryMatch());
+	    else
+		flowEntryMatch = new FlowEntryMatch();
 	    newFlowEntry.setFlowEntryMatch(flowEntryMatch);
+
+	    // Set the incoming port matching
 	    flowEntryMatch.enableInPort(newFlowEntry.inPort());
 
 	    //

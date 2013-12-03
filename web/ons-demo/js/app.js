@@ -1,6 +1,17 @@
 /*global d3, document∆*/
 
 
+function updateFlow(model) {
+    model.flows.forEach(function (flow) {
+	flow.flowId = flow.flowId.value;
+	flow.installerId = flow.installerId.value;
+	flow.dstDpid = flow.dataPath.dstPort.dpid.value;
+	flow.srcDpid = flow.dataPath.srcPort.dpid.value;
+	flow.dstPort = flow.dataPath.dstPort.port.value;
+	flow.srcPort = flow.dataPath.srcPort.port.value;
+    });
+}
+
 function sync() {
 	var d = Date.now();
 
@@ -8,6 +19,7 @@ function sync() {
 //		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
 		if (newModel) {
+			updateFlow(newModel);
 			var modelChanged = false;
 			var newModelString = JSON.stringify(newModel);
 			if (!modelString || newModelString != modelString) {

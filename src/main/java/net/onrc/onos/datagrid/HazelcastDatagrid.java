@@ -607,6 +607,29 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
 
     /**
+     * Get a Flow for a given Flow ID.
+     *
+     * @param flowId the Flow ID of the Flow to get.
+     * @return the Flow if found, otherwise null.
+     */
+    @Override
+    public FlowPath getFlow(FlowId flowId) {
+	byte[] valueBytes = mapFlow.get(flowId.value());
+	if (valueBytes == null)
+	    return null;
+
+	Kryo kryo = kryoFactory.newKryo();
+	//
+	// Decode the value
+	//
+	Input input = new Input(valueBytes);
+	FlowPath flowPath = kryo.readObject(input, FlowPath.class);
+	kryoFactory.deleteKryo(kryo);
+
+	return flowPath;
+    }
+
+    /**
      * Send a notification that a Flow is added.
      *
      * @param flowPath the Flow that is added.
@@ -699,6 +722,29 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	kryoFactory.deleteKryo(kryo);
 
 	return allFlowEntries;
+    }
+
+    /**
+     * Get a Flow Entry for a given Flow Entry ID.
+     *
+     * @param flowEntryId the Flow Entry ID of the Flow Entry to get.
+     * @return the Flow Entry if found, otherwise null.
+     */
+    @Override
+    public FlowEntry getFlowEntry(FlowEntryId flowEntryId) {
+	byte[] valueBytes = mapFlowEntry.get(flowEntryId.value());
+	if (valueBytes == null)
+	    return null;
+
+	Kryo kryo = kryoFactory.newKryo();
+	//
+	// Decode the value
+	//
+	Input input = new Input(valueBytes);
+	FlowEntry flowEntry = kryo.readObject(input, FlowEntry.class);
+	kryoFactory.deleteKryo(kryo);
+
+	return flowEntry;
     }
 
     /**

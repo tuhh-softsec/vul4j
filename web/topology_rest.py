@@ -720,8 +720,8 @@ def controller_status_change(cmd, controller_name):
 #    print "Debug: Controller command %s called %s" % (cmd, controller_name)
   else:
     # No longer use -i to specify keys (use .ssh/config to specify it)
-    start_onos="ssh %s ONOS/start-onos.sh start" % (controller_name)
-    stop_onos="ssh %s ONOS/start-onos.sh stop" % (controller_name)
+    start_onos="ssh %s \"cd ONOS; ./start-onos.sh start\"" % (controller_name)
+    stop_onos="ssh %s \"cd ONOS; ./start-onos.sh stop\"" % (controller_name)
 #    start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
 #    stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
 
@@ -960,7 +960,7 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
   parsedResult = json.loads(result)
   if len(parsedResult) > 0:
     if parsedResult[-1].has_key('flowId'):
-      flow_nr = int(parsedResult[-1]['flowId'], 16)
+      flow_nr = int(parsedResult[-1]['flowId']['value'], 16)
   else:
     flow_nr = -1  # first flow
     print "first flow"
