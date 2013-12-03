@@ -66,7 +66,6 @@ import net.floodlightcontroller.core.util.ListenerDispatcher;
 import net.floodlightcontroller.core.web.CoreWebRoutable;
 import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.packet.Ethernet;
-import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.storage.IResultSet;
 import net.floodlightcontroller.storage.IStorageSourceListener;
@@ -185,7 +184,6 @@ public class Controller implements IFloodlightProviderService,
     protected IRestApiService restApi;
     protected ICounterStoreService counterStore = null;
     protected IStorageSourceService storageSource;
-    protected IPktInProcessingTimeService pktinProcTime;
     protected IThreadPoolService threadPool;
     protected IControllerRegistryService registryService;
     
@@ -391,9 +389,7 @@ public class Controller implements IFloodlightProviderService,
         this.counterStore = counterStore;
     }
     
-    public void setPktInProcessingService(IPktInProcessingTimeService pits) {
-        this.pktinProcTime = pits;
-    }
+ 
     
     public void setRestApiService(IRestApiService restApi) {
         this.restApi = restApi;
@@ -1436,8 +1432,7 @@ public class Controller implements IFloodlightProviderService,
                     // Get the starting time (overall and per-component) of 
                     // the processing chain for this packet if performance
                     // monitoring is turned on
-                    pktinProcTime.bootstrap(listeners);
-                    pktinProcTime.recordStartTimePktIn();                     
+                    
                     Command cmd;
                     for (IOFMessageListener listener : listeners) {
                         if (listener instanceof IOFSwitchFilter) {
@@ -1446,15 +1441,15 @@ public class Controller implements IFloodlightProviderService,
                             }
                         }
 
-                        pktinProcTime.recordStartTimeComp(listener);
+
                         cmd = listener.receive(sw, m, bc);
-                        pktinProcTime.recordEndTimeComp(listener);
+
                         
                         if (Command.STOP.equals(cmd)) {
                             break;
                         }
                     }
-                    pktinProcTime.recordEndTimePktIn(sw, m, bc);
+
                 } else {
                     log.warn("Unhandled OF Message: {} from {}", m, sw);
                 }

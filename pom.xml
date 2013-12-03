@@ -238,7 +238,7 @@
     <dependency>
       <groupId>com.thinkaurelius.titan</groupId>
       <artifactId>titan-all</artifactId>
-      <version>0.4.0</version>
+      <version>0.4.1</version>
       <exclusions>
 	<exclusion>
           <groupId>org.slf4j</groupId>

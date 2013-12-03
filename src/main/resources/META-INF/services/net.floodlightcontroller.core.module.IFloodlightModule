@@ -5,10 +5,6 @@ net.floodlightcontroller.devicemanager.internal.DeviceManagerImpl
 net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager
 net.floodlightcontroller.topology.TopologyManager
 net.floodlightcontroller.forwarding.Forwarding
-net.floodlightcontroller.flowcache.FlowReconcileManager
-net.floodlightcontroller.staticflowentry.StaticFlowEntryPusher
-net.floodlightcontroller.perfmon.PktInProcessingTime
-net.floodlightcontroller.perfmon.NullPktInProcessingTime
 net.floodlightcontroller.restserver.RestApiServer
 net.floodlightcontroller.counter.CounterStore
 net.floodlightcontroller.counter.NullCounterStore

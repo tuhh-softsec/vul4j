@@ -1,5 +1,7 @@
 package net.onrc.onos.graph;
 
+import java.util.Map;
+
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 
 import org.slf4j.Logger;

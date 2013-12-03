@@ -61,8 +61,6 @@ import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPacket;
 import net.floodlightcontroller.packet.IPv4;
-import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
-import net.floodlightcontroller.perfmon.PktInProcessingTime;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.restserver.RestApiServer;
 import net.floodlightcontroller.storage.IStorageSourceService;
@@ -130,9 +128,7 @@ public class ControllerTest extends FloodlightTestCase {
         CounterStore cs = new CounterStore();
         fmc.addService(ICounterStoreService.class, cs);
         
-        PktInProcessingTime ppt = new PktInProcessingTime();
-        fmc.addService(IPktInProcessingTimeService.class, ppt);
-        
+   
         tp = new MockThreadPoolService();
         fmc.addService(IThreadPoolService.class, tp);
         
@@ -144,13 +140,11 @@ public class ControllerTest extends FloodlightTestCase {
         fmc.addService(IControllerRegistryService.class, sr );
 
         
-        ppt.init(fmc);
         restApi.init(fmc);
         memstorage.init(fmc);
         cm.init(fmc);
         tp.init(fmc);
         sr.init(fmc);
-        ppt.startUp(fmc);
         restApi.startUp(fmc);
         memstorage.startUp(fmc);
         cm.startUp(fmc);
