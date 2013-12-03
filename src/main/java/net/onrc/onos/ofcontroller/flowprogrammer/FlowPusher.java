@@ -695,7 +695,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		//
 		// Write the message to the switch
 		//
-		log.debug("MEASUREMENT: Installing flow entry "
+		log.debug("Installing flow entry "
 				+ flowEntry.flowEntryUserState() + " into switch DPID: "
 				+ sw.getStringId() + " flowEntryId: "
 				+ flowEntry.flowEntryId().toString() + " srcMac: "
