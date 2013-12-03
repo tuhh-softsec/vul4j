@@ -5,6 +5,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -146,6 +147,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		private Map<IOFSwitch,SwitchQueue> queues
 			= new HashMap<IOFSwitch,SwitchQueue>();
 		
+		// reusable latch used for waiting for arrival of message
 		private Semaphore mutex = new Semaphore(0);
 		
 		@Override
@@ -160,14 +162,16 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 					return;
 				}
 				
-				Set< Map.Entry<IOFSwitch,SwitchQueue> > entries;
+				// for safety of concurrent access, copy all key objects
+				Set<IOFSwitch> keys = new HashSet<IOFSwitch>(queues.size());
 				synchronized (queues) {
-					entries = queues.entrySet();
+					for (IOFSwitch sw : queues.keySet()) {
+						keys.add(sw);
+					}
 				}
 				
-				for (Map.Entry<IOFSwitch,SwitchQueue> entry : entries) {
-					IOFSwitch sw = entry.getKey();
-					SwitchQueue queue = entry.getValue();
+				for (IOFSwitch sw : keys) {
+					SwitchQueue queue = queues.get(sw);
 
 					// Skip if queue is suspended
 					if (sw == null || queue == null ||
@@ -175,46 +179,60 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 						continue;
 					}
 					
-					// check sending rate and determine it to be sent or not
-					long current_time = System.currentTimeMillis();
-					long size = 0;
-					
 					synchronized (queue) {
-						if (queue.isSendable(current_time)) {
-							int i = 0;
-							while (! queue.isEmpty()) {
-								// Number of messages excess the limit
-								if (i >= MAX_MESSAGE_SEND) {
-									// Messages remains in queue
-									mutex.release();
-									break;
-								}
-								++i;
-								
-								OFMessage msg = queue.poll();
-								try {
-									messageDamper.write(sw, msg, context);
-									log.debug("Pusher sends message : {}", msg);
-									size += msg.getLength();
-								} catch (IOException e) {
-									e.printStackTrace();
-									log.error("Exception in sending message ({}) : {}", msg, e);
+						processQueue(sw, queue, MAX_MESSAGE_SEND);
+						if (queue.isEmpty()) {
+							// remove queue if flagged to be.
+							if (queue.toBeDeleted) {
+								synchronized (queues) {
+									queues.remove(sw);
 								}
 							}
-							sw.flush();
-							queue.logSentData(current_time, size);
-							
-							if (queue.isEmpty()) {
-								// remove queue if flagged to be.
-								if (queue.toBeDeleted) {
-									synchronized (queues) {
-										queues.remove(sw);
-									}
-								}
+						} else {
+							// if some messages remains in queue, latch down
+							if (mutex.availablePermits() == 0) {
+								mutex.release();
 							}
 						}
 					}
 				}
+			}
+		}
+		
+		/**
+		 * Read messages from queue and send them to the switch.
+		 * If number of messages excess the limit, stop sending messages.
+		 * @param sw Switch to which messages will be sent.
+		 * @param queue Queue of messages.
+		 * @param max_msg Limitation of number of messages to be sent. If set to 0,
+		 *                all messages in queue will be sent.
+		 */
+		private void processQueue(IOFSwitch sw, SwitchQueue queue, long max_msg) {
+			// check sending rate and determine it to be sent or not
+			long current_time = System.currentTimeMillis();
+			long size = 0;
+			
+			if (queue.isSendable(current_time)) {
+				int i = 0;
+				while (! queue.isEmpty()) {
+					// Number of messages excess the limit
+					if (0 < max_msg && max_msg <= i) {
+						break;
+					}
+					++i;
+					
+					OFMessage msg = queue.poll();
+					try {
+						messageDamper.write(sw, msg, context);
+						log.debug("Pusher sends message : {}", msg);
+						size += msg.getLength();
+					} catch (IOException e) {
+						e.printStackTrace();
+						log.error("Exception in sending message ({}) : {}", msg, e);
+					}
+				}
+				sw.flush();
+				queue.logSentData(current_time, size);
 			}
 		}
 	}
@@ -348,6 +366,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		}
 		
 		if (rate > 0) {
+			log.debug("rate for {} is set to {}", sw.getId(), rate);
 			queue.max_rate = rate;
 		}
 	}
@@ -362,7 +381,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		FlowPusherThread proc = getProcess(sw);
 		queue = new SwitchQueue();
 		queue.state = QueueState.READY;
-		synchronized (proc) {
+		synchronized (proc.queues) {
 			proc.queues.put(sw, queue);
 		}
 		
@@ -759,7 +778,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		//
 		OFMatch match = new OFMatch();
 		match.setWildcards(OFMatch.OFPFW_ALL);
-		FlowEntryMatch flowPathMatch = flowPath.flowEntryMatch();
 		FlowEntryMatch flowEntryMatch = flowEntry.flowEntryMatch();
 
 		// Match the Incoming Port
@@ -771,9 +789,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		// Match the Source MAC address
 		MACAddress matchSrcMac = flowEntryMatch.srcMac();
-		if ((matchSrcMac == null) && (flowPathMatch != null)) {
-			matchSrcMac = flowPathMatch.srcMac();
-		}
 		if (matchSrcMac != null) {
 			match.setDataLayerSource(matchSrcMac.toString());
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
@@ -781,9 +796,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		// Match the Destination MAC address
 		MACAddress matchDstMac = flowEntryMatch.dstMac();
-		if ((matchDstMac == null) && (flowPathMatch != null)) {
-			matchDstMac = flowPathMatch.dstMac();
-		}
 		if (matchDstMac != null) {
 			match.setDataLayerDestination(matchDstMac.toString());
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
@@ -791,9 +803,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		// Match the Ethernet Frame Type
 		Short matchEthernetFrameType = flowEntryMatch.ethernetFrameType();
-		if ((matchEthernetFrameType == null) && (flowPathMatch != null)) {
-			matchEthernetFrameType = flowPathMatch.ethernetFrameType();
-		}
 		if (matchEthernetFrameType != null) {
 			match.setDataLayerType(matchEthernetFrameType);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
@@ -801,9 +810,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		// Match the VLAN ID
 		Short matchVlanId = flowEntryMatch.vlanId();
-		if ((matchVlanId == null) && (flowPathMatch != null)) {
-			matchVlanId = flowPathMatch.vlanId();
-		}
 		if (matchVlanId != null) {
 			match.setDataLayerVirtualLan(matchVlanId);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_VLAN);
@@ -811,9 +817,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		// Match the VLAN priority
 		Byte matchVlanPriority = flowEntryMatch.vlanPriority();
-		if ((matchVlanPriority == null) && (flowPathMatch != null)) {
-			matchVlanPriority = flowPathMatch.vlanPriority();
-		}
 		if (matchVlanPriority != null) {
 			match.setDataLayerVirtualLanPriorityCodePoint(matchVlanPriority);
 			match.setWildcards(match.getWildcards()
@@ -822,27 +825,18 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		// Match the Source IPv4 Network prefix
 		IPv4Net matchSrcIPv4Net = flowEntryMatch.srcIPv4Net();
-		if ((matchSrcIPv4Net == null) && (flowPathMatch != null)) {
-			matchSrcIPv4Net = flowPathMatch.srcIPv4Net();
-		}
 		if (matchSrcIPv4Net != null) {
 			match.setFromCIDR(matchSrcIPv4Net.toString(), OFMatch.STR_NW_SRC);
 		}
 
 		// Natch the Destination IPv4 Network prefix
 		IPv4Net matchDstIPv4Net = flowEntryMatch.dstIPv4Net();
-		if ((matchDstIPv4Net == null) && (flowPathMatch != null)) {
-			matchDstIPv4Net = flowPathMatch.dstIPv4Net();
-		}
 		if (matchDstIPv4Net != null) {
 			match.setFromCIDR(matchDstIPv4Net.toString(), OFMatch.STR_NW_DST);
 		}
 
 		// Match the IP protocol
 		Byte matchIpProto = flowEntryMatch.ipProto();
-		if ((matchIpProto == null) && (flowPathMatch != null)) {
-			matchIpProto = flowPathMatch.ipProto();
-		}
 		if (matchIpProto != null) {
 			match.setNetworkProtocol(matchIpProto);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_NW_PROTO);
@@ -850,9 +844,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		// Match the IP ToS (DSCP field, 6 bits)
 		Byte matchIpToS = flowEntryMatch.ipToS();
-		if ((matchIpToS == null) && (flowPathMatch != null)) {
-			matchIpToS = flowPathMatch.ipToS();
-		}
 		if (matchIpToS != null) {
 			match.setNetworkTypeOfService(matchIpToS);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_NW_TOS);
@@ -860,9 +851,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		// Match the Source TCP/UDP port
 		Short matchSrcTcpUdpPort = flowEntryMatch.srcTcpUdpPort();
-		if ((matchSrcTcpUdpPort == null) && (flowPathMatch != null)) {
-			matchSrcTcpUdpPort = flowPathMatch.srcTcpUdpPort();
-		}
 		if (matchSrcTcpUdpPort != null) {
 			match.setTransportSource(matchSrcTcpUdpPort);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_TP_SRC);
@@ -870,9 +858,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		// Match the Destination TCP/UDP port
 		Short matchDstTcpUdpPort = flowEntryMatch.dstTcpUdpPort();
-		if ((matchDstTcpUdpPort == null) && (flowPathMatch != null)) {
-			matchDstTcpUdpPort = flowPathMatch.dstTcpUdpPort();
-		}
 		if (matchDstTcpUdpPort != null) {
 			match.setTransportDestination(matchDstTcpUdpPort);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_TP_DST);
@@ -1068,11 +1053,8 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		
 		OFBarrierRequest msg = (OFBarrierRequest) factory.getMessage(OFType.BARRIER_REQUEST);
 		msg.setXid(sw.getNextTransactionId());
-		add(sw, msg);
 
-		// TODO create Future object of message
 		OFBarrierReplyFuture future = new OFBarrierReplyFuture(threadPool, sw, msg.getXid());
-
 		synchronized (barrierFutures) {
 			Map<Integer,OFBarrierReplyFuture> map = barrierFutures.get(sw.getId());
 			if (map == null) {
@@ -1081,6 +1063,8 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 			}
 			map.put(msg.getXid(), future);
 		}
+		
+		add(sw, msg);
 		
 		return future;
 	}
@@ -1139,11 +1123,13 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 	public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
 		Map<Integer,OFBarrierReplyFuture> map = barrierFutures.get(sw.getId());
 		if (map == null) {
+			log.debug("null map for {} : {}", sw.getId(), barrierFutures);
 			return Command.CONTINUE;
 		}
 		
 		OFBarrierReplyFuture future = map.get(msg.getXid());
 		if (future == null) {
+			log.debug("null future for {} : {}", msg.getXid(), map);
 			return Command.CONTINUE;
 		}
 		

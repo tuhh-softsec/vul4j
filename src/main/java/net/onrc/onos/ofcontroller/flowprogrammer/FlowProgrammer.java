@@ -20,6 +20,10 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.restserver.IRestApiService;
+import net.onrc.onos.ofcontroller.flowprogrammer.web.FlowProgrammerWebRoutable;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 /**
@@ -44,6 +48,8 @@ public class FlowProgrammer implements IFloodlightModule,
     protected static Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
     protected volatile IFloodlightProviderService floodlightProvider;
     protected volatile IControllerRegistryService registryService;
+    protected volatile IRestApiService restApi;
+    protected volatile IFlowService flowManager;
 
     protected FlowPusher pusher;
     private static final int NUM_PUSHER_THREAD = 1;
@@ -62,6 +68,8 @@ public class FlowProgrammer implements IFloodlightModule,
 	    throws FloodlightModuleException {
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	registryService = context.getServiceImpl(IControllerRegistryService.class);
+	restApi = context.getServiceImpl(IRestApiService.class);
+	flowManager = context.getServiceImpl(IFlowService.class);
 	pusher.init(null, context, floodlightProvider.getOFMessageFactory(), null);
 	if (enableFlowSync) {
 	    synchronizer.init(pusher);
@@ -70,6 +78,7 @@ public class FlowProgrammer implements IFloodlightModule,
 
     @Override
     public void startUp(FloodlightModuleContext context) {
+    restApi.addRestletRoutable(new FlowProgrammerWebRoutable());
 	pusher.start();
 	floodlightProvider.addOFMessageListener(OFType.FLOW_REMOVED, this);
 	floodlightProvider.addOFSwitchListener(this);
@@ -104,6 +113,7 @@ public class FlowProgrammer implements IFloodlightModule,
 	Collection<Class<? extends IFloodlightService>> l =
 		new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFloodlightProviderService.class);
+	l.add(IRestApiService.class);
 	return l;
     }
 
@@ -131,6 +141,8 @@ public class FlowProgrammer implements IFloodlightModule,
 	case FLOW_REMOVED:
 	    OFFlowRemoved flowMsg = (OFFlowRemoved) msg;
 	    log.debug("Got flow removed from "+ sw.getId() +": "+ flowMsg.getCookie());
+	    FlowEntryId id = new FlowEntryId(flowMsg.getCookie());
+	    flowManager.flowEntryOnSwitchExpired(sw, id);
 	    break;
 	default:
 	    break;

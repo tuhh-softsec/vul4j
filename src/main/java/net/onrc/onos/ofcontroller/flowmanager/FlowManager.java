@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
     // flag to use FlowPusher instead of FlowSwitchOperation/MessageDamper
-    private final static boolean enableFlowPusher = false;
+    private final static boolean enableFlowPusher = true;
 
     protected GraphDBOperation dbHandlerApi;
     protected GraphDBOperation dbHandlerInner;
@@ -451,9 +451,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     /**
      * Inform the Flow Manager that a Flow Entry on switch expired.
      *
+     * @param sw the switch the Flow Entry expired on.
      * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
-    public void flowEntryOnSwitchExpired(FlowEntryId flowEntryId) {
+    public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId) {
 	// TODO: Not implemented yet
     }
 
@@ -517,6 +518,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
 	    FlowEntry flowEntry = flowPair.flowEntry;
 
+	    if (! flowEntry.isValidFlowEntryId())
+		continue;
+
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 
 	    //
@@ -535,8 +539,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    FlowEntryUserState.FE_USER_DELETE) {
 		    continue;
 		}
-		if (! flowEntry.isValidFlowEntryId())
-		    continue;
 	    }
 
 	    log.debug("Pushing Flow Entry To Datagrid: {}", flowEntry.toString());

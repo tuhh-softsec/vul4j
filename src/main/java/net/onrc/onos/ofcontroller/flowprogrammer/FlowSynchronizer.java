@@ -30,9 +30,9 @@ import net.onrc.onos.ofcontroller.util.FlowEntryId;
 
 /**
  * FlowSynchronizer is an implementation of FlowSyncService.
- * In addition to IFlowSyncService, FlowSynchronizer periodically reads flow tables from
- * switches and compare them with GraphDB to drop unnecessary flows and/or to install
- * missing flows.
+ * In addition to IFlowSyncService, FlowSynchronizer periodically reads flow
+ * tables from switches and compare them with GraphDB to drop unnecessary
+ * flows and/or to install missing flows.
  * @author Brian
  *
  */
@@ -99,7 +99,8 @@ public class FlowSynchronizer implements IFlowSyncService {
 	}
 
 	/**
-	 * Compare flows entries in GraphDB and switch to pick up necessary messages.
+	 * Compare flows entries in GraphDB and switch to pick up necessary
+	 * messages.
 	 * After picking up, picked messages are added to FlowPusher.
 	 * @param graphEntries Flow entries in GraphDB.
 	 * @param switchEntries Flow entries in switch.
@@ -191,24 +192,22 @@ public class FlowSynchronizer implements IFlowSyncService {
     }
 
     /**
-     * FlowEntryWrapper represents abstract FlowEntry which is embodied by IFlowEntry
-     * (from GraphDB) or OFFlowStatisticsReply (from switch).
+     * FlowEntryWrapper represents abstract FlowEntry which is embodied
+     * by FlowEntryId (from GraphDB) or OFFlowStatisticsReply (from switch).
      * @author Brian
      *
      */
     class FlowEntryWrapper {
-	FlowEntryId id;
-	IFlowEntry iflowEntry;
+	FlowEntryId flowEntryId;
 	OFFlowStatisticsReply statisticsReply;
 
 	public FlowEntryWrapper(IFlowEntry entry) {
-	    iflowEntry = entry;
-	    id = new FlowEntryId(entry.getFlowEntryId());
+	    flowEntryId = new FlowEntryId(entry.getFlowEntryId());
 	}
 
 	public FlowEntryWrapper(OFFlowStatisticsReply entry) {
+	    flowEntryId = new FlowEntryId(entry.getCookie());
 	    statisticsReply = entry;
-	    id = new FlowEntryId(entry.getCookie());
 	}
 
 	/**
@@ -216,36 +215,51 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 * @param sw Switch to which flow will be installed.
 	 */
 	public void addToSwitch(IOFSwitch sw) {
-	    if(iflowEntry != null) {
-		pusher.add(sw, iflowEntry.getFlow(), iflowEntry);
-	    }
-	    else if(statisticsReply != null) {
-		log.error("Adding existing flow entry {} to sw {}", 
+	    if (statisticsReply != null) {
+		log.error("Error adding existing flow entry {} to sw {}", 
 			  statisticsReply.getCookie(), sw.getId());
+		return;
 	    }
+
+	    // Get the Flow Entry state from the Network Graph
+	    IFlowEntry iFlowEntry = null;
+	    try {
+		iFlowEntry = dbHandler.searchFlowEntry(flowEntryId);
+	    } catch (Exception e) {
+		log.error("Error finding flow entry {} in Network Graph",
+			  flowEntryId);
+		return;
+	    }
+	    if (iFlowEntry == null) {
+		log.error("Cannot add flow entry {} to sw {} : flow entry not found",
+			  flowEntryId, sw.getId());
+		return;
+	    }
+
+	    pusher.add(sw, iFlowEntry.getFlow(), iFlowEntry);
 	}
 	
 	/**
 	 * Remove this FlowEntry from a switch via FlowPusher.
 	 * @param sw Switch from which flow will be removed.
 	 */
-	public void removeFromSwitch(IOFSwitch sw){
-	    if(iflowEntry != null) {
-		log.error("Removing non-existent flow entry {} from sw {}", 
-			  iflowEntry.getFlowEntryId(), sw.getId());
+	public void removeFromSwitch(IOFSwitch sw) {
+	    if (statisticsReply == null) {
+		log.error("Error removing non-existent flow entry {} from sw {}", 
+			  flowEntryId, sw.getId());
+		return;
+	    }
 
-	    }
-	    else if(statisticsReply != null) {
-		// Convert Statistics Reply to Flow Mod, then write it
-		OFFlowMod fm = new OFFlowMod();
-		fm.setCookie(statisticsReply.getCookie());
-		fm.setCommand(OFFlowMod.OFPFC_DELETE_STRICT);
-		fm.setLengthU(OFFlowMod.MINIMUM_LENGTH);
-		fm.setMatch(statisticsReply.getMatch());
-		fm.setPriority(statisticsReply.getPriority());
-		fm.setOutPort(OFPort.OFPP_NONE);
-		pusher.add(sw, fm);
-	    }
+	    // Convert Statistics Reply to Flow Mod, then write it
+	    OFFlowMod fm = new OFFlowMod();
+	    fm.setCookie(statisticsReply.getCookie());
+	    fm.setCommand(OFFlowMod.OFPFC_DELETE_STRICT);
+	    fm.setLengthU(OFFlowMod.MINIMUM_LENGTH);
+	    fm.setMatch(statisticsReply.getMatch());
+	    fm.setPriority(statisticsReply.getPriority());
+	    fm.setOutPort(OFPort.OFPP_NONE);
+
+	    pusher.add(sw, fm);
 	}
 
 	/**
@@ -253,7 +267,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 */
 	@Override
 	public int hashCode() {
-	    return id.hashCode();
+	    return flowEntryId.hashCode();
 	}
 
 	/**
@@ -268,18 +282,14 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    if(obj.getClass() == this.getClass()) {
 		FlowEntryWrapper entry = (FlowEntryWrapper) obj;
 		// TODO: we need to actually compare the match + actions
-		return this.id.equals(entry.id);
+		return this.flowEntryId.equals(entry.flowEntryId);
 	    }
 	    return false;
 	}
 
 	@Override
 	public String toString() {
-	    return id.toString();
+	    return flowEntryId.toString();
 	}
     }
-
-
 }
-
-
