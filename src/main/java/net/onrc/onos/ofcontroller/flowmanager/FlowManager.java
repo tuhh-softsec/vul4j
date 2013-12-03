@@ -417,7 +417,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
 	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
-	    FlowPath flowPath = flowPair.flowPath;
 	    FlowEntry flowEntry = flowPair.flowEntry;
 
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
@@ -429,10 +428,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    //
 	    // Push the Flow Entry into the switch
 	    //
-	    if (! pusher.add(mySwitch, flowPath, flowEntry)) {
+	    if (! pusher.add(mySwitch, flowEntry)) {
 		String logMsg = "Cannot install Flow Entry " +
 		    flowEntry.flowEntryId() +
-		    " from Flow Path " + flowPath.flowId() +
+		    " from Flow Path " + flowEntry.flowId() +
 		    " on switch " + flowEntry.dpid();
 		log.error(logMsg);
 		continue;
