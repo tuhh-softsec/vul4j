@@ -62,7 +62,6 @@ public class AddFlowResource extends ServerResource {
 	    e.printStackTrace();
 	}
 
-	System.out.println("flowPath :" + flowPath);
 	// Process the request
 	if (flowPath != null) {
 	    if (flowService.addFlow(flowPath, result) != true) {
