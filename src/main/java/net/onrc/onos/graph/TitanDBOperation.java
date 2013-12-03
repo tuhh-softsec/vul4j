@@ -22,59 +22,5 @@ import net.onrc.onos.ofcontroller.util.FlowId;
  * @author nickkaranatsios
  */
 public class TitanDBOperation extends DBOperation {
-	
-    @Override
-    public IFlowPath searchFlowPath(FlowId flowId) {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        return searchFlowPath(flowId, fg);
-    }
 
-    @Override
-    public Iterable<IFlowPath> getAllFlowPaths() {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        return getAllFlowPaths(fg);
-    }
-
-    @Override
-    public void removeFlowPath(IFlowPath flowPath) {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        fg.removeVertex(flowPath.asVertex());
-    }
-
-    @Override
-    public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-
-        return fg.getVertices("flow_entry_id", flowEntryId.toString()).iterator().hasNext()
-                ? fg.getVertices("flow_entry_id", flowEntryId.toString(),
-                IFlowEntry.class).iterator().next() : null;
-    }
-
-    @Override
-    public Iterable<IFlowEntry> getAllFlowEntries() {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-
-        return fg.getVertices("type", "flow_entry", IFlowEntry.class);
-    }
-
-    @Override
-    public void removeFlowEntry(IFlowEntry flowEntry) {
-        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-        fg.removeVertex(flowEntry.asVertex());
-    }
-
-    @Override
-    public void commit() {
-        conn.commit();
-    }
-
-    @Override
-    public void rollback() {
-        conn.rollback();
-    }
-
-    @Override
-    public void close() {
-        conn.close();
-    }
 }

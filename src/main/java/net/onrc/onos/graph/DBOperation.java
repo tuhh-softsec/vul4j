@@ -20,6 +20,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
 /**
@@ -252,17 +253,19 @@ public abstract class DBOperation implements IDBOperation {
 	 * Search and get a flow path object with specified flow ID.
 	 * @param flowId flow ID to search
 	 */
-	protected IFlowPath searchFlowPath(final FlowId flowId, final FramedGraph fg) {
-	    return fg.getVertices("flow_id", flowId.toString()).iterator().hasNext()
-		    ? (IFlowPath) fg.getVertices("flow_id", flowId.toString(),
+	@Override
+	public IFlowPath searchFlowPath(final FlowId flowId) {
+	    return conn.getFramedGraph().getVertices("flow_id", flowId.toString()).iterator().hasNext()
+		    ? (IFlowPath) conn.getFramedGraph().getVertices("flow_id", flowId.toString(),
 		    IFlowPath.class).iterator().next() : null;
 	}
 
 	/**
 	 * Get all flow path objects.
 	 */
-	protected Iterable<IFlowPath> getAllFlowPaths(final FramedGraph fg) {
-	    Iterable<IFlowPath> flowPaths = fg.getVertices("type", "flow", IFlowPath.class);
+	@Override
+	public Iterable<IFlowPath> getAllFlowPaths() {
+	    Iterable<IFlowPath> flowPaths = conn.getFramedGraph().getVertices("type", "flow", IFlowPath.class);
 
 	    List<IFlowPath> nonNullFlows = new ArrayList<IFlowPath>();
 
@@ -272,6 +275,43 @@ public abstract class DBOperation implements IDBOperation {
 		}
 	    }
 	    return nonNullFlows;
+	}
+	
+	/**
+	 * Remove the specified flow path.
+	 * @param flowPath flow path object to remove
+	 */
+	@Override
+	public void removeFlowPath(IFlowPath flowPath) {
+	    conn.getFramedGraph().removeVertex(flowPath.asVertex());
+	}
+	
+	/**
+	 * Search and get a flow entry object with flow entry ID.
+	 * @param flowEntryId flow entry ID to search
+	 */
+	@Override
+	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
+	    return conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString()).iterator().hasNext()
+		    ? (IFlowEntry)conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString(),
+		    IFlowEntry.class).iterator().next() : null;
+	}
+
+	/**
+	 * Get all flow entry objects.
+	 */
+	@Override
+	public Iterable<IFlowEntry> getAllFlowEntries() {
+	    return conn.getFramedGraph().getVertices("type", "flow_entry", IFlowEntry.class);
+	}
+
+	/**
+	 * Remove the specified flow entry.
+	 * @param flowEntry flow entry object to remove
+	 */
+	@Override
+	public void removeFlowEntry(IFlowEntry flowEntry) {
+	    conn.getFramedGraph().removeVertex(flowEntry.asVertex());
 	}
 	
 	/**
@@ -328,9 +368,26 @@ public abstract class DBOperation implements IDBOperation {
 		conn.getFramedGraph().removeVertex(ipv4Address.asVertex());
 	}
 
-	
+	/**
+	 * Get the instance of GraphDBConnection assigned to this class.
+	 */
 	@Override
 	public IDBConnection getDBConnection() {
 	    return conn;
 	}	
+	
+	@Override
+	public void commit() {
+	    conn.commit();
+	}
+
+	@Override
+	public void rollback() {
+	    conn.rollback();
+	}
+
+	@Override
+	public void close() {
+	    conn.close();
+	}
 }
