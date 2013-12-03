@@ -518,6 +518,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
 	    FlowEntry flowEntry = flowPair.flowEntry;
 
+	    if (! flowEntry.isValidFlowEntryId())
+		continue;
+
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 
 	    //
@@ -536,8 +539,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    FlowEntryUserState.FE_USER_DELETE) {
 		    continue;
 		}
-		if (! flowEntry.isValidFlowEntryId())
-		    continue;
 	    }
 
 	    log.debug("Pushing Flow Entry To Datagrid: {}", flowEntry.toString());
