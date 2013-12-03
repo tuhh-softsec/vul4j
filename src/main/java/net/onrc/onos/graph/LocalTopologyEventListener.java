@@ -1,5 +1,7 @@
 package net.onrc.onos.graph;
 
+import java.util.Map;
+
 import net.onrc.onos.flow.FlowManagerImpl;
 import net.onrc.onos.flow.IFlowManager;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
@@ -36,7 +38,7 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	}
 
 	@Override
-	public void edgeRemoved(Edge e) {
+	public void edgeRemoved(Edge e, Map<String, Object> arg1) {
 		// TODO Auto-generated method stub
 		// Fire NetMapEvents (LinkRemoved, FlowEntryRemoved, HostRemoved, PortRemoved)
 		TitanEdge edge = (TitanEdge) e;
@@ -71,7 +73,7 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	}
 
 	@Override
-	public void vertexRemoved(Vertex vertex) {
+	public void vertexRemoved(Vertex vertex, Map<String, Object> arg1) {
 		// TODO Auto-generated method stub
 		// Generate NetMapEvents 
 		String type = (String) vertex.getProperty("type");
@@ -100,5 +102,7 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 		// TODO Auto-generated method stub
 		
 	}
+
+
 
 }
