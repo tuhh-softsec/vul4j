@@ -171,18 +171,28 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		//  - EventEntry<FlowEntry>
 		//
 		for (EventEntry<?> event : collection) {
+		    // Topology event
 		    if (event.eventData() instanceof TopologyElement) {
 			EventEntry<TopologyElement> topologyEventEntry =
 			    (EventEntry<TopologyElement>)event;
 			topologyEvents.add(topologyEventEntry);
-		    } else if (event.eventData() instanceof FlowPath) {
+			continue;
+		    }
+
+		    // FlowPath event
+		    if (event.eventData() instanceof FlowPath) {
 			EventEntry<FlowPath> flowPathEventEntry =
 			    (EventEntry<FlowPath>)event;
 			flowPathEvents.add(flowPathEventEntry);
-		    } else if (event.eventData() instanceof FlowEntry) {
+			continue;
+		    }
+
+		    // FlowEntry event
+		    if (event.eventData() instanceof FlowEntry) {
 			EventEntry<FlowEntry> flowEntryEventEntry =
 			    (EventEntry<FlowEntry>)event;
 			flowEntryEvents.add(flowEntryEventEntry);
+			continue;
 		    }
 		}
 		collection.clear();
