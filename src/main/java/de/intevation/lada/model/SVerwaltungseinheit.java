@@ -26,14 +26,10 @@ public class SVerwaltungseinheit implements java.io.Serializable {
 	private char isLandkreis;
 	private char isRegbezirk;
 	private String koordXExtern;
-	private Integer koordXGk;
 	private String koordYExtern;
-	private Integer koordYGk;
 	private String plz;
-	private Double koordXGeo;
-	private Integer koordXUtm;
-	private Integer koordYUtm;
-	private Double koordYGeo;
+	private Double longitude;
+	private Double latitude;
 
 	public SVerwaltungseinheit() {
 	}
@@ -53,10 +49,9 @@ public class SVerwaltungseinheit implements java.io.Serializable {
 	public SVerwaltungseinheit(String gemId, String bundesland, Short kdaId,
 			String kreis, String nuts, String regbezirk, String bezeichnung,
 			char isBundesland, char isGemeinde, char isLandkreis,
-			char isRegbezirk, String koordXExtern, Integer koordXGk,
-			String koordYExtern, Integer koordYGk, String plz,
-			Double koordXGeo, Integer koordXUtm, Integer koordYUtm,
-			Double koordYGeo) {
+			char isRegbezirk, String koordXExtern,
+			String koordYExtern, String plz,
+			Double longitude, Double latitude) {
 		this.gemId = gemId;
 		this.bundesland = bundesland;
 		this.kdaId = kdaId;
@@ -69,14 +64,10 @@ public class SVerwaltungseinheit implements java.io.Serializable {
 		this.isLandkreis = isLandkreis;
 		this.isRegbezirk = isRegbezirk;
 		this.koordXExtern = koordXExtern;
-		this.koordXGk = koordXGk;
 		this.koordYExtern = koordYExtern;
-		this.koordYGk = koordYGk;
 		this.plz = plz;
-		this.koordXGeo = koordXGeo;
-		this.koordXUtm = koordXUtm;
-		this.koordYUtm = koordYUtm;
-		this.koordYGeo = koordYGeo;
+		this.longitude = longitude;
+		this.latitude = latitude;
 	}
 
 	@Id
@@ -188,15 +179,6 @@ public class SVerwaltungseinheit implements java.io.Serializable {
 		this.koordXExtern = koordXExtern;
 	}
 
-	@Column(name = "koord_x_gk")
-	public Integer getKoordXGk() {
-		return this.koordXGk;
-	}
-
-	public void setKoordXGk(Integer koordXGk) {
-		this.koordXGk = koordXGk;
-	}
-
 	@Column(name = "koord_y_extern", length = 22)
 	public String getKoordYExtern() {
 		return this.koordYExtern;
@@ -204,15 +186,6 @@ public class SVerwaltungseinheit implements java.io.Serializable {
 
 	public void setKoordYExtern(String koordYExtern) {
 		this.koordYExtern = koordYExtern;
-	}
-
-	@Column(name = "koord_y_gk")
-	public Integer getKoordYGk() {
-		return this.koordYGk;
-	}
-
-	public void setKoordYGk(Integer koordYGk) {
-		this.koordYGk = koordYGk;
 	}
 
 	@Column(name = "plz", length = 6)
@@ -224,40 +197,22 @@ public class SVerwaltungseinheit implements java.io.Serializable {
 		this.plz = plz;
 	}
 
-	@Column(name = "koord_x_geo", precision = 17, scale = 17)
-	public Double getKoordXGeo() {
-		return this.koordXGeo;
+	@Column(name = "longitude", precision = 17, scale = 17)
+	public Double getLongitude() {
+		return this.longitude;
 	}
 
-	public void setKoordXGeo(Double koordXGeo) {
-		this.koordXGeo = koordXGeo;
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
-	@Column(name = "koord_x_utm")
-	public Integer getKoordXUtm() {
-		return this.koordXUtm;
+	@Column(name = "latitude", precision = 17, scale = 17)
+	public Double getLatitude() {
+		return this.latitude;
 	}
 
-	public void setKoordXUtm(Integer koordXUtm) {
-		this.koordXUtm = koordXUtm;
-	}
-
-	@Column(name = "koord_y_utm")
-	public Integer getKoordYUtm() {
-		return this.koordYUtm;
-	}
-
-	public void setKoordYUtm(Integer koordYUtm) {
-		this.koordYUtm = koordYUtm;
-	}
-
-	@Column(name = "koord_y_geo", precision = 17, scale = 17)
-	public Double getKoordYGeo() {
-		return this.koordYGeo;
-	}
-
-	public void setKoordYGeo(Double koordYGeo) {
-		this.koordYGeo = koordYGeo;
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
 	}
 
 }
