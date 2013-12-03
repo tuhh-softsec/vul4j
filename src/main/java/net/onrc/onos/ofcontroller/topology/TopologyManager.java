@@ -79,7 +79,8 @@ public class TopologyManager implements IFloodlightModule,
      */
     public void init(final String dbStore, String config) {
 	try {
-	    dbHandler = GraphDBManager.getDBOperation(dbStore, config);
+	    dbHandler = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
+	    //dbHandler = GraphDBManager.getDBOperation(dbStore, config);
 	} catch (Exception e) {
 	    log.error(e.getMessage());
 	}
