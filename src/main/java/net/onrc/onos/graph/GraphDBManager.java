@@ -25,15 +25,13 @@ public class GraphDBManager {
     }
 
     public static DBOperation getDBOperation(final String dbStore, final String dbConfigFile) {
-        if (operation == null) {
-	    if (dbStore.equals("ramcloud")) {
-		operation = new RamCloudDBOperation();
-	    } else if (dbStore.equals("titan")) {
-		operation = new TitanDBOperation();
-	    }
-	    if (operation != null) {
-		operation.conn = GraphDBManager.getConnection(dbStore, dbConfigFile);
-	    }
+	if (dbStore.equals("ramcloud")) {
+	    operation = new RamCloudDBOperation();
+	} else if (dbStore.equals("titan")) {
+	    operation = new TitanDBOperation();
+	}
+	if (operation != null) {
+	    operation.conn = GraphDBManager.getConnection(dbStore, dbConfigFile);
 	}
         return operation;
     }

@@ -22,7 +22,6 @@ public class RamCloudDBConnection extends DBConnection {
     private static Logger log = LoggerFactory.getLogger(RamCloudDBConnection.class);
 
     public RamCloudDBConnection(final String dbConfigFile) {
-        System.out.println("dbconfigfile is + "+ dbConfigFile);
         final String coordinatorURL = open(getConfiguration(new File(dbConfigFile)));
 	System.out.println("coordinatorURL "+ coordinatorURL);
         //graph = new RamCloudGraph(coordinatorURL);
@@ -31,7 +30,6 @@ public class RamCloudDBConnection extends DBConnection {
     
     @Override
     public FramedGraph getFramedGraph() {
-	System.out.println("RamCloud getFramedGraph");
         if (isValid()) {
             FramedGraph<RamCloudGraph> fg = new FramedGraph<RamCloudGraph>(graph);
             return fg;
