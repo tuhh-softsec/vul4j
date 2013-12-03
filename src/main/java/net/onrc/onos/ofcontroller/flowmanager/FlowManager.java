@@ -2,7 +2,6 @@ package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -19,7 +18,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.util.OFMessageDamper;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
@@ -39,9 +37,6 @@ import org.slf4j.LoggerFactory;
  * Flow Manager class for handling the network flows.
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
-    // flag to use FlowPusher instead of FlowSwitchOperation/MessageDamper
-    private final static boolean enableFlowPusher = true;
-
     protected GraphDBOperation dbHandlerApi;
     protected GraphDBOperation dbHandlerInner;
 
@@ -53,15 +48,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected IFlowPusherService pusher;
     
-    protected OFMessageDamper messageDamper;
-    
-    //
-    // TODO: Values copied from elsewhere (class LearningSwitch).
-    // The local copy should go away!
-    //
-    protected static final int OFMESSAGE_DAMPER_CAPACITY = 50000; // TODO: find sweet spot
-    protected static final int OFMESSAGE_DAMPER_TIMEOUT = 250;	// ms
-
     // Flow Entry ID generation state
     private static Random randomGenerator = new Random();
     private static int nextFlowEntryIdPrefix = 0;
@@ -161,14 +147,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
-
-	if (enableFlowPusher) {
-	    pusher = context.getServiceImpl(IFlowPusherService.class);
-	} else {
-	    messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
-	    EnumSet.of(OFType.FLOW_MOD),
-	    OFMESSAGE_DAMPER_TIMEOUT);
-	}
+	pusher = context.getServiceImpl(IFlowPusherService.class);
 
 	this.init("");
     }
@@ -413,42 +392,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Install a Flow Entry on a switch.
-     *
-     * @param mySwitch the switch to install the Flow Entry into.
-     * @param flowPath the flow path for the flow entry to install.
-     * @param flowEntry the flow entry to install.
-     * @return true on success, otherwise false.
-     */
-    private boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
-				    FlowEntry flowEntry) {
-    	if (enableFlowPusher) {
-	    return pusher.add(mySwitch, flowPath, flowEntry);
-    	} else {
-	    return FlowSwitchOperation.installFlowEntry(
-		floodlightProvider.getOFMessageFactory(),
-		messageDamper, mySwitch, flowPath, flowEntry);
-    	}
-    }
-
-    /**
-     * Remove a Flow Entry from a switch.
-     *
-     * @param mySwitch the switch to remove the Flow Entry from.
-     * @param flowPath the flow path for the flow entry to remove.
-     * @param flowEntry the flow entry to remove.
-     * @return true on success, otherwise false.
-     */
-    private boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
-				   FlowEntry flowEntry) {
-	//
-	// The installFlowEntry() method implements both installation
-	// and removal of flow entries.
-	//
-	return (installFlowEntry(mySwitch, flowPath, flowEntry));
-    }
-
-    /**
      * Inform the Flow Manager that a Flow Entry on switch expired.
      *
      * @param sw the switch the Flow Entry expired on.
@@ -484,9 +427,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry.toString());
 
 	    //
-	    // Install the Flow Entry into the switch
+	    // Push the Flow Entry into the switch
 	    //
-	    if (! installFlowEntry(mySwitch, flowPath, flowEntry)) {
+	    if (! pusher.add(mySwitch, flowPath, flowEntry)) {
 		String logMsg = "Cannot install Flow Entry " +
 		    flowEntry.flowEntryId() +
 		    " from Flow Path " + flowPath.flowId() +
