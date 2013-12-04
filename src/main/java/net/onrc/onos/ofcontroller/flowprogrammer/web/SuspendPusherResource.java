@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 /**
  * FlowProgrammer REST API implementation: Suspend sending message to switch.
  *
- *   GET /wm/fprog/suspend/{dpid}/json"
+ *   GET /wm/fprog/pusher/suspend/{dpid}/json"
  */
 public class SuspendPusherResource extends PusherResource {
 

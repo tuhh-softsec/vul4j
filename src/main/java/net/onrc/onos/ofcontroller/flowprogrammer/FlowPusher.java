@@ -154,7 +154,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 					// wait for message pushed to queue
 					mutex.acquire();
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					// not an error
 					log.debug("FlowPusherThread is interrupted");
 					return;
 				}
@@ -221,7 +221,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 					OFMessage msg = queue.poll();
 					try {
 						messageDamper.write(sw, msg, context);
-						log.debug("Pusher sends message : {}", msg);
+//						log.debug("Pusher sends message : {}", msg);
 						size += msg.getLength();
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -324,6 +324,13 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		synchronized (queue) {
 			if (queue.state == QueueState.SUSPENDED) {
 				queue.state = QueueState.READY;
+				
+				// Latch down if queue is not empty
+				FlowPusherThread thread = getProcess(sw);
+				if (! queue.isEmpty() &&
+						thread.mutex.availablePermits() == 0) {
+					thread.mutex.release();
+				}
 				return true;
 			}
 			return false;
@@ -427,7 +434,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		
 		synchronized (queue) {
 			queue.add(msg);
-			log.debug("Message is pushed : {}", msg);
+//			log.debug("Message is pushed : {}", msg);
 		}
 		
 		if (proc.mutex.availablePermits() == 0) {
