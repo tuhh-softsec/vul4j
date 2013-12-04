@@ -68,6 +68,21 @@ public class FlowDatabaseOperation {
 	}
 
 	//
+	// Remove the old Flow Entries
+	//
+	if (found) {
+	    Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
+	    LinkedList<IFlowEntry> deleteFlowEntries =
+		new LinkedList<IFlowEntry>();
+	    for (IFlowEntry flowEntryObj : flowEntries)
+		deleteFlowEntries.add(flowEntryObj);
+	    for (IFlowEntry flowEntryObj : deleteFlowEntries) {
+		flowObj.removeFlowEntry(flowEntryObj);
+		dbHandler.removeFlowEntry(flowEntryObj);
+	    }
+	}
+
+	//
 	// Set the Flow key:
 	// - flowId
 	//
@@ -155,6 +170,9 @@ public class FlowDatabaseOperation {
 	// flowPath.dataPath().flowEntries()
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
+	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
+		continue;	// Skip: all Flow Entries were deleted earlier
+
 	    if (addFlowEntry(flowManager, dbHandler, flowObj, flowEntry) == null) {
 		dbHandler.rollback();
 		return false;
@@ -185,14 +203,6 @@ public class FlowDatabaseOperation {
 				   FlowEntry flowEntry) {
 	// Flow edges
 	//   HeadFE (TODO)
-
-	//
-	// Assign the FlowEntry ID.
-	//
-	if (! flowEntry.isValidFlowEntryId()) {
-	    long id = flowManager.getNextFlowEntryId();
-	    flowEntry.setFlowEntryId(new FlowEntryId(id));
-	}
 
 	IFlowEntry flowEntryObj = null;
 	boolean found = false;

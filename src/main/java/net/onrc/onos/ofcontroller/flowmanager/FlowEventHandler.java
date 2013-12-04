@@ -58,9 +58,6 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
     private Topology topology;			// The network topology
-    private Map<Long, FlowPath> allFlowPaths = new HashMap<Long, FlowPath>();
-    private Map<Long, FlowEntry> unmatchedFlowEntryAdd =
-	new HashMap<Long, FlowEntry>();
 
     // The queue with Flow Path and Topology Element updates
     private BlockingQueue<EventEntry<?>> networkEvents =
@@ -74,21 +71,22 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     private List<EventEntry<FlowEntry>> flowEntryEvents =
 	new LinkedList<EventEntry<FlowEntry>>();
 
+    // All internally computed Flow Paths
+    private Map<Long, FlowPath> allFlowPaths = new HashMap<Long, FlowPath>();
+
+    // The Flow Entries received as notifications with unmatched Flow Paths
+    private Map<Long, FlowEntry> unmatchedFlowEntryAdd =
+	new HashMap<Long, FlowEntry>();
+
     //
     // Transient state for processing the Flow Paths:
-    //  - The new Flow Paths
     //  - The Flow Paths that should be recomputed
     //  - The Flow Paths with modified Flow Entries
-    //  - The Flow Entries that were updated
     //
-    private List<FlowPath> newFlowPaths = new LinkedList<FlowPath>();
-    private List<FlowPath> recomputeFlowPaths = new LinkedList<FlowPath>();
-    private List<FlowPath> modifiedFlowPaths = new LinkedList<FlowPath>();
-    private List<FlowPathEntryPair> updatedFlowEntries =
-	new LinkedList<FlowPathEntryPair>();
-    private List<FlowPathEntryPair> unmatchedDeleteFlowEntries =
-	new LinkedList<FlowPathEntryPair>();
-
+    private Map<Long, FlowPath> shouldRecomputeFlowPaths =
+	new HashMap<Long, FlowPath>();
+    private Map<Long, FlowPath> modifiedFlowPaths =
+	new HashMap<Long, FlowPath>();
 
     /**
      * Constructor for a given Flow Manager and Datagrid Service.
@@ -218,22 +216,15 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	processFlowPathEvents();
 	processTopologyEvents();
-	//
-	// Add all new Flows: should be done after processing the Flow Path
-	// and Topology events.
-	//
-	for (FlowPath flowPath : newFlowPaths) {
-	    allFlowPaths.put(flowPath.flowId().value(), flowPath);
-	}
-
 	processFlowEntryEvents();
 
 	// Recompute all affected Flow Paths and keep only the modified
-	for (FlowPath flowPath : recomputeFlowPaths) {
+	for (FlowPath flowPath : shouldRecomputeFlowPaths.values()) {
 	    if (recomputeFlowPath(flowPath))
-		modifiedFlowPaths.add(flowPath);
+		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 	}
 
+	// Extract the modified Flow Entries
 	modifiedFlowEntries = extractModifiedFlowEntries(modifiedFlowPaths);
 
 	// Assign missing Flow Entry IDs
@@ -244,14 +235,12 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	//
 	flowManager.pushModifiedFlowEntriesToSwitches(modifiedFlowEntries);
 	flowManager.pushModifiedFlowEntriesToDatagrid(modifiedFlowEntries);
-	flowManager.pushModifiedFlowEntriesToDatabase(modifiedFlowEntries);
-	flowManager.pushModifiedFlowEntriesToDatabase(updatedFlowEntries);
-	flowManager.pushModifiedFlowEntriesToDatabase(unmatchedDeleteFlowEntries);
+	flowManager.pushModifiedFlowPathsToDatabase(modifiedFlowPaths.values());
 
 	//
 	// Remove Flow Entries that were deleted
 	//
-	for (FlowPath flowPath : modifiedFlowPaths)
+	for (FlowPath flowPath : modifiedFlowPaths.values())
 	    flowPath.dataPath().removeDeletedFlowEntries();
 
 	// Cleanup
@@ -259,23 +248,20 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	flowPathEvents.clear();
 	flowEntryEvents.clear();
 	//
-	newFlowPaths.clear();
-	recomputeFlowPaths.clear();
+	shouldRecomputeFlowPaths.clear();
 	modifiedFlowPaths.clear();
-	updatedFlowEntries.clear();
-	unmatchedDeleteFlowEntries.clear();
     }
 
     /**
      * Extract the modified Flow Entries.
      */
     private List<FlowPathEntryPair> extractModifiedFlowEntries(
-					List<FlowPath> modifiedFlowPaths) {
+				Map<Long, FlowPath> modifiedFlowPaths) {
 	List<FlowPathEntryPair> modifiedFlowEntries =
 	    new LinkedList<FlowPathEntryPair>();
 
 	// Extract only the modified Flow Entries
-	for (FlowPath flowPath : modifiedFlowPaths) {
+	for (FlowPath flowPath : modifiedFlowPaths.values()) {
 	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
 		if (flowEntry.flowEntrySwitchState() ==
 		    FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
@@ -334,10 +320,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		if (allFlowPaths.get(flowPath.flowId().value()) != null) {
 		    //
 		    // TODO: What to do if the Flow Path already exists?
-		    // Remove and then re-add it, or merge the info?
-		    // For now, we don't have to do anything.
+		    // Fow now, we just re-add it.
 		    //
-		    break;
 		}
 
 		switch (flowPath.flowPathType()) {
@@ -347,7 +331,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    // we are going to recompute it anyway.
 		    //
 		    flowPath.flowEntries().clear();
-		    recomputeFlowPaths.add(flowPath);
+		    shouldRecomputeFlowPaths.put(flowPath.flowId().value(),
+						 flowPath);
 		    break;
 		case FP_TYPE_EXPLICIT_PATH:
 		    //
@@ -356,10 +341,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    for (FlowEntry flowEntry : flowPath.flowEntries()) {
 			flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 		    }
-		    modifiedFlowPaths.add(flowPath);
+		    modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 		    break;
 		}
-		newFlowPaths.add(flowPath);
+		allFlowPaths.put(flowPath.flowId().value(), flowPath);
 
 		break;
 	    }
@@ -382,8 +367,11 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 		}
 
-		allFlowPaths.remove(existingFlowPath.flowId().value());
-		modifiedFlowPaths.add(existingFlowPath);
+		// Remove the Flow Path from the internal state
+		Long key = existingFlowPath.flowId().value();
+		allFlowPaths.remove(key);
+		shouldRecomputeFlowPaths.remove(key);
+		modifiedFlowPaths.put(key, existingFlowPath);
 
 		break;
 	    }
@@ -416,7 +404,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	}
 	if (isTopologyModified) {
 	    // TODO: For now, if the topology changes, we recompute all Flows
-	    recomputeFlowPaths.addAll(allFlowPaths.values());
+	    shouldRecomputeFlowPaths.putAll(allFlowPaths);
 	}
     }
 
@@ -444,7 +432,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    continue;
 		}
 		flowPair = new FlowPathEntryPair(flowPath, updatedFlowEntry);
-		updatedFlowEntries.add(flowPair);
+		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 	    }
 	    unmatchedFlowEntryAdd = remainingUpdates;
 	}
@@ -481,15 +469,15 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		}
 		// Add the updated entry to the list of updated Flow Entries
 		flowPair = new FlowPathEntryPair(flowPath, updatedFlowEntry);
-		updatedFlowEntries.add(flowPair);
+		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 		break;
 
 	    case ENTRY_REMOVE:
 		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
 		if (unmatchedFlowEntryAdd.remove(flowEntry.flowEntryId().value()) != null) {
-		    continue;		// Match found
+		    continue;		// Removed previously unmatched entry
 		}
-						 
+
 		flowPath = allFlowPaths.get(flowEntry.flowId().value());
 		if (flowPath == null) {
 		    // Flow Path not found: ignore the update
@@ -497,13 +485,11 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		}
 		updatedFlowEntry = updateFlowEntryRemove(flowPath, flowEntry);
 		if (updatedFlowEntry == null) {
-		    // Flow Entry not found: add to list of deleted entries
-		    flowPair = new FlowPathEntryPair(flowPath, flowEntry);
-		    unmatchedDeleteFlowEntries.add(flowPair);
+		    // Flow Entry not found: ignore it
 		    break;
 		}
 		flowPair = new FlowPathEntryPair(flowPath, updatedFlowEntry);
-		updatedFlowEntries.add(flowPair);
+		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 		break;
 	    }
 	}

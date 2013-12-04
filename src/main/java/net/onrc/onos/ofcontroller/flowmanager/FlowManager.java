@@ -57,8 +57,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private final static Logger log = LoggerFactory.getLogger(FlowManager.class);
 
     // The queue to write Flow Entries to the database
-    private BlockingQueue<FlowPathEntryPair> flowEntriesToDatabaseQueue =
-	new LinkedBlockingQueue<FlowPathEntryPair>();
+    private BlockingQueue<FlowPath> flowPathsToDatabaseQueue =
+	new LinkedBlockingQueue<FlowPath>();
     FlowDatabaseWriter flowDatabaseWriter;
 
     /**
@@ -192,7 +192,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// The thread to write to the database
 	//
 	flowDatabaseWriter = new FlowDatabaseWriter(this,
-						flowEntriesToDatabaseQueue);
+						flowPathsToDatabaseQueue);
 	flowDatabaseWriter.start();
 
 	//
@@ -510,7 +510,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     class FlowDatabaseWriter extends Thread {
 	private FlowManager flowManager;
-	private BlockingQueue<FlowPathEntryPair> blockingQueue;
+	private BlockingQueue<FlowPath> blockingQueue;
 
 	/**
 	 * Constructor.
@@ -519,7 +519,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	 * @param blockingQueue the blocking queue to use.
 	 */
 	FlowDatabaseWriter(FlowManager flowManager,
-			   BlockingQueue<FlowPathEntryPair> blockingQueue) {
+			   BlockingQueue<FlowPath> blockingQueue) {
 	    this.flowManager = flowManager;
 	    this.blockingQueue = blockingQueue;
 	}
@@ -532,14 +532,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    //
 	    // The main loop
 	    //
-	    Collection<FlowPathEntryPair> collection =
-		new LinkedList<FlowPathEntryPair>();
+	    Collection<FlowPath> collection = new LinkedList<FlowPath>();
 	    try {
 		while (true) {
-		    FlowPathEntryPair entryPair = blockingQueue.take();
-		    collection.add(entryPair);
+		    FlowPath flowPath = blockingQueue.take();
+		    collection.add(flowPath);
 		    blockingQueue.drainTo(collection);
-		    flowManager.writeModifiedFlowEntriesToDatabase(collection);
+		    flowManager.writeModifiedFlowPathsToDatabase(collection);
 		    collection.clear();
 		}
 	    } catch (Exception exception) {
@@ -549,46 +548,42 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Push Flow Entries to the Network MAP.
+     * Push Flow Paths to the Network MAP.
      *
-     * NOTE: The Flow Entries are pushed only on the instance responsible
-     * for the first switch. This is to avoid database errors when multiple
-     * instances are writing Flow Entries for the same Flow Path.
+     * NOTE: The complete Flow Paths are pushed only on the instance
+     * responsible for the first switch. This is to avoid database errors
+     * when multiple instances are writing Flow Entries for the same Flow Path.
      *
-     * @param modifiedFlowEntries the collection of Flow Entries to push.
+     * @param modifiedFlowPaths the collection of Flow Paths to push.
      */
-    void pushModifiedFlowEntriesToDatabase(
-		Collection<FlowPathEntryPair> modifiedFlowEntries) {
+    void pushModifiedFlowPathsToDatabase(
+		Collection<FlowPath> modifiedFlowPaths) {
 	//
-	// We only add the Flow Entries to the Database Queue.
+	// We only add the Flow Paths to the Database Queue.
 	// The FlowDatabaseWriter thread is responsible for the actual writing.
 	//
-	flowEntriesToDatabaseQueue.addAll(modifiedFlowEntries);
+	flowPathsToDatabaseQueue.addAll(modifiedFlowPaths);
     }
 
     /**
-     * Write Flow Entries to the Network MAP.
+     * Write Flow Paths to the Network MAP.
      *
-     * NOTE: The Flow Entries are written only on the instance responsible
-     * for the first switch. This is to avoid database errors when multiple
-     * instances are writing Flow Entries for the same Flow Path.
+     * NOTE: The complete Flow Paths are pushed only on the instance
+     * responsible for the first switch. This is to avoid database errors
+     * when multiple instances are writing Flow Entries for the same Flow Path.
      *
-     * @param modifiedFlowEntries the collection of Flow Entries to write.
+     * @param modifiedFlowPaths the collection of Flow Paths to write.
      */
-    private void writeModifiedFlowEntriesToDatabase(
-		Collection<FlowPathEntryPair> modifiedFlowEntries) {
-	if (modifiedFlowEntries.isEmpty())
+    private void writeModifiedFlowPathsToDatabase(
+		Collection<FlowPath> modifiedFlowPaths) {
+	if (modifiedFlowPaths.isEmpty())
 	    return;
+
+	FlowId dummyFlowId = new FlowId();
 
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
-	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
-	    FlowPath flowPath = flowPair.flowPath;
-	    FlowEntry flowEntry = flowPair.flowEntry;
-
-	    if (! flowEntry.isValidFlowEntryId())
-		continue;
-
+	for (FlowPath flowPath : modifiedFlowPaths) {
 	    //
 	    // Push the changes only on the instance responsible for the
 	    // first switch.
@@ -598,69 +593,37 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    if (mySrcSwitch == null)
 		continue;
 
-	    log.debug("Pushing Flow Entry To Database: {}", flowEntry.toString());
 	    //
-	    // Write the Flow Entry to the Network Map
+	    // Test whether all Flow Entries are valid
 	    //
-	    // NOTE: We try a number of times, in case somehow some other
-	    // instances are writing at the same time.
-	    // Apparently, if other instances are writing at the same time
-	    // this will trigger an error.
-	    //
-	    for (int i = 0; i < 6; i++) {
-		try {
-		    //
-		    // Find the Flow Path in the Network MAP.
-		    //
-		    // NOTE: The Flow Path might not be found if the Flow was
-		    // just removed by some other controller instance.
-		    //
-		    IFlowPath flowObj =
-			dbHandlerInner.searchFlowPath(flowEntry.flowId());
-		    if (flowObj == null) {
-			String logMsg = "Cannot find Network MAP entry for Flow Path " + flowEntry.flowId();
-			log.error(logMsg);
-			break;
-		    }
-
-		    // Write the Flow Entry
-		    switch (flowEntry.flowEntryUserState()) {
-		    case FE_USER_ADD:
-			// FALLTHROUGH
-		    case FE_USER_MODIFY:
-			if (addFlowEntry(flowObj, flowEntry) == null) {
-			    String logMsg = "Cannot write to Network MAP Flow Entry " +
-				flowEntry.flowEntryId() +
-				" from Flow Path " + flowEntry.flowId() +
-				" on switch " + flowEntry.dpid();
-			    log.error(logMsg);
-			}
-			break;
-		    case FE_USER_DELETE:
-			if (deleteFlowEntry(flowObj, flowEntry) == false) {
-			    String logMsg = "Cannot remove from Network MAP Flow Entry " +
-				flowEntry.flowEntryId() +
-				" from Flow Path " + flowEntry.flowId() +
-				" on switch " + flowEntry.dpid();
-			    log.error(logMsg);
-			}
-			break;
-		    }
-
-		    // Commit to the database
-		    dbHandlerInner.commit();
-		    break;	// Success
-
-		} catch (Exception e) {
-		    log.debug("Exception writing Flow Entry to Network MAP: ", e);
-		    dbHandlerInner.rollback();
-		    // Wait a bit (random value [1ms, 20ms] and try again
-		    int delay = 1 + randomGenerator.nextInt() % 20;
-		    try {
-			Thread.sleep(delay);
-		    } catch (Exception e0) {
-		    }
+	    boolean allValid = true;
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		if (flowEntry.flowEntryUserState() ==
+		    FlowEntryUserState.FE_USER_DELETE) {
+		    continue;
 		}
+		if (! flowEntry.isValidFlowEntryId()) {
+		    allValid = false;
+		    break;
+		}
+	    }
+	    if (! allValid)
+		continue;
+
+	    log.debug("Pushing Flow Path To Database: {}", flowPath.toString());
+
+	    //
+	    // Write the Flow Path to the Network Map
+	    //
+	    try {
+		if (! FlowDatabaseOperation.addFlow(this, dbHandlerInner,
+						    flowPath, dummyFlowId)) {
+		    String logMsg = "Cannot write to Network Map Flow Path " +
+			flowPath.flowId();
+		    log.error(logMsg);
+		}
+	    } catch (Exception e) {
+		log.error("Exception writing Flow Path to Network MAP: ", e);
 	    }
 	}
     }
