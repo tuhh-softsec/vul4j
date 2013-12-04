@@ -427,37 +427,6 @@ public class FlowPusherTest {
 		flowEntry1.setFlowEntryErrorState(new FlowEntryErrorState());
 		flowEntry1.setFlowEntryUserState(FlowEntryUserState.FE_USER_ADD);
 		
-		FlowEntry flowEntry2 = new FlowEntry();
-		flowEntry2.setDpid(new Dpid(2));
-		flowEntry2.setFlowId(new FlowId(2));
-		flowEntry2.setInPort(new Port((short) 22)); 
-		flowEntry2.setOutPort(new Port((short) 2));
-		flowEntry2.setFlowEntryId(new FlowEntryId(2));
-		flowEntry2.setFlowEntryMatch(new FlowEntryMatch());
-		flowEntry2.setFlowEntryActions(new FlowEntryActions());
-		flowEntry2.setFlowEntryErrorState(new FlowEntryErrorState());
-		flowEntry2.setFlowEntryUserState(FlowEntryUserState.FE_USER_ADD);
-		
-		ArrayList<FlowEntry> flowEntries = new ArrayList<FlowEntry>();
-		flowEntries.add(flowEntry1);
-		flowEntries.add(flowEntry2);
-		
-		DataPath dataPath = new DataPath();
-		dataPath.setSrcPort(new SwitchPort(new Dpid(0x1234), new Port((short)1)));
-		dataPath.setDstPort(new SwitchPort(new Dpid(0x5678), new Port((short)2)));
-		dataPath.setFlowEntries(flowEntries);
-
-		FlowEntryMatch match = new FlowEntryMatch();
-		
-		FlowPath flowPath = new FlowPath();
-		flowPath.setFlowId(new FlowId(0x100));
-		flowPath.setInstallerId(new CallerId("installer id"));
-		flowPath.setFlowPathType(FlowPathType.valueOf("FP_TYPE_SHORTEST_PATH"));
-		flowPath.setFlowPathUserState(FlowPathUserState.valueOf("FP_USER_ADD"));
-		flowPath.setFlowPathFlags(new FlowPathFlags(0));
-		flowPath.setDataPath(dataPath);
-		flowPath.setFlowEntryMatch(match);
-
 		beginInitMock();
 		
 		OFFlowMod msg = EasyMock.createMock(OFFlowMod.class);
@@ -508,107 +477,7 @@ public class FlowPusherTest {
 		endInitMock();
 		initPusher(1);
 
-		pusher.add(sw, flowPath, flowEntry1);
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			fail("Failed to sleep");
-		}
-		
-		EasyMock.verify(sw);
-		
-		pusher.stop();
-	}
-	
-	/**
-	 * Test IFlowObject is correctly converted to message and is sent to a switch.
-	 */
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testAddIFlow() {
-		IFlowPath iFlowPath = createIFlowPathMock(1, "id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 2, 3, 4); 
-		IFlowEntry iFlowEntry = createMock(IFlowEntry.class);
-		BasicFactory basicFactory = createMock(BasicFactory.class);
-		
-		FlowEntryAction action = new FlowEntryAction();
-		action.setActionOutput(new Port((short)2));
-		FlowEntryActions actions = new FlowEntryActions();
-		actions.addAction(action);
-
-		// setup expectations
-		EasyMock.expect(iFlowEntry.getFlowEntryId()).andReturn(new FlowEntryId(123).toString());
-		EasyMock.expect(iFlowEntry.getUserState()).andReturn("FE_USER_ADD");
-		iFlowEntry.setSwitchState("FE_SWITCH_UPDATED");
-		EasyMock.expect(iFlowEntry.getMatchInPort()).andReturn(new Short((short) 1));
-		EasyMock.expect(iFlowEntry.getMatchSrcMac()).andReturn("01:23:45:67:89:01");
-		EasyMock.expect(iFlowEntry.getMatchDstMac()).andReturn("01:23:45:67:89:02");
-		EasyMock.expect(iFlowEntry.getMatchEthernetFrameType()).andReturn(new Short((short)0x0800));
-		EasyMock.expect(iFlowEntry.getMatchVlanId()).andReturn(new Short((short)0x1234));
-		EasyMock.expect(iFlowEntry.getMatchVlanPriority()).andReturn(new Byte((byte)0x10));
-		EasyMock.expect(iFlowEntry.getMatchSrcIPv4Net()).andReturn("192.168.0.1");
-		EasyMock.expect(iFlowEntry.getMatchDstIPv4Net()).andReturn("192.168.0.2");
-		EasyMock.expect(iFlowEntry.getMatchIpProto()).andReturn(new Byte((byte)0x20));
-		EasyMock.expect(iFlowEntry.getMatchIpToS()).andReturn(new Byte((byte)0x3));
-		EasyMock.expect(iFlowEntry.getMatchSrcTcpUdpPort()).andReturn(new Short((short)40000));
-		EasyMock.expect(iFlowEntry.getMatchDstTcpUdpPort()).andReturn(new Short((short)80));
-		EasyMock.expect(iFlowEntry.getActions()).andReturn(actions.toString());
-		EasyMock.expect(basicFactory.getMessage(OFType.FLOW_MOD)).andReturn(new OFFlowMod());
-		
-		EasyMock.replay(iFlowEntry);
-		EasyMock.replay(iFlowPath);
-		
-		beginInitMock();
-		
-		OFFlowMod msg = EasyMock.createMock(OFFlowMod.class);
-		EasyMock.expect(msg.setIdleTimeout(EasyMock.anyShort())).andReturn(msg);
-		EasyMock.expect(msg.setHardTimeout(EasyMock.anyShort())).andReturn(msg);
-		EasyMock.expect(msg.setPriority(EasyMock.anyShort())).andReturn(msg);
-		EasyMock.expect(msg.setBufferId(EasyMock.anyInt())).andReturn(msg);
-		EasyMock.expect(msg.setCookie(EasyMock.anyLong())).andReturn(msg);
-		EasyMock.expect(msg.setCommand(EasyMock.anyShort())).andReturn(msg);
-		EasyMock.expect(msg.setMatch(EasyMock.anyObject(OFMatch.class))).andReturn(msg);
-		EasyMock.expect(msg.setActions((List<OFAction>)EasyMock.anyObject())).andReturn(msg);
-		EasyMock.expect(msg.setLengthU(EasyMock.anyShort())).andReturn(msg);
-		EasyMock.expect(msg.setOutPort(EasyMock.anyShort())).andReturn(msg).atLeastOnce();
-		EasyMock.expect(msg.getXid()).andReturn(1).anyTimes();
-		EasyMock.expect(msg.getType()).andReturn(OFType.FLOW_MOD).anyTimes();
-		EasyMock.expect(msg.getLength()).andReturn((short)100).anyTimes();
-		EasyMock.replay(msg);
-		
-		EasyMock.expect(factory.getMessage(EasyMock.eq(OFType.FLOW_MOD))).andReturn(msg);
-		
-		ScheduledExecutorService executor = EasyMock.createMock(ScheduledExecutorService.class);
-		EasyMock.expect(executor.schedule((Runnable)EasyMock.anyObject(), EasyMock.anyLong(),
-				(TimeUnit)EasyMock.anyObject())).andReturn(null).once();
-		EasyMock.replay(executor);
-		EasyMock.expect(tpservice.getScheduledExecutor()).andReturn(executor);
-
-		IOFSwitch sw = EasyMock.createMock(IOFSwitch.class);
-		EasyMock.expect(sw.getId()).andReturn((long)1).anyTimes();
-		EasyMock.expect(sw.getStringId()).andReturn("1").anyTimes();
-		sw.flush();
-		EasyMock.expectLastCall().once();
-		EasyMock.replay(sw);
-		
-		try {
-			EasyMock.expect(damper.write(EasyMock.eq(sw), EasyMock.anyObject(OFMessage.class), EasyMock.eq(context)))
-				.andAnswer(new IAnswer<Boolean>() {
-					@Override
-					public Boolean answer() throws Throwable {
-						OFMessage msg = (OFMessage)EasyMock.getCurrentArguments()[1];
-						assertEquals(msg.getType(), OFType.FLOW_MOD);
-						return true;
-					}
-				}).once();
-		} catch (IOException e1) {
-			fail("Failed in OFMessageDamper#write()");
-		}
-		
-		endInitMock();
-		initPusher(1);
-
-		pusher.add(sw, iFlowPath, iFlowEntry);
+		pusher.add(sw, flowEntry1);
 		
 		try {
 			Thread.sleep(1000);
