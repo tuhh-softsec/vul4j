@@ -410,15 +410,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param modifiedFlowEntries the collection of modified Flow Entries.
      */
     public void pushModifiedFlowEntriesToSwitches(
-			Collection<FlowPathEntryPair> modifiedFlowEntries) {
+			Collection<FlowEntry> modifiedFlowEntries) {
 	if (modifiedFlowEntries.isEmpty())
 	    return;
 
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
-	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
-	    FlowEntry flowEntry = flowPair.flowEntry;
-
+	for (FlowEntry flowEntry : modifiedFlowEntries) {
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 	    if (mySwitch == null)
 		continue;
@@ -451,15 +449,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param modifiedFlowEntries the collection of modified Flow Entries.
      */
     public void pushModifiedFlowEntriesToDatagrid(
-			Collection<FlowPathEntryPair> modifiedFlowEntries) {
+			Collection<FlowEntry> modifiedFlowEntries) {
 	if (modifiedFlowEntries.isEmpty())
 	    return;
 
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
-	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
-	    FlowEntry flowEntry = flowPair.flowEntry;
-
+	for (FlowEntry flowEntry : modifiedFlowEntries) {
 	    if (! flowEntry.isValidFlowEntryId())
 		continue;
 
