@@ -402,6 +402,25 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Push modified Flow-related state as appropriate.
+     *
+     * @param modifiedFlowPaths the collection of modified Flow Paths.
+     * @param modifiedFlowEntries the collection of modified Flow Entries.
+     */
+    public void pushModifiedFlowState(
+			Collection<FlowPath> modifiedFlowPaths,
+			Collection<FlowEntry> modifiedFlowEntries) {
+	//
+	// Push the modified Flow state:
+	//  - Flow Entries to switches and the datagrid
+	//  - Flow Paths to the database
+	//
+	pushModifiedFlowEntriesToSwitches(modifiedFlowEntries);
+	pushModifiedFlowEntriesToDatagrid(modifiedFlowEntries);
+	pushModifiedFlowPathsToDatabase(modifiedFlowPaths);
+    }
+
+    /**
      * Push modified Flow Entries to switches.
      *
      * NOTE: Only the Flow Entries to switches controlled by this instance
@@ -409,7 +428,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param modifiedFlowEntries the collection of modified Flow Entries.
      */
-    public void pushModifiedFlowEntriesToSwitches(
+    private void pushModifiedFlowEntriesToSwitches(
 			Collection<FlowEntry> modifiedFlowEntries) {
 	if (modifiedFlowEntries.isEmpty())
 	    return;
@@ -448,7 +467,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param modifiedFlowEntries the collection of modified Flow Entries.
      */
-    public void pushModifiedFlowEntriesToDatagrid(
+    private void pushModifiedFlowEntriesToDatagrid(
 			Collection<FlowEntry> modifiedFlowEntries) {
 	if (modifiedFlowEntries.isEmpty())
 	    return;
@@ -552,7 +571,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param modifiedFlowPaths the collection of Flow Paths to push.
      */
-    void pushModifiedFlowPathsToDatabase(
+    private void pushModifiedFlowPathsToDatabase(
 		Collection<FlowPath> modifiedFlowPaths) {
 	//
 	// We only add the Flow Paths to the Database Queue.

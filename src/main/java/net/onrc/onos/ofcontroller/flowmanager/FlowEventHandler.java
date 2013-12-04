@@ -218,11 +218,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	assignFlowEntryId(modifiedFlowEntries);
 
 	//
-	// Push the modified Flow Entries to switches, datagrid and database
+	// Push the modified state to the Flow Manager
 	//
-	flowManager.pushModifiedFlowEntriesToSwitches(modifiedFlowEntries);
-	flowManager.pushModifiedFlowEntriesToDatagrid(modifiedFlowEntries);
-	flowManager.pushModifiedFlowPathsToDatabase(modifiedFlowPaths.values());
+	flowManager.pushModifiedFlowState(modifiedFlowPaths.values(),
+					  modifiedFlowEntries);
 
 	//
 	// Remove Flow Entries that were deleted
