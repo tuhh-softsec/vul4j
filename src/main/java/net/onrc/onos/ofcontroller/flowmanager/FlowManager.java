@@ -2,12 +2,12 @@ package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.Executors;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +18,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.util.OFMessageDamper;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
@@ -27,7 +26,6 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
-import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.*;
 
@@ -39,21 +37,10 @@ import org.slf4j.LoggerFactory;
  * Flow Manager class for handling the network flows.
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
-
-    //
-    // TODO: A temporary variable to switch between the poll-based and
-    // notification mechanism for the Flow Manager.
-    //
-    private final static boolean enableNotifications = true;
-    
-    // flag to use FlowPusher instead of FlowSwitchOperation/MessageDamper
-    private final static boolean enableFlowPusher = false;
-
     protected GraphDBOperation dbHandlerApi;
     protected GraphDBOperation dbHandlerInner;
 
     protected volatile IFloodlightProviderService floodlightProvider;
-    protected volatile ITopologyNetService topologyNetService;
     protected volatile IDatagridService datagridService;
     protected IRestApiService restApi;
     protected FloodlightModuleContext context;
@@ -61,322 +48,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected IFlowPusherService pusher;
     
-    protected OFMessageDamper messageDamper;
-    
-    //
-    // TODO: Values copied from elsewhere (class LearningSwitch).
-    // The local copy should go away!
-    //
-    protected static final int OFMESSAGE_DAMPER_CAPACITY = 50000; // TODO: find sweet spot
-    protected static final int OFMESSAGE_DAMPER_TIMEOUT = 250;	// ms
-
     // Flow Entry ID generation state
     private static Random randomGenerator = new Random();
     private static int nextFlowEntryIdPrefix = 0;
     private static int nextFlowEntryIdSuffix = 0;
-    private static long nextFlowEntryId = 0;
 
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowManager.class);
 
-    // The periodic task(s)
-    private ScheduledExecutorService mapReaderScheduler;
-    private ScheduledExecutorService shortestPathReconcileScheduler;
-
-    /**
-     * Periodic task for reading the Flow Entries and pushing changes
-     * into the switches.
-     */
-    final Runnable mapReader = new Runnable() {
-	    public void run() {
-		try {
-		    runImpl();
-		} catch (Exception e) {
-		    log.debug("Exception processing All Flow Entries from the Network MAP: ", e);
-		    dbHandlerInner.rollback();
-		    return;
-		}
-	    }
-
-	    private void runImpl() {
-		long startTime = System.nanoTime();
-		int counterAllFlowEntries = 0;
-		int counterMyNotUpdatedFlowEntries = 0;
-
-		if (floodlightProvider == null) {
-		    log.debug("FloodlightProvider service not found!");
-		    return;
-		}
-		Map<Long, IOFSwitch> mySwitches =
-		    floodlightProvider.getSwitches();
-		if (mySwitches.isEmpty()) {
-			log.trace("No switches controlled");
-			return;
-		}
-		LinkedList<IFlowEntry> addFlowEntries =
-		    new LinkedList<IFlowEntry>();
-		LinkedList<IFlowEntry> deleteFlowEntries =
-		    new LinkedList<IFlowEntry>();
-
-		//
-		// Fetch all Flow Entries which need to be updated and select
-		// only my Flow Entries that need to be updated into the
-		// switches.
-		//
-		Iterable<IFlowEntry> allFlowEntries =
-		    dbHandlerInner.getAllSwitchNotUpdatedFlowEntries();
-		for (IFlowEntry flowEntryObj : allFlowEntries) {
-			log.debug("flowEntryobj : {}", flowEntryObj);
-			
-		    counterAllFlowEntries++;
-
-		    String dpidStr = flowEntryObj.getSwitchDpid();
-		    if (dpidStr == null)
-			continue;
-		    Dpid dpid = new Dpid(dpidStr);
-		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
-		    if (mySwitch == null)
-			continue;	// Ignore the entry: not my switch
-
-		    IFlowPath flowObj =
-			dbHandlerInner.getFlowPathByFlowEntry(flowEntryObj);
-		    if (flowObj == null)
-			continue;		// Should NOT happen
-		    if (flowObj.getFlowId() == null)
-			continue;		// Invalid entry
-
-		    //
-		    // NOTE: For now we process the DELETE before the ADD
-		    // to cover the more common scenario.
-		    // TODO: This is error prone and needs to be fixed!
-		    //
-		    String userState = flowEntryObj.getUserState();
-		    if (userState == null)
-			continue;
-		    if (userState.equals("FE_USER_DELETE")) {
-			// An entry that needs to be deleted.
-			deleteFlowEntries.add(flowEntryObj);
-			installFlowEntry(mySwitch, flowObj, flowEntryObj);
-		    } else {
-			addFlowEntries.add(flowEntryObj);
-		    }
-		    counterMyNotUpdatedFlowEntries++;
-		}
-		
-		log.debug("addFlowEntries : {}", addFlowEntries);
-
-		//
-		// Process the Flow Entries that need to be added
-		//
-		for (IFlowEntry flowEntryObj : addFlowEntries) {
-		    IFlowPath flowObj =
-			dbHandlerInner.getFlowPathByFlowEntry(flowEntryObj);
-		    if (flowObj == null)
-			continue;		// Should NOT happen
-		    if (flowObj.getFlowId() == null)
-			continue;		// Invalid entry
-
-		    Dpid dpid = new Dpid(flowEntryObj.getSwitchDpid());
-		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
-		    if (mySwitch == null)
-			continue;		// Shouldn't happen
-		    installFlowEntry(mySwitch, flowObj, flowEntryObj);
-		}
-
-		//
-		// Delete all Flow Entries marked for deletion from the
-		// Network MAP.
-		//
-		// TODO: We should use the OpenFlow Barrier mechanism
-		// to check for errors, and delete the Flow Entries after the
-		// Barrier message is received.
-		//
-		while (! deleteFlowEntries.isEmpty()) {
-		    IFlowEntry flowEntryObj = deleteFlowEntries.poll();
-		    IFlowPath flowObj =
-			dbHandlerInner.getFlowPathByFlowEntry(flowEntryObj);
-		    if (flowObj == null) {
-			log.debug("Did not find FlowPath to be deleted");
-			continue;
-		    }
-		    flowObj.removeFlowEntry(flowEntryObj);
-		    dbHandlerInner.removeFlowEntry(flowEntryObj);
-		}
-
-		dbHandlerInner.commit();
-
-		long estimatedTime = System.nanoTime() - startTime;
-		double rate = 0.0;
-		if (estimatedTime > 0)
-		    rate = ((double)counterAllFlowEntries * 1000000000) / estimatedTime;
-		String logMsg = "MEASUREMENT: Processed AllFlowEntries: " +
-		    counterAllFlowEntries + " MyNotUpdatedFlowEntries: " +
-		    counterMyNotUpdatedFlowEntries + " in " +
-		    (double)estimatedTime / 1000000000 + " sec: " +
-		    rate + " paths/s";
-		log.debug(logMsg);
-	    }
-	};
-
-    /**
-     * Periodic task for reading the Flow Paths and recomputing the
-     * shortest paths.
-     */
-    final Runnable shortestPathReconcile = new Runnable() {
-	    public void run() {
-		try {
-		    runImpl();
-		} catch (Exception e) {
-		    log.debug("Exception processing All Flows from the Network MAP: ", e);
-		    dbHandlerInner.rollback();
-		    return;
-		}
-	    }
-
-	    private void runImpl() {
-		long startTime = System.nanoTime();
-		int counterAllFlowPaths = 0;
-		int counterMyFlowPaths = 0;
-
-		if (floodlightProvider == null) {
-		    log.debug("FloodlightProvider service not found!");
-		    return;
-		}
-		Map<Long, IOFSwitch> mySwitches =
-		    floodlightProvider.getSwitches();
-		if (mySwitches.isEmpty()) {
-			log.trace("No switches controlled");
-			return;
-		}
-		LinkedList<IFlowPath> deleteFlows = new LinkedList<IFlowPath>();
-
-		//
-		// Fetch and recompute the Shortest Path for those
-		// Flow Paths this controller is responsible for.
-		//
-		Topology topology = topologyNetService.newDatabaseTopology();
-		Iterable<IFlowPath> allFlowPaths = dbHandlerInner.getAllFlowPaths();
-		for (IFlowPath flowPathObj : allFlowPaths) {
-		    counterAllFlowPaths++;
-		    if (flowPathObj == null)
-			continue;
-
-		    String srcDpidStr = flowPathObj.getSrcSwitch();
-		    if (srcDpidStr == null)
-			continue;
-		    Dpid srcDpid = new Dpid(srcDpidStr);
-		    //
-		    // Use the source DPID as a heuristic to decide
-		    // which controller is responsible for maintaining the
-		    // shortest path.
-		    // NOTE: This heuristic is error-prone: if the switch
-		    // goes away and no controller is responsible for that
-		    // switch, then the original Flow Path is not cleaned-up
-		    //
-		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
-		    if (mySwitch == null)
-			continue;	// Ignore: not my responsibility
-
-		    // Test whether we need to maintain this flow
-		    String flowPathTypeStr = flowPathObj.getFlowPathType();
-		    if (flowPathTypeStr == null)
-			continue;	// Could be invalid entry?
-		    if (! flowPathTypeStr.equals("FP_TYPE_SHORTEST_PATH"))
-			continue;	// No need to maintain this flow
-
-		    //
-		    // Test whether we need to complete the Flow cleanup,
-		    // if the Flow has been deleted by the user.
-		    //
-		    String flowPathUserStateStr = flowPathObj.getFlowPathUserState();
-		    if ((flowPathUserStateStr != null)
-			&& flowPathUserStateStr.equals("FP_USER_DELETE")) {
-			Iterable<IFlowEntry> flowEntries = flowPathObj.getFlowEntries();
-			final boolean empty = !flowEntries.iterator().hasNext();
-			if (empty)
-			    deleteFlows.add(flowPathObj);
-		    }
-
-		    // Fetch the fields needed to recompute the shortest path
-		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
-		    Short srcPortShort = flowPathObj.getSrcPort();
-		    String dstDpidStr = flowPathObj.getDstSwitch();
-		    Short dstPortShort = flowPathObj.getDstPort();
-		    Long flowPathFlagsLong = flowPathObj.getFlowPathFlags();
-		    if ((dataPathSummaryStr == null) ||
-			(srcPortShort == null) ||
-			(dstDpidStr == null) ||
-			(dstPortShort == null) ||
-			(flowPathFlagsLong == null)) {
-			continue;
-		    }
-
-		    Port srcPort = new Port(srcPortShort);
-		    Dpid dstDpid = new Dpid(dstDpidStr);
-		    Port dstPort = new Port(dstPortShort);
-		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
-		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
-		    FlowPathType flowPathType = FlowPathType.valueOf(flowPathTypeStr);
-		    FlowPathUserState flowPathUserState = FlowPathUserState.valueOf(flowPathUserStateStr);
-		    FlowPathFlags flowPathFlags = new FlowPathFlags(flowPathFlagsLong);
-
-		    counterMyFlowPaths++;
-
-		    //
-		    // NOTE: Using here the regular getDatabaseShortestPath()
-		    // method won't work here, because that method calls
-		    // internally "conn.endTx(Transaction.COMMIT)", and that
-		    // will invalidate all handlers to the Titan database.
-		    // If we want to experiment with calling here
-		    // getDatabaseShortestPath(), we need to refactor that code
-		    // to avoid closing the transaction.
-		    //
-		    DataPath dataPath =
-			topologyNetService.getTopologyShortestPath(
-				topology,
-				srcSwitchPort,
-				dstSwitchPort);
-		    if (dataPath == null) {
-			// We need the DataPath to compare the paths
-			dataPath = new DataPath();
-			dataPath.setSrcPort(srcSwitchPort);
-			dataPath.setDstPort(dstSwitchPort);
-		    }
-		    dataPath.applyFlowPathFlags(flowPathFlags);
-
-		    String newDataPathSummaryStr = dataPath.dataPathSummary();
-		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
-			continue;	// Nothing changed
-
-		    reconcileFlow(flowPathObj, dataPath);
-		}
-
-		//
-		// Delete all leftover Flows marked for deletion from the
-		// Network MAP.
-		//
-		while (! deleteFlows.isEmpty()) {
-		    IFlowPath flowPathObj = deleteFlows.poll();
-		    dbHandlerInner.removeFlowPath(flowPathObj);
-		}
-
-		topologyNetService.dropTopology(topology);
-
-		dbHandlerInner.commit();
-
-		long estimatedTime = System.nanoTime() - startTime;
-		double rate = 0.0;
-		if (estimatedTime > 0)
-		    rate = ((double)counterAllFlowPaths * 1000000000) / estimatedTime;
-		String logMsg = "MEASUREMENT: Processed AllFlowPaths: " +
-		    counterAllFlowPaths + " MyFlowPaths: " +
-		    counterMyFlowPaths + " in " +
-		    (double)estimatedTime / 1000000000 + " sec: " +
-		    rate + " paths/s";
-		log.debug(logMsg);
-	    }
-	};
-
+    // The queue to write Flow Entries to the database
+    private BlockingQueue<FlowPath> flowPathsToDatabaseQueue =
+	new LinkedBlockingQueue<FlowPath>();
+    FlowDatabaseWriter flowDatabaseWriter;
 
     /**
      * Initialize the Flow Manager.
@@ -462,22 +145,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	throws FloodlightModuleException {
 	this.context = context;
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-	topologyNetService = context.getServiceImpl(ITopologyNetService.class);
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
-
-	if (enableFlowPusher) {
-		pusher = context.getServiceImpl(IFlowPusherService.class);
-	} else {
-		messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
-	    EnumSet.of(OFType.FLOW_MOD),
-	    OFMESSAGE_DAMPER_TIMEOUT);
-	}
+	pusher = context.getServiceImpl(IFlowPusherService.class);
 
 	this.init("");
-
-	mapReaderScheduler = Executors.newScheduledThreadPool(1);
-	shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
     }
 
     /**
@@ -515,22 +187,23 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	// Initialize the Flow Entry ID generator
 	nextFlowEntryIdPrefix = randomGenerator.nextInt();
-	
+
 	//
-	// Create the Flow Event Handler thread and register it with the
-	// Datagrid Service
+	// The thread to write to the database
+	//
+	flowDatabaseWriter = new FlowDatabaseWriter(this,
+						flowPathsToDatabaseQueue);
+	flowDatabaseWriter.start();
+
+	//
+	// The Flow Event Handler thread:
+	//  - create
+	//  - register with the Datagrid Service
+	//  - startup
 	//
 	flowEventHandler = new FlowEventHandler(this, datagridService);
 	datagridService.registerFlowEventHandlerService(flowEventHandler);
-
-	// Schedule the threads and periodic tasks
 	flowEventHandler.start();
-	if (! enableNotifications) {
-	    mapReaderScheduler.scheduleAtFixedRate(
-			mapReader, 3, 3, TimeUnit.SECONDS);
-	    shortestPathReconcileScheduler.scheduleAtFixedRate(
-			shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
-	}
     }
 
     /**
@@ -593,19 +266,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
-	//
-	// TODO: In the notification-based implementation,
-	// deleteFlow() is implemented by using clearFlow()
-	//
-	return clearAllFlows();
-
-	/*
 	if (FlowDatabaseOperation.deleteAllFlows(dbHandlerApi)) {
 	    datagridService.notificationSendAllFlowsRemoved();
 	    return true;
 	}
 	return false;
-	*/
     }
 
     /**
@@ -616,43 +281,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
-	//
-	// TODO: In the notification-based implementation,
-	// deleteFlow() is implemented by using clearFlow()
-	//
-	return clearFlow(flowId);
-	/*
 	if (FlowDatabaseOperation.deleteFlow(dbHandlerApi, flowId)) {
-	    datagridService.notificationSendFlowRemoved(flowId);
-	    return true;
-	}
-	return false;
-	*/
-    }
-
-    /**
-     * Clear the state for all previously added flows.
-     *
-     * @return true on success, otherwise false.
-     */
-    @Override
-    public boolean clearAllFlows() {
-	if (FlowDatabaseOperation.clearAllFlows(dbHandlerApi)) {
-	    datagridService.notificationSendAllFlowsRemoved();
-	    return true;
-	}
-	return false;
-    }
-
-    /**
-     * Clear the state for a previously added flow.
-     *
-     * @param flowId the Flow ID of the flow to clear.
-     * @return true on success, otherwise false.
-     */
-    @Override
-    public boolean clearFlow(FlowId flowId) {
-	if (FlowDatabaseOperation.clearFlow(dbHandlerApi, flowId)) {
 	    datagridService.notificationSendFlowRemoved(flowId);
 	    return true;
 	}
@@ -715,21 +344,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the Flow Paths if found, otherwise null.
      */
     @Override
-    public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId,
-						   int maxFlows) {
+    public ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId,
+						  int maxFlows) {
 	return FlowDatabaseOperation.getAllFlowsSummary(dbHandlerApi, flowId,
 							maxFlows);
     }
     
-    /**
-     * Get all Flows information, without the associated Flow Entries.
-     *
-     * @return all Flows information, without the associated Flow Entries.
-     */
-    public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries() {
-	return FlowDatabaseOperation.getAllFlowsWithoutFlowEntries(dbHandlerApi);
-    }
-
     /**
      * Add and maintain a shortest-path flow.
      *
@@ -772,139 +392,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Reconcile a flow.
+     * Inform the Flow Manager that a Flow Entry on switch expired.
      *
-     * @param flowObj the flow that needs to be reconciled.
-     * @param newDataPath the new data path to use.
-     * @return true on success, otherwise false.
+     * @param sw the switch the Flow Entry expired on.
+     * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
-    private boolean reconcileFlow(IFlowPath flowObj, DataPath newDataPath) {
-	String flowIdStr = flowObj.getFlowId();
-
-	//
-	// Set the incoming port matching and the outgoing port output
-	// actions for each flow entry.
-	//
-	int idx = 0;
-	for (FlowEntry flowEntry : newDataPath.flowEntries()) {
-	    flowEntry.setFlowId(new FlowId(flowIdStr));
-
-	    // Mark the Flow Entry as not updated in the switch
-	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
-	    // Set the incoming port matching
-	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
-	    flowEntry.setFlowEntryMatch(flowEntryMatch);
-	    flowEntryMatch.enableInPort(flowEntry.inPort());
-
-	    //
-	    // Set the actions
-	    //
-	    FlowEntryActions flowEntryActions = flowEntry.flowEntryActions();
-	    //
-	    // If the first Flow Entry, copy the Flow Path actions to it
-	    //
-	    if (idx == 0) {
-		String actionsStr = flowObj.getActions();
-		if (actionsStr != null) {
-		    FlowEntryActions flowActions = new FlowEntryActions(actionsStr);
-		    for (FlowEntryAction action : flowActions.actions())
-			flowEntryActions.addAction(action);
-		}
-	    }
-	    idx++;
-	    //
-	    // Add the outgoing port output action
-	    //
-	    FlowEntryAction flowEntryAction = new FlowEntryAction();
-	    flowEntryAction.setActionOutput(flowEntry.outPort());
-	    flowEntryActions.addAction(flowEntryAction);
-	}
-
-	//
-	// Remove the old Flow Entries, and add the new Flow Entries
-	//
-	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
-	for (IFlowEntry flowEntryObj : flowEntries) {
-	    flowEntryObj.setUserState("FE_USER_DELETE");
-	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
-	}
-	for (FlowEntry flowEntry : newDataPath.flowEntries()) {
-	    addFlowEntry(flowObj, flowEntry);
-	}
-
-	//
-	// Set the Data Path Summary
-	//
-	String dataPathSummaryStr = newDataPath.dataPathSummary();
-	flowObj.setDataPathSummary(dataPathSummaryStr);
-
-	return true;
-    }
-
-    /**
-     * Reconcile all flows in a set.
-     *
-     * @param flowObjSet the set of flows that need to be reconciliated.
-     */
-    private void reconcileFlows(Iterable<IFlowPath> flowObjSet) {
-	if (! flowObjSet.iterator().hasNext())
-	    return;
-	// TODO: Not implemented/used yet.
-    }
-
-    /**
-     * Install a Flow Entry on a switch.
-     *
-     * @param mySwitch the switch to install the Flow Entry into.
-     * @param flowObj the flow path object for the flow entry to install.
-     * @param flowEntryObj the flow entry object to install.
-     * @return true on success, otherwise false.
-     */
-    private boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
-				    IFlowEntry flowEntryObj) {
-    	if (enableFlowPusher) {
-        	return pusher.add(mySwitch, flowObj, flowEntryObj);
-    	} else {
-    		return FlowSwitchOperation.installFlowEntry(
-    			floodlightProvider.getOFMessageFactory(),
-    			messageDamper, mySwitch, flowObj, flowEntryObj);
-    	}
-    }
-
-    /**
-     * Install a Flow Entry on a switch.
-     *
-     * @param mySwitch the switch to install the Flow Entry into.
-     * @param flowPath the flow path for the flow entry to install.
-     * @param flowEntry the flow entry to install.
-     * @return true on success, otherwise false.
-     */
-    private boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
-				    FlowEntry flowEntry) {
-    	if (enableFlowPusher) {
-        	return pusher.add(mySwitch, flowPath, flowEntry);
-    	} else {
-    		return FlowSwitchOperation.installFlowEntry(
-    		floodlightProvider.getOFMessageFactory(),
-    		messageDamper, mySwitch, flowPath, flowEntry);
-    	}
-    }
-
-    /**
-     * Remove a Flow Entry from a switch.
-     *
-     * @param mySwitch the switch to remove the Flow Entry from.
-     * @param flowPath the flow path for the flow entry to remove.
-     * @param flowEntry the flow entry to remove.
-     * @return true on success, otherwise false.
-     */
-    private boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
-				   FlowEntry flowEntry) {
-	//
-	// The installFlowEntry() method implements both installation
-	// and removal of flow entries.
-	//
-	return (installFlowEntry(mySwitch, flowPath, flowEntry));
+    public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId) {
+	// TODO: Not implemented yet
     }
 
     /**
@@ -917,17 +411,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     public void pushModifiedFlowEntriesToSwitches(
 			Collection<FlowPathEntryPair> modifiedFlowEntries) {
-	// TODO: For now, the pushing of Flow Entries is disabled
-	if (! enableNotifications)
-	    return;
-
 	if (modifiedFlowEntries.isEmpty())
 	    return;
 
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
 	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
-	    FlowPath flowPath = flowPair.flowPath;
 	    FlowEntry flowEntry = flowPair.flowEntry;
 
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
@@ -937,12 +426,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry.toString());
 
 	    //
-	    // Install the Flow Entry into the switch
+	    // Push the Flow Entry into the switch
 	    //
-	    if (! installFlowEntry(mySwitch, flowPath, flowEntry)) {
+	    if (! pusher.add(mySwitch, flowEntry)) {
 		String logMsg = "Cannot install Flow Entry " +
 		    flowEntry.flowEntryId() +
-		    " from Flow Path " + flowPath.flowId() +
+		    " from Flow Path " + flowEntry.flowId() +
 		    " on switch " + flowEntry.dpid();
 		log.error(logMsg);
 		continue;
@@ -963,10 +452,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     public void pushModifiedFlowEntriesToDatagrid(
 			Collection<FlowPathEntryPair> modifiedFlowEntries) {
-	// TODO: For now, the pushing of Flow Entries is disabled
-	if (! enableNotifications)
-	    return;
-
 	if (modifiedFlowEntries.isEmpty())
 	    return;
 
@@ -974,6 +459,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
 	    FlowEntry flowEntry = flowPair.flowEntry;
+
+	    if (! flowEntry.isValidFlowEntryId())
+		continue;
 
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 
@@ -993,8 +481,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    FlowEntryUserState.FE_USER_DELETE) {
 		    continue;
 		}
-		if (! flowEntry.isValidFlowEntryId())
-		    continue;
 	    }
 
 	    log.debug("Pushing Flow Entry To Datagrid: {}", flowEntry.toString());
@@ -1020,32 +506,84 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Push Flow Entries to the Network MAP.
-     *
-     * NOTE: The Flow Entries are pushed only on the instance responsible
-     * for the first switch. This is to avoid database errors when multiple
-     * instances are writing Flow Entries for the same Flow Path.
-     *
-     * @param modifiedFlowEntries the collection of Flow Entries to push.
+     * Class to implement writing to the database in a separate thread.
      */
-    public void pushModifiedFlowEntriesToDatabase(
-		Collection<FlowPathEntryPair> modifiedFlowEntries) {
-	// TODO: For now, the pushing of Flow Entries is disabled
-	if (! enableNotifications)
+    class FlowDatabaseWriter extends Thread {
+	private FlowManager flowManager;
+	private BlockingQueue<FlowPath> blockingQueue;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param flowManager the Flow Manager to use.
+	 * @param blockingQueue the blocking queue to use.
+	 */
+	FlowDatabaseWriter(FlowManager flowManager,
+			   BlockingQueue<FlowPath> blockingQueue) {
+	    this.flowManager = flowManager;
+	    this.blockingQueue = blockingQueue;
+	}
+
+	/**
+	 * Run the thread.
+	 */
+	@Override
+	public void run() {
+	    //
+	    // The main loop
+	    //
+	    Collection<FlowPath> collection = new LinkedList<FlowPath>();
+	    try {
+		while (true) {
+		    FlowPath flowPath = blockingQueue.take();
+		    collection.add(flowPath);
+		    blockingQueue.drainTo(collection);
+		    flowManager.writeModifiedFlowPathsToDatabase(collection);
+		    collection.clear();
+		}
+	    } catch (Exception exception) {
+		log.debug("Exception writing to the Database: ", exception);
+	    }
+	}
+    }
+
+    /**
+     * Push Flow Paths to the Network MAP.
+     *
+     * NOTE: The complete Flow Paths are pushed only on the instance
+     * responsible for the first switch. This is to avoid database errors
+     * when multiple instances are writing Flow Entries for the same Flow Path.
+     *
+     * @param modifiedFlowPaths the collection of Flow Paths to push.
+     */
+    void pushModifiedFlowPathsToDatabase(
+		Collection<FlowPath> modifiedFlowPaths) {
+	//
+	// We only add the Flow Paths to the Database Queue.
+	// The FlowDatabaseWriter thread is responsible for the actual writing.
+	//
+	flowPathsToDatabaseQueue.addAll(modifiedFlowPaths);
+    }
+
+    /**
+     * Write Flow Paths to the Network MAP.
+     *
+     * NOTE: The complete Flow Paths are pushed only on the instance
+     * responsible for the first switch. This is to avoid database errors
+     * when multiple instances are writing Flow Entries for the same Flow Path.
+     *
+     * @param modifiedFlowPaths the collection of Flow Paths to write.
+     */
+    private void writeModifiedFlowPathsToDatabase(
+		Collection<FlowPath> modifiedFlowPaths) {
+	if (modifiedFlowPaths.isEmpty())
 	    return;
 
-	if (modifiedFlowEntries.isEmpty())
-	    return;
+	FlowId dummyFlowId = new FlowId();
 
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
-	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
-	    FlowPath flowPath = flowPair.flowPath;
-	    FlowEntry flowEntry = flowPair.flowEntry;
-
-	    if (! flowEntry.isValidFlowEntryId())
-		continue;
-
+	for (FlowPath flowPath : modifiedFlowPaths) {
 	    //
 	    // Push the changes only on the instance responsible for the
 	    // first switch.
@@ -1055,69 +593,37 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    if (mySrcSwitch == null)
 		continue;
 
-	    log.debug("Pushing Flow Entry To Database: {}", flowEntry.toString());
 	    //
-	    // Write the Flow Entry to the Network Map
+	    // Test whether all Flow Entries are valid
 	    //
-	    // NOTE: We try a number of times, in case somehow some other
-	    // instances are writing at the same time.
-	    // Apparently, if other instances are writing at the same time
-	    // this will trigger an error.
-	    //
-	    for (int i = 0; i < 6; i++) {
-		try {
-		    //
-		    // Find the Flow Path in the Network MAP.
-		    //
-		    // NOTE: The Flow Path might not be found if the Flow was
-		    // just removed by some other controller instance.
-		    //
-		    IFlowPath flowObj =
-			dbHandlerInner.searchFlowPath(flowEntry.flowId());
-		    if (flowObj == null) {
-			String logMsg = "Cannot find Network MAP entry for Flow Path " + flowEntry.flowId();
-			log.error(logMsg);
-			break;
-		    }
-
-		    // Write the Flow Entry
-		    switch (flowEntry.flowEntryUserState()) {
-		    case FE_USER_ADD:
-			// FALLTHROUGH
-		    case FE_USER_MODIFY:
-			if (addFlowEntry(flowObj, flowEntry) == null) {
-			    String logMsg = "Cannot write to Network MAP Flow Entry " +
-				flowEntry.flowEntryId() +
-				" from Flow Path " + flowEntry.flowId() +
-				" on switch " + flowEntry.dpid();
-			    log.error(logMsg);
-			}
-			break;
-		    case FE_USER_DELETE:
-			if (deleteFlowEntry(flowObj, flowEntry) == false) {
-			    String logMsg = "Cannot remove from Network MAP Flow Entry " +
-				flowEntry.flowEntryId() +
-				" from Flow Path " + flowEntry.flowId() +
-				" on switch " + flowEntry.dpid();
-			    log.error(logMsg);
-			}
-			break;
-		    }
-
-		    // Commit to the database
-		    dbHandlerInner.commit();
-		    break;	// Success
-
-		} catch (Exception e) {
-		    log.debug("Exception writing Flow Entry to Network MAP: ", e);
-		    dbHandlerInner.rollback();
-		    // Wait a bit (random value [1ms, 20ms] and try again
-		    int delay = 1 + randomGenerator.nextInt() % 20;
-		    try {
-			Thread.sleep(delay);
-		    } catch (Exception e0) {
-		    }
+	    boolean allValid = true;
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		if (flowEntry.flowEntryUserState() ==
+		    FlowEntryUserState.FE_USER_DELETE) {
+		    continue;
 		}
+		if (! flowEntry.isValidFlowEntryId()) {
+		    allValid = false;
+		    break;
+		}
+	    }
+	    if (! allValid)
+		continue;
+
+	    log.debug("Pushing Flow Path To Database: {}", flowPath.toString());
+
+	    //
+	    // Write the Flow Path to the Network Map
+	    //
+	    try {
+		if (! FlowDatabaseOperation.addFlow(this, dbHandlerInner,
+						    flowPath, dummyFlowId)) {
+		    String logMsg = "Cannot write to Network Map Flow Path " +
+			flowPath.flowId();
+		    log.error(logMsg);
+		}
+	    } catch (Exception e) {
+		log.error("Exception writing Flow Path to Network MAP: ", e);
 	    }
 	}
     }

@@ -16,7 +16,6 @@ echo "all links up"
 dsh -w ${basename}1 "cd ONOS/scripts; ./all-linkup.sh"
 echo "clean up flow"
 dsh -w ${basename}1 "cd ONOS/web; ./delete_flow.py 1 100"
-dsh -w ${basename}1 "cd ONOS/web; ./clear_flow.py 1 100"
 sleep 1
 dsh -w ${basename}1 "cd ONOS/web; ./get_flow.py all"
 dsh "cd ONOS/scripts; ./delflow.sh"
