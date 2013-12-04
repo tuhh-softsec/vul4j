@@ -30,7 +30,7 @@ public class RamCloudDBConnection extends DBConnection {
 	graph = RamCloudThreadLocal.get();
 	System.out.println("ThreadId = " + Thread.currentThread().getId() + "graph = " + graph);
 	if (graph == null) {
-	    graph = new RamCloudGraph("fast+udp:host=10.128.100.36,port=12246");
+	    graph = new RamCloudGraph("fast+udp:host=10.128.4.104,port=12246");
 	    RamCloudThreadLocal.set(graph);
 	}
     }
