@@ -27,12 +27,12 @@ public class RamCloudDBConnection extends DBConnection {
         //final String coordinatorURL = open(getConfiguration(new File(dbConfigFile)));
 	//System.out.println("coordinatorURL "+ coordinatorURL);
         //graph = new RamCloudGraph(coordinatorURL);
-	graph = RamCloudThreadLocal.get();
+	//graph = RamCloudThreadLocal.get();
 	System.out.println("ThreadId = " + Thread.currentThread().getId() + "graph = " + graph);
-	if (graph == null) {
-	    graph = new RamCloudGraph("fast+udp:host=10.128.100.36,port=12246");
-	    RamCloudThreadLocal.set(graph);
-	}
+	//if (graph == null) {
+	    graph = new RamCloudGraph("fast+udp:host=10.128.4.104,port=12246");
+	  //  RamCloudThreadLocal.set(graph);
+	//}
     }
     
     @Override
