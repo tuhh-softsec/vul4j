@@ -16,6 +16,7 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.OFMessageDamper;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryActions;
@@ -43,8 +44,9 @@ public class FlowPusherTest {
 	private FloodlightModuleContext modContext;
 	private BasicFactory factory;
 	private OFMessageDamper damper;
-	private IFloodlightProviderService flservice;
-	private IThreadPoolService tpservice;
+	private IFloodlightProviderService flProviderService;
+	private IThreadPoolService threadPoolService;
+	private IFlowService flowService;
 
 	/**
 	 * Test single OFMessage is correctly sent to single switch via MessageDamper.
@@ -65,7 +67,8 @@ public class FlowPusherTest {
 		EasyMock.replay(sw);
 		
 		try {
-			EasyMock.expect(damper.write(EasyMock.eq(sw), EasyMock.eq(msg), EasyMock.eq(context))).andReturn(true).once();
+			EasyMock.expect(damper.write(EasyMock.eq(sw), EasyMock.eq(msg), EasyMock.eq(context)))
+				.andReturn(true).once();
 		} catch (IOException e1) {
 			fail("Failed in OFMessageDamper#write()");
 		}
@@ -439,7 +442,7 @@ public class FlowPusherTest {
 		EasyMock.expect(executor.schedule((Runnable)EasyMock.anyObject(), EasyMock.anyLong(),
 				(TimeUnit)EasyMock.anyObject())).andReturn(null).once();
 		EasyMock.replay(executor);
-		EasyMock.expect(tpservice.getScheduledExecutor()).andReturn(executor);
+		EasyMock.expect(threadPoolService.getScheduledExecutor()).andReturn(executor);
 
 		IOFSwitch sw = EasyMock.createMock(IOFSwitch.class);
 		EasyMock.expect(sw.getId()).andReturn((long)1).anyTimes();
@@ -483,21 +486,29 @@ public class FlowPusherTest {
 		modContext = EasyMock.createMock(FloodlightModuleContext.class);
 		factory = EasyMock.createMock(BasicFactory.class);
 		damper = EasyMock.createMock(OFMessageDamper.class);
-		flservice = EasyMock.createMock(IFloodlightProviderService.class);
-		tpservice = EasyMock.createMock(IThreadPoolService.class);
+		flProviderService = EasyMock.createMock(IFloodlightProviderService.class);
+		threadPoolService = EasyMock.createMock(IThreadPoolService.class);
+		flowService = EasyMock.createMock(IFlowService.class);
+		
+		flowService.flowEntryPushedToSwitch(EasyMock.anyObject(IOFSwitch.class),
+			EasyMock.anyObject(FlowEntry.class));
+		EasyMock.expectLastCall().anyTimes();
 		
 		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IThreadPoolService.class)))
-			.andReturn(tpservice).once();
+			.andReturn(threadPoolService).once();
 		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IFloodlightProviderService.class)))
-			.andReturn(flservice).once();
-		flservice.addOFMessageListener(EasyMock.eq(OFType.BARRIER_REPLY),
+			.andReturn(flProviderService).once();
+		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IFlowService.class)))
+			.andReturn(flowService).once();
+		flProviderService.addOFMessageListener(EasyMock.eq(OFType.BARRIER_REPLY),
 				(FlowPusher) EasyMock.anyObject());
 		EasyMock.expectLastCall().once();
 	}
 	
 	private void endInitMock() {
-		EasyMock.replay(tpservice);
-		EasyMock.replay(flservice);
+		EasyMock.replay(flowService);
+		EasyMock.replay(threadPoolService);
+		EasyMock.replay(flProviderService);
 		EasyMock.replay(damper);
 		EasyMock.replay(factory);
 		EasyMock.replay(modContext);
@@ -524,7 +535,7 @@ public class FlowPusherTest {
 		EasyMock.expect(executor.schedule((Runnable)EasyMock.anyObject(), EasyMock.anyLong(),
 				(TimeUnit)EasyMock.anyObject())).andReturn(null).once();
 		EasyMock.replay(executor);
-		EasyMock.expect(tpservice.getScheduledExecutor()).andReturn(executor);
+		EasyMock.expect(threadPoolService.getScheduledExecutor()).andReturn(executor);
 
 		EasyMock.expect(sw.getNextTransactionId()).andReturn(1);
 	}
