@@ -402,22 +402,49 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Inform the Flow Manager that a Flow Entry has been pushed to a switch.
+     *
+     * @param sw the switch the Flow Entry has been pushed to.
+     * @param flowEntry the Flow Entry that has been pushed.
+     */
+    public void flowEntryPushedToSwitch(IOFSwitch sw, FlowEntry flowEntry) {
+	//
+	// Mark the Flow Entry that it has been pushed to the switch
+	//
+	flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+
+	//
+	// Write the Flow Entry to the Datagrid
+	//
+	switch (flowEntry.flowEntryUserState()) {
+	case FE_USER_ADD:
+	    datagridService.notificationSendFlowEntryAdded(flowEntry);
+	    break;
+	case FE_USER_MODIFY:
+	    datagridService.notificationSendFlowEntryUpdated(flowEntry);
+	    break;
+	case FE_USER_DELETE:
+	    datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+	    break;
+	}
+    }
+
+    /**
      * Push modified Flow-related state as appropriate.
      *
      * @param modifiedFlowPaths the collection of modified Flow Paths.
      * @param modifiedFlowEntries the collection of modified Flow Entries.
      */
-    public void pushModifiedFlowState(
-			Collection<FlowPath> modifiedFlowPaths,
-			Collection<FlowEntry> modifiedFlowEntries) {
+    void pushModifiedFlowState(Collection<FlowPath> modifiedFlowPaths,
+			       Collection<FlowEntry> modifiedFlowEntries) {
 	//
 	// Push the modified Flow state:
 	//  - Flow Entries to switches and the datagrid
 	//  - Flow Paths to the database
 	//
 	pushModifiedFlowEntriesToSwitches(modifiedFlowEntries);
-	pushModifiedFlowEntriesToDatagrid(modifiedFlowEntries);
 	pushModifiedFlowPathsToDatabase(modifiedFlowPaths);
+	cleanupDeletedFlowEntriesFromDatagrid(modifiedFlowEntries);
     }
 
     /**
@@ -453,21 +480,22 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		log.error(logMsg);
 		continue;
 	    }
-
-	    //
-	    // NOTE: Here we assume that the switch has been
-	    // successfully updated.
-	    //
-	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
 	}
     }
 
     /**
-     * Push modified Flow Entries to the datagrid.
+     * Cleanup deleted Flow Entries from the datagrid.
+     *
+     * NOTE: We cleanup only the Flow Entries that are not for our switches.
+     * This is needed to handle the case a switch going down:
+     * It has no Master controller instance, hence no controller instance
+     * will cleanup its flow entries.
+     * This is sub-optimal: we need to elect a controller instance to handle
+     * the cleanup of such orphaned flow entries.
      *
      * @param modifiedFlowEntries the collection of modified Flow Entries.
      */
-    private void pushModifiedFlowEntriesToDatagrid(
+    private void cleanupDeletedFlowEntriesFromDatagrid(
 			Collection<FlowEntry> modifiedFlowEntries) {
 	if (modifiedFlowEntries.isEmpty())
 	    return;
@@ -475,48 +503,31 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
 	for (FlowEntry flowEntry : modifiedFlowEntries) {
+	    //
+	    // Process only Flow Entries that should be deleted and have
+	    // a valid Flow Entry ID.
+	    //
 	    if (! flowEntry.isValidFlowEntryId())
 		continue;
-
-	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
-
-	    //
-	    // TODO: For now Flow Entries are removed by all instances,
-	    // even if this Flow Entry is not for our switches.
-	    //
-	    // This is needed to handle the case a switch going down:
-	    // it has no Master controller instance, hence no
-	    // controller instance will cleanup its flow entries.
-	    // This is sub-optimal: we need to elect a controller
-	    // instance to handle the cleanup of such orphaned flow
-	    // entries.
-	    //
-	    if (mySwitch == null) {
-		if (flowEntry.flowEntryUserState() !=
-		    FlowEntryUserState.FE_USER_DELETE) {
-		    continue;
-		}
+	    if (flowEntry.flowEntryUserState() !=
+		FlowEntryUserState.FE_USER_DELETE) {
+		continue;
 	    }
 
-	    log.debug("Pushing Flow Entry To Datagrid: {}", flowEntry.toString());
+	    //
+	    // NOTE: The deletion of Flow Entries for my switches is handled
+	    // elsewhere.
+	    //
+	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+	    if (mySwitch != null)
+		continue;
+
+	    log.debug("Pushing cleanup of Flow Entry To Datagrid: {}", flowEntry.toString());
+
 	    //
 	    // Write the Flow Entry to the Datagrid
 	    //
-	    switch (flowEntry.flowEntryUserState()) {
-	    case FE_USER_ADD:
-		if (mySwitch == null)
-		    break;	// Install only flow entries for my switches
-		datagridService.notificationSendFlowEntryAdded(flowEntry);
-		break;
-	    case FE_USER_MODIFY:
-		if (mySwitch == null)
-		    break;	// Install only flow entries for my switches
-		datagridService.notificationSendFlowEntryUpdated(flowEntry);
-		break;
-	    case FE_USER_DELETE:
-		datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
-		break;
-	    }
+	    datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
 	}
     }
 

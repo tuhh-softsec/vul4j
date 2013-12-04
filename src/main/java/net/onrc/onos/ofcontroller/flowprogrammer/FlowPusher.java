@@ -27,6 +27,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction.*;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -51,6 +52,7 @@ import net.onrc.onos.ofcontroller.util.Port;
  */
 public class FlowPusher implements IFlowPusherService, IOFMessageListener {
     private final static Logger log = LoggerFactory.getLogger(FlowPusher.class);
+    protected volatile IFlowService flowManager;
 
     // NOTE: Below are moved from FlowManager.
     // TODO: Values copied from elsewhere (class LearningSwitch).
@@ -267,6 +269,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		this.threadPool = modContext.getServiceImpl(IThreadPoolService.class);
 		IFloodlightProviderService flservice = modContext.getServiceImpl(IFloodlightProviderService.class);
 		flservice.addOFMessageListener(OFType.BARRIER_REPLY, this);
+		flowManager = modContext.getServiceImpl(IFlowService.class);
 		
 		if (damper != null) {
 			messageDamper = damper;
@@ -709,17 +712,19 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 				+ matchSrcMac + " dstMac: " + matchDstMac + " inPort: "
 				+ matchInPort + " outPort: " + actionOutputPort);
 		
+		if (add(sw, fm) != true)
+		    return false;
+
 		//
 		// TODO: We should use the OpenFlow Barrier mechanism
 		// to check for errors, and update the SwitchState
 		// for a flow entry after the Barrier message is
 		// is received.
+		// Only after inform the Flow Manager that the entry is pushed.
 		//
-		// TODO: The FlowEntry Object in Titan should be set
-		// to FE_SWITCH_UPDATED.
-		//
-		
-		return add(sw,fm);
+		flowManager.flowEntryPushedToSwitch(sw, flowEntry);
+
+		return true;
 	}
 	
 	@Override
