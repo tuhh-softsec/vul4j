@@ -6,10 +6,7 @@ import org.openflow.protocol.OFMessage;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.internal.OFMessageFuture;
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
-import net.onrc.onos.ofcontroller.util.FlowPath;
 
 /**
  * FlowPusherService is a service to send message to switches in proper rate.
@@ -59,20 +56,10 @@ public interface IFlowPusherService extends IFloodlightService {
 	/**
 	 * Create a message from FlowEntry and add it to the queue of the switch.
 	 * @param sw Switch to which message is pushed.
-	 * @param flowPath FlowPath object used for creating message.
 	 * @param flowEntry FlowEntry object used for creating message.
 	 * @return true if message is successfully added to a queue.
 	 */
-	boolean add(IOFSwitch sw, FlowPath flowPath, FlowEntry flowEntry);
-
-	/**
-	 * Create a message from IFlowEntry and add it to the queue of the switch.
-	 * @param sw Switch to which message is pushed.
-	 * @param flowObj IFlowPath object used for creating message.
-	 * @param flowEntryObj IFlowEntry object used for creating message.
-	 * @return true if message is successfully added to a queue.
-	 */
-	boolean add(IOFSwitch sw, IFlowPath flowObj, IFlowEntry flowEntryObj);
+	boolean add(IOFSwitch sw, FlowEntry flowEntry);
 
 	/**
 	 * Set sending rate to a switch.
