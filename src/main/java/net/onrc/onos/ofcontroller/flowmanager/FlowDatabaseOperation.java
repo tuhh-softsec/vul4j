@@ -31,14 +31,12 @@ public class FlowDatabaseOperation {
     /**
      * Add a flow.
      *
-     * @param flowManager the Flow Manager to use.
      * @param dbHandler the Graph Database handler to use.
      * @param flowPath the Flow Path to install.
      * @param flowId the return-by-reference Flow ID as assigned internally.
      * @return true on success, otherwise false.
      */
-    static boolean addFlow(FlowManager flowManager,
-			   GraphDBOperation dbHandler,
+    static boolean addFlow(GraphDBOperation dbHandler,
 			   FlowPath flowPath, FlowId flowId) {
 	IFlowPath flowObj = null;
 	boolean found = false;
@@ -173,7 +171,7 @@ public class FlowDatabaseOperation {
 	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
 		continue;	// Skip: all Flow Entries were deleted earlier
 
-	    if (addFlowEntry(flowManager, dbHandler, flowObj, flowEntry) == null) {
+	    if (addFlowEntry(dbHandler, flowObj, flowEntry) == null) {
 		dbHandler.rollback();
 		return false;
 	    }
@@ -191,14 +189,12 @@ public class FlowDatabaseOperation {
     /**
      * Add a flow entry to the Network MAP.
      *
-     * @param flowManager the Flow Manager to use.
      * @param dbHandler the Graph Database handler to use.
      * @param flowObj the corresponding Flow Path object for the Flow Entry.
      * @param flowEntry the Flow Entry to install.
      * @return the added Flow Entry object on success, otherwise null.
      */
-    static IFlowEntry addFlowEntry(FlowManager flowManager,
-				   GraphDBOperation dbHandler,
+    static IFlowEntry addFlowEntry(GraphDBOperation dbHandler,
 				   IFlowPath flowObj,
 				   FlowEntry flowEntry) {
 	// Flow edges

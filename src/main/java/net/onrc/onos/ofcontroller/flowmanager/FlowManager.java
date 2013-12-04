@@ -228,7 +228,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
 	}
 
-	if (FlowDatabaseOperation.addFlow(this, dbHandlerApi, flowPath, flowId)) {
+	if (FlowDatabaseOperation.addFlow(dbHandlerApi, flowPath, flowId)) {
 	    datagridService.notificationSendFlowAdded(flowPath);
 	    return true;
 	}
@@ -243,8 +243,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the added Flow Entry object on success, otherwise null.
      */
     private IFlowEntry addFlowEntry(IFlowPath flowObj, FlowEntry flowEntry) {
-	return FlowDatabaseOperation.addFlowEntry(this, dbHandlerInner,
-						  flowObj, flowEntry);
+	return FlowDatabaseOperation.addFlowEntry(dbHandlerInner, flowObj,
+						  flowEntry);
     }
 
     /**
@@ -616,8 +616,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    // Write the Flow Path to the Network Map
 	    //
 	    try {
-		if (! FlowDatabaseOperation.addFlow(this, dbHandlerInner,
-						    flowPath, dummyFlowId)) {
+		if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath,
+						    dummyFlowId)) {
 		    String logMsg = "Cannot write to Network Map Flow Path " +
 			flowPath.flowId();
 		    log.error(logMsg);
