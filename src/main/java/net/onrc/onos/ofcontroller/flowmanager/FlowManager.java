@@ -620,6 +620,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	for (FlowPath flowPath : modifiedFlowPaths) {
 	    //
+	    // Don't push Flow Paths that are deleted by the user.
+	    // Those will be deleted at the ONOS instance that received the
+	    // API call to delete the flow.
+	    //
+	    if (flowPath.flowPathUserState() ==
+		FlowPathUserState.FP_USER_DELETE) {
+		continue;
+	    }
+
+	    //
 	    // Push the changes only on the instance responsible for the
 	    // first switch.
 	    //
