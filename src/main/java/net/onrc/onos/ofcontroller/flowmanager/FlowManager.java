@@ -581,16 +581,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	for (FlowPath flowPath : modifiedFlowPaths) {
 	    //
-	    // Don't push Flow Paths that are deleted by the user.
-	    // Those will be deleted at the ONOS instance that received the
-	    // API call to delete the flow.
-	    //
-	    if (flowPath.flowPathUserState() ==
-		FlowPathUserState.FP_USER_DELETE) {
-		continue;
-	    }
-
-	    //
 	    // Push the changes only on the instance responsible for the
 	    // first switch.
 	    //
@@ -598,6 +588,27 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    IOFSwitch mySrcSwitch = mySwitches.get(srcDpid.value());
 	    if (mySrcSwitch == null)
 		continue;
+
+	    //
+	    // Delete the Flow Path from the Network Map
+	    //
+	    if (flowPath.flowPathUserState() ==
+		FlowPathUserState.FP_USER_DELETE) {
+		log.debug("Deleting Flow Path From Database: {}",
+			  flowPath.toString());
+
+		try {
+		    if (! FlowDatabaseOperation.deleteFlow(
+					dbHandlerInner,
+					flowPath.flowId())) {
+			log.error("Cannot delete Flow Path {} from Network Map",
+				  flowPath.flowId());
+		    }
+		} catch (Exception e) {
+		    log.error("Exception deleting Flow Path from Network MAP: {}", e);
+		}
+		continue;
+	    }
 
 	    //
 	    // Test whether all Flow Entries are valid
