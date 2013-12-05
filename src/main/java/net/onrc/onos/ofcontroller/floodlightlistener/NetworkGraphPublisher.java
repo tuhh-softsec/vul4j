@@ -88,6 +88,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
         public void run() {
             try {
             	log.debug("Running cleanup thread");
+		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
                 switchCleanup();
             }
             catch (Exception e) {
