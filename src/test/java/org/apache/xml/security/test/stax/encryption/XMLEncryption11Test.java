@@ -529,7 +529,7 @@ public class XMLEncryption11Test extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions =
                 new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
 
         properties.setEncryptionTransportKey(encryptedKey);
         properties.setEncryptionKeyTransportAlgorithm(encryptedKeyAlgo);

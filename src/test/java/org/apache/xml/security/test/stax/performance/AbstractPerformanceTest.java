@@ -140,7 +140,7 @@ public abstract class AbstractPerformanceTest {
         XMLSecurityConstants.Action[] actions = new XMLSecurityConstants.Action[]{
                 XMLSecurityConstants.SIGNATURE
         };
-        xmlSecurityProperties.setOutAction(actions);
+        xmlSecurityProperties.setActions(actions);
         xmlSecurityProperties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
 
         xmlSecurityProperties.setSignatureKey(key);
@@ -172,7 +172,7 @@ public abstract class AbstractPerformanceTest {
         XMLSecurityConstants.Action[] actions = new XMLSecurityConstants.Action[]{
                 XMLSecurityConstants.ENCRYPT
         };
-        xmlSecurityProperties.setOutAction(actions);
+        xmlSecurityProperties.setActions(actions);
         xmlSecurityProperties.setEncryptionKey(encryptionSymKey);
         xmlSecurityProperties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes256-cbc");
 

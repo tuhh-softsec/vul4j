@@ -60,7 +60,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions =
                 new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
 
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");
@@ -109,7 +109,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions =
                 new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
 
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");
@@ -168,7 +168,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
             XMLSecurityProperties properties = new XMLSecurityProperties();
             XMLSecurityConstants.Action[] actions =
                     new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
-            properties.setOutAction(actions);
+            properties.setActions(actions);
 
             // Set the key up
             KeyStore keyStore = KeyStore.getInstance("jks");
@@ -216,7 +216,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions =
                 new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
 
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");

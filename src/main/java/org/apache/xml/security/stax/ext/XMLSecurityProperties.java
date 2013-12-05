@@ -40,7 +40,7 @@ public class XMLSecurityProperties {
     private boolean skipDocumentEvents = false;
     private boolean disableSchemaValidation = false;
 
-    private XMLSecurityConstants.Action[] outAction;
+    private XMLSecurityConstants.Action[] actions;
 
     private X509Certificate encryptionUseThisCertificate;
     private String encryptionSymAlgorithm;
@@ -73,7 +73,7 @@ public class XMLSecurityProperties {
         this.inputProcessorList.addAll(xmlSecurityProperties.inputProcessorList);
         this.skipDocumentEvents = xmlSecurityProperties.skipDocumentEvents;
         this.disableSchemaValidation = xmlSecurityProperties.disableSchemaValidation;
-        this.outAction = xmlSecurityProperties.outAction;
+        this.actions = xmlSecurityProperties.actions;
         this.encryptionUseThisCertificate = xmlSecurityProperties.encryptionUseThisCertificate;
         this.encryptionSymAlgorithm = xmlSecurityProperties.encryptionSymAlgorithm;
         this.encryptionKeyTransportAlgorithm = xmlSecurityProperties.encryptionKeyTransportAlgorithm;
@@ -294,17 +294,17 @@ public class XMLSecurityProperties {
      *
      * @return The Actions in applied order
      */
-    public XMLSecurityConstants.Action[] getOutAction() {
-        return outAction;
+    public XMLSecurityConstants.Action[] getActions() {
+        return actions;
     }
 
     /**
      * Specifies how to secure the document eg. Timestamp, Signature, Encrypt
      *
-     * @param outAction
+     * @param actions
      */
-    public void setOutAction(XMLSecurityConstants.Action[] outAction) {
-        this.outAction = outAction;
+    public void setActions(XMLSecurityConstants.Action[] actions) {
+        this.actions = actions;
     }
 
     public String getSignatureCanonicalizationAlgorithm() {

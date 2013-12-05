@@ -80,7 +80,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         SecretKey key = generateDESSecretKey();
@@ -136,7 +136,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions =
                 new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
 
         // Set the key up
         SecretKey key = generateDESSecretKey();
@@ -172,7 +172,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         SecretKey key = generateDESSecretKey();
@@ -228,7 +228,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         KeyGenerator keygen = KeyGenerator.getInstance("AES");
@@ -285,7 +285,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         SecretKey key = generateDESSecretKey();
@@ -337,7 +337,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
@@ -401,7 +401,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         // Generate an RSA key
@@ -468,7 +468,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         SecretKey transportKey = generateDESSecretKey();
@@ -530,7 +530,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         byte[] passPhrase = "24 Bytes per DESede key!".getBytes();
@@ -589,7 +589,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         byte[] bits128 = {
@@ -650,7 +650,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         byte[] bits192 = {
@@ -713,7 +713,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         byte[] bits256 = {
@@ -780,7 +780,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         byte[] passPhrase = "24 Bytes per DESede key!".getBytes();
@@ -840,7 +840,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
@@ -900,7 +900,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up
         byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
@@ -959,7 +959,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
-        properties.setOutAction(actions);
+        properties.setActions(actions);
         
         // Set the key up - only specify a transport key, so the session key gets generated
         byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();

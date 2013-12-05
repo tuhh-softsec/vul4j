@@ -100,12 +100,12 @@ public class XMLSec {
      *          if the configuration is invalid
      */
     public static XMLSecurityProperties validateAndApplyDefaultsToOutboundSecurityProperties(XMLSecurityProperties securityProperties) throws XMLSecurityConfigurationException {
-        if (securityProperties.getOutAction() == null) {
+        if (securityProperties.getActions() == null) {
             throw new XMLSecurityConfigurationException("stax.noOutputAction");
         }
 
-        for (int i = 0; i < securityProperties.getOutAction().length; i++) {
-            XMLSecurityConstants.Action action = securityProperties.getOutAction()[i];
+        for (int i = 0; i < securityProperties.getActions().length; i++) {
+            XMLSecurityConstants.Action action = securityProperties.getActions()[i];
             if (XMLSecurityConstants.SIGNATURE.equals(action)) {
                 if (securityProperties.getSignatureAlgorithm() == null) {
                     if (securityProperties.getSignatureKey() instanceof RSAPrivateKey) {
