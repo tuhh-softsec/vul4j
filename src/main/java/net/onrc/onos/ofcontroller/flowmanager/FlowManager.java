@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -402,30 +403,41 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Inform the Flow Manager that a Flow Entry has been pushed to a switch.
+     * Inform the Flow Manager that a collection of Flow Entries have been
+     * pushed to a switch.
      *
-     * @param sw the switch the Flow Entry has been pushed to.
-     * @param flowEntry the Flow Entry that has been pushed.
+     * @param entries the collection of <IOFSwitch, FlowEntry> pairs
+     * that have been pushed.
      */
-    public void flowEntryPushedToSwitch(IOFSwitch sw, FlowEntry flowEntry) {
-	//
-	// Mark the Flow Entry that it has been pushed to the switch
-	//
-	flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+    public void flowEntriesPushedToSwitch(
+		Collection<Pair<IOFSwitch, FlowEntry>> entries) {
 
 	//
-	// Write the Flow Entry to the Datagrid
+	// Process all entries
 	//
-	switch (flowEntry.flowEntryUserState()) {
-	case FE_USER_ADD:
-	    datagridService.notificationSendFlowEntryAdded(flowEntry);
-	    break;
-	case FE_USER_MODIFY:
-	    datagridService.notificationSendFlowEntryUpdated(flowEntry);
-	    break;
-	case FE_USER_DELETE:
-	    datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
-	    break;
+	for (Pair<IOFSwitch, FlowEntry> entry : entries) {
+	    IOFSwitch sw = entry.left;
+	    FlowEntry flowEntry = entry.right;
+
+	    //
+	    // Mark the Flow Entry that it has been pushed to the switch
+	    //
+	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+
+	    //
+	    // Write the Flow Entry to the Datagrid
+	    //
+	    switch (flowEntry.flowEntryUserState()) {
+	    case FE_USER_ADD:
+		datagridService.notificationSendFlowEntryAdded(flowEntry);
+		break;
+	    case FE_USER_MODIFY:
+		datagridService.notificationSendFlowEntryUpdated(flowEntry);
+		break;
+	    case FE_USER_DELETE:
+		datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+		break;
+	    }
 	}
     }
 
@@ -460,27 +472,24 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (modifiedFlowEntries.isEmpty())
 	    return;
 
+	List<Pair<IOFSwitch, FlowEntry>> entries =
+	    new LinkedList<Pair<IOFSwitch, FlowEntry>>();
+
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
+	//
+	// Create a collection of my Flow Entries to push
+	//
 	for (FlowEntry flowEntry : modifiedFlowEntries) {
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 	    if (mySwitch == null)
 		continue;
 
 	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry.toString());
-
-	    //
-	    // Push the Flow Entry into the switch
-	    //
-	    if (! pusher.add(mySwitch, flowEntry)) {
-		String logMsg = "Cannot install Flow Entry " +
-		    flowEntry.flowEntryId() +
-		    " from Flow Path " + flowEntry.flowId() +
-		    " on switch " + flowEntry.dpid();
-		log.error(logMsg);
-		continue;
-	    }
+	    entries.add(new Pair<IOFSwitch, FlowEntry>(mySwitch, flowEntry));
 	}
+
+	pusher.pushFlowEntries(entries);
     }
 
     /**

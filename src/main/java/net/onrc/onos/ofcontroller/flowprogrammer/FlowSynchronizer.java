@@ -246,7 +246,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 		return;
 	    }
 
-	    pusher.add(sw, flowEntry);
+	    pusher.pushFlowEntry(sw, flowEntry);
 	}
 	
 	/**
