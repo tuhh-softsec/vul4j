@@ -97,7 +97,10 @@ public class OrtRepository implements Repository
         }
         Ort ort = (Ort)object;
         try {
-            manager.create(ort);
+            manager.persist(ort);
+            int id = ort.getOrtId();
+            ort.setBezeichnung("D_ " + String.format("%05d", id));
+            manager.update(ort);
             return new Response(true, 200, ort);
         }
         catch(EntityExistsException eee) {
