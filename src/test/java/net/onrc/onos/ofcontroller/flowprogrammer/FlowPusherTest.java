@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -468,7 +469,7 @@ public class FlowPusherTest {
 		endInitMock();
 		initPusher(1);
 
-		pusher.add(sw, flowEntry1);
+		pusher.pushFlowEntry(sw, flowEntry1);
 		
 		try {
 			Thread.sleep(1000);
@@ -490,8 +491,7 @@ public class FlowPusherTest {
 		threadPoolService = EasyMock.createMock(IThreadPoolService.class);
 		flowService = EasyMock.createMock(IFlowService.class);
 		
-		flowService.flowEntryPushedToSwitch(EasyMock.anyObject(IOFSwitch.class),
-			EasyMock.anyObject(FlowEntry.class));
+		flowService.flowEntriesPushedToSwitch(EasyMock.anyObject(Collection.class));
 		EasyMock.expectLastCall().anyTimes();
 		
 		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IThreadPoolService.class)))
