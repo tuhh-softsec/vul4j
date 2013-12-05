@@ -148,7 +148,7 @@ public class LProbeRepository implements Repository{
         // Try to save the new LProbe.
         try {
             Map<String, Integer> warnings = validator.validate(probe, false);
-            manager.create(probe);
+            manager.persist(probe);
             response.setWarnings(warnings);
             return response;
         }
