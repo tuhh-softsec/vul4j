@@ -260,11 +260,11 @@ public class FlowDatabaseOperation {
 	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
 	flowEntryObj.setSwitch(sw);
 	if (flowEntry.flowEntryMatch().matchInPort()) {
-	    IPortObject inport =
-		dbHandler.searchPort(flowEntry.dpid().toString(),
-					flowEntry.flowEntryMatch().inPort().value());
+	    //IPortObject inport =
+		//dbHandler.searchPort(flowEntry.dpid().toString(),
+					//flowEntry.flowEntryMatch().inPort().value());
 	    flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
-	    flowEntryObj.setInPort(inport);
+	    //flowEntryObj.setInPort(inport);
 	}
 	if (flowEntry.flowEntryMatch().matchSrcMac()) {
 	    flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
@@ -302,11 +302,11 @@ public class FlowDatabaseOperation {
 
 	for (FlowEntryAction fa : flowEntry.flowEntryActions().actions()) {
 	    if (fa.actionOutput() != null) {
-		IPortObject outport =
-		    dbHandler.searchPort(flowEntry.dpid().toString(),
-					      fa.actionOutput().port().value());
+		//IPortObject outport =
+		    //dbHandler.searchPort(flowEntry.dpid().toString(),
+					      //fa.actionOutput().port().value());
 		flowEntryObj.setActionOutputPort(fa.actionOutput().port().value());
-		flowEntryObj.setOutPort(outport);
+		//flowEntryObj.setOutPort(outport);
 	    }
 	}
 	if (! flowEntry.flowEntryActions().isEmpty()) {
