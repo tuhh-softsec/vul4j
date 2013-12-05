@@ -48,10 +48,10 @@ public class FlowSynchronizerTest {
 		idRemoved = new ArrayList<Long>();
 		
 		pusher = EasyMock.createMock(FlowPusher.class);
-		EasyMock.expect(pusher.add(EasyMock.anyObject(IOFSwitch.class), EasyMock.anyObject(OFMessage.class)))
-			.andAnswer(new IAnswer<Boolean>() {
+		pusher.add(EasyMock.anyObject(IOFSwitch.class), EasyMock.anyObject(OFMessage.class));
+		EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
 				@Override
-				public Boolean answer() throws Throwable {
+				public Object answer() throws Throwable {
 					OFMessage msg = (OFMessage)EasyMock.getCurrentArguments()[1];
 					if (msg.getType().equals(OFType.FLOW_MOD)) {
 						OFFlowMod fm = (OFFlowMod)msg;
@@ -62,10 +62,10 @@ public class FlowSynchronizerTest {
 					return null;
 				}
 			}).anyTimes();
-		EasyMock.expect(pusher.pushFlowEntry(EasyMock.anyObject(IOFSwitch.class), EasyMock.anyObject(FlowEntry.class)))
-		.andAnswer(new IAnswer<Boolean>() {
+		pusher.pushFlowEntry(EasyMock.anyObject(IOFSwitch.class), EasyMock.anyObject(FlowEntry.class));
+		EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
 			@Override
-			public Boolean answer() throws Throwable {
+			public Object answer() throws Throwable {
 				FlowEntry flow = (FlowEntry)EasyMock.getCurrentArguments()[1];
 				idAdded.add(flow.flowEntryId().value());
 				return null;

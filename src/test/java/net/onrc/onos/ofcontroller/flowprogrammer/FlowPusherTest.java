@@ -482,6 +482,7 @@ public class FlowPusherTest {
 		pusher.stop();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void beginInitMock() {
 		context = EasyMock.createMock(FloodlightContext.class);
 		modContext = EasyMock.createMock(FloodlightModuleContext.class);
