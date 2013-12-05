@@ -485,6 +485,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    if (mySwitch == null)
 		continue;
 
+	    //
+	    // Assign Flow Entry IDs if missing.
+	    //
+	    // NOTE: This is an additional safeguard, in case the
+	    // mySwitches set has changed (after the Flow Entry IDs
+	    // assignments by the caller).
+	    //
+	    if (! flowEntry.isValidFlowEntryId()) {
+		long id = getNextFlowEntryId();
+		flowEntry.setFlowEntryId(new FlowEntryId(id));
+	    }
+
 	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry.toString());
 	    entries.add(new Pair<IOFSwitch, FlowEntry>(mySwitch, flowEntry));
 	}
