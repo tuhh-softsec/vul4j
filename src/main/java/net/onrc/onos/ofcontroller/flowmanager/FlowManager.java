@@ -416,8 +416,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Process all entries
 	//
 	for (Pair<IOFSwitch, FlowEntry> entry : entries) {
-	    IOFSwitch sw = entry.left;
-	    FlowEntry flowEntry = entry.right;
+	    IOFSwitch sw = entry.first;
+	    FlowEntry flowEntry = entry.second;
 
 	    //
 	    // Mark the Flow Entry that it has been pushed to the switch

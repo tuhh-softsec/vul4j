@@ -458,7 +458,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 			new LinkedList<Pair<IOFSwitch, FlowEntry>>();
 
 		for (Pair<IOFSwitch, FlowEntry> entry : entries) {
-			if (add(entry.left, entry.right)) {
+			if (add(entry.first, entry.second)) {
 				pushedEntries.add(entry);
 			}
 		}
