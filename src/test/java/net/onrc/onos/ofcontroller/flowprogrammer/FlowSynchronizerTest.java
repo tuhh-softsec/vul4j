@@ -62,7 +62,7 @@ public class FlowSynchronizerTest {
 					return null;
 				}
 			}).anyTimes();
-		EasyMock.expect(pusher.add(EasyMock.anyObject(IOFSwitch.class), EasyMock.anyObject(FlowEntry.class)))
+		EasyMock.expect(pusher.pushFlowEntry(EasyMock.anyObject(IOFSwitch.class), EasyMock.anyObject(FlowEntry.class)))
 		.andAnswer(new IAnswer<Boolean>() {
 			@Override
 			public Boolean answer() throws Throwable {
