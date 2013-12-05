@@ -468,7 +468,7 @@ public class FlowPusherTest {
 		endInitMock();
 		initPusher(1);
 
-		pusher.add(sw, flowEntry1);
+		pusher.pushFlowEntry(sw, flowEntry1);
 		
 		try {
 			Thread.sleep(1000);
