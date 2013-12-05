@@ -1,5 +1,7 @@
 package net.onrc.onos.ofcontroller.flowprogrammer;
 
+import java.util.Collection;
+
 import org.openflow.protocol.OFBarrierReply;
 import org.openflow.protocol.OFMessage;
 
@@ -7,6 +9,7 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.internal.OFMessageFuture;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.Pair;
 
 /**
  * FlowPusherService is a service to send message to switches in proper rate.
@@ -47,6 +50,9 @@ public interface IFlowPusherService extends IFloodlightService {
 	
 	/**
 	 * Add a message to the queue of the switch.
+	 *
+	 * Note: Notification is NOT delivered for the pushed message.
+	 *
 	 * @param sw Switch to which message is pushed.
 	 * @param msg Message object to be added.
 	 * @return true if message is successfully added to a queue.
@@ -54,12 +60,28 @@ public interface IFlowPusherService extends IFloodlightService {
 	boolean add(IOFSwitch sw, OFMessage msg);
 
 	/**
-	 * Create a message from FlowEntry and add it to the queue of the switch.
+	 * Push a collection of Flow Entries to the corresponding switches.
+	 *
+	 * Note: Notification is delivered for the Flow Entries that
+	 * are pushed successfully.
+	 *
+	 * @param entries the collection of <IOFSwitch, FlowEntry> pairs
+	 * to push.
+	 */
+	void pushFlowEntries(Collection<Pair<IOFSwitch, FlowEntry>> entries);
+
+	/**
+	 * Create a message from FlowEntry and add it to the queue of the
+	 * switch.
+	 *
+	 * Note: Notification is delivered for the Flow Entries that
+	 * are pushed successfully.
+	 *
 	 * @param sw Switch to which message is pushed.
 	 * @param flowEntry FlowEntry object used for creating message.
 	 * @return true if message is successfully added to a queue.
 	 */
-	boolean add(IOFSwitch sw, FlowEntry flowEntry);
+	void pushFlowEntry(IOFSwitch sw, FlowEntry flowEntry);
 
 	/**
 	 * Set sending rate to a switch.

@@ -3,9 +3,11 @@ package net.onrc.onos.ofcontroller.flowprogrammer;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +38,7 @@ import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
 import net.onrc.onos.ofcontroller.util.IPv4Net;
+import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.Port;
 
 /**
@@ -446,9 +449,46 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		return true;
 	}
-	
+
 	@Override
-	public boolean add(IOFSwitch sw, FlowEntry flowEntry) {
+	public void pushFlowEntries(
+		Collection<Pair<IOFSwitch, FlowEntry>> entries) {
+
+		List<Pair<IOFSwitch, FlowEntry>> pushedEntries =
+			new LinkedList<Pair<IOFSwitch, FlowEntry>>();
+
+		for (Pair<IOFSwitch, FlowEntry> entry : entries) {
+			if (add(entry.first, entry.second)) {
+				pushedEntries.add(entry);
+			}
+		}
+
+		//
+		// TODO: We should use the OpenFlow Barrier mechanism
+		// to check for errors, and update the SwitchState
+		// for a flow entry after the Barrier message is
+		// is received.
+		// Only after inform the Flow Manager that the entry is pushed.
+		//
+		flowManager.flowEntriesPushedToSwitch(pushedEntries);
+	}
+
+	@Override
+	public void pushFlowEntry(IOFSwitch sw, FlowEntry flowEntry) {
+	    Collection<Pair<IOFSwitch, FlowEntry>> entries = 
+		new LinkedList<Pair<IOFSwitch, FlowEntry>>();
+
+	    entries.add(new Pair<IOFSwitch, FlowEntry>(sw, flowEntry));
+	    pushFlowEntries(entries);
+	}
+
+	/**
+	 * Create a message from FlowEntry and add it to the queue of the switch.
+	 * @param sw Switch to which message is pushed.
+	 * @param flowEntry FlowEntry object used for creating message.
+	 * @return true if message is successfully added to a queue.
+	 */
+	private boolean add(IOFSwitch sw, FlowEntry flowEntry) {
 		//
 		// Create the OpenFlow Flow Modification Entry to push
 		//
@@ -712,19 +752,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 				+ matchSrcMac + " dstMac: " + matchDstMac + " inPort: "
 				+ matchInPort + " outPort: " + actionOutputPort);
 		
-		if (add(sw, fm) != true)
-		    return false;
-
-		//
-		// TODO: We should use the OpenFlow Barrier mechanism
-		// to check for errors, and update the SwitchState
-		// for a flow entry after the Barrier message is
-		// is received.
-		// Only after inform the Flow Manager that the entry is pushed.
-		//
-		flowManager.flowEntryPushedToSwitch(sw, flowEntry);
-
-		return true;
+		return add(sw, fm);
 	}
 	
 	@Override

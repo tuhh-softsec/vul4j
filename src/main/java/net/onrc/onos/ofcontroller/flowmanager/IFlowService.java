@@ -1,6 +1,7 @@
 package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.IFloodlightService;
@@ -11,6 +12,7 @@ import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.Pair;
 
 /**
  * Interface for providing Flow Service to other modules.
@@ -125,10 +127,12 @@ public interface IFlowService extends IFloodlightService {
     public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId);
 
     /**
-     * Inform the Flow Manager that a Flow Entry has been pushed to a switch.
+     * Inform the Flow Manager that a collection of Flow Entries have been
+     * pushed to a switch.
      *
-     * @param sw the switch the Flow Entry has been pushed to.
-     * @param flowEntry the Flow Entry that has been pushed.
+     * @param entries the collection of <IOFSwitch, FlowEntry> pairs
+     * that have been pushed.
      */
-    void flowEntryPushedToSwitch(IOFSwitch sw, FlowEntry flowEntry);
+    public void flowEntriesPushedToSwitch(
+			Collection<Pair<IOFSwitch, FlowEntry>> entries);
 }
