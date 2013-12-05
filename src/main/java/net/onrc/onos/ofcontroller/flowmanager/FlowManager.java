@@ -237,30 +237,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Add a flow entry to the Network MAP.
-     *
-     * @param flowObj the corresponding Flow Path object for the Flow Entry.
-     * @param flowEntry the Flow Entry to install.
-     * @return the added Flow Entry object on success, otherwise null.
-     */
-    private IFlowEntry addFlowEntry(IFlowPath flowObj, FlowEntry flowEntry) {
-	return FlowDatabaseOperation.addFlowEntry(dbHandlerInner, flowObj,
-						  flowEntry);
-    }
-
-    /**
-     * Delete a flow entry from the Network MAP.
-     *
-     * @param flowObj the corresponding Flow Path object for the Flow Entry.
-     * @param flowEntry the Flow Entry to delete.
-     * @return true on success, otherwise false.
-     */
-    private boolean deleteFlowEntry(IFlowPath flowObj, FlowEntry flowEntry) {
-	return FlowDatabaseOperation.deleteFlowEntry(dbHandlerInner,
-						     flowObj, flowEntry);
-    }
-
-    /**
      * Delete all previously added flows.
      *
      * @return true on success, otherwise false.
