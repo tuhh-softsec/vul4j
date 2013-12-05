@@ -1,7 +1,6 @@
 package net.onrc.onos.ofcontroller.flowprogrammer;
 
 import static org.junit.Assert.*;
-import static org.powermock.api.easymock.PowerMock.createMock;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,29 +16,19 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.OFMessageDamper;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
-import net.onrc.onos.ofcontroller.util.CallerId;
-import net.onrc.onos.ofcontroller.util.DataPath;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction;
 import net.onrc.onos.ofcontroller.util.FlowEntryActions;
 import net.onrc.onos.ofcontroller.util.FlowEntryErrorState;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
 import net.onrc.onos.ofcontroller.util.FlowId;
-import net.onrc.onos.ofcontroller.util.FlowPath;
-import net.onrc.onos.ofcontroller.util.FlowPathFlags;
-import net.onrc.onos.ofcontroller.util.FlowPathType;
-import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.Port;
-import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openflow.protocol.OFBarrierRequest;
 import org.openflow.protocol.OFFlowMod;
@@ -55,8 +44,9 @@ public class FlowPusherTest {
 	private FloodlightModuleContext modContext;
 	private BasicFactory factory;
 	private OFMessageDamper damper;
-	private IFloodlightProviderService flservice;
-	private IThreadPoolService tpservice;
+	private IFloodlightProviderService flProviderService;
+	private IThreadPoolService threadPoolService;
+	private IFlowService flowService;
 
 	/**
 	 * Test single OFMessage is correctly sent to single switch via MessageDamper.
@@ -77,7 +67,8 @@ public class FlowPusherTest {
 		EasyMock.replay(sw);
 		
 		try {
-			EasyMock.expect(damper.write(EasyMock.eq(sw), EasyMock.eq(msg), EasyMock.eq(context))).andReturn(true).once();
+			EasyMock.expect(damper.write(EasyMock.eq(sw), EasyMock.eq(msg), EasyMock.eq(context)))
+				.andReturn(true).once();
 		} catch (IOException e1) {
 			fail("Failed in OFMessageDamper#write()");
 		}
@@ -451,7 +442,7 @@ public class FlowPusherTest {
 		EasyMock.expect(executor.schedule((Runnable)EasyMock.anyObject(), EasyMock.anyLong(),
 				(TimeUnit)EasyMock.anyObject())).andReturn(null).once();
 		EasyMock.replay(executor);
-		EasyMock.expect(tpservice.getScheduledExecutor()).andReturn(executor);
+		EasyMock.expect(threadPoolService.getScheduledExecutor()).andReturn(executor);
 
 		IOFSwitch sw = EasyMock.createMock(IOFSwitch.class);
 		EasyMock.expect(sw.getId()).andReturn((long)1).anyTimes();
@@ -495,21 +486,29 @@ public class FlowPusherTest {
 		modContext = EasyMock.createMock(FloodlightModuleContext.class);
 		factory = EasyMock.createMock(BasicFactory.class);
 		damper = EasyMock.createMock(OFMessageDamper.class);
-		flservice = EasyMock.createMock(IFloodlightProviderService.class);
-		tpservice = EasyMock.createMock(IThreadPoolService.class);
+		flProviderService = EasyMock.createMock(IFloodlightProviderService.class);
+		threadPoolService = EasyMock.createMock(IThreadPoolService.class);
+		flowService = EasyMock.createMock(IFlowService.class);
+		
+		flowService.flowEntryPushedToSwitch(EasyMock.anyObject(IOFSwitch.class),
+			EasyMock.anyObject(FlowEntry.class));
+		EasyMock.expectLastCall().anyTimes();
 		
 		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IThreadPoolService.class)))
-			.andReturn(tpservice).once();
+			.andReturn(threadPoolService).once();
 		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IFloodlightProviderService.class)))
-			.andReturn(flservice).once();
-		flservice.addOFMessageListener(EasyMock.eq(OFType.BARRIER_REPLY),
+			.andReturn(flProviderService).once();
+		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IFlowService.class)))
+			.andReturn(flowService).once();
+		flProviderService.addOFMessageListener(EasyMock.eq(OFType.BARRIER_REPLY),
 				(FlowPusher) EasyMock.anyObject());
 		EasyMock.expectLastCall().once();
 	}
 	
 	private void endInitMock() {
-		EasyMock.replay(tpservice);
-		EasyMock.replay(flservice);
+		EasyMock.replay(flowService);
+		EasyMock.replay(threadPoolService);
+		EasyMock.replay(flProviderService);
 		EasyMock.replay(damper);
 		EasyMock.replay(factory);
 		EasyMock.replay(modContext);
@@ -536,27 +535,9 @@ public class FlowPusherTest {
 		EasyMock.expect(executor.schedule((Runnable)EasyMock.anyObject(), EasyMock.anyLong(),
 				(TimeUnit)EasyMock.anyObject())).andReturn(null).once();
 		EasyMock.replay(executor);
-		EasyMock.expect(tpservice.getScheduledExecutor()).andReturn(executor);
+		EasyMock.expect(threadPoolService.getScheduledExecutor()).andReturn(executor);
 
 		EasyMock.expect(sw.getNextTransactionId()).andReturn(1);
-	}
-	
-	// Copied from FlowManagerTest
-	private IFlowPath createIFlowPathMock(long flowId, String installerID,
-			String flowPathType, String flowPathUserState,
-			long flowPathFlags, long srcDpid, int srcPort,
-			long dstDpid, int dstPort) {
-		IFlowPath iFlowPath = EasyMock.createNiceMock(IFlowPath.class);
-		EasyMock.expect(iFlowPath.getFlowId()).andReturn(new FlowId(flowId).toString()).anyTimes();
-		EasyMock.expect(iFlowPath.getInstallerId()).andReturn(installerID).anyTimes();
-		EasyMock.expect(iFlowPath.getFlowPathType()).andReturn(flowPathType).anyTimes();
-		EasyMock.expect(iFlowPath.getFlowPathUserState()).andReturn(flowPathUserState).anyTimes();
-		EasyMock.expect(iFlowPath.getFlowPathFlags()).andReturn(new Long(flowPathFlags)).anyTimes();
-		EasyMock.expect(iFlowPath.getSrcSwitch()).andReturn(new Dpid(srcDpid).toString()).anyTimes();
-		EasyMock.expect(iFlowPath.getSrcPort()).andReturn(new Short((short)srcPort)).anyTimes();
-		EasyMock.expect(iFlowPath.getDstSwitch()).andReturn(new Dpid(dstDpid).toString()).anyTimes();
-		EasyMock.expect(iFlowPath.getDstPort()).andReturn(new Short((short)dstPort)).anyTimes();
-		return iFlowPath;
 	}
 	
 }
