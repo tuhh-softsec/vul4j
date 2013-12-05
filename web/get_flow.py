@@ -250,48 +250,6 @@ def get_flow_path(flow_id):
   print_flow_path(parsedResult)
 
 
-def get_installer_flow_paths(installer_id, v1, p1, v2, p2):
-  try:
-    command = "curl -s \"http://%s:%s/wm/flow/getall-by-installer-id/%s/%s/%s/%s/%s/json\"" % (ControllerIP, ControllerPort, installer_id, v1, p1, v2, p2)
-    debug("get_installer_flow_paths %s" % command)
-
-    result = os.popen(command).read()
-    debug("result %s" % result)
-    if len(result) == 0:
-	print "No Flows found"
-	return;
-
-    parsedResult = json.loads(result)
-    debug("parsed %s" % parsedResult)
-  except:
-    log_error("Controller IF has issue")
-    exit(1)
-
-  for flowPath in parsedResult:
-    print_flow_path(flowPath)
-
-
-def get_endpoints_flow_paths(v1, p1, v2, p2):
-  try:
-    command = "curl -s \"http://%s:%s/wm/flow/getall-by-endpoints/%s/%s/%s/%s/json\"" % (ControllerIP, ControllerPort, v1, p1, v2, p2)
-    debug("get_endpoints_flow_paths %s" % command)
-
-    result = os.popen(command).read()
-    debug("result %s" % result)
-    if len(result) == 0:
-	print "No Flows found"
-	return;
-
-    parsedResult = json.loads(result)
-    debug("parsed %s" % parsedResult)
-  except:
-    log_error("Controller IF has issue")
-    exit(1)
-
-  for flowPath in parsedResult:
-    print_flow_path(flowPath)
-
-
 def get_all_flow_paths():
   try:
     command = "curl -s \"http://%s:%s/wm/flow/getall/json\"" % (ControllerIP, ControllerPort)
@@ -316,9 +274,7 @@ if __name__ == "__main__":
   usage_msg1 = "Usage:\n"
   usage_msg2 = "%s <flow_id> : Print flow with Flow ID of <flow_id>\n" % (sys.argv[0])
   usage_msg3 = "                   all    : Print all flows\n"
-  usage_msg4 = "                   installer <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port>\n"
-  usage_msg5 = "                   endpoints <src-dpid> <src-port> <dest-dpid> <dest-port>"
-  usage_msg = usage_msg1 + usage_msg2 + usage_msg3 + usage_msg4 + usage_msg5;
+  usage_msg = usage_msg1 + usage_msg2 + usage_msg3;
 
   # app.debug = False;
 
@@ -335,17 +291,5 @@ if __name__ == "__main__":
   # Do the work
   if sys.argv[1] == "all":
     get_all_flow_paths()
-  elif sys.argv[1] == "installer":
-    if len(sys.argv) < 7:
-      log_error(usage_msg)
-      exit(1)
-    get_installer_flow_paths(sys.argv[2], sys.argv[3], sys.argv[4],
-			     sys.argv[5], sys.argv[6])
-  elif sys.argv[1] == "endpoints":
-    if len(sys.argv) < 6:
-      log_error(usage_msg)
-      exit(1)
-    get_endpoints_flow_paths(sys.argv[2], sys.argv[3], sys.argv[4],
-			     sys.argv[5])
   else:
     get_flow_path(sys.argv[1])
