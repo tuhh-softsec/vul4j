@@ -38,9 +38,22 @@ implements Manager
         EJBTransactionRolledbackException,
         TransactionRequiredException {
         em.merge(object);
-        //em.persist(object);
     }
 
+    /**
+     * Persist a database object.
+     *
+     * @param object    The new object.
+     */
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void persist(Object object)
+    throws EntityExistsException,
+        IllegalArgumentException,
+        EJBTransactionRolledbackException,
+        TransactionRequiredException {
+        em.persist(object);
+    }
     /**
      * Update a database object.
      *

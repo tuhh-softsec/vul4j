@@ -31,4 +31,8 @@ public interface Manager
     public void delete(Object object)
     throws IllegalArgumentException,
         TransactionRequiredException;
+
+	void persist(Object object) throws EntityExistsException,
+			IllegalArgumentException, EJBTransactionRolledbackException,
+			TransactionRequiredException;
 }
