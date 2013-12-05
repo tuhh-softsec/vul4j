@@ -35,27 +35,27 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	@Override
 	public Iterable<ISwitchObject> getActiveSwitches() {
 		// TODO Auto-generated method stub
-		op.close(); //Commit to ensure we see latest data
+		//op.close(); //Commit to ensure we see latest data
 		return op.getActiveSwitches();
 	}
 
 	@Override
 	public Iterable<ISwitchObject> getAllSwitches() {
 		// TODO Auto-generated method stub
-		op.close(); //Commit to ensure we see latest data
+		//op.close(); //Commit to ensure we see latest data
 		return op.getAllSwitches();
 	}
 
 	@Override
 	public Iterable<ISwitchObject> getInactiveSwitches() {
 		// TODO Auto-generated method stub
-		op.close(); //Commit to ensure we see latest data
+		//op.close(); //Commit to ensure we see latest data
 		return op.getInactiveSwitches();
 	}
 
 	@Override
 	public Iterable<IPortObject> getPortsOnSwitch(String dpid) {
-		op.close(); //Commit to ensure we see latest data
+		//op.close(); //Commit to ensure we see latest data
 		ISwitchObject switchObject = op.searchSwitch(dpid);
 		if (switchObject != null) {
 			return switchObject.getPorts();

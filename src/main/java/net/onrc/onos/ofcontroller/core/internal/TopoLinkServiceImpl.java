@@ -35,7 +35,7 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 		// TODO Auto-generated method stub
 		dbop = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 		//dbop = GraphDBManager.getDBOperation("", "");
-		dbop.commit(); //Commit to ensure we see latest data
+		//dbop.commit(); //Commit to ensure we see latest data
 		Iterable<ISwitchObject> switches = dbop.getActiveSwitches();
 		List<Link> links = new ArrayList<Link>(); 
 		for (ISwitchObject sw : switches) {
