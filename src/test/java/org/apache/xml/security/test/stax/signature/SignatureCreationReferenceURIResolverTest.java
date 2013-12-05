@@ -27,6 +27,8 @@ import java.net.Proxy;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -58,8 +60,8 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
     public void testSignatureCreationWithExternalFilesystemXMLReference() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up
@@ -107,8 +109,8 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
     public void testSignatureCreationWithExternalFilesystemBinaryReference() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up
@@ -166,8 +168,8 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
 
             // Set up the Configuration
             XMLSecurityProperties properties = new XMLSecurityProperties();
-            XMLSecurityConstants.Action[] actions =
-                    new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+            List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+            actions.add(XMLSecurityConstants.SIGNATURE);
             properties.setActions(actions);
 
             // Set the key up
@@ -214,8 +216,8 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
     public void testSignatureCreationWithSameDocumentXPointerIdApostropheReference() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up

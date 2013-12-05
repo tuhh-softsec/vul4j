@@ -38,10 +38,13 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+
 import java.io.*;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author $Author: $
@@ -137,9 +140,8 @@ public abstract class AbstractPerformanceTest {
 
     protected void setUpOutboundSignatureXMLSec() throws XMLSecurityException {
         XMLSecurityProperties xmlSecurityProperties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = new XMLSecurityConstants.Action[]{
-                XMLSecurityConstants.SIGNATURE
-        };
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         xmlSecurityProperties.setActions(actions);
         xmlSecurityProperties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
 
@@ -169,9 +171,8 @@ public abstract class AbstractPerformanceTest {
 
     protected void setUpOutboundEncryptionXMLSec() throws XMLSecurityException {
         XMLSecurityProperties xmlSecurityProperties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = new XMLSecurityConstants.Action[]{
-                XMLSecurityConstants.ENCRYPT
-        };
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         xmlSecurityProperties.setActions(actions);
         xmlSecurityProperties.setEncryptionKey(encryptionSymKey);
         xmlSecurityProperties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes256-cbc");

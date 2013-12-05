@@ -29,7 +29,9 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.BadPaddingException;
@@ -527,8 +529,8 @@ public class XMLEncryption11Test extends org.junit.Assert {
 
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
 
         properties.setEncryptionTransportKey(encryptedKey);

@@ -86,8 +86,7 @@ public class OutboundXMLSec {
 
         OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(outboundSecurityContext, documentContext);
 
-        for (int i = 0; i < securityProperties.getActions().length; i++) {
-            XMLSecurityConstants.Action action = securityProperties.getActions()[i];
+        for (XMLSecurityConstants.Action action : securityProperties.getActions()) {
             if (XMLSecurityConstants.SIGNATURE.equals(action)) {
                 XMLSignatureOutputProcessor signatureOutputProcessor = new XMLSignatureOutputProcessor();
                 initializeOutputProcessor(outputProcessorChain, signatureOutputProcessor, action);

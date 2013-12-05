@@ -40,7 +40,7 @@ public class XMLSecurityProperties {
     private boolean skipDocumentEvents = false;
     private boolean disableSchemaValidation = false;
 
-    private XMLSecurityConstants.Action[] actions;
+    private List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
 
     private X509Certificate encryptionUseThisCertificate;
     private String encryptionSymAlgorithm;
@@ -294,7 +294,7 @@ public class XMLSecurityProperties {
      *
      * @return The Actions in applied order
      */
-    public XMLSecurityConstants.Action[] getActions() {
+    public List<XMLSecurityConstants.Action> getActions() {
         return actions;
     }
 
@@ -303,7 +303,7 @@ public class XMLSecurityProperties {
      *
      * @param actions
      */
-    public void setActions(XMLSecurityConstants.Action[] actions) {
+    public void setActions(List<XMLSecurityConstants.Action> actions) {
         this.actions = actions;
     }
 

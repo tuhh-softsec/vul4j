@@ -26,6 +26,8 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -78,8 +80,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testEncryptionContentCreation() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -134,8 +136,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testExceptionOnElementToEncryptNotFound() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
 
         // Set the key up
@@ -170,8 +172,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testEncryptionElementCreation() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -226,8 +228,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testStrongEncryption() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -283,8 +285,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testEncryptionMultipleElements() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -335,8 +337,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testAES128ElementAES192KWCipherUsingKEKOutbound() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -399,8 +401,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testAES256ElementRSAKWCipherUsingKEKOutbound() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -466,8 +468,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testAES192Element3DESKWCipher() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -528,8 +530,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testTripleDesElementCipher() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -587,8 +589,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testAes128ElementCipher() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -648,8 +650,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testAes192ElementCipher() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -711,8 +713,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testAes256ElementCipher() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -778,8 +780,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testTripleDesDocumentCipher() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -838,8 +840,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testPhysicalRepresentation1() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -898,8 +900,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testPhysicalRepresentation2() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up
@@ -957,8 +959,8 @@ public class EncryptionCreationTest extends org.junit.Assert {
     public void testTransportKey() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
         properties.setActions(actions);
         
         // Set the key up - only specify a transport key, so the session key gets generated

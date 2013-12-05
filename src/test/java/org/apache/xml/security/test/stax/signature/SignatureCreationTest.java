@@ -44,6 +44,8 @@ import java.security.Key;
 import java.security.KeyStore;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A set of test-cases for Signature creation.
@@ -54,8 +56,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testSignatureCreation() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         
         // Set the key up
@@ -108,8 +110,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testExceptionOnElementToSignNotFound() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up
@@ -150,8 +152,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testEnvelopedSignatureCreation() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up
@@ -212,8 +214,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testMultipleElements() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         
         // Set the key up
@@ -258,8 +260,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testHMACSignatureCreation() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         
         // Set the key up
@@ -297,8 +299,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testStrongSignatureCreation() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up
@@ -348,8 +350,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         
         // Set the key up
@@ -399,8 +401,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         
         KeyStore keyStore = KeyStore.getInstance("jks");
@@ -446,8 +448,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testDifferentC14nMethod() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         
         // Set the key up
@@ -491,8 +493,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testDifferentC14nMethodForReference() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up
@@ -557,8 +559,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testDifferentDigestMethodForReference() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up
@@ -623,8 +625,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testC14n11Method() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         
         // Set the key up
@@ -668,8 +670,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testExcC14nInclusivePrefixes() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up
@@ -719,8 +721,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testSignatureCreationKeyValue() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_KeyValue);
         
@@ -763,8 +765,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testSignatureCreationSKI() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_SkiKeyIdentifier);
         properties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
@@ -808,8 +810,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testSignatureCreationX509Certificate() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
         
@@ -852,8 +854,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testSignatureCreationX509SubjectName() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions = 
-            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
         properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509SubjectName);
         
@@ -896,8 +898,8 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     public void testSignatureCreationTransformBase64() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        XMLSecurityConstants.Action[] actions =
-                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
         properties.setActions(actions);
 
         // Set the key up

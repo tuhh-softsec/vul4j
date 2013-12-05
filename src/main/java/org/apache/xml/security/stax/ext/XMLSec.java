@@ -104,8 +104,7 @@ public class XMLSec {
             throw new XMLSecurityConfigurationException("stax.noOutputAction");
         }
 
-        for (int i = 0; i < securityProperties.getActions().length; i++) {
-            XMLSecurityConstants.Action action = securityProperties.getActions()[i];
+        for (XMLSecurityConstants.Action action : securityProperties.getActions()) {
             if (XMLSecurityConstants.SIGNATURE.equals(action)) {
                 if (securityProperties.getSignatureAlgorithm() == null) {
                     if (securityProperties.getSignatureKey() instanceof RSAPrivateKey) {
