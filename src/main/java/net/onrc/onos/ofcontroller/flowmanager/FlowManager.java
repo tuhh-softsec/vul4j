@@ -2,12 +2,12 @@ package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.SortedMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -303,20 +303,26 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId,
 						  int maxFlows) {
-    	ArrayList<FlowPath> flowPaths =
-	    FlowDatabaseOperation.getAllFlows(dbHandlerApi);
+    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+	SortedMap<Long, FlowPath> sortedFlowPaths =
+	    flowEventHandler.getAllFlowPathsCopy();
 
+	//
 	// Truncate each Flow Path and Flow Entry
-	for (FlowPath flowPath : flowPaths) {
+	//
+	for (FlowPath flowPath : sortedFlowPaths.values()) {
+	    //
+	    // TODO: Add only the Flow Paths that have been successfully
+	    // installed.
+	    //
 	    flowPath.setFlowEntryMatch(null);
 	    flowPath.setFlowEntryActions(null);
 	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
 		flowEntry.setFlowEntryMatch(null);
 		flowEntry.setFlowEntryActions(null);
 	    }
+	    flowPaths.add(flowPath);
 	}
-
-    	Collections.sort(flowPaths);
 
 	return flowPaths;
     }

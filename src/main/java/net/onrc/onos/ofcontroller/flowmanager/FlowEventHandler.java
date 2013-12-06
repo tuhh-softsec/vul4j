@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -27,6 +29,9 @@ import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
+import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
+
+import com.esotericsoftware.kryo2.Kryo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +50,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
     private Topology topology;			// The network topology
+    private KryoFactory kryoFactory = new KryoFactory();
 
     // The queue with Flow Path and Topology Element updates
     private BlockingQueue<EventEntry<?>> networkEvents =
@@ -129,7 +135,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	}
 
 	// Process the initial events (if any)
-	processEvents();
+	synchronized (allFlowPaths) {
+	    processEvents();
+	}
     }
 
     /**
@@ -183,7 +191,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		collection.clear();
 
 		// Process the events (if any)
-		processEvents();
+		synchronized (allFlowPaths) {
+		    processEvents();
+		}
 	    }
 	} catch (Exception exception) {
 	    log.debug("Exception processing Network Events: ", exception);
@@ -851,5 +861,32 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	EventEntry<TopologyElement> eventEntry =
 	    new EventEntry<TopologyElement>(EventEntry.Type.ENTRY_ADD, topologyElement);
 	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Get a sorted copy of all Flow Paths.
+     *
+     * @return a sorted copy of all Flow Paths.
+     */
+    synchronized SortedMap<Long, FlowPath> getAllFlowPathsCopy() {
+	SortedMap<Long, FlowPath> sortedFlowPaths =
+	    new TreeMap<Long, FlowPath>();
+
+	//
+	// TODO: For now we use serialization/deserialization to create
+	// a copy of each Flow Path. In the future, we should use proper
+	// copy constructors.
+	//
+	Kryo kryo = kryoFactory.newKryo();
+	synchronized (allFlowPaths) {
+	    for (Map.Entry<Long, FlowPath> entry : allFlowPaths.entrySet()) {
+		FlowPath origFlowPath = entry.getValue();
+		FlowPath copyFlowPath = kryo.copy(origFlowPath);
+		sortedFlowPaths.put(entry.getKey(), copyFlowPath);
+	    }
+	}
+	kryoFactory.deleteKryo(kryo);
+
+	return sortedFlowPaths;
     }
 }
