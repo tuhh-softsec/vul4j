@@ -244,10 +244,13 @@ public class NetworkGraphPublisher implements IDeviceListener,
 			    // Publish: add the ports
 			    // TODO: Add only ports that are UP?
 			    for (OFPhysicalPort port : sw.getPorts()) {
-				TopologyElement topologyElementPort =
-				    new TopologyElement(sw.getId(),
-							port.getPortNumber());
-				datagridService.notificationSendTopologyElementAdded(topologyElementPort);
+					TopologyElement topologyElementPort =
+					    new TopologyElement(sw.getId(), port.getPortNumber());
+					datagridService.notificationSendTopologyElementAdded(topologyElementPort);
+					
+					// Allow links to be discovered on this port now that it's
+					// in the database
+					linkDiscovery.RemoveFromSuppressLLDPs(sw.getId(), port.getPortNumber());
 			    }
 
 			    // Add all links that might be connected already
@@ -316,6 +319,10 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	@Override
 	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
 		if (swStore.addPort(HexString.toHexString(switchId), port)) {
+			// Allow links to be discovered on this port now that it's
+			// in the database
+			linkDiscovery.RemoveFromSuppressLLDPs(switchId, port.getPortNumber());
+			
 		    // TODO publish ADD_PORT event here
 		    TopologyElement topologyElement =
 			new TopologyElement(switchId, port.getPortNumber());
