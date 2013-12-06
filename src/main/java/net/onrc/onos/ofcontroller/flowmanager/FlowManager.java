@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -302,8 +303,22 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId,
 						  int maxFlows) {
-	return FlowDatabaseOperation.getAllFlowsSummary(dbHandlerApi, flowId,
-							maxFlows);
+    	ArrayList<FlowPath> flowPaths =
+	    FlowDatabaseOperation.getAllFlows(dbHandlerApi);
+
+	// Truncate each Flow Path and Flow Entry
+	for (FlowPath flowPath : flowPaths) {
+	    flowPath.setFlowEntryMatch(null);
+	    flowPath.setFlowEntryActions(null);
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		flowEntry.setFlowEntryMatch(null);
+		flowEntry.setFlowEntryActions(null);
+	    }
+	}
+
+    	Collections.sort(flowPaths);
+
+	return flowPaths;
     }
 
     /**

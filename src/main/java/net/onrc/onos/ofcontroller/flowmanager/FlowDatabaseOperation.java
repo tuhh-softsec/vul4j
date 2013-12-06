@@ -3,7 +3,6 @@ package net.onrc.onos.ofcontroller.flowmanager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -493,52 +492,6 @@ public class FlowDatabaseOperation {
 	dbHandler.commit();
 
 	return flowPaths;
-    }
-
-    /**
-     * Get summary of all installed flows by all installers in a given range.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param flowId the Flow ID of the first flow in the flow range to get.
-     * @param maxFlows the maximum number of flows to be returned.
-     * @return the Flow Paths if found, otherwise null.
-     */
-    static ArrayList<FlowPath> getAllFlowsSummary(GraphDBOperation dbHandler,
-						  FlowId flowId,
-						  int maxFlows) {
-	//
-	// TODO: The implementation below is not optimal:
-	// We fetch all flows, and then return only the subset that match
-	// the query conditions.
-	// We should use the appropriate Titan/Gremlin query to filter-out
-	// the flows as appropriate.
-	//
-    	ArrayList<FlowPath> flowPaths = getAllFlowsWithDataPathSummary(dbHandler);
-    	Collections.sort(flowPaths);
-    	return flowPaths;
-    }
-
-    /**
-     * Get all Flows information, with Data Path summary for the Flow Entries.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @return all Flows information, with Data Path summary for the Flow
-     * Entries.
-     */
-    static ArrayList<FlowPath> getAllFlowsWithDataPathSummary(GraphDBOperation dbHandler) {
-    	ArrayList<FlowPath> flowPaths = getAllFlows(dbHandler);
-
-	// Truncate each Flow Path and Flow Entry
-	for (FlowPath flowPath : flowPaths) {
-	    flowPath.setFlowEntryMatch(null);
-	    flowPath.setFlowEntryActions(null);
-	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
-		flowEntry.setFlowEntryMatch(null);
-		flowEntry.setFlowEntryActions(null);
-	    }
-	}
-
-    	return flowPaths;
     }
 
     /**
