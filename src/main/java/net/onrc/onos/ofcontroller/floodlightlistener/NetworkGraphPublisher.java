@@ -152,6 +152,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
     protected void switchCleanup() {
     	//op.close();
+	op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
     	Iterable<ISwitchObject> switches = op.getActiveSwitches();
     	
     	log.debug("Checking for inactive switches");
