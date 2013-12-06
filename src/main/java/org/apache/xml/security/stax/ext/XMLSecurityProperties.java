@@ -306,6 +306,13 @@ public class XMLSecurityProperties {
     public void setActions(List<XMLSecurityConstants.Action> actions) {
         this.actions = actions;
     }
+    
+    public void addAction(XMLSecurityConstants.Action action) {
+        if (actions == null) {
+            actions = new ArrayList<XMLSecurityConstants.Action>();
+        }
+        actions.add(action);
+    }
 
     public String getSignatureCanonicalizationAlgorithm() {
         return signatureCanonicalizationAlgorithm;
