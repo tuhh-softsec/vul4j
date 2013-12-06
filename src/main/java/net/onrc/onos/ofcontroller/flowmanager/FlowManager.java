@@ -217,7 +217,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public FlowId addFlow(FlowPath flowPath) {
 
 	// Allocate the Flow ID if necessary
-	if (! flowPath.flowId().isValid()) {
+	if (! flowPath.isValidFlowId()) {
 	    long id = getNextFlowEntryId();
 	    flowPath.setFlowId(new FlowId(id));
 	}

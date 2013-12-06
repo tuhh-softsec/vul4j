@@ -6,6 +6,7 @@ import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -207,6 +208,18 @@ public class FlowPath implements Comparable<FlowPath> {
     @JsonProperty("flowId")
     public void setFlowId(FlowId flowId) {
 	this.flowId = flowId;
+    }
+
+    /**
+     * Test whether the Flow ID is valid.
+     *
+     * @return true if the Flow ID is valid, otherwise false.
+     */
+    @JsonIgnore
+    public boolean isValidFlowId() {
+	if (this.flowId == null)
+	    return false;
+	return (this.flowId.isValid());
     }
 
     /**
