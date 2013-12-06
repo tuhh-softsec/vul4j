@@ -151,7 +151,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
     }
 
     protected void switchCleanup() {
-    	op.close();
+    	//op.close();
     	Iterable<ISwitchObject> switches = op.getActiveSwitches();
     	
     	log.debug("Checking for inactive switches");
