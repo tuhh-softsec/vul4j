@@ -202,6 +202,7 @@ public abstract class DBOperation implements IDBOperation {
 	public IFlowPath newFlowPath() {
 	    System.out.println("newFlowPath");
 	    IFlowPath flowPath = (IFlowPath)conn.getFramedGraph().addVertex(null, IFlowPath.class);
+	    System.out.println("flowPath : " + flowPath);
 	    if (flowPath != null) {
 		flowPath.setType("flow");
 	    }
