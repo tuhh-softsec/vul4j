@@ -232,7 +232,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
 	    List<Link> links = new ArrayList<Link>();
-
+	    this.dbop = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	    IPortObject srcPort = dbop.searchPort(HexString.toHexString(dpid), port);
 	    if (srcPort == null)
 		return links;
@@ -318,7 +318,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public List<Link> getLinks(String dpid) {
 		List<Link> links = new ArrayList<Link>();
-
+		this.dbop = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 		ISwitchObject srcSw = dbop.searchSwitch(dpid);
 		
 		if(srcSw != null) {
