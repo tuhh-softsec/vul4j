@@ -33,11 +33,9 @@ public class FlowDatabaseOperation {
      *
      * @param dbHandler the Graph Database handler to use.
      * @param flowPath the Flow Path to install.
-     * @param flowId the return-by-reference Flow ID as assigned internally.
      * @return true on success, otherwise false.
      */
-    static boolean addFlow(GraphDBOperation dbHandler,
-			   FlowPath flowPath, FlowId flowId) {
+    static boolean addFlow(GraphDBOperation dbHandler, FlowPath flowPath) {
 	IFlowPath flowObj = null;
 	boolean found = false;
 	try {
@@ -177,11 +175,6 @@ public class FlowDatabaseOperation {
 	    }
 	}
 	dbHandler.commit();
-
-	//
-	// TODO: We need a proper Flow ID allocation mechanism.
-	//
-	flowId.setValue(flowPath.flowId().value());
 
 	return true;
     }

@@ -151,9 +151,7 @@ public class Forwarding implements IOFMessageListener {
 		dataPath.setSrcPort(srcSwitchPort);
 		dataPath.setDstPort(dstSwitchPort);
 		
-		FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
 		FlowPath flowPath = new FlowPath();
-		flowPath.setFlowId(flowId);
 		flowPath.setInstallerId(new CallerId("Forwarding"));
 		flowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
 		flowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
@@ -165,7 +163,7 @@ public class Forwarding implements IOFMessageListener {
 		flowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
 		flowPath.setDataPath(dataPath);
 		
-		flowService.addFlow(flowPath, flowId);
+		FlowId flowId = flowService.addFlow(flowPath);
 	}
 	
 	private boolean flowExists(SwitchPort srcPort, MACAddress srcMac, 

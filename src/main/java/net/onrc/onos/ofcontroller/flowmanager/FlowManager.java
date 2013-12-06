@@ -211,11 +211,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * Add a flow.
      *
      * @param flowPath the Flow Path to install.
-     * @param flowId the return-by-reference Flow ID as assigned internally.
-     * @return true on success, otherwise false.
+     * @return the Flow ID on success, otherwise null.
      */
     @Override
-    public boolean addFlow(FlowPath flowPath, FlowId flowId) {
+    public FlowId addFlow(FlowPath flowPath) {
+
+	// Allocate the Flow ID if necessary
+	if (! flowPath.flowId().isValid()) {
+	    long id = getNextFlowEntryId();
+	    flowPath.setFlowId(new FlowId(id));
+	}
+
 	//
 	// NOTE: We need to explicitly initialize some of the state,
 	// in case the application didn't do it.
@@ -229,11 +235,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
 	}
 
-	if (FlowDatabaseOperation.addFlow(dbHandlerApi, flowPath, flowId)) {
+	if (FlowDatabaseOperation.addFlow(dbHandlerApi, flowPath)) {
 	    datagridService.notificationSendFlowAdded(flowPath);
-	    return true;
+	    return flowPath.flowId();
 	}
-	return false;
+	return null;
     }
 
     /**
@@ -298,29 +304,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 						  int maxFlows) {
 	return FlowDatabaseOperation.getAllFlowsSummary(dbHandlerApi, flowId,
 							maxFlows);
-    }
-    
-    /**
-     * Add and maintain a shortest-path flow.
-     *
-     * NOTE: The Flow Path argument does NOT contain flow entries.
-     *
-     * @param flowPath the Flow Path with the endpoints and the match
-     * conditions to install.
-     * @return the added shortest-path flow on success, otherwise null.
-     */
-    @Override
-    public FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath) {
-	//
-	// Don't do the shortest path computation here.
-	// Instead, let the Flow reconciliation thread take care of it.
-	//
-
-	FlowId flowId = new FlowId();
-	if (! addFlow(flowPath, flowId))
-	    return null;
-
-	return (flowPath);
     }
 
     /**
@@ -575,8 +558,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (modifiedFlowPaths.isEmpty())
 	    return;
 
-	FlowId dummyFlowId = new FlowId();
-
 	Map<Long, IOFSwitch> mySwitches = getMySwitches();
 
 	for (FlowPath flowPath : modifiedFlowPaths) {
@@ -633,8 +614,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    // Write the Flow Path to the Network Map
 	    //
 	    try {
-		if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath,
-						    dummyFlowId)) {
+		if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath)) {
 		    String logMsg = "Cannot write to Network Map Flow Path " +
 			flowPath.flowId();
 		    log.error(logMsg);

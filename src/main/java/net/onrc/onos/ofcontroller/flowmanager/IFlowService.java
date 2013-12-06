@@ -21,14 +21,10 @@ public interface IFlowService extends IFloodlightService {
     /**
      * Add a flow.
      *
-     * Internally, ONOS will automatically register the installer for
-     * receiving Flow Path Notifications for that path.
-     *
      * @param flowPath the Flow Path to install.
-     * @param flowId the return-by-reference Flow ID as assigned internally.
-     * @return true on success, otherwise false.
+     * @return the Flow ID on success, otherwise null.
      */
-    boolean addFlow(FlowPath flowPath, FlowId flowId);
+    FlowId addFlow(FlowPath flowPath);
 
     /**
      * Delete all previously added flows.
@@ -68,21 +64,6 @@ public interface IFlowService extends IFloodlightService {
      * @return the Flow Paths if found, otherwise null.
      */
     ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);
-    
-    /**
-     * Add and maintain a shortest-path flow.
-     *
-     * NOTE: The Flow Path argument does NOT contain all flow entries.
-     * Instead, it contains a single dummy flow entry that is used to
-     * store the matching condition(s).
-     * That entry is replaced by the appropriate entries from the
-     * internally performed shortest-path computation.
-     *
-     * @param flowPath the Flow Path with the endpoints and the match
-     * conditions to install.
-     * @return the added shortest-path flow on success, otherwise null.
-     */
-    FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath);
 
     /**
      * Get the network topology.
