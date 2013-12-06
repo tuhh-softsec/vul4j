@@ -14,6 +14,7 @@ import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 public class FloodlightProvider implements IFloodlightModule {
@@ -51,6 +52,7 @@ public class FloodlightProvider implements IFloodlightModule {
         dependencies.add(IThreadPoolService.class);
         // Following added by ONOS
         dependencies.add(IControllerRegistryService.class);
+        dependencies.add(ILinkDiscoveryService.class);
 
         return dependencies;
     }
@@ -69,6 +71,8 @@ public class FloodlightProvider implements IFloodlightModule {
        // Following added by ONOS
        controller.setMastershipService(
     		   context.getServiceImpl(IControllerRegistryService.class));
+       controller.setLinkDiscoveryService(
+    		   context.getServiceImpl(ILinkDiscoveryService.class));
 
        controller.init(context.getConfigParams(this));
     }

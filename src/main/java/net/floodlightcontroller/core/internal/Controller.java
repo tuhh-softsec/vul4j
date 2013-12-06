@@ -74,6 +74,7 @@ import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
@@ -186,6 +187,8 @@ public class Controller implements IFloodlightProviderService,
     protected IStorageSourceService storageSource;
     protected IThreadPoolService threadPool;
     protected IControllerRegistryService registryService;
+    
+    protected ILinkDiscoveryService linkDiscovery;
     
     // Configuration options
     protected int openFlowPort = 6633;
@@ -401,6 +404,10 @@ public class Controller implements IFloodlightProviderService,
 
 	public void setMastershipService(IControllerRegistryService serviceImpl) {
 		this.registryService = serviceImpl;		
+	}
+	
+	public void setLinkDiscoveryService(ILinkDiscoveryService linkDiscovery) {
+		this.linkDiscovery = linkDiscovery;
 	}
 	
     @Override
@@ -1294,6 +1301,12 @@ public class Controller implements IFloodlightProviderService,
                 updatePortInfo(sw, port);
             log.debug("Port #{} modified for {}", portNumber, sw);
         } else if (m.getReason() == (byte)OFPortReason.OFPPR_ADD.ordinal()) {
+        	// XXX Workaround to prevent race condition where a link is detected
+        	// and attempted to be written to the database before the port is in
+        	// the database. We now suppress link discovery on ports until we're
+        	// sure they're in the database.
+        	linkDiscovery.AddToSuppressLLDPs(sw.getId(), port.getPortNumber());
+        	
             sw.setPort(port);
             SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTADDED);
             try {
@@ -1536,6 +1549,14 @@ public class Controller implements IFloodlightProviderService,
                     "network problem that can be ignored."
             )
     protected void addSwitch(IOFSwitch sw) {
+    	// XXX Workaround to prevent race condition where a link is detected
+    	// and attempted to be written to the database before the port is in
+    	// the database. We now suppress link discovery on ports until we're
+    	// sure they're in the database.
+    	for (OFPhysicalPort port : sw.getPorts()) {
+    		linkDiscovery.AddToSuppressLLDPs(sw.getId(), port.getPortNumber());
+    	}
+    	
         // TODO: is it safe to modify the HashMap without holding 
         // the old switch's lock?
         OFSwitchImpl oldSw = (OFSwitchImpl) this.activeSwitches.put(sw.getId(), sw);

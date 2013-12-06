@@ -4,17 +4,13 @@ import net.floodlightcontroller.core.IOFSwitch;
 
 import org.openflow.util.HexString;
 import org.restlet.resource.Get;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * FlowProgrammer REST API implementation: Suspend sending message to switch.
+ * FlowProgrammer REST API implementation: Interrupt synchronization to a switch.
  *
- *   GET /wm/fprog/pusher/suspend/{dpid}/json"
+ *   GET /wm/fprog/synchronizer/interrupt/{dpid}/json"
  */
-public class SuspendPusherResource extends PusherResource {
-
-    protected final static Logger log = LoggerFactory.getLogger(SetPushRateResource.class);
+public class DoInterruptResource extends SynchronizerResource {
 
     /**
      * Implement the API.
@@ -41,6 +37,8 @@ public class SuspendPusherResource extends PusherResource {
     		return false;
     	}
     	
-    	return pusher.suspend(sw);
+    	synchronizer.interrupt(sw);
+    	
+    	return true;
     }
 }

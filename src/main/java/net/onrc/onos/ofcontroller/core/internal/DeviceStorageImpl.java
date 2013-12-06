@@ -68,28 +68,34 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	@Override
 	public IDeviceObject addDevice(IDevice device) {
 		IDeviceObject obj = null;
- 		try {
- 			if ((obj = ope.searchDevice(device.getMACAddressString())) != null) {
- 				log.debug("Adding device {}: found existing device", device.getMACAddressString());
-            } else {
-            	obj = ope.newDevice();
-                log.debug("Adding device {}: creating new device", device.getMACAddressString());
-            }
- 			
-            changeDeviceAttachments(device, obj);
-	        
-            changeDeviceIpv4Addresses(device, obj);
-            
- 			obj.setMACAddress(device.getMACAddressString());
- 			obj.setType("device");
- 			obj.setState("ACTIVE");
- 			ope.commit();
-		
- 			//log.debug("Adding device {}",device.getMACAddressString());
-		} catch (TitanException e) {
-			ope.rollback();
-			log.error("Adding device {} failed", device.getMACAddressString(), e);
-			obj = null;
+		for (int i = 0; i < 6; i++) {
+	 		try {
+	 			if (i > 0) {
+	 				log.debug("Retrying add device: i is {}", i);
+	 			}
+	 			if ((obj = ope.searchDevice(device.getMACAddressString())) != null) {
+	 				log.debug("Adding device {}: found existing device", device.getMACAddressString());
+	            } else {
+	            	obj = ope.newDevice();
+	                log.debug("Adding device {}: creating new device", device.getMACAddressString());
+	            }
+	 			
+	            changeDeviceAttachments(device, obj);
+		        
+	            changeDeviceIpv4Addresses(device, obj);
+	            
+	 			obj.setMACAddress(device.getMACAddressString());
+	 			obj.setType("device");
+	 			obj.setState("ACTIVE");
+	 			ope.commit();
+	 			
+	 			break;
+	 			//log.debug("Adding device {}",device.getMACAddressString());
+			} catch (TitanException e) {
+				ope.rollback();
+				log.error("Adding device {} failed", device.getMACAddressString(), e);
+				obj = null;
+			}
 		}
  		
 		return obj;		
@@ -262,8 +268,10 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	
 	private void changeDeviceIpv4Addresses(IDevice device, IDeviceObject deviceObject) {
 		List<String> dbIpv4Addresses = new ArrayList<String>();
+		List<Integer> intDbIpv4Addresses = new ArrayList<Integer>();
 		for (IIpv4Address ipv4Vertex : deviceObject.getIpv4Addresses()) {
 			dbIpv4Addresses.add(InetAddresses.fromInteger(ipv4Vertex.getIpv4Address()).getHostAddress());
+			intDbIpv4Addresses.add(ipv4Vertex.getIpv4Address());
 		}
 		
 		List<String> memIpv4Addresses = new ArrayList<String>();
@@ -275,13 +283,16 @@ public class DeviceStorageImpl implements IDeviceStorage {
 				memIpv4Addresses, dbIpv4Addresses);
 		
 		for (int ipv4Address : device.getIPv4Addresses()) {
-			if (deviceObject.getIpv4Address(ipv4Address) == null) {
+			//if (deviceObject.getIpv4Address(ipv4Address) == null) {
+			if (!intDbIpv4Addresses.contains(ipv4Address)) {
 				IIpv4Address dbIpv4Address = ope.ensureIpv4Address(ipv4Address);
 				
+				/*
 				IDeviceObject oldDevice = dbIpv4Address.getDevice();
 				if (oldDevice != null) {
 					oldDevice.removeIpv4Address(dbIpv4Address);
 				}
+				*/
 				
 				log.debug("Adding IP address {}", 
 						InetAddresses.fromInteger(ipv4Address).getHostAddress());

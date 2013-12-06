@@ -488,6 +488,8 @@ def exec_processing_by_script(parsed_args):
 if __name__ == "__main__":
   usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Flow Path Flags] [Match Conditions] [Actions]\n" % (sys.argv[0])
   usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "    <flow-id>             The Flow ID, or -1 if it should be assigned by ONOS\n"
+  usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Flags:\n"
   usage_msg = usage_msg + "        -m [monitorname]  Monitor and maintain the installed shortest path(s)\n"
   usage_msg = usage_msg + "                          If 'monitorname' is specified and is set to 'ONOS'\n"

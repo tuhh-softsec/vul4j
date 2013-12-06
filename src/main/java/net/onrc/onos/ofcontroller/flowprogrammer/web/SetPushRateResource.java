@@ -8,7 +8,7 @@ import org.restlet.resource.Get;
 /**
  * FlowProgrammer REST API implementation: Set sending rate to the switch.
  *
- *   GET /wm/fprog/setrate/{dpid}/{rate}/json"
+ *   GET /wm/fprog/pusher/setrate/{dpid}/{rate}/json"
  */
 public class SetPushRateResource extends PusherResource {
 
