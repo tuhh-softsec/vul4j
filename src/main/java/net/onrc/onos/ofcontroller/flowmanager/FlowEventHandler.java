@@ -32,19 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class for storing a pair of Flow Path and a Flow Entry.
- */
-class FlowPathEntryPair {
-    protected FlowPath flowPath;
-    protected FlowEntry flowEntry;
-
-    protected FlowPathEntryPair(FlowPath flowPath, FlowEntry flowEntry) {
-	this.flowPath = flowPath;
-	this.flowEntry = flowEntry;
-    }
-}
-
-/**
  * Class for FlowPath Maintenance.
  * This class listens for FlowEvents to:
  * - Maintain a local cache of the Network Topology.
@@ -207,7 +194,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * Process the events (if any)
      */
     private void processEvents() {
-	List<FlowPathEntryPair> modifiedFlowEntries;
+	Collection<FlowEntry> modifiedFlowEntries;
 
 	if (topologyEvents.isEmpty() && flowPathEvents.isEmpty() &&
 	    flowEntryEvents.isEmpty()) {
@@ -225,17 +212,16 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	}
 
 	// Extract the modified Flow Entries
-	modifiedFlowEntries = extractModifiedFlowEntries(modifiedFlowPaths);
+	modifiedFlowEntries = extractModifiedFlowEntries(modifiedFlowPaths.values());
 
 	// Assign missing Flow Entry IDs
 	assignFlowEntryId(modifiedFlowEntries);
 
 	//
-	// Push the modified Flow Entries to switches, datagrid and database
+	// Push the modified state to the Flow Manager
 	//
-	flowManager.pushModifiedFlowEntriesToSwitches(modifiedFlowEntries);
-	flowManager.pushModifiedFlowEntriesToDatagrid(modifiedFlowEntries);
-	flowManager.pushModifiedFlowPathsToDatabase(modifiedFlowPaths.values());
+	flowManager.pushModifiedFlowState(modifiedFlowPaths.values(),
+					  modifiedFlowEntries);
 
 	//
 	// Remove Flow Entries that were deleted
@@ -254,20 +240,20 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
     /**
      * Extract the modified Flow Entries.
+     *
+     * @param modifiedFlowPaths the Flow Paths to process.
+     * @return a collection with the modified Flow Entries.
      */
-    private List<FlowPathEntryPair> extractModifiedFlowEntries(
-				Map<Long, FlowPath> modifiedFlowPaths) {
-	List<FlowPathEntryPair> modifiedFlowEntries =
-	    new LinkedList<FlowPathEntryPair>();
+    private Collection<FlowEntry> extractModifiedFlowEntries(
+			Collection<FlowPath> modifiedFlowPaths) {
+	List<FlowEntry> modifiedFlowEntries = new LinkedList<FlowEntry>();
 
 	// Extract only the modified Flow Entries
-	for (FlowPath flowPath : modifiedFlowPaths.values()) {
+	for (FlowPath flowPath : modifiedFlowPaths) {
 	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
 		if (flowEntry.flowEntrySwitchState() ==
 		    FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
-		    FlowPathEntryPair flowPair =
-			new FlowPathEntryPair(flowPath, flowEntry);
-		    modifiedFlowEntries.add(flowPair);
+		    modifiedFlowEntries.add(flowEntry);
 		}
 	    }
 	}
@@ -276,8 +262,11 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
     /**
      * Assign the Flow Entry ID as needed.
+     *
+     * @param modifiedFlowEnries the collection of Flow Entries that need
+     * Flow Entry ID assigned.
      */
-    private void assignFlowEntryId(List<FlowPathEntryPair> modifiedFlowEntries) {
+    private void assignFlowEntryId(Collection<FlowEntry> modifiedFlowEntries) {
 	if (modifiedFlowEntries.isEmpty())
 	    return;
 
@@ -286,9 +275,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	//
 	// Assign the Flow Entry ID only for Flow Entries for my switches
 	//
-	for (FlowPathEntryPair flowPair : modifiedFlowEntries) {
-	    FlowEntry flowEntry = flowPair.flowEntry;
-	    // Update the Flow Entries only for my switches
+	for (FlowEntry flowEntry : modifiedFlowEntries) {
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 	    if (mySwitch == null)
 		continue;
@@ -412,7 +399,6 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * Process the Flow Entry events.
      */
     private void processFlowEntryEvents() {
-	FlowPathEntryPair flowPair;
 	FlowPath flowPath;
 	FlowEntry updatedFlowEntry;
 
@@ -431,7 +417,6 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 					 flowEntry);
 		    continue;
 		}
-		flowPair = new FlowPathEntryPair(flowPath, updatedFlowEntry);
 		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 	    }
 	    unmatchedFlowEntryAdd = remainingUpdates;
@@ -468,7 +453,6 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    break;
 		}
 		// Add the updated entry to the list of updated Flow Entries
-		flowPair = new FlowPathEntryPair(flowPath, updatedFlowEntry);
 		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 		break;
 
@@ -488,7 +472,6 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    // Flow Entry not found: ignore it
 		    break;
 		}
-		flowPair = new FlowPathEntryPair(flowPath, updatedFlowEntry);
 		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 		break;
 	    }

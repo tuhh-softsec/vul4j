@@ -186,10 +186,11 @@ public class Forwarding implements IOFMessageListener {
 		
 		CallerId callerId = new CallerId("Forwarding");
 		
-		FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
+		//FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
 		FlowPath flowPath = new FlowPath();
-		flowPath.setFlowId(flowId);
+		//flowPath.setFlowId(flowId);
 		flowPath.setInstallerId(callerId);
+
 		flowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
 		flowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
 		flowPath.setFlowEntryMatch(new FlowEntryMatch());
@@ -199,8 +200,9 @@ public class Forwarding implements IOFMessageListener {
 		// forwarding other stuff like ARP.
 		flowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
 		flowPath.setDataPath(dataPath);
-		
-		flowService.addFlow(flowPath, flowId);
+			
+		FlowId flowId = flowService.addFlow(flowPath);
+		//flowService.addFlow(flowPath, flowId);
 		
 		
 		DataPath reverseDataPath = new DataPath();
@@ -208,10 +210,10 @@ public class Forwarding implements IOFMessageListener {
 		reverseDataPath.setSrcPort(dstSwitchPort);
 		reverseDataPath.setDstPort(srcSwitchPort);
 		
-		FlowId reverseFlowId = new FlowId(flowService.getNextFlowEntryId());
+		//FlowId reverseFlowId = new FlowId(flowService.getNextFlowEntryId());
 		// TODO implement copy constructor for FlowPath
 		FlowPath reverseFlowPath = new FlowPath();
-		reverseFlowPath.setFlowId(reverseFlowId);
+		//reverseFlowPath.setFlowId(reverseFlowId);
 		reverseFlowPath.setInstallerId(callerId);
 		reverseFlowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
 		reverseFlowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
@@ -224,9 +226,9 @@ public class Forwarding implements IOFMessageListener {
 		reverseFlowPath.dataPath().srcPort().dpid().toString();
 		
 		// TODO what happens if no path exists?
-		flowService.addFlow(reverseFlowPath, reverseFlowId);
+		//flowService.addFlow(reverseFlowPath, reverseFlowId);
+		FlowId reverseFlowId = flowService.addFlow(reverseFlowPath);
 		
-
 		Port outPort = shortestPath.flowEntries().get(0).outPort();
 		forwardPacket(pi, sw, outPort.value());
 	}
