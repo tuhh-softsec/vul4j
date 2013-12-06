@@ -22,7 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.floodlightcontroller.core.IOFSwitch;
-import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.DBOperation;
+import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -40,12 +41,12 @@ public class FlowSynchronizer implements IFlowSyncService {
 
     private static Logger log = LoggerFactory.getLogger(FlowSynchronizer.class);
 
-    private GraphDBOperation dbHandler;
+    private DBOperation dbHandler;
     protected IFlowPusherService pusher;
     private Map<IOFSwitch, Thread> switchThreads; 
 
     public FlowSynchronizer() {
-	dbHandler = new GraphDBOperation("");
+	dbHandler = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	switchThreads = new HashMap<IOFSwitch, Thread>();
     }
 

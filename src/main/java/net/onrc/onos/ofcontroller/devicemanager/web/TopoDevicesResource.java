@@ -2,7 +2,8 @@ package net.onrc.onos.ofcontroller.devicemanager.web;
 
 import java.util.Iterator;
 
-import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.DBOperation;
+import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 
 import org.restlet.resource.Get;
@@ -12,7 +13,7 @@ public class TopoDevicesResource extends ServerResource {
 	
 	@Get("json")
 	public Iterator<IDeviceObject> retrieve() {
-		GraphDBOperation op = new GraphDBOperation("");
+		DBOperation op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 		
 		return op.getDevices().iterator();
 	}
