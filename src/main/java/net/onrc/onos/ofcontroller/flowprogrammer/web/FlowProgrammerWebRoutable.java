@@ -11,10 +11,12 @@ public class FlowProgrammerWebRoutable implements RestletRoutable {
 	@Override
 	public Restlet getRestlet(Context context) {
 		Router router = new Router(context);
-		router.attach("/setrate/{dpid}/{rate}/json", SetPushRateResource.class);
-		router.attach("/suspend/{dpid}/json", SuspendPusherResource.class);
-		router.attach("/resume/{dpid}/json", ResumePusherResource.class);
-		router.attach("/barrier/{dpid}/json", SendBarrierResource.class);
+		router.attach("/pusher/setrate/{dpid}/{rate}/json", SetPushRateResource.class);
+		router.attach("/pusher/suspend/{dpid}/json", SuspendPusherResource.class);
+		router.attach("/pusher/resume/{dpid}/json", ResumePusherResource.class);
+		router.attach("/pusher/barrier/{dpid}/json", SendBarrierResource.class);
+		router.attach("/synchronizer/sync/{dpid}/json", DoSynchronizeResource.class);
+		router.attach("/synchronizer/interrupt/{dpid}/json", DoInterruptResource.class);
 		return router;
 	}
 

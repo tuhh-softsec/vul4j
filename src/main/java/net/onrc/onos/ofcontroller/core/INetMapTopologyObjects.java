@@ -117,6 +117,7 @@ public interface INetMapTopologyObjects {
 		@Adjacency(label="host")
 		public void removeDevice(final IDeviceObject device);
 		
+		
 		@JsonIgnore
 		@Adjacency(label="inport",direction = Direction.IN)
 		public Iterable<IFlowEntry> getInFlowEntries();
@@ -124,6 +125,7 @@ public interface INetMapTopologyObjects {
 		@JsonIgnore
 		@Adjacency(label="outport",direction = Direction.IN)
 		public Iterable<IFlowEntry> getOutFlowEntries();
+		
 		
 		@JsonIgnore
 		@Adjacency(label="link")

@@ -142,7 +142,7 @@ public class FlowManagerTest {
 
 
 	/**
-	 * Test method for {@link FlowManager#addFlow(FlowPath, FlowId, String)}.
+	 * Test method for {@link FlowManager#addFlow(FlowPath)}.
 	 * @throws Exception 
 	 */
 	@Test
@@ -163,15 +163,15 @@ public class FlowManagerTest {
 		replayAll();
 
 		fm.init(context);
-		Boolean result = fm.addFlow(flowPath, flowId);
+		FlowId result = fm.addFlow(flowPath);
 
 		// verify the test
 		verifyAll();
-		assertFalse(result);
+		assertNotNull(result);
 	}
 
 	/**
-	 * Test method for {@link FlowManager#addFlow(FlowPath, FlowId)}.
+	 * Test method for {@link FlowManager#addFlow(FlowPath)}.
 	 * @throws Exception 
 	 */
 	@Test
@@ -233,11 +233,11 @@ public class FlowManagerTest {
 		replayAll();
 		
 		fm.init(context);
-		Boolean result = fm.addFlow(flowPath, new FlowId(0x100));
+		FlowId result = fm.addFlow(flowPath);
 
 		// verify the test
 		verifyAll();
-		assertTrue(result);
+		assertNotNull(result);
 	}
 
 	/**
@@ -388,76 +388,6 @@ public class FlowManagerTest {
 	}
 	
 	/**
-	 * Test method for {@link FlowManager#getAllFlows(CallerId, DataPathEndpoints)}.
-	 * @throws Exception 
-	 */ 
-	@Test
-	public final void testGetAllFlowsWithCallerIdAndDataPathEndpointsSuccessNormally() throws Exception {
-		final String getAllFlows = "getAllFlows";
-		// create mock objects
-		FlowManager fm = createPartialMock(FlowManager.class, getAllFlows,
-				new Class<?>[]{}, new Object[]{});
-
-		// instantiate required objects
-		DataPathEndpoints dataPathEndpoints = new DataPathEndpoints(
-				new SwitchPort(new Dpid(1), new Port((short)1)),
-				new SwitchPort(new Dpid(2), new Port((short)2)));
-
-		ArrayList<FlowPath> obtainedAllFlows = createTestFlowPaths();
-			
-		//setup expectations
-		expectInitWithContext();
-		expectPrivate(fm, getAllFlows).andReturn(obtainedAllFlows);
-		
-		//start the test
-		replayAll();
-		
-		fm.init(context);
-		ArrayList<FlowPath> flows = fm.getAllFlows(new CallerId("caller id"), dataPathEndpoints);
-
-		// verify the test
-		verifyAll();
-		assertEquals(1, flows.size());
-		assertEquals(obtainedAllFlows.get(1), flows.get(0));
-	}
-	
-	/**
-	 * Test method for {@link FlowManager#getAllFlows(DataPathEndpoints)}.
-	 * @throws Exception 
-	 */
-	@Test
-	public final void testGetAllFlowsWithDataPathEndpointsSuccessNormally() throws Exception {
-		final String getAllFlows = "getAllFlows";
-		// create mock objects
-		FlowManager fm = createPartialMock(FlowManager.class, getAllFlows,
-				new Class<?>[]{}, new Object[]{});
-
-		// instantiate required objects
-		DataPathEndpoints dataPathEndpoints = new DataPathEndpoints(
-				new SwitchPort(new Dpid(1), new Port((short)1)),
-				new SwitchPort(new Dpid(2), new Port((short)2)));
-
-		ArrayList<FlowPath> obtainedAllFlows = createTestFlowPaths();
-			
-		//setup expectations
-		expectInitWithContext();
-		expectPrivate(fm, getAllFlows).andReturn(obtainedAllFlows);
-		
-		//start the test
-		replayAll();
-		
-		fm.init(context);
-		ArrayList<FlowPath> flows = fm.getAllFlows(dataPathEndpoints);
-
-		// verify the test
-		verifyAll();
-		assertEquals(2, flows.size());
-		assertEquals(obtainedAllFlows.get(0), flows.get(0));
-		assertEquals(obtainedAllFlows.get(1), flows.get(1));
-		// TODO: ignore the order of flows in the list
-	}
-	
-	/**
 	 * Test method for {@link FlowManager#getAllFlowsSummary(FlowId, int)}.
 	 * @throws Exception 
 	 */
@@ -532,72 +462,6 @@ public class FlowManagerTest {
 				flows.get(1).dataPath().srcPort().toString());
 		// TODO: more asserts
 		// TODO: ignore seq. of the list
-	}
-	
-	/**
-	 * Test method for {@link FlowManager#addAndMaintainShortestPathFlow(FlowPath)}.
-	 * @throws Exception 
-	 */
-	@Test
-	public final void testAddAndMaintainShortestPathFlowSuccessNormally() throws Exception {
-		final String addFlow = "addFlow";
-
-		// create mock objects
-		FlowManager fm = createPartialMockAndInvokeDefaultConstructor(FlowManager.class, addFlow);
-
-		// instantiate required objects
-		DataPath dataPath = new DataPath();
-		dataPath.setSrcPort(new SwitchPort(new Dpid(1), new Port((short)3)));
-		dataPath.setDstPort(new SwitchPort(new Dpid(2), new Port((short)4)));
-		FlowEntryMatch match = new FlowEntryMatch();
-		FlowPath paramFlow = new FlowPath();
-		paramFlow.setFlowId(new FlowId(100));
-		paramFlow.setInstallerId(new CallerId("installer id"));
-		paramFlow.setFlowPathType(FlowPathType.valueOf("FP_TYPE_SHORTEST_PATH"));
-		paramFlow.setFlowPathUserState(FlowPathUserState.valueOf("FP_USER_ADD"));
-		paramFlow.setFlowPathFlags(new FlowPathFlags(0));
-		paramFlow.setDataPath(dataPath);
-		paramFlow.setFlowEntryMatch(match);
-		
-		// setup expectations
-		expectInitWithContext();
-		expectPrivate(fm, addFlow,
-				EasyMock.anyObject(FlowPath.class),
-				EasyMock.anyObject(FlowId.class),
-				EasyMock.anyObject(String.class)
-				).andAnswer(new IAnswer<Object>() {
-					public Object answer() throws Exception {
-						FlowPath flowPath = (FlowPath)EasyMock.getCurrentArguments()[0];
-						assertEquals(flowPath.flowId().value(), 100);
-						assertEquals(flowPath.installerId().toString(), "installer id");
-						assertEquals(flowPath.flowPathType().toString(), "PF_TYPE_SHORTEST_PATH");
-						assertEquals(flowPath.flowPathUserState().toString(), "PF_USER_STATE");
-						assertEquals(flowPath.flowPathFlags().flags(), 0);
-						assertEquals(flowPath.dataPath().srcPort().toString(),
-								new SwitchPort(new Dpid(1), new Port((short)3)).toString());
-
-						String dataPathSummary = (String)EasyMock.getCurrentArguments()[2];
-						assertEquals(dataPathSummary, "X");
-						
-						return true;
-					}
-				});
-		
-		// start the test
-		replayAll();
-
-		fm.init(context);
-		FlowPath resultFlow = fm.addAndMaintainShortestPathFlow(paramFlow);
-				
-		// verify the test
-		verifyAll();
-		assertEquals(paramFlow.flowId().value(), resultFlow.flowId().value());
-		assertEquals(paramFlow.installerId().toString(), resultFlow.installerId().toString());
-		assertEquals(paramFlow.flowPathType().toString(), resultFlow.flowPathType().toString());
-		assertEquals(paramFlow.flowPathUserState().toString(), resultFlow.flowPathUserState().toString());
-		assertEquals(paramFlow.flowPathFlags().flags(), resultFlow.flowPathFlags().flags());
-		assertEquals(paramFlow.dataPath().toString(), resultFlow.dataPath().toString());
-		assertEquals(paramFlow.flowEntryMatch().toString(), resultFlow.flowEntryMatch().toString());
 	}
 		
 	// INetMapStorage methods

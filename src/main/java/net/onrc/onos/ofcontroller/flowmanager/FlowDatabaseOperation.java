@@ -3,7 +3,6 @@ package net.onrc.onos.ofcontroller.flowmanager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,21 +23,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Class for performing Flow-related operations on the Database.
  */
-class FlowDatabaseOperation {
+public class FlowDatabaseOperation {
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
 
     /**
      * Add a flow.
      *
-     * @param flowManager the Flow Manager to use.
      * @param dbHandler the Graph Database handler to use.
      * @param flowPath the Flow Path to install.
-     * @param flowId the return-by-reference Flow ID as assigned internally.
      * @return true on success, otherwise false.
      */
-    static boolean addFlow(FlowManager flowManager,
-			   DBOperation dbHandler,
-			   FlowPath flowPath, FlowId flowId) {
+    static boolean addFlow(DBOperation dbHandler, FlowPath flowPath) {
 	IFlowPath flowObj = null;
 	boolean found = false;
 	try {
@@ -65,6 +60,21 @@ class FlowDatabaseOperation {
 		      flowPath.flowId().toString());
 	    dbHandler.rollback();
 	    return false;
+	}
+
+	//
+	// Remove the old Flow Entries
+	//
+	if (found) {
+	    Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
+	    LinkedList<IFlowEntry> deleteFlowEntries =
+		new LinkedList<IFlowEntry>();
+	    for (IFlowEntry flowEntryObj : flowEntries)
+		deleteFlowEntries.add(flowEntryObj);
+	    for (IFlowEntry flowEntryObj : deleteFlowEntries) {
+		flowObj.removeFlowEntry(flowEntryObj);
+		dbHandler.removeFlowEntry(flowEntryObj);
+	    }
 	}
 
 	//
@@ -155,17 +165,15 @@ class FlowDatabaseOperation {
 	// flowPath.dataPath().flowEntries()
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    if (addFlowEntry(flowManager, dbHandler, flowObj, flowEntry) == null) {
+	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
+		continue;	// Skip: all Flow Entries were deleted earlier
+
+	    if (addFlowEntry(dbHandler, flowObj, flowEntry) == null) {
 		dbHandler.rollback();
 		return false;
 	    }
 	}
 	dbHandler.commit();
-
-	//
-	// TODO: We need a proper Flow ID allocation mechanism.
-	//
-	flowId.setValue(flowPath.flowId().value());
 
 	return true;
     }
@@ -173,26 +181,16 @@ class FlowDatabaseOperation {
     /**
      * Add a flow entry to the Network MAP.
      *
-     * @param flowManager the Flow Manager to use.
      * @param dbHandler the Graph Database handler to use.
      * @param flowObj the corresponding Flow Path object for the Flow Entry.
      * @param flowEntry the Flow Entry to install.
      * @return the added Flow Entry object on success, otherwise null.
      */
-    static IFlowEntry addFlowEntry(FlowManager flowManager,
-				   DBOperation dbHandler,
+    static IFlowEntry addFlowEntry(DBOperation dbHandler,
 				   IFlowPath flowObj,
 				   FlowEntry flowEntry) {
 	// Flow edges
 	//   HeadFE (TODO)
-
-	//
-	// Assign the FlowEntry ID.
-	//
-	if (! flowEntry.isValidFlowEntryId()) {
-	    long id = flowManager.getNextFlowEntryId();
-	    flowEntry.setFlowEntryId(new FlowEntryId(id));
-	}
 
 	IFlowEntry flowEntryObj = null;
 	boolean found = false;
@@ -494,137 +492,6 @@ class FlowDatabaseOperation {
 	dbHandler.commit();
 
 	return flowPaths;
-    }
-
-    /**
-     * Get all previously added flows by a specific installer for a given
-     * data path endpoints.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param installerId the Caller ID of the installer of the flow to get.
-     * @param dataPathEndpoints the data path endpoints of the flow to get.
-     * @return the Flow Paths if found, otherwise null.
-     */
-    static ArrayList<FlowPath> getAllFlows(DBOperation dbHandler,
-					   CallerId installerId,
-					   DataPathEndpoints dataPathEndpoints) {
-	//
-	// TODO: The implementation below is not optimal:
-	// We fetch all flows, and then return only the subset that match
-	// the query conditions.
-	// We should use the appropriate Titan/Gremlin query to filter-out
-	// the flows as appropriate.
-	//
-	ArrayList<FlowPath> allFlows = getAllFlows(dbHandler);
-	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
-
-	if (allFlows == null)
-	    return flowPaths;
-
-	for (FlowPath flow : allFlows) {
-	    //
-	    // TODO: String-based comparison is sub-optimal.
-	    // We are using it for now to save us the extra work of
-	    // implementing the "equals()" and "hashCode()" methods.
-	    //
-	    if (! flow.installerId().toString().equals(installerId.toString()))
-		continue;
-	    if (! flow.dataPath().srcPort().toString().equals(dataPathEndpoints.srcPort().toString())) {
-		continue;
-	    }
-	    if (! flow.dataPath().dstPort().toString().equals(dataPathEndpoints.dstPort().toString())) {
-		continue;
-	    }
-	    flowPaths.add(flow);
-	}
-
-	return flowPaths;
-    }
-
-    /**
-     * Get all installed flows by all installers for given data path endpoints.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param dataPathEndpoints the data path endpoints of the flows to get.
-     * @return the Flow Paths if found, otherwise null.
-     */
-    static ArrayList<FlowPath> getAllFlows(DBOperation dbHandler,
-					   DataPathEndpoints dataPathEndpoints) {
-	//
-	// TODO: The implementation below is not optimal:
-	// We fetch all flows, and then return only the subset that match
-	// the query conditions.
-	// We should use the appropriate Titan/Gremlin query to filter-out
-	// the flows as appropriate.
-	//
-	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
-	ArrayList<FlowPath> allFlows = getAllFlows(dbHandler);
-
-	if (allFlows == null)
-	    return flowPaths;
-
-	for (FlowPath flow : allFlows) {
-	    //
-	    // TODO: String-based comparison is sub-optimal.
-	    // We are using it for now to save us the extra work of
-	    // implementing the "equals()" and "hashCode()" methods.
-	    //
-	    if (! flow.dataPath().srcPort().toString().equals(dataPathEndpoints.srcPort().toString())) {
-		continue;
-	    }
-	    if (! flow.dataPath().dstPort().toString().equals(dataPathEndpoints.dstPort().toString())) {
-		continue;
-	    }
-	    flowPaths.add(flow);
-	}
-
-	return flowPaths;
-    }
-
-    /**
-     * Get summary of all installed flows by all installers in a given range.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param flowId the Flow ID of the first flow in the flow range to get.
-     * @param maxFlows the maximum number of flows to be returned.
-     * @return the Flow Paths if found, otherwise null.
-     */
-    static ArrayList<FlowPath> getAllFlowsSummary(DBOperation dbHandler,
-						   FlowId flowId,
-						   int maxFlows) {
-	//
-	// TODO: The implementation below is not optimal:
-	// We fetch all flows, and then return only the subset that match
-	// the query conditions.
-	// We should use the appropriate Titan/Gremlin query to filter-out
-	// the flows as appropriate.
-	//
-    	ArrayList<FlowPath> flowPaths = getAllFlowsWithDataPathSummary(dbHandler);
-    	Collections.sort(flowPaths);
-    	return flowPaths;
-    }
-
-    /**
-     * Get all Flows information, with Data Path summary for the Flow Entries.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @return all Flows information, with Data Path summary for the Flow
-     * Entries.
-     */
-    static ArrayList<FlowPath> getAllFlowsWithDataPathSummary(DBOperation dbHandler) {
-    	ArrayList<FlowPath> flowPaths = getAllFlows(dbHandler);
-
-	// Truncate each Flow Path and Flow Entry
-	for (FlowPath flowPath : flowPaths) {
-	    flowPath.setFlowEntryMatch(null);
-	    flowPath.setFlowEntryActions(null);
-	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
-		flowEntry.setFlowEntryMatch(null);
-		flowEntry.setFlowEntryActions(null);
-	    }
-	}
-
-    	return flowPaths;
     }
 
     /**

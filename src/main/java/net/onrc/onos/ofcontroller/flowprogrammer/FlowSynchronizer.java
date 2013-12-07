@@ -26,7 +26,9 @@ import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.flowmanager.FlowDatabaseOperation;
 import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 
 /**
@@ -237,7 +239,15 @@ public class FlowSynchronizer implements IFlowSyncService {
 		return;
 	    }
 
-	    pusher.add(sw, iFlowEntry.getFlow(), iFlowEntry);
+	    FlowEntry flowEntry =
+		FlowDatabaseOperation.extractFlowEntry(iFlowEntry);
+	    if (flowEntry == null) {
+		log.error("Cannot add flow entry {} to sw {} : flow entry cannot be extracted",
+			  flowEntryId, sw.getId());
+		return;
+	    }
+
+	    pusher.pushFlowEntry(sw, flowEntry);
 	}
 	
 	/**

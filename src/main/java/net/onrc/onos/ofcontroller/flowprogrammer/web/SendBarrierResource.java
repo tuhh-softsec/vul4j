@@ -9,7 +9,7 @@ import org.restlet.resource.Get;
 /**
  * FlowProgrammer REST API implementation: Send barrier message to switch.
  *
- *   GET /wm/fprog/barrier/{dpid}/json"
+ *   GET /wm/fprog/pusher/barrier/{dpid}/json"
  */
 public class SendBarrierResource extends PusherResource {
     /**
