@@ -142,6 +142,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
 		
 		try {
+		        op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 			ISwitchObject curr = op.searchSwitch(dpid);
 			if (curr != null) {
 				//If existing the switch. set The SW state ACTIVE. 
@@ -193,6 +194,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		
 		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
 		try {
+			op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 			ISwitchObject sw = op.searchSwitch(dpid);
 			if (sw != null) {
 				//If existing the switch. set The SW state ACTIVE. 

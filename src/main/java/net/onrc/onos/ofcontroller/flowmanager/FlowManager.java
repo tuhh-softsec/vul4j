@@ -236,6 +236,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
 	}
 
+	dbHandlerApi = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	if (FlowDatabaseOperation.addFlow(this, dbHandlerApi, flowPath, flowId)) {
 	    datagridService.notificationSendFlowAdded(flowPath);
 	    return true;
@@ -251,6 +252,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the added Flow Entry object on success, otherwise null.
      */
     private IFlowEntry addFlowEntry(IFlowPath flowObj, FlowEntry flowEntry) {
+	dbHandlerInner = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	return FlowDatabaseOperation.addFlowEntry(this, dbHandlerInner,
 						  flowObj, flowEntry);
     }
@@ -263,6 +265,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return true on success, otherwise false.
      */
     private boolean deleteFlowEntry(IFlowPath flowObj, FlowEntry flowEntry) {
+	dbHandlerInner = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	return FlowDatabaseOperation.deleteFlowEntry(dbHandlerInner,
 						     flowObj, flowEntry);
     }
@@ -274,6 +277,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteAllFlows() {
+	dbHandlerApi = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	if (FlowDatabaseOperation.deleteAllFlows(dbHandlerApi)) {
 	    datagridService.notificationSendAllFlowsRemoved();
 	    return true;
@@ -289,6 +293,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
+	dbHandlerApi = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	if (FlowDatabaseOperation.deleteFlow(dbHandlerApi, flowId)) {
 	    datagridService.notificationSendFlowRemoved(flowId);
 	    return true;
@@ -304,6 +309,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public FlowPath getFlow(FlowId flowId) {
+	dbHandlerApi = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	return FlowDatabaseOperation.getFlow(dbHandlerApi, flowId);
     }
 
@@ -314,6 +320,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public ArrayList<FlowPath> getAllFlows() {
+	dbHandlerApi = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	return FlowDatabaseOperation.getAllFlows(dbHandlerApi);
     }
 
@@ -328,6 +335,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public ArrayList<FlowPath> getAllFlows(CallerId installerId,
 					   DataPathEndpoints dataPathEndpoints) {
+	dbHandlerApi = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	return FlowDatabaseOperation.getAllFlows(dbHandlerApi, installerId,
 						 dataPathEndpoints);
     }
@@ -340,6 +348,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public ArrayList<FlowPath> getAllFlows(DataPathEndpoints dataPathEndpoints) {
+	dbHandlerApi = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 	return FlowDatabaseOperation.getAllFlows(dbHandlerApi,
 						 dataPathEndpoints);
     }
@@ -625,6 +634,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // just removed by some other controller instance.
 		    //
 		    System.out.println("writeModifiedFlowEntriesToDatabase");
+		    dbHandlerInner = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 		    IFlowPath flowObj =
 			dbHandlerInner.searchFlowPath(flowEntry.flowId());
 		    if (flowObj == null) {
