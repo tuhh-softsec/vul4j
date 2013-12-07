@@ -21,18 +21,18 @@ public class RamCloudDBConnection extends DBConnection {
     private RamCloudGraph graph;
     private static Logger log = LoggerFactory.getLogger(RamCloudDBConnection.class);
     
-    private static final ThreadLocal<RamCloudGraph> RamCloudThreadLocal = new ThreadLocal<RamCloudGraph>();
+    //private static final ThreadLocal<RamCloudGraph> RamCloudThreadLocal = new ThreadLocal<RamCloudGraph>();
 
     public RamCloudDBConnection(final String dbConfigFile) {
         //final String coordinatorURL = open(getConfiguration(new File(dbConfigFile)));
 	//System.out.println("coordinatorURL "+ coordinatorURL);
         //graph = new RamCloudGraph(coordinatorURL);
-	graph = RamCloudThreadLocal.get();
-	System.out.println("ThreadId = " + Thread.currentThread().getId() + "graph = " + graph);
-	if (graph == null) {
-	    graph = new RamCloudGraph("fast+udp:host=10.128.4.104,port=12246");
-	    RamCloudThreadLocal.set(graph);
-	}
+	//graph = RamCloudThreadLocal.get();
+	System.out.println("ThreadId = " + Thread.currentThread().getId() + " graph = " + graph);
+	//if (graph == null) {
+	graph = new RamCloudGraph("fast+udp:host=10.128.4.104,port=12246");
+	    //RamCloudThreadLocal.set(graph);
+	//}
     }
     
     @Override
