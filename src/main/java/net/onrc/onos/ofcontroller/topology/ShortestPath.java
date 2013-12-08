@@ -22,7 +22,6 @@ import org.openflow.util.HexString;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
-import net.onrc.onos.graph.GraphDBManager;
 
 /**
  * Class to calculate a shortest DataPath between 2 SwitchPorts
