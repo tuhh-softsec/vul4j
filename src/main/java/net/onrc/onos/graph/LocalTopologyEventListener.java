@@ -1,7 +1,5 @@
 package net.onrc.onos.graph;
 
-import net.onrc.onos.flow.FlowManagerImpl;
-import net.onrc.onos.flow.IFlowManager;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 
 import org.slf4j.Logger;
@@ -52,9 +50,12 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 																src_port.getNumber(),
 																dest_port.getSwitch().getDPID(),
 																dest_port.getNumber()});
-			IFlowManager manager = new FlowManagerImpl();
 			// TODO: Find the flows and add to reconcile queue
-			manager.reconcileFlows(src_port);
+			//
+			// NOTE: Old code/logic.
+			//
+			// IFlowService flowManager = ...
+			// flowManager.reconcileFlows(src_port);
 		}
 	}
 
@@ -81,8 +82,11 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 			
 			IPortObject src_port = conn.getFramedGraph().frame(vertex, IPortObject.class);
 			log.debug("TopologyEvents: Port removed: {}:{}",src_port.getSwitch().getDPID(),src_port.getNumber());
-			IFlowManager manager = new FlowManagerImpl();
-			manager.reconcileFlows(src_port);			
+
+			// NOTE: Old code/logic.
+			//
+			// IFlowService flowManager = ...
+			// flowManager.reconcileFlows(src_port);
 		}
 	}
 

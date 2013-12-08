@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.forwarding;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,7 +37,11 @@ import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
+import org.openflow.protocol.OFPacketOut;
+import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
+import org.openflow.protocol.action.OFAction;
+import org.openflow.protocol.action.OFActionOutput;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,6 +161,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule {
 		ISwitchObject switchObject = portObject.getSwitch();
 		long destinationDpid = HexString.toLong(switchObject.getDPID());
 		
+		// TODO SwitchPort, Dpid and Port should probably be immutable
+		// (also, are Dpid and Port are even necessary?)
 		SwitchPort srcSwitchPort = new SwitchPort(
 				new Dpid(sw.getId()), new Port(pi.getInPort())); 
 		SwitchPort dstSwitchPort = new SwitchPort(
@@ -168,7 +175,31 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule {
 				dstSwitchPort, dstMacAddress)) {
 			log.debug("Not adding flow because it already exists");
 			
-			// Don't do anything if the flow already exists
+			// TODO check reverse flow as well
+			
+			DataPath shortestPath = 
+					topologyService.getDatabaseShortestPath(srcSwitchPort, dstSwitchPort);
+			
+			if (shortestPath == null || shortestPath.flowEntries().isEmpty()) {
+				log.warn("No path found between {} and {} - not handling packet",
+						srcSwitchPort, dstSwitchPort);
+				return;
+			}
+			
+			Port outPort = shortestPath.flowEntries().get(0).outPort();
+			forwardPacket(pi, sw, outPort.value());
+			return;
+		}
+		
+		// Calculate a shortest path before pushing flow mods.
+		// This will be used later by the packet-out processing, but it uses
+		// the database so will be slow, and we should do it before flow mods.
+		DataPath shortestPath = 
+				topologyService.getDatabaseShortestPath(srcSwitchPort, dstSwitchPort);
+		
+		if (shortestPath == null || shortestPath.flowEntries().isEmpty()) {
+			log.warn("No path found between {} and {} - not handling packet",
+					srcSwitchPort, dstSwitchPort);
 			return;
 		}
 		
@@ -180,21 +211,53 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule {
 		dataPath.setSrcPort(srcSwitchPort);
 		dataPath.setDstPort(dstSwitchPort);
 		
-		FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
+		CallerId callerId = new CallerId("Forwarding");
+		
+		//FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
 		FlowPath flowPath = new FlowPath();
-		flowPath.setFlowId(flowId);
-		flowPath.setInstallerId(new CallerId("Forwarding"));
+		//flowPath.setFlowId(flowId);
+		flowPath.setInstallerId(callerId);
+
 		flowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
 		flowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
 		flowPath.setFlowEntryMatch(new FlowEntryMatch());
 		flowPath.flowEntryMatch().enableSrcMac(srcMacAddress);
 		flowPath.flowEntryMatch().enableDstMac(dstMacAddress);
 		// For now just forward IPv4 packets. This prevents accidentally
-		// other stuff like ARP.
+		// forwarding other stuff like ARP.
 		flowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
 		flowPath.setDataPath(dataPath);
+			
+		FlowId flowId = flowService.addFlow(flowPath);
+		//flowService.addFlow(flowPath, flowId);
 		
-		flowService.addFlow(flowPath, flowId);
+		
+		DataPath reverseDataPath = new DataPath();
+		// Reverse the ports for the reverse path
+		reverseDataPath.setSrcPort(dstSwitchPort);
+		reverseDataPath.setDstPort(srcSwitchPort);
+		
+		//FlowId reverseFlowId = new FlowId(flowService.getNextFlowEntryId());
+		// TODO implement copy constructor for FlowPath
+		FlowPath reverseFlowPath = new FlowPath();
+		//reverseFlowPath.setFlowId(reverseFlowId);
+		reverseFlowPath.setInstallerId(callerId);
+		reverseFlowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
+		reverseFlowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
+		reverseFlowPath.setFlowEntryMatch(new FlowEntryMatch());
+		// Reverse the MAC addresses for the reverse path
+		reverseFlowPath.flowEntryMatch().enableSrcMac(dstMacAddress);
+		reverseFlowPath.flowEntryMatch().enableDstMac(srcMacAddress);
+		reverseFlowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
+		reverseFlowPath.setDataPath(reverseDataPath);
+		reverseFlowPath.dataPath().srcPort().dpid().toString();
+		
+		// TODO what happens if no path exists?
+		//flowService.addFlow(reverseFlowPath, reverseFlowId);
+		FlowId reverseFlowId = flowService.addFlow(reverseFlowPath);
+		
+		Port outPort = shortestPath.flowEntries().get(0).outPort();
+		forwardPacket(pi, sw, outPort.value());
 	}
 	
 	private boolean flowExists(SwitchPort srcPort, MACAddress srcMac, 
@@ -223,4 +286,31 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule {
 		return false;
 	}
 
+	private void forwardPacket(OFPacketIn pi, IOFSwitch sw, short port) {
+		List<OFAction> actions = new ArrayList<OFAction>(1);
+		actions.add(new OFActionOutput(port));
+		
+		OFPacketOut po = new OFPacketOut();
+		po.setInPort(OFPort.OFPP_NONE)
+		.setInPort(pi.getInPort())
+		.setActions(actions)
+		.setActionsLength((short)OFActionOutput.MINIMUM_LENGTH)
+		.setLengthU(OFPacketOut.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
+		
+		if (sw.getBuffers() == 0) {
+			po.setBufferId(OFPacketOut.BUFFER_ID_NONE)
+			.setPacketData(pi.getPacketData())
+			.setLengthU(po.getLengthU() + po.getPacketData().length);
+		}
+		else {
+			po.setBufferId(pi.getBufferId());
+		}
+		
+		try {
+			sw.write(po, null);
+			sw.flush();
+		} catch (IOException e) {
+			log.error("Error writing packet out to switch: {}", e);
+		}
+	}
 }
