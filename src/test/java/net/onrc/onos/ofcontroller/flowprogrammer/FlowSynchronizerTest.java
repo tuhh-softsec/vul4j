@@ -91,7 +91,7 @@ public class FlowSynchronizerTest {
 		initMockGraph(new long[] {1});
 		
 		// synchronize
-		doSynchronization(sw,100);
+		doSynchronization(sw,1000);
 		
 		// check if flow is not changed
 		assertEquals(0, idAdded.size());
@@ -110,7 +110,7 @@ public class FlowSynchronizerTest {
 		initMockGraph(new long[] {1});
 		
 		// synchronize
-		doSynchronization(sw,100);
+		doSynchronization(sw,1000);
 		
 		// check if single flow is installed
 		assertEquals(1, idAdded.size());
@@ -130,7 +130,7 @@ public class FlowSynchronizerTest {
 		initMockGraph(new long[] {});
 		
 		// synchronize
-		doSynchronization(sw,100);
+		doSynchronization(sw,1000);
 		
 		// check if single flow is deleted
 		assertEquals(0, idAdded.size());
@@ -151,7 +151,7 @@ public class FlowSynchronizerTest {
 		initMockGraph(new long[] {2,3,4,5});
 		
 		// synchronize
-		doSynchronization(sw,100);
+		doSynchronization(sw,1000);
 		
 		// check if two flows {4,5} is installed and one flow {1} is deleted
 		assertEquals(2, idAdded.size());
