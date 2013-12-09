@@ -4,9 +4,11 @@
  */
 package net.onrc.onos.graph;
 
+import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.ramcloud.RamCloudGraph;
 import com.tinkerpop.frames.FramedGraph;
 import java.io.File;
+import java.util.Set;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -33,6 +35,29 @@ public class RamCloudDBConnection extends DBConnection {
 	graph = new RamCloudGraph("fast+udp:host=10.128.4.104,port=12246");
 	    //RamCloudThreadLocal.set(graph);
 	//}
+	Set<String> s = graph.getIndexedKeys(Vertex.class);
+	System.out.println("index : " + s);
+        if (!s.contains("dpid")) {
+            graph.createKeyIndex("dpid", Vertex.class);
+        }
+        if (!s.contains("port_id")) {
+            graph.createKeyIndex("port_id", Vertex.class);
+        }
+        if (!s.contains("type")) {
+            graph.createKeyIndex("type", Vertex.class);
+        }
+        if (!s.contains("dl_addr")) {
+            graph.createKeyIndex("dl_addr", Vertex.class);
+        }
+        if (!s.contains("flow_id")) {
+            graph.createKeyIndex("flow_id", Vertex.class);
+        }
+        if (!s.contains("flow_entry_id")) {
+            graph.createKeyIndex("flow_entry_id", Vertex.class);
+        }
+        if (!s.contains("switch_state")) {
+            graph.createKeyIndex("switch_state", Vertex.class);
+        }
     }
     
     @Override
