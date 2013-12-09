@@ -6,13 +6,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-import io.netty.util.concurrent.Future;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.flowmanager.FlowDatabaseOperation;
+import net.onrc.onos.ofcontroller.flowprogrammer.IFlowSyncService.SyncResult;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 
@@ -91,7 +92,7 @@ public class FlowSynchronizerTest {
 		initMockGraph(new long[] {1});
 		
 		// synchronize
-		doSynchronization(sw,1000);
+		doSynchronization(sw);
 		
 		// check if flow is not changed
 		assertEquals(0, idAdded.size());
@@ -110,7 +111,7 @@ public class FlowSynchronizerTest {
 		initMockGraph(new long[] {1});
 		
 		// synchronize
-		doSynchronization(sw,1000);
+		doSynchronization(sw);
 		
 		// check if single flow is installed
 		assertEquals(1, idAdded.size());
@@ -130,7 +131,7 @@ public class FlowSynchronizerTest {
 		initMockGraph(new long[] {});
 		
 		// synchronize
-		doSynchronization(sw,1000);
+		doSynchronization(sw);
 		
 		// check if single flow is deleted
 		assertEquals(0, idAdded.size());
@@ -151,7 +152,7 @@ public class FlowSynchronizerTest {
 		initMockGraph(new long[] {2,3,4,5});
 		
 		// synchronize
-		doSynchronization(sw,1000);
+		doSynchronization(sw);
 		
 		// check if two flows {4,5} is installed and one flow {1} is deleted
 		assertEquals(2, idAdded.size());
@@ -179,7 +180,7 @@ public class FlowSynchronizerTest {
 		initMockGraph(dbIdList);
 
 		// synchronize
-		doSynchronization(sw, 3000);
+		doSynchronization(sw);
 		
 		// check if 1500 flows {2000-3499} is installed and 1500 flows {0,...,1499} is deleted
 		assertEquals(1500, idAdded.size());
@@ -299,15 +300,14 @@ public class FlowSynchronizerTest {
 	 * Instantiate FlowSynchronizer and sync flows.
 	 * @param sw Target IOFSwitch object
 	 */
-	private void doSynchronization(IOFSwitch sw, long wait) {
+	private void doSynchronization(IOFSwitch sw) {
 		sync = new FlowSynchronizer();
 		sync.init(pusher);
-		sync.synchronize(sw);
-		
+		Future<SyncResult> future = sync.synchronize(sw);
 		try {
-			Thread.sleep(wait);
-		} catch (InterruptedException e) {
-			fail("Failed to sleep");
+			future.get();
+		} catch (Exception e) {
+			fail("Failed to Future#get()");
 		}
 	}
 }
