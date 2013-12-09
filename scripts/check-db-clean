@@ -1,0 +1,6 @@
+g = TitanFactory.open('cassandra.local')
+g.stopTransaction(SUCCESS);
+g.V('type', 'port').each{println it.type};
+g.V('type', 'switch').each{println it.type};
+g.V('type', 'flow').each{println it.type};
+g.V('type', 'flow_entry').each{println it.type};

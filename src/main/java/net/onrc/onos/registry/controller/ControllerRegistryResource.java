@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class ControllerRegistryResource extends ServerResource {
 
-	protected static Logger log = LoggerFactory.getLogger(ControllerRegistryResource.class);
+	protected final static Logger log = LoggerFactory.getLogger(ControllerRegistryResource.class);
 
 	@Get("json")
 	public Collection<String> getControllers() {

@@ -10,6 +10,7 @@ RestPort=8182
 DBName="titanexample"
 
 2> install Flask python library (apt-get install python-flask)
+MacOS: sudo pip install Flask
 
 3> Run from commandline
 

@@ -1,0 +1,25 @@
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+PATH=$PATH:$HOME/bin
+
+export PATH
+
+### Cluster-IT setting##
+export RCP_USER=ubuntu
+export RCMD_CMD=ssh
+export RCMD_CMD_ARGS="-i $HOME/.ssh/onlabkey.pem"
+export RCMD_USER=ubuntu
+export RCP_CMD="scp -i $HOME/.ssh/onlabkey.pem -o StrictHostKeyChecking=no"
+export FANOUT=64
+export CLUSTER="$HOME/cluster-mgmt/cluster.txt"
+
+#### Set the proper value ####
+#export ONOS_CLUSTER_BASENAME="onosdevx"
+#export ONOS_CLUSTER_NR_NODES=8

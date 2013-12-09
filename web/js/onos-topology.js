@@ -1,6 +1,6 @@
 function gui(data_source){
-    var width = 960,
-    height = 500;
+    var width = 1280,
+    height = 1280;
     var radius = 8;
     var color = d3.scale.category20();
 
@@ -250,19 +250,33 @@ function gui(data_source){
 	    .attr("y", ".31em")
 	    .text(function(d) { 
 		l=d.name.split(":").length
-		return d.name.split(":")[l-3] + ":" + d.name.split(":")[l-2] + ":" + d.name.split(":")[l-1]
+		return d.name.split(":")[l-2] + ":" + d.name.split(":")[l-1]
 	    });
 
         circle.append("title")
 	    .text(function(d) { return d.name; });
 
 	circle.attr("fill", function(d) {
-	    if (d.group == 1){return "red";}
-	    else if (d.group == 2){return "blue";}
-	    else if (d.group == 3){return "green";}
-	    else if (d.group == 4){return "orange";}
-	    else if (d.group == 1000){return "black";}
-	    else{ return "gray"; }
+               if (d.group == 1){
+                    return "red"
+                }else if (d.group == 2){
+                    return "blue"
+                }else if (d.group == 3){
+                    return "green"
+                }else if (d.group == 4){
+                    return "orange"
+                }else if (d.group == 5){
+                    return "cyan"
+                }else if (d.group == 6){
+                    return "magenta"
+                }else if (d.group == 7){
+                    return "yellow"
+                }else if (d.group == 8){
+                    return "purple"
+                }else{
+                    return "gray"
+                }
+
 	});
 
 	path.attr("stroke", function(d) {
@@ -364,12 +378,25 @@ function gui(data_source){
 	})
 
 	circle.attr("fill", function(d) {
-	    ;	    if (d.group == 1){return "red";}
-	    else if (d.group == 2){return "blue";}
-	    else if (d.group == 3){return "green";}
-	    else if (d.group == 4){return "orange";}
-	    else if (d.group == 1000){return "black";}
-	    else{ return "gray"; }
+                if (d.group == 1){
+                    return "red"
+                }else if (d.group == 2){
+                    return "blue"
+                }else if (d.group == 3){
+                    return "green"
+                }else if (d.group == 4){
+                    return "orange"
+                }else if (d.group == 5){
+                    return "cyan"
+                }else if (d.group == 6){
+                    return "magenta"
+                }else if (d.group == 7){
+                    return "yellow"
+                }else if (d.group == 8){
+                    return "purple"
+                }else{
+                    return "gray"
+                }
 	});
 //	text.attr("x", function(d) { return d.x; }).attr("y", function(d) { return d.y; });
 	text.attr("transform", function(d) {

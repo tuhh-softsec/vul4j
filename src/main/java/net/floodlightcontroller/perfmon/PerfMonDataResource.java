@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author subrata
  */
 public class PerfMonDataResource extends ServerResource {
-    protected static Logger logger = LoggerFactory.getLogger(PerfMonDataResource.class);  
+    protected final static Logger logger = LoggerFactory.getLogger(PerfMonDataResource.class);  
     
     @Get("json")
     public CumulativeTimeBucket handleApiQuery() {        

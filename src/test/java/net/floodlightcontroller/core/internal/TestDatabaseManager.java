@@ -8,9 +8,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
@@ -18,6 +17,7 @@ import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.io.graphml.GraphMLReader;
 
+@SuppressWarnings("deprecation")
 public class TestDatabaseManager {
 	private static final String testDbLocation = "/tmp/onos-testdb";
 	
@@ -27,7 +27,8 @@ public class TestDatabaseManager {
 	
 	public static TitanGraph getTestDatabase(){
 		//return TitanFactory.open(testDbLocation);
-		return TitanFactory.openInMemoryGraph();
+//		return TitanFactory.openInMemoryGraph();
+		return TitanFactory.open(testDbLocation);
 	}
 	
 	public static void populateTestData(TitanGraph titanGraph){
@@ -57,8 +58,17 @@ public class TestDatabaseManager {
         Iterator<Vertex> it = titanGraph.getVertices("type", "port").iterator();
         while (it.hasNext()){
         	Vertex port = it.next();
-        	Integer portNum = (Integer) port.getProperty("number");
-        	port.setProperty("number", portNum.shortValue());
+
+        	if(port.getProperty("number") instanceof Short)
+        	{
+        		Short portNum = (Short) port.getProperty("number");
+        		port.setProperty("number", portNum.shortValue());
+        	}
+        	else{
+        		Integer portNum = (Integer) port.getProperty("number");	
+        		port.setProperty("number", portNum.shortValue());
+        	}
+
         }
         titanGraph.stopTransaction(Conclusion.SUCCESS);
 	}

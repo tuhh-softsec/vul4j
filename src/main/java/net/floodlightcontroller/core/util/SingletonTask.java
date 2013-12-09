@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * * If the task has begun, set a bit to restart it after the current task finishes
  */
 public class SingletonTask {
-    protected static Logger logger = LoggerFactory.getLogger(SingletonTask.class);
+    protected final static Logger logger = LoggerFactory.getLogger(SingletonTask.class);
             
     protected static class SingletonTaskContext  {
         protected boolean taskShouldRun = false;

@@ -120,7 +120,7 @@ public class RoleChanger {
     protected Thread workerThread;
     protected long timeout;
     protected static long DEFAULT_TIMEOUT = 15L*1000*1000*1000L; // 15s
-    protected static Logger log = LoggerFactory.getLogger(RoleChanger.class);
+    protected final static Logger log = LoggerFactory.getLogger(RoleChanger.class);
     /** 
      * A queued task to be handled by the Role changer thread. 
      */
@@ -275,10 +275,24 @@ public class RoleChanger {
                         sw.getAttribute(IOFSwitch.SWITCH_SUPPORTS_NX_ROLE);
                 if ((supportsNxRole == null) || supportsNxRole) {
                     // Handle cases #1 and #2
+                	log.debug("Sending NxRoleRequest to {}", sw);
                     sw.sendNxRoleRequest(role, cookie);
                 } else {
-                    // Handle case #3
-                    if (role == Role.SLAVE) {
+                	if (role == Role.MASTER) {
+                		// ONOS extension:
+                		log.debug("Switch {} doesn't support NxRoleRequests, but sending " + 
+                					"{} request anyway", sw, role);
+                		//Send the role request anyway, even though we know the switch
+                		//doesn't support it. The switch will give an error and in our
+                		//error handling code we will add the switch.
+                		//NOTE we *could* just add the switch right away rather than
+                		//going through the overhead of sending a role request - however
+                		//we then have to deal with concurrency issues resulting from
+                		//calling addSwitch outside of a netty handler.
+                		sw.sendNxRoleRequest(role, cookie);
+                	}
+                	// Handle case #3
+                	else if (role == Role.SLAVE) {
                         log.debug("Disconnecting switch {} that doesn't support " +
                         "role request messages from a controller that went to SLAVE mode");
                         // Closing the channel should result in a call to

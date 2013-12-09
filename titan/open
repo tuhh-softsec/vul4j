@@ -1,1 +1,1 @@
-g = TitanFactory.open('cassandra.local')
+g = TitanFactory.open('/tmp/cassandra.titan')

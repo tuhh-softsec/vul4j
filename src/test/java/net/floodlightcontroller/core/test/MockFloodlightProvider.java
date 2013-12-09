@@ -38,6 +38,7 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchFilter;
 import net.floodlightcontroller.core.IOFSwitchListener;
 import net.floodlightcontroller.core.IListener.Command;
+import net.floodlightcontroller.core.IUpdate;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
@@ -57,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
 public class MockFloodlightProvider implements IFloodlightModule, IFloodlightProviderService {
-    protected static Logger log = LoggerFactory.getLogger(MockFloodlightProvider.class);
+    protected final static Logger log = LoggerFactory.getLogger(MockFloodlightProvider.class);
     protected ConcurrentMap<OFType, ListenerDispatcher<OFType,IOFMessageListener>> listeners;
     protected List<IOFSwitchListener> switchListeners;
     protected List<IHAListener> haListeners;
@@ -347,4 +348,10 @@ public class MockFloodlightProvider implements IFloodlightModule, IFloodlightPro
         // TODO Auto-generated method stub
         
     }
+
+	@Override
+	public void publishUpdate(IUpdate update) {
+		// TODO Auto-generated method stub
+		
+	}
 }

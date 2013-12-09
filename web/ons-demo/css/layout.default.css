@@ -1,0 +1,162 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	display: -webkit-box;
+	-webkit-user-select: none;
+}
+
+#background, #background-image {
+	width: 100%;
+	height: 100%;
+}
+
+#contents {
+	width: 100%;
+	height: 100%;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+#columns {
+	display: -webkit-box;
+	-webkit-box-flex: 1.0;
+}
+
+#confirm {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	display: -webkit-box;
+	-webkit-box-align: center;
+	-webkit-box-pack: center;
+}
+
+#confirm-background {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+#confirm-panel {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-box-pack: justify;
+}
+
+#confirm-buttons {
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-flex: 1.0;
+	-webkit-box-align: center;
+}
+
+.header {
+	width: 100%;
+	display: -webkit-box;
+	-webkit-box-pack: justify;
+	-webkit-box-align: center;
+}
+
+#status {
+	display: -webkit-box;
+	-webkit-box-flex: 1.0;
+}
+
+#left, #right {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+
+#right {
+	width: 100%;
+	-webkit-box-flex: 1.0;
+}
+
+#topologyArea {
+	-webkit-box-flex: 1.0;
+	position: relative;
+}
+
+#selectedFlows {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+
+#flowChooser {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	display: -webkit-box;
+	overflow: scroll;
+}
+
+.selectedFlow {
+	display: -webkit-box;
+	position: relative;
+}
+
+#showFlowChooser {
+	position: relative;
+	display: -webkit-box;
+	-webkit-box-pack: center;
+}
+
+.selectedFlow .srcDPID, .selectedFlow .dstDPID {
+	-webkit-user-select: auto;
+}
+
+#selectedFlowsHeader {
+	display: -webkit-box;
+	height: 1.5em;
+}
+
+.iperf {
+	width: 100%;
+	-webkit-box-flex: 1.0;
+	position: relative;
+	display: -webkit-box;
+}
+
+.iperf-container {
+	position: absolute;
+	top: 0px;
+	height: 100%;
+	width: 100%;
+}
+
+#onos {
+	display: -webkit-box;
+}
+
+#actions {
+	display: -webkit-box;
+}
+
+#controllers {
+	display: -webkit-box;
+	overflow: scroll;
+	-webkit-box-flex: 1.0;
+}
+
+.controller {
+	margin: .25em;
+	background-color: blue;
+	-webkit-box-flex: 1.0;
+}
+
+#svg-container {
+	position: absolute;
+	top: 0px;
+	height: 100%;
+	width: 100%;
+}

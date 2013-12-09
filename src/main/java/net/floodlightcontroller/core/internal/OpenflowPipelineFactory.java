@@ -60,7 +60,7 @@ public class OpenflowPipelineFactory implements ChannelPipelineFactory {
         pipeline.addLast("idle", idleHandler);
         pipeline.addLast("timeout", readTimeoutHandler);
         pipeline.addLast("handshaketimeout",
-                         new HandshakeTimeoutHandler(state, timer, 15));
+                         new HandshakeTimeoutHandler(state, timer, 60)); // ONOS: was 15 increased it to fix Issue #296
         if (pipelineExecutor != null)
             pipeline.addLast("pipelineExecutor",
                              new ExecutionHandler(pipelineExecutor));

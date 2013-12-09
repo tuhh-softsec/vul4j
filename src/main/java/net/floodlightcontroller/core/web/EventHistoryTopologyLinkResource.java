@@ -1,9 +1,9 @@
 package net.floodlightcontroller.core.web;
 
-import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryService;
-import net.floodlightcontroller.linkdiscovery.internal.EventHistoryTopologyLink;
-import net.floodlightcontroller.linkdiscovery.internal.LinkDiscoveryManager;
 import net.floodlightcontroller.util.EventHistory;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.ofcontroller.linkdiscovery.internal.EventHistoryTopologyLink;
+import net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EventHistoryTopologyLinkResource extends ServerResource {
     // TODO - Move this to the DeviceManager Rest API
-    protected static Logger log = 
+    protected final static Logger log = 
             LoggerFactory.getLogger(EventHistoryTopologyLinkResource.class);
 
     @Get("json")

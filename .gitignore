@@ -2,6 +2,9 @@
 *.class
 .classpath
 .project
+.pydevproject
 target
 onos-logs
 onos.log
+repo
+

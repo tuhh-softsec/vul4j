@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class SwitchRoleResource extends ServerResource {
 
-    protected static Logger log = LoggerFactory.getLogger(SwitchRoleResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(SwitchRoleResource.class);
 
     @Get("json")
     public Object getRole() {

@@ -1,0 +1,4 @@
+#! /bin/bash
+. ${HOME}/bin/func.sh
+
+ssh `basename $0`

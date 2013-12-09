@@ -1,0 +1,8 @@
+Note about this directory
+=========================
+
+This directory contains link discovery manager and it's related module derived from Flood Light v0.9.0.
+Many of the code is unmodified from it's original state, but they had to be moved due to package visibility etc.
+
+Compare with floodlight's linkdiscovery directory to see what was modified from it's original code.
+

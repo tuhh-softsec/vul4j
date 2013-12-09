@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="60"
+   id="svg6140"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="switch.svg"
+   sodipodi:version="0.32"
+   width="60"
+   version="1.1">
+  <metadata
+     id="metadata4412">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>switch</dc:title>
+        <dc:description />
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>symbol</rdf:li>
+            <rdf:li>network</rdf:li>
+            <rdf:li>switch</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://www.openclipart.org/">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jakub Angelis</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Jakub Angelis</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date />
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     bordercolor="#666666"
+     borderopacity="1.0"
+     id="namedview6144"
+     inkscape:current-layer="layer1"
+     inkscape:cx="-65.089664"
+     inkscape:cy="-73.508205"
+     inkscape:document-units="mm"
+     inkscape:guide-bbox="true"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:window-height="746"
+     inkscape:window-width="1028"
+     inkscape:window-x="-4"
+     inkscape:window-y="0"
+     inkscape:zoom="1"
+     pagecolor="#ffffff"
+     showguides="false"
+     showgrid="false"
+     inkscape:window-maximized="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     showborder="false"
+     inkscape:showpageshadow="false" />
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1"
+     transform="translate(-350.71012,-251.97973)">
+    <rect
+       height="18.093575"
+       id="rect1944"
+       width="48.643852"
+       x="350.85608"
+       y="293.55972" />
+    <rect
+       height="18.093575"
+       id="rect1946"
+       transform="matrix(0.20031099,-0.97973237,0,1,0,0)"
+       width="38.694553"
+       x="1994.4028"
+       y="2247.5422" />
+    <g
+       id="g9312"
+       transform="matrix(0.1641042,0,0,0.35267689,231.88841,175.74726)">
+      <path
+         d="m 772.21875,226.4375 -47.34375,107.625 296.5,0 47.3438,-107.625 -296.50005,0 z"
+         id="path4749"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0" />
+      <g
+         id="g9298">
+        <g
+           id="g9282">
+          <path
+             d="m 772.66454,271.72258 40.19422,-18.1307"
+             id="path7440"
+             sodipodi:nodetypes="cc"
+             inkscape:connector-curvature="0" />
+          <path
+             d="m 807.7045,264.2106 92.50521,-0.0884"
+             id="path7442"
+             sodipodi:nodetypes="cc"
+             inkscape:connector-curvature="0" />
+        </g>
+        <g
+           id="g9294">
+          <path
+             d="m 913.2487,258.25739 6.36742,-14.48613 92.16548,-0.0165 4.1023,-9.59965 22.5745,16.94194"
+             id="path7444"
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0" />
+          <path
+             d="m 1003.8684,257.40378 -4.4934,10.25247 4.4915,-2.05647 0,-8.196 z"
+             id="path7446"
+             sodipodi:nodetypes="cccc"
+             inkscape:connector-curvature="0" />
+        </g>
+        <g
+           id="g9286">
+          <path
+             d="m 754.65476,312.558 40.38172,-18.16195"
+             id="path9238"
+             sodipodi:nodetypes="cc"
+             inkscape:connector-curvature="0" />
+          <path
+             d="m 789.69472,304.95227 92.50521,0.005"
+             id="path9240"
+             sodipodi:nodetypes="cc"
+             inkscape:connector-curvature="0" />
+        </g>
+        <g
+           id="g9290">
+          <path
+             d="m 895.23892,299.09281 6.36742,-14.48613 92.16548,-0.0165 4.1023,-9.59965 22.57448,16.94194"
+             id="path9242"
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0" />
+          <path
+             d="m 985.85862,298.2392 -4.4934,10.25247 4.4915,-1.83772 0.002,-8.41475 z"
+             id="path9244"
+             sodipodi:nodetypes="cccc"
+             inkscape:connector-curvature="0" />
+        </g>
+      </g>
+      <path
+         d="m 772.21875,226.4375 -47.34375,107.625 296.5,0 47.3438,-107.625 -296.50005,0 z m 243.00005,5.1875 24.2187,18.0625 -40.03125,17.90625 4.46875,-10.1875 -92.1875,0 6.75,-15.40625 92.2188,0 4.5625,-10.375 z m -203.06255,20.40625 -4.53125,10.375 92.1875,0 -6.78125,15.40625 -92.1875,0 -4.5,10.1875 -24.28125,-17.90625 40.09375,-18.0625 z m 185.09375,20.4375 24.2188,18.0625 -40.0313,17.90625 4.46875,-10.21875 -92.1875,0 6.78125,-15.40625 92.1875,0 4.5625,-10.34375 z m -203.03125,20.40625 -4.5625,10.34375 92.1875,0 -6.75,15.4375 -92.21875,0 -4.46875,10.1875 -24.3125,-17.90625 40.125,-18.0625 z"
+         id="rect1948"
+         inkscape:connector-curvature="0" />
+    </g>
+    <path
+       d="m 350.85884,293.2658 -0.14872,0.3086 0,18.09675 0.14872,0.30858 48.62613,0 0.14359,-0.30858 0,-18.09675 -0.14359,-0.3086 -48.62613,0 z m 0.14359,0.62824 48.33382,0 0,17.45751 -48.33382,0 0,-17.45751 z m 7.5129,-38.60712 -0.041,0.18736 -7.71291,37.78051 0.26668,0.25349 7.677,-37.59317 48.41074,0.0111 -0.0154,17.76613 -7.74367,37.74742 0.26668,0.2535 7.75906,-37.82461 0.0103,-0.0662 0,-0.0662 0.0103,-18.43839 -48.79537,-0.0111 -0.0923,0 z m 48.61074,0.12122 -7.81033,38.22137 0.26666,0.25347 7.81035,-38.22133 -0.26668,-0.25351 z"
+       id="rect10242"
+       sodipodi:nodetypes="cccccccccccccccccccccccccccccccccc"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

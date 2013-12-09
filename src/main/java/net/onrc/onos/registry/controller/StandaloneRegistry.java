@@ -16,13 +16,18 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implementation of a registry that doesn't rely on any external registry
+ * service. This is designed to be used only in single-node setups (e.g. for
+ * development). All registry data is stored in local memory.
+ * @author jono
+ *
+ */
 public class StandaloneRegistry implements IFloodlightModule,
 		IControllerRegistryService {
-	protected static Logger log = LoggerFactory.getLogger(StandaloneRegistry.class);
+	protected final static Logger log = LoggerFactory.getLogger(StandaloneRegistry.class);
 	
 	protected IRestApiService restApi;
-	
-	//protected String controllerId;
 	
 	protected String controllerId = null;
 	protected Map<String, ControlChangeCallback> switchCallbacks;
@@ -63,13 +68,7 @@ public class StandaloneRegistry implements IFloodlightModule,
 	}
 
 	@Override
-	public void setMastershipId(String id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getMastershipId() {
+	public String getControllerId() {
 		return controllerId;
 	}
 
@@ -92,7 +91,7 @@ public class StandaloneRegistry implements IFloodlightModule,
 
 	@Override
 	public String getControllerForSwitch(long dpid) throws RegistryException {
-		return controllerId;
+		return (switchCallbacks.get(HexString.toHexString(dpid)) != null)? controllerId: null;
 	}
 
 	@Override
@@ -115,6 +114,24 @@ public class StandaloneRegistry implements IFloodlightModule,
 	public Collection<Long> getSwitchesControlledByController(
 			String controllerId) {
 		throw new RuntimeException("Not yet implemented");
+	}
+	
+	private long blockTop = 0L;
+	private static final long BLOCK_SIZE = 0x1000000L;
+	
+	/**
+	 * Returns a block of IDs which are unique and unused.
+	 * Range of IDs is fixed size and is assigned incrementally as this method called.
+	 */
+	@Override
+	public synchronized IdBlock allocateUniqueIdBlock(){
+		long blockHead = blockTop;
+		long blockTail = blockTop + BLOCK_SIZE;
+		
+		IdBlock block = new IdBlock(blockHead, blockTail - 1, BLOCK_SIZE);
+		blockTop = blockTail;
+		
+		return block;
 	}
 
 	@Override
@@ -147,16 +164,6 @@ public class StandaloneRegistry implements IFloodlightModule,
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
 		switchCallbacks = new HashMap<String, ControlChangeCallback>();
-		
-		//Put some data in for testing
-		/*
-		try {
-			registerController("hurro");
-			requestControl(2L, null);
-		} catch (RegistryException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}*/
 	}
 
 	@Override

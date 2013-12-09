@@ -206,5 +206,11 @@ public interface IFloodlightProviderService extends IFloodlightService {
     * switch over to ACTIVE role
     */
    public void setAlwaysClearFlowsOnSwAdd(boolean value);
+   
+   /**
+    * Publish updates to Controller updates queue
+    * @param IUpdate
+    */
+   public void publishUpdate(IUpdate update);
 
 }

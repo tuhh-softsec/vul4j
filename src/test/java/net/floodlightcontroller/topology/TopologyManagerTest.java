@@ -4,10 +4,10 @@ import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery;
 import net.floodlightcontroller.test.FloodlightTestCase;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.TopologyManager;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TopologyManagerTest extends FloodlightTestCase {
-    protected static Logger log = LoggerFactory.getLogger(TopologyManagerTest.class);
+    protected final static Logger log = LoggerFactory.getLogger(TopologyManagerTest.class);
     TopologyManager tm;
     FloodlightModuleContext fmc;
     

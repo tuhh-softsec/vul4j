@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class ControllerRoleResource extends ServerResource {
 
-    protected static Logger log = LoggerFactory.getLogger(ControllerRoleResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(ControllerRoleResource.class);
 
     @Get("json")
     public RoleInfo getRole() {

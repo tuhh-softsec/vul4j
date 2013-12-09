@@ -1,0 +1,4 @@
+g.stopTransaction(SUCCESS)
+g.V('type', 'flow_entry').each{
+if (it.switch_state.equals("FE_SWITCH_NOT_UPDATED")) println it.map.next()
+}

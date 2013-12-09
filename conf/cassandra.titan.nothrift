@@ -1,0 +1,7 @@
+storage.backend=cassandra
+storage.hostname=localhost
+storage.keyspace=onos
+storage.connection-pool-size=4096
+storage.replication-factor=3
+storage.write-consistency-level=ALL
+storage.read-consistency-level=ONE
