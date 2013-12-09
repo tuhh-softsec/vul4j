@@ -7,8 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
@@ -44,26 +46,27 @@ public class FlowSynchronizer implements IFlowSyncService {
 
     private GraphDBOperation dbHandler;
     protected IFlowPusherService pusher;
-    private Map<IOFSwitch, Thread> switchThreads; 
+    private Map<IOFSwitch, FutureTask<SyncResult>> switchThreads; 
 
     public FlowSynchronizer() {
 	dbHandler = new GraphDBOperation("");
-	switchThreads = new HashMap<IOFSwitch, Thread>();
+	switchThreads = new HashMap<IOFSwitch, FutureTask<SyncResult>>();
     }
 
     @Override
-    public void synchronize(IOFSwitch sw) {
+    public Future<SyncResult> synchronize(IOFSwitch sw) {
 	Synchronizer sync = new Synchronizer(sw);
-	Thread t = new Thread(sync);
-	switchThreads.put(sw, t);
-	t.start();
+	FutureTask<SyncResult> task = new FutureTask<SyncResult>(sync);
+	switchThreads.put(sw, task);
+	task.run();
+	return task;
     }
     
     @Override
     public void interrupt(IOFSwitch sw) {
-	Thread t = switchThreads.remove(sw);
+	FutureTask<SyncResult> t = switchThreads.remove(sw);
 	if(t != null) {
-	    t.interrupt();
+		t.cancel(true);
 	}	
     }
 
@@ -80,7 +83,7 @@ public class FlowSynchronizer implements IFlowSyncService {
      * @author Brian
      *
      */
-	protected class Synchronizer implements Runnable {
+	protected class Synchronizer implements Callable<SyncResult> {
 	IOFSwitch sw;
 	ISwitchObject swObj;
 
@@ -91,13 +94,15 @@ public class FlowSynchronizer implements IFlowSyncService {
 	}
 
 	@Override
-	public void run() {
+	public SyncResult call() {
 	    // TODO: stop adding other flow entries while synchronizing
 	    //pusher.suspend(sw);
 	    Set<FlowEntryWrapper> graphEntries = getFlowEntriesFromGraph();
 	    Set<FlowEntryWrapper> switchEntries = getFlowEntriesFromSwitch();
-	    compare(graphEntries, switchEntries);
+	    SyncResult result = compare(graphEntries, switchEntries);
 	    //pusher.resume(sw);
+	    
+	    return result;
 	}
 
 	/**
@@ -107,7 +112,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 * @param graphEntries Flow entries in GraphDB.
 	 * @param switchEntries Flow entries in switch.
 	 */
-	private void compare(Set<FlowEntryWrapper> graphEntries, Set<FlowEntryWrapper> switchEntries) {
+	private SyncResult compare(Set<FlowEntryWrapper> graphEntries, Set<FlowEntryWrapper> switchEntries) {
 	    int added = 0, removed = 0, skipped = 0;
 	    for(FlowEntryWrapper entry : switchEntries) {
 		if(graphEntries.contains(entry)) {
@@ -128,6 +133,8 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    log.debug("Flow entries added "+ added + ", " +
 		      "Flow entries removed "+ removed + ", " +
 		      "Flow entries skipped " + skipped);
+	    
+	    return new SyncResult(added, removed, skipped);
 	}
 
 	/**
