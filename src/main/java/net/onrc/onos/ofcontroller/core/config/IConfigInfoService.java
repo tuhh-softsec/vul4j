@@ -2,16 +2,16 @@ package net.onrc.onos.ofcontroller.core.config;
 
 import java.net.InetAddress;
 
+import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
-import net.onrc.onos.ofcontroller.core.module.IOnosService;
 
 /**
  * Provides information about the layer 3 properties of the network.
  * This is based on IP addresses configured on ports in the network.
  *
  */
-public interface IConfigInfoService extends IOnosService {
+public interface IConfigInfoService extends IFloodlightService {
 	public boolean isInterfaceAddress(InetAddress address);
 	public boolean inConnectedNetwork(InetAddress address);
 	public boolean fromExternalNetwork(long inDpid, short inPort);

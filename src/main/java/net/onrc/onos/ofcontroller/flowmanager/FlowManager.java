@@ -134,6 +134,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	l.add(INetworkGraphService.class);
 	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
+		l.add(IFlowPusherService.class);
         return l;
     }
 

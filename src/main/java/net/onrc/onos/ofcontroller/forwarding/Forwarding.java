@@ -2,13 +2,18 @@ package net.onrc.onos.ofcontroller.forwarding;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.core.module.FloodlightModuleContext;
+import net.floodlightcontroller.core.module.IFloodlightModule;
+import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
@@ -41,7 +46,7 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Forwarding implements IOFMessageListener {
+public class Forwarding implements IOFMessageListener, IFloodlightModule {
 	private final static Logger log = LoggerFactory.getLogger(Forwarding.class);
 
 	private IFloodlightProviderService floodlightProvider;
@@ -55,11 +60,32 @@ public class Forwarding implements IOFMessageListener {
 		
 	}
 	
-	public void init(IFloodlightProviderService floodlightProvider, 
-			IFlowService flowService, IDatagridService datagridService) {
-		this.floodlightProvider = floodlightProvider;
-		this.flowService = flowService;
-		this.datagridService = datagridService;
+	@Override
+	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
+		return null;
+	}
+
+	@Override
+	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
+		return null;
+	}
+
+	@Override
+	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
+		List<Class<? extends IFloodlightService>> dependencies = 
+				new ArrayList<Class<? extends IFloodlightService>>();
+		dependencies.add(IFloodlightProviderService.class);
+		dependencies.add(IFlowService.class);
+		dependencies.add(IDatagridService.class);
+		return dependencies;
+	}
+	
+	@Override
+	public void init(FloodlightModuleContext context) {
+		this.floodlightProvider = 
+				context.getServiceImpl(IFloodlightProviderService.class);
+		this.flowService = context.getServiceImpl(IFlowService.class);
+		this.datagridService = context.getServiceImpl(IDatagridService.class);
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
@@ -69,7 +95,8 @@ public class Forwarding implements IOFMessageListener {
 		topologyService.init("");
 	}
 	
-	public void startUp() {
+	@Override
+	public void startUp(FloodlightModuleContext context) {
 		// no-op
 	}
 
