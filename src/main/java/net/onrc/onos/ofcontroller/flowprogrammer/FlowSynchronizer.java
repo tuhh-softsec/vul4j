@@ -93,16 +93,44 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    this.swObj = dbHandler.searchSwitch(dpid.toString());
 	}
 
+	double graphIDTime, switchTime, compareTime, graphEntryTime, extractTime, pushTime, totalTime;
 	@Override
 	public SyncResult call() {
 	    // TODO: stop adding other flow entries while synchronizing
 	    //pusher.suspend(sw);
+	    long start = System.nanoTime();
 	    Set<FlowEntryWrapper> graphEntries = getFlowEntriesFromGraph();
+	    long step1 = System.nanoTime();
 	    Set<FlowEntryWrapper> switchEntries = getFlowEntriesFromSwitch();
+	    long step2 = System.nanoTime();
 	    SyncResult result = compare(graphEntries, switchEntries);
+	    long step3 = System.nanoTime();
+	    graphIDTime = (step1 - start); 
+	    switchTime = (step2 - step1);
+	    compareTime = (step3 - step2);
+	    totalTime = (step3 - start);
+	    outputTime();
 	    //pusher.resume(sw);
 	    
 	    return result;
+	}
+	
+	private void outputTime() {
+	    double div = Math.pow(10, 6); //convert nanoseconds to ms
+	    graphIDTime /= div;
+	    switchTime /= div;
+	    compareTime = (compareTime - graphEntryTime - extractTime - pushTime) / div;
+	    graphEntryTime /= div;
+	    extractTime /= div;
+	    pushTime /= div;
+	    log.debug("Sync time (ms):" +
+	    		  graphIDTime + "," +
+	     		  switchTime + "," + 
+	    		  compareTime + "," +
+	     		  graphEntryTime + "," +
+	    		  extractTime + "," + 
+	     		  pushTime + "," +
+	              totalTime);
 	}
 
 	/**
@@ -128,6 +156,9 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    for(FlowEntryWrapper entry : graphEntries) {
 		// add flow entry to switch
 		entry.addToSwitch(sw);
+		graphEntryTime += entry.dbTime;
+		extractTime += entry.extractTime;
+		pushTime += entry.pushTime;
 		added++;
 	    }	  
 	    log.debug("Flow entries added "+ added + ", " +
@@ -223,6 +254,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 * Install this FlowEntry to a switch via FlowPusher.
 	 * @param sw Switch to which flow will be installed.
 	 */
+	double dbTime, extractTime, pushTime;
 	public void addToSwitch(IOFSwitch sw) {
 	    if (statisticsReply != null) {
 		log.error("Error adding existing flow entry {} to sw {}", 
@@ -230,6 +262,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 		return;
 	    }
 
+	    double startDB = System.nanoTime();
 	    // Get the Flow Entry state from the Network Graph
 	    IFlowEntry iFlowEntry = null;
 	    try {
@@ -244,7 +277,9 @@ public class FlowSynchronizer implements IFlowSyncService {
 			  flowEntryId, sw.getId());
 		return;
 	    }
+	    dbTime = System.nanoTime() - startDB;
 
+	    double startExtract = System.nanoTime();
 	    FlowEntry flowEntry =
 		FlowDatabaseOperation.extractFlowEntry(iFlowEntry);
 	    if (flowEntry == null) {
@@ -252,8 +287,11 @@ public class FlowSynchronizer implements IFlowSyncService {
 			  flowEntryId, sw.getId());
 		return;
 	    }
-
+	    extractTime = System.nanoTime() - startExtract;
+	    
+	    double startPush = System.nanoTime();
 	    pusher.pushFlowEntry(sw, flowEntry);
+	    pushTime = System.nanoTime() - startPush;
 	}
 	
 	/**
