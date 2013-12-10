@@ -164,6 +164,8 @@ def print_flow_path(parsedResult):
   flowPathType = parsedResult['flowPathType']
   flowPathUserState = parsedResult['flowPathUserState']
   flowPathFlags = parsedResult['flowPathFlags']['flags']
+  idleTimeout = parsedResult['idleTimeout']
+  hardTimeout = parsedResult['hardTimeout']
   srcSwitch = parsedResult['dataPath']['srcPort']['dpid']['value']
   srcPort = parsedResult['dataPath']['srcPort']['port']['value']
   dstSwitch = parsedResult['dataPath']['dstPort']['dpid']['value']
@@ -181,7 +183,7 @@ def print_flow_path(parsedResult):
       flowPathFlagsStr += ","
     flowPathFlagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY"
 
-  print "FlowPath: (flowId = %s installerId = %s flowPathType = %s flowPathUserState = %s flowPathFlags = 0x%x(%s) src = %s/%s dst = %s/%s)" % (flowId, installerId, flowPathType, flowPathUserState, flowPathFlags, flowPathFlagsStr, srcSwitch, srcPort, dstSwitch, dstPort)
+  print "FlowPath: (flowId = %s installerId = %s flowPathType = %s flowPathUserState = %s flowPathFlags = 0x%x(%s) src = %s/%s dst = %s/%s idleTimeout = %s hardTimeout = %s)" % (flowId, installerId, flowPathType, flowPathUserState, flowPathFlags, flowPathFlagsStr, srcSwitch, srcPort, dstSwitch, dstPort, idleTimeout, hardTimeout)
 
   #
   # Print the common match conditions
@@ -205,13 +207,15 @@ def print_flow_path(parsedResult):
   #
   for f in parsedResult['dataPath']['flowEntries']:
     flowEntryId = f['flowEntryId']
+    idleTimeout = f['idleTimeout']
+    hardTimeout = f['hardTimeout']
     dpid = f['dpid']['value']
     userState = f['flowEntryUserState']
     switchState = f['flowEntrySwitchState']
     match = f['flowEntryMatch'];
     actions = f['flowEntryActions']['actions']
 
-    print "  FlowEntry: (%s, %s, %s, %s)" % (flowEntryId, dpid, userState, switchState)
+    print "  FlowEntry: (%s, %s, %s, %s, idleTimeout = %s, hardTimeout = %s)" % (flowEntryId, dpid, userState, switchState, idleTimeout, hardTimeout)
 
     #
     # Print the match conditions

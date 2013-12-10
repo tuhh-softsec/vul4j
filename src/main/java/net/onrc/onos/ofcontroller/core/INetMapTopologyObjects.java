@@ -251,6 +251,20 @@ public interface INetMapTopologyObjects {
 		@Property("flow_path_flags")
 		public void setFlowPathFlags(Long flowPathFlags);
 
+		@JsonProperty("idleTimeout")
+		@Property("idle_timeout")
+		public Integer getIdleTimeout();
+
+		@Property("idle_timeout")
+		public void setIdleTimeout(Integer idleTimeout);
+
+		@JsonProperty("hardTimeout")
+		@Property("hard_timeout")
+		public Integer getHardTimeout();
+
+		@Property("hard_timeout")
+		public void setHardTimeout(Integer hardTimeout);
+
 		@JsonProperty("srcDpid")
 		@Property("src_switch")
 		public String getSrcSwitch();
@@ -404,6 +418,20 @@ public interface INetMapTopologyObjects {
 
 		@Property("flow_entry_id")
 		public void setFlowEntryId(String flowEntryId);
+
+		@JsonProperty("idleTimeout")
+		@Property("idle_timeout")
+		public Integer getIdleTimeout();
+
+		@Property("idle_timeout")
+		public void setIdleTimeout(Integer idleTimeout);
+
+		@JsonProperty("hardTimeout")
+		@Property("hard_timeout")
+		public Integer getHardTimeout();
+
+		@Property("hard_timeout")
+		public void setHardTimeout(Integer hardTimeout);
 
 		@Property("switch_dpid")
 		public String getSwitchDpid();
