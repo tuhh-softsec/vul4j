@@ -17,7 +17,10 @@ JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:+UseAdaptiveSizePolicy -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:MaxInlineSize=8192 -XX:FreqInlineSize=8192"
+<<<<<<< HEAD
 JVM_OPTS="$JVM_OPTS -javaagent:$ONOS_HOME/lib/jamm-0.2.5.jar"
+=======
+>>>>>>> d206f6f79247ca2b335d7bde1c9ed67222f50a87
 JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 		-XX:+UseThreadPriorities \
 		-XX:ThreadPriorityPolicy=42 \
