@@ -51,7 +51,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public ISwitchObject newSwitch(final String dpid) {
-	    System.out.println("newSwitch");
+	    //System.out.println("newSwitch");
 	    ISwitchObject obj = (ISwitchObject) conn.getFramedGraph().addVertex(null, ISwitchObject.class);
 	    if (obj != null) {
 		obj.setType("switch");
@@ -65,7 +65,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public Iterable<ISwitchObject> getAllSwitches() {
-	    System.out.println("getAllSwitches");
+	    //System.out.println("getAllSwitches");
 	    Iterable<ISwitchObject> switches = conn.getFramedGraph().getVertices("type", "switch", ISwitchObject.class);
 	    return switches;
 	}
@@ -75,7 +75,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public Iterable<ISwitchObject> getInactiveSwitches() {
-	    System.out.println("getInactiveSwitches");
+	    //System.out.println("getInactiveSwitches");
 	    Iterable<ISwitchObject> switches = conn.getFramedGraph().getVertices("type", "switch", ISwitchObject.class);
 	    List<ISwitchObject> inactiveSwitches = new ArrayList<ISwitchObject>();
 
@@ -103,13 +103,13 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public void removeSwitch(ISwitchObject sw) {
-	    System.out.println("removeSwitch");
+	    //System.out.println("removeSwitch");
 	    conn.getFramedGraph().removeVertex(sw.asVertex());
 	}
 
 	@Override
 	public IPortObject newPort(String dpid, Short portNum) {
-	    System.out.println("newPort");
+	    //System.out.println("newPort");
 	    IPortObject obj = (IPortObject) conn.getFramedGraph().addVertex(null, IPortObject.class);
 	    if (obj != null) {
 		obj.setType("port");
@@ -142,7 +142,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IPortObject searchPort(String dpid, Short number) {
-	    System.out.println("searchPort");
+	    //System.out.println("searchPort");
 	    String id = dpid + number.toString();
 	    return (conn.getFramedGraph() != null && conn.getFramedGraph().getVertices("port_id", id).iterator().hasNext())
 		    ? (IPortObject) conn.getFramedGraph().getVertices("port_id", id, IPortObject.class).iterator().next() : null;
@@ -155,7 +155,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public void removePort(IPortObject port) {
-	    System.out.println("removeProt");
+	    //System.out.println("removeProt");
 	    if (conn.getFramedGraph() != null) {
 		conn.getFramedGraph().removeVertex(port.asVertex());
 	    }
@@ -166,7 +166,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IDeviceObject newDevice() {
-	    System.out.println("newDevice");
+	    //System.out.println("newDevice");
 	    IDeviceObject obj = (IDeviceObject) conn.getFramedGraph().addVertex(null, IDeviceObject.class);
 	    if (obj != null) {
 		obj.setType("device");
@@ -179,7 +179,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public Iterable<IDeviceObject> getDevices() {
-	    System.out.println("getDeiveces");
+	    //System.out.println("getDeiveces");
 	    return conn.getFramedGraph() != null ? conn.getFramedGraph().getVertices("type", "device", IDeviceObject.class) : null;
 	}
 
@@ -189,7 +189,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public void removeDevice(IDeviceObject dev) {
-	    System.out.println("removeDevice");
+	    //System.out.println("removeDevice");
 	    if (conn.getFramedGraph() != null) {
 		conn.getFramedGraph().removeVertex(dev.asVertex());
 	    }
@@ -200,9 +200,9 @@ public abstract class DBOperation implements IDBOperation {
 	*/
 	@Override
 	public IFlowPath newFlowPath() {
-	    System.out.println("newFlowPath");
+	    //System.out.println("newFlowPath");
 	    IFlowPath flowPath = (IFlowPath)conn.getFramedGraph().addVertex(null, IFlowPath.class);
-	    System.out.println("flowPath : " + flowPath);
+	    //System.out.println("flowPath : " + flowPath);
 	    if (flowPath != null) {
 		flowPath.setType("flow");
 	    }
@@ -230,7 +230,7 @@ public abstract class DBOperation implements IDBOperation {
 	*/
 	@Override
 	public ISwitchObject searchSwitch(final String dpid) {
-	    System.out.println("searchSwitch");
+	    //System.out.println("searchSwitch");
 	    return (conn.getFramedGraph() != null && conn.getFramedGraph().getVertices("dpid", dpid).iterator().hasNext())
 		    ? (ISwitchObject) (conn.getFramedGraph().getVertices("dpid", dpid, ISwitchObject.class).iterator().next()) : null;
 	}
@@ -268,7 +268,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IFlowPath searchFlowPath(final FlowId flowId) {
-	    System.out.println("searchFlowPath");
+	    //System.out.println("searchFlowPath");
 	    return conn.getFramedGraph().getVertices("flow_id", flowId.toString()).iterator().hasNext()
 		    ? (IFlowPath) conn.getFramedGraph().getVertices("flow_id", flowId.toString(),
 		    IFlowPath.class).iterator().next() : null;
@@ -279,7 +279,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public Iterable<IFlowPath> getAllFlowPaths() {
-	    System.out.println("getAllFlowPaths");
+	    //System.out.println("getAllFlowPaths");
 	    Iterable<IFlowPath> flowPaths = conn.getFramedGraph().getVertices("type", "flow", IFlowPath.class);
 
 	    List<IFlowPath> nonNullFlows = new ArrayList<IFlowPath>();
@@ -298,7 +298,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public void removeFlowPath(IFlowPath flowPath) {
-	    System.out.println("removeFlowPath");
+	    //System.out.println("removeFlowPath");
 	    conn.getFramedGraph().removeVertex(flowPath.asVertex());
 	}
 	
@@ -308,7 +308,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
-	    System.out.println("searchFlowEntry");
+	    //System.out.println("searchFlowEntry");
 	    return conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString()).iterator().hasNext()
 		    ? (IFlowEntry)conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString(),
 		    IFlowEntry.class).iterator().next() : null;
@@ -328,7 +328,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public void removeFlowEntry(IFlowEntry flowEntry) {
-	    System.out.println("removeFlowEntry");
+	    //System.out.println("removeFlowEntry");
 	    conn.getFramedGraph().removeVertex(flowEntry.asVertex());
 	}
 	
@@ -337,7 +337,7 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IFlowEntry newFlowEntry() {
-	    System.out.println("newFlowEntry");
+	    //System.out.println("newFlowEntry");
 	    IFlowEntry flowEntry = (IFlowEntry) conn.getFramedGraph().addVertex(null, IFlowEntry.class);
 	    if (flowEntry != null) {
 		flowEntry.setType("flow_entry");
@@ -384,7 +384,7 @@ public abstract class DBOperation implements IDBOperation {
 	}
 
 	public void removeIpv4Address(IIpv4Address ipv4Address) {
-		System.out.println("removeIpv4Address");
+		//System.out.println("removeIpv4Address");
 		conn.getFramedGraph().removeVertex(ipv4Address.asVertex());
 	}
 

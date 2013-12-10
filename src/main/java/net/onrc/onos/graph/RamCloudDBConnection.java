@@ -30,13 +30,9 @@ public class RamCloudDBConnection extends DBConnection {
 	//System.out.println("coordinatorURL "+ coordinatorURL);
         //graph = new RamCloudGraph(coordinatorURL);
 	//graph = RamCloudThreadLocal.get();
-	System.out.println("ThreadId = " + Thread.currentThread().getId() + " graph = " + graph);
-	//if (graph == null) {
+	//System.out.println("ThreadId = " + Thread.currentThread().getId() + " graph = " + graph);
 	graph = new RamCloudGraph("fast+udp:host=10.128.4.104,port=12246");
-	    //RamCloudThreadLocal.set(graph);
-	//}
 	Set<String> s = graph.getIndexedKeys(Vertex.class);
-	System.out.println("index : " + s);
         if (!s.contains("dpid")) {
             graph.createKeyIndex("dpid", Vertex.class);
         }
