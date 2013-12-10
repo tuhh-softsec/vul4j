@@ -10,6 +10,7 @@
 
 import csv
 import os
+import sys
 from time import sleep, strftime
 from subprocess import Popen, call, check_output, PIPE
 from mininet.net import Mininet
@@ -25,8 +26,10 @@ except:
   call( 'apt-get install -y python-pexpect', stdout=PIPE, shell=True )
   import pexpect
 
+ONOS_HOME = '..'
+
 # Verify that tcpkill is installed
-if Popen( 'which tcpkill', shell=True).communicate():
+if not Popen( 'which tcpkill', stdout=PIPE, shell=True).communicate():
   print '* Installing tcpkill'
   call( 'apt-get install -y dsniff', stdout=PIPE, shell=True )
 
@@ -60,24 +63,21 @@ def disconnect():
   return results
 
 def startNet(net):
-  tail = Popen( "exec tail -0f ../onos-logs/onos.onosdev1.log", stdout=PIPE, shell=True )
-  print 'waiting'
-  #tail = pexpect.spawn( 'tail -0f ../onos-logs/onos.onosdev1.log' )
+  tail = pexpect.spawn( 'tail -0f %s/onos-logs/onos.onosdev1.log' % ONOS_HOME )
   net.start()
-  #index = tail.expect(['Sync time (ms)', pexpect.TIMEOUT])
-  #if index == 1:
-  #  print '* ONOS not started'
-  #  exit(1)
-  print 'done'
-  waitForResult(tail)
-  tail.kill()
+  index = tail.expect(['Sync time \(ms\)', pexpect.EOF, pexpect.TIMEOUT])
+  if index >= 1:
+    print '* ONOS not started'
+    net.stop()
+    exit(1)
+  tail.terminate()
 
 def dumpFlows():
   return check_output( 'ovs-ofctl dump-flows s1', shell=True )
 
 def addFlowsToONOS(n):
-  call( 'web/generate_flows.py 1 %d > /tmp/flows.txt' % n, shell=True )
-  call( 'web/add_flow.py -m onos -f /tmp/flows.txt', shell=True )
+  call( './generate_flows.py 1 %d > /tmp/flows.txt' % n, shell=True )
+  call( '%s/web/add_flow.py -m onos -f /tmp/flows.txt' % ONOS_HOME, shell=True )
   while True:
     output = check_output( 'ovs-ofctl dump-flows s1', shell=True )
     lines = len(output.split('\n'))
@@ -86,7 +86,7 @@ def addFlowsToONOS(n):
     sleep(1)
   count = 0
   while True:
-    output = pexpect.spawn( 'web/get_flow.py all' )
+    output = pexpect.spawn( '%s/web/get_flow.py all' % ONOS_HOME )
     while count < n:
       if output.expect(['FlowEntry', pexpect.EOF], timeout=2000) == 1:
         break
@@ -95,7 +95,7 @@ def addFlowsToONOS(n):
     sleep(5)
 
 def removeFlowsFromONOS():
-  call( 'web/delete_flow.py all', shell=True )
+  call( '%s/web/delete_flow.py all' % ONOS_HOME, shell=True )
   while True:
     output = check_output( 'ovs-ofctl dump-flows s1', shell=True )
     lines = len(output.split('\n'))
@@ -103,7 +103,7 @@ def removeFlowsFromONOS():
       break
     sleep(1)
   while True:
-    output = pexpect.spawn( 'web/get_flow.py all' )
+    output = pexpect.spawn( '%s/web/get_flow.py all' % ONOS_HOME )
     if output.expect(['FlowEntry', pexpect.EOF], timeout=2000) == 1:
       break
     sleep(5)
@@ -112,7 +112,7 @@ def removeFlowsFromONOS():
 # ----------------- Running the test and output  -------------------------
 def test(i, fn):
   # Start tailing the onos log
-  tail = pexpect.spawn( "tail -0f ../onos-logs/onos.onosdev1.log" )
+  tail = pexpect.spawn( "tail -0f %s/onos-logs/onos.onosdev1.log" % ONOS_HOME )
   # disconnect the switch from the controller using tcpkill
   tcp  = Popen( 'exec tcpkill -i lo -9 port 6633 > /dev/null 2>&1', shell=True )
   # wait until the switch has been disconnected
@@ -124,12 +124,19 @@ def test(i, fn):
   # end tcpkill process to reconnect the switch to the controller
   tcp.terminate()
   tail.expect('Sync time \(ms\):', timeout=6000)
+  tail.expect('([\d.]+,?)+\s')
   print tail.match.group(0)
-  print tail.match.after
   tail.terminate()
   sleep(3)
-  return []
-  #return [tail.match.group(x) for x in range(1,5)]
+  return tail.match.group(0).strip().split(',')
+
+def initResults(files):
+  headers = ['# of FEs', 'Flow IDs from Graph', 'FEs from Switch', 'Compare', 
+             'Read FE from graph', 'Extract FE', 'Push', 'Total' ]
+  for filename in files.values():
+    with open(filename, 'w') as csvfile:
+      writer = csv.writer(csvfile)
+      writer.writerow(headers)
 
 def outputResults(filename, n, results):
   results.insert(0, n)
@@ -142,6 +149,7 @@ def runPerf( resultDir, tests):
   fileMap = { 'add':    os.path.join(resultDir, 'add.csv'),
               'delete': os.path.join(resultDir, 'delete.csv'),
               'sync':   os.path.join(resultDir, 'sync.csv') }
+  initResults(fileMap)
   # start Mininet
   topo = SingleSwitchTopo()
   net = Mininet(topo=topo, controller=RemoteController)
@@ -172,7 +180,10 @@ if __name__ == '__main__':
   setLogLevel( 'output' )
   resultDir = strftime( '%Y%m%d-%H%M%S' )
   os.mkdir( resultDir )
-  runPerf( resultDir, [1, 10, 100] )
+  tests = sys.argv[1:]
+  if not tests:
+    tests = [1, 10, 100, 1000, 10000]
+  runPerf( resultDir, tests )
 
 exit()
 
