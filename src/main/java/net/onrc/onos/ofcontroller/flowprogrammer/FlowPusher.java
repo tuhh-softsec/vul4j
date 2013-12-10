@@ -68,8 +68,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
     protected static final int MAX_MESSAGE_SEND = 100;
 
     public static final short PRIORITY_DEFAULT = 100;
-    public static final short FLOWMOD_DEFAULT_IDLE_TIMEOUT = 0;	// infinity
-    public static final short FLOWMOD_DEFAULT_HARD_TIMEOUT = 0;	// infinite
 
 	public enum QueueState {
 		READY,
@@ -722,8 +720,8 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 			}
 		}
 
-		fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
-				.setHardTimeout(FLOWMOD_DEFAULT_HARD_TIMEOUT)
+		fm.setIdleTimeout((short)flowEntry.idleTimeout())
+				.setHardTimeout((short)flowEntry.hardTimeout())
 				.setPriority(PRIORITY_DEFAULT)
 				.setBufferId(OFPacketOut.BUFFER_ID_NONE).setCookie(cookie)
 				.setCommand(flowModCommand).setMatch(match)
