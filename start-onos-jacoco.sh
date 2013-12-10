@@ -4,38 +4,45 @@
 if [ -z "${ONOS_HOME}" ]; then
         ONOS_HOME=`dirname $0`
 fi
-ONOS_LOGBACK="${ONOS_HOME}/logback.`hostname`.xml"
-LOGDIR=${ONOS_HOME}/onos-logs
+
+## Because the script change dir to $ONOS_HOME, we can set ONOS_LOGBACK and LOGDIR relative to $ONOS_HOME
+#ONOS_LOGBACK="${ONOS_HOME}/logback.`hostname`.xml"
+#LOGDIR=${ONOS_HOME}/onos-logs
+ONOS_LOGBACK="./logback.`hostname`.xml"
+LOGDIR=./onos-logs
 ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
 PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
 LOGS="$ONOS_LOG $PCAP_LOG"
 
 # Set JVM options
 JVM_OPTS=""
+## If you want JaCoCo Code Coverage reports... uncomment line below
+JVM_OPTS="$JVM_OPTS -javaagent:${ONOS_HOME}/lib/jacocoagent.jar=dumponexit=true,output=file,destfile=${LOGDIR}/jacoco.exec"
 JVM_OPTS="$JVM_OPTS -server -d64"
-JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
+#JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
+JVM_OPTS="$JVM_OPTS -Xmx1g -Xms1g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:+UseAdaptiveSizePolicy -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:MaxInlineSize=8192 -XX:FreqInlineSize=8192"
-JVM_OPTS="$JVM_OPTS -javaagent:$ONOS_HOME/lib/jamm-0.2.5.jar"
+JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8"
+JVM_OPTS="$JVM_OPTS -XX:OnError=crash-logger" ;# For dumping core
+#JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
 JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 		-XX:+UseThreadPriorities \
 		-XX:ThreadPriorityPolicy=42 \
 		-XX:+UseCompressedOops \
-		-Dcassandra.compaction.priority=1 \
-		-Dcom.sun.management.jmxremote.port=7199 \
+		-Dcom.sun.management.jmxremote.port=7189 \
 		-Dcom.sun.management.jmxremote.ssl=false \
 		-Dcom.sun.management.jmxremote.authenticate=false"
 JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 
-#JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
-
-# Set Main class to start ONOS core
+# Set ONOS core main class
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
 
 if [ -z "${MVN}" ]; then
-    MVN="mvn"
+    MVN="mvn -o"
 fi
+
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
 
@@ -65,7 +72,8 @@ function start {
   done
 
 # Create a logback file if required
-  cat <<EOF_LOGBACK >${ONOS_LOGBACK}
+  if [ ! -f ${ONOS_LOGBACK} ]; then
+    cat <<EOF_LOGBACK >${ONOS_LOGBACK}
 <configuration scan="true" debug="true">
 <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 <encoder>
@@ -89,31 +97,39 @@ function start {
 </root>
 </configuration>
 EOF_LOGBACK
+  fi
 
   # Run floodlight
   echo "Starting ONOS controller ..."
   echo 
 
-  # XXX MVN has to run at the project top dir..
+  # XXX : MVN has to run at the project top dir 
+  echo $ONOS_HOME
   cd ${ONOS_HOME}
-  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties\""
-  ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
+  pwd 
+  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ./conf/onos.properties\""
+
+  ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ./conf/onos.properties" > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
 
   echo "Waiting for ONOS to start..."
   COUNT=0
   ESTATE=0
   while [ "$COUNT" != "10" ]; do
-    COUNT=$((COUNT + 1))
+    echo -n "."
+    sleep 1
+#    COUNT=$((COUNT + 1))
+#    sleep $COUNT
     n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
     if [ "$n" -ge "1" ]; then
+      echo ""
       exit 0
     fi
-    sleep $COUNT
   done
   echo "Timed out"
   exit 1
 
-  sudo -b /usr/sbin/tcpdump -n -i eth0 -s0 -w ${PCAP_LOG} 'tcp port 6633' > /dev/null  2>&1
+#  echo "java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -jar ${ONOS_JAR} -cf ./onos.properties > /dev/null 2>&1 &"
+#  sudo -b /usr/sbin/tcpdump -n -i eth0 -s0 -w ${PCAP_LOG} 'tcp port 6633' > /dev/null  2>&1
 }
 
 function stop {
@@ -123,22 +139,28 @@ function stop {
   pids="$flpid $tdpid"
   for p in ${pids}; do
     if [ x$p != "x" ]; then
-      kill -KILL $p
+      kill -TERM $p
       echo "Killed existing process (pid: $p)"
     fi
   done
 }
 
-function deldb {
-   # Delete the cassandra data
-   if [ -d "/tmp/cassandra" ]; then
-      rm -rf /tmp/cassandra/*
+function check_db {
+   if [ -d "/tmp/cassandra.titan" ]; then
+      echo "Cassandra is running on local berkely db. Exitting"
+      exit
+   fi
+   n=`ps -edalf |grep java |grep apache-cassandra | wc -l`
+   if [ x$n == "x0" ]; then
+      echo "Cassandra is not running. Exitting"
+      exit
    fi
 }
 
 case "$1" in
   start)
     stop
+    check_db
     start 
     ;;
   startifdown)
@@ -151,9 +173,6 @@ case "$1" in
     ;;
   stop)
     stop
-    ;;
-  deldb)
-    deldb
     ;;
   status)
     n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
