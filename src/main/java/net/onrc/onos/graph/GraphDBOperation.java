@@ -299,12 +299,10 @@ public class GraphDBOperation implements IDBOperation {
 	 * @param flowEntry flow entry object
 	 */
 	public IFlowPath getFlowPathByFlowEntry(IFlowEntry flowEntry) {
-		GremlinPipeline<Vertex, IFlowPath> pipe = new GremlinPipeline<Vertex, IFlowPath>();
-		pipe.start(flowEntry.asVertex());
-		pipe.out("flow");
-		@SuppressWarnings({ "rawtypes", "unchecked" })
+		GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
+		pipe.start(flowEntry.asVertex()).out("flow");
 		FramedVertexIterable<IFlowPath> r = new FramedVertexIterable<IFlowPath>(conn.getFramedGraph(),
-				(Iterable) pipe, IFlowPath.class);
+				(Iterable<Vertex>) pipe, IFlowPath.class);
 		return r.iterator().hasNext() ? r.iterator().next() : null;
 	}
 

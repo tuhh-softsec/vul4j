@@ -47,7 +47,6 @@ import com.hazelcast.instance.GroupProperties;
  * The relevant data is stored in the Hazelcast datagrid and shared as
  * appropriate in a multi-node cluster.
  */
-@SuppressWarnings("unused")
 public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     private final static int MAX_BUFFER_SIZE = 64*1024;
 
@@ -100,7 +99,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryAdded(EntryEvent<Long,byte[]> event) {
-		Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -119,7 +117,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryRemoved(EntryEvent<Long,byte[]> event) {
-	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -138,7 +135,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryUpdated(EntryEvent<Long,byte[]> event) {
-	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -181,7 +177,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    if (event.getMember().localMember())
 		return;
 
-	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -206,7 +201,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    if (event.getMember().localMember())
 		return;
 
-	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -231,7 +225,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    if (event.getMember().localMember())
 		return;
 
-	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -268,7 +261,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryAdded(EntryEvent<String,byte[]> event) {
-	    String keyString = (String)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -288,7 +280,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryRemoved(EntryEvent<String,byte[]> event) {
-	    String keyString = (String)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -308,7 +299,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryUpdated(EntryEvent<String,byte[]> event) {
-	    String keyString = (String)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //

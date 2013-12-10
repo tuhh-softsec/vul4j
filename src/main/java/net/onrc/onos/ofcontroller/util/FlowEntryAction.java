@@ -33,7 +33,6 @@ public class FlowEntryAction {
 	ACTION_ENQUEUE		((short)0xb),	// Output to queue on port
 	ACTION_VENDOR		((short)0xffff); // Vendor-specific
 
-	@SuppressWarnings("unused")
 	private final short value;	// The value
 
 	/**
@@ -43,6 +42,10 @@ public class FlowEntryAction {
 	 */
 	private ActionValues(short value) {
 	    this.value = value;
+	}
+	
+	public short toShort() {
+		return value;
 	}
     }
 

@@ -79,8 +79,9 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 	 * @author Naoki Shiota
 	 *
 	 */
-	@SuppressWarnings("serial")
 	private class SwitchQueue extends ArrayDeque<OFMessage> {
+		private static final long serialVersionUID = 1L;
+
 		QueueState state;
 		
 		// Max rate of sending message (bytes/ms). 0 implies no limitation.

@@ -14,8 +14,6 @@ import com.google.common.net.InetAddresses;
 
 public class Interface {
 	private final String name;
-	@SuppressWarnings("unused")
-	private final SwitchPort switchPort;
 	private final long dpid;
 	private final short port;
 	private final InetAddress ipAddress;
@@ -32,7 +30,6 @@ public class Interface {
 		this.port = port;
 		this.ipAddress = InetAddresses.forString(ipAddress);
 		this.prefixLength = prefixLength;
-		this.switchPort = new SwitchPort(new Dpid(this.dpid), new Port(this.port));
 	}
 	
 	public String getName() {
