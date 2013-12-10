@@ -9,7 +9,6 @@ LOGDIR=${ONOS_HOME}/onos-logs
 ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
 PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
 LOGS="$ONOS_LOG $PCAP_LOG"
-CASSANDRA_DIR=${HOME}/apache-cassandra-1.2.4
 
 # Set JVM options
 JVM_OPTS=""
