@@ -5,7 +5,11 @@
 
  Usage: 
    1. Ensure that ONOS is running
-   2. 
+   2. sudo ./flow-sync-perf.sh <list of tests>
+      e.g. sudo ./flow-sync-perf.sh 1 10 100 1000 
+      or to run the default tests:
+      sudo ./flow-sync-perf.sh
+   3. Results are CSV files in a date stamped directory
 '''
 
 import csv
