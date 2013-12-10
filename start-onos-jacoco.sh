@@ -99,7 +99,7 @@ function start {
 EOF_LOGBACK
   fi
 
-  # Run floodlight
+  # Run ONOS
   echo "Starting ONOS controller ..."
   echo 
 
