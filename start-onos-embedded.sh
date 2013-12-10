@@ -90,7 +90,7 @@ function start {
 </configuration>
 EOF_LOGBACK
 
-  # Run floodlight
+  # Run ONOS
   echo "Starting ONOS controller ..."
   echo 
 
