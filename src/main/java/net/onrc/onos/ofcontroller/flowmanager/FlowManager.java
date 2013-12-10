@@ -28,6 +28,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
+import net.onrc.onos.ofcontroller.forwarding.IForwardingService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.*;
 
@@ -134,7 +135,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	l.add(INetworkGraphService.class);
 	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
-		l.add(IFlowPusherService.class);
+	l.add(IFlowPusherService.class);
+	l.add(IForwardingService.class);
         return l;
     }
 
