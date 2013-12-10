@@ -354,8 +354,25 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param sw the switch the Flow Entry expired on.
      * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
-    public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId) {
-	// TODO: Not implemented yet
+    public void flowEntryOnSwitchExpired(IOFSwitch sw,
+					 FlowEntryId flowEntryId) {
+	// Find the Flow Entry
+	FlowEntry flowEntry = datagridService.getFlowEntry(flowEntryId);
+	if (flowEntryId == null)
+	    return;		// Flow Entry not found
+
+	// Find the Flow Path
+	FlowPath flowPath = datagridService.getFlow(flowEntry.flowId());
+	if (flowPath == null)
+	    return;		// Flow Path not found
+
+	//
+	// Remove the Flow if the Flow Entry expired on the first switch
+	//
+	Dpid srcDpid = flowPath.dataPath().srcPort().dpid();
+	if (srcDpid.value() != sw.getId())
+	    return;
+	deleteFlow(flowPath.flowId());
     }
 
     /**
