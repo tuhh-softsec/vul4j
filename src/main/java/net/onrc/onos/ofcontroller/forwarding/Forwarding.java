@@ -3,6 +3,7 @@ package net.onrc.onos.ofcontroller.forwarding;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -108,12 +109,18 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-		return null;
+		List<Class<? extends IFloodlightService>> services = 
+				new ArrayList<Class<? extends IFloodlightService>>(1);
+		services.add(IForwardingService.class);
+		return services;
 	}
 
 	@Override
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
-		return null;
+		Map<Class<? extends IFloodlightService>, IFloodlightService> impls = 
+				new HashMap<Class<? extends IFloodlightService>, IFloodlightService>(1);
+		impls.put(IForwardingService.class, this);
+		return impls;
 	}
 
 	@Override
