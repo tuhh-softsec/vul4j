@@ -456,6 +456,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private String flowPathType;
 		private String flowPathUserState;
 		private Long flowPathFlags;
+		private Integer idleTimeout;
+		private Integer hardTimeout;
 		private String dataPathSummary;
 		private Short srcPort,dstPort;
 		private String matchSrcMac,matchDstMac;
@@ -474,6 +476,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		private String flowPathTypeToUpdate;
 		private String flowPathUserStateToUpdate;
 		private Long flowPathFlagsToUpdate;
+		private Integer idleTimeoutToUpdate;
+		private Integer hardTimeoutToUpdate;
 		private String dataPathSummaryToUpdate;
 		private Short srcPortToUpdate,dstPortToUpdate;
 		private String matchSrcMacToUpdate,matchDstMacToUpdate;
@@ -514,6 +518,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(flowPathTypeToUpdate != null) { flowPathType = flowPathTypeToUpdate; }
 			if(flowPathUserStateToUpdate != null) { flowPathUserState = flowPathUserStateToUpdate; }
 			if(flowPathFlagsToUpdate != null) { flowPathFlags = flowPathFlagsToUpdate; }
+			if(idleTimeoutToUpdate != null) { idleTimeout = idleTimeoutToUpdate; }
+			if(hardTimeoutToUpdate != null) { hardTimeout = hardTimeoutToUpdate; }
 			if(srcSwToUpdate != null) { srcSw = srcSwToUpdate; }
 			if(dstSwToUpdate != null) { dstSw = dstSwToUpdate; }
 			if(dataPathSummaryToUpdate != null) { dataPathSummary = dataPathSummaryToUpdate; }
@@ -545,6 +551,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			flowPathTypeToUpdate = null;
 			flowPathUserStateToUpdate = null;
 			flowPathFlagsToUpdate = null;
+			idleTimeoutToUpdate = null;
+			hardTimeoutToUpdate = null;
 			srcSwToUpdate = dstSwToUpdate = dataPathSummaryToUpdate = null;
 			srcPortToUpdate = dstPortToUpdate = null;
 			matchSrcMacToUpdate = matchDstMacToUpdate = null;
@@ -565,6 +573,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setFlowPathTypeForTest(String flowPathType) { this.flowPathType = flowPathType; }
 		public void setFlowPathUserStateForTest(String flowPathUserState) { this.flowPathUserState = flowPathUserState; }
 		public void setFlowPathFlagsForTest(Long flowPathFlags) { this.flowPathFlags = flowPathFlags; }
+		public void setIdleTimeoutForTest(Integer idleTimeout) { this.idleTimeout = idleTimeout; }
+		public void setHardTimeoutForTest(Integer hardTimeout) { this.hardTimeout = hardTimeout; }
 		public void setSrcSwForTest(String srcSw) { this.srcSw = srcSw; }
 		public void setDstSwForTest(String dstSw) { this.dstSw = dstSw; }
 		public void setDataPathSummaryForTest(String dataPathSummary) { this.dataPathSummary = dataPathSummary; }
@@ -632,6 +642,18 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		public void setFlowPathFlags(Long flowPathFlags) { flowPathFlagsToUpdate = flowPathFlags; }
+
+		@Override
+		public Integer getIdleTimeout() { return idleTimeout; }
+
+		@Override
+		public void setIdleTimeout(Integer idleTimeout) { idleTimeoutToUpdate = idleTimeout; }
+
+		@Override
+		public Integer getHardTimeout() { return hardTimeout; }
+
+		@Override
+		public void setHardTimeout(Integer hardTimeout) { hardTimeoutToUpdate = hardTimeout; }
 
 		@Override
 		public String getSrcSwitch() { return srcSw; }
@@ -768,6 +790,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 
 	public static class TestFlowEntry implements IFlowEntry {
 		private String state,type,entryId,dpid,userState,switchState,errorStateType,errorStateCode;
+		private Integer idleTimeout;
+		private Integer hardTimeout;
 		private Short matchInPort;
 		private String matchSrcMac,matchDstMac;
 		private Short matchEtherFrameType;
@@ -785,6 +809,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 		private String stateToUpdate,typeToUpdate,entryIdToUpdate,dpidToUpdate,
 			userStateToUpdate,switchStateToUpdate,errorStateTypeToUpdate,errorStateCodeToUpdate;
+		private Integer idleTimeoutToUpdate;
+		private Integer hardTimeoutToUpdate;
 		private Short matchInPortToUpdate;
 		private String matchSrcMacToUpdate,matchDstMacToUpdate;
 		private Short matchEtherFrameTypeToUpdate;
@@ -810,6 +836,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 			if(stateToUpdate != null) { state = stateToUpdate; }
 			if(typeToUpdate != null) { type = typeToUpdate; }
 			if(entryIdToUpdate != null) { entryId = entryIdToUpdate; }
+			if(idleTimeoutToUpdate != null) { idleTimeout = idleTimeoutToUpdate; }
+			if(hardTimeoutToUpdate != null) { hardTimeout = hardTimeoutToUpdate; }
 			if(dpidToUpdate != null) { dpid = dpidToUpdate; }
 			if(userStateToUpdate != null) { userState = userStateToUpdate; }
 			if(switchStateToUpdate != null) { switchState = switchStateToUpdate; }
@@ -844,6 +872,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		
 		public void clearUncommitedData() {
 			stateToUpdate = typeToUpdate = entryIdToUpdate = dpidToUpdate = null;
+			idleTimeoutToUpdate = hardTimeoutToUpdate = null;
 			userStateToUpdate = switchStateToUpdate = errorStateTypeToUpdate = errorStateCodeToUpdate = null;
 			matchInPortToUpdate = null;
 			matchSrcMacToUpdate = matchDstMacToUpdate = null;
@@ -864,6 +893,8 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		public void setStateForTest(String state) { this.state = state; }
 		public void setTypeForTest(String type) { this.type = type; }
 		public void setEntryIdForTest(String entryId) { this.entryId = entryId; }
+		public void setIdleTimeoutForTest(Integer idleTimeout) { this.idleTimeout = idleTimeout; }
+		public void setHardTimeoutForTest(Integer hardTimeout) { this.hardTimeout = hardTimeout; }
 		public void setDpidForTest(String dpid) { this.dpid = dpid; }
 		public void setUserStateForTest(String userState) { this.userState = userState; }
 		public void setSwitchStateForTest(String switchState) { this.switchState = switchState; }
@@ -911,6 +942,18 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	
 		@Override
 		public void setFlowEntryId(String flowEntryId) { entryIdToUpdate = flowEntryId; }
+
+		@Override
+		public Integer getIdleTimeout() { return idleTimeout; }
+	
+		@Override
+		public void setIdleTimeout(Integer idleTimeout) { idleTimeoutToUpdate = idleTimeout; }
+
+		@Override
+		public Integer getHardTimeout() { return hardTimeout; }
+	
+		@Override
+		public void setHardTimeout(Integer hardTimeout) { hardTimeoutToUpdate = hardTimeout; }
 	
 		@Override
 		public String getSwitchDpid() { return dpid; }

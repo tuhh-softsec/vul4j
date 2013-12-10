@@ -13,6 +13,8 @@ public class FlowEntryTest {
 	
 	FlowId flowId = new FlowId(0x1234);
 	FlowEntryId flowEntryId = new FlowEntryId(0x5678);
+	int idleTimeout = 5;
+	int hardTimeout = 10;
 	FlowEntryMatch match;
 	FlowEntryActions actions;
 	
@@ -50,6 +52,9 @@ public class FlowEntryTest {
 
 		flowEntryId = new FlowEntryId("0x5678");
 		entry.setFlowEntryId(flowEntryId);
+
+		entry.setIdleTimeout(5);
+		entry.setHardTimeout(10);
 		
 		dpid = new Dpid("CA:FE");
 		entry.setDpid( dpid );
@@ -188,6 +193,16 @@ public class FlowEntryTest {
 	}
 
 	@Test
+	public void testIdleTimeout(){
+		assertEquals("idleTimeout", idleTimeout, entry.idleTimeout() );
+	}
+
+	@Test
+	public void testHardTimeout(){
+		assertEquals("hardTimeout", hardTimeout, entry.hardTimeout() );
+	}
+
+	@Test
 	public void testFlowEntryMatch(){
 		assertEquals("flowEntryMatch", match, entry.flowEntryMatch() );
 	}
@@ -237,8 +252,8 @@ public class FlowEntryTest {
 	@Test
 	public void testToString(){
 		FlowEntry def = new FlowEntry();
-		assertEquals("toString", def.toString(), "[ flowEntryActions=[] flowEntryUserState=FE_USER_UNKNOWN flowEntrySwitchState=FE_SWITCH_UNKNOWN]" );
-		assertEquals("toString", entry.toString(), "[flowEntryId=0x5678 flowId=0x1234 flowEntryMatch=[inPort=1 srcMac=01:02:03:04:05:06 dstMac=06:05:04:03:02:01 ethernetFrameType=2 vlanId=3 vlanPriority=4 srcIPv4Net=127.0.0.1/32 dstIPv4Net=127.0.0.2/32 ipProto=5 ipToS=6 srcTcpUdpPort=7 dstTcpUdpPort=8] flowEntryActions=[[type=ACTION_OUTPUT action=[port=9 maxLen=0]];[type=ACTION_OUTPUT action=[port=-3 maxLen=0]];[type=ACTION_SET_VLAN_VID action=[vlanId=3]];[type=ACTION_SET_VLAN_PCP action=[vlanPriority=4]];[type=ACTION_STRIP_VLAN action=[stripVlan=true]];[type=ACTION_SET_DL_SRC action=[addr=01:02:03:04:05:06]];[type=ACTION_SET_DL_DST action=[addr=06:05:04:03:02:01]];[type=ACTION_SET_NW_SRC action=[addr=127.0.0.3]];[type=ACTION_SET_NW_DST action=[addr=127.0.0.4]];[type=ACTION_SET_NW_TOS action=[ipToS=6]];[type=ACTION_SET_TP_SRC action=[port=7]];[type=ACTION_SET_TP_DST action=[port=8]];[type=ACTION_ENQUEUE action=[port=10 queueId=11]];] dpid=00:00:00:00:00:00:ca:fe inPort=1 outPort=9 flowEntryUserState=FE_USER_ADD flowEntrySwitchState=FE_SWITCH_UPDATED flowEntryErrorState=[type=12 code=13]]" );
+		assertEquals("toString", def.toString(), "[ idleTimeout=0 hardTimeout=0 flowEntryActions=[] flowEntryUserState=FE_USER_UNKNOWN flowEntrySwitchState=FE_SWITCH_UNKNOWN]" );
+		assertEquals("toString", entry.toString(), "[flowEntryId=0x5678 flowId=0x1234 idleTimeout=5 hardTimeout=10 flowEntryMatch=[inPort=1 srcMac=01:02:03:04:05:06 dstMac=06:05:04:03:02:01 ethernetFrameType=2 vlanId=3 vlanPriority=4 srcIPv4Net=127.0.0.1/32 dstIPv4Net=127.0.0.2/32 ipProto=5 ipToS=6 srcTcpUdpPort=7 dstTcpUdpPort=8] flowEntryActions=[[type=ACTION_OUTPUT action=[port=9 maxLen=0]];[type=ACTION_OUTPUT action=[port=-3 maxLen=0]];[type=ACTION_SET_VLAN_VID action=[vlanId=3]];[type=ACTION_SET_VLAN_PCP action=[vlanPriority=4]];[type=ACTION_STRIP_VLAN action=[stripVlan=true]];[type=ACTION_SET_DL_SRC action=[addr=01:02:03:04:05:06]];[type=ACTION_SET_DL_DST action=[addr=06:05:04:03:02:01]];[type=ACTION_SET_NW_SRC action=[addr=127.0.0.3]];[type=ACTION_SET_NW_DST action=[addr=127.0.0.4]];[type=ACTION_SET_NW_TOS action=[ipToS=6]];[type=ACTION_SET_TP_SRC action=[port=7]];[type=ACTION_SET_TP_DST action=[port=8]];[type=ACTION_ENQUEUE action=[port=10 queueId=11]];] dpid=00:00:00:00:00:00:ca:fe inPort=1 outPort=9 flowEntryUserState=FE_USER_ADD flowEntrySwitchState=FE_SWITCH_UPDATED flowEntryErrorState=[type=12 code=13]]" );
 	}
 
 }
