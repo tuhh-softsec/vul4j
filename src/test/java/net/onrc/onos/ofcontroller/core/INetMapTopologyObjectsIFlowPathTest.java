@@ -158,6 +158,42 @@ public class INetMapTopologyObjectsIFlowPathTest {
 
 	/**
 	 * Desc:
+	 *  Test method for get and set Idle Timeout method.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set the Idle Timeout.
+	 * 2. Should get the Idle Timeout.
+	 */
+	@Test
+	public void testSetGetIdleTimeout() {
+		String flowId = "xx";
+		Integer idleTimeout = 5;
+		flowPath.setFlowId(flowId);
+		flowPath.setIdleTimeout(idleTimeout);
+		assertEquals(flowPath.getIdleTimeout(), idleTimeout);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for get and set Hard Timeout method.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set the Hard Timeout.
+	 * 2. Should get the Hard Timeout.
+	 */
+	@Test
+	public void testSetGetHardTimeout() {
+		String flowId = "xx";
+		Integer hardTimeout = 5;
+		flowPath.setFlowId(flowId);
+		flowPath.setHardTimeout(hardTimeout);
+		assertEquals(flowPath.getHardTimeout(), hardTimeout);
+	}
+
+	/**
+	 * Desc:
 	 *  Test method for get and set SourceSwitch method.
 	 * Condition:
 	 *  N/A
