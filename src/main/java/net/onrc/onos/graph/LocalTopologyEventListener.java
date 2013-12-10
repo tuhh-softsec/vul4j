@@ -36,7 +36,7 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	}
 
 	@Override
-	public void edgeRemoved(Edge e, Map<String, Object> arg1) {
+	public void edgeRemoved(Edge e) {
 		// TODO Auto-generated method stub
 		// Fire NetMapEvents (LinkRemoved, FlowEntryRemoved, HostRemoved, PortRemoved)
 		TitanEdge edge = (TitanEdge) e;
@@ -74,7 +74,7 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	}
 
 	@Override
-	public void vertexRemoved(Vertex vertex, Map<String, Object> arg1) {
+	public void vertexRemoved(Vertex vertex) {
 		// TODO Auto-generated method stub
 		// Generate NetMapEvents 
 		String type = (String) vertex.getProperty("type");
