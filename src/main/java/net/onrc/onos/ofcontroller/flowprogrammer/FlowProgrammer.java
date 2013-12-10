@@ -42,7 +42,6 @@ import net.onrc.onos.registry.controller.IControllerRegistryService;
 public class FlowProgrammer implements IFloodlightModule, 
 				       IOFMessageListener,
 				       IOFSwitchListener {
-    @SuppressWarnings("unused")
     // flag to enable FlowSynchronizer
     private static final boolean enableFlowSync = true;
     protected static Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
@@ -155,8 +154,10 @@ public class FlowProgrammer implements IFloodlightModule,
     public void addedSwitch(IOFSwitch sw) {
 	log.debug("Switch added: {}", sw.getId());
 
-	if (enableFlowSync && registryService.hasControl(sw.getId())) {
-	    synchronizer.synchronize(sw);
+	if (enableFlowSync) {
+		if (registryService.hasControl(sw.getId())) {
+		    synchronizer.synchronize(sw);
+		}
 	}
     }
 

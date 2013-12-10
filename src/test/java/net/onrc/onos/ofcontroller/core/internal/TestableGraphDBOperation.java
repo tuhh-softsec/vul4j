@@ -326,6 +326,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 	 * tests in net.onrc.onos.ofcontroller.core.*
 	 */
 	public static class TestDeviceObject implements IDeviceObject {
+		@SuppressWarnings("unused")
 		private String state,type,mac,ipaddr;
 		private List<IPortObject> ports;
 		private List<ISwitchObject> switches;

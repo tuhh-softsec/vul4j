@@ -14,6 +14,7 @@ import com.google.common.net.InetAddresses;
 
 public class Interface {
 	private final String name;
+	@SuppressWarnings("unused")
 	private final SwitchPort switchPort;
 	private final long dpid;
 	private final short port;

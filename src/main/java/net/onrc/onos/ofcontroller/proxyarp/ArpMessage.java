@@ -2,10 +2,6 @@ package net.onrc.onos.ofcontroller.proxyarp;
 
 import java.io.Serializable;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 public class ArpMessage implements Serializable {
 
@@ -17,8 +13,6 @@ public class ArpMessage implements Serializable {
 	private final Type type;
 	private final InetAddress forAddress;
 	private final byte[] packetData;
-	
-	private final List<SwitchPort> switchPorts = new ArrayList<SwitchPort>();
 	
 	public enum Type {
 		REQUEST,

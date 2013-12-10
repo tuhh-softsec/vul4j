@@ -105,7 +105,8 @@ public class FlowPathFlags {
      *
      * @return the Flow Path flags as a string.
      */
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     public String toString() {
 	String flagsStr = null;
 	String ret = "[flags=";

@@ -265,6 +265,9 @@ public class Topology {
 
 	    break;
 	}
+	default:
+		// unexpected case
+		break;
 	}
 
 	return isModified;
@@ -315,6 +318,9 @@ public class Topology {
 	    }
 	    break;
 	}
+	default:
+		// unexpected case
+		break;
 	}
 
 	return isModified;

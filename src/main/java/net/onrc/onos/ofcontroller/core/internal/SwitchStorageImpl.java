@@ -493,6 +493,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void deletePortImpl(IPortObject port) {
 		if (port != null) {
 			op.removePort(port);

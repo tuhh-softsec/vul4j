@@ -33,6 +33,7 @@ public class FlowEntryAction {
 	ACTION_ENQUEUE		((short)0xb),	// Output to queue on port
 	ACTION_VENDOR		((short)0xffff); // Vendor-specific
 
+	@SuppressWarnings("unused")
 	private final short value;	// The value
 
 	/**
@@ -1564,6 +1565,9 @@ public class FlowEntryAction {
 	case ACTION_ENQUEUE:
 	    ret += " action=" + actionEnqueue.toString();
 	    break;
+	default:
+	    ret += " action=UNDEFINED";
+		break;
 	}
 	ret += "]";
 
@@ -1656,6 +1660,8 @@ public class FlowEntryAction {
 	    case ACTION_ENQUEUE:
 		actionEnqueue = new ActionEnqueue(decode);
 		break;
+		default:
+			throw new IllegalArgumentException();
 	    }
 	} catch (IllegalArgumentException e) {
 	    throw new IllegalArgumentException("Invalid action string");
