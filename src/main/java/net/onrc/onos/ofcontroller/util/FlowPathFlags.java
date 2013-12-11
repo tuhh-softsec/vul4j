@@ -105,15 +105,13 @@ public class FlowPathFlags {
      *
      * @return the Flow Path flags as a string.
      */
-    @Override
+	@Override
     public String toString() {
 	String flagsStr = null;
 	String ret = "[flags=";
 
 	// Test all flags
 	if ((this.flags & DISCARD_FIRST_HOP_ENTRY) != 0) {
-	    if (flagsStr != null)
-		flagsStr += ",";
 	    flagsStr += "DISCARD_FIRST_HOP_ENTRY";
 	}
 	if ((this.flags & KEEP_ONLY_FIRST_HOP_ENTRY) != 0) {

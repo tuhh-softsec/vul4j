@@ -27,7 +27,6 @@ import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
-import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,8 +98,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryAdded(EntryEvent event) {
-	    Long keyLong = (Long)event.getKey();
+	public void entryAdded(EntryEvent<Long,byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -118,8 +116,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryRemoved(EntryEvent event) {
-	    Long keyLong = (Long)event.getKey();
+	public void entryRemoved(EntryEvent<Long,byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -137,8 +134,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryUpdated(EntryEvent event) {
-	    Long keyLong = (Long)event.getKey();
+	public void entryUpdated(EntryEvent<Long,byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -156,7 +152,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryEvicted(EntryEvent event) {
+	public void entryEvicted(EntryEvent<Long,byte[]> event) {
 	    // NOTE: We don't use eviction for this map
 	}
     }
@@ -174,14 +170,13 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryAdded(EntryEvent event) {
+	public void entryAdded(EntryEvent<Long,byte[]> event) {
 	    //
 	    // NOTE: Ignore Flow Entries Events originated by this instance
 	    //
 	    if (event.getMember().localMember())
 		return;
 
-	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -199,14 +194,13 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryRemoved(EntryEvent event) {
+	public void entryRemoved(EntryEvent<Long,byte[]> event) {
 	    //
 	    // NOTE: Ignore Flow Entries Events originated by this instance
 	    //
 	    if (event.getMember().localMember())
 		return;
 
-	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -224,14 +218,13 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryUpdated(EntryEvent event) {
+	public void entryUpdated(EntryEvent<Long,byte[]> event) {
 	    //
 	    // NOTE: Ignore Flow Entries Events originated by this instance
 	    //
 	    if (event.getMember().localMember())
 		return;
 
-	    Long keyLong = (Long)event.getKey();
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -249,7 +242,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryEvicted(EntryEvent event) {
+	public void entryEvicted(EntryEvent<Long,byte[]> event) {
 	    // NOTE: We don't use eviction for this map
 	}
     }
@@ -267,8 +260,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryAdded(EntryEvent event) {
-	    String keyString = (String)event.getKey();
+	public void entryAdded(EntryEvent<String,byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -287,8 +279,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryRemoved(EntryEvent event) {
-	    String keyString = (String)event.getKey();
+	public void entryRemoved(EntryEvent<String,byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -307,8 +298,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryUpdated(EntryEvent event) {
-	    String keyString = (String)event.getKey();
+	public void entryUpdated(EntryEvent<String,byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -327,7 +317,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryEvicted(EntryEvent event) {
+	public void entryEvicted(EntryEvent<String,byte[]> event) {
 	    // NOTE: We don't use eviction for this map
 	}
     }

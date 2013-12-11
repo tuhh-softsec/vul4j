@@ -80,6 +80,10 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	                log.debug("Adding device {}: creating new device", device.getMACAddressString());
 	            }
 	 			
+	            if (obj == null) {
+	            	return null;
+	            }
+	            
 	            changeDeviceAttachments(device, obj);
 		        
 	            changeDeviceIpv4Addresses(device, obj);

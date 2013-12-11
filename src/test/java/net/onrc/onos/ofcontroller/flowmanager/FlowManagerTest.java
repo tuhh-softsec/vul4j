@@ -26,7 +26,6 @@ import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.*;
 
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -124,6 +123,7 @@ public class FlowManagerTest {
 		return flowPath;
 	}
 	
+	/*
 	private ArrayList<FlowPath> createTestFlowPaths() {
 		FlowPath flowPath1 = createTestFlowPath(1, "foo caller id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 1, 2, 2); 
 		FlowPath flowPath2 = createTestFlowPath(2, "caller id", "FP_TYPE_SHORTEST_PATH", "FP_USER_ADD", 0, 1, 1, 2, 2); 
@@ -136,6 +136,7 @@ public class FlowManagerTest {
 		
 		return flowPaths;
 	}
+	*/
 	
 
 	// IFlowService methods
@@ -710,7 +711,7 @@ public class FlowManagerTest {
 		fm.init(context);
 		// Use reflection to test the private method
 		// Boolean result = fm.reconcileFlow(iFlowPath1, dataPath);
-		Class fmClass = FlowManager.class;
+		Class<?> fmClass = FlowManager.class;
 		Method method = fmClass.getDeclaredMethod(
 			"reconcileFlow",
 			new Class[] { IFlowPath.class, DataPath.class });
@@ -772,7 +773,7 @@ public class FlowManagerTest {
 		fm.init(context);
 		// Use reflection to test the private method
 		// Boolean result = fm.installFlowEntry(iofSwitch, iFlowPath, iFlowEntry);
-		Class fmClass = FlowManager.class;
+		Class<?> fmClass = FlowManager.class;
 		Method method = fmClass.getDeclaredMethod(
 			"installFlowEntry",
 			new Class[] { IOFSwitch.class, IFlowPath.class, IFlowEntry.class });

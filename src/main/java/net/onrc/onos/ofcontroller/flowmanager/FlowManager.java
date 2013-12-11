@@ -10,8 +10,6 @@ import java.util.Random;
 import java.util.SortedMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -23,8 +21,6 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
@@ -32,7 +28,6 @@ import net.onrc.onos.ofcontroller.forwarding.IForwardingService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.*;
 
-import org.openflow.protocol.OFType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -389,7 +384,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Process all entries
 	//
 	for (Pair<IOFSwitch, FlowEntry> entry : entries) {
-	    IOFSwitch sw = entry.first;
 	    FlowEntry flowEntry = entry.second;
 
 	    //
@@ -410,6 +404,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    case FE_USER_DELETE:
 		datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
 		break;
+		default:
+			break;
 	    }
 	}
     }

@@ -143,7 +143,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     /**
      * Run the thread.
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void run() {
 	startup();
 
@@ -340,6 +341,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    }
 		    modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 		    break;
+		default:
+			break;
 		}
 		allFlowPaths.put(flowPath.flowId().value(), flowPath);
 

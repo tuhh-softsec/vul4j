@@ -14,10 +14,6 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.pipes.PipeFunction;
-import com.tinkerpop.pipes.transform.PathPipe;
-
 /**
  * This is the class for storing the information of links into GraphDB
  */
@@ -490,33 +486,4 @@ public class LinkStorageImpl implements ILinkStorage {
 	    
 	 	return success;
 	}
-
-	// TODO should be moved to TopoLinkServiceImpl (never used in this class)
-	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
-	
-		@SuppressWarnings("unchecked")
-		@Override
-		public Link compute(PathPipe<Vertex> pipe ) {
-			long s_dpid = 0;
-			long d_dpid = 0;
-			short s_port = 0;
-			short d_port = 0;
-			List<Vertex> V = new ArrayList<Vertex>();
-			V = (List<Vertex>)pipe.next();
-			Vertex src_sw = V.get(0);
-			Vertex dest_sw = V.get(3);
-			Vertex src_port = V.get(1);
-			Vertex dest_port = V.get(2);
-			s_dpid = HexString.toLong((String) src_sw.getProperty("dpid"));
-			d_dpid = HexString.toLong((String) dest_sw.getProperty("dpid"));
-			s_port = (Short) src_port.getProperty("number");
-			d_port = (Short) dest_port.getProperty("number");
-			
-			Link l = new Link(s_dpid,s_port,d_dpid,d_port);
-			
-			return l;
-		}
-	}
-
-
 }

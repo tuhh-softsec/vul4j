@@ -227,9 +227,9 @@ public class TopologyManager implements IFloodlightModule,
 	}
 	case FP_TYPE_EXPLICIT_PATH:
 	    return flowPath.dataPath();
+	default:
+		return null;
 	}
-
-	return null;
     }
 
     /**

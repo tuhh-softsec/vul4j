@@ -58,6 +58,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 
 	private IFloodlightProviderService floodlightProvider;
 	private IFlowService flowService;
+	@SuppressWarnings("unused")
 	private IDatagridService datagridService;
 	
 	private IDeviceStorage deviceStorage;
@@ -272,9 +273,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		flowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
 		flowPath.setDataPath(datapath);
 			
-		
-		
-		
 		DataPath reverseDataPath = new DataPath();
 		// Reverse the ports for the reverse path
 		reverseDataPath.setSrcPort(dstSwitchPort);
@@ -295,7 +293,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		reverseFlowPath.dataPath().srcPort().dpid().toString();
 		
 		// TODO what happens if no path exists?
-		
 		FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
 		FlowId reverseFlowId = new FlowId(flowService.getNextFlowEntryId());
 		
@@ -309,8 +306,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		pendingFlows.put(pathspec, flowId.value());
 		pendingFlows.put(reversePathSpec, reverseFlowId.value());
 		waitingPackets.put(flowId.value(), new PacketToPush(po, sw.getId()));
-		
-		
 		
 		flowService.addFlow(reverseFlowPath);
 		flowService.addFlow(flowPath);
