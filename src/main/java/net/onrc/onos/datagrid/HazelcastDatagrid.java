@@ -98,7 +98,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryAdded(EntryEvent<Long,byte[]> event) {
+	public void entryAdded(EntryEvent<Long, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -116,7 +116,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryRemoved(EntryEvent<Long,byte[]> event) {
+	public void entryRemoved(EntryEvent<Long, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -134,7 +134,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryUpdated(EntryEvent<Long,byte[]> event) {
+	public void entryUpdated(EntryEvent<Long, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -152,7 +152,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryEvicted(EntryEvent<Long,byte[]> event) {
+	public void entryEvicted(EntryEvent<Long, byte[]> event) {
 	    // NOTE: We don't use eviction for this map
 	}
     }
@@ -170,7 +170,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryAdded(EntryEvent<Long,byte[]> event) {
+	public void entryAdded(EntryEvent<Long, byte[]> event) {
 	    //
 	    // NOTE: Ignore Flow Entries Events originated by this instance
 	    //
@@ -194,7 +194,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryRemoved(EntryEvent<Long,byte[]> event) {
+	public void entryRemoved(EntryEvent<Long, byte[]> event) {
 	    //
 	    // NOTE: Ignore Flow Entries Events originated by this instance
 	    //
@@ -218,7 +218,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryUpdated(EntryEvent<Long,byte[]> event) {
+	public void entryUpdated(EntryEvent<Long, byte[]> event) {
 	    //
 	    // NOTE: Ignore Flow Entries Events originated by this instance
 	    //
@@ -242,7 +242,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryEvicted(EntryEvent<Long,byte[]> event) {
+	public void entryEvicted(EntryEvent<Long, byte[]> event) {
 	    // NOTE: We don't use eviction for this map
 	}
     }
@@ -260,7 +260,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryAdded(EntryEvent<String,byte[]> event) {
+	public void entryAdded(EntryEvent<String, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -279,7 +279,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryRemoved(EntryEvent<String,byte[]> event) {
+	public void entryRemoved(EntryEvent<String, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -298,7 +298,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryUpdated(EntryEvent<String,byte[]> event) {
+	public void entryUpdated(EntryEvent<String, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -317,7 +317,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryEvicted(EntryEvent<String,byte[]> event) {
+	public void entryEvicted(EntryEvent<String, byte[]> event) {
 	    // NOTE: We don't use eviction for this map
 	}
     }
