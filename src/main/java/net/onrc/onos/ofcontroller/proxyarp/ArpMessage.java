@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 public class ArpMessage implements Serializable {
@@ -17,6 +18,13 @@ public class ArpMessage implements Serializable {
 	private final Type type;
 	private final InetAddress forAddress;
 	private final byte[] packetData;
+	
+	//ARP reply message needs MAC info
+	private  MACAddress mac;
+	//only send the ARP request message to the device attachment needs the attachement swith and port. 
+	private long outSwitch=-1; 
+	private short outPort=-1;
+	
 	
 	private final List<SwitchPort> switchPorts = new ArrayList<SwitchPort>();
 	
@@ -37,13 +45,40 @@ public class ArpMessage implements Serializable {
 		this.forAddress = address;
 		this.packetData = null;
 	}
+	// the ARP reply message with MAC
+	private ArpMessage(Type type, InetAddress address, MACAddress mac) {
+		this.type = type;
+		this.forAddress = address;
+		this.packetData = null;
+		this.mac=mac;
+	}
 	
+	// construct ARP request message with attachment switch and port
+	private ArpMessage(Type type, InetAddress address, byte[] arpRequest,
+			long outSwitch, short outPort) {
+		this.type = type;
+		this.forAddress = address;
+		this.packetData = arpRequest; 
+		this.setOutSwitch(outSwitch); 
+		this.setOutPort(outPort);	
+	}
+
 	public static ArpMessage newRequest(InetAddress forAddress, byte[] arpRequest) {
 		return new ArpMessage(Type.REQUEST, forAddress, arpRequest);
 	}
 	
 	public static ArpMessage newReply(InetAddress forAddress) {
 		return new ArpMessage(Type.REPLY, forAddress);
+	}
+	//ARP reply message with MAC
+	public static ArpMessage newReply(InetAddress forAddress, MACAddress mac) {
+		return new ArpMessage(Type.REPLY, forAddress, mac);
+		
+	}
+	//ARP reqsuest message with attachment switch and port
+	public static ArpMessage newRequest(InetAddress forAddress, byte[] arpRequest, long outSwitch, short outPort ) {
+		return new ArpMessage(Type.REQUEST, forAddress, arpRequest, outSwitch, outPort);
+		
 	}
 
 	public Type getType() {
@@ -56,5 +91,24 @@ public class ArpMessage implements Serializable {
 	
 	public byte[] getPacket() {
 		return packetData;
+	}
+	public MACAddress getMAC() {
+		return mac;
+	}
+
+	public long getOutSwitch() {
+		return outSwitch;
+	}
+
+	public void setOutSwitch(long outSwitch) {
+		this.outSwitch = outSwitch;
+	}
+
+	public short getOutPort() {
+		return outPort;
+	}
+
+	public void setOutPort(short outPort) {
+		this.outPort = outPort;
 	}
 }
