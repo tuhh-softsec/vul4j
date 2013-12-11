@@ -171,12 +171,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryAdded(EntryEvent<Long, byte[]> event) {
-	    //
-	    // NOTE: Ignore Flow Entries Events originated by this instance
-	    //
-	    if (event.getMember().localMember())
-		return;
-
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -195,12 +189,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryRemoved(EntryEvent<Long, byte[]> event) {
-	    //
-	    // NOTE: Ignore Flow Entries Events originated by this instance
-	    //
-	    if (event.getMember().localMember())
-		return;
-
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -219,12 +207,6 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryUpdated(EntryEvent<Long, byte[]> event) {
-	    //
-	    // NOTE: Ignore Flow Entries Events originated by this instance
-	    //
-	    if (event.getMember().localMember())
-		return;
-
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
