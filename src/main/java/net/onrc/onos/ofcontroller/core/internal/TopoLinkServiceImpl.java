@@ -82,12 +82,11 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 			short s_port = 0;
 			short d_port = 0;
 			
-			@SuppressWarnings("unchecked")
-			List<Vertex> V = pipe.next();
-			Vertex src_sw = V.get(0);
-			Vertex dest_sw = V.get(3);
-			Vertex src_port = V.get(1);
-			Vertex dest_port = V.get(2);
+			List<?> V = pipe.next();
+			Vertex src_sw = (Vertex)V.get(0);
+			Vertex dest_sw = (Vertex)V.get(3);
+			Vertex src_port = (Vertex)V.get(1);
+			Vertex dest_port = (Vertex)V.get(2);
 			s_dpid = HexString.toLong((String) src_sw.getProperty("dpid"));
 			d_dpid = HexString.toLong((String) dest_sw.getProperty("dpid"));
 			s_port = (Short) src_port.getProperty("number");
