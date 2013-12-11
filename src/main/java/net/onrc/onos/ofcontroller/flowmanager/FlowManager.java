@@ -404,8 +404,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    case FE_USER_DELETE:
 		datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
 		break;
-		default:
-			break;
+	    case FE_USER_UNKNOWN:
+		assert(false);
+		break;
 	    }
 	}
     }

@@ -162,10 +162,12 @@ public class TopologyElement {
 	    return "Link=" +
 		Long.toHexString(fromSwitchDpid) + "/" + fromSwitchPort + "/" +
 		Long.toHexString(toSwitchDpid) + "/" + toSwitchPort;
-	default:
-		assert(false);
-		return null;
+	case ELEMENT_UNKNOWN:
+	    return "Element=UNKNOWN";
 	}
+
+	assert(false);
+	return null;
     }
 
     /**

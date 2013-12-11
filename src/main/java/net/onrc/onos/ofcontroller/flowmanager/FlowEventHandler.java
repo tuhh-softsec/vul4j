@@ -143,8 +143,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     /**
      * Run the thread.
      */
-    @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void run() {
 	startup();
 
@@ -341,8 +340,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    }
 		    modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
 		    break;
-		default:
-			break;
+		case FP_TYPE_UNKNOWN:
+		    log.error("FlowPath event with unknown type");
+		    break;
 		}
 		allFlowPaths.put(flowPath.flowId().value(), flowPath);
 
