@@ -105,7 +105,7 @@ public class FlowPathFlags {
      *
      * @return the Flow Path flags as a string.
      */
-	@Override
+    @Override
     public String toString() {
 	String flagsStr = null;
 	String ret = "[flags=";
@@ -119,7 +119,7 @@ public class FlowPathFlags {
 		flagsStr += ",";
 	    flagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY";
 	}
-	ret += "]";
+	ret += flagsStr + "]";
 
 	return ret;
     }
