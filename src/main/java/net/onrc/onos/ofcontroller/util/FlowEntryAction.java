@@ -43,10 +43,13 @@ public class FlowEntryAction {
 	private ActionValues(short value) {
 	    this.value = value;
 	}
-	
-	public short toShort() {
-		return value;
-	}
+
+	/**
+	 * Get the value.
+	 *
+	 * @return the value.
+	 */
+	public short getValue() { return value; }
     }
 
     /**
@@ -1568,9 +1571,9 @@ public class FlowEntryAction {
 	case ACTION_ENQUEUE:
 	    ret += " action=" + actionEnqueue.toString();
 	    break;
-	default:
-	    ret += " action=UNDEFINED";
-		break;
+	case ACTION_VENDOR:
+	    ret += " action=VENDOR";
+	    break;
 	}
 	ret += "]";
 
@@ -1663,8 +1666,9 @@ public class FlowEntryAction {
 	    case ACTION_ENQUEUE:
 		actionEnqueue = new ActionEnqueue(decode);
 		break;
-		default:
-			throw new IllegalArgumentException();
+	    case ACTION_VENDOR:
+		// TODO: Handle it as appropriate
+		break;
 	    }
 	} catch (IllegalArgumentException e) {
 	    throw new IllegalArgumentException("Invalid action string");
