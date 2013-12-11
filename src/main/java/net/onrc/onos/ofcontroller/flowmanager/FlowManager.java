@@ -45,6 +45,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected FlowEventHandler flowEventHandler;
 
     protected IFlowPusherService pusher;
+    protected IForwardingService forwardingService;
     
     // Flow Entry ID generation state
     private static Random randomGenerator = new Random();
@@ -148,6 +149,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
 	pusher = context.getServiceImpl(IFlowPusherService.class);
+	forwardingService = context.getServiceImpl(IForwardingService.class);
 
 	this.init("");
     }
@@ -409,6 +411,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		break;
 	    }
 	}
+    }
+
+    /**
+     * Generate a notification that a collection of Flow Paths has been
+     * installed in the network.
+     *
+     * @param flowPaths the collection of installed Flow Paths.
+     */
+    void notificationFlowPathsInstalled(Collection<FlowPath> flowPaths) {
+	forwardingService.flowsInstalled(flowPaths);
     }
 
     /**
