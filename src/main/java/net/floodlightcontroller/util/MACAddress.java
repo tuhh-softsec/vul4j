@@ -1,5 +1,6 @@
 package net.floodlightcontroller.util;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import net.onrc.onos.ofcontroller.util.serializers.MACAddressDeserializer;
@@ -15,7 +16,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @JsonDeserialize(using=MACAddressDeserializer.class)
 @JsonSerialize(using=MACAddressSerializer.class)
-public class MACAddress {
+public class MACAddress implements Serializable{
+    private static final long serialVersionUID = 10000L;
     public static final int MAC_ADDRESS_LENGTH = 6;
     private byte[] address = new byte[MAC_ADDRESS_LENGTH];
 
