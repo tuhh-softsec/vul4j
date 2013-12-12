@@ -18,9 +18,9 @@
 package net.floodlightcontroller.routing;
 
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -33,16 +33,12 @@ import net.floodlightcontroller.core.annotations.LogMessageCategory;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
 import net.floodlightcontroller.core.util.AppCookie;
-import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPacket;
-import net.floodlightcontroller.routing.IRoutingService;
-import net.floodlightcontroller.routing.IRoutingDecision;
-import net.floodlightcontroller.routing.Route;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.util.OFMessageDamper;
@@ -81,7 +77,6 @@ public abstract class ForwardingBase
     protected IDeviceService deviceManager;
     protected IRoutingService routingEngine;
     protected ITopologyService topology;
-    protected ICounterStoreService counterStore;
     
     protected OFMessageDamper messageDamper;
     
@@ -265,7 +260,6 @@ public abstract class ForwardingBase
             ((OFActionOutput)fm.getActions().get(0)).setPort(outPort);
 
             try {
-                counterStore.updatePktOutFMCounterStore(sw, fm);
                 if (log.isTraceEnabled()) {
                     log.trace("Pushing Route flowmod routeIndx={} " + 
                             "sw={} inPort={} outPort={}",
@@ -383,7 +377,6 @@ public abstract class ForwardingBase
         po.setLength(poLength);
 
         try {
-            counterStore.updatePktOutFMCounterStore(sw, po);
             messageDamper.write(sw, po, cntx, flush);
         } catch (IOException e) {
             log.error("Failure writing packet out", e);
@@ -466,7 +459,6 @@ public abstract class ForwardingBase
         po.setLength(poLength);
 
         try {
-            counterStore.updatePktOutFMCounterStore(sw, po);
             messageDamper.write(sw, po, cntx);
         } catch (IOException e) {
             log.error("Failure writing packet out", e);
@@ -518,7 +510,6 @@ public abstract class ForwardingBase
         po.setLength(poLength);
 
         try {
-            counterStore.updatePktOutFMCounterStore(sw, po);
             if (log.isTraceEnabled()) {
                 log.trace("write broadcast packet on switch-id={} " + 
                         "interfaces={} packet-out={}",

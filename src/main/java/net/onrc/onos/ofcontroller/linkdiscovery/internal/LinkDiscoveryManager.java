@@ -18,7 +18,6 @@
 package net.onrc.onos.ofcontroller.linkdiscovery.internal;
 
 import java.io.IOException;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -41,9 +40,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.IFloodlightProviderService.Role;
-import net.floodlightcontroller.core.IHAListener;
-import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchListener;
@@ -63,24 +59,17 @@ import net.floodlightcontroller.packet.LLDP;
 import net.floodlightcontroller.packet.LLDPTLV;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.routing.Link;
-import net.floodlightcontroller.storage.IResultSet;
-import net.floodlightcontroller.storage.IStorageSourceListener;
-import net.floodlightcontroller.storage.IStorageSourceService;
-import net.floodlightcontroller.storage.OperatorPredicate;
-import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.util.EventHistory;
 import net.floodlightcontroller.util.EventHistory.EvAction;
 import net.onrc.onos.ofcontroller.core.IOnosRemoteSwitch;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.UpdateOperation;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LinkType;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.SwitchType;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.UpdateOperation;
 import net.onrc.onos.ofcontroller.linkdiscovery.web.LinkDiscoveryWebRoutable;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
@@ -124,27 +113,11 @@ import org.slf4j.LoggerFactory;
 @LogMessageCategory("Network Topology")
 public class LinkDiscoveryManager
 implements IOFMessageListener, IOFSwitchListener, 
-IStorageSourceListener, ILinkDiscoveryService,
-IFloodlightModule, IInfoProvider, IHAListener {
+ILinkDiscoveryService, IFloodlightModule {
 	protected IFloodlightProviderService controller;
     protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
 
-    // Names of table/fields for links in the storage API
-    private static final String LINK_TABLE_NAME = "controller_link";
-    private static final String LINK_ID = "id";
-    private static final String LINK_SRC_SWITCH = "src_switch_id";
-    private static final String LINK_SRC_PORT = "src_port";
-    private static final String LINK_SRC_PORT_STATE = "src_port_state";
-    private static final String LINK_DST_SWITCH = "dst_switch_id";
-    private static final String LINK_DST_PORT = "dst_port";
-    private static final String LINK_DST_PORT_STATE = "dst_port_state";
-    private static final String LINK_VALID_TIME = "valid_time";
-    private static final String LINK_TYPE = "link_type";
-    private static final String SWITCH_CONFIG_TABLE_NAME = "controller_switchconfig";
-    private static final String SWITCH_CONFIG_CORE_SWITCH = "core_switch";
-
     protected IFloodlightProviderService floodlightProvider;
-    protected IStorageSourceService storageSource;
     protected IThreadPoolService threadPool;
     protected IRestApiService restApi;
     // Registry Service for ONOS
@@ -246,26 +219,24 @@ IFloodlightModule, IInfoProvider, IHAListener {
 	            recommendation=LogMessageDoc.GENERIC_ACTION)
 		@Override
 		public void dispatch() {
-			 if (linkDiscoveryAware != null) {
-	                if (log.isTraceEnabled()) {
-	                    log.trace("Dispatching link discovery update {} {} {} {} {} for {}",
-	                              new Object[]{this.getOperation(),
-	                                           HexString.toHexString(this.getSrc()), this.getSrcPort(),
-	                                           HexString.toHexString(this.getDst()), this.getDstPort(),
-	                                           linkDiscoveryAware});
-	                }
-	                try {
-	                    for (ILinkDiscoveryListener lda : linkDiscoveryAware) { // order maintained
-	                        lda.linkDiscoveryUpdate(this);
-	                    }
-	                }
-	                catch (Exception e) {
-	                    log.error("Error in link discovery updates loop", e);
-	                }
-	            }
-			
+			if (linkDiscoveryAware != null) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Dispatching link discovery update {} {} {} {} {} for {}",
+                              new Object[]{this.getOperation(),
+                                           HexString.toHexString(this.getSrc()), this.getSrcPort(),
+                                           HexString.toHexString(this.getDst()), this.getDstPort(),
+                                           linkDiscoveryAware});
+                }
+                try {
+                    for (ILinkDiscoveryListener lda : linkDiscoveryAware) { // order maintained
+                        lda.linkDiscoveryUpdate(this);
+                    }
+                }
+                catch (Exception e) {
+                    log.error("Error in link discovery updates loop", e);
+                }
+            }
 		}
-    	
     }
 
     /**
@@ -1063,8 +1034,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 // Add to portNOFLinks if the unicast valid time is null
                 if (newInfo.getUnicastValidTime() == null)
                     addLinkToBroadcastDomain(lt);
-
-                writeLinkToStorage(lt, newInfo);
                 
                 // ONOS: Distinguish added event separately from updated event
                 updateOperation = UpdateOperation.LINK_ADDED;
@@ -1117,11 +1086,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                         newInfo.getDstPortState().intValue() !=
                         oldInfo.getDstPortState().intValue())
                     linkChanged = true;
-
-                // Write changes to storage. This will always write the updated
-                // valid time, plus the port states if they've changed (i.e. if
-                // they weren't set to null in the previous block of code.
-                writeLinkToStorage(lt, newInfo);
 
                 if (linkChanged) {
                     updateOperation = getUpdateOperation(newInfo.getSrcPortState(),
@@ -1208,9 +1172,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                                0, 0, // Port states
                                ILinkDiscovery.LinkType.INVALID_LINK,
                                EvAction.LINK_DELETED, reason);
-
-                // remove link from storage.
-                removeLinkFromStorage(lt);
 
                 // TODO  Whenever link is removed, it has to checked if
                 // the switchports must be added to quarantine.
@@ -1304,7 +1265,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                                                      getLinkType(lt, linkInfo),
                                                      operation));
                             controller.publishUpdate(update);
-                            writeLinkToStorage(lt, linkInfo);
+                            
                             linkInfoChanged = true;
                         }
                     }
@@ -1578,123 +1539,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         }
     }
 
-    // STORAGE METHODS
-    /**
-     * Deletes all links from storage
-     */
-    void clearAllLinks() {
-        storageSource.deleteRowsAsync(LINK_TABLE_NAME, null);
-    }
-
-    /**
-     * Gets the storage key for a LinkTuple
-     * @param lt The LinkTuple to get
-     * @return The storage key as a String
-     */
-    private String getLinkId(Link lt) {
-        return HexString.toHexString(lt.getSrc()) +
-                "-" + lt.getSrcPort() + "-" +
-                HexString.toHexString(lt.getDst())+
-                "-" + lt.getDstPort();
-    }
-
-    /**
-     * Writes a LinkTuple and corresponding LinkInfo to storage
-     * @param lt The LinkTuple to write
-     * @param linkInfo The LinkInfo to write
-     */
-    protected void writeLinkToStorage(Link lt, LinkInfo linkInfo) {
-        LinkType type = getLinkType(lt, linkInfo);
-
-        // Write only direct links.  Do not write links to external
-        // L2 network.
-        // if (type != LinkType.DIRECT_LINK && type != LinkType.TUNNEL) {
-        //    return;
-        // }
-
-        Map<String, Object> rowValues = new HashMap<String, Object>();
-        String id = getLinkId(lt);
-        rowValues.put(LINK_ID, id);
-        rowValues.put(LINK_VALID_TIME, linkInfo.getUnicastValidTime());
-        String srcDpid = HexString.toHexString(lt.getSrc());
-        rowValues.put(LINK_SRC_SWITCH, srcDpid);
-        rowValues.put(LINK_SRC_PORT, lt.getSrcPort());
-
-        if (type == LinkType.DIRECT_LINK)
-            rowValues.put(LINK_TYPE, "internal");
-        else if (type == LinkType.MULTIHOP_LINK) 
-            rowValues.put(LINK_TYPE, "external");
-        else if (type == LinkType.TUNNEL) 
-            rowValues.put(LINK_TYPE, "tunnel"); 
-        else rowValues.put(LINK_TYPE, "invalid");
-
-        if (linkInfo.linkStpBlocked()) {
-            if (log.isTraceEnabled()) {
-                log.trace("writeLink, link {}, info {}, srcPortState Blocked",
-                          lt, linkInfo);
-            }
-            rowValues.put(LINK_SRC_PORT_STATE,
-                          OFPhysicalPort.OFPortState.OFPPS_STP_BLOCK.getValue());
-        } else {
-            if (log.isTraceEnabled()) {
-                log.trace("writeLink, link {}, info {}, srcPortState {}",
-                          new Object[]{ lt, linkInfo, linkInfo.getSrcPortState() });
-            }
-            rowValues.put(LINK_SRC_PORT_STATE, linkInfo.getSrcPortState());
-        }
-        String dstDpid = HexString.toHexString(lt.getDst());
-        rowValues.put(LINK_DST_SWITCH, dstDpid);
-        rowValues.put(LINK_DST_PORT, lt.getDstPort());
-        if (linkInfo.linkStpBlocked()) {
-            if (log.isTraceEnabled()) {
-                log.trace("writeLink, link {}, info {}, dstPortState Blocked",
-                          lt, linkInfo);
-            }
-            rowValues.put(LINK_DST_PORT_STATE,
-                          OFPhysicalPort.OFPortState.OFPPS_STP_BLOCK.getValue());
-        } else {
-            if (log.isTraceEnabled()) {
-                log.trace("writeLink, link {}, info {}, dstPortState {}",
-                          new Object[]{ lt, linkInfo, linkInfo.getDstPortState() });
-            }
-            rowValues.put(LINK_DST_PORT_STATE, linkInfo.getDstPortState());
-        }
-        storageSource.updateRowAsync(LINK_TABLE_NAME, rowValues);
-    }
-
-    public Long readLinkValidTime(Link lt) {
-        // FIXME: We're not currently using this right now, but if we start
-        // to use this again, we probably shouldn't use it in its current
-        // form, because it's doing synchronous storage calls. Depending
-        // on the context this may still be OK, but if it's being called
-        // on the packet in processing thread it should be reworked to
-        // use asynchronous storage calls.
-        Long validTime = null;
-        IResultSet resultSet = null;
-        try {
-            String[] columns = { LINK_VALID_TIME };
-            String id = getLinkId(lt);
-            resultSet = storageSource.executeQuery(LINK_TABLE_NAME, columns,
-                                                   new OperatorPredicate(LINK_ID, OperatorPredicate.Operator.EQ, id), null);
-            if (resultSet.next())
-                validTime = resultSet.getLong(LINK_VALID_TIME);
-        }
-        finally {
-            if (resultSet != null)
-                resultSet.close();
-        }
-        return validTime;
-    }
-
-    /**
-     * Removes a link from storage using an asynchronous call.
-     * @param lt The LinkTuple to delete.
-     */
-    protected void removeLinkFromStorage(Link lt) {
-        String id = getLinkId(lt);
-        storageSource.deleteRowAsync(LINK_TABLE_NAME, id);
-    }
-
     @Override
     public void addListener(ILinkDiscoveryListener listener) {
         linkDiscoveryAware.add(listener);
@@ -1718,22 +1562,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         this.linkDiscoveryAware.remove(linkDiscoveryAwareComponent);
     }
 
-    /**
-     * Sets the IStorageSource to use for ITology
-     * @param storageSource the storage source to use
-     */
-    public void setStorageSource(IStorageSourceService storageSource) {
-        this.storageSource = storageSource;
-    }
-
-    /**
-     * Gets the storage source for this ITopology
-     * @return The IStorageSource ITopology is writing to
-     */
-    public IStorageSourceService getStorageSource() {
-        return storageSource;
-    }
-
     @Override
     public boolean isCallbackOrderingPrereq(OFType type, String name) {
         return false;
@@ -1742,72 +1570,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
     @Override
     public boolean isCallbackOrderingPostreq(OFType type, String name) {
         return false;
-    }
-
-    @Override
-    public void rowsModified(String tableName, Set<Object> rowKeys) {
-        Map<Long, IOFSwitch> switches = floodlightProvider.getSwitches();
-        ArrayList<IOFSwitch> updated_switches = new ArrayList<IOFSwitch>();
-        for(Object key: rowKeys) {
-            Long swId = new Long(HexString.toLong((String)key));
-            if (switches.containsKey(swId)) {
-                IOFSwitch sw = switches.get(swId);
-                boolean curr_status = sw.hasAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH);
-                boolean new_status =  false;
-                IResultSet resultSet = null;
-
-                try {
-                    resultSet = storageSource.getRow(tableName, key);
-                    for (Iterator<IResultSet> it = resultSet.iterator(); it.hasNext();) {
-                        // In case of multiple rows, use the status in last row?
-                        Map<String, Object> row = it.next().getRow();
-                        if (row.containsKey(SWITCH_CONFIG_CORE_SWITCH)) {
-                            new_status = ((String)row.get(SWITCH_CONFIG_CORE_SWITCH)).equals("true");
-                        }
-                    }
-                }
-                finally {
-                    if (resultSet != null)
-                        resultSet.close();
-                }
-
-                if (curr_status != new_status) {
-                    updated_switches.add(sw);
-                }
-            } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("Update for switch which has no entry in switch " +
-                            "list (dpid={}), a delete action.", (String)key);
-                }
-            }
-        }
-
-        for (IOFSwitch sw : updated_switches) {
-            // Set SWITCH_IS_CORE_SWITCH to it's inverse value
-            if (sw.hasAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH)) {
-                sw.removeAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH);
-                if (log.isTraceEnabled()) {
-                    log.trace("SWITCH_IS_CORE_SWITCH set to False for {}", sw);
-                }
-                LinkUpdate update = new LinkUpdate(new LDUpdate(sw.getId(), SwitchType.BASIC_SWITCH,
-                                         UpdateOperation.SWITCH_UPDATED));
-                controller.publishUpdate(update);
-            }
-            else {
-                sw.setAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH, new Boolean(true));
-                if (log.isTraceEnabled()) {
-                    log.trace("SWITCH_IS_CORE_SWITCH set to True for {}", sw);
-                }
-                LinkUpdate update = new LinkUpdate(new LDUpdate(sw.getId(), SwitchType.CORE_SWITCH,
-                                         UpdateOperation.SWITCH_UPDATED));
-                controller.publishUpdate(update);
-            }
-        }
-    }
-
-    @Override
-    public void rowsDeleted(String tableName, Set<Object> rowKeys) {
-        // Ignore delete events, the switch delete will do the right thing on it's own
     }
 
     // IFloodlightModule classes
@@ -1838,7 +1600,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         Collection<Class<? extends IFloodlightService>> l = 
                 new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFloodlightProviderService.class);
-        l.add(IStorageSourceService.class);
         l.add(IThreadPoolService.class);
         l.add(IRestApiService.class);
         // Added by ONOS
@@ -1850,7 +1611,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
     public void init(FloodlightModuleContext context)
             throws FloodlightModuleException {
         floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-        storageSource = context.getServiceImpl(IStorageSourceService.class);
         threadPool = context.getServiceImpl(IThreadPoolService.class);
         restApi = context.getServiceImpl(IRestApiService.class);
         // Added by ONOS
@@ -1906,23 +1666,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 recommendation=LogMessageDoc.CHECK_SWITCH)
     })
     public void startUp(FloodlightModuleContext context) {
-        // Create our storage tables
-        if (storageSource == null) {
-            log.error("No storage source found.");
-            return;
-        }
-
-        storageSource.createTable(LINK_TABLE_NAME, null);
-        storageSource.setTablePrimaryKeyName(LINK_TABLE_NAME, LINK_ID);
-        storageSource.deleteMatchingRows(LINK_TABLE_NAME, null);
-        // Register for storage updates for the switch table
-        try {
-            storageSource.addListener(SWITCH_CONFIG_TABLE_NAME, this);
-        } catch (StorageException ex) {
-            log.error("Error in installing listener for " +
-            		  "switch table {}", SWITCH_CONFIG_TABLE_NAME);
-        }
-
         ScheduledExecutorService ses = threadPool.getScheduledExecutor();
         controller =
                 context.getServiceImpl(IFloodlightProviderService.class);
@@ -1933,36 +1676,22 @@ IFloodlightModule, IInfoProvider, IHAListener {
             public void run() {
                 try {
                     discoverLinks();
-                } catch (StorageException e) {
-                    log.error("Storage exception in LLDP send timer; " + 
-                            "terminating process", e);
-                    floodlightProvider.terminate();
                 } catch (Exception e) {
                     log.error("Exception in LLDP send timer.", e);
                 } finally {
                     if (!shuttingDown) {
-                        // null role implies HA mode is not enabled.
-                         Role role = floodlightProvider.getRole();
-                         if (role == null || role == Role.MASTER) {
-                             log.trace("Rescheduling discovery task as role = {}", role);
-                             discoveryTask.reschedule(DISCOVERY_TASK_INTERVAL,
-                                                TimeUnit.SECONDS);
-                         } else {
-                             log.trace("Stopped LLDP rescheduling due to role = {}.", role);
-                         }
+                    	// Always reschedule link discovery if we're not 
+                    	// shutting down (no chance of SLAVE role now)
+                        log.trace("Rescheduling discovery task");
+                        discoveryTask.reschedule(DISCOVERY_TASK_INTERVAL,
+                        					TimeUnit.SECONDS);
                     }
                 }
             }
         });
 
-        // null role implies HA mode is not enabled.
-        Role role = floodlightProvider.getRole();
-        if (role == null || role == Role.MASTER) {
-            log.trace("Setup: Rescheduling discovery task. role = {}", role);
-            discoveryTask.reschedule(DISCOVERY_TASK_INTERVAL, TimeUnit.SECONDS);
-        } else {
-                log.trace("Setup: Not scheduling LLDP as role = {}.", role);
-        }
+        // Always reschedule link discovery as we are never in SLAVE role now
+        discoveryTask.reschedule(DISCOVERY_TASK_INTERVAL, TimeUnit.SECONDS);
 
         // Setup the BDDP task.  It is invoked whenever switch port tuples
         // are added to the quarantine list.
@@ -1975,8 +1704,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         floodlightProvider.addOFMessageListener(OFType.PORT_STATUS, this);
         // Register for switch updates
         floodlightProvider.addOFSwitchListener(this);
-        floodlightProvider.addHAListener(this);
-        floodlightProvider.addInfoProvider("summary", this);
         if (restApi != null)
             restApi.addRestletRoutable(new LinkDiscoveryWebRoutable());
         setControllerTLV();
@@ -2059,59 +1786,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         evTopoCluster.clusterIdNew = clusterIdNew;
         evTopoCluster.reason       = reason;
         evTopoCluster = evHistTopologyCluster.put(evTopoCluster, action);
-    }
-
-    @Override
-    public Map<String, Object> getInfo(String type) {
-        if (!"summary".equals(type)) return null;
-
-        Map<String, Object> info = new HashMap<String, Object>();
-
-        int num_links = 0;
-        for (Set<Link> links : switchLinks.values())
-            num_links += links.size();
-        info.put("# inter-switch links", num_links / 2);
-
-        return info;
-    }
-
-    // IHARoleListener
-    @Override
-    public void roleChanged(Role oldRole, Role newRole) {
-        switch(newRole) {
-            case MASTER:
-                if (oldRole == Role.SLAVE) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Sending LLDPs " +
-                                "to HA change from SLAVE->MASTER");
-                    }
-                    clearAllLinks();
-                    log.debug("Role Change to Master: Rescheduling discovery task.");
-                    discoveryTask.reschedule(1, TimeUnit.MICROSECONDS);
-                }
-                break;
-            case SLAVE:
-                if (log.isTraceEnabled()) {
-                    log.trace("Clearing links due to " +
-                            "HA change to SLAVE");
-                }
-                switchLinks.clear();
-                links.clear();
-                portLinks.clear();
-                portBroadcastDomainLinks.clear();
-                discoverOnAllPorts();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void controllerNodeIPsChanged(
-                                         Map<String, String> curControllerNodeIPs,
-                                         Map<String, String> addedControllerNodeIPs,
-                                         Map<String, String> removedControllerNodeIPs) {
-        // ignore
     }
 
     public boolean isAutoPortFastFeature() {

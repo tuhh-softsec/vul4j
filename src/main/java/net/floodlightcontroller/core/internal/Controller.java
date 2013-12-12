@@ -19,19 +19,14 @@ package net.floodlightcontroller.core.internal;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,8 +46,6 @@ import java.util.concurrent.TimeoutException;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.IHAListener;
-import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -64,14 +57,8 @@ import net.floodlightcontroller.core.annotations.LogMessageDocs;
 import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
 import net.floodlightcontroller.core.util.ListenerDispatcher;
 import net.floodlightcontroller.core.web.CoreWebRoutable;
-import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.storage.IResultSet;
-import net.floodlightcontroller.storage.IStorageSourceListener;
-import net.floodlightcontroller.storage.IStorageSourceService;
-import net.floodlightcontroller.storage.OperatorPredicate;
-import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
@@ -82,7 +69,6 @@ import net.onrc.onos.registry.controller.RegistryException;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelStateEvent;
@@ -128,8 +114,6 @@ import org.openflow.protocol.vendor.OFBasicVendorDataType;
 import org.openflow.protocol.vendor.OFBasicVendorId;
 import org.openflow.protocol.vendor.OFVendorId;
 import org.openflow.util.HexString;
-import org.openflow.util.U16;
-import org.openflow.util.U32;
 import org.openflow.vendor.nicira.OFNiciraVendorData;
 import org.openflow.vendor.nicira.OFRoleReplyVendorData;
 import org.openflow.vendor.nicira.OFRoleRequestVendorData;
@@ -149,8 +133,7 @@ import org.slf4j.LoggerFactory;
  * - Additional DEBUG logs
  * - Try using hostname as controller ID, when ID was not explicitly given.
  */
-public class Controller implements IFloodlightProviderService, 
-            IStorageSourceListener {
+public class Controller implements IFloodlightProviderService {
     
     protected final static Logger log = LoggerFactory.getLogger(Controller.class);
 
@@ -177,14 +160,10 @@ public class Controller implements IFloodlightProviderService,
     protected HashMap<String, String> controllerNodeIPsCache;
     
     protected Set<IOFSwitchListener> switchListeners;
-    protected Set<IHAListener> haListeners;
-    protected Map<String, List<IInfoProvider>> providerMap;
     protected BlockingQueue<IUpdate> updates;
     
     // Module dependencies
     protected IRestApiService restApi;
-    protected ICounterStoreService counterStore = null;
-    protected IStorageSourceService storageSource;
     protected IThreadPoolService threadPool;
     protected IControllerRegistryService registryService;
     
@@ -208,47 +187,6 @@ public class Controller implements IFloodlightProviderService,
     
     // Flag to always flush flow table on switch reconnect (HA or otherwise)
     protected boolean alwaysClearFlowsOnSwAdd = false;
-    
-    // Storage table names
-    protected static final String CONTROLLER_TABLE_NAME = "controller_controller";
-    protected static final String CONTROLLER_ID = "id";
-    
-    protected static final String SWITCH_TABLE_NAME = "controller_switch";
-    protected static final String SWITCH_DATAPATH_ID = "dpid";
-    protected static final String SWITCH_SOCKET_ADDRESS = "socket_address";
-    protected static final String SWITCH_IP = "ip";
-    protected static final String SWITCH_CONTROLLER_ID = "controller_id";
-    protected static final String SWITCH_ACTIVE = "active";
-    protected static final String SWITCH_CONNECTED_SINCE = "connected_since";
-    protected static final String SWITCH_CAPABILITIES = "capabilities";
-    protected static final String SWITCH_BUFFERS = "buffers";
-    protected static final String SWITCH_TABLES = "tables";
-    protected static final String SWITCH_ACTIONS = "actions";
-
-    protected static final String SWITCH_CONFIG_TABLE_NAME = "controller_switchconfig";
-    protected static final String SWITCH_CONFIG_CORE_SWITCH = "core_switch";
-    
-    protected static final String PORT_TABLE_NAME = "controller_port";
-    protected static final String PORT_ID = "id";
-    protected static final String PORT_SWITCH = "switch_id";
-    protected static final String PORT_NUMBER = "number";
-    protected static final String PORT_HARDWARE_ADDRESS = "hardware_address";
-    protected static final String PORT_NAME = "name";
-    protected static final String PORT_CONFIG = "config";
-    protected static final String PORT_STATE = "state";
-    protected static final String PORT_CURRENT_FEATURES = "current_features";
-    protected static final String PORT_ADVERTISED_FEATURES = "advertised_features";
-    protected static final String PORT_SUPPORTED_FEATURES = "supported_features";
-    protected static final String PORT_PEER_FEATURES = "peer_features";
-    
-    protected static final String CONTROLLER_INTERFACE_TABLE_NAME = "controller_controllerinterface";
-    protected static final String CONTROLLER_INTERFACE_ID = "id";
-    protected static final String CONTROLLER_INTERFACE_CONTROLLER_ID = "controller_id";
-    protected static final String CONTROLLER_INTERFACE_TYPE = "type";
-    protected static final String CONTROLLER_INTERFACE_NUMBER = "number";
-    protected static final String CONTROLLER_INTERFACE_DISCOVERED_IP = "discovered_ip";
-    
-    
     
     // Perf. related configuration
     protected static final int SEND_BUFFER_SIZE = 4 * 1024 * 1024;
@@ -315,84 +253,9 @@ public class Controller implements IFloodlightProviderService,
         }
     }
     
-    /**
-     * Update message indicating controller's role has changed
-     */
-    protected class HARoleUpdate implements IUpdate {
-        public Role oldRole;
-        public Role newRole;
-        public HARoleUpdate(Role newRole, Role oldRole) {
-            this.oldRole = oldRole;
-            this.newRole = newRole;
-        }
-        public void dispatch() {
-            // Make sure that old and new roles are different.
-            if (oldRole == newRole) {
-                if (log.isTraceEnabled()) {
-                    log.trace("HA role update ignored as the old and " +
-                              "new roles are the same. newRole = {}" +
-                              "oldRole = {}", newRole, oldRole);
-                }
-                return;
-            }
-            if (log.isTraceEnabled()) {
-                log.trace("Dispatching HA Role update newRole = {}, oldRole = {}",
-                          newRole, oldRole);
-            }
-            if (haListeners != null) {
-                for (IHAListener listener : haListeners) {
-                        listener.roleChanged(oldRole, newRole);
-                }
-            }
-        }
-    }
-    
-    /**
-     * Update message indicating
-     * IPs of controllers in controller cluster have changed.
-     */
-    protected class HAControllerNodeIPUpdate implements IUpdate {
-        public Map<String,String> curControllerNodeIPs;
-        public Map<String,String> addedControllerNodeIPs;
-        public Map<String,String> removedControllerNodeIPs;
-        public HAControllerNodeIPUpdate(
-                HashMap<String,String> curControllerNodeIPs,  
-                HashMap<String,String> addedControllerNodeIPs,  
-                HashMap<String,String> removedControllerNodeIPs) {
-            this.curControllerNodeIPs = curControllerNodeIPs;
-            this.addedControllerNodeIPs = addedControllerNodeIPs;
-            this.removedControllerNodeIPs = removedControllerNodeIPs;
-        }
-        public void dispatch() {
-            if (log.isTraceEnabled()) {
-                log.trace("Dispatching HA Controller Node IP update "
-                        + "curIPs = {}, addedIPs = {}, removedIPs = {}",
-                        new Object[] { curControllerNodeIPs, addedControllerNodeIPs,
-                            removedControllerNodeIPs }
-                        );
-            }
-            if (haListeners != null) {
-                for (IHAListener listener: haListeners) {
-                    listener.controllerNodeIPsChanged(curControllerNodeIPs,
-                            addedControllerNodeIPs, removedControllerNodeIPs);
-                }
-            }
-        }
-    }
-    
     // ***************
     // Getters/Setters
-    // ***************
-    
-    public void setStorageSourceService(IStorageSourceService storageSource) {
-        this.storageSource = storageSource;
-    }
-    
-    public void setCounterStore(ICounterStoreService counterStore) {
-        this.counterStore = counterStore;
-    }
-    
- 
+    // *************** 
     
     public void setRestApiService(IRestApiService restApi) {
         this.restApi = restApi;
@@ -409,47 +272,6 @@ public class Controller implements IFloodlightProviderService,
 	public void setLinkDiscoveryService(ILinkDiscoveryService linkDiscovery) {
 		this.linkDiscovery = linkDiscovery;
 	}
-	
-    @Override
-    public Role getRole() {
-        synchronized(roleChanger) {
-            return role;
-        }
-    }
-    
-    @Override
-    public void setRole(Role role) {
-        if (role == null) throw new NullPointerException("Role can not be null.");
-        if (role == Role.MASTER && this.role == Role.SLAVE) {
-            // Reset db state to Inactive for all switches. 
-            updateAllInactiveSwitchInfo();
-        }
-        
-        // Need to synchronize to ensure a reliable ordering on role request
-        // messages send and to ensure the list of connected switches is stable
-        // RoleChanger will handle the actual sending of the message and 
-        // timeout handling
-        // @see RoleChanger
-        synchronized(roleChanger) {
-            if (role.equals(this.role)) {
-                log.debug("Ignoring role change: role is already {}", role);
-                return;
-            }
-
-            Role oldRole = this.role;
-            this.role = role;
-            
-            log.debug("Submitting role change request to role {}", role);
-            roleChanger.submitRequest(connectedSwitches, role);
-            
-            // Enqueue an update for our listeners.
-            try {
-                this.updates.put(new HARoleUpdate(role, oldRole));
-            } catch (InterruptedException e) {
-                log.error("Failure adding update to queue", e);
-            }
-        }
-    }
     
     public void publishUpdate(IUpdate update) {
     	try {
@@ -603,10 +425,6 @@ public class Controller implements IFloodlightProviderService,
                     explanation="Could not parse a message from the switch",
                     recommendation=LogMessageDoc.CHECK_SWITCH),
             @LogMessageDoc(level="ERROR",
-                    message="Terminating controller due to storage exception",
-                    explanation=ERROR_DATABASE,
-                    recommendation=LogMessageDoc.CHECK_CONTROLLER),
-            @LogMessageDoc(level="ERROR",
                     message="Could not process message: queue full",
                     explanation="OpenFlow messages are arriving faster than " +
                                 " the controller can process them.",
@@ -642,10 +460,6 @@ public class Controller implements IFloodlightProviderService,
                           " due to message parse failure", 
                           e.getCause());
                 ctx.getChannel().close();
-            } else if (e.getCause() instanceof StorageException) {
-                log.error("Terminating controller due to storage exception", 
-                          e.getCause());
-                terminate();
             } else if (e.getCause() instanceof RejectedExecutionException) {
                 log.warn("Could not process message: queue full");
             } else {
@@ -718,40 +532,8 @@ public class Controller implements IFloodlightProviderService,
                                     description);
                     sw.setSwitchProperties(description);
                     data = null;
-
-                    // At this time, also set other switch properties from storage
-                    boolean is_core_switch = false;
-                    IResultSet resultSet = null;
-                    try {
-                        String swid = sw.getStringId();
-                        resultSet = 
-                                storageSource.getRow(SWITCH_CONFIG_TABLE_NAME, swid);
-                        for (Iterator<IResultSet> it = 
-                                resultSet.iterator(); it.hasNext();) {
-                            // In case of multiple rows, use the status
-                            // in last row?
-                            Map<String, Object> row = it.next().getRow();
-                            if (row.containsKey(SWITCH_CONFIG_CORE_SWITCH)) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Reading SWITCH_IS_CORE_SWITCH " + 
-                                              "config for switch={}, is-core={}",
-                                              sw, row.get(SWITCH_CONFIG_CORE_SWITCH));
-                                }
-                                String ics = 
-                                        (String)row.get(SWITCH_CONFIG_CORE_SWITCH);
-                                is_core_switch = ics.equals("true");
-                            }
-                        }
-                    }
-                    finally {
-                        if (resultSet != null)
-                            resultSet.close();
-                    }
-                    if (is_core_switch) {
-                        sw.setAttribute(IOFSwitch.SWITCH_IS_CORE_SWITCH, 
-                                        true);
-                    }
                 }
+                
                 sw.removeAttribute(IOFSwitch.SWITCH_DESCRIPTION_FUTURE);
                 state.hasDescription = true;
                 checkSwitchReady();
@@ -964,7 +746,7 @@ public class Controller implements IFloodlightProviderService,
                 
                 // Some switches don't seem to update us with port
                 // status messages while in slave role.
-                readSwitchPortStateFromStorage(sw);                
+                //readSwitchPortStateFromStorage(sw);                
                 
                 // Only add the switch to the active switch list if 
                 // we're not in the slave role. Note that if the role 
@@ -1082,7 +864,7 @@ public class Controller implements IFloodlightProviderService,
                         // return results to rest api caller
                         sw.deliverOFFeaturesReply(m);
                         // update database */
-                        updateActiveSwitchInfo(sw);
+                        //updateActiveSwitchInfo(sw);
                     }
                     break;
                 case GET_CONFIG_REPLY:
@@ -1297,8 +1079,8 @@ public class Controller implements IFloodlightProviderService,
                    log.error("Failure adding update to queue", e);
                }
            }
-            if (updateStorage)
-                updatePortInfo(sw, port);
+            //if (updateStorage)
+                //updatePortInfo(sw, port);
             log.debug("Port #{} modified for {}", portNumber, sw);
         } else if (m.getReason() == (byte)OFPortReason.OFPPR_ADD.ordinal()) {
         	// XXX Workaround to prevent race condition where a link is detected
@@ -1314,8 +1096,8 @@ public class Controller implements IFloodlightProviderService,
             } catch (InterruptedException e) {
                 log.error("Failure adding update to queue", e);
             }
-            if (updateStorage)
-                updatePortInfo(sw, port);
+            //if (updateStorage)
+                //updatePortInfo(sw, port);
             log.debug("Port #{} added for {}", portNumber, sw);
         } else if (m.getReason() == 
                    (byte)OFPortReason.OFPPR_DELETE.ordinal()) {
@@ -1326,8 +1108,8 @@ public class Controller implements IFloodlightProviderService,
             } catch (InterruptedException e) {
                 log.error("Failure adding update to queue", e);
             }
-            if (updateStorage)
-                removePortInfo(sw, portNumber);
+            //if (updateStorage)
+                //removePortInfo(sw, portNumber);
             log.debug("Port #{} deleted for {}", portNumber, sw);
         }
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.PORTCHANGED);
@@ -1414,7 +1196,6 @@ public class Controller implements IFloodlightProviderService,
                     eth = new Ethernet();
                     eth.deserialize(pi.getPacketData(), 0,
                             pi.getPacketData().length);
-                    counterStore.updatePacketInCounters(sw, m, eth);
                 }
                 // fall through to default case...
 
@@ -1577,7 +1358,7 @@ public class Controller implements IFloodlightProviderService,
                 
                 oldSw.cancelAllStatisticsReplies();
                 
-                updateInactiveSwitchInfo(oldSw);
+                //updateInactiveSwitchInfo(oldSw);
     
                 // we need to clean out old switch state definitively 
                 // before adding the new switch
@@ -1605,7 +1386,7 @@ public class Controller implements IFloodlightProviderService,
             }
         }
         
-        updateActiveSwitchInfo(sw);
+        //updateActiveSwitchInfo(sw);
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.ADDED);
         try {
             this.updates.put(update);
@@ -1644,7 +1425,7 @@ public class Controller implements IFloodlightProviderService,
         // written out by the new master. Maybe need to revisit how we handle all
         // of the switch state that's written to storage.
         
-        updateInactiveSwitchInfo(sw);
+        //updateInactiveSwitchInfo(sw);
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.REMOVED);
         try {
             this.updates.put(update);
@@ -1828,213 +1609,6 @@ public class Controller implements IFloodlightProviderService,
     // Initialization
     // **************
 
-    protected void updateAllInactiveSwitchInfo() {
-        if (role == Role.SLAVE) {
-            return;
-        }
-        String controllerId = getControllerId();
-        String[] switchColumns = { SWITCH_DATAPATH_ID,
-                                   SWITCH_CONTROLLER_ID,
-                                   SWITCH_ACTIVE };
-        String[] portColumns = { PORT_ID, PORT_SWITCH };
-        IResultSet switchResultSet = null;
-        try {
-            OperatorPredicate op = 
-                    new OperatorPredicate(SWITCH_CONTROLLER_ID,
-                                          OperatorPredicate.Operator.EQ,
-                                          controllerId);
-            switchResultSet = 
-                    storageSource.executeQuery(SWITCH_TABLE_NAME,
-                                               switchColumns,
-                                               op, null);
-            while (switchResultSet.next()) {
-                IResultSet portResultSet = null;
-                try {
-                    String datapathId =
-                            switchResultSet.getString(SWITCH_DATAPATH_ID);
-                    switchResultSet.setBoolean(SWITCH_ACTIVE, Boolean.FALSE);
-                    op = new OperatorPredicate(PORT_SWITCH, 
-                                               OperatorPredicate.Operator.EQ,
-                                               datapathId);
-                    portResultSet = 
-                            storageSource.executeQuery(PORT_TABLE_NAME,
-                                                       portColumns,
-                                                       op, null);
-                    while (portResultSet.next()) {
-                        portResultSet.deleteRow();
-                    }
-                    portResultSet.save();
-                }
-                finally {
-                    if (portResultSet != null)
-                        portResultSet.close();
-                }
-            }
-            switchResultSet.save();
-        }
-        finally {
-            if (switchResultSet != null)
-                switchResultSet.close();
-        }
-    }
-    
-    protected void updateControllerInfo() {
-        updateAllInactiveSwitchInfo();
-        
-        // Write out the controller info to the storage source
-        Map<String, Object> controllerInfo = new HashMap<String, Object>();
-        String id = getControllerId();
-        controllerInfo.put(CONTROLLER_ID, id);
-        storageSource.updateRow(CONTROLLER_TABLE_NAME, controllerInfo);
-    }
-    
-    protected void updateActiveSwitchInfo(IOFSwitch sw) {
-        if (role == Role.SLAVE) {
-            return;
-        }
-        // Obtain the row info for the switch
-        Map<String, Object> switchInfo = new HashMap<String, Object>();
-        String datapathIdString = sw.getStringId();
-        switchInfo.put(SWITCH_DATAPATH_ID, datapathIdString);
-        String controllerId = getControllerId();
-        switchInfo.put(SWITCH_CONTROLLER_ID, controllerId);
-        Date connectedSince = sw.getConnectedSince();
-        switchInfo.put(SWITCH_CONNECTED_SINCE, connectedSince);
-        Channel channel = sw.getChannel();
-        SocketAddress socketAddress = channel.getRemoteAddress();
-        if (socketAddress != null) {
-            String socketAddressString = socketAddress.toString();
-            switchInfo.put(SWITCH_SOCKET_ADDRESS, socketAddressString);
-            if (socketAddress instanceof InetSocketAddress) {
-                InetSocketAddress inetSocketAddress =
-                        (InetSocketAddress)socketAddress;
-                InetAddress inetAddress = inetSocketAddress.getAddress();
-                String ip = inetAddress.getHostAddress();
-                switchInfo.put(SWITCH_IP, ip);
-            }
-        }
-        
-        // Write out the switch features info
-        long capabilities = U32.f(sw.getCapabilities());
-        switchInfo.put(SWITCH_CAPABILITIES, capabilities);
-        long buffers = U32.f(sw.getBuffers());
-        switchInfo.put(SWITCH_BUFFERS, buffers);
-        long tables = U32.f(sw.getTables());
-        switchInfo.put(SWITCH_TABLES, tables);
-        long actions = U32.f(sw.getActions());
-        switchInfo.put(SWITCH_ACTIONS, actions);
-        switchInfo.put(SWITCH_ACTIVE, Boolean.TRUE);
-        
-        // Update the switch
-        storageSource.updateRowAsync(SWITCH_TABLE_NAME, switchInfo);
-        
-        // Update the ports
-        for (OFPhysicalPort port: sw.getPorts()) {
-            updatePortInfo(sw, port);
-        }
-    }
-    
-    protected void updateInactiveSwitchInfo(IOFSwitch sw) {
-        if (role == Role.SLAVE) {
-            return;
-        }
-        log.debug("Update DB with inactiveSW {}", sw);
-        // Update the controller info in the storage source to be inactive
-        Map<String, Object> switchInfo = new HashMap<String, Object>();
-        String datapathIdString = sw.getStringId();
-        switchInfo.put(SWITCH_DATAPATH_ID, datapathIdString);
-        //switchInfo.put(SWITCH_CONNECTED_SINCE, null);
-        switchInfo.put(SWITCH_ACTIVE, Boolean.FALSE);
-        storageSource.updateRowAsync(SWITCH_TABLE_NAME, switchInfo);
-    }
-
-    protected void updatePortInfo(IOFSwitch sw, OFPhysicalPort port) {
-        if (role == Role.SLAVE) {
-            return;
-        }
-        String datapathIdString = sw.getStringId();
-        Map<String, Object> portInfo = new HashMap<String, Object>();
-        int portNumber = U16.f(port.getPortNumber());
-        String id = datapathIdString + "|" + portNumber;
-        portInfo.put(PORT_ID, id);
-        portInfo.put(PORT_SWITCH, datapathIdString);
-        portInfo.put(PORT_NUMBER, portNumber);
-        byte[] hardwareAddress = port.getHardwareAddress();
-        String hardwareAddressString = HexString.toHexString(hardwareAddress);
-        portInfo.put(PORT_HARDWARE_ADDRESS, hardwareAddressString);
-        String name = port.getName();
-        portInfo.put(PORT_NAME, name);
-        long config = U32.f(port.getConfig());
-        portInfo.put(PORT_CONFIG, config);
-        long state = U32.f(port.getState());
-        portInfo.put(PORT_STATE, state);
-        long currentFeatures = U32.f(port.getCurrentFeatures());
-        portInfo.put(PORT_CURRENT_FEATURES, currentFeatures);
-        long advertisedFeatures = U32.f(port.getAdvertisedFeatures());
-        portInfo.put(PORT_ADVERTISED_FEATURES, advertisedFeatures);
-        long supportedFeatures = U32.f(port.getSupportedFeatures());
-        portInfo.put(PORT_SUPPORTED_FEATURES, supportedFeatures);
-        long peerFeatures = U32.f(port.getPeerFeatures());
-        portInfo.put(PORT_PEER_FEATURES, peerFeatures);
-        storageSource.updateRowAsync(PORT_TABLE_NAME, portInfo);
-    }
-    
-    /**
-     * Read switch port data from storage and write it into a switch object
-     * @param sw the switch to update
-     */
-    protected void readSwitchPortStateFromStorage(OFSwitchImpl sw) {
-        OperatorPredicate op = 
-                new OperatorPredicate(PORT_SWITCH, 
-                                      OperatorPredicate.Operator.EQ,
-                                      sw.getStringId());
-        IResultSet portResultSet = 
-                storageSource.executeQuery(PORT_TABLE_NAME,
-                                           null, op, null);
-        //Map<Short, OFPhysicalPort> oldports = 
-        //        new HashMap<Short, OFPhysicalPort>();
-        //oldports.putAll(sw.getPorts());
-
-        while (portResultSet.next()) {
-            try {
-                OFPhysicalPort p = new OFPhysicalPort();
-                p.setPortNumber((short)portResultSet.getInt(PORT_NUMBER));
-                p.setName(portResultSet.getString(PORT_NAME));
-                p.setConfig((int)portResultSet.getLong(PORT_CONFIG));
-                p.setState((int)portResultSet.getLong(PORT_STATE));
-                String portMac = portResultSet.getString(PORT_HARDWARE_ADDRESS);
-                p.setHardwareAddress(HexString.fromHexString(portMac));
-                p.setCurrentFeatures((int)portResultSet.
-                                     getLong(PORT_CURRENT_FEATURES));
-                p.setAdvertisedFeatures((int)portResultSet.
-                                        getLong(PORT_ADVERTISED_FEATURES));
-                p.setSupportedFeatures((int)portResultSet.
-                                       getLong(PORT_SUPPORTED_FEATURES));
-                p.setPeerFeatures((int)portResultSet.
-                                  getLong(PORT_PEER_FEATURES));
-                //oldports.remove(Short.valueOf(p.getPortNumber()));
-                sw.setPort(p);
-            } catch (NullPointerException e) {
-                // ignore
-            }
-        }
-        SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.PORTCHANGED);
-        try {
-            this.updates.put(update);
-        } catch (InterruptedException e) {
-            log.error("Failure adding update to queue", e);
-        }
-    }
-    
-    protected void removePortInfo(IOFSwitch sw, short portNumber) {
-        if (role == Role.SLAVE) {
-            return;
-        }
-        String datapathIdString = sw.getStringId();
-        String id = datapathIdString + "|" + portNumber;
-        storageSource.deleteRowAsync(PORT_TABLE_NAME, id);
-    }
-
     /**
      * Sets the initial role based on properties in the config params.
      * It looks for two different properties.
@@ -2150,10 +1724,6 @@ public class Controller implements IFloodlightProviderService,
                 update.dispatch();
             } catch (InterruptedException e) {
                 return;
-            } catch (StorageException e) {
-                log.error("Storage exception in controller " + 
-                          "updates loop; terminating process", e);
-                return;
             } catch (Exception e) {
                 log.error("Exception in controller updates loop", e);
             }
@@ -2231,15 +1801,12 @@ public class Controller implements IFloodlightProviderService,
                                       ListenerDispatcher<OFType, 
                                                          IOFMessageListener>>();
         this.switchListeners = new CopyOnWriteArraySet<IOFSwitchListener>();
-        this.haListeners = new CopyOnWriteArraySet<IHAListener>();
         this.activeSwitches = new ConcurrentHashMap<Long, IOFSwitch>();
         this.connectedSwitches = new HashSet<OFSwitchImpl>();
         this.controllerNodeIPsCache = new HashMap<String, String>();
         this.updates = new LinkedBlockingQueue<IUpdate>();
         this.factory = new BasicFactory();
-        this.providerMap = new HashMap<String, List<IInfoProvider>>();
         setConfigParams(configParams);
-        //this.role = getInitialRole(configParams);
         //Set the controller's role to MASTER so it always tries to do role requests.
         this.role = Role.MASTER;
         this.roleChanger = new RoleChanger();
@@ -2258,143 +1825,12 @@ public class Controller implements IFloodlightProviderService,
     public void startupComponents() {
     	try {
 			registryService.registerController(controllerId);
-		} catch (RegistryException e2) {
-			log.warn("Registry service error: {}", e2.getMessage());
+		} catch (RegistryException e) {
+			log.warn("Registry service error: {}", e.getMessage());
 		}
-    	
-        // Create the table names we use
-        storageSource.createTable(CONTROLLER_TABLE_NAME, null);
-        storageSource.createTable(SWITCH_TABLE_NAME, null);
-        storageSource.createTable(PORT_TABLE_NAME, null);
-        storageSource.createTable(CONTROLLER_INTERFACE_TABLE_NAME, null);
-        storageSource.createTable(SWITCH_CONFIG_TABLE_NAME, null);
-        storageSource.setTablePrimaryKeyName(CONTROLLER_TABLE_NAME,
-                                             CONTROLLER_ID);
-        storageSource.setTablePrimaryKeyName(SWITCH_TABLE_NAME,
-                                             SWITCH_DATAPATH_ID);
-        storageSource.setTablePrimaryKeyName(PORT_TABLE_NAME, PORT_ID);
-        storageSource.setTablePrimaryKeyName(CONTROLLER_INTERFACE_TABLE_NAME, 
-                                             CONTROLLER_INTERFACE_ID);
-        storageSource.addListener(CONTROLLER_INTERFACE_TABLE_NAME, this);
-        
-        while (true) {
-            try {
-                updateControllerInfo();
-                break;
-            }
-            catch (StorageException e) {
-                log.info("Waiting for storage source");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e1) {
-                }
-            }
-        }
        
         // Add our REST API
         restApi.addRestletRoutable(new CoreWebRoutable());
-    }
-
-    @Override
-    public void addInfoProvider(String type, IInfoProvider provider) {
-        if (!providerMap.containsKey(type)) {
-            providerMap.put(type, new ArrayList<IInfoProvider>());
-        }
-        providerMap.get(type).add(provider);
-    }
-
-    @Override
-    public void removeInfoProvider(String type, IInfoProvider provider) {
-        if (!providerMap.containsKey(type)) {
-            log.debug("Provider type {} doesn't exist.", type);
-            return;
-        }
-        
-        providerMap.get(type).remove(provider);
-    }
-    
-    public Map<String, Object> getControllerInfo(String type) {
-        if (!providerMap.containsKey(type)) return null;
-        
-        Map<String, Object> result = new LinkedHashMap<String, Object>();
-        for (IInfoProvider provider : providerMap.get(type)) {
-            result.putAll(provider.getInfo(type));
-        }
-        
-        return result;
-    }
-
-    @Override
-    public void addHAListener(IHAListener listener) {
-        this.haListeners.add(listener);
-    }
-
-    @Override
-    public void removeHAListener(IHAListener listener) {
-        this.haListeners.remove(listener);
-    }
-    
-    
-    /**
-     * Handle changes to the controller nodes IPs and dispatch update. 
-     */
-    @SuppressWarnings("unchecked")
-    protected void handleControllerNodeIPChanges() {
-        HashMap<String,String> curControllerNodeIPs = new HashMap<String,String>();
-        HashMap<String,String> addedControllerNodeIPs = new HashMap<String,String>();
-        HashMap<String,String> removedControllerNodeIPs =new HashMap<String,String>();
-        String[] colNames = { CONTROLLER_INTERFACE_CONTROLLER_ID, 
-                           CONTROLLER_INTERFACE_TYPE, 
-                           CONTROLLER_INTERFACE_NUMBER, 
-                           CONTROLLER_INTERFACE_DISCOVERED_IP };
-        synchronized(controllerNodeIPsCache) {
-            // We currently assume that interface Ethernet0 is the relevant
-            // controller interface. Might change.
-            // We could (should?) implement this using 
-            // predicates, but creating the individual and compound predicate
-            // seems more overhead then just checking every row. Particularly, 
-            // since the number of rows is small and changes infrequent
-            IResultSet res = storageSource.executeQuery(CONTROLLER_INTERFACE_TABLE_NAME,
-                    colNames,null, null);
-            while (res.next()) {
-                if (res.getString(CONTROLLER_INTERFACE_TYPE).equals("Ethernet") &&
-                        res.getInt(CONTROLLER_INTERFACE_NUMBER) == 0) {
-                    String controllerID = res.getString(CONTROLLER_INTERFACE_CONTROLLER_ID);
-                    String discoveredIP = res.getString(CONTROLLER_INTERFACE_DISCOVERED_IP);
-                    String curIP = controllerNodeIPsCache.get(controllerID);
-                    
-                    curControllerNodeIPs.put(controllerID, discoveredIP);
-                    if (curIP == null) {
-                        // new controller node IP
-                        addedControllerNodeIPs.put(controllerID, discoveredIP);
-                    } 
-                    else if (!curIP.equals(discoveredIP)) {
-                        // IP changed                    
-                        removedControllerNodeIPs.put(controllerID, curIP);
-                        addedControllerNodeIPs.put(controllerID, discoveredIP);
-                    }
-                }
-            }
-            // Now figure out if rows have been deleted. We can't use the
-            // rowKeys from rowsDeleted directly, since the tables primary
-            // key is a compound that we can't disassemble
-            Set<String> curEntries = curControllerNodeIPs.keySet();
-            Set<String> removedEntries = controllerNodeIPsCache.keySet();
-            removedEntries.removeAll(curEntries);
-            for (String removedControllerID : removedEntries)
-                removedControllerNodeIPs.put(removedControllerID, controllerNodeIPsCache.get(removedControllerID));
-            controllerNodeIPsCache = (HashMap<String, String>) curControllerNodeIPs.clone();
-            HAControllerNodeIPUpdate update = new HAControllerNodeIPUpdate(
-                                curControllerNodeIPs, addedControllerNodeIPs,
-                                removedControllerNodeIPs);
-            if (!removedControllerNodeIPs.isEmpty() || !addedControllerNodeIPs.isEmpty()) {
-                try {
-                    this.updates.put(update);
-                } catch (InterruptedException e) {
-                    log.error("Failure adding update to queue", e);
-                }
-            }
-        }
     }
     
     @Override
@@ -2407,21 +1843,6 @@ public class Controller implements IFloodlightProviderService,
             retval.putAll(controllerNodeIPsCache);
         }
         return retval;
-    }
-
-    @Override
-    public void rowsModified(String tableName, Set<Object> rowKeys) {
-        if (tableName.equals(CONTROLLER_INTERFACE_TABLE_NAME)) {
-            handleControllerNodeIPChanges();
-        }
-        
-    }
-
-    @Override
-    public void rowsDeleted(String tableName, Set<Object> rowKeys) {
-        if (tableName.equals(CONTROLLER_INTERFACE_TABLE_NAME)) {
-            handleControllerNodeIPChanges();
-        }
     }
 
     @Override

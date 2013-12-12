@@ -27,9 +27,6 @@ import java.util.Map;
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.devicemanager.IDevice;
-import net.floodlightcontroller.devicemanager.IDeviceService;
-import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.floodlightcontroller.core.annotations.LogMessageCategory;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
@@ -38,7 +35,9 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.AppCookie;
-import net.floodlightcontroller.counter.ICounterStoreService;
+import net.floodlightcontroller.devicemanager.IDevice;
+import net.floodlightcontroller.devicemanager.IDeviceService;
+import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.routing.ForwardingBase;
 import net.floodlightcontroller.routing.IRoutingDecision;
@@ -389,7 +388,6 @@ public class Forwarding extends ForwardingBase implements IFloodlightModule {
         l.add(IDeviceService.class);
         l.add(IRoutingService.class);
         l.add(ITopologyService.class);
-        l.add(ICounterStoreService.class);
         return l;
     }
 
@@ -416,7 +414,6 @@ public class Forwarding extends ForwardingBase implements IFloodlightModule {
         this.deviceManager = context.getServiceImpl(IDeviceService.class);
         this.routingEngine = context.getServiceImpl(IRoutingService.class);
         this.topology = context.getServiceImpl(ITopologyService.class);
-        this.counterStore = context.getServiceImpl(ICounterStoreService.class);
         
         // read our config options
         Map<String, String> configOptions = context.getConfigParams(this);

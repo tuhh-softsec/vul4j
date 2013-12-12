@@ -1,13 +1,10 @@
 net.floodlightcontroller.core.FloodlightProvider
-net.floodlightcontroller.storage.memory.MemoryStorageSource
 net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher
 net.floodlightcontroller.devicemanager.internal.DeviceManagerImpl
 net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager
 net.floodlightcontroller.topology.TopologyManager
 net.floodlightcontroller.forwarding.Forwarding
 net.floodlightcontroller.restserver.RestApiServer
-net.floodlightcontroller.counter.CounterStore
-net.floodlightcontroller.counter.NullCounterStore
 net.floodlightcontroller.threadpool.ThreadPool
 net.floodlightcontroller.ui.web.StaticWebRoutable
 net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier

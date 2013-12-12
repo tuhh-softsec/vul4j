@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -39,9 +38,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.IFloodlightProviderService.Role;
-import net.floodlightcontroller.core.IHAListener;
-import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IUpdate;
@@ -63,7 +59,6 @@ import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.packet.UDP;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
@@ -85,14 +80,12 @@ import org.slf4j.LoggerFactory;
  */
 public class DeviceManagerImpl implements
 IDeviceService, IOFMessageListener, ITopologyListener,
-IFloodlightModule, IEntityClassListener,
-IInfoProvider, IHAListener {
+IFloodlightModule, IEntityClassListener {
     protected final static Logger logger =
             LoggerFactory.getLogger(DeviceManagerImpl.class);
 
     protected IFloodlightProviderService floodlightProvider;
     protected ITopologyService topology;
-    protected IStorageSourceService storageSource;
     protected IRestApiService restApi;
     protected IThreadPoolService threadPool;
 
@@ -551,20 +544,6 @@ IInfoProvider, IHAListener {
         deviceListeners.add(listener);
     }
 
-    // *************
-    // IInfoProvider
-    // *************
-
-    @Override
-    public Map<String, Object> getInfo(String type) {
-        if (!"summary".equals(type))
-            return null;
-
-        Map<String, Object> info = new HashMap<String, Object>();
-        info.put("# hosts", deviceMap.size());
-        return info;
-    }
-
     // ******************
     // IOFMessageListener
     // ******************
@@ -628,7 +607,6 @@ IInfoProvider, IHAListener {
         Collection<Class<? extends IFloodlightService>> l =
                 new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFloodlightProviderService.class);
-        l.add(IStorageSourceService.class);
         l.add(ITopologyService.class);
         l.add(IRestApiService.class);
         l.add(IThreadPoolService.class);
@@ -648,8 +626,6 @@ IInfoProvider, IHAListener {
 
         this.floodlightProvider =
                 fmc.getServiceImpl(IFloodlightProviderService.class);
-        this.storageSource =
-                fmc.getServiceImpl(IStorageSourceService.class);
         this.topology =
                 fmc.getServiceImpl(ITopologyService.class);
         this.restApi = fmc.getServiceImpl(IRestApiService.class);
@@ -668,7 +644,6 @@ IInfoProvider, IHAListener {
         apComparator = new AttachmentPointComparator();
 
         floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
-        floodlightProvider.addHAListener(this);
         if (topology != null)
             topology.addListener(this);
         entityClassifier.addListener(this);
@@ -691,30 +666,6 @@ IInfoProvider, IHAListener {
         } else {
             logger.debug("Could not instantiate REST API");
         }
-    }
-
-    // ***************
-    // IHAListener
-    // ***************
-
-    @Override
-    public void roleChanged(Role oldRole, Role newRole) {
-        switch(newRole) {
-            case SLAVE:
-                logger.debug("Resetting device state because of role change");
-                startUp(null);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void controllerNodeIPsChanged(
-                                         Map<String, String> curControllerNodeIPs,
-                                         Map<String, String> addedControllerNodeIPs,
-                                         Map<String, String> removedControllerNodeIPs) {
-        // no-op
     }
 
     // ****************

@@ -32,10 +32,7 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +41,6 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.FloodlightProvider;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
-import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -55,16 +51,12 @@ import net.floodlightcontroller.core.internal.Controller.SwitchUpdateType;
 import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.counter.CounterStore;
-import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPacket;
 import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.restserver.RestApiServer;
-import net.floodlightcontroller.storage.IStorageSourceService;
-import net.floodlightcontroller.storage.memory.MemoryStorageSource;
 import net.floodlightcontroller.test.FloodlightTestCase;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
@@ -121,15 +113,8 @@ public class ControllerTest extends FloodlightTestCase {
         controller = (Controller)cm.getServiceImpls().get(IFloodlightProviderService.class);
         fmc.addService(IFloodlightProviderService.class, controller);
         
-        MemoryStorageSource memstorage = new MemoryStorageSource();
-        fmc.addService(IStorageSourceService.class, memstorage);
-        
         RestApiServer restApi = new RestApiServer();
         fmc.addService(IRestApiService.class, restApi);
-        
-        CounterStore cs = new CounterStore();
-        fmc.addService(ICounterStoreService.class, cs);
-        
    
         tp = new MockThreadPoolService();
         fmc.addService(IThreadPoolService.class, tp);
@@ -145,13 +130,11 @@ public class ControllerTest extends FloodlightTestCase {
 
         
         restApi.init(fmc);
-        memstorage.init(fmc);
         cm.init(fmc);
         tp.init(fmc);
         sr.init(fmc);
         linkDiscovery.init(fmc);
         restApi.startUp(fmc);
-        memstorage.startUp(fmc);
         cm.startUp(fmc);
         tp.startUp(fmc);
         sr.startUp(fmc);
@@ -183,10 +166,12 @@ public class ControllerTest extends FloodlightTestCase {
                 
         expect(sw.getId()).andReturn(dpid).anyTimes();
         expect(sw.getStringId()).andReturn(dpidString).anyTimes();
-        expect(sw.getConnectedSince()).andReturn(new Date());
-        Channel channel = createMock(Channel.class);
-        expect(sw.getChannel()).andReturn(channel);
-        expect(channel.getRemoteAddress()).andReturn(null);
+        
+        //Now we don't write to storage these methods aren't called
+        //expect(sw.getConnectedSince()).andReturn(new Date());
+        //Channel channel = createMock(Channel.class);
+        //expect(sw.getChannel()).andReturn(channel);
+        //expect(channel.getRemoteAddress()).andReturn(null);
 
         expect(sw.getCapabilities()).andReturn(0).anyTimes();
         expect(sw.getBuffers()).andReturn(0).anyTimes();
@@ -403,21 +388,22 @@ public class ControllerTest extends FloodlightTestCase {
         IOFSwitch newsw = createMock(IOFSwitch.class);
         expect(newsw.getId()).andReturn(0L).anyTimes();
         expect(newsw.getStringId()).andReturn("00:00:00:00:00:00:00").anyTimes();
-        expect(newsw.getConnectedSince()).andReturn(new Date());
-        Channel channel2 = createMock(Channel.class);
-        expect(newsw.getChannel()).andReturn(channel2);
-        expect(channel2.getRemoteAddress()).andReturn(null);
-        expect(newsw.getPorts()).andReturn(new ArrayList<OFPhysicalPort>()).times(2);
+        //Now we don't write to storage, these methods aren't called
+        //expect(newsw.getConnectedSince()).andReturn(new Date());
+        //Channel channel2 = createMock(Channel.class);
+        //expect(newsw.getChannel()).andReturn(channel2);
+        //expect(channel2.getRemoteAddress()).andReturn(null);
+        expect(newsw.getPorts()).andReturn(new ArrayList<OFPhysicalPort>());
         expect(newsw.getCapabilities()).andReturn(0).anyTimes();
         expect(newsw.getBuffers()).andReturn(0).anyTimes();
         expect(newsw.getTables()).andReturn((byte)0).anyTimes();
         expect(newsw.getActions()).andReturn(0).anyTimes();
         controller.activeSwitches.put(0L, oldsw);
-        replay(newsw, channel, channel2);
+        replay(newsw, channel);//, channel2);
 
         controller.addSwitch(newsw);
 
-        verify(newsw, channel, channel2);
+        verify(newsw, channel);//, channel2);
     }
     
     @Test
@@ -486,18 +472,6 @@ public class ControllerTest extends FloodlightTestCase {
                     switchListener.nPortChanged == 1);
         }
     }
-    
-
-    private Map<String,Object> getFakeControllerIPRow(String id, String controllerId, 
-            String type, int number, String discoveredIP ) {
-        HashMap<String, Object> row = new HashMap<String,Object>();
-        row.put(Controller.CONTROLLER_INTERFACE_ID, id);
-        row.put(Controller.CONTROLLER_INTERFACE_CONTROLLER_ID, controllerId);
-        row.put(Controller.CONTROLLER_INTERFACE_TYPE, type);
-        row.put(Controller.CONTROLLER_INTERFACE_NUMBER, number);
-        row.put(Controller.CONTROLLER_INTERFACE_DISCOVERED_IP, discoveredIP);
-        return row;
-    }
 
     /**
      * Test notifications for controller node IP changes. This requires
@@ -511,6 +485,7 @@ public class ControllerTest extends FloodlightTestCase {
      * 
      * @throws Exception
      */
+    /*
     @Test
     public void testControllerNodeIPChanges() throws Exception {
         class DummyHAListener implements IHAListener {
@@ -621,7 +596,9 @@ public class ControllerTest extends FloodlightTestCase {
             listener.do_assert(4, expectedCurMap, expectedAddedMap, expectedRemovedMap);
         }
     }
+    */
     
+    /*
     @Test
     public void testGetControllerNodeIPs() {
         HashMap<String,String> expectedCurMap = new HashMap<String, String>();
@@ -637,40 +614,7 @@ public class ControllerTest extends FloodlightTestCase {
         assertEquals("expectedControllerNodeIPs is not as expected", 
                 expectedCurMap, controller.getControllerNodeIPs());
     }
-    
-    @Test
-    public void testSetRoleNull() {
-        try {
-            controller.setRole(null);
-            fail("Should have thrown an Exception");
-        }
-        catch (NullPointerException e) {
-            //exptected
-        }
-    }
-    
-    @Test 
-    public void testSetRole() {
-        controller.connectedSwitches.add(new OFSwitchImpl());
-        RoleChanger roleChanger = createMock(RoleChanger.class); 
-        roleChanger.submitRequest(controller.connectedSwitches, Role.SLAVE);
-        controller.roleChanger = roleChanger;
-        
-        assertEquals("Check that update queue is empty", 0, 
-                    controller.updates.size());
-        
-        replay(roleChanger);
-        controller.setRole(Role.SLAVE);
-        verify(roleChanger);
-        
-        IUpdate upd = controller.updates.poll();
-        assertNotNull("Check that update queue has an update", upd);
-        assertTrue("Check that update is HARoleUpdate", 
-                   upd instanceof Controller.HARoleUpdate);
-        Controller.HARoleUpdate roleUpd = (Controller.HARoleUpdate)upd;
-        assertSame(Role.MASTER, roleUpd.oldRole);
-        assertSame(Role.SLAVE, roleUpd.newRole);
-    }
+    */
     
     @Test
     public void testCheckSwitchReady() {
