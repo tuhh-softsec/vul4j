@@ -176,9 +176,14 @@ public class GraphDBOperation implements IDBOperation {
 	 */
 	public IPortObject searchPort(String dpid, Short number) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		if ( fg == null ) return null;
 		String id = dpid + number.toString();
-		return (fg != null && fg.getVertices("port_id",id).iterator().hasNext()) ? 
-				fg.getVertices("port_id",id,IPortObject.class).iterator().next() : null;
+		Iterator<IPortObject> ports =  fg.getVertices("port_id",id,IPortObject.class).iterator();
+		if ( ports.hasNext() ) {
+			return ports.next();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -206,10 +211,14 @@ public class GraphDBOperation implements IDBOperation {
 	 * @param macAddr MAC address to search and get
 	 */
 	public IDeviceObject searchDevice(String macAddr) {
-		// TODO Auto-generated method stub
-		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
-		return (fg != null && fg.getVertices("dl_addr",macAddr).iterator().hasNext()) ?
-			fg.getVertices("dl_addr",macAddr, IDeviceObject.class).iterator().next() : null;
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		if ( fg == null ) return null;
+		Iterator<IDeviceObject> devices =  fg.getVertices("dl_addr",macAddr, IDeviceObject.class).iterator();
+		if ( devices.hasNext() ) {
+			return devices.next();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -288,10 +297,13 @@ public class GraphDBOperation implements IDBOperation {
 	 */
 	public IFlowPath searchFlowPath(FlowId flowId) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-		
-		return fg.getVertices("flow_id", flowId.toString()).iterator().hasNext() ? 
-		    fg.getVertices("flow_id", flowId.toString(),
-				   IFlowPath.class).iterator().next() : null;
+		if ( fg == null ) return null;
+		Iterator<IFlowPath> flowpaths = fg.getVertices("flow_id", flowId.toString(), IFlowPath.class).iterator();
+		if ( flowpaths.hasNext() ) {
+			return flowpaths.next();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -348,10 +360,13 @@ public class GraphDBOperation implements IDBOperation {
 	 */
 	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-		
-		return fg.getVertices("flow_entry_id", flowEntryId.toString()).iterator().hasNext() ? 
-		    fg.getVertices("flow_entry_id", flowEntryId.toString(),
-				   IFlowEntry.class).iterator().next() : null;
+		if ( fg == null ) return null;
+		Iterator<IFlowEntry> flowentries = fg.getVertices("flow_entry_id", flowEntryId.toString(), IFlowEntry.class).iterator();
+		if ( flowentries.hasNext() ) {
+			return flowentries.next();
+		} else {
+			return null;
+		}
 	}
 
 	/**
