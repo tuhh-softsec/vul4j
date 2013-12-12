@@ -27,6 +27,9 @@ import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.forwarding.IForwardingService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.*;
+import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
+
+import com.esotericsoftware.kryo2.Kryo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +49,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected IFlowPusherService pusher;
     protected IForwardingService forwardingService;
-    
+
+    private KryoFactory kryoFactory = new KryoFactory();
+
     // Flow Entry ID generation state
     private static Random randomGenerator = new Random();
     private static int nextFlowEntryIdPrefix = 0;
@@ -587,11 +592,24 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     private void pushModifiedFlowPathsToDatabase(
 		Collection<FlowPath> modifiedFlowPaths) {
+	List<FlowPath> copiedFlowPaths = new LinkedList<FlowPath>();
+
+	//
+	// Create a copy of the Flow Paths to push, because the pushing
+	// itself will happen on a separate thread.
+	//
+	Kryo kryo = kryoFactory.newKryo();
+	for (FlowPath flowPath : modifiedFlowPaths) {
+	    FlowPath copyFlowPath = kryo.copy(flowPath);
+	    copiedFlowPaths.add(copyFlowPath);
+	}
+	kryoFactory.deleteKryo(kryo);
+
 	//
 	// We only add the Flow Paths to the Database Queue.
 	// The FlowDatabaseWriter thread is responsible for the actual writing.
 	//
-	flowPathsToDatabaseQueue.addAll(modifiedFlowPaths);
+	flowPathsToDatabaseQueue.addAll(copiedFlowPaths);
     }
 
     /**
