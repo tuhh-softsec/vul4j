@@ -9,6 +9,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.FloodlightModuleLoader;
 import net.floodlightcontroller.core.module.IFloodlightModuleContext;
 import net.floodlightcontroller.restserver.IRestApiService;
+import net.onrc.onos.ofcontroller.core.web.OnosCoreWebRoutable;
 
 /**
  * Host for the ONOS main method

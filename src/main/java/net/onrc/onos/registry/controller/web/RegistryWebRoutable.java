@@ -1,4 +1,4 @@
-package net.onrc.onos.registry.controller;
+package net.onrc.onos.registry.controller.web;
 
 import net.floodlightcontroller.restserver.RestletRoutable;
 

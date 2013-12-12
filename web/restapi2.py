@@ -158,14 +158,14 @@ def registry_switches():
 #    resp = Response(js, status=200, mimetype='application/json')
 #    return resp
 
-#@app.route("/wm/core/controller/switches/json")
+#@app.route("/fl/core/controller/switches/json")
 #def switches():
 #    global switches_
 #    js = json.dumps(switches_)
 #    resp = Response(js, status=200, mimetype='application/json')
 #    return resp
 
-@app.route("/wm/device/")
+@app.route("/fl/device/")
 def devices():
   try:
     command = "curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=device" % (RestIP, RestPort, DBName)
@@ -218,7 +218,7 @@ def devices():
 #{"entityClass":"DefaultEntityClass","mac":["7c:d1:c3:e0:8c:a3"],"ipv4":["192.168.2.102","10.1.10.35"],"vlan":[],"attachmentPoint":[{"port":13,"switchDPID":"00:01:00:12:e2:78:32:44","errorStatus":null}],"lastSeen":1357333593496}
 
 ## return fake stat for now
-@app.route("/wm/core/switch/<switchId>/<statType>/json")
+@app.route("/fl/core/switch/<switchId>/<statType>/json")
 def switch_stat(switchId, statType):
     if statType == "desc":
         desc=[{"length":1056,"serialNumber":"None","manufacturerDescription":"Nicira Networks, Inc.","hardwareDescription":"Open vSwitch","softwareDescription":"1.4.0+build0","datapathDescription":"None"}]
@@ -235,7 +235,7 @@ def switch_stat(switchId, statType):
     resp = Response(js, status=200, mimetype='application/json')
     return resp
 
-@app.route("/wm/core/controller/switches/json")
+@app.route("/fl/core/controller/switches/json")
 def query_switch():
   try:
     command = "curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=switch" % (RestIP, RestPort, DBName)

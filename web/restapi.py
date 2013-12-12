@@ -61,14 +61,14 @@ def return_file(filename="index.html"):
 #    resp = Response(js, status=200, mimetype='application/json')
 #    return resp
 
-#@app.route("/wm/core/controller/switches/json")
+#@app.route("/fl/core/controller/switches/json")
 #def switches():
 #    global switches_
 #    js = json.dumps(switches_)
 #    resp = Response(js, status=200, mimetype='application/json')
 #    return resp
 
-@app.route("/wm/device/")
+@app.route("/fl/device/")
 def devices():
   ret = []
   js = json.dumps(ret)
@@ -76,7 +76,7 @@ def devices():
   return resp
 
 ## return fake stat for now
-@app.route("/wm/core/switch/<switchId>/<statType>/json")
+@app.route("/fl/core/switch/<switchId>/<statType>/json")
 def switch_stat(switchId, statType):
     if statType == "desc":
         desc=[{"length":1056,"serialNumber":"None","manufacturerDescription":"Nicira Networks, Inc.","hardwareDescription":"Open vSwitch","softwareDescription":"1.4.0+build0","datapathDescription":"None"}]
@@ -93,7 +93,7 @@ def switch_stat(switchId, statType):
     resp = Response(js, status=200, mimetype='application/json')
     return resp
 
-@app.route("/wm/core/controller/switches/json")
+@app.route("/fl/core/controller/switches/json")
 def query_switch():
   try:
     command = "curl -s http://%s:%s/graphs/%s/vertices" % (RestIP, RestPort, DBName)

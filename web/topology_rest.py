@@ -457,9 +457,9 @@ def topology_for_gui():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-#@app.route("/wm/topology/toporoute/00:00:00:00:00:a1/2/00:00:00:00:00:c1/3/json")
-#@app.route("/wm/topology/toporoute/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
-@app.route("/wm/topology/toporoute/<v1>/<p1>/<v2>/<p2>/json")
+#@app.route("/fl/topology/toporoute/00:00:00:00:00:a1/2/00:00:00:00:00:c1/3/json")
+#@app.route("/fl/topology/toporoute/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
+@app.route("/fl/topology/toporoute/<v1>/<p1>/<v2>/<p2>/json")
 def shortest_path(v1, p1, v2, p2):
   try:
     command = "curl -s \'http://%s:%s/wm/core/topology/switches/all/json\'" % (RestIP, RestPort)
@@ -545,7 +545,7 @@ def shortest_path(v1, p1, v2, p2):
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/core/controller/switches/json")
+@app.route("/fl/core/controller/switches/json")
 def query_switch():
   try:
     command = "curl -s \'http://%s:%s/wm/core/topology/switches/all/json\'" % (RestIP, RestPort)
@@ -577,7 +577,7 @@ def query_switch():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/device/")
+@app.route("/fl/device/")
 def devices():
   try:
     command = "curl -s http://%s:%s/graphs/%s/vertices\?key=type\&value=device" % (RestIP, RestPort, DBName)
@@ -621,7 +621,7 @@ def devices():
 #{"entityClass":"DefaultEntityClass","mac":["7c:d1:c3:e0:8c:a3"],"ipv4":["192.168.2.102","10.1.10.35"],"vlan":[],"attachmentPoint":[{"port":13,"switchDPID":"00:01:00:12:e2:78:32:44","errorStatus":null}],"lastSeen":1357333593496}
 
 ## return fake stat for now
-@app.route("/wm/core/switch/<switchId>/<statType>/json")
+@app.route("/fl/core/switch/<switchId>/<statType>/json")
 def switch_stat(switchId, statType):
     if statType == "desc":
         desc=[{"length":1056,"serialNumber":"None","manufacturerDescription":"Nicira Networks, Inc.","hardwareDescription":"Open vSwitch","softwareDescription":"1.4.0+build0","datapathDescription":"None"}]

@@ -16,7 +16,7 @@
 
 window.Switch = Backbone.Model.extend({
 
-    urlRoot:"/wm/core/switch/",
+    urlRoot:"/fl/core/switch/",
     
     defaults: {
         datapathDescription: '',
@@ -34,7 +34,7 @@ window.Switch = Backbone.Model.extend({
 
         //console.log("fetching switch " + this.id + " desc")
         $.ajax({
-            url:hackBase + "/wm/core/switch/" + self.id + '/desc/json',
+            url:hackBase + "/fl/core/switch/" + self.id + '/desc/json',
             dataType:"json",
             success:function (data) {
                 //console.log("fetched  switch " + self.id + " desc");
@@ -45,7 +45,7 @@ window.Switch = Backbone.Model.extend({
 
         //console.log("fetching switch " + this.id + " aggregate")
         $.ajax({
-            url:hackBase + "/wm/core/switch/" + self.id + '/aggregate/json',
+            url:hackBase + "/fl/core/switch/" + self.id + '/aggregate/json',
             dataType:"json",
             success:function (data) {
                 //console.log("fetched  switch " + self.id + " aggregate");
@@ -69,7 +69,7 @@ window.Switch = Backbone.Model.extend({
         //console.log("fetching switch " + this.id + " ports")
         //console.log("fetching switch " + this.id + " features")
         $.when($.ajax({
-            url:hackBase + "/wm/core/switch/" + self.id + '/port/json',
+            url:hackBase + "/fl/core/switch/" + self.id + '/port/json',
             dataType:"json",
             success:function (data) {
                 //console.log("fetched  switch " + self.id + " ports");
@@ -106,7 +106,7 @@ window.Switch = Backbone.Model.extend({
             }
         }),
         $.ajax({
-            url:hackBase + "/wm/core/switch/" + self.id + '/features/json',
+            url:hackBase + "/fl/core/switch/" + self.id + '/features/json',
             dataType:"json",
             success:function (data) {
                 //console.log("fetched  switch " + self.id + " features");
@@ -163,7 +163,7 @@ window.Switch = Backbone.Model.extend({
         var self = this;
         //console.log("fetching switch " + this.id + " flows")
         $.ajax({
-            url:hackBase + "/wm/core/switch/" + self.id + '/flow/json',
+            url:hackBase + "/fl/core/switch/" + self.id + '/flow/json',
             dataType:"json",
             success:function (data) {
                 //console.log("fetched  switch " + self.id + " flows");
@@ -269,7 +269,7 @@ window.SwitchCollection = Backbone.Collection.extend({
         var self = this;
         //console.log("fetching switch list")
         $.ajax({
-            url:hackBase + "/wm/core/controller/switches/json",
+            url:hackBase + "/fl/core/controller/switches/json",
             dataType:"json",
             success:function (data) {
                 //console.log("fetched  switch list: " + data.length);

@@ -35,7 +35,7 @@ window.HostCollection = Backbone.Collection.extend({
         var self = this;
         //console.log("fetching host list")
         $.ajax({
-            url:hackBase + "/wm/device/",
+            url:hackBase + "/fl/device/",
             dataType:"json",
             success:function (data) {
                 //console.log("fetched  host list: " + data.length);
