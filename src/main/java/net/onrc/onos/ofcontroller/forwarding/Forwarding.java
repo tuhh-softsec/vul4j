@@ -250,7 +250,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 				return;
 			}
 			
-			
 			log.debug("Adding new flow between {} at {} and {} at {}",
 					new Object[]{srcMacAddress, srcSwitchPort, dstMacAddress, dstSwitchPort});
 			
@@ -364,9 +363,15 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		
 		return po;
 	}
-	
+
 	@Override
-	public void flowInstalled(FlowPath installedFlowPath) {
+	public void flowsInstalled(Collection<FlowPath> installedFlowPaths) {
+		for (FlowPath flowPath : installedFlowPaths) {
+			flowInstalled(flowPath);
+		}
+	}
+
+	private void flowInstalled(FlowPath installedFlowPath) {
 		// TODO check concurrency
 		// will need to sync and access both collections at once.
 		long flowId = installedFlowPath.flowId().value();

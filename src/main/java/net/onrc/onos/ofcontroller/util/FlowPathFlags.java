@@ -112,8 +112,6 @@ public class FlowPathFlags {
 
 	// Test all flags
 	if ((this.flags & DISCARD_FIRST_HOP_ENTRY) != 0) {
-	    if (flagsStr != null)
-		flagsStr += ",";
 	    flagsStr += "DISCARD_FIRST_HOP_ENTRY";
 	}
 	if ((this.flags & KEEP_ONLY_FIRST_HOP_ENTRY) != 0) {
@@ -121,7 +119,7 @@ public class FlowPathFlags {
 		flagsStr += ",";
 	    flagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY";
 	}
-	ret += "]";
+	ret += flagsStr + "]";
 
 	return ret;
     }

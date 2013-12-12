@@ -123,6 +123,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    graphEntryTime /= div;
 	    extractTime /= div;
 	    pushTime /= div;
+	    totalTime /= div;
 	    log.debug("Sync time (ms):" +
 	    		  graphIDTime + "," +
 	     		  switchTime + "," + 

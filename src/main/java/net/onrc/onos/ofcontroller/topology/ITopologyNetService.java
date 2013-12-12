@@ -1,7 +1,5 @@
 package net.onrc.onos.ofcontroller.topology;
 
-import java.util.Map;
-
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.SwitchPort;

@@ -34,7 +34,6 @@ import net.onrc.onos.ofcontroller.util.FlowEntryAction;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction.*;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryActions;
-import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
 import net.onrc.onos.ofcontroller.util.IPv4Net;
@@ -80,8 +79,9 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 	 * @author Naoki Shiota
 	 *
 	 */
-	@SuppressWarnings("serial")
 	private class SwitchQueue extends ArrayDeque<OFMessage> {
+		private static final long serialVersionUID = 1L;
+
 		QueueState state;
 		
 		// Max rate of sending message (bytes/ms). 0 implies no limitation.

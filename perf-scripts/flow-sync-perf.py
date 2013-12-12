@@ -31,6 +31,8 @@ except:
   import pexpect
 
 ONOS_HOME = '..'
+ONOS_LOG = '%s/onos-logs/onos.%s.log' % ( ONOS_HOME, check_output( 'hostname').strip() )
+print "ONOS Log File:", ONOS_LOG
 
 # Verify that tcpkill is installed
 if not Popen( 'which tcpkill', stdout=PIPE, shell=True).communicate():
@@ -42,7 +44,7 @@ def doNothing(n):
   print "Doing nothing with %d flows..." % n
 
 def addFakeFlows(n):
-  print "Adding %d random flows..." % n
+  print "Adding %d random flows to switch..." % n
   for i in range( 1, (n+1) ):
     a = i / (256*256) % 256
     b = i / 256 % 256
@@ -56,19 +58,20 @@ def delFlowsFromSwitch(n):
 
 
 # ----------------- Utility Functions -------------------------
-def disconnect():
-  tail = Popen( "exec tail -0f ../onos-logs/onos.onosdev1.log", stdout=PIPE, shell=True )
-  tcp  = Popen( 'exec tcpkill -i lo -9 port 6633 > /dev/null 2>&1', shell=True )
-  tcp  = Popen( 'exec tcpkill -i lo -9 port 6633 > /tmp/tcp 2>&1', shell=True )
-  sleep(1)
-  tcp.kill()
-  results = waitForResult(tail)
-  tail.kill()
-  return results
+def wait(time, msg=None):
+  if msg:
+    print msg,
+  for i in range(time):
+    sys.stdout.write('.')
+    sys.stdout.flush()
+    sleep(1)
+  print ". done"
 
 def startNet(net):
-  tail = pexpect.spawn( 'tail -0f %s/onos-logs/onos.onosdev1.log' % ONOS_HOME )
+  tail = pexpect.spawn( 'tail -0f %s' % ONOS_LOG )
+  sleep(1) 
   net.start()
+  print "Waiting for ONOS to detech the switch..."
   index = tail.expect(['Sync time \(ms\)', pexpect.EOF, pexpect.TIMEOUT])
   if index >= 1:
     print '* ONOS not started'
@@ -80,43 +83,71 @@ def dumpFlows():
   return check_output( 'ovs-ofctl dump-flows s1', shell=True )
 
 def addFlowsToONOS(n):
+  print "Adding %d flows to ONOS" % n,
   call( './generate_flows.py 1 %d > /tmp/flows.txt' % n, shell=True )
-  call( '%s/web/add_flow.py -m onos -f /tmp/flows.txt' % ONOS_HOME, shell=True )
+  #call( '%s/web/add_flow.py -m onos -f /tmp/flows.txt' % ONOS_HOME, shell=True )
+  p = Popen( '%s/web/add_flow.py -m onos -f /tmp/flows.txt' % ONOS_HOME, shell=True )
+  while p.poll() is None:
+    sys.stdout.write('.')
+    sys.stdout.flush()
+    sleep(1)
+  print ". done\nWaiting for flow entries to be added to switch",
   while True:
     output = check_output( 'ovs-ofctl dump-flows s1', shell=True )
     lines = len(output.split('\n'))
     if lines >= (n+2):
       break
+    sys.stdout.write('.')
+    sys.stdout.flush()
     sleep(1)
-  count = 0
+  print ". done\nWaiting for flow entries to be visible in network graph",
   while True:
     output = pexpect.spawn( '%s/web/get_flow.py all' % ONOS_HOME )
+    count = 0
     while count < n:
       if output.expect(['FlowEntry', pexpect.EOF], timeout=2000) == 1:
         break
       count += 1 
+      print '. done'
       return
+    sys.stdout.write('.')
+    sys.stdout.flush()
     sleep(5)
 
-def removeFlowsFromONOS():
-  call( '%s/web/delete_flow.py all' % ONOS_HOME, shell=True )
-  while True:
-    output = check_output( 'ovs-ofctl dump-flows s1', shell=True )
-    lines = len(output.split('\n'))
-    if lines == 2:
-      break
+def removeFlowsFromONOS(checkSwitch=True):
+  print "Removing all flows from ONOS",
+  #call( '%s/web/delete_flow.py all' % ONOS_HOME, shell=True )
+  p = Popen( '%s/web/delete_flow.py all' % ONOS_HOME, shell=True )
+  while p.poll() is None:
+    sys.stdout.write('.')
+    sys.stdout.flush()
     sleep(1)
+  print ". done"
+  if checkSwitch:
+    print "Waiting for flow entries to be removed from switch",
+    while True:
+      output = check_output( 'ovs-ofctl dump-flows s1', shell=True )
+      lines = len(output.split('\n'))
+      if lines == 2:
+        break
+      sys.stdout.write('.')
+      sys.stdout.flush()
+      sleep(1)
+    print ". done"
+  print "Waiting for flow entries to be removed from network graph",
   while True:
     output = pexpect.spawn( '%s/web/get_flow.py all' % ONOS_HOME )
     if output.expect(['FlowEntry', pexpect.EOF], timeout=2000) == 1:
       break
+    sys.stdout.write('.')
+    sys.stdout.flush()
     sleep(5)
-
+  print '. done'
 
 # ----------------- Running the test and output  -------------------------
 def test(i, fn):
   # Start tailing the onos log
-  tail = pexpect.spawn( "tail -0f %s/onos-logs/onos.onosdev1.log" % ONOS_HOME )
+  tail = pexpect.spawn( "tail -0f %s" % ONOS_LOG )
   # disconnect the switch from the controller using tcpkill
   tcp  = Popen( 'exec tcpkill -i lo -9 port 6633 > /dev/null 2>&1', shell=True )
   # wait until the switch has been disconnected
@@ -129,9 +160,9 @@ def test(i, fn):
   tcp.terminate()
   tail.expect('Sync time \(ms\):', timeout=6000)
   tail.expect('([\d.]+,?)+\s')
-  print tail.match.group(0)
+  print "* Results:", tail.match.group(0)
   tail.terminate()
-  sleep(3)
+  wait(3, "Waiting for 3 seconds between tests")
   return tail.match.group(0).strip().split(',')
 
 def initResults(files):
@@ -144,7 +175,6 @@ def initResults(files):
 
 def outputResults(filename, n, results):
   results.insert(0, n)
-  print results
   with open(filename, 'a') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(results)
@@ -154,12 +184,13 @@ def runPerf( resultDir, tests):
               'delete': os.path.join(resultDir, 'delete.csv'),
               'sync':   os.path.join(resultDir, 'sync.csv') }
   initResults(fileMap)
+  removeFlowsFromONOS(checkSwitch=False) # clear ONOS before starting
   # start Mininet
   topo = SingleSwitchTopo()
   net = Mininet(topo=topo, controller=RemoteController)
+  print "Starting Mininet"
   startNet(net)
-  removeFlowsFromONOS() # clear ONOS before starting
-  sleep(30) # let ONOS "warm-up"
+  wait(30, "Give ONOS 30 seconds to warm up") # let ONOS "warm-up"
   for i in tests:
     addFlowsToONOS(i)
     outputResults(fileMap['sync'],   i, test(i, doNothing))
@@ -167,18 +198,6 @@ def runPerf( resultDir, tests):
     removeFlowsFromONOS()
     outputResults(fileMap['add'],    i, test(i, addFakeFlows)) # test needs empty DB
   net.stop()
-
-def waitForResult(tail):
-  while True:
-    line = tail.stdout.readline()
-    index = line.find('n.o.o.o.f.FlowSynchronizer')
-    if index > 0:
-      print line,
-    index = line.find('Sync time (ms):')
-    if index > 0:
-      line = line[index + 15:].strip()
-      line = line.replace('-->', '')
-      return line.split() # graph, switch, compare, total
 
 if __name__ == '__main__':
   setLogLevel( 'output' )
@@ -189,6 +208,3 @@ if __name__ == '__main__':
     tests = [1, 10, 100, 1000, 10000]
   runPerf( resultDir, tests )
 
-exit()
-
-# ---------------------------

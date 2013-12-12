@@ -17,6 +17,7 @@ JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:+UseAdaptiveSizePolicy -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:MaxInlineSize=8192 -XX:FreqInlineSize=8192"
+JVM_OPTS="$JVM_OPTS -javaagent:$ONOS_HOME/lib/jamm-0.2.5.jar"
 JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 		-XX:+UseThreadPriorities \
 		-XX:ThreadPriorityPolicy=42 \
@@ -89,7 +90,7 @@ function start {
 </configuration>
 EOF_LOGBACK
 
-  # Run floodlight
+  # Run ONOS
   echo "Starting ONOS controller ..."
   echo 
 

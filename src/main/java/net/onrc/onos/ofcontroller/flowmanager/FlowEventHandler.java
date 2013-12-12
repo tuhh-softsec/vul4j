@@ -75,10 +75,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     // Transient state for processing the Flow Paths:
     //  - The Flow Paths that should be recomputed
     //  - The Flow Paths with modified Flow Entries
+    //  - The Flow Paths that we should check if installed in all switches
     //
     private Map<Long, FlowPath> shouldRecomputeFlowPaths =
 	new HashMap<Long, FlowPath>();
     private Map<Long, FlowPath> modifiedFlowPaths =
+	new HashMap<Long, FlowPath>();
+    private Map<Long, FlowPath> checkIfInstalledFlowPaths =
 	new HashMap<Long, FlowPath>();
 
     /**
@@ -239,6 +242,12 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	for (FlowPath flowPath : modifiedFlowPaths.values())
 	    flowPath.dataPath().removeDeletedFlowEntries();
 
+	//
+	// Check if Flow Paths have been installed into all switches,
+	// and generate the appropriate events.
+	//
+	checkInstalledFlowPaths(checkIfInstalledFlowPaths.values());
+
 	// Cleanup
 	topologyEvents.clear();
 	flowPathEvents.clear();
@@ -246,6 +255,44 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	//
 	shouldRecomputeFlowPaths.clear();
 	modifiedFlowPaths.clear();
+	checkIfInstalledFlowPaths.clear();
+    }
+
+    /**
+     * Check if Flow Paths have been installed into all switches,
+     * and generate the appropriate events.
+     *
+     * @param flowPaths the flowPaths to process.
+     */
+    private void checkInstalledFlowPaths(Collection<FlowPath> flowPaths) {
+	List<FlowPath> installedFlowPaths = new LinkedList<FlowPath>();
+
+	Kryo kryo = kryoFactory.newKryo();
+
+	for (FlowPath flowPath : flowPaths) {
+	    boolean isInstalled = true;
+
+	    //
+	    // Check whether all Flow Entries have been installed
+	    //
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		if (flowEntry.flowEntrySwitchState() !=
+		    FlowEntrySwitchState.FE_SWITCH_UPDATED) {
+		    isInstalled = false;
+		    break;
+		}
+	    }
+
+	    if (isInstalled) {
+		// Create a copy and add it to the list
+		FlowPath copyFlowPath = kryo.copy(flowPath);
+		installedFlowPaths.add(copyFlowPath);
+	    }
+	}
+	kryoFactory.deleteKryo(kryo);
+
+	// Generate an event for the installed Flow Path.
+	flowManager.notificationFlowPathsInstalled(installedFlowPaths);
     }
 
     /**
@@ -339,6 +386,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 			flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 		    }
 		    modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
+		    break;
+		case FP_TYPE_UNKNOWN:
+		    log.error("FlowPath event with unknown type");
 		    break;
 		}
 		allFlowPaths.put(flowPath.flowId().value(), flowPath);
@@ -526,10 +576,12 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    }
 
 	    //
-	    // Update the local Flow Entry.
+	    // Update the local Flow Entry, and keep state to check
+	    // if the Flow Path has been installed.
 	    //
 	    localFlowEntry.setFlowEntryUserState(flowEntry.flowEntryUserState());
 	    localFlowEntry.setFlowEntrySwitchState(flowEntry.flowEntrySwitchState());
+	    checkIfInstalledFlowPaths.put(flowPath.flowId().value(), flowPath);
 	    return localFlowEntry;
 	}
 
