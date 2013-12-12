@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import net.floodlightcontroller.core.test.MockFloodlightProvider;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.counter.NullCounterStore;
 import net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier;
 import net.floodlightcontroller.devicemanager.test.MockDeviceManager;
 import net.floodlightcontroller.topology.TopologyManager;
@@ -24,8 +23,6 @@ public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
 			TopologyManager.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_DEVICE_SERVICE =
 			MockDeviceManager.class;
-	public static final Class<? extends IFloodlightModule> DEFAULT_COUNTER_STORE =
-			NullCounterStore.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_THREADPOOL =
 			MockThreadPoolService.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_ENTITY_CLASSIFIER =
@@ -39,7 +36,6 @@ public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
 		DEFAULT_MODULE_LIST.add(DEFAULT_DEVICE_SERVICE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_FLOODLIGHT_PRPOVIDER);
 		DEFAULT_MODULE_LIST.add(DEFAULT_TOPOLOGY_PROVIDER);
-		DEFAULT_MODULE_LIST.add(DEFAULT_COUNTER_STORE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_THREADPOOL);
 		DEFAULT_MODULE_LIST.add(DEFAULT_ENTITY_CLASSIFIER);
 

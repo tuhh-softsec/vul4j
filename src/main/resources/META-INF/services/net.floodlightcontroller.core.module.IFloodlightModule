@@ -5,8 +5,6 @@ net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager
 net.floodlightcontroller.topology.TopologyManager
 net.floodlightcontroller.forwarding.Forwarding
 net.floodlightcontroller.restserver.RestApiServer
-net.floodlightcontroller.counter.CounterStore
-net.floodlightcontroller.counter.NullCounterStore
 net.floodlightcontroller.threadpool.ThreadPool
 net.floodlightcontroller.ui.web.StaticWebRoutable
 net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier

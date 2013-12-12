@@ -51,8 +51,6 @@ import net.floodlightcontroller.core.internal.Controller.SwitchUpdateType;
 import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.counter.CounterStore;
-import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPacket;
@@ -117,10 +115,6 @@ public class ControllerTest extends FloodlightTestCase {
         
         RestApiServer restApi = new RestApiServer();
         fmc.addService(IRestApiService.class, restApi);
-        
-        CounterStore cs = new CounterStore();
-        fmc.addService(ICounterStoreService.class, cs);
-        
    
         tp = new MockThreadPoolService();
         fmc.addService(IThreadPoolService.class, tp);

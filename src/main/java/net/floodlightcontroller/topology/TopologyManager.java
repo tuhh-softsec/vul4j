@@ -25,7 +25,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
-import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.packet.BSN;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.LLDP;
@@ -596,7 +595,6 @@ public class TopologyManager implements
         l.add(ILinkDiscoveryService.class);
         l.add(IThreadPoolService.class);
         l.add(IFloodlightProviderService.class);
-        l.add(ICounterStoreService.class);
         l.add(IRestApiService.class);
         return l;
     }

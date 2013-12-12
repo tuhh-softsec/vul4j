@@ -57,7 +57,6 @@ import net.floodlightcontroller.core.annotations.LogMessageDocs;
 import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
 import net.floodlightcontroller.core.util.ListenerDispatcher;
 import net.floodlightcontroller.core.web.CoreWebRoutable;
-import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
@@ -165,7 +164,6 @@ public class Controller implements IFloodlightProviderService {
     
     // Module dependencies
     protected IRestApiService restApi;
-    protected ICounterStoreService counterStore = null;
     protected IThreadPoolService threadPool;
     protected IControllerRegistryService registryService;
     
@@ -257,13 +255,7 @@ public class Controller implements IFloodlightProviderService {
     
     // ***************
     // Getters/Setters
-    // ***************
-    
-    public void setCounterStore(ICounterStoreService counterStore) {
-        this.counterStore = counterStore;
-    }
-    
- 
+    // *************** 
     
     public void setRestApiService(IRestApiService restApi) {
         this.restApi = restApi;
@@ -1204,7 +1196,6 @@ public class Controller implements IFloodlightProviderService {
                     eth = new Ethernet();
                     eth.deserialize(pi.getPacketData(), 0,
                             pi.getPacketData().length);
-                    counterStore.updatePacketInCounters(sw, m, eth);
                 }
                 // fall through to default case...
 
