@@ -78,6 +78,38 @@ public class INetMapTopologyObjectsIFlowEntryTest {
 		flowEntry.setFlowEntryId(flowEntryId);
 		assertEquals(flowEntry.getFlowEntryId(), flowEntryId);
 	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get Idle Timeout.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set Idle Timeout.
+	 * 2. Should get Idle Timeout.
+	 */
+	@Test
+	public void testSetGetIdleTimeout() {
+		Integer idleTimeout = 5;
+		flowEntry.setIdleTimeout(idleTimeout);
+		assertEquals(flowEntry.getIdleTimeout(), idleTimeout);
+	}
+
+	/**
+	 * Desc:
+	 *  Test method for set and get Hard Timeout.
+	 * Condition:
+	 *  N/A
+	 * Expect:
+	 * 1. Should set Hard Timeout.
+	 * 2. Should get Hard Timeout.
+	 */
+	@Test
+	public void testSetGetHardTimeout() {
+		Integer hardTimeout = 5;
+		flowEntry.setHardTimeout(hardTimeout);
+		assertEquals(flowEntry.getHardTimeout(), hardTimeout);
+	}
 	
 	/**
 	 * Desc:

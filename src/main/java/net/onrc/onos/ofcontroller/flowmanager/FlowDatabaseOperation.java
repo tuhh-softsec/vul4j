@@ -3,10 +3,8 @@ package net.onrc.onos.ofcontroller.flowmanager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.floodlightcontroller.util.MACAddress;
 
@@ -90,6 +88,8 @@ public class FlowDatabaseOperation {
 	// - flowPath.flowPathType()
 	// - flowPath.flowPathUserState()
 	// - flowPath.flowPathFlags()
+	// - flowPath.idleTimeout()
+	// - flowPath.hardTimeout()
 	// - flowPath.dataPath().srcPort()
 	// - flowPath.dataPath().dstPort()
 	// - flowPath.matchSrcMac()
@@ -109,6 +109,8 @@ public class FlowDatabaseOperation {
 	flowObj.setFlowPathType(flowPath.flowPathType().toString());
 	flowObj.setFlowPathUserState(flowPath.flowPathUserState().toString());
 	flowObj.setFlowPathFlags(flowPath.flowPathFlags().flags());
+	flowObj.setIdleTimeout(flowPath.idleTimeout());
+	flowObj.setHardTimeout(flowPath.hardTimeout());
 	flowObj.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
 	flowObj.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
@@ -225,6 +227,8 @@ public class FlowDatabaseOperation {
 	// - InPort edge
 	// - OutPort edge
 	//
+	// - flowEntry.idleTimeout()
+	// - flowEntry.hardTimeout()
 	// - flowEntry.dpid()
 	// - flowEntry.flowEntryUserState()
 	// - flowEntry.flowEntrySwitchState()
@@ -245,6 +249,8 @@ public class FlowDatabaseOperation {
 	// - flowEntry.actions()
 	//
 	ISwitchObject sw = dbHandler.searchSwitch(flowEntry.dpid().toString());
+	flowEntryObj.setIdleTimeout(flowEntry.idleTimeout());
+	flowEntryObj.setHardTimeout(flowEntry.hardTimeout());
 	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
 	flowEntryObj.setSwitch(sw);
 	if (flowEntry.flowEntryMatch().matchInPort()) {
@@ -509,6 +515,8 @@ public class FlowDatabaseOperation {
 	String flowPathType = flowObj.getFlowPathType();
 	String flowPathUserState = flowObj.getFlowPathUserState();
 	Long flowPathFlags = flowObj.getFlowPathFlags();
+	Integer idleTimeout = flowObj.getIdleTimeout();
+	Integer hardTimeout = flowObj.getHardTimeout();
 	String srcSwitchStr = flowObj.getSrcSwitch();
 	Short srcPortShort = flowObj.getSrcPort();
 	String dstSwitchStr = flowObj.getDstSwitch();
@@ -519,6 +527,8 @@ public class FlowDatabaseOperation {
 	    (flowPathType == null) ||
 	    (flowPathUserState == null) ||
 	    (flowPathFlags == null) ||
+	    (idleTimeout == null) ||
+	    (hardTimeout == null) ||
 	    (srcSwitchStr == null) ||
 	    (srcPortShort == null) ||
 	    (dstSwitchStr == null) ||
@@ -533,6 +543,8 @@ public class FlowDatabaseOperation {
 	flowPath.setFlowPathType(FlowPathType.valueOf(flowPathType));
 	flowPath.setFlowPathUserState(FlowPathUserState.valueOf(flowPathUserState));
 	flowPath.setFlowPathFlags(new FlowPathFlags(flowPathFlags));
+	flowPath.setIdleTimeout(idleTimeout);
+	flowPath.setHardTimeout(hardTimeout);
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
 	flowPath.dataPath().srcPort().setPort(new Port(srcPortShort));
 	flowPath.dataPath().dstPort().setDpid(new Dpid(dstSwitchStr));
@@ -611,11 +623,15 @@ public class FlowDatabaseOperation {
      */
     public static FlowEntry extractFlowEntry(IFlowEntry flowEntryObj) {
 	String flowEntryIdStr = flowEntryObj.getFlowEntryId();
+	Integer idleTimeout = flowEntryObj.getIdleTimeout();
+	Integer hardTimeout = flowEntryObj.getHardTimeout();
 	String switchDpidStr = flowEntryObj.getSwitchDpid();
 	String userState = flowEntryObj.getUserState();
 	String switchState = flowEntryObj.getSwitchState();
 
 	if ((flowEntryIdStr == null) ||
+	    (idleTimeout == null) ||
+	    (hardTimeout == null) ||
 	    (switchDpidStr == null) ||
 	    (userState == null) ||
 	    (switchState == null)) {

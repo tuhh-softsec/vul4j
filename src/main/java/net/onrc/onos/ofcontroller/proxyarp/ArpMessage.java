@@ -2,11 +2,7 @@ package net.onrc.onos.ofcontroller.proxyarp;
 
 import java.io.Serializable;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 public class ArpMessage implements Serializable {
 
@@ -25,9 +21,8 @@ public class ArpMessage implements Serializable {
 	private final long outSwitch; 
 	private final short outPort;
 	
-	
-	private final List<SwitchPort> switchPorts = new ArrayList<SwitchPort>();
-	
+
+
 	public enum Type {
 		REQUEST,
 		REPLY

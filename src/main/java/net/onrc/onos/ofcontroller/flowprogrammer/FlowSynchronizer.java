@@ -7,8 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
@@ -44,26 +46,27 @@ public class FlowSynchronizer implements IFlowSyncService {
 
     private GraphDBOperation dbHandler;
     protected IFlowPusherService pusher;
-    private Map<IOFSwitch, Thread> switchThreads; 
+    private Map<IOFSwitch, FutureTask<SyncResult>> switchThreads; 
 
     public FlowSynchronizer() {
 	dbHandler = new GraphDBOperation("");
-	switchThreads = new HashMap<IOFSwitch, Thread>();
+	switchThreads = new HashMap<IOFSwitch, FutureTask<SyncResult>>();
     }
 
     @Override
-    public void synchronize(IOFSwitch sw) {
+    public Future<SyncResult> synchronize(IOFSwitch sw) {
 	Synchronizer sync = new Synchronizer(sw);
-	Thread t = new Thread(sync);
-	switchThreads.put(sw, t);
-	t.start();
+	FutureTask<SyncResult> task = new FutureTask<SyncResult>(sync);
+	switchThreads.put(sw, task);
+	task.run();
+	return task;
     }
     
     @Override
     public void interrupt(IOFSwitch sw) {
-	Thread t = switchThreads.remove(sw);
+	FutureTask<SyncResult> t = switchThreads.remove(sw);
 	if(t != null) {
-	    t.interrupt();
+		t.cancel(true);
 	}	
     }
 
@@ -80,7 +83,7 @@ public class FlowSynchronizer implements IFlowSyncService {
      * @author Brian
      *
      */
-	protected class Synchronizer implements Runnable {
+	protected class Synchronizer implements Callable<SyncResult> {
 	IOFSwitch sw;
 	ISwitchObject swObj;
 
@@ -90,14 +93,45 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    this.swObj = dbHandler.searchSwitch(dpid.toString());
 	}
 
+	double graphIDTime, switchTime, compareTime, graphEntryTime, extractTime, pushTime, totalTime;
 	@Override
-	public void run() {
+	public SyncResult call() {
 	    // TODO: stop adding other flow entries while synchronizing
 	    //pusher.suspend(sw);
+	    long start = System.nanoTime();
 	    Set<FlowEntryWrapper> graphEntries = getFlowEntriesFromGraph();
+	    long step1 = System.nanoTime();
 	    Set<FlowEntryWrapper> switchEntries = getFlowEntriesFromSwitch();
-	    compare(graphEntries, switchEntries);
+	    long step2 = System.nanoTime();
+	    SyncResult result = compare(graphEntries, switchEntries);
+	    long step3 = System.nanoTime();
+	    graphIDTime = (step1 - start); 
+	    switchTime = (step2 - step1);
+	    compareTime = (step3 - step2);
+	    totalTime = (step3 - start);
+	    outputTime();
 	    //pusher.resume(sw);
+	    
+	    return result;
+	}
+	
+	private void outputTime() {
+	    double div = Math.pow(10, 6); //convert nanoseconds to ms
+	    graphIDTime /= div;
+	    switchTime /= div;
+	    compareTime = (compareTime - graphEntryTime - extractTime - pushTime) / div;
+	    graphEntryTime /= div;
+	    extractTime /= div;
+	    pushTime /= div;
+	    totalTime /= div;
+	    log.debug("Sync time (ms):" +
+	    		  graphIDTime + "," +
+	     		  switchTime + "," + 
+	    		  compareTime + "," +
+	     		  graphEntryTime + "," +
+	    		  extractTime + "," + 
+	     		  pushTime + "," +
+	              totalTime);
 	}
 
 	/**
@@ -107,7 +141,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 * @param graphEntries Flow entries in GraphDB.
 	 * @param switchEntries Flow entries in switch.
 	 */
-	private void compare(Set<FlowEntryWrapper> graphEntries, Set<FlowEntryWrapper> switchEntries) {
+	private SyncResult compare(Set<FlowEntryWrapper> graphEntries, Set<FlowEntryWrapper> switchEntries) {
 	    int added = 0, removed = 0, skipped = 0;
 	    for(FlowEntryWrapper entry : switchEntries) {
 		if(graphEntries.contains(entry)) {
@@ -123,11 +157,16 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    for(FlowEntryWrapper entry : graphEntries) {
 		// add flow entry to switch
 		entry.addToSwitch(sw);
+		graphEntryTime += entry.dbTime;
+		extractTime += entry.extractTime;
+		pushTime += entry.pushTime;
 		added++;
 	    }	  
 	    log.debug("Flow entries added "+ added + ", " +
 		      "Flow entries removed "+ removed + ", " +
 		      "Flow entries skipped " + skipped);
+	    
+	    return new SyncResult(added, removed, skipped);
 	}
 
 	/**
@@ -216,6 +255,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 * Install this FlowEntry to a switch via FlowPusher.
 	 * @param sw Switch to which flow will be installed.
 	 */
+	double dbTime, extractTime, pushTime;
 	public void addToSwitch(IOFSwitch sw) {
 	    if (statisticsReply != null) {
 		log.error("Error adding existing flow entry {} to sw {}", 
@@ -223,6 +263,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 		return;
 	    }
 
+	    double startDB = System.nanoTime();
 	    // Get the Flow Entry state from the Network Graph
 	    IFlowEntry iFlowEntry = null;
 	    try {
@@ -237,7 +278,9 @@ public class FlowSynchronizer implements IFlowSyncService {
 			  flowEntryId, sw.getId());
 		return;
 	    }
+	    dbTime = System.nanoTime() - startDB;
 
+	    double startExtract = System.nanoTime();
 	    FlowEntry flowEntry =
 		FlowDatabaseOperation.extractFlowEntry(iFlowEntry);
 	    if (flowEntry == null) {
@@ -245,8 +288,11 @@ public class FlowSynchronizer implements IFlowSyncService {
 			  flowEntryId, sw.getId());
 		return;
 	    }
-
+	    extractTime = System.nanoTime() - startExtract;
+	    
+	    double startPush = System.nanoTime();
 	    pusher.pushFlowEntry(sw, flowEntry);
+	    pushTime = System.nanoTime() - startPush;
 	}
 	
 	/**

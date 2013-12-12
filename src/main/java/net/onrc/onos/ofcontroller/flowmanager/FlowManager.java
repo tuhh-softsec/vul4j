@@ -10,8 +10,6 @@ import java.util.Random;
 import java.util.SortedMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -23,15 +21,13 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
+import net.onrc.onos.ofcontroller.forwarding.IForwardingService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.*;
 
-import org.openflow.protocol.OFType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +45,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected FlowEventHandler flowEventHandler;
 
     protected IFlowPusherService pusher;
+    protected IForwardingService forwardingService;
     
     // Flow Entry ID generation state
     private static Random randomGenerator = new Random();
@@ -134,7 +131,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	l.add(INetworkGraphService.class);
 	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
-		l.add(IFlowPusherService.class);
+	l.add(IFlowPusherService.class);
+	l.add(IForwardingService.class);
         return l;
     }
 
@@ -151,6 +149,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
 	pusher = context.getServiceImpl(IFlowPusherService.class);
+	forwardingService = context.getServiceImpl(IForwardingService.class);
 
 	this.init("");
     }
@@ -352,8 +351,25 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param sw the switch the Flow Entry expired on.
      * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
-    public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId) {
-	// TODO: Not implemented yet
+    public void flowEntryOnSwitchExpired(IOFSwitch sw,
+					 FlowEntryId flowEntryId) {
+	// Find the Flow Entry
+	FlowEntry flowEntry = datagridService.getFlowEntry(flowEntryId);
+	if (flowEntryId == null)
+	    return;		// Flow Entry not found
+
+	// Find the Flow Path
+	FlowPath flowPath = datagridService.getFlow(flowEntry.flowId());
+	if (flowPath == null)
+	    return;		// Flow Path not found
+
+	//
+	// Remove the Flow if the Flow Entry expired on the first switch
+	//
+	Dpid srcDpid = flowPath.dataPath().srcPort().dpid();
+	if (srcDpid.value() != sw.getId())
+	    return;
+	deleteFlow(flowPath.flowId());
     }
 
     /**
@@ -370,7 +386,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Process all entries
 	//
 	for (Pair<IOFSwitch, FlowEntry> entry : entries) {
-	    IOFSwitch sw = entry.first;
 	    FlowEntry flowEntry = entry.second;
 
 	    //
@@ -391,8 +406,21 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    case FE_USER_DELETE:
 		datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
 		break;
+	    case FE_USER_UNKNOWN:
+		assert(false);
+		break;
 	    }
 	}
+    }
+
+    /**
+     * Generate a notification that a collection of Flow Paths has been
+     * installed in the network.
+     *
+     * @param flowPaths the collection of installed Flow Paths.
+     */
+    void notificationFlowPathsInstalled(Collection<FlowPath> flowPaths) {
+	forwardingService.flowsInstalled(flowPaths);
     }
 
     /**

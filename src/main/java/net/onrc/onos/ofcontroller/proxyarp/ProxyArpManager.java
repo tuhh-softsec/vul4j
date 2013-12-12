@@ -394,6 +394,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
  
 	}
 	
+	@SuppressWarnings("unused")
 	private void handleArpReply(IOFSwitch sw, OFPacketIn pi, ARP arp){
 		if (log.isTraceEnabled()) {
 			log.trace("ARP reply recieved: {} => {}, on {}/{}", new Object[] { 

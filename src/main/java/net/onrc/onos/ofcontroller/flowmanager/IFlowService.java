@@ -6,8 +6,6 @@ import java.util.Collection;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.ofcontroller.topology.Topology;
-import net.onrc.onos.ofcontroller.util.CallerId;
-import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
