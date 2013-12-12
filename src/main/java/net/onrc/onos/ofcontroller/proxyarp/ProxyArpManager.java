@@ -314,7 +314,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
 		InetAddress target;
 		try {
-			 target = InetAddress.getByAddress(arp.getTargetProtocolAddress());
+			target = InetAddress.getByAddress(arp.getTargetProtocolAddress());
 		} catch (UnknownHostException e) {
 			log.debug("Invalid address in ARP request", e);
 			return;
@@ -326,11 +326,11 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			if (configService.isInterfaceAddress(target)) {
 				log.trace("ARP request for our interface. Sending reply {} => {}",
 						target.getHostAddress(), configService.getRouterMacAddress());
-				
+
 				sendArpReply(arp, sw.getId(), pi.getInPort(), 
 						configService.getRouterMacAddress());
 			}
-			
+
 			return;
 		}
 		
@@ -339,62 +339,57 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		IDeviceObject targetDevice = 
 				deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(target));
 		log.debug("targetDevice: {}", targetDevice);
-		
-       arpRequests.put(target, new ArpRequest(
-		 new HostArpRequester(arp, sw.getId(), pi.getInPort()), false));
-		
+
+		arpRequests.put(target, new ArpRequest(
+				new HostArpRequester(arp, sw.getId(), pi.getInPort()), false));
+
 		if (targetDevice != null) {
-          // Even the device in our database is not null, we do not reply to the request directly, but to check whether the device is still valid
+			// Even the device in our database is not null, we do not reply to the request directly, but to check whether the device is still valid
 			MACAddress macAddress = MACAddress.valueOf(targetDevice.getMACAddress());
-			
+
 			if (log.isTraceEnabled()) {
-					log.trace("The target Device Record in DB is: {} => {} from ARP request host at {}/{}", new Object [] {
-					inetAddressToString(arp.getTargetProtocolAddress()),
-					macAddress.toString(),
-					HexString.toHexString(sw.getId()), pi.getInPort()});
+				log.trace("The target Device Record in DB is: {} => {} from ARP request host at {}/{}", new Object [] {
+						inetAddressToString(arp.getTargetProtocolAddress()),
+						macAddress.toString(),
+						HexString.toHexString(sw.getId()), pi.getInPort()});
 			}
-			
-           // sendArpReply(arp, sw.getId(), pi.getInPort(), macAddress);
-			try {
-            		log.trace("Checking the device info from DB is still valid or not");
-    				Iterable<IPortObject> outPorts=targetDevice.getAttachedPorts();	
-			
-    				if(!outPorts.iterator().hasNext())
-    				{
-    					log.debug("outPort : null");
-    					sendToOtherNodes(eth, pi);
-    				}
-    				else{
-    						
-						for (IPortObject portObject : outPorts) {
-							long outSwitch=0;
-							short outPort=0;   
-							
-							
-							if (!portObject.getLinkedPorts().iterator().hasNext()) {
-								outPort=portObject.getNumber();					
-								log.debug("outPort:{} ", outPort);
-								}   
-				
-		            		Iterable<ISwitchObject>  outSwitches= targetDevice.getSwitch(); 
-								
-		            		for (ISwitchObject outswitch : outSwitches) {
-							    
-								outSwitch= HexString.toLong(outswitch.getDPID());
-								log.debug("outSwitch.DPID:{}; outPort: {}", outswitch.getDPID(), outPort );
-								sendToOtherNodes( eth, pi, outSwitch, outPort);
-		            		}
-	            						
-						}
-    				}
-			}catch (Exception e) {
-					log.error("Get attach outSwitche and outPort exception", e);
+
+			// sendArpReply(arp, sw.getId(), pi.getInPort(), macAddress);
+
+			log.trace("Checking the device info from DB is still valid or not");
+			Iterable<IPortObject> outPorts=targetDevice.getAttachedPorts();	
+
+			if(!outPorts.iterator().hasNext()){
+				log.debug("outPort : null");
+				sendToOtherNodes(eth, pi);
+			}else{
+
+				for (IPortObject portObject : outPorts) {
+					long outSwitch=0;
+					short outPort=0;   
+
+
+					if (!portObject.getLinkedPorts().iterator().hasNext()) {
+						outPort=portObject.getNumber();					
+						log.debug("outPort:{} ", outPort);
+					}   
+
+					Iterable<ISwitchObject>  outSwitches= targetDevice.getSwitch(); 
+
+					for (ISwitchObject outswitch : outSwitches) {
+
+						outSwitch= HexString.toLong(outswitch.getDPID());
+						log.debug("outSwitch.DPID:{}; outPort: {}", outswitch.getDPID(), outPort );
+						sendToOtherNodes( eth, pi, outSwitch, outPort);
+					}
+				}
 			}
-		} else {
-				log.debug("The Device info in DB is {} for IP {}", targetDevice, inetAddressToString(arp.getTargetProtocolAddress()));
-			
-                        // We don't know the device so broadcast the request out
-           				sendToOtherNodes(eth, pi);
+
+		}else {
+			log.debug("The Device info in DB is {} for IP {}", targetDevice, inetAddressToString(arp.getTargetProtocolAddress()));
+
+			// We don't know the device so broadcast the request out
+			sendToOtherNodes(eth, pi);
 		}
  
 	}
@@ -813,24 +808,15 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	@Override
 	public void arpRequestNotification(ArpMessage arpMessage) {
 		log.debug("Received ARP notification from other instances");
-		
+
 		switch (arpMessage.getType()){
 		case REQUEST:
-    			if (arpMessage.getOutSwitch()==-1)
-    			{		log.debug("OutSwitch in ARP request Message is null");
-    			}
-    			if (arpMessage.getOutPort()==-1)
-    			{		log.debug("OutPort in ARP request Message is null");
-    			}
-    			
-    			if(arpMessage.getOutSwitch() ==-1 || arpMessage.getOutPort()==-1){
-    					broadcastArpRequestOutMyEdge(arpMessage.getPacket());
-    			}else if (arpMessage.getOutSwitch() >0 && arpMessage.getOutPort()>0 ){
-    					log.debug("OutSwitch in ARP request message is: {}; OutPort in ARP request message is: {}",arpMessage.getOutSwitch(),arpMessage.getOutPort());
-    					sendArpRequestOutPort(arpMessage.getPacket(),arpMessage.getOutSwitch(),arpMessage.getOutPort());
-    				
-    			}else{
-    					broadcastArpRequestOutMyEdge(arpMessage.getPacket());}
+			if(arpMessage.getOutSwitch() == -1 || arpMessage.getOutPort() == -1){	
+				broadcastArpRequestOutMyEdge(arpMessage.getPacket());					
+			}else{					
+				sendArpRequestOutPort(arpMessage.getPacket(),arpMessage.getOutSwitch(),arpMessage.getOutPort());
+				log.debug("OutSwitch in ARP request message is: {}; OutPort in ARP request message is: {}",arpMessage.getOutSwitch(),arpMessage.getOutPort());
+			}
 			break;
 		case REPLY:
 			log.debug("Received ARP reply notification for {}",
