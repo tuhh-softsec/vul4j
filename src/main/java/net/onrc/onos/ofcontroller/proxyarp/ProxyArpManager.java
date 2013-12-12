@@ -208,8 +208,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		//Have to synchronize externally on the Multimap while using an iterator,
 		//even though it's a synchronizedMultimap
 		synchronized (arpRequests) {
-			log.debug("Current have {} outstanding requests", 
-					arpRequests.size());
+			//log.debug("Current have {} outstanding requests", 
+					//arpRequests.size());
 			
 			Iterator<Map.Entry<InetAddress, ArpRequest>> it 
 				= arpRequests.entries().iterator();
