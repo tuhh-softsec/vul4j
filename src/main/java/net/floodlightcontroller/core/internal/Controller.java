@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,7 +47,6 @@ import java.util.concurrent.TimeoutException;
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IHAListener;
-import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -165,7 +163,6 @@ public class Controller implements IFloodlightProviderService {
     
     protected Set<IOFSwitchListener> switchListeners;
     protected Set<IHAListener> haListeners;
-    protected Map<String, List<IInfoProvider>> providerMap;
     protected BlockingQueue<IUpdate> updates;
     
     // Module dependencies
@@ -1927,7 +1924,6 @@ public class Controller implements IFloodlightProviderService {
         this.controllerNodeIPsCache = new HashMap<String, String>();
         this.updates = new LinkedBlockingQueue<IUpdate>();
         this.factory = new BasicFactory();
-        this.providerMap = new HashMap<String, List<IInfoProvider>>();
         setConfigParams(configParams);
         //Set the controller's role to MASTER so it always tries to do role requests.
         this.role = Role.MASTER;
@@ -1953,35 +1949,6 @@ public class Controller implements IFloodlightProviderService {
        
         // Add our REST API
         restApi.addRestletRoutable(new CoreWebRoutable());
-    }
-
-    @Override
-    public void addInfoProvider(String type, IInfoProvider provider) {
-        if (!providerMap.containsKey(type)) {
-            providerMap.put(type, new ArrayList<IInfoProvider>());
-        }
-        providerMap.get(type).add(provider);
-    }
-
-    @Override
-    public void removeInfoProvider(String type, IInfoProvider provider) {
-        if (!providerMap.containsKey(type)) {
-            log.debug("Provider type {} doesn't exist.", type);
-            return;
-        }
-        
-        providerMap.get(type).remove(provider);
-    }
-    
-    public Map<String, Object> getControllerInfo(String type) {
-        if (!providerMap.containsKey(type)) return null;
-        
-        Map<String, Object> result = new LinkedHashMap<String, Object>();
-        for (IInfoProvider provider : providerMap.get(type)) {
-            result.putAll(provider.getInfo(type));
-        }
-        
-        return result;
     }
 
     @Override

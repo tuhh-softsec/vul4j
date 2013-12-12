@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -41,7 +40,6 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
 import net.floodlightcontroller.core.IHAListener;
-import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IUpdate;
@@ -85,7 +83,7 @@ import org.slf4j.LoggerFactory;
 public class DeviceManagerImpl implements
 IDeviceService, IOFMessageListener, ITopologyListener,
 IFloodlightModule, IEntityClassListener,
-IInfoProvider, IHAListener {
+IHAListener {
     protected final static Logger logger =
             LoggerFactory.getLogger(DeviceManagerImpl.class);
 
@@ -547,20 +545,6 @@ IInfoProvider, IHAListener {
     @Override
     public void addListener(IDeviceListener listener) {
         deviceListeners.add(listener);
-    }
-
-    // *************
-    // IInfoProvider
-    // *************
-
-    @Override
-    public Map<String, Object> getInfo(String type) {
-        if (!"summary".equals(type))
-            return null;
-
-        Map<String, Object> info = new HashMap<String, Object>();
-        info.put("# hosts", deviceMap.size());
-        return info;
     }
 
     // ******************

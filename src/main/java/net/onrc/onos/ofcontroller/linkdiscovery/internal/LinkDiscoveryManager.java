@@ -42,7 +42,6 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
 import net.floodlightcontroller.core.IHAListener;
-import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchListener;
@@ -117,7 +116,7 @@ import org.slf4j.LoggerFactory;
 public class LinkDiscoveryManager
 implements IOFMessageListener, IOFSwitchListener, 
 ILinkDiscoveryService,
-IFloodlightModule, IInfoProvider, IHAListener {
+IFloodlightModule, IHAListener {
 	protected IFloodlightProviderService controller;
     protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
 
@@ -1719,7 +1718,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         // Register for switch updates
         floodlightProvider.addOFSwitchListener(this);
         floodlightProvider.addHAListener(this);
-        floodlightProvider.addInfoProvider("summary", this);
         if (restApi != null)
             restApi.addRestletRoutable(new LinkDiscoveryWebRoutable());
         setControllerTLV();
@@ -1802,20 +1800,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         evTopoCluster.clusterIdNew = clusterIdNew;
         evTopoCluster.reason       = reason;
         evTopoCluster = evHistTopologyCluster.put(evTopoCluster, action);
-    }
-
-    @Override
-    public Map<String, Object> getInfo(String type) {
-        if (!"summary".equals(type)) return null;
-
-        Map<String, Object> info = new HashMap<String, Object>();
-
-        int num_links = 0;
-        for (Set<Link> links : switchLinks.values())
-            num_links += links.size();
-        info.put("# inter-switch links", num_links / 2);
-
-        return info;
     }
 
     // IHARoleListener

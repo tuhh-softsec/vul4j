@@ -170,28 +170,6 @@ public interface IFloodlightProviderService extends IFloodlightService {
      * Run the main I/O loop of the Controller.
      */
     public void run();
-
-    /**
-     * Add an info provider of a particular type
-     * @param type
-     * @param provider
-     */
-    public void addInfoProvider(String type, IInfoProvider provider);
-
-   /**
-    * Remove an info provider of a particular type
-    * @param type
-    * @param provider
-    */
-   public void removeInfoProvider(String type, IInfoProvider provider);
-   
-   /**
-    * Return information of a particular type (for rest services)
-    * @param type
-    * @return
-    */
-   public Map<String, Object> getControllerInfo(String type);
-   
    
    /**
     * Return the controller start time in  milliseconds
