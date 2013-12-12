@@ -13,6 +13,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class FlowEntry {
     private FlowId flowId;			// FlowID of the Flow Entry
     private FlowEntryId flowEntryId;		// The Flow Entry ID
+    private int		idleTimeout;		// The Flow idle timeout
+    private int		hardTimeout;		// The Flow hard timeout
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
     private FlowEntryActions flowEntryActions;	// The Flow Entry Actions
     private Dpid dpid;				// The Switch DPID
@@ -136,10 +138,11 @@ public class FlowEntry {
      *
      * @return true if the Flow ID is valid, otherwise false.
      */
+    @JsonIgnore
     public boolean isValidFlowId() {
 	if (this.flowId == null)
 	    return false;
-	return (this.flowId.value() != 0);
+	return (this.flowId.isValid());
     }
 
     /**
@@ -165,10 +168,59 @@ public class FlowEntry {
      *
      * @return true if the Flow Entry ID is valid, otherwise false.
      */
+    @JsonIgnore
     public boolean isValidFlowEntryId() {
 	if (this.flowEntryId == null)
 	    return false;
-	return (this.flowEntryId.value() != 0);
+	return (this.flowEntryId.isValid());
+    }
+
+    /**
+     * Get the flow idle timeout in seconds.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     * If zero, the timeout is not set.
+     *
+     * @return the flow idle timeout.
+     */
+    @JsonProperty("idleTimeout")
+    public int idleTimeout() { return idleTimeout; }
+
+    /**
+     * Set the flow idle timeout in seconds.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     * If zero, the timeout is not set.
+     *
+     * @param idleTimeout the flow idle timeout to set.
+     */
+    @JsonProperty("idleTimeout")
+    public void setIdleTimeout(int idleTimeout) {
+	this.idleTimeout = 0xffff & idleTimeout;
+    }
+
+    /**
+     * Get the flow hard timeout in seconds.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     * If zero, the timeout is not set.
+     *
+     * @return the flow hard timeout.
+     */
+    @JsonProperty("hardTimeout")
+    public int hardTimeout() { return hardTimeout; }
+
+    /**
+     * Set the flow hard timeout in seconds.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     * If zero, the timeout is not set.
+     *
+     * @param hardTimeout the flow hard timeout to set.
+     */
+    @JsonProperty("hardTimeout")
+    public void setHardTimeout(int hardTimeout) {
+	this.hardTimeout = 0xffff & hardTimeout;
     }
 
     /**
@@ -341,7 +393,8 @@ public class FlowEntry {
      * Convert the flow entry to a string.
      *
      * The string has the following form:
-     *  [flowEntryId=XXX flowEntryMatch=XXX flowEntryActions=XXX dpid=XXX
+     *  [flowEntryId=XXX idleTimeout=XXX hardTimeout=XXX
+     *   flowEntryMatch=XXX flowEntryActions=XXX dpid=XXX
      *   inPort=XXX outPort=XXX flowEntryUserState=XXX flowEntrySwitchState=XXX
      *   flowEntryErrorState=XXX]
      * @return the flow entry as a string.
@@ -357,10 +410,12 @@ public class FlowEntry {
 	if ( flowId != null ) {
 		ret.append(" flowId=" + this.flowId.toString());
 	}
+	ret.append(" idleTimeout=" + this.idleTimeout);
+	ret.append(" hardTimeout=" + this.hardTimeout);
 	if ( flowEntryMatch != null ) {
 		ret.append(" flowEntryMatch=" + this.flowEntryMatch.toString());
 	}
-	ret.append( " flowEntryActions=" + this.flowEntryActions.toString() );
+	ret.append(" flowEntryActions=" + this.flowEntryActions.toString() );
 	if ( dpid != null ) {
 		ret.append(" dpid=" + this.dpid.toString());
 	}

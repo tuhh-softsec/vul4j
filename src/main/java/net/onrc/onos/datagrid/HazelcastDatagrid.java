@@ -27,7 +27,6 @@ import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
-import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,8 +98,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryAdded(EntryEvent event) {
-	    Long keyLong = (Long)event.getKey();
+	public void entryAdded(EntryEvent<Long, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -118,8 +116,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryRemoved(EntryEvent event) {
-	    Long keyLong = (Long)event.getKey();
+	public void entryRemoved(EntryEvent<Long, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -137,8 +134,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryUpdated(EntryEvent event) {
-	    Long keyLong = (Long)event.getKey();
+	public void entryUpdated(EntryEvent<Long, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -156,7 +152,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryEvicted(EntryEvent event) {
+	public void entryEvicted(EntryEvent<Long, byte[]> event) {
 	    // NOTE: We don't use eviction for this map
 	}
     }
@@ -174,14 +170,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryAdded(EntryEvent event) {
-	    //
-	    // NOTE: Ignore Flow Entries Events originated by this instance
-	    //
-	    if (event.getMember().localMember())
-		return;
-
-	    Long keyLong = (Long)event.getKey();
+	public void entryAdded(EntryEvent<Long, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -199,14 +188,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryRemoved(EntryEvent event) {
-	    //
-	    // NOTE: Ignore Flow Entries Events originated by this instance
-	    //
-	    if (event.getMember().localMember())
-		return;
-
-	    Long keyLong = (Long)event.getKey();
+	public void entryRemoved(EntryEvent<Long, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -224,14 +206,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryUpdated(EntryEvent event) {
-	    //
-	    // NOTE: Ignore Flow Entries Events originated by this instance
-	    //
-	    if (event.getMember().localMember())
-		return;
-
-	    Long keyLong = (Long)event.getKey();
+	public void entryUpdated(EntryEvent<Long, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -249,7 +224,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryEvicted(EntryEvent event) {
+	public void entryEvicted(EntryEvent<Long, byte[]> event) {
 	    // NOTE: We don't use eviction for this map
 	}
     }
@@ -267,8 +242,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryAdded(EntryEvent event) {
-	    String keyString = (String)event.getKey();
+	public void entryAdded(EntryEvent<String, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -287,8 +261,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryRemoved(EntryEvent event) {
-	    String keyString = (String)event.getKey();
+	public void entryRemoved(EntryEvent<String, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -307,8 +280,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryUpdated(EntryEvent event) {
-	    String keyString = (String)event.getKey();
+	public void entryUpdated(EntryEvent<String, byte[]> event) {
 	    byte[] valueBytes = (byte[])event.getValue();
 
 	    //
@@ -327,7 +299,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 *
 	 * @param event the notification event for the entry.
 	 */
-	public void entryEvicted(EntryEvent event) {
+	public void entryEvicted(EntryEvent<String, byte[]> event) {
 	    // NOTE: We don't use eviction for this map
 	}
     }
@@ -607,6 +579,29 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
 
     /**
+     * Get a Flow for a given Flow ID.
+     *
+     * @param flowId the Flow ID of the Flow to get.
+     * @return the Flow if found, otherwise null.
+     */
+    @Override
+    public FlowPath getFlow(FlowId flowId) {
+	byte[] valueBytes = mapFlow.get(flowId.value());
+	if (valueBytes == null)
+	    return null;
+
+	Kryo kryo = kryoFactory.newKryo();
+	//
+	// Decode the value
+	//
+	Input input = new Input(valueBytes);
+	FlowPath flowPath = kryo.readObject(input, FlowPath.class);
+	kryoFactory.deleteKryo(kryo);
+
+	return flowPath;
+    }
+
+    /**
      * Send a notification that a Flow is added.
      *
      * @param flowPath the Flow that is added.
@@ -699,6 +694,29 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	kryoFactory.deleteKryo(kryo);
 
 	return allFlowEntries;
+    }
+
+    /**
+     * Get a Flow Entry for a given Flow Entry ID.
+     *
+     * @param flowEntryId the Flow Entry ID of the Flow Entry to get.
+     * @return the Flow Entry if found, otherwise null.
+     */
+    @Override
+    public FlowEntry getFlowEntry(FlowEntryId flowEntryId) {
+	byte[] valueBytes = mapFlowEntry.get(flowEntryId.value());
+	if (valueBytes == null)
+	    return null;
+
+	Kryo kryo = kryoFactory.newKryo();
+	//
+	// Decode the value
+	//
+	Input input = new Input(valueBytes);
+	FlowEntry flowEntry = kryo.readObject(input, FlowEntry.class);
+	kryoFactory.deleteKryo(kryo);
+
+	return flowEntry;
     }
 
     /**

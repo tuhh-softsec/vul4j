@@ -57,9 +57,6 @@ import net.floodlightcontroller.devicemanager.IEntityClassListener;
 import net.floodlightcontroller.devicemanager.IEntityClassifierService;
 import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.floodlightcontroller.devicemanager.web.DeviceRoutable;
-import net.floodlightcontroller.flowcache.IFlowReconcileListener;
-import net.floodlightcontroller.flowcache.IFlowReconcileService;
-import net.floodlightcontroller.flowcache.OFMatchReconcile;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.DHCP;
 import net.floodlightcontroller.packet.Ethernet;
@@ -88,7 +85,7 @@ import org.slf4j.LoggerFactory;
 public class DeviceManagerImpl implements
 IDeviceService, IOFMessageListener, ITopologyListener,
 IFloodlightModule, IEntityClassListener,
-IFlowReconcileListener, IInfoProvider, IHAListener {
+IInfoProvider, IHAListener {
     protected final static Logger logger =
             LoggerFactory.getLogger(DeviceManagerImpl.class);
 
@@ -96,7 +93,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
     protected ITopologyService topology;
     protected IRestApiService restApi;
     protected IThreadPoolService threadPool;
-    protected IFlowReconcileService flowReconcileMgr;
+
 
     /**
      * Time in milliseconds before entities will expire
@@ -599,62 +596,7 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
         return Command.CONTINUE;
     }
 
-    // ***************
-    // IFlowReconcileListener
-    // ***************
-    @Override
-    public Command reconcileFlows(ArrayList<OFMatchReconcile> ofmRcList) {
-        ListIterator<OFMatchReconcile> iter = ofmRcList.listIterator();
-        while (iter.hasNext()) {
-            OFMatchReconcile ofm = iter.next();
-            
-            // Remove the STOPPed flow.
-            if (Command.STOP == reconcileFlow(ofm)) {
-                iter.remove();
-            }
-        }
-        
-        if (ofmRcList.size() > 0) {
-            return Command.CONTINUE;
-        } else {
-            return Command.STOP;
-        }
-    }
-
-    protected Command reconcileFlow(OFMatchReconcile ofm) {
-        // Extract source entity information
-        Entity srcEntity =
-                getEntityFromFlowMod(ofm.ofmWithSwDpid, true);
-        if (srcEntity == null)
-            return Command.STOP;
-
-        // Find the device by source entity
-        Device srcDevice = findDeviceByEntity(srcEntity);
-        if (srcDevice == null)
-            return Command.STOP;
-
-        // Store the source device in the context
-        fcStore.put(ofm.cntx, CONTEXT_SRC_DEVICE, srcDevice);
-
-        // Find the device matching the destination from the entity
-        // classes of the source.
-        Entity dstEntity = getEntityFromFlowMod(ofm.ofmWithSwDpid, false);
-        Device dstDevice = null;
-        if (dstEntity != null) {
-            dstDevice = findDestByEntity(srcDevice, dstEntity);
-            if (dstDevice != null)
-                fcStore.put(ofm.cntx, CONTEXT_DST_DEVICE, dstDevice);
-        }
-        if (logger.isTraceEnabled()) {
-            logger.trace("Reconciling flow: match={}, srcEntity={}, srcDev={}, " 
-                         + "dstEntity={}, dstDev={}",
-                         new Object[] {ofm.ofmWithSwDpid.getOfMatch(),
-                                       srcEntity, srcDevice, 
-                                       dstEntity, dstDevice } );
-        }
-        return Command.CONTINUE;
-    }
-
+ 
     // *****************
     // IFloodlightModule
     // *****************
@@ -687,7 +629,6 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
         l.add(ITopologyService.class);
         l.add(IRestApiService.class);
         l.add(IThreadPoolService.class);
-        l.add(IFlowReconcileService.class);
         l.add(IEntityClassifierService.class);
         return l;
     }
@@ -708,7 +649,6 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
                 fmc.getServiceImpl(ITopologyService.class);
         this.restApi = fmc.getServiceImpl(IRestApiService.class);
         this.threadPool = fmc.getServiceImpl(IThreadPoolService.class);
-        this.flowReconcileMgr = fmc.getServiceImpl(IFlowReconcileService.class);
         this.entityClassifier = fmc.getServiceImpl(IEntityClassifierService.class);
     }
 
@@ -726,7 +666,6 @@ IFlowReconcileListener, IInfoProvider, IHAListener {
         floodlightProvider.addHAListener(this);
         if (topology != null)
             topology.addListener(this);
-        flowReconcileMgr.addFlowReconcileListener(this);
         entityClassifier.addListener(this);
 
         Runnable ecr = new Runnable() {

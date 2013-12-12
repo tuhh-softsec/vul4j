@@ -19,6 +19,8 @@ public class FlowPathTest {
 		iFlowPath.setFlowPathTypeForTest("FP_TYPE_SHORTEST_PATH");
 		iFlowPath.setFlowPathUserStateForTest("FP_USER_ADD");
 		iFlowPath.setFlowPathFlagsForTest(0L);
+		iFlowPath.setIdleTimeoutForTest(5);
+		iFlowPath.setHardTimeoutForTest(10);
 		iFlowPath.setSrcSwForTest("CA:FE");
 		iFlowPath.setSrcPortForTest((short)1);
 		iFlowPath.setDstSwForTest("BA:BE");
@@ -44,6 +46,8 @@ public class FlowPathTest {
 		assertTrue ( flowPath.flowPathUserState() == FlowPathUserState.FP_USER_UNKNOWN);
 		assertFalse( flowPath.flowPathFlags().isDiscardFirstHopEntry() );
 		assertFalse( flowPath.flowPathFlags().isKeepOnlyFirstHopEntry() );
+		assertTrue (flowPath.idleTimeout() == 0);
+		assertTrue (flowPath.hardTimeout() == 0);
 		assertTrue( flowPath.flowEntryActions().isEmpty() );
 	}
 
@@ -55,6 +59,8 @@ public class FlowPathTest {
 		iFlowPath.setFlowPathTypeForTest("FP_TYPE_SHORTEST_PATH");
 		iFlowPath.setFlowPathUserStateForTest("FP_USER_ADD");
 		iFlowPath.setFlowPathFlagsForTest(0L);
+		iFlowPath.setIdleTimeoutForTest(5);
+		iFlowPath.setHardTimeoutForTest(10);
 		iFlowPath.setSrcSwForTest("CA:FE");
 		iFlowPath.setSrcPortForTest((short)1);
 		iFlowPath.setDstSwForTest("BA:BE");
@@ -100,6 +106,8 @@ public class FlowPathTest {
 		assertEquals(flowPath.flowPathType(), FlowPathType.FP_TYPE_SHORTEST_PATH);
 		assertEquals(flowPath.flowPathUserState(), FlowPathUserState.FP_USER_ADD);
 		assertEquals(flowPath.flowPathFlags().flags(), 0);
+		assertEquals(flowPath.idleTimeout(), 5);
+		assertEquals(flowPath.hardTimeout(), 10);
 		assertEquals(flowPath.dataPath().srcPort().dpid().value(), 0xCAFE);
 		assertEquals(flowPath.dataPath().srcPort().port().value(), 1);
 		assertEquals(flowPath.dataPath().dstPort().dpid().value(), 0xBABE);
@@ -123,6 +131,8 @@ public class FlowPathTest {
 		
 		assertEquals(0x14, flowPath.dataPath().flowEntries().get(0).flowEntryId().value() );
 		assertEquals(0xBEEF, flowPath.dataPath().flowEntries().get(0).dpid().value() );
+		assertEquals(0, flowPath.dataPath().flowEntries().get(0).idleTimeout() );
+		assertEquals(0, flowPath.dataPath().flowEntries().get(0).hardTimeout() );
 		assertEquals(15, flowPath.dataPath().flowEntries().get(0).flowEntryMatch().inPort().value() );
 		assertEquals("11:22:33:44:55:66", flowPath.dataPath().flowEntries().get(0).flowEntryMatch().srcMac().toString());
 		assertEquals("66:55:44:33:22:11", flowPath.dataPath().flowEntries().get(0).flowEntryMatch().dstMac().toString());
@@ -179,6 +189,22 @@ public class FlowPathTest {
 	}
 
 	@Test
+	public void testSetIdleTimeout(){
+		FlowPath flowPath = new FlowPath();
+		int idleTimeout = 15;
+		flowPath.setIdleTimeout( idleTimeout );
+		assertTrue( flowPath.idleTimeout() == 15 );
+	}
+
+	@Test
+	public void testSetHardTimeout(){
+		FlowPath flowPath = new FlowPath();
+		int hardTimeout = 20;
+		flowPath.setHardTimeout( hardTimeout );
+		assertTrue( flowPath.hardTimeout() == 20 );
+	}
+
+	@Test
 	public void testSetDataPath(){
 		FlowPath flowPath = new FlowPath();
 		DataPath dataPath = new DataPath();
@@ -189,7 +215,7 @@ public class FlowPathTest {
 	@Test
 	public void testToString(){
 
-		assertEquals("[flowId=0x1234 installerId=installerId flowPathType=FP_TYPE_SHORTEST_PATH flowPathUserState=FP_USER_ADD flowPathFlags=[flags=] dataPath=[src=00:00:00:00:00:00:ca:fe/1 flowEntry=[flowEntryId=0x14 flowEntryMatch=[] flowEntryActions=[[type=ACTION_OUTPUT action=[port=23 maxLen=24]];[type=ACTION_OUTPUT action=[port=25 maxLen=26]];] dpid=00:00:00:00:00:00:be:ef flowEntryUserState=FE_USER_MODIFY flowEntrySwitchState=FE_SWITCH_UPDATE_IN_PROGRESS] dst=00:00:00:00:00:00:ba:be/2] flowEntryMatch=[] flowEntryActions=[[type=ACTION_OUTPUT action=[port=10 maxLen=11]];[type=ACTION_OUTPUT action=[port=12 maxLen=13]];]]", flowPath.toString());
+		assertEquals("[flowId=0x1234 installerId=installerId flowPathType=FP_TYPE_SHORTEST_PATH flowPathUserState=FP_USER_ADD flowPathFlags=[flags=] idleTimeout=5 hardTimeout=10 dataPath=[src=00:00:00:00:00:00:ca:fe/1 flowEntry=[flowEntryId=0x14 idleTimeout=0 hardTimeout=0 flowEntryMatch=[] flowEntryActions=[[type=ACTION_OUTPUT action=[port=23 maxLen=24]];[type=ACTION_OUTPUT action=[port=25 maxLen=26]];] dpid=00:00:00:00:00:00:be:ef flowEntryUserState=FE_USER_MODIFY flowEntrySwitchState=FE_SWITCH_UPDATE_IN_PROGRESS] dst=00:00:00:00:00:00:ba:be/2] flowEntryMatch=[] flowEntryActions=[[type=ACTION_OUTPUT action=[port=10 maxLen=11]];[type=ACTION_OUTPUT action=[port=12 maxLen=13]];]]", flowPath.toString());
 	}
 
 	@Test

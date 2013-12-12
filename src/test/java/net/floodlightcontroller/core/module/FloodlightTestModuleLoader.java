@@ -9,7 +9,6 @@ import net.floodlightcontroller.core.test.MockThreadPoolService;
 import net.floodlightcontroller.counter.NullCounterStore;
 import net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier;
 import net.floodlightcontroller.devicemanager.test.MockDeviceManager;
-import net.floodlightcontroller.perfmon.NullPktInProcessingTime;
 import net.floodlightcontroller.topology.TopologyManager;
 
 import org.slf4j.Logger;
@@ -31,8 +30,7 @@ public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
 			MockThreadPoolService.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_ENTITY_CLASSIFIER =
 			DefaultEntityClassifier.class;
-	public static final Class<? extends IFloodlightModule> DEFAULT_PERFMON =
-			NullPktInProcessingTime.class;
+	
 	
 	protected static final Collection<Class<? extends IFloodlightModule>> DEFAULT_MODULE_LIST;
 	
@@ -44,7 +42,7 @@ public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
 		DEFAULT_MODULE_LIST.add(DEFAULT_COUNTER_STORE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_THREADPOOL);
 		DEFAULT_MODULE_LIST.add(DEFAULT_ENTITY_CLASSIFIER);
-		DEFAULT_MODULE_LIST.add(DEFAULT_PERFMON);
+
 	}
 	
 	protected IFloodlightModuleContext fmc;

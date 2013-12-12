@@ -50,13 +50,21 @@ public interface IDatagridService extends IFloodlightService {
      * @param arpEventHandler The ARP event handler to de-register.
      */
     public void deregisterArpEventHandler(IArpEventHandler arpEventHandler);
-    
+
     /**
      * Get all Flows that are currently in the datagrid.
      *
      * @return all Flows that are currently in the datagrid.
      */
     Collection<FlowPath> getAllFlows();
+
+    /**
+     * Get a Flow for a given Flow ID.
+     *
+     * @param flowId the Flow ID of the Flow to get.
+     * @return the Flow if found, otherwise null.
+     */
+    FlowPath getFlow(FlowId flowId);
 
     /**
      * Send a notification that a Flow is added.
@@ -90,6 +98,14 @@ public interface IDatagridService extends IFloodlightService {
      * @return all Flow Entries that are currently in the datagrid.
      */
     Collection<FlowEntry> getAllFlowEntries();
+
+    /**
+     * Get a Flow Entry for a given Flow Entry ID.
+     *
+     * @param flowEntryId the Flow Entry ID of the Flow Entry to get.
+     * @return the Flow Entry if found, otherwise null.
+     */
+    FlowEntry getFlowEntry(FlowEntryId flowEntryId);
 
     /**
      * Send a notification that a FlowEntry is added.

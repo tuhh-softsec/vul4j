@@ -3,11 +3,8 @@ package net.onrc.onos.ofcontroller.flowmanager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.floodlightcontroller.util.MACAddress;
 
@@ -25,21 +22,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Class for performing Flow-related operations on the Database.
  */
-class FlowDatabaseOperation {
+public class FlowDatabaseOperation {
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
 
     /**
      * Add a flow.
      *
-     * @param flowManager the Flow Manager to use.
      * @param dbHandler the Graph Database handler to use.
      * @param flowPath the Flow Path to install.
-     * @param flowId the return-by-reference Flow ID as assigned internally.
      * @return true on success, otherwise false.
      */
-    static boolean addFlow(FlowManager flowManager,
-			   GraphDBOperation dbHandler,
-			   FlowPath flowPath, FlowId flowId) {
+    static boolean addFlow(GraphDBOperation dbHandler, FlowPath flowPath) {
 	IFlowPath flowObj = null;
 	boolean found = false;
 	try {
@@ -68,6 +61,21 @@ class FlowDatabaseOperation {
 	}
 
 	//
+	// Remove the old Flow Entries
+	//
+	if (found) {
+	    Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
+	    LinkedList<IFlowEntry> deleteFlowEntries =
+		new LinkedList<IFlowEntry>();
+	    for (IFlowEntry flowEntryObj : flowEntries)
+		deleteFlowEntries.add(flowEntryObj);
+	    for (IFlowEntry flowEntryObj : deleteFlowEntries) {
+		flowObj.removeFlowEntry(flowEntryObj);
+		dbHandler.removeFlowEntry(flowEntryObj);
+	    }
+	}
+
+	//
 	// Set the Flow key:
 	// - flowId
 	//
@@ -80,6 +88,8 @@ class FlowDatabaseOperation {
 	// - flowPath.flowPathType()
 	// - flowPath.flowPathUserState()
 	// - flowPath.flowPathFlags()
+	// - flowPath.idleTimeout()
+	// - flowPath.hardTimeout()
 	// - flowPath.dataPath().srcPort()
 	// - flowPath.dataPath().dstPort()
 	// - flowPath.matchSrcMac()
@@ -99,6 +109,8 @@ class FlowDatabaseOperation {
 	flowObj.setFlowPathType(flowPath.flowPathType().toString());
 	flowObj.setFlowPathUserState(flowPath.flowPathUserState().toString());
 	flowObj.setFlowPathFlags(flowPath.flowPathFlags().flags());
+	flowObj.setIdleTimeout(flowPath.idleTimeout());
+	flowObj.setHardTimeout(flowPath.hardTimeout());
 	flowObj.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
 	flowObj.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
@@ -155,17 +167,15 @@ class FlowDatabaseOperation {
 	// flowPath.dataPath().flowEntries()
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    if (addFlowEntry(flowManager, dbHandler, flowObj, flowEntry) == null) {
+	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
+		continue;	// Skip: all Flow Entries were deleted earlier
+
+	    if (addFlowEntry(dbHandler, flowObj, flowEntry) == null) {
 		dbHandler.rollback();
 		return false;
 	    }
 	}
 	dbHandler.commit();
-
-	//
-	// TODO: We need a proper Flow ID allocation mechanism.
-	//
-	flowId.setValue(flowPath.flowId().value());
 
 	return true;
     }
@@ -173,27 +183,16 @@ class FlowDatabaseOperation {
     /**
      * Add a flow entry to the Network MAP.
      *
-     * @param flowManager the Flow Manager to use.
      * @param dbHandler the Graph Database handler to use.
      * @param flowObj the corresponding Flow Path object for the Flow Entry.
      * @param flowEntry the Flow Entry to install.
      * @return the added Flow Entry object on success, otherwise null.
      */
-    static IFlowEntry addFlowEntry(FlowManager flowManager,
-				   GraphDBOperation dbHandler,
+    static IFlowEntry addFlowEntry(GraphDBOperation dbHandler,
 				   IFlowPath flowObj,
 				   FlowEntry flowEntry) {
 	// Flow edges
 	//   HeadFE (TODO)
-
-	//
-	// Assign the FlowEntry ID.
-	//
-	if ((flowEntry.flowEntryId() == null) ||
-	    (flowEntry.flowEntryId().value() == 0)) {
-	    long id = flowManager.getNextFlowEntryId();
-	    flowEntry.setFlowEntryId(new FlowEntryId(id));
-	}
 
 	IFlowEntry flowEntryObj = null;
 	boolean found = false;
@@ -228,6 +227,8 @@ class FlowDatabaseOperation {
 	// - InPort edge
 	// - OutPort edge
 	//
+	// - flowEntry.idleTimeout()
+	// - flowEntry.hardTimeout()
 	// - flowEntry.dpid()
 	// - flowEntry.flowEntryUserState()
 	// - flowEntry.flowEntrySwitchState()
@@ -248,6 +249,8 @@ class FlowDatabaseOperation {
 	// - flowEntry.actions()
 	//
 	ISwitchObject sw = dbHandler.searchSwitch(flowEntry.dpid().toString());
+	flowEntryObj.setIdleTimeout(flowEntry.idleTimeout());
+	flowEntryObj.setHardTimeout(flowEntry.hardTimeout());
 	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
 	flowEntryObj.setSwitch(sw);
 	if (flowEntry.flowEntryMatch().matchInPort()) {
@@ -370,122 +373,6 @@ class FlowDatabaseOperation {
      * @return true on success, otherwise false.
      */
     static boolean deleteAllFlows(GraphDBOperation dbHandler) {
-	final ConcurrentLinkedQueue<FlowId> concurrentAllFlowIds =
-	    new ConcurrentLinkedQueue<FlowId>();
-
-	// Get all Flow IDs
-	Iterable<IFlowPath> allFlowPaths = dbHandler.getAllFlowPaths();
-	for (IFlowPath flowPathObj : allFlowPaths) {
-	    if (flowPathObj == null)
-		continue;
-	    String flowIdStr = flowPathObj.getFlowId();
-	    if (flowIdStr == null)
-		continue;
-	    FlowId flowId = new FlowId(flowIdStr);
-	    concurrentAllFlowIds.add(flowId);
-	}
-
-	// Delete all flows one-by-one
-	for (FlowId flowId : concurrentAllFlowIds)
-	    deleteFlow(dbHandler, flowId);
-
-	/*
-	 * TODO: A faster mechanism to delete the Flow Paths by using
-	 * a number of threads. Commented-out for now.
-	 */
-	/*
-	//
-	// Create the threads to delete the Flow Paths
-	//
-	List<Thread> threads = new LinkedList<Thread>();
-	for (int i = 0; i < 10; i++) {
-	    Thread thread = new Thread(new Runnable() {
-		@Override
-		public void run() {
-		    while (true) {
-			FlowId flowId = concurrentAllFlowIds.poll();
-			if (flowId == null)
-			    return;
-			deleteFlow(dbHandler, flowId);
-		    }
-		}}, "Delete All Flow Paths");
-	    threads.add(thread);
-	}
-
-	// Start processing
-	for (Thread thread : threads) {
-	    thread.start();
-	}
-
-	// Wait for all threads to complete
-	for (Thread thread : threads) {
-	    try {
-		thread.join();
-	    } catch (InterruptedException e) {
-		log.debug("Exception waiting for a thread to delete a Flow Path: ", e);
-	    }
-	}
-	*/
-
-	return true;
-    }
-
-    /**
-     * Delete a previously added flow.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param flowId the Flow ID of the flow to delete.
-     * @return true on success, otherwise false.
-     */
-    static boolean deleteFlow(GraphDBOperation dbHandler, FlowId flowId) {
-	IFlowPath flowObj = null;
-	//
-	// We just mark the entries for deletion,
-	// and let the switches remove each individual entry after
-	// it has been removed from the switches.
-	//
-	try {
-	    flowObj = dbHandler.searchFlowPath(flowId);
-	} catch (Exception e) {
-	    // TODO: handle exceptions
-	    dbHandler.rollback();
-	    log.error(":deleteFlow FlowId:{} failed", flowId.toString());
-	    return false;
-	}
-	if (flowObj == null) {
-	    dbHandler.commit();
-	    return true;		// OK: No such flow
-	}
-
-	//
-	// Find and mark for deletion all Flow Entries,
-	// and the Flow itself.
-	//
-	flowObj.setFlowPathUserState("FP_USER_DELETE");
-	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
-	boolean empty = true;	// TODO: an ugly hack
-	for (IFlowEntry flowEntryObj : flowEntries) {
-	    empty = false;
-	    // flowObj.removeFlowEntry(flowEntryObj);
-	    // conn.utils().removeFlowEntry(conn, flowEntryObj);
-	    flowEntryObj.setUserState("FE_USER_DELETE");
-	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
-	}
-	// Remove from the database empty flows
-	if (empty)
-	    dbHandler.removeFlowPath(flowObj);
-	dbHandler.commit();
-
-	return true;
-    }
-
-    /**
-     * Clear the state for all previously added flows.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @return true on success, otherwise false.
-     */
-    static boolean clearAllFlows(GraphDBOperation dbHandler) {
 	List<FlowId> allFlowIds = new LinkedList<FlowId>();
 
 	// Get all Flow IDs
@@ -500,29 +387,29 @@ class FlowDatabaseOperation {
 	    allFlowIds.add(flowId);
 	}
 
-	// Clear all flows one-by-one
+	// Delete all flows one-by-one
 	for (FlowId flowId : allFlowIds) {
-	    clearFlow(dbHandler, flowId);
+	    deleteFlow(dbHandler, flowId);
 	}
 
 	return true;
     }
 
     /**
-     * Clear the state for a previously added flow.
+     * Delete a previously added flow.
      *
      * @param dbHandler the Graph Database handler to use.
-     * @param flowId the Flow ID of the flow to clear.
+     * @param flowId the Flow ID of the flow to delete.
      * @return true on success, otherwise false.
      */
-    static boolean clearFlow(GraphDBOperation dbHandler, FlowId flowId) {
+    static boolean deleteFlow(GraphDBOperation dbHandler, FlowId flowId) {
 	IFlowPath flowObj = null;
 	try {
 	    flowObj = dbHandler.searchFlowPath(flowId);
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    dbHandler.rollback();
-	    log.error(":clearFlow FlowId:{} failed", flowId.toString());
+	    log.error(":deleteFlow FlowId:{} failed", flowId.toString());
 	    return false;
 	}
 	if (flowObj == null) {
@@ -614,166 +501,6 @@ class FlowDatabaseOperation {
     }
 
     /**
-     * Get all previously added flows by a specific installer for a given
-     * data path endpoints.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param installerId the Caller ID of the installer of the flow to get.
-     * @param dataPathEndpoints the data path endpoints of the flow to get.
-     * @return the Flow Paths if found, otherwise null.
-     */
-    static ArrayList<FlowPath> getAllFlows(GraphDBOperation dbHandler,
-					   CallerId installerId,
-					   DataPathEndpoints dataPathEndpoints) {
-	//
-	// TODO: The implementation below is not optimal:
-	// We fetch all flows, and then return only the subset that match
-	// the query conditions.
-	// We should use the appropriate Titan/Gremlin query to filter-out
-	// the flows as appropriate.
-	//
-	ArrayList<FlowPath> allFlows = getAllFlows(dbHandler);
-	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
-
-	if (allFlows == null)
-	    return flowPaths;
-
-	for (FlowPath flow : allFlows) {
-	    //
-	    // TODO: String-based comparison is sub-optimal.
-	    // We are using it for now to save us the extra work of
-	    // implementing the "equals()" and "hashCode()" methods.
-	    //
-	    if (! flow.installerId().toString().equals(installerId.toString()))
-		continue;
-	    if (! flow.dataPath().srcPort().toString().equals(dataPathEndpoints.srcPort().toString())) {
-		continue;
-	    }
-	    if (! flow.dataPath().dstPort().toString().equals(dataPathEndpoints.dstPort().toString())) {
-		continue;
-	    }
-	    flowPaths.add(flow);
-	}
-
-	return flowPaths;
-    }
-
-    /**
-     * Get all installed flows by all installers for given data path endpoints.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param dataPathEndpoints the data path endpoints of the flows to get.
-     * @return the Flow Paths if found, otherwise null.
-     */
-    static ArrayList<FlowPath> getAllFlows(GraphDBOperation dbHandler,
-					   DataPathEndpoints dataPathEndpoints) {
-	//
-	// TODO: The implementation below is not optimal:
-	// We fetch all flows, and then return only the subset that match
-	// the query conditions.
-	// We should use the appropriate Titan/Gremlin query to filter-out
-	// the flows as appropriate.
-	//
-	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
-	ArrayList<FlowPath> allFlows = getAllFlows(dbHandler);
-
-	if (allFlows == null)
-	    return flowPaths;
-
-	for (FlowPath flow : allFlows) {
-	    //
-	    // TODO: String-based comparison is sub-optimal.
-	    // We are using it for now to save us the extra work of
-	    // implementing the "equals()" and "hashCode()" methods.
-	    //
-	    if (! flow.dataPath().srcPort().toString().equals(dataPathEndpoints.srcPort().toString())) {
-		continue;
-	    }
-	    if (! flow.dataPath().dstPort().toString().equals(dataPathEndpoints.dstPort().toString())) {
-		continue;
-	    }
-	    flowPaths.add(flow);
-	}
-
-	return flowPaths;
-    }
-
-    /**
-     * Get summary of all installed flows by all installers in a given range.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @param flowId the Flow ID of the first flow in the flow range to get.
-     * @param maxFlows the maximum number of flows to be returned.
-     * @return the Flow Paths if found, otherwise null.
-     */
-    static ArrayList<IFlowPath> getAllFlowsSummary(GraphDBOperation dbHandler,
-						   FlowId flowId,
-						   int maxFlows) {
-	//
-	// TODO: The implementation below is not optimal:
-	// We fetch all flows, and then return only the subset that match
-	// the query conditions.
-	// We should use the appropriate Titan/Gremlin query to filter-out
-	// the flows as appropriate.
-	//
-    	ArrayList<IFlowPath> flowPathsWithoutFlowEntries =
-	    getAllFlowsWithoutFlowEntries(dbHandler);
-
-    	Collections.sort(flowPathsWithoutFlowEntries, 
-			 new Comparator<IFlowPath>() {
-			     @Override
-			     public int compare(IFlowPath first, IFlowPath second) {
-				 long result =
-				     new FlowId(first.getFlowId()).value()
-				     - new FlowId(second.getFlowId()).value();
-				 if (result > 0) {
-				     return 1;
-				 } else if (result < 0) {
-				     return -1;
-				 } else {
-				     return 0;
-				 }
-			     }
-			 }
-			 );
-    	
-    	return flowPathsWithoutFlowEntries;
-    }
-
-    /**
-     * Get all Flows information, without the associated Flow Entries.
-     *
-     * @param dbHandler the Graph Database handler to use.
-     * @return all Flows information, without the associated Flow Entries.
-     */
-    static ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries(GraphDBOperation dbHandler) {
-    	Iterable<IFlowPath> flowPathsObj = null;
-    	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
-
-	// TODO: Remove this op.commit() flow, because it is not needed?
-    	dbHandler.commit();
-
-    	try {
-    	    flowPathsObj = dbHandler.getAllFlowPaths();
-    	} catch (Exception e) {
-    	    // TODO: handle exceptions
-    	    dbHandler.rollback();
-    	    log.error(":getAllFlowPaths failed");
-	    return flowPathsObjArray;		// No Flows found
-    	}
-    	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
-    	    return flowPathsObjArray;		// No Flows found
-    	}
-
-    	for (IFlowPath flowObj : flowPathsObj)
-	    flowPathsObjArray.add(flowObj);
-
-    	// conn.endTx(Transaction.COMMIT);
-
-    	return flowPathsObjArray;
-    }
-
-    /**
      * Extract Flow Path State from a Titan Database Object @ref IFlowPath.
      *
      * @param flowObj the object to extract the Flow Path State from.
@@ -788,6 +515,8 @@ class FlowDatabaseOperation {
 	String flowPathType = flowObj.getFlowPathType();
 	String flowPathUserState = flowObj.getFlowPathUserState();
 	Long flowPathFlags = flowObj.getFlowPathFlags();
+	Integer idleTimeout = flowObj.getIdleTimeout();
+	Integer hardTimeout = flowObj.getHardTimeout();
 	String srcSwitchStr = flowObj.getSrcSwitch();
 	Short srcPortShort = flowObj.getSrcPort();
 	String dstSwitchStr = flowObj.getDstSwitch();
@@ -798,6 +527,8 @@ class FlowDatabaseOperation {
 	    (flowPathType == null) ||
 	    (flowPathUserState == null) ||
 	    (flowPathFlags == null) ||
+	    (idleTimeout == null) ||
+	    (hardTimeout == null) ||
 	    (srcSwitchStr == null) ||
 	    (srcPortShort == null) ||
 	    (dstSwitchStr == null) ||
@@ -812,6 +543,8 @@ class FlowDatabaseOperation {
 	flowPath.setFlowPathType(FlowPathType.valueOf(flowPathType));
 	flowPath.setFlowPathUserState(FlowPathUserState.valueOf(flowPathUserState));
 	flowPath.setFlowPathFlags(new FlowPathFlags(flowPathFlags));
+	flowPath.setIdleTimeout(idleTimeout);
+	flowPath.setHardTimeout(hardTimeout);
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
 	flowPath.dataPath().srcPort().setPort(new Port(srcPortShort));
 	flowPath.dataPath().dstPort().setDpid(new Dpid(dstSwitchStr));
@@ -890,11 +623,15 @@ class FlowDatabaseOperation {
      */
     public static FlowEntry extractFlowEntry(IFlowEntry flowEntryObj) {
 	String flowEntryIdStr = flowEntryObj.getFlowEntryId();
+	Integer idleTimeout = flowEntryObj.getIdleTimeout();
+	Integer hardTimeout = flowEntryObj.getHardTimeout();
 	String switchDpidStr = flowEntryObj.getSwitchDpid();
 	String userState = flowEntryObj.getUserState();
 	String switchState = flowEntryObj.getSwitchState();
 
 	if ((flowEntryIdStr == null) ||
+	    (idleTimeout == null) ||
+	    (hardTimeout == null) ||
 	    (switchDpidStr == null) ||
 	    (userState == null) ||
 	    (switchState == null)) {

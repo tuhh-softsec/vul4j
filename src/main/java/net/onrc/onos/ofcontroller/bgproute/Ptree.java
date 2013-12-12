@@ -244,7 +244,6 @@ public class Ptree {
 		add.parent = node;
 	}
 	
-	@SuppressWarnings("unused")
     private PtreeNode node_common(PtreeNode node, byte [] key, int key_bits) {
 		int i;
 		int limit = Math.min(node.keyBits, key_bits) / 8;
@@ -275,8 +274,6 @@ public class Ptree {
 		}
 		
 		PtreeNode add = new PtreeNode(null, common_len, maxKeyOctets);
-		if (add == null)
-			return null;
 		
 		int j;
 		for (j = 0; j < i; j++)

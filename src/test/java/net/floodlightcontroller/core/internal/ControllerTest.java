@@ -57,8 +57,6 @@ import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPacket;
 import net.floodlightcontroller.packet.IPv4;
-import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
-import net.floodlightcontroller.perfmon.PktInProcessingTime;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.restserver.RestApiServer;
 import net.floodlightcontroller.test.FloodlightTestCase;
@@ -66,6 +64,8 @@ import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.flowmanager.FlowManager;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
@@ -121,9 +121,7 @@ public class ControllerTest extends FloodlightTestCase {
         CounterStore cs = new CounterStore();
         fmc.addService(ICounterStoreService.class, cs);
         
-        PktInProcessingTime ppt = new PktInProcessingTime();
-        fmc.addService(IPktInProcessingTimeService.class, ppt);
-        
+   
         tp = new MockThreadPoolService();
         fmc.addService(IThreadPoolService.class, tp);
         
@@ -133,18 +131,20 @@ public class ControllerTest extends FloodlightTestCase {
         fmc.addService(ITopologyNetService.class, new TopologyManager() );
         StandaloneRegistry sr = new StandaloneRegistry();
         fmc.addService(IControllerRegistryService.class, sr );
+        LinkDiscoveryManager linkDiscovery = new LinkDiscoveryManager();
+        fmc.addService(ILinkDiscoveryService.class, linkDiscovery);
 
         
-        ppt.init(fmc);
         restApi.init(fmc);
         cm.init(fmc);
         tp.init(fmc);
         sr.init(fmc);
-        ppt.startUp(fmc);
+        linkDiscovery.init(fmc);
         restApi.startUp(fmc);
         cm.startUp(fmc);
         tp.startUp(fmc);
         sr.startUp(fmc);
+        linkDiscovery.startUp(fmc);
     }
 
     public Controller getController() {
@@ -399,7 +399,7 @@ public class ControllerTest extends FloodlightTestCase {
         //Channel channel2 = createMock(Channel.class);
         //expect(newsw.getChannel()).andReturn(channel2);
         //expect(channel2.getRemoteAddress()).andReturn(null);
-        //expect(newsw.getPorts()).andReturn(new ArrayList<OFPhysicalPort>());
+        expect(newsw.getPorts()).andReturn(new ArrayList<OFPhysicalPort>());
         expect(newsw.getCapabilities()).andReturn(0).anyTimes();
         expect(newsw.getBuffers()).andReturn(0).anyTimes();
         expect(newsw.getTables()).andReturn((byte)0).anyTimes();
@@ -452,6 +452,10 @@ public class ControllerTest extends FloodlightTestCase {
         }
         DummySwitchListener switchListener = new DummySwitchListener();
         IOFSwitch sw = createMock(IOFSwitch.class);
+        expect(sw.getId()).andReturn(1L).anyTimes();
+        expect(sw.getEnabledPorts()).andReturn(null);
+        expect(sw.getChannel()).andReturn(null).anyTimes();
+        replay(sw);
         ControllerRunThread t = new ControllerRunThread();
         t.start();
         
@@ -1137,6 +1141,7 @@ public class ControllerTest extends FloodlightTestCase {
     @Test 
     public void testHandlePortStatus() throws Exception {
         IOFSwitch sw = createMock(IOFSwitch.class);
+        expect(sw.getId()).andReturn(1L).anyTimes();
         OFPhysicalPort port = new OFPhysicalPort();
         port.setName("myPortName1");
         port.setPortNumber((short)42);

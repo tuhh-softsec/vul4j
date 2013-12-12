@@ -2,34 +2,20 @@ package net.onrc.onos.ofcontroller.flowprogrammer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
-import org.openflow.protocol.OFMessage;
-import org.openflow.protocol.OFPacketOut;
 import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFStatisticsRequest;
-import org.openflow.protocol.action.OFAction;
-import org.openflow.protocol.action.OFActionDataLayerDestination;
-import org.openflow.protocol.action.OFActionDataLayerSource;
-import org.openflow.protocol.action.OFActionEnqueue;
-import org.openflow.protocol.action.OFActionNetworkLayerDestination;
-import org.openflow.protocol.action.OFActionNetworkLayerSource;
-import org.openflow.protocol.action.OFActionNetworkTypeOfService;
-import org.openflow.protocol.action.OFActionOutput;
-import org.openflow.protocol.action.OFActionStripVirtualLan;
-import org.openflow.protocol.action.OFActionTransportLayerDestination;
-import org.openflow.protocol.action.OFActionTransportLayerSource;
-import org.openflow.protocol.action.OFActionVirtualLanIdentifier;
-import org.openflow.protocol.action.OFActionVirtualLanPriorityCodePoint;
 import org.openflow.protocol.statistics.OFFlowStatisticsReply;
 import org.openflow.protocol.statistics.OFFlowStatisticsRequest;
 import org.openflow.protocol.statistics.OFStatistics;
@@ -37,120 +23,125 @@ import org.openflow.protocol.statistics.OFStatisticsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-import com.tinkerpop.blueprints.Direction;
-
-import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.core.IOFSwitchListener;
-import net.floodlightcontroller.core.module.FloodlightModuleContext;
-import net.floodlightcontroller.core.module.FloodlightModuleException;
-import net.floodlightcontroller.core.module.IFloodlightModule;
-import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.restserver.IRestApiService;
-import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.module.IOnosService;
-import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
+import net.onrc.onos.ofcontroller.flowmanager.FlowDatabaseOperation;
 import net.onrc.onos.ofcontroller.util.Dpid;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction;
-import net.onrc.onos.ofcontroller.util.FlowEntryActions;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionEnqueue;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionOutput;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetEthernetAddr;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetIPv4Addr;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetIpToS;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetTcpUdpPort;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetVlanId;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionSetVlanPriority;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction.ActionStripVlan;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
 
-public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
+/**
+ * FlowSynchronizer is an implementation of FlowSyncService.
+ * In addition to IFlowSyncService, FlowSynchronizer periodically reads flow
+ * tables from switches and compare them with GraphDB to drop unnecessary
+ * flows and/or to install missing flows.
+ * @author Brian
+ *
+ */
+public class FlowSynchronizer implements IFlowSyncService {
 
-    protected static Logger log = LoggerFactory.getLogger(FlowSynchronizer.class);
-    protected IFloodlightProviderService floodlightProvider;
-    protected IControllerRegistryService registryService;
-    protected IFlowPusherService pusher;
+    private static Logger log = LoggerFactory.getLogger(FlowSynchronizer.class);
 
     private GraphDBOperation dbHandler;
-    private Map<IOFSwitch, Thread> switchThread = new HashMap<IOFSwitch, Thread>();
+    protected IFlowPusherService pusher;
+    private Map<IOFSwitch, FutureTask<SyncResult>> switchThreads; 
 
     public FlowSynchronizer() {
 	dbHandler = new GraphDBOperation("");
-    }
-
-    public void synchronize(IOFSwitch sw) {
-	Synchroizer sync = new Synchroizer(sw);
-	Thread t = new Thread(sync);
-	t.start();
-	switchThread.put(sw, t);
+	switchThreads = new HashMap<IOFSwitch, FutureTask<SyncResult>>();
     }
 
     @Override
-    public void addedSwitch(IOFSwitch sw) {
-	log.debug("Switch added: {}", sw.getId());
-
-	if (registryService.hasControl(sw.getId())) {
-	    synchronize(sw);
-	}
+    public Future<SyncResult> synchronize(IOFSwitch sw) {
+	Synchronizer sync = new Synchronizer(sw);
+	FutureTask<SyncResult> task = new FutureTask<SyncResult>(sync);
+	switchThreads.put(sw, task);
+	task.run();
+	return task;
     }
-
+    
     @Override
-    public void removedSwitch(IOFSwitch sw) {
-	log.debug("Switch removed: {}", sw.getId());
-
-	Thread t = switchThread.remove(sw);
+    public void interrupt(IOFSwitch sw) {
+	FutureTask<SyncResult> t = switchThreads.remove(sw);
 	if(t != null) {
-	    t.interrupt();
-	}
-
+		t.cancel(true);
+	}	
     }
 
-    @Override
-    public void switchPortChanged(Long switchId) {
-	// TODO Auto-generated method stub
+    /**
+     * Initialize Synchronizer.
+     * @param pusherService FlowPusherService used for sending messages.
+     */
+    public void init(IFlowPusherService pusherService) {
+	pusher = pusherService;
     }
 
-    @Override
-    public String getName() {
-	return "FlowSynchronizer";
-    }
-
-    //@Override
-    public void init(FloodlightModuleContext context)
-	    throws FloodlightModuleException {
-	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-	registryService = context.getServiceImpl(IControllerRegistryService.class);
-	pusher = context.getServiceImpl(IFlowPusherService.class);
-    }
-
-    //@Override
-    public void startUp(FloodlightModuleContext context) {
-	floodlightProvider.addOFSwitchListener(this);
-    }
-
-    protected class Synchroizer implements Runnable {
+    /**
+     * Synchronizer represents main thread of synchronization.
+     * @author Brian
+     *
+     */
+	protected class Synchronizer implements Callable<SyncResult> {
 	IOFSwitch sw;
 	ISwitchObject swObj;
 
-	public Synchroizer(IOFSwitch sw) {
+	public Synchronizer(IOFSwitch sw) {
 	    this.sw = sw;
 	    Dpid dpid = new Dpid(sw.getId());
 	    this.swObj = dbHandler.searchSwitch(dpid.toString());
 	}
 
+	double graphIDTime, switchTime, compareTime, graphEntryTime, extractTime, pushTime, totalTime;
 	@Override
-	public void run() {
+	public SyncResult call() {
+	    // TODO: stop adding other flow entries while synchronizing
+	    //pusher.suspend(sw);
+	    long start = System.nanoTime();
 	    Set<FlowEntryWrapper> graphEntries = getFlowEntriesFromGraph();
+	    long step1 = System.nanoTime();
 	    Set<FlowEntryWrapper> switchEntries = getFlowEntriesFromSwitch();
-	    compare(graphEntries, switchEntries);
+	    long step2 = System.nanoTime();
+	    SyncResult result = compare(graphEntries, switchEntries);
+	    long step3 = System.nanoTime();
+	    graphIDTime = (step1 - start); 
+	    switchTime = (step2 - step1);
+	    compareTime = (step3 - step2);
+	    totalTime = (step3 - start);
+	    outputTime();
+	    //pusher.resume(sw);
+	    
+	    return result;
+	}
+	
+	private void outputTime() {
+	    double div = Math.pow(10, 6); //convert nanoseconds to ms
+	    graphIDTime /= div;
+	    switchTime /= div;
+	    compareTime = (compareTime - graphEntryTime - extractTime - pushTime) / div;
+	    graphEntryTime /= div;
+	    extractTime /= div;
+	    pushTime /= div;
+	    totalTime /= div;
+	    log.debug("Sync time (ms):" +
+	    		  graphIDTime + "," +
+	     		  switchTime + "," + 
+	    		  compareTime + "," +
+	     		  graphEntryTime + "," +
+	    		  extractTime + "," + 
+	     		  pushTime + "," +
+	              totalTime);
 	}
 
-	private void compare(Set<FlowEntryWrapper> graphEntries, Set<FlowEntryWrapper> switchEntries) {
+	/**
+	 * Compare flows entries in GraphDB and switch to pick up necessary
+	 * messages.
+	 * After picking up, picked messages are added to FlowPusher.
+	 * @param graphEntries Flow entries in GraphDB.
+	 * @param switchEntries Flow entries in switch.
+	 */
+	private SyncResult compare(Set<FlowEntryWrapper> graphEntries, Set<FlowEntryWrapper> switchEntries) {
 	    int added = 0, removed = 0, skipped = 0;
 	    for(FlowEntryWrapper entry : switchEntries) {
 		if(graphEntries.contains(entry)) {
@@ -166,13 +157,22 @@ public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
 	    for(FlowEntryWrapper entry : graphEntries) {
 		// add flow entry to switch
 		entry.addToSwitch(sw);
+		graphEntryTime += entry.dbTime;
+		extractTime += entry.extractTime;
+		pushTime += entry.pushTime;
 		added++;
 	    }	  
 	    log.debug("Flow entries added "+ added + ", " +
 		      "Flow entries removed "+ removed + ", " +
 		      "Flow entries skipped " + skipped);
+	    
+	    return new SyncResult(added, removed, skipped);
 	}
 
+	/**
+	 * Read GraphDB to get FlowEntries associated with a switch.
+	 * @return set of FlowEntries
+	 */
 	private Set<FlowEntryWrapper> getFlowEntriesFromGraph() {
 	    Set<FlowEntryWrapper> entries = new HashSet<FlowEntryWrapper>();
 	    for(IFlowEntry entry : swObj.getFlowEntries()) {
@@ -182,6 +182,10 @@ public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
 	    return entries;	    
 	}
 
+	/**
+	 * Read flow table from switch and derive FlowEntries from table.
+	 * @return set of FlowEntries
+	 */
 	private Set<FlowEntryWrapper> getFlowEntriesFromSwitch() {
 
 	    int lengthU = 0;
@@ -228,48 +232,90 @@ public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
 
     }
 
+    /**
+     * FlowEntryWrapper represents abstract FlowEntry which is embodied
+     * by FlowEntryId (from GraphDB) or OFFlowStatisticsReply (from switch).
+     * @author Brian
+     *
+     */
     class FlowEntryWrapper {
-	FlowEntryId id;
-	IFlowEntry iflowEntry;
+	FlowEntryId flowEntryId;
 	OFFlowStatisticsReply statisticsReply;
 
 	public FlowEntryWrapper(IFlowEntry entry) {
-	    iflowEntry = entry;
-	    id = new FlowEntryId(entry.getFlowEntryId());
+	    flowEntryId = new FlowEntryId(entry.getFlowEntryId());
 	}
 
 	public FlowEntryWrapper(OFFlowStatisticsReply entry) {
+	    flowEntryId = new FlowEntryId(entry.getCookie());
 	    statisticsReply = entry;
-	    id = new FlowEntryId(entry.getCookie());
 	}
 
+	/**
+	 * Install this FlowEntry to a switch via FlowPusher.
+	 * @param sw Switch to which flow will be installed.
+	 */
+	double dbTime, extractTime, pushTime;
 	public void addToSwitch(IOFSwitch sw) {
-	    if(iflowEntry != null) {
-		pusher.add(sw, iflowEntry.getFlow(), iflowEntry);
-	    }
-	    else if(statisticsReply != null) {
-		log.error("Adding existing flow entry {} to sw {}", 
+	    if (statisticsReply != null) {
+		log.error("Error adding existing flow entry {} to sw {}", 
 			  statisticsReply.getCookie(), sw.getId());
+		return;
 	    }
+
+	    double startDB = System.nanoTime();
+	    // Get the Flow Entry state from the Network Graph
+	    IFlowEntry iFlowEntry = null;
+	    try {
+		iFlowEntry = dbHandler.searchFlowEntry(flowEntryId);
+	    } catch (Exception e) {
+		log.error("Error finding flow entry {} in Network Graph",
+			  flowEntryId);
+		return;
+	    }
+	    if (iFlowEntry == null) {
+		log.error("Cannot add flow entry {} to sw {} : flow entry not found",
+			  flowEntryId, sw.getId());
+		return;
+	    }
+	    dbTime = System.nanoTime() - startDB;
+
+	    double startExtract = System.nanoTime();
+	    FlowEntry flowEntry =
+		FlowDatabaseOperation.extractFlowEntry(iFlowEntry);
+	    if (flowEntry == null) {
+		log.error("Cannot add flow entry {} to sw {} : flow entry cannot be extracted",
+			  flowEntryId, sw.getId());
+		return;
+	    }
+	    extractTime = System.nanoTime() - startExtract;
+	    
+	    double startPush = System.nanoTime();
+	    pusher.pushFlowEntry(sw, flowEntry);
+	    pushTime = System.nanoTime() - startPush;
 	}
 	
-	public void removeFromSwitch(IOFSwitch sw){
-	    if(iflowEntry != null) {
-		log.error("Removing non-existent flow entry {} from sw {}", 
-			  iflowEntry.getFlowEntryId(), sw.getId());
+	/**
+	 * Remove this FlowEntry from a switch via FlowPusher.
+	 * @param sw Switch from which flow will be removed.
+	 */
+	public void removeFromSwitch(IOFSwitch sw) {
+	    if (statisticsReply == null) {
+		log.error("Error removing non-existent flow entry {} from sw {}", 
+			  flowEntryId, sw.getId());
+		return;
+	    }
 
-	    }
-	    else if(statisticsReply != null) {
-		// Convert Statistics Reply to Flow Mod, then write it
-		OFFlowMod fm = new OFFlowMod();
-		fm.setCookie(statisticsReply.getCookie());
-		fm.setCommand(OFFlowMod.OFPFC_DELETE_STRICT);
-		fm.setLengthU(OFFlowMod.MINIMUM_LENGTH);
-		fm.setMatch(statisticsReply.getMatch());
-		fm.setPriority(statisticsReply.getPriority());
-		fm.setOutPort(OFPort.OFPP_NONE);
-		pusher.add(sw, fm);
-	    }
+	    // Convert Statistics Reply to Flow Mod, then write it
+	    OFFlowMod fm = new OFFlowMod();
+	    fm.setCookie(statisticsReply.getCookie());
+	    fm.setCommand(OFFlowMod.OFPFC_DELETE_STRICT);
+	    fm.setLengthU(OFFlowMod.MINIMUM_LENGTH);
+	    fm.setMatch(statisticsReply.getMatch());
+	    fm.setPriority(statisticsReply.getPriority());
+	    fm.setOutPort(OFPort.OFPP_NONE);
+
+	    pusher.add(sw, fm);
 	}
 
 	/**
@@ -277,7 +323,7 @@ public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
 	 */
 	@Override
 	public int hashCode() {
-	    return id.hashCode();
+	    return flowEntryId.hashCode();
 	}
 
 	/**
@@ -285,22 +331,21 @@ public class FlowSynchronizer implements IFlowSyncService, IOFSwitchListener {
 	 * the same value; otherwise, returns false.
 	 * 
 	 * @param Object to compare
+	 * @return true if the object has the same Flow Entry ID.
 	 */
 	@Override
 	public boolean equals(Object obj){
 	    if(obj.getClass() == this.getClass()) {
 		FlowEntryWrapper entry = (FlowEntryWrapper) obj;
 		// TODO: we need to actually compare the match + actions
-		return this.id.equals(entry.id);
+		return this.flowEntryId.equals(entry.flowEntryId);
 	    }
 	    return false;
 	}
 
 	@Override
 	public String toString() {
-	    return id.toString();
+	    return flowEntryId.toString();
 	}
     }
 }
-
-

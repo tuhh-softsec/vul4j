@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,9 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.core.module.FloodlightModuleContext;
+import net.floodlightcontroller.core.module.IFloodlightModule;
+import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
@@ -28,11 +32,9 @@ import net.onrc.onos.ofcontroller.bgproute.Interface;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
-import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 import net.onrc.onos.ofcontroller.core.internal.TopoSwitchServiceImpl;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.Port;
@@ -55,7 +57,7 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.net.InetAddresses;
 
 public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
-										IArpEventHandler {
+										IArpEventHandler, IFloodlightModule {
 	private final static Logger log = LoggerFactory.getLogger(ProxyArpManager.class);
 	
 	private final long ARP_TIMER_PERIOD = 60000; //ms (== 1 min) 
@@ -70,7 +72,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	
 	private IDeviceStorage deviceStorage;
 	private volatile ITopoSwitchService topoSwitchService;
-	private ITopoLinkService topoLinkService;
 	
 	private short vlan;
 	private static final short NO_VLAN = 0;
@@ -126,22 +127,42 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		}
 	}
 	
-	/*
-	public ProxyArpManager(IFloodlightProviderService floodlightProvider,
-				ITopologyService topology, IConfigInfoService configService,
-				IRestApiService restApi){
-
+	@Override
+	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
+		Collection<Class<? extends IFloodlightService>> l 
+			= new ArrayList<Class<? extends IFloodlightService>>();
+		l.add(IProxyArpService.class);
+		return l;
 	}
-	*/
+
+	@Override
+	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
+		Map<Class<? extends IFloodlightService>, IFloodlightService> m 
+			= new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
+		m.put(IProxyArpService.class, this);
+		return m;
+	}
+
+	@Override
+	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
+		Collection<Class<? extends IFloodlightService>> dependencies 
+			= new ArrayList<Class<? extends IFloodlightService>>();
+		dependencies.add(IFloodlightProviderService.class);
+		dependencies.add(ITopologyService.class);
+		dependencies.add(IRestApiService.class);
+		dependencies.add(IDatagridService.class);
+		dependencies.add(IConfigInfoService.class);
+		return dependencies;
+	}
 	
-	public void init(IFloodlightProviderService floodlightProvider,
-			ITopologyService topology, IDatagridService datagrid,
-			IConfigInfoService config, IRestApiService restApi){
-		this.floodlightProvider = floodlightProvider;
-		this.topology = topology;
-		this.datagrid = datagrid;
-		this.configService = config;
-		this.restApi = restApi;
+	@Override
+	public void init(FloodlightModuleContext context){
+		this.floodlightProvider = 
+				context.getServiceImpl(IFloodlightProviderService.class);
+		this.topology = context.getServiceImpl(ITopologyService.class);
+		this.datagrid = context.getServiceImpl(IDatagridService.class);
+		this.configService = context.getServiceImpl(IConfigInfoService.class);
+		this.restApi = context.getServiceImpl(IRestApiService.class);
 		
 		arpCache = new ArpCache();
 
@@ -149,10 +170,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 				HashMultimap.<InetAddress, ArpRequest>create());
 		
 		topoSwitchService = new TopoSwitchServiceImpl();
-		topoLinkService = new TopoLinkServiceImpl();
 	}
 	
-	public void startUp() {
+	@Override
+	public void startUp(FloodlightModuleContext context) {
 		this.vlan = configService.getVlan();
 		log.info("vlan set to {}", this.vlan);
 		
@@ -354,6 +375,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		}*/
 	}
 	
+	@SuppressWarnings("unused")
 	private void handleArpReply(IOFSwitch sw, OFPacketIn pi, ARP arp){
 		if (log.isTraceEnabled()) {
 			log.trace("ARP reply recieved: {} => {}, on {}/{}", new Object[] { 

@@ -129,9 +129,12 @@ def extract_flow_args(my_args):
   my_dst_port = my_args[5]
 
   #
-  # Extract the "flowPathFlags", "match" and "action" arguments
+  # Extract the "flowPathFlags", "idleTimeout", "hardTimeout",
+  # "match" and "action" arguments.
   #
   flowPathFlags = 0L
+  idleTimeout = 0
+  hardTimeout = 0
   match = {}
   matchInPortEnabled = True		# NOTE: Enabled by default
   actions = []
@@ -155,6 +158,10 @@ def extract_flow_args(my_args):
 	flowPathFlags = flowPathFlags + 0x1
       if "KEEP_ONLY_FIRST_HOP_ENTRY" in arg2:
 	flowPathFlags = flowPathFlags + 0x2
+    elif arg1 == "idleTimeout":
+     idleTimeout = arg2
+    elif arg1 == "hardTimeout":
+     hardTimeout = arg2
     elif arg1 == "matchInPort":
       # Just mark whether inPort matching is enabled
       matchInPortEnabled = arg2 in ['True', 'true']
@@ -310,6 +317,8 @@ def extract_flow_args(my_args):
     'my_dst_dpid' : my_dst_dpid,
     'my_dst_port' : my_dst_port,
     'flowPathFlags' : flowPathFlags,
+    'idleTimeout' : idleTimeout,
+    'hardTimeout' : hardTimeout,
     'match' : match,
     'matchInPortEnabled' : matchInPortEnabled,
     'actions' : actions,
@@ -334,6 +343,8 @@ def compute_flow_path(parsed_args, data_path):
   my_flow_id = parsed_args['my_flow_id']
   my_installer_id = parsed_args['my_installer_id']
   myFlowPathFlags = parsed_args['flowPathFlags']
+  myIdleTimeout = parsed_args['idleTimeout']
+  myHardTimeout = parsed_args['hardTimeout']
   match = parsed_args['match']
   matchInPortEnabled = parsed_args['matchInPortEnabled']
   actions = parsed_args['actions']
@@ -356,6 +367,8 @@ def compute_flow_path(parsed_args, data_path):
   flow_path['flowPathType'] = 'FP_TYPE_EXPLICIT_PATH'
   flow_path['flowPathUserState'] = 'FP_USER_ADD'
   flow_path['flowPathFlags'] = flowPathFlags
+  flow_path['idleTimeout'] = myIdleTimeout
+  flow_path['hardTimeout'] = myHardTimeout
 
   if (len(match) > 0):
     flow_path['flowEntryMatch'] = copy.deepcopy(match)
@@ -488,6 +501,8 @@ def exec_processing_by_script(parsed_args):
 if __name__ == "__main__":
   usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Flow Path Flags] [Match Conditions] [Actions]\n" % (sys.argv[0])
   usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "    <flow-id>             The Flow ID, or -1 if it should be assigned by ONOS\n"
+  usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Flags:\n"
   usage_msg = usage_msg + "        -m [monitorname]  Monitor and maintain the installed shortest path(s)\n"
   usage_msg = usage_msg + "                          If 'monitorname' is specified and is set to 'ONOS'\n"
@@ -504,6 +519,10 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "            DISCARD_FIRST_HOP_ENTRY    : Discard the first-hop flow entry\n"
   usage_msg = usage_msg + "            KEEP_ONLY_FIRST_HOP_ENTRY  : Keep only the first-hop flow entry\n"
   usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "    Timeouts (in seconds in the [0, 65535] interval):\n"
+  usage_msg = usage_msg + "        idleTimeout <idleTimeoutInSeconds> (default to 0: no timeout)\n"
+  usage_msg = usage_msg + "        hardTimeout <hardTimeoutInSeconds> (default to 0: no timeout)\n"
+  usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Match Conditions:\n"
   usage_msg = usage_msg + "        matchInPort <True|False> (default to True)\n"
   usage_msg = usage_msg + "        matchSrcMac <source MAC address>\n"
@@ -514,7 +533,7 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "        matchSrcIPv4Net <source IPv4 network address>\n"
   usage_msg = usage_msg + "        matchDstIPv4Net <destination IPv4 network address>\n"
   usage_msg = usage_msg + "        matchIpProto <IP protocol>\n"
-  usage_msg = usage_msg + "        matchIpToS <IP ToS (DSCP field, 6 bits)>\n"
+  usage_msg = usage_msg + "        matchIpToS <IP ToS> (DSCP field, 6 bits)\n"
   usage_msg = usage_msg + "        matchSrcTcpUdpPort <source TCP/UDP port>\n"
   usage_msg = usage_msg + "        matchDstTcpUdpPort <destination TCP/UDP port>\n"
   usage_msg = usage_msg + "\n"
@@ -527,7 +546,7 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "        actionSetEthernetDstAddr <destination MAC address>\n"
   usage_msg = usage_msg + "        actionSetIPv4SrcAddr <source IPv4 address>\n"
   usage_msg = usage_msg + "        actionSetIPv4DstAddr <destination IPv4 address>\n"
-  usage_msg = usage_msg + "        actionSetIpToS <IP ToS (DSCP field, 6 bits)>\n"
+  usage_msg = usage_msg + "        actionSetIpToS <IP ToS> (DSCP field, 6 bits)\n"
   usage_msg = usage_msg + "        actionSetTcpUdpSrcPort <source TCP/UDP port>\n"
   usage_msg = usage_msg + "        actionSetTcpUdpDstPort <destination TCP/UDP port>\n"
   usage_msg = usage_msg + "    Actions (not implemented yet):\n"

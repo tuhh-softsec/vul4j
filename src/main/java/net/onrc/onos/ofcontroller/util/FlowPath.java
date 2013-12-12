@@ -6,6 +6,7 @@ import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -17,7 +18,9 @@ public class FlowPath implements Comparable<FlowPath> {
     private FlowPathType flowPathType;	// The Flow Path type
     private FlowPathUserState flowPathUserState; // The Flow Path User state
     private FlowPathFlags flowPathFlags; // The Flow Path flags
-    private DataPath dataPath;		// The data path
+    private int		idleTimeout;	// The Flow idle timeout
+    private int		hardTimeout;	// The Flow hard timeout
+    private DataPath	dataPath;	// The data path
     private FlowEntryMatch flowEntryMatch; // Common Flow Entry Match for all
 					// Flow Entries
     private FlowEntryActions flowEntryActions; // The Flow Entry Actions for
@@ -44,6 +47,8 @@ public class FlowPath implements Comparable<FlowPath> {
 	this.setFlowPathType(FlowPathType.valueOf(flowObj.getFlowPathType()));
 	this.setFlowPathUserState(FlowPathUserState.valueOf(flowObj.getFlowPathUserState()));
 	this.setFlowPathFlags(new FlowPathFlags(flowObj.getFlowPathFlags()));
+	this.setIdleTimeout(flowObj.getIdleTimeout());
+	this.setHardTimeout(flowObj.getHardTimeout());
     	this.dataPath().srcPort().setDpid(new Dpid(flowObj.getSrcSwitch()));
     	this.dataPath().srcPort().setPort(new Port(flowObj.getSrcPort()));
     	this.dataPath().dstPort().setDpid(new Dpid(flowObj.getDstSwitch()));
@@ -210,6 +215,18 @@ public class FlowPath implements Comparable<FlowPath> {
     }
 
     /**
+     * Test whether the Flow ID is valid.
+     *
+     * @return true if the Flow ID is valid, otherwise false.
+     */
+    @JsonIgnore
+    public boolean isValidFlowId() {
+	if (this.flowId == null)
+	    return false;
+	return (this.flowId.isValid());
+    }
+
+    /**
      * Get the Caller ID of the flow path installer.
      *
      * @return the Caller ID of the flow path installer.
@@ -279,6 +296,54 @@ public class FlowPath implements Comparable<FlowPath> {
     @JsonProperty("flowPathFlags")
     public void setFlowPathFlags(FlowPathFlags flowPathFlags) {
 	this.flowPathFlags = flowPathFlags;
+    }
+
+    /**
+     * Get the flow idle timeout in seconds.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     * If zero, the timeout is not set.
+     *
+     * @return the flow idle timeout.
+     */
+    @JsonProperty("idleTimeout")
+    public int idleTimeout() { return idleTimeout; }
+
+    /**
+     * Set the flow idle timeout in seconds.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     * If zero, the timeout is not set.
+     *
+     * @param idleTimeout the flow idle timeout to set.
+     */
+    @JsonProperty("idleTimeout")
+    public void setIdleTimeout(int idleTimeout) {
+	this.idleTimeout = 0xffff & idleTimeout;
+    }
+
+    /**
+     * Get the flow hard timeout in seconds.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     * If zero, the timeout is not set.
+     *
+     * @return the flow hard timeout.
+     */
+    @JsonProperty("hardTimeout")
+    public int hardTimeout() { return hardTimeout; }
+
+    /**
+     * Set the flow hard timeout.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     * If zero, the timeout is not set.
+     *
+     * @param hardTimeout the flow hard timeout to set.
+     */
+    @JsonProperty("hardTimeout")
+    public void setHardTimeout(int hardTimeout) {
+	this.hardTimeout = 0xffff & hardTimeout;
     }
 
     /**
@@ -353,8 +418,8 @@ public class FlowPath implements Comparable<FlowPath> {
      *
      * The string has the following form:
      *  [flowId=XXX installerId=XXX flowPathType = XXX flowPathUserState = XXX
-     *   flowPathFlags=XXX dataPath=XXX flowEntryMatch=XXX
-     *   flowEntryActions=XXX]
+     *   flowPathFlags=XXX idleTimeout=XXX hardTimeout=XXX dataPath=XXX
+     *   flowEntryMatch=XXX flowEntryActions=XXX]
      *
      * @return the flow path as a string.
      */
@@ -365,6 +430,8 @@ public class FlowPath implements Comparable<FlowPath> {
 	ret += " flowPathType=" + this.flowPathType;
 	ret += " flowPathUserState=" + this.flowPathUserState;
 	ret += " flowPathFlags=" + this.flowPathFlags.toString();
+	ret += " idleTimeout=" + this.idleTimeout;
+	ret += " hardTimeout=" + this.hardTimeout;
 	if (dataPath != null)
 	    ret += " dataPath=" + this.dataPath.toString();
 	if (flowEntryMatch != null)

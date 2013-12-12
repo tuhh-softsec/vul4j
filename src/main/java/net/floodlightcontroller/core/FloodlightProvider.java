@@ -11,9 +11,9 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.counter.ICounterStoreService;
-import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 public class FloodlightProvider implements IFloodlightModule {
@@ -44,20 +44,18 @@ public class FloodlightProvider implements IFloodlightModule {
     public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
         Collection<Class<? extends IFloodlightService>> dependencies =
             new ArrayList<Class<? extends IFloodlightService>>(5);
-        dependencies.add(IPktInProcessingTimeService.class);
         dependencies.add(IRestApiService.class);
         dependencies.add(ICounterStoreService.class);
         dependencies.add(IThreadPoolService.class);
         // Following added by ONOS
         dependencies.add(IControllerRegistryService.class);
+        dependencies.add(ILinkDiscoveryService.class);
 
         return dependencies;
     }
 
     @Override
     public void init(FloodlightModuleContext context) throws FloodlightModuleException {
-       controller.setPktInProcessingService(
-           context.getServiceImpl(IPktInProcessingTimeService.class));
        controller.setCounterStore(
            context.getServiceImpl(ICounterStoreService.class));
        controller.setRestApiService(
@@ -67,6 +65,8 @@ public class FloodlightProvider implements IFloodlightModule {
        // Following added by ONOS
        controller.setMastershipService(
     		   context.getServiceImpl(IControllerRegistryService.class));
+       controller.setLinkDiscoveryService(
+    		   context.getServiceImpl(ILinkDiscoveryService.class));
 
        controller.init(context.getConfigParams(this));
     }

@@ -57,8 +57,6 @@ import net.floodlightcontroller.devicemanager.internal.DeviceManagerImpl.ClassSt
 import net.floodlightcontroller.devicemanager.test.MockEntityClassifier;
 import net.floodlightcontroller.devicemanager.test.MockEntityClassifierMac;
 import net.floodlightcontroller.devicemanager.test.MockFlexEntityClassifier;
-import net.floodlightcontroller.flowcache.FlowReconcileManager;
-import net.floodlightcontroller.flowcache.IFlowReconcileService;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPacket;
@@ -95,8 +93,6 @@ public class DeviceManagerImplTest extends FloodlightTestCase {
     private byte[] testARPReplyPacket_3_Serialized;
     MockFloodlightProvider mockFloodlightProvider;
     DeviceManagerImpl deviceManager;
-    //MemoryStorageSource storageSource;
-    FlowReconcileManager flowReconcileMgr;
 
     private IOFSwitch makeSwitchMock(long id) {
         IOFSwitch mockSwitch = createMock(IOFSwitch.class);
@@ -121,25 +117,25 @@ public class DeviceManagerImplTest extends FloodlightTestCase {
         fmc.addService(IThreadPoolService.class, tp);
         mockFloodlightProvider = getMockFloodlightProvider();
         deviceManager = new DeviceManagerImpl();
-        flowReconcileMgr = new FlowReconcileManager();
+       
         DefaultEntityClassifier entityClassifier = new DefaultEntityClassifier();
         fmc.addService(IDeviceService.class, deviceManager);
         //storageSource = new MemoryStorageSource();
         //fmc.addService(IStorageSourceService.class, storageSource);
         fmc.addService(IFloodlightProviderService.class, mockFloodlightProvider);
         fmc.addService(IRestApiService.class, restApi);
-        fmc.addService(IFlowReconcileService.class, flowReconcileMgr);
+ 
         fmc.addService(IEntityClassifierService.class, entityClassifier);
         fmc.addService(ITopologyService.class, topology);
         tp.init(fmc);
         restApi.init(fmc);
         //storageSource.init(fmc);
         deviceManager.init(fmc);
-        flowReconcileMgr.init(fmc);
+
         entityClassifier.init(fmc);
         //storageSource.startUp(fmc);
         deviceManager.startUp(fmc);
-        flowReconcileMgr.startUp(fmc);
+
         tp.startUp(fmc);
         entityClassifier.startUp(fmc);
 
