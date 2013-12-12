@@ -40,8 +40,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.IFloodlightProviderService.Role;
-import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchListener;
@@ -115,8 +113,7 @@ import org.slf4j.LoggerFactory;
 @LogMessageCategory("Network Topology")
 public class LinkDiscoveryManager
 implements IOFMessageListener, IOFSwitchListener, 
-ILinkDiscoveryService,
-IFloodlightModule, IHAListener {
+ILinkDiscoveryService, IFloodlightModule {
 	protected IFloodlightProviderService controller;
     protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
 
@@ -1683,28 +1680,18 @@ IFloodlightModule, IHAListener {
                     log.error("Exception in LLDP send timer.", e);
                 } finally {
                     if (!shuttingDown) {
-                        // null role implies HA mode is not enabled.
-                         Role role = floodlightProvider.getRole();
-                         if (role == null || role == Role.MASTER) {
-                             log.trace("Rescheduling discovery task as role = {}", role);
-                             discoveryTask.reschedule(DISCOVERY_TASK_INTERVAL,
-                                                TimeUnit.SECONDS);
-                         } else {
-                             log.trace("Stopped LLDP rescheduling due to role = {}.", role);
-                         }
+                    	// Always reschedule link discovery if we're not 
+                    	// shutting down (no chance of SLAVE role now)
+                        log.trace("Rescheduling discovery task");
+                        discoveryTask.reschedule(DISCOVERY_TASK_INTERVAL,
+                        					TimeUnit.SECONDS);
                     }
                 }
             }
         });
 
-        // null role implies HA mode is not enabled.
-        Role role = floodlightProvider.getRole();
-        if (role == null || role == Role.MASTER) {
-            log.trace("Setup: Rescheduling discovery task. role = {}", role);
-            discoveryTask.reschedule(DISCOVERY_TASK_INTERVAL, TimeUnit.SECONDS);
-        } else {
-                log.trace("Setup: Not scheduling LLDP as role = {}.", role);
-        }
+        // Always reschedule link discovery as we are never in SLAVE role now
+        discoveryTask.reschedule(DISCOVERY_TASK_INTERVAL, TimeUnit.SECONDS);
 
         // Setup the BDDP task.  It is invoked whenever switch port tuples
         // are added to the quarantine list.
@@ -1717,7 +1704,6 @@ IFloodlightModule, IHAListener {
         floodlightProvider.addOFMessageListener(OFType.PORT_STATUS, this);
         // Register for switch updates
         floodlightProvider.addOFSwitchListener(this);
-        floodlightProvider.addHAListener(this);
         if (restApi != null)
             restApi.addRestletRoutable(new LinkDiscoveryWebRoutable());
         setControllerTLV();
@@ -1800,45 +1786,6 @@ IFloodlightModule, IHAListener {
         evTopoCluster.clusterIdNew = clusterIdNew;
         evTopoCluster.reason       = reason;
         evTopoCluster = evHistTopologyCluster.put(evTopoCluster, action);
-    }
-
-    // IHARoleListener
-    @Override
-    public void roleChanged(Role oldRole, Role newRole) {
-        switch(newRole) {
-            case MASTER:
-                if (oldRole == Role.SLAVE) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Sending LLDPs " +
-                                "to HA change from SLAVE->MASTER");
-                    }
-                    //clearAllLinks();
-                    log.debug("Role Change to Master: Rescheduling discovery task.");
-                    discoveryTask.reschedule(1, TimeUnit.MICROSECONDS);
-                }
-                break;
-            case SLAVE:
-                if (log.isTraceEnabled()) {
-                    log.trace("Clearing links due to " +
-                            "HA change to SLAVE");
-                }
-                switchLinks.clear();
-                links.clear();
-                portLinks.clear();
-                portBroadcastDomainLinks.clear();
-                discoverOnAllPorts();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void controllerNodeIPsChanged(
-                                         Map<String, String> curControllerNodeIPs,
-                                         Map<String, String> addedControllerNodeIPs,
-                                         Map<String, String> removedControllerNodeIPs) {
-        // ignore
     }
 
     public boolean isAutoPortFastFeature() {

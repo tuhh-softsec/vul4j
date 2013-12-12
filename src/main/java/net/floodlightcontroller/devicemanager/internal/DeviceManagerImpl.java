@@ -38,8 +38,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.IFloodlightProviderService.Role;
-import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IUpdate;
@@ -82,8 +80,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DeviceManagerImpl implements
 IDeviceService, IOFMessageListener, ITopologyListener,
-IFloodlightModule, IEntityClassListener,
-IHAListener {
+IFloodlightModule, IEntityClassListener {
     protected final static Logger logger =
             LoggerFactory.getLogger(DeviceManagerImpl.class);
 
@@ -647,7 +644,6 @@ IHAListener {
         apComparator = new AttachmentPointComparator();
 
         floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
-        floodlightProvider.addHAListener(this);
         if (topology != null)
             topology.addListener(this);
         entityClassifier.addListener(this);
@@ -670,30 +666,6 @@ IHAListener {
         } else {
             logger.debug("Could not instantiate REST API");
         }
-    }
-
-    // ***************
-    // IHAListener
-    // ***************
-
-    @Override
-    public void roleChanged(Role oldRole, Role newRole) {
-        switch(newRole) {
-            case SLAVE:
-                logger.debug("Resetting device state because of role change");
-                startUp(null);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void controllerNodeIPsChanged(
-                                         Map<String, String> curControllerNodeIPs,
-                                         Map<String, String> addedControllerNodeIPs,
-                                         Map<String, String> removedControllerNodeIPs) {
-        // no-op
     }
 
     // ****************

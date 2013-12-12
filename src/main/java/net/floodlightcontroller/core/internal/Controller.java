@@ -46,7 +46,6 @@ import java.util.concurrent.TimeoutException;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -162,7 +161,6 @@ public class Controller implements IFloodlightProviderService {
     protected HashMap<String, String> controllerNodeIPsCache;
     
     protected Set<IOFSwitchListener> switchListeners;
-    protected Set<IHAListener> haListeners;
     protected BlockingQueue<IUpdate> updates;
     
     // Module dependencies
@@ -257,71 +255,6 @@ public class Controller implements IFloodlightProviderService {
         }
     }
     
-    /**
-     * Update message indicating controller's role has changed
-     */
-    protected class HARoleUpdate implements IUpdate {
-        public Role oldRole;
-        public Role newRole;
-        public HARoleUpdate(Role newRole, Role oldRole) {
-            this.oldRole = oldRole;
-            this.newRole = newRole;
-        }
-        public void dispatch() {
-            // Make sure that old and new roles are different.
-            if (oldRole == newRole) {
-                if (log.isTraceEnabled()) {
-                    log.trace("HA role update ignored as the old and " +
-                              "new roles are the same. newRole = {}" +
-                              "oldRole = {}", newRole, oldRole);
-                }
-                return;
-            }
-            if (log.isTraceEnabled()) {
-                log.trace("Dispatching HA Role update newRole = {}, oldRole = {}",
-                          newRole, oldRole);
-            }
-            if (haListeners != null) {
-                for (IHAListener listener : haListeners) {
-                        listener.roleChanged(oldRole, newRole);
-                }
-            }
-        }
-    }
-    
-    /**
-     * Update message indicating
-     * IPs of controllers in controller cluster have changed.
-     */
-    protected class HAControllerNodeIPUpdate implements IUpdate {
-        public Map<String,String> curControllerNodeIPs;
-        public Map<String,String> addedControllerNodeIPs;
-        public Map<String,String> removedControllerNodeIPs;
-        public HAControllerNodeIPUpdate(
-                HashMap<String,String> curControllerNodeIPs,  
-                HashMap<String,String> addedControllerNodeIPs,  
-                HashMap<String,String> removedControllerNodeIPs) {
-            this.curControllerNodeIPs = curControllerNodeIPs;
-            this.addedControllerNodeIPs = addedControllerNodeIPs;
-            this.removedControllerNodeIPs = removedControllerNodeIPs;
-        }
-        public void dispatch() {
-            if (log.isTraceEnabled()) {
-                log.trace("Dispatching HA Controller Node IP update "
-                        + "curIPs = {}, addedIPs = {}, removedIPs = {}",
-                        new Object[] { curControllerNodeIPs, addedControllerNodeIPs,
-                            removedControllerNodeIPs }
-                        );
-            }
-            if (haListeners != null) {
-                for (IHAListener listener: haListeners) {
-                    listener.controllerNodeIPsChanged(curControllerNodeIPs,
-                            addedControllerNodeIPs, removedControllerNodeIPs);
-                }
-            }
-        }
-    }
-    
     // ***************
     // Getters/Setters
     // ***************
@@ -347,47 +280,6 @@ public class Controller implements IFloodlightProviderService {
 	public void setLinkDiscoveryService(ILinkDiscoveryService linkDiscovery) {
 		this.linkDiscovery = linkDiscovery;
 	}
-	
-    @Override
-    public Role getRole() {
-        synchronized(roleChanger) {
-            return role;
-        }
-    }
-    
-    @Override
-    public void setRole(Role role) {
-        if (role == null) throw new NullPointerException("Role can not be null.");
-        //if (role == Role.MASTER && this.role == Role.SLAVE) {
-            // Reset db state to Inactive for all switches. 
-            //updateAllInactiveSwitchInfo();
-        //}
-        
-        // Need to synchronize to ensure a reliable ordering on role request
-        // messages send and to ensure the list of connected switches is stable
-        // RoleChanger will handle the actual sending of the message and 
-        // timeout handling
-        // @see RoleChanger
-        synchronized(roleChanger) {
-            if (role.equals(this.role)) {
-                log.debug("Ignoring role change: role is already {}", role);
-                return;
-            }
-
-            Role oldRole = this.role;
-            this.role = role;
-            
-            log.debug("Submitting role change request to role {}", role);
-            roleChanger.submitRequest(connectedSwitches, role);
-            
-            // Enqueue an update for our listeners.
-            try {
-                this.updates.put(new HARoleUpdate(role, oldRole));
-            } catch (InterruptedException e) {
-                log.error("Failure adding update to queue", e);
-            }
-        }
-    }
     
     public void publishUpdate(IUpdate update) {
     	try {
@@ -1918,7 +1810,6 @@ public class Controller implements IFloodlightProviderService {
                                       ListenerDispatcher<OFType, 
                                                          IOFMessageListener>>();
         this.switchListeners = new CopyOnWriteArraySet<IOFSwitchListener>();
-        this.haListeners = new CopyOnWriteArraySet<IHAListener>();
         this.activeSwitches = new ConcurrentHashMap<Long, IOFSwitch>();
         this.connectedSwitches = new HashSet<OFSwitchImpl>();
         this.controllerNodeIPsCache = new HashMap<String, String>();
@@ -1949,16 +1840,6 @@ public class Controller implements IFloodlightProviderService {
        
         // Add our REST API
         restApi.addRestletRoutable(new CoreWebRoutable());
-    }
-
-    @Override
-    public void addHAListener(IHAListener listener) {
-        this.haListeners.add(listener);
-    }
-
-    @Override
-    public void removeHAListener(IHAListener listener) {
-        this.haListeners.remove(listener);
     }
     
     @Override

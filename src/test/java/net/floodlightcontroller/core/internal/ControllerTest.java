@@ -623,40 +623,6 @@ public class ControllerTest extends FloodlightTestCase {
     */
     
     @Test
-    public void testSetRoleNull() {
-        try {
-            controller.setRole(null);
-            fail("Should have thrown an Exception");
-        }
-        catch (NullPointerException e) {
-            //exptected
-        }
-    }
-    
-    @Test 
-    public void testSetRole() {
-        controller.connectedSwitches.add(new OFSwitchImpl());
-        RoleChanger roleChanger = createMock(RoleChanger.class); 
-        roleChanger.submitRequest(controller.connectedSwitches, Role.SLAVE);
-        controller.roleChanger = roleChanger;
-        
-        assertEquals("Check that update queue is empty", 0, 
-                    controller.updates.size());
-        
-        replay(roleChanger);
-        controller.setRole(Role.SLAVE);
-        verify(roleChanger);
-        
-        IUpdate upd = controller.updates.poll();
-        assertNotNull("Check that update queue has an update", upd);
-        assertTrue("Check that update is HARoleUpdate", 
-                   upd instanceof Controller.HARoleUpdate);
-        Controller.HARoleUpdate roleUpd = (Controller.HARoleUpdate)upd;
-        assertSame(Role.MASTER, roleUpd.oldRole);
-        assertSame(Role.SLAVE, roleUpd.newRole);
-    }
-    
-    @Test
     public void testCheckSwitchReady() {
         OFChannelState state = new OFChannelState();
         Controller.OFChannelHandler chdlr = controller.new OFChannelHandler(state);

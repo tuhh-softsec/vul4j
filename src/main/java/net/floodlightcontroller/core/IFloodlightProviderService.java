@@ -83,11 +83,6 @@ public interface IFloodlightProviderService extends IFloodlightService {
     public Map<Long, IOFSwitch> getSwitches();
     
     /**
-     * Get the current role of the controller
-     */
-    public Role getRole();
-    
-    /**
      * Get the current mapping of controller IDs to their IP addresses
      * Returns a copy of the current mapping. 
      * @see IHAListener
@@ -98,11 +93,6 @@ public interface IFloodlightProviderService extends IFloodlightService {
      * Gets the ID of the controller
      */
     public String getControllerId();
-    
-    /**
-     * Set the role of the controller
-     */
-    public void setRole(Role role);
     
     /**
      * Add a switch listener
@@ -116,18 +106,6 @@ public interface IFloodlightProviderService extends IFloodlightService {
      */
     public void removeOFSwitchListener(IOFSwitchListener listener);
     
-    /**
-     * Adds a listener for HA role events
-     * @param listener The module that wants to listen for events
-     */
-    public void addHAListener(IHAListener listener);
-    
-    /**
-     * Removes a listener for HA role events
-     * @param listener The module that no longer wants to listen for events
-     */
-    public void removeHAListener(IHAListener listener);
-
     /**
      * Terminate the process
      */

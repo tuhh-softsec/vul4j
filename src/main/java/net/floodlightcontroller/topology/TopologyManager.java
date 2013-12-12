@@ -16,10 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.IFloodlightProviderService.Role;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.annotations.LogMessageCategory;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
@@ -44,9 +42,9 @@ import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
 import org.openflow.protocol.OFPacketOut;
 import org.openflow.protocol.OFPort;
+import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionOutput;
-import org.openflow.protocol.OFType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +57,7 @@ import org.slf4j.LoggerFactory;
 public class TopologyManager implements 
         IFloodlightModule, ITopologyService, 
         IRoutingService, ILinkDiscoveryListener,
-        IOFMessageListener, IHAListener {
+        IOFMessageListener {
 
     protected final static Logger log = LoggerFactory.getLogger(TopologyManager.class);
 
@@ -564,38 +562,6 @@ public class TopologyManager implements
         return Command.CONTINUE;
     }
 
-    // ***************
-    // IHAListener
-    // ***************
-
-    @Override
-    public void roleChanged(Role oldRole, Role newRole) {
-        switch(newRole) {
-            case MASTER:
-                if (oldRole == Role.SLAVE) {
-                    log.debug("Re-computing topology due " +
-                            "to HA change from SLAVE->MASTER");
-                    newInstanceTask.reschedule(1, TimeUnit.MILLISECONDS);
-                }
-                break;
-            case SLAVE:
-                log.debug("Clearing topology due to " +
-                        "HA change to SLAVE");
-                clearCurrentTopology();
-                break;
-            default:
-            	break;
-        }
-    }
-
-    @Override
-    public void controllerNodeIPsChanged(
-                          Map<String, String> curControllerNodeIPs,
-                          Map<String, String> addedControllerNodeIPs,
-                          Map<String, String> removedControllerNodeIPs) {
-        // no-op
-    }
-
     // *****************
     // IFloodlightModule
     // *****************
@@ -661,7 +627,6 @@ public class TopologyManager implements
         newInstanceTask = new SingletonTask(ses, new UpdateTopologyWorker());
         linkDiscovery.addListener(this);
         floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
-        floodlightProvider.addHAListener(this);
         addRestletRoutable();
     }
 

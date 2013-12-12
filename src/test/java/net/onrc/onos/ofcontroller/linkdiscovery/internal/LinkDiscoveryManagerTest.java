@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.IFloodlightProviderService.Role;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
@@ -387,37 +386,5 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         topology.addOrUpdateLink(lt, info);
         assertTrue(topology.portBroadcastDomainLinks.get(srcNpt).contains(lt));
         assertTrue(topology.portBroadcastDomainLinks.get(dstNpt).contains(lt));
-    }
-
-    @Test
-    public void testHARoleChange() throws Exception {
-        LinkDiscoveryManager topology = getTopology();
-        IOFSwitch sw1 = createMockSwitch(1L);
-        IOFSwitch sw2 = createMockSwitch(2L);
-        replay(sw1, sw2);
-        Link lt = new Link(1L, 2, 2L, 1);
-        NodePortTuple srcNpt = new NodePortTuple(1L, 2);
-        NodePortTuple dstNpt = new NodePortTuple(2L, 1);
-        LinkInfo info = new LinkInfo(System.currentTimeMillis(),
-                                     System.currentTimeMillis(), null,
-                                     0, 0);
-        topology.addOrUpdateLink(lt, info);
-
-        // check invariants hold
-        assertNotNull(topology.switchLinks.get(lt.getSrc()));
-        assertTrue(topology.switchLinks.get(lt.getSrc()).contains(lt));
-        assertNotNull(topology.portLinks.get(srcNpt));
-        assertTrue(topology.portLinks.get(srcNpt).contains(lt));
-        assertNotNull(topology.portLinks.get(dstNpt));
-        assertTrue(topology.portLinks.get(dstNpt).contains(lt));
-        assertTrue(topology.links.containsKey(lt));
-        
-        // check that it clears from memory
-        getMockFloodlightProvider().dispatchRoleChanged(null, Role.SLAVE);
-        assertTrue(topology.switchLinks.isEmpty());
-        getMockFloodlightProvider().dispatchRoleChanged(Role.SLAVE, Role.MASTER);
-        // check that lldps were sent
-        assertTrue(ldm.isSendLLDPsCalled);
-        ldm.reset();
     }
 }

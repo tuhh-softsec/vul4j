@@ -31,7 +31,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -60,7 +59,6 @@ public class MockFloodlightProvider implements IFloodlightModule, IFloodlightPro
     protected final static Logger log = LoggerFactory.getLogger(MockFloodlightProvider.class);
     protected ConcurrentMap<OFType, ListenerDispatcher<OFType,IOFMessageListener>> listeners;
     protected List<IOFSwitchListener> switchListeners;
-    protected List<IHAListener> haListeners;
     protected Map<Long, IOFSwitch> switches;
     protected BasicFactory factory;
 
@@ -72,7 +70,6 @@ public class MockFloodlightProvider implements IFloodlightModule, IFloodlightPro
                                    IOFMessageListener>>();
         switches = new ConcurrentHashMap<Long, IOFSwitch>();
         switchListeners = new CopyOnWriteArrayList<IOFSwitchListener>();
-        haListeners = new CopyOnWriteArrayList<IHAListener>();
         factory = new BasicFactory();
     }
 
@@ -252,37 +249,6 @@ public class MockFloodlightProvider implements IFloodlightModule, IFloodlightPro
     public void startUp(FloodlightModuleContext context) {
         // TODO Auto-generated method stub
         
-    }
-
-    @Override
-    public void addHAListener(IHAListener listener) {
-        haListeners.add(listener);
-    }
-
-    @Override
-    public void removeHAListener(IHAListener listener) {
-        haListeners.remove(listener);
-    }
-    
-    @Override
-    public Role getRole() {
-        return null;
-    }
-    
-    @Override
-    public void setRole(Role role) {
-        
-    }
-    
-    /**
-     * Dispatches a new role change notification
-     * @param oldRole
-     * @param newRole
-     */
-    public void dispatchRoleChanged(Role oldRole, Role newRole) {
-        for (IHAListener rl : haListeners) {
-            rl.roleChanged(oldRole, newRole);
-        }
     }
 
     @Override
