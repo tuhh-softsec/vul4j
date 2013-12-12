@@ -71,6 +71,7 @@ def startNet(net):
   tail = pexpect.spawn( 'tail -0f %s' % ONOS_LOG )
   sleep(1) 
   net.start()
+  print "Waiting for ONOS to detech the switch..."
   index = tail.expect(['Sync time \(ms\)', pexpect.EOF, pexpect.TIMEOUT])
   if index >= 1:
     print '* ONOS not started'
@@ -82,10 +83,15 @@ def dumpFlows():
   return check_output( 'ovs-ofctl dump-flows s1', shell=True )
 
 def addFlowsToONOS(n):
-  print "Adding %d flows to ONOS" % n
+  print "Adding %d flows to ONOS" % n,
   call( './generate_flows.py 1 %d > /tmp/flows.txt' % n, shell=True )
-  call( '%s/web/add_flow.py -m onos -f /tmp/flows.txt' % ONOS_HOME, shell=True )
-  print "Waiting for flow entries to be added to switch",
+  #call( '%s/web/add_flow.py -m onos -f /tmp/flows.txt' % ONOS_HOME, shell=True )
+  p = Popen( '%s/web/add_flow.py -m onos -f /tmp/flows.txt' % ONOS_HOME, shell=True )
+  while p.poll() is None:
+    sys.stdout.write('.')
+    sys.stdout.flush()
+    sleep(1)
+  print ". done\nWaiting for flow entries to be added to switch",
   while True:
     output = check_output( 'ovs-ofctl dump-flows s1', shell=True )
     lines = len(output.split('\n'))
@@ -108,19 +114,27 @@ def addFlowsToONOS(n):
     sys.stdout.flush()
     sleep(5)
 
-def removeFlowsFromONOS():
-  print "Removing all flows from ONOS"
-  call( '%s/web/delete_flow.py all' % ONOS_HOME, shell=True )
-  print "Waiting for flow entries to be removed from switch",
-  while True:
-    output = check_output( 'ovs-ofctl dump-flows s1', shell=True )
-    lines = len(output.split('\n'))
-    if lines == 2:
-      break
+def removeFlowsFromONOS(checkSwitch=True):
+  print "Removing all flows from ONOS",
+  #call( '%s/web/delete_flow.py all' % ONOS_HOME, shell=True )
+  p = Popen( '%s/web/delete_flow.py all' % ONOS_HOME, shell=True )
+  while p.poll() is None:
     sys.stdout.write('.')
     sys.stdout.flush()
     sleep(1)
-  print ". done\nWaiting for flow entries to be removed from network graph",
+  print ". done"
+  if checkSwitch:
+    print "Waiting for flow entries to be removed from switch",
+    while True:
+      output = check_output( 'ovs-ofctl dump-flows s1', shell=True )
+      lines = len(output.split('\n'))
+      if lines == 2:
+        break
+      sys.stdout.write('.')
+      sys.stdout.flush()
+      sleep(1)
+    print ". done"
+  print "Waiting for flow entries to be removed from network graph",
   while True:
     output = pexpect.spawn( '%s/web/get_flow.py all' % ONOS_HOME )
     if output.expect(['FlowEntry', pexpect.EOF], timeout=2000) == 1:
@@ -170,12 +184,12 @@ def runPerf( resultDir, tests):
               'delete': os.path.join(resultDir, 'delete.csv'),
               'sync':   os.path.join(resultDir, 'sync.csv') }
   initResults(fileMap)
+  removeFlowsFromONOS(checkSwitch=False) # clear ONOS before starting
   # start Mininet
   topo = SingleSwitchTopo()
   net = Mininet(topo=topo, controller=RemoteController)
   print "Starting Mininet"
   startNet(net)
-  removeFlowsFromONOS() # clear ONOS before starting
   wait(30, "Give ONOS 30 seconds to warm up") # let ONOS "warm-up"
   for i in tests:
     addFlowsToONOS(i)
