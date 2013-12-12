@@ -119,7 +119,9 @@ public class FlowPathFlags {
 		flagsStr += ",";
 	    flagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY";
 	}
-	ret += flagsStr + "]";
+	if (flagsStr != null)
+	    ret += flagsStr;
+	ret += "]";
 
 	return ret;
     }
