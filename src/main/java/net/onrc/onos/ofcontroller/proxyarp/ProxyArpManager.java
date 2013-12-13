@@ -363,7 +363,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
 			if(!outPorts.iterator().hasNext()){
 				log.debug("outPort : null");
-				sendToOtherNodes(eth, pi);
+				sendToOtherNodes(eth, sw.getId(), pi);
 			}else{
 
 				for (IPortObject portObject : outPorts) {
@@ -391,7 +391,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			log.debug("The Device info in DB is {} for IP {}", targetDevice, inetAddressToString(arp.getTargetProtocolAddress()));
 
 			// We don't know the device so broadcast the request out
-			sendToOtherNodes(eth, pi);
+			sendToOtherNodes(eth, sw.getId(), pi);
 		}
  
 	}
@@ -516,7 +516,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		}
 	}
 	
-	private void sendToOtherNodes(Ethernet eth, OFPacketIn pi) {
+	private void sendToOtherNodes(Ethernet eth, long inSwitchId, OFPacketIn pi) {
 		ARP arp = (ARP) eth.getPayload();
 		
 		if (log.isTraceEnabled()) {
@@ -532,7 +532,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			return;
 		}
 		
-		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize()));
+		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize(),
+				-1L, (short)-1, inSwitchId, pi.getInPort()));
 	}
 	//hazelcast to other ONOS instances to send the ARP packet out on outPort of outSwitch
 	private void sendToOtherNodes(Ethernet eth, OFPacketIn pi, long outSwitch, short outPort) {
@@ -628,7 +629,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		}
 	}
 	
-	private void broadcastArpRequestOutMyEdge(byte[] arpRequest) {
+	private void broadcastArpRequestOutMyEdge(byte[] arpRequest,
+			long inSwitch, short inPort) {
 		List<SwitchPort> switchPorts = new ArrayList<SwitchPort>();
 		
 		for (IOFSwitch sw : floodlightProvider.getSwitches().values()) {
@@ -648,9 +650,17 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			
 			for (IPortObject portObject : ports) {
 				if (!portObject.getLinkedPorts().iterator().hasNext()) {
+					short portNumber = portObject.getNumber();
+					
+					if (sw.getId() == inSwitch && portNumber == inPort) {
+						// This is the port that the ARP message came in,
+						// so don't broadcast out this port
+						continue;
+					}
+					
 					switchPorts.add(new SwitchPort(new Dpid(sw.getId()), 
-							new Port(portObject.getNumber())));
-					actions.add(new OFActionOutput(portObject.getNumber()));
+							new Port(portNumber)));
+					actions.add(new OFActionOutput(portNumber));
 				}
 			}
 			
@@ -814,7 +824,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		switch (arpMessage.getType()){
 		case REQUEST:
 			if(arpMessage.getOutSwitch() == -1 || arpMessage.getOutPort() == -1){	
-				broadcastArpRequestOutMyEdge(arpMessage.getPacket());					
+				broadcastArpRequestOutMyEdge(arpMessage.getPacket(),
+						arpMessage.getInSwitch(), arpMessage.getInPort());					
 			}else{					
 				sendArpRequestOutPort(arpMessage.getPacket(),arpMessage.getOutSwitch(),arpMessage.getOutPort());
 				log.debug("OutSwitch in ARP request message is: {}; OutPort in ARP request message is: {}",arpMessage.getOutSwitch(),arpMessage.getOutPort());
