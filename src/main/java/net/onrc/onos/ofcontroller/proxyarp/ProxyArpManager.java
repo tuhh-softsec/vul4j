@@ -374,14 +374,11 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 						log.debug("outPort:{} ", outPort);
 					}   
 
-					Iterable<ISwitchObject>  outSwitches= targetDevice.getSwitch(); 
-
-					for (ISwitchObject outswitch : outSwitches) {
-
-						outSwitch= HexString.toLong(outswitch.getDPID());
-						log.debug("outSwitch.DPID:{}; outPort: {}", outswitch.getDPID(), outPort );
-						sendToOtherNodes( eth, pi, outSwitch, outPort);
-					}
+					ISwitchObject outSwitchObject = portObject.getSwitch();
+					outSwitch= HexString.toLong(outSwitchObject.getDPID());
+					log.debug("outSwitch.DPID:{}; outPort: {}", outSwitchObject.getDPID(), outPort );
+					sendToOtherNodes( eth, pi, outSwitch, outPort);
+					
 				}
 			}
 
