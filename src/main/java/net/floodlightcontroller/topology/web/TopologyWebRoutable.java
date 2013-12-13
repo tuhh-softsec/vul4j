@@ -25,6 +25,6 @@ public class TopologyWebRoutable implements RestletRoutable {
      */
     @Override
     public String basePath() {
-        return "/fl/topology";
+        return "/wm/floodlight/topology";
     }
 }

@@ -5,21 +5,17 @@ import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
 import net.floodlightcontroller.restserver.RestletRoutable;
-import net.onrc.onos.ofcontroller.devicemanager.web.TopoDevicesResource;
 
-public class OnosCoreWebRoutable implements RestletRoutable {
+public class OnosInternalWebRoutable implements RestletRoutable {
     @Override
     public String basePath() {
-        return "/wm/core";
+        return "/wm/onos/internal";
     }
 
     @Override
     public Restlet getRestlet(Context context) {
         Router router = new Router(context);
         // Following added by ONOS
-        router.attach("/topology/switches/{filter}/json", TopoSwitchesResource.class);
-        router.attach("/topology/links/json", TopoLinksResource.class);
-        router.attach("/topology/devices/json", TopoDevicesResource.class);
         router.attach("/clearflowtable/json", ClearFlowTableResource.class);
         return router;
     }

@@ -61,7 +61,7 @@ import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
-import net.onrc.onos.ofcontroller.core.web.OnosCoreWebRoutable;
+import net.onrc.onos.ofcontroller.core.web.OnosInternalWebRoutable;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
@@ -1832,7 +1832,7 @@ public class Controller implements IFloodlightProviderService {
        
         // Add our REST API
         restApi.addRestletRoutable(new CoreWebRoutable());
-        restApi.addRestletRoutable(new OnosCoreWebRoutable());
+        restApi.addRestletRoutable(new OnosInternalWebRoutable());
     }
     
     @Override

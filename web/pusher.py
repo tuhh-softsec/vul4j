@@ -29,12 +29,12 @@ def debug(txt):
   if DEBUG:
     print '%s' % (txt)
 
-# @app.route("/wm/fprog/pusher/setrate/<dpid>/<rate>/json")
+# @app.route("/wm/onos/flowprogrammer/pusher/setrate/<dpid>/<rate>/json")
 # Sample output:
 #  "true"
 def set_rate(dpid,rate):
   try:
-    command = "curl -s \"http://%s:%s/wm/fprog/pusher/setrate/%s/%s/json\"" % (ControllerIP, ControllerPort, dpid, rate)
+    command = "curl -s \"http://%s:%s/wm/onos/flowprogrammer/pusher/setrate/%s/%s/json\"" % (ControllerIP, ControllerPort, dpid, rate)
     debug("set_rate %s" % command)
      
     result = os.popen(command).read()
@@ -48,12 +48,12 @@ def set_rate(dpid,rate):
   
   print "Sending rate to %s is successfully set to %s" % (dpid, rate)
 
-# @app.route("/wm/fprog/pusher/suspend/<dpid>/json")
+# @app.route("/wm/onos/flowprogrammer/pusher/suspend/<dpid>/json")
 # Sample output:
 #  "true"
 def suspend(dpid):
   try:
-    command = "curl -s \"http://%s:%s/wm/fprog/pusher/suspend/%s/json\"" % (ControllerIP, ControllerPort, dpid)
+    command = "curl -s \"http://%s:%s/wm/onos/flowprogrammer/pusher/suspend/%s/json\"" % (ControllerIP, ControllerPort, dpid)
     debug("suspend %s" % command)
      
     result = os.popen(command).read()
@@ -67,12 +67,12 @@ def suspend(dpid):
   
   print "DPID %s is successfully suspended" % dpid
 
-# @app.route("/wm/fprog/pusher/resume/<dpid>/json")
+# @app.route("/wm/onos/flowprogrammer/pusher/resume/<dpid>/json")
 # Sample output:
 #  "true"
 def resume(dpid):
   try:
-    command = "curl -s \"http://%s:%s/wm/fprog/pusher/resume/%s/json\"" % (ControllerIP, ControllerPort, dpid)
+    command = "curl -s \"http://%s:%s/wm/onos/flowprogrammer/pusher/resume/%s/json\"" % (ControllerIP, ControllerPort, dpid)
     debug("resume %s" % command)
      
     result = os.popen(command).read()
@@ -86,12 +86,12 @@ def resume(dpid):
   
   print "DPID %s is successfully resumed" % dpid
 
-# @app.route("/wm/fprog/pusher/barrier/<dpid>/json")
+# @app.route("/wm/onos/flowprogrammer/pusher/barrier/<dpid>/json")
 # Sample output:
 #  "{"version":1,"type":"BARRIER_REPLY","length":8,"xid":4,"lengthU":8}"
 def barrier(dpid):
   try:
-    command = "curl -s \"http://%s:%s/wm/fprog/pusher/barrier/%s/json\"" % (ControllerIP, ControllerPort, dpid)
+    command = "curl -s \"http://%s:%s/wm/onos/flowprogrammer/pusher/barrier/%s/json\"" % (ControllerIP, ControllerPort, dpid)
     debug("barrier %s" % command)
      
     result = os.popen(command).read()

@@ -31,7 +31,7 @@ import org.restlet.routing.Router;
 public class CoreWebRoutable implements RestletRoutable {
     @Override
     public String basePath() {
-        return "/fl/core";
+        return "/wm/floodlight/core";
     }
 
     @Override

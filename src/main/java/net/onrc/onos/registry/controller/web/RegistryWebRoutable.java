@@ -18,7 +18,7 @@ public class RegistryWebRoutable implements RestletRoutable {
 
 	@Override
 	public String basePath() {
-		return "/wm/registry";
+		return "/wm/onos/registry";
 	}
 
 }

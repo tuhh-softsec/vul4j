@@ -30,7 +30,7 @@ window.Status = Backbone.Model.extend({
         var self = this;
         console.log("fetching controller status");
         $.ajax({
-            url:hackBase + "/fl/core/health/json",
+            url:hackBase + "/wm/floodlight/core/health/json",
             dataType:"json",
             success:function (data) {
                 console.log("fetched controller status: health");
@@ -39,7 +39,7 @@ window.Status = Backbone.Model.extend({
             }
         });
         $.ajax({
-            url:hackBase + "/fl/core/system/uptime/json",
+            url:hackBase + "/wm/floodlight/core/system/uptime/json",
             dataType:"json",
             success:function (data) {
                 console.log("fetched controller status: uptime");
@@ -48,7 +48,7 @@ window.Status = Backbone.Model.extend({
             }
         });
         $.ajax({
-            url:hackBase + "/fl/core/memory/json",
+            url:hackBase + "/wm/floodlight/core/memory/json",
             dataType:"json",
             success:function (data) {
                 console.log("fetched controller status: memory");
@@ -57,7 +57,7 @@ window.Status = Backbone.Model.extend({
             }
         });
         $.ajax({
-            url:hackBase + "/fl/core/module/loaded/json",
+            url:hackBase + "/wm/floodlight/core/module/loaded/json",
             dataType:"json",
             success:function (data) {
                 console.log("fetched controller status: modules loaded");
