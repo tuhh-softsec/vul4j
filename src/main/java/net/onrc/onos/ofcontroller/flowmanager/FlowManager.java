@@ -368,7 +368,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 					 FlowEntryId flowEntryId) {
 	// Find the Flow Entry
 	FlowEntry flowEntry = datagridService.getFlowEntry(flowEntryId);
-	if (flowEntryId == null)
+	if (flowEntry == null)
 	    return;		// Flow Entry not found
 
 	// Find the Flow Path
