@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.forwarding;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +17,9 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.packet.Ethernet;
+import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
@@ -24,6 +27,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
+import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -49,6 +53,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.net.InetAddresses;
 
 public class Forwarding implements IOFMessageListener, IFloodlightModule,
 									IForwardingService {
@@ -60,6 +65,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	private IFloodlightProviderService floodlightProvider;
 	private IFlowService flowService;
 	private IFlowPusherService flowPusher;
+	private IDatagridService datagrid;
 	
 	private IDeviceStorage deviceStorage;
 	private TopologyManager topologyService;
@@ -142,6 +148,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 				context.getServiceImpl(IFloodlightProviderService.class);
 		flowService = context.getServiceImpl(IFlowService.class);
 		flowPusher = context.getServiceImpl(IFlowPusherService.class);
+		datagrid = context.getServiceImpl(IDatagridService.class);
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
@@ -190,15 +197,43 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		Ethernet eth = IFloodlightProviderService.bcStore.
 				get(cntx, IFloodlightProviderService.CONTEXT_PI_PAYLOAD);
 		
-		// We only want to handle unicast IPv4
-		if (eth.isBroadcast() || eth.isMulticast() || 
-				eth.getEtherType() != Ethernet.TYPE_IPv4) {
+		if (eth.getEtherType() != Ethernet.TYPE_IPv4) {
 			return Command.CONTINUE;
 		}
 		
-		handlePacketIn(sw, pi, eth);
+		if (eth.isBroadcast() || eth.isMulticast()) {
+			handleBroadcast(sw, pi, eth);
+			//return Command.CONTINUE;
+		}
+		else {
+			// Unicast
+			handlePacketIn(sw, pi, eth);
+		}
 		
 		return Command.STOP;
+	}
+	
+	private void handleBroadcast(IOFSwitch sw, OFPacketIn pi, Ethernet eth) {
+		if (log.isTraceEnabled()) {
+			log.trace("Sending broadcast packet to other ONOS instances");
+		}
+		
+		IPv4 ipv4Packet = (IPv4) eth.getPayload();
+		
+		// TODO We'll put the destination address here, because the current
+		// architecture needs an address. Addresses are only used for replies
+		// however, which don't apply to non-ARP packets. The ArpMessage class
+		// has become a bit too overloaded and should be refactored to 
+		// handle all use cases nicely.
+		 InetAddress targetAddress = 
+				InetAddresses.fromInteger(ipv4Packet.getDestinationAddress());
+		
+		// Piggy-back on the ARP mechanism to broadcast this packet out the
+		// edge. Luckily the ARP module doesn't check that the packet is
+		// actually ARP before broadcasting, so we can trick it into sending
+		// our non-ARP packets.
+		// TODO This should be refactored later to account for the new use case.
+		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize()));
 	}
 	
 	private void handlePacketIn(IOFSwitch sw, OFPacketIn pi, Ethernet eth) {

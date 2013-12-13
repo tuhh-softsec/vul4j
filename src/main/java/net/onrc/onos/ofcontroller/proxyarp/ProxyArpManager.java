@@ -299,10 +299,12 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 					handleArpReply(sw, pi, arp);
 					sendToOtherNodesReply(eth, pi);
 			}
+			
+			// Stop ARP packets here
+			return Command.STOP;
 		}
 		
-		//TODO should we propagate ARP or swallow it?
-		//Always propagate for now so DeviceManager can learn the host location
+		// Propagate everything else
 		return Command.CONTINUE;
 	}
 	
@@ -394,7 +396,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
  
 	}
 	
-	@SuppressWarnings("unused")
 	private void handleArpReply(IOFSwitch sw, OFPacketIn pi, ARP arp){
 		if (log.isTraceEnabled()) {
 			log.trace("ARP reply recieved: {} => {}, on {}/{}", new Object[] { 
