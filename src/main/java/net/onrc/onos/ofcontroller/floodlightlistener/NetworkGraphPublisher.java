@@ -40,7 +40,6 @@ import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 import net.onrc.onos.ofcontroller.core.internal.LinkStorageImpl;
 import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;

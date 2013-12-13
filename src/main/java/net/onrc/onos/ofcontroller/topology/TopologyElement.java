@@ -1,8 +1,5 @@
 package net.onrc.onos.ofcontroller.topology;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 /**
  * Class for storing information about a Topology Element: Switch, Port or
  * Link.
@@ -165,6 +162,8 @@ public class TopologyElement {
 	    return "Link=" +
 		Long.toHexString(fromSwitchDpid) + "/" + fromSwitchPort + "/" +
 		Long.toHexString(toSwitchDpid) + "/" + toSwitchPort;
+	case ELEMENT_UNKNOWN:
+	    return "Element=UNKNOWN";
 	}
 
 	assert(false);

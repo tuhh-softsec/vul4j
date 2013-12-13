@@ -17,7 +17,7 @@ LOGS="$ONOS_LOG $PCAP_LOG"
 # Set JVM options
 JVM_OPTS=""
 ## If you want JaCoCo Code Coverage reports... uncomment line below
-JVM_OPTS="$JVM_OPTS -javaagent:${ONOS_HOME}/lib/jacocoagent.jar=dumponexit=true,output=file,destfile=${LOGDIR}/jacoco.exec"
+#JVM_OPTS="$JVM_OPTS -javaagent:${ONOS_HOME}/lib/jacocoagent.jar=dumponexit=true,output=file,destfile=${LOGDIR}/jacoco.exec"
 JVM_OPTS="$JVM_OPTS -server -d64"
 #JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
 JVM_OPTS="$JVM_OPTS -Xmx1g -Xms1g -Xmn800m"
@@ -99,7 +99,7 @@ function start {
 EOF_LOGBACK
   fi
 
-  # Run floodlight
+  # Run ONOS
   echo "Starting ONOS controller ..."
   echo 
 

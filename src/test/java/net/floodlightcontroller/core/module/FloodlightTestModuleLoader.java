@@ -4,40 +4,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.floodlightcontroller.core.module.FloodlightModuleLoader;
-import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.test.MockFloodlightProvider;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.counter.NullCounterStore;
 import net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier;
 import net.floodlightcontroller.devicemanager.test.MockDeviceManager;
-import net.floodlightcontroller.perfmon.NullPktInProcessingTime;
-import net.floodlightcontroller.storage.memory.MemoryStorageSource;
 import net.floodlightcontroller.topology.TopologyManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
 	protected final static Logger log = LoggerFactory.getLogger(FloodlightTestModuleLoader.class);
 	
 	// List of default modules to use unless specified otherwise
-	public static final Class<? extends IFloodlightModule> DEFAULT_STORAGE_SOURCE =
-			MemoryStorageSource.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_FLOODLIGHT_PRPOVIDER =
 			MockFloodlightProvider.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_TOPOLOGY_PROVIDER =
 			TopologyManager.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_DEVICE_SERVICE =
 			MockDeviceManager.class;
-	public static final Class<? extends IFloodlightModule> DEFAULT_COUNTER_STORE =
-			NullCounterStore.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_THREADPOOL =
 			MockThreadPoolService.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_ENTITY_CLASSIFIER =
 			DefaultEntityClassifier.class;
-	public static final Class<? extends IFloodlightModule> DEFAULT_PERFMON =
-			NullPktInProcessingTime.class;
+	
 	
 	protected static final Collection<Class<? extends IFloodlightModule>> DEFAULT_MODULE_LIST;
 	
@@ -45,12 +35,10 @@ public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
 		DEFAULT_MODULE_LIST = new ArrayList<Class<? extends IFloodlightModule>>();
 		DEFAULT_MODULE_LIST.add(DEFAULT_DEVICE_SERVICE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_FLOODLIGHT_PRPOVIDER);
-		DEFAULT_MODULE_LIST.add(DEFAULT_STORAGE_SOURCE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_TOPOLOGY_PROVIDER);
-		DEFAULT_MODULE_LIST.add(DEFAULT_COUNTER_STORE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_THREADPOOL);
 		DEFAULT_MODULE_LIST.add(DEFAULT_ENTITY_CLASSIFIER);
-		DEFAULT_MODULE_LIST.add(DEFAULT_PERFMON);
+
 	}
 	
 	protected IFloodlightModuleContext fmc;

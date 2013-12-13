@@ -266,6 +266,9 @@ public class Topology {
 
 	    break;
 	}
+	case ELEMENT_UNKNOWN:
+	    // TODO: Adding "assert(false);" here can be dangerous
+	    break;
 	}
 
 	return isModified;
@@ -316,6 +319,9 @@ public class Topology {
 	    }
 	    break;
 	}
+	case ELEMENT_UNKNOWN:
+	    // TODO: Adding "assert(false);" here can be dangerous
+	    break;
 	}
 
 	return isModified;

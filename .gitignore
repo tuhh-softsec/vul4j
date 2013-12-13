@@ -3,6 +3,7 @@
 .classpath
 .project
 .pydevproject
+.settings
 target
 onos-logs
 onos.log

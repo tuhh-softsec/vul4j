@@ -2,6 +2,8 @@ package net.onrc.onos.ofcontroller.devicemanager.internal;
 
 import static org.junit.Assert.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -487,9 +489,10 @@ public class DeviceStorageImplTestBB {
 			IDeviceObject dev1 = ope.searchDevice(macAddr);
 			assertEquals(macAddr, dev1.getMACAddress());
 
+			int ip_int = getPackedIPv4Address(ip);
 			//XXX not updated to new interface
-		    //IDeviceObject dev = deviceImpl.getDeviceByIP(ip);
-			IDeviceObject dev = null;
+		    IDeviceObject dev = deviceImpl.getDeviceByIP(ip_int);
+			//IDeviceObject dev = null;
 			
 		    assertNotNull(dev);
 		    
@@ -658,4 +661,14 @@ public class DeviceStorageImplTestBB {
 		}
 	}
 
+	int getPackedIPv4Address(String ip) throws UnknownHostException {
+		byte[] bytes = InetAddress.getByName(ip).getAddress();
+
+		int val = 0;
+		  for (int i = 0; i < bytes.length; i++) {
+		    val <<= 8;
+		    val |= bytes[i] & 0xff;
+		  }
+		  return val;
+	}
 }

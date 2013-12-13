@@ -5,6 +5,11 @@ ONOS (Open Networking Operating System) is an experimental distributed
 SDN OS. Currently, it is under active development. ONOS was announced
 and demonstrated at ONS'13.
 
+License
+=======
+Apache 2.0
+
+
 Steps to download and setup a development Virtual Machine
 ==========================================
 

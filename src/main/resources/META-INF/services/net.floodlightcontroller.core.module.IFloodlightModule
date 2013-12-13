@@ -1,17 +1,10 @@
 net.floodlightcontroller.core.FloodlightProvider
-net.floodlightcontroller.storage.memory.MemoryStorageSource
 net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher
 net.floodlightcontroller.devicemanager.internal.DeviceManagerImpl
 net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager
 net.floodlightcontroller.topology.TopologyManager
 net.floodlightcontroller.forwarding.Forwarding
-net.floodlightcontroller.flowcache.FlowReconcileManager
-net.floodlightcontroller.staticflowentry.StaticFlowEntryPusher
-net.floodlightcontroller.perfmon.PktInProcessingTime
-net.floodlightcontroller.perfmon.NullPktInProcessingTime
 net.floodlightcontroller.restserver.RestApiServer
-net.floodlightcontroller.counter.CounterStore
-net.floodlightcontroller.counter.NullCounterStore
 net.floodlightcontroller.threadpool.ThreadPool
 net.floodlightcontroller.ui.web.StaticWebRoutable
 net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier
@@ -25,4 +18,6 @@ net.onrc.onos.ofcontroller.topology.TopologyManager
 net.onrc.onos.ofcontroller.bgproute.BgpRoute
 net.onrc.onos.registry.controller.ZookeeperRegistry
 net.onrc.onos.registry.controller.StandaloneRegistry
-net.onrc.onos.ofcontroller.core.module.OnosModuleLoader
+net.onrc.onos.ofcontroller.forwarding.Forwarding
+net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager
+net.onrc.onos.ofcontroller.core.config.DefaultConfiguration

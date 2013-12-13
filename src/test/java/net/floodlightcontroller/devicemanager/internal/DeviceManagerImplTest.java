@@ -18,7 +18,17 @@
 package net.floodlightcontroller.devicemanager.internal;
 
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.anyLong;
+import static org.easymock.EasyMock.anyShort;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,46 +41,40 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.easymock.EasyMock.expectLastCall;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.test.MockFloodlightProvider;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.devicemanager.IDevice;
+import net.floodlightcontroller.devicemanager.IDeviceListener;
+import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.devicemanager.IEntityClass;
 import net.floodlightcontroller.devicemanager.IEntityClassifierService;
 import net.floodlightcontroller.devicemanager.SwitchPort;
-import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.devicemanager.SwitchPort.ErrorStatus;
 import net.floodlightcontroller.devicemanager.internal.DeviceManagerImpl.ClassState;
 import net.floodlightcontroller.devicemanager.test.MockEntityClassifier;
 import net.floodlightcontroller.devicemanager.test.MockEntityClassifierMac;
 import net.floodlightcontroller.devicemanager.test.MockFlexEntityClassifier;
-import net.floodlightcontroller.flowcache.FlowReconcileManager;
-import net.floodlightcontroller.flowcache.IFlowReconcileService;
 import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPacket;
 import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.restserver.RestApiServer;
-import net.floodlightcontroller.storage.IStorageSourceService;
-import net.floodlightcontroller.storage.memory.MemoryStorageSource;
 import net.floodlightcontroller.test.FloodlightTestCase;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.ITopologyService;
-import static org.junit.Assert.*;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openflow.protocol.OFPacketIn;
+import org.openflow.protocol.OFPacketIn.OFPacketInReason;
 import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.protocol.OFType;
-import org.openflow.protocol.OFPacketIn.OFPacketInReason;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,8 +93,6 @@ public class DeviceManagerImplTest extends FloodlightTestCase {
     private byte[] testARPReplyPacket_3_Serialized;
     MockFloodlightProvider mockFloodlightProvider;
     DeviceManagerImpl deviceManager;
-    MemoryStorageSource storageSource;
-    FlowReconcileManager flowReconcileMgr;
 
     private IOFSwitch makeSwitchMock(long id) {
         IOFSwitch mockSwitch = createMock(IOFSwitch.class);
@@ -115,25 +117,25 @@ public class DeviceManagerImplTest extends FloodlightTestCase {
         fmc.addService(IThreadPoolService.class, tp);
         mockFloodlightProvider = getMockFloodlightProvider();
         deviceManager = new DeviceManagerImpl();
-        flowReconcileMgr = new FlowReconcileManager();
+       
         DefaultEntityClassifier entityClassifier = new DefaultEntityClassifier();
         fmc.addService(IDeviceService.class, deviceManager);
-        storageSource = new MemoryStorageSource();
-        fmc.addService(IStorageSourceService.class, storageSource);
+        //storageSource = new MemoryStorageSource();
+        //fmc.addService(IStorageSourceService.class, storageSource);
         fmc.addService(IFloodlightProviderService.class, mockFloodlightProvider);
         fmc.addService(IRestApiService.class, restApi);
-        fmc.addService(IFlowReconcileService.class, flowReconcileMgr);
+ 
         fmc.addService(IEntityClassifierService.class, entityClassifier);
         fmc.addService(ITopologyService.class, topology);
         tp.init(fmc);
         restApi.init(fmc);
-        storageSource.init(fmc);
+        //storageSource.init(fmc);
         deviceManager.init(fmc);
-        flowReconcileMgr.init(fmc);
+
         entityClassifier.init(fmc);
-        storageSource.startUp(fmc);
+        //storageSource.startUp(fmc);
         deviceManager.startUp(fmc);
-        flowReconcileMgr.startUp(fmc);
+
         tp.startUp(fmc);
         entityClassifier.startUp(fmc);
 

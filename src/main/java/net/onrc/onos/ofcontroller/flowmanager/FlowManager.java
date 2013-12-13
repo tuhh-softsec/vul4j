@@ -10,8 +10,6 @@ import java.util.Random;
 import java.util.SortedMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -25,15 +23,24 @@ import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
+import net.onrc.onos.ofcontroller.forwarding.IForwardingService;
 import net.onrc.onos.ofcontroller.topology.Topology;
-import net.onrc.onos.ofcontroller.util.*;
+import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowEntrySwitchState;
+import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
+import net.onrc.onos.ofcontroller.util.FlowId;
+import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.FlowPathUserState;
+import net.onrc.onos.ofcontroller.util.Pair;
+import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
-import org.openflow.protocol.OFType;
+import com.esotericsoftware.kryo2.Kryo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +60,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected FlowEventHandler flowEventHandler;
 
     protected IFlowPusherService pusher;
-    
+    protected IForwardingService forwardingService;
+
+    private KryoFactory kryoFactory = new KryoFactory();
+
     // Flow Entry ID generation state
     private static Random randomGenerator = new Random();
     private static int nextFlowEntryIdPrefix = 0;
@@ -142,6 +152,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	l.add(INetworkGraphService.class);
 	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
+	l.add(IFlowPusherService.class);
+	l.add(IForwardingService.class);
         return l;
     }
 
@@ -158,6 +170,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
 	pusher = context.getServiceImpl(IFlowPusherService.class);
+	forwardingService = context.getServiceImpl(IForwardingService.class);
 
 	this.init("","");
     }
@@ -359,8 +372,25 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param sw the switch the Flow Entry expired on.
      * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
-    public void flowEntryOnSwitchExpired(IOFSwitch sw, FlowEntryId flowEntryId) {
-	// TODO: Not implemented yet
+    public void flowEntryOnSwitchExpired(IOFSwitch sw,
+					 FlowEntryId flowEntryId) {
+	// Find the Flow Entry
+	FlowEntry flowEntry = datagridService.getFlowEntry(flowEntryId);
+	if (flowEntryId == null)
+	    return;		// Flow Entry not found
+
+	// Find the Flow Path
+	FlowPath flowPath = datagridService.getFlow(flowEntry.flowId());
+	if (flowPath == null)
+	    return;		// Flow Path not found
+
+	//
+	// Remove the Flow if the Flow Entry expired on the first switch
+	//
+	Dpid srcDpid = flowPath.dataPath().srcPort().dpid();
+	if (srcDpid.value() != sw.getId())
+	    return;
+	deleteFlow(flowPath.flowId());
     }
 
     /**
@@ -377,7 +407,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Process all entries
 	//
 	for (Pair<IOFSwitch, FlowEntry> entry : entries) {
-	    IOFSwitch sw = entry.first;
 	    FlowEntry flowEntry = entry.second;
 
 	    //
@@ -398,8 +427,21 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    case FE_USER_DELETE:
 		datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
 		break;
+	    case FE_USER_UNKNOWN:
+		assert(false);
+		break;
 	    }
 	}
+    }
+
+    /**
+     * Generate a notification that a collection of Flow Paths has been
+     * installed in the network.
+     *
+     * @param flowPaths the collection of installed Flow Paths.
+     */
+    void notificationFlowPathsInstalled(Collection<FlowPath> flowPaths) {
+	forwardingService.flowsInstalled(flowPaths);
     }
 
     /**
@@ -566,11 +608,24 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     private void pushModifiedFlowPathsToDatabase(
 		Collection<FlowPath> modifiedFlowPaths) {
+	List<FlowPath> copiedFlowPaths = new LinkedList<FlowPath>();
+
+	//
+	// Create a copy of the Flow Paths to push, because the pushing
+	// itself will happen on a separate thread.
+	//
+	Kryo kryo = kryoFactory.newKryo();
+	for (FlowPath flowPath : modifiedFlowPaths) {
+	    FlowPath copyFlowPath = kryo.copy(flowPath);
+	    copiedFlowPaths.add(copyFlowPath);
+	}
+	kryoFactory.deleteKryo(kryo);
+
 	//
 	// We only add the Flow Paths to the Database Queue.
 	// The FlowDatabaseWriter thread is responsible for the actual writing.
 	//
-	flowPathsToDatabaseQueue.addAll(modifiedFlowPaths);
+	flowPathsToDatabaseQueue.addAll(copiedFlowPaths);
     }
 
     /**

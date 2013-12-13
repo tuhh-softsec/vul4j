@@ -1,7 +1,5 @@
 package net.onrc.onos.ofcontroller.core;
 
-import net.onrc.onos.ofcontroller.flowmanager.web.DatapathSummarySerializer;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -12,6 +10,9 @@ import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.annotations.gremlin.GremlinGroovy;
 import com.tinkerpop.frames.annotations.gremlin.GremlinParam;
 import com.tinkerpop.frames.VertexFrame;
+
+import net.onrc.onos.ofcontroller.flowmanager.web.DatapathSummarySerializer;
+import net.floodlightcontroller.core.web.serializers.IPv4Serializer;
 
 /*
  * This is the interfaces to make the objects for Cassandra DB.
@@ -205,6 +206,7 @@ public interface INetMapTopologyObjects {
 		
 		@JsonProperty("ipv4")
 		@Property("ipv4_address")
+		@JsonSerialize(using=IPv4Serializer.class)
 		public int getIpv4Address();
 		
 		@Property("ipv4_address")
@@ -250,6 +252,20 @@ public interface INetMapTopologyObjects {
 
 		@Property("flow_path_flags")
 		public void setFlowPathFlags(Long flowPathFlags);
+
+		@JsonProperty("idleTimeout")
+		@Property("idle_timeout")
+		public Integer getIdleTimeout();
+
+		@Property("idle_timeout")
+		public void setIdleTimeout(Integer idleTimeout);
+
+		@JsonProperty("hardTimeout")
+		@Property("hard_timeout")
+		public Integer getHardTimeout();
+
+		@Property("hard_timeout")
+		public void setHardTimeout(Integer hardTimeout);
 
 		@JsonProperty("srcDpid")
 		@Property("src_switch")
@@ -404,6 +420,20 @@ public interface INetMapTopologyObjects {
 
 		@Property("flow_entry_id")
 		public void setFlowEntryId(String flowEntryId);
+
+		@JsonProperty("idleTimeout")
+		@Property("idle_timeout")
+		public Integer getIdleTimeout();
+
+		@Property("idle_timeout")
+		public void setIdleTimeout(Integer idleTimeout);
+
+		@JsonProperty("hardTimeout")
+		@Property("hard_timeout")
+		public Integer getHardTimeout();
+
+		@Property("hard_timeout")
+		public void setHardTimeout(Integer hardTimeout);
 
 		@Property("switch_dpid")
 		public String getSwitchDpid();

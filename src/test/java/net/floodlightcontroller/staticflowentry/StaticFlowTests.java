@@ -1,49 +1,16 @@
 package net.floodlightcontroller.staticflowentry;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-
-import org.easymock.Capture;
-import org.easymock.CaptureType;
-import org.junit.Test;
-import org.openflow.protocol.OFFlowMod;
-import org.openflow.protocol.OFMatch;
-import org.openflow.protocol.OFMessage;
-import org.openflow.protocol.OFPort;
-import org.openflow.protocol.action.OFAction;
-import org.openflow.protocol.action.OFActionOutput;
-import org.openflow.util.HexString;
-
-
-import net.floodlightcontroller.core.FloodlightContext;
-import net.floodlightcontroller.core.IFloodlightProviderService.Role;
-import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.core.module.FloodlightModuleContext;
-import net.floodlightcontroller.core.module.FloodlightModuleException;
-import net.floodlightcontroller.core.test.MockFloodlightProvider;
-import net.floodlightcontroller.test.FloodlightTestCase;
-import net.floodlightcontroller.restserver.RestApiServer;
-import net.floodlightcontroller.staticflowentry.StaticFlowEntryPusher;
-import net.floodlightcontroller.storage.IStorageSourceService;
-import net.floodlightcontroller.storage.memory.MemoryStorageSource;
-import static net.floodlightcontroller.staticflowentry.StaticFlowEntryPusher.*;
-import static org.easymock.EasyMock.*;
-
+/*
 public class StaticFlowTests extends FloodlightTestCase {    
     
     static String TestSwitch1DPID = "00:00:00:00:00:00:00:01";
     static int TotalTestRules = 3;
     
-    /***
-     * Create TestRuleXXX and the corresponding FlowModXXX
-     * for X = 1..3
-     */
+    //
+    // Create TestRuleXXX and the corresponding FlowModXXX
+    // for X = 1..3
+    //
     static Map<String,Object> TestRule1;
     static OFFlowMod FlowMod1;
     static {
@@ -332,3 +299,4 @@ public class StaticFlowTests extends FloodlightTestCase {
         assert(staticFlowEntryPusher.entriesFromStorage.containsValue(FlowMod3));
     }
 }
+*/

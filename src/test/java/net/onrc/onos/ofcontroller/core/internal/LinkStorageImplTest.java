@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LinkStorageImpl.class, GraphDBConnection.class, GraphDBOperation.class})
+@SuppressWarnings("serial")
 public class LinkStorageImplTest {
 	protected final static Logger log = LoggerFactory.getLogger(LinkStorageImplTest.class);
 
@@ -519,7 +520,6 @@ public class LinkStorageImplTest {
 	 * Create a mock {@link GraphDBOperation} which hooks port-related methods.
 	 * @return EasyMock-wrapped GraphDBOperation object.
 	 */
-	@SuppressWarnings("serial")
 	private GraphDBOperation createMockGraphDBOperation() {
 		GraphDBOperation mockDBOpe = EasyMock.createNiceMock(GraphDBOperation.class);
 		
@@ -672,7 +672,6 @@ public class LinkStorageImplTest {
 	 * @param dpid DPID of the switch
 	 * @return List of port number
 	 */
-	@SuppressWarnings("serial")
 	private List<Short> getPorts(long dpid) {
 		List<Short> ports;
 		
@@ -699,7 +698,6 @@ public class LinkStorageImplTest {
 	 * Returns list of DPIDs in test topology.
 	 * @return List of DPIDs
 	 */
-	@SuppressWarnings("serial")
 	private List<Long> getDpids() {
 		List<Long> dpids = new ArrayList<Long>() {{
 			add(Long.decode("0x0000000000000a01"));
@@ -726,12 +724,6 @@ public class LinkStorageImplTest {
 		return new Link(Long.decode("0x0000000000000a01"), 3, Long.decode("0x0000000000000a03"), 1);
 	}
 	
-	// make NO sense while test-network data doesn't define physical network (i.e. any link is feasible)
-	@SuppressWarnings("unused")
-	private Link createInfeasibleLink() {
-		return new Link(Long.decode("0x0000000000000a01"), 1, Long.decode("0x0000000000000a03"), 3);
-	}
-
 	/**
 	 * Returns list of existing {@link Link} objects
 	 * @return ArrayList of new Link objects

@@ -17,7 +17,16 @@
 
 package net.floodlightcontroller.forwarding;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.anyLong;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyShort;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,13 +40,11 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.test.MockFloodlightProvider;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier;
-import net.floodlightcontroller.devicemanager.test.MockDeviceManager;
-import net.floodlightcontroller.counter.CounterStore;
-import net.floodlightcontroller.counter.ICounterStoreService;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.devicemanager.IEntityClassifierService;
+import net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier;
+import net.floodlightcontroller.devicemanager.test.MockDeviceManager;
 import net.floodlightcontroller.packet.Data;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPacket;
@@ -50,9 +57,6 @@ import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.topology.NodePortTuple;
-import net.floodlightcontroller.flowcache.FlowReconcileManager;
-import net.floodlightcontroller.flowcache.IFlowReconcileService;
-import net.floodlightcontroller.forwarding.Forwarding;
 
 import org.easymock.Capture;
 import org.easymock.CaptureType;
@@ -63,10 +67,10 @@ import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
+import org.openflow.protocol.OFPacketIn.OFPacketInReason;
 import org.openflow.protocol.OFPacketOut;
 import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
-import org.openflow.protocol.OFPacketIn.OFPacketInReason;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionOutput;
 import org.openflow.util.HexString;
@@ -77,7 +81,6 @@ public class ForwardingTest extends FloodlightTestCase {
     protected MockDeviceManager deviceManager;
     protected IRoutingService routingEngine;
     protected Forwarding forwarding;
-    protected FlowReconcileManager flowReconcileMgr;
     protected ITopologyService topology;
     protected MockThreadPoolService threadPool;
     protected IOFSwitch sw1, sw2;
@@ -121,7 +124,6 @@ public class ForwardingTest extends FloodlightTestCase {
         forwarding = new Forwarding();
         threadPool = new MockThreadPoolService();
         deviceManager = new MockDeviceManager();
-        flowReconcileMgr = new FlowReconcileManager();
         routingEngine = createMock(IRoutingService.class);
         topology = createMock(ITopologyService.class);
         DefaultEntityClassifier entityClassifier = new DefaultEntityClassifier();
@@ -133,9 +135,7 @@ public class ForwardingTest extends FloodlightTestCase {
         fmc.addService(IThreadPoolService.class, threadPool);
         fmc.addService(ITopologyService.class, topology);
         fmc.addService(IRoutingService.class, routingEngine);
-        fmc.addService(ICounterStoreService.class, new CounterStore());
         fmc.addService(IDeviceService.class, deviceManager);
-        fmc.addService(IFlowReconcileService.class, flowReconcileMgr);
         fmc.addService(IEntityClassifierService.class, entityClassifier);
 
         topology.addListener(anyObject(ITopologyListener.class));
@@ -144,12 +144,10 @@ public class ForwardingTest extends FloodlightTestCase {
         threadPool.init(fmc);
         forwarding.init(fmc);
         deviceManager.init(fmc);
-        flowReconcileMgr.init(fmc);
         entityClassifier.init(fmc);
         threadPool.startUp(fmc);
         deviceManager.startUp(fmc);
         forwarding.startUp(fmc);
-        flowReconcileMgr.startUp(fmc);
         entityClassifier.startUp(fmc);
         verify(topology);
         

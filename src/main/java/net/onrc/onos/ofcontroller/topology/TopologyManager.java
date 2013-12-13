@@ -235,8 +235,12 @@ public class TopologyManager implements IFloodlightModule,
 	    SwitchPort dest = flowPath.dataPath().dstPort();
 	    return ShortestPath.getTopologyShortestPath(topology, src, dest);
 	}
+
 	case FP_TYPE_EXPLICIT_PATH:
 	    return flowPath.dataPath();
+
+	case FP_TYPE_UNKNOWN:
+	    return null;
 	}
 
 	return null;

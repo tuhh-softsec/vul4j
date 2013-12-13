@@ -353,7 +353,6 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	        	IPortObject p = sw.getPort(port);
 	            if (p != null) {
 	        		log.info("SwitchStorage:deletePort dpid:{} port:{} found and set INACTIVE", dpid, port);
-	        		//deletePortImpl(p);
 	        		p.setState("INACTIVE");
 	        		
 	        		// XXX for now delete devices when we change a port to prevent
@@ -497,13 +496,4 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	    			new Object[] {port.getPortId(), state, desc});
 		}
 	}
-	
-	private void deletePortImpl(IPortObject port) {
-		if (port != null) {
-			op.removePort(port);
-	    	log.info("SwitchStorage:deletePortImpl port:{} done",
-	    			port.getPortId());
-		}
-	}
-
 }
