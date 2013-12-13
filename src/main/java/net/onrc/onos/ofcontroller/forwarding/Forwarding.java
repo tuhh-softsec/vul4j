@@ -233,7 +233,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		// actually ARP before broadcasting, so we can trick it into sending
 		// our non-ARP packets.
 		// TODO This should be refactored later to account for the new use case.
-		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize()));
+		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize(),
+				sw.getId(), pi.getInPort()));
 	}
 	
 	private void handlePacketIn(IOFSwitch sw, OFPacketIn pi, Ethernet eth) {
