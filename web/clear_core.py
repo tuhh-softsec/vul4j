@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
   try:
     sw_list = json.dumps(core_switches)
-    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/core/clearflowtable/json" % (sw_list, controllers[0], onos_rest_port)
+    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/onos/internal/clearflowtable/json" % (sw_list, controllers[0], onos_rest_port)
 
     print command
     result = os.popen(command).read()

@@ -57,7 +57,7 @@ def return_file(filename="index.html"):
 ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
 ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
 
-@app.route("/wm/core/topology/switches/all/json")
+@app.route("/wm/onos/topology/switches/all/json")
 def switches():
   if request.args.get('proxy') == None:
     host = ONOS_LOCAL_HOST
@@ -65,7 +65,7 @@ def switches():
     host = ONOS_GUI3_HOST
 
   try:
-    command = "curl -s %s/wm/core/topology/switches/all/json" % (host)
+    command = "curl -s %s/wm/onos/topology/switches/all/json" % (host)
     print command
     result = os.popen(command).read()
   except:
@@ -75,7 +75,7 @@ def switches():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/core/topology/links/json")
+@app.route("/wm/onos/topology/links/json")
 def links():
   if request.args.get('proxy') == None:
     host = ONOS_LOCAL_HOST
@@ -83,7 +83,7 @@ def links():
     host = ONOS_GUI3_HOST
 
   try:
-    command = "curl -s %s/wm/core/topology/links/json" % (host)
+    command = "curl -s %s/wm/onos/topology/links/json" % (host)
     print command
     result = os.popen(command).read()
   except:
@@ -93,7 +93,7 @@ def links():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/flow/getall/json")
+@app.route("/wm/onos/flows/getall/json")
 def flows():
   if request.args.get('proxy') == None:
     host = ONOS_LOCAL_HOST
@@ -101,7 +101,7 @@ def flows():
     host = ONOS_GUI3_HOST
 
   try:
-    command = "curl -s %s/wm/flow/getall/json" % (host)
+    command = "curl -s %s/wm/onos/flows/getall/json" % (host)
     print command
     result = os.popen(command).read()
   except:
@@ -111,7 +111,7 @@ def flows():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/registry/controllers/json")
+@app.route("/wm/onos/registry/controllers/json")
 def registry_controllers():
   if request.args.get('proxy') == None:
     host = ONOS_LOCAL_HOST
@@ -119,7 +119,7 @@ def registry_controllers():
     host = ONOS_GUI3_HOST
 
   try:
-    command = "curl -s %s/wm/registry/controllers/json" % (host)
+    command = "curl -s %s/wm/onos/registry/controllers/json" % (host)
     print command
     result = os.popen(command).read()
   except:
@@ -129,7 +129,7 @@ def registry_controllers():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/registry/switches/json")
+@app.route("/wm/onos/registry/switches/json")
 def registry_switches():
   if request.args.get('proxy') == None:
     host = ONOS_LOCAL_HOST
@@ -137,7 +137,7 @@ def registry_switches():
     host = ONOS_GUI3_HOST
 
   try:
-    command = "curl -s %s/wm/registry/switches/json" % (host)
+    command = "curl -s %s/wm/onos/registry/switches/json" % (host)
     print command
     result = os.popen(command).read()
   except:
@@ -151,21 +151,21 @@ def registry_switches():
 
 
 ## REST API ##
-#@app.route("/wm/topology/links/json")
+#@app.route("/wm/onos/linkdiscovery/links/json")
 #def links():
 #    global links_
 #    js = json.dumps(links_)
 #    resp = Response(js, status=200, mimetype='application/json')
 #    return resp
 
-#@app.route("/wm/core/controller/switches/json")
+#@app.route("/wm/floodlight/core/controller/switches/json")
 #def switches():
 #    global switches_
 #    js = json.dumps(switches_)
 #    resp = Response(js, status=200, mimetype='application/json')
 #    return resp
 
-@app.route("/wm/device/")
+@app.route("/wm/floodlight/device/")
 def devices():
   try:
     command = "curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=device" % (RestIP, RestPort, DBName)
@@ -218,7 +218,7 @@ def devices():
 #{"entityClass":"DefaultEntityClass","mac":["7c:d1:c3:e0:8c:a3"],"ipv4":["192.168.2.102","10.1.10.35"],"vlan":[],"attachmentPoint":[{"port":13,"switchDPID":"00:01:00:12:e2:78:32:44","errorStatus":null}],"lastSeen":1357333593496}
 
 ## return fake stat for now
-@app.route("/wm/core/switch/<switchId>/<statType>/json")
+@app.route("/wm/floodlight/core/switch/<switchId>/<statType>/json")
 def switch_stat(switchId, statType):
     if statType == "desc":
         desc=[{"length":1056,"serialNumber":"None","manufacturerDescription":"Nicira Networks, Inc.","hardwareDescription":"Open vSwitch","softwareDescription":"1.4.0+build0","datapathDescription":"None"}]
@@ -235,7 +235,7 @@ def switch_stat(switchId, statType):
     resp = Response(js, status=200, mimetype='application/json')
     return resp
 
-@app.route("/wm/core/controller/switches/json")
+@app.route("/wm/floodlight/core/controller/switches/json")
 def query_switch():
   try:
     command = "curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=switch" % (RestIP, RestPort, DBName)
@@ -258,7 +258,7 @@ def query_switch():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/topology/links/json")
+@app.route("/wm/onos/linkdiscovery/links/json")
 def query_links():
   try:
     command = "curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=port" % (RestIP, RestPort, DBName)

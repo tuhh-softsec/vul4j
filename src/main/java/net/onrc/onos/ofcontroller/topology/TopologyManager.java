@@ -10,10 +10,11 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
-
+import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
+import net.onrc.onos.ofcontroller.topology.web.OnosTopologyWebRoutable;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowPath;
@@ -35,6 +36,7 @@ public class TopologyManager implements IFloodlightModule,
     protected IFloodlightProviderService floodlightProvider;
 
     protected GraphDBOperation dbHandler;
+    protected IRestApiService restApi;
 
 
     /**
@@ -145,6 +147,7 @@ public class TopologyManager implements IFloodlightModule,
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
+	restApi = context.getServiceImpl(IRestApiService.class);
 
 	String conf = "";
 	this.init(conf);
@@ -157,6 +160,7 @@ public class TopologyManager implements IFloodlightModule,
      */
     @Override
     public void startUp(FloodlightModuleContext context) {
+    	restApi.addRestletRoutable(new OnosTopologyWebRoutable());
 
     }
 

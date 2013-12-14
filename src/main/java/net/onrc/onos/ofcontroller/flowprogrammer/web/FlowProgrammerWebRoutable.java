@@ -22,7 +22,7 @@ public class FlowProgrammerWebRoutable implements RestletRoutable {
 
 	@Override
 	public String basePath() {
-		return "/wm/fprog";
+		return "/wm/onos/flowprogrammer";
 	}
 
 }

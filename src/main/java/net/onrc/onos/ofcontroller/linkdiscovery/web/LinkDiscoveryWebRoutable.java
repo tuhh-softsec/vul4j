@@ -12,6 +12,7 @@ public class LinkDiscoveryWebRoutable implements RestletRoutable {
     @Override
     public Router getRestlet(Context context) {
         Router router = new Router(context);
+        router.attach("/links/json", LinksResource.class);
         router.attach("/autoportfast/{state}/json", AutoPortFast.class); // enable/true or disable/false
         return router;
     }
@@ -21,6 +22,6 @@ public class LinkDiscoveryWebRoutable implements RestletRoutable {
      */
     @Override
     public String basePath() {
-        return "/wm/linkdiscovery";
+        return "/wm/onos/linkdiscovery";
     }
 }

@@ -273,69 +273,69 @@ def pick_host():
   return "http://" + host + ":8080"
 
 ## Switch ##
-@app.route("/wm/core/topology/switches/all/json")
+@app.route("/wm/onos/topology/switches/all/json")
 def switches():
   if request.args.get('proxy') == None:
     host = pick_host()
   else:
     host = ONOS_GUI3_HOST
 
-  url ="%s/wm/core/topology/switches/all/json" % (host)
+  url ="%s/wm/onos/topology/switches/all/json" % (host)
   (code, result) = get_json(url)
 
   resp = Response(result, status=code, mimetype='application/json')
   return resp
 
 ## Link ##
-@app.route("/wm/core/topology/links/json")
+@app.route("/wm/onos/topology/links/json")
 def links():
   if request.args.get('proxy') == None:
     host = pick_host()
   else:
     host = ONOS_GUI3_HOST
 
-  url ="%s/wm/core/topology/links/json" % (host)
+  url ="%s/wm/onos/topology/links/json" % (host)
   (code, result) = get_json(url)
 
   resp = Response(result, status=code, mimetype='application/json')
   return resp
 
 ## FlowSummary ##
-@app.route("/wm/flow/getsummary/<start>/<range>/json")
+@app.route("/wm/onos/flows/getsummary/<start>/<range>/json")
 def flows(start, range):
   if request.args.get('proxy') == None:
     host = pick_host()
   else:
     host = ONOS_GUI3_HOST
 
-  url ="%s/wm/flow/getsummary/%s/%s/json" % (host, start, range)
+  url ="%s/wm/onos/flows/getsummary/%s/%s/json" % (host, start, range)
   (code, result) = get_json(url)
 
   resp = Response(result, status=code, mimetype='application/json')
   return resp
 
-@app.route("/wm/registry/controllers/json")
+@app.route("/wm/onos/registry/controllers/json")
 def registry_controllers():
   if request.args.get('proxy') == None:
     host = pick_host()
   else:
     host = ONOS_GUI3_HOST
 
-  url= "%s/wm/registry/controllers/json" % (host)
+  url= "%s/wm/onos/registry/controllers/json" % (host)
   (code, result) = get_json(url)
 
   resp = Response(result, status=code, mimetype='application/json')
   return resp
 
 
-@app.route("/wm/registry/switches/json")
+@app.route("/wm/onos/registry/switches/json")
 def registry_switches():
   if request.args.get('proxy') == None:
     host = pick_host()
   else:
     host = ONOS_GUI3_HOST
 
-  url="%s/wm/registry/switches/json" % (host)
+  url="%s/wm/onos/registry/switches/json" % (host)
   (code, result) = get_json(url)
 
   resp = Response(result, status=code, mimetype='application/json')
@@ -354,7 +354,7 @@ def node_id(switch_array, dpid):
 @app.route('/topology', methods=['GET'])
 def topology_for_gui():
   try:
-    command = "curl -s \'http://%s:%s/wm/core/topology/switches/all/json\'" % (RestIP, RestPort)
+    command = "curl -s \'http://%s:%s/wm/onos/topology/switches/all/json\'" % (RestIP, RestPort)
     result = os.popen(command).read()
     parsedResult = json.loads(result)
   except:
@@ -382,7 +382,7 @@ def topology_for_gui():
       switches.append(sw)
 
   try:
-    command = "curl -s \'http://%s:%s/wm/registry/switches/json\'" % (RestIP, RestPort)
+    command = "curl -s \'http://%s:%s/wm/onos/registry/switches/json\'" % (RestIP, RestPort)
     result = os.popen(command).read()
     parsedResult = json.loads(result)
   except:
@@ -404,7 +404,7 @@ def topology_for_gui():
 #    v2 = "00:00:00:00:00:0b:0d:03"
 #    v2 = "00:00:00:00:00:0d:00:d3"
 #    p2=1
-#    command = "curl -s http://%s:%s/wm/topology/route/%s/%s/%s/%s/json" % (RestIP, RestPort, v1, p1, v2, p2)
+#    command = "curl -s http://%s:%s/wm/onos/topology/route/%s/%s/%s/%s/json" % (RestIP, RestPort, v1, p1, v2, p2)
 #    result = os.popen(command).read()
 #    parsedResult = json.loads(result)
 #  except:
@@ -421,7 +421,7 @@ def topology_for_gui():
   #      path.append( (sdpid, ddpid))
 
   try:
-    command = "curl -s \'http://%s:%s/wm/core/topology/links/json\'" % (RestIP, RestPort)
+    command = "curl -s \'http://%s:%s/wm/onos/topology/links/json\'" % (RestIP, RestPort)
     result = os.popen(command).read()
     parsedResult = json.loads(result)
   except:
@@ -457,12 +457,12 @@ def topology_for_gui():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-#@app.route("/wm/topology/toporoute/00:00:00:00:00:a1/2/00:00:00:00:00:c1/3/json")
-#@app.route("/wm/topology/toporoute/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
-@app.route("/wm/topology/toporoute/<v1>/<p1>/<v2>/<p2>/json")
+#@app.route("/wm/floodlight/topology/toporoute/00:00:00:00:00:a1/2/00:00:00:00:00:c1/3/json")
+#@app.route("/wm/floodlight/topology/toporoute/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
+@app.route("/wm/floodlight/topology/toporoute/<v1>/<p1>/<v2>/<p2>/json")
 def shortest_path(v1, p1, v2, p2):
   try:
-    command = "curl -s \'http://%s:%s/wm/core/topology/switches/all/json\'" % (RestIP, RestPort)
+    command = "curl -s \'http://%s:%s/wm/onos/topology/switches/all/json\'" % (RestIP, RestPort)
     result = os.popen(command).read()
     parsedResult = json.loads(result)
   except:
@@ -494,7 +494,7 @@ def shortest_path(v1, p1, v2, p2):
       switches.append(sw)
 
   try:
-    command = "curl -s http://%s:%s/wm/topology/route/%s/%s/%s/%s/json" % (RestIP, RestPort, v1, p1, v2, p2)
+    command = "curl -s http://%s:%s/wm/onos/topology/route/%s/%s/%s/%s/json" % (RestIP, RestPort, v1, p1, v2, p2)
     result = os.popen(command).read()
     parsedResult = json.loads(result)
   except:
@@ -510,7 +510,7 @@ def shortest_path(v1, p1, v2, p2):
       path.append( (sdpid, ddpid))
 
   try:
-    command = "curl -s \'http://%s:%s/wm/core/topology/links/json\'" % (RestIP, RestPort)
+    command = "curl -s \'http://%s:%s/wm/onos/topology/links/json\'" % (RestIP, RestPort)
     result = os.popen(command).read()
     parsedResult = json.loads(result)
   except:
@@ -545,11 +545,11 @@ def shortest_path(v1, p1, v2, p2):
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/core/controller/switches/json")
+@app.route("/wm/floodlight/core/controller/switches/json")
 def query_switch():
   try:
-    command = "curl -s \'http://%s:%s/wm/core/topology/switches/all/json\'" % (RestIP, RestPort)
-#    http://localhost:8080/wm/core/topology/switches/active/json
+    command = "curl -s \'http://%s:%s/wm/onos/topology/switches/all/json\'" % (RestIP, RestPort)
+#    http://localhost:8080/wm/onos/topology/switches/active/json
     print command
     result = os.popen(command).read()
     parsedResult = json.loads(result)
@@ -577,7 +577,7 @@ def query_switch():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/device/")
+@app.route("/wm/floodlight/device/")
 def devices():
   try:
     command = "curl -s http://%s:%s/graphs/%s/vertices\?key=type\&value=device" % (RestIP, RestPort, DBName)
@@ -621,7 +621,7 @@ def devices():
 #{"entityClass":"DefaultEntityClass","mac":["7c:d1:c3:e0:8c:a3"],"ipv4":["192.168.2.102","10.1.10.35"],"vlan":[],"attachmentPoint":[{"port":13,"switchDPID":"00:01:00:12:e2:78:32:44","errorStatus":null}],"lastSeen":1357333593496}
 
 ## return fake stat for now
-@app.route("/wm/core/switch/<switchId>/<statType>/json")
+@app.route("/wm/floodlight/core/switch/<switchId>/<statType>/json")
 def switch_stat(switchId, statType):
     if statType == "desc":
         desc=[{"length":1056,"serialNumber":"None","manufacturerDescription":"Nicira Networks, Inc.","hardwareDescription":"Open vSwitch","softwareDescription":"1.4.0+build0","datapathDescription":"None"}]
@@ -639,7 +639,7 @@ def switch_stat(switchId, statType):
     return resp
 
 
-@app.route("/wm/topology/links/json")
+@app.route("/wm/onos/linkdiscovery/links/json")
 def query_links():
   try:
     command = 'curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=port' % (RestIP, RestPort, DBName)
@@ -955,7 +955,7 @@ def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
 @app.route("/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>")
 def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
   host = pick_host()
-  url ="%s/wm/flow/getsummary/%s/%s/json" % (host, 0, 0)
+  url ="%s/wm/onos/flows/getsummary/%s/%s/json" % (host, 0, 0)
   (code, result) = get_json(url)
   parsedResult = json.loads(result)
   if len(parsedResult) > 0:
@@ -990,7 +990,7 @@ def del_flow(flow_id):
 @app.route("/gui/iperf/start/<flow_id>/<duration>/<samples>")
 def iperf_start(flow_id,duration,samples):
   try:
-    command = "curl -s \'http://%s:%s/wm/flow/get/%s/json\'" % (RestIP, RestPort, flow_id)
+    command = "curl -s \'http://%s:%s/wm/onos/flows/get/%s/json\'" % (RestIP, RestPort, flow_id)
     print command
     result = os.popen(command).read()
     if len(result) == 0:
@@ -1055,7 +1055,7 @@ def iperf_start(flow_id,duration,samples):
 @app.route("/gui/iperf/rate/<flow_id>")
 def iperf_rate(flow_id):
   try:
-    command = "curl -s \'http://%s:%s/wm/flow/get/%s/json\'" % (RestIP, RestPort, flow_id)
+    command = "curl -s \'http://%s:%s/wm/onos/flows/get/%s/json\'" % (RestIP, RestPort, flow_id)
     print command
     result = os.popen(command).read()
     if len(result) == 0:

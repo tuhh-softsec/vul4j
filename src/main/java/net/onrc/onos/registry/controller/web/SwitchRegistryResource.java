@@ -1,8 +1,11 @@
-package net.onrc.onos.registry.controller;
+package net.onrc.onos.registry.controller.web;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.onrc.onos.registry.controller.ControllerRegistryEntry;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

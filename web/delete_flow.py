@@ -14,7 +14,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 
 #
 # TODO: remove this! We don't use JSON argument here!
-# curl http://127.0.0.1:8080/wm/flow/delete/{"value":"0xf"}/json'
+# curl http://127.0.0.1:8080/wm/onos/flows/delete/{"value":"0xf"}/json'
 #
 
 ## Global Var ##
@@ -34,9 +34,9 @@ def debug(txt):
   if DEBUG:
     print '%s' % (txt)
 
-# @app.route("/wm/flow/delete/<flow-id>/json")
+# @app.route("/wm/onos/flows/delete/<flow-id>/json")
 def delete_flow_path(flow_id):
-  command = "curl -s \"http://%s:%s/wm/flow/delete/%s/json\"" % (ControllerIP, ControllerPort, flow_id)
+  command = "curl -s \"http://%s:%s/wm/onos/flows/delete/%s/json\"" % (ControllerIP, ControllerPort, flow_id)
   debug("delete_flow_path %s" % command)
   result = os.popen(command).read()
   debug("result %s" % result)

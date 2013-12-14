@@ -30,6 +30,6 @@ public class FlowWebRoutable implements RestletRoutable {
      */
     @Override
     public String basePath() {
-        return "/wm/flow";
+        return "/wm/onos/flows";
     }
 }
