@@ -17,7 +17,6 @@ public class FlowWebRoutable implements RestletRoutable {
     public Restlet getRestlet(Context context) {
         Router router = new Router(context);
         router.attach("/add/json", AddFlowResource.class);
-        router.attach("/add-shortest-path/json", AddShortestPathFlowResource.class);
         router.attach("/delete/{flow-id}/json", DeleteFlowResource.class);
         router.attach("/get/{flow-id}/json", GetFlowByIdResource.class);
         router.attach("/getall/json", GetAllFlowsResource.class);

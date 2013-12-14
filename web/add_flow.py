@@ -96,7 +96,7 @@ def add_shortest_path_flow(flow_path):
   flow_path_json = json.dumps(flow_path)
 
   try:
-    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/onos/flows/add-shortest-path/json" % (flow_path_json, ControllerIP, ControllerPort)
+    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/onos/flows/add/json" % (flow_path_json, ControllerIP, ControllerPort)
     debug("add_shortest_path_flow %s" % command)
     result = os.popen(command).read()
     debug("result %s" % result)
