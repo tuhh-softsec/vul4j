@@ -142,10 +142,11 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IPortObject searchPort(String dpid, Short number) {
-	    //System.out.println("searchPort");
+	    FramedGraph fg = conn.getFramedGraph();
+	    if ( fg == null ) return null;
 	    String id = dpid + number.toString();
-	    return (conn.getFramedGraph() != null && conn.getFramedGraph().getVertices("port_id", id).iterator().hasNext())
-		    ? (IPortObject) conn.getFramedGraph().getVertices("port_id", id, IPortObject.class).iterator().next() : null;
+	    Iterator<IPortObject> it = conn.getFramedGraph().getVertices("port_id", id, IPortObject.class).iterator();
+	    return (it.hasNext()) ? it.next() : null;
 
 	}
 
@@ -230,9 +231,10 @@ public abstract class DBOperation implements IDBOperation {
 	*/
 	@Override
 	public ISwitchObject searchSwitch(final String dpid) {
-	    //System.out.println("searchSwitch");
-	    return (conn.getFramedGraph() != null && conn.getFramedGraph().getVertices("dpid", dpid).iterator().hasNext())
-		    ? (ISwitchObject) (conn.getFramedGraph().getVertices("dpid", dpid, ISwitchObject.class).iterator().next()) : null;
+	    FramedGraph fg = conn.getFramedGraph();
+	    if ( fg == null ) return null;
+	    Iterator<ISwitchObject> it = conn.getFramedGraph().getVertices("dpid", dpid, ISwitchObject.class).iterator();
+	    return (it.hasNext()) ? it.next() : null;
 	}
 
 	/**
@@ -257,9 +259,10 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IDeviceObject searchDevice(String macAddr) {
-	    return (conn.getFramedGraph() != null && conn.getFramedGraph().getVertices("dl_addr", macAddr).iterator().hasNext())
-		    ? (IDeviceObject) conn.getFramedGraph().getVertices("dl_addr", macAddr, IDeviceObject.class).iterator().next() : null;
-
+	    FramedGraph fg = conn.getFramedGraph();
+	    if ( fg == null ) return null;
+	    Iterator<IDeviceObject> it = conn.getFramedGraph().getVertices("dl_addr", macAddr, IDeviceObject.class).iterator();
+	    return (it.hasNext()) ? it.next() : null;
 	}
 
 	/**
@@ -268,10 +271,10 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IFlowPath searchFlowPath(final FlowId flowId) {
-	    //System.out.println("searchFlowPath");
-	    return conn.getFramedGraph().getVertices("flow_id", flowId.toString()).iterator().hasNext()
-		    ? (IFlowPath) conn.getFramedGraph().getVertices("flow_id", flowId.toString(),
-		    IFlowPath.class).iterator().next() : null;
+	    FramedGraph fg = conn.getFramedGraph();
+	    if ( fg == null ) return null;
+	    Iterator<IFlowPath> it = conn.getFramedGraph().getVertices("flow_id", flowId.toString(), IFlowPath.class).iterator();
+	    return (it.hasNext()) ? it.next() : null;
 	}
 
 	/**
@@ -308,10 +311,10 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
-	    //System.out.println("searchFlowEntry");
-	    return conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString()).iterator().hasNext()
-		    ? (IFlowEntry)conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString(),
-		    IFlowEntry.class).iterator().next() : null;
+	    FramedGraph fg = conn.getFramedGraph();
+	    if ( fg == null ) return null;
+	    Iterator<IFlowEntry> it = conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString(), IFlowEntry.class).iterator();
+	    return (it.hasNext()) ? it.next() : null;
 	}
 
 	/**
