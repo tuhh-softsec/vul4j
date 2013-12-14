@@ -61,10 +61,10 @@ public class GraphDBOperation implements IDBOperation {
 	public ISwitchObject searchSwitch(String dpid) {
 
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
-		
-		return (fg != null && fg.getVertices("dpid",dpid).iterator().hasNext()) ? 
-				fg.getVertices("dpid",dpid,ISwitchObject.class).iterator().next() : null;
-				
+		if ( fg == null ) return null;
+		Iterator<ISwitchObject> it = fg.getVertices("dpid",dpid,ISwitchObject.class).iterator();
+		return (it.hasNext()) ? it.next() : null;
+
 	}
 
 	/**
