@@ -622,6 +622,12 @@ public class FlowDatabaseOperation {
      * @return the extracted Flow Entry State.
      */
     public static FlowEntry extractFlowEntry(IFlowEntry flowEntryObj) {
+	IFlowPath flowObj = flowEntryObj.getFlow();
+	if (flowObj == null)
+	    return null;
+
+	String flowIdStr = flowObj.getFlowId();
+	//
 	String flowEntryIdStr = flowEntryObj.getFlowEntryId();
 	Integer idleTimeout = flowEntryObj.getIdleTimeout();
 	Integer hardTimeout = flowEntryObj.getHardTimeout();
@@ -629,7 +635,8 @@ public class FlowDatabaseOperation {
 	String userState = flowEntryObj.getUserState();
 	String switchState = flowEntryObj.getSwitchState();
 
-	if ((flowEntryIdStr == null) ||
+	if ((flowIdStr == null) ||
+	    (flowEntryIdStr == null) ||
 	    (idleTimeout == null) ||
 	    (hardTimeout == null) ||
 	    (switchDpidStr == null) ||
@@ -641,6 +648,7 @@ public class FlowDatabaseOperation {
 
 	FlowEntry flowEntry = new FlowEntry();
 	flowEntry.setFlowEntryId(new FlowEntryId(flowEntryIdStr));
+	flowEntry.setFlowId(new FlowId(flowIdStr));
 	flowEntry.setDpid(new Dpid(switchDpidStr));
 	flowEntry.setIdleTimeout(idleTimeout);
 	flowEntry.setHardTimeout(hardTimeout);

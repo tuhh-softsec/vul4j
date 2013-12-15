@@ -29,7 +29,7 @@ def debug(txt):
   if DEBUG:
     print '%s' % (txt)
 
-# @app.route("/wm/datagrid/get/map/<map-name>/json ")
+# @app.route("/wm/onos/datagrid/get/map/<map-name>/json ")
 # Sample output:
 
 def print_datagrid_map(parsedResult):
@@ -37,7 +37,7 @@ def print_datagrid_map(parsedResult):
 
 def get_datagrid_map(map_name):
   try:
-    command = "curl -s \"http://%s:%s/wm/datagrid/get/map/%s/json\"" % (ControllerIP, ControllerPort, map_name)
+    command = "curl -s \"http://%s:%s/wm/onos/datagrid/get/map/%s/json\"" % (ControllerIP, ControllerPort, map_name)
     debug("get_datagrid_map %s" % command)
 
     result = os.popen(command).read()

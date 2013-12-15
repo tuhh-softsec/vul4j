@@ -69,8 +69,11 @@ public class ShortestPath {
 	//
 	// Test whether we are computing a path from/to the same DPID.
 	// If "yes", then just add a single flow entry in the return result.
+	// However, if the "in" and "out" ports are same, return null.
 	//
 	if (dpid_src.equals(dpid_dest)) {
+	    if (src.port().value() == dest.port().value())
+		return null;		// "In" and "Out" ports are same
 	    FlowEntry flowEntry = new FlowEntry();
 	    flowEntry.setDpid(src.dpid());
 	    flowEntry.setInPort(src.port());

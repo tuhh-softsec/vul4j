@@ -16,7 +16,7 @@
 
 window.Topology = Backbone.Model.extend({
 
-    url:"/wm/topology/links/json",
+    url:"/wm/onos/linkdiscovery/links/json",
     
     defaults:{
         nodes: [],

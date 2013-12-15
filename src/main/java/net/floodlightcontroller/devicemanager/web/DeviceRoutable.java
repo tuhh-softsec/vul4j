@@ -30,7 +30,7 @@ public class DeviceRoutable implements RestletRoutable {
 
     @Override
     public String basePath() {
-        return "/wm/device";
+        return "/wm/floodlight/device";
     }
     
     @Override

@@ -11,6 +11,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
+import net.onrc.onos.registry.controller.web.RegistryWebRoutable;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
