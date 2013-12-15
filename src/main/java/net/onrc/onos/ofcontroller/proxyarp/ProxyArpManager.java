@@ -223,13 +223,15 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 							entry.getKey().getHostAddress());
 		
 					//if he ARP Request is expired and then delete the device
+					/*
 					IDeviceObject targetDevice = 
 							deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(entry.getKey()));
 					
 					if(targetDevice!=null)
 					{deviceStorage.removeDevice(targetDevice);
 					 log.debug("RemoveDevice: {} due to no have not recieve the ARP reply", targetDevice.toString());
-					}				
+					}
+					*/				
 					
 					it.remove();
 					
@@ -263,7 +265,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	@Override
 	public boolean isCallbackOrderingPrereq(OFType type, String name) {
 		if (type == OFType.PACKET_IN) {
-			return "devicemanager".equals(name);
+			return "devicemanager".equals(name) || "onosdevicemanager".equals(name);
 		}
 		else {
 			return false;
@@ -272,7 +274,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
 	@Override
 	public boolean isCallbackOrderingPostreq(OFType type, String name) {
-		return false;
+		return type == OFType.PACKET_IN && "onosforwarding".equals(name);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.core;
 
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.devicemanager.OnosDevice;
 
 public interface IDeviceStorage extends INetMapStorage {
 	
@@ -12,5 +13,7 @@ public interface IDeviceStorage extends INetMapStorage {
 	public IDeviceObject getDeviceByMac(String mac);
 	public IDeviceObject getDeviceByIP(int ipv4Address);
 	public void changeDeviceAttachments(IDevice device);
-	public void changeDeviceIPv4Address(IDevice device);	
+	public void changeDeviceIPv4Address(IDevice device);
+	
+	public void addOnosDevice(OnosDevice onosDevice);
 }

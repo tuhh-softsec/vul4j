@@ -25,6 +25,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
+import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
@@ -51,8 +52,8 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.net.InetAddresses;
 
 public class Forwarding implements IOFMessageListener, IFloodlightModule,
@@ -71,7 +72,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	private TopologyManager topologyService;
 	
 	private Map<Path, Long> pendingFlows;
-	private Multimap<Long, PacketToPush> waitingPackets;
+	private ListMultimap<Long, PacketToPush> waitingPackets;
 	
 	private final Object lock = new Object();
 	
@@ -139,6 +140,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		dependencies.add(IFloodlightProviderService.class);
 		dependencies.add(IFlowService.class);
 		dependencies.add(IFlowPusherService.class);
+		dependencies.add(IOnosDeviceService.class);
 		return dependencies;
 	}
 	
@@ -155,7 +157,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		pendingFlows = new ConcurrentHashMap<Path, Long>();
 		//waitingPackets = Multimaps.synchronizedSetMultimap(
 				//HashMultimap.<Long, PacketToPush>create());
-		waitingPackets = HashMultimap.create();
+		//waitingPackets = HashMultimap.create();
+		waitingPackets = LinkedListMultimap.create();
 		
 		deviceStorage = new DeviceStorageImpl();
 		deviceStorage.init("");
@@ -176,7 +179,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	@Override
 	public boolean isCallbackOrderingPrereq(OFType type, String name) {
 		return (type == OFType.PACKET_IN) && 
-				(name.equals("devicemanager") || name.equals("proxyarpmanager"));
+				(name.equals("devicemanager") || name.equals("proxyarpmanager")
+				|| name.equals("onosdevicemanager"));
 	}
 
 	@Override
@@ -234,7 +238,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		// our non-ARP packets.
 		// TODO This should be refactored later to account for the new use case.
 		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize(),
-				sw.getId(), pi.getInPort()));
+				-1L, (short)-1, sw.getId(), pi.getInPort()));
 	}
 	
 	private void handlePacketIn(IOFSwitch sw, OFPacketIn pi, Ethernet eth) {

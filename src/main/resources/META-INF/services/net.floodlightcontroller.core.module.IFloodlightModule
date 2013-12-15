@@ -21,3 +21,4 @@ net.onrc.onos.registry.controller.StandaloneRegistry
 net.onrc.onos.ofcontroller.forwarding.Forwarding
 net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager
 net.onrc.onos.ofcontroller.core.config.DefaultConfiguration
+net.onrc.onos.ofcontroller.devicemanager.OnosDeviceManager
