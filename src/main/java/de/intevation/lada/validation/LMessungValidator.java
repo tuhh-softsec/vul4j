@@ -136,11 +136,11 @@ implements Validator
         Response response = messwertRepository.filter(builder.getQuery());
         List<LMesswert> messwerte = (List<LMesswert>)response.getData();
         String query = "select messgroesse_id from \"S_mmt_messgroesse\" where mmt_id = '" + mmt + "'";
-        List<Object[]> results = readonlyRepository.getEntityManager().createNativeQuery(query).getResultList();
+        List<Integer> results = readonlyRepository.getEntityManager().createNativeQuery(query).getResultList();
         for(LMesswert messwert: messwerte) {
             boolean hit = false;
-            for (Object[] row: results) {
-                if (messwert.getMessgroesseId().equals(row[0].toString())) {
+            for (Integer row: results) {
+                if (messwert.getMessgroesseId().equals(row.toString())) {
                     hit = true;
                 }
             }
