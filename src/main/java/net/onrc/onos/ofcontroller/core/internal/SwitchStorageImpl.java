@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class SwitchStorageImpl implements ISwitchStorage {
 	protected GraphDBOperation op;
 	protected final static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
-	
+
 	/***
 	 * Initialize function. Before you use this class, please call this method
 	 * @param conf configuration file for Cassandra DB
@@ -38,25 +38,26 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	 * Finalize/close function. After you use this class, please call this method.
 	 * It will close the DB connection.
 	 */
+	@Override
 	public void finalize() {
 		close();
 	}
-	
+
 	/***
 	 * Finalize/close function. After you use this class, please call this method.
 	 * It will close the DB connection. This is for Java garbage collection.
 	 */
 	@Override
 	public void close() {
-		op.close();		
+		op.close();
 	}
-	
+
 	// Method designing policy:
 	//  op.commit() and op.rollback() MUST called in public (first-class) methods.
 	//  A first-class method MUST NOT call other first-class method.
 	//  Routine process should be implemented in private method.
 	//  A private method MUST NOT call commit or rollback.
-	
+
 	/***
 	 * This function is for updating the switch into the DB.
 	 * @param dpid The switch dpid you want to update from the DB
@@ -67,7 +68,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	 * Jono, 11/8/2013
 	 * We don't need this update method that demultiplexes DM_OPERATIONS,
 	 * we can have clients just call the required methods directly.
-	 * We especially don't need this update method to re-implement 
+	 * We especially don't need this update method to re-implement
 	 * the functions of other methods.
 	 */
 	@Deprecated
@@ -75,7 +76,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	public boolean updateSwitch(String dpid, SwitchState state, DM_OPERATION dmope) {
 		boolean success = false;
 		ISwitchObject sw = null;
-		
+
 		log.info("SwitchStorage:update {} dpid:{}", dmope, dpid);
 	    switch(dmope) {
 	    	case UPDATE:
@@ -125,33 +126,33 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	            break;
 	    	default:
 	    }
-	    
+
 	    return success;
 	}
-	
+
 	@Override
 	public boolean addSwitch(IOFSwitch sw) {
 		boolean success = false;
-		
+
 		String dpid = sw.getStringId();
 		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
-		
+
 		try {
 			ISwitchObject curr = op.searchSwitch(dpid);
 			if (curr != null) {
-				//If existing the switch. set The SW state ACTIVE. 
+				//If existing the switch. set The SW state ACTIVE.
 				log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
 				setSwitchStateImpl(curr, SwitchState.ACTIVE);
 			} else {
 				curr = addSwitchImpl(dpid);
 			}
-	
+
 			for (OFPhysicalPort port: sw.getPorts()) {
 				//addPort(dpid, port);
 				addPortImpl(curr, port);
 
 			}
-			
+
 			// XXX for now delete devices when we change a port to prevent
 			// having stale devices.
 			DeviceStorageImpl deviceStorage = new DeviceStorageImpl();
@@ -163,14 +164,14 @@ public class SwitchStorageImpl implements ISwitchStorage {
 					deviceStorage.removeDeviceImpl(deviceStorage.getDeviceByMac(deviceObject.getMACAddress()));
 				}
 			}
-			
+
 			op.commit();
 			success = true;
 		} catch (Exception e) {
 			op.rollback();
 			log.error("SwitchStorage:addSwitch dpid:{} failed", dpid, e);
 		}
-		
+
 		return success;
 	}
 
@@ -181,16 +182,16 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	// This method is only called by tests, so we probably don't need it.
 	// If we need both addSwitch interfaces, one should call the other
 	// rather than implementing the same logic twice.
-	@Deprecated 
+	@Deprecated
 	@Override
 	public boolean addSwitch(String dpid) {
 		boolean success = false;
-		
+
 		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
 		try {
 			ISwitchObject sw = op.searchSwitch(dpid);
 			if (sw != null) {
-				//If existing the switch. set The SW state ACTIVE. 
+				//If existing the switch. set The SW state ACTIVE.
 				log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
 				setSwitchStateImpl(sw, SwitchState.ACTIVE);
 			} else {
@@ -203,7 +204,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			e.printStackTrace();
 			log.error("SwitchStorage:addSwitch dpid:{} failed", dpid, e);
 		}
-		
+
 		return success;
 	}
 
@@ -214,7 +215,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	@Override
 	public boolean deleteSwitch(String dpid) {
 		boolean success = false;
-		
+
 		try {
 			ISwitchObject sw = op.searchSwitch(dpid);
 			if (sw != null) {
@@ -227,18 +228,19 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			e.printStackTrace();
 			log.error("SwitchStorage:deleteSwitch {} failed", dpid);
 		}
-	
+
 		return success;
 	}
-	
+
+	@Override
 	public boolean deactivateSwitch(String dpid) {
 		boolean success = false;
-		
+
 		try {
 			ISwitchObject switchObject = op.searchSwitch(dpid);
 			if (switchObject != null) {
 				setSwitchStateImpl(switchObject, SwitchState.INACTIVE);
-				
+
 				for (IPortObject portObject : switchObject.getPorts()) {
 					portObject.setState("INACTIVE");
 				}
@@ -253,16 +255,17 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			op.rollback();
 			log.error("SwitchStorage:deactivateSwitch {} failed", dpid, e);
 		}
-		
+
 		return success;
 	}
 
+	@Override
 	public boolean updatePort(String dpid, short portNum, int state, String desc) {
 		boolean success = false;
-		
+
 		try {
 			ISwitchObject sw = op.searchSwitch(dpid);
-	
+
 	        if (sw != null) {
 	        	IPortObject p = sw.getPort(portNum);
 	        	log.info("SwitchStorage:updatePort dpid:{} port:{}", dpid, portNum);
@@ -278,7 +281,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			op.rollback();
 			e.printStackTrace();
 			log.error("SwitchStorage:addPort dpid:{} port:{} failed", dpid, portNum);
-		}	
+		}
 
 		return success;
 	}
@@ -291,7 +294,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	@Override
 	public boolean addPort(String dpid, OFPhysicalPort phport) {
 		boolean success = false;
-		
+
 		if(((OFPortConfig.OFPPC_PORT_DOWN.getValue() & phport.getConfig()) > 0) ||
 				((OFPortState.OFPPS_LINK_DOWN.getValue() & phport.getState()) > 0)) {
 			// just dispatch to deletePort()
@@ -299,22 +302,22 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			// DB with the correct info and port state.
 			return deletePort(dpid, phport.getPortNumber());
 		}
-	
+
 		try {
 			ISwitchObject sw = op.searchSwitch(dpid);
-	
+
 	        if (sw != null) {
 	        	IPortObject portObject = addPortImpl(sw, phport);
-	        	
+
 	        	// XXX for now delete devices when we change a port to prevent
 	    		// having stale devices.
 	    		DeviceStorageImpl deviceStorage = new DeviceStorageImpl();
 	    		deviceStorage.init("");
-	    		
+
 	    		for (IDeviceObject deviceObject : portObject.getDevices()) {
 	    			deviceStorage.removeDevice(deviceObject);
 	    		}
-	        	
+
         		op.commit();
         		success = true;
 	        } else {
@@ -325,7 +328,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			e.printStackTrace();
 			log.error("SwitchStorage:addPort dpid:{} port:{} failed", dpid, phport.getPortNumber());
 		}
-		
+
 		return success;
 	}
 
@@ -337,19 +340,19 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	@Override
 	public boolean deletePort(String dpid, short port) {
 		boolean success = false;
-		
+
 		DeviceStorageImpl deviceStorage = new DeviceStorageImpl();
 		deviceStorage.init("");
-		
+
 		try {
 			ISwitchObject sw = op.searchSwitch(dpid);
-	
+
 	        if (sw != null) {
 	        	IPortObject p = sw.getPort(port);
 	            if (p != null) {
 	        		log.info("SwitchStorage:deletePort dpid:{} port:{} found and set INACTIVE", dpid, port);
 	        		p.setState("INACTIVE");
-	        		
+
 	        		// XXX for now delete devices when we change a port to prevent
 	        		// having stale devices.
 	        		for (IDeviceObject d : p.getDevices()) {
@@ -358,7 +361,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	        		op.commit();
 	        	}
 	        }
-	        
+
 	        success = true;
 		} catch (Exception e) {
 			op.rollback();
@@ -399,7 +402,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			return null;
 		}
 	}
-	
+
 	private void setSwitchStateImpl(ISwitchObject sw, SwitchState state) {
 		if (sw != null && state != null) {
 			sw.setState(state.toString());
@@ -407,7 +410,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 					sw.getDPID(), state.toString());
 		}
 	}
-	
+
 	private void deleteSwitchImpl(ISwitchObject sw) {
         if (sw  != null) {
         	op.removeSwitch(sw);
@@ -416,19 +419,19 @@ public class SwitchStorageImpl implements ISwitchStorage {
         }
 	}
 
-	
+
 	private IPortObject addPortImpl(ISwitchObject sw, OFPhysicalPort phport) {
 		IPortObject portObject = op.searchPort(sw.getDPID(), phport.getPortNumber());
-		
-    	log.info("SwitchStorage:addPort dpid:{} port:{}", 
+
+    	log.info("SwitchStorage:addPort dpid:{} port:{}",
     			sw.getDPID(), phport.getPortNumber());
-    	
+
     	if (portObject != null) {
     		setPortStateImpl(portObject, phport.getState(), phport.getName());
     		portObject.setState("ACTIVE");
-    		
+
     		// This a convoluted way of checking if the port is attached
-    		// or not, but doing it this way avoids using the 
+    		// or not, but doing it this way avoids using the
     		// ISwitchObject.getPort method which uses GremlinGroovy query
     		// and takes forever.
     		boolean attached = false;
@@ -438,18 +441,18 @@ public class SwitchStorageImpl implements ISwitchStorage {
     				break;
     			}
     		}
-    		
+
     		if (!attached) {
     			sw.addPort(portObject);
     		}
-    		
+
     		/*
     		if (sw.getPort(phport.getPortNumber()) == null) {
     			// The port exists but the switch has no "on" link to it
     			sw.addPort(portObject);
     		}*/
-    		
-    		log.info("SwitchStorage:addPort dpid:{} port:{} exists setting as ACTIVE", 
+
+    		log.info("SwitchStorage:addPort dpid:{} port:{} exists setting as ACTIVE",
     				sw.getDPID(), phport.getPortNumber());
     	} else {
     		//addPortImpl(sw, phport.getPortNumber());
@@ -460,13 +463,13 @@ public class SwitchStorageImpl implements ISwitchStorage {
         	log.info("SwitchStorage:addPort dpid:{} port:{} done",
         			sw.getDPID(), phport.getPortNumber());
     	}
-    	
+
     	return portObject;
 	}
 	// TODO There's an issue here where a port with that ID could already
 	// exist when we try to add this one (because it's left over from an
 	// old topology). We need to remove an old port with the same ID when
-	// we add the new port. Also it seems that old ports like this are 
+	// we add the new port. Also it seems that old ports like this are
 	// never cleaned up and will remain in the DB in the ACTIVE state forever.
 	/*private IPortObject addPortImpl(ISwitchObject sw, short portNum) {
 		IPortObject p = op.newPort(sw.getDPID(), portNum);
@@ -474,7 +477,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		sw.addPort(p);
     	log.info("SwitchStorage:addPortImpl dpid:{} port:{} done",
     			sw.getDPID(), portNum);
-		
+
 		return p;
 	}*/
 
@@ -486,7 +489,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			if (desc != null) {
 				port.setDesc(desc);
 			}
-			
+
 	    	log.info("SwitchStorage:setPortStateImpl port:{} state:{} desc:{} done",
 	    			new Object[] {port.getPortId(), state, desc});
 		}
