@@ -108,7 +108,7 @@ public class LMessungService
             String probeId = messung.getProbeId();
             int messungsId = messung.getId().getMessungsId();
             if (authentication.hasAccess(headers, probeId) &&
-                !isReadOnly(probeId, messungsId)) {
+                !isReadOnly(probeId, messungsId, messung)) {
                 return repository.update(messung);
             }
             return new Response(false, 698, new ArrayList<LMessung>());
@@ -151,7 +151,7 @@ public class LMessungService
         }
     }
 
-    private boolean isReadOnly(String probeId, Integer messungsId) {
+    private boolean isReadOnly(String probeId, Integer messungsId, LMessung messung) {
         QueryBuilder<LMessung> builder =
             new QueryBuilder<LMessung>(
                 repository.getEntityManager(),
@@ -165,6 +165,10 @@ public class LMessungService
         }
         if (messungen.size() > 1) {
             return true;
+        }
+
+        if (messungen.get(0).isFertig() && !messung.isFertig()) {
+        	return false;
         }
         return messungen.get(0).isFertig();
     }
