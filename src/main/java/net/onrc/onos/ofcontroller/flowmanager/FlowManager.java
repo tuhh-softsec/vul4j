@@ -241,10 +241,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// in case the application didn't do it.
 	//
 	for (FlowEntry flowEntry : flowPath.flowEntries()) {
+	    // The Flow Entry switch state
 	    if (flowEntry.flowEntrySwitchState() ==
 		FlowEntrySwitchState.FE_SWITCH_UNKNOWN) {
 		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED);
 	    }
+	    // The Flow Entry ID
+	    if (! flowEntry.isValidFlowEntryId()) {
+		long id = getNextFlowEntryId();
+		flowEntry.setFlowEntryId(new FlowEntryId(id));
+	    }
+	    // The Flow ID
 	    if (! flowEntry.isValidFlowId())
 		flowEntry.setFlowId(new FlowId(flowPath.flowId().value()));
 	}
