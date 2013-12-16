@@ -27,63 +27,64 @@ import org.esigate.parser.ParserContext;
 import org.esigate.tags.TemplateRenderer;
 
 class IncludeTemplateElement implements Element {
-	public final static ElementType TYPE = new ElementType() {
-		@Override
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<!--$includetemplate$");
-		}
+    public static final ElementType TYPE = new ElementType() {
+        @Override
+        public boolean isStartTag(String tag) {
+            return tag.startsWith("<!--$includetemplate$");
+        }
 
-		@Override
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("<!--$endincludetemplate$");
-		}
+        @Override
+        public boolean isEndTag(String tag) {
+            return tag.startsWith("<!--$endincludetemplate$");
+        }
 
-		@Override
-		public Element newInstance() {
-			return new IncludeTemplateElement();
-		}
+        @Override
+        public Element newInstance() {
+            return new IncludeTemplateElement();
+        }
 
-	};
+    };
 
-	private Driver driver;
-	private String page;
-	private String name;
-	private final Map<String, String> params = new HashMap<String, String>();
-	private Appendable out;
+    private Driver driver;
+    private String page;
+    private String name;
+    private final Map<String, String> params = new HashMap<String, String>();
+    private Appendable out;
 
-	@Override
-	public boolean onError(Exception e, ParserContext ctx) {
-		return false;
-	}
+    @Override
+    public boolean onError(Exception e, ParserContext ctx) {
+        return false;
+    }
 
-	@Override
-	public void onTagStart(String tag, ParserContext ctx) {
-		this.out = new Adapter(ctx.getCurrent());
+    @Override
+    public void onTagStart(String tag, ParserContext ctx) {
+        this.out = new Adapter(ctx.getCurrent());
 
-		ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
-		this.driver = tagAttributes.getDriver();
-		this.page = tagAttributes.getPage();
-		this.name = tagAttributes.getName();
+        ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
+        this.driver = tagAttributes.getDriver();
+        this.page = tagAttributes.getPage();
+        this.name = tagAttributes.getName();
 
-	}
+    }
 
-	@Override
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		driver.render(page, null, out, ctx.getHttpRequest(), new TemplateRenderer(name, params, page), new AggregateRenderer());
-	}
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+        driver.render(page, null, out, ctx.getHttpRequest(), new TemplateRenderer(name, params, page),
+                new AggregateRenderer());
+    }
 
-	public void addParam(String name, String value) {
-		params.put(name, value);
-	}
+    public void addParam(String name, String value) {
+        params.put(name, value);
+    }
 
-	@Override
-	public boolean isClosed() {
-		return false;
-	}
+    @Override
+    public boolean isClosed() {
+        return false;
+    }
 
-	@Override
-	public void characters(CharSequence csq, int start, int end) throws IOException {
-		// Just ignore tag body
-	}
+    @Override
+    public void characters(CharSequence csq, int start, int end) throws IOException {
+        // Just ignore tag body
+    }
 
 }

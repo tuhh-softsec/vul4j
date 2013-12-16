@@ -18,6 +18,7 @@ package org.esigate.extension;
 import java.util.Properties;
 
 import org.apache.http.HttpHost;
+import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.esigate.Driver;
@@ -43,34 +44,35 @@ import org.slf4j.LoggerFactory;
  */
 public class ErrorPages implements Extension, IEventListener {
 
-	private static final StringEntity NO_MAPPING = new StringEntity(
-			"<html><body><h1>Esigate cannot process this request.</h1><h2>No mapping defined for this url.</h2></body></html>",
-			ContentType.create("text/html", "utf-8"));
-	private static final Logger LOG = LoggerFactory.getLogger(ErrorPages.class);
+    private static final StringEntity NO_MAPPING = new StringEntity(
+            "<html><body><h1>Esigate cannot process this request.</h1>"
+                    + "<h2>No mapping defined for this url.</h2></body></html>", ContentType.create("text/html",
+                    "utf-8"));
+    private static final Logger LOG = LoggerFactory.getLogger(ErrorPages.class);
 
-	@Override
-	public void init(Driver driver, Properties properties) {
-		driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
-	}
+    @Override
+    public void init(Driver driver, Properties properties) {
+        driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
+    }
 
-	@Override
-	public boolean event(EventDefinition id, Event event) {
+    @Override
+    public boolean event(EventDefinition id, Event event) {
 
-		FragmentEvent e = (FragmentEvent) event;
+        FragmentEvent e = (FragmentEvent) event;
 
-		if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
-			LOG.error(e.httpRequest.getRequestLine().getUri());
+        if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
+            LOG.error(e.httpRequest.getRequestLine().getUri());
 
-			if ("esigate".equals(((HttpHost) e.httpRequest.getParams().getParameter("TARGET_HOST")).getHostName())) {
-				if ("http://esigate/no-mapping/".equals(e.httpRequest.getRequestLine().getUri())) {
-					e.httpResponse = new HttpResponseBuilder().status(404).reason("No mapping defined")
-							.entity(NO_MAPPING).build();
-					return false;
-				}
-			}
-		}
+            if ("esigate".equals(((HttpHost) e.httpRequest.getParams().getParameter("TARGET_HOST")).getHostName())) {
+                if ("http://esigate/no-mapping/".equals(e.httpRequest.getRequestLine().getUri())) {
+                    e.httpResponse = new HttpResponseBuilder().status(HttpStatus.SC_NOT_FOUND)
+                            .reason("No mapping defined").entity(NO_MAPPING).build();
+                    return false;
+                }
+            }
+        }
 
-		// Continue processing
-		return true;
-	}
+        // Continue processing
+        return true;
+    }
 }

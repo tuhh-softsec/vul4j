@@ -25,34 +25,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class CacheStorage implements HttpCacheStorage {
-	private static final Logger LOG = LoggerFactory.getLogger(CacheStorage.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CacheStorage.class);
 
-	abstract public void init( Properties properties);
-	protected HttpCacheStorage impl;
+    public abstract void init(Properties properties);
 
-	@Override
-	public void putEntry(String key, HttpCacheEntry entry) throws IOException {
-		LOG.debug("putEntry({})", key);
-		impl.putEntry(key, entry);
-	}
+    private HttpCacheStorage impl;
 
-	@Override
-	public HttpCacheEntry getEntry(String key) throws IOException {
-		LOG.debug("getEntry({})", key);
-		return impl.getEntry(key);
-	}
+    @Override
+    public void putEntry(String key, HttpCacheEntry entry) throws IOException {
+        LOG.debug("putEntry({})", key);
+        impl.putEntry(key, entry);
+    }
 
-	@Override
-	public void removeEntry(String key) throws IOException {
-		LOG.debug("removeEntry({})", key);
-		impl.removeEntry(key);
+    @Override
+    public HttpCacheEntry getEntry(String key) throws IOException {
+        LOG.debug("getEntry({})", key);
+        return impl.getEntry(key);
+    }
 
-	}
+    @Override
+    public void removeEntry(String key) throws IOException {
+        LOG.debug("removeEntry({})", key);
+        impl.removeEntry(key);
 
-	@Override
-	public void updateEntry(String key, HttpCacheUpdateCallback callback) throws IOException, HttpCacheUpdateException {
-		LOG.debug("updateEntry({})",  key );
-		impl.updateEntry(key, callback);
-	}
+    }
+
+    @Override
+    public void updateEntry(String key, HttpCacheUpdateCallback callback) throws IOException, HttpCacheUpdateException {
+        LOG.debug("updateEntry({})", key);
+        impl.updateEntry(key, callback);
+    }
+
+    public void setImpl(HttpCacheStorage impl) {
+        this.impl = impl;
+    }
 
 }

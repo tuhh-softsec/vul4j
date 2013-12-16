@@ -22,10 +22,10 @@ import org.esigate.parser.ParserContext;
 
 class FragmentElement extends BaseElement {
 
-    public final static ElementType TYPE = new BaseElementType("<esi:fragment", "</esi:fragment") {
+    public static final ElementType TYPE = new BaseElementType("<esi:fragment", "</esi:fragment") {
 
         @Override
-		public FragmentElement newInstance() {
+        public FragmentElement newInstance() {
             return new FragmentElement();
         }
 

@@ -18,9 +18,12 @@ package org.esigate.extension;
 import java.util.Properties;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.impl.client.cache.CachingHttpClient;
+import org.apache.http.protocol.ExecutionContext;
 import org.esigate.Driver;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
@@ -34,8 +37,8 @@ import org.slf4j.LoggerFactory;
 /**
  * This extension logs fragments usage.
  * <p>
- * Be sure to put this extension as the first extension in order to log the
- * whole fragment processing time, including all other extension processing.
+ * Be sure to put this extension as the first extension in order to log the whole fragment processing time, including
+ * all other extension processing.
  * 
  * <p>
  * Log level is :
@@ -62,72 +65,83 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class FragmentLogging implements Extension, IEventListener {
-	private static final String TIME = "org.esigate.time";
-	private static final Logger LOG = LoggerFactory
-			.getLogger(FragmentLogging.class);
-	private Driver driver;
+    private static final String TIME = "org.esigate.time";
+    private static final Logger LOG = LoggerFactory.getLogger(FragmentLogging.class);
+    private Driver driver;
 
-	@Override
-	public void init(Driver driver, Properties properties) {
-		this.driver = driver;
-		driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST,
-				this);
-		driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE,
-				this); 
-	}
+    @Override
+    public void init(Driver driver, Properties properties) {
+        this.driver = driver;
+        driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST, this);
+        driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
+    }
 
-	@Override
-	public boolean event(EventDefinition id, Event event) {
+    @Override
+    public boolean event(EventDefinition id, Event event) {
 
-		FragmentEvent e = (FragmentEvent) event;
+        FragmentEvent e = (FragmentEvent) event;
 
-		if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
-			// Keep track of the start time.
-			e.httpContext.setAttribute(TIME, System.currentTimeMillis());
-		} else {
-			int statusCode = e.httpResponse.getStatusLine().getStatusCode();
+        if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
+            // Keep track of the start time.
+            e.httpContext.setAttribute(TIME, System.currentTimeMillis());
+        } else {
+            int statusCode = e.httpResponse.getStatusLine().getStatusCode();
 
-			// Log only if info or issue
-			if (LOG.isInfoEnabled() || statusCode >= 400) {
-				
-				// Log last result only
-				HttpRequest lastRequest = RedirectStrategy
-						.getLastRequest(e.httpRequest, e.httpContext);
+            // Log only if info or issue
+            if (LOG.isInfoEnabled() || statusCode >= HttpStatus.SC_BAD_REQUEST) {
 
-				// Create log message
-				String requestLine = lastRequest.getRequestLine().toString();
-				String statusLine = e.httpResponse.getStatusLine().toString();
+                // Log last result only
+                HttpRequest lastRequest = RedirectStrategy.getLastRequest(e.httpRequest, e.httpContext);
 
-				String reqHeaders = ArrayUtils.toString(lastRequest
-						.getAllHeaders());
-				String respHeaders = ArrayUtils.toString(e.httpResponse
-						.getAllHeaders());
+                // Create log message
+                HttpHost targetHost = (HttpHost) e.httpContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 
-				String cache = "";
-				CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) e.httpContext
-						.getAttribute(CachingHttpClient.CACHE_RESPONSE_STATUS);
-				if (cacheResponseStatus != null) {
-					cache = cacheResponseStatus.toString();
-				}
+                String requestLine = lastRequest.getRequestLine().toString();
+                String statusLine = e.httpResponse.getStatusLine().toString();
 
-				long time = System.currentTimeMillis()
-						- (Long) e.httpContext.removeAttribute(TIME);
+                String reqHeaders = ArrayUtils.toString(lastRequest.getAllHeaders());
+                String respHeaders = ArrayUtils.toString(e.httpResponse.getAllHeaders());
 
-				String logMessage = driver.getConfiguration().getInstanceName()
-						+ " " + requestLine + " " + reqHeaders + " -> "
-						+ statusLine + " (" + time + " ms) " + cache + " "
-						+ respHeaders;
+                String cache = "";
+                CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) e.httpContext
+                        .getAttribute(CachingHttpClient.CACHE_RESPONSE_STATUS);
+                if (cacheResponseStatus != null) {
+                    cache = cacheResponseStatus.toString();
+                }
 
-				// Log level according to status code.
-				if (statusCode >= 400)
-					LOG.warn(logMessage);
-				else
-					LOG.info(logMessage);
-			}
-		}
+                long time = System.currentTimeMillis() - (Long) e.httpContext.removeAttribute(TIME);
 
-		// Continue processing
-		return true;
-	}
+                StringBuilder logMessage = new StringBuilder();
+                logMessage.append(driver.getConfiguration().getInstanceName());
+                logMessage.append(" ");
+                // Display target host, protocol and port
+                if (targetHost != null) {
+                    logMessage.append(targetHost.getSchemeName());
+                    logMessage.append("://");
+                    logMessage.append(targetHost.getHostName());
+
+                    if (targetHost.getPort() != -1) {
+                        logMessage.append(":");
+                        logMessage.append(targetHost.getPort());
+                    }
+
+                    logMessage.append(" - ");
+                }
+
+                logMessage.append(requestLine + " " + reqHeaders + " -> " + statusLine + " (" + time + " ms) " + cache
+                        + " " + respHeaders);
+
+                // Log level according to status code.
+                if (statusCode >= HttpStatus.SC_BAD_REQUEST) {
+                    LOG.warn(logMessage.toString());
+                } else {
+                    LOG.info(logMessage.toString());
+                }
+            }
+        }
+
+        // Continue processing
+        return true;
+    }
 
 }

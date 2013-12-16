@@ -53,18 +53,19 @@ import org.esigate.parser.ElementType;
  * 
  */
 class RemoveElement extends BaseElement {
-	public final static ElementType TYPE = new BaseElementType("<esi:remove", "</esi:remove") {
-		@Override
-		public RemoveElement newInstance() {
-			return new RemoveElement();
-		}
+    public static final ElementType TYPE = new BaseElementType("<esi:remove", "</esi:remove") {
+        @Override
+        public RemoveElement newInstance() {
+            return new RemoveElement();
+        }
 
-	};
+    };
 
-	RemoveElement() { }
+    RemoveElement() {
+    }
 
-	@Override
-	public void characters(CharSequence csq, int start, int end) {
-		// ignore element body
-	}
+    @Override
+    public void characters(CharSequence csq, int start, int end) {
+        // ignore element body
+    }
 }

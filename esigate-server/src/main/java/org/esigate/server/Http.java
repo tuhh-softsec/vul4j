@@ -34,50 +34,68 @@ import org.apache.commons.io.IOUtils;
  * @author Ole Christian Rynning
  * 
  */
-public class Http {
+public final class Http {
 
-	public static class Response {
-		public final String body;
-		public final int code;
+    private Http() {
+    }
 
-		public Response(int code) {
-			this(code, "");
-		}
+    public static class Response {
+        private final String body;
+        private final int code;
 
-		public Response(int code, String body) {
-			this.code = code;
-			this.body = body;
-		}
-	}
+        public Response(int code) {
+            this(code, "");
+        }
 
-	public static Response GET(String uri) {
-		return http("GET", uri);
-	}
+        public Response(int code, String body) {
+            this.code = code;
+            this.body = body;
+        }
+    }
 
-	static Response http(String method, String uri) {
-		try {
-			URL url = new URL(uri);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod(method);
-			Object content = conn.getContent();
+    /**
+     * Perform POST request.
+     * 
+     * @param uri
+     *            target uri
+     * @return response.
+     */
 
-			if (content instanceof InputStream) {
-				return new Response(conn.getResponseCode(), IOUtils.toString((InputStream) content, "UTF-8"));
-			} else if (content instanceof String) {
-				return new Response(conn.getResponseCode(), (String) content);
-			} else {
-				return new Response(conn.getResponseCode(), "unknown");
-			}
+    public static Response doGET(String uri) {
+        return http("GET", uri);
+    }
 
-		} catch (SocketException e) {
-			return new Response(SC_NOT_FOUND);
-		} catch (IOException e) {
-			return new Response(SC_INTERNAL_SERVER_ERROR);
-		}
-	}
+    static Response http(String method, String uri) {
+        try {
+            URL url = new URL(uri);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod(method);
+            Object content = conn.getContent();
 
-	public static Response POST(String uri) {
-		return http("POST", uri);
-	}
+            if (content instanceof InputStream) {
+                return new Response(conn.getResponseCode(), IOUtils.toString((InputStream) content, "UTF-8"));
+            } else if (content instanceof String) {
+                return new Response(conn.getResponseCode(), (String) content);
+            } else {
+                return new Response(conn.getResponseCode(), "unknown");
+            }
+
+        } catch (SocketException e) {
+            return new Response(SC_NOT_FOUND);
+        } catch (IOException e) {
+            return new Response(SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Perform POST request.
+     * 
+     * @param uri
+     *            target uri
+     * @return response.
+     */
+    public static Response doPOST(String uri) {
+        return http("POST", uri);
+    }
 
 }

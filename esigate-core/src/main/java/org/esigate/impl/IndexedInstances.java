@@ -23,66 +23,63 @@ import java.util.TreeSet;
 import org.esigate.Driver;
 
 /**
- * This class is used by DriverFactory to hold both the user instances and a
- * list of the global mappings.
+ * This class is used by DriverFactory to hold both the user instances and a list of the global mappings.
  * 
  * <p>
- * This object is replaced atomically in the DriverFactory allowing a
- * synchronization-less update of the configuration.
+ * This object is replaced atomically in the DriverFactory allowing a synchronization-less update of the configuration.
  * 
  * @author Nicolas Richeton
  */
 public class IndexedInstances {
-	private final Map<String, Driver> instances;
-	private final Map<UriMapping, String> uriMappings;
+    private final Map<String, Driver> instances;
+    private final Map<UriMapping, String> uriMappings;
 
-	public IndexedInstances(Map<String, Driver> instances) {
-		this.instances = instances;
-		this.uriMappings = buildUriMappings(this.instances);
-	}
+    public IndexedInstances(Map<String, Driver> instances) {
+        this.instances = instances;
+        this.uriMappings = buildUriMappings();
+    }
 
-	private Map<UriMapping, String> buildUriMappings(Map<String, Driver> instances2) {
-		Map<UriMapping, String> result = new LinkedHashMap<UriMapping, String>();
+    private Map<UriMapping, String> buildUriMappings() {
+        Map<UriMapping, String> result = new LinkedHashMap<UriMapping, String>();
 
-		Map<UriMapping, String> unsortedResult = new LinkedHashMap<UriMapping, String>();
+        Map<UriMapping, String> unsortedResult = new LinkedHashMap<UriMapping, String>();
 
-		if (this.instances != null) {
-			for (String instanceId : this.instances.keySet()) {
-				List<UriMapping> driverMappings = this.instances.get(instanceId).getConfiguration().getUriMappings();
+        if (this.instances != null) {
+            for (String instanceId : this.instances.keySet()) {
+                List<UriMapping> driverMappings = this.instances.get(instanceId).getConfiguration().getUriMappings();
 
-				for (UriMapping mapping : driverMappings) {
-					unsortedResult.put(mapping, instanceId);
-				}
-			}
-		}
+                for (UriMapping mapping : driverMappings) {
+                    unsortedResult.put(mapping, instanceId);
+                }
+            }
+        }
 
-		// Order according to weight. 
-		SortedSet<UriMapping> keys = new TreeSet<UriMapping>( new UriMappingComparator());
-		keys.addAll(unsortedResult.keySet());
-		for (UriMapping key : keys) { 
-		  result.put(key, unsortedResult.get(key));
-		}		
-		
-		return result;
-	}
+        // Order according to weight.
+        SortedSet<UriMapping> keys = new TreeSet<UriMapping>(new UriMappingComparator());
+        keys.addAll(unsortedResult.keySet());
+        for (UriMapping key : keys) {
+            result.put(key, unsortedResult.get(key));
+        }
 
-	/**
-	 * A map containing all instances with their ids.
-	 * 
-	 * @return Map content (instanceName, instance)
-	 */
-	public Map<String, Driver> getInstances() {
-		return this.instances;
-	}
+        return result;
+    }
 
-	/**
-	 * A map containing all URI mappings and the associated driver instance
-	 * name.
-	 * 
-	 * @return Map content (mapping, instanceName)
-	 */
-	public Map<UriMapping, String> getUrimappings() {
-		return this.uriMappings;
-	}
+    /**
+     * A map containing all instances with their ids.
+     * 
+     * @return Map content (instanceName, instance)
+     */
+    public Map<String, Driver> getInstances() {
+        return this.instances;
+    }
+
+    /**
+     * A map containing all URI mappings and the associated driver instance name.
+     * 
+     * @return Map content (mapping, instanceName)
+     */
+    public Map<UriMapping, String> getUrimappings() {
+        return this.uriMappings;
+    }
 
 }

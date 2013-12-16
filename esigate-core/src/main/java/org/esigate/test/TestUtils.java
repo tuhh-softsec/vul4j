@@ -20,6 +20,7 @@ import java.io.IOException;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
+import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.util.HttpRequestHelper;
@@ -28,39 +29,55 @@ import org.esigate.util.HttpRequestHelper;
  * @author Francois-Xavier Bonnet
  * 
  */
-public class TestUtils {
+public final class TestUtils {
 
-	public final static HttpEntityEnclosingRequest createRequest() {
-		return new MockMediator().getHttpRequest();
-	}
+    private TestUtils() {
 
-	public final static HttpEntityEnclosingRequest createRequest(String uri) {
-		return new MockMediator(uri).getHttpRequest();
-	}
+    }
 
-	public final static HttpResponse getResponse(HttpEntityEnclosingRequest request) {
-		MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
-		return mediator.getHttpResponse();
-	}
+    public static HttpEntityEnclosingRequest createRequest() {
+        return new MockMediator().getHttpRequest();
+    }
 
-	public final static String getResponseBodyAsString(HttpEntityEnclosingRequest request) throws HttpErrorPage {
-		MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
-		HttpResponse response = mediator.getHttpResponse();
-		return HttpResponseUtils.toString(response, null);
-	}
+    public static HttpEntityEnclosingRequest createRequest(Driver driver) throws HttpErrorPage {
+        HttpEntityEnclosingRequest request = new MockMediator().getHttpRequest();
+        driver.initHttpRequestParams(request, null);
+        return request;
+    }
 
-	public final static void sendHttpErrorPage(HttpErrorPage e, HttpEntityEnclosingRequest request) throws IOException {
-		MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
-		mediator.sendResponse(e.getHttpResponse());
-	}
+    public static HttpEntityEnclosingRequest createRequest(String uri) {
+        return new MockMediator(uri).getHttpRequest();
+    }
 
-	public final static void addCookie(Cookie cookie, HttpEntityEnclosingRequest request) {
-		MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
-		mediator.addCookie(cookie);
-	}
-	
-	public final static void setRemoteAddr(String remoteAddr, HttpEntityEnclosingRequest request){
-		MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
-		mediator.setRemoteAddr(remoteAddr);
-	}
+    public static HttpEntityEnclosingRequest createRequest(String uri, Driver driver) throws HttpErrorPage {
+        HttpEntityEnclosingRequest request = new MockMediator(uri).getHttpRequest();
+        driver.initHttpRequestParams(request, null);
+        return request;
+    }
+
+    public static HttpResponse getResponse(HttpEntityEnclosingRequest request) {
+        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+        return mediator.getHttpResponse();
+    }
+
+    public static String getResponseBodyAsString(HttpEntityEnclosingRequest request) throws HttpErrorPage {
+        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+        HttpResponse response = mediator.getHttpResponse();
+        return HttpResponseUtils.toString(response, null);
+    }
+
+    public static void sendHttpErrorPage(HttpErrorPage e, HttpEntityEnclosingRequest request) throws IOException {
+        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+        mediator.sendResponse(e.getHttpResponse());
+    }
+
+    public static void addCookie(Cookie cookie, HttpEntityEnclosingRequest request) {
+        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+        mediator.addCookie(cookie);
+    }
+
+    public static void setRemoteAddr(String remoteAddr, HttpEntityEnclosingRequest request) {
+        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+        mediator.setRemoteAddr(remoteAddr);
+    }
 }

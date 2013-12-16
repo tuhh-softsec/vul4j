@@ -23,32 +23,32 @@ import junit.framework.TestCase;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class CommentElementTest extends TestCase {
-	private EsiRenderer tested;
-	private HttpEntityEnclosingRequest request;
+    private EsiRenderer tested;
+    private HttpEntityEnclosingRequest request;
 
-	@Override
-	protected void setUp() throws Exception {
-		Driver provider = new MockDriver();
-		request = TestUtils.createRequest();
-		tested = new EsiRenderer();
-		provider.initHttpRequestParams(request, null);
-	}
+    @Override
+    protected void setUp() throws Exception {
+        Driver provider = MockRequestExecutor.createDriver();
+        request = TestUtils.createRequest();
+        tested = new EsiRenderer();
+        provider.initHttpRequestParams(request, null);
+    }
 
-	public void testCommentEmpty() throws IOException, HttpErrorPage {
-		String page = "begin <esi:comment text=\"some comment\" /> end";
-		StringWriter out = new StringWriter();
-		tested.render(request, page, out);
-		assertEquals("begin  end", out.toString());
-	}
+    public void testCommentEmpty() throws IOException, HttpErrorPage {
+        String page = "begin <esi:comment text=\"some comment\" /> end";
+        StringWriter out = new StringWriter();
+        tested.render(request, page, out);
+        assertEquals("begin  end", out.toString());
+    }
 
-	public void testComment() throws IOException, HttpErrorPage {
-		String page = "begin <esi:comment text=\"some comment\" > some text </esi:comment> end";
-		StringWriter out = new StringWriter();
-		tested.render(request, page, out);
-		assertEquals("begin  end", out.toString());
-	}
+    public void testComment() throws IOException, HttpErrorPage {
+        String page = "begin <esi:comment text=\"some comment\" > some text </esi:comment> end";
+        StringWriter out = new StringWriter();
+        tested.render(request, page, out);
+        assertEquals("begin  end", out.toString());
+    }
 }

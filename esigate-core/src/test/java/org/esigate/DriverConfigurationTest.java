@@ -31,52 +31,52 @@ import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
  */
 public class DriverConfigurationTest extends TestCase {
 
-	public void testBaseUrl() {
-		Properties properties = new Properties();
-		
-		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com");
-		DriverConfiguration config = new DriverConfiguration("test-baseurl", properties);
-		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof SingleBaseUrlRetrieveStrategy);
+    public void testBaseUrl() {
+        Properties properties = new Properties();
 
-		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
-		config = new DriverConfiguration("test-baseurl", properties);
-		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof RoundRobinBaseUrlRetrieveStrategy);
+        properties.setProperty(Parameters.REMOTE_URL_BASE.getName(), "http://example.com");
+        DriverConfiguration config = new DriverConfiguration("test-baseurl", properties);
+        assertTrue(config.getBaseUrlRetrieveStrategy() instanceof SingleBaseUrlRetrieveStrategy);
 
-		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
-		properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.name, "roundrobin");
-		config = new DriverConfiguration("test-baseurl", properties);
-		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof RoundRobinBaseUrlRetrieveStrategy);
+        properties.setProperty(Parameters.REMOTE_URL_BASE.getName(), "http://example.com, http://example1.com");
+        config = new DriverConfiguration("test-baseurl", properties);
+        assertTrue(config.getBaseUrlRetrieveStrategy() instanceof RoundRobinBaseUrlRetrieveStrategy);
 
-		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
-		properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.name, "iphash");
-		config = new DriverConfiguration("test-baseurl", properties);
-		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof IpHashBaseUrlRetrieveStrategy);
+        properties.setProperty(Parameters.REMOTE_URL_BASE.getName(), "http://example.com, http://example1.com");
+        properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.getName(), "roundrobin");
+        config = new DriverConfiguration("test-baseurl", properties);
+        assertTrue(config.getBaseUrlRetrieveStrategy() instanceof RoundRobinBaseUrlRetrieveStrategy);
 
-		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
-		properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.name, "stickysession");
-		config = new DriverConfiguration("test-baseurl", properties);
-		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof StickySessionBaseUrlRetrieveStrategy);
+        properties.setProperty(Parameters.REMOTE_URL_BASE.getName(), "http://example.com, http://example1.com");
+        properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.getName(), "iphash");
+        config = new DriverConfiguration("test-baseurl", properties);
+        assertTrue(config.getBaseUrlRetrieveStrategy() instanceof IpHashBaseUrlRetrieveStrategy);
 
-		try {
-			properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
-			properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.name, "invalid_strategy");
-			config = new DriverConfiguration("test-baseurl", properties);
-			fail();
-		} catch (ConfigurationException e) {
-			assertTrue(e.getMessage().contains("invalid_strategy"));
-		} catch (Exception e) {
-			fail();
-		}
+        properties.setProperty(Parameters.REMOTE_URL_BASE.getName(), "http://example.com, http://example1.com");
+        properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.getName(), "stickysession");
+        config = new DriverConfiguration("test-baseurl", properties);
+        assertTrue(config.getBaseUrlRetrieveStrategy() instanceof StickySessionBaseUrlRetrieveStrategy);
 
-		try {
-			properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, ://1.com");
-			config = new DriverConfiguration("test-baseurl", properties);
-			fail();
-		} catch (ConfigurationException e) {
+        try {
+            properties.setProperty(Parameters.REMOTE_URL_BASE.getName(), "http://example.com, http://example1.com");
+            properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.getName(), "invalid_strategy");
+            config = new DriverConfiguration("test-baseurl", properties);
+            fail();
+        } catch (ConfigurationException e) {
+            assertTrue(e.getMessage().contains("invalid_strategy"));
+        } catch (Exception e) {
+            fail();
+        }
 
-		} catch (Exception e) {
-			fail();
-		}
+        try {
+            properties.setProperty(Parameters.REMOTE_URL_BASE.getName(), "http://example.com, ://1.com");
+            config = new DriverConfiguration("test-baseurl", properties);
+            fail();
+        } catch (ConfigurationException e) {
+            // Expected behavior
+        } catch (Exception e) {
+            fail();
+        }
 
-	}
+    }
 }

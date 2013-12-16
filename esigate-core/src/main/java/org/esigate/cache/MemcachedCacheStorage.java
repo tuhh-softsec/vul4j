@@ -32,32 +32,38 @@ import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 
 public class MemcachedCacheStorage extends CacheStorage {
-	@Override
-	public void init(Properties properties) {
-		Collection<String> serverStringList = Parameters.MEMCACHED_SERVERS_PROPERTY.getValueList(properties);
-		if (serverStringList.isEmpty())
-			throw new ConfigurationException("No memcached server defined. Property '" + Parameters.MEMCACHED_SERVERS_PROPERTY + "' must be defined.");
-		List<InetSocketAddress> servers = new ArrayList<InetSocketAddress>();
-		for (Iterator<String> iterator = serverStringList.iterator(); iterator.hasNext();) {
-			String server = iterator.next();
-			String[] serverHostPort = server.split(":");
-			if (serverHostPort.length != 2)
-				throw new ConfigurationException("Invalid memcached server: '" + server + "'. Each server must be in format 'host:port'.");
-			String host = serverHostPort[0];
-			try {
-				int port = Integer.parseInt(serverHostPort[1]);
-				servers.add(new InetSocketAddress(host, port));
-			} catch (NumberFormatException e) {
-				throw new ConfigurationException("Invalid memcached server: '" + server + "'. Each server must be in format 'host:port'. Port must be an integer.", e);
-			}
-		}
-		MemcachedClient memcachedClient;
-		try {
-			memcachedClient = new MemcachedClient(servers);
-		} catch (IOException e) {
-			throw new ConfigurationException(e);
-		}
-		CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
-		impl = new MemcachedHttpCacheStorage(memcachedClient, cacheConfig, new MemcachedCacheEntryFactoryImpl(), new SHA256KeyHashingScheme());
-	}
+    @Override
+    public void init(Properties properties) {
+        Collection<String> serverStringList = Parameters.MEMCACHED_SERVERS_PROPERTY.getValueList(properties);
+        if (serverStringList.isEmpty()) {
+            throw new ConfigurationException("No memcached server defined. Property '"
+                    + Parameters.MEMCACHED_SERVERS_PROPERTY + "' must be defined.");
+        }
+        List<InetSocketAddress> servers = new ArrayList<InetSocketAddress>();
+        for (Iterator<String> iterator = serverStringList.iterator(); iterator.hasNext();) {
+            String server = iterator.next();
+            String[] serverHostPort = server.split(":");
+            if (serverHostPort.length != 2) {
+                throw new ConfigurationException("Invalid memcached server: '" + server
+                        + "'. Each server must be in format 'host:port'.");
+            }
+            String host = serverHostPort[0];
+            try {
+                int port = Integer.parseInt(serverHostPort[1]);
+                servers.add(new InetSocketAddress(host, port));
+            } catch (NumberFormatException e) {
+                throw new ConfigurationException("Invalid memcached server: '" + server
+                        + "'. Each server must be in format 'host:port'. Port must be an integer.", e);
+            }
+        }
+        MemcachedClient memcachedClient;
+        try {
+            memcachedClient = new MemcachedClient(servers);
+        } catch (IOException e) {
+            throw new ConfigurationException(e);
+        }
+        CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
+        setImpl(new MemcachedHttpCacheStorage(memcachedClient, cacheConfig, new MemcachedCacheEntryFactoryImpl(),
+                new SHA256KeyHashingScheme()));
+    }
 }

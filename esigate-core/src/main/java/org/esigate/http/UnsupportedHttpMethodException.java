@@ -15,19 +15,19 @@
 package org.esigate.http;
 
 /**
- * Exception thrown when an unsupported HTTP method is called
+ * Exception thrown when an unsupported HTTP method is called.
  * 
  * @author Francois-Xavier Bonnet
  */
 public class UnsupportedHttpMethodException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param message
-	 *            Error message
-	 */
-	public UnsupportedHttpMethodException(String message) {
-		super(message);
-	}
+    /**
+     * @param message
+     *            Error message
+     */
+    public UnsupportedHttpMethodException(String message) {
+        super(message);
+    }
 
 }

@@ -24,10 +24,8 @@ import org.apache.http.cookie.Cookie;
 import org.esigate.cookie.CookieManager;
 
 /**
- * A CookieStore that delegates to the CookieManager instance associated with
- * this Driver instance. The CookieManager will decide what to do with each
- * cookie like forwarding it to the browser, storing it to session or just
- * ignoring it.
+ * A CookieStore that delegates to the CookieManager instance associated with this Driver instance. The CookieManager
+ * will decide what to do with each cookie like forwarding it to the browser, storing it to session or just ignoring it.
  * 
  * @see CookieStore
  * 
@@ -36,32 +34,32 @@ import org.esigate.cookie.CookieManager;
  */
 public class RequestCookieStore implements CookieStore {
 
-	private final HttpRequest originalRequest;
-	private final CookieManager cookieManager;
+    private final HttpRequest originalRequest;
+    private final CookieManager cookieManager;
 
-	public RequestCookieStore(CookieManager cookieManager, HttpRequest originalRequest) {
-		this.originalRequest = originalRequest;
-		this.cookieManager = cookieManager;
-	}
+    public RequestCookieStore(CookieManager cookieManager, HttpRequest originalRequest) {
+        this.originalRequest = originalRequest;
+        this.cookieManager = cookieManager;
+    }
 
-	@Override
-	public void addCookie(Cookie cookie) {
-		this.cookieManager.addCookie(cookie, this.originalRequest);
-	}
+    @Override
+    public void addCookie(Cookie cookie) {
+        this.cookieManager.addCookie(cookie, this.originalRequest);
+    }
 
-	@Override
-	public List<Cookie> getCookies() {
-		return this.cookieManager.getCookies(this.originalRequest);
-	}
+    @Override
+    public List<Cookie> getCookies() {
+        return this.cookieManager.getCookies(this.originalRequest);
+    }
 
-	@Override
-	public boolean clearExpired(Date date) {
-		return this.cookieManager.clearExpired(date, this.originalRequest);
-	}
+    @Override
+    public boolean clearExpired(Date date) {
+        return this.cookieManager.clearExpired(date, this.originalRequest);
+    }
 
-	@Override
-	public void clear() {
-		this.cookieManager.clear(this.originalRequest);
-	}
+    @Override
+    public void clear() {
+        this.cookieManager.clear(this.originalRequest);
+    }
 
 }

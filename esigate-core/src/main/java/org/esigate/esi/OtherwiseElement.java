@@ -24,38 +24,38 @@ import org.esigate.vars.VariablesResolver;
 
 class OtherwiseElement extends BaseElement {
 
-	public final static ElementType TYPE = new BaseElementType("<esi:otherwise", "</esi:otherwise") {
-		@Override
-		public OtherwiseElement newInstance() {
-			return new OtherwiseElement();
-		}
+    public static final ElementType TYPE = new BaseElementType("<esi:otherwise", "</esi:otherwise") {
+        @Override
+        public OtherwiseElement newInstance() {
+            return new OtherwiseElement();
+        }
 
-	};
+    };
 
-	private boolean active;
-	private StringBuilder buf = new StringBuilder();
+    private boolean active;
+    private StringBuilder buf = new StringBuilder();
 
-	OtherwiseElement() {
-	}
+    OtherwiseElement() {
+    }
 
-	@Override
-	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		ChooseElement parent = ctx.findAncestor(ChooseElement.class);
-		active = (parent != null) && !parent.hadConditionSet();
-	}
+    @Override
+    protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+        ChooseElement parent = ctx.findAncestor(ChooseElement.class);
+        active = (parent != null) && !parent.hadConditionSet();
+    }
 
-	@Override
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException {
-		if (active) {
-			String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
-			super.characters(result, 0, result.length());
-		}
-	}
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) throws IOException {
+        if (active) {
+            String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
+            super.characters(result, 0, result.length());
+        }
+    }
 
-	@Override
-	public void characters(CharSequence csq, int start, int end) {
-		if (active) {
-			buf.append(csq, start, end);
-		}
-	}
+    @Override
+    public void characters(CharSequence csq, int start, int end) {
+        if (active) {
+            buf.append(csq, start, end);
+        }
+    }
 }

@@ -24,35 +24,35 @@ import org.esigate.util.UriUtils;
 
 class InlineElement extends BaseElement {
 
-	public final static ElementType TYPE = new BaseElementType("<esi:inline", "</esi:inline") {
-		@Override
-		public InlineElement newInstance() {
-			return new InlineElement();
-		}
+    public static final ElementType TYPE = new BaseElementType("<esi:inline", "</esi:inline") {
+        @Override
+        public InlineElement newInstance() {
+            return new InlineElement();
+        }
 
-	};
+    };
 
-	private String uri;
-	private boolean fetchable;
-	private StringBuilder buf = new StringBuilder();
+    private String uri;
+    private boolean fetchable;
+    private StringBuilder buf = new StringBuilder();
 
-	InlineElement() {
-	}
+    InlineElement() {
+    }
 
-	@Override
-	protected void parseTag(Tag tag, ParserContext ctx) {
-		this.uri = tag.getAttribute("name");
-		this.fetchable = "yes".equalsIgnoreCase(tag.getAttribute("fetchable"));
-	}
+    @Override
+    protected void parseTag(Tag tag, ParserContext ctx) {
+        this.uri = tag.getAttribute("name");
+        this.fetchable = "yes".equalsIgnoreCase(tag.getAttribute("fetchable"));
+    }
 
-	@Override
-	public void characters(CharSequence csq, int start, int end) {
-		buf.append(csq, start, end);
-	}
+    @Override
+    public void characters(CharSequence csq, int start, int end) {
+        buf.append(csq, start, end);
+    }
 
-	@Override
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		String originalUrl = UriUtils.createUri(ctx.getHttpRequest().getRequestLine().getUri()).getPath();
-		InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.toString());
-	}
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+        String originalUrl = UriUtils.createUri(ctx.getHttpRequest().getRequestLine().getUri()).getPath();
+        InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.toString());
+    }
 }

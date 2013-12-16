@@ -2,67 +2,31 @@
 <document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<properties>
-		<title>Reverse proxy servlets</title>
+		<title>Reverse proxy servlet</title>
 		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 		<author email="nricheton@users.sourceforge.net">Nicolas Richeton</author>
 	</properties>
 	<body>
-		<section name="Reverse proxy servlets">
+		<section name="Rewriting reverse proxy">
 			<p>
-				The toolkit includes two reverse proxy servlets which can be used
-				to
-				serve
-				static resources
-				from a distant application and can use the
-				cache
-				to improve performance.
+				EsiGate includes a reverse proxy servlet which can be used
+				to serve static resources from a distant application and can use 
+				the	cache to improve performance.
 			</p>
-			<p>These servlet can also be used to start a Web Assemble Tool-based
-				application without installing a separate Apache http server.
+			<p>This servlet has the ability to rewrite scheme, port, url and
+				query
+				string before processing the request (proxy or redirect). This
+				is a simple alternative
+				to Apache + mod_rewrite + mod_proxy.
 			</p>
-
-			<subsection name="Basic reverse proxy">
-
-				<h4>Configuration</h4>
-				<p>
-					The reverse proxy is a servlet that has to be configured in the
-					web.xml
-					file.
-				</p>
-				<source><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE
-web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
-2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app>
-	<servlet>
-		<servlet-name>proxy</servlet-name>
-		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>proxy</servlet-name>
-		<url-pattern>/images/*</url-pattern>
-	</servlet-mapping>
-</web-app> 
-				]]></source>
-			</subsection>
-			<subsection name="Rewrite reverse proxy">
-
-				<h4>Description</h4>
-				<p>This servlet has the ability to rewrite scheme, port, url and
-					query
-					string before processing the request (proxy or redirect). This
-					is a simple alternative
-					to Apache + mod_rewrite + mod_proxy.
-				</p>
-				<p>
-					Once configured, this servlet is
-					<b>equivalent</b>
-					to the following
-					<b>Apache configuration</b>
-					:
-				</p>
-				<source><![CDATA[
+			<p>
+				Once configured, this servlet is
+				<b>equivalent</b>
+				to the following
+				<b>Apache configuration</b>
+				:
+			</p>
+			<source><![CDATA[
 RewriteEngine On
 ProxyRequests Off
 <Proxy *>
@@ -93,14 +57,14 @@ RewriteRule ^/myurl(/?.*)$ http://localhost:8080/webappcontext$1 [R=301,L]
 # URL + port
 RewriteCond  %{SERVER_PORT}  8181
 RewriteRule ^/myurl(/?.*)$ http://localhost:8080/webappcontext$1 [R=301,L]
- 				]]></source>
+				]]></source>
 
-				<h4>Configuration</h4>
-				<p>Add this servlet to your web application. You can also create a
-					dedicated application deployed on the ROOT context. This way you
-					have full control on the url.
-				</p>
-				<source><![CDATA[
+			<h4>Configuration</h4>
+			<p>Add this servlet to your web application. You can also create a
+				dedicated application deployed on the ROOT context. This way you
+				have full control on the url.
+			</p>
+			<source><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE
 web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
@@ -115,20 +79,20 @@ web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
 		<url-pattern>/images/*</url-pattern>
 	</servlet-mapping>
 </web-app> 
-				]]></source>
+			]]></source>
 
 
-				<p>Then the proxy has to be configured in both /esigate.properties
-					and org/esigate/rewrite-proxy.properties :
-				</p>
-				<p>esigate.properties</p>
-				<source><![CDATA[
+			<p>Then the proxy has to be configured in both /esigate.properties
+				and org/esigate/rewrite-proxy.properties :
+			</p>
+			<p>esigate.properties</p>
+			<source><![CDATA[
 #esigate.properties
 
 webapp.remoteUrlBase=http://localhost:8080/webappcontext/
-				]]></source>
-				<p>rewrite-proxy.properties</p>
-				<source><![CDATA[
+			]]></source>
+			<p>rewrite-proxy.properties</p>
+			<source><![CDATA[
 #org/esigate/rewrite-proxy.properties
 
 # Rule 1. (replace <rulename1> by the real rule name)
@@ -162,15 +126,7 @@ webapp.remoteUrlBase=http://localhost:8080/webappcontext/
 <rulename5>.portPattern=8181
 <rulename5>.portRewrite=8080
 <rulename5>.redirect=301
-					]]></source>
-			</subsection>
-
-			<subsection name="Other reverse proxy solutions">
-				<p>
-					In a production environment under very heavy load it may be more
-					efficient to use instead other tools such as Apache mod_proxy
-				</p>
-			</subsection>
+				]]></source>
 		
 		 <div id="disqus_thread"></div>
     <script type="text/javascript">

@@ -23,51 +23,54 @@ import junit.framework.TestCase;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockDriver;
+import org.esigate.MockRequestExecutor;
 import org.esigate.test.TestUtils;
 
 public class CommentTest extends TestCase {
 
-	private HttpEntityEnclosingRequest request;
-	private EsiRenderer tested;
+    private HttpEntityEnclosingRequest request;
+    private EsiRenderer tested;
 
-	@Override
-	protected void setUp() throws Exception {
-		Driver provider = new MockDriver();
-		request = TestUtils.createRequest();
-		tested = new EsiRenderer(Executors.newCachedThreadPool());
-		provider.initHttpRequestParams(request, null);
-		MockDriver provider1 = new MockDriver("provider1");
-		provider1.addResource("/test", "replacement");
-	}
+    @Override
+    protected void setUp() throws Exception {
+        MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
+        request = TestUtils.createRequest();
+        tested = new EsiRenderer(Executors.newCachedThreadPool());
+        provider.initHttpRequestParams(request, null);
+        MockRequestExecutor provider1 = MockRequestExecutor.createMockDriver("provider1");
+        provider1.addResource("/test", "replacement");
+    }
 
-	public void testComment() throws IOException, HttpErrorPage {
-		String page = "begin <!--esi<sometag> some text</sometag>--> end";
-		StringWriter out = new StringWriter();
-		tested.render(request, page, out);
-		assertEquals("begin <sometag> some text</sometag> end", out.toString());
-	}
+    public void testComment() throws IOException, HttpErrorPage {
+        String page = "begin <!--esi<sometag> some text</sometag>--> end";
+        StringWriter out = new StringWriter();
+        tested.render(request, page, out);
+        assertEquals("begin <sometag> some text</sometag> end", out.toString());
+    }
 
-	public void testCommentVars() throws IOException, HttpErrorPage {
-		String page = "<!--esi <p><esi:vars>Hello, $(HTTP_COOKIE{name})!</esi:vars></p> -->";
-		TestUtils.addCookie(new BasicClientCookie("name", "world"), request);
-		StringWriter out = new StringWriter();
-		tested.render(request, page, out);
-		assertEquals(" <p>Hello, world!</p> ", out.toString());
-	}
+    public void testCommentVars() throws IOException, HttpErrorPage {
+        String page = "<!--esi <p><esi:vars>Hello, $(HTTP_COOKIE{name})!</esi:vars></p> -->";
+        TestUtils.addCookie(new BasicClientCookie("name", "world"), request);
+        StringWriter out = new StringWriter();
+        tested.render(request, page, out);
+        assertEquals(" <p>Hello, world!</p> ", out.toString());
+    }
 
-	/**
-	 * http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=126
-	 * 
-	 * @throws Exception
-	 */
-	public void testCommentedEsiTags() throws Exception {
-		String page = "begin <!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>--> end";
-		StringWriter out = new StringWriter();
-		tested.render(request, page, out);
-		assertEquals("begin replacement end", out.toString());
-	}
+    /**
+     * 0000126: Support for commented esi tags.
+     * 
+     * http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=126
+     * 
+     * @throws Exception
+     */
+    public void testCommentedEsiTags() throws Exception {
+        String page = "begin "
+                + "<!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>-->"
+                + " end";
+        StringWriter out = new StringWriter();
+        tested.render(request, page, out);
+        assertEquals("begin replacement end", out.toString());
+    }
 
 }

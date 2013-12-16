@@ -21,11 +21,11 @@ var users = [{
 		   "title": "HEC Paris",
 		   "url": "http://www.hec.fr",
 		   "weight": Math.random()
-//	}, {
-//		"img": "idmacif.png",
-//		   "title": "idmacif",
-//		   "url": "http://www.idmacif.fr",
-//		   "weight": Math.random()
+	}, {
+		"img": "idmacif.png",
+		   "title": "idmacif",
+		   "url": "http://www.idmacif.fr",
+		   "weight": Math.random()
 	}, {
 		"img": "smile.png",
 		   "title": "Smile",
@@ -41,11 +41,11 @@ var users = [{
 		   "title": "voyages-sncf.com",
 		   "url": "http://www.voyages-sncf.com",
 		   "weight": Math.random()
-//	}, {
-//		"img": "ag2r.png",
-//		   "title": "AG2R La mondiale",
-//		   "url": "http://www.ag2rlamondiale.fr",
-//		   "weight": Math.random()
+	}, {
+		"img": "ag2r.png",
+		   "title": "AG2R La mondiale",
+		   "url": "http://www.ag2rlamondiale.fr",
+		   "weight": Math.random()
 	}, {
 		"img": "manitou.png",
 		   "title": "Manitou Group",
@@ -55,6 +55,16 @@ var users = [{
 		"img": "nantes-metropole.png",
 		   "title": "Nantes Métropole",
 		   "url": "http://www.nantesmetropole.fr",
+		   "weight": Math.random()
+	}, {
+		"img": "systalians.png",
+		   "title": "Systalians",
+		   "url": "http://www.systalians.com",
+		   "weight": Math.random()
+	}, {
+		"img": "reunica.png",
+		   "title": "Reunica",
+		   "url": "http://www.reunica.com",
 		   "weight": Math.random()
 	}];
 

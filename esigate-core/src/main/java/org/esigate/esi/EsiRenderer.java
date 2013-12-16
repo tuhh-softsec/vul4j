@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpStatus;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.parser.Parser;
@@ -27,26 +28,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Retrieves a resource from the provider application and parses it to find ESI
- * tags to be replaced by contents from other applications.
+ * Retrieves a resource from the provider application and parses it to find ESI tags to be replaced by contents from
+ * other applications.
  * 
- * For more information about ESI language specification, see <a
- * href="http://www.w3.org/TR/esi-lang">Edge Side Include</a>
+ * For more information about ESI language specification, see <a href="http://www.w3.org/TR/esi-lang">Edge Side
+ * Include</a>
  * 
  * @author Francois-Xavier Bonnet
  */
 public class EsiRenderer implements Renderer, Appendable {
 
-    private final static Logger LOG = LoggerFactory.getLogger(EsiRenderer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EsiRenderer.class);
 
-    
- 	private final static Pattern PATTERN = Pattern.compile("(<esi:\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)/?>)|(</esi:[^>]*>)");
-	private final static Pattern PATTERN_COMMENTS = Pattern.compile("(<!--esi)|(-->)");
+    private static final Pattern PATTERN = Pattern
+            .compile("(<esi:\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)/?>)|(</esi:[^>]*>)");
+    private static final Pattern PATTERN_COMMENTS = Pattern.compile("(<!--esi)|(-->)");
 
-	private final Parser parser = new Parser(PATTERN, IncludeElement.TYPE, CommentElement.TYPE, RemoveElement.TYPE, VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE, OtherwiseElement.TYPE,
-			TryElement.TYPE, AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE, ReplaceElement.TYPE, FragmentElement.TYPE);
+    private final Parser parser = new Parser(PATTERN, IncludeElement.TYPE, CommentElement.TYPE, RemoveElement.TYPE,
+            VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE, OtherwiseElement.TYPE, TryElement.TYPE,
+            AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE, ReplaceElement.TYPE, FragmentElement.TYPE);
 
-	private final Parser parserComments = new Parser(PATTERN_COMMENTS, Comment.TYPE);
+    private final Parser parserComments = new Parser(PATTERN_COMMENTS, Comment.TYPE);
 
     private Writer out;
 
@@ -69,7 +71,7 @@ public class EsiRenderer implements Renderer, Appendable {
     }
 
     /**
-     * Constructor used to render a complete page
+     * Constructor used to render a complete page.
      */
     public EsiRenderer() {
         page = null;
@@ -79,8 +81,7 @@ public class EsiRenderer implements Renderer, Appendable {
     /**
      * Constructor used to render a fragment Retrieves a fragment inside a page.<br />
      * 
-     * Extracts html between <code>&lt;esi:fragment name="myFragment"&gt;</code>
-     * and <code>&lt;/esi:fragment&gt;</code>
+     * Extracts html between <code>&lt;esi:fragment name="myFragment"&gt;</code> and <code>&lt;/esi:fragment&gt;</code>
      * 
      * @param page
      * @param name
@@ -100,7 +101,8 @@ public class EsiRenderer implements Renderer, Appendable {
     }
 
     @Override
-	public void render(HttpEntityEnclosingRequest originalRequest, String content, Writer out) throws IOException, HttpErrorPage {
+    public void render(HttpEntityEnclosingRequest originalRequest, String content, Writer out) throws IOException,
+            HttpErrorPage {
         if (name != null) {
             LOG.debug("Rendering fragment {} in page {}", name, page);
         }
@@ -108,7 +110,7 @@ public class EsiRenderer implements Renderer, Appendable {
         if (content == null) {
             return;
         }
-        
+
         // Pass 1. Remove esi comments
         StringBuilder contentWithoutComments = new StringBuilder();
         parserComments.setHttpRequest(originalRequest);
@@ -117,14 +119,15 @@ public class EsiRenderer implements Renderer, Appendable {
         // Pass 2. Process ESI
         parser.setHttpRequest(originalRequest);
         parser.parse(contentWithoutComments, this);
-        
-        if (name != null && this.found == false) {
-            throw new HttpErrorPage(502, "Fragment " + name + " not found", "Fragment " + name + " not found");
+
+        if (name != null && !this.found) {
+            throw new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, "Fragment " + name + " not found", "Fragment " + name
+                    + " not found");
         }
     }
 
     @Override
-	public Appendable append(CharSequence csq) throws IOException {
+    public Appendable append(CharSequence csq) throws IOException {
         if (write) {
             out.append(csq);
         }
@@ -132,7 +135,7 @@ public class EsiRenderer implements Renderer, Appendable {
     }
 
     @Override
-	public Appendable append(char c) throws IOException {
+    public Appendable append(char c) throws IOException {
         if (write) {
             out.append(c);
         }
@@ -140,7 +143,7 @@ public class EsiRenderer implements Renderer, Appendable {
     }
 
     @Override
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
+    public Appendable append(CharSequence csq, int start, int end) throws IOException {
         if (write) {
             out.append(csq, start, end);
         }

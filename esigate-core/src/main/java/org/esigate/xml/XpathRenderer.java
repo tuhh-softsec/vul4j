@@ -39,43 +39,42 @@ import org.xml.sax.SAXException;
 /**
  * XML renderer.
  * <p>
- * Applies optional XPath evaluation and XSLT transformation to the retrieved
- * data.
+ * Applies optional XPath evaluation and XSLT transformation to the retrieved data.
  * 
  * @author Stanislav Bernatskyi
  */
 public class XpathRenderer implements Renderer {
-	private final static HtmlNamespaceContext HTML_NAMESPACE_CONTEXT = new HtmlNamespaceContext();
-	private final static XPathFactory X_PATH_FACTORY = XPathFactory.newInstance();
-	private final XPathExpression expr;
+    private static final HtmlNamespaceContext HTML_NAMESPACE_CONTEXT = new HtmlNamespaceContext();
+    private static final XPathFactory X_PATH_FACTORY = XPathFactory.newInstance();
+    private final XPathExpression expr;
 
-	public XpathRenderer(String xpath) {
-		try {
-			XPath xpathObj = X_PATH_FACTORY.newXPath();
-			xpathObj.setNamespaceContext(HTML_NAMESPACE_CONTEXT);
-			this.expr = xpathObj.compile(xpath);
-		} catch (XPathExpressionException e) {
-			throw new ProcessingFailedException("failed to compile XPath expression", e);
-		}
-	}
+    public XpathRenderer(String xpath) {
+        try {
+            XPath xpathObj = X_PATH_FACTORY.newXPath();
+            xpathObj.setNamespaceContext(HTML_NAMESPACE_CONTEXT);
+            this.expr = xpathObj.compile(xpath);
+        } catch (XPathExpressionException e) {
+            throw new ProcessingFailedException("failed to compile XPath expression", e);
+        }
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
-		try {
-			HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder();
-			htmlDocumentBuilder.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
-			Document document = htmlDocumentBuilder.parse(new InputSource(new StringReader(src)));
-			NodeList matchingNodes = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
-			XhtmlSerializer serializer = new XhtmlSerializer(out);
-			Dom2Sax dom2Sax = new Dom2Sax(serializer, serializer);
-			for (int i = 0; i < matchingNodes.getLength(); i++) {
-				dom2Sax.parse(matchingNodes.item(i));
-			}
-		} catch (XPathExpressionException e) {
-			throw new ProcessingFailedException("Failed to evaluate XPath expression", e);
-		} catch (SAXException e) {
-			throw new ProcessingFailedException("Unable to parse source", e);
-		}
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
+        try {
+            HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder();
+            htmlDocumentBuilder.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
+            Document document = htmlDocumentBuilder.parse(new InputSource(new StringReader(src)));
+            NodeList matchingNodes = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+            XhtmlSerializer serializer = new XhtmlSerializer(out);
+            Dom2Sax dom2Sax = new Dom2Sax(serializer, serializer);
+            for (int i = 0; i < matchingNodes.getLength(); i++) {
+                dom2Sax.parse(matchingNodes.item(i));
+            }
+        } catch (XPathExpressionException e) {
+            throw new ProcessingFailedException("Failed to evaluate XPath expression", e);
+        } catch (SAXException e) {
+            throw new ProcessingFailedException("Unable to parse source", e);
+        }
+    }
 }

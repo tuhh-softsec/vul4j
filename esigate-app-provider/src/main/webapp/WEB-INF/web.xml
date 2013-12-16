@@ -3,7 +3,7 @@
 <web-app>
 	<filter>
 		<filter-name>ConnectorFilter</filter-name>
-		<filter-class>org.esigate.ConnectorFilter</filter-class>
+		<filter-class>org.esigate.servlet.user.ConnectorFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>ConnectorFilter</filter-name>

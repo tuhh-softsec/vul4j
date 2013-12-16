@@ -24,55 +24,60 @@ import org.esigate.HttpErrorPage;
 
 public class XsltRendererTest extends TestCase {
 
-	/**
-	 * Tests xpath expression evaluation
-	 * 
-	 * @throws IOException
-	 * @throws HttpErrorPage
-	 */
-	public void testXslt() throws IOException, HttpErrorPage {
-		String src = "<html><body>The body<br></body></html>";
-		String result = extractBody(src);
-		assertEquals("<body>The body<br /></body>", result);
-	}
+    /**
+     * Tests xpath expression evaluation.
+     * 
+     * @throws IOException
+     * @throws HttpErrorPage
+     */
+    public void testXslt() throws IOException, HttpErrorPage {
+        String src = "<html><body>The body<br></body></html>";
+        String result = extractBody(src);
+        assertEquals("<body>The body<br /></body>", result);
+    }
 
-	private String extractBody(String src) throws IOException {
-		String template = "<?xml version=\"1.0\"?>";
-		template += "<xsl:stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:html=\"http://www.w3.org/1999/xhtml\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">";
-		template += "<xsl:output method=\"xml\" omit-xml-declaration=\"yes\"/> indent=\"no\"";
-		template += "<xsl:template match=\"//html:body\">";
-		template += "<xsl:copy-of select=\".\"/>";
-		template += "</xsl:template>";
-		template += "</xsl:stylesheet>";
-		StringWriter out = new StringWriter();
-		XsltRenderer tested = new XsltRenderer(template);
-		tested.render(null, src, out);
-		return out.toString();
-	}
+    private String extractBody(String src) throws IOException {
+        String template = "<?xml version=\"1.0\"?>";
+        template += "<xsl:stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/xhtml\" "
+                + "xmlns:html=\"http://www.w3.org/1999/xhtml\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">";
+        template += "<xsl:output method=\"xml\" omit-xml-declaration=\"yes\"/> indent=\"no\"";
+        template += "<xsl:template match=\"//html:body\">";
+        template += "<xsl:copy-of select=\".\"/>";
+        template += "</xsl:template>";
+        template += "</xsl:stylesheet>";
+        StringWriter out = new StringWriter();
+        XsltRenderer tested = new XsltRenderer(template);
+        tested.render(null, src, out);
+        return out.toString();
+    }
 
-	/**
-	 * Tests parser does not throw an Exception for an unescaped '&' character
-	 * 
-	 * @throws Exception
-	 */
-	public void testParserSupportsUnescapedAmpersandCharacter() throws Exception {
-		String src = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-				+ "<html lang=\"fr\" xml:lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\">" + "<head><title>The header</title></head><body>&x=</body></html>";
-		String result = extractBody(src);
-		assertEquals("<body>&amp;x=</body>", result);
-	}
+    /**
+     * Tests parser does not throw an Exception for an unescaped '&' character.
+     * 
+     * @throws Exception
+     */
+    public void testParserSupportsUnescapedAmpersandCharacter() throws Exception {
+        String src = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+                + "<html lang=\"fr\" xml:lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\">"
+                + "<head><title>The header</title></head><body>&x=</body></html>";
+        String result = extractBody(src);
+        assertEquals("<body>&amp;x=</body>", result);
+    }
 
-	/**
-	 * Tests parser does not throw an Exception for a duplicated id
-	 * 
-	 * @throws Exception
-	 */
-	public void testParserSupportsDuplicatedId() throws Exception {
-		String src = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-				+ "<html lang=\"fr\" xml:lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\">"
-				+ "<head><title>The header</title></head><body><span id=\"test\">a</span><span id=\"test\">b</span></body></html>";
-		String result = extractBody(src);
-		assertEquals("<body><span id=\"test\">a</span><span id=\"test\">b</span></body>", result);
-	}
+    /**
+     * Tests parser does not throw an Exception for a duplicated id.
+     * 
+     * @throws Exception
+     */
+    public void testParserSupportsDuplicatedId() throws Exception {
+        String src = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+                + "<html lang=\"fr\" xml:lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\">"
+                + "<head><title>The header</title></head><body>"
+                + "<span id=\"test\">a</span><span id=\"test\">b</span></body></html>";
+        String result = extractBody(src);
+        assertEquals("<body><span id=\"test\">a</span><span id=\"test\">b</span></body>", result);
+    }
 
 }

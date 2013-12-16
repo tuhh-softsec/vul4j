@@ -5,10 +5,10 @@
 	pageEncoding="ISO-8859-1"%>
 <%@page import="org.esigate.UserContext"%><%@page import="org.esigate.util.HttpRequestHelper"%>
 <%@page import="org.esigate.DriverFactory"%>
-<%@taglib uri="http://www.esigate.org/taglib" prefix="assemble"%>
+
 <%
 	HttpEntityEnclosingRequest httpRequest = new HttpServletMediator(request, response, config.getServletContext()).getHttpRequest();
 	DriverFactory.getInstance().initHttpRequestParams(httpRequest, null);
 	UserContext context = HttpRequestHelper.getUserContext(httpRequest);
 	context.setUser("test");
-%><assemble:includeTemplate page="user.jsp" />
+%><esi:include src="$(PROVIDER{default})user.jsp" />

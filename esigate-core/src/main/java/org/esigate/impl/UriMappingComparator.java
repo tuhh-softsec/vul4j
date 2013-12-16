@@ -28,17 +28,18 @@ import java.util.Comparator;
  */
 public class UriMappingComparator implements Comparator<UriMapping> {
 
-	@Override
-	public int compare(UriMapping o1, UriMapping o2) {
-		int weightCompare = o2.getWeight() - o1.getWeight();
+    @Override
+    public int compare(UriMapping o1, UriMapping o2) {
+        int weightCompare = o2.getWeight() - o1.getWeight();
 
-		if (weightCompare != 0)
-			return weightCompare;
+        if (weightCompare != 0) {
+            return weightCompare;
+        }
 
-		// 2 objects with the same weight are usually not the same.
-		// This is required to prevent removal of different rules using the same
-		// weight within a SortedMap.
-		return o2.hashCode() - o1.hashCode();
-	}
+        // 2 objects with the same weight are usually not the same.
+        // This is required to prevent removal of different rules using the same
+        // weight within a SortedMap.
+        return o2.hashCode() - o1.hashCode();
+    }
 
 }

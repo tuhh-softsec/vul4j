@@ -1,3 +1,17 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.esigate.test.http;
 
 import java.net.URI;
@@ -32,116 +46,121 @@ import org.esigate.util.UriUtils;
  * 
  */
 public class HttpRequestBuilder {
-	ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
-	String uriString = "http://localhost/";
-	List<Header> headers = new ArrayList<Header>();
-	List<Cookie> cookies = new ArrayList<Cookie>();
-	HttpEntity entity = null;
-	private String method = "GET";
+    private ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
+    private String uriString = "http://localhost/";
+    private final List<Header> headers = new ArrayList<Header>();
+    private final List<Cookie> cookies = new ArrayList<Cookie>();
+    private HttpEntity entity = null;
+    private String method = "GET";
 
-	boolean mockMediator = false;
-	ContainerRequestMediator mediator = null;
+    private boolean mockMediator = false;
+    private ContainerRequestMediator mediator = null;
 
-	public HttpRequestBuilder uri(String uri) {
-		this.uriString = uri;
-		return this;
-	}
+    /**
+     * Build the request as defined in the current builder.
+     * 
+     * @return the request
+     */
+    public HttpEntityEnclosingRequest build() {
+        HttpEntityEnclosingRequest request = null;
+        URI uri = UriUtils.createUri(this.uriString);
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+        int port = uri.getPort();
+        request = new BasicHttpEntityEnclosingRequest(this.method, this.uriString, this.protocolVersion);
+        if (port == -1 || port == 80 && "http".equals(scheme) || port == 443 && "https".equals(scheme)) {
+            request.setHeader("Host", host);
+        } else {
+            request.setHeader("Host", host + ":" + port);
+        }
 
-	public HttpRequestBuilder header(String name, String value) {
-		this.headers.add(new BasicHeader(name, value));
-		return this;
-	}
+        for (Header h : this.headers) {
+            request.addHeader(h.getName(), h.getValue());
+        }
 
-	public HttpRequestBuilder method(String paramMethod) {
-		this.method = paramMethod;
-		return this;
-	}
+        if (this.entity != null) {
+            request.setEntity(this.entity);
+        }
 
-	public HttpRequestBuilder protocolVersion(ProtocolVersion paramProtocolVersion) {
-		this.protocolVersion = paramProtocolVersion;
-		return this;
-	}
+        ContainerRequestMediator requestMediator = null;
+        if (this.mockMediator) {
+            requestMediator = new MockMediator(this.uriString);
+        }
 
-	public HttpRequestBuilder cookie(String name, String value) {
-		this.cookies.add(new BasicClientCookie(name, value));
-		return this;
-	}
+        if (this.mediator != null) {
+            requestMediator = this.mediator;
+        }
 
-	public HttpRequestBuilder entity(HttpEntity paramEntity) {
-		this.entity = paramEntity;
-		return this;
-	}
+        // Add cookies
+        // In request header
+        String cookieHeaderValue = StringUtils.EMPTY;
+        for (Cookie c : this.cookies) {
+            if (StringUtils.isNotBlank(cookieHeaderValue)) {
+                cookieHeaderValue = cookieHeaderValue + "; ";
+            }
+            cookieHeaderValue = cookieHeaderValue + c.getName() + "=" + c.getValue();
+        }
+        if (StringUtils.isNotBlank(cookieHeaderValue)) {
+            request.addHeader("Cookie", cookieHeaderValue);
+        }
 
-	public HttpRequestBuilder mockMediator() {
+        // In mediator
+        if (requestMediator != null) {
+            for (Cookie c : this.cookies) {
+                requestMediator.addCookie(c);
+            }
+            HttpRequestHelper.setMediator(request, requestMediator);
+        }
 
-		if (this.mediator != null)
-			throw new IllegalArgumentException("Cannot use both mockMediator and mediator when building HttpRequest");
+        return request;
+    }
 
-		this.mockMediator = true;
-		return this;
-	}
+    public HttpRequestBuilder cookie(String name, String value) {
+        this.cookies.add(new BasicClientCookie(name, value));
+        return this;
+    }
 
-	public HttpRequestBuilder mediator(ContainerRequestMediator paramMediator) {
-		if (this.mockMediator)
-			throw new IllegalArgumentException("Cannot use both mockMediator and mediator when building HttpRequest");
+    public HttpRequestBuilder entity(HttpEntity paramEntity) {
+        this.entity = paramEntity;
+        return this;
+    }
 
-		this.mediator = paramMediator;
-		return this;
-	}
+    public HttpRequestBuilder header(String name, String value) {
+        this.headers.add(new BasicHeader(name, value));
+        return this;
+    }
 
-	/**
-	 * Build the request as defined in the current builder.
-	 * 
-	 * @return the request
-	 */
-	public HttpEntityEnclosingRequest build() {
-		HttpEntityEnclosingRequest request = null;
-		URI uri = UriUtils.createUri(this.uriString);
-		String scheme = uri.getScheme();
-		String host = uri.getHost();
-		int port = uri.getPort();
-		request = new BasicHttpEntityEnclosingRequest(this.method, this.uriString, this.protocolVersion);
-		if (port == -1 || (port == 80 && "http".equals(scheme)) || (port == 443 && "https".equals(scheme)))
-			request.setHeader("Host", host);
-		else
-			request.setHeader("Host", host + ":" + port);
+    public HttpRequestBuilder mediator(ContainerRequestMediator paramMediator) {
+        if (this.mockMediator) {
+            throw new IllegalArgumentException("Cannot use both mockMediator and mediator when building HttpRequest");
+        }
 
-		for (Header h : this.headers) {
-			request.addHeader(h.getName(), h.getValue());
-		}
+        this.mediator = paramMediator;
+        return this;
+    }
 
-		if (this.entity != null) {
-			request.setEntity(this.entity);
-		}
+    public HttpRequestBuilder method(String paramMethod) {
+        this.method = paramMethod;
+        return this;
+    }
 
-		ContainerRequestMediator requestMediator = null;
-		if (this.mockMediator)
-			requestMediator = new MockMediator(this.uriString);
+    public HttpRequestBuilder mockMediator() {
 
-		if (this.mediator != null)
-			requestMediator = this.mediator;
+        if (this.mediator != null) {
+            throw new IllegalArgumentException("Cannot use both mockMediator and mediator when building HttpRequest");
+        }
 
-		// Add cookies 
-		// In request header
-		String cookieHeaderValue = StringUtils.EMPTY;
-		for (Cookie c : this.cookies) {
-			if (StringUtils.isNotBlank(cookieHeaderValue)) {
-				cookieHeaderValue = cookieHeaderValue + "; ";
-			}
-			cookieHeaderValue = cookieHeaderValue + c.getName() + "=" + c.getValue();
-		}
-		if (StringUtils.isNotBlank(cookieHeaderValue)) {
-			request.addHeader("Cookie", cookieHeaderValue);
-		}
+        this.mockMediator = true;
+        return this;
+    }
 
-		// In mediator
-		if (requestMediator != null) {
-			for (Cookie c : this.cookies) {
-				requestMediator.addCookie(c);
-			}
-			HttpRequestHelper.setMediator(request, requestMediator);
-		}
+    public HttpRequestBuilder protocolVersion(ProtocolVersion paramProtocolVersion) {
+        this.protocolVersion = paramProtocolVersion;
+        return this;
+    }
 
-		return request;
-	}
+    public HttpRequestBuilder uri(String uri) {
+        this.uriString = uri;
+        return this;
+    }
 }

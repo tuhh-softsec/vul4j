@@ -17,10 +17,10 @@ package org.esigate.http;
 
 public class UnsupportedContentEncodingException extends RuntimeException {
 
-	private static final long serialVersionUID = -3514450770500951780L;
+    private static final long serialVersionUID = -3514450770500951780L;
 
-	public UnsupportedContentEncodingException(String message) {
-		super(message);
-	}
+    public UnsupportedContentEncodingException(String message) {
+        super(message);
+    }
 
 }

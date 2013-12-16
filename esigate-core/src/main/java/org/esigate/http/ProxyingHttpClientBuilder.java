@@ -23,47 +23,48 @@ import org.esigate.cache.CacheAdapter;
 import org.esigate.events.EventManager;
 
 public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
-	private Properties properties;
-	private EventManager eventManager;
-	private boolean useCache = true;
+    private Properties properties;
+    private EventManager eventManager;
+    private boolean useCache = true;
 
-	@Override
-	protected ClientExecChain decorateMainExec(ClientExecChain mainExec) {
-		ClientExecChain result = mainExec;
-		CacheAdapter cacheAdapter = new CacheAdapter();
-		cacheAdapter.init(properties);
-		result = cacheAdapter.wrapBackendHttpClient(eventManager, result);
-		
-		if (!useCache)
-			return result;
-		
-		result = super.decorateMainExec(result);
-		result = cacheAdapter.wrapCachingHttpClient(result);
-		return result;
-	}
+    @Override
+    protected ClientExecChain decorateMainExec(ClientExecChain mainExec) {
+        ClientExecChain result = mainExec;
+        CacheAdapter cacheAdapter = new CacheAdapter();
+        cacheAdapter.init(properties);
+        result = cacheAdapter.wrapBackendHttpClient(eventManager, result);
 
-	public void setUseCache(boolean useCache) {
-		this.useCache = useCache;
-	}
+        if (!useCache) {
+            return result;
+        }
 
-	public void setEventManager(EventManager eventManager) {
-		this.eventManager = eventManager;
-	}
+        result = super.decorateMainExec(result);
+        result = cacheAdapter.wrapCachingHttpClient(result);
+        return result;
+    }
 
-	public Properties getProperties() {
-		return properties;
-	}
+    public void setUseCache(boolean useCache) {
+        this.useCache = useCache;
+    }
 
-	public void setProperties(Properties properties) {
-		this.properties = properties;
-	}
+    public void setEventManager(EventManager eventManager) {
+        this.eventManager = eventManager;
+    }
 
-	public EventManager getEventManager() {
-		return eventManager;
-	}
+    public Properties getProperties() {
+        return properties;
+    }
 
-	public boolean isUseCache() {
-		return useCache;
-	}
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
+    public boolean isUseCache() {
+        return useCache;
+    }
 
 }

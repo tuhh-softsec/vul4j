@@ -1,7 +1,6 @@
 <%@page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@taglib uri="http://www.esigate.org/taglib-helper"
-	prefix="assemble"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -10,13 +9,13 @@
 </head>
 <body style="background-color: aqua">
 <div>Début de la page</div>
-<div style="border: 1px solid red"><assemble:block name="block1">
+<div style="border: 1px solid red"><esi:fragment name="block1">
 	<div style="background-color: aqua">Bloc de contenu<br />
 	<img src="images/smile.jpg" />&lt;--image gérée par le provider</div>
-</assemble:block></div>
-<assemble:block name="block2">
+</esi:fragment></div>
+<esi:fragment name="block2">
 	<div style="background-color: aqua">Autre bloc de contenu<br />
-</assemble:block>
+</esi:fragment>
 <div>Fin de la page</div>
 </body>
 </html>

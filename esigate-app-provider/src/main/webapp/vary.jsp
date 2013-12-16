@@ -2,8 +2,7 @@
 <%@page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%> 
 <%@ page import="javax.servlet.http.Cookie"%> 
-<%@taglib uri="http://www.esigate.org/taglib-helper"
-	prefix="assemble"%>	
+	
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <% response.addHeader("Vary", "Cookie"); %>
 <% response.addHeader( "Cache-Control", "public, max-age=60"); %>
@@ -16,7 +15,7 @@
 <body>
 
 This page display first cookie content.
-<assemble:block name="block1">
+<esi:fragment name="block1">
 <% 	
 	boolean found = false;
 	if ( request.getCookies() != null  ) { 
@@ -31,6 +30,6 @@ This page display first cookie content.
 	if ( !found ){ %><%="no cookie" %><% } 
 %>
 Generation time :  stime<%=System.currentTimeMillis() %>etime
-</assemble:block>
+</esi:fragment>
 </body>
 </html>

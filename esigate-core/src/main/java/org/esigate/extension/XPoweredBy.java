@@ -25,26 +25,26 @@ import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FragmentEvent;
 
 /**
- * This extension adds a X-Powered-By header
+ * This extension adds a X-Powered-By header.
  * 
  * @author Nicolas Richeton
  * 
  */
 public class XPoweredBy implements Extension, IEventListener {
 
-	@Override
-	public void init(Driver driver, Properties properties) {
-		driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST, this);
-	}
+    @Override
+    public void init(Driver driver, Properties properties) {
+        driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST, this);
+    }
 
-	@Override
-	public boolean event(EventDefinition id, Event event) {
+    @Override
+    public boolean event(EventDefinition id, Event event) {
 
-		FragmentEvent e = (FragmentEvent) event;
-		e.httpResponse.addHeader("X-Powered-By", "Esigate");
+        FragmentEvent e = (FragmentEvent) event;
+        e.httpResponse.addHeader("X-Powered-By", "Esigate");
 
-		// Continue processing
-		return true;
-	}
+        // Continue processing
+        return true;
+    }
 
 }

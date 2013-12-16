@@ -21,10 +21,10 @@ import org.apache.http.impl.client.cache.ManagedHttpCacheStorage;
 
 public class ManagedCacheStorage extends CacheStorage {
 
-	@Override
-	public void init(Properties properties) {
-		CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
-		impl = new ManagedHttpCacheStorage(cacheConfig);
-	}
+    @Override
+    public void init(Properties properties) {
+        CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
+        setImpl(new ManagedHttpCacheStorage(cacheConfig));
+    }
 
 }

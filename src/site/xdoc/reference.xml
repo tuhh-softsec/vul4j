@@ -14,7 +14,7 @@
 			<subsection name="Fragments and templates">
 				<p>
 					Any web application can be used to provide html fragments or page templates 
-					for other applications. Fragements are defined using ESI tags.
+					for other applications. Fragments are defined using ESI tags.
 				</p>
 			</subsection>
 			<subsection name="Cross technologies">
@@ -68,12 +68,12 @@
 		</section>
 		<section name="Installation">
 			<p>
-				ESIGate runs as a standard Java servlet and can be run in any Java servlet container like Tomcat, Jetty, WebSphere JBoss...
+				ESIGate runs as a standard Java servlet filter and can be run in any Java servlet container like Tomcat, Jetty, WebSphere JBoss...
 				If you are not familiar with Java servlet containers, you can use esigate-server that includes a pre-configured web application
 				with an embedded Jetty server.
 			</p>
 			<p>
-				If you are familiar with Java servlets, you may want to build your own web application using esigate-core as a dependency. With Maven:
+				If you are familiar with Java servlet-api, you may want to build your own web application using esigate-core as a dependency. With Maven:
 			</p>
 			<source><![CDATA[
 <dependency>
@@ -82,6 +82,25 @@
 	<version>RELEASE</version>
 </dependency>
 			]]></source>
+			<p>
+				The servlet filter can be declared in WEB-INF/web.xml file this way:
+				<source><![CDATA[
+	
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<filter>
+		<filter-name>EsiGate</filter-name>
+		<filter-class>org.esigate.servlet.ProxyFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>EsiGate</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+</web-app>
+
+				]]></source>
+			</p>
 			<p>
 				You can use esigate-war web application as an example.
 			</p>
@@ -444,28 +463,60 @@ theme.mappings=/css/*, /images/*
 			</table>
 
 		</subsection>
-		<subsection name="Specifying several provider applications">
+		<subsection name="Local and cross-context providers">
 			<p>
-				You can specify several provider applications prefixing directives
-				with the provider name.
-				Note: "default" application is the application used when later you use
-				tags without specifying the application, the other ones are called "appli1"
-				and "appli2":
+				You can use local resources or resources from another
+				web application deployed on the same server by using 
+				extension org.esigate.servlet.ServletExtension
+			</p>
+			<p>
+				Advantages:
+				<ul>
+					<li>Use local resources and apply to them esi transformation</li>
+					<li>Use resources from another web application without network
+					calls</li>
+				</ul>
 			</p>
 <source>
-# Common settings
-uriEncoding=UTF-8
+# In this example, we use 2 providers: local and crosscontext
+# Local context. Local resources may contain esi tags
+local.remoteUrlBase=http://localhost:8080/esigate/
+local.extensions=org.esigate.servlet.ServletExtension,org.esigate.extension.Esi
+local.mappings=*
 
-# Default application
-default.remoteUrlBase=http://localhost:8080/appli0/
-
-# appli1 application
-appli1.remoteUrlBase=http://localhost:8080/appli1/
-appli1.uriEncoding=ISO-8859-1
-
-# appli2 application
-appli2.remoteUrlBase=http://localhost:8080/appli2/
+# Another web application deployed in the same servlet container
+crosscontext.remoteUrlBase=http://localhost:8080/myWebapp/
+crosscontext.extensions=org.esigate.servlet.ServletExtension,org.esigate.extension.Esi
+crosscontext.context=/myWebapp
+crosscontext.mappings=/crosscontext/*
 </source>
+			<p>
+				Technically, local and cross-context call rely on the following
+				methods:
+			</p>
+			<table>
+				<tr>
+					<th>Call type</th>
+					<th>Proxy</th>
+					<th>Include</th>
+				</tr>
+				<tr>
+					<td>Local</td>
+					<td>filterChain.doFilter(request, response)</td>
+					<td>request.getRequestDispatcher(url).include(request, response)</td>
+				</tr>
+				<tr>
+					<td>Cross-context</td>
+					<td>servletContext().getContext(context).getRequestDispatcher(url).forward(request, response)</td>
+					<td>servletContext().getContext(context).getRequestDispatcher(url).include(request, response)</td>
+				</tr>
+			</table>
+			<p>
+				Note: cross-context has to be enabled in the context configuration. For example on Tomcat context xml file:
+			</p>
+			<source><![CDATA[
+<Context docBase="esigate" path="" crossContext="true"/>
+			]]></source>
 		</subsection>
 
                 <subsection name="Variables resolver">
@@ -769,9 +820,15 @@ someUrl=/cms/article123
 			<td>&lt;esi:try&gt;</td>
 			<td></td>
 			<td>Try block</td>
-			<td>&lt;esi:try&gt;&lt;esi:attempt&gt;...&lt;/esi:attempt&gt;&lt;esi:except
-			code="404"&gt;...&lt;/esi:except&gt;&lt;esi:except
-			code="500"&gt;...&lt;/esi:except&gt;&lt;esi:except&gt;...&lt;/esi:except&gt;&lt;:esi:try&gt;
+			<td>&lt;esi:try&gt;<br/>
+			&nbsp;&nbsp;&lt;esi:attempt&gt;...&lt;/esi:attempt&gt;<br/>
+			&nbsp;&nbsp;&lt;esi:except code="404"&gt;...&lt;/esi:except&gt;<br/>
+			&nbsp;&nbsp;&lt;esi:except	code="500"&gt;...&lt;/esi:except&gt;<br/>
+			&nbsp;&nbsp;&lt;esi:except&gt;...&lt;/esi:except&gt;<br/>
+			&lt;:esi:try&gt;<br/>
+			<br/>
+			If multiple except tags are present, only the first matching one is used. 
+			As a result, except tags with the <em>code</em> attribute should appear first. 
 			</td>
 			<td>Yes</td>
 			<td>Yes</td>
@@ -804,9 +861,9 @@ someUrl=/cms/article123
 			<td>code</td>
 			<td>Http return code that trigger this except block</td>
 			<td></td>
+			<td>&nbsp;</td>
 			<td>Yes</td>
-			<td>Yes</td>
-			<td>Yes</td>
+			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			</tr>
 			<tr>
@@ -2037,30 +2094,17 @@ discardCookies=*
 		</section>
 		<section name="Other features: Taglib, JSF, Wicket, html comments-based syntax">
 			<subsection name="Taglib">
-				<p>There is a JSP taglib that can be used in JSP pages and that implement
-				most of the functionnalities you can find in the ESI syntax</p>
-				<p>See the <a href="taglib.html">documentation of the taglib</a></p>
-				<p>Note: in a future version, this library will be removed and replaced by 
-				a servlet filter that will benefit of the full ESI syntax and will be 
-				compatible with all presentation frameworks (JSP, JSF, Wicket...)</p>
+				<p>The JSP taglib, JSF and Wicket components have been removed since 
+				version 5.0 and replaced by a servlet filter that will benefit of the
+				full ESI syntax and will be compatible with all presentation frameworks
+				(JSP, JSF, Wicket...).</p>
+				<p>If you plan to migrate an application developped using the taglib
+				please refer to the <a href="upgrade.html">upgrade documentation</a>.</p>
 			</subsection>
 			<subsection name="Reverse proxy Servlet">
 				<p>We provide also a reverse proxy servlet that can be used when using complex
 				url mappings a little bit like Apache mod_proxy.</p>
 				<p>See the <a href="proxy.html">documentation of the reverse proxy</a></p>
-			</subsection>
-			<subsection name="JSF">
-				<p>There is a JSF components library for ESIGate. Functionalities are limited (mostly include)</p>
-				<p>Note: in a future version, this library will be removed and replaced by 
-				a servlet filter that will benefit of the full ESI syntax and will be 
-				compatible with all presentation frameworks (JSP, JSF, Wicket...)</p>
-			</subsection>
-			<subsection name="Wicket">
-				<p>There is a Wicket components library for ESIGate. Functionalities are limited (mostly include)</p>
-				<p>See the <a href="esigate-wicket/index.html">documentation of the Wicket components</a></p>
-				<p>Note: in a future version, this library will be removed and replaced by 
-				a servlet filter that will benefit of the full ESI syntax and will be 
-				compatible with all presentation frameworks (JSP, JSF, Wicket...)</p>
 			</subsection>
 			<subsection name="Html comments-based syntax">
 				<p>In addition to ESI language, ESIGate also supports a syntax based on html

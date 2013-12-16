@@ -23,28 +23,28 @@ import org.esigate.parser.ParserContext;
 import org.esigate.vars.VariablesResolver;
 
 class VarsElement extends BaseElement {
-	public final static ElementType TYPE = new BaseElementType("<esi:vars", "</esi:vars") {
-		@Override
-		public VarsElement newInstance() {
-			return new VarsElement();
-		}
+    public static final ElementType TYPE = new BaseElementType("<esi:vars", "</esi:vars") {
+        @Override
+        public VarsElement newInstance() {
+            return new VarsElement();
+        }
 
-	};
+    };
 
-	private StringBuilder buf = new StringBuilder();
+    private StringBuilder buf = new StringBuilder();
 
-	VarsElement() {
-	}
+    VarsElement() {
+    }
 
-	@Override
-	public void characters(CharSequence csq, int start, int end) throws IOException {
-		buf.append(csq, start, end);
-	}
+    @Override
+    public void characters(CharSequence csq, int start, int end) throws IOException {
+        buf.append(csq, start, end);
+    }
 
-	@Override
-	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
-		ctx.getCurrent().characters(result, 0, result.length());
-	}
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+        String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
+        ctx.getCurrent().characters(result, 0, result.length());
+    }
 
 }

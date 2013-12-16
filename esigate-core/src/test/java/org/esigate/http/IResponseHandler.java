@@ -19,22 +19,20 @@ import java.io.IOException;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.esigate.test.conn.MockConnectionManager;
 
 /**
- * A response handler for {@link MockConnectionManager}
+ * A response handler for {@link org.esigate.test.conn.MockConnectionManager}.
  * 
  * @author Nicolas Richeton
  */
 public interface IResponseHandler {
 
-	/**
-	 * Implement this method to process the HTTP request and provide a custom
-	 * reponse.
-	 * 
-	 * @param request
-	 * @return the response
-	 * @throws IOException
-	 */
-	HttpResponse execute(HttpRequest request) throws IOException;
+    /**
+     * Implement this method to process the HTTP request and provide a custom reponse.
+     * 
+     * @param request
+     * @return the response
+     * @throws IOException
+     */
+    HttpResponse execute(HttpRequest request) throws IOException;
 }

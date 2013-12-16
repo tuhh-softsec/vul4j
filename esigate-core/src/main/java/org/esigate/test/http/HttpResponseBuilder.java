@@ -1,3 +1,17 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.esigate.test.http;
 
 import java.io.UnsupportedEncodingException;
@@ -28,56 +42,67 @@ import org.apache.http.message.BasicHttpResponse;
  */
 public class HttpResponseBuilder {
 
-	ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
-	int status = HttpStatus.SC_OK;
-	String reason = "Ok";
-	List<Header> headers = new ArrayList<Header>();
-	HttpEntity entity = null;
+    private ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
+    private int status = HttpStatus.SC_OK;
+    private String reason = "Ok";
+    private List<Header> headers = new ArrayList<Header>();
+    private HttpEntity entity = null;
 
-	public HttpResponseBuilder protocolVersion(
-			ProtocolVersion paramProtocolVersion) {
-		this.protocolVersion = paramProtocolVersion;
-		return this;
-	}
+    /**
+     * Build the HTTP response using all data previously set on this builder and/or use defaults.
+     * 
+     * @return The HTTP response
+     */
+    public HttpResponse build() {
+        BasicHttpResponse response = new BasicHttpResponse(this.protocolVersion, this.status, this.reason);
 
-	public HttpResponseBuilder status(int paramStatus) {
-		this.status = paramStatus;
-		return this;
-	}
+        for (Header h : this.headers) {
+            response.addHeader(h.getName(), h.getValue());
+        }
 
-	public HttpResponseBuilder reason(String paramReason) {
-		this.reason = paramReason;
-		return this;
-	}
+        if (this.entity != null) {
+            response.setEntity(this.entity);
+        }
+        return response;
+    }
 
-	public HttpResponseBuilder header(String name, String value) {
-		this.headers.add(new BasicHeader(name, value));
-		return this;
-	}
+    public HttpResponseBuilder entity(HttpEntity paramEntity) {
+        this.entity = paramEntity;
+        if (this.entity.getContentType() != null) {
+            this.headers.add(this.entity.getContentType());
+        }
+        return this;
+    }
 
-	public HttpResponseBuilder entity(HttpEntity paramEntity) {
-		this.entity = paramEntity;
-		this.headers.add( this.entity.getContentType());
-		return this;
-	}
+    public HttpResponseBuilder entity(String entityBody) throws UnsupportedEncodingException {
+        this.entity = new StringEntity(entityBody);
+        return this;
+    }
 
-	public HttpResponseBuilder entity(String entityBody)
-			throws UnsupportedEncodingException {
-		this.entity = new StringEntity(entityBody);
-		return this;
-	}
+    public HttpResponseBuilder header(String name, String value) {
+        this.headers.add(new BasicHeader(name, value));
+        return this;
+    }
 
-	public HttpResponse build() {
-		BasicHttpResponse response = new BasicHttpResponse(
-				this.protocolVersion, this.status, this.reason);
+    public HttpResponseBuilder protocolVersion(ProtocolVersion paramProtocolVersion) {
+        this.protocolVersion = paramProtocolVersion;
+        return this;
+    }
 
-		for (Header h : this.headers) {
-			response.addHeader(h.getName(), h.getValue());
-		}
+    public HttpResponseBuilder reason(String paramReason) {
+        this.reason = paramReason;
+        return this;
+    }
 
-		if (this.entity != null) {
-			response.setEntity(this.entity);
-		}
-		return response;
-	}
+    /**
+     * Set HTTP Status.
+     * 
+     * @param paramStatus
+     *            the response status.
+     * @return this builder
+     */
+    public HttpResponseBuilder status(int paramStatus) {
+        this.status = paramStatus;
+        return this;
+    }
 }

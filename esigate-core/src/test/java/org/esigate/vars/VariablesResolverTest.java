@@ -29,33 +29,33 @@ import org.junit.Test;
  */
 public class VariablesResolverTest {
 
-	public VariablesResolverTest() {
-	}
+    public VariablesResolverTest() {
+    }
 
-	/**
-	 * Test of replaceAllVariables method, of class VariablesHelper.
-	 */
-	@Test
-	public void testReplaceAllVariables() {
+    /**
+     * Test of replaceAllVariables method, of class VariablesHelper.
+     */
+    @Test
+    public void testReplaceAllVariables() {
 
-		assertFalse(VariablesResolver.containsVariable("novariable"));
-		assertFalse(VariablesResolver.containsVariable("$(varTest"));
-		assertTrue(VariablesResolver.containsVariable("$(varTest)"));
-		assertTrue(VariablesResolver.containsVariable("a string $(varTest) with variable"));
-		assertTrue(VariablesResolver.containsVariable("a string $(varTest) with $(varTest) 2 variables"));
+        assertFalse(VariablesResolver.containsVariable("novariable"));
+        assertFalse(VariablesResolver.containsVariable("$(varTest"));
+        assertTrue(VariablesResolver.containsVariable("$(varTest)"));
+        assertTrue(VariablesResolver.containsVariable("a string $(varTest) with variable"));
+        assertTrue(VariablesResolver.containsVariable("a string $(varTest) with $(varTest) 2 variables"));
 
-		String page = "some(unknownvar1)url with unkown $(unknownvar2) parameters";
-		String result = VariablesResolver.replaceAllVariables(page);
-		assertEquals("some(unknownvar1)url with unkown  parameters", result);
+        String page = "some(unknownvar1)url with unkown $(unknownvar2) parameters";
+        String result = VariablesResolver.replaceAllVariables(page);
+        assertEquals("some(unknownvar1)url with unkown  parameters", result);
 
-		page = "some$(varTest)url";
-		result = VariablesResolver.replaceAllVariables(page);
-		assertEquals("someTesturl", result);
+        page = "some$(varTest)url";
+        result = VariablesResolver.replaceAllVariables(page);
+        assertEquals("someTesturl", result);
 
-		page = "some$(varTest)url$(unkwownvar)";
-		result = VariablesResolver.replaceAllVariables(page);
-		assertEquals("someTesturl", result);
+        page = "some$(varTest)url$(unkwownvar)";
+        result = VariablesResolver.replaceAllVariables(page);
+        assertEquals("someTesturl", result);
 
-	}
+    }
 
 }

@@ -20,50 +20,57 @@ import org.apache.http.impl.client.cache.CacheConfig;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 
-public class CacheConfigHelper {
-	public final static CacheConfig createCacheConfig(Properties properties) {
+public final class CacheConfigHelper {
 
-		// Heuristic caching
-		boolean heuristicCachingEnabled = Parameters.HEURISTIC_CACHING_ENABLED.getValueBoolean(properties);
-		float heuristicCoefficient = Parameters.HEURISTIC_COEFFICIENT.getValueFloat(properties);
-		long heuristicDefaultLifetimeSecs = Parameters.HEURISTIC_DEFAULT_LIFETIME_SECS.getValueLong(properties);
-		int maxCacheEntries = Parameters.MAX_CACHE_ENTRIES.getValueInt(properties);
-		long maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValueLong(properties);
+    private CacheConfigHelper() {
 
-		// Asynchronous revalidation
-		int minAsynchronousWorkers = Parameters.MIN_ASYNCHRONOUS_WORKERS.getValueInt(properties);
-		int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValueInt(properties);
-		int asynchronousWorkerIdleLifetimeSecs = Parameters.ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS.getValueInt(properties);
-		int maxUpdateRetries = Parameters.MAX_UPDATE_RETRIES.getValueInt(properties);
-		int revalidationQueueSize = Parameters.REVALIDATION_QUEUE_SIZE.getValueInt(properties);
+    }
 
-		CacheConfig.Builder builder = CacheConfig.custom();
-		builder.setHeuristicCachingEnabled(heuristicCachingEnabled);
-		builder.setHeuristicCoefficient(heuristicCoefficient);
-		builder.setHeuristicDefaultLifetime(heuristicDefaultLifetimeSecs);
-		builder.setMaxCacheEntries(maxCacheEntries);
-		builder.setMaxObjectSize(maxObjectSize > 0 ? maxObjectSize : Long.MAX_VALUE);
-		builder.setAsynchronousWorkersCore(minAsynchronousWorkers);
-		builder.setAsynchronousWorkersMax(maxAsynchronousWorkers);
-		builder.setAsynchronousWorkerIdleLifetimeSecs(asynchronousWorkerIdleLifetimeSecs);
-		builder.setMaxUpdateRetries(maxUpdateRetries).setRevalidationQueueSize(revalidationQueueSize);
-		builder.setSharedCache(true);
-		return builder.build();
-	}
+    public static CacheConfig createCacheConfig(Properties properties) {
 
-	public final static CacheStorage createCacheStorage(Properties properties) {
-		String cacheStorageClass = Parameters.CACHE_STORAGE.getValueString(properties);
-		Object cacheStorageObject;
-		try {
-			cacheStorageObject = Class.forName(cacheStorageClass).newInstance();
-		} catch (Exception e) {
-			throw new ConfigurationException("Could not instantiate cacheStorageClass", e);
-		}
-		if (!(cacheStorageObject instanceof CacheStorage))
-			throw new ConfigurationException("Cache storage class must extend org.esigate.cache.CacheStorage.");
-		CacheStorage cacheStorage = (CacheStorage) cacheStorageObject;
-		cacheStorage.init(properties);
-		return cacheStorage;
-	}
+        // Heuristic caching
+        boolean heuristicCachingEnabled = Parameters.HEURISTIC_CACHING_ENABLED.getValueBoolean(properties);
+        float heuristicCoefficient = Parameters.HEURISTIC_COEFFICIENT.getValueFloat(properties);
+        long heuristicDefaultLifetimeSecs = Parameters.HEURISTIC_DEFAULT_LIFETIME_SECS.getValueLong(properties);
+        int maxCacheEntries = Parameters.MAX_CACHE_ENTRIES.getValueInt(properties);
+        long maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValueLong(properties);
+
+        // Asynchronous revalidation
+        int minAsynchronousWorkers = Parameters.MIN_ASYNCHRONOUS_WORKERS.getValueInt(properties);
+        int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValueInt(properties);
+        int asynchronousWorkerIdleLifetimeSecs = Parameters.ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS
+                .getValueInt(properties);
+        int maxUpdateRetries = Parameters.MAX_UPDATE_RETRIES.getValueInt(properties);
+        int revalidationQueueSize = Parameters.REVALIDATION_QUEUE_SIZE.getValueInt(properties);
+
+        CacheConfig.Builder builder = CacheConfig.custom();
+        builder.setHeuristicCachingEnabled(heuristicCachingEnabled);
+        builder.setHeuristicCoefficient(heuristicCoefficient);
+        builder.setHeuristicDefaultLifetime(heuristicDefaultLifetimeSecs);
+        builder.setMaxCacheEntries(maxCacheEntries);
+        builder.setMaxObjectSize(maxObjectSize > 0 ? maxObjectSize : Long.MAX_VALUE);
+        builder.setAsynchronousWorkersCore(minAsynchronousWorkers);
+        builder.setAsynchronousWorkersMax(maxAsynchronousWorkers);
+        builder.setAsynchronousWorkerIdleLifetimeSecs(asynchronousWorkerIdleLifetimeSecs);
+        builder.setMaxUpdateRetries(maxUpdateRetries).setRevalidationQueueSize(revalidationQueueSize);
+        builder.setSharedCache(true);
+        return builder.build();
+    }
+
+    public static CacheStorage createCacheStorage(Properties properties) {
+        String cacheStorageClass = Parameters.CACHE_STORAGE.getValueString(properties);
+        Object cacheStorageObject;
+        try {
+            cacheStorageObject = Class.forName(cacheStorageClass).newInstance();
+        } catch (Exception e) {
+            throw new ConfigurationException("Could not instantiate cacheStorageClass", e);
+        }
+        if (!(cacheStorageObject instanceof CacheStorage)) {
+            throw new ConfigurationException("Cache storage class must extend org.esigate.cache.CacheStorage.");
+        }
+        CacheStorage cacheStorage = (CacheStorage) cacheStorageObject;
+        cacheStorage.init(properties);
+        return cacheStorage;
+    }
 
 }
