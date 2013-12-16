@@ -35,7 +35,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 	
 	private IFloodlightProviderService floodlightProvider;
 
-	public class OnosDeviceUpdate implements IUpdate {
+	private class OnosDeviceUpdate implements IUpdate {
 		private OnosDevice device;
 		
 		public OnosDeviceUpdate(OnosDevice device) {
@@ -55,8 +55,9 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 
 	@Override
 	public boolean isCallbackOrderingPrereq(OFType type, String name) {
-		// TODO Auto-generated method stub
-		return false;
+		// We want link discovery to consume LLDP first otherwise we'll
+		// end up reading bad device info from LLDP packets
+		return type == OFType.PACKET_IN && "linkdiscovery".equals(name);
 	}
 
 	@Override

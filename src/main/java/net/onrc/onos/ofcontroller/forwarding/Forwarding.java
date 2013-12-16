@@ -249,13 +249,17 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 				destinationMac);
 		
 		if (deviceObject == null) {
-			log.debug("No device entry found for {}", destinationMac);
+			log.debug("No device entry found for {} - broadcasting packet", 
+					destinationMac);
+			handleBroadcast(sw, pi, eth);
 			return;
 		}
 		
 		Iterator<IPortObject> ports = deviceObject.getAttachedPorts().iterator();	
 		if (!ports.hasNext()) {
-			log.debug("No attachment point found for device {}", destinationMac);
+			log.debug("No attachment point found for device {} - broadcasting packet", 
+					destinationMac);
+			handleBroadcast(sw, pi, eth);
 			return;
 		}
 		IPortObject portObject = ports.next();

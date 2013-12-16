@@ -8,6 +8,7 @@ import net.onrc.onos.ofcontroller.util.serializers.MACAddressSerializer;
 
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.openflow.util.HexString;
 
 /**
  * The class representing MAC address.
@@ -167,13 +168,6 @@ public class MACAddress implements Serializable{
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (byte b: address) {
-            if (builder.length() > 0) {
-                builder.append(":");
-            }
-            builder.append(String.format("%02X", b & 0xFF));
-        }
-        return builder.toString();
+    	return HexString.toHexString(address);
     }
 }

@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.core.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import net.floodlightcontroller.devicemanager.IDevice;
@@ -325,8 +326,9 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	 */
 	@Override
 	public void addOnosDevice(OnosDevice onosDevice) {
-		
 		String macAddress = HexString.toHexString(onosDevice.getMacAddress().toBytes());
+		
+		log.debug("addOnosDevice: {}", onosDevice);
 		
 		try {
 			IDeviceObject device = ope.searchDevice(macAddress);
@@ -339,7 +341,6 @@ public class DeviceStorageImpl implements IDeviceStorage {
 			}
 			
 			// Check if the device has the IP address, add it if it doesn't
-			// TODO multiple IP addresses
 			if (onosDevice.getIpv4Address() != null) {
 				boolean hasIpAddress = false;
 				for (IIpv4Address ipv4Address : device.getIpv4Addresses()) {
@@ -360,8 +361,25 @@ public class DeviceStorageImpl implements IDeviceStorage {
 			}
 			
 			// Check if the device has the attachment point, add it if not
+			// TODO single attachment point for now, extend to multiple later
 			String switchDpid = HexString.toHexString(onosDevice.getSwitchDPID());
 			boolean hasAttachmentPoint = false;
+			Iterator<IPortObject> it = device.getAttachedPorts().iterator();
+			if (it.hasNext()) {
+				IPortObject existingPort = it.next();
+				if (existingPort != null) {
+					ISwitchObject existingSwitch = existingPort.getSwitch();
+					if (!existingSwitch.getDPID().equals(switchDpid) ||
+							existingPort.getNumber() != onosDevice.getSwitchPort()) {
+						existingPort.removeDevice(device);
+					}
+					else {
+						hasAttachmentPoint = true;
+					}
+				}
+			}
+			
+			/*
 			for (IPortObject portObject : device.getAttachedPorts()) {
 				ISwitchObject switchObject = portObject.getSwitch();
 				if (switchObject.getDPID().equals(switchDpid)
@@ -370,10 +388,13 @@ public class DeviceStorageImpl implements IDeviceStorage {
 					break;
 				}
 			}
+			*/
 			
 			if (!hasAttachmentPoint) {
 				IPortObject portObject = ope.searchPort(switchDpid, onosDevice.getSwitchPort());
-				portObject.setDevice(device);
+				if (portObject != null) {
+					portObject.setDevice(device);
+				}
 			}
 			
 			ope.commit();
