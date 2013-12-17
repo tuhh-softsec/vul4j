@@ -63,8 +63,8 @@ class ONOS( Controller ):
         ( fc + 'core.FloodlightProvider.controllerid', 0 ) )
 
 
-    # Make mvn not suck
-    mvn = 'mvn -e -X'
+    # For maven debugging
+    # mvn = 'mvn -o -e -X'
 
     def __init__( self, name, n=1, drop=True, **params):
         """n: number of ONOS instances to run (1)
@@ -83,7 +83,8 @@ class ONOS( Controller ):
         # Need to run commands from ONOS dir
         self.cmd( 'cd', self.onosDir )
         self.cmd( 'export PATH=$PATH:%s' % self.onosDir )
-        self.cmd( 'export MVN="%s"' % self.mvn )
+        if hasattr( self, 'mvn' ):
+            self.cmd( 'export MVN="%s"' % self.mvn )
 
     def check( self ):
         "Check for prerequisites"
