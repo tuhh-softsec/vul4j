@@ -75,7 +75,8 @@ public class LProbeRepository implements Repository{
         String sql,
         List<String> filters,
         List<String> results,
-        MultivaluedMap<String, String> params) {
+        MultivaluedMap<String, String> params,
+        List<String> msts) {
         Query query = em.createNativeQuery(sql);
         for (String filter: filters) {
             List<String> param = params.get(filter);
@@ -89,17 +90,20 @@ public class LProbeRepository implements Repository{
         List<Map<String, Object>> res = new ArrayList<Map<String, Object>>();
         for (Object[] row: result) {
             Map<String, Object> set = new HashMap<String, Object>();
+            boolean ro = false;
             for (int i = 0; i < row.length; i++) {
                 set.put(results.get(i), row[i]);
                 if (results.get(i).equals("probeId")) {
                     if (authorization.isReadOnly((String)row[i])) {
-                        set.put("readonly", Boolean.TRUE);
-                    }
-                    else {
-                        set.put("readonly", Boolean.FALSE);
+                    	ro = true;
                     }
                 }
+                if (results.get(i).equals("mstId") &&
+                	!msts.contains((String)row[i])) {
+                	ro = true;
+                }
             }
+            set.put("readonly", ro);
             res.add(set);
         }
         return new Response(true, 200, res);

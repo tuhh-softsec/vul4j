@@ -121,6 +121,7 @@ public class LProbeService {
                 if (auth.getMst().contains(mstId)) {
                     return response;
                 }
+                p.setReadonly(true);
                 return response;
             }
             return new Response(false, 698, new ArrayList<LProbe>());
@@ -205,7 +206,8 @@ public class LProbeService {
             }
             subselect += "or readonly = true) as lp";
             sql = sql.replace("l_probe", subselect);
-            return lpr.filterFree(sql, filters, results, params);
+            List<String> msts = auth.getMst();
+            return lpr.filterFree(sql, filters, results, params, msts);
         }
         catch(AuthenticationException ae) {
             return new Response(false, 699, new ArrayList<LProbe>());
