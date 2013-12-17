@@ -38,7 +38,7 @@ JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 # Set ONOS core main class
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
 
-MVN=${MVN:-mvn}
+MVN=${MVN:-mvn -o}
 
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
