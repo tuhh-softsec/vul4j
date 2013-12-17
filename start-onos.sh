@@ -11,7 +11,8 @@ ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
 PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
 LOGS="$ONOS_LOG $PCAP_LOG"
 
-ONOS_PROPS="${ONOS_PROPS:-./conf/onos.properties}"
+ONOS_PROPS=${ONOS_PROPS:-${ONOS_HOME}/conf/onos.properties}
+JMX_PORT=${JMX_PORT:-7189}
 
 # Set JVM options
 JVM_OPTS="${JVM_OPTS:-}"
