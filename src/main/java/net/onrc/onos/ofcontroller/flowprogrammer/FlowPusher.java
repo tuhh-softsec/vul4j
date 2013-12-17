@@ -152,6 +152,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		
 		@Override
 		public void run() {
+			this.setName("FlowPusherThread " + this.getId() );
 			while (true) {
 				try {
 					// wait for message pushed to queue

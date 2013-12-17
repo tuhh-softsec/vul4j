@@ -82,6 +82,8 @@ public class NetworkGraphPublisher implements IDeviceListener,
     protected class SwitchCleanup implements ControlChangeCallback, Runnable {
         @Override
         public void run() {
+            String old = Thread.currentThread().getName();
+            Thread.currentThread().setName("SwitchCleanup " + Thread.currentThread().getId());
             try {
             	log.debug("Running cleanup thread");
                 switchCleanup();
@@ -92,6 +94,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
             	op.close();
                     cleanupTask.reschedule(CLEANUP_TASK_INTERVAL,
                                               TimeUnit.SECONDS);
+                Thread.currentThread().setName(old);
             }
         }
 

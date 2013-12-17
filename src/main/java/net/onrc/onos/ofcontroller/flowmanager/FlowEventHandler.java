@@ -148,6 +148,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      */
     @Override
     public void run() {
+	this.setName("FlowEventHandler " + this.getId());
 	startup();
 
 	//

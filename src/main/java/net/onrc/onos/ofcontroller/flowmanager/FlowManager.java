@@ -582,6 +582,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    // The main loop
 	    //
 	    Collection<FlowPath> collection = new LinkedList<FlowPath>();
+	    this.setName("FlowDatabaseWriter " + this.getId() );
 	    try {
 		while (true) {
 		    FlowPath flowPath = blockingQueue.take();
