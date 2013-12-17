@@ -213,7 +213,7 @@ public interface INetMapTopologyObjects {
 		public void setIpv4Address(int ipv4Address);
 		
 		@JsonIgnore
-		@GremlinGroovy("it.in('hasAddress')")
+		@Adjacency(label = "hasAddress", direction = Direction.IN)
 		public IDeviceObject getDevice();
 	}
 	

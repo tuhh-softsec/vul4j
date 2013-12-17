@@ -642,7 +642,9 @@ public class FlowDatabaseOperation {
 	FlowEntry flowEntry = new FlowEntry();
 	flowEntry.setFlowEntryId(new FlowEntryId(flowEntryIdStr));
 	flowEntry.setDpid(new Dpid(switchDpidStr));
-
+	flowEntry.setIdleTimeout(idleTimeout);
+	flowEntry.setHardTimeout(hardTimeout);
+	
 	//
 	// Extract the match conditions
 	//

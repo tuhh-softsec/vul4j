@@ -437,17 +437,22 @@ public class LinkStorageImpl implements ILinkStorage {
 		// get source port vertex
 		String dpid = HexString.toHexString(lt.getSrc());
 		short port = lt.getSrcPort();
+		log.debug("addLinkImpl Src dpid : " + dpid + " port :" + port);
 		vportSrc = dbop.searchPort(dpid, port);
 		
 		// get dest port vertex
 		dpid = HexString.toHexString(lt.getDst());
 		port = lt.getDstPort();
+		log.debug("addLinkImpl Dst dpid : " + dpid + " port :" + port);
 		vportDst = dbop.searchPort(dpid, port);
-		            
+		
+		log.debug("addLinkImpl vportSrc : " + vportSrc + " vportDst : " + vportDst);
+		
 		if (vportSrc != null && vportDst != null) {
 			IPortObject portExist = null;
 			// check if the link exists
 			for (IPortObject V : vportSrc.getLinkedPorts()) {
+			        log.debug("vportSrc.getLinkedPorts() :" + V);
 				if (V.equals(vportDst)) {
 					portExist = V;
 					break;

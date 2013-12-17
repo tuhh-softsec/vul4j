@@ -438,7 +438,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
     		// and takes forever.
     		boolean attached = false;
     		for (IPortObject portsOnSwitch : sw.getPorts()) {
-    			if (portsOnSwitch.getPortId() == portObject.getPortId()) {
+    			if (portsOnSwitch.getPortId().equals(portObject.getPortId())) {
     				attached = true;
     				break;
     			}
