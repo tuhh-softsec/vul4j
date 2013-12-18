@@ -735,10 +735,13 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		}
 
 		//
-		// TODO: Set the following flag
-		// fm.setFlags(OFFlowMod.OFPFF_SEND_FLOW_REM);
-		// See method ForwardingBase::pushRoute()
+		// Set the OFPFF_SEND_FLOW_REM flag if the Flow Entry is not
+		// permanent.
 		//
+		if ((flowEntry.idleTimeout() != 0) ||
+		    (flowEntry.hardTimeout() != 0)) {
+		    fm.setFlags(OFFlowMod.OFPFF_SEND_FLOW_REM);
+		}
 
 		//
 		// Write the message to the switch

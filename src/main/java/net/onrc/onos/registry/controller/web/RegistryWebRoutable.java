@@ -1,4 +1,4 @@
-package net.onrc.onos.registry.controller;
+package net.onrc.onos.registry.controller.web;
 
 import net.floodlightcontroller.restserver.RestletRoutable;
 
@@ -18,7 +18,7 @@ public class RegistryWebRoutable implements RestletRoutable {
 
 	@Override
 	public String basePath() {
-		return "/wm/registry";
+		return "/wm/onos/registry";
 	}
 
 }

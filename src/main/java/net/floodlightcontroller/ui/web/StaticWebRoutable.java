@@ -64,7 +64,7 @@ public class StaticWebRoutable implements RestletRoutable, IFloodlightModule {
 
 	@Override
 	public String basePath() {
-		return "/ui/";
+		return "/wm/floodlight/ui/";
 	}
 
 }

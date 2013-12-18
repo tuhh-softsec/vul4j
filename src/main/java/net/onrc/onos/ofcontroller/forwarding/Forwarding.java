@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
@@ -25,6 +24,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
+import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
@@ -51,8 +51,8 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.net.InetAddresses;
 
 public class Forwarding implements IOFMessageListener, IFloodlightModule,
@@ -61,6 +61,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 
 	private final int IDLE_TIMEOUT = 5; // seconds
 	private final int HARD_TIMEOUT = 0; // seconds
+
+	private final int PATH_PUSHED_TIMEOUT = 3000; // milliseconds
 	
 	private IFloodlightProviderService floodlightProvider;
 	private IFlowService flowService;
@@ -70,12 +72,15 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	private IDeviceStorage deviceStorage;
 	private TopologyManager topologyService;
 	
-	private Map<Path, Long> pendingFlows;
-	private Multimap<Long, PacketToPush> waitingPackets;
+	//private Map<Path, Long> pendingFlows;
+	// TODO it seems there is a Guava collection that will time out entries.
+	// We should see if this will work here.
+	private Map<Path, PushedFlow> pendingFlows;
+	private ListMultimap<Long, PacketToPush> waitingPackets;
 	
 	private final Object lock = new Object();
 	
-	public class PacketToPush {
+	private class PacketToPush {
 		public final OFPacketOut packet;
 		public final long dpid;
 		
@@ -85,15 +90,35 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		}
 	}
 	
-	public final class Path {
+	private class PushedFlow {
+		public final long flowId;
+		private final long pushedTime;
+		public short firstHopOutPort = OFPort.OFPP_NONE.getValue();
+		
+		public PushedFlow(long flowId) {
+			this.flowId = flowId;
+			pushedTime = System.currentTimeMillis();
+		}
+		
+		public boolean isExpired() {
+			return (System.currentTimeMillis() - pushedTime) > PATH_PUSHED_TIMEOUT;
+		}
+	}
+	
+	private final class Path {
 		public final SwitchPort srcPort;
 		public final SwitchPort dstPort;
+		public final MACAddress srcMac;
+		public final MACAddress dstMac;
 		
-		public Path(SwitchPort src, SwitchPort dst) {
+		public Path(SwitchPort src, SwitchPort dst, 
+				MACAddress srcMac, MACAddress dstMac) {
 			srcPort = new SwitchPort(new Dpid(src.dpid().value()), 
 					new Port(src.port().value()));
 			dstPort = new SwitchPort(new Dpid(dst.dpid().value()), 
 					new Port(dst.port().value()));
+			this.srcMac = srcMac;
+			this.dstMac = dstMac;
 		}
 		
 		@Override
@@ -104,7 +129,9 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 			
 			Path otherPath = (Path) other;
 			return srcPort.equals(otherPath.srcPort) && 
-					dstPort.equals(otherPath.dstPort);
+					dstPort.equals(otherPath.dstPort) &&
+					srcMac.equals(otherPath.srcMac) &&
+					dstMac.equals(otherPath.dstMac);
 		}
 		
 		@Override
@@ -112,7 +139,15 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 			int hash = 17;
 			hash = 31 * hash + srcPort.hashCode();
 			hash = 31 * hash + dstPort.hashCode();
+			hash = 31 * hash + srcMac.hashCode();
+			hash = 31 * hash + dstMac.hashCode();
 			return hash;
+		}
+		
+		@Override
+		public String toString() {
+			return "(" + srcMac + " at " + srcPort + ") => (" 
+					+ dstPort + " at " + dstMac + ")";
 		}
 	}
 	
@@ -139,6 +174,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		dependencies.add(IFloodlightProviderService.class);
 		dependencies.add(IFlowService.class);
 		dependencies.add(IFlowPusherService.class);
+		dependencies.add(IOnosDeviceService.class);
 		return dependencies;
 	}
 	
@@ -152,10 +188,12 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
-		pendingFlows = new ConcurrentHashMap<Path, Long>();
+		//pendingFlows = new ConcurrentHashMap<Path, Long>();
+		pendingFlows = new HashMap<Path, PushedFlow>();
 		//waitingPackets = Multimaps.synchronizedSetMultimap(
 				//HashMultimap.<Long, PacketToPush>create());
-		waitingPackets = HashMultimap.create();
+		//waitingPackets = HashMultimap.create();
+		waitingPackets = LinkedListMultimap.create();
 		
 		deviceStorage = new DeviceStorageImpl();
 		deviceStorage.init("","");
@@ -176,7 +214,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	@Override
 	public boolean isCallbackOrderingPrereq(OFType type, String name) {
 		return (type == OFType.PACKET_IN) && 
-				(name.equals("devicemanager") || name.equals("proxyarpmanager"));
+				(name.equals("devicemanager") || name.equals("proxyarpmanager")
+				|| name.equals("onosdevicemanager"));
 	}
 
 	@Override
@@ -233,7 +272,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		// actually ARP before broadcasting, so we can trick it into sending
 		// our non-ARP packets.
 		// TODO This should be refactored later to account for the new use case.
-		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize()));
+		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize(),
+				-1L, (short)-1, sw.getId(), pi.getInPort()));
 	}
 	
 	private void handlePacketIn(IOFSwitch sw, OFPacketIn pi, Ethernet eth) {
@@ -244,13 +284,17 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 				destinationMac);
 		
 		if (deviceObject == null) {
-			log.debug("No device entry found for {}", destinationMac);
+			log.debug("No device entry found for {} - broadcasting packet", 
+					destinationMac);
+			handleBroadcast(sw, pi, eth);
 			return;
 		}
 		
 		Iterator<IPortObject> ports = deviceObject.getAttachedPorts().iterator();	
 		if (!ports.hasNext()) {
-			log.debug("No attachment point found for device {}", destinationMac);
+			log.debug("No attachment point found for device {} - broadcasting packet", 
+					destinationMac);
+			handleBroadcast(sw, pi, eth);
 			return;
 		}
 		IPortObject portObject = ports.next();
@@ -271,19 +315,34 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		
 		FlowPath flowPath, reverseFlowPath;
 		
-		Path pathspec = new Path(srcSwitchPort, dstSwitchPort);
+		Path pathspec = new Path(srcSwitchPort, dstSwitchPort, 
+				srcMacAddress, dstMacAddress);
 		// TODO check concurrency
 		synchronized (lock) {
-			Long existingFlowId = pendingFlows.get(pathspec);
+			PushedFlow existingFlow = pendingFlows.get(pathspec);
+			//Long existingFlowId = pendingFlows.get(pathspec);
 			
-			if (existingFlowId != null) {
+			if (existingFlow != null && !existingFlow.isExpired()) {
 				log.debug("Found existing flow {}", 
-						HexString.toHexString(existingFlowId));
+						HexString.toHexString(existingFlow.flowId));
 				
 				OFPacketOut po = constructPacketOut(pi, sw);
-				waitingPackets.put(existingFlowId, new PacketToPush(po, sw.getId()));
+				
+				if (existingFlow.firstHopOutPort != OFPort.OFPP_NONE.getValue()) {
+					// Flow has been sent to the switches so it is safe to
+					// send a packet out now
+					sendPacketOut(sw, po, existingFlow.firstHopOutPort);
+				}
+				else {
+					// Flow has not yet been sent to switches so save the
+					// packet out for later
+					waitingPackets.put(existingFlow.flowId, 
+							new PacketToPush(po, sw.getId()));
+				}
 				return;
 			}
+			
+			//log.debug("Couldn't match {} in {}", pathspec, pendingFlows);
 			
 			log.debug("Adding new flow between {} at {} and {} at {}",
 					new Object[]{srcMacAddress, srcSwitchPort, dstMacAddress, dstSwitchPort});
@@ -338,11 +397,14 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 			reverseFlowPath.setFlowId(reverseFlowId);
 			
 			OFPacketOut po = constructPacketOut(pi, sw);
-			Path reversePathSpec = new Path(dstSwitchPort, srcSwitchPort);
+			Path reversePathSpec = new Path(dstSwitchPort, srcSwitchPort, 
+					dstMacAddress, srcMacAddress);
 			
 			// Add to waiting lists
-			pendingFlows.put(pathspec, flowId.value());
-			pendingFlows.put(reversePathSpec, reverseFlowId.value());
+			//pendingFlows.put(pathspec, flowId.value());
+			//pendingFlows.put(reversePathSpec, reverseFlowId.value());
+			pendingFlows.put(pathspec, new PushedFlow(flowId.value()));
+			pendingFlows.put(reversePathSpec, new PushedFlow(reverseFlowId.value()));
 			waitingPackets.put(flowId.value(), new PacketToPush(po, sw.getId()));
 		
 		}
@@ -407,33 +469,44 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	}
 
 	private void flowInstalled(FlowPath installedFlowPath) {
-		// TODO check concurrency
-		// will need to sync and access both collections at once.
 		long flowId = installedFlowPath.flowId().value();
+		
+		short outPort = 
+				installedFlowPath.flowEntries().get(0).outPort().value();
+		
+		MACAddress srcMacAddress = installedFlowPath.flowEntryMatch().srcMac();
+		MACAddress dstMacAddress = installedFlowPath.flowEntryMatch().dstMac();
 		
 		Collection<PacketToPush> packets;
 		synchronized (lock) {
+			log.debug("Flow {} has been installed, sending queued packets",
+					installedFlowPath.flowId());
+			
 			packets = waitingPackets.removeAll(flowId);
 			
-			//remove pending flows entry
-			Path pathToRemove = new Path(installedFlowPath.dataPath().srcPort(),
-					installedFlowPath.dataPath().dstPort());
-			pendingFlows.remove(pathToRemove);
-			
+			// remove pending flows entry
+			Path installedPath = new Path(installedFlowPath.dataPath().srcPort(),
+					installedFlowPath.dataPath().dstPort(),
+					srcMacAddress, dstMacAddress);
+			//pendingFlows.remove(pathToRemove);
+			PushedFlow existingFlow = pendingFlows.get(installedPath);
+			if (existingFlow != null)
+			    existingFlow.firstHopOutPort = outPort;
 		}
 		
 		for (PacketToPush packet : packets) {
 			IOFSwitch sw = floodlightProvider.getSwitches().get(packet.dpid);
 			
-			OFPacketOut po = packet.packet;
-			short outPort = 
-					installedFlowPath.flowEntries().get(0).outPort().value();
-			po.getActions().add(new OFActionOutput(outPort));
-			po.setActionsLength((short)
-					(po.getActionsLength() + OFActionOutput.MINIMUM_LENGTH));
-			po.setLengthU(po.getLengthU() + OFActionOutput.MINIMUM_LENGTH);
-			
-			flowPusher.add(sw, po);
+			sendPacketOut(sw, packet.packet, outPort);
 		}
+	}
+	
+	private void sendPacketOut(IOFSwitch sw, OFPacketOut po, short outPort) {
+		po.getActions().add(new OFActionOutput(outPort));
+		po.setActionsLength((short)
+				(po.getActionsLength() + OFActionOutput.MINIMUM_LENGTH));
+		po.setLengthU(po.getLengthU() + OFActionOutput.MINIMUM_LENGTH);
+		
+		flowPusher.add(sw, po);
 	}
 }

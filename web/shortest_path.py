@@ -13,7 +13,7 @@ import time
 from flask import Flask, json, Response, render_template, make_response, request
 
 #
-# curl http://127.0.0.1:8080/wm/topology/route/00:00:00:00:00:00:0a:01/1/00:00:00:00:00:00:0a:04/1/json
+# curl http://127.0.0.1:8080/wm/onos/topology/route/00:00:00:00:00:00:0a:01/1/00:00:00:00:00:00:0a:04/1/json
 #
 
 ## Global Var ##
@@ -33,14 +33,14 @@ def debug(txt):
   if DEBUG:
     print '%s' % (txt)
 
-# @app.route("/wm/topology/route/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
+# @app.route("/wm/onos/topology/route/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
 #
 # Sample output:
 # {'dstPort': {'port': {'value': 0}, 'dpid': {'value': '00:00:00:00:00:00:00:02'}}, 'srcPort': {'port': {'value': 0}, 'dpid': {'value': '00:00:00:00:00:00:00:01'}}, 'flowEntries': [{'outPort': {'value': 1}, 'flowEntryErrorState': None, 'flowEntryMatch': None, 'flowEntryActions': None, 'inPort': {'value': 0}, 'flowEntryId': None, 'flowEntryUserState': 'FE_USER_UNKNOWN', 'dpid': {'value': '00:00:00:00:00:00:00:01'}, 'flowEntrySwitchState': 'FE_SWITCH_UNKNOWN'}, {'outPort': {'value': 0}, 'flowEntryErrorState': None, 'flowEntryMatch': None, 'flowEntryActions': None, 'inPort': {'value': 9}, 'flowEntryId': None, 'flowEntryUserState': 'FE_USER_UNKNOWN', 'dpid': {'value': '00:00:00:00:00:00:00:02'}, 'flowEntrySwitchState': 'FE_SWITCH_UNKNOWN'}]}
 #
 def shortest_path(v1, p1, v2, p2):
   try:
-    command = "curl -s http://%s:%s/wm/topology/route/%s/%s/%s/%s/json" % (ControllerIP, ControllerPort, v1, p1, v2, p2)
+    command = "curl -s http://%s:%s/wm/onos/topology/route/%s/%s/%s/%s/json" % (ControllerIP, ControllerPort, v1, p1, v2, p2)
     debug("shortest_path %s" % command)
 
     result = os.popen(command).read()

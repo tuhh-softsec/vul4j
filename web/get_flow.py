@@ -29,7 +29,7 @@ def debug(txt):
   if DEBUG:
     print '%s' % (txt)
 
-# @app.route("/wm/flow/get/<flow-id>/json")
+# @app.route("/wm/onos/flows/get/<flow-id>/json")
 # Sample output:
 # {"flowId":{"value":"0x5"},"installerId":{"value":"FOOBAR"},"dataPath":{"srcPort":{"dpid":{"value":"00:00:00:00:00:00:00:01"},"port":{"value":0}},"dstPort":{"dpid":{"value":"00:00:00:00:00:00:00:02"},"port":{"value":0}},"flowEntries":[{"flowEntryId":"0x1389","flowEntryMatch":null,"flowEntryActions":null,"dpid":{"value":"00:00:00:00:00:00:00:01"},"inPort":{"value":0},"outPort":{"value":1},"flowEntryUserState":"FE_USER_DELETE","flowEntrySwitchState":"FE_SWITCH_NOT_UPDATED","flowEntryErrorState":null},{"flowEntryId":"0x138a","flowEntryMatch":null,"flowEntryActions":null,"dpid":{"value":"00:00:00:00:00:00:00:02"},"inPort":{"value":9},"outPort":{"value":0},"flowEntryUserState":"FE_USER_DELETE","flowEntrySwitchState":"FE_SWITCH_NOT_UPDATED","flowEntryErrorState":null}]}}
 
@@ -236,7 +236,7 @@ def print_flow_path(parsedResult):
 
 def get_flow_path(flow_id):
   try:
-    command = "curl -s \"http://%s:%s/wm/flow/get/%s/json\"" % (ControllerIP, ControllerPort, flow_id)
+    command = "curl -s \"http://%s:%s/wm/onos/flows/get/%s/json\"" % (ControllerIP, ControllerPort, flow_id)
     debug("get_flow_path %s" % command)
 
     result = os.popen(command).read()
@@ -256,7 +256,7 @@ def get_flow_path(flow_id):
 
 def get_all_flow_paths():
   try:
-    command = "curl -s \"http://%s:%s/wm/flow/getall/json\"" % (ControllerIP, ControllerPort)
+    command = "curl -s \"http://%s:%s/wm/onos/flows/getall/json\"" % (ControllerIP, ControllerPort)
     debug("get_all_flow_paths %s" % command)
 
     result = os.popen(command).read()

@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.core.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import net.floodlightcontroller.devicemanager.IDevice;
@@ -13,6 +14,8 @@ import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.devicemanager.OnosDevice;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -327,4 +330,102 @@ public class DeviceStorageImpl implements IDeviceStorage {
 			}
 		}
 	}
+	
+	/**
+	 * Takes an {@link OnosDevice} and adds it into the database. There is no
+	 * checking of the database data and removing old data - an 
+	 * {@link OnosDevice} basically corresponds to a packet we've just seen,
+	 * and we need to add that information into the database.
+	 */
+	@Override
+	public void addOnosDevice(OnosDevice onosDevice) {
+		String macAddress = HexString.toHexString(onosDevice.getMacAddress().toBytes());
+		
+		//if the switch port we try to attach a new device already has a link, then stop adding device
+		IPortObject portObject1 = ope.searchPort(HexString.toHexString(
+				onosDevice.getSwitchDPID()), onosDevice.getSwitchPort());
+
+		if (portObject1.getLinkedPorts().iterator().hasNext()) {
+			log.debug("stop adding OnosDevice: {} due to there is a link to: {}",
+					onosDevice, portObject1.getLinkedPorts().iterator().next().getPortId());
+			return;
+		}
+		
+		log.debug("addOnosDevice: {}", onosDevice);
+
+		try {
+			IDeviceObject device = ope.searchDevice(macAddress);
+			
+			if (device == null) {
+				device = ope.newDevice();
+				device.setType("device");
+				device.setState("ACTIVE");
+				device.setMACAddress(macAddress);
+			}
+			
+			// Check if the device has the IP address, add it if it doesn't
+			if (onosDevice.getIpv4Address() != null) {
+				boolean hasIpAddress = false;
+				for (IIpv4Address ipv4Address : device.getIpv4Addresses()) {
+					if (ipv4Address.getIpv4Address() == onosDevice.getIpv4Address().intValue()) {
+						hasIpAddress = true;
+						break;
+					}
+				}
+				
+				if (!hasIpAddress) {
+					IIpv4Address ipv4Address = ope.ensureIpv4Address(onosDevice.getIpv4Address().intValue());
+					IDeviceObject oldDevice = ipv4Address.getDevice();
+					if (oldDevice != null && oldDevice.getMACAddress() != macAddress) {
+						oldDevice.removeIpv4Address(ipv4Address);
+					}
+					device.addIpv4Address(ipv4Address);
+				}
+			}
+			
+			// Check if the device has the attachment point, add it if not
+			// TODO single attachment point for now, extend to multiple later
+			String switchDpid = HexString.toHexString(onosDevice.getSwitchDPID());
+			boolean hasAttachmentPoint = false;
+			Iterator<IPortObject> it = device.getAttachedPorts().iterator();
+			if (it.hasNext()) {
+				IPortObject existingPort = it.next();
+				if (existingPort != null) {
+					ISwitchObject existingSwitch = existingPort.getSwitch();
+					if (!existingSwitch.getDPID().equals(switchDpid) ||
+							existingPort.getNumber() != onosDevice.getSwitchPort()) {
+						existingPort.removeDevice(device);
+					}
+					else {
+						hasAttachmentPoint = true;
+					}
+				}
+			}
+			
+			/*
+			for (IPortObject portObject : device.getAttachedPorts()) {
+				ISwitchObject switchObject = portObject.getSwitch();
+				if (switchObject.getDPID().equals(switchDpid)
+						&& portObject.getNumber() == onosDevice.getSwitchPort()) {
+					hasAttachmentPoint = true;
+					break;
+				}
+			}
+			*/
+			
+			if (!hasAttachmentPoint) {
+				IPortObject portObject = ope.searchPort(switchDpid, onosDevice.getSwitchPort());
+				if (portObject != null) {
+					portObject.setDevice(device);
+				}
+			}
+			
+			ope.commit();
+		}
+		catch (TitanException e) {
+			log.error("addOnosDevice {} failed:", macAddress, e);
+			ope.rollback();
+		}
+	}
+
 }
