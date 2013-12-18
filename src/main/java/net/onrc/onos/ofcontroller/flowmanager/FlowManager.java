@@ -413,32 +413,40 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Process all entries
 	//
+	// TODO: For now we have to create an explicit FlowEntry copy so
+	// we don't modify the original FlowEntry.
+	// This should go away after we start using the OpenFlow Barrier
+	// mechnanism in the FlowPusher.
+	//
+	Kryo kryo = kryoFactory.newKryo();
 	for (Pair<IOFSwitch, FlowEntry> entry : entries) {
 	    FlowEntry flowEntry = entry.second;
 
 	    //
 	    // Mark the Flow Entry that it has been pushed to the switch
 	    //
-	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+	    FlowEntry copyFlowEntry = kryo.copy(flowEntry);
+	    copyFlowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
 
 	    //
 	    // Write the Flow Entry to the Datagrid
 	    //
-	    switch (flowEntry.flowEntryUserState()) {
+	    switch (copyFlowEntry.flowEntryUserState()) {
 	    case FE_USER_ADD:
-		datagridService.notificationSendFlowEntryAdded(flowEntry);
+		datagridService.notificationSendFlowEntryAdded(copyFlowEntry);
 		break;
 	    case FE_USER_MODIFY:
-		datagridService.notificationSendFlowEntryUpdated(flowEntry);
+		datagridService.notificationSendFlowEntryUpdated(copyFlowEntry);
 		break;
 	    case FE_USER_DELETE:
-		datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+		datagridService.notificationSendFlowEntryRemoved(copyFlowEntry.flowEntryId());
 		break;
 	    case FE_USER_UNKNOWN:
 		assert(false);
 		break;
 	    }
 	}
+	kryoFactory.deleteKryo(kryo);
     }
 
     /**
@@ -692,6 +700,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    continue;
 		}
 		if (! flowEntry.isValidFlowEntryId()) {
+		    allValid = false;
+		    break;
+		}
+		if (flowEntry.flowEntrySwitchState() !=
+		    FlowEntrySwitchState.FE_SWITCH_UPDATED) {
 		    allValid = false;
 		    break;
 		}
