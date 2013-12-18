@@ -173,62 +173,63 @@ public class NetworkGraphPublisher implements IDeviceListener,
     	op.close();
     }
 
-	@Override
-	public void linkDiscoveryUpdate(LDUpdate update) {
-		Link lt = new Link(update.getSrc(),update.getSrcPort(),update.getDst(),update.getDstPort());
-		//log.debug("{}:LinkDicoveryUpdate(): Updating Link {}",this.getClass(), lt);
-		
-		switch (update.getOperation()) {
-			case LINK_REMOVED:
-				log.debug("LinkDiscoveryUpdate(): Removing link {}", lt);
-				
-				if (linkStore.deleteLink(lt)) {
-				    // TODO publish DELETE_LINK event here
-				    TopologyElement topologyElement =
-					new TopologyElement(update.getSrc(),
-							    update.getSrcPort(),
-							    update.getDst(),
-							    update.getDstPort());
-				    datagridService.notificationSendTopologyElementRemoved(topologyElement);
-				}
-				break;
-			case LINK_UPDATED:
-				log.debug("LinkDiscoveryUpdate(): Updating link {}", lt);
-				
-				LinkInfo linfo = linkStore.getLinkInfo(lt);
-				// TODO update "linfo" using portState derived using "update"
-				if (linkStore.update(lt, linfo, DM_OPERATION.UPDATE)) {
-				    // TODO publish UPDATE_LINK event here
-				    //
-				    // TODO NOTE: Here we assume that updated
-				    // link is UP.
-				    //
-				    TopologyElement topologyElement =
-					new TopologyElement(update.getSrc(),
-							    update.getSrcPort(),
-							    update.getDst(),
-							    update.getDstPort());
-				    datagridService.notificationSendTopologyElementUpdated(topologyElement);
-				}
-				break;
-			case LINK_ADDED:
-				log.debug("LinkDiscoveryUpdate(): Adding link {}", lt);
-				
-				if (linkStore.addLink(lt)) {
-				    // TODO publish ADD_LINK event here
-				    TopologyElement topologyElement =
-					new TopologyElement(update.getSrc(),
-							    update.getSrcPort(),
-							    update.getDst(),
-							    update.getDstPort());
-				    datagridService.notificationSendTopologyElementAdded(topologyElement);
-				}
-				break;
-			default:
-				break;
-		}
+    @Override
+    public void linkDiscoveryUpdate(LDUpdate update) {
+    	Link lt = new Link(update.getSrc(),update.getSrcPort(),update.getDst(),update.getDstPort());
+    	//log.debug("{}:LinkDicoveryUpdate(): Updating Link {}",this.getClass(), lt);
 
-	}
+    	switch (update.getOperation()) {
+    	case LINK_REMOVED:
+    		log.debug("LinkDiscoveryUpdate(): Removing link {}", lt);
+
+    		if (linkStore.deleteLink(lt)) {
+    			// TODO publish DELETE_LINK event here
+    			TopologyElement topologyElement =
+    					new TopologyElement(update.getSrc(),
+    							update.getSrcPort(),
+    							update.getDst(),
+    							update.getDstPort());
+    			datagridService.notificationSendTopologyElementRemoved(topologyElement);
+    		}
+    		break;
+    	case LINK_UPDATED:
+    		log.debug("LinkDiscoveryUpdate(): Updating link {}", lt);
+
+    		LinkInfo linfo = linkStore.getLinkInfo(lt);
+    		// TODO update "linfo" using portState derived using "update"
+    		if (linkStore.update(lt, linfo, DM_OPERATION.UPDATE)) {
+    			// TODO publish UPDATE_LINK event here
+    			//
+    			// TODO NOTE: Here we assume that updated
+    			// link is UP.
+    			//
+    			TopologyElement topologyElement =
+    					new TopologyElement(update.getSrc(),
+    							update.getSrcPort(),
+    							update.getDst(),
+    							update.getDstPort());
+    			datagridService.notificationSendTopologyElementUpdated(topologyElement);
+    		}
+    		break;
+    	case LINK_ADDED:
+    		log.debug("LinkDiscoveryUpdate(): Adding link {}", lt);
+
+    		if (linkStore.addLink(lt)) {
+    			// TODO publish ADD_LINK event here
+    			TopologyElement topologyElement =
+    					new TopologyElement(update.getSrc(),
+    							update.getSrcPort(),
+    							update.getDst(),
+    							update.getDstPort());
+    			datagridService.notificationSendTopologyElementAdded(topologyElement);
+    		}
+
+    		break;
+    	default:
+    		break;
+    	}
+
+    }
 
 	@Override
 	public void addedSwitch(IOFSwitch sw) {
