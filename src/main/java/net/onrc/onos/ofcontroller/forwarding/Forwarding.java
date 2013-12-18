@@ -489,7 +489,9 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 					installedFlowPath.dataPath().dstPort(),
 					srcMacAddress, dstMacAddress);
 			//pendingFlows.remove(pathToRemove);
-			pendingFlows.get(installedPath).firstHopOutPort = outPort;
+			PushedFlow existingFlow = pendingFlows.get(installedPath);
+			if (existingFlow != null)
+			    existingFlow.firstHopOutPort = outPort;
 		}
 		
 		for (PacketToPush packet : packets) {
