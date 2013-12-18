@@ -47,9 +47,9 @@ class ONOS( Controller ):
     zookeeperDir = home + "/zookeeper-3.4.5"
     dirBase = '/tmp'
     logDir = dirBase + '/onos-%s.logs'
-    cassDir = dirBase + '/onos-%s.cassandra'
+    # cassDir = dirBase + '/onos-%s.cassandra'
     configFile = dirBase + '/onos-%s.properties'
-    logbackFile = dirBase + '/onos-%s.logback'
+    logbackFile = dirBase + '/onos-%s.logback.xml'
 
     # Base ONOS modules
     baseModules = (
@@ -209,13 +209,13 @@ class ONOS( Controller ):
            propsFile: properties file name"""
         # ONOS directories and files
         logdir = self.logDir % id
-        cassdir = self.cassDir % id
+        # cassdir = self.cassDir % id
         logback = self.logbackFile % id
         jmxport = self.jmxbase + id
-        self.cmd( 'mkdir -p', logdir, cassdir )
+        self.cmd( 'mkdir -p', logdir ) # , cassdir
         self.cmd( 'export ONOS_LOGDIR="%s"' % logdir )
         self.cmd( 'export ZOO_LOG_DIR="%s"' % logdir )
-        self.cmd( 'export CASS_DIR="%s"' % cassdir )
+        # self.cmd( 'export CASS_DIR="%s"' % cassdir )
         self.cmd( 'export ONOS_LOGBACK="%s"' % logback )
         self.cmd( 'export JMX_PORT=%s' % jmxport )
         self.cmd( 'export JVM_OPTS="-D%s=%s"' % (
