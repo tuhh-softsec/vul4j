@@ -37,6 +37,8 @@ import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
+import com.thinkaurelius.titan.core.TitanException;
+
 import com.esotericsoftware.kryo2.Kryo;
 
 import org.slf4j.Logger;
@@ -669,16 +671,25 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		log.debug("Deleting Flow Path From Database: {}",
 			  flowPath.toString());
 
-		try {
-		    if (! FlowDatabaseOperation.deleteFlow(
-					dbHandlerInner,
-					flowPath.flowId())) {
-			log.error("Cannot delete Flow Path {} from Network Map",
-				  flowPath.flowId());
-		    }
-		} catch (Exception e) {
-		    log.error("Exception deleting Flow Path from Network MAP: {}", e);
-		}
+		boolean retry = false;
+		do {
+		    retry = false;
+		    try {
+			if (! FlowDatabaseOperation.deleteFlow(
+						dbHandlerInner,
+						flowPath.flowId())) {
+			    log.error("Cannot delete Flow Path {} from Network Map",
+				      flowPath.flowId());
+			    retry = true;
+			}
+		    } catch (TitanException te) {
+			log.error("Titan Exception deleting Flow Path from Network MAP: {}", te);
+			retry = true;
+		    } catch (Exception e) {
+			log.error("Exception deleting Flow Path from Network MAP: {}", e);
+		    } 
+		} while (retry);
+
 		continue;
 	    }
 
@@ -709,15 +720,23 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    //
 	    // Write the Flow Path to the Network Map
 	    //
-	    try {
-		if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath)) {
-		    String logMsg = "Cannot write to Network Map Flow Path " +
-			flowPath.flowId();
-		    log.error(logMsg);
+	    boolean retry = false;
+	    do {
+		retry = false;
+		try {
+		    if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath)) {
+			String logMsg = "Cannot write to Network Map Flow Path " +
+			    flowPath.flowId();
+			log.error(logMsg);
+			retry = true;
+		    }
+		} catch (TitanException te) {
+		    log.error("Titan Exception writing Flow Path to Network MAP: ", te);
+		    retry = true;
+		} catch (Exception e) {
+		    log.error("Exception writing Flow Path to Network MAP: ", e);
 		}
-	    } catch (Exception e) {
-		log.error("Exception writing Flow Path to Network MAP: ", e);
-	    }
+	    } while (retry);
 	}
     }
 }
