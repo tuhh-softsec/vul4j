@@ -460,7 +460,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      */
     private void processFlowEntryEvents() {
 	FlowPath flowPath;
-	FlowEntry updatedFlowEntry;
+	FlowEntry localFlowEntry;
 
 	//
 	// Update Flow Entries with previously unmatched Flow Entry updates
@@ -471,13 +471,15 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		flowPath = allFlowPaths.get(flowEntry.flowId().value());
 		if (flowPath == null)
 		    continue;
-		updatedFlowEntry = updateFlowEntryAdd(flowPath, flowEntry);
-		if (updatedFlowEntry == null) {
+		localFlowEntry = findFlowEntryAdd(flowPath, flowEntry);
+		if (localFlowEntry == null) {
 		    remainingUpdates.put(flowEntry.flowEntryId().value(),
 					 flowEntry);
 		    continue;
 		}
-		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
+		if (updateFlowEntryAdd(flowPath, localFlowEntry, flowEntry)) {
+		    modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
+		}
 	    }
 	    unmatchedFlowEntryAdd = remainingUpdates;
 	}
@@ -505,15 +507,17 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 					      flowEntry);
 		    break;
 		}
-		updatedFlowEntry = updateFlowEntryAdd(flowPath, flowEntry);
-		if (updatedFlowEntry == null) {
+		localFlowEntry = findFlowEntryAdd(flowPath, flowEntry);
+		if (localFlowEntry == null) {
 		    // Flow Entry not found: keep the entry for later matching
 		    unmatchedFlowEntryAdd.put(flowEntry.flowEntryId().value(),
 					      flowEntry);
 		    break;
 		}
-		// Add the updated entry to the list of updated Flow Entries
-		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
+		if (updateFlowEntryAdd(flowPath, localFlowEntry, flowEntry)) {
+		    // Add the updated Flow Path to the list of updated paths
+		    modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
+		}
 		break;
 
 	    case ENTRY_REMOVE:
@@ -527,32 +531,37 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		    // Flow Path not found: ignore the update
 		    break;
 		}
-		updatedFlowEntry = updateFlowEntryRemove(flowPath, flowEntry);
-		if (updatedFlowEntry == null) {
+		localFlowEntry = findFlowEntryRemove(flowPath, flowEntry);
+		if (localFlowEntry == null) {
 		    // Flow Entry not found: ignore it
 		    break;
 		}
-		modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
+		if (updateFlowEntryRemove(flowPath, localFlowEntry,
+					  flowEntry)) {
+		    // Add the updated Flow Path to the list of updated paths
+		    modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
+		}
 		break;
 	    }
 	}
     }
 
     /**
-     * Update a Flow Entry because of an external ENTRY_ADD event.
+     * Find a Flow Entry that should be updated because of an external
+     * ENTRY_ADD event.
      *
      * @param flowPath the FlowPath for the Flow Entry to update.
-     * @param flowEntry the FlowEntry with the new state.
-     * @return the updated Flow Entry if found, otherwise null.
+     * @param newFlowEntry the FlowEntry with the new state.
+     * @return the Flow Entry that should be updated if found, otherwise null.
      */
-    private FlowEntry updateFlowEntryAdd(FlowPath flowPath,
-					 FlowEntry flowEntry) {
+    private FlowEntry findFlowEntryAdd(FlowPath flowPath,
+				       FlowEntry newFlowEntry) {
 	//
 	// Iterate over all Flow Entries and find a match.
 	//
 	for (FlowEntry localFlowEntry : flowPath.flowEntries()) {
 	    if (! TopologyManager.isSameFlowEntryDataPath(localFlowEntry,
-							  flowEntry)) {
+							  newFlowEntry)) {
 		continue;
 	    }
 
@@ -561,27 +570,89 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    //
 	    if (localFlowEntry.isValidFlowEntryId()) {
 		if (localFlowEntry.flowEntryId().value() !=
-		    flowEntry.flowEntryId().value()) {
+		    newFlowEntry.flowEntryId().value()) {
 		    //
 		    // Find a local Flow Entry, but the Flow Entry ID doesn't
 		    // match. Keep looking.
 		    //
 		    continue;
 		}
-	    } else {
-		// Update the Flow Entry ID
-		FlowEntryId flowEntryId =
-		    new FlowEntryId(flowEntry.flowEntryId().value());
-		localFlowEntry.setFlowEntryId(flowEntryId);
 	    }
+	    return localFlowEntry;
+	}
 
-	    //
-	    // Update the local Flow Entry, and keep state to check
-	    // if the Flow Path has been installed.
-	    //
-	    localFlowEntry.setFlowEntryUserState(flowEntry.flowEntryUserState());
-	    localFlowEntry.setFlowEntrySwitchState(flowEntry.flowEntrySwitchState());
+	return null;		// Entry not found
+    }
+
+    /**
+     * Update a Flow Entry because of an external ENTRY_ADD event.
+     *
+     * @param flowPath the FlowPath for the Flow Entry to update.
+     * @param localFlowEntry the local Flow Entry to update.
+     * @param newFlowEntry the FlowEntry with the new state.
+     * @return true if the local Flow Entry was updated, otherwise false.
+     */
+    private boolean updateFlowEntryAdd(FlowPath flowPath,
+				       FlowEntry localFlowEntry,
+				       FlowEntry newFlowEntry) {
+	boolean updated = false;
+
+	if (localFlowEntry.flowEntryUserState() ==
+	    FlowEntryUserState.FE_USER_DELETE) {
+	    // Don't add-back a Flow Entry that is already deleted
+	    return false;
+	}
+
+	if (! localFlowEntry.isValidFlowEntryId()) {
+	    // Update the Flow Entry ID
+	    FlowEntryId flowEntryId =
+		new FlowEntryId(newFlowEntry.flowEntryId().value());
+	    localFlowEntry.setFlowEntryId(flowEntryId);
+	    updated = true;
+	}
+
+	//
+	// Update the local Flow Entry, and keep state to check
+	// if the Flow Path has been installed.
+	//
+	if (localFlowEntry.flowEntryUserState() !=
+	    newFlowEntry.flowEntryUserState()) {
+	    localFlowEntry.setFlowEntryUserState(
+			 newFlowEntry.flowEntryUserState());
+	    updated = true;
+	}
+	if (localFlowEntry.flowEntrySwitchState() !=
+	    newFlowEntry.flowEntrySwitchState()) {
+	    localFlowEntry.setFlowEntrySwitchState(
+			newFlowEntry.flowEntrySwitchState());
 	    checkIfInstalledFlowPaths.put(flowPath.flowId().value(), flowPath);
+	    updated = true;
+	}
+
+	return updated;
+    }
+
+    /**
+     * Find a Flow Entry that should be updated because of an external
+     * ENTRY_REMOVE event.
+     *
+     * @param flowPath the FlowPath for the Flow Entry to update.
+     * @param newFlowEntry the FlowEntry with the new state.
+     * @return the Flow Entry that should be updated if found, otherwise null.
+     */
+    private FlowEntry findFlowEntryRemove(FlowPath flowPath,
+					  FlowEntry newFlowEntry) {
+	//
+	// Iterate over all Flow Entries and find a match based on
+	// the Flow Entry ID.
+	//
+	for (FlowEntry localFlowEntry : flowPath.flowEntries()) {
+	    if (! localFlowEntry.isValidFlowEntryId())
+		continue;
+	    if (localFlowEntry.flowEntryId().value() !=
+		newFlowEntry.flowEntryId().value()) {
+		continue;
+	    }
 	    return localFlowEntry;
 	}
 
@@ -592,31 +663,32 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * Update a Flow Entry because of an external ENTRY_REMOVE event.
      *
      * @param flowPath the FlowPath for the Flow Entry to update.
-     * @param flowEntry the FlowEntry with the new state.
-     * @return the updated Flow Entry if found, otherwise null.
+     * @param localFlowEntry the local Flow Entry to update.
+     * @param newFlowEntry the FlowEntry with the new state.
+     * @return true if the local Flow Entry was updated, otherwise false.
      */
-    private FlowEntry updateFlowEntryRemove(FlowPath flowPath,
-					    FlowEntry flowEntry) {
+    private boolean updateFlowEntryRemove(FlowPath flowPath,
+					  FlowEntry localFlowEntry,
+					  FlowEntry newFlowEntry) {
+	boolean updated = false;
+
 	//
-	// Iterate over all Flow Entries and find a match based on
-	// the Flow Entry ID.
+	// Update the local Flow Entry.
 	//
-	for (FlowEntry localFlowEntry : flowPath.flowEntries()) {
-	    if (! localFlowEntry.isValidFlowEntryId())
-		continue;
-	    if (localFlowEntry.flowEntryId().value() !=
-		flowEntry.flowEntryId().value()) {
-		    continue;
-	    }
-	    //
-	    // Update the local Flow Entry.
-	    //
-	    localFlowEntry.setFlowEntryUserState(flowEntry.flowEntryUserState());
-	    localFlowEntry.setFlowEntrySwitchState(flowEntry.flowEntrySwitchState());
-	    return localFlowEntry;
+	if (localFlowEntry.flowEntryUserState() !=
+	    newFlowEntry.flowEntryUserState()) {
+	    localFlowEntry.setFlowEntryUserState(
+			newFlowEntry.flowEntryUserState());
+	    updated = true;
+	}
+	if (localFlowEntry.flowEntrySwitchState() !=
+	    newFlowEntry.flowEntrySwitchState()) {
+	    localFlowEntry.setFlowEntrySwitchState(
+			newFlowEntry.flowEntrySwitchState());
+	    updated = true;
 	}
 
-	return null;		// Entry not found
+	return updated;
     }
 
     /**
