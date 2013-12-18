@@ -1,21 +1,21 @@
 #!/bin/bash
 
 # Set paths
-if [ -z "${ONOS_HOME}" ]; then
-        ONOS_HOME=`dirname $0`
-fi
+ONOS_HOME="${ONOS_HOME:-`dirname $0`}"
 
 ## Because the script change dir to $ONOS_HOME, we can set ONOS_LOGBACK and LOGDIR relative to $ONOS_HOME
-#ONOS_LOGBACK="${ONOS_HOME}/logback.`hostname`.xml"
-#LOGDIR=${ONOS_HOME}/onos-logs
-ONOS_LOGBACK="./logback.`hostname`.xml"
-LOGDIR=./onos-logs
+ONOS_LOGBACK=${ONOS_LOGBACK:-${ONOS_HOME}/logback.`hostname`.xml}
+LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
+
 ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
 PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
 LOGS="$ONOS_LOG $PCAP_LOG"
 
+ONOS_PROPS=${ONOS_PROPS:-${ONOS_HOME}/conf/onos.properties}
+JMX_PORT=${JMX_PORT:-7189}
+
 # Set JVM options
-JVM_OPTS=""
+JVM_OPTS="${JVM_OPTS:-}"
 ## If you want JaCoCo Code Coverage reports... uncomment line below
 #JVM_OPTS="$JVM_OPTS -javaagent:${ONOS_HOME}/lib/jacocoagent.jar=dumponexit=true,output=file,destfile=${LOGDIR}/jacoco.exec"
 JVM_OPTS="$JVM_OPTS -server -d64"
@@ -31,7 +31,7 @@ JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 		-XX:+UseThreadPriorities \
 		-XX:ThreadPriorityPolicy=42 \
 		-XX:+UseCompressedOops \
-		-Dcom.sun.management.jmxremote.port=7189 \
+		-Dcom.sun.management.jmxremote.port=$JMX_PORT \
 		-Dcom.sun.management.jmxremote.ssl=false \
 		-Dcom.sun.management.jmxremote.authenticate=false"
 JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
@@ -39,9 +39,7 @@ JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 # Set ONOS core main class
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
 
-if [ -z "${MVN}" ]; then
-    MVN="mvn -o"
-fi
+MVN=${MVN:-mvn -o}
 
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
@@ -101,15 +99,15 @@ EOF_LOGBACK
 
   # Run ONOS
   echo "Starting ONOS controller ..."
-  echo 
+  echo
 
-  # XXX : MVN has to run at the project top dir 
+  # XXX : MVN has to run at the project top dir
   echo $ONOS_HOME
   cd ${ONOS_HOME}
-  pwd 
-  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ./conf/onos.properties\""
+  pwd
+  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_PROPS}\""
 
-  ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ./conf/onos.properties" > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
+  ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_PROPS}" > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
 
   echo "Waiting for ONOS to start..."
   COUNT=0
@@ -160,14 +158,18 @@ function check_db {
 case "$1" in
   start)
     stop
-#    check_db
-    start 
+    check_db
+    start
+    ;;
+  startnokill)
+    check_db
+    start
     ;;
   startifdown)
     n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
     if [ $n == 0 ]; then
       start
-    else 
+    else
       echo "$n instance of onos running"
     fi
     ;;

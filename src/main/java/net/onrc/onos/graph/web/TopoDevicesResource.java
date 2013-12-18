@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.devicemanager.web;
+package net.onrc.onos.graph.web;
 
 import java.util.Iterator;
 

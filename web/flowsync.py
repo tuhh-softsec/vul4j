@@ -29,12 +29,12 @@ def debug(txt):
   if DEBUG:
     print '%s' % (txt)
 
-# @app.route("/wm/fprog/synchronizer/sync/<dpid>/json")
+# @app.route("/wm/onos/flowprogrammer/synchronizer/sync/<dpid>/json")
 # Sample output:
 #  "true"
 def synchronize(dpid):
   try:
-    command = "curl -s \"http://%s:%s/wm/fprog/synchronizer/sync/%s/json\"" % (ControllerIP, ControllerPort, dpid)
+    command = "curl -s \"http://%s:%s/wm/onos/flowprogrammer/synchronizer/sync/%s/json\"" % (ControllerIP, ControllerPort, dpid)
     debug("synchronize %s" % command)
      
     result = os.popen(command).read()
@@ -48,12 +48,12 @@ def synchronize(dpid):
   
   print "Synchronization of switch %s has successfully began" % (dpid)
 
-# @app.route("/wm/fprog/synchronizer/interrupt/<dpid>/json")
+# @app.route("/wm/onos/flowprogrammer/synchronizer/interrupt/<dpid>/json")
 # Sample output:
 #  "true"
 def interrupt(dpid):
   try:
-    command = "curl -s \"http://%s:%s/wm/fprog/synchronizer/interrupt/%s/json\"" % (ControllerIP, ControllerPort, dpid)
+    command = "curl -s \"http://%s:%s/wm/onos/flowprogrammer/synchronizer/interrupt/%s/json\"" % (ControllerIP, ControllerPort, dpid)
     debug("interrupt %s" % command)
      
     result = os.popen(command).read()

@@ -14,7 +14,7 @@ import time
 from flask import Flask, json, Response, render_template, make_response, request
 
 #
-# curl http://127.0.0.1:8080/wm/topology/route/00:00:00:00:00:00:0a:01/1/00:00:00:00:00:00:0a:04/1/json
+# curl http://127.0.0.1:8080/wm/onos/topology/route/00:00:00:00:00:00:0a:01/1/00:00:00:00:00:00:0a:04/1/json
 #
 
 ## Global Var ##
@@ -37,14 +37,14 @@ def debug(txt):
   if DEBUG:
     print '%s' % (txt)
 
-# @app.route("/wm/topology/route/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
+# @app.route("/wm/onos/topology/route/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
 #
 # Sample output:
 # {'dstPort': {'port': {'value': 0}, 'dpid': {'value': '00:00:00:00:00:00:00:02'}}, 'srcPort': {'port': {'value': 0}, 'dpid': {'value': '00:00:00:00:00:00:00:01'}}, 'flowEntries': [{'outPort': {'value': 1}, 'flowEntryErrorState': None, 'flowEntryMatch': None, 'flowEntryActions': None, 'inPort': {'value': 0}, 'flowEntryId': None, 'flowEntryUserState': 'FE_USER_UNKNOWN', 'dpid': {'value': '00:00:00:00:00:00:00:01'}, 'flowEntrySwitchState': 'FE_SWITCH_UNKNOWN'}, {'outPort': {'value': 0}, 'flowEntryErrorState': None, 'flowEntryMatch': None, 'flowEntryActions': None, 'inPort': {'value': 9}, 'flowEntryId': None, 'flowEntryUserState': 'FE_USER_UNKNOWN', 'dpid': {'value': '00:00:00:00:00:00:00:02'}, 'flowEntrySwitchState': 'FE_SWITCH_UNKNOWN'}]}
 #
 def shortest_path(v1, p1, v2, p2):
   try:
-    command = "curl -s http://%s:%s/wm/topology/route/%s/%s/%s/%s/json" % (ControllerIP, ControllerPort, v1, p1, v2, p2)
+    command = "curl -s http://%s:%s/wm/onos/topology/route/%s/%s/%s/%s/json" % (ControllerIP, ControllerPort, v1, p1, v2, p2)
     debug("shortest_path %s" % command)
     parsedResult = []
 
@@ -82,7 +82,7 @@ def add_flow_path(flow_path):
   flow_path_json = json.dumps(flow_path)
 
   try:
-    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/flow/add/json" % (flow_path_json, ControllerIP, ControllerPort)
+    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/onos/flows/add/json" % (flow_path_json, ControllerIP, ControllerPort)
     debug("add_flow_path %s" % command)
     result = os.popen(command).read()
     debug("result %s" % result)
@@ -96,7 +96,7 @@ def add_shortest_path_flow(flow_path):
   flow_path_json = json.dumps(flow_path)
 
   try:
-    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/flow/add-shortest-path/json" % (flow_path_json, ControllerIP, ControllerPort)
+    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/onos/flows/add/json" % (flow_path_json, ControllerIP, ControllerPort)
     debug("add_shortest_path_flow %s" % command)
     result = os.popen(command).read()
     debug("result %s" % result)
@@ -107,7 +107,7 @@ def add_shortest_path_flow(flow_path):
     exit(1)
 
 def delete_flow_path(flow_id):
-  command = "curl -s \"http://%s:%s/wm/flow/delete/%s/json\"" % (ControllerIP, ControllerPort, flow_id)
+  command = "curl -s \"http://%s:%s/wm/onos/flows/delete/%s/json\"" % (ControllerIP, ControllerPort, flow_id)
   debug("delete_flow_path %s" % command)
   result = os.popen(command).read()
   debug("result %s" % result)

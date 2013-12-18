@@ -6,6 +6,7 @@ import java.util.List;
 import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.ofcontroller.core.ILinkStorage;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
@@ -113,11 +114,28 @@ public class LinkStorageImpl implements ILinkStorage {
 		return addLink(link, null);
 	}
 
+	private void deleteDeviceOnPort(Long dpid, Short number)
+	{
+		IPortObject srcPortObject = op.searchPort(HexString.toHexString(dpid), number);
+		if (srcPortObject.getDevices().iterator().hasNext()) {
+			for (IDeviceObject deviceObject: srcPortObject.getDevices()) {
+				srcPortObject.removeDevice(deviceObject);
+				log.debug("delete Device "+ deviceObject.getMACAddress() +
+						" from sw: {} port: {} due to a new link added",
+						dpid, number);
+			}
+		}
+	}
+
 	@Override
 	public boolean addLink(Link link, LinkInfo linfo) {
 		boolean success = false;
 		
 		try {
+			//delete the Device attachment points for the related switch and port
+			deleteDeviceOnPort(link.getSrc(),link.getSrcPort());
+			deleteDeviceOnPort(link.getDst(),link.getDstPort());
+
 			if (addLinkImpl(link)) {
 				// Set LinkInfo only if linfo is non-null.
 				if (linfo != null && (! setLinkInfoImpl(link, linfo))) {

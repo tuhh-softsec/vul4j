@@ -203,7 +203,7 @@ if __name__ == '__main__':
   setLogLevel( 'output' )
   resultDir = strftime( '%Y%m%d-%H%M%S' )
   os.mkdir( resultDir )
-  tests = sys.argv[1:]
+  tests = map(int, sys.argv[1:])
   if not tests:
     tests = [1, 10, 100, 1000, 10000]
   runPerf( resultDir, tests )

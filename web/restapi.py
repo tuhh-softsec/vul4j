@@ -54,21 +54,21 @@ def return_file(filename="index.html"):
   return response
 
 ## REST API ##
-#@app.route("/wm/topology/links/json")
+#@app.route("/wm/onos/linkdiscovery/links/json")
 #def links():
 #    global links_
 #    js = json.dumps(links_)
 #    resp = Response(js, status=200, mimetype='application/json')
 #    return resp
 
-#@app.route("/wm/core/controller/switches/json")
+#@app.route("/wm/floodlight/core/controller/switches/json")
 #def switches():
 #    global switches_
 #    js = json.dumps(switches_)
 #    resp = Response(js, status=200, mimetype='application/json')
 #    return resp
 
-@app.route("/wm/device/")
+@app.route("/wm/floodlight/device/")
 def devices():
   ret = []
   js = json.dumps(ret)
@@ -76,7 +76,7 @@ def devices():
   return resp
 
 ## return fake stat for now
-@app.route("/wm/core/switch/<switchId>/<statType>/json")
+@app.route("/wm/floodlight/core/switch/<switchId>/<statType>/json")
 def switch_stat(switchId, statType):
     if statType == "desc":
         desc=[{"length":1056,"serialNumber":"None","manufacturerDescription":"Nicira Networks, Inc.","hardwareDescription":"Open vSwitch","softwareDescription":"1.4.0+build0","datapathDescription":"None"}]
@@ -93,7 +93,7 @@ def switch_stat(switchId, statType):
     resp = Response(js, status=200, mimetype='application/json')
     return resp
 
-@app.route("/wm/core/controller/switches/json")
+@app.route("/wm/floodlight/core/controller/switches/json")
 def query_switch():
   try:
     command = "curl -s http://%s:%s/graphs/%s/vertices" % (RestIP, RestPort, DBName)
@@ -116,7 +116,7 @@ def query_switch():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/topology/links/json")
+@app.route("/wm/onos/linkdiscovery/links/json")
 def query_links():
   try:
     command = "curl -s http://%s:%s/graphs/%s/edges" % (RestIP, RestPort, DBName)

@@ -1,7 +1,10 @@
-package net.onrc.onos.registry.controller;
+package net.onrc.onos.registry.controller.web;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import net.onrc.onos.registry.controller.IControllerRegistryService;
+import net.onrc.onos.registry.controller.RegistryException;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

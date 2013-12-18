@@ -4,8 +4,6 @@ import org.restlet.Context;
 import org.restlet.routing.Router;
 
 import net.floodlightcontroller.restserver.RestletRoutable;
-import net.onrc.onos.ofcontroller.linkdiscovery.web.LinksResource;
-import net.onrc.onos.ofcontroller.topology.web.RouteResource;
 
 public class TopologyWebRoutable implements RestletRoutable {
     /**
@@ -14,13 +12,11 @@ public class TopologyWebRoutable implements RestletRoutable {
     @Override
     public Router getRestlet(Context context) {
         Router router = new Router(context);
-        router.attach("/links/json", LinksResource.class);
         router.attach("/tunnellinks/json", TunnelLinksResource.class);
         router.attach("/switchclusters/json", SwitchClustersResource.class);
         router.attach("/broadcastdomainports/json", BroadcastDomainPortsResource.class);
         router.attach("/enabledports/json", EnabledPortsResource.class);
         router.attach("/blockedports/json", BlockedPortsResource.class);
-        router.attach("/route/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json", RouteResource.class);
         return router;
     }
 
@@ -29,6 +25,6 @@ public class TopologyWebRoutable implements RestletRoutable {
      */
     @Override
     public String basePath() {
-        return "/wm/topology";
+        return "/wm/floodlight/topology";
     }
 }
