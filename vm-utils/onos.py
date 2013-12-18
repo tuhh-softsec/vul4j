@@ -31,10 +31,11 @@ from mininet.topo import LinearTopo
 from mininet.log import setLogLevel, info, warn
 from mininet.util import quietRun
 
+# This should be cleaned up to avoid interfering with mn
 from shutil import copyfile
 from os import environ
 from functools import partial
-from time import time, sleep
+import time
 from sys import argv
 
 class ONOS( Controller ):
@@ -143,7 +144,7 @@ class ONOS( Controller ):
             if output:
                 return output
             info( '.' )
-            sleep( 1 )
+            time.sleep( 1 )
 
     def waitStart( self, procname, pattern ):
         "Wait for at least one of procname to show up in netstat"
@@ -224,13 +225,13 @@ class ONOS( Controller ):
     def startONOS( self, id ):
         """Start ONOS
            id: new instance number"""
-        start = time()
+        start = time.time()
         self.stopONOS( id )
         propsFile = self.genProperties( id )
         self.setVars( id, propsFile )
         self.cmdPrint( 'start-onos.sh startnokill' )
         # start-onos.sh waits for ONOS startup
-        elapsed = time() - start
+        elapsed = time.time() - start
         info( '* ONOS %s started in %.2f seconds\n' % ( id, elapsed ) )
 
     def stopONOS( self, id ):
@@ -288,15 +289,15 @@ class OVSSwitchONOS( OVSSwitch ):
 
 def waitConnected( switches ):
     "Wait until all switches connect to controllers"
-    start = time()
+    start = time.time()
     info( '* Waiting for switches to connect...\n' )
     for s in switches:
         info( s )
         while not s.connected():
             info( '.' )
-            sleep( 1 )
+            time.sleep( 1 )
         info( ' ' )
-    elapsed = time() - start
+    elapsed = time.time() - start
     info( '\n* Connected in %.2f seconds\n' % elapsed )
 
 
