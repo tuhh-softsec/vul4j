@@ -77,17 +77,17 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     }
 
     @Override
-    public void sendError(int sc, String msg) throws IOException {
+    public void sendError(int sc, String msg) {
         httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, sc, msg));
     }
 
     @Override
-    public void sendError(int sc) throws IOException {
+    public void sendError(int sc) {
         httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, sc, ""));
     }
 
     @Override
-    public void sendRedirect(String location) throws IOException {
+    public void sendRedirect(String location) {
         httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT,
                 "Temporary redirect"));
         httpClientResponse.setHeader(HttpHeaders.LOCATION, location);
@@ -134,7 +134,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     }
 
     @Override
-    public ServletOutputStream getOutputStream() throws IOException {
+    public ServletOutputStream getOutputStream() {
         LOG.debug("getOutputStream");
         if (jspWriter != null) {
             throw new IllegalStateException("Writer already obtained");
@@ -158,7 +158,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     }
 
     @Override
-    public PrintWriter getWriter() throws IOException {
+    public PrintWriter getWriter() {
         LOG.debug("getWriter");
         if (servletOutputStream != null) {
             throw new IllegalStateException("OutputStream already obtained");

@@ -15,8 +15,8 @@
 
 package org.esigate.parser;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.esigate.impl.DriverRequest;
 
 /**
  * The current context used during parsing.
@@ -26,7 +26,7 @@ import org.apache.http.HttpResponse;
 public interface ParserContext {
 
     /** @return {@linkplain org.apache.http.HttpRequest} associated with current processing. */
-    HttpEntityEnclosingRequest getHttpRequest();
+    DriverRequest getHttpRequest();
 
     /** @return {@linkplain HttpResponse} associated with current processing. */
     HttpResponse getHttpResponse();

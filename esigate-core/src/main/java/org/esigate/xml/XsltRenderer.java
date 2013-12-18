@@ -34,12 +34,10 @@ import nu.validator.htmlparser.dom.Dom2Sax;
 import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.impl.DriverRequest;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -67,17 +65,17 @@ public class XsltRenderer implements Renderer {
      *             If an error occurs while writing to the output
      * @throws HttpErrorPage
      */
-    public XsltRenderer(String template, Driver driver, HttpEntityEnclosingRequest originalRequest) throws IOException,
+    public XsltRenderer(String template, Driver driver, DriverRequest originalRequest) throws IOException,
             HttpErrorPage {
         try {
-            InputStream templateStream = HttpRequestHelper.getMediator(originalRequest).getResourceAsStream(template);
+            InputStream templateStream = originalRequest.getMediator().getResourceAsStream(template);
             if (templateStream == null) {
                 throw new ProcessingFailedException("Template " + template + " not found");
             }
             transformer = createTransformer(templateStream);
         } catch (Exception e) {
             StringBuilder templateStringBuilder = new StringBuilder();
-            driver.render(template, null, templateStringBuilder, originalRequest);
+            driver.render(template, null, templateStringBuilder, originalRequest.getOriginalRequest());
             transformer = createTransformer(IOUtils.toInputStream(templateStringBuilder));
         }
     }
@@ -90,8 +88,8 @@ public class XsltRenderer implements Renderer {
      * @throws IOException
      *             If an error occurs while writing to the output
      */
-    public XsltRenderer(String template, HttpRequest request) throws IOException {
-        InputStream templateStream = HttpRequestHelper.getMediator(request).getResourceAsStream(template);
+    public XsltRenderer(String template, DriverRequest request) throws IOException {
+        InputStream templateStream = request.getMediator().getResourceAsStream(template);
         if (templateStream == null) {
             throw new ProcessingFailedException("Template " + template + " not found");
         }
@@ -121,7 +119,7 @@ public class XsltRenderer implements Renderer {
 
     /** {@inheritDoc} */
     @Override
-    public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
+    public void render(DriverRequest httpRequest, String src, Writer out) throws IOException {
         try {
             HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder();
             htmlDocumentBuilder.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);

@@ -15,8 +15,8 @@
 
 package org.esigate.parser.future;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.esigate.impl.DriverRequest;
 
 /**
  * The current context used during parsing.
@@ -30,12 +30,13 @@ import org.apache.http.HttpResponse;
 public interface FutureParserContext {
 
     /** @return {@linkplain org.apache.http.HttpRequest} associated with current processing. */
-    HttpEntityEnclosingRequest getHttpRequest();
+    DriverRequest getHttpRequest();
 
     /** @return {@linkplain org.apache.http.HttpResponse} associated with current processing. */
     HttpResponse getHttpResponse();
 
     /**
+     * @param element
      * @param e
      * @return <code>true</code> if error has been handled by this element and it should not be propagated further.
      */
@@ -49,7 +50,7 @@ public interface FutureParserContext {
      * Allow to get custom context data.
      * 
      * @param key
-     * @return
+     * @return custom context data
      */
     Object getData(String key);
 

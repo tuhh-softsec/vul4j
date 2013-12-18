@@ -69,8 +69,8 @@ class IncludeTemplateElement implements Element {
 
     @Override
     public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-        driver.render(page, null, out, ctx.getHttpRequest(), new TemplateRenderer(name, params, page),
-                new AggregateRenderer());
+        driver.render(page, null, out, ctx.getHttpRequest().getOriginalRequest(), new TemplateRenderer(name, params,
+                page), new AggregateRenderer());
     }
 
     public void addParam(String name, String value) {
@@ -83,7 +83,7 @@ class IncludeTemplateElement implements Element {
     }
 
     @Override
-    public void characters(CharSequence csq, int start, int end) throws IOException {
+    public void characters(CharSequence csq, int start, int end) {
         // Just ignore tag body
     }
 

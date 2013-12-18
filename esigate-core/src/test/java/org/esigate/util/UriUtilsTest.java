@@ -55,7 +55,7 @@ public class UriUtilsTest extends TestCase {
                         + "/test;jsessionid=84FF5970F8A92E41F752F8A15F736727" + "</a>", "<a href=\"/test\">/test</a>");
     }
 
-    public void testTranslate() throws Exception {
+    public void testTranslate() {
         String sourceUrl = "http://www.test.com/aaa/bb";
         String sourceExample = "http://www.test.com/aaa/cccc/d/";
         String targetExample = "https://localhost:8080/eee/cccc/d/";
@@ -63,7 +63,7 @@ public class UriUtilsTest extends TestCase {
         assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
     }
 
-    public void testTranslateSlash1() throws Exception {
+    public void testTranslateSlash1() {
         String sourceUrl = "http://www.test.com";
         String sourceExample = "https://localhost:8080/";
         String targetExample = "http://www.test.com/";
@@ -71,7 +71,7 @@ public class UriUtilsTest extends TestCase {
         assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
     }
 
-    public void testTranslateSlash2() throws Exception {
+    public void testTranslateSlash2() {
         String sourceUrl = "http://www.test.com/";
         String sourceExample = "https://localhost:8080/";
         String targetExample = "http://www.test.com";
@@ -79,7 +79,7 @@ public class UriUtilsTest extends TestCase {
         assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
     }
 
-    public void testTranslateUnmodified() throws Exception {
+    public void testTranslateUnmodified() {
         String sourceUrl = "http://www.test.com/zz/bb";
         String sourceExample = "http://www.test.com/aaa/cccc/d/";
         String targetExample = "https://localhost:8080/eee/cccc/d/";
@@ -87,7 +87,7 @@ public class UriUtilsTest extends TestCase {
         assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
     }
 
-    public void testTranslateIssue132() throws Exception {
+    public void testTranslateIssue132() {
         String sourceUrl = "http://mbl-ez-dua.sirissie.caisse-epargne.fr/rhone-alpes";
         String sourceExample = "http://esigate:8080/switchlanguage/to/mbl_rhone-alpes/";
         String targetExample = "http://esigate:8080/switchlanguage/to/mbl_rhone-alpes/";

@@ -43,7 +43,7 @@ class OtherwiseElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, FutureParserContext ctx) {
         ChooseElement parent = ctx.findAncestor(ChooseElement.class);
         active = (parent != null) && !parent.hadConditionSet();
     }
@@ -54,8 +54,6 @@ class OtherwiseElement extends BaseElement {
             String result;
             try {
                 result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
-            } catch (InterruptedException e) {
-                throw new IOException(e);
             } catch (ExecutionException e) {
                 if (e.getCause() instanceof HttpErrorPage) {
                     throw (HttpErrorPage) e.getCause();
@@ -67,7 +65,7 @@ class OtherwiseElement extends BaseElement {
     }
 
     @Override
-    public void characters(Future<CharSequence> csq) throws IOException {
+    public void characters(Future<CharSequence> csq) {
         if (active) {
             buf.enqueueAppend(csq);
         }

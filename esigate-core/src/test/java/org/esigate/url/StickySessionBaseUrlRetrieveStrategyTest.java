@@ -17,10 +17,10 @@ package org.esigate.url;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.api.BaseUrlRetrieveStrategy;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.TestUtils;
 
 public class StickySessionBaseUrlRetrieveStrategyTest extends TestCase {
@@ -31,7 +31,7 @@ public class StickySessionBaseUrlRetrieveStrategyTest extends TestCase {
         BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
         int times = 100;
         for (int i = 0; i < times; i++) {
-            HttpEntityEnclosingRequest request = TestUtils.createRequest();
+            IncomingRequest request = TestUtils.createRequest();
             Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME,
                     Integer.toString(i % baseUrls.length));
             TestUtils.addCookie(cookie, request);
@@ -44,7 +44,7 @@ public class StickySessionBaseUrlRetrieveStrategyTest extends TestCase {
                 "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
 
-        HttpEntityEnclosingRequest request = TestUtils.createRequest();
+        IncomingRequest request = TestUtils.createRequest();
         Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "-1");
         TestUtils.addCookie(cookie, request);
         strategy.getBaseURL(request);

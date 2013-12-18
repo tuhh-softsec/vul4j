@@ -17,11 +17,11 @@ package org.esigate.extension;
 
 import java.util.Properties;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.esigate.Driver;
 import org.esigate.Parameters;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.conn.SequenceResponse;
 import org.esigate.test.driver.AbstractDriverTestCase;
 
@@ -39,8 +39,7 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
                         .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
                         .entity("test").build()));
 
-        HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
-                .build();
+        IncomingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
 
         HttpResponse response = driverProxy(driver, request);
 
@@ -61,8 +60,7 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
                         .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
                         .entity("test").build()));
 
-        HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
-                .build();
+        IncomingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
 
         HttpResponse response = driverProxy(driver, request);
 
@@ -82,8 +80,7 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
                         .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/xml")
                         .entity("test").build()));
 
-        HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
-                .build();
+        IncomingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
 
         HttpResponse response = driverProxy(driver, request);
 

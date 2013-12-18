@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ByteArrayEntity;
@@ -26,6 +25,7 @@ import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.SequenceResponse;
 import org.esigate.test.driver.AbstractDriverTestCase;
@@ -55,7 +55,7 @@ public class HtmlEncodingProcessorTest extends AbstractDriverTestCase {
                         .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", contentType)
                         .entity(new ByteArrayEntity(s.getBytes("utf-8"))).build()));
 
-        HttpEntityEnclosingRequest request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
+        IncomingRequest request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
 
         HttpResponse response = driverProxy(driver, request);
 

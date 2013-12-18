@@ -20,24 +20,23 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class CommentTest extends TestCase {
 
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
     private EsiRenderer tested;
 
     @Override
     protected void setUp() throws Exception {
         Driver provider = MockRequestExecutor.createDriver();
-        request = TestUtils.createRequest();
+        request = TestUtils.createRequest(provider);
         tested = new EsiRenderer();
-        provider.initHttpRequestParams(request, null);
         MockRequestExecutor provider1 = MockRequestExecutor.createMockDriver("provider1");
         provider1.addResource("/test", "replacement");
     }

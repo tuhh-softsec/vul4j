@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.HttpErrorPage;
+import org.esigate.impl.DriverRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class FutureParser {
     private static final Logger LOG = LoggerFactory.getLogger(FutureParser.class);
     private final Pattern pattern;
     private final FutureElementType[] elementTypes;
-    private HttpEntityEnclosingRequest httpRequest;
+    private DriverRequest httpRequest;
     private HttpResponse httpResponse;
     private Map<String, Object> data = null;
 
@@ -104,7 +104,7 @@ public class FutureParser {
         ctx.characters(new CharSequenceFuture(in.subSequence(currentPosition, in.length())));
     }
 
-    public void setHttpRequest(HttpEntityEnclosingRequest httpRequest) {
+    public void setHttpRequest(DriverRequest httpRequest) {
         this.httpRequest = httpRequest;
     }
 

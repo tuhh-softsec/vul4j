@@ -21,8 +21,6 @@ import java.io.Writer;
 
 import junit.framework.TestCase;
 
-import org.esigate.HttpErrorPage;
-
 /**
  * Tests on ResourceFixupRenderer.
  * 
@@ -31,7 +29,7 @@ import org.esigate.HttpErrorPage;
  */
 public class ResourceFixupRendererTest extends TestCase {
 
-    public void testRenderBlock1() throws IOException, HttpErrorPage {
+    public void testRenderBlock1() throws IOException {
         String base = "http://myapp/context";
         String page = "templates/template1.html";
         final String input = "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
@@ -58,9 +56,8 @@ public class ResourceFixupRendererTest extends TestCase {
      * 
      * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=120"
      * @throws IOException
-     * @throws HttpErrorPage
      */
-    public void testComments() throws IOException, HttpErrorPage {
+    public void testComments() throws IOException {
         String base = "http://myapp/context";
         String page = "templates/template1.html";
         final String input = "<![CDATA[   var src=\"test\" ]]>";
@@ -78,7 +75,7 @@ public class ResourceFixupRendererTest extends TestCase {
         assertEquals(expectedOutputRelative, out.toString());
     }
 
-    public void testUrlReplaceContext() throws IOException, HttpErrorPage {
+    public void testUrlReplaceContext() throws IOException {
         String base = "http://myapp/context/";
         String newBase = "http://myapp/newcontext/";
         String page = "templates/template1.html";
@@ -101,7 +98,7 @@ public class ResourceFixupRendererTest extends TestCase {
         assertEquals(expectedOutputRelative, out.toString());
     }
 
-    public void testUrlSanitizing() throws IOException, HttpErrorPage {
+    public void testUrlSanitizing() throws IOException {
         String base = "http://myapp/context/";
         String page = "templates/template1.html";
         final String input = "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
@@ -123,7 +120,7 @@ public class ResourceFixupRendererTest extends TestCase {
         assertEquals(expectedOutputRelative, out.toString());
     }
 
-    public void testUrlSanitizing2() throws IOException, HttpErrorPage {
+    public void testUrlSanitizing2() throws IOException {
         String base = "http://myapp/context/";
         String visibleBase = "http://app2/";
         String page = "/page/";

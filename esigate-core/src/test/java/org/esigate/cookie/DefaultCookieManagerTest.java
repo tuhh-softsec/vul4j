@@ -15,7 +15,6 @@
 
 package org.esigate.cookie;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,17 +22,17 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
 import org.esigate.Parameters;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class DefaultCookieManagerTest extends TestCase {
     private DefaultCookieManager cookieManager;
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
 
     @Override
     protected void setUp() throws HttpErrorPage {
@@ -42,9 +41,8 @@ public class DefaultCookieManagerTest extends TestCase {
         properties.setProperty(Parameters.DISCARD_COOKIES.getName(), "D,e");
         cookieManager = new DefaultCookieManager();
         cookieManager.init(null, properties);
-        request = TestUtils.createRequest();
         Driver driver = MockRequestExecutor.createDriver();
-        driver.initHttpRequestParams(request, null);
+        request = TestUtils.createRequest(driver);
     }
 
     @Override
@@ -74,7 +72,7 @@ public class DefaultCookieManagerTest extends TestCase {
         assertEquals("c", cookieNames.get(1));
     }
 
-    public void testFilter() throws IOException, HttpErrorPage, NoSuchFieldException, IllegalAccessException {
+    public void testFilter() {
         TestUtils.addCookie(new BasicClientCookie("a", "value a"), request);
         TestUtils.addCookie(new BasicClientCookie("b", "value b"), request);
         TestUtils.addCookie(new BasicClientCookie("c", "value c"), request);

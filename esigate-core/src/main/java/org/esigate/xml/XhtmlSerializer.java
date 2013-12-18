@@ -73,7 +73,7 @@ public class XhtmlSerializer extends HtmlSerializer {
     }
 
     @Override
-    public void startDocument() throws SAXException {
+    public void startDocument() {
         // Don't generate DOCTYPE declaration
     }
 

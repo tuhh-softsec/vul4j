@@ -29,18 +29,17 @@ import java.util.concurrent.RunnableFuture;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
+import org.esigate.impl.DriverRequest;
 import org.esigate.parser.future.CharSequenceFuture;
 import org.esigate.parser.future.FutureElement;
 import org.esigate.parser.future.FutureElementType;
 import org.esigate.parser.future.FutureParserContext;
 import org.esigate.parser.future.StringBuilderFutureAppendable;
 import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
@@ -140,7 +139,7 @@ class IncludeElement extends BaseElement {
             String xslt = tag.getAttribute("stylesheet");
             boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 
-            HttpEntityEnclosingRequest httpRequest = ctx.getHttpRequest();
+            DriverRequest httpRequest = ctx.getHttpRequest();
             List<Renderer> rendererList = new ArrayList<Renderer>();
             Driver driver;
             String page;
@@ -149,7 +148,7 @@ class IncludeElement extends BaseElement {
             int idxLegacyPattern = src.indexOf(LEGACY_PROVIDER_PATTERN);
             if (idx < 0 && idxLegacyPattern < 0) {
                 page = src;
-                driver = HttpRequestHelper.getDriver(httpRequest);
+                driver = httpRequest.getDriver();
             } else if (idx >= 0) {
                 int startIdx = idx + PROVIDER_PATTERN.length();
                 int endIndex = src.indexOf("})", startIdx);
@@ -166,7 +165,7 @@ class IncludeElement extends BaseElement {
 
             if (rewriteAbsoluteUrl) {
                 Map<String, String> replaceRules = new HashMap<String, String>();
-                String baseUrl = HttpRequestHelper.getBaseUrl(httpRequest).toString();
+                String baseUrl = httpRequest.getBaseUrl().toString();
                 String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL(baseUrl);
 
                 String contextBaseUrl;
@@ -210,7 +209,8 @@ class IncludeElement extends BaseElement {
                 } else if (xslt != null) {
                     rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
                 }
-                driver.render(page, null, out, httpRequest, rendererList.toArray(new Renderer[rendererList.size()]));
+                driver.render(page, null, out, httpRequest.getOriginalRequest(),
+                        rendererList.toArray(new Renderer[rendererList.size()]));
             }
         }
 
@@ -234,7 +234,7 @@ class IncludeElement extends BaseElement {
     }
 
     @Override
-    public void characters(Future<CharSequence> csq) throws IOException {
+    public void characters(Future<CharSequence> csq) {
         if (write) {
             buf.enqueueAppend(csq);
         }
@@ -266,7 +266,7 @@ class IncludeElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, FutureParserContext ctx) {
         buf = new StringBuilderFutureAppendable();
         fragmentReplacements = new HashMap<String, CharSequence>();
         regexpReplacements = new HashMap<String, CharSequence>();

@@ -21,19 +21,18 @@ import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class RemoveElementTest extends TestCase {
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
 
     @Override
     protected void setUp() throws Exception {
         MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
-        request = TestUtils.createRequest();
-        provider.initHttpRequestParams(request, null);
+        request = TestUtils.createRequest(provider.getDriver());
     }
 
     public void testRemove() throws IOException, HttpErrorPage {

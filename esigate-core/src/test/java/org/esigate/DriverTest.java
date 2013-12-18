@@ -30,7 +30,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -49,6 +48,7 @@ import org.esigate.esi.EsiRenderer;
 import org.esigate.extension.DefaultCharset;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientRequestExecutor;
+import org.esigate.http.IncomingRequest;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
 import org.esigate.test.TestUtils;
@@ -56,14 +56,13 @@ import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.http.HttpRequestBuilder;
 import org.esigate.test.http.HttpResponseBuilder;
-import org.esigate.util.HttpRequestHelper;
 
 public class DriverTest extends TestCase {
-    private HttpEntityEnclosingRequest request;
+    private IncomingRequest request;
     private MockConnectionManager mockConnectionManager;
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() {
         mockConnectionManager = new MockConnectionManager();
 
         MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
@@ -297,8 +296,7 @@ public class DriverTest extends TestCase {
         });
         Driver driver = createMockDriver(properties, mockConnectionManager);
 
-        HttpEntityEnclosingRequest request1 = new HttpRequestBuilder().mockMediator().uri("http://www.foo.com:80")
-                .build();
+        IncomingRequest request1 = new HttpRequestBuilder().mockMediator().uri("http://www.foo.com:80").build();
         assertEquals("www.foo.com", request1.getLastHeader("Host").getValue());
 
         driver.proxy("", request1);
@@ -616,16 +614,14 @@ public class DriverTest extends TestCase {
         driver.proxy("/foobar/", request);
 
         // https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161
-        assertTrue("Set-Cookie must be forwarded.", HttpRequestHelper.getMediator(request).getCookies().length > 0);
+        assertTrue("Set-Cookie must be forwarded.", request.getMediator().getCookies().length > 0);
     }
 
     /**
      * 0000154: Warn on staleWhileRevalidate configuration issue.
      * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=154
-     * 
-     * @throws Exception
      */
-    public void testConfigStaleWhileRevalidateWith0WorkerThreadsThrowsConfigurationException() throws Exception {
+    public void testConfigStaleWhileRevalidateWith0WorkerThreadsThrowsConfigurationException() {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE, "http://localhost/");
         properties.put(Parameters.STALE_WHILE_REVALIDATE, "600");
@@ -750,7 +746,7 @@ public class DriverTest extends TestCase {
 
         driver.proxy("/foo/foobar.jsp", request);
 
-        ContainerRequestMediator mediator = HttpRequestHelper.getMediator(request);
+        ContainerRequestMediator mediator = request.getMediator();
         Assert.assertEquals(1, mediator.getCookies().length);
         Assert.assertEquals("/foo", mediator.getCookies()[0].getPath());
     }
@@ -777,7 +773,7 @@ public class DriverTest extends TestCase {
 
         driver.proxy("/bar/foobar.jsp", request);
 
-        ContainerRequestMediator mediator = HttpRequestHelper.getMediator(request);
+        ContainerRequestMediator mediator = request.getMediator();
         Assert.assertEquals(1, mediator.getCookies().length);
         Assert.assertEquals("/", mediator.getCookies()[0].getPath());
     }

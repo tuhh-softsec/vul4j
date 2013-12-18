@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.esigate.parser.future.FutureElementType;
 import org.esigate.parser.future.FutureParserContext;
@@ -59,7 +58,7 @@ class ExceptElement extends BaseElement {
         }
 
         @Override
-        public CharSequence get() throws InterruptedException, ExecutionException {
+        public CharSequence get() throws ExecutionException {
             int code = (tag.getAttribute("code") != null) ? Integer.parseInt(tag.getAttribute("code")) : -1;
             boolean processContent = (parent.hasErrors() && !parent.exceptProcessed() && (code == -1 || code == parent
                     .getErrorCode()));
@@ -72,8 +71,7 @@ class ExceptElement extends BaseElement {
         }
 
         @Override
-        public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
-                TimeoutException {
+        public CharSequence get(long timeout, TimeUnit unit) throws ExecutionException {
             return get();
         }
     }
@@ -96,8 +94,13 @@ class ExceptElement extends BaseElement {
     }
 
     @Override
-    public void characters(Future<CharSequence> csq) throws IOException {
+    public void characters(Future<CharSequence> csq) {
         buf.enqueueAppend(csq);
+    }
+
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) {
+        // Nothing to do
     }
 
 }

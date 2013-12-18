@@ -18,18 +18,18 @@ package org.esigate.cookie;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.cookie.Cookie;
 import org.esigate.extension.Extension;
+import org.esigate.impl.DriverRequest;
 
 public interface CookieManager extends Extension {
 
-    void addCookie(Cookie cookie, HttpRequest resourceContext);
+    void addCookie(Cookie cookie, DriverRequest request);
 
-    List<Cookie> getCookies(HttpRequest resourceContext);
+    List<Cookie> getCookies(DriverRequest request);
 
-    boolean clearExpired(Date date, HttpRequest resourceContext);
+    boolean clearExpired(Date date, DriverRequest request);
 
-    void clear(HttpRequest resourceContext);
+    void clear(DriverRequest request);
 
 }

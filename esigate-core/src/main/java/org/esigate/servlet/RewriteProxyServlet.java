@@ -310,8 +310,7 @@ public class RewriteProxyServlet extends HttpServlet {
      * javax.servlet.http.HttpServletResponse)
      */
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Build request url
         String relUrl = request.getRequestURI();
         relUrl = relUrl.substring(request.getContextPath().length());

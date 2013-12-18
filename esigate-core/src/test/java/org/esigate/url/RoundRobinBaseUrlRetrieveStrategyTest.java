@@ -23,8 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.api.BaseUrlRetrieveStrategy;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.TestUtils;
 
 public class RoundRobinBaseUrlRetrieveStrategyTest extends TestCase {
@@ -33,7 +33,7 @@ public class RoundRobinBaseUrlRetrieveStrategyTest extends TestCase {
         String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
                 "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new RoundRobinBaseUrlRetrieveStrategy(baseUrls);
-        HttpEntityEnclosingRequest request = TestUtils.createRequest();
+        IncomingRequest request = TestUtils.createRequest();
         int times = 5;
         int requestsCount = baseUrls.length * times;
         ConcurrentMap<String, AtomicInteger> counterMap = new ConcurrentHashMap<String, AtomicInteger>();

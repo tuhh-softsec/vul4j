@@ -16,7 +16,6 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 
@@ -36,13 +35,13 @@ class AttemptElement extends BaseElement {
     private StringBuilder buf = new StringBuilder();
 
     @Override
-    public void characters(CharSequence csq, int start, int end) throws IOException {
+    public void characters(CharSequence csq, int start, int end) {
         // Buffer all content inside this tag.
         this.buf.append(csq, start, end);
     }
 
     @Override
-    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public void onTagEnd(String tag, ParserContext ctx) throws IOException {
 
         // Ensure no error has been flagged on the parent <esi:try/> tag.
         // This means the attempt was successful and we can write the tag

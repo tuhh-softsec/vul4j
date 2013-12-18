@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -43,6 +42,7 @@ import org.esigate.Parameters;
 import org.esigate.cache.EhcacheCacheStorage;
 import org.esigate.cookie.CookieManager;
 import org.esigate.extension.ExtensionFactory;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.MockConnectionManager;
 
@@ -115,8 +115,8 @@ public class HttpClientRequestExecutorTest extends TestCase {
     }
 
     private HttpResponse executeRequest() throws HttpErrorPage {
-        HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest(driver);
-        GenericHttpRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
+        DriverRequest httpRequest = TestUtils.createRequest(driver);
+        OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
                 "http://localhost:8080", true);
         return httpClientRequestExecutor.execute(apacheHttpRequest);
     }
@@ -149,7 +149,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         assertTrue("Response content should be unchanged as cache should be used.", compare(response, result));
     }
 
-    public void testCacheAndLoadBalancingNoPreserveHost() throws Exception {
+    public void testCacheAndLoadBalancingNoPreserveHost() {
         // FIXME this test is currently broken
         // properties.put(Parameters.REMOTE_URL_BASE,
         // "http://localhost:8080, http://127.0.0.1:8080");
@@ -273,7 +273,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         Thread.sleep(1000);
         result = executeRequest();
         assertTrue("Response should have been refreshed.",
-                result.getFirstHeader("X-cache").getValue().startsWith("MISS"));
+                result.getFirstHeader("X-cache").getValue().startsWith("VALIDATED"));
     }
 
     public void test200OkPageIsCachedWithTTL() throws Exception {
@@ -353,9 +353,8 @@ public class HttpClientRequestExecutorTest extends TestCase {
         HttpResponse response = createMockResponse("1");
         response.setHeader("Cache-control", "no-cache");
         mockConnectionManager.setResponse(response);
-        HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://localhost:8080", driver);
-        driver.initHttpRequestParams(httpRequest, null);
-        GenericHttpRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
+        DriverRequest httpRequest = TestUtils.createRequest("http://localhost:8080", driver);
+        OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
                 "http://localhost:8080", true);
         HttpResponse result = httpClientRequestExecutor.execute(apacheHttpRequest);
         Header xCacheHeader1 = result.getFirstHeader("X-Cache");
@@ -387,8 +386,8 @@ public class HttpClientRequestExecutorTest extends TestCase {
         HttpResponse response = createMockResponse("1");
         response.setHeader("Cache-control", "max-age=60");
         mockConnectionManager.setResponse(response);
-        HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://localhost:8080", driver);
-        GenericHttpRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
+        DriverRequest httpRequest = TestUtils.createRequest("http://localhost:8080", driver);
+        OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
                 "http://localhost:8080", true);
         HttpResponse result = httpClientRequestExecutor.execute(apacheHttpRequest);
         Header xCacheHeader1 = result.getFirstHeader("X-Cache");
@@ -428,15 +427,14 @@ public class HttpClientRequestExecutorTest extends TestCase {
         createHttpClientHelper();
 
         mockConnectionManager.setResponse(createMockResponse(""));
-        HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest(uri, driver);
+        DriverRequest httpRequest = TestUtils.createRequest(uri, driver);
         if (virtualHost != null) {
             httpRequest.setHeader("Host", virtualHost);
         }
         // I dn't think it is possible to have a virtualHost that is different
         // from the host in request uri but let's check that Host header is
         // taken into account
-        GenericHttpRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest, targetHost,
-                true);
+        OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest, targetHost, true);
         httpClientRequestExecutor.execute(apacheHttpRequest);
         Header[] headers = mockConnectionManager.getSentRequest().getHeaders("Host");
         assertEquals("We should have 1 Host header", 1, headers.length);
@@ -451,8 +449,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         sendRequestAndCheckHostHeader("http://www.foo.com:123", "http://localhost:8080", "www.bar.com:345",
                 "www.bar.com:345");
         // Should be copied as is even when default port
-        sendRequestAndCheckHostHeader("http://www.foo.com", "http://localhost:8080", "www.foo.com:80",
-                "www.foo.com:80");
+        sendRequestAndCheckHostHeader("http://www.foo.com", "http://localhost:8080", "www.foo.com:80", "www.foo.com:80");
     }
 
     /**
@@ -494,29 +491,28 @@ public class HttpClientRequestExecutorTest extends TestCase {
         createHttpClientHelper();
         HttpClientRequestExecutor httpClientHelper2 = httpClientRequestExecutor;
 
-        HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://www.foo.com", driver);
+        DriverRequest httpRequest = TestUtils.createRequest("http://www.foo.com", driver);
 
         // Include something with first HttpClientHelper
-        GenericHttpRequest apacheHttpRequest = httpClientHelper1.createHttpRequest(httpRequest,
-                "http://localhost:8080", false);
+        OutgoingRequest apacheHttpRequest = httpClientHelper1.createHttpRequest(httpRequest, "http://localhost:8080",
+                false);
         // Also manually add a fake param to see if it is set in original
         // request or copied to other requests
-        apacheHttpRequest.getParams().setParameter("test", "test");
+        apacheHttpRequest.getContext().setAttribute("test", "test");
         httpClientHelper1.execute(apacheHttpRequest);
         Header[] headers = mockConnectionManager.getSentRequest().getHeaders("Host");
         assertEquals("We should have 1 Host header", 1, headers.length);
         assertEquals("www.foo.com", headers[0].getValue());
 
-        GenericHttpRequest apacheHttpRequest2 = httpClientHelper2.createHttpRequest(httpRequest,
-                "http://localhost:8080", false);
+        OutgoingRequest apacheHttpRequest2 = httpClientHelper2.createHttpRequest(httpRequest, "http://localhost:8080",
+                false);
         httpClientHelper2.execute(apacheHttpRequest2);
         Header[] headers2 = mockConnectionManager.getSentRequest().getHeaders("Host");
         assertEquals("We should have 1 Host header", 1, headers2.length);
         assertEquals("localhost:8080", headers2[0].getValue());
 
-        assertNull(httpRequest.getParams().getParameter("test"));
-        assertNull(apacheHttpRequest2.getParams().getParameter("test"));
-        assertNotNull(apacheHttpRequest.getParams().getParameter("test"));
+        assertNull(apacheHttpRequest2.getContext().getAttribute("test"));
+        assertNotNull(apacheHttpRequest.getContext().getAttribute("test"));
     }
 
     /**
@@ -530,9 +526,9 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
         properties.put(Parameters.USE_CACHE, "false");
         createHttpClientHelper();
-        HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest(driver);
-        GenericHttpRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest,
-                "http://localhost:8080", false);
+        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
+                false);
         HttpResponse response = createMockResponse("");
         response.addHeader("Set-Cookie", "test=\"a b\"; Version=1");
         mockConnectionManager.setResponse(response);
@@ -555,10 +551,10 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.TTL.getName(), "1000");
         createHttpClientHelper();
-        HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest(driver);
+        DriverRequest originalRequest = TestUtils.createRequest(driver);
         originalRequest.addHeader("If-Modified-Since", "Fri, 15 Jun 2012 21:06:25 GMT");
-        GenericHttpRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest,
-                "http://localhost:8080", false);
+        OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
+                false);
         HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1),
                 HttpStatus.SC_NOT_MODIFIED, "Not Modified"));
         mockConnectionManager.setResponse(response);
@@ -579,9 +575,9 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.TTL.getName(), "1000");
         createHttpClientHelper();
-        HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest(driver);
-        GenericHttpRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest,
-                "http://localhost:8080", false);
+        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
+                false);
         HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1),
                 HttpStatus.SC_MOVED_PERMANENTLY, "Moved permanently"));
         response.addHeader("Location", "http://www.foo.com");
@@ -603,9 +599,9 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.TTL.getName(), "1000");
         createHttpClientHelper();
-        HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest(driver);
-        GenericHttpRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest,
-                "http://localhost:8080", false);
+        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
+                false);
         HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1),
                 HttpStatus.SC_MOVED_TEMPORARILY, "Moved temporarily"));
         response.addHeader("Location", "http://www.foo.com");
@@ -629,10 +625,10 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.X_CACHE_HEADER, "true");
         properties.put(Parameters.HEURISTIC_CACHING_ENABLED, "false");
         createHttpClientHelper();
-        HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest(driver);
+        DriverRequest originalRequest = TestUtils.createRequest(driver);
 
-        GenericHttpRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest,
-                "http://localhost:8080", false);
+        OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
+                false);
 
         HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1),
                 HttpStatus.SC_OK, "OK"));
@@ -690,8 +686,8 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.X_CACHE_HEADER, "true");
         createHttpClientHelper();
 
-        HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest(driver);
-        GenericHttpRequest request1 = httpClientRequestExecutor.createHttpRequest(originalRequest,
+        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        OutgoingRequest request1 = httpClientRequestExecutor.createHttpRequest(originalRequest,
                 "http://localhost:8080", false);
         request1.addHeader("If-None-Match", "etag");
 
@@ -727,7 +723,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
 
         // Third request not conditional ! Should call backend server as we
         // don't have the entity in the cache.
-        GenericHttpRequest request2 = httpClientRequestExecutor.createHttpRequest(originalRequest,
+        OutgoingRequest request2 = httpClientRequestExecutor.createHttpRequest(originalRequest,
                 "http://localhost:8080", false);
         HttpResponse result3 = httpClientRequestExecutor.execute(request2);
         assertEquals(HttpStatus.SC_OK, result3.getStatusLine().getStatusCode());
@@ -747,8 +743,8 @@ public class HttpClientRequestExecutorTest extends TestCase {
         createHttpClientHelper();
 
         mockConnectionManager.setResponse(createMockResponse(""));
-        HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("https://wwww.foo.com", driver);
-        GenericHttpRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
+        DriverRequest httpRequest = TestUtils.createRequest("https://wwww.foo.com", driver);
+        OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
                 "http://localhost:8080", true);
         httpClientRequestExecutor.execute(apacheHttpRequest);
         Header[] headers = mockConnectionManager.getSentRequest().getHeaders("X-Forwarded-Proto");
@@ -771,18 +767,18 @@ public class HttpClientRequestExecutorTest extends TestCase {
         mockConnectionManager.setResponse(response);
 
         // First request to load the cache
-        HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest(driver);
+        DriverRequest httpRequest = TestUtils.createRequest(driver);
         httpRequest.addHeader("If-Modified-Since", yesterday);
-        GenericHttpRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
+        OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
                 "http://localhost:8080", true);
         HttpResponse result = httpClientRequestExecutor.execute(apacheHttpRequest);
         assertTrue(result.getFirstHeader("X-cache").getValue().startsWith("MISS"));
         assertEquals(HttpStatus.SC_NOT_MODIFIED, result.getStatusLine().getStatusCode());
 
         // Second request should use cache
-        HttpEntityEnclosingRequest httpRequest2 = TestUtils.createRequest(driver);
+        DriverRequest httpRequest2 = TestUtils.createRequest(driver);
         httpRequest2.addHeader("If-Modified-Since", yesterday);
-        GenericHttpRequest apacheHttpRequest2 = httpClientRequestExecutor.createHttpRequest(httpRequest2,
+        OutgoingRequest apacheHttpRequest2 = httpClientRequestExecutor.createHttpRequest(httpRequest2,
                 "http://localhost:8080", true);
         HttpResponse result2 = httpClientRequestExecutor.execute(apacheHttpRequest2);
         assertTrue(result2.getFirstHeader("X-cache").getValue().startsWith("HIT"));

@@ -1,6 +1,5 @@
 package org.esigate.servlet;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
 
@@ -21,12 +20,12 @@ public class MockHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
-    public ServletOutputStream getOutputStream() throws IOException {
+    public ServletOutputStream getOutputStream() {
         return null;
     }
 
     @Override
-    public PrintWriter getWriter() throws IOException {
+    public PrintWriter getWriter() {
         return null;
     }
 
@@ -52,7 +51,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
-    public void flushBuffer() throws IOException {
+    public void flushBuffer() {
     }
 
     @Override
@@ -107,15 +106,15 @@ public class MockHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
-    public void sendError(int sc, String msg) throws IOException {
+    public void sendError(int sc, String msg) {
     }
 
     @Override
-    public void sendError(int sc) throws IOException {
+    public void sendError(int sc) {
     }
 
     @Override
-    public void sendRedirect(String location) throws IOException {
+    public void sendRedirect(String location) {
     }
 
     @Override

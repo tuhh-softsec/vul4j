@@ -18,10 +18,10 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.http.ResourceUtils;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class ResourceUtilsTest extends TestCase {
@@ -30,8 +30,7 @@ public class ResourceUtilsTest extends TestCase {
         Properties props = new Properties();
         props.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com/");
         Driver driver = Driver.builder().setName("test").setProperties(props).build();
-        HttpEntityEnclosingRequest request = TestUtils.createRequest("http://bar.com");
-        driver.initHttpRequestParams(request, null);
+        DriverRequest request = TestUtils.createRequest("http://bar.com", driver);
         assertEquals("http://www.foo.com/test", ResourceUtils.getHttpUrlWithQueryString("/test", request, true));
     }
 
@@ -39,8 +38,7 @@ public class ResourceUtilsTest extends TestCase {
         Properties props = new Properties();
         props.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com/");
         Driver driver = Driver.builder().setName("test").setProperties(props).build();
-        HttpEntityEnclosingRequest request = TestUtils.createRequest("http://bar.com");
-        driver.initHttpRequestParams(request, null);
+        DriverRequest request = TestUtils.createRequest("http://bar.com", driver);
         assertEquals("http://www.bar.com/test",
                 ResourceUtils.getHttpUrlWithQueryString("http://www.bar.com/test", request, true));
     }

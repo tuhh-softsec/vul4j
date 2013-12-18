@@ -61,8 +61,8 @@ class IncludeBlockElement implements Element {
         String page = tagAttributes.getPage();
         String name = tagAttributes.getName();
 
-        driver.render(page, null, new Adapter(ctx.getCurrent()), ctx.getHttpRequest(), new BlockRenderer(name, page),
-                new AggregateRenderer());
+        driver.render(page, null, new Adapter(ctx.getCurrent()), ctx.getHttpRequest().getOriginalRequest(),
+                new BlockRenderer(name, page), new AggregateRenderer());
     }
 
     @Override
@@ -71,7 +71,7 @@ class IncludeBlockElement implements Element {
     }
 
     @Override
-    public void characters(CharSequence csq, int start, int end) throws IOException {
+    public void characters(CharSequence csq, int start, int end) {
         // Just ignore tag body
     }
 

@@ -1,6 +1,5 @@
 package org.esigate.util;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Pattern;
@@ -113,10 +112,8 @@ public final class UriUtils {
      * @param targetContext
      *            The request which was received by esigate
      * @return The translated URL
-     * @throws MalformedURLException
      */
-    public static String translateUrl(String sourceUrl, String sourceContext, String targetContext)
-            throws MalformedURLException {
+    public static String translateUrl(String sourceUrl, String sourceContext, String targetContext) {
         // Find what has been replaced at the beginning of sourceContext to
         // transform it to targetContext
         String commonSuffix = StringUtils.reverse(StringUtils.getCommonPrefix(StringUtils.reverse(sourceContext),

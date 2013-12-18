@@ -19,7 +19,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -93,7 +92,7 @@ public class HttpServletMediatorTest extends TestCase {
             private ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
 
             @Override
-            public void write(int b) throws IOException {
+            public void write(int b) {
                 this.byteOutputStream.write(b);
             }
 

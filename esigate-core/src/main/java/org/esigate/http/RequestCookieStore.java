@@ -18,10 +18,10 @@ package org.esigate.http;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import org.esigate.cookie.CookieManager;
+import org.esigate.impl.DriverRequest;
 
 /**
  * A CookieStore that delegates to the CookieManager instance associated with this Driver instance. The CookieManager
@@ -34,10 +34,10 @@ import org.esigate.cookie.CookieManager;
  */
 public class RequestCookieStore implements CookieStore {
 
-    private final HttpRequest originalRequest;
+    private final DriverRequest originalRequest;
     private final CookieManager cookieManager;
 
-    public RequestCookieStore(CookieManager cookieManager, HttpRequest originalRequest) {
+    public RequestCookieStore(CookieManager cookieManager, DriverRequest originalRequest) {
         this.originalRequest = originalRequest;
         this.cookieManager = cookieManager;
     }

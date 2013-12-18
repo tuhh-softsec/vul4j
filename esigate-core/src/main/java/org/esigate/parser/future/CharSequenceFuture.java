@@ -14,10 +14,8 @@
  */
 package org.esigate.parser.future;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * This class is a simple wrapper on a CharSequence.
@@ -69,8 +67,7 @@ public class CharSequenceFuture implements Future<CharSequence> {
      * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
      */
     @Override
-    public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
-            TimeoutException {
+    public CharSequence get(long timeout, TimeUnit unit) {
         // Get will never block, just use the default implementation.
         return get();
     }
@@ -81,7 +78,7 @@ public class CharSequenceFuture implements Future<CharSequence> {
      * @see java.util.concurrent.Future#get()
      */
     @Override
-    public CharSequence get() throws InterruptedException, ExecutionException {
+    public CharSequence get() {
         // Return the wrapped CharSequence.
         return this.seq;
     }

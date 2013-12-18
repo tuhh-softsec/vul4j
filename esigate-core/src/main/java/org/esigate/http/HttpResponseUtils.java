@@ -160,6 +160,7 @@ public final class HttpResponseUtils {
      * @since 4.1 - Event EventManager.EVENT_READ_ENTITY is fired when calling this method.
      * 
      * @param httpResponse
+     * @param eventManager 
      * @return The body as string or the reason phrase if body was empty.
      * @throws HttpErrorPage
      */
@@ -218,36 +219,6 @@ public final class HttpResponseUtils {
         }
 
         return removeSessionId(result, httpResponse);
-    }
-
-    /**
-     * This method is work in progress to externalize the provider.ttl option in an extension. May be moved and/or
-     * removed in 5.x Please do not use.
-     * 
-     * @deprecated since this is work in progress.
-     * @param httpResponse
-     * @return
-     */
-    @Deprecated
-    public static boolean isCacheableError(HttpResponse httpResponse) {
-        int statusCode = httpResponse.getStatusLine().getStatusCode();
-        return statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR
-                || statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE;
-    }
-
-    /**
-     * This method is work in progress to externalize the provider.ttl option in an extension. May be moved and/or
-     * removed in 5.x Please do not use.
-     * 
-     * @deprecated since this is work in progress.
-     * @param httpResponse
-     * @return
-     */
-    @Deprecated
-    public static boolean isCacheableSuccess(HttpResponse httpResponse) {
-        int statusCode = httpResponse.getStatusLine().getStatusCode();
-        return statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MOVED_PERMANENTLY
-                || statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_NOT_MODIFIED;
     }
 
 }

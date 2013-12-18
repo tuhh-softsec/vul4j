@@ -17,18 +17,17 @@ package org.esigate;
 
 import java.util.Properties;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.events.EventManager;
 import org.esigate.http.ContentTypeHelper;
-import org.esigate.http.GenericHttpRequest;
+import org.esigate.http.OutgoingRequest;
+import org.esigate.impl.DriverRequest;
 
 public interface RequestExecutor {
 
-    HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean b)
-            throws HttpErrorPage;
+    HttpResponse createAndExecuteRequest(DriverRequest request, String url, boolean b) throws HttpErrorPage;
 
-    HttpResponse execute(GenericHttpRequest httpRequest);
+    HttpResponse execute(OutgoingRequest httpRequest);
 
     public interface RequestExecutorBuilder {
 

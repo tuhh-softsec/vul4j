@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.future.FutureElementType;
 import org.esigate.parser.future.FutureParserContext;
 import org.esigate.parser.future.StringBuilderFutureAppendable;
@@ -82,8 +80,7 @@ class AttemptElement extends BaseElement {
         }
 
         @Override
-        public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
-                TimeoutException {
+        public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException {
             return get();
         }
     }
@@ -94,12 +91,12 @@ class AttemptElement extends BaseElement {
     }
 
     @Override
-    public void characters(Future<CharSequence> csq) throws IOException {
+    public void characters(Future<CharSequence> csq) {
         this.buf.enqueueAppend(csq);
     }
 
     @Override
-    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException {
         TryElement parent = ctx.findAncestor(TryElement.class);
         if (parent != null) {
             parent.setWrite(true);

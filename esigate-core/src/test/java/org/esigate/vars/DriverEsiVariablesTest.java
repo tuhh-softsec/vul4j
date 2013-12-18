@@ -21,7 +21,6 @@ import java.util.Properties;
 import junit.framework.Assert;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
@@ -32,6 +31,7 @@ import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.esi.EsiRenderer;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.driver.AbstractDriverTestCase;
@@ -73,7 +73,7 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");
 
         // Test case
-        HttpEntityEnclosingRequest request = createHttpRequest()
+        IncomingRequest request = createHttpRequest()
                 .uri("http://test.mydomain.fr/foobar/?test=esigate&test2=esigate2")
                 .header("Referer", "http://www.esigate.org")
                 .header("User-Agent",
@@ -110,7 +110,7 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
         // Setup remote server (provider) response.
         IResponseHandler mockExecutor = new IResponseHandler() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) {
 
                 StringBuilder content = new StringBuilder();
                 content.append("<esi:vars>");
@@ -165,7 +165,7 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");
 
         // Test case
-        HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
+        IncomingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
                 .header("User-Agent", "Mozilla/5.0 (Windows; U; MSIE 9.0; WIndows NT 9.0; en-US)").mockMediator()
                 .build();
 
@@ -188,7 +188,7 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
         // Setup remote server (provider) response.
         IResponseHandler mockExecutor = new IResponseHandler() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) {
 
                 StringBuilder content = new StringBuilder();
                 content.append("<esi:vars>");

@@ -15,8 +15,8 @@
 
 package org.esigate.api;
 
-import org.apache.http.HttpRequest;
+import org.esigate.http.IncomingRequest;
 
 public interface BaseUrlRetrieveStrategy {
-    String getBaseURL(HttpRequest originalRequest);
+    String getBaseURL(IncomingRequest originalRequest);
 }

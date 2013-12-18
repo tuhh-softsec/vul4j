@@ -41,7 +41,7 @@ class VarsElement extends BaseElement {
     }
 
     @Override
-    public void characters(Future<CharSequence> csq) throws IOException {
+    public void characters(Future<CharSequence> csq) {
         buf.enqueueAppend(csq);
     }
 
@@ -51,8 +51,6 @@ class VarsElement extends BaseElement {
         String result;
         try {
             result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
-        } catch (InterruptedException e) {
-            throw new IOException(e);
         } catch (ExecutionException e) {
             if (e.getCause() instanceof HttpErrorPage) {
                 throw (HttpErrorPage) e.getCause();

@@ -54,8 +54,7 @@ class ExceptElement extends BaseElement {
     }
 
     @Override
-    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-        super.onTagEnd(tag, ctx);
+    public void onTagEnd(String tag, ParserContext ctx) {
         TryElement parent = ctx.findAncestor(TryElement.class);
         parent.setWrite(false);
     }

@@ -28,7 +28,8 @@ import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FragmentEvent;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.extension.Extension;
-import org.esigate.http.GenericHttpRequest;
+import org.esigate.http.IncomingRequest;
+import org.esigate.http.OutgoingRequest;
 
 /**
  * This class is an adapter from the old ESIgate 2.X/3.X API used for AuthentificationHandlers to the new extension
@@ -38,8 +39,8 @@ import org.esigate.http.GenericHttpRequest;
  * The following events are mapped on init :
  * <uL>
  * <li> {@link EventManager#EVENT_PROXY_PRE} is mapped to {@link #beforeProxy(HttpRequest)}</li>
- * <li>{@link EventManager#EVENT_FRAGMENT_PRE} is mapped to {@link #preRequest(GenericHttpRequest, HttpRequest)}</li>
- * <li> {@link EventManager#EVENT_FRAGMENT_POST} is mapped to {@link #needsNewRequest(HttpResponse, HttpRequest)}</li>
+ * <li>{@link EventManager#EVENT_FRAGMENT_PRE} is mapped to {@link #preRequest(OutgoingRequest, IncomingRequest)}</li>
+ * <li> {@link EventManager#EVENT_FRAGMENT_POST} is mapped to {@link #needsNewRequest(HttpResponse, IncomingRequest)}</li>
  * </ul>
  * 
  * <p>
@@ -75,7 +76,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
      * @param request
      * @param httpRequest
      */
-    public abstract void preRequest(GenericHttpRequest request, HttpRequest httpRequest);
+    public abstract void preRequest(OutgoingRequest request, IncomingRequest httpRequest);
 
     /**
      * Method called after the response has been obtained from the destination server.
@@ -87,7 +88,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
      * @param httpRequest
      * @return true if a new request is needed
      */
-    public abstract boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest);
+    public abstract boolean needsNewRequest(HttpResponse response, IncomingRequest httpRequest);
 
     /*
      * (non-Javadoc)

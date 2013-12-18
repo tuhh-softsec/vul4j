@@ -52,4 +52,9 @@ class ChooseElement extends BaseElement {
         this.hasConditionSet |= condition; // set to true if anyone of conditions are true
     }
 
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) {
+        // Nothing to do
+    }
+
 }

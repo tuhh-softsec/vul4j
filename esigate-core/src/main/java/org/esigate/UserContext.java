@@ -17,8 +17,7 @@ package org.esigate;
 
 import java.io.Serializable;
 
-import org.apache.http.HttpRequest;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.http.IncomingRequest;
 
 /**
  * User context that can be used in the master application to define the user id. This context will be transmitted to
@@ -31,10 +30,10 @@ import org.esigate.util.HttpRequestHelper;
  */
 public class UserContext {
     private static final String USER_KEY = "user";
-    private final HttpRequest httpRequest;
+    private final IncomingRequest httpRequest;
     private final String key;
 
-    public UserContext(HttpRequest httpRequest, String key) {
+    public UserContext(IncomingRequest httpRequest, String key) {
         this.httpRequest = httpRequest;
         this.key = UserContext.class.getName() + "#" + key;
     }
@@ -44,11 +43,11 @@ public class UserContext {
     }
 
     public Object getAttribute(String name) {
-        return HttpRequestHelper.getMediator(httpRequest).getSessionAttribute(prefixAttributeName(name));
+        return httpRequest.getMediator().getSessionAttribute(prefixAttributeName(name));
     }
 
     public void setAttribute(String name, Serializable value) {
-        HttpRequestHelper.getMediator(httpRequest).setSessionAttribute(prefixAttributeName(name), value);
+        httpRequest.getMediator().setSessionAttribute(prefixAttributeName(name), value);
     }
 
     public String getUser() {

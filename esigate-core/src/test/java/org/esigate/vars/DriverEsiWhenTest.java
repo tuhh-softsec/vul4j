@@ -21,7 +21,6 @@ import java.util.Properties;
 import junit.framework.Assert;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
@@ -31,6 +30,7 @@ import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.esi.EsiRenderer;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.driver.AbstractDriverTestCase;
@@ -55,7 +55,7 @@ public class DriverEsiWhenTest extends AbstractDriverTestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");
 
         // Test case
-        HttpEntityEnclosingRequest request = createHttpRequest()
+        IncomingRequest request = createHttpRequest()
                 .uri("http://test.mydomain.fr/foobar/?test=esigate&test2=esigate2")
                 .header("Referer", "http://www.esigate.org")
                 .header("User-Agent",
@@ -99,7 +99,7 @@ public class DriverEsiWhenTest extends AbstractDriverTestCase {
         // Setup remote server (provider) response.
         IResponseHandler mockExecutor = new IResponseHandler() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) {
 
                 StringBuilder content = new StringBuilder();
 

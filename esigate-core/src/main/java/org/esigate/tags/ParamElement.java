@@ -2,7 +2,6 @@ package org.esigate.tags;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.aggregator.AggregationSyntaxException;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
@@ -42,7 +41,7 @@ class ParamElement implements Element {
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public void onTagStart(String tag, ParserContext ctx) throws IOException {
         this.parent = ctx.getCurrent();
         String[] parameters = tag.split("\\$");
         if (parameters.length != 4) {

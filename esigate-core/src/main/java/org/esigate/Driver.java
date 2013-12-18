@@ -16,8 +16,6 @@
 package org.esigate;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,10 +24,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
@@ -41,8 +36,9 @@ import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.HttpResponseUtils;
+import org.esigate.http.IncomingRequest;
 import org.esigate.http.ResourceUtils;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.impl.DriverRequest;
 import org.esigate.vars.VariablesResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,7 +128,7 @@ public final class Driver {
      *            parameters to be added to the request
      * @param writer
      *            Writer where to write the result
-     * @param originalRequest
+     * @param incomingRequest
      *            originating request object
      * @param renderers
      *            the renderers to use in order to transform the output
@@ -142,13 +138,13 @@ public final class Driver {
      *             If an Exception occurs while retrieving the template
      */
     public void render(String pageUrl, Map<String, String> parameters, Appendable writer,
-            HttpEntityEnclosingRequest originalRequest, Renderer... renderers) throws IOException, HttpErrorPage {
+            IncomingRequest incomingRequest, Renderer... renderers) throws IOException, HttpErrorPage {
 
-        initHttpRequestParams(originalRequest, parameters);
+        DriverRequest driverRequest = new DriverRequest(incomingRequest, this, parameters);
 
         // Replace ESI variables in URL
         // TODO: should be performed in the ESI extension
-        String resultingPageUrl = VariablesResolver.replaceAllVariables(pageUrl, originalRequest);
+        String resultingPageUrl = VariablesResolver.replaceAllVariables(pageUrl, driverRequest);
 
         // Retrieve URL
         HttpResponse response = null;
@@ -156,30 +152,28 @@ public final class Driver {
 
         // Get from cache to prevent multiple request to the same url if
         // multiple fragments are used.
-        boolean cacheable = "GET".equalsIgnoreCase(originalRequest.getRequestLine().getMethod());
+        boolean cacheable = "GET".equalsIgnoreCase(incomingRequest.getRequestLine().getMethod());
         if (cacheable) {
-            currentValue = (String) originalRequest.getParams().getParameter(resultingPageUrl);
-            response = (HttpResponse) originalRequest.getParams()
-                    .getParameter(CACHE_RESPONSE_PREFIX + resultingPageUrl);
+            currentValue = incomingRequest.getAttribute(resultingPageUrl);
+            response = incomingRequest.getAttribute(CACHE_RESPONSE_PREFIX + resultingPageUrl);
         }
 
-        // content and reponse were not in cache
+        // content and response were not in cache
         if (currentValue == null) {
-            String targetUrl = ResourceUtils.getHttpUrlWithQueryString(resultingPageUrl, originalRequest, false);
-            response = requestExecutor.createAndExecuteRequest(originalRequest, targetUrl, false);
-            // Unzip
+            String targetUrl = ResourceUtils.getHttpUrlWithQueryString(resultingPageUrl, driverRequest, false);
+            response = requestExecutor.createAndExecuteRequest(driverRequest, targetUrl, false);
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
             if (cacheable) {
-                originalRequest.getParams().setParameter(resultingPageUrl, currentValue);
-                originalRequest.getParams().setParameter(CACHE_RESPONSE_PREFIX + resultingPageUrl, response);
+                incomingRequest.setAttribute(resultingPageUrl, currentValue);
+                incomingRequest.setAttribute(CACHE_RESPONSE_PREFIX + resultingPageUrl, response);
             }
         }
 
         logAction("render", pageUrl, renderers);
 
         // Apply renderers
-        currentValue = performRendering(pageUrl, originalRequest, response, currentValue, renderers);
+        currentValue = performRendering(pageUrl, driverRequest, response, currentValue, renderers);
 
         // Output result
         writer.append(currentValue);
@@ -219,31 +213,6 @@ public final class Driver {
     }
 
     /**
-     * Set request context informations as request parameters.
-     * <p>
-     * 
-     * @see HttpRequest#setParams(org.apache.http.params.HttpParams)
-     * @param request
-     *            the HTTP request
-     * @param parameters
-     *            Additional parameters (other than the ones included in the request itself).
-     * @throws HttpErrorPage
-     *             if url base for this request is invalid (remoteBaseUrl or baseUrlRetriveStrategy).
-     */
-    public void initHttpRequestParams(HttpRequest request, Map<String, String> parameters) throws HttpErrorPage {
-        HttpRequestHelper.setDriver(request, this);
-        HttpRequestHelper.setParameters(request, parameters);
-        UserContext userContext = new UserContext(request, this.config.getInstanceName());
-        HttpRequestHelper.setUserContext(request, userContext);
-        try {
-            URL baseUrl = new URL(this.config.getBaseUrlRetrieveStrategy().getBaseURL(request));
-            HttpRequestHelper.setBaseUrl(request, baseUrl);
-        } catch (MalformedURLException e) {
-            throw new HttpErrorPage(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal server error", e);
-        }
-    }
-
-    /**
      * Retrieves a resource from the provider application and transforms it using the Renderer passed as a parameter.
      * 
      * @param relUrl
@@ -257,8 +226,11 @@ public final class Driver {
      * @throws HttpErrorPage
      *             If the page contains incorrect tags
      */
-    public void proxy(String relUrl, HttpEntityEnclosingRequest request, Renderer... renderers) throws IOException,
-            HttpErrorPage {
+    public void proxy(String relUrl, IncomingRequest request, Renderer... renderers) throws IOException, HttpErrorPage {
+
+        DriverRequest driverRequest = new DriverRequest(request, this, null);
+        driverRequest.setCharacterEncoding(this.config.getUriEncoding());
+
         // This is used to ensure EVENT_PROXY_POST is called once and only once.
         // there are 3 different cases
         // - Success -> the main code
@@ -280,13 +252,11 @@ public final class Driver {
 
             logAction("proxy", relUrl, renderers);
 
-            initHttpRequestParams(request, null);
-            HttpRequestHelper.setCharacterEncoding(request, this.config.getUriEncoding());
-            String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, e.originalRequest, true);
-            e.response = requestExecutor.createAndExecuteRequest(request, url, true);
+            String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, driverRequest, true);
+            e.response = requestExecutor.createAndExecuteRequest(driverRequest, url, true);
 
             // Perform rendering
-            e.response = performRendering(relUrl, request, e.response, renderers);
+            e.response = performRendering(relUrl, driverRequest, e.response, renderers);
 
             // Event post-proxy
             // This must be done before calling sendResponse to ensure response
@@ -295,15 +265,15 @@ public final class Driver {
             this.eventManager.fire(EventManager.EVENT_PROXY_POST, e);
 
             // Send request to the client.
-            HttpRequestHelper.getMediator(request).sendResponse(e.response);
+            request.getMediator().sendResponse(e.response);
 
         } catch (HttpErrorPage errorPage) {
             e.errorPage = errorPage;
 
             // On error returned by the proxy request, perform rendering on the
             // error page.
-            e.errorPage = new HttpErrorPage(performRendering(relUrl, request,
-                    e.errorPage.getHttpResponse(), renderers));
+            e.errorPage = new HttpErrorPage(performRendering(relUrl, driverRequest, e.errorPage.getHttpResponse(),
+                    renderers));
 
             // Event post-proxy
             // This must be done before throwing exception to ensure response
@@ -336,8 +306,8 @@ public final class Driver {
      * @throws HttpErrorPage
      * @throws IOException
      */
-    private HttpResponse performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest,
-            HttpResponse response, Renderer[] renderers) throws HttpErrorPage, IOException {
+    private HttpResponse performRendering(String pageUrl, DriverRequest originalRequest, HttpResponse response,
+            Renderer[] renderers) throws HttpErrorPage, IOException {
 
         if (!contentTypeHelper.isTextContentType(response)) {
             LOG.debug("'{}' is binary on no transformation to apply: was forwarded without modification.", pageUrl);
@@ -378,8 +348,8 @@ public final class Driver {
      * @throws HttpErrorPage
      * @throws IOException
      */
-    private String performRendering(String pageUrl, HttpEntityEnclosingRequest originalRequest, HttpResponse response,
-            String body, Renderer[] renderers) throws IOException, HttpErrorPage {
+    private String performRendering(String pageUrl, DriverRequest originalRequest, HttpResponse response, String body,
+            Renderer[] renderers) throws IOException, HttpErrorPage {
         // Start rendering
         RenderEvent renderEvent = new RenderEvent();
         renderEvent.originalRequest = originalRequest;

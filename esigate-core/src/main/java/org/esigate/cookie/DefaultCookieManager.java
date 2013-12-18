@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
@@ -29,7 +28,7 @@ import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.UserContext;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.impl.DriverRequest;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +79,7 @@ public class DefaultCookieManager implements CookieManager {
     }
 
     @Override
-    public void addCookie(Cookie cookie, HttpRequest originalRequest) {
+    public void addCookie(Cookie cookie, DriverRequest originalRequest) {
         String name = cookie.getName();
         if (discardCookies.contains(name) || (discardCookies.contains("*") && !forwardCookies.contains(name))) {
             if (LOG.isInfoEnabled()) {
@@ -94,14 +93,14 @@ public class DefaultCookieManager implements CookieManager {
             }
 
             // Forward cookie in response.
-            HttpRequestHelper.getMediator(originalRequest).addCookie(rewriteForBrowser(cookie, originalRequest));
+            originalRequest.getMediator().addCookie(rewriteForBrowser(cookie, originalRequest));
         } else {
             if (LOG.isInfoEnabled()) {
                 LOG.info("Cookie " + toString(cookie) + " -> storing to context");
             }
 
             // Store cookie in session
-            UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
+            UserContext userContext = originalRequest.getUserContext();
 
             BasicCookieStore cookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
             if (cookies == null) {
@@ -114,9 +113,9 @@ public class DefaultCookieManager implements CookieManager {
     }
 
     @Override
-    public List<Cookie> getCookies(HttpRequest originalRequest) {
+    public List<Cookie> getCookies(DriverRequest originalRequest) {
         BasicCookieStore cookies = new BasicCookieStore();
-        UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
+        UserContext userContext = originalRequest.getUserContext();
 
         // Read cookies from session
         BasicCookieStore sessionCookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
@@ -127,7 +126,7 @@ public class DefaultCookieManager implements CookieManager {
         }
 
         // Read cookie from request
-        Cookie[] requestCookies = HttpRequestHelper.getMediator(originalRequest).getCookies();
+        Cookie[] requestCookies = originalRequest.getMediator().getCookies();
         if (requestCookies != null) {
             for (Cookie cookie : requestCookies) {
                 String name = cookie.getName();
@@ -139,7 +138,7 @@ public class DefaultCookieManager implements CookieManager {
         return cookies.getCookies();
     }
 
-    private static Cookie rewriteForServer(Cookie cookie, HttpRequest originalRequest) {
+    private static Cookie rewriteForServer(Cookie cookie, DriverRequest request) {
         String name = cookie.getName();
         if ("_JSESSIONID".equalsIgnoreCase(name)) {
             name = name.substring(1);
@@ -148,10 +147,10 @@ public class DefaultCookieManager implements CookieManager {
         httpClientCookie.setSecure(false);
         String domain;
 
-        if (HttpRequestHelper.getDriver(originalRequest).getConfiguration().isPreserveHost()) {
-            domain = UriUtils.extractHostName(originalRequest.getRequestLine().getUri());
+        if (request.getDriver().getConfiguration().isPreserveHost()) {
+            domain = UriUtils.extractHostName(request.getRequestLine().getUri());
         } else {
-            domain = HttpRequestHelper.getBaseUrl(originalRequest).getHost();
+            domain = request.getBaseUrl().getHost();
         }
 
         httpClientCookie.setDomain(domain);
@@ -184,7 +183,7 @@ public class DefaultCookieManager implements CookieManager {
         return domain;
     }
 
-    private static Cookie rewriteForBrowser(Cookie cookie, HttpRequest originalRequest) {
+    private static Cookie rewriteForBrowser(Cookie cookie, DriverRequest request) {
         String name = cookie.getName();
         // Rewrite name if JSESSIONID because it will interfere with current
         // server session
@@ -193,19 +192,19 @@ public class DefaultCookieManager implements CookieManager {
         }
 
         // Rewrite domain
-        String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(),
-                UriUtils.extractHostName(originalRequest.getRequestLine().getUri()));
+        String domain = rewriteDomain(cookie.getDomain(), request.getBaseUrl().getHost(),
+                UriUtils.extractHostName(request.getRequestLine().getUri()));
 
         // Rewrite path
         String originalPath = cookie.getPath();
-        String requestPath = UriUtils.createUri(originalRequest.getRequestLine().getUri()).getPath();
+        String requestPath = UriUtils.createUri(request.getRequestLine().getUri()).getPath();
         String path = originalPath;
         if (requestPath == null || !requestPath.startsWith(originalPath)) {
             path = "/";
         }
 
         // Rewrite secure
-        boolean secure = (cookie.isSecure() && originalRequest.getRequestLine().getUri().startsWith("https"));
+        boolean secure = (cookie.isSecure() && request.getRequestLine().getUri().startsWith("https"));
 
         BasicClientCookie cookieToForward = new BasicClientCookie(name, cookie.getValue());
         if (domain != null) {
@@ -253,8 +252,8 @@ public class DefaultCookieManager implements CookieManager {
     }
 
     @Override
-    public boolean clearExpired(Date date, HttpRequest originalRequest) {
-        UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
+    public boolean clearExpired(Date date, DriverRequest request) {
+        UserContext userContext = request.getUserContext();
         BasicCookieStore cookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 
         if (cookies != null) {
@@ -265,8 +264,8 @@ public class DefaultCookieManager implements CookieManager {
     }
 
     @Override
-    public void clear(HttpRequest originalRequest) {
-        UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
+    public void clear(DriverRequest request) {
+        UserContext userContext = request.getUserContext();
         BasicCookieStore cookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
         if (cookies != null) {
             cookies.clear();

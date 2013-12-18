@@ -2,7 +2,6 @@ package org.esigate.tags;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.aggregator.AggregationSyntaxException;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
@@ -36,7 +35,7 @@ class TemplateElement implements Element {
     }
 
     @Override
-    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public void onTagEnd(String tag, ParserContext ctx) {
         // Stop writing
         if (nameMatches) {
             templateRenderer.setWrite(false);
@@ -44,7 +43,7 @@ class TemplateElement implements Element {
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public void onTagStart(String tag, ParserContext ctx) {
         String[] parameters = tag.split("\\$");
         if (parameters.length != 4) {
             throw new AggregationSyntaxException("Invalid syntax: " + tag);

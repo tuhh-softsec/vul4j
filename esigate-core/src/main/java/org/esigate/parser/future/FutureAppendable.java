@@ -72,7 +72,7 @@ public interface FutureAppendable {
      * 
      * @param timeout
      * @param unit
-     * @return
+     * @return FutureAppendable
      * @throws IOException
      * @throws HttpErrorPage
      * @throws TimeoutException

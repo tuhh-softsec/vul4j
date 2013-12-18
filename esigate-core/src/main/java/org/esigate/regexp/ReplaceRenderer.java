@@ -21,9 +21,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
+import org.esigate.impl.DriverRequest;
 
 /**
  * This renderer is only meant to replace a regex.
@@ -44,8 +43,7 @@ public class ReplaceRenderer implements Renderer {
     }
 
     @Override
-    public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException,
-            HttpErrorPage {
+    public void render(DriverRequest httpRequest, String src, Writer out) throws IOException {
         out.write(replace(src, replaceRules).toString());
     }
 

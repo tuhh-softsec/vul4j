@@ -14,7 +14,6 @@
  */
 package org.esigate.test.conn;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class UriResponse implements IResponseHandler {
     private Map<String, HttpResponse> responses = new HashMap<String, HttpResponse>();
 
     @Override
-    public HttpResponse execute(HttpRequest request) throws IOException {
+    public HttpResponse execute(HttpRequest request) {
         String uri = request.getRequestLine().getUri();
         HttpResponse result = this.responses.get(uri);
         if (result == null) {

@@ -22,18 +22,18 @@ import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpStatus;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
 import org.esigate.Parameters;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class IncludeElementTest extends TestCase {
 
     private MockRequestExecutor provider;
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
     private EsiRenderer tested;
 
     @Override
@@ -41,8 +41,7 @@ public class IncludeElementTest extends TestCase {
         provider = MockRequestExecutor.createMockDriver("mock");
         provider.addResource("/test", "test");
         provider.addResource("http://www.foo.com/test", "test");
-        request = TestUtils.createRequest();
-        provider.initHttpRequestParams(request, null);
+        request = TestUtils.createRequest(provider.getDriver());
         tested = new EsiRenderer(Executors.newCachedThreadPool());
     }
 
@@ -99,7 +98,8 @@ public class IncludeElementTest extends TestCase {
     public void testIncludeQueryString() throws IOException, HttpErrorPage {
         String page = "before <esi:include src=\"$(PROVIDER{mock})/test?$(QUERY_STRING)\" /> after";
         provider.addResource("/test?queryparameter1=test&queryparameter2=test2", "query OK");
-        request = TestUtils.createRequest("http://localhost/test?queryparameter1=test&queryparameter2=test2");
+        request = TestUtils.createRequest("http://localhost/test?queryparameter1=test&queryparameter2=test2",
+                provider.getDriver());
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("before query OK after", out.toString());
@@ -108,7 +108,8 @@ public class IncludeElementTest extends TestCase {
     public void testIncludeQueryStringParameter() throws IOException, HttpErrorPage {
         String page = "before <esi:include src=\"$(PROVIDER{mock})/$(QUERY_STRING{queryparameter2})\" /> after";
         provider.addResource("/test2", "queryparameter2 OK");
-        request = TestUtils.createRequest("http://localhost/test?queryparameter1=test&queryparameter2=test2");
+        request = TestUtils.createRequest("http://localhost/test?queryparameter1=test&queryparameter2=test2",
+                provider.getDriver());
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("before queryparameter2 OK after", out.toString());
@@ -311,8 +312,7 @@ public class IncludeElementTest extends TestCase {
         provider.addResource("http://www.foo.com/test-rewriteUrl",
                 "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">"
                         + "<a href=\"http://www.foo.com/test\">" + "<a href=\"http://www.foo.com/context/test\">");
-        request = TestUtils.createRequest();
-        provider.initHttpRequestParams(request, null);
+        request = TestUtils.createRequest(provider.getDriver());
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("before <IMG src=\"/contextExt/~miko/counter.gif?name=idocsguide\">"
@@ -331,8 +331,7 @@ public class IncludeElementTest extends TestCase {
         provider.addResource("http://www.foo.com/test-rewriteUrl",
                 "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">"
                         + "<a href=\"http://www.foo.com/test\">" + "<a href=\"http://www.foo.com/context/test\">");
-        request = TestUtils.createRequest();
-        provider.initHttpRequestParams(request, null);
+        request = TestUtils.createRequest(provider.getDriver());
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("before <IMG src=\"/context/~miko/counter.gif?name=idocsguide\">"

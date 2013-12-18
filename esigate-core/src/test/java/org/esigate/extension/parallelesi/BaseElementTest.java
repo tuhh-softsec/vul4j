@@ -17,8 +17,8 @@ package org.esigate.extension.parallelesi;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.esigate.impl.DriverRequest;
 import org.esigate.parser.future.FutureElement;
 import org.esigate.parser.future.FutureParserContext;
 
@@ -64,11 +64,16 @@ public class BaseElementTest extends TestCase {
         public MockBaseElement() {
         }
 
+        @Override
+        public void onTagEnd(String tag, FutureParserContext ctx) {
+            // Nothing to do
+        }
+
     }
 
     protected static class MockFutureParserContext implements FutureParserContext {
         @Override
-        public HttpEntityEnclosingRequest getHttpRequest() {
+        public DriverRequest getHttpRequest() {
             return null;
         }
 

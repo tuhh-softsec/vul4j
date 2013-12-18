@@ -1,6 +1,5 @@
 package org.esigate.cache;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import org.apache.http.Header;
@@ -10,7 +9,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.params.HttpParams;
 
 class BasicCloseableHttpResponse implements CloseableHttpResponse {
     private final HttpResponse httpResponse;
@@ -20,7 +18,7 @@ class BasicCloseableHttpResponse implements CloseableHttpResponse {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         // Nothing to do
     }
 
@@ -114,6 +112,7 @@ class BasicCloseableHttpResponse implements CloseableHttpResponse {
         httpResponse.setHeader(name, value);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Locale getLocale() {
         return httpResponse.getLocale();
@@ -129,6 +128,7 @@ class BasicCloseableHttpResponse implements CloseableHttpResponse {
         httpResponse.removeHeader(header);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setLocale(Locale loc) {
         httpResponse.setLocale(loc);
@@ -149,13 +149,15 @@ class BasicCloseableHttpResponse implements CloseableHttpResponse {
         return httpResponse.headerIterator(name);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public HttpParams getParams() {
+    public org.apache.http.params.HttpParams getParams() {
         return httpResponse.getParams();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void setParams(HttpParams params) {
+    public void setParams(org.apache.http.params.HttpParams params) {
         httpResponse.setParams(params);
     }
 

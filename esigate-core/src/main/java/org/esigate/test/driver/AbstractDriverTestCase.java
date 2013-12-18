@@ -7,7 +7,6 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.esigate.Driver;
@@ -15,6 +14,7 @@ import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.http.HttpClientRequestExecutor;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
@@ -80,12 +80,9 @@ public abstract class AbstractDriverTestCase extends TestCase {
      */
     protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager,
             String name) {
-        Driver driver =
-                Driver.builder()
-                        .setName(name)
-                        .setProperties(properties)
-                        .setRequestExecutorBuilder(
-                                HttpClientRequestExecutor.builder().setConnectionManager(connectionManager)).build();
+        Driver driver = Driver.builder().setName(name).setProperties(properties)
+                .setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setConnectionManager(connectionManager))
+                .build();
         DriverFactory.put(name, driver);
         return driver;
     }
@@ -109,7 +106,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
     }
 
     /**
-     * Execute {@link Driver#proxy(String, HttpEntityEnclosingRequest, Renderer...)} on an HttpRequest.
+     * Execute {@link Driver#proxy(String, org.esigate.http.IncomingRequest, Renderer...)} on an HttpRequest.
      * 
      * 
      * @param d
@@ -123,7 +120,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
      * @throws HttpErrorPage
      * @throws URISyntaxException
      */
-    public static HttpResponse driverProxy(Driver d, HttpEntityEnclosingRequest request, Renderer... renderers)
+    public static HttpResponse driverProxy(Driver d, IncomingRequest request, Renderer... renderers)
             throws IOException, HttpErrorPage, URISyntaxException {
         String uri = request.getRequestLine().getUri();
         d.proxy(new URI(uri).getPath(), request, renderers);

@@ -28,9 +28,15 @@ abstract class BaseElement implements FutureElement {
     protected BaseElement() {
     }
 
-    /** Additional tag initialization callback. */
+    /**
+     * Additional tag initialization callback.
+     * 
+     * @throws HttpErrorPage
+     * @throws IOException 
+     * 
+     **/
     @SuppressWarnings("unused")
-    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, FutureParserContext ctx) throws HttpErrorPage, IOException {
         // Default implementation does nothing
     }
 
@@ -45,11 +51,6 @@ abstract class BaseElement implements FutureElement {
         this.closed = tagObj.isOpenClosed();
         this.parent = ctx.getCurrent();
         parseTag(tagObj, ctx);
-    }
-
-    @Override
-    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-        // Empty, implementation can customize this method with tag logic
     }
 
     @Override

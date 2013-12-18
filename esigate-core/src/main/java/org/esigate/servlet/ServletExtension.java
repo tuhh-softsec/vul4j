@@ -25,6 +25,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.api.ContainerRequestMediator;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -32,7 +33,6 @@ import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.extension.Extension;
 import org.esigate.servlet.impl.ResponseCapturingWrapper;
-import org.esigate.util.HttpRequestHelper;
 
 public class ServletExtension implements Extension, IEventListener {
     private Driver driver;
@@ -50,17 +50,16 @@ public class ServletExtension implements Extension, IEventListener {
         FetchEvent fetchEvent = (FetchEvent) event;
         if (EventManager.EVENT_FETCH_PRE.equals(id)) {
             String uriString = fetchEvent.httpRequest.getRequestLine().getUri();
-            String baseUrl = HttpRequestHelper.getBaseUrl(fetchEvent.httpRequest).toString();
-            if (!uriString.startsWith(HttpRequestHelper.getBaseUrl(fetchEvent.httpRequest).toString())) {
+            String baseUrl = fetchEvent.httpRequest.getBaseUrl().toString();
+            if (!uriString.startsWith(baseUrl)) {
                 // Non local absolute uri
                 return true;
             } else {
                 String relUrl = uriString.substring(baseUrl.length());
-                if (!relUrl.startsWith("/")){
+                if (!relUrl.startsWith("/")) {
                     relUrl = "/" + relUrl;
                 }
-                HttpServletMediator mediator = (HttpServletMediator) HttpRequestHelper
-                        .getMediator(fetchEvent.httpRequest);
+                ContainerRequestMediator mediator = fetchEvent.httpRequest.getMediator();
                 HttpResponse result;
                 if (!(mediator instanceof HttpServletMediator)) {
                     String message = ServletExtension.class.getName()

@@ -21,8 +21,8 @@ import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Renderer;
+import org.esigate.impl.DriverRequest;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -240,7 +240,7 @@ public class ResourceFixupRenderer implements Renderer {
     }
 
     @Override
-    public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
+    public void render(DriverRequest httpRequest, String src, Writer out) throws IOException {
         out.write(replace(src).toString());
     }
 

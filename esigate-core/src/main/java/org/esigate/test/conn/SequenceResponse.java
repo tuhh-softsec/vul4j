@@ -14,7 +14,6 @@
  */
 package org.esigate.test.conn;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class SequenceResponse implements IResponseHandler {
     private List<HttpResponse> responses = new ArrayList<HttpResponse>();
 
     @Override
-    public HttpResponse execute(HttpRequest request) throws IOException {
+    public HttpResponse execute(HttpRequest request) {
 
         if (this.responses.size() <= this.count) {
             throw new IllegalStateException("Unexpected request");

@@ -16,7 +16,6 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 
@@ -52,7 +51,7 @@ class FragmentElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, ParserContext ctx) {
         String name = tag.getAttribute("name");
         esiRenderer = ctx.findAncestor(EsiRenderer.class);
         initialStateWrite = esiRenderer.isWrite();

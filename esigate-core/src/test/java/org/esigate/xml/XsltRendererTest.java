@@ -20,17 +20,14 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
-import org.esigate.HttpErrorPage;
-
 public class XsltRendererTest extends TestCase {
 
     /**
      * Tests xpath expression evaluation.
      * 
      * @throws IOException
-     * @throws HttpErrorPage
      */
-    public void testXslt() throws IOException, HttpErrorPage {
+    public void testXslt() throws IOException {
         String src = "<html><body>The body<br></body></html>";
         String result = extractBody(src);
         assertEquals("<body>The body<br /></body>", result);

@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
+import org.esigate.http.IncomingRequest;
 
 /**
  * Encapsulates all interactions between EsiGate and the server container it is running in. To run EsiGate inside a new
@@ -112,12 +112,12 @@ public interface ContainerRequestMediator {
     InputStream getResourceAsStream(String path);
 
     /**
-     * Returns the <code>HttpRequest</code> representing the request received by the container. Subsequent calls to this
-     * method should return the same instance.
+     * Returns the <code>IncomingRequest</code> representing the request received by the container. Subsequent calls to
+     * this method should return the same instance.
      * 
-     * @return the <code>HttpRequest</code>
+     * @return the <code>IncomingRequest</code>
      */
-    HttpRequest getHttpRequest();
+    IncomingRequest getHttpRequest();
 
     /**
      * @return The session id

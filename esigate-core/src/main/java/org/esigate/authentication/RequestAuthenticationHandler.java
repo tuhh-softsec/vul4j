@@ -22,8 +22,8 @@ import java.util.Properties;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.api.ContainerRequestMediator;
-import org.esigate.http.GenericHttpRequest;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.http.IncomingRequest;
+import org.esigate.http.OutgoingRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,16 +92,16 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
     }
 
     @Override
-    public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
+    public boolean needsNewRequest(HttpResponse response, IncomingRequest httpRequest) {
         return false;
     }
 
     @Override
-    public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
+    public void preRequest(OutgoingRequest request, IncomingRequest httpRequest) {
         LOG.debug("preRequest");
 
         // Process session
-        ContainerRequestMediator mediator = HttpRequestHelper.getMediator(httpRequest);
+        ContainerRequestMediator mediator = request.getMediator();
         for (String attribute : this.sessionAttributes) {
             String value = (String) mediator.getSessionAttribute(attribute);
             if (value != null) {
@@ -113,7 +113,7 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
 
         // Process request
         for (String attribute : this.requestAttributes) {
-            String value = (String) httpRequest.getParams().getParameter(attribute);
+            String value = httpRequest.getAttribute(attribute);
             if (value != null) {
                 LOG.debug("Adding request attribute {} ({}) as header ({}{})", attribute, value, this.headerPrefix,
                         attribute);

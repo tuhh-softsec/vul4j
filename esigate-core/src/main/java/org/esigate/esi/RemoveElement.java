@@ -15,6 +15,7 @@
 package org.esigate.esi;
 
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 /**
  * <p>
@@ -68,4 +69,10 @@ class RemoveElement extends BaseElement {
     public void characters(CharSequence csq, int start, int end) {
         // ignore element body
     }
+
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) {
+        // Nothing to do
+    }
+
 }

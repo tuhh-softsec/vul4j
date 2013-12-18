@@ -15,8 +15,6 @@
 
 package org.esigate.esi;
 
-import java.io.IOException;
-
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
@@ -47,23 +45,23 @@ class ReplaceElement extends BaseElement {
     }
 
     @Override
-    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public void onTagEnd(String tag, ParserContext ctx) throws HttpErrorPage {
         IncludeElement parent = ctx.findAncestor(IncludeElement.class);
         if (parent == null) {
             throw new EsiSyntaxError("<esi:replace> tag can only be used inside an <esi:include> tag");
         }
         String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
         if (fragment != null) {
-            parent.addFragmentReplacement(fragment, (CharSequence) result);
+            parent.addFragmentReplacement(fragment, result);
         } else if (regexp != null) {
-            parent.addRegexpReplacement(regexp, (CharSequence) result);
+            parent.addRegexpReplacement(regexp, result);
         } else {
             parent.characters(result, 0, result.length());
         }
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, ParserContext ctx) throws HttpErrorPage {
         buf = new StringBuilder();
         fragment = tag.getAttribute("fragment");
         regexp = tag.getAttribute("regexp");

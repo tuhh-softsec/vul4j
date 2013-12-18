@@ -17,7 +17,6 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.vars.VariablesResolver;
@@ -37,12 +36,12 @@ class VarsElement extends BaseElement {
     }
 
     @Override
-    public void characters(CharSequence csq, int start, int end) throws IOException {
+    public void characters(CharSequence csq, int start, int end) {
         buf.append(csq, start, end);
     }
 
     @Override
-    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public void onTagEnd(String tag, ParserContext ctx) throws IOException {
         String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
         ctx.getCurrent().characters(result, 0, result.length());
     }

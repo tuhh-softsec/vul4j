@@ -17,7 +17,6 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.vars.VariablesResolver;
@@ -39,7 +38,7 @@ class OtherwiseElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, ParserContext ctx) {
         ChooseElement parent = ctx.findAncestor(ChooseElement.class);
         active = (parent != null) && !parent.hadConditionSet();
     }

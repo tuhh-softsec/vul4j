@@ -30,14 +30,14 @@ import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.execchain.ClientExecChain;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpCoreContext;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientRequestExecutor;
+import org.esigate.http.OutgoingRequest;
 
 /**
  * This class is changes the behavior of the HttpCache by transforming the headers in the requests or response.
@@ -99,10 +99,10 @@ public class CacheAdapter {
          * 
          * @return true if we should process with the request.
          */
-        abstract FetchEvent transformRequest(HttpRequest httpRequest, HttpContext context);
+        abstract FetchEvent transformRequest(HttpRequest httpRequest, HttpClientContext context);
 
         abstract void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse,
-                HttpContext context);
+                HttpClientContext context);
 
     }
 
@@ -114,7 +114,7 @@ public class CacheAdapter {
              * the cache just by making a refresh in the browser.
              */
             @Override
-            FetchEvent transformRequest(HttpRequest httpRequest, HttpContext context) {
+            FetchEvent transformRequest(HttpRequest httpRequest, HttpClientContext context) {
                 return null;
             }
 
@@ -122,7 +122,8 @@ public class CacheAdapter {
              * Restores the real http status code if it has been hidden to HttpCache
              */
             @Override
-            void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse, HttpContext context) {
+            void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse,
+                    HttpClientContext context) {
                 // Remove previously added Cache-control header
                 if (httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")
                         && (staleWhileRevalidate > 0 || staleIfError > 0)) {
@@ -133,7 +134,7 @@ public class CacheAdapter {
                     if (context != null) {
                         CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) context
                                 .getAttribute(HttpCacheContext.CACHE_RESPONSE_STATUS);
-                        HttpHost host = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+                        HttpHost host = (HttpHost) context.getAttribute(HttpCoreContext.HTTP_TARGET_HOST);
                         String xCacheString;
                         if (cacheResponseStatus.equals(CacheResponseStatus.CACHE_HIT)) {
                             xCacheString = "HIT";
@@ -164,13 +165,16 @@ public class CacheAdapter {
              * Fire pre-Fetch event
              */
             @Override
-            FetchEvent transformRequest(HttpRequest httpRequest, HttpContext context) {
+            FetchEvent transformRequest(HttpRequest httpRequest, HttpClientContext context) {
                 // Create request event
-                FetchEvent e = new FetchEvent(httpRequest.getParams().getBooleanParameter(
-                        HttpClientRequestExecutor.PROXY, false));
-                e.httpRequest = httpRequest;
+                Boolean proxy = (Boolean) context.getAttribute(HttpClientRequestExecutor.PROXY);
+                if (proxy == null) {
+                    proxy = Boolean.FALSE;
+                }
+                FetchEvent e = new FetchEvent(proxy);
                 e.httpResponse = null;
                 e.httpContext = context;
+                e.httpRequest = (OutgoingRequest) context.getAttribute(HttpClientRequestExecutor.OUTGOING_REQUEST_KEY);
 
                 // EVENT pre
                 eventManager.fire(EventManager.EVENT_FETCH_PRE, e);
@@ -185,12 +189,16 @@ public class CacheAdapter {
              * "stale-while-revalidate" and "stale-if-error" cache-control directives depending on the configuration.
              */
             @Override
-            void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse, HttpContext context) {
+            void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse,
+                    HttpClientContext context) {
 
                 // Create request event
-                FetchEvent e = new FetchEvent(httpRequest.getParams().getBooleanParameter(
-                        HttpClientRequestExecutor.PROXY, false));
-                e.httpRequest = httpRequest;
+                Boolean proxy = (Boolean) context.getAttribute(HttpClientRequestExecutor.PROXY);
+                if (proxy == null) {
+                    proxy = Boolean.FALSE;
+                }
+                FetchEvent e = new FetchEvent(proxy);
+                e.httpRequest = (OutgoingRequest) context.getAttribute(HttpClientRequestExecutor.OUTGOING_REQUEST_KEY);
                 e.httpResponse = httpResponse;
                 e.httpContext = context;
 

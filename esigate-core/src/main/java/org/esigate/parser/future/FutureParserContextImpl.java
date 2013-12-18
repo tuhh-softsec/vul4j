@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.Future;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.HttpErrorPage;
+import org.esigate.impl.DriverRequest;
 
 /**
  * 
@@ -38,13 +38,13 @@ import org.esigate.HttpErrorPage;
  */
 class FutureParserContextImpl implements FutureParserContext {
     private final RootAdapter root;
-    private final HttpEntityEnclosingRequest httpRequest;
+    private final DriverRequest httpRequest;
     private final HttpResponse httpResponse;
 
     private final Stack<Pair> stack = new Stack<Pair>();
     private Map<String, Object> data;
 
-    FutureParserContextImpl(FutureAppendable root, HttpEntityEnclosingRequest httpRequest, HttpResponse httpResponse,
+    FutureParserContextImpl(FutureAppendable root, DriverRequest httpRequest, HttpResponse httpResponse,
             Map<String, Object> data) {
         this.root = new RootAdapter(root);
         this.httpRequest = httpRequest;
@@ -111,7 +111,7 @@ class FutureParserContextImpl implements FutureParserContext {
     }
 
     @Override
-    public HttpEntityEnclosingRequest getHttpRequest() {
+    public DriverRequest getHttpRequest() {
         return this.httpRequest;
     }
 

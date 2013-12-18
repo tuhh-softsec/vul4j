@@ -53,4 +53,9 @@ class ChooseElement extends BaseElement {
                                            // conditions are true
     }
 
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) {
+        // Nothing to do
+    }
+
 }

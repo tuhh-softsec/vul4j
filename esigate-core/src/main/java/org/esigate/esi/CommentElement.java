@@ -15,6 +15,7 @@
 package org.esigate.esi;
 
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 /**
  * The comment element allows developers to comment their ESI instructions, without making the comments available in the
@@ -40,4 +41,10 @@ class CommentElement extends BaseElement {
     public void characters(CharSequence csq, int start, int end) {
         // ignore element body
     }
+
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) {
+        // Nothing to do
+    }
+
 }

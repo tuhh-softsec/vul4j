@@ -1,6 +1,5 @@
 package org.esigate.http;
 
-import java.text.ParseException;
 import java.util.Date;
 
 public final class DateUtils {
@@ -16,10 +15,8 @@ public final class DateUtils {
      * 
      * @return the parsed date
      * 
-     * @throws ParseException
-     *             if the value could not be parsed using any of the supported date formats
      */
-    public static Date parseDate(String dateValue) throws ParseException {
+    public static Date parseDate(String dateValue) {
         return parseDate(dateValue, null, null);
     }
 
@@ -33,10 +30,8 @@ public final class DateUtils {
      * 
      * @return the parsed date
      * 
-     * @throws ParseException
-     *             if none of the dataFormats could parse the dateValue
      */
-    public static Date parseDate(final String dateValue, String[] dateFormats) throws ParseException {
+    public static Date parseDate(final String dateValue, String[] dateFormats) {
         return parseDate(dateValue, dateFormats, null);
     }
 

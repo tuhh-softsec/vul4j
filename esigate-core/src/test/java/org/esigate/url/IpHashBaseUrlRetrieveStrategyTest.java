@@ -18,8 +18,8 @@ package org.esigate.url;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.api.BaseUrlRetrieveStrategy;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.TestUtils;
 
 public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
@@ -28,7 +28,7 @@ public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
         String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
                 "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
-        HttpEntityEnclosingRequest request = TestUtils.createRequest();
+        IncomingRequest request = TestUtils.createRequest();
         strategy.getBaseURL(request);
     }
 
@@ -36,7 +36,7 @@ public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
         String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
                 "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
-        HttpEntityEnclosingRequest request = TestUtils.createRequest();
+        IncomingRequest request = TestUtils.createRequest();
         TestUtils.setRemoteAddr("", request);
         strategy.getBaseURL(request);
         request = TestUtils.createRequest();
@@ -56,7 +56,7 @@ public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
         BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
         int times = 100;
         for (int i = 0; i < times; i++) {
-            HttpEntityEnclosingRequest request = TestUtils.createRequest();
+            IncomingRequest request = TestUtils.createRequest();
             String ip = getRandomIp();
             TestUtils.setRemoteAddr(ip, request);
             String baseURL1 = strategy.getBaseURL(request);
