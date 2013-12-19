@@ -179,7 +179,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		
 		deviceStorage = new DeviceStorageImpl();
-		deviceStorage.init("");
+		deviceStorage.init("","");
 	}
 
 	@Override
