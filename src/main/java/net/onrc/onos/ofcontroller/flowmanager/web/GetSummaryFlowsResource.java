@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * The "{max-flows}" request attribute value is the maximum number of flows
  * to be returned.
  *
- *   GET /wm/flow/getsummary/{flow-id}/{max-flows}/json"
+ *   GET /wm/onos/flows/getsummary/{flow-id}/{max-flows}/json"
  */
 public class GetSummaryFlowsResource extends ServerResource {
     protected final static Logger log = LoggerFactory.getLogger(GetSummaryFlowsResource.class);

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  *  - "flow-entry" : Get the Flow Entries
  *  - "topology"   : Get the Topology
  *
- *   GET /wm/datagrid/get/map/{map-name}/json
+ *   GET /wm/onos/datagrid/get/map/{map-name}/json
  */
 public class GetMapResource extends ServerResource {
     protected final static Logger log = LoggerFactory.getLogger(GetMapResource.class);

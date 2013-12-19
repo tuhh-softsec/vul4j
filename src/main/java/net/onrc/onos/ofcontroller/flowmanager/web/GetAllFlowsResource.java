@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Flow Manager REST API implementation: Get all Flow state.
  *
- *   GET /wm/flow/getall/json"
+ *   GET /wm/onos/flows/getall/json"
  */
 public class GetAllFlowsResource extends ServerResource {
     protected final static Logger log = LoggerFactory.getLogger(GetAllFlowsResource.class);
