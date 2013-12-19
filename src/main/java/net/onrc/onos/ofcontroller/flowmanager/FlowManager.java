@@ -147,7 +147,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
 	l.add(IFlowPusherService.class);
-	l.add(IForwardingService.class);
+	//
+	// TODO: Comment-out the dependency on the IForwardingService,
+	// because it is an optional module. Apparently, adding the dependency
+	// here automatically enables the module.
+	//
+	// l.add(IForwardingService.class);
         return l;
     }
 
@@ -450,7 +455,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param flowPaths the collection of installed Flow Paths.
      */
     void notificationFlowPathsInstalled(Collection<FlowPath> flowPaths) {
-	forwardingService.flowsInstalled(flowPaths);
+	//
+	// TODO: Add an explicit check for null pointer, because
+	// the IForwardingService is optional. Remove the "if" statement
+	// after hte Forwarding Module becomes mandatory.
+	//
+	if (forwardingService != null)
+	    forwardingService.flowsInstalled(flowPaths);
     }
 
     /**
