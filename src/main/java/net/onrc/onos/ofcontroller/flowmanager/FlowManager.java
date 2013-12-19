@@ -516,6 +516,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    if (mySwitch == null)
 		continue;
 
+	    if (flowEntry.flowEntrySwitchState() ==
+		FlowEntrySwitchState.FE_SWITCH_UPDATED) {
+		//
+		// Don't push again Flow Entries that were already already
+		// installed into the switches.
+		//
+		continue;
+	    }
+
 	    //
 	    // Assign Flow Entry IDs if missing.
 	    //
