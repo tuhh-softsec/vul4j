@@ -53,7 +53,10 @@ public class RamCloudDBConnection extends DBConnection {
         }
         if (!s.contains("switch_state")) {
             graph.createKeyIndex("switch_state", Vertex.class);
-        }
+	}
+	if (!s.contains("ipv4_address")) {
+	    graph.createKeyIndex("ipv4_address", Vertex.class);
+	}
     }
     
     @Override
