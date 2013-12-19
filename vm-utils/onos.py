@@ -17,11 +17,11 @@ As a custom file, exports:
 
 Usage:
 
-$ sudo ./onos.py
+$ sudo -E ./onos.py
 
 This will start up a simple 2-host, 2 ONOS network
 
-$ sudo mn --custom onos.py --controller onos,2 --switch ovso
+$ sudo -E mn --custom onos.py --controller onos,2 --switch ovso
 """
 
 from mininet.node import Controller, OVSSwitch
@@ -33,7 +33,7 @@ from mininet.util import quietRun
 
 # This should be cleaned up to avoid interfering with mn
 from shutil import copyfile
-from os import environ
+from os import environ, path
 from functools import partial
 import time
 from sys import argv
@@ -78,20 +78,26 @@ class ONOS( Controller ):
 
     fc = 'net.floodlightcontroller.'
 
+    # Things that vary per ONOS id
     perNodeConfigBase = {
         fc + 'core.FloodlightProvider.openflowport': ofbase,
         fc + 'restserver.RestApiServer.port': restbase,
         fc + 'core.FloodlightProvider.controllerid': 0
     }
 
+    # Things that are static
     staticConfig = {
         'net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher.dbconf':
             '/tmp/cassandra.titan',
-        'net.onrc.onos.datagrid.HazelcastDatagrid.datagridConfig':
-            onosDir + '/conf/hazelcast.xml',
         'net.floodlightcontroller.core.FloodlightProvider.workerthreads': 16,
         'net.floodlightcontroller.forwarding.Forwarding.idletimeout': 5,
         'net.floodlightcontroller.forwarding.Forwarding.hardtimeout': 0
+    }
+
+    # Things that are based on onosDir
+    dirConfig = {
+        'net.onrc.onos.datagrid.HazelcastDatagrid.datagridConfig':
+        '%s/conf/hazelcast.xml',
     }
 
     proctag = 'mn-onos-id'
@@ -126,14 +132,24 @@ class ONOS( Controller ):
             self.cmd( 'export MVN="%s"' % self.mvn )
 
     def check( self ):
-        "Check for ONOS prerequisites"
+        "Set onosDir and check for ONOS prerequisites"
         if not quietRun( 'which java' ):
                 raise Exception( 'java not found -'
                                  ' make sure it is installed and in $PATH' )
         if not quietRun( 'which mvn' ):
                 raise Exception( 'Maven (mvn) not found -'
                                 ' make sure it is installed and in $PATH' )
-
+        if 'ONOS_HOME' in environ:
+            self.onosDir = environ[ 'ONOS_HOME' ]
+        else:
+            warn( '* $ONOS_HOME is not set - assuming %s\n' % self.onosDir )
+        for script in 'start-zk.sh', 'start-cassandra.sh', 'start-onos.sh':
+            script = path.join( self.onosDir, script )
+            if not path.exists( script ):
+                msg = '%s not found' % script
+                if 'ONOS_HOME' not in environ:
+                    msg += ' (try setting $ONOS_HOME and/or sudo -E)'
+                raise Exception( msg )
 
     def waitNetstat( self, pid ):
         """Wait for pid to show up in netstat
@@ -148,6 +164,11 @@ class ONOS( Controller ):
 
     def waitStart( self, procname, pattern ):
         "Wait for at least one of procname to show up in netstat"
+        # Check script exit code
+        exitCode = int( self.cmd( 'echo $?' ) )
+        if exitCode != 0:
+            raise Exception( '%s startup failed with code %d' %
+                             ( procname, exitCode ) )
         info( '* Waiting for %s startup' % procname )
         result = self.cmd( 'pgrep -f %s' % pattern ).split()[ 0 ]
         pid = int( result )
@@ -201,6 +222,8 @@ class ONOS( Controller ):
                 f.write( '%s = %s\n' % ( var, val ) )
             for var, val in self.staticConfig.iteritems():
                 f.write( '%s = %s\n' % ( var, val ) )
+            for var, val in self.dirConfig.iteritems():
+                f.write( '%s = %s\n' % ( var, val % self.onosDir) )
         return filename
 
     def setVars( self, id, propsFile ):
