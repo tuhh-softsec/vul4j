@@ -216,6 +216,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	processFlowPathEvents();
 	processTopologyEvents();
+	processUnmatchedFlowEntryAdd();
 	processFlowEntryEvents();
 
 	// Recompute all affected Flow Paths and keep only the modified
@@ -456,9 +457,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     }
 
     /**
-     * Process the Flow Entry events.
+     * Process previously received Flow Entries with unmatched Flow Paths.
      */
-    private void processFlowEntryEvents() {
+    private void processUnmatchedFlowEntryAdd() {
 	FlowPath flowPath;
 	FlowEntry localFlowEntry;
 
@@ -468,9 +469,15 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	if (! unmatchedFlowEntryAdd.isEmpty()) {
 	    Map<Long, FlowEntry> remainingUpdates = new HashMap<Long, FlowEntry>();
 	    for (FlowEntry flowEntry : unmatchedFlowEntryAdd.values()) {
+		// log.debug("Processing Unmatched Flow Entry: {}",
+		//	  flowEntry.toString());
+
 		flowPath = allFlowPaths.get(flowEntry.flowId().value());
-		if (flowPath == null)
+		if (flowPath == null) {
+		    remainingUpdates.put(flowEntry.flowEntryId().value(),
+					 flowEntry);
 		    continue;
+		}
 		localFlowEntry = findFlowEntryAdd(flowPath, flowEntry);
 		if (localFlowEntry == null) {
 		    remainingUpdates.put(flowEntry.flowEntryId().value(),
@@ -483,6 +490,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    }
 	    unmatchedFlowEntryAdd = remainingUpdates;
 	}
+    }
+
+    /**
+     * Process the Flow Entry events.
+     */
+    private void processFlowEntryEvents() {
+	FlowPath flowPath;
+	FlowEntry localFlowEntry;
 
 	//
 	// Process all Flow Entry events and update the appropriate state
