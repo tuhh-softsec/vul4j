@@ -18,7 +18,7 @@ public class MACAddressTest {
         address = MACAddress.valueOf("FF:FE:FD:10:20:30");
         assertEquals(address,
                 MACAddress.valueOf(new byte[]{(byte) 0xFF, (byte) 0xFE, (byte) 0xFD, 0x10, 0x20, 0x30}));
-        assertEquals("FF:FE:FD:10:20:30", address.toString());
+        assertEquals("ff:fe:fd:10:20:30", address.toString());
         
         address = MACAddress.valueOf("00:11:22:aa:bb:cc");
         assertEquals(address,
