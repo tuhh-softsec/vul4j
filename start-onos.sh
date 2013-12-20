@@ -1,4 +1,6 @@
 #!/bin/bash
+ulimit -c unlimited
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/ramcloud/bindings/java/edu/stanford/ramcloud:${HOME}/ramcloud/obj.blueprint-java
 
 # Set paths
 ONOS_HOME="${ONOS_HOME:-`dirname $0`}"
@@ -19,8 +21,10 @@ JVM_OPTS="${JVM_OPTS:-}"
 ## If you want JaCoCo Code Coverage reports... uncomment line below
 #JVM_OPTS="$JVM_OPTS -javaagent:${ONOS_HOME}/lib/jacocoagent.jar=dumponexit=true,output=file,destfile=${LOGDIR}/jacoco.exec"
 JVM_OPTS="$JVM_OPTS -server -d64"
+#JVM_OPTS="$JVM_OPTS -server -d64 -XX:+UnlockCommercialFeatures -XX:+FlightRecorder"
+JVM_OPTS="$JVM_OPTS -Xmx4g -Xms4g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
-JVM_OPTS="$JVM_OPTS -Xmx1g -Xms1g -Xmn800m"
+#JVM_OPTS="$JVM_OPTS -Xmx1g -Xms1g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:+UseAdaptiveSizePolicy -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
 JVM_OPTS="$JVM_OPTS -XX:MaxInlineSize=8192 -XX:FreqInlineSize=8192"
@@ -33,6 +37,9 @@ JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 		-XX:+UseCompressedOops \
 		-Dcom.sun.management.jmxremote.port=$JMX_PORT \
 		-Dcom.sun.management.jmxremote.ssl=false \
+                -Dbenchmark.measureBP=0 \
+                -Dbenchmark.measureRc=0 \
+                -Dbenchmark.measureONOS=0 \
 		-Dcom.sun.management.jmxremote.authenticate=false"
 JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 
@@ -158,7 +165,7 @@ function check_db {
 case "$1" in
   start)
     stop
-    check_db
+#    check_db
     start
     ;;
   startnokill)

@@ -25,6 +25,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 	protected DBOperation op;
 	protected final static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
+	public final long measureONOSTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOS", "0"));
 
 	/***
 	 * Initialize function. Before you use this class, please call this method
@@ -139,23 +140,47 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 		String dpid = sw.getStringId();
 		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
-
+                long startSwitchTime = 0, endSwitchTime = 0;
+                long startUpdSwitchTime = 0, endUpdSwitchTime=0;
+                long startPortTime = 0, endPortTime=0;
+                long totalStartTime =0, totalEndTime=0;
+		
 		try {
+			if (measureONOSTimeProp == 1) {
+			    totalStartTime = System.nanoTime();
+			}
 			ISwitchObject curr = op.searchSwitch(dpid);
 			if (curr != null) {
 				//If existing the switch. set The SW state ACTIVE.
 				log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
+				if (measureONOSTimeProp == 1) {
+				    startUpdSwitchTime = System.nanoTime();
+				}
 				setSwitchStateImpl(curr, SwitchState.ACTIVE);
+				if (measureONOSTimeProp == 1) {
+				    endUpdSwitchTime = System.nanoTime();
+				}
 			} else {
+				if (measureONOSTimeProp == 1) {
+				    startSwitchTime = System.nanoTime();
+				}
 				curr = addSwitchImpl(dpid);
+				if (measureONOSTimeProp == 1) {
+				    endSwitchTime = System.nanoTime();
+				}
 			}
-
+			if (measureONOSTimeProp == 1) {
+			    startPortTime = System.nanoTime();
+			}
+                        long noOfPorts = 0;
 			for (OFPhysicalPort port: sw.getPorts()) {
 				//addPort(dpid, port);
 				addPortImpl(curr, port);
-
+                                noOfPorts++;
 			}
-
+			if (measureONOSTimeProp == 1) {
+			    endPortTime = System.nanoTime();
+			}
 			// XXX for now delete devices when we change a port to prevent
 			// having stale devices.
 			DeviceStorageImpl deviceStorage = new DeviceStorageImpl();
@@ -169,6 +194,19 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			}
 
 			op.commit();
+			if (measureONOSTimeProp == 1) {
+			    totalEndTime = System.nanoTime();
+			}
+                        if (startSwitchTime != 0) {
+                          log.error("Performance -- switch add total time {}", endSwitchTime - startSwitchTime);
+                        }
+                        if (startUpdSwitchTime != 0) {
+                            log.error("Performance -- switch update total time {}", endUpdSwitchTime - startUpdSwitchTime);
+                        }
+                        if (startPortTime != 0) {
+                            log.error("Performance @@ port add total time {} no of ports written {}", endPortTime - startPortTime, noOfPorts);
+                        }
+                        log.error("Performance && total time for add switch {}", totalEndTime - totalStartTime);
 			success = true;
 		} catch (Exception e) {
 			op.rollback();
