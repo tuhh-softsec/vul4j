@@ -136,6 +136,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			deleteDeviceOnPort(link.getSrc(),link.getSrcPort());
 			deleteDeviceOnPort(link.getDst(),link.getDstPort());
 
+		        long startLinkTime = System.nanoTime();
 			if (addLinkImpl(link)) {
 				// Set LinkInfo only if linfo is non-null.
 				if (linfo != null && (! setLinkInfoImpl(link, linfo))) {
@@ -143,6 +144,8 @@ public class LinkStorageImpl implements ILinkStorage {
 					dbop.rollback();
 				}
 				dbop.commit();
+                                long endLinkTime = System.nanoTime();
+                                log.error("Performance ##add link total time {}", endLinkTime - startLinkTime);
 				success = true;
 			} else {
 				// If we fail here that's because the ports aren't added

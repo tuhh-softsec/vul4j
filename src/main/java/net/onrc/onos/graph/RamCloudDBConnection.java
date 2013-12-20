@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RamCloudDBConnection extends DBConnection {
     private RamCloudGraph graph;
+    private FramedGraph<RamCloudGraph> fg;
     private static Logger log = LoggerFactory.getLogger(RamCloudDBConnection.class);
     
     //private static final ThreadLocal<RamCloudGraph> RamCloudThreadLocal = new ThreadLocal<RamCloudGraph>();
@@ -31,7 +32,7 @@ public class RamCloudDBConnection extends DBConnection {
         //graph = new RamCloudGraph(coordinatorURL);
 	//graph = RamCloudThreadLocal.get();
 	//System.out.println("ThreadId = " + Thread.currentThread().getId() + " graph = " + graph);
-	graph = new RamCloudGraph("fast+udp:host=10.128.4.104,port=12246");
+	graph = new RamCloudGraph("fast+udp:host=10.0.0.144,port=12246");
 	Set<String> s = graph.getIndexedKeys(Vertex.class);
         if (!s.contains("dpid")) {
             graph.createKeyIndex("dpid", Vertex.class);
@@ -57,12 +58,12 @@ public class RamCloudDBConnection extends DBConnection {
 	if (!s.contains("ipv4_address")) {
 	    graph.createKeyIndex("ipv4_address", Vertex.class);
 	}
+        fg = new FramedGraph<RamCloudGraph>(graph);
     }
     
     @Override
     public FramedGraph getFramedGraph() {
         if (isValid()) {
-            FramedGraph<RamCloudGraph> fg = new FramedGraph<RamCloudGraph>(graph);
             return fg;
         } else {
             log.error("new FramedGraph failed");
