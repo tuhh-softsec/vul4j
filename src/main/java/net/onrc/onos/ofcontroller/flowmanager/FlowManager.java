@@ -752,17 +752,27 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    do {
 		retry = false;
 		try {
+                    long startTime = System.nanoTime();
 		    if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath)) {
 			String logMsg = "Cannot write to Network Map Flow Path " +
 			    flowPath.flowId();
 			log.error(logMsg);
 			retry = true;
 		    }
+ 		    // FIXME Flag to turn ON logging
+                    //long endTime = System.nanoTime();
+                    //log.error("Performance %% Flow path total time {} : {}", endTime - startTime, flowPath.toString());
 		} catch (TitanException te) {
 		    log.error("Titan Exception writing Flow Path to Network MAP: ", te);
 		    retry = true;
+ 		    // FIXME Flag to turn ON logging
+                    //long endTime = System.nanoTime();
+                    //log.error("Performance %% Flow path total time {} : {}", endTime - startTime, flowPath.toString());
 		} catch (Exception e) {
 		    log.error("Exception writing Flow Path to Network MAP: ", e);
+ 		    // FIXME Flag to turn ON logging
+                    //long endTime = System.nanoTime();
+                    //log.error("Performance %% Flow path total time {} : {}", endTime - startTime, flowPath.toString());
 		}
 	    } while (retry);
 	}
