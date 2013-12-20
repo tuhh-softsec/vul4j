@@ -332,7 +332,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 		IPortObject portObject1 = ope.searchPort(HexString.toHexString(
 				onosDevice.getSwitchDPID()), onosDevice.getSwitchPort());
 
-		if (portObject1.getLinkedPorts().iterator().hasNext()) {
+		if ((portObject1 != null) && portObject1.getLinkedPorts().iterator().hasNext()) {
 			log.debug("stop adding OnosDevice: {} due to there is a link to: {}",
 					onosDevice, portObject1.getLinkedPorts().iterator().next().getPortId());
 			return;
