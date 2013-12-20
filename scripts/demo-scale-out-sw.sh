@@ -13,7 +13,7 @@ function scale_onos(){
       ssh -i ~/.ssh/onlabkey.pem  ${basename}${i} 'cd ONOS;./start-onos.sh status' &
     done | grep "instance" | awk '{s+=$1}END{print s}'`
 
-    if [ x$up == 4 ]; then
+    if [ x$up == "x4" ]; then
       break;
     fi 
     sleep 1
