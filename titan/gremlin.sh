@@ -6,11 +6,14 @@ fi
 
 BASE_DIR=`dirname $0`
 ONOS_DIR="`dirname $0`/.."
-#CP=$( echo `dirname $0`/../lib/*.jar `dirname $0`/../lib/titan/*.jar . | sed 's/ /:/g')
-#CP=`${MVN} -f ${ONOS_DIR}/pom.xml dependency:build-classpath -Dmdep.outputFile=/dev/stdout -l /dev/stderr`
 
 # Use a python script to parse the classpath out of the .classpath file
-CP=`${BASE_DIR}/../scripts/parse-classpath.py`
+if [ ! -f ${ONOS_DIR}/.javacp ]; then
+  echo "execute mvn compile at ONOS HOME directory."
+  exit 1
+fi
+CP=`cat ${ONOS_DIR}/.javacp`
+CP="${CP}:${ONOS_DIR}/target/classes"
 
 if [[ "$CP" == *"Error reading classpath file"* ]]; then
     echo $CP
