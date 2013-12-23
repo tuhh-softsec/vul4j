@@ -28,9 +28,7 @@ import org.apache.http.client.methods.HttpExecutionAware;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.impl.execchain.ClientExecChain;
-import org.apache.http.util.TextUtils;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
@@ -46,7 +44,6 @@ import org.esigate.http.HttpClientRequestExecutor;
  */
 public class CacheAdapter {
     protected static final String HTTP_ROUTE = "HTTP_ROUTE";
-    private final static String TARGET_HOST = "TARGET_HOST";
     private int staleIfError;
     private int staleWhileRevalidate;
     private int ttl;
@@ -78,19 +75,13 @@ public class CacheAdapter {
             public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
                     HttpClientContext context, HttpExecutionAware execAware) throws IOException, HttpException {
 
-                // Switch targetHost and route for the cache to generate the right cache key
-                HttpHost virtualHost = context.getAttribute(HttpClientRequestExecutor.VIRTUAL_HOST, HttpHost.class);
-                HttpHost targetHost = context.getTargetHost();
-                context.setTargetHost(virtualHost);
+                // Switch route for the cache to generate the right cache key
+                HttpHost virtualHost = context.getTargetHost();
                 HttpRoute virtualRoute = new HttpRoute(virtualHost);
-                // Save the real targetHost and route to restore them later
-                context.setAttribute(TARGET_HOST, targetHost);
+                // Save the real route to restore later
                 context.setAttribute(HTTP_ROUTE, route);
 
                 CloseableHttpResponse response = wrapped.execute(virtualRoute, request, context, execAware);
-
-                // Restore the original target host
-                // context.setTargetHost(targetHost);
 
                 // Remove previously added Cache-control header
                 if (request.getRequestLine().getMethod().equalsIgnoreCase("GET")
@@ -110,7 +101,7 @@ public class CacheAdapter {
                         } else {
                             xCacheString = "MISS";
                         }
-                        xCacheString += " from " + targetHost.toHostString();
+                        xCacheString += " from " + route.getTargetHost().toHostString();
                         xCacheString += " (" + request.getRequestLine().getMethod() + " "
                                 + request.getRequestLine().getUri() + ")";
                         response.addHeader("X-Cache", xCacheString);
@@ -145,27 +136,12 @@ public class CacheAdapter {
             @Override
             public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
                     HttpClientContext context, HttpExecutionAware execAware) throws IOException, HttpException {
-                // Restore real target host and route
-                HttpHost virtualHost = context.getTargetHost();
-                HttpHost targetHost = context.getAttribute(TARGET_HOST, HttpHost.class);
+                // Restore real route
                 HttpRoute realRoute = context.getAttribute(HTTP_ROUTE, HttpRoute.class);
-                System.out.println(virtualHost);
-                System.out.println(targetHost);
-                System.out.println(realRoute);
-
-                // Fix cookieOrigin set by org.apache.http.client.protocol.RequestAddCookies to use the virtual host
-                // instead of the target host. Without this, cookies set with a domain will be rejected
-                CookieOrigin initialCookieOrigin = (CookieOrigin) context.getAttribute(HttpClientContext.COOKIE_ORIGIN);
-                String path = initialCookieOrigin.getPath();
-                CookieOrigin cookieOrigin = new CookieOrigin(virtualHost.getHostName(),
-                        virtualHost.getPort() >= 0 ? virtualHost.getPort() : 0, !TextUtils.isEmpty(path) ? path : "/",
-                        route.isSecure());
-                context.setAttribute(HttpClientContext.COOKIE_ORIGIN, cookieOrigin);
 
                 // In case we are bypassing the cache
                 if (realRoute == null)
                     realRoute = route;
-                // context.setTargetHost(targetHost);
 
                 // Create request event
                 Boolean proxy = (Boolean) context.getAttribute(HttpClientRequestExecutor.PROXY);
@@ -187,9 +163,6 @@ public class CacheAdapter {
                         response = new BasicCloseableHttpResponse(fetchEvent.httpResponse);
                     }
                 }
-
-                // Change again the target host to the virtual one
-                // context.setTargetHost(virtualHost);
 
                 // TODO: returning null may be hard. However, this only happens if
                 // an extension cancels the request. Need to think on the usecase.

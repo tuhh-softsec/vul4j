@@ -49,7 +49,7 @@ class InlineElement extends BaseElement {
 
     @Override
     public void onTagEnd(String tag, ParserContext ctx) {
-        String originalUrl = UriUtils.createUri(ctx.getHttpRequest().getRequestLine().getUri()).getPath();
+        String originalUrl = UriUtils.getPath(ctx.getHttpRequest().getRequestLine().getUri());
         InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.toString());
     }
 }

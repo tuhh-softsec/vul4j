@@ -15,7 +15,6 @@
 
 package org.esigate.util;
 
-import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.esigate.impl.DriverRequest;
 
 public final class HttpRequestHelper {
@@ -45,8 +43,7 @@ public final class HttpRequestHelper {
         if (characterEncoding == null) {
             characterEncoding = "ISO-8859-1";
         }
-        URI uri = UriUtils.createUri(request.getRequestLine().getUri());
-        List<NameValuePair> parameters = URLEncodedUtils.parse(uri, characterEncoding);
+        List<NameValuePair> parameters = UriUtils.parse(request.getRequestLine().getUri(), characterEncoding);
         Iterator<NameValuePair> it = parameters.iterator();
         while (it.hasNext()) {
             NameValuePair nameValuePair = it.next();
@@ -66,10 +63,10 @@ public final class HttpRequestHelper {
      * @return the host formatted as host:port
      */
     public static HttpHost getHost(HttpRequest request) {
-        URI uri = UriUtils.createUri(request.getRequestLine().getUri());
-        String scheme = uri.getScheme();
-        String host = uri.getHost();
-        int port = uri.getPort();
+        HttpHost httpHost = UriUtils.extractHost(request.getRequestLine().getUri());
+        String scheme = httpHost.getSchemeName();
+        String host = httpHost.getHostName();
+        int port = httpHost.getPort();
         Header[] headers = request.getHeaders(HttpHeaders.HOST);
         if (headers != null && headers.length != 0) {
             String headerValue = headers[0].getValue();

@@ -84,7 +84,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
         this.filterChain = filterChain;
         // create request line
         String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(),
-                request.getRequestURI(), request.getQueryString(), null).toString();
+                request.getRequestURI(), request.getQueryString(), null);
         ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(request.getProtocol(), null);
         IncomingRequest result = new IncomingRequest(new BasicRequestLine(request.getMethod(), uri, protocolVersion));
         // copy headers

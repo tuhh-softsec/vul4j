@@ -172,7 +172,7 @@ public final class VariablesResolver {
         String res = null;
         if (var.indexOf("QUERY_STRING") != -1) {
             if (arg == null) {
-                res = UriUtils.createUri(request.getRequestLine().getUri()).getRawQuery();
+                res = UriUtils.getRawQuery(request.getRequestLine().getUri());
             } else {
                 res = HttpRequestHelper.getParameter(request, arg);
             }

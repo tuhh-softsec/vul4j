@@ -14,13 +14,13 @@
  */
 package org.esigate.test.http;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
@@ -63,10 +63,10 @@ public class HttpRequestBuilder {
      */
     public IncomingRequest build() {
         IncomingRequest request = null;
-        URI uri = UriUtils.createUri(this.uriString);
-        String scheme = uri.getScheme();
-        String host = uri.getHost();
-        int port = uri.getPort();
+        HttpHost httpHost = UriUtils.extractHost(this.uriString);
+        String scheme = httpHost.getSchemeName();
+        String host = httpHost.getHostName();
+        int port = httpHost.getPort();
         RequestLine requestLine = new BasicRequestLine(this.method, this.uriString, this.protocolVersion);
         request = new IncomingRequest(requestLine);
         if (port == -1 || port == 80 && "http".equals(scheme) || port == 443 && "https".equals(scheme)) {

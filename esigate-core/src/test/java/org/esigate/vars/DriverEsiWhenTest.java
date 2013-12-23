@@ -15,7 +15,6 @@
 package org.esigate.vars;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -49,7 +48,7 @@ public class DriverEsiWhenTest extends AbstractDriverTestCase {
 
     @SuppressWarnings("static-method")
     @Test
-    public void testEsiWhenCase1() throws IOException, HttpErrorPage, URISyntaxException {
+    public void testEsiWhenCase1() throws IOException, HttpErrorPage {
         // Configuration
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");

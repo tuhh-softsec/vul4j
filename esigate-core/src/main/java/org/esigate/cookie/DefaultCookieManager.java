@@ -146,13 +146,12 @@ public class DefaultCookieManager implements CookieManager {
         BasicClientCookie2 httpClientCookie = new BasicClientCookie2(name, cookie.getValue());
         httpClientCookie.setSecure(false);
         String domain;
-        // FIXME
-//        if (request.getDriver().getConfiguration().isPreserveHost()) {
-//            domain = UriUtils.extractHostName(request.getRequestLine().getUri());
-//            System.out.println("domain: " + domain);
-//        } else {
+        if (request.getDriver().getConfiguration().isPreserveHost()) {
+            domain = UriUtils.extractHostName(request.getRequestLine().getUri());
+            System.out.println("domain: " + domain);
+        } else {
             domain = request.getBaseUrl().getHost();
-//        }
+        }
 
         httpClientCookie.setDomain(domain);
         httpClientCookie.setPath("/");
@@ -198,7 +197,7 @@ public class DefaultCookieManager implements CookieManager {
 
         // Rewrite path
         String originalPath = cookie.getPath();
-        String requestPath = UriUtils.createUri(request.getRequestLine().getUri()).getPath();
+        String requestPath = UriUtils.getPath(request.getRequestLine().getUri());
         String path = originalPath;
         if (requestPath == null || !requestPath.startsWith(originalPath)) {
             path = "/";

@@ -45,7 +45,7 @@ public final class ResourceUtils {
             if (charset == null) {
                 charset = "ISO-8859-1";
             }
-            String originalQuerystring = UriUtils.createUri(originalRequest.getRequestLine().getUri()).getRawQuery();
+            String originalQuerystring = UriUtils.getRawQuery(originalRequest.getRequestLine().getUri());
             if (proxy && originalQuerystring != null) {
                 // Remove jsessionid from request if it is present
                 // As we are in a java application, the container might add

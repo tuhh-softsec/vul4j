@@ -15,7 +15,6 @@
 package org.esigate.vars;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -58,11 +57,10 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
      * 
      * @throws IOException
      * @throws HttpErrorPage
-     * @throws URISyntaxException
      */
     @SuppressWarnings("static-method")
     @Test
-    public void testEsiVariablesCase1() throws IOException, HttpErrorPage, URISyntaxException {
+    public void testEsiVariablesCase1() throws IOException, HttpErrorPage {
         // Reset Driverfactory (used for default driver with $(PROVIDER))
         Properties factoryProperties = new Properties();
         factoryProperties.put("tested." + Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");
@@ -155,11 +153,10 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
      * 
      * @throws IOException
      * @throws HttpErrorPage
-     * @throws URISyntaxException
      */
     @SuppressWarnings("static-method")
     @Test
-    public void testEsiVariablesCase2() throws IOException, HttpErrorPage, URISyntaxException {
+    public void testEsiVariablesCase2() throws IOException, HttpErrorPage {
         // Configuration
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");

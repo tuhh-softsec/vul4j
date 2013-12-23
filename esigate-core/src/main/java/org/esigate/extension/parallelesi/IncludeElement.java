@@ -170,9 +170,9 @@ class IncludeElement extends BaseElement {
 
                 String contextBaseUrl;
                 String contextVisibleBaseUrl;
-                contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+                contextBaseUrl = UriUtils.getPath(baseUrl);
                 if (visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)) {
-                    contextVisibleBaseUrl = UriUtils.createUri(visibleBaseUrl).getPath();
+                    contextVisibleBaseUrl = UriUtils.getPath(visibleBaseUrl);
                     replaceRules.put("href=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "href=$1" + contextVisibleBaseUrl
                             + "$2$3");
                     replaceRules.put("src=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "src=$1" + contextVisibleBaseUrl
@@ -180,7 +180,7 @@ class IncludeElement extends BaseElement {
                     replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
                     replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
                 } else {
-                    contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+                    contextBaseUrl = UriUtils.getPath(baseUrl);
                     replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
                     replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
                 }

@@ -18,13 +18,13 @@ package org.esigate.test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.RequestLine;
@@ -55,10 +55,10 @@ public class MockMediator implements ContainerRequestMediator {
     private String remoteAddr;
 
     public MockMediator(String uriString) {
-        URI uri = UriUtils.createUri(uriString);
-        String scheme = uri.getScheme();
-        String host = uri.getHost();
-        int port = uri.getPort();
+        HttpHost httpHost = UriUtils.extractHost(uriString);
+        String scheme = httpHost.getSchemeName();
+        String host = httpHost.getHostName();
+        int port = httpHost.getPort();
         RequestLine requestLine = new BasicRequestLine("GET", uriString, HttpVersion.HTTP_1_1);
         this.httpRequest = new IncomingRequest(requestLine);
 

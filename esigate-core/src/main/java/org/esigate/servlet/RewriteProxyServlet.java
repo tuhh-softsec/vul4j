@@ -416,7 +416,7 @@ public class RewriteProxyServlet extends HttpServlet {
                             targetFile = newUrl;
                         }
                         target = UriUtils.createURI(targetScheme, request.getServerName(), targetPort, targetFile,
-                                null, null).toString();
+                                null, null);
 
                         // Redirect request and return;
                         int redirectCode = HttpServletResponse.SC_MOVED_PERMANENTLY;

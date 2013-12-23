@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -208,8 +207,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
     public OutgoingRequest createHttpRequest(DriverRequest originalRequest, String uri, boolean proxy) {
         // Extract the host in the URI. This is the host we have to send the
-        // request to physically. We will use this value to force the route to
-        // the server
+        // request to physically.
         HttpHost targetHost = UriUtils.extractHost(uri);
 
         // Preserve host if required
@@ -220,9 +218,13 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             virtualHost = targetHost;
         }
 
+        // FIXME
+        System.out.println("Target host:" + targetHost);
+        System.out.println("Virtual host:" + virtualHost);
+
         // Rewrite the uri with the virtualHost
-        //uri = UriUtils.rewriteURI(uri, virtualHost).toString();
-        uri = UriUtils.relativize(uri);
+        uri = UriUtils.rewriteURI(uri, virtualHost);
+
         String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
         OutgoingRequest httpRequest;
         if (SIMPLE_METHODS.contains(method)) {
@@ -238,7 +240,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         builder.setConnectTimeout(connectTimeout);
         builder.setSocketTimeout(socketTimeout);
         builder.setCircularRedirectsAllowed(true);
-        
+
         // Use browser compatibility cookie policy. This policy is the closest
         // to the behavior of a real browser.
         builder.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY);
@@ -255,14 +257,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         // depending on the browser
         headerManager.copyHeaders(originalRequest, httpRequest);
 
-        // FIXME
-        context.setTargetHost(targetHost);
-        context.setAttribute(VIRTUAL_HOST, virtualHost);
-        System.out.println("Target host " + targetHost + " virtual host " + virtualHost);
+        context.setAttribute(TARGET_HOST, targetHost);
         context.setAttribute(OUTGOING_REQUEST_KEY, httpRequest);
-
-        httpRequest.setHeader(HttpHeaders.HOST, virtualHost.toHostString());
-
         context.setAttribute(PROXY, proxy);
 
         return httpRequest;
@@ -300,7 +296,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             // Proceed to request only if extensions did not inject a response.
             if (event.httpResponse == null) {
                 try {
-                    HttpHost host = httpContext.getTargetHost();
+                    HttpHost host = (HttpHost) httpContext.getAttribute(TARGET_HOST);
                     HttpResponse response = httpClient.execute(host, httpRequest, httpContext);
                     result = new BasicHttpResponse(response.getStatusLine());
                     headerManager.copyHeaders(httpRequest, originalRequest, response, result);

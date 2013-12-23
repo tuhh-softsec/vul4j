@@ -17,10 +17,10 @@ package org.esigate.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpHost;
 import org.esigate.Renderer;
 import org.esigate.impl.DriverRequest;
 import org.esigate.util.UriUtils;
@@ -150,15 +150,12 @@ public class ResourceFixupRenderer implements Renderer {
         }
 
         // Build clean URI for further processing
-        URI url;
-        url = UriUtils.createUri(cleanBaseUrl + SLASH + cleanPageFullPath);
+        String url = cleanBaseUrl + SLASH + cleanPageFullPath;
+        HttpHost httpHost = UriUtils.extractHost(url);
 
         // Split url
-        server = url.getScheme() + "://" + url.getHost();
-        if (url.getPort() > -1) {
-            server += ":" + url.getPort();
-        }
-        this.pagePath = url.getPath();
+        server = httpHost.toURI();
+        this.pagePath = UriUtils.getPath(url);
         if (pagePath != null) {
             int indexSlash = pagePath.lastIndexOf(SLASH);
             if (indexSlash >= 0) {
@@ -168,8 +165,8 @@ public class ResourceFixupRenderer implements Renderer {
 
         // Check if we are going to replace context
         if (baseUrl != null && !baseUrl.equals(visibleBaseUrl)) {
-            contextRemove = UriUtils.createUri(baseUrl).getPath();
-            contextAdd = UriUtils.createUri(visibleBaseUrl).getPath();
+            contextRemove = UriUtils.getPath(baseUrl);
+            contextAdd = UriUtils.getPath(visibleBaseUrl);
         }
     }
 

@@ -15,7 +15,6 @@
 package org.esigate.extension;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Properties;
 
 import org.apache.http.HttpResponse;
@@ -44,7 +43,7 @@ public class HtmlEncodingProcessorTest extends AbstractDriverTestCase {
                 "<html><head><metA content=\"text/html; charset=utf-8\" /></head><body>testéèà</body></html>");
     }
 
-    private void doEncodingTest(String contentType, String s) throws IOException, HttpErrorPage, URISyntaxException {
+    private void doEncodingTest(String contentType, String s) throws IOException, HttpErrorPage {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
         properties.put(Parameters.EXTENSIONS.getName(), HtmlCharsetProcessor.class.getName());

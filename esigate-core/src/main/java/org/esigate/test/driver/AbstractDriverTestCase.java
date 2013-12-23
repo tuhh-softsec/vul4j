@@ -1,8 +1,6 @@
 package org.esigate.test.driver;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -20,6 +18,7 @@ import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.http.HttpRequestBuilder;
 import org.esigate.test.http.HttpResponseBuilder;
+import org.esigate.util.UriUtils;
 
 /**
  * Base class for end-to-end testing of Esigate.
@@ -118,12 +117,11 @@ public abstract class AbstractDriverTestCase extends TestCase {
      * @return the response
      * @throws IOException
      * @throws HttpErrorPage
-     * @throws URISyntaxException
      */
     public static HttpResponse driverProxy(Driver d, IncomingRequest request, Renderer... renderers)
-            throws IOException, HttpErrorPage, URISyntaxException {
+            throws IOException, HttpErrorPage {
         String uri = request.getRequestLine().getUri();
-        d.proxy(new URI(uri).getPath(), request, renderers);
+        d.proxy(UriUtils.getPath(uri), request, renderers);
 
         return TestUtils.getResponse(request);
 
