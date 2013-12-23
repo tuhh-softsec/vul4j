@@ -146,12 +146,13 @@ public class DefaultCookieManager implements CookieManager {
         BasicClientCookie2 httpClientCookie = new BasicClientCookie2(name, cookie.getValue());
         httpClientCookie.setSecure(false);
         String domain;
-
-        if (request.getDriver().getConfiguration().isPreserveHost()) {
-            domain = UriUtils.extractHostName(request.getRequestLine().getUri());
-        } else {
+        // FIXME
+//        if (request.getDriver().getConfiguration().isPreserveHost()) {
+//            domain = UriUtils.extractHostName(request.getRequestLine().getUri());
+//            System.out.println("domain: " + domain);
+//        } else {
             domain = request.getBaseUrl().getHost();
-        }
+//        }
 
         httpClientCookie.setDomain(domain);
         httpClientCookie.setPath("/");

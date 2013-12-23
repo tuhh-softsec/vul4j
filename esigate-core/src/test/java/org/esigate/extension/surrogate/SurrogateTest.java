@@ -113,7 +113,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
 
     }
 
-    public void testSurrogateCapabilitiese() throws Exception {
+    public void testSurrogateCapabilities() throws Exception {
 
         // Conf
         Properties properties = new Properties();
@@ -124,6 +124,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
         Driver driver = createMockDriver(properties, new IResponseHandler() {
             @Override
             public HttpResponse execute(HttpRequest request) {
+                Assert.assertNotNull(request.getFirstHeader("Surrogate-Capabilities"));
                 Assert.assertEquals(
                         "esigate=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0 X-ESI-Fragment/1.0 X-ESI-Replace/1.0 "
                                 + "X-ESI-XSLT/1.0 ESIGATE/4.0\"", request.getFirstHeader("Surrogate-Capabilities")
@@ -146,7 +147,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
      * 
      * @throws Exception
      */
-    public void testSurrogateCapabilitieseUniqueToken() throws Exception {
+    public void testSurrogateCapabilitiesUniqueToken() throws Exception {
 
         // Conf
         Properties properties = new Properties();

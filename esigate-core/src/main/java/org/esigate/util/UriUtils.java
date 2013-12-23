@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URIUtils;
 
 public final class UriUtils {
@@ -89,7 +90,7 @@ public final class UriUtils {
         return resolve(createUri(baseURI), reference);
     }
 
-    public static Object rewriteURI(String uri, HttpHost targetHost) {
+    public static URI rewriteURI(String uri, HttpHost targetHost) {
         return rewriteURI(createUri(uri), targetHost);
     }
 
@@ -132,6 +133,18 @@ public final class UriUtils {
 
         // follow redirect url.
         return absoluteSourceUrl;
+    }
+
+    public static String relativize(String uri) {
+        try {
+            URIBuilder uriBuilder = new URIBuilder(uri);
+            uriBuilder.setScheme(null);
+            uriBuilder.setHost(null);
+            uriBuilder.setPort(-1);
+            return uriBuilder.build().toString();
+        } catch (URISyntaxException e) {
+            throw new InvalidUriException(e);
+        }
     }
 
 }

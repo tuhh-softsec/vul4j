@@ -68,9 +68,10 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             "GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
     private static final Set<String> ENTITY_METHODS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
             "POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
-    private static final String ORIGINAL_REQUEST_KEY = "ORIGINAL_REQUEST";
     public static final String PROXY = "PROXY";
     public static final String OUTGOING_REQUEST_KEY = "OUTGOING_REQUEST";
+    public static final String TARGET_HOST = "TARGET_HOST";
+    public static final String VIRTUAL_HOST = "VIRTUAL_HOST";
     private boolean preserveHost;
     private CookieManager cookieManager;
     private HttpClient httpClient;
@@ -219,9 +220,9 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             virtualHost = targetHost;
         }
 
-        // Rewrite the uri with the virtualHost, this is the key used by the
-        // cache
-        uri = UriUtils.rewriteURI(uri, virtualHost).toString();
+        // Rewrite the uri with the virtualHost
+        //uri = UriUtils.rewriteURI(uri, virtualHost).toString();
+        uri = UriUtils.relativize(uri);
         String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
         OutgoingRequest httpRequest;
         if (SIMPLE_METHODS.contains(method)) {
@@ -237,6 +238,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         builder.setConnectTimeout(connectTimeout);
         builder.setSocketTimeout(socketTimeout);
         builder.setCircularRedirectsAllowed(true);
+        
         // Use browser compatibility cookie policy. This policy is the closest
         // to the behavior of a real browser.
         builder.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY);
@@ -253,8 +255,10 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         // depending on the browser
         headerManager.copyHeaders(originalRequest, httpRequest);
 
+        // FIXME
         context.setTargetHost(targetHost);
-        context.setAttribute(ORIGINAL_REQUEST_KEY, originalRequest);
+        context.setAttribute(VIRTUAL_HOST, virtualHost);
+        System.out.println("Target host " + targetHost + " virtual host " + virtualHost);
         context.setAttribute(OUTGOING_REQUEST_KEY, httpRequest);
 
         httpRequest.setHeader(HttpHeaders.HOST, virtualHost.toHostString());

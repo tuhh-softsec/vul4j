@@ -595,6 +595,13 @@ public class DriverTest extends TestCase {
         assertEquals("àéà", TestUtils.getResponseBodyAsString(request));
     }
 
+    /**
+     * 0000161: Cookie domain validation too strict with preserveHost
+     * 
+     * @see <a href="https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161">0000161</a>
+     * 
+     * @throws Exception
+     */
     public void testBug161SetCookie() throws Exception {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
@@ -603,7 +610,7 @@ public class DriverTest extends TestCase {
 
         BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
         response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
-        response.addHeader("Set-Cookie", "mycookie=123456; domain=mydomain.fr; path=/");
+        response.addHeader("Set-Cookie", "mycookie=123456; domain=.mydomain.fr; path=/");
         response.setEntity(new StringEntity("test"));
         mockConnectionManager.setResponse(response);
 
@@ -613,7 +620,6 @@ public class DriverTest extends TestCase {
 
         driver.proxy("/foobar/", request);
 
-        // https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161
         assertTrue("Set-Cookie must be forwarded.", request.getMediator().getCookies().length > 0);
     }
 
@@ -683,7 +689,7 @@ public class DriverTest extends TestCase {
         mockConnectionManager = new MockConnectionManager() {
             @Override
             public HttpResponse execute(HttpRequest httpRequest) {
-                Assert.assertNotNull(httpRequest.getFirstHeader("Cookie"));
+                Assert.assertNotNull("Cookie should be forwarded", httpRequest.getFirstHeader("Cookie"));
                 Assert.assertEquals("JSESSIONID=926E1C6A52804A625DFB0139962D4E13", httpRequest.getFirstHeader("Cookie")
                         .getValue());
                 return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
@@ -796,14 +802,14 @@ public class DriverTest extends TestCase {
             @Override
             public HttpResponse execute(HttpRequest httpRequest) {
                 // The main page
-                if (httpRequest.getRequestLine().getUri().equals("http://test.mydomain.fr/foobar/")) {
+                if (httpRequest.getRequestLine().getUri().equals("/foobar/")) {
                     return new HttpResponseBuilder()
                             .entity(new StringEntity("<esi:include src=\"http://test.mydomain.fr/esi/\"/>",
                                     ContentType.TEXT_HTML)).status(HttpStatus.SC_BAD_REQUEST).build();
                 }
 
                 // The ESI fragment
-                if (httpRequest.getRequestLine().getUri().equals("http://test.mydomain.fr/esi/")) {
+                if (httpRequest.getRequestLine().getUri().equals("/esi/")) {
                     try {
                         return new HttpResponseBuilder().entity("OK").build();
                     } catch (UnsupportedEncodingException e) {

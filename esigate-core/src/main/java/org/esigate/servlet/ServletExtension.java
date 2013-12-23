@@ -32,6 +32,8 @@ import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.extension.Extension;
+import org.esigate.http.HttpClientRequestExecutor;
+import org.esigate.http.OutgoingRequest;
 import org.esigate.servlet.impl.ResponseCapturingWrapper;
 
 public class ServletExtension implements Extension, IEventListener {
@@ -50,7 +52,9 @@ public class ServletExtension implements Extension, IEventListener {
         FetchEvent fetchEvent = (FetchEvent) event;
         if (EventManager.EVENT_FETCH_PRE.equals(id)) {
             String uriString = fetchEvent.httpRequest.getRequestLine().getUri();
-            String baseUrl = fetchEvent.httpRequest.getBaseUrl().toString();
+            OutgoingRequest outgoingRequest = fetchEvent.httpContext.getAttribute(
+                    HttpClientRequestExecutor.OUTGOING_REQUEST_KEY, OutgoingRequest.class);
+            String baseUrl = outgoingRequest.getBaseUrl().toString();
             if (!uriString.startsWith(baseUrl)) {
                 // Non local absolute uri
                 return true;
@@ -59,7 +63,7 @@ public class ServletExtension implements Extension, IEventListener {
                 if (!relUrl.startsWith("/")) {
                     relUrl = "/" + relUrl;
                 }
-                ContainerRequestMediator mediator = fetchEvent.httpRequest.getMediator();
+                ContainerRequestMediator mediator = outgoingRequest.getMediator();
                 HttpResponse result;
                 if (!(mediator instanceof HttpServletMediator)) {
                     String message = ServletExtension.class.getName()

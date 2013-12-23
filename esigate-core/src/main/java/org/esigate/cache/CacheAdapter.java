@@ -20,7 +20,6 @@ import java.util.Properties;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
@@ -29,15 +28,15 @@ import org.apache.http.client.methods.HttpExecutionAware;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.impl.execchain.ClientExecChain;
-import org.apache.http.protocol.HttpCoreContext;
+import org.apache.http.util.TextUtils;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientRequestExecutor;
-import org.esigate.http.OutgoingRequest;
 
 /**
  * This class is changes the behavior of the HttpCache by transforming the headers in the requests or response.
@@ -46,6 +45,8 @@ import org.esigate.http.OutgoingRequest;
  * 
  */
 public class CacheAdapter {
+    protected static final String HTTP_ROUTE = "HTTP_ROUTE";
+    private final static String TARGET_HOST = "TARGET_HOST";
     private int staleIfError;
     private int staleWhileRevalidate;
     private int ttl;
@@ -65,76 +66,42 @@ public class CacheAdapter {
         viaHeader = Parameters.VIA_HEADER.getValueBoolean(properties);
     }
 
-    private abstract class ClientExecDecorator implements ClientExecChain {
-        private final ClientExecChain wrapped;
-
-        ClientExecDecorator(ClientExecChain wrapped) {
-            this.wrapped = wrapped;
-        }
-
-        @Override
-        public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
-                HttpClientContext clientContext, HttpExecutionAware execAware) throws IOException, HttpException {
-            FetchEvent fetchEvent = transformRequest(request, clientContext);
-            CloseableHttpResponse response = null;
-            if (fetchEvent == null || !fetchEvent.exit) {
-                response = wrapped.execute(route, request, clientContext, execAware);
-            } else {
-                if (fetchEvent.httpResponse != null) {
-                    response = new BasicCloseableHttpResponse(fetchEvent.httpResponse);
-                }
-            }
-            if (response != null) {
-                transformResponse(request, response, clientContext);
-            }
-            // TODO: returning null may be hard. However, this only happens if
-            // an extension cancels the request. Need to think on the usecase.
-            return response;
-        }
-
-        /**
-         * 
-         * @param httpRequest
-         * @param context
-         * 
-         * @return true if we should process with the request.
-         */
-        abstract FetchEvent transformRequest(HttpRequest httpRequest, HttpClientContext context);
-
-        abstract void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse,
-                HttpClientContext context);
-
-    }
-
-    public ClientExecDecorator wrapCachingHttpClient(final ClientExecChain wrapped) {
-        return new ClientExecDecorator(wrapped) {
+    public ClientExecChain wrapCachingHttpClient(final ClientExecChain wrapped) {
+        return new ClientExecChain() {
 
             /**
              * Removes client http cache directives like "Cache-control" and "Pragma". Users must not be able to bypass
-             * the cache just by making a refresh in the browser.
+             * the cache just by making a refresh in the browser. Generates X-cache header.
+             * 
              */
             @Override
-            FetchEvent transformRequest(HttpRequest httpRequest, HttpClientContext context) {
-                return null;
-            }
+            public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
+                    HttpClientContext context, HttpExecutionAware execAware) throws IOException, HttpException {
 
-            /**
-             * Restores the real http status code if it has been hidden to HttpCache
-             */
-            @Override
-            void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse,
-                    HttpClientContext context) {
+                // Switch targetHost and route for the cache to generate the right cache key
+                HttpHost virtualHost = context.getAttribute(HttpClientRequestExecutor.VIRTUAL_HOST, HttpHost.class);
+                HttpHost targetHost = context.getTargetHost();
+                context.setTargetHost(virtualHost);
+                HttpRoute virtualRoute = new HttpRoute(virtualHost);
+                // Save the real targetHost and route to restore them later
+                context.setAttribute(TARGET_HOST, targetHost);
+                context.setAttribute(HTTP_ROUTE, route);
+
+                CloseableHttpResponse response = wrapped.execute(virtualRoute, request, context, execAware);
+
+                // Restore the original target host
+                // context.setTargetHost(targetHost);
+
                 // Remove previously added Cache-control header
-                if (httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")
+                if (request.getRequestLine().getMethod().equalsIgnoreCase("GET")
                         && (staleWhileRevalidate > 0 || staleIfError > 0)) {
-                    httpResponse.removeHeader(httpResponse.getLastHeader("Cache-control"));
+                    response.removeHeader(response.getLastHeader("Cache-control"));
                 }
                 // Add X-cache header
                 if (xCacheHeader) {
                     if (context != null) {
                         CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) context
                                 .getAttribute(HttpCacheContext.CACHE_RESPONSE_STATUS);
-                        HttpHost host = (HttpHost) context.getAttribute(HttpCoreContext.HTTP_TARGET_HOST);
                         String xCacheString;
                         if (cacheResponseStatus.equals(CacheResponseStatus.CACHE_HIT)) {
                             xCacheString = "HIT";
@@ -143,82 +110,108 @@ public class CacheAdapter {
                         } else {
                             xCacheString = "MISS";
                         }
-                        xCacheString += " from " + host.toHostString();
-                        xCacheString += " (" + httpRequest.getRequestLine().getMethod() + " "
-                                + httpRequest.getRequestLine().getUri() + ")";
-                        httpResponse.addHeader("X-Cache", xCacheString);
+                        xCacheString += " from " + targetHost.toHostString();
+                        xCacheString += " (" + request.getRequestLine().getMethod() + " "
+                                + request.getRequestLine().getUri() + ")";
+                        response.addHeader("X-Cache", xCacheString);
                     }
                 }
 
                 // Remove Via header
-                if (!viaHeader && httpResponse.containsHeader("Via")) {
-                    httpResponse.removeHeaders("Via");
+                if (!viaHeader && response.containsHeader("Via")) {
+                    response.removeHeaders("Via");
                 }
+                return response;
             }
         };
     }
 
-    public ClientExecDecorator wrapBackendHttpClient(final EventManager eventManager, ClientExecChain wrapped) {
-        return new ClientExecDecorator(wrapped) {
+    public ClientExecChain wrapBackendHttpClient(final EventManager eventManager, final ClientExecChain wrapped) {
+        return new ClientExecChain() {
 
-            /**
-             * Fire pre-Fetch event
-             */
-            @Override
-            FetchEvent transformRequest(HttpRequest httpRequest, HttpClientContext context) {
-                // Create request event
-                Boolean proxy = (Boolean) context.getAttribute(HttpClientRequestExecutor.PROXY);
-                if (proxy == null) {
-                    proxy = Boolean.FALSE;
-                }
-                FetchEvent e = new FetchEvent(proxy);
-                e.httpResponse = null;
-                e.httpContext = context;
-                e.httpRequest = (OutgoingRequest) context.getAttribute(HttpClientRequestExecutor.OUTGOING_REQUEST_KEY);
-
-                // EVENT pre
-                eventManager.fire(EventManager.EVENT_FETCH_PRE, e);
-
-                // Continue if exist is not requested
-                return e;
+            private boolean isCacheableStatus(int statusCode) {
+                return (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MOVED_PERMANENTLY
+                        || statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_NOT_FOUND
+                        || statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR
+                        || statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE || statusCode == HttpStatus.SC_NOT_MODIFIED);
             }
 
             /**
-             * Enables cache for all GET requests if cache ttl was forced to a certain duration in the configuration.
-             * This is done even for non 200 return codes! This is a very aggressive but efficient caching policy. Adds
-             * "stale-while-revalidate" and "stale-if-error" cache-control directives depending on the configuration.
+             * Fire pre-fetch and post-fetch events Enables cache for all GET requests if cache ttl was forced to a
+             * certain duration in the configuration. This is done even for non 200 return codes! This is a very
+             * aggressive but efficient caching policy. Adds "stale-while-revalidate" and "stale-if-error" cache-control
+             * directives depending on the configuration.
              */
             @Override
-            void transformResponse(HttpRequest httpRequest, CloseableHttpResponse httpResponse,
-                    HttpClientContext context) {
+            public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
+                    HttpClientContext context, HttpExecutionAware execAware) throws IOException, HttpException {
+                // Restore real target host and route
+                HttpHost virtualHost = context.getTargetHost();
+                HttpHost targetHost = context.getAttribute(TARGET_HOST, HttpHost.class);
+                HttpRoute realRoute = context.getAttribute(HTTP_ROUTE, HttpRoute.class);
+                System.out.println(virtualHost);
+                System.out.println(targetHost);
+                System.out.println(realRoute);
+
+                // Fix cookieOrigin set by org.apache.http.client.protocol.RequestAddCookies to use the virtual host
+                // instead of the target host. Without this, cookies set with a domain will be rejected
+                CookieOrigin initialCookieOrigin = (CookieOrigin) context.getAttribute(HttpClientContext.COOKIE_ORIGIN);
+                String path = initialCookieOrigin.getPath();
+                CookieOrigin cookieOrigin = new CookieOrigin(virtualHost.getHostName(),
+                        virtualHost.getPort() >= 0 ? virtualHost.getPort() : 0, !TextUtils.isEmpty(path) ? path : "/",
+                        route.isSecure());
+                context.setAttribute(HttpClientContext.COOKIE_ORIGIN, cookieOrigin);
+
+                // In case we are bypassing the cache
+                if (realRoute == null)
+                    realRoute = route;
+                // context.setTargetHost(targetHost);
 
                 // Create request event
                 Boolean proxy = (Boolean) context.getAttribute(HttpClientRequestExecutor.PROXY);
                 if (proxy == null) {
                     proxy = Boolean.FALSE;
                 }
-                FetchEvent e = new FetchEvent(proxy);
-                e.httpRequest = (OutgoingRequest) context.getAttribute(HttpClientRequestExecutor.OUTGOING_REQUEST_KEY);
-                e.httpResponse = httpResponse;
-                e.httpContext = context;
+                FetchEvent fetchEvent = new FetchEvent(proxy);
+                fetchEvent.httpResponse = null;
+                fetchEvent.httpContext = context;
+                fetchEvent.httpRequest = request;
 
-                // EVENT pre
-                eventManager.fire(EventManager.EVENT_FETCH_POST, e);
+                eventManager.fire(EventManager.EVENT_FETCH_PRE, fetchEvent);
 
-                String method = httpRequest.getRequestLine().getMethod();
-                int statusCode = httpResponse.getStatusLine().getStatusCode();
+                CloseableHttpResponse response = null;
+                if (!fetchEvent.exit) {
+                    response = wrapped.execute(realRoute, request, context, execAware);
+                } else {
+                    if (fetchEvent.httpResponse != null) {
+                        response = new BasicCloseableHttpResponse(fetchEvent.httpResponse);
+                    }
+                }
+
+                // Change again the target host to the virtual one
+                // context.setTargetHost(virtualHost);
+
+                // TODO: returning null may be hard. However, this only happens if
+                // an extension cancels the request. Need to think on the usecase.
+
+                // Update the event and fire post event
+                fetchEvent.httpResponse = response;
+                eventManager.fire(EventManager.EVENT_FETCH_POST, fetchEvent);
+
+                String method = request.getRequestLine().getMethod();
+                int statusCode = response.getStatusLine().getStatusCode();
 
                 // If ttl is set, force caching even for error pages
                 if (ttl > 0 && method.equalsIgnoreCase("GET") && isCacheableStatus(statusCode)) {
-                    httpResponse.removeHeaders("Date");
-                    httpResponse.removeHeaders("Cache-control");
-                    httpResponse.removeHeaders("Expires");
-                    httpResponse.setHeader("Date", DateUtils.formatDate(new Date(System.currentTimeMillis())));
-                    httpResponse.setHeader("Cache-control", "public, max-age=" + ttl);
-                    httpResponse.setHeader("Expires",
+                    response.removeHeaders("Date");
+                    response.removeHeaders("Cache-control");
+                    response.removeHeaders("Expires");
+                    response.setHeader("Date", DateUtils.formatDate(new Date(System.currentTimeMillis())));
+                    response.setHeader("Cache-control", "public, max-age=" + ttl);
+                    response.setHeader("Expires",
                             DateUtils.formatDate(new Date(System.currentTimeMillis() + ((long) ttl) * 1000)));
                 }
-                if (httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")) {
+                if (request.getRequestLine().getMethod().equalsIgnoreCase("GET")) {
                     String cacheControlHeader = "";
                     if (staleWhileRevalidate > 0) {
                         cacheControlHeader += "stale-while-revalidate=" + staleWhileRevalidate;
@@ -230,17 +223,11 @@ public class CacheAdapter {
                         cacheControlHeader += "stale-if-error=" + staleIfError;
                     }
                     if (cacheControlHeader.length() > 0) {
-                        httpResponse.addHeader("Cache-control", cacheControlHeader);
+                        response.addHeader("Cache-control", cacheControlHeader);
                     }
                 }
 
-            }
-
-            private boolean isCacheableStatus(int statusCode) {
-                return (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MOVED_PERMANENTLY
-                        || statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_NOT_FOUND
-                        || statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR
-                        || statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE || statusCode == HttpStatus.SC_NOT_MODIFIED);
+                return response;
             }
 
         };

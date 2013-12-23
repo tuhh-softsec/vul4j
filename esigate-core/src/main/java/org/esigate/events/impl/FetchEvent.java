@@ -1,9 +1,9 @@
 package org.esigate.events.impl;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.esigate.events.Event;
-import org.esigate.http.OutgoingRequest;
 
 /**
  * Fetch event : when a new HTTP call is made to get a new block/template (Cache miss).
@@ -26,7 +26,7 @@ public class FetchEvent extends Event {
     /**
      * The new HTTP call details.
      */
-    public OutgoingRequest httpRequest = null;
+    public HttpRequest httpRequest = null;
 
     private final boolean proxy;
 
