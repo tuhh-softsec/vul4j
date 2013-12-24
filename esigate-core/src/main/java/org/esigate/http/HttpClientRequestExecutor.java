@@ -218,13 +218,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             virtualHost = targetHost;
         }
 
-        // FIXME
-        System.out.println("Target host:" + targetHost);
-        System.out.println("Virtual host:" + virtualHost);
-
         // Rewrite the uri with the virtualHost
         uri = UriUtils.rewriteURI(uri, virtualHost);
-
         String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
         OutgoingRequest httpRequest;
         if (SIMPLE_METHODS.contains(method)) {

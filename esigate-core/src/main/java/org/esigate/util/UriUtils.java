@@ -163,7 +163,7 @@ public final class UriUtils {
         return URLEncodedUtils.parse(createUri(uri), charset);
     }
 
-    private static boolean isAbsolute(String uri) {
+    public static boolean isAbsolute(String uri) {
         return (uri.startsWith("http://") || uri.startsWith("https://"));
     }
 

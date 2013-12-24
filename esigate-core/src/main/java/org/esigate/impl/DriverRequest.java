@@ -23,12 +23,15 @@ public class DriverRequest implements HttpEntityEnclosingRequest {
     private final Map<String, String> parameters;
     private final UserContext userContext;
     private final URL baseUrl;
+    private final boolean external;
     private String characterEncoding;
 
-    public DriverRequest(IncomingRequest request, Driver driver, Map<String, String> parameters) throws HttpErrorPage {
+    public DriverRequest(IncomingRequest request, Driver driver, Map<String, String> parameters, boolean external)
+            throws HttpErrorPage {
         this.wrappedRequest = request;
         this.driver = driver;
         this.parameters = parameters;
+        this.external = external;
         this.userContext = new UserContext(request, driver.getConfiguration().getInstanceName());
         try {
             this.baseUrl = new URL(driver.getConfiguration().getBaseUrlRetrieveStrategy().getBaseURL(request));
@@ -175,6 +178,10 @@ public class DriverRequest implements HttpEntityEnclosingRequest {
 
     public IncomingRequest getOriginalRequest() {
         return wrappedRequest;
+    }
+
+    public boolean isExternal() {
+        return external;
     }
 
 }

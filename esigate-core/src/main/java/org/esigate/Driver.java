@@ -39,6 +39,7 @@ import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
+import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,8 +140,8 @@ public final class Driver {
      */
     public void render(String pageUrl, Map<String, String> parameters, Appendable writer,
             IncomingRequest incomingRequest, Renderer... renderers) throws IOException, HttpErrorPage {
-
-        DriverRequest driverRequest = new DriverRequest(incomingRequest, this, parameters);
+        boolean external = UriUtils.isAbsolute(pageUrl);
+        DriverRequest driverRequest = new DriverRequest(incomingRequest, this, parameters, external);
 
         // Replace ESI variables in URL
         // TODO: should be performed in the ESI extension
@@ -227,8 +228,8 @@ public final class Driver {
      *             If the page contains incorrect tags
      */
     public void proxy(String relUrl, IncomingRequest request, Renderer... renderers) throws IOException, HttpErrorPage {
-
-        DriverRequest driverRequest = new DriverRequest(request, this, null);
+        boolean external = UriUtils.isAbsolute(relUrl);
+        DriverRequest driverRequest = new DriverRequest(request, this, null, external);
         driverRequest.setCharacterEncoding(this.config.getUriEncoding());
 
         // This is used to ensure EVENT_PROXY_POST is called once and only once.

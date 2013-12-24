@@ -35,6 +35,7 @@ import org.esigate.extension.Extension;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.OutgoingRequest;
 import org.esigate.servlet.impl.ResponseCapturingWrapper;
+import org.esigate.util.UriUtils;
 
 public class ServletExtension implements Extension, IEventListener {
     private Driver driver;
@@ -55,11 +56,15 @@ public class ServletExtension implements Extension, IEventListener {
             OutgoingRequest outgoingRequest = fetchEvent.httpContext.getAttribute(
                     HttpClientRequestExecutor.OUTGOING_REQUEST_KEY, OutgoingRequest.class);
             String baseUrl = outgoingRequest.getBaseUrl().toString();
-            if (!uriString.startsWith(baseUrl)) {
+            if (outgoingRequest.getOriginalRequest().isExternal()) {
                 // Non local absolute uri
                 return true;
             } else {
-                String relUrl = uriString.substring(baseUrl.length());
+                String relUrl = uriString;
+                if (UriUtils.isAbsolute(relUrl)) {
+                    relUrl = relUrl.substring(UriUtils.extractHost(relUrl).toURI().length());
+                }
+                relUrl = relUrl.substring(UriUtils.getPath(baseUrl).length());
                 if (!relUrl.startsWith("/")) {
                     relUrl = "/" + relUrl;
                 }

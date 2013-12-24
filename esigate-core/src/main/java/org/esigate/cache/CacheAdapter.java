@@ -59,7 +59,9 @@ public class CacheAdapter {
                     + "in order to enable background revalidation (staleWhileRevalidate)");
         }
         ttl = Parameters.TTL.getValueInt(properties);
-        xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
+        // FIXME
+        // xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
+         xCacheHeader = true;
         viaHeader = Parameters.VIA_HEADER.getValueBoolean(properties);
     }
 
@@ -80,7 +82,7 @@ public class CacheAdapter {
                 HttpRoute virtualRoute = new HttpRoute(virtualHost);
                 // Save the real route to restore later
                 context.setAttribute(HTTP_ROUTE, route);
-
+                
                 CloseableHttpResponse response = wrapped.execute(virtualRoute, request, context, execAware);
 
                 // Remove previously added Cache-control header

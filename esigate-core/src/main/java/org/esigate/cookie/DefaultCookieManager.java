@@ -148,7 +148,6 @@ public class DefaultCookieManager implements CookieManager {
         String domain;
         if (request.getDriver().getConfiguration().isPreserveHost()) {
             domain = UriUtils.extractHostName(request.getRequestLine().getUri());
-            System.out.println("domain: " + domain);
         } else {
             domain = request.getBaseUrl().getHost();
         }

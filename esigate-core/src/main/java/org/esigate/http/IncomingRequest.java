@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.apache.http.RequestLine;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.esigate.UserContext;
 import org.esigate.api.ContainerRequestMediator;
 
 /**
@@ -35,7 +34,6 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
     private final Map<String, Object> attributes = new HashMap<String, Object>();
     private ContainerRequestMediator mediator;
     private Map<String, String> parameters;
-    private UserContext userContext;
     private URL baseUrl;
 
     public IncomingRequest(RequestLine requestline) {
@@ -64,10 +62,6 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
     public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
-    }
-
-    public UserContext getUserContext() {
-        return userContext;
     }
 
     public URL getBaseUrl() {

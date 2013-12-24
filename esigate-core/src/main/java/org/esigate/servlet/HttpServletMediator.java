@@ -116,6 +116,8 @@ public class HttpServletMediator implements ContainerRequestMediator {
             }
             result.setEntity(entity);
         }
+
+        result.setMediator(this);
         this.httpRequest = result;
     }
 

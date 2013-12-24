@@ -41,7 +41,7 @@ public final class TestUtils {
 
     public static DriverRequest createRequest(Driver driver) throws HttpErrorPage {
         IncomingRequest request = new MockMediator().getHttpRequest();
-        return new DriverRequest(request, driver, null);
+        return new DriverRequest(request, driver, null, false);
     }
 
     public static IncomingRequest createRequest(String uri) {
@@ -50,7 +50,7 @@ public final class TestUtils {
 
     public static DriverRequest createRequest(String uri, Driver driver) throws HttpErrorPage {
         IncomingRequest request = new MockMediator(uri).getHttpRequest();
-        return new DriverRequest(request, driver, null);
+        return new DriverRequest(request, driver, null, false);
     }
 
     public static HttpResponse getResponse(IncomingRequest request) {
