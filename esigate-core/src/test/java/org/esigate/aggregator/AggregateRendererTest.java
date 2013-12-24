@@ -43,8 +43,8 @@ public class AggregateRendererTest extends TestCase {
         requestExecutor.addResource("/testTemplateParams", "before <!--$begintemplate$mytemplate$-->some text "
                 + "<!--$beginparam$param1$-->To be replaced<!--$endparam$param1$-->"
                 + " goes here<!--$endtemplate$mytemplate$--> after");
-        requestExecutor.addResource("", "before " + "<!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$-->"
-                + " after");
+        requestExecutor.addResource("", "before " + "<!--$beginblock$myblock$-->some text goes here"
+                + "<!--$endblock$myblock$--> after");
         requestExecutor.addResource("/testNested", "before <!--$beginblock$myblock$--> nested "
                 + "<!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$-->"
                 + " /nested <!--$endblock$myblock$--> after");

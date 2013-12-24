@@ -59,9 +59,7 @@ public class CacheAdapter {
                     + "in order to enable background revalidation (staleWhileRevalidate)");
         }
         ttl = Parameters.TTL.getValueInt(properties);
-        // FIXME
-        // xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
-         xCacheHeader = true;
+        xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
         viaHeader = Parameters.VIA_HEADER.getValueBoolean(properties);
     }
 
@@ -82,7 +80,7 @@ public class CacheAdapter {
                 HttpRoute virtualRoute = new HttpRoute(virtualHost);
                 // Save the real route to restore later
                 context.setAttribute(HTTP_ROUTE, route);
-                
+
                 CloseableHttpResponse response = wrapped.execute(virtualRoute, request, context, execAware);
 
                 // Remove previously added Cache-control header
@@ -142,8 +140,9 @@ public class CacheAdapter {
                 HttpRoute realRoute = context.getAttribute(HTTP_ROUTE, HttpRoute.class);
 
                 // In case we are bypassing the cache
-                if (realRoute == null)
+                if (realRoute == null) {
                     realRoute = route;
+                }
 
                 // Create request event
                 Boolean proxy = (Boolean) context.getAttribute(HttpClientRequestExecutor.PROXY);

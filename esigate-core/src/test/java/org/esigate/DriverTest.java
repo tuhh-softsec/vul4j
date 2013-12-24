@@ -596,7 +596,7 @@ public class DriverTest extends TestCase {
     }
 
     /**
-     * 0000161: Cookie domain validation too strict with preserveHost
+     * 0000161: Cookie domain validation too strict with preserveHost.
      * 
      * @see <a href="https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161">0000161</a>
      * 

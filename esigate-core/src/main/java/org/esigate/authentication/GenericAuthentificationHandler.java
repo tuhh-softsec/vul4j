@@ -40,7 +40,8 @@ import org.esigate.http.OutgoingRequest;
  * <uL>
  * <li> {@link EventManager#EVENT_PROXY_PRE} is mapped to {@link #beforeProxy(HttpRequest)}</li>
  * <li>{@link EventManager#EVENT_FRAGMENT_PRE} is mapped to {@link #preRequest(OutgoingRequest, IncomingRequest)}</li>
- * <li> {@link EventManager#EVENT_FRAGMENT_POST} is mapped to {@link #needsNewRequest(HttpResponse, IncomingRequest)}</li>
+ * <li> {@link EventManager#EVENT_FRAGMENT_POST} is mapped to {@link #needsNewRequest(HttpResponse,
+ * IncomingRequest)}</li>
  * </ul>
  * 
  * <p>

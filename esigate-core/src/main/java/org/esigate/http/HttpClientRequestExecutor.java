@@ -218,19 +218,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             virtualHost = targetHost;
         }
 
-        // Rewrite the uri with the virtualHost
-        uri = UriUtils.rewriteURI(uri, virtualHost);
-        String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
-        OutgoingRequest httpRequest;
-        if (SIMPLE_METHODS.contains(method)) {
-            httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest);
-        } else if (ENTITY_METHODS.contains(method)) {
-            httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest);
-            httpRequest.setEntity(originalRequest.getEntity());
-        } else {
-            throw new UnsupportedHttpMethodException(method + " " + uri);
-        }
-
         RequestConfig.Builder builder = RequestConfig.custom();
         builder.setConnectTimeout(connectTimeout);
         builder.setSocketTimeout(socketTimeout);
@@ -241,11 +228,24 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         builder.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY);
 
         builder.setRedirectsEnabled(!proxy);
-
-        httpRequest.setConfig(builder.build());
+        RequestConfig config = builder.build();
 
         HttpClientContext context = new HttpClientContext();
-        httpRequest.setContext(context);
+
+        // Rewrite the uri with the virtualHost
+        uri = UriUtils.rewriteURI(uri, virtualHost);
+        String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
+        OutgoingRequest httpRequest;
+        if (SIMPLE_METHODS.contains(method)) {
+            httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest,
+                    config, context);
+        } else if (ENTITY_METHODS.contains(method)) {
+            httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest,
+                    config, context);
+            httpRequest.setEntity(originalRequest.getEntity());
+        } else {
+            throw new UnsupportedHttpMethodException(method + " " + uri);
+        }
 
         // We use the same user-agent and accept headers that the one sent by
         // the browser as some web sites generate different pages and scripts

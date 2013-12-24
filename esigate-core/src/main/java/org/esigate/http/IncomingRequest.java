@@ -24,7 +24,7 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.esigate.api.ContainerRequestMediator;
 
 /**
- * Represents an incoming http request
+ * Represents an incoming http request.
  * 
  * @author fxbonnet
  * 

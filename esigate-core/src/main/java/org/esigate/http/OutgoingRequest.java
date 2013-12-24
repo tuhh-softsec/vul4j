@@ -24,7 +24,6 @@ import org.apache.http.client.methods.Configurable;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicRequestLine;
-import org.esigate.Driver;
 import org.esigate.UserContext;
 import org.esigate.api.ContainerRequestMediator;
 import org.esigate.impl.DriverRequest;
@@ -38,13 +37,16 @@ import org.esigate.impl.DriverRequest;
 public class OutgoingRequest extends BasicHttpEntityEnclosingRequest implements Configurable {
 
     private RequestLine requestLine;
-    private RequestConfig requestConfig;
-    private HttpClientContext context;
+    private final RequestConfig requestConfig;
+    private final HttpClientContext context;
     private final DriverRequest originalRequest;
 
-    public OutgoingRequest(String method, String uri, ProtocolVersion version, DriverRequest originalRequest) {
+    public OutgoingRequest(String method, String uri, ProtocolVersion version, DriverRequest originalRequest,
+            RequestConfig requestConfig, HttpClientContext context) {
         super(method, uri, version);
         requestLine = new BasicRequestLine(method, uri, version);
+        this.requestConfig = requestConfig;
+        this.context = context;
         this.originalRequest = originalRequest;
     }
 
@@ -72,16 +74,8 @@ public class OutgoingRequest extends BasicHttpEntityEnclosingRequest implements 
         return requestConfig;
     }
 
-    public void setConfig(RequestConfig requestConfig) {
-        this.requestConfig = requestConfig;
-    }
-
     public HttpClientContext getContext() {
         return context;
-    }
-
-    public void setContext(HttpClientContext context) {
-        this.context = context;
     }
 
     public UserContext getUserContext() {
@@ -92,20 +86,12 @@ public class OutgoingRequest extends BasicHttpEntityEnclosingRequest implements 
         return originalRequest.getMediator();
     }
 
-    public Driver getDriver() {
-        return originalRequest.getDriver();
-    }
-
     public URL getBaseUrl() {
         return originalRequest.getBaseUrl();
     }
 
     public DriverRequest getOriginalRequest() {
         return originalRequest;
-    }
-
-    public String getCharacterEncoding() {
-        return originalRequest.getCharacterEncoding();
     }
 
 }
