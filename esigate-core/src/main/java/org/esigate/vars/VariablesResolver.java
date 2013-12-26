@@ -58,7 +58,7 @@ public final class VariablesResolver {
     /**
      * Loads variables according to default configuration file org/esigate/vars.properties.
      */
-    public static void configure() {
+    private static void configure() {
         InputStream inputStream = null;
         try {
             LOG.debug("Loading esigate-vars.properties file");

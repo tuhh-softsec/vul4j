@@ -145,7 +145,7 @@ class IncludeElement extends BaseElement {
         includeTag = tag;
     }
 
-    void processPage(String src, Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    private void processPage(String src, Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
         String fragment = tag.getAttribute("fragment");
         String xpath = tag.getAttribute("xpath");
         String xslt = tag.getAttribute("stylesheet");

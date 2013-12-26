@@ -16,7 +16,7 @@ public final class UriUtils {
         // Do not instantiate
     }
 
-    public static final class InvalidUriException extends RuntimeException {
+    private static final class InvalidUriException extends RuntimeException {
         private static final long serialVersionUID = 7013885420191182730L;
 
         private InvalidUriException(URISyntaxException cause) {
@@ -64,7 +64,7 @@ public final class UriUtils {
         return URIUtils.extractHost(createUri(uri));
     }
 
-    public static URI createUri(String uri) {
+    private static URI createUri(String uri) {
         return URI.create(uri);
     }
 

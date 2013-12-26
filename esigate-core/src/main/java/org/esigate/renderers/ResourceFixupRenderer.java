@@ -47,7 +47,7 @@ public class ResourceFixupRenderer implements Renderer {
 
     public static final int ABSOLUTE = 0;
     public static final int RELATIVE = 1;
-    public static final char SLASH = '/';
+    private static final char SLASH = '/';
     private static final Pattern URL_PATTERN = Pattern.compile(
             "<([^\\!][^>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
             Pattern.CASE_INSENSITIVE);
@@ -250,7 +250,7 @@ public class ResourceFixupRenderer implements Renderer {
      * 
      * @return the result of this renderer.
      */
-    CharSequence replace(CharSequence input) {
+    private CharSequence replace(CharSequence input) {
         StringBuffer result = new StringBuffer(input.length());
         Matcher m = URL_PATTERN.matcher(input);
         while (m.find()) {

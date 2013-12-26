@@ -34,11 +34,7 @@ public class OutgoingRequestContext extends HttpClientContext {
         }
     }
 
-    public static OutgoingRequestContext create() {
-        return new OutgoingRequestContext(new HttpClientContext());
-    }
-
-    public OutgoingRequestContext(final HttpContext context) {
+    private OutgoingRequestContext(final HttpContext context) {
         super(context);
     }
 

@@ -17,7 +17,6 @@ package org.esigate.http;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 
@@ -77,23 +76,6 @@ public final class HttpResponseUtils {
         Header header = httpResponse.getFirstHeader(headerName);
         if (header != null) {
             return header.getValue();
-        }
-        return null;
-    }
-
-    /**
-     * Returns the charset of the entity of "httpResponse".
-     * 
-     * @param httpResponse
-     * @return charset as string or null if no charset defined.
-     */
-    public static String getContentCharset(HttpResponse httpResponse) {
-        ContentType contentType = ContentType.get(httpResponse.getEntity());
-        if (contentType != null) {
-            Charset charset = contentType.getCharset();
-            if (charset != null) {
-                return charset.name();
-            }
         }
         return null;
     }
@@ -160,7 +142,7 @@ public final class HttpResponseUtils {
      * @since 4.1 - Event EventManager.EVENT_READ_ENTITY is fired when calling this method.
      * 
      * @param httpResponse
-     * @param eventManager 
+     * @param eventManager
      * @return The body as string or the reason phrase if body was empty.
      * @throws HttpErrorPage
      */

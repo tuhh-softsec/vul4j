@@ -33,11 +33,11 @@ class ExceptElement extends BaseElement {
 
     };
 
-    public class ExceptTask implements Future<CharSequence> {
+    private class ExceptTask implements Future<CharSequence> {
         private TryElement parent;
         private Tag tag;
 
-        public ExceptTask(Tag tag, TryElement parent) {
+        private ExceptTask(Tag tag, TryElement parent) {
             this.parent = parent;
             this.tag = tag;
         }

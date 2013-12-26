@@ -40,11 +40,11 @@ class AttemptElement extends BaseElement {
         }
     };
 
-    public static class AttemptTask implements Future<CharSequence> {
+    private static class AttemptTask implements Future<CharSequence> {
         private TryElement parent;
         private Future<CharSequence> buffer;
 
-        public AttemptTask(TryElement parent, Future<CharSequence> buf) {
+        private AttemptTask(TryElement parent, Future<CharSequence> buf) {
             this.parent = parent;
             this.buffer = buf;
         }

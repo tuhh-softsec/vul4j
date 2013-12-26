@@ -51,9 +51,9 @@ class IncludeElement extends BaseElement {
     private static final String PROVIDER_PATTERN = "$(PROVIDER{";
     private static final String LEGACY_PROVIDER_PATTERN = "$PROVIDER({";
 
-    protected static final Logger LOG = LoggerFactory.getLogger(IncludeElement.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IncludeElement.class);
 
-    public static class IncludeTask implements Callable<CharSequence> {
+    private static class IncludeTask implements Callable<CharSequence> {
         private String src;
         private String alt;
         private FutureParserContext ctx;
@@ -64,7 +64,7 @@ class IncludeElement extends BaseElement {
         private Map<String, CharSequence> regexpReplacements;
         private Executor executor;
 
-        public IncludeTask(Tag includeTag, String src, String alt, FutureParserContext ctx, FutureElement current,
+        private IncludeTask(Tag includeTag, String src, String alt, FutureParserContext ctx, FutureElement current,
                 boolean ignoreError, Map<String, CharSequence> fragmentReplacements,
                 Map<String, CharSequence> regexpReplacements, Executor executor) {
             this.src = src;
@@ -132,7 +132,7 @@ class IncludeElement extends BaseElement {
             return result;
         }
 
-        void processPage(String src, Tag tag, FutureParserContext ctx, Appendable out) throws IOException,
+        private void processPage(String src, Tag tag, FutureParserContext ctx, Appendable out) throws IOException,
                 HttpErrorPage {
             String fragment = tag.getAttribute("fragment");
             String xpath = tag.getAttribute("xpath");

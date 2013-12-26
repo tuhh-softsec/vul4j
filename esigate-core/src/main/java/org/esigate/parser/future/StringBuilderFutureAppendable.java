@@ -51,7 +51,7 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
      * @param capacity
      *            Capacity of the builder.
      */
-    public StringBuilderFutureAppendable(int capacity) {
+    private StringBuilderFutureAppendable(int capacity) {
         this.builder = new StringBuilder(capacity);
         this.futureBuilder = new FutureAppendableAdapter(this.builder);
     }

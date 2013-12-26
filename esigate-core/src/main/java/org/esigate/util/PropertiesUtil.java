@@ -41,7 +41,7 @@ public final class PropertiesUtil {
      * @param propertyName
      * @return the values
      */
-    public static Collection<String> getPropertyValueAsList(Properties properties, String propertyName) {
+    private static Collection<String> getPropertyValueAsList(Properties properties, String propertyName) {
         return getPropertyValueAsList(properties, propertyName, null);
     }
 
@@ -82,31 +82,6 @@ public final class PropertiesUtil {
             }
         }
         return result;
-    }
-
-    /**
-     * Populates a list based on 2 properties defining tokens to include and tokens to exclude.
-     * 
-     * @param list
-     * @param properties
-     * @param toAddPropertyName
-     * @param toRemovePropertyName
-     */
-    public static void populate(FilterList list, Properties properties, String toAddPropertyName,
-            String toRemovePropertyName) {
-        Collection<String> toAdd = getPropertyValueAsList(properties, toAddPropertyName);
-        Collection<String> toRemove = getPropertyValueAsList(properties, toRemovePropertyName);
-        if (toAdd.contains("*") && toRemove.contains("*")) {
-            throw new ConfigurationException("cannot use * for " + toAddPropertyName + " and " + toRemovePropertyName
-                    + " at the same time");
-        }
-        if (toRemove.contains("*")) {
-            list.remove(toRemove);
-            list.add(toAdd);
-        } else {
-            list.add(toAdd);
-            list.remove(toRemove);
-        }
     }
 
     /**
