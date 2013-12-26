@@ -161,4 +161,9 @@ class BasicCloseableHttpResponse implements CloseableHttpResponse {
         httpResponse.setParams(params);
     }
 
+    @Override
+    public String toString() {
+        return httpResponse.toString();
+    }
+
 }

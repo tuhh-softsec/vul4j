@@ -214,7 +214,7 @@ public final class HttpResponseUtils {
                 result = event.entityContent;
 
             } catch (IOException e) {
-                throw new HttpErrorPage(IOExceptionHandler.toHttpResponse(e));
+                throw new HttpErrorPage(ExceptionHandler.toHttpResponse(e));
             }
         }
 

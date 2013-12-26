@@ -292,10 +292,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
                     headerManager.copyHeaders(httpRequest, originalRequest, response, result);
                     result.setEntity(response.getEntity());
                 } catch (IOException e) {
-                    int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-                    String statusText = "Error retrieving URL";
-                    LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-                    result = IOExceptionHandler.toHttpResponse(e);
+                    result = ExceptionHandler.toHttpResponse(e);
+                    LOG.warn(httpRequest.getRequestLine() + " -> " + result.getStatusLine().toString());
                 }
                 event.httpResponse = result;
             }

@@ -15,7 +15,6 @@
 
 package org.esigate.http;
 
-import java.io.IOException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
@@ -28,13 +27,13 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 
-public final class IOExceptionHandler {
+public final class ExceptionHandler {
 
-    private IOExceptionHandler() {
+    private ExceptionHandler() {
 
     }
 
-    public static HttpResponse toHttpResponse(IOException exception) {
+    public static HttpResponse toHttpResponse(Exception exception) {
         if (exception instanceof HttpHostConnectException) {
             int statusCode = HttpStatus.SC_BAD_GATEWAY;
             String statusText = "Connection refused";

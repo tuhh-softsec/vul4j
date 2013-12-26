@@ -41,7 +41,7 @@ import org.apache.http.message.BasicStatusLine;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpResponseUtils;
-import org.esigate.http.IOExceptionHandler;
+import org.esigate.http.ExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -364,7 +364,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
             try {
                 flushBuffer();
             } catch (IOException e) {
-                return IOExceptionHandler.toHttpResponse(e);
+                return ExceptionHandler.toHttpResponse(e);
             }
             String result = "";
             if (writer != null) {

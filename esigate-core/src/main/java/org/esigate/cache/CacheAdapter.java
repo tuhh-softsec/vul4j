@@ -34,7 +34,10 @@ import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.http.DateUtils;
+import org.esigate.http.ExceptionHandler;
 import org.esigate.http.OutgoingRequestContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is changes the behavior of the HttpCache by transforming the headers in the requests or response.
@@ -43,6 +46,7 @@ import org.esigate.http.OutgoingRequestContext;
  * 
  */
 public class CacheAdapter {
+    private static final Logger LOG = LoggerFactory.getLogger(CacheAdapter.class);
     private int staleIfError;
     private int staleWhileRevalidate;
     private int ttl;
@@ -60,6 +64,9 @@ public class CacheAdapter {
         ttl = Parameters.TTL.getValueInt(properties);
         xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
         viaHeader = Parameters.VIA_HEADER.getValueBoolean(properties);
+        LOG.info("Initializing cache for provider " + Parameters.REMOTE_URL_BASE.getValueString(properties)
+                + " staleIfError=" + staleIfError + " staleWhileRevalidate=" + staleWhileRevalidate + " ttl=" + ttl
+                + " xCacheHeader=" + xCacheHeader + " viaHeader=" + viaHeader);
     }
 
     public ClientExecChain wrapCachingHttpClient(final ClientExecChain wrapped) {
@@ -124,7 +131,7 @@ public class CacheAdapter {
                 return (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MOVED_PERMANENTLY
                         || statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_NOT_FOUND
                         || statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR
-                        || statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE || statusCode == HttpStatus.SC_NOT_MODIFIED);
+                        || statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE || statusCode == HttpStatus.SC_NOT_MODIFIED || statusCode == HttpStatus.SC_GATEWAY_TIMEOUT);
             }
 
             /**
@@ -135,8 +142,7 @@ public class CacheAdapter {
              */
             @Override
             public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
-                    HttpClientContext httpClientContext, HttpExecutionAware execAware) throws IOException,
-                    HttpException {
+                    HttpClientContext httpClientContext, HttpExecutionAware execAware) {
                 OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
                 // Restore real route
                 HttpRoute realRoute = context.getRealHttpRoute();
@@ -157,7 +163,13 @@ public class CacheAdapter {
 
                 CloseableHttpResponse response = null;
                 if (!fetchEvent.exit) {
-                    response = wrapped.execute(realRoute, request, context, execAware);
+                    try {
+                        response = wrapped.execute(realRoute, request, context, execAware);
+                    } catch (IOException e) {
+                        response = new BasicCloseableHttpResponse(ExceptionHandler.toHttpResponse(e));
+                    } catch (HttpException e) {
+                        response = new BasicCloseableHttpResponse(ExceptionHandler.toHttpResponse(e));
+                    }
                 } else {
                     if (fetchEvent.httpResponse != null) {
                         response = new BasicCloseableHttpResponse(fetchEvent.httpResponse);
