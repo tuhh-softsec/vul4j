@@ -22,9 +22,11 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -285,17 +287,22 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         if (!event.exit) {
             // Proceed to request only if extensions did not inject a response.
             if (event.httpResponse == null) {
-                try {
-                    HttpHost physicalHost = context.getPhysicalHost();
-                    HttpResponse response = httpClient.execute(physicalHost, httpRequest, context);
-                    result = new BasicHttpResponse(response.getStatusLine());
-                    headerManager.copyHeaders(httpRequest, originalRequest, response, result);
-                    result.setEntity(response.getEntity());
-                } catch (IOException e) {
-                    result = ExceptionHandler.toHttpResponse(e);
-                    LOG.warn(httpRequest.getRequestLine() + " -> " + result.getStatusLine().toString());
+                if (httpRequest.containsHeader(HttpHeaders.EXPECT)) {
+                    event.httpResponse = new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_EXPECTATION_FAILED,
+                            "'Expect' request header is not supported");
+                } else {
+                    try {
+                        HttpHost physicalHost = context.getPhysicalHost();
+                        HttpResponse response = httpClient.execute(physicalHost, httpRequest, context);
+                        result = new BasicHttpResponse(response.getStatusLine());
+                        headerManager.copyHeaders(httpRequest, originalRequest, response, result);
+                        result.setEntity(response.getEntity());
+                    } catch (IOException e) {
+                        result = ExceptionHandler.toHttpResponse(e);
+                        LOG.warn(httpRequest.getRequestLine() + " -> " + result.getStatusLine().toString());
+                    }
+                    event.httpResponse = result;
                 }
-                event.httpResponse = result;
             }
             // EVENT post
             eventManager.fire(EventManager.EVENT_FRAGMENT_POST, event);
