@@ -86,7 +86,8 @@ public class HttpServletMediator implements ContainerRequestMediator {
         String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(),
                 request.getRequestURI(), request.getQueryString(), null);
         ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(request.getProtocol(), null);
-        IncomingRequest result = new IncomingRequest(new BasicRequestLine(request.getMethod(), uri, protocolVersion));
+        IncomingRequest result = new IncomingRequest(new BasicRequestLine(request.getMethod(), uri, protocolVersion),
+                this);
         // copy headers
         @SuppressWarnings("rawtypes")
         Enumeration names = request.getHeaderNames();
@@ -117,7 +118,6 @@ public class HttpServletMediator implements ContainerRequestMediator {
             result.setEntity(entity);
         }
 
-        result.setMediator(this);
         this.httpRequest = result;
     }
 

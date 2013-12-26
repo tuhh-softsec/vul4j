@@ -44,7 +44,8 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
     private boolean springSecurity;
     private String springSecurityUrl;
 
-    private String addCasAuthentication(String location, IncomingRequest request) {
+    private void addCasAuthentication(OutgoingRequest outgoingRequest, IncomingRequest request) {
+        String location = outgoingRequest.getRequestLine().getUri();
         String resultLocation = location;
         Principal principal = request.getMediator().getUserPrincipal();
         if (principal != null && principal instanceof AttributePrincipal) {
@@ -59,7 +60,8 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
                     LOG.debug("params: " + params.substring(1));
                 }
                 if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
-                    resultLocation = request.getBaseUrl() + springSecurityUrl + ((params != null) ? params : "");
+                    resultLocation = outgoingRequest.getBaseUrl() + springSecurityUrl
+                            + ((params != null) ? params : "");
                     springRedirectParam = "&spring-security-redirect=" + location;
                     LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
                 }
@@ -69,14 +71,13 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
                     + casProxyTicket);
             if (casProxyTicket != null) {
                 if (resultLocation.indexOf("?") > 0) {
-                    return resultLocation + "&ticket=" + casProxyTicket + springRedirectParam;
+                    resultLocation = resultLocation + "&ticket=" + casProxyTicket + springRedirectParam;
                 } else {
-                    return resultLocation + "?ticket=" + casProxyTicket + springRedirectParam;
+                    resultLocation = resultLocation + "?ticket=" + casProxyTicket + springRedirectParam;
                 }
             }
         }
-
-        return resultLocation;
+        outgoingRequest.setUri(resultLocation);
     }
 
     @Override
@@ -100,8 +101,13 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
     }
 
     @Override
-    public boolean needsNewRequest(HttpResponse httpResponse, IncomingRequest request) {
-        if (request.getParams().getBooleanParameter(SECOND_REQUEST, false)) {
+    public boolean needsNewRequest(HttpResponse httpResponse, OutgoingRequest outgoingRequest,
+            IncomingRequest incomingRequest) {
+        Boolean secondRequest = incomingRequest.getAttribute(SECOND_REQUEST);
+        if (secondRequest == null) {
+            secondRequest = Boolean.FALSE;
+        }
+        if (secondRequest) {
             // Calculating the URL we may have been redirected to, as
             // automatic redirect following is activated
             Header LocationHeader = httpResponse.getFirstHeader("Location");
@@ -112,7 +118,7 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
             if (currentLocation != null && currentLocation.contains(loginUrl)) {
                 // If the user is authenticated we need a second request with
                 // the proxy ticket
-                Principal principal = request.getMediator().getUserPrincipal();
+                Principal principal = incomingRequest.getMediator().getUserPrincipal();
                 if (principal != null && principal instanceof AttributePrincipal) {
                     return true;
                 }
@@ -122,10 +128,14 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
     }
 
     @Override
-    public void preRequest(OutgoingRequest request, IncomingRequest httpRequest) {
-        if (httpRequest.getParams().getBooleanParameter(SECOND_REQUEST, false)) {
-            request.setUri(addCasAuthentication(request.getRequestLine().getUri(), httpRequest));
+    public void preRequest(OutgoingRequest outgoingRequest, IncomingRequest incomingRequest) {
+        Boolean secondRequest = incomingRequest.getAttribute(SECOND_REQUEST);
+        if (secondRequest == null) {
+            secondRequest = Boolean.FALSE;
         }
-        httpRequest.getParams().setBooleanParameter(SECOND_REQUEST, true);
+        if (secondRequest) {
+            addCasAuthentication(outgoingRequest, incomingRequest);
+        }
+        incomingRequest.setAttribute(SECOND_REQUEST, true);
     }
 }

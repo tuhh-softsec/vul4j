@@ -32,8 +32,8 @@ import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.extension.Extension;
-import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.OutgoingRequest;
+import org.esigate.http.OutgoingRequestContext;
 import org.esigate.servlet.impl.ResponseCapturingWrapper;
 import org.esigate.util.UriUtils;
 
@@ -53,8 +53,7 @@ public class ServletExtension implements Extension, IEventListener {
         FetchEvent fetchEvent = (FetchEvent) event;
         if (EventManager.EVENT_FETCH_PRE.equals(id)) {
             String uriString = fetchEvent.httpRequest.getRequestLine().getUri();
-            OutgoingRequest outgoingRequest = fetchEvent.httpContext.getAttribute(
-                    HttpClientRequestExecutor.OUTGOING_REQUEST_KEY, OutgoingRequest.class);
+            OutgoingRequest outgoingRequest = OutgoingRequestContext.adapt(fetchEvent.httpContext).getOutgoingRequest();
             String baseUrl = outgoingRequest.getBaseUrl().toString();
             if (outgoingRequest.getOriginalRequest().isExternal()) {
                 // Non local absolute uri

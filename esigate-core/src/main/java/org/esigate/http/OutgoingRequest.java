@@ -21,7 +21,6 @@ import org.apache.http.ProtocolVersion;
 import org.apache.http.RequestLine;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.Configurable;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicRequestLine;
 import org.esigate.UserContext;
@@ -38,11 +37,11 @@ public class OutgoingRequest extends BasicHttpEntityEnclosingRequest implements 
 
     private RequestLine requestLine;
     private final RequestConfig requestConfig;
-    private final HttpClientContext context;
+    private final OutgoingRequestContext context;
     private final DriverRequest originalRequest;
 
     public OutgoingRequest(String method, String uri, ProtocolVersion version, DriverRequest originalRequest,
-            RequestConfig requestConfig, HttpClientContext context) {
+            RequestConfig requestConfig, OutgoingRequestContext context) {
         super(method, uri, version);
         requestLine = new BasicRequestLine(method, uri, version);
         this.requestConfig = requestConfig;
@@ -74,7 +73,7 @@ public class OutgoingRequest extends BasicHttpEntityEnclosingRequest implements 
         return requestConfig;
     }
 
-    public HttpClientContext getContext() {
+    public OutgoingRequestContext getContext() {
         return context;
     }
 

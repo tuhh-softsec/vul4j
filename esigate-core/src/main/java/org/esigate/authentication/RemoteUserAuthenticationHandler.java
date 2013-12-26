@@ -33,21 +33,22 @@ import org.esigate.http.OutgoingRequest;
 public class RemoteUserAuthenticationHandler extends GenericAuthentificationHandler {
 
     @Override
-    public boolean needsNewRequest(HttpResponse response, IncomingRequest httpRequest) {
+    public boolean needsNewRequest(HttpResponse response, OutgoingRequest outgoingRequest,
+            IncomingRequest incomingRequest) {
         return false;
     }
 
     @Override
-    public void preRequest(OutgoingRequest request, IncomingRequest httpRequest) {
-        UserContext userContext = request.getUserContext();
+    public void preRequest(OutgoingRequest outgoingRequest, IncomingRequest incomingRequest) {
+        UserContext userContext = outgoingRequest.getUserContext();
         String remoteUser = null;
         if (userContext != null && userContext.getUser() != null) {
             remoteUser = userContext.getUser();
         } else {
-            remoteUser = request.getMediator().getRemoteUser();
+            remoteUser = outgoingRequest.getMediator().getRemoteUser();
         }
         if (remoteUser != null) {
-            request.addHeader("X_REMOTE_USER", remoteUser);
+            outgoingRequest.addHeader("X_REMOTE_USER", remoteUser);
         }
     }
 

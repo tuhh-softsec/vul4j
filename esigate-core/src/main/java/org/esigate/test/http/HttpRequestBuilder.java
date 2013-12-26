@@ -68,7 +68,17 @@ public class HttpRequestBuilder {
         String host = httpHost.getHostName();
         int port = httpHost.getPort();
         RequestLine requestLine = new BasicRequestLine(this.method, this.uriString, this.protocolVersion);
-        request = new IncomingRequest(requestLine);
+
+        ContainerRequestMediator requestMediator = null;
+        if (this.mockMediator) {
+            requestMediator = new MockMediator(this.uriString);
+        }
+
+        if (this.mediator != null) {
+            requestMediator = this.mediator;
+        }
+
+        request = new IncomingRequest(requestLine, requestMediator);
         if (port == -1 || port == 80 && "http".equals(scheme) || port == 443 && "https".equals(scheme)) {
             request.setHeader("Host", host);
         } else {
@@ -81,15 +91,6 @@ public class HttpRequestBuilder {
 
         if (this.entity != null) {
             request.setEntity(this.entity);
-        }
-
-        ContainerRequestMediator requestMediator = null;
-        if (this.mockMediator) {
-            requestMediator = new MockMediator(this.uriString);
-        }
-
-        if (this.mediator != null) {
-            requestMediator = this.mediator;
         }
 
         // Add cookies
@@ -110,7 +111,6 @@ public class HttpRequestBuilder {
             for (Cookie c : this.cookies) {
                 requestMediator.addCookie(c);
             }
-            request.setMediator(requestMediator);
         }
 
         return request;

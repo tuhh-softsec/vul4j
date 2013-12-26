@@ -92,7 +92,8 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
     }
 
     @Override
-    public boolean needsNewRequest(HttpResponse response, IncomingRequest httpRequest) {
+    public boolean needsNewRequest(HttpResponse response, OutgoingRequest outgoingRequest,
+            IncomingRequest incomingRequest) {
         return false;
     }
 

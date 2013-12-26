@@ -60,7 +60,7 @@ public class MockMediator implements ContainerRequestMediator {
         String host = httpHost.getHostName();
         int port = httpHost.getPort();
         RequestLine requestLine = new BasicRequestLine("GET", uriString, HttpVersion.HTTP_1_1);
-        this.httpRequest = new IncomingRequest(requestLine);
+        this.httpRequest = new IncomingRequest(requestLine, this);
 
         // Remove default ports
         if (port == -1 || (port == 80 && "http".equals(scheme)) || (port == 443 && "https".equals(scheme))) {
@@ -68,8 +68,6 @@ public class MockMediator implements ContainerRequestMediator {
         } else {
             this.httpRequest.setHeader("Host", host + ":" + port);
         }
-
-        httpRequest.setMediator(this);
     }
 
     public MockMediator() {
@@ -108,8 +106,7 @@ public class MockMediator implements ContainerRequestMediator {
         this.httpResponse.setHeaders(response.getAllHeaders());
         HttpEntity entity = response.getEntity();
         if (entity != null) {
-            ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity),
-                    ContentType.get(entity));
+            ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity), ContentType.get(entity));
             if (entity.getContentEncoding() != null) {
                 copiedEntity.setContentEncoding(entity.getContentEncoding());
             }

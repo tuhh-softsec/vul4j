@@ -33,7 +33,6 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.message.BasicHttpResponse;
@@ -67,10 +66,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             "GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
     private static final Set<String> ENTITY_METHODS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
             "POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
-    public static final String PROXY = "PROXY";
-    public static final String OUTGOING_REQUEST_KEY = "OUTGOING_REQUEST";
-    public static final String TARGET_HOST = "TARGET_HOST";
-    public static final String VIRTUAL_HOST = "VIRTUAL_HOST";
     private boolean preserveHost;
     private CookieManager cookieManager;
     private HttpClient httpClient;
@@ -208,14 +203,14 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
     public OutgoingRequest createHttpRequest(DriverRequest originalRequest, String uri, boolean proxy) {
         // Extract the host in the URI. This is the host we have to send the
         // request to physically.
-        HttpHost targetHost = UriUtils.extractHost(uri);
+        HttpHost physicalHost = UriUtils.extractHost(uri);
 
         // Preserve host if required
         HttpHost virtualHost;
         if (preserveHost) {
             virtualHost = HttpRequestHelper.getHost(originalRequest);
         } else {
-            virtualHost = targetHost;
+            virtualHost = physicalHost;
         }
 
         RequestConfig.Builder builder = RequestConfig.custom();
@@ -230,7 +225,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         builder.setRedirectsEnabled(!proxy);
         RequestConfig config = builder.build();
 
-        HttpClientContext context = new HttpClientContext();
+        OutgoingRequestContext context = new OutgoingRequestContext();
 
         // Rewrite the uri with the virtualHost
         uri = UriUtils.rewriteURI(uri, virtualHost);
@@ -252,9 +247,9 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         // depending on the browser
         headerManager.copyHeaders(originalRequest, httpRequest);
 
-        context.setAttribute(TARGET_HOST, targetHost);
-        context.setAttribute(OUTGOING_REQUEST_KEY, httpRequest);
-        context.setAttribute(PROXY, proxy);
+        context.setPhysicalHost(physicalHost);
+        context.setOutgoingRequest(httpRequest);
+        context.setProxy(proxy);
 
         return httpRequest;
     }
@@ -270,12 +265,12 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
      */
     @Override
     public HttpResponse execute(OutgoingRequest httpRequest) {
-        HttpClientContext httpContext = httpRequest.getContext();
+        OutgoingRequestContext context = httpRequest.getContext();
         IncomingRequest originalRequest = httpRequest.getOriginalRequest().getOriginalRequest();
 
         if (cookieManager != null) {
             CookieStore cookieStore = new RequestCookieStore(cookieManager, httpRequest.getOriginalRequest());
-            httpContext.setCookieStore(cookieStore);
+            context.setCookieStore(cookieStore);
         }
         HttpResponse result;
         // Create request event
@@ -283,7 +278,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         event.httpRequest = httpRequest;
         event.originalRequest = originalRequest;
         event.httpResponse = null;
-        event.httpContext = httpContext;
+        event.httpContext = context;
         // EVENT pre
         eventManager.fire(EventManager.EVENT_FRAGMENT_PRE, event);
         // If exit : stop immediately.
@@ -291,8 +286,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             // Proceed to request only if extensions did not inject a response.
             if (event.httpResponse == null) {
                 try {
-                    HttpHost host = (HttpHost) httpContext.getAttribute(TARGET_HOST);
-                    HttpResponse response = httpClient.execute(host, httpRequest, httpContext);
+                    HttpHost physicalHost = context.getPhysicalHost();
+                    HttpResponse response = httpClient.execute(physicalHost, httpRequest, context);
                     result = new BasicHttpResponse(response.getStatusLine());
                     headerManager.copyHeaders(httpRequest, originalRequest, response, result);
                     result.setEntity(response.getEntity());

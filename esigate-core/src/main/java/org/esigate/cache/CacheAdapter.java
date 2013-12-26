@@ -34,7 +34,7 @@ import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.http.DateUtils;
-import org.esigate.http.HttpClientRequestExecutor;
+import org.esigate.http.OutgoingRequestContext;
 
 /**
  * This class is changes the behavior of the HttpCache by transforming the headers in the requests or response.
@@ -43,7 +43,6 @@ import org.esigate.http.HttpClientRequestExecutor;
  * 
  */
 public class CacheAdapter {
-    protected static final String HTTP_ROUTE = "HTTP_ROUTE";
     private int staleIfError;
     private int staleWhileRevalidate;
     private int ttl;
@@ -73,13 +72,14 @@ public class CacheAdapter {
              */
             @Override
             public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
-                    HttpClientContext context, HttpExecutionAware execAware) throws IOException, HttpException {
-
+                    HttpClientContext httpClientContext, HttpExecutionAware execAware) throws IOException,
+                    HttpException {
+                OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
                 // Switch route for the cache to generate the right cache key
                 HttpHost virtualHost = context.getTargetHost();
                 HttpRoute virtualRoute = new HttpRoute(virtualHost);
                 // Save the real route to restore later
-                context.setAttribute(HTTP_ROUTE, route);
+                context.setRealHttpRoute(route);
 
                 CloseableHttpResponse response = wrapped.execute(virtualRoute, request, context, execAware);
 
@@ -135,9 +135,11 @@ public class CacheAdapter {
              */
             @Override
             public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
-                    HttpClientContext context, HttpExecutionAware execAware) throws IOException, HttpException {
+                    HttpClientContext httpClientContext, HttpExecutionAware execAware) throws IOException,
+                    HttpException {
+                OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
                 // Restore real route
-                HttpRoute realRoute = context.getAttribute(HTTP_ROUTE, HttpRoute.class);
+                HttpRoute realRoute = context.getRealHttpRoute();
 
                 // In case we are bypassing the cache
                 if (realRoute == null) {
@@ -145,10 +147,7 @@ public class CacheAdapter {
                 }
 
                 // Create request event
-                Boolean proxy = (Boolean) context.getAttribute(HttpClientRequestExecutor.PROXY);
-                if (proxy == null) {
-                    proxy = Boolean.FALSE;
-                }
+                boolean proxy = context.isProxy();
                 FetchEvent fetchEvent = new FetchEvent(proxy);
                 fetchEvent.httpResponse = null;
                 fetchEvent.httpContext = context;

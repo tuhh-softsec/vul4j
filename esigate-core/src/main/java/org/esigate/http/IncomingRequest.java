@@ -15,7 +15,6 @@
 
 package org.esigate.http;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,12 +31,11 @@ import org.esigate.api.ContainerRequestMediator;
 public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
     private final Map<String, Object> attributes = new HashMap<String, Object>();
-    private ContainerRequestMediator mediator;
-    private Map<String, String> parameters;
-    private URL baseUrl;
+    private final ContainerRequestMediator mediator;
 
-    public IncomingRequest(RequestLine requestline) {
+    public IncomingRequest(RequestLine requestline, ContainerRequestMediator mediator) {
         super(requestline);
+        this.mediator = mediator;
     }
 
     public <T> T getAttribute(String name) {
@@ -50,22 +48,6 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
     public ContainerRequestMediator getMediator() {
         return mediator;
-    }
-
-    public void setMediator(ContainerRequestMediator mediator) {
-        this.mediator = mediator;
-    }
-
-    public Map<String, String> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(Map<String, String> parameters) {
-        this.parameters = parameters;
-    }
-
-    public URL getBaseUrl() {
-        return baseUrl;
     }
 
 }
