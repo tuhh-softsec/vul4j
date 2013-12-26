@@ -17,7 +17,7 @@ package org.esigate.events.impl;
 
 import java.util.List;
 
-import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Renderer;
 import org.esigate.events.Event;
 import org.esigate.impl.DriverRequest;
@@ -37,5 +37,5 @@ public class RenderEvent extends Event {
     /**
      * The response from backend, including headers.
      */
-    public HttpResponse httpResponse;
+    public CloseableHttpResponse httpResponse;
 }

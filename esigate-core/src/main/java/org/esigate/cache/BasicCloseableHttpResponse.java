@@ -13,7 +13,15 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 public class BasicCloseableHttpResponse implements CloseableHttpResponse {
     private final HttpResponse httpResponse;
 
-    public BasicCloseableHttpResponse(HttpResponse httpResponse) {
+    public static CloseableHttpResponse adapt(HttpResponse response) {
+        if (response instanceof CloseableHttpResponse) {
+            return (CloseableHttpResponse) response;
+        } else {
+            return new BasicCloseableHttpResponse(response);
+        }
+    }
+
+    private BasicCloseableHttpResponse(HttpResponse httpResponse) {
         this.httpResponse = httpResponse;
     }
 

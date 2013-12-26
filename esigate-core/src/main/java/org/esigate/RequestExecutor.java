@@ -17,7 +17,7 @@ package org.esigate;
 
 import java.util.Properties;
 
-import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.events.EventManager;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.OutgoingRequest;
@@ -25,9 +25,9 @@ import org.esigate.impl.DriverRequest;
 
 public interface RequestExecutor {
 
-    HttpResponse createAndExecuteRequest(DriverRequest request, String url, boolean b) throws HttpErrorPage;
+    CloseableHttpResponse createAndExecuteRequest(DriverRequest request, String url, boolean b) throws HttpErrorPage;
 
-    HttpResponse execute(OutgoingRequest httpRequest);
+    CloseableHttpResponse execute(OutgoingRequest httpRequest);
 
     public interface RequestExecutorBuilder {
 

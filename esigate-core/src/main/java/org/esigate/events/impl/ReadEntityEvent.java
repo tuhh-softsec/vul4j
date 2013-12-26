@@ -2,7 +2,7 @@ package org.esigate.events.impl;
 
 import java.nio.charset.Charset;
 
-import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.events.Event;
 
 /**
@@ -15,7 +15,7 @@ public class ReadEntityEvent extends Event {
     /**
      * The response returned by the remote server or by a cache subsystem.
      */
-    public HttpResponse httpResponse;
+    public CloseableHttpResponse httpResponse;
     /**
      * Response mime type.
      */

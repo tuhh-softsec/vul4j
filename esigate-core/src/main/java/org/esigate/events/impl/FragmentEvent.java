@@ -15,11 +15,11 @@
 
 package org.esigate.events.impl;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.events.Event;
 import org.esigate.http.IncomingRequest;
 import org.esigate.http.OutgoingRequest;
+import org.esigate.http.OutgoingRequestContext;
 
 /**
  * Fragment event : when a fragment (a complete or partial page) is required for rendering.
@@ -44,11 +44,11 @@ public class FragmentEvent extends Event {
      * use the given object instead.
      * 
      */
-    public HttpResponse httpResponse;
+    public CloseableHttpResponse httpResponse;
     /**
      * The request context.
      */
-    public HttpClientContext httpContext;
+    public OutgoingRequestContext httpContext;
     /**
      * The new HTTP call details.
      * <p>

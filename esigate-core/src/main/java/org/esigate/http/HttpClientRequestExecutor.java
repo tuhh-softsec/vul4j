@@ -35,6 +35,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.message.BasicHttpResponse;
@@ -43,6 +44,7 @@ import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.RequestExecutor;
+import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.cache.CacheConfigHelper;
 import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
@@ -266,7 +268,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
      * @return HTTP response.
      */
     @Override
-    public HttpResponse execute(OutgoingRequest httpRequest) {
+    public CloseableHttpResponse execute(OutgoingRequest httpRequest) {
         OutgoingRequestContext context = httpRequest.getContext();
         IncomingRequest originalRequest = httpRequest.getOriginalRequest().getOriginalRequest();
 
@@ -288,8 +290,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             // Proceed to request only if extensions did not inject a response.
             if (event.httpResponse == null) {
                 if (httpRequest.containsHeader(HttpHeaders.EXPECT)) {
-                    event.httpResponse = new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_EXPECTATION_FAILED,
-                            "'Expect' request header is not supported");
+                    event.httpResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(HttpVersion.HTTP_1_1,
+                            HttpStatus.SC_EXPECTATION_FAILED, "'Expect' request header is not supported"));
                 } else {
                     try {
                         HttpHost physicalHost = context.getPhysicalHost();
@@ -301,7 +303,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
                         result = ExceptionHandler.toHttpResponse(e);
                         LOG.warn(httpRequest.getRequestLine() + " -> " + result.getStatusLine().toString());
                     }
-                    event.httpResponse = result;
+                    event.httpResponse = BasicCloseableHttpResponse.adapt(result);
                 }
             }
             // EVENT post
@@ -320,10 +322,10 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
      *             if server returned no response or if the response as an error status code.
      */
     @Override
-    public HttpResponse createAndExecuteRequest(DriverRequest originalRequest, String targetUrl, boolean proxy)
+    public CloseableHttpResponse createAndExecuteRequest(DriverRequest originalRequest, String targetUrl, boolean proxy)
             throws HttpErrorPage {
         OutgoingRequest httpRequest = createHttpRequest(originalRequest, targetUrl, proxy);
-        HttpResponse httpResponse = execute(httpRequest);
+        CloseableHttpResponse httpResponse = execute(httpRequest);
         if (httpResponse == null) {
             throw new HttpErrorPage(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Request was cancelled by server",
                     "Request was cancelled by server");

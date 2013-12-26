@@ -24,11 +24,12 @@ import java.util.Properties;
 
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.esigate.RequestExecutor.RequestExecutorBuilder;
+import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.events.impl.RenderEvent;
@@ -148,7 +149,7 @@ public final class Driver {
         String resultingPageUrl = VariablesResolver.replaceAllVariables(pageUrl, driverRequest);
 
         // Retrieve URL
-        HttpResponse response = null;
+        CloseableHttpResponse response = null;
         String currentValue = null;
 
         // Get from cache to prevent multiple request to the same url if
@@ -273,8 +274,8 @@ public final class Driver {
 
             // On error returned by the proxy request, perform rendering on the
             // error page.
-            e.errorPage = new HttpErrorPage(performRendering(relUrl, driverRequest, e.errorPage.getHttpResponse(),
-                    renderers));
+            e.errorPage = new HttpErrorPage(performRendering(relUrl, driverRequest,
+                    BasicCloseableHttpResponse.adapt(e.errorPage.getHttpResponse()), renderers));
 
             // Event post-proxy
             // This must be done before throwing exception to ensure response
@@ -307,8 +308,8 @@ public final class Driver {
      * @throws HttpErrorPage
      * @throws IOException
      */
-    private HttpResponse performRendering(String pageUrl, DriverRequest originalRequest, HttpResponse response,
-            Renderer[] renderers) throws HttpErrorPage, IOException {
+    private CloseableHttpResponse performRendering(String pageUrl, DriverRequest originalRequest,
+            CloseableHttpResponse response, Renderer[] renderers) throws HttpErrorPage, IOException {
 
         if (!contentTypeHelper.isTextContentType(response)) {
             LOG.debug("'{}' is binary on no transformation to apply: was forwarded without modification.", pageUrl);
@@ -325,7 +326,8 @@ public final class Driver {
 
         // Generate the new response.
         HttpEntity transformedHttpEntity = new StringEntity(currentValue, ContentType.get(response.getEntity()));
-        HttpResponse transformedResponse = new BasicHttpResponse(response.getStatusLine());
+        CloseableHttpResponse transformedResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(response
+                .getStatusLine()));
         transformedResponse.setHeaders(response.getAllHeaders());
         transformedResponse.setEntity(transformedHttpEntity);
         return transformedResponse;
@@ -349,8 +351,8 @@ public final class Driver {
      * @throws HttpErrorPage
      * @throws IOException
      */
-    private String performRendering(String pageUrl, DriverRequest originalRequest, HttpResponse response, String body,
-            Renderer[] renderers) throws IOException, HttpErrorPage {
+    private String performRendering(String pageUrl, DriverRequest originalRequest, CloseableHttpResponse response,
+            String body, Renderer[] renderers) throws IOException, HttpErrorPage {
         // Start rendering
         RenderEvent renderEvent = new RenderEvent();
         renderEvent.originalRequest = originalRequest;

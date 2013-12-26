@@ -91,8 +91,7 @@ public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
                     HttpClientContext httpClientContext, HttpExecutionAware execAware) {
                 OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
                 // Create request event
-                boolean proxy = context.isProxy();
-                FetchEvent fetchEvent = new FetchEvent(proxy);
+                FetchEvent fetchEvent = new FetchEvent();
                 fetchEvent.httpResponse = null;
                 fetchEvent.httpContext = context;
                 fetchEvent.httpRequest = request;
@@ -104,16 +103,16 @@ public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
                     try {
                         response = wrapped.execute(route, request, context, execAware);
                     } catch (IOException e) {
-                        response = new BasicCloseableHttpResponse(ExceptionHandler.toHttpResponse(e));
+                        response = BasicCloseableHttpResponse.adapt(ExceptionHandler.toHttpResponse(e));
                     } catch (HttpException e) {
-                        response = new BasicCloseableHttpResponse(ExceptionHandler.toHttpResponse(e));
+                        response = BasicCloseableHttpResponse.adapt(ExceptionHandler.toHttpResponse(e));
                     }
                 } else {
                     if (fetchEvent.httpResponse != null) {
-                        response = new BasicCloseableHttpResponse(fetchEvent.httpResponse);
+                        response = fetchEvent.httpResponse;
                     } else {
                         // Provide an error page in order to avoid a NullPointerException
-                        response = new BasicCloseableHttpResponse(new BasicHttpResponse(HttpVersion.HTTP_1_1,
+                        response = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(HttpVersion.HTTP_1_1,
                                 HttpStatus.SC_INTERNAL_SERVER_ERROR,
                                 "An extension stopped the processing of the request without providing a response"));
                     }

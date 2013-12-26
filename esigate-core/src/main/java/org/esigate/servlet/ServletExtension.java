@@ -26,6 +26,7 @@ import org.apache.http.HttpStatus;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.api.ContainerRequestMediator;
+import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -78,7 +79,7 @@ public class ServletExtension implements Extension, IEventListener {
                     ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
                             httpServletMediator.getResponse(), driver.getContentTypeHelper());
                     try {
-                        if (fetchEvent.isProxy()) {
+                        if (fetchEvent.httpContext.isProxy()) {
                             if (context == null) {
                                 httpServletMediator.getFilterChain().doFilter(httpServletMediator.getRequest(),
                                         wrappedResponse);
@@ -121,7 +122,7 @@ public class ServletExtension implements Extension, IEventListener {
                         result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, e.getMessage(), e).getHttpResponse();
                     }
                 }
-                fetchEvent.httpResponse = result;
+                fetchEvent.httpResponse = BasicCloseableHttpResponse.adapt(result);
                 // Stop execution
                 fetchEvent.exit = true;
             }

@@ -21,6 +21,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
+import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -39,8 +40,7 @@ import org.esigate.http.OutgoingRequest;
  * The following events are mapped on init :
  * <uL>
  * <li> {@link EventManager#EVENT_PROXY_PRE} is mapped to {@link #beforeProxy(HttpRequest)}</li>
- * <li>{@link EventManager#EVENT_FRAGMENT_PRE} is mapped to
- * {@link #preRequest(OutgoingRequest, IncomingRequest)}</li>
+ * <li>{@link EventManager#EVENT_FRAGMENT_PRE} is mapped to {@link #preRequest(OutgoingRequest, IncomingRequest)}</li>
  * <li> {@link EventManager#EVENT_FRAGMENT_POST} is mapped to
  * {@link #needsNewRequest(HttpResponse, OutgoingRequest, IncomingRequest)}</li>
  * </ul>
@@ -122,7 +122,8 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 
             while (needsNewRequest(e.httpResponse, e.httpRequest, e.originalRequest)) {
                 EntityUtils.consumeQuietly(e.httpResponse.getEntity());
-                e.httpResponse = this.driver.getRequestExecutor().execute(e.httpRequest);
+                e.httpResponse = BasicCloseableHttpResponse.adapt(this.driver.getRequestExecutor().execute(
+                        e.httpRequest));
             }
         } else if (EventManager.EVENT_PROXY_PRE.equals(id)) {
             ProxyEvent e = (ProxyEvent) event;

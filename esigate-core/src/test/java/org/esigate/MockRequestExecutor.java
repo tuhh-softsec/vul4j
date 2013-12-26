@@ -19,8 +19,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.events.EventManager;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.OutgoingRequest;
@@ -93,7 +94,7 @@ public final class MockRequestExecutor implements RequestExecutor {
         }
     }
 
-    protected HttpResponse getResource(String url) throws HttpErrorPage {
+    protected CloseableHttpResponse getResource(String url) throws HttpErrorPage {
         String result = resources.get(url);
 
         if (result == null) {
@@ -107,16 +108,17 @@ public final class MockRequestExecutor implements RequestExecutor {
     }
 
     @Override
-    public HttpResponse createAndExecuteRequest(DriverRequest request, String url, boolean b) throws HttpErrorPage {
+    public CloseableHttpResponse createAndExecuteRequest(DriverRequest request, String url, boolean b)
+            throws HttpErrorPage {
         return getResource(url);
     }
 
     @Override
-    public HttpResponse execute(OutgoingRequest httpRequest) {
+    public CloseableHttpResponse execute(OutgoingRequest httpRequest) {
         try {
             return getResource(httpRequest.getRequestLine().getUri());
         } catch (HttpErrorPage e) {
-            return e.getHttpResponse();
+            return BasicCloseableHttpResponse.adapt(e.getHttpResponse());
         }
     }
 
