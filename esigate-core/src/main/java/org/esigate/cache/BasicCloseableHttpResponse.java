@@ -10,7 +10,7 @@ import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
-class BasicCloseableHttpResponse implements CloseableHttpResponse {
+public class BasicCloseableHttpResponse implements CloseableHttpResponse {
     private final HttpResponse httpResponse;
 
     public BasicCloseableHttpResponse(HttpResponse httpResponse) {

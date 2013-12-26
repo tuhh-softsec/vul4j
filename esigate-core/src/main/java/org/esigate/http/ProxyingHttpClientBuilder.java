@@ -15,12 +15,24 @@
 
 package org.esigate.http;
 
+import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.http.HttpException;
+import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpExecutionAware;
+import org.apache.http.client.methods.HttpRequestWrapper;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
 import org.apache.http.impl.execchain.ClientExecChain;
+import org.apache.http.message.BasicHttpResponse;
+import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.cache.CacheAdapter;
 import org.esigate.events.EventManager;
+import org.esigate.events.impl.FetchEvent;
 
 public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
     private Properties properties;
@@ -30,14 +42,14 @@ public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
     @Override
     protected ClientExecChain decorateMainExec(ClientExecChain mainExec) {
         ClientExecChain result = mainExec;
-        CacheAdapter cacheAdapter = new CacheAdapter();
-        cacheAdapter.init(properties);
-        result = cacheAdapter.wrapBackendHttpClient(eventManager, result);
-        if (!useCache) {
-            return result;
+        result = addFetchEvent(result);
+        if (useCache) {
+            CacheAdapter cacheAdapter = new CacheAdapter();
+            cacheAdapter.init(properties);
+            result = cacheAdapter.wrapBackendHttpClient(result);
+            result = super.decorateMainExec(result);
+            result = cacheAdapter.wrapCachingHttpClient(result);
         }
-        result = super.decorateMainExec(result);
-        result = cacheAdapter.wrapCachingHttpClient(result);
         return result;
     }
 
@@ -65,4 +77,54 @@ public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
         return useCache;
     }
 
+    /**
+     * Decorate with fetch event managements
+     * 
+     * @param wrapped
+     * @return the decorated ClientExecChain
+     */
+    private ClientExecChain addFetchEvent(final ClientExecChain wrapped) {
+        return new ClientExecChain() {
+
+            @Override
+            public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
+                    HttpClientContext httpClientContext, HttpExecutionAware execAware) {
+                OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
+                // Create request event
+                boolean proxy = context.isProxy();
+                FetchEvent fetchEvent = new FetchEvent(proxy);
+                fetchEvent.httpResponse = null;
+                fetchEvent.httpContext = context;
+                fetchEvent.httpRequest = request;
+
+                eventManager.fire(EventManager.EVENT_FETCH_PRE, fetchEvent);
+
+                CloseableHttpResponse response;
+                if (!fetchEvent.exit) {
+                    try {
+                        response = wrapped.execute(route, request, context, execAware);
+                    } catch (IOException e) {
+                        response = new BasicCloseableHttpResponse(ExceptionHandler.toHttpResponse(e));
+                    } catch (HttpException e) {
+                        response = new BasicCloseableHttpResponse(ExceptionHandler.toHttpResponse(e));
+                    }
+                } else {
+                    if (fetchEvent.httpResponse != null) {
+                        response = new BasicCloseableHttpResponse(fetchEvent.httpResponse);
+                    } else {
+                        // Provide an error page in order to avoid a NullPointerException
+                        response = new BasicCloseableHttpResponse(new BasicHttpResponse(HttpVersion.HTTP_1_1,
+                                HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                                "An extension stopped the processing of the request without providing a response"));
+                    }
+                }
+
+                // Update the event and fire post event
+                fetchEvent.httpResponse = response;
+                eventManager.fire(EventManager.EVENT_FETCH_POST, fetchEvent);
+                return response;
+            }
+        };
+
+    }
 }

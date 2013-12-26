@@ -31,10 +31,7 @@ import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.execchain.ClientExecChain;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
-import org.esigate.events.EventManager;
-import org.esigate.events.impl.FetchEvent;
 import org.esigate.http.DateUtils;
-import org.esigate.http.ExceptionHandler;
 import org.esigate.http.OutgoingRequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +121,7 @@ public class CacheAdapter {
         };
     }
 
-    public ClientExecChain wrapBackendHttpClient(final EventManager eventManager, final ClientExecChain wrapped) {
+    public ClientExecChain wrapBackendHttpClient(final ClientExecChain wrapped) {
         return new ClientExecChain() {
 
             private boolean isCacheableStatus(int statusCode) {
@@ -139,10 +136,14 @@ public class CacheAdapter {
              * certain duration in the configuration. This is done even for non 200 return codes! This is a very
              * aggressive but efficient caching policy. Adds "stale-while-revalidate" and "stale-if-error" cache-control
              * directives depending on the configuration.
+             * 
+             * @throws HttpException
+             * @throws IOException
              */
             @Override
             public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request,
-                    HttpClientContext httpClientContext, HttpExecutionAware execAware) {
+                    HttpClientContext httpClientContext, HttpExecutionAware execAware) throws IOException,
+                    HttpException {
                 OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
                 // Restore real route
                 HttpRoute realRoute = context.getRealHttpRoute();
@@ -152,36 +153,7 @@ public class CacheAdapter {
                     realRoute = route;
                 }
 
-                // Create request event
-                boolean proxy = context.isProxy();
-                FetchEvent fetchEvent = new FetchEvent(proxy);
-                fetchEvent.httpResponse = null;
-                fetchEvent.httpContext = context;
-                fetchEvent.httpRequest = request;
-
-                eventManager.fire(EventManager.EVENT_FETCH_PRE, fetchEvent);
-
-                CloseableHttpResponse response = null;
-                if (!fetchEvent.exit) {
-                    try {
-                        response = wrapped.execute(realRoute, request, context, execAware);
-                    } catch (IOException e) {
-                        response = new BasicCloseableHttpResponse(ExceptionHandler.toHttpResponse(e));
-                    } catch (HttpException e) {
-                        response = new BasicCloseableHttpResponse(ExceptionHandler.toHttpResponse(e));
-                    }
-                } else {
-                    if (fetchEvent.httpResponse != null) {
-                        response = new BasicCloseableHttpResponse(fetchEvent.httpResponse);
-                    }
-                }
-
-                // TODO: returning null may be hard. However, this only happens if
-                // an extension cancels the request. Need to think on the usecase.
-
-                // Update the event and fire post event
-                fetchEvent.httpResponse = response;
-                eventManager.fire(EventManager.EVENT_FETCH_POST, fetchEvent);
+                CloseableHttpResponse response = wrapped.execute(realRoute, request, context, execAware);
 
                 String method = request.getRequestLine().getMethod();
                 int statusCode = response.getStatusLine().getStatusCode();
