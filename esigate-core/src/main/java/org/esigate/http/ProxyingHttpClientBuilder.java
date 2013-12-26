@@ -20,7 +20,6 @@ import java.util.Properties;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpExecutionAware;
 import org.apache.http.client.methods.HttpRequestWrapper;
@@ -28,8 +27,7 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
 import org.apache.http.impl.execchain.ClientExecChain;
-import org.apache.http.message.BasicHttpResponse;
-import org.esigate.cache.BasicCloseableHttpResponse;
+import org.esigate.HttpErrorPage;
 import org.esigate.cache.CacheAdapter;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
@@ -98,30 +96,28 @@ public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
 
                 eventManager.fire(EventManager.EVENT_FETCH_PRE, fetchEvent);
 
-                CloseableHttpResponse response;
                 if (!fetchEvent.exit) {
                     try {
-                        response = wrapped.execute(route, request, context, execAware);
+                        fetchEvent.httpResponse = wrapped.execute(route, request, context, execAware);
                     } catch (IOException e) {
-                        response = BasicCloseableHttpResponse.adapt(ExceptionHandler.toHttpResponse(e));
+                        fetchEvent.httpResponse = HttpErrorPage.generateHttpResponse(e);
                     } catch (HttpException e) {
-                        response = BasicCloseableHttpResponse.adapt(ExceptionHandler.toHttpResponse(e));
+                        fetchEvent.httpResponse = HttpErrorPage.generateHttpResponse(e);
                     }
                 } else {
                     if (fetchEvent.httpResponse != null) {
-                        response = fetchEvent.httpResponse;
+                        fetchEvent.httpResponse = fetchEvent.httpResponse;
                     } else {
                         // Provide an error page in order to avoid a NullPointerException
-                        response = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(HttpVersion.HTTP_1_1,
+                        fetchEvent.httpResponse = HttpErrorPage.generateHttpResponse(
                                 HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                                "An extension stopped the processing of the request without providing a response"));
+                                "An extension stopped the processing of the request without providing a response");
                     }
                 }
 
                 // Update the event and fire post event
-                fetchEvent.httpResponse = response;
                 eventManager.fire(EventManager.EVENT_FETCH_POST, fetchEvent);
-                return response;
+                return fetchEvent.httpResponse;
             }
         };
 

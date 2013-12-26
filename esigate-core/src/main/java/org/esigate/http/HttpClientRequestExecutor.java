@@ -26,7 +26,6 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -44,7 +43,6 @@ import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.RequestExecutor;
-import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.cache.CacheConfigHelper;
 import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
@@ -290,8 +288,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             // Proceed to request only if extensions did not inject a response.
             if (event.httpResponse == null) {
                 if (httpRequest.containsHeader(HttpHeaders.EXPECT)) {
-                    event.httpResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(HttpVersion.HTTP_1_1,
-                            HttpStatus.SC_EXPECTATION_FAILED, "'Expect' request header is not supported"));
+                    event.httpResponse = HttpErrorPage.generateHttpResponse(HttpStatus.SC_EXPECTATION_FAILED,
+                            "'Expect' request header is not supported");
                 } else {
                     try {
                         HttpHost physicalHost = context.getPhysicalHost();
@@ -300,7 +298,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
                         headerManager.copyHeaders(httpRequest, originalRequest, response, result);
                         result.setEntity(response.getEntity());
                     } catch (IOException e) {
-                        result = ExceptionHandler.toHttpResponse(e);
+                        result = HttpErrorPage.generateHttpResponse(e);
                         LOG.warn(httpRequest.getRequestLine() + " -> " + result.getStatusLine().toString());
                     }
                     event.httpResponse = BasicCloseableHttpResponse.adapt(result);

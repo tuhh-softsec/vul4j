@@ -26,7 +26,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
-import org.esigate.cache.BasicCloseableHttpResponse;
+import org.esigate.http.BasicCloseableHttpResponse;
 
 /**
  * Fluent-style builder for HttpResponse.

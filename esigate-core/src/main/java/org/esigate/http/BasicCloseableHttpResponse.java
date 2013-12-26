@@ -1,4 +1,4 @@
-package org.esigate.cache;
+package org.esigate.http;
 
 import java.util.Locale;
 

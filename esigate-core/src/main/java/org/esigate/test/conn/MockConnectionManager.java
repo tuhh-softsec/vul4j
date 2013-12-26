@@ -24,13 +24,11 @@ import org.apache.http.HttpConnectionMetrics;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.ProtocolVersion;
 import org.apache.http.conn.ConnectionRequest;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HttpContext;
+import org.esigate.HttpErrorPage;
 
 public class MockConnectionManager implements HttpClientConnectionManager {
     private final AtomicBoolean open = new AtomicBoolean(false);
@@ -188,8 +186,7 @@ public class MockConnectionManager implements HttpClientConnectionManager {
         try {
             return this.responseHandler.execute(request);
         } catch (IOException e) {
-            return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                    e.getMessage());
+            return HttpErrorPage.generateHttpResponse(e);
         }
     }
 

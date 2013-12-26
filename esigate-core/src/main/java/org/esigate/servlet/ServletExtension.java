@@ -21,12 +21,11 @@ import java.util.Properties;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.api.ContainerRequestMediator;
-import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -69,11 +68,11 @@ public class ServletExtension implements Extension, IEventListener {
                     relUrl = "/" + relUrl;
                 }
                 ContainerRequestMediator mediator = outgoingRequest.getMediator();
-                HttpResponse result;
+                CloseableHttpResponse result;
                 if (!(mediator instanceof HttpServletMediator)) {
                     String message = ServletExtension.class.getName()
                             + " can be used only insite a java servlet engine";
-                    result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, message, message).getHttpResponse();
+                    result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                 } else {
                     HttpServletMediator httpServletMediator = (HttpServletMediator) mediator;
                     ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
@@ -89,8 +88,7 @@ public class ServletExtension implements Extension, IEventListener {
                                         context);
                                 if (crossContext == null) {
                                     String message = "Context " + context + " does not exist or cross context disabled";
-                                    result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, message, message)
-                                            .getHttpResponse();
+                                    result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                                 } else {
                                     crossContext.getRequestDispatcher(relUrl).forward(httpServletMediator.getRequest(),
                                             wrappedResponse);
@@ -107,8 +105,7 @@ public class ServletExtension implements Extension, IEventListener {
                                         context);
                                 if (crossContext == null) {
                                     String message = "Context " + context + " does not exist or cross context disabled";
-                                    result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, message, message)
-                                            .getHttpResponse();
+                                    result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                                 } else {
                                     crossContext.getRequestDispatcher(relUrl).include(httpServletMediator.getRequest(),
                                             wrappedResponse);
@@ -117,12 +114,12 @@ public class ServletExtension implements Extension, IEventListener {
                             }
                         }
                     } catch (IOException e) {
-                        result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, e.getMessage(), e).getHttpResponse();
+                        result = HttpErrorPage.generateHttpResponse(e);
                     } catch (ServletException e) {
-                        result = new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, e.getMessage(), e).getHttpResponse();
+                        result = HttpErrorPage.generateHttpResponse(e);
                     }
                 }
-                fetchEvent.httpResponse = BasicCloseableHttpResponse.adapt(result);
+                fetchEvent.httpResponse = result;
                 // Stop execution
                 fetchEvent.exit = true;
             }

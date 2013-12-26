@@ -31,17 +31,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
+import org.esigate.HttpErrorPage;
+import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpResponseUtils;
-import org.esigate.http.ExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +54,8 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     private OutputStream outputStream;
     private StringWriter writer;
     private HttpServletResponse response;
-    private HttpResponse httpClientResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
-            HttpStatus.SC_OK, "OK"));
+    private CloseableHttpResponse httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(
+            new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
     private String characterEncoding;
     private int bufferSize;
     private byte[] buffer;
@@ -257,7 +258,8 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
         if (isCommitted()) {
             throw new IllegalStateException("Response is already committed");
         }
-        httpClientResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "Ok"));
+        httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(
+                HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
     }
 
     @Override
@@ -359,12 +361,12 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
         committed = true;
     }
 
-    public HttpResponse getResponse() {
+    public CloseableHttpResponse getResponse() {
         if (hasToCaptureOutput()) {
             try {
                 flushBuffer();
             } catch (IOException e) {
-                return ExceptionHandler.toHttpResponse(e);
+                return HttpErrorPage.generateHttpResponse(e);
             }
             String result = "";
             if (writer != null) {

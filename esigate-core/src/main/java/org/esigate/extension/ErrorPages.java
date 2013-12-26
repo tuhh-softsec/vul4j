@@ -21,7 +21,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.esigate.Driver;
-import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -65,8 +64,8 @@ public class ErrorPages implements Extension, IEventListener {
 
             if ("esigate".equals(e.httpContext.getTargetHost().getHostName())) {
                 if ("http://esigate/no-mapping/".equals(e.httpRequest.getRequestLine().getUri())) {
-                    e.httpResponse = BasicCloseableHttpResponse.adapt(new HttpResponseBuilder()
-                            .status(HttpStatus.SC_NOT_FOUND).reason("No mapping defined").entity(NO_MAPPING).build());
+                    e.httpResponse = new HttpResponseBuilder().status(HttpStatus.SC_NOT_FOUND)
+                            .reason("No mapping defined").entity(NO_MAPPING).build();
                     return false;
                 }
             }

@@ -21,7 +21,6 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
-import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -122,8 +121,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 
             while (needsNewRequest(e.httpResponse, e.httpRequest, e.originalRequest)) {
                 EntityUtils.consumeQuietly(e.httpResponse.getEntity());
-                e.httpResponse = BasicCloseableHttpResponse.adapt(this.driver.getRequestExecutor().execute(
-                        e.httpRequest));
+                e.httpResponse = this.driver.getRequestExecutor().execute(e.httpRequest);
             }
         } else if (EventManager.EVENT_PROXY_PRE.equals(id)) {
             ProxyEvent e = (ProxyEvent) event;

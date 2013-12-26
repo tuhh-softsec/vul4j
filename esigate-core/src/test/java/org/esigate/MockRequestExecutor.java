@@ -21,7 +21,6 @@ import java.util.Properties;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.events.EventManager;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.OutgoingRequest;
@@ -118,7 +117,7 @@ public final class MockRequestExecutor implements RequestExecutor {
         try {
             return getResource(httpRequest.getRequestLine().getUri());
         } catch (HttpErrorPage e) {
-            return BasicCloseableHttpResponse.adapt(e.getHttpResponse());
+            return e.getHttpResponse();
         }
     }
 

@@ -29,11 +29,11 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.esigate.RequestExecutor.RequestExecutorBuilder;
-import org.esigate.cache.BasicCloseableHttpResponse;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.events.impl.RenderEvent;
 import org.esigate.extension.ExtensionFactory;
+import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.HttpResponseUtils;
@@ -274,8 +274,8 @@ public final class Driver {
 
             // On error returned by the proxy request, perform rendering on the
             // error page.
-            e.errorPage = new HttpErrorPage(performRendering(relUrl, driverRequest,
-                    BasicCloseableHttpResponse.adapt(e.errorPage.getHttpResponse()), renderers));
+            e.errorPage = new HttpErrorPage(performRendering(relUrl, driverRequest, e.errorPage.getHttpResponse(),
+                    renderers));
 
             // Event post-proxy
             // This must be done before throwing exception to ensure response
