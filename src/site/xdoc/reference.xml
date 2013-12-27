@@ -2101,11 +2101,6 @@ discardCookies=*
 				<p>If you plan to migrate an application developped using the taglib
 				please refer to the <a href="upgrade.html">upgrade documentation</a>.</p>
 			</subsection>
-			<subsection name="Reverse proxy Servlet">
-				<p>We provide also a reverse proxy servlet that can be used when using complex
-				url mappings a little bit like Apache mod_proxy.</p>
-				<p>See the <a href="proxy.html">documentation of the reverse proxy</a></p>
-			</subsection>
 			<subsection name="Html comments-based syntax">
 				<p>In addition to ESI language, ESIGate also supports a syntax based on html
 				comments though the functionalities are more limited</p>
