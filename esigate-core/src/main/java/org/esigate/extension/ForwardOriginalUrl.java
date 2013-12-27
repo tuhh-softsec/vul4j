@@ -35,7 +35,7 @@ public class ForwardOriginalUrl implements Extension, IEventListener {
         FragmentEvent fe = (FragmentEvent) event;
 
         // Add header
-        fe.httpRequest.addHeader("X-Esigate-Request", fe.originalRequest.getRequestLine().getUri());
+        fe.getHttpRequest().addHeader("X-Esigate-Request", fe.getOriginalRequest().getRequestLine().getUri());
 
         // Continue processing.
         return true;

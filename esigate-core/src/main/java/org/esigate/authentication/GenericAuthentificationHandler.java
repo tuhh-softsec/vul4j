@@ -115,17 +115,17 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 
         if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
             FragmentEvent e = (FragmentEvent) event;
-            preRequest(e.httpRequest, e.originalRequest);
+            preRequest(e.getHttpRequest(), e.getOriginalRequest());
         } else if (EventManager.EVENT_FRAGMENT_POST.equals(id)) {
             FragmentEvent e = (FragmentEvent) event;
 
-            while (needsNewRequest(e.httpResponse, e.httpRequest, e.originalRequest)) {
-                EntityUtils.consumeQuietly(e.httpResponse.getEntity());
-                e.httpResponse = this.driver.getRequestExecutor().execute(e.httpRequest);
+            while (needsNewRequest(e.getHttpResponse(), e.getHttpRequest(), e.getOriginalRequest())) {
+                EntityUtils.consumeQuietly(e.getHttpResponse().getEntity());
+                e.setHttpResponse(this.driver.getRequestExecutor().execute(e.getHttpRequest()));
             }
         } else if (EventManager.EVENT_PROXY_PRE.equals(id)) {
             ProxyEvent e = (ProxyEvent) event;
-            e.exit = !beforeProxy(e.originalRequest);
+            e.setExit(!beforeProxy(e.getOriginalRequest()));
         }
 
         return true;

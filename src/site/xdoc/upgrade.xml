@@ -180,6 +180,12 @@ provider2.mappings=/provider2/*
 				</p>
 
 			</subsection>
+			<subsection name="Events">
+				<p>
+					Event properties are now accessible through getter and setters.
+				</p>
+
+			</subsection>
 
 
 

@@ -82,33 +82,33 @@ public class FragmentLogging implements Extension, IEventListener {
 
         if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
             // Keep track of the start time.
-            e.httpContext.setAttribute(TIME, System.currentTimeMillis());
+            e.getHttpContext().setAttribute(TIME, System.currentTimeMillis());
         } else {
-            int statusCode = e.httpResponse.getStatusLine().getStatusCode();
+            int statusCode = e.getHttpResponse().getStatusLine().getStatusCode();
 
             // Log only if info or issue
             if (LOG.isInfoEnabled() || statusCode >= HttpStatus.SC_BAD_REQUEST) {
 
                 // Log last result only
-                HttpRequest lastRequest = RedirectStrategy.getLastRequest(e.httpRequest, e.httpContext);
+                HttpRequest lastRequest = RedirectStrategy.getLastRequest(e.getHttpRequest(), e.getHttpContext());
 
                 // Create log message
-                HttpHost targetHost = e.httpContext.getTargetHost();
+                HttpHost targetHost = e.getHttpContext().getTargetHost();
 
                 String requestLine = lastRequest.getRequestLine().toString();
-                String statusLine = e.httpResponse.getStatusLine().toString();
+                String statusLine = e.getHttpResponse().getStatusLine().toString();
 
                 String reqHeaders = ArrayUtils.toString(lastRequest.getAllHeaders());
-                String respHeaders = ArrayUtils.toString(e.httpResponse.getAllHeaders());
+                String respHeaders = ArrayUtils.toString(e.getHttpResponse().getAllHeaders());
 
                 String cache = "";
-                CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) e.httpContext
+                CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) e.getHttpContext()
                         .getAttribute(HttpCacheContext.CACHE_RESPONSE_STATUS);
                 if (cacheResponseStatus != null) {
                     cache = cacheResponseStatus.toString();
                 }
 
-                long time = System.currentTimeMillis() - (Long) e.httpContext.removeAttribute(TIME);
+                long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME);
 
                 StringBuilder logMessage = new StringBuilder();
                 logMessage.append(driver.getConfiguration().getInstanceName());

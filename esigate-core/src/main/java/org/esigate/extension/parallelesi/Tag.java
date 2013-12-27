@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Tag {
+final class Tag {
     private static final Pattern TAG_CLOSE_PATTERN = Pattern.compile("\\A</([\\S]*)[\\s]*>\\z");
     private static final Pattern TAG_START_PATTERN = Pattern.compile("\\A<([\\S]*)[\\s|>]");
     private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("([^\\s=]+)\\s*=\\s*('[^']*'|\"[^\"]*\")");

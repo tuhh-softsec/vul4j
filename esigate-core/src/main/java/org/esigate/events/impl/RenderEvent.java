@@ -15,6 +15,7 @@
 
 package org.esigate.events.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -30,12 +31,34 @@ import org.esigate.impl.DriverRequest;
  */
 public class RenderEvent extends Event {
 
-    public List<Renderer> renderers;
-    public String remoteUrl;
-    public DriverRequest originalRequest;
+    private final List<Renderer> renderers = new ArrayList<Renderer>(10);
+    private final String remoteUrl;
+    private final DriverRequest originalRequest;
 
     /**
      * The response from backend, including headers.
      */
-    public CloseableHttpResponse httpResponse;
+    private final CloseableHttpResponse httpResponse;
+
+    public RenderEvent(String remoteUrl, DriverRequest originalRequest, CloseableHttpResponse httpResponse) {
+        this.remoteUrl = remoteUrl;
+        this.originalRequest = originalRequest;
+        this.httpResponse = httpResponse;
+    }
+
+    public List<Renderer> getRenderers() {
+        return renderers;
+    }
+
+    public String getRemoteUrl() {
+        return remoteUrl;
+    }
+
+    public DriverRequest getOriginalRequest() {
+        return originalRequest;
+    }
+
+    public CloseableHttpResponse getHttpResponse() {
+        return httpResponse;
+    }
 }

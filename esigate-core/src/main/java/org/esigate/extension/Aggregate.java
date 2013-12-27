@@ -33,9 +33,9 @@ public class Aggregate implements Extension, IEventListener {
         boolean doAggregate = true;
 
         // ensure we should process esi
-        if (renderEvent.httpResponse != null
-                && renderEvent.httpResponse.containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
-            String capabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
+        if (renderEvent.getHttpResponse() != null
+                && renderEvent.getHttpResponse().containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
+            String capabilities = renderEvent.getHttpResponse().getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
                     .getValue();
 
             if (!containsIgnoreCase(capabilities, "Aggregator/1.0")) {
@@ -44,7 +44,7 @@ public class Aggregate implements Extension, IEventListener {
         }
 
         if (doAggregate) {
-            renderEvent.renderers.add(new AggregateRenderer());
+            renderEvent.getRenderers().add(new AggregateRenderer());
         }
         // Continue processing
         return true;
@@ -58,7 +58,7 @@ public class Aggregate implements Extension, IEventListener {
             @Override
             public boolean event(EventDefinition id, Event event) {
                 CapabilitiesEvent capEvent = (CapabilitiesEvent) event;
-                capEvent.capabilities.add("Aggregator/1.0");
+                capEvent.getCapabilities().add("Aggregator/1.0");
                 return true;
             }
         });

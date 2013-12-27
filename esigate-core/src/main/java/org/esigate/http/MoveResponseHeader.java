@@ -55,7 +55,7 @@ public class MoveResponseHeader implements IEventListener {
     public boolean event(EventDefinition id, Event event) {
         FragmentEvent fEvent = (FragmentEvent) event;
 
-        moveHeader(fEvent.httpResponse, this.srcName, this.targetName);
+        moveHeader(fEvent.getHttpResponse(), this.srcName, this.targetName);
 
         return true;
     }

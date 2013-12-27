@@ -45,20 +45,21 @@ public class HtmlCharsetProcessor implements Extension, IEventListener {
         ReadEntityEvent readEntityEvent = (ReadEntityEvent) event;
         Charset charset = null;
 
-        LOG.debug("Content mime type is {}", readEntityEvent.mimeType);
+        LOG.debug("Content mime type is {}", readEntityEvent.getMimeType());
 
         // Detect on supported MIME types.
         // ReadEntityEvent is only sent when esigate tries to parse a document.
-        if ("text/html".equals(readEntityEvent.mimeType) || "application/xhtml+xml".equals(readEntityEvent.mimeType)) {
+        if ("text/html".equals(readEntityEvent.getMimeType())
+                || "application/xhtml+xml".equals(readEntityEvent.getMimeType())) {
             LOG.debug("Supported MIME type, parsing content");
 
-            Matcher m = PATTERN_META_HTML5.matcher(readEntityEvent.entityContent);
+            Matcher m = PATTERN_META_HTML5.matcher(readEntityEvent.getEntityContent());
             if (m.matches()) {
                 LOG.debug("Found HTML5 charset");
                 charset = Charset.forName(m.group(1));
             }
 
-            m = PATTERN_META_HTML4_XHTML.matcher(readEntityEvent.entityContent);
+            m = PATTERN_META_HTML4_XHTML.matcher(readEntityEvent.getEntityContent());
             if (m.matches()) {
                 LOG.debug("Found HTML/XHTML charset");
                 charset = Charset.forName(m.group(1));
@@ -66,10 +67,9 @@ public class HtmlCharsetProcessor implements Extension, IEventListener {
         }
 
         // If another charset was found, update String object
-        if (charset != null && !charset.equals(readEntityEvent.charset)) {
-            LOG.debug("Changing charset fom {} to {}", readEntityEvent.charset, charset);
-            readEntityEvent.charset = charset;
-            readEntityEvent.entityContent = new String(readEntityEvent.rawEntityContent, readEntityEvent.charset);
+        if (charset != null && !charset.equals(readEntityEvent.getCharset())) {
+            LOG.debug("Changing charset fom {} to {}", readEntityEvent.getCharset(), charset);
+            readEntityEvent.setEntityContent(new String(readEntityEvent.getRawEntityContent(), charset));
         }
 
         return true;

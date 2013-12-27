@@ -62,9 +62,10 @@ public class Esi implements Extension, IEventListener {
         boolean doEsi = true;
 
         // ensure we should process esi
-        if (renderEvent.httpResponse != null
-                && renderEvent.httpResponse.containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
-            String enabledCapabilities = renderEvent.httpResponse.getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
+        if (renderEvent.getHttpResponse() != null
+                && renderEvent.getHttpResponse().containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
+            String enabledCapabilities = renderEvent.getHttpResponse()
+                    .getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
                     .getValue();
 
             doEsi = false;
@@ -78,7 +79,7 @@ public class Esi implements Extension, IEventListener {
         }
 
         if (doEsi) {
-            renderEvent.renderers.add(new EsiRenderer(this.executor));
+            renderEvent.getRenderers().add(new EsiRenderer(this.executor));
         }
 
         // Continue processing
@@ -94,7 +95,7 @@ public class Esi implements Extension, IEventListener {
             public boolean event(EventDefinition id, Event event) {
                 CapabilitiesEvent capEvent = (CapabilitiesEvent) event;
                 for (String capability : CAPABILITIES) {
-                    capEvent.capabilities.add(capability);
+                    capEvent.getCapabilities().add(capability);
                 }
                 return true;
             }

@@ -89,35 +89,31 @@ public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
                     HttpClientContext httpClientContext, HttpExecutionAware execAware) {
                 OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
                 // Create request event
-                FetchEvent fetchEvent = new FetchEvent();
-                fetchEvent.httpResponse = null;
-                fetchEvent.httpContext = context;
-                fetchEvent.httpRequest = request;
+                FetchEvent fetchEvent = new FetchEvent(context, request);
 
                 eventManager.fire(EventManager.EVENT_FETCH_PRE, fetchEvent);
 
-                if (!fetchEvent.exit) {
-                    try {
-                        fetchEvent.httpResponse = wrapped.execute(route, request, context, execAware);
-                    } catch (IOException e) {
-                        fetchEvent.httpResponse = HttpErrorPage.generateHttpResponse(e);
-                    } catch (HttpException e) {
-                        fetchEvent.httpResponse = HttpErrorPage.generateHttpResponse(e);
+                if (fetchEvent.isExit()) {
+                    if (fetchEvent.getHttpResponse() == null) {
+                        // Provide an error page in order to avoid a NullPointerException
+                        fetchEvent.setHttpResponse(HttpErrorPage.generateHttpResponse(
+                                HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                                "An extension stopped the processing of the request without providing a response"));
                     }
                 } else {
-                    if (fetchEvent.httpResponse != null) {
-                        fetchEvent.httpResponse = fetchEvent.httpResponse;
-                    } else {
-                        // Provide an error page in order to avoid a NullPointerException
-                        fetchEvent.httpResponse = HttpErrorPage.generateHttpResponse(
-                                HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                                "An extension stopped the processing of the request without providing a response");
+                    try {
+                        fetchEvent.setHttpResponse(wrapped.execute(route, request, context, execAware));
+                    } catch (IOException e) {
+                        fetchEvent.setHttpResponse(HttpErrorPage.generateHttpResponse(e));
+                    } catch (HttpException e) {
+                        fetchEvent.setHttpResponse(HttpErrorPage.generateHttpResponse(e));
                     }
                 }
 
                 // Update the event and fire post event
                 eventManager.fire(EventManager.EVENT_FETCH_POST, fetchEvent);
-                return fetchEvent.httpResponse;
+
+                return fetchEvent.getHttpResponse();
             }
         };
 

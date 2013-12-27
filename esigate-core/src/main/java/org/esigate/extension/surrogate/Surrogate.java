@@ -131,11 +131,11 @@ public class Surrogate implements Extension, IEventListener {
     @Override
     public void init(Driver driver, Properties properties) {
         CapabilitiesEvent capEvent = new CapabilitiesEvent();
-        capEvent.capabilities.add(CAP_SURROGATE);
+        capEvent.getCapabilities().add(CAP_SURROGATE);
 
         // Build all supported capabilities
         driver.getEventManager().fire(EVENT_SURROGATE_CAPABILITIES, capEvent);
-        this.capabilities = capEvent.capabilities.toArray(new String[] {});
+        this.capabilities = capEvent.getCapabilities().toArray(new String[] {});
         LOG.info("Surrogate capabilities: {}", join(this.capabilities, " "));
 
         // Build esigate token
@@ -186,7 +186,7 @@ public class Surrogate implements Extension, IEventListener {
         if (EventManager.EVENT_FETCH_PRE.equals(id)) {
             // Add Surrogate-Capabilities or append to existing header.
             FetchEvent e = (FetchEvent) event;
-            Header h = e.httpRequest.getFirstHeader(H_SURROGATE_CAPABILITIES);
+            Header h = e.getHttpRequest().getFirstHeader(H_SURROGATE_CAPABILITIES);
 
             StringBuilder archCapabilities = new StringBuilder(BUF_SIZE_CAPABILITIES);
             if (h != null && !isEmpty(h.getValue())) {
@@ -196,27 +196,27 @@ public class Surrogate implements Extension, IEventListener {
 
             archCapabilities.append(getUniqueToken(h == null ? null : h.getValue()));
             archCapabilities.append(this.esigateToken);
-            e.httpRequest.setHeader(H_SURROGATE_CAPABILITIES, archCapabilities.toString());
+            e.getHttpRequest().setHeader(H_SURROGATE_CAPABILITIES, archCapabilities.toString());
 
             // This header is used internally, and should not be forwarded.
-            e.httpRequest.removeHeaders(H_X_SURROGATE);
+            e.getHttpRequest().removeHeaders(H_X_SURROGATE);
         } else if (EventManager.EVENT_FETCH_POST.equals(id)) {
             onPostFetch(event);
         } else if (EventManager.EVENT_PROXY_PRE.equals(id)) {
             ProxyEvent e = (ProxyEvent) event;
             // Do we have another surrogate in front of esigate
-            if (e.originalRequest.containsHeader(H_SURROGATE_CAPABILITIES)) {
-                e.originalRequest.setHeader(H_X_SURROGATE, "true");
+            if (e.getOriginalRequest().containsHeader(H_SURROGATE_CAPABILITIES)) {
+                e.getOriginalRequest().setHeader(H_X_SURROGATE, "true");
             }
         } else if (EventManager.EVENT_PROXY_POST.equals(id)) {
             // Remove Surrogate Control content
             ProxyEvent e = (ProxyEvent) event;
 
-            if (e.response != null) {
-                processSurrogateControlContent(e.response, e.originalRequest.containsHeader(H_X_SURROGATE));
-            } else if (e.errorPage != null) {
-                processSurrogateControlContent(e.errorPage.getHttpResponse(),
-                        e.originalRequest.containsHeader(H_X_SURROGATE));
+            if (e.getResponse() != null) {
+                processSurrogateControlContent(e.getResponse(), e.getOriginalRequest().containsHeader(H_X_SURROGATE));
+            } else if (e.getErrorPage() != null) {
+                processSurrogateControlContent(e.getErrorPage().getHttpResponse(), e.getOriginalRequest()
+                        .containsHeader(H_X_SURROGATE));
             }
 
         }
@@ -238,7 +238,7 @@ public class Surrogate implements Extension, IEventListener {
         // Update caching policies
         FetchEvent e = (FetchEvent) event;
 
-        if (!e.httpResponse.containsHeader(H_SURROGATE_CONTROL)) {
+        if (!e.getHttpResponse().containsHeader(H_SURROGATE_CONTROL)) {
             return;
         }
 
@@ -247,7 +247,7 @@ public class Surrogate implements Extension, IEventListener {
         List<String> newSurrogateControlL = new ArrayList<String>();
         List<String> newCacheContent = new ArrayList<String>();
 
-        String controlHeader = e.httpResponse.getFirstHeader(H_SURROGATE_CONTROL).getValue();
+        String controlHeader = e.getHttpResponse().getFirstHeader(H_SURROGATE_CONTROL).getValue();
         String[] control = split(controlHeader, ",");
 
         for (String directive : control) {
@@ -286,13 +286,13 @@ public class Surrogate implements Extension, IEventListener {
             }
         }
 
-        e.httpResponse.setHeader(H_X_ENABLED_CAPABILITIES, join(enabledCapabilities, " "));
-        e.httpResponse.setHeader(H_X_NEXT_SURROGATE_CONTROL, join(newSurrogateControlL, ", "));
+        e.getHttpResponse().setHeader(H_X_ENABLED_CAPABILITIES, join(enabledCapabilities, " "));
+        e.getHttpResponse().setHeader(H_X_NEXT_SURROGATE_CONTROL, join(newSurrogateControlL, ", "));
 
         // If cache control must be updated.
         if (newCacheContent.size() > 0) {
-            MoveResponseHeader.moveHeader(e.httpResponse, "Cache-Control", H_X_ORIGINAL_CACHE_CONTROL);
-            e.httpResponse.setHeader("Cache-Control", join(newCacheContent, ", "));
+            MoveResponseHeader.moveHeader(e.getHttpResponse(), "Cache-Control", H_X_ORIGINAL_CACHE_CONTROL);
+            e.getHttpResponse().setHeader("Cache-Control", join(newCacheContent, ", "));
         }
     }
 

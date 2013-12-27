@@ -17,6 +17,7 @@ package org.esigate.http;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 
@@ -167,33 +168,35 @@ public final class HttpResponseUtils {
             }
 
             try {
-                ReadEntityEvent event = new ReadEntityEvent();
-                event.rawEntityContent = EntityUtils.toByteArray(httpEntity);
-
+                byte[] rawEntityContent = EntityUtils.toByteArray(httpEntity);
+                ContentType contentType = null;
+                Charset charset = null;
+                String mimeType = null;
                 try {
-                    ContentType contentType = ContentType.getOrDefault(httpEntity);
-                    event.mimeType = contentType.getMimeType();
-                    event.charset = contentType.getCharset();
+                    contentType = ContentType.getOrDefault(httpEntity);
+                    mimeType = contentType.getMimeType();
+                    charset = contentType.getCharset();
                 } catch (UnsupportedCharsetException ex) {
                     throw new UnsupportedEncodingException(ex.getMessage());
                 }
 
                 // Use default charset is no valid information found from HTTP
                 // headers
-                if (event.charset == null) {
-                    event.charset = HTTP.DEF_CONTENT_CHARSET;
+                if (charset == null) {
+                    charset = HTTP.DEF_CONTENT_CHARSET;
                 }
 
+                ReadEntityEvent event = new ReadEntityEvent(mimeType, charset, rawEntityContent);
+
                 // Read using charset based on HTTP headers
-                event.entityContent = new String(event.rawEntityContent, event.charset);
+                event.setEntityContent(new String(rawEntityContent, charset));
 
                 // Allow extensions to detect document encoding
                 if (eventManager != null) {
                     eventManager.fire(EventManager.EVENT_READ_ENTITY, event);
                 }
 
-                // Return entityContent
-                result = event.entityContent;
+                return event.getEntityContent();
 
             } catch (IOException e) {
                 throw new HttpErrorPage(HttpErrorPage.generateHttpResponse(e));

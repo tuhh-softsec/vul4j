@@ -53,7 +53,7 @@ class IncludeElement extends BaseElement {
 
     private static final Logger LOG = LoggerFactory.getLogger(IncludeElement.class);
 
-    private static class IncludeTask implements Callable<CharSequence> {
+    private static final class IncludeTask implements Callable<CharSequence> {
         private String src;
         private String alt;
         private FutureParserContext ctx;

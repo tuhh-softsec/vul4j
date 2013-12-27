@@ -75,9 +75,9 @@ public class APITest extends AbstractDriverTestCase {
                 @Override
                 public boolean event(EventDefinition id, Event event) {
                     RenderEvent revent = (RenderEvent) event;
-                    Assert.assertNotNull("httpResponse should not be null", revent.httpResponse);
-                    Assert.assertNotNull("originalRequest should not be null", revent.originalRequest);
-                    Assert.assertNotNull("renderers should not be null", revent.renderers);
+                    Assert.assertNotNull("httpResponse should not be null", revent.getHttpResponse());
+                    Assert.assertNotNull("originalRequest should not be null", revent.getOriginalRequest());
+                    Assert.assertNotNull("renderers should not be null", revent.getRenderers());
                     return true;
                 }
             });

@@ -2,7 +2,6 @@ package org.esigate.events.impl;
 
 import java.nio.charset.Charset;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.events.Event;
 
 /**
@@ -13,13 +12,9 @@ import org.esigate.events.Event;
  */
 public class ReadEntityEvent extends Event {
     /**
-     * The response returned by the remote server or by a cache subsystem.
-     */
-    public CloseableHttpResponse httpResponse;
-    /**
      * Response mime type.
      */
-    public String mimeType;
+    private final String mimeType;
 
     /**
      * Declared or detected charset.
@@ -28,13 +23,13 @@ public class ReadEntityEvent extends Event {
      * <p>
      * Note : if charset is modified, entityContent should be updated too.
      */
-    public Charset charset;
+    private final Charset charset;
 
     /**
      * The raw entity content, without any character set applied. It can be used to re-decode the entity content if the
      * default charset was incorrect.
      */
-    public byte[] rawEntityContent;
+    private final byte[] rawEntityContent;
     /**
      * The current, decoded entity content.
      * <p>
@@ -42,5 +37,31 @@ public class ReadEntityEvent extends Event {
      * <p>
      * Note : if entityContent is modified, charset should be updated too.
      */
-    public String entityContent;
+    private String entityContent;
+
+    public ReadEntityEvent(String mimeType, Charset charset, byte[] rawEntityContent) {
+        this.mimeType = mimeType;
+        this.charset = charset;
+        this.rawEntityContent = rawEntityContent;
+    }
+
+    public String getEntityContent() {
+        return entityContent;
+    }
+
+    public void setEntityContent(String entityContent) {
+        this.entityContent = entityContent;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public byte[] getRawEntityContent() {
+        return rawEntityContent;
+    }
 }

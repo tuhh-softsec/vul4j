@@ -241,24 +241,23 @@ public final class Driver {
         boolean postProxyPerformed = false;
 
         // Create Proxy event
-        ProxyEvent e = new ProxyEvent();
-        e.originalRequest = request;
+        ProxyEvent e = new ProxyEvent(request);
 
         try {
             // Event pre-proxy
             this.eventManager.fire(EventManager.EVENT_PROXY_PRE, e);
             // Return immediately if exit is requested by extension
-            if (e.exit) {
+            if (e.isExit()) {
                 return;
             }
 
             logAction("proxy", relUrl, renderers);
 
             String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, driverRequest, true);
-            e.response = requestExecutor.createAndExecuteRequest(driverRequest, url, true);
+            e.setResponse(requestExecutor.createAndExecuteRequest(driverRequest, url, true));
 
             // Perform rendering
-            e.response = performRendering(relUrl, driverRequest, e.response, renderers);
+            e.setResponse(performRendering(relUrl, driverRequest, e.getResponse(), renderers));
 
             // Event post-proxy
             // This must be done before calling sendResponse to ensure response
@@ -267,15 +266,15 @@ public final class Driver {
             this.eventManager.fire(EventManager.EVENT_PROXY_POST, e);
 
             // Send request to the client.
-            request.getMediator().sendResponse(e.response);
+            request.getMediator().sendResponse(e.getResponse());
 
         } catch (HttpErrorPage errorPage) {
-            e.errorPage = errorPage;
+            e.setErrorPage(errorPage);
 
             // On error returned by the proxy request, perform rendering on the
             // error page.
-            e.errorPage = new HttpErrorPage(performRendering(relUrl, driverRequest, e.errorPage.getHttpResponse(),
-                    renderers));
+            e.setErrorPage(new HttpErrorPage(performRendering(relUrl, driverRequest,
+                    e.getErrorPage().getHttpResponse(), renderers)));
 
             // Event post-proxy
             // This must be done before throwing exception to ensure response
@@ -283,7 +282,7 @@ public final class Driver {
             postProxyPerformed = true;
             this.eventManager.fire(EventManager.EVENT_PROXY_POST, e);
 
-            throw e.errorPage;
+            throw e.getErrorPage();
         } finally {
             if (!postProxyPerformed) {
                 this.eventManager.fire(EventManager.EVENT_PROXY_POST, e);
@@ -354,20 +353,14 @@ public final class Driver {
     private String performRendering(String pageUrl, DriverRequest originalRequest, CloseableHttpResponse response,
             String body, Renderer[] renderers) throws IOException, HttpErrorPage {
         // Start rendering
-        RenderEvent renderEvent = new RenderEvent();
-        renderEvent.originalRequest = originalRequest;
-        renderEvent.remoteUrl = pageUrl;
-        renderEvent.httpResponse = response;
-        // Create renderer list from parameters. Ensure at least 10
-        // additional
-        // renderers can be added at no cost.
-        renderEvent.renderers = new ArrayList<Renderer>(renderers.length + 10);
-        renderEvent.renderers.addAll(Arrays.asList(renderers));
+        RenderEvent renderEvent = new RenderEvent(pageUrl, originalRequest, response);
+        // Create renderer list from parameters.
+        renderEvent.getRenderers().addAll(Arrays.asList(renderers));
 
         String currentBody = body;
 
         this.eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
-        for (Renderer renderer : renderEvent.renderers) {
+        for (Renderer renderer : renderEvent.getRenderers()) {
             StringBuilderWriter stringWriter = new StringBuilderWriter(1024);
             renderer.render(originalRequest, currentBody, stringWriter);
             stringWriter.close();

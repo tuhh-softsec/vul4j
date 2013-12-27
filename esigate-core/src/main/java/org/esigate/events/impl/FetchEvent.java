@@ -18,14 +18,35 @@ public class FetchEvent extends Event {
      * May be null if the request has not been executed yet. If this case, setting a response cancels the HTTP call and
      * use the given object instead.
      */
-    public CloseableHttpResponse httpResponse;
+    private CloseableHttpResponse httpResponse;
     /**
      * The request context.
      */
-    public OutgoingRequestContext httpContext;
+    private final OutgoingRequestContext httpContext;
     /**
      * The new HTTP call details.
      */
-    public HttpRequestWrapper httpRequest = null;
+    private final HttpRequestWrapper httpRequest;
+
+    public FetchEvent(OutgoingRequestContext httpContext, HttpRequestWrapper httpRequest) {
+        this.httpContext = httpContext;
+        this.httpRequest = httpRequest;
+    }
+
+    public CloseableHttpResponse getHttpResponse() {
+        return httpResponse;
+    }
+
+    public void setHttpResponse(CloseableHttpResponse httpResponse) {
+        this.httpResponse = httpResponse;
+    }
+
+    public OutgoingRequestContext getHttpContext() {
+        return httpContext;
+    }
+
+    public HttpRequestWrapper getHttpRequest() {
+        return httpRequest;
+    }
 
 }

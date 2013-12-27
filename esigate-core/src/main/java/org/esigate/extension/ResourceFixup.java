@@ -20,12 +20,12 @@ public class ResourceFixup implements Extension, IEventListener {
         RenderEvent renderEvent = (RenderEvent) event;
         // Fix resources
         if (config.isFixResources()) {
-            String baseUrl = renderEvent.originalRequest.getBaseUrl().toString();
+            String baseUrl = renderEvent.getOriginalRequest().getBaseUrl().toString();
             ResourceFixupRenderer fixup = new ResourceFixupRenderer(baseUrl, config.getVisibleBaseURL(baseUrl),
-                    renderEvent.remoteUrl, config.getFixMode());
+                    renderEvent.getRemoteUrl(), config.getFixMode());
 
             // Add fixup renderer as first renderer.
-            renderEvent.renderers.add(0, fixup);
+            renderEvent.getRenderers().add(0, fixup);
         }
 
         // Continue processing

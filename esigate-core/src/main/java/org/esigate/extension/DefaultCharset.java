@@ -63,7 +63,7 @@ public class DefaultCharset implements Extension, IEventListener {
     public boolean event(EventDefinition arg0, Event arg1) {
         FetchEvent fe = (FetchEvent) arg1;
 
-        Header contentTypeHeader = fe.httpResponse.getFirstHeader("Content-Type");
+        Header contentTypeHeader = fe.getHttpResponse().getFirstHeader("Content-Type");
 
         // No content type, there is nothing we can do
         if (contentTypeHeader == null) {
@@ -88,7 +88,7 @@ public class DefaultCharset implements Extension, IEventListener {
 
         // Add default charset
         if (parsable) {
-            fe.httpResponse.setHeader("Content-Type", contentType + "; charset=" + defaultCharset);
+            fe.getHttpResponse().setHeader("Content-Type", contentType + "; charset=" + defaultCharset);
         }
 
         return true;

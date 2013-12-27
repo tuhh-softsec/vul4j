@@ -276,20 +276,16 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         }
         HttpResponse result;
         // Create request event
-        FragmentEvent event = new FragmentEvent();
-        event.httpRequest = httpRequest;
-        event.originalRequest = originalRequest;
-        event.httpResponse = null;
-        event.httpContext = context;
+        FragmentEvent event = new FragmentEvent(originalRequest, httpRequest, context);
         // EVENT pre
         eventManager.fire(EventManager.EVENT_FRAGMENT_PRE, event);
         // If exit : stop immediately.
-        if (!event.exit) {
+        if (!event.isExit()) {
             // Proceed to request only if extensions did not inject a response.
-            if (event.httpResponse == null) {
+            if (event.getHttpResponse() == null) {
                 if (httpRequest.containsHeader(HttpHeaders.EXPECT)) {
-                    event.httpResponse = HttpErrorPage.generateHttpResponse(HttpStatus.SC_EXPECTATION_FAILED,
-                            "'Expect' request header is not supported");
+                    event.setHttpResponse(HttpErrorPage.generateHttpResponse(HttpStatus.SC_EXPECTATION_FAILED,
+                            "'Expect' request header is not supported"));
                 } else {
                     try {
                         HttpHost physicalHost = context.getPhysicalHost();
@@ -301,13 +297,13 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
                         result = HttpErrorPage.generateHttpResponse(e);
                         LOG.warn(httpRequest.getRequestLine() + " -> " + result.getStatusLine().toString());
                     }
-                    event.httpResponse = BasicCloseableHttpResponse.adapt(result);
+                    event.setHttpResponse(BasicCloseableHttpResponse.adapt(result));
                 }
             }
             // EVENT post
             eventManager.fire(EventManager.EVENT_FRAGMENT_POST, event);
         }
-        return event.httpResponse;
+        return event.getHttpResponse();
     }
 
     /**

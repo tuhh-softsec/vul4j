@@ -52,8 +52,9 @@ public class ServletExtension implements Extension, IEventListener {
     public boolean event(EventDefinition id, Event event) {
         FetchEvent fetchEvent = (FetchEvent) event;
         if (EventManager.EVENT_FETCH_PRE.equals(id)) {
-            String uriString = fetchEvent.httpRequest.getRequestLine().getUri();
-            OutgoingRequest outgoingRequest = OutgoingRequestContext.adapt(fetchEvent.httpContext).getOutgoingRequest();
+            String uriString = fetchEvent.getHttpRequest().getRequestLine().getUri();
+            OutgoingRequest outgoingRequest = OutgoingRequestContext.adapt(fetchEvent.getHttpContext())
+                    .getOutgoingRequest();
             String baseUrl = outgoingRequest.getBaseUrl().toString();
             if (outgoingRequest.getOriginalRequest().isExternal()) {
                 // Non local absolute uri
@@ -78,7 +79,7 @@ public class ServletExtension implements Extension, IEventListener {
                     ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
                             httpServletMediator.getResponse(), driver.getContentTypeHelper());
                     try {
-                        if (fetchEvent.httpContext.isProxy()) {
+                        if (fetchEvent.getHttpContext().isProxy()) {
                             if (context == null) {
                                 httpServletMediator.getFilterChain().doFilter(httpServletMediator.getRequest(),
                                         wrappedResponse);
@@ -119,9 +120,9 @@ public class ServletExtension implements Extension, IEventListener {
                         result = HttpErrorPage.generateHttpResponse(e);
                     }
                 }
-                fetchEvent.httpResponse = result;
+                fetchEvent.setHttpResponse(result);
                 // Stop execution
-                fetchEvent.exit = true;
+                fetchEvent.setExit(true);
             }
         }
         return true;

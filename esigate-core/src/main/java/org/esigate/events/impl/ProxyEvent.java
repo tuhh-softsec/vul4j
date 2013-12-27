@@ -30,15 +30,39 @@ public class ProxyEvent extends Event {
     /**
      * The request which was received by ESIgate.
      */
-    public IncomingRequest originalRequest;
+    private final IncomingRequest originalRequest;
 
     /**
      * The current response. May be null if no reponse has be created yet or in case of error.
      */
-    public CloseableHttpResponse response = null;
+    private CloseableHttpResponse response = null;
 
     /**
      * The current error page. If not null, an error as occured and the error page will be sent instead of the response.
      */
-    public HttpErrorPage errorPage = null;
+    private HttpErrorPage errorPage = null;
+
+    public ProxyEvent(IncomingRequest originalRequest) {
+        this.originalRequest = originalRequest;
+    }
+
+    public CloseableHttpResponse getResponse() {
+        return response;
+    }
+
+    public void setResponse(CloseableHttpResponse response) {
+        this.response = response;
+    }
+
+    public HttpErrorPage getErrorPage() {
+        return errorPage;
+    }
+
+    public void setErrorPage(HttpErrorPage errorPage) {
+        this.errorPage = errorPage;
+    }
+
+    public IncomingRequest getOriginalRequest() {
+        return originalRequest;
+    }
 }

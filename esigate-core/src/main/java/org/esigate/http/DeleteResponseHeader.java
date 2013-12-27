@@ -48,14 +48,14 @@ public class DeleteResponseHeader implements IEventListener {
     @Override
     public boolean event(EventDefinition id, Event event) {
         ProxyEvent fEvent = (ProxyEvent) event;
-        if (fEvent.response != null && fEvent.response.containsHeader(this.name)) {
+        if (fEvent.getResponse() != null && fEvent.getResponse().containsHeader(this.name)) {
             LOG.info("Deleting header {} ", this.name);
-            fEvent.response.removeHeaders(this.name);
+            fEvent.getResponse().removeHeaders(this.name);
         }
-        if (fEvent.errorPage != null && fEvent.errorPage.getHttpResponse() != null
-                && fEvent.errorPage.getHttpResponse().containsHeader(this.name)) {
+        if (fEvent.getErrorPage() != null && fEvent.getErrorPage().getHttpResponse() != null
+                && fEvent.getErrorPage().getHttpResponse().containsHeader(this.name)) {
             LOG.info("Deleting header {} ", this.name);
-            fEvent.errorPage.getHttpResponse().removeHeaders(this.name);
+            fEvent.getErrorPage().getHttpResponse().removeHeaders(this.name);
         }
 
         return true;

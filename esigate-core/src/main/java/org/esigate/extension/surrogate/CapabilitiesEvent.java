@@ -29,5 +29,9 @@ public class CapabilitiesEvent extends Event {
     /**
      * Current capability list. An extension can update this list to declare additional capabilities.
      */
-    public List<String> capabilities = new ArrayList<String>();
+    private final List<String> capabilities = new ArrayList<String>();
+
+    public List<String> getCapabilities() {
+        return capabilities;
+    }
 }

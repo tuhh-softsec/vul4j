@@ -75,21 +75,21 @@ public class FetchLogging implements Extension, IEventListener {
         FetchEvent e = (FetchEvent) event;
 
         if (EventManager.EVENT_FETCH_POST.equals(id)) {
-            int statusCode = e.httpResponse.getStatusLine().getStatusCode();
+            int statusCode = e.getHttpResponse().getStatusLine().getStatusCode();
 
             // Log only if info or issue
             if (LOG.isInfoEnabled() || statusCode >= HttpStatus.SC_BAD_REQUEST) {
-                HttpRequest lastRequest = e.httpRequest;
+                HttpRequest lastRequest = e.getHttpRequest();
 
                 String url = lastRequest.getRequestLine().toString();
-                String status = e.httpResponse.getStatusLine().toString();
+                String status = e.getHttpResponse().getStatusLine().toString();
 
                 String reqHeaders = ArrayUtils.toString(lastRequest.getAllHeaders());
-                String respHeaders = ArrayUtils.toString(e.httpResponse.getAllHeaders());
+                String respHeaders = ArrayUtils.toString(e.getHttpResponse().getAllHeaders());
 
-                HttpHost targetHost = e.httpContext.getTargetHost();
+                HttpHost targetHost = e.getHttpContext().getTargetHost();
 
-                long time = System.currentTimeMillis() - (Long) e.httpContext.removeAttribute(TIME);
+                long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME);
 
                 StringBuilder logMessage = new StringBuilder();
 
@@ -132,7 +132,7 @@ public class FetchLogging implements Extension, IEventListener {
                 }
             }
         } else {
-            e.httpContext.setAttribute(TIME, System.currentTimeMillis());
+            e.getHttpContext().setAttribute(TIME, System.currentTimeMillis());
         }
 
         // Continue processing

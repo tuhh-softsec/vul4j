@@ -60,12 +60,12 @@ public class ErrorPages implements Extension, IEventListener {
         FragmentEvent e = (FragmentEvent) event;
 
         if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
-            LOG.error(e.httpRequest.getRequestLine().getUri());
+            LOG.error(e.getHttpRequest().getRequestLine().getUri());
 
-            if ("esigate".equals(e.httpContext.getTargetHost().getHostName())) {
-                if ("http://esigate/no-mapping/".equals(e.httpRequest.getRequestLine().getUri())) {
-                    e.httpResponse = new HttpResponseBuilder().status(HttpStatus.SC_NOT_FOUND)
-                            .reason("No mapping defined").entity(NO_MAPPING).build();
+            if ("esigate".equals(e.getHttpContext().getTargetHost().getHostName())) {
+                if ("http://esigate/no-mapping/".equals(e.getHttpRequest().getRequestLine().getUri())) {
+                    e.setHttpResponse(new HttpResponseBuilder().status(HttpStatus.SC_NOT_FOUND)
+                            .reason("No mapping defined").entity(NO_MAPPING).build());
                     return false;
                 }
             }

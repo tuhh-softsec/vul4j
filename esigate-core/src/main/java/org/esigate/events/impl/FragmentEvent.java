@@ -44,22 +44,49 @@ public class FragmentEvent extends Event {
      * use the given object instead.
      * 
      */
-    public CloseableHttpResponse httpResponse;
+    private CloseableHttpResponse httpResponse;
     /**
      * The request context.
      */
-    public OutgoingRequestContext httpContext;
+    private final OutgoingRequestContext httpContext;
     /**
      * The new HTTP call details.
      * <p>
      * This object can been updated during pre-event processing and the HTTP call will use the updated object.
      */
-    public OutgoingRequest httpRequest;
+    private final OutgoingRequest httpRequest;
 
     /**
      * The request which was received by ESIgate.
      * <p>
      * It is ready only and not intended to be altered.
      */
-    public IncomingRequest originalRequest;
+    private final IncomingRequest originalRequest;
+
+    public FragmentEvent(IncomingRequest originalRequest, OutgoingRequest httpRequest,
+            OutgoingRequestContext httpContext) {
+        this.originalRequest = originalRequest;
+        this.httpRequest = httpRequest;
+        this.httpContext = httpContext;
+    }
+
+    public CloseableHttpResponse getHttpResponse() {
+        return httpResponse;
+    }
+
+    public void setHttpResponse(CloseableHttpResponse httpResponse) {
+        this.httpResponse = httpResponse;
+    }
+
+    public OutgoingRequestContext getHttpContext() {
+        return httpContext;
+    }
+
+    public OutgoingRequest getHttpRequest() {
+        return httpRequest;
+    }
+
+    public IncomingRequest getOriginalRequest() {
+        return originalRequest;
+    }
 }
