@@ -60,16 +60,15 @@ public final class DriverFactory {
                 "development version");
         String rev = defaultIfBlank(DriverFactory.class.getPackage().getImplementationVersion(), "unknown");
         LOG.info("Starting esigate {} rev. {}", version, rev);
-
-        // Load default settings
-        configure();
     }
 
     private DriverFactory() {
-
+        // Do not instantiate
     }
 
-    /** Loads all instances according to default configuration file. */
+    /**
+     * Loads all instances according to default configuration file.
+     */
     public static void configure() {
         InputStream inputStream = null;
         InputStream extInputStream = null;
@@ -154,7 +153,7 @@ public final class DriverFactory {
     }
 
     /**
-     * Loads all instancies according to the properties parameter.
+     * Loads all instances according to the properties parameter.
      * 
      * @param props
      *            properties to use for configuration
@@ -211,7 +210,7 @@ public final class DriverFactory {
      * @param props
      */
     public static void configure(String name, Properties props) {
-        setInstance(name, createDriver(name, props));
+        put(name, createDriver(name, props));
     }
 
     /**
@@ -273,7 +272,7 @@ public final class DriverFactory {
     }
 
     /**
-     * Method used to inject providers. Useful mainly for unit testing purpose
+     * Add/replace instance in current instance map. Work on a copy of the current map and replace it atomically.
      * 
      * @param instanceName
      *            The name of the provider
@@ -281,16 +280,6 @@ public final class DriverFactory {
      *            The instance
      */
     public static void put(String instanceName, Driver instance) {
-        setInstance(instanceName, instance);
-    }
-
-    /**
-     * Add/replace instance in current instance map. Work on a copy of the current map and replace it atomically.
-     * 
-     * @param instanceName
-     * @param d
-     */
-    private static void setInstance(String instanceName, Driver d) {
         // Copy current instances
         Map<String, Driver> newInstances = new HashMap<String, Driver>();
         synchronized (instances) {
@@ -302,7 +291,7 @@ public final class DriverFactory {
         }
 
         // Add new instance
-        newInstances.put(instanceName, d);
+        newInstances.put(instanceName, instance);
 
         instances = new IndexedInstances(newInstances);
     }
@@ -312,6 +301,9 @@ public final class DriverFactory {
      * initialization.
      */
     public static void ensureConfigured() {
-        // Just trigger static init.
+        if (instances.getInstances().isEmpty()) {
+            // Load default settings
+            configure();
+        }
     }
 }
