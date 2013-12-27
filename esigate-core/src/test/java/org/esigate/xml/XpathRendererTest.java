@@ -15,9 +15,9 @@
 
 package org.esigate.xml;
 
-import java.io.StringWriter;
-
 import junit.framework.TestCase;
+
+import org.apache.commons.io.output.StringBuilderWriter;
 
 public class XpathRendererTest extends TestCase {
 
@@ -28,7 +28,7 @@ public class XpathRendererTest extends TestCase {
      */
     public void testXpathHtml() throws Exception {
         String src = "<html><title>The header</title><body>The body<br></body></html>";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         XpathRenderer tested = new XpathRenderer("/html:html/html:body");
         tested.render(null, src, out);
         assertEquals("<body>The body<br /></body>", out.toString());
@@ -44,7 +44,7 @@ public class XpathRendererTest extends TestCase {
                 + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
                 + "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
                 + "<head><title>The header</title></head><body>The body<br/><b></b></body></html>";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         XpathRenderer tested = new XpathRenderer("//html:body");
         tested.render(null, src, out);
         assertEquals("<body>The body<br /><b></b></body>", out.toString());
@@ -60,7 +60,7 @@ public class XpathRendererTest extends TestCase {
                 + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
                 + "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
                 + "<head><title>The header</title></head><body class=\"test\">The body<br/><b></b></body></html>";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         XpathRenderer tested = new XpathRenderer("//html:body/@class");
         tested.render(null, src, out);
         assertEquals("test", out.toString());

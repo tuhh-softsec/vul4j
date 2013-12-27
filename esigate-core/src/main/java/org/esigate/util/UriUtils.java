@@ -10,6 +10,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.esigate.Parameters;
 
 public final class UriUtils {
     private UriUtils() {
@@ -27,7 +28,7 @@ public final class UriUtils {
 
     public static String createURI(final String scheme, final String host, int port, final String path,
             final String query, final String fragment) {
-        StringBuilder buffer = new StringBuilder();
+        StringBuilder buffer = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
         if (host != null) {
             if (scheme != null) {
                 buffer.append(scheme);

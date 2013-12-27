@@ -22,6 +22,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpStatus;
 import org.esigate.Driver;
+import org.esigate.Parameters;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -91,7 +92,7 @@ public class FetchLogging implements Extension, IEventListener {
 
                 long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME);
 
-                StringBuilder logMessage = new StringBuilder();
+                StringBuilder logMessage = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
 
                 // Display target host, protocol and port
                 if (targetHost != null) {

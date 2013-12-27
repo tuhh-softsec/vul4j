@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.parser.Adapter;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;

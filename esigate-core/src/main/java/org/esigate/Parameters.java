@@ -132,4 +132,9 @@ public final class Parameters {
     // MemCached
     public static final Parameter MEMCACHED_SERVERS_PROPERTY = new Parameter("memcached.servers", null);
 
+    // Default size for String or byte buffers used to manipulate html page contents
+    public static final int DEFAULT_BUFFER_SIZE = 1024;
+
+    // Default size for String or byte buffers used to manipulate small things like tags, cookie, log lines
+    public static final int SMALL_BUFFER_SIZE = 256;
 }

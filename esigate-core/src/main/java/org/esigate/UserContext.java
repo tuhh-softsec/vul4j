@@ -63,7 +63,7 @@ public class UserContext {
      */
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder().append("User=").append(getUser());
+        StringBuilder result = new StringBuilder(Parameters.SMALL_BUFFER_SIZE).append("User=").append(getUser());
         return result.toString();
     }
 }

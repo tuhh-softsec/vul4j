@@ -17,6 +17,7 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
+import org.esigate.Parameters;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.vars.VariablesResolver;
@@ -32,7 +33,7 @@ class OtherwiseElement extends BaseElement {
     };
 
     private boolean active;
-    private StringBuilder buf = new StringBuilder();
+    private StringBuilder buf = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
 
     OtherwiseElement() {
     }

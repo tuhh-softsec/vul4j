@@ -15,6 +15,7 @@
 
 package org.esigate.esi;
 
+import org.esigate.Parameters;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.util.UriUtils;
@@ -31,7 +32,7 @@ class InlineElement extends BaseElement {
 
     private String uri;
     private boolean fetchable;
-    private StringBuilder buf = new StringBuilder();
+    private StringBuilder buf = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
 
     InlineElement() {
     }

@@ -15,10 +15,10 @@
 package org.esigate.esi;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
 import org.esigate.impl.DriverRequest;
@@ -66,7 +66,7 @@ public class TryElementTest extends TestCase {
                 + "<esi:include src='http://www.foo.com/test' /> abc "
                 + "<esi:include src=\"http://www.foo2.com/test\" />" + " cba" + "</esi:attempt>  invalid "
                 + "<esi:except>inside except</esi:except>" + " invalid </esi:try> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin inside except end", out.toString());
     }
@@ -74,7 +74,7 @@ public class TryElementTest extends TestCase {
     public void testTry() throws IOException, HttpErrorPage {
         String page = "begin <esi:try>" + "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>"
                 + "</esi:try> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin test end", out.toString());
     }
@@ -83,7 +83,7 @@ public class TryElementTest extends TestCase {
         String page = "begin <esi:try>"
                 + "<esi:attempt>abc <esi:include src=\"http://www.foo.com/test\" /> cba</esi:attempt>"
                 + "<esi:except>inside except</esi:except>" + "</esi:try> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin abc test cba end", out.toString());
     }
@@ -92,7 +92,7 @@ public class TryElementTest extends TestCase {
         String page = "begin <esi:try>" + "<esi:attempt>abc " + "<esi:include src=\"http://www.foo.com/test\" />"
                 + "<esi:include src='http://www.foo.com/not-found' onerror='continue' />" + " cba</esi:attempt>"
                 + "<esi:except>inside except</esi:except>" + "</esi:try> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin abc test cba end", out.toString());
     }
@@ -101,7 +101,7 @@ public class TryElementTest extends TestCase {
         String page = "begin <esi:try>"
                 + "<esi:attempt>abc <esi:include src=\"http://www.foo2.com/test\" /> cba</esi:attempt>"
                 + "<esi:except>inside except</esi:except>" + "</esi:try> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin inside except end", out.toString());
     }
@@ -110,7 +110,7 @@ public class TryElementTest extends TestCase {
         String page = "begin <esi:try>" + "<esi:attempt> " + "<esi:include src='http://www.foo.com/test' /> abc "
                 + "<esi:include src=\"http://www.foo2.com/test\" /> cba" + "</esi:attempt>"
                 + "<esi:except>inside except</esi:except>" + "</esi:try> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin inside except end", out.toString());
     }
@@ -122,7 +122,7 @@ public class TryElementTest extends TestCase {
                 + "<esi:except code='404'>inside correct except</esi:except>"
                 + "<esi:except code='412'>inside incorrect except</esi:except>"
                 + "<esi:except>inside default except</esi:except>" + "</esi:try> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin inside correct except end", out.toString());
     }
@@ -133,7 +133,7 @@ public class TryElementTest extends TestCase {
                 + "</esi:attempt>" + "<esi:except code='500'>inside incorrect except</esi:except>"
                 + "<esi:except code='412'>inside incorrect except</esi:except>"
                 + "<esi:except>inside default except</esi:except>" + "</esi:try> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin inside default except end", out.toString());
     }
@@ -142,7 +142,7 @@ public class TryElementTest extends TestCase {
         String page = "begin <esi:try>" + "<esi:attempt> "
                 + "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' fragment='fragmentNotFound'/>" + " cba"
                 + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>" + "</esi:try> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin NOT FOUND end", out.toString());
     }
@@ -151,7 +151,7 @@ public class TryElementTest extends TestCase {
         String page = "begin <esi:try>" + "<esi:attempt> "
                 + "<esi:attempt>abc<esi:include src='http://www.foo.com/testFragment' fragment='fragmentFound'/>"
                 + " cba" + "</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin  abcFRAGMENT FOUND cbaend", out.toString());
     }
@@ -161,7 +161,7 @@ public class TryElementTest extends TestCase {
                 + "<esi:attempt> "
                 + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
                 + " cba</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin end", out.toString());
     }
@@ -171,7 +171,7 @@ public class TryElementTest extends TestCase {
                 + "<esi:attempt> "
                 + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
                 + " cba" + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>" + "</esi:try>end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin NOT FOUNDend", out.toString());
     }

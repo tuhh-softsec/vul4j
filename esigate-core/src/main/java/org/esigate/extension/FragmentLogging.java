@@ -24,6 +24,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
 import org.esigate.Driver;
+import org.esigate.Parameters;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -102,15 +103,15 @@ public class FragmentLogging implements Extension, IEventListener {
                 String respHeaders = ArrayUtils.toString(e.getHttpResponse().getAllHeaders());
 
                 String cache = "";
-                CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) e.getHttpContext()
-                        .getAttribute(HttpCacheContext.CACHE_RESPONSE_STATUS);
+                CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) e.getHttpContext().getAttribute(
+                        HttpCacheContext.CACHE_RESPONSE_STATUS);
                 if (cacheResponseStatus != null) {
                     cache = cacheResponseStatus.toString();
                 }
 
                 long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME);
 
-                StringBuilder logMessage = new StringBuilder();
+                StringBuilder logMessage = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
                 logMessage.append(driver.getConfiguration().getInstanceName());
                 logMessage.append(" ");
                 // Display target host, protocol and port

@@ -1,10 +1,10 @@
 package org.esigate.parser.future;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ public class FutureAppendableAdapterTest {
     @Test
     public void testBasic() throws IOException, HttpErrorPage {
 
-        StringWriter sw = new StringWriter();
+        StringBuilderWriter sw = new StringBuilderWriter();
 
         FutureAppendableAdapter adapter = new FutureAppendableAdapter(sw);
 
@@ -23,7 +23,7 @@ public class FutureAppendableAdapterTest {
         adapter.enqueueAppend(new CharSequenceFuture("test4"));
 
         adapter.performAppends();
-        Assert.assertEquals("test1test2test3test4", sw.getBuffer().toString());
+        Assert.assertEquals("test1test2test3test4", sw.toString());
     }
 
 }

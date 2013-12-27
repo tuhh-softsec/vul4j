@@ -16,10 +16,11 @@
 package org.esigate.renderers;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 
 import junit.framework.TestCase;
+
+import org.apache.commons.io.output.StringBuilderWriter;
 
 /**
  * Tests on ResourceFixupRenderer.
@@ -40,12 +41,12 @@ public class ResourceFixupRendererTest extends TestCase {
                 + "<a href=\"http://myapp/context/page/page1.htm\">link</a> "
                 + "<img src=\"http://www.google.com/logo.com\"/>";
 
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
         assertEquals(expectedOutputAbsolute, out.toString());
 
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.RELATIVE);
         tested.render(null, input, out);
         assertEquals(expectedOutputRelative, out.toString());
@@ -64,12 +65,12 @@ public class ResourceFixupRendererTest extends TestCase {
         final String expectedOutputRelative = "<![CDATA[   var src=\"test\" ]]>";
         final String expectedOutputAbsolute = "<![CDATA[   var src=\"test\" ]]>";
 
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
         assertEquals(expectedOutputAbsolute, out.toString());
 
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.RELATIVE);
         tested.render(null, input, out);
         assertEquals(expectedOutputRelative, out.toString());
@@ -87,12 +88,12 @@ public class ResourceFixupRendererTest extends TestCase {
                 + "<a href=\"http://myapp/newcontext/page/page1.htm\">link</a> "
                 + "<img src=\"http://www.google.com/logo.com\"/>";
 
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, newBase, page, ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
         assertEquals(expectedOutputAbsolute, out.toString());
 
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested = new ResourceFixupRenderer(base, newBase, page, ResourceFixupRenderer.RELATIVE);
         tested.render(null, input, out);
         assertEquals(expectedOutputRelative, out.toString());
@@ -109,12 +110,12 @@ public class ResourceFixupRendererTest extends TestCase {
                 + "<a href=\"http://myapp/context/page/page1.htm\">link</a> "
                 + "<img src=\"http://www.google.com/logo.com\"/>";
 
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
         assertEquals(expectedOutputAbsolute, out.toString());
 
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.RELATIVE);
         tested.render(null, input, out);
         assertEquals(expectedOutputRelative, out.toString());
@@ -133,13 +134,13 @@ public class ResourceFixupRendererTest extends TestCase {
                 + "<img src=\"http://app2/page/images/logo.png\"/> "
                 + "<a href=\"http://app2/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
 
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page,
                 ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
         assertEquals(expectedOutputAbsolute, out.toString());
 
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested = new ResourceFixupRenderer(base, visibleBase, page, ResourceFixupRenderer.RELATIVE);
         tested.render(null, input, out);
         assertEquals(expectedOutputRelative, out.toString());
@@ -155,7 +156,7 @@ public class ResourceFixupRendererTest extends TestCase {
                 + "<img src=\"http://app2/page/images/logo$.png\"/></a>"
                 + " <img src=\"http://www.google.com/logo.com\"/>";
 
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page,
                 ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
@@ -171,7 +172,7 @@ public class ResourceFixupRendererTest extends TestCase {
         final String expectedOutputAbsolute = "  <a HREF=\"http://app2/page/../styles/style.css\"/> "
                 + "<img SrC=\"http://app2/page/images/logo.png\"/></a> <img src=\"http://www.google.com/logo.com\"/>";
 
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page,
                 ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
@@ -188,7 +189,7 @@ public class ResourceFixupRendererTest extends TestCase {
                 + "<img background=\"http://app2/page/images/logo.png\"/></a> "
                 + "<img background=\"http://www.google.com/logo.com\"/>";
 
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page,
                 ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
@@ -209,13 +210,13 @@ public class ResourceFixupRendererTest extends TestCase {
         final String expectedOutputAbsolute = "<a href=\"http://myapp/context/status?p=services\">test</a>";
 
         // Relative test
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.RELATIVE);
         tested.render(null, input, out);
         assertEquals(expectedOutputRelative, out.toString());
 
         // Absolute test
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
         assertEquals(expectedOutputAbsolute, out.toString());
@@ -238,13 +239,13 @@ public class ResourceFixupRendererTest extends TestCase {
         final String expectedOutputAbsolute = "<script src=\"http://localhost:8084/controller\"></script>";
 
         // Relative test
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visible, page, ResourceFixupRenderer.RELATIVE);
         tested.render(null, input, out);
         assertEquals(expectedOutputRelative, out.toString());
 
         // Absolute test
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested = new ResourceFixupRenderer(base, visible, page, ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
         assertEquals(expectedOutputAbsolute, out.toString());
@@ -271,13 +272,13 @@ public class ResourceFixupRendererTest extends TestCase {
         final String expectedOutputAbsolute = "<script src=\"//domain.com/applicationPath/controller\"></script>";
 
         // Relative test
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visible, page, ResourceFixupRenderer.RELATIVE);
         tested.render(null, input, out);
         assertEquals(expectedOutputRelative, out.toString());
 
         // Absolute test
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested = new ResourceFixupRenderer(base, visible, page, ResourceFixupRenderer.ABSOLUTE);
         tested.render(null, input, out);
         assertEquals(expectedOutputAbsolute, out.toString());

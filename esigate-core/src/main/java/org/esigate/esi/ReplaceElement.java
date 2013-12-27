@@ -16,6 +16,7 @@
 package org.esigate.esi;
 
 import org.esigate.HttpErrorPage;
+import org.esigate.Parameters;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.vars.VariablesResolver;
@@ -62,7 +63,7 @@ class ReplaceElement extends BaseElement {
 
     @Override
     protected void parseTag(Tag tag, ParserContext ctx) throws HttpErrorPage {
-        buf = new StringBuilder();
+        buf = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
         fragment = tag.getAttribute("fragment");
         regexp = tag.getAttribute("regexp");
         if (regexp == null) {

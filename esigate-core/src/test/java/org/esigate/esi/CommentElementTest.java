@@ -16,10 +16,10 @@
 package org.esigate.esi;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
@@ -39,14 +39,14 @@ public class CommentElementTest extends TestCase {
 
     public void testCommentEmpty() throws IOException, HttpErrorPage {
         String page = "begin <esi:comment text=\"some comment\" /> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin  end", out.toString());
     }
 
     public void testComment() throws IOException, HttpErrorPage {
         String page = "begin <esi:comment text=\"some comment\" > some text </esi:comment> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin  end", out.toString());
     }

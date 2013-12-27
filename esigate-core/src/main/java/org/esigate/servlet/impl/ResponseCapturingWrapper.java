@@ -18,7 +18,6 @@ package org.esigate.servlet.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -28,6 +27,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -39,6 +39,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.esigate.HttpErrorPage;
+import org.esigate.Parameters;
 import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.DateUtils;
@@ -52,7 +53,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     private ServletOutputStream servletOutputStream;
     private PrintWriter jspWriter;
     private OutputStream outputStream;
-    private StringWriter writer;
+    private StringBuilderWriter writer;
     private HttpServletResponse response;
     private CloseableHttpResponse httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(
             new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
@@ -345,7 +346,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
             if (contentType == null) {
                 httpClientResponse.addHeader(HttpHeaders.CONTENT_TYPE, "text/html;charset=" + charsetName);
             }
-            writer = new StringWriter();
+            writer = new StringBuilderWriter(Parameters.DEFAULT_BUFFER_SIZE);
             outputStream = new WriterOutputStream(writer, charsetName);
         } else {
             response.setStatus(httpClientResponse.getStatusLine().getStatusCode());

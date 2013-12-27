@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import org.apache.http.HttpStatus;
 import org.esigate.HttpErrorPage;
+import org.esigate.Parameters;
 import org.esigate.Renderer;
 import org.esigate.impl.DriverRequest;
 import org.esigate.parser.Parser;
@@ -111,7 +112,7 @@ public class EsiRenderer implements Renderer, Appendable {
         }
 
         // Pass 1. Remove esi comments
-        StringBuilder contentWithoutComments = new StringBuilder();
+        StringBuilder contentWithoutComments = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
         parserComments.setHttpRequest(originalRequest);
         parserComments.parse(content, contentWithoutComments);
 

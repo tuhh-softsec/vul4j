@@ -1,7 +1,7 @@
 package org.esigate.test.cases;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import org.apache.commons.io.output.StringBuilderWriter;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -20,7 +20,7 @@ public class Bug101ConnectionReleaseTest {
     private static final Logger LOG = LoggerFactory.getLogger(Bug101ConnectionReleaseTest.class);
 
     private void render(Driver driver, String page) throws IOException {
-        StringWriter writer = new StringWriter();
+        StringBuilderWriter writer = new StringBuilderWriter();
         IncomingRequest httpRequest = TestUtils.createRequest();
         try {
             driver.render("/esigate-app-aggregated1/" + page, null, writer, httpRequest, new BlockRenderer(null,

@@ -16,11 +16,11 @@
 package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
@@ -43,7 +43,7 @@ public class CommentTest extends TestCase {
 
     public void testComment() throws IOException, HttpErrorPage {
         String page = "begin <!--esi<sometag> some text</sometag>--> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin <sometag> some text</sometag> end", out.toString());
     }
@@ -51,7 +51,7 @@ public class CommentTest extends TestCase {
     public void testCommentVars() throws IOException, HttpErrorPage {
         String page = "<!--esi <p><esi:vars>Hello, $(HTTP_COOKIE{name})!</esi:vars></p> -->";
         TestUtils.addCookie(new BasicClientCookie("name", "world"), request);
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals(" <p>Hello, world!</p> ", out.toString());
     }
@@ -67,7 +67,7 @@ public class CommentTest extends TestCase {
         String page = "begin "
                 + "<!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>-->"
                 + " end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin replacement end", out.toString());
     }

@@ -28,6 +28,7 @@ import java.util.Properties;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.esigate.Driver;
+import org.esigate.Parameters;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -96,10 +97,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class Surrogate implements Extension, IEventListener {
-    /**
-     * 
-     */
-    private static final int BUF_SIZE_CAPABILITIES = 128;
 
     private static final String H_SURROGATE_CONTROL = "Surrogate-Control";
 
@@ -188,7 +185,7 @@ public class Surrogate implements Extension, IEventListener {
             FetchEvent e = (FetchEvent) event;
             Header h = e.getHttpRequest().getFirstHeader(H_SURROGATE_CAPABILITIES);
 
-            StringBuilder archCapabilities = new StringBuilder(BUF_SIZE_CAPABILITIES);
+            StringBuilder archCapabilities = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
             if (h != null && !isEmpty(h.getValue())) {
                 archCapabilities.append(defaultString(h.getValue()));
                 archCapabilities.append(", ");

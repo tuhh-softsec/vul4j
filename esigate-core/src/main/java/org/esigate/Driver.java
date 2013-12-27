@@ -361,7 +361,7 @@ public final class Driver {
 
         this.eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
         for (Renderer renderer : renderEvent.getRenderers()) {
-            StringBuilderWriter stringWriter = new StringBuilderWriter(1024);
+            StringBuilderWriter stringWriter = new StringBuilderWriter(Parameters.DEFAULT_BUFFER_SIZE);
             renderer.render(originalRequest, currentBody, stringWriter);
             stringWriter.close();
             currentBody = stringWriter.toString();

@@ -16,17 +16,17 @@
 package org.esigate.tags;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.HashMap;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
 
 public class TemplateRendererTest extends TestCase {
 
     public void testRenderTemplateNull1() throws IOException, HttpErrorPage {
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         TemplateRenderer tested = new TemplateRenderer(null, null, null);
         tested.render(null, null, out);
         assertEquals(0, out.toString().length());
@@ -36,7 +36,7 @@ public class TemplateRendererTest extends TestCase {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
 
         TemplateRenderer tested = new TemplateRenderer(null, params, null);
         tested.render(null, null, out);
@@ -52,7 +52,7 @@ public class TemplateRendererTest extends TestCase {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         TemplateRenderer tested = new TemplateRenderer(null, params, null);
         tested.render(null, input, out);
 
@@ -68,7 +68,7 @@ public class TemplateRendererTest extends TestCase {
                 + "<!--$endparam$key1$--> printed";
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "Should not work");
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         TemplateRenderer tested = new TemplateRenderer(null, params, null);
         tested.render(null, expectedOutput, out);
 
@@ -78,7 +78,7 @@ public class TemplateRendererTest extends TestCase {
     public void testRenderTemplate2() throws IOException, HttpErrorPage {
         final String expectedOutput = "abc some<!--$begintemplate$A$-->" + "some text goes here"
                 + "<!--$endtemplate$A$--> cdf hello";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         TemplateRenderer tested = new TemplateRenderer("A", null, null);
         tested.render(null, expectedOutput, out);
         assertEquals("some text goes here", out.toString());

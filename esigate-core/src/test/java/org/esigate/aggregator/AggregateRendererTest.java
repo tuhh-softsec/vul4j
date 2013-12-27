@@ -16,10 +16,10 @@
 package org.esigate.aggregator;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
@@ -57,19 +57,19 @@ public class AggregateRendererTest extends TestCase {
 
     public void testIncludeBlockNoBlockName() throws IOException, HttpErrorPage {
         String page = "content <!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$--> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content Test include end", out.toString());
     }
 
     public void testIncludeBlock() throws IOException, HttpErrorPage {
         String page = "content <!--$includeblock$mock$/testBlock$myblock$--> some text <!--$endincludeblock$--> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content some text goes here end", out.toString());
 
         page = "content <!--$includeblock$mock$$(vartestBlock)$myblock$--> some text <!--$endincludeblock$--> end";
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content some text goes here end", out.toString());
 
@@ -77,7 +77,7 @@ public class AggregateRendererTest extends TestCase {
 
     public void testIncludeBlockNested() throws IOException, HttpErrorPage {
         String page = "content <!--$includeblock$mock$/testNested$myblock$--> some text <!--$endincludeblock$--> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content  nested Test include /nested  end", out.toString());
     }
@@ -86,21 +86,21 @@ public class AggregateRendererTest extends TestCase {
         String page = "content "
                 + "<!--$includetemplate$mock$/testNestedTemplate$myblock$--> some text <!--$endincludetemplate$-->"
                 + " end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content  nested Test include /nested  end", out.toString());
     }
 
     public void testIncludeBlockRoot() throws IOException, HttpErrorPage {
         String page = "content <!--$includeblock$mock$$myblock$--> some text <!--$endincludeblock$--> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content some text goes here end", out.toString());
     }
 
     public void testIncludeTemplateNoTemplateName() throws IOException, HttpErrorPage {
         String page = "content <!--$includetemplate$mock$/testInclude$--> some text <!--$endincludetemplate$--> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content Test include end", out.toString());
     }
@@ -109,7 +109,7 @@ public class AggregateRendererTest extends TestCase {
         String page = "content <!--$includetemplate$mock$/testTemplateParams$mytemplate$--> some text "
                 + "<!--$beginput$param1$-->Replacement<!--$endput$-->"
                 + "some other text<!--$endincludetemplate$--> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content some text Replacement goes here end", out.toString());
     }
@@ -118,21 +118,21 @@ public class AggregateRendererTest extends TestCase {
         String page = "content <!--$includetemplate$mock$$(varTestTemplateParams)$mytemplate$--> some text "
                 + "<!--$beginput$param1$-->Replacement<!--$endput$-->"
                 + "some other text<!--$endincludetemplate$--> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content some text Replacement goes here end", out.toString());
 
         page = "content <!--$includetemplate$mock$/test$(varTemplate)Params$mytemplate$--> some text "
                 + "<!--$beginput$param1$-->Replacement<!--$endput$-->"
                 + "some other text<!--$endincludetemplate$--> end";
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content some text Replacement goes here end", out.toString());
 
         page = "content <!--$includetemplate$mock$/test$(varTemplate)$(varParams)$mytemplate$--> some text "
                 + "<!--$beginput$param1$-->Replacement<!--$endput$-->"
                 + "some other text<!--$endincludetemplate$--> end";
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content some text Replacement goes here end", out.toString());
 
@@ -143,7 +143,7 @@ public class AggregateRendererTest extends TestCase {
                 + "<!--$beginput$param1$-->aaa "
                 + "<!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$-->" + " bbb<!--$endput$-->"
                 + "some other text<!--$endincludetemplate$--> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content some text aaa Test include bbb goes here end", out.toString());
 

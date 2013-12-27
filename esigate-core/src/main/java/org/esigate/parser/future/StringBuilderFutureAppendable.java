@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.esigate.HttpErrorPage;
+import org.esigate.Parameters;
 
 /**
  * This is an implementation of StringBuilder which can append Future<CharSequence> and is a Future<CharSequence>
@@ -34,7 +35,6 @@ import org.esigate.HttpErrorPage;
  * 
  */
 public class StringBuilderFutureAppendable implements FutureAppendable, Future<CharSequence> {
-    private static final int DEFAULT_CAPACITY = 1024;
     private final StringBuilder builder;
     private final FutureAppendableAdapter futureBuilder;
 
@@ -42,7 +42,7 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
      * Create a new builder with a default capacity of 1024.
      */
     public StringBuilderFutureAppendable() {
-        this(DEFAULT_CAPACITY);
+        this(Parameters.DEFAULT_BUFFER_SIZE);
     }
 
     /**

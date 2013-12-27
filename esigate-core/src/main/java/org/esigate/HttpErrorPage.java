@@ -60,7 +60,7 @@ public class HttpErrorPage extends Exception {
     }
 
     private static HttpEntity toMemoryEntity(Exception exception) {
-        StringBuilderWriter out = new StringBuilderWriter(512);
+        StringBuilderWriter out = new StringBuilderWriter(Parameters.DEFAULT_BUFFER_SIZE);
         PrintWriter pw = new PrintWriter(out);
         exception.printStackTrace(pw);
         String content = out.toString();
@@ -85,7 +85,7 @@ public class HttpErrorPage extends Exception {
             }
             memoryEntity = byteArrayEntity;
         } catch (IOException e) {
-            StringBuilderWriter out = new StringBuilderWriter(512);
+            StringBuilderWriter out = new StringBuilderWriter(Parameters.DEFAULT_BUFFER_SIZE);
             PrintWriter pw = new PrintWriter(out);
             e.printStackTrace(pw);
             pw.close();

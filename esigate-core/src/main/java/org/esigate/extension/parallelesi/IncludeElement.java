@@ -32,6 +32,7 @@ import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.Parameters;
 import org.esigate.Renderer;
 import org.esigate.impl.DriverRequest;
 import org.esigate.parser.future.CharSequenceFuture;
@@ -81,7 +82,7 @@ class IncludeElement extends BaseElement {
         @Override
         public CharSequence call() throws IOException, HttpErrorPage {
             LOG.debug("Starting include task {}", this.src);
-            StringBuilderWriter sw = new StringBuilderWriter();
+            StringBuilderWriter sw = new StringBuilderWriter(Parameters.DEFAULT_BUFFER_SIZE);
 
             Exception currentException = null;
             // Handle src

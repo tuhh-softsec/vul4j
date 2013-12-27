@@ -223,7 +223,7 @@ public class DefaultCookieManager implements CookieManager {
     }
 
     private String toString(Cookie cookie) {
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
         result.append(cookie.getName());
         result.append("=");
         result.append(cookie.getValue());

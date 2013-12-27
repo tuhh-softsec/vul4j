@@ -15,11 +15,11 @@
 package org.esigate.tags;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
 
 public class BlockRendererTest extends TestCase {
@@ -32,12 +32,12 @@ public class BlockRendererTest extends TestCase {
     public void testRenderBlock() throws IOException, HttpErrorPage {
         final String expectedOutput = "abc some"
                 + "<!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$-->" + " cdf hello";
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         BlockRenderer tested = new BlockRenderer("myblock", null);
         tested.render(null, expectedOutput, out);
         assertEquals("some text goes here", out.toString());
         // null name means whole page
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         tested = new BlockRenderer(null, null);
         tested.render(null, expectedOutput, out);
         assertEquals(expectedOutput, out.toString());
@@ -45,7 +45,7 @@ public class BlockRendererTest extends TestCase {
 
     public void testUnknownTag() throws IOException, HttpErrorPage {
         final String input = "abc some<!--$hello$world$-->some text goes here";
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         BlockRenderer tested = new BlockRenderer(null, null);
         tested.render(null, input, out);
         // input should remain unchanged

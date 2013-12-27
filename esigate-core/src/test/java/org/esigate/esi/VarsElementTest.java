@@ -16,10 +16,10 @@
 package org.esigate.esi;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
@@ -45,7 +45,7 @@ public class VarsElementTest extends TestCase {
     public void testHttpHost() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>$(HTTP_HOST)</esi:vars> end";
         request = TestUtils.createRequest("http://www.foo.com", provider.getDriver());
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin www.foo.com end", out.toString());
     }
@@ -54,7 +54,7 @@ public class VarsElementTest extends TestCase {
         String page = "begin <esi:vars>"
                 + "<img src=\"http://www.example.com/$(HTTP_COOKIE{cookieName})/hello.gif\"/ >" + "</esi:vars> end";
         TestUtils.addCookie(new BasicClientCookie("cookieName", "value"), request);
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin <img src=\"http://www.example.com/value/hello.gif\"/ > end", out.toString());
     }
@@ -63,7 +63,7 @@ public class VarsElementTest extends TestCase {
         String page = "begin <esi:vars>" + "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >"
                 + "</esi:vars> end";
         request = TestUtils.createRequest("http://localhost/?param1=param1value", provider.getDriver());
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin <img src=\"http://www.example.com/param1value/hello.gif\"/ > end", out.toString());
     }
@@ -71,7 +71,7 @@ public class VarsElementTest extends TestCase {
     public void testHttpReferer() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>" + "$(HTTP_REFERER)" + "</esi:vars> end";
         request.setHeader("Referer", "http://www.example.com");
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin http://www.example.com end", out.toString());
     }
@@ -81,7 +81,7 @@ public class VarsElementTest extends TestCase {
         request.setHeader("User-Agent",
                 "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 GTB7.1 "
                         + "( .NET CLR 3.5.30729)");
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin WIN end", out.toString());
     }
@@ -89,7 +89,7 @@ public class VarsElementTest extends TestCase {
     public void testAcceptLanguage() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>" + "$(HTTP_ACCEPT_LANGUAGE{en-us})" + "</esi:vars> end";
         request.setHeader("Accept-Language", "en-us,en;q=0.5");
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("begin true end", out.toString());
     }

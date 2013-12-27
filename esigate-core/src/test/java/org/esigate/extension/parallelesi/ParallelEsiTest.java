@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
+import org.esigate.Parameters;
 import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 import org.slf4j.Logger;
@@ -61,8 +62,8 @@ public class ParallelEsiTest extends TestCase {
         EsiRenderer tested = new EsiRenderer(exe);
 
         // Build page and expected result
-        StringBuilder expect = new StringBuilder(100 * 128);
-        StringBuilder page = new StringBuilder(100 * 128);
+        StringBuilder expect = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
+        StringBuilder page = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
         page.append("before ");
         expect.append("before ");
         for (int i = 0; i < 100; i++) {

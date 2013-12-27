@@ -16,6 +16,7 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
+import org.esigate.Parameters;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 
@@ -32,7 +33,7 @@ class AttemptElement extends BaseElement {
         }
     };
 
-    private StringBuilder buf = new StringBuilder();
+    private StringBuilder buf = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
 
     @Override
     public void characters(CharSequence csq, int start, int end) {

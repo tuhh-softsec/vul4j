@@ -1,5 +1,6 @@
 package org.esigate.aggregator;
 
+import org.esigate.Parameters;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
@@ -25,7 +26,7 @@ class PutElement implements Element {
     };
 
     private IncludeTemplateElement includeTemplateElement;
-    private StringBuilder body = new StringBuilder();
+    private StringBuilder body = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
     private String name;
 
     @Override

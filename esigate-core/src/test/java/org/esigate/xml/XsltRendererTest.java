@@ -16,9 +16,10 @@
 package org.esigate.xml;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import junit.framework.TestCase;
+
+import org.apache.commons.io.output.StringBuilderWriter;
 
 public class XsltRendererTest extends TestCase {
 
@@ -42,7 +43,7 @@ public class XsltRendererTest extends TestCase {
         template += "<xsl:copy-of select=\".\"/>";
         template += "</xsl:template>";
         template += "</xsl:stylesheet>";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         XsltRenderer tested = new XsltRenderer(template);
         tested.render(null, src, out);
         return out.toString();

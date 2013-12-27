@@ -16,10 +16,10 @@
 package org.esigate.esi;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
 import org.esigate.impl.DriverRequest;
@@ -39,7 +39,7 @@ public class ReplaceElementTest extends TestCase {
 
     public void testErrorIfNotInsideIncludeTag() throws IOException, HttpErrorPage {
         String page = "begin <esi:replace fragment=\"test\">test</esi:replace> end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         try {
             tested.render(request, page, out);
         } catch (EsiSyntaxError e) {

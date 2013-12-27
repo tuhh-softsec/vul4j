@@ -26,8 +26,10 @@ import java.util.regex.Pattern;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.Parameters;
 import org.esigate.Renderer;
 import org.esigate.impl.DriverRequest;
+import org.esigate.parser.Adapter;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.regexp.ReplaceRenderer;
@@ -48,24 +50,7 @@ class IncludeElement extends BaseElement {
 
     };
 
-    private final Appendable outAdapter = new Appendable() {
-
-        @Override
-        public Appendable append(CharSequence csq, int start, int end) {
-            IncludeElement.this.characters(csq, start, end);
-            return this;
-        }
-
-        @Override
-        public Appendable append(char c) {
-            return append(new StringBuilder(1).append(c), 0, 1);
-        }
-
-        @Override
-        public Appendable append(CharSequence csq) {
-            return append(csq, 0, csq.length());
-        }
-    };
+    private final Appendable outAdapter = new Adapter(IncludeElement.this);
     private StringBuilder buf;
     private Map<String, CharSequence> fragmentReplacements;
     private Map<String, CharSequence> regexpReplacements;
@@ -139,7 +124,7 @@ class IncludeElement extends BaseElement {
 
     @Override
     protected void parseTag(Tag tag, ParserContext ctx) {
-        buf = new StringBuilder();
+        buf = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
         fragmentReplacements = new HashMap<String, CharSequence>();
         regexpReplacements = new HashMap<String, CharSequence>();
         includeTag = tag;

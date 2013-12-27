@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.esigate.Parameters;
 import org.esigate.api.ContainerRequestMediator;
 import org.esigate.impl.DriverRequest;
 import org.esigate.util.UriUtils;
@@ -40,7 +41,7 @@ public final class ResourceUtils {
 
     private static String buildQueryString(DriverRequest originalRequest, boolean proxy) {
         try {
-            StringBuilder queryString = new StringBuilder();
+            StringBuilder queryString = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
             String charset = originalRequest.getCharacterEncoding();
             if (charset == null) {
                 charset = "ISO-8859-1";
@@ -82,7 +83,7 @@ public final class ResourceUtils {
     }
 
     private static String concatUrl(String baseUrl, String relUrl) {
-        StringBuilder url = new StringBuilder();
+        StringBuilder url = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
         if (baseUrl != null && relUrl != null && (baseUrl.endsWith("/") || baseUrl.endsWith("\\"))
                 && relUrl.startsWith("/")) {
             url.append(baseUrl.substring(0, baseUrl.length() - 1)).append(relUrl);

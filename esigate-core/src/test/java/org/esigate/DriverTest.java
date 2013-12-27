@@ -17,7 +17,6 @@ package org.esigate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.SocketTimeoutException;
@@ -29,6 +28,7 @@ import java.util.zip.GZIPOutputStream;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -76,18 +76,18 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderBlock() throws IOException, HttpErrorPage {
-        Writer out = new StringWriter();
+        Writer out = new StringBuilderWriter();
         DriverFactory.getInstance("mock")
                 .render("/testBlock", null, out, request, new BlockRenderer("A", "/testBlock"));
 
         assertEquals("some text goes here", out.toString());
 
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         DriverFactory.getInstance("mock").render("$(vartestBlock)", null, out, request,
                 new BlockRenderer("A", "$(vartestBlock)"));
         assertEquals("some text goes here", out.toString());
 
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", null, out, request,
                 new BlockRenderer("A", "/$(vartest)$(varBlock)"));
         assertEquals("some text goes here", out.toString());
@@ -95,7 +95,7 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderTemplateFullPage() throws IOException, HttpErrorPage {
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
@@ -108,12 +108,12 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderTemplate() throws IOException, HttpErrorPage {
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
         DriverFactory.getInstance("mock").render("/testTemplate", null, out, request,
                 new TemplateRenderer("A", null, "/testTemplate"));
         assertEquals("some text goes here", out.toString());
 
-        out = new StringWriter();
+        out = new StringBuilderWriter();
         DriverFactory.getInstance("mock").render("/test$(varTemplate)", null, out, request,
                 new TemplateRenderer("A", null, "/test$(varTemplate)"));
         assertEquals("some text goes here", out.toString());

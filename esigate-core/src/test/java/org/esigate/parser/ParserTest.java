@@ -16,11 +16,11 @@
 package org.esigate.parser;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
 import org.esigate.impl.DriverRequest;
@@ -47,7 +47,7 @@ public class ParserTest extends TestCase {
         String page = "begin " + "<test:simple name='ignored'> this text will be ignored </test:simple>"
                 + "<test:body>this text should be {request} </test:body>" + "<test:unknown name='value' />"
                 + "<test:simple name='also ignored'/>" + " end";
-        StringWriter out = new StringWriter();
+        StringBuilderWriter out = new StringBuilderWriter();
 
         tested.parse(page, out);
         assertEquals("begin this text should be updated <test:unknown name='value' /> end", out.toString());
