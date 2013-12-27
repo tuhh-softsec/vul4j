@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public final class DriverSelector {
     private static final Logger LOG = LoggerFactory.getLogger(DriverSelector.class);
 
-    private DriverSelector() {
+    public DriverSelector() {
     }
 
     /**
@@ -48,12 +48,11 @@ public final class DriverSelector {
      * Perform selection based on the Host header.
      * 
      * @param request
-     * @param servlet 
+     * @param servlet
      * @return provider name or null.
      * @throws HttpErrorPage
      */
-    public static Pair<Driver, UriMapping> selectProvider(HttpServletRequest request, boolean servlet)
-            throws HttpErrorPage {
+    public Pair<Driver, UriMapping> selectProvider(HttpServletRequest request, boolean servlet) throws HttpErrorPage {
 
         String host = request.getHeader("Host");
         String scheme = request.getScheme();

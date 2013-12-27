@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 public class ProxyFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(ProxyFilter.class);
     private FilterConfig config;
+    private final DriverSelector driverSelector = new DriverSelector();
 
     @Override
     public void init(FilterConfig filterConfig) {
@@ -55,7 +56,7 @@ public class ProxyFilter implements Filter {
                 config.getServletContext(), chain);
         Pair<Driver, UriMapping> dm = null;
         try {
-            dm = DriverSelector.selectProvider(httpServletRequest, false);
+            dm = driverSelector.selectProvider(httpServletRequest, false);
             String relUrl = RequestUrl.getRelativeUrl(httpServletRequest, dm.getRight(), false);
             LOG.debug("Proxying {}", relUrl);
             dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
