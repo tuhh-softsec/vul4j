@@ -8,17 +8,6 @@
 		<groupId>org.esigate</groupId>
 		<version>5.0-SNAPSHOT</version>
 	</parent>
-	<repositories>
-		<repository>
-			<id>spy</id>
-			<name>Spy Repository</name>
-			<layout>default</layout>
-			<url>http://bleu.west.spy.net/~dustin/m2repo/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -70,9 +59,9 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>spy</groupId>
-			<artifactId>memcached</artifactId>
-			<version>2.5</version>
+			<groupId>net.spy</groupId>
+			<artifactId>spymemcached</artifactId>
+			<version>2.10.3</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
