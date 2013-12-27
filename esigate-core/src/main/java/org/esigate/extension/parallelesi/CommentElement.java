@@ -12,11 +12,13 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.extension.parallelesi;
 
 import java.util.concurrent.Future;
 
 import org.esigate.parser.future.FutureElementType;
+import org.esigate.parser.future.FutureParserContext;
 
 /**
  * The comment element allows developers to comment their ESI instructions, without making the comments available in the
@@ -42,4 +44,10 @@ class CommentElement extends BaseElement {
     public void characters(Future<CharSequence> csq) {
         // ignore element body
     }
+
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) {
+        // Nothing to do
+    }
+
 }

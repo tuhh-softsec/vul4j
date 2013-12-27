@@ -29,8 +29,8 @@ import nu.validator.htmlparser.common.DoctypeExpectation;
 import nu.validator.htmlparser.dom.Dom2Sax;
 import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Renderer;
+import org.esigate.impl.DriverRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -60,7 +60,7 @@ public class XpathRenderer implements Renderer {
 
     /** {@inheritDoc} */
     @Override
-    public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
+    public void render(DriverRequest httpRequest, String src, Writer out) throws IOException {
         try {
             HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder();
             htmlDocumentBuilder.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);

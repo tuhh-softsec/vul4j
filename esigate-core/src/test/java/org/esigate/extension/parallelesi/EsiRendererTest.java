@@ -20,20 +20,19 @@ import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.MockRequestExecutor;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class EsiRendererTest extends TestCase {
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
     private EsiRenderer tested;
 
     @Override
     protected void setUp() throws Exception {
         MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
-        request = TestUtils.createRequest();
+        request = TestUtils.createRequest(provider.getDriver());
         tested = new EsiRenderer(Executors.newCachedThreadPool());
-        provider.initHttpRequestParams(request, null);
     }
 
     public void testFragmentTagsShouldBeRemoved() throws Exception {

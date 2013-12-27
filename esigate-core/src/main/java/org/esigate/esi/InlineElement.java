@@ -15,9 +15,6 @@
 
 package org.esigate.esi;
 
-import java.io.IOException;
-
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.util.UriUtils;
@@ -51,8 +48,8 @@ class InlineElement extends BaseElement {
     }
 
     @Override
-    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-        String originalUrl = UriUtils.createUri(ctx.getHttpRequest().getRequestLine().getUri()).getPath();
+    public void onTagEnd(String tag, ParserContext ctx) {
+        String originalUrl = UriUtils.getPath(ctx.getHttpRequest().getRequestLine().getUri());
         InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.toString());
     }
 }

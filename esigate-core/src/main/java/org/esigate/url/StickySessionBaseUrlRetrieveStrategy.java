@@ -15,12 +15,11 @@
 
 package org.esigate.url;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.api.BaseUrlRetrieveStrategy;
 import org.esigate.api.ContainerRequestMediator;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.http.IncomingRequest;
 
 public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
     public static final String ESI_SESSION_COOKIE_NAME = "_esigate_session_cookie";
@@ -36,8 +35,8 @@ public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStra
     }
 
     @Override
-    public String getBaseURL(HttpRequest originalRequest) {
-        ContainerRequestMediator mediator = HttpRequestHelper.getMediator(originalRequest);
+    public String getBaseURL(IncomingRequest originalRequest) {
+        ContainerRequestMediator mediator = originalRequest.getMediator();
         Cookie sessionCookie = getEsiSessionCookie(mediator.getCookies());
         int index = 0;
         boolean toGenerate = true;

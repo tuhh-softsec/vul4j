@@ -81,4 +81,10 @@ class TryElement extends BaseElement {
     public void setWrite(boolean write) {
         this.write = write;
     }
+
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) {
+        // Nothing to do
+    }
+
 }

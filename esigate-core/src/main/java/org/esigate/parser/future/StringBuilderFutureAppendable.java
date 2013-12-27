@@ -51,13 +51,13 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
      * @param capacity
      *            Capacity of the builder.
      */
-    public StringBuilderFutureAppendable(int capacity) {
+    private StringBuilderFutureAppendable(int capacity) {
         this.builder = new StringBuilder(capacity);
         this.futureBuilder = new FutureAppendableAdapter(this.builder);
     }
 
     @Override
-    public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
+    public FutureAppendable enqueueAppend(Future<CharSequence> csq) {
         return this.futureBuilder.enqueueAppend(csq);
     }
 
@@ -87,7 +87,7 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
      * @see java.util.concurrent.Future#get()
      */
     @Override
-    public CharSequence get() throws InterruptedException, ExecutionException {
+    public CharSequence get() throws ExecutionException {
         try {
             this.futureBuilder.performAppends();
         } catch (IOException e) {
@@ -104,8 +104,7 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
      * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
      */
     @Override
-    public CharSequence get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
-            TimeoutException {
+    public CharSequence get(long timeout, TimeUnit unit) throws ExecutionException {
         try {
             this.futureBuilder.performAppends();
         } catch (IOException e) {

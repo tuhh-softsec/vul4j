@@ -42,7 +42,7 @@ public class FutureAppendableAdapter implements FutureAppendable {
     }
 
     @Override
-    public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
+    public FutureAppendable enqueueAppend(Future<CharSequence> csq) {
         this.futureList.add(csq);
         return this;
     }

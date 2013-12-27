@@ -21,7 +21,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpStatus;
-import org.apache.http.protocol.ExecutionContext;
 import org.esigate.Driver;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
@@ -88,7 +87,7 @@ public class FetchLogging implements Extension, IEventListener {
                 String reqHeaders = ArrayUtils.toString(lastRequest.getAllHeaders());
                 String respHeaders = ArrayUtils.toString(e.httpResponse.getAllHeaders());
 
-                HttpHost targetHost = (HttpHost) e.httpContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+                HttpHost targetHost = e.httpContext.getTargetHost();
 
                 long time = System.currentTimeMillis() - (Long) e.httpContext.removeAttribute(TIME);
 

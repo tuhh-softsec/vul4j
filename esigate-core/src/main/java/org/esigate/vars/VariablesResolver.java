@@ -22,11 +22,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpRequest;
 import org.apache.http.cookie.Cookie;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
+import org.esigate.impl.DriverRequest;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public final class VariablesResolver {
     /**
      * Loads variables according to default configuration file org/esigate/vars.properties.
      */
-    public static void configure() {
+    private static void configure() {
         InputStream inputStream = null;
         try {
             LOG.debug("Loading esigate-vars.properties file");
@@ -117,7 +117,7 @@ public final class VariablesResolver {
      * @param request
      * @return The resulting String
      */
-    public static String replaceAllVariables(String strVars, HttpRequest request) {
+    public static String replaceAllVariables(String strVars, DriverRequest request) {
         String result = strVars;
         if (VariablesResolver.containsVariable(strVars)) {
             Matcher matcher = VAR_PATTERN.matcher(strVars);
@@ -159,7 +159,7 @@ public final class VariablesResolver {
         return result;
     }
 
-    private static String getProperty(String var, String arg, HttpRequest request) {
+    private static String getProperty(String var, String arg, DriverRequest request) {
         String result = processVar(var, arg, request);
         if (properties != null) {
             result = properties.getProperty(var, result);
@@ -168,11 +168,11 @@ public final class VariablesResolver {
         return result;
     }
 
-    private static String processVar(String var, String arg, HttpRequest request) {
+    private static String processVar(String var, String arg, DriverRequest request) {
         String res = null;
         if (var.indexOf("QUERY_STRING") != -1) {
             if (arg == null) {
-                res = UriUtils.createUri(request.getRequestLine().getUri()).getRawQuery();
+                res = UriUtils.getRawQuery(request.getRequestLine().getUri());
             } else {
                 res = HttpRequestHelper.getParameter(request, arg);
             }
@@ -191,7 +191,7 @@ public final class VariablesResolver {
             if (arg == null) {
                 res = HttpRequestHelper.getFirstHeader("Cookie", request);
             } else {
-                Cookie[] cookies = HttpRequestHelper.getMediator(request).getCookies();
+                Cookie[] cookies = request.getMediator().getCookies();
                 for (Cookie c : cookies) {
                     if (c.getName().equals(arg)) {
                         res = c.getValue();
@@ -233,7 +233,8 @@ public final class VariablesResolver {
             String providerUrl = StringUtils.EMPTY;
             try {
                 Driver driver = DriverFactory.getInstance(arg);
-                providerUrl = driver.getConfiguration().getBaseUrlRetrieveStrategy().getBaseURL(request);
+                providerUrl = driver.getConfiguration().getBaseUrlRetrieveStrategy()
+                        .getBaseURL(request.getOriginalRequest());
             } catch (Exception e) {
                 // No driver available for this id.
             }

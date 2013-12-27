@@ -47,7 +47,7 @@ class ReplaceElement extends BaseElement {
     private String regexp;
 
     @Override
-    public void characters(Future<CharSequence> csq) throws IOException {
+    public void characters(Future<CharSequence> csq) {
         buf.enqueueAppend(csq);
     }
 
@@ -60,8 +60,6 @@ class ReplaceElement extends BaseElement {
         String result;
         try {
             result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
-        } catch (InterruptedException e) {
-            throw new IOException(e);
         } catch (ExecutionException e) {
             if (e.getCause() instanceof HttpErrorPage) {
                 throw (HttpErrorPage) e.getCause();
@@ -69,16 +67,16 @@ class ReplaceElement extends BaseElement {
             throw new IOException(e);
         }
         if (fragment != null) {
-            parent.addFragmentReplacement(fragment, (CharSequence) result);
+            parent.addFragmentReplacement(fragment, result);
         } else if (regexp != null) {
-            parent.addRegexpReplacement(regexp, (CharSequence) result);
+            parent.addRegexpReplacement(regexp, result);
         } else {
             parent.characters(new CharSequenceFuture(result));
         }
     }
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, FutureParserContext ctx) throws HttpErrorPage {
         buf = new StringBuilderFutureAppendable();
         fragment = tag.getAttribute("fragment");
         regexp = tag.getAttribute("regexp");

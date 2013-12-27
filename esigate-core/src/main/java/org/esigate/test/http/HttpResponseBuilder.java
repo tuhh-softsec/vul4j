@@ -20,12 +20,13 @@ import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
+import org.esigate.http.BasicCloseableHttpResponse;
 
 /**
  * Fluent-style builder for HttpResponse.
@@ -53,7 +54,7 @@ public class HttpResponseBuilder {
      * 
      * @return The HTTP response
      */
-    public HttpResponse build() {
+    public CloseableHttpResponse build() {
         BasicHttpResponse response = new BasicHttpResponse(this.protocolVersion, this.status, this.reason);
 
         for (Header h : this.headers) {
@@ -63,7 +64,7 @@ public class HttpResponseBuilder {
         if (this.entity != null) {
             response.setEntity(this.entity);
         }
-        return response;
+        return BasicCloseableHttpResponse.adapt(response);
     }
 
     public HttpResponseBuilder entity(HttpEntity paramEntity) {

@@ -14,22 +14,22 @@
  */
 package org.esigate.test.http;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpHost;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.message.BasicRequestLine;
 import org.esigate.api.ContainerRequestMediator;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.MockMediator;
-import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 
 /**
@@ -61,13 +61,24 @@ public class HttpRequestBuilder {
      * 
      * @return the request
      */
-    public HttpEntityEnclosingRequest build() {
-        HttpEntityEnclosingRequest request = null;
-        URI uri = UriUtils.createUri(this.uriString);
-        String scheme = uri.getScheme();
-        String host = uri.getHost();
-        int port = uri.getPort();
-        request = new BasicHttpEntityEnclosingRequest(this.method, this.uriString, this.protocolVersion);
+    public IncomingRequest build() {
+        IncomingRequest request = null;
+        HttpHost httpHost = UriUtils.extractHost(this.uriString);
+        String scheme = httpHost.getSchemeName();
+        String host = httpHost.getHostName();
+        int port = httpHost.getPort();
+        RequestLine requestLine = new BasicRequestLine(this.method, this.uriString, this.protocolVersion);
+
+        ContainerRequestMediator requestMediator = null;
+        if (this.mockMediator) {
+            requestMediator = new MockMediator(this.uriString);
+        }
+
+        if (this.mediator != null) {
+            requestMediator = this.mediator;
+        }
+
+        request = new IncomingRequest(requestLine, requestMediator);
         if (port == -1 || port == 80 && "http".equals(scheme) || port == 443 && "https".equals(scheme)) {
             request.setHeader("Host", host);
         } else {
@@ -80,15 +91,6 @@ public class HttpRequestBuilder {
 
         if (this.entity != null) {
             request.setEntity(this.entity);
-        }
-
-        ContainerRequestMediator requestMediator = null;
-        if (this.mockMediator) {
-            requestMediator = new MockMediator(this.uriString);
-        }
-
-        if (this.mediator != null) {
-            requestMediator = this.mediator;
         }
 
         // Add cookies
@@ -109,7 +111,6 @@ public class HttpRequestBuilder {
             for (Cookie c : this.cookies) {
                 requestMediator.addCookie(c);
             }
-            HttpRequestHelper.setMediator(request, requestMediator);
         }
 
         return request;

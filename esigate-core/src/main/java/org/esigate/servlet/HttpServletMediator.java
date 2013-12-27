@@ -30,18 +30,16 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicLineParser;
 import org.apache.http.message.BasicRequestLine;
 import org.esigate.api.ContainerRequestMediator;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.http.IncomingRequest;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +67,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final ServletContext servletContext;
-    private final HttpEntityEnclosingRequest httpRequest;
+    private final IncomingRequest httpRequest;
     private boolean responseSent = false;
     private final FilterChain filterChain;
 
@@ -86,10 +84,10 @@ public class HttpServletMediator implements ContainerRequestMediator {
         this.filterChain = filterChain;
         // create request line
         String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(),
-                request.getRequestURI(), request.getQueryString(), null).toString();
+                request.getRequestURI(), request.getQueryString(), null);
         ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(request.getProtocol(), null);
-        BasicHttpEntityEnclosingRequest result = new BasicHttpEntityEnclosingRequest(new BasicRequestLine(
-                request.getMethod(), uri, protocolVersion));
+        IncomingRequest result = new IncomingRequest(new BasicRequestLine(request.getMethod(), uri, protocolVersion),
+                this);
         // copy headers
         @SuppressWarnings("rawtypes")
         Enumeration names = request.getHeaderNames();
@@ -119,7 +117,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
             }
             result.setEntity(entity);
         }
-        HttpRequestHelper.setMediator(result, this);
+
         this.httpRequest = result;
     }
 
@@ -263,7 +261,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
     }
 
     @Override
-    public HttpEntityEnclosingRequest getHttpRequest() {
+    public IncomingRequest getHttpRequest() {
         return httpRequest;
     }
 

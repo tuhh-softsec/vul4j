@@ -61,7 +61,7 @@ class Tag {
         // return null;
     }
 
-    Tag(String name, boolean closing, boolean openClosed, Map<String, String> attributes) {
+    private Tag(String name, boolean closing, boolean openClosed, Map<String, String> attributes) {
         this.name = name;
         this.closing = closing;
         this.openClosed = openClosed;

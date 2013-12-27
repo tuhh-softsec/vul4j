@@ -21,23 +21,22 @@ import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class ChooseElementTest extends TestCase {
 
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
     private EsiRenderer tested;
 
     @Override
     protected void setUp() throws Exception {
-        MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
-        request = TestUtils.createRequest();
+        MockRequestExecutor requestExecutor = MockRequestExecutor.createMockDriver();
+        request = TestUtils.createRequest(requestExecutor.getDriver());
         tested = new EsiRenderer(Executors.newCachedThreadPool());
-        provider.initHttpRequestParams(request, null);
     }
 
     public void testChoose() throws IOException, HttpErrorPage {

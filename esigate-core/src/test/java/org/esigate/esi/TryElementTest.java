@@ -19,27 +19,24 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class TryElementTest extends TestCase {
-
     private EsiRenderer tested;
-
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
 
     @Override
-    protected void setUp() throws IOException, HttpErrorPage {
+    protected void setUp() throws HttpErrorPage {
         MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
         provider.addResource("/test", "test");
         provider.addResource("http://www.foo.com/test", "test");
         provider.addResource("http://www.foo.com/testFragment",
                 "before fragment <esi:fragment name=\"fragmentFound\">FRAGMENT FOUND</esi:fragment> after fragment");
         provider.addResource("http://www.foo.com/testWithoutFragment", "no fragment here");
-        request = TestUtils.createRequest();
-        provider.initHttpRequestParams(request, null);
+        request = TestUtils.createRequest(provider.getDriver());
         tested = new EsiRenderer();
     }
 

@@ -42,6 +42,7 @@ public final class RequestUrl {
      *            The current HTTP request
      * @param mapping
      *            matched mapping or null
+     * @param servlet 
      * @return the url, relative to the servlet mapping.
      */
     public static String getRelativeUrl(HttpServletRequest request, UriMapping mapping, boolean servlet) {

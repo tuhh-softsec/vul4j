@@ -29,18 +29,17 @@ import java.util.concurrent.RunnableFuture;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
+import org.esigate.impl.DriverRequest;
 import org.esigate.parser.future.CharSequenceFuture;
 import org.esigate.parser.future.FutureElement;
 import org.esigate.parser.future.FutureElementType;
 import org.esigate.parser.future.FutureParserContext;
 import org.esigate.parser.future.StringBuilderFutureAppendable;
 import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
@@ -52,9 +51,9 @@ class IncludeElement extends BaseElement {
     private static final String PROVIDER_PATTERN = "$(PROVIDER{";
     private static final String LEGACY_PROVIDER_PATTERN = "$PROVIDER({";
 
-    protected static final Logger LOG = LoggerFactory.getLogger(IncludeElement.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IncludeElement.class);
 
-    public static class IncludeTask implements Callable<CharSequence> {
+    private static class IncludeTask implements Callable<CharSequence> {
         private String src;
         private String alt;
         private FutureParserContext ctx;
@@ -65,7 +64,7 @@ class IncludeElement extends BaseElement {
         private Map<String, CharSequence> regexpReplacements;
         private Executor executor;
 
-        public IncludeTask(Tag includeTag, String src, String alt, FutureParserContext ctx, FutureElement current,
+        private IncludeTask(Tag includeTag, String src, String alt, FutureParserContext ctx, FutureElement current,
                 boolean ignoreError, Map<String, CharSequence> fragmentReplacements,
                 Map<String, CharSequence> regexpReplacements, Executor executor) {
             this.src = src;
@@ -133,14 +132,14 @@ class IncludeElement extends BaseElement {
             return result;
         }
 
-        void processPage(String src, Tag tag, FutureParserContext ctx, Appendable out) throws IOException,
+        private void processPage(String src, Tag tag, FutureParserContext ctx, Appendable out) throws IOException,
                 HttpErrorPage {
             String fragment = tag.getAttribute("fragment");
             String xpath = tag.getAttribute("xpath");
             String xslt = tag.getAttribute("stylesheet");
             boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 
-            HttpEntityEnclosingRequest httpRequest = ctx.getHttpRequest();
+            DriverRequest httpRequest = ctx.getHttpRequest();
             List<Renderer> rendererList = new ArrayList<Renderer>();
             Driver driver;
             String page;
@@ -149,7 +148,7 @@ class IncludeElement extends BaseElement {
             int idxLegacyPattern = src.indexOf(LEGACY_PROVIDER_PATTERN);
             if (idx < 0 && idxLegacyPattern < 0) {
                 page = src;
-                driver = HttpRequestHelper.getDriver(httpRequest);
+                driver = httpRequest.getDriver();
             } else if (idx >= 0) {
                 int startIdx = idx + PROVIDER_PATTERN.length();
                 int endIndex = src.indexOf("})", startIdx);
@@ -166,14 +165,14 @@ class IncludeElement extends BaseElement {
 
             if (rewriteAbsoluteUrl) {
                 Map<String, String> replaceRules = new HashMap<String, String>();
-                String baseUrl = HttpRequestHelper.getBaseUrl(httpRequest).toString();
+                String baseUrl = httpRequest.getBaseUrl().toString();
                 String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL(baseUrl);
 
                 String contextBaseUrl;
                 String contextVisibleBaseUrl;
-                contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+                contextBaseUrl = UriUtils.getPath(baseUrl);
                 if (visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)) {
-                    contextVisibleBaseUrl = UriUtils.createUri(visibleBaseUrl).getPath();
+                    contextVisibleBaseUrl = UriUtils.getPath(visibleBaseUrl);
                     replaceRules.put("href=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "href=$1" + contextVisibleBaseUrl
                             + "$2$3");
                     replaceRules.put("src=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "src=$1" + contextVisibleBaseUrl
@@ -181,7 +180,7 @@ class IncludeElement extends BaseElement {
                     replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
                     replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
                 } else {
-                    contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+                    contextBaseUrl = UriUtils.getPath(baseUrl);
                     replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
                     replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
                 }
@@ -210,7 +209,8 @@ class IncludeElement extends BaseElement {
                 } else if (xslt != null) {
                     rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
                 }
-                driver.render(page, null, out, httpRequest, rendererList.toArray(new Renderer[rendererList.size()]));
+                driver.render(page, null, out, httpRequest.getOriginalRequest(),
+                        rendererList.toArray(new Renderer[rendererList.size()]));
             }
         }
 
@@ -234,7 +234,7 @@ class IncludeElement extends BaseElement {
     }
 
     @Override
-    public void characters(Future<CharSequence> csq) throws IOException {
+    public void characters(Future<CharSequence> csq) {
         if (write) {
             buf.enqueueAppend(csq);
         }
@@ -266,7 +266,7 @@ class IncludeElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, FutureParserContext ctx) {
         buf = new StringBuilderFutureAppendable();
         fragmentReplacements = new HashMap<String, CharSequence>();
         regexpReplacements = new HashMap<String, CharSequence>();

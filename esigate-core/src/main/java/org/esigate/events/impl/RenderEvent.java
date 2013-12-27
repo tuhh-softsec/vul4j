@@ -17,10 +17,10 @@ package org.esigate.events.impl;
 
 import java.util.List;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Renderer;
 import org.esigate.events.Event;
+import org.esigate.impl.DriverRequest;
 
 /**
  * Render event : when renderers are applied on the page.
@@ -32,10 +32,10 @@ public class RenderEvent extends Event {
 
     public List<Renderer> renderers;
     public String remoteUrl;
-    public HttpRequest originalRequest;
+    public DriverRequest originalRequest;
 
     /**
      * The response from backend, including headers.
      */
-    public HttpResponse httpResponse;
+    public CloseableHttpResponse httpResponse;
 }

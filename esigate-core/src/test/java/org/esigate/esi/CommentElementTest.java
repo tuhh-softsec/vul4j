@@ -20,22 +20,21 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class CommentElementTest extends TestCase {
     private EsiRenderer tested;
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
 
     @Override
     protected void setUp() throws Exception {
         Driver provider = MockRequestExecutor.createDriver();
-        request = TestUtils.createRequest();
+        request = TestUtils.createRequest(provider);
         tested = new EsiRenderer();
-        provider.initHttpRequestParams(request, null);
     }
 
     public void testCommentEmpty() throws IOException, HttpErrorPage {

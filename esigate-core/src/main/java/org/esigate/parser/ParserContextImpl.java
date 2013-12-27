@@ -18,9 +18,9 @@ package org.esigate.parser;
 import java.io.IOException;
 import java.util.Stack;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.HttpErrorPage;
+import org.esigate.impl.DriverRequest;
 
 /**
  * 
@@ -31,12 +31,12 @@ import org.esigate.HttpErrorPage;
  */
 class ParserContextImpl implements ParserContext {
     private final RootAdapter root;
-    private final HttpEntityEnclosingRequest httpRequest;
+    private final DriverRequest httpRequest;
     private final HttpResponse httpResponse;
 
     private final Stack<Pair> stack = new Stack<Pair>();
 
-    ParserContextImpl(Appendable root, HttpEntityEnclosingRequest httpRequest, HttpResponse httpResponse) {
+    ParserContextImpl(Appendable root, DriverRequest httpRequest, HttpResponse httpResponse) {
         this.root = new RootAdapter(root);
         this.httpRequest = httpRequest;
         this.httpResponse = httpResponse;
@@ -104,7 +104,7 @@ class ParserContextImpl implements ParserContext {
     }
 
     @Override
-    public HttpEntityEnclosingRequest getHttpRequest() {
+    public DriverRequest getHttpRequest() {
         return this.httpRequest;
     }
 

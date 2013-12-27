@@ -24,10 +24,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpStatus;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
+import org.esigate.impl.DriverRequest;
 import org.esigate.parser.future.FutureAppendable;
 import org.esigate.parser.future.FutureAppendableAdapter;
 import org.esigate.parser.future.FutureParser;
@@ -128,8 +128,7 @@ public class EsiRenderer implements Renderer, FutureAppendable {
     }
 
     @Override
-    public void render(HttpEntityEnclosingRequest originalRequest, String content, Writer out) throws IOException,
-            HttpErrorPage {
+    public void render(DriverRequest originalRequest, String content, Writer out) throws IOException, HttpErrorPage {
         if (name != null) {
             LOG.debug("Rendering fragment {} in page {}", name, page);
         }
@@ -160,15 +159,13 @@ public class EsiRenderer implements Renderer, FutureAppendable {
 
             this.futureOut.performAppends();
 
-        } catch (InterruptedException e) {
-            throw new IOException(e);
         } catch (ExecutionException e) {
             throw new IOException(e);
         }
     }
 
     @Override
-    public FutureAppendable enqueueAppend(Future<CharSequence> csq) throws IOException {
+    public FutureAppendable enqueueAppend(Future<CharSequence> csq) {
         if (this.write) {
             this.futureOut.enqueueAppend(csq);
         }

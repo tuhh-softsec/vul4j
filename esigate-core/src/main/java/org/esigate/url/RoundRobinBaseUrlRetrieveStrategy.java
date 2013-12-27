@@ -17,8 +17,8 @@ package org.esigate.url;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.http.HttpRequest;
 import org.esigate.api.BaseUrlRetrieveStrategy;
+import org.esigate.http.IncomingRequest;
 
 public class RoundRobinBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
     private final AtomicInteger counter = new AtomicInteger(0);
@@ -29,7 +29,7 @@ public class RoundRobinBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrateg
     }
 
     @Override
-    public String getBaseURL(HttpRequest originalRequest) {
+    public String getBaseURL(IncomingRequest originalRequest) {
         int incremented = this.counter.incrementAndGet();
         int index = incremented % this.urls.length;
         return this.urls[Math.abs(index)];

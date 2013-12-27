@@ -17,7 +17,6 @@ package org.esigate.extension;
 
 import java.util.Properties;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpStatus;
 import org.esigate.Driver;
 import org.esigate.Parameters;
@@ -26,6 +25,7 @@ import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.RenderEvent;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.conn.SequenceResponse;
 import org.esigate.test.driver.AbstractDriverTestCase;
 import org.junit.Assert;
@@ -56,8 +56,7 @@ public class APITest extends AbstractDriverTestCase {
                 new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
                         .header("Content-Type", "text/html; charset=utf-8").build()));
 
-        HttpEntityEnclosingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator()
-                .build();
+        IncomingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
 
         driverProxy(driver, request);
 

@@ -22,109 +22,120 @@ import org.apache.http.Header;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.authentication.GenericAuthentificationHandler;
-import org.esigate.http.GenericHttpRequest;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.http.IncomingRequest;
+import org.esigate.http.OutgoingRequest;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CasAuthenticationHandler extends GenericAuthentificationHandler {
-	public static final String DEFAULT_LOGIN_URL = "/login";
+    public static final String DEFAULT_LOGIN_URL = "/login";
 
-	private final static Logger LOG = LoggerFactory.getLogger(GenericAuthentificationHandler.class);
+    private final static Logger LOG = LoggerFactory.getLogger(GenericAuthentificationHandler.class);
 
-	// Configuration properties names
-	private final static String LOGIN_URL_PROPERTY = "casLoginUrl";
-	private final static String SECOND_REQUEST = "SECOND_REQUEST";
-	private final static String SPRING_SECURITY_PROPERTY = "isSpringSecurity";
+    // Configuration properties names
+    private final static String LOGIN_URL_PROPERTY = "casLoginUrl";
+    private final static String SECOND_REQUEST = "SECOND_REQUEST";
+    private final static String SPRING_SECURITY_PROPERTY = "isSpringSecurity";
 
-	private final static String SPRING_SECURITY_URL_PATTERN_PROPERTY = "springSecurityUrl";
+    private final static String SPRING_SECURITY_URL_PATTERN_PROPERTY = "springSecurityUrl";
 
-	private String loginUrl;
-	private boolean springSecurity;
-	private String springSecurityUrl;
+    private String loginUrl;
+    private boolean springSecurity;
+    private String springSecurityUrl;
 
-	private String addCasAuthentication(String location, HttpRequest request) {
-		String resultLocation = location;
-		Principal principal = HttpRequestHelper.getMediator(request).getUserPrincipal();
-		if (principal != null && principal instanceof AttributePrincipal) {
-			AttributePrincipal casPrincipal = (AttributePrincipal) principal;
-			LOG.debug("User logged in CAS as: " + casPrincipal.getName());
-			String springRedirectParam = "";
+    private void addCasAuthentication(OutgoingRequest outgoingRequest, IncomingRequest request) {
+        String location = outgoingRequest.getRequestLine().getUri();
+        String resultLocation = location;
+        Principal principal = request.getMediator().getUserPrincipal();
+        if (principal != null && principal instanceof AttributePrincipal) {
+            AttributePrincipal casPrincipal = (AttributePrincipal) principal;
+            LOG.debug("User logged in CAS as: " + casPrincipal.getName());
+            String springRedirectParam = "";
 
-			if (springSecurity) {
-				String params = null;
-				if (resultLocation.indexOf("?") != -1) {
-					params = resultLocation.substring(resultLocation.indexOf("?"));
-					LOG.debug("params: " + params.substring(1));
-				}
-				if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
-					resultLocation = HttpRequestHelper.getBaseUrl(request) + springSecurityUrl + ((params != null) ? params : "");
-					springRedirectParam = "&spring-security-redirect=" + location;
-					LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
-				}
-			}
-			String casProxyTicket = casPrincipal.getProxyTicketFor(resultLocation);
-			LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName() + " for service: " + location + " : " + casProxyTicket);
-			if (casProxyTicket != null) {
-				if (resultLocation.indexOf("?") > 0) {
-					return resultLocation + "&ticket=" + casProxyTicket + springRedirectParam;
-				} else {
-					return resultLocation + "?ticket=" + casProxyTicket + springRedirectParam;
-				}
-			}
-		}
+            if (springSecurity) {
+                String params = null;
+                if (resultLocation.indexOf("?") != -1) {
+                    params = resultLocation.substring(resultLocation.indexOf("?"));
+                    LOG.debug("params: " + params.substring(1));
+                }
+                if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
+                    resultLocation = outgoingRequest.getBaseUrl() + springSecurityUrl
+                            + ((params != null) ? params : "");
+                    springRedirectParam = "&spring-security-redirect=" + location;
+                    LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
+                }
+            }
+            String casProxyTicket = casPrincipal.getProxyTicketFor(resultLocation);
+            LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName() + " for service: " + location + " : "
+                    + casProxyTicket);
+            if (casProxyTicket != null) {
+                if (resultLocation.indexOf("?") > 0) {
+                    resultLocation = resultLocation + "&ticket=" + casProxyTicket + springRedirectParam;
+                } else {
+                    resultLocation = resultLocation + "?ticket=" + casProxyTicket + springRedirectParam;
+                }
+            }
+        }
+        outgoingRequest.setUri(resultLocation);
+    }
 
-		return resultLocation;
-	}
+    @Override
+    public boolean beforeProxy(HttpRequest request) {
+        return true;
+    }
 
-	@Override
-	public boolean beforeProxy(HttpRequest request) {
-		return true;
-	}
+    @Override
+    public void init(Properties properties) {
+        loginUrl = properties.getProperty(LOGIN_URL_PROPERTY);
+        if (loginUrl == null) {
+            loginUrl = DEFAULT_LOGIN_URL;
+        }
+        String springSecurityString = properties.getProperty(SPRING_SECURITY_PROPERTY);
+        if (springSecurityString != null) {
+            springSecurity = Boolean.parseBoolean(springSecurityString);
+        } else {
+            springSecurity = false;
+        }
+        springSecurityUrl = properties.getProperty(SPRING_SECURITY_URL_PATTERN_PROPERTY);
+    }
 
-	@Override
-	public void init(Properties properties) {
-		loginUrl = properties.getProperty(LOGIN_URL_PROPERTY);
-		if (loginUrl == null) {
-			loginUrl = DEFAULT_LOGIN_URL;
-		}
-		String springSecurityString = properties.getProperty(SPRING_SECURITY_PROPERTY);
-		if (springSecurityString != null) {
-			springSecurity = Boolean.parseBoolean(springSecurityString);
-		} else {
-			springSecurity = false;
-		}
-		springSecurityUrl = properties.getProperty(SPRING_SECURITY_URL_PATTERN_PROPERTY);
-	}
+    @Override
+    public boolean needsNewRequest(HttpResponse httpResponse, OutgoingRequest outgoingRequest,
+            IncomingRequest incomingRequest) {
+        Boolean secondRequest = incomingRequest.getAttribute(SECOND_REQUEST);
+        if (secondRequest == null) {
+            secondRequest = Boolean.FALSE;
+        }
+        if (secondRequest) {
+            // Calculating the URL we may have been redirected to, as
+            // automatic redirect following is activated
+            Header LocationHeader = httpResponse.getFirstHeader("Location");
+            String currentLocation = null;
+            if (LocationHeader != null) {
+                currentLocation = LocationHeader.getValue();
+            }
+            if (currentLocation != null && currentLocation.contains(loginUrl)) {
+                // If the user is authenticated we need a second request with
+                // the proxy ticket
+                Principal principal = incomingRequest.getMediator().getUserPrincipal();
+                if (principal != null && principal instanceof AttributePrincipal) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean needsNewRequest(HttpResponse httpResponse, HttpRequest request) {
-		if (request.getParams().getBooleanParameter(SECOND_REQUEST, false)) {
-			// Calculating the URL we may have been redirected to, as
-			// automatic redirect following is activated
-			Header LocationHeader = httpResponse.getFirstHeader("Location");
-			String currentLocation = null;
-			if (LocationHeader != null) {
-				currentLocation = LocationHeader.getValue();
-			}
-			if (currentLocation != null && currentLocation.contains(loginUrl)) {
-				// If the user is authenticated we need a second request with
-				// the proxy ticket
-				Principal principal = HttpRequestHelper.getMediator(request).getUserPrincipal();
-				if (principal != null && principal instanceof AttributePrincipal) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
-		if (httpRequest.getParams().getBooleanParameter(SECOND_REQUEST, false)) {
-			request.setUri(addCasAuthentication(request.getRequestLine().getUri(), httpRequest));
-		}
-		httpRequest.getParams().setBooleanParameter(SECOND_REQUEST, true);
-	}
+    @Override
+    public void preRequest(OutgoingRequest outgoingRequest, IncomingRequest incomingRequest) {
+        Boolean secondRequest = incomingRequest.getAttribute(SECOND_REQUEST);
+        if (secondRequest == null) {
+            secondRequest = Boolean.FALSE;
+        }
+        if (secondRequest) {
+            addCasAuthentication(outgoingRequest, incomingRequest);
+        }
+        incomingRequest.setAttribute(SECOND_REQUEST, true);
+    }
 }

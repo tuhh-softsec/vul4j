@@ -22,8 +22,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.cache.CacheResponseStatus;
-import org.apache.http.impl.client.cache.CachingHttpClient;
-import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.client.cache.HttpCacheContext;
 import org.esigate.Driver;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
@@ -94,7 +93,7 @@ public class FragmentLogging implements Extension, IEventListener {
                 HttpRequest lastRequest = RedirectStrategy.getLastRequest(e.httpRequest, e.httpContext);
 
                 // Create log message
-                HttpHost targetHost = (HttpHost) e.httpContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+                HttpHost targetHost = e.httpContext.getTargetHost();
 
                 String requestLine = lastRequest.getRequestLine().toString();
                 String statusLine = e.httpResponse.getStatusLine().toString();
@@ -104,7 +103,7 @@ public class FragmentLogging implements Extension, IEventListener {
 
                 String cache = "";
                 CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) e.httpContext
-                        .getAttribute(CachingHttpClient.CACHE_RESPONSE_STATUS);
+                        .getAttribute(HttpCacheContext.CACHE_RESPONSE_STATUS);
                 if (cacheResponseStatus != null) {
                     cache = cacheResponseStatus.toString();
                 }

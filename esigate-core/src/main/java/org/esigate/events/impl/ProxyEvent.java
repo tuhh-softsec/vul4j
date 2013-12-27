@@ -15,10 +15,10 @@
 
 package org.esigate.events.impl;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.HttpErrorPage;
 import org.esigate.events.Event;
+import org.esigate.http.IncomingRequest;
 
 /**
  * Proxy Event : Requests received by ESIGate in proxy mode ( standalone application).
@@ -30,12 +30,12 @@ public class ProxyEvent extends Event {
     /**
      * The request which was received by ESIgate.
      */
-    public HttpRequest originalRequest;
+    public IncomingRequest originalRequest;
 
     /**
      * The current response. May be null if no reponse has be created yet or in case of error.
      */
-    public HttpResponse response = null;
+    public CloseableHttpResponse response = null;
 
     /**
      * The current error page. If not null, an error as occured and the error page will be sent instead of the response.

@@ -17,7 +17,6 @@ package org.esigate.extension;
 
 import java.util.Properties;
 
-import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -63,7 +62,7 @@ public class ErrorPages implements Extension, IEventListener {
         if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
             LOG.error(e.httpRequest.getRequestLine().getUri());
 
-            if ("esigate".equals(((HttpHost) e.httpRequest.getParams().getParameter("TARGET_HOST")).getHostName())) {
+            if ("esigate".equals(e.httpContext.getTargetHost().getHostName())) {
                 if ("http://esigate/no-mapping/".equals(e.httpRequest.getRequestLine().getUri())) {
                     e.httpResponse = new HttpResponseBuilder().status(HttpStatus.SC_NOT_FOUND)
                             .reason("No mapping defined").entity(NO_MAPPING).build();

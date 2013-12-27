@@ -20,8 +20,8 @@ import java.util.Properties;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.UserContext;
-import org.esigate.http.GenericHttpRequest;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.http.IncomingRequest;
+import org.esigate.http.OutgoingRequest;
 
 /**
  * AuthenticationHandler implementation that retrieves the user passed by the servlet container or set manually into the
@@ -33,21 +33,22 @@ import org.esigate.util.HttpRequestHelper;
 public class RemoteUserAuthenticationHandler extends GenericAuthentificationHandler {
 
     @Override
-    public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
+    public boolean needsNewRequest(HttpResponse response, OutgoingRequest outgoingRequest,
+            IncomingRequest incomingRequest) {
         return false;
     }
 
     @Override
-    public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
-        UserContext userContext = HttpRequestHelper.getUserContext(httpRequest);
+    public void preRequest(OutgoingRequest outgoingRequest, IncomingRequest incomingRequest) {
+        UserContext userContext = outgoingRequest.getUserContext();
         String remoteUser = null;
         if (userContext != null && userContext.getUser() != null) {
             remoteUser = userContext.getUser();
         } else {
-            remoteUser = HttpRequestHelper.getMediator(httpRequest).getRemoteUser();
+            remoteUser = outgoingRequest.getMediator().getRemoteUser();
         }
         if (remoteUser != null) {
-            request.addHeader("X_REMOTE_USER", remoteUser);
+            outgoingRequest.addHeader("X_REMOTE_USER", remoteUser);
         }
     }
 

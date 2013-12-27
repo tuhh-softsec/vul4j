@@ -17,7 +17,6 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.vars.Operations;
@@ -40,7 +39,7 @@ class WhenElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, ParserContext ctx) {
         String test = tag.getAttribute("test");
         ChooseElement parent = ctx.findAncestor(ChooseElement.class);
         if (test != null && parent != null) {

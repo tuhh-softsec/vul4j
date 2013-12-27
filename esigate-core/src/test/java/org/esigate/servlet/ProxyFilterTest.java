@@ -15,13 +15,11 @@
 
 package org.esigate.servlet;
 
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.Assert;
@@ -75,12 +73,10 @@ public class ProxyFilterTest {
     /**
      * Test provider selection based on esigate.properties configuration.
      * 
-     * @throws ServletException
-     * @throws IOException
      * @throws HttpErrorPage
      */
     @Test
-    public void testProviderSelectionEsigate() throws ServletException, IOException, HttpErrorPage {
+    public void testProviderSelectionEsigate() throws HttpErrorPage {
 
         // Setup Esigate
         Properties p = new Properties();

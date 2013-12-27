@@ -15,8 +15,8 @@
 
 package org.esigate.url;
 
-import org.apache.http.HttpRequest;
 import org.esigate.api.BaseUrlRetrieveStrategy;
+import org.esigate.http.IncomingRequest;
 
 public class SingleBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
 
@@ -27,7 +27,7 @@ public class SingleBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
     }
 
     @Override
-    public String getBaseURL(HttpRequest originalRequest) {
+    public String getBaseURL(IncomingRequest originalRequest) {
         return this.baseUrl;
     }
 

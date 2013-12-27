@@ -17,13 +17,13 @@ package org.esigate.test;
 
 import java.io.IOException;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.http.HttpResponseUtils;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.http.IncomingRequest;
+import org.esigate.impl.DriverRequest;
 
 /**
  * @author Francois-Xavier Bonnet
@@ -35,49 +35,52 @@ public final class TestUtils {
 
     }
 
-    public static HttpEntityEnclosingRequest createRequest() {
+    public static IncomingRequest createRequest() {
         return new MockMediator().getHttpRequest();
     }
 
-    public static HttpEntityEnclosingRequest createRequest(Driver driver) throws HttpErrorPage {
-        HttpEntityEnclosingRequest request = new MockMediator().getHttpRequest();
-        driver.initHttpRequestParams(request, null);
-        return request;
+    public static DriverRequest createRequest(Driver driver) throws HttpErrorPage {
+        IncomingRequest request = new MockMediator().getHttpRequest();
+        return new DriverRequest(request, driver, null, false);
     }
 
-    public static HttpEntityEnclosingRequest createRequest(String uri) {
+    public static IncomingRequest createRequest(String uri) {
         return new MockMediator(uri).getHttpRequest();
     }
 
-    public static HttpEntityEnclosingRequest createRequest(String uri, Driver driver) throws HttpErrorPage {
-        HttpEntityEnclosingRequest request = new MockMediator(uri).getHttpRequest();
-        driver.initHttpRequestParams(request, null);
-        return request;
+    public static DriverRequest createRequest(String uri, Driver driver) throws HttpErrorPage {
+        IncomingRequest request = new MockMediator(uri).getHttpRequest();
+        return new DriverRequest(request, driver, null, false);
     }
 
-    public static HttpResponse getResponse(HttpEntityEnclosingRequest request) {
-        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+    public static HttpResponse getResponse(IncomingRequest request) {
+        MockMediator mediator = (MockMediator) request.getMediator();
         return mediator.getHttpResponse();
     }
 
-    public static String getResponseBodyAsString(HttpEntityEnclosingRequest request) throws HttpErrorPage {
-        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+    public static String getResponseBodyAsString(IncomingRequest request) throws HttpErrorPage {
+        MockMediator mediator = (MockMediator) request.getMediator();
         HttpResponse response = mediator.getHttpResponse();
         return HttpResponseUtils.toString(response, null);
     }
 
-    public static void sendHttpErrorPage(HttpErrorPage e, HttpEntityEnclosingRequest request) throws IOException {
-        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+    public static void sendHttpErrorPage(HttpErrorPage e, IncomingRequest request) throws IOException {
+        MockMediator mediator = (MockMediator) request.getMediator();
         mediator.sendResponse(e.getHttpResponse());
     }
 
-    public static void addCookie(Cookie cookie, HttpEntityEnclosingRequest request) {
-        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+    public static void addCookie(Cookie cookie, DriverRequest request) {
+        MockMediator mediator = (MockMediator) request.getMediator();
         mediator.addCookie(cookie);
     }
 
-    public static void setRemoteAddr(String remoteAddr, HttpEntityEnclosingRequest request) {
-        MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
+    public static void addCookie(Cookie cookie, IncomingRequest request) {
+        MockMediator mediator = (MockMediator) request.getMediator();
+        mediator.addCookie(cookie);
+    }
+
+    public static void setRemoteAddr(String remoteAddr, IncomingRequest request) {
+        MockMediator mediator = (MockMediator) request.getMediator();
         mediator.setRemoteAddr(remoteAddr);
     }
 }

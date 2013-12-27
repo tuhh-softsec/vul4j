@@ -20,35 +20,38 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
+import org.esigate.Driver;
+import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class AggregateRendererTest extends TestCase {
     private AggregateRenderer tested;
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
 
     @Override
-    protected void setUp() throws Exception {
-        MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
-        provider.addResource("/testInclude", "Test include");
-        provider.addResource("/testBlock",
+    protected void setUp() throws HttpErrorPage {
+        MockRequestExecutor requestExecutor = MockRequestExecutor.createMockDriver("mock");
+        Driver driver = DriverFactory.getInstance("mock");
+        requestExecutor.addResource("/testInclude", "Test include");
+        requestExecutor.addResource("/testBlock",
                 "before <!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$--> after");
-        provider.addResource("/testTemplate",
+        requestExecutor.addResource("/testTemplate",
                 "before <!--$begintemplate$mytemplate$-->some text goes here<!--$endtemplate$mytemplate$--> after");
-        provider.addResource("/testTemplateParams", "before <!--$begintemplate$mytemplate$-->some text "
+        requestExecutor.addResource("/testTemplateParams", "before <!--$begintemplate$mytemplate$-->some text "
                 + "<!--$beginparam$param1$-->To be replaced<!--$endparam$param1$-->"
                 + " goes here<!--$endtemplate$mytemplate$--> after");
-        provider.addResource("", "before " + "<!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$-->"
-                + " after");
-        provider.addResource("/testNested", "before <!--$beginblock$myblock$--> nested "
+        requestExecutor.addResource("", "before " + "<!--$beginblock$myblock$-->some text goes here"
+                + "<!--$endblock$myblock$--> after");
+        requestExecutor.addResource("/testNested", "before <!--$beginblock$myblock$--> nested "
                 + "<!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$-->"
                 + " /nested <!--$endblock$myblock$--> after");
-        provider.addResource("/testNestedTemplate", "before <!--$begintemplate$myblock$--> nested "
+        requestExecutor.addResource("/testNestedTemplate", "before <!--$begintemplate$myblock$--> nested "
                 + "<!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$-->"
                 + " /nested <!--$endtemplate$myblock$--> after");
-        request = TestUtils.createRequest();
+        request = TestUtils.createRequest(driver);
         tested = new AggregateRenderer();
     }
 

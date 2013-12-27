@@ -18,18 +18,25 @@ package org.esigate;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.ConnectionPoolTimeoutException;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.util.EntityUtils;
+import org.esigate.http.BasicCloseableHttpResponse;
 
 /**
  * Exception thrown when an error occurred retrieving a resource.
@@ -41,7 +48,51 @@ import org.apache.http.util.EntityUtils;
  */
 public class HttpErrorPage extends Exception {
     private static final long serialVersionUID = 1L;
-    private final HttpResponse httpResponse;
+    private final CloseableHttpResponse httpResponse;
+
+    private static HttpEntity toMemoryEntity(String content) {
+        try {
+            return new StringEntity(content, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // This should not happen as UTF-8 is always supported
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static HttpEntity toMemoryEntity(Exception exception) {
+        StringBuilderWriter out = new StringBuilderWriter(512);
+        PrintWriter pw = new PrintWriter(out);
+        exception.printStackTrace(pw);
+        String content = out.toString();
+        try {
+            return toMemoryEntity(content);
+        } finally {
+            pw.close();
+        }
+    }
+
+    private static HttpEntity toMemoryEntity(HttpEntity httpEntity) {
+        if (httpEntity == null) {
+            return null;
+        }
+        HttpEntity memoryEntity;
+        try {
+            byte[] content = EntityUtils.toByteArray(httpEntity);
+            ByteArrayEntity byteArrayEntity = new ByteArrayEntity(content, ContentType.get(httpEntity));
+            Header contentEncoding = httpEntity.getContentEncoding();
+            if (contentEncoding != null) {
+                byteArrayEntity.setContentEncoding(contentEncoding);
+            }
+            memoryEntity = byteArrayEntity;
+        } catch (IOException e) {
+            StringBuilderWriter out = new StringBuilderWriter(512);
+            PrintWriter pw = new PrintWriter(out);
+            e.printStackTrace(pw);
+            pw.close();
+            memoryEntity = new StringEntity(out.toString(), ContentType.getOrDefault(httpEntity));
+        }
+        return memoryEntity;
+    }
 
     /**
      * Create an HTTP error page exception from an Http response.
@@ -49,30 +100,11 @@ public class HttpErrorPage extends Exception {
      * @param httpResponse
      *            backend response.
      */
-    public HttpErrorPage(HttpResponse httpResponse) {
+    public HttpErrorPage(CloseableHttpResponse httpResponse) {
         super(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase());
         this.httpResponse = httpResponse;
         // Consume the entity and replace it with an in memory Entity
-        HttpEntity httpEntity = httpResponse.getEntity();
-        HttpEntity memoryEntity;
-        if (httpEntity != null) {
-            try {
-                byte[] content = EntityUtils.toByteArray(httpEntity);
-                ByteArrayEntity byteArrayEntity = new ByteArrayEntity(content, ContentType.get(httpEntity));
-                Header contentEncoding = httpEntity.getContentEncoding();
-                if (contentEncoding != null) {
-                    byteArrayEntity.setContentEncoding(contentEncoding);
-                }
-                memoryEntity = byteArrayEntity;
-            } catch (IOException e) {
-                StringBuilderWriter out = new StringBuilderWriter(512);
-                PrintWriter pw = new PrintWriter(out);
-                e.printStackTrace(pw);
-                pw.close();
-                memoryEntity = new StringEntity(out.toString(), ContentType.getOrDefault(httpEntity));
-            }
-            this.httpResponse.setEntity(memoryEntity);
-        }
+        httpResponse.setEntity(toMemoryEntity(httpResponse.getEntity()));
     }
 
     /**
@@ -84,13 +116,8 @@ public class HttpErrorPage extends Exception {
      */
     public HttpErrorPage(int statusCode, String statusMessage, String content) {
         super(statusCode + " " + statusMessage);
-        this.httpResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
-        try {
-            this.httpResponse.setEntity(new StringEntity(content, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            // This should not happen as UTF-8 is always supported
-            throw new RuntimeException(e);
-        }
+        this.httpResponse = HttpErrorPage.generateHttpResponse(statusCode, statusMessage);
+        this.httpResponse.setEntity(toMemoryEntity(content));
     }
 
     /**
@@ -102,19 +129,8 @@ public class HttpErrorPage extends Exception {
      */
     public HttpErrorPage(int statusCode, String statusMessage, Exception exception) {
         super(statusCode + " " + statusMessage, exception);
-        this.httpResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
-        StringBuilderWriter out = new StringBuilderWriter(512);
-        PrintWriter pw = new PrintWriter(out);
-        exception.printStackTrace(pw);
-        String content = out.toString();
-        try {
-            this.httpResponse.setEntity(new StringEntity(content, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            // This should not happen as UTF-8 is always supported
-            throw new RuntimeException(e);
-        } finally {
-            pw.close();
-        }
+        this.httpResponse = HttpErrorPage.generateHttpResponse(statusCode, statusMessage);
+        this.httpResponse.setEntity(toMemoryEntity(exception));
     }
 
     /**
@@ -122,8 +138,31 @@ public class HttpErrorPage extends Exception {
      * 
      * @return HTTP response
      */
-    public HttpResponse getHttpResponse() {
+    public CloseableHttpResponse getHttpResponse() {
         return this.httpResponse;
+    }
+
+    public static CloseableHttpResponse generateHttpResponse(Exception exception) {
+        if (exception instanceof HttpHostConnectException) {
+            return generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, "Connection refused");
+        } else if (exception instanceof ConnectionPoolTimeoutException) {
+            return generateHttpResponse(HttpStatus.SC_GATEWAY_TIMEOUT, "Connection pool timeout");
+        } else if (exception instanceof ConnectTimeoutException) {
+            return generateHttpResponse(HttpStatus.SC_GATEWAY_TIMEOUT, "Connect timeout");
+        } else if (exception instanceof SocketTimeoutException) {
+            return generateHttpResponse(HttpStatus.SC_GATEWAY_TIMEOUT, "Socket timeout");
+        } else if (exception instanceof SocketException) {
+            return generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, "Socket Exception");
+        } else {
+            return generateHttpResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Error retrieving URL");
+        }
+    }
+
+    public static CloseableHttpResponse generateHttpResponse(int statusCode, String statusText) {
+        CloseableHttpResponse result = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(
+                HttpVersion.HTTP_1_1, statusCode, statusText)));
+        result.setEntity(toMemoryEntity(statusText));
+        return result;
     }
 
 }

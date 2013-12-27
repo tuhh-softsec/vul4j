@@ -20,9 +20,8 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.http.HttpRequest;
 import org.esigate.api.ContainerRequestMediator;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.impl.DriverRequest;
 import org.esigate.util.UriUtils;
 
 /**
@@ -39,28 +38,28 @@ public final class ResourceUtils {
 
     }
 
-    private static String buildQueryString(HttpRequest originalRequest, boolean proxy) {
+    private static String buildQueryString(DriverRequest originalRequest, boolean proxy) {
         try {
             StringBuilder queryString = new StringBuilder();
-            String charset = HttpRequestHelper.getCharacterEncoding(originalRequest);
+            String charset = originalRequest.getCharacterEncoding();
             if (charset == null) {
                 charset = "ISO-8859-1";
             }
-            String originalQuerystring = UriUtils.createUri(originalRequest.getRequestLine().getUri()).getRawQuery();
+            String originalQuerystring = UriUtils.getRawQuery(originalRequest.getRequestLine().getUri());
             if (proxy && originalQuerystring != null) {
                 // Remove jsessionid from request if it is present
                 // As we are in a java application, the container might add
                 // jsessionid to the querystring. We must not forward it to
                 // included applications.
                 String jsessionid = null;
-                ContainerRequestMediator mediator = HttpRequestHelper.getMediator(originalRequest);
+                ContainerRequestMediator mediator = originalRequest.getMediator();
                 jsessionid = mediator.getSessionId();
                 if (jsessionid != null) {
                     originalQuerystring = UriUtils.removeSessionId(jsessionid, originalQuerystring);
                 }
                 queryString.append(originalQuerystring);
             }
-            Map<String, String> parameters = HttpRequestHelper.getParameters(originalRequest);
+            Map<String, String> parameters = originalRequest.getParameters();
             if (parameters != null) {
                 ResourceUtils.appendParameters(queryString, charset, parameters);
             }
@@ -93,10 +92,10 @@ public final class ResourceUtils {
         return url.toString();
     }
 
-    public static String getHttpUrlWithQueryString(String url, HttpRequest originalRequest, boolean proxy) {
+    public static String getHttpUrlWithQueryString(String url, DriverRequest originalRequest, boolean proxy) {
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
             // Relative URL, we need to add the driver base url
-            String baseUrl = HttpRequestHelper.getBaseUrl(originalRequest).toString();
+            String baseUrl = originalRequest.getBaseUrl().toString();
             if (baseUrl != null) {
                 url = concatUrl(baseUrl, url);
             }

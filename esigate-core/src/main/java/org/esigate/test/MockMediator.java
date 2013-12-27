@@ -18,23 +18,24 @@ package org.esigate.test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.message.BasicRequestLine;
 import org.apache.http.util.EntityUtils;
 import org.esigate.api.ContainerRequestMediator;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.http.IncomingRequest;
 import org.esigate.util.UriUtils;
 
 /**
@@ -50,15 +51,16 @@ public class MockMediator implements ContainerRequestMediator {
     private final ArrayList<Cookie> cookies = new ArrayList<Cookie>();
     private String remoteUser;
     private HttpResponse httpResponse;
-    private HttpEntityEnclosingRequest httpRequest;
+    private IncomingRequest httpRequest;
     private String remoteAddr;
 
     public MockMediator(String uriString) {
-        URI uri = UriUtils.createUri(uriString);
-        String scheme = uri.getScheme();
-        String host = uri.getHost();
-        int port = uri.getPort();
-        this.httpRequest = new BasicHttpEntityEnclosingRequest("GET", uriString);
+        HttpHost httpHost = UriUtils.extractHost(uriString);
+        String scheme = httpHost.getSchemeName();
+        String host = httpHost.getHostName();
+        int port = httpHost.getPort();
+        RequestLine requestLine = new BasicRequestLine("GET", uriString, HttpVersion.HTTP_1_1);
+        this.httpRequest = new IncomingRequest(requestLine, this);
 
         // Remove default ports
         if (port == -1 || (port == 80 && "http".equals(scheme)) || (port == 443 && "https".equals(scheme))) {
@@ -66,8 +68,6 @@ public class MockMediator implements ContainerRequestMediator {
         } else {
             this.httpRequest.setHeader("Host", host + ":" + port);
         }
-
-        HttpRequestHelper.setMediator(this.httpRequest, this);
     }
 
     public MockMediator() {
@@ -106,8 +106,7 @@ public class MockMediator implements ContainerRequestMediator {
         this.httpResponse.setHeaders(response.getAllHeaders());
         HttpEntity entity = response.getEntity();
         if (entity != null) {
-            ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity),
-                    ContentType.get(entity));
+            ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity), ContentType.get(entity));
             if (entity.getContentEncoding() != null) {
                 copiedEntity.setContentEncoding(entity.getContentEncoding());
             }
@@ -131,7 +130,7 @@ public class MockMediator implements ContainerRequestMediator {
     }
 
     @Override
-    public HttpEntityEnclosingRequest getHttpRequest() {
+    public IncomingRequest getHttpRequest() {
         return this.httpRequest;
     }
 

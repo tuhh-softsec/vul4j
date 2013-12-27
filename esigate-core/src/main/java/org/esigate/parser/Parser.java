@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.HttpErrorPage;
+import org.esigate.impl.DriverRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +29,7 @@ public class Parser {
     private static final Logger LOG = LoggerFactory.getLogger(Parser.class);
     private final Pattern pattern;
     private final ElementType[] elementTypes;
-    private HttpEntityEnclosingRequest httpRequest;
+    private DriverRequest httpRequest;
     private HttpResponse httpResponse;
 
     /**
@@ -94,7 +94,7 @@ public class Parser {
         ctx.characters(in, currentPosition, in.length());
     }
 
-    public void setHttpRequest(HttpEntityEnclosingRequest httpRequest) {
+    public void setHttpRequest(DriverRequest httpRequest) {
         this.httpRequest = httpRequest;
     }
 

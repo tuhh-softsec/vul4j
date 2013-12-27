@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.future.FutureElementType;
 import org.esigate.parser.future.FutureParserContext;
 import org.esigate.parser.future.StringBuilderFutureAppendable;
@@ -49,17 +48,15 @@ class InlineElement extends BaseElement {
     }
 
     @Override
-    public void characters(Future<CharSequence> csq) throws IOException {
+    public void characters(Future<CharSequence> csq) {
         buf.enqueueAppend(csq);
     }
 
     @Override
-    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
-        String originalUrl = UriUtils.createUri(ctx.getHttpRequest().getRequestLine().getUri()).getPath();
+    public void onTagEnd(String tag, FutureParserContext ctx) throws IOException {
+        String originalUrl = UriUtils.getPath(ctx.getHttpRequest().getRequestLine().getUri());
         try {
             InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.get().toString());
-        } catch (InterruptedException e) {
-            throw new IOException(e);
         } catch (ExecutionException e) {
             throw new IOException(e);
         }

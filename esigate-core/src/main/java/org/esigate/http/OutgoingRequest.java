@@ -15,12 +15,17 @@
 
 package org.esigate.http;
 
+import java.net.URL;
+
 import org.apache.http.ProtocolVersion;
 import org.apache.http.RequestLine;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.Configurable;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicRequestLine;
+import org.esigate.UserContext;
+import org.esigate.api.ContainerRequestMediator;
+import org.esigate.impl.DriverRequest;
 
 /**
  * Allows request line / uri modification after request creation.
@@ -28,14 +33,20 @@ import org.apache.http.message.BasicRequestLine;
  * @author fxbonnet
  * 
  */
-public class GenericHttpRequest extends BasicHttpEntityEnclosingRequest implements Configurable {
+public class OutgoingRequest extends BasicHttpEntityEnclosingRequest implements Configurable {
 
     private RequestLine requestLine;
-    private RequestConfig requestConfig;
+    private final RequestConfig requestConfig;
+    private final OutgoingRequestContext context;
+    private final DriverRequest originalRequest;
 
-    public GenericHttpRequest(String method, String uri, ProtocolVersion version) {
+    public OutgoingRequest(String method, String uri, ProtocolVersion version, DriverRequest originalRequest,
+            RequestConfig requestConfig, OutgoingRequestContext context) {
         super(method, uri, version);
         requestLine = new BasicRequestLine(method, uri, version);
+        this.requestConfig = requestConfig;
+        this.context = context;
+        this.originalRequest = originalRequest;
     }
 
     public void setUri(String uri) {
@@ -62,8 +73,24 @@ public class GenericHttpRequest extends BasicHttpEntityEnclosingRequest implemen
         return requestConfig;
     }
 
-    public void setConfig(RequestConfig requestConfig) {
-        this.requestConfig = requestConfig;
+    public OutgoingRequestContext getContext() {
+        return context;
+    }
+
+    public UserContext getUserContext() {
+        return originalRequest.getUserContext();
+    }
+
+    public ContainerRequestMediator getMediator() {
+        return originalRequest.getMediator();
+    }
+
+    public URL getBaseUrl() {
+        return originalRequest.getBaseUrl();
+    }
+
+    public DriverRequest getOriginalRequest() {
+        return originalRequest;
     }
 
 }

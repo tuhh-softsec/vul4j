@@ -16,24 +16,19 @@
 package org.esigate.test.conn;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpConnectionMetrics;
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.conn.ConnectionRequest;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HttpContext;
+import org.esigate.HttpErrorPage;
 
 public class MockConnectionManager implements HttpClientConnectionManager {
     private final AtomicBoolean open = new AtomicBoolean(false);
@@ -59,8 +54,7 @@ public class MockConnectionManager implements HttpClientConnectionManager {
         }
 
         @Override
-        public HttpClientConnection get(long timeout, TimeUnit tunit) throws InterruptedException, ExecutionException,
-                ConnectionPoolTimeoutException {
+        public HttpClientConnection get(long timeout, TimeUnit tunit) {
             if (open.get()) {
                 throw new IllegalStateException("Connection is busy");
             }
@@ -70,7 +64,7 @@ public class MockConnectionManager implements HttpClientConnectionManager {
     private final HttpClientConnection httpClientConnection = new HttpClientConnection() {
 
         @Override
-        public void shutdown() throws IOException {
+        public void shutdown() {
             open.set(false);
         }
 
@@ -100,38 +94,38 @@ public class MockConnectionManager implements HttpClientConnectionManager {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             open.set(false);
         }
 
         @Override
-        public void sendRequestHeader(HttpRequest request) throws HttpException, IOException {
+        public void sendRequestHeader(HttpRequest request) {
             sentRequest = request;
         }
 
         @Override
-        public void sendRequestEntity(HttpEntityEnclosingRequest request) throws HttpException, IOException {
+        public void sendRequestEntity(HttpEntityEnclosingRequest request) {
             sentRequest = request;
         }
 
         @Override
-        public HttpResponse receiveResponseHeader() throws HttpException, IOException {
+        public HttpResponse receiveResponseHeader() {
             sleep();
             return execute(sentRequest);
         }
 
         @Override
-        public void receiveResponseEntity(HttpResponse response) throws HttpException, IOException {
+        public void receiveResponseEntity(HttpResponse response) {
             // Nothing to do
         }
 
         @Override
-        public boolean isResponseAvailable(int timeout) throws IOException {
+        public boolean isResponseAvailable(int timeout) {
             return true;
         }
 
         @Override
-        public void flush() throws IOException {
+        public void flush() {
             // Nothing to do
         }
     };
@@ -173,7 +167,7 @@ public class MockConnectionManager implements HttpClientConnectionManager {
     public void setResponse(final HttpResponse response) {
         setResponseHandler(new IResponseHandler() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) {
                 return response;
             }
         });
@@ -192,8 +186,7 @@ public class MockConnectionManager implements HttpClientConnectionManager {
         try {
             return this.responseHandler.execute(request);
         } catch (IOException e) {
-            return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                    e.getMessage());
+            return HttpErrorPage.generateHttpResponse(e);
         }
     }
 
@@ -202,18 +195,17 @@ public class MockConnectionManager implements HttpClientConnectionManager {
     }
 
     @Override
-    public void connect(HttpClientConnection conn, HttpRoute route, int connectTimeout, HttpContext context)
-            throws IOException {
+    public void connect(HttpClientConnection conn, HttpRoute route, int connectTimeout, HttpContext context) {
         // Nothing to do
     }
 
     @Override
-    public void upgrade(HttpClientConnection conn, HttpRoute route, HttpContext context) throws IOException {
+    public void upgrade(HttpClientConnection conn, HttpRoute route, HttpContext context) {
         // Nothing to do
     }
 
     @Override
-    public void routeComplete(HttpClientConnection conn, HttpRoute route, HttpContext context) throws IOException {
+    public void routeComplete(HttpClientConnection conn, HttpRoute route, HttpContext context) {
         // Nothing to do
     }
 

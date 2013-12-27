@@ -23,9 +23,8 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpRequest;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
-import org.esigate.util.HttpRequestHelper;
 
 public class DriverFactoryTest extends TestCase {
 
@@ -49,9 +48,8 @@ public class DriverFactoryTest extends TestCase {
         Driver instance = DriverFactory.getInstance(id);
         assertNotNull(instance);
 
-        HttpRequest request = TestUtils.createRequest();
-        instance.initHttpRequestParams(request, null);
-        assertEquals("http://base.url", HttpRequestHelper.getBaseUrl(request).toString());
+        DriverRequest request = TestUtils.createRequest(instance);
+        assertEquals("http://base.url", request.getBaseUrl().toString());
     }
 
     public void testMergeProperties() {

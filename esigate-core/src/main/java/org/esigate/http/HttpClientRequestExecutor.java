@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -35,15 +34,10 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.DefaultedHttpParams;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
@@ -54,6 +48,7 @@ import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FragmentEvent;
 import org.esigate.extension.ExtensionFactory;
+import org.esigate.impl.DriverRequest;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -73,9 +68,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             "GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
     private static final Set<String> ENTITY_METHODS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
             "POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
-    private static final String ORIGINAL_REQUEST_KEY = "ORIGINAL_REQUEST";
-    private static final String TARGET_HOST = "TARGET_HOST";
-    public static final String PROXY = "PROXY";
     private boolean preserveHost;
     private CookieManager cookieManager;
     private HttpClient httpClient;
@@ -210,67 +202,56 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
     private HttpClientRequestExecutor() {
     }
 
-    public GenericHttpRequest createHttpRequest(HttpEntityEnclosingRequest originalRequest, String uri, boolean proxy)
-            throws HttpErrorPage {
+    public OutgoingRequest createHttpRequest(DriverRequest originalRequest, String uri, boolean proxy) {
         // Extract the host in the URI. This is the host we have to send the
-        // request to physically. We will use this value to force the route to
-        // the server
-        HttpHost targetHost = UriUtils.extractHost(uri);
+        // request to physically.
+        HttpHost physicalHost = UriUtils.extractHost(uri);
 
         // Preserve host if required
         HttpHost virtualHost;
         if (preserveHost) {
             virtualHost = HttpRequestHelper.getHost(originalRequest);
         } else {
-            virtualHost = targetHost;
-        }
-
-        // FIXME if we don't preserveHost and we are clustering, we will have
-        // one different cache entry for each node. The unit test for that is
-        // commented out
-        // Rewrite the uri with the virtualHost, this is the key used by the
-        // cache
-        uri = UriUtils.rewriteURI(uri, virtualHost).toString();
-
-        String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
-        GenericHttpRequest httpRequest;
-        if (SIMPLE_METHODS.contains(method)) {
-            httpRequest = new GenericHttpRequest(method, uri, originalRequest.getProtocolVersion());
-        } else if (ENTITY_METHODS.contains(method)) {
-            httpRequest = new GenericHttpRequest(method, uri, originalRequest.getProtocolVersion());
-            httpRequest.setEntity(originalRequest.getEntity());
-        } else {
-            throw new UnsupportedHttpMethodException(method + " " + uri);
+            virtualHost = physicalHost;
         }
 
         RequestConfig.Builder builder = RequestConfig.custom();
         builder.setConnectTimeout(connectTimeout);
         builder.setSocketTimeout(socketTimeout);
         builder.setCircularRedirectsAllowed(true);
+
         // Use browser compatibility cookie policy. This policy is the closest
         // to the behavior of a real browser.
         builder.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY);
 
         builder.setRedirectsEnabled(!proxy);
+        RequestConfig config = builder.build();
 
-        httpRequest.setConfig(builder.build());
+        OutgoingRequestContext context = new OutgoingRequestContext();
 
-        httpRequest.setParams(new DefaultedHttpParams(new BasicHttpParams(), originalRequest.getParams()));
+        // Rewrite the uri with the virtualHost
+        uri = UriUtils.rewriteURI(uri, virtualHost);
+        String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
+        OutgoingRequest httpRequest;
+        if (SIMPLE_METHODS.contains(method)) {
+            httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest,
+                    config, context);
+        } else if (ENTITY_METHODS.contains(method)) {
+            httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest,
+                    config, context);
+            httpRequest.setEntity(originalRequest.getEntity());
+        } else {
+            throw new UnsupportedHttpMethodException(method + " " + uri);
+        }
 
         // We use the same user-agent and accept headers that the one sent by
         // the browser as some web sites generate different pages and scripts
         // depending on the browser
         headerManager.copyHeaders(originalRequest, httpRequest);
 
-        httpRequest.getParams().setParameter(TARGET_HOST, targetHost);
-        httpRequest.getParams().setParameter(ORIGINAL_REQUEST_KEY, originalRequest);
-        // When the cache is used the request from ExecutionContext is not set
-        // so we set it just in case
-        httpRequest.getParams().setParameter(ExecutionContext.HTTP_REQUEST, httpRequest);
-
-        httpRequest.setHeader(HttpHeaders.HOST, virtualHost.toHostString());
-
-        httpRequest.getParams().setBooleanParameter(PROXY, proxy);
+        context.setPhysicalHost(physicalHost);
+        context.setOutgoingRequest(httpRequest);
+        context.setProxy(proxy);
 
         return httpRequest;
     }
@@ -285,14 +266,13 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
      * @return HTTP response.
      */
     @Override
-    public HttpResponse execute(GenericHttpRequest httpRequest) {
-        HttpEntityEnclosingRequest originalRequest = (HttpEntityEnclosingRequest) httpRequest.getParams().getParameter(
-                ORIGINAL_REQUEST_KEY);
-        HttpContext httpContext = new BasicHttpContext();
+    public CloseableHttpResponse execute(OutgoingRequest httpRequest) {
+        OutgoingRequestContext context = httpRequest.getContext();
+        IncomingRequest originalRequest = httpRequest.getOriginalRequest().getOriginalRequest();
 
         if (cookieManager != null) {
-            CookieStore cookieStore = new RequestCookieStore(cookieManager, originalRequest);
-            httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+            CookieStore cookieStore = new RequestCookieStore(cookieManager, httpRequest.getOriginalRequest());
+            context.setCookieStore(cookieStore);
         }
         HttpResponse result;
         // Create request event
@@ -300,29 +280,29 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         event.httpRequest = httpRequest;
         event.originalRequest = originalRequest;
         event.httpResponse = null;
-        event.httpContext = httpContext;
+        event.httpContext = context;
         // EVENT pre
         eventManager.fire(EventManager.EVENT_FRAGMENT_PRE, event);
         // If exit : stop immediately.
         if (!event.exit) {
             // Proceed to request only if extensions did not inject a response.
             if (event.httpResponse == null) {
-                try {
-                    HttpHost host = (HttpHost) httpRequest.getParams().getParameter(TARGET_HOST);
-                    HttpResponse response = httpClient.execute(host, httpRequest, httpContext);
-                    result = new BasicHttpResponse(response.getStatusLine());
-                    headerManager.copyHeaders(httpRequest, originalRequest, response, result);
-                    result.setEntity(response.getEntity());
-                } catch (IOException e) {
-                    int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-                    String statusText = "Error retrieving URL";
-                    LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-                    result = IOExceptionHandler.toHttpResponse(e);
+                if (httpRequest.containsHeader(HttpHeaders.EXPECT)) {
+                    event.httpResponse = HttpErrorPage.generateHttpResponse(HttpStatus.SC_EXPECTATION_FAILED,
+                            "'Expect' request header is not supported");
+                } else {
+                    try {
+                        HttpHost physicalHost = context.getPhysicalHost();
+                        HttpResponse response = httpClient.execute(physicalHost, httpRequest, context);
+                        result = new BasicHttpResponse(response.getStatusLine());
+                        headerManager.copyHeaders(httpRequest, originalRequest, response, result);
+                        result.setEntity(response.getEntity());
+                    } catch (IOException e) {
+                        result = HttpErrorPage.generateHttpResponse(e);
+                        LOG.warn(httpRequest.getRequestLine() + " -> " + result.getStatusLine().toString());
+                    }
+                    event.httpResponse = BasicCloseableHttpResponse.adapt(result);
                 }
-                // FIXME workaround for a bug in http client cache that does not
-                // keep params in response
-                result.setParams(httpRequest.getParams());
-                event.httpResponse = result;
             }
             // EVENT post
             eventManager.fire(EventManager.EVENT_FRAGMENT_POST, event);
@@ -340,10 +320,10 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
      *             if server returned no response or if the response as an error status code.
      */
     @Override
-    public HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest originalRequest, String targetUrl,
-            boolean proxy) throws HttpErrorPage {
-        GenericHttpRequest httpRequest = createHttpRequest(originalRequest, targetUrl, proxy);
-        HttpResponse httpResponse = execute(httpRequest);
+    public CloseableHttpResponse createAndExecuteRequest(DriverRequest originalRequest, String targetUrl, boolean proxy)
+            throws HttpErrorPage {
+        OutgoingRequest httpRequest = createHttpRequest(originalRequest, targetUrl, proxy);
+        CloseableHttpResponse httpResponse = execute(httpRequest);
         if (httpResponse == null) {
             throw new HttpErrorPage(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Request was cancelled by server",
                     "Request was cancelled by server");

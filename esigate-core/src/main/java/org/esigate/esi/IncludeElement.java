@@ -23,15 +23,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
+import org.esigate.impl.DriverRequest;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
@@ -52,18 +51,18 @@ class IncludeElement extends BaseElement {
     private final Appendable outAdapter = new Appendable() {
 
         @Override
-        public Appendable append(CharSequence csq, int start, int end) throws IOException {
+        public Appendable append(CharSequence csq, int start, int end) {
             IncludeElement.this.characters(csq, start, end);
             return this;
         }
 
         @Override
-        public Appendable append(char c) throws IOException {
+        public Appendable append(char c) {
             return append(new StringBuilder(1).append(c), 0, 1);
         }
 
         @Override
-        public Appendable append(CharSequence csq) throws IOException {
+        public Appendable append(CharSequence csq) {
             return append(csq, 0, csq.length());
         }
     };
@@ -139,20 +138,20 @@ class IncludeElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, ParserContext ctx) {
         buf = new StringBuilder();
         fragmentReplacements = new HashMap<String, CharSequence>();
         regexpReplacements = new HashMap<String, CharSequence>();
         includeTag = tag;
     }
 
-    void processPage(String src, Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    private void processPage(String src, Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
         String fragment = tag.getAttribute("fragment");
         String xpath = tag.getAttribute("xpath");
         String xslt = tag.getAttribute("stylesheet");
         boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 
-        HttpEntityEnclosingRequest httpRequest = ctx.getHttpRequest();
+        DriverRequest httpRequest = ctx.getHttpRequest();
         List<Renderer> rendererList = new ArrayList<Renderer>();
         Driver driver;
         String page;
@@ -161,7 +160,7 @@ class IncludeElement extends BaseElement {
         int idxLegacyPattern = src.indexOf(LEGACY_PROVIDER_PATTERN);
         if (idx < 0 && idxLegacyPattern < 0) {
             page = src;
-            driver = HttpRequestHelper.getDriver(httpRequest);
+            driver = httpRequest.getDriver();
         } else if (idx >= 0) {
             int startIdx = idx + PROVIDER_PATTERN.length();
             int endIndex = src.indexOf("})", startIdx);
@@ -178,14 +177,14 @@ class IncludeElement extends BaseElement {
 
         if (rewriteAbsoluteUrl) {
             Map<String, String> replaceRules = new HashMap<String, String>();
-            String baseUrl = HttpRequestHelper.getBaseUrl(httpRequest).toString();
+            String baseUrl = httpRequest.getBaseUrl().toString();
             String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL(baseUrl);
 
             String contextBaseUrl;
             String contextVisibleBaseUrl;
-            contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+            contextBaseUrl = UriUtils.getPath(baseUrl);
             if (visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)) {
-                contextVisibleBaseUrl = UriUtils.createUri(visibleBaseUrl).getPath();
+                contextVisibleBaseUrl = UriUtils.getPath(visibleBaseUrl);
                 replaceRules.put("href=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "href=$1" + contextVisibleBaseUrl
                         + "$2$3");
                 replaceRules.put("src=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "src=$1" + contextVisibleBaseUrl
@@ -193,7 +192,7 @@ class IncludeElement extends BaseElement {
                 replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
                 replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
             } else {
-                contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+                contextBaseUrl = UriUtils.getPath(baseUrl);
                 replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
                 replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
             }
@@ -222,7 +221,8 @@ class IncludeElement extends BaseElement {
             } else if (xslt != null) {
                 rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
             }
-            driver.render(page, null, outAdapter, httpRequest, rendererList.toArray(new Renderer[rendererList.size()]));
+            driver.render(page, null, outAdapter, httpRequest.getOriginalRequest(),
+                    rendererList.toArray(new Renderer[rendererList.size()]));
         }
     }
 

@@ -1,8 +1,5 @@
 package org.esigate.aggregator;
 
-import java.io.IOException;
-
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
@@ -42,7 +39,7 @@ class PutElement implements Element {
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public void onTagStart(String tag, ParserContext ctx) {
         String[] parameters = tag.split("\\$");
         if (parameters.length != 4) {
             throw new AggregationSyntaxException("Invalid syntax: " + tag);
@@ -54,17 +51,13 @@ class PutElement implements Element {
         }
     }
 
-    // public void write(CharSequence content, int begin, int end, Writer out, Parser parser) {
-    // body.append(content, begin, end);
-    // }
-
     @Override
     public boolean isClosed() {
         return false;
     }
 
     @Override
-    public void characters(CharSequence csq, int start, int end) throws IOException {
+    public void characters(CharSequence csq, int start, int end) {
         body.append(csq, start, end);
     }
 

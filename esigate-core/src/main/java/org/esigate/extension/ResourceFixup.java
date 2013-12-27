@@ -10,7 +10,6 @@ import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.RenderEvent;
 import org.esigate.renderers.ResourceFixupRenderer;
-import org.esigate.util.HttpRequestHelper;
 
 public class ResourceFixup implements Extension, IEventListener {
     private DriverConfiguration config;
@@ -21,7 +20,7 @@ public class ResourceFixup implements Extension, IEventListener {
         RenderEvent renderEvent = (RenderEvent) event;
         // Fix resources
         if (config.isFixResources()) {
-            String baseUrl = HttpRequestHelper.getBaseUrl(renderEvent.originalRequest).toString();
+            String baseUrl = renderEvent.originalRequest.getBaseUrl().toString();
             ResourceFixupRenderer fixup = new ResourceFixupRenderer(baseUrl, config.getVisibleBaseURL(baseUrl),
                     renderEvent.remoteUrl, config.getFixMode());
 

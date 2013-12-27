@@ -16,7 +16,6 @@ package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.future.CharSequenceFuture;
 import org.esigate.parser.future.FutureElementType;
 import org.esigate.parser.future.FutureParserContext;
@@ -53,7 +52,7 @@ class FragmentElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    protected void parseTag(Tag tag, FutureParserContext ctx) {
         String name = tag.getAttribute("name");
         esiRenderer = ctx.findAncestor(EsiRenderer.class);
         initialStateWrite = esiRenderer.isWrite();

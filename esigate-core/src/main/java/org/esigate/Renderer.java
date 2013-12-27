@@ -18,7 +18,7 @@ package org.esigate;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.http.HttpEntityEnclosingRequest;
+import org.esigate.impl.DriverRequest;
 
 /**
  * Content rendering strategy.
@@ -41,5 +41,5 @@ public interface Renderer {
      * @throws IOException
      * @throws HttpErrorPage
      */
-    void render(HttpEntityEnclosingRequest originalRequest, String src, Writer out) throws IOException, HttpErrorPage;
+    void render(DriverRequest originalRequest, String src, Writer out) throws IOException, HttpErrorPage;
 }

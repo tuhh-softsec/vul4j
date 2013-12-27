@@ -46,4 +46,9 @@ class Comment extends BaseElement {
         // do not try to parse tag string
         super.onTagStart("<esi!-->", ctx);
     }
+
+    @Override
+    public void onTagEnd(String tag, ParserContext ctx) {
+        // Nothing to do
+    }
 }

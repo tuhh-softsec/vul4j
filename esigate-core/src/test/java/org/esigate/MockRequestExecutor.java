@@ -17,19 +17,21 @@ package org.esigate;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.events.EventManager;
 import org.esigate.http.ContentTypeHelper;
-import org.esigate.http.GenericHttpRequest;
+import org.esigate.http.OutgoingRequest;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.http.HttpResponseBuilder;
 
 public final class MockRequestExecutor implements RequestExecutor {
+    public Driver getDriver() {
+        return driver;
+    }
+
     private Driver driver;
 
     public static class MockDriverBuilder implements RequestExecutorBuilder {
@@ -91,7 +93,7 @@ public final class MockRequestExecutor implements RequestExecutor {
         }
     }
 
-    protected HttpResponse getResource(String url) throws HttpErrorPage {
+    protected CloseableHttpResponse getResource(String url) throws HttpErrorPage {
         String result = resources.get(url);
 
         if (result == null) {
@@ -105,13 +107,13 @@ public final class MockRequestExecutor implements RequestExecutor {
     }
 
     @Override
-    public HttpResponse createAndExecuteRequest(HttpEntityEnclosingRequest request, String url, boolean b)
+    public CloseableHttpResponse createAndExecuteRequest(DriverRequest request, String url, boolean b)
             throws HttpErrorPage {
         return getResource(url);
     }
 
     @Override
-    public HttpResponse execute(GenericHttpRequest httpRequest) {
+    public CloseableHttpResponse execute(OutgoingRequest httpRequest) {
         try {
             return getResource(httpRequest.getRequestLine().getUri());
         } catch (HttpErrorPage e) {
@@ -137,10 +139,6 @@ public final class MockRequestExecutor implements RequestExecutor {
 
     public static Driver createDriver(String name) {
         return createDriver(name, getDefaultProperties());
-    }
-
-    public void initHttpRequestParams(HttpRequest request, Map<String, String> parameters) throws HttpErrorPage {
-        driver.initHttpRequestParams(request, parameters);
     }
 
     public static Driver createDriver(String name, Properties defaultProps) {

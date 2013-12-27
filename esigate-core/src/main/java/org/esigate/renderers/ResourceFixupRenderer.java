@@ -17,12 +17,12 @@ package org.esigate.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpHost;
 import org.esigate.Renderer;
+import org.esigate.impl.DriverRequest;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class ResourceFixupRenderer implements Renderer {
 
     public static final int ABSOLUTE = 0;
     public static final int RELATIVE = 1;
-    public static final char SLASH = '/';
+    private static final char SLASH = '/';
     private static final Pattern URL_PATTERN = Pattern.compile(
             "<([^\\!][^>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
             Pattern.CASE_INSENSITIVE);
@@ -150,15 +150,12 @@ public class ResourceFixupRenderer implements Renderer {
         }
 
         // Build clean URI for further processing
-        URI url;
-        url = UriUtils.createUri(cleanBaseUrl + SLASH + cleanPageFullPath);
+        String url = cleanBaseUrl + SLASH + cleanPageFullPath;
+        HttpHost httpHost = UriUtils.extractHost(url);
 
         // Split url
-        server = url.getScheme() + "://" + url.getHost();
-        if (url.getPort() > -1) {
-            server += ":" + url.getPort();
-        }
-        this.pagePath = url.getPath();
+        server = httpHost.toURI();
+        this.pagePath = UriUtils.getPath(url);
         if (pagePath != null) {
             int indexSlash = pagePath.lastIndexOf(SLASH);
             if (indexSlash >= 0) {
@@ -168,8 +165,8 @@ public class ResourceFixupRenderer implements Renderer {
 
         // Check if we are going to replace context
         if (baseUrl != null && !baseUrl.equals(visibleBaseUrl)) {
-            contextRemove = UriUtils.createUri(baseUrl).getPath();
-            contextAdd = UriUtils.createUri(visibleBaseUrl).getPath();
+            contextRemove = UriUtils.getPath(baseUrl);
+            contextAdd = UriUtils.getPath(visibleBaseUrl);
         }
     }
 
@@ -240,7 +237,7 @@ public class ResourceFixupRenderer implements Renderer {
     }
 
     @Override
-    public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
+    public void render(DriverRequest httpRequest, String src, Writer out) throws IOException {
         out.write(replace(src).toString());
     }
 
@@ -253,7 +250,7 @@ public class ResourceFixupRenderer implements Renderer {
      * 
      * @return the result of this renderer.
      */
-    CharSequence replace(CharSequence input) {
+    private CharSequence replace(CharSequence input) {
         StringBuffer result = new StringBuffer(input.length());
         Matcher m = URL_PATTERN.matcher(input);
         while (m.find()) {

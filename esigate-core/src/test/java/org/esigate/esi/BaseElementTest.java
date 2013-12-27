@@ -17,8 +17,8 @@ package org.esigate.esi;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.esigate.impl.DriverRequest;
 import org.esigate.parser.Element;
 import org.esigate.parser.ParserContext;
 
@@ -64,11 +64,16 @@ public class BaseElementTest extends TestCase {
         public MockBaseElement() {
         }
 
+        @Override
+        public void onTagEnd(String tag, ParserContext ctx) {
+            // Nothing to do
+        }
+
     }
 
     protected static class MockParserContext implements ParserContext {
         @Override
-        public HttpEntityEnclosingRequest getHttpRequest() {
+        public DriverRequest getHttpRequest() {
             return null;
         }
 
@@ -91,5 +96,6 @@ public class BaseElementTest extends TestCase {
         public HttpResponse getHttpResponse() {
             return null;
         }
+
     }
 }

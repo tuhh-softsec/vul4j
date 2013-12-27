@@ -23,13 +23,14 @@ import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 
 public class MemcachedCacheStorageTest extends TestCase {
-    public void testBasicOperations() throws Exception {
+    public void testBasicOperations() {
         // Cannot be really tested as we would need a running memcached server
         // CacheStorage cacheStorage = new MemcachedCacheStorage();
         // cacheStorage.init(new Properties());
         // CacheStorageTestUtils.testBasicOperations(cacheStorage);
     }
 
+    @SuppressWarnings("unused")
     public void testConfiguration() throws Exception {
         // Cannot be really tested as we would need a running memcached server
         Properties properties = new Properties();
@@ -38,7 +39,7 @@ public class MemcachedCacheStorageTest extends TestCase {
         cacheStorage.init(properties);
     }
 
-    public void testConfigurationNoServers() throws Exception {
+    public void testConfigurationNoServers() {
         CacheStorage cacheStorage = new MemcachedCacheStorage();
         try {
             cacheStorage.init(new Properties());
@@ -48,7 +49,7 @@ public class MemcachedCacheStorageTest extends TestCase {
         fail("Configuration should fail as '" + Parameters.MEMCACHED_SERVERS_PROPERTY + "' is not defined.");
     }
 
-    public void testConfigurationWrongValue() throws Exception {
+    public void testConfigurationWrongValue() {
         Properties properties = new Properties();
         properties.put(Parameters.MEMCACHED_SERVERS_PROPERTY, "foo");
         CacheStorage cacheStorage = new MemcachedCacheStorage();
@@ -60,7 +61,7 @@ public class MemcachedCacheStorageTest extends TestCase {
         fail("Configuration should fail as '" + Parameters.MEMCACHED_SERVERS_PROPERTY + "' is not defined.");
     }
 
-    public void testConfigurationWrongPort() throws Exception {
+    public void testConfigurationWrongPort() {
         Properties properties = new Properties();
         properties.put(Parameters.MEMCACHED_SERVERS_PROPERTY, "foo:bar");
         CacheStorage cacheStorage = new MemcachedCacheStorage();

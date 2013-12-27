@@ -30,7 +30,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -49,6 +48,7 @@ import org.esigate.esi.EsiRenderer;
 import org.esigate.extension.DefaultCharset;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientRequestExecutor;
+import org.esigate.http.IncomingRequest;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
 import org.esigate.test.TestUtils;
@@ -56,14 +56,13 @@ import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.http.HttpRequestBuilder;
 import org.esigate.test.http.HttpResponseBuilder;
-import org.esigate.util.HttpRequestHelper;
 
 public class DriverTest extends TestCase {
-    private HttpEntityEnclosingRequest request;
+    private IncomingRequest request;
     private MockConnectionManager mockConnectionManager;
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() {
         mockConnectionManager = new MockConnectionManager();
 
         MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
@@ -297,8 +296,7 @@ public class DriverTest extends TestCase {
         });
         Driver driver = createMockDriver(properties, mockConnectionManager);
 
-        HttpEntityEnclosingRequest request1 = new HttpRequestBuilder().mockMediator().uri("http://www.foo.com:80")
-                .build();
+        IncomingRequest request1 = new HttpRequestBuilder().mockMediator().uri("http://www.foo.com:80").build();
         assertEquals("www.foo.com", request1.getLastHeader("Host").getValue());
 
         driver.proxy("", request1);
@@ -597,6 +595,13 @@ public class DriverTest extends TestCase {
         assertEquals("àéà", TestUtils.getResponseBodyAsString(request));
     }
 
+    /**
+     * 0000161: Cookie domain validation too strict with preserveHost.
+     * 
+     * @see <a href="https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161">0000161</a>
+     * 
+     * @throws Exception
+     */
     public void testBug161SetCookie() throws Exception {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
@@ -605,7 +610,7 @@ public class DriverTest extends TestCase {
 
         BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
         response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
-        response.addHeader("Set-Cookie", "mycookie=123456; domain=mydomain.fr; path=/");
+        response.addHeader("Set-Cookie", "mycookie=123456; domain=.mydomain.fr; path=/");
         response.setEntity(new StringEntity("test"));
         mockConnectionManager.setResponse(response);
 
@@ -615,17 +620,14 @@ public class DriverTest extends TestCase {
 
         driver.proxy("/foobar/", request);
 
-        // https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161
-        assertTrue("Set-Cookie must be forwarded.", HttpRequestHelper.getMediator(request).getCookies().length > 0);
+        assertTrue("Set-Cookie must be forwarded.", request.getMediator().getCookies().length > 0);
     }
 
     /**
      * 0000154: Warn on staleWhileRevalidate configuration issue.
      * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=154
-     * 
-     * @throws Exception
      */
-    public void testConfigStaleWhileRevalidateWith0WorkerThreadsThrowsConfigurationException() throws Exception {
+    public void testConfigStaleWhileRevalidateWith0WorkerThreadsThrowsConfigurationException() {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE, "http://localhost/");
         properties.put(Parameters.STALE_WHILE_REVALIDATE, "600");
@@ -687,7 +689,7 @@ public class DriverTest extends TestCase {
         mockConnectionManager = new MockConnectionManager() {
             @Override
             public HttpResponse execute(HttpRequest httpRequest) {
-                Assert.assertNotNull(httpRequest.getFirstHeader("Cookie"));
+                Assert.assertNotNull("Cookie should be forwarded", httpRequest.getFirstHeader("Cookie"));
                 Assert.assertEquals("JSESSIONID=926E1C6A52804A625DFB0139962D4E13", httpRequest.getFirstHeader("Cookie")
                         .getValue());
                 return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
@@ -750,7 +752,7 @@ public class DriverTest extends TestCase {
 
         driver.proxy("/foo/foobar.jsp", request);
 
-        ContainerRequestMediator mediator = HttpRequestHelper.getMediator(request);
+        ContainerRequestMediator mediator = request.getMediator();
         Assert.assertEquals(1, mediator.getCookies().length);
         Assert.assertEquals("/foo", mediator.getCookies()[0].getPath());
     }
@@ -777,7 +779,7 @@ public class DriverTest extends TestCase {
 
         driver.proxy("/bar/foobar.jsp", request);
 
-        ContainerRequestMediator mediator = HttpRequestHelper.getMediator(request);
+        ContainerRequestMediator mediator = request.getMediator();
         Assert.assertEquals(1, mediator.getCookies().length);
         Assert.assertEquals("/", mediator.getCookies()[0].getPath());
     }
@@ -800,14 +802,14 @@ public class DriverTest extends TestCase {
             @Override
             public HttpResponse execute(HttpRequest httpRequest) {
                 // The main page
-                if (httpRequest.getRequestLine().getUri().equals("http://test.mydomain.fr/foobar/")) {
+                if (httpRequest.getRequestLine().getUri().equals("/foobar/")) {
                     return new HttpResponseBuilder()
                             .entity(new StringEntity("<esi:include src=\"http://test.mydomain.fr/esi/\"/>",
                                     ContentType.TEXT_HTML)).status(HttpStatus.SC_BAD_REQUEST).build();
                 }
 
                 // The ESI fragment
-                if (httpRequest.getRequestLine().getUri().equals("http://test.mydomain.fr/esi/")) {
+                if (httpRequest.getRequestLine().getUri().equals("/esi/")) {
                     try {
                         return new HttpResponseBuilder().entity("OK").build();
                     } catch (UnsupportedEncodingException e) {

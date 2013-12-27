@@ -47,10 +47,6 @@ abstract class BaseElement implements Element {
     }
 
     @Override
-    public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-    }
-
-    @Override
     public boolean onError(Exception e, ParserContext ctx) {
         return false;
     }

@@ -15,7 +15,6 @@
 
 package org.esigate.http;
 
-import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -24,12 +23,9 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.params.CoreProtocolPNames;
-import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
+import org.esigate.impl.DriverRequest;
 import org.esigate.util.FilterList;
-import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.PropertiesUtil;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -56,10 +52,8 @@ public class HeaderManager {
         // By default all headers are forwarded
         requestHeadersFilterList.add(Collections.singletonList("*"));
         responseHeadersFilterList.add(Collections.singletonList("*"));
-        PropertiesUtil
-                .populate(requestHeadersFilterList, properties, Parameters.FORWARD_REQUEST_HEADERS.getName(),
-                        Parameters.DISCARD_REQUEST_HEADERS.getName(), "",
-                        Parameters.DISCARD_REQUEST_HEADERS.getDefaultValue());
+        PropertiesUtil.populate(requestHeadersFilterList, properties, Parameters.FORWARD_REQUEST_HEADERS.getName(),
+                Parameters.DISCARD_REQUEST_HEADERS.getName(), "", Parameters.DISCARD_REQUEST_HEADERS.getDefaultValue());
         PropertiesUtil.populate(responseHeadersFilterList, properties, Parameters.FORWARD_RESPONSE_HEADERS.getName(),
                 Parameters.DISCARD_RESPONSE_HEADERS.getName(), "",
                 Parameters.DISCARD_RESPONSE_HEADERS.getDefaultValue());
@@ -82,34 +76,24 @@ public class HeaderManager {
      *            source request
      * @param httpRequest
      *            destination request
-     * @throws HttpErrorPage
-     *             if one of the header value is invalid.
      */
-    public void copyHeaders(HttpRequest originalRequest, HttpRequest httpRequest) throws HttpErrorPage {
+    public void copyHeaders(DriverRequest originalRequest, OutgoingRequest httpRequest) {
         String originalUri = originalRequest.getRequestLine().getUri();
         String uri = httpRequest.getRequestLine().getUri();
         for (Header header : originalRequest.getAllHeaders()) {
             // Special headers
-            // User-agent must be set in a specific way
-            if (HttpHeaders.USER_AGENT.equalsIgnoreCase(header.getName())
-                    && isForwardedRequestHeader(HttpHeaders.USER_AGENT)) {
-                httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT, header.getValue());
-            } else if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName())
+            if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName())
                     && isForwardedRequestHeader(HttpHeaders.REFERER)) {
                 String value = header.getValue();
-                try {
-                    value = UriUtils.translateUrl(value, originalUri, uri);
-                } catch (MalformedURLException e) {
-                    throw new HttpErrorPage(HttpStatus.SC_BAD_REQUEST, "Bad request", e);
-                }
+                value = UriUtils.translateUrl(value, originalUri, uri);
                 httpRequest.addHeader(header.getName(), value);
                 // All other headers are copied if allowed
             } else if (isForwardedRequestHeader(header.getName())) {
                 httpRequest.addHeader(header);
             }
         }
-        // process X-Forwarded-For header 
-        String remoteAddr = HttpRequestHelper.getMediator(originalRequest).getRemoteAddr();
+        // process X-Forwarded-For header
+        String remoteAddr = originalRequest.getMediator().getRemoteAddr();
 
         if (remoteAddr != null) {
             String forwardedFor = null;
@@ -140,10 +124,9 @@ public class HeaderManager {
      * @param originalRequest
      * @param httpClientResponse
      * @param output
-     * @throws MalformedURLException
      */
     public void copyHeaders(HttpRequest httpRequest, HttpEntityEnclosingRequest originalRequest,
-            HttpResponse httpClientResponse, HttpResponse output) throws MalformedURLException {
+            HttpResponse httpClientResponse, HttpResponse output) {
         String originalUri = originalRequest.getRequestLine().getUri();
         String uri = httpRequest.getRequestLine().getUri();
         for (Header header : httpClientResponse.getAllHeaders()) {

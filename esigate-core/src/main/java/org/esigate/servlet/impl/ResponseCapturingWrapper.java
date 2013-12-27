@@ -31,13 +31,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
+import org.esigate.HttpErrorPage;
+import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpResponseUtils;
@@ -52,8 +54,8 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     private OutputStream outputStream;
     private StringWriter writer;
     private HttpServletResponse response;
-    private HttpResponse httpClientResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
-            HttpStatus.SC_OK, "OK"));
+    private CloseableHttpResponse httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(
+            new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
     private String characterEncoding;
     private int bufferSize;
     private byte[] buffer;
@@ -77,17 +79,17 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     }
 
     @Override
-    public void sendError(int sc, String msg) throws IOException {
+    public void sendError(int sc, String msg) {
         httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, sc, msg));
     }
 
     @Override
-    public void sendError(int sc) throws IOException {
+    public void sendError(int sc) {
         httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, sc, ""));
     }
 
     @Override
-    public void sendRedirect(String location) throws IOException {
+    public void sendRedirect(String location) {
         httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT,
                 "Temporary redirect"));
         httpClientResponse.setHeader(HttpHeaders.LOCATION, location);
@@ -134,7 +136,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     }
 
     @Override
-    public ServletOutputStream getOutputStream() throws IOException {
+    public ServletOutputStream getOutputStream() {
         LOG.debug("getOutputStream");
         if (jspWriter != null) {
             throw new IllegalStateException("Writer already obtained");
@@ -158,7 +160,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     }
 
     @Override
-    public PrintWriter getWriter() throws IOException {
+    public PrintWriter getWriter() {
         LOG.debug("getWriter");
         if (servletOutputStream != null) {
             throw new IllegalStateException("OutputStream already obtained");
@@ -256,7 +258,8 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
         if (isCommitted()) {
             throw new IllegalStateException("Response is already committed");
         }
-        httpClientResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "Ok"));
+        httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(
+                HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
     }
 
     @Override
@@ -358,13 +361,12 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
         committed = true;
     }
 
-    public HttpResponse getResponse() {
+    public CloseableHttpResponse getResponse() {
         if (hasToCaptureOutput()) {
             try {
                 flushBuffer();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                return HttpErrorPage.generateHttpResponse(e);
             }
             String result = "";
             if (writer != null) {

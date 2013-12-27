@@ -14,9 +14,8 @@
  */
 package org.esigate.url;
 
-import org.apache.http.HttpRequest;
 import org.esigate.api.BaseUrlRetrieveStrategy;
-import org.esigate.util.HttpRequestHelper;
+import org.esigate.http.IncomingRequest;
 
 public class IpHashBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
     private final String[] urls;
@@ -26,8 +25,8 @@ public class IpHashBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
     }
 
     @Override
-    public String getBaseURL(HttpRequest originalRequest) {
-        int index = getHashCode(HttpRequestHelper.getMediator(originalRequest).getRemoteAddr()) % this.urls.length;
+    public String getBaseURL(IncomingRequest originalRequest) {
+        int index = getHashCode(originalRequest.getMediator().getRemoteAddr()) % this.urls.length;
         return this.urls[Math.abs(index)];
     }
 

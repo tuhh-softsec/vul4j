@@ -17,6 +17,7 @@ package org.esigate.extension.parallelesi;
 import java.util.concurrent.Future;
 
 import org.esigate.parser.future.FutureElementType;
+import org.esigate.parser.future.FutureParserContext;
 
 /**
  * <p>
@@ -70,4 +71,10 @@ class RemoveElement extends BaseElement {
     public void characters(Future<CharSequence> csq) {
         // ignore element body
     }
+
+    @Override
+    public void onTagEnd(String tag, FutureParserContext ctx) {
+        // Nothing to do
+    }
+
 }

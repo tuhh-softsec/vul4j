@@ -26,7 +26,7 @@ import org.esigate.ConfigurationException;
  */
 public class UriMappingTest extends TestCase {
 
-    public void testParseMapping() throws Exception {
+    public void testParseMapping() {
         UriMapping uriMapping = UriMapping.create("http://foo.com:80/a*.jsp");
         assertEquals("http://foo.com:80", uriMapping.getHost());
         assertEquals("/a", uriMapping.getPath());
@@ -63,7 +63,7 @@ public class UriMappingTest extends TestCase {
         assertNull(uriMapping.getExtension());
     }
 
-    public void testParseInvalidMapping() throws Exception {
+    public void testParseInvalidMapping() {
         try {
             UriMapping.create("aaa");
             fail("The mapping is invalid, we should get an exception");

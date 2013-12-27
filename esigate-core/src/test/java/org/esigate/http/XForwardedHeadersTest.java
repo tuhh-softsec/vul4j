@@ -15,10 +15,8 @@
 
 package org.esigate.http;
 
-import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -48,7 +46,7 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         Driver driver = createMockDriver(properties, new IResponseHandler() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) {
                 assertEquals(1, request.getHeaders("X-Forwarded-For").length);
                 assertEquals("192.168.0.1, 127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
                 assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
@@ -61,9 +59,8 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
         MockMediator mediator = new MockMediator(uri);
         mediator.setRemoteAddr("127.0.0.1");
 
-        HttpEntityEnclosingRequest request =
-                createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
-                        .header("X-Forwarded-Proto", "https").mediator(mediator).build();
+        IncomingRequest request = createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
+                .header("X-Forwarded-Proto", "https").mediator(mediator).build();
 
         driverProxy(driver, request);
 
@@ -82,7 +79,7 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         Driver driver = createMockDriver(properties, new IResponseHandler() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) {
                 assertEquals(1, request.getHeaders("X-Forwarded-For").length);
                 assertEquals("127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
                 assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
@@ -95,9 +92,8 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
         MockMediator mediator = new MockMediator(uri);
         mediator.setRemoteAddr("127.0.0.1");
 
-        HttpEntityEnclosingRequest request =
-                createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
-                        .header("X-Forwarded-Proto", "https").mediator(mediator).build();
+        IncomingRequest request = createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
+                .header("X-Forwarded-Proto", "https").mediator(mediator).build();
 
         driverProxy(driver, request);
 
@@ -117,7 +113,7 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         Driver driver = createMockDriver(properties, new IResponseHandler() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) {
                 assertEquals(1, request.getHeaders("X-Forwarded-For").length);
                 assertEquals("192.168.0.1, 127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
                 assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
@@ -130,9 +126,8 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
         MockMediator mediator = new MockMediator(uri);
         mediator.setRemoteAddr("127.0.0.1");
 
-        HttpEntityEnclosingRequest request =
-                createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
-                        .header("X-Forwarded-Proto", "http").mediator(mediator).build();
+        IncomingRequest request = createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
+                .header("X-Forwarded-Proto", "http").mediator(mediator).build();
 
         driverProxy(driver, request);
 
@@ -154,7 +149,7 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         Driver driver = createMockDriver(properties, new IResponseHandler() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) {
                 assertEquals(1, request.getHeaders("X-Forwarded-For").length);
                 assertEquals("127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
                 assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
@@ -167,7 +162,7 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
         MockMediator mediator = new MockMediator(uri);
         mediator.setRemoteAddr("127.0.0.1");
 
-        HttpEntityEnclosingRequest request = createHttpRequest().uri(uri).mediator(mediator).build();
+        IncomingRequest request = createHttpRequest().uri(uri).mediator(mediator).build();
 
         driverProxy(driver, request);
     }
@@ -188,7 +183,7 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         Driver driver = createMockDriver(properties, new IResponseHandler() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) {
                 assertEquals(1, request.getHeaders("X-Forwarded-For").length);
                 assertEquals("127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
                 assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
@@ -201,7 +196,7 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
         MockMediator mediator = new MockMediator(uri);
         mediator.setRemoteAddr("127.0.0.1");
 
-        HttpEntityEnclosingRequest request = createHttpRequest().uri(uri).mediator(mediator).build();
+        IncomingRequest request = createHttpRequest().uri(uri).mediator(mediator).build();
 
         driverProxy(driver, request);
 

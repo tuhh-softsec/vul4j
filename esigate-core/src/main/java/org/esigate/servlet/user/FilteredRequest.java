@@ -31,7 +31,7 @@ public class FilteredRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * Returns the user defined as parameter "user" if present
+     * Returns the user defined as parameter "user" if present.
      */
     @Override
     public String getRemoteUser() {
@@ -48,6 +48,7 @@ public class FilteredRequest extends HttpServletRequestWrapper {
         String user = getRemoteUser();
         if (user != null) {
             return new Principal() {
+                @Override
                 public String getName() {
                     return getRemoteUser();
                 }

@@ -1,6 +1,5 @@
 package org.esigate.cache;
 
-import java.io.IOException;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -32,7 +31,7 @@ public final class CacheStorageTestUtils {
         final HttpCacheEntry newEntry = makeCacheEntry("new entry");
         HttpCacheUpdateCallback callback = new HttpCacheUpdateCallback() {
             @Override
-            public HttpCacheEntry update(HttpCacheEntry existing) throws IOException {
+            public HttpCacheEntry update(HttpCacheEntry existing) {
                 return newEntry;
             }
         };

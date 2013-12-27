@@ -21,31 +21,31 @@ import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
+import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class VarsElementTest extends TestCase {
 
-    private HttpEntityEnclosingRequest request;
+    private DriverRequest request;
     private EsiRenderer tested;
+    private MockRequestExecutor provider;
 
     @Override
     protected void setUp() throws Exception {
-        MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
+        provider = MockRequestExecutor.createMockDriver("mock");
         provider.addResource("/test", "test");
         provider.addResource("http://www.foo.com/test", "test");
 
-        request = TestUtils.createRequest();
-        provider.initHttpRequestParams(request, null);
+        request = TestUtils.createRequest(provider.getDriver());
         tested = new EsiRenderer(Executors.newCachedThreadPool());
     }
 
     public void testHttpHost() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>$(HTTP_HOST)</esi:vars> end";
-        request = TestUtils.createRequest("http://www.foo.com");
+        request = TestUtils.createRequest("http://www.foo.com", provider.getDriver());
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin www.foo.com end", out.toString());
@@ -63,7 +63,7 @@ public class VarsElementTest extends TestCase {
     public void testQueryString() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>" + "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >"
                 + "</esi:vars> end";
-        request = TestUtils.createRequest("http://localhost/?param1=param1value");
+        request = TestUtils.createRequest("http://localhost/?param1=param1value", provider.getDriver());
         StringWriter out = new StringWriter();
         tested.render(request, page, out);
         assertEquals("begin <img src=\"http://www.example.com/param1value/hello.gif\"/ > end", out.toString());
