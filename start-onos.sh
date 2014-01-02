@@ -52,6 +52,7 @@ if [ ! -f ${ONOS_HOME}/.javacp ]; then
   ${MVN} -f ${ONOS_HOME}/pom.xml compile
 fi
 JAVA_CP=`cat ${ONOS_HOME}/.javacp`
+JAVA_CP="${JAVA_CP}:${ONOS_HOME}/target/classes"
 
 
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
