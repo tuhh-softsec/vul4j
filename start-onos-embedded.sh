@@ -166,6 +166,6 @@ case "$1" in
     echo "$n instance of onos running"
     ;;
   *)
-    echo "Usage: $0 {start|stop|restart|status|startifdown}"
+    echo "Usage: $0 {start|stop|status|startifdown}"
     exit 1
 esac
