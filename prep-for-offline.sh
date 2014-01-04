@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#
+# A helper script to download all the dependencies beforehand, rather than
+# Maven lazily downloading them when they're needed.
+#
+
 if [ -z "${MVN}" ]; then
     MVN="mvn"
 fi

@@ -1,5 +1,16 @@
 #!/bin/bash
 
+#
+# A helper script to update the modified local copy of "curator" or the "kryo2"
+# version.
+#
+# NOTE: This script is useful only for developers.
+# Usage:
+#  1. Update the "curator" jar file or the "kryo2" pom.xml file as appropriate.
+#  2. Run this script.
+#  3. Push the modified repo/ directory to the source code repository.
+#
+
 if [ -z "${MVN}" ]; then
     MVN="mvn"
 fi
