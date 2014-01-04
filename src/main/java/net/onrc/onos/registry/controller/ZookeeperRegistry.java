@@ -99,8 +99,9 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			//may have since released the request or even begun another request
 			//(this is why we use == to check the object instance is the same)
 			SwitchLeadershipData swData = switches.get(dpid);
-			if (swData != null) {
+			if (swData == null) {
 				log.debug("Leadership data {} not found", dpid);
+				return;
 			}
 			
 			if (swData.getLatch() == latch){
