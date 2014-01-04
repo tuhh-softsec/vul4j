@@ -328,8 +328,18 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	public void addOnosDevice(OnosDevice onosDevice) {
 		String macAddress = HexString.toHexString(onosDevice.getMacAddress().toBytes());
 		
-		log.debug("addOnosDevice: {}", onosDevice);
+		//if the switch port we try to attach a new device already has a link, then stop adding device
+		IPortObject portObject1 = ope.searchPort(HexString.toHexString(
+				onosDevice.getSwitchDPID()), onosDevice.getSwitchPort());
+
+		if ((portObject1 != null) && portObject1.getLinkedPorts().iterator().hasNext()) {
+			log.debug("stop adding OnosDevice: {} due to there is a link to: {}",
+					onosDevice, portObject1.getLinkedPorts().iterator().next().getPortId());
+			return;
+		}
 		
+		log.debug("addOnosDevice: {}", onosDevice);
+
 		try {
 			IDeviceObject device = ope.searchDevice(macAddress);
 			

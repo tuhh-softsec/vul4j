@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * Flow Manager REST API implementation: Add a Flow with the Flow
  * Entries:
  *
- *   POST /wm/flow/add/json
+ *   POST /wm/onos/flows/add/json
  */
 public class AddFlowResource extends ServerResource {
 

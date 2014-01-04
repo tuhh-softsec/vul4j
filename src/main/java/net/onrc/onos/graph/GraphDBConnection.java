@@ -33,6 +33,7 @@ public class GraphDBConnection implements IDBConnection {
 			.getLogger(GraphDBConnection.class);
 	private static GraphDBConnection singleton = new GraphDBConnection();
 	private static TitanGraph graph;
+	private static FramedGraph<TitanGraph> fg;
 	private static EventTransactionalGraph<TitanGraph> eg;
 	private static String configFile;
 
@@ -85,6 +86,7 @@ public class GraphDBConnection implements IDBConnection {
 				graph.createKeyIndex("ipv4_address", Vertex.class);
 			}
 			graph.commit();
+			fg = new FramedGraph<TitanGraph>(graph);
 			eg = new EventTransactionalGraph<TitanGraph>(graph);
 		}
 		return singleton;
@@ -95,13 +97,7 @@ public class GraphDBConnection implements IDBConnection {
 	 */
 	@Override
 	public FramedGraph<TitanGraph> getFramedGraph() {
-		if (isValid()) {
-			FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
-			return fg;
-		} else {
-			log.error("new FramedGraph failed");
-			return null;
-		}
+		return fg;
 	}
 
 	/**
@@ -136,11 +132,11 @@ public class GraphDBConnection implements IDBConnection {
 
 	/**
 	 * Commit changes for the graph operations.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public void commit() {
-//		// Should not catch exception here! 
+//		// Should not catch exception here!
 //		try {
 			graph.commit();
 //		}
@@ -154,7 +150,7 @@ public class GraphDBConnection implements IDBConnection {
 	 */
 	@Override
 	public void rollback() {
-		// Should not catch exception here! 
+		// Should not catch exception here!
 //		try {
 			graph.rollback();
 //		}

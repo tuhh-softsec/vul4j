@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * The "{flow-id}" request attribute value can be either a specific Flow ID,
  * or the keyword "all" to delete all Flows:
  *
- *   GET /wm/flow/delete/{flow-id}/json
+ *   GET /wm/onos/flows/delete/{flow-id}/json
  */
 public class DeleteFlowResource extends ServerResource {
     protected final static Logger log = LoggerFactory.getLogger(DeleteFlowResource.class);

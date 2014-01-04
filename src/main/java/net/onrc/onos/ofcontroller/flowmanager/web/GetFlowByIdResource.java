@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  *
  * The "{flow-id}" request attribute value is the Flow ID of the flow to get:
  *
- *   GET /wm/flow/get/{flow-id}/json
+ *   GET /wm/onos/flows/get/{flow-id}/json
  */
 public class GetFlowByIdResource extends ServerResource {
     protected final static Logger log = LoggerFactory.getLogger(GetFlowByIdResource.class);
