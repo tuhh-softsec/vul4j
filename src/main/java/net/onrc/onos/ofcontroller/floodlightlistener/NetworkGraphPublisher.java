@@ -83,7 +83,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
         @Override
         public void run() {
             String old = Thread.currentThread().getName();
-            Thread.currentThread().setName("SwitchCleanup " + Thread.currentThread().getId());
+            Thread.currentThread().setName("SwitchCleanup@" + old);
             try {
             	log.debug("Running cleanup thread");
                 switchCleanup();
