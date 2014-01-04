@@ -86,7 +86,7 @@ public class FlowEntryId {
      */
     @Override
     public boolean equals(Object obj){
-	if(obj.getClass() == this.getClass()) {
+	if(obj != null && obj.getClass() == this.getClass()) {
 	    FlowEntryId entry = (FlowEntryId) obj;
 	    return this.value() == entry.value();
 	}

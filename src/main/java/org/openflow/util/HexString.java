@@ -47,12 +47,12 @@ public class HexString {
         int i = 0;
         for (; i < (padTo * 2 - arr.length); i++) {
             ret.append('0');
-            if ((i % 2) == 1)
+            if ((i & 1) == 1)
                 ret.append(':');
         }
         for (int j = 0; j < arr.length; j++) {
             ret.append(arr[j]);
-            if ((((i + j) % 2) == 1) && (j < (arr.length - 1)))
+            if ((((i + j) & 1) == 1) && (j < (arr.length - 1)))
                 ret.append(':');
         }
         return ret.toString();
