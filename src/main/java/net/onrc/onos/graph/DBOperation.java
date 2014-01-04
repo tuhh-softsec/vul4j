@@ -33,7 +33,7 @@ public abstract class DBOperation implements IDBOperation {
 
 	/**
 	 * Search and get an active switch object with DPID.
-	 * @param dpid DPID of the switch 
+	 * @param dpid DPID of the switch
 	 */
 	@Override
 	public ISwitchObject searchActiveSwitch(String dpid) {
@@ -44,7 +44,7 @@ public abstract class DBOperation implements IDBOperation {
 	    }
 	    return null;
 	}
-	
+
 	/**
 	 * Create a new switch and return the created switch object.
 	 * @param dpid DPID of the switch
@@ -59,7 +59,7 @@ public abstract class DBOperation implements IDBOperation {
 	    }
 	    return obj;
 	}
-	
+
 	/**
 	 * Get all switch objects.
 	 */
@@ -86,7 +86,7 @@ public abstract class DBOperation implements IDBOperation {
 	    }
 	    return inactiveSwitches;
 	}
-	
+
 	/**
 	 * Get all flow entries objects where their switches are not updated.
 	 */
@@ -125,6 +125,7 @@ public abstract class DBOperation implements IDBOperation {
 	*
 	* @param portNumber port number
 	*/
+	@Override
 	@Deprecated
 	public IPortObject newPort(Short portNumber) {
 	    IPortObject obj = (IPortObject) conn.getFramedGraph().addVertex(null, IPortObject.class);
@@ -145,7 +146,7 @@ public abstract class DBOperation implements IDBOperation {
 	    FramedGraph fg = conn.getFramedGraph();
 	    if ( fg == null ) return null;
 	    String id = dpid + number.toString();
-	    Iterator<IPortObject> it = conn.getFramedGraph().getVertices("port_id", id, IPortObject.class).iterator();
+	    Iterator<IPortObject> it = fg.getVertices("port_id", id, IPortObject.class).iterator();
 	    return (it.hasNext()) ? it.next() : null;
 
 	}
@@ -195,7 +196,7 @@ public abstract class DBOperation implements IDBOperation {
 		conn.getFramedGraph().removeVertex(dev.asVertex());
 	    }
 	}
-	
+
 	/**
 	* Create and return a flow path object.
 	*/
@@ -219,7 +220,7 @@ public abstract class DBOperation implements IDBOperation {
 	    GremlinPipeline<Vertex, IFlowPath> pipe = new GremlinPipeline<Vertex, IFlowPath>();
 	    pipe.start(flowEntry.asVertex());
 	    pipe.out("flow");
-	    FramedVertexIterable<IFlowPath> r = new FramedVertexIterable(conn.getFramedGraph(), (Iterable) pipe, IFlowPath.class);
+	    FramedVertexIterable<IFlowPath> r = new FramedVertexIterable(conn.getFramedGraph(), pipe, IFlowPath.class);
 	    return r.iterator().hasNext() ? r.iterator().next() : null;
 	}
 
@@ -233,7 +234,7 @@ public abstract class DBOperation implements IDBOperation {
 	public ISwitchObject searchSwitch(final String dpid) {
 	    FramedGraph fg = conn.getFramedGraph();
 	    if ( fg == null ) return null;
-	    Iterator<ISwitchObject> it = conn.getFramedGraph().getVertices("dpid", dpid, ISwitchObject.class).iterator();
+	    Iterator<ISwitchObject> it = fg.getVertices("dpid", dpid, ISwitchObject.class).iterator();
 	    return (it.hasNext()) ? it.next() : null;
 	}
 
@@ -261,7 +262,7 @@ public abstract class DBOperation implements IDBOperation {
 	public IDeviceObject searchDevice(String macAddr) {
 	    FramedGraph fg = conn.getFramedGraph();
 	    if ( fg == null ) return null;
-	    Iterator<IDeviceObject> it = conn.getFramedGraph().getVertices("dl_addr", macAddr, IDeviceObject.class).iterator();
+	    Iterator<IDeviceObject> it = fg.getVertices("dl_addr", macAddr, IDeviceObject.class).iterator();
 	    return (it.hasNext()) ? it.next() : null;
 	}
 
@@ -273,7 +274,7 @@ public abstract class DBOperation implements IDBOperation {
 	public IFlowPath searchFlowPath(final FlowId flowId) {
 	    FramedGraph fg = conn.getFramedGraph();
 	    if ( fg == null ) return null;
-	    Iterator<IFlowPath> it = conn.getFramedGraph().getVertices("flow_id", flowId.toString(), IFlowPath.class).iterator();
+	    Iterator<IFlowPath> it = fg.getVertices("flow_id", flowId.toString(), IFlowPath.class).iterator();
 	    return (it.hasNext()) ? it.next() : null;
 	}
 
@@ -294,7 +295,7 @@ public abstract class DBOperation implements IDBOperation {
 	    }
 	    return nonNullFlows;
 	}
-	
+
 	/**
 	 * Remove the specified flow path.
 	 * @param flowPath flow path object to remove
@@ -304,7 +305,7 @@ public abstract class DBOperation implements IDBOperation {
 	    //System.out.println("removeFlowPath");
 	    conn.getFramedGraph().removeVertex(flowPath.asVertex());
 	}
-	
+
 	/**
 	 * Search and get a flow entry object with flow entry ID.
 	 * @param flowEntryId flow entry ID to search
@@ -313,7 +314,7 @@ public abstract class DBOperation implements IDBOperation {
 	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
 	    FramedGraph fg = conn.getFramedGraph();
 	    if ( fg == null ) return null;
-	    Iterator<IFlowEntry> it = conn.getFramedGraph().getVertices("flow_entry_id", flowEntryId.toString(), IFlowEntry.class).iterator();
+	    Iterator<IFlowEntry> it = fg.getVertices("flow_entry_id", flowEntryId.toString(), IFlowEntry.class).iterator();
 	    return (it.hasNext()) ? it.next() : null;
 	}
 
@@ -334,7 +335,7 @@ public abstract class DBOperation implements IDBOperation {
 	    //System.out.println("removeFlowEntry");
 	    conn.getFramedGraph().removeVertex(flowEntry.asVertex());
 	}
-	
+
 	/**
 	 * Create and return a flow entry object.
 	 */
@@ -352,7 +353,7 @@ public abstract class DBOperation implements IDBOperation {
 	public IIpv4Address newIpv4Address() {
 		return newVertex("ipv4Address", IIpv4Address.class);
 	}
-	
+
 	private <T extends IBaseObject> T newVertex(String type, Class<T> vertexType) {
 		T newVertex = (T) conn.getFramedGraph().addVertex(null, vertexType);
 		if (newVertex != null) {
@@ -364,8 +365,8 @@ public abstract class DBOperation implements IDBOperation {
 	public IIpv4Address searchIpv4Address(int intIpv4Address) {
 		return searchForVertex("ipv4_address", intIpv4Address, IIpv4Address.class);
 	}
-	
-	
+
+
 	public IIpv4Address ensureIpv4Address(int intIpv4Address) {
 		IIpv4Address ipv4Vertex = searchIpv4Address(intIpv4Address);
 		if (ipv4Vertex == null) {
@@ -373,9 +374,9 @@ public abstract class DBOperation implements IDBOperation {
 			ipv4Vertex.setIpv4Address(intIpv4Address);
 		}
 		return ipv4Vertex;
-	}	
+	}
 
-	
+
 	private <T> T searchForVertex(String propertyName, Object propertyValue, Class<T> vertexType) {
 		if (conn.getFramedGraph() != null) {
 			Iterator<T> it = conn.getFramedGraph().getVertices(propertyName, propertyValue, vertexType).iterator();
@@ -397,8 +398,8 @@ public abstract class DBOperation implements IDBOperation {
 	@Override
 	public IDBConnection getDBConnection() {
 	    return conn;
-	}	
-	
+	}
+
 	@Override
 	public void commit() {
 	    conn.commit();

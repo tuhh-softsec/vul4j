@@ -8,7 +8,6 @@ import java.util.List;
 
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.graph.DBOperation;
-
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
@@ -23,6 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowDatabaseOperation {
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
+    public static final boolean measureONOSFlowTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOSFlow", "0")) != 0;
 
     /**
      * Add a flow.
@@ -34,12 +34,36 @@ public class FlowDatabaseOperation {
     static boolean addFlow(DBOperation dbHandler, FlowPath flowPath) {
 	IFlowPath flowObj = null;
 	boolean found = false;
+	long startAddFlow = 0;
+	long endAddFlow = 0;
+	long endSearchExistingFlowPathTime = 0;
+	long endCreateNewFlowPathTime = 0;
+	long startFollowExistingFlowEntries = 0;
+	long endFollowExistingFlowEntries = 0;
+	long accTimeRemovingFlowEntriesFromFlowPath = 0;
+	long accTimeRemovingFlowEntriesFromDB = 0;
+	long startSettingFlowPathProps = 0;
+	long endSettingFlowPathProps = 0;
+	int numPropsSet = 0;
+	long accTimeAddFlowEntries = 0;
+	int numNewFlowEntries = 0;
+	LinkedList<long[]> flowEntryTimes = new LinkedList<>();
+
 	try {
+	    if ( measureONOSFlowTimeProp ) {
+		startAddFlow = System.nanoTime();
+	    }
 	    flowObj = dbHandler.searchFlowPath(flowPath.flowId());
+	    if ( measureONOSFlowTimeProp ) {
+		endSearchExistingFlowPathTime = System.nanoTime();
+	    }
 	    if (flowObj != null) {
 		found = true;
 	    } else {
 		flowObj = dbHandler.newFlowPath();
+		if ( measureONOSFlowTimeProp ) {
+			endCreateNewFlowPathTime = System.nanoTime();
+		}
 	    }
 	} catch (Exception e) {
 	    dbHandler.rollback();
@@ -64,23 +88,46 @@ public class FlowDatabaseOperation {
 	// Remove the old Flow Entries
 	//
 	if (found) {
+	    if ( measureONOSFlowTimeProp ) {
+		startFollowExistingFlowEntries = System.nanoTime();
+	    }
 	    Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
+	    if ( measureONOSFlowTimeProp ) {
+		endFollowExistingFlowEntries = System.nanoTime();
+	    }
 	    LinkedList<IFlowEntry> deleteFlowEntries =
 		new LinkedList<IFlowEntry>();
 	    for (IFlowEntry flowEntryObj : flowEntries)
 		deleteFlowEntries.add(flowEntryObj);
-	    for (IFlowEntry flowEntryObj : deleteFlowEntries) {
-		flowObj.removeFlowEntry(flowEntryObj);
-		dbHandler.removeFlowEntry(flowEntryObj);
+	    if( measureONOSFlowTimeProp ) {
+		    for (IFlowEntry flowEntryObj : deleteFlowEntries) {
+			long start = System.nanoTime();
+			flowObj.removeFlowEntry(flowEntryObj);
+			accTimeRemovingFlowEntriesFromFlowPath += System.nanoTime() - start;
+			start = System.nanoTime();
+			dbHandler.removeFlowEntry(flowEntryObj);
+			accTimeRemovingFlowEntriesFromDB += System.nanoTime() - start;
+		    }
+	    } else {
+		    for (IFlowEntry flowEntryObj : deleteFlowEntries) {
+			flowObj.removeFlowEntry(flowEntryObj);
+			dbHandler.removeFlowEntry(flowEntryObj);
+		    }
 	    }
 	}
 
+	if ( measureONOSFlowTimeProp ) {
+		startSettingFlowPathProps = System.nanoTime();
+	}
 	//
 	// Set the Flow key:
 	// - flowId
 	//
 	flowObj.setFlowId(flowPath.flowId().toString());
 	flowObj.setType("flow");
+	if ( measureONOSFlowTimeProp ) {
+	    numPropsSet += 2;
+	}
 
 	//
 	// Set the Flow attributes:
@@ -115,49 +162,99 @@ public class FlowDatabaseOperation {
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
 	flowObj.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
 	flowObj.setDstPort(flowPath.dataPath().dstPort().port().value());
+	if ( measureONOSFlowTimeProp ) {
+	    numPropsSet += 10;
+	}
+
 	if (flowPath.flowEntryMatch().matchSrcMac()) {
 	    flowObj.setMatchSrcMac(flowPath.flowEntryMatch().srcMac().toString());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchDstMac()) {
 	    flowObj.setMatchDstMac(flowPath.flowEntryMatch().dstMac().toString());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchEthernetFrameType()) {
 	    flowObj.setMatchEthernetFrameType(flowPath.flowEntryMatch().ethernetFrameType());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchVlanId()) {
 	    flowObj.setMatchVlanId(flowPath.flowEntryMatch().vlanId());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchVlanPriority()) {
 	    flowObj.setMatchVlanPriority(flowPath.flowEntryMatch().vlanPriority());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchSrcIPv4Net()) {
 	    flowObj.setMatchSrcIPv4Net(flowPath.flowEntryMatch().srcIPv4Net().toString());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchDstIPv4Net()) {
 	    flowObj.setMatchDstIPv4Net(flowPath.flowEntryMatch().dstIPv4Net().toString());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchIpProto()) {
 	    flowObj.setMatchIpProto(flowPath.flowEntryMatch().ipProto());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchIpToS()) {
 	    flowObj.setMatchIpToS(flowPath.flowEntryMatch().ipToS());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchSrcTcpUdpPort()) {
 	    flowObj.setMatchSrcTcpUdpPort(flowPath.flowEntryMatch().srcTcpUdpPort());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (flowPath.flowEntryMatch().matchDstTcpUdpPort()) {
 	    flowObj.setMatchDstTcpUdpPort(flowPath.flowEntryMatch().dstTcpUdpPort());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	if (! flowPath.flowEntryActions().actions().isEmpty()) {
 	    flowObj.setActions(flowPath.flowEntryActions().toString());
+		if ( measureONOSFlowTimeProp ) {
+		    ++numPropsSet;
+		}
 	}
 	flowObj.setDataPathSummary(flowPath.dataPath().dataPathSummary());
+	if ( measureONOSFlowTimeProp ) {
+	    ++numPropsSet;
+	}
 
 	if (found)
 	    flowObj.setFlowPathUserState("FP_USER_MODIFY");
 	else
 	    flowObj.setFlowPathUserState("FP_USER_ADD");
 
+	if ( measureONOSFlowTimeProp ) {
+	    ++numPropsSet;
+	}
+
+	if ( measureONOSFlowTimeProp ) {
+		endSettingFlowPathProps = System.nanoTime();
+	}
 	// Flow edges:
 	//   HeadFE
 
@@ -170,12 +267,59 @@ public class FlowDatabaseOperation {
 	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
 		continue;	// Skip: all Flow Entries were deleted earlier
 
-	    if (addFlowEntry(dbHandler, flowObj, flowEntry) == null) {
+	    long startAddFlowEntry = 0, endAddFlowEntry;
+	    if( measureONOSFlowTimeProp ) {
+		startAddFlowEntry = System.nanoTime();
+	    }
+	    IFlowEntry iFlowEntry = addFlowEntry(dbHandler, flowObj, flowEntry);
+	    if( measureONOSFlowTimeProp ) {
+		endAddFlowEntry = System.nanoTime();
+		accTimeAddFlowEntries += endAddFlowEntry - startAddFlowEntry;
+
+		flowEntryTimes.addLast( new long[]{flowEntry.flowId().value(), endAddFlowEntry - startAddFlowEntry} );
+	    }
+	    if ( iFlowEntry == null) {
 		dbHandler.rollback();
 		return false;
 	    }
 	}
 	dbHandler.commit();
+
+
+	if ( measureONOSFlowTimeProp ) {
+	    endAddFlow = System.nanoTime();
+
+	    log.debug("Performance addFlow(_,{}) -- "
+		    + "GrandTotal: {} "
+		    + "only FlowPathTotal: {} "
+		    + "searchExistingFlowPath: {} "
+		    + "createNewFlowPathTime: {}"
+		    + "followExistingFlowEntries: {} "
+		    + "accTimeRemovingFlowEntriesFromFlowPath: {} "
+		    + "accTimeRemovingFlowEntriesFromDB: {} "
+		    + "settingFlowPathProps: {} #Props: {} "
+		    + "accFlowEntries: {} #FEs: {}",
+		    flowPath.flowId(),
+		    (endAddFlow - startAddFlow),
+		    (endSettingFlowPathProps - startAddFlow),
+		    (endSearchExistingFlowPathTime - startAddFlow),
+		    (endCreateNewFlowPathTime - endSearchExistingFlowPathTime),
+		    (endFollowExistingFlowEntries - startFollowExistingFlowEntries),
+		    (accTimeRemovingFlowEntriesFromFlowPath),
+		    (accTimeRemovingFlowEntriesFromDB),
+		    (endSettingFlowPathProps - startSettingFlowPathProps), numPropsSet,
+		    accTimeAddFlowEntries, numNewFlowEntries
+		    );
+
+	    // Each FlowEntries
+	    final String strFlowId = flowPath.flowId().toString();
+	    for ( long[] idFE_Time : flowEntryTimes ) {
+		log.debug("Performance addFlowEntry(_,{},{})@addFlow -- FlowEntryTotal: {}",
+			strFlowId,
+			"0x" + Long.toHexString(idFE_Time[0]),
+			idFE_Time[1]);
+	    }
+	}
 
 	return true;
     }
@@ -221,7 +365,7 @@ public class FlowDatabaseOperation {
 	flowEntryObj.setFlowEntryId(flowEntry.flowEntryId().toString());
 	flowEntryObj.setType("flow_entry");
 
-	// 
+	//
 	// Set the Flow Entry Edges and attributes:
 	// - Switch edge
 	// - InPort edge
