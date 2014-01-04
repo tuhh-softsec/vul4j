@@ -103,7 +103,7 @@ EOF_LOGBACK
 
   # XXX MVN has to run at the project top dir..
   cd ${ONOS_HOME}
-  java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp ${JAVA_CP} ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`stderr &
+  java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp ${JAVA_CP} ${MAIN_CLASS} -cf ${ONOS_HOME}/conf/onos-embedded.properties > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
 
   echo "Waiting for ONOS to start..."
   COUNT=0
