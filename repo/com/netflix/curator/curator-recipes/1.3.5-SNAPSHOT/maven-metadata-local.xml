@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.netflix.curator</groupId>
+  <artifactId>curator-recipes</artifactId>
+  <version>1.3.5-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
+    <lastUpdated>20140102175423</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.3.5-SNAPSHOT</value>
+        <updated>20140102175423</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.3.5-SNAPSHOT</value>
+        <updated>20140102175423</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
