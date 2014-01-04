@@ -56,7 +56,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 					      ILinkDiscoveryListener,
 					      IFloodlightModule,
 					      INetworkGraphService {
-	
+
 	protected IDeviceStorage devStore;
 	protected ISwitchStorage swStore;
 	protected ILinkStorage linkStore;
@@ -64,19 +64,19 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	//protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
 	protected GraphDBOperation op;
-	
+
 	protected static final String DBConfigFile = "dbconf";
 	protected static final String CleanupEnabled = "EnableCleanup";
 	protected IThreadPoolService threadPool;
 	protected IFloodlightProviderService floodlightProvider;
-	
+
 	protected final int CLEANUP_TASK_INTERVAL = 60; // 1 min
 	protected SingletonTask cleanupTask;
 	protected ILinkDiscoveryService linkDiscovery;
 
 	protected IDatagridService datagridService;
-	
-	/**
+
+    /**
      *  Cleanup and synch switch state from registry
      */
     protected class SwitchCleanup implements ControlChangeCallback, Runnable {
@@ -114,7 +114,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 					//if (swStore.updateSwitch(HexString.toHexString(dpid), SwitchState.INACTIVE, DM_OPERATION.UPDATE)) {
 					if (swStore.deactivateSwitch(HexString.toHexString(dpid))) {
 					    registryService.releaseControl(dpid);
-					    
+
 					    // TODO publish UPDATE_SWITCH event here
 					    //
 					    // NOTE: Here we explicitly send
@@ -144,14 +144,14 @@ public class NetworkGraphPublisher implements IDeviceListener,
 				} catch (Exception e) {
 	                log.error("Error in SwitchCleanup:controlChanged ", e);
 				}
-			}						
+			}
 		}
     }
 
     protected void switchCleanup() {
     	op.close();
     	Iterable<ISwitchObject> switches = op.getActiveSwitches();
-    	
+
     	log.debug("Checking for inactive switches");
     	// For each switch check if a controller exists in controller registry
     	for (ISwitchObject sw: switches) {
@@ -249,7 +249,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 					TopologyElement topologyElementPort =
 					    new TopologyElement(sw.getId(), port.getPortNumber());
 					datagridService.notificationSendTopologyElementAdded(topologyElementPort);
-					
+
 					// Allow links to be discovered on this port now that it's
 					// in the database
 					linkDiscovery.RemoveFromSuppressLLDPs(sw.getId(), port.getPortNumber());
@@ -324,7 +324,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 			// Allow links to be discovered on this port now that it's
 			// in the database
 			linkDiscovery.RemoveFromSuppressLLDPs(switchId, port.getPortNumber());
-			
+
 		    // TODO publish ADD_PORT event here
 		    TopologyElement topologyElement =
 			new TopologyElement(switchId, port.getPortNumber());
@@ -409,7 +409,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	public void deviceVlanChanged(IDevice device) {
 		// TODO Auto-generated method stub
 	}
-	
+
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
@@ -446,7 +446,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
 		op = new GraphDBOperation(conf);
-		
+
 		floodlightProvider =
 	            context.getServiceImpl(IFloodlightProviderService.class);
 		//deviceService = context.getServiceImpl(IDeviceService.class);
@@ -454,18 +454,18 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		threadPool = context.getServiceImpl(IThreadPoolService.class);
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 		datagridService = context.getServiceImpl(IDatagridService.class);
-		
+
 		devStore = new DeviceStorageImpl();
 		devStore.init(conf);
-		
+
 		swStore = new SwitchStorageImpl();
 		swStore.init(conf);
-		
+
 		linkStore = new LinkStorageImpl();
 		linkStore.init(conf);
-				
+
 		log.debug("Initializing NetworkGraphPublisher module with {}", conf);
-		
+
 	}
 
 	@Override
@@ -476,11 +476,11 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		//deviceService.addListener(this);
 		floodlightProvider.addOFSwitchListener(this);
 		linkDiscovery.addListener(this);
-		
+
 		log.debug("Adding EventListener");
 		IDBConnection conn = op.getDBConnection();
 		conn.addEventListener(new LocalTopologyEventListener((GraphDBConnection) conn));
-	       // Setup the Cleanup task. 
+	       // Setup the Cleanup task.
 		if (cleanupNeeded == null || !cleanupNeeded.equals("False")) {
 				ScheduledExecutorService ses = threadPool.getScheduledExecutor();
 				cleanupTask = new SingletonTask(ses, new SwitchCleanup());

@@ -89,6 +89,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     /**
      * Shutdown the Flow Manager operation.
      */
+    @Override
     public void finalize() {
     	close();
     }
@@ -110,7 +111,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-        Collection<Class<? extends IFloodlightService>> l = 
+        Collection<Class<? extends IFloodlightService>> l =
             new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFlowService.class);
         return l;
@@ -122,7 +123,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the collection of implemented services.
      */
     @Override
-    public Map<Class<? extends IFloodlightService>, IFloodlightService> 
+    public Map<Class<? extends IFloodlightService>, IFloodlightService>
 			       getServiceImpls() {
         Map<Class<? extends IFloodlightService>,
 	    IFloodlightService> m =
@@ -138,7 +139,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the collection of modules this module depends on.
      */
     @Override
-    public Collection<Class<? extends IFloodlightService>> 
+    public Collection<Class<? extends IFloodlightService>>
 				      getModuleDependencies() {
 	Collection<Class<? extends IFloodlightService>> l =
 	    new ArrayList<Class<? extends IFloodlightService>>();
@@ -368,6 +369,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @return the network topology.
      */
+    @Override
     public Topology getTopology() {
 	return flowEventHandler.getTopology();
     }
@@ -378,6 +380,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param sw the switch the Flow Entry expired on.
      * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
+    @Override
     public void flowEntryOnSwitchExpired(IOFSwitch sw,
 					 FlowEntryId flowEntryId) {
 	// Find the Flow Entry
@@ -406,6 +409,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param entries the collection of <IOFSwitch, FlowEntry> pairs
      * that have been pushed.
      */
+    @Override
     public void flowEntriesPushedToSwitch(
 		Collection<Pair<IOFSwitch, FlowEntry>> entries) {
 
