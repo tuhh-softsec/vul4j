@@ -18,10 +18,6 @@ http://wiki.onlab.us/display/Eng/ONOS+Development+VM
 Building ONOS
 -------------
 
-0. Install custom jars and dependencies (needs to be run only once)
-
-        $ ./setup-local-maven.sh
-
 1. Cleanly build ONOS
 
         $ mvn clean
@@ -30,8 +26,8 @@ Building ONOS
     NOTE: installing maven for the first time may switch java version
     from 1.7 to 1.6. This might prevent Cassandra to run.
 
-Dependencies
-------------
+External Dependencies
+---------------------
 1. Zookeeper
 
     Download and install apache-zookeeper-3.4.5:
@@ -110,6 +106,20 @@ Running ONOS with Cassandra embedded (Optional)
 
         ## Confirm the REST API server is running:
         $ ./start-rest.sh status
+
+
+Developping ONOS in offline environment (Optional)
+---------------------------------------------------------------------------
+
+Maven need the Internet connection to download required dependencies and plugins,
+when they're used for the first time.
+
+If you need to develop ONOS in an Internet unreachable environment
+you may want to run the following helper script before you go offline,
+so that required dependencies and plugins for frequently used maven target will be
+downloaded to your local environment.
+
+        $ ./prep-for-offline.sh
 
 
 Running in offline mode (Optional)
