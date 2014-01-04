@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.netflix.curator</groupId>
+  <artifactId>curator-x-discovery</artifactId>
+  <versioning>
+    <versions>
+      <version>1.3.5-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20140102175425</lastUpdated>
+  </versioning>
+</metadata>

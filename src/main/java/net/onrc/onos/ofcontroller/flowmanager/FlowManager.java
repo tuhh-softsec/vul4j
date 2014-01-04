@@ -37,6 +37,8 @@ import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
+import com.thinkaurelius.titan.core.TitanException;
+
 import com.esotericsoftware.kryo2.Kryo;
 
 import org.slf4j.Logger;
@@ -145,7 +147,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
 	l.add(IFlowPusherService.class);
-	l.add(IForwardingService.class);
+	//
+	// TODO: Comment-out the dependency on the IForwardingService,
+	// because it is an optional module. Apparently, adding the dependency
+	// here automatically enables the module.
+	//
+	// l.add(IForwardingService.class);
         return l;
     }
 
@@ -405,32 +412,40 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Process all entries
 	//
+	// TODO: For now we have to create an explicit FlowEntry copy so
+	// we don't modify the original FlowEntry.
+	// This should go away after we start using the OpenFlow Barrier
+	// mechnanism in the FlowPusher.
+	//
+	Kryo kryo = kryoFactory.newKryo();
 	for (Pair<IOFSwitch, FlowEntry> entry : entries) {
 	    FlowEntry flowEntry = entry.second;
 
 	    //
 	    // Mark the Flow Entry that it has been pushed to the switch
 	    //
-	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+	    FlowEntry copyFlowEntry = kryo.copy(flowEntry);
+	    copyFlowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
 
 	    //
 	    // Write the Flow Entry to the Datagrid
 	    //
-	    switch (flowEntry.flowEntryUserState()) {
+	    switch (copyFlowEntry.flowEntryUserState()) {
 	    case FE_USER_ADD:
-		datagridService.notificationSendFlowEntryAdded(flowEntry);
+		datagridService.notificationSendFlowEntryAdded(copyFlowEntry);
 		break;
 	    case FE_USER_MODIFY:
-		datagridService.notificationSendFlowEntryUpdated(flowEntry);
+		datagridService.notificationSendFlowEntryUpdated(copyFlowEntry);
 		break;
 	    case FE_USER_DELETE:
-		datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+		datagridService.notificationSendFlowEntryRemoved(copyFlowEntry.flowEntryId());
 		break;
 	    case FE_USER_UNKNOWN:
 		assert(false);
 		break;
 	    }
 	}
+	kryoFactory.deleteKryo(kryo);
     }
 
     /**
@@ -440,7 +455,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param flowPaths the collection of installed Flow Paths.
      */
     void notificationFlowPathsInstalled(Collection<FlowPath> flowPaths) {
-	forwardingService.flowsInstalled(flowPaths);
+	//
+	// TODO: Add an explicit check for null pointer, because
+	// the IForwardingService is optional. Remove the "if" statement
+	// after hte Forwarding Module becomes mandatory.
+	//
+	if (forwardingService != null)
+	    forwardingService.flowsInstalled(flowPaths);
     }
 
     /**
@@ -486,6 +507,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 	    if (mySwitch == null)
 		continue;
+
+	    if (flowEntry.flowEntrySwitchState() ==
+		FlowEntrySwitchState.FE_SWITCH_UPDATED) {
+		//
+		// Don't push again Flow Entries that were already already
+		// installed into the switches.
+		//
+		continue;
+	    }
 
 	    //
 	    // Assign Flow Entry IDs if missing.
@@ -662,16 +692,25 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		log.debug("Deleting Flow Path From Database: {}",
 			  flowPath.toString());
 
-		try {
-		    if (! FlowDatabaseOperation.deleteFlow(
-					dbHandlerInner,
-					flowPath.flowId())) {
-			log.error("Cannot delete Flow Path {} from Network Map",
-				  flowPath.flowId());
-		    }
-		} catch (Exception e) {
-		    log.error("Exception deleting Flow Path from Network MAP: {}", e);
-		}
+		boolean retry = false;
+		do {
+		    retry = false;
+		    try {
+			if (! FlowDatabaseOperation.deleteFlow(
+						dbHandlerInner,
+						flowPath.flowId())) {
+			    log.error("Cannot delete Flow Path {} from Network Map",
+				      flowPath.flowId());
+			    retry = true;
+			}
+		    } catch (TitanException te) {
+			log.error("Titan Exception deleting Flow Path from Network MAP: {}", te);
+			retry = true;
+		    } catch (Exception e) {
+			log.error("Exception deleting Flow Path from Network MAP: {}", e);
+		    } 
+		} while (retry);
+
 		continue;
 	    }
 
@@ -688,6 +727,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    allValid = false;
 		    break;
 		}
+		if (flowEntry.flowEntrySwitchState() !=
+		    FlowEntrySwitchState.FE_SWITCH_UPDATED) {
+		    allValid = false;
+		    break;
+		}
 	    }
 	    if (! allValid)
 		continue;
@@ -697,15 +741,23 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    //
 	    // Write the Flow Path to the Network Map
 	    //
-	    try {
-		if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath)) {
-		    String logMsg = "Cannot write to Network Map Flow Path " +
-			flowPath.flowId();
-		    log.error(logMsg);
+	    boolean retry = false;
+	    do {
+		retry = false;
+		try {
+		    if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath)) {
+			String logMsg = "Cannot write to Network Map Flow Path " +
+			    flowPath.flowId();
+			log.error(logMsg);
+			retry = true;
+		    }
+		} catch (TitanException te) {
+		    log.error("Titan Exception writing Flow Path to Network MAP: ", te);
+		    retry = true;
+		} catch (Exception e) {
+		    log.error("Exception writing Flow Path to Network MAP: ", e);
 		}
-	    } catch (Exception e) {
-		log.error("Exception writing Flow Path to Network MAP: ", e);
-	    }
+	    } while (retry);
 	}
     }
 }

@@ -4,8 +4,9 @@
 .project
 .pydevproject
 .settings
+.javacp
 target
 onos-logs
 onos.log
-repo
+logback.*.xml
 
