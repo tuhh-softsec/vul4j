@@ -35,7 +35,9 @@ ONOS_LOG = '%s/onos-logs/onos.%s.log' % ( ONOS_HOME, check_output( 'hostname').s
 print "ONOS Log File:", ONOS_LOG
 
 # Verify that tcpkill is installed
-if not Popen( 'which tcpkill', stdout=PIPE, shell=True).communicate():
+tcpkill_check = Popen( 'which tcpkill', stdout=PIPE, shell=True)
+tcpkill_check.communicate()
+if tcpkill_check.returncode != 0:
   print '* Installing tcpkill'
   call( 'apt-get install -y dsniff', stdout=PIPE, shell=True )
 
