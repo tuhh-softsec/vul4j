@@ -22,7 +22,8 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowDatabaseOperation {
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
-    public static final boolean measureONOSFlowTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOSFlow", "0")) != 0;
+    private static final boolean measureONOSFlowTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOSFlow", "0")) != 0;
+    private static final boolean measureONOSFlowEntryTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOSFlowEntry", "0")) != 0;
 
     /**
      * Add a flow.
@@ -37,6 +38,7 @@ public class FlowDatabaseOperation {
 	long startAddFlow = 0;
 	long endAddFlow = 0;
 	long endSearchExistingFlowPathTime = 0;
+	long startCreateNewFlowPathTime = 0;
 	long endCreateNewFlowPathTime = 0;
 	long startFollowExistingFlowEntries = 0;
 	long endFollowExistingFlowEntries = 0;
@@ -60,6 +62,9 @@ public class FlowDatabaseOperation {
 	    if (flowObj != null) {
 		found = true;
 	    } else {
+		if ( measureONOSFlowTimeProp ) {
+			startCreateNewFlowPathTime = System.nanoTime();
+		}
 		flowObj = dbHandler.newFlowPath();
 		if ( measureONOSFlowTimeProp ) {
 			endCreateNewFlowPathTime = System.nanoTime();
@@ -303,7 +308,7 @@ public class FlowDatabaseOperation {
 		    (endAddFlow - startAddFlow),
 		    (endSettingFlowPathProps - startAddFlow),
 		    (endSearchExistingFlowPathTime - startAddFlow),
-		    (endCreateNewFlowPathTime - endSearchExistingFlowPathTime),
+		    (endCreateNewFlowPathTime - startCreateNewFlowPathTime),
 		    (endFollowExistingFlowEntries - startFollowExistingFlowEntries),
 		    (accTimeRemovingFlowEntriesFromFlowPath),
 		    (accTimeRemovingFlowEntriesFromDB),
@@ -337,15 +342,60 @@ public class FlowDatabaseOperation {
 				   FlowEntry flowEntry) {
 	// Flow edges
 	//   HeadFE (TODO)
+	long startAddFlowEntry = 0;
+	long endAddFlowEntry = 0;
+
+	long endSearchFlowEntry = 0;
+
+	long startCreateNewFlowEntry = 0;
+	long endCreateNewFlowEntry = 0;
+
+	long startSetProperties = 0;
+	long endSetProperties = 0;
+	int numProperties = 0;
+
+	long startSearchSwitch = 0;
+	long endSearchSwitch = 0;
+
+	long startAddEdgeToSwitch =0;
+	long endAddEdgeToSwitch =0;
+
+	long startSearchInPort = 0;
+	long endSearchInPort = 0;
+
+	long startAddEdgeToInPort =0;
+	long endAddEdgeToInPort =0;
+
+	long startSearchOutPort = 0;
+	long endSearchOutPort = 0;
+
+	long startAddEdgeToOutPort =0;
+	long endAddEdgeToOutPort =0;
+
+	long startAddEdgeBetweenFlowPath = 0;
+	long endAddEdgeBetweenFlowPath = 0;
+
+	if (measureONOSFlowEntryTimeProp) {
+		startAddFlowEntry = System.nanoTime();
+	}
 
 	IFlowEntry flowEntryObj = null;
 	boolean found = false;
 	try {
 	    if ((flowEntryObj =
-		 dbHandler.searchFlowEntry(flowEntry.flowEntryId())) != null) {
+		dbHandler.searchFlowEntry(flowEntry.flowEntryId())) != null) {
+		if (measureONOSFlowEntryTimeProp) {
+			endSearchFlowEntry = System.nanoTime();
+		}
 		found = true;
 	    } else {
+		if (measureONOSFlowEntryTimeProp) {
+		    startCreateNewFlowEntry = System.nanoTime();
+		}
 		flowEntryObj = dbHandler.newFlowEntry();
+		if (measureONOSFlowEntryTimeProp) {
+		    endCreateNewFlowEntry = System.nanoTime();
+		}
 	    }
 	} catch (Exception e) {
 	    log.error(":addFlow FlowEntryId:{} failed",
@@ -358,12 +408,18 @@ public class FlowDatabaseOperation {
 	    return null;
 	}
 
+	if (measureONOSFlowEntryTimeProp) {
+	    startSetProperties = System.nanoTime();
+	}
 	//
 	// Set the Flow Entry key:
 	// - flowEntry.flowEntryId()
 	//
 	flowEntryObj.setFlowEntryId(flowEntry.flowEntryId().toString());
 	flowEntryObj.setType("flow_entry");
+	if (measureONOSFlowEntryTimeProp) {
+	    numProperties += 2;
+	}
 
 	//
 	// Set the Flow Entry Edges and attributes:
@@ -392,63 +448,151 @@ public class FlowDatabaseOperation {
 	// - flowEntry.actionOutputPort()
 	// - flowEntry.actions()
 	//
+	if (measureONOSFlowEntryTimeProp) {
+	    startSearchSwitch = System.nanoTime();
+	}
 	ISwitchObject sw = dbHandler.searchSwitch(flowEntry.dpid().toString());
+	if (measureONOSFlowEntryTimeProp) {
+	    endSearchSwitch = System.nanoTime();
+	}
+
 	flowEntryObj.setIdleTimeout(flowEntry.idleTimeout());
 	flowEntryObj.setHardTimeout(flowEntry.hardTimeout());
 	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
+	if (measureONOSFlowEntryTimeProp) {
+	    numProperties += 3;
+	}
+
+	if (measureONOSFlowEntryTimeProp) {
+	    startAddEdgeToSwitch = System.nanoTime();
+	}
 	flowEntryObj.setSwitch(sw);
+	if (measureONOSFlowEntryTimeProp) {
+	    endAddEdgeToSwitch = System.nanoTime();
+	}
 	if (flowEntry.flowEntryMatch().matchInPort()) {
+	    if (measureONOSFlowEntryTimeProp) {
+		startSearchInPort = System.nanoTime();
+	    }
 	    IPortObject inport =
-		dbHandler.searchPort(flowEntry.dpid().toString(),
-					flowEntry.flowEntryMatch().inPort().value());
+		    dbHandler.searchPort(flowEntry.dpid().toString(),
+			    flowEntry.flowEntryMatch().inPort().value());
+	    if (measureONOSFlowEntryTimeProp) {
+		endSearchInPort = System.nanoTime();
+	    }
+
 	    flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
+
+	    if (measureONOSFlowEntryTimeProp) {
+		startAddEdgeToInPort = System.nanoTime();
+	    }
 	    flowEntryObj.setInPort(inport);
+	    if (measureONOSFlowEntryTimeProp) {
+		endAddEdgeToInPort = System.nanoTime();
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchSrcMac()) {
 	    flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchDstMac()) {
 	    flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
 	    flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchVlanId()) {
 	    flowEntryObj.setMatchVlanId(flowEntry.flowEntryMatch().vlanId());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchVlanPriority()) {
 	    flowEntryObj.setMatchVlanPriority(flowEntry.flowEntryMatch().vlanPriority());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
 	    flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
 	    flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchIpProto()) {
 	    flowEntryObj.setMatchIpProto(flowEntry.flowEntryMatch().ipProto());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchIpToS()) {
 	    flowEntryObj.setMatchIpToS(flowEntry.flowEntryMatch().ipToS());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchSrcTcpUdpPort()) {
 	    flowEntryObj.setMatchSrcTcpUdpPort(flowEntry.flowEntryMatch().srcTcpUdpPort());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 	if (flowEntry.flowEntryMatch().matchDstTcpUdpPort()) {
 	    flowEntryObj.setMatchDstTcpUdpPort(flowEntry.flowEntryMatch().dstTcpUdpPort());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 
 	for (FlowEntryAction fa : flowEntry.flowEntryActions().actions()) {
 	    if (fa.actionOutput() != null) {
+		if (measureONOSFlowEntryTimeProp) {
+		    if ( startSearchOutPort != 0 ) log.error("Performance addFlowEntry(_,{},{}) -- Multiple output port action unexpected.", flowEntry.flowId(), flowEntry.flowEntryId());
+		    startSearchOutPort = System.nanoTime();
+		}
 		IPortObject outport =
-		    dbHandler.searchPort(flowEntry.dpid().toString(),
-					      fa.actionOutput().port().value());
+			dbHandler.searchPort(flowEntry.dpid().toString(),
+				fa.actionOutput().port().value());
+		if (measureONOSFlowEntryTimeProp) {
+		    endSearchOutPort = System.nanoTime();
+		}
+
 		flowEntryObj.setActionOutputPort(fa.actionOutput().port().value());
+		if (measureONOSFlowEntryTimeProp) {
+		    ++numProperties;
+		}
+
+		if (measureONOSFlowEntryTimeProp) {
+		    startAddEdgeToOutPort = System.nanoTime();
+		}
 		flowEntryObj.setOutPort(outport);
+		if (measureONOSFlowEntryTimeProp) {
+		    endAddEdgeToOutPort = System.nanoTime();
+		}
 	    }
 	}
 	if (! flowEntry.flowEntryActions().isEmpty()) {
 	    flowEntryObj.setActions(flowEntry.flowEntryActions().toString());
+	    if (measureONOSFlowEntryTimeProp) {
+		++numProperties;
+	    }
 	}
 
 	// TODO: Hacks with hard-coded state names!
@@ -457,16 +601,57 @@ public class FlowDatabaseOperation {
 	else
 	    flowEntryObj.setUserState("FE_USER_ADD");
 	flowEntryObj.setSwitchState(flowEntry.flowEntrySwitchState().toString());
+	if (measureONOSFlowEntryTimeProp) {
+	    numProperties += 2;
+	}
 	//
 	// TODO: Take care of the FlowEntryErrorState.
 	//
+	if (measureONOSFlowEntryTimeProp) {
+	    endSetProperties = System.nanoTime();
+	}
 
 	// Flow Entries edges:
 	//   Flow
 	//   NextFE (TODO)
 	if (! found) {
+	    if (measureONOSFlowEntryTimeProp) {
+		startAddEdgeBetweenFlowPath = System.nanoTime();
+	    }
 	    flowObj.addFlowEntry(flowEntryObj);
 	    flowEntryObj.setFlow(flowObj);
+	    if (measureONOSFlowEntryTimeProp) {
+		endAddEdgeBetweenFlowPath = System.nanoTime();
+	    }
+	}
+	if (measureONOSFlowEntryTimeProp) {
+	    endAddFlowEntry = System.nanoTime();
+
+	    log.error("Performance addFlowEntry(_,{},{}) -- "
+		    + "GrandTotal: {} "
+		    + "SearchExistingFE: {} "
+		    + "CreateNewFE: {} "
+		    + "SetProp+Edge: {} #Props: {} "
+		    + "SearchSwitch: {} "
+		    + "AddEdgeToSwitch: {} "
+		    + "SearchInPort: {} "
+		    + "AddEdgeToInPort: {} "
+		    + "SearchOutPort: {} "
+		    + "AddEdgeToOutPort: {} "
+		    + "AddEdgeBetweenFlowPath: {} "
+		    , flowEntry.flowId(), flowEntry.flowEntryId()
+		    , endAddFlowEntry - startAddFlowEntry
+		    , endSearchFlowEntry - startAddFlowEntry
+		    , endCreateNewFlowEntry - startCreateNewFlowEntry
+		    , endSetProperties - startSetProperties, numProperties
+		    , endSearchSwitch - startSearchSwitch
+		    , endAddEdgeToSwitch - startAddEdgeToSwitch
+		    , endSearchInPort - startSearchInPort
+		    , endAddEdgeToInPort - startAddEdgeToInPort
+		    , endSearchOutPort - startSearchOutPort
+		    , endAddEdgeToOutPort - startAddEdgeToOutPort
+		    , endAddEdgeBetweenFlowPath - startAddEdgeBetweenFlowPath
+		    );
 	}
 
 	return flowEntryObj;
