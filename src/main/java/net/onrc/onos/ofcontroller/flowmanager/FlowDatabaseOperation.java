@@ -289,7 +289,7 @@ public class FlowDatabaseOperation {
 	if ( measureONOSFlowTimeProp ) {
 	    endAddFlow = System.nanoTime();
 
-	    log.debug("Performance addFlow(_,{}) -- "
+	    log.error("Performance addFlow(_,{}) -- "
 		    + "GrandTotal: {} "
 		    + "only FlowPathTotal: {} "
 		    + "searchExistingFlowPath: {} "
@@ -314,7 +314,7 @@ public class FlowDatabaseOperation {
 	    // Each FlowEntries
 	    final String strFlowId = flowPath.flowId().toString();
 	    for ( long[] idFE_Time : flowEntryTimes ) {
-		log.debug("Performance addFlowEntry(_,{},{})@addFlow -- FlowEntryTotal: {}",
+		log.error("Performance addFlowEntry(_,{},{})@addFlow -- FlowEntryTotal: {}",
 			strFlowId,
 			"0x" + Long.toHexString(idFE_Time[0]),
 			idFE_Time[1]);
