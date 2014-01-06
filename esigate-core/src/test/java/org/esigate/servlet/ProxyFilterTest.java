@@ -80,11 +80,11 @@ public class ProxyFilterTest {
 
         // Setup Esigate
         Properties p = new Properties();
-        p.setProperty("provider1." + Parameters.REMOTE_URL_BASE, "test");
+        p.setProperty("provider1." + Parameters.REMOTE_URL_BASE, "http://test");
         p.setProperty("provider1." + Parameters.MAPPINGS, "http://sub.domain.com/*");
-        p.setProperty("provider2." + Parameters.REMOTE_URL_BASE, "test");
+        p.setProperty("provider2." + Parameters.REMOTE_URL_BASE, "http://test");
         p.setProperty("provider2." + Parameters.MAPPINGS, "http://sub2.domain.com/*");
-        p.setProperty("single." + Parameters.REMOTE_URL_BASE, "test");
+        p.setProperty("single." + Parameters.REMOTE_URL_BASE, "http://test");
         p.setProperty("single." + Parameters.MAPPINGS, "*");
         DriverFactory.configure(p);
 

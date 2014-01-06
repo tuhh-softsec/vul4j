@@ -82,6 +82,11 @@ public final class Parameter {
         return PropertiesUtil.getPropertyValueAsList(properties, name, defaultValue);
     }
 
+    public String[] getValueArray(Properties properties) {
+        Collection<String> resultAsCollection = getValueList(properties);
+        return resultAsCollection.toArray(new String[resultAsCollection.size()]);
+    }
+
     public String getName() {
         return name;
     }

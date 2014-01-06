@@ -84,29 +84,21 @@ public class DriverConfiguration {
     }
 
     private BaseUrlRetrieveStrategy getBaseUrlRetrieveSession(Properties props) {
-        BaseUrlRetrieveStrategy urlStrategy = null;
-        String baseURLs = Parameters.REMOTE_URL_BASE.getValueString(props);
-        if (StringUtils.isEmpty(baseURLs)) {
+        BaseUrlRetrieveStrategy urlStrategy;
+        String[] baseURLs = Parameters.REMOTE_URL_BASE.getValueArray(props);
+        if (baseURLs.length == 0) {
             throw new ConfigurationException(Parameters.REMOTE_URL_BASE.getName()
                     + " property cannot be empty for instance '" + instanceName + "'");
-        }
-        String[] urls = StringUtils.split(baseURLs, ",");
-        if (1 == urls.length) {
-            String baseURL = StringUtils.trimToEmpty(urls[0]);
-            urlStrategy = new SingleBaseUrlRetrieveStrategy(baseURL);
-        } else if (urls.length > 0) {
-            String[] urlArr = new String[urls.length];
-            for (int i = 0; i < urls.length; i++) {
-                String baseURL = StringUtils.trimToEmpty(urls[i]);
-                urlArr[i] = baseURL;
-            }
+        } else if (baseURLs.length == 1) {
+            urlStrategy = new SingleBaseUrlRetrieveStrategy(baseURLs[0]);
+        } else {
             String strategy = Parameters.REMOTE_URL_BASE_STRATEGY.getValueString(props);
             if (Parameters.ROUNDROBIN.equalsIgnoreCase(strategy)) {
-                urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(urlArr);
+                urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(baseURLs);
             } else if (Parameters.IPHASH.equalsIgnoreCase(strategy)) {
-                urlStrategy = new IpHashBaseUrlRetrieveStrategy(urlArr);
+                urlStrategy = new IpHashBaseUrlRetrieveStrategy(baseURLs);
             } else if (Parameters.STICKYSESSION.equalsIgnoreCase(strategy)) {
-                urlStrategy = new StickySessionBaseUrlRetrieveStrategy(urlArr);
+                urlStrategy = new StickySessionBaseUrlRetrieveStrategy(baseURLs);
             } else {
                 throw new ConfigurationException("No such BaseUrlRetrieveStrategy '" + strategy + "'");
             }

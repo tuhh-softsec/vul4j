@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.Properties;
 
 import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
@@ -33,6 +32,7 @@ import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.http.DateUtils;
 import org.esigate.http.OutgoingRequestContext;
+import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +49,7 @@ public class CacheAdapter {
     private int ttl;
     private boolean xCacheHeader;
     private boolean viaHeader;
+    private HttpRoute routeForCacheKey;
 
     public void init(Properties properties) {
         staleIfError = Parameters.STALE_IF_ERROR.getValueInt(properties);
@@ -64,6 +65,8 @@ public class CacheAdapter {
         LOG.info("Initializing cache for provider " + Parameters.REMOTE_URL_BASE.getValueString(properties)
                 + " staleIfError=" + staleIfError + " staleWhileRevalidate=" + staleWhileRevalidate + " ttl=" + ttl
                 + " xCacheHeader=" + xCacheHeader + " viaHeader=" + viaHeader);
+        String firstBaseURL = Parameters.REMOTE_URL_BASE.getValueArray(properties)[0];
+        routeForCacheKey = new HttpRoute(UriUtils.extractHost(firstBaseURL));
     }
 
     public ClientExecChain wrapCachingHttpClient(final ClientExecChain wrapped) {
@@ -79,13 +82,12 @@ public class CacheAdapter {
                     HttpClientContext httpClientContext, HttpExecutionAware execAware) throws IOException,
                     HttpException {
                 OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
-                // Switch route for the cache to generate the right cache key
-                HttpHost virtualHost = context.getTargetHost();
-                HttpRoute virtualRoute = new HttpRoute(virtualHost);
+
                 // Save the real route to restore later
                 context.setRealHttpRoute(route);
 
-                CloseableHttpResponse response = wrapped.execute(virtualRoute, request, context, execAware);
+                // Switch route for the cache to generate the right cache key
+                CloseableHttpResponse response = wrapped.execute(routeForCacheKey, request, context, execAware);
 
                 // Remove previously added Cache-control header
                 if (request.getRequestLine().getMethod().equalsIgnoreCase("GET")

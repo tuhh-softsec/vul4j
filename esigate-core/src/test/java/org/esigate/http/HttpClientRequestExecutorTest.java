@@ -59,7 +59,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
     private Properties properties;
     private Driver driver;
 
-    private void createHttpClientHelper() {
+    private void createHttpClientRequestExecutor() {
         driver = Driver
                 .builder()
                 .setName("default")
@@ -116,9 +116,8 @@ public class HttpClientRequestExecutorTest extends TestCase {
 
     private HttpResponse executeRequest() throws HttpErrorPage {
         DriverRequest httpRequest = TestUtils.createRequest(driver);
-        OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
-                "http://localhost:8080", true);
-        return httpClientRequestExecutor.execute(apacheHttpRequest);
+        String url = ResourceUtils.getHttpUrlWithQueryString("/", httpRequest, true);
+        return httpClientRequestExecutor.createAndExecuteRequest(httpRequest, url, true);
     }
 
     @Override
@@ -134,7 +133,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080, http://127.0.0.1:8080");
         properties.put(Parameters.USE_CACHE.getName(), "true"); // Default value
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         // First request
         HttpResponse response = createMockResponse("0");
         response.setHeader("Cache-control", "public, max-age=3600");
@@ -149,27 +148,23 @@ public class HttpClientRequestExecutorTest extends TestCase {
         assertTrue("Response content should be unchanged as cache should be used.", compare(response, result));
     }
 
-    public void testCacheAndLoadBalancingNoPreserveHost() {
-        // FIXME this test is currently broken
-        // properties.put(Parameters.REMOTE_URL_BASE,
-        // "http://localhost:8080, http://127.0.0.1:8080");
-        // properties.put(Parameters.USE_CACHE.name, "false"); // Default value
-        // properties.put(Parameters.PRESERVE_HOST.name, "false");
-        // createHttpClientHelper();
-        // // First request
-        // HttpResponse response = createMockResponse("0");
-        // response.setHeader("Cache-control", "public, max-age=3600");
-        // mockHttpClient.setResponse(response);
-        // HttpResponse result = executeRequest();
-        // assertTrue("Response content should be '0'", compare(response,
-        // result));
-        // // Second request should reuse the cache entry even if it uses a
-        // // different node
-        // HttpResponse response1 = createMockResponse("1");
-        // mockHttpClient.setResponse(response1);
-        // result = executeRequest();
-        // assertTrue("Response content should be unchanged as cache should be used.",
-        // compare(response, result));
+    public void testCacheAndLoadBalancingNoPreserveHost() throws Exception {
+        properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080, http://127.0.0.1:8080");
+        properties.put(Parameters.USE_CACHE, "true"); // Default value
+        properties.put(Parameters.PRESERVE_HOST, "false");
+        createHttpClientRequestExecutor();
+        // First request
+        HttpResponse response = createMockResponse("0");
+        response.setHeader("Cache-control", "public, max-age=3600");
+        mockConnectionManager.setResponse(response);
+        HttpResponse result = executeRequest();
+        assertTrue("Response content should be '0'", compare(response, result));
+        // Second request should reuse the cache entry even if it uses a
+        // different node
+        HttpResponse response1 = createMockResponse("1");
+        mockConnectionManager.setResponse(response1);
+        result = executeRequest();
+        assertTrue("Response content should be unchanged as cache should be used.", compare(response, result));
     }
 
     public void testCacheStaleIfError() throws Exception {
@@ -179,26 +174,12 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.MIN_ASYNCHRONOUS_WORKERS.getName(), "1");
         properties.put(Parameters.MAX_ASYNCHRONOUS_WORKERS.getName(), "10");
         properties.put(Parameters.HEURISTIC_CACHING_ENABLED.getName(), "false");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         // First request
         HttpResponse response = createMockResponse("0");
-        response.setHeader("Last-modified", "Fri, 20 May 2011 00:00:00 GMT"); // HttpClient
-                                                                              // should
-                                                                              // store
-                                                                              // in
-                                                                              // cache
-                                                                              // and
-                                                                              // send
-                                                                              // a
-                                                                              // conditional
-                                                                              // request
-                                                                              // next
-                                                                              // time
-        response.setHeader("Cache-control", "max-age=0"); // HttpClient should
-                                                          // store in cache
-                                                          // and send a
-                                                          // conditional
-                                                          // request next time
+        // HttpClient should store in cache and send a conditional request next time
+        response.setHeader("Last-modified", "Fri, 20 May 2011 00:00:00 GMT");
+        response.setHeader("Cache-control", "max-age=0");
         mockConnectionManager.setResponse(response);
         HttpResponse result = executeRequest();
         assertTrue("Response content should be '0'", compare(response, result));
@@ -224,7 +205,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
     public void testCacheTtl() throws Exception {
         properties.put(Parameters.USE_CACHE.getName(), "true"); // Default value
         properties.put(Parameters.TTL.getName(), "1");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         // First request
         HttpResponse response = createMockResponse("0");
         response.setHeader("Cache-control", "no-cache");
@@ -244,10 +225,10 @@ public class HttpClientRequestExecutorTest extends TestCase {
     }
 
     public void assertStatusCodeIsCachedWithTtl(int statusCode, boolean responseHasBody) throws Exception {
-        properties.put(Parameters.USE_CACHE.getName(), "true"); // Default value
-        properties.put(Parameters.TTL.getName(), "1");
+        properties.put(Parameters.USE_CACHE, "true"); // Default value
+        properties.put(Parameters.TTL, "1");
         properties.put(Parameters.X_CACHE_HEADER, "true");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         // First request
         HttpResponse response;
         if (responseHasBody) {
@@ -260,18 +241,31 @@ public class HttpClientRequestExecutorTest extends TestCase {
             response.setHeader("Location", "http://www.foo.com");
         }
         mockConnectionManager.setResponse(response);
-        HttpResponse result = executeRequest();
+        HttpResponse result;
+        try {
+            result = executeRequest();
+        } catch (HttpErrorPage errorPage) {
+            result = errorPage.getHttpResponse();
+        }
         assertTrue(result.getFirstHeader("X-cache").getValue().startsWith("MISS"));
         // Second request should use cache even if first response was a 404
         HttpResponse response1 = createMockResponse("1");
         response.setHeader("Cache-control", "no-cache");
         mockConnectionManager.setResponse(response1);
-        result = executeRequest();
+        try {
+            result = executeRequest();
+        } catch (HttpErrorPage errorPage) {
+            result = errorPage.getHttpResponse();
+        }
         assertTrue("Response content should be unchanged as cache should be used.", result.getFirstHeader("X-cache")
                 .getValue().startsWith("HIT"));
         // Third request after cache has expired
         Thread.sleep(1000);
-        result = executeRequest();
+        try {
+            result = executeRequest();
+        } catch (HttpErrorPage errorPage) {
+            result = errorPage.getHttpResponse();
+        }
         assertTrue("Response should have been refreshed.",
                 result.getFirstHeader("X-cache").getValue().startsWith("VALIDATED"));
     }
@@ -304,7 +298,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.USE_CACHE.getName(), "true"); // Default value
         properties.put(Parameters.CACHE_STORAGE.getName(), EhcacheCacheStorage.class.getName()); // Default
         // value
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         // First request
         HttpResponse response = createMockResponse("0");
         response.setHeader("Cache-control", "public, max-age=3600");
@@ -322,7 +316,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
     public void testXCacheHeader() throws Exception {
         properties.put(Parameters.USE_CACHE.getName(), "true"); // Default value
         properties.put(Parameters.X_CACHE_HEADER.getName(), "true");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         // First request
         HttpResponse response = createMockResponse("0");
         response.setHeader("Cache-control", "public, max-age=3600");
@@ -348,7 +342,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.USE_CACHE.getName(), "true"); // Default value
         properties.put(Parameters.X_CACHE_HEADER.getName(), "true");
         properties.put(Parameters.REMOTE_URL_BASE_STRATEGY.getName(), Parameters.ROUNDROBIN);
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         // First request
         HttpResponse response = createMockResponse("1");
         response.setHeader("Cache-control", "no-cache");
@@ -381,7 +375,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
         properties.put(Parameters.X_CACHE_HEADER.getName(), "true");
         properties.put(Parameters.REMOTE_URL_BASE_STRATEGY.getName(), Parameters.ROUNDROBIN);
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         // First request
         HttpResponse response = createMockResponse("1");
         response.setHeader("Cache-control", "max-age=60");
@@ -410,7 +404,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
     public void testDecompressStream() throws IOException, HttpErrorPage {
         properties.put("default" + Parameters.REMOTE_URL_BASE.getName(), "http://localhost,http://127.0.0.1");
         properties.put(Parameters.USE_CACHE.getName(), "true"); // Default value
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         String content = "To be compressed";
         HttpResponse httpResponse = createMockGzippedResponse(content);
         mockConnectionManager.setResponse(httpResponse);
@@ -425,7 +419,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
         properties.put(Parameters.REMOTE_URL_BASE.getName(), targetHost);
         properties.put(Parameters.USE_CACHE.getName(), "false");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
 
         mockConnectionManager.setResponse(createMockResponse(""));
         DriverRequest httpRequest = TestUtils.createRequest(uri, driver);
@@ -482,7 +476,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.USE_CACHE.getName(), "false");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         HttpClientRequestExecutor httpClientHelper1 = httpClientRequestExecutor;
 
         // Create a second HttpClientHelper with preserveHost = true
@@ -490,7 +484,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.PRESERVE_HOST.getName(), "false");
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.USE_CACHE.getName(), "false");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         HttpClientRequestExecutor httpClientHelper2 = httpClientRequestExecutor;
 
         DriverRequest httpRequest = TestUtils.createRequest("http://www.foo.com", driver);
@@ -527,7 +521,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
         properties.put(Parameters.USE_CACHE, "false");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         DriverRequest originalRequest = TestUtils.createRequest(driver);
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
                 false);
@@ -552,7 +546,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.TTL.getName(), "1000");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         DriverRequest originalRequest = TestUtils.createRequest(driver);
         originalRequest.addHeader("If-Modified-Since", "Fri, 15 Jun 2012 21:06:25 GMT");
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
@@ -576,7 +570,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.TTL.getName(), "1000");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         DriverRequest originalRequest = TestUtils.createRequest(driver);
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
                 false);
@@ -600,7 +594,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.TTL.getName(), "1000");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         DriverRequest originalRequest = TestUtils.createRequest(driver);
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
                 false);
@@ -626,7 +620,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.TTL, "1");
         properties.put(Parameters.X_CACHE_HEADER, "true");
         properties.put(Parameters.HEURISTIC_CACHING_ENABLED, "false");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         DriverRequest originalRequest = TestUtils.createRequest(driver);
 
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
@@ -686,7 +680,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080");
         properties.put(Parameters.TTL, "1");
         properties.put(Parameters.X_CACHE_HEADER, "true");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
 
         DriverRequest originalRequest = TestUtils.createRequest(driver);
         OutgoingRequest request1 = httpClientRequestExecutor.createHttpRequest(originalRequest,
@@ -742,7 +736,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
     public void testXForwardedProtoHeader() throws Exception {
         properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
 
         mockConnectionManager.setResponse(createMockResponse(""));
         DriverRequest httpRequest = TestUtils.createRequest("https://wwww.foo.com", driver);
@@ -757,7 +751,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
     public void test304CachedResponseIsReusedWithIfModifiedSinceRequest() throws Exception {
         properties.put(Parameters.USE_CACHE, "true"); // Default value
         properties.put(Parameters.X_CACHE_HEADER, "true");
-        createHttpClientHelper();
+        createHttpClientRequestExecutor();
         // First request
         String now = DateUtils.formatDate(new Date());
         String yesterday = DateUtils.formatDate(new Date(System.currentTimeMillis() - 86400 * 1000));
