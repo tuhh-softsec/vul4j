@@ -730,6 +730,39 @@ public class DriverTest extends TestCase {
         driver.proxy("/foobar.jsp", request);
     }
 
+    /**
+     * Cookies from external URLs calls should also be forwarded
+     * 
+     * @see <a href="https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=255">0000255: forwardCookies does
+     *      not work with esi:include if not using a provider variable</a>
+     * @throws Exception
+     */
+    public void testForwardCookiesExternalUrl() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080/");
+        properties.put(Parameters.PRESERVE_HOST, "true");
+        properties.put(Parameters.FORWARD_COOKIES, "*");
+
+        mockConnectionManager = new MockConnectionManager() {
+            @Override
+            public HttpResponse execute(HttpRequest httpRequest) {
+                BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK,
+                        "OK");
+                response.addHeader(new BasicHeader("Set-Cookie", "name1=value1;domain=www.external.server"));
+                return response;
+            }
+        };
+
+        Driver driver = createMockDriver(properties, mockConnectionManager);
+
+        request = TestUtils.createRequest("http://localhost:8080/foo/foobar.jsp");
+
+        driver.proxy("http://wwww.external.server/foo/foobar.jsp", request);
+
+        ContainerRequestMediator mediator = request.getMediator();
+        Assert.assertEquals(1, mediator.getCookies().length);
+    }
+
     public void testRewriteCookiePath() throws Exception {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080/");

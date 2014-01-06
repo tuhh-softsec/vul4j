@@ -208,11 +208,10 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         HttpHost physicalHost = UriUtils.extractHost(uri);
 
         // Preserve host if required
-        HttpHost virtualHost;
-        if (preserveHost) {
-            virtualHost = HttpRequestHelper.getHost(originalRequest);
-        } else {
-            virtualHost = physicalHost;
+        if (preserveHost && !originalRequest.isExternal()) {
+            HttpHost virtualHost = HttpRequestHelper.getHost(originalRequest);
+            // Rewrite the uri with the virtualHost
+            uri = UriUtils.rewriteURI(uri, virtualHost);
         }
 
         RequestConfig.Builder builder = RequestConfig.custom();
@@ -229,8 +228,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         OutgoingRequestContext context = new OutgoingRequestContext();
 
-        // Rewrite the uri with the virtualHost
-        uri = UriUtils.rewriteURI(uri, virtualHost);
         String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
         OutgoingRequest httpRequest;
         if (SIMPLE_METHODS.contains(method)) {

@@ -72,7 +72,7 @@ public class ServletExtension implements Extension, IEventListener {
                 CloseableHttpResponse result;
                 if (!(mediator instanceof HttpServletMediator)) {
                     String message = ServletExtension.class.getName()
-                            + " can be used only insite a java servlet engine";
+                            + " can be used only inside a java servlet engine";
                     result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                 } else {
                     HttpServletMediator httpServletMediator = (HttpServletMediator) mediator;
