@@ -408,7 +408,7 @@
         <log4j.version>1.2.17</log4j.version>
         <bcprov.version>1.50</bcprov.version>
         <xmlunit.version>1.4</xmlunit.version>
-        <commons.codec.version>1.7</commons.codec.version>
+        <commons.codec.version>1.9</commons.codec.version>
         <woodstox.core.asl.version>4.2.0</woodstox.core.asl.version>
         <jetty.version>8.1.4.v20120524</jetty.version>
         <xmlsec.jaxb.context.class />
