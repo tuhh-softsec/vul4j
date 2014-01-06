@@ -140,7 +140,7 @@ public class FlowProgrammer implements IFloodlightModule,
 	case FLOW_REMOVED:
 	    OFFlowRemoved flowMsg = (OFFlowRemoved) msg;
 	    FlowEntryId id = new FlowEntryId(flowMsg.getCookie());
-	    log.debug("Got flow entry removed from " + sw.getId() + ": " + id);
+	    log.debug("Got flow entry removed from {}: {}",sw.getId(), id);
 	    flowManager.flowEntryOnSwitchExpired(sw, id);
 	    break;
 	default:

@@ -39,7 +39,7 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 		// TODO Auto-generated method stub
 		// Fire NetMapEvents (LinkRemoved, FlowEntryRemoved, HostRemoved, PortRemoved)
 		TitanEdge edge = (TitanEdge) e;
-		log.debug("TopologyEvents: Received edge removed event: {}",edge.toString());
+		log.debug("TopologyEvents: Received edge removed event: {}",edge);
 		String label = edge.getLabel();
 		if (label.equals("link")) {
 			Vertex v = edge.getVertex(Direction.IN);
@@ -76,7 +76,7 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 		// TODO Auto-generated method stub
 		// Generate NetMapEvents 
 		String type = (String) vertex.getProperty("type");
-		log.debug("TopologyEvents: Received vertex removed event: {}",vertex.toString());
+		log.debug("TopologyEvents: Received vertex removed event: {}",vertex);
 		if (type.equals("port")) {
 			// port is removed...lets fire reconcile here directly for now
 			

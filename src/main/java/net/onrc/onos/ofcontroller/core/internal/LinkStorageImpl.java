@@ -511,13 +511,13 @@ public class LinkStorageImpl implements ILinkStorage {
 	 	vportDst = dbop.searchPort(dpid, port);
 	 	
 		// FIXME: This needs to remove all edges
-	 	if (vportSrc != null && vportDst != null) {
-	 		vportSrc.removeLink(vportDst);
-	    	log.debug("deleteLinkImpl(): deleted edges src {} dst {}", new Object[]{
-	    			lt, vportSrc, vportDst});
-	    	success = true;
-	    }
-	    
-	 	return success;
+		if (vportSrc != null && vportDst != null) {
+			vportSrc.removeLink(vportDst);
+			log.debug("deleteLinkImpl(): deleted edge {} src {} dst {}", new Object[]{
+				lt, vportSrc, vportDst});
+			success = true;
+		}
+
+		return success;
 	}
 }

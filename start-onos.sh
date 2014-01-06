@@ -54,7 +54,6 @@ fi
 JAVA_CP=`cat ${ONOS_HOME}/.javacp`
 JAVA_CP="${JAVA_CP}:${ONOS_HOME}/target/classes"
 
-
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
 
@@ -196,6 +195,6 @@ case "$1" in
     echo "$n instance of onos running"
     ;;
   *)
-    echo "Usage: $0 {start|stop|restart|status|startifdown}"
+    echo "Usage: $0 {start|stop|status|startifdown}"
     exit 1
 esac
