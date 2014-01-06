@@ -40,7 +40,7 @@ public class RouteResource extends ServerResource {
         String dstDpidStr = (String) getRequestAttributes().get("dst-dpid");
         String dstPortStr = (String) getRequestAttributes().get("dst-port");
 
-        log.debug( srcDpidStr + "--" + srcPortStr + "--" + dstDpidStr + "--" + dstPortStr);
+        log.debug( "{}--{}--{}--{}", srcDpidStr, srcPortStr, dstDpidStr, dstPortStr);
 
 	Dpid srcDpid = new Dpid(srcDpidStr);
 	Port srcPort = new Port(Short.parseShort(srcPortStr));

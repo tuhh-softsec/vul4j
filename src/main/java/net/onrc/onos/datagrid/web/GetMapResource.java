@@ -47,7 +47,7 @@ public class GetMapResource extends ServerResource {
 	// Extract the arguments
 	String mapNameStr = (String)getRequestAttributes().get("map-name");
 
-	log.debug("Get Datagrid Map: " + mapNameStr);
+	log.debug("Get Datagrid Map: {}", mapNameStr);
 
 	//
 	// Get the Flows

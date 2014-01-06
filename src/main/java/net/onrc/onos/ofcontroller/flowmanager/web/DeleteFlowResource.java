@@ -46,7 +46,7 @@ public class DeleteFlowResource extends ServerResource {
 	    result = flowService.deleteAllFlows();
 	} else {
 	    FlowId flowId = new FlowId(flowIdStr);
-	    log.debug("Delete Flow Id: " + flowIdStr);
+	    log.debug("Delete Flow Id: {}", flowIdStr);
 	    result = flowService.deleteFlow(flowId);
 	}
 	return result;

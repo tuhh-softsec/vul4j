@@ -31,7 +31,7 @@ public class IPv4NetDeserializer extends JsonDeserializer<IPv4Net> {
 	    String fieldname = jp.getCurrentName();
 	    if ("value".equals(fieldname)) {
 		String value = jp.getText();
-		log.debug("Fieldname: " + fieldname + " Value: " + value);
+		log.debug("Fieldname: {} Value: {}", fieldname, value);
 		ipv4Net = new IPv4Net(value);
 	    }
 	}

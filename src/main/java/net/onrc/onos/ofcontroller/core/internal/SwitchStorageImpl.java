@@ -169,7 +169,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			success = true;
 		} catch (Exception e) {
 			op.rollback();
-			log.error("SwitchStorage:addSwitch dpid:{} failed", dpid, e);
+			log.error("SwitchStorage:addSwitch dpid:"+dpid+" failed", e);
 		}
 
 		return success;
@@ -202,7 +202,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		} catch (Exception e) {
 			op.rollback();
 			e.printStackTrace();
-			log.error("SwitchStorage:addSwitch dpid:{} failed", dpid, e);
+			log.error("SwitchStorage:addSwitch dpid:"+dpid+" failed", e);
 		}
 
 		return success;
@@ -253,7 +253,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		} catch (Exception e) {
 			// TODO what type of exception is thrown when we can't commit?
 			op.rollback();
-			log.error("SwitchStorage:deactivateSwitch {} failed", dpid, e);
+			log.error("SwitchStorage:deactivateSwitch "+dpid+" failed", e);
 		}
 
 		return success;
@@ -407,7 +407,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		if (sw != null && state != null) {
 			sw.setState(state.toString());
 			log.info("SwitchStorage:setSwitchStateImpl dpid:{} updated {}",
-					sw.getDPID(), state.toString());
+					sw.getDPID(), state);
 		}
 	}
 

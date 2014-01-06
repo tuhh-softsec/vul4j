@@ -533,7 +533,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowEntry.setFlowEntryId(new FlowEntryId(id));
 	    }
 
-	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry.toString());
+	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry);
 	    entries.add(new Pair<IOFSwitch, FlowEntry>(mySwitch, flowEntry));
 	}
 
@@ -579,7 +579,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    if (mySwitch != null)
 		continue;
 
-	    log.debug("Pushing cleanup of Flow Entry To Datagrid: {}", flowEntry.toString());
+	    log.debug("Pushing cleanup of Flow Entry To Datagrid: {}", flowEntry);
 
 	    //
 	    // Write the Flow Entry to the Datagrid
@@ -693,8 +693,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    //
 	    if (flowPath.flowPathUserState() ==
 		FlowPathUserState.FP_USER_DELETE) {
-		log.debug("Deleting Flow Path From Database: {}",
-			  flowPath.toString());
+		log.debug("Deleting Flow Path From Database: {}", flowPath);
 
 		boolean retry = false;
 		do {
@@ -740,7 +739,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    if (! allValid)
 		continue;
 
-	    log.debug("Pushing Flow Path To Database: {}", flowPath.toString());
+	    log.debug("Pushing Flow Path To Database: {}", flowPath);
 
 	    //
 	    // Write the Flow Path to the Network Map
@@ -750,9 +749,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		retry = false;
 		try {
 		    if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath)) {
-			String logMsg = "Cannot write to Network Map Flow Path " +
-			    flowPath.flowId();
-			log.error(logMsg);
+			log.error("Cannot write to Network Map Flow Path {}", flowPath.flowId());
 			retry = true;
 		    }
 		} catch (TitanException te) {
