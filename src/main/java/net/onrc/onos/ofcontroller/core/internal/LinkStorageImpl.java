@@ -15,6 +15,7 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.tinkerpop.blueprints.impls.ramcloud.PerfMon;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.pipes.PipeFunction;
 import com.tinkerpop.pipes.transform.PathPipe;
@@ -27,6 +28,7 @@ public class LinkStorageImpl implements ILinkStorage {
 
 	protected final static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
 	protected DBOperation dbop;
+	private static PerfMon pm = PerfMon.getInstance();
 
 	/**
 	 * Initialize the object. Open LinkStorage using given configuration file.
@@ -137,6 +139,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			deleteDeviceOnPort(link.getDst(),link.getDstPort());
 
 		        long startLinkTime = System.nanoTime();
+			pm.addlink_start();
 			if (addLinkImpl(link)) {
 				// Set LinkInfo only if linfo is non-null.
 				if (linfo != null && (! setLinkInfoImpl(link, linfo))) {
@@ -144,6 +147,7 @@ public class LinkStorageImpl implements ILinkStorage {
 					dbop.rollback();
 				}
 				dbop.commit();
+				pm.addlink_end();
                                 long endLinkTime = System.nanoTime();
                                 log.error("Performance ##add link total time {}", endLinkTime - startLinkTime);
 				success = true;

@@ -3,6 +3,8 @@ package net.onrc.onos.ofcontroller.core.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tinkerpop.blueprints.impls.ramcloud.PerfMon;
+
 import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.graph.GraphDBManager;
@@ -26,6 +28,9 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	protected DBOperation op;
 	protected final static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 	public final long measureONOSTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOS", "0"));
+	public final long measureAllTimeProp = Long.valueOf(System.getProperty("benchmark.measureAll", "0"));
+
+	private static PerfMon pm = PerfMon.getInstance();
 
 	/***
 	 * Initialize function. Before you use this class, please call this method
@@ -144,12 +149,20 @@ public class SwitchStorageImpl implements ISwitchStorage {
                 long startUpdSwitchTime = 0, endUpdSwitchTime=0;
                 long startPortTime = 0, endPortTime=0;
                 long totalStartTime =0, totalEndTime=0;
+                long Tstamp1=0;
 		
 		try {
 			if (measureONOSTimeProp == 1) {
+		            log.error("Performance: addSwitch dpid= {} Start", dpid);
 			    totalStartTime = System.nanoTime();
 			}
+			pm.addswitch_start();
 			ISwitchObject curr = op.searchSwitch(dpid);
+			if (measureONOSTimeProp == 1) {
+			    Tstamp1 = System.nanoTime();
+		            log.error("Performance: addSwitch dpid= {} searchSwitch done at {} took {}", dpid, Tstamp1, Tstamp1-totalStartTime);
+			}
+
 			if (curr != null) {
 				//If existing the switch. set The SW state ACTIVE.
 				log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
@@ -165,19 +178,25 @@ public class SwitchStorageImpl implements ISwitchStorage {
 				    startSwitchTime = System.nanoTime();
 				}
 				curr = addSwitchImpl(dpid);
+			        pm.addswitch_end();
 				if (measureONOSTimeProp == 1) {
 				    endSwitchTime = System.nanoTime();
+		                    //log.error("Performance: addSwitch dpid= {} addSwitchImpl done at {} took {}", dpid, endSwitchTime, endSwitchTime-startSwitchTime);
+		                    log.error("Performance: addSwitch dpid= {} End searchSwitch {} addSwitchImpl {} total {} diff {}", dpid, Tstamp1-totalStartTime, endSwitchTime-startSwitchTime, endSwitchTime-totalStartTime,endSwitchTime-totalStartTime-(Tstamp1-totalStartTime)-(endSwitchTime-startSwitchTime)); 
 				}
 			}
 			if (measureONOSTimeProp == 1) {
 			    startPortTime = System.nanoTime();
 			}
                         long noOfPorts = 0;
+			pm.addport_start();
 			for (OFPhysicalPort port: sw.getPorts()) {
 				//addPort(dpid, port);
 				addPortImpl(curr, port);
                                 noOfPorts++;
+			    	pm.addport_incr();
 			}
+			pm.addport_end();
 			if (measureONOSTimeProp == 1) {
 			    endPortTime = System.nanoTime();
 			}
@@ -198,10 +217,11 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			    totalEndTime = System.nanoTime();
 			}
                         if (startSwitchTime != 0) {
-                          log.error("Performance -- switch add total time {}", endSwitchTime - startSwitchTime);
+                            //log.error("Performance -- switch add total time {}", endSwitchTime - startSwitchTime);
+                            log.error("Performance -- switch add total time {} including_search {}", endSwitchTime - startSwitchTime, endSwitchTime - totalStartTime);
                         }
                         if (startUpdSwitchTime != 0) {
-                            log.error("Performance -- switch update total time {}", endUpdSwitchTime - startUpdSwitchTime);
+                            log.error("Performance -- switch update total time {} including_search {}", endUpdSwitchTime - startUpdSwitchTime, endUpdSwitchTime - totalStartTime);
                         }
                         if (startPortTime != 0) {
                             log.error("Performance @@ port add total time {} no of ports written {}", endPortTime - startPortTime, noOfPorts);
