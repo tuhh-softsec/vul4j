@@ -175,23 +175,10 @@
                         <Specification-Version>${project.version}</Specification-Version>
                         <Export-Package>
                               org.apache.xml.security.*;version="${project.version}",
-                              javax.xml.crypto;version="${project.version}",
-			      javax.xml.crypto.dsig;version="${project.version}",
-			      javax.xml.crypto.dsig.dom;version="${project.version}",
-                              javax.xml.crypto.dsig.keyinfo;version="${project.version}",
-                              javax.xml.crypto.dsig.spec;version="${project.version}",
-                              javax.xml.crypto.dom;version="${project.version}",
-                              javax.xml.crypto;version="${oldxmlsec.version}",
-			      javax.xml.crypto.dsig;version="${oldxmlsec.version}",
-			      javax.xml.crypto.dsig.dom;version="${oldxmlsec.version}",
-                              javax.xml.crypto.dsig.keyinfo;version="${oldxmlsec.version}",
-                              javax.xml.crypto.dsig.spec;version="${oldxmlsec.version}",
-                              javax.xml.crypto.dom;version="${oldxmlsec.version}",
                               org.apache.jcp.xml.dsig.internal.*;version="${project.version}",
                         </Export-Package>
                         <Import-Package>
                               !org.apache.xml.security.*,
-                              !javax.xml.crypto.*,
                               !org.apache.jcp.xml.dsig.internal.*,
                               org.slf4j.*;version="[1.7,2)",
                               org.apache.commons.codec.*;version="[1.6,2)",
@@ -413,7 +400,7 @@
 
     <properties>
         <xml.apis.version>1.4.01</xml.apis.version>
-        <oldxmlsec.version>1.5.5</oldxmlsec.version>
+        <oldxmlsec.version>1.5.6</oldxmlsec.version>
         <slf4j.version>1.7.5</slf4j.version>
         <xalan.version>2.7.1</xalan.version>
         <xerces.version>2.11.0</xerces.version>
