@@ -167,7 +167,7 @@ public class GraphDBConnection implements IDBConnection {
 		try {
 			commit();
 		} catch (Exception e) {
-			log.error("{}", e.toString());
+			log.error("close() failed with exception", e);
 		}
 	}
 }

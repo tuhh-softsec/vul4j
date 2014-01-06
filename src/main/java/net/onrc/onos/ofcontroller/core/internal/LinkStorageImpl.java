@@ -477,7 +477,7 @@ public class LinkStorageImpl implements ILinkStorage {
 				vportSrc.setLinkPort(vportDst);
 				success = true;
 			} else {
-				log.debug("LinkStorageImpl:addLinkImpl failed link exists {} {} src {} dst {}", 
+				log.debug("LinkStorageImpl:addLinkImpl failed link exists {} {} src {} dst {}",
 						new Object[]{op, lt, vportSrc, vportDst});
 			}
 		}
@@ -500,13 +500,13 @@ public class LinkStorageImpl implements ILinkStorage {
 	 	vportDst = op.searchPort(dpid, port);
 	 	
 		// FIXME: This needs to remove all edges
-	 	if (vportSrc != null && vportDst != null) {
-	 		vportSrc.removeLink(vportDst);
-	    	log.debug("deleteLinkImpl(): deleted edges src {} dst {}", new Object[]{
-	    			lt, vportSrc, vportDst});
-	    	success = true;
-	    }
-	    
-	 	return success;
+		if (vportSrc != null && vportDst != null) {
+			vportSrc.removeLink(vportDst);
+			log.debug("deleteLinkImpl(): deleted edge {} src {} dst {}", new Object[]{
+				lt, vportSrc, vportDst});
+			success = true;
+		}
+
+		return success;
 	}
 }

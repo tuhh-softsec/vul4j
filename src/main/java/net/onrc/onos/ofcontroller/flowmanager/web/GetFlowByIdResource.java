@@ -41,7 +41,7 @@ public class GetFlowByIdResource extends ServerResource {
 	String flowIdStr = (String) getRequestAttributes().get("flow-id");
 	FlowId flowId = new FlowId(flowIdStr);
 
-	log.debug("Get Flow Id: " + flowIdStr);
+	log.debug("Get Flow Id: {}", flowIdStr);
 
 	result = flowService.getFlow(flowId);
 

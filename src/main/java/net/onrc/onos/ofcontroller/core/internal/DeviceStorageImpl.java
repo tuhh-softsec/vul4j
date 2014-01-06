@@ -231,8 +231,8 @@ public class DeviceStorageImpl implements IDeviceStorage {
 					port.setDevice(obj);  
 				}
 
-				log.debug("port number is {}", port.getNumber().toString());
-				log.debug("port desc is {}", port.getDesc());  
+				log.debug("port number is {}", port.getNumber());
+				log.debug("port desc is {}", port.getDesc());
 			}
 		}      		 
 
@@ -333,8 +333,10 @@ public class DeviceStorageImpl implements IDeviceStorage {
 				onosDevice.getSwitchDPID()), onosDevice.getSwitchPort());
 
 		if ((portObject1 != null) && portObject1.getLinkedPorts().iterator().hasNext()) {
-			log.debug("stop adding OnosDevice: {} due to there is a link to: {}",
-					onosDevice, portObject1.getLinkedPorts().iterator().next().getPortId());
+			if (log.isDebugEnabled()) {
+				log.debug("stop adding OnosDevice: {} due to there is a link to: {}",
+						onosDevice, portObject1.getLinkedPorts().iterator().next().getPortId());
+			}
 			return;
 		}
 		

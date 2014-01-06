@@ -47,8 +47,8 @@ public class GetSummaryFlowsResource extends ServerResource {
         // Extract the arguments
     	String flowIdStr = (String) getRequestAttributes().get("flow-id");
     	String maxFlowStr = (String) getRequestAttributes().get("max-flows");
-    	log.debug("Get Summary Flows starting flow-id: " + flowIdStr + " max-flows: " + maxFlowStr);
-    	
+    	log.debug("Get Summary Flows starting flow-id: {} max-flows: {}" ,flowIdStr, maxFlowStr);
+
     	flowId = new FlowId(flowIdStr);
     	maxFlows = Integer.parseInt(maxFlowStr);
     	if (maxFlows < 0) maxFlows = 0;

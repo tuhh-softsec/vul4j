@@ -31,7 +31,7 @@ public class IPv6Deserializer extends JsonDeserializer<IPv6> {
 	    String fieldname = jp.getCurrentName();
 	    if ("value".equals(fieldname)) {
 		String value = jp.getText();
-		log.debug("Fieldname: " + fieldname + " Value: " + value);
+		log.debug("Fieldname: {} Value: {}", fieldname, value);
 		ipv6 = new IPv6(value);
 	    }
 	}

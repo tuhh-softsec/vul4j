@@ -31,7 +31,7 @@ public class DpidDeserializer extends JsonDeserializer<Dpid> {
 	    String fieldname = jp.getCurrentName();
 	    if ("value".equals(fieldname)) {
 		String value = jp.getText();
-		log.debug("Fieldname: " + fieldname + " Value: " + value);
+		log.debug("Fieldname: {} Value: {}", fieldname, value);
 		dpid = new Dpid(value);
 	    }
 	}
