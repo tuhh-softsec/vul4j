@@ -51,7 +51,7 @@ public class AddFlowResource extends ServerResource {
 	ObjectMapper mapper = new ObjectMapper();
 	String flowPathStr = flowJson;
 	FlowPath flowPath = null;
-	log.debug("Add Flow Path: " + flowPathStr);
+	log.debug("Add Flow Path: {}", flowPathStr);
 	try {
 	    flowPath = mapper.readValue(flowPathStr, FlowPath.class);
 	} catch (JsonGenerationException e) {

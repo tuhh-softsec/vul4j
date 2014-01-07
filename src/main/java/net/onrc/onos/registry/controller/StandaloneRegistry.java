@@ -101,7 +101,7 @@ public class StandaloneRegistry implements IFloodlightModule,
 				new HashMap<String, List<ControllerRegistryEntry>>();
 		
 		for (String strSwitch : switchCallbacks.keySet()){
-			log.debug("Swtich _{}", strSwitch);
+			log.debug("Switch _{}", strSwitch);
 			List<ControllerRegistryEntry> list = new ArrayList<ControllerRegistryEntry>();
 			list.add(new ControllerRegistryEntry(controllerId, 0));
 			

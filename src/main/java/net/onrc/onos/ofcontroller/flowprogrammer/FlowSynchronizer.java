@@ -124,14 +124,14 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    extractTime /= div;
 	    pushTime /= div;
 	    totalTime /= div;
-	    log.debug("Sync time (ms):" +
-	    		  graphIDTime + "," +
-	     		  switchTime + "," + 
-	    		  compareTime + "," +
-	     		  graphEntryTime + "," +
-	    		  extractTime + "," + 
-	     		  pushTime + "," +
-	              totalTime);
+	    log.debug("Sync time (ms):{},{},{},{},{},{},{}"
+	              , graphIDTime
+	              , switchTime
+	              , compareTime
+	              , graphEntryTime
+	              , extractTime
+	              , pushTime
+	              , totalTime);
 	}
 
 	/**
@@ -161,11 +161,14 @@ public class FlowSynchronizer implements IFlowSyncService {
 		extractTime += entry.extractTime;
 		pushTime += entry.pushTime;
 		added++;
-	    }	  
-	    log.debug("Flow entries added "+ added + ", " +
-		      "Flow entries removed "+ removed + ", " +
-		      "Flow entries skipped " + skipped);
-	    
+	    }
+	    log.debug("Flow entries added {}, " +
+		      "Flow entries removed {}, " +
+		      "Flow entries skipped {}"
+		      , added
+		      , removed
+		      , skipped );
+
 	    return new SyncResult(added, removed, skipped);
 	}
 
@@ -258,7 +261,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	double dbTime, extractTime, pushTime;
 	public void addToSwitch(IOFSwitch sw) {
 	    if (statisticsReply != null) {
-		log.error("Error adding existing flow entry {} to sw {}", 
+		log.error("Error adding existing flow entry {} to sw {}",
 			  statisticsReply.getCookie(), sw.getId());
 		return;
 	    }
@@ -289,19 +292,19 @@ public class FlowSynchronizer implements IFlowSyncService {
 		return;
 	    }
 	    extractTime = System.nanoTime() - startExtract;
-	    
+
 	    double startPush = System.nanoTime();
 	    pusher.pushFlowEntry(sw, flowEntry);
 	    pushTime = System.nanoTime() - startPush;
 	}
-	
+
 	/**
 	 * Remove this FlowEntry from a switch via FlowPusher.
 	 * @param sw Switch from which flow will be removed.
 	 */
 	public void removeFromSwitch(IOFSwitch sw) {
 	    if (statisticsReply == null) {
-		log.error("Error removing non-existent flow entry {} from sw {}", 
+		log.error("Error removing non-existent flow entry {} from sw {}",
 			  flowEntryId, sw.getId());
 		return;
 	    }

@@ -226,7 +226,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 					
 					if (targetDevice != null) {
 						deviceStorage.removeDevice(targetDevice);
-						log.debug("RemoveDevice: {} due to no have not recieve the ARP reply", targetDevice.toString());
+						if (log.isDebugEnabled()) {
+							log.debug("RemoveDevice: {} due to no have not recieve the ARP reply", targetDevice);
+						}
 					}
 					
 					it.remove();
@@ -351,10 +353,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			MACAddress macAddress = MACAddress.valueOf(targetDevice.getMACAddress());
 
 			if (log.isTraceEnabled()) {
-				log.trace("The target Device Record in DB is: {} => {} from ARP request host at {}/{}", 
+				log.trace("The target Device Record in DB is: {} => {} from ARP request host at {}/{}",
 						new Object [] {
 						inetAddressToString(arp.getTargetProtocolAddress()),
-						macAddress.toString(),
+						macAddress,
 						HexString.toHexString(sw.getId()), pi.getInPort()});
 			}
 

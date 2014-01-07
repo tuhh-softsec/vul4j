@@ -505,7 +505,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 			// Unknown user state. Ignore the entry
 			log.debug(
 					"Flow Entry ignored (FlowEntryId = {}): unknown user state {}",
-					flowEntry.flowEntryId().toString(),
+					flowEntry.flowEntryId(),
 					flowEntry.flowEntryUserState());
 			return false;
 		}
@@ -747,13 +747,16 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 		//
 		// Write the message to the switch
 		//
-		log.debug("Installing flow entry "
-				+ flowEntry.flowEntryUserState() + " into switch DPID: "
-				+ sw.getStringId() + " flowEntryId: "
-				+ flowEntry.flowEntryId().toString() + " srcMac: "
-				+ matchSrcMac + " dstMac: " + matchDstMac + " inPort: "
-				+ matchInPort + " outPort: " + actionOutputPort);
-		
+		log.debug("Installing flow entry {} into switch DPID: {} flowEntryId: {} srcMac: {} dstMac: {} inPort: {} outPort: {}"
+			, flowEntry.flowEntryUserState()
+			, sw.getStringId()
+			, flowEntry.flowEntryId()
+			, matchSrcMac
+			, matchDstMac
+			, matchInPort
+			, actionOutputPort
+			);
+
 		return add(sw, fm);
 	}
 	
