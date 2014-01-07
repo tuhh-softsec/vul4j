@@ -17,6 +17,8 @@ import net.onrc.onos.ofcontroller.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.tinkerpop.blueprints.impls.ramcloud.PerfMon;
+
 /**
  * Class for performing Flow-related operations on the Database.
  */
@@ -50,7 +52,9 @@ public class FlowDatabaseOperation {
 	long accTimeAddFlowEntries = 0;
 	int numNewFlowEntries = 0;
 	LinkedList<long[]> flowEntryTimes = new LinkedList<>();
+	PerfMon pm = PerfMon.getInstance();
 
+	pm.addflowpath_start();
 	try {
 	    if ( measureONOSFlowTimeProp ) {
 		startAddFlow = System.nanoTime();
@@ -260,6 +264,7 @@ public class FlowDatabaseOperation {
 	if ( measureONOSFlowTimeProp ) {
 		endSettingFlowPathProps = System.nanoTime();
 	}
+	pm.addflowpath_end();
 	// Flow edges:
 	//   HeadFE
 
@@ -268,9 +273,12 @@ public class FlowDatabaseOperation {
 	// Flow Entries:
 	// flowPath.dataPath().flowEntries()
 	//
+	pm.addflowentry_start();
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
 	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
 		continue;	// Skip: all Flow Entries were deleted earlier
+
+	    pm.addflowentry_incr();
 
 	    long startAddFlowEntry = 0, endAddFlowEntry;
 	    if( measureONOSFlowTimeProp ) {
@@ -288,6 +296,7 @@ public class FlowDatabaseOperation {
 		return false;
 	    }
 	}
+	pm.addflowentry_end();
 	dbHandler.commit();
 
 
