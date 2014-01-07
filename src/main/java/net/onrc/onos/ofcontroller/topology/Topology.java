@@ -381,12 +381,18 @@ public class Topology {
      * Read topology state from the database.
      *
      * @param dbHandler the Graph Database handler to use.
+     * @return true if topology is updated. In other words,
+     * 		topology read from database is different from current topology.
      */
-    public void readFromDatabase(GraphDBOperation dbHandler) {
+    public boolean readFromDatabase(GraphDBOperation dbHandler) {
 	//
 	// Fetch the relevant info from the Switch and Port vertices
 	// from the Titan Graph.
 	//
+    
+	Map<Long,Node> oldNodesMap = nodesMap;
+	nodesMap = new TreeMap<Long,Node>();
+	
 	Iterable<ISwitchObject> activeSwitches = dbHandler.getActiveSwitches();
 	for (ISwitchObject switchObj : activeSwitches) {
 	    Vertex nodeVertex = switchObj.asVertex();
@@ -450,5 +456,76 @@ public class Topology {
 	    }
 	}
 	dbHandler.commit();
+	return ! compareTopology(oldNodesMap, nodesMap);
+    }
+    
+    // TODO Merge into loops in readFromDatabase() can reduce execution time.
+    /**
+     * Check given two topology are identical or not.
+     * @param topo1
+     * @param topo2
+     * @return true if identical
+     */
+    private boolean compareTopology(Map<Long,Node> topo1, Map<Long,Node> topo2) {
+    	if (topo1.size() != topo2.size()) {
+    		return false;
+    	}
+    	
+    	for (Map.Entry<Long,Node> nodeEntry : topo1.entrySet()) {
+    		Long dpid = nodeEntry.getKey();
+    		if (! topo2.containsKey(dpid)) {
+    			return false;
+    		}
+    		
+    		Node n1 = nodeEntry.getValue();
+    		Node n2 = topo2.get(dpid);
+    		
+    		// check port identity
+    		if (n1.ports().size() != n2.ports().size()) {
+    			return false;
+    		}
+    		for (Integer port : n1.ports().keySet()) {
+    			if (! n2.ports().containsKey(port)) {
+    				return false;
+    			}
+    		}
+    		
+    		// check link identity
+    		if (n1.links.size() != n2.links.size()) {
+    			return false;
+    		}
+    		for (Map.Entry<Integer, Node.Link> linkEntry : n1.links.entrySet()) {
+    			Integer p1 = linkEntry.getKey();
+    			Node.Link l1 = linkEntry.getValue();
+    			
+    			if (! n2.links.containsKey(p1)) {
+    				return false;
+    			}
+    			Node.Link l2 = n2.links.get(p1);
+    			
+    		   	// Supposition: Link's "me" and "neighbor" is properly set.
+    			if (l1.myPort != l2.myPort ||
+    				l1.neighborPort != l2.neighborPort) {
+    				return false;
+    			}
+    		}
+    	}
+    	return true;
+    }
+    
+    // Only for debug use
+    @Override
+    public String toString() {
+    	long numNodes = nodesMap.size();
+    	long numLinks = 0;
+    	for (Map.Entry<Long, Node> entry : nodesMap.entrySet()) {
+    		Node n = entry.getValue();
+    		for (Map.Entry<Integer, Node.Link> linkEntry : n.links.entrySet()) {
+    			if (n.nodeId > linkEntry.getValue().neighbor.nodeId) {
+    				++numLinks;
+    			}
+    		}
+    	}
+    	return "Topology has " + numNodes + " Nodes and " + numLinks + " Links.";
     }
 }
