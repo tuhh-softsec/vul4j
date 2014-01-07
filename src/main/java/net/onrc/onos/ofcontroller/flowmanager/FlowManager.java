@@ -224,7 +224,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//  - register with the Datagrid Service
 	//  - startup
 	//
-	flowEventHandler = new FlowEventHandler(this, datagridService);
+	flowEventHandler = new FlowEventHandler(this, datagridService, dbHandlerInner);
 	datagridService.registerFlowEventHandlerService(flowEventHandler);
 	flowEventHandler.start();
     }
