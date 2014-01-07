@@ -34,6 +34,7 @@ import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import com.esotericsoftware.kryo2.Kryo;
+import com.tinkerpop.blueprints.impls.ramcloud.PerfMon;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,17 +156,21 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	if (refreshTopology) {
 		refreshTopologyTimer = new Timer();
 		refreshTopologyTimer.schedule(new TimerTask() {
+			private PerfMon pm = PerfMon.getInstance();
 			@Override
 			public void run() {
 				log.debug("[BEFORE] {}", topology.toString());
 				long begin, end;
 				synchronized(topology) {
 					begin = System.nanoTime();
+					pm.read_whole_topology_start();
 					topology.readFromDatabase(flowManager.dbHandlerInner);
+					pm.read_whole_topology_end();
 					end = System.nanoTime();
 				}
-				log.debug("[AFTER] {}", topology.toString());
-				log.debug("refresh takes : {}[us]", (end - begin) / 1000.0);
+				// FIXME level raised for measurement. Was debug
+				log.error("[AFTER] {}", topology.toString());
+				log.error("refresh takes : {}[us]", (end - begin) / 1000.0);
 			}
 		}, refreshTopologyDelay, refreshTopologyInterval);
 	}
