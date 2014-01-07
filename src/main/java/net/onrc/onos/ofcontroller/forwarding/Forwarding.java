@@ -1,6 +1,5 @@
 package net.onrc.onos.ofcontroller.forwarding;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.packet.Ethernet;
-import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
@@ -27,7 +25,8 @@ import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
-import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
+import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
+import net.onrc.onos.ofcontroller.proxyarp.BroadcastPacketOutNotification;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -53,7 +52,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.net.InetAddresses;
 
 public class Forwarding implements IOFMessageListener, IFloodlightModule,
 									IForwardingService {
@@ -175,6 +173,9 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		dependencies.add(IFlowService.class);
 		dependencies.add(IFlowPusherService.class);
 		dependencies.add(IOnosDeviceService.class);
+		// We don't use the IProxyArpService directly, but reactive forwarding
+		// requires it to be loaded and answering ARP requests
+		dependencies.add(IProxyArpService.class);
 		return dependencies;
 	}
 	
@@ -256,24 +257,9 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		if (log.isTraceEnabled()) {
 			log.trace("Sending broadcast packet to other ONOS instances");
 		}
-		
-		IPv4 ipv4Packet = (IPv4) eth.getPayload();
-		
-		// TODO We'll put the destination address here, because the current
-		// architecture needs an address. Addresses are only used for replies
-		// however, which don't apply to non-ARP packets. The ArpMessage class
-		// has become a bit too overloaded and should be refactored to 
-		// handle all use cases nicely.
-		 InetAddress targetAddress = 
-				InetAddresses.fromInteger(ipv4Packet.getDestinationAddress());
-		
-		// Piggy-back on the ARP mechanism to broadcast this packet out the
-		// edge. Luckily the ARP module doesn't check that the packet is
-		// actually ARP before broadcasting, so we can trick it into sending
-		// our non-ARP packets.
-		// TODO This should be refactored later to account for the new use case.
-		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize(),
-				-1L, (short)-1, sw.getId(), pi.getInPort()));
+
+		 datagrid.sendPacketOutNotification(new BroadcastPacketOutNotification(
+				 eth.serialize(), sw.getId(), pi.getInPort()));
 	}
 	
 	private void handlePacketIn(IOFSwitch sw, OFPacketIn pi, Ethernet eth) {
@@ -303,7 +289,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		long destinationDpid = HexString.toLong(switchObject.getDPID());
 		
 		// TODO SwitchPort, Dpid and Port should probably be immutable
-		// (also, are Dpid and Port are even necessary?)
 		SwitchPort srcSwitchPort = new SwitchPort(
 				new Dpid(sw.getId()), new Port(pi.getInPort())); 
 		SwitchPort dstSwitchPort = new SwitchPort(

@@ -18,8 +18,10 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.web.DatagridWebRoutable;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
-import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
-import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
+import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
+import net.onrc.onos.ofcontroller.proxyarp.IArpReplyEventHandler;
+import net.onrc.onos.ofcontroller.proxyarp.IPacketOutEventHandler;
+import net.onrc.onos.ofcontroller.proxyarp.PacketOutNotification;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
@@ -79,11 +81,16 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     private MapTopologyListener mapTopologyListener = null;
     private String mapTopologyListenerId = null;
     
-    // State related to the ARP map
-    protected static final String arpMapName = "arpMap";
-    private IMap<ArpMessage, byte[]> arpMap = null;
-    private List<IArpEventHandler> arpEventHandlers = new ArrayList<IArpEventHandler>();
+    // State related to the packet out map
+    protected static final String packetOutMapName = "packetOutMap";
+    private IMap<PacketOutNotification, byte[]> packetOutMap = null;
+    private List<IPacketOutEventHandler> packetOutEventHandlers = new ArrayList<IPacketOutEventHandler>();
     private final byte[] dummyByte = {0};
+    
+    // State related to the ARP reply map
+    protected static final String arpReplyMapName = "arpReplyMap";
+    private IMap<ArpReplyNotification, byte[]> arpReplyMap = null;
+    private List<IArpReplyEventHandler> arpReplyEventHandlers = new ArrayList<IArpReplyEventHandler>();
 
     /**
      * Class for receiving notifications for Flow state.
@@ -305,34 +312,22 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
     
     /**
-     * Class for receiving notifications for ARP requests.
+     * Class for receiving notifications for sending packet-outs.
      *
      * The datagrid map is:
-     *  - Key: Request ID (String)
-     *  - Value: ARP request packet (byte[])
+     *  - Key: Packet-out to send (PacketOutNotification)
+     *  - Value: dummy value (we only need the key) (byte[])
      */
-    class ArpMapListener implements EntryListener<ArpMessage, byte[]> {
+    class PacketOutMapListener implements EntryListener<PacketOutNotification, byte[]> {
 		/**
 		 * Receive a notification that an entry is added.
 		 *
 		 * @param event the notification event for the entry.
 		 */
-		public void entryAdded(EntryEvent<ArpMessage, byte[]> event) {
-		    for (IArpEventHandler arpEventHandler : arpEventHandlers) {
-		    	arpEventHandler.arpRequestNotification(event.getKey());
+		public void entryAdded(EntryEvent<PacketOutNotification, byte[]> event) {
+		    for (IPacketOutEventHandler packetOutEventHandler : packetOutEventHandlers) {
+		    	packetOutEventHandler.packetOutNotification(event.getKey());
 		    }
-		    
-		    //
-		    // Decode the value and deliver the notification
-		    //
-		    /*
-		    Kryo kryo = kryoFactory.newKryo();
-		    Input input = new Input(valueBytes);
-		    TopologyElement topologyElement =
-			kryo.readObject(input, TopologyElement.class);
-		    kryoFactory.deleteKryo(kryo);
-		    flowEventHandlerService.notificationRecvTopologyElementAdded(topologyElement);
-		    */
 		}
 	
 		/**
@@ -340,7 +335,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
-		public void entryRemoved(EntryEvent<ArpMessage, byte[]> event) {
+		public void entryRemoved(EntryEvent<PacketOutNotification, byte[]> event) {
 			// Not used
 		}
 	
@@ -349,7 +344,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
-		public void entryUpdated(EntryEvent<ArpMessage, byte[]> event) {
+		public void entryUpdated(EntryEvent<PacketOutNotification, byte[]> event) {
 			// Not used
 		}
 	
@@ -358,9 +353,34 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
-		public void entryEvicted(EntryEvent<ArpMessage, byte[]> event) {
+		public void entryEvicted(EntryEvent<PacketOutNotification, byte[]> event) {
 		    // Not used
 		}
+    }
+    
+    /**
+     * Class for receiving notifications for sending packet-outs.
+     *
+     * The datagrid map is:
+     *  - Key: Packet-out to send (PacketOutNotification)
+     *  - Value: dummy value (we only need the key) (byte[])
+     */
+    class ArpReplyMapListener implements EntryListener<ArpReplyNotification, byte[]> {
+		/**
+		 * Receive a notification that an entry is added.
+		 *
+		 * @param event the notification event for the entry.
+		 */
+		public void entryAdded(EntryEvent<ArpReplyNotification, byte[]> event) {
+		    for (IArpReplyEventHandler arpReplyEventHandler : arpReplyEventHandlers) {
+		    	arpReplyEventHandler.arpReplyEvent(event.getKey());
+		    }
+		}
+		
+		// These methods aren't used for ARP replies
+		public void entryRemoved(EntryEvent<ArpReplyNotification, byte[]> event) {}
+		public void entryUpdated(EntryEvent<ArpReplyNotification, byte[]> event) {}
+		public void entryEvicted(EntryEvent<ArpReplyNotification, byte[]> event) {}
     }
 
     /**
@@ -478,8 +498,11 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 
 	restApi.addRestletRoutable(new DatagridWebRoutable());
 	
-	arpMap = hazelcastInstance.getMap(arpMapName);
-	arpMap.addEntryListener(new ArpMapListener(), true);
+	packetOutMap = hazelcastInstance.getMap(packetOutMapName);
+	packetOutMap.addEntryListener(new PacketOutMapListener(), true);
+	
+	arpReplyMap = hazelcastInstance.getMap(arpReplyMapName);
+	arpReplyMap.addEntryListener(new ArpReplyMapListener(), true);
     }
 
     /**
@@ -540,15 +563,27 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
     
     @Override
-    public void registerArpEventHandler(IArpEventHandler arpEventHandler) {
+    public void registerPacketOutEventHandler(IPacketOutEventHandler arpEventHandler) {
     	if (arpEventHandler != null) {
-    		arpEventHandlers.add(arpEventHandler);
+    		packetOutEventHandlers.add(arpEventHandler);
     	}
     }
     
     @Override
-    public void deregisterArpEventHandler(IArpEventHandler arpEventHandler) {
-    	arpEventHandlers.remove(arpEventHandler);
+    public void deregisterPacketOutEventHandler(IPacketOutEventHandler arpEventHandler) {
+    	packetOutEventHandlers.remove(arpEventHandler);
+    }
+    
+    @Override
+    public void registerArpReplyEventHandler(IArpReplyEventHandler arpReplyEventHandler) {
+    	if (arpReplyEventHandler != null) {
+    		arpReplyEventHandlers.add(arpReplyEventHandler);
+    	}
+    }
+    
+    @Override
+    public void deregisterArpReplyEventHandler(IArpReplyEventHandler arpReplyEventHandler) {
+    	arpReplyEventHandlers.remove(arpReplyEventHandler);
     }
     
     /**
@@ -885,8 +920,12 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
     
     @Override
-    public void sendArpRequest(ArpMessage arpMessage) {
-    	//log.debug("ARP bytes: {}", HexString.toHexString(arpRequest));
-     	arpMap.putAsync(arpMessage, dummyByte, 1L, TimeUnit.MILLISECONDS);
+    public void sendPacketOutNotification(PacketOutNotification packetOutNotification) {
+     	packetOutMap.putAsync(packetOutNotification, dummyByte, 1L, TimeUnit.MILLISECONDS);
     }
+
+	@Override
+	public void sendArpReplyNotification(ArpReplyNotification arpReply) {
+		arpReplyMap.putAsync(arpReply, dummyByte, 1L, TimeUnit.MILLISECONDS);
+	}
 }
