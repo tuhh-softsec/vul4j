@@ -89,6 +89,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     /**
      * Shutdown the Flow Manager operation.
      */
+    @Override
     public void finalize() {
     	close();
     }
@@ -110,7 +111,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-        Collection<Class<? extends IFloodlightService>> l = 
+        Collection<Class<? extends IFloodlightService>> l =
             new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFlowService.class);
         return l;
@@ -122,7 +123,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the collection of implemented services.
      */
     @Override
-    public Map<Class<? extends IFloodlightService>, IFloodlightService> 
+    public Map<Class<? extends IFloodlightService>, IFloodlightService>
 			       getServiceImpls() {
         Map<Class<? extends IFloodlightService>,
 	    IFloodlightService> m =
@@ -138,7 +139,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the collection of modules this module depends on.
      */
     @Override
-    public Collection<Class<? extends IFloodlightService>> 
+    public Collection<Class<? extends IFloodlightService>>
 				      getModuleDependencies() {
 	Collection<Class<? extends IFloodlightService>> l =
 	    new ArrayList<Class<? extends IFloodlightService>>();
@@ -368,6 +369,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @return the network topology.
      */
+    @Override
     public Topology getTopology() {
 	return flowEventHandler.getTopology();
     }
@@ -378,6 +380,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param sw the switch the Flow Entry expired on.
      * @param flowEntryId the Flow Entry ID of the expired Flow Entry.
      */
+    @Override
     public void flowEntryOnSwitchExpired(IOFSwitch sw,
 					 FlowEntryId flowEntryId) {
 	// Find the Flow Entry
@@ -406,6 +409,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @param entries the collection of <IOFSwitch, FlowEntry> pairs
      * that have been pushed.
      */
+    @Override
     public void flowEntriesPushedToSwitch(
 		Collection<Pair<IOFSwitch, FlowEntry>> entries) {
 
@@ -529,7 +533,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowEntry.setFlowEntryId(new FlowEntryId(id));
 	    }
 
-	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry.toString());
+	    log.debug("Pushing Flow Entry To Switch: {}", flowEntry);
 	    entries.add(new Pair<IOFSwitch, FlowEntry>(mySwitch, flowEntry));
 	}
 
@@ -575,7 +579,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    if (mySwitch != null)
 		continue;
 
-	    log.debug("Pushing cleanup of Flow Entry To Datagrid: {}", flowEntry.toString());
+	    log.debug("Pushing cleanup of Flow Entry To Datagrid: {}", flowEntry);
 
 	    //
 	    // Write the Flow Entry to the Datagrid
@@ -612,6 +616,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    // The main loop
 	    //
 	    Collection<FlowPath> collection = new LinkedList<FlowPath>();
+	    this.setName("FlowDatabaseWriter " + this.getId() );
 	    try {
 		while (true) {
 		    FlowPath flowPath = blockingQueue.take();
@@ -688,8 +693,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    //
 	    if (flowPath.flowPathUserState() ==
 		FlowPathUserState.FP_USER_DELETE) {
-		log.debug("Deleting Flow Path From Database: {}",
-			  flowPath.toString());
+		log.debug("Deleting Flow Path From Database: {}", flowPath);
 
 		boolean retry = false;
 		do {
@@ -735,7 +739,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    if (! allValid)
 		continue;
 
-	    log.debug("Pushing Flow Path To Database: {}", flowPath.toString());
+	    log.debug("Pushing Flow Path To Database: {}", flowPath);
 
 	    //
 	    // Write the Flow Path to the Network Map
@@ -745,9 +749,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		retry = false;
 		try {
 		    if (! FlowDatabaseOperation.addFlow(dbHandlerInner, flowPath)) {
-			String logMsg = "Cannot write to Network Map Flow Path " +
-			    flowPath.flowId();
-			log.error(logMsg);
+			log.error("Cannot write to Network Map Flow Path {}", flowPath.flowId());
 			retry = true;
 		    }
 		} catch (TitanException te) {

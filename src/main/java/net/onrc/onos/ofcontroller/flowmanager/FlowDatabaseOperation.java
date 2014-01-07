@@ -49,13 +49,13 @@ public class FlowDatabaseOperation {
 	    String stacktrace = sw.toString();
 
 	    log.error(":addFlow FlowId:{} failed: {}",
-		      flowPath.flowId().toString(),
+		      flowPath.flowId(),
 		      stacktrace);
 	    return false;
 	}
 	if (flowObj == null) {
 	    log.error(":addFlow FlowId:{} failed: Flow object not created",
-		      flowPath.flowId().toString());
+		      flowPath.flowId());
 	    dbHandler.rollback();
 	    return false;
 	}
@@ -205,12 +205,12 @@ public class FlowDatabaseOperation {
 	    }
 	} catch (Exception e) {
 	    log.error(":addFlow FlowEntryId:{} failed",
-		      flowEntry.flowEntryId().toString());
+		      flowEntry.flowEntryId());
 	    return null;
 	}
 	if (flowEntryObj == null) {
 	    log.error(":addFlow FlowEntryId:{} failed: FlowEntry object not created",
-		      flowEntry.flowEntryId().toString());
+		      flowEntry.flowEntryId());
 	    return null;
 	}
 
@@ -344,7 +344,7 @@ public class FlowDatabaseOperation {
 	    flowEntryObj = dbHandler.searchFlowEntry(flowEntry.flowEntryId());
 	} catch (Exception e) {
 	    log.error(":deleteFlowEntry FlowEntryId:{} failed",
-		      flowEntry.flowEntryId().toString());
+		      flowEntry.flowEntryId());
 	    return false;
 	}
 	//
@@ -354,7 +354,7 @@ public class FlowDatabaseOperation {
 	/*
 	if (flowEntryObj == null) {
 	    log.error(":deleteFlowEntry FlowEntryId:{} failed: FlowEntry object not found",
-		      flowEntry.flowEntryId().toString());
+		      flowEntry.flowEntryId());
 	    return false;
 	}
 	*/
@@ -409,7 +409,7 @@ public class FlowDatabaseOperation {
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    dbHandler.rollback();
-	    log.error(":deleteFlow FlowId:{} failed", flowId.toString());
+	    log.error(":deleteFlow FlowId:{} failed", flowId);
 	    return false;
 	}
 	if (flowObj == null) {
@@ -446,7 +446,7 @@ public class FlowDatabaseOperation {
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    dbHandler.rollback();
-	    log.error(":getFlow FlowId:{} failed", flowId.toString());
+	    log.error(":getFlow FlowId:{} failed", flowId);
 	    return null;
 	}
 	if (flowObj == null) {

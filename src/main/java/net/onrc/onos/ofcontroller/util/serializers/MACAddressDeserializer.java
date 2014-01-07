@@ -31,7 +31,7 @@ public class MACAddressDeserializer extends JsonDeserializer<MACAddress> {
 	    String fieldname = jp.getCurrentName();
 	    if ("value".equals(fieldname)) {
 		String value = jp.getText();
-		log.debug("Fieldname: " + fieldname + " Value: " + value);
+		log.debug("Fieldname: {} Value: {}", fieldname, value);
 		mac = MACAddress.valueOf(value);
 	    }
 	}

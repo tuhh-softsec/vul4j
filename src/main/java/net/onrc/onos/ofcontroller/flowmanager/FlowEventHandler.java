@@ -148,6 +148,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      */
     @Override
     public void run() {
+	this.setName("FlowEventHandler " + this.getId());
 	startup();
 
 	//
@@ -354,8 +355,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	for (EventEntry<FlowPath> eventEntry : flowPathEvents) {
 	    FlowPath flowPath = eventEntry.eventData();
 
-	    log.debug("Flow Event: {} {}", eventEntry.eventType(),
-		      flowPath.toString());
+	    log.debug("Flow Event: {} {}", eventEntry.eventType(), flowPath);
 
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD: {
@@ -439,7 +439,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    TopologyElement topologyElement = eventEntry.eventData();
 
 	    log.debug("Topology Event: {} {}", eventEntry.eventType(),
-		      topologyElement.toString());
+		      topologyElement);
 
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD:
@@ -506,7 +506,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    FlowEntry flowEntry = eventEntry.eventData();
 
 	    log.debug("Flow Entry Event: {} {}", eventEntry.eventType(),
-		      flowEntry.toString());
+		      flowEntry);
 
 	    if ((! flowEntry.isValidFlowId()) ||
 		(! flowEntry.isValidFlowEntryId())) {

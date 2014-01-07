@@ -664,8 +664,7 @@ ILinkDiscoveryService, IFloodlightModule {
             iofSwitch.write(po, null);
             iofSwitch.flush();
         } catch (IOException e) {
-            log.error("Failure sending LLDP out port {} on switch {}",
-                      new Object[]{ port, iofSwitch.getStringId() }, e);
+            log.error("Failure sending LLDP out port "+port+" on switch "+iofSwitch.getStringId(), e);
         }
 
     }
@@ -675,7 +674,7 @@ ILinkDiscoveryService, IFloodlightModule {
      */
     protected void discoverOnAllPorts() {
         if (log.isTraceEnabled()) {
-            log.trace("Sending LLDP packets out of all the enabled ports on switch {}");
+            log.trace("Sending LLDP packets out of all the enabled ports on switch");
         }
         Set<Long> switches = floodlightProvider.getSwitches().keySet();
         // Send standard LLDPs

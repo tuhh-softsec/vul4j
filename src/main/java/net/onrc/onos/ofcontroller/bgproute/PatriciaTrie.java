@@ -17,14 +17,14 @@ public class PatriciaTrie<V> implements IPatriciaTrie<V> {
 
 	@Override
 	public synchronized V put(Prefix prefix, V value) {
+		if (prefix == null || value == null) {
+			throw new NullPointerException();
+		}
+		
 		if (prefix.getPrefixLength() > maxPrefixLength) {
 			throw new IllegalArgumentException(String.format(
 					"Prefix length %d is greater than max prefix length %d", 
 					prefix.getPrefixLength(), maxPrefixLength));
-		}
-		
-		if (prefix == null || value == null) {
-			throw new NullPointerException();
 		}
 		
 		Node node = top;

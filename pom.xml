@@ -11,6 +11,12 @@
   <name>ONOS</name>
   <url>http://onlab.us/</url>
   <repositories>
+    <!-- In Project repository -->
+    <repository>
+      <id>in-project</id>
+      <name>In Project Repo</name>
+      <url>file://${project.basedir}/repo</url>
+    </repository>
     <repository>
       <id>central</id>
       <name>Maven Central repository</name>
@@ -20,12 +26,6 @@
       <id>maven-restlet</id>
       <name>Public online Restlet repository</name>
       <url>http://maven.restlet.org</url>
-    </repository>
-    <!-- In Project repository -->
-    <repository>
-      <id>in-project</id>
-      <name>In Project Repo</name>
-      <url>file://${project.basedir}/repo</url>
     </repository>
   </repositories>
   <properties>
@@ -265,6 +265,10 @@
     </plugins>
   </reporting>
   <dependencies>
+    <!-- Commenting out original kryo 2.X
+         and using shaded version (net.onrc.onos.kryo2)
+         to workaround conflict with kryo 1.X in titan's dependency.(#443)
+    -->
     <!--
     <dependency>
       <groupId>com.esotericsoftware.kryo</groupId>
