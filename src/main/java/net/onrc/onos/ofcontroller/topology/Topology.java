@@ -1,10 +1,11 @@
 package net.onrc.onos.ofcontroller.topology;
 
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 
@@ -12,7 +13,6 @@ import org.openflow.util.HexString;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
-import net.onrc.onos.graph.DBOperation;
 
 /**
  * A class for storing Node and Link information for fast computation
@@ -450,5 +450,21 @@ public class Topology {
 	    }
 	}
 	dbHandler.commit();
+    }
+
+    // Only for debug use
+    @Override
+    public String toString() {
+    	long numNodes = nodesMap.size();
+    	long numLinks = 0;
+    	for (Map.Entry<Long, Node> entry : nodesMap.entrySet()) {
+    		Node n = entry.getValue();
+    		for (Map.Entry<Integer, Node.Link> linkEntry : n.links.entrySet()) {
+    			if (n.nodeId > linkEntry.getValue().neighbor.nodeId) {
+    				++numLinks;
+    			}
+    		}
+    	}
+    	return "Topology has " + numNodes + " Nodes and " + numLinks + " Links.";
     }
 }

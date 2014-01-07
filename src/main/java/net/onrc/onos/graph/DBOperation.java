@@ -31,14 +31,10 @@ import net.onrc.onos.ofcontroller.flowmanager.FlowDatabaseOperation;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
-/**
- *
- * @author nickkaranatsios
- */
 public abstract class DBOperation implements IDBOperation {
 
 	protected DBConnection conn;
-    private final static Logger log = LoggerFactory.getLogger(DBOperation.class);
+	private final static Logger log = LoggerFactory.getLogger(DBOperation.class);
 
 
 	/**

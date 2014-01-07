@@ -391,11 +391,11 @@ public class FlowDatabaseOperation {
 	IFlowEntry flowEntryObj = null;
 	boolean found = false;
 	try {
-	    if ((flowEntryObj =
-		dbHandler.searchFlowEntry(flowEntry.flowEntryId())) != null) {
-		if (measureONOSFlowEntryTimeProp) {
-			endSearchFlowEntry = System.nanoTime();
-		}
+	    flowEntryObj = dbHandler.searchFlowEntry(flowEntry.flowEntryId());
+	    if (measureONOSFlowEntryTimeProp) {
+		endSearchFlowEntry = System.nanoTime();
+	    }
+	    if (flowEntryObj != null) {
 		found = true;
 	    } else {
 		if (measureONOSFlowEntryTimeProp) {
