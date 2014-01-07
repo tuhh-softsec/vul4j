@@ -5,12 +5,19 @@
 package net.onrc.onos.graph;
 
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.impls.ramcloud.*;
 import com.tinkerpop.frames.FramedGraph;
 import com.tinkerpop.frames.structures.FramedVertexIterable;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IBaseObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
@@ -20,6 +27,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
+import net.onrc.onos.ofcontroller.flowmanager.FlowDatabaseOperation;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
@@ -30,6 +38,8 @@ import net.onrc.onos.ofcontroller.util.FlowId;
 public abstract class DBOperation implements IDBOperation {
 
 	protected DBConnection conn;
+    private final static Logger log = LoggerFactory.getLogger(DBOperation.class);
+
 
 	/**
 	 * Search and get an active switch object with DPID.
@@ -413,5 +423,13 @@ public abstract class DBOperation implements IDBOperation {
 	@Override
 	public void close() {
 	    conn.close();
+	}
+
+	@Override
+	public void setFlowProperties(IFlowEntry flowEntry, Map<String, Object> map) {
+		log.debug("setProperties start: size {}", map.size());
+		RamCloudVertex v = (RamCloudVertex) flowEntry.asVertex();
+		v.setProperties(map);
+		log.debug("setProperties end: size {}, id {}", map.size(), v.getId());
 	}
 }

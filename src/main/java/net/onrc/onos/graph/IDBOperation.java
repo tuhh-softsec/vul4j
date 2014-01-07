@@ -1,5 +1,7 @@
 package net.onrc.onos.graph;
 
+import java.util.Map;
+
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
@@ -39,7 +41,9 @@ public interface IDBOperation {
 	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId);
 	public Iterable<IFlowEntry> getAllFlowEntries();
 	public void removeFlowEntry(IFlowEntry flowEntry);
-	
+
+	public void setFlowProperties(IFlowEntry flowEntry, Map<String, Object> map);
+
 	public IDBConnection getDBConnection();	
 	public void commit();
 	public void rollback();
