@@ -156,9 +156,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	if (refreshTopology) {
 		refreshTopologyTimer = new Timer();
 		refreshTopologyTimer.schedule(new TimerTask() {
-			private PerfMon pm = PerfMon.getInstance();
 			@Override
 			public void run() {
+				PerfMon pm = PerfMon.getInstance();
 				log.debug("[BEFORE] {}", topology.toString());
 				long begin, end;
 				synchronized(topology) {
