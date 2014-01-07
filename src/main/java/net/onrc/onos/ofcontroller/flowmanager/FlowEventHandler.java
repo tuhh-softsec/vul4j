@@ -63,6 +63,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	new LinkedList<EventEntry<FlowPath>>();
     private List<EventEntry<FlowEntry>> flowEntryEvents =
 	new LinkedList<EventEntry<FlowEntry>>();
+    private List<EventEntry<FlowId>> flowIdEvents =
+	new LinkedList<EventEntry<FlowId>>();
 
     // All internally computed Flow Paths
     private Map<Long, FlowPath> allFlowPaths = new HashMap<Long, FlowPath>();
@@ -137,6 +139,16 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    flowEntryEvents.add(eventEntry);
 	}
 
+	//
+	// Obtain the initial FlowId state
+	//
+	Collection<FlowId> flowIds = datagridService.getAllFlowIds();
+	for (FlowId flowId : flowIds) {
+	    EventEntry<FlowId> eventEntry =
+		new EventEntry<FlowId>(EventEntry.Type.ENTRY_ADD, flowId);
+	    flowIdEvents.add(eventEntry);
+	}
+
 	// Process the initial events (if any)
 	synchronized (allFlowPaths) {
 	    processEvents();
@@ -166,6 +178,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		//  - EventEntry<TopologyElement>
 		//  - EventEntry<FlowPath>
 		//  - EventEntry<FlowEntry>
+		//  - EventEntry<FlowId>
 		//
 		for (EventEntry<?> event : collection) {
 		    // Topology event
@@ -189,6 +202,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 			EventEntry<FlowEntry> flowEntryEventEntry =
 			    (EventEntry<FlowEntry>)event;
 			flowEntryEvents.add(flowEntryEventEntry);
+			continue;
+		    }
+
+		    // FlowId event
+		    if (event.eventData() instanceof FlowId) {
+			EventEntry<FlowId> flowIdEventEntry =
+			    (EventEntry<FlowId>)event;
+			flowIdEvents.add(flowIdEventEntry);
 			continue;
 		    }
 		}
@@ -215,6 +236,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    return;		// Nothing to do
 	}
 
+	processFlowIdEvents();
 	processFlowPathEvents();
 	processTopologyEvents();
 	processUnmatchedFlowEntryAdd();
@@ -254,6 +276,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	topologyEvents.clear();
 	flowPathEvents.clear();
 	flowEntryEvents.clear();
+	flowIdEvents.clear();
 	//
 	shouldRecomputeFlowPaths.clear();
 	modifiedFlowPaths.clear();
@@ -344,6 +367,41 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    }
 	}
     }
+
+    /**
+     * Process the Flow ID events.
+     */
+    private void processFlowIdEvents() {
+	//
+	// Process all Flow ID events and update the appropriate state
+	//
+	for (EventEntry<FlowId> eventEntry : flowIdEvents) {
+	    FlowId flowId = eventEntry.eventData();
+
+	    log.debug("Flow ID Event: {} {}", eventEntry.eventType(), flowId);
+
+	    switch (eventEntry.eventType()) {
+	    case ENTRY_ADD: {
+		//
+		// Add a new Flow ID
+		//
+		// TODO: Implement it!
+
+		break;
+	    }
+
+	    case ENTRY_REMOVE: {
+		//
+		// Remove an existing Flow ID.
+		//
+		// TODO: Implement it!
+
+		break;
+	    }
+	    }
+	}
+    }
+
 
     /**
      * Process the Flow Path events.
@@ -968,6 +1026,43 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// NOTE: The ADD and UPDATE events are processed in same way
 	EventEntry<FlowEntry> eventEntry =
 	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowId is added.
+     *
+     * @param flowId the FlowId that is added.
+     */
+    @Override
+    public void notificationRecvFlowIdAdded(FlowId flowId) {
+	EventEntry<FlowId> eventEntry =
+	    new EventEntry<FlowId>(EventEntry.Type.ENTRY_ADD, flowId);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowId is removed.
+     *
+     * @param flowId the FlowId that is removed.
+     */
+    @Override
+    public void notificationRecvFlowIdRemoved(FlowId flowId) {
+	EventEntry<FlowId> eventEntry =
+	    new EventEntry<FlowId>(EventEntry.Type.ENTRY_REMOVE, flowId);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowId is updated.
+     *
+     * @param flowId the FlowId that is updated.
+     */
+    @Override
+    public void notificationRecvFlowIdUpdated(FlowId flowId) {
+	// NOTE: The ADD and UPDATE events are processed in same way
+	EventEntry<FlowId> eventEntry =
+	    new EventEntry<FlowId>(EventEntry.Type.ENTRY_ADD, flowId);
 	networkEvents.add(eventEntry);
     }
 
