@@ -16,9 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.impls.ramcloud.PerfMon;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.pipes.PipeFunction;
-import com.tinkerpop.pipes.transform.PathPipe;
 import net.onrc.onos.graph.GraphDBManager;
 
 /**
@@ -47,7 +44,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	//  Routine process should be implemented in private method.
 	//  A private method MUST NOT call commit or rollback.
 
-	
+
 	/**
 	 * Update a record in the LinkStorage in a way provided by dmop.
 	 * @param link Record of a link to be updated.
@@ -57,7 +54,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public boolean update(Link link, LinkInfo linkinfo, DM_OPERATION dmop) {
 		boolean success = false;
-		
+
 		switch (dmop) {
 		case CREATE:
 		case INSERT:
@@ -107,7 +104,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			}
 			break;
 		}
-		
+
 		return success;
 	}
 
@@ -132,7 +129,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public boolean addLink(Link link, LinkInfo linfo) {
 		boolean success = false;
-		
+
 		try {
 			//delete the Device attachment points for the related switch and port
 			deleteDeviceOnPort(link.getSrc(),link.getSrcPort());
@@ -162,10 +159,10 @@ public class LinkStorageImpl implements ILinkStorage {
 			e.printStackTrace();
 			log.error("LinkStorageImpl:addLink link:{} linfo:{} failed", link, linfo);
 		}
-		
+
 		return success;
 	}
-	
+
 	/**
 	 * Update multiple records in the LinkStorage in a way provided by op.
 	 * @param links List of records to be updated.
@@ -174,13 +171,13 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public boolean addLinks(List<Link> links) {
 		boolean success = false;
-		
+
 		for (Link lt: links) {
 			if (! addLinkImpl(lt)) {
 				return false;
 			}
 		}
-		
+
 		try {
 			dbop.commit();
 			success = true;
@@ -189,7 +186,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			e.printStackTrace();
 			log.error("LinkStorageImpl:addLinks link:s{} failed", links);
 		}
-		
+
 		return success;
 	}
 
@@ -200,9 +197,9 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public boolean deleteLink(Link lt) {
 		boolean success = false;
-		
+
 		log.debug("LinkStorageImpl:deleteLink(): {}", lt);
-		
+
         try {
          	if (deleteLinkImpl(lt)) {
         		dbop.commit();
@@ -218,7 +215,7 @@ public class LinkStorageImpl implements ILinkStorage {
         			new Object[]{lt, e.toString()});
         	e.printStackTrace();
         }
-        
+
         return success;
 	}
 
@@ -229,7 +226,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public boolean deleteLinks(List<Link> links) {
 		boolean success = false;
-		
+
 		try {
 			for (Link lt : links) {
 				if (! deleteLinkImpl(lt)) {
@@ -244,7 +241,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			e.printStackTrace();
         	log.error("LinkStorageImpl:deleteLinks failed invalid vertices {}", links);
 		}
-		
+
 		return success;
 	}
 
@@ -263,7 +260,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	    ISwitchObject srcSw = srcPort.getSwitch();
 	    if (srcSw == null)
 		return links;
-    	
+
 	    for(IPortObject dstPort : srcPort.getLinkedPorts()) {
 		ISwitchObject dstSw = dstPort.getSwitch();
 		if (dstSw != null) {
@@ -285,14 +282,14 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public List<Link> getReverseLinks(Long dpid, short port) {
 	    List<Link> links = new ArrayList<Link>();
-    	
+
 	    IPortObject srcPort = dbop.searchPort(HexString.toHexString(dpid), port);
 	    if (srcPort == null)
 		return links;
 	    ISwitchObject srcSw = srcPort.getSwitch();
 	    if (srcSw == null)
 		return links;
-    	
+
 	    for(IPortObject dstPort : srcPort.getReverseLinkedPorts()) {
 		ISwitchObject dstSw = dstPort.getSwitch();
 		if (dstSw != null) {
@@ -304,7 +301,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	    }
 	    return links;
 	}
-	
+
 	/**
 	 * Delete records of the links connected to the port specified by given DPID and port number.
 	 * @param dpid DPID of desired port.
@@ -313,7 +310,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public boolean deleteLinksOnPort(Long dpid, short port) {
 		boolean success = false;
-		
+
 		List<Link> linksToDelete = getLinks(dpid, port);
 		try {
 			for(Link l : linksToDelete) {
@@ -330,7 +327,7 @@ public class LinkStorageImpl implements ILinkStorage {
 			e.printStackTrace();
         	log.error("LinkStorageImpl:deleteLinksOnPort dpid:{} port:{} failed", dpid, port);
 		}
-		
+
 		return success;
 	}
 
@@ -343,7 +340,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	public List<Link> getLinks(String dpid) {
 		List<Link> links = new ArrayList<Link>();
 		ISwitchObject srcSw = dbop.searchSwitch(dpid);
-		
+
 		if(srcSw != null) {
 			for(IPortObject srcPort : srcSw.getPorts()) {
 				for(IPortObject dstPort : srcPort.getLinkedPorts()) {
@@ -358,7 +355,7 @@ public class LinkStorageImpl implements ILinkStorage {
 				}
 			}
 		}
-		
+
 		return links;
 	}
 
@@ -373,7 +370,7 @@ public class LinkStorageImpl implements ILinkStorage {
 		List<Link> links = new ArrayList<Link>();
 
 		ISwitchObject srcSw = dbop.searchSwitch(dpid);
-		
+
 		if(srcSw != null) {
 			for(IPortObject srcPort : srcSw.getPorts()) {
 				for(IPortObject dstPort : srcPort.getReverseLinkedPorts()) {
@@ -382,7 +379,7 @@ public class LinkStorageImpl implements ILinkStorage {
 		        		Link link = new Link(
 							HexString.toLong(dstSw.getDPID()),
 							dstPort.getNumber(),
-					
+
 							HexString.toLong(dpid),
 							srcPort.getNumber());
 		        		links.add(link);
@@ -390,7 +387,7 @@ public class LinkStorageImpl implements ILinkStorage {
 				}
 			}
 		}
-		
+
 		return links;
 	}
 
@@ -398,16 +395,17 @@ public class LinkStorageImpl implements ILinkStorage {
 	 * Get list of all links whose state is ACTIVE.
 	 * @return List of active links. Empty list if no port was found.
 	 */
+	@Override
 	public List<Link> getActiveLinks() {
 		Iterable<ISwitchObject> switches = dbop.getActiveSwitches();
 
-		List<Link> links = new ArrayList<Link>(); 
-		
+		List<Link> links = new ArrayList<Link>();
+
 		for (ISwitchObject srcSw : switches) {
 			for(IPortObject srcPort : srcSw.getPorts()) {
 				for(IPortObject dstPort : srcPort.getLinkedPorts()) {
 					ISwitchObject dstSw = dstPort.getSwitch();
-					
+
 					if(dstSw != null && dstSw.getState().equals("ACTIVE")) {
 						links.add(new Link(HexString.toLong(srcSw.getDPID()),
 								srcPort.getNumber(),
@@ -417,10 +415,10 @@ public class LinkStorageImpl implements ILinkStorage {
 				}
 			}
 		}
-		
+
 		return links;
 	}
-	
+
 	@Override
 	public LinkInfo getLinkInfo(Link link) {
 		// TODO implement this
@@ -430,6 +428,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	/**
 	 * Finalize the object.
 	 */
+	@Override
 	public void finalize() {
 		close();
 	}
@@ -440,7 +439,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-//		graph.shutdown();		
+//		graph.shutdown();
 	}
 
 	/**
@@ -450,66 +449,66 @@ public class LinkStorageImpl implements ILinkStorage {
 	 */
 	private boolean setLinkInfoImpl(Link link, LinkInfo linkinfo) {
 		// TODO implement this
-		
+
 		return false;
 	}
 
 	private boolean addLinkImpl(Link lt) {
 		boolean success = false;
-		
+
 		IPortObject vportSrc = null, vportDst = null;
-		
+
 		// get source port vertex
 		String dpid = HexString.toHexString(lt.getSrc());
 		short port = lt.getSrcPort();
-		log.debug("addLinkImpl Src dpid : " + dpid + " port :" + port);
+		log.debug("addLinkImpl Src dpid : {} port : {}", dpid, port);
 		vportSrc = dbop.searchPort(dpid, port);
-		
+
 		// get dest port vertex
 		dpid = HexString.toHexString(lt.getDst());
 		port = lt.getDstPort();
-		log.debug("addLinkImpl Dst dpid : " + dpid + " port :" + port);
+		log.debug("addLinkImpl Dst dpid : {} port : {}", dpid, port);
 		vportDst = dbop.searchPort(dpid, port);
-		
-		log.debug("addLinkImpl vportSrc : " + vportSrc + " vportDst : " + vportDst);
-		
+
+		log.debug("addLinkImpl vportSrc : {} vportDst : {}", vportSrc, vportDst);
+
 		if (vportSrc != null && vportDst != null) {
 			IPortObject portExist = null;
 			// check if the link exists
 			for (IPortObject V : vportSrc.getLinkedPorts()) {
-			        log.debug("vportSrc.getLinkedPorts() :" + V);
+			        log.debug("vportSrc.getLinkedPorts() :{}", V);
 				if (V.equals(vportDst)) {
 					portExist = V;
 					break;
 				}
 			}
-		
+
 			if (portExist == null) {
 				vportSrc.setLinkPort(vportDst);
 				success = true;
 			} else {
-				log.debug("LinkStorageImpl:addLinkImpl failed link exists {} {} src {} dst {}", 
+				log.debug("LinkStorageImpl:addLinkImpl failed link exists {} {} src {} dst {}",
 						new Object[]{dbop, lt, vportSrc, vportDst});
 			}
 		}
-		
+
 		return success;
 	}
 
 	private boolean deleteLinkImpl(Link lt) {
 		boolean success = false;
 		IPortObject vportSrc = null, vportDst = null;
-	
+
 	    // get source port vertex
 	 	String dpid = HexString.toHexString(lt.getSrc());
 	 	short port = lt.getSrcPort();
 	 	vportSrc = dbop.searchPort(dpid, port);
-	    
+
 	    // get dst port vertex
 	 	dpid = HexString.toHexString(lt.getDst());
 	 	port = lt.getDstPort();
 	 	vportDst = dbop.searchPort(dpid, port);
-	 	
+
 		// FIXME: This needs to remove all edges
 		if (vportSrc != null && vportDst != null) {
 			vportSrc.removeLink(vportDst);
