@@ -420,12 +420,15 @@ public class FlowDatabaseOperation {
 	if (measureONOSFlowEntryTimeProp) {
 	    startSetProperties = System.nanoTime();
 	}
+	
+	FlowProperty flowProp = new FlowProperty(dbHandler, flowEntryObj);
+	
 	//
 	// Set the Flow Entry key:
 	// - flowEntry.flowEntryId()
 	//
-	flowEntryObj.setFlowEntryId(flowEntry.flowEntryId().toString());
-	flowEntryObj.setType("flow_entry");
+	flowProp.setFlowEntryId(flowEntry.flowEntryId().toString());
+	flowProp.setType("flow_entry");
 	if (measureONOSFlowEntryTimeProp) {
 	    numProperties += 2;
 	}
@@ -465,9 +468,9 @@ public class FlowDatabaseOperation {
 	    endSearchSwitch = System.nanoTime();
 	}
 
-	flowEntryObj.setIdleTimeout(flowEntry.idleTimeout());
-	flowEntryObj.setHardTimeout(flowEntry.hardTimeout());
-	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
+	flowProp.setIdleTimeout(flowEntry.idleTimeout());
+	flowProp.setHardTimeout(flowEntry.hardTimeout());
+	flowProp.setSwitchDpid(flowEntry.dpid().toString());
 	if (measureONOSFlowEntryTimeProp) {
 	    numProperties += 3;
 	}
@@ -490,7 +493,7 @@ public class FlowDatabaseOperation {
 		endSearchInPort = System.nanoTime();
 	    }
 
-	    flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
+	    flowProp.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
@@ -504,67 +507,67 @@ public class FlowDatabaseOperation {
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchSrcMac()) {
-	    flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+		flowProp.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchDstMac()) {
-	    flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+		flowProp.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
-	    flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
+		flowProp.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchVlanId()) {
-	    flowEntryObj.setMatchVlanId(flowEntry.flowEntryMatch().vlanId());
+		flowProp.setMatchVlanId(flowEntry.flowEntryMatch().vlanId());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchVlanPriority()) {
-	    flowEntryObj.setMatchVlanPriority(flowEntry.flowEntryMatch().vlanPriority());
+		flowProp.setMatchVlanPriority(flowEntry.flowEntryMatch().vlanPriority());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
-	    flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
+		flowProp.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
-	    flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
+		flowProp.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchIpProto()) {
-	    flowEntryObj.setMatchIpProto(flowEntry.flowEntryMatch().ipProto());
+		flowProp.setMatchIpProto(flowEntry.flowEntryMatch().ipProto());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchIpToS()) {
-	    flowEntryObj.setMatchIpToS(flowEntry.flowEntryMatch().ipToS());
+		flowProp.setMatchIpToS(flowEntry.flowEntryMatch().ipToS());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchSrcTcpUdpPort()) {
-	    flowEntryObj.setMatchSrcTcpUdpPort(flowEntry.flowEntryMatch().srcTcpUdpPort());
+		flowProp.setMatchSrcTcpUdpPort(flowEntry.flowEntryMatch().srcTcpUdpPort());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
 	}
 	if (flowEntry.flowEntryMatch().matchDstTcpUdpPort()) {
-	    flowEntryObj.setMatchDstTcpUdpPort(flowEntry.flowEntryMatch().dstTcpUdpPort());
+		flowProp.setMatchDstTcpUdpPort(flowEntry.flowEntryMatch().dstTcpUdpPort());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
@@ -583,7 +586,7 @@ public class FlowDatabaseOperation {
 		    endSearchOutPort = System.nanoTime();
 		}
 
-		flowEntryObj.setActionOutputPort(fa.actionOutput().port().value());
+		flowProp.setActionOutputPort(fa.actionOutput().port().value());
 		if (measureONOSFlowEntryTimeProp) {
 		    ++numProperties;
 		}
@@ -598,7 +601,7 @@ public class FlowDatabaseOperation {
 	    }
 	}
 	if (! flowEntry.flowEntryActions().isEmpty()) {
-	    flowEntryObj.setActions(flowEntry.flowEntryActions().toString());
+		flowProp.setActions(flowEntry.flowEntryActions().toString());
 	    if (measureONOSFlowEntryTimeProp) {
 		++numProperties;
 	    }
@@ -606,10 +609,10 @@ public class FlowDatabaseOperation {
 
 	// TODO: Hacks with hard-coded state names!
 	if (found)
-	    flowEntryObj.setUserState("FE_USER_MODIFY");
+		flowProp.setUserState("FE_USER_MODIFY");
 	else
-	    flowEntryObj.setUserState("FE_USER_ADD");
-	flowEntryObj.setSwitchState(flowEntry.flowEntrySwitchState().toString());
+		flowProp.setUserState("FE_USER_ADD");
+	flowProp.setSwitchState(flowEntry.flowEntrySwitchState().toString());
 	if (measureONOSFlowEntryTimeProp) {
 	    numProperties += 2;
 	}
@@ -633,6 +636,7 @@ public class FlowDatabaseOperation {
 		endAddEdgeBetweenFlowPath = System.nanoTime();
 	    }
 	}
+    flowProp.commitProperties();
 	if (measureONOSFlowEntryTimeProp) {
 	    endAddFlowEntry = System.nanoTime();
 

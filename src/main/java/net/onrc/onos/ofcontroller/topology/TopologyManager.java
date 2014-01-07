@@ -14,7 +14,6 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.graph.GraphDBManager;
-import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.topology.web.OnosTopologyWebRoutable;
 import net.onrc.onos.ofcontroller.util.DataPath;
