@@ -420,9 +420,9 @@ public class FlowDatabaseOperation {
 	if (measureONOSFlowEntryTimeProp) {
 	    startSetProperties = System.nanoTime();
 	}
-	
+
 	FlowProperty flowProp = new FlowProperty(dbHandler, flowEntryObj);
-	
+
 	//
 	// Set the Flow Entry key:
 	// - flowEntry.flowEntryId()
@@ -616,6 +616,7 @@ public class FlowDatabaseOperation {
 	if (measureONOSFlowEntryTimeProp) {
 	    numProperties += 2;
 	}
+	flowProp.commitProperties();
 	//
 	// TODO: Take care of the FlowEntryErrorState.
 	//
@@ -636,7 +637,6 @@ public class FlowDatabaseOperation {
 		endAddEdgeBetweenFlowPath = System.nanoTime();
 	    }
 	}
-    flowProp.commitProperties();
 	if (measureONOSFlowEntryTimeProp) {
 	    endAddFlowEntry = System.nanoTime();
 
