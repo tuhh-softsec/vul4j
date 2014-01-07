@@ -78,7 +78,7 @@ function start {
 # Create a logback file if required
   if [ ! -f ${ONOS_LOGBACK} ]; then
     cat <<EOF_LOGBACK >${ONOS_LOGBACK}
-<configuration scan="true" debug="true">
+<configuration scan="true" scanPeriod="1 minutes" debug="true">
 <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 <encoder>
 <pattern>%level [%logger:%thread] %msg%n</pattern>
@@ -89,6 +89,7 @@ function start {
 <file>${ONOS_LOG}</file>
 <encoder>
 <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+<immediateFlush>true</immediateFlush>
 </encoder>
 </appender>
 
