@@ -55,7 +55,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     // Refresh delay(ms)
     private final static long refreshTopologyDelay = 5000;
     // Refresh interval(ms)
-    private final static long refreshTopologyInterval = 1000;
+    private final static long refreshTopologyInterval = 5000;
     private Timer refreshTopologyTimer;
 
     private FlowManager flowManager;		// The Flow Manager to use
