@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -32,6 +34,7 @@ import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import com.esotericsoftware.kryo2.Kryo;
+import com.tinkerpop.blueprints.impls.ramcloud.PerfMon;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +49,14 @@ import org.slf4j.LoggerFactory;
 class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
+
+    // Flag to refresh Topology object periodically
+    private final static boolean refreshTopology = true;
+    // Refresh delay(ms)
+    private final static long refreshTopologyDelay = 5000;
+    // Refresh interval(ms)
+    private final static long refreshTopologyInterval = 5000;
+    private Timer refreshTopologyTimer;
 
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
@@ -140,6 +151,28 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// Process the initial events (if any)
 	synchronized (allFlowPaths) {
 	    processEvents();
+	}
+
+	if (refreshTopology) {
+		refreshTopologyTimer = new Timer();
+		refreshTopologyTimer.schedule(new TimerTask() {
+			private PerfMon pm = PerfMon.getInstance();
+			@Override
+			public void run() {
+				log.debug("[BEFORE] {}", topology.toString());
+				long begin, end;
+				synchronized(topology) {
+					begin = System.nanoTime();
+					pm.read_whole_topology_start();
+					topology.readFromDatabase(flowManager.dbHandlerInner);
+					pm.read_whole_topology_end();
+					end = System.nanoTime();
+				}
+				// FIXME level raised for measurement. Was debug
+				log.error("[AFTER] {}", topology.toString());
+				log.error("refresh takes : {}[us]", (end - begin) / 1000.0);
+			}
+		}, refreshTopologyDelay, refreshTopologyInterval);
 	}
     }
 
@@ -443,10 +476,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD:
-		isTopologyModified |= topology.addTopologyElement(topologyElement);
+    	synchronized (topology) {
+    		isTopologyModified |= topology.addTopologyElement(topologyElement);
+    	}
 		break;
 	    case ENTRY_REMOVE:
-		isTopologyModified |= topology.removeTopologyElement(topologyElement);
+    	synchronized (topology) {
+    		isTopologyModified |= topology.removeTopologyElement(topologyElement);
+    	}
 		break;
 	    }
 	}
@@ -730,8 +767,12 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	DataPath oldDataPath = flowPath.dataPath();
 
 	// Compute the new path
-	DataPath newDataPath = TopologyManager.computeNetworkPath(topology,
+	DataPath newDataPath;
+	synchronized (topology) {
+	newDataPath = TopologyManager.computeNetworkPath(topology,
 								  flowPath);
+	}
+
 	if (newDataPath == null) {
 	    // We need the DataPath to compare the paths
 	    newDataPath = new DataPath();
