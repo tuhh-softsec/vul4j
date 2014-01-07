@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 
