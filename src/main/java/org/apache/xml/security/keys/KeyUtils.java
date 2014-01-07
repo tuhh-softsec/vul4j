@@ -32,7 +32,7 @@ import org.apache.xml.security.keys.content.X509Data;
  *
  * @author $Author$
  */
-public class KeyUtils {
+public final class KeyUtils {
 
     private KeyUtils() {
         // no instantiation

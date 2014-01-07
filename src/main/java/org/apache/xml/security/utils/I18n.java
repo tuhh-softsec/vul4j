@@ -149,7 +149,7 @@ public class I18n {
      * @param languageCode
      * @param countryCode
      */
-    public synchronized static void init(String languageCode, String countryCode) {
+    public static synchronized void init(String languageCode, String countryCode) {
         if (alreadyInitialized) {
             return;
         }
@@ -166,7 +166,7 @@ public class I18n {
      * Method init
      * @param resourceBundle
      */
-    public synchronized static void init(ResourceBundle resourceBundle) {
+    public static synchronized void init(ResourceBundle resourceBundle) {
         if (alreadyInitialized) {
             return;
         }

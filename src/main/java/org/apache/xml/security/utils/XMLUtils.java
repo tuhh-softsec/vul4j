@@ -49,7 +49,7 @@ import org.w3c.dom.Text;
  *
  * @author Christian Geuer-Pollmann
  */
-public class XMLUtils {
+public final class XMLUtils {
 
     private static boolean ignoreLineBreaks =
         AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
@@ -916,13 +916,16 @@ public class XMLUtils {
      * a matching Element has been found, just that no wrapping attack has been detected.
      */
     public static boolean protectAgainstWrappingAttack(Node startNode, String value) {
-        Node startParent = startNode.getParentNode();
-        Node processedNode = null;
-        Element foundElement = null;
-        
         String id = value.trim();
         if (id.charAt(0) == '#') {
             id = id.substring(1);
+        }
+        
+        Node startParent = null;
+        Node processedNode = null;
+        Element foundElement = null;
+        if (startNode != null) {
+            startParent = startNode.getParentNode();
         }
 
         while (startNode != null) {
@@ -977,12 +980,15 @@ public class XMLUtils {
     public static boolean protectAgainstWrappingAttack(
         Node startNode, Element knownElement, String value
     ) {
-        Node startParent = startNode.getParentNode();
-        Node processedNode = null;
-        
         String id = value.trim();
         if (id.charAt(0) == '#') {
             id = id.substring(1);
+        }
+        
+        Node startParent = null;
+        Node processedNode = null;
+        if (startNode != null) {
+            startParent = startNode.getParentNode();
         }
 
         while (startNode != null) {

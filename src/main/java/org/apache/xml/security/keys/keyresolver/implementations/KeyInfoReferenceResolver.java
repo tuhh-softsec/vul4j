@@ -223,8 +223,7 @@ public class KeyInfoReferenceResolver extends KeyResolverSpi {
     private XMLSignatureInput resolveInput(Attr uri, String baseURI, boolean secureValidation)
         throws XMLSecurityException {
         ResourceResolver resRes = ResourceResolver.getInstance(uri, baseURI, secureValidation);
-        XMLSignatureInput resource = resRes.resolve(uri, baseURI, secureValidation);
-        return resource;
+        return resRes.resolve(uri, baseURI, secureValidation);
     }
 
     /**

@@ -44,9 +44,6 @@ public class XMLSignatureInputDebugger {
 
     private Set<String> inclusiveNamespaces;
 
-    /** Field doc */
-    private Document doc = null;
-
     /** Field writer */
     private Writer writer = null;
 
@@ -151,12 +148,12 @@ public class XMLSignatureInputDebugger {
         // get only a single node as anchor to fetch the owner document
         Node n = this.xpathNodeSet.iterator().next();
 
-        this.doc = XMLUtils.getOwnerDocument(n);
+        Document doc = XMLUtils.getOwnerDocument(n);
 
         try {
             this.writer = new StringWriter();
 
-            this.canonicalizeXPathNodeSet(this.doc);
+            this.canonicalizeXPathNodeSet(doc);
             this.writer.close();
 
             return this.writer.toString();
@@ -164,7 +161,6 @@ public class XMLSignatureInputDebugger {
             throw new XMLSignatureException("empty", ex);
         } finally {
             this.xpathNodeSet = null;
-            this.doc = null;
             this.writer = null;
         }
     }

@@ -107,7 +107,7 @@ public class XalanXPathAPI implements XPathAPI {
         context = null;
     }
     
-    public synchronized static boolean isInstalled() {
+    public static synchronized boolean isInstalled() {
         return installed;
     }
 
@@ -161,7 +161,7 @@ public class XalanXPathAPI implements XPathAPI {
         return xpath;
     }
 
-    private synchronized static void fixupFunctionTable() {
+    private static synchronized void fixupFunctionTable() {
         installed = false;
         if (log.isDebugEnabled()) {
             log.debug("Registering Here function");

@@ -32,7 +32,7 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
     public static final String INCLUSIVE_NAMESPACES_PREFIX_LIST = "inclusiveNamespacePrefixList";
     public static final String PROPAGATE_DEFAULT_NAMESPACE = "propagateDefaultNamespace";
 
-    protected ArrayList<String> inclusiveNamespaces = null;
+    protected List<String> inclusiveNamespaces = null;
     protected boolean propagateDefaultNamespace = false;
 
     public Canonicalizer20010315_Excl(boolean includeComments) {
@@ -49,13 +49,13 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
         }
     }
 
-    protected static ArrayList<String> getPrefixList(List<String> inclusiveNamespaces) {
+    protected static List<String> getPrefixList(List<String> inclusiveNamespaces) {
 
         if (inclusiveNamespaces == null || inclusiveNamespaces.isEmpty()) {
             return null;
         }
 
-        final ArrayList<String> prefixes = new ArrayList<String>(inclusiveNamespaces.size());
+        final List<String> prefixes = new ArrayList<String>(inclusiveNamespaces.size());
 
         for (int i = 0; i < inclusiveNamespaces.size(); i++) {
             final String s = inclusiveNamespaces.get(i).intern();

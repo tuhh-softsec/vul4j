@@ -70,9 +70,9 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
     private final SignatureType signatureType;
     private final InboundSecurityToken inboundSecurityToken;
-    private final ArrayList<KeyValue<ResourceResolver, ReferenceType>> sameDocumentReferences;
-    private final ArrayList<KeyValue<ResourceResolver, ReferenceType>> externalReferences;
-    private final ArrayList<ReferenceType> processedReferences;
+    private final List<KeyValue<ResourceResolver, ReferenceType>> sameDocumentReferences;
+    private final List<KeyValue<ResourceResolver, ReferenceType>> externalReferences;
+    private final List<ReferenceType> processedReferences;
 
     public AbstractSignatureReferenceVerifyInputProcessor(
             InputProcessorChain inputProcessorChain,

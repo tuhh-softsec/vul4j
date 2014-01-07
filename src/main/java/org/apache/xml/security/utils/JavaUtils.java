@@ -29,7 +29,7 @@ import java.io.InputStream;
  * A collection of different, general-purpose methods for JAVA-specific things
  * @author Christian Geuer-Pollmann
  */
-public class JavaUtils {
+public final class JavaUtils {
 
     private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(JavaUtils.class);

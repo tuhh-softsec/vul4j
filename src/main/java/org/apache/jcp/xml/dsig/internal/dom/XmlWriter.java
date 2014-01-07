@@ -21,7 +21,6 @@ package org.apache.jcp.xml.dsig.internal.dom;
 import javax.xml.crypto.MarshalException;
 import javax.xml.crypto.XMLCryptoContext;
 import javax.xml.crypto.XMLStructure;
-import javax.xml.stream.XMLStreamWriter;
 
 import org.w3c.dom.Attr;
 
@@ -41,7 +40,7 @@ public interface XmlWriter {
      *
      * @param <CLZ>
      */
-    static abstract class ToMarshal<CLZ extends XMLStructure> { //NOPMD
+    abstract static class ToMarshal<CLZ extends XMLStructure> { //NOPMD
         public final Class<CLZ> clazzToMatch;
         
         public ToMarshal(Class<CLZ> clazzToMatch) {

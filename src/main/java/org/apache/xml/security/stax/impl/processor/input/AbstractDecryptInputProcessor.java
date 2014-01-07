@@ -692,7 +692,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
     /**
      * The DecryptionThread handles encrypted XML-Parts
      */
-    class DecryptionThread implements Runnable {
+    static class DecryptionThread implements Runnable {
 
         private final InputProcessorChain inputProcessorChain;
         private final boolean header;

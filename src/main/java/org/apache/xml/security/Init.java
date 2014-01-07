@@ -62,7 +62,7 @@ public class Init {
      * Method isInitialized
      * @return true if the library is already initialized.     
      */
-    public static synchronized final boolean isInitialized() {
+    public static final synchronized boolean isInitialized() {
         return Init.alreadyInitialized;
     }
 

@@ -40,20 +40,20 @@ import java.util.*;
  */
 public abstract class CanonicalizerBase extends TransformIdentity {
 
-    protected static final byte[] _END_PI = {'?', '>'};
-    protected static final byte[] _BEGIN_PI = {'<', '?'};
-    protected static final byte[] _END_COMM = {'-', '-', '>'};
-    protected static final byte[] _BEGIN_COMM = {'<', '!', '-', '-'};
-    protected static final byte[] __XA_ = {'&', '#', 'x', 'A', ';'};
-    protected static final byte[] __X9_ = {'&', '#', 'x', '9', ';'};
-    protected static final byte[] _QUOT_ = {'&', 'q', 'u', 'o', 't', ';'};
-    protected static final byte[] __XD_ = {'&', '#', 'x', 'D', ';'};
-    protected static final byte[] _GT_ = {'&', 'g', 't', ';'};
-    protected static final byte[] _LT_ = {'&', 'l', 't', ';'};
-    protected static final byte[] _END_TAG = {'<', '/'};
-    protected static final byte[] _AMP_ = {'&', 'a', 'm', 'p', ';'};
-    protected static final byte[] EQUAL_STRING = {'=', '\"'};
-    protected static final byte[] NEWLINE = {'\n'};
+    static final byte[] _END_PI = {'?', '>'};
+    static final byte[] _BEGIN_PI = {'<', '?'};
+    static final byte[] _END_COMM = {'-', '-', '>'};
+    static final byte[] _BEGIN_COMM = {'<', '!', '-', '-'};
+    static final byte[] __XA_ = {'&', '#', 'x', 'A', ';'};
+    static final byte[] __X9_ = {'&', '#', 'x', '9', ';'};
+    static final byte[] _QUOT_ = {'&', 'q', 'u', 'o', 't', ';'};
+    static final byte[] __XD_ = {'&', '#', 'x', 'D', ';'};
+    static final byte[] _GT_ = {'&', 'g', 't', ';'};
+    static final byte[] _LT_ = {'&', 'l', 't', ';'};
+    static final byte[] _END_TAG = {'<', '/'};
+    static final byte[] _AMP_ = {'&', 'a', 'm', 'p', ';'};
+    static final byte[] EQUAL_STRING = {'=', '\"'};
+    static final byte[] NEWLINE = {'\n'};
 
     protected static final String XML = "xml";
     protected static final String XMLNS = "xmlns";
@@ -240,7 +240,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     public void transform(final XMLSecEvent xmlSecEvent) throws XMLStreamException {
         try {
             OutputStream outputStream = getOutputStream();
-
+            
             switch (xmlSecEvent.getEventType()) {
                 case XMLStreamConstants.START_ELEMENT:
 

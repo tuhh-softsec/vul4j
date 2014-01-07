@@ -242,10 +242,10 @@ class Marshaller {
         }
     };
 
-    private static List<XmlWriter.ToMarshal<? extends XMLStructure>> MARSHALLERS = null;
+    private static final List<XmlWriter.ToMarshal<? extends XMLStructure>> MARSHALLERS = 
+        new ArrayList<XmlWriter.ToMarshal<? extends XMLStructure>>();
     
     static {
-        MARSHALLERS = new ArrayList<XmlWriter.ToMarshal<? extends XMLStructure>>();
         MARSHALLERS.add(Marshal_KeyName);
         MARSHALLERS.add(Marshal_KeyInfo);
         MARSHALLERS.add(Marshal_KeyValue);

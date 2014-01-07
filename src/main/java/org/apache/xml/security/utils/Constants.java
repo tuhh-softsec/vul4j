@@ -27,7 +27,7 @@ package org.apache.xml.security.utils;
  *
  * @author $Author$
  */
-public class Constants {
+public final class Constants {
 
     /** Field configurationFile */
     public static final String configurationFile = "data/websig.conf";

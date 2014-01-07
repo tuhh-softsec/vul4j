@@ -29,7 +29,6 @@ import java.security.cert.*;
 import java.util.*;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
-import javax.xml.crypto.dsig.keyinfo.X509IssuerSerial;
 import javax.xml.crypto.dsig.keyinfo.X509Data;
 import javax.security.auth.x500.X500Principal;
 import org.w3c.dom.Element;

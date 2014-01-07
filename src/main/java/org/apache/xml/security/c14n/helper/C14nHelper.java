@@ -29,7 +29,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Christian Geuer-Pollmann
  */
-public class C14nHelper {
+public final class C14nHelper {
 
     /**
      * Constructor C14nHelper

@@ -42,7 +42,7 @@ import javax.xml.crypto.dsig.spec.*;
  *
  * @author Sean Mullan
  */
-public class DOMUtils {
+public final class DOMUtils {
 
     // class cannot be instantiated
     private DOMUtils() {} 

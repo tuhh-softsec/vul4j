@@ -44,10 +44,10 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 
@@ -70,7 +70,7 @@ public final class DOMXMLSignature extends DOMStructure
     private boolean validationStatus;
     private boolean validated = false;
     private KeySelectorResult ksr;
-    private HashMap<String, XMLStructure> signatureIdMap;
+    private Map<String, XMLStructure> signatureIdMap;
 
     static {
         org.apache.xml.security.Init.init();

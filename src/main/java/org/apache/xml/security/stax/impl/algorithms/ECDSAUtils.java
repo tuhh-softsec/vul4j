@@ -890,8 +890,9 @@ public final class ECDSAUtils {
     }
 
     public static ECPoint decodePoint(byte[] encodedBytes, EllipticCurve elliptiCcurve) {
-        if (encodedBytes[0] != 0x04)
+        if (encodedBytes[0] != 0x04) {
             throw new IllegalArgumentException("Only uncompressed format is supported");
+        }
 
         int size = (elliptiCcurve.getField().getFieldSize() + 7) / 8;
         byte affineXBytes[] = new byte[size];

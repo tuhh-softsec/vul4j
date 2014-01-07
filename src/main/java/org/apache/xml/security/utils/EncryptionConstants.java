@@ -18,7 +18,7 @@
  */
 package org.apache.xml.security.utils;
 
-public class EncryptionConstants {
+public final class EncryptionConstants {
     // Attributes that exist in XML Signature in the same way
     /** Tag of Attr Algorithm **/
     public static final String _ATT_ALGORITHM              = Constants._ATT_ALGORITHM;

@@ -39,7 +39,7 @@ public abstract class XPathFactory {
         }
     }
     
-    protected synchronized static boolean isXalanInstalled() {
+    protected static synchronized boolean isXalanInstalled() {
         return xalanInstalled;
     }
     
