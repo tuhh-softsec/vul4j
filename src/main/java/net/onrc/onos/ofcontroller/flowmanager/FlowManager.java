@@ -93,7 +93,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * Shutdown the Flow Manager operation.
      */
     @Override
-    public void finalize() {
+    protected void finalize() {
     	close();
     }
 
@@ -754,7 +754,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			retry = true;
 		    } catch (Exception e) {
 			log.error("Exception deleting Flow Path from Network MAP: {}", e);
-		    } 
+		    }
 		} while (retry);
 
 		if (enableOnrc2014MeasurementsFlows) {
