@@ -2,7 +2,6 @@ package org.esigate.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
@@ -20,17 +19,14 @@ import org.esigate.http.IncomingRequest;
 public class DriverRequest implements HttpEntityEnclosingRequest {
     private final IncomingRequest wrappedRequest;
     private final Driver driver;
-    private final Map<String, String> parameters;
     private final UserContext userContext;
     private final URL baseUrl;
     private final boolean external;
     private String characterEncoding;
 
-    public DriverRequest(IncomingRequest request, Driver driver, Map<String, String> parameters, boolean external)
-            throws HttpErrorPage {
+    public DriverRequest(IncomingRequest request, Driver driver, boolean external) throws HttpErrorPage {
         this.wrappedRequest = request;
         this.driver = driver;
-        this.parameters = parameters;
         this.external = external;
         this.userContext = new UserContext(request, driver.getConfiguration().getInstanceName());
         try {
@@ -150,10 +146,6 @@ public class DriverRequest implements HttpEntityEnclosingRequest {
 
     public Driver getDriver() {
         return driver;
-    }
-
-    public Map<String, String> getParameters() {
-        return parameters;
     }
 
     public UserContext getUserContext() {

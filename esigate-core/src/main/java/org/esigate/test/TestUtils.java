@@ -15,8 +15,6 @@
 
 package org.esigate.test;
 
-import java.io.IOException;
-
 import org.apache.http.cookie.Cookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
@@ -39,7 +37,7 @@ public final class TestUtils {
 
     public static DriverRequest createRequest(Driver driver) throws HttpErrorPage {
         IncomingRequest request = new MockMediator().getHttpRequest();
-        return new DriverRequest(request, driver, null, false);
+        return new DriverRequest(request, driver, false);
     }
 
     public static IncomingRequest createRequest(String uri) {
@@ -48,7 +46,7 @@ public final class TestUtils {
 
     public static DriverRequest createRequest(String uri, Driver driver) throws HttpErrorPage {
         IncomingRequest request = new MockMediator(uri).getHttpRequest();
-        return new DriverRequest(request, driver, null, false);
+        return new DriverRequest(request, driver, false);
     }
 
     public static void addCookie(Cookie cookie, DriverRequest request) {

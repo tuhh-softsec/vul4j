@@ -72,7 +72,7 @@ class IncludeTemplateElement implements Element {
 
     @Override
     public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-        CloseableHttpResponse response = driver.render(page, null, ctx.getHttpRequest().getOriginalRequest(),
+        CloseableHttpResponse response = driver.render(page, ctx.getHttpRequest().getOriginalRequest(),
                 new TemplateRenderer(name, params, page), new AggregateRenderer());
         out.append(HttpResponseUtils.toString(response));
     }

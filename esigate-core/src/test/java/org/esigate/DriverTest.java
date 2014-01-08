@@ -76,16 +76,16 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderBlock() throws IOException, HttpErrorPage {
-        CloseableHttpResponse response = DriverFactory.getInstance("mock").render("/testBlock", null, request,
+        CloseableHttpResponse response = DriverFactory.getInstance("mock").render("/testBlock", request,
                 new BlockRenderer("A", "/testBlock"));
 
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 
-        response = DriverFactory.getInstance("mock").render("$(vartestBlock)", null, request,
+        response = DriverFactory.getInstance("mock").render("$(vartestBlock)", request,
                 new BlockRenderer("A", "$(vartestBlock)"));
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 
-        response = DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", null, request,
+        response = DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", request,
                 new BlockRenderer("A", "/$(vartest)$(varBlock)"));
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 
@@ -95,8 +95,8 @@ public class DriverTest extends TestCase {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
-        CloseableHttpResponse response = DriverFactory.getInstance("mock").render("/testTemplateFullPage", null,
-                request, new TemplateRenderer(null, params, "/testTemplateFullPage"));
+        CloseableHttpResponse response = DriverFactory.getInstance("mock").render("/testTemplateFullPage", request,
+                new TemplateRenderer(null, params, "/testTemplateFullPage"));
         String result = HttpResponseUtils.toString(response);
         assertFalse(result.contains("key"));
         assertTrue(result.contains("'value'"));
@@ -105,11 +105,11 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderTemplate() throws IOException, HttpErrorPage {
-        CloseableHttpResponse response = DriverFactory.getInstance("mock").render("/testTemplate", null, request,
+        CloseableHttpResponse response = DriverFactory.getInstance("mock").render("/testTemplate", request,
                 new TemplateRenderer("A", null, "/testTemplate"));
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 
-        response = DriverFactory.getInstance("mock").render("/test$(varTemplate)", null, request,
+        response = DriverFactory.getInstance("mock").render("/test$(varTemplate)", request,
                 new TemplateRenderer("A", null, "/test$(varTemplate)"));
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 

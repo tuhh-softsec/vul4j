@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -126,8 +125,6 @@ public final class Driver {
      * 
      * @param pageUrl
      *            Address of the page containing the template
-     * @param parameters
-     *            parameters to be added to the request
      * @param incomingRequest
      *            originating request object
      * @param renderers
@@ -138,10 +135,10 @@ public final class Driver {
      * @throws HttpErrorPage
      *             If an Exception occurs while retrieving the template
      */
-    public CloseableHttpResponse render(String pageUrl, Map<String, String> parameters,
-            IncomingRequest incomingRequest, Renderer... renderers) throws IOException, HttpErrorPage {
+    public CloseableHttpResponse render(String pageUrl, IncomingRequest incomingRequest, Renderer... renderers)
+            throws IOException, HttpErrorPage {
         boolean external = UriUtils.isAbsolute(pageUrl);
-        DriverRequest driverRequest = new DriverRequest(incomingRequest, this, parameters, external);
+        DriverRequest driverRequest = new DriverRequest(incomingRequest, this, external);
 
         // Replace ESI variables in URL
         // TODO: should be performed in the ESI extension
@@ -232,7 +229,7 @@ public final class Driver {
     public CloseableHttpResponse proxy(String relUrl, IncomingRequest request, Renderer... renderers)
             throws IOException, HttpErrorPage {
         boolean external = UriUtils.isAbsolute(relUrl);
-        DriverRequest driverRequest = new DriverRequest(request, this, null, external);
+        DriverRequest driverRequest = new DriverRequest(request, this, external);
         driverRequest.setCharacterEncoding(this.config.getUriEncoding());
 
         // This is used to ensure EVENT_PROXY_POST is called once and only once.

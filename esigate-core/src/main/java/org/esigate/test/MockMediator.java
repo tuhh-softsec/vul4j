@@ -15,23 +15,17 @@
 
 package org.esigate.test;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicRequestLine;
-import org.apache.http.util.EntityUtils;
 import org.esigate.api.ContainerRequestMediator;
 import org.esigate.http.IncomingRequest;
 import org.esigate.util.UriUtils;

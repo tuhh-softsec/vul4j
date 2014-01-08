@@ -70,7 +70,7 @@ public class XsltRenderer implements Renderer {
     public XsltRenderer(String template, Driver driver, DriverRequest originalRequest) throws IOException,
             HttpErrorPage {
         StringBuilder templateStringBuilder = new StringBuilder();
-        CloseableHttpResponse response = driver.render(template, null, originalRequest.getOriginalRequest());
+        CloseableHttpResponse response = driver.render(template, originalRequest.getOriginalRequest());
         templateStringBuilder.append(HttpResponseUtils.toString(response));
         transformer = createTransformer(IOUtils.toInputStream(templateStringBuilder));
     }

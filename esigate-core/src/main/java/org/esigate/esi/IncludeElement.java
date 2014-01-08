@@ -208,7 +208,7 @@ class IncludeElement extends BaseElement {
             } else if (xslt != null) {
                 rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
             }
-            CloseableHttpResponse response = driver.render(page, null, httpRequest.getOriginalRequest(),
+            CloseableHttpResponse response = driver.render(page, httpRequest.getOriginalRequest(),
                     rendererList.toArray(new Renderer[rendererList.size()]));
             outAdapter.append(HttpResponseUtils.toString(response));
         }

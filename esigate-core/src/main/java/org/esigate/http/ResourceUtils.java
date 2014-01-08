@@ -15,11 +15,6 @@
 
 package org.esigate.http;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.esigate.Parameters;
 import org.esigate.impl.DriverRequest;
 import org.esigate.util.UriUtils;
@@ -39,45 +34,25 @@ public final class ResourceUtils {
     }
 
     private static String buildQueryString(DriverRequest originalRequest, boolean proxy) {
-        try {
-            StringBuilder queryString = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
-            String charset = originalRequest.getCharacterEncoding();
-            if (charset == null) {
-                charset = "ISO-8859-1";
-            }
-            String originalQuerystring = UriUtils.getRawQuery(originalRequest.getRequestLine().getUri());
-            if (proxy && originalQuerystring != null) {
-                // Remove jsessionid from request if it is present
-                // As we are in a java application, the container might add
-                // jsessionid to the querystring. We must not forward it to
-                // included applications.
-                String jsessionid = null;
-                jsessionid = originalRequest.getOriginalRequest().getSessionId();
-                if (jsessionid != null) {
-                    originalQuerystring = UriUtils.removeSessionId(jsessionid, originalQuerystring);
-                }
-                queryString.append(originalQuerystring);
-            }
-            Map<String, String> parameters = originalRequest.getParameters();
-            if (parameters != null) {
-                ResourceUtils.appendParameters(queryString, charset, parameters);
-            }
-            return queryString.toString();
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+        StringBuilder queryString = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
+        String charset = originalRequest.getCharacterEncoding();
+        if (charset == null) {
+            charset = "ISO-8859-1";
         }
-    }
-
-    private static void appendParameters(StringBuilder buf, String charset, Map<String, String> params)
-            throws UnsupportedEncodingException {
-        for (Entry<String, String> param : params.entrySet()) {
-            if (buf.length() > 0) {
-                buf.append("&");
+        String originalQuerystring = UriUtils.getRawQuery(originalRequest.getRequestLine().getUri());
+        if (proxy && originalQuerystring != null) {
+            // Remove jsessionid from request if it is present
+            // As we are in a java application, the container might add
+            // jsessionid to the querystring. We must not forward it to
+            // included applications.
+            String jsessionid = null;
+            jsessionid = originalRequest.getOriginalRequest().getSessionId();
+            if (jsessionid != null) {
+                originalQuerystring = UriUtils.removeSessionId(jsessionid, originalQuerystring);
             }
-            buf.append(URLEncoder.encode(param.getKey(), charset));
-            buf.append("=");
-            buf.append(URLEncoder.encode(param.getValue(), charset));
+            queryString.append(originalQuerystring);
         }
+        return queryString.toString();
     }
 
     private static String concatUrl(String baseUrl, String relUrl) {
