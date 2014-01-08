@@ -51,11 +51,6 @@ public final class TestUtils {
         return new DriverRequest(request, driver, null, false);
     }
 
-    public static void sendHttpErrorPage(HttpErrorPage e, IncomingRequest request) throws IOException {
-        MockMediator mediator = (MockMediator) request.getMediator();
-        mediator.sendResponse(e.getHttpResponse());
-    }
-
     public static void addCookie(Cookie cookie, DriverRequest request) {
         MockMediator mediator = (MockMediator) request.getMediator();
         mediator.addCookie(cookie);

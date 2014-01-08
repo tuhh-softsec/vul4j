@@ -81,19 +81,6 @@ public class MockMediator implements ContainerRequestMediator {
         this.cookies.add(cookie);
     }
 
-    public void sendResponse(HttpResponse response) throws IOException {
-        this.httpResponse = new BasicHttpResponse(response.getStatusLine());
-        this.httpResponse.setHeaders(response.getAllHeaders());
-        HttpEntity entity = response.getEntity();
-        if (entity != null) {
-            ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity), ContentType.get(entity));
-            if (entity.getContentEncoding() != null) {
-                copiedEntity.setContentEncoding(entity.getContentEncoding());
-            }
-            this.httpResponse.setEntity(copiedEntity);
-        }
-    }
-
     @Override
     public void setSessionAttribute(String key, Serializable value) {
         this.sessionAttributes.put(key, value);
