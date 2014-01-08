@@ -71,7 +71,7 @@ implements Validator
      * @param warnings
      */
     private void validateVerwaltungseinheit(LOrt ort, Map<String, Integer> warnings) {
-        if (!ort.getOrtsTyp().equals("E")) {
+        if (!"E".equals(ort.getOrtsTyp())) {
             return;
         }
         QueryBuilder<Ort> ortBuilder =
@@ -84,6 +84,10 @@ implements Validator
                 readonlyRepo.getEntityManager(), SVerwaltungseinheit.class);
         veBuilder.and("gemId", orte.get(0).getGemId());
         Response ver = readonlyRepo.filter(veBuilder.getQuery());
+        if (((List<SVerwaltungseinheit>)ver.getData()).isEmpty()) {
+            warnings.put("verwaltungseinheit", 653);
+            return;
+        }
         SVerwaltungseinheit ve = ((List<SVerwaltungseinheit>)ver.getData()).get(0);
         QueryBuilder<DeVg> vg =
             new QueryBuilder<DeVg>(readonlyRepo.getEntityManager(), DeVg.class);
