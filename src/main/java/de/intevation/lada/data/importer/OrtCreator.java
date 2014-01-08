@@ -337,7 +337,7 @@ public class OrtCreator
         if ("ort_land_s".equals(key)) {
             this.setLandS(value.toString());
         }
-        if ("ort_gemeindeschlüssel".equals(key)) {
+        if ("ort_gemeindeschluessel".equals(key)) {
             this.setGemSchluessel(value.toString());
         }
         if ("ort_bezeichnung".equals(key)) {
@@ -371,8 +371,8 @@ public class OrtCreator
             return null;
         }
         Ort ort = new Ort();
+        ortRepo.create(ort);
         this.ortId = ort.getOrtId();
-        ort.setBezeichnung("D_" + ort.getOrtId());
         boolean koord = true;
         if (this.koordinatenS != null && this.koordinatenS.length() > 0) {
             ort = setKoordinatenS(ort);
@@ -435,7 +435,10 @@ public class OrtCreator
             ort.setNutsCode(list.get(0).getNuts());
         }
         ort.setBeschreibung(beschreibung);
-        ort.setHoeheLand(Float.valueOf(hoehe));
+        if (this.hoehe != null) {
+        	ort.setHoeheLand(Float.valueOf(hoehe));
+        }
+        ortRepo.update(ort);
         return ort;
     }
 
@@ -507,7 +510,7 @@ public class OrtCreator
             QueryBuilder<SStaat> builder =
                 new QueryBuilder<SStaat>(
                     readonlyRepo.getEntityManager(), SStaat.class);
-            builder.and("staat_id", this.landS);
+            builder.and("staatId", this.landS);
             Response response = readonlyRepo.filter(builder.getQuery());
             List<SStaat> list = (List<SStaat>)response.getData();
             if (list.isEmpty()) {
@@ -515,7 +518,9 @@ public class OrtCreator
                 return ort;
             }
             ort.setKoordXExtern(list.get(0).getKoordXExtern());
+            ort.setLongitude(Double.valueOf(list.get(0).getKoordXExtern()));
             ort.setKoordYExtern(list.get(0).getKoordYExtern());
+            ort.setLatitude(Double.valueOf(list.get(0).getKoordYExtern()));
         }
         return ort;
     }
@@ -629,24 +634,24 @@ public class OrtCreator
         String x = "";
         String y = "";
         String tmp = "";
-        if (this.koordinaten.startsWith("\"")) {
-            tmp = this.koordinaten.substring(1);
+        if (this.koordinatenS.startsWith("\"")) {
+            tmp = this.koordinatenS.substring(1);
             art = tmp.substring(0, tmp.indexOf("\""));
             tmp = tmp.substring(tmp.indexOf("\"") + 2);
         }
         else {
-            art = this.koordinaten.substring(0, this.koordinaten.indexOf(" "));
-            tmp = this.koordinaten.substring(
-                0, this.koordinaten.indexOf(" ") + 1);
+            art = this.koordinatenS.substring(0, this.koordinatenS.indexOf(" "));
+            tmp = this.koordinatenS.substring(
+                this.koordinatenS.indexOf(" ") + 1);
         }
         if (tmp.startsWith("\"")) {
             tmp = tmp.substring(1);
             x = tmp.substring(0, tmp.indexOf("\""));
-            tmp = tmp.substring(0, tmp.indexOf("\"") + 2);
+            tmp = tmp.substring(tmp.indexOf("\"") + 2);
         }
         else {
             x = tmp.substring(0, tmp.indexOf(" "));
-            tmp = tmp.substring(0, tmp.indexOf(" ") + 1);
+            tmp = tmp.substring(tmp.indexOf(" ") + 1);
         }
         if (tmp.startsWith("\"")) {
             tmp = tmp.substring(1);
@@ -656,7 +661,9 @@ public class OrtCreator
             y = tmp;
         }
         ort.setKoordXExtern(x);
+        ort.setLongitude(Double.valueOf(x));
         ort.setKoordYExtern(y);
+        ort.setLatitude(Double.valueOf(y));
         return ort;
     }
 
