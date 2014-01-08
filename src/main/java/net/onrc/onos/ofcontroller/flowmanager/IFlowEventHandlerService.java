@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.flowmanager;
 
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
 /**
@@ -49,6 +50,27 @@ public interface IFlowEventHandlerService {
      * @param flowEntry the FlowEntry that is updated.
      */
     void notificationRecvFlowEntryUpdated(FlowEntry flowEntry);
+
+    /**
+     * Receive a notification that a FlowId is added.
+     *
+     * @param flowId the FlowId that is added.
+     */
+    void notificationRecvFlowIdAdded(FlowId flowId);
+
+    /**
+     * Receive a notification that a FlowId is removed.
+     *
+     * @param flowId the FlowId that is removed.
+     */
+    void notificationRecvFlowIdRemoved(FlowId flowId);
+
+    /**
+     * Receive a notification that a FlowId is updated.
+     *
+     * @param flowId the FlowId that is updated.
+     */
+    void notificationRecvFlowIdUpdated(FlowId flowId);
 
     /**
      * Receive a notification that a Topology Element is added.

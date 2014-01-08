@@ -14,6 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.datagrid.IDatagridService;
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
@@ -46,7 +47,11 @@ import org.slf4j.LoggerFactory;
 class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
+    
+    // Flag to enable feature of acquiring topology information from DB instead of datagrid.
+    private final boolean accessDBFlag = false;
 
+    private GraphDBOperation dbHandler;
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
     private Topology topology;			// The network topology
@@ -63,6 +68,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	new LinkedList<EventEntry<FlowPath>>();
     private List<EventEntry<FlowEntry>> flowEntryEvents =
 	new LinkedList<EventEntry<FlowEntry>>();
+    private List<EventEntry<FlowId>> flowIdEvents =
+	new LinkedList<EventEntry<FlowId>>();
 
     // All internally computed Flow Paths
     private Map<Long, FlowPath> allFlowPaths = new HashMap<Long, FlowPath>();
@@ -91,10 +98,12 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * @param datagridService the Datagrid Service to use.
      */
     FlowEventHandler(FlowManager flowManager,
-		     IDatagridService datagridService) {
+		     IDatagridService datagridService,
+		     GraphDBOperation dbHandler) {
 	this.flowManager = flowManager;
 	this.datagridService = datagridService;
 	this.topology = new Topology();
+	this.dbHandler = dbHandler;
     }
 
     /**
@@ -137,6 +146,16 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    flowEntryEvents.add(eventEntry);
 	}
 
+	//
+	// Obtain the initial FlowId state
+	//
+	Collection<FlowId> flowIds = datagridService.getAllFlowIds();
+	for (FlowId flowId : flowIds) {
+	    EventEntry<FlowId> eventEntry =
+		new EventEntry<FlowId>(EventEntry.Type.ENTRY_ADD, flowId);
+	    flowIdEvents.add(eventEntry);
+	}
+
 	// Process the initial events (if any)
 	synchronized (allFlowPaths) {
 	    processEvents();
@@ -166,12 +185,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		//  - EventEntry<TopologyElement>
 		//  - EventEntry<FlowPath>
 		//  - EventEntry<FlowEntry>
+		//  - EventEntry<FlowId>
 		//
 		for (EventEntry<?> event : collection) {
 		    // Topology event
 		    if (event.eventData() instanceof TopologyElement) {
 			EventEntry<TopologyElement> topologyEventEntry =
 			    (EventEntry<TopologyElement>)event;
+			
 			topologyEvents.add(topologyEventEntry);
 			continue;
 		    }
@@ -191,6 +212,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 			flowEntryEvents.add(flowEntryEventEntry);
 			continue;
 		    }
+
+		    // FlowId event
+		    if (event.eventData() instanceof FlowId) {
+			EventEntry<FlowId> flowIdEventEntry =
+			    (EventEntry<FlowId>)event;
+			flowIdEvents.add(flowIdEventEntry);
+			continue;
+		    }
 		}
 		collection.clear();
 
@@ -203,7 +232,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    log.debug("Exception processing Network Events: ", exception);
 	}
     }
-
+    
     /**
      * Process the events (if any)
      */
@@ -215,6 +244,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    return;		// Nothing to do
 	}
 
+	processFlowIdEvents();
 	processFlowPathEvents();
 	processTopologyEvents();
 	processUnmatchedFlowEntryAdd();
@@ -254,6 +284,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	topologyEvents.clear();
 	flowPathEvents.clear();
 	flowEntryEvents.clear();
+	flowIdEvents.clear();
 	//
 	shouldRecomputeFlowPaths.clear();
 	modifiedFlowPaths.clear();
@@ -346,6 +377,41 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     }
 
     /**
+     * Process the Flow ID events.
+     */
+    private void processFlowIdEvents() {
+	//
+	// Process all Flow ID events and update the appropriate state
+	//
+	for (EventEntry<FlowId> eventEntry : flowIdEvents) {
+	    FlowId flowId = eventEntry.eventData();
+
+	    log.debug("Flow ID Event: {} {}", eventEntry.eventType(), flowId);
+
+	    switch (eventEntry.eventType()) {
+	    case ENTRY_ADD: {
+		//
+		// Add a new Flow ID
+		//
+		// TODO: Implement it!
+
+		break;
+	    }
+
+	    case ENTRY_REMOVE: {
+		//
+		// Remove an existing Flow ID.
+		//
+		// TODO: Implement it!
+
+		break;
+	    }
+	    }
+	}
+    }
+
+
+    /**
      * Process the Flow Path events.
      */
     private void processFlowPathEvents() {
@@ -435,20 +501,28 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// Process all Topology events and update the appropriate state
 	//
 	boolean isTopologyModified = false;
-	for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
-	    TopologyElement topologyElement = eventEntry.eventData();
+	if (accessDBFlag) {
+		log.debug("[BEFORE] {}", topology.toString());
+		if (! topology.readFromDatabase(dbHandler)) {
+			isTopologyModified = true;
+		}
+		log.debug("[AFTER] {}", topology.toString());
+	} else {
+		for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
+		    TopologyElement topologyElement = eventEntry.eventData();
+			
+		    log.debug("Topology Event: {} {}", eventEntry.eventType(),
+				      topologyElement.toString());
 
-	    log.debug("Topology Event: {} {}", eventEntry.eventType(),
-		      topologyElement);
-
-	    switch (eventEntry.eventType()) {
-	    case ENTRY_ADD:
-		isTopologyModified |= topology.addTopologyElement(topologyElement);
-		break;
-	    case ENTRY_REMOVE:
-		isTopologyModified |= topology.removeTopologyElement(topologyElement);
-		break;
-	    }
+		    switch (eventEntry.eventType()) {
+		    case ENTRY_ADD:
+			isTopologyModified |= topology.addTopologyElement(topologyElement);
+			break;
+		    case ENTRY_REMOVE:
+			isTopologyModified |= topology.removeTopologyElement(topologyElement);
+			break;
+		    }
+		}
 	}
 	if (isTopologyModified) {
 	    // TODO: For now, if the topology changes, we recompute all Flows
@@ -968,6 +1042,43 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// NOTE: The ADD and UPDATE events are processed in same way
 	EventEntry<FlowEntry> eventEntry =
 	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowId is added.
+     *
+     * @param flowId the FlowId that is added.
+     */
+    @Override
+    public void notificationRecvFlowIdAdded(FlowId flowId) {
+	EventEntry<FlowId> eventEntry =
+	    new EventEntry<FlowId>(EventEntry.Type.ENTRY_ADD, flowId);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowId is removed.
+     *
+     * @param flowId the FlowId that is removed.
+     */
+    @Override
+    public void notificationRecvFlowIdRemoved(FlowId flowId) {
+	EventEntry<FlowId> eventEntry =
+	    new EventEntry<FlowId>(EventEntry.Type.ENTRY_REMOVE, flowId);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowId is updated.
+     *
+     * @param flowId the FlowId that is updated.
+     */
+    @Override
+    public void notificationRecvFlowIdUpdated(FlowId flowId) {
+	// NOTE: The ADD and UPDATE events are processed in same way
+	EventEntry<FlowId> eventEntry =
+	    new EventEntry<FlowId>(EventEntry.Type.ENTRY_ADD, flowId);
 	networkEvents.add(eventEntry);
     }
 

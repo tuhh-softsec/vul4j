@@ -134,6 +134,39 @@ public interface IDatagridService extends IFloodlightService {
     void notificationSendAllFlowEntriesRemoved();
 
     /**
+     * Get all Flow IDs that are currently in the datagrid.
+     *
+     * @return all Flow IDs that are currently in the datagrid.
+     */
+    Collection<FlowId> getAllFlowIds();
+
+    /**
+     * Send a notification that a FlowId is added.
+     *
+     * @param flowId the FlowId that is added.
+     */
+    void notificationSendFlowIdAdded(FlowId flowId);
+
+    /**
+     * Send a notification that a FlowId is removed.
+     *
+     * @param flowId the FlowId that is removed.
+     */
+    void notificationSendFlowIdRemoved(FlowId flowId);
+
+    /**
+     * Send a notification that a FlowId is updated.
+     *
+     * @param flowId the FlowId that is updated.
+     */
+    void notificationSendFlowIdUpdated(FlowId flowId);
+
+    /**
+     * Send a notification that all Flow IDs are removed.
+     */
+    void notificationSendAllFlowIdsRemoved();
+
+    /**
      * Get all Topology Elements that are currently in the datagrid.
      *
      * @return all Topology Elements that are currently in the datagrid.
