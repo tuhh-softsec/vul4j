@@ -23,11 +23,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.Renderer;
+import org.esigate.http.HttpResponseUtils;
 import org.esigate.impl.DriverRequest;
 import org.esigate.parser.Adapter;
 import org.esigate.parser.ElementType;
@@ -206,8 +208,9 @@ class IncludeElement extends BaseElement {
             } else if (xslt != null) {
                 rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
             }
-            driver.render(page, null, outAdapter, httpRequest.getOriginalRequest(),
+            CloseableHttpResponse response = driver.render(page, null, httpRequest.getOriginalRequest(),
                     rendererList.toArray(new Renderer[rendererList.size()]));
+            outAdapter.append(HttpResponseUtils.toString(response));
         }
     }
 

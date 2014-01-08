@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
@@ -59,7 +60,8 @@ public class ProxyFilter implements Filter {
             dm = driverSelector.selectProvider(httpServletRequest, false);
             String relUrl = RequestUrl.getRelativeUrl(httpServletRequest, dm.getRight(), false);
             LOG.debug("Proxying {}", relUrl);
-            dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
+            CloseableHttpResponse driverResponse = dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
+            mediator.sendResponse(driverResponse);
         } catch (HttpErrorPage e) {
             if (!httpServletResponse.isCommitted()) {
                 mediator.sendResponse(e.getHttpResponse());

@@ -178,7 +178,6 @@ public class HttpServletMediator implements ContainerRequestMediator {
         return servletCookie;
     }
 
-    @Override
     public void sendResponse(HttpResponse httpResponse) throws IOException {
 
         try {

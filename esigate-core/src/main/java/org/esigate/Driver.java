@@ -128,18 +128,17 @@ public final class Driver {
      *            Address of the page containing the template
      * @param parameters
      *            parameters to be added to the request
-     * @param writer
-     *            Writer where to write the result
      * @param incomingRequest
      *            originating request object
      * @param renderers
      *            the renderers to use in order to transform the output
+     * @return The resulting response
      * @throws IOException
      *             If an IOException occurs while writing to the writer
      * @throws HttpErrorPage
      *             If an Exception occurs while retrieving the template
      */
-    public void render(String pageUrl, Map<String, String> parameters, Appendable writer,
+    public CloseableHttpResponse render(String pageUrl, Map<String, String> parameters,
             IncomingRequest incomingRequest, Renderer... renderers) throws IOException, HttpErrorPage {
         boolean external = UriUtils.isAbsolute(pageUrl);
         DriverRequest driverRequest = new DriverRequest(incomingRequest, this, parameters, external);
@@ -177,8 +176,9 @@ public final class Driver {
         // Apply renderers
         currentValue = performRendering(pageUrl, driverRequest, response, currentValue, renderers);
 
-        // Output result
-        writer.append(currentValue);
+        response.setEntity(new StringEntity(currentValue, HttpResponseUtils.getContentType(response)));
+
+        return response;
     }
 
     /**
@@ -223,12 +223,14 @@ public final class Driver {
      *            the request
      * @param renderers
      *            the renderers to use to transform the output
+     * @return The resulting response.
      * @throws IOException
      *             If an IOException occurs while writing to the response
      * @throws HttpErrorPage
      *             If the page contains incorrect tags
      */
-    public void proxy(String relUrl, IncomingRequest request, Renderer... renderers) throws IOException, HttpErrorPage {
+    public CloseableHttpResponse proxy(String relUrl, IncomingRequest request, Renderer... renderers)
+            throws IOException, HttpErrorPage {
         boolean external = UriUtils.isAbsolute(relUrl);
         DriverRequest driverRequest = new DriverRequest(request, this, null, external);
         driverRequest.setCharacterEncoding(this.config.getUriEncoding());
@@ -248,7 +250,7 @@ public final class Driver {
             this.eventManager.fire(EventManager.EVENT_PROXY_PRE, e);
             // Return immediately if exit is requested by extension
             if (e.isExit()) {
-                return;
+                return e.getResponse();
             }
 
             logAction("proxy", relUrl, renderers);
@@ -266,7 +268,7 @@ public final class Driver {
             this.eventManager.fire(EventManager.EVENT_PROXY_POST, e);
 
             // Send request to the client.
-            request.getMediator().sendResponse(e.getResponse());
+            return e.getResponse();
 
         } catch (HttpErrorPage errorPage) {
             e.setErrorPage(errorPage);

@@ -15,10 +15,8 @@
 
 package org.esigate.api;
 
-import java.io.IOException;
 import java.io.Serializable;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import org.esigate.http.IncomingRequest;
 
@@ -44,15 +42,6 @@ public interface ContainerRequestMediator {
      * @param cookie
      */
     void addCookie(Cookie cookie);
-
-    /**
-     * Writes the response produced by EsiGate to the client. This includes response status line, headers and HttpEntity
-     * 
-     * @param response
-     * @throws IOException
-     *             if an problem occurs while writing to the network connection
-     */
-    void sendResponse(HttpResponse response) throws IOException;
 
     /**
      * Stores an object that can be reused across successive http requests from the same user. Implementations can

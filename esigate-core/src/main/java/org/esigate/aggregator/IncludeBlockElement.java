@@ -17,8 +17,10 @@ package org.esigate.aggregator;
 
 import java.io.IOException;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.http.HttpResponseUtils;
 import org.esigate.parser.Adapter;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
@@ -62,8 +64,9 @@ class IncludeBlockElement implements Element {
         String page = tagAttributes.getPage();
         String name = tagAttributes.getName();
 
-        driver.render(page, null, new Adapter(ctx.getCurrent()), ctx.getHttpRequest().getOriginalRequest(),
+        CloseableHttpResponse response = driver.render(page, null, ctx.getHttpRequest().getOriginalRequest(),
                 new BlockRenderer(name, page), new AggregateRenderer());
+        new Adapter(ctx.getCurrent()).append(HttpResponseUtils.toString(response));
     }
 
     @Override

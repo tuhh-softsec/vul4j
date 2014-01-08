@@ -34,9 +34,11 @@ import nu.validator.htmlparser.dom.Dom2Sax;
 import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
+import org.esigate.http.HttpResponseUtils;
 import org.esigate.impl.DriverRequest;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -68,7 +70,8 @@ public class XsltRenderer implements Renderer {
     public XsltRenderer(String template, Driver driver, DriverRequest originalRequest) throws IOException,
             HttpErrorPage {
         StringBuilder templateStringBuilder = new StringBuilder();
-        driver.render(template, null, templateStringBuilder, originalRequest.getOriginalRequest());
+        CloseableHttpResponse response = driver.render(template, null, originalRequest.getOriginalRequest());
+        templateStringBuilder.append(HttpResponseUtils.toString(response));
         transformer = createTransformer(IOUtils.toInputStream(templateStringBuilder));
     }
 

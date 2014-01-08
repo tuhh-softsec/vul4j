@@ -1,14 +1,16 @@
 package org.esigate.test.cases;
 
 import java.io.IOException;
-import org.apache.commons.io.output.StringBuilderWriter;
 import java.util.Properties;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
+import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.test.TestUtils;
@@ -23,8 +25,10 @@ public class Bug101ConnectionReleaseTest {
         StringBuilderWriter writer = new StringBuilderWriter();
         IncomingRequest httpRequest = TestUtils.createRequest();
         try {
-            driver.render("/esigate-app-aggregated1/" + page, null, writer, httpRequest, new BlockRenderer(null,
-                    "/esigate-app-aggregated1/" + page));
+            CloseableHttpResponse response = driver.render("/esigate-app-aggregated1/" + page, null, httpRequest,
+                    new BlockRenderer(null, "/esigate-app-aggregated1/" + page));
+            writer.append(HttpResponseUtils.toString(response));
+            writer.close();
         } catch (HttpErrorPage e) {
             LOG.info(page + " -> " + e.getHttpResponse().getStatusLine().getStatusCode());
         }

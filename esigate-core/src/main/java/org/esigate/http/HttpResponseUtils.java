@@ -27,6 +27,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.entity.DeflateDecompressingEntity;
 import org.apache.http.client.entity.GzipDecompressingEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
@@ -204,6 +205,18 @@ public final class HttpResponseUtils {
         }
 
         return removeSessionId(result, httpResponse);
+    }
+
+    public static ContentType getContentType(CloseableHttpResponse response) {
+        HttpEntity entity = response.getEntity();
+        if (entity == null) {
+            return null;
+        }
+        return ContentType.get(entity);
+    }
+
+    public static String toString(CloseableHttpResponse response) throws HttpErrorPage {
+        return toString(response, null);
     }
 
 }

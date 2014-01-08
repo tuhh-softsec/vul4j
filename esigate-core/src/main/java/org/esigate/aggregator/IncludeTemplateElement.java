@@ -19,8 +19,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.http.HttpResponseUtils;
 import org.esigate.parser.Adapter;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
@@ -70,8 +72,9 @@ class IncludeTemplateElement implements Element {
 
     @Override
     public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-        driver.render(page, null, out, ctx.getHttpRequest().getOriginalRequest(), new TemplateRenderer(name, params,
-                page), new AggregateRenderer());
+        CloseableHttpResponse response = driver.render(page, null, ctx.getHttpRequest().getOriginalRequest(),
+                new TemplateRenderer(name, params, page), new AggregateRenderer());
+        out.append(HttpResponseUtils.toString(response));
     }
 
     public void addParam(String name, String value) {

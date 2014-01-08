@@ -81,7 +81,6 @@ public class MockMediator implements ContainerRequestMediator {
         this.cookies.add(cookie);
     }
 
-    @Override
     public void sendResponse(HttpResponse response) throws IOException {
         this.httpResponse = new BasicHttpResponse(response.getStatusLine());
         this.httpResponse.setHeaders(response.getAllHeaders());

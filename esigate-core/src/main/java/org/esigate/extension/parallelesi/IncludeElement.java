@@ -29,11 +29,13 @@ import java.util.concurrent.RunnableFuture;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.Renderer;
+import org.esigate.http.HttpResponseUtils;
 import org.esigate.impl.DriverRequest;
 import org.esigate.parser.future.CharSequenceFuture;
 import org.esigate.parser.future.FutureElement;
@@ -210,8 +212,9 @@ class IncludeElement extends BaseElement {
                 } else if (xslt != null) {
                     rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
                 }
-                driver.render(page, null, out, httpRequest.getOriginalRequest(),
+                CloseableHttpResponse response = driver.render(page, null, httpRequest.getOriginalRequest(),
                         rendererList.toArray(new Renderer[rendererList.size()]));
+                out.append(HttpResponseUtils.toString(response));
             }
         }
 

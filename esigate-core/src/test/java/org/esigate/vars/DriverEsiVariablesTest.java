@@ -22,6 +22,7 @@ import junit.framework.Assert;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
@@ -31,7 +32,6 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.esi.EsiRenderer;
 import org.esigate.http.IncomingRequest;
-import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.driver.AbstractDriverTestCase;
 import org.junit.Test;
@@ -130,9 +130,8 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
         // Build driver and request.
         Driver driver = createMockDriver(properties, mockExecutor);
 
-        driverProxy(driver, request, new EsiRenderer());
+        CloseableHttpResponse response = driverProxy(driver, request, new EsiRenderer());
 
-        HttpResponse response = TestUtils.getResponse(request);
         String entityContent = EntityUtils.toString(response.getEntity());
         LOG.info("Esigate response: \n" + entityContent);
 
@@ -206,9 +205,8 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
         // Build driver and request.
         Driver driver = createMockDriver(properties, mockExecutor);
 
-        driverProxy(driver, request, new EsiRenderer());
+        CloseableHttpResponse response = driverProxy(driver, request, new EsiRenderer());
 
-        HttpResponse response = TestUtils.getResponse(request);
         String entityContent = EntityUtils.toString(response.getEntity());
         LOG.info("Esigate response: \n" + entityContent);
 

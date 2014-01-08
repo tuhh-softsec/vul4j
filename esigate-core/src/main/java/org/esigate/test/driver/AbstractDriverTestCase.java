@@ -6,6 +6,7 @@ import java.util.Properties;
 import junit.framework.TestCase;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
@@ -13,7 +14,6 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.IncomingRequest;
-import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.http.HttpRequestBuilder;
@@ -118,15 +118,10 @@ public abstract class AbstractDriverTestCase extends TestCase {
      * @throws IOException
      * @throws HttpErrorPage
      */
-    public static HttpResponse driverProxy(Driver d, IncomingRequest request, Renderer... renderers)
+    public static CloseableHttpResponse driverProxy(Driver d, IncomingRequest request, Renderer... renderers)
             throws IOException, HttpErrorPage {
         String uri = request.getRequestLine().getUri();
-        d.proxy(UriUtils.getPath(uri), request, renderers);
-
-        return TestUtils.getResponse(request);
-
-        // This is work in progress. Commenting right now.
-        // return d.proxy(new URI(uri).getPath(), request);
+        return d.proxy(UriUtils.getPath(uri), request, renderers);
     }
 
 }
