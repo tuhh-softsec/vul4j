@@ -48,6 +48,9 @@ import org.slf4j.LoggerFactory;
  * Flow Manager class for handling the network flows.
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
+
+    private boolean enableOnrc2014MeasurementsFlows = false;
+
     protected GraphDBOperation dbHandlerApi;
     protected GraphDBOperation dbHandlerInner;
 
@@ -224,7 +227,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//  - register with the Datagrid Service
 	//  - startup
 	//
-	flowEventHandler = new FlowEventHandler(this, datagridService, dbHandlerInner);
+	flowEventHandler = new FlowEventHandler(this, datagridService);
 	datagridService.registerFlowEventHandlerService(flowEventHandler);
 	flowEventHandler.start();
     }
@@ -265,7 +268,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	}
 
 	if (FlowDatabaseOperation.addFlow(dbHandlerApi, flowPath)) {
-	    datagridService.notificationSendFlowAdded(flowPath);
+	    if (enableOnrc2014MeasurementsFlows) {
+		datagridService.notificationSendFlowIdAdded(flowPath.flowId());
+	    } else {
+		datagridService.notificationSendFlowAdded(flowPath);
+	    }
+
 	    return flowPath.flowId();
 	}
 	return null;
@@ -279,7 +287,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public boolean deleteAllFlows() {
 	if (FlowDatabaseOperation.deleteAllFlows(dbHandlerApi)) {
-	    datagridService.notificationSendAllFlowsRemoved();
+	    if (enableOnrc2014MeasurementsFlows) {
+		datagridService.notificationSendAllFlowIdsRemoved();
+	    } else {
+		datagridService.notificationSendAllFlowsRemoved();
+	    }
 	    return true;
 	}
 	return false;
@@ -294,7 +306,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public boolean deleteFlow(FlowId flowId) {
 	if (FlowDatabaseOperation.deleteFlow(dbHandlerApi, flowId)) {
-	    datagridService.notificationSendFlowRemoved(flowId);
+	    if (enableOnrc2014MeasurementsFlows) {
+		datagridService.notificationSendFlowIdRemoved(flowId);
+	    } else {
+		datagridService.notificationSendFlowRemoved(flowId);
+	    }
 	    return true;
 	}
 	return false;
@@ -309,6 +325,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public FlowPath getFlow(FlowId flowId) {
 	return FlowDatabaseOperation.getFlow(dbHandlerApi, flowId);
+    }
+
+    /**
+     * Get the source switch DPID of a previously added flow.
+     *
+     * @param flowId the Flow ID of the flow to get.
+     * @return the source switch DPID if found, otherwise null.
+     */
+    public Dpid getFlowSourceDpid(FlowId flowId) {
+	return FlowDatabaseOperation.getFlowSourceDpid(dbHandlerApi, flowId);
     }
 
     /**
@@ -413,6 +439,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public void flowEntriesPushedToSwitch(
 		Collection<Pair<IOFSwitch, FlowEntry>> entries) {
 
+	if (enableOnrc2014MeasurementsFlows)
+	    return;
+
 	//
 	// Process all entries
 	//
@@ -483,7 +512,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	pushModifiedFlowEntriesToSwitches(modifiedFlowEntries);
 	pushModifiedFlowPathsToDatabase(modifiedFlowPaths);
-	cleanupDeletedFlowEntriesFromDatagrid(modifiedFlowEntries);
+	if (! enableOnrc2014MeasurementsFlows) {
+	    cleanupDeletedFlowEntriesFromDatagrid(modifiedFlowEntries);
+	}
     }
 
     /**
@@ -714,6 +745,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    } 
 		} while (retry);
 
+		if (enableOnrc2014MeasurementsFlows) {
+		    // Send the notification
+		    datagridService.notificationSendFlowIdRemoved(flowPath.flowId());
+		}
+
 		continue;
 	    }
 
@@ -730,10 +766,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    allValid = false;
 		    break;
 		}
-		if (flowEntry.flowEntrySwitchState() !=
-		    FlowEntrySwitchState.FE_SWITCH_UPDATED) {
-		    allValid = false;
-		    break;
+		if (! enableOnrc2014MeasurementsFlows) {
+		    if (flowEntry.flowEntrySwitchState() !=
+			FlowEntrySwitchState.FE_SWITCH_UPDATED) {
+			allValid = false;
+			break;
+		    }
 		}
 	    }
 	    if (! allValid)
@@ -759,6 +797,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    log.error("Exception writing Flow Path to Network MAP: ", e);
 		}
 	    } while (retry);
+
+	    if (enableOnrc2014MeasurementsFlows) {
+		// Send the notification
+		datagridService.notificationSendFlowIdAdded(flowPath.flowId());
+	    }
 	}
     }
 }

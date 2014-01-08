@@ -464,6 +464,45 @@ public class FlowDatabaseOperation {
     }
 
     /**
+     * Get the source switch DPID of a previously added flow.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowId the Flow ID of the flow to get.
+     * @return the source switch DPID if found, otherwise null.
+     */
+    static Dpid getFlowSourceDpid(GraphDBOperation dbHandler, FlowId flowId) {
+	IFlowPath flowObj = null;
+	try {
+	    flowObj = dbHandler.searchFlowPath(flowId);
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    dbHandler.rollback();
+	    log.error(":getFlowSourceDpid FlowId:{} failed", flowId);
+	    return null;
+	}
+	if (flowObj == null) {
+	    dbHandler.commit();
+	    return null;		// Flow not found
+	}
+
+	//
+	// Extract the Flow Source DPID
+	//
+	String srcSwitchStr = flowObj.getSrcSwitch();
+	if (srcSwitchStr == null) {
+	    // TODO: A work-around, becauuse of some bogus database objects
+	    dbHandler.commit();
+	    return null;
+	}
+
+	Dpid dpid = new Dpid(srcSwitchStr);
+
+	dbHandler.commit();
+
+	return dpid;
+    }
+
+    /**
      * Get all installed flows by all installers.
      *
      * @param dbHandler the Graph Database handler to use.

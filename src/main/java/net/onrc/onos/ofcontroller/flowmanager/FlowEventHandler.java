@@ -45,12 +45,13 @@ import org.slf4j.LoggerFactory;
  * - Recompute impacted FlowPath using cached Topology.
  */
 class FlowEventHandler extends Thread implements IFlowEventHandlerService {
+
+    private boolean enableOnrc2014MeasurementsFlows = false;
+    private boolean enableOnrc2014MeasurementsTopology = false;
+
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
     
-    // Flag to enable feature of acquiring topology information from DB instead of datagrid.
-    private final boolean accessDBFlag = false;
-
     private GraphDBOperation dbHandler;
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
@@ -98,12 +99,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * @param datagridService the Datagrid Service to use.
      */
     FlowEventHandler(FlowManager flowManager,
-		     IDatagridService datagridService,
-		     GraphDBOperation dbHandler) {
+		     IDatagridService datagridService) {
 	this.flowManager = flowManager;
 	this.datagridService = datagridService;
 	this.topology = new Topology();
-	this.dbHandler = dbHandler;
     }
 
     /**
@@ -117,6 +116,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * Startup processing.
      */
     private void startup() {
+	this.dbHandler = new GraphDBOperation("");
+
 	//
 	// Obtain the initial Topology state
 	//
@@ -240,7 +241,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	Collection<FlowEntry> modifiedFlowEntries;
 
 	if (topologyEvents.isEmpty() && flowPathEvents.isEmpty() &&
-	    flowEntryEvents.isEmpty()) {
+	    flowEntryEvents.isEmpty() && flowIdEvents.isEmpty()) {
 	    return;		// Nothing to do
 	}
 
@@ -501,11 +502,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// Process all Topology events and update the appropriate state
 	//
 	boolean isTopologyModified = false;
-	if (accessDBFlag) {
+	if (enableOnrc2014MeasurementsTopology) {
 		log.debug("[BEFORE] {}", topology.toString());
-		if (! topology.readFromDatabase(dbHandler)) {
-			isTopologyModified = true;
-		}
+		topology.readFromDatabase(dbHandler);
+		isTopologyModified = true;
 		log.debug("[AFTER] {}", topology.toString());
 	} else {
 		for (EventEntry<TopologyElement> eventEntry : topologyEvents) {

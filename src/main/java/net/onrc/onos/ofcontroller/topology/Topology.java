@@ -381,17 +381,13 @@ public class Topology {
      * Read topology state from the database.
      *
      * @param dbHandler the Graph Database handler to use.
-     * @return true if topology is updated. In other words,
-     * 		topology read from database is different from current topology.
      */
-    public boolean readFromDatabase(GraphDBOperation dbHandler) {
+    public void readFromDatabase(GraphDBOperation dbHandler) {
 	//
 	// Fetch the relevant info from the Switch and Port vertices
 	// from the Titan Graph.
 	//
-    
-	Map<Long,Node> oldNodesMap = nodesMap;
-	nodesMap = new TreeMap<Long,Node>();
+    	nodesMap = new TreeMap<Long,Node>();
 	
 	Iterable<ISwitchObject> activeSwitches = dbHandler.getActiveSwitches();
 	for (ISwitchObject switchObj : activeSwitches) {
@@ -456,7 +452,6 @@ public class Topology {
 	    }
 	}
 	dbHandler.commit();
-	return ! compareTopology(oldNodesMap, nodesMap);
     }
     
     // TODO Merge into loops in readFromDatabase() can reduce execution time.
