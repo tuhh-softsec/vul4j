@@ -25,6 +25,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.Parameters;
 import org.esigate.api.ContainerRequestMediator;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
@@ -40,12 +41,14 @@ import org.esigate.util.UriUtils;
 public class ServletExtension implements Extension, IEventListener {
     private Driver driver;
     private String context;
+    private int maxObjectSize;
 
     @Override
     public void init(Driver driver, Properties properties) {
         this.driver = driver;
         driver.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
         context = properties.getProperty("context");
+        maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValueInt(properties);
     }
 
     @Override
@@ -76,10 +79,11 @@ public class ServletExtension implements Extension, IEventListener {
                     result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                 } else {
                     HttpServletMediator httpServletMediator = (HttpServletMediator) mediator;
-                    ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
-                            httpServletMediator.getResponse(), driver.getContentTypeHelper());
                     try {
                         if (fetchEvent.getHttpContext().isProxy()) {
+                            ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
+                                    httpServletMediator.getResponse(), driver.getContentTypeHelper(), true,
+                                    maxObjectSize);
                             if (context == null) {
                                 httpServletMediator.getFilterChain().doFilter(httpServletMediator.getRequest(),
                                         wrappedResponse);
@@ -97,6 +101,9 @@ public class ServletExtension implements Extension, IEventListener {
                                 }
                             }
                         } else {
+                            ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
+                                    httpServletMediator.getResponse(), driver.getContentTypeHelper(), false,
+                                    maxObjectSize);
                             if (context == null) {
                                 httpServletMediator.getRequest().getRequestDispatcher(relUrl)
                                         .forward(httpServletMediator.getRequest(), wrappedResponse);

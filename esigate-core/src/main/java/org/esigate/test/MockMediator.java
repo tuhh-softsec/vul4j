@@ -16,9 +16,7 @@
 package org.esigate.test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,10 +47,8 @@ import org.esigate.util.UriUtils;
 public class MockMediator implements ContainerRequestMediator {
     private final Map<String, Object> sessionAttributes = new HashMap<String, Object>();
     private final ArrayList<Cookie> cookies = new ArrayList<Cookie>();
-    private String remoteUser;
     private HttpResponse httpResponse;
     private IncomingRequest httpRequest;
-    private String remoteAddr;
 
     public MockMediator(String uriString) {
         HttpHost httpHost = UriUtils.extractHost(uriString);
@@ -86,28 +82,12 @@ public class MockMediator implements ContainerRequestMediator {
     }
 
     @Override
-    public String getRemoteAddr() {
-        return this.remoteAddr;
-    }
-
-    @Override
-    public String getRemoteUser() {
-        return this.remoteUser;
-    }
-
-    @Override
-    public Principal getUserPrincipal() {
-        throw new RuntimeException("Method not implemented");
-    }
-
-    @Override
     public void sendResponse(HttpResponse response) throws IOException {
         this.httpResponse = new BasicHttpResponse(response.getStatusLine());
         this.httpResponse.setHeaders(response.getAllHeaders());
         HttpEntity entity = response.getEntity();
         if (entity != null) {
-            ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity),
-                    ContentType.get(entity));
+            ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity), ContentType.get(entity));
             if (entity.getContentEncoding() != null) {
                 copiedEntity.setContentEncoding(entity.getContentEncoding());
             }
@@ -126,26 +106,12 @@ public class MockMediator implements ContainerRequestMediator {
     }
 
     @Override
-    public InputStream getResourceAsStream(String path) {
-        throw new RuntimeException("Method not implemented");
-    }
-
-    @Override
     public IncomingRequest getHttpRequest() {
         return this.httpRequest;
     }
 
-    @Override
-    public String getSessionId() {
-        return null;
-    }
-
     public HttpResponse getHttpResponse() {
         return this.httpResponse;
-    }
-
-    public void setRemoteAddr(String remoteAddr) {
-        this.remoteAddr = remoteAddr;
     }
 
 }

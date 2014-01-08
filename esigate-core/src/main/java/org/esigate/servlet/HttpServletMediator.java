@@ -16,9 +16,7 @@
 package org.esigate.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.Enumeration;
 
 import javax.servlet.FilterChain;
@@ -118,6 +116,13 @@ public class HttpServletMediator implements ContainerRequestMediator {
             result.setEntity(entity);
         }
 
+        result.setRemoteAddr(request.getRemoteAddr());
+        result.setRemoteUser(request.getRemoteUser());
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            result.setSessionId(session.getId());
+        }
+        result.setUserPrincipal(request.getUserPrincipal());
         this.httpRequest = result;
     }
 
@@ -171,21 +176,6 @@ public class HttpServletMediator implements ContainerRequestMediator {
             servletCookie.setMaxAge(maxAge);
         }
         return servletCookie;
-    }
-
-    @Override
-    public String getRemoteAddr() {
-        return request.getRemoteAddr();
-    }
-
-    @Override
-    public String getRemoteUser() {
-        return request.getRemoteUser();
-    }
-
-    @Override
-    public Principal getUserPrincipal() {
-        return request.getUserPrincipal();
     }
 
     @Override
@@ -246,34 +236,19 @@ public class HttpServletMediator implements ContainerRequestMediator {
     }
 
     @Override
-    public InputStream getResourceAsStream(String path) {
-        return servletContext.getResourceAsStream(path);
-    }
-
-    @Override
-    @Deprecated
-    public String getSessionId() {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            return session.getId();
-        }
-        return null;
-    }
-
-    @Override
     public IncomingRequest getHttpRequest() {
         return httpRequest;
     }
 
-    public HttpServletResponse getResponse() {
+    HttpServletResponse getResponse() {
         return response;
     }
 
-    public HttpServletRequest getRequest() {
+    HttpServletRequest getRequest() {
         return request;
     }
 
-    public FilterChain getFilterChain() {
+    FilterChain getFilterChain() {
         return filterChain;
     }
 

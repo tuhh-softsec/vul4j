@@ -67,33 +67,9 @@ public class XsltRenderer implements Renderer {
      */
     public XsltRenderer(String template, Driver driver, DriverRequest originalRequest) throws IOException,
             HttpErrorPage {
-        try {
-            InputStream templateStream = originalRequest.getMediator().getResourceAsStream(template);
-            if (templateStream == null) {
-                throw new ProcessingFailedException("Template " + template + " not found");
-            }
-            transformer = createTransformer(templateStream);
-        } catch (Exception e) {
-            StringBuilder templateStringBuilder = new StringBuilder();
-            driver.render(template, null, templateStringBuilder, originalRequest.getOriginalRequest());
-            transformer = createTransformer(IOUtils.toInputStream(templateStringBuilder));
-        }
-    }
-
-    /**
-     * @param template
-     *            The path to the xsl template, relative to the context root
-     * @param request
-     *            HttpRequest
-     * @throws IOException
-     *             If an error occurs while writing to the output
-     */
-    public XsltRenderer(String template, DriverRequest request) throws IOException {
-        InputStream templateStream = request.getMediator().getResourceAsStream(template);
-        if (templateStream == null) {
-            throw new ProcessingFailedException("Template " + template + " not found");
-        }
-        transformer = createTransformer(templateStream);
+        StringBuilder templateStringBuilder = new StringBuilder();
+        driver.render(template, null, templateStringBuilder, originalRequest.getOriginalRequest());
+        transformer = createTransformer(IOUtils.toInputStream(templateStringBuilder));
     }
 
     /**

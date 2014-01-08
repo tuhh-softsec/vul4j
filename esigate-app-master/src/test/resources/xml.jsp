@@ -20,7 +20,7 @@
 <b>NB</b>: You should see bulleted list with aqua background color without any border.</p>
 
 <p>Fragment below was retrieved from 'provider' source using following code:<br />
-<code>&lt;esi:include src="xml-page.xml" stylesheet="/WEB-INF/xml-template.xslt" /&gt;</code><br />
+<code>&lt;esi:include src="xml-page.xml" stylesheet="$(PROVIDER{local})xml-template.xslt" /&gt;</code><br />
 <div style="background-color: blue"><ol><li>updated: Item 1</li><li>updated: Item 2</li><li>updated: Item 3</li></ol></div>
 <b>NB</b>: You should see numbered list with blue background color without any border, each list item should have 'updated: ' prefix.</p>
 </body>

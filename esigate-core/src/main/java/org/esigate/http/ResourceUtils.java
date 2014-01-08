@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.esigate.Parameters;
-import org.esigate.api.ContainerRequestMediator;
 import org.esigate.impl.DriverRequest;
 import org.esigate.util.UriUtils;
 
@@ -53,8 +52,7 @@ public final class ResourceUtils {
                 // jsessionid to the querystring. We must not forward it to
                 // included applications.
                 String jsessionid = null;
-                ContainerRequestMediator mediator = originalRequest.getMediator();
-                jsessionid = mediator.getSessionId();
+                jsessionid = originalRequest.getOriginalRequest().getSessionId();
                 if (jsessionid != null) {
                     originalQuerystring = UriUtils.removeSessionId(jsessionid, originalQuerystring);
                 }

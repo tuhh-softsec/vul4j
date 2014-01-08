@@ -47,7 +47,7 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
     private void addCasAuthentication(OutgoingRequest outgoingRequest, IncomingRequest request) {
         String location = outgoingRequest.getRequestLine().getUri();
         String resultLocation = location;
-        Principal principal = request.getMediator().getUserPrincipal();
+        Principal principal = request.getUserPrincipal();
         if (principal != null && principal instanceof AttributePrincipal) {
             AttributePrincipal casPrincipal = (AttributePrincipal) principal;
             LOG.debug("User logged in CAS as: " + casPrincipal.getName());
@@ -118,7 +118,7 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
             if (currentLocation != null && currentLocation.contains(loginUrl)) {
                 // If the user is authenticated we need a second request with
                 // the proxy ticket
-                Principal principal = incomingRequest.getMediator().getUserPrincipal();
+                Principal principal = incomingRequest.getUserPrincipal();
                 if (principal != null && principal instanceof AttributePrincipal) {
                     return true;
                 }

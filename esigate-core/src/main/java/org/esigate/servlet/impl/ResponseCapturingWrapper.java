@@ -16,29 +16,27 @@
 package org.esigate.servlet.impl;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
-import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.ContentTypeHelper;
@@ -47,36 +45,68 @@ import org.esigate.http.HttpResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Wrapper to the HttpServletResponse that intercepts the content written in order to build an {@link HttpResponse}.
+ * <ul>
+ * <li>If the content of the response is required for transformation (parseable content-type or proxy=false) or smaller
+ * than the buffer size the {@link HttpResponse} will contain the entire response</li>
+ * <li>If the content of the response is not required for transformation, the {@link HttpResponse} will contain only an
+ * abstract of the response truncated to the bufer size. The complete response will have already been written to the
+ * original {@link HttpServletResponse}</li>
+ * </ul>
+ * 
+ * @author Francois-Xavier Bonnet
+ * 
+ */
 public class ResponseCapturingWrapper implements HttpServletResponse {
     private static final Logger LOG = LoggerFactory.getLogger(ResponseCapturingWrapper.class);
-    private static final int DEFAULT_BUFFER_SIZE = 8192;
-    private ServletOutputStream servletOutputStream;
-    private PrintWriter jspWriter;
-    private OutputStream outputStream;
-    private StringBuilderWriter writer;
+
+    // OutputStream and Writer exposed
+    private ServletOutputStream outputStream;
+    private PrintWriter writer;
+
+    // OutputStream and Writer of the wrapped HttpServletResponse
+    private ServletOutputStream responseOutputStream;
+    private PrintWriter responseWriter;
+
+    // OutputStream and Writer buffers
+    private ByteArrayOutputStream internalOutputStream;
+    private StringBuilderWriter internalWriter;
+
     private HttpServletResponse response;
+
     private CloseableHttpResponse httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(
             new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
+
+    private String contentType;
     private String characterEncoding;
     private int bufferSize;
-    private byte[] buffer;
     private int bytesWritten = 0;
     private boolean committed = false;
     private ContentTypeHelper contentTypeHelper;
+    private final boolean proxy;
+    private boolean capture = true;
 
-    public ResponseCapturingWrapper(HttpServletResponse response, ContentTypeHelper contentTypeHelper) {
+    public ResponseCapturingWrapper(HttpServletResponse response, ContentTypeHelper contentTypeHelper, boolean proxy,
+            int bufferSize) {
         this.response = response;
-        this.characterEncoding = response.getCharacterEncoding();
-        this.bufferSize = response.getBufferSize();
-        if (this.bufferSize == 0) {
-            this.bufferSize = DEFAULT_BUFFER_SIZE;
-        }
+        this.bufferSize = bufferSize;
         this.contentTypeHelper = contentTypeHelper;
+        this.proxy = proxy;
     }
 
     @Override
-    public boolean containsHeader(String name) {
-        return httpClientResponse.containsHeader(name);
+    public void setStatus(int sc) {
+        httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, sc, ""));
+    }
+
+    @Override
+    public void setStatus(int sc, String sm) {
+        httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, sc, sm));
+    }
+
+    public int getStatus() {
+        return httpClientResponse.getStatusLine().getStatusCode();
     }
 
     @Override
@@ -97,6 +127,29 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     }
 
     @Override
+    public boolean containsHeader(String name) {
+        return httpClientResponse.containsHeader(name);
+    }
+
+    @Override
+    public void setHeader(String name, String value) {
+        if (HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(name)) {
+            setContentType(value);
+        } else {
+            httpClientResponse.setHeader(name, value);
+        }
+    }
+
+    @Override
+    public void addHeader(String name, String value) {
+        if (HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(name)) {
+            setContentType(value);
+        } else {
+            httpClientResponse.addHeader(name, value);
+        }
+    }
+
+    @Override
     public void setDateHeader(String name, long date) {
         setHeader(name, DateUtils.formatDate(date));
     }
@@ -107,18 +160,24 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     }
 
     @Override
-    public void setStatus(int sc) {
-        httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, sc, ""));
+    public void setIntHeader(String name, int value) {
+        setHeader(name, Integer.toString(value));
     }
 
     @Override
-    public void setStatus(int sc, String sm) {
-        httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, sc, sm));
+    public void addIntHeader(String name, int value) {
+        addHeader(name, Integer.toString(value));
+    }
+
+    @Override
+    public void setContentLength(int len) {
+        setHeader(HttpHeaders.CONTENT_LENGTH, Integer.toString(len));
     }
 
     @Override
     public void setCharacterEncoding(String charset) {
         this.characterEncoding = charset;
+        updateContentTypeHeader();
     }
 
     @Override
@@ -137,91 +196,37 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     }
 
     @Override
-    public ServletOutputStream getOutputStream() {
-        LOG.debug("getOutputStream");
-        if (jspWriter != null) {
-            throw new IllegalStateException("Writer already obtained");
-        }
-        if (servletOutputStream == null) {
-            initBuffer();
-            servletOutputStream = new ServletOutputStream() {
-
-                @Override
-                public void write(int b) throws IOException {
-                    outputStream.write(b);
-                }
-
-                @Override
-                public void close() throws IOException {
-                    outputStream.close();
-                }
-            };
-        }
-        return servletOutputStream;
-    }
-
-    @Override
-    public PrintWriter getWriter() {
-        LOG.debug("getWriter");
-        if (servletOutputStream != null) {
-            throw new IllegalStateException("OutputStream already obtained");
-        }
-        if (jspWriter == null) {
-            initBuffer();
-            jspWriter = new PrintWriter(new Writer() {
-                private final Charset charset = Charset.forName(characterEncoding);
-
-                @Override
-                public void write(char[] cbuf, int off, int len) throws IOException {
-                    outputStream.write(charset.encode(CharBuffer.wrap(cbuf, off, len)).array());
-                }
-
-                @Override
-                public void flush() throws IOException {
-                    outputStream.flush();
-                }
-
-                @Override
-                public void close() throws IOException {
-                    outputStream.close();
-                }
-            });
-        }
-        return jspWriter;
-    }
-
-    @Override
-    public void setContentLength(int len) {
-        setHeader(HttpHeaders.CONTENT_LENGTH, Integer.toString(len));
-    }
-
-    @Override
     public void setContentType(String type) {
-        setHeader(HttpHeaders.CONTENT_TYPE, type);
         ContentType contentType = ContentType.parse(type);
+        this.contentType = contentType.getMimeType();
         if (contentType.getCharset() != null) {
-            setCharacterEncoding(contentType.getCharset().name());
+            this.characterEncoding = contentType.getCharset().name();
+        }
+        updateContentTypeHeader();
+    }
+
+    private void updateContentTypeHeader() {
+        if (contentType != null) {
+            if (characterEncoding == null) {
+                httpClientResponse.setHeader(HttpHeaders.CONTENT_TYPE, contentType);
+            } else {
+                httpClientResponse.setHeader(HttpHeaders.CONTENT_TYPE, contentType + ";charset=" + characterEncoding);
+            }
         }
     }
 
     @Override
-    public void setHeader(String name, String value) {
-        httpClientResponse.setHeader(name, value);
+    public void setLocale(Locale loc) {
+        response.setLocale(loc);
+        if (characterEncoding == null) {
+            characterEncoding = response.getCharacterEncoding();
+            updateContentTypeHeader();
+        }
     }
 
     @Override
-    public void addHeader(String name, String value) {
-        httpClientResponse.addHeader(name, value);
-    }
-
-    @Override
-    public void setIntHeader(String name, int value) {
-        setHeader(name, Integer.toString(value));
-    }
-
-    @Override
-    public void addIntHeader(String name, int value) {
-        addHeader(name, Integer.toString(value));
+    public Locale getLocale() {
+        return response.getLocale();
     }
 
     @Override
@@ -232,48 +237,6 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
     @Override
     public int getBufferSize() {
         return bufferSize;
-    }
-
-    @Override
-    public void flushBuffer() throws IOException {
-        if (outputStream != null) {
-            outputStream.flush();
-        }
-    }
-
-    @Override
-    public void resetBuffer() {
-        if (isCommitted()) {
-            throw new IllegalStateException("Response is already committed");
-        }
-        bytesWritten = 0;
-    }
-
-    @Override
-    public boolean isCommitted() {
-        return committed;
-    }
-
-    @Override
-    public void reset() {
-        if (isCommitted()) {
-            throw new IllegalStateException("Response is already committed");
-        }
-        httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(
-                HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
-    }
-
-    @Override
-    public void setLocale(Locale loc) {
-        response.setLocale(loc);
-        if (characterEncoding == null) {
-            characterEncoding = response.getCharacterEncoding();
-        }
-    }
-
-    @Override
-    public Locale getLocale() {
-        return response.getLocale();
     }
 
     @Override
@@ -303,88 +266,170 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
         return response.encodeRedirectUrl(url);
     }
 
-    private void initBuffer() {
-        buffer = new byte[bufferSize];
-        bytesWritten = 0;
-        outputStream = new OutputStream() {
-
-            @Override
-            public void write(int b) throws IOException {
-                buffer[bytesWritten] = (byte) b;
-                bytesWritten++;
-                if (bytesWritten == bufferSize) {
-                    flushInternalBuffer();
-                }
-            }
-
-            @Override
-            public void close() throws IOException {
-                flushInternalBuffer();
-                outputStream.close();
-            }
-
-            @Override
-            public void flush() throws IOException {
-                flushInternalBuffer();
-            }
-        };
+    @Override
+    public void reset() {
+        if (isCommitted()) {
+            throw new IllegalStateException("Response is already committed");
+        }
+        httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(
+                HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
     }
 
+    @Override
+    public ServletOutputStream getOutputStream() {
+        LOG.debug("getOutputStream");
+        if (writer != null) {
+            throw new IllegalStateException("Writer already obtained");
+        }
+        if (outputStream == null) {
+            internalOutputStream = new ByteArrayOutputStream(Parameters.DEFAULT_BUFFER_SIZE);
+            outputStream = new ServletOutputStream() {
+
+                @Override
+                public void write(int b) throws IOException {
+                    if (capture || bytesWritten < bufferSize) {
+                        internalOutputStream.write(b);
+                    } else {
+                        responseOutputStream.write(b);
+                    }
+                    if (bytesWritten == bufferSize) {
+                        commit();
+                    }
+                    bytesWritten++;
+                }
+
+                @Override
+                public void flush() throws IOException {
+                    commit();
+                }
+
+                @Override
+                public void close() throws IOException {
+                    commit();
+                }
+
+                private void commit() throws IOException {
+                    if (!committed) {
+                        capture = hasToCaptureOutput();
+                        if (!capture) {
+                            responseOutputStream = response.getOutputStream();
+                            internalOutputStream.writeTo(responseOutputStream);
+                        }
+                        committed = true;
+                    }
+
+                }
+
+            };
+        }
+        return outputStream;
+    }
+
+    @Override
+    public PrintWriter getWriter() {
+        LOG.debug("getWriter");
+        if (outputStream != null) {
+            throw new IllegalStateException("OutputStream already obtained");
+        }
+        if (writer == null) {
+            internalWriter = new StringBuilderWriter(Parameters.DEFAULT_BUFFER_SIZE);
+            writer = new PrintWriter(new Writer() {
+
+                @Override
+                public void write(char[] cbuf, int off, int len) throws IOException {
+                    if (capture || bytesWritten < bufferSize) {
+                        internalWriter.write(cbuf, off, len);
+                    } else {
+                        responseWriter.write(cbuf, off, len);
+                    }
+                    if (bytesWritten == bufferSize) {
+                        commit();
+                    }
+                    bytesWritten++;
+                }
+
+                @Override
+                public void flush() throws IOException {
+                    commit();
+                }
+
+                @Override
+                public void close() throws IOException {
+                    commit();
+                }
+
+                private void commit() throws IOException {
+                    if (!committed) {
+                        capture = hasToCaptureOutput();
+                        if (!capture) {
+                            responseWriter = response.getWriter();
+                            responseWriter.write(internalWriter.toString());
+                        }
+                        committed = true;
+                    }
+
+                }
+
+            });
+        }
+        return writer;
+    }
+
+    @Override
+    public void flushBuffer() throws IOException {
+        if (outputStream != null) {
+            outputStream.flush();
+        }
+        if (writer != null) {
+            writer.flush();
+        }
+    }
+
+    @Override
+    public void resetBuffer() {
+        if (isCommitted()) {
+            throw new IllegalStateException("Response is already committed");
+        }
+        if (internalOutputStream != null) {
+            internalOutputStream.reset();
+        }
+        if (internalWriter != null) {
+            internalWriter = new StringBuilderWriter(Parameters.DEFAULT_BUFFER_SIZE);
+        }
+        bytesWritten = 0;
+    }
+
+    @Override
+    public boolean isCommitted() {
+        return committed;
+    }
+
+    /**
+     * We have to capture the output of the response in 2 cases :
+     * <ol>
+     * <li>the content type is text and may have to be transformed</li>
+     * <li>we are inside an include, in this case the content type must be considered as text</li>
+     * </ol>
+     * 
+     * @return true if we have to capture the output of the response
+     */
     private boolean hasToCaptureOutput() {
-        return contentTypeHelper.isTextContentType(httpClientResponse)
+        return !proxy || contentTypeHelper.isTextContentType(httpClientResponse)
                 || HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpClientResponse) == null;
     }
 
-    private void flushInternalBuffer() throws IOException {
-        LOG.debug("flushInternalBuffer");
-        if (hasToCaptureOutput()) {
-            String charsetName = characterEncoding;
-            if (charsetName == null) {
-                charsetName = "ISO-8859-1";
-            }
-            String contentType = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpClientResponse);
-            if (contentType == null) {
-                httpClientResponse.addHeader(HttpHeaders.CONTENT_TYPE, "text/html;charset=" + charsetName);
-            }
-            writer = new StringBuilderWriter(Parameters.DEFAULT_BUFFER_SIZE);
-            outputStream = new WriterOutputStream(writer, charsetName);
-        } else {
-            response.setStatus(httpClientResponse.getStatusLine().getStatusCode());
-            for (Header header : httpClientResponse.getAllHeaders()) {
-                String name = header.getName();
-                String value = header.getValue();
-                response.addHeader(name, value);
-            }
-            outputStream = response.getOutputStream();
-        }
-        outputStream.write(buffer, 0, bytesWritten);
-        outputStream.flush();
-        committed = true;
-    }
-
     public CloseableHttpResponse getResponse() {
-        if (hasToCaptureOutput()) {
-            try {
-                flushBuffer();
-            } catch (IOException e) {
-                return HttpErrorPage.generateHttpResponse(e);
-            }
-            String result = "";
-            if (writer != null) {
-                result = writer.toString();
-            }
-            if (result.isEmpty() && httpClientResponse.getStatusLine().getStatusCode() >= HttpStatus.SC_BAD_REQUEST) {
-                result = httpClientResponse.getStatusLine().getStatusCode() + " "
-                        + httpClientResponse.getStatusLine().getReasonPhrase();
-                setContentType("text/html;charset=ISO-8859-1");
-            }
-            httpClientResponse.setEntity(new StringEntity(result, ContentType.parse(getContentType())));
-            writer = null;
+        ContentType contentType = null;
+        if (this.contentType != null) {
+            contentType = ContentType.create(this.contentType, characterEncoding);
+        }
+        if (internalWriter != null) {
+            httpClientResponse.setEntity(new StringEntity(internalWriter.toString(), contentType));
+        } else if (internalOutputStream != null) {
+            httpClientResponse.setEntity(new ByteArrayEntity(internalOutputStream.toByteArray(), 0, Math.min(
+                    bytesWritten, bufferSize), contentType));
         }
         return httpClientResponse;
     }
 
-    public int getStatus() {
-        return httpClientResponse.getStatusLine().getStatusCode();
-    }
 }

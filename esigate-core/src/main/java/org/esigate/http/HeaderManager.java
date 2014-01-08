@@ -93,7 +93,7 @@ public class HeaderManager {
             }
         }
         // process X-Forwarded-For header
-        String remoteAddr = originalRequest.getMediator().getRemoteAddr();
+        String remoteAddr = originalRequest.getOriginalRequest().getRemoteAddr();
 
         if (remoteAddr != null) {
             String forwardedFor = null;

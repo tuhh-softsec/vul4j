@@ -15,6 +15,7 @@
 
 package org.esigate.http;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,10 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
     private final Map<String, Object> attributes = new HashMap<String, Object>();
     private final ContainerRequestMediator mediator;
+    private String remoteUser;
+    private String remoteAddr;
+    private String sessionId;
+    private Principal userPrincipal;
 
     public IncomingRequest(RequestLine requestline, ContainerRequestMediator mediator) {
         super(requestline);
@@ -48,6 +53,38 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
     public ContainerRequestMediator getMediator() {
         return mediator;
+    }
+
+    public String getRemoteUser() {
+        return remoteUser;
+    }
+
+    public String getRemoteAddr() {
+        return remoteAddr;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setRemoteAddr(String remoteAddr) {
+        this.remoteAddr = remoteAddr;
+    }
+
+    public void setRemoteUser(String remoteUser) {
+        this.remoteUser = remoteUser;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void setUserPrincipal(Principal userPrincipal) {
+        this.userPrincipal = userPrincipal;
+    }
+
+    public Principal getUserPrincipal() {
+        return userPrincipal;
     }
 
 }

@@ -80,7 +80,6 @@ public final class TestUtils {
     }
 
     public static void setRemoteAddr(String remoteAddr, IncomingRequest request) {
-        MockMediator mediator = (MockMediator) request.getMediator();
-        mediator.setRemoteAddr(remoteAddr);
+        request.setRemoteAddr(remoteAddr);
     }
 }

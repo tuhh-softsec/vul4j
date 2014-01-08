@@ -16,7 +16,6 @@
 package org.esigate.api;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 
 import org.apache.http.HttpResponse;
@@ -47,34 +46,6 @@ public interface ContainerRequestMediator {
     void addCookie(Cookie cookie);
 
     /**
-     * Returns the Internet Protocol (IP) address of the client or last proxy that sent the request. This is the same as
-     * the value of the CGI variable <code>REMOTE_ADDR</code>. Implementation are not required to support this feature
-     * and can retur <code>null</code>
-     * 
-     * @return a <code>String</code> containing the IP address of the client that sent the request or <code>null</code>
-     */
-    String getRemoteAddr();
-
-    /**
-     * Returns the login of the user making this request, if the user has been authenticated, or <code>null</code> if
-     * the user has not been authenticated. Whether the user name is sent with each subsequent request depends on the
-     * browser and type of authentication. Same as the value of the CGI variable REMOTE_USER.
-     * 
-     * @return a <code>String</code> specifying the login of the user making this request, or <code>null</code> if the
-     *         user login is not known
-     */
-    String getRemoteUser();
-
-    /**
-     * Returns a <code>java.security.Principal</code> object containing the name of the current authenticated user. If
-     * the user has not been authenticated, the method returns <code>null</code>.
-     * 
-     * @return a <code>java.security.Principal</code> containing the name of the user making this request;
-     *         <code>null</code> if the user has not been authenticated
-     */
-    java.security.Principal getUserPrincipal();
-
-    /**
      * Writes the response produced by EsiGate to the client. This includes response status line, headers and HttpEntity
      * 
      * @param response
@@ -103,26 +74,11 @@ public interface ContainerRequestMediator {
     Serializable getSessionAttribute(String key);
 
     /**
-     * Opens an <code>InputStream</code> to some local resource or <code>null</code>. Implementors are not required to
-     * implement a local resources store and can return <code>null</code>.
-     * 
-     * @param path
-     * @return the <code>InputStream</code> or <code>null</code>
-     */
-    InputStream getResourceAsStream(String path);
-
-    /**
      * Returns the <code>IncomingRequest</code> representing the request received by the container. Subsequent calls to
      * this method should return the same instance.
      * 
      * @return the <code>IncomingRequest</code>
      */
     IncomingRequest getHttpRequest();
-
-    /**
-     * @return The session id
-     */
-    // TODO remove this method. Too specific for servlet API
-    String getSessionId();
 
 }

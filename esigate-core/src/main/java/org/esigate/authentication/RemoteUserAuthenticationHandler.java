@@ -45,7 +45,7 @@ public class RemoteUserAuthenticationHandler extends GenericAuthentificationHand
         if (userContext != null && userContext.getUser() != null) {
             remoteUser = userContext.getUser();
         } else {
-            remoteUser = outgoingRequest.getMediator().getRemoteUser();
+            remoteUser = outgoingRequest.getOriginalRequest().getOriginalRequest().getRemoteUser();
         }
         if (remoteUser != null) {
             outgoingRequest.addHeader("X_REMOTE_USER", remoteUser);

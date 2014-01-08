@@ -26,7 +26,7 @@ public class IpHashBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
 
     @Override
     public String getBaseURL(IncomingRequest originalRequest) {
-        int index = getHashCode(originalRequest.getMediator().getRemoteAddr()) % this.urls.length;
+        int index = getHashCode(originalRequest.getRemoteAddr()) % this.urls.length;
         return this.urls[Math.abs(index)];
     }
 

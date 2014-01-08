@@ -57,10 +57,10 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         String uri = "http://test.mydomain.fr/foobar/";
         MockMediator mediator = new MockMediator(uri);
-        mediator.setRemoteAddr("127.0.0.1");
 
         IncomingRequest request = createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
                 .header("X-Forwarded-Proto", "https").mediator(mediator).build();
+        request.setRemoteAddr("127.0.0.1");
 
         driverProxy(driver, request);
 
@@ -90,10 +90,10 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         String uri = "http://test.mydomain.fr/foobar/";
         MockMediator mediator = new MockMediator(uri);
-        mediator.setRemoteAddr("127.0.0.1");
 
         IncomingRequest request = createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
                 .header("X-Forwarded-Proto", "https").mediator(mediator).build();
+        request.setRemoteAddr("127.0.0.1");
 
         driverProxy(driver, request);
 
@@ -124,10 +124,10 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         String uri = "http://test.mydomain.fr/foobar/";
         MockMediator mediator = new MockMediator(uri);
-        mediator.setRemoteAddr("127.0.0.1");
 
         IncomingRequest request = createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
                 .header("X-Forwarded-Proto", "http").mediator(mediator).build();
+        request.setRemoteAddr("127.0.0.1");
 
         driverProxy(driver, request);
 
@@ -160,9 +160,9 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         String uri = "http://test.mydomain.fr/foobar/";
         MockMediator mediator = new MockMediator(uri);
-        mediator.setRemoteAddr("127.0.0.1");
 
         IncomingRequest request = createHttpRequest().uri(uri).mediator(mediator).build();
+        request.setRemoteAddr("127.0.0.1");
 
         driverProxy(driver, request);
     }
@@ -194,9 +194,9 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
 
         String uri = "https://test.mydomain.fr/foobar/";
         MockMediator mediator = new MockMediator(uri);
-        mediator.setRemoteAddr("127.0.0.1");
 
         IncomingRequest request = createHttpRequest().uri(uri).mediator(mediator).build();
+        request.setRemoteAddr("127.0.0.1");
 
         driverProxy(driver, request);
 

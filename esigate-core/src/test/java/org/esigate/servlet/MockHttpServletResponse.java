@@ -1,6 +1,9 @@
 package org.esigate.servlet;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -8,6 +11,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 public class MockHttpServletResponse implements HttpServletResponse {
+    private ServletOutputStream outputStream;
+    private ByteArrayOutputStream outputStreamContent;
+    private PrintWriter writer;
+    private StringWriter writerContent;
 
     @Override
     public String getCharacterEncoding() {
@@ -21,12 +28,48 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public ServletOutputStream getOutputStream() {
-        return null;
+        if (writer != null) {
+            throw new IllegalStateException("Writer already obtained");
+        }
+        if (outputStream == null) {
+            outputStreamContent = new ByteArrayOutputStream();
+            outputStream = new ServletOutputStream() {
+
+                @Override
+                public void write(int b) {
+                    outputStreamContent.write(b);
+                }
+            };
+        }
+        return outputStream;
     }
 
     @Override
     public PrintWriter getWriter() {
-        return null;
+        if (outputStream != null) {
+            throw new IllegalStateException("OutputStream already obtained");
+        }
+        if (writer == null) {
+            writerContent = new StringWriter();
+            writer = new PrintWriter(writerContent);
+        }
+        return writer;
+    }
+
+    public String getWriterContent() {
+        if (writer == null) {
+            return null;
+        } else {
+            return writerContent.toString();
+        }
+    }
+
+    public String getOutputStreamContentAsString(String charsetName) throws UnsupportedEncodingException {
+        if (outputStream == null) {
+            return null;
+        } else {
+            return outputStreamContent.toString(charsetName);
+        }
     }
 
     @Override
