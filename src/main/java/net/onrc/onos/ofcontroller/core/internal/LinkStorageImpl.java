@@ -149,6 +149,7 @@ public class LinkStorageImpl implements ILinkStorage {
                                 log.error("Performance ##add link total time {}", endLinkTime - startLinkTime);
 				success = true;
 			} else {
+				pm.addlink_end();
 				// If we fail here that's because the ports aren't added
 				// before we try to add the link
 				log.debug("Adding link failed: {}", link);
@@ -487,7 +488,7 @@ public class LinkStorageImpl implements ILinkStorage {
 				vportSrc.setLinkPort(vportDst);
 				success = true;
 			} else {
-				log.debug("LinkStorageImpl:addLinkImpl failed link exists {} {} src {} dst {}",
+				log.error("LinkStorageImpl:addLinkImpl failed link exists {} {} src {} dst {}",
 						new Object[]{dbop, lt, vportSrc, vportDst});
 			}
 		}
