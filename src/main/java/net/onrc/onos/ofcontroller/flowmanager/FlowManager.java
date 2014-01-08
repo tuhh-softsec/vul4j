@@ -348,6 +348,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Get all installed flows whose Source Switch is controlled by this
+     * instance.
+     *
+     * @param mySwitches the collection of the switches controlled by this
+     * instance.
+     * @return the Flow Paths if found, otherwise null.
+     */
+    public ArrayList<FlowPath> getAllMyFlows(Map<Long, IOFSwitch> mySwitches) {
+	return FlowDatabaseOperation.getAllMyFlows(dbHandlerApi, mySwitches);
+    }
+
+    /**
      * Get summary of all installed flows by all installers in a given range.
      *
      * @param flowId the Flow ID of the first flow in the flow range to get.
