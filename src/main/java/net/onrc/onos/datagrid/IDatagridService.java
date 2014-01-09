@@ -12,6 +12,7 @@ import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.Pair;
 
 /**
  * Interface for providing Datagrid Service to other modules.
@@ -137,7 +138,7 @@ public interface IDatagridService extends IFloodlightService {
     /**
      * Get all Flow IDs that are currently in the datagrid.
      *
-     * @return all Flow IDs that are currently in the datagrid.
+     * @return all Flow IDs that ae currently in the datagrid.
      */
     Collection<FlowId> getAllFlowIds();
 
@@ -166,6 +167,13 @@ public interface IDatagridService extends IFloodlightService {
      * Send a notification that all Flow IDs are removed.
      */
     void notificationSendAllFlowIdsRemoved();
+
+    /**
+     * Get all Flow Entry IDs that are currently in the datagrid.
+     *
+     * @return all Flow Entry IDs that ae currently in the datagrid.
+     */
+    Collection<Pair<FlowEntryId, Dpid>> getAllFlowEntryIds();
 
     /**
      * Send a notification that a FlowEntryId is added.

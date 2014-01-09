@@ -26,6 +26,7 @@ import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import org.slf4j.Logger;
@@ -1015,6 +1016,40 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	kryoFactory.deleteKryo(kryo);
 
 	return allFlowIds;
+    }
+
+    /**
+     * Get all Flow Entry IDs that are currently in the datagrid.
+     *
+     * @return all Flow Entry IDs that ae currently in the datagrid.
+     */
+    @Override
+    public Collection<Pair<FlowEntryId, Dpid>> getAllFlowEntryIds() {
+	Collection<Pair<FlowEntryId, Dpid>> allFlowEntryIds =
+	    new LinkedList<Pair<FlowEntryId, Dpid>>();
+
+	//
+	// Get all current entries
+	//
+	Kryo kryo = kryoFactory.newKryo();
+	for (Map.Entry<Long, byte[]> entry : mapFlowEntryId.entrySet()) {
+	    Long key = entry.getKey();
+	    byte[] valueBytes = entry.getValue();
+
+	    FlowEntryId flowEntryId = new FlowEntryId(key);
+
+	    //
+	    // Decode the value
+	    //
+	    Input input = new Input(valueBytes);
+	    Dpid dpid = kryo.readObject(input, Dpid.class);
+
+	    Pair<FlowEntryId, Dpid> pair = new Pair(flowEntryId, dpid);
+	    allFlowEntryIds.add(pair);
+	}
+	kryoFactory.deleteKryo(kryo);
+
+	return allFlowEntryIds;
     }
 
     /**

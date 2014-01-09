@@ -31,6 +31,7 @@ import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
+import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
@@ -73,6 +74,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	new LinkedList<EventEntry<FlowEntry>>();
     private List<EventEntry<FlowId>> flowIdEvents =
 	new LinkedList<EventEntry<FlowId>>();
+    private List<EventEntry<Pair<FlowEntryId, Dpid>>> flowEntryIdEvents =
+	new LinkedList<EventEntry<Pair<FlowEntryId, Dpid>>>();
 
     // All internally computed Flow Paths
     private Map<Long, FlowPath> allFlowPaths = new HashMap<Long, FlowPath>();
@@ -159,6 +162,17 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    flowIdEvents.add(eventEntry);
 	}
 
+	//
+	// Obtain the initial FlowEntryId state
+	//
+	Collection<Pair<FlowEntryId, Dpid>> flowEntryIds =
+	    datagridService.getAllFlowEntryIds();
+	for (Pair<FlowEntryId, Dpid> pair : flowEntryIds) {
+	    EventEntry<Pair<FlowEntryId, Dpid>> eventEntry =
+		new EventEntry<Pair<FlowEntryId, Dpid>>(EventEntry.Type.ENTRY_ADD, pair);
+	    flowEntryIdEvents.add(eventEntry);
+	}
+
 	// Process the initial events (if any)
 	synchronized (allFlowPaths) {
 	    processEvents();
@@ -189,6 +203,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		//  - EventEntry<FlowPath>
 		//  - EventEntry<FlowEntry>
 		//  - EventEntry<FlowId>
+		//  - EventEntry<Pair<FlowEntryId, Dpid>>
 		//
 		for (EventEntry<?> event : collection) {
 		    // Topology event
@@ -223,6 +238,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 			flowIdEvents.add(flowIdEventEntry);
 			continue;
 		    }
+		    // FlowEntryId event
+		    if (event.eventData() instanceof Pair) {
+			EventEntry<Pair<FlowEntryId, Dpid>> flowEntryIdEventEntry =
+			    (EventEntry<Pair<FlowEntryId, Dpid>>)event;
+			flowEntryIdEvents.add(flowEntryIdEventEntry);
+			continue;
+		    }
 		}
 		collection.clear();
 
@@ -244,7 +266,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	if (enableOnrc2014MeasurementsFlows) {
 
-	    if (topologyEvents.isEmpty() && flowIdEvents.isEmpty()) {
+	    if (topologyEvents.isEmpty() && flowIdEvents.isEmpty() &&
+		flowEntryIdEvents.isEmpty()) {
 		return;		// Nothing to do
 	    }
 
@@ -284,6 +307,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    // Cleanup
 	    topologyEvents.clear();
 	    flowIdEvents.clear();
+	    flowEntryIdEvents.clear();
 	    //
 	    allFlowPaths.clear();
 	    shouldRecomputeFlowPaths.clear();
@@ -1225,12 +1249,11 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     @Override
     public void notificationRecvFlowEntryIdAdded(FlowEntryId flowEntryId,
 						 Dpid dpid) {
-	// TODO: Implement it!
-	/*
-	EventEntry<FlowEntryId> eventEntry =
-	    new EventEntry<FlowEntryId>(EventEntry.Type.ENTRY_ADD, flowEntryId);
+	Pair flowEntryIdPair = new Pair(flowEntryId, dpid);
+
+	EventEntry<Pair<FlowEntryId, Dpid>> eventEntry =
+	    new EventEntry<Pair<FlowEntryId, Dpid>>(EventEntry.Type.ENTRY_ADD, flowEntryIdPair);
 	networkEvents.add(eventEntry);
-	*/
     }
 
     /**
@@ -1242,12 +1265,11 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     @Override
     public void notificationRecvFlowEntryIdRemoved(FlowEntryId flowEntryId,
 						   Dpid dpid) {
-	// TODO: Implement it!
-	/*
-	EventEntry<FlowEntryId> eventEntry =
-	    new EventEntry<FlowEntryId>(EventEntry.Type.ENTRY_REMOVE, flowEntryId);
+	Pair flowEntryIdPair = new Pair(flowEntryId, dpid);
+
+	EventEntry<Pair<FlowEntryId, Dpid>> eventEntry =
+	    new EventEntry<Pair<FlowEntryId, Dpid>>(EventEntry.Type.ENTRY_REMOVE, flowEntryIdPair);
 	networkEvents.add(eventEntry);
-	*/
     }
 
     /**
@@ -1259,13 +1281,12 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     @Override
     public void notificationRecvFlowEntryIdUpdated(FlowEntryId flowEntryId,
 						   Dpid dpid) {
-	// TODO: Implement it!
-	/*
+	Pair flowEntryIdPair = new Pair(flowEntryId, dpid);
+
 	// NOTE: The ADD and UPDATE events are processed in same way
-	EventEntry<FlowEntryId> eventEntry =
-	    new EventEntry<FlowEntryId>(EventEntry.Type.ENTRY_ADD, flowEntryId);
+	EventEntry<Pair<FlowEntryId, Dpid>> eventEntry =
+	    new EventEntry<Pair<FlowEntryId, Dpid>>(EventEntry.Type.ENTRY_ADD, flowEntryIdPair);
 	networkEvents.add(eventEntry);
-	*/
     }
 
     /**
