@@ -961,6 +961,11 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     private boolean recomputeFlowPath(FlowPath flowPath) {
 	boolean hasChanged = false;
 
+	if (enableOnrc2014MeasurementsFlows) {
+	    // Cleanup the deleted Flow Entries from the earlier iteration
+	    flowPath.dataPath().removeDeletedFlowEntries();
+	}
+
 	//
 	// Test whether the Flow Path needs to be recomputed
 	//
