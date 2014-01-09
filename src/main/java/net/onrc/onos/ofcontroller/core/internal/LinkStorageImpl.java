@@ -116,7 +116,12 @@ public class LinkStorageImpl implements ILinkStorage {
 	private void deleteDeviceOnPort(Long dpid, Short number)
 	{
 		IPortObject srcPortObject = dbop.searchPort(HexString.toHexString(dpid), number);
-		if (srcPortObject.getDevices().iterator().hasNext()) {
+		if (srcPortObject == null)
+		    return;
+		Iterable<IDeviceObject> devices = srcPortObject.getDevices();
+		if (devices == null)
+		    return;
+		if (devices.iterator().hasNext()) {
 			for (IDeviceObject deviceObject: srcPortObject.getDevices()) {
 				srcPortObject.removeDevice(deviceObject);
 				log.debug("delete Device "+ deviceObject.getMACAddress() +
