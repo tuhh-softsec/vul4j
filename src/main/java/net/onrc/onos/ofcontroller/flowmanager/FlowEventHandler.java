@@ -19,6 +19,7 @@ import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
+import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.EventEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction;
@@ -30,6 +31,7 @@ import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
+import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import com.esotericsoftware.kryo2.Kryo;
@@ -431,10 +433,43 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * @param mySwitches the collection of my switches.
      */
     private void prepareMyFlows(Map<Long, IOFSwitch> mySwitches) {
-	// Fetch my flows from the database
-	ArrayList<FlowPath> myFlows = flowManager.getAllMyFlows(mySwitches);
-	for (FlowPath flowPath : myFlows) {
-	    allFlowPaths.put(flowPath.flowId().value(), flowPath);
+	if (! topologyEvents.isEmpty()) {
+	    // Fetch my flows from the database
+	    ArrayList<FlowPath> myFlows = FlowDatabaseOperation.getAllMyFlows(dbHandler, mySwitches);
+	    for (FlowPath flowPath : myFlows) {
+		allFlowPaths.put(flowPath.flowId().value(), flowPath);
+
+		//
+		// TODO: Bug workaround / fix :
+		// method FlowDatabaseOperation.extractFlowEntry() doesn't
+		// fetch the inPort and outPort, hence we assign them here.
+		//
+		// Assign the inPort and outPort for the Flow Entries
+		for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		    // Set the inPort
+		    do {
+			if (flowEntry.inPort() != null)
+			    break;
+			if (flowEntry.flowEntryMatch() == null)
+			    break;
+			Port inPort = new Port(flowEntry.flowEntryMatch().inPort().value());
+			flowEntry.setInPort(inPort);
+		    } while (false);
+
+		    // Set the outPort
+		    do {
+			if (flowEntry.outPort() != null)
+			    break;
+			for (FlowEntryAction fa : flowEntry.flowEntryActions().actions()) {
+			    if (fa.actionOutput() != null) {
+				Port outPort = new Port(fa.actionOutput().port().value());
+				flowEntry.setOutPort(outPort);
+				break;
+			    }
+			}
+		    } while (false);
+		}
+	    }
 	}
 
 	//
@@ -444,6 +479,16 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	for (EventEntry<FlowId> eventEntry : flowIdEvents) {
 	    FlowId flowId = eventEntry.eventData();
 	    FlowPath flowPath = allFlowPaths.get(flowId.value());
+	    if (flowPath == null) {
+		if (! topologyEvents.isEmpty())
+		    continue;		// Optimization: Not my flow
+		Dpid dpid = FlowDatabaseOperation.getFlowSourceDpid(dbHandler,
+								    flowId);
+		if ((dpid != null) && (mySwitches.get(dpid.value()) != null)) {
+		    flowPath = FlowDatabaseOperation.getFlow(dbHandler,
+							     flowId);
+		}
+	    }
 	    if (flowPath != null) {
 		shouldRecomputeFlowPaths.put(flowPath.flowId().value(),
 					     flowPath);
@@ -476,7 +521,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    //
 	    FlowPath flowPath = allFlowPaths.get(flowId.value());
 	    if (flowPath == null)
-		flowPath = flowManager.getFlow(flowId);
+		flowPath = FlowDatabaseOperation.getFlow(dbHandler, flowId);
 	    if (flowPath == null) {
 		log.debug("Flow ID {} : Flow not found!", flowId);
 		continue;

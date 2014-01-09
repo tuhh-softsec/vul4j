@@ -523,8 +523,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//  - Flow Paths to the database
 	//
 	pushModifiedFlowEntriesToSwitches(modifiedFlowEntries);
-	pushModifiedFlowPathsToDatabase(modifiedFlowPaths);
-	if (! enableOnrc2014MeasurementsFlows) {
+	if (enableOnrc2014MeasurementsFlows) {
+	    writeModifiedFlowPathsToDatabase(modifiedFlowPaths);
+	} else {
+	    pushModifiedFlowPathsToDatabase(modifiedFlowPaths);
 	    cleanupDeletedFlowEntriesFromDatagrid(modifiedFlowEntries);
 	}
     }
