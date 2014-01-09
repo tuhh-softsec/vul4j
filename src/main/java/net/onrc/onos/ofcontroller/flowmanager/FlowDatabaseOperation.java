@@ -314,10 +314,14 @@ public class FlowDatabaseOperation {
 	}
 
 	// TODO: Hacks with hard-coded state names!
-	if (found)
-	    flowEntryObj.setUserState("FE_USER_MODIFY");
-	else
-	    flowEntryObj.setUserState("FE_USER_ADD");
+	if (enableOnrc2014MeasurementsFlows) {
+	    flowEntryObj.setUserState(flowEntry.flowEntryUserState().toString());
+	} else {
+	    if (found)
+		flowEntryObj.setUserState("FE_USER_MODIFY");
+	    else
+		flowEntryObj.setUserState("FE_USER_ADD");
+	}
 	flowEntryObj.setSwitchState(flowEntry.flowEntrySwitchState().toString());
 	//
 	// TODO: Take care of the FlowEntryErrorState.
