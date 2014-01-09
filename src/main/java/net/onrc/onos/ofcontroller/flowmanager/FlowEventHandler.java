@@ -663,11 +663,34 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    if (topologyEvents.isEmpty())
 		return;
 
-	    // TODO: Code for debugging purpose only
+	    //
+	    // TODO: Fake the topology read it by checking the cache with
+	    // the old topology and ignoring topology events that don't make
+	    // any impact to the topology.
+	    // This is needed aa workaround: if a port is down, we get
+	    // up to three additional "Port Down" or "Link Down" events.
+	    //
+	    boolean isTopologyModified = false;
 	    for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
 		TopologyElement topologyElement = eventEntry.eventData();
+
 		log.debug("Topology Event: {} {}", eventEntry.eventType(),
 			  topologyElement.toString());
+
+		switch (eventEntry.eventType()) {
+		case ENTRY_ADD:
+		    isTopologyModified |= topology.addTopologyElement(topologyElement);
+		    break;
+		case ENTRY_REMOVE:
+		    isTopologyModified |= topology.removeTopologyElement(topologyElement);
+		    break;
+		}
+		if (isTopologyModified)
+		    break;
+	    }
+	    if (! isTopologyModified) {
+		log.debug("Ignoring topology events that don't modify the topology");
+		return;
 	    }
 
 	    log.debug("[BEFORE] {}", topology.toString());
@@ -964,6 +987,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	if (enableOnrc2014MeasurementsFlows) {
 	    // Cleanup the deleted Flow Entries from the earlier iteration
 	    flowPath.dataPath().removeDeletedFlowEntries();
+
+	    //
+	    // TODO: Fake it that the Flow Entries have been already pushed
+	    // into the switches, so we don't push them again.
+	    //
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+	    }
 	}
 
 	//
