@@ -663,6 +663,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    if (topologyEvents.isEmpty())
 		return;
 
+	    // TODO: Code for debugging purpose only
+	    for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
+		TopologyElement topologyElement = eventEntry.eventData();
+		log.debug("Topology Event: {} {}", eventEntry.eventType(),
+			  topologyElement.toString());
+	    }
+
 	    //
 	    // TODO: Fake the topology read it by checking the cache with
 	    // the old topology and ignoring topology events that don't make
@@ -673,9 +680,6 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    boolean isTopologyModified = false;
 	    for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
 		TopologyElement topologyElement = eventEntry.eventData();
-
-		log.debug("Topology Event: {} {}", eventEntry.eventType(),
-			  topologyElement.toString());
 
 		switch (eventEntry.eventType()) {
 		case ENTRY_ADD:
