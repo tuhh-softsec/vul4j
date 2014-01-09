@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
-    private boolean enableOnrc2014MeasurementsFlows = false;
+    private boolean enableOnrc2014MeasurementsFlows = true;
 
     protected GraphDBOperation dbHandlerApi;
     protected GraphDBOperation dbHandlerInner;

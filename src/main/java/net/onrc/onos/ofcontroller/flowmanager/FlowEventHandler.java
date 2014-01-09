@@ -46,8 +46,8 @@ import org.slf4j.LoggerFactory;
  */
 class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
-    private boolean enableOnrc2014MeasurementsFlows = false;
-    private boolean enableOnrc2014MeasurementsTopology = false;
+    private boolean enableOnrc2014MeasurementsFlows = true;
+    private boolean enableOnrc2014MeasurementsTopology = true;
 
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
@@ -431,9 +431,23 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * @param mySwitches the collection of my switches.
      */
     private void prepareMyFlows(Map<Long, IOFSwitch> mySwitches) {
+	// Fetch my flows from the database
 	ArrayList<FlowPath> myFlows = flowManager.getAllMyFlows(mySwitches);
 	for (FlowPath flowPath : myFlows) {
 	    allFlowPaths.put(flowPath.flowId().value(), flowPath);
+	}
+
+	//
+	// Automatically add all Flow ID events (for the Flows this instance
+	// is responsible for) to the collection of Flows to recompute.
+	//
+	for (EventEntry<FlowId> eventEntry : flowIdEvents) {
+	    FlowId flowId = eventEntry.eventData();
+	    FlowPath flowPath = allFlowPaths.get(flowId.value());
+	    if (flowPath != null) {
+		shouldRecomputeFlowPaths.put(flowPath.flowId().value(),
+					     flowPath);
+	    }
 	}
     }
 
