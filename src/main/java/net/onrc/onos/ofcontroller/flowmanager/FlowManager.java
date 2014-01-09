@@ -328,6 +328,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Get a previously added flow entry.
+     *
+     * @param flowEntryId the Flow Entry ID of the flow entry to get.
+     * @return the Flow Entry if found, otherwise null.
+     */
+    public FlowEntry getFlowEntry(FlowEntryId flowEntryId) {
+	return FlowDatabaseOperation.getFlowEntry(dbHandlerApi, flowEntryId);
+    }
+
+    /**
      * Get the source switch DPID of a previously added flow.
      *
      * @param flowId the Flow ID of the flow to get.

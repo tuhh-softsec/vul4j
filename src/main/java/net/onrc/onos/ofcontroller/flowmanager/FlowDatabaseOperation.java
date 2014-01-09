@@ -470,6 +470,38 @@ public class FlowDatabaseOperation {
     }
 
     /**
+     * Get a previously added flow entry.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowEntryId the Flow Entry ID of the flow entry to get.
+     * @return the Flow Entry if found, otherwise null.
+     */
+    static FlowEntry getFlowEntry(GraphDBOperation dbHandler,
+				  FlowEntryId flowEntryId) {
+	IFlowEntry flowEntryObj = null;
+	try {
+	    flowEntryObj = dbHandler.searchFlowEntry(flowEntryId);
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    dbHandler.rollback();
+	    log.error(":getFlowEntry FlowEntryId:{} failed", flowEntryId);
+	    return null;
+	}
+	if (flowEntryObj == null) {
+	    dbHandler.commit();
+	    return null;		// Flow not found
+	}
+
+	//
+	// Extract the Flow Entry state
+	//
+	FlowEntry flowEntry = extractFlowEntry(flowEntryObj);
+	dbHandler.commit();
+
+	return flowEntry;
+    }
+
+    /**
      * Get the source switch DPID of a previously added flow.
      *
      * @param dbHandler the Graph Database handler to use.

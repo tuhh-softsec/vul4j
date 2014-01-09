@@ -276,6 +276,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    // Fetch and prepare my flows
 	    prepareMyFlows(mySwitches);
 
+	    // Process the Flow ID events
+	    processFlowIdEvents(mySwitches);
+
 	    // Fetch the topology
 	    processTopologyEvents();
 
@@ -296,7 +299,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    }
 
 	    // Extract my modified Flow Entries
-	    modifiedFlowEntries = processFlowIdEvents(mySwitches);
+	    modifiedFlowEntries = processFlowEntryIdEvents(mySwitches);
 
 	    //
 	    // Push the modified state to the Flow Manager
@@ -461,6 +464,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    // Fetch my flows from the database
 	    ArrayList<FlowPath> myFlows = FlowDatabaseOperation.getAllMyFlows(dbHandler, mySwitches);
 	    for (FlowPath flowPath : myFlows) {
+		log.debug("Found my flow: {}", flowPath);
+
 		allFlowPaths.put(flowPath.flowId().value(), flowPath);
 
 		//
@@ -495,13 +500,23 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		}
 	    }
 	}
+    }
 
+    /**
+     * Process the Flow ID events.
+     *
+     * @param mySwitches the collection of my switches.
+     */
+    private void processFlowIdEvents(Map<Long, IOFSwitch> mySwitches) {
 	//
 	// Automatically add all Flow ID events (for the Flows this instance
 	// is responsible for) to the collection of Flows to recompute.
 	//
 	for (EventEntry<FlowId> eventEntry : flowIdEvents) {
 	    FlowId flowId = eventEntry.eventData();
+
+	    log.debug("Flow ID Event: {} {}", eventEntry.eventType(), flowId);
+
 	    FlowPath flowPath = allFlowPaths.get(flowId.value());
 	    if (flowPath == null) {
 		if (! topologyEvents.isEmpty())
@@ -521,47 +536,38 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     }
 
     /**
-     * Process the Flow ID events.
+     * Process the Flow Entry ID events.
      *
      * @param mySwitches the collection of my switches.
      * @return a collection of modified Flow Entries this instance needs
      * to push to its own switches.
      */
-    private Collection<FlowEntry> processFlowIdEvents(Map<Long, IOFSwitch> mySwitches) {
+    private Collection<FlowEntry> processFlowEntryIdEvents(Map<Long, IOFSwitch> mySwitches) {
 	List<FlowEntry> modifiedFlowEntries = new LinkedList<FlowEntry>();
 
 	//
 	// Process all Flow ID events and update the appropriate state
 	//
-	for (EventEntry<FlowId> eventEntry : flowIdEvents) {
-	    FlowId flowId = eventEntry.eventData();
+	for (EventEntry<Pair<FlowEntryId, Dpid>> eventEntry : flowEntryIdEvents) {
+	    Pair<FlowEntryId, Dpid> pair = eventEntry.eventData();
+	    FlowEntryId flowEntryId = pair.first;
+	    Dpid dpid = pair.second;
 
-	    log.debug("Flow ID Event: {} {}", eventEntry.eventType(), flowId);
+	    log.debug("Flow Entry ID Event: {} {} {}", eventEntry.eventType(),
+		      flowEntryId, dpid);
 
-	    //
-	    // Lookup the Flow ID in the Flows that were read from the
-	    // database in in a previous step. If not found, read from
-	    // the database.
-	    //
-	    FlowPath flowPath = allFlowPaths.get(flowId.value());
-	    if (flowPath == null)
-		flowPath = FlowDatabaseOperation.getFlow(dbHandler, flowId);
-	    if (flowPath == null) {
-		log.debug("Flow ID {} : Flow not found!", flowId);
+	    if (mySwitches.get(dpid.value()) == null)
+		continue;
+
+	    // Fetch the Flow Entry
+	    FlowEntry flowEntry = FlowDatabaseOperation.getFlowEntry(dbHandler,
+								     flowEntryId);
+	    if (flowEntry == null) {
+		log.debug("Flow Entry ID {} : Flow Entry not found!",
+			  flowEntryId);
 		continue;
 	    }
-
-	    // Collect only my flow entries that are not updated.
-	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
-		if (flowEntry.flowEntrySwitchState() !=
-		    FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
-		    continue;
-		}
-		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
-		if (mySwitch == null)
-		    continue;
-		modifiedFlowEntries.add(flowEntry);
-	    }
+	    modifiedFlowEntries.add(flowEntry);
 	}
 
 	return modifiedFlowEntries;
@@ -656,6 +662,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	if (enableOnrc2014MeasurementsTopology) {
 	    if (topologyEvents.isEmpty())
 		return;
+
+	    // TODO: Code for debugging purpose only
+	    for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
+		TopologyElement topologyElement = eventEntry.eventData();
+		log.debug("Topology Event: {} {}", eventEntry.eventType(),
+			  topologyElement.toString());
+	    }
+
 	    log.debug("[BEFORE] {}", topology.toString());
 	    topology.readFromDatabase(dbHandler);
 	    log.debug("[AFTER] {}", topology.toString());
