@@ -823,8 +823,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    } while (retry);
 
 	    if (enableOnrc2014MeasurementsFlows) {
-		// Send the notification
-		datagridService.notificationSendFlowIdAdded(flowPath.flowId());
+		// Send the notifications
+		for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		    if (flowEntry.flowEntrySwitchState() ==
+			FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
+			datagridService.notificationSendFlowEntryIdAdded(flowEntry.flowEntryId(), flowEntry.dpid());
+		    }
+		}
 	    }
 	}
     }
