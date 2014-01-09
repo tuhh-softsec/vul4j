@@ -1,7 +1,9 @@
 package net.onrc.onos.ofcontroller.flowmanager;
 
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
+import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
@@ -71,6 +73,32 @@ public interface IFlowEventHandlerService {
      * @param flowId the FlowId that is updated.
      */
     void notificationRecvFlowIdUpdated(FlowId flowId);
+
+    /**
+     * Receive a notification that a FlowEntryId is added.
+     *
+     * @param flowEntryId the FlowEntryId that is added.
+     * @param dpid the Switch Dpid for the corresponding Flow Entry.
+     */
+    void notificationRecvFlowEntryIdAdded(FlowEntryId flowEntryId, Dpid dpid);
+
+    /**
+     * Receive a notification that a FlowEntryId is removed.
+     *
+     * @param flowEntryId the FlowEntryId that is removed.
+     * @param dpid the Switch Dpid for the corresponding Flow Entry.
+     */
+    void notificationRecvFlowEntryIdRemoved(FlowEntryId flowEntryId,
+					    Dpid dpid);
+
+    /**
+     * Receive a notification that a FlowEntryId is updated.
+     *
+     * @param flowEntryId the FlowEntryId that is updated.
+     * @param dpid the Switch Dpid for the corresponding Flow Entry.
+     */
+    void notificationRecvFlowEntryIdUpdated(FlowEntryId flowEntryId,
+					    Dpid dpid);
 
     /**
      * Receive a notification that a Topology Element is added.

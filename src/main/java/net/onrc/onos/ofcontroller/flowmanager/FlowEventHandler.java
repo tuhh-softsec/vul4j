@@ -1217,6 +1217,58 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     }
 
     /**
+     * Receive a notification that a FlowEntryId is added.
+     *
+     * @param flowEntryId the FlowEntryId that is added.
+     * @param dpid the Switch Dpid for the corresponding Flow Entry.
+     */
+    @Override
+    public void notificationRecvFlowEntryIdAdded(FlowEntryId flowEntryId,
+						 Dpid dpid) {
+	// TODO: Implement it!
+	/*
+	EventEntry<FlowEntryId> eventEntry =
+	    new EventEntry<FlowEntryId>(EventEntry.Type.ENTRY_ADD, flowEntryId);
+	networkEvents.add(eventEntry);
+	*/
+    }
+
+    /**
+     * Receive a notification that a FlowEntryId is removed.
+     *
+     * @param flowEntryId the FlowEntryId that is removed.
+     * @param dpid the Switch Dpid for the corresponding Flow Entry.
+     */
+    @Override
+    public void notificationRecvFlowEntryIdRemoved(FlowEntryId flowEntryId,
+						   Dpid dpid) {
+	// TODO: Implement it!
+	/*
+	EventEntry<FlowEntryId> eventEntry =
+	    new EventEntry<FlowEntryId>(EventEntry.Type.ENTRY_REMOVE, flowEntryId);
+	networkEvents.add(eventEntry);
+	*/
+    }
+
+    /**
+     * Receive a notification that a FlowEntryId is updated.
+     *
+     * @param flowEntryId the FlowEntryId that is updated.
+     * @param dpid the Switch Dpid for the corresponding Flow Entry.
+     */
+    @Override
+    public void notificationRecvFlowEntryIdUpdated(FlowEntryId flowEntryId,
+						   Dpid dpid) {
+	// TODO: Implement it!
+	/*
+	// NOTE: The ADD and UPDATE events are processed in same way
+	EventEntry<FlowEntryId> eventEntry =
+	    new EventEntry<FlowEntryId>(EventEntry.Type.ENTRY_ADD, flowEntryId);
+	networkEvents.add(eventEntry);
+	*/
+    }
+
+    /**
      * Receive a notification that a Topology Element is added.
      *
      * @param topologyElement the Topology Element that is added.

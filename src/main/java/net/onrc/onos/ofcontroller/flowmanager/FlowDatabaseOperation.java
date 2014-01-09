@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
  * Class for performing Flow-related operations on the Database.
  */
 public class FlowDatabaseOperation {
+    static private boolean enableOnrc2014MeasurementsFlows = true;
+
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
 
     /**
@@ -169,8 +171,10 @@ public class FlowDatabaseOperation {
 	// flowPath.dataPath().flowEntries()
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
-		continue;	// Skip: all Flow Entries were deleted earlier
+	    if (! enableOnrc2014MeasurementsFlows) {
+		if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
+		    continue;	// Skip: all Flow Entries were deleted earlier
+	    }
 
 	    if (addFlowEntry(dbHandler, flowObj, flowEntry) == null) {
 		dbHandler.rollback();

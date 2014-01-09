@@ -7,6 +7,7 @@ import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
 import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
+import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
@@ -165,6 +166,35 @@ public interface IDatagridService extends IFloodlightService {
      * Send a notification that all Flow IDs are removed.
      */
     void notificationSendAllFlowIdsRemoved();
+
+    /**
+     * Send a notification that a FlowEntryId is added.
+     *
+     * @param flowEntryId the FlowEntryId that is added.
+     * @param dpid the Switch Dpid.
+     */
+    void notificationSendFlowEntryIdAdded(FlowEntryId flowEntryId, Dpid dpid);
+
+    /**
+     * Send a notification that a FlowEntryId is removed.
+     *
+     * @param flowEntryId the FlowEntryId that is removed.
+     */
+    void notificationSendFlowEntryIdRemoved(FlowEntryId flowEntryId);
+
+    /**
+     * Send a notification that a FlowEntryId is updated.
+     *
+     * @param flowEntryId the FlowEntryId that is updated.
+     * @param dpid the Switch Dpid.
+     */
+    void notificationSendFlowEntryIdUpdated(FlowEntryId flowEntryId,
+					    Dpid dpid);
+
+    /**
+     * Send a notification that all Flow Entry IDs are removed.
+     */
+    void notificationSendAllFlowEntryIdsRemoved();
 
     /**
      * Get all Topology Elements that are currently in the datagrid.
