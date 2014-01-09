@@ -159,7 +159,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 			@Override
 			public void run() {
 				PerfMon pm = PerfMon.getInstance();
-				log.debug("[BEFORE] {}", topology.toString());
+				log.debug("[BEFORE] {}", topology);
 				long begin, end;
 				synchronized(topology) {
 					begin = System.nanoTime();
@@ -169,7 +169,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 					end = System.nanoTime();
 				}
 				// FIXME level raised for measurement. Was debug
-				log.error("[AFTER] {}", topology.toString());
+				log.error("[AFTER] {}", topology);
 				log.error("refresh takes : {}[us]", (end - begin) / 1000.0);
 			}
 		}, refreshTopologyDelay, refreshTopologyInterval);
