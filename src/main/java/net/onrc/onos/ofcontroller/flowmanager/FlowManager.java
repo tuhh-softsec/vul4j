@@ -826,12 +826,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// Send the notifications
 
 		for (FlowEntry flowEntry : flowPath.flowEntries()) {
-		    /* TODO: Not needed?
-		    if (flowEntry.flowEntrySwitchState() ==
+		    if (flowEntry.flowEntrySwitchState() !=
 			FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
-			datagridService.notificationSendFlowEntryIdAdded(flowEntry.flowEntryId(), flowEntry.dpid());
+			continue;
 		    }
-		    */
+		    // datagridService.notificationSendFlowEntryIdAdded(flowEntry.flowEntryId(), flowEntry.dpid());
 
 		    //
 		    // Write the Flow Entry to the Datagrid
