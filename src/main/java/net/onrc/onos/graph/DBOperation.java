@@ -27,7 +27,6 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
-import net.onrc.onos.ofcontroller.flowmanager.FlowDatabaseOperation;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
@@ -64,6 +63,15 @@ public abstract class DBOperation implements IDBOperation {
 		obj.setDPID(dpid);
 	    }
 	    return obj;
+	}
+
+	/**
+	 * Get all port objects.
+	 */
+	@Override
+	public Iterable<IPortObject> getAllPorts() {
+	    Iterable<IPortObject> ports = conn.getFramedGraph().getVertices("type", "port", IPortObject.class);
+	    return ports;
 	}
 
 	/**
@@ -119,7 +127,7 @@ public abstract class DBOperation implements IDBOperation {
 	    IPortObject obj = (IPortObject) conn.getFramedGraph().addVertex(null, IPortObject.class);
 	    if (obj != null) {
 		obj.setType("port");
-		String id = dpid + portNum.toString();
+		String id = dpid + PORT_ID_DELIM + portNum.toString();
 		obj.setPortId(id);
 		obj.setNumber(portNum);
 	    }
@@ -151,7 +159,7 @@ public abstract class DBOperation implements IDBOperation {
 	public IPortObject searchPort(String dpid, Short number) {
 	    FramedGraph fg = conn.getFramedGraph();
 	    if ( fg == null ) return null;
-	    String id = dpid + number.toString();
+	    String id = dpid + PORT_ID_DELIM + number.toString();
 	    Iterator<IPortObject> it = fg.getVertices("port_id", id, IPortObject.class).iterator();
 	    return (it.hasNext()) ? it.next() : null;
 

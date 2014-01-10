@@ -11,6 +11,8 @@ import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
 public interface IDBOperation {
+	public static final String PORT_ID_DELIM = "@";
+
 	public ISwitchObject newSwitch(String dpid);
 	public ISwitchObject searchSwitch(String dpid);
 	public ISwitchObject searchActiveSwitch(String dpid);
@@ -19,13 +21,13 @@ public interface IDBOperation {
 	public Iterable<ISwitchObject> getInactiveSwitches();
 	public Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries();
 	public void removeSwitch(ISwitchObject sw);
-	
+
 	@Deprecated
 	public IPortObject newPort(Short portNumber);
 	public IPortObject newPort(String dpid, Short portNum);
 	public IPortObject searchPort(String dpid, Short number);
 	public void removePort(IPortObject port);
-	
+
 	public IDeviceObject newDevice();
 	public IDeviceObject searchDevice(String macAddr);
 	public Iterable<IDeviceObject> getDevices();
@@ -44,9 +46,10 @@ public interface IDBOperation {
 
 	public void setFlowProperties(IFlowEntry flowEntry, Map<String, Object> map);
 
-	public IDBConnection getDBConnection();	
+	public IDBConnection getDBConnection();
 	public void commit();
 	public void rollback();
 	public void close();
-	
+
+	public Iterable<IPortObject> getAllPorts();
 }
