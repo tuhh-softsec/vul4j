@@ -3,6 +3,7 @@ package net.onrc.onos.ofcontroller.flowmanager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -634,6 +635,28 @@ public class FlowDatabaseOperation {
 	}
 
 	dbHandler.commit();
+
+	return flowPaths;
+    }
+
+    /**
+     * Get a subset of installed flows.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowIds the collection of Flow IDs to get.
+     * @return the Flow Paths if found, otherwise null.
+     */
+    static ArrayList<FlowPath> getFlows(GraphDBOperation dbHandler,
+					Collection<FlowId> flowIds) {
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+
+	// TODO: This implementation should use threads
+	for (FlowId flowId : flowIds) {
+	    FlowPath flowPath = getFlow(dbHandler, flowId);
+	    if (flowPath != null)
+		flowPaths.add(flowPath);
+	}
+	// dbHandler.commit();
 
 	return flowPaths;
     }
