@@ -57,22 +57,25 @@ public interface IFlowEventHandlerService {
      * Receive a notification that a FlowId is added.
      *
      * @param flowId the FlowId that is added.
+     * @param dpid the Source Switch Dpid for the corresponding Flow.
      */
-    void notificationRecvFlowIdAdded(FlowId flowId);
+    void notificationRecvFlowIdAdded(FlowId flowId, Dpid dpid);
 
     /**
      * Receive a notification that a FlowId is removed.
      *
      * @param flowId the FlowId that is removed.
+     * @param dpid the Source Switch Dpid for the corresponding Flow.
      */
-    void notificationRecvFlowIdRemoved(FlowId flowId);
+    void notificationRecvFlowIdRemoved(FlowId flowId, Dpid dpid);
 
     /**
      * Receive a notification that a FlowId is updated.
      *
      * @param flowId the FlowId that is updated.
+     * @param dpid the Source Switch Dpid for the corresponding Flow.
      */
-    void notificationRecvFlowIdUpdated(FlowId flowId);
+    void notificationRecvFlowIdUpdated(FlowId flowId, Dpid dpid);
 
     /**
      * Receive a notification that a FlowEntryId is added.

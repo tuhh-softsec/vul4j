@@ -269,7 +269,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	if (FlowDatabaseOperation.addFlow(dbHandlerApi, flowPath)) {
 	    if (enableOnrc2014MeasurementsFlows) {
-		datagridService.notificationSendFlowIdAdded(flowPath.flowId());
+		datagridService.notificationSendFlowIdAdded(flowPath.flowId(),
+							    flowPath.dataPath().srcPort().dpid());
 	    } else {
 		datagridService.notificationSendFlowAdded(flowPath);
 	    }

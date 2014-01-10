@@ -140,14 +140,15 @@ public interface IDatagridService extends IFloodlightService {
      *
      * @return all Flow IDs that ae currently in the datagrid.
      */
-    Collection<FlowId> getAllFlowIds();
+    Collection<Pair<FlowId, Dpid>> getAllFlowIds();
 
     /**
      * Send a notification that a FlowId is added.
      *
      * @param flowId the FlowId that is added.
+     * @param dpid the Source Switch Dpid.
      */
-    void notificationSendFlowIdAdded(FlowId flowId);
+    void notificationSendFlowIdAdded(FlowId flowId, Dpid dpid);
 
     /**
      * Send a notification that a FlowId is removed.
@@ -160,8 +161,9 @@ public interface IDatagridService extends IFloodlightService {
      * Send a notification that a FlowId is updated.
      *
      * @param flowId the FlowId that is updated.
+     * @param dpid the Source Switch Dpid.
      */
-    void notificationSendFlowIdUpdated(FlowId flowId);
+    void notificationSendFlowIdUpdated(FlowId flowId, Dpid dpid);
 
     /**
      * Send a notification that all Flow IDs are removed.
