@@ -5,7 +5,9 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.util.MACAddress;
 
 import net.onrc.onos.graph.GraphDBOperation;
@@ -23,6 +25,8 @@ import org.slf4j.LoggerFactory;
  * Class for performing Flow-related operations on the Database.
  */
 public class FlowDatabaseOperation {
+    static private boolean enableOnrc2014MeasurementsFlows = true;
+
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
 
     /**
@@ -167,8 +171,10 @@ public class FlowDatabaseOperation {
 	// flowPath.dataPath().flowEntries()
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
-		continue;	// Skip: all Flow Entries were deleted earlier
+	    if (! enableOnrc2014MeasurementsFlows) {
+		if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
+		    continue;	// Skip: all Flow Entries were deleted earlier
+	    }
 
 	    if (addFlowEntry(dbHandler, flowObj, flowEntry) == null) {
 		dbHandler.rollback();
@@ -308,10 +314,14 @@ public class FlowDatabaseOperation {
 	}
 
 	// TODO: Hacks with hard-coded state names!
-	if (found)
-	    flowEntryObj.setUserState("FE_USER_MODIFY");
-	else
-	    flowEntryObj.setUserState("FE_USER_ADD");
+	if (enableOnrc2014MeasurementsFlows) {
+	    flowEntryObj.setUserState(flowEntry.flowEntryUserState().toString());
+	} else {
+	    if (found)
+		flowEntryObj.setUserState("FE_USER_MODIFY");
+	    else
+		flowEntryObj.setUserState("FE_USER_ADD");
+	}
 	flowEntryObj.setSwitchState(flowEntry.flowEntrySwitchState().toString());
 	//
 	// TODO: Take care of the FlowEntryErrorState.
@@ -464,6 +474,77 @@ public class FlowDatabaseOperation {
     }
 
     /**
+     * Get a previously added flow entry.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowEntryId the Flow Entry ID of the flow entry to get.
+     * @return the Flow Entry if found, otherwise null.
+     */
+    static FlowEntry getFlowEntry(GraphDBOperation dbHandler,
+				  FlowEntryId flowEntryId) {
+	IFlowEntry flowEntryObj = null;
+	try {
+	    flowEntryObj = dbHandler.searchFlowEntry(flowEntryId);
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    dbHandler.rollback();
+	    log.error(":getFlowEntry FlowEntryId:{} failed", flowEntryId);
+	    return null;
+	}
+	if (flowEntryObj == null) {
+	    dbHandler.commit();
+	    return null;		// Flow not found
+	}
+
+	//
+	// Extract the Flow Entry state
+	//
+	FlowEntry flowEntry = extractFlowEntry(flowEntryObj);
+	dbHandler.commit();
+
+	return flowEntry;
+    }
+
+    /**
+     * Get the source switch DPID of a previously added flow.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowId the Flow ID of the flow to get.
+     * @return the source switch DPID if found, otherwise null.
+     */
+    static Dpid getFlowSourceDpid(GraphDBOperation dbHandler, FlowId flowId) {
+	IFlowPath flowObj = null;
+	try {
+	    flowObj = dbHandler.searchFlowPath(flowId);
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    dbHandler.rollback();
+	    log.error(":getFlowSourceDpid FlowId:{} failed", flowId);
+	    return null;
+	}
+	if (flowObj == null) {
+	    dbHandler.commit();
+	    return null;		// Flow not found
+	}
+
+	//
+	// Extract the Flow Source DPID
+	//
+	String srcSwitchStr = flowObj.getSrcSwitch();
+	if (srcSwitchStr == null) {
+	    // TODO: A work-around, becauuse of some bogus database objects
+	    dbHandler.commit();
+	    return null;
+	}
+
+	Dpid dpid = new Dpid(srcSwitchStr);
+
+	dbHandler.commit();
+
+	return dpid;
+    }
+
+    /**
      * Get all installed flows by all installers.
      *
      * @param dbHandler the Graph Database handler to use.
@@ -487,6 +568,60 @@ public class FlowDatabaseOperation {
 	}
 
 	for (IFlowPath flowObj : flowPathsObj) {
+	    //
+	    // Extract the Flow state
+	    //
+	    FlowPath flowPath = extractFlowPath(flowObj);
+	    if (flowPath != null)
+		flowPaths.add(flowPath);
+	}
+
+	dbHandler.commit();
+
+	return flowPaths;
+    }
+
+    /**
+     * Get all installed flows whose Source Switch is controlled by this
+     * instance.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param mySwitches the collection of the switches controlled by this
+     * instance.
+     * @return the Flow Paths if found, otherwise null.
+     */
+    static ArrayList<FlowPath> getAllMyFlows(GraphDBOperation dbHandler,
+					     Map<Long, IOFSwitch> mySwitches) {
+	Iterable<IFlowPath> flowPathsObj = null;
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+
+	try {
+	    flowPathsObj = dbHandler.getAllFlowPaths();
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    dbHandler.rollback();
+	    log.error(":getAllMyFlowPaths failed");
+	    return flowPaths;
+	}
+	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
+	    dbHandler.commit();
+	    return flowPaths;	// No Flows found
+	}
+
+	for (IFlowPath flowObj : flowPathsObj) {
+	    //
+	    // Extract the Source Switch DPID and ignore if the switch
+	    // is not controlled by this instance.
+	    //
+	    String srcSwitchStr = flowObj.getSrcSwitch();
+	    if (srcSwitchStr == null) {
+		// TODO: A work-around, becauuse of some bogus database objects
+		continue;
+	    }
+	    Dpid dpid = new Dpid(srcSwitchStr);
+	    if (mySwitches.get(dpid.value()) == null)
+		continue;
+
 	    //
 	    // Extract the Flow state
 	    //

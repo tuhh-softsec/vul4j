@@ -21,10 +21,12 @@ import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
 import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
+import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import org.slf4j.Logger;
@@ -78,6 +80,12 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     private IMap<Long, byte[]> mapFlowId = null;
     private MapFlowIdListener mapFlowIdListener = null;
     private String mapFlowIdListenerId = null;
+
+    // State related to the Flow Entry ID map
+    protected static final String mapFlowEntryIdName = "mapFlowEntryId";
+    private IMap<Long, byte[]> mapFlowEntryId = null;
+    private MapFlowEntryIdListener mapFlowEntryIdListener = null;
+    private String mapFlowEntryIdListenerId = null;
 
     // State related to the Network Topology map
     protected static final String mapTopologyName = "mapTopology";
@@ -257,7 +265,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryAdded(EntryEvent<Long, byte[]> event) {
-	    byte[] valueBytes = (byte[])event.getValue();
+	    byte[] valueBytes = event.getValue();
 
 	    //
 	    // Decode the value and deliver the notification
@@ -275,7 +283,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryRemoved(EntryEvent<Long, byte[]> event) {
-	    byte[] valueBytes = (byte[])event.getValue();
+	    byte[] valueBytes = event.getValue();
 
 	    //
 	    // Decode the value and deliver the notification
@@ -293,7 +301,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 * @param event the notification event for the entry.
 	 */
 	public void entryUpdated(EntryEvent<Long, byte[]> event) {
-	    byte[] valueBytes = (byte[])event.getValue();
+	    byte[] valueBytes = event.getValue();
 
 	    //
 	    // Decode the value and deliver the notification
@@ -303,6 +311,87 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    FlowId flowId = kryo.readObject(input, FlowId.class);
 	    kryoFactory.deleteKryo(kryo);
 	    flowEventHandlerService.notificationRecvFlowIdUpdated(flowId);
+	}
+
+	/**
+	 * Receive a notification that an entry is evicted.
+	 *
+	 * @param event the notification event for the entry.
+	 */
+	public void entryEvicted(EntryEvent<Long, byte[]> event) {
+	    // NOTE: We don't use eviction for this map
+	}
+    }
+
+    /**
+     * Class for receiving notifications for FlowEntryId state.
+     *
+     * The datagrid map is:
+     *  - Key : FlowEntryId (Long)
+     *  - Value : Serialized Switch Dpid (byte[])
+     */
+    class MapFlowEntryIdListener implements EntryListener<Long, byte[]> {
+	/**
+	 * Receive a notification that an entry is added.
+	 *
+	 * @param event the notification event for the entry.
+	 */
+	public void entryAdded(EntryEvent<Long, byte[]> event) {
+	    Long keyLong = event.getKey();
+	    FlowEntryId flowEntryId = new FlowEntryId(keyLong);
+
+	    byte[] valueBytes = event.getValue();
+
+	    //
+	    // Decode the value and deliver the notification
+	    //
+	    Kryo kryo = kryoFactory.newKryo();
+	    Input input = new Input(valueBytes);
+	    Dpid dpid = kryo.readObject(input, Dpid.class);
+	    kryoFactory.deleteKryo(kryo);
+	    flowEventHandlerService.notificationRecvFlowEntryIdAdded(flowEntryId, dpid);
+	}
+
+	/**
+	 * Receive a notification that an entry is removed.
+	 *
+	 * @param event the notification event for the entry.
+	 */
+	public void entryRemoved(EntryEvent<Long, byte[]> event) {
+	    Long keyLong = event.getKey();
+	    FlowEntryId flowEntryId = new FlowEntryId(keyLong);
+
+	    byte[] valueBytes = event.getValue();
+
+	    //
+	    // Decode the value and deliver the notification
+	    //
+	    Kryo kryo = kryoFactory.newKryo();
+	    Input input = new Input(valueBytes);
+	    Dpid dpid = kryo.readObject(input, Dpid.class);
+	    kryoFactory.deleteKryo(kryo);
+	    flowEventHandlerService.notificationRecvFlowEntryIdRemoved(flowEntryId, dpid);
+	}
+
+	/**
+	 * Receive a notification that an entry is updated.
+	 *
+	 * @param event the notification event for the entry.
+	 */
+	public void entryUpdated(EntryEvent<Long, byte[]> event) {
+	    Long keyLong = event.getKey();
+	    FlowEntryId flowEntryId = new FlowEntryId(keyLong);
+
+	    byte[] valueBytes = event.getValue();
+
+	    //
+	    // Decode the value and deliver the notification
+	    //
+	    Kryo kryo = kryoFactory.newKryo();
+	    Input input = new Input(valueBytes);
+	    Dpid dpid = kryo.readObject(input, Dpid.class);
+	    kryoFactory.deleteKryo(kryo);
+	    flowEventHandlerService.notificationRecvFlowEntryIdUpdated(flowEntryId, dpid);
 	}
 
 	/**
@@ -604,6 +693,11 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	mapFlowId = hazelcastInstance.getMap(mapFlowIdName);
 	mapFlowIdListenerId = mapFlowId.addEntryListener(mapFlowIdListener, true);
 
+	// Initialize the FlowEntryId-related map state
+	mapFlowEntryIdListener = new MapFlowEntryIdListener();
+	mapFlowEntryId = hazelcastInstance.getMap(mapFlowEntryIdName);
+	mapFlowEntryIdListenerId = mapFlowEntryId.addEntryListener(mapFlowEntryIdListener, true);
+
 	// Initialize the Topology-related map state
 	mapTopologyListener = new MapTopologyListener();
 	mapTopology = hazelcastInstance.getMap(mapTopologyName);
@@ -635,6 +729,11 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	mapFlowId.removeEntryListener(mapFlowIdListenerId);
 	mapFlowId = null;
 	mapFlowIdListener = null;
+
+	// Clear the FlowEntryId-related map state
+	mapFlowEntryId.removeEntryListener(mapFlowEntryIdListenerId);
+	mapFlowEntryId = null;
+	mapFlowEntryIdListener = null;
 
 	// Clear the Topology-related map state
 	mapTopology.removeEntryListener(mapTopologyListenerId);
@@ -920,6 +1019,40 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
 
     /**
+     * Get all Flow Entry IDs that are currently in the datagrid.
+     *
+     * @return all Flow Entry IDs that ae currently in the datagrid.
+     */
+    @Override
+    public Collection<Pair<FlowEntryId, Dpid>> getAllFlowEntryIds() {
+	Collection<Pair<FlowEntryId, Dpid>> allFlowEntryIds =
+	    new LinkedList<Pair<FlowEntryId, Dpid>>();
+
+	//
+	// Get all current entries
+	//
+	Kryo kryo = kryoFactory.newKryo();
+	for (Map.Entry<Long, byte[]> entry : mapFlowEntryId.entrySet()) {
+	    Long key = entry.getKey();
+	    byte[] valueBytes = entry.getValue();
+
+	    FlowEntryId flowEntryId = new FlowEntryId(key);
+
+	    //
+	    // Decode the value
+	    //
+	    Input input = new Input(valueBytes);
+	    Dpid dpid = kryo.readObject(input, Dpid.class);
+
+	    Pair<FlowEntryId, Dpid> pair = new Pair(flowEntryId, dpid);
+	    allFlowEntryIds.add(pair);
+	}
+	kryoFactory.deleteKryo(kryo);
+
+	return allFlowEntryIds;
+    }
+
+    /**
      * Send a notification that a FlowId is added.
      *
      * @param flowId the FlowId that is added.
@@ -984,6 +1117,78 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	Set<Long> keySet = mapFlowId.keySet();
 	for (Long key : keySet) {
 	    mapFlowId.removeAsync(key);
+	}
+    }
+
+    /**
+     * Send a notification that a FlowEntryId is added.
+     *
+     * @param flowEntryId the FlowEntryId that is added.
+     * @param dpid the Switch Dpid.
+     */
+    @Override
+    public void notificationSendFlowEntryIdAdded(FlowEntryId flowEntryId,
+						 Dpid dpid) {
+	//
+	// Encode the value
+	//
+	byte[] buffer = new byte[MAX_BUFFER_SIZE];
+	Kryo kryo = kryoFactory.newKryo();
+	Output output = new Output(buffer, -1);
+	kryo.writeObject(output, dpid);
+	byte[] valueBytes = output.toBytes();
+	kryoFactory.deleteKryo(kryo);
+
+	//
+	// Put the entry:
+	//  - Key : FlowEntryId (Long)
+	//  - Value : Serialized Switch Dpid (byte[])
+	//
+	mapFlowEntryId.putAsync(flowEntryId.value(), valueBytes);
+    }
+
+    /**
+     * Send a notification that a FlowEntryId is removed.
+     *
+     * @param flowEntryId the FlowEntryId that is removed.
+     */
+    @Override
+    public void notificationSendFlowEntryIdRemoved(FlowEntryId flowEntryId) {
+	//
+	// Remove the entry:
+	//  - Key : FlowEntryId (Long)
+	//  - Value : Serialized Dpid (byte[])
+	//
+	mapFlowEntryId.removeAsync(flowEntryId.value());
+    }
+
+    /**
+     * Send a notification that a FlowEntryId is updated.
+     *
+     * @param flowEntryId the FlowEntryId that is updated.
+     * @param dpid the Switch Dpid.
+     */
+    @Override
+    public void notificationSendFlowEntryIdUpdated(FlowEntryId flowEntryId,
+						   Dpid dpid) {
+	// NOTE: Adding an entry with an existing key automatically updates it
+	notificationSendFlowEntryIdAdded(flowEntryId, dpid);
+    }
+
+    /**
+     * Send a notification that all Flow Entry IDs are removed.
+     */
+    @Override
+    public void notificationSendAllFlowEntryIdsRemoved() {
+	//
+	// Remove all entries
+	// NOTE: We remove the entries one-by-one so the per-entry
+	// notifications will be delivered.
+	//
+	// mapFlowEntryId.clear();
+	Set<Long> keySet = mapFlowEntryId.keySet();
+	for (Long key : keySet) {
+	    mapFlowEntryId.removeAsync(key);
 	}
     }
 

@@ -19,6 +19,7 @@ import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.DataPath;
+import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.EventEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction;
@@ -30,6 +31,8 @@ import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
+import net.onrc.onos.ofcontroller.util.Pair;
+import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import com.esotericsoftware.kryo2.Kryo;
@@ -45,12 +48,13 @@ import org.slf4j.LoggerFactory;
  * - Recompute impacted FlowPath using cached Topology.
  */
 class FlowEventHandler extends Thread implements IFlowEventHandlerService {
+
+    private boolean enableOnrc2014MeasurementsFlows = true;
+    private boolean enableOnrc2014MeasurementsTopology = true;
+
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
     
-    // Flag to enable feature of acquiring topology information from DB instead of datagrid.
-    private final boolean accessDBFlag = false;
-
     private GraphDBOperation dbHandler;
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
@@ -70,6 +74,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	new LinkedList<EventEntry<FlowEntry>>();
     private List<EventEntry<FlowId>> flowIdEvents =
 	new LinkedList<EventEntry<FlowId>>();
+    private List<EventEntry<Pair<FlowEntryId, Dpid>>> flowEntryIdEvents =
+	new LinkedList<EventEntry<Pair<FlowEntryId, Dpid>>>();
 
     // All internally computed Flow Paths
     private Map<Long, FlowPath> allFlowPaths = new HashMap<Long, FlowPath>();
@@ -98,12 +104,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * @param datagridService the Datagrid Service to use.
      */
     FlowEventHandler(FlowManager flowManager,
-		     IDatagridService datagridService,
-		     GraphDBOperation dbHandler) {
+		     IDatagridService datagridService) {
 	this.flowManager = flowManager;
 	this.datagridService = datagridService;
 	this.topology = new Topology();
-	this.dbHandler = dbHandler;
     }
 
     /**
@@ -117,6 +121,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * Startup processing.
      */
     private void startup() {
+	this.dbHandler = new GraphDBOperation("");
+
 	//
 	// Obtain the initial Topology state
 	//
@@ -156,6 +162,17 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	    flowIdEvents.add(eventEntry);
 	}
 
+	//
+	// Obtain the initial FlowEntryId state
+	//
+	Collection<Pair<FlowEntryId, Dpid>> flowEntryIds =
+	    datagridService.getAllFlowEntryIds();
+	for (Pair<FlowEntryId, Dpid> pair : flowEntryIds) {
+	    EventEntry<Pair<FlowEntryId, Dpid>> eventEntry =
+		new EventEntry<Pair<FlowEntryId, Dpid>>(EventEntry.Type.ENTRY_ADD, pair);
+	    flowEntryIdEvents.add(eventEntry);
+	}
+
 	// Process the initial events (if any)
 	synchronized (allFlowPaths) {
 	    processEvents();
@@ -186,6 +203,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		//  - EventEntry<FlowPath>
 		//  - EventEntry<FlowEntry>
 		//  - EventEntry<FlowId>
+		//  - EventEntry<Pair<FlowEntryId, Dpid>>
 		//
 		for (EventEntry<?> event : collection) {
 		    // Topology event
@@ -220,6 +238,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 			flowIdEvents.add(flowIdEventEntry);
 			continue;
 		    }
+		    // FlowEntryId event
+		    if (event.eventData() instanceof Pair) {
+			EventEntry<Pair<FlowEntryId, Dpid>> flowEntryIdEventEntry =
+			    (EventEntry<Pair<FlowEntryId, Dpid>>)event;
+			flowEntryIdEvents.add(flowEntryIdEventEntry);
+			continue;
+		    }
 		}
 		collection.clear();
 
@@ -239,12 +264,66 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     private void processEvents() {
 	Collection<FlowEntry> modifiedFlowEntries;
 
+	if (enableOnrc2014MeasurementsFlows) {
+
+	    if (topologyEvents.isEmpty() && flowIdEvents.isEmpty() &&
+		flowEntryIdEvents.isEmpty()) {
+		return;		// Nothing to do
+	    }
+
+	    Map<Long, IOFSwitch> mySwitches = flowManager.getMySwitches();
+
+	    // Fetch and prepare my flows
+	    prepareMyFlows(mySwitches);
+
+	    // Process the Flow ID events
+	    processFlowIdEvents(mySwitches);
+
+	    // Fetch the topology
+	    processTopologyEvents();
+
+	    // Recompute all affected Flow Paths and keep only the modified
+	    for (FlowPath flowPath : shouldRecomputeFlowPaths.values()) {
+		if (recomputeFlowPath(flowPath))
+		    modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
+	    }
+
+	    // Assign the Flow Entry ID as needed
+	    for (FlowPath flowPath : modifiedFlowPaths.values()) {
+		for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		    if (! flowEntry.isValidFlowEntryId()) {
+			long id = flowManager.getNextFlowEntryId();
+			flowEntry.setFlowEntryId(new FlowEntryId(id));
+		    }
+		}
+	    }
+
+	    // Extract my modified Flow Entries
+	    modifiedFlowEntries = processFlowEntryIdEvents(mySwitches);
+
+	    //
+	    // Push the modified state to the Flow Manager
+	    //
+	    flowManager.pushModifiedFlowState(modifiedFlowPaths.values(),
+					      modifiedFlowEntries);
+
+	    // Cleanup
+	    topologyEvents.clear();
+	    flowIdEvents.clear();
+	    flowEntryIdEvents.clear();
+	    //
+	    allFlowPaths.clear();
+	    shouldRecomputeFlowPaths.clear();
+	    modifiedFlowPaths.clear();
+
+	    return;
+	}
+
 	if (topologyEvents.isEmpty() && flowPathEvents.isEmpty() &&
 	    flowEntryEvents.isEmpty()) {
 	    return;		// Nothing to do
 	}
 
-	processFlowIdEvents();
 	processFlowPathEvents();
 	processTopologyEvents();
 	processUnmatchedFlowEntryAdd();
@@ -284,7 +363,6 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	topologyEvents.clear();
 	flowPathEvents.clear();
 	flowEntryEvents.clear();
-	flowIdEvents.clear();
 	//
 	shouldRecomputeFlowPaths.clear();
 	modifiedFlowPaths.clear();
@@ -377,39 +455,123 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     }
 
     /**
-     * Process the Flow ID events.
+     * Prepare my flows.
+     *
+     * @param mySwitches the collection of my switches.
      */
-    private void processFlowIdEvents() {
+    private void prepareMyFlows(Map<Long, IOFSwitch> mySwitches) {
+	if (! topologyEvents.isEmpty()) {
+	    // Fetch my flows from the database
+	    ArrayList<FlowPath> myFlows = FlowDatabaseOperation.getAllMyFlows(dbHandler, mySwitches);
+	    for (FlowPath flowPath : myFlows) {
+		log.debug("Found my flow: {}", flowPath);
+
+		allFlowPaths.put(flowPath.flowId().value(), flowPath);
+
+		//
+		// TODO: Bug workaround / fix :
+		// method FlowDatabaseOperation.extractFlowEntry() doesn't
+		// fetch the inPort and outPort, hence we assign them here.
+		//
+		// Assign the inPort and outPort for the Flow Entries
+		for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		    // Set the inPort
+		    do {
+			if (flowEntry.inPort() != null)
+			    break;
+			if (flowEntry.flowEntryMatch() == null)
+			    break;
+			Port inPort = new Port(flowEntry.flowEntryMatch().inPort().value());
+			flowEntry.setInPort(inPort);
+		    } while (false);
+
+		    // Set the outPort
+		    do {
+			if (flowEntry.outPort() != null)
+			    break;
+			for (FlowEntryAction fa : flowEntry.flowEntryActions().actions()) {
+			    if (fa.actionOutput() != null) {
+				Port outPort = new Port(fa.actionOutput().port().value());
+				flowEntry.setOutPort(outPort);
+				break;
+			    }
+			}
+		    } while (false);
+		}
+	    }
+	}
+    }
+
+    /**
+     * Process the Flow ID events.
+     *
+     * @param mySwitches the collection of my switches.
+     */
+    private void processFlowIdEvents(Map<Long, IOFSwitch> mySwitches) {
 	//
-	// Process all Flow ID events and update the appropriate state
+	// Automatically add all Flow ID events (for the Flows this instance
+	// is responsible for) to the collection of Flows to recompute.
 	//
 	for (EventEntry<FlowId> eventEntry : flowIdEvents) {
 	    FlowId flowId = eventEntry.eventData();
 
 	    log.debug("Flow ID Event: {} {}", eventEntry.eventType(), flowId);
 
-	    switch (eventEntry.eventType()) {
-	    case ENTRY_ADD: {
-		//
-		// Add a new Flow ID
-		//
-		// TODO: Implement it!
-
-		break;
+	    FlowPath flowPath = allFlowPaths.get(flowId.value());
+	    if (flowPath == null) {
+		if (! topologyEvents.isEmpty())
+		    continue;		// Optimization: Not my flow
+		Dpid dpid = FlowDatabaseOperation.getFlowSourceDpid(dbHandler,
+								    flowId);
+		if ((dpid != null) && (mySwitches.get(dpid.value()) != null)) {
+		    flowPath = FlowDatabaseOperation.getFlow(dbHandler,
+							     flowId);
+		}
 	    }
-
-	    case ENTRY_REMOVE: {
-		//
-		// Remove an existing Flow ID.
-		//
-		// TODO: Implement it!
-
-		break;
-	    }
+	    if (flowPath != null) {
+		shouldRecomputeFlowPaths.put(flowPath.flowId().value(),
+					     flowPath);
 	    }
 	}
     }
 
+    /**
+     * Process the Flow Entry ID events.
+     *
+     * @param mySwitches the collection of my switches.
+     * @return a collection of modified Flow Entries this instance needs
+     * to push to its own switches.
+     */
+    private Collection<FlowEntry> processFlowEntryIdEvents(Map<Long, IOFSwitch> mySwitches) {
+	List<FlowEntry> modifiedFlowEntries = new LinkedList<FlowEntry>();
+
+	//
+	// Process all Flow ID events and update the appropriate state
+	//
+	for (EventEntry<Pair<FlowEntryId, Dpid>> eventEntry : flowEntryIdEvents) {
+	    Pair<FlowEntryId, Dpid> pair = eventEntry.eventData();
+	    FlowEntryId flowEntryId = pair.first;
+	    Dpid dpid = pair.second;
+
+	    log.debug("Flow Entry ID Event: {} {} {}", eventEntry.eventType(),
+		      flowEntryId, dpid);
+
+	    if (mySwitches.get(dpid.value()) == null)
+		continue;
+
+	    // Fetch the Flow Entry
+	    FlowEntry flowEntry = FlowDatabaseOperation.getFlowEntry(dbHandler,
+								     flowEntryId);
+	    if (flowEntry == null) {
+		log.debug("Flow Entry ID {} : Flow Entry not found!",
+			  flowEntryId);
+		continue;
+	    }
+	    modifiedFlowEntries.add(flowEntry);
+	}
+
+	return modifiedFlowEntries;
+    }
 
     /**
      * Process the Flow Path events.
@@ -497,32 +659,70 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * Process the Topology events.
      */
     private void processTopologyEvents() {
+	boolean isTopologyModified = false;
+
+	if (enableOnrc2014MeasurementsTopology) {
+	    if (topologyEvents.isEmpty())
+		return;
+
+	    // TODO: Code for debugging purpose only
+	    for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
+		TopologyElement topologyElement = eventEntry.eventData();
+		log.debug("Topology Event: {} {}", eventEntry.eventType(),
+			  topologyElement.toString());
+	    }
+
+	    log.debug("[BEFORE] {}", topology.toString());
+
+	    //
+	    // TODO: Fake the unconditional topology read by checking the cache
+	    // with the old topology and ignoring topology events that don't
+	    // make any impact to the topology.
+	    // This is needed aa workaround: if a port is down, we get
+	    // up to three additional "Port Down" or "Link Down" events.
+	    //
+	    for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
+		TopologyElement topologyElement = eventEntry.eventData();
+
+		switch (eventEntry.eventType()) {
+		case ENTRY_ADD:
+		    isTopologyModified |= topology.addTopologyElement(topologyElement);
+		    break;
+		case ENTRY_REMOVE:
+		    isTopologyModified |= topology.removeTopologyElement(topologyElement);
+		    break;
+		}
+		if (isTopologyModified)
+		    break;
+	    }
+	    if (! isTopologyModified) {
+		log.debug("Ignoring topology events that don't modify the topology");
+		return;
+	    }
+
+	    topology.readFromDatabase(dbHandler);
+	    log.debug("[AFTER] {}", topology.toString());
+	    shouldRecomputeFlowPaths.putAll(allFlowPaths);
+	    return;
+	}
+
 	//
 	// Process all Topology events and update the appropriate state
 	//
-	boolean isTopologyModified = false;
-	if (accessDBFlag) {
-		log.debug("[BEFORE] {}", topology.toString());
-		if (! topology.readFromDatabase(dbHandler)) {
-			isTopologyModified = true;
-		}
-		log.debug("[AFTER] {}", topology.toString());
-	} else {
-		for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
-		    TopologyElement topologyElement = eventEntry.eventData();
+	for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
+	    TopologyElement topologyElement = eventEntry.eventData();
 			
-		    log.debug("Topology Event: {} {}", eventEntry.eventType(),
-				      topologyElement.toString());
+	    log.debug("Topology Event: {} {}", eventEntry.eventType(),
+		      topologyElement.toString());
 
-		    switch (eventEntry.eventType()) {
-		    case ENTRY_ADD:
-			isTopologyModified |= topology.addTopologyElement(topologyElement);
-			break;
-		    case ENTRY_REMOVE:
-			isTopologyModified |= topology.removeTopologyElement(topologyElement);
-			break;
-		    }
-		}
+	    switch (eventEntry.eventType()) {
+	    case ENTRY_ADD:
+		isTopologyModified |= topology.addTopologyElement(topologyElement);
+		break;
+	    case ENTRY_REMOVE:
+		isTopologyModified |= topology.removeTopologyElement(topologyElement);
+		break;
+	    }
 	}
 	if (isTopologyModified) {
 	    // TODO: For now, if the topology changes, we recompute all Flows
@@ -788,6 +988,19 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      */
     private boolean recomputeFlowPath(FlowPath flowPath) {
 	boolean hasChanged = false;
+
+	if (enableOnrc2014MeasurementsFlows) {
+	    // Cleanup the deleted Flow Entries from the earlier iteration
+	    flowPath.dataPath().removeDeletedFlowEntries();
+
+	    //
+	    // TODO: Fake it that the Flow Entries have been already pushed
+	    // into the switches, so we don't push them again.
+	    //
+	    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.FE_SWITCH_UPDATED);
+	    }
+	}
 
 	//
 	// Test whether the Flow Path needs to be recomputed
@@ -1079,6 +1292,55 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// NOTE: The ADD and UPDATE events are processed in same way
 	EventEntry<FlowId> eventEntry =
 	    new EventEntry<FlowId>(EventEntry.Type.ENTRY_ADD, flowId);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowEntryId is added.
+     *
+     * @param flowEntryId the FlowEntryId that is added.
+     * @param dpid the Switch Dpid for the corresponding Flow Entry.
+     */
+    @Override
+    public void notificationRecvFlowEntryIdAdded(FlowEntryId flowEntryId,
+						 Dpid dpid) {
+	Pair flowEntryIdPair = new Pair(flowEntryId, dpid);
+
+	EventEntry<Pair<FlowEntryId, Dpid>> eventEntry =
+	    new EventEntry<Pair<FlowEntryId, Dpid>>(EventEntry.Type.ENTRY_ADD, flowEntryIdPair);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowEntryId is removed.
+     *
+     * @param flowEntryId the FlowEntryId that is removed.
+     * @param dpid the Switch Dpid for the corresponding Flow Entry.
+     */
+    @Override
+    public void notificationRecvFlowEntryIdRemoved(FlowEntryId flowEntryId,
+						   Dpid dpid) {
+	Pair flowEntryIdPair = new Pair(flowEntryId, dpid);
+
+	EventEntry<Pair<FlowEntryId, Dpid>> eventEntry =
+	    new EventEntry<Pair<FlowEntryId, Dpid>>(EventEntry.Type.ENTRY_REMOVE, flowEntryIdPair);
+	networkEvents.add(eventEntry);
+    }
+
+    /**
+     * Receive a notification that a FlowEntryId is updated.
+     *
+     * @param flowEntryId the FlowEntryId that is updated.
+     * @param dpid the Switch Dpid for the corresponding Flow Entry.
+     */
+    @Override
+    public void notificationRecvFlowEntryIdUpdated(FlowEntryId flowEntryId,
+						   Dpid dpid) {
+	Pair flowEntryIdPair = new Pair(flowEntryId, dpid);
+
+	// NOTE: The ADD and UPDATE events are processed in same way
+	EventEntry<Pair<FlowEntryId, Dpid>> eventEntry =
+	    new EventEntry<Pair<FlowEntryId, Dpid>>(EventEntry.Type.ENTRY_ADD, flowEntryIdPair);
 	networkEvents.add(eventEntry);
     }
 
