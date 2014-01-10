@@ -56,6 +56,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
     
     private GraphDBOperation dbHandler;
+
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
     private Topology topology;			// The network topology
@@ -717,7 +718,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD:
-		isTopologyModified |= topology.addTopologyElement(topologyElement);
+    	isTopologyModified |= topology.addTopologyElement(topologyElement);
 		break;
 	    case ENTRY_REMOVE:
 		isTopologyModified |= topology.removeTopologyElement(topologyElement);
@@ -1019,6 +1020,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	// Compute the new path
 	DataPath newDataPath = TopologyManager.computeNetworkPath(topology,
 								  flowPath);
+	
 	if (newDataPath == null) {
 	    // We need the DataPath to compare the paths
 	    newDataPath = new DataPath();

@@ -83,7 +83,17 @@ public class GraphDBOperation implements IDBOperation {
 	    }
 	    return null;
 	}
-
+	
+	/**
+     * Get all switch objects.
+     */
+    @Override
+    public Iterable<IPortObject> getAllPorts() {
+        FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+        Iterable<IPortObject> ports =  fg.getVertices("type","port",IPortObject.class);
+        return ports;
+    }
+    
 	/**
 	 * Get all switch objects.
 	 */
@@ -154,7 +164,7 @@ public class GraphDBOperation implements IDBOperation {
 		IPortObject obj = fg.addVertex(null,IPortObject.class);
 		if (obj != null) {
 			obj.setType("port");
-			String id = dpid + portNumber.toString();
+			String id = dpid + PORT_ID_DELIM + portNumber.toString();
 			obj.setPortId(id);
 			obj.setNumber(portNumber);
 		}
@@ -187,7 +197,7 @@ public class GraphDBOperation implements IDBOperation {
 	public IPortObject searchPort(String dpid, Short number) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		if ( fg == null ) return null;
-		String id = dpid + number.toString();
+		String id = dpid + IDBOperation.PORT_ID_DELIM + number.toString();
 		Iterator<IPortObject> ports =  fg.getVertices("port_id",id,IPortObject.class).iterator();
 		if ( ports.hasNext() ) {
 			return ports.next();

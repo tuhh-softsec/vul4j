@@ -6,10 +6,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.IDBOperation;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 
 import org.openflow.util.HexString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
@@ -24,36 +28,37 @@ class Node {
      * paths.
      */
     class Link {
-	public Node me;			// The node this link originates from
-	public Node neighbor;		// The neighbor node on the other side
-	public int myPort;		// Local port ID for the link
-	public int neighborPort;	// Neighbor port ID for the link
+    	public Node me;                        // The node this link originates from
+        public Node neighbor;                // The neighbor node on the other side
+        public int myPort;                // Local port ID for the link
+        public int neighborPort;        // Neighbor port ID for the link
 
-	/**
-	 * Link constructor.
-	 *
-	 * @param me the node this link originates from.
-	 * @param the neighbor node on the other side of the link.
-	 * @param myPort local port ID for the link.
-	 * @param neighborPort neighbor port ID for the link.
-	 */
-	public Link(Node me, Node neighbor, int myPort, int neighborPort) {
-	    this.me = me;
-	    this.neighbor = neighbor;
-	    this.myPort = myPort;
-	    this.neighborPort = neighborPort;
-	}
+        /**
+         * Link constructor.
+         *
+         * @param me the node this link originates from.
+         * @param the neighbor node on the other side of the link.
+         * @param myPort local port ID for the link.
+         * @param neighborPort neighbor port ID for the link.
+         */
+        public Link(Node me, Node neighbor, int myPort, int neighborPort) {
+        	this.me = me;
+        	this.neighbor = neighbor;
+        	this.myPort = myPort;
+        	this.neighborPort = neighborPort;
+        }
     };
 
     public long nodeId;				// The node ID
+    // TODO Change type of PortNumber to Short
     public TreeMap<Integer, Link> links;	// The links from this node:
-						//     (src PortID -> Link)
+						//     (src PortNumber -> Link)
     private TreeMap<Integer, Link> reverseLinksMap; // The links to this node:
-						//     (dst PortID -> Link)
+						//     (dst PortNumber -> Link)
     private TreeMap<Integer, Integer> portsMap;	// The ports on this node:
-						//     (PortID -> PortID)
+						//     (PortNumber -> PortNumber)
 						// TODO: In the future will be:
-						//     (PortID -> Port)
+						//     (PortNumber -> Port)
 
     /**
      * Node constructor.
@@ -187,6 +192,11 @@ class Node {
  * A class for storing topology information.
  */
 public class Topology {
+    private final static Logger log = LoggerFactory.getLogger(Topology.class);
+    
+    // flag to use optimized readFromDatabase() method.
+    private static final boolean enableOptimizedRead = false;
+    
     private Map<Long, Node> nodesMap;	// The dpid->Node mapping
 
     /**
@@ -383,131 +393,171 @@ public class Topology {
      * @param dbHandler the Graph Database handler to use.
      */
     public void readFromDatabase(GraphDBOperation dbHandler) {
-	//
-	// Fetch the relevant info from the Switch and Port vertices
-	// from the Titan Graph.
-	//
-    	nodesMap = new TreeMap<Long,Node>();
-	
-	Iterable<ISwitchObject> activeSwitches = dbHandler.getActiveSwitches();
-	for (ISwitchObject switchObj : activeSwitches) {
-	    Vertex nodeVertex = switchObj.asVertex();
-	    //
-	    // The Switch info
-	    //
-	    String nodeDpid = nodeVertex.getProperty("dpid").toString();
-	    long nodeId = HexString.toLong(nodeDpid);
-	    Node me = nodesMap.get(nodeId);
-	    if (me == null)
-		me = addNode(nodeId);
+    	if (enableOptimizedRead) {
+    		readFromDatabaseBodyOptimized(dbHandler);
+    	} else {
+    		readFromDatabaseBody(dbHandler);
+    	}
 
-	    //
-	    // The local Port info
-	    //
-	    for (Vertex myPortVertex : nodeVertex.getVertices(Direction.OUT, "on")) {
-		// Ignore inactive ports
-		if (! myPortVertex.getProperty("state").toString().equals("ACTIVE"))
-		    continue;
-
-		int myPort = 0;
-		Object obj = myPortVertex.getProperty("number");
-		if (obj instanceof Short) {
-		    myPort = (Short)obj;
-		} else if (obj instanceof Integer) {
-		    myPort = (Integer)obj;
-		}
-		me.addPort(myPort);
-
-		//
-		// The neighbor Port info
-		//
-		for (Vertex neighborPortVertex : myPortVertex.getVertices(Direction.OUT, "link")) {
-		    // Ignore inactive ports
-		    if (! neighborPortVertex.getProperty("state").toString().equals("ACTIVE"))
-			continue;
-
-		    int neighborPort = 0;
-		    obj = neighborPortVertex.getProperty("number");
-		    if (obj instanceof Short) {
-			neighborPort = (Short)obj;
-		    } else if (obj instanceof Integer) {
-			neighborPort = (Integer)obj;
-		    }
-		    //
-		    // The neighbor Switch info
-		    //
-		    for (Vertex neighborVertex : neighborPortVertex.getVertices(Direction.IN, "on")) {
-			// Ignore inactive switches
-			String state = neighborVertex.getProperty("state").toString();
-			if (! state.equals(SwitchState.ACTIVE.toString()))
-			    continue;
-
-			String neighborDpid = neighborVertex.getProperty("dpid").toString();
-			long neighborId = HexString.toLong(neighborDpid);
-			Node neighbor = nodesMap.get(neighborId);
-			if (neighbor == null)
-			    neighbor = addNode(neighborId);
-			neighbor.addPort(neighborPort);
-			me.addLink(myPort, neighbor, neighborPort);
-		    }
-		}
-	    }
-	}
-	dbHandler.commit();
     }
     
-    // TODO Merge into loops in readFromDatabase() can reduce execution time.
-    /**
-     * Check given two topology are identical or not.
-     * @param topo1
-     * @param topo2
-     * @return true if identical
-     */
-    private boolean compareTopology(Map<Long,Node> topo1, Map<Long,Node> topo2) {
-    	if (topo1.size() != topo2.size()) {
-    		return false;
+    private void readFromDatabaseBody(GraphDBOperation dbHandler) {
+    	//
+    	// Fetch the relevant info from the Switch and Port vertices
+    	// from the Titan Graph.
+    	//
+
+    	nodesMap.clear();
+    	Iterable<ISwitchObject> activeSwitches = dbHandler.getActiveSwitches();
+    	for (ISwitchObject switchObj : activeSwitches) {
+    	    Vertex nodeVertex = switchObj.asVertex();
+    	    //
+    	    // The Switch info
+    	    //
+    	    String nodeDpid = nodeVertex.getProperty("dpid").toString();
+    	    long nodeId = HexString.toLong(nodeDpid);
+    	    Node me = nodesMap.get(nodeId);
+    	    if (me == null)
+    		me = addNode(nodeId);
+
+    	    //
+    	    // The local Port info
+    	    //
+    	    for (Vertex myPortVertex : nodeVertex.getVertices(Direction.OUT, "on")) {
+    		// Ignore inactive ports
+    		if (! myPortVertex.getProperty("state").toString().equals("ACTIVE"))
+    		    continue;
+
+    		int myPort = 0;
+    		Object obj = myPortVertex.getProperty("number");
+    		if (obj instanceof Short) {
+    		    myPort = (Short)obj;
+    		} else if (obj instanceof Integer) {
+    		    myPort = (Integer)obj;
+    		}
+    		me.addPort(myPort);
+
+    		for (Vertex neighborPortVertex : myPortVertex.getVertices(Direction.OUT, "link")) {
+    		    // Ignore inactive ports
+    		    if (! neighborPortVertex.getProperty("state").toString().equals("ACTIVE")) {
+    		    	continue;
+    		    }
+
+    		    int neighborPort = 0;
+    		    obj = neighborPortVertex.getProperty("number");
+    		    if (obj instanceof Short) {
+    			neighborPort = (Short)obj;
+    		    } else if (obj instanceof Integer) {
+    			neighborPort = (Integer)obj;
+    		    }
+    		    //
+    		    // The neighbor Switch info
+    		    //
+    		    for (Vertex neighborVertex : neighborPortVertex.getVertices(Direction.IN, "on")) {
+    			// Ignore inactive switches
+    			String state = neighborVertex.getProperty("state").toString();
+    			if (! state.equals(SwitchState.ACTIVE.toString()))
+    			    continue;
+
+    			String neighborDpid = neighborVertex.getProperty("dpid").toString();
+    			long neighborId = HexString.toLong(neighborDpid);
+    			Node neighbor = nodesMap.get(neighborId);
+    			if (neighbor == null)
+    			    neighbor = addNode(neighborId);
+    			neighbor.addPort(neighborPort);
+    			me.addLink(myPort, neighbor, neighborPort);
+    		    }
+    		}
+    	    }
     	}
-    	
-    	for (Map.Entry<Long,Node> nodeEntry : topo1.entrySet()) {
-    		Long dpid = nodeEntry.getKey();
-    		if (! topo2.containsKey(dpid)) {
-    			return false;
-    		}
-    		
-    		Node n1 = nodeEntry.getValue();
-    		Node n2 = topo2.get(dpid);
-    		
-    		// check port identity
-    		if (n1.ports().size() != n2.ports().size()) {
-    			return false;
-    		}
-    		for (Integer port : n1.ports().keySet()) {
-    			if (! n2.ports().containsKey(port)) {
-    				return false;
-    			}
-    		}
-    		
-    		// check link identity
-    		if (n1.links.size() != n2.links.size()) {
-    			return false;
-    		}
-    		for (Map.Entry<Integer, Node.Link> linkEntry : n1.links.entrySet()) {
-    			Integer p1 = linkEntry.getKey();
-    			Node.Link l1 = linkEntry.getValue();
-    			
-    			if (! n2.links.containsKey(p1)) {
-    				return false;
-    			}
-    			Node.Link l2 = n2.links.get(p1);
-    			
-    		   	// Supposition: Link's "me" and "neighbor" is properly set.
-    			if (l1.myPort != l2.myPort ||
-    				l1.neighborPort != l2.neighborPort) {
-    				return false;
-    			}
-    		}
-    	}
-    	return true;
+    	dbHandler.commit();
+    }
+    
+    private void readFromDatabaseBodyOptimized(GraphDBOperation dbHandler) {
+	    nodesMap.clear();
+		    
+		// Load all switches into Map
+		Iterable<ISwitchObject> switches = dbHandler.getAllSwitches();
+		for (ISwitchObject switchObj : switches) {
+		        // Ignore inactive ports
+		    if (!switchObj.getState().equals(SwitchState.ACTIVE.toString())) {
+	            continue;
+		    }
+		    Vertex nodeVertex = switchObj.asVertex();
+		    //
+		    // The Switch info
+		    //
+		    String nodeDpid = nodeVertex.getProperty("dpid").toString();
+		    long nodeId = HexString.toLong(nodeDpid);
+		    addNode(nodeId);
+		}
+		
+		//
+		// Get All Ports
+		//
+		Iterable<IPortObject> ports = dbHandler.getAllPorts(); //TODO: Add to DB operations
+		for (IPortObject myPortObj : ports) {
+		    Vertex myPortVertex = myPortObj.asVertex();
+		    
+		    // Ignore inactive ports
+		    if (! myPortVertex.getProperty("state").toString().equals("ACTIVE")) {
+	            continue;
+		    }
+		    
+		    short myPort = 0;
+		    String idStr = myPortObj.getPortId();
+		    String[] splitter = idStr.split(IDBOperation.PORT_ID_DELIM);
+		    if (splitter.length != 2) {
+	            log.error("Invalid port_id : {}", idStr);
+	            continue;
+		    }
+		    String myDpid = splitter[0];
+		    myPort = Short.parseShort(splitter[1]);
+		    long myId = HexString.toLong(myDpid);
+		    Node me = nodesMap.get(myId);
+		    
+		    if (me == null) {
+		        // cannot proceed ports and switches are out of sync
+		        //TODO: Restart the whole read
+		        continue;
+		    }
+		    
+		    if (me.getPort((int)myPort) == null) {
+	            me.addPort((int)myPort);
+		    } else if (me.getLink((int)myPort) != null) {
+		        // Link already added..probably by neighbor
+		        continue;
+		    }
+		
+		    //
+		    // The neighbor Port info
+		    //
+		    for (Vertex neighborPortVertex : myPortVertex.getVertices(Direction.OUT, "link")) {
+		        // Ignore inactive ports
+		        if (! neighborPortVertex.getProperty("state").toString().equals("ACTIVE")) {
+	                continue;
+		        }
+		        int neighborPort = 0;
+		        idStr = neighborPortVertex.getProperty("port_id").toString();
+		        splitter = idStr.split(IDBOperation.PORT_ID_DELIM);
+		        if (splitter.length != 2) {
+	                log.error("Invalid port_id : {}", idStr);
+	                continue;
+		        }
+		        String neighborDpid = splitter[0];
+		        neighborPort = Short.parseShort(splitter[1]);
+		        long neighborId = HexString.toLong(neighborDpid);                                
+		        Node neighbor = nodesMap.get(neighborId);
+		        if (neighbor == null) {
+	                continue;
+		        }
+		        if (neighbor.getPort(neighborPort) == null) {
+		        	neighbor.addPort(neighborPort);
+		        }
+		        me.addLink(myPort, neighbor, neighborPort);
+		    }
+		}
+		dbHandler.commit();
     }
     
     // Only for debug use

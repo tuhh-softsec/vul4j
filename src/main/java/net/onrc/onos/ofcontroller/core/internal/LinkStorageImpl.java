@@ -482,6 +482,8 @@ public class LinkStorageImpl implements ILinkStorage {
 				log.debug("LinkStorageImpl:addLinkImpl failed link exists {} {} src {} dst {}",
 						new Object[]{op, lt, vportSrc, vportDst});
 			}
+		} else {
+			log.error("Ports not found : {}", lt);
 		}
 
 		return success;
