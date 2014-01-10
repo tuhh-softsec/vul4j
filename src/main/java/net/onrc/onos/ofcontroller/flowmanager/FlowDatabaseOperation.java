@@ -663,7 +663,7 @@ public class FlowDatabaseOperation {
      * @param flowObj the object to extract the Flow Path State from.
      * @return the extracted Flow Path State.
      */
-    private static FlowPath extractFlowPath(IFlowPath flowObj) {
+    static FlowPath extractFlowPath(IFlowPath flowObj) {
 	//
 	// Extract the Flow state
 	//
