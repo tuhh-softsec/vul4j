@@ -6,12 +6,12 @@ import java.util.Map;
 import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 
-public class FlowProperty {
+public class FlowEntryProperty {
     private Map<String, Object> map = new HashMap<>();
     private DBOperation dbhandler;
     private IFlowEntry flowEntry;
     
-    public FlowProperty(DBOperation dbHandler, IFlowEntry flowEntry) {
+    public FlowEntryProperty(DBOperation dbHandler, IFlowEntry flowEntry) {
         this.dbhandler = dbHandler;
         this.flowEntry = flowEntry;
     }
@@ -145,6 +145,6 @@ public class FlowProperty {
      * @param dbhandler
      */
     public void commitProperties() {
-        dbhandler.setFlowProperties(flowEntry ,map);
+        dbhandler.setVertexProperties(flowEntry.asVertex() ,map);
     }
 }

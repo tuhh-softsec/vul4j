@@ -430,10 +430,21 @@ public abstract class DBOperation implements IDBOperation {
 	}
 
 	@Override
-	public void setFlowProperties(IFlowEntry flowEntry, Map<String, Object> map) {
+	public void setVertexProperties(Vertex vertex, Map<String, Object> map) {
 		log.debug("setProperties start: size {}", map.size());
-		RamCloudVertex v = (RamCloudVertex) flowEntry.asVertex();
+		RamCloudVertex v = (RamCloudVertex) vertex;
 		v.setProperties(map);
 		log.debug("setProperties end: size {}, id {}", map.size(), v.getId());
+	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for(ISwitchObject sw: getAllSwitches()) {
+			sb.append("sw: " + sw.getDPID() + "\n");
+			for(IPortObject port: sw.getPorts()) {
+				sb.append("  port: " + port.getPortId() + "\n");
+			}
+		}
+		return sb.toString();
 	}
 }
