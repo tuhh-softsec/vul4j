@@ -165,7 +165,10 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         if (issuerSerialType != null) {
             if (issuerSerialType.getX509IssuerName() == null
                     || issuerSerialType.getX509SerialNumber() == null
-                    || securityProperties.getSignatureVerificationKey() == null) {
+                    || SecurityTokenConstants.KeyUsage_Signature_Verification.equals(keyUsage)
+                        && securityProperties.getSignatureVerificationKey() == null
+                    || SecurityTokenConstants.KeyUsage_Decryption.equals(keyUsage)
+                        && securityProperties.getDecryptionKey() == null) {
                 throw new XMLSecurityException("stax.noKey", keyUsage);
             }
             X509IssuerSerialSecurityToken token =
