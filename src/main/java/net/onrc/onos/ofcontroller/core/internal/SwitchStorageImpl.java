@@ -226,7 +226,9 @@ public class SwitchStorageImpl implements ISwitchStorage {
                         if (startPortTime != 0) {
                             log.error("Performance @@ port add total time {} no of ports written {}", endPortTime - startPortTime, noOfPorts);
                         }
-                        log.error("Performance && total time for add switch {}", totalEndTime - totalStartTime);
+			if (totalStartTime != 0) {
+			    log.error("Performance && total time for add switch {}", totalEndTime - totalStartTime);
+			}
 			success = true;
 		} catch (Exception e) {
 			op.rollback();
