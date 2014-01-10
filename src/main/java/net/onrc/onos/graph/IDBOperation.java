@@ -9,6 +9,8 @@ import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
 public interface IDBOperation {
+	public static final String PORT_ID_DELIM = "@";
+	
 	public ISwitchObject newSwitch(String dpid);
 	public ISwitchObject searchSwitch(String dpid);
 	public ISwitchObject searchActiveSwitch(String dpid);
@@ -44,5 +46,5 @@ public interface IDBOperation {
 	public void commit();
 	public void rollback();
 	public void close();
-	
+	Iterable<IPortObject> getAllPorts();
 }

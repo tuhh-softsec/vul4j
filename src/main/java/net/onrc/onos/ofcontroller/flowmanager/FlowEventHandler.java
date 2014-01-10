@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -56,6 +58,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
     
     private GraphDBOperation dbHandler;
+
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
     private Topology topology;			// The network topology
@@ -717,10 +720,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD:
-		isTopologyModified |= topology.addTopologyElement(topologyElement);
+    	synchronized (topology) {
+    		isTopologyModified |= topology.addTopologyElement(topologyElement);
+    	}
 		break;
 	    case ENTRY_REMOVE:
-		isTopologyModified |= topology.removeTopologyElement(topologyElement);
+    	synchronized (topology) {
+    		isTopologyModified |= topology.removeTopologyElement(topologyElement);
+    	}
 		break;
 	    }
 	}
@@ -1017,8 +1024,12 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	DataPath oldDataPath = flowPath.dataPath();
 
 	// Compute the new path
-	DataPath newDataPath = TopologyManager.computeNetworkPath(topology,
+	DataPath newDataPath;
+	synchronized (topology) {
+	newDataPath = TopologyManager.computeNetworkPath(topology,
 								  flowPath);
+	}
+	
 	if (newDataPath == null) {
 	    // We need the DataPath to compare the paths
 	    newDataPath = new DataPath();
