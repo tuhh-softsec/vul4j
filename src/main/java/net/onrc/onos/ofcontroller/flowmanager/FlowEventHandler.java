@@ -659,6 +659,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      * Process the Topology events.
      */
     private void processTopologyEvents() {
+	boolean isTopologyModified = false;
+
 	if (enableOnrc2014MeasurementsTopology) {
 	    if (topologyEvents.isEmpty())
 		return;
@@ -670,14 +672,15 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 			  topologyElement.toString());
 	    }
 
+	    log.debug("[BEFORE] {}", topology.toString());
+
 	    //
-	    // TODO: Fake the topology read it by checking the cache with
-	    // the old topology and ignoring topology events that don't make
-	    // any impact to the topology.
+	    // TODO: Fake the unconditional topology read by checking the cache
+	    // with the old topology and ignoring topology events that don't
+	    // make any impact to the topology.
 	    // This is needed aa workaround: if a port is down, we get
 	    // up to three additional "Port Down" or "Link Down" events.
 	    //
-	    boolean isTopologyModified = false;
 	    for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
 		TopologyElement topologyElement = eventEntry.eventData();
 
@@ -697,7 +700,6 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 		return;
 	    }
 
-	    log.debug("[BEFORE] {}", topology.toString());
 	    topology.readFromDatabase(dbHandler);
 	    log.debug("[AFTER] {}", topology.toString());
 	    shouldRecomputeFlowPaths.putAll(allFlowPaths);
@@ -707,7 +709,6 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	//
 	// Process all Topology events and update the appropriate state
 	//
-	boolean isTopologyModified = false;
 	for (EventEntry<TopologyElement> eventEntry : topologyEvents) {
 	    TopologyElement topologyElement = eventEntry.eventData();
 			
