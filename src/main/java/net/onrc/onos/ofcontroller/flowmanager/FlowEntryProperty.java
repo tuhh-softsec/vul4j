@@ -145,6 +145,6 @@ public class FlowEntryProperty {
      * @param dbhandler
      */
     public void commitProperties() {
-        dbhandler.setFlowProperties(flowEntry ,map);
+        dbhandler.setVertexProperties(flowEntry.asVertex() ,map);
     }
 }

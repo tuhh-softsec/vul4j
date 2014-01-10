@@ -2,6 +2,8 @@ package net.onrc.onos.graph;
 
 import java.util.Map;
 
+import com.tinkerpop.blueprints.Vertex;
+
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
@@ -42,7 +44,7 @@ public interface IDBOperation {
 	public Iterable<IFlowEntry> getAllFlowEntries();
 	public void removeFlowEntry(IFlowEntry flowEntry);
 
-	public void setFlowProperties(IFlowEntry flowEntry, Map<String, Object> map);
+	public void setVertexProperties(Vertex vertex, Map<String, Object> map);
 
 	public IDBConnection getDBConnection();	
 	public void commit();
