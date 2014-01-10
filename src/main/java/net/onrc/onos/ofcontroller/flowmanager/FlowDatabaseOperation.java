@@ -421,7 +421,7 @@ public class FlowDatabaseOperation {
 	    startSetProperties = System.nanoTime();
 	}
 
-	FlowProperty flowProp = new FlowProperty(dbHandler, flowEntryObj);
+	FlowEntryProperty flowProp = new FlowEntryProperty(dbHandler, flowEntryObj);
 
 	//
 	// Set the Flow Entry key:
