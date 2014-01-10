@@ -416,6 +416,7 @@ public class Topology {
 		} else if (obj instanceof Integer) {
 		    myPort = (Integer)obj;
 		}
+		me.addPort(myPort);
 
 		//
 		// The neighbor Port info
@@ -446,6 +447,7 @@ public class Topology {
 			Node neighbor = nodesMap.get(neighborId);
 			if (neighbor == null)
 			    neighbor = addNode(neighborId);
+			neighbor.addPort(neighborPort);
 			me.addLink(myPort, neighbor, neighborPort);
 		    }
 		}
