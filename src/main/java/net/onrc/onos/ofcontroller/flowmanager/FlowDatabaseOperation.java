@@ -128,12 +128,14 @@ public class FlowDatabaseOperation {
 	if ( measureONOSFlowTimeProp ) {
 		startSettingFlowPathProps = System.nanoTime();
 	}
+
+	FlowPathProperty flowProp = new FlowPathProperty(dbHandler, flowObj);
+
 	//
 	// Set the Flow key:
 	// - flowId
 	//
-	flowObj.setFlowId(flowPath.flowId().toString());
-	flowObj.setType("flow");
+	flowProp.setFlowId(flowPath.flowId().toString());
 	if ( measureONOSFlowTimeProp ) {
 	    numPropsSet += 2;
 	}
@@ -161,101 +163,103 @@ public class FlowDatabaseOperation {
 	// - flowPath.matchDstTcpUdpPort()
 	// - flowPath.flowEntryActions()
 	//
-	flowObj.setInstallerId(flowPath.installerId().toString());
-	flowObj.setFlowPathType(flowPath.flowPathType().toString());
-	flowObj.setFlowPathUserState(flowPath.flowPathUserState().toString());
-	flowObj.setFlowPathFlags(flowPath.flowPathFlags().flags());
-	flowObj.setIdleTimeout(flowPath.idleTimeout());
-	flowObj.setHardTimeout(flowPath.hardTimeout());
-	flowObj.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
-	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
-	flowObj.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
-	flowObj.setDstPort(flowPath.dataPath().dstPort().port().value());
+	flowProp.setInstallerId(flowPath.installerId().toString());
+	flowProp.setFlowPathType(flowPath.flowPathType().toString());
+	flowProp.setFlowPathUserState(flowPath.flowPathUserState().toString());
+	flowProp.setFlowPathFlags(flowPath.flowPathFlags().flags());
+	flowProp.setIdleTimeout(flowPath.idleTimeout());
+	flowProp.setHardTimeout(flowPath.hardTimeout());
+	flowProp.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
+	flowProp.setSrcPort(flowPath.dataPath().srcPort().port().value());
+	flowProp.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
+	flowProp.setDstPort(flowPath.dataPath().dstPort().port().value());
 	if ( measureONOSFlowTimeProp ) {
 	    numPropsSet += 10;
 	}
 
 	if (flowPath.flowEntryMatch().matchSrcMac()) {
-	    flowObj.setMatchSrcMac(flowPath.flowEntryMatch().srcMac().toString());
+	    flowProp.setMatchSrcMac(flowPath.flowEntryMatch().srcMac().toString());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchDstMac()) {
-	    flowObj.setMatchDstMac(flowPath.flowEntryMatch().dstMac().toString());
+	    flowProp.setMatchDstMac(flowPath.flowEntryMatch().dstMac().toString());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchEthernetFrameType()) {
-	    flowObj.setMatchEthernetFrameType(flowPath.flowEntryMatch().ethernetFrameType());
+	    flowProp.setMatchEthernetFrameType(flowPath.flowEntryMatch().ethernetFrameType());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchVlanId()) {
-	    flowObj.setMatchVlanId(flowPath.flowEntryMatch().vlanId());
+	    flowProp.setMatchVlanId(flowPath.flowEntryMatch().vlanId());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchVlanPriority()) {
-	    flowObj.setMatchVlanPriority(flowPath.flowEntryMatch().vlanPriority());
+	    flowProp.setMatchVlanPriority(flowPath.flowEntryMatch().vlanPriority());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchSrcIPv4Net()) {
-	    flowObj.setMatchSrcIPv4Net(flowPath.flowEntryMatch().srcIPv4Net().toString());
+	    flowProp.setMatchSrcIPv4Net(flowPath.flowEntryMatch().srcIPv4Net().toString());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchDstIPv4Net()) {
-	    flowObj.setMatchDstIPv4Net(flowPath.flowEntryMatch().dstIPv4Net().toString());
+	    flowProp.setMatchDstIPv4Net(flowPath.flowEntryMatch().dstIPv4Net().toString());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchIpProto()) {
-	    flowObj.setMatchIpProto(flowPath.flowEntryMatch().ipProto());
+	    flowProp.setMatchIpProto(flowPath.flowEntryMatch().ipProto());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchIpToS()) {
-	    flowObj.setMatchIpToS(flowPath.flowEntryMatch().ipToS());
+	    flowProp.setMatchIpToS(flowPath.flowEntryMatch().ipToS());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchSrcTcpUdpPort()) {
-	    flowObj.setMatchSrcTcpUdpPort(flowPath.flowEntryMatch().srcTcpUdpPort());
+	    flowProp.setMatchSrcTcpUdpPort(flowPath.flowEntryMatch().srcTcpUdpPort());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (flowPath.flowEntryMatch().matchDstTcpUdpPort()) {
-	    flowObj.setMatchDstTcpUdpPort(flowPath.flowEntryMatch().dstTcpUdpPort());
+	    flowProp.setMatchDstTcpUdpPort(flowPath.flowEntryMatch().dstTcpUdpPort());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
 	if (! flowPath.flowEntryActions().actions().isEmpty()) {
-	    flowObj.setActions(flowPath.flowEntryActions().toString());
+	    flowProp.setActions(flowPath.flowEntryActions().toString());
 		if ( measureONOSFlowTimeProp ) {
 		    ++numPropsSet;
 		}
 	}
-	flowObj.setDataPathSummary(flowPath.dataPath().dataPathSummary());
+	flowProp.setDataPathSummary(flowPath.dataPath().dataPathSummary());
 	if ( measureONOSFlowTimeProp ) {
 	    ++numPropsSet;
 	}
 
 	if (found)
-	    flowObj.setFlowPathUserState("FP_USER_MODIFY");
+	    flowProp.setFlowPathUserState("FP_USER_MODIFY");
 	else
-	    flowObj.setFlowPathUserState("FP_USER_ADD");
+	    flowProp.setFlowPathUserState("FP_USER_ADD");
+
+	flowProp.commitProperties();
 
 	if ( measureONOSFlowTimeProp ) {
 	    ++numPropsSet;
@@ -852,6 +856,7 @@ public class FlowDatabaseOperation {
 	//
 	// Extract the Flow state
 	//
+    log.info("extractFlowPath: start");
 	String flowIdStr = flowObj.getFlowId();
 	String installerIdStr = flowObj.getInstallerId();
 	String flowPathType = flowObj.getFlowPathType();
@@ -875,7 +880,8 @@ public class FlowDatabaseOperation {
 	    (srcPortShort == null) ||
 	    (dstSwitchStr == null) ||
 	    (dstPortShort == null)) {
-	    // TODO: A work-around, becauuse of some bogus database objects
+	    // TODO: A work-around, because of some bogus database objects
+	    log.error("extractFlowPath: wrong properties");
 	    return null;
 	}
 
@@ -954,6 +960,7 @@ public class FlowDatabaseOperation {
 	    flowPath.dataPath().flowEntries().add(flowEntry);
 	}
 
+    log.info("extractFlowPath: end");
 	return flowPath;
     }
 
@@ -964,9 +971,12 @@ public class FlowDatabaseOperation {
      * @return the extracted Flow Entry State.
      */
     public static FlowEntry extractFlowEntry(IFlowEntry flowEntryObj) {
+	log.info("extractFlowEntry: start");
 	IFlowPath flowObj = flowEntryObj.getFlow();
-	if (flowObj == null)
+	if (flowObj == null) {
+		log.error("extractFlowEntry: no flowPath exists");
 	    return null;
+	}
 
 	String flowIdStr = flowObj.getFlowId();
 	//
@@ -985,6 +995,7 @@ public class FlowDatabaseOperation {
 	    (userState == null) ||
 	    (switchState == null)) {
 	    // TODO: A work-around, because of some bogus database objects
+		log.error("extractFlowEntry: wrong properties");
 	    return null;
 	}
 
@@ -1050,6 +1061,7 @@ public class FlowDatabaseOperation {
 	//
 	// TODO: Take care of FlowEntryErrorState.
 	//
+	log.info("extractFlowEntry: end");
 	return flowEntry;
     }
 }
