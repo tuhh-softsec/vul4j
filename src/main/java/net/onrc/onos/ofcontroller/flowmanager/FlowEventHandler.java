@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -720,14 +718,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	    switch (eventEntry.eventType()) {
 	    case ENTRY_ADD:
-    	synchronized (topology) {
-    		isTopologyModified |= topology.addTopologyElement(topologyElement);
-    	}
+    	isTopologyModified |= topology.addTopologyElement(topologyElement);
 		break;
 	    case ENTRY_REMOVE:
-    	synchronized (topology) {
-    		isTopologyModified |= topology.removeTopologyElement(topologyElement);
-    	}
+		isTopologyModified |= topology.removeTopologyElement(topologyElement);
 		break;
 	    }
 	}
@@ -1024,11 +1018,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 	DataPath oldDataPath = flowPath.dataPath();
 
 	// Compute the new path
-	DataPath newDataPath;
-	synchronized (topology) {
-	newDataPath = TopologyManager.computeNetworkPath(topology,
+	DataPath newDataPath = TopologyManager.computeNetworkPath(topology,
 								  flowPath);
-	}
 	
 	if (newDataPath == null) {
 	    // We need the DataPath to compare the paths
