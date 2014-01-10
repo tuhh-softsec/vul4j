@@ -51,11 +51,11 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
 
     // Flag to refresh Topology object periodically
-    private final static boolean refreshTopology = true;
+    private final static boolean refreshTopology = false;
     // Refresh delay(ms)
     private final static long refreshTopologyDelay = 5000;
     // Refresh interval(ms)
-    private final static long refreshTopologyInterval = 5000;
+    private final static long refreshTopologyInterval = 2000;
     private Timer refreshTopologyTimer;
 
     private FlowManager flowManager;		// The Flow Manager to use
