@@ -726,7 +726,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param modifiedFlowPaths the collection of Flow Paths to write.
      */
-    private void writeModifiedFlowPathsToDatabase(
+    void writeModifiedFlowPathsToDatabase(
 		Collection<FlowPath> modifiedFlowPaths) {
 	if (modifiedFlowPaths.isEmpty())
 	    return;
