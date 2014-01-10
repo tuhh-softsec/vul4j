@@ -1250,6 +1250,12 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
     @Override
     public void notificationRecvFlowEntryRemoved(FlowEntry flowEntry) {
 	if (enableOnrc2014MeasurementsFlows) {
+	    //
+	    // NOTE: Must update the state to DELETE, because
+	    // the notification contains the original state.
+	    //
+	    flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
+
 	    Collection entries = new ArrayList();
 	    entries.add(flowEntry);
 	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
