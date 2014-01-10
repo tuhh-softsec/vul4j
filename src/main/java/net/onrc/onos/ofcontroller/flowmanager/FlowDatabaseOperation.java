@@ -172,13 +172,9 @@ public class FlowDatabaseOperation {
 	// flowPath.dataPath().flowEntries()
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    // TODO: not needed?
-	    /*
-	    if (! enableOnrc2014MeasurementsFlows) {
-		if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
-		    continue;	// Skip: all Flow Entries were deleted earlier
+	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE) {
+		continue;	// Skip: all Flow Entries were deleted earlier
 	    }
-	    */
 
 	    if (addFlowEntry(dbHandler, flowObj, flowEntry) == null) {
 		dbHandler.rollback();
