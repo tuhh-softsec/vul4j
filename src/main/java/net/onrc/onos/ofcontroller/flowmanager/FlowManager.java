@@ -549,7 +549,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param modifiedFlowEntries the collection of modified Flow Entries.
      */
-    private void pushModifiedFlowEntriesToSwitches(
+    void pushModifiedFlowEntriesToSwitches(
 			Collection<FlowEntry> modifiedFlowEntries) {
 	if (modifiedFlowEntries.isEmpty())
 	    return;
@@ -824,10 +824,31 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	    if (enableOnrc2014MeasurementsFlows) {
 		// Send the notifications
+
 		for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		    /* TODO: Not needed?
 		    if (flowEntry.flowEntrySwitchState() ==
 			FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
 			datagridService.notificationSendFlowEntryIdAdded(flowEntry.flowEntryId(), flowEntry.dpid());
+		    }
+		    */
+
+		    //
+		    // Write the Flow Entry to the Datagrid
+		    //
+		    switch (flowEntry.flowEntryUserState()) {
+		    case FE_USER_ADD:
+			datagridService.notificationSendFlowEntryAdded(flowEntry);
+			break;
+		    case FE_USER_MODIFY:
+			datagridService.notificationSendFlowEntryUpdated(flowEntry);
+			break;
+		    case FE_USER_DELETE:
+			datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+			break;
+		    case FE_USER_UNKNOWN:
+			assert(false);
+			break;
 		    }
 		}
 	    }

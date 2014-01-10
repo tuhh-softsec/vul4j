@@ -1230,6 +1230,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      */
     @Override
     public void notificationRecvFlowEntryAdded(FlowEntry flowEntry) {
+	if (enableOnrc2014MeasurementsFlows) {
+	    Collection entries = new ArrayList();
+	    entries.add(flowEntry);
+	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
+	    return;
+	}
+
 	EventEntry<FlowEntry> eventEntry =
 	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
 	networkEvents.add(eventEntry);
@@ -1242,6 +1249,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      */
     @Override
     public void notificationRecvFlowEntryRemoved(FlowEntry flowEntry) {
+	if (enableOnrc2014MeasurementsFlows) {
+	    Collection entries = new ArrayList();
+	    entries.add(flowEntry);
+	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
+	    return;
+	}
+
 	EventEntry<FlowEntry> eventEntry =
 	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_REMOVE, flowEntry);
 	networkEvents.add(eventEntry);
@@ -1254,6 +1268,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
      */
     @Override
     public void notificationRecvFlowEntryUpdated(FlowEntry flowEntry) {
+	if (enableOnrc2014MeasurementsFlows) {
+	    Collection entries = new ArrayList();
+	    entries.add(flowEntry);
+	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
+	    return;
+	}
+
 	// NOTE: The ADD and UPDATE events are processed in same way
 	EventEntry<FlowEntry> eventEntry =
 	    new EventEntry<FlowEntry>(EventEntry.Type.ENTRY_ADD, flowEntry);
