@@ -19,6 +19,8 @@ import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowEntrySwitchState;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
@@ -262,8 +264,30 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	    boolean success = FlowDatabaseOperation.addFlow(dbHandler, flowPath);
 	    if(success) {
 		if(datagridService != null) {
-		    datagridService.notificationSendFlowIdAdded(flowPath.flowId(),
-			    flowPath.dataPath().srcPort().dpid());
+		    // Send notifications for each Flow Entry
+		    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+			if (flowEntry.flowEntrySwitchState() !=
+			    FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
+			    continue;
+			}
+			//
+			// Write the Flow Entry to the Datagrid
+			//
+			switch (flowEntry.flowEntryUserState()) {
+			case FE_USER_ADD:
+			    datagridService.notificationSendFlowEntryAdded(flowEntry);
+			    break;
+			case FE_USER_MODIFY:
+			    datagridService.notificationSendFlowEntryUpdated(flowEntry);
+			    break;
+			case FE_USER_DELETE:
+			    datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+			    break;
+			case FE_USER_UNKNOWN:
+			    assert(false);
+			    break;
+			}
+		    }
 		}
 	    }
 	    else {
