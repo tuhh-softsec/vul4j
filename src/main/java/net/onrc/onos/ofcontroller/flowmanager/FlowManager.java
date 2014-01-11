@@ -772,11 +772,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 		} while (retry);
 
-		if (enableOnrc2014MeasurementsFlows) {
-		    // Send the notification
-		    datagridService.notificationSendFlowIdRemoved(flowPath.flowId());
-		}
-
 		continue;
 	    }
 
