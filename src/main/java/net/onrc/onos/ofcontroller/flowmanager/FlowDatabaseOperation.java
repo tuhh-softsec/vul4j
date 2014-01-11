@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
  * Class for performing Flow-related operations on the Database.
  */
 public class FlowDatabaseOperation {
-    static private boolean enableOnrc2014MeasurementsFlows = true;
-
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
 
     /**
@@ -172,9 +170,8 @@ public class FlowDatabaseOperation {
 	// flowPath.dataPath().flowEntries()
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE) {
+	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
 		continue;	// Skip: all Flow Entries were deleted earlier
-	    }
 
 	    if (addFlowEntry(dbHandler, flowObj, flowEntry) == null) {
 		dbHandler.rollback();
@@ -313,15 +310,7 @@ public class FlowDatabaseOperation {
 	    flowEntryObj.setActions(flowEntry.flowEntryActions().toString());
 	}
 
-	// TODO: Hacks with hard-coded state names!
-	if (enableOnrc2014MeasurementsFlows) {
-	    flowEntryObj.setUserState(flowEntry.flowEntryUserState().toString());
-	} else {
-	    if (found)
-		flowEntryObj.setUserState("FE_USER_MODIFY");
-	    else
-		flowEntryObj.setUserState("FE_USER_ADD");
-	}
+	flowEntryObj.setUserState(flowEntry.flowEntryUserState().toString());
 	flowEntryObj.setSwitchState(flowEntry.flowEntrySwitchState().toString());
 	//
 	// TODO: Take care of the FlowEntryErrorState.
