@@ -4,8 +4,11 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Map;
+
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.graph.DBOperation;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IBaseObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
@@ -16,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.impls.ramcloud.PerfMon;
+import com.tinkerpop.blueprints.impls.ramcloud.RamCloudVertex;
 
 /**
  * Class for performing Flow-related operations on the Database.
@@ -847,17 +851,46 @@ public class FlowDatabaseOperation {
 	// Extract the Flow state
 	//
     log.info("extractFlowPath: start");
-	String flowIdStr = flowObj.getFlowId();
-	String installerIdStr = flowObj.getInstallerId();
-	String flowPathType = flowObj.getFlowPathType();
-	String flowPathUserState = flowObj.getFlowPathUserState();
-	Long flowPathFlags = flowObj.getFlowPathFlags();
-	Integer idleTimeout = flowObj.getIdleTimeout();
-	Integer hardTimeout = flowObj.getHardTimeout();
-	String srcSwitchStr = flowObj.getSrcSwitch();
-	Short srcPortShort = flowObj.getSrcPort();
-	String dstSwitchStr = flowObj.getDstSwitch();
-	Short dstPortShort = flowObj.getDstPort();
+	String flowIdStr;
+	String installerIdStr;
+	String flowPathType;
+	String flowPathUserState;
+	Long flowPathFlags;
+	Integer idleTimeout;
+	Integer hardTimeout;
+	String srcSwitchStr;
+	Short srcPortShort;
+	String dstSwitchStr;
+	Short dstPortShort;
+
+	if ( flowObj.asVertex() instanceof RamCloudVertex ) {
+	    RamCloudVertex v = (RamCloudVertex)flowObj.asVertex();
+	    Map<String,Object> propMap = v.getProperties();
+
+	    flowIdStr = (String) propMap.get("flow_id");
+	    installerIdStr = (String) propMap.get("installer_id");
+	    flowPathType = (String) propMap.get("flow_path_type");
+	    flowPathUserState = (String) propMap.get("user_state");
+	    flowPathFlags = (Long)propMap.get("flow_path_flags");
+	    idleTimeout = (Integer) propMap.get("idle_timeout");
+	    hardTimeout = (Integer) propMap.get("hard_timeout");
+	    srcSwitchStr = (String) propMap.get("src_switch");
+	    srcPortShort = (Short)propMap.get("src_port");
+	    dstSwitchStr = (String) propMap.get("dst_switch");
+	    dstPortShort = (Short)propMap.get("dst_port");
+	} else {
+	    flowIdStr = flowObj.getFlowId();
+	    installerIdStr = flowObj.getInstallerId();
+	    flowPathType = flowObj.getFlowPathType();
+	    flowPathUserState = flowObj.getFlowPathUserState();
+	    flowPathFlags = flowObj.getFlowPathFlags();
+	    idleTimeout = flowObj.getIdleTimeout();
+	    hardTimeout = flowObj.getHardTimeout();
+	    srcSwitchStr = flowObj.getSrcSwitch();
+	    srcPortShort = flowObj.getSrcPort();
+	    dstSwitchStr = flowObj.getDstSwitch();
+	    dstPortShort = flowObj.getDstPort();
+	}
 
 	if ((flowIdStr == null) ||
 	    (installerIdStr == null) ||
@@ -891,40 +924,7 @@ public class FlowDatabaseOperation {
 	// Extract the match conditions common for all Flow Entries
 	//
 	{
-	    FlowEntryMatch match = new FlowEntryMatch();
-	    String matchSrcMac = flowObj.getMatchSrcMac();
-	    if (matchSrcMac != null)
-		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
-	    String matchDstMac = flowObj.getMatchDstMac();
-	    if (matchDstMac != null)
-		match.enableDstMac(MACAddress.valueOf(matchDstMac));
-	    Short matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
-	    if (matchEthernetFrameType != null)
-		match.enableEthernetFrameType(matchEthernetFrameType);
-	    Short matchVlanId = flowObj.getMatchVlanId();
-	    if (matchVlanId != null)
-		match.enableVlanId(matchVlanId);
-	    Byte matchVlanPriority = flowObj.getMatchVlanPriority();
-	    if (matchVlanPriority != null)
-		match.enableVlanPriority(matchVlanPriority);
-	    String matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
-	    if (matchSrcIPv4Net != null)
-		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-	    String matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
-	    if (matchDstIPv4Net != null)
-		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
-	    Byte matchIpProto = flowObj.getMatchIpProto();
-	    if (matchIpProto != null)
-		match.enableIpProto(matchIpProto);
-	    Byte matchIpToS = flowObj.getMatchIpToS();
-	    if (matchIpToS != null)
-		match.enableIpToS(matchIpToS);
-	    Short matchSrcTcpUdpPort = flowObj.getMatchSrcTcpUdpPort();
-	    if (matchSrcTcpUdpPort != null)
-		match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
-	    Short matchDstTcpUdpPort = flowObj.getMatchDstTcpUdpPort();
-	    if (matchDstTcpUdpPort != null)
-		match.enableDstTcpUdpPort(matchDstTcpUdpPort);
+	    FlowEntryMatch match = extractMatch(flowObj);
 
 	    flowPath.setFlowEntryMatch(match);
 	}
@@ -970,12 +970,30 @@ public class FlowDatabaseOperation {
 
 	String flowIdStr = flowObj.getFlowId();
 	//
-	String flowEntryIdStr = flowEntryObj.getFlowEntryId();
-	Integer idleTimeout = flowEntryObj.getIdleTimeout();
-	Integer hardTimeout = flowEntryObj.getHardTimeout();
-	String switchDpidStr = flowEntryObj.getSwitchDpid();
-	String userState = flowEntryObj.getUserState();
-	String switchState = flowEntryObj.getSwitchState();
+	String flowEntryIdStr;
+	Integer idleTimeout;
+	Integer hardTimeout;
+	String switchDpidStr;
+	String userState;
+	String switchState;
+	if ( flowEntryObj.asVertex() instanceof RamCloudVertex ) {
+	    RamCloudVertex v = (RamCloudVertex)flowEntryObj.asVertex();
+	    Map<String,Object> propMap = v.getProperties();
+
+	    flowEntryIdStr = (String) propMap.get("flow_entry_id");
+	    idleTimeout = (Integer) propMap.get("idle_timeout");
+	    hardTimeout = (Integer) propMap.get("hard_timeout");
+	    switchDpidStr = (String) propMap.get("switch_dpid");
+	    userState = (String) propMap.get("user_state");
+	    switchState = (String) propMap.get("switch_state");
+	} else {
+	    flowEntryIdStr = flowEntryObj.getFlowEntryId();
+	    idleTimeout = flowEntryObj.getIdleTimeout();
+	    hardTimeout = flowEntryObj.getHardTimeout();
+	    switchDpidStr = flowEntryObj.getSwitchDpid();
+	    userState = flowEntryObj.getUserState();
+	    switchState = flowEntryObj.getSwitchState();
+	}
 
 	if ((flowIdStr == null) ||
 	    (flowEntryIdStr == null) ||
@@ -999,43 +1017,7 @@ public class FlowDatabaseOperation {
 	//
 	// Extract the match conditions
 	//
-	FlowEntryMatch match = new FlowEntryMatch();
-	Short matchInPort = flowEntryObj.getMatchInPort();
-	if (matchInPort != null)
-	    match.enableInPort(new Port(matchInPort));
-	String matchSrcMac = flowEntryObj.getMatchSrcMac();
-	if (matchSrcMac != null)
-	    match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
-	String matchDstMac = flowEntryObj.getMatchDstMac();
-	if (matchDstMac != null)
-	    match.enableDstMac(MACAddress.valueOf(matchDstMac));
-	Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
-	if (matchEthernetFrameType != null)
-	    match.enableEthernetFrameType(matchEthernetFrameType);
-	Short matchVlanId = flowEntryObj.getMatchVlanId();
-	if (matchVlanId != null)
-	    match.enableVlanId(matchVlanId);
-	Byte matchVlanPriority = flowEntryObj.getMatchVlanPriority();
-	if (matchVlanPriority != null)
-	    match.enableVlanPriority(matchVlanPriority);
-	String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
-	if (matchSrcIPv4Net != null)
-	    match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-	String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
-	if (matchDstIPv4Net != null)
-	    match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
-	Byte matchIpProto = flowEntryObj.getMatchIpProto();
-	if (matchIpProto != null)
-	    match.enableIpProto(matchIpProto);
-	Byte matchIpToS = flowEntryObj.getMatchIpToS();
-	if (matchIpToS != null)
-	    match.enableIpToS(matchIpToS);
-	Short matchSrcTcpUdpPort = flowEntryObj.getMatchSrcTcpUdpPort();
-	if (matchSrcTcpUdpPort != null)
-	    match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
-	Short matchDstTcpUdpPort = flowEntryObj.getMatchDstTcpUdpPort();
-	if (matchDstTcpUdpPort != null)
-	    match.enableDstTcpUdpPort(matchDstTcpUdpPort);
+	FlowEntryMatch match = extractMatch(flowEntryObj);
 	flowEntry.setFlowEntryMatch(match);
 
 	//
@@ -1053,5 +1035,99 @@ public class FlowDatabaseOperation {
 	//
 	log.info("extractFlowEntry: end");
 	return flowEntry;
+    }
+
+    /**
+     * Extract FlowEntryMatch from IFlowPath or IFlowEntry
+     * @param flowObj : either IFlowPath or IFlowEntry
+     * @return extracted Match info
+     */
+    private static FlowEntryMatch extractMatch(IBaseObject flowObj) {
+	FlowEntryMatch match = new FlowEntryMatch();
+
+	Short matchInPort = null; // Only for IFlowEntry
+	String matchSrcMac = null;
+	String matchDstMac = null;
+	Short matchEthernetFrameType = null;
+	Short matchVlanId = null;
+	Byte matchVlanPriority = null;
+	String matchSrcIPv4Net = null;
+	String matchDstIPv4Net = null;
+	Byte matchIpProto = null;
+	Byte matchIpToS = null;
+	Short matchSrcTcpUdpPort = null;
+	Short matchDstTcpUdpPort = null;
+
+	if ( flowObj.asVertex() instanceof RamCloudVertex ) {
+	    RamCloudVertex v = (RamCloudVertex)flowObj.asVertex();
+	    Map<String,Object> propMap = v.getProperties();
+	    matchInPort = (Short) propMap.get("matchInPort");
+	    matchSrcMac = (String) propMap.get("matchSrcMac");
+	    matchDstMac = (String) propMap.get("matchDstMac");
+	    matchEthernetFrameType = (Short) propMap.get("matchEthernetFrameType");
+	    matchVlanId = (Short) propMap.get("matchVlanId");
+	    matchVlanPriority = (Byte) propMap.get("matchVlanPriority");
+	    matchSrcIPv4Net = (String) propMap.get("matchSrcIPv4Net");
+	    matchDstIPv4Net = (String) propMap.get("matchDstIPv4Net");
+	    matchIpProto = (Byte) propMap.get("matchIpProto");
+	    matchIpToS = (Byte) propMap.get("matchIpToS");
+	    matchSrcTcpUdpPort = (Short) propMap.get("matchSrcTcpUdpPort");
+	    matchDstTcpUdpPort = (Short) propMap.get("matchDstTcpUdpPort");
+	} else {
+	    if (flowObj instanceof IFlowEntry ){
+		IFlowEntry flowEntry = (IFlowEntry) flowObj;
+		matchInPort = flowEntry.getMatchInPort();
+		matchSrcMac = flowEntry.getMatchSrcMac();
+		matchDstMac = flowEntry.getMatchDstMac();
+		matchEthernetFrameType = flowEntry.getMatchEthernetFrameType();
+		matchVlanId = flowEntry.getMatchVlanId();
+		matchVlanPriority = flowEntry.getMatchVlanPriority();
+		matchSrcIPv4Net = flowEntry.getMatchSrcIPv4Net();
+		matchDstIPv4Net = flowEntry.getMatchDstIPv4Net();
+		matchIpProto = flowEntry.getMatchIpProto();
+		matchIpToS = flowEntry.getMatchIpToS();
+		matchSrcTcpUdpPort = flowEntry.getMatchSrcTcpUdpPort();
+		matchDstTcpUdpPort = flowEntry.getMatchDstTcpUdpPort();
+	    } else if(flowObj instanceof IFlowPath) {
+		IFlowPath flowPath = (IFlowPath) flowObj;
+		matchSrcMac = flowPath.getMatchSrcMac();
+		matchDstMac = flowPath.getMatchDstMac();
+		matchEthernetFrameType = flowPath.getMatchEthernetFrameType();
+		matchVlanId = flowPath.getMatchVlanId();
+		matchVlanPriority = flowPath.getMatchVlanPriority();
+		matchSrcIPv4Net = flowPath.getMatchSrcIPv4Net();
+		matchDstIPv4Net = flowPath.getMatchDstIPv4Net();
+		matchIpProto = flowPath.getMatchIpProto();
+		matchIpToS = flowPath.getMatchIpToS();
+		matchSrcTcpUdpPort = flowPath.getMatchSrcTcpUdpPort();
+		matchDstTcpUdpPort = flowPath.getMatchDstTcpUdpPort();
+	    }
+	}
+
+	if (matchInPort != null)
+	    match.enableInPort(new Port(matchInPort));
+	if (matchSrcMac != null)
+	    match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
+	if (matchDstMac != null)
+	    match.enableDstMac(MACAddress.valueOf(matchDstMac));
+	if (matchEthernetFrameType != null)
+	    match.enableEthernetFrameType(matchEthernetFrameType);
+	if (matchVlanId != null)
+	    match.enableVlanId(matchVlanId);
+	if (matchVlanPriority != null)
+	    match.enableVlanPriority(matchVlanPriority);
+	if (matchSrcIPv4Net != null)
+	    match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+	if (matchDstIPv4Net != null)
+	    match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+	if (matchIpProto != null)
+	    match.enableIpProto(matchIpProto);
+	if (matchIpToS != null)
+	    match.enableIpToS(matchIpToS);
+	if (matchSrcTcpUdpPort != null)
+	    match.enableSrcTcpUdpPort(matchSrcTcpUdpPort);
+	if (matchDstTcpUdpPort != null)
+	    match.enableDstTcpUdpPort(matchDstTcpUdpPort);
+	return match;
     }
 }
