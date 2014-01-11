@@ -326,6 +326,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    // Cleanup
 	    topologyEvents.clear();
 	    flowIdEvents.clear();
+	    switchDpidEvents.clear();
 	    //
 	    // NOTE: Keep a cache with my Flow Paths
 	    // allFlowPaths.clear();
