@@ -328,9 +328,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 		if (flowPath.flowPathUserState() ==
 		    FlowPathUserState.FP_USER_DELETE) {
 		    log.debug("Deleting Flow Path From Database: {}", flowPath);
+		    // TODO: For now the deleting of a Flow Path is blocking
 		    ParallelFlowDatabaseOperation.deleteFlow(dbHandler,
-							     flowPath.flowId(),
-							     datagridService);
+							     flowPath.flowId());
+		    // Send the notifications for the deleted Flow Entries
+		    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+			datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+		    }
+
 		    continue;
 		}
 
