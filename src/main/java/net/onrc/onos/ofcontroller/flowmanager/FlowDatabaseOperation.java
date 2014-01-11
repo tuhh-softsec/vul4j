@@ -4,8 +4,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
@@ -719,23 +717,11 @@ public class FlowDatabaseOperation {
      * @return true on success, otherwise false.
      */
     static boolean deleteAllFlows(DBOperation dbHandler) {
-	List<FlowId> allFlowIds = new LinkedList<FlowId>();
-
-	// Get all Flow IDs
 	Iterable<IFlowPath> allFlowPaths = dbHandler.getAllFlowPaths();
 	for (IFlowPath flowPathObj : allFlowPaths) {
 	    if (flowPathObj == null)
 		continue;
-	    String flowIdStr = flowPathObj.getFlowId();
-	    if (flowIdStr == null)
-		continue;
-	    FlowId flowId = new FlowId(flowIdStr);
-	    allFlowIds.add(flowId);
-	}
-
-	// Delete all flows one-by-one
-	for (FlowId flowId : allFlowIds) {
-	    deleteFlow(dbHandler, flowId);
+	    deleteIFlowPath(dbHandler, flowPathObj);
 	}
 
 	return true;
@@ -763,6 +749,12 @@ public class FlowDatabaseOperation {
 	    return true;		// OK: No such flow
 	}
 
+	deleteIFlowPath(dbHandler, flowObj);
+
+	return true;
+    }
+
+    private static void deleteIFlowPath(DBOperation dbHandler, IFlowPath flowObj) {
 	//
 	// Remove all Flow Entries
 	//
@@ -774,8 +766,6 @@ public class FlowDatabaseOperation {
 	// Remove the Flow itself
 	dbHandler.removeFlowPath(flowObj);
 	dbHandler.commit();
-
-	return true;
     }
 
     /**
