@@ -321,7 +321,26 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    //
 	    // Push the modified state to the database
 	    //
-	    flowManager.writeModifiedFlowPathsToDatabase(modifiedFlowPaths.values());
+	    for (FlowPath flowPath : modifiedFlowPaths.values()) {
+		//
+		// Delete the Flow Path from the Network Map
+		//
+		if (flowPath.flowPathUserState() ==
+		    FlowPathUserState.FP_USER_DELETE) {
+		    log.debug("Deleting Flow Path From Database: {}", flowPath);
+		    ParallelFlowDatabaseOperation.deleteFlow(dbHandler,
+							     flowPath.flowId(),
+							     datagridService);
+		    continue;
+		}
+
+		log.debug("Pushing Flow Path To Database: {}", flowPath);
+		//
+		// Write the Flow Path to the Network Map
+		//
+		ParallelFlowDatabaseOperation.addFlow(dbHandler, flowPath,
+						      datagridService);
+	    }
 
 	    // Cleanup
 	    topologyEvents.clear();
