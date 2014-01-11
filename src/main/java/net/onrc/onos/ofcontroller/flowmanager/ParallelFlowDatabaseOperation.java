@@ -33,7 +33,7 @@ import net.onrc.onos.ofcontroller.util.FlowPath;
 public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
 
-    private final static int numThreads = 20; // TODO: make this configurable
+    private final static int numThreads = Integer.valueOf(System.getProperty("parallelFlowDatabase.numThreads", "32"));
     private final static ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
     /**
