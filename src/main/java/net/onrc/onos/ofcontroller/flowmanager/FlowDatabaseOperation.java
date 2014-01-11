@@ -3,9 +3,11 @@ package net.onrc.onos.ofcontroller.flowmanager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
+import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IBaseObject;
@@ -139,7 +141,7 @@ public class FlowDatabaseOperation {
 	//
 	flowProp.setFlowId(flowPath.flowId().toString());
 	if ( measureONOSFlowTimeProp ) {
-	    numPropsSet += 2;
+	    numPropsSet += 1;
 	}
 
 	//
@@ -613,11 +615,7 @@ public class FlowDatabaseOperation {
 	    }
 	}
 
-	// TODO: Hacks with hard-coded state names!
-	if (found)
-		flowProp.setUserState("FE_USER_MODIFY");
-	else
-		flowProp.setUserState("FE_USER_ADD");
+	flowProp.setUserState(flowEntry.flowEntryUserState().toString());
 	flowProp.setSwitchState(flowEntry.flowEntrySwitchState().toString());
 	if (measureONOSFlowEntryTimeProp) {
 	    numProperties += 2;
@@ -804,6 +802,77 @@ public class FlowDatabaseOperation {
     }
 
     /**
+     * Get a previously added flow entry.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowEntryId the Flow Entry ID of the flow entry to get.
+     * @return the Flow Entry if found, otherwise null.
+     */
+    static FlowEntry getFlowEntry(DBOperation dbHandler,
+				  FlowEntryId flowEntryId) {
+	IFlowEntry flowEntryObj = null;
+	try {
+	    flowEntryObj = dbHandler.searchFlowEntry(flowEntryId);
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    dbHandler.rollback();
+	    log.error(":getFlowEntry FlowEntryId:{} failed", flowEntryId);
+	    return null;
+	}
+	if (flowEntryObj == null) {
+	    dbHandler.commit();
+	    return null;		// Flow not found
+	}
+
+	//
+	// Extract the Flow Entry state
+	//
+	FlowEntry flowEntry = extractFlowEntry(flowEntryObj);
+	dbHandler.commit();
+
+	return flowEntry;
+    }
+
+    /**
+     * Get the source switch DPID of a previously added flow.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowId the Flow ID of the flow to get.
+     * @return the source switch DPID if found, otherwise null.
+     */
+    static Dpid getFlowSourceDpid(DBOperation dbHandler, FlowId flowId) {
+	IFlowPath flowObj = null;
+	try {
+	    flowObj = dbHandler.searchFlowPath(flowId);
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    dbHandler.rollback();
+	    log.error(":getFlowSourceDpid FlowId:{} failed", flowId);
+	    return null;
+	}
+	if (flowObj == null) {
+	    dbHandler.commit();
+	    return null;		// Flow not found
+	}
+
+	//
+	// Extract the Flow Source DPID
+	//
+	String srcSwitchStr = flowObj.getSrcSwitch();
+	if (srcSwitchStr == null) {
+	    // TODO: A work-around, becauuse of some bogus database objects
+	    dbHandler.commit();
+	    return null;
+	}
+
+	Dpid dpid = new Dpid(srcSwitchStr);
+
+	dbHandler.commit();
+
+	return dpid;
+    }
+
+    /**
      * Get all installed flows by all installers.
      *
      * @param dbHandler the Graph Database handler to use.
@@ -841,12 +910,88 @@ public class FlowDatabaseOperation {
     }
 
     /**
+     * Get all installed flows whose Source Switch is controlled by this
+     * instance.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param mySwitches the collection of the switches controlled by this
+     * instance.
+     * @return the Flow Paths if found, otherwise null.
+     */
+    static ArrayList<FlowPath> getAllMyFlows(DBOperation dbHandler,
+					     Map<Long, IOFSwitch> mySwitches) {
+	Iterable<IFlowPath> flowPathsObj = null;
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+
+	try {
+	    flowPathsObj = dbHandler.getAllFlowPaths();
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    dbHandler.rollback();
+	    log.error(":getAllMyFlowPaths failed");
+	    return flowPaths;
+	}
+	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
+	    dbHandler.commit();
+	    return flowPaths;	// No Flows found
+	}
+
+	for (IFlowPath flowObj : flowPathsObj) {
+	    //
+	    // Extract the Source Switch DPID and ignore if the switch
+	    // is not controlled by this instance.
+	    //
+	    String srcSwitchStr = flowObj.getSrcSwitch();
+	    if (srcSwitchStr == null) {
+		// TODO: A work-around, becauuse of some bogus database objects
+		continue;
+	    }
+	    Dpid dpid = new Dpid(srcSwitchStr);
+	    if (mySwitches.get(dpid.value()) == null)
+		continue;
+
+	    //
+	    // Extract the Flow state
+	    //
+	    FlowPath flowPath = extractFlowPath(flowObj);
+	    if (flowPath != null)
+		flowPaths.add(flowPath);
+	}
+
+	dbHandler.commit();
+
+	return flowPaths;
+    }
+
+    /**
+     * Get a subset of installed flows.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowIds the collection of Flow IDs to get.
+     * @return the Flow Paths if found, otherwise null.
+     */
+    static ArrayList<FlowPath> getFlows(DBOperation dbHandler,
+					Collection<FlowId> flowIds) {
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+
+	// TODO: This implementation should use threads
+	for (FlowId flowId : flowIds) {
+	    FlowPath flowPath = getFlow(dbHandler, flowId);
+	    if (flowPath != null)
+		flowPaths.add(flowPath);
+	}
+	// dbHandler.commit();
+
+	return flowPaths;
+    }
+
+    /**
      * Extract Flow Path State from a Titan Database Object @ref IFlowPath.
      *
      * @param flowObj the object to extract the Flow Path State from.
      * @return the extracted Flow Path State.
      */
-    private static FlowPath extractFlowPath(IFlowPath flowObj) {
+    static FlowPath extractFlowPath(IFlowPath flowObj) {
 	//
 	// Extract the Flow state
 	//

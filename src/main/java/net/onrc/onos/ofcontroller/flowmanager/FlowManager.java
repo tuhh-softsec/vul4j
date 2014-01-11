@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -50,8 +51,9 @@ import org.slf4j.LoggerFactory;
  * Flow Manager class for handling the network flows.
  */
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
-    // flag to use FlowPusher instead of FlowSwitchOperation/MessageDamper
-    private final static boolean enableFlowPusher = false;
+
+    private boolean enableOnrc2014MeasurementsFlows = true;
+
     protected DBOperation dbHandlerApi;
     protected DBOperation dbHandlerInner;
 
@@ -98,7 +100,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * Shutdown the Flow Manager operation.
      */
     @Override
-    public void finalize() {
+    protected void finalize() {
     	close();
     }
 
@@ -107,6 +109,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void close() {
+	floodlightProvider.removeOFSwitchListener(flowEventHandler);
 	datagridService.deregisterFlowEventHandlerService(flowEventHandler);
     	dbHandlerApi.close();
     	dbHandlerInner.close();
@@ -233,6 +236,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//  - startup
 	//
 	flowEventHandler = new FlowEventHandler(this, datagridService);
+	floodlightProvider.addOFSwitchListener(flowEventHandler);
 	datagridService.registerFlowEventHandlerService(flowEventHandler);
 	flowEventHandler.start();
     }
@@ -273,7 +277,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	}
 
 	if (FlowDatabaseOperation.addFlow(dbHandlerApi, flowPath)) {
-	    datagridService.notificationSendFlowAdded(flowPath);
+	    if (enableOnrc2014MeasurementsFlows) {
+		datagridService.notificationSendFlowIdAdded(flowPath.flowId(),
+							    flowPath.dataPath().srcPort().dpid());
+	    } else {
+		datagridService.notificationSendFlowAdded(flowPath);
+	    }
+
 	    return flowPath.flowId();
 	}
 	return null;
@@ -287,7 +297,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public boolean deleteAllFlows() {
 	if (FlowDatabaseOperation.deleteAllFlows(dbHandlerApi)) {
-	    datagridService.notificationSendAllFlowsRemoved();
+	    if (enableOnrc2014MeasurementsFlows) {
+		datagridService.notificationSendAllFlowIdsRemoved();
+	    } else {
+		datagridService.notificationSendAllFlowsRemoved();
+	    }
 	    return true;
 	}
 	return false;
@@ -302,7 +316,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public boolean deleteFlow(FlowId flowId) {
 	if (FlowDatabaseOperation.deleteFlow(dbHandlerApi, flowId)) {
-	    datagridService.notificationSendFlowRemoved(flowId);
+	    if (enableOnrc2014MeasurementsFlows) {
+		datagridService.notificationSendFlowIdRemoved(flowId);
+	    } else {
+		datagridService.notificationSendFlowRemoved(flowId);
+	    }
 	    return true;
 	}
 	return false;
@@ -320,6 +338,26 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Get a previously added flow entry.
+     *
+     * @param flowEntryId the Flow Entry ID of the flow entry to get.
+     * @return the Flow Entry if found, otherwise null.
+     */
+    public FlowEntry getFlowEntry(FlowEntryId flowEntryId) {
+	return FlowDatabaseOperation.getFlowEntry(dbHandlerApi, flowEntryId);
+    }
+
+    /**
+     * Get the source switch DPID of a previously added flow.
+     *
+     * @param flowId the Flow ID of the flow to get.
+     * @return the source switch DPID if found, otherwise null.
+     */
+    public Dpid getFlowSourceDpid(FlowId flowId) {
+	return FlowDatabaseOperation.getFlowSourceDpid(dbHandlerApi, flowId);
+    }
+
+    /**
      * Get all installed flows by all installers.
      *
      * @return the Flow Paths if found, otherwise null.
@@ -327,6 +365,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public ArrayList<FlowPath> getAllFlows() {
 	return FlowDatabaseOperation.getAllFlows(dbHandlerApi);
+    }
+
+    /**
+     * Get all installed flows whose Source Switch is controlled by this
+     * instance.
+     *
+     * @param mySwitches the collection of the switches controlled by this
+     * instance.
+     * @return the Flow Paths if found, otherwise null.
+     */
+    public ArrayList<FlowPath> getAllMyFlows(Map<Long, IOFSwitch> mySwitches) {
+	return FlowDatabaseOperation.getAllMyFlows(dbHandlerApi, mySwitches);
     }
 
     /**
@@ -341,7 +391,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 						  int maxFlows) {
     	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 	SortedMap<Long, FlowPath> sortedFlowPaths =
-	    flowEventHandler.getAllFlowPathsCopy();
+	    new TreeMap<Long, FlowPath>();
+
+	if (enableOnrc2014MeasurementsFlows) {
+	    Collection<FlowPath> databaseFlowPaths =
+		ParallelFlowDatabaseOperation.getAllFlows(dbHandlerApi);
+	    for (FlowPath flowPath : databaseFlowPaths) {
+		sortedFlowPaths.put(flowPath.flowId().value(), flowPath);
+	    }
+	} else {
+	    sortedFlowPaths = flowEventHandler.getAllFlowPathsCopy();
+	}
 
 	//
 	// Truncate each Flow Path and Flow Entry
@@ -421,6 +481,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public void flowEntriesPushedToSwitch(
 		Collection<Pair<IOFSwitch, FlowEntry>> entries) {
 
+	if (enableOnrc2014MeasurementsFlows)
+	    return;
+
 	//
 	// Process all entries
 	//
@@ -490,8 +553,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//  - Flow Paths to the database
 	//
 	pushModifiedFlowEntriesToSwitches(modifiedFlowEntries);
-	pushModifiedFlowPathsToDatabase(modifiedFlowPaths);
-	cleanupDeletedFlowEntriesFromDatagrid(modifiedFlowEntries);
+	if (enableOnrc2014MeasurementsFlows) {
+	    writeModifiedFlowPathsToDatabase(modifiedFlowPaths);
+	} else {
+	    pushModifiedFlowPathsToDatabase(modifiedFlowPaths);
+	    cleanupDeletedFlowEntriesFromDatagrid(modifiedFlowEntries);
+	}
     }
 
     /**
@@ -502,7 +569,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param modifiedFlowEntries the collection of modified Flow Entries.
      */
-    private void pushModifiedFlowEntriesToSwitches(
+    void pushModifiedFlowEntriesToSwitches(
 			Collection<FlowEntry> modifiedFlowEntries) {
 	if (modifiedFlowEntries.isEmpty())
 	    return;
@@ -679,7 +746,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      *
      * @param modifiedFlowPaths the collection of Flow Paths to write.
      */
-    private void writeModifiedFlowPathsToDatabase(
+    void writeModifiedFlowPathsToDatabase(
 		Collection<FlowPath> modifiedFlowPaths) {
 	if (modifiedFlowPaths.isEmpty())
 	    return;
@@ -719,7 +786,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			retry = true;
 		    } catch (Exception e) {
 			log.error("Exception deleting Flow Path from Network MAP: {}", e);
-		    } 
+		    }
 		} while (retry);
 
 		continue;
@@ -738,10 +805,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    allValid = false;
 		    break;
 		}
-		if (flowEntry.flowEntrySwitchState() !=
-		    FlowEntrySwitchState.FE_SWITCH_UPDATED) {
-		    allValid = false;
-		    break;
+		if (! enableOnrc2014MeasurementsFlows) {
+		    if (flowEntry.flowEntrySwitchState() !=
+			FlowEntrySwitchState.FE_SWITCH_UPDATED) {
+			allValid = false;
+			break;
+		    }
 		}
 	    }
 	    if (! allValid)
@@ -777,6 +846,36 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
                     //log.error("Performance %% Flow path total time {} : {}", endTime - startTime, flowPath.toString());
 		}
 	    } while (retry);
+
+	    if (enableOnrc2014MeasurementsFlows) {
+		// Send the notifications
+
+		for (FlowEntry flowEntry : flowPath.flowEntries()) {
+		    if (flowEntry.flowEntrySwitchState() !=
+			FlowEntrySwitchState.FE_SWITCH_NOT_UPDATED) {
+			continue;
+		    }
+		    // datagridService.notificationSendFlowEntryIdAdded(flowEntry.flowEntryId(), flowEntry.dpid());
+
+		    //
+		    // Write the Flow Entry to the Datagrid
+		    //
+		    switch (flowEntry.flowEntryUserState()) {
+		    case FE_USER_ADD:
+			datagridService.notificationSendFlowEntryAdded(flowEntry);
+			break;
+		    case FE_USER_MODIFY:
+			datagridService.notificationSendFlowEntryUpdated(flowEntry);
+			break;
+		    case FE_USER_DELETE:
+			datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+			break;
+		    case FE_USER_UNKNOWN:
+			assert(false);
+			break;
+		    }
+		}
+	    }
 	}
     }
 }

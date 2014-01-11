@@ -242,12 +242,15 @@ public class FlowSynchronizer implements IFlowSyncService {
      *
      */
     class FlowEntryWrapper {
-	FlowEntryId flowEntryId;
-	OFFlowStatisticsReply statisticsReply;
+    FlowEntryId flowEntryId;
+    IFlowEntry iFlowEntry;
+    OFFlowStatisticsReply statisticsReply;
+
 
 	public FlowEntryWrapper(IFlowEntry entry) {
 	    flowEntryId = new FlowEntryId(entry.getFlowEntryId());
-	}
+	    iFlowEntry = entry;
+    }
 
 	public FlowEntryWrapper(OFFlowStatisticsReply entry) {
 	    flowEntryId = new FlowEntryId(entry.getCookie());
@@ -268,18 +271,14 @@ public class FlowSynchronizer implements IFlowSyncService {
 
 	    double startDB = System.nanoTime();
 	    // Get the Flow Entry state from the Network Graph
-	    IFlowEntry iFlowEntry = null;
-	    try {
-		iFlowEntry = dbHandler.searchFlowEntry(flowEntryId);
-	    } catch (Exception e) {
-		log.error("Error finding flow entry {} in Network Graph",
-			  flowEntryId);
-		return;
-	    }
 	    if (iFlowEntry == null) {
-		log.error("Cannot add flow entry {} to sw {} : flow entry not found",
-			  flowEntryId, sw.getId());
-		return;
+            try {
+            	iFlowEntry = dbHandler.searchFlowEntry(flowEntryId);
+            } catch (Exception e) {
+            	log.error("Error finding flow entry {} in Network Graph",
+            			flowEntryId);
+            	return;
+            }
 	    }
 	    dbTime = System.nanoTime() - startDB;
 

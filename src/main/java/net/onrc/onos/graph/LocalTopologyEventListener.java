@@ -1,5 +1,7 @@
 package net.onrc.onos.graph;
 
+import java.util.Map;
+
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 
 import org.slf4j.Logger;
@@ -35,6 +37,8 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 
 	}
 
+	@Override
+	//public void edgeRemoved(Edge e, Map<String, Object> arg1) {
 	public void edgeRemoved(Edge e) {
 		// TODO Auto-generated method stub
 		// Fire NetMapEvents (LinkRemoved, FlowEntryRemoved, HostRemoved, PortRemoved)
@@ -72,6 +76,8 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 
 	}
 
+	@Override
+	//public void vertexRemoved(Vertex vertex, Map<String, Object> arg1) {
 	public void vertexRemoved(Vertex vertex) {
 		// TODO Auto-generated method stub
 		// Generate NetMapEvents 

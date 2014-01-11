@@ -7,10 +7,12 @@ import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
 import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
+import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.Pair;
 
 /**
  * Interface for providing Datagrid Service to other modules.
@@ -132,6 +134,77 @@ public interface IDatagridService extends IFloodlightService {
      * Send a notification that all Flow Entries are removed.
      */
     void notificationSendAllFlowEntriesRemoved();
+
+    /**
+     * Get all Flow IDs that are currently in the datagrid.
+     *
+     * @return all Flow IDs that ae currently in the datagrid.
+     */
+    Collection<Pair<FlowId, Dpid>> getAllFlowIds();
+
+    /**
+     * Send a notification that a FlowId is added.
+     *
+     * @param flowId the FlowId that is added.
+     * @param dpid the Source Switch Dpid.
+     */
+    void notificationSendFlowIdAdded(FlowId flowId, Dpid dpid);
+
+    /**
+     * Send a notification that a FlowId is removed.
+     *
+     * @param flowId the FlowId that is removed.
+     */
+    void notificationSendFlowIdRemoved(FlowId flowId);
+
+    /**
+     * Send a notification that a FlowId is updated.
+     *
+     * @param flowId the FlowId that is updated.
+     * @param dpid the Source Switch Dpid.
+     */
+    void notificationSendFlowIdUpdated(FlowId flowId, Dpid dpid);
+
+    /**
+     * Send a notification that all Flow IDs are removed.
+     */
+    void notificationSendAllFlowIdsRemoved();
+
+    /**
+     * Get all Flow Entry IDs that are currently in the datagrid.
+     *
+     * @return all Flow Entry IDs that ae currently in the datagrid.
+     */
+    Collection<Pair<FlowEntryId, Dpid>> getAllFlowEntryIds();
+
+    /**
+     * Send a notification that a FlowEntryId is added.
+     *
+     * @param flowEntryId the FlowEntryId that is added.
+     * @param dpid the Switch Dpid.
+     */
+    void notificationSendFlowEntryIdAdded(FlowEntryId flowEntryId, Dpid dpid);
+
+    /**
+     * Send a notification that a FlowEntryId is removed.
+     *
+     * @param flowEntryId the FlowEntryId that is removed.
+     */
+    void notificationSendFlowEntryIdRemoved(FlowEntryId flowEntryId);
+
+    /**
+     * Send a notification that a FlowEntryId is updated.
+     *
+     * @param flowEntryId the FlowEntryId that is updated.
+     * @param dpid the Switch Dpid.
+     */
+    void notificationSendFlowEntryIdUpdated(FlowEntryId flowEntryId,
+					    Dpid dpid);
+
+    /**
+     * Send a notification that all Flow Entry IDs are removed.
+     */
+    void notificationSendAllFlowEntryIdsRemoved();
 
     /**
      * Get all Topology Elements that are currently in the datagrid.

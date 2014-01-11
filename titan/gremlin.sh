@@ -8,11 +8,12 @@ BASE_DIR=`dirname $0`
 ONOS_DIR="`dirname $0`/.."
 
 # Use a python script to parse the classpath out of the .classpath file
-if [ ! -f ${BASE_DIR}/../.javacp ]; then
+if [ ! -f ${ONOS_DIR}/.javacp ]; then
   echo "execute mvn compile at ONOS HOME directory."
   exit 1
 fi
-CP=`cat ${BASE_DIR}/../.javacp`
+CP=`cat ${ONOS_DIR}/.javacp`
+CP="${CP}:${ONOS_DIR}/target/classes"
 
 if [[ "$CP" == *"Error reading classpath file"* ]]; then
     echo $CP

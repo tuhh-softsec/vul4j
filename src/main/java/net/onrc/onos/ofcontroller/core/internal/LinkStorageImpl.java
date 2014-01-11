@@ -27,6 +27,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	protected DBOperation dbop;
 	private static PerfMon pm = PerfMon.getInstance();
 
+
 	/**
 	 * Initialize the object. Open LinkStorage using given configuration file.
 	 * @param conf Path (absolute path for now) to configuration file.
@@ -432,7 +433,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	 * Finalize the object.
 	 */
 	@Override
-	public void finalize() {
+	protected void finalize() {
 		close();
 	}
 
@@ -493,6 +494,8 @@ public class LinkStorageImpl implements ILinkStorage {
 				log.error("LinkStorageImpl:addLinkImpl failed link exists {} {} src {} dst {}",
 						new Object[]{dbop, lt, vportSrc, vportDst});
 			}
+		} else {
+			log.error("Ports not found : {}", lt);
 		}
 
 		return success;
