@@ -22,12 +22,27 @@ import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 
+/**
+ * Class for performing parallel Flow-related operations on the Database.
+ * 
+ * This class is mostly a wrapper of FlowDatabaseOperation with a thread pool
+ * for parallelization.
+ * 
+ * @author Brian O'Connor <brian@onlab.us>
+ */
 public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
 
-    private final static int numThreads = 20;
+    private final static int numThreads = 20; // TODO: make this configurable
     private final static ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
+    /**
+     * Get all installed flows by first querying the database for all FlowPaths
+     * and then populating them from the database in parallel.
+     * 
+     * @param dbHandler the Graph Database handler to use.
+     * @return the Flow Paths if found, otherwise an empty list.
+     */
     static ArrayList<FlowPath> getAllFlows(GraphDBOperation dbHandler) {
 	Iterable<IFlowPath> flowPathsObj = null;
 	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
@@ -65,12 +80,15 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	return flowPaths;	
     }
     
-    /*
-     * params: collection of dpid
-     * 
-     * return: all flows where src dpid is in collection
+    /**
+     * Query the database for all flow paths that have their source switch
+     * in the provided collection
      * 
      * Note: this function is implemented naively and inefficiently
+     * 
+     * @param dbHandler the Graph Database handler to use.
+     * @param switches a collection of switches whose flow paths you want
+     * @return the Flow Paths if found, otherwise an empty list.
      */
     static ArrayList<FlowPath> getFlowsForSwitches(GraphDBOperation dbHandler, Collection<Dpid> switches) {
 	Iterable<IFlowPath> flowPathsObj = null;
@@ -117,6 +135,11 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	return flowPaths;	
     }
     
+    /**
+     * The basic parallelization unit for extracting FlowEntries from the database.
+     * 
+     * This is simply a wrapper for FlowDatabaseOperation.extractFlowPath()
+     */
     private final static class ExtractFlowTask implements Callable<FlowPath> {
 	private final IFlowPath flowObj;
 	
@@ -129,6 +152,13 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	}
     }
 
+    /**
+     * Get a subset of installed flows in parallel.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowIds the collection of Flow IDs to get.
+     * @return the Flow Paths if found, otherwise an empty list.
+     */
     static ArrayList<FlowPath> getFlows(GraphDBOperation dbHandler,
 		  			Collection<FlowId> flowIds) {
 	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
@@ -154,6 +184,11 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	return flowPaths;
     }
     
+    /**
+     * The basic parallelization unit for getting FlowEntries.
+     * 
+     * This is simply a wrapper for FlowDatabaseOperation.getFlow()
+     */
     private final static class GetFlowTask implements Callable<FlowPath> {
 	private final GraphDBOperation dbHandler;
 	private final FlowId flowId;
@@ -168,6 +203,15 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	}
     }
     
+    /**
+     * Add a flow by creating a database task, then waiting for the result.
+     * Mostly, a wrapper for FlowDatabaseOperation.addFlow() which overs little
+     * performance benefit.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowPath the Flow Path to install.
+     * @return true on success, otherwise false.
+     */
     static boolean addFlow(GraphDBOperation dbHandler, FlowPath flowPath) {
 	Future<Boolean> result = executor.submit(new AddFlowTask(dbHandler, flowPath, null));
 	// NOTE: This function is blocking
@@ -178,6 +222,14 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	}
     }
     
+    /**
+     * Add a flow asynchronously by creating a database task.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowPath the Flow Path to install.
+     * @param datagridService the notification service for when the task is completed
+     * @return true always
+     */
     static boolean addFlow(GraphDBOperation dbHandler, FlowPath flowPath, IDatagridService datagridService) {
 	executor.submit(new AddFlowTask(dbHandler, flowPath, datagridService));
 	// TODO: If we need the results, submit returns a Future that contains
@@ -186,6 +238,12 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 
     }
     
+    /**
+     * The basic parallelization unit for adding FlowPaths.
+     * 
+     * This is simply a wrapper for FlowDatabaseOperation.addFlow(), 
+     * which also sends a notification if a datagrid services is provided
+     */
     private final static class AddFlowTask implements Callable<Boolean> {
 	private final GraphDBOperation dbHandler;
 	private final FlowPath flowPath;
@@ -216,6 +274,17 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	}
     }
 
+    /**
+     * Delete a previously added flow by creating a database task, then waiting 
+     * for the result.
+     * 
+     * Mostly, a wrapper for FlowDatabaseOperation.addFlow() which overs little
+     * performance benefit.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowId the Flow ID of the flow to delete.
+     * @return true on success, otherwise false.
+     */
     static boolean deleteFlow(GraphDBOperation dbHandler, FlowId flowId) {
 	Future<Boolean> result = executor.submit(new DeleteFlowTask(dbHandler, flowId, null));
 	// NOTE: This function is blocking
@@ -226,6 +295,14 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	}
     }    
     
+    /**
+     * Delete a previously added flow asynchronously by creating a database task.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowId the Flow ID of the flow to delete.
+     * @param datagridService the notification service for when the task is completed
+     * @return true always
+     */
     static boolean deleteFlow(GraphDBOperation dbHandler, FlowId flowId, IDatagridService datagridService) {
 	executor.submit(new DeleteFlowTask(dbHandler, flowId, datagridService));
 	// TODO: If we need the results, submit returns a Future that contains
@@ -233,6 +310,12 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	return true;
     }
     
+    /**
+     * The basic parallelization unit for deleting FlowPaths.
+     * 
+     * This is simply a wrapper for FlowDatabaseOperation.deleteFlow(),
+     * which also sends a notification if a datagrid services is provided
+     */
     private final static class DeleteFlowTask implements Callable<Boolean> {
 	private final GraphDBOperation dbHandler;
 	private final FlowId flowId;
