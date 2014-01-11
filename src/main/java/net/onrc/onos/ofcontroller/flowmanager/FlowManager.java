@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -384,7 +385,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 						  int maxFlows) {
     	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 	SortedMap<Long, FlowPath> sortedFlowPaths =
-	    flowEventHandler.getAllFlowPathsCopy();
+	    new TreeMap<Long, FlowPath>();
+
+	if (enableOnrc2014MeasurementsFlows) {
+	    Collection<FlowPath> databaseFlowPaths =
+		ParallelFlowDatabaseOperation.getAllFlows(dbHandlerApi);
+	    for (FlowPath flowPath : databaseFlowPaths) {
+		sortedFlowPaths.put(flowPath.flowId().value(), flowPath);
+	    }
+	} else {
+	    sortedFlowPaths = flowEventHandler.getAllFlowPathsCopy();
+	}
 
 	//
 	// Truncate each Flow Path and Flow Entry
