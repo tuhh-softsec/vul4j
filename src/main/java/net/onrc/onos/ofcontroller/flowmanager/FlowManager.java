@@ -102,6 +102,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void close() {
+	floodlightProvider.removeOFSwitchListener(flowEventHandler);
 	datagridService.deregisterFlowEventHandlerService(flowEventHandler);
     	dbHandlerApi.close();
     	dbHandlerInner.close();
@@ -228,6 +229,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//  - startup
 	//
 	flowEventHandler = new FlowEventHandler(this, datagridService);
+	floodlightProvider.addOFSwitchListener(flowEventHandler);
 	datagridService.registerFlowEventHandlerService(flowEventHandler);
 	flowEventHandler.start();
     }
