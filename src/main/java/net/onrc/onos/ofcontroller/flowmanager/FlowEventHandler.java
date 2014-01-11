@@ -640,7 +640,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 
 	// Get my Flows
 	Collection<FlowPath> myFlows =
-	    FlowDatabaseOperation.getFlows(dbHandler, shouldFetchMyFlowIds);
+	    ParallelFlowDatabaseOperation.getFlows(dbHandler,
+						   shouldFetchMyFlowIds);
 
 	for (FlowPath flowPath : myFlows) {
 	    fixFlowFromDatabase(flowPath);
