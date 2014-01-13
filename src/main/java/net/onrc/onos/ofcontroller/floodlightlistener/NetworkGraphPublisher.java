@@ -44,6 +44,8 @@ import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
 
+import net.onrc.onos.ofcontroller.flowmanager.PerformanceMonitor;
+
 import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -354,12 +356,16 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	@Override
 	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
 		// Remove all links that might be connected already
+		PerformanceMonitor.start("SwitchPortRemoved.DbAccess");
+
 		List<Link> links = linkStore.getLinks(switchId, port.getPortNumber());
 		// Remove all reverse links as well
 		List<Link> reverseLinks = linkStore.getReverseLinks(switchId, port.getPortNumber());
 		links.addAll(reverseLinks);
 
 		if (swStore.deletePort(HexString.toHexString(switchId), port.getPortNumber())) {
+		    PerformanceMonitor.stop("SwitchPortRemoved.DbAccess");
+		    PerformanceMonitor.start("SwitchPortRemoved.NotificationSend");
 		    // TODO publish DELETE_PORT event here
 		    TopologyElement topologyElement =
 			new TopologyElement(switchId, port.getPortNumber());
@@ -374,6 +380,9 @@ public class NetworkGraphPublisher implements IDeviceListener,
 						link.getDstPort());
 			datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
 		    }
+		    PerformanceMonitor.stop("SwitchPortRemoved.NotificationSend");
+		    PerformanceMonitor.report("SwitchPortRemoved.DbAccess");
+		    PerformanceMonitor.report("TopologyEntryRemoved.NotificationReceived");
 		}
 	}
 

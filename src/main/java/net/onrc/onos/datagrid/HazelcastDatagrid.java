@@ -44,6 +44,8 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.instance.GroupProperties;
 
+import net.onrc.onos.ofcontroller.flowmanager.PerformanceMonitor;
+
 /**
  * A datagrid service that uses Hazelcast as a datagrid.
  * The relevant data is stored in the Hazelcast datagrid and shared as
@@ -448,6 +450,8 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 */
 	@Override
 	public void entryRemoved(EntryEvent<String, byte[]> event) {
+	    String tag = "TopologyEntryRemoved.NotificationReceived." + event.getKey();
+	    PerformanceMonitor.start(tag);
 	    byte[] valueBytes = event.getValue();
 
 	    //
@@ -459,6 +463,8 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		kryo.readObject(input, TopologyElement.class);
 	    kryoFactory.deleteKryo(kryo);
 	    flowEventHandlerService.notificationRecvTopologyElementRemoved(topologyElement);
+	    PerformanceMonitor.stop(tag);
+	    PerformanceMonitor.report(tag);
 	}
 
 	/**

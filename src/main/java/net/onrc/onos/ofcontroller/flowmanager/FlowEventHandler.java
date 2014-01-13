@@ -290,6 +290,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 
 	if (enableOnrc2014MeasurementsFlows) {
 
+	    PerformanceMonitor.start("EventHandler.ProcessAllEvents");
+
 	    if (topologyEvents.isEmpty() && flowIdEvents.isEmpty() &&
 		switchDpidEvents.isEmpty()) {
 		return;		// Nothing to do
@@ -298,15 +300,22 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    Map<Long, IOFSwitch> mySwitches = flowManager.getMySwitches();
 
 	    // Process the Switch Dpid events
+	    PerformanceMonitor.start("EventHandler.SwitchDpidEvents");
 	    processSwitchDpidEvents();
+	    PerformanceMonitor.stop("EventHandler.SwitchDpidEvents");
 
 	    // Process the Flow ID events
+	    PerformanceMonitor.start("EventHandler.FlowIdEvents");
 	    processFlowIdEvents(mySwitches);
+	    PerformanceMonitor.stop("EventHandler.FlowIdEvents");
 
 	    // Fetch the topology
+	    PerformanceMonitor.start("EventHandler.ReadTopology");
 	    processTopologyEvents();
+	    PerformanceMonitor.stop("EventHandler.ReadTopology");
 
 	    // Recompute all affected Flow Paths and keep only the modified
+	    PerformanceMonitor.start("EventHandler.RecomputeFlows");
 	    for (FlowPath flowPath : shouldRecomputeFlowPaths.values()) {
 		if (recomputeFlowPath(flowPath))
 		    modifiedFlowPaths.put(flowPath.flowId().value(), flowPath);
@@ -321,10 +330,12 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 		    }
 		}
 	    }
+	    PerformanceMonitor.stop("EventHandler.RecomputeFlows");
 
 	    //
 	    // Push the modified state to the database
 	    //
+	    PerformanceMonitor.start("EventHandler.WriteFlowsToDb");
 	    for (FlowPath flowPath : modifiedFlowPaths.values()) {
 		//
 		// Delete the Flow Path from the Network Map
@@ -335,10 +346,17 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 		    // TODO: For now the deleting of a Flow Path is blocking
 		    ParallelFlowDatabaseOperation.deleteFlow(dbHandler,
 							     flowPath.flowId());
+		    //
+		    // NOTE: For now the sending of the notifications
+		    // is outside of this loop, so the performance measurements
+		    // are more accurate.
+		    //
+		    /*
 		    // Send the notifications for the deleted Flow Entries
 		    for (FlowEntry flowEntry : flowPath.flowEntries()) {
 			datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
 		    }
+		    */
 
 		    continue;
 		}
@@ -350,6 +368,23 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 		ParallelFlowDatabaseOperation.addFlow(dbHandler, flowPath,
 						      datagridService);
 	    }
+	    PerformanceMonitor.stop("EventHandler.WriteFlowsToDb");
+
+	    //
+	    // Send the notifications for the deleted Flow Entries
+	    // NOTE: This code was pulled outside of the above loop,
+	    // so the performance measurements are more accurate.
+	    //
+	    PerformanceMonitor.start("EventHandler.NotificationSend.FlowEntryRemoved");
+	    for (FlowPath flowPath : modifiedFlowPaths.values()) {
+		if (flowPath.flowPathUserState() ==
+		    FlowPathUserState.FP_USER_DELETE) {
+		    for (FlowEntry flowEntry : flowPath.flowEntries()) {
+			datagridService.notificationSendFlowEntryRemoved(flowEntry.flowEntryId());
+		    }
+		}
+	    }
+	    PerformanceMonitor.stop("EventHandler.NotificationSend.FlowEntryRemoved");
 
 	    // Cleanup
 	    topologyEvents.clear();
@@ -360,6 +395,17 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    // allFlowPaths.clear();
 	    shouldRecomputeFlowPaths.clear();
 	    modifiedFlowPaths.clear();
+
+	    PerformanceMonitor.stop("EventHandler.ProcessAllEvents");
+
+
+	    PerformanceMonitor.report("EventHandler.SwitchDpidEvents");
+	    PerformanceMonitor.report("EventHandler.FlowIdEvents");
+	    PerformanceMonitor.report("EventHandler.ReadTopology");
+	    PerformanceMonitor.report("EventHandler.RecomputeFlows");
+	    PerformanceMonitor.report("EventHandler.WriteFlowsToDb");
+	    PerformanceMonitor.report("EventHandler.NotificationSend.FlowEntryRemoved");
+	    PerformanceMonitor.report("EventHandler.ProcessAllEvents");
 
 	    return;
 	}
@@ -1375,9 +1421,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
     @Override
     public void notificationRecvFlowEntryAdded(FlowEntry flowEntry) {
 	if (enableOnrc2014MeasurementsFlows) {
+	    String tag = "EventHandler.AddFlowEntryToSwitch." + flowEntry.flowEntryId();
+	    PerformanceMonitor.start(tag);
 	    Collection entries = new ArrayList();
 	    entries.add(flowEntry);
 	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
+	    PerformanceMonitor.stop(tag);
+	    PerformanceMonitor.report(tag);
 	    return;
 	}
 
@@ -1394,6 +1444,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
     @Override
     public void notificationRecvFlowEntryRemoved(FlowEntry flowEntry) {
 	if (enableOnrc2014MeasurementsFlows) {
+	    String tag = "EventHandler.RemoveFlowEntryFromSwitch." + flowEntry.flowEntryId();
+	    PerformanceMonitor.start(tag);
 	    //
 	    // NOTE: Must update the state to DELETE, because
 	    // the notification contains the original state.
@@ -1403,6 +1455,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    Collection entries = new ArrayList();
 	    entries.add(flowEntry);
 	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
+	    PerformanceMonitor.stop(tag);
+	    PerformanceMonitor.report(tag);
 	    return;
 	}
 
