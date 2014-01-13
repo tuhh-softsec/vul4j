@@ -727,6 +727,7 @@ public class FlowDatabaseOperation {
 		continue;
 	    deleteIFlowPath(dbHandler, flowPathObj);
 	}
+	dbHandler.commit();
 
 	return true;
     }
@@ -754,6 +755,7 @@ public class FlowDatabaseOperation {
 	}
 
 	deleteIFlowPath(dbHandler, flowObj);
+	dbHandler.commit();
 
 	return true;
     }
@@ -769,7 +771,6 @@ public class FlowDatabaseOperation {
 	}
 	// Remove the Flow itself
 	dbHandler.removeFlowPath(flowObj);
-	dbHandler.commit();
     }
 
     /**
