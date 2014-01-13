@@ -376,7 +376,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 		    }
 		}
 	    }
-	    PerformanceMonitor.stop("EventHandler.WriteFlowsToDb");
+	    PerformanceMonitor.stop("EventHandler.NotificationSend.FlowEntryRemoved");
 
 	    // Cleanup
 	    topologyEvents.clear();
