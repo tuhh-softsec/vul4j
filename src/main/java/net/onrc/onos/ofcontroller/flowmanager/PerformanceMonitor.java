@@ -82,7 +82,22 @@ public class PerformanceMonitor {
 	double overheadMilli = overhead / Math.pow(10, 6);
 	log.error("Performance Results: {} with measurement overhead: {} ms", map, overheadMilli);
     }
-    
+
+    /**
+     * Write the performance measurement for a tag to the log
+     *
+     * @param tag the tag name.
+     */
+    public static void report(String tag) {
+	Measurement m = map.get(tag);
+	if (m != null) {
+	    log.error("Performance Results: tag = {} start = {} stop = {} elapsed = {}",
+		      tag, m.start, m.stop, m.toString());
+	} else {
+	    log.error("Performance Results: unknown tag {}", tag);
+	}
+    }
+
     /**
      * A single performance measurement
      */
