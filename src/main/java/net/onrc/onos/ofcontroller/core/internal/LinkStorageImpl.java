@@ -27,7 +27,6 @@ public class LinkStorageImpl implements ILinkStorage {
 	protected DBOperation dbop;
 	private static PerfMon pm = PerfMon.getInstance();
 
-
 	/**
 	 * Initialize the object. Open LinkStorage using given configuration file.
 	 * @param conf Path (absolute path for now) to configuration file.
