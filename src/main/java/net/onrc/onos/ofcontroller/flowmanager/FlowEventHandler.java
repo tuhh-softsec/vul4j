@@ -296,9 +296,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    Map<Long, IOFSwitch> mySwitches = flowManager.getMySwitches();
 
 	    // Process the Switch Dpid events
-	    PerformanceMonitor.start("EventHandler.SwitchDpid");
+	    PerformanceMonitor.start("EventHandler.SwitchDpidEvents");
 	    processSwitchDpidEvents();
-	    PerformanceMonitor.stop("EventHandler.SwitchDpid");
+	    PerformanceMonitor.stop("EventHandler.SwitchDpidEvents");
 
 	    // Process the Flow ID events
 	    PerformanceMonitor.start("EventHandler.FlowIdEvents");
@@ -395,7 +395,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    PerformanceMonitor.stop("EventHandler.ProcessAllEvents");
 
 
-	    PerformanceMonitor.report("EventHandler.SwitchDpid");
+	    PerformanceMonitor.report("EventHandler.SwitchDpidEvents");
 	    PerformanceMonitor.report("EventHandler.FlowIdEvents");
 	    PerformanceMonitor.report("EventHandler.ReadTopology");
 	    PerformanceMonitor.report("EventHandler.RecomputeFlows");
