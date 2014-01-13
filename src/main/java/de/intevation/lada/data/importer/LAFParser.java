@@ -9,6 +9,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import de.intevation.lada.auth.AuthenticationResponse;
+import de.intevation.lada.model.LMessung;
+import de.intevation.lada.model.LMesswert;
+import de.intevation.lada.model.LOrt;
+import de.intevation.lada.model.LProbe;
+import de.intevation.lada.validation.ValidationException;
+import de.intevation.lada.validation.Validator;
 
 /**
  * This parser is used to read data in LAF based key-value pair structure.
@@ -28,6 +34,19 @@ public class LAFParser {
     @Inject
     @Named("lafwriter")
     private Writer writer;
+
+    @Inject
+    @Named("lprobevalidator")
+    private Validator probeValidator;
+    @Inject
+    @Named("lmessungvalidator")
+    private Validator messungValidator;
+    @Inject
+    @Named("lmesswertvalidator")
+    private Validator messwertValidator;
+    @Inject
+    @Named("lortvalidator")
+    private Validator ortValidator;
 
     private Map<String, List<ReportData>> warnings;
     private Map<String, List<ReportData>> errors;
@@ -128,7 +147,6 @@ public class LAFParser {
         boolean p = writer.writeProbe(auth, producer.getProbe());
         if (!p) {
             this.errors.put(probeId, writer.getErrors());
-            this.warnings.put(probeId, writer.getWarnings());
             return;
         }
         writer.writeProbenKommentare(auth, producer.getProbenKommentare());
@@ -140,20 +158,156 @@ public class LAFParser {
         writer.writeLOrte(auth, producer.getLOrte());
         writer.writeMessungKommentare(auth, producer.getMessungsKommentare());
         writer.writeMesswerte(auth, producer.getMesswerte());
-        List<ReportData> err = this.errors.get(probeId);
-        if (err == null) {
-            this.errors.put(probeId, writer.getErrors());
+        this.validateProbe(producer.getProbe());
+        this.validateMessungen(producer.getMessungen());
+        this.validateMesswerte(producer.getMesswerte());
+        this.validateLOrte(producer.getLOrte());
+    }
+
+    private boolean validateProbe(LProbe probe) {
+    	try {
+            Map<String, Integer> warn =
+                probeValidator.validate(probe, false);
+            if (warn != null) {
+            	List<ReportData> warns = new ArrayList<ReportData>();
+                for (String key: warn.keySet()) {
+                	warns.add(new ReportData(key, "validation", warn.get(key)));
+                }
+                this.appendWarnings(probe.getProbeId(), warns);
+            }
         }
-        else {
-            err.addAll(writer.getErrors());
+        catch (ValidationException e) {
+            Map<String, Integer> err = e.getErrors();
+          	List<ReportData> errs = new ArrayList<ReportData>();
+            for(String key: err.keySet()) {
+                errs.add(new ReportData(key, "validation", err.get(key)));
+            }
+            this.appendErrors(probe.getProbeId(), errs);
+            Map<String, Integer> warn = e.getWarnings();
+            if (warn != null) {
+            	List<ReportData> warns = new ArrayList<ReportData>();
+                for (String key: warn.keySet()) {
+                    warns.add(new ReportData(key, "validation", warn.get(key)));
+                }
+                this.appendWarnings(probe.getProbeId(), warns);
+            }
+            return false;
         }
-        List<ReportData> warn = this.warnings.get(probeId);
-        if (warn == null) {
-            this.warnings.put(probeId, writer.getWarnings());
+    	return true;
+    }
+
+	private boolean validateMessungen(List<LMessung> messungen) {
+        for(LMessung messung: messungen) {
+            try {
+                Map<String, Integer> warn =
+                    messungValidator.validate(messung, false);
+                if (warn != null) {
+                	List<ReportData> warns = new ArrayList<ReportData>();
+                    for (String key : warn.keySet()) {
+                        warns.add(
+                            new ReportData(key, "validation", warn.get(key)));
+                    }
+                    this.appendWarnings(messung.getProbeId(), warns);
+                }
+            }
+            catch (ValidationException e) {
+                Map<String, Integer> err = e.getErrors();
+                List<ReportData> errs = new ArrayList<ReportData>();
+                for(String key: err.keySet()) {
+                    errs.add(
+                        new ReportData(key, "validation", err.get(key)));
+                }
+                this.appendErrors(messung.getProbeId(), errs);
+                Map<String, Integer> warn = e.getWarnings();
+                if (warn != null) {
+                	List<ReportData> warns = new ArrayList<ReportData>();
+                    for (String key: warn.keySet()) {
+                        warns.add(
+                            new ReportData(key, "validation", warn.get(key)));
+                    }
+                    this.appendWarnings(messung.getProbeId(), warns);
+                }
+                return false;
+            }
         }
-        else {
-            warn.addAll(writer.getWarnings());
+
+        return true;
+    	
+    }
+    
+    private boolean validateMesswerte(List<LMesswert> werte) {
+        for(LMesswert messwert: werte) {
+            try {
+                Map<String, Integer> warn =
+                    messwertValidator.validate(messwert, false);
+                if (warn != null) {
+                	List<ReportData> warns = new ArrayList<ReportData>();
+                    for (String key : warn.keySet()) {
+                        warns.add(
+                            new ReportData(key, "validation", warn.get(key)));
+                    }
+                    this.appendWarnings(messwert.getProbeId(), warns);
+                }
+            }
+            catch (ValidationException e) {
+                Map<String, Integer> err = e.getErrors();
+                List<ReportData> errs = new ArrayList<ReportData>();
+                for(String key: err.keySet()) {
+                    errs.add(
+                        new ReportData(key, "validation", err.get(key)));
+                }
+                this.appendErrors(messwert.getProbeId(), errs);
+                Map<String, Integer> warn = e.getWarnings();
+                if (warn != null) {
+                	List<ReportData> warns = new ArrayList<ReportData>();
+                    for (String key: warn.keySet()) {
+                        warns.add(
+                            new ReportData(key, "validation", warn.get(key)));
+                    }
+                    this.appendWarnings(messwert.getProbeId(), warns);
+                }
+                return false;
+            }
         }
+        return true;
+    } 
+    
+    private boolean validateLOrte(List<LOrt> orte) {
+        for(LOrt ort: orte) {
+            try {
+                Map<String, Integer> warn =
+                    ortValidator.validate(ort, false);
+                if (warn != null) {
+                	List<ReportData> warns = new ArrayList<ReportData>();
+                    for (String key : warn.keySet()) {
+                        warns.add(
+                            new ReportData(key, "validation", warn.get(key)));
+                    }
+                    this.appendWarnings(ort.getProbeId(), warns);
+                }
+            }
+            catch (ValidationException e) {
+                Map<String, Integer> err = e.getErrors();
+                List<ReportData> errs = new ArrayList<ReportData>();
+                for(String key: err.keySet()) {
+                    errs.add(
+                        new ReportData(key, "validation", err.get(key)));
+                }
+                this.appendErrors(ort.getProbeId(), errs);
+                Map<String, Integer> warn = e.getWarnings();
+                if (warn != null) {
+                	List<ReportData> warns = new ArrayList<ReportData>();
+                    for (String key: warn.keySet()) {
+                        warns.add(
+                            new ReportData(key, "validation", warn.get(key)));
+                    }
+                    this.appendWarnings(ort.getProbeId(), warns);
+                }
+                return false;
+            }
+        }
+        return true;
+    	
     }
 
     /**
@@ -306,4 +460,27 @@ public class LAFParser {
         this.errors = new HashMap<String, List<ReportData>>();
         this.warnings = new HashMap<String, List<ReportData>>();
     }
+
+    private void appendErrors(String probeId, List<ReportData> errs) {
+		List<ReportData> err = this.errors.get(probeId);
+		if (err == null) {
+			this.errors.put(probeId, errs);
+		}
+		else {
+			err.addAll(errs);
+			this.errors.put(probeId, err);
+		}
+	}
+
+	private void appendWarnings(String probeId, List<ReportData> warns) {
+    	List<ReportData> warn = this.warnings.get(probeId);
+    	if (warn == null) {
+    		this.warnings.put(probeId, warns);
+    	}
+    	else {
+    		warn.addAll(warns);
+    		this.warnings.put(probeId, warn);
+    	}
+	}
+
 }

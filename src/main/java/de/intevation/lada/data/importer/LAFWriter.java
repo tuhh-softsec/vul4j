@@ -41,19 +41,6 @@ implements Writer
     private EntityManager em;
 
     @Inject
-    @Named("lprobevalidator")
-    private Validator probeValidator;
-    @Inject
-    @Named("lmessungvalidator")
-    private Validator messungValidator;
-    @Inject
-    @Named("lortvalidator")
-    private Validator ortValidator;
-    @Inject
-    @Named("lmesswertvalidator")
-    private Validator messwertValidator;
-
-    @Inject
     @Named("lproberepository")
     private Repository probeRepository;
     @Inject
@@ -100,32 +87,7 @@ implements Writer
             errors.add(new ReportData("auth", "not authorized", 699));
             return false;
         }
-        try {
-            Map<String, Integer> warn =
-                probeValidator.validate(probe, false);
-            if (warn != null) {
-                for (String key: warn.keySet()) {
-                    warnings.add(new ReportData(key, "validation", warn.get(key)));
-                }
-            }
-        }
-        catch (ValidationException e) {
-            Map<String, Integer> err = e.getErrors();
-            for(String key: err.keySet()) {
-                errors.add(new ReportData(key, "validation", err.get(key)));
-            }
-            Map<String, Integer> warn = e.getWarnings();
-            if (warn != null) {
-                for (String key: warn.keySet()) {
-                    warnings.add(new ReportData(key, "validation", warn.get(key)));
-                }
-            }
-            if (probe.getProbeId() == null) {
-                errors.add(new ReportData("probeId", "missing", 673));
-            }
-            return false;
-        }
-        if (probe.getProbeId() == null) {
+         if (probe.getProbeId() == null) {
             errors.add(new ReportData("probeId", "missing", 673));
             return false;
         }
@@ -153,34 +115,8 @@ implements Writer
         List<LMessung> messungen
     ) {
         for(LMessung messung: messungen) {
-            try {
-                Map<String, Integer> warn =
-                    messungValidator.validate(messung, false);
-                messungRepository.create(messung);
-                if (warn != null) {
-                    for (String key : warn.keySet()) {
-                        warnings.add(
-                            new ReportData(key, "validation", warn.get(key)));
-                    }
-                }
-            }
-            catch (ValidationException e) {
-                Map<String, Integer> err = e.getErrors();
-                for(String key: err.keySet()) {
-                    errors.add(
-                        new ReportData(key, "validation", err.get(key)));
-                }
-                Map<String, Integer> warn = e.getWarnings();
-                if (warn != null) {
-                    for (String key: warn.keySet()) {
-                        warnings.add(
-                            new ReportData(key, "validation", warn.get(key)));
-                    }
-                }
-                return false;
-            }
+            messungRepository.create(messung);
         }
-
         return true;
     }
 
@@ -209,32 +145,7 @@ implements Writer
     @Override
     public boolean writeLOrte(AuthenticationResponse auth, List<LOrt> orte) {
         for(LOrt ort: orte) {
-            try {
-                Map<String, Integer> warn =
-                    ortValidator.validate(ort, false);
-                lortRepository.create(ort);
-                if (warn != null) {
-                    for (String key : warn.keySet()) {
-                        warnings.add(
-                            new ReportData(key, "validation", warn.get(key)));
-                    }
-                }
-            }
-            catch (ValidationException e) {
-                Map<String, Integer> err = e.getErrors();
-                for(String key: err.keySet()) {
-                    errors.add(
-                        new ReportData(key, "validation", err.get(key)));
-                }
-                Map<String, Integer> warn = e.getWarnings();
-                if (warn != null) {
-                    for (String key: warn.keySet()) {
-                        warnings.add(
-                            new ReportData(key, "validation", warn.get(key)));
-                    }
-                }
-                return false;
-            }
+            lortRepository.create(ort);
         }
         return true;
     }
@@ -293,34 +204,9 @@ implements Writer
         List<LMesswert> werte
     ) {
         for(LMesswert messwert: werte) {
-            try {
-                Map<String, Integer> warn =
-                    messwertValidator.validate(messwert, false);
-                messwertRepository.create(messwert);
-                if (warn != null) {
-                    for (String key : warn.keySet()) {
-                        warnings.add(
-                            new ReportData(key, "validation", warn.get(key)));
-                    }
-                }
-            }
-            catch (ValidationException e) {
-                Map<String, Integer> err = e.getErrors();
-                for(String key: err.keySet()) {
-                    errors.add(
-                        new ReportData(key, "validation", err.get(key)));
-                }
-                Map<String, Integer> warn = e.getWarnings();
-                if (warn != null) {
-                    for (String key: warn.keySet()) {
-                        warnings.add(
-                            new ReportData(key, "validation", warn.get(key)));
-                    }
-                }
-                return false;
-            }
+            messwertRepository.create(messwert);
         }
-        return false;
+        return true;
     }
 
     /**
