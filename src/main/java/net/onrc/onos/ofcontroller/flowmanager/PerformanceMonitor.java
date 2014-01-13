@@ -146,7 +146,7 @@ public class PerformanceMonitor {
 	 */
 	public String toString() {
 	    double milli = elapsed() / Math.pow(10, 6);
-	    return Double.toString(milli) + "ms";
+	    return Double.toString(milli) + " ms";
 	}
     }
     
