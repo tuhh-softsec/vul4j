@@ -35,19 +35,12 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 
 	@Override
 	public List<Link> getActiveLinks() {
-<<<<<<< HEAD
 		// TODO Auto-generated method stub
 		dbop = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
 		//dbop = GraphDBManager.getDBOperation("", "");
 		//dbop.commit(); //Commit to ensure we see latest data
 		Iterable<ISwitchObject> switches = dbop.getActiveSwitches();
 		List<Link> links = new ArrayList<Link>(); 
-=======
-		op = new GraphDBOperation("");
-		op.commit(); //Commit to ensure we see latest data
-		Iterable<ISwitchObject> switches = op.getActiveSwitches();
-		List<Link> links = new ArrayList<Link>();
->>>>>>> df6f52e87c8beeec9a50e4050634d70f124e9bc3
 		for (ISwitchObject sw : switches) {
 			GremlinPipeline<Vertex, Link> pipe = new GremlinPipeline<Vertex, Link>();
 			ExtractLink extractor = new ExtractLink();
@@ -68,13 +61,8 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 
 	@Override
 	public List<Link> getLinksOnSwitch(String dpid) {
-<<<<<<< HEAD
 		List<Link> links = new ArrayList<Link>(); 
 		ISwitchObject sw = dbop.searchSwitch(dpid);
-=======
-		List<Link> links = new ArrayList<Link>();
-		ISwitchObject sw = op.searchSwitch(dpid);
->>>>>>> df6f52e87c8beeec9a50e4050634d70f124e9bc3
 		GremlinPipeline<Vertex, Link> pipe = new GremlinPipeline<Vertex, Link>();
 		ExtractLink extractor = new ExtractLink();
 
