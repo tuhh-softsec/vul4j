@@ -42,7 +42,6 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.esigate.api.ContainerRequestMediator;
 import org.esigate.esi.EsiRenderer;
 import org.esigate.extension.DefaultCharset;
 import org.esigate.http.DateUtils;
@@ -613,7 +612,7 @@ public class DriverTest extends TestCase {
 
         driver.proxy("/foobar/", request);
 
-        assertTrue("Set-Cookie must be forwarded.", request.getMediator().getCookies().length > 0);
+        assertTrue("Set-Cookie must be forwarded.", request.getNewCookies().length > 0);
     }
 
     /**
@@ -752,8 +751,7 @@ public class DriverTest extends TestCase {
 
         driver.proxy("http://wwww.external.server/foo/foobar.jsp", request);
 
-        ContainerRequestMediator mediator = request.getMediator();
-        Assert.assertEquals(1, mediator.getCookies().length);
+        Assert.assertEquals(1, request.getNewCookies().length);
     }
 
     public void testRewriteCookiePath() throws Exception {
@@ -778,9 +776,8 @@ public class DriverTest extends TestCase {
 
         driver.proxy("/foo/foobar.jsp", request);
 
-        ContainerRequestMediator mediator = request.getMediator();
-        Assert.assertEquals(1, mediator.getCookies().length);
-        Assert.assertEquals("/foo", mediator.getCookies()[0].getPath());
+        Assert.assertEquals(1, request.getNewCookies().length);
+        Assert.assertEquals("/foo", request.getNewCookies()[0].getPath());
     }
 
     public void testRewriteCookiePathNotMatching() throws Exception {
@@ -805,9 +802,8 @@ public class DriverTest extends TestCase {
 
         driver.proxy("/bar/foobar.jsp", request);
 
-        ContainerRequestMediator mediator = request.getMediator();
-        Assert.assertEquals(1, mediator.getCookies().length);
-        Assert.assertEquals("/", mediator.getCookies()[0].getPath());
+        Assert.assertEquals(1, request.getNewCookies().length);
+        Assert.assertEquals("/", request.getNewCookies()[0].getPath());
     }
 
     /**

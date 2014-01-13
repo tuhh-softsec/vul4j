@@ -123,15 +123,9 @@ public class HttpServletMediator implements ContainerRequestMediator {
             result.setSessionId(session.getId());
         }
         result.setUserPrincipal(request.getUserPrincipal());
-        this.httpRequest = result;
-    }
-
-    @Override
-    public Cookie[] getCookies() {
+        // Copy cookies
         javax.servlet.http.Cookie[] src = request.getCookies();
-        Cookie[] result = null;
         if (src != null) {
-            result = new Cookie[src.length];
             for (int i = 0; i < src.length; i++) {
                 javax.servlet.http.Cookie c = src[i];
                 BasicClientCookie dest = new BasicClientCookie(c.getName(), c.getValue());
@@ -140,20 +134,10 @@ public class HttpServletMediator implements ContainerRequestMediator {
                 dest.setPath(c.getPath());
                 dest.setComment(c.getComment());
                 dest.setVersion(c.getVersion());
-                result[i] = dest;
+                result.addCookie(dest);
             }
         }
-        return result;
-    }
-
-    @Override
-    public void addCookie(Cookie src) {
-        if (this.responseSent) {
-            LOG.warn(WARN_RESPONSE_ALREADY_SENT, "Create cookie '" + src.getName() + "'");
-            return;
-        }
-
-        this.response.addCookie(rewriteCookie(src));
+        this.httpRequest = result;
     }
 
     static javax.servlet.http.Cookie rewriteCookie(Cookie src) {
@@ -187,6 +171,13 @@ public class HttpServletMediator implements ContainerRequestMediator {
                 String value = header.getValue();
                 response.addHeader(name, value);
             }
+
+            // Copy new cookies
+            Cookie[] newCookies = httpRequest.getNewCookies();
+            for (int i = 0; i < newCookies.length; i++) {
+                response.addCookie(rewriteCookie(newCookies[i]));
+            }
+
             HttpEntity httpEntity = httpResponse.getEntity();
             if (httpEntity != null) {
                 long contentLength = httpEntity.getContentLength();

@@ -16,7 +16,6 @@
 package org.esigate.test;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,6 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.RequestLine;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.message.BasicRequestLine;
 import org.esigate.api.ContainerRequestMediator;
 import org.esigate.http.IncomingRequest;
@@ -40,7 +38,6 @@ import org.esigate.util.UriUtils;
  */
 public class MockMediator implements ContainerRequestMediator {
     private final Map<String, Object> sessionAttributes = new HashMap<String, Object>();
-    private final ArrayList<Cookie> cookies = new ArrayList<Cookie>();
     private HttpResponse httpResponse;
     private IncomingRequest httpRequest;
 
@@ -62,17 +59,6 @@ public class MockMediator implements ContainerRequestMediator {
 
     public MockMediator() {
         this("http://localhost:8080");
-    }
-
-    @Override
-    public Cookie[] getCookies() {
-        Cookie[] cookiesArray = new Cookie[this.cookies.size()];
-        return this.cookies.toArray(cookiesArray);
-    }
-
-    @Override
-    public void addCookie(Cookie cookie) {
-        this.cookies.add(cookie);
     }
 
     @Override

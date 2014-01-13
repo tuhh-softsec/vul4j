@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
@@ -444,8 +443,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         sendRequestAndCheckHostHeader("http://www.foo.com:123", "http://localhost:8080", "www.bar.com:345",
                 "www.bar.com:345");
         // Should be copied as is even when default port
-        sendRequestAndCheckHostHeader("http://www.foo.com", "http://localhost:8080", "www.foo.com:80",
-                "www.foo.com:80");
+        sendRequestAndCheckHostHeader("http://www.foo.com", "http://localhost:8080", "www.foo.com:80", "www.foo.com:80");
     }
 
     /**
@@ -512,7 +510,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
     }
 
     /**
-     * Executes 2 requests, there is a cookie sent in the response that contains spaces in the value.
+     * Test with a cookie sent in the response that contains spaces in the value.
      * 
      * @throws Exception
      */
@@ -529,12 +527,8 @@ public class HttpClientRequestExecutorTest extends TestCase {
         response.addHeader("Set-Cookie", "test=\"a b\"; Version=1");
         mockConnectionManager.setResponse(response);
         httpClientRequestExecutor.execute(request);
-        request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080", false);
-        httpClientRequestExecutor.execute(request);
-        HttpRequest sentRequest = mockConnectionManager.getSentRequest();
-        assertNotNull(sentRequest.getHeaders("Cookie"));
-        assertEquals(1, sentRequest.getHeaders("Cookie").length);
-        assertEquals("test=\"a b\"", sentRequest.getHeaders("Cookie")[0].getValue());
+        assertEquals(1, originalRequest.getOriginalRequest().getNewCookies().length);
+        assertEquals("a b", originalRequest.getOriginalRequest().getNewCookies()[0].getValue());
     }
 
     /**

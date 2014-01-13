@@ -93,7 +93,7 @@ public class DefaultCookieManager implements CookieManager {
             }
 
             // Forward cookie in response.
-            originalRequest.getMediator().addCookie(rewriteForBrowser(cookie, originalRequest));
+            originalRequest.getOriginalRequest().addNewCookie(rewriteForBrowser(cookie, originalRequest));
         } else {
             if (LOG.isInfoEnabled()) {
                 LOG.info("Cookie " + toString(cookie) + " -> storing to context");
@@ -126,7 +126,7 @@ public class DefaultCookieManager implements CookieManager {
         }
 
         // Read cookie from request
-        Cookie[] requestCookies = originalRequest.getMediator().getCookies();
+        Cookie[] requestCookies = originalRequest.getOriginalRequest().getCookies();
         if (requestCookies != null) {
             for (Cookie cookie : requestCookies) {
                 String name = cookie.getName();

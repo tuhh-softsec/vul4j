@@ -50,13 +50,11 @@ public final class TestUtils {
     }
 
     public static void addCookie(Cookie cookie, DriverRequest request) {
-        MockMediator mediator = (MockMediator) request.getMediator();
-        mediator.addCookie(cookie);
+        request.getOriginalRequest().addCookie(cookie);
     }
 
     public static void addCookie(Cookie cookie, IncomingRequest request) {
-        MockMediator mediator = (MockMediator) request.getMediator();
-        mediator.addCookie(cookie);
+        request.addCookie(cookie);
     }
 
     public static void setRemoteAddr(String remoteAddr, IncomingRequest request) {

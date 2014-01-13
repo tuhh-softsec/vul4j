@@ -18,7 +18,6 @@ package org.esigate.url;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.api.BaseUrlRetrieveStrategy;
-import org.esigate.api.ContainerRequestMediator;
 import org.esigate.http.IncomingRequest;
 
 public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
@@ -36,8 +35,7 @@ public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStra
 
     @Override
     public String getBaseURL(IncomingRequest originalRequest) {
-        ContainerRequestMediator mediator = originalRequest.getMediator();
-        Cookie sessionCookie = getEsiSessionCookie(mediator.getCookies());
+        Cookie sessionCookie = getEsiSessionCookie(originalRequest.getCookies());
         int index = 0;
         boolean toGenerate = true;
 
@@ -62,7 +60,7 @@ public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStra
         if (toGenerate) {
             index = generateIndex();
             Cookie cookie = new BasicClientCookie(ESI_SESSION_COOKIE_NAME, Integer.toString(index));
-            mediator.addCookie(cookie);
+            originalRequest.addNewCookie(cookie);
         }
 
         return this.urls[index];

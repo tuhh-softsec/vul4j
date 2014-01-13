@@ -25,7 +25,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.cookie.ClientCookie;
 import org.esigate.http.IncomingRequest;
-import org.esigate.test.MockMediator;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.driver.AbstractDriverTestCase;
 
@@ -62,14 +61,12 @@ public class DriverCookieTest extends AbstractDriverTestCase {
         IncomingRequest request = createHttpRequest().uri("https://test.mydomain.fr/foobar/").mockMediator().build();
 
         driverProxy(driver, request);
-        MockMediator m = (MockMediator) request.getMediator();
-        Assert.assertTrue(((ClientCookie) m.getCookies()[0]).isSecure());
+        Assert.assertTrue(((ClientCookie) request.getNewCookies()[0]).isSecure());
 
         // Http request : Cookie is forwarded as NOT secure
         request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
         driverProxy(driver, request);
-        m = (MockMediator) request.getMediator();
-        Assert.assertFalse(((ClientCookie) m.getCookies()[0]).isSecure());
+        Assert.assertFalse(((ClientCookie) request.getNewCookies()[0]).isSecure());
     }
 
 }

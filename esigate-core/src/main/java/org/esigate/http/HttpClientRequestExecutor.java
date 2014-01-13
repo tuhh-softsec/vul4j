@@ -229,15 +229,11 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         OutgoingRequestContext context = new OutgoingRequestContext();
 
         String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
-        OutgoingRequest httpRequest;
-        if (SIMPLE_METHODS.contains(method)) {
-            httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest,
-                    config, context);
-        } else if (ENTITY_METHODS.contains(method)) {
-            httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest,
-                    config, context);
+        OutgoingRequest httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(),
+                originalRequest, config, context);
+        if (ENTITY_METHODS.contains(method)) {
             httpRequest.setEntity(originalRequest.getEntity());
-        } else {
+        } else if (!SIMPLE_METHODS.contains(method)) {
             throw new UnsupportedHttpMethodException(method + " " + uri);
         }
 

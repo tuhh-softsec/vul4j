@@ -17,7 +17,6 @@ package org.esigate.api;
 
 import java.io.Serializable;
 
-import org.apache.http.cookie.Cookie;
 import org.esigate.http.IncomingRequest;
 
 /**
@@ -28,20 +27,6 @@ import org.esigate.http.IncomingRequest;
  * 
  */
 public interface ContainerRequestMediator {
-
-    /**
-     * Retrieves the cookies from the Cookie header of the request.
-     * 
-     * @return the cookies contained in the incoming request
-     */
-    Cookie[] getCookies();
-
-    /**
-     * Sends a cookie to the client by adding a Set-cookie header to the response.
-     * 
-     * @param cookie
-     */
-    void addCookie(Cookie cookie);
 
     /**
      * Stores an object that can be reused across successive http requests from the same user. Implementations can

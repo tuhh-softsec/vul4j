@@ -16,10 +16,13 @@
 package org.esigate.http;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.RequestLine;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.esigate.api.ContainerRequestMediator;
 
@@ -37,6 +40,8 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
     private String remoteAddr;
     private String sessionId;
     private Principal userPrincipal;
+    private List<Cookie> cookies = new ArrayList<Cookie>();
+    private List<Cookie> newCookies = new ArrayList<Cookie>();
 
     public IncomingRequest(RequestLine requestline, ContainerRequestMediator mediator) {
         super(requestline);
@@ -85,6 +90,22 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
     public Principal getUserPrincipal() {
         return userPrincipal;
+    }
+
+    public Cookie[] getCookies() {
+        return cookies.toArray(new Cookie[cookies.size()]);
+    }
+
+    public Cookie[] getNewCookies() {
+        return newCookies.toArray(new Cookie[newCookies.size()]);
+    }
+
+    public void addCookie(Cookie cookie) {
+        cookies.add(cookie);
+    }
+
+    public void addNewCookie(Cookie cookie) {
+        newCookies.add(cookie);
     }
 
 }

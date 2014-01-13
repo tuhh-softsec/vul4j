@@ -191,7 +191,7 @@ public final class VariablesResolver {
             if (arg == null) {
                 res = HttpRequestHelper.getFirstHeader("Cookie", request);
             } else {
-                Cookie[] cookies = request.getMediator().getCookies();
+                Cookie[] cookies = request.getOriginalRequest().getCookies();
                 for (Cookie c : cookies) {
                     if (c.getName().equals(arg)) {
                         res = c.getValue();

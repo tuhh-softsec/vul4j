@@ -109,7 +109,7 @@ public class HttpRequestBuilder {
         // In mediator
         if (requestMediator != null) {
             for (Cookie c : this.cookies) {
-                requestMediator.addCookie(c);
+                request.addCookie(c);
             }
         }
 
