@@ -151,6 +151,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
                 case CDATA:
                 case CHARACTERS:
                     stringBuilder.append(getText());
+                    break;
                 default:
                     throw new XMLStreamException("Expected a text token, got " + type + ".");
             }
