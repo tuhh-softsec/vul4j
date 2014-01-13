@@ -432,7 +432,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	 * Finalize the object.
 	 */
 	@Override
-	public void finalize() {
+	protected void finalize() {
 		close();
 	}
 

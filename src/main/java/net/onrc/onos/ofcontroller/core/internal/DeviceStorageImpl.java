@@ -60,7 +60,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	 * It will close the DB connection. This is for Java garbage collection.
 	 */
 	@Override
-	public void finalize() {
+	protected void finalize() {
 		close();
 	}
 
