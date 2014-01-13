@@ -315,8 +315,11 @@ public class XMLSecurityConstants {
     public static final AlgorithmUsage Sym_Sig = new AlgorithmUsage("Sym_Sig");
     public static final AlgorithmUsage Asym_Sig = new AlgorithmUsage("Asym_Sig");
     public static final AlgorithmUsage Enc = new AlgorithmUsage("Enc");
-    public static final AlgorithmUsage Dig = new AlgorithmUsage("Dig");
-    public static final AlgorithmUsage C14n = new AlgorithmUsage("C14n");
+
+    public static final AlgorithmUsage SigDig = new AlgorithmUsage("SigDig");
+    public static final AlgorithmUsage EncDig = new AlgorithmUsage("EncDig");
+    public static final AlgorithmUsage SigC14n = new AlgorithmUsage("SigC14n");
+    public static final AlgorithmUsage SigTransform = new AlgorithmUsage("SigTransform");
 
     public static class AlgorithmUsage extends ComparableType<AlgorithmUsage> {
         public AlgorithmUsage(String name) {

@@ -287,7 +287,8 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
         // C14n algorithm
         for (SecurityEvent event : algorithmEvents) {
             AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent) event;
-            if (XMLSecurityConstants.C14n.equals(algorithmEvent.getAlgorithmUsage())) {
+            if (XMLSecurityConstants.SigC14n.equals(algorithmEvent.getAlgorithmUsage())
+                || XMLSecurityConstants.SigTransform.equals(algorithmEvent.getAlgorithmUsage())) {
                 assertEquals(c14nAlgorithm, algorithmEvent.getAlgorithmURI());
             }
         }
@@ -295,7 +296,7 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
         // Digest algorithm
         for (SecurityEvent event : algorithmEvents) {
             AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent) event;
-            if (XMLSecurityConstants.Dig.equals(algorithmEvent.getAlgorithmUsage())) {
+            if (XMLSecurityConstants.SigDig.equals(algorithmEvent.getAlgorithmUsage())) {
                 assertEquals(digestAlgorithm, algorithmEvent.getAlgorithmURI());
             }
         }

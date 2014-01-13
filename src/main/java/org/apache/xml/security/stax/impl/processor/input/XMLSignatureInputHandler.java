@@ -40,7 +40,7 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
 
         AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
         algorithmSuiteSecurityEvent.setAlgorithmURI(signatureType.getSignedInfo().getCanonicalizationMethod().getAlgorithm());
-        algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.C14n);
+        algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.SigC14n);
         algorithmSuiteSecurityEvent.setCorrelationID(signatureType.getId());
         inboundSecurityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
 

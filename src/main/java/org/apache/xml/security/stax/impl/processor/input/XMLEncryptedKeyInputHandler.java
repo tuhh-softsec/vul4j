@@ -34,6 +34,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.securityToken.AbstractInboundSecurityToken;
 import org.apache.xml.security.stax.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
+import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.EncryptedKeyTokenSecurityEvent;
 import org.apache.xml.security.utils.Base64;
 
@@ -43,6 +44,7 @@ import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.JAXBElement;
+
 import java.security.*;
 import java.security.spec.MGF1ParameterSpec;
 import java.util.Deque;
@@ -185,6 +187,12 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                                         XMLSecurityUtils.getQNameType(encryptedKeyType.getEncryptionMethod().getContent(), XMLSecurityConstants.TAG_dsig_DigestMethod);
                                 String jceDigestAlgorithm = "SHA-1";
                                 if (digestMethodType != null) {
+                                    AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
+                                    algorithmSuiteSecurityEvent.setAlgorithmURI(digestMethodType.getAlgorithm());
+                                    algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.EncDig);
+                                    algorithmSuiteSecurityEvent.setCorrelationID(correlationID);
+                                    inboundSecurityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
+                                    
                                     jceDigestAlgorithm = JCEAlgorithmMapper.translateURItoJCEID(digestMethodType.getAlgorithm());
                                 }
 

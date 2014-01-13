@@ -276,7 +276,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
         AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
         algorithmSuiteSecurityEvent.setAlgorithmURI(digestMethodAlgorithm);
-        algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.Dig);
+        algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.SigDig);
         algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
         inboundSecurityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
 
@@ -306,7 +306,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(XMLSecurityConstants.NS_C14N_OMIT_COMMENTS);
-            algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.C14n);
+            algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.SigTransform);
             algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
             inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
 
@@ -339,7 +339,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithm);
-            algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.C14n);
+            algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.SigTransform);
             algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
             inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
 
