@@ -819,6 +819,16 @@ ILinkDiscoveryService, IFloodlightModule {
                 }
                 return Command.STOP;
             }
+            else if(sw <= remoteSwitch.getId()){
+                if (log.isTraceEnabled()) {
+                    log.trace("Getting BBDP from a different controller. myId {}: remoteId {}", myId, otherId);
+                    log.trace("and my controller id is smaller than the other, so quelching it. myPort {}: rPort {}", pi.getInPort(), remotePort);
+                  }
+                  //XXX ONOS: Fix the BDDP broadcast issue
+                  //return Command.CONTINUE;
+                  return Command.STOP;
+            }
+            /*
             else if (myId < otherId)  {
                 if (log.isTraceEnabled()) {
                     log.trace("Getting BDDP packets from a different controller" +
@@ -828,6 +838,7 @@ ILinkDiscoveryService, IFloodlightModule {
                 //return Command.CONTINUE;
                 return Command.STOP;
             }
+            */
         }
 
 
