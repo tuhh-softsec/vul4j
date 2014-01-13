@@ -8,13 +8,6 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 
 public class FlowEntryProperty {
     private Map<String, Object> map = new HashMap<>();
-    private DBOperation dbhandler;
-    private IFlowEntry flowEntry;
-    
-    public FlowEntryProperty(DBOperation dbHandler, IFlowEntry flowEntry) {
-        this.dbhandler = dbHandler;
-        this.flowEntry = flowEntry;
-    }
     
     public void setFlowId(String value) {
         map.put("flow_id", value);
@@ -144,7 +137,7 @@ public class FlowEntryProperty {
      *
      * @param dbhandler
      */
-    public void commitProperties() {
-        dbhandler.setVertexProperties(flowEntry.asVertex() ,map);
+    public void commitProperties(DBOperation dbhandler, IFlowEntry flowEntry) {
+        dbhandler.setVertexProperties(flowEntry.asVertex(), map);
     }
 }

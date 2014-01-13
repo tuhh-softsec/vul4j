@@ -28,6 +28,7 @@ public class FlowDatabaseOperation {
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
     private static final boolean measureONOSFlowTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOSFlow", "0")) != 0;
     private static final boolean measureONOSFlowEntryTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOSFlowEntry", "0")) != 0;
+    private static final boolean useFastAddFlow = true;
 
     /**
      * Add a flow.
@@ -36,7 +37,204 @@ public class FlowDatabaseOperation {
      * @param flowPath the Flow Path to install.
      * @return true on success, otherwise false.
      */
+    static boolean addFlowFast(DBOperation dbHandler, FlowPath flowPath) {
+	IFlowPath flowPathObj = null;
+	FlowPathProperty flowProp = new FlowPathProperty();
+	
+	flowPathObj = dbHandler.searchFlowPath(flowPath.flowId()); // toshi memo: getVertices("flow_id")
+	if (flowPathObj == null) {
+	    try {
+		flowPathObj = dbHandler.newFlowPath(); // toshi memo: addVertex(), setType("flow")
+	    } catch (Exception e) {
+		flowPathObj = null;
+		StringWriter sw = new StringWriter();
+		e.printStackTrace(new PrintWriter(sw));
+		log.error(":addFlow FlowId:{} failed: {}", flowPath.flowId(), sw.toString());
+	    }
+	    flowProp.setFlowPathUserState("FP_USER_ADD");
+	} else {
+	    // Remove the old Flow Entries (this is special for RAMCloud)
+	    for (IFlowEntry flowEntryObj : flowPathObj.getFlowEntries()) { // toshi memo: get.@Adjacency("flow", IN)
+		//flowObj.removeFlowEntry(flowEntryObj);   // toshi memo: remove.@Adjacency("flow", IN)
+		dbHandler.removeFlowEntry(flowEntryObj); // toshi memo: removeVertex()
+	    }
+	    flowProp.setFlowPathUserState("FP_USER_MODIFY");
+	}
+	if (flowPathObj == null) {
+	    log.error(":addFlow FlowId:{} failed: Flow object not created", flowPath.flowId());
+	    dbHandler.rollback();
+	    
+	    return false;
+	}
+
+	// Set the Flow key
+	flowProp.setFlowId(flowPath.flowId().toString());
+
+	// Set the Flow attributes
+	flowProp.setInstallerId(flowPath.installerId().toString());
+	flowProp.setFlowPathType(flowPath.flowPathType().toString());
+	flowProp.setFlowPathUserState(flowPath.flowPathUserState().toString());
+	flowProp.setFlowPathFlags(flowPath.flowPathFlags().flags());
+	flowProp.setIdleTimeout(flowPath.idleTimeout());
+	flowProp.setHardTimeout(flowPath.hardTimeout());
+	flowProp.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
+	flowProp.setSrcPort(flowPath.dataPath().srcPort().port().value());
+	flowProp.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
+	flowProp.setDstPort(flowPath.dataPath().dstPort().port().value());
+
+	if (flowPath.flowEntryMatch().matchSrcMac()) {
+	    flowProp.setMatchSrcMac(flowPath.flowEntryMatch().srcMac().toString());
+	}
+	if (flowPath.flowEntryMatch().matchDstMac()) {
+	    flowProp.setMatchDstMac(flowPath.flowEntryMatch().dstMac().toString());
+	}
+	if (flowPath.flowEntryMatch().matchEthernetFrameType()) {
+	    flowProp.setMatchEthernetFrameType(flowPath.flowEntryMatch().ethernetFrameType());
+	}
+	if (flowPath.flowEntryMatch().matchVlanId()) {
+	    flowProp.setMatchVlanId(flowPath.flowEntryMatch().vlanId());
+	}
+	if (flowPath.flowEntryMatch().matchVlanPriority()) {
+	    flowProp.setMatchVlanPriority(flowPath.flowEntryMatch().vlanPriority());
+	}
+	if (flowPath.flowEntryMatch().matchSrcIPv4Net()) {
+	    flowProp.setMatchSrcIPv4Net(flowPath.flowEntryMatch().srcIPv4Net().toString());
+	}
+	if (flowPath.flowEntryMatch().matchDstIPv4Net()) {
+	    flowProp.setMatchDstIPv4Net(flowPath.flowEntryMatch().dstIPv4Net().toString());
+	}
+	if (flowPath.flowEntryMatch().matchIpProto()) {
+	    flowProp.setMatchIpProto(flowPath.flowEntryMatch().ipProto());
+	}
+	if (flowPath.flowEntryMatch().matchIpToS()) {
+	    flowProp.setMatchIpToS(flowPath.flowEntryMatch().ipToS());
+	}
+	if (flowPath.flowEntryMatch().matchSrcTcpUdpPort()) {
+	    flowProp.setMatchSrcTcpUdpPort(flowPath.flowEntryMatch().srcTcpUdpPort());
+	}
+	if (flowPath.flowEntryMatch().matchDstTcpUdpPort()) {
+	    flowProp.setMatchDstTcpUdpPort(flowPath.flowEntryMatch().dstTcpUdpPort());
+	}
+	if (! flowPath.flowEntryActions().actions().isEmpty()) {
+	    flowProp.setActions(flowPath.flowEntryActions().toString());
+	}
+	flowProp.setDataPathSummary(flowPath.dataPath().dataPathSummary());
+
+	flowProp.commitProperties(dbHandler, flowPathObj); // toshi memo: flowObj.setProperties()
+
+	//
+	// Flow Entries:
+	// flowPath.dataPath().flowEntries()
+	//
+	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
+	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
+		continue;	// Skip: all Flow Entries were deleted earlier
+
+	    IFlowEntry iFlowEntry = null;
+	    FlowEntryProperty flowEntryProp = new FlowEntryProperty();
+	    
+	    try {
+		iFlowEntry = dbHandler.searchFlowEntry(flowEntry.flowEntryId()); // toshi memo: getVertices()
+		if (iFlowEntry != null) {
+		    flowEntryProp.setUserState("FE_USER_MODIFY");
+		} else {
+		    flowEntryProp.setUserState("FE_USER_ADD");
+		    iFlowEntry = dbHandler.newFlowEntry(); // toshi memo: addVertex(). setType("flow_entry")
+		    //flowObj.addFlowEntry(iFlowEntry);      // toshi memo: add.@Adjacency("flow", IN)
+		    iFlowEntry.setFlow(flowPathObj);           // toshi memo: set.@Adjacency("flow")
+		}
+	    } catch (Exception e) {
+		iFlowEntry = null;
+	    }
+	    if (iFlowEntry == null) {
+		log.error(":addFlow FlowEntryId:{} failed: FlowEntry object not created", flowEntry.flowEntryId());
+		dbHandler.rollback();
+		return false;
+	    }
+	    
+	    // Set the Flow Entry key
+	    flowEntryProp.setFlowEntryId(flowEntry.flowEntryId().toString());
+	    flowEntryProp.setType("flow_entry");
+
+	    // Set the Flow Entry Edges
+	    ISwitchObject sw = dbHandler.searchSwitch(flowEntry.dpid().toString()); // toshi memo: getVertices()
+
+	    flowEntryProp.setIdleTimeout(flowEntry.idleTimeout());
+	    flowEntryProp.setHardTimeout(flowEntry.hardTimeout());
+	    flowEntryProp.setSwitchDpid(flowEntry.dpid().toString());
+
+	    iFlowEntry.setSwitch(sw);  // toshi memo: set.@Adjacency("switch")
+	    if (flowEntry.flowEntryMatch().matchInPort()) {
+		IPortObject inport = dbHandler.searchPort(flowEntry.dpid().toString(), flowEntry.flowEntryMatch().inPort().value()); // toshi memo: getVertices()
+		flowEntryProp.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
+		iFlowEntry.setInPort(inport);  // toshi memo: set.@Adjacency("inport")
+	    }
+
+	    // Set the Flow Entry attributes
+	    if (flowEntry.flowEntryMatch().matchSrcMac()) {
+		flowEntryProp.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchDstMac()) {
+		flowEntryProp.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
+		flowEntryProp.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
+	    }
+	    if (flowEntry.flowEntryMatch().matchVlanId()) {
+		flowEntryProp.setMatchVlanId(flowEntry.flowEntryMatch().vlanId());
+	    }
+	    if (flowEntry.flowEntryMatch().matchVlanPriority()) {
+		flowEntryProp.setMatchVlanPriority(flowEntry.flowEntryMatch().vlanPriority());
+	    }
+	    if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
+		flowEntryProp.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
+		flowEntryProp.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchIpProto()) {
+		flowEntryProp.setMatchIpProto(flowEntry.flowEntryMatch().ipProto());
+	    }
+	    if (flowEntry.flowEntryMatch().matchIpToS()) {
+		flowEntryProp.setMatchIpToS(flowEntry.flowEntryMatch().ipToS());
+	    }
+	    if (flowEntry.flowEntryMatch().matchSrcTcpUdpPort()) {
+		flowEntryProp.setMatchSrcTcpUdpPort(flowEntry.flowEntryMatch().srcTcpUdpPort());
+	    }
+	    if (flowEntry.flowEntryMatch().matchDstTcpUdpPort()) {
+		flowEntryProp.setMatchDstTcpUdpPort(flowEntry.flowEntryMatch().dstTcpUdpPort());
+	    }
+
+	    for (FlowEntryAction fa : flowEntry.flowEntryActions().actions()) {
+		if (fa.actionOutput() != null) {
+		    IPortObject outport = dbHandler.searchPort(flowEntry.dpid().toString(), fa.actionOutput().port().value()); // toshi memo: getVertices()
+		    flowEntryProp.setActionOutputPort(fa.actionOutput().port().value());
+		    iFlowEntry.setOutPort(outport); // set.@Adjacency("outport")
+		}
+	    }
+	    if (! flowEntry.flowEntryActions().isEmpty()) {
+		flowEntryProp.setActions(flowEntry.flowEntryActions().toString());
+	    }
+
+	    flowEntryProp.setSwitchState(flowEntry.flowEntrySwitchState().toString());
+	    flowEntryProp.commitProperties(dbHandler, iFlowEntry); // toshi memo: setProperties()
+	}
+	
+	dbHandler.commit();
+	return true;
+    }
+    
+    /**
+     * Add a flow.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowPath the Flow Path to install.
+     * @return true on success, otherwise false.
+     */
     static boolean addFlow(DBOperation dbHandler, FlowPath flowPath) {
+	if (useFastAddFlow)
+	    return addFlowFast(dbHandler, flowPath);
+
 	IFlowPath flowObj = null;
 	boolean found = false;
 	long startAddFlow = 0;
@@ -131,7 +329,7 @@ public class FlowDatabaseOperation {
 		startSettingFlowPathProps = System.nanoTime();
 	}
 
-	FlowPathProperty flowProp = new FlowPathProperty(dbHandler, flowObj);
+	FlowPathProperty flowProp = new FlowPathProperty();
 
 	//
 	// Set the Flow key:
@@ -261,7 +459,7 @@ public class FlowDatabaseOperation {
 	else
 	    flowProp.setFlowPathUserState("FP_USER_ADD");
 
-	flowProp.commitProperties();
+	flowProp.commitProperties(dbHandler, flowObj);
 
 	if ( measureONOSFlowTimeProp ) {
 	    ++numPropsSet;
@@ -427,7 +625,7 @@ public class FlowDatabaseOperation {
 	    startSetProperties = System.nanoTime();
 	}
 
-	FlowEntryProperty flowProp = new FlowEntryProperty(dbHandler, flowEntryObj);
+	FlowEntryProperty flowProp = new FlowEntryProperty();
 
 	//
 	// Set the Flow Entry key:
@@ -622,7 +820,7 @@ public class FlowDatabaseOperation {
 	if (measureONOSFlowEntryTimeProp) {
 	    numProperties += 2;
 	}
-	flowProp.commitProperties();
+	flowProp.commitProperties(dbHandler, flowEntryObj);
 	//
 	// TODO: Take care of the FlowEntryErrorState.
 	//
@@ -637,7 +835,7 @@ public class FlowDatabaseOperation {
 	    if (measureONOSFlowEntryTimeProp) {
 		startAddEdgeBetweenFlowPath = System.nanoTime();
 	    }
-	    flowObj.addFlowEntry(flowEntryObj);
+	    //flowObj.addFlowEntry(flowEntryObj);
 	    flowEntryObj.setFlow(flowObj);
 	    if (measureONOSFlowEntryTimeProp) {
 		endAddEdgeBetweenFlowPath = System.nanoTime();
