@@ -38,6 +38,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
+import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 /**
  * A custom implementation of a XMLStreamReader to get back from the XMLEventReader world
@@ -206,13 +207,12 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
             case START_ELEMENT:
                 return xmlSecEvent.asStartElement().getNamespaceURI(prefix);
             case END_ELEMENT:
-                @SuppressWarnings("unchecked")
-                Iterator<Namespace> namespaceIterator = xmlSecEvent.asEndElement().getNamespaces();
-                while (namespaceIterator.hasNext()) {
-                    Namespace namespace = namespaceIterator.next();
-                    if (prefix.equals(namespace.getPrefix())) {
-                        return namespace.getNamespaceURI();
-                    }
+                //the documentation states that getNamespaces on an end element should return ns'es that
+                //go out of scope (currently not unsupported)
+                //so that means we have to query the parent element
+                XMLSecStartElement xmlSecStartElement = xmlSecEvent.asEndElement().getParentXMLSecStartElement();
+                if (xmlSecStartElement != null) {
+                    return xmlSecStartElement.getNamespaceURI(prefix);
                 }
                 return null;
             default:
