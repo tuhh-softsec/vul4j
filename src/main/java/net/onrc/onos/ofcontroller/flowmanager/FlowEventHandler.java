@@ -389,7 +389,13 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    modifiedFlowPaths.clear();
 
 	    PerformanceMonitor.stop("EventHandler.ProcessAllEvents");
-	    PerformanceMonitor.report();
+
+
+	    PerformanceMonitor.report("EventHandler.ReadTopology");
+	    PerformanceMonitor.report("EventHandler.RecomputeFlows");
+	    PerformanceMonitor.report("EventHandler.WriteFlowsToDb");
+	    PerformanceMonitor.report("EventHandler.NotificationSend.FlowEntryRemoved");
+	    PerformanceMonitor.report("EventHandler.ProcessAllEvents");
 
 	    return;
 	}
@@ -1404,7 +1410,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    entries.add(flowEntry);
 	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
 	    PerformanceMonitor.stop("EventHandler.AddFlowEntryToSwitch");
-	    PerformanceMonitor.report();
+	    PerformanceMonitor.report("EventHandler.AddFlowEntryToSwitch");
 	    return;
 	}
 
@@ -1432,7 +1438,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    entries.add(flowEntry);
 	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
 	    PerformanceMonitor.stop("EventHandler.RemoveFlowEntryFromSwitch");
-	    PerformanceMonitor.report();
+	    PerformanceMonitor.report("EventHandler.RemoveFlowEntryFromSwitch");
 	    return;
 	}
 

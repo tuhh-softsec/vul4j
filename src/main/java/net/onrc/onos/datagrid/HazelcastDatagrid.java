@@ -463,7 +463,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    kryoFactory.deleteKryo(kryo);
 	    flowEventHandlerService.notificationRecvTopologyElementRemoved(topologyElement);
 	    PerformanceMonitor.stop("TopologyEntryRemoved.NotificationReceived");
-	    PerformanceMonitor.report();
+	    PerformanceMonitor.report("TopologyEntryRemoved.NotificationReceived");
 	}
 
 	/**

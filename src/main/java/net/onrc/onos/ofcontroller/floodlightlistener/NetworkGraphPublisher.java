@@ -378,7 +378,8 @@ public class NetworkGraphPublisher implements IDeviceListener,
 			datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
 		    }
 		    PerformanceMonitor.stop("SwitchPortRemoved.NotificationSend");
-		    PerformanceMonitor.report();
+		    PerformanceMonitor.report("SwitchPortRemoved.DbAccess");
+		    PerformanceMonitor.report("TopologyEntryRemoved.NotificationReceived");
 		}
 	}
 
