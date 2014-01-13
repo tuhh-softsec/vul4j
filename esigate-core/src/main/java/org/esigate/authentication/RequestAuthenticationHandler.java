@@ -21,7 +21,6 @@ import java.util.Properties;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.esigate.api.ContainerRequestMediator;
 import org.esigate.http.IncomingRequest;
 import org.esigate.http.OutgoingRequest;
 import org.slf4j.Logger;
@@ -102,9 +101,8 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
         LOG.debug("preRequest");
 
         // Process session
-        ContainerRequestMediator mediator = request.getMediator();
         for (String attribute : this.sessionAttributes) {
-            String value = (String) mediator.getSessionAttribute(attribute);
+            String value = (String) httpRequest.getSession().getAttribute(attribute);
             if (value != null) {
                 LOG.debug("Adding session attribute {} ({}) as header ({}{})", attribute, value, this.headerPrefix,
                         attribute);

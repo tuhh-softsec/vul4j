@@ -15,10 +15,6 @@
 
 package org.esigate.test;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -37,7 +33,6 @@ import org.esigate.util.UriUtils;
  * @author Nicolas Richeton
  */
 public class MockMediator implements ContainerRequestMediator {
-    private final Map<String, Object> sessionAttributes = new HashMap<String, Object>();
     private HttpResponse httpResponse;
     private IncomingRequest httpRequest;
 
@@ -55,20 +50,12 @@ public class MockMediator implements ContainerRequestMediator {
         } else {
             this.httpRequest.setHeader("Host", host + ":" + port);
         }
+        this.httpRequest.setSession(new MockSession());
+
     }
 
     public MockMediator() {
         this("http://localhost:8080");
-    }
-
-    @Override
-    public void setSessionAttribute(String key, Serializable value) {
-        this.sessionAttributes.put(key, value);
-    }
-
-    @Override
-    public Serializable getSessionAttribute(String key) {
-        return (Serializable) this.sessionAttributes.get(key);
     }
 
     @Override

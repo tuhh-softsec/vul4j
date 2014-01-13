@@ -17,6 +17,7 @@ package org.esigate;
 
 import java.io.Serializable;
 
+import org.esigate.api.Session;
 import org.esigate.http.IncomingRequest;
 
 /**
@@ -43,11 +44,15 @@ public class UserContext {
     }
 
     public Object getAttribute(String name) {
-        return httpRequest.getMediator().getSessionAttribute(prefixAttributeName(name));
+        Session session = httpRequest.getSession();
+        if (session == null) {
+            return null;
+        }
+        return session.getAttribute(prefixAttributeName(name));
     }
 
     public void setAttribute(String name, Serializable value) {
-        httpRequest.getMediator().setSessionAttribute(prefixAttributeName(name), value);
+        httpRequest.getSession().setAttribute(prefixAttributeName(name), value);
     }
 
     public String getUser() {

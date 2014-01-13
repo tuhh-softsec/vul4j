@@ -15,8 +15,6 @@
 
 package org.esigate.api;
 
-import java.io.Serializable;
-
 import org.esigate.http.IncomingRequest;
 
 /**
@@ -27,25 +25,6 @@ import org.esigate.http.IncomingRequest;
  * 
  */
 public interface ContainerRequestMediator {
-
-    /**
-     * Stores an object that can be reused across successive http requests from the same user. Implementations can
-     * decide to store the objects serialized in a cookie on the client side or server side with some session tracking
-     * mechanism.
-     * 
-     * @param key
-     * @param value
-     */
-    void setSessionAttribute(String key, Serializable value);
-
-    /**
-     * Retrieves an Object previously stored with method @see #setSessionAttribute(String, Serializable) or
-     * <code>null</code>.
-     * 
-     * @param key
-     * @return the previously stored object or <code>null</code>
-     */
-    Serializable getSessionAttribute(String key);
 
     /**
      * Returns the <code>IncomingRequest</code> representing the request received by the container. Subsequent calls to

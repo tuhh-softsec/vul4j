@@ -103,11 +103,11 @@ public class HttpServletMediatorTest extends TestCase {
         HttpServletMediator mediator = new HttpServletMediator(request, response, context);
         mediator.sendResponse(new HttpResponseBuilder().entity("Response").build());
 
-        mediator.setSessionAttribute("test", "value");
+        mediator.getHttpRequest().getSession().setAttribute("test", "value");
 
         // Previous method should have no effect since session cannot be
         // created.
-        Assert.assertNull(mediator.getSessionAttribute("test"));
+        Assert.assertNull(mediator.getHttpRequest().getSession().getAttribute("test"));
     }
 
 }

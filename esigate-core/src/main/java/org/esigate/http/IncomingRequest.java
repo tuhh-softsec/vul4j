@@ -25,6 +25,7 @@ import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.esigate.api.ContainerRequestMediator;
+import org.esigate.api.Session;
 
 /**
  * Represents an incoming http request.
@@ -42,6 +43,7 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
     private Principal userPrincipal;
     private List<Cookie> cookies = new ArrayList<Cookie>();
     private List<Cookie> newCookies = new ArrayList<Cookie>();
+    private Session session;
 
     public IncomingRequest(RequestLine requestline, ContainerRequestMediator mediator) {
         super(requestline);
@@ -106,6 +108,14 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
     public void addNewCookie(Cookie cookie) {
         newCookies.add(cookie);
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
     }
 
 }

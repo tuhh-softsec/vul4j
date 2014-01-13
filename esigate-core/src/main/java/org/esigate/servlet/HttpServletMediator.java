@@ -16,7 +16,6 @@
 package org.esigate.servlet;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Enumeration;
 
 import javax.servlet.FilterChain;
@@ -39,8 +38,6 @@ import org.apache.http.message.BasicRequestLine;
 import org.esigate.api.ContainerRequestMediator;
 import org.esigate.http.IncomingRequest;
 import org.esigate.util.UriUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This mediator converts esigate request/responses to Servlet request/responses.
@@ -53,20 +50,11 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class HttpServletMediator implements ContainerRequestMediator {
-    private static final String WARN_RESPONSE_ALREADY_SENT = "Attempt to write to the response, "
-            + "but it is already sent. The operation {} was discarded. "
-            + "This usually means that esigate is configured " + "with stale-while-revalidate is enabled "
-            + "AND backend is sending a cookie update which is not discarded by configuration. "
-            + "This configuration is unsupported. Please update configuration to turn off stale-while-revalidate "
-            + "or discard cookies. ";
-
-    private static final Logger LOG = LoggerFactory.getLogger(HttpServletMediator.class);
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final ServletContext servletContext;
     private final IncomingRequest httpRequest;
-    private boolean responseSent = false;
     private final FilterChain filterChain;
 
     public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
@@ -137,6 +125,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
                 result.addCookie(dest);
             }
         }
+        result.setSession(new HttpServletSession(request));
         this.httpRequest = result;
     }
 
@@ -163,66 +152,39 @@ public class HttpServletMediator implements ContainerRequestMediator {
     }
 
     public void sendResponse(HttpResponse httpResponse) throws IOException {
-
-        try {
-            response.setStatus(httpResponse.getStatusLine().getStatusCode());
-            for (Header header : httpResponse.getAllHeaders()) {
-                String name = header.getName();
-                String value = header.getValue();
-                response.addHeader(name, value);
-            }
-
-            // Copy new cookies
-            Cookie[] newCookies = httpRequest.getNewCookies();
-            for (int i = 0; i < newCookies.length; i++) {
-                response.addCookie(rewriteCookie(newCookies[i]));
-            }
-
-            HttpEntity httpEntity = httpResponse.getEntity();
-            if (httpEntity != null) {
-                long contentLength = httpEntity.getContentLength();
-                if (contentLength > -1 && contentLength < Integer.MAX_VALUE) {
-                    response.setContentLength((int) contentLength);
-                }
-                Header contentType = httpEntity.getContentType();
-                if (contentType != null) {
-                    response.setContentType(contentType.getValue());
-                }
-                Header contentEncoding = httpEntity.getContentEncoding();
-                if (contentEncoding != null) {
-                    response.setHeader(contentEncoding.getName(), contentEncoding.getValue());
-                }
-
-                httpEntity.writeTo(response.getOutputStream());
-            } else {
-                response.sendError(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine()
-                        .getReasonPhrase());
-            }
-        } finally {
-            this.responseSent = true;
-        }
-    }
-
-    @Override
-    public void setSessionAttribute(String key, Serializable value) {
-
-        if (this.responseSent) {
-            LOG.warn(WARN_RESPONSE_ALREADY_SENT, "Set session attribute '" + key + "'");
-            return;
+        response.setStatus(httpResponse.getStatusLine().getStatusCode());
+        for (Header header : httpResponse.getAllHeaders()) {
+            String name = header.getName();
+            String value = header.getValue();
+            response.addHeader(name, value);
         }
 
-        HttpSession session = this.request.getSession();
-        session.setAttribute(key, value);
-
-    }
-
-    @Override
-    public Serializable getSessionAttribute(String key) {
-        HttpSession session = this.request.getSession(false);
-        if (session == null) {
-            return null;
+        // Copy new cookies
+        Cookie[] newCookies = httpRequest.getNewCookies();
+        for (int i = 0; i < newCookies.length; i++) {
+            response.addCookie(rewriteCookie(newCookies[i]));
         }
-        return (Serializable) session.getAttribute(key);
+
+        HttpEntity httpEntity = httpResponse.getEntity();
+        if (httpEntity != null) {
+            long contentLength = httpEntity.getContentLength();
+            if (contentLength > -1 && contentLength < Integer.MAX_VALUE) {
+                response.setContentLength((int) contentLength);
+            }
+            Header contentType = httpEntity.getContentType();
+            if (contentType != null) {
+                response.setContentType(contentType.getValue());
+            }
+            Header contentEncoding = httpEntity.getContentEncoding();
+            if (contentEncoding != null) {
+                response.setHeader(contentEncoding.getName(), contentEncoding.getValue());
+            }
+
+            httpEntity.writeTo(response.getOutputStream());
+        } else {
+            response.sendError(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine()
+                    .getReasonPhrase());
+        }
     }
 
     @Override
