@@ -450,7 +450,8 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 */
 	@Override
 	public void entryRemoved(EntryEvent<String, byte[]> event) {
-	    PerformanceMonitor.start("TopologyEntryRemoved.NotificationReceived");
+	    String tag = "TopologyEntryRemoved.NotificationReceived." + event.getKey();
+	    PerformanceMonitor.start(tag);
 	    byte[] valueBytes = event.getValue();
 
 	    //
@@ -462,8 +463,8 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		kryo.readObject(input, TopologyElement.class);
 	    kryoFactory.deleteKryo(kryo);
 	    flowEventHandlerService.notificationRecvTopologyElementRemoved(topologyElement);
-	    PerformanceMonitor.stop("TopologyEntryRemoved.NotificationReceived");
-	    PerformanceMonitor.report("TopologyEntryRemoved.NotificationReceived");
+	    PerformanceMonitor.stop(tag);
+	    PerformanceMonitor.report(tag);
 	}
 
 	/**
