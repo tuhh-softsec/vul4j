@@ -80,6 +80,11 @@ public class PerformanceMonitor {
      */
     public static void report() {
 	String result = "Performance Results: (avg/start/stop/count)\n";
+	if(map.size() == 0) {
+	    result += "No Measurements";
+	    log.error(result);
+	    return;
+	}
 	long experimentEnd = -1;
 	for(Entry<String, List<Measurement>> e : map.entrySet()) {
 	    String key = e.getKey();
@@ -132,10 +137,10 @@ public class PerformanceMonitor {
 	//TODO: fix this;
 	Measurement m = list.get(0);
 	if (m != null) {
-	    log.error("Performance Results: tag = {} start = {} stop = {} elapsed = {}",
+	    log.error("Performance Result: tag = {} start = {} stop = {} elapsed = {}",
 		      tag, m.start, m.stop, m.toString());
 	} else {
-	    log.error("Performance Results: unknown tag {}", tag);
+	    log.error("Performance Result: unknown tag {}", tag);
 	}
     }
 

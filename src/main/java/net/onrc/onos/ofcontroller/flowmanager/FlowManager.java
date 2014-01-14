@@ -39,7 +39,6 @@ import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import com.thinkaurelius.titan.core.TitanException;
-
 import com.esotericsoftware.kryo2.Kryo;
 
 import org.slf4j.Logger;
@@ -328,6 +327,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public FlowPath getFlow(FlowId flowId) {
+	log.debug("FlowID: {}", flowId);
+	if(flowId.value() == -100) {
+	    log.debug("Printing results...");
+	    PerformanceMonitor.report();
+	    PerformanceMonitor.clear();
+	}
+	else if(flowId.value() == -200) {
+	    log.debug("Clearing results...");
+	    PerformanceMonitor.clear();
+	}
 	return FlowDatabaseOperation.getFlow(dbHandlerApi, flowId);
     }
 
