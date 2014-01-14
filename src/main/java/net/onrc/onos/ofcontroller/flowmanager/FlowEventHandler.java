@@ -395,13 +395,15 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    PerformanceMonitor.stop("EventHandler.ProcessAllEvents");
 
 
-	    PerformanceMonitor.report("EventHandler.SwitchDpidEvents");
-	    PerformanceMonitor.report("EventHandler.FlowIdEvents");
-	    PerformanceMonitor.report("EventHandler.ReadTopology");
-	    PerformanceMonitor.report("EventHandler.RecomputeFlows");
-	    PerformanceMonitor.report("EventHandler.WriteFlowsToDb");
-	    PerformanceMonitor.report("EventHandler.NotificationSend.FlowEntryRemoved");
-	    PerformanceMonitor.report("EventHandler.ProcessAllEvents");
+//	    PerformanceMonitor.report("EventHandler.SwitchDpidEvents");
+//	    PerformanceMonitor.report("EventHandler.FlowIdEvents");
+//	    PerformanceMonitor.report("EventHandler.ReadTopology");
+//	    PerformanceMonitor.report("EventHandler.RecomputeFlows");
+//	    PerformanceMonitor.report("EventHandler.WriteFlowsToDb");
+//	    PerformanceMonitor.report("EventHandler.NotificationSend.FlowEntryRemoved");
+//	    PerformanceMonitor.report("EventHandler.ProcessAllEvents");
+	    PerformanceMonitor.report();
+	    PerformanceMonitor.clear();
 
 	    return;
 	}
@@ -1411,13 +1413,15 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
     @Override
     public void notificationRecvFlowEntryAdded(FlowEntry flowEntry) {
 	if (enableOnrc2014MeasurementsFlows) {
-	    String tag = "EventHandler.AddFlowEntryToSwitch." + flowEntry.flowEntryId();
-	    PerformanceMonitor.start(tag);
+//	    String tag = "EventHandler.AddFlowEntryToSwitch." + flowEntry.flowEntryId();
+	    String tag = "EventHandler.AddFlowEntryToSwitch";
+	    PerformanceMonitor.Measurement m = PerformanceMonitor.start(tag);
 	    Collection entries = new ArrayList();
 	    entries.add(flowEntry);
 	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
-	    PerformanceMonitor.stop(tag);
-	    PerformanceMonitor.report(tag);
+//	    PerformanceMonitor.stop(tag);
+	    m.stop();
+//	    PerformanceMonitor.report(tag);
 	    return;
 	}
 
@@ -1434,8 +1438,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
     @Override
     public void notificationRecvFlowEntryRemoved(FlowEntry flowEntry) {
 	if (enableOnrc2014MeasurementsFlows) {
-	    String tag = "EventHandler.RemoveFlowEntryFromSwitch." + flowEntry.flowEntryId();
-	    PerformanceMonitor.start(tag);
+//	    String tag = "EventHandler.RemoveFlowEntryFromSwitch." + flowEntry.flowEntryId();
+	    String tag = "EventHandler.RemoveFlowEntryFromSwitch";
+	    PerformanceMonitor.Measurement m = PerformanceMonitor.start(tag);
 	    //
 	    // NOTE: Must update the state to DELETE, because
 	    // the notification contains the original state.
@@ -1445,8 +1450,9 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    Collection entries = new ArrayList();
 	    entries.add(flowEntry);
 	    flowManager.pushModifiedFlowEntriesToSwitches(entries);
-	    PerformanceMonitor.stop(tag);
-	    PerformanceMonitor.report(tag);
+//	    PerformanceMonitor.stop(tag);
+	    m.stop();
+//	    PerformanceMonitor.report(tag);
 	    return;
 	}
 

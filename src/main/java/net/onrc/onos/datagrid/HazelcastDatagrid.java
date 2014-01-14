@@ -18,6 +18,7 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.web.DatagridWebRoutable;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
+import net.onrc.onos.ofcontroller.flowmanager.PerformanceMonitor.Measurement;
 import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
@@ -450,8 +451,9 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	 */
 	@Override
 	public void entryRemoved(EntryEvent<String, byte[]> event) {
-	    String tag = "TopologyEntryRemoved.NotificationReceived." + event.getKey();
-	    PerformanceMonitor.start(tag);
+//	    String tag = "TopologyEntryRemoved.NotificationReceived." + event.getKey();
+	    String tag = "TopologyEntryRemoved.NotificationReceived";
+	    PerformanceMonitor.Measurement m = PerformanceMonitor.start(tag);
 	    byte[] valueBytes = event.getValue();
 
 	    //
@@ -463,8 +465,9 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		kryo.readObject(input, TopologyElement.class);
 	    kryoFactory.deleteKryo(kryo);
 	    flowEventHandlerService.notificationRecvTopologyElementRemoved(topologyElement);
-	    PerformanceMonitor.stop(tag);
-	    PerformanceMonitor.report(tag);
+//	    PerformanceMonitor.stop(tag);
+	    m.stop();
+//	    PerformanceMonitor.report(tag);
 	}
 
 	/**

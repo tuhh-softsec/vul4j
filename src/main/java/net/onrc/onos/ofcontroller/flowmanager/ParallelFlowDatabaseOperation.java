@@ -261,12 +261,16 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	
 	@Override
 	public Boolean call() throws Exception {
-	    String tag1 = "FlowDatabaseOperation.AddFlow." + flowPath.flowId();
-	    String tag2 = "FlowDatabaseOperation.NotificationSend.FlowEntry." + flowPath.flowId();
-	    PerformanceMonitor.start(tag1);
+//	    String tag1 = "FlowDatabaseOperation.AddFlow." + flowPath.flowId();
+	    String tag1 = "FlowDatabaseOperation.AddFlow";
+//	    String tag2 = "FlowDatabaseOperation.NotificationSend.FlowEntry." + flowPath.flowId();
+	    String tag2 = "FlowDatabaseOperation.NotificationSend.FlowEntry";
+	    PerformanceMonitor.Measurement m;
+	    m = PerformanceMonitor.start(tag1);
 	    boolean success = FlowDatabaseOperation.addFlow(dbHandler, flowPath);
 	    PerformanceMonitor.stop(tag1);
-	    PerformanceMonitor.start(tag2);
+	    m.stop();
+	    m = PerformanceMonitor.start(tag2);
 	    if(success) {
 		if(datagridService != null) {
 		    // Send notifications for each Flow Entry
@@ -298,9 +302,9 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	    else {
 		log.error("Error adding flow path {} to database", flowPath);
 	    }
-	    PerformanceMonitor.stop(tag2);
-	    PerformanceMonitor.report(tag1);
-	    PerformanceMonitor.report(tag2);
+	    m.stop();
+//	    PerformanceMonitor.report(tag1);
+//	    PerformanceMonitor.report(tag2);
 	    return success;
 
 	}

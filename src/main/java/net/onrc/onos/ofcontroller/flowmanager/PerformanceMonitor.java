@@ -1,6 +1,9 @@
 package net.onrc.onos.ofcontroller.flowmanager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -10,26 +13,35 @@ import org.slf4j.LoggerFactory;
  * Class for collecting performance measurements
  */
 public class PerformanceMonitor {
-    private final static Map<String, Measurement> map = new ConcurrentHashMap<String, Measurement>();;
+    private final static Map<String, List<Measurement>> map = new ConcurrentHashMap<>();;
     private final static Logger log = LoggerFactory.getLogger(PerformanceMonitor.class);
-    private static long overhead;    
-    
+    private static long overhead;
+    private static long experimentStart = Long.MAX_VALUE;
+    private final static double normalization = Math.pow(10, 6);
+
     /**
      * Start a performance measurement, identified by a tag
      * 
      * Note: Only a single measurement can use the same tag at a time.
+     * ..... not true anymore.
      * 
      * @param tag for performance measurement
      */
-    public static void start(String tag) {
+    public static Measurement start(String tag) {
 	long start = System.nanoTime();
-	Measurement m = new Measurement();
-	if(map.put(tag, m) != null) {
-	    // if there was a previous entry, we have just overwritten it
-	    log.error("Tag {} already exists", tag);
+	if(start < experimentStart) {
+	    experimentStart = start;
 	}
+	List<Measurement> list = map.get(tag);
+	if(list == null) {
+	    list = new ArrayList<Measurement>();
+	    map.put(tag, list);
+	}
+	Measurement m = new Measurement();
+	list.add(m);
 	m.start();
 	overhead += System.nanoTime() - start;
+	return m;
     }
     
     /**
@@ -41,46 +53,70 @@ public class PerformanceMonitor {
      */
     public static void stop(String tag) {
 	long time = System.nanoTime();
-	Measurement m = map.get(tag);
-	if(m == null) {
+	List<Measurement> list = map.get(tag);
+	if(list == null) {
 	    log.error("Tag {} does not exist", tag);
 	}
+	else if(list.size() == 1) {
+	    list.get(0).stop(time);
+	}
 	else {
-	    map.get(tag).stop(time);
+	    log.error("Tag {} has multiple measurements", tag);
 	}
 	overhead += System.nanoTime() - time;
     }
-    
-    /**
-     * Find a measurement, identified by tag, and return the result
-     * 
-     * @param tag for performance measurement
-     * @return the time in nanoseconds
-     */
-    public static long result(String tag) {
-	Measurement m = map.get(tag);
-	if(m != null) {
-	    return m.elapsed();
-	}
-	else {
-	    return -1;
-	}
-    }
-    
+        
     /**
      * Clear all performance measurements.
      */
     public static void clear() {
 	map.clear();
 	overhead = 0;
+	experimentStart = Long.MAX_VALUE;
     }
     
     /**
      * Write all performance measurements to the log
      */
     public static void report() {
-	double overheadMilli = overhead / Math.pow(10, 6);
-	log.error("Performance Results: {} with measurement overhead: {} ms", map, overheadMilli);
+	String result = "Performance Results: (avg/start/stop/count)\n";
+	long experimentEnd = -1;
+	for(Entry<String, List<Measurement>> e : map.entrySet()) {
+	    String key = e.getKey();
+	    List<Measurement> list = e.getValue();
+	    int total = 0, count = 0;
+	    long start = Long.MAX_VALUE, stop = -1;
+	    for(Measurement m : list) {
+		// Collect overall start and end times
+		if(m.start < start) {
+		    start = m.start;
+		}
+		if(m.stop > stop) {
+		    stop = m.stop;
+		    if(stop > experimentEnd) {
+			experimentEnd = stop;
+		    }
+		}
+		
+		// Collect statistics for average
+		total += m.elapsed();
+		count++;
+	    }
+	    double avg = (double) total / count;
+	    // Normalize start/stop
+	    start -= experimentStart;
+	    stop -= experimentStart;
+	    result += key + '=' + 
+		    (avg / normalization) + '/' + 
+		    (start / normalization) + '/' + 
+		    (stop / normalization) + '/' + 
+		    count + '\n';
+	}
+	double overheadMs = overhead / normalization;
+	double experimentElapsed = (experimentEnd - experimentStart) / normalization;
+	result += "TotalTime:" + experimentElapsed + "/Overhead:" + overheadMs;
+	log.error(result);
+//	log.error("Performance Results: {} with measurement overhead: {} ms", map, overheadMilli);
     }
 
     /**
@@ -89,7 +125,12 @@ public class PerformanceMonitor {
      * @param tag the tag name.
      */
     public static void report(String tag) {
-	Measurement m = map.get(tag);
+	List<Measurement> list = map.get(tag);
+	if(list == null) {
+	    return; //TODO
+	}
+	//TODO: fix this;
+	Measurement m = list.get(0);
 	if (m != null) {
 	    log.error("Performance Results: tag = {} start = {} stop = {} elapsed = {}",
 		      tag, m.start, m.stop, m.toString());
@@ -101,9 +142,9 @@ public class PerformanceMonitor {
     /**
      * A single performance measurement
      */
-    static class Measurement {
+    public static class Measurement {
 	long start;
-	long stop;
+	long stop = -1;
 	
 	/** 
 	 * Start the measurement
@@ -116,7 +157,8 @@ public class PerformanceMonitor {
 	 * Stop the measurement
 	 */
 	public void stop() {
-	    stop = System.nanoTime();
+	    long now = System.nanoTime();
+	    stop(now);
 	}
 	
 	/**
@@ -133,29 +175,36 @@ public class PerformanceMonitor {
 	 * @return the measurement time in nanoseconds, or -1 if the measurement is stil running.
 	 */
 	public long elapsed() {
-	    if(stop == 0) {
+	    if(stop <= 0) {
 		return -1;
 	    }
 	    else {
 		return stop - start;
 	    }
 	}
-	
+		
 	/**
 	 * Returns the number of milliseconds for the measurement as a String.
 	 */
 	public String toString() {
-	    double milli = elapsed() / Math.pow(10, 6);
-	    return Double.toString(milli) + " ms";
+	    double milli = elapsed() / normalization;
+	    double startMs = start / normalization;
+	    double stopMs = stop / normalization;
+	    
+	    return milli + "ms/" + startMs + '/' + stopMs;
 	}
     }
     
     public static void main(String args[]){
 	// test the measurement overhead
 	String tag;
-	for(int i = 0; i < 100; i++){
+	for(int i = 0; i < 2; i++){
 	    tag = "foo foo foo";
-	    start(tag); stop(tag);
+	    Measurement m;
+	    m = start(tag); System.out.println(tag); m.stop();
+	    m = start(tag); System.out.println(tag); m.stop();
+	    m = start(tag); System.out.println(tag); m.stop();
+	    m = start(tag); System.out.println(tag); m.stop();
 	    tag = "bar";
 	    start(tag); stop(tag);
 	    tag = "baz";
@@ -163,15 +212,15 @@ public class PerformanceMonitor {
 	    report();
 	    clear();
 	}
-	for(int i = 0; i < 100; i++){
-	    tag = "a";
-	    start(tag); stop(tag);
-	    tag = "b";
-	    start(tag); stop(tag);
-	    tag = "c";
-	    start(tag); stop(tag);
-	    report();
-	    clear();
-	}
+//	for(int i = 0; i < 100; i++){
+//	    tag = "a";
+//	    start(tag); stop(tag);
+//	    tag = "b";
+//	    start(tag); stop(tag);
+//	    tag = "c";
+//	    start(tag); stop(tag);
+//	    report();
+//	    clear();
+//	}
     }
 }
