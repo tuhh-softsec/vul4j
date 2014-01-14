@@ -462,6 +462,11 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		MACAddress srcMacAddress = installedFlowPath.flowEntryMatch().srcMac();
 		MACAddress dstMacAddress = installedFlowPath.flowEntryMatch().dstMac();
 		
+		if (srcMacAddress == null || dstMacAddress == null) {
+			// Not our flow path, ignore
+			return;
+		}
+		
 		Collection<PacketToPush> packets;
 		synchronized (lock) {
 			log.debug("Flow {} has been installed, sending queued packets",
