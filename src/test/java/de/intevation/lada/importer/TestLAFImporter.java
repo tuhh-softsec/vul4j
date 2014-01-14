@@ -68,7 +68,7 @@ public class TestLAFImporter
         assertNotNull("No probe format available", probeFormat);
         assertEquals(
             "Not enough configuration elements for probe.",
-            32,
+            33,
             probeFormat.size());
         List<EntryFormat> messungFormat = format.getFormat("messung");
         assertNotNull("No messung format available", messungFormat);
@@ -80,7 +80,7 @@ public class TestLAFImporter
         assertNotNull("No ort format available", ortFormat);
         assertEquals(
             "Not enough configuration elements for ort.",
-            20,
+            21,
             ortFormat.size());
     }
 

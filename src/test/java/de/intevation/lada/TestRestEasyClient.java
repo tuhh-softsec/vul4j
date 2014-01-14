@@ -8,7 +8,7 @@ import org.jboss.resteasy.client.ClientResponse;
 
 public class TestRestEasyClient {
 
-    public static String baseURL = "https://bfs-lada.intevation.de/lada-0.6/server/rest/";
+    public static String baseURL = "https://bfs-lada.intevation.de/lada-1.0/server/rest/";
 
     public ClientResponse<String> getResponse(String url, boolean header){
         ClientRequest request = new ClientRequest(url);
