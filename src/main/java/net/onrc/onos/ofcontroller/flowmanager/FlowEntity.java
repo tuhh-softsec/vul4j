@@ -25,6 +25,7 @@ import java.util.Set;
  */
 public class FlowEntity implements FlowEntityManager {
     private String primaryKey;
+    // TODO: Should remove since not implemented.
     private Class<?> hasMany;
     private Collection<?> many = new ArrayList<>();
     private Map<String, Object> properties;
@@ -81,10 +82,8 @@ public class FlowEntity implements FlowEntityManager {
         @Override
         public Vertex getVertex(com.tinkerpop.blueprints.Direction dir) throws IllegalArgumentException {
             if (dir == Direction.IN) {
-                System.out.println("returning in vertex " + this.dst.getId());
                 return dst;
             } else if (dir == Direction.OUT) {
-                System.out.println("returning out vertex " + this.src.getId());
                 return src;
             }
             return null;
@@ -151,11 +150,13 @@ public class FlowEntity implements FlowEntityManager {
     
     @Override
     public void operationEnd(String opName) {
+        // TODO: This method is implemented in case we need to reset any variables.
+        /*
         String opKey = getOpKey(opName);
         if (operations.containsKey(opKey)) {
             System.out.println(operations);
         }
-        
+        */
     }
     
     
@@ -185,8 +186,6 @@ public class FlowEntity implements FlowEntityManager {
     
     @Override
     public void persist(DBOperation dbHandler) {
-        System.out.println("total operations: " );
-        System.out.println(operations);
         // get a hold of all the flow entries for the current flowpath.
         if (children.size() > 0) {
             int noOfChildren = children.size();
@@ -200,22 +199,17 @@ public class FlowEntity implements FlowEntityManager {
                 RamCloudGraph graph = (RamCloudGraph)dbHandler.getDBConnection().getFramedGraph().getBaseGraph();
                 for (int i = 0; i < noOfChildren; i++) {
                     ids.add(null);
-                    //addedVertices.add((RamCloudVertex) graph.addVertex(null));
                 }
                 List<RamCloudVertex> addedVertices = graph.addVertices(ids);
-                System.out.println("Added vertices " + addedVertices);
-                // call setVertices()
                 //Iterable<Vertex> vertices = dbHandler.setVertices(ids);
                 //Iterator vi = vertices.iterator();
                 // get source and destination edge match vertex v construct list
                 // of edges
-
                 ArrayList<Edge> edgesToSet = new ArrayList<>();
                 for (int i = 0; i < noOfChildren; i++) {
                     FlowEntity childEntity = (FlowEntity)children.get(i);
                     Vertex srcVertex = addedVertices.get(i);                    
                     propertiesToSet.put((RamCloudVertex)srcVertex, childEntity.properties);
-                    //Vertex srcVertex = getVertexEdge(vi, i);
 
                     if (srcVertex == null) continue;
                     for (int j = 0; j < childEntity.edges.size(); j++) {
@@ -226,10 +220,6 @@ public class FlowEntity implements FlowEntityManager {
                 graph.addEdges(edgesToSet);
                 graph.setProperties(propertiesToSet);
             }
-        }
-        for (int i = 0; i < children.size(); i++) {
-            FlowEntityManager entity = (FlowEntityManager)children.get(i);
-            System.out.println(entity.getProperties());
         }
     }
 
