@@ -23,6 +23,9 @@ import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntrySwitchState;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
+
+import com.esotericsoftware.kryo2.Kryo;
 
 /**
  * Class for performing parallel Flow-related operations on the Database.
@@ -37,6 +40,8 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 
     private final static int numThreads = Integer.valueOf(System.getProperty("parallelFlowDatabase.numThreads", "32"));
     private final static ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+
+    private static KryoFactory kryoFactory = new KryoFactory();
 
     /**
      * Get all installed flows by first querying the database for all FlowPaths
@@ -255,7 +260,12 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 		    FlowPath flowPath,
 		    IDatagridService datagridService) {
 	    this.dbHandler = dbHandler;
-	    this.flowPath = flowPath;
+
+	    // Create a copy of the FlowPath object
+	    Kryo kryo = kryoFactory.newKryo();
+	    this.flowPath = kryo.copy(flowPath);
+	    kryoFactory.deleteKryo(kryo);
+	    
 	    this.datagridService = datagridService;
 	}
 	
@@ -359,7 +369,12 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	
 	DeleteFlowTask(GraphDBOperation dbHandler, FlowId flowId, IDatagridService datagridService) {
 	    this.dbHandler = dbHandler;
-	    this.flowId = flowId;
+
+	    // Create a copy of the FlowId object
+	    Kryo kryo = kryoFactory.newKryo();
+	    this.flowId = kryo.copy(flowId);
+	    kryoFactory.deleteKryo(kryo);
+
 	    this.datagridService = datagridService;
 	}
 	@Override
