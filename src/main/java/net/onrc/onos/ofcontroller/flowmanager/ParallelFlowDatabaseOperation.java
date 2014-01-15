@@ -268,7 +268,7 @@ public class ParallelFlowDatabaseOperation extends FlowDatabaseOperation {
 	    PerformanceMonitor.Measurement m;
 	    m = PerformanceMonitor.start(tag1);
 	    boolean success = FlowDatabaseOperation.addFlow(dbHandler, flowPath);
-	    PerformanceMonitor.stop(tag1);
+//	    PerformanceMonitor.stop(tag1);
 	    m.stop();
 	    m = PerformanceMonitor.start(tag2);
 	    if(success) {

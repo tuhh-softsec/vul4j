@@ -28,7 +28,7 @@ ONOS_LOG = '/tmp/onos-0.logs/onos.onos-vm.log'
 print "ONOS Log File:", ONOS_LOG
 
 PORT = 's1-eth2'
-N = 5
+N = 1
 
 # ----------------- Running the test and output  -------------------------
 
@@ -39,10 +39,11 @@ class Result(object):
     self.onosTime = onosTime
     self.overhead = overhead
     # sorted by start time
-    self.details = sorted(details, key=lambda x: float(x[2]) )
+    self.tags = sorted(details, key=lambda x: float(x[2]))
+    self.details = sorted(details, key=lambda x: float(x[2]), reverse=True)
 
   def __repr__(self):
-    return '%f %f %f %d %s' % (self.tsharkTime, self.onosTime, self.overhead, self.flowmods, self.details)
+    return '%f %f %f %d %s' % (self.tsharkTime, self.onosTime, self.overhead, self.flowmods, self.tags)
 
 
 def clearResults():
@@ -85,6 +86,7 @@ def test():
       timeout = 3 #sec
   elapsed = (end - start) * 1000
 
+  sleep(2)
   # read the performance results from ONOS
   reportResults() # REST call
 
@@ -97,7 +99,7 @@ def test():
   result = Result(elapsed, count, totalTime, overhead, tags)
   # Output results
   print result
-
+  plot(result)
 
   # Bring port back up
   call( 'ifconfig %s up' % PORT, shell=True )
@@ -126,6 +128,88 @@ def runPerf(n):
   totalTime = datetime.now() - start
   print '\nExperiments complete in %s (h:m:s.s)' % totalTime
 
+def plot(result):
+  import matplotlib.pyplot as plt
+  import pylab
+  import numpy as np
+  from matplotlib.ticker import MaxNLocator
+  
+  tags = [ x[0] for x in result.details ]
+  numTags = len(tags)
+  scores = [ float(x[1]) for x in result.details ]
+  offset = [ float(x[2]) for x in result.details ]
+  rankings = [ float(x[3]) - float(x[2]) for x in result.details ]
+  counts = [ x[4] for x in result.details ]
+  
+  fig, ax1 = plt.subplots(figsize=(15, 9))
+  plt.subplots_adjust(left=0.3, right=0.8)
+  pos = np.arange(numTags)+0.5    # Center bars on the Y-axis ticks
+  rects = ax1.barh(pos, rankings, left=offset, align='center', height=0.5, color='m')
+  
+  ax1.axis([0, result.onosTime, 0, numTags])
+  pylab.yticks(pos, tags)
+  ax1.set_title('TITLE HERE')
+  #plt.text(result.onosTime/2, -0.5, 
+  #         'Iteration: ' + str(1), horizontalalignment='center', size='small')
+  
+  # Set the right-hand Y-axis ticks and labels and set X-axis tick marks at the
+  # deciles
+  ax2 = ax1.twinx()
+  print MaxNLocator(7)
+  ax2.xaxis.set_major_locator(MaxNLocator(7)) # max number of xaxis ticks
+  #ax2.plot([100, 100], [0, 5], 'white', alpha=0.1)
+  ax2.xaxis.grid(True, linestyle='--', which='major', color='grey', alpha=0.25)
+  #Plot a solid vertical gridline to highlight the median position
+  #plt.plot([50, 50], [0, 5], 'grey', alpha=0.25)
+  
+  # Build up the score labels for the right Y-axis by first appending a carriage
+  # return to each string and then tacking on the appropriate meta information
+  # (i.e., 'laps' vs 'seconds'). We want the labels centered on the ticks, so if
+  # there is no meta info (like for pushups) then don't add the carriage return to
+  # the string
+  
+  '''
+  scoreLabels = [withnew(i, scr) for i, scr in enumerate(scores)]
+  scoreLabels = [i+j for i, j in zip(scoreLabels, testMeta)]
+  '''
+  scoreLabels = ['%.3f ms\n%s'%(i,j)  for i,j in zip(scores,counts)]
+  # set the tick locations
+  ax2.set_yticks(pos)
+  # set the tick labels
+  ax2.set_yticklabels(scoreLabels)
+  # make sure that the limits are set equally on both yaxis so the ticks line up
+  ax2.set_ylim(ax1.get_ylim())
+  
+  ax1.set_xlabel('Time (ms)') 
+  ax2.set_ylabel('Average iteration / Count')
+  
+  # Lastly, write in the ranking inside each bar to aid in interpretation
+  for rect in rects:
+      # Rectangle widths are already integer-valued but are floating
+      # type, so it helps to remove the trailing decimal point and 0 by
+      # converting width to int type
+      width = int(rect.get_width())
+      offset = int(rect.get_x())
+      percent = width / result.onosTime
+      onePercent = 0.01 * result.onosTime
+  
+      rankStr = str(width) + 'ms' 
+      if (percent < 0.09):        # The bars aren't wide enough to print the ranking inside
+          xloc = offset + width + onePercent   # Shift the text to the right side of the right edge
+          clr = 'black'      # Black against white background
+          align = 'left'
+      else:
+          xloc = offset + 0.98*width  # Shift the text to the left side of the right edge
+          clr = 'white'      # White on magenta
+          align = 'right'
+  
+      # Center the text vertically in the bar
+      yloc = rect.get_y()+rect.get_height()/2.0
+      ax1.text(xloc, yloc, rankStr, horizontalalignment=align,
+              verticalalignment='center', color=clr)
+  
+  plt.show()
+  plt.savefig('test.png')
 if __name__ == '__main__':
   n = N 
   runPerf(n)

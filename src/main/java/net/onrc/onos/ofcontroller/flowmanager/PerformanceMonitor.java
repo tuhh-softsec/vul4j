@@ -54,13 +54,11 @@ public class PerformanceMonitor {
     public static void stop(String tag) {
 	long time = System.nanoTime();
 	List<Measurement> list = map.get(tag);
-	if(list == null) {
+	if(list == null || list.size() == 0) {
 	    log.error("Tag {} does not exist", tag);
 	}
-	else if(list.size() == 1) {
-	    list.get(0).stop(time);
-	}
-	else {
+	list.get(0).stop(time);
+	if(list.size() > 1) {
 	    log.error("Tag {} has multiple measurements", tag);
 	}
 	overhead += System.nanoTime() - time;
@@ -92,6 +90,9 @@ public class PerformanceMonitor {
 	    int total = 0, count = 0;
 	    long start = Long.MAX_VALUE, stop = -1;
 	    for(Measurement m : list) {
+		if(m.stop < 0) {
+		    continue; // measurement has not been stopped
+		}
 		// Collect overall start and end times
 		if(m.start < start) {
 		    start = m.start;
@@ -101,8 +102,7 @@ public class PerformanceMonitor {
 		    if(stop > experimentEnd) {
 			experimentEnd = stop;
 		    }
-		}
-		
+		}		
 		// Collect statistics for average
 		total += m.elapsed();
 		count++;
@@ -155,7 +155,9 @@ public class PerformanceMonitor {
 	 * Start the measurement
 	 */
 	public void start() {
-	    start = System.nanoTime();
+	    if(start <= 0) {
+		start = System.nanoTime();
+	    }
 	}
 	
 	/**
@@ -171,7 +173,9 @@ public class PerformanceMonitor {
 	 * @param time to stop
 	 */
 	public void stop(long time){
-	    stop = time;
+	    if(stop <= 0) {
+		stop = time;
+	    }
 	}
 	
 	/**
@@ -217,15 +221,24 @@ public class PerformanceMonitor {
 	    report();
 	    clear();
 	}
-//	for(int i = 0; i < 100; i++){
-//	    tag = "a";
-//	    start(tag); stop(tag);
-//	    tag = "b";
-//	    start(tag); stop(tag);
-//	    tag = "c";
-//	    start(tag); stop(tag);
-//	    report();
-//	    clear();
-//	}
+	for(int i = 0; i < 100; i++){
+	    tag = "a";
+	    start(tag); stop(tag);
+	    start(tag); stop(tag);
+
+	    start(tag); stop(tag);
+	    start(tag); stop(tag);
+	    start(tag); stop(tag);
+	    start(tag); stop(tag);
+	    start(tag); stop(tag);
+	    start(tag); stop(tag);
+
+	    tag = "b";
+	    start(tag); stop(tag);
+	    tag = "c";
+	    start(tag); stop(tag);
+	    report();
+	    clear();
+	}
     }
 }
