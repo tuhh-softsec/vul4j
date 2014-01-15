@@ -327,8 +327,13 @@ public class FlowDatabaseOperation {
      * @return true on success, otherwise false.
      */
     static boolean addFlow(DBOperation dbHandler, FlowPath flowPath) {
-	if (useFastAddFlow)
-	    return addFlowFast(dbHandler, flowPath);
+	if (useFastAddFlow) {
+		PerfMon pm = PerfMon.getInstance();
+		pm.addflowpath_start();
+	    boolean retValue = addFlowFast(dbHandler, flowPath);
+		pm.addflowpath_end();
+		return retValue;
+	}
 
 	IFlowPath flowObj = null;
 	boolean found = false;
