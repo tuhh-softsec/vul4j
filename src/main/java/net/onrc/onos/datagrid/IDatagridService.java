@@ -40,21 +40,31 @@ public interface IDatagridService extends IFloodlightService {
     void deregisterFlowEventHandlerService(IFlowEventHandlerService flowEventHandlerService);
 
     /**
-     * Register event handler for ARP events.
+     * Register event handler for packet-out events.
      * 
-     * @param arpEventHandler The ARP event handler to register.
+     * @param packetOutEventHandler The packet-out event handler to register.
      */
-    public void registerPacketOutEventHandler(IPacketOutEventHandler arpEventHandler);
+    public void registerPacketOutEventHandler(IPacketOutEventHandler packetOutEventHandler);
     
     /**
-     * De-register event handler service for ARP events.
+     * Deregister event handler service for packet-out events.
      * 
-     * @param arpEventHandler The ARP event handler to de-register.
+     * @param packetOutEventHandler The packet-out event handler to deregister.
      */
-    public void deregisterPacketOutEventHandler(IPacketOutEventHandler arpEventHandler);
+    public void deregisterPacketOutEventHandler(IPacketOutEventHandler packetOutEventHandler);
     
+    /**
+     * Register event handler for ARP reply events.
+     * 
+     * @param packetOutEventHandler The ARP reply event handler to register.
+     */
     public void registerArpReplyEventHandler(IArpReplyEventHandler arpReplyEventHandler);
     
+    /**
+     * Deregister event handler service for ARP reply events.
+     * 
+     * @param packetOutEventHandler The ARP reply event handler to deregister.
+     */
     public void deregisterArpReplyEventHandler(IArpReplyEventHandler arpReplyEventHandler);
 
     /**

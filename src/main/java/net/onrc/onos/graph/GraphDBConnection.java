@@ -11,6 +11,8 @@ import com.tinkerpop.blueprints.TransactionalGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
 import com.tinkerpop.frames.FramedGraph;
+import com.tinkerpop.frames.FramedGraphFactory;
+import com.tinkerpop.frames.modules.gremlingroovy.GremlinGroovyModule;
 
 public class GraphDBConnection implements IDBConnection {
 	public enum Transaction {
@@ -33,6 +35,7 @@ public class GraphDBConnection implements IDBConnection {
 			.getLogger(GraphDBConnection.class);
 	private static GraphDBConnection singleton = new GraphDBConnection();
 	private static TitanGraph graph;
+	private static FramedGraphFactory factory;
 	private static FramedGraph<TitanGraph> fg;
 	private static EventTransactionalGraph<TitanGraph> eg;
 	private static String configFile;
@@ -86,7 +89,9 @@ public class GraphDBConnection implements IDBConnection {
 				graph.createKeyIndex("ipv4_address", Vertex.class);
 			}
 			graph.commit();
-			fg = new FramedGraph<TitanGraph>(graph);
+			// Make sure you reuse the factory when creating new framed graphs
+			factory = new FramedGraphFactory(new GremlinGroovyModule());
+            fg = factory.create(graph);
 			eg = new EventTransactionalGraph<TitanGraph>(graph);
 		}
 		return singleton;
@@ -97,7 +102,12 @@ public class GraphDBConnection implements IDBConnection {
 	 */
 	@Override
 	public FramedGraph<TitanGraph> getFramedGraph() {
-		return fg;
+		if (isValid()) {
+			return fg;
+		} else {
+			log.error("New FramedGraph failed");
+			return null;
+		}
 	}
 
 	/**

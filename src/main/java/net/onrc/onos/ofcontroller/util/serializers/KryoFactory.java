@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -152,9 +151,6 @@ public class KryoFactory {
 	kryo.register(TopologyElement.class);
 	kryo.register(TopologyElement.Type.class);
 	kryo.register(TreeMap.class);
-	
-	//ARP message
-	kryo.register(ArpMessage.class);
 
 	return kryo;
     }

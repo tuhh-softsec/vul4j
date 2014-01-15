@@ -577,15 +577,15 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
 
     @Override
-    public void registerPacketOutEventHandler(IPacketOutEventHandler arpEventHandler) {
-    	if (arpEventHandler != null) {
-    		packetOutEventHandlers.add(arpEventHandler);
+    public void registerPacketOutEventHandler(IPacketOutEventHandler packetOutEventHandler) {
+    	if (packetOutEventHandler != null) {
+    		packetOutEventHandlers.add(packetOutEventHandler);
     	}
     }
     
     @Override
-    public void deregisterPacketOutEventHandler(IPacketOutEventHandler arpEventHandler) {
-    	packetOutEventHandlers.remove(arpEventHandler);
+    public void deregisterPacketOutEventHandler(IPacketOutEventHandler packetOutEventHandler) {
+    	packetOutEventHandlers.remove(packetOutEventHandler);
     }
     
     @Override
