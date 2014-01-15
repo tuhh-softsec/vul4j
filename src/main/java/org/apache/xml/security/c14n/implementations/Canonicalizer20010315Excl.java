@@ -210,7 +210,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
                 inclusiveNSSet.contains(XMLNS) &&
                 ns.getMappingWithoutRendered(XMLNS) == null) {
                 ns.removeMapping(XMLNS);
-                ns.addMapping(XMLNS, "", nullNode);
+                ns.addMapping(
+                    XMLNS, "", getNullNode(element.getOwnerDocument()));
         }
         String prefix = null;
         if (element.getNamespaceURI() != null
@@ -311,7 +312,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
             if (xmlns != null && !isVisible(xmlns)) {
                 // There is a definition but the xmlns is not selected by the 
                 // xpath. then xmlns=""
-                ns.addMapping(XMLNS, "", nullNode);
+                ns.addMapping(XMLNS, "", getNullNode(xmlns.getOwnerDocument()));
             }
 
             String prefix = null;
