@@ -296,7 +296,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			}
 			else if (arp.getOpCode() == ARP.OP_REPLY) {
 				handleArpReply(sw, pi, arp);
-				sendReplyNotification(eth, pi);
+				sendArpReplyNotification(eth, pi);
 			}
 			
 			// Stop ARP packets here
@@ -532,7 +532,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		}
 	}
 	
-	private void sendReplyNotification(Ethernet eth, OFPacketIn pi) {
+	private void sendArpReplyNotification(Ethernet eth, OFPacketIn pi) {
 		ARP arp = (ARP) eth.getPayload();
 		
 		if (log.isTraceEnabled()) {
