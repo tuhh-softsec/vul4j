@@ -37,6 +37,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 import net.onrc.onos.ofcontroller.core.internal.TopoSwitchServiceImpl;
+import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
@@ -58,7 +59,8 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.net.InetAddresses;
 
 public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
-										IArpEventHandler, IFloodlightModule {
+										IPacketOutEventHandler, IArpReplyEventHandler, 
+										IFloodlightModule {
 	private final static Logger log = LoggerFactory.getLogger(ProxyArpManager.class);
 	
 	private final long ARP_TIMER_PERIOD = 100; //ms  
@@ -70,6 +72,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	private IDatagridService datagrid;
 	private IConfigInfoService configService;
 	private IRestApiService restApi;
+	private IFlowPusherService flowPusher;
 	
 	private IDeviceStorage deviceStorage;
 	private volatile ITopoSwitchService topoSwitchService;
@@ -153,6 +156,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		dependencies.add(IRestApiService.class);
 		dependencies.add(IDatagridService.class);
 		dependencies.add(IConfigInfoService.class);
+		dependencies.add(IFlowPusherService.class);
 		return dependencies;
 	}
 	
@@ -164,6 +168,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		this.datagrid = context.getServiceImpl(IDatagridService.class);
 		this.configService = context.getServiceImpl(IConfigInfoService.class);
 		this.restApi = context.getServiceImpl(IRestApiService.class);
+		this.flowPusher = context.getServiceImpl(IFlowPusherService.class);
 		
 		//arpCache = new ArpCache();
 
@@ -181,7 +186,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		restApi.addRestletRoutable(new ArpWebRoutable());
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
-		datagrid.registerArpEventHandler(this);
+		datagrid.registerPacketOutEventHandler(this);
 		
 		deviceStorage = new DeviceStorageImpl();
 		deviceStorage.init("");
@@ -291,7 +296,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			}
 			else if (arp.getOpCode() == ARP.OP_REPLY) {
 				handleArpReply(sw, pi, arp);
-				sendToOtherNodesReply(eth, pi);
+				sendReplyNotification(eth, pi);
 			}
 			
 			// Stop ARP packets here
@@ -345,7 +350,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			}
 			
 			// We don't know the device so broadcast the request out
-			sendToOtherNodes(eth, sw.getId(), pi);
+			datagrid.sendPacketOutNotification(
+					new BroadcastPacketOutNotification(eth.serialize(), 
+							sw.getId(), pi.getInPort()));
 		}
 		else {
 			// Even if the device exists in our database, we do not reply to
@@ -362,7 +369,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
 			// sendArpReply(arp, sw.getId(), pi.getInPort(), macAddress);
 
-			log.trace("Checking the device info from DB is still valid or not");
 			Iterable<IPortObject> outPorts = targetDevice.getAttachedPorts();	
 
 			if (!outPorts.iterator().hasNext()){
@@ -371,19 +377,26 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 							" - broadcasting", macAddress);
 				}
 				
-				sendToOtherNodes(eth, sw.getId(), pi);
+				datagrid.sendPacketOutNotification(
+						new BroadcastPacketOutNotification(eth.serialize(), 
+								sw.getId(), pi.getInPort()));
 			} 
 			else {
 				for (IPortObject portObject : outPorts) {
-					long outSwitch = 0;
-					short outPort = 0;
+					//long outSwitch = 0;
+					//short outPort = 0;
 
+					/*
 					if (!portObject.getLinkedPorts().iterator().hasNext()) {
 						outPort = portObject.getNumber();					
+					}*/
+					if (portObject.getLinkedPorts().iterator().hasNext()) {
+						continue;
 					}
 
+					short outPort = portObject.getNumber();
 					ISwitchObject outSwitchObject = portObject.getSwitch();
-					outSwitch = HexString.toLong(outSwitchObject.getDPID());
+					long outSwitch = HexString.toLong(outSwitchObject.getDPID());
 
 					if (log.isTraceEnabled()) {
 						log.trace("Probing device {} on port {}/{}", 
@@ -391,7 +404,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 								HexString.toHexString(outSwitch), outPort});
 					}
 					
-					sendToOtherNodes(eth, pi, outSwitch, outPort);
+					datagrid.sendPacketOutNotification(
+							new SinglePacketOutNotification(eth.serialize(), 
+									outSwitch, outPort));
 				}
 			}
 		}
@@ -517,50 +532,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		}
 	}
 	
-	private void sendToOtherNodes(Ethernet eth, long inSwitchId, OFPacketIn pi) {
-		ARP arp = (ARP) eth.getPayload();
-		
-		if (log.isTraceEnabled()) {
-			log.trace("Sending ARP request for {} to other ONOS instances",
-					inetAddressToString(arp.getTargetProtocolAddress()));
-		}
-		
-		InetAddress targetAddress;
-		try {
-			targetAddress = InetAddress.getByAddress(arp.getTargetProtocolAddress());
-		} catch (UnknownHostException e) {
-			log.error("Unknown host", e);
-			return;
-		}
-		
-		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize(),
-				-1L, (short)-1, inSwitchId, pi.getInPort()));
-	}
-	
-	//hazelcast to other ONOS instances to send the ARP packet out on outPort of outSwitch
-	private void sendToOtherNodes(Ethernet eth, OFPacketIn pi, long outSwitch, short outPort) {
-		ARP arp = (ARP) eth.getPayload();
-		
-		if (log.isTraceEnabled()) {
-			log.trace("Sending ARP request for {} to other ONOS instances with outSwitch {} ",
-					inetAddressToString(arp.getTargetProtocolAddress()), String.valueOf(outSwitch));
-		}
-		
-		InetAddress targetAddress;
-		try {
-			targetAddress = InetAddress.getByAddress(arp.getTargetProtocolAddress());
-		} catch (UnknownHostException e) {
-			log.error("Unknown host", e);
-			return;
-		}
-		
-		datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize(), outSwitch, outPort)); 
-		//datagrid.sendArpRequest(ArpMessage.newRequest(targetAddress, eth.serialize()));
-		
-		
-	}
-	
-	private void sendToOtherNodesReply(Ethernet eth, OFPacketIn pi) {
+	private void sendReplyNotification(Ethernet eth, OFPacketIn pi) {
 		ARP arp = (ARP) eth.getPayload();
 		
 		if (log.isTraceEnabled()) {
@@ -577,12 +549,14 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			log.error("Unknown host", e);
 			return;
 		}
-		
-		datagrid.sendArpRequest(ArpMessage.newReply(targetAddress, mac));
-		//datagrid.sendArpReply(ArpMessage.newRequest(targetAddress, eth.serialize()));
-	
+
+		datagrid.sendArpReplyNotification(new ArpReplyNotification(targetAddress, mac));
 	}
 	
+	// This remains from the older single-instance ARP code. It used Floodlight
+	// APIs to find the edge of the network, but only worked on a single instance.
+	// We now do this using ONOS network graph APIs.
+	@Deprecated
 	private void broadcastArpRequestOutEdge(byte[] arpRequest, long inSwitch, short inPort) {
 		for (IOFSwitch sw : floodlightProvider.getSwitches().values()){
 			Collection<Short> enabledPorts = sw.getEnabledPortNumbers();
@@ -673,12 +647,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			po.setLengthU(OFPacketOut.MINIMUM_LENGTH + actionsLength 
 					+ arpRequest.length);
 			
-			try {
-				sw.write(po, null);
-				sw.flush();
-			} catch (IOException e) {
-				log.error("Failure writing packet out to switch", e);
-			}
+			flowPusher.add(sw, po);
 		}
 		
 		if (log.isTraceEnabled()) {
@@ -712,12 +681,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			return;
 		}
 		
-		try {
-			sw.write(po, null);
-			sw.flush();
-		} catch (IOException e) {
-			log.error("Failure writing packet out to switch", e);
-		}
+		flowPusher.add(sw, po);
 	}
 	
 	private void sendArpReply(ARP arpRequest, long dpid, short port, MACAddress targetMac) {
@@ -740,7 +704,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			.setTargetProtocolAddress(arpRequest.getSenderProtocolAddress());
 		
 
-		
 		Ethernet eth = new Ethernet();
 		eth.setDestinationMACAddress(arpRequest.getSenderHardwareAddress())
 			.setSourceMACAddress(targetMac.toBytes())
@@ -775,12 +738,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			return;
 		}
 		
-		try {
-			sw.write(msgList, null);
-			sw.flush();
-		} catch (IOException e) {
-			log.error("Failure writing packet out to switch", e);
-		}
+		flowPusher.add(sw, po);
 	}
 	
 	private String inetAddressToString(byte[] bytes) {
@@ -820,9 +778,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	}
 
 	/*
-	 * IArpEventHandler methods
-	 */
-	
 	@Override
 	public void arpRequestNotification(ArpMessage arpMessage) {
 		log.debug("Received ARP notification from other instances");
@@ -844,6 +799,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			break;
 		}
 	}
+	*/
 	
 	private void sendArpReplyToWaitingRequesters(InetAddress address, MACAddress mac) {
 		log.debug("Sending ARP reply for {} to requesters", 
@@ -874,6 +830,35 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		//Don't hold an ARP lock while dispatching requests
 		for (ArpRequest request : requestsToSend) {
 			request.dispatchReply(address, mac);
+		}
+	}
+
+	@Override
+	public void arpReplyEvent(ArpReplyNotification arpReply) {
+		log.debug("Received ARP reply notification for {}",
+				arpReply.getTargetAddress());
+		sendArpReplyToWaitingRequesters(arpReply.getTargetAddress(), 
+				arpReply.getTargetMacAddress());
+	}
+
+	@Override
+	public void packetOutNotification(
+			PacketOutNotification packetOutNotification) {
+		
+		if (packetOutNotification instanceof SinglePacketOutNotification) {
+			SinglePacketOutNotification notification = 
+					(SinglePacketOutNotification) packetOutNotification;
+			sendArpRequestOutPort(notification.packet, notification.getOutSwitch(), 
+					notification.getOutPort());
+		}
+		else if (packetOutNotification instanceof BroadcastPacketOutNotification) {
+			BroadcastPacketOutNotification notification = 
+					(BroadcastPacketOutNotification) packetOutNotification;
+			broadcastArpRequestOutMyEdge(notification.packet, 
+					notification.getInSwitch(), notification.getInPort());
+		}
+		else {
+			log.warn("Unknown packet out notification received");
 		}
 	}
 }

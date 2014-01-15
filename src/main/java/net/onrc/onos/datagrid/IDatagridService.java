@@ -4,8 +4,10 @@ import java.util.Collection;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
-import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
-import net.onrc.onos.ofcontroller.proxyarp.IArpEventHandler;
+import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
+import net.onrc.onos.ofcontroller.proxyarp.IArpReplyEventHandler;
+import net.onrc.onos.ofcontroller.proxyarp.IPacketOutEventHandler;
+import net.onrc.onos.ofcontroller.proxyarp.PacketOutNotification;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
@@ -42,14 +44,18 @@ public interface IDatagridService extends IFloodlightService {
      * 
      * @param arpEventHandler The ARP event handler to register.
      */
-    public void registerArpEventHandler(IArpEventHandler arpEventHandler);
+    public void registerPacketOutEventHandler(IPacketOutEventHandler arpEventHandler);
     
     /**
      * De-register event handler service for ARP events.
      * 
      * @param arpEventHandler The ARP event handler to de-register.
      */
-    public void deregisterArpEventHandler(IArpEventHandler arpEventHandler);
+    public void deregisterPacketOutEventHandler(IPacketOutEventHandler arpEventHandler);
+    
+    public void registerArpReplyEventHandler(IArpReplyEventHandler arpReplyEventHandler);
+    
+    public void deregisterArpReplyEventHandler(IArpReplyEventHandler arpReplyEventHandler);
 
     /**
      * Get all Flows that are currently in the datagrid.
@@ -167,8 +173,21 @@ public interface IDatagridService extends IFloodlightService {
     void notificationSendAllTopologyElementsRemoved();
     
     /**
-     * Send an ARP request to other ONOS instances
-     * @param arpRequest The request packet to send
+     * Send a packet-out notification to other ONOS instances. This informs
+     * other instances that they should send this packet out some of the ports
+     * they control. Not all notifications are applicable to all instances 
+     * (i.e. some notifications specify a single port to send the packet out),
+     * so each instance must determine whether it needs to take action when it
+     * receives the notification.
+     * 
+     * @param packetOutNotification The packet notification to send
      */
-    public void sendArpRequest(ArpMessage arpMessage);  
+    public void sendPacketOutNotification(PacketOutNotification packetOutNotification);
+    
+    /**
+     * Send notification to other ONOS instances that an ARP reply has been 
+     * received.
+     * @param arpReply The notification of the ARP reply
+     */
+    public void sendArpReplyNotification(ArpReplyNotification arpReply);
 }
