@@ -195,7 +195,7 @@ public class Topology {
     private final static Logger log = LoggerFactory.getLogger(Topology.class);
     
     // flag to use optimized readFromDatabase() method.
-    private static final boolean enableOptimizedRead = false;
+    private static final boolean enableOptimizedRead = true;
     
     private Map<Long, Node> nodesMap;	// The dpid->Node mapping
 
