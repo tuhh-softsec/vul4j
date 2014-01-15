@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.flowmanager;
 
+import com.tinkerpop.blueprints.Direction;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class FlowDatabaseOperation {
     private final static Logger log = LoggerFactory.getLogger(FlowDatabaseOperation.class);
     private static final boolean measureONOSFlowTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOSFlow", "0")) != 0;
     private static final boolean measureONOSFlowEntryTimeProp = Long.valueOf(System.getProperty("benchmark.measureONOSFlowEntry", "0")) != 0;
+    private static final boolean useFastAddFlow = true;
 
     /**
      * Add a flow.
@@ -36,7 +38,299 @@ public class FlowDatabaseOperation {
      * @param flowPath the Flow Path to install.
      * @return true on success, otherwise false.
      */
+    static boolean addFlowFast(DBOperation dbHandler, FlowPath flowPath) {
+	IFlowPath flowPathObj = null;
+	FlowPathProperty flowProp = new FlowPathProperty();
+        FlowEntity flowPathEntity = new FlowEntity();
+        boolean flowPathUpdate = false;
+	
+	flowPathObj = dbHandler.searchFlowPath(flowPath.flowId()); // toshi memo: getVertices("flow_id")
+	if (flowPathObj == null) {
+	    try {
+                flowPathEntity.operationBegin(DBOperationType.ADD.toString());
+		flowPathObj = dbHandler.newFlowPath(); // toshi memo: addVertex(), setType("flow")
+	    } catch (Exception e) {
+		flowPathObj = null;
+		StringWriter sw = new StringWriter();
+		e.printStackTrace(new PrintWriter(sw));
+		log.error(":addFlow FlowId:{} failed: {}", flowPath.flowId(), sw.toString());
+	    }
+            flowPathEntity.setProperty("user_state", "FP_USER_ADD");
+	    flowProp.setFlowPathUserState("FP_USER_ADD");
+	} else {
+            flowPathUpdate = true;
+	    // Remove the old Flow Entries (this is special for RAMCloud)
+	    for (IFlowEntry flowEntryObj : flowPathObj.getFlowEntries()) { // toshi memo: get.@Adjacency("flow", IN)
+		//flowObj.removeFlowEntry(flowEntryObj);   // toshi memo: remove.@Adjacency("flow", IN)
+                flowPathEntity.operationBegin(DBOperationType.REMOVE.toString());
+		dbHandler.removeFlowEntry(flowEntryObj); // toshi memo: removeVertex()
+                flowPathEntity.operationEnd(DBOperationType.REMOVE.toString());
+	    }
+            flowPathEntity.operationBegin(DBOperationType.UPDATE.toString());
+            flowPathEntity.setProperty("user_state", "FP_USER_ADD");
+	    flowProp.setFlowPathUserState("FP_USER_MODIFY");
+	}
+	if (flowPathObj == null) {
+	    log.error(":addFlow FlowId:{} failed: Flow object not created", flowPath.flowId());
+	    dbHandler.rollback();
+	    
+	    return false;
+	}
+
+        flowPathEntity.setProperty("flow_id", flowPath.flowId().toString());
+	// Set the Flow key
+	flowProp.setFlowId(flowPath.flowId().toString());
+
+	// Set the Flow attributes
+
+        flowPathEntity.setProperty("installer_id", flowPath.installerId().toString());
+	flowProp.setInstallerId(flowPath.installerId().toString());
+
+        flowPathEntity.setProperty("flow_path_type", flowPath.flowPathType().toString());
+	flowProp.setFlowPathType(flowPath.flowPathType().toString());
+
+        flowPathEntity.setProperty("user_state", flowPath.flowPathUserState().toString());
+	flowProp.setFlowPathUserState(flowPath.flowPathUserState().toString());
+
+
+        flowPathEntity.setProperty("flow_path_flags", flowPath.flowPathFlags().flags());
+	flowProp.setFlowPathFlags(flowPath.flowPathFlags().flags());
+
+        flowPathEntity.setProperty("idle_timeout", flowPath.idleTimeout());
+	flowProp.setIdleTimeout(flowPath.idleTimeout());
+
+        flowPathEntity.setProperty("hard_timeout", flowPath.hardTimeout());
+	flowProp.setHardTimeout(flowPath.hardTimeout());
+
+        flowPathEntity.setProperty("src_switch", flowPath.dataPath().srcPort().dpid().toString());
+	flowProp.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
+
+        flowPathEntity.setProperty("src_port", flowPath.dataPath().srcPort().port().value());
+	flowProp.setSrcPort(flowPath.dataPath().srcPort().port().value());
+
+        flowPathEntity.setProperty("dst_switch", flowPath.dataPath().dstPort().dpid().toString());
+	flowProp.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
+
+        flowPathEntity.setProperty("dst_port", flowPath.dataPath().dstPort().port().value());
+	flowProp.setDstPort(flowPath.dataPath().dstPort().port().value());
+
+	if (flowPath.flowEntryMatch().matchSrcMac()) {
+            flowPathEntity.setProperty("matchSrcMac",flowPath.flowEntryMatch().srcMac().toString());
+	    flowProp.setMatchSrcMac(flowPath.flowEntryMatch().srcMac().toString());
+	}
+	if (flowPath.flowEntryMatch().matchDstMac()) {
+            flowPathEntity.setProperty("matchDstMac", flowPath.flowEntryMatch().dstMac().toString());
+	    flowProp.setMatchDstMac(flowPath.flowEntryMatch().dstMac().toString());
+	}
+	if (flowPath.flowEntryMatch().matchEthernetFrameType()) {
+            flowPathEntity.setProperty("matchEthernetFrameType", flowPath.flowEntryMatch().ethernetFrameType());
+	    flowProp.setMatchEthernetFrameType(flowPath.flowEntryMatch().ethernetFrameType());
+	}
+	if (flowPath.flowEntryMatch().matchVlanId()) {
+            flowPathEntity.setProperty("matchVlanId", flowPath.flowEntryMatch().vlanId());
+	    flowProp.setMatchVlanId(flowPath.flowEntryMatch().vlanId());
+	}
+	if (flowPath.flowEntryMatch().matchVlanPriority()) {
+            flowPathEntity.setProperty("matchVlanPriority", flowPath.flowEntryMatch().vlanPriority());
+	    flowProp.setMatchVlanPriority(flowPath.flowEntryMatch().vlanPriority());
+	}
+	if (flowPath.flowEntryMatch().matchSrcIPv4Net()) {
+            flowPathEntity.setProperty("matchSrcIPv4Net", flowPath.flowEntryMatch().srcIPv4Net().toString());
+	    flowProp.setMatchSrcIPv4Net(flowPath.flowEntryMatch().srcIPv4Net().toString());
+	}
+	if (flowPath.flowEntryMatch().matchDstIPv4Net()) {
+            flowPathEntity.setProperty("matchDstIPv4Net", flowPath.flowEntryMatch().dstIPv4Net().toString());
+	    flowProp.setMatchDstIPv4Net(flowPath.flowEntryMatch().dstIPv4Net().toString());
+	}
+	if (flowPath.flowEntryMatch().matchIpProto()) {
+            flowPathEntity.setProperty("matchIpProto", flowPath.flowEntryMatch().ipProto());
+	    flowProp.setMatchIpProto(flowPath.flowEntryMatch().ipProto());
+	}
+	if (flowPath.flowEntryMatch().matchIpToS()) {
+            flowPathEntity.setProperty("matchIpToS", flowPath.flowEntryMatch().ipToS());
+	    flowProp.setMatchIpToS(flowPath.flowEntryMatch().ipToS());
+	}
+	if (flowPath.flowEntryMatch().matchSrcTcpUdpPort()) {
+            flowPathEntity.setProperty("matchSrcTcpUdpPort", flowPath.flowEntryMatch().srcTcpUdpPort());
+	    flowProp.setMatchSrcTcpUdpPort(flowPath.flowEntryMatch().srcTcpUdpPort());
+	}
+	if (flowPath.flowEntryMatch().matchDstTcpUdpPort()) {
+            flowPathEntity.setProperty("matchDstTcpUdpPort", flowPath.flowEntryMatch().dstTcpUdpPort());
+	    flowProp.setMatchDstTcpUdpPort(flowPath.flowEntryMatch().dstTcpUdpPort());
+	}
+	if (! flowPath.flowEntryActions().actions().isEmpty()) {
+            flowPathEntity.setProperty("actions", flowPath.flowEntryActions().toString());
+	    flowProp.setActions(flowPath.flowEntryActions().toString());
+	}
+        flowPathEntity.setProperty("data_path_summary", flowPath.dataPath().dataPathSummary());
+	flowProp.setDataPathSummary(flowPath.dataPath().dataPathSummary());
+
+	flowProp.commitProperties(dbHandler, flowPathObj); // toshi memo: flowObj.setProperties()
+
+	//
+	// Flow Entries:
+	// flowPath.dataPath().flowEntries()
+	//
+	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
+	    if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE)
+		continue;	// Skip: all Flow Entries were deleted earlier
+
+	    IFlowEntry iFlowEntry = null;
+	    FlowEntryProperty flowEntryProp = new FlowEntryProperty();
+            FlowEntity flowEntryEntity = new FlowEntity();
+            boolean updateFlowEntry = false;
+	    
+	    try {
+		iFlowEntry = dbHandler.searchFlowEntry(flowEntry.flowEntryId()); // toshi memo: getVertices()
+		if (iFlowEntry != null) {
+                    updateFlowEntry = true;
+                    flowEntryEntity.operationBegin(DBOperationType.UPDATE.toString());
+                    flowEntryEntity.setProperty("user_state", "FE_USER_MODIFY");
+		    flowEntryProp.setUserState("FE_USER_MODIFY");
+		} else {
+System.out.println("About to add a flow entry");
+                    flowEntryEntity.operationBegin(DBOperationType.ADD.toString());
+                    flowEntryEntity.setProperty("user_state", "FE_USER_ADD");
+		    flowEntryProp.setUserState("FE_USER_ADD");
+		    // NK: iFlowEntry = dbHandler.newFlowEntry(); // toshi memo: addVertex(). setType("flow_entry")
+		    //flowObj.addFlowEntry(iFlowEntry);      // toshi memo: add.@Adjacency("flow", IN)
+		    // NK: iFlowEntry.setFlow(flowPathObj);           // toshi memo: set.@Adjacency("flow")
+                    flowEntryEntity.addEdge(flowPathObj, Direction.OUT, "flow");
+		}
+	    } catch (Exception e) {
+		iFlowEntry = null;
+	    }
+            /* NK:
+	    if (iFlowEntry == null) {
+		log.error(":addFlow FlowEntryId:{} failed: FlowEntry object not created", flowEntry.flowEntryId());
+		dbHandler.rollback();
+		return false;
+	    }
+            */
+	    
+            flowEntryEntity.setProperty("flow_id", flowEntry.flowEntryId().toString());
+	    // Set the Flow Entry key
+	    // NK: flowEntryProp.setFlowEntryId(flowEntry.flowEntryId().toString());
+            flowEntryEntity.setProperty("flow_entry_id", flowEntry.flowEntryId().toString());
+
+            flowEntryEntity.setProperty("type", "flow_entry");
+	    // NK: flowEntryProp.setType("flow_entry");
+
+	    // Set the Flow Entry Edges
+	    ISwitchObject sw = dbHandler.searchSwitch(flowEntry.dpid().toString()); // toshi memo: getVertices()
+
+            flowEntryEntity.setProperty("idle_timeout", flowEntry.idleTimeout());
+	    // NK: flowEntryProp.setIdleTimeout(flowEntry.idleTimeout());
+
+            flowEntryEntity.setProperty("hard_timeout", flowEntry.hardTimeout());
+	    // NK: flowEntryProp.setHardTimeout(flowEntry.hardTimeout());
+
+            flowEntryEntity.setProperty("switch_dpid", flowEntry.dpid().toString());
+	    // NK:flowEntryProp.setSwitchDpid(flowEntry.dpid().toString());
+
+	    //NK: iFlowEntry.setSwitch(sw);  // toshi memo: set.@Adjacency("switch")
+            flowEntryEntity.addEdge(sw, Direction.OUT, "switch");
+	    if (flowEntry.flowEntryMatch().matchInPort()) {
+		IPortObject inport = dbHandler.searchPort(flowEntry.dpid().toString(), flowEntry.flowEntryMatch().inPort().value()); // toshi memo: getVertices()
+
+                flowEntryEntity.setProperty("matchInPort", flowEntry.flowEntryMatch().inPort().value());
+		// NK: flowEntryProp.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
+                flowEntryEntity.addEdge(inport, Direction.OUT, "inport");
+		// NK: iFlowEntry.setInPort(inport);  // toshi memo: set.@Adjacency("inport")
+	    }
+
+	    // Set the Flow Entry attributes
+	    if (flowEntry.flowEntryMatch().matchSrcMac()) {
+                flowEntryEntity.setProperty("matchSrcMac", flowEntry.flowEntryMatch().srcMac().toString());
+		// NK: flowEntryProp.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchDstMac()) {
+                flowEntryEntity.setProperty("matchDstMac", flowEntry.flowEntryMatch().dstMac().toString());
+		// NK: flowEntryProp.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
+                flowEntryEntity.setProperty("matchEthernetFrameType", flowEntry.flowEntryMatch().ethernetFrameType());
+		// NK: flowEntryProp.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
+	    }
+	    if (flowEntry.flowEntryMatch().matchVlanId()) {
+                flowEntryEntity.setProperty("matchVlanId", flowEntry.flowEntryMatch().vlanId());
+		// NK: flowEntryProp.setMatchVlanId(flowEntry.flowEntryMatch().vlanId());
+	    }
+	    if (flowEntry.flowEntryMatch().matchVlanPriority()) {
+                flowEntryEntity.setProperty("matchVlanPriority", flowEntry.flowEntryMatch().vlanPriority());
+		// NK: flowEntryProp.setMatchVlanPriority(flowEntry.flowEntryMatch().vlanPriority());
+	    }
+	    if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
+                flowEntryEntity.setProperty("matchSrcIPv4Net", flowEntry.flowEntryMatch().srcIPv4Net().toString());
+		// NK: flowEntryProp.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
+                flowEntryEntity.setProperty("matchDstIPv4Net", flowEntry.flowEntryMatch().dstIPv4Net().toString());
+		// NK: flowEntryProp.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchIpProto()) {
+                flowEntryEntity.setProperty("matchIpProto", flowEntry.flowEntryMatch().ipProto());
+		// NK: flowEntryProp.setMatchIpProto(flowEntry.flowEntryMatch().ipProto());
+	    }
+	    if (flowEntry.flowEntryMatch().matchIpToS()) {
+                flowEntryEntity.setProperty("matchIpToS", flowEntry.flowEntryMatch().ipToS());
+		// NK: flowEntryProp.setMatchIpToS(flowEntry.flowEntryMatch().ipToS());
+	    }
+	    if (flowEntry.flowEntryMatch().matchSrcTcpUdpPort()) {
+                flowEntryEntity.setProperty("matchSrcTcpUdpPort", flowEntry.flowEntryMatch().srcTcpUdpPort());
+		// NK: flowEntryProp.setMatchSrcTcpUdpPort(flowEntry.flowEntryMatch().srcTcpUdpPort());
+	    }
+	    if (flowEntry.flowEntryMatch().matchDstTcpUdpPort()) {
+                flowEntryEntity.setProperty("matchDstTcpUdpPort", flowEntry.flowEntryMatch().dstTcpUdpPort());
+		// NK: flowEntryProp.setMatchDstTcpUdpPort(flowEntry.flowEntryMatch().dstTcpUdpPort());
+	    }
+
+	    for (FlowEntryAction fa : flowEntry.flowEntryActions().actions()) {
+		if (fa.actionOutput() != null) {
+		    IPortObject outport = dbHandler.searchPort(flowEntry.dpid().toString(), fa.actionOutput().port().value()); // toshi memo: getVertices()
+                    flowEntryEntity.setProperty("actionOutputPort", fa.actionOutput().port().value());
+		    // NK: flowEntryProp.setActionOutputPort(fa.actionOutput().port().value());
+                    flowEntryEntity.addEdge(outport, Direction.OUT, "outport");
+		    // NK: iFlowEntry.setOutPort(outport); // set.@Adjacency("outport")
+		}
+	    }
+	    if (! flowEntry.flowEntryActions().isEmpty()) {
+                flowEntryEntity.setProperty("actions", flowEntry.flowEntryActions().toString());
+		// NK: flowEntryProp.setActions(flowEntry.flowEntryActions().toString());
+	    }
+
+            flowEntryEntity.setProperty("switch_state", flowEntry.flowEntrySwitchState().toString());
+	    // NK: flowEntryProp.setSwitchState(flowEntry.flowEntrySwitchState().toString());
+	    // NK: flowEntryProp.commitProperties(dbHandler, iFlowEntry); // toshi memo: setProperties()
+            if (updateFlowEntry) {
+               flowEntryEntity.operationEnd(DBOperationType.UPDATE.toString());
+            } else {
+               flowEntryEntity.operationEnd(DBOperationType.ADD.toString());
+            }
+            flowPathEntity.append(flowEntryEntity);
+	}
+	
+        if (flowPathUpdate) {
+            flowPathEntity.operationEnd(DBOperationType.UPDATE.toString());
+        } else {
+            flowPathEntity.operationEnd(DBOperationType.ADD.toString());
+        }
+        flowPathEntity.persist(dbHandler);
+	// NK:dbHandler.commit();
+	return true;
+    }
+    
+    /**
+     * Add a flow.
+     *
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowPath the Flow Path to install.
+     * @return true on success, otherwise false.
+     */
     static boolean addFlow(DBOperation dbHandler, FlowPath flowPath) {
+	if (useFastAddFlow)
+	    return addFlowFast(dbHandler, flowPath);
+
 	IFlowPath flowObj = null;
 	boolean found = false;
 	long startAddFlow = 0;
@@ -131,7 +425,7 @@ public class FlowDatabaseOperation {
 		startSettingFlowPathProps = System.nanoTime();
 	}
 
-	FlowPathProperty flowProp = new FlowPathProperty(dbHandler, flowObj);
+	FlowPathProperty flowProp = new FlowPathProperty();
 
 	//
 	// Set the Flow key:
@@ -261,7 +555,7 @@ public class FlowDatabaseOperation {
 	else
 	    flowProp.setFlowPathUserState("FP_USER_ADD");
 
-	flowProp.commitProperties();
+	flowProp.commitProperties(dbHandler, flowObj);
 
 	if ( measureONOSFlowTimeProp ) {
 	    ++numPropsSet;
@@ -427,7 +721,7 @@ public class FlowDatabaseOperation {
 	    startSetProperties = System.nanoTime();
 	}
 
-	FlowEntryProperty flowProp = new FlowEntryProperty(dbHandler, flowEntryObj);
+	FlowEntryProperty flowProp = new FlowEntryProperty();
 
 	//
 	// Set the Flow Entry key:
@@ -622,7 +916,7 @@ public class FlowDatabaseOperation {
 	if (measureONOSFlowEntryTimeProp) {
 	    numProperties += 2;
 	}
-	flowProp.commitProperties();
+	flowProp.commitProperties(dbHandler, flowEntryObj);
 	//
 	// TODO: Take care of the FlowEntryErrorState.
 	//
@@ -637,7 +931,7 @@ public class FlowDatabaseOperation {
 	    if (measureONOSFlowEntryTimeProp) {
 		startAddEdgeBetweenFlowPath = System.nanoTime();
 	    }
-	    flowObj.addFlowEntry(flowEntryObj);
+	    //flowObj.addFlowEntry(flowEntryObj);
 	    flowEntryObj.setFlow(flowObj);
 	    if (measureONOSFlowEntryTimeProp) {
 		endAddEdgeBetweenFlowPath = System.nanoTime();
@@ -727,7 +1021,6 @@ public class FlowDatabaseOperation {
 		continue;
 	    deleteIFlowPath(dbHandler, flowPathObj);
 	}
-	dbHandler.commit();
 
 	return true;
     }
@@ -755,7 +1048,6 @@ public class FlowDatabaseOperation {
 	}
 
 	deleteIFlowPath(dbHandler, flowObj);
-	dbHandler.commit();
 
 	return true;
     }
@@ -771,6 +1063,7 @@ public class FlowDatabaseOperation {
 	}
 	// Remove the Flow itself
 	dbHandler.removeFlowPath(flowObj);
+	dbHandler.commit();
     }
 
     /**
