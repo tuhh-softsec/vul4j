@@ -193,14 +193,16 @@ public class FlowEntity implements FlowEntityManager {
             if (noOfChildren > 0) {
                 // construct a list of null ids for creating vertices for all
                 // flow entries.
-                //ArrayList<Object> ids = new ArrayList<>(noOfChildren);
-                List<RamCloudVertex> addedVertices = new ArrayList<>();
+                ArrayList<Object> ids = new ArrayList<>(noOfChildren);
+                // set properties
+                Map<RamCloudVertex, Map<String, Object>> propertiesToSet = new HashMap<>();
+                
                 RamCloudGraph graph = (RamCloudGraph)dbHandler.getDBConnection().getFramedGraph().getBaseGraph();
                 for (int i = 0; i < noOfChildren; i++) {
-                    // ids.add(null);
-                    addedVertices.add((RamCloudVertex) graph.addVertex(null));
+                    ids.add(null);
+                    //addedVertices.add((RamCloudVertex) graph.addVertex(null));
                 }
-                // List<RamCloudVertex> addedVertices = graph.addVertices(ids);
+                List<RamCloudVertex> addedVertices = graph.addVertices(ids);
                 System.out.println("Added vertices " + addedVertices);
                 // call setVertices()
                 //Iterable<Vertex> vertices = dbHandler.setVertices(ids);
@@ -211,8 +213,10 @@ public class FlowEntity implements FlowEntityManager {
                 ArrayList<Edge> edgesToSet = new ArrayList<>();
                 for (int i = 0; i < noOfChildren; i++) {
                     FlowEntity childEntity = (FlowEntity)children.get(i);
+                    Vertex srcVertex = addedVertices.get(i);                    
+                    propertiesToSet.put((RamCloudVertex)srcVertex, childEntity.properties);
                     //Vertex srcVertex = getVertexEdge(vi, i);
-                    Vertex srcVertex = addedVertices.get(i);
+
                     if (srcVertex == null) continue;
                     for (int j = 0; j < childEntity.edges.size(); j++) {
                         EntityEdge edge = (EntityEdge) childEntity.edges.get(j);
@@ -220,13 +224,6 @@ public class FlowEntity implements FlowEntityManager {
                     }
                 }
                 graph.addEdges(edgesToSet);
-                ArrayList<Map<Vertex, Map<String, Object>>> allProperties = new ArrayList<>();
-                // set properties
-                Map<RamCloudVertex, Map<String, Object>> propertiesToSet = new HashMap<>();
-                for (int i = 0; i < noOfChildren; i++) {
-                    FlowEntity childEntity = (FlowEntity)children.get(i);
-                    propertiesToSet.put((RamCloudVertex)addedVertices.get(i), childEntity.properties);
-                }
                 graph.setProperties(propertiesToSet);
             }
         }
