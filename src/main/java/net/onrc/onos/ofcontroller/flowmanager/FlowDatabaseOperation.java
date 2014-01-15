@@ -188,7 +188,6 @@ public class FlowDatabaseOperation {
                     flowEntryEntity.setProperty("user_state", "FE_USER_MODIFY");
 		    flowEntryProp.setUserState("FE_USER_MODIFY");
 		} else {
-System.out.println("About to add a flow entry");
                     flowEntryEntity.operationBegin(DBOperationType.ADD.toString());
                     flowEntryEntity.setProperty("user_state", "FE_USER_ADD");
 		    flowEntryProp.setUserState("FE_USER_ADD");
