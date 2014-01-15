@@ -12,6 +12,7 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
 import com.tinkerpop.frames.FramedGraph;
 import com.tinkerpop.frames.FramedGraphFactory;
+import com.tinkerpop.frames.modules.gremlingroovy.GremlinGroovyModule;
 
 public class GraphDBConnection implements IDBConnection {
 	public enum Transaction {
@@ -89,7 +90,7 @@ public class GraphDBConnection implements IDBConnection {
 			}
 			graph.commit();
 			// Make sure you reuse the factory when creating new framed graphs
-			factory = new FramedGraphFactory();
+			factory = new FramedGraphFactory(new GremlinGroovyModule());
             fg = factory.create(graph);
 			eg = new EventTransactionalGraph<TitanGraph>(graph);
 		}
