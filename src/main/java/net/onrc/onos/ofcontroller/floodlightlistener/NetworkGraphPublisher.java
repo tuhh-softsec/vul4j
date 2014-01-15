@@ -360,8 +360,8 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		List<Link> reverseLinks = linkStore.getReverseLinks(switchId, port.getPortNumber());
 		links.addAll(reverseLinks);
 
-		PerformanceMonitor.stop("SwitchPortRemoved.DbAccess");
 		if (swStore.deletePort(HexString.toHexString(switchId), port.getPortNumber())) {
+		    PerformanceMonitor.stop("SwitchPortRemoved.DbAccess");
 		    PerformanceMonitor.start("SwitchPortRemoved.NotificationSend");
 		    // TODO publish DELETE_PORT event here
 		    TopologyElement topologyElement =
