@@ -15,29 +15,11 @@
 
 package org.esigate.esi;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.output.StringBuilderWriter;
-import org.esigate.Driver;
-import org.esigate.MockRequestExecutor;
-import org.esigate.impl.DriverRequest;
-import org.esigate.test.TestUtils;
-
-public class EsiRendererTest extends TestCase {
-    private DriverRequest request;
-    private EsiRenderer tested;
-
-    @Override
-    protected void setUp() throws Exception {
-        Driver provider = MockRequestExecutor.createDriver();
-        request = TestUtils.createRequest(provider);
-        tested = new EsiRenderer();
-    }
+public class EsiRendererTest extends AbstractElementTest {
 
     public void testFragmentTagsShouldBeRemoved() throws Exception {
         String page = "begin <esi:fragment name=\"test\">content</esi:fragment> end";
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin content end", out.toString());
+        String result = render(page);
+        assertEquals("begin content end", result);
     }
 }

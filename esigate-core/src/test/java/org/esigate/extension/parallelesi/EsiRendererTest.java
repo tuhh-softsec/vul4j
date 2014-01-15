@@ -15,30 +15,11 @@
 
 package org.esigate.extension.parallelesi;
 
-import java.util.concurrent.Executors;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.io.output.StringBuilderWriter;
-import org.esigate.MockRequestExecutor;
-import org.esigate.impl.DriverRequest;
-import org.esigate.test.TestUtils;
-
-public class EsiRendererTest extends TestCase {
-    private DriverRequest request;
-    private EsiRenderer tested;
-
-    @Override
-    protected void setUp() throws Exception {
-        MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
-        request = TestUtils.createRequest(provider.getDriver());
-        tested = new EsiRenderer(Executors.newCachedThreadPool());
-    }
+public class EsiRendererTest extends AbstractElementTest {
 
     public void testFragmentTagsShouldBeRemoved() throws Exception {
         String page = "begin <esi:fragment name=\"test\">content</esi:fragment> end";
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin content end", out.toString());
+        String result = render(page);
+        assertEquals("begin content end", result);
     }
 }

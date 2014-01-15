@@ -21,14 +21,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockRequestExecutor;
 import org.esigate.Parameters;
-import org.esigate.impl.DriverRequest;
-import org.esigate.test.TestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,16 +32,12 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  * 
  */
-public class ParallelEsiTest extends TestCase {
-
-    private MockRequestExecutor provider;
-    private DriverRequest request;
+public class ParallelEsiTest extends AbstractElementTest {
 
     @Override
-    protected void setUp() throws Exception {
-        this.provider = MockRequestExecutor.createMockDriver("mock");
-        this.provider.addResource("/test", "test");
-        this.request = TestUtils.createRequest(provider.getDriver());
+    protected void setUp() {
+        super.setUp();
+        addResource("/test", "test");
     }
 
     /**
@@ -59,7 +49,7 @@ public class ParallelEsiTest extends TestCase {
     public void testParallelInclude() throws IOException, HttpErrorPage {
         // ESI executor
         final BlockingExecutor exe = new BlockingExecutor();
-        EsiRenderer tested = new EsiRenderer(exe);
+        setTested(new EsiRenderer(exe));
 
         // Build page and expected result
         StringBuilder expect = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
@@ -95,16 +85,14 @@ public class ParallelEsiTest extends TestCase {
         ExecutorService watchDog = Executors.newSingleThreadExecutor();
         watchDog.execute(r);
 
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(this.request, page.toString(), out);
+        String result = render(page.toString());
 
         // close
-        out.close();
         watchDog.shutdown();
 
         // Asserts
         assertEquals(100, exe.getCount());
-        assertEquals(expect.toString(), out.toString());
+        assertEquals(expect.toString(), result);
     }
 
     /**

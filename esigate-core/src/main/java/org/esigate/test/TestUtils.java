@@ -15,11 +15,16 @@
 
 package org.esigate.test;
 
-import org.apache.http.cookie.Cookie;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpVersion;
+import org.apache.http.RequestLine;
+import org.apache.http.message.BasicRequestLine;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.api.ContainerRequestContext;
 import org.esigate.http.IncomingRequest;
 import org.esigate.impl.DriverRequest;
+import org.esigate.util.UriUtils;
 
 /**
  * @author Francois-Xavier Bonnet
@@ -31,33 +36,37 @@ public final class TestUtils {
 
     }
 
-    public static IncomingRequest createRequest() {
-        return new MockMediator().getHttpRequest();
+    public static IncomingRequest.Builder createIncomingRequest(String uri) {
+        HttpHost httpHost = UriUtils.extractHost(uri);
+        String scheme = httpHost.getSchemeName();
+        String host = httpHost.getHostName();
+        int port = httpHost.getPort();
+        RequestLine requestLine = new BasicRequestLine("GET", uri, HttpVersion.HTTP_1_1);
+        IncomingRequest.Builder builder = IncomingRequest.builder(requestLine);
+        builder.setContext(new ContainerRequestContext() {
+        });
+        // Remove default ports
+        if (port == -1 || (port == 80 && "http".equals(scheme)) || (port == 443 && "https".equals(scheme))) {
+            builder.addHeader("Host", host);
+        } else {
+            builder.addHeader("Host", host + ":" + port);
+        }
+        builder.setSession(new MockSession());
+        return builder;
     }
 
-    public static DriverRequest createRequest(Driver driver) throws HttpErrorPage {
-        IncomingRequest request = new MockMediator().getHttpRequest();
+    public static IncomingRequest.Builder createIncomingRequest() {
+        return createIncomingRequest("http://localhost:8080");
+    }
+
+    public static DriverRequest createDriverRequest(String uri, Driver driver) throws HttpErrorPage {
+        IncomingRequest request = createIncomingRequest(uri).build();
         return new DriverRequest(request, driver, false);
     }
 
-    public static IncomingRequest createRequest(String uri) {
-        return new MockMediator(uri).getHttpRequest();
-    }
-
-    public static DriverRequest createRequest(String uri, Driver driver) throws HttpErrorPage {
-        IncomingRequest request = new MockMediator(uri).getHttpRequest();
+    public static DriverRequest createDriverRequest(Driver driver) throws HttpErrorPage {
+        IncomingRequest request = createIncomingRequest().build();
         return new DriverRequest(request, driver, false);
     }
 
-    public static void addCookie(Cookie cookie, DriverRequest request) {
-        request.getOriginalRequest().addCookie(cookie);
-    }
-
-    public static void addCookie(Cookie cookie, IncomingRequest request) {
-        request.addCookie(cookie);
-    }
-
-    public static void setRemoteAddr(String remoteAddr, IncomingRequest request) {
-        request.setRemoteAddr(remoteAddr);
-    }
 }

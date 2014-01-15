@@ -16,34 +16,16 @@
 package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockRequestExecutor;
 import org.esigate.esi.EsiSyntaxError;
-import org.esigate.impl.DriverRequest;
-import org.esigate.test.TestUtils;
 
-public class ReplaceElementTest extends TestCase {
-
-    private EsiRenderer tested;
-    private DriverRequest request;
-
-    @Override
-    protected void setUp() throws HttpErrorPage {
-        MockRequestExecutor provider = MockRequestExecutor.createMockDriver("mock");
-        request = TestUtils.createRequest(provider.getDriver());
-        tested = new EsiRenderer(Executors.newCachedThreadPool());
-    }
+public class ReplaceElementTest extends AbstractElementTest {
 
     public void testErrorIfNotInsideIncludeTag() throws IOException, HttpErrorPage {
         String page = "begin <esi:replace fragment=\"test\">test</esi:replace> end";
-        StringBuilderWriter out = new StringBuilderWriter();
         try {
-            tested.render(request, page, out);
+            render(page);
         } catch (EsiSyntaxError e) {
             return;
         }

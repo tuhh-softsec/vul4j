@@ -22,7 +22,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.esigate.Driver;
 import org.esigate.Parameters;
-import org.esigate.test.MockMediator;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.driver.AbstractDriverTestCase;
 
@@ -55,12 +54,9 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
             }
         });
 
-        String uri = "http://test.mydomain.fr/foobar/";
-        MockMediator mediator = new MockMediator(uri);
-
-        IncomingRequest request = createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
-                .header("X-Forwarded-Proto", "https").mediator(mediator).build();
-        request.setRemoteAddr("127.0.0.1");
+        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/")
+                .addHeader("X-Forwarded-For", "192.168.0.1").addHeader("X-Forwarded-Proto", "https")
+                .setRemoteAddr("127.0.0.1").build();
 
         driverProxy(driver, request);
 
@@ -88,12 +84,9 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
             }
         });
 
-        String uri = "http://test.mydomain.fr/foobar/";
-        MockMediator mediator = new MockMediator(uri);
-
-        IncomingRequest request = createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
-                .header("X-Forwarded-Proto", "https").mediator(mediator).build();
-        request.setRemoteAddr("127.0.0.1");
+        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/")
+                .addHeader("X-Forwarded-For", "192.168.0.1").addHeader("X-Forwarded-Proto", "https")
+                .setRemoteAddr("127.0.0.1").build();
 
         driverProxy(driver, request);
 
@@ -122,12 +115,9 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
             }
         });
 
-        String uri = "http://test.mydomain.fr/foobar/";
-        MockMediator mediator = new MockMediator(uri);
-
-        IncomingRequest request = createHttpRequest().uri(uri).header("X-Forwarded-For", "192.168.0.1")
-                .header("X-Forwarded-Proto", "http").mediator(mediator).build();
-        request.setRemoteAddr("127.0.0.1");
+        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/")
+                .addHeader("X-Forwarded-For", "192.168.0.1").addHeader("X-Forwarded-Proto", "http")
+                .setRemoteAddr("127.0.0.1").build();
 
         driverProxy(driver, request);
 
@@ -158,11 +148,7 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
             }
         });
 
-        String uri = "http://test.mydomain.fr/foobar/";
-        MockMediator mediator = new MockMediator(uri);
-
-        IncomingRequest request = createHttpRequest().uri(uri).mediator(mediator).build();
-        request.setRemoteAddr("127.0.0.1");
+        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").setRemoteAddr("127.0.0.1").build();
 
         driverProxy(driver, request);
     }
@@ -192,11 +178,7 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
             }
         });
 
-        String uri = "https://test.mydomain.fr/foobar/";
-        MockMediator mediator = new MockMediator(uri);
-
-        IncomingRequest request = createHttpRequest().uri(uri).mediator(mediator).build();
-        request.setRemoteAddr("127.0.0.1");
+        IncomingRequest request = createRequest("https://test.mydomain.fr/foobar/").setRemoteAddr("127.0.0.1").build();
 
         driverProxy(driver, request);
 

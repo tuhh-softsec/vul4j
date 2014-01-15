@@ -21,10 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpVersion;
 import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.esigate.api.ContainerRequestMediator;
+import org.apache.http.message.BasicRequestLine;
+import org.esigate.api.ContainerRequestContext;
 import org.esigate.api.Session;
 
 /**
@@ -33,10 +36,10 @@ import org.esigate.api.Session;
  * @author fxbonnet
  * 
  */
-public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
+public final class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
     private final Map<String, Object> attributes = new HashMap<String, Object>();
-    private final ContainerRequestMediator mediator;
+    private ContainerRequestContext context;
     private String remoteUser;
     private String remoteAddr;
     private String sessionId;
@@ -45,9 +48,74 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
     private List<Cookie> newCookies = new ArrayList<Cookie>();
     private Session session;
 
-    public IncomingRequest(RequestLine requestline, ContainerRequestMediator mediator) {
+    public static final class Builder {
+        private final IncomingRequest result;
+
+        private Builder(RequestLine requestline) {
+            result = new IncomingRequest(requestline);
+        }
+
+        public IncomingRequest build() {
+            return result;
+        }
+
+        public Builder setContext(ContainerRequestContext context) {
+            result.context = context;
+            return this;
+        }
+
+        public Builder setRemoteAddr(String remoteAddr) {
+            result.remoteAddr = remoteAddr;
+            return this;
+        }
+
+        public Builder setRemoteUser(String remoteUser) {
+            result.remoteUser = remoteUser;
+            return this;
+        }
+
+        public Builder setSessionId(String sessionId) {
+            result.sessionId = sessionId;
+            return this;
+        }
+
+        public Builder setUserPrincipal(Principal userPrincipal) {
+            result.userPrincipal = userPrincipal;
+            return this;
+        }
+
+        public Builder addCookie(Cookie cookie) {
+            result.cookies.add(cookie);
+            return this;
+        }
+
+        public Builder setSession(Session session) {
+            result.session = session;
+            return this;
+        }
+
+        public Builder addHeader(String name, String value) {
+            result.addHeader(name, value);
+            return this;
+        }
+
+        public Builder setEntity(InputStreamEntity entity) {
+            result.setEntity(entity);
+            return this;
+        }
+
+    }
+
+    public static Builder builder(RequestLine requestline) {
+        return new Builder(requestline);
+    }
+
+    public static Builder builder(String uri) {
+        return new Builder(new BasicRequestLine("GET", uri, HttpVersion.HTTP_1_1));
+    }
+
+    private IncomingRequest(RequestLine requestline) {
         super(requestline);
-        this.mediator = mediator;
     }
 
     public <T> T getAttribute(String name) {
@@ -58,8 +126,8 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
         attributes.put(name, value);
     }
 
-    public ContainerRequestMediator getMediator() {
-        return mediator;
+    public ContainerRequestContext getContext() {
+        return context;
     }
 
     public String getRemoteUser() {
@@ -74,22 +142,6 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
         return sessionId;
     }
 
-    public void setRemoteAddr(String remoteAddr) {
-        this.remoteAddr = remoteAddr;
-    }
-
-    public void setRemoteUser(String remoteUser) {
-        this.remoteUser = remoteUser;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    public void setUserPrincipal(Principal userPrincipal) {
-        this.userPrincipal = userPrincipal;
-    }
-
     public Principal getUserPrincipal() {
         return userPrincipal;
     }
@@ -102,20 +154,12 @@ public class IncomingRequest extends BasicHttpEntityEnclosingRequest {
         return newCookies.toArray(new Cookie[newCookies.size()]);
     }
 
-    public void addCookie(Cookie cookie) {
-        cookies.add(cookie);
-    }
-
     public void addNewCookie(Cookie cookie) {
         newCookies.add(cookie);
     }
 
     public Session getSession() {
         return session;
-    }
-
-    public void setSession(Session session) {
-        this.session = session;
     }
 
 }

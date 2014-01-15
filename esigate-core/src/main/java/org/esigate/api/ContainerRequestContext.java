@@ -15,23 +15,12 @@
 
 package org.esigate.api;
 
-import org.esigate.http.IncomingRequest;
-
 /**
- * Encapsulates all interactions between EsiGate and the server container it is running in. To run EsiGate inside a new
- * container type, an implementation of this interface is required.
+ * Encapsulates container-specific objects that may be used by container-specific extensions.
  * 
  * @author Francois-Xavier Bonnet
  * 
  */
-public interface ContainerRequestMediator {
-
-    /**
-     * Returns the <code>IncomingRequest</code> representing the request received by the container. Subsequent calls to
-     * this method should return the same instance.
-     * 
-     * @return the <code>IncomingRequest</code>
-     */
-    IncomingRequest getHttpRequest();
+public interface ContainerRequestContext {
 
 }

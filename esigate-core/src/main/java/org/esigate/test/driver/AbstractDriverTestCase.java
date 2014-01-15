@@ -14,9 +14,9 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.IncomingRequest;
+import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
-import org.esigate.test.http.HttpRequestBuilder;
 import org.esigate.test.http.HttpResponseBuilder;
 import org.esigate.util.UriUtils;
 
@@ -95,13 +95,8 @@ public abstract class AbstractDriverTestCase extends TestCase {
         return new HttpResponseBuilder();
     }
 
-    /**
-     * Create a fluent-style builder for HttpRequest.
-     * 
-     * @return a HttpRequestBuilder
-     */
-    public static HttpRequestBuilder createHttpRequest() {
-        return new HttpRequestBuilder();
+    public static IncomingRequest.Builder createRequest(String uri) {
+        return TestUtils.createIncomingRequest(uri);
     }
 
     /**
@@ -111,7 +106,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
      * @param d
      *            esigate driver
      * @param request
-     *            Request must have been created with a mediator.
+     *            Request
      * @param renderers
      *            Renderers which will be applied on response entity.
      * @return the response

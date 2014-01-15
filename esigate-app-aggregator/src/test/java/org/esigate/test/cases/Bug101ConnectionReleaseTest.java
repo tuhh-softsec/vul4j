@@ -23,7 +23,7 @@ public class Bug101ConnectionReleaseTest {
 
     private void render(Driver driver, String page) throws IOException {
         StringBuilderWriter writer = new StringBuilderWriter();
-        IncomingRequest httpRequest = TestUtils.createRequest();
+        IncomingRequest httpRequest = TestUtils.createIncomingRequest().build();
         try {
             CloseableHttpResponse response = driver.render("/esigate-app-aggregated1/" + page, httpRequest,
                     new BlockRenderer(null, "/esigate-app-aggregated1/" + page));

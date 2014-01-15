@@ -27,12 +27,14 @@ import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
 import org.esigate.Parameters;
+import org.esigate.http.IncomingRequest;
 import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 
 public class DefaultCookieManagerTest extends TestCase {
     private DefaultCookieManager cookieManager;
     private DriverRequest request;
+    private Driver driver;
 
     @Override
     protected void setUp() throws HttpErrorPage {
@@ -41,8 +43,8 @@ public class DefaultCookieManagerTest extends TestCase {
         properties.setProperty(Parameters.DISCARD_COOKIES.getName(), "D,e");
         cookieManager = new DefaultCookieManager();
         cookieManager.init(null, properties);
-        Driver driver = MockRequestExecutor.createDriver();
-        request = TestUtils.createRequest(driver);
+        driver = MockRequestExecutor.createDriver();
+        request = TestUtils.createDriverRequest(driver);
     }
 
     @Override
@@ -72,10 +74,11 @@ public class DefaultCookieManagerTest extends TestCase {
         assertEquals("c", cookieNames.get(1));
     }
 
-    public void testFilter() {
-        TestUtils.addCookie(new BasicClientCookie("a", "value a"), request);
-        TestUtils.addCookie(new BasicClientCookie("b", "value b"), request);
-        TestUtils.addCookie(new BasicClientCookie("c", "value c"), request);
+    public void testFilter() throws HttpErrorPage {
+        IncomingRequest incomingRequest = TestUtils.createIncomingRequest()
+                .addCookie(new BasicClientCookie("a", "value a")).addCookie(new BasicClientCookie("b", "value b"))
+                .addCookie(new BasicClientCookie("c", "value c")).build();
+        request = new DriverRequest(incomingRequest, driver, false);
         List<org.apache.http.cookie.Cookie> cookies = cookieManager.getCookies(request);
         assertNotNull(cookies);
         assertFalse(cookies.isEmpty());

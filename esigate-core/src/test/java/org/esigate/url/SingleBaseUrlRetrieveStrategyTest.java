@@ -26,7 +26,7 @@ public class SingleBaseUrlRetrieveStrategyTest extends TestCase {
     public void testGetBaseURL() {
         String baseUrl = "http://example.com/test/";
         BaseUrlRetrieveStrategy strategy = new SingleBaseUrlRetrieveStrategy(baseUrl);
-        IncomingRequest request = TestUtils.createRequest();
+        IncomingRequest request = TestUtils.createIncomingRequest().build();
         String baseURL2 = strategy.getBaseURL(request);
         assertEquals(baseUrl, baseURL2);
     }

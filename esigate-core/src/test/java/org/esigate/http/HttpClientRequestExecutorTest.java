@@ -114,7 +114,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
     }
 
     private HttpResponse executeRequest() throws HttpErrorPage {
-        DriverRequest httpRequest = TestUtils.createRequest(driver);
+        DriverRequest httpRequest = TestUtils.createDriverRequest(driver);
         String url = ResourceUtils.getHttpUrlWithQueryString("/", httpRequest, true);
         return httpClientRequestExecutor.createAndExecuteRequest(httpRequest, url, true);
     }
@@ -346,7 +346,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         HttpResponse response = createMockResponse("1");
         response.setHeader("Cache-control", "no-cache");
         mockConnectionManager.setResponse(response);
-        DriverRequest httpRequest = TestUtils.createRequest("http://localhost:8080", driver);
+        DriverRequest httpRequest = TestUtils.createDriverRequest("http://localhost:8080", driver);
         OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
                 "http://localhost:8080", true);
         HttpResponse result = httpClientRequestExecutor.execute(apacheHttpRequest);
@@ -355,7 +355,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         response = createMockResponse("2");
         response.setHeader("Cache-control", "no-cache");
         mockConnectionManager.setResponse(response);
-        httpRequest = TestUtils.createRequest("http://localhost:8080", driver);
+        httpRequest = TestUtils.createDriverRequest("http://localhost:8080", driver);
         apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
         result = httpClientRequestExecutor.execute(apacheHttpRequest);
         Header xCacheHeader2 = result.getFirstHeader("X-Cache");
@@ -379,7 +379,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         HttpResponse response = createMockResponse("1");
         response.setHeader("Cache-control", "max-age=60");
         mockConnectionManager.setResponse(response);
-        DriverRequest httpRequest = TestUtils.createRequest("http://localhost:8080", driver);
+        DriverRequest httpRequest = TestUtils.createDriverRequest("http://localhost:8080", driver);
         OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
                 "http://localhost:8080", true);
         HttpResponse result = httpClientRequestExecutor.execute(apacheHttpRequest);
@@ -388,7 +388,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         response = createMockResponse("2");
         response.setHeader("Cache-control", "max-age=60");
         mockConnectionManager.setResponse(response);
-        httpRequest = TestUtils.createRequest("http://localhost:8080", driver);
+        httpRequest = TestUtils.createDriverRequest("http://localhost:8080", driver);
         apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
         result = httpClientRequestExecutor.execute(apacheHttpRequest);
         Header xCacheHeader2 = result.getFirstHeader("X-Cache");
@@ -421,7 +421,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         createHttpClientRequestExecutor();
 
         mockConnectionManager.setResponse(createMockResponse(""));
-        DriverRequest httpRequest = TestUtils.createRequest(uri, driver);
+        DriverRequest httpRequest = TestUtils.createDriverRequest(uri, driver);
         if (virtualHost != null) {
             httpRequest.setHeader("Host", virtualHost);
         }
@@ -443,7 +443,8 @@ public class HttpClientRequestExecutorTest extends TestCase {
         sendRequestAndCheckHostHeader("http://www.foo.com:123", "http://localhost:8080", "www.bar.com:345",
                 "www.bar.com:345");
         // Should be copied as is even when default port
-        sendRequestAndCheckHostHeader("http://www.foo.com", "http://localhost:8080", "www.foo.com:80", "www.foo.com:80");
+        sendRequestAndCheckHostHeader("http://www.foo.com", "http://localhost:8080",
+                "www.foo.com:80", "www.foo.com:80");
     }
 
     /**
@@ -485,7 +486,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         createHttpClientRequestExecutor();
         HttpClientRequestExecutor httpClientHelper2 = httpClientRequestExecutor;
 
-        DriverRequest httpRequest = TestUtils.createRequest("http://www.foo.com", driver);
+        DriverRequest httpRequest = TestUtils.createDriverRequest("http://www.foo.com", driver);
 
         // Include something with first HttpClientHelper
         OutgoingRequest apacheHttpRequest = httpClientHelper1.createHttpRequest(httpRequest, "http://localhost:8080",
@@ -520,7 +521,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
         properties.put(Parameters.USE_CACHE, "false");
         createHttpClientRequestExecutor();
-        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        DriverRequest originalRequest = TestUtils.createDriverRequest(driver);
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
                 false);
         HttpResponse response = createMockResponse("");
@@ -541,7 +542,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.TTL.getName(), "1000");
         createHttpClientRequestExecutor();
-        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        DriverRequest originalRequest = TestUtils.createDriverRequest(driver);
         originalRequest.addHeader("If-Modified-Since", "Fri, 15 Jun 2012 21:06:25 GMT");
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
                 false);
@@ -565,7 +566,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.TTL.getName(), "1000");
         createHttpClientRequestExecutor();
-        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        DriverRequest originalRequest = TestUtils.createDriverRequest(driver);
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
                 false);
         HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1),
@@ -589,7 +590,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
         properties.put(Parameters.TTL.getName(), "1000");
         createHttpClientRequestExecutor();
-        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        DriverRequest originalRequest = TestUtils.createDriverRequest(driver);
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
                 false);
         HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1),
@@ -615,7 +616,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.X_CACHE_HEADER, "true");
         properties.put(Parameters.HEURISTIC_CACHING_ENABLED, "false");
         createHttpClientRequestExecutor();
-        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        DriverRequest originalRequest = TestUtils.createDriverRequest(driver);
 
         OutgoingRequest request = httpClientRequestExecutor.createHttpRequest(originalRequest, "http://localhost:8080",
                 false);
@@ -676,7 +677,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.X_CACHE_HEADER, "true");
         createHttpClientRequestExecutor();
 
-        DriverRequest originalRequest = TestUtils.createRequest(driver);
+        DriverRequest originalRequest = TestUtils.createDriverRequest(driver);
         OutgoingRequest request1 = httpClientRequestExecutor.createHttpRequest(originalRequest,
                 "http://localhost:8080", false);
         request1.addHeader("If-None-Match", "etag");
@@ -733,7 +734,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         createHttpClientRequestExecutor();
 
         mockConnectionManager.setResponse(createMockResponse(""));
-        DriverRequest httpRequest = TestUtils.createRequest("https://wwww.foo.com", driver);
+        DriverRequest httpRequest = TestUtils.createDriverRequest("https://wwww.foo.com", driver);
         OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
                 "http://localhost:8080", true);
         httpClientRequestExecutor.execute(apacheHttpRequest);
@@ -757,7 +758,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         mockConnectionManager.setResponse(response);
 
         // First request to load the cache
-        DriverRequest httpRequest = TestUtils.createRequest(driver);
+        DriverRequest httpRequest = TestUtils.createDriverRequest(driver);
         httpRequest.addHeader("If-Modified-Since", yesterday);
         OutgoingRequest apacheHttpRequest = httpClientRequestExecutor.createHttpRequest(httpRequest,
                 "http://localhost:8080", true);
@@ -766,7 +767,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         assertEquals(HttpStatus.SC_NOT_MODIFIED, result.getStatusLine().getStatusCode());
 
         // Second request should use cache
-        DriverRequest httpRequest2 = TestUtils.createRequest(driver);
+        DriverRequest httpRequest2 = TestUtils.createDriverRequest(driver);
         httpRequest2.addHeader("If-Modified-Since", yesterday);
         OutgoingRequest apacheHttpRequest2 = httpClientRequestExecutor.createHttpRequest(httpRequest2,
                 "http://localhost:8080", true);

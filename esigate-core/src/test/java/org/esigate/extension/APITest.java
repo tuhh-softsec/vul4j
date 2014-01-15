@@ -56,7 +56,7 @@ public class APITest extends AbstractDriverTestCase {
                 new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
                         .header("Content-Type", "text/html; charset=utf-8").build()));
 
-        IncomingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
 
         driverProxy(driver, request);
 

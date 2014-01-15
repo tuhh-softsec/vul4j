@@ -37,6 +37,8 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.util.EntityUtils;
 import org.esigate.http.BasicCloseableHttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exception thrown when an error occurred retrieving a resource.
@@ -48,6 +50,7 @@ import org.esigate.http.BasicCloseableHttpResponse;
  */
 public class HttpErrorPage extends Exception {
     private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(HttpErrorPage.class);
     private final CloseableHttpResponse httpResponse;
 
     private static HttpEntity toMemoryEntity(String content) {
@@ -154,7 +157,8 @@ public class HttpErrorPage extends Exception {
         } else if (exception instanceof SocketException) {
             return generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, "Socket Exception");
         } else {
-            return generateHttpResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Error retrieving URL");
+            LOG.error("Error retrieving URL", exception);
+            return generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, "Error retrieving URL");
         }
     }
 

@@ -17,37 +17,19 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.output.StringBuilderWriter;
-import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockRequestExecutor;
-import org.esigate.impl.DriverRequest;
-import org.esigate.test.TestUtils;
 
-public class CommentElementTest extends TestCase {
-    private EsiRenderer tested;
-    private DriverRequest request;
-
-    @Override
-    protected void setUp() throws Exception {
-        Driver provider = MockRequestExecutor.createDriver();
-        request = TestUtils.createRequest(provider);
-        tested = new EsiRenderer();
-    }
+public class CommentElementTest extends AbstractElementTest {
 
     public void testCommentEmpty() throws IOException, HttpErrorPage {
         String page = "begin <esi:comment text=\"some comment\" /> end";
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin  end", out.toString());
+        String result = render(page);
+        assertEquals("begin  end", result);
     }
 
     public void testComment() throws IOException, HttpErrorPage {
         String page = "begin <esi:comment text=\"some comment\" > some text </esi:comment> end";
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin  end", out.toString());
+        String result = render(page);
+        assertEquals("begin  end", result);
     }
 }

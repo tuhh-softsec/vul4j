@@ -47,9 +47,6 @@ public class MockHttpServletRequestBuilder {
     private String method = "GET";
     private Map<String, Object> session = null;
 
-    // boolean mockMediator = false;
-    // ContainerRequestMediator mediator = null;
-
     public MockHttpServletRequestBuilder uri(String uri) {
         this.uriString = uri;
         return this;

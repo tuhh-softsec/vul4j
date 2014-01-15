@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
-import org.esigate.test.http.HttpRequestBuilder;
+import org.esigate.http.IncomingRequest;
 import org.esigate.test.http.HttpResponseBuilder;
 import org.junit.Test;
 
@@ -38,13 +38,13 @@ public class UriResponseTest {
                 new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 1").build()).response(
                 "http://test/path2", new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 2").build());
 
-        assertEquals("OK 1", EntityUtils.toString(seq
-                .execute(new HttpRequestBuilder().uri("http://test/path1").build()).getEntity()));
-        assertEquals("OK 2", EntityUtils.toString(seq
-                .execute(new HttpRequestBuilder().uri("http://test/path2").build()).getEntity()));
+        assertEquals("OK 1",
+                EntityUtils.toString(seq.execute(IncomingRequest.builder("http://test/path1").build()).getEntity()));
+        assertEquals("OK 2",
+                EntityUtils.toString(seq.execute(IncomingRequest.builder("http://test/path2").build()).getEntity()));
 
         try {
-            seq.execute(new HttpRequestBuilder().uri("http://test/path3").build());
+            seq.execute(IncomingRequest.builder("http://test/path3").build());
             fail("Should send an exception");
         } catch (IllegalStateException e) {
             // OK

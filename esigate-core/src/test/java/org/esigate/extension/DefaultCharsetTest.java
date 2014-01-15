@@ -39,7 +39,7 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
                         .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
                         .entity("test").build()));
 
-        IncomingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
 
         HttpResponse response = driverProxy(driver, request);
 
@@ -60,7 +60,7 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
                         .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
                         .entity("test").build()));
 
-        IncomingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
 
         HttpResponse response = driverProxy(driver, request);
 
@@ -80,7 +80,7 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
                         .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/xml")
                         .entity("test").build()));
 
-        IncomingRequest request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
 
         HttpResponse response = driverProxy(driver, request);
 

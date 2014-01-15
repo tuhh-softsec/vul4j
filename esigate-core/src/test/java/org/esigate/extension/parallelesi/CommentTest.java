@@ -16,44 +16,31 @@
 package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockRequestExecutor;
-import org.esigate.impl.DriverRequest;
-import org.esigate.test.TestUtils;
 
-public class CommentTest extends TestCase {
-
-    private DriverRequest request;
-    private EsiRenderer tested;
+public class CommentTest extends AbstractElementTest {
 
     @Override
-    protected void setUp() throws Exception {
-        MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
-        request = TestUtils.createRequest(provider.getDriver());
-        tested = new EsiRenderer(Executors.newCachedThreadPool());
+    protected void setUp() {
+        super.setUp();
         MockRequestExecutor provider1 = MockRequestExecutor.createMockDriver("provider1");
         provider1.addResource("/test", "replacement");
     }
 
     public void testComment() throws IOException, HttpErrorPage {
         String page = "begin <!--esi<sometag> some text</sometag>--> end";
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin <sometag> some text</sometag> end", out.toString());
+        String result = render(page);
+        assertEquals("begin <sometag> some text</sometag> end", result);
     }
 
     public void testCommentVars() throws IOException, HttpErrorPage {
         String page = "<!--esi <p><esi:vars>Hello, $(HTTP_COOKIE{name})!</esi:vars></p> -->";
-        TestUtils.addCookie(new BasicClientCookie("name", "world"), request);
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals(" <p>Hello, world!</p> ", out.toString());
+        getRequestBuilder().addCookie(new BasicClientCookie("name", "world"));
+        String result = render(page);
+        assertEquals(" <p>Hello, world!</p> ", result);
     }
 
     /**
@@ -67,9 +54,8 @@ public class CommentTest extends TestCase {
         String page = "begin "
                 + "<!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>-->"
                 + " end";
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin replacement end", out.toString());
+        String result = render(page);
+        assertEquals("begin replacement end", result);
     }
 
 }

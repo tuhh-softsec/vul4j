@@ -30,20 +30,24 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.http.IncomingRequest;
 import org.esigate.impl.UriMapping;
 import org.esigate.servlet.impl.DriverSelector;
+import org.esigate.servlet.impl.RequestFactory;
 import org.esigate.servlet.impl.RequestUrl;
+import org.esigate.servlet.impl.ResponseSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProxyFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(ProxyFilter.class);
-    private FilterConfig config;
+    private RequestFactory requestFactory;
     private final DriverSelector driverSelector = new DriverSelector();
+    private final ResponseSender responseSender = new ResponseSender();
 
     @Override
     public void init(FilterConfig filterConfig) {
-        this.config = filterConfig;
+        requestFactory = new RequestFactory(filterConfig.getServletContext());
         // Force esigate configuration parsing to trigger errors right away (if
         // any) and prevent delay on first call.
         DriverFactory.ensureConfigured();
@@ -53,18 +57,17 @@ public class ProxyFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        HttpServletMediator mediator = new HttpServletMediator(httpServletRequest, httpServletResponse,
-                config.getServletContext(), chain);
+        IncomingRequest incomingRequest = requestFactory.create(httpServletRequest, httpServletResponse, chain);
         Pair<Driver, UriMapping> dm = null;
         try {
             dm = driverSelector.selectProvider(httpServletRequest, false);
             String relUrl = RequestUrl.getRelativeUrl(httpServletRequest, dm.getRight(), false);
             LOG.debug("Proxying {}", relUrl);
-            CloseableHttpResponse driverResponse = dm.getLeft().proxy(relUrl, mediator.getHttpRequest());
-            mediator.sendResponse(driverResponse);
+            CloseableHttpResponse driverResponse = dm.getLeft().proxy(relUrl, incomingRequest);
+            responseSender.sendResponse(driverResponse, incomingRequest, httpServletResponse);
         } catch (HttpErrorPage e) {
             if (!httpServletResponse.isCommitted()) {
-                mediator.sendResponse(e.getHttpResponse());
+                responseSender.sendResponse(e.getHttpResponse(), incomingRequest, httpServletResponse);
             }
         }
     }

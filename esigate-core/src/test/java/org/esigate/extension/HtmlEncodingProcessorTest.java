@@ -54,7 +54,7 @@ public class HtmlEncodingProcessorTest extends AbstractDriverTestCase {
                         .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", contentType)
                         .entity(new ByteArrayEntity(s.getBytes("utf-8"))).build()));
 
-        IncomingRequest request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
+        IncomingRequest request = TestUtils.createIncomingRequest("http://test.mydomain.fr/foobar/").build();
 
         HttpResponse response = driverProxy(driver, request);
 

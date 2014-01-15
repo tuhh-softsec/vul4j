@@ -16,31 +16,15 @@
 package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockRequestExecutor;
-import org.esigate.impl.DriverRequest;
-import org.esigate.test.TestUtils;
 
-public class RemoveElementTest extends TestCase {
-    private DriverRequest request;
-
-    @Override
-    protected void setUp() throws Exception {
-        MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
-        request = TestUtils.createRequest(provider.getDriver());
-    }
+public class RemoveElementTest extends AbstractElementTest {
 
     public void testRemove() throws IOException, HttpErrorPage {
         String page = "begin <esi:remove>some text to be removed</esi:remove> end";
-        EsiRenderer tested = new EsiRenderer(Executors.newCachedThreadPool());
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin  end", out.toString());
+        String result = render(page);
+        assertEquals("begin  end", result);
     }
 
 }

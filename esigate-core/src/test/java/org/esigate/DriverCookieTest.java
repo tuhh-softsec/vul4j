@@ -58,13 +58,13 @@ public class DriverCookieTest extends AbstractDriverTestCase {
         });
 
         // Https request : Cookie is forwarded as Secure
-        IncomingRequest request = createHttpRequest().uri("https://test.mydomain.fr/foobar/").mockMediator().build();
+        IncomingRequest request = createRequest("https://test.mydomain.fr/foobar/").build();
 
         driverProxy(driver, request);
         Assert.assertTrue(((ClientCookie) request.getNewCookies()[0]).isSecure());
 
         // Http request : Cookie is forwarded as NOT secure
-        request = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        request = createRequest("http://test.mydomain.fr/foobar/").build();
         driverProxy(driver, request);
         Assert.assertFalse(((ClientCookie) request.getNewCookies()[0]).isSecure());
     }

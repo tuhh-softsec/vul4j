@@ -24,7 +24,7 @@ import org.apache.http.client.methods.Configurable;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicRequestLine;
 import org.esigate.UserContext;
-import org.esigate.api.ContainerRequestMediator;
+import org.esigate.api.ContainerRequestContext;
 import org.esigate.impl.DriverRequest;
 
 /**
@@ -81,8 +81,8 @@ public class OutgoingRequest extends BasicHttpEntityEnclosingRequest implements 
         return originalRequest.getUserContext();
     }
 
-    public ContainerRequestMediator getMediator() {
-        return originalRequest.getMediator();
+    public ContainerRequestContext getContainerRequestContext() {
+        return originalRequest.getContext();
     }
 
     public URL getBaseUrl() {

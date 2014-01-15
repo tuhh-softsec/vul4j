@@ -28,7 +28,6 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -46,13 +45,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Wrapper to the HttpServletResponse that intercepts the content written in order to build an {@link HttpResponse}.
+ * Wrapper to the HttpServletResponse that intercepts the content written in order to build an
+ * {@link org.apache.http.HttpResponse}.
  * <ul>
  * <li>If the content of the response is required for transformation (parseable content-type or proxy=false) or smaller
- * than the buffer size the {@link HttpResponse} will contain the entire response</li>
- * <li>If the content of the response is not required for transformation, the {@link HttpResponse} will contain only an
- * abstract of the response truncated to the bufer size. The complete response will have already been written to the
- * original {@link HttpServletResponse}</li>
+ * than the buffer size the {@link org.apache.http.HttpResponse} will contain the entire response</li>
+ * <li>If the content of the response is not required for transformation, the {@link org.apache.http.HttpResponse} will
+ * contain only an abstract of the response truncated to the bufer size. The complete response will have already been
+ * written to the original {@link HttpServletResponse}</li>
  * </ul>
  * 
  * @author Francois-Xavier Bonnet

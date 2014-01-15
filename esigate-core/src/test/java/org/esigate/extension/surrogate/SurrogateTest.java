@@ -68,8 +68,8 @@ public class SurrogateTest extends AbstractDriverTestCase {
                                 .header("Content-Type", "text/html; charset=utf-8").build()));
 
         // Request
-        IncomingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
-                .header("Surrogate-Capabilities", "ab=\"Surrogate/1.0\"").mockMediator().build();
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader(
+                "Surrogate-Capabilities", "ab=\"Surrogate/1.0\"").build();
 
         // content="" is completely removed
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -104,8 +104,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
                         .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\", max-age=600").build()));
 
         // Request
-        IncomingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
-                .mockMediator().build();
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
 
         // Proxy
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -133,8 +132,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
             }
         });
 
-        IncomingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
-                .mockMediator().build();
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         driverProxy(driver, requestWithSurrogate);
 
     }
@@ -166,8 +164,8 @@ public class SurrogateTest extends AbstractDriverTestCase {
             }
         });
 
-        IncomingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
-                .header("Surrogate-Capabilities", "esigate=\"Surrogate/1.0\"").mockMediator().build();
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader(
+                "Surrogate-Capabilities", "esigate=\"Surrogate/1.0\"").build();
         driverProxy(driver, requestWithSurrogate);
 
     }
@@ -198,8 +196,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
                         .header("Surrogate-Control", "content=\"\"").header("Content-Type", "text/html; charset=utf-8")
                         .build()));
 
-        IncomingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
-                .mockMediator().build();
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
         Assert.assertEquals("before <esi:vars>$(HTTP_HOST)</esi:vars> after",
                 EntityUtils.toString(response.getEntity()));
@@ -228,8 +225,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
                         .header("Surrogate-Control", "content=\"ESI/1.0\"")
                         .header("Content-Type", "text/html; charset=utf-8").build()));
 
-        IncomingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
-                .mockMediator().build();
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
         Assert.assertEquals("before test.mydomain.fr after", EntityUtils.toString(response.getEntity()));
     }
@@ -260,20 +256,19 @@ public class SurrogateTest extends AbstractDriverTestCase {
                                 .header("Surrogate-Control", "").header("Cache-Control", "public, max-age=60")
                                 .header("Content-Type", "text/html; charset=utf-8").build()));
 
-        IncomingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
-                .mockMediator().build();
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
         assertEquals("1", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("MISS"));
 
         // Caching has been disabled by Cache-Control header
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("2", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("MISS"));
 
         // Caching was not altered by Surrogate-Control
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("2", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("HIT"));
@@ -307,19 +302,18 @@ public class SurrogateTest extends AbstractDriverTestCase {
                                 .header("Surrogate-Control", "max-age=60").header("Cache-Control", "no-store")
                                 .header("Content-Type", "text/html; charset=utf-8").build()));
 
-        IncomingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
-                .mockMediator().build();
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
         assertEquals("1", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("MISS"));
 
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("2", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("MISS"));
 
         // Caching was enabled with Surrogate-Control
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("2", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("HIT"));
@@ -370,20 +364,19 @@ public class SurrogateTest extends AbstractDriverTestCase {
 
         );
 
-        IncomingRequest requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/")
-                .mockMediator().build();
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
         assertEquals("1", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("MISS"));
 
         // Previous response was not cacheable.
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("2", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("MISS"));
 
         // Caching was enabled with Surrogate-Control
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("2", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("HIT"));
@@ -392,7 +385,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
         Thread.sleep(1500);
 
         // Cache expired, this request fails.
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         try {
             response = driverProxy(driver, requestWithSurrogate);
             fail("Should return 500");
@@ -403,13 +396,13 @@ public class SurrogateTest extends AbstractDriverTestCase {
         }
 
         // New request
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("4", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("VALIDATED"));
 
         // Caching was enabled with Surrogate-Control
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("4", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("HIT"));
@@ -419,7 +412,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
 
         // Extended cache was enabled. This request fails but extended cache
         // allows to return the stale content
-        requestWithSurrogate = createHttpRequest().uri("http://test.mydomain.fr/foobar/").mockMediator().build();
+        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("4", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("MISS"));

@@ -25,6 +25,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
@@ -54,14 +55,15 @@ public class DriverEsiWhenTest extends AbstractDriverTestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");
 
         // Test case
-        IncomingRequest request = createHttpRequest()
-                .uri("http://test.mydomain.fr/foobar/?test=esigate&test2=esigate2")
-                .header("Referer", "http://www.esigate.org")
-                .header("User-Agent",
+        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/?test=esigate&test2=esigate2")
+                .addHeader("Referer", "http://www.esigate.org")
+                .addHeader(
+                        "User-Agent",
                         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/536.30.1 (KHTML, like Gecko) "
                                 + "Version/6.0.5 Safari/536.30.1")
-                .header("Accept-Language", "da, en-gb;q=0.8, en;q=0.7").cookie("test-cookie", "test-cookie-value")
-                .cookie("test-cookie2", "test-cookie-value2").mockMediator().build();
+                .addHeader("Accept-Language", "da, en-gb;q=0.8, en;q=0.7")
+                .addCookie(new BasicClientCookie("test-cookie", "test-cookie-value"))
+                .addCookie(new BasicClientCookie("test-cookie2", "test-cookie-value2")).build();
 
         final StringBuilder expected = new StringBuilder();
         addExpression(expected, "!(1==1)", false);

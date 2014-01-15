@@ -28,7 +28,7 @@ public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
         String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
                 "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
-        IncomingRequest request = TestUtils.createRequest();
+        IncomingRequest request = TestUtils.createIncomingRequest().build();
         strategy.getBaseURL(request);
     }
 
@@ -36,17 +36,13 @@ public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
         String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
                 "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
-        IncomingRequest request = TestUtils.createRequest();
-        TestUtils.setRemoteAddr("", request);
+        IncomingRequest request = TestUtils.createIncomingRequest().setRemoteAddr("").build();
         strategy.getBaseURL(request);
-        request = TestUtils.createRequest();
-        TestUtils.setRemoteAddr(null, request);
+        request = TestUtils.createIncomingRequest().setRemoteAddr(null).build();
         strategy.getBaseURL(request);
-        request = TestUtils.createRequest();
-        TestUtils.setRemoteAddr("not_ip", request);
+        request = TestUtils.createIncomingRequest().setRemoteAddr("not_ip").build();
         strategy.getBaseURL(request);
-        request = TestUtils.createRequest();
-        TestUtils.setRemoteAddr("a.b.c.d", request);
+        request = TestUtils.createIncomingRequest().setRemoteAddr("a.b.c.d").build();
         strategy.getBaseURL(request);
     }
 
@@ -56,9 +52,8 @@ public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
         BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
         int times = 100;
         for (int i = 0; i < times; i++) {
-            IncomingRequest request = TestUtils.createRequest();
             String ip = getRandomIp();
-            TestUtils.setRemoteAddr(ip, request);
+            IncomingRequest request = TestUtils.createIncomingRequest().setRemoteAddr(ip).build();
             String baseURL1 = strategy.getBaseURL(request);
             String baseURL2 = strategy.getBaseURL(request);
             String baseURL3 = strategy.getBaseURL(request);

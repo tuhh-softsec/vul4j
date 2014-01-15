@@ -33,7 +33,7 @@ public class RoundRobinBaseUrlRetrieveStrategyTest extends TestCase {
         String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
                 "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new RoundRobinBaseUrlRetrieveStrategy(baseUrls);
-        IncomingRequest request = TestUtils.createRequest();
+        IncomingRequest request = TestUtils.createIncomingRequest().build();
         int times = 5;
         int requestsCount = baseUrls.length * times;
         ConcurrentMap<String, AtomicInteger> counterMap = new ConcurrentHashMap<String, AtomicInteger>();

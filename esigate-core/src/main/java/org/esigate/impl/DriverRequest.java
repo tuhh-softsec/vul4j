@@ -13,7 +13,7 @@ import org.apache.http.RequestLine;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.UserContext;
-import org.esigate.api.ContainerRequestMediator;
+import org.esigate.api.ContainerRequestContext;
 import org.esigate.http.IncomingRequest;
 
 public class DriverRequest implements HttpEntityEnclosingRequest {
@@ -164,8 +164,8 @@ public class DriverRequest implements HttpEntityEnclosingRequest {
         this.characterEncoding = characterEncoding;
     }
 
-    public ContainerRequestMediator getMediator() {
-        return wrappedRequest.getMediator();
+    public ContainerRequestContext getContext() {
+        return wrappedRequest.getContext();
     }
 
     public IncomingRequest getOriginalRequest() {

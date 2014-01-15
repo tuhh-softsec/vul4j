@@ -71,4 +71,15 @@ public class UserContext {
         StringBuilder result = new StringBuilder(Parameters.SMALL_BUFFER_SIZE).append("User=").append(getUser());
         return result.toString();
     }
+
+    /**
+     * Returns the key under which the user name is to be stored in the session for a given provider.
+     * 
+     * @param providerName
+     *            The name of the provider
+     * @return The session key
+     */
+    public static String getUserSessionKey(String providerName) {
+        return UserContext.class.getName() + "#" + providerName + "#" + USER_KEY;
+    }
 }

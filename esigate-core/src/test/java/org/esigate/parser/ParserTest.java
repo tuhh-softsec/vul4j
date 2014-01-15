@@ -34,7 +34,7 @@ public class ParserTest extends TestCase {
     protected void setUp() throws HttpErrorPage {
         MockRequestExecutor provider = MockRequestExecutor.createMockDriver();
         tested = new Parser(Pattern.compile("(<test:[^>]*>)|(</test:[^>]*>)"), SIMPLE, BODY);
-        DriverRequest request = TestUtils.createRequest("http://a.b?request=updated", provider.getDriver());
+        DriverRequest request = TestUtils.createDriverRequest("http://a.b?request=updated", provider.getDriver());
         tested.setHttpRequest(request);
     }
 

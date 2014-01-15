@@ -10,9 +10,9 @@ import org.esigate.http.ContentTypeHelper;
 import org.esigate.servlet.MockHttpServletResponse;
 
 public class ResponseCapturingWrapperTest extends TestCase {
-    private final static int BUFFER_SIZE = 1024;
-    private final static String SMALL_STRING = "test";
-    private final static String BIG_STRING;
+    private static final int BUFFER_SIZE = 1024;
+    private static final String SMALL_STRING = "test";
+    private static final String BIG_STRING;
     private ContentTypeHelper contentTypeHelper;
     private MockHttpServletResponse httpServletResponse;
     static {

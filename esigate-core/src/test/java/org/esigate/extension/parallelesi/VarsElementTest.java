@@ -16,83 +16,57 @@
 package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockRequestExecutor;
-import org.esigate.impl.DriverRequest;
-import org.esigate.test.TestUtils;
 
-public class VarsElementTest extends TestCase {
-
-    private DriverRequest request;
-    private EsiRenderer tested;
-    private MockRequestExecutor provider;
-
-    @Override
-    protected void setUp() throws Exception {
-        provider = MockRequestExecutor.createMockDriver("mock");
-        provider.addResource("/test", "test");
-        provider.addResource("http://www.foo.com/test", "test");
-
-        request = TestUtils.createRequest(provider.getDriver());
-        tested = new EsiRenderer(Executors.newCachedThreadPool());
-    }
+public class VarsElementTest extends AbstractElementTest {
 
     public void testHttpHost() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>$(HTTP_HOST)</esi:vars> end";
-        request = TestUtils.createRequest("http://www.foo.com", provider.getDriver());
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin www.foo.com end", out.toString());
+        incomingRequest("http://www.foo.com");
+        String result = render(page);
+        assertEquals("begin www.foo.com end", result);
     }
 
     public void testCookie() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>"
                 + "<img src=\"http://www.example.com/$(HTTP_COOKIE{cookieName})/hello.gif\"/ >" + "</esi:vars> end";
-        TestUtils.addCookie(new BasicClientCookie("cookieName", "value"), request);
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin <img src=\"http://www.example.com/value/hello.gif\"/ > end", out.toString());
+        getRequestBuilder().addCookie(new BasicClientCookie("cookieName", "value"));
+        String result = render(page);
+        assertEquals("begin <img src=\"http://www.example.com/value/hello.gif\"/ > end", result);
     }
 
     public void testQueryString() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>" + "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >"
                 + "</esi:vars> end";
-        request = TestUtils.createRequest("http://localhost/?param1=param1value", provider.getDriver());
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin <img src=\"http://www.example.com/param1value/hello.gif\"/ > end", out.toString());
+        incomingRequest("http://localhost/?param1=param1value");
+        String result = render(page);
+        assertEquals("begin <img src=\"http://www.example.com/param1value/hello.gif\"/ > end", result);
     }
 
     public void testHttpReferer() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>" + "$(HTTP_REFERER)" + "</esi:vars> end";
-        request.setHeader("Referer", "http://www.example.com");
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin http://www.example.com end", out.toString());
+        getRequestBuilder().addHeader("Referer", "http://www.example.com");
+        String result = render(page);
+        assertEquals("begin http://www.example.com end", result);
     }
 
     public void testUserAgent() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>" + "$(HTTP_USER_AGENT{os})" + "</esi:vars> end";
-        request.setHeader("User-Agent",
+        getRequestBuilder().addHeader(
+                "User-Agent",
                 "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 GTB7.1 "
                         + "( .NET CLR 3.5.30729)");
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin WIN end", out.toString());
+        String result = render(page);
+        assertEquals("begin WIN end", result);
     }
 
     public void testAcceptLanguage() throws IOException, HttpErrorPage {
         String page = "begin <esi:vars>" + "$(HTTP_ACCEPT_LANGUAGE{en-us})" + "</esi:vars> end";
-        request.setHeader("Accept-Language", "en-us,en;q=0.5");
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin true end", out.toString());
+        getRequestBuilder().addHeader("Accept-Language", "en-us,en;q=0.5");
+        String result = render(page);
+        assertEquals("begin true end", result);
     }
 
 }

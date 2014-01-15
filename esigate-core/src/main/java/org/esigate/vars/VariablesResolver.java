@@ -189,7 +189,18 @@ public final class VariablesResolver {
             res = HttpRequestHelper.getFirstHeader("Referer", request);
         } else if (var.indexOf("HTTP_COOKIE") != -1) {
             if (arg == null) {
-                res = HttpRequestHelper.getFirstHeader("Cookie", request);
+                // Add cookies
+                // In request header
+                String cookieHeaderValue = StringUtils.EMPTY;
+                for (Cookie c : request.getOriginalRequest().getCookies()) {
+                    if (StringUtils.isNotBlank(cookieHeaderValue)) {
+                        cookieHeaderValue = cookieHeaderValue + "; ";
+                    }
+                    cookieHeaderValue = cookieHeaderValue + c.getName() + "=" + c.getValue();
+                }
+                if (StringUtils.isNotBlank(cookieHeaderValue)) {
+                    res = cookieHeaderValue;
+                }
             } else {
                 Cookie[] cookies = request.getOriginalRequest().getCookies();
                 for (Cookie c : cookies) {

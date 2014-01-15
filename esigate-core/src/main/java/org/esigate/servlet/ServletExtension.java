@@ -26,7 +26,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
-import org.esigate.api.ContainerRequestMediator;
+import org.esigate.api.ContainerRequestContext;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -71,52 +71,52 @@ public class ServletExtension implements Extension, IEventListener {
                 if (!relUrl.startsWith("/")) {
                     relUrl = "/" + relUrl;
                 }
-                ContainerRequestMediator mediator = outgoingRequest.getMediator();
+                ContainerRequestContext requestContext = outgoingRequest.getContainerRequestContext();
                 CloseableHttpResponse result;
-                if (!(mediator instanceof HttpServletMediator)) {
+                if (!(requestContext instanceof HttpServletRequestContext)) {
                     String message = ServletExtension.class.getName()
                             + " can be used only inside a java servlet engine";
                     result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                 } else {
-                    HttpServletMediator httpServletMediator = (HttpServletMediator) mediator;
+                    HttpServletRequestContext httpServletRequestContext = (HttpServletRequestContext) requestContext;
                     try {
                         if (fetchEvent.getHttpContext().isProxy()) {
                             ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
-                                    httpServletMediator.getResponse(), driver.getContentTypeHelper(), true,
+                                    httpServletRequestContext.getResponse(), driver.getContentTypeHelper(), true,
                                     maxObjectSize);
                             if (context == null) {
-                                httpServletMediator.getFilterChain().doFilter(httpServletMediator.getRequest(),
-                                        wrappedResponse);
+                                httpServletRequestContext.getFilterChain().doFilter(
+                                        httpServletRequestContext.getRequest(), wrappedResponse);
                                 result = wrappedResponse.getResponse();
                             } else {
-                                ServletContext crossContext = httpServletMediator.getServletContext().getContext(
+                                ServletContext crossContext = httpServletRequestContext.getServletContext().getContext(
                                         context);
                                 if (crossContext == null) {
                                     String message = "Context " + context + " does not exist or cross context disabled";
                                     result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                                 } else {
-                                    crossContext.getRequestDispatcher(relUrl).forward(httpServletMediator.getRequest(),
-                                            wrappedResponse);
+                                    crossContext.getRequestDispatcher(relUrl).forward(
+                                            httpServletRequestContext.getRequest(), wrappedResponse);
                                     result = wrappedResponse.getResponse();
                                 }
                             }
                         } else {
                             ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
-                                    httpServletMediator.getResponse(), driver.getContentTypeHelper(), false,
+                                    httpServletRequestContext.getResponse(), driver.getContentTypeHelper(), false,
                                     maxObjectSize);
                             if (context == null) {
-                                httpServletMediator.getRequest().getRequestDispatcher(relUrl)
-                                        .forward(httpServletMediator.getRequest(), wrappedResponse);
+                                httpServletRequestContext.getRequest().getRequestDispatcher(relUrl)
+                                        .forward(httpServletRequestContext.getRequest(), wrappedResponse);
                                 result = wrappedResponse.getResponse();
                             } else {
-                                ServletContext crossContext = httpServletMediator.getServletContext().getContext(
+                                ServletContext crossContext = httpServletRequestContext.getServletContext().getContext(
                                         context);
                                 if (crossContext == null) {
                                     String message = "Context " + context + " does not exist or cross context disabled";
                                     result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                                 } else {
-                                    crossContext.getRequestDispatcher(relUrl).include(httpServletMediator.getRequest(),
-                                            wrappedResponse);
+                                    crossContext.getRequestDispatcher(relUrl).include(
+                                            httpServletRequestContext.getRequest(), wrappedResponse);
                                     result = wrappedResponse.getResponse();
                                 }
                             }

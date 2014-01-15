@@ -51,7 +51,7 @@ public class AggregateRendererTest extends TestCase {
         requestExecutor.addResource("/testNestedTemplate", "before <!--$begintemplate$myblock$--> nested "
                 + "<!--$includeblock$mock$/testInclude$--> some text <!--$endincludeblock$-->"
                 + " /nested <!--$endtemplate$myblock$--> after");
-        request = TestUtils.createRequest(driver);
+        request = TestUtils.createDriverRequest(driver);
         tested = new AggregateRenderer();
     }
 

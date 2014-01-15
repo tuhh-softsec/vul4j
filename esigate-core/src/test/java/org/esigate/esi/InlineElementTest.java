@@ -17,36 +17,18 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.output.StringBuilderWriter;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockRequestExecutor;
-import org.esigate.impl.DriverRequest;
-import org.esigate.test.TestUtils;
 
-public class InlineElementTest extends TestCase {
-    private MockRequestExecutor provider;
-    private DriverRequest request;
-
-    @Override
-    protected void setUp() throws Exception {
-        provider = MockRequestExecutor.createMockDriver("mock");
-        provider.addResource("/test", "test");
-        provider.addResource("http://www.foo.com/test", "test");
-        request = TestUtils.createRequest(provider.getDriver());
-    }
+public class InlineElementTest extends AbstractElementTest {
 
     public void testInlineElement() throws IOException, HttpErrorPage {
         String page = "begin <esi:inline name=\"someUri\" fetchable=\"yes\">inside inline</esi:inline>end";
-        EsiRenderer tested = new EsiRenderer();
-        StringBuilderWriter out = new StringBuilderWriter();
-        tested.render(request, page, out);
-        assertEquals("begin end", out.toString());
+        String result = render(page);
+        assertEquals("begin end", result);
         InlineCache actual = InlineCache.getFragment("someUri");
         assertNotNull(actual);
-        assertEquals(true, actual.isFetchable());
-        assertEquals(false, actual.isExpired());
+        assertTrue(actual.isFetchable());
+        assertFalse(actual.isExpired());
         assertEquals("inside inline", actual.getFragment());
     }
 

@@ -13,23 +13,13 @@
  *
  */
 
-package org.esigate.servlet;
+package org.esigate.servlet.impl;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.http.Header;
@@ -39,14 +29,14 @@ import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.message.BasicHeader;
-import org.esigate.http.MockHttpServletRequestBuilder;
-import org.esigate.test.http.HttpResponseBuilder;
 
-public class HttpServletMediatorTest extends TestCase {
+public class ResponseSenderTest extends TestCase {
     private SimpleDateFormat format;
+    private ResponseSender renderer;
 
     @Override
     protected void setUp() throws Exception {
+        renderer = new ResponseSender();
         format = new SimpleDateFormat(DateUtils.PATTERN_RFC1123, Locale.US);
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         super.setUp();
@@ -59,7 +49,7 @@ public class HttpServletMediatorTest extends TestCase {
                 + expires + "; Path=/");
         CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
         Cookie src = cookieSpec.parse(header, origin).get(0);
-        javax.servlet.http.Cookie result = HttpServletMediator.rewriteCookie(src);
+        javax.servlet.http.Cookie result = renderer.rewriteCookie(src);
         assertTrue(result.getMaxAge() > 86398);
         assertTrue(result.getMaxAge() < 86401);
     }
@@ -71,43 +61,9 @@ public class HttpServletMediatorTest extends TestCase {
                 + "; Path=/");
         CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
         Cookie src = cookieSpec.parse(header, origin).get(0);
-        javax.servlet.http.Cookie result = HttpServletMediator.rewriteCookie(src);
+        javax.servlet.http.Cookie result = renderer.rewriteCookie(src);
         assertTrue(result.getMaxAge() > 15551998);
         assertTrue(result.getMaxAge() < 15552001);
-    }
-
-    /**
-     * Ensure there is no exception when trying to create a session outside of a request (during background
-     * revalidation). Expected behavior is no exception, but value not set.
-     * 
-     * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=229"
-     * @throws Exception
-     */
-    public void testSetAttributeNoSession() throws Exception {
-        HttpServletRequest request = new MockHttpServletRequestBuilder().protocolVersion("HTTP/1.0").method("GET")
-                .session(null).build();
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        ServletOutputStream outputStream = new ServletOutputStream() {
-
-            private ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-
-            @Override
-            public void write(int b) {
-                this.byteOutputStream.write(b);
-            }
-
-        };
-        when(response.getOutputStream()).thenReturn(outputStream);
-        ServletContext context = mock(ServletContext.class);
-
-        HttpServletMediator mediator = new HttpServletMediator(request, response, context);
-        mediator.sendResponse(new HttpResponseBuilder().entity("Response").build());
-
-        mediator.getHttpRequest().getSession().setAttribute("test", "value");
-
-        // Previous method should have no effect since session cannot be
-        // created.
-        Assert.assertNull(mediator.getHttpRequest().getSession().getAttribute("test"));
     }
 
 }

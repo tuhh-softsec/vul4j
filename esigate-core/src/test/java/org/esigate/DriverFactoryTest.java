@@ -48,7 +48,7 @@ public class DriverFactoryTest extends TestCase {
         Driver instance = DriverFactory.getInstance(id);
         assertNotNull(instance);
 
-        DriverRequest request = TestUtils.createRequest(instance);
+        DriverRequest request = TestUtils.createDriverRequest(instance);
         assertEquals("http://base.url", request.getBaseUrl().toString());
     }
 

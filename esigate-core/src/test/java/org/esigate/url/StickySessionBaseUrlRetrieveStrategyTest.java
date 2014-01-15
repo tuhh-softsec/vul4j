@@ -31,10 +31,9 @@ public class StickySessionBaseUrlRetrieveStrategyTest extends TestCase {
         BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
         int times = 100;
         for (int i = 0; i < times; i++) {
-            IncomingRequest request = TestUtils.createRequest();
             Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME,
                     Integer.toString(i % baseUrls.length));
-            TestUtils.addCookie(cookie, request);
+            IncomingRequest request = TestUtils.createIncomingRequest().addCookie(cookie).build();
             assertEquals(baseUrls[i % baseUrls.length], strategy.getBaseURL(request));
         }
     }
@@ -44,24 +43,20 @@ public class StickySessionBaseUrlRetrieveStrategyTest extends TestCase {
                 "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
 
-        IncomingRequest request = TestUtils.createRequest();
         Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "-1");
-        TestUtils.addCookie(cookie, request);
+        IncomingRequest request = TestUtils.createIncomingRequest().addCookie(cookie).build();
         strategy.getBaseURL(request);
 
-        request = TestUtils.createRequest();
         cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "5");
-        TestUtils.addCookie(cookie, request);
+        request = TestUtils.createIncomingRequest().addCookie(cookie).build();
         strategy.getBaseURL(request);
 
-        request = TestUtils.createRequest();
         cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, null);
-        TestUtils.addCookie(cookie, request);
+        request = TestUtils.createIncomingRequest().addCookie(cookie).build();
         strategy.getBaseURL(request);
 
-        request = TestUtils.createRequest();
         cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "a");
-        TestUtils.addCookie(cookie, request);
+        request = TestUtils.createIncomingRequest().addCookie(cookie).build();
         strategy.getBaseURL(request);
     }
 }
