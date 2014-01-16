@@ -15,6 +15,8 @@
 
 package org.esigate.renderers;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.regex.Matcher;
@@ -54,7 +56,7 @@ public class ResourceFixupRenderer implements Renderer {
     private String contextAdd = null;
     private String contextRemove = null;
     /**
-     * Page path without the filename
+     * Page path without the filename.
      */
     private String pagePath = null;
 
@@ -80,17 +82,17 @@ public class ResourceFixupRenderer implements Renderer {
      * <li>images/image.png is replaced by /context/images/image.png</li>
      * </ul>
      * 
-     * @param baseUrl
-     * 
+     * @param pBaseUrl
+     *          Base url (same as configured in provider).
      * @param visibleBaseUrl
-     *            Base url (same as configured in provider).
+     *            Visible Base url (same as configured in provider). Will replace the base url in rewritten urls.
      * @param pageFullPath
      *            Page as used in tag lib or using API
-     * @param mode
+     * @param pMode
      *            ResourceFixupRenderer.ABSOLUTE or ResourceFixupRenderer.RELATIVE
      */
-    public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl, String pageFullPath, int mode) {
-        this(baseUrl, visibleBaseUrl, pageFullPath, mode, true);
+    public ResourceFixupRenderer(String pBaseUrl, String visibleBaseUrl, String pageFullPath, int pMode) {
+        this(pBaseUrl, visibleBaseUrl, pageFullPath, pMode, true);
     }
 
     /**
@@ -108,10 +110,10 @@ public class ResourceFixupRenderer implements Renderer {
      * <li>images/image.png is replaced by /context/images/image.png</li>
      * </ul>
      * 
-     * @param baseUrl
-     * 
+    * @param baseUrl
+     *          Base url (same as configured in provider).
      * @param visibleBaseUrl
-     *            Base url (same as configured in provider).
+     *            Visible Base url (same as configured in provider). Will replace the base url in rewritten urls.
      * @param pageFullPath
      *            Page as used in tag lib or using API
      * @param mode
@@ -140,7 +142,7 @@ public class ResourceFixupRenderer implements Renderer {
         cleanBaseUrl = removeLeadingSlash(cleanBaseUrl);
 
         String cleanPageFullPath = pageFullPath;
-        if (cleanPageFullPath.charAt(0) == SLASH) {
+        if (isNotEmpty(cleanPageFullPath) && cleanPageFullPath.charAt(0) == SLASH) {
             cleanPageFullPath = cleanPageFullPath.substring(1);
         }
 
@@ -170,13 +172,20 @@ public class ResourceFixupRenderer implements Renderer {
         }
     }
 
+    /**
+     * Remove the last character if it is a slash.
+     * 
+     * @param src
+     *            url.
+     * @return url without an ending slash.
+     */
     private String removeLeadingSlash(String src) {
         int lastCharPosition = src.length() - 1;
         if (src.charAt(lastCharPosition) != SLASH) {
             return src;
-        } else {
-            return src.substring(0, lastCharPosition);
         }
+
+        return src.substring(0, lastCharPosition);
     }
 
     /**
