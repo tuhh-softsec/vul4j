@@ -89,7 +89,7 @@ public class PerformanceMonitor {
 	for(Entry<String, Queue<Measurement>> e : map.entrySet()) {
 	    String key = e.getKey();
 	    Queue<Measurement> list = e.getValue();
-	    int total = 0, count = 0;
+	    long total = 0, count = 0;
 	    long start = Long.MAX_VALUE, stop = -1;
 	    for(Measurement m : list) {
 		if(m.stop < 0) {
