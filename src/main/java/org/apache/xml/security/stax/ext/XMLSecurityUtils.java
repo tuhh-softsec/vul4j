@@ -55,6 +55,8 @@ import java.util.*;
  * @version $Revision$ $Date$
  */
 public class XMLSecurityUtils {
+    
+    private static final int MAX_SYMMETRIC_KEY_SIZE = 1024;
 
     protected XMLSecurityUtils() {
     }
@@ -392,10 +394,16 @@ public class XMLSecurityUtils {
         }
         String keyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(symEncAlgo);
         SecretKeySpec keySpec;
-        if (size > 0 && !symEncAlgo.endsWith("gcm")) {
+        if (size > 0 && !symEncAlgo.endsWith("gcm") && !symEncAlgo.contains("hmac-")) {
             keySpec = 
                 new SecretKeySpec(
                     rawKey, 0, rawKey.length > size ? size : rawKey.length, keyAlgorithm
+                );
+        } else if (rawKey.length > MAX_SYMMETRIC_KEY_SIZE) {
+            // Prevent a possible attack where a huge secret key is specified
+            keySpec = 
+                new SecretKeySpec(
+                    rawKey, 0, MAX_SYMMETRIC_KEY_SIZE, keyAlgorithm
                 );
         } else {
             keySpec = new SecretKeySpec(rawKey, keyAlgorithm);
