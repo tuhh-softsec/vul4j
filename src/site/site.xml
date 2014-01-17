@@ -60,6 +60,7 @@
 
 		<menu name="Modules">
 			<item href="esigate-core/index.html" name="esigate-core" />
+			<item href="esigate-servlet/index.html" name="esigate-servlet" />
 			<item href="esigate-cas/index.html" name="esigate-cas" />
 			<item href="esigate-war/index.html" name="esigate-war" />
 			<item href="esigate-server/index.html" name="esigate-server" />

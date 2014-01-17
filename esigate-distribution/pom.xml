@@ -15,6 +15,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
+			<artifactId>esigate-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.esigate</groupId>
 			<artifactId>esigate-cas</artifactId>
 		</dependency>
 		<dependency>

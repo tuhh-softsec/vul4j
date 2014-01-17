@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
 
-import javax.servlet.http.HttpServletResponse;
-
 import junit.framework.TestCase;
 
 import org.apache.commons.io.output.NullOutputStream;
@@ -105,7 +103,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         ByteArrayEntity httpEntity = new ByteArrayEntity(compressedBytes);
         httpEntity.setContentType("text/html; charset=ISO-8859-1");
         httpEntity.setContentEncoding("gzip");
-        StatusLine statusLine = new BasicStatusLine(new ProtocolVersion("p", 1, 2), HttpServletResponse.SC_OK, "OK");
+        StatusLine statusLine = new BasicStatusLine(new ProtocolVersion("p", 1, 2), HttpStatus.SC_OK, "OK");
         BasicHttpResponse httpResponse = new BasicHttpResponse(statusLine);
         httpResponse.addHeader("Content-type", "text/html; charset=ISO-8859-1");
         httpResponse.addHeader("Content-encoding", "gzip");
@@ -443,8 +441,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         sendRequestAndCheckHostHeader("http://www.foo.com:123", "http://localhost:8080", "www.bar.com:345",
                 "www.bar.com:345");
         // Should be copied as is even when default port
-        sendRequestAndCheckHostHeader("http://www.foo.com", "http://localhost:8080",
-                "www.foo.com:80", "www.foo.com:80");
+        sendRequestAndCheckHostHeader("http://www.foo.com", "http://localhost:8080", "www.foo.com:80", "www.foo.com:80");
     }
 
     /**

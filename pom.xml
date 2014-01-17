@@ -335,6 +335,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.esigate</groupId>
+				<artifactId>esigate-servlet</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.esigate</groupId>
 				<artifactId>esigate-war</artifactId>
 				<type>war</type>
 				<version>${project.version}</version>
@@ -646,6 +651,7 @@
 	</profiles>
 	<modules>
 		<module>esigate-core</module>
+		<module>esigate-servlet</module>
 		<module>esigate-cas</module>
 		<module>esigate-app-provider</module>
 		<module>esigate-app-master</module>

@@ -73,12 +73,12 @@
 				with an embedded Jetty server.
 			</p>
 			<p>
-				If you are familiar with Java servlet-api, you may want to build your own web application using esigate-core as a dependency. With Maven:
+				If you are familiar with Java servlet-api, you may want to build your own web application using esigate-servlet as a dependency. With Maven:
 			</p>
 			<source><![CDATA[
 <dependency>
 	<groupId>org.esigate</groupId>
-	<artifactId>esigate-core</artifactId>
+	<artifactId>esigate-servlet</artifactId>
 	<version>RELEASE</version>
 </dependency>
 			]]></source>

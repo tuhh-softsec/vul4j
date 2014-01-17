@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<body>
+		<section name="About">
+			<p>
+				This module contains the servlet filter used to run EsiGate
+				inside a servlet engine.
+			</p>
+		</section>
+	</body>
+</document>

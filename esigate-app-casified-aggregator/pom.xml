@@ -12,7 +12,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.esigate</groupId>
-			<artifactId>esigate-core</artifactId>
+			<artifactId>esigate-servlet</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
