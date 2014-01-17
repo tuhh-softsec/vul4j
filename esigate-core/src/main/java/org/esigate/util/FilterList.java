@@ -1,6 +1,5 @@
 package org.esigate.util;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -21,23 +20,22 @@ public class FilterList {
      * everything, this method will have no effect.
      * 
      * @param toAdd
-     *            String tokens to add to the list. This argument can be:
+     *            String token to add to the list. This argument can be:
      *            <ul>
      *            <li>A single String token</li>
-     *            <li>A comma-separated list of String tokens</li>
      *            <li>* (in this case the list will then act as if it contained any token but you will be able to make
      *            except some tokens using the remove method)</li>
      *            </ul>
      */
-    public void add(Collection<String> toAdd) {
+    public void add(String toAdd) {
         if (toAdd.contains("*")) {
             set.clear();
             defaultContains = true;
         } else {
             if (!defaultContains) {
-                set.addAll(toAdd);
+                set.add(toAdd);
             } else {
-                set.removeAll(toAdd);
+                set.remove(toAdd);
             }
         }
     }
@@ -50,19 +48,18 @@ public class FilterList {
      *            String tokens to add to the list. This argument can be:
      *            <ul>
      *            <li>A single String token</li>
-     *            <li>A comma-separated list of String tokens</li>
      *            <li>* (in this case the list will then be empty again)</li>
      *            </ul>
      */
-    public void remove(Collection<String> toRemove) {
+    public void remove(String toRemove) {
         if (toRemove.contains("*")) {
             set.clear();
             defaultContains = false;
         } else {
             if (defaultContains) {
-                set.addAll(toRemove);
+                set.add(toRemove);
             } else {
-                set.removeAll(toRemove);
+                set.remove(toRemove);
             }
         }
     }

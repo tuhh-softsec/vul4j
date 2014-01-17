@@ -15,18 +15,13 @@
 
 package org.esigate.http;
 
-import java.util.Collections;
-import java.util.Properties;
-
 import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.esigate.Parameters;
 import org.esigate.impl.DriverRequest;
 import org.esigate.util.FilterList;
-import org.esigate.util.PropertiesUtil;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,21 +37,42 @@ import org.slf4j.LoggerFactory;
 public class HeaderManager {
     private static final Logger LOG = LoggerFactory.getLogger(HeaderManager.class);
 
-    private final FilterList requestHeadersFilterList;
-    private final FilterList responseHeadersFilterList;
+    private final FilterList requestHeadersFilterList = new FilterList();
+    private final FilterList responseHeadersFilterList = new FilterList();
 
-    public HeaderManager(Properties properties) {
+    public HeaderManager() {
         // Populate headers filter lists
-        requestHeadersFilterList = new FilterList();
-        responseHeadersFilterList = new FilterList();
-        // By default all headers are forwarded
-        requestHeadersFilterList.add(Collections.singletonList("*"));
-        responseHeadersFilterList.add(Collections.singletonList("*"));
-        PropertiesUtil.populate(requestHeadersFilterList, properties, Parameters.FORWARD_REQUEST_HEADERS.getName(),
-                Parameters.DISCARD_REQUEST_HEADERS.getName(), "", Parameters.DISCARD_REQUEST_HEADERS.getDefaultValue());
-        PropertiesUtil.populate(responseHeadersFilterList, properties, Parameters.FORWARD_RESPONSE_HEADERS.getName(),
-                Parameters.DISCARD_RESPONSE_HEADERS.getName(), "",
-                Parameters.DISCARD_RESPONSE_HEADERS.getDefaultValue());
+
+        // By default all request headers are forwarded
+        requestHeadersFilterList.add("*");
+        // Except hop-by-hop headers
+        requestHeadersFilterList.remove("Authorization");
+        requestHeadersFilterList.remove("Connection");
+        requestHeadersFilterList.remove("Content-Length");
+        requestHeadersFilterList.remove("Cache-control");
+        requestHeadersFilterList.remove("Cookie");
+        requestHeadersFilterList.remove("Host");
+        requestHeadersFilterList.remove("Max-Forwards");
+        requestHeadersFilterList.remove("Pragma");
+        requestHeadersFilterList.remove("Proxy-Authorization");
+        requestHeadersFilterList.remove("TE");
+        requestHeadersFilterList.remove("Trailer");
+        requestHeadersFilterList.remove("Transfer-Encoding");
+        requestHeadersFilterList.remove("Upgrade");
+
+        // By default all response headers are forwarded
+        responseHeadersFilterList.add("*");
+        // Except hop-by-hop headers
+        responseHeadersFilterList.remove("Connection");
+        responseHeadersFilterList.remove("Content-Length");
+        responseHeadersFilterList.remove("Content-MD5");
+        responseHeadersFilterList.remove("Date");
+        responseHeadersFilterList.remove("Keep-Alive");
+        responseHeadersFilterList.remove("Proxy-Authenticate");
+        responseHeadersFilterList.remove("Set-Cookie");
+        responseHeadersFilterList.remove("Trailer");
+        responseHeadersFilterList.remove("Transfer-Encoding");
+        responseHeadersFilterList.remove("WWW-Authenticate");
     }
 
     protected boolean isForwardedRequestHeader(String headerName) {
@@ -82,8 +98,7 @@ public class HeaderManager {
         String uri = httpRequest.getRequestLine().getUri();
         for (Header header : originalRequest.getAllHeaders()) {
             // Special headers
-            if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName())
-                    && isForwardedRequestHeader(HttpHeaders.REFERER)) {
+            if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName()) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
                 String value = header.getValue();
                 value = UriUtils.translateUrl(value, originalUri, uri);
                 httpRequest.addHeader(header.getName(), value);

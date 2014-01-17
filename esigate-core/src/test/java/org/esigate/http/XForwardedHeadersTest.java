@@ -63,36 +63,6 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
     }
 
     /**
-     * Discard existing headers and ensure they are correctly replaced by default ones.
-     * 
-     * @throws Exception
-     *             on error
-     */
-    public void testXForwardedHeadersDiscarded() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
-        properties.put(Parameters.DISCARD_REQUEST_HEADERS, "X-Forwarded-For,X-Forwarded-Proto");
-
-        Driver driver = createMockDriver(properties, new IResponseHandler() {
-            @Override
-            public HttpResponse execute(HttpRequest request) {
-                assertEquals(1, request.getHeaders("X-Forwarded-For").length);
-                assertEquals("127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
-                assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
-                assertEquals("http", request.getFirstHeader("X-Forwarded-Proto").getValue());
-                return createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
-            }
-        });
-
-        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/")
-                .addHeader("X-Forwarded-For", "192.168.0.1").addHeader("X-Forwarded-Proto", "https")
-                .setRemoteAddr("127.0.0.1").build();
-
-        driverProxy(driver, request);
-
-    }
-
-    /**
      * Ensure existing X-Forwarded headers are correctly altered.
      * <p>
      * (When Esigate is accessed via HTTPS).

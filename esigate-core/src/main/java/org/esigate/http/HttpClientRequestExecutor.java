@@ -109,7 +109,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             HttpClientRequestExecutor httpClientHelper = new HttpClientRequestExecutor();
             httpClientHelper.eventManager = eventManager;
             httpClientHelper.preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(properties);
-            httpClientHelper.headerManager = new HeaderManager(properties);
+            httpClientHelper.headerManager = new HeaderManager();
             if (cookieManager == null) {
                 cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, driver);
             }

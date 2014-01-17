@@ -59,14 +59,6 @@ public final class Parameters {
 
     // Http headers
     public static final Parameter PRESERVE_HOST = new Parameter("preserveHost", "false");
-    public static final Parameter DISCARD_REQUEST_HEADERS = new Parameter("discardRequestHeaders",
-            "Authorization,Connection,Content-Length,Cache-control,Cookie,Host,"
-                    + "Max-Forwards,Pragma,Proxy-Authorization,TE,Trailer,Transfer-Encoding,Upgrade");
-    public static final Parameter FORWARD_REQUEST_HEADERS = new Parameter("forwardRequestHeaders", null);
-    public static final Parameter DISCARD_RESPONSE_HEADERS = new Parameter("discardResponseHeaders",
-            "Connection,Content-Length,Content-MD5,Date,Keep-Alive,Proxy-Authenticate,Set-Cookie,"
-                    + "Trailer,Transfer-Encoding,WWW-Authenticate");
-    public static final Parameter FORWARD_RESPONSE_HEADERS = new Parameter("forwardResponseHeaders", null);
 
     // Cookies
     public static final Parameter COOKIE_MANAGER = new Parameter("cookieManager", DefaultCookieManager.class.getName());
