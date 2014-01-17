@@ -18,7 +18,6 @@ package org.esigate;
 import org.esigate.authentication.RemoteUserAuthenticationHandler;
 import org.esigate.cache.BasicCacheStorage;
 import org.esigate.cookie.DefaultCookieManager;
-import org.esigate.extension.Aggregate;
 import org.esigate.extension.Esi;
 import org.esigate.extension.FetchLogging;
 import org.esigate.extension.FragmentLogging;
@@ -80,13 +79,10 @@ public final class Parameters {
 
     // Extensions
     public static final Parameter EXTENSIONS = new Parameter("extensions", FragmentLogging.class.getName() + ","
-            + FetchLogging.class.getName()
-            + ","
-            // + ErrorPages.class.getName() + ","
-            + RemoteUserAuthenticationHandler.class.getName() + "," + Esi.class.getName() + ","
-            + Aggregate.class.getName() + "," + ResourceFixup.class.getName() + "," + XPoweredBy.class.getName() + ","
+            + FetchLogging.class.getName() + "," + RemoteUserAuthenticationHandler.class.getName() + ","
+            + Esi.class.getName() + "," + ResourceFixup.class.getName() + "," + XPoweredBy.class.getName() + ","
             + Surrogate.class.getName());
-
+    
     // Cache settings
     public static final Parameter USE_CACHE = new Parameter("useCache", "true");
     public static final Parameter MAX_CACHE_ENTRIES = new Parameter("maxCacheEntries", "1000");
@@ -118,8 +114,7 @@ public final class Parameters {
 
     // EhCache
     public static final Parameter EHCACHE_CACHE_NAME_PROPERTY = new Parameter("ehcache.cacheName", "esigate");
-    public static final Parameter EHCACHE_CONFIGURATION_FILE_PROPERTY = new Parameter("ehcache.configurationFile",
-            null);
+    public static final Parameter EHCACHE_CONFIGURATION_FILE_PROPERTY = new Parameter("ehcache.configurationFile", null);
 
     // MemCached
     public static final Parameter MEMCACHED_SERVERS_PROPERTY = new Parameter("memcached.servers", null);
