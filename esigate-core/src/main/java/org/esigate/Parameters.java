@@ -18,6 +18,7 @@ package org.esigate;
 import org.esigate.authentication.RemoteUserAuthenticationHandler;
 import org.esigate.cache.BasicCacheStorage;
 import org.esigate.cookie.DefaultCookieManager;
+import org.esigate.extension.ConfigReloadOnChange;
 import org.esigate.extension.Esi;
 import org.esigate.extension.FetchLogging;
 import org.esigate.extension.FragmentLogging;
@@ -81,8 +82,8 @@ public final class Parameters {
     public static final Parameter EXTENSIONS = new Parameter("extensions", FragmentLogging.class.getName() + ","
             + FetchLogging.class.getName() + "," + RemoteUserAuthenticationHandler.class.getName() + ","
             + Esi.class.getName() + "," + ResourceFixup.class.getName() + "," + XPoweredBy.class.getName() + ","
-            + Surrogate.class.getName());
-    
+            + Surrogate.class.getName() + "," + ConfigReloadOnChange.class.getName());
+
     // Cache settings
     public static final Parameter USE_CACHE = new Parameter("useCache", "true");
     public static final Parameter MAX_CACHE_ENTRIES = new Parameter("maxCacheEntries", "1000");
