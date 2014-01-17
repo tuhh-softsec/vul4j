@@ -133,8 +133,7 @@ public class DriverTest extends TestCase {
         } catch (HttpErrorPage e) {
             driverResponse = e.getHttpResponse();
         }
-        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                driverResponse.getStatusLine().getStatusCode());
+        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse.getStatusLine().getStatusCode());
         assertTrue("Header 'Dummy'", driverResponse.containsHeader("Dummy"));
     }
 
@@ -156,8 +155,7 @@ public class DriverTest extends TestCase {
         } catch (HttpErrorPage e) {
             driverResponse = e.getHttpResponse();
         }
-        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                driverResponse.getStatusLine().getStatusCode());
+        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse.getStatusLine().getStatusCode());
         assertFalse("Header 'Transfer-Encoding'", driverResponse.containsHeader("Transfer-Encoding"));
     }
 
@@ -448,7 +446,6 @@ public class DriverTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");
         properties.put(Parameters.PRESERVE_HOST.getName(), "false");
-        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
 
         mockConnectionManager = new MockConnectionManager() {
             @Override
@@ -483,7 +480,6 @@ public class DriverTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
-        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
 
         mockConnectionManager = new MockConnectionManager() {
             @Override
@@ -595,7 +591,6 @@ public class DriverTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
-        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
 
         BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
         response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
@@ -675,7 +670,6 @@ public class DriverTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080/");
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
-        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
 
         mockConnectionManager = new MockConnectionManager() {
             @Override
@@ -699,7 +693,6 @@ public class DriverTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080/");
         properties.put(Parameters.PRESERVE_HOST.getName(), "false");
-        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
 
         mockConnectionManager = new MockConnectionManager() {
             @Override
@@ -730,7 +723,6 @@ public class DriverTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080/");
         properties.put(Parameters.PRESERVE_HOST, "true");
-        properties.put(Parameters.FORWARD_COOKIES, "*");
 
         mockConnectionManager = new MockConnectionManager() {
             @Override
@@ -756,7 +748,6 @@ public class DriverTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080/");
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
-        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
 
         mockConnectionManager = new MockConnectionManager() {
             @Override
@@ -783,7 +774,6 @@ public class DriverTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080/");
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
-        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
 
         mockConnectionManager = new MockConnectionManager() {
             @Override

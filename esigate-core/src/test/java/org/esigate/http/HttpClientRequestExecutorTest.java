@@ -515,7 +515,6 @@ public class HttpClientRequestExecutorTest extends TestCase {
     public void testCookieWithSpaces() throws Exception {
         properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
-        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
         properties.put(Parameters.USE_CACHE, "false");
         createHttpClientRequestExecutor();
         DriverRequest originalRequest = TestUtils.createDriverRequest(driver);

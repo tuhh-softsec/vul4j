@@ -38,9 +38,9 @@ import org.slf4j.LoggerFactory;
  * cookies in the user session.
  * 
  * <p>
- * When cookies are not forwarded or discarded, a the user session is used to store these cookies : in that case Esigate
- * is no longer stateful. For public deployment is is recommended to use cookie forwarding and discarding to prevent
- * session creation.
+ * When cookies are not stored in the session or discarded, they are forwarded to the client browser. If no cookie is
+ * stored to the session (default) EsiGate is completely stateless. For public deployment is is recommended to use
+ * cookie forwarding and discarding to prevent session creation.
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
@@ -50,65 +50,61 @@ public class DefaultCookieManager implements CookieManager {
     private static final Logger LOG = LoggerFactory.getLogger(CookieManager.class);
     private static final String COOKIES_LIST_SESSION_KEY = CookieManager.class.getName() + "#cookies";
     private Collection<String> discardCookies;
-    private Collection<String> forwardCookies;
+    private Collection<String> storeCookiesInSession;
 
-    protected Collection<String> getForwardCookies() {
-        return forwardCookies;
+    protected Collection<String> getStoredCookies() {
+        return storeCookiesInSession;
     }
 
     /**
-     * Init cookie manager. Reads parameters <b>discardCookies</b> and <b>forwardCookies</b>.
+     * Init cookie manager. Reads parameters <b>discardCookies</b> and <b>storeCookiesInSession</b>.
      */
     @Override
     public void init(Driver d, Properties properties) {
-        // Cookies to forward
-        this.forwardCookies = Parameters.FORWARD_COOKIES.getValueList(properties);
+        // Cookies to store to session
+        this.storeCookiesInSession = Parameters.STORE_COOKIES_IN_SESSION.getValueList(properties);
         // Cookies to discard
         this.discardCookies = Parameters.DISCARD_COOKIES.getValueList(properties);
 
         // Verify configuration
-        if (this.forwardCookies.contains("*") && this.forwardCookies.size() > 1) {
-            throw new ConfigurationException("forwardCookies must be a list of cookie names OR *");
+        if (this.storeCookiesInSession.contains("*") && this.storeCookiesInSession.size() > 1) {
+            throw new ConfigurationException("storeCookiesInSession must be a list of cookie names OR *");
         }
         if (this.discardCookies.contains("*") && this.discardCookies.size() > 1) {
             throw new ConfigurationException("discardCookies must be a list of cookie names OR *");
         }
-        if (this.forwardCookies.contains("*") && this.discardCookies.contains("*")) {
-            throw new ConfigurationException("cannot use * for forwardCookies AND discardCookies at the same time");
+        if (this.storeCookiesInSession.contains("*") && this.discardCookies.contains("*")) {
+            throw new ConfigurationException(
+                    "cannot use * for storeCookiesInSession AND discardCookies at the same time");
         }
     }
 
     @Override
     public void addCookie(Cookie cookie, DriverRequest originalRequest) {
         String name = cookie.getName();
-        if (discardCookies.contains(name) || (discardCookies.contains("*") && !forwardCookies.contains(name))) {
+        if (discardCookies.contains(name) || (discardCookies.contains("*") && !storeCookiesInSession.contains(name))) {
             if (LOG.isInfoEnabled()) {
                 LOG.info("Cookie " + toString(cookie) + " -> discarding");
             }
-
             // Ignore cookie
-        } else if (forwardCookies.contains(name) || forwardCookies.contains("*")) {
+        } else if (storeCookiesInSession.contains(name) || storeCookiesInSession.contains("*")) {
             if (LOG.isInfoEnabled()) {
-                LOG.info("Cookie " + toString(cookie) + " -> forwarding");
+                LOG.info("Cookie " + toString(cookie) + " -> storing to session");
             }
-
-            // Forward cookie in response.
-            originalRequest.getOriginalRequest().addNewCookie(rewriteForBrowser(cookie, originalRequest));
-        } else {
-            if (LOG.isInfoEnabled()) {
-                LOG.info("Cookie " + toString(cookie) + " -> storing to context");
-            }
-
             // Store cookie in session
             UserContext userContext = originalRequest.getUserContext();
-
             BasicCookieStore cookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
             if (cookies == null) {
                 cookies = new BasicCookieStore();
             }
             cookies.addCookie(cookie);
-
             userContext.setAttribute(COOKIES_LIST_SESSION_KEY, cookies);
+        } else {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Cookie " + toString(cookie) + " -> forwarding");
+            }
+            // Forward cookie to response.
+            originalRequest.getOriginalRequest().addNewCookie(rewriteForBrowser(cookie, originalRequest));
         }
     }
 
@@ -130,7 +126,8 @@ public class DefaultCookieManager implements CookieManager {
         if (requestCookies != null) {
             for (Cookie cookie : requestCookies) {
                 String name = cookie.getName();
-                if (forwardCookies.contains(name) || (forwardCookies.contains("*") && !discardCookies.contains(name))) {
+                if (!storeCookiesInSession.contains(name) && !storeCookiesInSession.contains("*")
+                        && !discardCookies.contains(name) && !discardCookies.contains("*")) {
                     cookies.addCookie(rewriteForServer(cookie, originalRequest));
                 }
             }

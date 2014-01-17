@@ -46,7 +46,6 @@ public class DriverCookieTest extends AbstractDriverTestCase {
         // Conf
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.FORWARD_COOKIES.getName(), "*");
 
         // Setup remote server (provider) response.
         Driver driver = createMockDriver(properties, new IResponseHandler() {

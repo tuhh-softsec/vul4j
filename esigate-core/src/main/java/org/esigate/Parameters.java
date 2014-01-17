@@ -63,7 +63,7 @@ public final class Parameters {
     // Cookies
     public static final Parameter COOKIE_MANAGER = new Parameter("cookieManager", DefaultCookieManager.class.getName());
     public static final Parameter DISCARD_COOKIES = new Parameter("discardCookies", null);
-    public static final Parameter FORWARD_COOKIES = new Parameter("forwardCookies", null);
+    public static final Parameter STORE_COOKIES_IN_SESSION = new Parameter("storeCookiesInSession", null);
 
     // Url rewriting
     public static final Parameter FIX_RESOURCES = new Parameter("fixResources", "false");

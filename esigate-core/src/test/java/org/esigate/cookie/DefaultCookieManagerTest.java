@@ -39,7 +39,7 @@ public class DefaultCookieManagerTest extends TestCase {
     @Override
     protected void setUp() throws HttpErrorPage {
         Properties properties = new Properties();
-        properties.setProperty(Parameters.FORWARD_COOKIES.getName(), "a, c");
+        properties.setProperty(Parameters.STORE_COOKIES_IN_SESSION.getName(), "b, f");
         properties.setProperty(Parameters.DISCARD_COOKIES.getName(), "D,e");
         cookieManager = new DefaultCookieManager();
         cookieManager.init(null, properties);
@@ -66,23 +66,23 @@ public class DefaultCookieManagerTest extends TestCase {
     }
 
     public void testInit() {
-        assertNotNull(cookieManager.getForwardCookies());
-        assertEquals(2, cookieManager.getForwardCookies().size());
-        List<String> cookieNames = new ArrayList<String>(cookieManager.getForwardCookies());
+        assertNotNull(cookieManager.getStoredCookies());
+        assertEquals(2, cookieManager.getStoredCookies().size());
+        List<String> cookieNames = new ArrayList<String>(cookieManager.getStoredCookies());
         Collections.sort(cookieNames);
-        assertEquals("a", cookieNames.get(0));
-        assertEquals("c", cookieNames.get(1));
+        assertEquals("b", cookieNames.get(0));
+        assertEquals("f", cookieNames.get(1));
     }
 
     public void testFilter() throws HttpErrorPage {
         IncomingRequest incomingRequest = TestUtils.createIncomingRequest()
                 .addCookie(new BasicClientCookie("a", "value a")).addCookie(new BasicClientCookie("b", "value b"))
-                .addCookie(new BasicClientCookie("c", "value c")).build();
+                .addCookie(new BasicClientCookie("c", "value c")).addCookie(new BasicClientCookie("e", "value e")).build();
         request = new DriverRequest(incomingRequest, driver, false);
         List<org.apache.http.cookie.Cookie> cookies = cookieManager.getCookies(request);
         assertNotNull(cookies);
         assertFalse(cookies.isEmpty());
-        assertTrue(cookies.size() == 2);
+        assertEquals(2, cookies.size());
         assertEquals("a", cookies.get(0).getName());
         assertEquals("c", cookies.get(1).getName());
     }
