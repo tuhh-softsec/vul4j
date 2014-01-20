@@ -1,31 +1,6 @@
-Einrichtung der Anwendung LADA
-==============================
-
-Dies ist die Prototypversion der Serverkomponente für die Anwendung LADA zur
-Verarbeitung und Erfassung von Labordaten.
-
-Die Software bietet grundlegende Funktionalität zur Erfassung und Bearbeitung
-von Messdaten. Weitere Informationen finden sich auf der Projektwebseite unter
-der Adresse:
-
-	https://wald.intevation.org/projects/lada/
-
-Die Software entstand im Rahmen einer Software Entwicklung durch die
-Intevation GmbH im Auftrag des Bundesamt für Strahlenschutz im Jahre 2013.
-
-Lizenz
-------
-Die Software unter der GNU GPL v>=3 Lizenz verfügbar. Details siehe die Datei
-COPYING.
-
-Quelltext
----------
-Die Quelldateien lassen sich wie folgt auschecken:
-hg clone https://scm.wald.intevation.org/hg/lada/lada-server
-
-
 Installation
 ============
+Allgemeine Informationen finden Sie in der README Datei
 
 Die Installation der Serverkomponente erfordert folgende Vorraussetzungen:
 
@@ -126,6 +101,11 @@ Administrations-Webinterface unter der Adresse: http://localhost:9990
 Installation der LADA Anwendung
 ===============================
 Zur Installation der LADA Anwendung müssen folgende Schritte unternommen werden:
+
+mvn clean compile package
+cd /opt/jboss-as-7.1.1.Final/standalone/deployments
+cp /path/where/the/war/file/is/lada.war .
+touch lada.war.dodeploy
 
 $cd /opt/jboss-as-7.1.1.Final/standalone/deployments
 $cp /path/where/the/war/file/is/lada.war .
