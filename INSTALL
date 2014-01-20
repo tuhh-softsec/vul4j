@@ -1,0 +1,256 @@
+Einrichtung der Anwendung LADA
+==============================
+
+Dies ist die Prototypversion der Serverkomponente für die Anwendung LADA zur
+Verarbeitung und Erfassung von Labordaten.
+
+Die Software bietet grundlegende Funktionalität zur Erfassung und Bearbeitung
+von Messdaten. Weitere Informationen finden sich auf der Projektwebseite unter
+der Adresse:
+
+	https://wald.intevation.org/projects/lada/
+
+Die Software entstand im Rahmen einer Software Entwicklung durch die
+Intevation GmbH im Auftrag des Bundesamt für Strahlenschutz im Jahre 2013.
+
+Lizenz
+------
+Die Software unter der GNU GPL v>=3 Lizenz verfügbar. Details siehe die Datei
+COPYING.
+
+Quelltext
+---------
+Die Quelldateien lassen sich wie folgt auschecken:
+hg clone https://scm.wald.intevation.org/hg/lada/lada-server
+
+
+Installation
+============
+
+Die Installation der Serverkomponente erfordert folgende Vorraussetzungen:
+
+* PostgreSQL-9.2/PostGIS-2.0 Datenbank inklusive Testdaten
+* JBoss-AS
+
+
+Datenbank
+---------
+Die LADA Anwendung basiert auf einer PostgreSQL/PostGIS Datenbank in den
+Versionen PostgreSQL 9.2/PostGIS 2.0.
+Beipieldaten sind in dem Datenbankdump lada-db.zip verfügbar und können
+in eine PostgreSQL/PostGIS Datenbank importiert werden.
+Der dadurch verfügbare Testdatensatz enthält zusätzlich Daten zu Gemeinden und
+Verwaltungen in Deutschland, die vom BKG zur Verfügung gestellt werden.
+
+Einrichtung der Datenbankverbindung im JBoss AS
+-----------------------------------------------
+Die Datenbankverbindung wird im Application Server eingerichtet. Hierzu muss der
+entsprechende Treiber zunächst als Modul eingefügt werden. Die folgenden
+Schritte setzen vorraus, dass der JBoss AS in dem Ordner
+/opt/jboss-as-7.1.1-Final installiert ist.
+
+1. Anlegen des Verzeichnisses und herunterladen der Treiber.
+
+$cd /opt/jboss-as-7.1.1.Final/modules/org
+$mkdir -p postgresql/main/
+$cd postgresql/main
+$curl -O "http://jdbc.postgresql.org/download/postgresql-9.2-1002.jdbc4.jar"
+$curl -O "http://www.hibernatespatial.org/repository/org/postgis/postgis-jdbc/1.5.2/postgis-jdbc-1.5.2.jar"
+
+2. In dem Ordner /opt/jboss-as-7.1.1.Final/modules/org/postgresql/main/ eine
+Datei module.xml mit folgendem Inhalt anlegen.
+
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.0" name="org.postgresql">
+    <resources>
+        <resource-root path="postgresql-9.2-1002.jdbc4.jar"/>
+        <resource-root path="postgis-jdbc-1.5.2.jar"/>
+    </resources>
+    <dependencies>
+        <module name="javax.api"/>
+        <module name="javax.transaction.api"/>
+    </dependencies>
+</module>
+
+3. Einfügen der Hibernate-Spatial Komponenten.
+
+$cd /opt/jboss-as-7.1.1.Final/modules/org/hibernate/main
+$curl -O "http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.0/hibernate-spatial-4.0.jar"
+$curl -O "http://repo1.maven.org/maven2/com/vividsolutions/jts/1.13/jts-1.13.jar"
+
+4. Eintragen der Hibernate-Spatial Komponenten in
+/opt/jboss-as-7.1.1.Final/modules/org/hibernate/main/module.xml
+
+<resources>
+    ...
+    <resource-root path="hibernate-spatial-4.0.jar"/>
+    <resource-root path="jts-1.13.jar"/>
+</resources>
+<dependencies>
+    ...
+    <module name="org.postgresql"/>
+</dependencies>
+
+5. Einfügen des PostgreSQL Moduls als Treiber in die JBoss Konfiguration.
+
+    In den Abschnitt <datasources> folgenden Block einfügen: 
+
+<driver name="postgis" module="org.postgresql">
+    <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+</driver>
+
+
+Nun kann man eine neue Datenbankverbindung mit dem neuen Treiber einrichten.
+Dazu verbindet man sich mit dem soeben angelegten Management-Nutzer mit der
+Administrations-Webinterface unter der Adresse: http://localhost:9990
+
+1. Datesources auswählen. Hier werden alle derzeit eingerichteten Datenquellen
+   angzeigt. Wir wollen eine neue einrichten. Hierzu
+2. Oben rechts von "Runtime" auf "Profile" wechseln.
+3. "Add" wählen.
+4. Name: Lada, JNDI: java:/jboss/Lada
+5. Treiber Wählen: postgis
+6. Weitere Verbindungsparameter angeben.
+   a) connection url: jdbc:postgresql_postGIS://localhost:5432/lada
+   b) Nutzer
+   c) Password
+
+7.Da während dieser Einrichtung die Standard PostgreSQL Treiberklasse gewählt
+  wird, muss diese noch in der Datei
+    /opt/jboss-as-7.1.1.Final/standalone/configuration/standalone.xml
+  geändert werden:
+  Hierzu wird im Abschnitt <datasources> für die neu angelegte Datenquelle
+    <driver-class>org.postgresql.Driver</driver-class> gegen
+    <driver-class>org.postgis.DriverWrapper</driver-class> ausgetauscht.
+
+Installation der LADA Anwendung
+===============================
+Zur Installation der LADA Anwendung müssen folgende Schritte unternommen werden:
+
+$cd /opt/jboss-as-7.1.1.Final/standalone/deployments
+$cp /path/where/the/war/file/is/lada.war .
+$touch lada.war.dodeploy
+
+Zum Aktualisieren der Anwendung genügt es, wenn die lada.war Datei aktualisiert
+wird.
+
+Die Anwendung ist dann unter dem Pfad "/lada" (abhängig vom Archivnamen)
+erreichbar.
+
+Konfiguration der LADA Anwendung
+================================
+Die Konfigurationsdateien sind Dateien im JSON-Format und können an einer
+beliebigen Stelle im System abgelegt werden, solang diese Dateien für den
+Nutzer, mit dem JBoss-Server gestartet wird, gelesen werden kann.
+
+Bei Änderungen an der Konfigurationsdatei muss der Server nicht neu gestartet
+werden. Es reicht ein erneutes Laden der Anwendung durch den Client.
+Vorbereitete und vollständige Konfigurationsdateien sind in dem Ordner
+'config' zu finden.
+
+Importer
+--------
+Der Pfad an dem diese Konfigurationsdatei zu finden ist wird in einer JBoss
+Konfigurationsdatei "standalone.xml" abgelegt. Diese Datei findet sich im JBoss
+Ordner ($JBOSSHOME/standalone/configuration/standalone.xml).
+
+In dieser Datei wird der Pfad in Form einer Property abgelegt:
+
+<server xmlns="urn:jboss:domain:1.2">
+...
+
+<system-properties>
+        <property name="de.intevation.lada.importconfig"
+value="/pfad/zur/konfigurations/datei/des/importers.json"/>
+</system-properties>
+
+...
+</server>
+
+Flexible Suche
+--------------
+Der Pfad an dem diese Konfigurationsdatei zu finden ist wird in einer JBoss
+Konfigurationsdatei "standalone.xml" abgelegt. Diese Datei findet sich im JBoss
+Ordner ($JBOSSHOME/standalone/configuration/standalone.xml).
+
+In dieser Datei wird der Pfad in Form einer Property abgelegt:
+
+<server xmlns="urn:jboss:domain:1.2">
+...
+
+<system-properties>
+        ...
+        <property name="de.intevation.lada.sqlconfig"
+value="/pfad/zur/konfigurations/datei/der/abfragen.json"/>
+</system-properties>
+
+...
+</server>
+
+Einrichtung des Webservers (Apache)
+===================================
+Die folgenden Module des Apache Webserver sind nötig, um die LADA Anwendung zu
+betreiben:
+  * ldap_module: Authenitfizierung gegen den LDAP
+  * headers_module: Setzten der Header nach der Authenitifizierung
+  * proxy_module: Reverse Proxy des Apache zum Jboss-Server
+
+Damit der Client eine Verbindung zu dem Server aufbauen kann, um von dort Daten
+laden zu können ist es notwendig den Server weiter zu konfigurieren.
+
+togglesebool httpd_can_network_connect
+service httpd restart
+
+Dies erlaubt dem Apache grundsätzlich sich an einen anderen Dienst zu verbinden.
+
+Nun muss noch ein Reverse-Proxy eingerichtet werden. Dieser ist nur für
+bestimmte Adressen aktiv
+
+Folgende Datei sollte unter "/etc/httpd/conf.d/lada.conf" angelegt werden:
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    #ServerName dummy-host.example.com
+    ErrorLog logs/lada-error_log
+    CustomLog logs/lada-access_log common
+
+    # Set multiple Proxys
+    ProxyPass /lada/server http://localhost:8080/lada
+    ProxyPassReverse /lada/server http://localhost:8080/lada
+</VirtualHost>
+
+Alles Anfragen an die Adresse "/lada/service" werden nun an den JBoss
+weitergeleitet.
+
+Authentifizierung
+
+Die Authentifizierung geschieht gegen einen LDAP-Server.
+
+<Location /lada>
+    AuthType basic
+    AuthName "test"
+    AuthBasicProvider ldap
+    AuthLDAPURL "ldap://ike.polyhedra.intevation.de:389/cn=users,dc=icosahedron,dc=polyhedra,dc=intevation,dc=de?uid,memberof??(&(objectClass=inetOrgPerson)(memberOf=*))"
+    Require valid-user
+</Location>
+
+<Location /lada/server>
+    RequestHeader unset Authorization
+    RequestHeader set X-LDAP-User "%{AUTHENTICATE_uid}e"
+    RequestHeader set X-LDAP-Groups "%{AUTHENTICATE_memberof}e"
+</Location>
+
+Sofern gewünscht ist die Authentifizierung für Testzwecke zu deaktivieren muss
+trotz allem die entsprechenden Header gesetzt werden, da der Server diese
+derzeit erwartet.
+
+# Set Headers to simulate Authentification.
+<Location /lada/server>
+        RequestHeader set X-LDAP-User "mst_06010"
+        RequestHeader set X-LDAP-Groups "cn=Imis_world,cn=groups,dc=icosahedron,dc=polyhedra,dc=intevation,dc=de;cn=mst_06010,cn=groups,dc=icosahedron,dc=polyhedra,dc=intevation,dc=de;cn=mst_11010,cn=groups,dc=icosahedron,dc=polyhedra,dc=intevation,dc=de"
+</Location>
+
+Dokumentation
+=============
+Eine HTML-Dokumenation des Quellcodes(Javadoc) ist in dem Ordner 'doc' hinterlegt und
+kann über einen Webserver (z.B. Apache WebServer) bereitgestellt werden.
