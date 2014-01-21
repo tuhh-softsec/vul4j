@@ -175,6 +175,10 @@ public class XMLSecurityUtils {
                                                     OutputProcessorChain outputProcessorChain, X509Certificate[] x509Certificates)
             throws XMLStreamException, XMLSecurityException {
 
+        if (x509Certificates == null || x509Certificates.length == 0) {
+            throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
+        }
+        
         X509Certificate x509Certificate = x509Certificates[0];
         PublicKey publicKey = x509Certificate.getPublicKey();
         String algorithm = publicKey.getAlgorithm();
@@ -232,6 +236,10 @@ public class XMLSecurityUtils {
             OutputProcessorChain outputProcessorChain,
             X509Certificate[] x509Certificates)
         throws XMLSecurityException, XMLStreamException {
+        if (x509Certificates == null || x509Certificates.length == 0) {
+            throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
+        }
+        
         // SKI can only be used for a V3 certificate
         int version = x509Certificates[0].getVersion();
         if (version != 3) {
@@ -253,6 +261,10 @@ public class XMLSecurityUtils {
             X509Certificate[] x509Certificates)
         throws XMLSecurityException, XMLStreamException {
         
+        if (x509Certificates == null || x509Certificates.length == 0) {
+            throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
+        }
+        
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data, true, null);
 
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Certificate, false, null);
@@ -273,6 +285,10 @@ public class XMLSecurityUtils {
             X509Certificate[] x509Certificates)
         throws XMLSecurityException, XMLStreamException {
         
+        if (x509Certificates == null || x509Certificates.length == 0) {
+            throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
+        }
+        
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data, true, null);
 
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SubjectName, false, null);
@@ -287,6 +303,10 @@ public class XMLSecurityUtils {
             OutputProcessorChain outputProcessorChain, X509Certificate[] x509Certificates)
             throws XMLStreamException, XMLSecurityException {
 
+        if (x509Certificates == null || x509Certificates.length == 0) {
+            throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
+        }
+        
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data, true, null);
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerSerial, false, null);
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerName, false, null);
