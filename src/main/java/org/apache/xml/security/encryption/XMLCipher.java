@@ -1124,8 +1124,7 @@ public class XMLCipher {
 
         try {
             int ivLen = JCEMapper.getIVLengthFromURI(algorithm) / 8;
-            byte[] temp = new byte[ivLen];
-            XMLSecurityConstants.secureRandom.nextBytes(temp);
+            byte[] temp = XMLSecurityConstants.generateBytes(ivLen);
             IvParameterSpec paramSpec = new IvParameterSpec(temp);
             c.init(cipherMode, key, paramSpec);
         } catch (InvalidKeyException ike) {

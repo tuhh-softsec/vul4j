@@ -248,8 +248,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                                     "Generating a faked one to mitigate timing attacks.");
 
                             int keyLength = JCEAlgorithmMapper.getKeyLengthFromURI(symmetricAlgorithmURI);
-                            this.decryptedKey = new byte[keyLength / 8];
-                            XMLSecurityConstants.secureRandom.nextBytes(this.decryptedKey);
+                            this.decryptedKey = XMLSecurityConstants.generateBytes(keyLength / 8);
                             return this.decryptedKey;
                         }
                     }

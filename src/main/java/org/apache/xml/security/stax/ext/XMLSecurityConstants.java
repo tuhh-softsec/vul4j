@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.stax.ext;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.impl.util.ConcreteLSInput;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -35,6 +36,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -45,18 +47,18 @@ import java.security.SecureRandom;
  * @version $Revision$ $Date$
  */
 public class XMLSecurityConstants {
-
-    public static final SecureRandom secureRandom;
-    private static JAXBContext jaxbContext;
-    private static Schema schema;
-
+    
     public static final DatatypeFactory datatypeFactory;
     public static final XMLOutputFactory xmlOutputFactory;
     public static final XMLOutputFactory xmlOutputFactoryNonRepairingNs;
 
+    private static final SecureRandom SECURE_RANDOM;
+    private static JAXBContext jaxbContext;
+    private static Schema schema;
+
     static {
         try {
-            secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            SECURE_RANDOM = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
@@ -130,6 +132,23 @@ public class XMLSecurityConstants {
     }
 
     protected XMLSecurityConstants() {
+    }
+    
+    /**
+     * Generate bytes of the given length using the SHA1PRNG algorithm. The SecureRandom
+     * instance that backs this method is cached for efficiency.
+     * 
+     * @return a byte array of the given length
+     * @throws WSSecurityException
+     */
+    public static byte[] generateBytes(int length) throws XMLSecurityException {
+        try {
+            byte[] temp = new byte[length];
+            SECURE_RANDOM.nextBytes(temp);
+            return temp;
+        } catch (Exception ex) {
+            throw new XMLSecurityException("Error in generating nonce of length " + length, ex);
+        }
     }
 
     protected static synchronized void setJaxbContext(JAXBContext jaxbContext) {

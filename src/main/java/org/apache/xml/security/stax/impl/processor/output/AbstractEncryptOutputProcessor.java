@@ -155,8 +155,7 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                 Cipher symmetricCipher = Cipher.getInstance(jceAlgorithm);
 
                 int ivLen = JCEMapper.getIVLengthFromURI(encryptionSymAlgorithm) / 8;
-                byte[] iv = new byte[ivLen];
-                XMLSecurityConstants.secureRandom.nextBytes(iv);
+                byte[] iv = XMLSecurityConstants.generateBytes(ivLen);
                 IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
                 symmetricCipher.init(Cipher.ENCRYPT_MODE, encryptionPartDef.getSymmetricKey(), ivParameterSpec);
 
