@@ -88,7 +88,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
             Thread.currentThread().setName("SwitchCleanup@" + old);
             try {
             	log.debug("Running cleanup thread");
-		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
+		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
                 switchCleanup();
             }
             catch (Exception e) {
@@ -450,7 +450,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		String conf = configMap.get(DBConfigFile);
                 String dbStore = configMap.get(GraphDBStore);
 		System.out.println("conf" + conf + "dbStore" + dbStore);
-		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
+		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 		//op = GraphDBManager.getDBOperation(dbStore, conf);
 		if (op == null) {
 		    System.out.println("publisher op is null");
