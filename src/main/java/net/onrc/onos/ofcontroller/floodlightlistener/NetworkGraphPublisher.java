@@ -485,7 +485,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		linkDiscovery.addListener(this);
 
 		log.debug("Adding EventListener");
-		System.out.println("start Up op " + op);
 		IDBConnection conn = op.getDBConnection();
 		conn.addEventListener(new LocalTopologyEventListener((DBConnection) conn));
 	       // Setup the Cleanup task. 

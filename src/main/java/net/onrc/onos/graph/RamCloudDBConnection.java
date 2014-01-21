@@ -24,15 +24,9 @@ public class RamCloudDBConnection extends DBConnection {
     private FramedGraph<RamCloudGraph> fg;
     private static Logger log = LoggerFactory.getLogger(RamCloudDBConnection.class);
     
-    //private static final ThreadLocal<RamCloudGraph> RamCloudThreadLocal = new ThreadLocal<RamCloudGraph>();
-
     public RamCloudDBConnection(final String dbConfigFile) {
-        //final String coordinatorURL = open(getConfiguration(new File(dbConfigFile)));
-	//System.out.println("coordinatorURL "+ coordinatorURL);
-        //graph = new RamCloudGraph(coordinatorURL);
-	//graph = RamCloudThreadLocal.get();
-	//System.out.println("ThreadId = " + Thread.currentThread().getId() + " graph = " + graph);
-	graph = new RamCloudGraph("fast+udp:host=10.0.0.144,port=12246");
+        final String coordinatorURL = open(getConfiguration(new File(dbConfigFile)));
+	graph = new RamCloudGraph(coordinatorURL);
 	Set<String> s = graph.getIndexedKeys(Vertex.class);
         if (!s.contains("dpid")) {
             graph.createKeyIndex("dpid", Vertex.class);
@@ -120,11 +114,13 @@ public class RamCloudDBConnection extends DBConnection {
         }
     }
      
-     private String open(final Configuration configuration) {
-         final String coordinatorURL = configuration.getString("ramcloud.coordinator", null);
-         if (coordinatorURL == null) {
-             throw new RuntimeException("Configuration must contain a valid 'coordinatorURL' setting");
-         }
-         return coordinatorURL;
-     }
+    private String open(final Configuration configuration) {
+	final String coordinatorIp = configuration.getString("ramcloud.coordinatorIp", null);
+	final String coordinatorPort = configuration.getString("ramcloud.coordinatorPort", null);
+	final String coordinatorURL = coordinatorIp + "," + coordinatorPort;
+	if (coordinatorURL == null) {
+	    throw new RuntimeException("Configuration must contain a valid 'coordinatorURL' setting");
+	}
+	return coordinatorURL;
+    }
 }
