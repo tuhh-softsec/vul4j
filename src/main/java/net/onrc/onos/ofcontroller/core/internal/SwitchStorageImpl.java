@@ -38,8 +38,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	 */
 	@Override
 	public void init(final String dbStore, final String conf) {
-		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
-		//op = GraphDBManager.getDBOperation(dbStore, conf);
+		op = GraphDBManager.getDBOperation(dbStore, conf);
 	}
 
 

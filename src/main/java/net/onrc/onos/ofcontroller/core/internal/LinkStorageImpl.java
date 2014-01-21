@@ -33,8 +33,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	 */
 	@Override
 	public void init(final String dbStore, final String conf) {
-		//this.dbop = GraphDBManager.getDBOperation(dbStore, conf);
-		this.dbop = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
+		this.dbop = GraphDBManager.getDBOperation(dbStore, conf);
 
 	}
 

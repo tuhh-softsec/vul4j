@@ -1,12 +1,25 @@
 #!/bin/bash
 
+ulimit -c unlimited
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/ramcloud/bindings/java/edu/stanford/ramcloud:${HOME}/ramcloud/obj.blueprint-java
+
+function host2ip (){
+   ip=`egrep "$1\$" /etc/hosts |grep -v "ip6"|  awk '{print $1}'`
+   echo $ip
+}
+
 # Set paths
 ONOS_HOME=`dirname $0`
 RAMCLOUD_DIR=${HOME}/ramcloud
-LOGDIR=${ONOS_HOME}/ONOS/onos-logs
+LOGDIR=${ONOS_HOME}/onos-logs
 RAMCLOUD_LOG=${LOGDIR}/ramcloud.`hostname`.log
-RAMCLOUD_COORDINATOR="fast+udp:host=10.128.4.104,port=12246"
-RAMCLOUD_SERVER="fast+udp:host=10.128.100.35,port=12242"
+thishost=`hostname`
+thisip=`host2ip $thishost`
+coordinatorip=`grep coordinatorIp /tmp/ramcloud.conf | cut -d "=" -f 2,3`
+coordinatorport=`grep coordinatorPort /tmp/ramcloud.conf | cut -d "=" -f 2,3`
+coordinator=`echo $coordinatorip","$coordinatorport`
+RAMCLOUD_COORDINATOR=$coordinator
+RAMCLOUD_SERVER="fast+udp:host=$thisip,port=12242"
 
 function lotate {
     logfile=$1
@@ -32,13 +45,12 @@ function start {
 
   # Run ramcloud 
   echo "Starting ramcloud"
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/ramcloud/bindings/java/edu/stanford/ramcloud:${HOME}/ramcloud/obj.blueprint-java
-  $RAMCLOUD_DIR/obj/server -M -r 0 -L $RAMCLOUD_SERVER  -C $RAMCLOUD_COORDINATOR > $RAMCLOUD_LOG 2>&1 &
+  $RAMCLOUD_DIR/obj.blueprint-java/server -M -r 0 -L $RAMCLOUD_SERVER  -C $RAMCLOUD_COORDINATOR > $RAMCLOUD_LOG 2>&1 &
 }
 
 function stop {
   # Kill the existing processes
-  capid=`ps -edalf |grep ramcloud |grep obj/server | awk '{print $4}'`
+  capid=`pgrep -f obj.blueprint-java/server | awk '{print $1}'`
   pids="$capid"
   for p in ${pids}; do
     if [ x$p != "x" ]; then
@@ -70,7 +82,7 @@ case "$1" in
 #    deldb
 #    ;;
   status)
-    n=`ps -edalf |grep ramcloud |grep obj/server | wc -l`
+    n=`pgrep -f obj.blueprint-java/server | wc -l`
     echo "$n ramcloud server running"
     ;;
   *)
