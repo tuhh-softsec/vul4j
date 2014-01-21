@@ -1017,12 +1017,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 		
 		OFMatch matchLLDP = new OFMatch();
-		matchLLDP.setDataLayerType((short)0x8942);
+		matchLLDP.setDataLayerType((short)0x88cc);
 		matchLLDP.setWildcards(matchLLDP.getWildcards() & ~ OFMatch.OFPFW_DL_TYPE);
 		fmLLDP.setMatch(matchLLDP);
 		
 		OFMatch matchBDDP = new OFMatch();
-		matchBDDP.setDataLayerType((short)0x88cc);
+		matchBDDP.setDataLayerType((short)0x8942);
 		matchBDDP.setWildcards(matchBDDP.getWildcards() & ~ OFMatch.OFPFW_DL_TYPE);
 		fmBDDP.setMatch(matchBDDP);
 		
