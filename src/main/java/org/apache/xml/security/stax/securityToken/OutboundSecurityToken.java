@@ -20,6 +20,8 @@ package org.apache.xml.security.stax.securityToken;
 
 import java.security.Key;
 
+import org.w3c.dom.Element;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
 /**
@@ -44,5 +46,7 @@ public interface OutboundSecurityToken extends SecurityToken {
     Key getSecretKey(String algorithmURI) throws XMLSecurityException;
     
     void addWrappedToken(OutboundSecurityToken securityToken);
+    
+    Element getCustomTokenReference();
 
 }

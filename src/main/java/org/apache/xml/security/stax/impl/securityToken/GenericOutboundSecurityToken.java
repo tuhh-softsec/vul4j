@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.w3c.dom.Element;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
@@ -39,6 +41,7 @@ public class GenericOutboundSecurityToken extends AbstractSecurityToken implemen
     private Object processor;
     private final List<OutboundSecurityToken> wrappedTokens = new ArrayList<OutboundSecurityToken>();
     private OutboundSecurityToken keyWrappingToken;
+    private Element customTokenReference;
 
     public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType, Key key, X509Certificate[] x509Certificates) {
         this(id, tokenType, key);
@@ -109,6 +112,14 @@ public class GenericOutboundSecurityToken extends AbstractSecurityToken implemen
     public KeyIdentifier getKeyIdentifier() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public Element getCustomTokenReference() {
+        return customTokenReference;
+    }
+
+    public void setCustomTokenReference(Element customTokenReference) {
+        this.customTokenReference = customTokenReference;
     }
 
 }

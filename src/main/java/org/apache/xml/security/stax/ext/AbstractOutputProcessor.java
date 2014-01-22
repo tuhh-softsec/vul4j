@@ -37,6 +37,12 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
 import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * An abstract OutputProcessor class for reusabilty
@@ -251,5 +257,44 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
             }
         }
         return securePart;
+    }
+    
+    protected void outputDOMElement(Element element, OutputProcessorChain outputProcessorChain)
+            throws XMLStreamException, XMLSecurityException {
+
+        NamedNodeMap namedNodeMap = element.getAttributes();
+        List<XMLSecAttribute> attributes = new ArrayList<XMLSecAttribute>(namedNodeMap.getLength());
+        List<XMLSecNamespace> namespaces = new ArrayList<XMLSecNamespace>(namedNodeMap.getLength());
+        for (int i = 0; i < namedNodeMap.getLength(); i++) {
+            Attr attribute = (Attr) namedNodeMap.item(i);
+            if (attribute.getPrefix() == null) {
+                attributes.add(
+                        createAttribute(
+                                new QName(attribute.getNamespaceURI(), attribute.getLocalName()), attribute.getValue()));
+            } else if ("xmlns".equals(attribute.getPrefix()) || "xmlns".equals(attribute.getLocalName())) {
+                namespaces.add(createNamespace(attribute.getLocalName(), attribute.getValue()));
+            } else {
+                attributes.add(
+                        createAttribute(
+                                new QName(attribute.getNamespaceURI(), attribute.getLocalName(), attribute.getPrefix()),
+                                attribute.getValue()));
+            }
+        }
+
+        QName elementName = new QName(element.getNamespaceURI(), element.getLocalName(), element.getPrefix());
+        createStartElementAndOutputAsEvent(outputProcessorChain, elementName, namespaces, attributes);
+        NodeList childNodes = element.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node childNode = childNodes.item(i);
+            switch (childNode.getNodeType()) {
+                case Node.ELEMENT_NODE:
+                    outputDOMElement((Element) childNode, outputProcessorChain);
+                    break;
+                case Node.TEXT_NODE:
+                    createCharactersAndOutputAsEvent(outputProcessorChain, ((Text) childNode).getData());
+                    break;
+            }
+        }
+        createEndElementAndOutputAsEvent(outputProcessorChain, elementName);
     }
 }
