@@ -449,7 +449,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
                 String dbStore = configMap.get(GraphDBStore);
-		op = GraphDBManager.getDBOperation(dbStore, conf);
+		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 		if (op == null) {
 		    System.out.println("publisher op is null");
 		}
