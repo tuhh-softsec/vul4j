@@ -491,11 +491,6 @@
       <artifactId>packetstreamer-thrift</artifactId>
       <version>0.1.0</version>
     </dependency>
-    <dependency>
-      <groupId>com.tinkerpop.blueprints.impls.ramcloud</groupId>
-      <artifactId>blueprints-ramcloud-graph</artifactId>
-      <version>2.5.0</version>
-    </dependency>
     -->
   </dependencies>
 </project>
