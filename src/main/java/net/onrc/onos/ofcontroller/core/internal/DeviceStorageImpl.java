@@ -39,7 +39,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	@Override
 	public void init(final String dbStore, final String conf) {
 		try {
-			ope = GraphDBManager.getDBOperation(dbStore, conf);
+			ope = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}

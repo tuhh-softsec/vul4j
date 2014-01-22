@@ -60,9 +60,9 @@ public class TopologyManagerTest {
 	EasyMock.expect(TitanFactory.open((String)EasyMock.anyObject())).andReturn(titanGraph);
 	PowerMock.replay(TitanFactory.class);
 
-        oper = GraphDBManager.getDBOperation(dbStore, conf);
+        oper = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 	// Create the connection to the database
-	conn = GraphDBManager.getConnection(dbStore, conf);
+	conn = GraphDBManager.getConnection("ramcloud", "/tmp/ramcloud.conf");
 
 	// Populate the database
 	TestDatabaseManager.populateTestData(titanGraph);

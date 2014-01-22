@@ -15,7 +15,7 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	protected final static Logger log = LoggerFactory.getLogger(TopoSwitchServiceImpl.class);
 
 	public TopoSwitchServiceImpl(final String dbStore, String conf) {
-		op = GraphDBManager.getDBOperation(dbStore, conf);
+		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 	}
 
 	public TopoSwitchServiceImpl() {
