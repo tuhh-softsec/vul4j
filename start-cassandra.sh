@@ -3,7 +3,7 @@
 # Set paths
 ONOS_HOME=`dirname $0`
 CASSANDRA_DIR=${HOME}/apache-cassandra-1.2.4
-LOGDIR=${ONOS_HOME}/ONOS/onos-logs
+LOGDIR=${ONOS_HOME}/onos-logs
 CASSANDRA_LOG=${LOGDIR}/cassandara.`hostname`.log
 
 function lotate {
