@@ -273,6 +273,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	for (FlowPath flowPath : flowPaths) {
 	    boolean isInstalled = true;
+	    
+	    if (flowPath.flowEntries().isEmpty()) {
+	    	continue;
+	    }
 
 	    //
 	    // Check whether all Flow Entries have been installed

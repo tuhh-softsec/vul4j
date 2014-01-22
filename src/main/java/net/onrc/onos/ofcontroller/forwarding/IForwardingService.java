@@ -22,4 +22,12 @@ public interface IForwardingService extends IFloodlightService {
 	 * been installed in the network.
 	 */
 	public void flowsInstalled(Collection<FlowPath> installedFlowPaths);
+	
+	/**
+	 * Notify the Forwarding module that a flow has expired and been 
+	 * removed from the network.
+	 * 
+	 * @param removedFlowPath The FlowPath that was removed
+	 */
+	public void flowRemoved(FlowPath removedFlowPath);
 }

@@ -400,6 +400,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (srcDpid.value() != sw.getId())
 	    return;
 	deleteFlow(flowPath.flowId());
+	
+	// Send flow deleted notification to the Forwarding module
+	// TODO This is a quick fix for flow-removed notifications. We
+	// should think more about the design of these notifications.
+	notificationFlowPathRemoved(flowPath);
     }
 
     /**
@@ -466,6 +471,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	if (forwardingService != null)
 	    forwardingService.flowsInstalled(flowPaths);
+    }
+
+    /**
+     * Generate a notification that a FlowPath has been removed from the 
+     * network. This means we've received an expiry message for the flow
+     * from the switch, and send flowmods to remove any remaining parts of
+     * the path.
+     * 
+     * @param flowPath FlowPath object that was removed from the network.
+     */
+    void notificationFlowPathRemoved(FlowPath flowPath) {
+	if (forwardingService != null) {
+		forwardingService.flowRemoved(flowPath);
+	}
     }
 
     /**
