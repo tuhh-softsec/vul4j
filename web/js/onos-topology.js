@@ -222,8 +222,23 @@ function gui(data_source){
 	return changed
     }
 
+    function nr_active_sw(){
+        var n=0; 
+        var nodes = force.nodes();
+        for(var i=0;i<nodes.length;i++){
+          if(nodes[i].group!=0)
+            n++;
+        }; 
+        return n;
+    }
+
     function draw(force, path, circle, text){
 	force.stop();
+        svg.append("svg:text")
+	    .attr("x", 50)
+	    .attr("y", 20)
+            .text(function(){return "Switch: " + force.nodes().length + " (Active: " + nr_active_sw()  + ")/ Link: " + force.links().length});
+
         path.enter().append("svg:path")
 	    .attr("class", function(d) { return "link"; })
 	    .attr("marker-end", function(d) {
