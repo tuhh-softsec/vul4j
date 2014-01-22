@@ -30,7 +30,7 @@ import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.Switch;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 
-import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo.Kryo;
 
 /**
  * Class factory for allocating Kryo instances for

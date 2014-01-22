@@ -31,7 +31,7 @@ import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
-import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo.Kryo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
