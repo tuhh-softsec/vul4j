@@ -57,6 +57,10 @@ function status {
 function start {
     lotate $REST_LOG 10 
     cd $WEBDIR
+    # Make log dir for iperf log files
+    if [ ! -d  log ]; then
+      mkdir log
+    fi
     $restscript > $REST_LOG 2>&1 &
 }
 
