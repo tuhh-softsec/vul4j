@@ -1,7 +1,7 @@
 #! /bin/bash
 
 controller=`hostname`
-switches=`ifconfig -a | grep sw |grep -v eth | awk '{print $1}'`
+switches=`sudo ovs-vsctl list-br`
 
 function host2ip (){
    ip=`grep $1 /etc/hosts |grep -v "ip6"|  awk '{print $1}'`
@@ -12,14 +12,16 @@ function host2ip (){
 
 if [ $# != 3 ];then
  echo "usage: $0 <dpid> <port> <up|down>"
+ echo " example: $0 00:00:00:00:ba:5e:ba:11 1 up"
+ exit
 fi
 
-src_dpid="dpid:"`echo $1 | sed s'/://g'`
+src_dpid=`echo $1 | sed s'/://g'`
 src_port=$2
 cmd=$3
 
 for s in $switches; do
-    dpid=`sudo ovs-ofctl  show  $s |grep dpid | awk '{print $4}'`
+    dpid=`sudo ovs-ofctl show  $s |grep dpid | awk '{if(match($0,/dpid:[0-9|a-d]*/)){ print substr($0,RSTART+5,RLENGTH)}}'`
     if [  "x$dpid" == "x$src_dpid" ]; then
 
 #       intf=`sudo ovs-ofctl show $s |grep addr | awk -v p=$src_port 'BEGIN {pat="^ "p"\("}
