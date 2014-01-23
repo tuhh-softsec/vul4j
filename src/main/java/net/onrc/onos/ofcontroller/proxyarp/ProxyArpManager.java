@@ -187,6 +187,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 		
 		datagrid.registerPacketOutEventHandler(this);
+		datagrid.registerArpReplyEventHandler(this);
 		
 		deviceStorage = new DeviceStorageImpl();
 		deviceStorage.init("");
@@ -295,8 +296,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 				handleArpRequest(sw, pi, arp, eth);
 			}
 			else if (arp.getOpCode() == ARP.OP_REPLY) {
-				handleArpReply(sw, pi, arp);
+				// For replies we simply send a notification via Hazelcast
 				sendArpReplyNotification(eth, pi);
+				
+				//handleArpReply(sw, pi, arp);
 			}
 			
 			// Stop ARP packets here
