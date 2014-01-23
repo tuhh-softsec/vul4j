@@ -3,23 +3,17 @@
 ulimit -c unlimited
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/ramcloud/bindings/java/edu/stanford/ramcloud:${HOME}/ramcloud/obj.blueprint-java
 
-function host2ip (){
-   ip=`egrep "$1\$" /etc/hosts |grep -v "ip6"|  awk '{print $1}'`
-   echo $ip
-}
-
 # Set paths
 ONOS_HOME=`dirname $0`
 RAMCLOUD_DIR=${HOME}/ramcloud
 LOGDIR=${ONOS_HOME}/onos-logs
-RAMCLOUD_LOG=${LOGDIR}/ramcloud.`hostname`.log
-thishost=`hostname`
-thisip=`host2ip $thishost`
+RAMCLOUD_LOG=${LOGDIR}/ramcloud.server.`hostname`.log
 coordinatorip=`grep coordinatorIp ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
 coordinatorport=`grep coordinatorPort ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
-coordinator=`echo $coordinatorip","$coordinatorport`
-RAMCLOUD_COORDINATOR=$coordinator
-RAMCLOUD_SERVER="fast+udp:host=$thisip,port=12242"
+RAMCLOUD_COORDINATOR=`echo $coordinatorip","$coordinatorport`
+serverip=`grep serverIp ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
+serverport=`grep serverPort ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
+RAMCLOUD_SERVER=`echo $serverip","$serverport`
 
 function lotate {
     logfile=$1
