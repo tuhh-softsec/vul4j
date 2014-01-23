@@ -35,7 +35,7 @@ public class RestClient {
 				log.warn("The content received from {} is not json", str);
 			}		
 
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));             
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 			String line;
 			while ((line = br.readLine()) != null) {
 				response.append(line);
