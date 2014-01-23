@@ -32,9 +32,9 @@ import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.kryo2.Kryo;
-import com.esotericsoftware.kryo2.io.Input;
-import com.esotericsoftware.kryo2.io.Output;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.core.EntryEvent;
@@ -80,14 +80,14 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     private IMap<String, byte[]> mapTopology = null;
     private MapTopologyListener mapTopologyListener = null;
     private String mapTopologyListenerId = null;
-    
+
     // State related to the packet out map
     protected static final String packetOutMapName = "packetOutMap";
     private IMap<PacketOutNotification, byte[]> packetOutMap = null;
     private List<IPacketOutEventHandler> packetOutEventHandlers = new ArrayList<IPacketOutEventHandler>();
 
     private final byte[] dummyByte = {0};
-    
+
     // State related to the ARP reply map
     protected static final String arpReplyMapName = "arpReplyMap";
     private IMap<ArpReplyNotification, byte[]> arpReplyMap = null;
@@ -337,6 +337,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
+		@Override
 		public void entryAdded(EntryEvent<PacketOutNotification, byte[]> event) {
 		    for (IPacketOutEventHandler packetOutEventHandler : packetOutEventHandlers) {
 		    	packetOutEventHandler.packetOutNotification(event.getKey());
@@ -348,6 +349,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
+		@Override
 		public void entryRemoved(EntryEvent<PacketOutNotification, byte[]> event) {
 			// Not used
 		}
@@ -357,6 +359,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
+		@Override
 		public void entryUpdated(EntryEvent<PacketOutNotification, byte[]> event) {
 			// Not used
 		}
@@ -366,11 +369,12 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
+		@Override
 		public void entryEvicted(EntryEvent<PacketOutNotification, byte[]> event) {
 		    // Not used
 		}
     }
-    
+
     /**
      * Class for receiving notifications for sending packet-outs.
      *
@@ -384,15 +388,19 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 *
 		 * @param event the notification event for the entry.
 		 */
+		@Override
 		public void entryAdded(EntryEvent<ArpReplyNotification, byte[]> event) {
 		    for (IArpReplyEventHandler arpReplyEventHandler : arpReplyEventHandlers) {
 		    	arpReplyEventHandler.arpReplyEvent(event.getKey());
 		    }
 		}
-		
+
 		// These methods aren't used for ARP replies
+		@Override
 		public void entryRemoved(EntryEvent<ArpReplyNotification, byte[]> event) {}
+		@Override
 		public void entryUpdated(EntryEvent<ArpReplyNotification, byte[]> event) {}
+		@Override
 		public void entryEvicted(EntryEvent<ArpReplyNotification, byte[]> event) {}
     }
 
@@ -511,10 +519,10 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfig);
 
 	restApi.addRestletRoutable(new DatagridWebRoutable());
-	
+
 	packetOutMap = hazelcastInstance.getMap(packetOutMapName);
 	packetOutMap.addEntryListener(new PacketOutMapListener(), true);
-	
+
 	arpReplyMap = hazelcastInstance.getMap(arpReplyMapName);
 	arpReplyMap.addEntryListener(new ArpReplyMapListener(), true);
     }
@@ -582,12 +590,12 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     		packetOutEventHandlers.add(packetOutEventHandler);
     	}
     }
-    
+
     @Override
     public void deregisterPacketOutEventHandler(IPacketOutEventHandler packetOutEventHandler) {
     	packetOutEventHandlers.remove(packetOutEventHandler);
     }
-    
+
     @Override
     public void registerArpReplyEventHandler(IArpReplyEventHandler arpReplyEventHandler) {
     	if (arpReplyEventHandler != null) {

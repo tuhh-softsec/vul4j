@@ -39,7 +39,7 @@ import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import com.thinkaurelius.titan.core.TitanException;
 
-import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo.Kryo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
