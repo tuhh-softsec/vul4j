@@ -15,8 +15,8 @@ LOGDIR=${ONOS_HOME}/onos-logs
 RAMCLOUD_LOG=${LOGDIR}/ramcloud.`hostname`.log
 thishost=`hostname`
 thisip=`host2ip $thishost`
-coordinatorip=`grep coordinatorIp /tmp/ramcloud.conf | cut -d "=" -f 2,3`
-coordinatorport=`grep coordinatorPort /tmp/ramcloud.conf | cut -d "=" -f 2,3`
+coordinatorip=`grep coordinatorIp ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
+coordinatorport=`grep coordinatorPort ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
 coordinator=`echo $coordinatorip","$coordinatorport`
 RAMCLOUD_COORDINATOR=$coordinator
 RAMCLOUD_SERVER="fast+udp:host=$thisip,port=12242"
