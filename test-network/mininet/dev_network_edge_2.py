@@ -113,7 +113,6 @@ def sdnnet(opt):
     #  controllers.append(rc)
 
     #net.controllers=controllers
-    net.build()
 
     host = []
     for i in range (NR_NODES):
