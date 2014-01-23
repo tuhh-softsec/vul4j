@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.slf4j.Logger;
@@ -37,21 +35,7 @@ public class RestClient {
 				log.warn("The content received from {} is not json", str);
 			}		
 
-            String contentType = conn.getContentType();
-            String regex = ".*charset=(.+)";
-            Pattern p = Pattern.compile(regex);
-            Matcher m = p.matcher(contentType);
-
-            String charSet;
-            if (! m.find()) {
-                    log.debug("charset not specified in HTTP header.");
-                    charSet = "ISO-8859-1";                // assume ISO-8859-1
-            } else {
-                    charSet = m.group(1);
-            }
-            
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), charSet)); 
-            
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));             
 			String line;
 			while ((line = br.readLine()) != null) {
 				response.append(line);
