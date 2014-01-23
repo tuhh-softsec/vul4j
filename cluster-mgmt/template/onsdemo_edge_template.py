@@ -21,7 +21,7 @@ from subprocess import Popen, STDOUT, PIPE
 
 import sys
 
-#import argparse
+import argparse
 
 class MyController( Controller ):
     def __init__( self, name, ip='127.0.0.1', port=6633, **kwargs):
@@ -101,7 +101,7 @@ def stopsshd( ):
     info( '*** Shutting down stale sshd/Banner processes ',
           quietRun( "pkill -9 -f Banner" ), '\n' )
 
-def sdnnet(opt):
+def sdnnet(nocli, noarp):
     topo = SDNTopo()
     info( '*** Creating network\n' )
     net = Mininet( topo=topo, controller=MyController, link=TCLink)
@@ -129,26 +129,29 @@ def sdnnet(opt):
         host[i].defaultIntf().setIP('192.168.%d.%d/16' % (NWID,(int(i)+1))) 
         host[i].defaultIntf().setMAC('00:00:%02x:%02x:%02x:%02x' % (192,168,NWID,(int(i)+1))) 
 
-    for i in range (NR_NODES):
-       for n in range (2,9):
-         for h in range (25):
-           host[i].setARP('192.168.%d.%d' % (n, (int(h)+1)), '00:00:%02x:%02x:%02x:%02x' % (192,168,n,(int(h)+1))) 
+
+    if noarp == False:
+      for i in range (NR_NODES):
+        for n in range (2,9):
+          for h in range (25):
+            host[i].setARP('192.168.%d.%d' % (n, (int(h)+1)), '00:00:%02x:%02x:%02x:%02x' % (192,168,n,(int(h)+1))) 
 
     stopsshd ()
 #    stopiperf ()
     startsshds ( host )
 #    startiperfs ( host )
 
-    if opt=="cli":
+    if nocli == False:
         CLI(net)
         stopsshd()
         net.stop()
 
 if __name__ == '__main__':
     setLogLevel( 'info' )
-    if len(sys.argv) == 1:
-      sdnnet("cli")
-    elif len(sys.argv) == 2 and sys.argv[1] == "-n":
-      sdnnet("nocli")
-    else:
-      print "%s [-n]" % sys.argv[0]
+    parser = argparse.ArgumentParser(description='mininet script')
+    parser.add_argument('-x', dest='noarp', action='store_true',
+                     help='do not crete staric arp entries')
+    parser.add_argument('-n', dest='nocli', action='store_true',
+                     help='do not run cli')
+    args = parser.parse_args()
+    sdnnet(args.nocli, args.noarp)
