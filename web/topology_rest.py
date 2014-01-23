@@ -689,8 +689,8 @@ def query_links():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-@app.route("/controller_status")
-def controller_status():
+@app.route("/controller_status_old")
+def controller_status_old():
 #  onos_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh status | awk '{print $1}'"
   onos_check="cd; onos status | grep %s | awk '{print $2}'"
   #cassandra_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-cassandra.sh status"
@@ -708,6 +708,30 @@ def controller_status():
   js = json.dumps(cont_status)
   resp = Response(js, status=200, mimetype='application/json')
   return resp
+
+
+@app.route("/controller_status")
+def controller_status():
+  url= "%s:%d/wm/onos/registry/controllers/json" % (RestIP, RestPort)
+  (code, result) = get_json(url)
+  parsedResult = json.loads(result)
+
+  cont_status=[]
+  for i in controllers:
+    status={}
+    if i in parsedResult:
+      onos=1
+    else:
+      onos=0
+    status["name"]=i
+    status["onos"]=onos
+    status["cassandra"]=0
+    cont_status.append(status)
+
+  js = json.dumps(cont_status)
+  resp = Response(js, status=200, mimetype='application/json')
+  return resp
+
 
 ### Command ###
 @app.route("/gui/controller/<cmd>/<controller_name>")
