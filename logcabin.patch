@@ -1,0 +1,21 @@
+diff --git a/Core/Time.h b/Core/Time.h
+index 1dd2e00..a9deddd 100644
+--- a/Core/Time.h
++++ b/Core/Time.h
+@@ -25,6 +25,7 @@ namespace std {
+ /**
+  * Prints std::time_point values in a way that is useful for unit tests.
+  */
++/*
+ template<typename Clock, typename Duration>
+ std::ostream&
+ operator<<(std::ostream& os,
+@@ -45,7 +46,7 @@ operator<<(std::ostream& os,
+                         microsSinceUnixEpoch / 1000000,
+                         microsSinceUnixEpoch % 1000000);
+ }
+-
++*/
+ }
+ 
+ namespace LogCabin {
