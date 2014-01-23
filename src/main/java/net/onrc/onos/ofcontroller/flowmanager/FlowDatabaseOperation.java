@@ -4,8 +4,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-
 import net.floodlightcontroller.util.MACAddress;
 
 import net.onrc.onos.graph.GraphDBOperation;
@@ -221,7 +219,7 @@ public class FlowDatabaseOperation {
 	flowEntryObj.setFlowEntryId(flowEntry.flowEntryId().toString());
 	flowEntryObj.setType("flow_entry");
 
-	// 
+	//
 	// Set the Flow Entry Edges and attributes:
 	// - Switch edge
 	// - InPort edge
@@ -373,24 +371,15 @@ public class FlowDatabaseOperation {
      * @return true on success, otherwise false.
      */
     static boolean deleteAllFlows(GraphDBOperation dbHandler) {
-	List<FlowId> allFlowIds = new LinkedList<FlowId>();
-
 	// Get all Flow IDs
 	Iterable<IFlowPath> allFlowPaths = dbHandler.getAllFlowPaths();
 	for (IFlowPath flowPathObj : allFlowPaths) {
 	    if (flowPathObj == null)
 		continue;
-	    String flowIdStr = flowPathObj.getFlowId();
-	    if (flowIdStr == null)
-		continue;
-	    FlowId flowId = new FlowId(flowIdStr);
-	    allFlowIds.add(flowId);
-	}
 
-	// Delete all flows one-by-one
-	for (FlowId flowId : allFlowIds) {
-	    deleteFlow(dbHandler, flowId);
+	    deleteIFlowPath(dbHandler, flowPathObj);
 	}
+	dbHandler.commit();
 
 	return true;
     }
@@ -417,6 +406,18 @@ public class FlowDatabaseOperation {
 	    return true;		// OK: No such flow
 	}
 
+	deleteIFlowPath(dbHandler, flowObj);
+	dbHandler.commit();
+	return true;
+    }
+
+    /**
+     * Delete a previously added flow.
+     * @note You need to call commit after calling this method.
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowObj IFlowPath object to delete.
+     */
+    private static void deleteIFlowPath(GraphDBOperation dbHandler, IFlowPath flowObj) {
 	//
 	// Remove all Flow Entries
 	//
@@ -427,9 +428,6 @@ public class FlowDatabaseOperation {
 	}
 	// Remove the Flow itself
 	dbHandler.removeFlowPath(flowObj);
-	dbHandler.commit();
-
-	return true;
     }
 
     /**
