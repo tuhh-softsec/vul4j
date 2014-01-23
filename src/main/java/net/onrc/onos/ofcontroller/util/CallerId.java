@@ -18,6 +18,7 @@ public class CallerId {
      * @param otherCallerId
      */
     public CallerId(CallerId otherCallerId) {
+    // Note: make a full copy if we change value to a mutable type
     value = otherCallerId.value;
     }
 

@@ -297,10 +297,13 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 					// send a packet out now
 					FlowPath flow = datagrid.getFlow(new FlowId(existingFlow.flowId));
 					FlowEntry flowEntryForThisSwitch = null;
-					for (FlowEntry flowEntry : flow.flowEntries()) {
-						if (flowEntry.dpid().equals(new Dpid(sw.getId()))) {
-							flowEntryForThisSwitch = flowEntry;
-							break;
+					
+					if (flow != null) {
+						for (FlowEntry flowEntry : flow.flowEntries()) {
+							if (flowEntry.dpid().equals(new Dpid(sw.getId()))) {
+								flowEntryForThisSwitch = flowEntry;
+								break;
+							}
 						}
 					}
 					
