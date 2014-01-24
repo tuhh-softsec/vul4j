@@ -66,6 +66,7 @@ public class UncategorizedTest extends org.junit.Assert {
         
         try {
             XMLSec.getOutboundXMLSec(properties);
+            Assert.fail();
         } catch (XMLSecurityConfigurationException ex) {
             Assert.assertTrue(ex.getMessage().contains("Duplicate Actions are not allowed"));
         }
