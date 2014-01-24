@@ -77,7 +77,7 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 
 	}
 
-	private class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
+	private static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
 		@Override
 		public Link compute(PathPipe<Vertex> pipe) {
 			long s_dpid = 0;

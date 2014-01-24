@@ -8,13 +8,6 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 
 public class FlowPathProperty {
 	private Map<String, Object> map = new HashMap<>();
-	private DBOperation dbhandler;
-	private IFlowPath flowPath;
-
-	public FlowPathProperty(DBOperation dbHandler, IFlowPath flowPath) {
-		this.dbhandler = dbHandler;
-		this.flowPath = flowPath;
-	}
 
 	public void setType(String typeStr) {
 		map.put("type", typeStr);
@@ -120,7 +113,7 @@ public class FlowPathProperty {
      *
      * @param dbhandler
      */
-    public void commitProperties() {
+    public void commitProperties(DBOperation dbhandler, IFlowPath flowPath) {
         dbhandler.setVertexProperties(flowPath.asVertex() ,map);
     }
 }

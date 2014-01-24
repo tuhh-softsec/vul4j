@@ -74,14 +74,13 @@ public class TopologyManager implements IFloodlightModule,
 
     /**
      * Init the module.
-     * @param 
+     *
      * @param config the database configuration file to use for
      * the initialization.
      */
     public void init(final String dbStore, String config) {
 	try {
-	    dbHandler = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
-	    //dbHandler = GraphDBManager.getDBOperation(dbStore, config);
+	    dbHandler = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 	} catch (Exception e) {
 	    log.error(e.getMessage());
 	}
@@ -220,7 +219,7 @@ public class TopologyManager implements IFloodlightModule,
      */
     @Override
     public void dropTopology(Topology topology) {
-	topology = null;
+    // nothing to do
     }
 
     /**

@@ -1,0 +1,13 @@
+diff --git a/src/MasterService.cc b/src/MasterService.cc
+index ba7fdf1..fa041e0 100644
+--- a/src/MasterService.cc
++++ b/src/MasterService.cc
+@@ -606,7 +606,7 @@ MasterService::multiWrite(const WireFormat::MultiOp::Request* reqHdr,
+             reqOffset, currentReq->valueLength);
+         reqOffset += currentReq->valueLength;
+ 
+-        if (stringKey == NULL || value == NULL) {
++        if (stringKey == NULL) {
+             respHdr->common.status = STATUS_REQUEST_FORMAT_ERROR;
+             break;
+         }

@@ -8,8 +8,8 @@ import argparse
 import io
 import time
 import random
-
 import re
+from urllib2 import Request, urlopen, URLError, HTTPError
 
 from flask import Flask, json, Response, render_template, make_response, request
 
@@ -114,132 +114,131 @@ def return_file(filename="index.html"):
 ## Proxy ##
 @app.route("/proxy/gui/link/<cmd>/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
 def proxy_link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
+  url = "%s/gui/link/%s/%s/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, src_dpid, src_port, dst_dpid, dst_port)
   try:
-    command = "curl -s %s/gui/link/%s/%s/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, src_dpid, src_port, dst_dpid, dst_port)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    print "REST IF has issue"
-    exit
+    result = ""
+    print "REST IF has issue %s" % url
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 @app.route("/proxy/gui/switchctrl/<cmd>")
 def proxy_switch_controller_setting(cmd):
+  url = "%s/gui/switchctrl/%s" % (ONOS_GUI3_CONTROL_HOST, cmd)
   try:
-    command = "curl -s %s/gui/switchctrl/%s" % (ONOS_GUI3_CONTROL_HOST, cmd)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    print "REST IF has issue"
-    exit
+    result = ""
+    print "REST IF has issue %s" % url
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 @app.route("/proxy/gui/switch/<cmd>/<dpid>")
 def proxy_switch_status_change(cmd, dpid):
+  url = "%s/gui/switch/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, dpid)
   try:
-    command = "curl -s %s/gui/switch/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, dpid)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    print "REST IF has issue"
-    exit
+    result = ""
+    print "REST IF has issue %s" % url
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 @app.route("/proxy/gui/controller/<cmd>/<controller_name>")
 def proxy_controller_status_change(cmd, controller_name):
+  url = "%s/gui/controller/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, controller_name)
   try:
-    command = "curl -s %s/gui/controller/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, controller_name)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    print "REST IF has issue"
-    exit
-
+    result = ""
+    print "REST IF has issue %s" % url
+ 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 @app.route("/proxy/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>")
 def proxy_add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
   try:
-    command = "curl -s %s/gui/addflow/%s/%s/%s/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
-    print command
-    result = os.popen(command).read()
+    url = "%s/gui/addflow/%s/%s/%s/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+    #print "proxy gui addflow " + url
+    (code, result) = get_json(url)
   except:
-    print "REST IF has issue"
-    exit
+    print "REST IF has issue %s" % url
+    print "Result %s" % result
+    exit()
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 @app.route("/proxy/gui/delflow/<flow_id>")
 def proxy_del_flow(flow_id):
+  url = "%s/gui/delflow/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id)
   try:
-    command = "curl -s %s/gui/delflow/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    print "REST IF has issue"
-    exit
+    result = ""
+    print "REST IF has issue %s" % url
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 @app.route("/proxy/gui/iperf/start/<flow_id>/<duration>/<samples>")
 def proxy_iperf_start(flow_id,duration,samples):
+  url = "%s/gui/iperf/start/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id, duration, samples)
   try:
-    command = "curl -m 40 -s %s/gui/iperf/start/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id, duration, samples)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    print "REST IF has issue"
-    exit
+    result = ""
+    print "REST IF has issue %s" % url
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 @app.route("/proxy/gui/iperf/rate/<flow_id>")
 def proxy_iperf_rate(flow_id):
+  url = "%s/gui/iperf/rate/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id)
   try:
-    command = "curl -s %s/gui/iperf/rate/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    print "REST IF has issue"
-    exit
+    result = ""
+    print "REST IF has issue %s" % url
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 @app.route("/proxy/gui/reset")
 def proxy_gui_reset():
-  result = ""
+  url = "%s/gui/reset" % (ONOS_GUI3_CONTROL_HOST)
   try:
-    command = "curl -m 300 -s %s/gui/reset" % (ONOS_GUI3_CONTROL_HOST)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    print "REST IF has issue"
-    exit
+    result = ""
+    print "REST IF has issue %s" % url
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 @app.route("/proxy/gui/scale")
 def proxy_gui_scale():
-  result = ""
+  url = "%s/gui/scale" % (ONOS_GUI3_CONTROL_HOST)
   try:
-    command = "curl -m 300 -s %s/gui/scale" % (ONOS_GUI3_CONTROL_HOST)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    print "REST IF has issue"
-    exit
+    result = ""
+    print "REST IF has issue %s" % url
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
@@ -247,19 +246,20 @@ def proxy_gui_scale():
 ###### ONOS REST API ##############################
 ## Worker Func ###
 def get_json(url):
-  code = 200
+  code = 200;
   try:
-    command = "curl -m 60 -s %s" % (url)
-    result = os.popen(command).read()
-    parsedResult = json.loads(result)
-    if type(parsedResult) == 'dict' and parsedResult.has_key('code'):
-      print "REST %s returned code %s" % (command, parsedResult['code'])
-      code=500
-  except:
-    print "REST IF %s has issue" % command
+    response = urlopen(url)
+  except URLError, e:
+    print "get_json: REST IF %s has issue. Reason: %s" % (url, e.reason)
     result = ""
-    code = 500
+    return (500, result)
+  except HTTPError, e:
+    print "get_json: REST IF %s has issue. Code %s" % (url, e.code)
+    result = ""
+    return (e.code, result)
 
+  result = response.read()
+#  parsedResult = json.loads(result)
   return (code, result)
 
 def pick_host():
@@ -354,14 +354,13 @@ def node_id(switch_array, dpid):
 @app.route('/topology', methods=['GET'])
 def topology_for_gui():
   try:
-    command = "curl -s \'http://%s:%s/wm/onos/topology/switches/all/json\'" % (RestIP, RestPort)
-    result = os.popen(command).read()
+    url="http://%s:%s/wm/onos/topology/switches/all/json" % (RestIP, RestPort)
+    (code, result) = get_json(url)
     parsedResult = json.loads(result)
   except:
-    log_error("REST IF has issue: %s" % command)
+    log_error("REST IF has issue: %s" % url)
     log_error("%s" % result)
     return
-#    sys.exit(0)
 
   topo = {}
   switches = []
@@ -382,11 +381,11 @@ def topology_for_gui():
       switches.append(sw)
 
   try:
-    command = "curl -s \'http://%s:%s/wm/onos/registry/switches/json\'" % (RestIP, RestPort)
-    result = os.popen(command).read()
+    url="http://%s:%s/wm/onos/registry/switches/json" % (RestIP, RestPort)
+    (code, result) = get_json(url)
     parsedResult = json.loads(result)
   except:
-    log_error("REST IF has issue: %s" % command)
+    log_error("REST IF has issue: %s" % url)
     log_error("%s" % result)
 
   for key in parsedResult:
@@ -397,35 +396,12 @@ def topology_for_gui():
       if switches[sw_id]['group'] != 0:
         switches[sw_id]['group'] = controllers.index(ctrl) + 1
 
-#  try:
-#    v1 = "00:00:00:00:00:0a:0d:00"
-#    v1 = "00:00:00:00:00:0d:00:d1"
-#    p1=1
-#    v2 = "00:00:00:00:00:0b:0d:03"
-#    v2 = "00:00:00:00:00:0d:00:d3"
-#    p2=1
-#    command = "curl -s http://%s:%s/wm/onos/topology/route/%s/%s/%s/%s/json" % (RestIP, RestPort, v1, p1, v2, p2)
-#    result = os.popen(command).read()
-#    parsedResult = json.loads(result)
-#  except:
-#    log_error("No route")
-#    parsedResult = {}
-
-  #path = []
-  #if parsedResult.has_key('flowEntries'):
-  #  flowEntries= parsedResult['flowEntries']
-  #  for i, v in enumerate(flowEntries):
-  #    if i < len(flowEntries) - 1:
-  #      sdpid= flowEntries[i]['dpid']['value']
-  #      ddpid = flowEntries[i+1]['dpid']['value']
-  #      path.append( (sdpid, ddpid))
-
   try:
-    command = "curl -s \'http://%s:%s/wm/onos/topology/links/json\'" % (RestIP, RestPort)
-    result = os.popen(command).read()
+    url = "http://%s:%s/wm/onos/topology/links/json" % (RestIP, RestPort)
+    (code, result) = get_json(url)
     parsedResult = json.loads(result)
   except:
-    log_error("REST IF has issue: %s" % command)
+    log_error("REST IF has issue: %s" % url)
     log_error("%s" % result)
     return
 #    sys.exit(0)
@@ -457,19 +433,16 @@ def topology_for_gui():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-#@app.route("/wm/floodlight/topology/toporoute/00:00:00:00:00:a1/2/00:00:00:00:00:c1/3/json")
-#@app.route("/wm/floodlight/topology/toporoute/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
 @app.route("/wm/floodlight/topology/toporoute/<v1>/<p1>/<v2>/<p2>/json")
 def shortest_path(v1, p1, v2, p2):
   try:
-    command = "curl -s \'http://%s:%s/wm/onos/topology/switches/all/json\'" % (RestIP, RestPort)
-    result = os.popen(command).read()
+    url = "http://%s:%s/wm/onos/topology/switches/all/json" % (RestIP, RestPort)
+    (code, result) = get_json(url)
     parsedResult = json.loads(result)
   except:
     log_error("REST IF has issue: %s" % command)
     log_error("%s" % result)
     return
-#    sys.exit(0)
 
   topo = {}
   switches = []
@@ -494,30 +467,28 @@ def shortest_path(v1, p1, v2, p2):
       switches.append(sw)
 
   try:
-    command = "curl -s http://%s:%s/wm/onos/topology/route/%s/%s/%s/%s/json" % (RestIP, RestPort, v1, p1, v2, p2)
-    result = os.popen(command).read()
+    url = "http://%s:%s/wm/onos/topology/route/%s/%s/%s/%s/json" % (RestIP, RestPort, v1, p1, v2, p2)
+    (code, result) = get_json(url)
     parsedResult = json.loads(result)
   except:
     log_error("No route")
     parsedResult = []
-#    exit(1)
 
   path = [];
   for i, v in enumerate(parsedResult):
     if i < len(parsedResult) - 1:
-      sdpid= parsedResult[i]['switch']
-      ddpid = parsedResult[i+1]['switch']
+      sdpid= parsedResult['flowEntries'][i]['dpid']['value']
+      ddpid= parsedResult['flowEntries'][i+1]['dpid']['value']
       path.append( (sdpid, ddpid))
 
   try:
-    command = "curl -s \'http://%s:%s/wm/onos/topology/links/json\'" % (RestIP, RestPort)
-    result = os.popen(command).read()
+    url = "http://%s:%s/wm/onos/topology/links/json" % (RestIP, RestPort)
+    (code, result) = get_json(url)
     parsedResult = json.loads(result)
   except:
     log_error("REST IF has issue: %s" % command)
     log_error("%s" % result)
     return
-#    sys.exit(0)
 
   for v in parsedResult:
     link = {}
@@ -548,13 +519,11 @@ def shortest_path(v1, p1, v2, p2):
 @app.route("/wm/floodlight/core/controller/switches/json")
 def query_switch():
   try:
-    command = "curl -s \'http://%s:%s/wm/onos/topology/switches/all/json\'" % (RestIP, RestPort)
-#    http://localhost:8080/wm/onos/topology/switches/active/json
-    print command
-    result = os.popen(command).read()
+    url = "http://%s:%s/wm/onos/topology/switches/all/json" % (RestIP, RestPort)
+    (code, result) = get_json(url)
     parsedResult = json.loads(result)
   except:
-    log_error("REST IF has issue: %s" % command)
+    log_error("REST IF has issue: %s" % url)
     log_error("%s" % result)
     return
 #    sys.exit(0)
@@ -577,49 +546,6 @@ def query_switch():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/floodlight/device/")
-def devices():
-  try:
-    command = "curl -s http://%s:%s/graphs/%s/vertices\?key=type\&value=device" % (RestIP, RestPort, DBName)
-    result = os.popen(command).read()
-    parsedResult = json.loads(result)['results']
-  except:
-    log_error("REST IF has issue: %s" % command)
-    log_error("%s" % result)
-    return
-#    sys.exit(0)
-
-  devices = []
-  for v in parsedResult:
-    dl_addr = v['dl_addr']
-    nw_addr = v['nw_addr']
-    vertex = v['_id']
-    mac = []
-    mac.append(dl_addr)
-    ip = []
-    ip.append(nw_addr)
-    device = {}
-    device['entryClass']="DefaultEntryClass"
-    device['mac']=mac
-    device['ipv4']=ip
-    device['vlan']=[]
-    device['lastSeen']=0
-    attachpoints =[]
-
-    port, dpid = deviceV_to_attachpoint(vertex)
-    attachpoint = {}
-    attachpoint['port']=port
-    attachpoint['switchDPID']=dpid
-    attachpoints.append(attachpoint)
-    device['attachmentPoint']=attachpoints
-    devices.append(device)
-
-  js = json.dumps(devices)
-  resp = Response(js, status=200, mimetype='application/json')
-  return resp
-
-#{"entityClass":"DefaultEntityClass","mac":["7c:d1:c3:e0:8c:a3"],"ipv4":["192.168.2.102","10.1.10.35"],"vlan":[],"attachmentPoint":[{"port":13,"switchDPID":"00:01:00:12:e2:78:32:44","errorStatus":null}],"lastSeen":1357333593496}
-
 ## return fake stat for now
 @app.route("/wm/floodlight/core/switch/<switchId>/<statType>/json")
 def switch_stat(switchId, statType):
@@ -638,68 +564,19 @@ def switch_stat(switchId, statType):
     resp = Response(js, status=200, mimetype='application/json')
     return resp
 
-
-@app.route("/wm/onos/linkdiscovery/links/json")
-def query_links():
-  try:
-    command = 'curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=port' % (RestIP, RestPort, DBName)
-    print command
-    result = os.popen(command).read()
-    parsedResult = json.loads(result)['results']
-  except:
-    log_error("REST IF has issue: %s" % command)
-    log_error("%s" % result)
-    return
-#    sys.exit(0)
-
-  debug("query_links %s" % command)
-#  pp.pprint(parsedResult)
-  sport = []
-  links = []
-  for v in parsedResult:
-    srcport = v['_id']
-    try:
-      command = "curl -s http://%s:%s/graphs/%s/vertices/%d/out?_label=link" % (RestIP, RestPort, DBName, srcport)
-      print command
-      result = os.popen(command).read()
-      linkResults = json.loads(result)['results']
-    except:
-      log_error("REST IF has issue: %s" % command)
-      log_error("%s" % result)
-      return
-#      sys.exit(0)
-
-    for p in linkResults:
-      if p.has_key('type') and p['type'] == "port":
-        dstport = p['_id']
-        (sport, sdpid) = portV_to_port_dpid(srcport)
-        (dport, ddpid) = portV_to_port_dpid(dstport)
-        link = {}
-        link["src-switch"]=sdpid
-        link["src-port"]=sport
-        link["src-port-state"]=0
-        link["dst-switch"]=ddpid
-        link["dst-port"]=dport
-        link["dst-port-state"]=0
-        link["type"]="internal"
-        links.append(link)
-
-#  pp.pprint(links)
-  js = json.dumps(links)
-  resp = Response(js, status=200, mimetype='application/json')
-  return resp
-
 @app.route("/controller_status")
 def controller_status():
-#  onos_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh status | awk '{print $1}'"
-  onos_check="cd; onos status | grep %s | awk '{print $2}'"
-  #cassandra_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-cassandra.sh status"
+  url= "http://%s:%d/wm/onos/registry/controllers/json" % (RestIP, RestPort)
+  (code, result) = get_json(url)
+  parsedResult = json.loads(result)
 
   cont_status=[]
   for i in controllers:
     status={}
-    onos=os.popen(onos_check % i).read()[:-1]
-#    onos=os.popen(onos_check % (i, i.lower())).read()[:-1]
+    if i in parsedResult:
+      onos=1
+    else:
+      onos=0
     status["name"]=i
     status["onos"]=onos
     status["cassandra"]=0
@@ -708,6 +585,7 @@ def controller_status():
   js = json.dumps(cont_status)
   resp = Response(js, status=200, mimetype='application/json')
   return resp
+
 
 ### Command ###
 @app.route("/gui/controller/<cmd>/<controller_name>")
@@ -989,17 +867,16 @@ def del_flow(flow_id):
 #http://localhost:9000/gui/iperf/start/<flow_id>/<duration>
 @app.route("/gui/iperf/start/<flow_id>/<duration>/<samples>")
 def iperf_start(flow_id,duration,samples):
+  url = "http://%s:%s/wm/onos/flows/get/%s/json" % (RestIP, RestPort, flow_id)
   try:
-    command = "curl -s \'http://%s:%s/wm/onos/flows/get/%s/json\'" % (RestIP, RestPort, flow_id)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
     if len(result) == 0:
       print "No Flow found"
       return "Flow %s not found" % (flow_id);
   except:
-    print "REST IF has issue"
-    return "REST IF has issue"
-    exit
+    print "REST IF has issue %s" % url
+    return "REST IF has issue %s" % url
 
   parsedResult = json.loads(result)
 
@@ -1054,15 +931,14 @@ def iperf_start(flow_id,duration,samples):
 #http://localhost:9000/gui/iperf/rate/<flow_id>
 @app.route("/gui/iperf/rate/<flow_id>")
 def iperf_rate(flow_id):
+  url = "http://%s:%s/wm/onos/flows/get/%s/json" % (RestIP, RestPort, flow_id)
   try:
-    command = "curl -s \'http://%s:%s/wm/onos/flows/get/%s/json\'" % (RestIP, RestPort, flow_id)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
     if len(result) == 0:
-      resp = Response(result, status=400, mimetype='text/html')
-      return "no such iperf flow (flowid %s)" % flow_id;
+      return "no such iperf flow (flowid %s)" % flow_id
   except:
-    print "REST IF has issue"
+    print "REST IF has issue %s" % url
     exit
 
   parsedResult = json.loads(result)
@@ -1082,12 +958,13 @@ def iperf_rate(flow_id):
     else:
       host = controllers[hostid-1]
 
+  url="http://%s:%s/log/iperfsvr_%s.out" % (host, 9000, flow_id)
   try:
-    command = "curl -s http://%s:%s/log/iperfsvr_%s.out" % (host, 9000, flow_id)
-    print command
-    result = os.popen(command).read()
+    response = urlopen(url)
+    result = response.read()
   except:
-    exit
+    print "REST IF has issue %s" % url
+    return 
 
   if re.match("Cannot", result):
     resp = Response(result, status=400, mimetype='text/html')
@@ -1101,25 +978,24 @@ if __name__ == "__main__":
   read_config()
   read_link_def()
   if len(sys.argv) > 1 and sys.argv[1] == "-d":
-#      add_flow("00:00:00:00:00:00:02:02", 1, "00:00:00:00:00:00:03:02", 1, "00:00:00:00:02:02", "00:00:00:00:03:0c")
-#     link_change("up", "00:00:00:00:ba:5e:ba:11", 1, "00:00:00:00:00:00:00:00", 1)
-#     link_change("down", "00:00:20:4e:7f:51:8a:35", 1, "00:00:00:00:00:00:00:00", 1)
-#     link_change("up", "00:00:00:00:00:00:02:03", 1, "00:00:00:00:00:00:00:00", 1)
-#     link_change("down", "00:00:00:00:00:00:07:12", 1, "00:00:00:00:00:00:00:00", 1)
-#    print "-- query all switches --"
-#    query_switch()
-#    print "-- query topo --"
-#    topology_for_gui()
-#    link_change(1,2,3,4)
-    print "-- query all links --"
-#    query_links()
-#    print "-- query all devices --"
-#    devices()
-#    iperf_start(1,10,15)
-#    iperf_rate(1)
-#    switches()
-#    add_flow(1,2,3,4,5,6)
-    reset_demo()
+    # for debugging
+    #add_flow("00:00:00:00:00:00:02:02", 1, "00:00:00:00:00:00:03:02", 1, "00:00:00:00:02:02", "00:00:00:00:03:0c")
+    #proxy_link_change("up", "00:00:00:00:ba:5e:ba:11", 1, "00:00:00:00:00:00:00:00", 1)
+    #proxy_link_change("down", "00:00:20:4e:7f:51:8a:35", 1, "00:00:00:00:00:00:00:00", 1)
+    #proxy_link_change("up", "00:00:00:00:00:00:02:03", 1, "00:00:00:00:00:00:00:00", 1)
+    #proxy_link_change("down", "00:00:00:00:00:00:07:12", 1, "00:00:00:00:00:00:00:00", 1)
+    #print "-- query all switches --"
+    #query_switch()
+    #print "-- query topo --"
+    #topology_for_gui()
+    ##print "-- query all links --"
+    ##query_links()
+    #print "-- query all devices --"
+    #devices()
+    #links()
+    #switches()
+    #reset_demo()
+    pass
   else:
     app.debug = True
     app.run(threaded=True, host="0.0.0.0", port=9000)

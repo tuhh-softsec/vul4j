@@ -11,16 +11,14 @@ import com.thinkaurelius.titan.core.TitanEdge;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.impls.ramcloud.*;
-import java.util.Map;
 
 public class LocalTopologyEventListener implements LocalGraphChangedListener {
-	
+
 	protected final static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
 	protected static DBConnection conn;
-	
+
 	public LocalTopologyEventListener(DBConnection conn) {
-		LocalTopologyEventListener.conn = conn;		
+		LocalTopologyEventListener.conn = conn;
 	}
 
 	@Override
@@ -38,8 +36,7 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	}
 
 	@Override
-	//public void edgeRemoved(Edge e, Map<String, Object> arg1) {
-	public void edgeRemoved(Edge e) {
+	public void edgeRemoved(Edge e, Map<String, Object> arg1) {
 		// TODO Auto-generated method stub
 		// Fire NetMapEvents (LinkRemoved, FlowEntryRemoved, HostRemoved, PortRemoved)
 		TitanEdge edge = (TitanEdge) e;
@@ -77,15 +74,14 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	}
 
 	@Override
-	//public void vertexRemoved(Vertex vertex, Map<String, Object> arg1) {
-	public void vertexRemoved(Vertex vertex) {
+	public void vertexRemoved(Vertex vertex, Map<String, Object> arg1) {
 		// TODO Auto-generated method stub
-		// Generate NetMapEvents 
+		// Generate NetMapEvents
 		String type = (String) vertex.getProperty("type");
 		log.debug("TopologyEvents: Received vertex removed event: {}",vertex);
 		if (type.equals("port")) {
 			// port is removed...lets fire reconcile here directly for now
-			
+
 			IPortObject src_port = (IPortObject) conn.getFramedGraph().frame(vertex, IPortObject.class);
 			log.debug("TopologyEvents: Port removed: {}:{}",src_port.getSwitch().getDPID(),src_port.getNumber());
 
@@ -101,21 +97,14 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	public void edgePropertyChanged(Edge arg0, String arg1, Object arg2,
 			Object arg3) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void vertexPropertyChanged(Vertex arg0, String arg1, Object arg2,
 			Object arg3) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public void vertexRemoved(Vertex vertex, Map<String, Object> props) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	public void edgeRemoved(Edge edge, Map<String, Object> props) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
@@ -31,7 +30,7 @@ import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.Switch;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 
-import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo.Kryo;
 
 /**
  * Class factory for allocating Kryo instances for
@@ -152,9 +151,6 @@ public class KryoFactory {
 	kryo.register(TopologyElement.class);
 	kryo.register(TopologyElement.Type.class);
 	kryo.register(TreeMap.class);
-	
-	//ARP message
-	kryo.register(ArpMessage.class);
 
 	return kryo;
     }

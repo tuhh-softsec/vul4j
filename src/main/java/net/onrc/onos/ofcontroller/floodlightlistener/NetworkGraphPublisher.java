@@ -20,6 +20,7 @@ import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.graph.DBConnection;
 import net.onrc.onos.graph.GraphDBManager;
@@ -38,7 +39,7 @@ import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
-import net.onrc.onos.ofcontroller.proxyarp.ArpMessage;
+import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
@@ -67,7 +68,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	//protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
 	protected DBOperation op;
-	
+
 	protected static final String DBConfigFile = "dbconf";
         protected static final String GraphDBStore = "graph_db_store";
 	protected static final String CleanupEnabled = "EnableCleanup";
@@ -90,7 +91,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
             Thread.currentThread().setName("SwitchCleanup@" + old);
             try {
             	log.debug("Running cleanup thread");
-		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
+		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
                 switchCleanup();
             }
             catch (Exception e) {
@@ -396,8 +397,9 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		log.debug("{}:deviceAdded(): Adding device {}",this.getClass(),device.getMACAddressString());
 		devStore.addDevice(device);
 		for (int intIpv4Address : device.getIPv4Addresses()) {
-			datagridService.sendArpRequest(
-					ArpMessage.newReply(InetAddresses.fromInteger(intIpv4Address)));
+			datagridService.sendArpReplyNotification(new ArpReplyNotification(
+					InetAddresses.fromInteger(intIpv4Address), 
+					MACAddress.valueOf(device.getMACAddress())));
 		}
 	}
 
@@ -458,13 +460,11 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
                 String dbStore = configMap.get(GraphDBStore);
-		System.out.println("conf" + conf + "dbStore" + dbStore);
-		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
-		//op = GraphDBManager.getDBOperation(dbStore, conf);
+		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 		if (op == null) {
 		    System.out.println("publisher op is null");
 		}
-		
+
 		floodlightProvider =
 	            context.getServiceImpl(IFloodlightProviderService.class);
 		//deviceService = context.getServiceImpl(IDeviceService.class);
@@ -475,13 +475,13 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 		devStore = new DeviceStorageImpl();
 		devStore.init(dbStore, conf);
-		
+
 		swStore = new SwitchStorageImpl();
 		swStore.init(dbStore, conf);
-		
+
 		linkStore = new LinkStorageImpl();
 		linkStore.init(dbStore, conf);
-				
+
 		log.debug("Initializing NetworkGraphPublisher module with {}", conf);
 
 	}
@@ -496,10 +496,9 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		linkDiscovery.addListener(this);
 
 		log.debug("Adding EventListener");
-		System.out.println("start Up op " + op);
 		IDBConnection conn = op.getDBConnection();
 		conn.addEventListener(new LocalTopologyEventListener((DBConnection) conn));
-	       // Setup the Cleanup task. 
+	       // Setup the Cleanup task.
 		if (cleanupNeeded == null || !cleanupNeeded.equals("False")) {
 				ScheduledExecutorService ses = threadPool.getScheduledExecutor();
 				cleanupTask = new SingletonTask(ses, new SwitchCleanup());

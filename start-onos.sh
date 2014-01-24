@@ -21,7 +21,7 @@ JVM_OPTS="${JVM_OPTS:-}"
 ## If you want JaCoCo Code Coverage reports... uncomment line below
 #JVM_OPTS="$JVM_OPTS -javaagent:${ONOS_HOME}/lib/jacocoagent.jar=dumponexit=true,output=file,destfile=${LOGDIR}/jacoco.exec"
 JVM_OPTS="$JVM_OPTS -server -d64"
-#JVM_OPTS="$JVM_OPTS -server -d64 -XX:+UnlockCommercialFeatures -XX:+FlightRecorder"
+#JVM_OPTS="$JVM_OPTS -XX:+TieredCompilation -XX:InitialCodeCacheSize=512m -XX:ReservedCodeCacheSize=512m"
 JVM_OPTS="$JVM_OPTS -Xmx4g -Xms4g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -Xmx1g -Xms1g -Xmn800m"
@@ -103,6 +103,7 @@ function start {
 <logger name="org" level="WARN"/>
 <logger name="LogService" level="WARN"/> <!-- Restlet access logging -->
 <logger name="net.floodlightcontroller.logging" level="WARN"/>
+<logger name="com.thinkaurelius.titan" level="INFO"/>
 
 <root level="DEBUG">
 <appender-ref ref="FILE" />
@@ -119,9 +120,6 @@ EOF_LOGBACK
   echo $ONOS_HOME
   cd ${ONOS_HOME}
   pwd
-  echo "${MVN} exec:exec -Dexec.executable=\"java\" -Dexec.args=\"${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_PROPS}\""
-
-  #${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${ONOS_PROPS}" > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
   java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp ${JAVA_CP} ${MAIN_CLASS} -cf ${ONOS_PROPS} > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
 
   echo "Waiting for ONOS to start..."

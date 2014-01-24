@@ -8,6 +8,5 @@
 target
 onos-logs
 onos.log
-repo
 logback.*.xml
 

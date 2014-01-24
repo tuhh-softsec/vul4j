@@ -97,6 +97,7 @@ function start {
 <logger name="org" level="WARN"/>
 <logger name="LogService" level="WARN"/> <!-- Restlet access logging -->
 <logger name="net.floodlightcontroller.logging" level="WARN"/>
+<logger name="com.thinkaurelius.titan" level="INFO"/>
 
 <root level="DEBUG">
 <appender-ref ref="FILE" />

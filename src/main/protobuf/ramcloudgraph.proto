@@ -1,0 +1,37 @@
+package RamCloudGraph;
+
+option java_package = "com.tinkerpop.blueprints.impls.ramcloud";
+option java_outer_classname = "RamCloudGraphProtos";
+
+message EdgeListProtoBuf {
+  repeated EdgeProtoBuf edge = 1;
+}
+
+message EdgeProtoBuf {
+  required uint64 neighborId = 1;
+  required bool outgoing = 2;
+  required string label = 3;
+}
+
+message PropertyListProtoBuf {
+  repeated PropertyProtoBuf property = 1;
+}
+
+message PropertyProtoBuf {
+  enum Type { STRING = 1; INT32 = 2; INT64 = 3; DOUBLE = 4; FLOAT = 5; BOOL = 6; }
+
+  required string key = 1;
+  
+  required Type value_type = 2;
+
+  optional string string_value = 3;
+  optional int32 int32_value = 4;
+  optional int64 int64_value = 5;
+  optional double double_value = 6;
+  optional float float_value = 7;
+  optional bool bool_value = 8;
+}
+
+message IndexBlob {
+  repeated int64 vertexId = 1;
+}

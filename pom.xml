@@ -195,13 +195,11 @@
               <goal>build-classpath</goal>
             </goals>
             <configuration>
-              <!-- configure the plugin here -->
               <outputFile>${project.basedir}/.javacp</outputFile>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
   <!-- for getting visualization reporting   -->
@@ -267,20 +265,9 @@
     </plugins>
   </reporting>
   <dependencies>
-    <!-- Commenting out original kryo 2.X
-         and using shaded version (net.onrc.onos.kryo2)
-         to workaround conflict with kryo 1.X in titan's dependency.(#443)
-    -->
-    <!--
     <dependency>
       <groupId>com.esotericsoftware.kryo</groupId>
       <artifactId>kryo</artifactId>
-      <version>2.22</version>
-    </dependency>
-    -->
-    <dependency>
-      <groupId>net.onrc.onos</groupId>
-      <artifactId>kryo2</artifactId>
       <version>2.22</version>
     </dependency>
     <!-- ONOS's direct dependencies -->
@@ -293,7 +280,7 @@
     <dependency>
       <groupId>com.thinkaurelius.titan</groupId>
       <artifactId>titan-all</artifactId>
-      <version>0.2.1</version>
+      <version>0.4.2</version>
       <exclusions>
 	<exclusion>
           <groupId>org.slf4j</groupId>
@@ -304,12 +291,27 @@
     <dependency>
       <groupId>com.tinkerpop</groupId>
       <artifactId>frames</artifactId>
-      <version>2.3.1</version>
+      <version>2.4.0</version>
     </dependency>
     <dependency>
       <groupId>com.tinkerpop.blueprints</groupId>
       <artifactId>blueprints-core</artifactId>
       <version>2.3.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.tinkerpop.rexster</groupId>
+        <artifactId>rexster-core</artifactId>
+        <version>2.4.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.tinkerpop.blueprints</groupId>
+        <artifactId>blueprints-test</artifactId>
+        <version>2.4.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>2.5.0</version>
     </dependency>
     <dependency>
       <groupId>com.hazelcast</groupId>
@@ -477,10 +479,5 @@
       <version>0.1.0</version>
     </dependency>
     -->
-    <dependency>
-      <groupId>com.tinkerpop.blueprints.impls.ramcloud</groupId>
-      <artifactId>blueprints-ramcloud-graph</artifactId>
-      <version>2.5.0</version>
-    </dependency>
   </dependencies>
 </project>

@@ -25,7 +25,6 @@ import com.google.common.net.InetAddresses;
 import com.thinkaurelius.titan.core.TitanException;
 /**
  * This is the class for storing the information of devices into CassandraDB
- *
  * @author Pankaj
  */
 public class DeviceStorageImpl implements IDeviceStorage {
@@ -39,10 +38,9 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	@Override
 	public void init(final String dbStore, final String conf) {
 		try {
-			ope = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
-			//ope = GraphDBManager.getDBOperation(dbStore, conf);
+			ope = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			log.error("Couldn't open graph operation", e);
 		}
 	}
 
