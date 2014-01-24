@@ -21,10 +21,15 @@ package org.apache.xml.security.test.stax;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.apache.xml.security.stax.config.Init;
+import org.apache.xml.security.stax.ext.XMLSec;
+import org.apache.xml.security.stax.ext.XMLSecurityConfigurationException;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author $Author$
@@ -42,6 +47,27 @@ public class UncategorizedTest extends org.junit.Assert {
             Assert.fail();
         } catch (XMLSecurityException e) {
             Assert.assertTrue(e.getMessage().contains("Cannot find the declaration of element 'doc'."));
+        }
+    }
+    
+    @Test
+    public void testDuplicateActions() throws Exception {
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
+        properties.setActions(actions);
+        
+        // Should work
+        XMLSec.getOutboundXMLSec(properties);
+        
+        // Should throw an error on a duplicate Action
+        actions.add(XMLSecurityConstants.SIGNATURE);
+        properties.setActions(actions);
+        
+        try {
+            XMLSec.getOutboundXMLSec(properties);
+        } catch (XMLSecurityConfigurationException ex) {
+            Assert.assertTrue(ex.getMessage().contains("Duplicate Actions are not allowed"));
         }
     }
 }

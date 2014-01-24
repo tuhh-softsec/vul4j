@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
+import java.util.HashSet;
 
 import javax.crypto.SecretKey;
 
@@ -102,6 +103,12 @@ public class XMLSec {
     public static XMLSecurityProperties validateAndApplyDefaultsToOutboundSecurityProperties(XMLSecurityProperties securityProperties) throws XMLSecurityConfigurationException {
         if (securityProperties.getActions() == null) {
             throw new XMLSecurityConfigurationException("stax.noOutputAction");
+        }
+        
+        // Check for duplicate actions
+        if (new HashSet<XMLSecurityConstants.Action>(securityProperties.getActions()).size() 
+            != securityProperties.getActions().size()) {
+            throw new XMLSecurityConfigurationException("stax.duplicateActions");
         }
 
         for (XMLSecurityConstants.Action action : securityProperties.getActions()) {
