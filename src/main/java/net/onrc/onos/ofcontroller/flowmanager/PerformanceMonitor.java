@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * Class for collecting performance measurements
  */
 public class PerformanceMonitor {
-    private final static Map<String, List<Measurement>> map = new ConcurrentHashMap<>();;
+    private final static Map<String, Queue<Measurement>> map = new ConcurrentHashMap<>();;
     private final static Logger log = LoggerFactory.getLogger(PerformanceMonitor.class);
     private static long overhead;
     private static long experimentStart = Long.MAX_VALUE;
@@ -32,9 +34,9 @@ public class PerformanceMonitor {
 	if(start < experimentStart) {
 	    experimentStart = start;
 	}
-	List<Measurement> list = map.get(tag);
+	Queue<Measurement> list = map.get(tag);
 	if(list == null) {
-	    list = new ArrayList<Measurement>();
+	    list = new ConcurrentLinkedQueue<Measurement>();
 	    map.put(tag, list);
 	}
 	Measurement m = new Measurement();
@@ -53,11 +55,11 @@ public class PerformanceMonitor {
      */
     public static void stop(String tag) {
 	long time = System.nanoTime();
-	List<Measurement> list = map.get(tag);
+	Queue<Measurement> list = map.get(tag);
 	if(list == null || list.size() == 0) {
 	    log.error("Tag {} does not exist", tag);
 	}
-	list.get(0).stop(time);
+	list.peek().stop(time);
 	if(list.size() > 1) {
 	    log.error("Tag {} has multiple measurements", tag);
 	}
@@ -84,10 +86,10 @@ public class PerformanceMonitor {
 	    return;
 	}
 	long experimentEnd = -1;
-	for(Entry<String, List<Measurement>> e : map.entrySet()) {
+	for(Entry<String, Queue<Measurement>> e : map.entrySet()) {
 	    String key = e.getKey();
-	    List<Measurement> list = e.getValue();
-	    int total = 0, count = 0;
+	    Queue<Measurement> list = e.getValue();
+	    long total = 0, count = 0;
 	    long start = Long.MAX_VALUE, stop = -1;
 	    for(Measurement m : list) {
 		if(m.stop < 0) {
@@ -130,12 +132,12 @@ public class PerformanceMonitor {
      * @param tag the tag name.
      */
     public static void report(String tag) {
-	List<Measurement> list = map.get(tag);
+	Queue<Measurement> list = map.get(tag);
 	if(list == null) {
 	    return; //TODO
 	}
 	//TODO: fix this;
-	Measurement m = list.get(0);
+	Measurement m = list.peek();
 	if (m != null) {
 	    log.error("Performance Result: tag = {} start = {} stop = {} elapsed = {}",
 		      tag, m.start, m.stop, m.toString());
