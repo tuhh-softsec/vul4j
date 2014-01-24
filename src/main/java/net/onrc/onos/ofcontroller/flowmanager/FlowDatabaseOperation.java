@@ -677,8 +677,10 @@ public class FlowDatabaseOperation {
 	for (IFlowPath flowPathObj : allFlowPaths) {
 	    if (flowPathObj == null)
 		continue;
+
 	    deleteIFlowPath(dbHandler, flowPathObj);
 	}
+	dbHandler.commit();
 
 	return true;
     }
@@ -706,10 +708,16 @@ public class FlowDatabaseOperation {
 	}
 
 	deleteIFlowPath(dbHandler, flowObj);
-
+	dbHandler.commit();
 	return true;
     }
 
+    /**
+     * Delete a previously added flow.
+     * @note You need to call commit after calling this method.
+     * @param dbHandler the Graph Database handler to use.
+     * @param flowObj IFlowPath object to delete.
+     */
     private static void deleteIFlowPath(DBOperation dbHandler, IFlowPath flowObj) {
 	//
 	// Remove all Flow Entries
@@ -721,7 +729,6 @@ public class FlowDatabaseOperation {
 	}
 	// Remove the Flow itself
 	dbHandler.removeFlowPath(flowObj);
-	dbHandler.commit();
     }
 
     /**

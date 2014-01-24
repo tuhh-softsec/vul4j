@@ -1,5 +1,7 @@
 package net.onrc.onos.graph;
 
+import java.util.Map;
+
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 
 import org.slf4j.Logger;
@@ -9,8 +11,6 @@ import com.thinkaurelius.titan.core.TitanEdge;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.impls.ramcloud.*;
-import java.util.Map;
 
 public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	
@@ -35,7 +35,8 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 
 	}
 
-	public void edgeRemoved(Edge e) {
+	@Override
+	public void edgeRemoved(Edge e, Map<String, Object> arg1) {
 		// TODO Auto-generated method stub
 		// Fire NetMapEvents (LinkRemoved, FlowEntryRemoved, HostRemoved, PortRemoved)
 		TitanEdge edge = (TitanEdge) e;
@@ -72,7 +73,8 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 
 	}
 
-	public void vertexRemoved(Vertex vertex) {
+	@Override
+	public void vertexRemoved(Vertex vertex, Map<String, Object> arg1) {
 		// TODO Auto-generated method stub
 		// Generate NetMapEvents 
 		String type = (String) vertex.getProperty("type");
@@ -105,11 +107,6 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 		
 	}
 
-	public void vertexRemoved(Vertex vertex, Map<String, Object> props) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
-	public void edgeRemoved(Edge edge, Map<String, Object> props) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
 }

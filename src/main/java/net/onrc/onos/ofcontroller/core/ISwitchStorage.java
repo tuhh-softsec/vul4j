@@ -40,7 +40,7 @@ public interface ISwitchStorage extends INetMapStorage {
 	public boolean deactivateSwitch(String dpid);
 	/*
 	 * Update the port details
-	 */	
+	 */
 	public boolean updatePort(String dpid, short port, int state, String desc);
 	/*
 	 * Associate a port on switch

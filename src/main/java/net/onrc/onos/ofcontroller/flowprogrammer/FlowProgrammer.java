@@ -44,7 +44,7 @@ public class FlowProgrammer implements IFloodlightModule,
 				       IOFSwitchListener {
     // flag to enable FlowSynchronizer
     private static final boolean enableFlowSync = true;
-    protected static Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
+    protected static final Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
     protected volatile IFloodlightProviderService floodlightProvider;
     protected volatile IControllerRegistryService registryService;
     protected volatile IRestApiService restApi;

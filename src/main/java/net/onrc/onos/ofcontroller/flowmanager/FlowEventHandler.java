@@ -33,7 +33,7 @@ import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
-import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo.Kryo;
 import com.tinkerpop.blueprints.impls.ramcloud.PerfMon;
 
 import org.slf4j.Logger;
@@ -306,6 +306,10 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService {
 
 	for (FlowPath flowPath : flowPaths) {
 	    boolean isInstalled = true;
+	    
+	    if (flowPath.flowEntries().isEmpty()) {
+	    	continue;
+	    }
 
 	    //
 	    // Check whether all Flow Entries have been installed

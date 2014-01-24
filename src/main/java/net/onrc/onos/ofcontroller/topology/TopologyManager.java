@@ -74,7 +74,7 @@ public class TopologyManager implements IFloodlightModule,
 
     /**
      * Init the module.
-     * @param 
+     *
      * @param config the database configuration file to use for
      * the initialization.
      */
@@ -219,7 +219,7 @@ public class TopologyManager implements IFloodlightModule,
      */
     @Override
     public void dropTopology(Topology topology) {
-	topology = null;
+    // nothing to do
     }
 
     /**

@@ -51,7 +51,8 @@ public class FlowSynchronizer implements IFlowSyncService {
 
     public FlowSynchronizer() {
 	dbHandler = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
-	switchThreads = new HashMap<IOFSwitch, FutureTask<SyncResult>>();    }
+	switchThreads = new HashMap<IOFSwitch, FutureTask<SyncResult>>();
+    }
 
     @Override
     public Future<SyncResult> synchronize(IOFSwitch sw) {
@@ -102,6 +103,10 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    Set<FlowEntryWrapper> graphEntries = getFlowEntriesFromGraph();
 	    long step1 = System.nanoTime();
 	    Set<FlowEntryWrapper> switchEntries = getFlowEntriesFromSwitch();
+	    if (switchEntries == null) {
+	    	log.debug("getFlowEntriesFromSwitch() failed");
+	    	return null;
+	    }
 	    long step2 = System.nanoTime();
 	    SyncResult result = compare(graphEntries, switchEntries);
 	    long step3 = System.nanoTime();
@@ -216,12 +221,15 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    } catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		return null;
 	    } catch (InterruptedException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		return null;
 	    } catch (ExecutionException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		return null;
 	    }
 
 	    Set<FlowEntryWrapper> results = new HashSet<FlowEntryWrapper>();
@@ -338,7 +346,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 */
 	@Override
 	public boolean equals(Object obj){
-	    if(obj.getClass() == this.getClass()) {
+	    if(obj != null && obj.getClass() == this.getClass()) {
 		FlowEntryWrapper entry = (FlowEntryWrapper) obj;
 		// TODO: we need to actually compare the match + actions
 		return this.flowEntryId.equals(entry.flowEntryId);
