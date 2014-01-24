@@ -25,7 +25,7 @@ import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
-import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo.Kryo;
 
 /**
  * Class for performing parallel Flow-related operations on the Database.
