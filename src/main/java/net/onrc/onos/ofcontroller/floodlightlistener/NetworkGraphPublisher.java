@@ -461,9 +461,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		String conf = configMap.get(DBConfigFile);
                 String dbStore = configMap.get(GraphDBStore);
 		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
-		if (op == null) {
-		    System.out.println("publisher op is null");
-		}
 
 		floodlightProvider =
 	            context.getServiceImpl(IFloodlightProviderService.class);
