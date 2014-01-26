@@ -223,6 +223,7 @@ public class DriverTest extends TestCase {
     public void testRewriteRedirectResponse() throws Exception {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com:8080/");
+        properties.put(Parameters.PRESERVE_HOST, "false");
         request = TestUtils.createIncomingRequest("http://www.bar.com/foo/");
         HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1),
                 HttpStatus.SC_MOVED_TEMPORARILY, "Found");

@@ -23,7 +23,7 @@ import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
-import org.esigate.extension.parallelesi.Esi;
+import org.esigate.extension.Esi;
 import org.esigate.http.IncomingRequest;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.SequenceResponse;

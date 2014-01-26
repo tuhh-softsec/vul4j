@@ -75,6 +75,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
     private HeaderManager headerManager;
     private int connectTimeout;
     private int socketTimeout;
+    private HttpHost firstBaseUrlHost;
 
     public static final class HttpClientHelperBuilder implements RequestExecutorBuilder {
         private EventManager eventManager;
@@ -117,6 +118,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             httpClientHelper.connectTimeout = Parameters.CONNECT_TIMEOUT.getValueInt(properties);
             httpClientHelper.socketTimeout = Parameters.SOCKET_TIMEOUT.getValueInt(properties);
             httpClientHelper.httpClient = buildHttpClient(properties, eventManager, connectionManager);
+            String firstBaseURL = Parameters.REMOTE_URL_BASE.getValueArray(properties)[0];
+            httpClientHelper.firstBaseUrlHost = UriUtils.extractHost(firstBaseURL);
             return httpClientHelper;
         }
 
@@ -207,11 +210,15 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         // request to physically.
         HttpHost physicalHost = UriUtils.extractHost(uri);
 
-        // Preserve host if required
-        if (preserveHost && !originalRequest.isExternal()) {
-            HttpHost virtualHost = HttpRequestHelper.getHost(originalRequest);
-            // Rewrite the uri with the virtualHost
-            uri = UriUtils.rewriteURI(uri, virtualHost);
+        if (!originalRequest.isExternal()) {
+            if (preserveHost) {
+                // Preserve host if required
+                HttpHost virtualHost = HttpRequestHelper.getHost(originalRequest);
+                // Rewrite the uri with the virtualHost
+                uri = UriUtils.rewriteURI(uri, virtualHost);
+            } else {
+                uri = UriUtils.rewriteURI(uri, firstBaseUrlHost);
+            }
         }
 
         RequestConfig.Builder builder = RequestConfig.custom();

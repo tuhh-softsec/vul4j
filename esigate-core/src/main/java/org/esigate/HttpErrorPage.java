@@ -17,7 +17,6 @@ package org.esigate;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
@@ -54,12 +53,7 @@ public class HttpErrorPage extends Exception {
     private final CloseableHttpResponse httpResponse;
 
     private static HttpEntity toMemoryEntity(String content) {
-        try {
-            return new StringEntity(content, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            // This should not happen as UTF-8 is always supported
-            throw new RuntimeException(e);
-        }
+        return new StringEntity(content, "UTF-8");
     }
 
     private static HttpEntity toMemoryEntity(Exception exception) {

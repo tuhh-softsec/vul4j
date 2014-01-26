@@ -32,7 +32,6 @@ import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.http.DateUtils;
 import org.esigate.http.OutgoingRequestContext;
-import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,6 @@ public class CacheAdapter {
     private int ttl;
     private boolean xCacheHeader;
     private boolean viaHeader;
-    private HttpRoute routeForCacheKey;
 
     public void init(Properties properties) {
         staleIfError = Parameters.STALE_IF_ERROR.getValueInt(properties);
@@ -65,8 +63,6 @@ public class CacheAdapter {
         LOG.info("Initializing cache for provider " + Parameters.REMOTE_URL_BASE.getValueString(properties)
                 + " staleIfError=" + staleIfError + " staleWhileRevalidate=" + staleWhileRevalidate + " ttl=" + ttl
                 + " xCacheHeader=" + xCacheHeader + " viaHeader=" + viaHeader);
-        String firstBaseURL = Parameters.REMOTE_URL_BASE.getValueArray(properties)[0];
-        routeForCacheKey = new HttpRoute(UriUtils.extractHost(firstBaseURL));
     }
 
     public ClientExecChain wrapCachingHttpClient(final ClientExecChain wrapped) {
@@ -83,11 +79,8 @@ public class CacheAdapter {
                     HttpException {
                 OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
 
-                // Save the real route to restore later
-                context.setRealHttpRoute(route);
-
                 // Switch route for the cache to generate the right cache key
-                CloseableHttpResponse response = wrapped.execute(routeForCacheKey, request, context, execAware);
+                CloseableHttpResponse response = wrapped.execute(route, request, context, execAware);
 
                 // Remove previously added Cache-control header
                 if (request.getRequestLine().getMethod().equalsIgnoreCase("GET")
@@ -130,8 +123,7 @@ public class CacheAdapter {
                 return (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MOVED_PERMANENTLY
                         || statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_NOT_FOUND
                         || statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR
-                        || statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE
-                        || statusCode == HttpStatus.SC_NOT_MODIFIED || statusCode == HttpStatus.SC_GATEWAY_TIMEOUT);
+                        || statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE || statusCode == HttpStatus.SC_NOT_MODIFIED || statusCode == HttpStatus.SC_GATEWAY_TIMEOUT);
             }
 
             /**
@@ -148,15 +140,8 @@ public class CacheAdapter {
                     HttpClientContext httpClientContext, HttpExecutionAware execAware) throws IOException,
                     HttpException {
                 OutgoingRequestContext context = OutgoingRequestContext.adapt(httpClientContext);
-                // Restore real route
-                HttpRoute realRoute = context.getRealHttpRoute();
 
-                // In case we are bypassing the cache
-                if (realRoute == null) {
-                    realRoute = route;
-                }
-
-                CloseableHttpResponse response = wrapped.execute(realRoute, request, context, execAware);
+                CloseableHttpResponse response = wrapped.execute(route, request, context, execAware);
 
                 String method = request.getRequestLine().getMethod();
                 int statusCode = response.getStatusLine().getStatusCode();

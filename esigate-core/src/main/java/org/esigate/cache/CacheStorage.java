@@ -33,7 +33,7 @@ public abstract class CacheStorage implements HttpCacheStorage {
 
     @Override
     public void putEntry(String key, HttpCacheEntry entry) throws IOException {
-        LOG.debug("putEntry({})", key);
+        LOG.debug("putEntry({},{})", key, entry);
         impl.putEntry(key, entry);
     }
 
@@ -52,7 +52,7 @@ public abstract class CacheStorage implements HttpCacheStorage {
 
     @Override
     public void updateEntry(String key, HttpCacheUpdateCallback callback) throws IOException, HttpCacheUpdateException {
-        LOG.debug("updateEntry({})", key);
+        LOG.debug("updateEntry({},{})", key, callback);
         impl.updateEntry(key, callback);
     }
 

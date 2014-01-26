@@ -58,7 +58,7 @@ public final class Parameters {
     public static final Parameter PROXY_PASSWORD = new Parameter("proxyPassword", null);
 
     // Http headers
-    public static final Parameter PRESERVE_HOST = new Parameter("preserveHost", "false");
+    public static final Parameter PRESERVE_HOST = new Parameter("preserveHost", "true");
 
     // Cookies
     public static final Parameter COOKIE_MANAGER = new Parameter("cookieManager", DefaultCookieManager.class.getName());

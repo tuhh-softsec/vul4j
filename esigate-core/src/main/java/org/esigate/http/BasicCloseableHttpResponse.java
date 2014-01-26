@@ -120,7 +120,6 @@ public final class BasicCloseableHttpResponse implements CloseableHttpResponse {
         httpResponse.setHeader(name, value);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public Locale getLocale() {
         return httpResponse.getLocale();
@@ -136,7 +135,6 @@ public final class BasicCloseableHttpResponse implements CloseableHttpResponse {
         httpResponse.removeHeader(header);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void setLocale(Locale loc) {
         httpResponse.setLocale(loc);

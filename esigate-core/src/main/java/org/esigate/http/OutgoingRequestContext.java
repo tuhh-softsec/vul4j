@@ -17,13 +17,11 @@ package org.esigate.http;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.protocol.HttpContext;
 
 public class OutgoingRequestContext extends HttpClientContext {
     private static final String PROXY = "PROXY";
     private static final String OUTGOING_REQUEST = "OUTGOING_REQUEST";
-    private static final String REAL_HTTP_ROUTE = "REAL_HTTP_ROUTE";
     private static final String PHYSICAL_HOST = "PHYSICAL_HOST";
 
     public static OutgoingRequestContext adapt(final HttpContext context) {
@@ -61,14 +59,6 @@ public class OutgoingRequestContext extends HttpClientContext {
 
     public void setOutgoingRequest(OutgoingRequest outgoingRequest) {
         setAttribute(OUTGOING_REQUEST, outgoingRequest);
-    }
-
-    public HttpRoute getRealHttpRoute() {
-        return getAttribute(REAL_HTTP_ROUTE, HttpRoute.class);
-    }
-
-    public void setRealHttpRoute(HttpRoute httpRoute) {
-        setAttribute(REAL_HTTP_ROUTE, httpRoute);
     }
 
     public HttpHost getPhysicalHost() {
