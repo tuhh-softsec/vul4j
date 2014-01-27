@@ -18,10 +18,10 @@ package org.esigate;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,37 +74,14 @@ public final class DriverFactory {
         InputStream extInputStream = null;
 
         try {
-            // Load from environment
-            String envPath = System.getProperty(PROP_CONF_LOCATION);
-            if (envPath != null) {
-                try {
-                    LOG.info("Scanning configuration {}", envPath);
-                    inputStream = new FileInputStream(new File(envPath));
-                } catch (FileNotFoundException e) {
-                    LOG.error("Can't read file {} (from -D" + PROP_CONF_LOCATION + ")", envPath, e);
-                }
-            }
+            URL configUrl = getConfigUrl();
 
-            if (inputStream == null) {
-                LOG.info("Scanning configuration {}", "/esigate.properties");
-                inputStream = DriverFactory.class.getResourceAsStream("/esigate.properties");
-            }
-
-            // For backward compatibility
-            if (inputStream == null) {
-                LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"),
-                        "driver.properties");
-                inputStream = DriverFactory.class.getResourceAsStream("driver.properties");
-            }
-            if (inputStream == null) {
-                LOG.info("Scanning configuration {}", "/net/webassembletool/driver.properties");
-                inputStream = DriverFactory.class.getResourceAsStream("/net/webassembletool/driver.properties");
-            }
-
-            if (inputStream == null) {
+            if (configUrl == null) {
                 throw new ConfigurationException("esigate.properties configuration file "
                         + "was not found in the classpath");
             }
+
+            inputStream = configUrl.openStream();
 
             // load driver-ext.properties if exists
             LOG.info("Scanning configuration {}", "/esigate-ext.properties");
@@ -306,4 +283,39 @@ public final class DriverFactory {
             configure();
         }
     }
+
+    /**
+     * @return The URL of the configuration file.
+     */
+    public static URL getConfigUrl() {
+        URL configUrl = null;
+        // Load from environment
+        String envPath = System.getProperty(PROP_CONF_LOCATION);
+        if (envPath != null) {
+            try {
+                LOG.info("Scanning configuration {}", envPath);
+                configUrl = new File(envPath).toURI().toURL();
+            } catch (MalformedURLException e) {
+                LOG.error("Can't read file {} (from -D" + PROP_CONF_LOCATION + ")", envPath, e);
+            }
+        }
+
+        if (configUrl == null) {
+            LOG.info("Scanning configuration {}", "/esigate.properties");
+            configUrl = DriverFactory.class.getResource("/esigate.properties");
+        }
+
+        // For backward compatibility
+        if (configUrl == null) {
+            LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"),
+                    "driver.properties");
+            configUrl = DriverFactory.class.getResource("driver.properties");
+        }
+        if (configUrl == null) {
+            LOG.info("Scanning configuration {}", "/net/webassembletool/driver.properties");
+            configUrl = DriverFactory.class.getResource("/net/webassembletool/driver.properties");
+        }
+        return configUrl;
+    }
+
 }

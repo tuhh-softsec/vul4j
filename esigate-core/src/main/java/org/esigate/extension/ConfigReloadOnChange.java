@@ -15,6 +15,8 @@
 package org.esigate.extension;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Properties;
 
 import org.esigate.Driver;
@@ -119,6 +121,19 @@ public class ConfigReloadOnChange implements Extension {
         String envPath = System.getProperty("esigate.config");
         if (envPath != null) {
             configuration = new File(envPath);
+        } else {
+            URL configUrl = DriverFactory.getConfigUrl();
+            if (configUrl != null && "file".equalsIgnoreCase(configUrl.getProtocol())) {
+                try {
+                    configuration = new File(configUrl.toURI());
+                } catch (URISyntaxException e) {
+                    LOG.error("Unable to access configuration file", e);
+                }
+            }
+        }
+
+        if (configuration != null && configuration.exists()) {
+            lastModified = configuration.lastModified();
         }
 
         // Start watcher
