@@ -83,7 +83,7 @@ public class RequestHeadersTest extends TestCase {
      * @throws Exception
      */
     public void testAuthorization() throws Exception {
-        assertHeaderDiscarded("Authorization");
+        assertHeaderForwarded("Authorization");
     }
 
     public void testConnection() throws Exception {

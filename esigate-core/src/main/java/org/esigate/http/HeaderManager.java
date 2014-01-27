@@ -46,7 +46,6 @@ public class HeaderManager {
         // By default all request headers are forwarded
         requestHeadersFilterList.add("*");
         // Except hop-by-hop headers
-        requestHeadersFilterList.remove("Authorization");
         requestHeadersFilterList.remove("Connection");
         requestHeadersFilterList.remove("Content-Length");
         requestHeadersFilterList.remove("Cache-control");
