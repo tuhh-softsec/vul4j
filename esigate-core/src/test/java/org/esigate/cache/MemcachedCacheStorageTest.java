@@ -18,11 +18,19 @@ package org.esigate.cache;
 import java.util.Properties;
 
 import junit.framework.TestCase;
+import net.spy.memcached.compat.log.SLF4JLogger;
 
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 
 public class MemcachedCacheStorageTest extends TestCase {
+    @Override
+    protected void setUp() {
+        // Redirect the logs to slf4j
+        System.setProperty("net.spy.log.LoggerImpl", SLF4JLogger.class.getName());
+
+    }
+
     public void testBasicOperations() {
         // Cannot be really tested as we would need a running memcached server
         // CacheStorage cacheStorage = new MemcachedCacheStorage();

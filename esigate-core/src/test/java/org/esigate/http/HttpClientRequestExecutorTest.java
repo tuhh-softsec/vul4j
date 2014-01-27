@@ -393,7 +393,6 @@ public class HttpClientRequestExecutorTest extends TestCase {
         assertNotNull("X-Cache header is missing", xCacheHeader2);
         assertTrue("X-Cache header should indicate the first backend used",
                 xCacheHeader1.getValue().startsWith("MISS from localhost"));
-        System.out.println(xCacheHeader2.getValue());
         assertTrue("X-Cache header should indicate reuse of the cache entry",
                 xCacheHeader2.getValue().startsWith("HIT from 127.0.0.1"));
     }
