@@ -230,43 +230,7 @@ theme.mappings=/css/*, /images/*
                     <td>Instructs send the request to the target server with the same Host header value as in the incoming request.
                     This feature is very usefull when the target server uses virtual hosts.</td>
                     <td>No</td>
-                    <td>false</td>
-                </tr>
-                <tr>
-                    <td>discardRequestHeaders</td>
-                    <td>Comma separated list of HTTP request headers which will not be forwarded from client
-                    to server. By default, any other request header will be forwarded.
-                    See <a href="#Http_headers_support">HTTP headers support</a> for more details.
-                    </td>
-                    <td>No</td>
-                    <td>Authorization,Connection,Content-Length,Cache-control,Cookie,Expect,Host,Max-Forwards,Pragma,Proxy-Authorization,TE,Trailer,Transfer-Encoding,Upgrade</td>
-                </tr>
-                <tr>
-                    <td>forwardRequestHeaders</td>
-                    <td>Comma separated list of HTTP request headers which are discarded by default but have to be forwarded from client
-                    to server.
-                    See <a href="#Http_headers_support">HTTP headers support</a> for more details.
-                    </td>
-                    <td>No</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>discardResponseHeaders</td>
-                    <td>Comma separated list of HTTP request headers which will not be forwarded from server
-                    to client . By default, any other response header will be forwarded.
-                    See <a href="#Http_headers_support">HTTP headers support</a> for more details.
-                    </td>
-                    <td>No</td>
-                    <td>Connection,Content-Length,Content-MD5,Date,Keep-Alive,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticate</td>
-                </tr>
-                <tr>
-                    <td>forwardResponseHeaders</td>
-                    <td>Comma separated list of HTTP response headers which are discarded by default but have to be forwarded from server
-                    to client.
-                    See <a href="#Http_headers_support">HTTP headers support</a> for more details.
-                    </td>
-                    <td>No</td>
-                    <td></td>
+                    <td>true</td>
                 </tr>
                 <tr>
                     <td>cookieManager</td>
@@ -276,22 +240,16 @@ theme.mappings=/css/*, /images/*
                 </tr>
                  <tr>
                     <td>discardCookies</td>
-                    <td>Comma separated list of the names of the cookies to ignore. By default, cookies are stored in the session on ESIGate side. You can use the value * to discard all cookies.</td>
+                    <td>Comma separated list of the names of the cookies to ignore. By default, cookies are forwarded. You can use the value * to discard all cookies.</td>
                     <td>No</td>
                     <td></td>
                 </tr>
                  <tr>
-                    <td>forwardCookies</td>
-                    <td>Comma separated list of the names of the cookies to forward to the client. By default, cookies are stored in the session on ESIGate side. You can use the value * to forward all cookies. Domain and path are rewritten in order to match the domain and path that are visible from the client.</td>
+                    <td>storeCookiesInSession</td>
+                    <td>Comma separated list of the names of the cookies to store in the session on ESIGate side. By default, cookies are forwarded. You can use the value * to store all the cookies. Domain and path are rewritten in order to match the domain and path that are visible from the client.</td>
                     <td>No</td>
                     <td></td>
                 </tr>
-				<tr>
-                    <td>fixResources</td>
-                    <td>Fix links to resources, images and pages in the pages retrieved (parse the pages to find &lt;a href=...&gt; or &lt;img src=...&gt; ...)</td>
-                    <td>No</td>
-                    <td>false</td>
-                </tr>   
 				<tr>
                     <td>fixMode</td>
                     <td>If "relative" the generated URLs will be relative to the root of the server (ie starting with "/"). If "absolute" generated URLs will be absolute (ie starting with "http://")</td>
@@ -316,17 +274,11 @@ theme.mappings=/css/*, /images/*
 					<td>No</td>
 					<td>roundrobin</td>
 				</tr>
-               <tr>
-                    <td><strike>authenticationHandler</strike></td>
-                    <td>This configuration is deprecated and no longer supported. Authentication handlers must now be implemented as extensions. See the <a href="#Authentication_and_SSO">authentication documentation</a> to learn how to use authentication and upgrade existing custom handlers. </td>
-                    <td>No</td>
-                    <td></td>
-                </tr> 
-                   <tr>
+                    <tr>
                     <td>extensions</td>
                     <td>A comma-separated list of extensions (class names). Extensions can register to events and customize standard behavior, for instance add logging or handle authentication. Extensions will be called in the same order as in this list.</td>
                     <td>No</td>
-                    <td>org.esigate.extension.FragmentLogging, org.esigate.extension.FetchLogging, org.esigate.authentication.RemoteUserAuthenticationHandler, org.esigate.extension.ResourceFixup, org.esigate.extension.XPoweredBy</td>
+                    <td>org.esigate.extension.FragmentLogging, org.esigate.extension.FetchLogging, org.esigate.authentication.RemoteUserAuthenticationHandler, org.esigate.extension.Esi, org.esigate.extension.ResourceFixup, org.esigate.extension.XPoweredBy, org.esigate.extension.surrogate.Surrogate, org.esigate.extension.ConfigReloadOnChange</td>
                 </tr> 
  				<tr>
 					<td>useCache</td>
@@ -1192,10 +1144,7 @@ someUrl=/cms/article123
 					</tr>
 					<tr>
 						<td>Authorization</td>
-						<td>
-							Not forwarded. See 
-							<a href="#Authentication_and_SSO">authentication</a>
-						</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>Cache-control</td>
@@ -1231,7 +1180,7 @@ someUrl=/cms/article123
 					</tr>
 					<tr>
 						<td>Cookie</td>
-						<td>Depends on cookie configuration. By default not forwarded because cookies are kept into session (see <a href="#Cookies">Cookies</a>)</td>
+						<td>Depends on cookie configuration. Rewritten and forwarded by default (see <a href="#Cookies">Cookies</a>)</td>
 					</tr>
 					<tr>
 						<td>Date</td>
@@ -1247,7 +1196,7 @@ someUrl=/cms/article123
 					</tr>
 					<tr>
 						<td>Host</td>
-						<td>Default ignored, depends on preserveHost parameter</td>
+						<td>Forwarded by default, depends on preserveHost parameter</td>
 					</tr>
 					<tr>
 						<td>If-Match</td>
@@ -1456,7 +1405,7 @@ someUrl=/cms/article123
 					</tr>
 					<tr>
 						<td>Set-Cookie</td>
-						<td>Depends on cookie configuration. By default not forwarded because cookies are kept into session (see <a href="#Cookies">Cookies</a>)</td>
+						<td>Depends on cookie configuration. By default rewritten and forwarded (see <a href="#Cookies">Cookies</a>)</td>
 					</tr>
 					<tr>
 						<td>Trailer</td>
@@ -1480,10 +1429,7 @@ someUrl=/cms/article123
 					</tr>
 					<tr>
 						<td>WWW-Authenticate</td>
-						<td>
-							Not forwarded, see
-							<a href="#Authentication_and_SSO">authentication</a>
-						</td>
+						<td>Forwarded</td>
 					</tr>
 				</table>
 			</subsection>
@@ -1508,9 +1454,10 @@ someUrl=/cms/article123
 			</subsection>
 			<subsection name="Cookie storing">
 				<p>
-					By default, cookies sent by the browser are NOT forwarded to
-					target applications and cookies sent back by the server are not
-					forwarded to the browser : they are kept server side into a the user
+					By default, cookies sent by the browser are forwarded to
+					target applications and cookies sent back by the server are
+					forwarded to the browser. It is also possible to store them in 
+					the session on EsiGate side: they are kept server side into a the user
 					context. Of course, every user has a separate user context.
 				</p>
 				<p>
@@ -1525,37 +1472,37 @@ someUrl=/cms/article123
 					store the user context.
 				</p>
 			</subsection>
-			<subsection name="Cookie forwarding, cookie discarding">
+			<subsection name="Cookie forwarding, cookie storing, cookie discarding">
 				<p>
-					It is possible to configure ESIGate to forward all cookies or
-					specific cookies to the browser and also discard all or specific
+					It is possible to configure ESIGate to store all cookies or
+					specific cookies to the session and also discard all or specific
 					cookies. This is done by using the properties
-	                "forwardCookies" and "discardCookies" in the configuration file.
+	                "storeCookiesInSession" and "discardCookies" in the configuration file.
 	                Values for these properties should be a comma separated list of cookie
 	                names or the single value "*".
 				</p>
 				<p>
-					Example 1: forward cookies named "cookie1" and "cookie2", discard
-					cookie name "cookie3", all other cookies will be stored server side
+					Example 1: store cookies named "cookie1" and "cookie2", discard
+					cookie name "cookie3", all other cookies will be forwarded
 					(default behavior).
 					<source>
-forwardCookies=cookie1,cookie2
+storeCookiesInSession=cookie1,cookie2
 discardCookies=cookie3
 					</source>
 				</p>
 				<p>
-					Example 2: forward cookies named "cookie1" and "cookie2", discard
+					Example 2: store cookies named "cookie1" and "cookie2", discard
 					all other cookies.
 					<source>
-forwardCookies=cookie1,cookie2
+storeCookiesInSession=cookie1,cookie2
 discardCookies=*
 					</source>
 				</p>
-				<p>Note: if the name of a cookie is present in forwardCookies, it
+				<p>Note: if the name of a cookie is present in storeCookiesInSession, it
 					takes priority over "*" in discardCookies</p>
 				<p>Note: if the name of a cookie is present in discardCookies, it
-					takes priority over "*" in forwardCookies</p>
-				<p>Note: using value "*" for both forwardCookies and discardCookies
+					takes priority over "*" in storeCookiesInSession</p>
+				<p>Note: using value "*" for both storeCookiesInSession and discardCookies
 					is not allowed.</p>
 				<p>Note: forwarded cookies are not kept server side, they are
 					forwarded both ways, server to browser when the header "set-cookie"
@@ -1564,8 +1511,7 @@ discardCookies=*
 			<subsection name="Cookie rewriting">
 				<p>For forwarded cookie, the
 					domain and path of the cookie and secure
-					or
-					not cannot be kept as-is
+					or	not cannot be kept as-is
 					because a cookie that would not match its
 					originating domain should be
 					rejected by the browser.

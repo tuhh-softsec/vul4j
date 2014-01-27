@@ -204,8 +204,33 @@ provider2.mappings=/provider2/*
 				</p>
 
 			</subsection>
-
-
+			<subsection name="Default option values">
+				<p>
+					"preserveHost" is now set to true by default.
+				</p>
+				<p>
+					Cookies are now forwarded by default. "forwardCookies" parameter has
+					been removed and a new parameter "storeCookiesInSession" has been created
+					to be able to keep some cookies in the session.
+				</p>
+				<p>
+					Aggregator extension is not enabled anymore in the 
+					default extensions list. I you still use the old html comments based
+					aggregator syntax, you have to add this extension.
+				</p>
+				<p>
+					"fixResources" option has been removed. Urls inside pages are now rewritten by default.
+					To desactivate it, you have to remove org.esigate.extension.ResourceFixup extension.
+				</p>
+				<p>
+					org.esigate.extension.ConfigReloadOnChange is now activated by default. The configuration
+					file is checked every 5 seconds and automatically reloaded if the file has changed.
+					This can be useful in development.
+				</p>
+				<p>
+					WWW-Authenticate response header and Authorization request header are now forwarded (basic authentication).
+				</p>
+			</subsection>
 
 			<div id="disqus_thread"></div>
 			<script type="text/javascript">
