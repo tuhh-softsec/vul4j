@@ -83,9 +83,6 @@ public final class ExtensionFactory {
      */
     public static <T extends Extension> List<T> getExtensions(Properties properties, Parameter parameter, Driver d) {
         Collection<String> className = parameter.getValueList(properties);
-        if (className == null) {
-            return null;
-        }
         List<T> finalResult = new ArrayList<T>();
         for (String cName : className) {
             try {

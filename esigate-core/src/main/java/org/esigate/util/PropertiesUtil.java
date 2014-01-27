@@ -61,12 +61,15 @@ public final class PropertiesUtil {
      * @param list
      * @return Ordered collection
      */
-    private static Collection<String> toCollection(String list) {
+    static Collection<String> toCollection(String list) {
         Collection<String> result = new ArrayList<String>();
         if (list != null) {
             String[] values = list.split(",");
             for (String value : values) {
-                result.add(value.trim());
+                String trimmed = value.trim();
+                if (!trimmed.isEmpty()) {
+                    result.add(trimmed);
+                }
             }
         }
         return result;

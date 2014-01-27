@@ -65,8 +65,6 @@ public final class Parameters {
     public static final Parameter DISCARD_COOKIES = new Parameter("discardCookies", null);
     public static final Parameter STORE_COOKIES_IN_SESSION = new Parameter("storeCookiesInSession", null);
 
-    // Url rewriting
-    public static final Parameter FIX_RESOURCES = new Parameter("fixResources", "false");
     public static final Parameter FIX_MODE = new Parameter("fixMode", "relative");
     public static final Parameter VISIBLE_URL_BASE = new Parameter("visibleUrlBase", null);
 

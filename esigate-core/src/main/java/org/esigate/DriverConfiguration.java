@@ -39,7 +39,6 @@ public class DriverConfiguration {
 
     private final String instanceName;
     private final String uriEncoding;
-    private final boolean fixResources;
     private final String visibleBaseURL;
     private final int fixMode;
     private final Properties properties;
@@ -53,7 +52,6 @@ public class DriverConfiguration {
         baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
         uriEncoding = Parameters.URI_ENCODING.getValueString(props);
         preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
-        fixResources = Parameters.FIX_RESOURCES.getValueBoolean(props);
         visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValueString(props);
         isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
         if ("absolute".equalsIgnoreCase(Parameters.FIX_MODE.getValueString(props))) {
@@ -108,10 +106,6 @@ public class DriverConfiguration {
 
     public int getFixMode() {
         return fixMode;
-    }
-
-    public boolean isFixResources() {
-        return fixResources;
     }
 
     public String getVisibleBaseURL(String currentBaseUrl) {
