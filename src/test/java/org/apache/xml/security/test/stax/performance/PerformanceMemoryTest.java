@@ -260,7 +260,11 @@ public class PerformanceMemoryTest extends AbstractPerformanceTest {
                 maxMem = mem > maxMem ? mem : maxMem;
             }
             System.out.println("Max memory usage: " + maxMem + "MB");
-            return maxMem;
+            
+            if (maxMem > Integer.MIN_VALUE) {
+                return maxMem;
+            }
+            return 0;
         }
     }
 }
