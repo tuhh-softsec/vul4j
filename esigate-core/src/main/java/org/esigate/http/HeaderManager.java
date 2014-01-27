@@ -71,7 +71,6 @@ public class HeaderManager {
         responseHeadersFilterList.remove("Set-Cookie");
         responseHeadersFilterList.remove("Trailer");
         responseHeadersFilterList.remove("Transfer-Encoding");
-        responseHeadersFilterList.remove("WWW-Authenticate");
     }
 
     protected boolean isForwardedRequestHeader(String headerName) {

@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.meterware.httpunit.AuthorizationRequiredException;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
@@ -109,9 +110,8 @@ public class ResponseHeadersTest extends TestCase {
     /**
      * Content-encoding should not be forwarded as EsiGate will decompress gzip responses
      * 
-     * @throws Exception
      */
-    public void testContentEncoding() throws Exception {
+    public void testContentEncoding() {
         // FIXME not easy to test as adding this header without really gzipping
         // response body makes the response invalid
         // assertHeaderDiscarded("Content-Encoding", "gzip");
@@ -124,9 +124,8 @@ public class ResponseHeadersTest extends TestCase {
     /**
      * Keep-alive is managed by the servlet container, we must not try to set it
      * 
-     * @throws Exception
      */
-    public void testContentLength() throws Exception {
+    public void testContentLength() {
         // Cannot test it
     }
 
@@ -198,9 +197,8 @@ public class ResponseHeadersTest extends TestCase {
     /**
      * Keep-alive is managed by the servlet container, we must not try to change it
      * 
-     * @throws Exception
      */
-    public void testKeepAlive() throws Exception {
+    public void testKeepAlive() {
         // Cannot test it
     }
 
@@ -295,9 +293,8 @@ public class ResponseHeadersTest extends TestCase {
      * Transfer-Encoding Ignored (chunked encoding managed by the container). We cannot really test it live as setting
      * this header generates invalid responses.
      * 
-     * @throws Exception
      */
-    public void testTransferEncoding() throws Exception {
+    public void testTransferEncoding() {
         // Cannot test it
     }
 
@@ -320,8 +317,13 @@ public class ResponseHeadersTest extends TestCase {
     }
 
     public void testWWWAuthenticate() throws Exception {
-        // Default ignored, see authentication
-        assertHeaderDiscarded("WWW-Authenticate");
+        try {
+            assertHeaderForwarded("WWW-Authenticate");
+        } catch (AuthorizationRequiredException e) {
+            // What we expected
+            return;
+        }
+        fail("Header WWW-Authenticate should be forwarded");
     }
 
     public void testXPoweredBy() throws Exception {
