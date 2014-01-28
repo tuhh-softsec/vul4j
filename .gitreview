@@ -1,0 +1,5 @@
+[gerrit]
+host=gerrit.onos.onlab.us
+port=29418
+project=ONOS.git
+defaultbranch=master
