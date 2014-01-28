@@ -101,7 +101,7 @@ public class XMLSec {
      *          if the configuration is invalid
      */
     public static XMLSecurityProperties validateAndApplyDefaultsToOutboundSecurityProperties(XMLSecurityProperties securityProperties) throws XMLSecurityConfigurationException {
-        if (securityProperties.getActions() == null) {
+        if (securityProperties.getActions() == null || securityProperties.getActions().isEmpty()) {
             throw new XMLSecurityConfigurationException("stax.noOutputAction");
         }
         
