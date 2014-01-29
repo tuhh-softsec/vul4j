@@ -141,6 +141,9 @@ public class XMLSec {
                 if (securityProperties.getEncryptionSymAlgorithm() == null) {
                     securityProperties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes256-cbc");
                 }
+                if (securityProperties.getEncryptionKeyIdentifier() == null) {
+                    securityProperties.setEncryptionKeyIdentifier(SecurityTokenConstants.KeyIdentifier_IssuerSerial);
+                }
             }
         }
         return new XMLSecurityProperties(securityProperties);

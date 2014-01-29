@@ -51,6 +51,7 @@ public class XMLSecurityProperties {
     private final List<SecurePart> encryptionParts = new LinkedList<SecurePart>();
     private Key encryptionKey;
     private Key encryptionTransportKey;
+    private SecurityTokenConstants.KeyIdentifier encryptionKeyIdentifier;
 
     private Key decryptionKey;
 
@@ -83,6 +84,7 @@ public class XMLSecurityProperties {
         this.encryptionParts.addAll(xmlSecurityProperties.encryptionParts);
         this.encryptionKey = xmlSecurityProperties.encryptionKey;
         this.encryptionTransportKey = xmlSecurityProperties.encryptionTransportKey;
+        this.encryptionKeyIdentifier = xmlSecurityProperties.encryptionKeyIdentifier;
         this.decryptionKey = xmlSecurityProperties.decryptionKey;
         this.signatureParts.addAll(xmlSecurityProperties.signatureParts);
         this.signatureAlgorithm = xmlSecurityProperties.signatureAlgorithm;
@@ -102,6 +104,24 @@ public class XMLSecurityProperties {
 
     public void setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier signatureKeyIdentifier) {
         this.signatureKeyIdentifier = signatureKeyIdentifier;
+    }
+    
+    /**
+     * returns the KeyIdentifierType which will be used in the secured document
+     *
+     * @return The KeyIdentifierType
+     */
+    public SecurityTokenConstants.KeyIdentifier getEncryptionKeyIdentifier() {
+        return encryptionKeyIdentifier;
+    }
+
+    /**
+     * Specifies the KeyIdentifierType to use in the secured document
+     *
+     * @param encryptionKeyIdentifier
+     */
+    public void setEncryptionKeyIdentifier(SecurityTokenConstants.KeyIdentifier encryptionKeyIdentifier) {
+        this.encryptionKeyIdentifier = encryptionKeyIdentifier;
     }
 
     /**

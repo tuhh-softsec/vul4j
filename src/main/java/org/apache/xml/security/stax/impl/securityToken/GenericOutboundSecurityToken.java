@@ -19,13 +19,13 @@
 package org.apache.xml.security.stax.impl.securityToken;
 
 import java.security.Key;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.w3c.dom.Element;
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
@@ -51,6 +51,9 @@ public class GenericOutboundSecurityToken extends AbstractSecurityToken implemen
     public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType, Key key) {
         this(id, tokenType);
         setSecretKey("", key);
+        if (key instanceof PublicKey) {
+            setPublicKey((PublicKey)key);
+        }
     }
 
     public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType) {

@@ -181,6 +181,18 @@ public class XMLSecurityUtils {
         
         X509Certificate x509Certificate = x509Certificates[0];
         PublicKey publicKey = x509Certificate.getPublicKey();
+        createKeyValueTokenStructure(abstractOutputProcessor, outputProcessorChain, publicKey);
+    }
+    
+    public static void createKeyValueTokenStructure(AbstractOutputProcessor abstractOutputProcessor,
+                                                    OutputProcessorChain outputProcessorChain, 
+                                                    PublicKey publicKey)
+            throws XMLStreamException, XMLSecurityException {
+
+        if (publicKey == null) {
+            throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
+        }
+        
         String algorithm = publicKey.getAlgorithm();
 
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyValue, true, null);

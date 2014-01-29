@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.processor.output;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.stax.securityToken.SecurityTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,9 @@ import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+
 import java.security.*;
+import java.security.cert.X509Certificate;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
@@ -177,6 +180,9 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         }
 
                         createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptionMethod);
+                        
+                        createKeyInfoStructureForEncryptedKey(outputProcessorChain, keyWrappingToken);
+                        
                         createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherData, false, null);
                         createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherValue, false, null);
 
@@ -255,6 +261,45 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
 
                         createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptedKey);
 
+                        createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo);
+                    }
+                    
+                    protected void createKeyInfoStructureForEncryptedKey(
+                        OutputProcessorChain outputProcessorChain,
+                        OutboundSecurityToken securityToken
+                    ) throws XMLStreamException, XMLSecurityException {
+                        SecurityTokenConstants.KeyIdentifier keyIdentifier = 
+                            getSecurityProperties().getEncryptionKeyIdentifier();
+
+                        X509Certificate[] x509Certificates = securityToken.getX509Certificates();
+                        if (x509Certificates == null) {
+                            if (securityToken.getPublicKey() != null 
+                                && SecurityTokenConstants.KeyIdentifier_KeyValue.equals(keyIdentifier)) {
+                                createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo, true, null);
+                                
+                                XMLSecurityUtils.createKeyValueTokenStructure(this, outputProcessorChain, 
+                                                                              securityToken.getPublicKey());
+                                createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo);
+                            }
+                            return;
+                        }
+
+                        createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo, true, null);
+
+                        if (keyIdentifier == null || SecurityTokenConstants.KeyIdentifier_IssuerSerial.equals(keyIdentifier)) {
+                            XMLSecurityUtils.createX509IssuerSerialStructure(this, outputProcessorChain, x509Certificates);
+                        } else if (SecurityTokenConstants.KeyIdentifier_KeyValue.equals(keyIdentifier)) {
+                            XMLSecurityUtils.createKeyValueTokenStructure(this, outputProcessorChain, x509Certificates);
+                        } else if (SecurityTokenConstants.KeyIdentifier_SkiKeyIdentifier.equals(keyIdentifier)) {
+                            XMLSecurityUtils.createX509SubjectKeyIdentifierStructure(this, outputProcessorChain, x509Certificates);
+                        } else if (SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier.equals(keyIdentifier)) {
+                            XMLSecurityUtils.createX509CertificateStructure(this, outputProcessorChain, x509Certificates);
+                        } else if (SecurityTokenConstants.KeyIdentifier_X509SubjectName.equals(keyIdentifier)) {
+                            XMLSecurityUtils.createX509SubjectNameStructure(this, outputProcessorChain, x509Certificates);
+                        } else {
+                            throw new XMLSecurityException("stax.unsupportedToken", keyIdentifier);
+                        }
+                        
                         createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo);
                     }
                 };
