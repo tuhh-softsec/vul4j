@@ -73,7 +73,7 @@ public class AbstractSignatureCreationTest extends org.junit.Assert {
     ) throws Exception {
         verifyUsingDOM(document, cert, secureParts, null);
     }
-
+    
     /**
      * Verify the document using DOM
      */
@@ -82,6 +82,19 @@ public class AbstractSignatureCreationTest extends org.junit.Assert {
             X509Certificate cert,
             List<SecurePart> secureParts,
             ResourceResolverSpi resourceResolverSpi
+    ) throws Exception {
+        verifyUsingDOM(document, cert, secureParts, resourceResolverSpi, true);
+    }
+
+    /**
+     * Verify the document using DOM
+     */
+    protected void verifyUsingDOM(
+            Document document,
+            X509Certificate cert,
+            List<SecurePart> secureParts,
+            ResourceResolverSpi resourceResolverSpi,
+            boolean keyInfoRequired
     ) throws Exception {
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xpath = xpf.newXPath();
@@ -107,8 +120,10 @@ public class AbstractSignatureCreationTest extends org.junit.Assert {
         if (resourceResolverSpi != null) {
             signature.addResourceResolver(resourceResolverSpi);
         }
-        KeyInfo ki = signature.getKeyInfo();
-        Assert.assertNotNull(ki);
+        if (keyInfoRequired) {
+            KeyInfo ki = signature.getKeyInfo();
+            Assert.assertNotNull(ki);
+        }
 
         Assert.assertTrue(signature.checkSignatureValue(cert));
     }
