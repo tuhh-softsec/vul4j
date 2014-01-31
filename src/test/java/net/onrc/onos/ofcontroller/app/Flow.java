@@ -1,6 +1,5 @@
 package net.onrc.onos.ofcontroller.app;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -8,19 +7,19 @@ import java.util.Map;
  * This code is valid for the architectural study purpose only.
  * @author Toshio Koide (t-koide@onlab.us)
  */
-public class Flow extends NetworkGraphEntity {
+public abstract class Flow extends NetworkGraphEntity {
 	public enum FlowState {
 		Created,
 		Configuring,
 		Configured,
-		PathCalcurating,
-		PathCalcurated,
-		PathCalcurationFailed,
+		PathCalculating,
+		PathCalculated,
+		PathCalculationFailed,
 		PathInstalled,
-		PathInstlationFailed,
-		FlowEntriesCalcurating,
-		FlowEntriesCalcurated,
-		FlowEntriesCalcuratinFailed,
+		PathInstallationFailed,
+		FlowEntriesCalculating,
+		FlowEntriesCalculated,
+		FlowEntriesCalculationFailed,
 		FlowEntriesInstalling,
 		FlowEntriesInstalled,
 		FlowEntriesInstallationFailed,
@@ -43,6 +42,11 @@ public class Flow extends NetworkGraphEntity {
 	// flow entries
 	protected Map<SwitchPort, FlowEntry> flowEntries = null;
 
+	// abstract methods
+	abstract boolean calcPath();
+	abstract void calcFlowEntries();
+	
+
 	public Flow(NetworkGraph graph, String name, SwitchPort srcPort, SwitchPort dstPort) {
 		super(graph);
 		this.srcPort = srcPort;
@@ -57,12 +61,7 @@ public class Flow extends NetworkGraphEntity {
 	boolean isState(FlowState state) {
 		return this.state == state;
 	}
-	
-	boolean calcPath() {
-		state = FlowState.PathCalcurated;
-		return true;
-	}
-	
+		
 	public Path getPath() {
 		return path;
 	}
@@ -83,15 +82,16 @@ public class Flow extends NetworkGraphEntity {
 		return true;
 	}
 
-	public void calcFlowEntries() {
-		flowEntries = new HashMap<SwitchPort, FlowEntry>();
-		state = FlowState.FlowEntriesCalcurated;
-	}
-	
+	/**
+	 * not implemented yet
+	 */
 	public void installFlowEntries() {
 		state = FlowState.FlowEntriesInstalled;
 	}
 	
+	/**
+	 * not implemented yet
+	 */
 	public void uninstallFlowEntries() {
 		state = FlowState.FlowEntriesRemoved;
 	}
