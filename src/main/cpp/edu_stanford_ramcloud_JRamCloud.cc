@@ -455,13 +455,25 @@ JNICALL Java_edu_stanford_ramcloud_JRamCloud_remove__J_3B(JNIEnv *env,
     return static_cast<jlong>(version);
 }
 
+
+// Workaround for javah generating incorrect signature for inner class
+// 00024 is an escaped signature for $ character
+#ifdef __cplusplus
+extern "C" {
+#endif
+JNIEXPORT jlong JNICALL Java_edu_stanford_ramcloud_JRamCloud_remove__J_3BLedu_stanford_ramcloud_JRamCloud_00024RejectRules_2
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);
+#ifdef __cplusplus
+}
+#endif
+
 /*
  * Class:     edu_stanford_ramcloud_JRamCloud
  * Method:    remove
- * Signature: (J[BLJRamCloud/RejectRules;)J
+ * Signature: (J[BLedu/stanford/ramcloud/JRamCloud/$RejectRules;)J
  */
 JNIEXPORT jlong
-JNICALL Java_edu_stanford_ramcloud_JRamCloud_remove__J_3BLJRamCloud_RejectRules_2(JNIEnv *env,
+JNICALL Java_edu_stanford_ramcloud_JRamCloud_remove__J_3BLedu_stanford_ramcloud_JRamCloud_00024RejectRules_2(JNIEnv *env,
                                                            jobject jRamCloud,
                                                            jlong jTableId,
                                                            jbyteArray jKey,
