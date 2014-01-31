@@ -18,6 +18,7 @@ import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.datastore.topology.RCLink.STATUS;
 import net.onrc.onos.datastore.utils.ByteArrayComparator;
+import net.onrc.onos.datastore.utils.ByteArrayUtil;
 
 public class RCDevice extends RCObject {
     @SuppressWarnings("unused")
@@ -145,6 +146,12 @@ public class RCDevice extends RCObject {
 	}
 
 	return map;
+    }
+
+    @Override
+    public String toString() {
+	// TODO OUTPUT ALL?
+	return "[RCDevice " + ByteArrayUtil.toHexStringBuffer(mac, ":") + "]";
     }
 
     public static void main(String[] args) {

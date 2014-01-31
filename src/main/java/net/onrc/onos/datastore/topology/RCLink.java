@@ -47,6 +47,12 @@ public class RCLink extends RCObject {
 	public byte[] getSwitchID() {
 	    return RCSwitch.getSwichID(dpid);
 	}
+
+	@Override
+	public String toString() {
+	    return "(" + Long.toHexString(dpid) + "@" + number + ")";
+	}
+
     }
 
     public static final String GLOBAL_LINK_TABLE_NAME = "G:Link";
@@ -76,6 +82,27 @@ public class RCLink extends RCObject {
 	        .put(RCPort.getPortID(dst_dpid, dst_port_no)).array();
     }
 
+    public static long[] getLinkTupleFromKey(byte[] key) {
+	return getLinkTupleFromKey(ByteBuffer.wrap(key));
+    }
+
+    public static long[] getLinkTupleFromKey(ByteBuffer keyBuf) {
+	long tuple[] = new long[4];
+	if (keyBuf.getChar() != 'L') {
+	    throw new IllegalArgumentException("Invalid Link key");
+	}
+	long src_port_pair[] = RCPort.getPortPairFromKey(keyBuf.slice());
+	keyBuf.position(2 + RCPort.PORTID_BYTES);
+	long dst_port_pair[] = RCPort.getPortPairFromKey(keyBuf.slice());
+
+	tuple[0] = src_port_pair[0];
+	tuple[1] = src_port_pair[1];
+	tuple[2] = dst_port_pair[0];
+	tuple[3] = dst_port_pair[1];
+
+	return tuple;
+    }
+
     public RCLink(Long src_dpid, Long src_port_no, Long dst_dpid,
 	    Long dst_port_no) {
 	super(RCTable.getTable(GLOBAL_LINK_TABLE_NAME), getLinkID(src_dpid,
@@ -84,6 +111,12 @@ public class RCLink extends RCObject {
 	src = new SwitchPort(src_dpid, src_port_no);
 	dst = new SwitchPort(dst_dpid, dst_port_no);
 	status = STATUS.INACTIVE;
+    }
+
+    public static RCLink createFromKey(byte[] key) {
+	long linkTuple[] = getLinkTupleFromKey(key);
+	return new RCLink(linkTuple[0], linkTuple[1], linkTuple[2],
+	        linkTuple[3]);
     }
 
     public STATUS getStatus() {
@@ -125,6 +158,11 @@ public class RCLink extends RCObject {
 
 	this.status = (STATUS) map.get(PROP_STATUS);
 	return map;
+    }
+
+    @Override
+    public String toString() {
+	return "[RCLink " + src + "->" + dst + " STATUS:" + status + "]";
     }
 
     public static void main(String[] args) {

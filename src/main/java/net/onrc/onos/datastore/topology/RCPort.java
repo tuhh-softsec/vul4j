@@ -17,6 +17,7 @@ import com.esotericsoftware.kryo.Kryo;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.datastore.utils.ByteArrayComparator;
+import net.onrc.onos.datastore.utils.ByteArrayUtil;
 
 public class RCPort extends RCObject {
     private static final Logger log = LoggerFactory.getLogger(RCPort.class);
@@ -74,21 +75,35 @@ public class RCPort extends RCObject {
 	        .putChar('P').putLong(number).array();
     }
 
-    public static long getDpidFromKey(byte[] key) {
-	ByteBuffer keyBuf = ByteBuffer.wrap(key);
+    public static long[] getPortPairFromKey(byte[] key) {
+	return getPortPairFromKey(ByteBuffer.wrap(key));
+
+    }
+
+    public static long[] getPortPairFromKey(ByteBuffer keyBuf) {
+	long[] pair = new long[2];
 	if (keyBuf.getChar() != 'S') {
-	    throw new IllegalArgumentException("Invalid Port key");
+	    throw new IllegalArgumentException("Invalid Port key:" + keyBuf
+		    + " "
+		    + ByteArrayUtil.toHexStringBuffer(keyBuf.array(), ":"));
 	}
-	return keyBuf.getLong();
+	pair[0] = keyBuf.getLong();
+	if (keyBuf.getChar() != 'P') {
+	    throw new IllegalArgumentException("Invalid Port key:" + keyBuf
+		    + " "
+		    + ByteArrayUtil.toHexStringBuffer(keyBuf.array(), ":"));
+	}
+	pair[1] = keyBuf.getLong();
+	return pair;
+
+    }
+
+    public static long getDpidFromKey(byte[] key) {
+	return getPortPairFromKey(key)[0];
     }
 
     public static long getNumberFromKey(byte[] key) {
-	ByteBuffer keyBuf = ByteBuffer.wrap(key);
-	keyBuf.position(RCSwitch.SWITCHID_BYTES);
-	if (keyBuf.getChar() != 'P') {
-	    throw new IllegalArgumentException("Invalid Port key");
-	}
-	return keyBuf.getLong();
+	return getPortPairFromKey(key)[1];
     }
 
     // FIXME specify DPID,number here, or Should caller specify the key it self?
@@ -108,7 +123,8 @@ public class RCPort extends RCObject {
     }
 
     public static RCPort createFromKey(byte[] key) {
-	return new RCPort(getDpidFromKey(key), getNumberFromKey(key));
+	long[] pair = getPortPairFromKey(key);
+	return new RCPort(pair[0], pair[1]);
     }
 
     public STATUS getStatus() {
