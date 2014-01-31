@@ -126,7 +126,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
      * Startup processing.
      */
     private void startup() {
-	this.dbHandler = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
+	this.dbHandler = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 
 	//
 	// Obtain the initial Topology state

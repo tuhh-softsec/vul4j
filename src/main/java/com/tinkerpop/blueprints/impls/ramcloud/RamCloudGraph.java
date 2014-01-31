@@ -84,6 +84,8 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
     private final long INSTANCE_ID_RANGE = 100000;
     private String coordinatorLocation;
     private static final Features FEATURES = new Features();
+    // FIXME better loop variable name
+    public final int CONDITIONALWRITE_RETRY_MAX = 100;
     public final long measureBPTimeProp = Long.valueOf(System.getProperty("benchmark.measureBP", "0"));
     public final long measureRcTimeProp = Long.valueOf(System.getProperty("benchmark.measureRc", "0"));
     public static final long measureSerializeTimeProp = Long.valueOf(System.getProperty("benchmark.measureSerializeTimeProp", "0"));
@@ -279,7 +281,7 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
         }
         if (instanceEntry != null) {
 	    long curInstanceId = 1;
-	    for (int i = 0 ; i < 100 ; i++) {
+	    for (int i = 0 ; i < CONDITIONALWRITE_RETRY_MAX ; i++) {
 		Map<String, Long> propMap = null;
 		if (instanceEntry.value == null) {
 		    log.warn("Got a null byteArray argument");

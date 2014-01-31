@@ -51,21 +51,6 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
     // FIXME this should not be defined here
     private long indexVersion;
 
-//    private static final ThreadLocal<Kryo> kryo = new ThreadLocal<Kryo>() {
-//        @Override
-//        protected Kryo initialValue() {
-//                 Kryo kryo = new Kryo();
-//                 kryo.setRegistrationRequired(true);
-//                 kryo.register(Long.class);
-//                 kryo.register(String.class);
-//                 kryo.register(TreeMap.class);
-//                 kryo.register(ArrayList.class);
-//                 kryo.setReferences(false);
-//                 return kryo;
-//        }
-//    };
-
-
     public RamCloudIndex(long tableId, String indexName, Object propValue, RamCloudGraph graph, Class<T> indexClass) {
 	this.tableId = tableId;
 	this.graph = graph;
@@ -89,7 +74,6 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 	    JRamCloud.Object vertTableEntry;
 	    JRamCloud vertTable = graph.getRcClient();
 
-	    //vertTableEntry = graph.getRcClient().read(tableId, rcKey);
 	    pm.indexread_start("RamCloudIndex exists()");
 	    vertTableEntry = vertTable.read(tableId, rcKey);
 	    pm.indexread_end("RamCloudIndex exists()");
@@ -110,7 +94,6 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 		JRamCloud.RejectRules rules = rcClient.new RejectRules();
 		rules.setExists();
 
-		//graph.getRcClient().writeRule(tableId, rcKey, ByteBuffer.allocate(0).array(), rules);
 		pm.indexwrite_start("RamCloudIndex create()");
 		rcClient.writeRule(tableId, rcKey, ByteBuffer.allocate(0).array(), rules);
 		pm.indexwrite_end("RamCloudIndex create()");
@@ -181,8 +164,7 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 
 	create();
 
-	// FIXME give more meaningful loop variable
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < graph.CONDITIONALWRITE_RETRY_MAX; i++) {
 	    Map<Object, List<Object>> map = readIndexPropertyMapFromDB();
 	    List<Object> values = map.get(propValue);
 	    if (values == null) {
@@ -193,20 +175,14 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 		values.add(elmId);
 	    }
 
-            //Masa commented out the following measurement b/c Serialization delay is measured in onvertIndexPropertyMapToRcBytes(map)
-	    //long serStartTime = System.nanoTime();
 	    byte[] rcValue = convertIndexPropertyMapToRcBytes(map);
-	    //if(RamCloudGraph.measureSerializeTimeProp == 1) {
-	    //	long serEndTime = System.nanoTime();
-	    //	log.error("Performance index kryo serialization [id={}] {} size {}", elmId, serEndTime - serStartTime, rcValue.length);
-            //}
 
 	    if (rcValue.length != 0) {
 		if (writeWithRules(rcValue)) {
 		    break;
 		} else {
 		    log.debug("getSetProperty(String {}, Object {}) cond. write failure RETRYING {}", propValue, elmId, i+1);
-		    if (i == 100) {
+		    if (i + 1 == graph.CONDITIONALWRITE_RETRY_MAX) {
 			log.error("getSetProperty(String {}, Object {}) cond. write failure Gaveup RETRYING", propValue, elmId);
 		    }
 		}
@@ -261,9 +237,7 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 	    log.error("Index name mismatch indexName:{}, remove({},{},...). SOMETHING IS WRONG", indexName, propName, propValue);
 	}
 
-	// FIXME better loop variable name
-	final int MAX_RETRYS = 100;
-	for (int i = 0; i < MAX_RETRYS; ++i) {
+	for (int i = 0; i < graph.CONDITIONALWRITE_RETRY_MAX; ++i) {
 	    Map<Object, List<Object>> map = readIndexPropertyMapFromDB();
 
 	    if (map.containsKey(propValue)) {
@@ -281,17 +255,7 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 		// no change to DB so exit now
 		return;
 	    }
-	    //long startTime = System.nanoTime();
-	    //if(RamCloudGraph.measureSerializeTimeProp == 1) {
-	    //   pm.ser_start("SC");
-	    //}
 	    byte[] rcValue = convertIndexPropertyMapToRcBytes(map);
-	    //if(RamCloudGraph.measureSerializeTimeProp == 1) {
-	    //    pm.ser_end("SC");
-	    	//long endTime = System.nanoTime();
-		//pm.ser_add(endTime - startTime);
-	    	//log.error("Performance index kryo serialization for removal key {} {} size {}", element, endTime - startTime, rcValue.length);
-	    //}
 
 	    if (rcValue.length == 0) {
 		return;
@@ -301,7 +265,7 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 		break;
 	    } else {
 		log.debug("remove({}, {}, T element) write failure RETRYING {}", propName, propValue, (i + 1));
-		if (i + 1 == MAX_RETRYS) {
+		if (i + 1 == graph.CONDITIONALWRITE_RETRY_MAX) {
 		    log.error("remove({}, {}, T element) write failed completely. gave up RETRYING", propName, propValue);
 		}
 	    }
@@ -341,15 +305,14 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 		// nothing to write
 		continue;
 	    }
-	    if (writeWithRules(tableId, tableEntry.key, rcValue, tableEntry.version, graph)) {
+	    if (RamCloudWrite.writeWithRules(tableId, tableEntry.key, rcValue, tableEntry.version, graph, RamCloudWrite.PerfMonEnum.INDEXWRITE)) {
 		// cond. write success
 		continue;
 	    } else {
 		// cond. write failure
 		log.debug("removeElement({}, {}, ...) cond. key/value write failure RETRYING", tableId, element );
 		// FIXME Dirty hack
-		final int RETRY_MAX = 100;
-		for (int retry = RETRY_MAX; retry >= 0; --retry) {
+		for (int retry = graph.CONDITIONALWRITE_RETRY_MAX; retry >= 0; --retry) {
 		    RamCloudKeyIndex idx = new RamCloudKeyIndex(tableId, tableEntry.key, graph, element.getClass());
 		    Map<Object, List<Object>> rereadMap = idx.readIndexPropertyMapFromDB();
 
@@ -370,7 +333,7 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 		    }
 
 		    if (idx.writeWithRules(convertIndexPropertyMapToRcBytes(rereadMap))) {
-			log.debug("removeElement({}, {}, ...) cond. key/value {} write failure RETRYING {}", tableId, element, rereadMap, RETRY_MAX - retry);
+			log.debug("removeElement({}, {}, ...) cond. key/value {} write failure RETRYING {}", tableId, element, rereadMap, graph.CONDITIONALWRITE_RETRY_MAX - retry);
 			// cond. re-write success
 			break;
 		    }
@@ -384,31 +347,20 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
     }
 
     public Map<Object, List<Object>> readIndexPropertyMapFromDB() {
-	//log.debug("getIndexPropertyMap() ");
 	JRamCloud.Object propTableEntry;
-	long startTime = 0;
 	PerfMon pm = PerfMon.getInstance();
 
 	try {
 	    JRamCloud vertTable = graph.getRcClient();
-	    if (graph.measureRcTimeProp == 1) {
-		startTime = System.nanoTime();
-	    }
-	    //propTableEntry = graph.getRcClient().read(tableId, rcKey);
 	    pm.indexread_start("RamCloudIndex readIndexPropertyMapFromDB()");
 	    propTableEntry = vertTable.read(tableId, rcKey);
 	    pm.indexread_end("RamCloudIndex readIndexPropertyMapFromDB()");
-	    if (graph.measureRcTimeProp == 1) {
-		long endTime = System.nanoTime();
-		log.error("Performance readIndexPropertyMapFromDB(indexName {}) read time {}", indexName, endTime - startTime);
-	    }
 	    indexVersion = propTableEntry.version;
 	} catch (Exception e) {
 	    pm.indexread_end("RamCloudIndex readIndexPropertyMapFromDB()");
 	    indexVersion = 0;
-	    if (graph.measureRcTimeProp == 1) {
-		long endTime = System.nanoTime();
-		log.error("Performance readIndexPropertyMapFromDB(indexName {}) exception read time {}", indexName, endTime - startTime);
+	    if (e instanceof JRamCloud.ObjectDoesntExistException) {
+		return null;
 	    }
 	    log.warn("readIndexPropertyMapFromDB() Element does not have a index property table entry! tableId :" + tableId + " indexName : " + indexName + " ", e);
 	    return null;
@@ -423,10 +375,6 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 	    return null;
 	} else if (byteArray.length != 0) {
 	    PerfMon pm = PerfMon.getInstance();
-            long startTime = 0;
-            if(RamCloudGraph.measureSerializeTimeProp == 1) {
-        	startTime = System.nanoTime();
-            }
 	    pm.indexdeser_start("RamCloudIndex convertRcBytesToIndexPropertyMap()");
 	    IndexBlob blob;
 	    TreeMap<Object, List<Object>> map = new TreeMap<Object, List<Object>>();
@@ -434,18 +382,12 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 		blob = IndexBlob.parseFrom(byteArray);
 		List const_list = blob.getVertexIdList();
 		ArrayList list = new ArrayList<>(const_list);
-//		ByteBufferInput input = new ByteBufferInput(byteArray);
-//		ArrayList list = kryo.get().readObject(input, ArrayList.class);
 		map.put(rcKeyToPropName(rcKey), list);
 	    } catch (InvalidProtocolBufferException e) {
 		log.error("{" + toString() + "}: Read malformed edge list: ", e);
 	    } finally {
 		pm.indexdeser_end("RamCloudIndex convertRcBytesToIndexPropertyMap()");
 	    }
-            if(RamCloudGraph.measureSerializeTimeProp == 1) {
-            	long endTime = System.nanoTime();
-                log.error("Performance index kryo deserialization [id=N/A] {} size {}", endTime - startTime, byteArray.length);
-            }
 	    return map;
 	} else {
 	    return new TreeMap<Object, List<Object>>();
@@ -454,10 +396,6 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 
     public static byte[] convertIndexPropertyMapToRcBytes(Map<Object, List<Object>> map) {
 	PerfMon pm = PerfMon.getInstance();
-	long startTime = 0;
-	if(RamCloudGraph.measureSerializeTimeProp == 1) {
-	    startTime = System.nanoTime();
-	}
 	byte[] bytes;
 
 	pm.indexser_start("RamCloudIndex convertIndexPropertyMapToRcBytes()");
@@ -468,47 +406,12 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 	}
 	IndexBlob blob = builder.build();
 	bytes = blob.toByteArray();
-//	ByteBufferOutput output = new ByteBufferOutput(1024*1024);
-//	if ( map.values().size() == 0 ) {
-//	    kryo.get().writeObject(output, new ArrayList<Object>());
-//	} else {
-//	    kryo.get().writeObject(output, vtxIds);
-//	}
-//	bytes = output.toBytes();
         pm.indexser_end("RamCloudIndex convertIndexPropertyMapToRcBytes()");
-	if(RamCloudGraph.measureSerializeTimeProp == 1) {
-        	long endTime = System.nanoTime();
-		log.error("Performance index ProtoBuff serialization {}, size={}", endTime - startTime, bytes);
-	}
 	return bytes;
     }
 
     protected boolean writeWithRules(byte[] rcValue) {
-	return writeWithRules(this.tableId, this.rcKey, rcValue, this.indexVersion, this.graph);
-    }
-
-    private static boolean writeWithRules(long tableId, byte[] rcKey, byte[] rcValue, long expectedVersion, RamCloudGraph graph) {
-	JRamCloud.RejectRules rules = graph.getRcClient().new RejectRules();
-
-	if (expectedVersion == 0) {
-	    rules.setExists();
-	} else {
-	    rules.setNeVersion(expectedVersion);
-	}
-
-	PerfMon pm = PerfMon.getInstance();
-	try {
-	    JRamCloud vertTable = graph.getRcClient();
-	    pm.indexwrite_start("RamCloudIndex writeWithRules()");
-	    vertTable.writeRule(tableId, rcKey, rcValue, rules);
-	    pm.indexwrite_end("RamCloudIndex writeWithRules()");
-	} catch (Exception e) {
-            pm.indexwrite_end("RamCloudIndex writeWithRules()");
-            pm.indexwrite_condfail("RamCloudIndex writeWithRules()");
-	    log.debug("Cond. Write index property: {} failed {} expected version: {}", rcKeyToIndexName(rcKey), e, expectedVersion);
-	    return false;
-	}
-	return true;
+	return RamCloudWrite.writeWithRules(this.tableId, this.rcKey, rcValue, this.indexVersion, this.graph, RamCloudWrite.PerfMonEnum.INDEXWRITE);
     }
 
     public List<Object> getElmIdListForPropValue(Object propValue) {
@@ -526,7 +429,7 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
     }
 
     public <T> T removeIndexProperty(String key) {
-	for (int i = 0; i < 100; ++i) {
+	for (int i = 0; i < graph.CONDITIONALWRITE_RETRY_MAX; ++i) {
 	    Map<Object, List<Object>> map = readIndexPropertyMapFromDB();
 	    T retVal = (T) map.remove(key);
 	    byte[] rcValue = convertIndexPropertyMapToRcBytes(map);

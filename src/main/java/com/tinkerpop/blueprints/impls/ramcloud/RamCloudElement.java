@@ -43,6 +43,7 @@ public class RamCloudElement implements Element, Serializable {
     private byte[] rcPropTableKey;
     private long rcPropTableId;
     private RamCloudGraph graph;
+    private long propVersion;
 
     private static final ThreadLocal<Kryo> kryo = new ThreadLocal<Kryo>() {
         @Override
@@ -79,6 +80,7 @@ public class RamCloudElement implements Element, Serializable {
 	    pm.read_start("RamCloudElement getPropertyMap()");
 	    propTableEntry = vertTable.read(rcPropTableId, rcPropTableKey);
 	    pm.read_end("RamCloudElement getPropertyMap()");
+	    propVersion = propTableEntry.version;
 	    if (propTableEntry.value.length > 1024 * 1024 * 0.9) {
 		log.warn("Element[id={}] property map size is near 1MB limit!", new String(rcPropTableKey));
 	    }
@@ -113,59 +115,27 @@ public class RamCloudElement implements Element, Serializable {
 	    return null;
 	} else if (byteArray.length != 0) {
 	    PerfMon pm = PerfMon.getInstance();
-	    long startTime = 0;
-	    if(RamCloudGraph.measureSerializeTimeProp == 1) {
-		startTime = System.nanoTime();
-	    }
 	    pm.deser_start("RamCloudElement convertRcBytesToPropertyMap()");
 	    ByteBufferInput input = new ByteBufferInput(byteArray);
 	    TreeMap map = kryo.get().readObject(input, TreeMap.class);
 	    pm.deser_end("RamCloudElement convertRcBytesToPropertyMap()");
-	    if(RamCloudGraph.measureSerializeTimeProp == 1) {
-            	long endTime = System.nanoTime();
-            	log.error("Performance element kryo deserialization key {} {} size {}", this, endTime - startTime, byteArray.length);
-	    }
 	    return map;
 	} else {
 	    return new TreeMap<String, Object>();
 	}
     }
 
-    private void setPropertyMap(Map<String, Object> map) {
+    private static byte[] convertVertexPropertyMapToRcBytes(Map<String, Object> map) {
 	byte[] rcValue;
 	PerfMon pm = PerfMon.getInstance();
 
-	long startKryoTime = 0;
-	if(RamCloudGraph.measureSerializeTimeProp == 1) {
-	    startKryoTime = System.nanoTime();
-	}
 	pm.ser_start("RamCloudElement setPropertyMap()");
 	byte[] rcTemp = new byte[1024*1024];
 	Output output = new Output(rcTemp);
 	kryo.get().writeObject(output, map);
-	long midKryoTime = 0;
-	if(RamCloudGraph.measureSerializeTimeProp == 1) {
-	    midKryoTime = System.nanoTime();
-	}
 	rcValue = output.toBytes();
 	pm.ser_end("RamCloudElement setPropertyMap()");
-	if(RamCloudGraph.measureSerializeTimeProp == 1) {
-        	long endKryoTime = System.nanoTime();
-        	log.error("Performance element kryo serialization key {} mid {}, total {}, size {}", this, midKryoTime - startKryoTime, endKryoTime - startKryoTime, rcValue.length);
-	}
-
-	long startTime = 0;
-	JRamCloud vertTable = graph.getRcClient();
-	if (graph.measureRcTimeProp == 1) {
-	    startTime = System.nanoTime();
-	}
-	pm.write_start("RamCloudElement setPropertyMap()");
-	vertTable.write(rcPropTableId, rcPropTableKey, rcValue);
-	pm.write_end("RamCloudElement setPropertyMap()");
-	if (graph.measureRcTimeProp == 1) {
-	    long endTime = System.nanoTime();
-	    log.error("Performance setPropertyMap write time key {} {}", this, endTime - startTime);
-	}
+	return rcValue;
     }
 
     @Override
@@ -184,34 +154,61 @@ public class RamCloudElement implements Element, Serializable {
 	return getPropertyMap();
     }
     public void setProperties(Map<String, Object> properties) {
-        Map<String, Object> map = getPropertyMap();
+	Map<String, Object> map = getPropertyMap();
         Map<String, Object> oldValueMap = new HashMap<String, Object>(map.size());
-        for (Map.Entry<String, Object> property : properties.entrySet()) {
-            String key = property.getKey();
-            if (key == null) {
-                throw ExceptionFactory.propertyKeyCanNotBeNull();
-            }
+	for (Map.Entry<String, Object> property : properties.entrySet()) {
+	    String key = property.getKey();
+	    if (key == null) {
+	        throw ExceptionFactory.propertyKeyCanNotBeNull();
+	    }
 
-            if (key.equals("")) {
-                throw ExceptionFactory.propertyKeyCanNotBeEmpty();
-            }
+	    if (key.equals("")) {
+	        throw ExceptionFactory.propertyKeyCanNotBeEmpty();
+	    }
 
-            if (key.equals("id")) {
-                throw ExceptionFactory.propertyKeyIdIsReserved();
-            }
+	    if (key.equals("id")) {
+	        throw ExceptionFactory.propertyKeyIdIsReserved();
+	    }
 
-            if (this instanceof RamCloudEdge && key.equals("label")) {
-                throw ExceptionFactory.propertyKeyLabelIsReservedForEdges();
-            }
-            Object value = property.getValue();
-            if (value == null) {
-                throw ExceptionFactory.propertyValueCanNotBeNull();
-            }
+	    if (this instanceof RamCloudEdge && key.equals("label")) {
+	        throw ExceptionFactory.propertyKeyLabelIsReservedForEdges();
+	    }
+	    Object value = property.getValue();
+	    if (value == null) {
+		throw ExceptionFactory.propertyValueCanNotBeNull();
+	    }
 
-            oldValueMap.put(key, map.put(key, value));
+	    oldValueMap.put(key, map.put(key, value));
 
-        }
-        setPropertyMap(map);
+	}
+	byte[] rcValue = convertVertexPropertyMapToRcBytes(map);
+
+	if (rcValue.length != 0) {
+	    if (!writeWithRules(rcValue)) {
+		log.debug("getSetProperties cond. write failure RETRYING 1");
+		for (int i = 0; i < graph.CONDITIONALWRITE_RETRY_MAX ; i++){
+		    map = getPropertyMap();
+		    oldValueMap = new HashMap<String, Object>(map.size());
+		    for (Map.Entry<String, Object> property : properties.entrySet()) {
+			String key = property.getKey();
+			Object value = property.getValue();
+			oldValueMap.put(key, map.put(key, value));
+		    }
+
+		    rcValue = convertVertexPropertyMapToRcBytes(map);
+		    if (rcValue.length != 0) {
+			if (writeWithRules(rcValue)) {
+			    break;
+			} else {
+			    log.debug("getSetProperties cond. write failure RETRYING {}", i+1);
+                            if (i + 1 == graph.CONDITIONALWRITE_RETRY_MAX) {
+                                log.error("setProperties cond. write failure Gaveup RETRYING");
+                            }
+			}
+		    }
+		}
+	    }
+	}
 
         // TODO use multi-write
         for (Map.Entry<String, Object> oldProperty : oldValueMap.entrySet()) {
@@ -229,25 +226,25 @@ public class RamCloudElement implements Element, Serializable {
     }
 
     @Override
-    public void setProperty(String key, Object value) {
-	Object oldValue;
-	if (value == null) {
+    public void setProperty(String propKey, Object propValue) {
+	Object oldValue = null;
+	if (propValue == null) {
 	    throw ExceptionFactory.propertyValueCanNotBeNull();
 	}
 
-	if (key == null) {
+	if (propKey == null) {
 	    throw ExceptionFactory.propertyKeyCanNotBeNull();
 	}
 
-	if (key.equals("")) {
+	if (propKey.equals("")) {
 	    throw ExceptionFactory.propertyKeyCanNotBeEmpty();
 	}
 
-	if (key.equals("id")) {
+	if (propKey.equals("id")) {
 	    throw ExceptionFactory.propertyKeyIdIsReserved();
 	}
 
-	if (this instanceof RamCloudEdge && key.equals("label")) {
+	if (this instanceof RamCloudEdge && propKey.equals("label")) {
 	    throw ExceptionFactory.propertyKeyLabelIsReservedForEdges();
 	}
 
@@ -256,41 +253,74 @@ public class RamCloudElement implements Element, Serializable {
 	    startTime = System.nanoTime();
 	}
 
-	Map<String, Object> map = getPropertyMap();
-	oldValue = map.put(key, value);
-	setPropertyMap(map);
+	for (int i = 0; i < graph.CONDITIONALWRITE_RETRY_MAX; i++) {
+	    Map<String, Object> map = getPropertyMap();
+	    oldValue = map.put(propKey, propValue);
+
+	    byte[] rcValue = convertVertexPropertyMapToRcBytes(map);
+
+	    if (rcValue.length != 0) {
+		if (writeWithRules(rcValue)) {
+		    break;
+		} else {
+		    log.debug("setProperty(String {}, Object {}) cond. write failure RETRYING {}", propKey, propValue, i+1);
+		    if (i + 1 == graph.CONDITIONALWRITE_RETRY_MAX) {
+			log.error("setProperty(String {}, Object {}) cond. write failure Gaveup RETRYING", propKey, propValue);
+		    }
+		}
+	    }
+	}
 
 	boolean ret = false;
 	if (this instanceof RamCloudVertex) {
-	    RamCloudKeyIndex keyIndex = new RamCloudKeyIndex(graph.kidxVertTableId, key, value, graph, Vertex.class);
-	    ret = keyIndex.autoUpdate(key, value, oldValue, this);
+	    RamCloudKeyIndex keyIndex = new RamCloudKeyIndex(graph.kidxVertTableId, propKey, propValue, graph, Vertex.class);
+	    ret = keyIndex.autoUpdate(propKey, propValue, oldValue, this);
 	} else {
-	    RamCloudKeyIndex keyIndex = new RamCloudKeyIndex(graph.kidxVertTableId, key, value, graph, Edge.class);
-	    keyIndex.autoUpdate(key, value, oldValue, this);
+	    RamCloudKeyIndex keyIndex = new RamCloudKeyIndex(graph.kidxVertTableId, propKey, propValue, graph, Edge.class);
+	    keyIndex.autoUpdate(propKey, propValue, oldValue, this);
 	}
 
 	if (graph.measureBPTimeProp == 1) {
 	    long endTime = System.nanoTime();
 	    if (ret) {
-		log.error("Performance vertex setProperty(key {}) which is index total time {}", key, endTime - startTime);
+		log.error("Performance vertex setProperty(key {}) which is total time {}", propKey, endTime - startTime);
 	    } else {
-		log.error("Performance vertex setProperty(key {}) does not index time {}", key, endTime - startTime);
+		log.error("Performance vertex setProperty(key {}) does not time {}", propKey, endTime - startTime);
 	    }
 	}
 
     }
 
+    protected boolean writeWithRules(byte[] rcValue) {
+	return RamCloudWrite.writeWithRules(this.rcPropTableId, this.rcPropTableKey, rcValue, this.propVersion, this.graph, RamCloudWrite.PerfMonEnum.WRITE);
+    }
+
     @Override
-    public <T> T removeProperty(String key) {
-	Map<String, Object> map = getPropertyMap();
-	T retVal = (T) map.remove(key);
-	setPropertyMap(map);
+    public <T> T removeProperty(String propKey) {
+	T retVal = null;
+	for (int i = 0; i < graph.CONDITIONALWRITE_RETRY_MAX; i++) {
+	    Map<String, Object> map = getPropertyMap();
+	    retVal = (T) map.remove(propKey);
+	    byte[] rcValue = convertVertexPropertyMapToRcBytes(map);
+
+	    if (rcValue.length != 0) {
+		if (writeWithRules(rcValue)) {
+		    break;
+		} else {
+		    log.debug("removeProperty(String {}) cond. write failure RETRYING {}", propKey, i+1);
+		    if (i + 1 == graph.CONDITIONALWRITE_RETRY_MAX) {
+			log.error("removeProperty(String {}) cond. write failure Gaveup RETRYING", propKey);
+		    }
+		}
+	    }
+	}
+
 	if (this instanceof RamCloudVertex) {
-	    RamCloudKeyIndex keyIndex = new RamCloudKeyIndex(graph.kidxVertTableId, key, retVal, graph, Vertex.class);
-	    keyIndex.autoRemove(key, retVal.toString(), this);
+	    RamCloudKeyIndex keyIndex = new RamCloudKeyIndex(graph.kidxVertTableId, propKey, retVal, graph, Vertex.class);
+	    keyIndex.autoRemove(propKey, retVal.toString(), this);
 	} else {
-	    RamCloudKeyIndex keyIndex = new RamCloudKeyIndex(graph.kidxVertTableId, key, retVal, graph, Edge.class);
-	    keyIndex.autoRemove(key, retVal.toString(), this);
+	    RamCloudKeyIndex keyIndex = new RamCloudKeyIndex(graph.kidxVertTableId, propKey, retVal, graph, Edge.class);
+	    keyIndex.autoRemove(propKey, retVal.toString(), this);
 	}
 
 	return retVal;

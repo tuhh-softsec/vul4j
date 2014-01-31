@@ -35,7 +35,7 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 
 	@Override
 	public List<Link> getActiveLinks() {
-		dbop = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloudconf");
+		dbop = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
 		//dbop = GraphDBManager.getDBOperation("", "");
 		//dbop.commit(); //Commit to ensure we see latest data
 		Iterable<ISwitchObject> switches = dbop.getActiveSwitches();

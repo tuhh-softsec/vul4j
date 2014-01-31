@@ -189,11 +189,11 @@ public class RamCloudVertex extends RamCloudElement implements Vertex, Serializa
 	/*
 	 * RamCloudVertex specific methods
 	 */
-	private static byte[] idToRcKey(long id) {
+	public static byte[] idToRcKey(long id) {
 		return ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(id).array();
 	}
 
-	private static long rcKeyToId(byte[] rcKey) {
+	public static long rcKeyToId(byte[] rcKey) {
 		return ByteBuffer.wrap(rcKey).order(ByteOrder.LITTLE_ENDIAN).getLong();
 	}
 
