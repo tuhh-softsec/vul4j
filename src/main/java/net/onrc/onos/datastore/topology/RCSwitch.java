@@ -239,7 +239,7 @@ public class RCSwitch extends RCObject {
 	assert (swRead2.getAllPortIds().size() == 1);
 	try {
 	    swRead2.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Deleting Switch Failed", e);
 	}
 
@@ -476,57 +476,57 @@ public class RCSwitch extends RCObject {
 	try {
 	    sw1.read();
 	    sw1.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Delete Switch Failed", e);
 	}
 	try {
 	    sw1p1.read();
 	    sw1p1.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Delete Port Failed", e);
 	}
 	try {
 	    sw1p2.read();
 	    sw1p2.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Delete Port Failed", e);
 	}
 	try {
 	    d1.read();
 	    d1.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Delete Device Failed", e);
 	}
 
 	try {
 	    l1.read();
 	    l1.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Delete Link Failed", e);
 	}
 
 	try {
 	    sw2.read();
 	    sw2.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Delete Switch Failed", e);
 	}
 	try {
 	    sw2p1.read();
 	    sw2p1.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Delete Port Failed", e);
 	}
 	try {
 	    sw2p2.read();
 	    sw2p2.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Delete Port Failed", e);
 	}
 	try {
 	    d2.read();
 	    d2.delete();
-	} catch (ObjectDoesntExistException e) {
+	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.debug("Delete Device Failed", e);
 	}
 

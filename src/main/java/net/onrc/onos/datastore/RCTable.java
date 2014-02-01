@@ -92,7 +92,14 @@ public class RCTable {
 
     // TODO: Enumerate whole table?
 
-    // Reject if exist
+    /**
+     * Create a Key-Value entry on table.
+     *
+     * @param key
+     * @param value
+     * @return version of the created entry
+     * @throws ObjectExistsException
+     */
     public long create(final byte[] key, final byte[] value)
 	    throws ObjectExistsException {
 
@@ -106,7 +113,28 @@ public class RCTable {
 	return updated_version;
     }
 
-    // read
+    /**
+     * Create a Key-Value entry on table, without existance checking.
+     *
+     * @param key
+     * @param value
+     * @return version of the created entry
+     */
+    public long forceCreate(final byte[] key, final byte[] value) {
+	JRamCloud rcClient = RCClient.getClient();
+
+	long updated_version = rcClient.write(this.rcTableId, key, value);
+	return updated_version;
+
+    }
+
+    /**
+     * Read a Key-Value entry from table.
+     *
+     * @param key
+     * @return Corresponding {@link Entry}
+     * @throws ObjectDoesntExistException
+     */
     public Entry read(final byte[] key) throws ObjectDoesntExistException {
 
 	JRamCloud rcClient = RCClient.getClient();
@@ -120,7 +148,17 @@ public class RCTable {
 	return new Entry(rcObj.key, rcObj.value, rcObj.version);
     }
 
-    // Reject if version neq
+    /**
+     * Update an existing Key-Value entry in table.
+     *
+     * @param key
+     * @param value
+     * @param version
+     *            expected version in the data store
+     * @return version after update
+     * @throws ObjectDoesntExistException
+     * @throws WrongVersionException
+     */
     public long update(final byte[] key, final byte[] value, final long version)
 	    throws ObjectDoesntExistException, WrongVersionException {
 
@@ -135,7 +173,14 @@ public class RCTable {
 	return updated_version;
     }
 
-    // Reject if not exist
+    /**
+     * Update an existing Key-Value entry in table, without checking version.
+     *
+     * @param key
+     * @param value
+     * @return version after update
+     * @throws ObjectDoesntExistException
+     */
     public long update(final byte[] key, final byte[] value)
 	    throws ObjectDoesntExistException {
 
@@ -150,16 +195,38 @@ public class RCTable {
 
     }
 
-    // Reject if not exist
-    public long delete(final byte[] key) throws ObjectDoesntExistException {
+    /**
+     * Remove an existing Key-Value entry in table
+     *
+     * @param key
+     * @param version
+     *            expected version in the data store
+     * @return version of removed object
+     * @throws ObjectDoesntExistException
+     * @throws WrongVersionException
+     */
+    public long delete(final byte[] key, final long version)
+	    throws ObjectDoesntExistException, WrongVersionException {
 	JRamCloud rcClient = RCClient.getClient();
 
-	// FIXME underlying JRamCloud does not support cond remove
+	// FIXME underlying JRamCloud does not support cond. remove now
 	RejectRules rules = rcClient.new RejectRules();
 	rules.setDoesntExists();
+	rules.setNeVersion(version);
 
 	long removed_version = rcClient.remove(this.rcTableId, key, rules);
 	return removed_version;
     }
 
+    /**
+     * Remove a Key-Value entry in table
+     *
+     * @param key
+     * @return version of removed object or -1, if it did not exist.
+     */
+    public long forceDelete(final byte[] key) {
+	JRamCloud rcClient = RCClient.getClient();
+	long removed_version = rcClient.remove(this.rcTableId, key);
+	return removed_version;
+    }
 }

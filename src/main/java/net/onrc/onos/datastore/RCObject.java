@@ -122,7 +122,8 @@ public class RCObject {
 	serializeAndSetValue(defaultKryo.get(), this.propertyMap);
     }
 
-    protected void serializeAndSetValue(Kryo kryo, Map<Object, Object> javaObject) {
+    protected void serializeAndSetValue(Kryo kryo,
+	    Map<Object, Object> javaObject) {
 
 	// value
 	byte[] rcTemp = new byte[1024 * 1024];
@@ -144,7 +145,8 @@ public class RCObject {
 	return deserializeObjectFromValue(kryo, HashMap.class);
     }
 
-    protected <T extends Map> T deserializeObjectFromValue(Kryo kryo, Class<T> type) {
+    protected <T extends Map> T deserializeObjectFromValue(Kryo kryo,
+	    Class<T> type) {
 	if (this.value == null)
 	    return null;
 
@@ -160,7 +162,6 @@ public class RCObject {
      *
      * Fails if the Object with same key already exists.
      *
-     * @note create an Empty Object if no object has never been set.
      * @throws ObjectExistsException
      */
     public void create() throws ObjectExistsException {
@@ -215,9 +216,10 @@ public class RCObject {
      * Fails if the Object with key does not exists.
      *
      * @throws ObjectDoesntExistException
+     * @throws WrongVersionException
      */
-    public void delete() throws ObjectDoesntExistException {
-	this.version = table.delete(key);
+    public void delete() throws ObjectDoesntExistException, WrongVersionException {
+	this.version = table.delete(key, this.version);
     }
 
     /**
@@ -301,8 +303,8 @@ public class RCObject {
     public static Collection<? extends RCObject> getAllObjects() {
 	// TODO implement
 	throw new UnsupportedOperationException("Not implemented yet");
-	//Collection<? extends RCObject> list = new ArrayList<>();
-	//return list;
+	// Collection<? extends RCObject> list = new ArrayList<>();
+	// return list;
     }
 
 }
