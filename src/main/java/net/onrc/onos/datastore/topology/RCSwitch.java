@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
 
+import edu.stanford.ramcloud.JRamCloud;
 import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 import edu.stanford.ramcloud.JRamCloud.ObjectExistsException;
 import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
@@ -66,7 +68,7 @@ public class RCSwitch extends RCObject {
 
     public static final int SWITCHID_BYTES = 2 + 8;
 
-    public static byte[] getSwichID(Long dpid) {
+    public static byte[] getSwitchID(Long dpid) {
 	if (dpid == null) {
 	    throw new IllegalArgumentException("dpid cannot be null");
 	}
@@ -88,7 +90,7 @@ public class RCSwitch extends RCObject {
     // FIXME specify DPID here, or Should caller specify the key it self?
     // In other words, should layer above have the control of the ID?
     public RCSwitch(Long dpid) {
-	super(RCTable.getTable(GLOBAL_SWITCH_TABLE_NAME), getSwichID(dpid));
+	super(RCTable.getTable(GLOBAL_SWITCH_TABLE_NAME), getSwitchID(dpid));
 
 	this.dpid = dpid;
 	this.status = STATUS.INACTIVE;
@@ -96,8 +98,44 @@ public class RCSwitch extends RCObject {
 	this.isPortIdsModified = true;
     }
 
-    public static RCSwitch createFromKey(byte[] key) {
-	return new RCSwitch(getDpidFromKey(key));
+    /**
+     * Get an instance from Key.
+     *
+     * @note You need to call `read()` to get the DB content.
+     * @param key
+     * @return RCSwitch instance
+     */
+    public static <SW extends RCObject> SW createFromKey(byte[] key) {
+	@SuppressWarnings("unchecked")
+	SW sw = (SW) new RCSwitch(getDpidFromKey(key));
+	return sw;
+    }
+
+    public static Iterable<RCSwitch> getAllSwitches() {
+	return new SwitchEnumerator();
+    }
+
+    public static class SwitchEnumerator implements Iterable<RCSwitch> {
+
+	@Override
+	public Iterator<RCSwitch> iterator() {
+	    return new SwitchIterator();
+	}
+    }
+
+    public static class SwitchIterator extends ObjectIterator<RCSwitch> {
+
+	public SwitchIterator() {
+	    super(RCTable.getTable(GLOBAL_SWITCH_TABLE_NAME));
+	}
+
+	@Override
+	public RCSwitch next() {
+	    JRamCloud.Object o = enumerator.next();
+	    RCSwitch e = RCSwitch.createFromKey(o.key);
+	    e.setValueAndDeserialize(o.value, o.version);
+	    return e;
+	}
     }
 
     public STATUS getStatus() {
@@ -255,6 +293,7 @@ public class RCSwitch extends RCObject {
 	topology_delete();
     }
 
+    @Deprecated
     private static void topology_setup() {
 	log.debug("topology_setup start.");
 
@@ -361,8 +400,16 @@ public class RCSwitch extends RCObject {
 	log.debug("topology_setup end.");
     }
 
+    @Deprecated
     private static void topology_walk() {
 	log.debug("topology_walk start.");
+
+	Iterable<RCSwitch> swIt = RCSwitch.getAllSwitches();
+	log.debug("Enumerating Switches start");
+	for (RCSwitch sw : swIt) {
+	    log.debug("{}", sw);
+	}
+	log.debug("Enumerating Switches end");
 
 	RCSwitch sw1 = new RCSwitch(0x1L);
 	try {
@@ -459,6 +506,7 @@ public class RCSwitch extends RCObject {
 	log.debug("topology_walk end.");
     }
 
+    @Deprecated
     private static void topology_delete() {
 	log.debug("topology_delete start.");
 

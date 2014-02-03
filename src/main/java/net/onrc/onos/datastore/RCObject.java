@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.onrc.onos.datastore.RCTable.Entry;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +18,7 @@ import com.esotericsoftware.kryo.io.Output;
 import edu.stanford.ramcloud.JRamCloud;
 import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 import edu.stanford.ramcloud.JRamCloud.ObjectExistsException;
+import edu.stanford.ramcloud.JRamCloud.TableEnumerator;
 import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 
 /**
@@ -55,10 +55,10 @@ public class RCObject {
     private Map<Object, Object> propertyMap;
 
     public RCObject(RCTable table, byte[] key) {
-	this(table, key, null);
+	this(table, key, null, VERSION_NONEXISTENT);
     }
 
-    public RCObject(RCTable table, byte[] key, byte[] value) {
+    public RCObject(RCTable table, byte[] key, byte[] value, long version) {
 	if (table == null) {
 	    throw new IllegalArgumentException("table cannot be null");
 	}
@@ -68,12 +68,18 @@ public class RCObject {
 	this.table = table;
 	this.key = key;
 	this.value = value;
-	this.version = VERSION_NONEXISTENT;
+	this.version = version;
 	this.propertyMap = new HashMap<Object, Object>();
 
 	if (this.value != null) {
 	    deserializeObjectFromValue();
 	}
+    }
+
+    public static <T extends RCObject> T createFromKey(byte[] key) {
+	// Equivalent of this method is expected to be implemented by SubClasses
+	throw new UnsupportedOperationException(
+	        "createFromKey() is not expected to be called for RCObject");
     }
 
     public RCTable getTable() {
@@ -157,6 +163,12 @@ public class RCObject {
 	return map;
     }
 
+    protected void setValueAndDeserialize(byte[] value, long version) {
+	this.value = value;
+	this.version = version;
+	deserializeObjectFromValue();
+    }
+
     /**
      * Create an Object in DataStore.
      *
@@ -185,11 +197,8 @@ public class RCObject {
      */
     public void read() throws ObjectDoesntExistException {
 	Entry e = table.read(key);
-	this.value = e.value;
-	this.version = e.version;
-
 	// TODO should we deserialize immediately?
-	deserializeObjectFromValue();
+	setValueAndDeserialize(e.value, e.version);
     }
 
     /**
@@ -218,7 +227,8 @@ public class RCObject {
      * @throws ObjectDoesntExistException
      * @throws WrongVersionException
      */
-    public void delete() throws ObjectDoesntExistException, WrongVersionException {
+    public void delete() throws ObjectDoesntExistException,
+	    WrongVersionException {
 	this.version = table.delete(key, this.version);
     }
 
@@ -297,14 +307,59 @@ public class RCObject {
 	return fail_exists;
     }
 
-    /**
-     * Get All of it's kind?
-     */
-    public static Collection<? extends RCObject> getAllObjects() {
-	// TODO implement
-	throw new UnsupportedOperationException("Not implemented yet");
-	// Collection<? extends RCObject> list = new ArrayList<>();
-	// return list;
+    public static Iterable<RCObject> getAllObjects(
+	    RCTable table) {
+	return new ObjectEnumerator(table);
+    }
+
+    public static class ObjectEnumerator implements
+	    Iterable<RCObject> {
+
+	private RCTable table;
+
+	public ObjectEnumerator(RCTable table) {
+	    this.table = table;
+	}
+
+	@Override
+	public Iterator<RCObject> iterator() {
+	    return new ObjectIterator<RCObject>(table);
+	}
+
+    }
+
+    public static class ObjectIterator<E extends RCObject> implements
+	    Iterator<E> {
+
+	protected TableEnumerator enumerator;
+
+	public ObjectIterator(RCTable table) {
+	    // FIXME workaround for JRamCloud bug. It should have been declared
+	    // as static class
+	    JRamCloud c = RCClient.getClient();
+	    this.enumerator = c.new TableEnumerator(table.getTableId());
+	}
+
+	@Override
+	public boolean hasNext() {
+	    return enumerator.hasNext();
+	}
+
+	@Override
+	public E next() {
+	    JRamCloud.Object o = enumerator.next();
+	    RCObject obj = RCObject.createFromKey(o.key);
+	    obj.setValueAndDeserialize(o.value, o.version);
+	    return (E) obj;
+	}
+
+	@Deprecated
+	@Override
+	public void remove() {
+	    // TODO Not implemented, as I cannot find a use-case for it.
+	    throw new UnsupportedOperationException("Not implemented yet");
+	}
+
     }
 
 }

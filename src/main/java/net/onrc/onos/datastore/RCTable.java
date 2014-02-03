@@ -16,6 +16,7 @@ import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
  *
  */
 public class RCTable {
+    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(RCTable.class);
 
     private static final ConcurrentHashMap<String, RCTable> table_map = new ConcurrentHashMap<>();

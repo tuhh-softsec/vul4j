@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
 
+import edu.stanford.ramcloud.JRamCloud;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.datastore.utils.ByteArrayComparator;
@@ -122,9 +124,45 @@ public class RCPort extends RCObject {
 	this.isDeviceIdsModified = true;
     }
 
-    public static RCPort createFromKey(byte[] key) {
+    /**
+     * Get an instance from Key.
+     *
+     * @note You need to call `read()` to get the DB content.
+     * @param key
+     * @return RCPort instance
+     */
+    public static <P extends RCObject> P createFromKey(byte[] key) {
 	long[] pair = getPortPairFromKey(key);
-	return new RCPort(pair[0], pair[1]);
+	@SuppressWarnings("unchecked")
+	P p = (P) new RCPort(pair[0], pair[1]);
+	return p;
+    }
+
+    public static Iterable<RCPort> getAllPorts() {
+	return new PortEnumerator();
+    }
+
+    public static class PortEnumerator implements Iterable<RCPort> {
+
+	@Override
+	public Iterator<RCPort> iterator() {
+	    return new PortIterator();
+	}
+    }
+
+    public static class PortIterator extends ObjectIterator<RCPort> {
+
+	public PortIterator() {
+	    super(RCTable.getTable(GLOBAL_PORT_TABLE_NAME));
+	}
+
+	@Override
+	public RCPort next() {
+	    JRamCloud.Object o = enumerator.next();
+	    RCPort e = RCPort.createFromKey(o.key);
+	    e.setValueAndDeserialize(o.value, o.version);
+	    return e;
+	}
     }
 
     public STATUS getStatus() {

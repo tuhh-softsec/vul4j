@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
 
+import edu.stanford.ramcloud.JRamCloud;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.datastore.topology.RCLink.STATUS;
@@ -73,8 +75,44 @@ public class RCDevice extends RCObject {
 	this.isPortIdsModified = true;
     }
 
-    public static RCDevice createFromKey(byte[] key) {
-	return new RCDevice(getMacFromKey(key));
+    /**
+     * Get an instance from Key.
+     *
+     * @note You need to call `read()` to get the DB content.
+     * @param key
+     * @return
+     */
+    public static <D extends RCObject> D createFromKey(byte[] key) {
+	@SuppressWarnings("unchecked")
+	D d = (D) new RCDevice(getMacFromKey(key));
+	return d;
+    }
+
+    public static Iterable<RCDevice> getAllDevices() {
+	return new DeviceEnumerator();
+    }
+
+    public static class DeviceEnumerator implements Iterable<RCDevice> {
+
+	@Override
+	public Iterator<RCDevice> iterator() {
+	    return new DeviceIterator();
+	}
+    }
+
+    public static class DeviceIterator extends ObjectIterator<RCDevice> {
+
+	public DeviceIterator() {
+	    super(RCTable.getTable(GLOBAL_DEVICE_TABLE_NAME));
+	}
+
+	@Override
+	public RCDevice next() {
+	    JRamCloud.Object o = enumerator.next();
+	    RCDevice e = RCDevice.createFromKey(o.key);
+	    e.setValueAndDeserialize(o.value, o.version);
+	    return e;
+	}
     }
 
     public byte[] getMac() {

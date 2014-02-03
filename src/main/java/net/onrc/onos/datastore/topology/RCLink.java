@@ -2,6 +2,7 @@ package net.onrc.onos.datastore.topology;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
 
+import edu.stanford.ramcloud.JRamCloud;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 
@@ -45,7 +47,7 @@ public class RCLink extends RCObject {
 	}
 
 	public byte[] getSwitchID() {
-	    return RCSwitch.getSwichID(dpid);
+	    return RCSwitch.getSwitchID(dpid);
 	}
 
 	@Override
@@ -113,10 +115,46 @@ public class RCLink extends RCObject {
 	status = STATUS.INACTIVE;
     }
 
-    public static RCLink createFromKey(byte[] key) {
+    /**
+     * Get an instance from Key.
+     *
+     * @note You need to call `read()` to get the DB content.
+     * @param key
+     * @return RCLink instance
+     */
+    public static <L extends RCObject> L createFromKey(byte[] key) {
 	long linkTuple[] = getLinkTupleFromKey(key);
-	return new RCLink(linkTuple[0], linkTuple[1], linkTuple[2],
+	@SuppressWarnings("unchecked")
+	L l = (L) new RCLink(linkTuple[0], linkTuple[1], linkTuple[2],
 	        linkTuple[3]);
+	return l;
+    }
+
+    public static Iterable<RCLink> getAllLinks() {
+	return new LinkEnumerator();
+    }
+
+    public static class LinkEnumerator implements Iterable<RCLink> {
+
+	@Override
+	public Iterator<RCLink> iterator() {
+	    return new LinkIterator();
+	}
+    }
+
+    public static class LinkIterator extends ObjectIterator<RCLink> {
+
+	public LinkIterator() {
+	    super(RCTable.getTable(GLOBAL_LINK_TABLE_NAME));
+	}
+
+	@Override
+	public RCLink next() {
+	    JRamCloud.Object o = enumerator.next();
+	    RCLink e = RCLink.createFromKey(o.key);
+	    e.setValueAndDeserialize(o.value, o.version);
+	    return e;
+	}
     }
 
     public STATUS getStatus() {
