@@ -676,14 +676,20 @@ public class FlowDatabaseOperation {
      * @return true on success, otherwise false.
      */
     static boolean deleteAllFlows(DBOperation dbHandler) {
-	Iterable<IFlowPath> allFlowPaths = dbHandler.getAllFlowPaths();
-	for (IFlowPath flowPathObj : allFlowPaths) {
-	    if (flowPathObj == null)
-		continue;
+	try {
+	    // Get all Flow IDs
+	    Iterable<IFlowPath> allFlowPaths = dbHandler.getAllFlowPaths();
+	    for (IFlowPath flowPathObj : allFlowPaths) {
+		if (flowPathObj == null)
+		    continue;
 
-	    deleteIFlowPath(dbHandler, flowPathObj);
+		deleteIFlowPath(dbHandler, flowPathObj);
+	    }
+	    dbHandler.commit();
+	} catch (Exception e) {
+	    log.error("Exception deleting all Flow Paths from Network MAP: ", e);
+	    return false;
 	}
-	dbHandler.commit();
 
 	return true;
     }
