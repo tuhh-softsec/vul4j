@@ -59,9 +59,13 @@ public class RCPort extends RCObject {
     private STATUS status;
     // XXX These 2 set of Ids can be removed from DataStore, if In-Memory cache
     // build the indexing info from Link.
+    @Deprecated
     private TreeSet<byte[]> linkIds;
+    @Deprecated
     transient boolean isLinkIdsModified;
+    @Deprecated
     private TreeSet<byte[]> deviceIds;
+    @Deprecated
     transient boolean isDeviceIdsModified;
 
     public static final int PORTID_BYTES = RCSwitch.SWITCHID_BYTES + 2 + 8;
@@ -186,19 +190,23 @@ public class RCPort extends RCObject {
 	return getKey();
     }
 
+    @Deprecated
     public void addLinkId(byte[] linkId) {
 	isLinkIdsModified |= linkIds.add(linkId);
     }
 
+    @Deprecated
     public void removeLinkId(byte[] linkId) {
 	isLinkIdsModified |= linkIds.remove(linkId);
     }
 
+    @Deprecated
     public void emptyLinkIds() {
 	linkIds.clear();
 	isLinkIdsModified = true;
     }
 
+    @Deprecated
     public void addAllToLinkIds(Collection<byte[]> linkIds) {
 	isLinkIdsModified |= this.linkIds.addAll(linkIds);
     }
@@ -207,23 +215,28 @@ public class RCPort extends RCObject {
      *
      * @return Unmodifiable Set view of all the LinkIds;
      */
+    @Deprecated
     public Set<byte[]> getAllLinkIds() {
 	return Collections.unmodifiableSet(linkIds);
     }
 
+    @Deprecated
     public void addDeviceId(byte[] deviceId) {
 	isDeviceIdsModified |= deviceIds.add(deviceId);
     }
 
+    @Deprecated
     public void removeDeviceId(byte[] deviceId) {
 	isDeviceIdsModified |= deviceIds.remove(deviceId);
     }
 
+    @Deprecated
     public void emptyDeviceIds() {
 	deviceIds.clear();
 	isDeviceIdsModified = true;
     }
 
+    @Deprecated
     public void addAllToDeviceIds(Collection<byte[]> deviceIds) {
 	isDeviceIdsModified |= this.deviceIds.addAll(deviceIds);
     }
@@ -232,6 +245,7 @@ public class RCPort extends RCObject {
      *
      * @return Unmodifiable Set view of all the LinkIds;
      */
+    @Deprecated
     public Set<byte[]> getAllDeviceIds() {
 	return Collections.unmodifiableSet(deviceIds);
     }
