@@ -56,6 +56,8 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
+    
+    private final int FLOW_IDLE_TIMEOUT_ADDED_SECONDS = 2;
 
     private DBOperation dbHandler;
 
@@ -1316,9 +1318,19 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    //
 	    // Copy the Flow timeouts
 	    //
-	    newFlowEntry.setIdleTimeout(flowPath.idleTimeout());
 	    newFlowEntry.setHardTimeout(flowPath.hardTimeout());
 	    newFlowEntry.setPriority(flowPath.priority());
+
+	    if (flowPath.idleTimeout() > 0) {
+	    	if (idx == 0) {
+	    		newFlowEntry.setIdleTimeout(flowPath.idleTimeout());
+	    	}
+	    	else {
+	    		newFlowEntry.setIdleTimeout(flowPath.idleTimeout() + FLOW_IDLE_TIMEOUT_ADDED_SECONDS);
+	    	}
+	     } else if(flowPath.idleTimeout() == 0) {
+	    	newFlowEntry.setIdleTimeout(flowPath.idleTimeout());
+	     }
 
 	    //
 	    // Allocate the FlowEntryMatch by copying the default one
