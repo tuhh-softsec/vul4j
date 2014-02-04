@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 
 import net.floodlightcontroller.core.IOFSwitch;
@@ -99,6 +100,9 @@ public class FlowDatabaseOperation {
 
         flowPathEntity.setProperty("hard_timeout", flowPath.hardTimeout());
 	flowProp.setHardTimeout(flowPath.hardTimeout());
+
+        flowPathEntity.setProperty("priority", flowPath.priority());
+	flowProp.setPriority(flowPath.priority());
 
         flowPathEntity.setProperty("src_switch", flowPath.dataPath().srcPort().dpid().toString());
 	flowProp.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
@@ -207,6 +211,8 @@ public class FlowDatabaseOperation {
             flowEntryEntity.setProperty("idle_timeout", flowEntry.idleTimeout());
 
             flowEntryEntity.setProperty("hard_timeout", flowEntry.hardTimeout());
+
+            flowEntryEntity.setProperty("priority", flowEntry.priority());
 
             flowEntryEntity.setProperty("switch_dpid", flowEntry.dpid().toString());
 
@@ -400,6 +406,7 @@ public class FlowDatabaseOperation {
 	//
 	// - flowEntry.idleTimeout()
 	// - flowEntry.hardTimeout()
+	// - flowEntry.priority()
 	// - flowEntry.dpid()
 	// - flowEntry.flowEntryUserState()
 	// - flowEntry.flowEntrySwitchState()
@@ -429,6 +436,7 @@ public class FlowDatabaseOperation {
 
 	flowProp.setIdleTimeout(flowEntry.idleTimeout());
 	flowProp.setHardTimeout(flowEntry.hardTimeout());
+	flowProp.setPriority(flowEntry.priority());
 	flowProp.setSwitchDpid(flowEntry.dpid().toString());
 	if (measureONOSFlowEntryTimeProp) {
 	    numProperties += 3;
@@ -961,6 +969,7 @@ public class FlowDatabaseOperation {
 	Long flowPathFlags;
 	Integer idleTimeout;
 	Integer hardTimeout;
+	Integer priority;
 	String srcSwitchStr;
 	Short srcPortShort;
 	String dstSwitchStr;
@@ -977,6 +986,7 @@ public class FlowDatabaseOperation {
 	    flowPathFlags = (Long)propMap.get("flow_path_flags");
 	    idleTimeout = (Integer) propMap.get("idle_timeout");
 	    hardTimeout = (Integer) propMap.get("hard_timeout");
+	    priority = (Integer) propMap.get("priority");
 	    srcSwitchStr = (String) propMap.get("src_switch");
 	    srcPortShort = (Short)propMap.get("src_port");
 	    dstSwitchStr = (String) propMap.get("dst_switch");
@@ -989,6 +999,7 @@ public class FlowDatabaseOperation {
 	    flowPathFlags = flowObj.getFlowPathFlags();
 	    idleTimeout = flowObj.getIdleTimeout();
 	    hardTimeout = flowObj.getHardTimeout();
+	    priority = flowObj.getPriority();
 	    srcSwitchStr = flowObj.getSrcSwitch();
 	    srcPortShort = flowObj.getSrcPort();
 	    dstSwitchStr = flowObj.getDstSwitch();
@@ -1002,6 +1013,7 @@ public class FlowDatabaseOperation {
 	    (flowPathFlags == null) ||
 	    (idleTimeout == null) ||
 	    (hardTimeout == null) ||
+	    (priority == null) ||
 	    (srcSwitchStr == null) ||
 	    (srcPortShort == null) ||
 	    (dstSwitchStr == null) ||
@@ -1019,6 +1031,7 @@ public class FlowDatabaseOperation {
 	flowPath.setFlowPathFlags(new FlowPathFlags(flowPathFlags));
 	flowPath.setIdleTimeout(idleTimeout);
 	flowPath.setHardTimeout(hardTimeout);
+	flowPath.setPriority(priority);
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
 	flowPath.dataPath().srcPort().setPort(new Port(srcPortShort));
 	flowPath.dataPath().dstPort().setDpid(new Dpid(dstSwitchStr));
@@ -1076,6 +1089,7 @@ public class FlowDatabaseOperation {
 	String flowEntryIdStr;
 	Integer idleTimeout;
 	Integer hardTimeout;
+	Integer priority;
 	String switchDpidStr;
 	String userState;
 	String switchState;
@@ -1086,6 +1100,7 @@ public class FlowDatabaseOperation {
 	    flowEntryIdStr = (String) propMap.get("flow_entry_id");
 	    idleTimeout = (Integer) propMap.get("idle_timeout");
 	    hardTimeout = (Integer) propMap.get("hard_timeout");
+	    priority = (Integer) propMap.get("priority");
 	    switchDpidStr = (String) propMap.get("switch_dpid");
 	    userState = (String) propMap.get("user_state");
 	    switchState = (String) propMap.get("switch_state");
@@ -1093,6 +1108,7 @@ public class FlowDatabaseOperation {
 	    flowEntryIdStr = flowEntryObj.getFlowEntryId();
 	    idleTimeout = flowEntryObj.getIdleTimeout();
 	    hardTimeout = flowEntryObj.getHardTimeout();
+	    priority = flowEntryObj.getPriority();
 	    switchDpidStr = flowEntryObj.getSwitchDpid();
 	    userState = flowEntryObj.getUserState();
 	    switchState = flowEntryObj.getSwitchState();
@@ -1102,6 +1118,7 @@ public class FlowDatabaseOperation {
 	    (flowEntryIdStr == null) ||
 	    (idleTimeout == null) ||
 	    (hardTimeout == null) ||
+	    (priority == null) ||
 	    (switchDpidStr == null) ||
 	    (userState == null) ||
 	    (switchState == null)) {
@@ -1116,6 +1133,7 @@ public class FlowDatabaseOperation {
 	flowEntry.setDpid(new Dpid(switchDpidStr));
 	flowEntry.setIdleTimeout(idleTimeout);
 	flowEntry.setHardTimeout(hardTimeout);
+	flowEntry.setPriority(priority);
 
 	//
 	// Extract the match conditions

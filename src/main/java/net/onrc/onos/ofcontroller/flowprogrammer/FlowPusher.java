@@ -66,9 +66,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
     // Number of messages sent to switch at once
     protected static final int MAX_MESSAGE_SEND = 100;
 
-    public static final short PRIORITY_DEFAULT = 100;
-
-	public enum QueueState {
+    public enum QueueState {
 		READY,
 		SUSPENDED,
 	}
@@ -723,7 +721,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
 		fm.setIdleTimeout((short)flowEntry.idleTimeout())
 				.setHardTimeout((short)flowEntry.hardTimeout())
-				.setPriority(PRIORITY_DEFAULT)
+				.setPriority((short)flowEntry.priority())
 				.setBufferId(OFPacketOut.BUFFER_ID_NONE).setCookie(cookie)
 				.setCommand(flowModCommand).setMatch(match)
 				.setActions(openFlowActions)

@@ -129,12 +129,13 @@ def extract_flow_args(my_args):
   my_dst_port = my_args[5]
 
   #
-  # Extract the "flowPathFlags", "idleTimeout", "hardTimeout",
+  # Extract the "flowPathFlags", "idleTimeout", "hardTimeout", "priority",
   # "match" and "action" arguments.
   #
   flowPathFlags = 0L
   idleTimeout = 0
   hardTimeout = 0
+  priority = 32768
   match = {}
   matchInPortEnabled = True		# NOTE: Enabled by default
   actions = []
@@ -162,6 +163,8 @@ def extract_flow_args(my_args):
      idleTimeout = arg2
     elif arg1 == "hardTimeout":
      hardTimeout = arg2
+    elif arg1 == "priority":
+     priority = arg2
     elif arg1 == "matchInPort":
       # Just mark whether inPort matching is enabled
       matchInPortEnabled = arg2 in ['True', 'true']
@@ -319,6 +322,7 @@ def extract_flow_args(my_args):
     'flowPathFlags' : flowPathFlags,
     'idleTimeout' : idleTimeout,
     'hardTimeout' : hardTimeout,
+    'priority' : priority,
     'match' : match,
     'matchInPortEnabled' : matchInPortEnabled,
     'actions' : actions,
@@ -345,6 +349,7 @@ def compute_flow_path(parsed_args, data_path):
   myFlowPathFlags = parsed_args['flowPathFlags']
   myIdleTimeout = parsed_args['idleTimeout']
   myHardTimeout = parsed_args['hardTimeout']
+  myPriority = parsed_args['priority']
   match = parsed_args['match']
   matchInPortEnabled = parsed_args['matchInPortEnabled']
   actions = parsed_args['actions']
@@ -369,6 +374,7 @@ def compute_flow_path(parsed_args, data_path):
   flow_path['flowPathFlags'] = flowPathFlags
   flow_path['idleTimeout'] = myIdleTimeout
   flow_path['hardTimeout'] = myHardTimeout
+  flow_path['priority'] = myPriority
 
   if (len(match) > 0):
     flow_path['flowEntryMatch'] = copy.deepcopy(match)
@@ -499,7 +505,7 @@ def exec_processing_by_script(parsed_args):
 
 
 if __name__ == "__main__":
-  usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Flow Path Flags] [Match Conditions] [Actions]\n" % (sys.argv[0])
+  usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Flow Attributes] [Match Conditions] [Actions]\n" % (sys.argv[0])
   usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    <flow-id>             The Flow ID, or -1 if it should be assigned by ONOS\n"
   usage_msg = usage_msg + "\n"
@@ -512,16 +518,18 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "        -f <filename>     Read the flow(s) to install from a file\n"
   usage_msg = usage_msg + "                          File format: one line per flow starting with <flow-id>\n"
   usage_msg = usage_msg + "\n"
-  usage_msg = usage_msg + "    Flow Path Flags:\n"
+  usage_msg = usage_msg + "    Flow Attributes:\n"
   usage_msg = usage_msg + "        flowPathFlags <Flags> (flag names separated by ',')\n"
-  usage_msg = usage_msg + "\n"
-  usage_msg = usage_msg + "        Known flags:\n"
+  usage_msg = usage_msg + "            Known flags:\n"
   usage_msg = usage_msg + "            DISCARD_FIRST_HOP_ENTRY    : Discard the first-hop flow entry\n"
   usage_msg = usage_msg + "            KEEP_ONLY_FIRST_HOP_ENTRY  : Keep only the first-hop flow entry\n"
   usage_msg = usage_msg + "\n"
-  usage_msg = usage_msg + "    Timeouts (in seconds in the [0, 65535] interval):\n"
-  usage_msg = usage_msg + "        idleTimeout <idleTimeoutInSeconds> (default to 0: no timeout)\n"
-  usage_msg = usage_msg + "        hardTimeout <hardTimeoutInSeconds> (default to 0: no timeout)\n"
+  usage_msg = usage_msg + "        idleTimeout <idleTimeoutInSeconds> (in the [0, 65535] interval;\n"
+  usage_msg = usage_msg + "                                            default to 0: no timeout)\n"
+  usage_msg = usage_msg + "        hardTimeout <hardTimeoutInSeconds> (in the [0, 65535] interval;\n"
+  usage_msg = usage_msg + "                                            default to 0: no timeout)\n"
+  usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "        priority <flowPriority> (in the [0, 65535] interval; default to 32768)\n"
   usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Match Conditions:\n"
   usage_msg = usage_msg + "        matchInPort <True|False> (default to True)\n"

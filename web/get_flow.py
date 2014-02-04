@@ -166,6 +166,7 @@ def print_flow_path(parsedResult):
   flowPathFlags = parsedResult['flowPathFlags']['flags']
   idleTimeout = parsedResult['idleTimeout']
   hardTimeout = parsedResult['hardTimeout']
+  priority = parsedResult['priority']
   srcSwitch = parsedResult['dataPath']['srcPort']['dpid']['value']
   srcPort = parsedResult['dataPath']['srcPort']['port']['value']
   dstSwitch = parsedResult['dataPath']['dstPort']['dpid']['value']
@@ -183,7 +184,7 @@ def print_flow_path(parsedResult):
       flowPathFlagsStr += ","
     flowPathFlagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY"
 
-  print "FlowPath: (flowId = %s installerId = %s flowPathType = %s flowPathUserState = %s flowPathFlags = 0x%x(%s) src = %s/%s dst = %s/%s idleTimeout = %s hardTimeout = %s)" % (flowId, installerId, flowPathType, flowPathUserState, flowPathFlags, flowPathFlagsStr, srcSwitch, srcPort, dstSwitch, dstPort, idleTimeout, hardTimeout)
+  print "FlowPath: (flowId = %s installerId = %s flowPathType = %s flowPathUserState = %s flowPathFlags = 0x%x(%s) src = %s/%s dst = %s/%s idleTimeout = %s hardTimeout = %s priority = %s)" % (flowId, installerId, flowPathType, flowPathUserState, flowPathFlags, flowPathFlagsStr, srcSwitch, srcPort, dstSwitch, dstPort, idleTimeout, hardTimeout, priority)
 
   #
   # Print the common match conditions
@@ -209,13 +210,14 @@ def print_flow_path(parsedResult):
     flowEntryId = f['flowEntryId']
     idleTimeout = f['idleTimeout']
     hardTimeout = f['hardTimeout']
+    priority = f['priority']
     dpid = f['dpid']['value']
     userState = f['flowEntryUserState']
     switchState = f['flowEntrySwitchState']
     match = f['flowEntryMatch'];
     actions = f['flowEntryActions']['actions']
 
-    print "  FlowEntry: (%s, %s, %s, %s, idleTimeout = %s, hardTimeout = %s)" % (flowEntryId, dpid, userState, switchState, idleTimeout, hardTimeout)
+    print "  FlowEntry: (%s, %s, %s, %s, idleTimeout = %s, hardTimeout = %s, priority = %s)" % (flowEntryId, dpid, userState, switchState, idleTimeout, hardTimeout, priority)
 
     #
     # Print the match conditions

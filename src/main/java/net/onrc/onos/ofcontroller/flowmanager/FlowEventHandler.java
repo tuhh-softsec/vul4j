@@ -1318,6 +1318,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    //
 	    newFlowEntry.setIdleTimeout(flowPath.idleTimeout());
 	    newFlowEntry.setHardTimeout(flowPath.hardTimeout());
+	    newFlowEntry.setPriority(flowPath.priority());
 
 	    //
 	    // Allocate the FlowEntryMatch by copying the default one

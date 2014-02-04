@@ -15,6 +15,7 @@ public class FlowEntry {
     private FlowEntryId flowEntryId;		// The Flow Entry ID
     private int		idleTimeout;		// The Flow idle timeout
     private int		hardTimeout;		// The Flow hard timeout
+    private int		priority;		// The Flow priority
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
     private FlowEntryActions flowEntryActions;	// The Flow Entry Actions
     private Dpid dpid;				// The Switch DPID
@@ -111,6 +112,7 @@ public class FlowEntry {
 	setFlowEntryActions(actions);
 	*/
 
+	priority = FlowPath.PRIORITY_DEFAULT;
 	flowEntryActions = new FlowEntryActions();
 	flowEntryUserState = FlowEntryUserState.FE_USER_UNKNOWN;
 	flowEntrySwitchState = FlowEntrySwitchState.FE_SWITCH_UNKNOWN;
@@ -221,6 +223,28 @@ public class FlowEntry {
     @JsonProperty("hardTimeout")
     public void setHardTimeout(int hardTimeout) {
 	this.hardTimeout = 0xffff & hardTimeout;
+    }
+
+    /**
+     * Get the flow priority.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     *
+     * @return the flow priority.
+     */
+    @JsonProperty("priority")
+    public int priority() { return priority; }
+
+    /**
+     * Set the flow priority.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     *
+     * @param priority the flow priority to set.
+     */
+    @JsonProperty("priority")
+    public void setPriority(int priority) {
+	this.priority = 0xffff & priority;
     }
 
     /**
@@ -393,7 +417,7 @@ public class FlowEntry {
      * Convert the flow entry to a string.
      *
      * The string has the following form:
-     *  [flowEntryId=XXX idleTimeout=XXX hardTimeout=XXX
+     *  [flowEntryId=XXX idleTimeout=XXX hardTimeout=XXX priority=XXX
      *   flowEntryMatch=XXX flowEntryActions=XXX dpid=XXX
      *   inPort=XXX outPort=XXX flowEntryUserState=XXX flowEntrySwitchState=XXX
      *   flowEntryErrorState=XXX]
@@ -412,6 +436,7 @@ public class FlowEntry {
 	}
 	ret.append(" idleTimeout=" + this.idleTimeout);
 	ret.append(" hardTimeout=" + this.hardTimeout);
+	ret.append(" priority=" + this.priority);
 	if ( flowEntryMatch != null ) {
 		ret.append(" flowEntryMatch=" + this.flowEntryMatch.toString());
 	}

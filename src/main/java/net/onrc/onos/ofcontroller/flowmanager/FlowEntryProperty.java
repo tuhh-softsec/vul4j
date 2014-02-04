@@ -48,6 +48,10 @@ public class FlowEntryProperty {
     public void setHardTimeout(Integer value) {
         map.put("hard_timeout", value);
     }
+
+    public void setPriority(Integer value) {
+        map.put("priority", value);
+    }
     
     public void setSwitchDpid(String value) {
         map.put("switch_dpid", value);

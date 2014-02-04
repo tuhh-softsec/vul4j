@@ -268,6 +268,13 @@ public interface INetMapTopologyObjects {
 		@Property("hard_timeout")
 		public void setHardTimeout(Integer hardTimeout);
 
+		@JsonProperty("priority")
+		@Property("priority")
+		public Integer getPriority();
+
+		@Property("priority")
+		public void setPriority(Integer priority);
+
 		@JsonProperty("srcDpid")
 		@Property("src_switch")
 		public String getSrcSwitch();
@@ -435,6 +442,13 @@ public interface INetMapTopologyObjects {
 
 		@Property("hard_timeout")
 		public void setHardTimeout(Integer hardTimeout);
+
+		@JsonProperty("priority")
+		@Property("priority")
+		public Integer getPriority();
+
+		@Property("priority")
+		public void setPriority(Integer priority);
 
 		@Property("switch_dpid")
 		public String getSwitchDpid();

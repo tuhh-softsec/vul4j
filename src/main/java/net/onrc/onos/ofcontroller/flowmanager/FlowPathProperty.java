@@ -41,6 +41,10 @@ public class FlowPathProperty {
 		map.put("hard_timeout", hardTimeout);
 	}
 
+	public void setPriority(Integer priority) {
+		map.put("priority", priority);
+	}
+
 	public void setSrcSwitch(String srcSwitch) {
 		map.put("src_switch", srcSwitch);
 	}

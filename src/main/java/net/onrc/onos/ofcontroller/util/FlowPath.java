@@ -13,6 +13,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * The class representing the Flow Path.
  */
 public class FlowPath implements Comparable<FlowPath> {
+    public static final int PRIORITY_DEFAULT = 32768;	// Default Flow Priority
+
     private FlowId flowId;		// The Flow ID
     private CallerId installerId;	// The Caller ID of the path installer
     private FlowPathType flowPathType;	// The Flow Path type
@@ -20,6 +22,7 @@ public class FlowPath implements Comparable<FlowPath> {
     private FlowPathFlags flowPathFlags; // The Flow Path flags
     private int		idleTimeout;	// The Flow idle timeout
     private int		hardTimeout;	// The Flow hard timeout
+    private int		priority;	// The Flow priority
     private DataPath	dataPath;	// The data path
     private FlowEntryMatch flowEntryMatch; // Common Flow Entry Match for all
 					// Flow Entries
@@ -33,6 +36,7 @@ public class FlowPath implements Comparable<FlowPath> {
 	flowPathType = FlowPathType.FP_TYPE_UNKNOWN;
 	flowPathUserState = FlowPathUserState.FP_USER_UNKNOWN;
 	flowPathFlags = new FlowPathFlags();
+	priority = FlowPath.PRIORITY_DEFAULT;
 	dataPath = new DataPath();
 	flowEntryActions = new FlowEntryActions();
     }
@@ -49,6 +53,7 @@ public class FlowPath implements Comparable<FlowPath> {
 	this.setFlowPathFlags(new FlowPathFlags(flowObj.getFlowPathFlags()));
 	this.setIdleTimeout(flowObj.getIdleTimeout());
 	this.setHardTimeout(flowObj.getHardTimeout());
+	this.setPriority(flowObj.getPriority());
     	this.dataPath().srcPort().setDpid(new Dpid(flowObj.getSrcSwitch()));
     	this.dataPath().srcPort().setPort(new Port(flowObj.getSrcPort()));
     	this.dataPath().dstPort().setDpid(new Dpid(flowObj.getDstSwitch()));
@@ -347,6 +352,28 @@ public class FlowPath implements Comparable<FlowPath> {
     }
 
     /**
+     * Get the flow priority.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     *
+     * @return the flow priority.
+     */
+    @JsonProperty("priority")
+    public int priority() { return priority; }
+
+    /**
+     * Set the flow priority.
+     *
+     * It should be an unsigned integer in the interval [0, 65535].
+     *
+     * @param priority the flow priority to set.
+     */
+    @JsonProperty("priority")
+    public void setPriority(int priority) {
+	this.priority = 0xffff & priority;
+    }
+
+    /**
      * Get the flow path's data path.
      *
      * @return the flow path's data path.
@@ -418,8 +445,8 @@ public class FlowPath implements Comparable<FlowPath> {
      *
      * The string has the following form:
      *  [flowId=XXX installerId=XXX flowPathType = XXX flowPathUserState = XXX
-     *   flowPathFlags=XXX idleTimeout=XXX hardTimeout=XXX dataPath=XXX
-     *   flowEntryMatch=XXX flowEntryActions=XXX]
+     *   flowPathFlags=XXX idleTimeout=XXX hardTimeout=XXX priority=XXX
+     *   dataPath=XXX flowEntryMatch=XXX flowEntryActions=XXX]
      *
      * @return the flow path as a string.
      */
@@ -432,6 +459,7 @@ public class FlowPath implements Comparable<FlowPath> {
 	ret += " flowPathFlags=" + this.flowPathFlags.toString();
 	ret += " idleTimeout=" + this.idleTimeout;
 	ret += " hardTimeout=" + this.hardTimeout;
+	ret += " priority=" + this.priority;
 	if (dataPath != null)
 	    ret += " dataPath=" + this.dataPath.toString();
 	if (flowEntryMatch != null)
