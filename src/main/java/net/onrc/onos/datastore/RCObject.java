@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.onrc.onos.datastore.RCObject.WriteOp.STATUS;
 import net.onrc.onos.datastore.RCTable.Entry;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +18,11 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import edu.stanford.ramcloud.JRamCloud;
+import edu.stanford.ramcloud.JRamCloud.MultiWriteObject;
+import edu.stanford.ramcloud.JRamCloud.MultiWriteRspObject;
 import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 import edu.stanford.ramcloud.JRamCloud.ObjectExistsException;
+import edu.stanford.ramcloud.JRamCloud.RejectRules;
 import edu.stanford.ramcloud.JRamCloud.TableEnumerator;
 import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 
@@ -92,6 +97,19 @@ public class RCObject {
 
     public byte[] getKey() {
 	return key;
+    }
+
+    /**
+     * Get the byte array value of this object
+     *
+     * @note will trigger serialization, if value was null.
+     * @return
+     */
+    protected byte[] getValue() {
+	if (value == null) {
+	    serializeAndSetValue();
+	}
+	return value;
     }
 
     public long getVersion() {
@@ -239,7 +257,7 @@ public class RCObject {
      *
      * @param objects
      *            RCObjects to read
-     * @return true if there exist an failed read.
+     * @return true if there exist a failed read.
      */
     public static boolean multiRead(Collection<RCObject> objects) {
 	boolean fail_exists = false;
@@ -307,13 +325,131 @@ public class RCObject {
 	return fail_exists;
     }
 
-    public static Iterable<RCObject> getAllObjects(
-	    RCTable table) {
+    public static class WriteOp {
+	public enum STATUS {
+	    NOT_EXECUTED, SUCCESS, FAILED
+	}
+
+	public enum OPS {
+	    CREATE, UPDATE, FORCE_CREATE
+	}
+
+	private RCObject obj;
+	private OPS op;
+	private STATUS status;
+
+	public static WriteOp Create(RCObject obj) {
+	    return new WriteOp(obj, OPS.CREATE);
+	}
+
+	public static WriteOp Update(RCObject obj) {
+	    return new WriteOp(obj, OPS.UPDATE);
+	}
+
+	public static WriteOp ForceCreate(RCObject obj) {
+	    return new WriteOp(obj, OPS.FORCE_CREATE);
+	}
+
+	public WriteOp(RCObject obj, OPS op) {
+	    this.obj = obj;
+	    this.op = op;
+	    this.status = STATUS.NOT_EXECUTED;
+	}
+
+	public boolean hasSucceed() {
+	    return status == STATUS.SUCCESS;
+	}
+
+	public RCObject getObject() {
+	    return obj;
+	}
+
+	public OPS getOp() {
+	    return op;
+	}
+    }
+
+    public static boolean multiWrite(Collection<WriteOp> objects) {
+	boolean fail_exists = false;
+
+	ArrayList<WriteOp> req = new ArrayList<>();
+	Iterator<WriteOp> it = objects.iterator();
+	while (it.hasNext()) {
+
+	    req.add(it.next());
+
+	    if (req.size() >= RCClient.MAX_MULTI_WRITES) {
+		// dispatch multiWrite
+		fail_exists |= multiWriteInternal(req);
+		req.clear();
+	    }
+	}
+
+	if (!req.isEmpty()) {
+	    // dispatch multiWrite
+	    fail_exists |= multiWriteInternal(req);
+	    req.clear();
+	}
+
+	return fail_exists;
+    }
+
+    private static boolean multiWriteInternal(ArrayList<WriteOp> ops) {
+
+	boolean fail_exists = false;
+	MultiWriteObject multiWriteObjects[] = new MultiWriteObject[ops.size()];
+	JRamCloud rcClient = RCClient.getClient();
+
+	for (int i = 0; i < multiWriteObjects.length; ++i) {
+	    WriteOp op = ops.get(i);
+	    RCObject obj = op.getObject();
+
+	    // FIXME JRamCloud.RejectRules definition is messed up
+	    RejectRules rules = rcClient.new RejectRules();
+
+	    switch (op.getOp()) {
+	    case CREATE:
+		rules.setExists();
+		break;
+	    case FORCE_CREATE:
+		// no reject rule
+		break;
+	    case UPDATE:
+		rules.setDoesntExists();
+		rules.setNeVersion(obj.getVersion());
+		break;
+	    }
+	    multiWriteObjects[i] = new MultiWriteObject(obj.getTableId(),
+		    obj.getKey(), obj.getValue(), rules);
+	}
+
+	MultiWriteRspObject[] results = rcClient.multiWrite(multiWriteObjects);
+	assert (results.length == multiWriteObjects.length);
+
+	for (int i = 0; i < results.length; ++i) {
+	    WriteOp op = ops.get(i);
+
+	    if (results[i] != null
+		    && results[i].getStatus() == RCClient.STATUS_OK) {
+		op.status = STATUS.SUCCESS;
+
+		RCObject obj = op.getObject();
+		obj.version = results[i].getVersion();
+	    } else {
+		op.status = STATUS.FAILED;
+		fail_exists = true;
+	    }
+
+	}
+
+	return fail_exists;
+    }
+
+    public static Iterable<RCObject> getAllObjects(RCTable table) {
 	return new ObjectEnumerator(table);
     }
 
-    public static class ObjectEnumerator implements
-	    Iterable<RCObject> {
+    public static class ObjectEnumerator implements Iterable<RCObject> {
 
 	private RCTable table;
 

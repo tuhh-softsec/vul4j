@@ -4,9 +4,16 @@ import edu.stanford.ramcloud.JRamCloud;
 
 public class RCClient {
 
+    // Value taken from RAMCloud's Status.h
+    // FIXME These constants should be defined by JRamCloud
+    public static final int STATUS_OK = 0;
+
     // FIXME come up with a proper way to retrieve configuration
     public static final int MAX_MULTI_READS = Integer.valueOf(System
 	    .getProperty("ramcloud.max_multi_reads", "400"));
+
+    public static final int MAX_MULTI_WRITES = Integer.valueOf(System
+	    .getProperty("ramcloud.max_multi_writes", "800"));
 
     private static final ThreadLocal<JRamCloud> tlsRCClient = new ThreadLocal<JRamCloud>() {
 	@Override

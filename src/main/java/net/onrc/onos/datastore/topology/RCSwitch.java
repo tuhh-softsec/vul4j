@@ -248,7 +248,7 @@ public class RCSwitch extends RCObject {
 	}
 	assert (swRead.getStatus() == STATUS.ACTIVE);
 	for (byte[] portId : swRead.getAllPortIds()) {
-	    // bad example code, portId is not expected to be ASCII string
+	    // XXX bad example code, portId is not expected to be ASCII string
 	    log.debug("PortId: {}", new String(portId));
 	}
 	assert (swRead.getAllPortIds().size() == 2);
@@ -271,7 +271,7 @@ public class RCSwitch extends RCObject {
 	}
 	assert (swRead2.getStatus() == STATUS.INACTIVE);
 	for (byte[] portId : swRead2.getAllPortIds()) {
-	    // bad example code, portId is not expected to be ASCII string
+	    // XXX bad example code, portId is not expected to be ASCII string
 	    log.debug("PortId: {}", new String(portId));
 	}
 	assert (swRead2.getAllPortIds().size() == 1);
@@ -364,17 +364,16 @@ public class RCSwitch extends RCObject {
 	d2.addPortId(sw2p2.getId());
 	sw2p2.addDeviceId(d2.getId());
 
-	try {
-	    sw2.create();
-	    log.debug("Create {}", sw2);
-	    sw2p1.create();
-	    log.debug("Create {}", sw2p1);
-	    sw2p2.create();
-	    log.debug("Create {}", sw2p2);
-	    d2.create();
-	    log.debug("Create {}", d2);
-	} catch (ObjectExistsException e) {
-	    log.error("One of Switch/Port/Device creation failed", e);
+	boolean failed = RCObject.multiWrite(Arrays.asList(
+	        RCObject.WriteOp.Create(sw2), RCObject.WriteOp.Create(sw2p1),
+	        RCObject.WriteOp.Create(sw2p2), RCObject.WriteOp.Create(d2)));
+	if (failed) {
+	    log.error("One of Switch/Port/Device creation failed");
+	} else {
+	    log.debug("Create {} Version:{}", sw2, sw2.getVersion());
+	    log.debug("Create {} Version:{}", sw2p1, sw2p1.getVersion());
+	    log.debug("Create {} Version:{}", sw2p2, sw2p2.getVersion());
+	    log.debug("Create {} Version:{}", d2, d2.getVersion());
 	}
 
 	RCLink l1 = new RCLink(0x1L, 2L, 0x2L, 1L);
@@ -427,15 +426,15 @@ public class RCSwitch extends RCObject {
 	    try {
 		port.read();
 		assert (port.getDpid() == 0x1L);
-		log.debug("Port 0x1:{} - LinkIDs:{} DeviceIDs:{}",
-		        port.getNumber(), port.getAllLinkIds(),
+		log.debug("{} - LinkIDs:{} DeviceIDs:{}",
+		        port, port.getAllLinkIds(),
 		        port.getAllDeviceIds());
 
 		for (byte[] deviceId : port.getAllDeviceIds()) {
 		    RCDevice device = RCDevice.createFromKey(deviceId);
 		    try {
 			device.read();
-			log.debug("Device {} - PortIDs:{}", device.getMac(),
+			log.debug("{} - PortIDs:{}", device,
 			        device.getAllPortIds());
 		    } catch (ObjectDoesntExistException e) {
 			log.error("Reading Device failed", e);
@@ -457,7 +456,7 @@ public class RCSwitch extends RCObject {
 	    }
 	}
 
-	RCSwitch sw2 = new RCSwitch(0x1L);
+	RCSwitch sw2 = new RCSwitch(0x2L);
 	try {
 	    sw2.read();
 	    log.debug("{}", sw2);
@@ -472,16 +471,16 @@ public class RCSwitch extends RCObject {
 	    RCPort port = RCPort.createFromKey(portId);
 	    try {
 		port.read();
-		assert (port.getDpid() == 0x1L);
-		log.debug("Port 0x2:{} - LinkIDs:{} DeviceIDs:{}",
-		        port.getNumber(), port.getAllLinkIds(),
+		assert (port.getDpid() == 0x2L);
+		log.debug("{} - LinkIDs:{} DeviceIDs:{}",
+		        port, port.getAllLinkIds(),
 		        port.getAllDeviceIds());
 
 		for (byte[] deviceId : port.getAllDeviceIds()) {
 		    RCDevice device = RCDevice.createFromKey(deviceId);
 		    try {
 			device.read();
-			log.debug("Device {} - PortIDs:{}", device,
+			log.debug("{} - PortIDs:{}", device,
 			        device.getAllPortIds());
 		    } catch (ObjectDoesntExistException e) {
 			log.error("Reading Device failed", e);
