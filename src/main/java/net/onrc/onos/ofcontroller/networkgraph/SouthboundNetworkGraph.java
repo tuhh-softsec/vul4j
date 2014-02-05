@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.onrc.onos.datastore.RCObject;
+import net.onrc.onos.datastore.RCObject.WriteOp;
 import net.onrc.onos.datastore.topology.RCLink;
 import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
@@ -16,7 +17,7 @@ import edu.stanford.ramcloud.JRamCloud.ObjectExistsException;
 import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 
 /**
- * The southbound interface to the network graph which allows clients to 
+ * The southbound interface to the network graph which allows clients to
  * mutate the graph. This class will maintain the invariants of the network
  * graph. The southbound discovery modules will use this interface to update
  * the network graph as they learn about the state of the network.
@@ -24,37 +25,55 @@ import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
  */
 public class SouthboundNetworkGraph {
 	private static final Logger log = LoggerFactory.getLogger(SouthboundNetworkGraph.class);
-	
+
 	private static final int NUM_RETRIES = 10;
-	
-	
+
+
 	public void addSwitch(Switch sw) {
+
+		ArrayList<WriteOp> groupOp = new ArrayList<>();
+
 		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
 		rcSwitch.setStatus(RCSwitch.STATUS.ACTIVE);
-		
+
+		// XXX Is ForceCreating Switch on DB OK here?
+		// If ForceCreating, who ever is calling this method needs
+		// to assure that DPID is unique cluster-wide, etc.
+		groupOp.add(WriteOp.ForceCreate(rcSwitch));
+
 		for (Port port : sw.getPorts()) {
 			RCPort rcPort = new RCPort(sw.getDpid(), (long)port.getNumber());
 			rcPort.setStatus(RCPort.STATUS.ACTIVE);
 			rcSwitch.addPortId(rcPort.getId());
-			
-			// TODO check how to write switch+ports together
-			writeObject(rcPort);
+
+			groupOp.add(WriteOp.ForceCreate(rcPort));
 		}
-		
-		writeObject(rcSwitch);
+
+		boolean failed = RCObject.multiWrite( groupOp );
+
+		if ( failed ) {
+		    log.error("Adding Switch {} and it's ports failed.", sw.getDpid());
+		    for ( WriteOp op : groupOp ) {
+			log.debug("Operation:{} for {} - Result:{}", op.getOp(), op.getObject(), op.getStatus() );
+
+			// If we changed the operation from ForceCreate to
+			// Conditional operation (Create/Update) then we should retry here.
+		    }
+		}
+
 	}
-	
+
 	public void deactivateSwitch(Switch sw) {
 		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
-		
+
 		List<RCObject> objectsToDeactive = new ArrayList<RCObject>();
-		
+
 		for (int i = 0; i < NUM_RETRIES; i++) {
 			try {
 				rcSwitch.read();
 				rcSwitch.setStatus(RCSwitch.STATUS.INACTIVE);
 				objectsToDeactive.add(rcSwitch);
-				
+
 				for (Port p : sw.getPorts()) {
 					RCPort rcPort = new RCPort(sw.getDpid(), (long)p.getNumber());
 					rcPort.read();
@@ -66,14 +85,14 @@ public class SouthboundNetworkGraph {
 				// We don't care to much if the object wasn't there, it's
 				// being deactivated anyway
 			}
-			
+
 			try {
-				for (RCObject rcObject : objectsToDeactive) {	
+				for (RCObject rcObject : objectsToDeactive) {
 					rcObject.update();
 				}
 				break;
 			} catch (ObjectDoesntExistException e) {
-				// Unlikely, and we don't care anyway. 
+				// Unlikely, and we don't care anyway.
 				// TODO But, this will cause everything else to fail
 				log.warn("Trying to deactivate object that doesn't exist", e);
 			} catch (WrongVersionException e) {
@@ -81,28 +100,28 @@ public class SouthboundNetworkGraph {
 			}
 		}
 	}
-	
+
 	public void addPort(Switch sw, Port port) {
 		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
-		
+
 		try {
 			rcSwitch.read();
 		} catch (ObjectDoesntExistException e) {
 			log.warn("Add port failed because switch {} doesn't exist", sw.getDpid(), e);
 			return;
 		}
-		
+
 		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
 		rcPort.setStatus(RCPort.STATUS.ACTIVE);
 		rcSwitch.addPortId(rcPort.getId());
-		
+
 		writeObject(rcPort);
 		writeObject(rcSwitch);
 	}
-	
+
 	public void deactivatePort(Port port) {
 		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
-		
+
 		for (int i = 0; i < NUM_RETRIES; i++) {
 			try {
 				rcPort.read();
@@ -111,9 +130,9 @@ public class SouthboundNetworkGraph {
 				log.warn("Trying to deactivate a port that doesn't exist: {}", port);
 				return;
 			}
-			
+
 			rcPort.setStatus(RCPort.STATUS.INACTIVE);
-			
+
 			try {
 				rcPort.update();
 				break;
@@ -122,14 +141,14 @@ public class SouthboundNetworkGraph {
 			}
 		}
 	}
-	
+
 	public void addLink(Link link) {
 		RCLink rcLink = new RCLink(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber(),
 				link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
-		
+
 		RCPort rcSrcPort = new RCPort(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber());
 		RCPort rcDstPort = new RCPort(link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
-		
+
 		for (int i = 0; i < NUM_RETRIES; i++) {
 			try {
 				rcSrcPort.read();
@@ -143,12 +162,12 @@ public class SouthboundNetworkGraph {
 				log.debug("Link already exists {}", link);
 				return;
 			}
-			
+
 			rcSrcPort.addLinkId(rcLink.getId());
 			rcDstPort.addLinkId(rcLink.getId());
-			
+
 			rcLink.setStatus(RCLink.STATUS.ACTIVE);
-			
+
 			try {
 				rcLink.update();
 				rcSrcPort.update();
@@ -160,14 +179,14 @@ public class SouthboundNetworkGraph {
 			}
 		}
 	}
-	
+
 	public void removeLink(Link link) {
 		RCLink rcLink = new RCLink(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber(),
 				link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
-		
+
 		RCPort rcSrcPort = new RCPort(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber());
 		RCPort rcDstPort = new RCPort(link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
-		
+
 		for (int i = 0; i < NUM_RETRIES; i++) {
 			try {
 				rcSrcPort.read();
@@ -177,10 +196,10 @@ public class SouthboundNetworkGraph {
 				log.error("Remove link failed {}", link, e);
 				return;
 			}
-			
+
 			rcSrcPort.removeLinkId(rcLink.getId());
 			rcDstPort.removeLinkId(rcLink.getId());
-			
+
 			try {
 				rcSrcPort.update();
 				rcDstPort.update();
@@ -193,15 +212,15 @@ public class SouthboundNetworkGraph {
 			}
 		}
 	}
-	
+
 	public void updateDevice(Device device) {
 		// TODO implement
 	}
-	
+
 	public void removeDevice(Device device) {
 		// TODO implement
 	}
-	
+
 	// TODO what happens if this fails? why could it fail?
 	private void writeObject(RCObject object) {
 		for (int i = 0; i < NUM_RETRIES; i++) {
@@ -216,7 +235,7 @@ public class SouthboundNetworkGraph {
 					return;
 				}
 			}
-			
+
 			try {
 				// TODO check API for writing without caring what's there
 				object.update();
