@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +80,27 @@ public class RCPort extends RCObject {
 	}
 	return ByteBuffer.allocate(PORTID_BYTES).putChar('S').putLong(dpid)
 	        .putChar('P').putLong(number).array();
+    }
+
+    public static StringBuilder keysToSB(Collection<byte[]> keys) {
+	StringBuilder sb = new StringBuilder();
+	sb.append("[");
+	boolean hasWritten = false;
+	for (byte[] key : keys) {
+	    if (hasWritten) {
+		sb.append(", ");
+	    }
+	    sb.append(keyToString(key));
+	    hasWritten = true;
+	}
+	sb.append("]");
+	return sb;
+    }
+
+    public static String keyToString(byte[] key) {
+	// For debug log
+	long[] pair = getPortPairFromKey(key);
+	return "S" + HexString.toHexString(pair[0]) + "P" + pair[1];
     }
 
     public static long[] getPortPairFromKey(byte[] key) {

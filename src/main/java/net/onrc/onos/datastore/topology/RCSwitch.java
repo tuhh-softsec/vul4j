@@ -14,6 +14,7 @@ import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.datastore.utils.ByteArrayComparator;
 
+import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +75,26 @@ public class RCSwitch extends RCObject {
 	}
 	return ByteBuffer.allocate(SWITCHID_BYTES).putChar('S').putLong(dpid)
 	        .array();
+    }
+
+    public static StringBuilder keysToSB(Collection<byte[]> keys) {
+	StringBuilder sb = new StringBuilder();
+	sb.append("[");
+	boolean hasWritten = false;
+	for (byte[] key : keys) {
+	    if (hasWritten) {
+		sb.append(", ");
+	    }
+	    sb.append(keyToString(key));
+	    hasWritten = true;
+	}
+	sb.append("]");
+	return sb;
+    }
+
+    public static String keyToString(byte[] key) {
+	// For debug log
+	return "S" + HexString.toHexString(getDpidFromKey(key));
     }
 
     public static long getDpidFromKey(byte[] key) {
@@ -326,7 +347,8 @@ public class RCSwitch extends RCObject {
 	sw1.addPortId(sw1p2.getId());
 	try {
 	    sw1.update();
-	    log.debug("Update {} - {}", sw1, sw1.getAllPortIds());
+	    log.debug("Update {} - {}", sw1,
+		    RCPort.keysToSB(sw1.getAllPortIds()));
 	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.error("Switch update failed", e);
 	}
@@ -364,11 +386,17 @@ public class RCSwitch extends RCObject {
 	d2.addPortId(sw2p2.getId());
 	sw2p2.addDeviceId(d2.getId());
 
-	boolean failed = RCObject.multiWrite(Arrays.asList(
+	// XXX Collection created by Arrays.asList needs to be stored, so that
+	// which operation failed
+	Collection<WriteOp> groupOp = Arrays.asList(
 	        RCObject.WriteOp.Create(sw2), RCObject.WriteOp.Create(sw2p1),
-	        RCObject.WriteOp.Create(sw2p2), RCObject.WriteOp.Create(d2)));
+	        RCObject.WriteOp.Create(sw2p2), RCObject.WriteOp.Create(d2));
+	boolean failed = RCObject.multiWrite(groupOp);
 	if (failed) {
-	    log.error("One of Switch/Port/Device creation failed");
+	    log.error("Some of Switch/Port/Device creation failed");
+	    for ( WriteOp op : groupOp ) {
+		log.debug("{} - Result:{}", op.getObject(), op.getStatus() );
+	    }
 	} else {
 	    log.debug("Create {} Version:{}", sw2, sw2.getVersion());
 	    log.debug("Create {} Version:{}", sw2p1, sw2p1.getVersion());
@@ -426,16 +454,16 @@ public class RCSwitch extends RCObject {
 	    try {
 		port.read();
 		assert (port.getDpid() == 0x1L);
-		log.debug("{} - LinkIDs:{} DeviceIDs:{}",
-		        port, port.getAllLinkIds(),
-		        port.getAllDeviceIds());
+		log.debug("{} - LinkIDs:{} DeviceIDs:{}", port,
+		        RCLink.keysToSB(port.getAllLinkIds()),
+		        RCDevice.keysToSB(port.getAllDeviceIds()));
 
 		for (byte[] deviceId : port.getAllDeviceIds()) {
 		    RCDevice device = RCDevice.createFromKey(deviceId);
 		    try {
 			device.read();
 			log.debug("{} - PortIDs:{}", device,
-			        device.getAllPortIds());
+			        RCPort.keysToSB(device.getAllPortIds()));
 		    } catch (ObjectDoesntExistException e) {
 			log.error("Reading Device failed", e);
 		    }
@@ -472,16 +500,16 @@ public class RCSwitch extends RCObject {
 	    try {
 		port.read();
 		assert (port.getDpid() == 0x2L);
-		log.debug("{} - LinkIDs:{} DeviceIDs:{}",
-		        port, port.getAllLinkIds(),
-		        port.getAllDeviceIds());
+		log.debug("{} - LinkIDs:{} DeviceIDs:{}", port,
+		        RCLink.keysToSB(port.getAllLinkIds()),
+		        RCDevice.keysToSB(port.getAllDeviceIds()));
 
 		for (byte[] deviceId : port.getAllDeviceIds()) {
 		    RCDevice device = RCDevice.createFromKey(deviceId);
 		    try {
 			device.read();
 			log.debug("{} - PortIDs:{}", device,
-			        device.getAllPortIds());
+			        RCPort.keysToSB(device.getAllPortIds()));
 		    } catch (ObjectDoesntExistException e) {
 			log.error("Reading Device failed", e);
 		    }
@@ -509,72 +537,40 @@ public class RCSwitch extends RCObject {
     private static void topology_delete() {
 	log.debug("topology_delete start.");
 
-	// TODO implement get all kind of API
-	RCSwitch sw1 = new RCSwitch(0x1L);
-	RCPort sw1p1 = new RCPort(0x1L, 1L);
-	RCPort sw1p2 = new RCPort(0x1L, 2L);
-	RCDevice d1 = new RCDevice(new byte[] { 0, 1, 2, 3, 4, 5, 6 });
-	RCLink l1 = new RCLink(0x1L, 2L, 0x2L, 1L);
-	RCSwitch sw2 = new RCSwitch(0x2L);
-	RCPort sw2p1 = new RCPort(0x2L, 1L);
-	RCPort sw2p2 = new RCPort(0x2L, 2L);
-	RCDevice d2 = new RCDevice(new byte[] { 6, 5, 4, 3, 2, 1, 0 });
-
-	try {
-	    sw1.read();
-	    sw1.delete();
-	} catch (ObjectDoesntExistException | WrongVersionException e) {
-	    log.debug("Delete Switch Failed", e);
-	}
-	try {
-	    sw1p1.read();
-	    sw1p1.delete();
-	} catch (ObjectDoesntExistException | WrongVersionException e) {
-	    log.debug("Delete Port Failed", e);
-	}
-	try {
-	    sw1p2.read();
-	    sw1p2.delete();
-	} catch (ObjectDoesntExistException | WrongVersionException e) {
-	    log.debug("Delete Port Failed", e);
-	}
-	try {
-	    d1.read();
-	    d1.delete();
-	} catch (ObjectDoesntExistException | WrongVersionException e) {
-	    log.debug("Delete Device Failed", e);
+	for (RCSwitch sw : RCSwitch.getAllSwitches()) {
+	    try {
+		sw.read();
+		sw.delete();
+	    } catch (ObjectDoesntExistException | WrongVersionException e) {
+		log.debug("Delete Switch Failed", e);
+	    }
 	}
 
-	try {
-	    l1.read();
-	    l1.delete();
-	} catch (ObjectDoesntExistException | WrongVersionException e) {
-	    log.debug("Delete Link Failed", e);
+	for (RCPort p : RCPort.getAllPorts()) {
+	    try {
+		p.read();
+		p.delete();
+	    } catch (ObjectDoesntExistException | WrongVersionException e) {
+		log.debug("Delete Port Failed", e);
+	    }
 	}
 
-	try {
-	    sw2.read();
-	    sw2.delete();
-	} catch (ObjectDoesntExistException | WrongVersionException e) {
-	    log.debug("Delete Switch Failed", e);
+	for (RCDevice d : RCDevice.getAllDevices()) {
+	    try {
+		d.read();
+		d.delete();
+	    } catch (ObjectDoesntExistException | WrongVersionException e) {
+		log.debug("Delete Device Failed", e);
+	    }
 	}
-	try {
-	    sw2p1.read();
-	    sw2p1.delete();
-	} catch (ObjectDoesntExistException | WrongVersionException e) {
-	    log.debug("Delete Port Failed", e);
-	}
-	try {
-	    sw2p2.read();
-	    sw2p2.delete();
-	} catch (ObjectDoesntExistException | WrongVersionException e) {
-	    log.debug("Delete Port Failed", e);
-	}
-	try {
-	    d2.read();
-	    d2.delete();
-	} catch (ObjectDoesntExistException | WrongVersionException e) {
-	    log.debug("Delete Device Failed", e);
+
+	for (RCLink l : RCLink.getAllLinks()) {
+	    try {
+		l.read();
+		l.delete();
+	    } catch (ObjectDoesntExistException | WrongVersionException e) {
+		log.debug("Delete Link Failed", e);
+	    }
 	}
 
 	log.debug("topology_delete end.");

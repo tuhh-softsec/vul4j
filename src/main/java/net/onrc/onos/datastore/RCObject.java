@@ -367,6 +367,10 @@ public class RCObject {
 	public OPS getOp() {
 	    return op;
 	}
+
+	public STATUS getStatus() {
+	    return status;
+	}
     }
 
     public static boolean multiWrite(Collection<WriteOp> objects) {

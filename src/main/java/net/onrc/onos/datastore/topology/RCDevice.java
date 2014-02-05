@@ -57,6 +57,27 @@ public class RCDevice extends RCObject {
 	        .array();
     }
 
+    public static StringBuilder keysToSB(Collection<byte[]> keys) {
+	StringBuilder sb = new StringBuilder();
+	sb.append("[");
+	boolean hasWritten = false;
+	for (byte[] key : keys) {
+	    if (hasWritten) {
+		sb.append(", ");
+	    }
+	    sb.append(keyToString(key));
+	    hasWritten = true;
+	}
+	sb.append("]");
+	return sb;
+    }
+
+    public static String keyToString(byte[] key) {
+	// For debug log
+	byte[] mac = getMacFromKey(key);
+	return "D" + ByteArrayUtil.toHexStringBuffer(mac, ":");
+    }
+
     public static byte[] getMacFromKey(byte[] key) {
 	ByteBuffer keyBuf = ByteBuffer.wrap(key);
 	if (keyBuf.getChar() != 'D') {

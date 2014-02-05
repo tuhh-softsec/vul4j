@@ -1,10 +1,12 @@
 package net.onrc.onos.datastore.topology;
 
 import java.nio.ByteBuffer;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +84,28 @@ public class RCLink extends RCObject {
 	return ByteBuffer.allocate(LINKID_BYTES).putChar('L')
 	        .put(RCPort.getPortID(src_dpid, src_port_no))
 	        .put(RCPort.getPortID(dst_dpid, dst_port_no)).array();
+    }
+
+    public static StringBuilder keysToSB(Collection<byte[]> keys) {
+	StringBuilder sb = new StringBuilder();
+	sb.append("[");
+	boolean hasWritten = false;
+	for (byte[] key : keys) {
+	    if (hasWritten) {
+		sb.append(", ");
+	    }
+	    sb.append(keyToString(key));
+	    hasWritten = true;
+	}
+	sb.append("]");
+	return sb;
+    }
+
+    public static String keyToString(byte[] key) {
+	// For debug log
+	long[] tuple = getLinkTupleFromKey(key);
+	return "L" + "S" + HexString.toHexString(tuple[0]) + "P" + tuple[1]
+	        + "S" + HexString.toHexString(tuple[2]) + "P" + tuple[3];
     }
 
     public static long[] getLinkTupleFromKey(byte[] key) {
