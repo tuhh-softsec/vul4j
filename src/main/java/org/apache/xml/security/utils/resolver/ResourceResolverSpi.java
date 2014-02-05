@@ -44,10 +44,8 @@ public abstract class ResourceResolverSpi {
      * 
      * @throws ResourceResolverException
      */
-    public XMLSignatureInput engineResolveURI(ResourceResolverContext context)
-        throws ResourceResolverException {
-        throw new UnsupportedOperationException();
-    }
+    public abstract XMLSignatureInput engineResolveURI(ResourceResolverContext context)
+        throws ResourceResolverException;
 
     /**
      * Method engineSetProperty
@@ -107,9 +105,7 @@ public abstract class ResourceResolverSpi {
      * @param context Context in which to do resolution.
      * @return true if the engine can resolve the uri
      */
-    public boolean engineCanResolveURI(ResourceResolverContext context) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract boolean engineCanResolveURI(ResourceResolverContext context);
 
     /**
      * Method engineGetPropertyKeys
