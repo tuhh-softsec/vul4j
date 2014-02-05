@@ -205,6 +205,17 @@ public class RCObject {
 	this.version = table.create(key, value);
     }
 
+    public void forceCreate() {
+
+	if (this.propertyMap == null) {
+	    log.warn("No object map was set. Setting empty Map.");
+	    setObjectMap(new HashMap<Object, Object>());
+	}
+	serializeAndSetValue();
+
+	this.version = table.forceCreate(key, value);
+    }
+
     /**
      * Read an Object from DataStore.
      *
@@ -248,6 +259,10 @@ public class RCObject {
     public void delete() throws ObjectDoesntExistException,
 	    WrongVersionException {
 	this.version = table.delete(key, this.version);
+    }
+
+    public void forceDelete() {
+	this.version = table.forceDelete(key);
     }
 
     /**
