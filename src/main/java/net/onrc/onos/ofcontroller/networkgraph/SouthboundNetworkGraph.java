@@ -22,6 +22,15 @@ import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
  * graph. The southbound discovery modules will use this interface to update
  * the network graph as they learn about the state of the network.
  *
+ * Modification to the Network Map by this module will:
+ * 1. Writes to Cluster-wide DataStore.
+ * 2. Update ONOS instance In-memory Network Map.
+ * 3. Send-out Notification. (TBD)
+ *    (XXX: To update other instances In-memory Network Map,
+ *          notification should be triggered here.
+ *          But if we want to aggregate notification to minimize notification,
+ *          It might be better for the caller to trigger notification.)
+ *
  */
 public class SouthboundNetworkGraph {
 	private static final Logger log = LoggerFactory.getLogger(SouthboundNetworkGraph.class);

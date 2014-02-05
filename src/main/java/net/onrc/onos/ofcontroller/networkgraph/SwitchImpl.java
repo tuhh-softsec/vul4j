@@ -11,14 +11,20 @@ import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 
+/**
+ * Switch Object stored in In-memory Topology.
+ *
+ * TODO REMOVE following design memo: This object itself may hold the DBObject,
+ * but this Object itself will not issue any read/write to the DataStore.
+ */
 public class SwitchImpl extends NetworkGraphObject implements Switch {
-	
+
 	private long dpid;
 	private final Map<Short, Port> ports;
 
 	public SwitchImpl(NetworkGraph graph) {
 		super(graph);
-		
+
 		ports = new HashMap<Short, Port>();
 	}
 
@@ -68,7 +74,7 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	public void setDpid(long dpid) {
 		this.dpid = dpid;
 	}
-	
+
 	public void addPort(Port port) {
 		this.ports.put(port.getNumber(), port);
 	}
@@ -77,23 +83,23 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	public Iterable<Link> getLinks() {
 		return graph.getLinksFromSwitch(dpid);
 	}
-	
+
 	public void store() {
 		RCSwitch rcSwitch = new RCSwitch(dpid);
-		
+
 		for (Port port : ports.values()) {
 			RCPort rcPort = new RCPort(dpid, (long)port.getNumber());
 			rcSwitch.addPortId(rcPort.getId());
 		}
-		
-		
+
+
 		try {
 			rcSwitch.update();
-			
+
 		} catch (ObjectDoesntExistException | WrongVersionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 }

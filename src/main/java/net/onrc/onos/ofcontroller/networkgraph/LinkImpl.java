@@ -1,12 +1,18 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+/**
+ * Link Object stored in In-memory Topology.
+ *
+ * TODO REMOVE following design memo: This object itself may hold the DBObject,
+ * but this Object itself will not issue any read/write to the DataStore.
+ */
 public class LinkImpl extends NetworkGraphObject implements Link {
-	
+
 	private long srcSwitch;
 	private short srcPort;
 	private long dstSwitch;
 	private short dstPort;
-	
+
 	private static final int DEFAULT_COST = 1;
 	private int cost = DEFAULT_COST;
 
@@ -43,12 +49,12 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	@Override
 	public int getCost() {
 		return cost;
 	}
-	
+
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
@@ -89,5 +95,5 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 		this.dstPort = dstPort;
 	}
 
-	
+
 }
