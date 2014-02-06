@@ -1,5 +1,5 @@
 net.floodlightcontroller.core.FloodlightProvider
-net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher
+net.onrc.onos.ofcontroller.floodlightlistener.RCNetworkGraphPublisher
 net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager
 net.floodlightcontroller.topology.TopologyManager
 net.floodlightcontroller.forwarding.Forwarding
@@ -21,3 +21,4 @@ net.onrc.onos.ofcontroller.forwarding.Forwarding
 net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager
 net.onrc.onos.ofcontroller.core.config.DefaultConfiguration
 net.onrc.onos.ofcontroller.devicemanager.OnosDeviceManager
+net.onrc.onos.ofcontroller.networkgraph.NetworkGraphModule

@@ -24,10 +24,10 @@ import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
-import net.onrc.onos.ofcontroller.floodlightlistener.INetworkGraphService;
 import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.forwarding.IForwardingService;
+import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -41,7 +41,6 @@ import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import com.thinkaurelius.titan.core.TitanException;
-
 import com.esotericsoftware.kryo.Kryo;
 
 import org.slf4j.Logger;
@@ -151,7 +150,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	Collection<Class<? extends IFloodlightService>> l =
 	    new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFloodlightProviderService.class);
-	l.add(INetworkGraphService.class);
 	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
 	l.add(IFlowPusherService.class);

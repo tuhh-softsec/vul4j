@@ -36,10 +36,15 @@ public class SouthboundNetworkGraph {
 	private static final Logger log = LoggerFactory.getLogger(SouthboundNetworkGraph.class);
 
 	private static final int NUM_RETRIES = 10;
+	
+	private final NetworkGraphImpl graph;
 
+	public SouthboundNetworkGraph(NetworkGraphImpl graph) {
+		this.graph = graph;
+	}
 
 	public void addSwitch(Switch sw) {
-
+		log.debug("Adding switch {}", sw);
 		ArrayList<WriteOp> groupOp = new ArrayList<>();
 
 		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
@@ -61,7 +66,7 @@ public class SouthboundNetworkGraph {
 		boolean failed = RCObject.multiWrite( groupOp );
 
 		if ( failed ) {
-		    log.error("Adding Switch {} and it's ports failed.", sw.getDpid());
+		    log.error("Adding Switch {} and its ports failed.", sw.getDpid());
 		    for ( WriteOp op : groupOp ) {
 			log.debug("Operation:{} for {} - Result:{}", op.getOp(), op.getObject(), op.getStatus() );
 
@@ -69,10 +74,15 @@ public class SouthboundNetworkGraph {
 			// Conditional operation (Create/Update) then we should retry here.
 		    }
 		}
+		else {
+			// Publish event to the in-memory cache
+			graph.addSwitch(sw);
+		}
 
 	}
 
 	public void deactivateSwitch(Switch sw) {
+		log.debug("Deactivating switch {}", sw);
 		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
 
 		List<RCObject> objectsToDeactive = new ArrayList<RCObject>();
@@ -111,6 +121,7 @@ public class SouthboundNetworkGraph {
 	}
 
 	public void addPort(Switch sw, Port port) {
+		log.debug("Adding port {}", port);
 		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
 
 		try {
@@ -129,6 +140,7 @@ public class SouthboundNetworkGraph {
 	}
 
 	public void deactivatePort(Port port) {
+		log.debug("Deactivating port {}", port);
 		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
 
 		for (int i = 0; i < NUM_RETRIES; i++) {
@@ -152,6 +164,7 @@ public class SouthboundNetworkGraph {
 	}
 
 	public void addLink(Link link) {
+		log.debug("Adding link {}", link);
 		RCLink rcLink = new RCLink(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber(),
 				link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
 
@@ -187,9 +200,13 @@ public class SouthboundNetworkGraph {
 				// retry
 			}
 		}
+		
+		// Publish event to in-memory cache
+		graph.addLink(link);
 	}
 
 	public void removeLink(Link link) {
+		log.debug("Removing link {}", link);
 		RCLink rcLink = new RCLink(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber(),
 				link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
 

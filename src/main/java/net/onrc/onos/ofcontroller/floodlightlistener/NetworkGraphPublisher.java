@@ -58,8 +58,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 					      IOFSwitchListener,
 					      IOFSwitchPortListener,
 					      ILinkDiscoveryListener,
-					      IFloodlightModule,
-					      INetworkGraphService {
+					      IFloodlightModule {
 
 	protected IDeviceStorage devStore;
 	protected ISwitchStorage swStore;
@@ -427,31 +426,23 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-		Collection<Class<? extends IFloodlightService>> l =
-		    new ArrayList<Class<? extends IFloodlightService>>();
-		l.add(INetworkGraphService.class);
-		return l;
+		return null;
 	}
 
 	@Override
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
-		Map<Class<? extends IFloodlightService>,
-		    IFloodlightService> m =
-		    new HashMap<Class<? extends IFloodlightService>,
-		    IFloodlightService>();
-		m.put(INetworkGraphService.class, this);
-		return m;
+		return null;
 	}
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
 	    Collection<Class<? extends IFloodlightService>> l =
 	            new ArrayList<Class<? extends IFloodlightService>>();
-	        l.add(IFloodlightProviderService.class);
-	        //l.add(IDeviceService.class);
-	        l.add(IDatagridService.class);
-	        l.add(IThreadPoolService.class);
-	        return l;
+        l.add(IFloodlightProviderService.class);
+        //l.add(IDeviceService.class);
+        l.add(IDatagridService.class);
+        l.add(IThreadPoolService.class);
+        return l;
 	}
 
 	@Override
