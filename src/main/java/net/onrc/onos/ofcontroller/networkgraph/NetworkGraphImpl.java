@@ -1,8 +1,5 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
-import java.net.InetAddress;
-
-import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
 
@@ -14,78 +11,136 @@ import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 /**
  * The "NB" read-only Network Map.
  *
- * TODO Current implementation directly read from DB, but
- * eventually, it should read from In-memory shared Network Map instance within ONOS process.
+ * TODO Current implementation directly read from DB, but eventually, it should
+ * read from In-memory shared Network Map instance within ONOS process.
  *
  */
-public class NetworkGraphImpl implements NetworkGraph {
+public class NetworkGraphImpl extends AbstractNetworkGraph {
 
-	private static final Logger log = LoggerFactory.getLogger(NetworkGraphImpl.class);
+    private static final Logger log = LoggerFactory
+	    .getLogger(NetworkGraphImpl.class);
 
-	@Override
-	public Switch getSwitch(long dpid) {
-		SwitchImpl sw = new SwitchImpl(this);
+    public NetworkGraphImpl() {
+	super();
+    }
 
-		RCSwitch rcSwitch = new RCSwitch(dpid);
-		try {
-			rcSwitch.read();
-		} catch (ObjectDoesntExistException e) {
-			log.warn("Tried to get a switch that doesn't exist {}", dpid);
-			return null;
-		}
+    void addSwitch(Switch sw) {
+	if ( sw == null ) {
+	    throw new IllegalArgumentException("Switch cannot be null");
+	}
+	switches.put(sw.getDpid(), sw);
 
-		sw.setDpid(rcSwitch.getDpid());
+    }
 
-		for (byte[] portId : rcSwitch.getAllPortIds()) {
-			RCPort rcPort = RCPort.createFromKey(portId);
-			try {
-				rcPort.read();
+    /**
+     * Deactivate Switch (and its Ports)
+     * @param sw
+     */
+    void deactivateSwitch(Switch sw) {
+	if ( sw == null ) {
+	    throw new IllegalArgumentException("Switch cannot be null");
+	}
+	SwitchImpl s = getSwitchImpl(sw);
+	// TODO Deactivate Switch
 
-				PortImpl port = new PortImpl(this);
-				//port.setDpid(dpid);
+	// XXX Are we sure we want to deactivate Ports also?
 
-				// TODO why are port numbers long?
-				//port.setPortNumber((short)rcPort.getNumber());
+	// TODO Auto-generated method stub
 
-				port.setSwitch(sw);
-				sw.addPort(port);
+    }
 
-			} catch (ObjectDoesntExistException e) {
-				log.warn("Tried to read port that doesn't exist", rcPort);
-			}
-		}
+    void addPort(Port port) {
+	if ( port == null ) {
+	    throw new IllegalArgumentException("Port cannot be null");
+	}
+	// TODO Auto-generated method stub
 
-		return sw;
+    }
+
+    void deactivatePort(Port port) {
+	if ( port == null ) {
+	    throw new IllegalArgumentException("Port cannot be null");
+	}
+	// TODO Auto-generated method stub
+
+    }
+
+    void addLink(Link link) {
+	if ( link == null ) {
+	    throw new IllegalArgumentException("Link cannot be null");
+	}
+	// TODO Auto-generated method stub
+
+    }
+
+    void removeLink(Link link) {
+	if ( link == null ) {
+	    throw new IllegalArgumentException("Link cannot be null");
+	}
+	// TODO Auto-generated method stub
+
+    }
+
+    void updateDevice(Device device) {
+	if ( device == null ) {
+	    throw new IllegalArgumentException("Device cannot be null");
+	}
+	// TODO Auto-generated method stub
+
+    }
+
+    void removeDevice(Device device) {
+	if ( device == null ) {
+	    throw new IllegalArgumentException("Device cannot be null");
+	}
+	// TODO Auto-generated method stub
+
+    }
+
+    private SwitchImpl getSwitchImpl(Switch sw) {
+	if( sw instanceof SwitchImpl ) {
+	    return (SwitchImpl) sw;
+	}
+	throw new ClassCastException("SwitchImpl expected, but found:" + sw.getClass().getName()  );
+    }
+
+    // FIXME To be removed later this class should never read from DB.
+    public void readSwitchFromTopology(long dpid) {
+	SwitchImpl sw = new SwitchImpl(this);
+
+	RCSwitch rcSwitch = new RCSwitch(dpid);
+	try {
+	    rcSwitch.read();
+	} catch (ObjectDoesntExistException e) {
+	    log.warn("Tried to get a switch that doesn't exist {}", dpid);
+	    return;
 	}
 
-	@Override
-	public Iterable<Switch> getSwitches() {
-		// TODO Auto-generated method stub
-		return null;
+	sw.setDpid(rcSwitch.getDpid());
+
+	addSwitch(sw);
+
+	for (byte[] portId : rcSwitch.getAllPortIds()) {
+	    RCPort rcPort = RCPort.createFromKey(portId);
+	    try {
+		rcPort.read();
+
+		PortImpl port = new PortImpl(this);
+		// port.setDpid(dpid);
+
+		// TODO why are port numbers long?
+		// port.setPortNumber((short)rcPort.getNumber());
+
+		port.setSwitch(sw);
+		sw.addPort(port);
+
+		addPort(port);
+
+	    } catch (ObjectDoesntExistException e) {
+		log.warn("Tried to read port that doesn't exist", rcPort);
+	    }
 	}
 
-	@Override
-	public Iterable<Link> getLinks() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Iterable<Link> getLinksFromSwitch(long dpid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Iterable<Device> getDeviceByIp(InetAddress ipAddress) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Iterable<Device> getDeviceByMac(MACAddress address) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
 }
