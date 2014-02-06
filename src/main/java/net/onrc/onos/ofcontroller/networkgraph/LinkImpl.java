@@ -8,10 +8,10 @@ package net.onrc.onos.ofcontroller.networkgraph;
  */
 public class LinkImpl extends NetworkGraphObject implements Link {
 
-	private long srcSwitch;
-	private short srcPort;
-	private long dstSwitch;
-	private short dstPort;
+	private Switch srcSwitch;
+	private Port srcPort;
+	private Switch dstSwitch;
+	private Port dstPort;
 
 	private static final int DEFAULT_COST = 1;
 	private int cost = DEFAULT_COST;
@@ -61,37 +61,41 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 
 	@Override
 	public long getSourceSwitchDpid() {
-		return srcSwitch;
+		return srcSwitch.getDpid();
 	}
 
-	public void setSrcSwitch(long srcSwitch) {
+	public void setSrcSwitch(Switch srcSwitch) {
+	    // TODO null check
 		this.srcSwitch = srcSwitch;
 	}
 
 	@Override
 	public short getSourcePortNumber() {
-		return srcPort;
+		return srcPort.getNumber();
 	}
 
-	public void setSrcPort(short srcPort) {
+	public void setSrcPort(Port srcPort) {
+	    // TODO null check
 		this.srcPort = srcPort;
 	}
 
 	@Override
 	public long getDestinationSwitchDpid() {
-		return dstSwitch;
+		return dstSwitch.getDpid();
 	}
 
-	public void setDstSwitch(long dstSwitch) {
+	public void setDstSwitch(Switch dstSwitch) {
+	    // TODO null check
 		this.dstSwitch = dstSwitch;
 	}
 
 	@Override
 	public short getDestinationPortNumber() {
-		return dstPort;
+		return dstPort.getNumber();
 	}
 
-	public void setDstPort(short dstPort) {
+	public void setDstPort(Port dstPort) {
+	    // TODO null check
 		this.dstPort = dstPort;
 	}
 
