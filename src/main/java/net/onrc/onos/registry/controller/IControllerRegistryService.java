@@ -70,6 +70,15 @@ public interface IControllerRegistryService extends IFloodlightService {
 	 * @return 
 	 */
 	public boolean hasControl(long dpid);
+
+	/**
+	 * Check whether this instance is the leader for the cluster.
+	 * This call doesn't block.
+	 *
+	 * @return true if the instance is the leader for the cluster,
+	 * otherwise false.
+	 */
+	public boolean isClusterLeader();
 	
 	/**
 	 * Get the unique ID used to identify this controller in the cluster

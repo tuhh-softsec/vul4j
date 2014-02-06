@@ -69,6 +69,11 @@ public class StandaloneRegistry implements IFloodlightModule,
 	}
 
 	@Override
+	public boolean isClusterLeader() {
+	    return true;
+	}
+
+	@Override
 	public String getControllerId() {
 		return controllerId;
 	}
