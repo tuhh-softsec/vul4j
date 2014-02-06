@@ -53,6 +53,7 @@ public class ResourceFixupRenderer implements Renderer {
     private static final Pattern URL_PATTERN = Pattern.compile(
             "<([^\\!][^>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
             Pattern.CASE_INSENSITIVE);
+
     private String contextAdd = null;
     private String contextRemove = null;
     /**
@@ -64,7 +65,6 @@ public class ResourceFixupRenderer implements Renderer {
     private String server = null;
     private String baseUrl;
     private String replacementUrl;
-    private final boolean fixRelativeUrls;
     private final int mode;
 
     /**
@@ -82,50 +82,17 @@ public class ResourceFixupRenderer implements Renderer {
      * <li>images/image.png is replaced by /context/images/image.png</li>
      * </ul>
      * 
-     * @param pBaseUrl
-     *          Base url (same as configured in provider).
-     * @param visibleBaseUrl
-     *            Visible Base url (same as configured in provider). Will replace the base url in rewritten urls.
-     * @param pageFullPath
-     *            Page as used in tag lib or using API
-     * @param pMode
-     *            ResourceFixupRenderer.ABSOLUTE or ResourceFixupRenderer.RELATIVE
-     */
-    public ResourceFixupRenderer(String pBaseUrl, String visibleBaseUrl, String pageFullPath, int pMode) {
-        this(pBaseUrl, visibleBaseUrl, pageFullPath, pMode, true);
-    }
-
-    /**
-     * Creates a renderer which fixes urls. The domain name and the url path are computed from the full url made of
-     * baseUrl + pageFullPath.
-     * 
-     * If mode is ABSOLUTE, all relative urls will be replaced by the full urls :
-     * <ul>
-     * <li>images/image.png is replaced by http://server/context/images/image.png</li>
-     * <li>/context/images/image.png is replaced by http://server/context/images/image.png</li>
-     * </ul>
-     * 
-     * If mode is RELATIVE, context will be added to relative urls :
-     * <ul>
-     * <li>images/image.png is replaced by /context/images/image.png</li>
-     * </ul>
-     * 
-    * @param baseUrl
-     *          Base url (same as configured in provider).
+     * @param baseUrl
+     *            Base url (same as configured in provider).
      * @param visibleBaseUrl
      *            Visible Base url (same as configured in provider). Will replace the base url in rewritten urls.
      * @param pageFullPath
      *            Page as used in tag lib or using API
      * @param mode
      *            ResourceFixupRenderer.ABSOLUTE or ResourceFixupRenderer.RELATIVE
-     * @param fixRelativeUrls
-     *            defines whether relative URLs should be fixed
      */
-    public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl, String pageFullPath, int mode,
-            boolean fixRelativeUrls) {
+    public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl, String pageFullPath, int mode) {
         this.mode = mode;
-        this.fixRelativeUrls = fixRelativeUrls;
-
         if (visibleBaseUrl != null && visibleBaseUrl.length() != 0) {
             this.baseUrl = removeLeadingSlash(baseUrl);
             this.replacementUrl = removeLeadingSlash(visibleBaseUrl);
@@ -227,7 +194,7 @@ public class ResourceFixupRenderer implements Renderer {
             if (mode == ABSOLUTE) {
                 url = server + url;
             }
-        } else if (fixRelativeUrls) {
+        } else {
 
             if (url.charAt(0) == '?' && fileName != null) {
                 url = fileName + url;
