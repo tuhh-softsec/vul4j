@@ -3,13 +3,15 @@ package net.onrc.onos.ofcontroller.networkgraph;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
-import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
-import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
+import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
+import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 
 /**
  * Switch Object stored in In-memory Topology.
@@ -81,7 +83,11 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 
 	@Override
 	public Iterable<Link> getLinks() {
-		return graph.getLinksFromSwitch(dpid);
+		Set<Link> links = new HashSet<>();
+		for( Port p : ports.values()) {
+		    links.add(p.getLink());
+		}
+		return links;
 	}
 
 	public void store() {
