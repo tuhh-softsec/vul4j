@@ -23,7 +23,6 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.esigate.api.BaseUrlRetrieveStrategy;
 import org.esigate.impl.UriMapping;
-import org.esigate.renderers.ResourceFixupRenderer;
 import org.esigate.url.IpHashBaseUrlRetrieveStrategy;
 import org.esigate.url.RoundRobinBaseUrlRetrieveStrategy;
 import org.esigate.url.SingleBaseUrlRetrieveStrategy;
@@ -40,7 +39,6 @@ public class DriverConfiguration {
     private final String instanceName;
     private final String uriEncoding;
     private final String visibleBaseURL;
-    private final int fixMode;
     private final Properties properties;
     private final boolean preserveHost;
     private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
@@ -54,12 +52,6 @@ public class DriverConfiguration {
         preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
         visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValueString(props);
         isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
-        if ("absolute".equalsIgnoreCase(Parameters.FIX_MODE.getValueString(props))) {
-            this.fixMode = ResourceFixupRenderer.ABSOLUTE;
-        } else {
-            this.fixMode = ResourceFixupRenderer.RELATIVE;
-        }
-
         this.uriMappings = parseMappings(props);
         properties = props;
     }
@@ -102,10 +94,6 @@ public class DriverConfiguration {
             }
         }
         return urlStrategy;
-    }
-
-    public int getFixMode() {
-        return fixMode;
     }
 
     public String getVisibleBaseURL(String currentBaseUrl) {

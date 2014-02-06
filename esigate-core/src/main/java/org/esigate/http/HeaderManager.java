@@ -96,7 +96,8 @@ public class HeaderManager {
         String uri = httpRequest.getRequestLine().getUri();
         for (Header header : originalRequest.getAllHeaders()) {
             // Special headers
-            if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName()) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
+            if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName())
+                    && isForwardedRequestHeader(HttpHeaders.REFERER)) {
                 String value = header.getValue();
                 value = UriUtils.translateUrl(value, originalUri, uri);
                 httpRequest.addHeader(header.getName(), value);

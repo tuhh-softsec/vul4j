@@ -133,7 +133,8 @@ public class DriverTest extends TestCase {
         } catch (HttpErrorPage e) {
             driverResponse = e.getHttpResponse();
         }
-        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse.getStatusLine().getStatusCode());
+        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse
+                .getStatusLine().getStatusCode());
         assertTrue("Header 'Dummy'", driverResponse.containsHeader("Dummy"));
     }
 
@@ -155,7 +156,8 @@ public class DriverTest extends TestCase {
         } catch (HttpErrorPage e) {
             driverResponse = e.getHttpResponse();
         }
-        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse.getStatusLine().getStatusCode());
+        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse.getStatusLine()
+                .getStatusCode());
         assertFalse("Header 'Transfer-Encoding'", driverResponse.containsHeader("Transfer-Encoding"));
     }
 

@@ -77,7 +77,8 @@ public class DefaultCookieManagerTest extends TestCase {
     public void testFilter() throws HttpErrorPage {
         IncomingRequest incomingRequest = TestUtils.createIncomingRequest()
                 .addCookie(new BasicClientCookie("a", "value a")).addCookie(new BasicClientCookie("b", "value b"))
-                .addCookie(new BasicClientCookie("c", "value c")).addCookie(new BasicClientCookie("e", "value e")).build();
+                .addCookie(new BasicClientCookie("c", "value c")).addCookie(new BasicClientCookie("e", "value e"))
+                .build();
         request = new DriverRequest(incomingRequest, driver, false);
         List<org.apache.http.cookie.Cookie> cookies = cookieManager.getCookies(request);
         assertNotNull(cookies);

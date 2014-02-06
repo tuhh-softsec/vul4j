@@ -39,6 +39,7 @@ import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
+import org.esigate.impl.UrlRewriter;
 import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.slf4j.Logger;
@@ -60,6 +61,7 @@ public final class Driver {
     private EventManager eventManager;
     private RequestExecutor requestExecutor;
     private ContentTypeHelper contentTypeHelper;
+    private UrlRewriter urlRewriter;
 
     public static class DriverBuilder {
         private Driver driver = new Driver();
@@ -84,6 +86,7 @@ public final class Driver {
             ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, driver);
             driver.requestExecutor = requestExecutorBuilder.setDriver(driver).setEventManager(driver.eventManager)
                     .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper).build();
+            driver.urlRewriter = new UrlRewriter(properties);
             return driver;
         }
 
@@ -395,6 +398,10 @@ public final class Driver {
 
     public ContentTypeHelper getContentTypeHelper() {
         return contentTypeHelper;
+    }
+
+    public UrlRewriter getUrlRewriter() {
+        return urlRewriter;
     }
 
 }
