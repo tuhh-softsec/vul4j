@@ -9,11 +9,11 @@ public class RCClient {
     public static final int STATUS_OK = 0;
 
     // FIXME come up with a proper way to retrieve configuration
-    public static final int MAX_MULTI_READS = Integer.valueOf(System
-	    .getProperty("ramcloud.max_multi_reads", "400"));
+    public static final int MAX_MULTI_READS = Math.max(1, Integer
+	    .valueOf(System.getProperty("ramcloud.max_multi_reads", "400")));
 
-    public static final int MAX_MULTI_WRITES = Integer.valueOf(System
-	    .getProperty("ramcloud.max_multi_writes", "800"));
+    public static final int MAX_MULTI_WRITES = Math.max(1, Integer
+	    .valueOf(System.getProperty("ramcloud.max_multi_writes", "800")));
 
     private static final ThreadLocal<JRamCloud> tlsRCClient = new ThreadLocal<JRamCloud>() {
 	@Override
