@@ -3,9 +3,8 @@ package net.onrc.onos.ofcontroller.networkgraph;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 
 import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
@@ -21,17 +20,17 @@ import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
  */
 public class SwitchImpl extends NetworkGraphObject implements Switch {
 
-	private long dpid;
-	private final Map<Short, Port> ports;
+	private Long dpid;
+	private final Map<Long, Port> ports;
 
-	public SwitchImpl(NetworkGraph graph) {
+	public SwitchImpl(NetworkGraph graph, Long dpid) {
 		super(graph);
-
-		ports = new HashMap<Short, Port>();
+		this.dpid = dpid;
+		ports = new HashMap<Long, Port>();
 	}
 
 	@Override
-	public long getDpid() {
+	public Long getDpid() {
 		return dpid;
 	}
 
@@ -41,7 +40,7 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	}
 
 	@Override
-	public Port getPort(short number) {
+	public Port getPort(Long number) {
 		return ports.get(number);
 	}
 
@@ -58,8 +57,8 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	}
 
 	@Override
-	public Link getLinkToNeighbor(long neighborDpid) {
-		for (Link link : graph.getLinksFromSwitch(dpid)) {
+	public Link getLinkToNeighbor(Long neighborDpid) {
+		for (Link link : graph.getOutgoingLinksFromSwitch(dpid)) {
 			if (link.getDestinationSwitch().getDpid() == neighborDpid) {
 				return link;
 			}
@@ -73,21 +72,14 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 		return null;
 	}
 
-	public void setDpid(long dpid) {
-		this.dpid = dpid;
-	}
-
 	public void addPort(Port port) {
 		this.ports.put(port.getNumber(), port);
 	}
-
-	@Override
-	public Iterable<Link> getLinks() {
-		Set<Link> links = new HashSet<>();
-		for( Port p : ports.values()) {
-		    links.add(p.getLink());
-		}
-		return links;
+	
+	public Port addPort(Long portNumber) {
+		PortImpl port = new PortImpl(graph, this, portNumber);
+		ports.put(port.getNumber(), port);
+		return port;
 	}
 
 	public void store() {
@@ -107,5 +99,29 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public Iterable<Link> getOutgoingLinks() {
+		LinkedList<Link> links = new LinkedList<Link>();
+		for (Port port: getPorts()) {
+			Link link = port.getOutgoingLink(); 
+			if (link != null) {
+				links.add(link);
+			}
+		}
+		return links;
+	}
+
+	@Override
+	public Iterable<Link> getIncomingLinks() {
+		LinkedList<Link> links = new LinkedList<Link>();
+		for (Port port: getPorts()) {
+			Link link = port.getIncomingLink(); 
+			if (link != null) {
+				links.add(link);
+			}
+		}
+		return links;
 	}
 }

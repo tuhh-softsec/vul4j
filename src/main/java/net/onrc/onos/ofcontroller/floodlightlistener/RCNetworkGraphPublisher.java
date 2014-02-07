@@ -20,9 +20,12 @@ import net.onrc.onos.ofcontroller.networkgraph.LinkImpl;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.SouthboundNetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
+import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.openflow.protocol.OFPhysicalPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * I've created a copy of the NetworkGraphPublisher so I can integrate
@@ -31,33 +34,48 @@ import org.openflow.protocol.OFPhysicalPort;
  * TODO Remove old NetworkGraphPublisher once the integration of the new
  * API is complete.
  * For now, we just write to the database and don't worry about sending
- * notifications. 
+ * notifications.
  * TODO Send notification after each database write
  */
 public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 												IOFSwitchPortListener,
 												ILinkDiscoveryListener,
 												IFloodlightModule {
+	private final static Logger log = LoggerFactory.getLogger(RCNetworkGraphPublisher.class);
 
 	private IFloodlightProviderService floodlightProvider;
 	private ILinkDiscoveryService linkDiscovery;
 	private IControllerRegistryService registryService;
 	private IDatagridService datagridService;
 	private INetworkGraphService networkGraphService;
-	
+
 	private NetworkGraph networkGraph;
 	private SouthboundNetworkGraph southboundNetworkGraph;
-	
+
 
 	@Override
 	public void linkDiscoveryUpdate(LDUpdate update) {
-		// TODO Auto-generated method stub
-		LinkImpl link = new LinkImpl(networkGraph);
-		link.setSrcSwitch(update.getSrc());
-		link.setSrcPort(update.getSrcPort());
-		link.setDstSwitch(update.getDst());
-		link.setDstPort(update.getDstPort());
-		
+
+		// TODO Move this sanity check when retrieving port to common place?
+		Switch srcSw = networkGraph.getSwitch(update.getSrc());
+		if (srcSw == null) {
+			log.error("Switch {} missing when adding Link {}",
+					new Dpid(update.getSrc()), update);
+			return;
+		}
+
+		Switch dstSw = networkGraph.getSwitch(update.getDst());
+		if (dstSw == null) {
+			log.error("Switch {} missing when adding Link {}",
+					new Dpid(update.getDst()), update);
+			return;
+		}
+
+		// XXX Is it correct to add Link object created with networkGraph to southboundNetworkGraph?
+		LinkImpl link = new LinkImpl(networkGraph,
+			srcSw.getPort((long) update.getSrcPort()),
+			dstSw.getPort((long) update.getDstPort()));
+
 		switch (update.getOperation()) {
 		case LINK_ADDED:
 			southboundNetworkGraph.addLink(link);
@@ -93,13 +111,13 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	@Override
 	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -108,10 +126,10 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		if (!registryService.hasControl(sw.getId())) {
 			return;
 		}
-		
+
 		Switch onosSwitch = FloodlightToOnosMappers.map(networkGraph, sw);
 		southboundNetworkGraph.addSwitch(onosSwitch);
-		
+
 		/*
 		// TODO publish ADD_SWITCH event here
 	    TopologyElement topologyElement =
@@ -150,13 +168,13 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	@Override
 	public void removedSwitch(IOFSwitch sw) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void switchPortChanged(Long switchId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -168,14 +186,14 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	/* *****************
 	 * IFloodlightModule
 	 * *****************/
-	
+
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
 		return null;
 	}
 
 	@Override
-	public Map<Class<? extends IFloodlightService>, IFloodlightService> 
+	public Map<Class<? extends IFloodlightService>, IFloodlightService>
 			getServiceImpls() {
 		return null;
 	}
@@ -199,7 +217,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		linkDiscovery = context.getServiceImpl(ILinkDiscoveryService.class);
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 		datagridService = context.getServiceImpl(IDatagridService.class);
-		
+
 		networkGraphService = context.getServiceImpl(INetworkGraphService.class);
 	}
 
@@ -208,7 +226,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		// TODO enable cleanup thread
 		floodlightProvider.addOFSwitchListener(this);
 		linkDiscovery.addListener(this);
-		
+
 		networkGraph = networkGraphService.getNetworkGraph();
 		southboundNetworkGraph = networkGraphService.getSouthboundNetworkGraph();
 	}

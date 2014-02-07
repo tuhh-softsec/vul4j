@@ -7,41 +7,50 @@ package net.onrc.onos.ofcontroller.networkgraph;
  * but this Object itself will not issue any read/write to the DataStore.
  */
 public class LinkImpl extends NetworkGraphObject implements Link {
+	protected Port srcPort;
+	protected Port dstPort;
 
-	private Switch srcSwitch;
-	private Port srcPort;
-	private Switch dstSwitch;
-	private Port dstPort;
+	protected static final Double DEFAULT_CAPACITY = Double.POSITIVE_INFINITY;
+	protected Double capacity = DEFAULT_CAPACITY;
 
-	private static final int DEFAULT_COST = 1;
-	private int cost = DEFAULT_COST;
+	protected static final int DEFAULT_COST = 1;
+	protected int cost = DEFAULT_COST;
 
-	public LinkImpl(NetworkGraph graph) {
+	public LinkImpl(NetworkGraph graph, Port srcPort, Port dstPort) {
 		super(graph);
+		this.srcPort = srcPort;
+		this.dstPort = dstPort;
+		setToPorts();
+	}
+
+	protected void setToPorts() {
+		((PortImpl)srcPort).setOutgoingLink(this);
+		((PortImpl)srcPort).setIncomingLink(this);		
+	}
+	
+	protected void unsetFromPorts() {
+		((PortImpl)srcPort).setOutgoingLink(null);
+		((PortImpl)srcPort).setIncomingLink(null);
 	}
 
 	@Override
 	public Port getSourcePort() {
-		// TODO Auto-generated method stub
-		return null;
+		return srcPort;
 	}
 
 	@Override
 	public Port getDestinationPort() {
-		// TODO Auto-generated method stub
-		return null;
+		return dstPort;
 	}
 
 	@Override
 	public Switch getSourceSwitch() {
-		// TODO Auto-generated method stub
-		return null;
+		return srcPort.getSwitch();
 	}
 
 	@Override
 	public Switch getDestinationSwitch() {
-		// TODO Auto-generated method stub
-		return null;
+		return dstPort.getSwitch();
 	}
 
 	@Override
@@ -60,44 +69,39 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 	}
 
 	@Override
-	public long getSourceSwitchDpid() {
-		return srcSwitch.getDpid();
-	}
-
-	public void setSrcSwitch(Switch srcSwitch) {
-	    // TODO null check
-		this.srcSwitch = srcSwitch;
+	public Long getSourceSwitchDpid() {
+		return srcPort.getSwitch().getDpid();
 	}
 
 	@Override
-	public short getSourcePortNumber() {
+	public Long getSourcePortNumber() {
 		return srcPort.getNumber();
 	}
 
-	public void setSrcPort(Port srcPort) {
-	    // TODO null check
-		this.srcPort = srcPort;
+	@Override
+	public Long getDestinationSwitchDpid() {
+		return dstPort.getSwitch().getDpid();
 	}
 
 	@Override
-	public long getDestinationSwitchDpid() {
-		return dstSwitch.getDpid();
-	}
-
-	public void setDstSwitch(Switch dstSwitch) {
-	    // TODO null check
-		this.dstSwitch = dstSwitch;
-	}
-
-	@Override
-	public short getDestinationPortNumber() {
+	public Long getDestinationPortNumber() {
 		return dstPort.getNumber();
 	}
 
-	public void setDstPort(Port dstPort) {
-	    // TODO null check
-		this.dstPort = dstPort;
+	@Override
+	public Double getCapacity() {
+		return capacity;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s --(cap:%f Mbps)--> %s",
+				getSourcePort().toString(),
+				getCapacity(),
+				getDestinationPort().toString());
 	}
 
-
+	public void setCapacity(Double capacity) {
+		this.capacity = capacity;
+	}
 }

@@ -11,11 +11,12 @@ import net.floodlightcontroller.util.MACAddress;
  *
  */
 public interface NetworkGraph {
-	public Switch getSwitch(long dpid);
-	public Iterable<Switch> getSwitches();
+	public Switch getSwitch(Long dpid);
+	public Iterable<? extends Switch> getSwitches();
 	
-	public Iterable<Link> getLinks();
-	public Iterable<Link> getLinksFromSwitch(long dpid);
+	public Iterable<? extends Link> getLinks();
+	public Iterable<? extends Link> getOutgoingLinksFromSwitch(Long dpid); // Toshi: unnecessary
+	public Iterable<? extends Link> getIncomingLinksFromSwitch(Long dpid); // Toshi: unnecessary
 	
 	public Iterable<Device> getDeviceByIp(InetAddress ipAddress);
 	public Iterable<Device> getDeviceByMac(MACAddress address);

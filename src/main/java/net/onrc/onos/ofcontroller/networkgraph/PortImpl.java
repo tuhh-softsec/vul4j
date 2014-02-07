@@ -8,43 +8,26 @@ package net.onrc.onos.ofcontroller.networkgraph;
  */
 public class PortImpl extends NetworkGraphObject implements Port {
 
-	//private long dpid;
 	private Switch sw;
-	private short number;
+	private Long number;
+	protected Link outgoingLink;
+	protected Link incomingLink;
 
-	public PortImpl(NetworkGraph graph) {
+	public PortImpl(NetworkGraph graph, Switch parentSwitch, Long number) {
 		super(graph);
-	}
-
-	public void setPortNumber(short portNumber) {
-		number = portNumber;
+		this.sw = parentSwitch;
+		this.number = number;
 	}
 
 	@Override
-	public short getNumber() {
+	public Long getNumber() {
 		return number;
 	}
 
-	/*
-	public void setDpid(long dpid) {
-		this.dpid = dpid;
-	}
-
-	public long getDpid() {
-		return dpid;
-	}
-	*/
-
 	@Override
-	public String getName() {
+	public Long getHardwareAddress() {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public long getHardwareAddress() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 0L;
 	}
 
 	@Override
@@ -52,14 +35,28 @@ public class PortImpl extends NetworkGraphObject implements Port {
 		return sw;
 	}
 
-	public void setSwitch(Switch sw) {
-		this.sw = sw;
+	@Override
+	public Link getOutgoingLink() {
+		return outgoingLink;
 	}
 
 	@Override
-	public Link getLink() {
-		// TODO Auto-generated method stub
-		return null;
+	public Link getIncomingLink() {
+		return incomingLink;
 	}
 
+	public void setOutgoingLink(Link link) {
+		outgoingLink = link;
+	}
+
+	public void setIncomingLink(Link link) {
+		incomingLink = link;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%d:%d",
+				getSwitch().getDpid(),
+				getNumber());
+	}
 }

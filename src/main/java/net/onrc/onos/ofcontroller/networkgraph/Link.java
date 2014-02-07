@@ -12,13 +12,17 @@ public interface Link {
 	public Port getDestinationPort();
 	public Switch getSourceSwitch();
 	public Switch getDestinationSwitch();
-
+		
 	public long getLastSeenTime();
+
 	public int getCost();
+	public Double getCapacity();
 
 	// Not sure if we want to expose these northbound
-	public long getSourceSwitchDpid();
-	public short getSourcePortNumber();
-	public long getDestinationSwitchDpid();
-	public short getDestinationPortNumber();
+	// Toshi: I think these are unnecessary because we can get them
+	// Toshi: like "this.getSourcePort().getSwitch()" etc.
+	public Long getSourceSwitchDpid();
+	public Long getSourcePortNumber();
+	public Long getDestinationSwitchDpid();
+	public Long getDestinationPortNumber();
 }

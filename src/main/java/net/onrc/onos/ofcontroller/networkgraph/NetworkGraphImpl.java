@@ -116,8 +116,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 		sw.read();
 		// TODO SwitchImpl probably should have a constructor from
 		// RCSwitch
-		SwitchImpl memSw = new SwitchImpl(this);
-		memSw.setDpid(sw.getDpid());
+		SwitchImpl memSw = new SwitchImpl(this, sw.getDpid());
 
 		addSwitch(memSw);
 	    } catch (ObjectDoesntExistException e) {
@@ -130,16 +129,13 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 		p.read();
 
 		// TODO PortImpl probably should have a constructor from RCPort
-		PortImpl memPort = new PortImpl(this);
-		// FIXME remove shortValue()
-		memPort.setPortNumber(p.getNumber().shortValue());
 		Switch sw = this.getSwitch(p.getDpid());
 		if (sw == null) {
 		    log.error("Switch {} missing when adding Port {}",
 			    new Dpid(p.getDpid()), p);
 		    continue;
 		}
-		memPort.setSwitch(sw);
+		PortImpl memPort = new PortImpl(this, sw, p.getNumber());
 
 		addPort(memPort);
 	    } catch (ObjectDoesntExistException e) {
@@ -158,41 +154,38 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 	// }
 
 	for (RCLink l : RCLink.getAllLinks()) {
-	    try {
-		l.read();
+		try {
+			l.read();
 
-		LinkImpl memLink = new LinkImpl(this);
 
-		Switch srcSw = this.getSwitch(l.getSrc().dpid);
-		if (srcSw == null) {
-		    log.error("Switch {} missing when adding Link {}",
-			    new Dpid(l.getSrc().dpid), l);
-		    continue;
+			Switch srcSw = this.getSwitch(l.getSrc().dpid);
+			if (srcSw == null) {
+				log.error("Switch {} missing when adding Link {}",
+						new Dpid(l.getSrc().dpid), l);
+				continue;
+			}
+
+			Switch dstSw = this.getSwitch(l.getDst().dpid);
+			if (dstSw == null) {
+				log.error("Switch {} missing when adding Link {}",
+						new Dpid(l.getDst().dpid), l);
+				continue;
+			}
+
+			LinkImpl memLink = new LinkImpl(this,
+				srcSw.getPort(l.getSrc().number),
+				dstSw.getPort(l.getDst().number));
+
+			addLink(memLink);
+		} catch (ObjectDoesntExistException e) {
+			log.debug("Delete Link Failed", e);
 		}
-		memLink.setSrcSwitch(srcSw);
-		// FIXME remove shortValue()
-		memLink.setSrcPort(srcSw.getPort(l.getSrc().number.shortValue()));
-
-		Switch dstSw = this.getSwitch(l.getDst().dpid);
-		if (dstSw == null) {
-		    log.error("Switch {} missing when adding Link {}",
-			    new Dpid(l.getDst().dpid), l);
-		    continue;
-		}
-		memLink.setDstSwitch(dstSw);
-		// FIXME remove shortValue()
-		memLink.setDstPort(srcSw.getPort(l.getDst().number.shortValue()));
-
-		addLink(memLink);
-	    } catch (ObjectDoesntExistException e) {
-		log.debug("Delete Link Failed", e);
-	    }
 	}
     }
 
     // FIXME To be removed later this class should never read from DB.
-    public void readSwitchFromTopology(long dpid) {
-	SwitchImpl sw = new SwitchImpl(this);
+    public void readSwitchFromTopology(Long dpid) {
+	SwitchImpl sw = new SwitchImpl(this, dpid);
 
 	RCSwitch rcSwitch = new RCSwitch(dpid);
 	try {
@@ -202,8 +195,6 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 	    return;
 	}
 
-	sw.setDpid(rcSwitch.getDpid());
-
 	addSwitch(sw);
 
 	for (byte[] portId : rcSwitch.getAllPortIds()) {
@@ -211,13 +202,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 	    try {
 		rcPort.read();
 
-		PortImpl port = new PortImpl(this);
-		// port.setDpid(dpid);
+		PortImpl port = new PortImpl(this, sw, rcPort.getNumber());
 
-		// TODO why are port numbers long?
-		// port.setPortNumber((short)rcPort.getNumber());
-
-		port.setSwitch(sw);
 		sw.addPort(port);
 
 		addPort(port);
