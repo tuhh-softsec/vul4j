@@ -10,6 +10,8 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.restserver.IRestApiService;
+import net.onrc.onos.ofcontroller.networkgraph.web.NetworkGraphWebRoutable;
 
 public class NetworkGraphModule implements IFloodlightModule, INetworkGraphService {
 
@@ -19,6 +21,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	private NetworkGraphImpl networkGraph;
 	private SouthboundNetworkGraph southboundNetworkGraph;
 
+	private IRestApiService restApi;
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
@@ -39,20 +42,24 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
-		return null;
+		List<Class<? extends IFloodlightService>> dependencies = 
+				new ArrayList<Class<? extends IFloodlightService>>();
+		dependencies.add(IRestApiService.class);
+		return dependencies;
 	}
 	
 	@Override
 	public void init(FloodlightModuleContext context)
 			throws FloodlightModuleException {
+		restApi = context.getServiceImpl(IRestApiService.class);
+		
 		networkGraph = new NetworkGraphImpl();
 		southboundNetworkGraph = new SouthboundNetworkGraph(networkGraph);
 	}
 
 	@Override
 	public void startUp(FloodlightModuleContext context) {
-		// TODO Auto-generated method stub
-
+		restApi.addRestletRoutable(new NetworkGraphWebRoutable());
 	}
 
 	@Override

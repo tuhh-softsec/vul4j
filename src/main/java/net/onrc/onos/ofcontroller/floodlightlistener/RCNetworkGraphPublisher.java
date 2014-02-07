@@ -41,8 +41,8 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 												IOFSwitchPortListener,
 												ILinkDiscoveryListener,
 												IFloodlightModule {
-	private final static Logger log = LoggerFactory.getLogger(RCNetworkGraphPublisher.class);
-
+	private static final Logger log = LoggerFactory.getLogger(RCNetworkGraphPublisher.class);
+	
 	private IFloodlightProviderService floodlightProvider;
 	private ILinkDiscoveryService linkDiscovery;
 	private IControllerRegistryService registryService;
