@@ -12,9 +12,9 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${ONOS_HOME}/lib:${RAMCLOUD_HOME}/obj.${
 ## Because the script change dir to $ONOS_HOME, we can set ONOS_LOGBACK and LOGDIR relative to $ONOS_HOME
 ONOS_LOGBACK=${ONOS_LOGBACK:-${ONOS_HOME}/logback.`hostname`.xml}
 LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
-
-ONOS_LOG="${LOGDIR}/onos.`hostname`.log"
-PCAP_LOG="${LOGDIR}/onos.`hostname`.pcap"
+LOGBASE=${ONOS_LOGBASE:-onos.`hostname`}
+ONOS_LOG="${LOGDIR}/${LOGBASE}.log"
+PCAP_LOG="${LOGDIR}/${LOGBASE}.pcap"
 LOGS="$ONOS_LOG $PCAP_LOG"
 
 ONOS_PROPS=${ONOS_PROPS:-${ONOS_HOME}/conf/onos.properties}
@@ -124,7 +124,7 @@ EOF_LOGBACK
   echo $ONOS_HOME
   cd ${ONOS_HOME}
   pwd
-  java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp ${JAVA_CP} ${MAIN_CLASS} -cf ${ONOS_PROPS} > ${LOGDIR}/onos.`hostname`.stdout 2>${LOGDIR}/onos.`hostname`.stderr &
+  java ${JVM_OPTS} -Dlogback.configurationFile=${ONOS_LOGBACK} -cp ${JAVA_CP} ${MAIN_CLASS} -cf ${ONOS_PROPS} > ${LOGDIR}/${LOGBASE}.stdout 2>${LOGDIR}/${LOGBASE}.stderr &
 
   echo "Waiting for ONOS to start..."
   COUNT=0
@@ -179,7 +179,7 @@ case "$1" in
     start
     ;;
   startnokill)
-    check_db
+#    check_db
     start
     ;;
   startifdown)

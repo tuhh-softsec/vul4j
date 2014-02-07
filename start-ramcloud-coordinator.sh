@@ -4,7 +4,7 @@
 # Set paths
 ONOS_HOME=`dirname $0`
 RAMCLOUD_DIR=${HOME}/ramcloud
-LOGDIR=${ONOS_HOME}/onos-logs
+LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
 RAMCLOUD_LOG=${LOGDIR}/ramcloud.coordinator.`hostname`.log
 coordinatorip=`grep coordinatorIp ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
 coordinatorport=`grep coordinatorPort ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`

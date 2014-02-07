@@ -8,7 +8,7 @@ We implement the following classes:
 ONOSController: a custom Controller() subclass to start ONOS
 OVSSwitchONOS: a custom OVSSwitch() switch that connects to multiple controllers.
 
-We use single Zookeeper and Cassandra instances for now.
+We use single Zookeeper and Ramcloud instances for now.
 
 As a custom file, exports:
 
@@ -24,12 +24,12 @@ This will start up a simple 2-host, 2 ONOS network
 $ sudo -E mn --custom onos.py --controller onos,2 --switch ovso
 """
 
-from mininet.node import Controller, OVSSwitch
+from mininet.node import Controller, OVSSwitch, CPULimitedHost, RemoteController
 from mininet.net import Mininet
 from mininet.cli import CLI
 from mininet.topo import LinearTopo
 from mininet.log import setLogLevel, info, warn
-from mininet.util import quietRun
+from mininet.util import quietRun, numCores
 
 # This should be cleaned up to avoid interfering with mn
 from shutil import copyfile
@@ -37,6 +37,7 @@ from os import environ, path
 from functools import partial
 import time
 from sys import argv
+from time import sleep
 
 class ONOS( Controller ):
     "Custom controller class for ONOS"
@@ -46,8 +47,7 @@ class ONOS( Controller ):
     onosDir = home + "/ONOS"
     zookeeperDir = home + "/zookeeper-3.4.5"
     dirBase = '/tmp'
-    logDir = dirBase + '/onos-%s.logs'
-    # cassDir = dirBase + '/onos-%s.cassandra'
+    logDir = dirBase + '/onos-logs'
     configFile = dirBase + '/onos-%s.properties'
     logbackFile = dirBase + '/onos-%s.logback.xml'
 
@@ -55,12 +55,14 @@ class ONOS( Controller ):
     baseModules = (
         'net.floodlightcontroller.core.FloodlightProvider',
         'net.floodlightcontroller.threadpool.ThreadPool',
-        'net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher',
+        'net.onrc.onos.ofcontroller.floodlightlistener.RCNetworkGraphPublisher',
         'net.floodlightcontroller.ui.web.StaticWebRoutable',
         'net.onrc.onos.datagrid.HazelcastDatagrid',
         'net.onrc.onos.ofcontroller.flowmanager.FlowManager',
         'net.onrc.onos.ofcontroller.flowprogrammer.FlowProgrammer',
         'net.onrc.onos.ofcontroller.topology.TopologyManager',
+        'net.onrc.onos.intent.runtime.PathCalcRuntimeModule',
+        'net.onrc.onos.intent.runtime.PlanInstallModule',
         'net.onrc.onos.registry.controller.ZookeeperRegistry'
     )
 
@@ -87,8 +89,8 @@ class ONOS( Controller ):
 
     # Things that are static
     staticConfig = {
-        'net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher.dbconf':
-            '/tmp/cassandra.titan',
+        'net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher.graph_db_store':
+            'ramcloud',
         'net.floodlightcontroller.core.FloodlightProvider.workerthreads': 16,
         'net.floodlightcontroller.forwarding.Forwarding.idletimeout': 5,
         'net.floodlightcontroller.forwarding.Forwarding.hardtimeout': 0
@@ -96,11 +98,17 @@ class ONOS( Controller ):
 
     # Things that are based on onosDir
     dirConfig = {
+        'net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher.dbconf':
+            '%s/conf/ramcloud.conf',
         'net.onrc.onos.datagrid.HazelcastDatagrid.datagridConfig':
         '%s/conf/hazelcast.xml',
     }
 
     proctag = 'mn-onos-id'
+
+    # List of scripts that we need/use
+    scripts = ( 'start-zk.sh', 'start-ramcloud-coordinator.sh',
+                'start-ramcloud-server.sh', 'start-onos.sh', 'start-rest.sh' )
 
     # For maven debugging
     # mvn = 'mvn -o -e -X'
@@ -115,6 +123,7 @@ class ONOS( Controller ):
         self.runAsRoot = runAsRoot
         self.ids = range( 0, self.count )
         Controller.__init__( self, name, **params )
+        self.proxies = []
         # We don't need to run as root, and it can interfere
         # with starting Zookeeper manually
         self.user = None
@@ -125,6 +134,7 @@ class ONOS( Controller ):
                 self.waiting = False
             except:
                 warn( '__init__: failed to drop privileges\n' )
+        self.cmd( 'mkdir -p', self.logDir )
         # Need to run commands from ONOS dir
         self.cmd( 'cd', self.onosDir )
         self.cmd( 'export PATH=$PATH:%s' % self.onosDir )
@@ -143,7 +153,7 @@ class ONOS( Controller ):
             self.onosDir = environ[ 'ONOS_HOME' ]
         else:
             warn( '* $ONOS_HOME is not set - assuming %s\n' % self.onosDir )
-        for script in 'start-zk.sh', 'start-cassandra.sh', 'start-onos.sh':
+        for script in self.scripts:
             script = path.join( self.onosDir, script )
             if not path.exists( script ):
                 msg = '%s not found' % script
@@ -156,37 +166,55 @@ class ONOS( Controller ):
            We assume that once a process is listening on some
            port, it is ready to go!"""
         while True:
-            output = self.cmd( 'sudo netstat -natp | grep %s/' % pid )
+            output = self.cmd( 'sudo netstat -natup | grep %s/' % pid )
             if output:
-                return output
+                break
             info( '.' )
             time.sleep( 1 )
+        info( '\n* Process %d is listening\n' % pid  )
 
-    def waitStart( self, procname, pattern ):
-        "Wait for at least one of procname to show up in netstat"
+    def waitStart( self, procname, pattern, maxWait=10 ):
+        "Wait for proces to start up and be visible to pgrep"
         # Check script exit code
         exitCode = int( self.cmd( 'echo $?' ) )
         if exitCode != 0:
             raise Exception( '%s startup failed with code %d' %
                              ( procname, exitCode ) )
         info( '* Waiting for %s startup' % procname )
-        result = self.cmd( 'pgrep -f %s' % pattern ).split()[ 0 ]
-        pid = int( result )
-        output = self.waitNetstat( pid )
-        info( '\n* %s process %d is listening\n' % ( procname, pid ) )
-        info( output )
+        while True:
+            result = self.cmd( 'pgrep -f %s' % pattern )
+            if result:
+                break
+            info( '.' )
+            sleep( 1 )
+        pid = int( result.split()[ 0 ] )
+        return pid
 
-    def startCassandra( self ):
-        "Start Cassandra"
-        self.cmd( 'start-cassandra.sh start' )
-        self.waitStart( 'Cassandra', 'apache-cassandra' )
-        status = self.cmd( 'start-cassandra.sh status' )
-        if 'running' not in status:
-            raise Exception( 'Cassandra startup failed: ' + status )
+    def startRamcloud( self, cpu=.6 ):
+        """Start Ramcloud
+           cpu: CPU usage limit (in seconds/s)"""
+        # Edit configuration file
+        self.cmd( "sed -ibak -e 's/host=.*/host=127.0.0.1/' %s/conf/ramcloud.conf" %
+            self.onosDir)
+        # Create a cgroup so Ramcloud doesn't eat all of our CPU
+        ramcloud = CPULimitedHost( 'ramcloud', inNamespace=False, period_us=5000 )
+        ramcloud.setCPUFrac( cpu / numCores() )
+        ramcloud.cmd( 'export PATH=%s:$PATH' % self.onosDir )
+        ramcloud.cmd( 'export ONOS_LOGDIR=%s' % self.logDir )
+        for daemon in 'coordinator', 'server':
+            ramcloud.cmd( 'start-ramcloud-%s.sh start' % daemon )
+            pid = self.waitStart( 'Ramcloud %s' % daemon, 'obj.master/' + daemon )
+            self.waitNetstat( pid )
+            status = self.cmd( 'start-ramcloud-%s.sh status' % daemon )
+            if 'running' not in status:
+                raise Exception( 'Ramcloud %s startup failed: ' % daemon + status )
+        self.ramcloud = ramcloud
 
-    def stopCassandra( self ):
-        "Stop Cassandra"
-        self.cmd( 'start-cassandra.sh stop' )
+    def stopRamcloud( self ):
+        "Stop Ramcloud"
+        for daemon in 'coordinator', 'server':
+            self.ramcloud.cmd( './start-ramcloud-%s.sh stop' % daemon )
+        self.ramcloud.terminate()
 
     def startZookeeper( self, initcfg=True ):
         "Start Zookeeper"
@@ -195,8 +223,10 @@ class ONOS( Controller ):
             cfg = self.zookeeperDir + '/conf/zoo.cfg'
             template = self.zookeeperDir + '/conf/zoo_sample.cfg'
             copyfile( template, cfg )
-        self.cmd( 'start-zk.sh restart' )
-        self.waitStart( 'Zookeeper', 'zookeeper' )
+        self.cmd( 'start-zk.sh stop' )
+        self.cmd( 'start-zk.sh start' )
+        pid = self.waitStart( 'Zookeeper', 'zookeeper' )
+        self.waitNetstat( pid )
         status = self.cmd( 'start-zk.sh status' )
         if 'Error' in status:
             raise Exception( 'Zookeeper startup failed: ' + status )
@@ -230,15 +260,13 @@ class ONOS( Controller ):
         """Set and return environment vars
            id: ONOS instance number
            propsFile: properties file name"""
-        # ONOS directories and files
-        logdir = self.logDir % id
         # cassdir = self.cassDir % id
         logback = self.logbackFile % id
         jmxport = self.jmxbase + id
-        self.cmd( 'mkdir -p', logdir ) # , cassdir
-        self.cmd( 'export ONOS_LOGDIR="%s"' % logdir )
+        logdir = self.logDir
+        self.cmd( 'export ONOS_LOGDIR=%s' % logdir )
+        self.cmd( 'export ONOS_LOGBASE=onos-%d.`hostname`' % id)
         self.cmd( 'export ZOO_LOG_DIR="%s"' % logdir )
-        # self.cmd( 'export CASS_DIR="%s"' % cassdir )
         self.cmd( 'export ONOS_LOGBACK="%s"' % logback )
         self.cmd( 'export JMX_PORT=%s' % jmxport )
         self.cmd( 'export JVM_OPTS="-D%s=%s"' % (
@@ -252,7 +280,7 @@ class ONOS( Controller ):
         self.stopONOS( id )
         propsFile = self.genProperties( id )
         self.setVars( id, propsFile )
-        self.cmdPrint( 'start-onos.sh startnokill' )
+        self.cmd( 'start-onos.sh startnokill' )
         # start-onos.sh waits for ONOS startup
         elapsed = time.time() - start
         info( '* ONOS %s started in %.2f seconds\n' % ( id, elapsed ) )
@@ -263,51 +291,49 @@ class ONOS( Controller ):
         pid = self.cmd( "jps -v | grep %s=%s | awk '{print $1}'" %
             ( self.proctag, id ) ).strip()
         if pid:
-            self.cmdPrint( 'kill', pid )
+            self.cmd( 'kill', pid )
 
     def start( self, *args ):
         "Start ONOS instances"
-        info( '* Starting Cassandra\n' )
-        self.startCassandra()
         info( '* Starting Zookeeper\n' )
         self.startZookeeper()
+        info( '* Starting Ramcloud\n' )
+        self.startRamcloud()
         for id in self.ids:
             info( '* Starting ONOS %s\n' % id )
             self.startONOS( id )
+        self.cmd( 'start-rest.sh start' )
+        # Initialize proxies for clist()
+        self.proxies = [ RemoteController( 'onos-%d' % id, port=(self.ofbase + id ) )
+            for id in range( 0, self.count ) ]
 
     def stop( self, *args ):
         "Stop ONOS instances"
+        self.cmd( 'start-rest.sh stop' )
         for id in self.ids:
             info( '* Stopping ONOS %s\n' % id )
             self.stopONOS( id )
         info( '* Stopping Zookeeper\n' )
         self.stopZookeeper()
-        info( '* Stopping Cassandra\n' )
-        self.stopCassandra()
+        info( '* Stopping Ramcloud\n' )
+        self.stopRamcloud()
+        for p in self.proxies:
+            p.stop()
+        p.proxies = []
 
     def clist( self ):
-        "Return list of controller specifiers (proto:ip:port)"
-        return [ 'tcp:127.0.0.1:%s' % ( self.ofbase + id )
-            for id in range( 0, self.count ) ]
+        "Return list of Controller proxies for this ONOS cluster"
+        return self.proxies
 
 
 class OVSSwitchONOS( OVSSwitch ):
     "OVS switch which connects to multiple controllers"
     def start( self, controllers ):
-        OVSSwitch.start( self, controllers )
         assert len( controllers ) == 1
         c0 = controllers[ 0 ]
         assert type( c0 ) == ONOS
-        clist = ','.join( c0.clist() )
-        self.cmd( 'ovs-vsctl set-controller', self, clist)
-        # Reconnect quickly to controllers (1s vs. 15s max_backoff)
-        for uuid in self.controllerUUIDs():
-            if uuid.count( '-' ) != 4:
-                # Doesn't look like a UUID
-                continue
-            uuid = uuid.strip()
-            self.cmd( 'ovs-vsctl set Controller', uuid,
-                      'max_backoff=1000' )
+        controllers = c0.clist()
+        OVSSwitch.start( self, controllers )
 
 
 def waitConnected( switches ):

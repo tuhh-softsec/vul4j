@@ -1,13 +1,13 @@
 #! /bin/bash
 
 # Change this accordingly
-ONOSDIR=${ONOS_HOME:-${HOME}/ONOS}
+ONOS_HOME=${ONOS_HOME:-${HOME}/ONOS}
 script_name="topology_rest.py"
 
 #######################
-WEBDIR=${ONOSDIR}/web
+WEBDIR=${ONOS_HOME}/web
 restscript=${WEBDIR}/$script_name
-LOGDIR=${ONOS_LOGDIR:-${ONOSDIR}/onos-logs}
+LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
 REST_LOG="${LOGDIR}/rest.`hostname`.log"
 #######################
 
