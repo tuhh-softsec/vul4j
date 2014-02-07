@@ -75,7 +75,14 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	public void addPort(Port port) {
 		this.ports.put(port.getNumber(), port);
 	}
-	
+
+	public Port removePort(Port port) {
+	    Port p = this.ports.remove(port.getNumber());
+	    // XXX Do we need to validate instance equality?
+	    assert( p == port );
+	    return p;
+	}
+
 	public Port addPort(Long portNumber) {
 		PortImpl port = new PortImpl(graph, this, portNumber);
 		ports.put(port.getNumber(), port);
@@ -105,7 +112,7 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	public Iterable<Link> getOutgoingLinks() {
 		LinkedList<Link> links = new LinkedList<Link>();
 		for (Port port: getPorts()) {
-			Link link = port.getOutgoingLink(); 
+			Link link = port.getOutgoingLink();
 			if (link != null) {
 				links.add(link);
 			}
@@ -117,7 +124,7 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	public Iterable<Link> getIncomingLinks() {
 		LinkedList<Link> links = new LinkedList<Link>();
 		for (Port port: getPorts()) {
-			Link link = port.getIncomingLink(); 
+			Link link = port.getIncomingLink();
 			if (link != null) {
 				links.add(link);
 			}

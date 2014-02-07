@@ -1,5 +1,7 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.util.NoSuchElementException;
+
 import net.onrc.onos.datastore.topology.RCLink;
 import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
@@ -13,8 +15,12 @@ import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 /**
  * The "NB" read-only Network Map.
  *
+ * - Maintain Invariant/Relationships between Topology Objects.
+ *
  * TODO To be synchronized based on TopologyEvent Notification.
  *
+ * TODO TBD: This class may delay the requested change to handle event
+ * re-ordering. e.g.) Link Add came in, but Switch was not there.
  */
 public class NetworkGraphImpl extends AbstractNetworkGraph {
 
@@ -25,15 +31,29 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 	super();
     }
 
+    /**
+     * Add Switch to Topology.
+     *
+     * Fails with an Exception if a switch with same DPID already exist in
+     * Topology.
+     *
+     * @param sw
+     */
     void addSwitch(Switch sw) {
 	if (sw == null) {
 	    throw new IllegalArgumentException("Switch cannot be null");
 	}
-	switches.put(sw.getDpid(), sw);
+	Switch oldSw = switches.putIfAbsent(sw.getDpid(), sw);
+	if (oldSw != null) {
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException("Switch already exists");
+	}
     }
 
     /**
-     * Deactivate Switch (and its Ports?)
+     * Deactivate and remove Switch.
+     *
+     * XXX Should it deactivate or delete its Ports also?
      *
      * @param sw
      */
@@ -41,47 +61,171 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 	if (sw == null) {
 	    throw new IllegalArgumentException("Switch cannot be null");
 	}
-	SwitchImpl s = getSwitchImpl(sw);
-	// XXX When modifying existing object should we change the object itself
-	// or create a modified copy and switch them?
 
-	// TODO Deactivate Switch
+	if( !isSwitchInstanceInTopology(sw) ){
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException(
+		    String.format(
+			    "Switch with dpid %s did not exist or different instance registered.",
+			    new Dpid(sw.getDpid())));
+	}
 
 	// XXX Are we sure we want to deactivate Ports also?
+	for (Port p : sw.getPorts()) {
+	    deactivatePort(p);
+	}
 
-	// TODO Auto-generated method stub
+	// TODO Deactivate Switch: What to do simply remove?
+	for (Link l : sw.getIncomingLinks()) {
+	    removeLink(l);
+	}
+
+	for (Link l : sw.getOutgoingLinks()) {
+	    removeLink(l);
+	}
+
+	if (!switches.containsKey(sw.getDpid())) {
+	    throw new NoSuchElementException(String.format(
+		    "Switch with dpid %s not found.", new Dpid(sw.getDpid())));
+	}
+	boolean removed = switches.remove(sw.getDpid(), sw);
+
+	if (!removed) {
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException(
+		    String.format(
+			    "Switch with dpid %s did not exist or different instance registered.",
+			    new Dpid(sw.getDpid())));
+	}
     }
 
+    /**
+     * Add Port to Topology.
+     *
+     * @param port
+     */
     void addPort(Port port) {
 	if (port == null) {
 	    throw new IllegalArgumentException("Port cannot be null");
 	}
-	// TODO Auto-generated method stub
+	Switch sw = port.getSwitch();
 
+	if( !isSwitchInstanceInTopology(sw) ){
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException(
+		    String.format(
+			    "Switch with dpid %s did not exist or different instance registered.",
+			    new Dpid(sw.getDpid())));
+	}
+
+	SwitchImpl s = getSwitchImpl(sw);
+
+	s.addPort(port);
+	// XXX Check If port already exist, if so then what? deactivate old?
     }
 
+    /**
+     * Deactivate and remove Ports.
+     *
+     * @param port
+     */
     void deactivatePort(Port port) {
 	if (port == null) {
 	    throw new IllegalArgumentException("Port cannot be null");
 	}
-	// TODO Auto-generated method stub
 
+	Switch sw = port.getSwitch();
+
+	if( !isSwitchInstanceInTopology(sw) ){
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException(
+		    String.format(
+			    "Switch with dpid %s did not exist or different instance registered.",
+			    new Dpid(sw.getDpid())));
+	}
+
+
+	// remove Link
+	removeLink(port.getIncomingLink());
+	removeLink(port.getOutgoingLink());
+
+	// remove Device
+	for(Device d: port.getDevices()) {
+	    removeDevice(d);
+	}
+
+	// remove Port from Switch
+	SwitchImpl s = getSwitchImpl(sw);
+	s.removePort(port);
     }
 
     void addLink(Link link) {
 	if (link == null) {
 	    throw new IllegalArgumentException("Link cannot be null");
 	}
-	// TODO Auto-generated method stub
 
+	Switch srcSw = link.getSourceSwitch();
+	if( !isSwitchInstanceInTopology(srcSw) ){
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException(
+		    String.format(
+			    "Switch with dpid %s did not exist or different instance registered.",
+			    new Dpid(srcSw.getDpid())));
+	}
+
+	Switch dstSw = link.getDestinationSwitch();
+	if( !isSwitchInstanceInTopology(dstSw) ){
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException(
+		    String.format(
+			    "Switch with dpid %s did not exist or different instance registered.",
+			    new Dpid(dstSw.getDpid())));
+	}
+
+	PortImpl srcPort = getPortImpl( link.getSourcePort() );
+	PortImpl dstPort = getPortImpl( link.getDestinationPort() );
+
+	// XXX check Existing Link first?
+	srcPort.setOutgoingLink(link);
+	dstPort.setIncomingLink(link);
     }
 
     void removeLink(Link link) {
 	if (link == null) {
 	    throw new IllegalArgumentException("Link cannot be null");
 	}
-	// TODO Auto-generated method stub
 
+	Switch srcSw = link.getSourceSwitch();
+	if( !isSwitchInstanceInTopology(srcSw) ){
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException(
+		    String.format(
+			    "Switch with dpid %s did not exist or different instance registered.",
+			    new Dpid(srcSw.getDpid())));
+	}
+
+	Switch dstSw = link.getDestinationSwitch();
+	if( !isSwitchInstanceInTopology(dstSw) ){
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException(
+		    String.format(
+			    "Switch with dpid %s did not exist or different instance registered.",
+			    new Dpid(dstSw.getDpid())));
+	}
+
+	PortImpl srcPort = getPortImpl( link.getSourcePort() );
+	PortImpl dstPort = getPortImpl( link.getDestinationPort() );
+
+	// XXX check Existing Link first?
+	if( srcPort.getOutgoingLink() != link || dstPort.getIncomingLink() != link) {
+	    // XXX Define or choose more appropriate Exception.
+	    throw new RuntimeException(
+		    String.format("Link %s did not belong to Topology", link.toString())
+		    );
+	}
+	// remove Link
+	srcPort.setOutgoingLink(null);
+	dstPort.setIncomingLink(null);
     }
 
     void updateDevice(Device device) {
@@ -104,8 +248,22 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 	if (sw instanceof SwitchImpl) {
 	    return (SwitchImpl) sw;
 	}
-	throw new ClassCastException("SwitchImpl expected, but found:"
-	        + sw.getClass().getName());
+	throw new ClassCastException("SwitchImpl expected, but found: " + sw);
+    }
+
+    private PortImpl getPortImpl(Port p) {
+	if (p instanceof PortImpl) {
+	    return (PortImpl) p;
+	}
+	throw new ClassCastException("PortImpl expected, but found: " + p);
+    }
+
+    public boolean isSwitchInstanceInTopology(Switch sw) {
+        // check if the sw instance is valid in Topology
+        if (sw != switches.get(sw.getDpid())) {
+            return false;
+        }
+        return true;
     }
 
     public void loadWholeTopologyFromDB() {
@@ -154,65 +312,31 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 	// }
 
 	for (RCLink l : RCLink.getAllLinks()) {
-		try {
-			l.read();
-
-
-			Switch srcSw = this.getSwitch(l.getSrc().dpid);
-			if (srcSw == null) {
-				log.error("Switch {} missing when adding Link {}",
-						new Dpid(l.getSrc().dpid), l);
-				continue;
-			}
-
-			Switch dstSw = this.getSwitch(l.getDst().dpid);
-			if (dstSw == null) {
-				log.error("Switch {} missing when adding Link {}",
-						new Dpid(l.getDst().dpid), l);
-				continue;
-			}
-
-			LinkImpl memLink = new LinkImpl(this,
-				srcSw.getPort(l.getSrc().number),
-				dstSw.getPort(l.getDst().number));
-
-			addLink(memLink);
-		} catch (ObjectDoesntExistException e) {
-			log.debug("Delete Link Failed", e);
-		}
-	}
-    }
-
-    // FIXME To be removed later this class should never read from DB.
-    public void readSwitchFromTopology(Long dpid) {
-	SwitchImpl sw = new SwitchImpl(this, dpid);
-
-	RCSwitch rcSwitch = new RCSwitch(dpid);
-	try {
-	    rcSwitch.read();
-	} catch (ObjectDoesntExistException e) {
-	    log.warn("Tried to get a switch that doesn't exist {}", dpid);
-	    return;
-	}
-
-	addSwitch(sw);
-
-	for (byte[] portId : rcSwitch.getAllPortIds()) {
-	    RCPort rcPort = RCPort.createFromKey(portId);
 	    try {
-		rcPort.read();
+		l.read();
 
-		PortImpl port = new PortImpl(this, sw, rcPort.getNumber());
+		Switch srcSw = this.getSwitch(l.getSrc().dpid);
+		if (srcSw == null) {
+		    log.error("Switch {} missing when adding Link {}",
+			    new Dpid(l.getSrc().dpid), l);
+		    continue;
+		}
 
-		sw.addPort(port);
+		Switch dstSw = this.getSwitch(l.getDst().dpid);
+		if (dstSw == null) {
+		    log.error("Switch {} missing when adding Link {}",
+			    new Dpid(l.getDst().dpid), l);
+		    continue;
+		}
 
-		addPort(port);
+		LinkImpl memLink = new LinkImpl(this,
+			srcSw.getPort(l.getSrc().number), dstSw.getPort(l
+				.getDst().number));
 
+		addLink(memLink);
 	    } catch (ObjectDoesntExistException e) {
-		log.warn("Tried to read port that doesn't exist", rcPort);
+		log.debug("Delete Link Failed", e);
 	    }
 	}
-
     }
-
 }

@@ -17,4 +17,6 @@ public interface Port {
 
 	public Link getOutgoingLink();
 	public Link getIncomingLink();
+
+	public Iterable<Device> getDevices();
 }

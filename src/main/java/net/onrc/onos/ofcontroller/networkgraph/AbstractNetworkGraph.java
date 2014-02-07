@@ -73,7 +73,7 @@ public class AbstractNetworkGraph implements NetworkGraph {
 			return linklist;
 		}
 	}
-	
+
 	@Override
 	public Iterable<Link> getIncomingLinksFromSwitch(Long dpid) {
 		Switch sw = getSwitch(dpid);

@@ -1,5 +1,9 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Port Object stored in In-memory Topology.
  *
@@ -12,11 +16,13 @@ public class PortImpl extends NetworkGraphObject implements Port {
 	private Long number;
 	protected Link outgoingLink;
 	protected Link incomingLink;
+	protected Set<Device> devices;
 
 	public PortImpl(NetworkGraph graph, Switch parentSwitch, Long number) {
 		super(graph);
 		this.sw = parentSwitch;
 		this.number = number;
+		this.devices = new HashSet<>();
 	}
 
 	@Override
@@ -45,12 +51,35 @@ public class PortImpl extends NetworkGraphObject implements Port {
 		return incomingLink;
 	}
 
+	@Override
+	public Iterable<Device> getDevices() {
+	    return Collections.unmodifiableSet(this.devices);
+	}
+
 	public void setOutgoingLink(Link link) {
 		outgoingLink = link;
 	}
 
 	public void setIncomingLink(Link link) {
 		incomingLink = link;
+	}
+
+	/**
+	 *
+	 * @param d
+	 * @return true if successfully added
+	 */
+	public boolean addDevice(Device d) {
+	    return this.devices.add(d);
+	}
+
+	/**
+	 *
+	 * @param d
+	 * @return true if device existed and was removed
+	 */
+	public boolean removeDevice(Device d) {
+	    return this.devices.remove(d);
 	}
 
 	@Override
