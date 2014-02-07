@@ -46,8 +46,8 @@ public class FloodlightProvider implements IFloodlightModule {
         dependencies.add(IRestApiService.class);
         dependencies.add(IThreadPoolService.class);
         // Following added by ONOS
-        dependencies.add(IControllerRegistryService.class);
-        dependencies.add(ILinkDiscoveryService.class);
+        // dependencies.add(IControllerRegistryService.class);
+        // dependencies.add(ILinkDiscoveryService.class);
 
         return dependencies;
     }

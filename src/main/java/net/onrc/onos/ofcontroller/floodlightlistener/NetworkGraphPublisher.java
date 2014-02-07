@@ -438,11 +438,12 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
 	    Collection<Class<? extends IFloodlightService>> l =
 	            new ArrayList<Class<? extends IFloodlightService>>();
-        l.add(IFloodlightProviderService.class);
-        //l.add(IDeviceService.class);
-        l.add(IDatagridService.class);
-        l.add(IThreadPoolService.class);
-        return l;
+	        l.add(IFloodlightProviderService.class);
+	        //l.add(IDeviceService.class);
+	        l.add(IDatagridService.class);
+	        l.add(IThreadPoolService.class);
+		l.add(ILinkDiscoveryService.class);
+	        return l;
 	}
 
 	@Override

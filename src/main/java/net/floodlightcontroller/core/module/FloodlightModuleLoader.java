@@ -297,7 +297,64 @@ public class FloodlightModuleLoader {
                 }
             }
         }
-        
+
+	//
+	// Reorder the moduleSet to take into account the module dependencies:
+	// If a module depends on the service provided by another module, the
+	// latter should be included before the former.
+	//
+	Collection<IFloodlightModule> orderedModuleSet =
+	    new ArrayList<IFloodlightModule>();
+	while (! moduleSet.isEmpty()) {
+	    //
+	    // Evaluate each module in the unsorted collection: if all its
+	    // dependencies are in the orderedModuleSet, then add it to the
+	    // orderedModuleSet.
+	    //
+	    boolean moduleWasSorted = false;
+	    for (IFloodlightModule module : moduleSet) {
+		Collection<Class<? extends IFloodlightService>> deps =
+		    module.getModuleDependencies();
+		boolean allDepsFound = true;
+		if (deps != null) {
+		    for (Class<? extends IFloodlightService> c : deps) {
+			IFloodlightModule m = moduleMap.get(c);
+			// NOTE: Earlier we checked that the module exists
+			assert(m != null);
+			if (! orderedModuleSet.contains(m)) {
+			    allDepsFound = false;
+			    break;
+			}
+		    }
+		}
+
+		// Move the module to the sorted collection
+		if (allDepsFound) {
+		    orderedModuleSet.add(module);
+		    moduleSet.remove(module);
+		    moduleWasSorted = true;
+		    break;
+		}
+	    }
+
+	    //
+	    // Test for cyclic depenency:
+	    // If no module was sorted, but there are still unsorted modules
+	    // then there is cyclic dependency.
+	    //
+	    if ((! moduleWasSorted) && (! moduleSet.isEmpty())) {
+		String errorMsg = "";
+		for (IFloodlightModule module : moduleSet) {
+		    if (! errorMsg.isEmpty())
+			errorMsg += ", ";
+		    errorMsg += module.getClass().getName();
+		}
+		errorMsg = "ERROR! Cyclic service dependency/dependencies among the following modules: " + errorMsg;
+		throw new FloodlightModuleException(errorMsg);
+	    }
+	}
+	moduleSet = orderedModuleSet;
+
         floodlightModuleContext.setModuleSet(moduleSet);
         parseConfigParameters(prop);
         initModules(moduleSet);
