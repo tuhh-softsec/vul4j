@@ -16,6 +16,6 @@ public interface IDeviceStorage extends INetMapStorage {
 	public void changeDeviceIPv4Address(IDevice device);
 	public void rollback();
 	public void commit();
-	
+
 	public void addOnosDevice(OnosDevice onosDevice);
 }

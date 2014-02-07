@@ -161,6 +161,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	    return ope.searchDevice(mac);
 	}
 
+
 	/***
 	 * This function is for closing the DB transaction properly.
 	 * After you use any DB operation, to clear the cache of transaction, it should be called.

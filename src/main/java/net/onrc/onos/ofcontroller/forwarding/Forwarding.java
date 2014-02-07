@@ -223,6 +223,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		Ethernet eth = IFloodlightProviderService.bcStore.
 				get(cntx, IFloodlightProviderService.CONTEXT_PI_PAYLOAD);
 		
+		log.debug("Receive PACKET_IN swId {}, portId {}", sw.getId(), pi.getInPort());
+		
 		if (eth.getEtherType() != Ethernet.TYPE_IPv4) {
 			return Command.CONTINUE;
 		}
@@ -257,7 +259,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		try{	
 			IDeviceObject deviceObject = deviceStorage.getDeviceByMac(
 				destinationMac);
-
 			if (deviceObject == null) {
 				log.debug("No device entry found for {}",
 						destinationMac);
@@ -313,6 +314,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 			return;	
 		}
 
+
 		//This code assumes the device has only one port. It should be problem.
 		IPortObject portObject = ports.next();
 
@@ -329,17 +331,23 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		MACAddress srcMacAddress = MACAddress.valueOf(eth.getSourceMACAddress());
 		MACAddress dstMacAddress = MACAddress.valueOf(eth.getDestinationMACAddress());
 		
-		FlowPath flowPath, reverseFlowPath;
+		FlowPath flowPath;
 		
 		synchronized (lock) {
 			//TODO check concurrency
-			Path pathspec = new Path(srcMacAddress, dstMacAddress);
+			Path pathspec = new Path(srcMacAddress, dstMacAddress);	
+			
 			PushedFlow existingFlow = pendingFlows.get(pathspec);
 
+			//A path is installed side by side to reduce a path timeout and a wrong state.
 			if (existingFlow != null) {
-				// We've already installed a flow for this pair of MAC addresses
-				log.debug("Found existing same pathspec {}, Flow ID is {}",
-						pathspec, HexString.toHexString(existingFlow.flowId));
+				// We've already start to install a flow for this pair of MAC addresses
+				if(log.isDebugEnabled()) {
+					log.debug("Found existing the same pathspec {}, Flow ID is {}", 
+							pathspec, 
+							HexString.toHexString(existingFlow.flowId));
+				}
+				
 				OFPacketOut po = constructPacketOut(pi, sw);
 				
 				// Find the correct port here. We just assume the PI is from 
@@ -375,8 +383,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 					}
 				}
 				else {
-					//log.debug("Existing Flow ID {} is not installed. Continue to overwrite.",Long.toHexString(existingFlow.flowId) );
-					// Flow has not yet been installed to switches so save the
+					// Flow path has not yet been installed to switches so save the
 					// packet out for later
 					log.debug("Put a packet into the waitng list. flowId {}", Long.toHexString(existingFlow.flowId));
 					waitingPackets.put(existingFlow.flowId, new PacketToPush(po, sw.getId()));
@@ -403,51 +410,20 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 			flowPath.flowEntryMatch().enableDstMac(dstMacAddress);
 			flowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
 			flowPath.setDataPath(datapath);
-			
-			
-			DataPath reverseDataPath = new DataPath();
-			// Reverse the ports for the reverse path
-			reverseDataPath.setSrcPort(dstSwitchPort);
-			reverseDataPath.setDstPort(srcSwitchPort);
-			
-			// TODO implement copy constructor for FlowPath
-			reverseFlowPath = new FlowPath();
-			reverseFlowPath.setInstallerId(new CallerId(callerId));
-			reverseFlowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
-			reverseFlowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
-			reverseFlowPath.setIdleTimeout(IDLE_TIMEOUT);
-			reverseFlowPath.setHardTimeout(HARD_TIMEOUT);
-			reverseFlowPath.setFlowEntryMatch(new FlowEntryMatch());
-			// Reverse the MAC addresses for the reverse path
-			reverseFlowPath.flowEntryMatch().enableSrcMac(dstMacAddress);
-			reverseFlowPath.flowEntryMatch().enableDstMac(srcMacAddress);
-			reverseFlowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
-			reverseFlowPath.setDataPath(reverseDataPath);
 
 			FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
-			FlowId reverseFlowId = new FlowId(flowService.getNextFlowEntryId());
 			
 			flowPath.setFlowId(flowId);
-			reverseFlowPath.setFlowId(reverseFlowId);
-			
+
 			OFPacketOut po = constructPacketOut(pi, sw);
-			Path reversePathSpec = new Path(dstMacAddress, srcMacAddress);
 			
 			// Add to waiting lists
 			pendingFlows.put(pathspec, new PushedFlow(flowId.value()));
 			log.debug("Put a Path {} in the pending flow, Flow ID {}", pathspec, flowId);
-			pendingFlows.put(reversePathSpec, new PushedFlow(reverseFlowId.value()));
-			log.debug("Put a Path {} in the pending flow, Flow ID {}", reversePathSpec, reverseFlowId);
-			PacketToPush pp = new PacketToPush(po, sw.getId());
-			waitingPackets.put(flowId.value(), pp);
-
-			log.debug("Put a Packet in the wating list. relatedflowId {}, realatedReversedFlowId {}", 
-					flowId, reverseFlowId);
+			waitingPackets.put(flowId.value(), new PacketToPush(po, sw.getId()));
+			log.debug("Put a Packet in the wating list. related pathspec {}", pathspec);
 		}
-		
-		log.debug("Adding reverse {} to {}. Flow ID {}", new Object[] {
-				dstMacAddress, srcMacAddress, reverseFlowPath.flowId()});
-		flowService.addFlow(reverseFlowPath);
+
 		log.debug("Adding forward {} to {}. Flow ID {}", new Object[] {
 				srcMacAddress, dstMacAddress, flowPath.flowId()});
 		flowService.addFlow(flowPath);
@@ -482,8 +458,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	@Override
 	public void flowRemoved(FlowPath removedFlowPath) {
 		if(log.isDebugEnabled()){
-			log.debug("Flow {} was removed, having {} queued packets",
-					removedFlowPath.flowId(), waitingPackets.get(removedFlowPath.flowId().value()).size());
+			log.debug("Flow {} was removed", removedFlowPath.flowId());
 		}
 
 
@@ -500,8 +475,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		synchronized (lock) {
 			// There *shouldn't* be any packets queued if the flow has 
 			// just been removed. 
-			List<PacketToPush> packets = 
-					waitingPackets.removeAll(removedFlowPath.flowId().value());
+			List<PacketToPush> packets = waitingPackets.removeAll(removedFlowPath.flowId().value());
 			if (!packets.isEmpty()) {
 				log.warn("Removed flow {} has packets queued.",  removedFlowPath.flowId());
 			}
@@ -527,7 +501,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		MACAddress srcMacAddress = installedFlowPath.flowEntryMatch().srcMac();
 		MACAddress dstMacAddress = installedFlowPath.flowEntryMatch().dstMac();
 		Path installedPath = new Path(srcMacAddress, dstMacAddress);
-		Path reversedInstalledPath = new Path(dstMacAddress, srcMacAddress);
 		
 		// TODO waiting packets should time out. We could request a path that
 		// can't be installed right now because of a network partition. The path
@@ -535,15 +508,12 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		// packets in the meantime and probably don't want to send very old packets.
 		
 		List<PacketToPush> packets;
-		List<PacketToPush> reversedPackets;
 		Short outPort = installedFlowPath.flowEntries().get(0).outPort().value();
 
 		PushedFlow existingFlow;
-		PushedFlow reversedExistingFlow;
 		
 		synchronized (lock) {
 			existingFlow = pendingFlows.get(installedPath);
-			reversedExistingFlow = pendingFlows.get(reversedInstalledPath);
 
 			if (existingFlow != null) {
 			    existingFlow.installed = true;
@@ -553,22 +523,12 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 				return;
 			}
 
-			if(reversedExistingFlow == null) {
-				log.debug("ReversedExistingFlow {} is null", reversedInstalledPath);
-				return;
-			}
-
-			//Check both existing flow and reversedExisting flow are installed status.
-			if(reversedExistingFlow.installed){
+			//Check both existing flow are installed status.
+			if(existingFlow.installed){
 				packets = waitingPackets.removeAll(existingFlow.flowId);
 				if(log.isDebugEnabled()){
 					log.debug("removed my packets {} to push from waitingPackets. outPort {} size {}",
 							Long.toHexString(existingFlow.flowId), existingFlow.firstOutPort, packets.size());
-				}
-				reversedPackets = waitingPackets.removeAll(reversedExistingFlow.flowId);
-				if(log.isDebugEnabled()){
-					log.debug("removed my reversed packets {} to push from waitingPackets. outPort {} size {}",
-							Long.toHexString(reversedExistingFlow.flowId), reversedExistingFlow.firstOutPort, reversedPackets.size());
 				}
 			}else{
 				log.debug("Forward or reverse flows hasn't been pushed yet. return");	
@@ -580,12 +540,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 			log.debug("Start packetToPush to sw {}, outPort {}", packet.dpid, existingFlow.firstOutPort);
 			IOFSwitch sw = floodlightProvider.getSwitches().get(packet.dpid);
 			sendPacketOut(sw, packet.packet, existingFlow.firstOutPort);
-		}
-
-		for (PacketToPush packet : reversedPackets) {
-			log.debug("Start packetToPush to sw {}, outPort {}", packet.dpid, reversedExistingFlow.firstOutPort);
-			IOFSwitch sw = floodlightProvider.getSwitches().get(packet.dpid);
-			sendPacketOut(sw, packet.packet, reversedExistingFlow.firstOutPort);
 		}
 	}
 	

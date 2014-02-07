@@ -57,7 +57,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
     
-    private final int FLOW_IDLE_TIMEOUT_ADDED_SECONDS = 2;
+    private final int FLOW_IDLE_TIMEOUT_ADDED_SECONDS = 5;
 
     private DBOperation dbHandler;
 
