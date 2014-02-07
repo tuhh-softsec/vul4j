@@ -11,7 +11,6 @@ import com.tinkerpop.frames.annotations.gremlin.GremlinGroovy;
 import com.tinkerpop.frames.annotations.gremlin.GremlinParam;
 import com.tinkerpop.frames.VertexFrame;
 
-import net.onrc.onos.ofcontroller.flowmanager.web.DatapathSummarySerializer;
 import net.floodlightcontroller.core.web.serializers.IPv4Serializer;
 
 /*
@@ -302,14 +301,6 @@ public interface INetMapTopologyObjects {
 
 		@Property("dst_port")
 		public void setDstPort(Short dstPort);
-
-		@JsonProperty("dataPath")
-		@JsonSerialize(using=DatapathSummarySerializer.class)
-		@Property("data_path_summary")
-		public String getDataPathSummary();
-
-		@Property("data_path_summary")
-		public void setDataPathSummary(String dataPathSummary);
 
 		@JsonIgnore
 		@Adjacency(label="flow", direction=Direction.IN)

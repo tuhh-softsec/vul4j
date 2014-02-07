@@ -164,8 +164,6 @@ public class FlowDatabaseOperation {
             flowPathEntity.setProperty("actions", flowPath.flowEntryActions().toString());
 	    flowProp.setActions(flowPath.flowEntryActions().toString());
 	}
-        flowPathEntity.setProperty("data_path_summary", flowPath.dataPath().dataPathSummary());
-	flowProp.setDataPathSummary(flowPath.dataPath().dataPathSummary());
 
 	flowProp.commitProperties(dbHandler, flowPathObj);
 

@@ -133,10 +133,6 @@ public class FlowEntryProperty {
         map.put("actionOutputPort", value);
     }
     
-    public void setDataPathSummary(String value) {
-        map.put("data_path_summary", value);
-    }
-    
     /**
      *
      * @param dbhandler

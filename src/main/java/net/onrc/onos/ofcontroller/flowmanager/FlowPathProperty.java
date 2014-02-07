@@ -61,10 +61,6 @@ public class FlowPathProperty {
 		map.put("dst_port", dstPort);
 	}
 
-	public void setDataPathSummary(String dataPathSummary) {
-		map.put("data_path_summary", dataPathSummary);
-	}
-
 	public void setMatchSrcMac(String matchSrcMac) {
 		map.put("matchSrcMac", matchSrcMac);
 	}
