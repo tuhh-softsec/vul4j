@@ -8,10 +8,6 @@ import com.tinkerpop.blueprints.Direction;
 import java.util.Map;
 import net.onrc.onos.graph.DBOperation;
 
-/**
- *
- * @author nickkaranatsios
- */
 public interface FlowEntityManager {
     public void setPrimaryKey(String key);
     public String getPrimaryKey();

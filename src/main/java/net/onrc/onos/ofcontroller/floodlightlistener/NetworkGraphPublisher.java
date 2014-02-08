@@ -90,7 +90,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
             Thread.currentThread().setName("SwitchCleanup@" + old);
             try {
             	log.debug("Running cleanup thread");
-		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
+		op = GraphDBManager.getDBOperation();
                 switchCleanup();
             }
             catch (Exception e) {
@@ -451,7 +451,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
                 String dbStore = configMap.get(GraphDBStore);
-		op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
+		op = GraphDBManager.getDBOperation();
 
 		floodlightProvider =
 	            context.getServiceImpl(IFloodlightProviderService.class);

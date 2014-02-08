@@ -13,7 +13,7 @@ public class TopoDevicesResource extends ServerResource {
 	
 	@Get("json")
 	public Iterator<IDeviceObject> retrieve() {
-		DBOperation op = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
+		DBOperation op = GraphDBManager.getDBOperation();
 		
 		return op.getDevices().iterator();
 	}

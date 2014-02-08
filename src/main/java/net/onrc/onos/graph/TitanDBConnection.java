@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.onrc.onos.graph;
 
 import com.thinkaurelius.titan.core.TitanFactory;
@@ -14,10 +10,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author nickkaranatsios
- */
 public class TitanDBConnection extends DBConnection {
 
     private TitanGraph graph;

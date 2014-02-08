@@ -29,7 +29,11 @@ public class RamCloudWrite {
 		pm.indexwrite_start("RamCloudIndex writeWithRules()");
 	    }
 	    rcClient.writeRule(tableId, rcKey, rcValue, rules);
-	    pm.indexwrite_end("RamCloudIndex writeWithRules()");
+            if (perfMonKind.equals(PerfMonEnum.WRITE)) {
+                pm.write_end("RamCloudIndex writeWithRules()");
+            } else if (perfMonKind.equals(PerfMonEnum.INDEXWRITE)) {
+                pm.indexwrite_end("RamCloudIndex writeWithRules()");
+            }
 	} catch (Exception e) {
 	    if (perfMonKind.equals(PerfMonEnum.WRITE)) {
 		pm.write_end("RamCloudIndex writeWithRules()");

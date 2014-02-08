@@ -9,14 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author nickkaranatsios
- */
 public class GraphDBManager {
     private static ThreadLocal<HashMap<String, DBConnection>> connections = new ThreadLocal<HashMap<String, DBConnection>>();
     private static DBOperation operation = null;
-    
+    private final static String DB_CONFIG_FILE = "conf/ramcloud.conf";
+
     static Map<String, DBConnection> getConnectionMap() {
         if (connections.get() == null) {
             connections.set(new HashMap<String, DBConnection>());
@@ -24,14 +21,18 @@ public class GraphDBManager {
         return connections.get();
     }
 
-    public static DBOperation getDBOperation(final String dbStore, final String dbConfigFile) {
+    public static DBOperation getDBOperation() {
+        return getDBOperation("ramcloud");
+    }
+
+    public static DBOperation getDBOperation(final String dbStore) {
 	if (dbStore.equals("ramcloud")) {
 	    operation = new RamCloudDBOperation();
 	} else if (dbStore.equals("titan")) {
 	    operation = new TitanDBOperation();
 	}
 	if (operation != null) {
-	    operation.conn = GraphDBManager.getConnection(dbStore, dbConfigFile);
+	    operation.conn = GraphDBManager.getConnection(dbStore, DB_CONFIG_FILE);
 	}
         return operation;
     }

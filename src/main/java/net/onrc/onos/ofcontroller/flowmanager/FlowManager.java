@@ -87,8 +87,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public void init(final String dbStore, final String conf) {
-	dbHandlerApi = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
-	dbHandlerInner = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
+	dbHandlerApi = GraphDBManager.getDBOperation();
+	dbHandlerInner = GraphDBManager.getDBOperation();
     }
 
     /**

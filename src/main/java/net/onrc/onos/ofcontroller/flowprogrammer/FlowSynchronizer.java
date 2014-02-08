@@ -50,7 +50,7 @@ public class FlowSynchronizer implements IFlowSyncService {
     private Map<IOFSwitch, FutureTask<SyncResult>> switchThreads; 
 
     public FlowSynchronizer() {
-	dbHandler = GraphDBManager.getDBOperation("ramcloud", "/tmp/ramcloud.conf");
+	dbHandler = GraphDBManager.getDBOperation();
 	switchThreads = new HashMap<IOFSwitch, FutureTask<SyncResult>>();
     }
 

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.onrc.onos.graph;
 
 import com.tinkerpop.blueprints.Vertex;
@@ -15,10 +11,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author nickkaranatsios
- */
 public class RamCloudDBConnection extends DBConnection {
     private RamCloudGraph graph;
     private FramedGraph<RamCloudGraph> fg;

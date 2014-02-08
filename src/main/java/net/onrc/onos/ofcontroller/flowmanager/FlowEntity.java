@@ -19,10 +19,6 @@ import com.tinkerpop.blueprints.impls.ramcloud.RamCloudVertex;
 import java.util.List;
 import java.util.Set;
 
-/**
- *
- * @author nickkaranatsios
- */
 public class FlowEntity implements FlowEntityManager {
     private String primaryKey;
     // TODO: Should remove since not implemented.
@@ -214,7 +210,9 @@ public class FlowEntity implements FlowEntityManager {
                     if (srcVertex == null) continue;
                     for (int j = 0; j < childEntity.edges.size(); j++) {
                         EntityEdge edge = (EntityEdge) childEntity.edges.get(j);
-                        edgesToSet.add(new RamCloudEdgeEntity(srcVertex, ((IBaseObject) edge.dst).asVertex(), edge.dir, edge.label));
+                        if (edge !=null) {
+                            edgesToSet.add(new RamCloudEdgeEntity(srcVertex, ((IBaseObject) edge.dst).asVertex(), edge.dir, edge.label));
+                        }
                     }
                 }
                 graph.addEdges(edgesToSet);

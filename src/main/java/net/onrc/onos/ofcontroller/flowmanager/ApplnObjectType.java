@@ -4,10 +4,6 @@
  */
 package net.onrc.onos.ofcontroller.flowmanager;
 
-/**
- *
- * @author nickkaranatsios
- */
 public enum ApplnObjectType {
     FLOWPATH,
     FLOWENTRY,  
