@@ -39,6 +39,7 @@ import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import com.thinkaurelius.titan.core.TitanException;
 import com.esotericsoftware.kryo.Kryo;
@@ -62,8 +63,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected FloodlightModuleContext context;
     protected FlowEventHandler flowEventHandler;
 
-    protected IFlowPusherService pusher;
+    protected IFlowPusherService pusherService;
     protected IForwardingService forwardingService;
+    protected IControllerRegistryService registryService;
 
     private KryoFactory kryoFactory = new KryoFactory();
 
@@ -153,6 +155,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	l.add(IDatagridService.class);
 	l.add(IRestApiService.class);
 	l.add(IFlowPusherService.class);
+	l.add(IControllerRegistryService.class);
 	//
 	// TODO: Comment-out the dependency on the IForwardingService,
 	// because it is an optional module. Apparently, adding the dependency
@@ -174,8 +177,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
-	pusher = context.getServiceImpl(IFlowPusherService.class);
+	pusherService = context.getServiceImpl(IFlowPusherService.class);
 	forwardingService = context.getServiceImpl(IForwardingService.class);
+	registryService = context.getServiceImpl(IControllerRegistryService.class);
 
 	this.init("","");
     }
@@ -233,6 +237,49 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	floodlightProvider.addOFSwitchListener(flowEventHandler);
 	datagridService.registerFlowEventHandlerService(flowEventHandler);
 	flowEventHandler.start();
+
+	//
+	// FlowManager cleanup if cluster leader
+	//
+	if (registryService.isClusterLeader()) {
+	    boolean reuseDatabaseFlowPath = false;
+
+	    //
+	    // Deal with leftover Flow state in the database: cleanup
+	    // or push it into the switches.
+	    //
+	    do {
+		Map<String, String> configMap = context.getConfigParams(this);
+		if (configMap == null)
+		    break;
+		String operation = configMap.get("reuseDatabaseFlowPath");
+		if (operation == null)
+		    break;
+		if (operation.equals("true"))
+		    reuseDatabaseFlowPath = true;
+	    } while (false);
+
+	    if (reuseDatabaseFlowPath) {
+		// Push all flows from the database into the switches
+		log.debug("Startup Cluster Leader FlowManager: push Flow Paths to Switches");
+		//
+		// NOTE: For simplicity, we explicitly re-add all flows
+		// from the database, even if this means we are re-adding
+		// them to the database.
+		// One of the reasons is because addFlow() contains a
+		// number of sanity checks and cleanups which we don't
+		// want to repeat here; e.g., truncating Shortest Path
+		// Flow Entries which might be obsoleted.
+		//
+		ArrayList<FlowPath> flowPaths = getAllFlows();
+		for (FlowPath flowPath : flowPaths)
+		    addFlow(flowPath);
+	    } else {
+		// Delete all flows in the database
+		log.debug("Startup Cluster Leader FlowManager: cleanup Flow Paths in database");
+		deleteAllFlows();
+	    }
+	}
     }
 
     /**
@@ -635,7 +682,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    entries.add(new Pair<IOFSwitch, FlowEntry>(mySwitch, flowEntry));
 	}
 
-	pusher.pushFlowEntries(entries);
+	pusherService.pushFlowEntries(entries);
     }
 
     /**
