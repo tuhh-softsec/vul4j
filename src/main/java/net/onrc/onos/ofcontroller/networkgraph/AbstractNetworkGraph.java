@@ -22,7 +22,7 @@ public class AbstractNetworkGraph implements NetworkGraph {
 	protected ConcurrentMap<Long, Switch> switches;
 
 	protected ConcurrentMap<InetAddress, Set<Device>> addr2Device;
-	protected ConcurrentMap<MACAddress, Set<Device>> mac2Device;
+	protected ConcurrentMap<MACAddress, Device> mac2Device;
 
 	public AbstractNetworkGraph() {
 		// TODO: Does these object need to be stored in Concurrent Collection?
@@ -103,11 +103,7 @@ public class AbstractNetworkGraph implements NetworkGraph {
 	}
 
 	@Override
-	public Iterable<Device> getDeviceByMac(MACAddress address) {
-		Set<Device> devices = mac2Device.get(address);
-		if (devices == null) {
-			return Collections.emptyList();
-		}
-		return Collections.unmodifiableCollection(devices);
+	public Device getDeviceByMac(MACAddress address) {
+		return mac2Device.get(address);
 	}
 }

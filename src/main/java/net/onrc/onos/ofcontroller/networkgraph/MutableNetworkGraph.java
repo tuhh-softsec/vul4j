@@ -3,6 +3,7 @@ package net.onrc.onos.ofcontroller.networkgraph;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import net.floodlightcontroller.util.MACAddress;
@@ -12,9 +13,11 @@ import net.floodlightcontroller.util.MACAddress;
  */
 public class MutableNetworkGraph implements NetworkGraph {
 	protected HashMap<Long, SwitchImpl> switches;
+	protected HashMap<MACAddress, Device> devices;
 	
 	public MutableNetworkGraph() {
 		switches = new HashMap<Long, SwitchImpl>();
+		devices = new HashMap<MACAddress, Device>();
 	}
 
 	// Switch operations
@@ -98,13 +101,26 @@ public class MutableNetworkGraph implements NetworkGraph {
 
 	@Override
 	public Iterable<Device> getDeviceByIp(InetAddress ipAddress) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO optimize it
+		HashSet<Device> result = new HashSet<Device>();
+		for (Device d: devices.values()) {
+			Collection<InetAddress> addrs = d.getIpAddress();
+			for (InetAddress addr: addrs) {
+				if (addr.equals(ipAddress)) {
+					result.add(d);
+					break;
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override
-	public Iterable<Device> getDeviceByMac(MACAddress address) {
-		// TODO Auto-generated method stub
-		return null;
+	public Device getDeviceByMac(MACAddress address) {
+		return devices.get(address);
+	}
+
+	public void addDevice(Device device) {
+		devices.put(device.getMacAddress(), device);
 	}
 }

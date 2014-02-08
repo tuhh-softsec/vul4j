@@ -19,5 +19,5 @@ public interface NetworkGraph {
 	public Iterable<? extends Link> getIncomingLinksFromSwitch(Long dpid); // Toshi: unnecessary
 	
 	public Iterable<Device> getDeviceByIp(InetAddress ipAddress);
-	public Iterable<Device> getDeviceByMac(MACAddress address);
+	public Device getDeviceByMac(MACAddress address);
 }
