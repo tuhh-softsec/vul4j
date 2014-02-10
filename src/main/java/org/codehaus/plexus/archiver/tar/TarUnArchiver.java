@@ -18,9 +18,9 @@ package org.codehaus.plexus.archiver.tar;
  */
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
-import org.codehaus.plexus.archiver.zip.AbstractZipUnArchiver;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.BufferedInputStream;
@@ -35,7 +35,7 @@ import java.util.zip.GZIPInputStream;
  * @version $Revision$ $Date$
  */
 public class TarUnArchiver
-    extends AbstractZipUnArchiver
+    extends AbstractUnArchiver
 {
     public TarUnArchiver()
     {
@@ -79,19 +79,29 @@ public class TarUnArchiver
     protected void execute()
         throws ArchiverException
     {
+        execute(getSourceFile(), getDestDirectory());
+    }
+
+    protected void execute( String path, File outputDirectory )
+    {
+        execute( new File(path), getDestDirectory());
+    }
+
+    protected void execute( File sourceFile, File outputDirectory )
+    {
         TarInputStream tis = null;
         try
         {
-            getLogger().info( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
-            tis = new TarInputStream( compression.decompress( getSourceFile(),
-                                                              new BufferedInputStream(
-                                                                  new FileInputStream( getSourceFile() ) ) ) );
+            getLogger().info( "Expanding: " + sourceFile + " into " + outputDirectory );
+            tis = new TarInputStream( compression.decompress( sourceFile,
+                    new BufferedInputStream(
+                            new FileInputStream( sourceFile ) ) ) );
             TarEntry te;
 
             while ( ( te = tis.getNextEntry() ) != null )
             {
-                extractFile( getSourceFile(), getDestDirectory(), tis, te.getName(), te.getModTime(),
-                             te.isDirectory(), te.getMode() != 0 ? te.getMode() : null);
+                extractFile( sourceFile, outputDirectory, tis, te.getName(), te.getModTime(),
+                        te.isDirectory(), te.getMode() != 0 ? te.getMode() : null);
             }
             getLogger().debug( "expand complete" );
 
@@ -197,4 +207,5 @@ public class TarUnArchiver
             return istream;
         }
     }
+
 }
