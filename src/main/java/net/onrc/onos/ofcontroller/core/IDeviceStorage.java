@@ -14,6 +14,8 @@ public interface IDeviceStorage extends INetMapStorage {
 	public IDeviceObject getDeviceByIP(int ipv4Address);
 	public void changeDeviceAttachments(IDevice device);
 	public void changeDeviceIPv4Address(IDevice device);
+	public void rollback();
+	public void commit();
 	
 	public void addOnosDevice(OnosDevice onosDevice);
 }

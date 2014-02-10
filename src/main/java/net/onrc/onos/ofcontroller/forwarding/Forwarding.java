@@ -253,22 +253,24 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		String destinationMac = 
 				HexString.toHexString(eth.getDestinationMACAddress()); 
 		
-		//FIXME TitanTransaction opened here probably needs to be either commit()/rollback() to avoid transaction leak, before exiting run().
-		//But it seems that IDeviceStorage does not provide a way to close transaction properly.
-		//Also getDeviceByMac() is a blocking call, so it may be better way to handle it to avoid the condition.
-		IDeviceObject deviceObject = deviceStorage.getDeviceByMac(
+		//FIXME getDeviceByMac() is a blocking call, so it may be better way to handle it to avoid the condition.
+		try{	
+			IDeviceObject deviceObject = deviceStorage.getDeviceByMac(
 				destinationMac);
-		
-		if (deviceObject == null) {
-			log.debug("No device entry found for {}",
-					destinationMac);
-			
-			//Device is not in the DB, so wait it until the device is added.
-			executor.schedule(new WaitDeviceArp(sw, pi, eth), SLEEP_TIME_FOR_DB_DEVICE_INSTALLED, TimeUnit.MILLISECONDS);
-			return;
+
+			if (deviceObject == null) {
+				log.debug("No device entry found for {}",
+						destinationMac);
+
+				//Device is not in the DB, so wait it until the device is added.
+				executor.schedule(new WaitDeviceArp(sw, pi, eth), SLEEP_TIME_FOR_DB_DEVICE_INSTALLED, TimeUnit.MILLISECONDS);
+				return;
+			}
+
+			continueHandlePacketIn(sw, pi, eth, deviceObject);
+		} finally {
+			deviceStorage.rollback();
 		}
-		
-		continueHandlePacketIn(sw, pi, eth, deviceObject);
 	}
 	
 	private class WaitDeviceArp implements Runnable {
@@ -285,14 +287,18 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 
 		@Override
 		public void run() {
+			try {
 				IDeviceObject deviceObject = deviceStorage.getDeviceByMac(HexString.toHexString(eth.getDestinationMACAddress()));
-				if(deviceObject == null){
-					log.debug("wait {}ms and device was not found. Send broadcast packet and the thread finish.", SLEEP_TIME_FOR_DB_DEVICE_INSTALLED);
-					handleBroadcast(sw, pi, eth);
-					return;
-				}
-				log.debug("wait {}ms and device {} was found, continue",SLEEP_TIME_FOR_DB_DEVICE_INSTALLED, deviceObject.getMACAddress());
-				continueHandlePacketIn(sw, pi, eth, deviceObject);
+					if(deviceObject == null){
+						log.debug("wait {}ms and device was not found. Send broadcast packet and the thread finish.", SLEEP_TIME_FOR_DB_DEVICE_INSTALLED);
+						handleBroadcast(sw, pi, eth);
+						return;
+					}
+					log.debug("wait {}ms and device {} was found, continue",SLEEP_TIME_FOR_DB_DEVICE_INSTALLED, deviceObject.getMACAddress());
+					continueHandlePacketIn(sw, pi, eth, deviceObject);
+			} finally {
+				deviceStorage.rollback();
+			}
 		}
 	}
 

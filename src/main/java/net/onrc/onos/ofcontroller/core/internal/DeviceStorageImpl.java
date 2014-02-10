@@ -162,6 +162,20 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	}
 
 	/***
+	 * This function is for closing the DB transaction properly.
+	 * After you use any DB operation, to clear the cache of transaction, it should be called.
+	 */
+	@Override
+	public void rollback() {
+		ope.rollback();
+	}
+	
+	@Override
+	public void commit(){
+		ope.commit();
+	}
+
+	/***
 	 * This function is for getting the Device from the DB by IP address of the device.
 	 * @param ip The device ip address you want to get from the DB.
 	 * @return IDeviceObject you want to get.
