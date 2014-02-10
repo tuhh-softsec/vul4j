@@ -11,7 +11,7 @@ if [ -d ${RAMCLOUD_HOME} ]; then
 fi
 
 # clone ramcloud
-git clone git@github.com:y-higuchi/ramcloud.git ${RAMCLOUD_HOME}
+git clone git://github.com/y-higuchi/ramcloud.git ${RAMCLOUD_HOME}
 cd ${RAMCLOUD_HOME}
 git checkout custom
 
