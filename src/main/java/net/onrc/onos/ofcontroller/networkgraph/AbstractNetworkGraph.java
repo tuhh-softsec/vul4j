@@ -97,7 +97,7 @@ public class AbstractNetworkGraph implements NetworkGraph {
 	public Iterable<Device> getDeviceByIp(InetAddress ipAddress) {
 		Set<Device> devices = addr2Device.get(ipAddress);
 		if (devices == null) {
-			return Collections.emptyList();
+			return Collections.emptySet();
 		}
 		return Collections.unmodifiableCollection(devices);
 	}
