@@ -85,15 +85,22 @@ public class TarUnArchiver
         try
         {
             getLogger().info( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
-            tis = new TarArchiveInputStream( compression.decompress( getSourceFile(),
+            File sourceFile = getSourceFile();
+            TarFile tarFile = new TarFile( sourceFile );
+            tis = new TarArchiveInputStream( compression.decompress( sourceFile,
                                                               new BufferedInputStream(
-                                                                  new FileInputStream( getSourceFile() ) ) ) );
+                                                                  new FileInputStream( sourceFile ) ) ) );
             TarArchiveEntry te;
-
             while ( ( te = tis.getNextTarEntry() ) != null )
             {
-                extractFile( getSourceFile(), getDestDirectory(), tis, te.getName(), te.getModTime(),
-                             te.isDirectory(), te.getMode() != 0 ? te.getMode() : null);
+
+                TarResource fileInfo = new TarResource( tarFile, te);
+                if (!isSelected( te.getName(), fileInfo )) {
+                    continue;
+                }
+
+                extractFile(getSourceFile(), getDestDirectory(), tis, te.getName(), te.getModTime(),
+                        te.isDirectory(), te.getMode() != 0 ? te.getMode() : null);
             }
             getLogger().debug( "expand complete" );
 
