@@ -17,7 +17,7 @@ public class FloodlightToOnosMappers {
 	}
 
 	public static Port map(NetworkGraph graph, SwitchImpl sw, OFPhysicalPort port) {
-		PortImpl onosPort = new PortImpl(graph, sw, new Long(port.getPortNumber()));
+		PortImpl onosPort = new PortImpl(graph, sw, Long.valueOf(port.getPortNumber()));
 		onosPort.setDescription(port.getName());
 		return onosPort;
 	}
