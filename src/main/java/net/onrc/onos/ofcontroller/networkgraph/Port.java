@@ -12,6 +12,7 @@ package net.onrc.onos.ofcontroller.networkgraph;
 public interface Port {
 	public Long getNumber();
 	public Long getHardwareAddress();
+	public String getDescription();
 
 	public Switch getSwitch();
 

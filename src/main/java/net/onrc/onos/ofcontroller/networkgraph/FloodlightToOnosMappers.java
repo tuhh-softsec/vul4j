@@ -18,15 +18,17 @@ public class FloodlightToOnosMappers {
 
 	public static Port map(NetworkGraph graph, SwitchImpl sw, OFPhysicalPort port) {
 		PortImpl onosPort = new PortImpl(graph, sw, new Long(port.getPortNumber()));
+		onosPort.setDescription(port.getName());
 		return onosPort;
 	}
 
 	public static Link map(NetworkGraph graph, net.floodlightcontroller.routing.Link link) {
-		Port srcPort = graph.getSwitch(link.getSrc()).getPort(Long.valueOf(link.getSrcPort()));
-		Port dstPort = graph.getSwitch(link.getDst()).getPort(Long.valueOf(link.getDstPort()));
-		LinkImpl onosLink = new LinkImpl(graph, srcPort, dstPort);
-
+		//Port srcPort = graph.getSwitch(link.getSrc()).getPort(Long.valueOf(link.getSrcPort()));
+		//Port dstPort = graph.getSwitch(link.getDst()).getPort(Long.valueOf(link.getDstPort()));
+		//LinkImpl onosLink = new LinkImpl(graph, srcPort, dstPort);
+		LinkImpl onosLink = new LinkImpl(graph, link.getSrc(), (long)link.getSrcPort(),
+				link.getDst(), (long)link.getDstPort());
+		
 		return onosLink;
-
 	}
 }

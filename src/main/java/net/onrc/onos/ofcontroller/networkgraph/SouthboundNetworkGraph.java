@@ -133,6 +133,8 @@ public class SouthboundNetworkGraph {
 
 		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
 		rcPort.setStatus(RCPort.STATUS.ACTIVE);
+		// TODO add description into RCPort
+		//rcPort.setDescription(port.getDescription());
 		rcSwitch.addPortId(rcPort.getId());
 
 		writeObject(rcPort);
