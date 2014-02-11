@@ -2,57 +2,87 @@ package net.onrc.onos.ofcontroller.networkgraph;
 
 import java.net.InetAddress;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import net.floodlightcontroller.util.MACAddress;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)
  */
-public class DeviceImpl implements Device {
-	LinkedList<Port> attachmentPoints = new LinkedList<Port>();
-	MACAddress macAddr;
+public class DeviceImpl extends NetworkGraphObject implements Device {
 
-	public DeviceImpl(NetworkGraph graph, MACAddress macAddr) { 
-		this.macAddr = macAddr;
-	}
-	
-	@Override
-	public MACAddress getMacAddress() {
-		return macAddr;
-	}
+    private final MACAddress macAddr;
+    // These should be ConcurrentCollecton if Graph is going to be
+    protected LinkedList<Port> attachmentPoints;
+    protected Set<InetAddress> ipAddresses;
 
-	@Override
-	public Collection<InetAddress> getIpAddress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public DeviceImpl(NetworkGraph graph, MACAddress mac) {
+	super(graph);
+	this.macAddr = mac;
+	this.attachmentPoints = new LinkedList<>();
+	this.ipAddresses = new HashSet<>();
+    }
 
-	/**
-	 * @return ports attached to the device.
-	 * The last added port is stored as the first element.
-	 */
-	@Override
-	public Iterable<Port> getAttachmentPoints() {
-		return attachmentPoints;
-	}
+    @Override
+    public MACAddress getMacAddress() {
+	return this.macAddr;
+    }
 
-	@Override
-	public long getLastSeenTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	public void addAttachmentPoint(Port port) {
-		attachmentPoints.add(0, port);
-	}
-	
-	public void removeAttachmentPoint(Port port) {
-		attachmentPoints.remove(port);
-	}
-	
-	@Override
-	public String toString() {
-		return macAddr.toString();
-	}
+    @Override
+    public Collection<InetAddress> getIpAddress() {
+	return Collections.unmodifiableSet(ipAddresses);
+    }
+
+    @Override
+    public Iterable<Port> getAttachmentPoints() {
+	return Collections.unmodifiableList(this.attachmentPoints);
+    }
+
+    @Override
+    public long getLastSeenTime() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public String toString() {
+	return macAddr.toString();
+    }
+
+    /**
+     * Only {@link NetworkGraphImpl} should use this method
+     * @param p
+     */
+    void addAttachmentPoint(Port p) {
+	this.attachmentPoints.remove(p);
+	this.attachmentPoints.addFirst(p);
+    }
+
+    /**
+     * Only {@link NetworkGraphImpl} should use this method
+     * @param p
+     */
+    boolean removeAttachmentPoint(Port p) {
+	return this.attachmentPoints.remove(p);
+    }
+
+    /**
+     * Only {@link NetworkGraphImpl} should use this method
+     * @param p
+     */
+    boolean addIpAddress(InetAddress addr) {
+	return this.ipAddresses.add(addr);
+    }
+
+    /**
+     * Only {@link NetworkGraphImpl} should use this method
+     * @param p
+     */
+    boolean removeIpAddress(InetAddress addr) {
+	return this.ipAddresses.remove(addr);
+    }
+
 }

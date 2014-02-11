@@ -13,12 +13,13 @@ import java.util.Set;
 public class PortImpl extends NetworkGraphObject implements Port {
 
 	private Switch sw;
-	
+
 	private Long number;
 	private String description;
-	
+
 	protected Link outgoingLink;
 	protected Link incomingLink;
+	// These needs to be ConcurrentCollecton if allowing Graph to be accessed Concurrently
 	protected Set<Device> devices;
 
 	public PortImpl(NetworkGraph graph, Switch parentSwitch, Long number) {
@@ -32,12 +33,12 @@ public class PortImpl extends NetworkGraphObject implements Port {
 	public Long getNumber() {
 		return number;
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public void setDescription(String description) {
 		this.description = description;
 	}

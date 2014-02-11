@@ -258,6 +258,13 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 	throw new ClassCastException("PortImpl expected, but found: " + p);
     }
 
+    private DeviceImpl getDeviceImpl(Device d) {
+	if (d instanceof DeviceImpl) {
+	    return (DeviceImpl) d;
+	}
+	throw new ClassCastException("DeviceImpl expected, but found: " + d);
+    }
+
     public boolean isSwitchInstanceInTopology(Switch sw) {
         // check if the sw instance is valid in Topology
         if (sw != switches.get(sw.getDpid())) {

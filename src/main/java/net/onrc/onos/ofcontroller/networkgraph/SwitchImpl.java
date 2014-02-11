@@ -21,6 +21,7 @@ import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 public class SwitchImpl extends NetworkGraphObject implements Switch {
 
 	private Long dpid;
+	// These needs to be ConcurrentCollecton if allowing Graph to be accessed Concurrently
 	private final Map<Long, Port> ports;
 
 	public SwitchImpl(NetworkGraph graph, Long dpid) {
