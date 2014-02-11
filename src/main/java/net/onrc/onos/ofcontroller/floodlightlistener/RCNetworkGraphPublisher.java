@@ -14,13 +14,10 @@ import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
-import net.onrc.onos.ofcontroller.networkgraph.FloodlightToOnosMappers;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
-import net.onrc.onos.ofcontroller.networkgraph.LinkImpl;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraphDatastore;
-import net.onrc.onos.ofcontroller.networkgraph.Switch;
-import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
+import net.onrc.onos.ofcontroller.networkgraph.NetworkGraphDiscoveryInterface;
+import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.openflow.protocol.OFPhysicalPort;
@@ -49,36 +46,18 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	private IDatagridService datagridService;
 	private INetworkGraphService networkGraphService;
 
-	private NetworkGraph networkGraph;
-	private NetworkGraphDatastore southboundNetworkGraph;
+	private NetworkGraphDiscoveryInterface networkGraphDiscoveryInterface;
 
 
 	@Override
 	public void linkDiscoveryUpdate(LDUpdate update) {
-
-		// TODO Move this sanity check when retrieving port to common place?
-		Switch srcSw = networkGraph.getSwitch(update.getSrc());
-		if (srcSw == null) {
-			log.error("Switch {} missing when adding Link {}",
-					new Dpid(update.getSrc()), update);
-			return;
-		}
-
-		Switch dstSw = networkGraph.getSwitch(update.getDst());
-		if (dstSw == null) {
-			log.error("Switch {} missing when adding Link {}",
-					new Dpid(update.getDst()), update);
-			return;
-		}
-
-		// XXX Is it correct to add Link object created with networkGraph to southboundNetworkGraph?
-		LinkImpl link = new LinkImpl(networkGraph,
-			srcSw.getPort((long) update.getSrcPort()),
-			dstSw.getPort((long) update.getDstPort()));
-
+		LinkEvent linkEvent = new LinkEvent(update.getSrc(), 
+				(long)update.getSrcPort(), update.getDst(), 
+				(long)update.getDstPort());
+		
 		switch (update.getOperation()) {
 		case LINK_ADDED:
-//			southboundNetworkGraph.addLink(link);
+			networkGraphDiscoveryInterface.putLinkEvent(linkEvent);
 			/*
 			TopologyElement topologyElement =
 					new TopologyElement(update.getSrc(),
@@ -93,7 +72,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 			// We never use it.
 			break;
 		case LINK_REMOVED:
-//			southboundNetworkGraph.removeLink(link);
+			networkGraphDiscoveryInterface.removeLinkEvent(linkEvent);
 			/*
 			TopologyElement topologyElement =
 					new TopologyElement(update.getSrc(),
@@ -127,8 +106,8 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 			return;
 		}
 
-		Switch onosSwitch = FloodlightToOnosMappers.map(networkGraph, sw);
-//		southboundNetworkGraph.addSwitch(onosSwitch);
+		SwitchEvent switchEvent = new SwitchEvent(sw.getId());
+		networkGraphDiscoveryInterface.putSwitchEvent(switchEvent);
 
 		/*
 		// TODO publish ADD_SWITCH event here
@@ -167,8 +146,9 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 
 	@Override
 	public void removedSwitch(IOFSwitch sw) {
-		// TODO Auto-generated method stub
-
+		// TODO move to cleanup thread
+		SwitchEvent switchEvent = new SwitchEvent(sw.getId());
+		networkGraphDiscoveryInterface.removeSwitchEvent(switchEvent);
 	}
 
 	@Override
@@ -227,7 +207,6 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		floodlightProvider.addOFSwitchListener(this);
 		linkDiscovery.addListener(this);
 
-		networkGraph = networkGraphService.getNetworkGraph();
-		southboundNetworkGraph = networkGraphService.getSouthboundNetworkGraph();
+		networkGraphDiscoveryInterface = networkGraphService.getNetworkGraphDiscoveryInterface();
 	}
 }

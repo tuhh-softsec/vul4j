@@ -28,13 +28,17 @@ import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
  * re-ordering. e.g.) Link Add came in, but Switch was not there.
  *
  */
-public class NetworkGraphImpl extends AbstractNetworkGraph {
+public class NetworkGraphImpl extends AbstractNetworkGraph
+								implements NetworkGraphDiscoveryInterface {
 
     private static final Logger log = LoggerFactory
 	    .getLogger(NetworkGraphImpl.class);
+    
+    private final NetworkGraphDatastore datastore;
 
     public NetworkGraphImpl() {
 	super();
+	datastore = new NetworkGraphDatastore(this);
     }
 
     /**
@@ -518,4 +522,113 @@ public class NetworkGraphImpl extends AbstractNetworkGraph {
 	    super(message);
 	}
     }
+
+    /* ******************************
+     * NetworkGraphDiscoveryInterface methods
+     * ******************************/
+    
+	@Override
+	public void putSwitchEvent(SwitchEvent switchEvent) {
+		if (checkAddSwitchInvariant()) {
+			datastore.addSwitch(switchEvent);
+			putSwitch(switchEvent);
+		}
+		// TODO handle invariant violation
+	}
+
+	@Override
+	public void removeSwitchEvent(SwitchEvent switchEvent) {
+		if (checkRemoveSwitchInvariant()) {
+			datastore.deactivateSwitch(switchEvent);
+			removeSwitch(switchEvent);
+		}
+		// TODO handle invariant violation
+	}
+
+	@Override
+	public void putPortEvent(PortEvent portEvent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removePortEvent(PortEvent portEvent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void putLinkEvent(LinkEvent linkEvent) {
+		if (checkAddLinkInvariant()) {
+			datastore.addLink(linkEvent);
+			putLink(linkEvent);
+		}
+		// TODO handle invariant violation
+	}
+
+	@Override
+	public void removeLinkEvent(LinkEvent linkEvent) {
+		if (checkRemoveLinkInvariant()) {
+			datastore.removeLink(linkEvent);
+			removeLink(linkEvent);
+		}
+		// TODO handle invariant violation
+	}
+
+	@Override
+	public void updateDeviceEvent(DeviceEvent deviceToUpdate,
+			Set<InetAddress> updatedIpAddrs, Set<Port> updatedAttachmentPoints) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeDeviceEvent(DeviceEvent deviceEvent) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/* *****************
+	 * Internal methods to check invariants of the network graph
+	 * *****************/
+	
+	private boolean checkAddSwitchInvariant() {
+		// TODO implement
+		return true;
+	}
+	
+	private boolean checkRemoveSwitchInvariant() {
+		// TODO implement
+		return true;
+	}
+	
+	private boolean checkAddPortInvariant() {
+		// TODO implement
+		return true;
+	}
+	
+	private boolean checkRemovePortInvariant() {
+		// TODO implement
+		return true;
+	}
+	
+	private boolean checkAddLinkInvariant() {
+		// TODO implement
+		return true;
+	}
+	
+	private boolean checkRemoveLinkInvariant() {
+		// TODO implement
+		return true;
+	}
+	
+	private boolean checkAddDeviceInvariant() {
+		// TODO implement
+		return true;
+	}
+	
+	private boolean checkRemoveDeviceInvariant() {
+		// TODO implement
+		return true;
+	}
 }
