@@ -8,7 +8,6 @@ import java.util.Map;
 
 import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
-import net.onrc.onos.ofcontroller.util.FlowEntry;
 import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 
@@ -43,12 +42,6 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	@Override
 	public Port getPort(Long number) {
 		return ports.get(number);
-	}
-
-	@Override
-	public Collection<FlowEntry> getFlowEntries() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

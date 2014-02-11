@@ -2,8 +2,6 @@ package net.onrc.onos.ofcontroller.networkgraph;
 
 import java.util.Collection;
 
-import net.onrc.onos.ofcontroller.util.FlowEntry;
-
 /**
  * Interface of Switch Object exposed to the "NB" read-only Topology.
  *
@@ -18,9 +16,6 @@ public interface Switch {
 
 	public Port getPort(Long number);
 
-
-	// Flows
-	public Collection<FlowEntry> getFlowEntries();
 
 	// Graph traversal API
 	public Iterable<Switch> getNeighbors();
