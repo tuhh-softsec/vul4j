@@ -19,5 +19,5 @@ public interface INetworkGraphService extends IFloodlightService {
      * applications/modules that shouldn't touch it
      * @return
      */
-    public SouthboundNetworkGraph getSouthboundNetworkGraph();
+    public NetworkGraphDatastore getSouthboundNetworkGraph();
 }

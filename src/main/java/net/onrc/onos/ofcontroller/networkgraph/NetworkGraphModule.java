@@ -19,7 +19,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	// private RCNetworkGraphPublisher eventListener;
 	
 	private NetworkGraphImpl networkGraph;
-	private SouthboundNetworkGraph southboundNetworkGraph;
+	private NetworkGraphDatastore southboundNetworkGraph;
 
 	private IRestApiService restApi;
 
@@ -54,7 +54,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
 		networkGraph = new NetworkGraphImpl();
-		southboundNetworkGraph = new SouthboundNetworkGraph(networkGraph);
+		southboundNetworkGraph = new NetworkGraphDatastore(networkGraph);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	}
 
 	@Override
-	public SouthboundNetworkGraph getSouthboundNetworkGraph() {
+	public NetworkGraphDatastore getSouthboundNetworkGraph() {
 		return southboundNetworkGraph;
 	}
 

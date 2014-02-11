@@ -32,14 +32,14 @@ import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
  *          It might be better for the caller to trigger notification.)
  *
  */
-public class SouthboundNetworkGraph {
-	private static final Logger log = LoggerFactory.getLogger(SouthboundNetworkGraph.class);
+public class NetworkGraphDatastore {
+	private static final Logger log = LoggerFactory.getLogger(NetworkGraphDatastore.class);
 
 	private static final int NUM_RETRIES = 10;
 	
 	private final NetworkGraphImpl graph;
 
-	public SouthboundNetworkGraph(NetworkGraphImpl graph) {
+	public NetworkGraphDatastore(NetworkGraphImpl graph) {
 		this.graph = graph;
 	}
 

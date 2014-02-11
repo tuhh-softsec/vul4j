@@ -18,7 +18,7 @@ import net.onrc.onos.ofcontroller.networkgraph.FloodlightToOnosMappers;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.LinkImpl;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.networkgraph.SouthboundNetworkGraph;
+import net.onrc.onos.ofcontroller.networkgraph.NetworkGraphDatastore;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
@@ -50,7 +50,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	private INetworkGraphService networkGraphService;
 
 	private NetworkGraph networkGraph;
-	private SouthboundNetworkGraph southboundNetworkGraph;
+	private NetworkGraphDatastore southboundNetworkGraph;
 
 
 	@Override
