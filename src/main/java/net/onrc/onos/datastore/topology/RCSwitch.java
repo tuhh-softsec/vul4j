@@ -64,7 +64,9 @@ public class RCSwitch extends RCObject {
 
     private final Long dpid;
     private STATUS status;
+    @Deprecated
     private TreeSet<byte[]> portIds;
+    @Deprecated
     transient private boolean isPortIdsModified;
 
     public static final int SWITCHID_BYTES = 2 + 8;
@@ -176,20 +178,24 @@ public class RCSwitch extends RCObject {
 	return getKey();
     }
 
+    @Deprecated
     public void addPortId(byte[] portId) {
 	// TODO: Should we copy portId, or reference is OK.
 	isPortIdsModified |= portIds.add(portId);
     }
 
+    @Deprecated
     public void removePortId(byte[] portId) {
 	isPortIdsModified |= portIds.remove(portId);
     }
 
+    @Deprecated
     public void emptyPortIds() {
 	portIds.clear();
 	this.isPortIdsModified = true;
     }
 
+    @Deprecated
     public void addAllToPortIds(Collection<byte[]> portIds) {
 	// TODO: Should we copy portId, or reference is OK.
 	isPortIdsModified |= this.portIds.addAll(portIds);
@@ -199,6 +205,7 @@ public class RCSwitch extends RCObject {
      *
      * @return Unmodifiable Set view of all the PortIds;
      */
+    @Deprecated
     public Set<byte[]> getAllPortIds() {
 	return Collections.unmodifiableSet(portIds);
     }
