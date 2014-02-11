@@ -3,8 +3,10 @@ package net.onrc.onos.ofcontroller.networkgraph;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
@@ -46,13 +48,20 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 
 	@Override
 	public Iterable<Switch> getNeighbors() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<Switch> neighbors = new HashSet<>();
+		for (Link link : getOutgoingLinks()) {
+		    neighbors.add(link.getDestinationSwitch());
+		}
+		// XXX should incoming considered neighbor?
+		for (Link link : getIncomingLinks()) {
+		    neighbors.add(link.getSourceSwitch());
+		}
+		return neighbors;
 	}
 
 	@Override
 	public Link getLinkToNeighbor(Long neighborDpid) {
-		for (Link link : graph.getOutgoingLinksFromSwitch(dpid)) {
+		for (Link link : getOutgoingLinks()) {
 			if (link.getDestinationSwitch().getDpid().equals(neighborDpid) ) {
 				return link;
 			}
@@ -72,8 +81,6 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 
 	public Port removePort(Port port) {
 	    Port p = this.ports.remove(port.getNumber());
-	    // XXX Do we need to validate instance equality?
-	    assert( p == port );
 	    return p;
 	}
 
