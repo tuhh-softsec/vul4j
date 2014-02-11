@@ -13,11 +13,13 @@ import net.floodlightcontroller.util.MACAddress;
 public interface NetworkGraph {
 	public Switch getSwitch(Long dpid);
 	public Iterable<? extends Switch> getSwitches();
-	
+
+	// TODO Not sure about the use-case of this method? Remove if not used at the end.
 	public Iterable<? extends Link> getLinks();
+	// XXX next 2 method can be removed. getSwitch(dpid).getOutgoingLinks() is equivalent
 	public Iterable<? extends Link> getOutgoingLinksFromSwitch(Long dpid); // Toshi: unnecessary
 	public Iterable<? extends Link> getIncomingLinksFromSwitch(Long dpid); // Toshi: unnecessary
-	
+
 	public Iterable<Device> getDeviceByIp(InetAddress ipAddress);
 	public Device getDeviceByMac(MACAddress address);
 }
