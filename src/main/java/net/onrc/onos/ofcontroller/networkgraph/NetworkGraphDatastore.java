@@ -5,8 +5,6 @@ import java.util.List;
 
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCObject.WriteOp;
-import net.onrc.onos.datastore.topology.RCLink;
-import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
 
 import org.slf4j.Logger;
@@ -36,14 +34,14 @@ public class NetworkGraphDatastore {
 	private static final Logger log = LoggerFactory.getLogger(NetworkGraphDatastore.class);
 
 	private static final int NUM_RETRIES = 10;
-	
+
 	private final NetworkGraphImpl graph;
 
 	public NetworkGraphDatastore(NetworkGraphImpl graph) {
 		this.graph = graph;
 	}
 
-	public void addSwitch(Switch sw) {
+	public void addSwitch(SwitchEvent sw) {
 		log.debug("Adding switch {}", sw);
 		ArrayList<WriteOp> groupOp = new ArrayList<>();
 
@@ -55,13 +53,13 @@ public class NetworkGraphDatastore {
 		// to assure that DPID is unique cluster-wide, etc.
 		groupOp.add(WriteOp.ForceCreate(rcSwitch));
 
-		for (Port port : sw.getPorts()) {
-			RCPort rcPort = new RCPort(sw.getDpid(), (long)port.getNumber());
-			rcPort.setStatus(RCPort.STATUS.ACTIVE);
-			rcSwitch.addPortId(rcPort.getId());
-
-			groupOp.add(WriteOp.ForceCreate(rcPort));
-		}
+//		for (Port port : sw.getPorts()) {
+//			RCPort rcPort = new RCPort(sw.getDpid(), (long)port.getNumber());
+//			rcPort.setStatus(RCPort.STATUS.ACTIVE);
+//			rcSwitch.addPortId(rcPort.getId());
+//
+//			groupOp.add(WriteOp.ForceCreate(rcPort));
+//		}
 
 		boolean failed = RCObject.multiWrite( groupOp );
 
@@ -76,12 +74,12 @@ public class NetworkGraphDatastore {
 		}
 		else {
 			// Publish event to the in-memory cache
-			graph.addSwitch(sw);
+//			graph.addSwitch(sw);
 		}
 
 	}
 
-	public void deactivateSwitch(Switch sw) {
+	public void deactivateSwitch(SwitchEvent sw) {
 		log.debug("Deactivating switch {}", sw);
 		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
 
@@ -93,12 +91,12 @@ public class NetworkGraphDatastore {
 				rcSwitch.setStatus(RCSwitch.STATUS.INACTIVE);
 				objectsToDeactive.add(rcSwitch);
 
-				for (Port p : sw.getPorts()) {
-					RCPort rcPort = new RCPort(sw.getDpid(), (long)p.getNumber());
-					rcPort.read();
-					rcPort.setStatus(RCPort.STATUS.INACTIVE);
-					objectsToDeactive.add(rcPort);
-				}
+//				for (Port p : sw.getPorts()) {
+//					RCPort rcPort = new RCPort(sw.getDpid(), (long)p.getNumber());
+//					rcPort.read();
+//					rcPort.setStatus(RCPort.STATUS.INACTIVE);
+//					objectsToDeactive.add(rcPort);
+//				}
 			} catch (ObjectDoesntExistException e) {
 				log.warn("Trying to deactivate an object that doesn't exist", e);
 				// We don't care to much if the object wasn't there, it's
@@ -120,132 +118,132 @@ public class NetworkGraphDatastore {
 		}
 	}
 
-	public void addPort(Switch sw, Port port) {
+	public void addPort(PortEvent port) {
 		log.debug("Adding port {}", port);
-		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
-
-		try {
-			rcSwitch.read();
-		} catch (ObjectDoesntExistException e) {
-			log.warn("Add port failed because switch {} doesn't exist", sw.getDpid(), e);
-			return;
-		}
-
-		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
-		rcPort.setStatus(RCPort.STATUS.ACTIVE);
-		// TODO add description into RCPort
-		//rcPort.setDescription(port.getDescription());
-		rcSwitch.addPortId(rcPort.getId());
-
-		writeObject(rcPort);
-		writeObject(rcSwitch);
+//		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
+//
+//		try {
+//			rcSwitch.read();
+//		} catch (ObjectDoesntExistException e) {
+//			log.warn("Add port failed because switch {} doesn't exist", sw.getDpid(), e);
+//			return;
+//		}
+//
+//		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
+//		rcPort.setStatus(RCPort.STATUS.ACTIVE);
+//		// TODO add description into RCPort
+//		//rcPort.setDescription(port.getDescription());
+//		rcSwitch.addPortId(rcPort.getId());
+//
+//		writeObject(rcPort);
+//		writeObject(rcSwitch);
 	}
 
-	public void deactivatePort(Port port) {
+	public void deactivatePort(PortEvent port) {
 		log.debug("Deactivating port {}", port);
-		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
-
-		for (int i = 0; i < NUM_RETRIES; i++) {
-			try {
-				rcPort.read();
-			} catch (ObjectDoesntExistException e) {
-				// oh well, we were deactivating anyway
-				log.warn("Trying to deactivate a port that doesn't exist: {}", port);
-				return;
-			}
-
-			rcPort.setStatus(RCPort.STATUS.INACTIVE);
-
-			try {
-				rcPort.update();
-				break;
-			} catch (ObjectDoesntExistException | WrongVersionException e) {
-				// retry
-			}
-		}
+//		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
+//
+//		for (int i = 0; i < NUM_RETRIES; i++) {
+//			try {
+//				rcPort.read();
+//			} catch (ObjectDoesntExistException e) {
+//				// oh well, we were deactivating anyway
+//				log.warn("Trying to deactivate a port that doesn't exist: {}", port);
+//				return;
+//			}
+//
+//			rcPort.setStatus(RCPort.STATUS.INACTIVE);
+//
+//			try {
+//				rcPort.update();
+//				break;
+//			} catch (ObjectDoesntExistException | WrongVersionException e) {
+//				// retry
+//			}
+//		}
 	}
 
-	public void addLink(Link link) {
+	public void addLink(LinkEvent link) {
 		log.debug("Adding link {}", link);
-		RCLink rcLink = new RCLink(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber(),
-				link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
-
-		RCPort rcSrcPort = new RCPort(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber());
-		RCPort rcDstPort = new RCPort(link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
-
-		for (int i = 0; i < NUM_RETRIES; i++) {
-			try {
-				rcSrcPort.read();
-				rcDstPort.read();
-				rcLink.create();
-			} catch (ObjectDoesntExistException e) {
-				// port doesn't exist
-				log.error("Add link failed {}", link, e);
-				return;
-			} catch (ObjectExistsException e) {
-				log.debug("Link already exists {}", link);
-				return;
-			}
-
-			rcSrcPort.addLinkId(rcLink.getId());
-			rcDstPort.addLinkId(rcLink.getId());
-
-			rcLink.setStatus(RCLink.STATUS.ACTIVE);
-
-			try {
-				rcLink.update();
-				rcSrcPort.update();
-				rcDstPort.update();
-				break;
-			} catch (ObjectDoesntExistException | WrongVersionException e) {
-				log.debug(" ", e);
-				// retry
-			}
-		}
-		
-		// Publish event to in-memory cache
-		graph.addLink(link);
+//		RCLink rcLink = new RCLink(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber(),
+//				link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
+//
+//		RCPort rcSrcPort = new RCPort(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber());
+//		RCPort rcDstPort = new RCPort(link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
+//
+//		for (int i = 0; i < NUM_RETRIES; i++) {
+//			try {
+//				rcSrcPort.read();
+//				rcDstPort.read();
+//				rcLink.create();
+//			} catch (ObjectDoesntExistException e) {
+//				// port doesn't exist
+//				log.error("Add link failed {}", link, e);
+//				return;
+//			} catch (ObjectExistsException e) {
+//				log.debug("Link already exists {}", link);
+//				return;
+//			}
+//
+//			rcSrcPort.addLinkId(rcLink.getId());
+//			rcDstPort.addLinkId(rcLink.getId());
+//
+//			rcLink.setStatus(RCLink.STATUS.ACTIVE);
+//
+//			try {
+//				rcLink.update();
+//				rcSrcPort.update();
+//				rcDstPort.update();
+//				break;
+//			} catch (ObjectDoesntExistException | WrongVersionException e) {
+//				log.debug(" ", e);
+//				// retry
+//			}
+//		}
+//
+//		// Publish event to in-memory cache
+//		graph.putLink(link);
 	}
 
-	public void removeLink(Link link) {
+	public void removeLink(LinkEvent link) {
 		log.debug("Removing link {}", link);
-		RCLink rcLink = new RCLink(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber(),
-				link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
-
-		RCPort rcSrcPort = new RCPort(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber());
-		RCPort rcDstPort = new RCPort(link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
-
-		for (int i = 0; i < NUM_RETRIES; i++) {
-			try {
-				rcSrcPort.read();
-				rcDstPort.read();
-				rcLink.read();
-			} catch (ObjectDoesntExistException e) {
-				log.error("Remove link failed {}", link, e);
-				return;
-			}
-
-			rcSrcPort.removeLinkId(rcLink.getId());
-			rcDstPort.removeLinkId(rcLink.getId());
-
-			try {
-				rcSrcPort.update();
-				rcDstPort.update();
-				rcLink.delete();
-			} catch (ObjectDoesntExistException e) {
-				log.error("Remove link failed {}", link, e);
-				return;
-			} catch (WrongVersionException e) {
-				// retry
-			}
-		}
+//		RCLink rcLink = new RCLink(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber(),
+//				link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
+//
+//		RCPort rcSrcPort = new RCPort(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber());
+//		RCPort rcDstPort = new RCPort(link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
+//
+//		for (int i = 0; i < NUM_RETRIES; i++) {
+//			try {
+//				rcSrcPort.read();
+//				rcDstPort.read();
+//				rcLink.read();
+//			} catch (ObjectDoesntExistException e) {
+//				log.error("Remove link failed {}", link, e);
+//				return;
+//			}
+//
+//			rcSrcPort.removeLinkId(rcLink.getId());
+//			rcDstPort.removeLinkId(rcLink.getId());
+//
+//			try {
+//				rcSrcPort.update();
+//				rcDstPort.update();
+//				rcLink.delete();
+//			} catch (ObjectDoesntExistException e) {
+//				log.error("Remove link failed {}", link, e);
+//				return;
+//			} catch (WrongVersionException e) {
+//				// retry
+//			}
+//		}
 	}
 
-	public void updateDevice(Device device) {
+	public void updateDevice(DeviceEvent device) {
 		// TODO implement
 	}
 
-	public void removeDevice(Device device) {
+	public void removeDevice(DeviceEvent device) {
 		// TODO implement
 	}
 

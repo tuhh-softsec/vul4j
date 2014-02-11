@@ -42,7 +42,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 												ILinkDiscoveryListener,
 												IFloodlightModule {
 	private static final Logger log = LoggerFactory.getLogger(RCNetworkGraphPublisher.class);
-	
+
 	private IFloodlightProviderService floodlightProvider;
 	private ILinkDiscoveryService linkDiscovery;
 	private IControllerRegistryService registryService;
@@ -78,7 +78,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 
 		switch (update.getOperation()) {
 		case LINK_ADDED:
-			southboundNetworkGraph.addLink(link);
+//			southboundNetworkGraph.addLink(link);
 			/*
 			TopologyElement topologyElement =
 					new TopologyElement(update.getSrc(),
@@ -93,7 +93,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 			// We never use it.
 			break;
 		case LINK_REMOVED:
-			southboundNetworkGraph.removeLink(link);
+//			southboundNetworkGraph.removeLink(link);
 			/*
 			TopologyElement topologyElement =
 					new TopologyElement(update.getSrc(),
@@ -128,7 +128,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		}
 
 		Switch onosSwitch = FloodlightToOnosMappers.map(networkGraph, sw);
-		southboundNetworkGraph.addSwitch(onosSwitch);
+//		southboundNetworkGraph.addSwitch(onosSwitch);
 
 		/*
 		// TODO publish ADD_SWITCH event here

@@ -25,5 +25,6 @@ public interface Switch {
 
 	public Link getLinkToNeighbor(Long dpid);
 
+	// XXX Iterable or Collection?
 	public Collection<Device> getDevices();
 }

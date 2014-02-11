@@ -53,7 +53,7 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	@Override
 	public Link getLinkToNeighbor(Long neighborDpid) {
 		for (Link link : graph.getOutgoingLinksFromSwitch(dpid)) {
-			if (link.getDestinationSwitch().getDpid() == neighborDpid) {
+			if (link.getDestinationSwitch().getDpid().equals(neighborDpid) ) {
 				return link;
 			}
 		}
