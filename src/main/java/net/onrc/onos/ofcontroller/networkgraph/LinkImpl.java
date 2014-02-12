@@ -15,30 +15,6 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 
 	protected static final int DEFAULT_COST = 1;
 	protected int cost = DEFAULT_COST;
-	
-	private long srcSwitchDpid;
-	private long srcPortNumber;
-	private long dstSwitchDpid;
-	private long dstPortNumber;
-	
-	/**
-	 * Constructor for when a new link is being created because of a link
-	 * discovery event.
-	 * @param graph
-	 * @param srcSwitchDpid
-	 * @param srcPortNumber
-	 * @param dstSwitchDpid
-	 * @param dstPortNumber
-	 */
-	public LinkImpl(NetworkGraph graph, long srcSwitchDpid, long srcPortNumber,
-			long dstSwitchDpid, long dstPortNumber) {
-		super(graph);
-		
-		this.srcSwitchDpid = srcSwitchDpid;
-		this.srcPortNumber = srcPortNumber;
-		this.dstSwitchDpid = dstSwitchDpid;
-		this.dstPortNumber = dstPortNumber;
-	}
 
 	/**
 	 * Constructor for when a link is read from the database and the Ports
@@ -56,9 +32,9 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 
 	protected void setToPorts() {
 		((PortImpl)srcPort).setOutgoingLink(this);
-		((PortImpl)srcPort).setIncomingLink(this);		
+		((PortImpl)srcPort).setIncomingLink(this);
 	}
-	
+
 	protected void unsetFromPorts() {
 		((PortImpl)srcPort).setOutgoingLink(null);
 		((PortImpl)srcPort).setIncomingLink(null);
@@ -101,29 +77,29 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 
 	@Override
 	public Long getSourceSwitchDpid() {
-		return srcSwitchDpid;
+		return srcPort.getSwitch().getDpid();
 	}
 
 	@Override
 	public Long getSourcePortNumber() {
-		return srcPortNumber;
+		return srcPort.getNumber();
 	}
 
 	@Override
 	public Long getDestinationSwitchDpid() {
-		return dstSwitchDpid;
+		return dstPort.getSwitch().getDpid();
 	}
 
 	@Override
 	public Long getDestinationPortNumber() {
-		return dstPortNumber;
+		return dstPort.getNumber();
 	}
 
 	@Override
 	public Double getCapacity() {
 		return capacity;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.format("%s --(cap:%f Mbps)--> %s",

@@ -4,6 +4,7 @@ import org.openflow.protocol.OFPhysicalPort;
 
 import net.floodlightcontroller.core.IOFSwitch;
 
+// XXX Either change the return value to Event Object or remove this class
 public class FloodlightToOnosMappers {
 
 	public static Switch map(NetworkGraph graph, IOFSwitch sw) {
@@ -23,12 +24,10 @@ public class FloodlightToOnosMappers {
 	}
 
 	public static Link map(NetworkGraph graph, net.floodlightcontroller.routing.Link link) {
-		//Port srcPort = graph.getSwitch(link.getSrc()).getPort(Long.valueOf(link.getSrcPort()));
-		//Port dstPort = graph.getSwitch(link.getDst()).getPort(Long.valueOf(link.getDstPort()));
-		//LinkImpl onosLink = new LinkImpl(graph, srcPort, dstPort);
-		LinkImpl onosLink = new LinkImpl(graph, link.getSrc(), (long)link.getSrcPort(),
-				link.getDst(), (long)link.getDstPort());
-		
+		Port srcPort = graph.getSwitch(link.getSrc()).getPort(Long.valueOf(link.getSrcPort()));
+		Port dstPort = graph.getSwitch(link.getDst()).getPort(Long.valueOf(link.getDstPort()));
+		LinkImpl onosLink = new LinkImpl(graph, srcPort, dstPort);
+
 		return onosLink;
 	}
 }
