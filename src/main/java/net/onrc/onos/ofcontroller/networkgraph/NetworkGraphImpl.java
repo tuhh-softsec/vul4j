@@ -1,8 +1,14 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import net.onrc.onos.datastore.topology.RCLink;
 import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
+import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 import net.onrc.onos.ofcontroller.util.Dpid;
 
 import org.slf4j.Logger;
@@ -41,8 +47,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
     /**
      * put Switch
      *
-     * XXX Internal Invariant-maintenance method. Will not write to DB. Will not
-     * fire Notification.
+     * XXX Internal In-memory object mutation method. Will not write to DB.
+     * Will not fire Notification.
      *
      * @param swEvt
      */
@@ -77,8 +83,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
     /**
      * remove Switch.
      *
-     * XXX Internal Invariant-maintenance method. Will not write to DB. Will not
-     * fire Notification.
+     * XXX Internal In-memory object mutation method. Will not write to DB.
+     * Will not fire Notification.
      *
      * @param swEvt
      */
@@ -136,8 +142,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
     /**
      * put Port
      *
-     * XXX Internal Invariant-maintenance method. Will not write to DB. Will not
-     * fire Notification.
+     * XXX Internal In-memory object mutation method. Will not write to DB.
+     * Will not fire Notification.
      *
      * @param portEvt
      */
@@ -170,8 +176,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
     /**
      * remove Port
      *
-     * XXX Internal Invariant-maintenance method. Will not write to DB. Will not
-     * fire Notification.
+     * XXX Internal In-memory object mutation method. Will not write to DB.
+     * Will not fire Notification.
      *
      * @param portEvt
      */
@@ -221,8 +227,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
     /**
      * put Link
      *
-     * XXX Internal Invariant-maintenance method. Will not write to DB. Will not
-     * fire Notification.
+     * XXX Internal In-memory object mutation method. Will not write to DB.
+     * Will not fire Notification.
      *
      * @param linkEvt
      */
@@ -310,8 +316,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
     /**
      * removeLink
      *
-     * XXX Internal Invariant-maintenance method. Will not write to DB. Will not
-     * fire Notification.
+     * XXX Internal In-memory object mutation method. Will not write to DB.
+     * Will not fire Notification.
      *
      * @param linkEvt
      */
@@ -626,6 +632,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Override
 	public void putDeviceEvent(DeviceEvent device) {
+	    // XXX if prepareFor~ method returned false, event should be dropped
 		// TODO Auto-generated method stub
 
 	}
@@ -640,30 +647,46 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	 * Internal methods to maintain invariants of the network graph
 	 * *****************/
 
-	// TODO give a name which suggest it will update if required.(prepareFor~)
 	/**
 	 *
 	 * @param swEvt
 	 * @return true if ready to accept event.
 	 */
 	private boolean prepareForAddSwitchEvent(SwitchEvent swEvt) {
-		// TODO implement
-		// No show stopping precondition?
-		// Prep: remove(deactivate) Ports on Switch, which is not on event
-
-		return true;
+	    // No show stopping precondition?
+	    // Prep: remove(deactivate) Ports on Switch, which is not on event
+	    removePortsNotOnEvent(swEvt);
+	    return true;
 	}
 
 	private boolean prepareForRemoveSwitchEvent(SwitchEvent swEvt) {
-		// TODO implement
-		// No show stopping precondition?
-		// Prep: remove(deactivate) Ports on Switch, which is not on event
+	    // No show stopping precondition?
+	    // Prep: remove(deactivate) Ports on Switch, which is not on event
+	    // XXX may be remove switch should imply wipe all ports
+	    removePortsNotOnEvent(swEvt);
+	    return true;
+	}
 
-		return true;
+	private void removePortsNotOnEvent(SwitchEvent swEvt) {
+	    Switch sw = switches.get( swEvt.getDpid() );
+	    if ( sw != null ) {
+		Set<Long> port_noOnEvent = new HashSet<>();
+		for( PortEvent portEvent : swEvt.getPorts()) {
+		    port_noOnEvent.add(portEvent.getNumber());
+		}
+		// Existing ports not on event should be removed.
+		// TODO Should batch eventually for performance?
+		for( Port p : sw.getPorts() ) {
+		    if ( !port_noOnEvent.contains(p.getNumber()) ) {
+			PortEvent rmEvent = new PortEvent(p.getSwitch().getDpid(), p.getNumber());
+			// calling Discovery removePort() API to wipe from DB, etc.
+			removePortEvent(rmEvent);
+		    }
+		}
+	    }
 	}
 
 	private boolean prepareForAddPortEvent(PortEvent portEvt) {
-		// TODO implement
 		// Parent Switch must exist
 		if ( getSwitch(portEvt.getDpid()) == null) {
 		    return false;
@@ -673,45 +696,141 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	}
 
 	private boolean prepareForRemovePortEvent(PortEvent portEvt) {
-		// TODO implement
 		// Parent Switch must exist
-		if ( getSwitch(portEvt.getDpid()) == null) {
+		Switch sw = getSwitch(portEvt.getDpid());
+		if ( sw ==  null ) {
 		    return false;
 		}
-		// Prep: None
+		Port port = sw.getPort(portEvt.getNumber());
+		if ( port == null ) {
+		    log.debug("Port already removed? {}", portEvt);
+		    // let it pass
+		    return true;
+		}
+
+		// Prep: Remove Link and Device Attachment
+		for (Device device : port.getDevices()) {
+		    DeviceEvent devEvt = new DeviceEvent(device.getMacAddress());
+		    devEvt.addAttachmentPoint(new SwitchPort(port.getSwitch().getDpid(), port.getNumber()));
+		    // calling Discovery API to wipe from DB, etc.
+		    removeDeviceEvent(devEvt);
+		}
+		Set<Link> links = new HashSet<>();
+		links.add(port.getOutgoingLink());
+		links.add(port.getIncomingLink());
+		for ( Link link : links) {
+		    if (link == null ) {
+			continue;
+		    }
+		    LinkEvent linkEvent = new LinkEvent(link.getSourceSwitchDpid(), link.getSourcePortNumber(), link.getDestinationSwitchDpid(), link.getDestinationPortNumber());
+		    // calling Discovery API to wipe from DB, etc.
+		    removeLinkEvent(linkEvent);
+		}
 		return true;
 	}
 
 	private boolean prepareForAddLinkEvent(LinkEvent linkEvt) {
-		// TODO implement
-		// Src/Dst Switch must exist
-		// Src/Dst Port must exist
-		// Prep: remove Device attachment on both Ports
-		// XXX write to DataStore about removed Device, notify about Device change?
-		return true;
+	    // Src/Dst Switch must exist
+	    Switch srcSw = getSwitch(linkEvt.getSrc().dpid);
+	    Switch dstSw = getSwitch(linkEvt.getDst().dpid);
+	    if ( srcSw == null || dstSw == null ) {
+		return false;
+	    }
+	    // Src/Dst Port must exist
+	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
+	    Port dstPort = srcSw.getPort(linkEvt.getDst().number);
+	    if ( srcPort == null || dstPort == null ) {
+		return false;
+	    }
+
+	    // Prep: remove Device attachment on both Ports
+	    for (Device device : srcPort.getDevices()) {
+		DeviceEvent devEvt = new DeviceEvent(device.getMacAddress());
+		devEvt.addAttachmentPoint(new SwitchPort(srcPort.getSwitch().getDpid(), srcPort.getNumber()));
+		// calling Discovery API to wipe from DB, etc.
+		removeDeviceEvent(devEvt);
+	    }
+	    for (Device device : dstPort.getDevices()) {
+		DeviceEvent devEvt = new DeviceEvent(device.getMacAddress());
+		devEvt.addAttachmentPoint(new SwitchPort(dstPort.getSwitch().getDpid(), dstPort.getNumber()));
+		// calling Discovery API to wipe from DB, etc.
+		removeDeviceEvent(devEvt);
+	    }
+
+	    return true;
 	}
 
 	private boolean prepareForRemoveLinkEvent(LinkEvent linkEvt) {
-		// TODO implement
-		// Src/Dst Switch must exist
-		// Src/Dst Port must exist
-		// Prep: None
-		return true;
+	    // Src/Dst Switch must exist
+	    Switch srcSw = getSwitch(linkEvt.getSrc().dpid);
+	    Switch dstSw = getSwitch(linkEvt.getDst().dpid);
+	    if ( srcSw == null || dstSw == null ) {
+		return false;
+	    }
+	    // Src/Dst Port must exist
+	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
+	    Port dstPort = srcSw.getPort(linkEvt.getDst().number);
+	    if ( srcPort == null || dstPort == null ) {
+		return false;
+	    }
+
+	    // Prep: None
+	    return true;
 	}
 
+	/**
+	 *
+	 * @param deviceEvt Event will be modified to remove inapplicable attachemntPoints/ipAddress
+	 * @return false if this event should be dropped.
+	 */
 	private boolean prepareForAddDeviceEvent(DeviceEvent deviceEvt) {
-		// TODO implement
+	    boolean preconditionBroken = false;
+	    ArrayList<PortEvent.SwitchPort> failedSwitchPort = new ArrayList<>();
+	    for ( PortEvent.SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
 		// Attached Ports' Parent Switch must exist
+		Switch sw = getSwitch(swp.dpid);
+		if ( sw ==  null ) {
+		    preconditionBroken = true;
+		    failedSwitchPort.add(swp);
+		    continue;
+		}
 		// Attached Ports must exist
+		Port port = sw.getPort(swp.number);
+		if ( port == null ) {
+		    preconditionBroken = true;
+		    failedSwitchPort.add(swp);
+		    continue;
+		}
 		// Attached Ports must not have Link
+		if ( port.getOutgoingLink() != null || port.getIncomingLink() != null ) {
+		    preconditionBroken = true;
+		    failedSwitchPort.add(swp);
+		    continue;
+		}
+	    }
 
-		// XXX Does above must hold for all attachment Point in order for this
-		// event to be processed, or just ignore those attachment point?
-		return true;
+	    // Rewriting event to exclude failed attachmentPoint
+	    // XXX Assumption behind this is that inapplicable device event should
+	    // be dropped, not deferred. If we decide to defer Device event,
+	    // rewriting can become a problem
+	    List<SwitchPort>  attachmentPoints = deviceEvt.getAttachmentPoints();
+	    attachmentPoints.removeAll(failedSwitchPort);
+	    deviceEvt.setAttachmentPoints(attachmentPoints);
+
+	    if ( deviceEvt.getAttachmentPoints().isEmpty() && deviceEvt.getIpAddresses().isEmpty() ) {
+		// XXX return false to represent: Nothing left to do for this event. Caller should drop event
+		return false;
+	    }
+
+	// Should we return false to tell caller that the event was trimmed?
+	// if ( preconditionBroken ) {
+	//     return false;
+	// }
+
+	    return true;
 	}
 
 	private boolean prepareForRemoveDeviceEvent(DeviceEvent deviceEvt) {
-		// TODO implement
 		// No show stopping precondition?
 		// Prep: none
 		return true;

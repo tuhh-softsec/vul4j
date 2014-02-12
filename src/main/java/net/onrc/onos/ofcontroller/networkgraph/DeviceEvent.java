@@ -10,7 +10,14 @@ import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 
 /**
- * Self-contained Device event Object
+ * Self-contained Device event(s) Object
+ *
+ * Device event differ from other events.
+ * Device Event represent add/remove of attachmentPoint or ipAddress.
+ * Not add/remove of the DeviceObject itself.
+ *
+ * Multiple attachmentPoints can be specified to batch events into 1 object.
+ * Each should be treated as independent events.
  *
  * TODO: We probably want common base class/interface for Self-Contained Event Object
  *
@@ -21,6 +28,9 @@ public class DeviceEvent {
     protected Set<InetAddress> ipAddresses;
 
     public DeviceEvent(MACAddress mac) {
+	if (mac == null) {
+	    throw new IllegalArgumentException("Device mac cannot be null");
+	}
 	this.mac = mac;
 	this.attachmentPoints = new LinkedList<>();
 	this.ipAddresses = new HashSet<>();
@@ -34,9 +44,19 @@ public class DeviceEvent {
 	return attachmentPoints;
     }
 
+    public Set<InetAddress> getIpAddresses() {
+        return ipAddresses;
+    }
+
     public void setAttachmentPoints(List<SwitchPort> attachmentPoints) {
 	this.attachmentPoints = attachmentPoints;
     }
+
+    public void addAttachmentPoint(SwitchPort attachmentPoint) {
+	// may need to maintain uniqness
+	this.attachmentPoints.add(0, attachmentPoint);
+    }
+
 
     boolean addIpAddress(InetAddress addr) {
 	return this.ipAddresses.add(addr);
