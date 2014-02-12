@@ -30,7 +30,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 
     private static final Logger log = LoggerFactory
 	    .getLogger(NetworkGraphImpl.class);
-    
+
     private final NetworkGraphDatastore datastore;
 
     public NetworkGraphImpl() {
@@ -50,6 +50,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	if (swEvt == null) {
 	    throw new IllegalArgumentException("Switch cannot be null");
 	}
+
 	Switch sw = switches.get(swEvt.getDpid());
 
 	if (sw == null) {
@@ -65,6 +66,12 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 
 	// Add upate when more attributes are added to Event object
 	// no attribute to update for now
+
+	// TODO handle child Port event properly for performance
+	for (PortEvent portEvt : swEvt.getPorts() ) {
+	    putPort(portEvt);
+	}
+
     }
 
     /**
@@ -80,10 +87,15 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	    throw new IllegalArgumentException("Switch cannot be null");
 	}
 
+	// TODO handle child Port event properly for performance
+	for (PortEvent portEvt : swEvt.getPorts() ) {
+	    removePort(portEvt);
+	}
+
 	Switch sw = switches.get(swEvt.getDpid());
 
 	if (sw == null) {
-	    log.warn("Switch {} already removed, ignoreing", swEvt);
+	    log.warn("Switch {} already removed, ignoring", swEvt);
 	    return;
 	}
 
@@ -170,16 +182,17 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 
 	Switch sw = switches.get(portEvt.getDpid());
 	if (sw == null) {
-	    log.warn("Parent Switch for Port {} already removed, ignoreing", portEvt);
+	    log.warn("Parent Switch for Port {} already removed, ignoring", portEvt);
 	    return;
 	}
 
 	Port p = sw.getPort(portEvt.getNumber());
 	if (p == null) {
-	    log.warn("Port {} already removed, ignoreing", portEvt);
+	    log.warn("Port {} already removed, ignoring", portEvt);
 	    return;
 	}
-	// null check
+
+	// check if there is something referring to this Port
 
 	if (!p.getDevices().iterator().hasNext()) {
 	    log.warn(
@@ -217,7 +230,6 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	if (linkEvt == null) {
 	    throw new IllegalArgumentException("Link cannot be null");
 	}
-	// TODO Auto-generated method stub
 
 	Switch srcSw = switches.get(linkEvt.getSrc().dpid);
 	if (srcSw == null) {
@@ -242,6 +254,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 			    "Src Port %s of a Link did not exist.",
 			    linkEvt.getSrc() ));
 	}
+
 	Port dstPort = dstSw.getPort(linkEvt.getDst().number);
 	if (dstPort == null) {
 	    throw new BrokenInvariantException(
@@ -250,20 +263,48 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 			    linkEvt.getDst() ));
 	}
 
+	// getting Link instance from destination port incoming Link
 	Link l = dstPort.getIncomingLink();
 	LinkImpl link = null;
 	assert( l == srcPort.getOutgoingLink() );
 	if (l != null) {
-//	    link = getLink
+	    link = getLinkImpl(l);
 	}
 
-	// TODO update Switch
-	// TODO update Link
+	if (link == null) {
+	    link = new LinkImpl(this, srcPort, dstPort);
+	}
 
 
-	// XXX check Existing Link first?
-//	srcPort.setOutgoingLink(link);
-//	dstPort.setIncomingLink(link);
+	PortImpl dstPortMem = getPortImpl(dstPort);
+	PortImpl srcPortMem = getPortImpl(srcPort);
+
+	// Add Link first to avoid further Device addition
+
+	// add Link to Port
+	dstPortMem.setIncomingLink(link);
+	srcPortMem.setOutgoingLink(link);
+
+	// remove Device Pointing to Port if any
+	for(Device d : dstPortMem.getDevices() ) {
+	    log.error("Device {} on Port {} should have been removed prior to adding Link {}", d, dstPort, linkEvt);
+	    DeviceImpl dev = getDeviceImpl(d);
+	    dev.removeAttachmentPoint(dstPort);
+	    // XXX This implies that change is made to Device Object,
+	    // which need to be written to DB, how should that be done?
+	    // should we write here or ignore and leave DB in inconsistent state?
+	}
+	dstPortMem.removeAllDevice();
+	for(Device d : srcPortMem.getDevices() ) {
+	    log.error("Device {} on Port {} should have been removed prior to adding Link {}", d, srcPort, linkEvt);
+	    DeviceImpl dev = getDeviceImpl(d);
+	    dev.removeAttachmentPoint(srcPort);
+	    // XXX This implies that change is made to Device Object,
+	    // which need to be written to DB, how should that be done?
+	    // should we write here or ignore and leave DB in inconsistent state?
+	}
+	srcPortMem.removeAllDevice();
+
     }
 
     /**
@@ -272,45 +313,48 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
      * XXX Internal Invariant-maintenance method. Will not write to DB. Will not
      * fire Notification.
      *
-     * @param link
+     * @param linkEvt
      */
-    void removeLink(LinkEvent link) {
-	if (link == null) {
+    void removeLink(LinkEvent linkEvt) {
+	if (linkEvt == null) {
 	    throw new IllegalArgumentException("Link cannot be null");
 	}
-	// TODO Auto-generated method stub
 
-	// Switch srcSw = link.getSourceSwitch();
-	// if (!isSwitchInstanceInTopology(srcSw)) {
-	// // XXX Define or choose more appropriate Exception.
-	// throw new RuntimeException(
-	// String.format(
-	// "Switch with dpid %s did not exist or different instance registered.",
-	// new Dpid(srcSw.getDpid())));
-	// }
-	//
-	// Switch dstSw = link.getDestinationSwitch();
-	// if (!isSwitchInstanceInTopology(dstSw)) {
-	// // XXX Define or choose more appropriate Exception.
-	// throw new RuntimeException(
-	// String.format(
-	// "Switch with dpid %s did not exist or different instance registered.",
-	// new Dpid(dstSw.getDpid())));
-	// }
-	//
-	// PortImpl srcPort = getPortImpl(link.getSourcePort());
-	// PortImpl dstPort = getPortImpl(link.getDestinationPort());
-	//
-	// // XXX check Existing Link first?
-	// if (srcPort.getOutgoingLink() != link
-	// || dstPort.getIncomingLink() != link) {
-	// // XXX Define or choose more appropriate Exception.
-	// throw new RuntimeException(String.format(
-	// "Link %s did not belong to Topology", link.toString()));
-	// }
-	// // remove Link
-	// srcPort.setOutgoingLink(null);
-	// dstPort.setIncomingLink(null);
+	Switch srcSw = switches.get(linkEvt.getSrc().dpid);
+	if (srcSw == null) {
+	    log.warn("Src Switch for Link {} already removed, ignoring", linkEvt);
+	    return;
+	}
+
+	Switch dstSw = switches.get(linkEvt.getDst().dpid);
+	if (dstSw == null) {
+	    log.warn("Dst Switch for Link {} already removed, ignoring", linkEvt);
+	    return;
+	}
+
+	Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
+	if (srcPort == null) {
+	    log.warn("Src Port for Link {} already removed, ignoring", linkEvt);
+	    return;
+	}
+
+	Port dstPort = dstSw.getPort(linkEvt.getDst().number);
+	if (dstPort == null) {
+	    log.warn("Dst Port for Link {} already removed, ignoring", linkEvt);
+	    return;
+	}
+
+	Link l = dstPort.getIncomingLink();
+	if (  l == null ) {
+	    log.warn("Link {} already removed on destination Port", linkEvt);
+	}
+	l = srcPort.getOutgoingLink();
+	if (  l == null ) {
+	    log.warn("Link {} already removed on src Port", linkEvt);
+	}
+
+	getPortImpl(dstPort).setIncomingLink(null);
+	getPortImpl(srcPort).setOutgoingLink(null);
     }
 
     // XXX Need to rework Device related
@@ -323,6 +367,12 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	if (deviceEvt == null) {
 	    throw new IllegalArgumentException("Device cannot be null");
 	}
+
+	// for each attachment point
+	/// TODO check if Link exist on that Port
+
+
+
 	// TODO Auto-generated method stub
 
 	// Device existingDevice =
@@ -400,7 +450,6 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	    throw new IllegalArgumentException("Device cannot be null");
 	}
 	// TODO Auto-generated method stub
-
     }
 
     private SwitchImpl getSwitchImpl(Switch sw) {
@@ -417,6 +466,13 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	throw new ClassCastException("PortImpl expected, but found: " + p);
     }
 
+    private LinkImpl getLinkImpl(Link l) {
+	if (l instanceof LinkImpl) {
+	    return (LinkImpl) l;
+	}
+	throw new ClassCastException("LinkImpl expected, but found: " + l);
+    }
+
     private DeviceImpl getDeviceImpl(Device d) {
 	if (d instanceof DeviceImpl) {
 	    return (DeviceImpl) d;
@@ -424,15 +480,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	throw new ClassCastException("DeviceImpl expected, but found: " + d);
     }
 
-    public boolean isSwitchInstanceInTopology(Switch sw) {
-	// check if the sw instance is valid in Topology
-	if (sw != switches.get(sw.getDpid())) {
-	    return false;
-	}
-	return true;
-    }
-
     public void loadWholeTopologyFromDB() {
+	// TODO this method needs to use East-bound API if we still need this
 	// XXX clear everything first?
 
 	for (RCSwitch sw : RCSwitch.getAllSwitches()) {
@@ -522,10 +571,10 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
     /* ******************************
      * NetworkGraphDiscoveryInterface methods
      * ******************************/
-    
+
 	@Override
 	public void putSwitchEvent(SwitchEvent switchEvent) {
-		if (checkAddSwitchInvariant()) {
+		if (checkAddSwitchInvariant(switchEvent)) {
 			datastore.addSwitch(switchEvent);
 			putSwitch(switchEvent);
 		}
@@ -534,7 +583,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 
 	@Override
 	public void removeSwitchEvent(SwitchEvent switchEvent) {
-		if (checkRemoveSwitchInvariant()) {
+		if (checkRemoveSwitchInvariant(switchEvent)) {
 			datastore.deactivateSwitch(switchEvent);
 			removeSwitch(switchEvent);
 		}
@@ -544,18 +593,18 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	@Override
 	public void putPortEvent(PortEvent portEvent) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void removePortEvent(PortEvent portEvent) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void putLinkEvent(LinkEvent linkEvent) {
-		if (checkAddLinkInvariant()) {
+		if (checkAddLinkInvariant(linkEvent)) {
 			datastore.addLink(linkEvent);
 			putLink(linkEvent);
 		}
@@ -564,7 +613,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 
 	@Override
 	public void removeLinkEvent(LinkEvent linkEvent) {
-		if (checkRemoveLinkInvariant()) {
+		if (checkRemoveLinkInvariant(linkEvent)) {
 			datastore.removeLink(linkEvent);
 			removeLink(linkEvent);
 		}
@@ -574,55 +623,55 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	@Override
 	public void putDeviceEvent(DeviceEvent device) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void removeDeviceEvent(DeviceEvent deviceEvent) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	/* *****************
 	 * Internal methods to check invariants of the network graph
 	 * *****************/
-	
-	private boolean checkAddSwitchInvariant() {
+
+	private boolean checkAddSwitchInvariant(SwitchEvent swEvt) {
 		// TODO implement
 		return true;
 	}
-	
-	private boolean checkRemoveSwitchInvariant() {
+
+	private boolean checkRemoveSwitchInvariant(SwitchEvent swEvt) {
 		// TODO implement
 		return true;
 	}
-	
-	private boolean checkAddPortInvariant() {
+
+	private boolean checkAddPortInvariant(PortEvent portEvt) {
 		// TODO implement
 		return true;
 	}
-	
-	private boolean checkRemovePortInvariant() {
+
+	private boolean checkRemovePortInvariant(PortEvent portEvt) {
 		// TODO implement
 		return true;
 	}
-	
-	private boolean checkAddLinkInvariant() {
+
+	private boolean checkAddLinkInvariant(LinkEvent linkEvt) {
 		// TODO implement
 		return true;
 	}
-	
-	private boolean checkRemoveLinkInvariant() {
+
+	private boolean checkRemoveLinkInvariant(LinkEvent linkEvt) {
 		// TODO implement
 		return true;
 	}
-	
-	private boolean checkAddDeviceInvariant() {
+
+	private boolean checkAddDeviceInvariant(DeviceEvent deviceEvt) {
 		// TODO implement
 		return true;
 	}
-	
-	private boolean checkRemoveDeviceInvariant() {
+
+	private boolean checkRemoveDeviceInvariant(DeviceEvent deviceEvt) {
 		// TODO implement
 		return true;
 	}

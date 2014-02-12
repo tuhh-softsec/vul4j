@@ -95,6 +95,10 @@ public class PortImpl extends NetworkGraphObject implements Port {
 	    return this.devices.remove(d);
 	}
 
+	public void removeAllDevice() {
+	    this.devices.clear();
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%d:%d",
