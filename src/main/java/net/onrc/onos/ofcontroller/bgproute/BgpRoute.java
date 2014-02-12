@@ -3,6 +3,7 @@ package net.onrc.onos.ofcontroller.bgproute;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,20 +34,36 @@ import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.bgproute.RibUpdate.Operation;
+import net.onrc.onos.ofcontroller.core.IDeviceStorage;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
+import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
+import net.onrc.onos.ofcontroller.core.internal.TopoSwitchServiceImpl;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
-import net.onrc.onos.ofcontroller.proxyarp.BgpProxyArpManager;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
+import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
 import net.onrc.onos.ofcontroller.topology.Topology;
 import net.onrc.onos.ofcontroller.topology.TopologyManager;
+import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
-import net.onrc.onos.ofcontroller.util.FlowEntry;
+import net.onrc.onos.ofcontroller.util.FlowEntryAction;
+import net.onrc.onos.ofcontroller.util.FlowEntryActions;
+import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
+import net.onrc.onos.ofcontroller.util.FlowId;
+import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.FlowPathFlags;
+import net.onrc.onos.ofcontroller.util.FlowPathType;
+import net.onrc.onos.ofcontroller.util.FlowPathUserState;
+import net.onrc.onos.ofcontroller.util.IPv4Net;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 import net.sf.json.JSONArray;
@@ -60,9 +77,7 @@ import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFPacketOut;
 import org.openflow.protocol.OFPort;
-import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
-import org.openflow.protocol.action.OFActionDataLayerDestination;
 import org.openflow.protocol.action.OFActionOutput;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -86,8 +101,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private ITopologyNetService topologyNetService;
 	private ILinkDiscoveryService linkDiscoveryService;
 	private IRestApiService restApi;
-	
-	private BgpProxyArpManager proxyArp;
+	private IProxyArpService proxyArp;
+	protected volatile IFlowService flowManagerService;
+	private IDeviceStorage deviceStorage;
+	private ITopoSwitchService topoSwitchService;
 	
 	private IPatriciaTrie<RibEntry> ptree;
 	private IPatriciaTrie<Interface> interfacePtrie;
@@ -139,12 +156,13 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	
 	private Map<InetAddress, Path> pushedPaths;
 	private Map<Prefix, Path> prefixToPath;
-	private Multimap<Prefix, PushedFlowMod> pushedFlows;
+//	private Multimap<Prefix, PushedFlowMod> pushedFlows;
+	private Multimap<Prefix, FlowId> pushedFlowIds;
 	
 	private FlowCache flowCache;
 	
 	private volatile Topology topology = null;
-		
+	
 	private class TopologyChangeDetector implements Runnable {
 		@Override
 		public void run() {
@@ -232,7 +250,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		l.add(IConfigInfoService.class);
 		return l;
 	}
-
+	
 	@Override
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
 		Map<Class<? extends IFloodlightService>, IFloodlightService> m 
@@ -255,38 +273,38 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	@Override
 	public void init(FloodlightModuleContext context)
 			throws FloodlightModuleException {
-	    
+		
 		ptree = new PatriciaTrie<RibEntry>(32);
 		interfacePtrie = new PatriciaTrie<Interface>(32);
-	    
-	    ribUpdates = new LinkedBlockingQueue<RibUpdate>();
-	    	
+		
+		ribUpdates = new LinkedBlockingQueue<RibUpdate>();
+		
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		topologyService = context.getServiceImpl(ITopologyService.class);
 		linkDiscoveryService = context.getServiceImpl(ILinkDiscoveryService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
-		
-		//TODO We'll initialise this here for now, but it should really be done as
-		//part of the controller core
-		//proxyArp = new ProxyArpManager(floodlightProvider, topologyService, this, restApi);
-		proxyArp = new BgpProxyArpManager();
-		proxyArp.init(floodlightProvider, topologyService, this, restApi);
-		//proxyArp = context.getServiceImpl(IProxyArpService.class);
-		
+		flowManagerService = context.getServiceImpl(IFlowService.class);
+		proxyArp = context.getServiceImpl(IProxyArpService.class);
+
+		deviceStorage = new DeviceStorageImpl();
+		deviceStorage.init("", "");
+
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		topologyChangeDetectorTask = new SingletonTask(executor, new TopologyChangeDetector());
 
 		topologyNetService = new TopologyManager(context);
-		
+		topoSwitchService = new TopoSwitchServiceImpl();
+
 		pathsWaitingOnArp = new HashMap<InetAddress, Path>();
 		prefixesWaitingOnArp = Multimaps.synchronizedSetMultimap(
 				HashMultimap.<InetAddress, RibUpdate>create());
 		
 		pushedPaths = new HashMap<InetAddress, Path>();
 		prefixToPath = new HashMap<Prefix, Path>();
-		pushedFlows = HashMultimap.<Prefix, PushedFlowMod>create();
+//		pushedFlows = HashMultimap.<Prefix, PushedFlowMod>create();
+		pushedFlowIds = HashMultimap.<Prefix, FlowId>create();
 		
 		flowCache = new FlowCache(floodlightProvider);
 		
@@ -311,7 +329,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		else {
 			log.info("RouterId set to {}", routerId);
 		}
-		
+
 		String configFilenameParameter = context.getConfigParams(this).get("configfile");
 		if (configFilenameParameter != null){
 			configFilename = configFilenameParameter;
@@ -326,11 +344,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		restApi.addRestletRoutable(new BgpRouteWebRoutable());
 		topologyService.addListener(this);
 		floodlightProvider.addOFSwitchListener(this);
-		
-		proxyArp.startUp();
-		
-		//floodlightProvider.addOFMessageListener(OFType.PACKET_IN, proxyArp);
-		
+
 		//Retrieve the RIB from BGPd during startup
 		retrieveRib();
 	}
@@ -390,7 +404,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 			
 			RibEntry rib = new RibEntry(router_id, nexthop);
-
+			
 			try {
 				ribUpdates.put(new RibUpdate(Operation.UPDATE, p, rib));
 			} catch (InterruptedException e) {
@@ -439,11 +453,24 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		RibEntry rib = update.getRibEntry();
 		
 		InetAddress dstIpAddress = rib.getNextHop();
+		MACAddress nextHopMacAddress;
+
+		// See if we know the MAC address of the next hop
+		// TODO if we do not treat the next hop as a device in the future, we need to update this
+		IDeviceObject nextHopDevice =
+				deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(dstIpAddress));
 		
-		//See if we know the MAC address of the next hop
-		MACAddress nextHopMacAddress = proxyArp.getMacAddress(rib.getNextHop());
+		if (nextHopDevice == null){
+			log.debug("NextHopDevice for IP: {} is null", dstIpAddress);
+			prefixesWaitingOnArp.put(dstIpAddress,
+					new RibUpdate(Operation.UPDATE, prefix, rib));
+			proxyArp.sendArpRequest(dstIpAddress, this, true);
+			return;
+
+		}
+		nextHopMacAddress = MACAddress.valueOf(nextHopDevice.getMACAddress());
 		
-		//Find the attachment point (egress interface) of the next hop
+		// Find the attachment point (egress interface) of the next hop
 		Interface egressInterface = null;
 		if (bgpPeers.containsKey(dstIpAddress)) {
 			//Route to a peer
@@ -488,11 +515,34 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
-	private void addPrefixFlows(Prefix prefix, Interface egressInterface, MACAddress nextHopMacAddress) {		
+	/**
+	 * Add a flow to match dst-IP prefix and rewrite MAC for one IP prefix
+	 * to all other border switches
+	 */
+	private void addPrefixFlows(Prefix prefix, Interface egressInterface,
+			MACAddress nextHopMacAddress) {
 		log.debug("Adding flows for prefix {}, next hop mac {}",
 				prefix, nextHopMacAddress);
 		
-		//We only need one flow mod per switch, so pick one interface on each switch
+		FlowPath flowPath = new FlowPath();
+		flowPath.setInstallerId(new CallerId("SDNIP"));
+		
+		// Set flowPath FlowPathType and FlowPathUserState
+		flowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
+		flowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
+
+		// Insert dst-ip prefix based forwarding and MAC rewrite flow entry
+		// only to the first-host switches
+		FlowPathFlags flowPathFlags = new FlowPathFlags();
+		flowPathFlags.setFlags(FlowPathFlags.KEEP_ONLY_FIRST_HOP_ENTRY);
+		flowPath.setFlowPathFlags(flowPathFlags);
+
+		// Create the DataPath object: dstSwitchPort
+		SwitchPort dstPort = new SwitchPort();
+		dstPort.setDpid(new Dpid(egressInterface.getDpid()));
+		dstPort.setPort(new Port(egressInterface.getPort()));
+
+		// We only need one flow mod per switch, so pick one interface on each switch
 		Map<Long, Interface> srcInterfaces = new HashMap<Long, Interface>();
 		for (Interface intf : interfaces.values()) {
 			if (!srcInterfaces.containsKey(intf.getDpid()) 
@@ -500,77 +550,56 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				srcInterfaces.put(intf.getDpid(), intf);
 			}
 		}
-		
-		//Add a flow to rewrite mac for this prefix to all other border switches
 		for (Interface srcInterface : srcInterfaces.values()) {
-			DataPath shortestPath; 
-			if (topology == null) {
-				shortestPath = topologyNetService.getDatabaseShortestPath(
-						srcInterface.getSwitchPort(),
-						egressInterface.getSwitchPort());
+
+			if (egressInterface.equals(srcInterface)){
+				continue;
 			}
-			else {
-				shortestPath = topologyNetService.getTopologyShortestPath(
-						topology, srcInterface.getSwitchPort(),
-						egressInterface.getSwitchPort());
-			}
-			
-			if (shortestPath == null){
-				log.debug("Shortest path between {} and {} not found",
-						srcInterface.getSwitchPort(),
-						egressInterface.getSwitchPort());
-				return; // just quit here?
-			}
-			
-			//Set up the flow mod
-			OFFlowMod fm = (OFFlowMod) floodlightProvider.getOFMessageFactory()
-					.getMessage(OFType.FLOW_MOD);
-			
-	        fm.setIdleTimeout((short)0)
-	        .setHardTimeout((short)0)
-	        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
-	        .setCookie(MAC_RW_COOKIE)
-	        .setCommand(OFFlowMod.OFPFC_ADD)
-	        .setPriority(SDNIP_PRIORITY)
-	        .setLengthU(OFFlowMod.MINIMUM_LENGTH
-	        		+ OFActionDataLayerDestination.MINIMUM_LENGTH
-	        		+ OFActionOutput.MINIMUM_LENGTH);
-	        
-	        OFMatch match = new OFMatch();
-	        match.setDataLayerType(Ethernet.TYPE_IPv4);
-	        match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
-	        
-	        match.setFromCIDR(prefix.toString(), OFMatch.STR_NW_DST);
-	        fm.setMatch(match);
-	        
-	        //Set up MAC rewrite action
-	        OFActionDataLayerDestination macRewriteAction = new OFActionDataLayerDestination();
-	        macRewriteAction.setDataLayerAddress(nextHopMacAddress.toBytes());
-	        
-	        //Set up output action
-	        OFActionOutput outputAction = new OFActionOutput();
-	        outputAction.setMaxLength((short)0xffff);
-	        Port outputPort = shortestPath.flowEntries().get(0).outPort();
-	        outputAction.setPort(outputPort.value());
-	        
-	        List<OFAction> actions = new ArrayList<OFAction>();
-	        actions.add(macRewriteAction);
-	        actions.add(outputAction);
-	        fm.setActions(actions);
-	        
-	        pushedFlows.put(prefix, new PushedFlowMod(srcInterface.getDpid(), fm));
-	        flowCache.write(srcInterface.getDpid(), fm);
+
+			// Create flowPath FlowId
+			//FlowId returnByRefFlowId = new FlowId(flowManagerService.getNextFlowEntryId());
+			//flowPath.setFlowId(returnByRefFlowId);
+			flowPath.setFlowId(new FlowId());
+
+			// Create DataPath object: srcSwitchPort
+			SwitchPort srcPort = new SwitchPort();
+			srcPort.setDpid(new Dpid(srcInterface.getDpid()));
+			srcPort.setPort(new Port(srcInterface.getPort()));
+
+			DataPath dataPath = new DataPath();
+			dataPath.setSrcPort(srcPort);
+			dataPath.setDstPort(dstPort);
+			flowPath.setDataPath(dataPath);
+
+			// Create flow path matching condition(s): IPv4 Prefix
+			FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
+			flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPv4);
+			IPv4Net dstIPv4Net= new IPv4Net(prefix.toString());
+			flowEntryMatch.enableDstIPv4Net(dstIPv4Net);
+			flowPath.setFlowEntryMatch(flowEntryMatch);
 
 			/*
-			 * XXX Rate limit hack!
-			 * This should be solved properly by adding a rate limiting
-			 * layer on top of the switches if we know they need it.
+			 * Create the Flow Entry Action(s): dst-MAC rewrite action
 			 */
-	        try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				// TODO handle this properly
-				log.error("Interrupted", e);
+			FlowEntryActions flowEntryActions = new FlowEntryActions();
+			FlowEntryAction flowEntryAction1 = new FlowEntryAction();
+			flowEntryAction1.setActionSetEthernetDstAddr(nextHopMacAddress);
+			// flowEntryAction1.actionSetEthernetDstAddr(nextHopMacAddress);
+			flowEntryActions.addAction(flowEntryAction1);
+			flowPath.setFlowEntryActions(flowEntryActions);
+
+			// Flow Path installation, only to first hop switches
+			if (flowManagerService.addFlow(flowPath) == null) {
+				log.error("Failed to install flow path to the first hop for " +
+						"prefix: {}, nextHopMacAddress: {}", prefix.getAddress(),
+						nextHopMacAddress);
+			}
+			else {
+				log.debug("Successfully installed flow path to the first hop " +
+						"for prefix: {}, nextHopMacAddress: {}", prefix.getAddress(),
+						nextHopMacAddress);
+
+				pushedFlowIds.put(prefix, flowPath.flowId());
 			}
 		}
 	}
@@ -600,7 +629,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			if (path != null) {
 				//path could be null if we added to the Ptree but didn't push
 				//flows yet because we were waiting to resolve ARP
-			
+				
 				path.decrementUsers();
 				if (path.getUsers() <= 0 && !path.isPermanent()) {
 					deletePath(path);
@@ -610,51 +639,53 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
+	// TODO have not tested this module
 	private void deletePrefixFlows(Prefix prefix) {
 		log.debug("Deleting flows for prefix {}", prefix);
 		
-		Collection<PushedFlowMod> pushedFlowMods 
-				= pushedFlows.removeAll(prefix);
-		
-		for (PushedFlowMod pfm : pushedFlowMods) {
+		Collection<FlowId> flowIds = pushedFlowIds.removeAll(prefix);
+		for (FlowId flowId : flowIds) {
 			if (log.isTraceEnabled()) {
-				log.trace("Pushing a DELETE flow mod to {}, matches prefix {} with mac-rewrite {}",
-						new Object[] {HexString.toHexString(pfm.getDpid()),
-						pfm.getFlowMod().getMatch().getNetworkDestination() + 
-						pfm.getFlowMod().getMatch().getNetworkDestinationMaskLen(),
-						HexString.toHexString(((OFActionDataLayerDestination)pfm.getFlowMod().getActions().get(0))
-								.getDataLayerAddress())});
+				//Trace the flow status by flowPath in the switch before deleting it
+				log.trace("Pushing a DELETE flow mod to flowPath : {}",
+						flowManagerService.getFlow(flowId).toString());
 			}
 			
-			sendDeleteFlowMod(pfm.getFlowMod(), pfm.getDpid());
+			if( flowManagerService.deleteFlow(flowId))
+			{
+				log.debug("Successfully deleted FlowId: {}",flowId);
+			}
+			else
+			{
+				log.debug("Failed to delete FlowId: {}",flowId);
+			}
 		}
 	}
 	
+	// TODO need to record the path and then delete here
 	private void deletePath(Path path) {
 		log.debug("Deleting flows for path to {}", 
 				path.getDstIpAddress().getHostAddress());
 		
-		for (PushedFlowMod pfm : path.getFlowMods()) {
+		// TODO need update
+		/*for (PushedFlowMod pfm : path.getFlowMods()) {
 			if (log.isTraceEnabled()) {
 				log.trace("Pushing a DELETE flow mod to {}, dst MAC {}",
 						new Object[] {HexString.toHexString(pfm.getDpid()),
 						HexString.toHexString(pfm.getFlowMod().getMatch().getDataLayerDestination())
 				});
 			}
-			
+
 			sendDeleteFlowMod(pfm.getFlowMod(), pfm.getDpid());
-		}
+		}*/
 	}
 	
-	private void sendDeleteFlowMod(OFFlowMod addFlowMod, long dpid) {
-		flowCache.delete(dpid, addFlowMod);
-	}
 	
 	//TODO test next-hop changes
 	//TODO check delete/add synchronization
-	
-	/*
-	 * On startup we need to calculate a full mesh of paths between all gateway
+
+	/**
+	 * On startup, we need to calculate a full mesh of paths between all gateway
 	 * switches
 	 */
 	private void setupFullMesh(){
@@ -674,12 +705,24 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			
 			//See if we know the MAC address of the peer. If not we can't
 			//do anything until we learn it
-			MACAddress macAddress = proxyArp.getMacAddress(peer.getIpAddress());
+			MACAddress macAddress;
+			IDeviceObject nextHopDevice =
+					deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(peer.getIpAddress()));
+
+			if(nextHopDevice == null){
+				log.debug("There is no DeviceObject for {}", peer.getIpAddress().getHostAddress());
+				//Put in the pending paths list first
+				pathsWaitingOnArp.put(peer.getIpAddress(), path);
+				proxyArp.sendArpRequest(peer.getIpAddress(), this, true);
+				continue;
+			}
+			
+			macAddress = MACAddress.valueOf(nextHopDevice.getMACAddress());
+
 			if (macAddress == null) {
 				log.debug("Don't know MAC for {}", peer.getIpAddress().getHostAddress());
 				//Put in the pending paths list first
 				pathsWaitingOnArp.put(peer.getIpAddress(), path);
-				
 				proxyArp.sendArpRequest(peer.getIpAddress(), this, true);
 				continue;
 			}
@@ -688,225 +731,271 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			calculateAndPushPath(path, macAddress);
 		}
 	}
-	
+		
 	private void calculateAndPushPath(Path path, MACAddress dstMacAddress) {
 		Interface dstInterface = path.getDstInterface();
 		
 		log.debug("Setting up path to {}, {}", path.getDstIpAddress().getHostAddress(),
 				dstMacAddress);
-		
-		List<PushedFlowMod> pushedFlows = new ArrayList<PushedFlowMod>();
-		
+
+		FlowPath flowPath = new FlowPath();
+
+		flowPath.setInstallerId(new CallerId("SDNIP"));
+
+		// Set flowPath FlowPathType and FlowPathUserState
+		flowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
+		flowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
+
+		// Insert the dest-mac based forwarding flow entry to the non-first-hop switches
+		FlowPathFlags flowPathFlags = new FlowPathFlags();
+		flowPathFlags.setFlags(FlowPathFlags.DISCARD_FIRST_HOP_ENTRY);
+		flowPath.setFlowPathFlags(flowPathFlags);
+
+		// Create the DataPath object: dstSwitchPort
+		SwitchPort dstPort = new SwitchPort();
+		dstPort.setDpid(new Dpid(dstInterface.getDpid()));
+		dstPort.setPort(new Port(dstInterface.getPort()));
+
 		for (Interface srcInterface : interfaces.values()) {
+
 			if (dstInterface.equals(srcInterface)){
 				continue;
 			}
-			
-			DataPath shortestPath;
-			if (topology == null) {
-				shortestPath = topologyNetService.getDatabaseShortestPath(
-						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
+
+			// Create flowPath FlowId
+			//FlowId returnByRefFlowId = new FlowId(flowManagerService.getNextFlowEntryId());
+			//flowPath.setFlowId(returnByRefFlowId);
+			flowPath.setFlowId(new FlowId());
+
+			// Create the DataPath object: srcSwitchPort
+			SwitchPort srcPort = new SwitchPort();
+			srcPort.setDpid(new Dpid(srcInterface.getDpid()));
+			srcPort.setPort(new Port(srcInterface.getPort()));
+
+			DataPath dataPath = new DataPath();
+			dataPath.setSrcPort(srcPort);
+			dataPath.setDstPort(dstPort);
+			flowPath.setDataPath(dataPath);
+
+			// Create the Flow Path Match condition(s)
+			FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
+			flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPv4);
+			flowEntryMatch.enableDstMac(dstMacAddress);
+			flowPath.setFlowEntryMatch(flowEntryMatch);
+
+			// NOTE: No need to add ACTION_OUTPUT. It is implied when creating
+			// Shortest Path Flow, and is always the last action for the Flow Entries
+			log.debug("FlowPath of MAC based forwarding: {}", flowPath.toString());
+			if (flowManagerService.addFlow(flowPath) == null) {
+				log.error("Failed to set up MAC based forwarding path to {}, {}",
+						path.getDstIpAddress().getHostAddress(),dstMacAddress);
 			}
 			else {
-				shortestPath = topologyNetService.getTopologyShortestPath(topology, 
-						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
+				log.debug("Successfully set up MAC based forwarding path to {}, {}",
+						path.getDstIpAddress().getHostAddress(),dstMacAddress);
 			}
-			
-			if (shortestPath == null){
-				log.warn("Shortest path between {} and {} not found",
-						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
-				return;
-			}
-			
-			List<PushedFlowMod> pushedFlowMods = installPath(shortestPath.flowEntries(), dstMacAddress);
-			pushedFlows.addAll(pushedFlowMods);
 		}
-		
-		path.setFlowMods(pushedFlows);
 	}
-	
-	private List<PushedFlowMod> installPath(List<FlowEntry> flowEntries, MACAddress dstMacAddress){
-		List<PushedFlowMod> flowMods = new ArrayList<PushedFlowMod>();
-		
-		//Set up the flow mod
-		OFFlowMod fm =
-                (OFFlowMod) floodlightProvider.getOFMessageFactory()
-                                              .getMessage(OFType.FLOW_MOD);
-		
-        OFActionOutput action = new OFActionOutput();
-        action.setMaxLength((short)0xffff);
-        List<OFAction> actions = new ArrayList<OFAction>();
-        actions.add(action);
-        
-        fm.setIdleTimeout((short)0)
-        .setHardTimeout((short)0)
-        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
-        .setCookie(L2_FWD_COOKIE)
-        .setCommand(OFFlowMod.OFPFC_ADD)
-        .setPriority(SDNIP_PRIORITY)
-        .setActions(actions)
-        .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
-        
-        //Don't push the first flow entry. We need to push entries in the
-		//first switch based on IP prefix which we don't know yet.
-        for (int i = 1; i < flowEntries.size(); i++){        	
-        	FlowEntry flowEntry = flowEntries.get(i);
-           
-            OFMatch match = new OFMatch();
-            match.setDataLayerDestination(dstMacAddress.toBytes());
-            match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
-            ((OFActionOutput) fm.getActions().get(0)).setPort(flowEntry.outPort().value());
-            
-            fm.setMatch(match);
-            
-            flowMods.add(new PushedFlowMod(flowEntry.dpid().value(), fm));
-            
-            flowCache.write(flowEntry.dpid().value(), fm);
-                        
-            try {
-                fm = fm.clone();
-            } catch (CloneNotSupportedException e1) {
-                log.error("Failure cloning flow mod", e1);
-            }
-		}
-        
-        return flowMods;
-	}
-	
-	private void setupBgpPaths(){
-		for (BgpPeer bgpPeer : bgpPeers.values()){
-			Interface peerInterface = interfaces.get(bgpPeer.getInterfaceName());
-			
-			DataPath path = topologyNetService.getDatabaseShortestPath(
-					peerInterface.getSwitchPort(), bgpdAttachmentPoint);
-			
-			if (path == null){
-				log.debug("Unable to compute path for BGP traffic for {}",
-							bgpPeer.getIpAddress());
-				continue;
-			}
-			
-			//Set up the flow mod
-			OFFlowMod fm =
-	                (OFFlowMod) floodlightProvider.getOFMessageFactory()
-	                                              .getMessage(OFType.FLOW_MOD);
-			
-	        OFActionOutput action = new OFActionOutput();
-	        action.setMaxLength((short)0xffff);
-	        List<OFAction> actions = new ArrayList<OFAction>();
-	        actions.add(action);
-	        
-	        fm.setIdleTimeout((short)0)
-	        .setHardTimeout((short)0)
-	        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
-	        .setCookie(BGP_COOKIE)
-	        .setCommand(OFFlowMod.OFPFC_ADD)
-	        .setPriority(SDNIP_PRIORITY)
-	        .setActions(actions)
-	        .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
 
-	        //Forward = gateway -> bgpd, reverse = bgpd -> gateway
-	        OFMatch forwardMatchSrc = new OFMatch();
-	        
-	        String interfaceCidrAddress = peerInterface.getIpAddress().getHostAddress() 
-	        					+ "/32";
-	        String peerCidrAddress = bgpPeer.getIpAddress().getHostAddress()
-	        					+ "/32";
-	        
-	        //Common match fields
-	        forwardMatchSrc.setDataLayerType(Ethernet.TYPE_IPv4);
-	        forwardMatchSrc.setNetworkProtocol(IPv4.PROTOCOL_TCP);
-	        //forwardMatchSrc.setTransportDestination(BGP_PORT);
-	        forwardMatchSrc.setWildcards(forwardMatchSrc.getWildcards() & ~OFMatch.OFPFW_IN_PORT
-	        				& ~OFMatch.OFPFW_DL_TYPE & ~OFMatch.OFPFW_NW_PROTO);
-	        
-	        
-	        OFMatch reverseMatchSrc = forwardMatchSrc.clone();
-	        
-	        forwardMatchSrc.setFromCIDR(peerCidrAddress, OFMatch.STR_NW_SRC);
-	        forwardMatchSrc.setFromCIDR(interfaceCidrAddress, OFMatch.STR_NW_DST);
-	        
-	        OFMatch forwardMatchDst = forwardMatchSrc.clone();
-	        
-	        forwardMatchSrc.setTransportSource(BGP_PORT);
-	        forwardMatchSrc.setWildcards(forwardMatchSrc.getWildcards() & ~OFMatch.OFPFW_TP_SRC);
-	        forwardMatchDst.setTransportDestination(BGP_PORT);
-	        forwardMatchDst.setWildcards(forwardMatchDst.getWildcards() & ~OFMatch.OFPFW_TP_DST);
-	        
-	        reverseMatchSrc.setFromCIDR(interfaceCidrAddress, OFMatch.STR_NW_SRC);
-	        reverseMatchSrc.setFromCIDR(peerCidrAddress, OFMatch.STR_NW_DST);
-	        
-	        OFMatch reverseMatchDst = reverseMatchSrc.clone();
-	        
-	        reverseMatchSrc.setTransportSource(BGP_PORT);
-	        reverseMatchSrc.setWildcards(forwardMatchSrc.getWildcards() & ~OFMatch.OFPFW_TP_SRC);
-	        reverseMatchDst.setTransportDestination(BGP_PORT);
-	        reverseMatchDst.setWildcards(forwardMatchDst.getWildcards() & ~OFMatch.OFPFW_TP_DST);
-	        
-	        fm.setMatch(forwardMatchSrc);
-	        
-	        OFMatch forwardIcmpMatch = new OFMatch();
-	        forwardIcmpMatch.setDataLayerType(Ethernet.TYPE_IPv4);
-	        forwardIcmpMatch.setNetworkProtocol(IPv4.PROTOCOL_ICMP);
-	        forwardIcmpMatch.setWildcards(forwardIcmpMatch.getWildcards() &
-	        		~OFMatch.OFPFW_DL_TYPE & ~OFMatch.OFPFW_NW_PROTO);
-	        
-	        OFMatch reverseIcmpMatch = forwardIcmpMatch.clone();
-	        forwardIcmpMatch.setFromCIDR(interfaceCidrAddress, OFMatch.STR_NW_DST);
-	        reverseIcmpMatch.setFromCIDR(interfaceCidrAddress, OFMatch.STR_NW_SRC);
-	        
-			for (FlowEntry flowEntry : path.flowEntries()){
-				OFFlowMod forwardFlowModSrc, forwardFlowModDst;
-				OFFlowMod reverseFlowModSrc, reverseFlowModDst;
-				OFFlowMod forwardIcmp, reverseIcmp;
-				try {
-					forwardFlowModSrc = fm.clone();
-					forwardFlowModDst = fm.clone();
-					reverseFlowModSrc = fm.clone();
-					reverseFlowModDst = fm.clone();
-					forwardIcmp = fm.clone();
-					reverseIcmp = fm.clone();
-				} catch (CloneNotSupportedException e) {
-					log.warn("Clone failed", e);
-					continue;
-				}
-				
-				forwardMatchSrc.setInputPort(flowEntry.inPort().value());
-				forwardFlowModSrc.setMatch(forwardMatchSrc);
-				((OFActionOutput)forwardFlowModSrc.getActions().get(0))
-						.setPort(flowEntry.outPort().value());
-				
-				forwardMatchDst.setInputPort(flowEntry.inPort().value());
-				forwardFlowModDst.setMatch(forwardMatchDst);
-				((OFActionOutput)forwardFlowModDst.getActions().get(0))
-						.setPort(flowEntry.outPort().value());
-				
-				reverseMatchSrc.setInputPort(flowEntry.outPort().value());
-				reverseFlowModSrc.setMatch(reverseMatchSrc);
-				((OFActionOutput)reverseFlowModSrc.getActions().get(0))
-						.setPort(flowEntry.inPort().value());
-				
-				reverseMatchDst.setInputPort(flowEntry.outPort().value());
-				reverseFlowModDst.setMatch(reverseMatchDst);
-				((OFActionOutput)reverseFlowModDst.getActions().get(0))
-						.setPort(flowEntry.inPort().value());
-				
-				((OFActionOutput)forwardIcmp.getActions().get(0))
-						.setPort(flowEntry.outPort().value());
-				forwardIcmp.setMatch(forwardIcmpMatch);
-				
-				((OFActionOutput)reverseIcmp.getActions().get(0))
-						.setPort(flowEntry.inPort().value());
-				reverseIcmp.setMatch(reverseIcmpMatch);
-				
-				List<OFFlowMod> flowModList = new ArrayList<OFFlowMod>(6);
-				flowModList.add(forwardFlowModSrc);
-				flowModList.add(forwardFlowModDst);
-				flowModList.add(reverseFlowModSrc);
-				flowModList.add(reverseFlowModDst);
-				flowModList.add(forwardIcmp);
-				flowModList.add(reverseIcmp);
-				flowCache.write(flowEntry.dpid().value(), flowModList);
+	/**
+	 *  Pre-actively install all BGP traffic paths from BGP host attachment point
+	 *  in SDN network to all the virtual gateways to BGP peers in other networks
+	 */
+	private void setupBgpPaths(){
+
+		for (BgpPeer bgpPeer : bgpPeers.values()){
+
+			FlowPath flowPath = new FlowPath();
+			flowPath.setInstallerId(new CallerId("SDNIP"));
+
+			// Set flowPath FlowPathType and FlowPathUserState
+			flowPath.setFlowPathType(FlowPathType.FP_TYPE_SHORTEST_PATH);
+			flowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
+
+			// Install flow paths between BGPd and its peers
+			// There is no need to set the FlowPathFlags
+			flowPath.setFlowPathFlags(new FlowPathFlags(0));
+
+			Interface peerInterface = interfaces.get(bgpPeer.getInterfaceName());
+
+			// set flowPath FlowId
+			//FlowId returnByRefFlowId = new FlowId(flowManagerService.getNextFlowEntryId());
+			//flowPath.setFlowId(returnByRefFlowId);
+
+
+			// Create the Flow Path Match condition(s)
+			FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
+			flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPv4);
+
+			// Match both source address and dest address
+			IPv4Net dstIPv4Net= new IPv4Net(bgpPeer.getIpAddress().getHostAddress()+"/32");
+			flowEntryMatch.enableDstIPv4Net(dstIPv4Net);
+
+			IPv4Net srcIPv4Net= new IPv4Net(peerInterface.getIpAddress().getHostAddress()+"/32");
+			flowEntryMatch.enableSrcIPv4Net(srcIPv4Net);
+
+			// Match TCP protocol
+			flowEntryMatch.enableIpProto(IPv4.PROTOCOL_TCP);
+
+			// Match destination TCP port
+			flowEntryMatch.enableDstTcpUdpPort(BGP_PORT);
+			flowPath.setFlowEntryMatch(flowEntryMatch);
+
+			/**
+			 * Create the DataPath: BGP -> BGP peer
+			 */
+			// Flow path for src-TCP-port
+			DataPath dataPath = new DataPath();
+
+			SwitchPort srcPort = new SwitchPort();
+			srcPort.setDpid(bgpdAttachmentPoint.dpid());
+			srcPort.setPort(bgpdAttachmentPoint.port());
+			dataPath.setSrcPort(srcPort);
+
+			SwitchPort dstPort = new SwitchPort();
+			dstPort.setDpid(new Dpid(peerInterface.getDpid()));
+			dstPort.setPort(new Port(peerInterface.getSwitchPort().port()));
+			dataPath.setDstPort(dstPort);
+
+			flowPath.setDataPath(dataPath);
+
+			if (flowManagerService.addFlow(flowPath) == null) {
+				log.error("Failed to set up path BGP -> peer {}"+"; dst-TCP-port:179",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+			else {
+				log.debug("Successfully set up path BGP -> peer {}"+"; dst-TCP-port:179",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+
+			// Disable dst-TCP-port, and set src-TCP-port
+			flowEntryMatch.disableDstTcpUdpPort();
+			flowEntryMatch.enableSrcTcpUdpPort(BGP_PORT);
+			flowPath.setFlowEntryMatch(flowEntryMatch);
+
+			// Create a new FlowId
+			//FlowId returnByRefFlowId2 = new FlowId(flowManagerService.getNextFlowEntryId());
+			//flowPath.setFlowId(returnByRefFlowId2);
+			flowPath.setFlowId(new FlowId());
+
+			if (flowManagerService.addFlow(flowPath) == null) {
+				log.error("Failed to set up path BGP -> Peer {}" + "; src-TCP-port:179",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+			else {
+				log.debug("Successfully set up path BGP -> Peer {}" + "; src-TCP-port:179",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+
+			/**
+			 * Create the DataPath: BGP <-BGP peer
+			 */
+			// Reversed BGP flow path for src-TCP-port
+			//FlowId returnByRefFlowId3 = new FlowId(flowManagerService.getNextFlowEntryId());
+			//flowPath.setFlowId(returnByRefFlowId3);
+			flowPath.setFlowId(new FlowId());
+
+			DataPath reverse_dataPath = new DataPath();
+
+			SwitchPort reverse_dstPort = new SwitchPort();
+			reverse_dstPort.setDpid(bgpdAttachmentPoint.dpid());
+			reverse_dstPort.setPort(bgpdAttachmentPoint.port());
+			reverse_dataPath.setDstPort(reverse_dstPort);
+
+			SwitchPort reverse_srcPort = new SwitchPort();
+			reverse_srcPort.setDpid(new Dpid(peerInterface.getDpid()));
+			reverse_srcPort.setPort(new Port(peerInterface.getSwitchPort().port()));
+			reverse_dataPath.setSrcPort(reverse_srcPort);
+			flowPath.setDataPath(reverse_dataPath);
+
+			// reverse the dst IP and src IP addresses
+			flowEntryMatch.enableDstIPv4Net(srcIPv4Net);
+			flowEntryMatch.enableSrcIPv4Net(dstIPv4Net);
+			flowPath.setFlowEntryMatch(flowEntryMatch);
+
+			log.debug("Reversed BGP FlowPath: {}", flowPath.toString());
+
+			if (flowManagerService.addFlow(flowPath) == null) {
+
+				log.error("Failed to set up path BGP <- Peer {}" + "; src-TCP-port:179",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+			else {
+				log.debug("Successfully set up path BGP <- Peer {}" + "; src-TCP-port:179",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+
+			// Reversed BGP flow path for dst-TCP-port
+			//FlowId returnByRefFlowId4 = new FlowId(flowManagerService.getNextFlowEntryId());
+			//flowPath.setFlowId(returnByRefFlowId4);
+			flowPath.setFlowId(new FlowId());
+
+			// Disable src-TCP-port, and set the dst-TCP-port
+			flowEntryMatch.disableSrcTcpUdpPort();
+			flowEntryMatch.enableDstTcpUdpPort(BGP_PORT);
+			flowPath.setFlowEntryMatch(flowEntryMatch);
+
+			log.debug("Reversed BGP FlowPath: {}", flowPath.toString());
+			
+			if (flowManagerService.addFlow(flowPath) == null) {
+				log.error("Failed to setting up path BGP <- Peer {}" + "; dst-TCP-port:179",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+			else {
+				log.debug("Successfully setting up path BGP <- Peer {}" + "; dst-TCP-port:179",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+
+			/**
+			 * ICMP paths between BGPd and its peers
+			 */
+			//match ICMP protocol BGP <- Peer
+			//FlowId returnByRefFlowId5 = new FlowId(flowManagerService.getNextFlowEntryId());
+			//flowPath.setFlowId(returnByRefFlowId5);
+			flowPath.setFlowId(new FlowId());
+
+			flowEntryMatch.enableIpProto(IPv4.PROTOCOL_ICMP);
+			flowEntryMatch.disableSrcTcpUdpPort();
+			flowEntryMatch.disableDstTcpUdpPort();
+
+			flowPath.setFlowEntryMatch(flowEntryMatch);
+
+			flowPath.setDataPath(reverse_dataPath);
+
+			log.debug("Reversed ICMP FlowPath: {}", flowPath.toString());
+
+			if (flowManagerService.addFlow(flowPath) == null) {
+
+				log.error("Failed to set up ICMP path BGP <- Peer {}",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+			else {
+				log.debug("Successfully set up ICMP path BGP <- Peer {}",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+
+			//match ICMP protocol BGP -> Peer
+			//FlowId returnByRefFlowId6 = new FlowId(flowManagerService.getNextFlowEntryId());
+			//flowPath.setFlowId(returnByRefFlowId6);
+			flowPath.setFlowId(new FlowId());
+
+			flowEntryMatch.enableDstIPv4Net(dstIPv4Net);
+			flowEntryMatch.enableSrcIPv4Net(srcIPv4Net);
+			flowPath.setFlowEntryMatch(flowEntryMatch);
+
+			flowPath.setDataPath(dataPath);
+
+			log.debug("ICMP flowPath: {}", flowPath.toString());
+
+
+			if (flowManagerService.addFlow(flowPath) == null) {
+
+				log.error("Failed to set up ICMP path BGP -> Peer {}",
+						bgpPeer.getIpAddress().getHostAddress());
+			}
+			else {
+				log.debug("Successfully set up ICMP path BGP -> Peer {}",
+						bgpPeer.getIpAddress().getHostAddress());
 			}
 		}
 	}
@@ -965,6 +1054,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 	
+	//TODO wait the priority module of the flow Manager
 	private void setupArpFlows() {
 		OFMatch match = new OFMatch();
 		match.setDataLayerType(Ethernet.TYPE_ARP);
@@ -981,36 +1071,36 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		fm.setActions(actions);
 		
 		fm.setIdleTimeout((short)0)
-        .setHardTimeout((short)0)
-        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
-        .setCookie(0)
-        .setCommand(OFFlowMod.OFPFC_ADD)
-        .setPriority(ARP_PRIORITY)
+		.setHardTimeout((short)0)
+		.setBufferId(OFPacketOut.BUFFER_ID_NONE)
+		.setCookie(0)
+		.setCommand(OFFlowMod.OFPFC_ADD)
+		.setPriority(ARP_PRIORITY)
 		.setLengthU(OFFlowMod.MINIMUM_LENGTH + OFActionOutput.MINIMUM_LENGTH);
 		
 		for (String strdpid : switches){
 			flowCache.write(HexString.toLong(strdpid), fm);
 		}
 	}
-	
+	//TODO need update, waiting for the priority feature from flow Manager
 	private void setupDefaultDropFlows() {
 		OFFlowMod fm = new OFFlowMod();
 		fm.setMatch(new OFMatch());
 		fm.setActions(new ArrayList<OFAction>()); //No action means drop
 		
 		fm.setIdleTimeout((short)0)
-        .setHardTimeout((short)0)
-        .setBufferId(OFPacketOut.BUFFER_ID_NONE)
-        .setCookie(0)
-        .setCommand(OFFlowMod.OFPFC_ADD)
-        .setPriority((short)0)
+		.setHardTimeout((short)0)
+		.setBufferId(OFPacketOut.BUFFER_ID_NONE)
+		.setCookie(0)
+		.setCommand(OFFlowMod.OFPFC_ADD)
+		.setPriority((short)0)
 		.setLengthU(OFFlowMod.MINIMUM_LENGTH);
 		
 		OFFlowMod fmLLDP;
 		OFFlowMod fmBDDP;
 		try {
-			 fmLLDP = fm.clone();
-			 fmBDDP = fm.clone();
+			fmLLDP = fm.clone();
+			fmBDDP = fm.clone();
 		} catch (CloneNotSupportedException e1) {
 			log.error("Error cloning flow mod", e1);
 			return;
@@ -1054,8 +1144,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		log.debug("Topology is now ready, beginning routing function");
 		topology = topologyNetService.newDatabaseTopology();
 		
-		setupArpFlows();
-		setupDefaultDropFlows();
+		// Wait Pavlin's API. We need the following functions.
+		/*setupArpFlows();
+		setupDefaultDropFlows();*/
 		
 		setupBgpPaths();
 		setupFullMesh();
@@ -1073,11 +1164,22 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		});
 	}
 	
+	// Before inserting the paths for BGP traffic, we should check
+	// whether all the switches in the configure file are discovered by onos.
 	private void checkSwitchesConnected(){
 		for (String dpid : switches){
-			if (floodlightProvider.getSwitches().get(HexString.toLong(dpid)) == null){
-				log.debug("Not all switches are here yet");
-				return;
+			Iterator<ISwitchObject> activeSwitches = topoSwitchService.
+					getActiveSwitches().iterator();
+			while(activeSwitches.hasNext())
+			{
+				ISwitchObject switchObject = activeSwitches.next();
+				if (switchObject.getDPID().equals(dpid)) {
+					break;
+				}
+				if(activeSwitches.hasNext() == false) {
+					log.debug("Not all switches are here yet");
+					return;
+				}
 			}
 		}
 		switchesConnected = true;

@@ -9,10 +9,10 @@ public class FlowPathFlags {
     private long flags;
 
     // Discard the first-hop Flow Entry
-    private static final long DISCARD_FIRST_HOP_ENTRY   = (1 << 0);
+    public static final long DISCARD_FIRST_HOP_ENTRY   = (1 << 0);
 
     // Keep only the first-hop Flow Entry
-    private static final long KEEP_ONLY_FIRST_HOP_ENTRY = (1 << 1);
+    public static final long KEEP_ONLY_FIRST_HOP_ENTRY = (1 << 1);
 
     /**
      * Default constructor.
@@ -125,4 +125,5 @@ public class FlowPathFlags {
 
 	return ret;
     }
+
 }

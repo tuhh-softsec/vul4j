@@ -229,7 +229,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 					// TODO check whether this is OK from this thread
 					IDeviceObject targetDevice = 
 							deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(entry.getKey()));
-					
 					if (targetDevice != null) {
 						deviceStorage.removeDevice(targetDevice);
 						if (log.isDebugEnabled()) {
@@ -253,6 +252,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			
 			log.debug("Resending ARP request for {}", address.getHostAddress());
 			
+			// Only ARP requests sent by the controller will have the retry flag
+			// set, so for now we can just send a new ARP request for that address.
 			sendArpRequestForAddress(address);
 			
 			for (ArpRequest request : entry.getValue()) {
@@ -433,8 +434,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		
 		MACAddress senderMacAddress = MACAddress.valueOf(arp.getSenderHardwareAddress());
 		
-		//arpCache.update(senderIpAddress, senderMacAddress);
-		
 		//See if anyone's waiting for this ARP reply
 		Set<ArpRequest> requests = arpRequests.get(senderIpAddress);
 		
@@ -504,7 +503,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			   .setPriorityCode((byte)0);
 		}
 		
-		sendArpRequestToSwitches(ipAddress, eth.serialize());
+		//sendArpRequestToSwitches(ipAddress, eth.serialize());
+		datagrid.sendPacketOutNotification(new SinglePacketOutNotification(eth.serialize(),intf.getDpid(),intf.getPort()));
 	}
 	
 	private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest) {
@@ -531,7 +531,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			}
 		}
 		else {
-			broadcastArpRequestOutEdge(arpRequest, inSwitch, inPort);
+			//broadcastArpRequestOutEdge(arpRequest, inSwitch, inPort);
+			broadcastArpRequestOutMyEdge(arpRequest, inSwitch, inPort);
 		}
 	}
 	
