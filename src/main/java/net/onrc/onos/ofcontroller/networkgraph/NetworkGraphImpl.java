@@ -64,7 +64,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    }
 	}
 
-	// Add upate when more attributes are added to Event object
+	// Update when more attributes are added to Event object
 	// no attribute to update for now
 
 	// TODO handle child Port event properly for performance
@@ -574,18 +574,20 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Override
 	public void putSwitchEvent(SwitchEvent switchEvent) {
-		if (checkAddSwitchInvariant(switchEvent)) {
+		if (prepareForAddSwitchEvent(switchEvent)) {
 			datastore.addSwitch(switchEvent);
 			putSwitch(switchEvent);
+			// TODO send out notification
 		}
 		// TODO handle invariant violation
 	}
 
 	@Override
 	public void removeSwitchEvent(SwitchEvent switchEvent) {
-		if (checkRemoveSwitchInvariant(switchEvent)) {
+		if (prepareForRemoveSwitchEvent(switchEvent)) {
 			datastore.deactivateSwitch(switchEvent);
 			removeSwitch(switchEvent);
+			// TODO send out notification
 		}
 		// TODO handle invariant violation
 	}
@@ -604,18 +606,20 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Override
 	public void putLinkEvent(LinkEvent linkEvent) {
-		if (checkAddLinkInvariant(linkEvent)) {
+		if (prepareForAddLinkEvent(linkEvent)) {
 			datastore.addLink(linkEvent);
 			putLink(linkEvent);
+			// TODO send out notification
 		}
 		// TODO handle invariant violation
 	}
 
 	@Override
 	public void removeLinkEvent(LinkEvent linkEvent) {
-		if (checkRemoveLinkInvariant(linkEvent)) {
+		if (prepareForRemoveLinkEvent(linkEvent)) {
 			datastore.removeLink(linkEvent);
 			removeLink(linkEvent);
+			// TODO send out notification
 		}
 		// TODO handle invariant violation
 	}
@@ -633,52 +637,89 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	}
 
 	/* *****************
-	 * Internal methods to check invariants of the network graph
+	 * Internal methods to maintain invariants of the network graph
 	 * *****************/
 
-	private boolean checkAddSwitchInvariant(SwitchEvent swEvt) {
+	// TODO give a name which suggest it will update if required.(prepareFor~)
+	/**
+	 *
+	 * @param swEvt
+	 * @return true if ready to accept event.
+	 */
+	private boolean prepareForAddSwitchEvent(SwitchEvent swEvt) {
 		// TODO implement
+		// No show stopping precondition?
+		// Prep: remove(deactivate) Ports on Switch, which is not on event
+
 		return true;
 	}
 
-	private boolean checkRemoveSwitchInvariant(SwitchEvent swEvt) {
+	private boolean prepareForRemoveSwitchEvent(SwitchEvent swEvt) {
 		// TODO implement
+		// No show stopping precondition?
+		// Prep: remove(deactivate) Ports on Switch, which is not on event
+
 		return true;
 	}
 
-	private boolean checkAddPortInvariant(PortEvent portEvt) {
+	private boolean prepareForAddPortEvent(PortEvent portEvt) {
 		// TODO implement
+		// Parent Switch must exist
+		if ( getSwitch(portEvt.getDpid()) == null) {
+		    return false;
+		}
+		// Prep: None
 		return true;
 	}
 
-	private boolean checkRemovePortInvariant(PortEvent portEvt) {
+	private boolean prepareForRemovePortEvent(PortEvent portEvt) {
 		// TODO implement
+		// Parent Switch must exist
+		if ( getSwitch(portEvt.getDpid()) == null) {
+		    return false;
+		}
+		// Prep: None
 		return true;
 	}
 
-	private boolean checkAddLinkInvariant(LinkEvent linkEvt) {
+	private boolean prepareForAddLinkEvent(LinkEvent linkEvt) {
 		// TODO implement
+		// Src/Dst Switch must exist
+		// Src/Dst Port must exist
+		// Prep: remove Device attachment on both Ports
+		// XXX write to DataStore about removed Device, notify about Device change?
 		return true;
 	}
 
-	private boolean checkRemoveLinkInvariant(LinkEvent linkEvt) {
+	private boolean prepareForRemoveLinkEvent(LinkEvent linkEvt) {
 		// TODO implement
+		// Src/Dst Switch must exist
+		// Src/Dst Port must exist
+		// Prep: None
 		return true;
 	}
 
-	private boolean checkAddDeviceInvariant(DeviceEvent deviceEvt) {
+	private boolean prepareForAddDeviceEvent(DeviceEvent deviceEvt) {
 		// TODO implement
+		// Attached Ports' Parent Switch must exist
+		// Attached Ports must exist
+		// Attached Ports must not have Link
+
+		// XXX Does above must hold for all attachment Point in order for this
+		// event to be processed, or just ignore those attachment point?
 		return true;
 	}
 
-	private boolean checkRemoveDeviceInvariant(DeviceEvent deviceEvt) {
+	private boolean prepareForRemoveDeviceEvent(DeviceEvent deviceEvt) {
 		// TODO implement
+		// No show stopping precondition?
+		// Prep: none
 		return true;
 	}
 
 	@Override
 	public void putSwitchReplicationEvent(SwitchEvent switchEvent) {
-		if (checkAddSwitchInvariant(switchEvent)) {
+		if (prepareForAddSwitchEvent(switchEvent)) {
 			putSwitch(switchEvent);
 		}
 		// TODO handle invariant violation
