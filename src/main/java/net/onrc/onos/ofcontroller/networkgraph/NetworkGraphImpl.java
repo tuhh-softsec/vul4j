@@ -25,8 +25,8 @@ import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
  * re-ordering. e.g.) Link Add came in, but Switch was not there.
  *
  */
-public class NetworkGraphImpl extends AbstractNetworkGraph
-								implements NetworkGraphDiscoveryInterface {
+public class NetworkGraphImpl extends AbstractNetworkGraph implements
+	NetworkGraphDiscoveryInterface, NetworkGraphReplicationInterface {
 
     private static final Logger log = LoggerFactory
 	    .getLogger(NetworkGraphImpl.class);
@@ -674,5 +674,55 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	private boolean checkRemoveDeviceInvariant(DeviceEvent deviceEvt) {
 		// TODO implement
 		return true;
+	}
+
+	@Override
+	public void putSwitchReplicationEvent(SwitchEvent switchEvent) {
+		if (checkAddSwitchInvariant(switchEvent)) {
+			putSwitch(switchEvent);
+		}
+		// TODO handle invariant violation
+	}
+
+	@Override
+	public void removeSwitchReplicationEvent(SwitchEvent switchEvent) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void putPortReplicationEvent(PortEvent portEvent) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void removePortReplicationEvent(PortEvent portEvent) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void putLinkReplicationEvent(LinkEvent linkEvent) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void removeLinkReplicationEvent(LinkEvent linkEvent) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void putDeviceReplicationEvent(DeviceEvent deviceEvent) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void removeDeviceReplicationEvent(DeviceEvent deviceEvent) {
+	    // TODO Auto-generated method stub
+
 	}
 }
