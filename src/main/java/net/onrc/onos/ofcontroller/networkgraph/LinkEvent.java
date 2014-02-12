@@ -3,7 +3,7 @@ package net.onrc.onos.ofcontroller.networkgraph;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 
 /**
- * Self-contained Link object for event
+ * Self-contained Link event Object
  *
  * TODO: We probably want common base class/interface for Self-Contained Event Object
  *

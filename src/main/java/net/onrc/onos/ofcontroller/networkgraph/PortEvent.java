@@ -1,7 +1,7 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
 /**
- * Self-contained Port object for event
+ * Self-contained Port event Object
  *
  * TODO: We probably want common base class/interface for Self-Contained Event Object
  *

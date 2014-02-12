@@ -10,7 +10,7 @@ import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 
 /**
- * Self-contained Device object for event
+ * Self-contained Device event Object
  *
  * TODO: We probably want common base class/interface for Self-Contained Event Object
  *
