@@ -73,7 +73,7 @@ public class PathCalcRuntime {
 				continue;
 			}
 
-			pathIntents.addIntent(new PathIntent(path, bandwidth, intent));
+			pathIntents.addIntent(new PathIntent("pi" + intent.getId(), path, bandwidth, intent));
 		}
 		return pathIntents;
 	}

@@ -10,19 +10,19 @@ import net.onrc.onos.ofcontroller.networkgraph.Port;
 public class ConstrainedShortestPathIntent extends ShortestPathIntent {
 	protected Double bandwidth;
 
-	public ConstrainedShortestPathIntent(
+	public ConstrainedShortestPathIntent(String id,
 			Port srcPort, MACAddress srcMac,
 			Port dstPort, MACAddress dstMac,
 			Double bandwidth) {
-		super(srcPort, srcMac, dstPort, dstMac);
+		super(id, srcPort, srcMac, dstPort, dstMac);
 		this.bandwidth = bandwidth;
 	}
 
-	public ConstrainedShortestPathIntent(NetworkGraph graph,
-			Long srcSwitch, Long srcPort, long srcMac,
-			Long dstSwitch, Long dstPort, long dstMac,
+	public ConstrainedShortestPathIntent(NetworkGraph graph, String id,
+			long srcSwitch, long srcPort, long srcMac,
+			long dstSwitch, long dstPort, long dstMac,
 			Double bandwidth) {
-		super(graph, srcSwitch, srcPort, srcMac, dstSwitch, dstPort, dstMac);
+		super(graph, id, srcSwitch, srcPort, srcMac, dstSwitch, dstPort, dstMac);
 		this.bandwidth = bandwidth;
 	}
 

@@ -13,18 +13,20 @@ public class ShortestPathIntent extends Intent {
 	protected MACAddress srcMac = null;
 	protected MACAddress dstMac = null;
 
-	public ShortestPathIntent(
+	public ShortestPathIntent(String id,
 			Port srcPort, MACAddress srcMac,
 			Port dstPort, MACAddress dstMac) {
+		super(id);
 		this.srcPort = srcPort;
 		this.dstPort = dstPort;
 		this.srcMac = srcMac;
 		this.dstMac = dstMac;
 	}
 
-	public ShortestPathIntent(NetworkGraph graph,
-			Long srcSwitch, Long srcPort, long srcMac,
-			Long dstSwitch, Long dstPort, long dstMac) {
+	public ShortestPathIntent(NetworkGraph graph, String id,
+			long srcSwitch, long srcPort, long srcMac,
+			long dstSwitch, long dstPort, long dstMac) {
+		super(id);
 		this.srcPort = graph.getSwitch(srcSwitch).getPort(srcPort);
 		this.dstPort = graph.getSwitch(dstSwitch).getPort(srcPort);
 		this.srcMac = MACAddress.valueOf(srcMac);

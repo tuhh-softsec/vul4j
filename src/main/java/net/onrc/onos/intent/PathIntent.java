@@ -9,6 +9,7 @@ public class PathIntent extends Intent {
 	protected Path path;
 	protected Double bandwidth;
 	protected Intent parentIntent;
+	protected int id;
 
 	/**
 	 * 
@@ -17,8 +18,10 @@ public class PathIntent extends Intent {
 	 * @param bandwidth bandwidth which should be allocated for the path.
 	 * If null, it means no intent for bandwidth allocation (best effort).
 	 * @param parentIntent parent intent. If null, it means this is root intent.
+	 * @param id
 	 */
-	public PathIntent(Path path, Double bandwidth, Intent parentIntent) {
+	public PathIntent(String id, Path path, Double bandwidth, Intent parentIntent) {
+		super(id);
 		this.path = path;
 		this.bandwidth = bandwidth;
 		this.parentIntent = parentIntent;
