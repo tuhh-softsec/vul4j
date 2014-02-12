@@ -26,10 +26,24 @@ public class PathIntents {
 			value.add(intent);
 		}
 	}
+	
+	public void removeIntent(PathIntent intent) {
+		intents.remove(intent);
+		for (Link link: intent.getPath()) {
+			HashSet<PathIntent> value = linkToIntents.get(link);
+			value.remove(intent);
+		}
+	}
 
 	public void addIntents(PathIntents intents) {
 		for(PathIntent intent: intents.getIntents()) {
 			addIntent(intent);
+		}
+	}
+
+	public void removeIntents(PathIntents intents) {
+		for(PathIntent intent: intents.getIntents()) {
+			removeIntent(intent);
 		}
 	}
 
