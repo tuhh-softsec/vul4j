@@ -3,6 +3,7 @@ package net.onrc.onos.datagrid;
 import java.util.Collection;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.onrc.onos.intent.Intent;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
 import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
 import net.onrc.onos.ofcontroller.proxyarp.IArpReplyEventHandler;
@@ -20,6 +21,10 @@ import net.onrc.onos.ofcontroller.util.Pair;
  * Interface for providing Datagrid Service to other modules.
  */
 public interface IDatagridService extends IFloodlightService {
+    /*
+     * register all the intents as one batch
+     */
+    void registerIntent(Collection<Intent> intents);
     /**
      * Register Flow Event Handler Service for receiving Flow-related
      * notifications.

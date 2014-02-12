@@ -17,6 +17,7 @@ public class DatagridWebRoutable implements RestletRoutable {
     public Restlet getRestlet(Context context) {
         Router router = new Router(context);
         router.attach("/get/map/{map-name}/json", GetMapResource.class);
+        router.attach("/add/intent/json", IntentResource.class);
         return router;
     }
 

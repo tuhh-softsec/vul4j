@@ -18,7 +18,6 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.web.DatagridWebRoutable;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
-import net.onrc.onos.ofcontroller.flowmanager.PerformanceMonitor.Measurement;
 import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
 import net.onrc.onos.ofcontroller.proxyarp.IArpReplyEventHandler;
 import net.onrc.onos.ofcontroller.proxyarp.IPacketOutEventHandler;
@@ -44,8 +43,10 @@ import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IList;
 import com.hazelcast.core.IMap;
 import com.hazelcast.instance.GroupProperties;
+import net.onrc.onos.intent.Intent;
 
 import net.onrc.onos.ofcontroller.flowmanager.PerformanceMonitor;
 
@@ -109,6 +110,16 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     protected static final String arpReplyMapName = "arpReplyMap";
     private IMap<ArpReplyNotification, byte[]> arpReplyMap = null;
     private List<IArpReplyEventHandler> arpReplyEventHandlers = new ArrayList<IArpReplyEventHandler>();
+    
+    
+    protected static final String intentListName = "intentList";
+    private IList<Intent> intentList = null;
+
+    @Override
+    public void registerIntent(Collection<Intent> intents) {
+        intentList.addAll(intents);
+    }
+    
 
     /**
      * Class for receiving notifications for Flow state.
@@ -710,6 +721,9 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 
 	arpReplyMap = hazelcastInstance.getMap(arpReplyMapName);
 	arpReplyMap.addEntryListener(new ArpReplyMapListener(), true);
+        intentList = hazelcastInstance.getList(intentListName);
+        
+        
     }
 
     /**
