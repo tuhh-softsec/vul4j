@@ -1,8 +1,5 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
-import java.net.InetAddress;
-import java.util.Set;
-
 import net.onrc.onos.datastore.topology.RCLink;
 import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
@@ -322,9 +319,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
      *
      * @param device
      */
-    void updateDevice(DeviceEvent deviceToUpdate,
-	    Set<InetAddress> updatedIpAddrs, Set<Port> updatedAttachmentPoints) {
-	if (deviceToUpdate == null) {
+    void putDevice(DeviceEvent deviceEvt) {
+	if (deviceEvt == null) {
 	    throw new IllegalArgumentException("Device cannot be null");
 	}
 	// TODO Auto-generated method stub
@@ -576,8 +572,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph
 	}
 
 	@Override
-	public void updateDeviceEvent(DeviceEvent deviceToUpdate,
-			Set<InetAddress> updatedIpAddrs, Set<Port> updatedAttachmentPoints) {
+	public void putDeviceEvent(DeviceEvent device) {
 		// TODO Auto-generated method stub
 		
 	}
