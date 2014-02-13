@@ -1,6 +1,7 @@
 package net.onrc.onos.datastore.topology;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -257,8 +258,8 @@ public class RCSwitch extends RCObject {
 	// create active switch 0x1 with 2 ports
 	RCSwitch sw = new RCSwitch(0x1L);
 	sw.setStatus(STATUS.ACTIVE);
-	sw.addPortId("SW0x0001P001".getBytes());
-	sw.addPortId("SW0x0001P002".getBytes());
+	sw.addPortId("SW0x0001P001".getBytes(StandardCharsets.UTF_8));
+	sw.addPortId("SW0x0001P002".getBytes(StandardCharsets.UTF_8));
 
 	try {
 	    sw.create();
@@ -277,13 +278,13 @@ public class RCSwitch extends RCObject {
 	assert (swRead.getStatus() == STATUS.ACTIVE);
 	for (byte[] portId : swRead.getAllPortIds()) {
 	    // XXX bad example code, portId is not expected to be ASCII string
-	    log.debug("PortId: {}", new String(portId));
+	    log.debug("PortId: {}", new String(portId, StandardCharsets.UTF_8));
 	}
 	assert (swRead.getAllPortIds().size() == 2);
 
 	// update 0x1
 	swRead.setStatus(STATUS.INACTIVE);
-	swRead.removePortId("SW0x0001P001".getBytes());
+	swRead.removePortId("SW0x0001P001".getBytes(StandardCharsets.UTF_8));
 	try {
 	    swRead.update();
 	} catch (ObjectDoesntExistException | WrongVersionException e) {
@@ -300,7 +301,7 @@ public class RCSwitch extends RCObject {
 	assert (swRead2.getStatus() == STATUS.INACTIVE);
 	for (byte[] portId : swRead2.getAllPortIds()) {
 	    // XXX bad example code, portId is not expected to be ASCII string
-	    log.debug("PortId: {}", new String(portId));
+	    log.debug("PortId: {}", new String(portId, StandardCharsets.UTF_8));
 	}
 	assert (swRead2.getAllPortIds().size() == 1);
 	try {

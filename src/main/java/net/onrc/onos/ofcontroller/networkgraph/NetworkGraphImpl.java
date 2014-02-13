@@ -704,13 +704,13 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		// Attached Ports' Parent Switch must exist
 		Switch sw = getSwitch(swp.dpid);
 		if ( sw ==  null ) {
-		    log.warn("Switch {} for the attachment point did not exist. skipping mutation", sw);
+		    log.warn("Switch for the attachment point {} did not exist. skipping mutation", swp);
 		    continue;
 		}
 		// Attached Ports must exist
 		Port port = sw.getPort(swp.number);
 		if ( port == null ) {
-		    log.warn("Port {} for the attachment point did not exist. skipping mutation", port);
+		    log.warn("Port for the attachment point {} did not exist. skipping mutation", swp);
 		    continue;
 		}
 		// Attached Ports must not have Link
@@ -770,13 +770,13 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		// Attached Ports' Parent Switch must exist
 		Switch sw = getSwitch(swp.dpid);
 		if ( sw ==  null ) {
-		    log.warn("Switch {} for the attachment point did not exist. skipping attachment point mutation", sw);
+		    log.warn("Switch for the attachment point {} did not exist. skipping attachment point mutation", swp);
 		    continue;
 		}
 		// Attached Ports must exist
 		Port port = sw.getPort(swp.number);
 		if ( port == null ) {
-		    log.warn("Port {} for the attachment point did not exist. skipping attachment point mutation", port);
+		    log.warn("Port for the attachment point {} did not exist. skipping attachment point mutation", swp);
 		    continue;
 		}
 

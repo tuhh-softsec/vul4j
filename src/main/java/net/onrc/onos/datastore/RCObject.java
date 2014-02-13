@@ -464,26 +464,7 @@ public class RCObject {
 	return fail_exists;
     }
 
-    public static Iterable<RCObject> getAllObjects(RCTable table) {
-	return new ObjectEnumerator(table);
-    }
-
-    public static class ObjectEnumerator implements Iterable<RCObject> {
-
-	private RCTable table;
-
-	public ObjectEnumerator(RCTable table) {
-	    this.table = table;
-	}
-
-	@Override
-	public Iterator<RCObject> iterator() {
-	    return new ObjectIterator<RCObject>(table);
-	}
-
-    }
-
-    public static class ObjectIterator<E extends RCObject> implements
+    public static abstract class ObjectIterator<E extends RCObject> implements
 	    Iterator<E> {
 
 	protected TableEnumerator enumerator;
@@ -500,13 +481,14 @@ public class RCObject {
 	    return enumerator.hasNext();
 	}
 
-	@Override
-	public E next() {
-	    JRamCloud.Object o = enumerator.next();
-	    RCObject obj = RCObject.createFromKey(o.key);
-	    obj.setValueAndDeserialize(o.value, o.version);
-	    return (E) obj;
-	}
+// Implement something similar to below to realize Iterator
+//	@Override
+//	public E next() {
+//	    JRamCloud.Object o = enumerator.next();
+//	    E obj = E.createFromKey(o.key);
+//	    obj.setValueAndDeserialize(o.value, o.version);
+//	    return obj;
+//	}
 
 	@Deprecated
 	@Override

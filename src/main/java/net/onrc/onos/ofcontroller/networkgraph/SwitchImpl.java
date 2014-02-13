@@ -76,13 +76,13 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 		// TODO Should switch also store a list of attached devices to avoid
 		// calculating this every time?
 		List<Device> devices = new ArrayList<Device>();
-		
+
 		for (Port port : ports.values()) {
 			for (Device device : port.getDevices()) {
 				devices.add(device);
 			}
 		}
-		
+
 		return devices;
 	}
 
@@ -101,11 +101,12 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 		return port;
 	}
 
+	// XXX Do we still need this method?
 	public void store() {
 		RCSwitch rcSwitch = new RCSwitch(dpid);
 
 		for (Port port : ports.values()) {
-			RCPort rcPort = new RCPort(dpid, (long)port.getNumber());
+			RCPort rcPort = new RCPort(dpid, port.getNumber());
 			rcSwitch.addPortId(rcPort.getId());
 		}
 
