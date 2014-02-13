@@ -43,519 +43,6 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
     }
 
     /**
-     * put Switch
-     *
-     * XXX Internal In-memory object mutation method. Will not write to DB.
-     * Will not fire Notification.
-     *
-     * @param swEvt
-     */
-    void putSwitch(SwitchEvent swEvt) {
-	if (swEvt == null) {
-	    throw new IllegalArgumentException("Switch cannot be null");
-	}
-
-	Switch sw = switches.get(swEvt.getDpid());
-
-	if (sw == null) {
-	    sw = new SwitchImpl(this, swEvt.getDpid());
-	    Switch existing = switches.putIfAbsent(swEvt.getDpid(), sw);
-	    if (existing != null) {
-		log.warn(
-			"Concurrent putSwitch not expected. Continuing updating {}",
-			existing);
-		sw = existing;
-	    }
-	}
-
-	// Update when more attributes are added to Event object
-	// no attribute to update for now
-
-	// TODO handle child Port event properly for performance
-	for (PortEvent portEvt : swEvt.getPorts() ) {
-	    putPort(portEvt);
-	}
-
-    }
-
-    /**
-     * remove Switch.
-     *
-     * XXX Internal In-memory object mutation method. Will not write to DB.
-     * Will not fire Notification.
-     *
-     * @param swEvt
-     */
-    void removeSwitch(SwitchEvent swEvt) {
-	if (swEvt == null) {
-	    throw new IllegalArgumentException("Switch cannot be null");
-	}
-
-	// TODO handle child Port event properly for performance
-	for (PortEvent portEvt : swEvt.getPorts() ) {
-	    removePort(portEvt);
-	}
-
-	Switch sw = switches.get(swEvt.getDpid());
-
-	if (sw == null) {
-	    log.warn("Switch {} already removed, ignoring", swEvt);
-	    return;
-	}
-
-	// Sanity check
-	if (!sw.getPorts().isEmpty()) {
-	    log.warn(
-		    "Ports on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
-		    swEvt);
-	    // XXX Should we remove Port?
-	}
-	if (!sw.getDevices().isEmpty()) {
-	    log.warn(
-		    "Devices on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
-		    swEvt);
-	    // XXX Should we remove Device to Switch relation?
-	}
-	if (!sw.getIncomingLinks().iterator().hasNext()) {
-	    log.warn(
-		    "IncomingLinks on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
-		    swEvt);
-	    // XXX Should we remove Link?
-	}
-	if (!sw.getOutgoingLinks().iterator().hasNext()) {
-	    log.warn(
-		    "OutgoingLinks on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
-		    swEvt);
-	    // XXX Should we remove Link?
-	}
-
-	boolean removed = switches.remove(swEvt.getDpid(), sw);
-	if (removed) {
-	    log.warn(
-		    "Switch instance was replaced concurrently while removing {}. Something is not right.",
-		    sw);
-	}
-    }
-
-    /**
-     * put Port
-     *
-     * XXX Internal In-memory object mutation method. Will not write to DB.
-     * Will not fire Notification.
-     *
-     * @param portEvt
-     */
-    void putPort(PortEvent portEvt) {
-	if (portEvt == null) {
-	    throw new IllegalArgumentException("Port cannot be null");
-	}
-	Switch sw = switches.get(portEvt.getDpid());
-	if (sw == null) {
-	    throw new BrokenInvariantException(String.format(
-		    "Switch with dpid %s did not exist.",
-		    new Dpid(portEvt.getDpid())));
-	}
-	Port p = sw.getPort(portEvt.getNumber());
-	PortImpl port = null;
-	if (p != null) {
-	    port = getPortImpl(p);
-	}
-
-	if (port == null) {
-	    port = new PortImpl(this, sw, portEvt.getNumber());
-	}
-
-	// TODO update attributes
-
-	SwitchImpl s = getSwitchImpl(sw);
-	s.addPort(port);
-    }
-
-    /**
-     * remove Port
-     *
-     * XXX Internal In-memory object mutation method. Will not write to DB.
-     * Will not fire Notification.
-     *
-     * @param portEvt
-     */
-    void removePort(PortEvent portEvt) {
-	if (portEvt == null) {
-	    throw new IllegalArgumentException("Port cannot be null");
-	}
-
-	Switch sw = switches.get(portEvt.getDpid());
-	if (sw == null) {
-	    log.warn("Parent Switch for Port {} already removed, ignoring", portEvt);
-	    return;
-	}
-
-	Port p = sw.getPort(portEvt.getNumber());
-	if (p == null) {
-	    log.warn("Port {} already removed, ignoring", portEvt);
-	    return;
-	}
-
-	// check if there is something referring to this Port
-
-	if (!p.getDevices().iterator().hasNext()) {
-	    log.warn(
-		    "Devices on Port {} should be removed prior to removing Port. Removing Port anyways",
-		    portEvt);
-	    // XXX Should we remove Device to Port relation?
-	}
-	if (p.getIncomingLink() != null) {
-	    log.warn(
-		    "IncomingLinks on Port {} should be removed prior to removing Port. Removing Port anyways",
-		    portEvt);
-	    // XXX Should we remove Link?
-	}
-	if (p.getOutgoingLink() != null) {
-	    log.warn(
-		    "OutgoingLinks on Port {} should be removed prior to removing Port. Removing Port anyways",
-		    portEvt);
-	    // XXX Should we remove Link?
-	}
-
-	// remove Port from Switch
-	 SwitchImpl s = getSwitchImpl(sw);
-	 s.removePort(p);
-    }
-
-    /**
-     * put Link
-     *
-     * XXX Internal In-memory object mutation method. Will not write to DB.
-     * Will not fire Notification.
-     *
-     * @param linkEvt
-     */
-    void putLink(LinkEvent linkEvt) {
-	if (linkEvt == null) {
-	    throw new IllegalArgumentException("Link cannot be null");
-	}
-
-	Switch srcSw = switches.get(linkEvt.getSrc().dpid);
-	if (srcSw == null) {
-	    throw new BrokenInvariantException(
-		    String.format(
-			    "Switch with dpid %s did not exist.",
-			    new Dpid(linkEvt.getSrc().dpid)));
-	}
-
-	Switch dstSw = switches.get(linkEvt.getDst().dpid);
-	if (dstSw == null) {
-	    throw new BrokenInvariantException(
-		    String.format(
-			    "Switch with dpid %s did not exist.",
-			    new Dpid(linkEvt.getDst().dpid)));
-	}
-
-	Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
-	if (srcPort == null) {
-	    throw new BrokenInvariantException(
-		    String.format(
-			    "Src Port %s of a Link did not exist.",
-			    linkEvt.getSrc() ));
-	}
-
-	Port dstPort = dstSw.getPort(linkEvt.getDst().number);
-	if (dstPort == null) {
-	    throw new BrokenInvariantException(
-		    String.format(
-			    "Dst Port %s of a Link did not exist.",
-			    linkEvt.getDst() ));
-	}
-
-	// getting Link instance from destination port incoming Link
-	Link l = dstPort.getIncomingLink();
-	LinkImpl link = null;
-	assert( l == srcPort.getOutgoingLink() );
-	if (l != null) {
-	    link = getLinkImpl(l);
-	}
-
-	if (link == null) {
-	    link = new LinkImpl(this, srcPort, dstPort);
-	}
-
-
-	PortImpl dstPortMem = getPortImpl(dstPort);
-	PortImpl srcPortMem = getPortImpl(srcPort);
-
-	// Add Link first to avoid further Device addition
-
-	// add Link to Port
-	dstPortMem.setIncomingLink(link);
-	srcPortMem.setOutgoingLink(link);
-
-	// remove Device Pointing to Port if any
-	for(Device d : dstPortMem.getDevices() ) {
-	    log.error("Device {} on Port {} should have been removed prior to adding Link {}", d, dstPort, linkEvt);
-	    DeviceImpl dev = getDeviceImpl(d);
-	    dev.removeAttachmentPoint(dstPort);
-	    // XXX This implies that change is made to Device Object,
-	    // which need to be written to DB, how should that be done?
-	    // should we write here or ignore and leave DB in inconsistent state?
-	}
-	dstPortMem.removeAllDevice();
-	for(Device d : srcPortMem.getDevices() ) {
-	    log.error("Device {} on Port {} should have been removed prior to adding Link {}", d, srcPort, linkEvt);
-	    DeviceImpl dev = getDeviceImpl(d);
-	    dev.removeAttachmentPoint(srcPort);
-	    // XXX This implies that change is made to Device Object,
-	    // which need to be written to DB, how should that be done?
-	    // should we write here or ignore and leave DB in inconsistent state?
-	}
-	srcPortMem.removeAllDevice();
-
-    }
-
-    /**
-     * removeLink
-     *
-     * XXX Internal In-memory object mutation method. Will not write to DB.
-     * Will not fire Notification.
-     *
-     * @param linkEvt
-     */
-    void removeLink(LinkEvent linkEvt) {
-	if (linkEvt == null) {
-	    throw new IllegalArgumentException("Link cannot be null");
-	}
-
-	Switch srcSw = switches.get(linkEvt.getSrc().dpid);
-	if (srcSw == null) {
-	    log.warn("Src Switch for Link {} already removed, ignoring", linkEvt);
-	    return;
-	}
-
-	Switch dstSw = switches.get(linkEvt.getDst().dpid);
-	if (dstSw == null) {
-	    log.warn("Dst Switch for Link {} already removed, ignoring", linkEvt);
-	    return;
-	}
-
-	Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
-	if (srcPort == null) {
-	    log.warn("Src Port for Link {} already removed, ignoring", linkEvt);
-	    return;
-	}
-
-	Port dstPort = dstSw.getPort(linkEvt.getDst().number);
-	if (dstPort == null) {
-	    log.warn("Dst Port for Link {} already removed, ignoring", linkEvt);
-	    return;
-	}
-
-	Link l = dstPort.getIncomingLink();
-	if (  l == null ) {
-	    log.warn("Link {} already removed on destination Port", linkEvt);
-	}
-	l = srcPort.getOutgoingLink();
-	if (  l == null ) {
-	    log.warn("Link {} already removed on src Port", linkEvt);
-	}
-
-	getPortImpl(dstPort).setIncomingLink(null);
-	getPortImpl(srcPort).setOutgoingLink(null);
-    }
-
-    // XXX Need to rework Device related
-    /**
-     * Add new device to DB
-     *
-     * @param device
-     */
-    void putDevice(DeviceEvent deviceEvt) {
-	if (deviceEvt == null) {
-	    throw new IllegalArgumentException("Device cannot be null");
-	}
-
-	Device device = getDeviceByMac(deviceEvt.getMac());
-	if ( device == null ) {
-	    device = new DeviceImpl(this, deviceEvt.getMac());
-	    Device existing = mac2Device.putIfAbsent(deviceEvt.getMac(), device);
-	    if (existing != null) {
-		log.warn(
-			"Concurrent putDevice seems to be in action. Continuing updating {}",
-			existing);
-		device = existing;
-	    }
-	}
-	DeviceImpl memDevice = getDeviceImpl(device);
-
-	// for each attachment point
-	for (SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
-	    // Attached Ports' Parent Switch must exist
-	    Switch sw = getSwitch(swp.dpid);
-	    if ( sw ==  null ) {
-		log.warn("Switch {} for the attachment point did not exist. skipping mutation", sw);
-		continue;
-	    }
-	    // Attached Ports must exist
-	    Port port = sw.getPort(swp.number);
-	    if ( port == null ) {
-		log.warn("Port {} for the attachment point did not exist. skipping mutation", port);
-		continue;
-	    }
-	    // Attached Ports must not have Link
-	    if ( port.getOutgoingLink() != null || port.getIncomingLink() != null ) {
-		log.warn("Link (Out:{},In:{}) exist on the attachment point, skipping mutation.", port.getOutgoingLink(), port.getIncomingLink());
-		continue;
-	    }
-
-	    // finally add Device <-> Port on In-memory structure
-	    PortImpl memPort = getPortImpl(port);
-	    memPort.addDevice(device);
-	    memDevice.addAttachmentPoint(port);
-	}
-
-	// for each IP address
-	for( InetAddress ipAddr : deviceEvt.getIpAddresses() ) {
-	    // Add Device -> IP
-	    memDevice.addIpAddress(ipAddr);
-
-	    // Add IP -> Set<Device>
-	    boolean updated = false;
-	    do {
-		Set<Device> devices = this.addr2Device.get(ipAddr);
-		if ( devices == null ) {
-		    devices = new HashSet<>();
-		    Set<Device> existing = this.addr2Device.putIfAbsent(ipAddr, devices);
-		    if ( existing == null ) {
-			// success
-			updated = true;
-		    }
-		} else {
-		    Set<Device> updateDevices = new HashSet<>(devices);
-		    updateDevices.add(device);
-		    updated = this.addr2Device.replace(ipAddr, devices, updateDevices);
-		}
-		if (!updated) {
-		    log.debug("Collision detected, updating IP to Device mapping retrying.");
-		}
-	    } while( !updated );
-	}
-    }
-
-    void removeDevice(DeviceEvent deviceEvt) {
-	if (deviceEvt == null) {
-	    throw new IllegalArgumentException("Device cannot be null");
-	}
-
-	Device device = getDeviceByMac(deviceEvt.getMac());
-	if ( device == null ) {
-	    log.warn("Device {} already removed, ignoring", deviceEvt);
-	    return;
-	}
-	DeviceImpl memDevice = getDeviceImpl(device);
-
-	// for each attachment point
-	for (SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
-	    // Attached Ports' Parent Switch must exist
-	    Switch sw = getSwitch(swp.dpid);
-	    if ( sw ==  null ) {
-		log.warn("Switch {} for the attachment point did not exist. skipping attachment point mutation", sw);
-		continue;
-	    }
-	    // Attached Ports must exist
-	    Port port = sw.getPort(swp.number);
-	    if ( port == null ) {
-		log.warn("Port {} for the attachment point did not exist. skipping attachment point mutation", port);
-		continue;
-	    }
-
-	    // finally remove Device <-> Port on In-memory structure
-	    PortImpl memPort = getPortImpl(port);
-	    memPort.removeDevice(device);
-	    memDevice.removeAttachmentPoint(port);
-	}
-
-	// for each IP address
-	for( InetAddress ipAddr : deviceEvt.getIpAddresses() ) {
-	    // Remove Device -> IP
-	    memDevice.removeIpAddress(ipAddr);
-
-	    // Remove IP -> Set<Device>
-	    boolean updated = false;
-	    do {
-		Set<Device> devices = this.addr2Device.get(ipAddr);
-		if ( devices == null ) {
-		    // already empty set, nothing to do
-		    updated = true;
-		} else {
-		    Set<Device> updateDevices = new HashSet<>(devices);
-		    updateDevices.remove(device);
-		    updated = this.addr2Device.replace(ipAddr, devices, updateDevices);
-		}
-		if (!updated) {
-		    log.debug("Collision detected, updating IP to Device mapping retrying.");
-		}
-	    } while( !updated );
-	}
-    }
-
-    private SwitchImpl getSwitchImpl(Switch sw) {
-	if (sw instanceof SwitchImpl) {
-	    return (SwitchImpl) sw;
-	}
-	throw new ClassCastException("SwitchImpl expected, but found: " + sw);
-    }
-
-    private PortImpl getPortImpl(Port p) {
-	if (p instanceof PortImpl) {
-	    return (PortImpl) p;
-	}
-	throw new ClassCastException("PortImpl expected, but found: " + p);
-    }
-
-    private LinkImpl getLinkImpl(Link l) {
-	if (l instanceof LinkImpl) {
-	    return (LinkImpl) l;
-	}
-	throw new ClassCastException("LinkImpl expected, but found: " + l);
-    }
-
-    private DeviceImpl getDeviceImpl(Device d) {
-	if (d instanceof DeviceImpl) {
-	    return (DeviceImpl) d;
-	}
-	throw new ClassCastException("DeviceImpl expected, but found: " + d);
-    }
-
-    public void loadWholeTopologyFromDB() {
-	// TODO this method needs to use East-bound API if we still need this
-	// XXX clear everything first?
-
-	for (RCSwitch sw : RCSwitch.getAllSwitches()) {
-	    if ( sw.getStatus() != RCSwitch.STATUS.ACTIVE ) {
-		continue;
-	    }
-	    putSwitchReplicationEvent(new SwitchEvent(sw.getDpid()));
-	}
-
-	for (RCPort p : RCPort.getAllPorts()) {
-	    if (p.getStatus() != RCPort.STATUS.ACTIVE) {
-		continue;
-	    }
-	    putPortReplicationEvent(new PortEvent(p.getDpid(), p.getNumber() ));
-	}
-
-	// TODO Is Device going to be in DB? If so, read from DB.
-	//	for (RCDevice d : RCDevice.getAllDevices()) {
-	//	    DeviceEvent devEvent = new DeviceEvent( MACAddress.valueOf(d.getMac()) );
-	//	    for (byte[] portId : d.getAllPortIds() ) {
-	//		devEvent.addAttachmentPoint( new SwitchPort( RCPort.getDpidFromKey(portId), RCPort.getNumberFromKey(portId) ));
-	//	    }
-	//	}
-
-	for (RCLink l : RCLink.getAllLinks()) {
-	    putLinkReplicationEvent( new LinkEvent(l.getSrc().dpid, l.getSrc().number, l.getDst().dpid, l.getDst().number));
-	}
-    }
-
-    /**
      * Exception to be thrown when Modification to the Network Graph cannot be continued due to broken invariant.
      *
      * XXX Should this be checked exception or RuntimeException
@@ -651,14 +138,14 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	 * @return true if ready to accept event.
 	 */
 	private boolean prepareForAddSwitchEvent(SwitchEvent swEvt) {
-	    // No show stopping precondition?
+	    // No show stopping precondition
 	    // Prep: remove(deactivate) Ports on Switch, which is not on event
 	    removePortsNotOnEvent(swEvt);
 	    return true;
 	}
 
 	private boolean prepareForRemoveSwitchEvent(SwitchEvent swEvt) {
-	    // No show stopping precondition?
+	    // No show stopping precondition
 	    // Prep: remove(deactivate) Ports on Switch, which is not on event
 	    // XXX may be remove switch should imply wipe all ports
 	    removePortsNotOnEvent(swEvt);
@@ -834,6 +321,10 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		return true;
 	}
 
+	/* ******************************
+	 * NetworkGraphReplicationInterface methods
+	 * ******************************/
+
 	@Override
 	public void putSwitchReplicationEvent(SwitchEvent switchEvent) {
 	    // TODO who is in charge of ignoring event triggered by my self?
@@ -912,5 +403,469 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		removeDevice(deviceEvent);
 	    }
 	    // TODO Auto-generated method stub
+	}
+
+	/* ************************************************
+	 * Internal In-memory object mutation methods.
+	 * ************************************************/
+
+	void putSwitch(SwitchEvent swEvt) {
+	    if (swEvt == null) {
+		throw new IllegalArgumentException("Switch cannot be null");
+	    }
+
+	    Switch sw = switches.get(swEvt.getDpid());
+
+	    if (sw == null) {
+		sw = new SwitchImpl(this, swEvt.getDpid());
+		Switch existing = switches.putIfAbsent(swEvt.getDpid(), sw);
+		if (existing != null) {
+		    log.warn(
+			    "Concurrent putSwitch not expected. Continuing updating {}",
+			    existing);
+		    sw = existing;
+		}
+	    }
+
+	    // Update when more attributes are added to Event object
+	    // no attribute to update for now
+
+	    // TODO handle child Port event properly for performance
+	    for (PortEvent portEvt : swEvt.getPorts() ) {
+		putPort(portEvt);
+	    }
+
+	}
+
+	void removeSwitch(SwitchEvent swEvt) {
+	    if (swEvt == null) {
+		throw new IllegalArgumentException("Switch cannot be null");
+	    }
+
+	    // TODO handle child Port event properly for performance
+	    for (PortEvent portEvt : swEvt.getPorts() ) {
+		removePort(portEvt);
+	    }
+
+	    Switch sw = switches.get(swEvt.getDpid());
+
+	    if (sw == null) {
+		log.warn("Switch {} already removed, ignoring", swEvt);
+		return;
+	    }
+
+	    // Sanity check
+	    if (!sw.getPorts().isEmpty()) {
+		log.warn(
+			"Ports on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
+			swEvt);
+		// XXX Should we remove Port?
+	    }
+	    if (!sw.getDevices().isEmpty()) {
+		log.warn(
+			"Devices on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
+			swEvt);
+		// XXX Should we remove Device to Switch relation?
+	    }
+	    if (!sw.getIncomingLinks().iterator().hasNext()) {
+		log.warn(
+			"IncomingLinks on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
+			swEvt);
+		// XXX Should we remove Link?
+	    }
+	    if (!sw.getOutgoingLinks().iterator().hasNext()) {
+		log.warn(
+			"OutgoingLinks on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
+			swEvt);
+		// XXX Should we remove Link?
+	    }
+
+	    boolean removed = switches.remove(swEvt.getDpid(), sw);
+	    if (removed) {
+		log.warn(
+			"Switch instance was replaced concurrently while removing {}. Something is not right.",
+			sw);
+	    }
+	}
+
+	void putPort(PortEvent portEvt) {
+	    if (portEvt == null) {
+		throw new IllegalArgumentException("Port cannot be null");
+	    }
+	    Switch sw = switches.get(portEvt.getDpid());
+	    if (sw == null) {
+		throw new BrokenInvariantException(String.format(
+			"Switch with dpid %s did not exist.",
+			new Dpid(portEvt.getDpid())));
+	    }
+	    Port p = sw.getPort(portEvt.getNumber());
+	    PortImpl port = null;
+	    if (p != null) {
+		port = getPortImpl(p);
+	    }
+
+	    if (port == null) {
+		port = new PortImpl(this, sw, portEvt.getNumber());
+	    }
+
+	    // TODO update attributes
+
+	    SwitchImpl s = getSwitchImpl(sw);
+	    s.addPort(port);
+	}
+
+	void removePort(PortEvent portEvt) {
+	    if (portEvt == null) {
+		throw new IllegalArgumentException("Port cannot be null");
+	    }
+
+	    Switch sw = switches.get(portEvt.getDpid());
+	    if (sw == null) {
+		log.warn("Parent Switch for Port {} already removed, ignoring", portEvt);
+		return;
+	    }
+
+	    Port p = sw.getPort(portEvt.getNumber());
+	    if (p == null) {
+		log.warn("Port {} already removed, ignoring", portEvt);
+		return;
+	    }
+
+	    // check if there is something referring to this Port
+
+	    if (!p.getDevices().iterator().hasNext()) {
+		log.warn(
+			"Devices on Port {} should be removed prior to removing Port. Removing Port anyways",
+			portEvt);
+		// XXX Should we remove Device to Port relation?
+	    }
+	    if (p.getIncomingLink() != null) {
+		log.warn(
+			"IncomingLinks on Port {} should be removed prior to removing Port. Removing Port anyways",
+			portEvt);
+		// XXX Should we remove Link?
+	    }
+	    if (p.getOutgoingLink() != null) {
+		log.warn(
+			"OutgoingLinks on Port {} should be removed prior to removing Port. Removing Port anyways",
+			portEvt);
+		// XXX Should we remove Link?
+	    }
+
+	    // remove Port from Switch
+	    SwitchImpl s = getSwitchImpl(sw);
+	    s.removePort(p);
+	}
+
+	void putLink(LinkEvent linkEvt) {
+	    if (linkEvt == null) {
+		throw new IllegalArgumentException("Link cannot be null");
+	    }
+
+	    Switch srcSw = switches.get(linkEvt.getSrc().dpid);
+	    if (srcSw == null) {
+		throw new BrokenInvariantException(
+			String.format(
+				"Switch with dpid %s did not exist.",
+				new Dpid(linkEvt.getSrc().dpid)));
+	    }
+
+	    Switch dstSw = switches.get(linkEvt.getDst().dpid);
+	    if (dstSw == null) {
+		throw new BrokenInvariantException(
+			String.format(
+				"Switch with dpid %s did not exist.",
+				new Dpid(linkEvt.getDst().dpid)));
+	    }
+
+	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
+	    if (srcPort == null) {
+		throw new BrokenInvariantException(
+			String.format(
+				"Src Port %s of a Link did not exist.",
+				linkEvt.getSrc() ));
+	    }
+
+	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
+	    if (dstPort == null) {
+		throw new BrokenInvariantException(
+			String.format(
+				"Dst Port %s of a Link did not exist.",
+				linkEvt.getDst() ));
+	    }
+
+	    // getting Link instance from destination port incoming Link
+	    Link l = dstPort.getIncomingLink();
+	    LinkImpl link = null;
+	    assert( l == srcPort.getOutgoingLink() );
+	    if (l != null) {
+		link = getLinkImpl(l);
+	    }
+
+	    if (link == null) {
+		link = new LinkImpl(this, srcPort, dstPort);
+	    }
+
+
+	    PortImpl dstPortMem = getPortImpl(dstPort);
+	    PortImpl srcPortMem = getPortImpl(srcPort);
+
+	    // Add Link first to avoid further Device addition
+
+	    // add Link to Port
+	    dstPortMem.setIncomingLink(link);
+	    srcPortMem.setOutgoingLink(link);
+
+	    // remove Device Pointing to Port if any
+	    for(Device d : dstPortMem.getDevices() ) {
+		log.error("Device {} on Port {} should have been removed prior to adding Link {}", d, dstPort, linkEvt);
+		DeviceImpl dev = getDeviceImpl(d);
+		dev.removeAttachmentPoint(dstPort);
+		// XXX This implies that change is made to Device Object,
+		// which need to be written to DB, how should that be done?
+		// should we write here or ignore and leave DB in inconsistent state?
+	    }
+	    dstPortMem.removeAllDevice();
+	    for(Device d : srcPortMem.getDevices() ) {
+		log.error("Device {} on Port {} should have been removed prior to adding Link {}", d, srcPort, linkEvt);
+		DeviceImpl dev = getDeviceImpl(d);
+		dev.removeAttachmentPoint(srcPort);
+		// XXX This implies that change is made to Device Object,
+		// which need to be written to DB, how should that be done?
+		// should we write here or ignore and leave DB in inconsistent state?
+	    }
+	    srcPortMem.removeAllDevice();
+
+	}
+
+	void removeLink(LinkEvent linkEvt) {
+	    if (linkEvt == null) {
+		throw new IllegalArgumentException("Link cannot be null");
+	    }
+
+	    Switch srcSw = switches.get(linkEvt.getSrc().dpid);
+	    if (srcSw == null) {
+		log.warn("Src Switch for Link {} already removed, ignoring", linkEvt);
+		return;
+	    }
+
+	    Switch dstSw = switches.get(linkEvt.getDst().dpid);
+	    if (dstSw == null) {
+		log.warn("Dst Switch for Link {} already removed, ignoring", linkEvt);
+		return;
+	    }
+
+	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
+	    if (srcPort == null) {
+		log.warn("Src Port for Link {} already removed, ignoring", linkEvt);
+		return;
+	    }
+
+	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
+	    if (dstPort == null) {
+		log.warn("Dst Port for Link {} already removed, ignoring", linkEvt);
+		return;
+	    }
+
+	    Link l = dstPort.getIncomingLink();
+	    if (  l == null ) {
+		log.warn("Link {} already removed on destination Port", linkEvt);
+	    }
+	    l = srcPort.getOutgoingLink();
+	    if (  l == null ) {
+		log.warn("Link {} already removed on src Port", linkEvt);
+	    }
+
+	    getPortImpl(dstPort).setIncomingLink(null);
+	    getPortImpl(srcPort).setOutgoingLink(null);
+	}
+
+	// XXX Need to rework Device related
+	void putDevice(DeviceEvent deviceEvt) {
+	    if (deviceEvt == null) {
+		throw new IllegalArgumentException("Device cannot be null");
+	    }
+
+	    Device device = getDeviceByMac(deviceEvt.getMac());
+	    if ( device == null ) {
+		device = new DeviceImpl(this, deviceEvt.getMac());
+		Device existing = mac2Device.putIfAbsent(deviceEvt.getMac(), device);
+		if (existing != null) {
+		    log.warn(
+			    "Concurrent putDevice seems to be in action. Continuing updating {}",
+			    existing);
+		    device = existing;
+		}
+	    }
+	    DeviceImpl memDevice = getDeviceImpl(device);
+
+	    // for each attachment point
+	    for (SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
+		// Attached Ports' Parent Switch must exist
+		Switch sw = getSwitch(swp.dpid);
+		if ( sw ==  null ) {
+		    log.warn("Switch {} for the attachment point did not exist. skipping mutation", sw);
+		    continue;
+		}
+		// Attached Ports must exist
+		Port port = sw.getPort(swp.number);
+		if ( port == null ) {
+		    log.warn("Port {} for the attachment point did not exist. skipping mutation", port);
+		    continue;
+		}
+		// Attached Ports must not have Link
+		if ( port.getOutgoingLink() != null || port.getIncomingLink() != null ) {
+		    log.warn("Link (Out:{},In:{}) exist on the attachment point, skipping mutation.", port.getOutgoingLink(), port.getIncomingLink());
+		    continue;
+		}
+
+		// finally add Device <-> Port on In-memory structure
+		PortImpl memPort = getPortImpl(port);
+		memPort.addDevice(device);
+		memDevice.addAttachmentPoint(port);
+	    }
+
+	    // for each IP address
+	    for( InetAddress ipAddr : deviceEvt.getIpAddresses() ) {
+		// Add Device -> IP
+		memDevice.addIpAddress(ipAddr);
+
+		// Add IP -> Set<Device>
+		boolean updated = false;
+		do {
+		    Set<Device> devices = this.addr2Device.get(ipAddr);
+		    if ( devices == null ) {
+			devices = new HashSet<>();
+			Set<Device> existing = this.addr2Device.putIfAbsent(ipAddr, devices);
+			if ( existing == null ) {
+			    // success
+			    updated = true;
+			}
+		    } else {
+			Set<Device> updateDevices = new HashSet<>(devices);
+			updateDevices.add(device);
+			updated = this.addr2Device.replace(ipAddr, devices, updateDevices);
+		    }
+		    if (!updated) {
+			log.debug("Collision detected, updating IP to Device mapping retrying.");
+		    }
+		} while( !updated );
+	    }
+	}
+
+	void removeDevice(DeviceEvent deviceEvt) {
+	    if (deviceEvt == null) {
+		throw new IllegalArgumentException("Device cannot be null");
+	    }
+
+	    Device device = getDeviceByMac(deviceEvt.getMac());
+	    if ( device == null ) {
+		log.warn("Device {} already removed, ignoring", deviceEvt);
+		return;
+	    }
+	    DeviceImpl memDevice = getDeviceImpl(device);
+
+	    // for each attachment point
+	    for (SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
+		// Attached Ports' Parent Switch must exist
+		Switch sw = getSwitch(swp.dpid);
+		if ( sw ==  null ) {
+		    log.warn("Switch {} for the attachment point did not exist. skipping attachment point mutation", sw);
+		    continue;
+		}
+		// Attached Ports must exist
+		Port port = sw.getPort(swp.number);
+		if ( port == null ) {
+		    log.warn("Port {} for the attachment point did not exist. skipping attachment point mutation", port);
+		    continue;
+		}
+
+		// finally remove Device <-> Port on In-memory structure
+		PortImpl memPort = getPortImpl(port);
+		memPort.removeDevice(device);
+		memDevice.removeAttachmentPoint(port);
+	    }
+
+	    // for each IP address
+	    for( InetAddress ipAddr : deviceEvt.getIpAddresses() ) {
+		// Remove Device -> IP
+		memDevice.removeIpAddress(ipAddr);
+
+		// Remove IP -> Set<Device>
+		boolean updated = false;
+		do {
+		    Set<Device> devices = this.addr2Device.get(ipAddr);
+		    if ( devices == null ) {
+			// already empty set, nothing to do
+			updated = true;
+		    } else {
+			Set<Device> updateDevices = new HashSet<>(devices);
+			updateDevices.remove(device);
+			updated = this.addr2Device.replace(ipAddr, devices, updateDevices);
+		    }
+		    if (!updated) {
+			log.debug("Collision detected, updating IP to Device mapping retrying.");
+		    }
+		} while( !updated );
+	    }
+	}
+
+	private SwitchImpl getSwitchImpl(Switch sw) {
+	    if (sw instanceof SwitchImpl) {
+		return (SwitchImpl) sw;
+	    }
+	    throw new ClassCastException("SwitchImpl expected, but found: " + sw);
+	}
+
+	private PortImpl getPortImpl(Port p) {
+	    if (p instanceof PortImpl) {
+		return (PortImpl) p;
+	    }
+	    throw new ClassCastException("PortImpl expected, but found: " + p);
+	}
+
+	private LinkImpl getLinkImpl(Link l) {
+	    if (l instanceof LinkImpl) {
+		return (LinkImpl) l;
+	    }
+	    throw new ClassCastException("LinkImpl expected, but found: " + l);
+	}
+
+	private DeviceImpl getDeviceImpl(Device d) {
+	    if (d instanceof DeviceImpl) {
+		return (DeviceImpl) d;
+	    }
+	    throw new ClassCastException("DeviceImpl expected, but found: " + d);
+	}
+
+	@Deprecated
+	public void loadWholeTopologyFromDB() {
+	    // XXX clear everything first?
+
+	    for (RCSwitch sw : RCSwitch.getAllSwitches()) {
+		if ( sw.getStatus() != RCSwitch.STATUS.ACTIVE ) {
+		    continue;
+		}
+		putSwitchReplicationEvent(new SwitchEvent(sw.getDpid()));
+	    }
+
+	    for (RCPort p : RCPort.getAllPorts()) {
+		if (p.getStatus() != RCPort.STATUS.ACTIVE) {
+		    continue;
+		}
+		putPortReplicationEvent(new PortEvent(p.getDpid(), p.getNumber() ));
+	    }
+
+	    // TODO Is Device going to be in DB? If so, read from DB.
+	    //	for (RCDevice d : RCDevice.getAllDevices()) {
+	    //	    DeviceEvent devEvent = new DeviceEvent( MACAddress.valueOf(d.getMac()) );
+	    //	    for (byte[] portId : d.getAllPortIds() ) {
+	    //		devEvent.addAttachmentPoint( new SwitchPort( RCPort.getDpidFromKey(portId), RCPort.getNumberFromKey(portId) ));
+	    //	    }
+	    //	}
+
+	    for (RCLink l : RCLink.getAllLinks()) {
+		putLinkReplicationEvent( new LinkEvent(l.getSrc().dpid, l.getSrc().number, l.getDst().dpid, l.getDst().number));
+	    }
 	}
 }
