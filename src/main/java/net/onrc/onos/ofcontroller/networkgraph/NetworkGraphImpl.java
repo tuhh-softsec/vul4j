@@ -15,8 +15,6 @@ import net.onrc.onos.ofcontroller.util.Dpid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
-
 /**
  * The "NB" read-only Network Map.
  *
@@ -458,13 +456,13 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    // Attached Ports' Parent Switch must exist
 	    Switch sw = getSwitch(swp.dpid);
 	    if ( sw ==  null ) {
-		log.warn("Switch {} for the attachment point did not exist. skipping mutation", sw);
+		log.warn("Switch {} for the attachment point did not exist. skipping attachment point mutation", sw);
 		continue;
 	    }
 	    // Attached Ports must exist
 	    Port port = sw.getPort(swp.number);
 	    if ( port == null ) {
-		log.warn("Port {} for the attachment point did not exist. skipping mutation", port);
+		log.warn("Port {} for the attachment point did not exist. skipping attachment point mutation", port);
 		continue;
 	    }
 
@@ -531,69 +529,29 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	// XXX clear everything first?
 
 	for (RCSwitch sw : RCSwitch.getAllSwitches()) {
-	    try {
-		sw.read();
-		// TODO if there is going to be inactive Switch in DB, skip
-		// TODO update other attributes if there exist any
-		putSwitch(new SwitchEvent(sw.getDpid()));
-	    } catch (ObjectDoesntExistException e) {
-		log.error("Read Switch Failed, skipping", e);
+	    if ( sw.getStatus() != RCSwitch.STATUS.ACTIVE ) {
+		continue;
 	    }
+	    putSwitchReplicationEvent(new SwitchEvent(sw.getDpid()));
 	}
 
 	for (RCPort p : RCPort.getAllPorts()) {
-	    try {
-		p.read();
-
-		Switch sw = this.getSwitch(p.getDpid());
-		if (sw == null) {
-		    log.error("Switch {} missing when adding Port {}",
-			    new Dpid(p.getDpid()), p);
-		    continue;
-		}
-		PortEvent portEvent = new PortEvent(p.getDpid(), p.getNumber());
-		// TODO update other attributes if there exist any
-		putPort(portEvent);
-	    } catch (ObjectDoesntExistException e) {
-		log.error("Read Port Failed, skipping", e);
+	    if (p.getStatus() != RCPort.STATUS.ACTIVE) {
+		continue;
 	    }
+	    putPortReplicationEvent(new PortEvent(p.getDpid(), p.getNumber() ));
 	}
 
 	// TODO Is Device going to be in DB? If so, read from DB.
-	// for (RCDevice d : RCDevice.getAllDevices()) {
-	// try {
-	// d.read();
-	//
-	// } catch (ObjectDoesntExistException e) {
-	// log.debug("Read Device Failed, skipping", e);
-	// }
-	// }
+	//	for (RCDevice d : RCDevice.getAllDevices()) {
+	//	    DeviceEvent devEvent = new DeviceEvent( MACAddress.valueOf(d.getMac()) );
+	//	    for (byte[] portId : d.getAllPortIds() ) {
+	//		devEvent.addAttachmentPoint( new SwitchPort( RCPort.getDpidFromKey(portId), RCPort.getNumberFromKey(portId) ));
+	//	    }
+	//	}
 
 	for (RCLink l : RCLink.getAllLinks()) {
-	    try {
-		l.read();
-
-		Switch srcSw = this.getSwitch(l.getSrc().dpid);
-		if (srcSw == null) {
-		    log.error("Switch {} missing when adding Link {}",
-			    new Dpid(l.getSrc().dpid), l);
-		    continue;
-		}
-
-		Switch dstSw = this.getSwitch(l.getDst().dpid);
-		if (dstSw == null) {
-		    log.error("Switch {} missing when adding Link {}",
-			    new Dpid(l.getDst().dpid), l);
-		    continue;
-		}
-
-		LinkEvent linkEvent = new LinkEvent(l.getSrc().dpid,
-			l.getSrc().number, l.getDst().dpid, l.getDst().number);
-		// TODO update other attributes if there exist any
-		putLink(linkEvent);
-	    } catch (ObjectDoesntExistException e) {
-		log.debug("Delete Link Failed", e);
-	    }
+	    putLinkReplicationEvent( new LinkEvent(l.getSrc().dpid, l.getSrc().number, l.getDst().dpid, l.getDst().number));
 	}
     }
 
@@ -878,51 +836,81 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Override
 	public void putSwitchReplicationEvent(SwitchEvent switchEvent) {
-		if (prepareForAddSwitchEvent(switchEvent)) {
-			putSwitch(switchEvent);
-		}
-		// TODO handle invariant violation
+	    // TODO who is in charge of ignoring event triggered by my self?
+	    // This method or caller?
+	    if (prepareForAddSwitchEvent(switchEvent)) {
+		putSwitch(switchEvent);
+	    }
+	    // TODO handle invariant violation
 	}
 
 	@Override
 	public void removeSwitchReplicationEvent(SwitchEvent switchEvent) {
+	    // TODO who is in charge of ignoring event triggered by my self?
+	    // This method or caller?
+	    if (prepareForRemoveSwitchEvent(switchEvent)) {
+		removeSwitch(switchEvent);
+	    }
 	    // TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void putPortReplicationEvent(PortEvent portEvent) {
+	    // TODO who is in charge of ignoring event triggered by my self?
+	    // This method or caller?
+	    if (prepareForAddPortEvent(portEvent)) {
+		putPort(portEvent);
+	    }
 	    // TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void removePortReplicationEvent(PortEvent portEvent) {
+	    // TODO who is in charge of ignoring event triggered by my self?
+	    // This method or caller?
+	    if (prepareForRemovePortEvent(portEvent)) {
+		removePort(portEvent);
+	    }
 	    // TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void putLinkReplicationEvent(LinkEvent linkEvent) {
+	    // TODO who is in charge of ignoring event triggered by my self?
+	    // This method or caller?
+	    if (prepareForAddLinkEvent(linkEvent)) {
+		putLink(linkEvent);
+	    }
 	    // TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void removeLinkReplicationEvent(LinkEvent linkEvent) {
+	    // TODO who is in charge of ignoring event triggered by my self?
+	    // This method or caller?
+	    if (prepareForRemoveLinkEvent(linkEvent)) {
+		removeLink(linkEvent);
+	    }
 	    // TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void putDeviceReplicationEvent(DeviceEvent deviceEvent) {
+	    // TODO who is in charge of ignoring event triggered by my self?
+	    // This method or caller?
+	    if (prepareForAddDeviceEvent(deviceEvent)) {
+		putDevice(deviceEvent);
+	    }
 	    // TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void removeDeviceReplicationEvent(DeviceEvent deviceEvent) {
+	    // TODO who is in charge of ignoring event triggered by my self?
+	    // This method or caller?
+	    if (prepareForRemoveDeviceEvent(deviceEvent)) {
+		removeDevice(deviceEvent);
+	    }
 	    // TODO Auto-generated method stub
-
 	}
 }
