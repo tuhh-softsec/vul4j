@@ -13,6 +13,7 @@ public class NetworkGraphWebRoutable implements RestletRoutable {
 		Router router = new Router(context);
 		router.attach("/rc/switches/json", RamcloudSwitchesResource.class);
 		router.attach("/rc/links/json", RamcloudLinksResource.class);
+		router.attach("/rc/ports/json", RamcloudPortsResource.class);
 		router.attach("/ng/switches/json", NetworkGraphSwitchesResource.class);
 		router.attach("/ng/links/json", NetworkGraphLinksResource.class);
 		return router;

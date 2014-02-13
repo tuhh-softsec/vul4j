@@ -6,6 +6,7 @@ import java.util.List;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCObject.WriteOp;
 import net.onrc.onos.datastore.topology.RCLink;
+import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
 
 import org.slf4j.Logger;
@@ -54,13 +55,14 @@ public class NetworkGraphDatastore {
 		// to assure that DPID is unique cluster-wide, etc.
 		groupOp.add(WriteOp.ForceCreate(rcSwitch));
 
-//		for (Port port : sw.getPorts()) {
-//			RCPort rcPort = new RCPort(sw.getDpid(), (long)port.getNumber());
-//			rcPort.setStatus(RCPort.STATUS.ACTIVE);
-//			rcSwitch.addPortId(rcPort.getId());
-//
-//			groupOp.add(WriteOp.ForceCreate(rcPort));
-//		}
+		//for (Port port : sw.getPorts()) {
+		for (PortEvent portEvent : sw.getPorts()) {
+			RCPort rcPort = new RCPort(sw.getDpid(), portEvent.getNumber());
+			rcPort.setStatus(RCPort.STATUS.ACTIVE);
+			//rcSwitch.addPortId(rcPort.getId());
+
+			groupOp.add(WriteOp.ForceCreate(rcPort));
+		}
 
 		boolean failed = RCObject.multiWrite(groupOp);
 
