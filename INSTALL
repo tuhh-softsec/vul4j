@@ -14,6 +14,9 @@ Die LADA Anwendung basiert auf einer PostgreSQL/PostGIS Datenbank in den
 Versionen PostgreSQL 9.2/PostGIS 2.0.
 Beipieldaten sind in dem Datenbankdump lada-db.zip verfügbar und können
 in eine PostgreSQL/PostGIS Datenbank importiert werden.
+Hierzu sollte vorher ein Benutzer in der Datenbank angelegt werden. In der
+folgenden Installationsanleitung wird davon ausgegangen, dass ein Benutzer
+'lada' in der Datenbank existiert.
 Der dadurch verfügbare Testdatensatz enthält zusätzlich Daten zu Gemeinden und
 Verwaltungen in Deutschland, die vom BKG zur Verfügung gestellt werden.
 
@@ -87,7 +90,7 @@ Administrations-Webinterface unter der Adresse: http://localhost:9990
 5. Treiber Wählen: postgis
 6. Weitere Verbindungsparameter angeben.
    a) connection url: jdbc:postgresql_postGIS://localhost:5432/lada
-   b) Nutzer
+   b) Nutzer (lada)
    c) Password
 
 7.Da während dieser Einrichtung die Standard PostgreSQL Treiberklasse gewählt
