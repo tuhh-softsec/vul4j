@@ -30,6 +30,11 @@ public class PortImpl extends NetworkGraphObject implements Port {
 	}
 
 	@Override
+	public Long getDpid() {
+	    return sw.getDpid();
+	}
+
+	@Override
 	public Long getNumber() {
 		return number;
 	}
