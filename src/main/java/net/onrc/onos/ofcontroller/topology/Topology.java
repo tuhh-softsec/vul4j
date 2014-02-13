@@ -474,104 +474,104 @@ public class Topology {
     }
 
     private void readFromDatabaseBodyOptimized(DBOperation dbHandler) {
-	    nodesMap.clear();
-		    
-		// Load all switches into Map
-		Iterable<ISwitchObject> switches = dbHandler.getAllSwitches();
-		for (ISwitchObject switchObj : switches) {
-		        // Ignore inactive ports
-		    if (!switchObj.getState().equals(SwitchState.ACTIVE.toString())) {
-	            continue;
-		    }
-		    Vertex nodeVertex = switchObj.asVertex();
-		    //
-		    // The Switch info
-		    //
-		    String nodeDpid = nodeVertex.getProperty("dpid").toString();
-		    long nodeId = HexString.toLong(nodeDpid);
-		    addNode(nodeId);
+	nodesMap.clear();
+
+	// Load all switches into Map
+	Iterable<ISwitchObject> switches = dbHandler.getAllSwitches();
+	for (ISwitchObject switchObj : switches) {
+	    // Ignore inactive ports
+	    if (!switchObj.getState().equals(SwitchState.ACTIVE.toString())) {
+		continue;
+	    }
+	    Vertex nodeVertex = switchObj.asVertex();
+	    //
+	    // The Switch info
+	    //
+	    String nodeDpid = nodeVertex.getProperty("dpid").toString();
+	    long nodeId = HexString.toLong(nodeDpid);
+	    addNode(nodeId);
+	}
+
+	//
+	// Get All Ports
+	//
+	Iterable<IPortObject> ports = dbHandler.getAllPorts(); //TODO: Add to DB operations
+	for (IPortObject myPortObj : ports) {
+	    Vertex myPortVertex = myPortObj.asVertex();
+
+	    // Ignore inactive ports
+	    if (! myPortVertex.getProperty("state").toString().equals("ACTIVE")) {
+		continue;
+	    }
+
+	    short myPort = 0;
+	    String idStr = myPortObj.getPortId();
+	    String[] splitter = idStr.split(IDBOperation.PORT_ID_DELIM);
+	    if (splitter.length != 2) {
+		log.error("Invalid port_id : {}", idStr);
+		continue;
+	    }
+	    String myDpid = splitter[0];
+	    myPort = Short.parseShort(splitter[1]);
+	    long myId = HexString.toLong(myDpid);
+	    Node me = nodesMap.get(myId);
+
+	    if (me == null) {
+		// cannot proceed ports and switches are out of sync
+		//TODO: Restart the whole read
+		continue;
+	    }
+
+	    if (me.getPort((int)myPort) == null) {
+		me.addPort((int)myPort);
+	    } else if (me.getLink((int)myPort) != null) {
+		// Link already added..probably by neighbor
+		continue;
+	    }
+
+	    //
+	    // The neighbor Port info
+	    //
+	    for (Vertex neighborPortVertex : myPortVertex.getVertices(Direction.OUT, "link")) {
+		// Ignore inactive ports
+		if (! neighborPortVertex.getProperty("state").toString().equals("ACTIVE")) {
+		    continue;
 		}
-		
-		//
-		// Get All Ports
-		//
-		Iterable<IPortObject> ports = dbHandler.getAllPorts(); //TODO: Add to DB operations
-		for (IPortObject myPortObj : ports) {
-		    Vertex myPortVertex = myPortObj.asVertex();
-		    
-		    // Ignore inactive ports
-		    if (! myPortVertex.getProperty("state").toString().equals("ACTIVE")) {
-	            continue;
-		    }
-		    
-		    short myPort = 0;
-		    String idStr = myPortObj.getPortId();
-		    String[] splitter = idStr.split(IDBOperation.PORT_ID_DELIM);
-		    if (splitter.length != 2) {
-	            log.error("Invalid port_id : {}", idStr);
-	            continue;
-		    }
-		    String myDpid = splitter[0];
-		    myPort = Short.parseShort(splitter[1]);
-		    long myId = HexString.toLong(myDpid);
-		    Node me = nodesMap.get(myId);
-		    
-		    if (me == null) {
-		        // cannot proceed ports and switches are out of sync
-		        //TODO: Restart the whole read
-		        continue;
-		    }
-		    
-		    if (me.getPort((int)myPort) == null) {
-	            me.addPort((int)myPort);
-		    } else if (me.getLink((int)myPort) != null) {
-		        // Link already added..probably by neighbor
-		        continue;
-		    }
-		
-		    //
-		    // The neighbor Port info
-		    //
-		    for (Vertex neighborPortVertex : myPortVertex.getVertices(Direction.OUT, "link")) {
-		        // Ignore inactive ports
-		        if (! neighborPortVertex.getProperty("state").toString().equals("ACTIVE")) {
-	                continue;
-		        }
-		        int neighborPort = 0;
-		        idStr = neighborPortVertex.getProperty("port_id").toString();
-		        splitter = idStr.split(IDBOperation.PORT_ID_DELIM);
-		        if (splitter.length != 2) {
-	                log.error("Invalid port_id : {}", idStr);
-	                continue;
-		        }
-		        String neighborDpid = splitter[0];
-		        neighborPort = Short.parseShort(splitter[1]);
-		        long neighborId = HexString.toLong(neighborDpid);                                
-		        Node neighbor = nodesMap.get(neighborId);
-		        if (neighbor == null) {
-	                continue;
-		        }
-		        if (neighbor.getPort(neighborPort) == null) {
-		        	neighbor.addPort(neighborPort);
-		        }
-		        me.addLink(myPort, neighbor, neighborPort);
-		    }
+		int neighborPort = 0;
+		idStr = neighborPortVertex.getProperty("port_id").toString();
+		splitter = idStr.split(IDBOperation.PORT_ID_DELIM);
+		if (splitter.length != 2) {
+		    log.error("Invalid port_id : {}", idStr);
+		    continue;
 		}
-		dbHandler.commit();
+		String neighborDpid = splitter[0];
+		neighborPort = Short.parseShort(splitter[1]);
+		long neighborId = HexString.toLong(neighborDpid);
+		Node neighbor = nodesMap.get(neighborId);
+		if (neighbor == null) {
+		    continue;
+		}
+		if (neighbor.getPort(neighborPort) == null) {
+		    neighbor.addPort(neighborPort);
+		}
+		me.addLink(myPort, neighbor, neighborPort);
+	    }
+	}
+	dbHandler.commit();
     }
-    
+
     // Only for debug use
     @Override
     public String toString() {
     	long numNodes = nodesMap.size();
     	long numLinks = 0;
     	for (Map.Entry<Long, Node> entry : nodesMap.entrySet()) {
-    		Node n = entry.getValue();
-    		for (Map.Entry<Integer, Node.Link> linkEntry : n.links.entrySet()) {
-    			if (n.nodeId > linkEntry.getValue().neighbor.nodeId) {
-    				++numLinks;
-    			}
-    		}
+	    Node n = entry.getValue();
+	    for (Map.Entry<Integer, Node.Link> linkEntry : n.links.entrySet()) {
+		if (n.nodeId > linkEntry.getValue().neighbor.nodeId) {
+		    ++numLinks;
+		}
+	    }
     	}
     	return "Topology has " + numNodes + " Nodes and " + numLinks + " Links.";
     }
