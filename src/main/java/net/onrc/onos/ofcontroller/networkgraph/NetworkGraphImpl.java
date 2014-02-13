@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,8 +25,7 @@ import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
  * TODO To be synchronized based on TopologyEvent Notification.
  *
  * TODO TBD: Caller is expected to maintain parent/child calling order. Parent
- * Object must exist before adding sub component(Add Switch -> Port). Child
- * Object need to be removed before removing parent (Delete Port->Switch)
+ * Object must exist before adding sub component(Add Switch -> Port).
  *
  * TODO TBD: This class may delay the requested change to handle event
  * re-ordering. e.g.) Link Add came in, but Switch was not there.
@@ -374,88 +374,128 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    throw new IllegalArgumentException("Device cannot be null");
 	}
 
+	Device device = getDeviceByMac(deviceEvt.getMac());
+	if ( device == null ) {
+	    device = new DeviceImpl(this, deviceEvt.getMac());
+	    Device existing = mac2Device.putIfAbsent(deviceEvt.getMac(), device);
+	    if (existing != null) {
+		log.warn(
+			"Concurrent putDevice seems to be in action. Continuing updating {}",
+			existing);
+		device = existing;
+	    }
+	}
+	DeviceImpl memDevice = getDeviceImpl(device);
+
 	// for each attachment point
-	/// TODO check if Link exist on that Port
+	for (SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
+	    // Attached Ports' Parent Switch must exist
+	    Switch sw = getSwitch(swp.dpid);
+	    if ( sw ==  null ) {
+		log.warn("Switch {} for the attachment point did not exist. skipping mutation", sw);
+		continue;
+	    }
+	    // Attached Ports must exist
+	    Port port = sw.getPort(swp.number);
+	    if ( port == null ) {
+		log.warn("Port {} for the attachment point did not exist. skipping mutation", port);
+		continue;
+	    }
+	    // Attached Ports must not have Link
+	    if ( port.getOutgoingLink() != null || port.getIncomingLink() != null ) {
+		log.warn("Link (Out:{},In:{}) exist on the attachment point, skipping mutation.", port.getOutgoingLink(), port.getIncomingLink());
+		continue;
+	    }
 
+	    // finally add Device <-> Port on In-memory structure
+	    PortImpl memPort = getPortImpl(port);
+	    memPort.addDevice(device);
+	    memDevice.addAttachmentPoint(port);
+	}
 
+	// for each IP address
+	for( InetAddress ipAddr : deviceEvt.getIpAddresses() ) {
+	    // Add Device -> IP
+	    memDevice.addIpAddress(ipAddr);
 
-	// TODO Auto-generated method stub
-
-	// Device existingDevice =
-	// getDeviceByMac(deviceToUpdate.getMacAddress());
-	// if (existingDevice != deviceToUpdate) {
-	// throw new IllegalArgumentException(
-	// "Must supply Device Object in this NetworkGraph");
-	// }
-	//
-	// DeviceImpl device = getDeviceImpl(deviceToUpdate);
-	//
-	// // Update IP Addr
-	// // uniq
-	// Set<InetAddress> prevAddrs = new HashSet<>(
-	// deviceToUpdate.getIpAddress());
-	// Set<InetAddress> newAddrs = updatedIpAddrs;
-	//
-	// // delta
-	// @SuppressWarnings("unchecked")
-	// Collection<InetAddress> delAddr = CollectionUtils.subtract(newAddrs,
-	// prevAddrs);
-	// @SuppressWarnings("unchecked")
-	// Collection<InetAddress> addAddr = CollectionUtils.subtract(prevAddrs,
-	// newAddrs);
-	//
-	// for (InetAddress addr : delAddr) {
-	// Set<Device> devices = addr2Device.get(addr);
-	// if (devices == null) {
-	// continue;
-	// }
-	// devices.remove(device);
-	// device.removeIpAddress(addr);
-	// }
-	// for (InetAddress addr : addAddr) {
-	// Set<Device> devices = addr2Device.get(addr);
-	// if (devices == null) {
-	// devices = new HashSet<>();
-	// addr2Device.put(addr, devices);
-	// }
-	// devices.add(device);
-	// device.addIpAddress(addr);
-	// }
-	//
-	// // Update Attachment Point
-	// // uniq
-	// Set<Port> prevPorts = new HashSet<>();
-	// CollectionUtils.addAll(prevAddrs,
-	// deviceToUpdate.getAttachmentPoints()
-	// .iterator());
-	// Set<Port> newPorts = updatedAttachmentPoints;
-	// // delta
-	// @SuppressWarnings("unchecked")
-	// Collection<Port> delPorts = CollectionUtils.subtract(newPorts,
-	// prevPorts);
-	// @SuppressWarnings("unchecked")
-	// Collection<Port> addPorts = CollectionUtils.subtract(prevPorts,
-	// newPorts);
-	//
-	// for (Port p : delPorts) {
-	// device.removeAttachmentPoint(p);
-	// getPortImpl(p).removeDevice(device);
-	// }
-	//
-	// for (Port p : addPorts) {
-	// device.addAttachmentPoint(p);
-	// getPortImpl(p).addDevice(device);
-	// }
-
-	// TODO Auto-generated method stub
-
+	    // Add IP -> Set<Device>
+	    boolean updated = false;
+	    do {
+		Set<Device> devices = this.addr2Device.get(ipAddr);
+		if ( devices == null ) {
+		    devices = new HashSet<>();
+		    Set<Device> existing = this.addr2Device.putIfAbsent(ipAddr, devices);
+		    if ( existing == null ) {
+			// success
+			updated = true;
+		    }
+		} else {
+		    Set<Device> updateDevices = new HashSet<>(devices);
+		    updateDevices.add(device);
+		    updated = this.addr2Device.replace(ipAddr, devices, updateDevices);
+		}
+		if (!updated) {
+		    log.debug("Collision detected, updating IP to Device mapping retrying.");
+		}
+	    } while( !updated );
+	}
     }
 
-    void removeDevice(DeviceEvent device) {
-	if (device == null) {
+    void removeDevice(DeviceEvent deviceEvt) {
+	if (deviceEvt == null) {
 	    throw new IllegalArgumentException("Device cannot be null");
 	}
-	// TODO Auto-generated method stub
+
+	Device device = getDeviceByMac(deviceEvt.getMac());
+	if ( device == null ) {
+	    log.warn("Device {} already removed, ignoring", deviceEvt);
+	    return;
+	}
+	DeviceImpl memDevice = getDeviceImpl(device);
+
+	// for each attachment point
+	for (SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
+	    // Attached Ports' Parent Switch must exist
+	    Switch sw = getSwitch(swp.dpid);
+	    if ( sw ==  null ) {
+		log.warn("Switch {} for the attachment point did not exist. skipping mutation", sw);
+		continue;
+	    }
+	    // Attached Ports must exist
+	    Port port = sw.getPort(swp.number);
+	    if ( port == null ) {
+		log.warn("Port {} for the attachment point did not exist. skipping mutation", port);
+		continue;
+	    }
+
+	    // finally remove Device <-> Port on In-memory structure
+	    PortImpl memPort = getPortImpl(port);
+	    memPort.removeDevice(device);
+	    memDevice.removeAttachmentPoint(port);
+	}
+
+	// for each IP address
+	for( InetAddress ipAddr : deviceEvt.getIpAddresses() ) {
+	    // Remove Device -> IP
+	    memDevice.removeIpAddress(ipAddr);
+
+	    // Remove IP -> Set<Device>
+	    boolean updated = false;
+	    do {
+		Set<Device> devices = this.addr2Device.get(ipAddr);
+		if ( devices == null ) {
+		    // already empty set, nothing to do
+		    updated = true;
+		} else {
+		    Set<Device> updateDevices = new HashSet<>(devices);
+		    updateDevices.remove(device);
+		    updated = this.addr2Device.replace(ipAddr, devices, updateDevices);
+		}
+		if (!updated) {
+		    log.debug("Collision detected, updating IP to Device mapping retrying.");
+		}
+	    } while( !updated );
+	}
     }
 
     private SwitchImpl getSwitchImpl(Switch sw) {
