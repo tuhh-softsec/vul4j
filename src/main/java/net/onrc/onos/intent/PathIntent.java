@@ -38,4 +38,10 @@ public class PathIntent extends Intent {
 	public Intent getParentIntent() {
 		return parentIntent;
 	}
+
+	@Override
+	public byte[] toBytes() {
+		// TODO not implemented yet
+		return null;
+	}
 }

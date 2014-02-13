@@ -1,5 +1,8 @@
 package net.onrc.onos.intent;
 
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Port;
@@ -33,6 +36,20 @@ public class ShortestPathIntent extends Intent {
 		this.dstMac = MACAddress.valueOf(dstMac);
 	}
 
+	public static ShortestPathIntent fromBytes(NetworkGraph graph, byte[] bytes) {
+		Input input = new Input(bytes);
+		ShortestPathIntent intent = new ShortestPathIntent(graph,
+				input.readString(),
+				input.readLong(),
+				input.readLong(),
+				input.readLong(),
+				input.readLong(),
+				input.readLong(),
+				input.readLong());
+		input.close();
+		return intent;
+		}
+
 	public Port getSourcePort() {
 		return srcPort;
 	}
@@ -54,5 +71,20 @@ public class ShortestPathIntent extends Intent {
 		return String.format("srcPort:%s, srcMac:%s, dstPort:%s, dstMac:%s",
 				srcPort.toString(), srcMac.toString(),
 				dstPort.toString(), dstMac.toString());
+	}
+
+	@Override
+	public byte[] toBytes() {
+		byte[] buffer = new byte[1024];
+		Output output = new Output(buffer, -1);
+		output.writeString(id);
+		output.writeLong(srcPort.getSwitch().getDpid());
+		output.writeLong(srcPort.getNumber());
+		output.writeLong(srcMac.toLong());
+		output.writeLong(dstPort.getSwitch().getDpid());
+		output.writeLong(dstPort.getNumber());
+		output.writeLong(dstMac.toLong());
+		output.close();
+		return output.toBytes();
 	}
 }

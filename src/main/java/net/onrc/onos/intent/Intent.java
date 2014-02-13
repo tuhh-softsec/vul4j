@@ -13,6 +13,8 @@ public abstract class Intent {
 	public String getId() {
 		return id;
 	}
+	
+	abstract public byte[] toBytes();
 
 	@Override
 	public int hashCode() {
