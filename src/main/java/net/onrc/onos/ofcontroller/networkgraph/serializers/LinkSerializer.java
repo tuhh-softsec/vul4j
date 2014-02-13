@@ -27,7 +27,7 @@ public class LinkSerializer extends SerializerBase<Link> {
 				link.getSourcePort().getNumber());
 		jsonGenerator.writeStringField("dst-switch", 
 				HexString.toHexString(link.getDestinationSwitch().getDpid()));
-		jsonGenerator.writeNumberField("src-port", 
+		jsonGenerator.writeNumberField("dst-port", 
 				link.getDestinationPort().getNumber());
 		jsonGenerator.writeEndObject();
 	}

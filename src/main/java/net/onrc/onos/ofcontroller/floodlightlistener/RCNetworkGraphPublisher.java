@@ -2,7 +2,9 @@ package net.onrc.onos.ofcontroller.floodlightlistener;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -10,17 +12,25 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.core.util.SingletonTask;
+import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
+import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraphDiscoveryInterface;
+import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
+import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
+import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
+import net.onrc.onos.registry.controller.RegistryException;
 
 import org.openflow.protocol.OFPhysicalPort;
+import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +56,103 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	private IDatagridService datagridService;
 	private INetworkGraphService networkGraphService;
 
+	private NetworkGraph networkGraph;
 	private NetworkGraphDiscoveryInterface networkGraphDiscoveryInterface;
+	
+	private static final String ENABLE_CLEANUP_PROPERTY = "EnableCleanup";
+	private boolean cleanupEnabled = true;
+	private static final int CLEANUP_TASK_INTERVAL = 60; // in seconds
+	private SingletonTask cleanupTask;
 
+    /**
+     *  Cleanup and synch switch state from registry
+     */
+    private class SwitchCleanup implements ControlChangeCallback, Runnable {
+        @Override
+        public void run() {
+            String old = Thread.currentThread().getName();
+            Thread.currentThread().setName("SwitchCleanup@" + old);
+            
+            try {
+            	log.debug("Running cleanup thread");
+                switchCleanup();
+            }
+            catch (Exception e) {
+                log.error("Error in cleanup thread", e);
+            } finally {
+                cleanupTask.reschedule(CLEANUP_TASK_INTERVAL,
+                                          TimeUnit.SECONDS);
+                Thread.currentThread().setName(old);
+            }
+        }
+        
+        private void switchCleanup() {
+        	Iterable<Switch> switches = networkGraph.getSwitches();
+
+        	log.debug("Checking for inactive switches");
+        	// For each switch check if a controller exists in controller registry
+        	for (Switch sw: switches) {
+    			try {
+    				String controller = 
+    						registryService.getControllerForSwitch(sw.getDpid());
+    				if (controller == null) {
+    					log.debug("Requesting control to set switch {} INACTIVE", 
+    							HexString.toHexString(sw.getDpid()));
+    					registryService.requestControl(sw.getDpid(), this);
+    				}
+    			} catch (RegistryException e) {
+    				log.error("Caught RegistryException in cleanup thread", e);
+    			}
+    		}
+        }
+
+		@Override
+		public void controlChanged(long dpid, boolean hasControl) {
+			if (hasControl) {
+				log.debug("Got control to set switch {} INACTIVE", HexString.toHexString(dpid));
+				/*
+				// Get the affected ports
+				List<Short> ports = swStore.getPorts(HexString.toHexString(dpid));
+				// Get the affected links
+				List<Link> links = linkStore.getLinks(HexString.toHexString(dpid));
+				// Get the affected reverse links
+				List<Link> reverseLinks = linkStore.getReverseLinks(HexString.toHexString(dpid));
+				links.addAll(reverseLinks);
+				*/
+				SwitchEvent switchEvent = new SwitchEvent(dpid);
+				networkGraphDiscoveryInterface.removeSwitchEvent(switchEvent);
+			    registryService.releaseControl(dpid);
+
+			    // TODO publish UPDATE_SWITCH event here
+			    //
+			    // NOTE: Here we explicitly send
+			    // notification to remove the
+			    // switch, because it is inactive
+			    //
+			    /*
+			    TopologyElement topologyElement =
+				new TopologyElement(dpid);
+			    datagridService.notificationSendTopologyElementRemoved(topologyElement);
+
+			    // Publish: remove the affected ports
+			    for (Short port : ports) {
+				TopologyElement topologyElementPort =
+				    new TopologyElement(dpid, port);
+				datagridService.notificationSendTopologyElementRemoved(topologyElementPort);
+			    }
+			    // Publish: remove the affected links
+			    for (Link link : links) {
+				TopologyElement topologyElementLink =
+				    new TopologyElement(link.getSrc(),
+							link.getSrcPort(),
+							link.getDst(),
+							link.getDstPort());
+				datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
+			    }
+			    */
+			}
+		}
+    }
 
 	@Override
 	public void linkDiscoveryUpdate(LDUpdate update) {
@@ -107,6 +212,13 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		}
 
 		SwitchEvent switchEvent = new SwitchEvent(sw.getId());
+		
+		List<PortEvent> portEvents = new ArrayList<PortEvent>();
+		for (OFPhysicalPort port : sw.getPorts()) {
+			portEvents.add(new PortEvent(sw.getId(), (long)port.getPortNumber()));
+		}
+		switchEvent.setPorts(portEvents);
+		
 		networkGraphDiscoveryInterface.putSwitchEvent(switchEvent);
 
 		/*
@@ -114,19 +226,21 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	    TopologyElement topologyElement =
 		new TopologyElement(sw.getId());
 	    datagridService.notificationSendTopologyElementAdded(topologyElement);
-
+		*/
+		
 	    // Publish: add the ports
 	    // TODO: Add only ports that are UP?
 	    for (OFPhysicalPort port : sw.getPorts()) {
-			TopologyElement topologyElementPort =
-			    new TopologyElement(sw.getId(), port.getPortNumber());
-			datagridService.notificationSendTopologyElementAdded(topologyElementPort);
+			//TopologyElement topologyElementPort =
+			    //new TopologyElement(sw.getId(), port.getPortNumber());
+			//datagridService.notificationSendTopologyElementAdded(topologyElementPort);
 
 			// Allow links to be discovered on this port now that it's
 			// in the database
 			linkDiscovery.RemoveFromSuppressLLDPs(sw.getId(), port.getPortNumber());
 	    }
 
+	    /*
 	    // Add all links that might be connected already
 	    List<Link> links = linkStore.getLinks(HexString.toHexString(sw.getId()));
 	    // Add all reverse links as well
@@ -147,8 +261,8 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	@Override
 	public void removedSwitch(IOFSwitch sw) {
 		// TODO move to cleanup thread
-		SwitchEvent switchEvent = new SwitchEvent(sw.getId());
-		networkGraphDiscoveryInterface.removeSwitchEvent(switchEvent);
+		//SwitchEvent switchEvent = new SwitchEvent(sw.getId());
+		//networkGraphDiscoveryInterface.removeSwitchEvent(switchEvent);
 	}
 
 	@Override
@@ -184,6 +298,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	            new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFloodlightProviderService.class);
         l.add(ILinkDiscoveryService.class);
+        l.add(IThreadPoolService.class);
         l.add(IControllerRegistryService.class);
         l.add(IDatagridService.class);
         l.add(INetworkGraphService.class);
@@ -207,6 +322,26 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		floodlightProvider.addOFSwitchListener(this);
 		linkDiscovery.addListener(this);
 
-		networkGraphDiscoveryInterface = networkGraphService.getNetworkGraphDiscoveryInterface();
+		networkGraph = networkGraphService.getNetworkGraph();
+		networkGraphDiscoveryInterface = 
+				networkGraphService.getNetworkGraphDiscoveryInterface();
+		
+		// Run the cleanup thread
+		String enableCleanup = 
+				context.getConfigParams(this).get(ENABLE_CLEANUP_PROPERTY);
+		if (enableCleanup != null && enableCleanup.toLowerCase().equals("false")) {
+			cleanupEnabled = false;
+		}
+		
+		log.debug("Cleanup thread is {}enabled", (cleanupEnabled)? "" : "not ");
+		
+		if (cleanupEnabled) {
+			IThreadPoolService threadPool = 
+					context.getServiceImpl(IThreadPoolService.class);
+			cleanupTask = new SingletonTask(threadPool.getScheduledExecutor(), 
+					new SwitchCleanup());
+			// Run the cleanup task immediately on startup
+			cleanupTask.reschedule(0, TimeUnit.SECONDS);
+		}
 	}
 }

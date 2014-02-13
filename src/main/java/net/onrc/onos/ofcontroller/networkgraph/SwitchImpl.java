@@ -1,10 +1,12 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -71,8 +73,17 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 
 	@Override
 	public Collection<Device> getDevices() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Should switch also store a list of attached devices to avoid
+		// calculating this every time?
+		List<Device> devices = new ArrayList<Device>();
+		
+		for (Port port : ports.values()) {
+			for (Device device : port.getDevices()) {
+				devices.add(device);
+			}
+		}
+		
+		return devices;
 	}
 
 	public void addPort(Port port) {
