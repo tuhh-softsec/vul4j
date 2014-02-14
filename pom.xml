@@ -140,10 +140,7 @@
 					</dependencies>
 					<configuration>
 						<goals>source:jar javadoc:jar deploy site:site site:deploy</goals>
-
-						<arguments>-pl
-							esigate-server,esigate-cas,esigate-distribution
-							-am</arguments>
+						<arguments>-pl esigate-server,esigate-cas,esigate-distribution -am</arguments>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -662,7 +659,7 @@
 		<module>esigate-app-casified-aggregated1</module>
 		<module>esigate-app-casified-aggregated2</module>
 		<module>esigate-app-casified-aggregator</module>
-		
+
 		<module>esigate-war</module>
 		<module>esigate-server</module>
 		<module>esigate-distribution</module>
