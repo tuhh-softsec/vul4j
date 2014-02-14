@@ -1,6 +1,5 @@
 package net.onrc.onos.intent;
 
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)
@@ -9,11 +8,9 @@ public class IntentDeserializer {
 	private String id;
 	private String className;
 	private Intent intent = null;
-	private NetworkGraph g;
 
-	public IntentDeserializer(NetworkGraph graph, byte[] b) {
+	public IntentDeserializer(byte[] b) {
 		// TODO deserialize object and get (unique id, class name, object data) tuple.
-		g = graph;
 		id = "id";
 		className = "pi";
 		byte[] objectData = null;
@@ -35,17 +32,17 @@ public class IntentDeserializer {
 
 	private void parsePathIntent(byte[] objectData) {
 		// TODO deserialize object and create instance
-		intent = new PathIntent(id, null, null, null);
+		intent = new PathIntent(id, null, 0, null);
 	}
 
 	private void parseShortestPathIntent(byte[] objectData) {
 		// TODO deserialize object and create instance
-		intent = new ShortestPathIntent(g, id, 0L, 0L, 0L, 0L, 0L, 0L);
+		intent = new ShortestPathIntent(id, 0L, 0L, 0L, 0L, 0L, 0L);
 	}
 
 	private void parseConstrainedShortestPathIntent(byte[] objectData) {
 		// TODO deserialize object and create instance
-		intent = new ConstrainedShortestPathIntent(g, id, 0L, 0L, 0L, 0L, 0L, 0L, 0.0);
+		intent = new ConstrainedShortestPathIntent(id, 0L, 0L, 0L, 0L, 0L, 0L, 0.0);
 	}
 
 	public Intent getIntent() {

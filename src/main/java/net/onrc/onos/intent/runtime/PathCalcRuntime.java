@@ -49,15 +49,15 @@ public class PathCalcRuntime {
 			}
 
 			ShortestPathIntent spIntent = (ShortestPathIntent) intent;
-			Switch srcSwitch = spIntent.getSourcePort().getSwitch();
-			Switch dstSwitch = spIntent.getDestinationPort().getSwitch();
+			Switch srcSwitch = graph.getSwitch(spIntent.getSrcSwitchDpid());
+			Switch dstSwitch = graph.getSwitch(spIntent.getDstSwitchDpid());
 			if (srcSwitch == null || dstSwitch == null) {
 				// incomplete intent.
 				// TODO should push back the intent to caller
 				continue;
 			}
 
-			Double bandwidth = null;
+			double bandwidth = 0.0;
 			ConstrainedBFSTree tree = null;
 			if (intent instanceof ConstrainedShortestPathIntent) {
 				bandwidth = ((ConstrainedShortestPathIntent) intent).getBandwidth();
@@ -72,7 +72,7 @@ public class PathCalcRuntime {
 				// TODO should push back the intent to caller
 				continue;
 			}
-
+			
 			pathIntents.addIntent(new PathIntent("pi" + intent.getId(), path, bandwidth, intent));
 		}
 		return pathIntents;

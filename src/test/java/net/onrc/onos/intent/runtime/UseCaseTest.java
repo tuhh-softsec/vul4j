@@ -49,9 +49,9 @@ public class UseCaseTest {
 	public void useCase1() {
 		// create shortest path intents
 		LinkedList<Intent> intents = new LinkedList<Intent>();
-		intents.add(new ShortestPathIntent(g, "1", 1L, 20L, 1L, 4L, 20L, 4L));
-		intents.add(new ShortestPathIntent(g, "2", 2L, 20L, 2L, 6L, 20L, 5L));
-		intents.add(new ShortestPathIntent(g, "3", 4L, 20L, 3L, 8L, 20L, 6L));
+		intents.add(new ShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 4L));
+		intents.add(new ShortestPathIntent("2", 2L, 20L, 2L, 6L, 20L, 5L));
+		intents.add(new ShortestPathIntent("3", 4L, 20L, 3L, 8L, 20L, 6L));
 
 		// compile high-level intents into low-level intents (calculate paths)
 		PathCalcRuntime runtime1 = new PathCalcRuntime(g);
@@ -65,11 +65,11 @@ public class UseCaseTest {
 	public void useCase2() {
 		// create constrained shortest path intents
 		LinkedList<Intent> intents = new LinkedList<Intent>();
-		intents.add(new ConstrainedShortestPathIntent(g, "1", 1L, 20L, 1L, 4L, 20L, 17L, 400.0));
-		intents.add(new ConstrainedShortestPathIntent(g, "2", 2L, 20L, 2L, 6L, 20L, 18L, 400.0));
-		intents.add(new ConstrainedShortestPathIntent(g, "3", 4L, 20L, 3L, 8L, 20L, 19L, 400.0));
-		intents.add(new ConstrainedShortestPathIntent(g, "4", 3L, 20L, 4L, 8L, 20L, 20L, 400.0));
-		intents.add(new ConstrainedShortestPathIntent(g, "5", 4L, 20L, 5L, 8L, 20L, 21L, 400.0));
+		intents.add(new ConstrainedShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 17L, 400.0));
+		intents.add(new ConstrainedShortestPathIntent("2", 2L, 20L, 2L, 6L, 20L, 18L, 400.0));
+		intents.add(new ConstrainedShortestPathIntent("3", 4L, 20L, 3L, 8L, 20L, 19L, 400.0));
+		intents.add(new ConstrainedShortestPathIntent("4", 3L, 20L, 4L, 8L, 20L, 20L, 400.0));
+		intents.add(new ConstrainedShortestPathIntent("5", 4L, 20L, 5L, 8L, 20L, 21L, 400.0));
 
 		// compile high-level intents into low-level intents (calculate paths)
 		PathCalcRuntime runtime1 = new PathCalcRuntime(g);
@@ -83,11 +83,11 @@ public class UseCaseTest {
 	public void useCase3() {
 		// create constrained & not best effort shortest path intents
 		LinkedList<Intent> intents = new LinkedList<Intent>();
-		intents.add(new ConstrainedShortestPathIntent(g, "1", 1L, 20L, 1L, 4L, 20L, 6L, 600.0));
-		intents.add(new ConstrainedShortestPathIntent(g, "2", 2L, 20L, 2L, 6L, 20L, 7L, 600.0));
-		intents.add(new ShortestPathIntent(g, "3", 4L, 20L, 3L, 8L, 20L, 8L));
-		intents.add(new ShortestPathIntent(g, "4", 4L, 20L, 4L, 8L, 20L, 9L));
-		intents.add(new ConstrainedShortestPathIntent(g, "5", 4L, 20L, 5L, 8L, 20L, 10L, 600.0));
+		intents.add(new ConstrainedShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 6L, 600.0));
+		intents.add(new ConstrainedShortestPathIntent("2", 2L, 20L, 2L, 6L, 20L, 7L, 600.0));
+		intents.add(new ShortestPathIntent("3", 4L, 20L, 3L, 8L, 20L, 8L));
+		intents.add(new ShortestPathIntent("4", 4L, 20L, 4L, 8L, 20L, 9L));
+		intents.add(new ConstrainedShortestPathIntent("5", 4L, 20L, 5L, 8L, 20L, 10L, 600.0));
 
 		// compile high-level intents into low-level intents (calculate paths)
 		PathCalcRuntime runtime1 = new PathCalcRuntime(g);

@@ -101,7 +101,7 @@ public class IntentResource extends ServerResource {
                 }
                 System.out.println("constructed node " + sb.toString());
                 sb.delete(0, sb.length());
-                intentDesializer = new IntentDeserializer(graph, sb.toString().getBytes());
+                intentDesializer = new IntentDeserializer(sb.toString().getBytes());
                 Intent intent = intentDesializer.getIntent();
                 intents.add(intent);
             }

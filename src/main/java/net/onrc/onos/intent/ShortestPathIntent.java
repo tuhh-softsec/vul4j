@@ -1,90 +1,66 @@
 package net.onrc.onos.intent;
 
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.networkgraph.Port;
+import net.onrc.onos.ofcontroller.util.Dpid;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class ShortestPathIntent extends Intent {
-	protected Port srcPort = null;
-	protected Port dstPort = null;
-	protected MACAddress srcMac = null;
-	protected MACAddress dstMac = null;
+	protected long srcSwitchDpid;
+	protected long srcPortNumber;
+	protected long srcMacAddress;
+	protected long dstSwitchDpid;
+	protected long dstPortNumber;
+	protected long dstMacAddress;
 
-	public ShortestPathIntent(String id,
-			Port srcPort, MACAddress srcMac,
-			Port dstPort, MACAddress dstMac) {
-		super(id);
-		this.srcPort = srcPort;
-		this.dstPort = dstPort;
-		this.srcMac = srcMac;
-		this.dstMac = dstMac;
+	/**
+	 * Default constructor for Kryo deserialization
+	 */
+	@Deprecated
+	public ShortestPathIntent() {
 	}
 
-	public ShortestPathIntent(NetworkGraph graph, String id,
+	public ShortestPathIntent(String id,
 			long srcSwitch, long srcPort, long srcMac,
 			long dstSwitch, long dstPort, long dstMac) {
 		super(id);
-		this.srcPort = graph.getSwitch(srcSwitch).getPort(srcPort);
-		this.dstPort = graph.getSwitch(dstSwitch).getPort(srcPort);
-		this.srcMac = MACAddress.valueOf(srcMac);
-		this.dstMac = MACAddress.valueOf(dstMac);
+		srcSwitchDpid = srcSwitch;
+		srcPortNumber = srcPort;
+		srcMacAddress = srcMac;
+		dstSwitchDpid = dstSwitch;
+		dstPortNumber = dstPort;
+		dstMacAddress = dstMac;
 	}
 
-	public static ShortestPathIntent fromBytes(NetworkGraph graph, byte[] bytes) {
-		Input input = new Input(bytes);
-		ShortestPathIntent intent = new ShortestPathIntent(graph,
-				input.readString(),
-				input.readLong(),
-				input.readLong(),
-				input.readLong(),
-				input.readLong(),
-				input.readLong(),
-				input.readLong());
-		input.close();
-		return intent;
-		}
-
-	public Port getSourcePort() {
-		return srcPort;
+	public long getSrcSwitchDpid() {
+		return srcSwitchDpid;
 	}
 
-	public MACAddress getSourceMac() {
-		return srcMac;
+	public long getSrcPortNumber() {
+		return srcPortNumber;
 	}
 
-	public Port getDestinationPort() {
-		return dstPort;
+	public long getSrcMac() {
+		return srcMacAddress;
 	}
 
-	public MACAddress getDestinationMac() {
-		return dstMac;
+	public long getDstSwitchDpid() {
+		return dstSwitchDpid;
+	}
+
+	public long getDstPortNumber() {
+		return dstPortNumber;
+	}
+
+	public long getDstMac() {
+		return dstMacAddress;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("srcPort:%s, srcMac:%s, dstPort:%s, dstMac:%s",
-				srcPort.toString(), srcMac.toString(),
-				dstPort.toString(), dstMac.toString());
-	}
-
-	@Override
-	public byte[] toBytes() {
-		byte[] buffer = new byte[1024];
-		Output output = new Output(buffer, -1);
-		output.writeString(id);
-		output.writeLong(srcPort.getSwitch().getDpid());
-		output.writeLong(srcPort.getNumber());
-		output.writeLong(srcMac.toLong());
-		output.writeLong(dstPort.getSwitch().getDpid());
-		output.writeLong(dstPort.getNumber());
-		output.writeLong(dstMac.toLong());
-		output.close();
-		return output.toBytes();
+		return String.format("srcDpid:%s, srcPort:%d, srcMac:%s, dstDpid:%s, dstPort:%d, dstMac:%s",
+				new Dpid(srcSwitchDpid), srcPortNumber, MACAddress.valueOf(srcMacAddress),
+				new Dpid(dstSwitchDpid), dstPortNumber, MACAddress.valueOf(dstMacAddress));
 	}
 }
