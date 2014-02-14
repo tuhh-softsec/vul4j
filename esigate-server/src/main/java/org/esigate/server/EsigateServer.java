@@ -201,7 +201,9 @@ public final class EsigateServer {
         // } else {
         workDir = new File(currentDir, "work");
         // }
-        FileUtils.deleteDirectory(workDir);
+        if( workDir.exists()){
+           FileUtils.deleteDirectory(workDir);
+        }
         context.setTempDirectory(workDir);
     }
 
