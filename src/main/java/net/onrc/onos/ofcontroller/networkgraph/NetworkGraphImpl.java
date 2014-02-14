@@ -124,16 +124,23 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	}
 
 	@Override
-	public void putDeviceEvent(DeviceEvent device) {
-	    // XXX if prepareFor~ method returned false, event should be dropped
-		// TODO Auto-generated method stub
-
+	public void putDeviceEvent(DeviceEvent deviceEvent) {
+		if (prepareForAddDeviceEvent(deviceEvent)) {
+//			datastore.addDevice(deviceEvent);
+			// TODO send out notification
+		}
+		// TODO handle invariant violation
+		// XXX if prepareFor~ method returned false, event should be dropped
 	}
 
 	@Override
 	public void removeDeviceEvent(DeviceEvent deviceEvent) {
-		// TODO Auto-generated method stub
-
+		if (prepareForRemoveDeviceEvent(deviceEvent)) {
+//			datastore.removeDevice(deviceEvent);
+			// TODO send out notification
+		}
+		// TODO handle invariant violation
+		// XXX if prepareFor~ method returned false, event should be dropped
 	}
 
 	/* *****************
