@@ -96,7 +96,7 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:http://svn.code.sf.net/p/webassembletool/code/trunk</connection>
+		<connection>scm:svn:https://svn.code.sf.net/p/webassembletool/code/trunk</connection>
 		<developerConnection>scm:svn:https://svn.code.sf.net/p/webassembletool/code/trunk</developerConnection>
 		<url>http://svn.code.sf.net/p/webassembletool/code/trunk/</url>
 	</scm>
