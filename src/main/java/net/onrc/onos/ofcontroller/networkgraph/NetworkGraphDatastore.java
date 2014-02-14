@@ -119,47 +119,47 @@ public class NetworkGraphDatastore {
 
 	public void addPort(PortEvent port) {
 		log.debug("Adding port {}", port);
-//		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
-//
-//		try {
-//			rcSwitch.read();
-//		} catch (ObjectDoesntExistException e) {
-//			log.warn("Add port failed because switch {} doesn't exist", sw.getDpid(), e);
-//			return;
-//		}
-//
-//		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
-//		rcPort.setStatus(RCPort.STATUS.ACTIVE);
-//		// TODO add description into RCPort
-//		//rcPort.setDescription(port.getDescription());
-//		rcSwitch.addPortId(rcPort.getId());
-//
-//		writeObject(rcPort);
-//		writeObject(rcSwitch);
+		//RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
+
+		//try {
+			//rcSwitch.read();
+		//} catch (ObjectDoesntExistException e) {
+			//log.warn("Add port failed because switch {} doesn't exist", sw.getDpid(), e);
+			//return;
+		//}
+
+		RCPort rcPort = new RCPort(port.getDpid(), port.getNumber());
+		rcPort.setStatus(RCPort.STATUS.ACTIVE);
+		// TODO add description into RCPort
+		//rcPort.setDescription(port.getDescription());
+		//rcSwitch.addPortId(rcPort.getId());
+
+		writeObject(rcPort);
+		//writeObject(rcSwitch);
 	}
 
 	public void deactivatePort(PortEvent port) {
 		log.debug("Deactivating port {}", port);
-//		RCPort rcPort = new RCPort(port.getSwitch().getDpid(), (long)port.getNumber());
-//
-//		for (int i = 0; i < NUM_RETRIES; i++) {
-//			try {
-//				rcPort.read();
-//			} catch (ObjectDoesntExistException e) {
-//				// oh well, we were deactivating anyway
-//				log.warn("Trying to deactivate a port that doesn't exist: {}", port);
-//				return;
-//			}
-//
-//			rcPort.setStatus(RCPort.STATUS.INACTIVE);
-//
-//			try {
-//				rcPort.update();
-//				break;
-//			} catch (ObjectDoesntExistException | WrongVersionException e) {
-//				// retry
-//			}
-//		}
+		RCPort rcPort = new RCPort(port.getDpid(), port.getNumber());
+
+		for (int i = 0; i < NUM_RETRIES; i++) {
+			try {
+				rcPort.read();
+			} catch (ObjectDoesntExistException e) {
+				// oh well, we were deactivating anyway
+				log.warn("Trying to deactivate a port that doesn't exist: {}", port);
+				return;
+			}
+
+			rcPort.setStatus(RCPort.STATUS.INACTIVE);
+
+			try {
+				rcPort.update();
+				break;
+			} catch (ObjectDoesntExistException | WrongVersionException e) {
+				// retry
+			}
+		}
 	}
 
 	public void addLink(LinkEvent linkEvent) {

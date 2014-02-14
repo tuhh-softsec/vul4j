@@ -32,12 +32,12 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 
 	protected void setToPorts() {
 		((PortImpl)srcPort).setOutgoingLink(this);
-		((PortImpl)srcPort).setIncomingLink(this);
+		((PortImpl)dstPort).setIncomingLink(this);
 	}
 
 	protected void unsetFromPorts() {
 		((PortImpl)srcPort).setOutgoingLink(null);
-		((PortImpl)srcPort).setIncomingLink(null);
+		((PortImpl)dstPort).setIncomingLink(null);
 	}
 
 	@Override

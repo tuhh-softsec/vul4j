@@ -85,14 +85,20 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Override
 	public void putPortEvent(PortEvent portEvent) {
-		// TODO Auto-generated method stub
-
+		if (prepareForAddPortEvent(portEvent)) {
+			datastore.addPort(portEvent);
+			putPort(portEvent);
+			// TODO send out notification
+		}
 	}
 
 	@Override
 	public void removePortEvent(PortEvent portEvent) {
-		// TODO Auto-generated method stub
-
+		if (prepareForRemovePortEvent(portEvent)) {
+			datastore.deactivatePort(portEvent);
+			removePort(portEvent);
+			// TODO send out notification
+		}
 	}
 
 	@Override
@@ -223,7 +229,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    }
 	    // Src/Dst Port must exist
 	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
-	    Port dstPort = srcSw.getPort(linkEvt.getDst().number);
+	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
 	    if ( srcPort == null || dstPort == null ) {
 		return false;
 	    }
@@ -250,13 +256,24 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    Switch srcSw = getSwitch(linkEvt.getSrc().dpid);
 	    Switch dstSw = getSwitch(linkEvt.getDst().dpid);
 	    if ( srcSw == null || dstSw == null ) {
+	    log.warn("Rejecting addLink {} because switch doesn't exist", linkEvt);
 		return false;
 	    }
 	    // Src/Dst Port must exist
 	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
 	    Port dstPort = srcSw.getPort(linkEvt.getDst().number);
 	    if ( srcPort == null || dstPort == null ) {
+	    log.warn("Rejecting addLink {} because port doesn't exist", linkEvt);
 		return false;
+	    }
+	    
+	    Link link = srcPort.getOutgoingLink();
+	    
+	    if (link == null || 
+	    		!link.getDestinationPortNumber().equals(linkEvt.getDst().number)
+	    		|| !link.getDestinationSwitchDpid().equals(linkEvt.getDst().dpid)) {
+	    log.warn("Rejecting removeLink {} because link doesn't exist", linkEvt);
+	  	return false;
 	    }
 
 	    // Prep: None

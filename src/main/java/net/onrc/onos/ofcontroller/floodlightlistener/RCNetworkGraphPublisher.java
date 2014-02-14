@@ -194,14 +194,15 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 
 	@Override
 	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
-		// TODO Auto-generated method stub
-
+		PortEvent portEvent = new PortEvent(switchId, (long)port.getPortNumber());
+		networkGraphDiscoveryInterface.putPortEvent(portEvent);
+		linkDiscovery.RemoveFromSuppressLLDPs(switchId, port.getPortNumber());
 	}
 
 	@Override
 	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
-		// TODO Auto-generated method stub
-
+		PortEvent portEvent = new PortEvent(switchId, (long)port.getPortNumber());
+		networkGraphDiscoveryInterface.removePortEvent(portEvent);
 	}
 
 	@Override
