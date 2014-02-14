@@ -638,18 +638,22 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		log.error("Device {} on Port {} should have been removed prior to adding Link {}", d, dstPort, linkEvt);
 		DeviceImpl dev = getDeviceImpl(d);
 		dev.removeAttachmentPoint(dstPort);
-		// XXX This implies that change is made to Device Object,
-		// which need to be written to DB, how should that be done?
-		// should we write here or ignore and leave DB in inconsistent state?
+		// This implies that change is made to Device Object.
+		// sending Device attachment point removed event
+		DeviceEvent rmEvent = new DeviceEvent(d.getMacAddress());
+		rmEvent.addAttachmentPoint(new SwitchPort(dstPort.getDpid(), dstPort.getNumber()));
+		removeDeviceEvent(rmEvent);
 	    }
 	    dstPortMem.removeAllDevice();
 	    for(Device d : srcPortMem.getDevices() ) {
 		log.error("Device {} on Port {} should have been removed prior to adding Link {}", d, srcPort, linkEvt);
 		DeviceImpl dev = getDeviceImpl(d);
 		dev.removeAttachmentPoint(srcPort);
-		// XXX This implies that change is made to Device Object,
-		// which need to be written to DB, how should that be done?
-		// should we write here or ignore and leave DB in inconsistent state?
+		// This implies that change is made to Device Object.
+		// sending Device attachment point removed event
+		DeviceEvent rmEvent = new DeviceEvent(d.getMacAddress());
+		rmEvent.addAttachmentPoint(new SwitchPort(dstPort.getDpid(), dstPort.getNumber()));
+		removeDeviceEvent(rmEvent);
 	    }
 	    srcPortMem.removeAllDevice();
 
