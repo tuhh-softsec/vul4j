@@ -90,6 +90,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 			putPort(portEvent);
 			// TODO send out notification
 		}
+		// TODO handle invariant violation
 	}
 
 	@Override
@@ -99,6 +100,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 			removePort(portEvent);
 			// TODO send out notification
 		}
+		// TODO handle invariant violation
 	}
 
 	@Override
