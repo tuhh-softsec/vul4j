@@ -414,7 +414,10 @@ public class Topology {
     	    //
     	    // The Switch info
     	    //
-    	    String nodeDpid = nodeVertex.getProperty("dpid").toString();
+	    Object obj = nodeVertex.getProperty("dpid");
+	    if (obj == null)
+		continue;	// Ignore vertices with empty attributes
+    	    String nodeDpid = obj.toString();
     	    long nodeId = HexString.toLong(nodeDpid);
     	    Node me = nodesMap.get(nodeId);
     	    if (me == null)
@@ -424,12 +427,17 @@ public class Topology {
     	    // The local Port info
     	    //
     	    for (Vertex myPortVertex : nodeVertex.getVertices(Direction.OUT, "on")) {
+		obj = myPortVertex.getProperty("state");
+		if (obj == null)
+		    continue;	// Ignore vertices with empty attributes
     		// Ignore inactive ports
-    		if (! myPortVertex.getProperty("state").toString().equals("ACTIVE"))
+    		if (! obj.toString().equals("ACTIVE"))
     		    continue;
 
     		int myPort = 0;
-    		Object obj = myPortVertex.getProperty("number");
+    		obj = myPortVertex.getProperty("number");
+		if (obj == null)
+		    continue;	// Ignore vertices with empty attributes
     		if (obj instanceof Short) {
     		    myPort = (Short)obj;
     		} else if (obj instanceof Integer) {
@@ -438,13 +446,18 @@ public class Topology {
     		me.addPort(myPort);
 
     		for (Vertex neighborPortVertex : myPortVertex.getVertices(Direction.OUT, "link")) {
+		    obj = neighborPortVertex.getProperty("state");
+		    if (obj == null)
+			continue;    // Ignore vertices with empty attributes
     		    // Ignore inactive ports
-    		    if (! neighborPortVertex.getProperty("state").toString().equals("ACTIVE")) {
+    		    if (! obj.toString().equals("ACTIVE")) {
     		    	continue;
     		    }
 
     		    int neighborPort = 0;
     		    obj = neighborPortVertex.getProperty("number");
+		    if (obj == null)
+			continue;    // Ignore vertices with empty attributes
     		    if (obj instanceof Short) {
     			neighborPort = (Short)obj;
     		    } else if (obj instanceof Integer) {
@@ -454,12 +467,18 @@ public class Topology {
     		    // The neighbor Switch info
     		    //
     		    for (Vertex neighborVertex : neighborPortVertex.getVertices(Direction.IN, "on")) {
+			obj = neighborVertex.getProperty("state");
+			if (obj == null)
+			    continue;  // Ignore vertices with empty attributes
     			// Ignore inactive switches
-    			String state = neighborVertex.getProperty("state").toString();
+    			String state = obj.toString();
     			if (! state.equals(SwitchState.ACTIVE.toString()))
     			    continue;
 
-    			String neighborDpid = neighborVertex.getProperty("dpid").toString();
+			obj = neighborVertex.getProperty("dpid");
+			if (obj == null)
+			    continue;  // Ignore vertices with empty attributes
+    			String neighborDpid = obj.toString();
     			long neighborId = HexString.toLong(neighborDpid);
     			Node neighbor = nodesMap.get(neighborId);
     			if (neighbor == null)
@@ -479,16 +498,24 @@ public class Topology {
 	// Load all switches into Map
 	Iterable<ISwitchObject> switches = dbHandler.getAllSwitches();
 	for (ISwitchObject switchObj : switches) {
+	    String switchState = switchObj.getState();
+	    if (switchState == null)
+		continue;	// Ignore vertices with empty attributes
 	    // Ignore inactive ports
-	    if (!switchObj.getState().equals(SwitchState.ACTIVE.toString())) {
+	    if (!switchState.equals(SwitchState.ACTIVE.toString())) {
 		continue;
 	    }
-	    Vertex nodeVertex = switchObj.asVertex();
+
 	    //
 	    // The Switch info
 	    //
-	    String nodeDpid = nodeVertex.getProperty("dpid").toString();
+	    Vertex nodeVertex = switchObj.asVertex();
+	    Object obj = nodeVertex.getProperty("dpid");
+	    if (obj == null)
+		continue;	// Ignore vertices with empty attributes
+	    String nodeDpid = obj.toString();
 	    long nodeId = HexString.toLong(nodeDpid);
+
 	    addNode(nodeId);
 	}
 
@@ -499,13 +526,18 @@ public class Topology {
 	for (IPortObject myPortObj : ports) {
 	    Vertex myPortVertex = myPortObj.asVertex();
 
+	    Object obj = myPortVertex.getProperty("state");
+	    if (obj == null)
+		continue;	// Ignore vertices with empty attributes
 	    // Ignore inactive ports
-	    if (! myPortVertex.getProperty("state").toString().equals("ACTIVE")) {
+	    if (! obj.toString().equals("ACTIVE")) {
 		continue;
 	    }
 
 	    short myPort = 0;
 	    String idStr = myPortObj.getPortId();
+	    if (idStr == null)
+		continue;	// Ignore vertices with empty attributes
 	    String[] splitter = idStr.split(IDBOperation.PORT_ID_DELIM);
 	    if (splitter.length != 2) {
 		log.error("Invalid port_id : {}", idStr);
@@ -533,12 +565,19 @@ public class Topology {
 	    // The neighbor Port info
 	    //
 	    for (Vertex neighborPortVertex : myPortVertex.getVertices(Direction.OUT, "link")) {
+		obj = neighborPortVertex.getProperty("state");
+		if (obj == null)
+		    continue;	// Ignore vertices with empty attributes
 		// Ignore inactive ports
-		if (! neighborPortVertex.getProperty("state").toString().equals("ACTIVE")) {
+		if (! obj.toString().equals("ACTIVE")) {
 		    continue;
 		}
+
 		int neighborPort = 0;
-		idStr = neighborPortVertex.getProperty("port_id").toString();
+		obj = neighborPortVertex.getProperty("port_id");
+		if (obj == null)
+		    continue;	// Ignore vertices with empty attributes
+		idStr = obj.toString();
 		splitter = idStr.split(IDBOperation.PORT_ID_DELIM);
 		if (splitter.length != 2) {
 		    log.error("Invalid port_id : {}", idStr);
