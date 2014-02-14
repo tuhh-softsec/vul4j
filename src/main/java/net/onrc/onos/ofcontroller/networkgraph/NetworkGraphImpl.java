@@ -265,26 +265,28 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    Switch srcSw = getSwitch(linkEvt.getSrc().dpid);
 	    Switch dstSw = getSwitch(linkEvt.getDst().dpid);
 	    if ( srcSw == null || dstSw == null ) {
-	    log.warn("Rejecting addLink {} because switch doesn't exist", linkEvt);
+		log.warn("Rejecting removeLink {} because switch doesn't exist", linkEvt);
 		return false;
 	    }
 	    // Src/Dst Port must exist
 	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
-	    Port dstPort = srcSw.getPort(linkEvt.getDst().number);
+	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
 	    if ( srcPort == null || dstPort == null ) {
-	    log.warn("Rejecting addLink {} because port doesn't exist", linkEvt);
+		log.warn("Rejecting removeLink {} because port doesn't exist", linkEvt);
 		return false;
 	    }
-	    
-	    Link link = srcPort.getOutgoingLink();
-	    
-	    if (link == null || 
-	    		!link.getDestinationPortNumber().equals(linkEvt.getDst().number)
-	    		|| !link.getDestinationSwitchDpid().equals(linkEvt.getDst().dpid)) {
-	    log.warn("Rejecting removeLink {} because link doesn't exist", linkEvt);
-	  	return false;
-	    }
 
+	    Link link = srcPort.getOutgoingLink();
+
+	    // Link is already gone, or different Link exist in memory
+	    // XXX Check if we should reject or just accept these cases.
+	    // it should be harmless to remove the Link on event from DB anyways
+	    if (link == null ||
+		    !link.getDestinationPortNumber().equals(linkEvt.getDst().number)
+		    || !link.getDestinationSwitchDpid().equals(linkEvt.getDst().dpid)) {
+		log.warn("Rejecting removeLink {} because link doesn't exist", linkEvt);
+		return false;
+	    }
 	    // Prep: None
 	    return true;
 	}
@@ -329,7 +331,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    deviceEvt.setAttachmentPoints(attachmentPoints);
 
 	    if ( deviceEvt.getAttachmentPoints().isEmpty() && deviceEvt.getIpAddresses().isEmpty() ) {
-		// XXX return false to represent: Nothing left to do for this event. Caller should drop event
+		// return false to represent: Nothing left to do for this event. Caller should drop event
 		return false;
 	    }
 
@@ -353,8 +355,6 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Override
 	public void putSwitchReplicationEvent(SwitchEvent switchEvent) {
-	    // TODO who is in charge of ignoring event triggered by my self?
-	    // This method or caller?
 	    if (prepareForAddSwitchEvent(switchEvent)) {
 		putSwitch(switchEvent);
 	    }
@@ -363,72 +363,58 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Override
 	public void removeSwitchReplicationEvent(SwitchEvent switchEvent) {
-	    // TODO who is in charge of ignoring event triggered by my self?
-	    // This method or caller?
 	    if (prepareForRemoveSwitchEvent(switchEvent)) {
 		removeSwitch(switchEvent);
 	    }
-	    // TODO Auto-generated method stub
+	    // TODO handle invariant violation
 	}
 
 	@Override
 	public void putPortReplicationEvent(PortEvent portEvent) {
-	    // TODO who is in charge of ignoring event triggered by my self?
-	    // This method or caller?
 	    if (prepareForAddPortEvent(portEvent)) {
 		putPort(portEvent);
 	    }
-	    // TODO Auto-generated method stub
+	    // TODO handle invariant violation
 	}
 
 	@Override
 	public void removePortReplicationEvent(PortEvent portEvent) {
-	    // TODO who is in charge of ignoring event triggered by my self?
-	    // This method or caller?
 	    if (prepareForRemovePortEvent(portEvent)) {
 		removePort(portEvent);
 	    }
-	    // TODO Auto-generated method stub
+	    // TODO handle invariant violation
 	}
 
 	@Override
 	public void putLinkReplicationEvent(LinkEvent linkEvent) {
-	    // TODO who is in charge of ignoring event triggered by my self?
-	    // This method or caller?
 	    if (prepareForAddLinkEvent(linkEvent)) {
 		putLink(linkEvent);
 	    }
-	    // TODO Auto-generated method stub
+	    // TODO handle invariant violation
 	}
 
 	@Override
 	public void removeLinkReplicationEvent(LinkEvent linkEvent) {
-	    // TODO who is in charge of ignoring event triggered by my self?
-	    // This method or caller?
 	    if (prepareForRemoveLinkEvent(linkEvent)) {
 		removeLink(linkEvent);
 	    }
-	    // TODO Auto-generated method stub
+	    // TODO handle invariant violation
 	}
 
 	@Override
 	public void putDeviceReplicationEvent(DeviceEvent deviceEvent) {
-	    // TODO who is in charge of ignoring event triggered by my self?
-	    // This method or caller?
 	    if (prepareForAddDeviceEvent(deviceEvent)) {
 		putDevice(deviceEvent);
 	    }
-	    // TODO Auto-generated method stub
+	    // TODO handle invariant violation
 	}
 
 	@Override
 	public void removeDeviceReplicationEvent(DeviceEvent deviceEvent) {
-	    // TODO who is in charge of ignoring event triggered by my self?
-	    // This method or caller?
 	    if (prepareForRemoveDeviceEvent(deviceEvent)) {
 		removeDevice(deviceEvent);
 	    }
-	    // TODO Auto-generated method stub
+	    // TODO handle invariant violation
 	}
 
 	/* ************************************************
