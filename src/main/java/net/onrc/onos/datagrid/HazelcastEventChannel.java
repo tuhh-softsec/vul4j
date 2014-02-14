@@ -1,12 +1,11 @@
 package net.onrc.onos.datagrid;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -27,8 +26,9 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
     private Class<?> typeK;			// The class type of the key
     private Class<?> typeV;			// The class type of the value
     private IMap<K, byte[]> channelMap = null;	// The Hazelcast channel map
-    private List<IEventChannelListener<K, V>> listeners = // Channel listeners
-	new ArrayList<IEventChannelListener<K, V>>();
+    // The channel listeners
+    private CopyOnWriteArrayList<IEventChannelListener<K, V>> listeners =
+	new CopyOnWriteArrayList<IEventChannelListener<K, V>>();
 
     // The map entry listener
     private MapEntryListener mapEntryListener = new MapEntryListener<K>();

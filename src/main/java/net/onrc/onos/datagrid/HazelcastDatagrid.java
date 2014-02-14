@@ -762,8 +762,9 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
      * @param typeV the type of the Value in the Key-Value store.
      * @return the event channel for the channel name.
      */
-    private <K, V> IEventChannel<K, V> createChannelImpl(String channelName,
-					     Class<K> typeK, Class<V> typeV) {
+    private synchronized <K, V> IEventChannel<K, V> createChannelImpl(
+					String channelName,
+					Class<K> typeK, Class<V> typeV) {
 	IEventChannel<K, V> castedEventChannel;
 	IEventChannel<?, ?> genericEventChannel =
 	    eventChannels.get(channelName);
