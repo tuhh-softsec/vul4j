@@ -304,17 +304,21 @@ public class RCObject {
 	JRamCloud rcClient = RCClient.getClient();
 
 	final int reqs = req.size();
-	JRamCloud.multiReadObject mrObjs[] = new JRamCloud.multiReadObject[reqs];
+
+        long tableId[] = new long[reqs];
+        byte[] key[] = new byte[reqs][];
+        short keySize[] = new short[reqs];
 
 	// setup multi-read operation
 	for (int i = 0; i < reqs; ++i) {
 	    RCObject obj = req.get(i);
-	    mrObjs[i] = new JRamCloud.multiReadObject(obj.getTableId(),
-		    obj.getKey());
+            tableId[i] = obj.getTableId();
+            key[i] = obj.getKey();
+            keySize[i] = (short) key[i].length;
 	}
 
 	// execute
-	JRamCloud.Object results[] = rcClient.multiRead(mrObjs);
+	JRamCloud.Object results[] = rcClient.multiRead(tableId, key, keySize, reqs);
 	assert (results.length <= req.size());
 
 	// reflect changes to RCObject

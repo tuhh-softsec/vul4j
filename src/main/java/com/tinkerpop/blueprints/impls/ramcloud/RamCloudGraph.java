@@ -433,17 +433,21 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
 
 	    final int mreadMax = 400;
 	    final int size = Math.min(mreadMax, vertexList.size());
-	    JRamCloud.multiReadObject vertPropTableMread[] = new JRamCloud.multiReadObject[size];
+
+            long tableId[] = new long[size];
+            byte[] keyData[] = new byte[size][];
+            short keySize[] = new short[size];
 
 	    int vertexNum = 0;
 	    for (Object vert : vertexList) {
-		byte[] rckey =
+                tableId[vertexNum] = vertPropTableId;
+		keyData[vertexNum] =
 			ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong((Long) vert).array();
-		vertPropTableMread[vertexNum] = new JRamCloud.multiReadObject(vertPropTableId, rckey);
+		keySize[vertexNum] = (short) keyData[vertexNum].length;
 		if (vertexNum >= (mreadMax - 1)) {
 		    pm.multiread_start("RamCloudGraph getVertices()");
 		    JRamCloud.Object outvertPropTable[] =
-			    vertTable.multiRead(vertPropTableMread);
+			    vertTable.multiRead(tableId, keyData, keySize, vertexNum);
 		    pm.multiread_end("RamCloudGraph getVertices()");
 		    for (int i = 0; i < outvertPropTable.length; i++) {
 			if (outvertPropTable[i] != null) {
@@ -457,14 +461,12 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
 	    }
 
 	    if (vertexNum != 0) {
-		JRamCloud.multiReadObject mread_leftover[] = Arrays.copyOf(vertPropTableMread, vertexNum);
-
 		long startTime2 = 0;
 		if (measureRcTimeProp == 1) {
 		    startTime2 = System.nanoTime();
 		}
 		pm.multiread_start("RamCloudGraph getVertices()");
-		JRamCloud.Object outvertPropTable[] = vertTable.multiRead(mread_leftover);
+		JRamCloud.Object outvertPropTable[] = vertTable.multiRead(tableId, keyData, keySize, vertexNum);
 		pm.multiread_end("RamCloudGraph getVertices()");
 		if (measureRcTimeProp == 1) {
 		    long endTime2 = System.nanoTime();

@@ -14,6 +14,9 @@
  */
 
 package edu.stanford.ramcloud;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.lang.Integer;
 
 /*
  * This class provides Java bindings for RAMCloud. Right now it is a rather
@@ -285,7 +288,7 @@ public class JRamCloud {
     public native long getTableId(String name);
     public native Object read(long tableId, byte[] key);
     public native Object read(long tableId, byte[] key, RejectRules rules);
-    public native Object[] multiRead(multiReadObject[] mread);
+    public native Object[] multiRead(long[] tableId, byte[] keydata[], short[] keyDataSize, int requestNum);
     public native long remove(long tableId, byte[] key);
     public native long remove(long tableId, byte[] key, RejectRules rules);
     public native long write(long tableId, byte[] key, byte[] value);
@@ -388,16 +391,22 @@ public class JRamCloud {
         ramcloud.write(tableId6, "object3-1", "value:3-1");
         ramcloud.write(tableId6, "object3-2", "value:3-2");
 
-        multiReadObject mread[] = new multiReadObject[2];
-        //for (int k = 0; k < 2000; k++) {
-        mread[0] = new multiReadObject(tableId4, "object1-1".getBytes());
-        mread[1] = new multiReadObject(tableId5, "object2-1".getBytes());
-        JRamCloud.Object out[] = ramcloud.multiRead(mread);
+	long tableIdList[] = new long[2];
+        byte[] keydata[] = new byte[2][];
+        short keydataSize[] = new short[2];
+        tableIdList[0] = tableId4;
+        keydata[0] = "object1-1".getBytes();
+        keydataSize[0] = (short) keydata[0].length;
+        tableIdList[1] = tableId5;
+        keydata[1] = "object2-1".getBytes();
+	keydataSize[1] = (short) keydata[1].length;
+
+        JRamCloud.Object out[] = ramcloud.multiRead(tableIdList, keydata, keydataSize, 2);
         for (int i = 0 ; i < 2 ; i++){
             System.out.println("multi read object: key = [" + out[i].getKey() + "], value = ["
                     + out[i].getValue() + "]");
-        //}
         }
+
         MultiWriteObject mwrite[] = new MultiWriteObject[2];
         for (int i = 0; i < 1000; i++) {
             String key1 = "key1" + new Integer(i).toString();
@@ -415,13 +424,19 @@ public class JRamCloud {
         for (int i = 0; i < 1000; i++) {
             String key1 = "key1" + new Integer(i).toString();
             String key2 = "key2" + new Integer(i).toString();
-            mread[0] = new multiReadObject(tableId4, key1.getBytes());
-            mread[1] = new multiReadObject(tableId5, key2.getBytes());
-            out = ramcloud.multiRead(mread);
+            tableIdList[0] = tableId4;
+            keydata[0] = key1.getBytes();
+            keydataSize[0] = (short) keydata[0].length;
+            tableIdList[1] = tableId5;
+            keydata[1] = key2.getBytes();
+            keydataSize[1] = (short) keydata[1].length;
+
+            out = ramcloud.multiRead(tableIdList, keydata, keydataSize, 2);
             for (int j = 0; j < 2; j++) {
                 System.out.println("multi read object: key = [" + out[j].getKey() + "], value = [" + out[j].getValue() + "]");
             }
         }
+
         ramcloud.dropTable("table4");
         ramcloud.dropTable("table5");
         ramcloud.dropTable("table6");
