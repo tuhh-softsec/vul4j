@@ -19,10 +19,11 @@ import net.onrc.onos.ofcontroller.networkgraph.Switch;
 public class PathCalcRuntime {
 	NetworkGraph graph;
 	HashSet<Intent> inputIntents = new HashSet<Intent>();
-	PathIntents outputIntents = new PathIntents();
+	PathIntents outputIntents = null;
 
 	public PathCalcRuntime(NetworkGraph g) {
 		this.graph = g;
+		outputIntents = new PathIntents(g);
 	}
 
 	public Collection<Intent> getInputIntents() {
@@ -39,7 +40,7 @@ public class PathCalcRuntime {
 	}
 
 	protected PathIntents calcPathIntents(Collection<Intent> originalIntents) {
-		PathIntents pathIntents = new PathIntents();
+		PathIntents pathIntents = new PathIntents(graph);
 
 		for (Intent intent: originalIntents) {
 			if (!(intent instanceof ShortestPathIntent)) {

@@ -13,8 +13,7 @@ public abstract class Intent {
 	/**
 	 * Default constructor for Kryo deserialization
 	 */
-	@Deprecated
-	public Intent() {
+	protected Intent() {
 	}
 
 	public Intent(String id) {

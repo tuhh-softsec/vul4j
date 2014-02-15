@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import net.onrc.onos.ofcontroller.networkgraph.Link;
+import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)
@@ -14,10 +15,15 @@ import net.onrc.onos.ofcontroller.networkgraph.Link;
 public class PathIntents {
 	protected LinkedList<PathIntent> intents = new LinkedList<PathIntent>();
 	protected HashMap<Link, HashSet<PathIntent>> linkToIntents = new HashMap<Link, HashSet<PathIntent>>();
+	protected NetworkGraph graph;
+
+	public PathIntents(NetworkGraph graph) {
+		this.graph = graph;
+	}
 
 	public void addIntent(PathIntent intent) {
 		intents.add(intent);
-		for (Link link: intent.getPath()) {
+		for (Link link: intent.getPath(graph)) {
 			HashSet<PathIntent> value = linkToIntents.get(link);
 			if (value == null) {
 				value = new HashSet<PathIntent>();
@@ -26,10 +32,10 @@ public class PathIntents {
 			value.add(intent);
 		}
 	}
-	
+
 	public void removeIntent(PathIntent intent) {
 		intents.remove(intent);
-		for (Link link: intent.getPath()) {
+		for (Link link: intent.getPath(graph)) {
 			HashSet<PathIntent> value = linkToIntents.get(link);
 			value.remove(intent);
 		}

@@ -27,7 +27,6 @@ public class ConstrainedBFSTree {
 
 	public ConstrainedBFSTree(Switch rootSwitch) {
 		this.rootSwitch = rootSwitch;
-		this.intents = new PathIntents();
 		calcTree();
 	}
 
@@ -46,7 +45,7 @@ public class ConstrainedBFSTree {
 			for (Link link: sw.getOutgoingLinks()) {
 				Switch reachedSwitch = link.getDestinationPort().getSwitch();
 				if (switchSearched.contains(reachedSwitch)) continue;
-				if (bandwidth > 0.0 && intents.getAvailableBandwidth(link) < bandwidth) continue;
+				if (intents != null && intents.getAvailableBandwidth(link) < bandwidth) continue;
 				switchQueue.add(reachedSwitch);
 				switchSearched.add(reachedSwitch);
 				upstreamLinks.put(reachedSwitch, link);

@@ -35,7 +35,7 @@ public class UseCaseTest {
 		for (PathIntent pathIntent: intents.getIntents()) {
 			System.out.println("Parent intent: " + pathIntent.getParentIntent().toString());
 			System.out.println("Path:");
-			for (Link link: pathIntent.getPath()) {
+			for (Link link: pathIntent.getPath(g)) {
 				System.out.printf("%s --(%f/%f)--> %s\n",
 						link.getSourcePort(),
 						link.getCapacity() - intents.getAvailableBandwidth(link),

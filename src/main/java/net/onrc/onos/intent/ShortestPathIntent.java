@@ -17,8 +17,7 @@ public class ShortestPathIntent extends Intent {
 	/**
 	 * Default constructor for Kryo deserialization
 	 */
-	@Deprecated
-	public ShortestPathIntent() {
+	protected ShortestPathIntent() {
 	}
 
 	public ShortestPathIntent(String id,
