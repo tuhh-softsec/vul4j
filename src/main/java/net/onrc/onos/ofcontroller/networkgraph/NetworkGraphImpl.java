@@ -176,12 +176,23 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		}
 		// Existing ports not on event should be removed.
 		// TODO Should batch eventually for performance?
+		List<Port> portsToRemove = new ArrayList<Port>();
 		for( Port p : sw.getPorts() ) {
 		    if ( !port_noOnEvent.contains(p.getNumber()) ) {
+			//PortEvent rmEvent = new PortEvent(p.getSwitch().getDpid(), p.getNumber());
+			// calling Discovery removePort() API to wipe from DB, etc.
+			//removePortEvent(rmEvent);
+		    
+		    // We can't remove ports here because this will trigger a remove
+		    // from the switch's port list, which we are currently iterating
+		    // over.
+		    portsToRemove.add(p);
+		    }
+		}
+		for (Port p : portsToRemove) {
 			PortEvent rmEvent = new PortEvent(p.getSwitch().getDpid(), p.getNumber());
 			// calling Discovery removePort() API to wipe from DB, etc.
 			removePortEvent(rmEvent);
-		    }
 		}
 	    }
 	}

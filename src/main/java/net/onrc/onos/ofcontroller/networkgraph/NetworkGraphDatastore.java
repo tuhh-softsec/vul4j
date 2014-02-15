@@ -230,6 +230,7 @@ public class NetworkGraphDatastore {
 				//rcSrcPort.update();
 				//rcDstPort.update();
 				rcLink.delete();
+				return;
 			} catch (ObjectDoesntExistException e) {
 				log.error("Remove link failed {}", linkEvent, e);
 				return;
