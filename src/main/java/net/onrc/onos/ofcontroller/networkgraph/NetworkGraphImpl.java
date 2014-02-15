@@ -297,6 +297,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	public void putDeviceEvent(DeviceEvent deviceEvent) {
 		if (prepareForAddDeviceEvent(deviceEvent)) {
 //			datastore.addDevice(deviceEvent);
+//			putDevice(deviceEvent);
 			// Send out notification
 			TopologyEvent topologyEvent =
 			    new TopologyEvent(deviceEvent);
@@ -311,6 +312,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	public void removeDeviceEvent(DeviceEvent deviceEvent) {
 		if (prepareForRemoveDeviceEvent(deviceEvent)) {
 //			datastore.removeDevice(deviceEvent);
+//			removeDevice(deviceEvent);
 			// Send out notification
 			eventChannel.removeEntry(deviceEvent.getID());
 		}
