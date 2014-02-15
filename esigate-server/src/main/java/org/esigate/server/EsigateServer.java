@@ -205,7 +205,14 @@ public final class EsigateServer {
 		workDir = new File(currentDir, "work");
 		// }
 		if (workDir.exists()) {
-			FileUtils.deleteDirectory(workDir);
+			try {
+				FileUtils.cleanDirectory(workDir);
+			} catch (IllegalArgumentException e) {
+				// Strange behavior : if this directory exists, it disappears a
+				// few ms later, causing this exception. We can ignore since we
+				// initially wanted to delete it.
+				System.out.println("Info: issue while deleting work directory, it was already deleted. Not a problem.");
+			}
 		}
 
 		return workDir;
