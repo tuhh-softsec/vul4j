@@ -172,6 +172,6 @@
 		</dependencies>
 	</dependencyManagement>
 	<properties>
-		<jetty.version>9.1.0.RC1</jetty.version>
+		<jetty.version>9.1.2.v20140210</jetty.version>
 	</properties>
 </project>
