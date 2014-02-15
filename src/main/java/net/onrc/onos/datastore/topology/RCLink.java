@@ -15,6 +15,8 @@ import com.esotericsoftware.kryo.Kryo;
 import edu.stanford.ramcloud.JRamCloud;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
+import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
+import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 
 public class RCLink extends RCObject {
     @SuppressWarnings("unused")
@@ -77,13 +79,10 @@ public class RCLink extends RCObject {
     private final SwitchPort dst;
     private STATUS status;
 
-    public static final int LINKID_BYTES = 2 + RCPort.PORTID_BYTES * 2;
-
     public static byte[] getLinkID(Long src_dpid, Long src_port_no,
 	    Long dst_dpid, Long dst_port_no) {
-	return ByteBuffer.allocate(LINKID_BYTES).putChar('L')
-	        .put(RCPort.getPortID(src_dpid, src_port_no))
-	        .put(RCPort.getPortID(dst_dpid, dst_port_no)).array();
+	return LinkEvent.getLinkID(src_dpid, src_port_no, dst_dpid,
+		dst_port_no);
     }
 
     public static StringBuilder keysToSB(Collection<byte[]> keys) {
@@ -118,7 +117,7 @@ public class RCLink extends RCObject {
 	    throw new IllegalArgumentException("Invalid Link key");
 	}
 	long src_port_pair[] = RCPort.getPortPairFromKey(keyBuf.slice());
-	keyBuf.position(2 + RCPort.PORTID_BYTES);
+	keyBuf.position(2 + PortEvent.PORTID_BYTES);
 	long dst_port_pair[] = RCPort.getPortPairFromKey(keyBuf.slice());
 
 	tuple[0] = src_port_pair[0];

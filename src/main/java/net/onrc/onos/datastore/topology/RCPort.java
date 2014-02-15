@@ -21,6 +21,7 @@ import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.datastore.utils.ByteArrayComparator;
 import net.onrc.onos.datastore.utils.ByteArrayUtil;
+import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 
 public class RCPort extends RCObject {
     private static final Logger log = LoggerFactory.getLogger(RCPort.class);
@@ -69,17 +70,8 @@ public class RCPort extends RCObject {
     @Deprecated
     transient boolean isDeviceIdsModified;
 
-    public static final int PORTID_BYTES = RCSwitch.SWITCHID_BYTES + 2 + 8;
-
     public static byte[] getPortID(Long dpid, Long number) {
-	if (dpid == null) {
-	    throw new IllegalArgumentException("dpid cannot be null");
-	}
-	if (number == null) {
-	    throw new IllegalArgumentException("number cannot be null");
-	}
-	return ByteBuffer.allocate(PORTID_BYTES).putChar('S').putLong(dpid)
-	        .putChar('P').putLong(number).array();
+        return PortEvent.getPortID(dpid, number);
     }
 
     public static StringBuilder keysToSB(Collection<byte[]> keys) {

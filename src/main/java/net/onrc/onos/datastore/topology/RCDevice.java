@@ -21,6 +21,7 @@ import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.datastore.topology.RCLink.STATUS;
 import net.onrc.onos.datastore.utils.ByteArrayComparator;
 import net.onrc.onos.datastore.utils.ByteArrayUtil;
+import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 
 public class RCDevice extends RCObject {
     @SuppressWarnings("unused")
@@ -53,8 +54,7 @@ public class RCDevice extends RCObject {
 
     // Assuming mac is unique cluster-wide
     public static byte[] getDeviceID(final byte[] mac) {
-	return ByteBuffer.allocate(2 + mac.length).putChar('D').put(mac)
-	        .array();
+        return DeviceEvent.getDeviceID(mac);
     }
 
     public static StringBuilder keysToSB(Collection<byte[]> keys) {

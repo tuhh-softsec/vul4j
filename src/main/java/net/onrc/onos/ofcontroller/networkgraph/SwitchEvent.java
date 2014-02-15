@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,16 @@ public class SwitchEvent {
     @Override
     public String toString() {
 	return "[SwitchEvent 0x" + Long.toHexString(dpid) + "]";
+    }
+
+    public static final int SWITCHID_BYTES = 2 + 8;
+
+    public static byte[] getSwitchID(Long dpid) {
+	if (dpid == null) {
+	    throw new IllegalArgumentException("dpid cannot be null");
+	}
+	return ByteBuffer.allocate(SwitchEvent.SWITCHID_BYTES).putChar('S').putLong(dpid)
+		.array();
     }
 
 }

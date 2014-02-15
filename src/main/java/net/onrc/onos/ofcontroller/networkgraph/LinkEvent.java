@@ -1,5 +1,7 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.nio.ByteBuffer;
+
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 
 /**
@@ -31,6 +33,15 @@ public class LinkEvent {
     @Override
     public String toString() {
 	return "[LinkEvent " + src + "->" + dst + "]";
+    }
+
+    public static final int LINKID_BYTES = 2 + PortEvent.PORTID_BYTES * 2;
+
+    public static byte[] getLinkID(Long src_dpid, Long src_port_no,
+	    Long dst_dpid, Long dst_port_no) {
+	return ByteBuffer.allocate(LinkEvent.LINKID_BYTES).putChar('L')
+		.put(PortEvent.getPortID(src_dpid, src_port_no))
+		.put(PortEvent.getPortID(dst_dpid, dst_port_no)).array();
     }
 
 }

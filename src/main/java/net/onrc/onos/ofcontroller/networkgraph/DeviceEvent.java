@@ -1,6 +1,7 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
 import java.net.InetAddress;
+import java.nio.ByteBuffer;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,6 +70,12 @@ public class DeviceEvent {
     @Override
     public String toString() {
 	return "[DeviceEvent " + mac + " attachmentPoints:" + attachmentPoints + " ipAddr:" + ipAddresses + "]";
+    }
+
+    // Assuming mac is unique cluster-wide
+    public static byte[] getDeviceID(final byte[] mac) {
+	return ByteBuffer.allocate(2 + mac.length).putChar('D').put(mac)
+		.array();
     }
 
 

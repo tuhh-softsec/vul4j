@@ -14,6 +14,7 @@ import java.util.TreeSet;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.datastore.utils.ByteArrayComparator;
+import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -70,14 +71,8 @@ public class RCSwitch extends RCObject {
     @Deprecated
     transient private boolean isPortIdsModified;
 
-    public static final int SWITCHID_BYTES = 2 + 8;
-
     public static byte[] getSwitchID(Long dpid) {
-	if (dpid == null) {
-	    throw new IllegalArgumentException("dpid cannot be null");
-	}
-	return ByteBuffer.allocate(SWITCHID_BYTES).putChar('S').putLong(dpid)
-	        .array();
+        return SwitchEvent.getSwitchID(dpid);
     }
 
     public static StringBuilder keysToSB(Collection<byte[]> keys) {

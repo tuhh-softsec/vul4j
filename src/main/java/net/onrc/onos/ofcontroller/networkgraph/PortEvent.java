@@ -1,5 +1,7 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.nio.ByteBuffer;
+
 /**
  * Self-contained Port event Object
  *
@@ -50,6 +52,19 @@ public class PortEvent {
     @Override
     public String toString() {
 	return "[PortEvent 0x" + Long.toHexString(id.dpid) + "@" + id.number + "]";
+    }
+
+    public static final int PORTID_BYTES = SwitchEvent.SWITCHID_BYTES + 2 + 8;
+
+    public static byte[] getPortID(Long dpid, Long number) {
+	if (dpid == null) {
+	    throw new IllegalArgumentException("dpid cannot be null");
+	}
+	if (number == null) {
+	    throw new IllegalArgumentException("number cannot be null");
+	}
+	return ByteBuffer.allocate(PortEvent.PORTID_BYTES).putChar('S').putLong(dpid)
+		.putChar('P').putLong(number).array();
     }
 
 }
