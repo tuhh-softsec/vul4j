@@ -199,6 +199,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		// Parent Switch must exist
 		Switch sw = getSwitch(portEvt.getDpid());
 		if ( sw ==  null ) {
+		    log.debug("Switch already removed? {}", portEvt);
 		    return false;
 		}
 		Port port = sw.getPort(portEvt.getNumber());
@@ -210,6 +211,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 		// Prep: Remove Link and Device Attachment
 		for (Device device : port.getDevices()) {
+		    log.debug("Removing Device {} on Port {}", device, portEvt);
 		    DeviceEvent devEvt = new DeviceEvent(device.getMacAddress());
 		    devEvt.addAttachmentPoint(new SwitchPort(port.getSwitch().getDpid(), port.getNumber()));
 		    // calling Discovery API to wipe from DB, etc.
@@ -222,6 +224,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		    if (link == null ) {
 			continue;
 		    }
+		    log.debug("Removing Link {} on Port {}", link, portEvt);
 		    LinkEvent linkEvent = new LinkEvent(link.getSourceSwitchDpid(), link.getSourcePortNumber(), link.getDestinationSwitchDpid(), link.getDestinationPortNumber());
 		    // calling Discovery API to wipe from DB, etc.
 		    removeLinkEvent(linkEvent);
