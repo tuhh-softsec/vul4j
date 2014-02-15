@@ -11,6 +11,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
+import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.networkgraph.web.NetworkGraphWebRoutable;
 
 public class NetworkGraphModule implements IFloodlightModule, INetworkGraphService {
@@ -20,6 +21,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	
 	private NetworkGraphImpl networkGraph;
 	//private NetworkGraphDatastore southboundNetworkGraph;
+	private IDatagridService datagridService;
 
 	private IRestApiService restApi;
 
@@ -44,6 +46,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
 		List<Class<? extends IFloodlightService>> dependencies = 
 				new ArrayList<Class<? extends IFloodlightService>>();
+		dependencies.add(IDatagridService.class);
 		dependencies.add(IRestApiService.class);
 		return dependencies;
 	}
@@ -52,6 +55,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	public void init(FloodlightModuleContext context)
 			throws FloodlightModuleException {
 		restApi = context.getServiceImpl(IRestApiService.class);
+		datagridService = context.getServiceImpl(IDatagridService.class);
 		
 		networkGraph = new NetworkGraphImpl();
 		//southboundNetworkGraph = new NetworkGraphDatastore(networkGraph);
@@ -60,6 +64,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		restApi.addRestletRoutable(new NetworkGraphWebRoutable());
+		networkGraph.startup(datagridService);
 	}
 
 	@Override
