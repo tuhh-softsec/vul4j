@@ -13,6 +13,14 @@ public class PortEvent {
         public final Long dpid;
         public final Long number;
 
+	/**
+	 * Default constructor.
+	 */
+	public SwitchPort() {
+	    dpid = null;
+	    number = null;
+	}
+
         public SwitchPort(Long dpid, Long number) {
             this.dpid = dpid;
             this.number = number;
@@ -36,6 +44,13 @@ public class PortEvent {
     private final SwitchPort id;
     // TODO Add Hardware Address
     // TODO Add Description
+
+    /**
+     * Default constructor.
+     */
+    public PortEvent() {
+	id = null;
+    }
 
     public PortEvent(Long dpid, Long number) {
 	this.id = new SwitchPort(dpid, number);
@@ -67,4 +82,7 @@ public class PortEvent {
 		.putChar('P').putLong(number).array();
     }
 
+    public byte[] getID() {
+	return getPortID(getDpid(), getNumber());
+    }
 }

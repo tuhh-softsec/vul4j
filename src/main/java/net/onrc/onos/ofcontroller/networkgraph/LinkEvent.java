@@ -14,6 +14,14 @@ public class LinkEvent {
     private final SwitchPort src;
     private final SwitchPort dst;
 
+    /**
+     * Default constructor.
+     */
+    public LinkEvent() {
+	src = null;
+	dst = null;
+    }
+
     public LinkEvent(Long src_dpid, Long src_port_no, Long dst_dpid,
 	    Long dst_port_no) {
 
@@ -44,4 +52,8 @@ public class LinkEvent {
 		.put(PortEvent.getPortID(dst_dpid, dst_port_no)).array();
     }
 
+    public byte[] getID() {
+	return getLinkID(src.getDpid(), src.getNumber(),
+			 dst.getDpid(), dst.getNumber());
+    }
 }

@@ -28,6 +28,14 @@ public class DeviceEvent {
     protected List<SwitchPort> attachmentPoints;
     protected Set<InetAddress> ipAddresses;
 
+
+    /**
+     * Default constructor.
+     */
+    public DeviceEvent() {
+	mac = null;
+    }
+
     public DeviceEvent(MACAddress mac) {
 	if (mac == null) {
 	    throw new IllegalArgumentException("Device mac cannot be null");
@@ -78,5 +86,7 @@ public class DeviceEvent {
 		.array();
     }
 
-
+    public byte[] getID() {
+	return getDeviceID(mac.toBytes());
+    }
 }

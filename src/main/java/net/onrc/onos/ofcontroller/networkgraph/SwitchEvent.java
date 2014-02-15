@@ -15,6 +15,13 @@ public class SwitchEvent {
 
     private List<PortEvent> ports;
 
+    /**
+     * Default constructor.
+     */
+    public SwitchEvent() {
+	dpid = null;
+    }
+
     public SwitchEvent(Long dpid) {
 	this(dpid, new ArrayList<PortEvent>());
     }
@@ -51,4 +58,7 @@ public class SwitchEvent {
 		.array();
     }
 
+    public byte[] getID() {
+	return getSwitchID(dpid);
+    }
 }
