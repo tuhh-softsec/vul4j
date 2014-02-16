@@ -56,9 +56,14 @@ public class UseCaseTest {
 		// compile high-level intents into low-level intents (calculate paths)
 		PathCalcRuntime runtime1 = new PathCalcRuntime(g);
 		runtime1.addInputIntents(intents);
+		
+		// compile low-level intents into flow entry installation plan
+		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
+		runtime2.addIntents(runtime1.getOutputIntents());
 
 		// show results
 		showResult(runtime1.getOutputIntents());
+		System.out.println(runtime2.getPlan());
 	}
 
 	@Test
@@ -75,8 +80,13 @@ public class UseCaseTest {
 		PathCalcRuntime runtime1 = new PathCalcRuntime(g);
 		runtime1.addInputIntents(intents);
 
+		// compile low-level intents into flow entry installation plan
+		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
+		runtime2.addIntents(runtime1.getOutputIntents());
+
 		// show results
 		showResult(runtime1.getOutputIntents());
+		System.out.println(runtime2.getPlan());
 	}
 
 	@Test
@@ -93,7 +103,12 @@ public class UseCaseTest {
 		PathCalcRuntime runtime1 = new PathCalcRuntime(g);
 		runtime1.addInputIntents(intents);
 
+		// compile low-level intents into flow entry installation plan
+		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
+		runtime2.addIntents(runtime1.getOutputIntents());
+
 		// show results
 		showResult(runtime1.getOutputIntents());
+		System.out.println(runtime2.getPlan());
 	}
 }
