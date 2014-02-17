@@ -13,30 +13,33 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.networkgraph.web.NetworkGraphWebRoutable;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 public class NetworkGraphModule implements IFloodlightModule, INetworkGraphService {
 
 	// This is initialized as a module for now
 	// private RCNetworkGraphPublisher eventListener;
-	
+
 	private NetworkGraphImpl networkGraph;
 	//private NetworkGraphDatastore southboundNetworkGraph;
 	private IDatagridService datagridService;
+	private IControllerRegistryService registryService;
+
 
 	private IRestApiService restApi;
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-		List<Class<? extends IFloodlightService>> services = 
+		List<Class<? extends IFloodlightService>> services =
 				new ArrayList<Class<? extends IFloodlightService>>();
 		services.add(INetworkGraphService.class);
 		return services;
 	}
 
 	@Override
-	public Map<Class<? extends IFloodlightService>, IFloodlightService> 
+	public Map<Class<? extends IFloodlightService>, IFloodlightService>
 			getServiceImpls() {
-		Map<Class<? extends IFloodlightService>, IFloodlightService> impls = 
+		Map<Class<? extends IFloodlightService>, IFloodlightService> impls =
 				new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
 		impls.put(INetworkGraphService.class, this);
 		return impls;
@@ -44,20 +47,21 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
-		List<Class<? extends IFloodlightService>> dependencies = 
+		List<Class<? extends IFloodlightService>> dependencies =
 				new ArrayList<Class<? extends IFloodlightService>>();
 		dependencies.add(IDatagridService.class);
 		dependencies.add(IRestApiService.class);
 		return dependencies;
 	}
-	
+
 	@Override
 	public void init(FloodlightModuleContext context)
 			throws FloodlightModuleException {
 		restApi = context.getServiceImpl(IRestApiService.class);
 		datagridService = context.getServiceImpl(IDatagridService.class);
-		
-		networkGraph = new NetworkGraphImpl();
+		registryService = context.getServiceImpl(IControllerRegistryService.class);
+
+		networkGraph = new NetworkGraphImpl(registryService);
 		//southboundNetworkGraph = new NetworkGraphDatastore(networkGraph);
 	}
 

@@ -8,6 +8,8 @@ package net.onrc.onos.ofcontroller.networkgraph;
  * in a single transaction.
  */
 public class TopologyEvent {
+    public static final String NOBODY = "";
+    String originID = NOBODY;
     SwitchEvent switchEvent = null;		// Set for Switch event
     PortEvent portEvent = null;			// Set for Port event
     LinkEvent linkEvent = null;			// Set for Link event
@@ -24,8 +26,9 @@ public class TopologyEvent {
      *
      * @param switchEvent the Switch event to use.
      */
-    TopologyEvent(SwitchEvent switchEvent) {
+    TopologyEvent(SwitchEvent switchEvent, String originID) {
 	this.switchEvent = switchEvent;
+	setOriginID(originID);
     }
 
     /**
@@ -33,8 +36,9 @@ public class TopologyEvent {
      *
      * @param portEvent the Port event to use.
      */
-    TopologyEvent(PortEvent portEvent) {
+    TopologyEvent(PortEvent portEvent, String originID) {
 	this.portEvent = portEvent;
+	setOriginID(originID);
     }
 
     /**
@@ -42,8 +46,9 @@ public class TopologyEvent {
      *
      * @param linkEvent the Link event to use.
      */
-    TopologyEvent(LinkEvent linkEvent) {
+    TopologyEvent(LinkEvent linkEvent, String originID) {
 	this.linkEvent = linkEvent;
+	setOriginID(originID);
     }
 
     /**
@@ -51,8 +56,9 @@ public class TopologyEvent {
      *
      * @param deviceEvent the Device event to use.
      */
-    TopologyEvent(DeviceEvent deviceEvent) {
+    TopologyEvent(DeviceEvent deviceEvent, String originID) {
 	this.deviceEvent = deviceEvent;
+	setOriginID(originID);
     }
 
     /**
@@ -88,5 +94,17 @@ public class TopologyEvent {
 	if (deviceEvent != null)
 	    return deviceEvent.getID();
 	return null;
+    }
+
+    public String getOriginID() {
+	return originID;
+    }
+
+    void setOriginID(String originID) {
+	if (originID != null) {
+	    this.originID = originID;
+	} else {
+	    this.originID = NOBODY;
+	}
     }
 }

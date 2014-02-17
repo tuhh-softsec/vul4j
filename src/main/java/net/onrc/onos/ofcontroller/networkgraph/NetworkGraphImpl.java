@@ -19,6 +19,7 @@ import net.onrc.onos.datastore.topology.RCSwitch;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 import net.onrc.onos.ofcontroller.util.EventEntry;
 import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,10 +49,12 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
     private EventHandler eventHandler = new EventHandler();
 
     private final NetworkGraphDatastore datastore;
+    private final IControllerRegistryService registryService;
 
-    public NetworkGraphImpl() {
+    public NetworkGraphImpl(IControllerRegistryService registryService) {
 	super();
 	datastore = new NetworkGraphDatastore(this);
+	this.registryService = registryService;
     }
 
     /**
@@ -119,7 +122,10 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	 */
 	private void processEvents(Collection<EventEntry<TopologyEvent>> events) {
 	    for (EventEntry<TopologyEvent> event : events) {
-		// TODO ignore event triggered by myself
+		if (event.eventData().getOriginID().equals(registryService.getControllerId())) {
+		    // ignore event triggered by myself
+		    continue;
+		}
 		TopologyEvent topologyEvent = event.eventData();
 		switch (event.eventType()) {
 		case ENTRY_ADD:
@@ -227,7 +233,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 			putSwitch(switchEvent);
 			// Send out notification
 			TopologyEvent topologyEvent =
-			    new TopologyEvent(switchEvent);
+			    new TopologyEvent(switchEvent, registryService.getControllerId());
 			eventChannel.addEntry(topologyEvent.getID(),
 					      topologyEvent);
 		}
@@ -252,7 +258,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 			putPort(portEvent);
 			// Send out notification
 			TopologyEvent topologyEvent =
-			    new TopologyEvent(portEvent);
+			    new TopologyEvent(portEvent, registryService.getControllerId());
 			eventChannel.addEntry(topologyEvent.getID(),
 					      topologyEvent);
 		}
@@ -277,7 +283,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 			putLink(linkEvent);
 			// Send out notification
 			TopologyEvent topologyEvent =
-			    new TopologyEvent(linkEvent);
+			    new TopologyEvent(linkEvent, registryService.getControllerId());
 			eventChannel.addEntry(topologyEvent.getID(),
 					      topologyEvent);
 		}
@@ -305,7 +311,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 //			putDevice(deviceEvent);
 			// Send out notification
 			TopologyEvent topologyEvent =
-			    new TopologyEvent(deviceEvent);
+			    new TopologyEvent(deviceEvent, registryService.getControllerId());
 			eventChannel.addEntry(topologyEvent.getID(),
 					      topologyEvent);
 		}
