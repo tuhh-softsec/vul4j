@@ -736,25 +736,38 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		return;
 	    }
 
-	    // check if there is something referring to this Port
+	    // Remove Link and Device Attachment
+	    for (Device device : p.getDevices()) {
+		log.debug("Removing Device {} on Port {}", device, portEvt);
+		DeviceEvent devEvt = new DeviceEvent(device.getMacAddress());
+		devEvt.addAttachmentPoint(new SwitchPort(p.getSwitch().getDpid(), p.getNumber()));
 
-	    if (!p.getDevices().iterator().hasNext()) {
-		log.warn(
-			"Devices on Port {} should be removed prior to removing Port. Removing Port anyways",
-			portEvt);
-		// XXX Should we remove Device to Port relation?
+		// XXX calling removeDeviceEvent() may trigger duplicate event, once at prepare phase, second time here
+		// If event can be squashed, ignored etc. at receiver side it shouldn't be a problem, but if not
+		// need to re-visit
+
+		// calling Discovery API to wipe from DB, etc.
+		removeDeviceEvent(devEvt);
 	    }
-	    if (p.getIncomingLink() != null) {
-		log.warn(
-			"IncomingLinks on Port {} should be removed prior to removing Port. Removing Port anyways",
-			portEvt);
-		// XXX Should we remove Link?
+	    Set<Link> links = new HashSet<>();
+	    links.add(p.getOutgoingLink());
+	    links.add(p.getIncomingLink());
+	    ArrayList<LinkEvent> linksToRemove = new ArrayList<>();
+	    for (Link link : links) {
+		if (link == null) {
+		    continue;
+		}
+		log.debug("Removing Link {} on Port {}", link, portEvt);
+		LinkEvent linkEvent = new LinkEvent(link.getSourceSwitchDpid(), link.getSourcePortNumber(), link.getDestinationSwitchDpid(), link.getDestinationPortNumber());
+		linksToRemove.add(linkEvent);
 	    }
-	    if (p.getOutgoingLink() != null) {
-		log.warn(
-			"OutgoingLinks on Port {} should be removed prior to removing Port. Removing Port anyways",
-			portEvt);
-		// XXX Should we remove Link?
+	    for (LinkEvent linkEvent : linksToRemove) {
+		// XXX calling removeLinkEvent() may trigger duplicate event, once at prepare phase, second time here
+		// If event can be squashed, ignored etc. at receiver side it shouldn't be a problem, but if not
+		// need to re-visit
+
+		// calling Discovery API to wipe from DB, etc.
+		removeLinkEvent(linkEvent);
 	    }
 
 	    // remove Port from Switch
