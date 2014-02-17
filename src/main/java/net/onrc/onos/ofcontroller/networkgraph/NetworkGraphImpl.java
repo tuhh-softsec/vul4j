@@ -666,30 +666,23 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		return;
 	    }
 
-	    // Sanity check
-	    if (!sw.getPorts().isEmpty()) {
+	    // remove all ports if there still exist
+	    ArrayList<PortEvent> portsToRemove = new ArrayList<>();
+	    for (Port port : sw.getPorts()) {
 		log.warn(
-			"Ports on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
-			swEvt);
-		// XXX Should we remove Port?
+			"Port {} on Switch {} should be removed prior to removing Switch. Removing Port now",
+			port, swEvt);
+		PortEvent portEvt = new PortEvent(port.getDpid(), port.getNumber());
+		portsToRemove.add(portEvt);
 	    }
-	    if (!sw.getDevices().isEmpty()) {
-		log.warn(
-			"Devices on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
-			swEvt);
-		// XXX Should we remove Device to Switch relation?
-	    }
-	    if (!sw.getIncomingLinks().iterator().hasNext()) {
-		log.warn(
-			"IncomingLinks on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
-			swEvt);
-		// XXX Should we remove Link?
-	    }
-	    if (!sw.getOutgoingLinks().iterator().hasNext()) {
-		log.warn(
-			"OutgoingLinks on Switch {} should be removed prior to removing Switch. Removing Switch anyways",
-			swEvt);
-		// XXX Should we remove Link?
+	    for (PortEvent portEvt : portsToRemove ) {
+		// XXX calling removePortEvent() may trigger duplicate event, once at prepare phase, second time here
+		// If event can be squashed, ignored etc. at receiver side it shouldn't be a problem, but if not
+		// need to re-visit this issue.
+
+		// Note: removePortEvent() implies removal of attached Device, etc.
+		// if we decide not to call removePortEvent(), Device needs to be handled properly
+		removePortEvent(portEvt);
 	    }
 
 	    boolean removed = switches.remove(swEvt.getDpid(), sw);
