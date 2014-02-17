@@ -87,6 +87,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	/**
 	 * Run the thread.
 	 */
+	@Override
 	public void run() {
 	    Collection<EventEntry<TopologyEvent>> collection =
 		new LinkedList<EventEntry<TopologyEvent>>();
@@ -359,7 +360,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 			//PortEvent rmEvent = new PortEvent(p.getSwitch().getDpid(), p.getNumber());
 			// calling Discovery removePort() API to wipe from DB, etc.
 			//removePortEvent(rmEvent);
-		    
+
 		    // We can't remove ports here because this will trigger a remove
 		    // from the switch's port list, which we are currently iterating
 		    // over.
@@ -398,13 +399,18 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		}
 
 		// Prep: Remove Link and Device Attachment
+		ArrayList<DeviceEvent> deviceEvts = new ArrayList<>();
 		for (Device device : port.getDevices()) {
 		    log.debug("Removing Device {} on Port {}", device, portEvt);
 		    DeviceEvent devEvt = new DeviceEvent(device.getMacAddress());
 		    devEvt.addAttachmentPoint(new SwitchPort(port.getSwitch().getDpid(), port.getNumber()));
+		    deviceEvts.add(devEvt);
+		}
+		for (DeviceEvent devEvt : deviceEvts) {
 		    // calling Discovery API to wipe from DB, etc.
 		    removeDeviceEvent(devEvt);
 		}
+
 		Set<Link> links = new HashSet<>();
 		links.add(port.getOutgoingLink());
 		links.add(port.getIncomingLink());
@@ -435,15 +441,18 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    }
 
 	    // Prep: remove Device attachment on both Ports
+	    ArrayList<DeviceEvent> deviceEvents = new ArrayList<>();
 	    for (Device device : srcPort.getDevices()) {
 		DeviceEvent devEvt = new DeviceEvent(device.getMacAddress());
 		devEvt.addAttachmentPoint(new SwitchPort(srcPort.getSwitch().getDpid(), srcPort.getNumber()));
-		// calling Discovery API to wipe from DB, etc.
-		removeDeviceEvent(devEvt);
+		deviceEvents.add(devEvt);
 	    }
 	    for (Device device : dstPort.getDevices()) {
 		DeviceEvent devEvt = new DeviceEvent(device.getMacAddress());
 		devEvt.addAttachmentPoint(new SwitchPort(dstPort.getSwitch().getDpid(), dstPort.getNumber()));
+		deviceEvents.add(devEvt);
+	    }
+	    for (DeviceEvent devEvt : deviceEvents) {
 		// calling Discovery API to wipe from DB, etc.
 		removeDeviceEvent(devEvt);
 	    }
