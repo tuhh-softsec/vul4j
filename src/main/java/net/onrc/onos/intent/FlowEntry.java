@@ -6,6 +6,9 @@ import java.util.Set;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.networkgraph.Port;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
+import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowEntryActions;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 
 /**
  * 
@@ -28,5 +31,22 @@ public class FlowEntry {
 	
 	public String toString() {
 		return match + "->" + actions;
+	}
+	
+	public Switch getSwitch() {
+	    return sw;
+	}
+	
+	public net.onrc.onos.ofcontroller.util.FlowEntry getFlowEntry() {
+		net.onrc.onos.ofcontroller.util.FlowEntry entry = new net.onrc.onos.ofcontroller.util.FlowEntry();
+		entry.setDpid(new Dpid(sw.getDpid()));
+		entry.setFlowEntryId(new FlowEntryId(0)); // all zero for now
+		entry.setFlowEntryMatch(match.getFlowEntryMatch());
+		FlowEntryActions flowEntryActions = new FlowEntryActions();
+		for(Action action : actions) {
+		    flowEntryActions.addAction(action.getFlowEntryAction());
+		}
+		entry.setFlowEntryActions(flowEntryActions);
+		return entry;
 	}
 }

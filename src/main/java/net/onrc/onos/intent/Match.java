@@ -3,6 +3,7 @@ package net.onrc.onos.intent;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.networkgraph.Port;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
+import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 
 /**
  * 
@@ -36,6 +37,14 @@ public class Match {
 		else {
 			return false;
 		}
+	}
+	
+	public FlowEntryMatch getFlowEntryMatch(){
+	    FlowEntryMatch match = new FlowEntryMatch();
+	    match.enableSrcMac(srcMac);
+	    match.enableDstMac(dstMac);
+	    match.enableInPort(new net.onrc.onos.ofcontroller.util.Port(srcPort.getNumber().shortValue()));
+	    return match;
 	}
 	
 	public String toString() {

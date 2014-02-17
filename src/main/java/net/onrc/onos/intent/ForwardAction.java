@@ -1,6 +1,7 @@
 package net.onrc.onos.intent;
 
 import net.onrc.onos.ofcontroller.networkgraph.Port;
+import net.onrc.onos.ofcontroller.util.FlowEntryAction;
 
 /**
  * 
@@ -17,6 +18,13 @@ class ForwardAction extends Action {
 	
 	public String toString() {
 		return dstPort.toString();
+	}
+
+	@Override
+	public FlowEntryAction getFlowEntryAction() {
+	    FlowEntryAction action = new FlowEntryAction();
+	    action.setActionOutput(new net.onrc.onos.ofcontroller.util.Port(dstPort.getNumber().shortValue()));
+	    return action;
 	}
 	
 }
