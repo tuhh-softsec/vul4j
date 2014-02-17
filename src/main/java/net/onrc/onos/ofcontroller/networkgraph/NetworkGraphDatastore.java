@@ -164,7 +164,7 @@ public class NetworkGraphDatastore {
 
 	public void addLink(LinkEvent linkEvent) {
 		log.debug("Adding link {}", linkEvent);
-		
+
 		RCLink rcLink = new RCLink(linkEvent.getSrc().getDpid(), linkEvent.getSrc().getNumber(),
 				linkEvent.getDst().getDpid(), linkEvent.getDst().getNumber());
 
@@ -219,6 +219,7 @@ public class NetworkGraphDatastore {
 				//rcDstPort.read();
 				rcLink.read();
 			} catch (ObjectDoesntExistException e) {
+			    // XXX Note: This error might be harmless, if triggered by out-dated remove Link event
 				log.error("Remove link failed {}", linkEvent, e);
 				return;
 			}

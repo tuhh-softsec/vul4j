@@ -119,6 +119,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	 */
 	private void processEvents(Collection<EventEntry<TopologyEvent>> events) {
 	    for (EventEntry<TopologyEvent> event : events) {
+		// TODO ignore event triggered by myself
 		TopologyEvent topologyEvent = event.eventData();
 		switch (event.eventType()) {
 		case ENTRY_ADD:
@@ -285,6 +286,9 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Override
 	public void removeLinkEvent(LinkEvent linkEvent) {
+	    // TODO may need to distinguish internal event, which checks
+	    // ownership of dst-dpid of this link, and only write to DB
+	    // if it is owner of the dpid
 		if (prepareForRemoveLinkEvent(linkEvent)) {
 			datastore.removeLink(linkEvent);
 			removeLink(linkEvent);
@@ -421,6 +425,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		    log.debug("Removing Link {} on Port {}", link, portEvt);
 		    LinkEvent linkEvent = new LinkEvent(link.getSourceSwitchDpid(), link.getSourcePortNumber(), link.getDestinationSwitchDpid(), link.getDestinationPortNumber());
 		    // calling Discovery API to wipe from DB, etc.
+		    // XXX call internal remove Link, which will check
+		    // ownership and modify only if it is the owner
 		    removeLinkEvent(linkEvent);
 		}
 		return true;
@@ -559,6 +565,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		putSwitch(switchEvent);
 	    }
 	    // TODO handle invariant violation
+	    // TODO trigger instance local topology event handler
 	}
 
 	@Override
@@ -567,6 +574,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		removeSwitch(switchEvent);
 	    }
 	    // TODO handle invariant violation
+	    // TODO trigger instance local topology event handler
 	}
 
 	@Override
@@ -575,6 +583,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		putPort(portEvent);
 	    }
 	    // TODO handle invariant violation
+	    // TODO trigger instance local topology event handler
 	}
 
 	@Override
@@ -583,6 +592,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		removePort(portEvent);
 	    }
 	    // TODO handle invariant violation
+	    // TODO trigger instance local topology event handler
 	}
 
 	@Override
@@ -591,6 +601,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		putLink(linkEvent);
 	    }
 	    // TODO handle invariant violation
+	    // TODO trigger instance local topology event handler
 	}
 
 	@Override
@@ -599,6 +610,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		removeLink(linkEvent);
 	    }
 	    // TODO handle invariant violation
+	    // TODO trigger instance local topology event handler
 	}
 
 	@Override
@@ -607,6 +619,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		putDevice(deviceEvent);
 	    }
 	    // TODO handle invariant violation
+	    // TODO trigger instance local topology event handler
 	}
 
 	@Override
@@ -615,6 +628,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		removeDevice(deviceEvent);
 	    }
 	    // TODO handle invariant violation
+	    // TODO trigger instance local topology event handler
 	}
 
 	/* ************************************************
@@ -675,7 +689,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		PortEvent portEvt = new PortEvent(port.getDpid(), port.getNumber());
 		portsToRemove.add(portEvt);
 	    }
-	    for (PortEvent portEvt : portsToRemove ) {
+	    for (PortEvent portEvt : portsToRemove) {
 		// XXX calling removePortEvent() may trigger duplicate event, once at prepare phase, second time here
 		// If event can be squashed, ignored etc. at receiver side it shouldn't be a problem, but if not
 		// need to re-visit this issue.
@@ -1062,7 +1076,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Deprecated
 	public void loadWholeTopologyFromDB() {
-	    // XXX clear everything first?
+	    // XXX May need to clear whole topology first, depending on
+	    // how we initially subscribe to replication events
 
 	    for (RCSwitch sw : RCSwitch.getAllSwitches()) {
 		if ( sw.getStatus() != RCSwitch.STATUS.ACTIVE ) {
@@ -1087,6 +1102,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    //	}
 
 	    for (RCLink l : RCLink.getAllLinks()) {
+		// TODO check if src/dst switch/port exist before triggering event
 		putLinkReplicationEvent( new LinkEvent(l.getSrc().dpid, l.getSrc().number, l.getDst().dpid, l.getDst().number));
 	    }
 	}
