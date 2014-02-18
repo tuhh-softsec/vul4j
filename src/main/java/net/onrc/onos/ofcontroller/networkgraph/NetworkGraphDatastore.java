@@ -37,9 +37,9 @@ public class NetworkGraphDatastore {
 
 	private static final int NUM_RETRIES = 10;
 
-	private final NetworkGraphImpl graph;
+	private final TopologyManager graph;
 
-	public NetworkGraphDatastore(NetworkGraphImpl graph) {
+	public NetworkGraphDatastore(TopologyManager graph) {
 		this.graph = graph;
 	}
 

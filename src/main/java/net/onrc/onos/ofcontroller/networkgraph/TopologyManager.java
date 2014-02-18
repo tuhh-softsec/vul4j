@@ -39,11 +39,11 @@ import org.slf4j.LoggerFactory;
  * re-ordering. e.g.) Link Add came in, but Switch was not there.
  *
  */
-public class NetworkGraphImpl extends AbstractNetworkGraph implements
+public class TopologyManager extends AbstractNetworkGraph implements
 	NetworkGraphDiscoveryInterface, NetworkGraphReplicationInterface {
 
     private static final Logger log = LoggerFactory
-	    .getLogger(NetworkGraphImpl.class);
+	    .getLogger(TopologyManager.class);
 
     private IEventChannel<byte[], TopologyEvent> eventChannel;
     private static final String EVENT_CHANNEL_NAME = "onos.topology";
@@ -53,7 +53,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
     private final IControllerRegistryService registryService;
     private CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners;
 
-    public NetworkGraphImpl(IControllerRegistryService registryService, CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners) {
+    public TopologyManager(IControllerRegistryService registryService, CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners) {
 	super();
 	datastore = new NetworkGraphDatastore(this);
 	this.registryService = registryService;
@@ -98,7 +98,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    Collection<EventEntry<TopologyEvent>> collection =
 		new LinkedList<EventEntry<TopologyEvent>>();
 
-	    this.setName("NetworkGraphImpl.EventHandler " + this.getId());
+	    this.setName("TopologyManager.EventHandler " + this.getId());
 	    startup();
 
 	    //

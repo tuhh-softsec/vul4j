@@ -53,7 +53,7 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     }
 
     /**
-     * Only {@link NetworkGraphImpl} should use this method
+     * Only {@link TopologyManager} should use this method
      * @param p
      */
     void addAttachmentPoint(Port p) {
@@ -62,7 +62,7 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     }
 
     /**
-     * Only {@link NetworkGraphImpl} should use this method
+     * Only {@link TopologyManager} should use this method
      * @param p
      */
     boolean removeAttachmentPoint(Port p) {
@@ -70,7 +70,7 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     }
 
     /**
-     * Only {@link NetworkGraphImpl} should use this method
+     * Only {@link TopologyManager} should use this method
      * @param p
      */
     boolean addIpAddress(InetAddress addr) {
@@ -78,7 +78,7 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     }
 
     /**
-     * Only {@link NetworkGraphImpl} should use this method
+     * Only {@link TopologyManager} should use this method
      * @param p
      */
     boolean removeIpAddress(InetAddress addr) {

@@ -21,7 +21,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	// This is initialized as a module for now
 	// private RCNetworkGraphPublisher eventListener;
 
-	private NetworkGraphImpl networkGraph;
+	private TopologyManager networkGraph;
 	//private NetworkGraphDatastore southboundNetworkGraph;
 	private IDatagridService datagridService;
 	private IControllerRegistryService registryService;
@@ -64,7 +64,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 
 		networkGraphListeners = new CopyOnWriteArrayList<>();
-		networkGraph = new NetworkGraphImpl(registryService, networkGraphListeners);
+		networkGraph = new TopologyManager(registryService, networkGraphListeners);
 		//southboundNetworkGraph = new NetworkGraphDatastore(networkGraph);
 	}
 
