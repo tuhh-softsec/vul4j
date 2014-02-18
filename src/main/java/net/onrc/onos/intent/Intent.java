@@ -4,7 +4,7 @@ package net.onrc.onos.intent;
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class Intent {	
-	enum IntentState {
+	public enum IntentState {
 		CREATED,
 		INST_REQ,
 		INST_NACK,

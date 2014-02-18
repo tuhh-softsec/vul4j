@@ -11,6 +11,7 @@ import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentMap;
+//import net.onrc.onos.intent.Intent.IntentState;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
@@ -28,6 +29,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.resource.Get;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,11 +46,11 @@ public class IntentResource extends ServerResource {
 
     private class IntentStatus {
         String intentId;
-        boolean status;
+        String status;
         
         public IntentStatus() {}
         
-        public IntentStatus(String intentId, boolean status) {
+        public IntentStatus(String intentId, String status) {
             this.intentId = intentId;
             this.status = status;
         }
@@ -60,33 +63,28 @@ public class IntentResource extends ServerResource {
             this.intentId = intentId;
         }
         
-        public boolean getStatus() {
+        public String getStatus() {
             return status;
         }
         
-        public void setStatus(boolean status) {
+        public void setStatus(String status) {
             this.status = status;
         }
     }
     
     @Post("json")
-    public String store(String jsonFlowIntent) throws IOException {
+    public String store(String jsonIntent) throws IOException {
 	IDatagridService datagridService = (IDatagridService) getContext()
 		.getAttributes().get(IDatagridService.class.getCanonicalName());
 	if (datagridService == null) {
 	    log.debug("FlowIntentResource ONOS Datagrid Service not found");
 	    return "";
 	}
-	INetworkGraphService networkGraphService = (INetworkGraphService) getContext()
-		.getAttributes().get(
-			INetworkGraphService.class.getCanonicalName());
-	NetworkGraph graph = networkGraphService.getNetworkGraph();
         String reply = "";
 	ObjectMapper mapper = new ObjectMapper();
 	JsonNode jNode = null;
 	try {
-	    System.out.println("json string " + jsonFlowIntent);
-	    jNode = mapper.readValue(jsonFlowIntent, JsonNode.class);
+	    jNode = mapper.readValue(jsonIntent, JsonNode.class);
 	} catch (JsonGenerationException ex) {
 	    log.error("JsonGeneration exception ", ex);
 	} catch (JsonMappingException ex) {
@@ -98,11 +96,15 @@ public class IntentResource extends ServerResource {
 	if (jNode != null) {
 	    Kryo kryo = new Kryo();
 	    reply = parseJsonNode(kryo, jNode.getElements(), datagridService);
-	    // datagridService.registerIntent(intents);
 	}
         return reply;
     }
 
+    @Get("json")
+    public String retrieve() {
+        return "123";
+    }
+    
     private String parseJsonNode(Kryo kryo, Iterator<JsonNode> nodes,
 	    IDatagridService datagridService) throws IOException {
         LinkedList<IntentOperation> operations = new LinkedList<>();
@@ -119,8 +121,7 @@ public class IntentResource extends ServerResource {
 		    data = node.get(fieldName);
                     parseFields(data, fieldName, fields);
 		}
-                System.out.println("recv fields " + fields);
-                boolean status = processIntent(fields, operations);
+                String status = processIntent(fields, operations);
                 appendIntentStatus(status, (String)fields.get("intent_id"), mapper, arrayNode);
 		// datagridService.registerIntent(Long.toString(uuid),
 		// sb.toString().getBytes());
@@ -132,22 +133,25 @@ public class IntentResource extends ServerResource {
         
     }
 
-    private void appendIntentStatus(boolean status, final String applnIntentId, 
+    private void appendIntentStatus(String status, final String applnIntentId, 
             ObjectMapper mapper, ArrayNode arrayNode) throws IOException {
+        System.out.println("status " + status);
         String intentId = applnIntentId.split(":")[1];
-        String boolStr = Boolean.TRUE.toString();
-        if (status == false) {
-            boolStr = Boolean.FALSE.toString();
-        }
-        String jsonString = "{\"intent_id\":" + intentId + "," + "\"status\":" + boolStr + "}";
-        JsonNode parsedNode = mapper.readValue(jsonString, JsonNode.class);
-        arrayNode.add(parsedNode);
+        ObjectNode node = mapper.createObjectNode();
+        node.put("intent_id", intentId);
+        node.put("status", status);
+        arrayNode.add(node);
     }
     
-    private boolean processIntent(Map<String, Object> fields, LinkedList<IntentOperation> operations) {
+    private String processIntent(Map<String, Object> fields, LinkedList<IntentOperation> operations) {
         String intentType = (String)fields.get("intent_type");
-        boolean status = false;
+        String intentOp = (String)fields.get("intent_op");
+        String status = null;
         
+        IntentOperation.Operator operation = IntentOperation.Operator.ADD;
+        if ((intentOp.equals("remove"))) {
+            operation = IntentOperation.Operator.REMOVE;
+        }
         if (intentType.equals("shortest_intent_type")) {
             ShortestPathIntent spi = new ShortestPathIntent((String) fields.get("intent_id"),
                     Long.decode((String) fields.get("srcSwitch")),
@@ -156,8 +160,9 @@ public class IntentResource extends ServerResource {
                     Long.decode((String) fields.get("dstSwitch")),
                     (long) fields.get("dstPort"),
                     MACAddress.valueOf((String) fields.get("dstMac")).toLong());
-            operations.add(new IntentOperation(IntentOperation.Operator.ADD, spi));
-            status = true;
+            operations.add(new IntentOperation(operation, spi));
+            System.out.println("intent operation " + operation.toString());
+            status = (spi.getState()).toString();
         } else {
             ConstrainedShortestPathIntent cspi = new ConstrainedShortestPathIntent((String) fields.get("intent_id"),
                     Long.decode((String) fields.get("srcSwitch")),
@@ -167,24 +172,20 @@ public class IntentResource extends ServerResource {
                     (long) fields.get("dstPort"),
                     MACAddress.valueOf((String) fields.get("dstMac")).toLong(),
                     (double) fields.get("bandwidth"));
-            operations.add(new IntentOperation(IntentOperation.Operator.ADD, cspi));
-            status = true;
+            operations.add(new IntentOperation(operation, cspi));
+            status = (cspi.getState()).toString();
         }
         return status;
     }
 
     private void parseFields(JsonNode node, String fieldName, Map<String, Object> fields) {
         if ((node.isTextual())) {
-            System.out.println("textual fieldname = " + fieldName);
             fields.put(fieldName, node.getTextValue());
         } else if ((node.isInt())) {
-            System.out.println("int fieldname = " + fieldName);
             fields.put(fieldName, (long)node.getIntValue());
         } else if (node.isDouble()) {
-            System.out.println("double fieldname = " + fieldName);
             fields.put(fieldName, node.getDoubleValue());
         } else if ((node.isLong())) {
-            System.out.println("long fieldname = " + fieldName);
             fields.put(fieldName, node.getLongValue());
         }
     }
