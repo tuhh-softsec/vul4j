@@ -14,9 +14,9 @@ import net.floodlightcontroller.util.MACAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbstractNetworkGraph implements NetworkGraph {
+public class NetworkGraphImpl implements NetworkGraph {
 	@SuppressWarnings("unused")
-	private static final Logger log = LoggerFactory.getLogger(AbstractNetworkGraph.class);
+	private static final Logger log = LoggerFactory.getLogger(NetworkGraphImpl.class);
 
 	// DPID -> Switch
 	protected ConcurrentMap<Long, Switch> switches;
@@ -24,7 +24,7 @@ public class AbstractNetworkGraph implements NetworkGraph {
 	protected ConcurrentMap<InetAddress, Set<Device>> addr2Device;
 	protected ConcurrentMap<MACAddress, Device> mac2Device;
 
-	public AbstractNetworkGraph() {
+	public NetworkGraphImpl() {
 		// TODO: Does these object need to be stored in Concurrent Collection?
 		switches = new ConcurrentHashMap<>();
 		addr2Device = new ConcurrentHashMap<>();

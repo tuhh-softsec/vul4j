@@ -1,12 +1,12 @@
 package net.onrc.onos.intent;
 
-import net.onrc.onos.ofcontroller.networkgraph.AbstractNetworkGraph;
+import net.onrc.onos.ofcontroller.networkgraph.NetworkGraphImpl;
 import net.onrc.onos.ofcontroller.networkgraph.Link;
 import net.onrc.onos.ofcontroller.networkgraph.LinkImpl;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchImpl;
 
-public class MockNetworkGraph extends AbstractNetworkGraph {
+public class MockNetworkGraph extends NetworkGraphImpl {
 	public Switch addSwitch(Long switchId) {
 		SwitchImpl sw = new SwitchImpl(this, switchId);
 		switches.put(sw.getDpid(), sw);

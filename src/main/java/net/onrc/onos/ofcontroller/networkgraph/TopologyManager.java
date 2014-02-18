@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * re-ordering. e.g.) Link Add came in, but Switch was not there.
  *
  */
-public class TopologyManager extends AbstractNetworkGraph implements
+public class TopologyManager extends NetworkGraphImpl implements
 	NetworkGraphDiscoveryInterface, NetworkGraphReplicationInterface {
 
     private static final Logger log = LoggerFactory
