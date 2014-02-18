@@ -409,13 +409,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	}
 
 	private boolean prepareForRemovePortEvent(PortEvent portEvt) {
-		// Parent Switch must exist
-		Switch sw = getSwitch(portEvt.getDpid());
-		if ( sw ==  null ) {
-		    log.debug("Switch already removed? {}", portEvt);
-		    return false;
-		}
-		Port port = sw.getPort(portEvt.getNumber());
+		Port port = getPort(portEvt.getDpid(), portEvt.getNumber());
 		if ( port == null ) {
 		    log.debug("Port already removed? {}", portEvt);
 		    // let it pass
@@ -454,17 +448,9 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	}
 
 	private boolean prepareForAddLinkEvent(LinkEvent linkEvt) {
-	    // Src/Dst Switch must exist
-	    Switch srcSw = getSwitch(linkEvt.getSrc().dpid);
-	    Switch dstSw = getSwitch(linkEvt.getDst().dpid);
-	    if ( srcSw == null || dstSw == null ) {
-	    log.warn("Dropping add link event because switch doesn't exist: {}",
-	    		linkEvt);
-		return false;
-	    }
 	    // Src/Dst Port must exist
-	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
-	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
+	    Port srcPort = getPort(linkEvt.getSrc().dpid, linkEvt.getSrc().number);
+	    Port dstPort = getPort(linkEvt.getDst().dpid, linkEvt.getDst().number);
 	    if ( srcPort == null || dstPort == null ) {
 	    log.warn("Dropping add link event because port doesn't exist: {}",
 	    		linkEvt);
@@ -492,16 +478,9 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	}
 
 	private boolean prepareForRemoveLinkEvent(LinkEvent linkEvt) {
-	    // Src/Dst Switch must exist
-	    Switch srcSw = getSwitch(linkEvt.getSrc().dpid);
-	    Switch dstSw = getSwitch(linkEvt.getDst().dpid);
-	    if ( srcSw == null || dstSw == null ) {
-		log.warn("Dropping remove link event because switch doesn't exist: {}", linkEvt);
-		return false;
-	    }
 	    // Src/Dst Port must exist
-	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
-	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
+	    Port srcPort = getPort(linkEvt.getSrc().dpid, linkEvt.getSrc().number);
+	    Port dstPort = getPort(linkEvt.getDst().dpid, linkEvt.getDst().number);
 	    if ( srcPort == null || dstPort == null ) {
 		log.warn("Dropping remove link event because port doesn't exist {}", linkEvt);
 		return false;
@@ -531,15 +510,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    boolean preconditionBroken = false;
 	    ArrayList<PortEvent.SwitchPort> failedSwitchPort = new ArrayList<>();
 	    for ( PortEvent.SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
-		// Attached Ports' Parent Switch must exist
-		Switch sw = getSwitch(swp.dpid);
-		if ( sw ==  null ) {
-		    preconditionBroken = true;
-		    failedSwitchPort.add(swp);
-		    continue;
-		}
 		// Attached Ports must exist
-		Port port = sw.getPort(swp.number);
+		Port port = getPort(swp.dpid, swp.number);
 		if ( port == null ) {
 		    preconditionBroken = true;
 		    failedSwitchPort.add(swp);
@@ -827,23 +799,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		throw new IllegalArgumentException("Link cannot be null");
 	    }
 
-	    Switch srcSw = switches.get(linkEvt.getSrc().dpid);
-	    if (srcSw == null) {
-		throw new BrokenInvariantException(
-			String.format(
-				"Switch with dpid %s did not exist.",
-				new Dpid(linkEvt.getSrc().dpid)));
-	    }
-
-	    Switch dstSw = switches.get(linkEvt.getDst().dpid);
-	    if (dstSw == null) {
-		throw new BrokenInvariantException(
-			String.format(
-				"Switch with dpid %s did not exist.",
-				new Dpid(linkEvt.getDst().dpid)));
-	    }
-
-	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
+	    Port srcPort = getPort(linkEvt.getSrc().dpid, linkEvt.getSrc().number);
 	    if (srcPort == null) {
 		throw new BrokenInvariantException(
 			String.format(
@@ -851,7 +807,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 				linkEvt.getSrc() ));
 	    }
 
-	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
+	    Port dstPort = getPort(linkEvt.getDst().dpid, linkEvt.getDst().number);
 	    if (dstPort == null) {
 		throw new BrokenInvariantException(
 			String.format(
@@ -912,25 +868,13 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		throw new IllegalArgumentException("Link cannot be null");
 	    }
 
-	    Switch srcSw = switches.get(linkEvt.getSrc().dpid);
-	    if (srcSw == null) {
-		log.warn("Src Switch for Link {} already removed, ignoring", linkEvt);
-		return;
-	    }
-
-	    Switch dstSw = switches.get(linkEvt.getDst().dpid);
-	    if (dstSw == null) {
-		log.warn("Dst Switch for Link {} already removed, ignoring", linkEvt);
-		return;
-	    }
-
-	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
+	    Port srcPort = getPort(linkEvt.getSrc().dpid, linkEvt.getSrc().number);
 	    if (srcPort == null) {
 		log.warn("Src Port for Link {} already removed, ignoring", linkEvt);
 		return;
 	    }
 
-	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
+	    Port dstPort = getPort(linkEvt.getDst().dpid, linkEvt.getDst().number);
 	    if (dstPort == null) {
 		log.warn("Dst Port for Link {} already removed, ignoring", linkEvt);
 		return;
@@ -970,14 +914,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	    // for each attachment point
 	    for (SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
-		// Attached Ports' Parent Switch must exist
-		Switch sw = getSwitch(swp.dpid);
-		if ( sw ==  null ) {
-		    log.warn("Switch for the attachment point {} did not exist. skipping mutation", swp);
-		    continue;
-		}
 		// Attached Ports must exist
-		Port port = sw.getPort(swp.number);
+		Port port = getPort(swp.dpid, swp.number);
 		if ( port == null ) {
 		    log.warn("Port for the attachment point {} did not exist. skipping mutation", swp);
 		    continue;
@@ -1036,14 +974,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	    // for each attachment point
 	    for (SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
-		// Attached Ports' Parent Switch must exist
-		Switch sw = getSwitch(swp.dpid);
-		if ( sw ==  null ) {
-		    log.warn("Switch for the attachment point {} did not exist. skipping attachment point mutation", swp);
-		    continue;
-		}
 		// Attached Ports must exist
-		Port port = sw.getPort(swp.number);
+		Port port = getPort(swp.dpid, swp.number);
 		if ( port == null ) {
 		    log.warn("Port for the attachment point {} did not exist. skipping attachment point mutation", swp);
 		    continue;
@@ -1135,6 +1067,15 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    }
 	}
 
+	// we might want to include this in NetworkGraph interface
+	private Port getPort(Long dpid, Long number) {
+	    Switch sw = getSwitch(dpid);
+	    if (sw != null) {
+		return sw.getPort(number);
+	    }
+	    return null;
+	}
+
 	private SwitchImpl getSwitchImpl(Switch sw) {
 	    if (sw instanceof SwitchImpl) {
 		return (SwitchImpl) sw;
@@ -1192,15 +1133,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	    for (RCLink l : RCLink.getAllLinks()) {
 		// check if src/dst switch/port exist before triggering event
-		// Src/Dst Switch must exist
-		Switch srcSw = getSwitch(l.getSrc().dpid);
-		Switch dstSw = getSwitch(l.getDst().dpid);
-		if ( srcSw == null || dstSw == null ) {
-		    continue;
-		}
-		// Src/Dst Port must exist
-		Port srcPort = srcSw.getPort(l.getSrc().number);
-		Port dstPort = dstSw.getPort(l.getDst().number);
+		Port srcPort = getPort(l.getSrc().dpid, l.getSrc().number);
+		Port dstPort = getPort(l.getDst().dpid, l.getDst().number);
 		if ( srcPort == null || dstPort == null ) {
 		    continue;
 		}
