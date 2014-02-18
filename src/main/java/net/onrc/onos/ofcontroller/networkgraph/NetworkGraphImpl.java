@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.onrc.onos.datagrid.IDatagridService;
@@ -50,11 +51,13 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
     private final NetworkGraphDatastore datastore;
     private final IControllerRegistryService registryService;
+    private CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners;
 
-    public NetworkGraphImpl(IControllerRegistryService registryService) {
+    public NetworkGraphImpl(IControllerRegistryService registryService, CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners) {
 	super();
 	datastore = new NetworkGraphDatastore(this);
 	this.registryService = registryService;
+	this.networkGraphListeners = networkGraphListeners;
     }
 
     /**
@@ -571,7 +574,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		putSwitch(switchEvent);
 	    }
 	    // TODO handle invariant violation
-	    // TODO trigger instance local topology event handler
+	    // trigger instance local topology event handler
+	    dispatchPutSwitchEvent(switchEvent);
 	}
 
 	@Override
@@ -580,7 +584,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		removeSwitch(switchEvent);
 	    }
 	    // TODO handle invariant violation
-	    // TODO trigger instance local topology event handler
+	    // trigger instance local topology event handler
+	    dispatchRemoveSwitchEvent(switchEvent);
 	}
 
 	@Override
@@ -589,7 +594,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		putPort(portEvent);
 	    }
 	    // TODO handle invariant violation
-	    // TODO trigger instance local topology event handler
+	    // trigger instance local topology event handler
+	    dispatchPutPortEvent(portEvent);
 	}
 
 	@Override
@@ -598,7 +604,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		removePort(portEvent);
 	    }
 	    // TODO handle invariant violation
-	    // TODO trigger instance local topology event handler
+	    // trigger instance local topology event handler
+	    dispatchRemovePortEvent(portEvent);
 	}
 
 	@Override
@@ -607,7 +614,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		putLink(linkEvent);
 	    }
 	    // TODO handle invariant violation
-	    // TODO trigger instance local topology event handler
+	    // trigger instance local topology event handler
+	    dispatchPutLinkEvent(linkEvent);
 	}
 
 	@Override
@@ -616,7 +624,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		removeLink(linkEvent);
 	    }
 	    // TODO handle invariant violation
-	    // TODO trigger instance local topology event handler
+	    // trigger instance local topology event handler
+	    dispatchRemoveLinkEvent(linkEvent);
 	}
 
 	@Override
@@ -625,7 +634,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		putDevice(deviceEvent);
 	    }
 	    // TODO handle invariant violation
-	    // TODO trigger instance local topology event handler
+	    // trigger instance local topology event handler
+	    dispatchPutDeviceEvent(deviceEvent);
 	}
 
 	@Override
@@ -634,7 +644,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		removeDevice(deviceEvent);
 	    }
 	    // TODO handle invariant violation
-	    // TODO trigger instance local topology event handler
+	    // trigger instance local topology event handler
+	    dispatchRemoveDeviceEvent(deviceEvent);
 	}
 
 	/* ************************************************
@@ -1049,6 +1060,62 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 			log.debug("Collision detected, updating IP to Device mapping retrying.");
 		    }
 		} while( !updated );
+	    }
+	}
+
+	private void dispatchPutSwitchEvent(SwitchEvent switchEvent) {
+	    for (INetworkGraphListener listener : this.networkGraphListeners) {
+		// TODO Should copy before handing them over to listener
+		listener.putSwitchEvent(switchEvent);
+	    }
+	}
+
+	private void dispatchRemoveSwitchEvent(SwitchEvent switchEvent) {
+	    for (INetworkGraphListener listener : this.networkGraphListeners) {
+		// TODO Should copy before handing them over to listener
+		listener.removeSwitchEvent(switchEvent);
+	    }
+	}
+
+	private void dispatchPutPortEvent(PortEvent portEvent) {
+	    for (INetworkGraphListener listener : this.networkGraphListeners) {
+		// TODO Should copy before handing them over to listener
+		listener.putPortEvent(portEvent);
+	    }
+	}
+
+	private void dispatchRemovePortEvent(PortEvent portEvent) {
+	    for (INetworkGraphListener listener : this.networkGraphListeners) {
+		// TODO Should copy before handing them over to listener
+		listener.removePortEvent(portEvent);
+	    }
+	}
+
+	private void dispatchPutLinkEvent(LinkEvent linkEvent) {
+	    for (INetworkGraphListener listener : this.networkGraphListeners) {
+		// TODO Should copy before handing them over to listener
+		listener.putLinkEvent(linkEvent);
+	    }
+	}
+
+	private void dispatchRemoveLinkEvent(LinkEvent linkEvent) {
+	    for (INetworkGraphListener listener : this.networkGraphListeners) {
+		// TODO Should copy before handing them over to listener
+		listener.removeLinkEvent(linkEvent);
+	    }
+	}
+
+	private void dispatchPutDeviceEvent(DeviceEvent deviceEvent) {
+	    for (INetworkGraphListener listener : this.networkGraphListeners) {
+		// TODO Should copy before handing them over to listener
+		listener.putDeviceEvent(deviceEvent);;
+	    }
+	}
+
+	private void dispatchRemoveDeviceEvent(DeviceEvent deviceEvent) {
+	    for (INetworkGraphListener listener : this.networkGraphListeners) {
+		// TODO Should copy before handing them over to listener
+		listener.removeDeviceEvent(deviceEvent);
 	    }
 	}
 

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
@@ -25,6 +26,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	private IDatagridService datagridService;
 	private IControllerRegistryService registryService;
 
+	private CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners;
 
 	private IRestApiService restApi;
 
@@ -61,7 +63,8 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 		datagridService = context.getServiceImpl(IDatagridService.class);
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 
-		networkGraph = new NetworkGraphImpl(registryService);
+		networkGraphListeners = new CopyOnWriteArrayList<>();
+		networkGraph = new NetworkGraphImpl(registryService, networkGraphListeners);
 		//southboundNetworkGraph = new NetworkGraphDatastore(networkGraph);
 	}
 
@@ -79,6 +82,16 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	@Override
 	public NetworkGraphDiscoveryInterface getNetworkGraphDiscoveryInterface() {
 		return networkGraph;
+	}
+
+	@Override
+	public void registerNetworkGraphListener(INetworkGraphListener listener) {
+	    networkGraphListeners.addIfAbsent(listener);
+	}
+
+	@Override
+	public void deregisterNetworkGraphListener(INetworkGraphListener listener) {
+	    networkGraphListeners.remove(listener);
 	}
 
 }
