@@ -1,8 +1,5 @@
 package net.onrc.onos.ofcontroller.flowmanager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * Class for collecting performance measurements
  */
 public class PerformanceMonitor {
-    private final static Map<String, Queue<Measurement>> map = new ConcurrentHashMap<>();;
+    private final static ConcurrentHashMap<String, Queue<Measurement>> map = new ConcurrentHashMap<>();;
     private final static Logger log = LoggerFactory.getLogger(PerformanceMonitor.class);
     private static long overhead;
     private static long experimentStart = Long.MAX_VALUE;
@@ -23,10 +20,10 @@ public class PerformanceMonitor {
 
     /**
      * Start a performance measurement, identified by a tag
-     * 
+     *
      * Note: Only a single measurement can use the same tag at a time.
      * ..... not true anymore.
-     * 
+     *
      * @param tag for performance measurement
      */
     public static Measurement start(String tag) {
@@ -37,7 +34,11 @@ public class PerformanceMonitor {
 	Queue<Measurement> list = map.get(tag);
 	if(list == null) {
 	    list = new ConcurrentLinkedQueue<Measurement>();
-	    map.put(tag, list);
+	    Queue<Measurement> existing_list = map.putIfAbsent(tag, list);
+	    if (existing_list != null) {
+		// someone concurrently added, using theirs
+		list = existing_list;
+	    }
 	}
 	Measurement m = new Measurement();
 	list.add(m);
@@ -45,12 +46,12 @@ public class PerformanceMonitor {
 	overhead += System.nanoTime() - start;
 	return m;
     }
-    
+
     /**
-     * Stop a performance measurement. 
-     * 
+     * Stop a performance measurement.
+     *
      * You must have already started a measurement with tag.
-     * 
+     *
      * @param tag for performance measurement
      */
     public static void stop(String tag) {
@@ -65,7 +66,7 @@ public class PerformanceMonitor {
 	}
 	overhead += System.nanoTime() - time;
     }
-        
+
     /**
      * Clear all performance measurements.
      */
@@ -74,7 +75,7 @@ public class PerformanceMonitor {
 	overhead = 0;
 	experimentStart = Long.MAX_VALUE;
     }
-    
+
     /**
      * Write all performance measurements to the log
      */
@@ -104,7 +105,7 @@ public class PerformanceMonitor {
 		    if(stop > experimentEnd) {
 			experimentEnd = stop;
 		    }
-		}		
+		}
 		// Collect statistics for average
 		total += m.elapsed();
 		count++;
@@ -113,10 +114,10 @@ public class PerformanceMonitor {
 	    // Normalize start/stop
 	    start -= experimentStart;
 	    stop -= experimentStart;
-	    result += key + '=' + 
-		    (avg / normalization) + '/' + 
-		    (start / normalization) + '/' + 
-		    (stop / normalization) + '/' + 
+	    result += key + '=' +
+		    (avg / normalization) + '/' +
+		    (start / normalization) + '/' +
+		    (stop / normalization) + '/' +
 		    count + '\n';
 	}
 	double overheadMs = overhead / normalization;
@@ -152,8 +153,8 @@ public class PerformanceMonitor {
     public static class Measurement {
 	long start;
 	long stop = -1;
-	
-	/** 
+
+	/**
 	 * Start the measurement
 	 */
 	public void start() {
@@ -161,7 +162,7 @@ public class PerformanceMonitor {
 		start = System.nanoTime();
 	    }
 	}
-	
+
 	/**
 	 * Stop the measurement
 	 */
@@ -169,7 +170,7 @@ public class PerformanceMonitor {
 	    long now = System.nanoTime();
 	    stop(now);
 	}
-	
+
 	/**
 	 * Stop the measurement at a specific time
 	 * @param time to stop
@@ -179,10 +180,10 @@ public class PerformanceMonitor {
 		stop = time;
 	    }
 	}
-	
+
 	/**
 	 * Compute the elapsed time of the measurement in nanoseconds
-	 * 
+	 *
 	 * @return the measurement time in nanoseconds, or -1 if the measurement is stil running.
 	 */
 	public long elapsed() {
@@ -193,19 +194,20 @@ public class PerformanceMonitor {
 		return stop - start;
 	    }
 	}
-		
+
 	/**
 	 * Returns the number of milliseconds for the measurement as a String.
 	 */
+	@Override
 	public String toString() {
 	    double milli = elapsed() / normalization;
 	    double startMs = start / normalization;
 	    double stopMs = stop / normalization;
-	    
+
 	    return milli + "ms/" + startMs + '/' + stopMs;
 	}
     }
-    
+
     public static void main(String args[]){
 	// test the measurement overhead
 	String tag;
