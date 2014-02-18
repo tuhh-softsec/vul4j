@@ -76,7 +76,7 @@ public class TopologyEvent {
 	    return linkEvent.toString();
 	if (deviceEvent != null)
 	    return deviceEvent.toString();
-	return null;
+	return "[Empty TopologyEvent]";
     }
 
     /**
