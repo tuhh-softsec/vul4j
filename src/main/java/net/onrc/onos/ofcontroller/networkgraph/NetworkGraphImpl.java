@@ -400,6 +400,8 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	private boolean prepareForAddPortEvent(PortEvent portEvt) {
 		// Parent Switch must exist
 		if ( getSwitch(portEvt.getDpid()) == null) {
+			log.warn("Dropping add port event because switch doesn't exist: {}",
+					portEvt);
 		    return false;
 		}
 		// Prep: None
@@ -456,12 +458,16 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    Switch srcSw = getSwitch(linkEvt.getSrc().dpid);
 	    Switch dstSw = getSwitch(linkEvt.getDst().dpid);
 	    if ( srcSw == null || dstSw == null ) {
+	    log.warn("Dropping add link event because switch doesn't exist: {}",
+	    		linkEvt);
 		return false;
 	    }
 	    // Src/Dst Port must exist
 	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
 	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
 	    if ( srcPort == null || dstPort == null ) {
+	    log.warn("Dropping add link event because port doesn't exist: {}",
+	    		linkEvt);
 		return false;
 	    }
 
@@ -490,14 +496,14 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    Switch srcSw = getSwitch(linkEvt.getSrc().dpid);
 	    Switch dstSw = getSwitch(linkEvt.getDst().dpid);
 	    if ( srcSw == null || dstSw == null ) {
-		log.warn("Rejecting removeLink {} because switch doesn't exist", linkEvt);
+		log.warn("Dropping remove link event because switch doesn't exist: {}", linkEvt);
 		return false;
 	    }
 	    // Src/Dst Port must exist
 	    Port srcPort = srcSw.getPort(linkEvt.getSrc().number);
 	    Port dstPort = dstSw.getPort(linkEvt.getDst().number);
 	    if ( srcPort == null || dstPort == null ) {
-		log.warn("Rejecting removeLink {} because port doesn't exist", linkEvt);
+		log.warn("Dropping remove link event because port doesn't exist {}", linkEvt);
 		return false;
 	    }
 
@@ -509,7 +515,7 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    if (link == null ||
 		    !link.getDestinationPortNumber().equals(linkEvt.getDst().number)
 		    || !link.getDestinationSwitchDpid().equals(linkEvt.getDst().dpid)) {
-		log.warn("Rejecting removeLink {} because link doesn't exist", linkEvt);
+		log.warn("Dropping remove link event because link doesn't exist: {}", linkEvt);
 		return false;
 	    }
 	    // Prep: None
