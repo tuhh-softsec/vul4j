@@ -1185,7 +1185,19 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 	    //	}
 
 	    for (RCLink l : RCLink.getAllLinks()) {
-		// TODO check if src/dst switch/port exist before triggering event
+		// check if src/dst switch/port exist before triggering event
+		// Src/Dst Switch must exist
+		Switch srcSw = getSwitch(l.getSrc().dpid);
+		Switch dstSw = getSwitch(l.getDst().dpid);
+		if ( srcSw == null || dstSw == null ) {
+		    continue;
+		}
+		// Src/Dst Port must exist
+		Port srcPort = srcSw.getPort(l.getSrc().number);
+		Port dstPort = dstSw.getPort(l.getDst().number);
+		if ( srcPort == null || dstPort == null ) {
+		    continue;
+		}
 		putLinkReplicationEvent( new LinkEvent(l.getSrc().dpid, l.getSrc().number, l.getDst().dpid, l.getDst().number));
 	    }
 	}
