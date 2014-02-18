@@ -295,11 +295,20 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 
 	@Override
 	public void removeLinkEvent(LinkEvent linkEvent) {
-	    // TODO may need to distinguish internal event, which checks
-	    // ownership of dst-dpid of this link, and only write to DB
-	    // if it is owner of the dpid
+	    removeLinkEvent(linkEvent, false);
+
+	}
+
+	private void removeLinkEvent(LinkEvent linkEvent, boolean dstCheckBeforeDBmodify) {
 		if (prepareForRemoveLinkEvent(linkEvent)) {
-			datastore.removeLink(linkEvent);
+			if (dstCheckBeforeDBmodify) {
+			    // write to DB only if it is owner of the dst dpid
+			    if (registryService.hasControl(linkEvent.getDst().dpid)) {
+				datastore.removeLink(linkEvent);
+			    }
+			} else {
+			    datastore.removeLink(linkEvent);
+			}
 			removeLink(linkEvent);
 			// Send out notification
 			eventChannel.removeEntry(linkEvent.getID());
@@ -434,9 +443,10 @@ public class NetworkGraphImpl extends AbstractNetworkGraph implements
 		    log.debug("Removing Link {} on Port {}", link, portEvt);
 		    LinkEvent linkEvent = new LinkEvent(link.getSourceSwitchDpid(), link.getSourcePortNumber(), link.getDestinationSwitchDpid(), link.getDestinationPortNumber());
 		    // calling Discovery API to wipe from DB, etc.
-		    // XXX call internal remove Link, which will check
-		    // ownership and modify only if it is the owner
-		    removeLinkEvent(linkEvent);
+
+		    // Call internal remove Link, which will check
+		    // ownership of DST dpid and modify DB only if it is the owner
+		    removeLinkEvent(linkEvent, true);
 		}
 		return true;
 	}
