@@ -1,13 +1,15 @@
 package net.onrc.onos.intent.runtime;
 
 import java.util.Collection;
-import java.util.HashSet;
 
+import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.intent.ConstrainedBFSTree;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.Intent;
+import net.onrc.onos.intent.IntentOperation;
+import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.PathIntent;
-import net.onrc.onos.intent.PathIntents;
+import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
@@ -16,33 +18,16 @@ import net.onrc.onos.ofcontroller.networkgraph.Switch;
 /**
  * @author Toshio Koide (t-koide@onlab.us)
  */
-public class PathCalcRuntime {
-	NetworkGraph graph;
-	HashSet<Intent> inputIntents = new HashSet<Intent>();
-	PathIntents outputIntents = null;
-
+public class PathCalcRuntime implements IFloodlightService {
+	private NetworkGraph graph;
 	public PathCalcRuntime(NetworkGraph g) {
 		this.graph = g;
-		outputIntents = new PathIntents(g);
 	}
 
-	public Collection<Intent> getInputIntents() {
-		return inputIntents;
-	}
+	public PathIntentMap calcPathIntents(Collection<Intent> highLevelIntents, PathIntentMap pathIntents) {
+		IntentOperationList intentOpList = new IntentOperationList();
 
-	public PathIntents getOutputIntents() {
-		return outputIntents;
-	}
-
-	public void addInputIntents(Collection<Intent> inputIntents) {
-		this.inputIntents.addAll(inputIntents);
-		this.outputIntents = calcPathIntents(inputIntents);
-	}
-
-	protected PathIntents calcPathIntents(Collection<Intent> originalIntents) {
-		PathIntents pathIntents = new PathIntents(graph);
-
-		for (Intent intent: originalIntents) {
+		for (Intent intent: highLevelIntents) {
 			if (!(intent instanceof ShortestPathIntent)) {
 				// unsupported intent type.
 				// TODO should push back the intent to caller
@@ -73,8 +58,10 @@ public class PathCalcRuntime {
 				// TODO should push back the intent to caller
 				continue;
 			}
-			
-			pathIntents.addIntent(new PathIntent("pi" + intent.getId(), path, bandwidth, intent));
+
+			PathIntent pathIntent = new PathIntent("pi" + intent.getId(), path, bandwidth, intent);
+			pathIntents.addIntent(pathIntent);
+			intentOpList.add(new IntentOperation(IntentOperation.Operator.ADD, pathIntent));
 		}
 		return pathIntents;
 	}

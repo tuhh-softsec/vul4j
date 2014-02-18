@@ -45,7 +45,7 @@ public class Intent {
 		state = newState;
 		return oldState;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();

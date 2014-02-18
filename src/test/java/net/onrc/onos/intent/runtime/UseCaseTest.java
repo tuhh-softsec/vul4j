@@ -6,7 +6,7 @@ import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.MockNetworkGraph;
 import net.onrc.onos.intent.PathIntent;
-import net.onrc.onos.intent.PathIntents;
+import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.ofcontroller.networkgraph.*;
 
@@ -31,8 +31,9 @@ public class UseCaseTest {
 	public void tearDown() {
 	}
 
-	private void showResult(PathIntents intents) {
-		for (PathIntent pathIntent: intents.getIntents()) {
+	private void showResult(PathIntentMap intents) {
+		for (Intent intent: intents.getAllIntents()) {
+			PathIntent pathIntent = (PathIntent)intent;
 			System.out.println("Parent intent: " + pathIntent.getParentIntent().toString());
 			System.out.println("Path:");
 			for (Link link: pathIntent.getPath(g)) {
@@ -55,14 +56,14 @@ public class UseCaseTest {
 
 		// compile high-level intents into low-level intents (calculate paths)
 		PathCalcRuntime runtime1 = new PathCalcRuntime(g);
-		runtime1.addInputIntents(intents);
+		PathIntentMap pathIntents = runtime1.calcPathIntents(intents, new PathIntentMap(g));
 		
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents(runtime1.getOutputIntents());
+		runtime2.addIntents(pathIntents);
 
 		// show results
-		showResult(runtime1.getOutputIntents());
+		showResult(pathIntents);
 		System.out.println(runtime2.getPlan());
 	}
 
@@ -78,14 +79,14 @@ public class UseCaseTest {
 
 		// compile high-level intents into low-level intents (calculate paths)
 		PathCalcRuntime runtime1 = new PathCalcRuntime(g);
-		runtime1.addInputIntents(intents);
+		PathIntentMap pathIntents = runtime1.calcPathIntents(intents, new PathIntentMap(g));
 
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents(runtime1.getOutputIntents());
+		runtime2.addIntents(pathIntents);
 
 		// show results
-		showResult(runtime1.getOutputIntents());
+		showResult(pathIntents);
 		System.out.println(runtime2.getPlan());
 	}
 
@@ -101,14 +102,14 @@ public class UseCaseTest {
 
 		// compile high-level intents into low-level intents (calculate paths)
 		PathCalcRuntime runtime1 = new PathCalcRuntime(g);
-		runtime1.addInputIntents(intents);
+		PathIntentMap pathIntents = runtime1.calcPathIntents(intents, new PathIntentMap(g));
 
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents(runtime1.getOutputIntents());
+		runtime2.addIntents(pathIntents);
 
 		// show results
-		showResult(runtime1.getOutputIntents());
+		showResult(pathIntents);
 		System.out.println(runtime2.getPlan());
 	}
 }

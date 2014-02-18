@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 import net.onrc.onos.ofcontroller.networkgraph.Link;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
@@ -12,17 +11,18 @@ import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 /**
  * @author Toshio Koide (t-koide@onlab.us)
  */
-public class PathIntents {
-	protected LinkedList<PathIntent> intents = new LinkedList<PathIntent>();
+public class PathIntentMap extends IntentMap {
 	protected HashMap<Link, HashSet<PathIntent>> linkToIntents = new HashMap<Link, HashSet<PathIntent>>();
 	protected NetworkGraph graph;
 
-	public PathIntents(NetworkGraph graph) {
+	public PathIntentMap(NetworkGraph graph) {
 		this.graph = graph;
 	}
 
 	public void addIntent(PathIntent intent) {
-		intents.add(intent);
+		if (intents.containsKey(intent.getId()))
+			removeIntent((PathIntent)intents.get(intent.getId()));
+		intents.put(intent.getId(), intent);
 		for (Link link: intent.getPath(graph)) {
 			HashSet<PathIntent> value = linkToIntents.get(link);
 			if (value == null) {
@@ -41,24 +41,8 @@ public class PathIntents {
 		}
 	}
 
-	public void addIntents(PathIntents intents) {
-		for(PathIntent intent: intents.getIntents()) {
-			addIntent(intent);
-		}
-	}
-
-	public void removeIntents(PathIntents intents) {
-		for(PathIntent intent: intents.getIntents()) {
-			removeIntent(intent);
-		}
-	}
-
 	public Collection<PathIntent> getIntentByLink(Link link) {
 		return Collections.unmodifiableCollection(linkToIntents.get(link));
-	}
-
-	public Collection<PathIntent> getIntents() {
-		return Collections.unmodifiableCollection(intents);
 	}
 
 	/**

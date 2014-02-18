@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map.Entry;
 
 import net.onrc.onos.intent.Intent.IntentState;
@@ -52,7 +51,7 @@ public class IntentMap {
 	private HashSet<ChangedListener> listeners = new HashSet<>();
 	protected HashMap<String, Intent> intents = new HashMap<>();
 
-	public void executeOperations(List<IntentOperation> operations) {
+	public void executeOperations(IntentOperationList operations) {
 		LinkedList<ChangedEvent> events = new LinkedList<>();
 		for (IntentOperation operation: operations) {
 			switch (operation.operator) {
@@ -97,7 +96,6 @@ public class IntentMap {
 	public Intent getIntent(String key) {
 		return intents.get(key);
 	}
-
 
 	public void addChangeListener(ChangedListener listener) {
 		listeners.add(listener);

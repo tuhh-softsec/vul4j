@@ -13,7 +13,7 @@ import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.PathIntent;
-import net.onrc.onos.intent.PathIntents;
+import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.ofcontroller.networkgraph.Link;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
@@ -28,7 +28,7 @@ import net.onrc.onos.ofcontroller.networkgraph.Switch;
 
 public class PlanCalcRuntime {
 	NetworkGraph graph;
-	protected PathIntents intents;
+	protected PathIntentMap intents;
 	protected Set<Collection<FlowEntry>> flowEntries;
 	protected List<Set<FlowEntry>> plan;
 	
@@ -38,7 +38,7 @@ public class PlanCalcRuntime {
 		this.plan = new ArrayList<>();
 	}
 	
-	public void addIntents(PathIntents intents) {
+	public void addIntents(PathIntentMap intents) {
 		this.intents = intents;
 		computeFlowEntries();
 		constructPlan();
@@ -49,7 +49,8 @@ public class PlanCalcRuntime {
 	}
 
 	public void computeFlowEntries() {
-		for(PathIntent intent : intents.getIntents()) {
+		for(Intent i : intents.getAllIntents()) {
+			PathIntent intent = (PathIntent)i;
 			Intent parent = intent.getParentIntent();
 			Port srcPort, dstPort, lastDstPort = null;
 			MACAddress srcMac, dstMac;

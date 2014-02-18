@@ -22,7 +22,7 @@ public class ConstrainedBFSTree {
 	HashMap<Switch, Link> upstreamLinks = new HashMap<Switch, Link>();
 	HashMap<Switch, Path> paths = new HashMap<Switch, Path>();
 	Switch rootSwitch;
-	PathIntents intents = null;
+	PathIntentMap intents = null;
 	double bandwidth = 0.0; // 0.0 means no limit for bandwidth (normal BFS tree)
 
 	public ConstrainedBFSTree(Switch rootSwitch) {
@@ -30,7 +30,7 @@ public class ConstrainedBFSTree {
 		calcTree();
 	}
 
-	public ConstrainedBFSTree(Switch rootSwitch, PathIntents intents, double bandwidth) {
+	public ConstrainedBFSTree(Switch rootSwitch, PathIntentMap intents, double bandwidth) {
 		this.rootSwitch = rootSwitch;
 		this.intents = intents;
 		this.bandwidth = bandwidth;

@@ -128,9 +128,8 @@ public class IntentResource extends ServerResource {
 	    }
 	}
         IntentMap intents = new IntentMap();
-        intents.executeOperations(operations);
+//        intents.executeOperations(operations); // TODO use PathCalcRuntimeModule
         return mapper.writeValueAsString(arrayNode);
-        
     }
 
     private void appendIntentStatus(String status, final String applnIntentId, 

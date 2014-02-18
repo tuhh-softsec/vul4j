@@ -23,7 +23,7 @@ public class IntentMapTest {
 	@Test
 	public void test() {
 		IntentMap intents = new IntentMap();
-		LinkedList<IntentOperation> operations = new LinkedList<>();
+		IntentOperationList operations = new IntentOperationList();
 
 		// add three intents
 
