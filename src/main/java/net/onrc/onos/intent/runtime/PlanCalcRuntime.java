@@ -12,6 +12,7 @@ import java.util.Set;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.Intent;
+import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
@@ -36,10 +37,11 @@ public class PlanCalcRuntime {
 		this.graph = graph;
 		this.flowEntries = new HashSet<>();
 		this.plan = new ArrayList<>();
+		this.intents = new PathIntentMap(this.graph);
 	}
 	
-	public void addIntents(PathIntentMap intents) {
-		this.intents = intents;
+	public void addIntents(IntentOperationList intentOpList) {
+		intents.executeOperations(intentOpList);
 		computeFlowEntries();
 		constructPlan();
 	}
