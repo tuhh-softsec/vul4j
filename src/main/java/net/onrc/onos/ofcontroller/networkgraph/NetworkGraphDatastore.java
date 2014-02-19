@@ -200,9 +200,6 @@ public class NetworkGraphDatastore {
 				// retry
 			}
 		}
-
-		// Publish event to in-memory cache
-		graph.putLink(linkEvent);
 	}
 
 	public void removeLink(LinkEvent linkEvent) {
