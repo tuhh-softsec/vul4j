@@ -53,6 +53,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 				new ArrayList<Class<? extends IFloodlightService>>();
 		dependencies.add(IDatagridService.class);
 		dependencies.add(IRestApiService.class);
+		dependencies.add(IControllerRegistryService.class);
 		return dependencies;
 	}
 
