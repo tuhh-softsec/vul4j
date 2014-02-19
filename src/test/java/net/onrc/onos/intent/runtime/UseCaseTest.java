@@ -98,7 +98,7 @@ public class UseCaseTest {
 
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents((PathIntentMap) runtime1.getPathIntents()); // TODO use pathIntentOpList
+		runtime2.addIntents(pathIntentOpList);
 
 		// show results
 		showResult((PathIntentMap) runtime1.getPathIntents());
@@ -123,7 +123,7 @@ public class UseCaseTest {
 
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents((PathIntentMap) runtime1.getPathIntents()); // TODO use pathIntentOpList
+		runtime2.addIntents(pathIntentOpList);
 
 		// show results
 		showResult((PathIntentMap) runtime1.getPathIntents());
@@ -148,7 +148,7 @@ public class UseCaseTest {
 
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents((PathIntentMap) runtime1.getPathIntents()); // TODO use pathIntentOpList
+		runtime2.addIntents(pathIntentOpList);
 
 		// show results
 		showResult((PathIntentMap) runtime1.getPathIntents());
