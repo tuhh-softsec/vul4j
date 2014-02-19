@@ -9,7 +9,7 @@ import net.onrc.onos.ofcontroller.networkgraph.SwitchImpl;
 public class MockNetworkGraph extends NetworkGraphImpl {
 	public Switch addSwitch(Long switchId) {
 		SwitchImpl sw = new SwitchImpl(this, switchId);
-		switches.put(sw.getDpid(), sw);
+		this.putSwitch(sw);
 		return sw;
 
 	}

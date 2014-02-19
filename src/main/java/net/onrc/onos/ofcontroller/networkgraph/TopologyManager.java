@@ -39,8 +39,8 @@ import org.slf4j.LoggerFactory;
  * re-ordering. e.g.) Link Add came in, but Switch was not there.
  *
  */
-public class TopologyManager extends NetworkGraphImpl implements
-	NetworkGraphDiscoveryInterface, NetworkGraphReplicationInterface {
+public class TopologyManager implements NetworkGraphDiscoveryInterface,
+				NetworkGraphReplicationInterface {
 
     private static final Logger log = LoggerFactory
 	    .getLogger(TopologyManager.class);
@@ -50,14 +50,18 @@ public class TopologyManager extends NetworkGraphImpl implements
     private EventHandler eventHandler = new EventHandler();
 
     private final NetworkGraphDatastore datastore;
+    private final NetworkGraphImpl networkGraph = new NetworkGraphImpl();
     private final IControllerRegistryService registryService;
     private CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners;
 
     public TopologyManager(IControllerRegistryService registryService, CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners) {
-	super();
 	datastore = new NetworkGraphDatastore(this);
 	this.registryService = registryService;
 	this.networkGraphListeners = networkGraphListeners;
+    }
+
+    NetworkGraph getNetworkGraph() {
+	return networkGraph;
     }
 
     /**
@@ -368,7 +372,7 @@ public class TopologyManager extends NetworkGraphImpl implements
 	}
 
 	private void removePortsNotOnEvent(SwitchEvent swEvt) {
-	    Switch sw = switches.get( swEvt.getDpid() );
+	    Switch sw = networkGraph.getSwitch(swEvt.getDpid());
 	    if ( sw != null ) {
 		Set<Long> port_noOnEvent = new HashSet<>();
 		for( PortEvent portEvent : swEvt.getPorts()) {
@@ -399,7 +403,7 @@ public class TopologyManager extends NetworkGraphImpl implements
 
 	private boolean prepareForAddPortEvent(PortEvent portEvt) {
 		// Parent Switch must exist
-		if ( getSwitch(portEvt.getDpid()) == null) {
+		if ( networkGraph.getSwitch(portEvt.getDpid()) == null) {
 			log.warn("Dropping add port event because switch doesn't exist: {}",
 					portEvt);
 		    return false;
@@ -645,17 +649,11 @@ public class TopologyManager extends NetworkGraphImpl implements
 		throw new IllegalArgumentException("Switch cannot be null");
 	    }
 
-	    Switch sw = switches.get(swEvt.getDpid());
+	    Switch sw = networkGraph.getSwitch(swEvt.getDpid());
 
 	    if (sw == null) {
-		sw = new SwitchImpl(this, swEvt.getDpid());
-		Switch existing = switches.putIfAbsent(swEvt.getDpid(), sw);
-		if (existing != null) {
-		    log.warn(
-			    "Concurrent putSwitch not expected. Continuing updating {}",
-			    existing);
-		    sw = existing;
-		}
+		sw = new SwitchImpl(networkGraph, swEvt.getDpid());
+		networkGraph.putSwitch(sw);
 	    }
 
 	    // Update when more attributes are added to Event object
@@ -678,7 +676,7 @@ public class TopologyManager extends NetworkGraphImpl implements
 		removePort(portEvt);
 	    }
 
-	    Switch sw = switches.get(swEvt.getDpid());
+	    Switch sw = networkGraph.getSwitch(swEvt.getDpid());
 
 	    if (sw == null) {
 		log.warn("Switch {} already removed, ignoring", swEvt);
@@ -704,19 +702,14 @@ public class TopologyManager extends NetworkGraphImpl implements
 		removePortEvent(portEvt);
 	    }
 
-	    boolean removed = switches.remove(swEvt.getDpid(), sw);
-	    if (removed) {
-		log.warn(
-			"Switch instance was replaced concurrently while removing {}. Something is not right.",
-			sw);
-	    }
+	    networkGraph.removeSwitch(swEvt.getDpid());
 	}
 
 	void putPort(PortEvent portEvt) {
 	    if (portEvt == null) {
 		throw new IllegalArgumentException("Port cannot be null");
 	    }
-	    Switch sw = switches.get(portEvt.getDpid());
+	    Switch sw = networkGraph.getSwitch(portEvt.getDpid());
 	    if (sw == null) {
 		throw new BrokenInvariantException(String.format(
 			"Switch with dpid %s did not exist.",
@@ -729,7 +722,7 @@ public class TopologyManager extends NetworkGraphImpl implements
 	    }
 
 	    if (port == null) {
-		port = new PortImpl(this, sw, portEvt.getNumber());
+		port = new PortImpl(networkGraph, sw, portEvt.getNumber());
 	    }
 
 	    // TODO update attributes
@@ -743,7 +736,7 @@ public class TopologyManager extends NetworkGraphImpl implements
 		throw new IllegalArgumentException("Port cannot be null");
 	    }
 
-	    Switch sw = switches.get(portEvt.getDpid());
+	    Switch sw = networkGraph.getSwitch(portEvt.getDpid());
 	    if (sw == null) {
 		log.warn("Parent Switch for Port {} already removed, ignoring", portEvt);
 		return;
@@ -824,7 +817,7 @@ public class TopologyManager extends NetworkGraphImpl implements
 	    }
 
 	    if (link == null) {
-		link = new LinkImpl(this, srcPort, dstPort);
+		link = new LinkImpl(networkGraph, srcPort, dstPort);
 	    }
 
 
@@ -899,18 +892,18 @@ public class TopologyManager extends NetworkGraphImpl implements
 		throw new IllegalArgumentException("Device cannot be null");
 	    }
 
-	    Device device = getDeviceByMac(deviceEvt.getMac());
+	    Device device = networkGraph.getDeviceByMac(deviceEvt.getMac());
 	    if ( device == null ) {
-		device = new DeviceImpl(this, deviceEvt.getMac());
-		Device existing = mac2Device.putIfAbsent(deviceEvt.getMac(), device);
-		if (existing != null) {
-		    log.warn(
-			    "Concurrent putDevice seems to be in action. Continuing updating {}",
-			    existing);
-		    device = existing;
-		}
+		device = new DeviceImpl(networkGraph, deviceEvt.getMac());
 	    }
 	    DeviceImpl memDevice = getDeviceImpl(device);
+
+	    // for each IP address
+	    for( InetAddress ipAddr : deviceEvt.getIpAddresses() ) {
+		memDevice.addIpAddress(ipAddr);
+	    }
+
+	    networkGraph.putDevice(device);
 
 	    // for each attachment point
 	    for (SwitchPort swp : deviceEvt.getAttachmentPoints() ) {
@@ -931,33 +924,6 @@ public class TopologyManager extends NetworkGraphImpl implements
 		memPort.addDevice(device);
 		memDevice.addAttachmentPoint(port);
 	    }
-
-	    // for each IP address
-	    for( InetAddress ipAddr : deviceEvt.getIpAddresses() ) {
-		// Add Device -> IP
-		memDevice.addIpAddress(ipAddr);
-
-		// Add IP -> Set<Device>
-		boolean updated = false;
-		do {
-		    Set<Device> devices = this.addr2Device.get(ipAddr);
-		    if ( devices == null ) {
-			devices = new HashSet<>();
-			Set<Device> existing = this.addr2Device.putIfAbsent(ipAddr, devices);
-			if ( existing == null ) {
-			    // success
-			    updated = true;
-			}
-		    } else {
-			Set<Device> updateDevices = new HashSet<>(devices);
-			updateDevices.add(device);
-			updated = this.addr2Device.replace(ipAddr, devices, updateDevices);
-		    }
-		    if (!updated) {
-			log.debug("Collision detected, updating IP to Device mapping retrying.");
-		    }
-		} while( !updated );
-	    }
 	}
 
 	void removeDevice(DeviceEvent deviceEvt) {
@@ -965,7 +931,7 @@ public class TopologyManager extends NetworkGraphImpl implements
 		throw new IllegalArgumentException("Device cannot be null");
 	    }
 
-	    Device device = getDeviceByMac(deviceEvt.getMac());
+	    Device device = networkGraph.getDeviceByMac(deviceEvt.getMac());
 	    if ( device == null ) {
 		log.warn("Device {} already removed, ignoring", deviceEvt);
 		return;
@@ -986,29 +952,7 @@ public class TopologyManager extends NetworkGraphImpl implements
 		memPort.removeDevice(device);
 		memDevice.removeAttachmentPoint(port);
 	    }
-
-	    // for each IP address
-	    for( InetAddress ipAddr : deviceEvt.getIpAddresses() ) {
-		// Remove Device -> IP
-		memDevice.removeIpAddress(ipAddr);
-
-		// Remove IP -> Set<Device>
-		boolean updated = false;
-		do {
-		    Set<Device> devices = this.addr2Device.get(ipAddr);
-		    if ( devices == null ) {
-			// already empty set, nothing to do
-			updated = true;
-		    } else {
-			Set<Device> updateDevices = new HashSet<>(devices);
-			updateDevices.remove(device);
-			updated = this.addr2Device.replace(ipAddr, devices, updateDevices);
-		    }
-		    if (!updated) {
-			log.debug("Collision detected, updating IP to Device mapping retrying.");
-		    }
-		} while( !updated );
-	    }
+	    networkGraph.removeDevice(device);
 	}
 
 	private void dispatchPutSwitchEvent(SwitchEvent switchEvent) {
@@ -1069,7 +1013,7 @@ public class TopologyManager extends NetworkGraphImpl implements
 
 	// we might want to include this in NetworkGraph interface
 	private Port getPort(Long dpid, Long number) {
-	    Switch sw = getSwitch(dpid);
+	    Switch sw = networkGraph.getSwitch(dpid);
 	    if (sw != null) {
 		return sw.getPort(number);
 	    }

@@ -21,7 +21,7 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 	// This is initialized as a module for now
 	// private RCNetworkGraphPublisher eventListener;
 
-	private TopologyManager networkGraph;
+	private TopologyManager topologyManager;
 	//private NetworkGraphDatastore southboundNetworkGraph;
 	private IDatagridService datagridService;
 	private IControllerRegistryService registryService;
@@ -64,24 +64,24 @@ public class NetworkGraphModule implements IFloodlightModule, INetworkGraphServi
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 
 		networkGraphListeners = new CopyOnWriteArrayList<>();
-		networkGraph = new TopologyManager(registryService, networkGraphListeners);
+		topologyManager = new TopologyManager(registryService, networkGraphListeners);
 		//southboundNetworkGraph = new NetworkGraphDatastore(networkGraph);
 	}
 
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		restApi.addRestletRoutable(new NetworkGraphWebRoutable());
-		networkGraph.startup(datagridService);
+		topologyManager.startup(datagridService);
 	}
 
 	@Override
 	public NetworkGraph getNetworkGraph() {
-		return networkGraph;
+		return topologyManager.getNetworkGraph();
 	}
 
 	@Override
 	public NetworkGraphDiscoveryInterface getNetworkGraphDiscoveryInterface() {
-		return networkGraph;
+		return topologyManager;
 	}
 
 	@Override
