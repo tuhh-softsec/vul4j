@@ -53,6 +53,15 @@ public class NetworkGraphImpl implements NetworkGraph {
 	}
 
 	@Override
+	public Port getPort(Long dpid, Long number) {
+	    Switch sw = getSwitch(dpid);
+	    if (sw != null) {
+		return sw.getPort(number);
+	    }
+	    return null;
+	}
+
+	@Override
 	public Iterable<Link> getLinks() {
 		List<Link> linklist = new LinkedList<>();
 
@@ -103,7 +112,7 @@ public class NetworkGraphImpl implements NetworkGraph {
 
 
 	@Override
-	public Iterable<Device> getDeviceByIp(InetAddress ipAddress) {
+	public Iterable<Device> getDevicesByIp(InetAddress ipAddress) {
 		Set<Device> devices = addr2Device.get(ipAddress);
 		if (devices == null) {
 			return Collections.emptySet();
