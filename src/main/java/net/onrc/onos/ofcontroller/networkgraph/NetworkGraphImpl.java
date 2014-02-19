@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import net.floodlightcontroller.util.MACAddress;
 
@@ -24,6 +27,11 @@ public class NetworkGraphImpl implements NetworkGraph {
 
 	private ConcurrentMap<InetAddress, Set<Device>> addr2Device;
 	private ConcurrentMap<MACAddress, Device> mac2Device;
+	
+	private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+	private Lock readLock = readWriteLock.readLock();
+	// TODO use the write lock after refactor
+	private Lock writeLock = readWriteLock.writeLock();
 
 	public NetworkGraphImpl() {
 		// TODO: Does these object need to be stored in Concurrent Collection?
@@ -147,5 +155,15 @@ public class NetworkGraphImpl implements NetworkGraph {
 			addr2Device.remove(ipAddr);
 		}
 	    }
+	}
+
+	@Override
+	public void acquireLock() {
+		readLock.lock();
+	}
+
+	@Override
+	public void releaseLock() {
+		readLock.unlock();
 	}
 }

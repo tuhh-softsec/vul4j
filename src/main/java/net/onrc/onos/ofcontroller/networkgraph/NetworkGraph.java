@@ -80,4 +80,17 @@ public interface NetworkGraph {
      * @return the network device for the MAC address if found, otherwise null.
      */
     public Device getDeviceByMac(MACAddress address);
+	
+    /**
+     * Acquire a read lock on the entire topology. The topology will not 
+     * change while readers have the lock. Must be released using 
+     * {@link releaseLock()}. This method will block until a read lock is
+     * available.
+     */
+	public void acquireLock();
+	
+	/**
+	 * Release the read lock on the topology.
+	 */
+	public void releaseLock();
 }
