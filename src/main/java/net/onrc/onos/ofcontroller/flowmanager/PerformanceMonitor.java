@@ -12,10 +12,26 @@ import org.slf4j.LoggerFactory;
  * Class for collecting performance measurements
  */
 public class PerformanceMonitor {
-    private final static ConcurrentHashMap<String, Queue<Measurement>> map = new ConcurrentHashMap<>();;
     private final static Logger log = LoggerFactory.getLogger(PerformanceMonitor.class);
-    private static long overhead;
-    private static long experimentStart = Long.MAX_VALUE;
+
+    // experiment name -> PerformanceMonitor
+    private static final ConcurrentHashMap<String,PerformanceMonitor> perfMons = new ConcurrentHashMap<>();
+    public static PerformanceMonitor experiment(String name) {
+	PerformanceMonitor pm = perfMons.get(name);
+	if (pm == null) {
+	    pm = new PerformanceMonitor();
+	    PerformanceMonitor existing = perfMons.putIfAbsent(name, pm);
+	    if (existing != null) {
+		pm = existing;
+	    }
+	}
+	return pm;
+    }
+
+    // tag -> Measurements
+    private final ConcurrentHashMap<String, Queue<Measurement>> map = new ConcurrentHashMap<>();
+    private long overhead;
+    private long experimentStart = Long.MAX_VALUE;
     private final static double normalization = Math.pow(10, 6);
 
     /**
@@ -26,7 +42,7 @@ public class PerformanceMonitor {
      *
      * @param tag for performance measurement
      */
-    public static Measurement start(String tag) {
+    public Measurement startStep(String tag) {
 	long start = System.nanoTime();
 	if(start < experimentStart) {
 	    experimentStart = start;
@@ -54,7 +70,7 @@ public class PerformanceMonitor {
      *
      * @param tag for performance measurement
      */
-    public static void stop(String tag) {
+    public void stopStep(String tag) {
 	long time = System.nanoTime();
 	Queue<Measurement> list = map.get(tag);
 	if(list == null || list.size() == 0) {
@@ -70,7 +86,7 @@ public class PerformanceMonitor {
     /**
      * Clear all performance measurements.
      */
-    public static void clear() {
+    public void reset() {
 	map.clear();
 	overhead = 0;
 	experimentStart = Long.MAX_VALUE;
@@ -79,7 +95,7 @@ public class PerformanceMonitor {
     /**
      * Write all performance measurements to the log
      */
-    public static void report() {
+    public void reportAll() {
 	String result = "Performance Results: (avg/start/stop/count)\n";
 	if(map.size() == 0) {
 	    result += "No Measurements";
@@ -132,7 +148,7 @@ public class PerformanceMonitor {
      *
      * @param tag the tag name.
      */
-    public static void report(String tag) {
+    public void reportStep(String tag) {
 	Queue<Measurement> list = map.get(tag);
 	if(list == null) {
 	    return; //TODO
@@ -206,6 +222,34 @@ public class PerformanceMonitor {
 
 	    return milli + "ms/" + startMs + '/' + stopMs;
 	}
+    }
+
+    @Deprecated
+    private static final PerformanceMonitor theInstance = new PerformanceMonitor();
+
+    @Deprecated
+    public static Measurement start(String tag) {
+	return theInstance.startStep(tag);
+    }
+
+    @Deprecated
+    public static void stop(String tag) {
+	theInstance.stopStep(tag);;
+    }
+
+    @Deprecated
+    public static void clear() {
+	theInstance.reset();;
+    }
+
+    @Deprecated
+    public static void report() {
+	theInstance.reportAll();;
+    }
+
+    @Deprecated
+    public static void report(String tag) {
+	theInstance.reportStep(tag);
     }
 
     public static void main(String args[]){
