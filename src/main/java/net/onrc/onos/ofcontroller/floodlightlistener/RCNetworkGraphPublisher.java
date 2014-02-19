@@ -120,7 +120,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 				links.addAll(reverseLinks);
 				*/
 				SwitchEvent switchEvent = new SwitchEvent(dpid);
-				networkGraphDiscoveryInterface.removeSwitchEvent(switchEvent);
+				networkGraphDiscoveryInterface.removeSwitchDiscoveryEvent(switchEvent);
 			    registryService.releaseControl(dpid);
 
 			    // TODO publish UPDATE_SWITCH event here
@@ -162,7 +162,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		
 		switch (update.getOperation()) {
 		case LINK_ADDED:
-			networkGraphDiscoveryInterface.putLinkEvent(linkEvent);
+			networkGraphDiscoveryInterface.putLinkDiscoveryEvent(linkEvent);
 			/*
 			TopologyElement topologyElement =
 					new TopologyElement(update.getSrc(),
@@ -177,7 +177,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 			// We never use it.
 			break;
 		case LINK_REMOVED:
-			networkGraphDiscoveryInterface.removeLinkEvent(linkEvent);
+			networkGraphDiscoveryInterface.removeLinkDiscoveryEvent(linkEvent);
 			/*
 			TopologyElement topologyElement =
 					new TopologyElement(update.getSrc(),
@@ -195,14 +195,14 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	@Override
 	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
 		PortEvent portEvent = new PortEvent(switchId, (long)port.getPortNumber());
-		networkGraphDiscoveryInterface.putPortEvent(portEvent);
+		networkGraphDiscoveryInterface.putPortDiscoveryEvent(portEvent);
 		linkDiscovery.RemoveFromSuppressLLDPs(switchId, port.getPortNumber());
 	}
 
 	@Override
 	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
 		PortEvent portEvent = new PortEvent(switchId, (long)port.getPortNumber());
-		networkGraphDiscoveryInterface.removePortEvent(portEvent);
+		networkGraphDiscoveryInterface.removePortDiscoveryEvent(portEvent);
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		}
 		switchEvent.setPorts(portEvents);
 		
-		networkGraphDiscoveryInterface.putSwitchEvent(switchEvent);
+		networkGraphDiscoveryInterface.putSwitchDiscoveryEvent(switchEvent);
 
 		/*
 		// TODO publish ADD_SWITCH event here
@@ -263,7 +263,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 	public void removedSwitch(IOFSwitch sw) {
 		// TODO move to cleanup thread
 		//SwitchEvent switchEvent = new SwitchEvent(sw.getId());
-		//networkGraphDiscoveryInterface.removeSwitchEvent(switchEvent);
+		//networkGraphDiscoveryInterface.removeSwitchDiscoveryEvent(switchEvent);
 	}
 
 	@Override

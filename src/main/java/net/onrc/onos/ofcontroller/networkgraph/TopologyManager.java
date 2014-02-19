@@ -248,7 +248,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
      * ******************************/
 
     @Override
-    public void putSwitchEvent(SwitchEvent switchEvent) {
+    public void putSwitchDiscoveryEvent(SwitchEvent switchEvent) {
 	if (prepareForAddSwitchEvent(switchEvent)) {
 	    datastore.addSwitch(switchEvent);
 	    putSwitch(switchEvent);
@@ -261,7 +261,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     }
 
     @Override
-    public void removeSwitchEvent(SwitchEvent switchEvent) {
+    public void removeSwitchDiscoveryEvent(SwitchEvent switchEvent) {
 	if (prepareForRemoveSwitchEvent(switchEvent)) {
 	    datastore.deactivateSwitch(switchEvent);
 	    removeSwitch(switchEvent);
@@ -272,7 +272,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     }
 
     @Override
-    public void putPortEvent(PortEvent portEvent) {
+    public void putPortDiscoveryEvent(PortEvent portEvent) {
 	if (prepareForAddPortEvent(portEvent)) {
 	    datastore.addPort(portEvent);
 	    putPort(portEvent);
@@ -285,7 +285,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     }
 
     @Override
-    public void removePortEvent(PortEvent portEvent) {
+    public void removePortDiscoveryEvent(PortEvent portEvent) {
 	if (prepareForRemovePortEvent(portEvent)) {
 	    datastore.deactivatePort(portEvent);
 	    removePort(portEvent);
@@ -296,7 +296,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     }
 
     @Override
-    public void putLinkEvent(LinkEvent linkEvent) {
+    public void putLinkDiscoveryEvent(LinkEvent linkEvent) {
 	if (prepareForAddLinkEvent(linkEvent)) {
 	    datastore.addLink(linkEvent);
 	    putLink(linkEvent);
@@ -309,12 +309,12 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     }
 
     @Override
-    public void removeLinkEvent(LinkEvent linkEvent) {
-	removeLinkEvent(linkEvent, false);
+    public void removeLinkDiscoveryEvent(LinkEvent linkEvent) {
+	removeLinkDiscoveryEvent(linkEvent, false);
     }
 
-    private void removeLinkEvent(LinkEvent linkEvent,
-				 boolean dstCheckBeforeDBmodify) {
+    private void removeLinkDiscoveryEvent(LinkEvent linkEvent,
+					  boolean dstCheckBeforeDBmodify) {
 	if (prepareForRemoveLinkEvent(linkEvent)) {
 	    if (dstCheckBeforeDBmodify) {
 		// write to DB only if it is owner of the dst dpid
@@ -332,7 +332,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     }
 
     @Override
-    public void putDeviceEvent(DeviceEvent deviceEvent) {
+    public void putDeviceDiscoveryEvent(DeviceEvent deviceEvent) {
 	if (prepareForAddDeviceEvent(deviceEvent)) {
 //	    datastore.addDevice(deviceEvent);
 //	    putDevice(deviceEvent);
@@ -348,7 +348,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     }
 
     @Override
-    public void removeDeviceEvent(DeviceEvent deviceEvent) {
+    public void removeDeviceDiscoveryEvent(DeviceEvent deviceEvent) {
 	if (prepareForRemoveDeviceEvent(deviceEvent)) {
 //	    datastore.removeDevice(deviceEvent);
 //	    removeDevice(deviceEvent);
@@ -397,7 +397,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 		if (!port_noOnEvent.contains(p.getNumber())) {
 		    //PortEvent rmEvent = new PortEvent(p.getSwitch().getDpid(), p.getNumber());
 		    // calling Discovery removePort() API to wipe from DB, etc.
-		    //removePortEvent(rmEvent);
+		    //removePortDiscoveryEvent(rmEvent);
 
 		    // We can't remove ports here because this will trigger a remove
 		    // from the switch's port list, which we are currently iterating
@@ -409,7 +409,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 		PortEvent rmEvent = new PortEvent(p.getSwitch().getDpid(),
 						  p.getNumber());
 		// calling Discovery removePort() API to wipe from DB, etc.
-		removePortEvent(rmEvent);
+		removePortDiscoveryEvent(rmEvent);
 	    }
 	}
     }
@@ -445,7 +445,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	}
 	for (DeviceEvent devEvent : deviceEvents) {
 	    // calling Discovery API to wipe from DB, etc.
-	    removeDeviceEvent(devEvent);
+	    removeDeviceDiscoveryEvent(devEvent);
 	}
 
 	Set<Link> links = new HashSet<>();
@@ -465,7 +465,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 
 	    // Call internal remove Link, which will check
 	    // ownership of DST dpid and modify DB only if it is the owner
-	    removeLinkEvent(linkEvent, true);
+	    removeLinkDiscoveryEvent(linkEvent, true);
 	}
 	return true;
     }
@@ -497,7 +497,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	}
 	for (DeviceEvent devEvent : deviceEvents) {
 	    // calling Discovery API to wipe from DB, etc.
-	    removeDeviceEvent(devEvent);
+	    removeDeviceDiscoveryEvent(devEvent);
 	}
 
 	return true;
@@ -718,15 +718,15 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	    portsToRemove.add(portEvent);
 	}
 	for (PortEvent portEvent : portsToRemove) {
-	    // XXX calling removePortEvent() may trigger duplicate event,
-	    // once at prepare phase, second time here
+	    // XXX calling removePortDiscoveryEvent() may trigger duplicate
+	    // event, once at prepare phase, second time here
 	    // If event can be squashed, ignored etc. at receiver side it
 	    // shouldn't be a problem, but if not need to re-visit this issue.
 
-	    // Note: removePortEvent() implies removal of attached Device, etc.
-	    // if we decide not to call removePortEvent(), Device needs to be
-	    // handled properly
-	    removePortEvent(portEvent);
+	    // Note: removePortDiscoveryEvent() implies removal of attached
+	    // Device, etc. if we decide not to call
+	    // removePortDiscoveryEvent(), Device needs to be handled properly.
+	    removePortDiscoveryEvent(portEvent);
 	}
 
 	networkGraph.removeSwitch(swEvent.getDpid());
@@ -783,13 +783,13 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	    devEvent.addAttachmentPoint(new SwitchPort(p.getSwitch().getDpid(),
 						       p.getNumber()));
 
-	    // XXX calling removeDeviceEvent() may trigger duplicate event,
-	    // once at prepare phase, second time here
+	    // XXX calling removeDeviceDiscoveryEvent() may trigger duplicate
+	    // event, once at prepare phase, second time here.
 	    // If event can be squashed, ignored etc. at receiver side it
 	    // shouldn't be a problem, but if not need to re-visit
 
 	    // calling Discovery API to wipe from DB, etc.
-	    removeDeviceEvent(devEvent);
+	    removeDeviceDiscoveryEvent(devEvent);
 	}
 	Set<Link> links = new HashSet<>();
 	links.add(p.getOutgoingLink());
@@ -807,13 +807,13 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	    linksToRemove.add(linkEvent);
 	}
 	for (LinkEvent linkEvent : linksToRemove) {
-	    // XXX calling removeLinkEvent() may trigger duplicate event,
-	    // once at prepare phase, second time here
+	    // XXX calling removeLinkDiscoveryEvent() may trigger duplicate
+	    // event, once at prepare phase, second time here.
 	    // If event can be squashed, ignored etc. at receiver side it
 	    // shouldn't be a problem, but if not need to re-visit
 
 	    // calling Discovery API to wipe from DB, etc.
-	    removeLinkEvent(linkEvent);
+	    removeLinkDiscoveryEvent(linkEvent);
 	}
 
 	// remove Port from Switch
@@ -876,7 +876,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	    DeviceEvent rmEvent = new DeviceEvent(d.getMacAddress());
 	    rmEvent.addAttachmentPoint(new SwitchPort(dstPort.getDpid(),
 						      dstPort.getNumber()));
-	    removeDeviceEvent(rmEvent);
+	    removeDeviceDiscoveryEvent(rmEvent);
 	}
 	dstPortMem.removeAllDevice();
 	for (Device d : srcPortMem.getDevices() ) {
@@ -889,7 +889,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	    DeviceEvent rmEvent = new DeviceEvent(d.getMacAddress());
 	    rmEvent.addAttachmentPoint(new SwitchPort(dstPort.getDpid(),
 						      dstPort.getNumber()));
-	    removeDeviceEvent(rmEvent);
+	    removeDeviceDiscoveryEvent(rmEvent);
 	}
 	srcPortMem.removeAllDevice();
     }
