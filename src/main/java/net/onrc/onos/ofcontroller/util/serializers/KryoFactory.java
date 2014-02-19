@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.intent.ConstrainedShortestPathIntent;
+import net.onrc.onos.intent.Intent;
+import net.onrc.onos.intent.IntentOperation;
+import net.onrc.onos.intent.IntentOperationList;
+import net.onrc.onos.intent.PathIntent;
+import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
@@ -36,6 +42,7 @@ import net.onrc.onos.ofcontroller.util.IPv6Net;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.Switch;
 // import net.onrc.onos.ofcontroller.util.SwitchPort;
+
 
 import com.esotericsoftware.kryo.Kryo;
 
@@ -167,6 +174,16 @@ public class KryoFactory {
 	kryo.register(PortEvent.SwitchPort.class);
 	kryo.register(SwitchEvent.class);
 	kryo.register(TopologyEvent.class);
+
+	// Intent-related classes
+	kryo.register(IntentOperationList.class);
+	kryo.register(IntentOperation.class);
+	kryo.register(PathIntent.class);
+	kryo.register(ShortestPathIntent.class);
+	kryo.register(ConstrainedShortestPathIntent.class);
+	kryo.register(Intent.IntentState.class);
+	kryo.register(long[].class);
+	kryo.register(IntentOperation.Operator.class);
 
 	return kryo;
     }

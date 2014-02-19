@@ -22,3 +22,4 @@ net.onrc.onos.ofcontroller.proxyarp.ProxyArpManager
 net.onrc.onos.ofcontroller.core.config.DefaultConfiguration
 net.onrc.onos.ofcontroller.devicemanager.OnosDeviceManager
 net.onrc.onos.ofcontroller.networkgraph.NetworkGraphModule
+net.onrc.onos.intent.runtime.PathCalcRuntimeModule

@@ -31,7 +31,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
 		Collection<Class<? extends IFloodlightService>> l = new ArrayList<>(1);
-		l.add(PathCalcRuntime.class);
+		l.add(IPathCalcRuntimeService.class);
 		return l;
 	}
 
@@ -54,13 +54,13 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	public void init(FloodlightModuleContext context) throws FloodlightModuleException {
 		datagridService = context.getServiceImpl(IDatagridService.class);
 		networkGraphService = context.getServiceImpl(INetworkGraphService.class); 
-		runtime = new PathCalcRuntime(networkGraphService.getNetworkGraph());
-		highLevelIntents = new IntentMap();
-		pathIntents = new PathIntentMap(networkGraphService.getNetworkGraph());
 	}
 
 	@Override
 	public void startUp(FloodlightModuleContext context) {
+		highLevelIntents = new IntentMap();
+		runtime = new PathCalcRuntime(networkGraphService.getNetworkGraph());
+		pathIntents = new PathIntentMap(networkGraphService.getNetworkGraph());
 		eventChannel = datagridService.createChannel(
 				EVENT_CHANNEL_NAME,
 				byte[].class,
