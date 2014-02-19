@@ -168,38 +168,11 @@ public class NetworkGraphDatastore {
 		RCLink rcLink = new RCLink(linkEvent.getSrc().getDpid(), linkEvent.getSrc().getNumber(),
 				linkEvent.getDst().getDpid(), linkEvent.getDst().getNumber());
 
-		//RCPort rcSrcPort = new RCPort(link.getSrc().getDpid(), link.getSrc().getNumber());
-		//RCPort rcDstPort = new RCPort(link.getDst().getDpid(), link.getDst().getNumber());
-
-		for (int i = 0; i < NUM_RETRIES; i++) {
-			try {
-				//rcSrcPort.read();
-				//rcDstPort.read();
-				rcLink.create();
-			//} catch (ObjectDoesntExistException e) {
-				// port doesn't exist
-				//log.error("Add link failed {}", link, e);
-				//return;
-			} catch (ObjectExistsException e) {
-				log.debug("Link already exists {}", linkEvent);
-				return;
-			}
-
-			//rcSrcPort.addLinkId(rcLink.getId());
-			//rcDstPort.addLinkId(rcLink.getId());
-
-			rcLink.setStatus(RCLink.STATUS.ACTIVE);
-
-			try {
-				rcLink.update();
-				//rcSrcPort.update();
-				//rcDstPort.update();
-				break;
-			} catch (ObjectDoesntExistException | WrongVersionException e) {
-				log.debug(" ", e);
-				// retry
-			}
-		}
+		// XXX This method is called only by discovery,
+		// which means what we are trying to write currently is the truth
+		// so we can force write here
+		rcLink.setStatus(RCLink.STATUS.ACTIVE);
+		rcLink.forceCreate();
 	}
 
 	public void removeLink(LinkEvent linkEvent) {
