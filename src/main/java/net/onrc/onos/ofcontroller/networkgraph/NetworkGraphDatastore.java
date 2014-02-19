@@ -43,7 +43,13 @@ public class NetworkGraphDatastore {
 		this.graph = graph;
 	}
 
-	public void addSwitch(SwitchEvent sw) {
+	/**
+	 * Add a switch to the database.
+	 *
+	 * @param sw the switch to add.
+	 * @return true on success, otherwise false.
+	 */
+	public boolean addSwitch(SwitchEvent sw) {
 		log.debug("Adding switch {}", sw);
 		ArrayList<WriteOp> groupOp = new ArrayList<>();
 
@@ -75,10 +81,16 @@ public class NetworkGraphDatastore {
 			// Conditional operation (Create/Update) then we should retry here.
 		    }
 		}
-
+		return (! failed);
 	}
 
-	public void deactivateSwitch(SwitchEvent sw) {
+	/**
+	 * Update a switch as inactive in the database.
+	 *
+	 * @param sw the switch to update.
+	 * @return true on success, otherwise false.
+	 */
+	public boolean deactivateSwitch(SwitchEvent sw) {
 		log.debug("Deactivating switch {}", sw);
 		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
 
@@ -100,24 +112,34 @@ public class NetworkGraphDatastore {
 				log.warn("Trying to deactivate an object that doesn't exist", e);
 				// We don't care to much if the object wasn't there, it's
 				// being deactivated anyway
+				return true;	// Success: no object in the DB
 			}
 
 			try {
 				for (RCObject rcObject : objectsToDeactive) {
 					rcObject.update();
 				}
-				break;
+				return true;		// Success
 			} catch (ObjectDoesntExistException e) {
 				// Unlikely, and we don't care anyway.
 				// TODO But, this will cause everything else to fail
 				log.warn("Trying to deactivate object that doesn't exist", e);
+				return true;	// Success: no object in the DB
 			} catch (WrongVersionException e) {
 				// Need to re-read and retry
 			}
 		}
+
+		return false;				// Failure
 	}
 
-	public void addPort(PortEvent port) {
+	/**
+	 * Add a port to the database.
+	 *
+	 * @param port the port to add.
+	 * @return true on success, otherwise false.
+	 */
+	public boolean addPort(PortEvent port) {
 		log.debug("Adding port {}", port);
 		//RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
 
@@ -125,7 +147,7 @@ public class NetworkGraphDatastore {
 			//rcSwitch.read();
 		//} catch (ObjectDoesntExistException e) {
 			//log.warn("Add port failed because switch {} doesn't exist", sw.getDpid(), e);
-			//return;
+			//return false;
 		//}
 
 		RCPort rcPort = new RCPort(port.getDpid(), port.getNumber());
@@ -134,51 +156,80 @@ public class NetworkGraphDatastore {
 		//rcPort.setDescription(port.getDescription());
 		//rcSwitch.addPortId(rcPort.getId());
 
-		writeObject(rcPort);
-		//writeObject(rcSwitch);
+		boolean success = writeObject(rcPort);
+		// success &= writeObject(rcSwitch);
+		return success;
 	}
 
-	public void deactivatePort(PortEvent port) {
+	/**
+	 * Update a port as inactive in the database.
+	 *
+	 * @param port the port to update.
+	 * @return true on success, otherwise false.
+	 */
+	public boolean deactivatePort(PortEvent port) {
 		log.debug("Deactivating port {}", port);
 		RCPort rcPort = new RCPort(port.getDpid(), port.getNumber());
 
 		for (int i = 0; i < NUM_RETRIES; i++) {
 			try {
-				rcPort.read();
+			    rcPort.read();
 			} catch (ObjectDoesntExistException e) {
 				// oh well, we were deactivating anyway
 				log.warn("Trying to deactivate a port that doesn't exist: {}", port);
-				return;
+				return true;	// Success: no object in the DB
 			}
 
 			rcPort.setStatus(RCPort.STATUS.INACTIVE);
 
 			try {
 				rcPort.update();
-				break;
+				return true;		// Success
 			} catch (ObjectDoesntExistException | WrongVersionException e) {
 				// retry
 			}
 		}
+
+		return false;				// Failure
 	}
 
-	public void addLink(LinkEvent linkEvent) {
-		log.debug("Adding link {}", linkEvent);
+	/**
+	 * Add a link to the database.
+	 *
+	 * @param link the link to add.
+	 * @return true on success, otherwise false.
+	 */
+	public boolean addLink(LinkEvent link) {
+		log.debug("Adding link {}", link);
 
-		RCLink rcLink = new RCLink(linkEvent.getSrc().getDpid(), linkEvent.getSrc().getNumber(),
-				linkEvent.getDst().getDpid(), linkEvent.getDst().getNumber());
+		RCLink rcLink = new RCLink(link.getSrc().getDpid(),
+					   link.getSrc().getNumber(),
+					   link.getDst().getDpid(),
+					   link.getDst().getNumber());
 
 		// XXX This method is called only by discovery,
 		// which means what we are trying to write currently is the truth
 		// so we can force write here
+		//
+		// TODO: We need to check for errors
 		rcLink.setStatus(RCLink.STATUS.ACTIVE);
 		rcLink.forceCreate();
+
+		return true;					// Success
 	}
 
-	public void removeLink(LinkEvent linkEvent) {
-		log.debug("Removing link {}", linkEvent);
-		RCLink rcLink = new RCLink(linkEvent.getSrc().getDpid(), linkEvent.getSrc().getNumber(),
-				linkEvent.getDst().getDpid(), linkEvent.getDst().getNumber());
+	/**
+	 * Remove a link from the database.
+	 *
+	 * @param link the link to remove.
+	 * @return true on success, otherwise false.
+	 */
+	public boolean removeLink(LinkEvent link) {
+		log.debug("Removing link {}", link);
+		RCLink rcLink = new RCLink(link.getSrc().getDpid(),
+					   link.getSrc().getNumber(),
+					   link.getDst().getDpid(),
+					   link.getDst().getNumber());
 
 		//RCPort rcSrcPort = new RCPort(link.getSourceSwitchDpid(), (long)link.getSourcePortNumber());
 		//RCPort rcDstPort = new RCPort(link.getDestinationSwitchDpid(), (long)link.getDestinationPortNumber());
@@ -190,8 +241,8 @@ public class NetworkGraphDatastore {
 				rcLink.read();
 			} catch (ObjectDoesntExistException e) {
 			    // XXX Note: This error might be harmless, if triggered by out-dated remove Link event
-				log.error("Remove link failed {}", linkEvent, e);
-				return;
+				log.error("Remove link failed {}", link, e);
+				return true;	// Success: no object in the DB
 			}
 
 			//rcSrcPort.removeLinkId(rcLink.getId());
@@ -201,26 +252,47 @@ public class NetworkGraphDatastore {
 				//rcSrcPort.update();
 				//rcDstPort.update();
 				rcLink.delete();
-				return;
+				return true;			// Success
 			} catch (ObjectDoesntExistException e) {
-				log.error("Remove link failed {}", linkEvent, e);
-				return;
+				log.error("Remove link failed {}", link, e);
+				return true;	// Success: no object in the DB
 			} catch (WrongVersionException e) {
 				// retry
 			}
 		}
+
+		return false;					// Failure
 	}
 
-	public void updateDevice(DeviceEvent device) {
+	/**
+	 * Add a device to the database.
+	 *
+	 * @param device the device to add.
+	 * @return true on success, otherwise false.
+	 */
+	public boolean updateDevice(DeviceEvent device) {
 		// TODO implement
+		return false;			// Failure: not implemented yet
 	}
 
-	public void removeDevice(DeviceEvent device) {
+	/**
+	 * Remove a device from the database.
+	 *
+	 * @param device the device to remove.
+	 * @return true on success, otherwise false.
+	 */
+	public boolean removeDevice(DeviceEvent device) {
 		// TODO implement
+		return false;			// Failure: not implemented yet
 	}
 
-	// TODO what happens if this fails? why could it fail?
-	private void writeObject(RCObject object) {
+	/**
+	 * Write an object to the database.
+	 *
+	 * @param object the object to write.
+	 * @return true on success, otherwise false.
+	 */
+	private boolean writeObject(RCObject object) {
 		for (int i = 0; i < NUM_RETRIES; i++) {
 			try {
 				object.create();
@@ -230,18 +302,20 @@ public class NetworkGraphDatastore {
 				} catch (ObjectDoesntExistException e1) {
 					// TODO Auto-generated catch block
 					log.error(" ", e);
-					return;
+					return false;		// Failure
 				}
 			}
 
 			try {
 				// TODO check API for writing without caring what's there
 				object.update();
-				break;
+				return true;			// Success
 			} catch (ObjectDoesntExistException | WrongVersionException e) {
 				log.debug(" ", e);
 				// re-read and retry
 			}
 		}
+
+		return false;					// Failure
 	}
 }
