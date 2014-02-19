@@ -63,7 +63,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
      */
     public TopologyManager(IControllerRegistryService registryService,
 			   CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners) {
-	datastore = new NetworkGraphDatastore(this);
+	datastore = new NetworkGraphDatastore();
 	this.registryService = registryService;
 	this.networkGraphListeners = networkGraphListeners;
     }
@@ -318,6 +318,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	if (prepareForRemoveLinkEvent(linkEvent)) {
 	    if (dstCheckBeforeDBmodify) {
 		// write to DB only if it is owner of the dst dpid
+	    // XXX this will cause link remove events to be dropped
+		// if the dst switch just disconnected
 		if (registryService.hasControl(linkEvent.getDst().dpid)) {
 		    datastore.removeLink(linkEvent);
 		}
