@@ -1,9 +1,6 @@
 package net.onrc.onos.intent;
 
-import static org.junit.Assert.*;
-
-import java.util.LinkedList;
-
+import static org.junit.Assert.assertEquals;
 import net.onrc.onos.intent.Intent.IntentState;
 
 import org.junit.After;

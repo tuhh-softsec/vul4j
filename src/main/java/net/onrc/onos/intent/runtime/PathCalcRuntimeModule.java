@@ -14,19 +14,20 @@ import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.intent.IntentMap;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.PathIntentMap;
+import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 
-public class PathCalcRuntimeModule implements IFloodlightModule {
+public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntimeService {
 	private PathCalcRuntime runtime;
 	private IDatagridService datagridService;
-	private NetworkGraph networkGraph;
+	private INetworkGraphService networkGraphService;
 	private IntentMap highLevelIntents;
-	private PathIntentMap lowLevelIntents;
-	
+	private PathIntentMap pathIntents;
+
 	private IEventChannel<byte[], IntentOperationList> eventChannel;
 	private static final String EVENT_CHANNEL_NAME = "onos.pathintent";
 
-	
+
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
 		Collection<Class<? extends IFloodlightService>> l = new ArrayList<>(1);
@@ -37,7 +38,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule {
 	@Override
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
 		Map<Class<? extends IFloodlightService>, IFloodlightService> m = new HashMap<>(1);
-		m.put(PathCalcRuntime.class, runtime);
+		m.put(IPathCalcRuntimeService.class, this);
 		return m;
 	}
 
@@ -45,16 +46,17 @@ public class PathCalcRuntimeModule implements IFloodlightModule {
 	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
 		Collection<Class<? extends IFloodlightService>> l = new ArrayList<>();
 		l.add(IDatagridService.class);
+		l.add(INetworkGraphService.class);
 		return l;
 	}
 
 	@Override
 	public void init(FloodlightModuleContext context) throws FloodlightModuleException {
 		datagridService = context.getServiceImpl(IDatagridService.class);
-		//networkGraph = new MockNetworkGraph(); // TODO give pointer to the correct NetworkGraph
-		runtime = new PathCalcRuntime(networkGraph);
+		networkGraphService = context.getServiceImpl(INetworkGraphService.class); 
+		runtime = new PathCalcRuntime(networkGraphService.getNetworkGraph());
 		highLevelIntents = new IntentMap();
-		lowLevelIntents = new PathIntentMap(networkGraph);
+		pathIntents = new PathIntentMap(networkGraphService.getNetworkGraph());
 	}
 
 	@Override
@@ -64,25 +66,33 @@ public class PathCalcRuntimeModule implements IFloodlightModule {
 				byte[].class,
 				IntentOperationList.class);
 	}
-	
-	public void executeIntentOperations(IntentOperationList list) {
-		highLevelIntents.executeOperations(list);
-		lowLevelIntents = runtime.calcPathIntents(
-				highLevelIntents.getAllIntents(),
-				new PathIntentMap(networkGraph));
-		// TODO publishPathIntentOperationList(IntentOperationList list)
-	}
-	
+
 	protected void publishPathIntentOperationList(IntentOperationList list) {
 		eventChannel.addEntry(new byte[1], list); // TODO make key bytes		
 	}
-	
-	public IntentMap getIntents() {
+
+	@Override
+	public IntentOperationList executeIntentOperations(IntentOperationList list) {
+		highLevelIntents.executeOperations(list);
+		IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, pathIntents);
+		pathIntents.executeOperations(pathIntentOperations);
+		publishPathIntentOperationList(pathIntentOperations);
+		return pathIntentOperations;
+	}
+
+	@Override
+	public IntentMap getHighLevelIntents() {
 		return highLevelIntents;
 	}
-	
+
+	@Override
+	public IntentMap getPathIntents() {
+		return pathIntents;
+	}
+
+	@Override
 	public void purgeIntents() {
 		highLevelIntents.purge();
-		lowLevelIntents.purge();
+		pathIntents.purge();
 	}
 }
