@@ -1,12 +1,23 @@
 package net.onrc.onos.intent;
 
+import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraphImpl;
 import net.onrc.onos.ofcontroller.networkgraph.Link;
 import net.onrc.onos.ofcontroller.networkgraph.LinkImpl;
+import net.onrc.onos.ofcontroller.networkgraph.Port;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchImpl;
 
 public class MockNetworkGraph extends NetworkGraphImpl {
+	class DetachableLinkImpl extends LinkImpl {
+		public DetachableLinkImpl(NetworkGraph graph, Port srcPort, Port dstPort) {
+			super(graph, srcPort, dstPort);
+		}
+
+		public void detachFromGraph() {
+			unsetFromPorts();
+		}	
+	}
 	public Switch addSwitch(Long switchId) {
 		SwitchImpl sw = new SwitchImpl(this, switchId);
 		this.putSwitch(sw);
@@ -15,7 +26,7 @@ public class MockNetworkGraph extends NetworkGraphImpl {
 	}
 
 	public Link addLink(Long srcDpid, Long srcPortNo, Long dstDpid, Long dstPortNo) {
-		return new LinkImpl(
+		return new DetachableLinkImpl(
 				this,
 				getSwitch(srcDpid).getPort(srcPortNo),
 				getSwitch(dstDpid).getPort(dstPortNo));
@@ -61,6 +72,13 @@ public class MockNetworkGraph extends NetworkGraphImpl {
 		// set capacity of all links to 1000Mbps
 		for (Link link: getLinks()) {
 			((LinkImpl)link).setCapacity(1000.0);
+		}
+	}
+
+	public void removeLink(Long srcDpid, Long srcPortNo, Long dstDpid, Long dstPortNo) {
+		DetachableLinkImpl link = (DetachableLinkImpl)getSwitch(srcDpid).getPort(srcPortNo).getOutgoingLink();
+		if (link.getDestinationSwitch().getDpid().equals(dstDpid) && link.getDestinationPort().getNumber().equals(dstPortNo)) {
+			link.detachFromGraph();
 		}
 	}
 }

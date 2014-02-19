@@ -12,8 +12,9 @@ import net.onrc.onos.intent.MockNetworkGraph;
 import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
+import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphListener;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
-import net.onrc.onos.ofcontroller.networkgraph.Link;
+import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 
 import org.easymock.EasyMock;
@@ -48,11 +49,12 @@ public class UseCaseTest {
 		.andReturn(datagridService).once();
 		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(INetworkGraphService.class)))
 		.andReturn(networkGraphService).once();
-		
-		networkGraphService.getNetworkGraph();
-		EasyMock.expectLastCall().andReturn(g).anyTimes();
-		
-		EasyMock.expect(datagridService.createChannel("onos.pathintent", byte[].class, IntentOperationList.class))
+
+		EasyMock.expect(networkGraphService.getNetworkGraph()).andReturn(g).anyTimes();
+		networkGraphService.registerNetworkGraphListener(EasyMock.anyObject(INetworkGraphListener.class));
+		EasyMock.expectLastCall();
+
+		EasyMock.expect(datagridService.createChannel("onos.pathintent", String.class, IntentOperationList.class))
 		.andReturn(eventChannel).once();
 
 		EasyMock.replay(datagridService);
@@ -72,18 +74,14 @@ public class UseCaseTest {
 			PathIntent pathIntent = (PathIntent)intent;
 			System.out.println("Parent intent: " + pathIntent.getParentIntent().toString());
 			System.out.println("Path:");
-			for (Link link: pathIntent.getPath(g)) {
-				System.out.printf("%s --(%f/%f)--> %s\n",
-						link.getSourcePort(),
-						link.getCapacity() - intents.getAvailableBandwidth(link),
-						link.getCapacity(),
-						link.getDestinationPort());
+			for (LinkEvent linkEvent: pathIntent.getPathByLinkEvent()) {
+				System.out.println(linkEvent);
 			}
 		}
 	}
 
 	@Test
-	public void useCase1() throws FloodlightModuleException {
+	public void createShortestPaths() throws FloodlightModuleException {
 		// create shortest path intents
 		IntentOperationList opList = new IntentOperationList();
 		opList.add(Operator.ADD, new ShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 4L));
@@ -106,7 +104,7 @@ public class UseCaseTest {
 	}
 
 	@Test
-	public void useCase2() throws FloodlightModuleException {
+	public void createConstrainedShortestPaths() throws FloodlightModuleException {
 		// create constrained shortest path intents
 		IntentOperationList opList = new IntentOperationList();
 		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 17L, 400.0));
@@ -131,8 +129,8 @@ public class UseCaseTest {
 	}
 
 	@Test
-	public void useCase3() throws FloodlightModuleException {
-		// create constrained & not best effort shortest path intents
+	public void createMixedShortestPaths() throws FloodlightModuleException {
+		// create constrained & best effort shortest path intents
 		IntentOperationList opList = new IntentOperationList();
 		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 6L, 600.0));
 		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("2", 2L, 20L, 2L, 6L, 20L, 7L, 600.0));
@@ -153,5 +151,42 @@ public class UseCaseTest {
 		// show results
 		showResult((PathIntentMap) runtime1.getPathIntents());
 		System.out.println(runtime2.getPlan());
+	}
+	
+	@Test
+	public void rerouteShortestPaths() throws FloodlightModuleException {
+		// create shortest path intents
+		IntentOperationList opList = new IntentOperationList();
+		opList.add(Operator.ADD, new ShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 4L));
+		opList.add(Operator.ADD, new ShortestPathIntent("2", 2L, 20L, 2L, 6L, 20L, 5L));
+		opList.add(Operator.ADD, new ShortestPathIntent("3", 4L, 20L, 3L, 8L, 20L, 6L));
+
+		// compile high-level intent operations into low-level intent operations (calculate paths)
+		PathCalcRuntimeModule runtime1 = new PathCalcRuntimeModule();
+		runtime1.init(modContext);
+		runtime1.startUp(modContext);
+		IntentOperationList pathIntentOpList = runtime1.executeIntentOperations(opList);
+
+		// compile low-level intents into flow entry installation plan
+		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
+		runtime2.addIntents(pathIntentOpList);
+
+		// show results step1
+		showResult((PathIntentMap) runtime1.getPathIntents());
+		System.out.println(runtime2.getPlan());
+
+		// link down
+		((MockNetworkGraph)g).removeLink(1L, 2L, 9L, 1L); // This link is used by the intent "1"
+		LinkEvent linkEvent = new LinkEvent(1L, 2L, 9L, 1L);
+		runtime1.removeLinkEvent(linkEvent);
+		((MockNetworkGraph)g).removeLink(9L, 1L, 1L, 2L);
+		linkEvent = new LinkEvent(9L, 1L, 1L, 2L);
+		runtime1.removeLinkEvent(linkEvent);
+
+		System.out.println("Link goes down.");
+
+		// show results step2
+		showResult((PathIntentMap) runtime1.getPathIntents());
+		System.out.println(runtime2.getPlan());		
 	}
 }

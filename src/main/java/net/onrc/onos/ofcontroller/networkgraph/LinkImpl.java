@@ -76,28 +76,36 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 	}
 
 	@Override
+	public Double getCapacity() {
+		return capacity;
+	}
+
+	public void setCapacity(Double capacity) {
+		this.capacity = capacity;
+	}
+
+	@Deprecated
+	@Override
 	public Long getSourceSwitchDpid() {
 		return srcPort.getSwitch().getDpid();
 	}
 
+	@Deprecated
 	@Override
 	public Long getSourcePortNumber() {
 		return srcPort.getNumber();
 	}
 
+	@Deprecated
 	@Override
 	public Long getDestinationSwitchDpid() {
 		return dstPort.getSwitch().getDpid();
 	}
 
+	@Deprecated
 	@Override
 	public Long getDestinationPortNumber() {
 		return dstPort.getNumber();
-	}
-
-	@Override
-	public Double getCapacity() {
-		return capacity;
 	}
 
 	@Override
@@ -106,9 +114,5 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 				getSourcePort().toString(),
 				getCapacity(),
 				getDestinationPort().toString());
-	}
-
-	public void setCapacity(Double capacity) {
-		this.capacity = capacity;
 	}
 }

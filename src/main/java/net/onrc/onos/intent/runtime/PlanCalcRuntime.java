@@ -37,7 +37,7 @@ public class PlanCalcRuntime {
 		this.graph = graph;
 		this.flowEntries = new HashSet<>();
 		this.plan = new ArrayList<>();
-		this.intents = new PathIntentMap(this.graph);
+		this.intents = new PathIntentMap();
 	}
 	
 	public void addIntents(IntentOperationList intentOpList) {

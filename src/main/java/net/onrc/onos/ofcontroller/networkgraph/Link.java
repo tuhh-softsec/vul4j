@@ -12,7 +12,7 @@ public interface Link {
 	public Port getDestinationPort();
 	public Switch getSourceSwitch();
 	public Switch getDestinationSwitch();
-		
+
 	public long getLastSeenTime();
 
 	public int getCost();
@@ -21,8 +21,12 @@ public interface Link {
 	// Not sure if we want to expose these northbound
 	// Toshi: I think these are unnecessary because we can get them
 	// Toshi: like "this.getSourcePort().getSwitch()" etc.
+	@Deprecated
 	public Long getSourceSwitchDpid();
+	@Deprecated
 	public Long getSourcePortNumber();
+	@Deprecated
 	public Long getDestinationSwitchDpid();
+	@Deprecated
 	public Long getDestinationPortNumber();
 }

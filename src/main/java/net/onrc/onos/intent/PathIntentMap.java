@@ -6,43 +6,44 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import net.onrc.onos.ofcontroller.networkgraph.Link;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class PathIntentMap extends IntentMap {
-	protected HashMap<Link, HashSet<PathIntent>> linkToIntents = new HashMap<Link, HashSet<PathIntent>>();
-	protected NetworkGraph graph;
+	protected HashMap<LinkEvent, HashSet<PathIntent>> linkToIntents = new HashMap<>();
 
-	public PathIntentMap(NetworkGraph graph) {
-		this.graph = graph;
-	}
-
-	public void addIntent(PathIntent intent) {
-		if (intents.containsKey(intent.getId()))
-			removeIntent((PathIntent)intents.get(intent.getId()));
-		intents.put(intent.getId(), intent);
-		for (Link link: intent.getPath(graph)) {
-			HashSet<PathIntent> value = linkToIntents.get(link);
-			if (value == null) {
+	@Override
+	protected void putIntent(Intent intent) {
+		super.putIntent(intent);
+		for (LinkEvent linkEvent: ((PathIntent) intent).getPathByLinkEvent()) {
+			HashSet<PathIntent> value = linkToIntents.get(linkEvent);
+			if (value == null)
 				value = new HashSet<PathIntent>();
-				linkToIntents.put(link, value);
-			}
-			value.add(intent);
+			value.add((PathIntent) intent);
+			linkToIntents.put(linkEvent, value);
 		}
 	}
 
-	public void removeIntent(PathIntent intent) {
-		intents.remove(intent);
-		for (Link link: intent.getPath(graph)) {
-			HashSet<PathIntent> value = linkToIntents.get(link);
+	@Override
+	protected void removeIntent(String intentId) {
+		PathIntent intent = (PathIntent) getIntent(intentId);
+		for (LinkEvent linkEvent: intent.getPathByLinkEvent()) {
+			HashSet<PathIntent> value = linkToIntents.get(linkEvent);
 			value.remove(intent);
 		}
+		super.removeIntent(intentId);
 	}
 
-	public Collection<PathIntent> getIntentByLink(Link link) {
-		return Collections.unmodifiableCollection(linkToIntents.get(link));
+	public Collection<PathIntent> getIntentsByLink(LinkEvent linkEvent) {
+		Collection<PathIntent> intents = linkToIntents.get(linkEvent);
+		if (intents == null) {
+			return null;
+		}
+		else {
+			return Collections.unmodifiableCollection(intents);
+		}
 	}
 
 	/**
@@ -51,9 +52,11 @@ public class PathIntentMap extends IntentMap {
 	 * @return
 	 */
 	public Double getAvailableBandwidth(Link link) {
+		if (link == null) return null;
 		Double bandwidth = link.getCapacity();
-		if (!bandwidth.isInfinite() && linkToIntents.containsKey(link)) {
-			for (PathIntent intent: getIntentByLink(link)) {
+		LinkEvent linkEvent = new LinkEvent(link);
+		if (!bandwidth.isInfinite() && linkToIntents.containsKey(linkEvent)) {
+			for (PathIntent intent: getIntentsByLink(linkEvent)) {
 				Double intentBandwidth = intent.getBandwidth();
 				if (intentBandwidth == null || intentBandwidth.isInfinite() || intentBandwidth.isNaN())
 					continue;

@@ -5,11 +5,13 @@ import java.util.HashMap;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.intent.ConstrainedBFSTree;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
+import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
+import net.onrc.onos.intent.IntentOperation.Operator;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
@@ -74,7 +76,7 @@ public class PathCalcRuntime implements IFloodlightService {
 				pathIntentOpList.add(new IntentOperation(IntentOperation.Operator.ADD, pathIntent));
 				break;
 			case REMOVE:
-				pathIntentOpList.add(intentOp);
+				pathIntentOpList.add(Operator.REMOVE, new Intent("pi" + intentOp.intent.getId()));
 				break;
 			}
 		}

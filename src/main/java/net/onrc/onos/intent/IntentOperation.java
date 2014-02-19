@@ -26,4 +26,9 @@ public class IntentOperation {
 
 	public Operator operator;
 	public Intent intent;
+	
+	@Override
+	public String toString() {
+		return operator.toString() + ", (" + intent.toString() + ")";
+	}
 }

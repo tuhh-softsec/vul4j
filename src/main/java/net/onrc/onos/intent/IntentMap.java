@@ -49,18 +49,32 @@ public class IntentMap {
 	}
 
 	private HashSet<ChangedListener> listeners = new HashSet<>();
-	protected HashMap<String, Intent> intents = new HashMap<>();
+	private HashMap<String, Intent> intents = new HashMap<>();
+	
+	protected void putIntent(Intent intent) {
+		if (intents.containsKey(intent.getId()))
+			removeIntent(intent.getId());
+		intents.put(intent.getId(), intent);
+	}
+	
+	protected void removeIntent(String intentId) {
+		intents.remove(intentId);		
+	}
+	
+	public Intent getIntent(String intentId) {
+		return intents.get(intentId);
+	}
 
 	public void executeOperations(IntentOperationList operations) {
 		LinkedList<ChangedEvent> events = new LinkedList<>();
 		for (IntentOperation operation: operations) {
 			switch (operation.operator) {
 			case ADD:
-				intents.put(operation.intent.getId(), operation.intent);
+				putIntent(operation.intent);
 				events.add(new ChangedEvent(ChangedEventType.ADDED, operation.intent));
 				break;
 			case REMOVE:
-				Intent intent = intents.get(operation.intent.getId());
+				Intent intent = getIntent(operation.intent.getId());
 				if (intent == null) {
 					// TODO throw exception
 				}
@@ -78,23 +92,21 @@ public class IntentMap {
 	}
 
 	public void purge() {
-		Iterator<Entry<String, Intent>> i = intents.entrySet().iterator();
-		while (i.hasNext()) {
-			Entry<String, Intent> entry = i.next();
+		LinkedList<String> removeIds = new LinkedList<>();
+		for (Entry<String, Intent> entry: intents.entrySet()) {
 			Intent intent = entry.getValue();
 			if (intent.getState() == IntentState.DEL_ACK
 					|| intent.getState() == IntentState.INST_NACK) {
-				i.remove();
-			}
+				removeIds.add(intent.getId());
+			}			
+		}
+		for (String intentId: removeIds) {
+			removeIntent(intentId);
 		}
 	}
 
 	public Collection<Intent> getAllIntents() {
 		return intents.values();
-	}
-
-	public Intent getIntent(String key) {
-		return intents.get(key);
 	}
 
 	public void addChangeListener(ChangedListener listener) {
