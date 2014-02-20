@@ -39,8 +39,7 @@ import org.slf4j.LoggerFactory;
  * re-ordering. e.g.) Link Add came in, but Switch was not there.
  *
  */
-public class TopologyManager implements NetworkGraphDiscoveryInterface,
-				NetworkGraphReplicationInterface {
+public class TopologyManager implements NetworkGraphDiscoveryInterface {
 
     private static final Logger log = LoggerFactory
 	    .getLogger(TopologyManager.class);
@@ -142,10 +141,6 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	 */
 	private void processEvents(Collection<EventEntry<TopologyEvent>> events) {
 	    for (EventEntry<TopologyEvent> event : events) {
-		if (event.eventData().getOriginID().equals(registryService.getControllerId())) {
-		    // ignore event triggered by myself
-		    continue;
-		}
 		TopologyEvent topologyEvent = event.eventData();
 		switch (event.eventType()) {
 		case ENTRY_ADD:
@@ -251,8 +246,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     public void putSwitchDiscoveryEvent(SwitchEvent switchEvent) {
 	if (datastore.addSwitch(switchEvent)) {
 	    // Send out notification
-	    TopologyEvent topologyEvent =
-		new TopologyEvent(switchEvent, registryService.getControllerId());
+	    TopologyEvent topologyEvent = new TopologyEvent(switchEvent);
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
 	}
     }
@@ -269,8 +263,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     public void putPortDiscoveryEvent(PortEvent portEvent) {
 	if (datastore.addPort(portEvent)) {
 	    // Send out notification
-	    TopologyEvent topologyEvent =
-		new TopologyEvent(portEvent, registryService.getControllerId());
+	    TopologyEvent topologyEvent = new TopologyEvent(portEvent);
 	}
     }
 
@@ -286,8 +279,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     public void putLinkDiscoveryEvent(LinkEvent linkEvent) {
 	if (datastore.addLink(linkEvent)) {
 	    // Send out notification
-	    TopologyEvent topologyEvent =
-		new TopologyEvent(linkEvent, registryService.getControllerId());
+	    TopologyEvent topologyEvent = new TopologyEvent(linkEvent);
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
 	}
     }
@@ -304,9 +296,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
     public void putDeviceDiscoveryEvent(DeviceEvent deviceEvent) {
 	if (datastore.addDevice(deviceEvent)) {
 	    // Send out notification
-	    TopologyEvent topologyEvent =
-		new TopologyEvent(deviceEvent,
-				  registryService.getControllerId());
+	    TopologyEvent topologyEvent = new TopologyEvent(deviceEvent);
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
 	}
     }
@@ -317,6 +307,82 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	    // Send out notification
 	    eventChannel.removeEntry(deviceEvent.getID());
 	}
+    }
+
+    /* ************************************************
+     * Internal methods for processing the replication events
+     * ************************************************/
+
+    private void putSwitchReplicationEvent(SwitchEvent switchEvent) {
+	if (prepareForAddSwitchEvent(switchEvent)) {
+	    putSwitch(switchEvent);
+	}
+	// TODO handle invariant violation
+	// trigger instance local topology event handler
+	dispatchPutSwitchEvent(switchEvent);
+    }
+
+    private void removeSwitchReplicationEvent(SwitchEvent switchEvent) {
+	if (prepareForRemoveSwitchEvent(switchEvent)) {
+	    removeSwitch(switchEvent);
+	}
+	// TODO handle invariant violation
+	// trigger instance local topology event handler
+	dispatchRemoveSwitchEvent(switchEvent);
+    }
+
+    private void putPortReplicationEvent(PortEvent portEvent) {
+	if (prepareForAddPortEvent(portEvent)) {
+	    putPort(portEvent);
+	}
+	// TODO handle invariant violation
+	// trigger instance local topology event handler
+	dispatchPutPortEvent(portEvent);
+    }
+
+    private void removePortReplicationEvent(PortEvent portEvent) {
+	if (prepareForRemovePortEvent(portEvent)) {
+	    removePort(portEvent);
+	}
+	// TODO handle invariant violation
+	// trigger instance local topology event handler
+	dispatchRemovePortEvent(portEvent);
+    }
+
+    private void putLinkReplicationEvent(LinkEvent linkEvent) {
+	if (prepareForAddLinkEvent(linkEvent)) {
+	    putLink(linkEvent);
+	}
+	// TODO handle invariant violation
+	// trigger instance local topology event handler
+	dispatchPutLinkEvent(linkEvent);
+    }
+
+    private void removeLinkReplicationEvent(LinkEvent linkEvent) {
+	if (prepareForRemoveLinkEvent(linkEvent)) {
+	    removeLink(linkEvent);
+	}
+	// TODO handle invariant violation
+	// trigger instance local topology event handler
+	dispatchRemoveLinkEvent(linkEvent);
+    }
+
+    private void putDeviceReplicationEvent(DeviceEvent deviceEvent) {
+	if (prepareForAddDeviceEvent(deviceEvent)) {
+	    putDevice(deviceEvent);
+	}
+	// TODO handle invariant violation
+	// trigger instance local topology event handler
+	dispatchPutDeviceEvent(deviceEvent);
+    }
+
+    private void removeDeviceReplicationEvent(DeviceEvent deviceEvent) {
+	if (prepareForRemoveDeviceEvent(deviceEvent)) {
+	    removeDevice(deviceEvent);
+	}
+	// TODO handle invariant violation
+	// trigger instance local topology event handler
+	dispatchRemoveDeviceEvent(deviceEvent);
     }
 
     /* *****************
@@ -541,90 +607,6 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	// No show stopping precondition?
 	// Prep: none
 	return true;
-    }
-
-    /* ******************************
-     * NetworkGraphReplicationInterface methods
-     * ******************************/
-
-    @Override
-    public void putSwitchReplicationEvent(SwitchEvent switchEvent) {
-	if (prepareForAddSwitchEvent(switchEvent)) {
-	    putSwitch(switchEvent);
-	}
-	// TODO handle invariant violation
-	// trigger instance local topology event handler
-	dispatchPutSwitchEvent(switchEvent);
-    }
-
-    @Override
-    public void removeSwitchReplicationEvent(SwitchEvent switchEvent) {
-	if (prepareForRemoveSwitchEvent(switchEvent)) {
-	    removeSwitch(switchEvent);
-	}
-	// TODO handle invariant violation
-	// trigger instance local topology event handler
-	dispatchRemoveSwitchEvent(switchEvent);
-    }
-
-    @Override
-    public void putPortReplicationEvent(PortEvent portEvent) {
-	if (prepareForAddPortEvent(portEvent)) {
-	    putPort(portEvent);
-	}
-	// TODO handle invariant violation
-	// trigger instance local topology event handler
-	dispatchPutPortEvent(portEvent);
-    }
-
-    @Override
-    public void removePortReplicationEvent(PortEvent portEvent) {
-	if (prepareForRemovePortEvent(portEvent)) {
-	    removePort(portEvent);
-	}
-	// TODO handle invariant violation
-	// trigger instance local topology event handler
-	dispatchRemovePortEvent(portEvent);
-    }
-
-    @Override
-    public void putLinkReplicationEvent(LinkEvent linkEvent) {
-	if (prepareForAddLinkEvent(linkEvent)) {
-	    putLink(linkEvent);
-	}
-	// TODO handle invariant violation
-	// trigger instance local topology event handler
-	dispatchPutLinkEvent(linkEvent);
-    }
-
-    @Override
-    public void removeLinkReplicationEvent(LinkEvent linkEvent) {
-	if (prepareForRemoveLinkEvent(linkEvent)) {
-	    removeLink(linkEvent);
-	}
-	// TODO handle invariant violation
-	// trigger instance local topology event handler
-	dispatchRemoveLinkEvent(linkEvent);
-    }
-
-    @Override
-    public void putDeviceReplicationEvent(DeviceEvent deviceEvent) {
-	if (prepareForAddDeviceEvent(deviceEvent)) {
-	    putDevice(deviceEvent);
-	}
-	// TODO handle invariant violation
-	// trigger instance local topology event handler
-	dispatchPutDeviceEvent(deviceEvent);
-    }
-
-    @Override
-    public void removeDeviceReplicationEvent(DeviceEvent deviceEvent) {
-	if (prepareForRemoveDeviceEvent(deviceEvent)) {
-	    removeDevice(deviceEvent);
-	}
-	// TODO handle invariant violation
-	// trigger instance local topology event handler
-	dispatchRemoveDeviceEvent(deviceEvent);
     }
 
     /* ************************************************
