@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
+import net.onrc.onos.intent.ErrorIntent;
 import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentOperationList;
@@ -179,6 +180,7 @@ public class KryoFactory {
 	kryo.register(IntentOperation.class);
 	kryo.register(PathIntent.class);
 	kryo.register(Intent.class);
+	kryo.register(ErrorIntent.class);
 	kryo.register(ShortestPathIntent.class);
 	kryo.register(ConstrainedShortestPathIntent.class);
 	kryo.register(Intent.IntentState.class);

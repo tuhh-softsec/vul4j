@@ -3,6 +3,7 @@ package net.onrc.onos.intent.runtime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
@@ -12,18 +13,20 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.intent.Intent;
+import net.onrc.onos.intent.Intent.IntentState;
 import net.onrc.onos.intent.IntentMap;
+import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentOperation.Operator;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.PathIntentMap;
+import net.onrc.onos.intent.persist.PersistIntent;
 import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphListener;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
-import net.onrc.onos.intent.persist.PersistIntent;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 /**
@@ -93,18 +96,42 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 				IntentOperationList.class);
 		networkGraphService.registerNetworkGraphListener(this);
                 persistIntent = new PersistIntent(controllerRegistry, networkGraphService);
-                
+
 	}
 
 	@Override
 	public IntentOperationList executeIntentOperations(IntentOperationList list) {
+		// update the map of high-level intents
 		highLevelIntents.executeOperations(list);
+
+		// prepare high-level intents' state changes
+		HashMap<String, IntentState> states = new HashMap<>();
+		for (IntentOperation op: list) {
+			String id = op.intent.getId();
+			states.put(id, IntentState.INST_REQ);
+		}
+
+		// calculate path-intents (low-level operations)
 		IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, pathIntents);
+
+		// persist calculated low-level operations
 		long key = persistIntent.getKey();
-		System.out.println(pathIntentOperations);
+		persistIntent.persistIfLeader(key, pathIntentOperations);
+
+		// remove error-intents and reflect them to high-level intents
+		Iterator<IntentOperation> i = pathIntentOperations.iterator();
+		while (i.hasNext()) {
+			IntentOperation op = i.next();
+			if (op.operator.equals(Operator.ERROR)) {
+				states.put(op.intent.getId(), IntentState.INST_NACK);
+				i.remove();
+			}
+		}
+		highLevelIntents.changeStates(states);
+
+		// update the map of low-level intents and publish the low-level operations
 		pathIntents.executeOperations(pathIntentOperations);
 		eventChannel.addEntry(key, pathIntentOperations);
-                persistIntent.persistIfLeader(key, pathIntentOperations);
 		return pathIntentOperations;
 	}
 

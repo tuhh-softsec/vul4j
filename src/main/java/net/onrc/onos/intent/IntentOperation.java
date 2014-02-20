@@ -6,15 +6,21 @@ package net.onrc.onos.intent;
 public class IntentOperation {
 	public enum Operator {
 		/**
-		 * Add new intent specified by intent field
+		 * Add new intent specified by intent field.
 		 */
 		ADD,
 
 		/**
 		 * Remove existing intent specified by intent field.
-		 * The specified intent should be an instance of Intent class (not a child class)
+		 * The instance of intent field should be an instance of Intent class (not a child class)
 		 */
 		REMOVE,
+
+		/**
+		 * Do error handling.
+		 * The instance of intent field should be an instance of ErrorIntent
+		 */
+		ERROR,
 	}
 
 	public IntentOperation() {}

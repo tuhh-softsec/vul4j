@@ -5,6 +5,8 @@ import java.util.HashMap;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.intent.ConstrainedBFSTree;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
+import net.onrc.onos.intent.ErrorIntent;
+import net.onrc.onos.intent.ErrorIntent.ErrorType;
 import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentOperation.Operator;
@@ -33,9 +35,9 @@ public class PathCalcRuntime implements IFloodlightService {
 	 * calculate shortest-path and constrained-shortest-path intents into low-level path intents
 	 * @param intentOpList IntentOperationList having instances of ShortestPathIntent/ConstrainedShortestPathIntent
 	 * @param pathIntents a set of current low-level intents
-	 * @return IntentOperationList for PathIntent instances
+	 * @return IntentOperationList. PathIntent and/or ErrorIntent instances.
 	 */
-	public IntentOperationList calcPathIntents(IntentOperationList intentOpList, PathIntentMap pathIntents) {
+	public IntentOperationList calcPathIntents(final IntentOperationList intentOpList, final PathIntentMap pathIntents) {
 		IntentOperationList pathIntentOpList = new IntentOperationList();
 		HashMap<Switch, ConstrainedBFSTree> spfTrees = new HashMap<>();
 
@@ -43,8 +45,11 @@ public class PathCalcRuntime implements IFloodlightService {
 			switch (intentOp.operator) {
 			case ADD:
 				if (!(intentOp.intent instanceof ShortestPathIntent)) {
-					log.error("unsupported intent type: {}", intentOp.intent.getClass().getName());
-					// TODO should push back the intent to caller
+					log.error("Unsupported intent type: {}", intentOp.intent.getClass().getName());
+					pathIntentOpList.add(Operator.ERROR, new ErrorIntent(
+							ErrorType.UNSUPPORTED_INTENT,
+							"Unsupported intent type.",
+							intentOp.intent));
 					continue;
 				}
 
@@ -55,7 +60,10 @@ public class PathCalcRuntime implements IFloodlightService {
 					log.error("Switch not found: {}, {}",
 							spIntent.getSrcSwitchDpid(),
 							spIntent.getDstSwitchDpid());
-					// TODO should push back the intent to caller
+					pathIntentOpList.add(Operator.ERROR, new ErrorIntent(
+							ErrorType.SWITCH_NOT_FOUND,
+							"Switch not found.",
+							intentOp.intent));
 					continue;
 				}
 
@@ -75,14 +83,20 @@ public class PathCalcRuntime implements IFloodlightService {
 				Path path = tree.getPath(dstSwitch);
 				if (path == null) {
 					log.error("Path not found: {}", intentOp.intent.toString());
-					// TODO should push back the intent to caller
+					pathIntentOpList.add(Operator.ERROR, new ErrorIntent(
+							ErrorType.PATH_NOT_FOUND,
+							"Path not found.",
+							intentOp.intent));
 					continue;
 				}
 				PathIntent pathIntent = new PathIntent("pi" + intentOp.intent.getId(), path, bandwidth, intentOp.intent);
-				pathIntentOpList.add(new IntentOperation(IntentOperation.Operator.ADD, pathIntent));
+				pathIntentOpList.add(Operator.ADD, pathIntent);
 				break;
 			case REMOVE:
 				pathIntentOpList.add(Operator.REMOVE, new Intent("pi" + intentOp.intent.getId()));
+				break;
+			case ERROR:
+				// just ignore
 				break;
 			}
 		}

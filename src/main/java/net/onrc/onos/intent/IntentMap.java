@@ -5,6 +5,7 @@ import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import net.onrc.onos.intent.Intent.IntentState;
@@ -13,6 +14,10 @@ import net.onrc.onos.intent.Intent.IntentState;
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class IntentMap {
+	private HashSet<ChangedListener> listeners = new HashSet<>();
+	private HashMap<String, Intent> intents = new HashMap<>();
+	private	LinkedList<ChangedEvent> events = new LinkedList<>();
+
 	public enum ChangedEventType {
 		/**
 		 * Added new intent.
@@ -47,47 +52,25 @@ public class IntentMap {
 		void intentsChange(LinkedList<ChangedEvent> events);
 	}
 
-	private HashSet<ChangedListener> listeners = new HashSet<>();
-	private HashMap<String, Intent> intents = new HashMap<>();
-
-	protected void putIntent(Intent intent) {
-		if (intents.containsKey(intent.getId()))
-			removeIntent(intent.getId());
-		intents.put(intent.getId(), intent);
-	}
-
-	protected void removeIntent(String intentId) {
-		intents.remove(intentId);		
-	}
-
-	public Intent getIntent(String intentId) {
-		return intents.get(intentId);
-	}
+	//================================================================================
+	// public methods
+	//================================================================================
 
 	public void executeOperations(IntentOperationList operations) {
-		LinkedList<ChangedEvent> events = new LinkedList<>();
 		for (IntentOperation operation: operations) {
 			switch (operation.operator) {
 			case ADD:
-				putIntent(operation.intent);
-				events.add(new ChangedEvent(ChangedEventType.ADDED, operation.intent));
+				handleAddOperation(operation);
 				break;
 			case REMOVE:
-				Intent intent = getIntent(operation.intent.getId());
-				if (intent == null) {
-					// TODO throw exception
-				}
-				else {
-					intent.setState(Intent.IntentState.DEL_REQ);
-					events.add(new ChangedEvent(ChangedEventType.STATE_CHANGED,
-							new Intent(intent.getId(), Intent.IntentState.DEL_REQ)));
-				}
+				handleRemoveOperation(operation);
+				break;
+			case ERROR:
+				handleErrorOperation(operation);
 				break;
 			}
 		}
-		for (ChangedListener listener: listeners) {
-			listener.intentsChange(events);
-		}
+		notifyEvents();
 	}
 
 	public void purge() {
@@ -97,11 +80,23 @@ public class IntentMap {
 			if (intent.getState() == IntentState.DEL_ACK
 					|| intent.getState() == IntentState.INST_NACK) {
 				removeIds.add(intent.getId());
-			}			
+			}
 		}
 		for (String intentId: removeIds) {
 			removeIntent(intentId);
 		}
+		notifyEvents();
+	}
+
+	public void changeStates(Map<String, IntentState> states) {
+		for (Entry<String, IntentState> state: states.entrySet()) {
+			setState(state.getKey(), state.getValue());
+		}
+		notifyEvents();
+	}
+
+	public Intent getIntent(String intentId) {
+		return intents.get(intentId);
 	}
 
 	public Collection<Intent> getAllIntents() {
@@ -114,5 +109,81 @@ public class IntentMap {
 
 	public void removeChangedListener(ChangedListener listener) {
 		listeners.remove(listener);
+	}
+
+	//================================================================================
+	// methods that affect intents map (protected)
+	//================================================================================
+
+	protected void putIntent(Intent intent) {
+		if (intents.containsKey(intent.getId()))
+			removeIntent(intent.getId());
+		intents.put(intent.getId(), intent);
+		events.add(new ChangedEvent(ChangedEventType.ADDED, intent));
+	}
+
+	protected void removeIntent(String intentId) {
+		Intent intent = intents.remove(intentId);
+		if (intent == null) return;
+		events.add(new ChangedEvent(ChangedEventType.REMOVED, intent));
+	}
+
+	protected void setState(String intentId, IntentState state) {
+		Intent intent = intents.get(intentId);
+		if (intent == null) return;
+		intent.setState(state);
+		events.add(new ChangedEvent(ChangedEventType.STATE_CHANGED, intent));
+	}
+
+	//================================================================================
+	// helper methods (protected)
+	//================================================================================
+
+	protected void handleAddOperation(IntentOperation operation) {
+		putIntent(operation.intent);
+	}
+
+	protected void handleRemoveOperation(IntentOperation operation) {
+		Intent intent = getIntent(operation.intent.getId());
+		if (intent == null) {
+			// TODO error handling
+		}
+		else {
+			setState(intent.getId(), IntentState.DEL_REQ);
+		}
+	}
+
+	protected void handleErrorOperation(IntentOperation operation) {
+		//TODO put error message into the intent
+
+		ErrorIntent errorIntent = (ErrorIntent) operation.intent;
+		Intent targetIntent = intents.get(errorIntent.getId());
+		if (targetIntent == null) {
+			// TODO error handling
+			return;
+		}
+
+		switch (targetIntent.getState()) {
+		case CREATED:
+		case INST_REQ:
+		case INST_ACK:
+			setState(targetIntent.getId(), IntentState.INST_NACK);
+			break;
+		case DEL_REQ:
+			setState(targetIntent.getId(), IntentState.DEL_PENDING);
+			break;
+		case INST_NACK:
+		case DEL_PENDING:
+		case DEL_ACK:
+			// do nothing
+			break;
+		}
+	}
+
+	protected void notifyEvents() {
+		for (ChangedListener listener: listeners) {
+			listener.intentsChange(events);
+		}
+		events.clear();
 	}
 }
