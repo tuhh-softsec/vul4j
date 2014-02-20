@@ -249,11 +249,14 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
     }
 
     protected SecurePart securePartMatches(XMLSecStartElement xmlSecStartElement, Map<Object, SecurePart> secureParts) {
-        SecurePart securePart = secureParts.get(xmlSecStartElement.getName());
-        if (securePart == null) {
-            Attribute attribute = xmlSecStartElement.getAttributeByName(XMLSecurityConstants.ATT_NULL_Id);
-            if (attribute != null) {
-                securePart = secureParts.get(attribute.getValue());
+        SecurePart securePart = null;
+        if (secureParts != null) {
+            securePart = secureParts.get(xmlSecStartElement.getName());
+            if (securePart == null) {
+                Attribute attribute = xmlSecStartElement.getAttributeByName(XMLSecurityConstants.ATT_NULL_Id);
+                if (attribute != null) {
+                    securePart = secureParts.get(attribute.getValue());
+                }
             }
         }
         return securePart;
