@@ -165,6 +165,10 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	 * @param events the events to process.
 	 */
 	private void processEvents(Collection<EventEntry<TopologyEvent>> events) {
+
+	    //
+	    // Classify and suppress matching events
+	    //
 	    for (EventEntry<TopologyEvent> event : events) {
 		TopologyEvent topologyEvent = event.eventData();
 		SwitchEvent switchEvent = topologyEvent.switchEvent;
@@ -173,7 +177,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 		DeviceEvent deviceEvent = topologyEvent.deviceEvent;
 
 		//
-		// Extract the events by cancelling matching events
+		// Extract the events
 		//
 		switch (event.eventType()) {
 		case ENTRY_ADD:
@@ -224,6 +228,46 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 		    break;
 		}
 	    }
+
+	    //
+	    // Apply the classified events.
+	    //
+	    // Apply the "add" events in the proper order:
+	    //   switch, port, link, device
+	    //
+	    for (SwitchEvent switchEvent : addedSwitchEvents.values())
+		addSwitch(switchEvent);
+	    for (PortEvent portEvent : addedPortEvents.values())
+		addPort(portEvent);
+	    for (LinkEvent linkEvent : addedLinkEvents.values())
+		addLink(linkEvent);
+	    for (DeviceEvent deviceEvent : addedDeviceEvents.values())
+		addDevice(deviceEvent);
+	    //
+	    // Apply the "remove" events in the reverse order:
+	    //   device, link, port, switch
+	    //
+	    for (DeviceEvent deviceEvent : removedDeviceEvents.values())
+		removeDevice(deviceEvent);
+	    for (LinkEvent linkEvent : removedLinkEvents.values())
+		removeLink(linkEvent);
+	    for (PortEvent portEvent : removedPortEvents.values())
+		removePort(portEvent);
+	    for (SwitchEvent switchEvent : removedSwitchEvents.values())
+		removeSwitch(switchEvent);
+
+
+	    //
+	    // Cleanup
+	    //
+	    addedSwitchEvents.clear();
+	    removedSwitchEvents.clear();
+	    addedPortEvents.clear();
+	    removedPortEvents.clear();
+	    addedLinkEvents.clear();
+	    removedLinkEvents.clear();
+	    addedDeviceEvents.clear();
+	    removedDeviceEvents.clear();
 	}
 
 	/**
@@ -275,24 +319,6 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 						   byte[].class,
 						   TopologyEvent.class);
 	eventHandler.start();
-    }
-
-    /**
-     * Exception to be thrown when Modification to the Network Graph cannot be
-     * continued due to broken invariant.
-     *
-     * XXX Should this be checked exception or RuntimeException?
-     */
-    public static class BrokenInvariantException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-
-	public BrokenInvariantException() {
-	    super();
-	}
-
-	public BrokenInvariantException(String message) {
-	    super(message);
-	}
     }
 
     /* ******************************
@@ -380,9 +406,268 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
-    /* *****************
-     * Internal methods to maintain invariants of the network graph
-     * *****************/
+    /* ************************************************
+     * Internal methods to maintain the network graph
+     * ************************************************/
+    private void addSwitch(SwitchEvent swEvent) {
+	Switch sw = networkGraph.getSwitch(swEvent.getDpid());
+	if (sw == null) {
+	    sw = new SwitchImpl(networkGraph, swEvent.getDpid());
+	    networkGraph.putSwitch(sw);
+	} else {
+	    // TODO: Update the switch attributes
+	    // TODO: Nothing to do for now
+	}
+    }
+
+    private void removeSwitch(SwitchEvent swEvent) {
+	Switch sw = networkGraph.getSwitch(swEvent.getDpid());
+	if (sw == null) {
+	    log.warn("Switch {} already removed, ignoring", swEvent);
+	    return;
+	}
+
+	//
+	// Remove all Ports on the Switch
+	//
+	ArrayList<PortEvent> portsToRemove = new ArrayList<>();
+	for (Port port : sw.getPorts()) {
+	    log.warn("Port {} on Switch {} should be removed prior to removing Switch. Removing Port now.",
+		     port, swEvent);
+	    PortEvent portEvent = new PortEvent(port.getDpid(),
+						port.getNumber());
+	    portsToRemove.add(portEvent);
+	}
+	for (PortEvent portEvent : portsToRemove)
+	    removePort(portEvent);
+
+	networkGraph.removeSwitch(swEvent.getDpid());
+    }
+
+    private void addPort(PortEvent portEvent) {
+	Switch sw = networkGraph.getSwitch(portEvent.getDpid());
+	if (sw == null) {
+	    // Reordered event
+	    // TODO: Delay the event in local cache
+	    return;
+	}
+	SwitchImpl switchImpl = getSwitchImpl(sw);
+
+	Port port = sw.getPort(portEvent.getNumber());
+	if (port == null) {
+	    port = new PortImpl(networkGraph, sw, portEvent.getNumber());
+	    switchImpl.addPort(port);
+	} else {
+	    // TODO: Update the port attributes
+	}
+    }
+
+    private void removePort(PortEvent portEvent) {
+	Switch sw = networkGraph.getSwitch(portEvent.getDpid());
+	if (sw == null) {
+	    log.warn("Parent Switch for Port {} already removed, ignoring",
+		     portEvent);
+	    return;
+	}
+
+	Port port = sw.getPort(portEvent.getNumber());
+	if (port == null) {
+	    log.warn("Port {} already removed, ignoring", portEvent);
+	    return;
+	}
+
+	//
+	// Remove all Devices attached to the Port
+	//
+	ArrayList<DeviceEvent> devicesToRemove = new ArrayList<>();
+	for (Device device : port.getDevices()) {
+	    log.debug("Removing Device {} on Port {}", device, portEvent);
+	    DeviceEvent deviceEvent = new DeviceEvent(device.getMacAddress());
+	    SwitchPort switchPort = new SwitchPort(port.getSwitch().getDpid(),
+						   port.getNumber());
+	    deviceEvent.addAttachmentPoint(switchPort);
+	    devicesToRemove.add(deviceEvent);
+	}
+	for (DeviceEvent deviceEvent : devicesToRemove)
+	    removeDevice(deviceEvent);
+
+	//
+	// Remove all Links connected to the Port
+	//
+	Set<Link> links = new HashSet<>();
+	links.add(port.getOutgoingLink());
+	links.add(port.getIncomingLink());
+	ArrayList<LinkEvent> linksToRemove = new ArrayList<>();
+	for (Link link : links) {
+	    if (link == null)
+		continue;
+	    log.debug("Removing Link {} on Port {}", link, portEvent);
+	    LinkEvent linkEvent = new LinkEvent(link.getSrcSwitch().getDpid(),
+						link.getSrcPort().getNumber(),
+						link.getDstSwitch().getDpid(),
+						link.getDstPort().getNumber());
+	    linksToRemove.add(linkEvent);
+	}
+	for (LinkEvent linkEvent : linksToRemove)
+	    removeLink(linkEvent);
+
+	// Remove the Port from the Switch
+	SwitchImpl switchImpl = getSwitchImpl(sw);
+	switchImpl.removePort(port);
+    }
+
+    private void addLink(LinkEvent linkEvent) {
+	Port srcPort = networkGraph.getPort(linkEvent.getSrc().dpid,
+					    linkEvent.getSrc().number);
+	if (srcPort == null) {
+	    // Reordered event
+	    // TODO: Delay the event in local cache
+	    return;
+	}
+
+	Port dstPort = networkGraph.getPort(linkEvent.getDst().dpid,
+					    linkEvent.getDst().number);
+	if (dstPort == null) {
+	    // Reordered event
+	    // TODO: Delay the event in local cache
+	    return;
+	}
+
+	// Get the Link instance from the Destination Port Incoming Link
+	Link link = dstPort.getIncomingLink();
+	assert(link == srcPort.getOutgoingLink());
+	if (link == null) {
+	    link = new LinkImpl(networkGraph, srcPort, dstPort);
+	    PortImpl srcPortImpl = getPortImpl(srcPort);
+	    PortImpl dstPortImpl = getPortImpl(dstPort);
+	    srcPortImpl.setOutgoingLink(link);
+	    dstPortImpl.setIncomingLink(link);
+
+	    // Remove all Devices attached to the Ports
+	    ArrayList<DeviceEvent> devicesToRemove = new ArrayList<>();
+	    ArrayList<Port> ports = new ArrayList<>();
+	    ports.add(srcPort);
+	    ports.add(dstPort);
+	    for (Port port : ports) {
+		for (Device device : port.getDevices()) {
+		    log.error("Device {} on Port {} should have been removed prior to adding Link {}",
+			      device, port, linkEvent);
+		    DeviceEvent deviceEvent =
+			new DeviceEvent(device.getMacAddress());
+		    SwitchPort switchPort =
+			new SwitchPort(port.getSwitch().getDpid(),
+				       port.getNumber());
+		    deviceEvent.addAttachmentPoint(switchPort);
+		    devicesToRemove.add(deviceEvent);
+		}
+	    }
+	    for (DeviceEvent deviceEvent : devicesToRemove)
+		removeDevice(deviceEvent);
+	} else {
+	    // TODO: Update the link attributes
+	}
+    }
+
+    private void removeLink(LinkEvent linkEvent) {
+	Port srcPort = networkGraph.getPort(linkEvent.getSrc().dpid,
+					    linkEvent.getSrc().number);
+	if (srcPort == null) {
+	    log.warn("Src Port for Link {} already removed, ignoring",
+		     linkEvent);
+	    return;
+	}
+
+	Port dstPort = networkGraph.getPort(linkEvent.getDst().dpid,
+					    linkEvent.getDst().number);
+	if (dstPort == null) {
+	    log.warn("Dst Port for Link {} already removed, ignoring",
+		     linkEvent);
+	    return;
+	}
+
+	//
+	// Remove the Link instance from the Destination Port Incoming Link
+	// and the Source Port Outgoing Link.
+	//
+	Link link = dstPort.getIncomingLink();
+	if (link == null) {
+	    log.warn("Link {} already removed on destination Port", linkEvent);
+	}
+	link = srcPort.getOutgoingLink();
+	if (link == null) {
+	    log.warn("Link {} already removed on src Port", linkEvent);
+	}
+	getPortImpl(dstPort).setIncomingLink(null);
+	getPortImpl(srcPort).setOutgoingLink(null);
+    }
+
+    // TODO: Device-related work is incomplete
+    private void addDevice(DeviceEvent deviceEvent) {
+	Device device = networkGraph.getDeviceByMac(deviceEvent.getMac());
+	if (device == null) {
+	    device = new DeviceImpl(networkGraph, deviceEvent.getMac());
+	}
+	DeviceImpl deviceImpl = getDeviceImpl(device);
+
+	// Update the IP addresses
+	for (InetAddress ipAddr : deviceEvent.getIpAddresses())
+	    deviceImpl.addIpAddress(ipAddr);
+
+	// Process each attachment point
+	boolean attachmentFound = false;
+	for (SwitchPort swp : deviceEvent.getAttachmentPoints()) {
+	    // Attached Ports must exist
+	    Port port = networkGraph.getPort(swp.dpid, swp.number);
+	    if (port == null) {
+		// Reordered event
+		// TODO: Delay the event in local cache
+		continue;
+	    }
+	    // Attached Ports must not have Link
+	    if (port.getOutgoingLink() != null ||
+		port.getIncomingLink() != null) {
+		log.warn("Link (Out:{},In:{}) exist on the attachment point, skipping mutation.",
+			 port.getOutgoingLink(),
+			 port.getIncomingLink());
+		continue;
+	    }
+
+	    // Add Device <-> Port attachment
+	    PortImpl portImpl = getPortImpl(port);
+	    portImpl.addDevice(device);
+	    deviceImpl.addAttachmentPoint(port);
+	    attachmentFound = true;
+	}
+
+	// Update the device in the Network Graph
+	if (attachmentFound) 
+	    networkGraph.putDevice(device);
+    }
+
+    private void removeDevice(DeviceEvent deviceEvent) {
+	Device device = networkGraph.getDeviceByMac(deviceEvent.getMac());
+	if (device == null) {
+	    log.warn("Device {} already removed, ignoring", deviceEvent);
+	    return;
+	}
+	DeviceImpl deviceImpl = getDeviceImpl(device);
+
+	// Process each attachment point
+	for (SwitchPort swp : deviceEvent.getAttachmentPoints()) {
+	    // Attached Ports must exist
+	    Port port = networkGraph.getPort(swp.dpid, swp.number);
+	    if (port == null) {
+		log.warn("Port for the attachment point {} did not exist. skipping attachment point mutation", swp);
+		continue;
+	    }
+
+	    // Remove Device <-> Port attachment
+	    PortImpl portImpl = getPortImpl(port);
+	    portImpl.removeDevice(device);
+	    deviceImpl.removeAttachmentPoint(port);
+	}
+	networkGraph.removeDevice(device);
+    }
 
     /**
      *
@@ -566,329 +851,6 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	// No show stopping precondition?
 	// Prep: none
 	return true;
-    }
-
-    /* ************************************************
-     * Internal In-memory object mutation methods.
-     * ************************************************/
-
-    void putSwitch(SwitchEvent swEvent) {
-	if (swEvent == null) {
-	    throw new IllegalArgumentException("Switch cannot be null");
-	}
-
-	Switch sw = networkGraph.getSwitch(swEvent.getDpid());
-
-	if (sw == null) {
-	    sw = new SwitchImpl(networkGraph, swEvent.getDpid());
-	    networkGraph.putSwitch(sw);
-	}
-
-	// Update when more attributes are added to Event object
-	// no attribute to update for now
-    }
-
-    void removeSwitch(SwitchEvent swEvent) {
-	if (swEvent == null) {
-	    throw new IllegalArgumentException("Switch cannot be null");
-	}
-
-	Switch sw = networkGraph.getSwitch(swEvent.getDpid());
-	if (sw == null) {
-	    log.warn("Switch {} already removed, ignoring", swEvent);
-	    return;
-	}
-
-	// remove all ports if there still exist
-	ArrayList<PortEvent> portsToRemove = new ArrayList<>();
-	for (Port port : sw.getPorts()) {
-	    log.warn("Port {} on Switch {} should be removed prior to removing Switch. Removing Port now",
-		     port, swEvent);
-	    PortEvent portEvent = new PortEvent(port.getDpid(),
-						port.getNumber());
-	    portsToRemove.add(portEvent);
-	}
-	for (PortEvent portEvent : portsToRemove) {
-	    // XXX calling removePortDiscoveryEvent() may trigger duplicate
-	    // event, once at prepare phase, second time here
-	    // If event can be squashed, ignored etc. at receiver side it
-	    // shouldn't be a problem, but if not need to re-visit this issue.
-
-	    // Note: removePortDiscoveryEvent() implies removal of attached
-	    // Device, etc. if we decide not to call
-	    // removePortDiscoveryEvent(), Device needs to be handled properly.
-	    removePortDiscoveryEvent(portEvent);
-	}
-
-	networkGraph.removeSwitch(swEvent.getDpid());
-    }
-
-    void putPort(PortEvent portEvent) {
-	if (portEvent == null) {
-	    throw new IllegalArgumentException("Port cannot be null");
-	}
-	Switch sw = networkGraph.getSwitch(portEvent.getDpid());
-	if (sw == null) {
-	    throw new BrokenInvariantException(String.format(
-			"Switch with dpid %s did not exist.",
-			new Dpid(portEvent.getDpid())));
-	}
-	Port p = sw.getPort(portEvent.getNumber());
-	PortImpl port = null;
-	if (p != null) {
-	    port = getPortImpl(p);
-	}
-
-	if (port == null) {
-	    port = new PortImpl(networkGraph, sw, portEvent.getNumber());
-	}
-
-	// TODO update attributes
-
-	SwitchImpl s = getSwitchImpl(sw);
-	s.addPort(port);
-    }
-
-    void removePort(PortEvent portEvent) {
-	if (portEvent == null) {
-	    throw new IllegalArgumentException("Port cannot be null");
-	}
-
-	Switch sw = networkGraph.getSwitch(portEvent.getDpid());
-	if (sw == null) {
-	    log.warn("Parent Switch for Port {} already removed, ignoring",
-		     portEvent);
-	    return;
-	}
-
-	Port p = sw.getPort(portEvent.getNumber());
-	if (p == null) {
-	    log.warn("Port {} already removed, ignoring", portEvent);
-	    return;
-	}
-
-	// Remove Link and Device Attachment
-	for (Device device : p.getDevices()) {
-	    log.debug("Removing Device {} on Port {}", device, portEvent);
-	    DeviceEvent devEvent = new DeviceEvent(device.getMacAddress());
-	    devEvent.addAttachmentPoint(new SwitchPort(p.getSwitch().getDpid(),
-						       p.getNumber()));
-
-	    // XXX calling removeDeviceDiscoveryEvent() may trigger duplicate
-	    // event, once at prepare phase, second time here.
-	    // If event can be squashed, ignored etc. at receiver side it
-	    // shouldn't be a problem, but if not need to re-visit
-
-	    // calling Discovery API to wipe from DB, etc.
-	    removeDeviceDiscoveryEvent(devEvent);
-	}
-	Set<Link> links = new HashSet<>();
-	links.add(p.getOutgoingLink());
-	links.add(p.getIncomingLink());
-	ArrayList<LinkEvent> linksToRemove = new ArrayList<>();
-	for (Link link : links) {
-	    if (link == null) {
-		continue;
-	    }
-	    log.debug("Removing Link {} on Port {}", link, portEvent);
-	    LinkEvent linkEvent = new LinkEvent(link.getSrcSwitch().getDpid(),
-						link.getSrcPort().getNumber(),
-						link.getDstSwitch().getDpid(),
-						link.getDstPort().getNumber());
-	    linksToRemove.add(linkEvent);
-	}
-	for (LinkEvent linkEvent : linksToRemove) {
-	    // XXX calling removeLinkDiscoveryEvent() may trigger duplicate
-	    // event, once at prepare phase, second time here.
-	    // If event can be squashed, ignored etc. at receiver side it
-	    // shouldn't be a problem, but if not need to re-visit
-
-	    // calling Discovery API to wipe from DB, etc.
-	    removeLinkDiscoveryEvent(linkEvent);
-	}
-
-	// remove Port from Switch
-	SwitchImpl s = getSwitchImpl(sw);
-	s.removePort(p);
-    }
-
-    void putLink(LinkEvent linkEvent) {
-	if (linkEvent == null) {
-	    throw new IllegalArgumentException("Link cannot be null");
-	}
-
-	Port srcPort = networkGraph.getPort(linkEvent.getSrc().dpid,
-					    linkEvent.getSrc().number);
-	if (srcPort == null) {
-	    throw new BrokenInvariantException(
-			String.format(
-				"Src Port %s of a Link did not exist.",
-				linkEvent.getSrc() ));
-	}
-
-	Port dstPort = networkGraph.getPort(linkEvent.getDst().dpid,
-					    linkEvent.getDst().number);
-	if (dstPort == null) {
-	    throw new BrokenInvariantException(
-			String.format(
-				"Dst Port %s of a Link did not exist.",
-				linkEvent.getDst()));
-	}
-
-	// getting Link instance from destination port incoming Link
-	Link l = dstPort.getIncomingLink();
-	LinkImpl link = null;
-	assert(l == srcPort.getOutgoingLink());
-	if (l != null) {
-	    link = getLinkImpl(l);
-	}
-
-	if (link == null) {
-	    link = new LinkImpl(networkGraph, srcPort, dstPort);
-	}
-
-	PortImpl dstPortMem = getPortImpl(dstPort);
-	PortImpl srcPortMem = getPortImpl(srcPort);
-
-	// Add Link first to avoid further Device addition
-
-	// add Link to Port
-	dstPortMem.setIncomingLink(link);
-	srcPortMem.setOutgoingLink(link);
-
-	// remove Device Pointing to Port if any
-	for (Device d : dstPortMem.getDevices() ) {
-	    log.error("Device {} on Port {} should have been removed prior to adding Link {}",
-		      d, dstPort, linkEvent);
-	    DeviceImpl dev = getDeviceImpl(d);
-	    dev.removeAttachmentPoint(dstPort);
-	    // This implies that change is made to Device Object.
-	    // sending Device attachment point removed event
-	    DeviceEvent rmEvent = new DeviceEvent(d.getMacAddress());
-	    rmEvent.addAttachmentPoint(new SwitchPort(dstPort.getDpid(),
-						      dstPort.getNumber()));
-	    removeDeviceDiscoveryEvent(rmEvent);
-	}
-	dstPortMem.removeAllDevice();
-	for (Device d : srcPortMem.getDevices() ) {
-	    log.error("Device {} on Port {} should have been removed prior to adding Link {}",
-		      d, srcPort, linkEvent);
-	    DeviceImpl dev = getDeviceImpl(d);
-	    dev.removeAttachmentPoint(srcPort);
-	    // This implies that change is made to Device Object.
-	    // sending Device attachment point removed event
-	    DeviceEvent rmEvent = new DeviceEvent(d.getMacAddress());
-	    rmEvent.addAttachmentPoint(new SwitchPort(dstPort.getDpid(),
-						      dstPort.getNumber()));
-	    removeDeviceDiscoveryEvent(rmEvent);
-	}
-	srcPortMem.removeAllDevice();
-    }
-
-    void removeLink(LinkEvent linkEvent) {
-	if (linkEvent == null) {
-	    throw new IllegalArgumentException("Link cannot be null");
-	}
-
-	Port srcPort = networkGraph.getPort(linkEvent.getSrc().dpid,
-					    linkEvent.getSrc().number);
-	if (srcPort == null) {
-	    log.warn("Src Port for Link {} already removed, ignoring",
-		     linkEvent);
-	    return;
-	}
-
-	Port dstPort = networkGraph.getPort(linkEvent.getDst().dpid,
-					    linkEvent.getDst().number);
-	if (dstPort == null) {
-	    log.warn("Dst Port for Link {} already removed, ignoring",
-		     linkEvent);
-	    return;
-	}
-
-	Link l = dstPort.getIncomingLink();
-	if ( l == null) {
-	    log.warn("Link {} already removed on destination Port", linkEvent);
-	}
-	l = srcPort.getOutgoingLink();
-	if (l == null) {
-	    log.warn("Link {} already removed on src Port", linkEvent);
-	}
-
-	getPortImpl(dstPort).setIncomingLink(null);
-	getPortImpl(srcPort).setOutgoingLink(null);
-    }
-
-    // XXX Need to rework Device related
-    void putDevice(DeviceEvent deviceEvent) {
-	if (deviceEvent == null) {
-	    throw new IllegalArgumentException("Device cannot be null");
-	}
-
-	Device device = networkGraph.getDeviceByMac(deviceEvent.getMac());
-	if (device == null) {
-	    device = new DeviceImpl(networkGraph, deviceEvent.getMac());
-	}
-	DeviceImpl memDevice = getDeviceImpl(device);
-
-	// for each IP address
-	for (InetAddress ipAddr : deviceEvent.getIpAddresses()) {
-	    memDevice.addIpAddress(ipAddr);
-	}
-
-	networkGraph.putDevice(device);
-
-	// for each attachment point
-	for (SwitchPort swp : deviceEvent.getAttachmentPoints()) {
-	    // Attached Ports must exist
-	    Port port = networkGraph.getPort(swp.dpid, swp.number);
-	    if (port == null) {
-		log.warn("Port for the attachment point {} did not exist. skipping mutation", swp);
-		continue;
-	    }
-	    // Attached Ports must not have Link
-	    if (port.getOutgoingLink() != null ||
-		port.getIncomingLink() != null) {
-		log.warn("Link (Out:{},In:{}) exist on the attachment point, skipping mutation.",
-			 port.getOutgoingLink(),
-			 port.getIncomingLink());
-		continue;
-	    }
-
-	    // finally add Device <-> Port on In-memory structure
-	    PortImpl memPort = getPortImpl(port);
-	    memPort.addDevice(device);
-	    memDevice.addAttachmentPoint(port);
-	}
-    }
-
-    void removeDevice(DeviceEvent deviceEvent) {
-	if (deviceEvent == null) {
-	    throw new IllegalArgumentException("Device cannot be null");
-	}
-
-	Device device = networkGraph.getDeviceByMac(deviceEvent.getMac());
-	if (device == null) {
-	    log.warn("Device {} already removed, ignoring", deviceEvent);
-	    return;
-	}
-	DeviceImpl memDevice = getDeviceImpl(device);
-
-	// for each attachment point
-	for (SwitchPort swp : deviceEvent.getAttachmentPoints()) {
-	    // Attached Ports must exist
-	    Port port = networkGraph.getPort(swp.dpid, swp.number);
-	    if (port == null) {
-		log.warn("Port for the attachment point {} did not exist. skipping attachment point mutation", swp);
-		continue;
-	    }
-
-	    // finally remove Device <-> Port on In-memory structure
-	    PortImpl memPort = getPortImpl(port);
-	    memPort.removeDevice(device);
-	    memDevice.removeAttachmentPoint(port);
-	}
-	networkGraph.removeDevice(device);
     }
 
     private void dispatchPutSwitchEvent(SwitchEvent switchEvent) {
