@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
+import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +30,8 @@ public class PathIntentTest {
 
 	@Test
 	public void test() {
-		Kryo kryo = new Kryo();
+		KryoFactory factory = new KryoFactory();
+		Kryo kryo = factory.newKryo();
 		Output output = new Output(1024);
 
 		ConstrainedShortestPathIntent cspIntent1 =

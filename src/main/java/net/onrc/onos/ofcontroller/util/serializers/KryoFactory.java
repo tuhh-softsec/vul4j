@@ -13,8 +13,8 @@ import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
+import net.onrc.onos.ofcontroller.networkgraph.Path;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
-import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
 import net.onrc.onos.ofcontroller.networkgraph.TopologyEvent;
 import net.onrc.onos.ofcontroller.topology.TopologyElement;
@@ -42,7 +42,6 @@ import net.onrc.onos.ofcontroller.util.IPv6Net;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.Switch;
 // import net.onrc.onos.ofcontroller.util.SwitchPort;
-
 
 import com.esotericsoftware.kryo.Kryo;
 
@@ -182,7 +181,7 @@ public class KryoFactory {
 	kryo.register(ShortestPathIntent.class);
 	kryo.register(ConstrainedShortestPathIntent.class);
 	kryo.register(Intent.IntentState.class);
-	kryo.register(long[].class);
+	kryo.register(Path.class);
 	kryo.register(IntentOperation.Operator.class);
 
 	return kryo;
