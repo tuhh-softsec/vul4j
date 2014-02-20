@@ -249,116 +249,74 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 
     @Override
     public void putSwitchDiscoveryEvent(SwitchEvent switchEvent) {
-	if (prepareForAddSwitchEvent(switchEvent)) {
-	    datastore.addSwitch(switchEvent);
-	    putSwitch(switchEvent);
+	if (datastore.addSwitch(switchEvent)) {
 	    // Send out notification
 	    TopologyEvent topologyEvent =
 		new TopologyEvent(switchEvent, registryService.getControllerId());
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
 	}
-	// TODO handle invariant violation
     }
 
     @Override
     public void removeSwitchDiscoveryEvent(SwitchEvent switchEvent) {
-	if (prepareForRemoveSwitchEvent(switchEvent)) {
-	    datastore.deactivateSwitch(switchEvent);
-	    removeSwitch(switchEvent);
+	if (datastore.deactivateSwitch(switchEvent)) {
 	    // Send out notification
 	    eventChannel.removeEntry(switchEvent.getID());
 	}
-	// TODO handle invariant violation
     }
 
     @Override
     public void putPortDiscoveryEvent(PortEvent portEvent) {
-	if (prepareForAddPortEvent(portEvent)) {
-	    datastore.addPort(portEvent);
-	    putPort(portEvent);
+	if (datastore.addPort(portEvent)) {
 	    // Send out notification
 	    TopologyEvent topologyEvent =
 		new TopologyEvent(portEvent, registryService.getControllerId());
-	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
 	}
-	// TODO handle invariant violation
     }
 
     @Override
     public void removePortDiscoveryEvent(PortEvent portEvent) {
-	if (prepareForRemovePortEvent(portEvent)) {
-	    datastore.deactivatePort(portEvent);
-	    removePort(portEvent);
+	if (datastore.deactivatePort(portEvent)) {
 	    // Send out notification
 	    eventChannel.removeEntry(portEvent.getID());
 	}
-	// TODO handle invariant violation
     }
 
     @Override
     public void putLinkDiscoveryEvent(LinkEvent linkEvent) {
-	if (prepareForAddLinkEvent(linkEvent)) {
-	    datastore.addLink(linkEvent);
-	    putLink(linkEvent);
+	if (datastore.addLink(linkEvent)) {
 	    // Send out notification
 	    TopologyEvent topologyEvent =
 		new TopologyEvent(linkEvent, registryService.getControllerId());
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
 	}
-	// TODO handle invariant violation
     }
 
     @Override
     public void removeLinkDiscoveryEvent(LinkEvent linkEvent) {
-	removeLinkDiscoveryEvent(linkEvent, false);
-    }
-
-    private void removeLinkDiscoveryEvent(LinkEvent linkEvent,
-					  boolean dstCheckBeforeDBmodify) {
-	if (prepareForRemoveLinkEvent(linkEvent)) {
-	    if (dstCheckBeforeDBmodify) {
-		// write to DB only if it is owner of the dst dpid
-	    // XXX this will cause link remove events to be dropped
-		// if the dst switch just disconnected
-		if (registryService.hasControl(linkEvent.getDst().dpid)) {
-		    datastore.removeLink(linkEvent);
-		}
-	    } else {
-		datastore.removeLink(linkEvent);
-	    }
-	    removeLink(linkEvent);
+	if (datastore.removeLink(linkEvent)) {
 	    // Send out notification
 	    eventChannel.removeEntry(linkEvent.getID());
 	}
-	// TODO handle invariant violation
     }
 
     @Override
     public void putDeviceDiscoveryEvent(DeviceEvent deviceEvent) {
-	if (prepareForAddDeviceEvent(deviceEvent)) {
-//	    datastore.addDevice(deviceEvent);
-//	    putDevice(deviceEvent);
+	if (datastore.addDevice(deviceEvent)) {
 	    // Send out notification
 	    TopologyEvent topologyEvent =
 		new TopologyEvent(deviceEvent,
 				  registryService.getControllerId());
-	    eventChannel.addEntry(topologyEvent.getID(),
-				  topologyEvent);
+	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
 	}
-	// TODO handle invariant violation
-	// XXX if prepareFor~ method returned false, event should be dropped
     }
 
     @Override
     public void removeDeviceDiscoveryEvent(DeviceEvent deviceEvent) {
-	if (prepareForRemoveDeviceEvent(deviceEvent)) {
-//	    datastore.removeDevice(deviceEvent);
-//	    removeDevice(deviceEvent);
+	if (datastore.removeDevice(deviceEvent)) {
 	    // Send out notification
 	    eventChannel.removeEntry(deviceEvent.getID());
 	}
-	// TODO handle invariant violation
-	// XXX if prepareFor~ method returned false, event should be dropped
     }
 
     /* *****************
@@ -1127,5 +1085,26 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 						  l.getDst().dpid,
 						  l.getDst().number));
 	}
+    }
+
+    @Deprecated
+    private void removeLinkDiscoveryEvent(LinkEvent linkEvent,
+					  boolean dstCheckBeforeDBmodify) {
+	if (prepareForRemoveLinkEvent(linkEvent)) {
+	    if (dstCheckBeforeDBmodify) {
+		// write to DB only if it is owner of the dst dpid
+	    // XXX this will cause link remove events to be dropped
+		// if the dst switch just disconnected
+		if (registryService.hasControl(linkEvent.getDst().dpid)) {
+		    datastore.removeLink(linkEvent);
+		}
+	    } else {
+		datastore.removeLink(linkEvent);
+	    }
+	    removeLink(linkEvent);
+	    // Send out notification
+	    eventChannel.removeEntry(linkEvent.getID());
+	}
+	// TODO handle invariant violation
     }
 }

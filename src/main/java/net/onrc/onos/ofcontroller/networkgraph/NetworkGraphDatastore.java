@@ -174,7 +174,7 @@ public class NetworkGraphDatastore {
 	 * @param device the device to add.
 	 * @return true on success, otherwise false.
 	 */
-	public boolean updateDevice(DeviceEvent device) {
+	public boolean addDevice(DeviceEvent device) {
 		// TODO implement
 		return false;			// Failure: not implemented yet
 	}
