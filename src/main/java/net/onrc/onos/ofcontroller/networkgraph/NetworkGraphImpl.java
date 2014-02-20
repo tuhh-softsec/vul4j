@@ -70,6 +70,27 @@ public class NetworkGraphImpl implements NetworkGraph {
 	}
 
 	@Override
+	public Link getLink(Long dpid, Long number) {
+	    Port srcPort = getPort(dpid, number);
+	    if (srcPort == null)
+		return null;
+	    return srcPort.getOutgoingLink();
+	}
+
+	@Override
+	public Link getLink(Long srcDpid, Long srcNumber, Long dstDpid,
+			    Long dstNumber) {
+	    Link link = getLink(srcDpid, srcNumber);
+	    if (link == null)
+		return null;
+	    if (link.getDstSwitch().getDpid() != dstDpid)
+		return null;
+	    if (link.getDstPort().getNumber() != dstNumber)
+		return null;
+	    return link;
+	}
+
+	@Override
 	public Iterable<Link> getLinks() {
 		List<Link> linklist = new LinkedList<>();
 
@@ -81,43 +102,6 @@ public class NetworkGraphImpl implements NetworkGraph {
 		}
 		return linklist;
 	}
-
-	@Override
-	public Iterable<Link> getOutgoingLinksFromSwitch(Long dpid) {
-		Switch sw = getSwitch(dpid);
-		if (sw == null) {
-			return Collections.emptyList();
-		}
-		Iterable<Link> links = sw.getOutgoingLinks();
-		if (links instanceof Collection) {
-			return Collections.unmodifiableCollection((Collection<Link>) links);
-		} else {
-			List<Link> linklist = new LinkedList<>();
-			for (Link l : links) {
-				linklist.add(l);
-			}
-			return linklist;
-		}
-	}
-
-	@Override
-	public Iterable<Link> getIncomingLinksFromSwitch(Long dpid) {
-		Switch sw = getSwitch(dpid);
-		if (sw == null) {
-			return Collections.emptyList();
-		}
-		Iterable<Link> links = sw.getIncomingLinks();
-		if (links instanceof Collection) {
-			return Collections.unmodifiableCollection((Collection<Link>) links);
-		} else {
-			List<Link> linklist = new LinkedList<>();
-			for (Link l : links) {
-				linklist.add(l);
-			}
-			return linklist;
-		}
-	}
-
 
 	@Override
 	public Iterable<Device> getDevicesByIp(InetAddress ipAddress) {

@@ -29,10 +29,10 @@ public class LinkEvent {
     }
 
     public LinkEvent(Link link) {
-	src = new SwitchPort(link.getSourceSwitch().getDpid(),
-		link.getSourcePort().getNumber());
-	dst = new SwitchPort(link.getDestinationSwitch().getDpid(),
-		link.getDestinationPort().getNumber());
+	src = new SwitchPort(link.getSrcSwitch().getDpid(),
+		link.getSrcPort().getNumber());
+	dst = new SwitchPort(link.getDstSwitch().getDpid(),
+		link.getDstPort().getNumber());
     }
 
     public SwitchPort getSrc() {
@@ -60,16 +60,6 @@ public class LinkEvent {
     public byte[] getID() {
 	return getLinkID(src.getDpid(), src.getNumber(),
 		dst.getDpid(), dst.getNumber());
-    }
-
-    public Link getLink(NetworkGraph graph) {
-	Port srcPort = graph.getPort(getSrc().getDpid(), getSrc().getNumber());
-	if (srcPort == null) return null;
-	Link link = srcPort.getOutgoingLink();
-	if (link == null) return null;
-	if (link.getDestinationSwitch().getDpid() != getDst().getDpid()) return null;
-	if (link.getDestinationPort().getNumber() != getDst().getNumber()) return null;
-	return link;
     }
 
     @Override

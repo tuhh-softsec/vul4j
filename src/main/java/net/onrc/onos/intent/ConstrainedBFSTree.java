@@ -44,7 +44,7 @@ public class ConstrainedBFSTree {
 		while (!switchQueue.isEmpty()) {
 			Switch sw = switchQueue.poll();
 			for (Link link: sw.getOutgoingLinks()) {
-				Switch reachedSwitch = link.getDestinationPort().getSwitch();
+				Switch reachedSwitch = link.getDstPort().getSwitch();
 				if (switchSearched.contains(reachedSwitch)) continue;
 				if (intents != null && intents.getAvailableBandwidth(link) < bandwidth) continue;
 				switchQueue.add(reachedSwitch);

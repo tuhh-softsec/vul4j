@@ -22,13 +22,13 @@ public class LinkSerializer extends SerializerBase<Link> {
 			throws IOException, JsonGenerationException {
 		jsonGenerator.writeStartObject();
 		jsonGenerator.writeStringField("src-switch", 
-				HexString.toHexString(link.getSourceSwitch().getDpid()));
+				HexString.toHexString(link.getSrcSwitch().getDpid()));
 		jsonGenerator.writeNumberField("src-port", 
-				link.getSourcePort().getNumber());
+				link.getSrcPort().getNumber());
 		jsonGenerator.writeStringField("dst-switch", 
-				HexString.toHexString(link.getDestinationSwitch().getDpid()));
+				HexString.toHexString(link.getDstSwitch().getDpid()));
 		jsonGenerator.writeNumberField("dst-port", 
-				link.getDestinationPort().getNumber());
+				link.getDstPort().getNumber());
 		jsonGenerator.writeEndObject();
 	}
 

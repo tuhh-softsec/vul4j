@@ -72,12 +72,15 @@ public class PlanCalcRuntime {
 			}
 			List<FlowEntry> entries = new ArrayList<>();
 			for(LinkEvent linkEvent : intent.getPath()) {
-				Link link = linkEvent.getLink(graph);
-				Switch sw = link.getSourceSwitch();
-				dstPort = link.getSourcePort();
+				Link link = graph.getLink(linkEvent.getSrc().getDpid(),
+							  linkEvent.getSrc().getNumber(),
+							  linkEvent.getDst().getDpid(),
+							  linkEvent.getDst().getNumber());
+				Switch sw = link.getSrcSwitch();
+				dstPort = link.getSrcPort();
 				FlowEntry fe = new FlowEntry(sw, srcPort, dstPort, srcMac, dstMac);
 				entries.add(fe);
-				srcPort = link.getDestinationPort();
+				srcPort = link.getDstPort();
 			}
 			if(lastDstPort != null) {
 				Switch sw = lastDstPort.getSwitch();

@@ -8,25 +8,59 @@ package net.onrc.onos.ofcontroller.networkgraph;
  *
  */
 public interface Link {
-	public Port getSourcePort();
-	public Port getDestinationPort();
-	public Switch getSourceSwitch();
-	public Switch getDestinationSwitch();
+    /**
+     * Get the source switch for the link.
+     *
+     * @return the source switch for the link.
+     */
+    public Switch getSrcSwitch();
 
-	public long getLastSeenTime();
+    /**
+     * Get the source port for the link.
+     *
+     * @return the source port for the link.
+     */
+    public Port getSrcPort();
 
-	public int getCost();
-	public Double getCapacity();
+    /**
+     * Get the destination switch for the link.
+     *
+     * @return the destination switch for the link.
+     */
+    public Switch getDstSwitch();
 
-	// Not sure if we want to expose these northbound
-	// Toshi: I think these are unnecessary because we can get them
-	// Toshi: like "this.getSourcePort().getSwitch()" etc.
-	@Deprecated
-	public Long getSourceSwitchDpid();
-	@Deprecated
-	public Long getSourcePortNumber();
-	@Deprecated
-	public Long getDestinationSwitchDpid();
-	@Deprecated
-	public Long getDestinationPortNumber();
+    /**
+     * Get the destination port for the link.
+     *
+     * @return the destination port for the link.
+     */
+    public Port getDstPort();
+
+    /**
+     * Get the last seen time for the link.
+     *
+     * TODO: Not implemented yet.
+     * TODO: what is the time definition?
+     *
+     * @return the last seen time for the link.
+     */
+    public long getLastSeenTime();
+
+    /**
+     * Get the link cost.
+     *
+     * TODO: What is the unit?
+     *
+     * @param return the link cost.
+     */
+    public int getCost();
+
+    /**
+     * Get the link capacity.
+     *
+     * TODO: What is the unit?
+     *
+     * @return the link capacity.
+     */
+    public Double getCapacity();
 }

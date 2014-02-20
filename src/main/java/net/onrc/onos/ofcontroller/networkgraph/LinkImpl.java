@@ -30,6 +30,26 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 		setToPorts();
 	}
 
+	@Override
+	public Switch getSrcSwitch() {
+		return srcPort.getSwitch();
+	}
+
+	@Override
+	public Port getSrcPort() {
+		return srcPort;
+	}
+
+	@Override
+	public Switch getDstSwitch() {
+		return dstPort.getSwitch();
+	}
+
+	@Override
+	public Port getDstPort() {
+		return dstPort;
+	}
+
 	protected void setToPorts() {
 		((PortImpl)srcPort).setOutgoingLink(this);
 		((PortImpl)dstPort).setIncomingLink(this);
@@ -38,26 +58,6 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 	protected void unsetFromPorts() {
 		((PortImpl)srcPort).setOutgoingLink(null);
 		((PortImpl)dstPort).setIncomingLink(null);
-	}
-
-	@Override
-	public Port getSourcePort() {
-		return srcPort;
-	}
-
-	@Override
-	public Port getDestinationPort() {
-		return dstPort;
-	}
-
-	@Override
-	public Switch getSourceSwitch() {
-		return srcPort.getSwitch();
-	}
-
-	@Override
-	public Switch getDestinationSwitch() {
-		return dstPort.getSwitch();
 	}
 
 	@Override
@@ -84,35 +84,11 @@ public class LinkImpl extends NetworkGraphObject implements Link {
 		this.capacity = capacity;
 	}
 
-	@Deprecated
-	@Override
-	public Long getSourceSwitchDpid() {
-		return srcPort.getSwitch().getDpid();
-	}
-
-	@Deprecated
-	@Override
-	public Long getSourcePortNumber() {
-		return srcPort.getNumber();
-	}
-
-	@Deprecated
-	@Override
-	public Long getDestinationSwitchDpid() {
-		return dstPort.getSwitch().getDpid();
-	}
-
-	@Deprecated
-	@Override
-	public Long getDestinationPortNumber() {
-		return dstPort.getNumber();
-	}
-
 	@Override
 	public String toString() {
 		return String.format("%s --(cap:%f Mbps)--> %s",
-				getSourcePort().toString(),
+				getSrcPort().toString(),
 				getCapacity(),
-				getDestinationPort().toString());
+				getDstPort().toString());
 	}
 }

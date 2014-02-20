@@ -77,7 +77,7 @@ public class MockNetworkGraph extends NetworkGraphImpl {
 
 	public void removeLink(Long srcDpid, Long srcPortNo, Long dstDpid, Long dstPortNo) {
 		DetachableLinkImpl link = (DetachableLinkImpl)getSwitch(srcDpid).getPort(srcPortNo).getOutgoingLink();
-		if (link.getDestinationSwitch().getDpid().equals(dstDpid) && link.getDestinationPort().getNumber().equals(dstPortNo)) {
+		if (link.getDstSwitch().getDpid().equals(dstDpid) && link.getDstPort().getNumber().equals(dstPortNo)) {
 			link.detachFromGraph();
 		}
 	}

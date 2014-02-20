@@ -417,10 +417,10 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	    }
 	    log.debug("Removing Link {} on Port {}", link, portEvent);
 	    LinkEvent linkEvent =
-		new LinkEvent(link.getSourceSwitchDpid(),
-			      link.getSourcePortNumber(),
-			      link.getDestinationSwitchDpid(),
-			      link.getDestinationPortNumber());
+		new LinkEvent(link.getSrcSwitch().getDpid(),
+			      link.getSrcPort().getNumber(),
+			      link.getDstSwitch().getDpid(),
+			      link.getDstPort().getNumber());
 	    // calling Discovery API to wipe from DB, etc.
 
 	    // Call internal remove Link, which will check
@@ -480,8 +480,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 	// XXX Check if we should reject or just accept these cases.
 	// it should be harmless to remove the Link on event from DB anyways
 	if (link == null ||
-	    !link.getDestinationPortNumber().equals(linkEvent.getDst().number)
-	    || !link.getDestinationSwitchDpid().equals(linkEvent.getDst().dpid)) {
+	    !link.getDstPort().getNumber().equals(linkEvent.getDst().number)
+	    || !link.getDstSwitch().getDpid().equals(linkEvent.getDst().dpid)) {
 	    log.warn("Dropping remove link event because link doesn't exist: {}", linkEvent);
 	    return false;
 	}
@@ -760,10 +760,10 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface,
 		continue;
 	    }
 	    log.debug("Removing Link {} on Port {}", link, portEvent);
-	    LinkEvent linkEvent = new LinkEvent(link.getSourceSwitchDpid(),
-						link.getSourcePortNumber(),
-						link.getDestinationSwitchDpid(),
-						link.getDestinationPortNumber());
+	    LinkEvent linkEvent = new LinkEvent(link.getSrcSwitch().getDpid(),
+						link.getSrcPort().getNumber(),
+						link.getDstSwitch().getDpid(),
+						link.getDstPort().getNumber());
 	    linksToRemove.add(linkEvent);
 	}
 	for (LinkEvent linkEvent : linksToRemove) {

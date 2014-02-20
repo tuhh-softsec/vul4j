@@ -15,7 +15,6 @@ import net.floodlightcontroller.util.MACAddress;
 public class DeviceImpl extends NetworkGraphObject implements Device {
 
     private final MACAddress macAddr;
-    // These should be ConcurrentCollecton if Graph is going to be
     protected LinkedList<Port> attachmentPoints;
     protected Set<InetAddress> ipAddresses;
 
@@ -84,5 +83,4 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     boolean removeIpAddress(InetAddress addr) {
 	return this.ipAddresses.remove(addr);
     }
-
 }

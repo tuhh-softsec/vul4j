@@ -15,12 +15,35 @@ import net.floodlightcontroller.util.MACAddress;
  *
  */
 public interface Device {
-	public MACAddress getMacAddress();
+    /**
+     * Get the device MAC address.
+     *
+     * @return the device MAC address.
+     */
+    public MACAddress getMacAddress();
 
-	public Collection<InetAddress> getIpAddress();
+    /**
+     * Get the device IP addresses.
+     *
+     * @return the device IP addresses.
+     */
+    public Collection<InetAddress> getIpAddress();
 
-	// Add requirement for Iteration order? Latest observed port first.
-	public Iterable<Port> getAttachmentPoints();
+    /**
+     * Get the device attachment points.
+     *
+     * Add requirement for Iteration order? Latest observed port first.
+     *
+     * @return the device attachment points.
+     */
+    public Iterable<Port> getAttachmentPoints();
 
-	public long getLastSeenTime();
+    /**
+     * Get the device last seen time.
+     *
+     * TODO: what is the time definition?
+     *
+     * @return the device last seen time.
+     */
+    public long getLastSeenTime();
 }

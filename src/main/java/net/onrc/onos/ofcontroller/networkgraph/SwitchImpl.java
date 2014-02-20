@@ -52,11 +52,11 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	public Iterable<Switch> getNeighbors() {
 		Set<Switch> neighbors = new HashSet<>();
 		for (Link link : getOutgoingLinks()) {
-		    neighbors.add(link.getDestinationSwitch());
+		    neighbors.add(link.getDstSwitch());
 		}
 		// XXX should incoming considered neighbor?
 		for (Link link : getIncomingLinks()) {
-		    neighbors.add(link.getSourceSwitch());
+		    neighbors.add(link.getSrcSwitch());
 		}
 		return neighbors;
 	}
@@ -64,7 +64,7 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 	@Override
 	public Link getLinkToNeighbor(Long neighborDpid) {
 		for (Link link : getOutgoingLinks()) {
-			if (link.getDestinationSwitch().getDpid().equals(neighborDpid) ) {
+			if (link.getDstSwitch().getDpid().equals(neighborDpid) ) {
 				return link;
 			}
 		}

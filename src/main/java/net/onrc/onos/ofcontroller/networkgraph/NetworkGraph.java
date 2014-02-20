@@ -14,7 +14,7 @@ public interface NetworkGraph {
      * Get the switch for a given switch DPID.
      *
      * @param dpid the switch dpid.
-     * @return the switch if found, otherwise, null.
+     * @return the switch if found, otherwise null.
      */
     public Switch getSwitch(Long dpid);
 
@@ -30,9 +30,31 @@ public interface NetworkGraph {
      *
      * @param dpid the switch DPID.
      * @param number the switch port number.
-     * @return the switch port if found, otherwise, null.
+     * @return the switch port if found, otherwise null.
      */
     public Port getPort(Long dpid, Long number);
+
+    /**
+     * Get the outgoing link for a switch and a port.
+     *
+     * @param dpid the switch DPID.
+     * @param number the switch port number.
+     * @return the outgoing link if found, otherwise null.
+     */
+    public Link getLink(Long dpid, Long number);
+
+    /**
+     * Get the outgoing link from a switch and a port to another switch and
+     * a port.
+     *
+     * @param srcDpid the source switch DPID.
+     * @param srcNumber the source switch port number.
+     * @param dstDpid the destination switch DPID.
+     * @param dstNumber the destination switch port number.
+     * @return the outgoing link if found, otherwise null.
+     */
+    public Link getLink(Long srcDpid, Long srcNumber, Long dstDpid,
+			Long dstNumber);
 
     /**
      * Get all links in the network.
@@ -42,28 +64,6 @@ public interface NetworkGraph {
      * @return all links in the network.
      */
     public Iterable<Link> getLinks();
-
-    /**
-     * Get all outgoing links for a switch.
-     *
-     * TODO: Not clear if this method is needed. Remove if not used.
-     * E.g, getSwitch(dpid).getOutgoingLinks() is equivalent.
-     *
-     * @param dpid the switch DPID.
-     * @return all outgoing links for a switch.
-     */
-    public Iterable<Link> getOutgoingLinksFromSwitch(Long dpid);
-
-    /**
-     * Get all incoming links for a switch.
-     *
-     * TODO: Not clear if this method is needed. Remove if not used.
-     * E.g, getSwitch(dpid).getIncomingLinks() is equivalent.
-     *
-     * @param dpid the switch DPID.
-     * @return all incoming links for a switch.
-     */
-    public Iterable<Link> getIncomingLinksFromSwitch(Long dpid);
 
     /**
      * Get the network devices for a given IP address.
@@ -87,10 +87,10 @@ public interface NetworkGraph {
      * {@link releaseLock()}. This method will block until a read lock is
      * available.
      */
-	public void acquireLock();
+    public void acquireLock();
 	
-	/**
-	 * Release the read lock on the topology.
-	 */
-	public void releaseLock();
+    /**
+     * Release the read lock on the topology.
+     */
+    public void releaseLock();
 }
