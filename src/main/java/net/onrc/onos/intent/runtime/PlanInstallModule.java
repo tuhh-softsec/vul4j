@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
@@ -29,6 +32,8 @@ public class PlanInstallModule implements IFloodlightModule {
     private PlanCalcRuntime planCalc;
     private PlanInstallRuntime planInstall;
     private EventListener eventListener;
+    private final static Logger log = LoggerFactory.getLogger(PlanInstallModule.class);
+
 
     private static final String PATH_INTENT_CHANNEL_NAME = "onos.pathintent";
     
@@ -64,12 +69,15 @@ public class PlanInstallModule implements IFloodlightModule {
 	}
 	
 	private void processIntents(IntentOperationList intents) {
+	    log.debug("Processing OperationList {}", intents);
 	    List<Set<FlowEntry>> plan = planCalc.computePlan(intents);
+	    log.debug("Plan: {}", plan);
 	    planInstall.installPlan(plan);
 	}
 	
 	@Override
 	public void entryAdded(IntentOperationList value) {
+	    log.debug("Added OperationList {}", value);
 	    intentQueue.add(value);
 	}
 
