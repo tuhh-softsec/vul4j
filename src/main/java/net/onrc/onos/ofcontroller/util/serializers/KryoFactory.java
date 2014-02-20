@@ -178,6 +178,7 @@ public class KryoFactory {
 	kryo.register(IntentOperationList.class);
 	kryo.register(IntentOperation.class);
 	kryo.register(PathIntent.class);
+	kryo.register(Intent.class);
 	kryo.register(ShortestPathIntent.class);
 	kryo.register(ConstrainedShortestPathIntent.class);
 	kryo.register(Intent.IntentState.class);

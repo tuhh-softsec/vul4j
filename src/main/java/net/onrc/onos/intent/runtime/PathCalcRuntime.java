@@ -16,11 +16,15 @@ import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class PathCalcRuntime implements IFloodlightService {
 	private NetworkGraph graph;
+	private final static Logger log = LoggerFactory.getLogger(PathCalcRuntime.class);
 	public PathCalcRuntime(NetworkGraph g) {
 		this.graph = g;
 	}
@@ -39,7 +43,7 @@ public class PathCalcRuntime implements IFloodlightService {
 			switch (intentOp.operator) {
 			case ADD:
 				if (!(intentOp.intent instanceof ShortestPathIntent)) {
-					// unsupported intent type.
+					log.error("unsupported intent type: {}", intentOp.intent.getClass().getName());
 					// TODO should push back the intent to caller
 					continue;
 				}
@@ -48,7 +52,9 @@ public class PathCalcRuntime implements IFloodlightService {
 				Switch srcSwitch = graph.getSwitch(spIntent.getSrcSwitchDpid());
 				Switch dstSwitch = graph.getSwitch(spIntent.getDstSwitchDpid());
 				if (srcSwitch == null || dstSwitch == null) {
-					// incomplete intent.
+					log.error("Switch not found: {}, {}",
+							spIntent.getSrcSwitchDpid(),
+							spIntent.getDstSwitchDpid());
 					// TODO should push back the intent to caller
 					continue;
 				}
@@ -68,7 +74,7 @@ public class PathCalcRuntime implements IFloodlightService {
 				}
 				Path path = tree.getPath(dstSwitch);
 				if (path == null) {
-					// path not found.
+					log.error("Path not found: {}", intentOp.intent.toString());
 					// TODO should push back the intent to caller
 					continue;
 				}
