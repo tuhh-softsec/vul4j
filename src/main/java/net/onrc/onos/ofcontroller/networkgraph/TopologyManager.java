@@ -68,6 +68,23 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	new HashMap<ByteBuffer, DeviceEvent>();
 
     //
+    // Local state for keeping track of locally discovered events so we can
+    // cleanup properly when a Switch or Port is removed.
+    //
+    // We keep all Port, Link and Device events per Switch DPID:
+    //  - If a switch goes down, we remove all corresponding Port, Link and
+    //    Device events.
+    //  - If a port on a switch goes down, we remove all corresponding Link
+    //    and Device events.
+    //
+    private Map<Long, Map<ByteBuffer, PortEvent>> discoveredAddedPortEvents =
+	new HashMap<>();
+    private Map<Long, Map<ByteBuffer, LinkEvent>> discoveredAddedLinkEvents =
+	new HashMap<>();
+    private Map<Long, Map<ByteBuffer, DeviceEvent>> discoveredAddedDeviceEvents =
+	new HashMap<>();
+
+    //
     // Local state for keeping track of the application event notifications
     //
     List<SwitchEvent> apiAddedSwitchEvents = new LinkedList<SwitchEvent>();
@@ -171,22 +188,14 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	 */
 	private void processEvents(Collection<EventEntry<TopologyEvent>> events) {
 	    // Local state for computing the final set of events
-	    Map<ByteBuffer, SwitchEvent> addedSwitchEvents =
-		new HashMap<ByteBuffer, SwitchEvent>();
-	    Map<ByteBuffer, SwitchEvent> removedSwitchEvents =
-		new HashMap<ByteBuffer, SwitchEvent>();
-	    Map<ByteBuffer, PortEvent> addedPortEvents =
-		new HashMap<ByteBuffer, PortEvent>();
-	    Map<ByteBuffer, PortEvent> removedPortEvents =
-		new HashMap<ByteBuffer, PortEvent>();
-	    Map<ByteBuffer, LinkEvent> addedLinkEvents =
-		new HashMap<ByteBuffer, LinkEvent>();
-	    Map<ByteBuffer, LinkEvent> removedLinkEvents =
-		new HashMap<ByteBuffer, LinkEvent>();
-	    Map<ByteBuffer, DeviceEvent> addedDeviceEvents =
-		new HashMap<ByteBuffer, DeviceEvent>();
-	    Map<ByteBuffer, DeviceEvent> removedDeviceEvents =
-		new HashMap<ByteBuffer, DeviceEvent>();
+	    Map<ByteBuffer, SwitchEvent> addedSwitchEvents = new HashMap<>();
+	    Map<ByteBuffer, SwitchEvent> removedSwitchEvents = new HashMap<>();
+	    Map<ByteBuffer, PortEvent> addedPortEvents = new HashMap<>();
+	    Map<ByteBuffer, PortEvent> removedPortEvents = new HashMap<>();
+	    Map<ByteBuffer, LinkEvent> addedLinkEvents = new HashMap<>();
+	    Map<ByteBuffer, LinkEvent> removedLinkEvents = new HashMap<>();
+	    Map<ByteBuffer, DeviceEvent> addedDeviceEvents = new HashMap<>();
+	    Map<ByteBuffer, DeviceEvent> removedDeviceEvents = new HashMap<>();
 
 	    //
 	    // Classify and suppress matching events
@@ -445,24 +454,80 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    TopologyEvent topologyEvent = new TopologyEvent(switchEvent);
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
 
+	    // Send out notification for each port
 	    for (PortEvent portEvent : portEvents) {
 		topologyEvent = new TopologyEvent(portEvent);
 		eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
 	    }
+
+	    //
+	    // Keep track of the added ports
+	    //
+	    // Get the old Port Events
+	    Map<ByteBuffer, PortEvent> oldPortEvents =
+		discoveredAddedPortEvents.get(switchEvent.getDpid());
+	    if (oldPortEvents == null)
+		oldPortEvents = new HashMap<>();
+
+	    // Store the new Port Events in the local cache
+	    Map<ByteBuffer, PortEvent> newPortEvents = new HashMap<>();
+	    for (PortEvent portEvent : portEvents) {
+		ByteBuffer id = ByteBuffer.wrap(portEvent.getID());
+		newPortEvents.put(id, portEvent);
+	    }
+	    discoveredAddedPortEvents.put(switchEvent.getDpid(),
+					  newPortEvents);
+
+	    //
+	    // Extract the removed ports
+	    //
+	    List<PortEvent> removedPortEvents = new LinkedList<>();
+	    for (Map.Entry<ByteBuffer, PortEvent> entry : oldPortEvents.entrySet()) {
+		ByteBuffer key = entry.getKey();
+		PortEvent portEvent = entry.getValue();
+		if (! newPortEvents.containsKey(key))
+		    removedPortEvents.add(portEvent);
+	    }
+
+	    // Cleanup old removed ports
+	    for (PortEvent portEvent : removedPortEvents)
+		removePortDiscoveryEvent(portEvent);
 	}
     }
 
     @Override
     public void removeSwitchDiscoveryEvent(SwitchEvent switchEvent) {
-	// TODO: Use a copy of the port events previously added for that switch
-	Collection<PortEvent> portEvents = new LinkedList<PortEvent>();
+	// Get the old Port Events
+	Map<ByteBuffer, PortEvent> oldPortEvents =
+	    discoveredAddedPortEvents.get(switchEvent.getDpid());
+	if (oldPortEvents == null)
+	    oldPortEvents = new HashMap<>();
 
-	if (datastore.deactivateSwitch(switchEvent, portEvents)) {
+	if (datastore.deactivateSwitch(switchEvent, oldPortEvents.values())) {
 	    // Send out notification
 	    eventChannel.removeEntry(switchEvent.getID());
 
-	    for (PortEvent portEvent : portEvents) {
+	    // Send out notification for each port
+	    for (PortEvent portEvent : oldPortEvents.values())
 		eventChannel.removeEntry(portEvent.getID());
+	    discoveredAddedPortEvents.remove(switchEvent.getDpid());
+
+	    // Cleanup for each link
+	    Map<ByteBuffer, LinkEvent> oldLinkEvents =
+		discoveredAddedLinkEvents.get(switchEvent.getDpid());
+	    if (oldLinkEvents != null) {
+		for (LinkEvent linkEvent : oldLinkEvents.values())
+		    removeLinkDiscoveryEvent(linkEvent);
+		discoveredAddedLinkEvents.remove(switchEvent.getDpid());
+	    }
+
+	    // Cleanup for each device
+	    Map<ByteBuffer, DeviceEvent> oldDeviceEvents =
+		discoveredAddedDeviceEvents.get(switchEvent.getDpid());
+	    if (oldDeviceEvents != null) {
+		for (DeviceEvent deviceEvent : oldDeviceEvents.values())
+		    removeDeviceDiscoveryEvent(deviceEvent);
+		discoveredAddedDeviceEvents.remove(switchEvent.getDpid());
 	    }
 	}
     }
@@ -473,6 +538,17 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    // Send out notification
 	    TopologyEvent topologyEvent = new TopologyEvent(portEvent);
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
+
+	    // Store the new Port Event in the local cache
+	    Map<ByteBuffer, PortEvent> oldPortEvents =
+		discoveredAddedPortEvents.get(portEvent.getDpid());
+	    if (oldPortEvents == null) {
+		oldPortEvents = new HashMap<>();
+		discoveredAddedPortEvents.put(portEvent.getDpid(),
+					      oldPortEvents);
+	    }
+	    ByteBuffer id = ByteBuffer.wrap(portEvent.getID());
+	    oldPortEvents.put(id, portEvent);
 	}
     }
 
@@ -481,6 +557,49 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	if (datastore.deactivatePort(portEvent)) {
 	    // Send out notification
 	    eventChannel.removeEntry(portEvent.getID());
+
+	    // Cleanup the Port Event from the local cache
+	    Map<ByteBuffer, PortEvent> oldPortEvents =
+		discoveredAddedPortEvents.get(portEvent.getDpid());
+	    if (oldPortEvents != null) {
+		ByteBuffer id = ByteBuffer.wrap(portEvent.getID());
+		oldPortEvents.remove(id);
+	    }
+
+	    // Cleanup for the incoming link
+	    Map<ByteBuffer, LinkEvent> oldLinkEvents =
+		discoveredAddedLinkEvents.get(portEvent.getDpid());
+	    if (oldLinkEvents != null) {
+		for (LinkEvent linkEvent : oldLinkEvents.values()) {
+		    if (linkEvent.getDst().equals(portEvent.id)) {
+			removeLinkDiscoveryEvent(linkEvent);
+			//
+			// NOTE: oldLinkEvents was modified by
+			// removeLinkDiscoveryEvent() and cannot be iterated
+			// anymore.
+			//
+			break;
+		    }
+		}
+	    }
+
+	    // Cleanup for the connected devices
+	    // TODO: The implementation below is probably wrong
+	    List<DeviceEvent> removedDeviceEvents = new LinkedList<>();
+	    Map<ByteBuffer, DeviceEvent> oldDeviceEvents =
+		discoveredAddedDeviceEvents.get(portEvent.getDpid());
+	    if (oldDeviceEvents != null) {
+		for (DeviceEvent deviceEvent : oldDeviceEvents.values()) {
+		    for (SwitchPort swp : deviceEvent.getAttachmentPoints()) {
+			if (swp.equals(portEvent.id)) {
+			    removedDeviceEvents.add(deviceEvent);
+			    break;
+			}
+		    }
+		}
+		for (DeviceEvent deviceEvent : removedDeviceEvents)
+		    removeDeviceDiscoveryEvent(deviceEvent);
+	    }
 	}
     }
 
@@ -490,6 +609,17 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    // Send out notification
 	    TopologyEvent topologyEvent = new TopologyEvent(linkEvent);
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
+
+	    // Store the new Link Event in the local cache
+	    Map<ByteBuffer, LinkEvent> oldLinkEvents =
+		discoveredAddedLinkEvents.get(linkEvent.getDst().getDpid());
+	    if (oldLinkEvents == null) {
+		oldLinkEvents = new HashMap<>();
+		discoveredAddedLinkEvents.put(linkEvent.getDst().getDpid(),
+					      oldLinkEvents);
+	    }
+	    ByteBuffer id = ByteBuffer.wrap(linkEvent.getID());
+	    oldLinkEvents.put(id, linkEvent);
 	}
     }
 
@@ -498,6 +628,14 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	if (datastore.removeLink(linkEvent)) {
 	    // Send out notification
 	    eventChannel.removeEntry(linkEvent.getID());
+
+	    // Cleanup the Link Event from the local cache
+	    Map<ByteBuffer, LinkEvent> oldLinkEvents =
+		discoveredAddedLinkEvents.get(linkEvent.getDst().getDpid());
+	    if (oldLinkEvents != null) {
+		ByteBuffer id = ByteBuffer.wrap(linkEvent.getID());
+		oldLinkEvents.remove(id);
+	    }
 	}
     }
 
@@ -507,6 +645,20 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    // Send out notification
 	    TopologyEvent topologyEvent = new TopologyEvent(deviceEvent);
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
+
+	    // Store the new Device Event in the local cache
+	    // TODO: The implementation below is probably wrong
+	    for (SwitchPort swp : deviceEvent.getAttachmentPoints()) {
+		Map<ByteBuffer, DeviceEvent> oldDeviceEvents =
+		    discoveredAddedDeviceEvents.get(swp.getDpid());
+		if (oldDeviceEvents == null) {
+		    oldDeviceEvents = new HashMap<>();
+		    discoveredAddedDeviceEvents.put(swp.getDpid(),
+						    oldDeviceEvents);
+		}
+		ByteBuffer id = ByteBuffer.wrap(deviceEvent.getID());
+		oldDeviceEvents.put(id, deviceEvent);
+	    }
 	}
     }
 
@@ -515,6 +667,17 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	if (datastore.removeDevice(deviceEvent)) {
 	    // Send out notification
 	    eventChannel.removeEntry(deviceEvent.getID());
+
+	    // Cleanup the Device Event from the local cache
+	    // TODO: The implementation below is probably wrong
+	    ByteBuffer id = ByteBuffer.wrap(deviceEvent.getID());
+	    for (SwitchPort swp : deviceEvent.getAttachmentPoints()) {
+		Map<ByteBuffer, DeviceEvent> oldDeviceEvents =
+		    discoveredAddedDeviceEvents.get(swp.getDpid());
+		if (oldDeviceEvents != null) {
+		    oldDeviceEvents.remove(id);
+		}
+	    }
 	}
     }
 

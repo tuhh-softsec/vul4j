@@ -72,7 +72,7 @@ public class PortEvent {
         }
     }
 
-    private final SwitchPort id;
+    protected final SwitchPort id;
     // TODO Add Hardware Address
     // TODO Add Description
 
