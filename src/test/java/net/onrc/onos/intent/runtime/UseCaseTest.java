@@ -1,5 +1,6 @@
 package net.onrc.onos.intent.runtime;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +20,10 @@ import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.intent.persist.PersistIntent;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphListener;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
+import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
+import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
+import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
@@ -184,6 +188,15 @@ public class UseCaseTest {
 
 	@Test
 	public void rerouteShortestPaths() throws FloodlightModuleException {
+		List<SwitchEvent> addedSwitchEvents = new LinkedList<>();
+		List<SwitchEvent> removedSwitchEvents = new LinkedList<>();
+		List<PortEvent> addedPortEvents = new LinkedList<>();
+		List<PortEvent> removedPortEvents = new LinkedList<>();
+		List<LinkEvent> addedLinkEvents = new LinkedList<>();
+		List<LinkEvent> removedLinkEvents = new LinkedList<>();
+		List<DeviceEvent> addedDeviceEvents = new LinkedList<>();
+		List<DeviceEvent> removedDeviceEvents = new LinkedList<>();
+
 		// create shortest path intents
 		IntentOperationList opList = new IntentOperationList();
 		opList.add(Operator.ADD, new ShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 4L));
@@ -207,11 +220,29 @@ public class UseCaseTest {
 		// link down
 		((MockNetworkGraph)g).removeLink(1L, 2L, 9L, 1L); // This link is used by the intent "1"
 		LinkEvent linkEvent = new LinkEvent(1L, 2L, 9L, 1L);
-		runtime1.removeLinkEvent(linkEvent);
+		removedLinkEvents.clear();
+		removedLinkEvents.add(linkEvent);
+		runtime1.networkGraphEvents(addedSwitchEvents,
+					    removedSwitchEvents,
+					    addedPortEvents,
+					    removedPortEvents,
+					    addedLinkEvents,
+					    removedLinkEvents,
+					    addedDeviceEvents,
+					    removedDeviceEvents);
+
 		((MockNetworkGraph)g).removeLink(9L, 1L, 1L, 2L);
 		linkEvent = new LinkEvent(9L, 1L, 1L, 2L);
-		runtime1.removeLinkEvent(linkEvent);
-
+		removedLinkEvents.clear();
+		removedLinkEvents.add(linkEvent);
+		runtime1.networkGraphEvents(addedSwitchEvents,
+					    removedSwitchEvents,
+					    addedPortEvents,
+					    removedPortEvents,
+					    addedLinkEvents,
+					    removedLinkEvents,
+					    addedDeviceEvents,
+					    removedDeviceEvents);
 		System.out.println("Link goes down.");
 
 		// show results step2

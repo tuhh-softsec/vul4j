@@ -67,6 +67,18 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
     private Map<ByteBuffer, DeviceEvent> reorderedAddedDeviceEvents =
 	new HashMap<ByteBuffer, DeviceEvent>();
 
+    //
+    // Local state for keeping track of the application event notifications
+    //
+    List<SwitchEvent> apiAddedSwitchEvents = new LinkedList<SwitchEvent>();
+    List<SwitchEvent> apiRemovedSwitchEvents = new LinkedList<SwitchEvent>();
+    List<PortEvent> apiAddedPortEvents = new LinkedList<PortEvent>();
+    List<PortEvent> apiRemovedPortEvents = new LinkedList<PortEvent>();
+    List<LinkEvent> apiAddedLinkEvents = new LinkedList<LinkEvent>();
+    List<LinkEvent> apiRemovedLinkEvents = new LinkedList<LinkEvent>();
+    List<DeviceEvent> apiAddedDeviceEvents = new LinkedList<DeviceEvent>();
+    List<DeviceEvent> apiRemovedDeviceEvents = new LinkedList<DeviceEvent>();
+
     /**
      * Constructor.
      *
@@ -275,37 +287,15 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 		removeSwitch(switchEvent);
 
 	    //
-	    // Try to apply the reordered events.
+	    // Apply reordered events
 	    //
-	    // NOTE: For simplicity we try to apply all events of a particular
-	    // type if any "parent" type event was processed:
-	    //  - Apply reordered Port Events if Switches were added
-	    //  - Apply reordered Link and Device Events if Switches or Ports
-	    //    were added
+	    applyReorderedEvents(! addedSwitchEvents.isEmpty(),
+				 ! addedPortEvents.isEmpty());
+
 	    //
-	    if (! (addedSwitchEvents.isEmpty() && addedPortEvents.isEmpty())) {
-		Map<ByteBuffer, PortEvent> portEvents = reorderedAddedPortEvents;
-		Map<ByteBuffer, LinkEvent> linkEvents = reorderedAddedLinkEvents;
-		Map<ByteBuffer, DeviceEvent> deviceEvents = reorderedAddedDeviceEvents;
-		reorderedAddedPortEvents = new HashMap<>();
-		reorderedAddedLinkEvents = new HashMap<>();
-		reorderedAddedDeviceEvents = new HashMap<>();
-		//
-		// Apply reordered Port Events if Switches were added
-		//
-		if (! addedSwitchEvents.isEmpty()) {
-		    for (PortEvent portEvent : portEvents.values())
-			addPort(portEvent);
-		}
-		//
-		// Apply reordered Link and Device Events if Switches or Ports
-		// were added.
-		//
-		for (LinkEvent linkEvent : linkEvents.values())
-		    addLink(linkEvent);
-		for (DeviceEvent deviceEvent : deviceEvents.values())
-		    addDevice(deviceEvent);
-	    }
+	    // Dispatch the Topology Notification Events to the applications
+	    //
+	    dispatchNetworkGraphEvents();
 	}
 
 	/**
@@ -357,6 +347,90 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 						   byte[].class,
 						   TopologyEvent.class);
 	eventHandler.start();
+    }
+
+    /**
+     * Dispatch Network Graph Events to the listeners.
+     */
+    private void dispatchNetworkGraphEvents() {
+	if (apiAddedSwitchEvents.isEmpty() &&
+	    apiRemovedSwitchEvents.isEmpty() &&
+	    apiAddedPortEvents.isEmpty() &&
+	    apiRemovedPortEvents.isEmpty() &&
+	    apiAddedLinkEvents.isEmpty() &&
+	    apiRemovedLinkEvents.isEmpty() &&
+	    apiAddedDeviceEvents.isEmpty() &&
+	    apiRemovedDeviceEvents.isEmpty()) {
+	    return;		// No events to dispatch
+	}
+
+	// Deliver the events
+	for (INetworkGraphListener listener : this.networkGraphListeners) {
+	    // TODO: Should copy before handing them over to listener?
+	    listener.networkGraphEvents(apiAddedSwitchEvents,
+					apiRemovedSwitchEvents,
+					apiAddedPortEvents,
+					apiRemovedPortEvents,
+					apiAddedLinkEvents,
+					apiRemovedLinkEvents,
+					apiAddedDeviceEvents,
+					apiRemovedDeviceEvents);
+	}
+
+	//
+	// Cleanup
+	//
+	apiAddedSwitchEvents.clear();
+	apiRemovedSwitchEvents.clear();
+	apiAddedPortEvents.clear();
+	apiRemovedPortEvents.clear();
+	apiAddedLinkEvents.clear();
+	apiRemovedLinkEvents.clear();
+	apiAddedDeviceEvents.clear();
+	apiRemovedDeviceEvents.clear();
+    }
+
+    /**
+     * Apply reordered events.
+     *
+     * @param hasAddedSwitchEvents true if there were Added Switch Events.
+     * @param hasAddedPortEvents true if there were Added Port Events.
+     */
+    private void applyReorderedEvents(boolean hasAddedSwitchEvents,
+				      boolean hasAddedPortEvents) {
+	if (! (hasAddedSwitchEvents || hasAddedPortEvents))
+	    return;		// Nothing to do
+
+	//
+	// Try to apply the reordered events.
+	//
+	// NOTE: For simplicity we try to apply all events of a particular
+	// type if any "parent" type event was processed:
+	//  - Apply reordered Port Events if Switches were added
+	//  - Apply reordered Link and Device Events if Switches or Ports
+	//    were added
+	//
+	Map<ByteBuffer, PortEvent> portEvents = reorderedAddedPortEvents;
+	Map<ByteBuffer, LinkEvent> linkEvents = reorderedAddedLinkEvents;
+	Map<ByteBuffer, DeviceEvent> deviceEvents = reorderedAddedDeviceEvents;
+	reorderedAddedPortEvents = new HashMap<>();
+	reorderedAddedLinkEvents = new HashMap<>();
+	reorderedAddedDeviceEvents = new HashMap<>();
+	//
+	// Apply reordered Port Events if Switches were added
+	//
+	if (hasAddedSwitchEvents) {
+	    for (PortEvent portEvent : portEvents.values())
+		addPort(portEvent);
+	}
+	//
+	// Apply reordered Link and Device Events if Switches or Ports
+	// were added.
+	//
+	for (LinkEvent linkEvent : linkEvents.values())
+	    addLink(linkEvent);
+	for (DeviceEvent deviceEvent : deviceEvents.values())
+	    addDevice(deviceEvent);
     }
 
     /* ******************************
@@ -447,21 +521,22 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
     /* ************************************************
      * Internal methods to maintain the network graph
      * ************************************************/
-    private void addSwitch(SwitchEvent swEvent) {
-	Switch sw = networkGraph.getSwitch(swEvent.getDpid());
+    private void addSwitch(SwitchEvent switchEvent) {
+	Switch sw = networkGraph.getSwitch(switchEvent.getDpid());
 	if (sw == null) {
-	    sw = new SwitchImpl(networkGraph, swEvent.getDpid());
+	    sw = new SwitchImpl(networkGraph, switchEvent.getDpid());
 	    networkGraph.putSwitch(sw);
 	} else {
 	    // TODO: Update the switch attributes
 	    // TODO: Nothing to do for now
 	}
+	apiAddedSwitchEvents.add(switchEvent);
     }
 
-    private void removeSwitch(SwitchEvent swEvent) {
-	Switch sw = networkGraph.getSwitch(swEvent.getDpid());
+    private void removeSwitch(SwitchEvent switchEvent) {
+	Switch sw = networkGraph.getSwitch(switchEvent.getDpid());
 	if (sw == null) {
-	    log.warn("Switch {} already removed, ignoring", swEvent);
+	    log.warn("Switch {} already removed, ignoring", switchEvent);
 	    return;
 	}
 
@@ -471,7 +546,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	ArrayList<PortEvent> portsToRemove = new ArrayList<>();
 	for (Port port : sw.getPorts()) {
 	    log.warn("Port {} on Switch {} should be removed prior to removing Switch. Removing Port now.",
-		     port, swEvent);
+		     port, switchEvent);
 	    PortEvent portEvent = new PortEvent(port.getDpid(),
 						port.getNumber());
 	    portsToRemove.add(portEvent);
@@ -479,7 +554,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	for (PortEvent portEvent : portsToRemove)
 	    removePort(portEvent);
 
-	networkGraph.removeSwitch(swEvent.getDpid());
+	networkGraph.removeSwitch(switchEvent.getDpid());
+	apiRemovedSwitchEvents.add(switchEvent);
     }
 
     private void addPort(PortEvent portEvent) {
@@ -499,6 +575,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	} else {
 	    // TODO: Update the port attributes
 	}
+	apiAddedPortEvents.add(portEvent);
     }
 
     private void removePort(PortEvent portEvent) {
@@ -553,6 +630,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	// Remove the Port from the Switch
 	SwitchImpl switchImpl = getSwitchImpl(sw);
 	switchImpl.removePort(port);
+
+	apiRemovedPortEvents.add(portEvent);
     }
 
     private void addLink(LinkEvent linkEvent) {
@@ -600,6 +679,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	} else {
 	    // TODO: Update the link attributes
 	}
+
+	apiAddedLinkEvents.add(linkEvent);
     }
 
     private void removeLink(LinkEvent linkEvent) {
@@ -633,6 +714,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
 	getPortImpl(dstPort).setIncomingLink(null);
 	getPortImpl(srcPort).setOutgoingLink(null);
+
+	apiRemovedLinkEvents.add(linkEvent);
     }
 
     // TODO: Device-related work is incomplete
@@ -675,8 +758,10 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
 
 	// Update the device in the Network Graph
-	if (attachmentFound)
+	if (attachmentFound) {
 	    networkGraph.putDevice(device);
+	    apiAddedDeviceEvents.add(deviceEvent);
+	}
     }
 
     private void removeDevice(DeviceEvent deviceEvent) {
@@ -701,20 +786,22 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    portImpl.removeDevice(device);
 	    deviceImpl.removeAttachmentPoint(port);
 	}
+
 	networkGraph.removeDevice(device);
+	apiRemovedDeviceEvents.add(deviceEvent);
     }
 
     /**
      *
-     * @param swEvent
+     * @param switchEvent
      * @return true if ready to accept event.
      */
-    private boolean prepareForAddSwitchEvent(SwitchEvent swEvent) {
+    private boolean prepareForAddSwitchEvent(SwitchEvent switchEvent) {
 	// No show stopping precondition
 	return true;
     }
 
-    private boolean prepareForRemoveSwitchEvent(SwitchEvent swEvent) {
+    private boolean prepareForRemoveSwitchEvent(SwitchEvent switchEvent) {
 	// No show stopping precondition
 	return true;
     }
@@ -886,62 +973,6 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	// No show stopping precondition?
 	// Prep: none
 	return true;
-    }
-
-    private void dispatchPutSwitchEvent(SwitchEvent switchEvent) {
-	for (INetworkGraphListener listener : this.networkGraphListeners) {
-	    // TODO Should copy before handing them over to listener
-	    listener.putSwitchEvent(switchEvent);
-	}
-    }
-
-    private void dispatchRemoveSwitchEvent(SwitchEvent switchEvent) {
-	for (INetworkGraphListener listener : this.networkGraphListeners) {
-	    // TODO Should copy before handing them over to listener
-	    listener.removeSwitchEvent(switchEvent);
-	}
-    }
-
-    private void dispatchPutPortEvent(PortEvent portEvent) {
-	for (INetworkGraphListener listener : this.networkGraphListeners) {
-	    // TODO Should copy before handing them over to listener
-	    listener.putPortEvent(portEvent);
-	}
-    }
-
-    private void dispatchRemovePortEvent(PortEvent portEvent) {
-	for (INetworkGraphListener listener : this.networkGraphListeners) {
-	    // TODO Should copy before handing them over to listener
-	    listener.removePortEvent(portEvent);
-	}
-    }
-
-    private void dispatchPutLinkEvent(LinkEvent linkEvent) {
-	for (INetworkGraphListener listener : this.networkGraphListeners) {
-	    // TODO Should copy before handing them over to listener
-	    listener.putLinkEvent(linkEvent);
-	}
-    }
-
-    private void dispatchRemoveLinkEvent(LinkEvent linkEvent) {
-	for (INetworkGraphListener listener : this.networkGraphListeners) {
-	    // TODO Should copy before handing them over to listener
-	    listener.removeLinkEvent(linkEvent);
-	}
-    }
-
-    private void dispatchPutDeviceEvent(DeviceEvent deviceEvent) {
-	for (INetworkGraphListener listener : this.networkGraphListeners) {
-	    // TODO Should copy before handing them over to listener
-	    listener.putDeviceEvent(deviceEvent);;
-	}
-    }
-
-    private void dispatchRemoveDeviceEvent(DeviceEvent deviceEvent) {
-	for (INetworkGraphListener listener : this.networkGraphListeners) {
-	    // TODO Should copy before handing them over to listener
-	    listener.removeDeviceEvent(deviceEvent);
-	}
     }
 
     private SwitchImpl getSwitchImpl(Switch sw) {

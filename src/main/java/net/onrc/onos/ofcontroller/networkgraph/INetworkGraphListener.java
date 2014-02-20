@@ -1,22 +1,30 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.util.Collection;
+
 /**
  * Interface which needs to be implemented to receive Topology events from
- * NetworkGraph
- *
- * TODO Should these interface hand over Event object or Object in NetworkGraph.
+ * the NetworkGraph.
  */
 public interface INetworkGraphListener {
-    public void putSwitchEvent(SwitchEvent switchEvent);
-    public void removeSwitchEvent(SwitchEvent switchEvent);
-
-    public void putPortEvent(PortEvent portEvent);
-    public void removePortEvent(PortEvent portEvent);
-
-    public void putLinkEvent(LinkEvent linkEvent);
-    public void removeLinkEvent(LinkEvent linkEvent);
-
-    public void putDeviceEvent(DeviceEvent deviceEvent);
-    public void removeDeviceEvent(DeviceEvent deviceEvent);
-
+    /**
+     * Network Graph events.
+     *
+     * @param addedSwitchEvents the Added Switch Events.
+     * @param removedSwitchEvents the Removed Switch Events.
+     * @param addedPortEvents the Added Port Events.
+     * @param removedPortEvents the Removed Port Events.
+     * @param addedLinkEvents the Added Link Events.
+     * @param removedLinkEvents the Removed Link Events.
+     * @param addedDeviceEvents the Added Device Events.
+     * @param removedDeviceEvents the Removed Device Events.
+     */
+    public void networkGraphEvents(Collection<SwitchEvent> addedSwitchEvents,
+				   Collection<SwitchEvent> removedSwitchEvents,
+				   Collection<PortEvent> addedPortEvents,
+				   Collection<PortEvent> removedPortEvents,
+				   Collection<LinkEvent> addedLinkEvents,
+				   Collection<LinkEvent> removedLinkEvents,
+				   Collection<DeviceEvent> addedDeviceEvents,
+				   Collection<DeviceEvent> removedDeviceEvents);
 }

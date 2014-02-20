@@ -152,42 +152,18 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	}
 
 	@Override
-	public void putSwitchEvent(SwitchEvent switchEvent) {
-		// do nothing
-	}
-
-	@Override
-	public void removeSwitchEvent(SwitchEvent switchEvent) {
-		// do nothing
-	}
-
-	@Override
-	public void putPortEvent(PortEvent portEvent) {
-		// do nothing
-	}
-
-	@Override
-	public void removePortEvent(PortEvent portEvent) {
-		// do nothing
-	}
-
-	@Override
-	public void putLinkEvent(LinkEvent linkEvent) {
-		// do nothing
-	}
-
-	@Override
-	public void removeLinkEvent(LinkEvent linkEvent) {
+	public void networkGraphEvents(
+				Collection<SwitchEvent> addedSwitchEvents,
+				Collection<SwitchEvent> removedSwitchEvents,
+				Collection<PortEvent> addedPortEvents,
+				Collection<PortEvent> removedPortEvents,
+				Collection<LinkEvent> addedLinkEvents,
+				Collection<LinkEvent> removedLinkEvents,
+				Collection<DeviceEvent> addedDeviceEvents,
+				Collection<DeviceEvent> removedDeviceEvents) {
+	    // TODO: The implementation below is incomplete
+	    for (LinkEvent linkEvent : removedLinkEvents) {
 		reroutePaths(linkEvent);
-	}
-
-	@Override
-	public void putDeviceEvent(DeviceEvent deviceEvent) {
-		// do nothing
-	}
-
-	@Override
-	public void removeDeviceEvent(DeviceEvent deviceEvent) {
-		// do nothing
+	    }
 	}
 }
