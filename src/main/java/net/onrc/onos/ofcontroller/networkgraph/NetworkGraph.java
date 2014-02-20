@@ -84,13 +84,13 @@ public interface NetworkGraph {
     /**
      * Acquire a read lock on the entire topology. The topology will not 
      * change while readers have the lock. Must be released using 
-     * {@link releaseLock()}. This method will block until a read lock is
+     * {@link releaseReadLock()}. This method will block until a read lock is
      * available.
      */
-    public void acquireLock();
+    public void acquireReadLock();
 	
     /**
      * Release the read lock on the topology.
      */
-    public void releaseLock();
+    public void releaseReadLock();
 }

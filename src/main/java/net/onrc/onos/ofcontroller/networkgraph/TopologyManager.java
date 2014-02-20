@@ -269,6 +269,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    }
 
 	    //
+	    // Lock the Network Graph while it is modified
+	    //
+	    networkGraph.acquireWriteLock();
+
+	    //
 	    // Apply the classified events.
 	    //
 	    // Apply the "add" events in the proper order:
@@ -300,6 +305,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    //
 	    applyReorderedEvents(! addedSwitchEvents.isEmpty(),
 				 ! addedPortEvents.isEmpty());
+
+	    //
+	    // Network Graph modifications completed: Release the lock
+	    //
+	    networkGraph.releaseWriteLock();
 
 	    //
 	    // Dispatch the Topology Notification Events to the applications

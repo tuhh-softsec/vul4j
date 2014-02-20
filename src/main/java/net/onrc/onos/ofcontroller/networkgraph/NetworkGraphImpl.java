@@ -142,12 +142,20 @@ public class NetworkGraphImpl implements NetworkGraph {
 	}
 
 	@Override
-	public void acquireLock() {
+	public void acquireReadLock() {
 		readLock.lock();
 	}
 
 	@Override
-	public void releaseLock() {
+	public void releaseReadLock() {
 		readLock.unlock();
+	}
+
+	protected void acquireWriteLock() {
+		writeLock.lock();
+	}
+
+	protected void releaseWriteLock() {
+		writeLock.unlock();
 	}
 }
