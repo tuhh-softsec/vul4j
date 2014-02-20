@@ -56,22 +56,15 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
     private final IControllerRegistryService registryService;
     private CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners;
 
-    // Local state for computing the final set of events
-    private Map<ByteBuffer, SwitchEvent> addedSwitchEvents =
-	new HashMap<ByteBuffer, SwitchEvent>();
-    private Map<ByteBuffer, SwitchEvent> removedSwitchEvents =
-	new HashMap<ByteBuffer, SwitchEvent>();
-    private Map<ByteBuffer, PortEvent> addedPortEvents =
+    //
+    // Local state for keeping track of reordered events.
+    // NOTE: Switch Events are not affected by the event reordering.
+    //
+    private Map<ByteBuffer, PortEvent> reorderedAddedPortEvents =
 	new HashMap<ByteBuffer, PortEvent>();
-    private Map<ByteBuffer, PortEvent> removedPortEvents =
-	new HashMap<ByteBuffer, PortEvent>();
-    private Map<ByteBuffer, LinkEvent> addedLinkEvents =
+    private Map<ByteBuffer, LinkEvent> reorderedAddedLinkEvents =
 	new HashMap<ByteBuffer, LinkEvent>();
-    private Map<ByteBuffer, LinkEvent> removedLinkEvents =
-	new HashMap<ByteBuffer, LinkEvent>();
-    private Map<ByteBuffer, DeviceEvent> addedDeviceEvents =
-	new HashMap<ByteBuffer, DeviceEvent>();
-    private Map<ByteBuffer, DeviceEvent> removedDeviceEvents =
+    private Map<ByteBuffer, DeviceEvent> reorderedAddedDeviceEvents =
 	new HashMap<ByteBuffer, DeviceEvent>();
 
     /**
@@ -165,6 +158,23 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	 * @param events the events to process.
 	 */
 	private void processEvents(Collection<EventEntry<TopologyEvent>> events) {
+	    // Local state for computing the final set of events
+	    Map<ByteBuffer, SwitchEvent> addedSwitchEvents =
+		new HashMap<ByteBuffer, SwitchEvent>();
+	    Map<ByteBuffer, SwitchEvent> removedSwitchEvents =
+		new HashMap<ByteBuffer, SwitchEvent>();
+	    Map<ByteBuffer, PortEvent> addedPortEvents =
+		new HashMap<ByteBuffer, PortEvent>();
+	    Map<ByteBuffer, PortEvent> removedPortEvents =
+		new HashMap<ByteBuffer, PortEvent>();
+	    Map<ByteBuffer, LinkEvent> addedLinkEvents =
+		new HashMap<ByteBuffer, LinkEvent>();
+	    Map<ByteBuffer, LinkEvent> removedLinkEvents =
+		new HashMap<ByteBuffer, LinkEvent>();
+	    Map<ByteBuffer, DeviceEvent> addedDeviceEvents =
+		new HashMap<ByteBuffer, DeviceEvent>();
+	    Map<ByteBuffer, DeviceEvent> removedDeviceEvents =
+		new HashMap<ByteBuffer, DeviceEvent>();
 
 	    //
 	    // Classify and suppress matching events
@@ -186,21 +196,25 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 			ByteBuffer id = ByteBuffer.wrap(switchEvent.getID());
 			addedSwitchEvents.put(id, switchEvent);
 			removedSwitchEvents.remove(id);
+			// Switch Events are not affected by event reordering
 		    }
 		    if (portEvent != null) {
 			ByteBuffer id = ByteBuffer.wrap(portEvent.getID());
 			addedPortEvents.put(id, portEvent);
 			removedPortEvents.remove(id);
+			reorderedAddedPortEvents.remove(id);
 		    }
 		    if (linkEvent != null) {
 			ByteBuffer id = ByteBuffer.wrap(linkEvent.getID());
 			addedLinkEvents.put(id, linkEvent);
 			removedLinkEvents.remove(id);
+			reorderedAddedLinkEvents.remove(id);
 		    }
 		    if (deviceEvent != null) {
 			ByteBuffer id = ByteBuffer.wrap(deviceEvent.getID());
 			addedDeviceEvents.put(id, deviceEvent);
 			removedDeviceEvents.remove(id);
+			reorderedAddedDeviceEvents.remove(id);
 		    }
 		    break;
 		case ENTRY_REMOVE:
@@ -209,21 +223,25 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 			ByteBuffer id = ByteBuffer.wrap(switchEvent.getID());
 			addedSwitchEvents.remove(id);
 			removedSwitchEvents.put(id, switchEvent);
+			// Switch Events are not affected by event reordering
 		    }
 		    if (portEvent != null) {
 			ByteBuffer id = ByteBuffer.wrap(portEvent.getID());
 			addedPortEvents.remove(id);
 			removedPortEvents.put(id, portEvent);
+			reorderedAddedPortEvents.remove(id);
 		    }
 		    if (linkEvent != null) {
 			ByteBuffer id = ByteBuffer.wrap(linkEvent.getID());
 			addedLinkEvents.remove(id);
 			removedLinkEvents.put(id, linkEvent);
+			reorderedAddedLinkEvents.remove(id);
 		    }
 		    if (deviceEvent != null) {
 			ByteBuffer id = ByteBuffer.wrap(deviceEvent.getID());
 			addedDeviceEvents.remove(id);
 			removedDeviceEvents.put(id, deviceEvent);
+			reorderedAddedDeviceEvents.remove(id);
 		    }
 		    break;
 		}
@@ -256,18 +274,38 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    for (SwitchEvent switchEvent : removedSwitchEvents.values())
 		removeSwitch(switchEvent);
 
-
 	    //
-	    // Cleanup
+	    // Try to apply the reordered events.
 	    //
-	    addedSwitchEvents.clear();
-	    removedSwitchEvents.clear();
-	    addedPortEvents.clear();
-	    removedPortEvents.clear();
-	    addedLinkEvents.clear();
-	    removedLinkEvents.clear();
-	    addedDeviceEvents.clear();
-	    removedDeviceEvents.clear();
+	    // NOTE: For simplicity we try to apply all events of a particular
+	    // type if any "parent" type event was processed:
+	    //  - Apply reordered Port Events if Switches were added
+	    //  - Apply reordered Link and Device Events if Switches or Ports
+	    //    were added
+	    //
+	    if (! (addedSwitchEvents.isEmpty() && addedPortEvents.isEmpty())) {
+		Map<ByteBuffer, PortEvent> portEvents = reorderedAddedPortEvents;
+		Map<ByteBuffer, LinkEvent> linkEvents = reorderedAddedLinkEvents;
+		Map<ByteBuffer, DeviceEvent> deviceEvents = reorderedAddedDeviceEvents;
+		reorderedAddedPortEvents = new HashMap<>();
+		reorderedAddedLinkEvents = new HashMap<>();
+		reorderedAddedDeviceEvents = new HashMap<>();
+		//
+		// Apply reordered Port Events if Switches were added
+		//
+		if (! addedSwitchEvents.isEmpty()) {
+		    for (PortEvent portEvent : portEvents.values())
+			addPort(portEvent);
+		}
+		//
+		// Apply reordered Link and Device Events if Switches or Ports
+		// were added.
+		//
+		for (LinkEvent linkEvent : linkEvents.values())
+		    addLink(linkEvent);
+		for (DeviceEvent deviceEvent : deviceEvents.values())
+		    addDevice(deviceEvent);
+	    }
 	}
 
 	/**
@@ -447,8 +485,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
     private void addPort(PortEvent portEvent) {
 	Switch sw = networkGraph.getSwitch(portEvent.getDpid());
 	if (sw == null) {
-	    // Reordered event
-	    // TODO: Delay the event in local cache
+	    // Reordered event: delay the event in local cache
+	    ByteBuffer id = ByteBuffer.wrap(portEvent.getID());
+	    reorderedAddedPortEvents.put(id, portEvent);
 	    return;
 	}
 	SwitchImpl switchImpl = getSwitchImpl(sw);
@@ -519,17 +558,12 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
     private void addLink(LinkEvent linkEvent) {
 	Port srcPort = networkGraph.getPort(linkEvent.getSrc().dpid,
 					    linkEvent.getSrc().number);
-	if (srcPort == null) {
-	    // Reordered event
-	    // TODO: Delay the event in local cache
-	    return;
-	}
-
 	Port dstPort = networkGraph.getPort(linkEvent.getDst().dpid,
 					    linkEvent.getDst().number);
-	if (dstPort == null) {
-	    // Reordered event
-	    // TODO: Delay the event in local cache
+	if ((srcPort == null) || (dstPort == null)) {
+	    // Reordered event: delay the event in local cache
+	    ByteBuffer id = ByteBuffer.wrap(linkEvent.getID());
+	    reorderedAddedLinkEvents.put(id, linkEvent);
 	    return;
 	}
 
@@ -619,8 +653,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    // Attached Ports must exist
 	    Port port = networkGraph.getPort(swp.dpid, swp.number);
 	    if (port == null) {
-		// Reordered event
-		// TODO: Delay the event in local cache
+		// Reordered event: delay the event in local cache
+		ByteBuffer id = ByteBuffer.wrap(deviceEvent.getID());
+		reorderedAddedDeviceEvents.put(id, deviceEvent);
 		continue;
 	    }
 	    // Attached Ports must not have Link
@@ -640,7 +675,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
 
 	// Update the device in the Network Graph
-	if (attachmentFound) 
+	if (attachmentFound)
 	    networkGraph.putDevice(device);
     }
 
