@@ -86,6 +86,9 @@ public class OutboundXMLSec {
 
         OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(outboundSecurityContext, documentContext);
 
+        SecurePart signEntireRequestPart = null;
+        SecurePart encryptEntireRequestPart = null;
+        
         for (XMLSecurityConstants.Action action : securityProperties.getActions()) {
             if (XMLSecurityConstants.SIGNATURE.equals(action)) {
                 XMLSignatureOutputProcessor signatureOutputProcessor = new XMLSignatureOutputProcessor();
@@ -95,18 +98,21 @@ public class OutboundXMLSec {
                 List<SecurePart> signatureParts = securityProperties.getSignatureSecureParts();
                 for (int j = 0; j < signatureParts.size(); j++) {
                     SecurePart securePart = signatureParts.get(j);
-                    if (securePart.getIdToSign() == null) {
+                    if (securePart.getIdToSign() == null && securePart.getName() != null) {
                         outputProcessorChain.getSecurityContext().putAsMap(
                                 XMLSecurityConstants.SIGNATURE_PARTS,
                                 securePart.getName(),
                                 securePart
                         );
-                    } else {
+                    } else if (securePart.getIdToSign() != null) {
                         outputProcessorChain.getSecurityContext().putAsMap(
                                 XMLSecurityConstants.SIGNATURE_PARTS,
                                 securePart.getIdToSign(),
                                 securePart
                         );
+                    } else if (securePart.isSecureEntireRequest()) {
+                        // Special functionality to sign the first element in the request
+                        signEntireRequestPart = securePart;
                     }
                 }
             } else if (XMLSecurityConstants.ENCRYPT.equals(action)) {
@@ -117,18 +123,21 @@ public class OutboundXMLSec {
                 List<SecurePart> encryptionParts = securityProperties.getEncryptionSecureParts();
                 for (int j = 0; j < encryptionParts.size(); j++) {
                     SecurePart securePart = encryptionParts.get(j);
-                    if (securePart.getIdToSign() == null) {
+                    if (securePart.getIdToSign() == null && securePart.getName() != null) {
                         outputProcessorChain.getSecurityContext().putAsMap(
                                 XMLSecurityConstants.ENCRYPTION_PARTS,
                                 securePart.getName(),
                                 securePart
                         );
-                    } else {
+                    } else if (securePart.getIdToSign() != null) {
                         outputProcessorChain.getSecurityContext().putAsMap(
                                 XMLSecurityConstants.ENCRYPTION_PARTS,
                                 securePart.getIdToSign(),
                                 securePart
                         );
+                    } else if (securePart.isSecureEntireRequest()) {
+                        // Special functionality to encrypt the first element in the request
+                        encryptEntireRequestPart = securePart;
                     }
                 }
             }
@@ -145,7 +154,11 @@ public class OutboundXMLSec {
             throw new IllegalArgumentException(output + " is not supported as output");
         }
 
-        return new XMLSecurityStreamWriter(outputProcessorChain);
+        XMLSecurityStreamWriter streamWriter = new XMLSecurityStreamWriter(outputProcessorChain);
+        streamWriter.setSignEntireRequestPart(signEntireRequestPart);
+        streamWriter.setEncryptEntireRequestPart(encryptEntireRequestPart);
+        
+        return streamWriter;
     }
 
     private void initializeOutputProcessor(OutputProcessorChainImpl outputProcessorChain, OutputProcessor outputProcessor, XMLSecurityConstants.Action action) throws XMLSecurityException {

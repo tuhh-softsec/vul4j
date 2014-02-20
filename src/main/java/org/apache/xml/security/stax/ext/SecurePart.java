@@ -67,6 +67,7 @@ public class SecurePart {
     private String[] transforms;
     private String digestMethod;
     private boolean required = true;
+    private boolean secureEntireRequest;
 
     public SecurePart(QName name, Modifier modifier) {
         this(name, false, modifier);
@@ -192,5 +193,13 @@ public class SecurePart {
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    public boolean isSecureEntireRequest() {
+        return secureEntireRequest;
+    }
+
+    public void setSecureEntireRequest(boolean secureEntireRequest) {
+        this.secureEntireRequest = secureEntireRequest;
     }
 }
