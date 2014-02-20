@@ -18,13 +18,13 @@ import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.intent.persist.PersistIntent;
+import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphListener;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
-import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
+import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.easymock.EasyMock;
@@ -46,8 +46,8 @@ public class UseCaseTest {
 	private FloodlightModuleContext modContext;
 	private IDatagridService datagridService;
 	private INetworkGraphService networkGraphService;
-        private IControllerRegistryService controllerRegistryService;
-        private PersistIntent persistIntent;
+	private IControllerRegistryService controllerRegistryService;
+	private PersistIntent persistIntent;
 	@SuppressWarnings("rawtypes")
 	private IEventChannel eventChannel;
 
@@ -60,24 +60,24 @@ public class UseCaseTest {
 
 		datagridService = EasyMock.createMock(IDatagridService.class);
 		networkGraphService = EasyMock.createMock(INetworkGraphService.class);
-                controllerRegistryService = EasyMock.createMock(IControllerRegistryService.class);
+		controllerRegistryService = EasyMock.createMock(IControllerRegistryService.class);
 		modContext = EasyMock.createMock(FloodlightModuleContext.class);
 		eventChannel = EasyMock.createMock(IEventChannel.class);
-                persistIntent = PowerMock.createMock(PersistIntent.class);
-                
-                PowerMock.expectNew(PersistIntent.class,
-                        EasyMock.anyObject(IControllerRegistryService.class),
-                        EasyMock.anyObject(INetworkGraphService.class)).andReturn(persistIntent);
+		persistIntent = PowerMock.createMock(PersistIntent.class);
+
+		PowerMock.expectNew(PersistIntent.class,
+				EasyMock.anyObject(IControllerRegistryService.class),
+				EasyMock.anyObject(INetworkGraphService.class)).andReturn(persistIntent);
 
 		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IDatagridService.class)))
 		.andReturn(datagridService).once();
 		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(INetworkGraphService.class)))
 		.andReturn(networkGraphService).once();
-                EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IControllerRegistryService.class)))
-                        .andReturn(controllerRegistryService).once();
-                EasyMock.expect(persistIntent.getKey()).andReturn(1L).anyTimes();
-                EasyMock.expect(persistIntent.persistIfLeader(EasyMock.eq(1L), 
-                        EasyMock.anyObject(IntentOperationList.class))).andReturn(true).anyTimes();
+		EasyMock.expect(modContext.getServiceImpl(EasyMock.eq(IControllerRegistryService.class)))
+		.andReturn(controllerRegistryService).once();
+		EasyMock.expect(persistIntent.getKey()).andReturn(1L).anyTimes();
+		EasyMock.expect(persistIntent.persistIfLeader(EasyMock.eq(1L),
+				EasyMock.anyObject(IntentOperationList.class))).andReturn(true).anyTimes();
 
 		EasyMock.expect(networkGraphService.getNetworkGraph()).andReturn(g).anyTimes();
 		networkGraphService.registerNetworkGraphListener(EasyMock.anyObject(INetworkGraphListener.class));
@@ -89,8 +89,8 @@ public class UseCaseTest {
 		EasyMock.replay(datagridService);
 		EasyMock.replay(networkGraphService);
 		EasyMock.replay(modContext);
-                EasyMock.replay(controllerRegistryService);
-                PowerMock.replay(persistIntent, PersistIntent.class);
+		EasyMock.replay(controllerRegistryService);
+		PowerMock.replay(persistIntent, PersistIntent.class);
 	}
 
 	@After
@@ -98,8 +98,8 @@ public class UseCaseTest {
 		EasyMock.verify(datagridService);
 		EasyMock.verify(networkGraphService);
 		EasyMock.verify(modContext);
-                EasyMock.verify(controllerRegistryService);
-                PowerMock.verify(persistIntent, PersistIntent.class);
+		EasyMock.verify(controllerRegistryService);
+		PowerMock.verify(persistIntent, PersistIntent.class);
 	}
 
 	private void showResult(PathIntentMap intents) {
@@ -222,27 +222,29 @@ public class UseCaseTest {
 		LinkEvent linkEvent = new LinkEvent(1L, 2L, 9L, 1L);
 		removedLinkEvents.clear();
 		removedLinkEvents.add(linkEvent);
-		runtime1.networkGraphEvents(addedSwitchEvents,
-					    removedSwitchEvents,
-					    addedPortEvents,
-					    removedPortEvents,
-					    addedLinkEvents,
-					    removedLinkEvents,
-					    addedDeviceEvents,
-					    removedDeviceEvents);
+		runtime1.networkGraphEvents(
+				addedSwitchEvents,
+				removedSwitchEvents,
+				addedPortEvents,
+				removedPortEvents,
+				addedLinkEvents,
+				removedLinkEvents,
+				addedDeviceEvents,
+				removedDeviceEvents);
 
 		((MockNetworkGraph)g).removeLink(9L, 1L, 1L, 2L);
 		linkEvent = new LinkEvent(9L, 1L, 1L, 2L);
 		removedLinkEvents.clear();
 		removedLinkEvents.add(linkEvent);
-		runtime1.networkGraphEvents(addedSwitchEvents,
-					    removedSwitchEvents,
-					    addedPortEvents,
-					    removedPortEvents,
-					    addedLinkEvents,
-					    removedLinkEvents,
-					    addedDeviceEvents,
-					    removedDeviceEvents);
+		runtime1.networkGraphEvents(
+				addedSwitchEvents,
+				removedSwitchEvents,
+				addedPortEvents,
+				removedPortEvents,
+				addedLinkEvents,
+				removedLinkEvents,
+				addedDeviceEvents,
+				removedDeviceEvents);
 		System.out.println("Link goes down.");
 
 		// show results step2

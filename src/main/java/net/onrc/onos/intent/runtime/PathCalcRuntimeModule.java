@@ -3,6 +3,7 @@ package net.onrc.onos.intent.runtime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -38,23 +39,40 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	private INetworkGraphService networkGraphService;
 	private IntentMap highLevelIntents;
 	private PathIntentMap pathIntents;
-        private IControllerRegistryService controllerRegistry;
-        private PersistIntent persistIntent;
+	private IControllerRegistryService controllerRegistry;
+	private PersistIntent persistIntent;
 
 	private IEventChannel<Long, IntentOperationList> eventChannel;
 	private static final String EVENT_CHANNEL_NAME = "onos.pathintent";
 
-	private void reroutePaths(LinkEvent linkEvent) {
-		Collection<PathIntent> oldPaths = pathIntents.getIntentsByLink(linkEvent);
-		if (oldPaths == null) return;
+	// ================================================================================
+	// private methods
+	// ================================================================================
+
+	private void reroutePaths(Collection<LinkEvent> removedLinkEvents) {
+		HashSet<PathIntent> oldPaths = new HashSet<>();
+		for (LinkEvent linkEvent : removedLinkEvents) {
+			Collection<PathIntent> intents = pathIntents.getIntentsByLink(linkEvent);
+			if (intents == null)
+				continue;
+			oldPaths.addAll(intents);
+		}
+
+		if (oldPaths.isEmpty())
+			return;
 		IntentOperationList reroutingOperation = new IntentOperationList();
-		for (PathIntent pathIntent: oldPaths) {
-			// TODO use Operator.UPDATE instead of REMOVE and ADD in order to optimize
+		for (PathIntent pathIntent : oldPaths) {
+			// TODO use Operator.UPDATE instead of REMOVE and ADD in order to
+			// optimize
 			reroutingOperation.add(Operator.REMOVE, new Intent(pathIntent.getParentIntent().getId()));
 			reroutingOperation.add(Operator.ADD, pathIntent.getParentIntent());
 		}
 		executeIntentOperations(reroutingOperation);
 	}
+
+	// ================================================================================
+	// IFloodlightModule implementations
+	// ================================================================================
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
@@ -82,7 +100,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	public void init(FloodlightModuleContext context) throws FloodlightModuleException {
 		datagridService = context.getServiceImpl(IDatagridService.class);
 		networkGraphService = context.getServiceImpl(INetworkGraphService.class);
-                controllerRegistry = context.getServiceImpl(IControllerRegistryService.class);
+		controllerRegistry = context.getServiceImpl(IControllerRegistryService.class);
 	}
 
 	@Override
@@ -90,14 +108,15 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		highLevelIntents = new IntentMap();
 		runtime = new PathCalcRuntime(networkGraphService.getNetworkGraph());
 		pathIntents = new PathIntentMap();
-		eventChannel = datagridService.createChannel(
-				EVENT_CHANNEL_NAME,
-				Long.class,
-				IntentOperationList.class);
+		eventChannel = datagridService.createChannel(EVENT_CHANNEL_NAME, Long.class, IntentOperationList.class);
 		networkGraphService.registerNetworkGraphListener(this);
-                persistIntent = new PersistIntent(controllerRegistry, networkGraphService);
+		persistIntent = new PersistIntent(controllerRegistry, networkGraphService);
 
 	}
+
+	// ================================================================================
+	// IPathCalcRuntimeService implementations
+	// ================================================================================
 
 	@Override
 	public IntentOperationList executeIntentOperations(IntentOperationList list) {
@@ -106,7 +125,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 		// prepare high-level intents' state changes
 		HashMap<String, IntentState> states = new HashMap<>();
-		for (IntentOperation op: list) {
+		for (IntentOperation op : list) {
 			String id = op.intent.getId();
 			states.put(id, IntentState.INST_REQ);
 		}
@@ -129,7 +148,8 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		}
 		highLevelIntents.changeStates(states);
 
-		// update the map of low-level intents and publish the low-level operations
+		// update the map of low-level intents and publish the low-level
+		// operations
 		pathIntents.executeOperations(pathIntentOperations);
 		eventChannel.addEntry(key, pathIntentOperations);
 		return pathIntentOperations;
@@ -151,19 +171,21 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		pathIntents.purge();
 	}
 
+	// ================================================================================
+	// INetworkGraphListener implementations
+	// ================================================================================
+
 	@Override
-	public void networkGraphEvents(
-				Collection<SwitchEvent> addedSwitchEvents,
-				Collection<SwitchEvent> removedSwitchEvents,
-				Collection<PortEvent> addedPortEvents,
-				Collection<PortEvent> removedPortEvents,
-				Collection<LinkEvent> addedLinkEvents,
-				Collection<LinkEvent> removedLinkEvents,
-				Collection<DeviceEvent> addedDeviceEvents,
-				Collection<DeviceEvent> removedDeviceEvents) {
-	    // TODO: The implementation below is incomplete
-	    for (LinkEvent linkEvent : removedLinkEvents) {
-		reroutePaths(linkEvent);
-	    }
+	public void networkGraphEvents(Collection<SwitchEvent> addedSwitchEvents,
+			Collection<SwitchEvent> removedSwitchEvents,
+			Collection<PortEvent> addedPortEvents,
+			Collection<PortEvent> removedPortEvents,
+			Collection<LinkEvent> addedLinkEvents,
+			Collection<LinkEvent> removedLinkEvents,
+			Collection<DeviceEvent> addedDeviceEvents,
+			Collection<DeviceEvent> removedDeviceEvents) {
+		// TODO need optimization.
+		// This reroutes only if when some links are removed for now.
+		reroutePaths(removedLinkEvents);
 	}
 }
