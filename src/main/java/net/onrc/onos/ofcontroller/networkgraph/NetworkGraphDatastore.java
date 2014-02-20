@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.networkgraph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCObject.WriteOp;
@@ -36,9 +37,11 @@ public class NetworkGraphDatastore {
 	 * Add a switch to the database.
 	 *
 	 * @param sw the switch to add.
+	 * @param portEvents the corresponding switch ports to add.
 	 * @return true on success, otherwise false.
 	 */
-	public boolean addSwitch(SwitchEvent sw) {
+	public boolean addSwitch(SwitchEvent sw,
+				 Collection<PortEvent> portEvents) {
 		log.debug("Adding switch {}", sw);
 		ArrayList<WriteOp> groupOp = new ArrayList<>();
 
@@ -50,7 +53,7 @@ public class NetworkGraphDatastore {
 		// to assure that DPID is unique cluster-wide, etc.
 		groupOp.add(WriteOp.ForceCreate(rcSwitch));
 
-		for (PortEvent portEvent : sw.getPorts()) {
+		for (PortEvent portEvent : portEvents) {
 			RCPort rcPort = new RCPort(sw.getDpid(), portEvent.getNumber());
 			rcPort.setStatus(RCPort.STATUS.ACTIVE);
 
@@ -75,9 +78,11 @@ public class NetworkGraphDatastore {
 	 * Update a switch as inactive in the database.
 	 *
 	 * @param sw the switch to update.
+	 * @param portEvents the corresponding switch ports to update.
 	 * @return true on success, otherwise false.
 	 */
-	public boolean deactivateSwitch(SwitchEvent sw) {
+	public boolean deactivateSwitch(SwitchEvent sw,
+					Collection<PortEvent> portEvents) {
 		log.debug("Deactivating switch {}", sw);
 		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
 
@@ -86,7 +91,7 @@ public class NetworkGraphDatastore {
 
 		groupOp.add(WriteOp.ForceCreate(rcSwitch));
 
-		for (PortEvent portEvent : sw.getPorts()) {
+		for (PortEvent portEvent : portEvents) {
 			RCPort rcPort = new RCPort(sw.getDpid(), (long)portEvent.getNumber());
 			rcPort.setStatus(RCPort.STATUS.INACTIVE);
 
@@ -94,7 +99,7 @@ public class NetworkGraphDatastore {
 		}
 
 		boolean failed = RCObject.multiWrite(groupOp);
-		
+
 		return !failed;
 	}
 

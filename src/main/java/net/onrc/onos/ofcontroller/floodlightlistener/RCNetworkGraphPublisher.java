@@ -218,9 +218,7 @@ public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
 		for (OFPhysicalPort port : sw.getPorts()) {
 			portEvents.add(new PortEvent(sw.getId(), (long)port.getPortNumber()));
 		}
-		switchEvent.setPorts(portEvents);
-		
-		networkGraphDiscoveryInterface.putSwitchDiscoveryEvent(switchEvent);
+		networkGraphDiscoveryInterface.putSwitchDiscoveryEvent(switchEvent, portEvents);
 
 		/*
 		// TODO publish ADD_SWITCH event here
