@@ -41,6 +41,8 @@ import com.netflix.curator.x.discovery.ServiceCache;
 import com.netflix.curator.x.discovery.ServiceDiscovery;
 import com.netflix.curator.x.discovery.ServiceDiscoveryBuilder;
 import com.netflix.curator.x.discovery.ServiceInstance;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * A registry service that uses Zookeeper. All data is stored in Zookeeper,
@@ -78,6 +80,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	//Zookeeper performance-related configuration
 	protected static final int sessionTimeout = 5000;
 	protected static final int connectionTimeout = 7000;
+        private volatile IdBlock idBlock = null;
 	
 
 	protected class SwitchLeaderListener implements LeaderLatchListener{
@@ -385,27 +388,31 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		return data;
 	}
 	
+        public IdBlock allocateUniqueIdBlock(long range) {
+            try {
+                AtomicValue<Long> result = null;
+                do {
+                    result = distributedIdCounter.add(range);
+                } while (result == null || !result.succeeded());
+
+                return new IdBlock(result.preValue(), result.postValue() - 1, range);
+            } catch (Exception e) {
+                log.error("Error allocating ID block");
+            }
+            return null;
+        }
+        
 	/**
 	 * Returns a block of IDs which are unique and unused.
 	 * Range of IDs is fixed size and is assigned incrementally as this method called.
 	 * Since the range of IDs is managed by Zookeeper in distributed way, this method may block when
 	 * requests come up simultaneously.
 	 */
+        @Override
 	public IdBlock allocateUniqueIdBlock(){
-		try {
-			AtomicValue<Long> result = null;
-			do {
-				result = distributedIdCounter.add(ID_BLOCK_SIZE);
-			} while (result == null || !result.succeeded());
-			
-			return new IdBlock(result.preValue(), result.postValue() - 1, ID_BLOCK_SIZE);
-		} catch (Exception e) {
-			log.error("Error allocating ID block");
-		} 
-		
-		return null;
+            return allocateUniqueIdBlock(ID_BLOCK_SIZE);
 	}
-	
+            
 	/*
 	 * IFloodlightModule
 	 */

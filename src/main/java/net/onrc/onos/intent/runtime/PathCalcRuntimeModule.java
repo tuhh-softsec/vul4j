@@ -23,6 +23,8 @@ import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
+import net.onrc.onos.intent.persist.PersistIntent;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)
@@ -33,8 +35,10 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	private INetworkGraphService networkGraphService;
 	private IntentMap highLevelIntents;
 	private PathIntentMap pathIntents;
+        private IControllerRegistryService controllerRegistry;
+        private PersistIntent persistIntent;
 
-	private IEventChannel<String, IntentOperationList> eventChannel;
+	private IEventChannel<Long, IntentOperationList> eventChannel;
 	private static final String EVENT_CHANNEL_NAME = "onos.pathintent";
 
 	private void reroutePaths(LinkEvent linkEvent) {
@@ -75,6 +79,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	public void init(FloodlightModuleContext context) throws FloodlightModuleException {
 		datagridService = context.getServiceImpl(IDatagridService.class);
 		networkGraphService = context.getServiceImpl(INetworkGraphService.class);
+                controllerRegistry = context.getServiceImpl(IControllerRegistryService.class);
 	}
 
 	@Override
@@ -84,19 +89,22 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		pathIntents = new PathIntentMap();
 		eventChannel = datagridService.createChannel(
 				EVENT_CHANNEL_NAME,
-				String.class,
+				Long.class,
 				IntentOperationList.class);
 		networkGraphService.registerNetworkGraphListener(this);
+                persistIntent = new PersistIntent(controllerRegistry, networkGraphService);
+                
 	}
 
 	@Override
 	public IntentOperationList executeIntentOperations(IntentOperationList list) {
 		highLevelIntents.executeOperations(list);
 		IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, pathIntents);
-		String key = "..."; // TODO generate key
+		long key = persistIntent.getKey();
 		System.out.println(pathIntentOperations);
 		pathIntents.executeOperations(pathIntentOperations);
 		eventChannel.addEntry(key, pathIntentOperations);
+                persistIntent.persistIfLeader(key, pathIntentOperations);
 		return pathIntentOperations;
 	}
 

@@ -5,17 +5,16 @@
 package net.onrc.onos.datagrid.web;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentMap;
-//import net.onrc.onos.intent.Intent.IntentState;
-import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
-import net.onrc.onos.registry.controller.IdBlock;
+import net.onrc.onos.intent.Intent;
+import net.onrc.onos.intent.runtime.IPathCalcRuntimeService;
+import net.onrc.onos.intent.IntentOperationList;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -23,10 +22,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import org.codehaus.jackson.map.ObjectMapper;
 import net.floodlightcontroller.util.MACAddress;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -40,9 +36,6 @@ import org.slf4j.LoggerFactory;
  */
 public class IntentResource extends ServerResource {
     private final static Logger log = LoggerFactory.getLogger(IntentResource.class);
-    private final String sep = ":";
-    private IdBlock idBlock = null;
-    private long nextIdBlock = 0;
 
     private class IntentStatus {
         String intentId;
@@ -80,6 +73,13 @@ public class IntentResource extends ServerResource {
 	    log.debug("FlowIntentResource ONOS Datagrid Service not found");
 	    return "";
 	}
+        IPathCalcRuntimeService pathRuntime = (IPathCalcRuntimeService)getContext()
+                .getAttributes().get(IPathCalcRuntimeService.class.getCanonicalName());
+        if (pathRuntime == null) {
+            log.debug("Failed to get path calc runtime");
+            System.out.println("Failed to get path calc runtime");
+            return "";
+        }
         String reply = "";
 	ObjectMapper mapper = new ObjectMapper();
 	JsonNode jNode = null;
@@ -94,20 +94,35 @@ public class IntentResource extends ServerResource {
 	}
 
 	if (jNode != null) {
-	    Kryo kryo = new Kryo();
-	    reply = parseJsonNode(kryo, jNode.getElements(), datagridService);
+	    reply = parseJsonNode(jNode.getElements(), pathRuntime);
 	}
         return reply;
     }
 
     @Get("json")
-    public String retrieve() {
-        return "123";
+    public String retrieve() throws IOException {
+        IPathCalcRuntimeService pathRuntime = (IPathCalcRuntimeService)getContext().
+                getAttributes().get(IPathCalcRuntimeService.class.getCanonicalName());
+        ObjectMapper mapper = new ObjectMapper();
+        String restStr = "";
+        ArrayNode arrayNode = mapper.createArrayNode();
+        IntentMap intentMap = pathRuntime.getHighLevelIntents();
+        Collection<Intent> intents = intentMap.getAllIntents();
+        if (!intents.isEmpty()) {
+            for (Intent intent : intents) {
+                ObjectNode node = mapper.createObjectNode();
+                node.put("intent_id", intent.getId());
+                node.put("status", intent.getState().toString());
+                arrayNode.add(node);
+                restStr = mapper.writeValueAsString(arrayNode);
+            }
+        }
+        return restStr;
     }
     
-    private String parseJsonNode(Kryo kryo, Iterator<JsonNode> nodes,
-	    IDatagridService datagridService) throws IOException {
-        LinkedList<IntentOperation> operations = new LinkedList<>();
+    private String parseJsonNode(Iterator<JsonNode> nodes,
+	    IPathCalcRuntimeService pathRuntime) throws IOException {
+        IntentOperationList operations = new IntentOperationList();
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode arrayNode = mapper.createArrayNode();
 	while (nodes.hasNext()) {
@@ -123,18 +138,14 @@ public class IntentResource extends ServerResource {
 		}
                 String status = processIntent(fields, operations);
                 appendIntentStatus(status, (String)fields.get("intent_id"), mapper, arrayNode);
-		// datagridService.registerIntent(Long.toString(uuid),
-		// sb.toString().getBytes());
 	    }
 	}
-        IntentMap intents = new IntentMap();
-//        intents.executeOperations(operations); // TODO use PathCalcRuntimeModule
+        pathRuntime.executeIntentOperations(operations);
         return mapper.writeValueAsString(arrayNode);
     }
 
     private void appendIntentStatus(String status, final String applnIntentId, 
             ObjectMapper mapper, ArrayNode arrayNode) throws IOException {
-        System.out.println("status " + status);
         String intentId = applnIntentId.split(":")[1];
         ObjectNode node = mapper.createObjectNode();
         node.put("intent_id", intentId);
@@ -142,7 +153,7 @@ public class IntentResource extends ServerResource {
         arrayNode.add(node);
     }
     
-    private String processIntent(Map<String, Object> fields, LinkedList<IntentOperation> operations) {
+    private String processIntent(Map<String, Object> fields, IntentOperationList operations) {
         String intentType = (String)fields.get("intent_type");
         String intentOp = (String)fields.get("intent_op");
         String status = null;
@@ -160,7 +171,6 @@ public class IntentResource extends ServerResource {
                     (long) fields.get("dstPort"),
                     MACAddress.valueOf((String) fields.get("dstMac")).toLong());
             operations.add(new IntentOperation(operation, spi));
-            System.out.println("intent operation " + operation.toString());
             status = (spi.getState()).toString();
         } else {
             ConstrainedShortestPathIntent cspi = new ConstrainedShortestPathIntent((String) fields.get("intent_id"),
@@ -187,50 +197,5 @@ public class IntentResource extends ServerResource {
         } else if ((node.isLong())) {
             fields.put(fieldName, node.getLongValue());
         }
-    }
-    
-    @Deprecated
-    private long setPathIntentId() {
-	long uuid = 0;
-	if (idBlock == null || nextIdBlock + 1 == idBlock.getSize()) {
-	    IControllerRegistryService controllerRegistry = getControllerRegistry();
-	    if (controllerRegistry != null) {
-		idBlock = controllerRegistry.allocateUniqueIdBlock();
-		nextIdBlock = idBlock.getStart();
-		System.out.println("start block " + nextIdBlock + " end block "
-			+ idBlock.getEnd() + " size " + idBlock.getSize());
-	    }
-	}
-	if (idBlock != null) {
-	    uuid = nextIdBlock;
-	    nextIdBlock++;
-	}
-	return uuid;
-    }
-
-    @Deprecated
-    private void setIntentType(final String intentType, StringBuilder sb) {
-	String canonicalName = null;
-	if (intentType.equals("shortest-path")) {
-	    canonicalName = ShortestPathIntent.class.getCanonicalName();
-	    sb.append(ShortestPathIntent.class.getCanonicalName());
-	} else if (intentType.equals("constrained-shortest-path")) {
-	    canonicalName = ShortestPathIntent.class.getCanonicalName();
-	}
-	sb.append(canonicalName);
-	sb.append(sep);
-    }
-
-    private IControllerRegistryService getControllerRegistry() {
-	return (IControllerRegistryService) getContext().getAttributes().get(
-		IControllerRegistryService.class.getCanonicalName());
-    }
-
-    @Deprecated
-    private byte[] toBytes(Kryo kryo, Object value) {
-	Output output = new Output(1024);
-        kryo.writeObject(output, value);
-        output.close();
-        return output.toBytes();
     }
 }

@@ -116,6 +116,15 @@ public interface IControllerRegistryService extends IFloodlightService {
 	 */
 	public Collection<Long> getSwitchesControlledByController(String controllerId);
 	
+        /**
+         * Get 
+         * @return 
+         */
 	public IdBlock allocateUniqueIdBlock();
+        
+        /**
+         * Get next unique id and retrieve a new range of ids if needed.
+         */
+        public IdBlock allocateUniqueIdBlock(long range);
 	
 }

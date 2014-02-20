@@ -57,14 +57,6 @@ parser = OptionParser.new do |opts|
 end
 parser.parse!
 
-def rand_mac
-  mac = `openssl rand -hex 6`
-  mac.scan(/(..)/).join(":")
-end
-
-def rand_switch
-  switch = `openssl rand -hex 5`.chomp
-end
 
 class Intent
   attr_reader :switches, :ports, :intent_id
@@ -132,7 +124,7 @@ puts intents.size
 
   def post intents
     json_data = intents.to_json
-    response = RestClient.post "http://#{@server}:#{@port}/wm/onos/datagrid/#{intent_op}/intent/json", json_data, :content_type => :json, :accept => :json
+    response = RestClient.post "http://#{@server}:#{@port}/wm/onos/datagrid/#{intent_op}/intents/json", json_data, :content_type => :json, :accept => :json
     puts response
   end
 
@@ -181,10 +173,6 @@ puts intent.inspect
       json_intents << intent
 puts
     end
-    #sha256 = Digest::SHA256.new
-    #sha256.update intent_hash.to_s
-    #puts sha256.hexdigest
-    #puts "intent hash = #{intent_hash}"
     json_intents
   end
 

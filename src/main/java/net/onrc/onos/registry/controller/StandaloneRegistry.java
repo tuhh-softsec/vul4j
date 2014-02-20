@@ -172,4 +172,9 @@ public class StandaloneRegistry implements IFloodlightModule,
 		restApi.addRestletRoutable(new RegistryWebRoutable());
 	}
 
+    @Override
+    public IdBlock allocateUniqueIdBlock(long range) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
