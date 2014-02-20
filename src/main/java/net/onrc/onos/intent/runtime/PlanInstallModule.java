@@ -8,21 +8,22 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.datagrid.IDatagridService;
+import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.datagrid.IEventChannelListener;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PlanInstallModule implements IFloodlightModule {
     protected volatile IFloodlightProviderService floodlightProvider;
@@ -32,6 +33,7 @@ public class PlanInstallModule implements IFloodlightModule {
     private PlanCalcRuntime planCalc;
     private PlanInstallRuntime planInstall;
     private EventListener eventListener;
+    private IEventChannel<Long, IntentOperationList> channel;
     private final static Logger log = LoggerFactory.getLogger(PlanInstallModule.class);
 
 
@@ -63,7 +65,7 @@ public class PlanInstallModule implements IFloodlightModule {
 		    //TODO: drain the remaining intent lists
 		    processIntents(intents);
 		} catch (InterruptedException e) {
-		    //TODO: log the exception
+		    log.warn("Error taking from intent queue: {}", e.getMessage());
 		}
 	    }
 	}
@@ -78,7 +80,11 @@ public class PlanInstallModule implements IFloodlightModule {
 	@Override
 	public void entryAdded(IntentOperationList value) {
 	    log.debug("Added OperationList {}", value);
-	    intentQueue.add(value);
+	    try {
+		intentQueue.put(value);
+	    } catch (InterruptedException e) {
+		log.warn("Error putting to intent queue: {}", e.getMessage());
+	    }
 	}
 
 	@Override
@@ -93,11 +99,11 @@ public class PlanInstallModule implements IFloodlightModule {
     }
     @Override
     public void startUp(FloodlightModuleContext context) {
+	channel = datagridService.addListener(PATH_INTENT_CHANNEL_NAME, 
+				    	      eventListener, 
+				              Long.class, 
+				              IntentOperationList.class);
 	eventListener.start();
-	datagridService.addListener(PATH_INTENT_CHANNEL_NAME, 
-				    new EventListener(), 
-				    Long.class, 
-				    IntentOperationList.class);
     }
     
     @Override
