@@ -12,9 +12,10 @@ import java.util.Set;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.Intent;
+import net.onrc.onos.intent.IntentOperation;
+import net.onrc.onos.intent.IntentOperation.Operator;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.PathIntent;
-import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.ofcontroller.networkgraph.Link;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
@@ -29,88 +30,103 @@ import net.onrc.onos.ofcontroller.networkgraph.Switch;
  */
 
 public class PlanCalcRuntime {
-	NetworkGraph graph;
-	protected PathIntentMap intents;
-	protected Set<Collection<FlowEntry>> flowEntries;
-	protected List<Set<FlowEntry>> plan;
 
-	public PlanCalcRuntime(NetworkGraph graph) {
-		this.graph = graph;
-		this.flowEntries = new HashSet<>();
-		this.plan = new ArrayList<>();
-		this.intents = new PathIntentMap();
+    NetworkGraph graph;
+
+    public PlanCalcRuntime(NetworkGraph graph) {
+	this.graph = graph;
+    }
+
+    public List<Set<FlowEntry>> computePlan(IntentOperationList intentOps) {
+	Set<Collection<FlowEntry>> flowEntries = computeFlowEntries(intentOps);
+	return buildPhases(flowEntries);
+    }
+
+    private Set<Collection<FlowEntry>> computeFlowEntries(IntentOperationList intentOps) {
+	Set<Collection<FlowEntry>> flowEntries = new HashSet<>();
+	for(IntentOperation i : intentOps) {
+	    PathIntent intent = (PathIntent) i.intent;
+	    Intent parent = intent.getParentIntent();
+	    Port srcPort, dstPort, lastDstPort = null;
+	    MACAddress srcMac, dstMac;
+	    if(parent instanceof ShortestPathIntent) {
+		ShortestPathIntent pathIntent = (ShortestPathIntent) parent;
+		Switch srcSwitch = graph.getSwitch(pathIntent.getSrcSwitchDpid());
+		srcPort = srcSwitch.getPort(pathIntent.getSrcPortNumber());
+		srcMac = MACAddress.valueOf(pathIntent.getSrcMac());
+		dstMac = MACAddress.valueOf(pathIntent.getDstMac());
+		Switch dstSwitch = graph.getSwitch(pathIntent.getDstSwitchDpid());
+		lastDstPort = dstSwitch.getPort(pathIntent.getDstPortNumber());
+	    }
+	    else {
+		// TODO: log this error
+		continue;
+	    }
+	    List<FlowEntry> entries = new ArrayList<>();
+	    for(LinkEvent linkEvent : intent.getPath()) {
+		Link link = graph.getLink(linkEvent.getSrc().getDpid(),
+			  linkEvent.getSrc().getNumber(),
+			  linkEvent.getDst().getDpid(),
+			  linkEvent.getDst().getNumber());
+		Switch sw = link.getSrcSwitch();
+		dstPort = link.getSrcPort();
+		FlowEntry fe = new FlowEntry(sw, srcPort, dstPort, srcMac, dstMac, i.operator);
+		entries.add(fe);
+		srcPort = link.getDstPort();
+	    }
+	    if(lastDstPort != null) {
+		Switch sw = lastDstPort.getSwitch();
+		dstPort = lastDstPort;
+		FlowEntry fe = new FlowEntry(sw, srcPort, dstPort, srcMac, dstMac, i.operator);
+		entries.add(fe);
+	    }
+	    // install flow entries in reverse order
+	    Collections.reverse(entries);
+	    flowEntries.add(entries);
 	}
+	return flowEntries;
+    }
 
-	public void addIntents(IntentOperationList intentOpList) {
-		intents.executeOperations(intentOpList);
-		computeFlowEntries();
-		constructPlan();
-	}
-
-	public List<Set<FlowEntry>> getPlan() {
-		return plan;
-	}
-
-	public void computeFlowEntries() {
-		for(Intent i : intents.getAllIntents()) {
-			PathIntent intent = (PathIntent)i;
-			Intent parent = intent.getParentIntent();
-			Port srcPort, dstPort, lastDstPort = null;
-			MACAddress srcMac, dstMac;
-			if(parent instanceof ShortestPathIntent) {
-				ShortestPathIntent pathIntent = (ShortestPathIntent) parent;
-				Switch srcSwitch = graph.getSwitch(pathIntent.getSrcSwitchDpid());
-				srcPort = srcSwitch.getPort(pathIntent.getSrcPortNumber());
-				srcMac = MACAddress.valueOf(pathIntent.getSrcMac());
-				dstMac = MACAddress.valueOf(pathIntent.getDstMac());
-				Switch dstSwitch = graph.getSwitch(pathIntent.getDstSwitchDpid());
-				lastDstPort = dstSwitch.getPort(pathIntent.getDstPortNumber());
-			}
-			else {
-				// TODO: log this error
-				continue;
-			}
-			List<FlowEntry> entries = new ArrayList<>();
-			for(LinkEvent linkEvent : intent.getPath()) {
-				Link link = graph.getLink(linkEvent.getSrc().getDpid(),
-							  linkEvent.getSrc().getNumber(),
-							  linkEvent.getDst().getDpid(),
-							  linkEvent.getDst().getNumber());
-				Switch sw = link.getSrcSwitch();
-				dstPort = link.getSrcPort();
-				FlowEntry fe = new FlowEntry(sw, srcPort, dstPort, srcMac, dstMac);
-				entries.add(fe);
-				srcPort = link.getDstPort();
-			}
-			if(lastDstPort != null) {
-				Switch sw = lastDstPort.getSwitch();
-				dstPort = lastDstPort;
-				FlowEntry fe = new FlowEntry(sw, srcPort, dstPort, srcMac, dstMac);
-				entries.add(fe);
-			}
-			// install flow entries in reverse order
-			Collections.reverse(entries);
-			flowEntries.add(entries);
+    private List<Set<FlowEntry>> buildPhases(Set<Collection<FlowEntry>> flowEntries) {
+	Map<FlowEntry, Integer> map = new HashMap<>();
+	List<Set<FlowEntry>> plan = new ArrayList<>();
+	for(Collection<FlowEntry> c : flowEntries) {
+	    for(FlowEntry e : c) {
+		Integer i = map.get(e);
+		if(i == null) {
+		    i = Integer.valueOf(0);
 		}
-	}
-
-	public void constructPlan() {
-		Map<FlowEntry, Integer> map = new HashMap<>();
-		for(Collection<FlowEntry> c : flowEntries) {
-			for(FlowEntry e: c) {
-				Integer i = map.get(e);
-				if(i == null) {
-					map.put(e, 1);
-				}
-				else {
-					i += 1;
-				}
-
-			}
+		switch(e.getOperator()) {
+		case ADD:
+		    i += 1;
+		    break;
+		case REMOVE:
+		    i -= 1;
+		    break;
 		}
-
-		// really simple first iteration of plan
-		//TODO: optimize the map in phases
-		plan.add(map.keySet());
+		map.put(e, i);
+		System.out.println(e + " " + e.getOperator());
+	    }
 	}
+		
+	// really simple first iteration of plan
+	//TODO: optimize the map in phases
+	Set<FlowEntry> phase = new HashSet<>();
+	for(FlowEntry e : map.keySet()) {
+	    Integer i = map.get(e);
+	    if(i == 0) {
+		continue;
+	    }
+	    else if(i > 0) {
+		e.setOperator(Operator.ADD);
+	    }
+	    else if(i < 0) {
+		e.setOperator(Operator.REMOVE);
+	    }
+	    phase.add(e);
+	}
+	plan.add(phase);
+		
+	return plan;
+    }
 }

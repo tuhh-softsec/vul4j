@@ -18,22 +18,23 @@ import net.onrc.onos.ofcontroller.util.Pair;
  *
  */
 
-public class PathInstallRuntime {
+public class PlanInstallRuntime {
     NetworkGraph graph;
     IFlowPusherService pusher;
     IFloodlightProviderService provider;
-    protected List<Set<FlowEntry>> plan;
 
-    public PathInstallRuntime(NetworkGraph graph) {
+    public PlanInstallRuntime(NetworkGraph graph, 
+	    		      IFloodlightProviderService provider,
+	                      IFlowPusherService pusher) {
 	this.graph = graph;
+	this.provider = provider;
+	this.pusher = pusher;
     }
 
     public void installPlan(List<Set<FlowEntry>> plan) {
-	this.plan = plan;
 	Map<Long,IOFSwitch> switches = provider.getSwitches();
 	for(Set<FlowEntry> phase : plan) {
-	    Set<Pair<IOFSwitch, net.onrc.onos.ofcontroller.util.FlowEntry>> entries 
-	    = new HashSet<>();
+	    Set<Pair<IOFSwitch, net.onrc.onos.ofcontroller.util.FlowEntry>> entries = new HashSet<>();
 	    // convert flow entries and create pairs
 	    for(FlowEntry entry : phase) {
 		entries.add(new Pair<>(switches.get(entry.getSwitch().getDpid()), 

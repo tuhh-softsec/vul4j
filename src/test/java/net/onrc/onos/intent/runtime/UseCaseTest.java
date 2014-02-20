@@ -1,10 +1,14 @@
 package net.onrc.onos.intent.runtime;
 
+import java.util.List;
+import java.util.Set;
+
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
+import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.IntentOperation.Operator;
 import net.onrc.onos.intent.IntentOperationList;
@@ -96,11 +100,11 @@ public class UseCaseTest {
 
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents(pathIntentOpList);
+		List<Set<FlowEntry>> plan = runtime2.computePlan(pathIntentOpList);
 
 		// show results
 		showResult((PathIntentMap) runtime1.getPathIntents());
-		System.out.println(runtime2.getPlan());
+		System.out.println(plan);
 	}
 
 	@Test
@@ -121,11 +125,11 @@ public class UseCaseTest {
 
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents(pathIntentOpList);
+		List<Set<FlowEntry>> plan = runtime2.computePlan(pathIntentOpList);
 
 		// show results
 		showResult((PathIntentMap) runtime1.getPathIntents());
-		System.out.println(runtime2.getPlan());
+		System.out.println(plan);
 	}
 
 	@Test
@@ -146,11 +150,11 @@ public class UseCaseTest {
 
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents(pathIntentOpList);
+		List<Set<FlowEntry>> plan = runtime2.computePlan(pathIntentOpList);
 
 		// show results
 		showResult((PathIntentMap) runtime1.getPathIntents());
-		System.out.println(runtime2.getPlan());
+		System.out.println(plan);
 	}
 
 	@Test
@@ -169,11 +173,11 @@ public class UseCaseTest {
 
 		// compile low-level intents into flow entry installation plan
 		PlanCalcRuntime runtime2 = new PlanCalcRuntime(g);
-		runtime2.addIntents(pathIntentOpList);
+		List<Set<FlowEntry>> plan = runtime2.computePlan(pathIntentOpList);
 
 		// show results step1
 		showResult((PathIntentMap) runtime1.getPathIntents());
-		System.out.println(runtime2.getPlan());
+		System.out.println(plan);
 
 		// link down
 		((MockNetworkGraph)g).removeLink(1L, 2L, 9L, 1L); // This link is used by the intent "1"
@@ -187,6 +191,6 @@ public class UseCaseTest {
 
 		// show results step2
 		showResult((PathIntentMap) runtime1.getPathIntents());
-		System.out.println(runtime2.getPlan());
+		// TODO: show results of plan computation
 	}
 }
