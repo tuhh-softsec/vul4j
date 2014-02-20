@@ -18,11 +18,12 @@ import net.onrc.onos.datagrid.IEventChannelListener;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
+import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 
 public class PlanInstallModule implements IFloodlightModule {
     protected volatile IFloodlightProviderService floodlightProvider;
-    protected volatile NetworkGraph networkGraph;
+    protected volatile INetworkGraphService networkGraph;
     protected volatile IDatagridService datagridService;
     protected volatile IFlowPusherService flowPusher;
     private PlanCalcRuntime planCalc;
@@ -35,11 +36,12 @@ public class PlanInstallModule implements IFloodlightModule {
     public void init(FloodlightModuleContext context)
 	    throws FloodlightModuleException {
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-	//networkGraph = context.getServiceImpl(INetworkGraphService.class);
+	networkGraph = context.getServiceImpl(INetworkGraphService.class);
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	flowPusher = context.getServiceImpl(IFlowPusherService.class);
-	planCalc = new PlanCalcRuntime(networkGraph);
-	planInstall = new PlanInstallRuntime(networkGraph, floodlightProvider, flowPusher);
+	NetworkGraph graph = networkGraph.getNetworkGraph();
+	planCalc = new PlanCalcRuntime(graph);
+	planInstall = new PlanInstallRuntime(graph, floodlightProvider, flowPusher);
 	eventListener = new EventListener();
     }
 
@@ -95,7 +97,7 @@ public class PlanInstallModule implements IFloodlightModule {
 	Collection<Class<? extends IFloodlightService>> l =
 		new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFloodlightProviderService.class);
-//	l.add(INetworkGraphService.class);
+	l.add(INetworkGraphService.class);
 	l.add(IDatagridService.class);
 	l.add(IFlowPusherService.class);
 	return l;
