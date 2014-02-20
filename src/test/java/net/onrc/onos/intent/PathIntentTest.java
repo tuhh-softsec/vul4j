@@ -1,6 +1,7 @@
 package net.onrc.onos.intent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
 
@@ -35,9 +36,9 @@ public class PathIntentTest {
 				new ConstrainedShortestPathIntent("1", 2L, 3L, 4L, 5L, 6L, 7L, 1000.0);
 
 		Path path = new Path();
-		path.add(g.getSwitch(1L).getPort(1L).getOutgoingLink());
-		path.add(g.getSwitch(2L).getPort(1L).getOutgoingLink());
-		path.add(g.getSwitch(3L).getPort(1L).getOutgoingLink());
+		path.add(new LinkEvent(g.getSwitch(1L).getPort(1L).getOutgoingLink()));
+		path.add(new LinkEvent(g.getSwitch(2L).getPort(1L).getOutgoingLink()));
+		path.add(new LinkEvent(g.getSwitch(3L).getPort(1L).getOutgoingLink()));
 
 		PathIntent pathIntent1 = new PathIntent("11", path, 123.45, cspIntent1);
 
@@ -53,30 +54,30 @@ public class PathIntentTest {
 		input.close();
 
 		// check
-		
+
 		assertEquals("11", pathIntent2.getId());
-		Path path2 = pathIntent2.getPath(g);
+		Path path2 = pathIntent2.getPath();
 
-		assertEquals(Long.valueOf(1L), path2.get(0).getSourceSwitch().getDpid());
-		assertEquals(Long.valueOf(1L), path2.get(0).getSourcePort().getNumber());
-		assertEquals(Long.valueOf(2L), path2.get(0).getDestinationSwitch().getDpid());
-		assertEquals(Long.valueOf(2L), path2.get(0).getDestinationPort().getNumber());
+		assertEquals(Long.valueOf(1L), path2.get(0).getSrc().getDpid());
+		assertEquals(Long.valueOf(1L), path2.get(0).getSrc().getNumber());
+		assertEquals(Long.valueOf(2L), path2.get(0).getDst().getDpid());
+		assertEquals(Long.valueOf(2L), path2.get(0).getDst().getNumber());
 
-		assertEquals(Long.valueOf(2L), path2.get(1).getSourceSwitch().getDpid());
-		assertEquals(Long.valueOf(1L), path2.get(1).getSourcePort().getNumber());
-		assertEquals(Long.valueOf(3L), path2.get(1).getDestinationSwitch().getDpid());
-		assertEquals(Long.valueOf(2L), path2.get(1).getDestinationPort().getNumber());
+		assertEquals(Long.valueOf(2L), path2.get(1).getSrc().getDpid());
+		assertEquals(Long.valueOf(1L), path2.get(1).getSrc().getNumber());
+		assertEquals(Long.valueOf(3L), path2.get(1).getDst().getDpid());
+		assertEquals(Long.valueOf(2L), path2.get(1).getDst().getNumber());
 
-		assertEquals(Long.valueOf(3L), path2.get(2).getSourceSwitch().getDpid());
-		assertEquals(Long.valueOf(1L), path2.get(2).getSourcePort().getNumber());
-		assertEquals(Long.valueOf(4L), path2.get(2).getDestinationSwitch().getDpid());
-		assertEquals(Long.valueOf(2L), path2.get(2).getDestinationPort().getNumber());
+		assertEquals(Long.valueOf(3L), path2.get(2).getSrc().getDpid());
+		assertEquals(Long.valueOf(1L), path2.get(2).getSrc().getNumber());
+		assertEquals(Long.valueOf(4L), path2.get(2).getDst().getDpid());
+		assertEquals(Long.valueOf(2L), path2.get(2).getDst().getNumber());
 
 		assertEquals(123.45, pathIntent2.getBandwidth(), 0.0);
 
-		ConstrainedShortestPathIntent cspIntent2 = 
+		ConstrainedShortestPathIntent cspIntent2 =
 				(ConstrainedShortestPathIntent) pathIntent2.getParentIntent();
-		
+
 		assertEquals("1", cspIntent2.getId());
 		assertEquals(2L, cspIntent2.getSrcSwitchDpid());
 		assertEquals(3L, cspIntent2.getSrcPortNumber());

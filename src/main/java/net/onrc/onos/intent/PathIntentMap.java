@@ -17,7 +17,7 @@ public class PathIntentMap extends IntentMap {
 	@Override
 	protected void putIntent(Intent intent) {
 		super.putIntent(intent);
-		for (LinkEvent linkEvent: ((PathIntent) intent).getPathByLinkEvent()) {
+		for (LinkEvent linkEvent: ((PathIntent) intent).getPath()) {
 			HashSet<PathIntent> value = linkToIntents.get(linkEvent);
 			if (value == null)
 				value = new HashSet<PathIntent>();
@@ -29,7 +29,7 @@ public class PathIntentMap extends IntentMap {
 	@Override
 	protected void removeIntent(String intentId) {
 		PathIntent intent = (PathIntent) getIntent(intentId);
-		for (LinkEvent linkEvent: intent.getPathByLinkEvent()) {
+		for (LinkEvent linkEvent: intent.getPath()) {
 			HashSet<PathIntent> value = linkToIntents.get(linkEvent);
 			value.remove(intent);
 		}

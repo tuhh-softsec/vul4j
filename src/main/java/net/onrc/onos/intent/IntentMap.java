@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
@@ -50,17 +49,17 @@ public class IntentMap {
 
 	private HashSet<ChangedListener> listeners = new HashSet<>();
 	private HashMap<String, Intent> intents = new HashMap<>();
-	
+
 	protected void putIntent(Intent intent) {
 		if (intents.containsKey(intent.getId()))
 			removeIntent(intent.getId());
 		intents.put(intent.getId(), intent);
 	}
-	
+
 	protected void removeIntent(String intentId) {
 		intents.remove(intentId);		
 	}
-	
+
 	public Intent getIntent(String intentId) {
 		return intents.get(intentId);
 	}

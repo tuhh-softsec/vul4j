@@ -74,7 +74,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	@Override
 	public void init(FloodlightModuleContext context) throws FloodlightModuleException {
 		datagridService = context.getServiceImpl(IDatagridService.class);
-		networkGraphService = context.getServiceImpl(INetworkGraphService.class); 
+		networkGraphService = context.getServiceImpl(INetworkGraphService.class);
 	}
 
 	@Override

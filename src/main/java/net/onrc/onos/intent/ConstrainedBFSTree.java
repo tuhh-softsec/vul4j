@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import net.onrc.onos.ofcontroller.networkgraph.Link;
+import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 
@@ -17,10 +18,10 @@ import net.onrc.onos.ofcontroller.networkgraph.Switch;
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class ConstrainedBFSTree {
-	LinkedList<Switch> switchQueue = new LinkedList<Switch>();
-	HashSet<Switch> switchSearched = new HashSet<Switch>();
-	HashMap<Switch, Link> upstreamLinks = new HashMap<Switch, Link>();
-	HashMap<Switch, Path> paths = new HashMap<Switch, Path>();
+	LinkedList<Switch> switchQueue = new LinkedList<>();
+	HashSet<Switch> switchSearched = new HashSet<>();
+	HashMap<Long, LinkEvent> upstreamLinks = new HashMap<>();
+	HashMap<Switch, Path> paths = new HashMap<>();
 	Switch rootSwitch;
 	PathIntentMap intents = null;
 	double bandwidth = 0.0; // 0.0 means no limit for bandwidth (normal BFS tree)
@@ -48,20 +49,21 @@ public class ConstrainedBFSTree {
 				if (intents != null && intents.getAvailableBandwidth(link) < bandwidth) continue;
 				switchQueue.add(reachedSwitch);
 				switchSearched.add(reachedSwitch);
-				upstreamLinks.put(reachedSwitch, link);
+				upstreamLinks.put(reachedSwitch.getDpid(), new LinkEvent(link));
 			}
 		}
 	}
 
 	public Path getPath(Switch leafSwitch) {
 		Path path = paths.get(leafSwitch);
+		Long rootSwitchDpid = rootSwitch.getDpid();
 		if (path == null && switchSearched.contains(leafSwitch)) {
 			path = new Path();
-			Switch sw = leafSwitch;
-			while (sw != rootSwitch) {
-				Link upstreamLink = upstreamLinks.get(sw);
+			Long sw = leafSwitch.getDpid();
+			while (sw != rootSwitchDpid) {
+				LinkEvent upstreamLink = upstreamLinks.get(sw);
 				path.add(0, upstreamLink);
-				sw = upstreamLink.getSourcePort().getSwitch();
+				sw = upstreamLink.getSrc().getDpid();
 			}
 			paths.put(leafSwitch, path);
 		}

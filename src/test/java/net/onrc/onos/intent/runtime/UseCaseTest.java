@@ -74,7 +74,7 @@ public class UseCaseTest {
 			PathIntent pathIntent = (PathIntent)intent;
 			System.out.println("Parent intent: " + pathIntent.getParentIntent().toString());
 			System.out.println("Path:");
-			for (LinkEvent linkEvent: pathIntent.getPathByLinkEvent()) {
+			for (LinkEvent linkEvent: pathIntent.getPath()) {
 				System.out.println(linkEvent);
 			}
 		}
@@ -152,7 +152,7 @@ public class UseCaseTest {
 		showResult((PathIntentMap) runtime1.getPathIntents());
 		System.out.println(runtime2.getPlan());
 	}
-	
+
 	@Test
 	public void rerouteShortestPaths() throws FloodlightModuleException {
 		// create shortest path intents
@@ -187,6 +187,6 @@ public class UseCaseTest {
 
 		// show results step2
 		showResult((PathIntentMap) runtime1.getPathIntents());
-		System.out.println(runtime2.getPlan());		
+		System.out.println(runtime2.getPlan());
 	}
 }

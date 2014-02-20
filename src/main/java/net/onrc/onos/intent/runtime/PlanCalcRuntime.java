@@ -17,12 +17,13 @@ import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.ofcontroller.networkgraph.Link;
+import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Port;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 
 /**
- * 
+ *
  * @author Brian O'Connor <bocon@onlab.us>
  *
  */
@@ -32,20 +33,20 @@ public class PlanCalcRuntime {
 	protected PathIntentMap intents;
 	protected Set<Collection<FlowEntry>> flowEntries;
 	protected List<Set<FlowEntry>> plan;
-	
+
 	public PlanCalcRuntime(NetworkGraph graph) {
 		this.graph = graph;
 		this.flowEntries = new HashSet<>();
 		this.plan = new ArrayList<>();
 		this.intents = new PathIntentMap();
 	}
-	
+
 	public void addIntents(IntentOperationList intentOpList) {
 		intents.executeOperations(intentOpList);
 		computeFlowEntries();
 		constructPlan();
 	}
-	
+
 	public List<Set<FlowEntry>> getPlan() {
 		return plan;
 	}
@@ -70,7 +71,8 @@ public class PlanCalcRuntime {
 				continue;
 			}
 			List<FlowEntry> entries = new ArrayList<>();
-			for(Link link : intent.getPath(graph)) {
+			for(LinkEvent linkEvent : intent.getPath()) {
+				Link link = linkEvent.getLink(graph);
 				Switch sw = link.getSourceSwitch();
 				dstPort = link.getSourcePort();
 				FlowEntry fe = new FlowEntry(sw, srcPort, dstPort, srcMac, dstMac);
@@ -88,7 +90,7 @@ public class PlanCalcRuntime {
 			flowEntries.add(entries);
 		}
 	}
-	
+
 	public void constructPlan() {
 		Map<FlowEntry, Integer> map = new HashMap<>();
 		for(Collection<FlowEntry> c : flowEntries) {
@@ -100,10 +102,10 @@ public class PlanCalcRuntime {
 				else {
 					i += 1;
 				}
-				
+
 			}
 		}
-		
+
 		// really simple first iteration of plan
 		//TODO: optimize the map in phases
 		plan.add(map.keySet());

@@ -3,7 +3,7 @@ package net.onrc.onos.intent;
 /**
  * @author Toshio Koide (t-koide@onlab.us)
  */
-public class Intent {	
+public class Intent {
 	public enum IntentState {
 		CREATED,
 		INST_REQ,
@@ -50,7 +50,7 @@ public class Intent {
 	public int hashCode() {
 		return id.hashCode();
 	}
-	
+
 	@Override
 	public String toString() {
 		return id.toString() + ", " + state.toString();
