@@ -247,16 +247,18 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
 	    }
 	    vertices.add(v);
 	}
-	MultiWriteObject multiWriteObjects[] = new MultiWriteObject[vertices.size() * 2];
+	
+	MultiWriteObject mwo = new MultiWriteObject(vertices.size()*2);
+		
 	for (int i=0; i < vertices.size(); i++) {
 	    RamCloudVertex v = vertices.get(i);
-	    multiWriteObjects[i*2] = new MultiWriteObject(vertTableId, v.rcKey, ByteBuffer.allocate(0).array(), null);
-	    multiWriteObjects[i*2+1] = new MultiWriteObject(vertPropTableId, v.rcKey, ByteBuffer.allocate(0).array(), null);
+	    mwo.setObject(i*2, vertTableId, v.rcKey, ByteBuffer.allocate(0).array(), null);
+	    mwo.setObject(i*2+1, vertTableId, v.rcKey, ByteBuffer.allocate(0).array(), null);
 	}
 	try {
 		PerfMon pm = PerfMon.getInstance();
 		pm.multiwrite_start("RamCloudVertex create()");
-	    getRcClient().multiWrite(multiWriteObjects);
+		getRcClient().multiWrite(mwo.tableId, mwo.key, mwo.keyLength, mwo.value, mwo.valueLength, vertices.size()*2, mwo.rules);
 		pm.multiwrite_end("RamCloudVertex create()");
 	    log.info("ramcloud vertices are created");
 	} catch (Exception e) {

@@ -18,12 +18,14 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import edu.stanford.ramcloud.JRamCloud;
+import edu.stanford.ramcloud.JRamCloud.MultiReadObject;
 import edu.stanford.ramcloud.JRamCloud.MultiWriteObject;
 import edu.stanford.ramcloud.JRamCloud.MultiWriteRspObject;
 import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 import edu.stanford.ramcloud.JRamCloud.ObjectExistsException;
 import edu.stanford.ramcloud.JRamCloud.RejectRules;
 import edu.stanford.ramcloud.JRamCloud.TableEnumerator;
+import edu.stanford.ramcloud.JRamCloud.TableEnumerator2;
 import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 
 /**
@@ -304,21 +306,17 @@ public class RCObject {
 	JRamCloud rcClient = RCClient.getClient();
 
 	final int reqs = req.size();
-
-        long tableId[] = new long[reqs];
-        byte[] key[] = new byte[reqs][];
-        short keySize[] = new short[reqs];
+	
+	MultiReadObject multiReadObjects = new MultiReadObject(req.size());
 
 	// setup multi-read operation
 	for (int i = 0; i < reqs; ++i) {
 	    RCObject obj = req.get(i);
-            tableId[i] = obj.getTableId();
-            key[i] = obj.getKey();
-            keySize[i] = (short) key[i].length;
+            multiReadObjects.setObject(i, obj.getTableId(), obj.getKey());
 	}
 
 	// execute
-	JRamCloud.Object results[] = rcClient.multiRead(tableId, key, keySize, reqs);
+	JRamCloud.Object results[] = rcClient.multiRead(multiReadObjects.tableId, multiReadObjects.key, multiReadObjects.keyLength, reqs);
 	assert (results.length <= req.size());
 
 	// reflect changes to RCObject
@@ -420,10 +418,10 @@ public class RCObject {
     private static boolean multiWriteInternal(ArrayList<WriteOp> ops) {
 
 	boolean fail_exists = false;
-	MultiWriteObject multiWriteObjects[] = new MultiWriteObject[ops.size()];
+	MultiWriteObject multiWriteObjects = new MultiWriteObject(ops.size());
 	JRamCloud rcClient = RCClient.getClient();
 
-	for (int i = 0; i < multiWriteObjects.length; ++i) {
+	for (int i = 0; i < ops.size(); ++i) {
 	    WriteOp op = ops.get(i);
 	    RCObject obj = op.getObject();
 
@@ -442,12 +440,11 @@ public class RCObject {
 		rules.setNeVersion(obj.getVersion());
 		break;
 	    }
-	    multiWriteObjects[i] = new MultiWriteObject(obj.getTableId(),
-		    obj.getKey(), obj.getValue(), rules);
+	    multiWriteObjects.setObject(i, obj.getTableId(), obj.getKey(), obj.getValue(), rules);
 	}
 
-	MultiWriteRspObject[] results = rcClient.multiWrite(multiWriteObjects);
-	assert (results.length == multiWriteObjects.length);
+	MultiWriteRspObject[] results = rcClient.multiWrite(multiWriteObjects.tableId, multiWriteObjects.key, multiWriteObjects.keyLength, multiWriteObjects.value, multiWriteObjects.valueLength, ops.size(), multiWriteObjects.rules);
+	assert (results.length == ops.size());
 
 	for (int i = 0; i < results.length; ++i) {
 	    WriteOp op = ops.get(i);
@@ -467,17 +464,17 @@ public class RCObject {
 
 	return fail_exists;
     }
-
+   
     public static abstract class ObjectIterator<E extends RCObject> implements
 	    Iterator<E> {
 
-	protected TableEnumerator enumerator;
+	protected TableEnumerator2 enumerator;
 
 	public ObjectIterator(RCTable table) {
 	    // FIXME workaround for JRamCloud bug. It should have been declared
 	    // as static class
 	    JRamCloud c = RCClient.getClient();
-	    this.enumerator = c.new TableEnumerator(table.getTableId());
+	    this.enumerator = c.new TableEnumerator2(table.getTableId());
 	}
 
 	@Override
@@ -493,7 +490,7 @@ public class RCObject {
 //	    obj.setValueAndDeserialize(o.value, o.version);
 //	    return obj;
 //	}
-
+	
 	@Deprecated
 	@Override
 	public void remove() {
