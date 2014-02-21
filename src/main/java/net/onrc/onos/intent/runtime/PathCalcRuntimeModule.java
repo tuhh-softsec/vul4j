@@ -153,6 +153,14 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		// update the map of low-level intents and publish the low-level
 		// operations
 		pathIntents.executeOperations(pathIntentOperations);
+
+		// send remove operation includes intent which has a complete path
+		// TODO need optimization
+		for (IntentOperation op: pathIntentOperations) {
+			if(op.operator.equals(Operator.REMOVE)) {
+				op.intent = pathIntents.getIntent(op.intent.getId());
+			}
+		}
 		eventChannel.addEntry(key, pathIntentOperations);
 		return pathIntentOperations;
 	}
