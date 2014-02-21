@@ -244,7 +244,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		}
 
 		 datagrid.sendPacketOutNotification(new BroadcastPacketOutNotification(
-				 eth.serialize(), sw.getId(), pi.getInPort()));
+				 eth.serialize(), null, sw.getId(), pi.getInPort()));
 	}
 	
 	private void handlePacketIn(IOFSwitch sw, OFPacketIn pi, Ethernet eth){

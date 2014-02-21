@@ -87,22 +87,21 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	private static class ArpRequest {
 		private final IArpRequester requester;
 		private final boolean retry;
+		private boolean sent = false;
 		private long requestTime;
 		
 		public ArpRequest(IArpRequester requester, boolean retry){
 			this.requester = requester;
 			this.retry = retry;
-			this.requestTime = System.currentTimeMillis();
 		}
 		
 		public ArpRequest(ArpRequest old) {
 			this.requester = old.requester;
 			this.retry = old.retry;
-			this.requestTime = System.currentTimeMillis();
 		}
 		
 		public boolean isExpired() {
-			return (System.currentTimeMillis() - requestTime) > ARP_REQUEST_TIMEOUT;
+			return sent && ((System.currentTimeMillis() - requestTime) > ARP_REQUEST_TIMEOUT);
 		}
 		
 		public boolean shouldRetry() {
@@ -111,6 +110,11 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		
 		public void dispatchReply(InetAddress ipAddress, MACAddress replyMacAddress) {
 			requester.arpResponse(ipAddress, replyMacAddress);
+		}
+		
+		public void setRequestTime() {
+			this.requestTime = System.currentTimeMillis();
+			this.sent = true;
 		}
 	}
 	
@@ -355,8 +359,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			
 			// We don't know the device so broadcast the request out
 			datagrid.sendPacketOutNotification(
-					new BroadcastPacketOutNotification(eth.serialize(), 
-							sw.getId(), pi.getInPort()));
+					new BroadcastPacketOutNotification(eth.serialize(),
+							target, sw.getId(), pi.getInPort()));
 		}
 		else {
 			// Even if the device exists in our database, we do not reply to
@@ -383,7 +387,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 				
 				datagrid.sendPacketOutNotification(
 						new BroadcastPacketOutNotification(eth.serialize(), 
-								sw.getId(), pi.getInPort()));
+								target, sw.getId(), pi.getInPort()));
 			} 
 			else {
 				for (IPortObject portObject : outPorts) {
@@ -410,7 +414,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 					
 					datagrid.sendPacketOutNotification(
 							new SinglePacketOutNotification(eth.serialize(), 
-									outSwitch, outPort));
+									target, outSwitch, outPort));
 				}
 			}
 		}
@@ -504,7 +508,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		}
 		
 		//sendArpRequestToSwitches(ipAddress, eth.serialize());
-		datagrid.sendPacketOutNotification(new SinglePacketOutNotification(eth.serialize(),intf.getDpid(),intf.getPort()));
+		datagrid.sendPacketOutNotification(new SinglePacketOutNotification(eth.serialize(),
+				ipAddress, intf.getDpid(),intf.getPort()));
 	}
 	
 	private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest) {
@@ -854,12 +859,28 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 					(SinglePacketOutNotification) packetOutNotification;
 			sendArpRequestOutPort(notification.packet, notification.getOutSwitch(), 
 					notification.getOutPort());
+			
+			// set timestamp
+			InetAddress addr = notification.getTargetAddress();
+			if (addr != null) {
+				for (ArpRequest request : arpRequests.get(addr)) {
+					request.setRequestTime();
+				}
+			}
 		}
 		else if (packetOutNotification instanceof BroadcastPacketOutNotification) {
 			BroadcastPacketOutNotification notification = 
 					(BroadcastPacketOutNotification) packetOutNotification;
 			broadcastArpRequestOutMyEdge(notification.packet, 
 					notification.getInSwitch(), notification.getInPort());
+			
+			// set timestamp
+			InetAddress addr = notification.getTargetAddress();
+			if (addr != null) {
+				for (ArpRequest request : arpRequests.get(addr)) {
+					request.setRequestTime();
+				}
+			}
 		}
 		else {
 			log.warn("Unknown packet out notification received");

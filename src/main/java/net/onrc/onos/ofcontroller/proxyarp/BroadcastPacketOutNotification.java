@@ -1,5 +1,8 @@
 package net.onrc.onos.ofcontroller.proxyarp;
 
+import java.net.InetAddress;
+
+//TODO This class is too generic to be handled by ProxyArpService.
 /**
  * Notification to all ONOS instances to broadcast this packet out the edge of
  * the network. The edge is defined as any port that doesn't have a link to
@@ -12,13 +15,15 @@ public class BroadcastPacketOutNotification extends
 	
 	private static final long serialVersionUID = 1L;
 	
+	private final InetAddress address;
 	private final long inSwitch;
 	private final short inPort;
 
-	public BroadcastPacketOutNotification(byte[] packet, long inSwitch, 
-			short inPort) {
+	public BroadcastPacketOutNotification(byte[] packet, InetAddress address,
+			long inSwitch, short inPort) {
 		super(packet);
 		
+		this.address = address;
 		this.inSwitch = inSwitch;
 		this.inPort = inPort;
 	}
@@ -31,4 +36,7 @@ public class BroadcastPacketOutNotification extends
 		return inPort;
 	}
 
+	public InetAddress getTargetAddress() {
+		return address;
+	}
 }
