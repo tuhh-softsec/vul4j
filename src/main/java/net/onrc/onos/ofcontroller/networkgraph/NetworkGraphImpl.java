@@ -1,7 +1,6 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
 import java.net.InetAddress;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,7 +26,7 @@ public class NetworkGraphImpl implements NetworkGraph {
 
 	private ConcurrentMap<InetAddress, Set<Device>> addr2Device;
 	private ConcurrentMap<MACAddress, Device> mac2Device;
-	
+
 	private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 	private Lock readLock = readWriteLock.readLock();
 	// TODO use the write lock after refactor
@@ -83,9 +82,9 @@ public class NetworkGraphImpl implements NetworkGraph {
 	    Link link = getLink(srcDpid, srcNumber);
 	    if (link == null)
 		return null;
-	    if (link.getDstSwitch().getDpid() != dstDpid)
+	    if (!link.getDstSwitch().getDpid().equals(dstDpid))
 		return null;
-	    if (link.getDstPort().getNumber() != dstNumber)
+	    if (!link.getDstPort().getNumber().equals(dstNumber))
 		return null;
 	    return link;
 	}

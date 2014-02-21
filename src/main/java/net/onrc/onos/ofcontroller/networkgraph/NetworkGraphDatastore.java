@@ -92,7 +92,7 @@ public class NetworkGraphDatastore {
 		groupOp.add(WriteOp.ForceCreate(rcSwitch));
 
 		for (PortEvent portEvent : portEvents) {
-			RCPort rcPort = new RCPort(sw.getDpid(), (long)portEvent.getNumber());
+			RCPort rcPort = new RCPort(sw.getDpid(), portEvent.getNumber());
 			rcPort.setStatus(RCPort.STATUS.INACTIVE);
 
 			groupOp.add(WriteOp.ForceCreate(rcPort));
@@ -129,10 +129,10 @@ public class NetworkGraphDatastore {
 	 */
 	public boolean deactivatePort(PortEvent port) {
 		log.debug("Deactivating port {}", port);
-		
+
 		RCPort rcPort = new RCPort(port.getDpid(), port.getNumber());
 		rcPort.setStatus(STATUS.INACTIVE);
-		
+
 		rcPort.forceCreate();
 
 		return true;
@@ -165,7 +165,7 @@ public class NetworkGraphDatastore {
 
 	public boolean removeLink(LinkEvent linkEvent) {
 		log.debug("Removing link {}", linkEvent);
-		
+
 		RCLink rcLink = new RCLink(linkEvent.getSrc().getDpid(), linkEvent.getSrc().getNumber(),
 				linkEvent.getDst().getDpid(), linkEvent.getDst().getNumber());
 		rcLink.forceDelete();
