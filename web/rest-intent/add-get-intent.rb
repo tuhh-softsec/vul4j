@@ -30,9 +30,6 @@ parser = OptionParser.new do |opts|
   opts.on('-t', '--max_intents max_intents', 'max. number of intents') do |max_intents|
     options[:max_intents] = max_intents
   end
-  opts.on('-l', '--application application_id', 'set application id') do |appl_id|
-    options[:application_id] = appl_id.to_i
-  end
   opts.on('-i', '--intent_id intent_id', 'global intent id') do |id|
     options[:intent_id] = id.to_i
   end
@@ -72,7 +69,7 @@ parser.parse!
 
 class Intent
   attr_reader :switches, :ports, :intent_id
-  attr_reader :application_id, :intent_type, :intent_op
+  attr_reader :intent_type, :intent_op
   attr_reader :random_intent, :server, :port
   attr_reader :bulk_limit
 
@@ -142,7 +139,7 @@ puts intents.size
 
   def post intents
     json_data = intents.to_json
-    #response = RestClient.post "http://#{@server}:#{@port}/wm/onos/datagrid/#{intent_op}/intents/json", json_data, :content_type => :json, :accept => :json
+    response = RestClient.post "http://#{@server}:#{@port}/wm/onos/datagrid/#{intent_op}/intents/json", json_data, :content_type => :json, :accept => :json
     puts response
   end
 
@@ -152,8 +149,6 @@ puts intents.size
     @ports = (1..(max_switches - 1)).to_a
     @intent_id = options[:intent_id]
     @intent_id ||= 1
-    @application_id = options[:application_id]
-    @application_id ||= 1
     @intent_type = options[:intent_type]
     @intent_op = options[:intent_op]
     @intent_op ||= "add"
@@ -176,7 +171,7 @@ puts intents.size
       dst_port = sw_set.index(src_switch)
       dst_port = dst_port + 1
       intent = {
-        :intent_id => "#{@application_id}:#{@intent_id}",
+        :intent_id => "#{@intent_id}",
         :intent_type => @intent_type,
         :intent_op => @intent_op,
         :srcSwitch => src_switch.to_s,

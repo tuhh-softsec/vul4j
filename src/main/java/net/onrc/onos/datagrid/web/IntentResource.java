@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
  */
 public class IntentResource extends ServerResource {
     private final static Logger log = LoggerFactory.getLogger(IntentResource.class);
+    // TODO need to assign proper application id.
+    private final String APPLN_ID = "1";
 
     private class IntentStatus {
         String intentId;
@@ -76,8 +78,7 @@ public class IntentResource extends ServerResource {
         IPathCalcRuntimeService pathRuntime = (IPathCalcRuntimeService)getContext()
                 .getAttributes().get(IPathCalcRuntimeService.class.getCanonicalName());
         if (pathRuntime == null) {
-            log.debug("Failed to get path calc runtime");
-            System.out.println("Failed to get path calc runtime");
+            log.warn("Failed to get path calc runtime");
             return "";
         }
         String reply = "";
@@ -112,17 +113,20 @@ public class IntentResource extends ServerResource {
         Collection<Intent> intents = intentMap.getAllIntents();
         if (!intents.isEmpty()) {
             if ((intentId != null )) {
-                Intent intent = intentMap.getIntent(intentId);
+                String applnIntentId = APPLN_ID + ":" + intentId;
+                Intent intent = intentMap.getIntent(applnIntentId);
                 if (intent != null) {
                     ObjectNode node = mapper.createObjectNode();
-                    node.put("intent_id", intent.getId());
+                    node.put("intent_id", intentId);
                     node.put("status", intent.getState().toString());
                     arrayNode.add(node);
                 }
             } else {
                 for (Intent intent : intents) {
                     ObjectNode node = mapper.createObjectNode();
-                    node.put("intent_id", intent.getId());
+                    String applnIntentId = intent.getId();
+                    intentId = applnIntentId.split(":")[1];
+                    node.put("intent_id", intentId);
                     node.put("status", intent.getState().toString());
                     arrayNode.add(node);
                 }
@@ -156,10 +160,10 @@ public class IntentResource extends ServerResource {
         return mapper.writeValueAsString(arrayNode);
     }
 
-    private void appendIntentStatus(String status, final String applnIntentId, 
+    private void appendIntentStatus(String status, final String intentId, 
             ObjectMapper mapper, ArrayNode arrayNode) throws IOException {
         ObjectNode node = mapper.createObjectNode();
-        node.put("intent_id", applnIntentId);
+        node.put("intent_id", intentId);
         node.put("status", status);
         arrayNode.add(node);
     }
@@ -168,13 +172,14 @@ public class IntentResource extends ServerResource {
         String intentType = (String)fields.get("intent_type");
         String intentOp = (String)fields.get("intent_op");
         String status = null;
+        String applnIntentId = APPLN_ID + ":" + (String)fields.get("intent_id");
         
         IntentOperation.Operator operation = IntentOperation.Operator.ADD;
         if ((intentOp.equals("remove"))) {
             operation = IntentOperation.Operator.REMOVE;
         }
         if (intentType.equals("shortest_intent_type")) {
-            ShortestPathIntent spi = new ShortestPathIntent((String) fields.get("intent_id"),
+            ShortestPathIntent spi = new ShortestPathIntent(applnIntentId,
                     Long.decode((String) fields.get("srcSwitch")),
                     (long) fields.get("srcPort"),
                     MACAddress.valueOf((String) fields.get("srcMac")).toLong(),
@@ -184,7 +189,7 @@ public class IntentResource extends ServerResource {
             operations.add(new IntentOperation(operation, spi));
             status = (spi.getState()).toString();
         } else {
-            ConstrainedShortestPathIntent cspi = new ConstrainedShortestPathIntent((String) fields.get("intent_id"),
+            ConstrainedShortestPathIntent cspi = new ConstrainedShortestPathIntent(applnIntentId,
                     Long.decode((String) fields.get("srcSwitch")),
                     (long) fields.get("srcPort"),
                     MACAddress.valueOf((String) fields.get("srcMac")).toLong(),
