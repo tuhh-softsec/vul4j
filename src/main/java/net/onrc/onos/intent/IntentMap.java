@@ -5,10 +5,10 @@ import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import net.onrc.onos.intent.Intent.IntentState;
+import net.onrc.onos.intent.runtime.IntentStateList;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)
@@ -88,7 +88,7 @@ public class IntentMap {
 		notifyEvents();
 	}
 
-	public void changeStates(Map<String, IntentState> states) {
+	public void changeStates(IntentStateList states) {
 		for (Entry<String, IntentState> state: states.entrySet()) {
 			setState(state.getKey(), state.getValue());
 		}
@@ -167,6 +167,7 @@ public class IntentMap {
 		case CREATED:
 		case INST_REQ:
 		case INST_ACK:
+		case REROUTE_REQ:
 			setState(targetIntent.getId(), IntentState.INST_NACK);
 			break;
 		case DEL_REQ:

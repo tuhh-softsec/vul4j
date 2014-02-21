@@ -8,6 +8,9 @@ import net.onrc.onos.ofcontroller.networkgraph.Port;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchImpl;
 
+/**
+ * @author Toshio Koide (t-koide@onlab.us)
+ */
 public class MockNetworkGraph extends NetworkGraphImpl {
 	class DetachableLinkImpl extends LinkImpl {
 		public DetachableLinkImpl(NetworkGraph graph, Port srcPort, Port dstPort) {
@@ -16,7 +19,7 @@ public class MockNetworkGraph extends NetworkGraphImpl {
 
 		public void detachFromGraph() {
 			unsetFromPorts();
-		}	
+		}
 	}
 	public Switch addSwitch(Long switchId) {
 		SwitchImpl sw = new SwitchImpl(this, switchId);
@@ -39,7 +42,7 @@ public class MockNetworkGraph extends NetworkGraphImpl {
 
 		return links;
 	}
-	
+
 	public void createSampleTopology() {
 		// add 10 switches (24 ports switch)
 		for (Long dpid=1L; dpid<10L; dpid++) {

@@ -11,6 +11,9 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+/**
+ * @author Toshio Koide (t-koide@onlab.us)
+ */
 public class ShortestPathIntentTest {
 	NetworkGraph g;
 

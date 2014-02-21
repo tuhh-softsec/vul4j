@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
@@ -13,6 +14,8 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.datagrid.IEventChannel;
+import net.onrc.onos.datagrid.IEventChannelListener;
+import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.Intent.IntentState;
 import net.onrc.onos.intent.IntentMap;
 import net.onrc.onos.intent.IntentOperation;
@@ -20,6 +23,7 @@ import net.onrc.onos.intent.IntentOperation.Operator;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.PathIntentMap;
+import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.intent.persist.PersistIntent;
 import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphListener;
@@ -32,7 +36,7 @@ import net.onrc.onos.registry.controller.IControllerRegistryService;
 /**
  * @author Toshio Koide (t-koide@onlab.us)
  */
-public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntimeService, INetworkGraphListener {
+public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntimeService, INetworkGraphListener, IEventChannelListener<Long, IntentStateList> {
 	private PathCalcRuntime runtime;
 	private IDatagridService datagridService;
 	private INetworkGraphService networkGraphService;
@@ -41,8 +45,9 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	private IControllerRegistryService controllerRegistry;
 	private PersistIntent persistIntent;
 
-	private IEventChannel<Long, IntentOperationList> eventChannel;
-	private static final String EVENT_CHANNEL_NAME = "onos.pathintent";
+	private IEventChannel<Long, IntentOperationList> opEventChannel;
+	private static final String INTENT_OP_EVENT_CHANNEL_NAME = "onos.pathintent";
+	private static final String INTENT_STATE_EVENT_CHANNEL_NAME = "onos.pathintent_state";
 
 	// ================================================================================
 	// private methods
@@ -105,10 +110,10 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		highLevelIntents = new IntentMap();
 		runtime = new PathCalcRuntime(networkGraphService.getNetworkGraph());
 		pathIntents = new PathIntentMap();
-		eventChannel = datagridService.createChannel(EVENT_CHANNEL_NAME, Long.class, IntentOperationList.class);
+		opEventChannel = datagridService.createChannel(INTENT_OP_EVENT_CHANNEL_NAME, Long.class, IntentOperationList.class);
+		datagridService.addListener(INTENT_STATE_EVENT_CHANNEL_NAME, this, Long.class, IntentStateList.class);
 		networkGraphService.registerNetworkGraphListener(this);
 		persistIntent = new PersistIntent(controllerRegistry, networkGraphService);
-
 	}
 
 	// ================================================================================
@@ -121,7 +126,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		highLevelIntents.executeOperations(list);
 
 		// change states of high-level intents
-		HashMap<String, IntentState> states = new HashMap<>();
+		IntentStateList states = new IntentStateList();
 		for (IntentOperation op : list) {
 			String id = op.intent.getId();
 			if (op.intent.getState().equals(IntentState.INST_ACK))
@@ -161,7 +166,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 				op.intent = pathIntents.getIntent(op.intent.getId());
 			}
 		}
-		eventChannel.addEntry(key, pathIntentOperations);
+		opEventChannel.addEntry(key, pathIntentOperations);
 		return pathIntentOperations;
 	}
 
@@ -194,8 +199,51 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			Collection<LinkEvent> removedLinkEvents,
 			Collection<DeviceEvent> addedDeviceEvents,
 			Collection<DeviceEvent> removedDeviceEvents) {
-		// TODO need optimization.
-		// Only high-level intents that affected by link down are rerouted.
+		// TODO add getIntentsByPort() and getIntentsBySwitch() to PathIntentMap.
 		reroutePaths(removedLinkEvents);
+	}
+
+	// ================================================================================
+	// IEventChannelListener implementations
+	// ================================================================================
+
+	@Override
+	public void entryAdded(IntentStateList value) {
+		entryUpdated(value);
+	}
+
+	@Override
+	public void entryRemoved(IntentStateList value) {
+		// do nothing
+	}
+
+	@Override
+	public void entryUpdated(IntentStateList value) {
+		// reflect state changes of path-level intent into application-level intents
+		IntentStateList parentStates = new IntentStateList();
+		for (Entry<String, IntentState> entry: value.entrySet()) {
+			PathIntent pathIntent = (PathIntent) pathIntents.getIntent(entry.getKey());
+			if (pathIntent == null) continue;
+
+			Intent parentIntent = pathIntent.getParentIntent();
+			if (parentIntent == null ||
+					!(parentIntent instanceof ShortestPathIntent) ||
+					!((ShortestPathIntent) parentIntent).getPathIntentId().equals(pathIntent.getId()))
+				continue;
+
+			IntentState state = entry.getValue();
+			switch (state) {
+			case INST_ACK:
+			case INST_NACK:
+			case DEL_ACK:
+			case DEL_PENDING:
+				parentStates.put(parentIntent.getId(), state);
+				break;
+			default:
+				break;
+			}
+		}
+		highLevelIntents.changeStates(parentStates);
+		pathIntents.changeStates(value);
 	}
 }
