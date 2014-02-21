@@ -273,44 +273,48 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    //
 	    networkGraph.acquireWriteLock();
 
-	    //
-	    // Apply the classified events.
-	    //
-	    // Apply the "add" events in the proper order:
-	    //   switch, port, link, device
-	    //
-	    for (SwitchEvent switchEvent : addedSwitchEvents.values())
-		addSwitch(switchEvent);
-	    for (PortEvent portEvent : addedPortEvents.values())
-		addPort(portEvent);
-	    for (LinkEvent linkEvent : addedLinkEvents.values())
-		addLink(linkEvent);
-	    for (DeviceEvent deviceEvent : addedDeviceEvents.values())
-		addDevice(deviceEvent);
-	    //
-	    // Apply the "remove" events in the reverse order:
-	    //   device, link, port, switch
-	    //
-	    for (DeviceEvent deviceEvent : removedDeviceEvents.values())
-		removeDevice(deviceEvent);
-	    for (LinkEvent linkEvent : removedLinkEvents.values())
-		removeLink(linkEvent);
-	    for (PortEvent portEvent : removedPortEvents.values())
-		removePort(portEvent);
-	    for (SwitchEvent switchEvent : removedSwitchEvents.values())
-		removeSwitch(switchEvent);
-
-	    //
-	    // Apply reordered events
-	    //
-	    applyReorderedEvents(! addedSwitchEvents.isEmpty(),
-				 ! addedPortEvents.isEmpty());
-
-	    //
-	    // Network Graph modifications completed: Release the lock
-	    //
-	    networkGraph.releaseWriteLock();
-
+	    try {
+    	    	//
+		// Apply the classified events.
+		//
+		// Apply the "add" events in the proper order:
+		//   switch, port, link, device
+		//
+    	    	for (SwitchEvent switchEvent : addedSwitchEvents.values())
+    	    	    addSwitch(switchEvent);
+    	    	for (PortEvent portEvent : addedPortEvents.values())
+    	    	    addPort(portEvent);
+    	    	for (LinkEvent linkEvent : addedLinkEvents.values())
+    	    	    addLink(linkEvent);
+    	    	for (DeviceEvent deviceEvent : addedDeviceEvents.values())
+    	    	    addDevice(deviceEvent);
+    	    	//
+    	    	// Apply the "remove" events in the reverse order:
+    	    	//   device, link, port, switch
+    	    	//
+    	    	for (DeviceEvent deviceEvent : removedDeviceEvents.values())
+    	    	    removeDevice(deviceEvent);
+    	    	for (LinkEvent linkEvent : removedLinkEvents.values())
+    	    	    removeLink(linkEvent);
+    	    	for (PortEvent portEvent : removedPortEvents.values())
+    	    	    removePort(portEvent);
+    	    	for (SwitchEvent switchEvent : removedSwitchEvents.values())
+    	    	    removeSwitch(switchEvent);
+    
+    	    	//
+    	    	// Apply reordered events
+    	    	//
+    	    	applyReorderedEvents(! addedSwitchEvents.isEmpty(),
+    	    				! addedPortEvents.isEmpty());
+    	    
+	    }
+    	    finally {
+    		//
+    		// Network Graph modifications completed: Release the lock
+    		//
+    		networkGraph.releaseWriteLock();
+	    }
+	    
 	    //
 	    // Dispatch the Topology Notification Events to the applications
 	    //
