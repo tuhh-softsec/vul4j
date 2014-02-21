@@ -21,11 +21,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import edu.stanford.ramcloud.JRamCloud;
 import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 import edu.stanford.ramcloud.JRamCloud.ObjectExistsException;
 import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
+import net.onrc.onos.datastore.RCProtos.SwitchProperty;
 
 /**
  * Switch Object in RC.
@@ -163,7 +166,6 @@ public class RCSwitch extends RCObject {
 
     public void setStatus(STATUS status) {
 	this.status = status;
-	getObjectMap().put(PROP_STATUS, status);
     }
 
     public Long getDpid() {
@@ -210,36 +212,36 @@ public class RCSwitch extends RCObject {
     public void serializeAndSetValue() {
 	Map<Object, Object> map = getObjectMap();
 
-	map.put(PROP_DPID, this.dpid);
-	if (isPortIdsModified) {
-	    byte[] portIdArray[] = new byte[portIds.size()][];
-	    map.put(PROP_PORT_IDS, portIds.toArray(portIdArray));
-	    isPortIdsModified = false;
+	SwitchProperty.Builder sw = SwitchProperty.newBuilder();
+	sw.setDpid(dpid);
+	sw.setStatus(status.ordinal());
+	
+	if (!map.isEmpty()) {
+	    serializeAndSetValue(switchKryo.get(), map);
+	    sw.setValue(ByteString.copyFrom(this.getSerializedValue()));
 	}
-
-	serializeAndSetValue(switchKryo.get(), map);
+	
+	this.value = sw.build().toByteArray();
     }
 
     @Override
     public Map<Object, Object> deserializeObjectFromValue() {
-	Map<Object, Object> map = deserializeObjectFromValue(switchKryo.get());
-
-	this.status = (STATUS) map.get(PROP_STATUS);
-
-	if (this.portIds == null) {
-	    this.portIds = new TreeSet<>(
-		    ByteArrayComparator.BYTEARRAY_COMPARATOR);
+	SwitchProperty sw = null;
+	Map<Object, Object> map = null;
+	try {
+	    sw = SwitchProperty.parseFrom(this.value);
+	    this.value = sw.getValue().toByteArray();
+	    if (this.value.length >= 1) {
+		map = deserializeObjectFromValue(switchKryo.get());
+	    } else {
+		map = new HashMap<>();
+	    }
+	    this.status = STATUS.values()[sw.getStatus()];
+	    return map;
+	} catch (InvalidProtocolBufferException e) {
+	    log.error("{" + toString() + "}: Read Switch: ", e);
+	    return null;
 	}
-	byte[] portIdArray[] = (byte[][]) map.get(PROP_PORT_IDS);
-	if (portIdArray != null) {
-	    this.portIds.clear();
-	    this.portIds.addAll(Arrays.asList(portIdArray));
-	    isPortIdsModified = false;
-	} else {
-	    // trigger write on next serialize
-	    isPortIdsModified = true;
-	}
-	return map;
     }
 
     @Override

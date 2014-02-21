@@ -1,0 +1,26 @@
+package RCProtos;
+
+option java_package = "net.onrc.onos.datastore";
+option java_outer_classname = "RCProtos";
+
+message SwitchProperty {
+  required int64 dpid = 1;
+  required int32 status = 2;
+  optional bytes value = 3;
+}
+
+message PortProperty {
+  required int64 dpid = 1;
+  required int64 number = 2;
+  required int32 status = 3;
+  optional bytes value = 4;
+}
+
+message LinkProperty {
+  required bytes srcSwId = 1;
+  required bytes srcPortId = 2;
+  required bytes dstSwId = 3;
+  required bytes dstPortId = 4;
+  required int32 status = 5;
+  optional bytes value = 6;
+}

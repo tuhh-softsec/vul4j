@@ -15,8 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import edu.stanford.ramcloud.JRamCloud;
+import net.onrc.onos.datastore.RCProtos.PortProperty;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.datastore.utils.ByteArrayComparator;
@@ -189,7 +192,6 @@ public class RCPort extends RCObject {
 
     public void setStatus(STATUS status) {
 	this.status = status;
-	getObjectMap().put(PROP_STATUS, status);
     }
 
     public Long getDpid() {
@@ -265,69 +267,40 @@ public class RCPort extends RCObject {
     }
 
     @Override
-    public void serializeAndSetValue() {
+    public void serializeAndSetValue() {	
 	Map<Object, Object> map = getObjectMap();
-
-	map.put(PROP_DPID, this.dpid);
-	map.put(PROP_NUMBER, this.number);
-	if (isLinkIdsModified) {
-	    byte[] linkIdArray[] = new byte[linkIds.size()][];
-	    map.put(PROP_LINK_IDS, linkIds.toArray(linkIdArray));
-	    isLinkIdsModified = false;
+	
+	PortProperty.Builder port = PortProperty.newBuilder();
+	port.setDpid(dpid);
+	port.setNumber(number);
+	port.setStatus(status.ordinal());
+	
+	if (!map.isEmpty()) {
+	    serializeAndSetValue(portKryo.get(), map);
+	    port.setValue(ByteString.copyFrom(this.getSerializedValue()));
 	}
-	if (isDeviceIdsModified) {
-	    byte[] deviceIdArray[] = new byte[deviceIds.size()][];
-	    map.put(PROP_DEVICE_IDS, deviceIds.toArray(deviceIdArray));
-	    isDeviceIdsModified = false;
-	}
-	if (log.isWarnEnabled() && (linkIds.size() * deviceIds.size()) != 0) {
-	    log.warn("Either #LinkIds:{} or #DeviceIds:{} is expected to be 0",
-		    linkIds.size(), deviceIds.size());
-	}
-
-	serializeAndSetValue(portKryo.get(), map);
+	
+	this.value = port.build().toByteArray();
     }
 
     @Override
     public Map<Object, Object> deserializeObjectFromValue() {
-	Map<Object, Object> map = deserializeObjectFromValue(portKryo.get());
-
-	this.status = (STATUS) map.get(PROP_STATUS);
-
-	if (this.linkIds == null) {
-	    this.linkIds = new TreeSet<>(
-		    ByteArrayComparator.BYTEARRAY_COMPARATOR);
-	}
-	byte[] linkIdArray[] = (byte[][]) map.get(PROP_LINK_IDS);
-	if (linkIdArray != null) {
-	    this.linkIds.clear();
-	    this.linkIds.addAll(Arrays.asList(linkIdArray));
-	    isLinkIdsModified = false;
-	} else {
-	    // trigger write on next serialize
-	    isLinkIdsModified = true;
-	}
-
-	if (this.deviceIds == null) {
-	    this.deviceIds = new TreeSet<>(
-		    ByteArrayComparator.BYTEARRAY_COMPARATOR);
-	}
-	byte[] deviceIdArray[] = (byte[][]) map.get(PROP_DEVICE_IDS);
-	if (deviceIdArray != null) {
-	    this.deviceIds.clear();
-	    this.deviceIds.addAll(Arrays.asList(deviceIdArray));
-	    isDeviceIdsModified = false;
-	} else {
-	    // trigger write on next serialize
-	    isDeviceIdsModified = true;
-	}
-
-	if (log.isWarnEnabled() && (linkIds.size() * deviceIds.size()) != 0) {
-	    log.warn("Either #LinkIds:{} or #DeviceIds:{} is expected to be 0",
-		    linkIds.size(), deviceIds.size());
-	}
-
-	return map;
+	PortProperty port = null;
+	Map<Object, Object> map = null;
+	try {
+	    port = PortProperty.parseFrom(this.value);
+	    this.value = port.getValue().toByteArray();
+	    if (this.value.length >= 1) {
+		map = deserializeObjectFromValue(portKryo.get());
+	    } else {
+		map = new HashMap<>();
+	    }
+	    this.status = STATUS.values()[port.getStatus()];
+	    return map;
+	} catch (InvalidProtocolBufferException e) {
+	    log.error("{" + toString() + "}: Read Port: ", e);
+	    return null;
+	}	
     }
 
     @Override

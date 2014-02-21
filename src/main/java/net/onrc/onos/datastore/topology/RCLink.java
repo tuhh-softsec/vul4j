@@ -11,8 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import edu.stanford.ramcloud.JRamCloud;
+import net.onrc.onos.datastore.RCProtos.LinkProperty;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
@@ -186,7 +189,6 @@ public class RCLink extends RCObject {
 
     public void setStatus(STATUS status) {
 	this.status = status;
-	getObjectMap().put(PROP_STATUS, status);
     }
 
     public SwitchPort getSrc() {
@@ -205,20 +207,39 @@ public class RCLink extends RCObject {
     public void serializeAndSetValue() {
 	Map<Object, Object> map = getObjectMap();
 
-	map.put(PROP_SRC_SW_ID, src.getSwitchID());
-	map.put(PROP_SRC_PORT_ID, src.getPortID());
-	map.put(PROP_DST_SW_ID, dst.getSwitchID());
-	map.put(PROP_DST_PORT_ID, dst.getPortID());
-
-	serializeAndSetValue(linkKryo.get(), map);
+	LinkProperty.Builder link = LinkProperty.newBuilder();
+	link.setSrcSwId(ByteString.copyFrom(src.getSwitchID()));
+	link.setSrcPortId(ByteString.copyFrom(src.getPortID()));
+	link.setDstSwId(ByteString.copyFrom(dst.getSwitchID()));
+	link.setDstPortId(ByteString.copyFrom(dst.getPortID()));
+	link.setStatus(status.ordinal());
+	
+	if (!map.isEmpty()) {
+	    serializeAndSetValue(linkKryo.get(), map);
+	    link.setValue(ByteString.copyFrom(this.getSerializedValue()));
+	}
+	
+	this.value = link.build().toByteArray();
     }
 
     @Override
     public Map<Object, Object> deserializeObjectFromValue() {
-	Map<Object, Object> map = deserializeObjectFromValue(linkKryo.get());
-
-	this.status = (STATUS) map.get(PROP_STATUS);
-	return map;
+	LinkProperty link = null;
+	Map<Object, Object> map = null;
+	try {
+	    link = LinkProperty.parseFrom(this.value);
+	    this.value = link.getValue().toByteArray();
+	    if (this.value.length >= 1) {
+		map = deserializeObjectFromValue(linkKryo.get());
+	    } else {
+		map = new HashMap<>();
+	    }
+	    this.status = STATUS.values()[link.getStatus()];
+	    return map;
+	} catch (InvalidProtocolBufferException e) {
+	    log.error("{" + toString() + "}: Read Link: ", e);
+	    return null;
+	}	
     }
 
     @Override

@@ -56,7 +56,7 @@ public class RCObject {
 
     private final RCTable table;
     private final byte[] key;
-    private byte[] value;
+    protected byte[] value; //FIXME should not be exposed
     private long version;
 
     private Map<Object, Object> propertyMap;
@@ -150,6 +150,7 @@ public class RCObject {
 
     protected void serializeAndSetValue(Kryo kryo,
 	    Map<Object, Object> javaObject) {
+	
 
 	// value
 	byte[] rcTemp = new byte[1024 * 1024];
@@ -175,7 +176,7 @@ public class RCObject {
 	    Class<T> type) {
 	if (this.value == null)
 	    return null;
-
+	
 	Input input = new Input(this.value);
 	T map = kryo.readObject(input, type);
 	this.propertyMap = map;
