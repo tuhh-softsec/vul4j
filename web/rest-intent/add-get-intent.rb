@@ -146,7 +146,7 @@ puts intents.size
   def parse_options options
     max_switches = options[:max_switches].to_i || 4
     @switches = (1..max_switches).to_a
-    @ports = (1..(max_switches - 1)).to_a
+    @ports = (1..max_switches).to_a
     @intent_id = options[:intent_id]
     @intent_id ||= 1
     @intent_type = options[:intent_type]
@@ -166,19 +166,15 @@ puts intents.size
   def _create_intent src_switch, iterable_switches, json_intents
     network_id = 1
     iterable_switches.each_index do |sw_i|
-      dst_switch = iterable_switches[sw_i]
-      sw_set = @switches - [dst_switch]
-      dst_port = sw_set.index(src_switch)
-      dst_port = dst_port + 1
       intent = {
         :intent_id => "#{@intent_id}",
         :intent_type => @intent_type,
         :intent_op => @intent_op,
         :srcSwitch => src_switch.to_s,
-        :srcPort => @ports[sw_i],
+        :srcPort => @ports[-1],
         :srcMac => "00:00:c0:a8:#{mac_format(src_switch)}",
         :dstSwitch => iterable_switches[sw_i].to_s,
-        :dstPort => dst_port,
+        :dstPort => @ports[-1],
         :dstMac => "00:00:c0:a8:#{mac_format(iterable_switches[sw_i].to_i)}"
       }
 puts intent.inspect
