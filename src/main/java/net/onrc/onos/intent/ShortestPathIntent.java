@@ -13,6 +13,7 @@ public class ShortestPathIntent extends Intent {
 	protected long dstSwitchDpid;
 	protected long dstPortNumber;
 	protected long dstMacAddress;
+	protected String pathIntentId = null;
 
 	/**
 	 * Default constructor for Kryo deserialization
@@ -56,10 +57,18 @@ public class ShortestPathIntent extends Intent {
 		return dstMacAddress;
 	}
 
+	public void setPathIntent(PathIntent pathIntent) {
+		pathIntentId = pathIntent.getId();
+	}
+
+	public String getPathIntentId() {
+		return pathIntentId;
+	}
+
 	@Override
 	public String toString() {
 		return String.format("id:%s, state:%s, srcDpid:%s, srcPort:%d, srcMac:%s, dstDpid:%s, dstPort:%d, dstMac:%s",
-				getId(), state,
+				getId(), getState(),
 				new Dpid(srcSwitchDpid), srcPortNumber, MACAddress.valueOf(srcMacAddress),
 				new Dpid(dstSwitchDpid), dstPortNumber, MACAddress.valueOf(dstMacAddress));
 	}

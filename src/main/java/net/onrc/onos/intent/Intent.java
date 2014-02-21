@@ -12,10 +12,11 @@ public class Intent {
 		DEL_REQ,
 		DEL_PENDING,
 		DEL_ACK,
+		REROUTE_REQ,
 	}
 
-	protected String id;
-	protected IntentState state = IntentState.CREATED;
+	private String id;
+	private IntentState state = IntentState.CREATED;
 
 	/**
 	 * Default constructor for Kryo deserialization
@@ -48,7 +49,22 @@ public class Intent {
 
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return (id == null) ? 0 : id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if ((obj == null) || (getClass() != obj.getClass()))
+			return false;
+		Intent other = (Intent) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 	@Override

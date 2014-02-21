@@ -23,15 +23,15 @@ public class IntentOperation {
 		ERROR,
 	}
 
-	public IntentOperation() {}
+	public Operator operator;
+	public Intent intent;
+
+	protected IntentOperation() {}
 
 	public IntentOperation(Operator operator, Intent intent) {
 		this.operator = operator;
 		this.intent = intent;
 	}
-
-	public Operator operator;
-	public Intent intent;
 
 	@Override
 	public String toString() {

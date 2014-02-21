@@ -8,6 +8,7 @@ import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.ErrorIntent;
 import net.onrc.onos.intent.ErrorIntent.ErrorType;
 import net.onrc.onos.intent.Intent;
+import net.onrc.onos.intent.Intent.IntentState;
 import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentOperation.Operator;
 import net.onrc.onos.intent.IntentOperationList;
@@ -63,13 +64,13 @@ public class PathCalcRuntime implements IFloodlightService {
 					pathIntentOpList.add(Operator.ERROR, new ErrorIntent(
 							ErrorType.SWITCH_NOT_FOUND,
 							"Switch not found.",
-							intentOp.intent));
+							spIntent));
 					continue;
 				}
 
 				double bandwidth = 0.0;
 				ConstrainedBFSTree tree = null;
-				if (intentOp.intent instanceof ConstrainedShortestPathIntent) {
+				if (spIntent instanceof ConstrainedShortestPathIntent) {
 					bandwidth = ((ConstrainedShortestPathIntent) intentOp.intent).getBandwidth();
 					tree = new ConstrainedBFSTree(srcSwitch, pathIntents, bandwidth);
 				}
@@ -82,18 +83,36 @@ public class PathCalcRuntime implements IFloodlightService {
 				}
 				Path path = tree.getPath(dstSwitch);
 				if (path == null) {
-					log.error("Path not found: {}", intentOp.intent.toString());
+					log.error("Path not found: {}", spIntent.toString());
 					pathIntentOpList.add(Operator.ERROR, new ErrorIntent(
 							ErrorType.PATH_NOT_FOUND,
 							"Path not found.",
-							intentOp.intent));
+							spIntent));
 					continue;
 				}
-				PathIntent pathIntent = new PathIntent("pi" + intentOp.intent.getId(), path, bandwidth, intentOp.intent);
+
+				// generate new path-intent ID
+				String oldPathIntentId = spIntent.getPathIntentId();
+				String newPathIntentId;
+				if (oldPathIntentId == null)
+					newPathIntentId = PathIntent.createFirstId(spIntent.getId());
+				else {
+					newPathIntentId = PathIntent.createNextId(oldPathIntentId);
+
+					// Request removal of low-level intent if it exists.
+					pathIntentOpList.add(Operator.REMOVE, new Intent(oldPathIntentId));
+				}
+
+				// create new path-intent
+				PathIntent pathIntent = new PathIntent(newPathIntentId, path, bandwidth, spIntent);
+				pathIntent.setState(IntentState.INST_REQ);
+				spIntent.setPathIntent(pathIntent);
 				pathIntentOpList.add(Operator.ADD, pathIntent);
+
 				break;
 			case REMOVE:
-				pathIntentOpList.add(Operator.REMOVE, new Intent("pi" + intentOp.intent.getId()));
+				pathIntentOpList.add(Operator.REMOVE, new Intent(
+						((ShortestPathIntent) intentOp.intent).getPathIntentId()));
 				break;
 			case ERROR:
 				// just ignore

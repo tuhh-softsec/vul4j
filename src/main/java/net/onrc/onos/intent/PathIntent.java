@@ -10,6 +10,15 @@ public class PathIntent extends Intent {
 	protected double bandwidth;
 	protected Intent parentIntent;
 
+	public static String createFirstId(String parentId) {
+		return String.format("pi%s___0", parentId);
+	}
+
+	public static String createNextId(String currentId) {
+		String parts[] = currentId.split("___");
+		return String.format("%s___%d", parts[0], Long.valueOf(parts[1])+1);
+	}
+
 	/**
 	 * Default constructor for Kryo deserialization
 	 */

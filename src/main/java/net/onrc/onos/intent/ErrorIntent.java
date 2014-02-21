@@ -22,7 +22,7 @@ public class ErrorIntent extends Intent {
 	}
 
 	public ErrorIntent(ErrorType errorType, String message, Intent parentIntent) {
-		this.id = parentIntent.getId();
+		super(parentIntent.getId());
 		this.errorType = errorType;
 		this.message = message;
 		this.parentIntent = parentIntent;

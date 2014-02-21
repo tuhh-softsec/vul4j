@@ -29,6 +29,18 @@ public class PathIntentTest {
 	}
 
 	@Test
+	public void testCreateFirstId() {
+		String id = PathIntent.createFirstId("100");
+		assertEquals("pi100___0", id);
+	}
+
+	@Test
+	public void testCreateNextId() {
+		String id = PathIntent.createNextId("pi100___999");
+		assertEquals("pi100___1000", id);
+	}
+
+	@Test
 	public void test() {
 		KryoFactory factory = new KryoFactory();
 		Kryo kryo = factory.newKryo();

@@ -13,7 +13,6 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.datagrid.IEventChannel;
-import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.Intent.IntentState;
 import net.onrc.onos.intent.IntentMap;
 import net.onrc.onos.intent.IntentOperation;
@@ -60,11 +59,9 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 		if (oldPaths.isEmpty())
 			return;
+
 		IntentOperationList reroutingOperation = new IntentOperationList();
 		for (PathIntent pathIntent : oldPaths) {
-			// TODO use Operator.UPDATE instead of REMOVE and ADD in order to
-			// optimize
-			reroutingOperation.add(Operator.REMOVE, new Intent(pathIntent.getParentIntent().getId()));
 			reroutingOperation.add(Operator.ADD, pathIntent.getParentIntent());
 		}
 		executeIntentOperations(reroutingOperation);
@@ -123,21 +120,26 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		// update the map of high-level intents
 		highLevelIntents.executeOperations(list);
 
-		// prepare high-level intents' state changes
+		// change states of high-level intents
 		HashMap<String, IntentState> states = new HashMap<>();
 		for (IntentOperation op : list) {
 			String id = op.intent.getId();
-			states.put(id, IntentState.INST_REQ);
+			if (op.intent.getState().equals(IntentState.INST_ACK))
+				states.put(id, IntentState.REROUTE_REQ);
+			else
+				states.put(id, IntentState.INST_REQ);
 		}
+		highLevelIntents.changeStates(states);
 
 		// calculate path-intents (low-level operations)
 		IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, pathIntents);
 
-		// persist calculated low-level operations
+		// persist calculated low-level operations into data store
 		long key = persistIntent.getKey();
 		persistIntent.persistIfLeader(key, pathIntentOperations);
 
 		// remove error-intents and reflect them to high-level intents
+		states.clear();
 		Iterator<IntentOperation> i = pathIntentOperations.iterator();
 		while (i.hasNext()) {
 			IntentOperation op = i.next();
@@ -185,7 +187,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			Collection<DeviceEvent> addedDeviceEvents,
 			Collection<DeviceEvent> removedDeviceEvents) {
 		// TODO need optimization.
-		// This reroutes only if when some links are removed for now.
+		// Only high-level intents that affected by link down are rerouted.
 		reroutePaths(removedLinkEvents);
 	}
 }

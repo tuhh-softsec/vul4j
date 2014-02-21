@@ -1,5 +1,6 @@
 package net.onrc.onos.intent.runtime;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +12,9 @@ import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.Intent;
+import net.onrc.onos.intent.Intent.IntentState;
 import net.onrc.onos.intent.IntentOperation.Operator;
+import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.MockNetworkGraph;
 import net.onrc.onos.intent.PathIntent;
@@ -217,25 +220,21 @@ public class UseCaseTest {
 		showResult((PathIntentMap) runtime1.getPathIntents());
 		System.out.println(plan);
 
+		// TODO this state changes should be triggered by notification of plan module
+		HashMap<String, IntentState> states = new HashMap<>();
+		states.put("1", IntentState.INST_ACK);
+		states.put("2", IntentState.INST_ACK);
+		states.put("3", IntentState.INST_ACK);
+		runtime1.getHighLevelIntents().changeStates(states);
+
 		// link down
 		((MockNetworkGraph)g).removeLink(1L, 2L, 9L, 1L); // This link is used by the intent "1"
-		LinkEvent linkEvent = new LinkEvent(1L, 2L, 9L, 1L);
-		removedLinkEvents.clear();
-		removedLinkEvents.add(linkEvent);
-		runtime1.networkGraphEvents(
-				addedSwitchEvents,
-				removedSwitchEvents,
-				addedPortEvents,
-				removedPortEvents,
-				addedLinkEvents,
-				removedLinkEvents,
-				addedDeviceEvents,
-				removedDeviceEvents);
-
 		((MockNetworkGraph)g).removeLink(9L, 1L, 1L, 2L);
-		linkEvent = new LinkEvent(9L, 1L, 1L, 2L);
+		LinkEvent linkEvent1 = new LinkEvent(1L, 2L, 9L, 1L);
+		LinkEvent linkEvent2 = new LinkEvent(9L, 1L, 1L, 2L);
 		removedLinkEvents.clear();
-		removedLinkEvents.add(linkEvent);
+		removedLinkEvents.add(linkEvent1);
+		removedLinkEvents.add(linkEvent2);
 		runtime1.networkGraphEvents(
 				addedSwitchEvents,
 				removedSwitchEvents,
