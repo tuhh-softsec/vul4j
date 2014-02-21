@@ -5,8 +5,6 @@ import java.util.Set;
 
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.IntentOperation.Operator;
-import net.onrc.onos.ofcontroller.networkgraph.Port;
-import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntryActions;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
@@ -19,12 +17,12 @@ import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
  */
 
 public class FlowEntry {
-	protected Switch sw;
+	protected long sw;
 	protected Match match;
 	protected Set<Action> actions;
 	protected Operator operator;
 	
-	public FlowEntry(Switch sw, Port srcPort, Port dstPort, 
+	public FlowEntry(long sw, long srcPort, long dstPort, 
 			 MACAddress srcMac, MACAddress dstMac,
 			 Operator operator) {
 		this.sw = sw;
@@ -38,7 +36,7 @@ public class FlowEntry {
 		return match + "->" + actions;
 	}
 	
-	public Switch getSwitch() {
+	public long getSwitch() {
 	    return sw;
 	}
 	
@@ -52,7 +50,7 @@ public class FlowEntry {
 	
 	public net.onrc.onos.ofcontroller.util.FlowEntry getFlowEntry() {
 		net.onrc.onos.ofcontroller.util.FlowEntry entry = new net.onrc.onos.ofcontroller.util.FlowEntry();
-		entry.setDpid(new Dpid(sw.getDpid()));
+		entry.setDpid(new Dpid(sw));
 		entry.setFlowEntryId(new FlowEntryId(0)); // all zero for now
 		entry.setFlowEntryMatch(match.getFlowEntryMatch());
 		FlowEntryActions flowEntryActions = new FlowEntryActions();
@@ -66,6 +64,8 @@ public class FlowEntry {
 		    break;
 		case REMOVE:
 		    entry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
+		    break;
+		default:
 		    break;
 		}
 		return entry;

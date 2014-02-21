@@ -9,7 +9,7 @@ import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+//import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.util.Pair;
 
 import org.slf4j.Logger;
@@ -22,34 +22,36 @@ import org.slf4j.LoggerFactory;
  */
 
 public class PlanInstallRuntime {
-    NetworkGraph graph;
+//    NetworkGraph graph;
     IFlowPusherService pusher;
     IFloodlightProviderService provider;
     private final static Logger log = LoggerFactory.getLogger(PlanInstallRuntime.class);
 
-    public PlanInstallRuntime(NetworkGraph graph, 
+    public PlanInstallRuntime(//NetworkGraph graph, 
 	    		      IFloodlightProviderService provider,
 	                      IFlowPusherService pusher) {
-	this.graph = graph;
+//	this.graph = graph;
 	this.provider = provider;
 	this.pusher = pusher;
     }
 
-    public void installPlan(List<Set<FlowEntry>> plan) {
+    public boolean installPlan(List<Set<FlowEntry>> plan) {
 	Map<Long,IOFSwitch> switches = provider.getSwitches();
 	log.debug("IOFSwitches: {}", switches);
 	for(Set<FlowEntry> phase : plan) {
 	    Set<Pair<IOFSwitch, net.onrc.onos.ofcontroller.util.FlowEntry>> entries = new HashSet<>();
 	    // convert flow entries and create pairs
 	    for(FlowEntry entry : phase) {
-		entries.add(new Pair<>(switches.get(entry.getSwitch().getDpid()), 
-			entry.getFlowEntry()));
+		IOFSwitch sw = switches.get(entry.getSwitch());
+		entries.add(new Pair<>(sw, entry.getFlowEntry()));
 	    }
 	    log.debug("Pushing flow entries: {}", entries);
 	    // push flow entries to switches
 	    pusher.pushFlowEntries(entries);
 	    // TODO: wait for confirmation messages before proceeding
 	}
+	// TODO: we assume that the plan installation succeeds for now
+	return true;
     }
 
 }

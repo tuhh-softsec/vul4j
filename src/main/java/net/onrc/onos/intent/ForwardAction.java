@@ -1,6 +1,5 @@
 package net.onrc.onos.intent;
 
-import net.onrc.onos.ofcontroller.networkgraph.Port;
 import net.onrc.onos.ofcontroller.util.FlowEntryAction;
 
 /**
@@ -10,20 +9,20 @@ import net.onrc.onos.ofcontroller.util.FlowEntryAction;
  */
 
 class ForwardAction extends Action {
-	protected Port dstPort;
+	protected long dstPort;
 	
-	public ForwardAction(Port dstPort) {
+	public ForwardAction(long dstPort) {
 		this.dstPort = dstPort;
 	}
 	
 	public String toString() {
-		return dstPort.toString();
+		return Long.toString(dstPort);
 	}
 
 	@Override
 	public FlowEntryAction getFlowEntryAction() {
 	    FlowEntryAction action = new FlowEntryAction();
-	    action.setActionOutput(new net.onrc.onos.ofcontroller.util.Port(dstPort.getNumber().shortValue()));
+	    action.setActionOutput(new net.onrc.onos.ofcontroller.util.Port((short) dstPort));
 	    return action;
 	}
 	
