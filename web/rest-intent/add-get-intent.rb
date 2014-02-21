@@ -10,10 +10,23 @@ options = {
 }
 
 parser = OptionParser.new do |opts|
-  opts.banner = "Usage add-get-intent [options]"
-  opts.on('-g', '--get_intents', 'get intents state') do
+  opts.banner = "Usage [get-options] [post-options]"
+
+  opts.separator  ""
+  opts.separator  "Get options:"
+
+  opts.on('-G', '--get_intents', 'get intents state') do
+    options[:get_intents] = true
     options[:rest_op] = "get"
   end
+  opts.on('-g', '--get_intent intent_id', 'get intent state') do |intent_id|
+    options[:rest_op] = "get"
+    options[:get_intent] = intent_id
+  end
+
+  opts.separator  ""
+  opts.separator  "Post options:"
+
   opts.on('-t', '--max_intents max_intents', 'max. number of intents') do |max_intents|
     options[:max_intents] = max_intents
   end
@@ -57,7 +70,6 @@ parser = OptionParser.new do |opts|
 end
 parser.parse!
 
-
 class Intent
   attr_reader :switches, :ports, :intent_id
   attr_reader :application_id, :intent_type, :intent_op
@@ -72,8 +84,14 @@ class Intent
     create_specific_intent
   end
 
-  def get_intent
-    request = RestClient.get "http://#{@server}:#{@port}/wm/onos/datagrid/get/intents/json"
+  def get_intent options
+    if options[:get_intents] == true
+      request = RestClient.get "http://#{@server}:#{@port}/wm/onos/datagrid/get/intents/json"
+    else
+      url = "http://#{@server}:#{@port}/wm/onos/datagrid/get/intent/#{options[:get_intent]}/json"
+      request = RestClient.get url
+      #request = RestClient.get "http://#{@server}:#{@port}/wm/onos/datagrid/get/intent/json",{:intent_id => options[:get_intent]}
+    end
     puts request
   end
 
@@ -124,7 +142,7 @@ puts intents.size
 
   def post intents
     json_data = intents.to_json
-    response = RestClient.post "http://#{@server}:#{@port}/wm/onos/datagrid/#{intent_op}/intents/json", json_data, :content_type => :json, :accept => :json
+    #response = RestClient.post "http://#{@server}:#{@port}/wm/onos/datagrid/#{intent_op}/intents/json", json_data, :content_type => :json, :accept => :json
     puts response
   end
 
@@ -188,7 +206,7 @@ end
 
 intent = Intent.new options
 if options[:rest_op] == "get"
-  intent.get_intent
+  intent.get_intent options
 else
   json_data = intent.post_intent
 end

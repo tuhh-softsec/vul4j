@@ -105,17 +105,29 @@ public class IntentResource extends ServerResource {
                 getAttributes().get(IPathCalcRuntimeService.class.getCanonicalName());
         ObjectMapper mapper = new ObjectMapper();
         String restStr = "";
+
+        String intentId = (String) getRequestAttributes().get("intent_id");
         ArrayNode arrayNode = mapper.createArrayNode();
         IntentMap intentMap = pathRuntime.getHighLevelIntents();
         Collection<Intent> intents = intentMap.getAllIntents();
         if (!intents.isEmpty()) {
-            for (Intent intent : intents) {
-                ObjectNode node = mapper.createObjectNode();
-                node.put("intent_id", intent.getId());
-                node.put("status", intent.getState().toString());
-                arrayNode.add(node);
-                restStr = mapper.writeValueAsString(arrayNode);
+            if ((intentId != null )) {
+                Intent intent = intentMap.getIntent(intentId);
+                if (intent != null) {
+                    ObjectNode node = mapper.createObjectNode();
+                    node.put("intent_id", intent.getId());
+                    node.put("status", intent.getState().toString());
+                    arrayNode.add(node);
+                }
+            } else {
+                for (Intent intent : intents) {
+                    ObjectNode node = mapper.createObjectNode();
+                    node.put("intent_id", intent.getId());
+                    node.put("status", intent.getState().toString());
+                    arrayNode.add(node);
+                }
             }
+            restStr = mapper.writeValueAsString(arrayNode);
         }
         return restStr;
     }
@@ -146,9 +158,8 @@ public class IntentResource extends ServerResource {
 
     private void appendIntentStatus(String status, final String applnIntentId, 
             ObjectMapper mapper, ArrayNode arrayNode) throws IOException {
-        String intentId = applnIntentId.split(":")[1];
         ObjectNode node = mapper.createObjectNode();
-        node.put("intent_id", intentId);
+        node.put("intent_id", applnIntentId);
         node.put("status", status);
         arrayNode.add(node);
     }

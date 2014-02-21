@@ -19,6 +19,7 @@ public class DatagridWebRoutable implements RestletRoutable {
         router.attach("/get/map/{map-name}/json", GetMapResource.class);
         router.attach("/add/intents/json", IntentResource.class);
         router.attach("/get/intents/json", IntentResource.class);
+        router.attach("/get/intent/{intent_id}/json", IntentResource.class);
         return router;
     }
 
