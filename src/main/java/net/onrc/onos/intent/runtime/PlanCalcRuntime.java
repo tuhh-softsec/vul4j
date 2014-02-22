@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.Intent;
@@ -29,6 +32,7 @@ import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 public class PlanCalcRuntime {
 
 //    NetworkGraph graph;
+    private final static Logger log = LoggerFactory.getLogger(PlanCalcRuntime.class);
 
     public PlanCalcRuntime(/*NetworkGraph graph*/) {
 //	this.graph = graph;
@@ -42,6 +46,10 @@ public class PlanCalcRuntime {
     private Set<Collection<FlowEntry>> computeFlowEntries(IntentOperationList intentOps) {
 	Set<Collection<FlowEntry>> flowEntries = new HashSet<>();
 	for(IntentOperation i : intentOps) {
+	    if(!(i.intent instanceof PathIntent)) {
+		log.warn("Not a path intent: {}", i);
+		continue;
+	    }
 	    PathIntent intent = (PathIntent) i.intent;
 	    Intent parent = intent.getParentIntent();
 	    long srcPort, dstPort;
@@ -60,7 +68,7 @@ public class PlanCalcRuntime {
 		lastDstPort = pathIntent.getDstPortNumber();
 	    }
 	    else {
-		// TODO: log this error
+		log.warn("Unsupported Intent: {}", parent);
 		continue;
 	    }
 	    List<FlowEntry> entries = new ArrayList<>();

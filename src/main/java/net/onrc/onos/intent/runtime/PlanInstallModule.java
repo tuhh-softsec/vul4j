@@ -67,7 +67,8 @@ public class PlanInstallModule implements IFloodlightModule {
 	    while(true) {
 		try {
 		    IntentOperationList intents = intentQueue.take();
-		    //TODO: drain the remaining intent lists
+		    //TODO: consider draining the remaining intent lists 
+		    //      and processing in one big batch
 		    processIntents(intents);
 		} catch (InterruptedException e) {
 		    log.warn("Error taking from intent queue: {}", e.getMessage());
@@ -162,13 +163,13 @@ public class PlanInstallModule implements IFloodlightModule {
     
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-	// TODO Auto-generated method stub
+	// no services, for now
 	return null;
     }
 
     @Override
     public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
-	// TODO Auto-generated method stub
+	// no services, for now
 	return null;
     }
 

@@ -40,14 +40,25 @@ public class PlanInstallRuntime {
 	log.debug("IOFSwitches: {}", switches);
 	for(Set<FlowEntry> phase : plan) {
 	    Set<Pair<IOFSwitch, net.onrc.onos.ofcontroller.util.FlowEntry>> entries = new HashSet<>();
+	    Set<IOFSwitch> modifiedSwitches = new HashSet<>();
+
 	    // convert flow entries and create pairs
 	    for(FlowEntry entry : phase) {
 		IOFSwitch sw = switches.get(entry.getSwitch());
+		if(sw == null) {
+		    // no active switch, skip this flow entry
+		    log.debug("Skipping flow entry: {}", entry);
+		    continue;
+		}
 		entries.add(new Pair<>(sw, entry.getFlowEntry()));
+		modifiedSwitches.add(sw);
 	    }
-	    log.debug("Pushing flow entries: {}", entries);
+	    
 	    // push flow entries to switches
+	    log.debug("Pushing flow entries: {}", entries);
 	    pusher.pushFlowEntries(entries);
+	    
+	    // TODO: insert a barrier after each phase on each modifiedSwitch
 	    // TODO: wait for confirmation messages before proceeding
 	}
 	// TODO: we assume that the plan installation succeeds for now
