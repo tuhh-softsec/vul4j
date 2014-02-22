@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
@@ -48,20 +51,24 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	private IEventChannel<Long, IntentOperationList> opEventChannel;
 	private static final String INTENT_OP_EVENT_CHANNEL_NAME = "onos.pathintent";
 	private static final String INTENT_STATE_EVENT_CHANNEL_NAME = "onos.pathintent_state";
+	private static final Logger log = LoggerFactory.getLogger(PathCalcRuntimeModule.class);
 
 	// ================================================================================
 	// private methods
 	// ================================================================================
 
-	private void reroutePaths(Collection<PathIntent> oldPaths) {
+	private void reroutePaths(Collection<Intent> oldPaths) {
 		if (oldPaths == null || oldPaths.isEmpty())
 			return;
 
 		IntentOperationList reroutingOperation = new IntentOperationList();
-		for (PathIntent pathIntent : oldPaths) {
-			reroutingOperation.add(Operator.ADD, pathIntent.getParentIntent());
+		for (Intent pathIntent : oldPaths) {
+			reroutingOperation.add(Operator.ADD, ((PathIntent) pathIntent).getParentIntent());
 		}
-		executeIntentOperations(reroutingOperation);
+	}
+
+	private void log(String step) {
+		log.error("Step:{}, Time:{}", step, System.nanoTime());
 	}
 
 	// ================================================================================
@@ -115,9 +122,12 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	@Override
 	public IntentOperationList executeIntentOperations(IntentOperationList list) {
 		// update the map of high-level intents
+		log("begin_updateInMemoryIntents");
 		highLevelIntents.executeOperations(list);
+		log("end_updateInMemoryIntents");
 
 		// change states of high-level intents
+		log("begin_updateInMemoryIntents");
 		IntentStateList states = new IntentStateList();
 		for (IntentOperation op : list) {
 			String id = op.intent.getId();
@@ -127,15 +137,21 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 				states.put(id, IntentState.INST_REQ);
 		}
 		highLevelIntents.changeStates(states);
+		log("end_updateInMemoryIntents");
 
 		// calculate path-intents (low-level operations)
+		log("begin_calcPathIntents");
 		IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, pathIntents);
+		log("end_calcPathIntents");
 
 		// persist calculated low-level operations into data store
+		log("begin_persistPathIntents");
 		long key = persistIntent.getKey();
 		persistIntent.persistIfLeader(key, pathIntentOperations);
+		log("end_persistPathIntents");
 
 		// remove error-intents and reflect them to high-level intents
+		log("begin_removeErrorIntents");
 		states.clear();
 		Iterator<IntentOperation> i = pathIntentOperations.iterator();
 		while (i.hasNext()) {
@@ -146,19 +162,26 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			}
 		}
 		highLevelIntents.changeStates(states);
+		log("end_removeErrorIntents");
 
-		// update the map of low-level intents and publish the low-level
-		// operations
+		// update the map of path intents and publish the path operations
+		log("begin_updateInMemoryPathIntents");
 		pathIntents.executeOperations(pathIntentOperations);
+		log("end_updateInMemoryPathIntents");
 
-		// send remove operation includes intent which has a complete path
-		// TODO need optimization
+		// Demo special: add a complete path to remove operation
+		log("begin_addPathToRemoveOperation");
 		for (IntentOperation op: pathIntentOperations) {
 			if(op.operator.equals(Operator.REMOVE)) {
 				op.intent = pathIntents.getIntent(op.intent.getId());
 			}
 		}
+		log("end_addPathToRemoveOperation");
+
+		// send notification
+		log("begin_sendNotification");
 		opEventChannel.addEntry(key, pathIntentOperations);
+		log("end_sendNotification");
 		return pathIntentOperations;
 	}
 
@@ -192,18 +215,34 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			Collection<DeviceEvent> addedDeviceEvents,
 			Collection<DeviceEvent> removedDeviceEvents) {
 
-		HashSet<PathIntent> affectedPaths = new HashSet<>();
+		log("called_networkGraphEvents");
+		HashSet<Intent> affectedPaths = new HashSet<>();
 
-		for (SwitchEvent switchEvent: removedSwitchEvents)
-			affectedPaths.addAll(pathIntents.getIntentsByDpid(switchEvent.getDpid()));
+		if (addedLinkEvents.size() > 0 ||
+				addedPortEvents.size() > 0 ||
+				addedSwitchEvents.size() > 0) {
+			log("begin_getAllIntents");
+			affectedPaths.addAll(getPathIntents().getAllIntents());
+			log("end_getAllIntents");
+		}
+		else {
+			log("begin_getIntentsByLink");
+			for (LinkEvent linkEvent: removedLinkEvents)
+				affectedPaths.addAll(pathIntents.getIntentsByLink(linkEvent));
+			log("end_getIntentsByLink");
 
-		for (PortEvent portEvent: removedPortEvents)
-			affectedPaths.addAll(pathIntents.getIntentsByPort(portEvent.getDpid(), portEvent.getNumber()));
+			log("begin_getIntentsByPort");
+			for (PortEvent portEvent: removedPortEvents)
+				affectedPaths.addAll(pathIntents.getIntentsByPort(portEvent.getDpid(), portEvent.getNumber()));
+			log("end_getIntentsByPort");
 
-		for (LinkEvent linkEvent: removedLinkEvents)
-			affectedPaths.addAll(pathIntents.getIntentsByLink(linkEvent));
-
+			log("begin_getIntentsByDpid");
+			for (SwitchEvent switchEvent: removedSwitchEvents)
+				affectedPaths.addAll(pathIntents.getIntentsByDpid(switchEvent.getDpid()));
+			log("end_getIntentsByDpid");
+		}
 		reroutePaths(affectedPaths);
+		log("finished_networkGraphEvents");
 	}
 
 	// ================================================================================
@@ -212,6 +251,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 	@Override
 	public void entryAdded(IntentStateList value) {
+		log("called_EntryAdded");
 		entryUpdated(value);
 	}
 
@@ -222,7 +262,9 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 	@Override
 	public void entryUpdated(IntentStateList value) {
+		log("called_EntryUpdated");
 		// reflect state changes of path-level intent into application-level intents
+		log("begin_changeStateByNotification");
 		IntentStateList parentStates = new IntentStateList();
 		for (Entry<String, IntentState> entry: value.entrySet()) {
 			PathIntent pathIntent = (PathIntent) pathIntents.getIntent(entry.getKey());
@@ -248,5 +290,6 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		}
 		highLevelIntents.changeStates(parentStates);
 		pathIntents.changeStates(value);
+		log("end_changeStateByNotification");
 	}
 }
