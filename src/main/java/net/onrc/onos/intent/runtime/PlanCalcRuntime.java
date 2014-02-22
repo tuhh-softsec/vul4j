@@ -17,11 +17,8 @@ import net.onrc.onos.intent.IntentOperation.Operator;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.ShortestPathIntent;
-import net.onrc.onos.ofcontroller.networkgraph.Link;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.networkgraph.Port;
-import net.onrc.onos.ofcontroller.networkgraph.Switch;
+//import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 
 /**
  *
@@ -31,10 +28,10 @@ import net.onrc.onos.ofcontroller.networkgraph.Switch;
 
 public class PlanCalcRuntime {
 
-    NetworkGraph graph;
+//    NetworkGraph graph;
 
-    public PlanCalcRuntime(NetworkGraph graph) {
-	this.graph = graph;
+    public PlanCalcRuntime(/*NetworkGraph graph*/) {
+//	this.graph = graph;
     }
 
     public List<Set<FlowEntry>> computePlan(IntentOperationList intentOps) {
@@ -47,16 +44,20 @@ public class PlanCalcRuntime {
 	for(IntentOperation i : intentOps) {
 	    PathIntent intent = (PathIntent) i.intent;
 	    Intent parent = intent.getParentIntent();
-	    Port srcPort, dstPort, lastDstPort = null;
+	    long srcPort, dstPort;
+	    long lastDstSw = -1, lastDstPort = -1;
 	    MACAddress srcMac, dstMac;
 	    if(parent instanceof ShortestPathIntent) {
 		ShortestPathIntent pathIntent = (ShortestPathIntent) parent;
-		Switch srcSwitch = graph.getSwitch(pathIntent.getSrcSwitchDpid());
-		srcPort = srcSwitch.getPort(pathIntent.getSrcPortNumber());
+//		Switch srcSwitch = graph.getSwitch(pathIntent.getSrcSwitchDpid());
+//		srcPort = srcSwitch.getPort(pathIntent.getSrcPortNumber());
+		srcPort = pathIntent.getSrcPortNumber();
 		srcMac = MACAddress.valueOf(pathIntent.getSrcMac());
 		dstMac = MACAddress.valueOf(pathIntent.getDstMac());
-		Switch dstSwitch = graph.getSwitch(pathIntent.getDstSwitchDpid());
-		lastDstPort = dstSwitch.getPort(pathIntent.getDstPortNumber());
+//		Switch dstSwitch = graph.getSwitch(pathIntent.getDstSwitchDpid());
+		lastDstSw = pathIntent.getDstSwitchDpid();
+//		lastDstPort = dstSwitch.getPort(pathIntent.getDstPortNumber());
+		lastDstPort = pathIntent.getDstPortNumber();
 	    }
 	    else {
 		// TODO: log this error
@@ -64,18 +65,22 @@ public class PlanCalcRuntime {
 	    }
 	    List<FlowEntry> entries = new ArrayList<>();
 	    for(LinkEvent linkEvent : intent.getPath()) {
-		Link link = graph.getLink(linkEvent.getSrc().getDpid(),
-			  linkEvent.getSrc().getNumber(),
-			  linkEvent.getDst().getDpid(),
-			  linkEvent.getDst().getNumber());
-		Switch sw = link.getSrcSwitch();
-		dstPort = link.getSrcPort();
+//		Link link = graph.getLink(linkEvent.getSrc().getDpid(),
+//			  linkEvent.getSrc().getNumber(),
+//			  linkEvent.getDst().getDpid(),
+//			  linkEvent.getDst().getNumber());
+//		Switch sw = link.getSrcSwitch();
+		long sw = linkEvent.getSrc().getDpid();
+//		dstPort = link.getSrcPort();
+		dstPort = linkEvent.getSrc().getNumber();
 		FlowEntry fe = new FlowEntry(sw, srcPort, dstPort, srcMac, dstMac, i.operator);
 		entries.add(fe);
-		srcPort = link.getDstPort();
+//		srcPort = link.getDstPort();
+		srcPort = linkEvent.getDst().getNumber();
 	    }
-	    if(lastDstPort != null) {
-		Switch sw = lastDstPort.getSwitch();
+	    if(lastDstSw >= 0 && lastDstPort >= 0) {
+		//Switch sw = lastDstPort.getSwitch();
+		long sw = lastDstSw;
 		dstPort = lastDstPort;
 		FlowEntry fe = new FlowEntry(sw, srcPort, dstPort, srcMac, dstMac, i.operator);
 		entries.add(fe);
@@ -102,6 +107,8 @@ public class PlanCalcRuntime {
 		    break;
 		case REMOVE:
 		    i -= 1;
+		    break;
+		default:
 		    break;
 		}
 		map.put(e, i);

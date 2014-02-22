@@ -1,8 +1,8 @@
 package net.onrc.onos.intent;
 
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.networkgraph.Port;
-import net.onrc.onos.ofcontroller.networkgraph.Switch;
+//import net.onrc.onos.ofcontroller.networkgraph.Port;
+//import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
 
 /**
@@ -12,13 +12,13 @@ import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
  */
 
 public class Match {
-	protected Switch sw;
+	protected long sw;
 	protected MACAddress srcMac;
 	protected MACAddress dstMac;
-	protected Port srcPort;
-
-	public Match(Switch sw, Port srcPort,
-				 MACAddress srcMac, MACAddress dstMac) {
+	protected long srcPort;
+	
+	public Match(long sw, long srcPort, 
+		     MACAddress srcMac, MACAddress dstMac) {
 		this.sw = sw;
 		this.srcPort = srcPort;
 		this.srcMac = srcMac;
@@ -43,12 +43,12 @@ public class Match {
 	    FlowEntryMatch match = new FlowEntryMatch();
 	    match.enableSrcMac(srcMac);
 	    match.enableDstMac(dstMac);
-	    match.enableInPort(new net.onrc.onos.ofcontroller.util.Port(srcPort.getNumber().shortValue()));
+	    match.enableInPort(new net.onrc.onos.ofcontroller.util.Port((short) srcPort));
 	    return match;
 	}
 
 	@Override
 	public String toString() {
-		return "(" + srcPort + "," + srcMac + "," + dstMac + ")";
+		return "Sw:" + sw + " (" + srcPort + "," + srcMac + "," + dstMac + ")";
 	}
 }

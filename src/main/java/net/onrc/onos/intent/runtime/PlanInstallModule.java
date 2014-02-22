@@ -17,10 +17,12 @@ import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.datagrid.IEventChannelListener;
 import net.onrc.onos.intent.FlowEntry;
+import net.onrc.onos.intent.Intent.IntentState;
+import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+//import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +35,13 @@ public class PlanInstallModule implements IFloodlightModule {
     private PlanCalcRuntime planCalc;
     private PlanInstallRuntime planInstall;
     private EventListener eventListener;
-    private IEventChannel<Long, IntentOperationList> channel;
+    private IEventChannel<Long, IntentStateList> intentStateChannel;
     private final static Logger log = LoggerFactory.getLogger(PlanInstallModule.class);
 
 
     private static final String PATH_INTENT_CHANNEL_NAME = "onos.pathintent";
+    private static final String INTENT_STATE_EVENT_CHANNEL_NAME = "onos.pathintent_state";
+
     
     @Override
     public void init(FloodlightModuleContext context)
@@ -46,9 +50,9 @@ public class PlanInstallModule implements IFloodlightModule {
 	networkGraph = context.getServiceImpl(INetworkGraphService.class);
 	datagridService = context.getServiceImpl(IDatagridService.class);
 	flowPusher = context.getServiceImpl(IFlowPusherService.class);
-	NetworkGraph graph = networkGraph.getNetworkGraph();
-	planCalc = new PlanCalcRuntime(graph);
-	planInstall = new PlanInstallRuntime(graph, floodlightProvider, flowPusher);
+//	NetworkGraph graph = networkGraph.getNetworkGraph();
+	planCalc = new PlanCalcRuntime();
+	planInstall = new PlanInstallRuntime(floodlightProvider, flowPusher);
 	eventListener = new EventListener();
     }
 
@@ -56,6 +60,7 @@ public class PlanInstallModule implements IFloodlightModule {
     	implements IEventChannelListener<Long, IntentOperationList> {
 	
 	private BlockingQueue<IntentOperationList> intentQueue = new LinkedBlockingQueue<>();
+	private Long key = Long.valueOf(0);
 	
 	@Override
 	public void run() {
@@ -74,11 +79,44 @@ public class PlanInstallModule implements IFloodlightModule {
 	    log.debug("Processing OperationList {}", intents);
 	    List<Set<FlowEntry>> plan = planCalc.computePlan(intents);
 	    log.debug("Plan: {}", plan);
-	    planInstall.installPlan(plan);
+	    boolean success = planInstall.installPlan(plan);
+	    
+	    sendNotifications(intents, true, success);
+	}
+	
+	private void sendNotifications(IntentOperationList intents, boolean installed, boolean success) {
+	    IntentStateList states = new IntentStateList();
+	    for(IntentOperation i : intents) {
+		IntentState newState;
+		switch(i.operator) {
+		case REMOVE:
+		    if(installed) {
+			newState = success ? IntentState.DEL_ACK : IntentState.DEL_PENDING;
+		    }
+		    else {
+			newState = IntentState.DEL_REQ;
+		    }
+		    break;
+		case ADD:
+		default:
+		    if(installed) {
+			newState = success ? IntentState.INST_ACK : IntentState.INST_NACK;
+		    }
+		    else {
+			newState = IntentState.INST_REQ;
+		    }
+		    break;
+		}
+		states.put(i.intent.getId(), newState);
+	    }
+	    intentStateChannel.addEntry(key, states);
+	    key += 1;
 	}
 	
 	@Override
 	public void entryAdded(IntentOperationList value) {
+	    sendNotifications(value, false, false);
+	    
 	    log.debug("Added OperationList {}", value);
 	    try {
 		intentQueue.put(value);
@@ -99,11 +137,16 @@ public class PlanInstallModule implements IFloodlightModule {
     }
     @Override
     public void startUp(FloodlightModuleContext context) {
-	channel = datagridService.addListener(PATH_INTENT_CHANNEL_NAME, 
+	// start subscriber
+	datagridService.addListener(PATH_INTENT_CHANNEL_NAME, 
 				    	      eventListener, 
 				              Long.class, 
 				              IntentOperationList.class);
 	eventListener.start();
+	// start publisher
+	intentStateChannel = datagridService.createChannel(INTENT_STATE_EVENT_CHANNEL_NAME, 
+						Long.class, 
+						IntentStateList.class);
     }
     
     @Override
