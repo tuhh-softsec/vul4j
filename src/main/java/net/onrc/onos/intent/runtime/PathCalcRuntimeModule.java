@@ -125,17 +125,12 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		// update the map of high-level intents
 		log("begin_updateInMemoryIntents");
 		highLevelIntents.executeOperations(list);
-		log("end_updateInMemoryIntents");
 
 		// change states of high-level intents
-		log("begin_updateInMemoryIntents");
 		IntentStateList states = new IntentStateList();
 		for (IntentOperation op : list) {
-			String id = op.intent.getId();
 			if (op.intent.getState().equals(IntentState.INST_ACK))
-				states.put(id, IntentState.REROUTE_REQ);
-			else
-				states.put(id, IntentState.INST_REQ);
+				states.put(op.intent.getId(), IntentState.REROUTE_REQ);
 		}
 		highLevelIntents.changeStates(states);
 		log("end_updateInMemoryIntents");
