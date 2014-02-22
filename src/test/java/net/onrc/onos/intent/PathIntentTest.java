@@ -2,7 +2,6 @@ package net.onrc.onos.intent;
 
 import static org.junit.Assert.assertEquals;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
@@ -18,13 +17,8 @@ import com.esotericsoftware.kryo.io.Output;
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class PathIntentTest {
-	NetworkGraph g;
-
 	@Before
 	public void setUp() throws Exception {
-		MockNetworkGraph graph = new MockNetworkGraph();
-		graph.createSampleTopology();
-		g = graph;
 	}
 
 	@After
@@ -53,9 +47,9 @@ public class PathIntentTest {
 				new ConstrainedShortestPathIntent("1", 2L, 3L, 4L, 5L, 6L, 7L, 1000.0);
 
 		Path path = new Path();
-		path.add(new LinkEvent(g.getSwitch(1L).getPort(1L).getOutgoingLink()));
-		path.add(new LinkEvent(g.getSwitch(2L).getPort(1L).getOutgoingLink()));
-		path.add(new LinkEvent(g.getSwitch(3L).getPort(1L).getOutgoingLink()));
+		path.add(new LinkEvent(1L, 1L, 2L, 2L));
+		path.add(new LinkEvent(2L, 1L, 3L, 2L));
+		path.add(new LinkEvent(3L, 1L, 4L, 2L));
 
 		PathIntent pathIntent1 = new PathIntent("11", path, 123.45, cspIntent1);
 

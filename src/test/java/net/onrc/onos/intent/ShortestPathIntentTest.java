@@ -1,7 +1,6 @@
 package net.onrc.onos.intent;
 
 import static org.junit.Assert.*;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,13 +14,8 @@ import com.esotericsoftware.kryo.io.Output;
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class ShortestPathIntentTest {
-	NetworkGraph g;
-
 	@Before
 	public void setUp() throws Exception {
-		MockNetworkGraph graph = new MockNetworkGraph();
-		graph.createSampleTopology();
-		g = graph;
 	}
 
 	@After
