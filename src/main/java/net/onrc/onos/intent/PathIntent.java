@@ -11,7 +11,7 @@ public class PathIntent extends Intent {
 	protected Intent parentIntent;
 
 	public static String createFirstId(String parentId) {
-		return String.format("pi%s___0", parentId);
+		return String.format("%s___0", parentId);
 	}
 
 	public static String createNextId(String currentId) {
