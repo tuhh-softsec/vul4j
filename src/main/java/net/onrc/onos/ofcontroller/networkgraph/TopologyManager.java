@@ -48,7 +48,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    .getLogger(TopologyManager.class);
 
     private IEventChannel<byte[], TopologyEvent> eventChannel;
-    private static final String EVENT_CHANNEL_NAME = "onos.topology";
+    public static final String EVENT_CHANNEL_NAME = "onos.topology";
     private EventHandler eventHandler = new EventHandler();
 
     private final NetworkGraphDatastore datastore;
