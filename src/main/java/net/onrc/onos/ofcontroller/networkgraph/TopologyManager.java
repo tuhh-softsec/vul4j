@@ -387,6 +387,27 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    return;		// No events to dispatch
 	}
 
+	//
+	// Debug statements
+	// TODO: Those statements should be removed in the future
+	//
+	for (SwitchEvent switchEvent : apiAddedSwitchEvents)
+	    log.debug("Dispatch Network Graph Event: ADDED {}", switchEvent);
+	for (SwitchEvent switchEvent : apiRemovedSwitchEvents)
+	    log.debug("Dispatch Network Graph Event: REMOVED {}", switchEvent);
+	for (PortEvent portEvent : apiAddedPortEvents)
+	    log.debug("Dispatch Network Graph Event: ADDED {}", portEvent);
+	for (PortEvent portEvent : apiRemovedPortEvents)
+	    log.debug("Dispatch Network Graph Event: REMOVED {}", portEvent);
+	for (LinkEvent linkEvent : apiAddedLinkEvents)
+	    log.debug("Dispatch Network Graph Event: ADDED {}", linkEvent);
+	for (LinkEvent linkEvent : apiRemovedLinkEvents)
+	    log.debug("Dispatch Network Graph Event: REMOVED {}", linkEvent);
+	for (DeviceEvent deviceEvent : apiAddedDeviceEvents)
+	    log.debug("Dispatch Network Graph Event: ADDED {}", deviceEvent);
+	for (DeviceEvent deviceEvent : apiRemovedDeviceEvents)
+	    log.debug("Dispatch Network Graph Event: REMOVED {}", deviceEvent);
+
 	// Deliver the events
 	for (INetworkGraphListener listener : this.networkGraphListeners) {
 	    // TODO: Should copy before handing them over to listener?
@@ -433,16 +454,13 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	//  - Apply reordered Link and Device Events if Switches or Ports
 	//    were added
 	//
-	Map<ByteBuffer, PortEvent> portEvents = reorderedAddedPortEvents;
-	Map<ByteBuffer, LinkEvent> linkEvents = reorderedAddedLinkEvents;
-	Map<ByteBuffer, DeviceEvent> deviceEvents = reorderedAddedDeviceEvents;
-	reorderedAddedPortEvents = new HashMap<>();
-	reorderedAddedLinkEvents = new HashMap<>();
-	reorderedAddedDeviceEvents = new HashMap<>();
+
 	//
 	// Apply reordered Port Events if Switches were added
 	//
 	if (hasAddedSwitchEvents) {
+	    Map<ByteBuffer, PortEvent> portEvents = reorderedAddedPortEvents;
+	    reorderedAddedPortEvents = new HashMap<>();
 	    for (PortEvent portEvent : portEvents.values())
 		addPort(portEvent);
 	}
@@ -450,8 +468,13 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	// Apply reordered Link and Device Events if Switches or Ports
 	// were added.
 	//
+	Map<ByteBuffer, LinkEvent> linkEvents = reorderedAddedLinkEvents;
+	reorderedAddedLinkEvents = new HashMap<>();
 	for (LinkEvent linkEvent : linkEvents.values())
 	    addLink(linkEvent);
+	//
+	Map<ByteBuffer, DeviceEvent> deviceEvents = reorderedAddedDeviceEvents;
+	reorderedAddedDeviceEvents = new HashMap<>();
 	for (DeviceEvent deviceEvent : deviceEvents.values())
 	    addDevice(deviceEvent);
     }
