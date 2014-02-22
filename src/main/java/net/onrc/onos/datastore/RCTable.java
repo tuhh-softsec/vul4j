@@ -9,6 +9,7 @@ import edu.stanford.ramcloud.JRamCloud;
 import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 import edu.stanford.ramcloud.JRamCloud.ObjectExistsException;
 import edu.stanford.ramcloud.JRamCloud.RejectRules;
+import edu.stanford.ramcloud.JRamCloud.RejectRulesException;
 import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 
 /**
@@ -106,16 +107,21 @@ public class RCTable {
 
 	JRamCloud rcClient = RCClient.getClient();
 
-	RejectRules rules = rcClient.new RejectRules();
-	rules.setExists();
+	RejectRules rules = new RejectRules();
+	rules.rejectIfExists();
 
-	long updated_version = rcClient.writeRule(this.rcTableId, key, value,
-	        rules);
-	return updated_version;
+	try {
+	    return rcClient.write(this.rcTableId, key, value, rules);
+	} catch (ObjectExistsException e) {
+	    throw e;
+	} catch (RejectRulesException e) {
+	    log.error("Unexpected RejectRulesException", e);
+	    return JRamCloud.VERSION_NONEXISTENT;
+	}
     }
 
     /**
-     * Create a Key-Value entry on table, without existance checking.
+     * Create a Key-Value entry on table, without existence checking.
      *
      * @param key
      * @param value
@@ -140,13 +146,17 @@ public class RCTable {
 
 	JRamCloud rcClient = RCClient.getClient();
 
-	// FIXME underlying JRamCloud cannot detect "not exist"
-	// RejectRules rules = rcClient.new RejectRules();
-	// rules.setDoesntExists();
-	// JRamCloud.Object rcObj = rcClient.read(this.rcTableId, key, rules);
-	JRamCloud.Object rcObj = rcClient.read(this.rcTableId, key);
-
-	return new Entry(rcObj.key, rcObj.value, rcObj.version);
+	RejectRules rules = new RejectRules();
+	rules.rejectIfDoesntExists();
+	try {
+	    JRamCloud.Object rcObj = rcClient.read(this.rcTableId, key, rules);
+	    return new Entry(rcObj.key, rcObj.value, rcObj.version);
+	} catch (ObjectDoesntExistException e) {
+	    throw e;
+	} catch (RejectRulesException e) {
+	    log.error("Unexpected RejectRulesException", e);
+	    return null;
+	}
     }
 
     /**
@@ -165,13 +175,18 @@ public class RCTable {
 
 	JRamCloud rcClient = RCClient.getClient();
 
-	RejectRules rules = rcClient.new RejectRules();
-	rules.setDoesntExists();
-	rules.setNeVersion(version);
+	RejectRules rules = new RejectRules();
+	rules.rejectIfDoesntExists();
+	rules.rejectIfNeVersion(version);
 
-	long updated_version = rcClient.writeRule(this.rcTableId, key, value,
-	        rules);
-	return updated_version;
+	try {
+	    return rcClient.write(this.rcTableId, key, value, rules);
+	} catch (ObjectDoesntExistException|WrongVersionException e) {
+	    throw e;
+	} catch (RejectRulesException e) {
+	    log.error("Unexpected RejectRulesException", e);
+	    return JRamCloud.VERSION_NONEXISTENT;
+	}
     }
 
     /**
@@ -187,13 +202,17 @@ public class RCTable {
 
 	JRamCloud rcClient = RCClient.getClient();
 
-	RejectRules rules = rcClient.new RejectRules();
-	rules.setDoesntExists();
+	RejectRules rules = new RejectRules();
+	rules.rejectIfDoesntExists();
 
-	long updated_version = rcClient.writeRule(this.rcTableId, key, value,
-	        rules);
-	return updated_version;
-
+	try {
+	    return rcClient.write(this.rcTableId, key, value, rules);
+	} catch (ObjectDoesntExistException e) {
+	    throw e;
+	} catch (RejectRulesException e) {
+	    log.error("Unexpected RejectRulesException", e);
+	    return JRamCloud.VERSION_NONEXISTENT;
+	}
     }
 
     /**
@@ -210,13 +229,18 @@ public class RCTable {
 	    throws ObjectDoesntExistException, WrongVersionException {
 	JRamCloud rcClient = RCClient.getClient();
 
-	// FIXME underlying JRamCloud does not support cond. remove now
-	RejectRules rules = rcClient.new RejectRules();
-	rules.setDoesntExists();
-	rules.setNeVersion(version);
+	RejectRules rules = new RejectRules();
+	rules.rejectIfDoesntExists();
+	rules.rejectIfNeVersion(version);
 
-	long removed_version = rcClient.remove(this.rcTableId, key, rules);
-	return removed_version;
+	try {
+	    return rcClient.remove(this.rcTableId, key, rules);
+	} catch (ObjectDoesntExistException|WrongVersionException e) {
+	    throw e;
+	} catch (RejectRulesException e) {
+	    log.error("Unexpected RejectRulesException", e);
+	    return JRamCloud.VERSION_NONEXISTENT;
+	}
     }
 
     /**

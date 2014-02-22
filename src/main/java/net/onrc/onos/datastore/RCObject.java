@@ -24,7 +24,6 @@ import edu.stanford.ramcloud.JRamCloud.MultiWriteRspObject;
 import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
 import edu.stanford.ramcloud.JRamCloud.ObjectExistsException;
 import edu.stanford.ramcloud.JRamCloud.RejectRules;
-import edu.stanford.ramcloud.JRamCloud.TableEnumerator;
 import edu.stanford.ramcloud.JRamCloud.TableEnumerator2;
 import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
 
@@ -150,7 +149,7 @@ public class RCObject {
 
     protected void serializeAndSetValue(Kryo kryo,
 	    Map<Object, Object> javaObject) {
-	
+
 
 	// value
 	byte[] rcTemp = new byte[1024 * 1024];
@@ -176,7 +175,7 @@ public class RCObject {
 	    Class<T> type) {
 	if (this.value == null)
 	    return null;
-	
+
 	Input input = new Input(this.value);
 	T map = kryo.readObject(input, type);
 	this.propertyMap = map;
@@ -307,7 +306,7 @@ public class RCObject {
 	JRamCloud rcClient = RCClient.getClient();
 
 	final int reqs = req.size();
-	
+
 	MultiReadObject multiReadObjects = new MultiReadObject(req.size());
 
 	// setup multi-read operation
@@ -426,19 +425,18 @@ public class RCObject {
 	    WriteOp op = ops.get(i);
 	    RCObject obj = op.getObject();
 
-	    // FIXME JRamCloud.RejectRules definition is messed up
-	    RejectRules rules = rcClient.new RejectRules();
+	    RejectRules rules = new RejectRules();
 
 	    switch (op.getOp()) {
 	    case CREATE:
-		rules.setExists();
+		rules.rejectIfExists();
 		break;
 	    case FORCE_CREATE:
 		// no reject rule
 		break;
 	    case UPDATE:
-		rules.setDoesntExists();
-		rules.setNeVersion(obj.getVersion());
+		rules.rejectIfDoesntExists();
+		rules.rejectIfNeVersion(obj.getVersion());
 		break;
 	    }
 	    multiWriteObjects.setObject(i, obj.getTableId(), obj.getKey(), obj.getValue(), rules);
@@ -465,7 +463,7 @@ public class RCObject {
 
 	return fail_exists;
     }
-   
+
     public static abstract class ObjectIterator<E extends RCObject> implements
 	    Iterator<E> {
 
@@ -491,7 +489,7 @@ public class RCObject {
 //	    obj.setValueAndDeserialize(o.value, o.version);
 //	    return obj;
 //	}
-	
+
 	@Deprecated
 	@Override
 	public void remove() {

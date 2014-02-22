@@ -14,6 +14,7 @@
  */
 
 package edu.stanford.ramcloud;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -35,6 +36,8 @@ public class JRamCloud {
         System.loadLibrary("edu_stanford_ramcloud_JRamCloud");
     }
 
+    public static final long VERSION_NONEXISTENT = 0L;
+
     /// Pointer to the underlying C++ RAMCloud object associated with this
     /// object.
     private long ramcloudObjectPointer = 0;
@@ -42,85 +45,106 @@ public class JRamCloud {
     /**
      * See src/RejectRules.h.
      */
-    public class RejectRules {
-	private long givenVersion;
-        private boolean doesntExist;
-        private boolean exists;
-        private boolean versionLeGiven;
-        private boolean versionNeGiven;
+    public static class RejectRules {
+        // these needs to be in sync with JNI code;
+        public static final int DoesntExist = 1;
+        public static final int Exists = 1 << 1;
+        public static final int VersionLeGiven = 1 << 2;
+        public static final int VersionNeGiven = 1 << 3;
+
+        protected long givenVersion;
+        protected int flags;
 
         public RejectRules() {
-            this.givenVersion = -1;
-            this.exists = this.doesntExist = this.versionLeGiven = this.versionNeGiven = false;
+            clear();
         }
 
-        public void setLeVersion(long version) {
+        public void clear() {
+            this.givenVersion = VERSION_NONEXISTENT;
+            this.flags = 0x0;
+        }
+
+        public RejectRules set(int flags, long version) {
+            this.flags = flags;
+            this.givenVersion = version;
+            return this;
+        }
+
+        public RejectRules set(int flags) {
+            return set(flags,VERSION_NONEXISTENT);
+        }
+
+        public RejectRules rejectIfLeVersion(long version) {
             setVersion(version);
-            this.versionLeGiven = true;
+            this.flags |= VersionLeGiven;
+            return this;
         }
 
-        public void setExists() {
-            this.exists = true;
+        public RejectRules rejectIfExists() {
+            this.flags |= Exists;
+            return this;
         }
 
-        public void setDoesntExists() {
-            this.doesntExist = true;
+        public RejectRules rejectIfDoesntExists() {
+            this.flags |= DoesntExist;
+            return this;
         }
 
-        public void setNeVersion(long version) {
+        public RejectRules rejectIfNeVersion(long version) {
             setVersion(version);
-            this.versionNeGiven = true;
+            this.flags |= VersionNeGiven;
+            return this;
         }
 
         private void setVersion(long version) {
             this.givenVersion = version;
-        }	
+        }
     }
-    
+
     public static class MultiReadObject {
         public long[] tableId;
         public byte[] key[];
-	public short[] keyLength;
-        
+        public short[] keyLength;
+
         public MultiReadObject(int size){
             this.tableId = new long[size];
             this.key = new byte[size][];
-	    this.keyLength = new short[size];
+            this.keyLength = new short[size];
         }
-	
+
 	public void setObject(int num, long tableId, byte key[]){
             this.tableId[num] = tableId;
             this.key[num] = key;
-	    this.keyLength[num] = (short) this.key[num].length;
+            this.keyLength[num] = (short) this.key[num].length;
 	}
     }
-    
+
     public static class MultiWriteObject {
         public long[] tableId;
         public byte[] key[];
-	public short[] keyLength;
+        public short[] keyLength;
         public byte[] value[];
-	public short[] valueLength;
+        public int[] valueLength;
         public RejectRules[] rules;
 
         public MultiWriteObject(int size) {
             this.tableId = new long[size];
             this.key = new byte[size][];
-	    this.keyLength = new short[size];
+            this.keyLength = new short[size];
             this.value = new byte[size][];
-	    this.valueLength = new short[size];
+            this.valueLength = new int[size];
             this.rules = new RejectRules[size];
         }
-	
+
 	public void setObject(int num, long tableId, byte key[], byte value[], RejectRules rules){
 	    this.tableId[num] = tableId;
 	    this.key[num] = key;
 	    this.keyLength[num] = (short) key.length;
 	    this.value[num] = value;
-	    this.valueLength[num] = (short) value.length;
+	    this.valueLength[num] = value.length;
 	    this.rules[num] = rules;
 	}
-	
+
     }
 
     public static class MultiWriteRspObject {
@@ -159,27 +183,27 @@ public class JRamCloud {
         public String
         getKey()
         {
-            return new String(key);
+            return new String(key,StandardCharsets.UTF_8);
         }
 
         public String
         getValue()
         {
-            return new String(value);
+            return new String(value,StandardCharsets.UTF_8);
         }
 
         final public byte[] key;
         final public byte[] value;
         final public long version;
     }
-    
+
     public static class TableEnumeratorObject {
 	TableEnumeratorObject(Object[] _object, long _nextHash)
-        {
+	{
 	    object = _object;
 	    nextHash = _nextHash;
 	}
-	
+
 	final public Object[] object;
 	final public long nextHash;
     }
@@ -187,32 +211,32 @@ public class JRamCloud {
     public class TableEnumerator {
         private long tableEnumeratorObjectPointer = 0;
         private long ramCloudObjectPointer = 0;
-        
+
         public TableEnumerator(long tableId)
         {
             ramCloudObjectPointer = ramcloudObjectPointer;
             tableEnumeratorObjectPointer = init(tableId);
         }
-        
+
         private native long init(long tableId);
         public native boolean hasNext();
         public native Object next();
     }
 
     public class TableEnumerator2 {
-        
+
 	protected long tableId;
 	protected LinkedList<JRamCloud.Object> rcobjs = null;
 	protected long nextHash = 0;
 	protected boolean done = false;
-	
+
         public TableEnumerator2(long tableId)
         {
 	    this.tableId = tableId;
 	    rcobjs = new LinkedList<>();
         }
         public boolean hasNext() {
-	    if (rcobjs.isEmpty()) 
+	    if (rcobjs.isEmpty())
 	    {
 		if (done) {
 		    return false;
@@ -229,13 +253,13 @@ public class JRamCloud {
 	    }
 	    return true;
 	}
-	
-	public Object next() 
+
+	public Object next()
 	{
 	    return rcobjs.pop();
 	}
     }
-    
+
     /**
      * Connect to the RAMCloud cluster specified by the given coordinator's
      * service locator string. This causes the JNI code to instantiate the
@@ -265,7 +289,8 @@ public class JRamCloud {
      * object. The user really should have called disconnect, but in case
      * they did not, be sure to clean up after them.
      */
-    public void
+    @Override
+    protected void
     finalize()
     {
         System.err.println("warning: JRamCloud::disconnect() was not called " +
@@ -280,34 +305,36 @@ public class JRamCloud {
     public Object
     read(long tableId, String key)
     {
-        return read(tableId, key.getBytes());
+        return read(tableId, key.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
      * Convenience read() wrapper that take a String key argument.
+     * @throws RejectRulesException
      */
     public Object
-    read(long tableId, String key, RejectRules rules)
+    read(long tableId, String key, RejectRules rules) throws RejectRulesException
     {
-        return read(tableId, key.getBytes(), rules);
+        return read(tableId, key.getBytes(StandardCharsets.UTF_8), rules);
     }
-    
+
     /**
      * Convenience remove() wrapper that take a String key argument.
      */
     public long
     remove(long tableId, String key)
     {
-        return remove(tableId, key.getBytes());
+        return remove(tableId, key.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
      * Convenience remove() wrapper that take a String key argument.
+     * @throws RejectRulesException
      */
     public long
-    remove(long tableId, String key, RejectRules rules)
+    remove(long tableId, String key, RejectRules rules) throws RejectRulesException
     {
-        return remove(tableId, key.getBytes(), rules);
+        return remove(tableId, key.getBytes(StandardCharsets.UTF_8), rules);
     }
 
     /**
@@ -316,16 +343,17 @@ public class JRamCloud {
     public long
     write(long tableId, String key, String value)
     {
-        return write(tableId, key.getBytes(), value.getBytes());
+        return write(tableId, key.getBytes(StandardCharsets.UTF_8), value.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
      * Convenience write() wrapper that take String key and value arguments.
+     * @throws RejectRulesException
      */
     public long
-    write(long tableId, String key, String value, RejectRules rules)
+    write(long tableId, String key, String value, RejectRules rules) throws RejectRulesException
     {
-        return write(tableId, key.getBytes(), value.getBytes(), rules);
+        return write(tableId, key.getBytes(StandardCharsets.UTF_8), value.getBytes(StandardCharsets.UTF_8), rules);
     }
 
     /**
@@ -335,19 +363,20 @@ public class JRamCloud {
     public long
     write(long tableId, String key, byte[] value)
     {
-        return write(tableId, key.getBytes(), value);
+        return write(tableId, key.getBytes(StandardCharsets.UTF_8), value);
     }
 
     /**
      * Convenience write() wrapper that takes a String key and a byte[] value
      * argument.
+     * @throws RejectRulesException
      */
     public long
-    write(long tableId, String key, byte[] value, RejectRules rules)
+    write(long tableId, String key, byte[] value, RejectRules rules) throws RejectRulesException
     {
-        return write(tableId, key.getBytes(), value, rules);
+        return write(tableId, key.getBytes(StandardCharsets.UTF_8), value, rules);
     }
-    
+
     private static native long connect(String coordinatorLocator);
     private static native void disconnect(long ramcloudObjectPointer);
 
@@ -356,79 +385,79 @@ public class JRamCloud {
     public native void dropTable(String name);
     public native long getTableId(String name);
     public native Object read(long tableId, byte[] key);
-    public native Object read(long tableId, byte[] key, RejectRules rules);
+    public native Object read(long tableId, byte[] key, RejectRules rules) throws RejectRulesException;
     public native Object[] multiRead(long[] tableId, byte[] keydata[], short[] keyDataSize, int requestNum);
     public native long remove(long tableId, byte[] key);
-    public native long remove(long tableId, byte[] key, RejectRules rules);
+    public native long remove(long tableId, byte[] key, RejectRules rules) throws RejectRulesException;
     public native long write(long tableId, byte[] key, byte[] value);
-    public native long write(long tableId, byte[] key, byte[] value, RejectRules rules);
+    public native long write(long tableId, byte[] key, byte[] value, RejectRules rules) throws RejectRulesException;
+    @Deprecated
     public native long writeRule(long tableId, byte[] key, byte[] value, RejectRules rules);
-    public native MultiWriteRspObject[] multiWrite(long[] tableId, byte[] key[], short[] keyDataSize, byte[] value[], short[] valueDataSize, int requestNum, RejectRules[] rules);
+    public native MultiWriteRspObject[] multiWrite(long[] tableId, byte[] key[], short[] keyDataSize, byte[] value[], int[] valueDataSize, int requestNum, RejectRules[] rules);
     public native TableEnumeratorObject getTableObjects(long tableId, long nextHash);
 
     /*
      * The following exceptions may be thrown by the JNI functions:
      */
 
-    public class TableDoesntExistException extends Exception {
+    public static class TableDoesntExistException extends RuntimeException {
         public TableDoesntExistException(String message)
         {
             super(message);
         }
     }
 
-    public class ObjectDoesntExistException extends Exception {
+    public static class ObjectDoesntExistException extends RejectRulesException {
         public ObjectDoesntExistException(String message)
         {
             super(message);
         }
     }
 
-    public class ObjectExistsException extends Exception {
+    public static class ObjectExistsException extends RejectRulesException {
         public ObjectExistsException(String message)
         {
             super(message);
         }
     }
 
-    public class WrongVersionException extends Exception {
+    public static class WrongVersionException extends RejectRulesException {
         public WrongVersionException(String message)
         {
             super(message);
         }
     }
-    
-    public class InvalidObjectException extends Exception {
+
+    public static class InvalidObjectException extends RuntimeException {
         public InvalidObjectException(String message) {
             super(message);
         }
     }
-    
-    public class RejectRulesException extends Exception {
+
+    public static class RejectRulesException extends Exception {
         public RejectRulesException(String message) {
             super(message);
         }
     }
-    
+
     public static void tableEnumeratorTest(JRamCloud ramcloud) {
         long startTime = 0;
         for (int x = 0 ; x < 2 ; x ++){
         for(int N = 1000; N < 10000; N += 1000) {
             long EnumerateTesttable = ramcloud.createTable("EnumerateTest");
             for(int i = 0 ; i < N ; ++i) {
-                String key = new Integer(i).toString();
-                ramcloud.write(EnumerateTesttable, key.getBytes(), "Hello, World!".getBytes());
+                String key = String.valueOf(i);
+                ramcloud.write(EnumerateTesttable, key.getBytes(StandardCharsets.UTF_8), "Hello, World!".getBytes(StandardCharsets.UTF_8));
             }
 
-            MultiReadObject mread[] = new MultiReadObject[N];
             long tableIdList[] = new long[N];
             byte[] keydata[] = new byte[N][];
             short keydataSize[] = new short[N];
-	    startTime = System.nanoTime();
+            startTime = System.nanoTime();
             for (int j = 0 ; j < N ; ++j) {
                 tableIdList[j] = EnumerateTesttable;
-                String key = new Integer(j).toString();
-                keydata[j] = key.getBytes();
+                String key = String.valueOf(j);
+                keydata[j] = key.getBytes(StandardCharsets.UTF_8);
                 keydataSize[j] = (short) keydata[j].length;
             }
             JRamCloud.Object out[] = ramcloud.multiRead(tableIdList, keydata, keydataSize, N);
@@ -448,13 +477,13 @@ public class JRamCloud {
                     System.out.println("tableEnumerator object: key = [" + tableEntry.getKey() + "], value = [" + tableEntry.getValue() + "]");
                 }
             }
-	    System.out.println("old TableEnumerator : " + N + " Time : " + (System.nanoTime()-startTime));
+            System.out.println("old TableEnumerator : " + N + " Time : " + (System.nanoTime()-startTime));
 
             startTime = System.nanoTime();
             JRamCloud.TableEnumerator2 tableEnum2 = ramcloud.new TableEnumerator2(EnumerateTesttable);
-	    while (tableEnum2.hasNext()) {
-		Object tableEntry2 = tableEnum2.next();
-		if (tableEntry2 != null) {
+            while (tableEnum2.hasNext()) {
+                Object tableEntry2 = tableEnum2.next();
+                if (tableEntry2 != null) {
                     System.out.println("tableEnumerator2 object: key = [" + tableEntry2.getKey() + "], value = [" + tableEntry2.getValue() + "]");
                 }
             }
@@ -492,15 +521,16 @@ public class JRamCloud {
         }
 
         ramcloud.write(tableId, "thisIsTheKey", "thisIsTheValue");
-        
+
         long before = System.nanoTime();
         for (int i = 0; i < 1000; i++) {
+            @SuppressWarnings("unused")
             JRamCloud.Object unused = ramcloud.read(tableId, "thisIsTheKey");
         }
         long after = System.nanoTime();
         System.out.println("Avg read latency: " +
             ((double)(after - before) / 1000 / 1000) + " usec");
-        
+
         // multiRead test
         long tableId4 = ramcloud.createTable("table4");
         System.out.println("table4 id " + tableId4);
@@ -516,9 +546,9 @@ public class JRamCloud {
 
 	MultiReadObject mr = new MultiReadObject(2);
 	MultiWriteObject mw = new MultiWriteObject(2);
-	
-	mr.setObject(0, tableId4, "object1-1".getBytes());
-	mr.setObject(1, tableId5, "object2-1".getBytes());
+
+	mr.setObject(0, tableId4, "object1-1".getBytes(StandardCharsets.UTF_8));
+	mr.setObject(1, tableId5, "object2-1".getBytes(StandardCharsets.UTF_8));
 
         JRamCloud.Object out[] = ramcloud.multiRead(mr.tableId, mr.key, mr.keyLength, 2);
         for (int i = 0 ; i < 2 ; i++){
@@ -527,12 +557,12 @@ public class JRamCloud {
         }
 
         for (int i = 0; i < 1000; i++) {
-            String key1 = "key1" + new Integer(i).toString();
-            String key2 = "key2" + new Integer(i).toString();
-	    
-	    mw.setObject(0, tableId4, key1.getBytes(), "v0-value".getBytes(), null);
-	    mw.setObject(1, tableId5, key2.getBytes(), "v1".getBytes(), null);
-      	    
+            String key1 = "key1" + String.valueOf(i);
+            String key2 = "key2" + String.valueOf(i);
+
+            mw.setObject(0, tableId4, key1.getBytes(StandardCharsets.UTF_8), "v0-value".getBytes(StandardCharsets.UTF_8), null);
+            mw.setObject(1, tableId5, key2.getBytes(StandardCharsets.UTF_8), "v1".getBytes(StandardCharsets.UTF_8), null);
+
             MultiWriteRspObject[] rsp = ramcloud.multiWrite(mw.tableId, mw.key, mw.keyLength, mw.value, mw.valueLength, 2, mw.rules);
             if (rsp != null) {
                 for (int j = 0; j < rsp.length; j++) {
@@ -541,20 +571,20 @@ public class JRamCloud {
             }
         }
         for (int i = 0; i < 1000; i++) {
-            String key1 = "key1" + new Integer(i).toString();
-            String key2 = "key2" + new Integer(i).toString();
+            String key1 = "key1" + String.valueOf(i);
+            String key2 = "key2" + String.valueOf(i);
 
-	    mr.setObject(0, tableId4, key1.getBytes());
-	    mr.setObject(1, tableId5, key2.getBytes());
-	    
+            mr.setObject(0, tableId4, key1.getBytes(StandardCharsets.UTF_8));
+            mr.setObject(1, tableId5, key2.getBytes(StandardCharsets.UTF_8));
+
             out = ramcloud.multiRead(mr.tableId, mr.key, mr.keyLength, 2);
             for (int j = 0; j < 2; j++) {
                 System.out.println("multi read object: key = [" + out[j].getKey() + "], value = [" + out[j].getValue() + "]");
             }
         }
 
-	tableEnumeratorTest(ramcloud);
-	
+        tableEnumeratorTest(ramcloud);
+
         ramcloud.dropTable("table4");
         ramcloud.dropTable("table5");
         ramcloud.dropTable("table6");

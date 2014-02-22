@@ -256,11 +256,11 @@ public class RamCloudVertex extends RamCloudElement implements Vertex, Serializa
 				}
 
 				EdgeListProtoBuf edgeList = buildProtoBufFromEdgeSet(edges);
-				JRamCloud.RejectRules rules = rcClient.new RejectRules();
+				JRamCloud.RejectRules rules = new RejectRules();
 				if ( expected_version == 0L ) {
-					rules.setExists();
+					rules.rejectIfExists();
 				} else {
-					rules.setNeVersion(expected_version);
+					rules.rejectIfNeVersion(expected_version);
 				}
 				pm.write_start("RAMCloudVertex updateEdgeAdjList()");
 				long updated_version = rcClient.writeRule(graph.vertTableId, rcKey, edgeList.toByteArray(), rules);
@@ -490,7 +490,7 @@ public class RamCloudVertex extends RamCloudElement implements Vertex, Serializa
 		// TODO: Existence check costs extra (presently 2 reads), could use option to turn on/off
 		if (!exists()) {
 			PerfMon pm = PerfMon.getInstance();
-			JRamCloud vertTable = graph.getRcClient();			
+			JRamCloud vertTable = graph.getRcClient();
 			MultiWriteObject mwo = new MultiWriteObject(2);
 			mwo.setObject(1, graph.vertTableId, rcKey, ByteBuffer.allocate(0).array(), null);
 			mwo.setObject(2, graph.vertPropTableId, rcKey, ByteBuffer.allocate(0).array(), null);

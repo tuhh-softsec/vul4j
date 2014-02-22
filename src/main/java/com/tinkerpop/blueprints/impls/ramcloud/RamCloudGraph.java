@@ -25,7 +25,6 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +56,7 @@ import com.tinkerpop.blueprints.impls.ramcloud.PerfMon;
 
 import edu.stanford.ramcloud.JRamCloud;
 import edu.stanford.ramcloud.JRamCloud.MultiWriteObject;
+import edu.stanford.ramcloud.JRamCloud.RejectRules;
 
 public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, TransactionalGraph, Serializable {
     private final static Logger log = LoggerFactory.getLogger(RamCloudGraph.class);
@@ -247,9 +247,9 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
 	    }
 	    vertices.add(v);
 	}
-	
+
 	MultiWriteObject mwo = new MultiWriteObject(vertices.size()*2);
-		
+
 	for (int i=0; i < vertices.size(); i++) {
 	    RamCloudVertex v = vertices.get(i);
 	    mwo.setObject(i*2, vertTableId, v.rcKey, ByteBuffer.allocate(0).array(), null);
@@ -320,8 +320,8 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
 		    log.error("Got an exception while serializing element's property map", e);
 		    return;
 		}
-		JRamCloud.RejectRules rules = rcClient.new RejectRules();
-		rules.setNeVersion(instanceEntry.version);
+		JRamCloud.RejectRules rules = new RejectRules();
+		rules.rejectIfNeVersion(instanceEntry.version);
 		try {
 		    rcClient.writeRule(instanceTableId, "nextInstanceId".getBytes(), rcValue, rules);
 		    instanceId = curInstanceId;

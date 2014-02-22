@@ -1,6 +1,8 @@
 package com.tinkerpop.blueprints.impls.ramcloud;
 
 import edu.stanford.ramcloud.JRamCloud;
+import edu.stanford.ramcloud.JRamCloud.RejectRules;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,14 +12,14 @@ public class RamCloudWrite {
 	INDEXWRITE
     }
     private final static Logger log = LoggerFactory.getLogger(RamCloudGraph.class);
-    
+
     public static boolean writeWithRules(long tableId, byte[] rcKey, byte[] rcValue, long expectedVersion, RamCloudGraph graph, PerfMonEnum perfMonKind) {
-	JRamCloud.RejectRules rules = graph.getRcClient().new RejectRules();
+	JRamCloud.RejectRules rules = new RejectRules();
 
 	if (expectedVersion == 0) {
-	    rules.setExists();
+	    rules.rejectIfExists();
 	} else {
-	    rules.setNeVersion(expectedVersion);
+	    rules.rejectIfNeVersion(expectedVersion);
 	}
 
 	PerfMon pm = PerfMon.getInstance();

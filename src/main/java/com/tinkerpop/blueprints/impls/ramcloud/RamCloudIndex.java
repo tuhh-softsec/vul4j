@@ -38,6 +38,7 @@ import com.tinkerpop.blueprints.impls.ramcloud.RamCloudGraphProtos.IndexBlob;
 import com.tinkerpop.blueprints.impls.ramcloud.RamCloudGraphProtos.IndexBlob.Builder;
 
 import edu.stanford.ramcloud.JRamCloud;
+import edu.stanford.ramcloud.JRamCloud.RejectRules;
 
 // FIXME Index instance should be representing an Index table, not a IndexTable K-V pair
 public class RamCloudIndex<T extends Element> implements Index<T>, Serializable {
@@ -91,8 +92,8 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 	    PerfMon pm = PerfMon.getInstance();
 	    try {
 		JRamCloud rcClient = graph.getRcClient();
-		JRamCloud.RejectRules rules = rcClient.new RejectRules();
-		rules.setExists();
+		JRamCloud.RejectRules rules = new RejectRules();
+		rules.rejectIfExists();
 
 		pm.indexwrite_start("RamCloudIndex create()");
 		rcClient.writeRule(tableId, rcKey, ByteBuffer.allocate(0).array(), rules);
