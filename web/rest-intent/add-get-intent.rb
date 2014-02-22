@@ -143,7 +143,7 @@ puts intents.size
 
   def post intents
     json_data = intents.to_json
-    response = RestClient.post "http://#{@server}:#{@port}/wm/onos/datagrid/#{intent_op}/intents/json", json_data, :content_type => :json, :accept => :json
+    response = RestClient.post "http://#{@server}:#{@port}/wm/onos/datagrid/add/intents/json", json_data, :content_type => :json, :accept => :json
     puts response
   end
 

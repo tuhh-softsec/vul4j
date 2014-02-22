@@ -72,12 +72,12 @@ public class PersistIntent {
         // TODO call controllerRegistry.isClusterLeader()
         if (leader) {
             try {
-                System.out.println("persist operations to ramcloud size of operations: " + operations.size());
                 kryo.writeObject(output, operations);
                 output.close();
                 byte[] buffer = stream.toByteArray();
                 table.create(String.valueOf(key).getBytes(), buffer);
-                System.out.println("key is " + key + " value length is " + buffer.length);
+                log.debug("persist operations to ramcloud size of operations: {}", operations.size());
+                log.debug("key is {} ", key, " value length is {}", buffer.length);
                 ret = true;
             } catch (JRamCloud.ObjectExistsException ex) {
                 log.warn("Failed to store intent journal with key " + key);
