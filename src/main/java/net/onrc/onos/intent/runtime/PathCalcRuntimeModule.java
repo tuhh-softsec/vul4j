@@ -65,6 +65,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		for (Intent pathIntent : oldPaths) {
 			reroutingOperation.add(Operator.ADD, ((PathIntent) pathIntent).getParentIntent());
 		}
+		executeIntentOperations(reroutingOperation);
 	}
 
 	private void log(String step) {
@@ -262,6 +263,8 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 	@Override
 	public void entryUpdated(IntentStateList value) {
+		// TODO draw state transition diagram in multiple ONOS instances and update this method
+
 		log("called_EntryUpdated");
 		// reflect state changes of path-level intent into application-level intents
 		log("begin_changeStateByNotification");
