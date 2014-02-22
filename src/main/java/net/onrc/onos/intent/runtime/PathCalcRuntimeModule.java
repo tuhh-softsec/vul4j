@@ -53,16 +53,8 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	// private methods
 	// ================================================================================
 
-	private void reroutePaths(Collection<LinkEvent> removedLinkEvents) {
-		HashSet<PathIntent> oldPaths = new HashSet<>();
-		for (LinkEvent linkEvent : removedLinkEvents) {
-			Collection<PathIntent> intents = pathIntents.getIntentsByLink(linkEvent);
-			if (intents == null)
-				continue;
-			oldPaths.addAll(intents);
-		}
-
-		if (oldPaths.isEmpty())
+	private void reroutePaths(Collection<PathIntent> oldPaths) {
+		if (oldPaths == null || oldPaths.isEmpty())
 			return;
 
 		IntentOperationList reroutingOperation = new IntentOperationList();
@@ -85,14 +77,14 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 	@Override
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
-		Map<Class<? extends IFloodlightService>, IFloodlightService> m = new HashMap<>(1);
+		Map<Class<? extends IFloodlightService>, IFloodlightService> m = new HashMap<>();
 		m.put(IPathCalcRuntimeService.class, this);
 		return m;
 	}
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
-		Collection<Class<? extends IFloodlightService>> l = new ArrayList<>();
+		Collection<Class<? extends IFloodlightService>> l = new ArrayList<>(2);
 		l.add(IDatagridService.class);
 		l.add(INetworkGraphService.class);
 		return l;
@@ -199,8 +191,19 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			Collection<LinkEvent> removedLinkEvents,
 			Collection<DeviceEvent> addedDeviceEvents,
 			Collection<DeviceEvent> removedDeviceEvents) {
-		// TODO add getIntentsByPort() and getIntentsBySwitch() to PathIntentMap.
-		reroutePaths(removedLinkEvents);
+
+		HashSet<PathIntent> affectedPaths = new HashSet<>();
+
+		for (SwitchEvent switchEvent: removedSwitchEvents)
+			affectedPaths.addAll(pathIntents.getIntentsByDpid(switchEvent.getDpid()));
+
+		for (PortEvent portEvent: removedPortEvents)
+			affectedPaths.addAll(pathIntents.getIntentsByPort(portEvent.getDpid(), portEvent.getNumber()));
+
+		for (LinkEvent linkEvent: removedLinkEvents)
+			affectedPaths.addAll(pathIntents.getIntentsByLink(linkEvent));
+
+		reroutePaths(affectedPaths);
 	}
 
 	// ================================================================================
