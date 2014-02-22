@@ -23,6 +23,7 @@ import org.restlet.resource.ServerResource;
 import org.codehaus.jackson.map.ObjectMapper;
 import net.floodlightcontroller.util.MACAddress;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -104,12 +105,19 @@ public class IntentResource extends ServerResource {
     public String retrieve() throws IOException {
         IPathCalcRuntimeService pathRuntime = (IPathCalcRuntimeService)getContext().
                 getAttributes().get(IPathCalcRuntimeService.class.getCanonicalName());
+        
+        String intentCategory = (String) getRequestAttributes().get("category");
+        IntentMap intentMap = null;
+        if (intentCategory.equals("high")) {
+            intentMap = pathRuntime.getHighLevelIntents();
+        } else {
+            intentMap = pathRuntime.getPathIntents();
+        }
         ObjectMapper mapper = new ObjectMapper();
         String restStr = "";
 
         String intentId = (String) getRequestAttributes().get("intent_id");
         ArrayNode arrayNode = mapper.createArrayNode();
-        IntentMap intentMap = pathRuntime.getHighLevelIntents();
         Collection<Intent> intents = intentMap.getAllIntents();
         if (!intents.isEmpty()) {
             if ((intentId != null )) {
@@ -117,8 +125,15 @@ public class IntentResource extends ServerResource {
                 Intent intent = intentMap.getIntent(applnIntentId);
                 if (intent != null) {
                     ObjectNode node = mapper.createObjectNode();
+                    // TODO refactor/remove duplicate code.
                     node.put("intent_id", intentId);
                     node.put("status", intent.getState().toString());
+                    LinkedList<String> logs = intent.getLogs();
+                    ArrayNode logNode = mapper.createArrayNode();
+                    for (String intentLog :logs) {
+                        logNode.add(intentLog);
+                    }
+                    node.put("log", logNode);
                     arrayNode.add(node);
                 }
             } else {
@@ -128,6 +143,12 @@ public class IntentResource extends ServerResource {
                     intentId = applnIntentId.split(":")[1];
                     node.put("intent_id", intentId);
                     node.put("status", intent.getState().toString());
+                    LinkedList<String> logs = intent.getLogs();
+                    ArrayNode logNode = mapper.createArrayNode();
+                    for (String intentLog :logs) {
+                        logNode.add(intentLog);
+                    }
+                    node.put("log", logNode);
                     arrayNode.add(node);
                 }
             }
@@ -152,26 +173,32 @@ public class IntentResource extends ServerResource {
 		    data = node.get(fieldName);
                     parseFields(data, fieldName, fields);
 		}
-                String status = processIntent(fields, operations);
-                appendIntentStatus(status, (String)fields.get("intent_id"), mapper, arrayNode);
+                Intent intent = processIntent(fields, operations);
+                appendIntentStatus(intent, (String)fields.get("intent_id"), mapper, arrayNode);
 	    }
 	}
         pathRuntime.executeIntentOperations(operations);
         return mapper.writeValueAsString(arrayNode);
     }
 
-    private void appendIntentStatus(String status, final String intentId, 
+    private void appendIntentStatus(Intent intent, final String intentId, 
             ObjectMapper mapper, ArrayNode arrayNode) throws IOException {
         ObjectNode node = mapper.createObjectNode();
         node.put("intent_id", intentId);
-        node.put("status", status);
+        node.put("status", intent.getState().toString());
+        LinkedList<String> logs = intent.getLogs();
+        ArrayNode logNode = mapper.createArrayNode();
+        for (String intentLog : logs) {
+            logNode.add(intentLog);
+        }
+        node.put("log", logNode);
         arrayNode.add(node);
     }
     
-    private String processIntent(Map<String, Object> fields, IntentOperationList operations) {
+    private Intent processIntent(Map<String, Object> fields, IntentOperationList operations) {
         String intentType = (String)fields.get("intent_type");
         String intentOp = (String)fields.get("intent_op");
-        String status = null;
+        Intent intent;
         String applnIntentId = APPLN_ID + ":" + (String)fields.get("intent_id");
         
         IntentOperation.Operator operation = IntentOperation.Operator.ADD;
@@ -187,7 +214,7 @@ public class IntentResource extends ServerResource {
                     (long) fields.get("dstPort"),
                     MACAddress.valueOf((String) fields.get("dstMac")).toLong());
             operations.add(new IntentOperation(operation, spi));
-            status = (spi.getState()).toString();
+            intent = spi;
         } else {
             ConstrainedShortestPathIntent cspi = new ConstrainedShortestPathIntent(applnIntentId,
                     Long.decode((String) fields.get("srcSwitch")),
@@ -198,9 +225,9 @@ public class IntentResource extends ServerResource {
                     MACAddress.valueOf((String) fields.get("dstMac")).toLong(),
                     (double) fields.get("bandwidth"));
             operations.add(new IntentOperation(operation, cspi));
-            status = (cspi.getState()).toString();
+            intent = cspi;
         }
-        return status;
+        return intent;
     }
 
     private void parseFields(JsonNode node, String fieldName, Map<String, Object> fields) {

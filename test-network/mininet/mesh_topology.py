@@ -95,7 +95,6 @@ def main(argv):
   switches = 4
   if max_switches != "":
     switches = int(max_switches)
-  topos = { 'mytopo': ( lambda: MyTopo(switches) ) }
   net = Mininet(topo=MyTopo(switches), controller=MyController, link=TCLink)
   print dumpNodeConnections(net.switches)
 

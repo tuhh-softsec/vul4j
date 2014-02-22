@@ -14,7 +14,6 @@ import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IdBlock;
 import org.slf4j.Logger;

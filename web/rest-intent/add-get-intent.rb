@@ -3,7 +3,8 @@ require "optparse"
 
 options = { 
   :rest_op => "add",
-  :intent_id => 123, 
+  :intent_id => 1, 
+  :intent_category => "high",
   :intent_type => "shortest_intent_type", 
   :max_switches => 4,
   :intent_op => "add"
@@ -29,6 +30,9 @@ parser = OptionParser.new do |opts|
 
   opts.on('-t', '--max_intents max_intents', 'max. number of intents') do |max_intents|
     options[:max_intents] = max_intents
+  end
+  opts.on('-e', '--intent_category intent_category', 'intent category high|low') do |intent_category|
+    options[:intent_category] = intent_category
   end
   opts.on('-i', '--intent_id intent_id', 'global intent id') do |id|
     options[:intent_id] = id.to_i
@@ -67,6 +71,7 @@ parser = OptionParser.new do |opts|
 end
 parser.parse!
 
+
 class Intent
   attr_reader :switches, :ports, :intent_id
   attr_reader :intent_type, :intent_op
@@ -83,11 +88,10 @@ class Intent
 
   def get_intent options
     if options[:get_intents] == true
-      request = RestClient.get "http://#{@server}:#{@port}/wm/onos/datagrid/get/intents/json"
+      request = RestClient.get "http://#{@server}:#{@port}/wm/onos/datagrid/get/intents/#{options[:intent_category]}/json"
     else
-      url = "http://#{@server}:#{@port}/wm/onos/datagrid/get/intent/#{options[:get_intent]}/json"
+      url = "http://#{@server}:#{@port}/wm/onos/datagrid/get/intent/#{options[:intent_category]}/#{options[:get_intent]}/json"
       request = RestClient.get url
-      #request = RestClient.get "http://#{@server}:#{@port}/wm/onos/datagrid/get/intent/json",{:intent_id => options[:get_intent]}
     end
     puts request
   end
