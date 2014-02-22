@@ -1248,15 +1248,6 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	//	}
 
 	for (RCLink l : RCLink.getAllLinks()) {
-	    // check if src/dst switch/port exist before triggering event
-	    Port srcPort = networkGraph.getPort(l.getSrc().dpid,
-						l.getSrc().number);
-	    Port dstPort = networkGraph.getPort(l.getDst().dpid,
-						l.getDst().number);
-	    if (srcPort == null || dstPort == null) {
-		continue;
-	    }
-
 	    LinkEvent linkEvent = new LinkEvent(l.getSrc().dpid,
 						l.getSrc().number,
 						l.getDst().dpid,
