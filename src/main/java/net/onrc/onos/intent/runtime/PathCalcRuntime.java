@@ -42,6 +42,9 @@ public class PathCalcRuntime implements IFloodlightService {
 		IntentOperationList pathIntentOpList = new IntentOperationList();
 		HashMap<Switch, ConstrainedBFSTree> spfTrees = new HashMap<>();
 
+		// TODO optimize locking of NetworkGraph
+		graph.acquireReadLock();
+
 		for (IntentOperation intentOp: intentOpList) {
 			switch (intentOp.operator) {
 			case ADD:
@@ -119,6 +122,9 @@ public class PathCalcRuntime implements IFloodlightService {
 				break;
 			}
 		}
+		// TODO optimize locking of NetworkGraph
+		graph.releaseReadLock();
+
 		return pathIntentOpList;
 	}
 }
