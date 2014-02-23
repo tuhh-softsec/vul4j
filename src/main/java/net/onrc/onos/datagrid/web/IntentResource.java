@@ -213,7 +213,7 @@ public class IntentResource extends ServerResource {
                     Long.decode((String) fields.get("dstSwitch")),
                     (long) fields.get("dstPort"),
                     MACAddress.valueOf((String) fields.get("dstMac")).toLong());
-            operations.add(new IntentOperation(operation, spi));
+            operations.add(operation, spi);
             intent = spi;
         } else {
             ConstrainedShortestPathIntent cspi = new ConstrainedShortestPathIntent(applnIntentId,
@@ -224,7 +224,7 @@ public class IntentResource extends ServerResource {
                     (long) fields.get("dstPort"),
                     MACAddress.valueOf((String) fields.get("dstMac")).toLong(),
                     (double) fields.get("bandwidth"));
-            operations.add(new IntentOperation(operation, cspi));
+            operations.add(operation, cspi);
             intent = cspi;
         }
         return intent;
