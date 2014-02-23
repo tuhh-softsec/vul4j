@@ -137,7 +137,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 		// calculate path-intents (low-level operations)
 		log("begin_calcPathIntents");
-		IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, pathIntents);
+		IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, highLevelIntents, pathIntents);
 		log("end_calcPathIntents");
 
 		// persist calculated low-level operations into data store

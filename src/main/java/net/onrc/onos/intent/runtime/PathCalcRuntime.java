@@ -9,6 +9,7 @@ import net.onrc.onos.intent.ErrorIntent;
 import net.onrc.onos.intent.ErrorIntent.ErrorType;
 import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.Intent.IntentState;
+import net.onrc.onos.intent.IntentMap;
 import net.onrc.onos.intent.IntentOperation;
 import net.onrc.onos.intent.IntentOperation.Operator;
 import net.onrc.onos.intent.IntentOperationList;
@@ -38,7 +39,7 @@ public class PathCalcRuntime implements IFloodlightService {
 	 * @param pathIntents a set of current low-level intents
 	 * @return IntentOperationList. PathIntent and/or ErrorIntent instances.
 	 */
-	public IntentOperationList calcPathIntents(final IntentOperationList intentOpList, final PathIntentMap pathIntents) {
+	public IntentOperationList calcPathIntents(final IntentOperationList intentOpList, final IntentMap appIntents, final PathIntentMap pathIntents) {
 		IntentOperationList pathIntentOpList = new IntentOperationList();
 		HashMap<Switch, ConstrainedBFSTree> spfTrees = new HashMap<>();
 
@@ -114,8 +115,16 @@ public class PathCalcRuntime implements IFloodlightService {
 
 				break;
 			case REMOVE:
-				pathIntentOpList.add(Operator.REMOVE, new Intent(
-						((ShortestPathIntent) intentOp.intent).getPathIntentId()));
+				ShortestPathIntent targetAppIntent = (ShortestPathIntent) appIntents.getIntent(intentOp.intent.getId());
+				if (targetAppIntent != null) {
+					String pathIntentId = targetAppIntent.getPathIntentId();
+					if (pathIntentId != null) {
+						Intent targetPathIntent = pathIntents.getIntent(pathIntentId);
+						if (targetPathIntent != null) {
+							pathIntentOpList.add(Operator.REMOVE, targetPathIntent);
+						}
+					}
+				}
 				break;
 			case ERROR:
 				// just ignore
