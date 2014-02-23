@@ -11,8 +11,8 @@ import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
  *
  */
 public class LinkEvent {
-    private final SwitchPort src;
-    private final SwitchPort dst;
+    protected final SwitchPort src;
+    protected final SwitchPort dst;
 
     /**
      * Default constructor.

@@ -1,8 +1,6 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Self-contained Switch Object
@@ -11,7 +9,7 @@ import java.util.List;
  *
  */
 public class SwitchEvent {
-    private final Long dpid;
+    protected final Long dpid;
 
     /**
      * Default constructor.
