@@ -22,7 +22,6 @@ import net.onrc.onos.datastore.topology.RCPort;
 import net.onrc.onos.datastore.topology.RCSwitch;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 import net.onrc.onos.ofcontroller.util.EventEntry;
-import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.slf4j.Logger;
@@ -300,13 +299,13 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
     	    	    removePort(portEvent);
     	    	for (SwitchEvent switchEvent : removedSwitchEvents.values())
     	    	    removeSwitch(switchEvent);
-    
+
     	    	//
     	    	// Apply reordered events
     	    	//
     	    	applyReorderedEvents(! addedSwitchEvents.isEmpty(),
     	    				! addedPortEvents.isEmpty());
-    	    
+
 	    }
     	    finally {
     		//
@@ -314,7 +313,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
     		//
     		networkGraph.releaseWriteLock();
 	    }
-	    
+
 	    //
 	    // Dispatch the Topology Notification Events to the applications
 	    //
@@ -387,26 +386,28 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    return;		// No events to dispatch
 	}
 
-	//
-	// Debug statements
-	// TODO: Those statements should be removed in the future
-	//
-	for (SwitchEvent switchEvent : apiAddedSwitchEvents)
-	    log.debug("Dispatch Network Graph Event: ADDED {}", switchEvent);
-	for (SwitchEvent switchEvent : apiRemovedSwitchEvents)
-	    log.debug("Dispatch Network Graph Event: REMOVED {}", switchEvent);
-	for (PortEvent portEvent : apiAddedPortEvents)
-	    log.debug("Dispatch Network Graph Event: ADDED {}", portEvent);
-	for (PortEvent portEvent : apiRemovedPortEvents)
-	    log.debug("Dispatch Network Graph Event: REMOVED {}", portEvent);
-	for (LinkEvent linkEvent : apiAddedLinkEvents)
-	    log.debug("Dispatch Network Graph Event: ADDED {}", linkEvent);
-	for (LinkEvent linkEvent : apiRemovedLinkEvents)
-	    log.debug("Dispatch Network Graph Event: REMOVED {}", linkEvent);
-	for (DeviceEvent deviceEvent : apiAddedDeviceEvents)
-	    log.debug("Dispatch Network Graph Event: ADDED {}", deviceEvent);
-	for (DeviceEvent deviceEvent : apiRemovedDeviceEvents)
-	    log.debug("Dispatch Network Graph Event: REMOVED {}", deviceEvent);
+	if (log.isDebugEnabled()) {
+	    //
+	    // Debug statements
+	    // TODO: Those statements should be removed in the future
+	    //
+	    for (SwitchEvent switchEvent : apiAddedSwitchEvents)
+		log.debug("Dispatch Network Graph Event: ADDED {}", switchEvent);
+	    for (SwitchEvent switchEvent : apiRemovedSwitchEvents)
+		log.debug("Dispatch Network Graph Event: REMOVED {}", switchEvent);
+	    for (PortEvent portEvent : apiAddedPortEvents)
+		log.debug("Dispatch Network Graph Event: ADDED {}", portEvent);
+	    for (PortEvent portEvent : apiRemovedPortEvents)
+		log.debug("Dispatch Network Graph Event: REMOVED {}", portEvent);
+	    for (LinkEvent linkEvent : apiAddedLinkEvents)
+		log.debug("Dispatch Network Graph Event: ADDED {}", linkEvent);
+	    for (LinkEvent linkEvent : apiRemovedLinkEvents)
+		log.debug("Dispatch Network Graph Event: REMOVED {}", linkEvent);
+	    for (DeviceEvent deviceEvent : apiAddedDeviceEvents)
+		log.debug("Dispatch Network Graph Event: ADDED {}", deviceEvent);
+	    for (DeviceEvent deviceEvent : apiRemovedDeviceEvents)
+		log.debug("Dispatch Network Graph Event: REMOVED {}", deviceEvent);
+	}
 
 	// Deliver the events
 	for (INetworkGraphListener listener : this.networkGraphListeners) {
