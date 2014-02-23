@@ -35,15 +35,18 @@ public class SwitchEvent {
 
     public static final int SWITCHID_BYTES = 2 + 8;
 
-    public static byte[] getSwitchID(Long dpid) {
+    public static ByteBuffer getSwitchID(Long dpid) {
 	if (dpid == null) {
 	    throw new IllegalArgumentException("dpid cannot be null");
 	}
-	return ByteBuffer.allocate(SwitchEvent.SWITCHID_BYTES).putChar('S').putLong(dpid)
-		.array();
+	return ByteBuffer.allocate(SwitchEvent.SWITCHID_BYTES).putChar('S').putLong(dpid);
     }
 
     public byte[] getID() {
+	return getSwitchID(dpid).array();
+    }
+
+    public ByteBuffer getIDasByteBuffer() {
 	return getSwitchID(dpid);
     }
 }

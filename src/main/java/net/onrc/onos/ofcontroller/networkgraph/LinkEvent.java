@@ -50,14 +50,19 @@ public class LinkEvent {
 
     public static final int LINKID_BYTES = 2 + PortEvent.PORTID_BYTES * 2;
 
-    public static byte[] getLinkID(Long src_dpid, Long src_port_no,
+    public static ByteBuffer getLinkID(Long src_dpid, Long src_port_no,
 	    Long dst_dpid, Long dst_port_no) {
 	return ByteBuffer.allocate(LinkEvent.LINKID_BYTES).putChar('L')
 		.put(PortEvent.getPortID(src_dpid, src_port_no))
-		.put(PortEvent.getPortID(dst_dpid, dst_port_no)).array();
+		.put(PortEvent.getPortID(dst_dpid, dst_port_no));
     }
 
     public byte[] getID() {
+	return getLinkID(src.getDpid(), src.getNumber(),
+		dst.getDpid(), dst.getNumber()).array();
+    }
+
+    public ByteBuffer getIDasByteBuffer() {
 	return getLinkID(src.getDpid(), src.getNumber(),
 		dst.getDpid(), dst.getNumber());
     }

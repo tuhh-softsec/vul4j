@@ -77,7 +77,7 @@ public class RCLink extends RCObject {
     public static byte[] getLinkID(Long src_dpid, Long src_port_no,
 	    Long dst_dpid, Long dst_port_no) {
 	return LinkEvent.getLinkID(src_dpid, src_port_no, dst_dpid,
-		dst_port_no);
+		dst_port_no).array();
     }
 
     public static StringBuilder keysToSB(Collection<byte[]> keys) {
@@ -205,12 +205,12 @@ public class RCLink extends RCObject {
 	link.setDstSwId(ByteString.copyFrom(dst.getSwitchID()));
 	link.setDstPortId(ByteString.copyFrom(dst.getPortID()));
 	link.setStatus(status.ordinal());
-	
+
 	if (!map.isEmpty()) {
 	    serializeAndSetValue(linkKryo.get(), map);
 	    link.setValue(ByteString.copyFrom(this.getSerializedValue()));
 	}
-	
+
 	this.value = link.build().toByteArray();
     }
 
@@ -231,7 +231,7 @@ public class RCLink extends RCObject {
 	} catch (InvalidProtocolBufferException e) {
 	    log.error("{" + toString() + "}: Read Link: ", e);
 	    return null;
-	}	
+	}
     }
 
     @Override

@@ -102,7 +102,7 @@ public class PortEvent {
 
     public static final int PORTID_BYTES = SwitchEvent.SWITCHID_BYTES + 2 + 8;
 
-    public static byte[] getPortID(Long dpid, Long number) {
+    public static ByteBuffer getPortID(Long dpid, Long number) {
 	if (dpid == null) {
 	    throw new IllegalArgumentException("dpid cannot be null");
 	}
@@ -110,10 +110,14 @@ public class PortEvent {
 	    throw new IllegalArgumentException("number cannot be null");
 	}
 	return ByteBuffer.allocate(PortEvent.PORTID_BYTES).putChar('S').putLong(dpid)
-		.putChar('P').putLong(number).array();
+		.putChar('P').putLong(number);
     }
 
     public byte[] getID() {
+	return getPortID(getDpid(), getNumber()).array();
+    }
+
+    public ByteBuffer getIDasByteBuffer() {
 	return getPortID(getDpid(), getNumber());
     }
 }

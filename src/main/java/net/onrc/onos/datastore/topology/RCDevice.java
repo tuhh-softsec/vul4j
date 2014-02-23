@@ -54,7 +54,7 @@ public class RCDevice extends RCObject {
 
     // Assuming mac is unique cluster-wide
     public static byte[] getDeviceID(final byte[] mac) {
-        return DeviceEvent.getDeviceID(mac);
+        return DeviceEvent.getDeviceID(mac).array();
     }
 
     public static StringBuilder keysToSB(Collection<byte[]> keys) {

@@ -1,7 +1,6 @@
 package net.onrc.onos.datastore.topology;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -52,7 +51,7 @@ public class RCPort extends RCObject {
     private STATUS status;
 
     public static byte[] getPortID(Long dpid, Long number) {
-        return PortEvent.getPortID(dpid, number);
+        return PortEvent.getPortID(dpid, number).array();
     }
 
     public static StringBuilder keysToSB(Collection<byte[]> keys) {
@@ -181,19 +180,19 @@ public class RCPort extends RCObject {
     }
 
     @Override
-    public void serializeAndSetValue() {	
+    public void serializeAndSetValue() {
 	Map<Object, Object> map = getObjectMap();
-	
+
 	PortProperty.Builder port = PortProperty.newBuilder();
 	port.setDpid(dpid);
 	port.setNumber(number);
 	port.setStatus(status.ordinal());
-	
+
 	if (!map.isEmpty()) {
 	    serializeAndSetValue(portKryo.get(), map);
 	    port.setValue(ByteString.copyFrom(this.getSerializedValue()));
 	}
-	
+
 	this.value = port.build().toByteArray();
     }
 
@@ -214,7 +213,7 @@ public class RCPort extends RCObject {
 	} catch (InvalidProtocolBufferException e) {
 	    log.error("{" + toString() + "}: Read Port: ", e);
 	    return null;
-	}	
+	}
     }
 
     @Override

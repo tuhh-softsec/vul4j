@@ -60,7 +60,7 @@ public class RCSwitch extends RCObject {
     private STATUS status;
 
     public static byte[] getSwitchID(Long dpid) {
-        return SwitchEvent.getSwitchID(dpid);
+        return SwitchEvent.getSwitchID(dpid).array();
     }
 
     public static StringBuilder keysToSB(Collection<byte[]> keys) {
@@ -166,12 +166,12 @@ public class RCSwitch extends RCObject {
 	SwitchProperty.Builder sw = SwitchProperty.newBuilder();
 	sw.setDpid(dpid);
 	sw.setStatus(status.ordinal());
-	
+
 	if (!map.isEmpty()) {
 	    serializeAndSetValue(switchKryo.get(), map);
 	    sw.setValue(ByteString.copyFrom(this.getSerializedValue()));
 	}
-	
+
 	this.value = sw.build().toByteArray();
     }
 

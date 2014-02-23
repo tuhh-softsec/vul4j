@@ -81,12 +81,15 @@ public class DeviceEvent {
     }
 
     // Assuming mac is unique cluster-wide
-    public static byte[] getDeviceID(final byte[] mac) {
-	return ByteBuffer.allocate(2 + mac.length).putChar('D').put(mac)
-		.array();
+    public static ByteBuffer getDeviceID(final byte[] mac) {
+	return ByteBuffer.allocate(2 + mac.length).putChar('D').put(mac);
     }
 
     public byte[] getID() {
+	return getDeviceID(mac.toBytes()).array();
+    }
+
+    public ByteBuffer getIDasByteBuffer() {
 	return getDeviceID(mac.toBytes());
     }
 }
