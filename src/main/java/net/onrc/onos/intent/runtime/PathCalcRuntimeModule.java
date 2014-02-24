@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	private PersistIntent persistIntent;
 
 	private IEventChannel<Long, IntentOperationList> opEventChannel;
+	private final ReentrantLock lock = new ReentrantLock();
 	private static final String INTENT_OP_EVENT_CHANNEL_NAME = "onos.pathintent";
 	private static final String INTENT_STATE_EVENT_CHANNEL_NAME = "onos.pathintent_state";
 	private static final Logger log = LoggerFactory.getLogger(PathCalcRuntimeModule.class);
@@ -126,63 +128,72 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 	@Override
 	public IntentOperationList executeIntentOperations(IntentOperationList list) {
-		// update the map of high-level intents
-		log("begin_updateInMemoryIntents");
-		highLevelIntents.executeOperations(list);
+		lock.lock(); // TODO optimize locking using smaller steps
+		try {
+			// update the map of high-level intents
+			log("begin_updateInMemoryIntents");
+			highLevelIntents.executeOperations(list);
 
-		// change states of high-level intents
-		IntentStateList states = new IntentStateList();
-		for (IntentOperation op : list) {
-			if (op.intent.getState().equals(IntentState.INST_ACK))
-				states.put(op.intent.getId(), IntentState.REROUTE_REQ);
-		}
-		highLevelIntents.changeStates(states);
-		log("end_updateInMemoryIntents");
-
-		// calculate path-intents (low-level operations)
-		log("begin_calcPathIntents");
-		IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, highLevelIntents, pathIntents);
-		log("end_calcPathIntents");
-
-		// persist calculated low-level operations into data store
-		log("begin_persistPathIntents");
-		long key = persistIntent.getKey();
-		persistIntent.persistIfLeader(key, pathIntentOperations);
-		log("end_persistPathIntents");
-
-		// remove error-intents and reflect them to high-level intents
-		log("begin_removeErrorIntents");
-		states.clear();
-		Iterator<IntentOperation> i = pathIntentOperations.iterator();
-		while (i.hasNext()) {
-			IntentOperation op = i.next();
-			if (op.operator.equals(Operator.ERROR)) {
-				states.put(op.intent.getId(), IntentState.INST_NACK);
-				i.remove();
+			// change states of high-level intents
+			IntentStateList states = new IntentStateList();
+			for (IntentOperation op : list) {
+				if (op.intent.getState().equals(IntentState.INST_ACK))
+					states.put(op.intent.getId(), IntentState.REROUTE_REQ);
 			}
-		}
-		highLevelIntents.changeStates(states);
-		log("end_removeErrorIntents");
+			highLevelIntents.changeStates(states);
+			log("end_updateInMemoryIntents");
 
-		// update the map of path intents and publish the path operations
-		log("begin_updateInMemoryPathIntents");
-		pathIntents.executeOperations(pathIntentOperations);
-		log("end_updateInMemoryPathIntents");
+			// calculate path-intents (low-level operations)
+			log("begin_calcPathIntents");
+			IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, highLevelIntents, pathIntents);
+			log("end_calcPathIntents");
 
-		// Demo special: add a complete path to remove operation
-		log("begin_addPathToRemoveOperation");
-		for (IntentOperation op: pathIntentOperations) {
-			if(op.operator.equals(Operator.REMOVE)) {
-				op.intent = pathIntents.getIntent(op.intent.getId());
+			// persist calculated low-level operations into data store
+			log("begin_persistPathIntents");
+			long key = persistIntent.getKey();
+			persistIntent.persistIfLeader(key, pathIntentOperations);
+			log("end_persistPathIntents");
+
+			// remove error-intents and reflect them to high-level intents
+			log("begin_removeErrorIntents");
+			states.clear();
+			Iterator<IntentOperation> i = pathIntentOperations.iterator();
+			while (i.hasNext()) {
+				IntentOperation op = i.next();
+				if (op.operator.equals(Operator.ERROR)) {
+					states.put(op.intent.getId(), IntentState.INST_NACK);
+					i.remove();
+				}
 			}
-		}
-		log("end_addPathToRemoveOperation");
+			highLevelIntents.changeStates(states);
+			log("end_removeErrorIntents");
 
-		// send notification
-		log("begin_sendNotification");
-		opEventChannel.addEntry(key, pathIntentOperations);
-		log("end_sendNotification");
-		return pathIntentOperations;
+			// update the map of path intents and publish the path operations
+			log("begin_updateInMemoryPathIntents");
+			pathIntents.executeOperations(pathIntentOperations);
+			log("end_updateInMemoryPathIntents");
+
+			// Demo special: add a complete path to remove operation
+			log("begin_addPathToRemoveOperation");
+			for (IntentOperation op: pathIntentOperations) {
+				if(op.operator.equals(Operator.REMOVE)) {
+					op.intent = pathIntents.getIntent(op.intent.getId());
+				}
+				if (op.intent instanceof PathIntent) {
+					log.debug("operation: {}, intent:{}", op.operator, op.intent);
+				}
+			}
+			log("end_addPathToRemoveOperation");
+
+			// send notification
+			log("begin_sendNotification");
+			opEventChannel.addEntry(key, pathIntentOperations);
+			log("end_sendNotification");
+			return pathIntentOperations;
+		}
+		finally {
+			lock.unlock();
+		}
 	}
 
 	@Override
@@ -263,37 +274,42 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	@Override
 	public void entryUpdated(IntentStateList value) {
 		// TODO draw state transition diagram in multiple ONOS instances and update this method
+		lock.lock(); // TODO optimize locking using smaller steps
+		try {
+			log("called_EntryUpdated");
+			// reflect state changes of path-level intent into application-level intents
+			log("begin_changeStateByNotification");
+			IntentStateList parentStates = new IntentStateList();
+			for (Entry<String, IntentState> entry: value.entrySet()) {
+				PathIntent pathIntent = (PathIntent) pathIntents.getIntent(entry.getKey());
+				if (pathIntent == null) continue;
 
-		log("called_EntryUpdated");
-		// reflect state changes of path-level intent into application-level intents
-		log("begin_changeStateByNotification");
-		IntentStateList parentStates = new IntentStateList();
-		for (Entry<String, IntentState> entry: value.entrySet()) {
-			PathIntent pathIntent = (PathIntent) pathIntents.getIntent(entry.getKey());
-			if (pathIntent == null) continue;
+				Intent parentIntent = pathIntent.getParentIntent();
+				if (parentIntent == null ||
+						!(parentIntent instanceof ShortestPathIntent) ||
+						!((ShortestPathIntent) parentIntent).getPathIntentId().equals(pathIntent.getId()))
+					continue;
 
-			Intent parentIntent = pathIntent.getParentIntent();
-			if (parentIntent == null ||
-					!(parentIntent instanceof ShortestPathIntent) ||
-					!((ShortestPathIntent) parentIntent).getPathIntentId().equals(pathIntent.getId()))
-				continue;
-
-			IntentState state = entry.getValue();
-			switch (state) {
-			case INST_REQ:
-			case INST_ACK:
-			case INST_NACK:
-			case DEL_REQ:
-			case DEL_ACK:
-			case DEL_PENDING:
-				parentStates.put(parentIntent.getId(), state);
-				break;
-			default:
-				break;
+				IntentState state = entry.getValue();
+				switch (state) {
+				case INST_REQ:
+				case INST_ACK:
+				case INST_NACK:
+				case DEL_REQ:
+				case DEL_ACK:
+				case DEL_PENDING:
+					parentStates.put(parentIntent.getId(), state);
+					break;
+				default:
+					break;
+				}
 			}
+			highLevelIntents.changeStates(parentStates);
+			pathIntents.changeStates(value);
+			log("end_changeStateByNotification");
 		}
-		highLevelIntents.changeStates(parentStates);
-		pathIntents.changeStates(value);
-		log("end_changeStateByNotification");
+		finally {
+			lock.unlock();
+		}
 	}
 }

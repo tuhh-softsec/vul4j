@@ -52,4 +52,9 @@ public class PathIntent extends Intent {
 	public Intent getParentIntent() {
 		return parentIntent;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%s, %s, %s", getId(), getState(), getPath());
+	}
 }
