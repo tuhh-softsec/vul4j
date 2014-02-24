@@ -545,7 +545,13 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    // Send out notification
 	    eventChannel.removeEntry(switchEvent.getID());
 
-	    // Send out notification for each port
+	    //
+	    // Send out notification for each port.
+	    //
+	    // NOTE: We don't use removePortDiscoveryEvent() for the cleanup,
+	    // because it will attempt to remove the port from the database,
+	    // and the deactiveSwitch() call above already removed all ports.
+	    //
 	    for (PortEvent portEvent : oldPortEvents.values())
 		eventChannel.removeEntry(portEvent.getID());
 	    discoveredAddedPortEvents.remove(switchEvent.getDpid());
@@ -610,14 +616,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    Map<ByteBuffer, LinkEvent> oldLinkEvents =
 		discoveredAddedLinkEvents.get(portEvent.getDpid());
 	    if (oldLinkEvents != null) {
-		for (LinkEvent linkEvent : oldLinkEvents.values()) {
+		for (LinkEvent linkEvent : new ArrayList<>(oldLinkEvents.values())) {
 		    if (linkEvent.getDst().equals(portEvent.id)) {
 			removeLinkDiscoveryEvent(linkEvent);
-			//
-			// NOTE: oldLinkEvents was modified by
-			// removeLinkDiscoveryEvent() and cannot be iterated
-			// anymore.
-			//
 			// XXX If we change our model to allow multiple Link on
 			// a Port, this loop must be fixed to allow continuing.
 			break;
