@@ -62,8 +62,12 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			return;
 
 		IntentOperationList reroutingOperation = new IntentOperationList();
-		for (Intent pathIntent : oldPaths) {
-			reroutingOperation.add(Operator.ADD, ((PathIntent) pathIntent).getParentIntent());
+		for (Intent intent : oldPaths) {
+			PathIntent pathIntent = (PathIntent) intent;
+			if (pathIntent.getState().equals(IntentState.INST_ACK) &&
+					!reroutingOperation.contains(pathIntent)) {
+				reroutingOperation.add(Operator.ADD, pathIntent.getParentIntent());
+			}
 		}
 		executeIntentOperations(reroutingOperation);
 	}
@@ -276,8 +280,10 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 			IntentState state = entry.getValue();
 			switch (state) {
+			case INST_REQ:
 			case INST_ACK:
 			case INST_NACK:
+			case DEL_REQ:
 			case DEL_ACK:
 			case DEL_PENDING:
 				parentStates.put(parentIntent.getId(), state);
