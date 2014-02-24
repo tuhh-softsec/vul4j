@@ -554,8 +554,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    Map<ByteBuffer, LinkEvent> oldLinkEvents =
 		discoveredAddedLinkEvents.get(switchEvent.getDpid());
 	    if (oldLinkEvents != null) {
-		for (LinkEvent linkEvent : oldLinkEvents.values())
+		for (LinkEvent linkEvent : new ArrayList<>(oldLinkEvents.values())) {
 		    removeLinkDiscoveryEvent(linkEvent);
+		}
 		discoveredAddedLinkEvents.remove(switchEvent.getDpid());
 	    }
 
@@ -563,8 +564,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    Map<ByteBuffer, DeviceEvent> oldDeviceEvents =
 		discoveredAddedDeviceEvents.get(switchEvent.getDpid());
 	    if (oldDeviceEvents != null) {
-		for (DeviceEvent deviceEvent : oldDeviceEvents.values())
+		for (DeviceEvent deviceEvent : new ArrayList<>(oldDeviceEvents.values())) {
 		    removeDeviceDiscoveryEvent(deviceEvent);
+		}
 		discoveredAddedDeviceEvents.remove(switchEvent.getDpid());
 	    }
 	}
@@ -616,6 +618,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 			// removeLinkDiscoveryEvent() and cannot be iterated
 			// anymore.
 			//
+			// XXX If we change our model to allow multiple Link on
+			// a Port, this loop must be fixed to allow continuing.
 			break;
 		    }
 		}
@@ -627,11 +631,10 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    Map<ByteBuffer, DeviceEvent> oldDeviceEvents =
 		discoveredAddedDeviceEvents.get(portEvent.getDpid());
 	    if (oldDeviceEvents != null) {
-		for (DeviceEvent deviceEvent : oldDeviceEvents.values()) {
+		for (DeviceEvent deviceEvent : new ArrayList<>(oldDeviceEvents.values())) {
 		    for (SwitchPort swp : deviceEvent.getAttachmentPoints()) {
 			if (swp.equals(portEvent.id)) {
 			    removedDeviceEvents.add(deviceEvent);
-			    break;
 			}
 		    }
 		}
