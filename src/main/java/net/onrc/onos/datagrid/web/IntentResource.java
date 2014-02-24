@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,12 +71,6 @@ public class IntentResource extends ServerResource {
     
     @Post("json")
     public String store(String jsonIntent) throws IOException {
-	IDatagridService datagridService = (IDatagridService) getContext()
-		.getAttributes().get(IDatagridService.class.getCanonicalName());
-	if (datagridService == null) {
-	    log.debug("FlowIntentResource ONOS Datagrid Service not found");
-	    return "";
-	}
         IPathCalcRuntimeService pathRuntime = (IPathCalcRuntimeService)getContext()
                 .getAttributes().get(IPathCalcRuntimeService.class.getCanonicalName());
         if (pathRuntime == null) {
@@ -99,6 +94,16 @@ public class IntentResource extends ServerResource {
 	    reply = parseJsonNode(jNode.getElements(), pathRuntime);
 	}
         return reply;
+    }
+    
+    @Delete("json")
+    public String store() {
+        IPathCalcRuntimeService pathRuntime = (IPathCalcRuntimeService)getContext().
+                getAttributes().get(IPathCalcRuntimeService.class.getCanonicalName());
+        pathRuntime.purgeIntents();
+        // TODO no reply yet from the purge intents call
+        return "";
+        
     }
 
     @Get("json")

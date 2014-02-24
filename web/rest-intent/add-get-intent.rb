@@ -25,6 +25,12 @@ parser = OptionParser.new do |opts|
     options[:get_intent] = intent_id
   end
 
+  opts.separator ""
+  opts.separator "Delete options"
+  opts.on('-d', '--purge', 'purge all intents') do
+    options[:rest_op] = "delete"
+  end
+
   opts.separator  ""
   opts.separator  "Post options:"
 
@@ -94,6 +100,11 @@ class Intent
       request = RestClient.get url
     end
     puts request
+  end
+
+  def purge_intents
+    response = RestClient.delete "http://#{@server}:#{@port}/wm/onos/datagrid/delete/intents/json"
+    puts response
   end
 
   private 
@@ -202,6 +213,8 @@ end
 intent = Intent.new options
 if options[:rest_op] == "get"
   intent.get_intent options
+elsif options[:rest_op] == "delete"
+  intent.purge_intents
 else
   json_data = intent.post_intent
 end
