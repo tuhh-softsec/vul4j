@@ -7,6 +7,58 @@ Die Installation der Serverkomponente erfordert folgende Vorraussetzungen:
 * PostgreSQL-9.2/PostGIS-2.0 Datenbank inklusive Testdaten
 * JBoss-AS
 
+Zum Bauen der Anwendung aus den Quellen wird zusätzlich das Build-Tool 'maven'
+benötigt.
+
+Installation JBoss-AS
+-------------------------
+
+Im folgenden ist die Installation des JBoss-AS in dem Ordner /opt beschrieben.
+
+$ cd /opt
+$ curl -O http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip
+# Integrität prüfen. Leider bietet Redhat für diese "Community Edition" keinen
+# Überprüfungsweg an. Vermutlich als Verkaufsanreiz für die professionelle
+# Version. Beim Herunterladen am 2013-05-09 hatte die Datei folgende sha256
+# Prüfsumme:
+# 0aece7899b54c0219732112307b2bede78ab9b39ee14140ce89ac8c1b716d0ee
+# jboss-as-7.1.1.Final.zip
+$ unzip jboss-as-7.1.1.Final.zip
+
+# Der Jboss Server soll nicht als root, sondern unter einem dedizierten Nutzer
+# laufen. In diesem Fall als Nutzer "lada". Hierfür müssen einige
+# Berechtigungen angepasst werden.
+$ USER=lada
+$ chgrp -R ${USER} jboss-as-7.1.1.Final
+$ cd jboss-as-7.1.1.Final
+$ chmod 775 standalone/
+$ chmod 775 standalone/deployments
+$ chmod 775 standalone/tmp
+$ chmod 775 standalone/configuration
+$ chmod 660 standalone/configuration/mgmt-users.properties
+$ chmod 660 standalone/configuration/application-users.properties
+
+Einrichten eines Admin Zugangs
+``````````````````````````````
+Um den JBoss Server über die Weboberfläche administrieren zu können muss
+zunächst ein neuer Nutzer erstellt werden:
+
+$ cd jboss-as-7.1.1.Final
+$ sh bin/add-user.sh
+
+Einrichten von JBoss als Service
+````````````````````````````````
+JBoss soll als Service start und beendbar sein.
+
+$ cd /etc/init.d
+$ cp /opt/jboss-as-7.1.1.Final/bin/init.d/jboss-as-standalone.sh jboss
+
+# In diesem SCRIPT müssen dann folgene Variablen angepasst werden:
+# 1. JBOSS_HOME=/opt/jboss-as-7.1.1.Final
+# 2. JBOSS_USER=lada
+
+$ servive jboss start
+
 
 Datenbank
 ---------
@@ -105,9 +157,21 @@ Installation der LADA Anwendung
 ===============================
 Zur Installation der LADA Anwendung müssen folgende Schritte unternommen werden:
 
-mvn clean compile package
-cd /opt/jboss-as-7.1.1.Final/standalone/deployments
-cp /path/where/the/war/file/is/lada.war .
+Erstellen der Anwendung aus den Quellen (optional)
+--------------------------------------------------
+
+Befehle zum Bauen der Anwendung aus den Quellen:
+
+$ cd /path/to/sources/
+$ mvn clean compile package
+
+Das WAR-Archiv der Anwendung wird in dem Ordner 'target/' abgelegt.
+
+Installation des Pakets
+-----------------------
+
+$ cd /opt/jboss-as-7.1.1.Final/standalone/deployments
+$ cp /path/where/the/war/file/is/lada.war .
 touch lada.war.dodeploy
 
 $cd /opt/jboss-as-7.1.1.Final/standalone/deployments
