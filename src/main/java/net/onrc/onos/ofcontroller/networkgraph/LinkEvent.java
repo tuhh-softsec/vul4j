@@ -15,8 +15,9 @@ public class LinkEvent {
     protected final SwitchPort dst;
 
     /**
-     * Default constructor.
+     * Default constructor for Serializer to use.
      */
+    @Deprecated
     public LinkEvent() {
 	src = null;
 	dst = null;

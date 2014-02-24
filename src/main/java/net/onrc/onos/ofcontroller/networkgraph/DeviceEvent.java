@@ -30,8 +30,9 @@ public class DeviceEvent {
 
 
     /**
-     * Default constructor.
+     * Default constructor for Serializer to use.
      */
+    @Deprecated
     public DeviceEvent() {
 	mac = null;
     }
