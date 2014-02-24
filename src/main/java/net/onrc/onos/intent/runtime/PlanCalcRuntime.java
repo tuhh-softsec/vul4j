@@ -120,10 +120,10 @@ public class PlanCalcRuntime {
 		    break;
 		}
 		map.put(e, i);
-		System.out.println(e + " " + e.getOperator());
+		// System.out.println(e + " " + e.getOperator());
 	    }
 	}
-		
+
 	// really simple first iteration of plan
 	//TODO: optimize the map in phases
 	Set<FlowEntry> phase = new HashSet<>();
@@ -141,7 +141,7 @@ public class PlanCalcRuntime {
 	    phase.add(e);
 	}
 	plan.add(phase);
-		
+
 	return plan;
     }
 }

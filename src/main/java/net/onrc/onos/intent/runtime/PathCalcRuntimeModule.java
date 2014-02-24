@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
@@ -41,6 +42,38 @@ import net.onrc.onos.registry.controller.IControllerRegistryService;
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntimeService, INetworkGraphListener, IEventChannelListener<Long, IntentStateList> {
+	class PerfLog {
+		private String step;
+		private long time;
+
+		public PerfLog(String step) {
+			this.step = step;
+			this.time = System.nanoTime();
+		}
+
+		public void logThis() {
+			log.error("Time:{}, Step:{}", time, step);
+		}
+	}
+	class PerfLogger {
+		private LinkedList<PerfLog> logData = new LinkedList<>();
+
+		public PerfLogger(String logPhase) {
+			log("start_" + logPhase);
+		}
+
+		public void log(String step) {
+			logData.add(new PerfLog(step));
+		}
+
+		public void flushLog() {
+			log("finish");
+			for (PerfLog log: logData) {
+				log.logThis();
+			}
+			logData.clear();
+		}
+	}
 	private PathCalcRuntime runtime;
 	private IDatagridService datagridService;
 	private INetworkGraphService networkGraphService;
@@ -74,9 +107,6 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		executeIntentOperations(reroutingOperation);
 	}
 
-	private void log(String step) {
-		log.error("Step:{}, Time:{}", step, System.nanoTime());
-	}
 
 	// ================================================================================
 	// IFloodlightModule implementations
@@ -129,9 +159,12 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	@Override
 	public IntentOperationList executeIntentOperations(IntentOperationList list) {
 		lock.lock(); // TODO optimize locking using smaller steps
+		if (list == null || list.size() == 0)
+			return null;
+		PerfLogger p = new PerfLogger("executeIntentOperations_" + list.get(0).operator);
 		try {
 			// update the map of high-level intents
-			log("begin_updateInMemoryIntents");
+			p.log("begin_updateInMemoryIntents");
 			highLevelIntents.executeOperations(list);
 
 			// change states of high-level intents
@@ -141,21 +174,21 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 					states.put(op.intent.getId(), IntentState.REROUTE_REQ);
 			}
 			highLevelIntents.changeStates(states);
-			log("end_updateInMemoryIntents");
+			p.log("end_updateInMemoryIntents");
 
 			// calculate path-intents (low-level operations)
-			log("begin_calcPathIntents");
+			p.log("begin_calcPathIntents");
 			IntentOperationList pathIntentOperations = runtime.calcPathIntents(list, highLevelIntents, pathIntents);
-			log("end_calcPathIntents");
+			p.log("end_calcPathIntents");
 
 			// persist calculated low-level operations into data store
-			log("begin_persistPathIntents");
+			p.log("begin_persistPathIntents");
 			long key = persistIntent.getKey();
 			persistIntent.persistIfLeader(key, pathIntentOperations);
-			log("end_persistPathIntents");
+			p.log("end_persistPathIntents");
 
 			// remove error-intents and reflect them to high-level intents
-			log("begin_removeErrorIntents");
+			p.log("begin_removeErrorIntents");
 			states.clear();
 			Iterator<IntentOperation> i = pathIntentOperations.iterator();
 			while (i.hasNext()) {
@@ -166,15 +199,15 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 				}
 			}
 			highLevelIntents.changeStates(states);
-			log("end_removeErrorIntents");
+			p.log("end_removeErrorIntents");
 
 			// update the map of path intents and publish the path operations
-			log("begin_updateInMemoryPathIntents");
+			p.log("begin_updateInMemoryPathIntents");
 			pathIntents.executeOperations(pathIntentOperations);
-			log("end_updateInMemoryPathIntents");
+			p.log("end_updateInMemoryPathIntents");
 
 			// Demo special: add a complete path to remove operation
-			log("begin_addPathToRemoveOperation");
+			p.log("begin_addPathToRemoveOperation");
 			for (IntentOperation op: pathIntentOperations) {
 				if(op.operator.equals(Operator.REMOVE)) {
 					op.intent = pathIntents.getIntent(op.intent.getId());
@@ -183,15 +216,17 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 					log.debug("operation: {}, intent:{}", op.operator, op.intent);
 				}
 			}
-			log("end_addPathToRemoveOperation");
+			p.log("end_addPathToRemoveOperation");
 
 			// send notification
-			log("begin_sendNotification");
+			p.log("begin_sendNotification");
 			opEventChannel.addEntry(key, pathIntentOperations);
-			log("end_sendNotification");
+			p.log("end_sendNotification");
+			opEventChannel.removeEntry(key);
 			return pathIntentOperations;
 		}
 		finally {
+			p.flushLog();
 			lock.unlock();
 		}
 	}
@@ -226,34 +261,34 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			Collection<DeviceEvent> addedDeviceEvents,
 			Collection<DeviceEvent> removedDeviceEvents) {
 
-		log("called_networkGraphEvents");
+		PerfLogger p = new PerfLogger("networkGraphEvents");
 		HashSet<Intent> affectedPaths = new HashSet<>();
 
-		if (addedLinkEvents.size() > 0 ||
-				addedPortEvents.size() > 0 ||
-				addedSwitchEvents.size() > 0) {
-			log("begin_getAllIntents");
+		if (addedLinkEvents.size() > 0) { // ||
+//				addedPortEvents.size() > 0 ||
+//				addedSwitchEvents.size() > 0) {
+			p.log("begin_getAllIntents");
 			affectedPaths.addAll(getPathIntents().getAllIntents());
-			log("end_getAllIntents");
+			p.log("end_getAllIntents");
 		}
 		else {
-			log("begin_getIntentsByLink");
+			p.log("begin_getIntentsByLink");
 			for (LinkEvent linkEvent: removedLinkEvents)
 				affectedPaths.addAll(pathIntents.getIntentsByLink(linkEvent));
-			log("end_getIntentsByLink");
+			p.log("end_getIntentsByLink");
 
-			log("begin_getIntentsByPort");
+			p.log("begin_getIntentsByPort");
 			for (PortEvent portEvent: removedPortEvents)
 				affectedPaths.addAll(pathIntents.getIntentsByPort(portEvent.getDpid(), portEvent.getNumber()));
-			log("end_getIntentsByPort");
+			p.log("end_getIntentsByPort");
 
-			log("begin_getIntentsByDpid");
+			p.log("begin_getIntentsByDpid");
 			for (SwitchEvent switchEvent: removedSwitchEvents)
 				affectedPaths.addAll(pathIntents.getIntentsByDpid(switchEvent.getDpid()));
-			log("end_getIntentsByDpid");
+			p.log("end_getIntentsByDpid");
 		}
 		reroutePaths(affectedPaths);
-		log("finished_networkGraphEvents");
+		p.flushLog();
 	}
 
 	// ================================================================================
@@ -262,7 +297,6 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 	@Override
 	public void entryAdded(IntentStateList value) {
-		log("called_EntryAdded");
 		entryUpdated(value);
 	}
 
@@ -274,11 +308,11 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 	@Override
 	public void entryUpdated(IntentStateList value) {
 		// TODO draw state transition diagram in multiple ONOS instances and update this method
+		PerfLogger p = new PerfLogger("entryUpdated");
 		lock.lock(); // TODO optimize locking using smaller steps
 		try {
-			log("called_EntryUpdated");
 			// reflect state changes of path-level intent into application-level intents
-			log("begin_changeStateByNotification");
+			p.log("begin_changeStateByNotification");
 			IntentStateList parentStates = new IntentStateList();
 			for (Entry<String, IntentState> entry: value.entrySet()) {
 				PathIntent pathIntent = (PathIntent) pathIntents.getIntent(entry.getKey());
@@ -306,9 +340,10 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			}
 			highLevelIntents.changeStates(parentStates);
 			pathIntents.changeStates(value);
-			log("end_changeStateByNotification");
+			p.log("end_changeStateByNotification");
 		}
 		finally {
+			p.flushLog();
 			lock.unlock();
 		}
 	}

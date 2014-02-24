@@ -115,11 +115,8 @@ public class UseCaseTest {
 	private void showResult(PathIntentMap intents) {
 		for (Intent intent: intents.getAllIntents()) {
 			PathIntent pathIntent = (PathIntent)intent;
+			System.out.println("Path intent:" + pathIntent);
 			System.out.println("Parent intent: " + pathIntent.getParentIntent().toString());
-			System.out.println("Path:");
-			for (LinkEvent linkEvent: pathIntent.getPath()) {
-				System.out.println(linkEvent);
-			}
 		}
 	}
 
@@ -233,6 +230,11 @@ public class UseCaseTest {
 		states.put("2", IntentState.INST_ACK);
 		states.put("3", IntentState.INST_ACK);
 		runtime1.getHighLevelIntents().changeStates(states);
+		states.clear();
+		states.put("1___0", IntentState.INST_ACK);
+		states.put("2___0", IntentState.INST_ACK);
+		states.put("3___0", IntentState.INST_ACK);
+		runtime1.getPathIntents().changeStates(states);
 
 		// link down
 		((MockNetworkGraph)g).removeLink(1L, 2L, 9L, 1L); // This link is used by the intent "1"
