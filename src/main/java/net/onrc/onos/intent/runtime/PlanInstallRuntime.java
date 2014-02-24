@@ -36,6 +36,7 @@ public class PlanInstallRuntime {
     }
 
     public boolean installPlan(List<Set<FlowEntry>> plan) {
+	long start = System.nanoTime();
 	Map<Long,IOFSwitch> switches = provider.getSwitches();
 	log.debug("IOFSwitches: {}", switches);
 	for(Set<FlowEntry> phase : plan) {
@@ -61,6 +62,8 @@ public class PlanInstallRuntime {
 	    // TODO: insert a barrier after each phase on each modifiedSwitch
 	    // TODO: wait for confirmation messages before proceeding
 	}
+	long end = System.nanoTime();
+	log.error("MEASUREMENT: Install plan: {} ns", (end-start));
 	// TODO: we assume that the plan installation succeeds for now
 	return true;
     }

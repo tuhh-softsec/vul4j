@@ -39,8 +39,14 @@ public class PlanCalcRuntime {
     }
 
     public List<Set<FlowEntry>> computePlan(IntentOperationList intentOps) {
+	long start = System.nanoTime();
 	Set<Collection<FlowEntry>> flowEntries = computeFlowEntries(intentOps);
-	return buildPhases(flowEntries);
+	long step1 = System.nanoTime();
+	List<Set<FlowEntry>> plan = buildPhases(flowEntries);
+	long step2 = System.nanoTime();
+	log.error("MEASUREMENT: Compute flow entries: {} ns, Build phases: {} ns", 
+		  (step1 - start), (step2 - step1));
+	return plan;
     }
 
     private Set<Collection<FlowEntry>> computeFlowEntries(IntentOperationList intentOps) {
