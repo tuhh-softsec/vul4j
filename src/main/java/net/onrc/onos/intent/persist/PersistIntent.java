@@ -8,6 +8,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
 import edu.stanford.ramcloud.JRamCloud;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 import net.onrc.onos.datagrid.web.IntentResource;
 import net.onrc.onos.datastore.RCTable;
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PersistIntent {
     private final static Logger log = LoggerFactory.getLogger(IntentResource.class);
-    private final static long range = 10000;
+    private long range = 10000L;
     private final IControllerRegistryService controllerRegistry;
     NetworkGraph graph = null;
     private final String intentJournal = "G:IntentJournal";
@@ -76,11 +77,16 @@ public class PersistIntent {
                 output.close();
                 byte[] buffer = stream.toByteArray();
                 table.create(String.valueOf(key).getBytes(), buffer);
+                log.debug("key is {} value length is {}", key, buffer.length);
+                stream.reset();
+                stream.close();
                 log.debug("persist operations to ramcloud size of operations: {}", operations.size());
-                log.debug("key is {} ", key, " value length is {}", buffer.length);
+                if (buffer.length > 921600 ) log.error("oversize key {} value length is {}", key, buffer.length);
                 ret = true;
             } catch (JRamCloud.ObjectExistsException ex) {
                 log.warn("Failed to store intent journal with key " + key);
+            } catch (IOException ex) {
+                log.error("Failed to close the stream");
             }
         }
         return ret;
