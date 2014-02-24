@@ -37,7 +37,7 @@ public class SwitchEvent {
 	if (dpid == null) {
 	    throw new IllegalArgumentException("dpid cannot be null");
 	}
-	return ByteBuffer.allocate(SwitchEvent.SWITCHID_BYTES).putChar('S').putLong(dpid);
+	return (ByteBuffer) ByteBuffer.allocate(SwitchEvent.SWITCHID_BYTES).putChar('S').putLong(dpid).flip();
     }
 
     public byte[] getID() {

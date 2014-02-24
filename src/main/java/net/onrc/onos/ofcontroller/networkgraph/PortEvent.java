@@ -109,8 +109,8 @@ public class PortEvent {
 	if (number == null) {
 	    throw new IllegalArgumentException("number cannot be null");
 	}
-	return ByteBuffer.allocate(PortEvent.PORTID_BYTES).putChar('S').putLong(dpid)
-		.putChar('P').putLong(number);
+	return (ByteBuffer) ByteBuffer.allocate(PortEvent.PORTID_BYTES).putChar('S').putLong(dpid)
+		.putChar('P').putLong(number).flip();
     }
 
     public byte[] getID() {

@@ -52,9 +52,9 @@ public class LinkEvent {
 
     public static ByteBuffer getLinkID(Long src_dpid, Long src_port_no,
 	    Long dst_dpid, Long dst_port_no) {
-	return ByteBuffer.allocate(LinkEvent.LINKID_BYTES).putChar('L')
+	return (ByteBuffer) ByteBuffer.allocate(LinkEvent.LINKID_BYTES).putChar('L')
 		.put(PortEvent.getPortID(src_dpid, src_port_no))
-		.put(PortEvent.getPortID(dst_dpid, dst_port_no));
+		.put(PortEvent.getPortID(dst_dpid, dst_port_no)).flip();
     }
 
     public byte[] getID() {
