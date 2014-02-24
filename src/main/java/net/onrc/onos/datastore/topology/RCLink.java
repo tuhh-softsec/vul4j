@@ -22,7 +22,6 @@ import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 
 public class RCLink extends RCObject {
-    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(RCLink.class);
 
     private static final ThreadLocal<Kryo> linkKryo = new ThreadLocal<Kryo>() {
@@ -65,13 +64,6 @@ public class RCLink extends RCObject {
     }
 
     public static final String GLOBAL_LINK_TABLE_NAME = "G:Link";
-
-    // FIXME these should be Enum or some number, not String
-    private static final String PROP_STATUS = "status";
-    private static final String PROP_SRC_SW_ID = "src-sw-id";
-    private static final String PROP_SRC_PORT_ID = "src-port-id";
-    private static final String PROP_DST_SW_ID = "dst-sw-id";
-    private static final String PROP_DST_PORT_ID = "dst-port-id";
 
     // must not re-order enum members, ordinal will be sent over wire
     public enum STATUS {

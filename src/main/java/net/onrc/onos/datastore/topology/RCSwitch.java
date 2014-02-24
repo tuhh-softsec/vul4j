@@ -1,19 +1,13 @@
 package net.onrc.onos.datastore.topology;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeSet;
-
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
-import net.onrc.onos.datastore.utils.ByteArrayComparator;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
 
 import org.openflow.util.HexString;
@@ -57,11 +51,6 @@ public class RCSwitch extends RCObject {
 
     public static final String GLOBAL_SWITCH_TABLE_NAME = "G:Switch";
 
-    // FIXME these should be Enum or some number, not String
-    private static final String PROP_DPID = "dpid";
-    private static final String PROP_STATUS = "status";
-    private static final String PROP_PORT_IDS = "port-ids";
-
     // must not re-order enum members, ordinal will be sent over wire
     public enum STATUS {
 	INACTIVE, ACTIVE;
@@ -69,10 +58,6 @@ public class RCSwitch extends RCObject {
 
     private final Long dpid;
     private STATUS status;
-    @Deprecated
-    private TreeSet<byte[]> portIds;
-    @Deprecated
-    transient private boolean isPortIdsModified;
 
     public static byte[] getSwitchID(Long dpid) {
         return SwitchEvent.getSwitchID(dpid);
@@ -116,8 +101,6 @@ public class RCSwitch extends RCObject {
 
 	this.dpid = dpid;
 	this.status = STATUS.INACTIVE;
-	this.portIds = new TreeSet<>(ByteArrayComparator.BYTEARRAY_COMPARATOR);
-	this.isPortIdsModified = true;
     }
 
     /**
@@ -176,38 +159,6 @@ public class RCSwitch extends RCObject {
 	return getKey();
     }
 
-    @Deprecated
-    public void addPortId(byte[] portId) {
-	// TODO: Should we copy portId, or reference is OK.
-	isPortIdsModified |= portIds.add(portId);
-    }
-
-    @Deprecated
-    public void removePortId(byte[] portId) {
-	isPortIdsModified |= portIds.remove(portId);
-    }
-
-    @Deprecated
-    public void emptyPortIds() {
-	portIds.clear();
-	this.isPortIdsModified = true;
-    }
-
-    @Deprecated
-    public void addAllToPortIds(Collection<byte[]> portIds) {
-	// TODO: Should we copy portId, or reference is OK.
-	isPortIdsModified |= this.portIds.addAll(portIds);
-    }
-
-    /**
-     *
-     * @return Unmodifiable Set view of all the PortIds;
-     */
-    @Deprecated
-    public Set<byte[]> getAllPortIds() {
-	return Collections.unmodifiableSet(portIds);
-    }
-
     @Override
     public void serializeAndSetValue() {
 	Map<Object, Object> map = getObjectMap();
@@ -255,8 +206,6 @@ public class RCSwitch extends RCObject {
 	// create active switch 0x1 with 2 ports
 	RCSwitch sw = new RCSwitch(0x1L);
 	sw.setStatus(STATUS.ACTIVE);
-	sw.addPortId("SW0x0001P001".getBytes(StandardCharsets.UTF_8));
-	sw.addPortId("SW0x0001P002".getBytes(StandardCharsets.UTF_8));
 
 	try {
 	    sw.create();
@@ -273,15 +222,9 @@ public class RCSwitch extends RCObject {
 	    log.debug("Reading Switch Failed", e);
 	}
 	assert (swRead.getStatus() == STATUS.ACTIVE);
-	for (byte[] portId : swRead.getAllPortIds()) {
-	    // XXX bad example code, portId is not expected to be ASCII string
-	    log.debug("PortId: {}", new String(portId, StandardCharsets.UTF_8));
-	}
-	assert (swRead.getAllPortIds().size() == 2);
 
 	// update 0x1
 	swRead.setStatus(STATUS.INACTIVE);
-	swRead.removePortId("SW0x0001P001".getBytes(StandardCharsets.UTF_8));
 	try {
 	    swRead.update();
 	} catch (ObjectDoesntExistException | WrongVersionException e) {
@@ -296,11 +239,6 @@ public class RCSwitch extends RCObject {
 	    log.debug("Reading Switch Again Failed", e);
 	}
 	assert (swRead2.getStatus() == STATUS.INACTIVE);
-	for (byte[] portId : swRead2.getAllPortIds()) {
-	    // XXX bad example code, portId is not expected to be ASCII string
-	    log.debug("PortId: {}", new String(portId, StandardCharsets.UTF_8));
-	}
-	assert (swRead2.getAllPortIds().size() == 1);
 	try {
 	    swRead2.delete();
 	} catch (ObjectDoesntExistException | WrongVersionException e) {
@@ -347,20 +285,15 @@ public class RCSwitch extends RCObject {
 	    log.error("Port creation failed", e);
 	}
 
-	sw1.emptyPortIds();
-	sw1.addPortId(sw1p1.getId());
-	sw1.addPortId(sw1p2.getId());
 	try {
 	    sw1.update();
-	    log.debug("Update {} - {}", sw1,
-		    RCPort.keysToSB(sw1.getAllPortIds()));
+	    log.debug("Update {}", sw1);
 	} catch (ObjectDoesntExistException | WrongVersionException e) {
 	    log.error("Switch update failed", e);
 	}
 
 	RCDevice d1 = new RCDevice(new byte[] { 0, 1, 2, 3, 4, 5, 6 });
 	d1.addPortId(sw1p1.getId());
-	sw1p1.addDeviceId(d1.getId());
 
 	try {
 	    d1.create();
@@ -382,20 +315,14 @@ public class RCSwitch extends RCObject {
 	RCPort sw2p2 = new RCPort(0x2L, 2L);
 	sw2p2.setStatus(RCPort.STATUS.ACTIVE);
 
-	sw2.addPortId(sw2p1.getId());
-	sw2.addPortId(sw2p2.getId());
-	sw2.addAllToPortIds(Arrays.asList(sw2p1.getId(), sw2p2.getId()));
-	assert (sw2.getAllPortIds().size() == 2);
-
 	RCDevice d2 = new RCDevice(new byte[] { 6, 5, 4, 3, 2, 1, 0 });
 	d2.addPortId(sw2p2.getId());
-	sw2p2.addDeviceId(d2.getId());
 
 	// XXX Collection created by Arrays.asList needs to be stored, so that
 	// which operation failed
 	Collection<WriteOp> groupOp = Arrays.asList(
-	        RCObject.WriteOp.Create(sw2), RCObject.WriteOp.Create(sw2p1),
-	        RCObject.WriteOp.Create(sw2p2), RCObject.WriteOp.Create(d2));
+		RCObject.WriteOp.Create(sw2), RCObject.WriteOp.Create(sw2p1),
+		RCObject.WriteOp.Create(sw2p2), RCObject.WriteOp.Create(d2));
 	boolean failed = RCObject.multiWrite(groupOp);
 	if (failed) {
 	    log.error("Some of Switch/Port/Device creation failed");
@@ -412,8 +339,6 @@ public class RCSwitch extends RCObject {
 	RCLink l1 = new RCLink(0x1L, 2L, 0x2L, 1L);
 	l1.setStatus(RCLink.STATUS.ACTIVE);
 
-	sw1p2.addLinkId(l1.getId());
-	sw2p1.addLinkId(l1.getId());
 	try {
 	    l1.create();
 	    log.debug("Create {}", l1);
@@ -453,39 +378,25 @@ public class RCSwitch extends RCObject {
 
 	assert (sw1.getDpid() == 0x1L);
 	assert (sw1.getStatus() == STATUS.ACTIVE);
-	assert (sw1.getAllPortIds().size() == 2);
-	for (byte[] portId : sw1.getAllPortIds()) {
-	    RCPort port = RCPort.createFromKey(portId);
-	    try {
-		port.read();
-		assert (port.getDpid() == 0x1L);
-		log.debug("{} - LinkIDs:{} DeviceIDs:{}", port,
-		        RCLink.keysToSB(port.getAllLinkIds()),
-		        RCDevice.keysToSB(port.getAllDeviceIds()));
+	for (RCPort port : RCPort.getAllPorts()) {
+	    if (port.getDpid() != 0x1L) {
+		continue;
+	    }
+	    log.debug("{}", port);
 
-		for (byte[] deviceId : port.getAllDeviceIds()) {
-		    RCDevice device = RCDevice.createFromKey(deviceId);
-		    try {
-			device.read();
-			log.debug("{} - PortIDs:{}", device,
-			        RCPort.keysToSB(device.getAllPortIds()));
-		    } catch (ObjectDoesntExistException e) {
-			log.error("Reading Device failed", e);
-		    }
+	    for (RCDevice device : RCDevice.getAllDevices()) {
+		if (!device.getAllPortIds().contains(port.getId())) {
+		    continue;
 		}
+		log.debug("{} - PortIDs:{}", device,
+			RCPort.keysToSB(device.getAllPortIds()));
+	    }
 
-		for (byte[] linkId : port.getAllLinkIds()) {
-		    RCLink link = RCLink.createFromKey(linkId);
-		    try {
-			link.read();
-			log.debug("Link {}", link);
-		    } catch (ObjectDoesntExistException e) {
-			log.error("Reading Link failed", e);
-		    }
+	    for (RCLink link : RCLink.getAllLinks()) {
+		if (!Arrays.equals(link.getSrc().getPortID(), port.getId())) {
+		    continue;
 		}
-
-	    } catch (ObjectDoesntExistException e) {
-		log.error("Reading Port failed", e);
+		log.debug("Link {}", link);
 	    }
 	}
 
@@ -499,40 +410,27 @@ public class RCSwitch extends RCObject {
 
 	assert (sw2.getDpid() == 0x2L);
 	assert (sw2.getStatus() == STATUS.ACTIVE);
-	assert (sw2.getAllPortIds().size() == 2);
-	for (byte[] portId : sw2.getAllPortIds()) {
-	    RCPort port = RCPort.createFromKey(portId);
-	    try {
-		port.read();
-		assert (port.getDpid() == 0x2L);
-		log.debug("{} - LinkIDs:{} DeviceIDs:{}", port,
-		        RCLink.keysToSB(port.getAllLinkIds()),
-		        RCDevice.keysToSB(port.getAllDeviceIds()));
-
-		for (byte[] deviceId : port.getAllDeviceIds()) {
-		    RCDevice device = RCDevice.createFromKey(deviceId);
-		    try {
-			device.read();
-			log.debug("{} - PortIDs:{}", device,
-			        RCPort.keysToSB(device.getAllPortIds()));
-		    } catch (ObjectDoesntExistException e) {
-			log.error("Reading Device failed", e);
-		    }
-		}
-
-		for (byte[] linkId : port.getAllLinkIds()) {
-		    RCLink link = RCLink.createFromKey(linkId);
-		    try {
-			link.read();
-			log.debug("Link {}", link);
-		    } catch (ObjectDoesntExistException e) {
-			log.error("Reading Link failed", e);
-		    }
-		}
-
-	    } catch (ObjectDoesntExistException e) {
-		log.error("Reading Port failed", e);
+	for (RCPort port : RCPort.getAllPorts()) {
+	    if (port.getDpid() != 0x2L) {
+		continue;
 	    }
+	    log.debug("{}", port);
+
+	    for (RCDevice device : RCDevice.getAllDevices()) {
+		if (!device.getAllPortIds().contains(port.getId())) {
+		    continue;
+		}
+		log.debug("{} - PortIDs:{}", device,
+			RCPort.keysToSB(device.getAllPortIds()));
+	    }
+
+	    for (RCLink link : RCLink.getAllLinks()) {
+		if (!Arrays.equals(link.getSrc().getPortID(), port.getId())) {
+		    continue;
+		}
+		log.debug("Link {}", link);
+	    }
+
 	}
 
 	log.debug("topology_walk end.");

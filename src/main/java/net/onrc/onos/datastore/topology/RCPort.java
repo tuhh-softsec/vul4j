@@ -3,13 +3,9 @@ package net.onrc.onos.datastore.topology;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +18,6 @@ import edu.stanford.ramcloud.JRamCloud;
 import net.onrc.onos.datastore.RCProtos.PortProperty;
 import net.onrc.onos.datastore.RCObject;
 import net.onrc.onos.datastore.RCTable;
-import net.onrc.onos.datastore.utils.ByteArrayComparator;
 import net.onrc.onos.datastore.utils.ByteArrayUtil;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 
@@ -46,13 +41,6 @@ public class RCPort extends RCObject {
 
     public static final String GLOBAL_PORT_TABLE_NAME = "G:Port";
 
-    // FIXME these should be Enum or some number, not String
-    private static final String PROP_DPID = "dpid";
-    private static final String PROP_NUMBER = "number";
-    private static final String PROP_STATUS = "status";
-    private static final String PROP_LINK_IDS = "link-ids";
-    private static final String PROP_DEVICE_IDS = "device-ids";
-
     // must not re-order enum members, ordinal will be sent over wire
     public enum STATUS {
 	INACTIVE, ACTIVE;
@@ -62,16 +50,6 @@ public class RCPort extends RCObject {
     private final Long number;
 
     private STATUS status;
-    // XXX These 2 set of Ids can be removed from DataStore, if In-Memory cache
-    // build the indexing info from Link.
-    @Deprecated
-    private TreeSet<byte[]> linkIds;
-    @Deprecated
-    transient boolean isLinkIdsModified;
-    @Deprecated
-    private TreeSet<byte[]> deviceIds;
-    @Deprecated
-    transient boolean isDeviceIdsModified;
 
     public static byte[] getPortID(Long dpid, Long number) {
         return PortEvent.getPortID(dpid, number);
@@ -139,10 +117,6 @@ public class RCPort extends RCObject {
 	this.dpid = dpid;
 	this.number = number;
 	this.status = STATUS.INACTIVE;
-	this.linkIds = new TreeSet<>(ByteArrayComparator.BYTEARRAY_COMPARATOR);
-	this.isLinkIdsModified = true;
-	this.deviceIds = new TreeSet<>(ByteArrayComparator.BYTEARRAY_COMPARATOR);
-	this.isDeviceIdsModified = true;
     }
 
     /**
@@ -204,66 +178,6 @@ public class RCPort extends RCObject {
 
     public byte[] getId() {
 	return getKey();
-    }
-
-    @Deprecated
-    public void addLinkId(byte[] linkId) {
-	isLinkIdsModified |= linkIds.add(linkId);
-    }
-
-    @Deprecated
-    public void removeLinkId(byte[] linkId) {
-	isLinkIdsModified |= linkIds.remove(linkId);
-    }
-
-    @Deprecated
-    public void emptyLinkIds() {
-	linkIds.clear();
-	isLinkIdsModified = true;
-    }
-
-    @Deprecated
-    public void addAllToLinkIds(Collection<byte[]> linkIds) {
-	isLinkIdsModified |= this.linkIds.addAll(linkIds);
-    }
-
-    /**
-     *
-     * @return Unmodifiable Set view of all the LinkIds;
-     */
-    @Deprecated
-    public Set<byte[]> getAllLinkIds() {
-	return Collections.unmodifiableSet(linkIds);
-    }
-
-    @Deprecated
-    public void addDeviceId(byte[] deviceId) {
-	isDeviceIdsModified |= deviceIds.add(deviceId);
-    }
-
-    @Deprecated
-    public void removeDeviceId(byte[] deviceId) {
-	isDeviceIdsModified |= deviceIds.remove(deviceId);
-    }
-
-    @Deprecated
-    public void emptyDeviceIds() {
-	deviceIds.clear();
-	isDeviceIdsModified = true;
-    }
-
-    @Deprecated
-    public void addAllToDeviceIds(Collection<byte[]> deviceIds) {
-	isDeviceIdsModified |= this.deviceIds.addAll(deviceIds);
-    }
-
-    /**
-     *
-     * @return Unmodifiable Set view of all the LinkIds;
-     */
-    @Deprecated
-    public Set<byte[]> getAllDeviceIds() {
-	return Collections.unmodifiableSet(deviceIds);
     }
 
     @Override

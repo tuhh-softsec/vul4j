@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.onrc.onos.datastore.topology.RCPort;
-import net.onrc.onos.datastore.topology.RCSwitch;
-import edu.stanford.ramcloud.JRamCloud.ObjectDoesntExistException;
-import edu.stanford.ramcloud.JRamCloud.WrongVersionException;
-
 /**
  * Switch Object stored in In-memory Topology.
  *
@@ -99,26 +94,6 @@ public class SwitchImpl extends NetworkGraphObject implements Switch {
 		PortImpl port = new PortImpl(graph, this, portNumber);
 		ports.put(port.getNumber(), port);
 		return port;
-	}
-
-	// XXX Do we still need this method?
-	public void store() {
-		RCSwitch rcSwitch = new RCSwitch(dpid);
-
-		for (Port port : ports.values()) {
-			RCPort rcPort = new RCPort(dpid, port.getNumber());
-			rcSwitch.addPortId(rcPort.getId());
-		}
-
-
-		try {
-			rcSwitch.update();
-
-		} catch (ObjectDoesntExistException | WrongVersionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 	@Override
