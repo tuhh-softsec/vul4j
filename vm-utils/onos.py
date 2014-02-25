@@ -48,23 +48,7 @@ class ONOS( Controller ):
     zookeeperDir = home + "/zookeeper-3.4.5"
     dirBase = '/tmp'
     logDir = dirBase + '/onos-logs'
-    configFile = dirBase + '/onos-%s.properties'
     logbackFile = dirBase + '/onos-%s.logback.xml'
-
-    # Base ONOS modules
-    baseModules = (
-        'net.floodlightcontroller.core.FloodlightProvider',
-        'net.floodlightcontroller.threadpool.ThreadPool',
-        'net.onrc.onos.ofcontroller.floodlightlistener.RCNetworkGraphPublisher',
-        'net.floodlightcontroller.ui.web.StaticWebRoutable',
-        'net.onrc.onos.datagrid.HazelcastDatagrid',
-        'net.onrc.onos.ofcontroller.flowmanager.FlowManager',
-        'net.onrc.onos.ofcontroller.flowprogrammer.FlowProgrammer',
-        'net.onrc.onos.ofcontroller.topology.TopologyManager',
-        'net.onrc.onos.intent.runtime.PathCalcRuntimeModule',
-        'net.onrc.onos.intent.runtime.PlanInstallModule',
-        'net.onrc.onos.registry.controller.ZookeeperRegistry'
-    )
 
     # Additions for reactive forwarding
     reactiveModules = (
@@ -87,31 +71,11 @@ class ONOS( Controller ):
         fc + 'core.FloodlightProvider.controllerid': 0
     }
 
-    # Things that are static
-    staticConfig = {
-        'net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher.graph_db_store':
-            'ramcloud',
-        'net.floodlightcontroller.core.FloodlightProvider.workerthreads': 16,
-        'net.floodlightcontroller.forwarding.Forwarding.idletimeout': 5,
-        'net.floodlightcontroller.forwarding.Forwarding.hardtimeout': 0
-    }
-
-    # Things that are based on onosDir
-    dirConfig = {
-        'net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher.dbconf':
-            '%s/conf/ramcloud.conf',
-        'net.onrc.onos.datagrid.HazelcastDatagrid.datagridConfig':
-        '%s/conf/hazelcast.xml',
-    }
-
     proctag = 'mn-onos-id'
 
     # List of scripts that we need/use
     scripts = ( 'start-zk.sh', 'start-ramcloud-coordinator.sh',
                 'start-ramcloud-server.sh', 'start-onos.sh', 'start-rest.sh' )
-
-    # For maven debugging
-    # mvn = 'mvn -o -e -X'
 
     def __init__( self, name, n=1, reactive=True, runAsRoot=False, **params):
         """n: number of ONOS instances to run (1)
@@ -138,17 +102,12 @@ class ONOS( Controller ):
         # Need to run commands from ONOS dir
         self.cmd( 'cd', self.onosDir )
         self.cmd( 'export PATH=$PATH:%s' % self.onosDir )
-        if hasattr( self, 'mvn' ):
-            self.cmd( 'export MVN="%s"' % self.mvn )
 
     def check( self ):
         "Set onosDir and check for ONOS prerequisites"
         if not quietRun( 'which java' ):
                 raise Exception( 'java not found -'
                                  ' make sure it is installed and in $PATH' )
-        if not quietRun( 'which mvn' ):
-                raise Exception( 'Maven (mvn) not found -'
-                                ' make sure it is installed and in $PATH' )
         if 'ONOS_HOME' in environ:
             self.onosDir = environ[ 'ONOS_HOME' ]
         else:
@@ -202,6 +161,7 @@ class ONOS( Controller ):
         ramcloud.cmd( 'export PATH=%s:$PATH' % self.onosDir )
         ramcloud.cmd( 'export ONOS_LOGDIR=%s' % self.logDir )
         for daemon in 'coordinator', 'server':
+            ramcloud.cmd( 'start-ramcloud-%s.sh stop' % daemon )
             ramcloud.cmd( 'start-ramcloud-%s.sh start' % daemon )
             pid = self.waitStart( 'Ramcloud %s' % daemon, 'obj.master/' + daemon )
             self.waitNetstat( pid )
@@ -236,25 +196,26 @@ class ONOS( Controller ):
         self.cmd( 'start-zk.sh stop' )
 
     def genProperties( self, id, path='/tmp' ):
-        "Generate ONOS properties file"
-        filename = path + '/onos-%s.properties' % id
-        with open( filename, 'w' ) as f:
-            # Write modules list
-            modules = list( self.baseModules )
-            if self.reactive:
-                modules += list( self.reactiveModules )
-            f.write( 'floodlight.modules = %s\n' %
-                     ',\\\n'.join( modules ) )
-            # Write other parameters
-            for var, val in self.perNodeConfigBase.iteritems():
-                if type( val ) is int:
-                    val += id
-                f.write( '%s = %s\n' % ( var, val ) )
-            for var, val in self.staticConfig.iteritems():
-                f.write( '%s = %s\n' % ( var, val ) )
-            for var, val in self.dirConfig.iteritems():
-                f.write( '%s = %s\n' % ( var, val % self.onosDir) )
-        return filename
+        "Generate ONOS properties file and return its full pathname"
+        defaultProps = self.onosDir + '/conf/onos.properties'
+        propsFile = path + '/onos-%s.properties' % id
+        with open( propsFile, 'w' ) as f:
+            with open( defaultProps ) as d:
+                for line in d.readlines():
+                    prop = line.split( ' ' )[ 0 ]
+                    val = self.perNodeConfigBase.get( prop, None )
+                    if val:
+                        # Write updated property
+                        f.write( '%s = %s\n' % ( prop, val + id) )
+                    else:
+                        # Write original property
+                        f.write( line )
+                    if prop == 'floodlight.modules' and ',\\' in line:
+                        if self.reactive:
+                            # Insert reactive modules into list
+                            for module in self.reactiveModules:
+                                f.write( '%s,\\\n' % module )
+        return propsFile
 
     def setVars( self, id, propsFile ):
         """Set and return environment vars
