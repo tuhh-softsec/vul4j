@@ -37,9 +37,9 @@ function start {
     lotate $RAMCLOUD_LOG
   fi
 
-  # Run ramcloud 
+  # Run ramcloud
   echo "Starting ramcloud"
-  $RAMCLOUD_DIR/obj.blueprint-java/server -M -L $RAMCLOUD_SERVER -C $RAMCLOUD_COORDINATOR --detectFailures 0 > $RAMCLOUD_LOG 2>&1 &
+  $RAMCLOUD_DIR/obj.blueprint-java/server -M -L $RAMCLOUD_SERVER -C $RAMCLOUD_COORDINATOR --masterServiceThreads 1 --logCleanerThreads 1 --detectFailures 0 > $RAMCLOUD_LOG 2>&1 &
 }
 
 function stop {
