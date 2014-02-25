@@ -81,12 +81,20 @@ public class PlanInstallModule implements IFloodlightModule {
 	}
 	
 	private void processIntents(IntentOperationList intents) {
+	    log("start_processIntents");
 	    log.debug("Processing OperationList {}", intents);
+	    log("begin_computePlan");
 	    List<Set<FlowEntry>> plan = planCalc.computePlan(intents);
+	    log("end_computePlan");
 	    log.debug("Plan: {}", plan);
+	    log("begin_installPlan");
 	    boolean success = planInstall.installPlan(plan);
+	    log("end_installPlan");
 	    
+	    log("begin_sendInstallNotif");
 	    sendNotifications(intents, true, success);
+	    log("end_sendInstallNotif");
+	    log("finish");
 	}
 	
 	private void sendNotifications(IntentOperationList intents, boolean installed, boolean success) {
@@ -120,8 +128,12 @@ public class PlanInstallModule implements IFloodlightModule {
 	
 	@Override
 	public void entryAdded(IntentOperationList value) {
+	    log("start_intentNotifRecv");
+	    log("begin_sendReceivedNotif");
 	    sendNotifications(value, false, false);
-	    
+	    log("end_sendReceivedNotif");
+	    log("finish");
+
 	    log.debug("Added OperationList {}", value);
 	    try {
 		intentQueue.put(value);
@@ -140,6 +152,11 @@ public class PlanInstallModule implements IFloodlightModule {
 	    // This channel is a queue, so this method is not needed
 	}
     }
+    
+    public static void log(String step) {
+	log.error("Time:{}, Step:{}", System.nanoTime(), step);
+    }
+    
     @Override
     public void startUp(FloodlightModuleContext context) {
 	// start subscriber
