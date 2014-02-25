@@ -33,11 +33,13 @@ public class NetworkGraphSwitchesResource extends ServerResource {
 		mapper.registerModule(module);
 		
 		try {
+			graph.acquireReadLock();
 			return mapper.writeValueAsString(graph.getSwitches());
 		} catch (IOException e) {
 			log.error("Error writing switch list to JSON", e);
 			return "";
+		} finally {
+			graph.releaseReadLock();
 		}
 	}
-
 }

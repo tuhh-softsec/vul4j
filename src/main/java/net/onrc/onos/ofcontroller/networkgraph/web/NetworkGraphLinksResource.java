@@ -31,10 +31,13 @@ public class NetworkGraphLinksResource extends ServerResource {
 		mapper.registerModule(module);
 		
 		try {
+			graph.acquireReadLock();
 			return mapper.writeValueAsString(graph.getLinks());
 		} catch (IOException e) {
 			log.error("Error writing link list to JSON", e);
 			return "";
+		} finally {
+		    graph.releaseReadLock();
 		}
 	}
 }
