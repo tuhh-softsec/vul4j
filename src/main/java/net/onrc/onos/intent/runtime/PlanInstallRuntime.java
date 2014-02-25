@@ -1,17 +1,21 @@
 package net.onrc.onos.intent.runtime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.core.internal.OFMessageFuture;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 //import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.util.Pair;
 
+import org.openflow.protocol.OFBarrierReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +65,23 @@ public class PlanInstallRuntime {
 	    
 	    // TODO: insert a barrier after each phase on each modifiedSwitch
 	    // TODO: wait for confirmation messages before proceeding
+	    List<Pair<IOFSwitch,OFMessageFuture<OFBarrierReply>>> barriers = new ArrayList<>();
+	    for(IOFSwitch sw : modifiedSwitches) {
+		barriers.add(new Pair<>(sw, pusher.barrierAsync(sw)));
+	    }
+	    for(Pair<IOFSwitch,OFMessageFuture<OFBarrierReply>> pair : barriers) {
+		IOFSwitch sw = pair.first;
+		OFMessageFuture<OFBarrierReply> future = pair.second;
+		try {
+		    future.get();
+		} catch (InterruptedException | ExecutionException e) {
+		    log.error("Barrier message not received for sw: {}", sw);
+		}
+	    }
 	}
 	long end = System.nanoTime();
 	log.error("MEASUREMENT: Install plan: {} ns", (end-start));
+	
 	// TODO: we assume that the plan installation succeeds for now
 	return true;
     }

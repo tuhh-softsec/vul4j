@@ -25,5 +25,16 @@ class ForwardAction extends Action {
 	    action.setActionOutput(new net.onrc.onos.ofcontroller.util.Port((short) dstPort));
 	    return action;
 	}
+
+	public int hashCode() {
+	    return (int) dstPort;
+	}
 	
+	public boolean equals(Object o) {
+	    if(!(o instanceof ForwardAction)) {
+		return false;
+	    }
+  	    ForwardAction action = (ForwardAction) o;
+	    return this.dstPort == action.dstPort;
+	}
 }

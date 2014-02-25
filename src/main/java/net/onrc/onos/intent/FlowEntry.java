@@ -51,7 +51,7 @@ public class FlowEntry {
 	public net.onrc.onos.ofcontroller.util.FlowEntry getFlowEntry() {
 		net.onrc.onos.ofcontroller.util.FlowEntry entry = new net.onrc.onos.ofcontroller.util.FlowEntry();
 		entry.setDpid(new Dpid(sw));
-		entry.setFlowEntryId(new FlowEntryId(0)); // all zero for now
+		entry.setFlowEntryId(new FlowEntryId(hashCode())); // naive, but useful for now
 		entry.setFlowEntryMatch(match.getFlowEntryMatch());
 		FlowEntryActions flowEntryActions = new FlowEntryActions();
 		for(Action action : actions) {
@@ -71,6 +71,19 @@ public class FlowEntry {
 		return entry;
 	}
 	
-	//TODO: implement hash for cookie
-	//TODO: implement equals (don't include operator!)
+	
+	public int hashCode() {
+	    return match.hashCode();
+	}
+	
+	public boolean equals(Object o) {
+	    if(!(o instanceof FlowEntry)) {
+		return false;
+	    }
+	    FlowEntry other = (FlowEntry) o;
+	    // Note: we should not consider the operator for this comparison
+	    return this.match.equals(other.match) 
+		&& this.actions.containsAll(other.actions)
+		&& other.actions.containsAll(this.actions);
+	}
 }

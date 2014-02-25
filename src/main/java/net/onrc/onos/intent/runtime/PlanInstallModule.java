@@ -2,6 +2,7 @@ package net.onrc.onos.intent.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,6 +70,9 @@ public class PlanInstallModule implements IFloodlightModule {
 		    IntentOperationList intents = intentQueue.take();
 		    //TODO: consider draining the remaining intent lists 
 		    //      and processing in one big batch
+//		    List<IntentOperationList> remaining = new LinkedList<>();
+//		    intentQueue.drainTo(remaining);
+		    
 		    processIntents(intents);
 		} catch (InterruptedException e) {
 		    log.warn("Error taking from intent queue: {}", e.getMessage());
