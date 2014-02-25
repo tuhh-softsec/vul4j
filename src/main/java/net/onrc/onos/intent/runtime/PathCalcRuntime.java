@@ -107,19 +107,6 @@ public class PathCalcRuntime implements IFloodlightService {
 					pathIntentOpList.add(Operator.REMOVE, new Intent(oldPathIntentId));
 				}
 
-				// remove old path-intent if exists
-				Intent oldIntent = appIntents.getIntent(spIntent.getId());
-				if (oldIntent != null) {
-					ShortestPathIntent oldSpIntent = (ShortestPathIntent)oldIntent;
-					String pathIntentId = oldSpIntent.getPathIntentId();
-					if (pathIntentId != null) {
-						Intent targetPathIntent = pathIntents.getIntent(pathIntentId);
-						if (targetPathIntent != null) {
-							pathIntentOpList.add(Operator.REMOVE, targetPathIntent);
-						}
-					}
-				}
-
 				// create new path-intent
 				PathIntent pathIntent = new PathIntent(newPathIntentId, path, bandwidth, spIntent);
 				pathIntent.setState(IntentState.INST_REQ);

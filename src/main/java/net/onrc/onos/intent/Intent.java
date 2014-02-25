@@ -54,6 +54,9 @@ public class Intent {
 	public IntentState setState(IntentState newState) {
 		logs.add(String.format("setState, oldState:%s, newState:%s, time:%d",
 				state, newState, System.nanoTime())); // for measurement
+		if (logs.size() > 20) { // TODO this size should be configurable
+			logs.removeFirst();
+		}
 		IntentState oldState = state;
 		state = newState;
 		return oldState;
