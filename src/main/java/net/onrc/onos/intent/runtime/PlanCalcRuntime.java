@@ -5,12 +5,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.FlowEntry;
@@ -22,6 +20,9 @@ import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 //import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -40,7 +41,7 @@ public class PlanCalcRuntime {
 
     public List<Set<FlowEntry>> computePlan(IntentOperationList intentOps) {
 	long start = System.nanoTime();
-	Set<Collection<FlowEntry>> flowEntries = computeFlowEntries(intentOps);
+	List<Collection<FlowEntry>> flowEntries = computeFlowEntries(intentOps);
 	long step1 = System.nanoTime();
 	List<Set<FlowEntry>> plan = buildPhases(flowEntries);
 	long step2 = System.nanoTime();
@@ -49,8 +50,8 @@ public class PlanCalcRuntime {
 	return plan;
     }
 
-    private Set<Collection<FlowEntry>> computeFlowEntries(IntentOperationList intentOps) {
-	Set<Collection<FlowEntry>> flowEntries = new HashSet<>();
+    private List<Collection<FlowEntry>> computeFlowEntries(IntentOperationList intentOps) {
+	List<Collection<FlowEntry>> flowEntries = new LinkedList<>();
 	for(IntentOperation i : intentOps) {
 	    if(!(i.intent instanceof PathIntent)) {
 		log.warn("Not a path intent: {}", i);
@@ -106,7 +107,7 @@ public class PlanCalcRuntime {
 	return flowEntries;
     }
 
-    private List<Set<FlowEntry>> buildPhases(Set<Collection<FlowEntry>> flowEntries) {
+    private List<Set<FlowEntry>> buildPhases(List<Collection<FlowEntry>> flowEntries) {
 	Map<FlowEntry, Integer> map = new HashMap<>();
 	List<Set<FlowEntry>> plan = new ArrayList<>();
 	for(Collection<FlowEntry> c : flowEntries) {
