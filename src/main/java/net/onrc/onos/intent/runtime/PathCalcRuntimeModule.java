@@ -158,10 +158,11 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 	@Override
 	public IntentOperationList executeIntentOperations(IntentOperationList list) {
-		lock.lock(); // TODO optimize locking using smaller steps
 		if (list == null || list.size() == 0)
 			return null;
 		PerfLogger p = new PerfLogger("executeIntentOperations_" + list.get(0).operator);
+
+		lock.lock(); // TODO optimize locking using smaller steps
 		try {
 			// update the map of high-level intents
 			p.log("begin_updateInMemoryIntents");
