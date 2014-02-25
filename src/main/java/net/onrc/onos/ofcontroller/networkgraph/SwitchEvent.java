@@ -12,8 +12,9 @@ public class SwitchEvent {
     protected final Long dpid;
 
     /**
-     * Default constructor.
+     * Default constructor for Serializer to use.
      */
+    @Deprecated
     public SwitchEvent() {
 	dpid = null;
     }

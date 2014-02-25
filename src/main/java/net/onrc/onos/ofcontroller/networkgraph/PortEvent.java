@@ -14,8 +14,9 @@ public class PortEvent {
 	public final Long number;
 
 	/**
-	 * Default constructor.
+	 * Default constructor for Serializer to use.
 	 */
+	@Deprecated
 	public SwitchPort() {
 	    dpid = null;
 	    number = null;
@@ -77,8 +78,9 @@ public class PortEvent {
     // TODO Add Description
 
     /**
-     * Default constructor.
+     * Default constructor for Serializer to use.
      */
+    @Deprecated
     public PortEvent() {
 	id = null;
     }
