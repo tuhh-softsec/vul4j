@@ -480,10 +480,12 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    addDevice(deviceEvent);
     }
 
-    /* ******************************
-     * NetworkGraphDiscoveryInterface methods
-     * ******************************/
-
+    /**
+     * Switch discovered event.
+     *
+     * @param switchEvent the switch event.
+     * @param portEvents the corresponding port events for the switch.
+     */
     @Override
     public void putSwitchDiscoveryEvent(SwitchEvent switchEvent,
 					Collection<PortEvent> portEvents) {
@@ -533,6 +535,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
+    /**
+     * Switch removed event.
+     *
+     * @param switchEvent the switch event.
+     */
     @Override
     public void removeSwitchDiscoveryEvent(SwitchEvent switchEvent) {
 	// Get the old Port Events
@@ -578,6 +585,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
+    /**
+     * Port discovered event.
+     *
+     * @param portEvent the port event.
+     */
     @Override
     public void putPortDiscoveryEvent(PortEvent portEvent) {
 	if (datastore.addPort(portEvent)) {
@@ -598,6 +610,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
+    /**
+     * Port removed event.
+     *
+     * @param portEvent the port event.
+     */
     @Override
     public void removePortDiscoveryEvent(PortEvent portEvent) {
 	if (datastore.deactivatePort(portEvent)) {
@@ -645,6 +662,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
+    /**
+     * Link discovered event.
+     *
+     * @param linkEvent the link event.
+     */
     @Override
     public void putLinkDiscoveryEvent(LinkEvent linkEvent) {
 	if (datastore.addLink(linkEvent)) {
@@ -665,6 +687,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
+    /**
+     * Link removed event.
+     *
+     * @param linkEvent the link event.
+     */
     @Override
     public void removeLinkDiscoveryEvent(LinkEvent linkEvent) {
 	if (datastore.removeLink(linkEvent)) {
@@ -681,6 +708,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
+    /**
+     * Device discovered event.
+     *
+     * @param deviceEvent the device event.
+     */
     @Override
     public void putDeviceDiscoveryEvent(DeviceEvent deviceEvent) {
 	if (datastore.addDevice(deviceEvent)) {
@@ -704,6 +736,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
+    /**
+     * Device removed event.
+     *
+     * @param deviceEvent the device event.
+     */
     @Override
     public void removeDeviceDiscoveryEvent(DeviceEvent deviceEvent) {
 	if (datastore.removeDevice(deviceEvent)) {
@@ -723,9 +760,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
-    /* ************************************************
-     * Internal methods to maintain the network graph
-     * ************************************************/
+    /**
+     * Add a switch to the Network Graph.
+     *
+     * @param switchEvent the Switch Event with the switch to add.
+     */
     private void addSwitch(SwitchEvent switchEvent) {
 	Switch sw = networkGraph.getSwitch(switchEvent.getDpid());
 	if (sw == null) {
@@ -738,6 +777,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	apiAddedSwitchEvents.add(switchEvent);
     }
 
+    /**
+     * Remove a switch from the Network Graph.
+     *
+     * @param switchEvent the Switch Event with the switch to remove.
+     */
     private void removeSwitch(SwitchEvent switchEvent) {
 	Switch sw = networkGraph.getSwitch(switchEvent.getDpid());
 	if (sw == null) {
@@ -763,6 +807,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	apiRemovedSwitchEvents.add(switchEvent);
     }
 
+    /**
+     * Add a port to the Network Graph.
+     *
+     * @param portEvent the Port Event with the port to add.
+     */
     private void addPort(PortEvent portEvent) {
 	Switch sw = networkGraph.getSwitch(portEvent.getDpid());
 	if (sw == null) {
@@ -783,6 +832,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	apiAddedPortEvents.add(portEvent);
     }
 
+    /**
+     * Remove a port from the Network Graph.
+     *
+     * @param portEvent the Port Event with the port to remove.
+     */
     private void removePort(PortEvent portEvent) {
 	Switch sw = networkGraph.getSwitch(portEvent.getDpid());
 	if (sw == null) {
@@ -839,6 +893,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	apiRemovedPortEvents.add(portEvent);
     }
 
+    /**
+     * Add a link to the Network Graph.
+     *
+     * @param linkEvent the Link Event with the link to add.
+     */
     private void addLink(LinkEvent linkEvent) {
 	Port srcPort = networkGraph.getPort(linkEvent.getSrc().dpid,
 					    linkEvent.getSrc().number);
@@ -888,6 +947,11 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	apiAddedLinkEvents.add(linkEvent);
     }
 
+    /**
+     * Remove a link from the Network Graph.
+     *
+     * @param linkEvent the Link Event with the link to remove.
+     */
     private void removeLink(LinkEvent linkEvent) {
 	Port srcPort = networkGraph.getPort(linkEvent.getSrc().dpid,
 					    linkEvent.getSrc().number);
@@ -923,7 +987,15 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	apiRemovedLinkEvents.add(linkEvent);
     }
 
-    // TODO: Device-related work is incomplete
+    /**
+     * Add a device to the Network Graph.
+     *
+     * TODO: Device-related work is incomplete.
+     * TODO: Eventually, we might need to consider reordering
+     * or addLink() and addDevice() events on the same port.
+     *
+     * @param deviceEvent the Device Event with the device to add.
+     */
     private void addDevice(DeviceEvent deviceEvent) {
 	Device device = networkGraph.getDeviceByMac(deviceEvent.getMac());
 	if (device == null) {
@@ -969,6 +1041,13 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
     }
 
+    /**
+     * Remove a device from the Network Graph.
+     *
+     * TODO: Device-related work is incomplete.
+     *
+     * @param deviceEvent the Device Event with the device to remove.
+     */
     private void removeDevice(DeviceEvent deviceEvent) {
 	Device device = networkGraph.getDeviceByMac(deviceEvent.getMac());
 	if (device == null) {
@@ -997,218 +1076,63 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
     }
 
     /**
+     * Get the SwitchImpl-casted switch implementation.
      *
-     * @param switchEvent
-     * @return true if ready to accept event.
+     * @param sw the Switch to cast.
+     * @return the SwitchImpl-casted switch implementation.
      */
-    private boolean prepareForAddSwitchEvent(SwitchEvent switchEvent) {
-	// No show stopping precondition
-	return true;
-    }
-
-    private boolean prepareForRemoveSwitchEvent(SwitchEvent switchEvent) {
-	// No show stopping precondition
-	return true;
-    }
-
-    private boolean prepareForAddPortEvent(PortEvent portEvent) {
-	// Parent Switch must exist
-	if (networkGraph.getSwitch(portEvent.getDpid()) == null) {
-	    log.warn("Dropping add port event because switch doesn't exist: {}",
-		     portEvent);
-	    return false;
-	}
-	// Prep: None
-	return true;
-    }
-
-    private boolean prepareForRemovePortEvent(PortEvent portEvent) {
-	Port port = networkGraph.getPort(portEvent.getDpid(),
-					 portEvent.getNumber());
-	if (port == null) {
-	    log.debug("Port already removed? {}", portEvent);
-	    // let it pass
-	    return true;
-	}
-
-	// Prep: Remove Link and Device Attachment
-	ArrayList<DeviceEvent> deviceEvents = new ArrayList<>();
-	for (Device device : port.getDevices()) {
-	    log.debug("Removing Device {} on Port {}", device, portEvent);
-	    DeviceEvent devEvent = new DeviceEvent(device.getMacAddress());
-	    devEvent.addAttachmentPoint(new SwitchPort(port.getSwitch().getDpid(),
-						     port.getNumber()));
-	    deviceEvents.add(devEvent);
-	}
-	for (DeviceEvent devEvent : deviceEvents) {
-	    // calling Discovery API to wipe from DB, etc.
-	    removeDeviceDiscoveryEvent(devEvent);
-	}
-
-	Set<Link> links = new HashSet<>();
-	links.add(port.getOutgoingLink());
-	links.add(port.getIncomingLink());
-	for (Link link : links) {
-	    if (link == null) {
-		continue;
-	    }
-	    log.debug("Removing Link {} on Port {}", link, portEvent);
-	    LinkEvent linkEvent =
-		new LinkEvent(link.getSrcSwitch().getDpid(),
-			      link.getSrcPort().getNumber(),
-			      link.getDstSwitch().getDpid(),
-			      link.getDstPort().getNumber());
-	    // calling Discovery API to wipe from DB, etc.
-
-	    // Call internal remove Link, which will check
-	    // ownership of DST dpid and modify DB only if it is the owner
-	    removeLinkDiscoveryEvent(linkEvent, true);
-	}
-	return true;
-    }
-
-    private boolean prepareForAddLinkEvent(LinkEvent linkEvent) {
-	// Src/Dst Port must exist
-	Port srcPort = networkGraph.getPort(linkEvent.getSrc().dpid,
-					    linkEvent.getSrc().number);
-	Port dstPort = networkGraph.getPort(linkEvent.getDst().dpid,
-					    linkEvent.getDst().number);
-	if (srcPort == null || dstPort == null) {
-	    log.warn("Dropping add link event because port doesn't exist: {}",
-		     linkEvent);
-	    return false;
-	}
-
-	// Prep: remove Device attachment on both Ports
-	ArrayList<DeviceEvent> deviceEvents = new ArrayList<>();
-	for (Device device : srcPort.getDevices()) {
-	    DeviceEvent devEvent = new DeviceEvent(device.getMacAddress());
-	    devEvent.addAttachmentPoint(new SwitchPort(srcPort.getSwitch().getDpid(), srcPort.getNumber()));
-	    deviceEvents.add(devEvent);
-	}
-	for (Device device : dstPort.getDevices()) {
-	    DeviceEvent devEvent = new DeviceEvent(device.getMacAddress());
-	    devEvent.addAttachmentPoint(new SwitchPort(dstPort.getSwitch().getDpid(),
-						     dstPort.getNumber()));
-	    deviceEvents.add(devEvent);
-	}
-	for (DeviceEvent devEvent : deviceEvents) {
-	    // calling Discovery API to wipe from DB, etc.
-	    removeDeviceDiscoveryEvent(devEvent);
-	}
-
-	return true;
-    }
-
-    private boolean prepareForRemoveLinkEvent(LinkEvent linkEvent) {
-	// Src/Dst Port must exist
-	Port srcPort = networkGraph.getPort(linkEvent.getSrc().dpid,
-					    linkEvent.getSrc().number);
-	Port dstPort = networkGraph.getPort(linkEvent.getDst().dpid,
-					    linkEvent.getDst().number);
-	if (srcPort == null || dstPort == null) {
-	    log.warn("Dropping remove link event because port doesn't exist {}", linkEvent);
-	    return false;
-	}
-
-	Link link = srcPort.getOutgoingLink();
-
-	// Link is already gone, or different Link exist in memory
-	// XXX Check if we should reject or just accept these cases.
-	// it should be harmless to remove the Link on event from DB anyways
-	if (link == null ||
-	    !link.getDstPort().getNumber().equals(linkEvent.getDst().number)
-	    || !link.getDstSwitch().getDpid().equals(linkEvent.getDst().dpid)) {
-	    log.warn("Dropping remove link event because link doesn't exist: {}", linkEvent);
-	    return false;
-	}
-	// Prep: None
-	return true;
-    }
-
-    /**
-     *
-     * @param deviceEvent Event will be modified to remove inapplicable attachemntPoints/ipAddress
-     * @return false if this event should be dropped.
-     */
-    private boolean prepareForAddDeviceEvent(DeviceEvent deviceEvent) {
-	boolean preconditionBroken = false;
-	ArrayList<PortEvent.SwitchPort> failedSwitchPort = new ArrayList<>();
-	for ( PortEvent.SwitchPort swp : deviceEvent.getAttachmentPoints() ) {
-	    // Attached Ports must exist
-	    Port port = networkGraph.getPort(swp.dpid, swp.number);
-	    if (port == null) {
-		preconditionBroken = true;
-		failedSwitchPort.add(swp);
-		continue;
-	    }
-	    // Attached Ports must not have Link
-	    if (port.getOutgoingLink() != null ||
-		port.getIncomingLink() != null) {
-		preconditionBroken = true;
-		failedSwitchPort.add(swp);
-		continue;
-	    }
-	}
-
-	// Rewriting event to exclude failed attachmentPoint
-	// XXX Assumption behind this is that inapplicable device event should
-	// be dropped, not deferred. If we decide to defer Device event,
-	// rewriting can become a problem
-	List<SwitchPort>  attachmentPoints = deviceEvent.getAttachmentPoints();
-	attachmentPoints.removeAll(failedSwitchPort);
-	deviceEvent.setAttachmentPoints(attachmentPoints);
-
-	if (deviceEvent.getAttachmentPoints().isEmpty() &&
-	    deviceEvent.getIpAddresses().isEmpty()) {
-	    // return false to represent: Nothing left to do for this event.
-	    // Caller should drop event
-	    return false;
-	}
-
-	// Should we return false to tell caller that the event was trimmed?
-	// if ( preconditionBroken ) {
-	//     return false;
-	// }
-
-	return true;
-    }
-
-    private boolean prepareForRemoveDeviceEvent(DeviceEvent deviceEvent) {
-	// No show stopping precondition?
-	// Prep: none
-	return true;
-    }
-
     private SwitchImpl getSwitchImpl(Switch sw) {
 	if (sw instanceof SwitchImpl) {
-	    return (SwitchImpl) sw;
+	    return (SwitchImpl)sw;
 	}
 	throw new ClassCastException("SwitchImpl expected, but found: " + sw);
     }
 
-    private PortImpl getPortImpl(Port p) {
-	if (p instanceof PortImpl) {
-	    return (PortImpl) p;
+    /**
+     * Get the PortImpl-casted port implementation.
+     *
+     * @param port the Port to cast.
+     * @return the PortImpl-casted port implementation.
+     */
+    private PortImpl getPortImpl(Port port) {
+	if (port instanceof PortImpl) {
+	    return (PortImpl)port;
 	}
-	throw new ClassCastException("PortImpl expected, but found: " + p);
+	throw new ClassCastException("PortImpl expected, but found: " + port);
     }
 
-    private LinkImpl getLinkImpl(Link l) {
-	if (l instanceof LinkImpl) {
-	    return (LinkImpl) l;
+    /**
+     * Get the LinkImpl-casted link implementation.
+     *
+     * @param link the Link to cast.
+     * @return the LinkImpl-casted link implementation.
+     */
+    private LinkImpl getLinkImpl(Link link) {
+	if (link instanceof LinkImpl) {
+	    return (LinkImpl)link;
 	}
-	throw new ClassCastException("LinkImpl expected, but found: " + l);
+	throw new ClassCastException("LinkImpl expected, but found: " + link);
     }
 
-    private DeviceImpl getDeviceImpl(Device d) {
-	if (d instanceof DeviceImpl) {
-	    return (DeviceImpl) d;
+    /**
+     * Get the DeviceImpl-casted device implementation.
+     *
+     * @param device the Device to cast.
+     * @return the DeviceImpl-casted device implementation.
+     */
+    private DeviceImpl getDeviceImpl(Device device) {
+	if (device instanceof DeviceImpl) {
+	    return (DeviceImpl)device;
 	}
-	throw new ClassCastException("DeviceImpl expected, but found: " + d);
+	throw new ClassCastException("DeviceImpl expected, but found: " + device);
     }
 
-    @Deprecated
+    /**
+     * Read the whole topology from the database.
+     *
+     * @return a collection of EventEntry-encapsulated Topology Events for
+     * the whole topology.
+     */
     private Collection<EventEntry<TopologyEvent>> readWholeTopologyFromDB() {
 	Collection<EventEntry<TopologyEvent>> collection =
 	    new LinkedList<EventEntry<TopologyEvent>>();
@@ -1265,26 +1189,5 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
 
 	return collection;
-    }
-
-    @Deprecated
-    private void removeLinkDiscoveryEvent(LinkEvent linkEvent,
-					  boolean dstCheckBeforeDBmodify) {
-	if (prepareForRemoveLinkEvent(linkEvent)) {
-	    if (dstCheckBeforeDBmodify) {
-		// write to DB only if it is owner of the dst dpid
-	    // XXX this will cause link remove events to be dropped
-		// if the dst switch just disconnected
-		if (registryService.hasControl(linkEvent.getDst().dpid)) {
-		    datastore.removeLink(linkEvent);
-		}
-	    } else {
-		datastore.removeLink(linkEvent);
-	    }
-	    removeLink(linkEvent);
-	    // Send out notification
-	    eventChannel.removeEntry(linkEvent.getID());
-	}
-	// TODO handle invariant violation
     }
 }
