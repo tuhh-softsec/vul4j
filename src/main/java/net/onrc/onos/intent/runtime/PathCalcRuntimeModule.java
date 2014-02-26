@@ -84,6 +84,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 	private IEventChannel<Long, IntentOperationList> opEventChannel;
 	private final ReentrantLock lock = new ReentrantLock();
+	private HashSet<LinkEvent> unmatchedLinkEvents = new HashSet<>();
 	private static final String INTENT_OP_EVENT_CHANNEL_NAME = "onos.pathintent";
 	private static final String INTENT_STATE_EVENT_CHANNEL_NAME = "onos.pathintent_state";
 	private static final Logger log = LoggerFactory.getLogger(PathCalcRuntimeModule.class);
@@ -99,8 +100,8 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		IntentOperationList reroutingOperation = new IntentOperationList();
 		for (Intent intent : oldPaths) {
 			PathIntent pathIntent = (PathIntent) intent;
-			if (pathIntent.getState().equals(IntentState.INST_ACK) &&
-					!reroutingOperation.contains(pathIntent)) {
+			if (pathIntent.getState().equals(IntentState.INST_ACK) && // XXX: path intents in flight
+					!reroutingOperation.contains(pathIntent.getParentIntent())) { 
 				reroutingOperation.add(Operator.ADD, pathIntent.getParentIntent());
 			}
 		}
@@ -264,15 +265,40 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 		PerfLogger p = new PerfLogger("networkGraphEvents");
 		HashSet<Intent> affectedPaths = new HashSet<>();
+		
+		boolean rerouteAll = false;
+		for(LinkEvent le : addedLinkEvents) {
+		    LinkEvent rev = new LinkEvent(le.getDst().getDpid(), le.getDst().getNumber(), le.getSrc().getDpid(), le.getSrc().getNumber());
+		    if(unmatchedLinkEvents.contains(rev)) {
+			rerouteAll = true;
+			unmatchedLinkEvents.remove(rev);
+			log.debug("Found matched LinkEvent: {} {}", rev, le);
+		    }
+		    else {
+			unmatchedLinkEvents.add(le);
+			log.debug("Adding unmatched LinkEvent: {}", le);
+		    }
+		}
+		for(LinkEvent le : removedLinkEvents) {
+		    if (unmatchedLinkEvents.contains(le)) {
+			unmatchedLinkEvents.remove(le);
+			log.debug("Removing LinkEvent: {}", le);
+		    }
+		}
+		if(unmatchedLinkEvents.size() > 0) {
+		    log.debug("Unmatched link events: {} events", unmatchedLinkEvents.size());
+		}
 
-		if (addedLinkEvents.size() > 0) { // ||
+		if ( rerouteAll ) {//addedLinkEvents.size() > 0) { // ||
 //				addedPortEvents.size() > 0 ||
 //				addedSwitchEvents.size() > 0) {
 			p.log("begin_getAllIntents");
 			affectedPaths.addAll(getPathIntents().getAllIntents());
 			p.log("end_getAllIntents");
 		}
-		else {
+		else if (removedSwitchEvents.size() > 0 ||
+			 removedLinkEvents.size() > 0 ||
+			 removedPortEvents.size() > 0) {
 			p.log("begin_getIntentsByLink");
 			for (LinkEvent linkEvent: removedLinkEvents)
 				affectedPaths.addAll(pathIntents.getIntentsByLink(linkEvent));
