@@ -17,6 +17,7 @@ import net.onrc.onos.datastore.RCTable;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IdBlock;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class PersistIntent {
     private final static String intentJournal = "G:IntentJournal";
     private final static int valueStoreLimit = 1024 * 1024;
     private RCTable table;
-    private Kryo kryo = new Kryo();
+    private Kryo kryo;
     private ByteArrayOutputStream stream;
     private Output output = null;
     private AtomicLong nextId = null;
@@ -48,6 +49,7 @@ public class PersistIntent {
         table = RCTable.getTable(intentJournal);
         stream = new ByteArrayOutputStream(1024);
         output = new Output(stream);
+        kryo = (new KryoFactory()).newKryo();
     }
     
     public long getKey() {
