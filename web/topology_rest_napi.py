@@ -5,6 +5,7 @@ from urllib2 import Request, urlopen, URLError, HTTPError
 from flask import Flask, json, Response, render_template, make_response, request
 
 ## Global Var for ON.Lab local REST ##
+# The GUI can be accessed at <this_host>:9000/onos-topology.html
 RestIP="localhost"
 RestPort=8080
 ONOS_DEFAULT_HOST="localhost" ;# Has to set if LB=False
