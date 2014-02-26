@@ -60,7 +60,7 @@ public class ConstrainedBFSTree {
 		if (path == null && switchSearched.contains(leafSwitch)) {
 			path = new Path();
 			Long sw = leafSwitch.getDpid();
-			while (sw != rootSwitchDpid) {
+			while (!sw.equals(rootSwitchDpid)) {
 				LinkEvent upstreamLink = upstreamLinks.get(sw);
 				path.add(0, upstreamLink);
 				sw = upstreamLink.getSrc().getDpid();
