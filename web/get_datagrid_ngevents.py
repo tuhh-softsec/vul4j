@@ -33,7 +33,7 @@ def debug(txt):
 # Sample output:
 
 def print_datagrid_map(parsedResult):
-  print '%s' % (parsedResult)
+  print '%s' % (parsedResult),
 
 def get_datagrid_map():
   try:
