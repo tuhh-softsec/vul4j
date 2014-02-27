@@ -314,7 +314,9 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 				affectedPaths.addAll(pathIntents.getIntentsByDpid(switchEvent.getDpid()));
 			p.log("end_getIntentsByDpid");
 		}
+		p.log("begin_reroutePaths");
 		reroutePaths(affectedPaths);
+		p.log("end_reroutePaths");
 		p.flushLog();
 	}
 

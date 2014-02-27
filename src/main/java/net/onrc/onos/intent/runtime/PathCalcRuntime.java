@@ -45,6 +45,7 @@ public class PathCalcRuntime implements IFloodlightService {
 
 		// TODO optimize locking of NetworkGraph
 		graph.acquireReadLock();
+		log.debug("NetworkGraph: {}", graph.getLinks());
 
 		for (IntentOperation intentOp: intentOpList) {
 			switch (intentOp.operator) {
@@ -62,9 +63,10 @@ public class PathCalcRuntime implements IFloodlightService {
 				Switch srcSwitch = graph.getSwitch(spIntent.getSrcSwitchDpid());
 				Switch dstSwitch = graph.getSwitch(spIntent.getDstSwitchDpid());
 				if (srcSwitch == null || dstSwitch == null) {
-					log.error("Switch not found: {}, {}",
+					log.error("Switch not found. src:{}, dst:{}, NetworkGraph:{}",
 							spIntent.getSrcSwitchDpid(),
-							spIntent.getDstSwitchDpid());
+							spIntent.getDstSwitchDpid(),
+							graph.getLinks());
 					pathIntentOpList.add(Operator.ERROR, new ErrorIntent(
 							ErrorType.SWITCH_NOT_FOUND,
 							"Switch not found.",
@@ -87,7 +89,7 @@ public class PathCalcRuntime implements IFloodlightService {
 				}
 				Path path = tree.getPath(dstSwitch);
 				if (path == null) {
-					log.error("Path not found: {}", spIntent.toString());
+					log.error("Path not found. Intent: {}, NetworkGraph:{}", spIntent.toString(), graph.getLinks());
 					pathIntentOpList.add(Operator.ERROR, new ErrorIntent(
 							ErrorType.PATH_NOT_FOUND,
 							"Path not found.",
