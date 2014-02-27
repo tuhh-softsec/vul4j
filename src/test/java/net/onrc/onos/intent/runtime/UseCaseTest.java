@@ -54,11 +54,13 @@ public class UseCaseTest {
 	@SuppressWarnings("rawtypes")
 	private IEventChannel eventChannel;
 
+	private static Long LOCAL_PORT = 0xFFFEL;
+
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
 		MockNetworkGraph graph = new MockNetworkGraph();
-		graph.createSampleTopology();
+		graph.createSampleTopology1();
 		g = graph;
 
 		datagridService = createMock(IDatagridService.class);
@@ -124,9 +126,9 @@ public class UseCaseTest {
 	public void createShortestPaths() throws FloodlightModuleException {
 		// create shortest path intents
 		IntentOperationList opList = new IntentOperationList();
-		opList.add(Operator.ADD, new ShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 4L));
-		opList.add(Operator.ADD, new ShortestPathIntent("2", 2L, 20L, 2L, 6L, 20L, 5L));
-		opList.add(Operator.ADD, new ShortestPathIntent("3", 4L, 20L, 3L, 8L, 20L, 6L));
+		opList.add(Operator.ADD, new ShortestPathIntent("1", 1L, 12L, LOCAL_PORT, 2L, 21L, LOCAL_PORT));
+		opList.add(Operator.ADD, new ShortestPathIntent("2", 1L, 14L, LOCAL_PORT, 4L, 41L, LOCAL_PORT));
+		opList.add(Operator.ADD, new ShortestPathIntent("3", 2L, 23L, LOCAL_PORT, 3L, 32L, LOCAL_PORT));
 
 		// compile high-level intent operations into low-level intent operations (calculate paths)
 		PathCalcRuntimeModule runtime1 = new PathCalcRuntimeModule();
@@ -147,11 +149,11 @@ public class UseCaseTest {
 	public void createConstrainedShortestPaths() throws FloodlightModuleException {
 		// create constrained shortest path intents
 		IntentOperationList opList = new IntentOperationList();
-		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 17L, 400.0));
-		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("2", 2L, 20L, 2L, 6L, 20L, 18L, 400.0));
-		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("3", 4L, 20L, 3L, 8L, 20L, 19L, 400.0));
-		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("4", 3L, 20L, 4L, 8L, 20L, 20L, 400.0));
-		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("5", 4L, 20L, 5L, 8L, 20L, 21L, 400.0));
+		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("1", 1L, 12L, LOCAL_PORT, 2L, 21L, LOCAL_PORT, 400.0));
+		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("2", 1L, 14L, LOCAL_PORT, 4L, 41L, LOCAL_PORT, 400.0));
+		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("3", 2L, 24L, LOCAL_PORT, 4L, 42L, LOCAL_PORT, 400.0));
+		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("4", 2L, 23L, LOCAL_PORT, 3L, 32L, LOCAL_PORT, 400.0));
+		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("5", 3L, 34L, LOCAL_PORT, 4L, 43L, LOCAL_PORT, 400.0));
 
 		// compile high-level intent operations into low-level intent operations (calculate paths)
 		PathCalcRuntimeModule runtime1 = new PathCalcRuntimeModule();
@@ -172,11 +174,11 @@ public class UseCaseTest {
 	public void createMixedShortestPaths() throws FloodlightModuleException {
 		// create constrained & best effort shortest path intents
 		IntentOperationList opList = new IntentOperationList();
-		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 6L, 600.0));
-		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("2", 2L, 20L, 2L, 6L, 20L, 7L, 600.0));
-		opList.add(Operator.ADD, new ShortestPathIntent("3", 4L, 20L, 3L, 8L, 20L, 8L));
-		opList.add(Operator.ADD, new ShortestPathIntent("4", 4L, 20L, 4L, 8L, 20L, 9L));
-		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("5", 4L, 20L, 5L, 8L, 20L, 10L, 600.0));
+		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("1", 1L, 12L, LOCAL_PORT, 2L, 21L, LOCAL_PORT, 400.0));
+		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("2", 1L, 14L, LOCAL_PORT, 4L, 41L, LOCAL_PORT, 400.0));
+		opList.add(Operator.ADD, new ShortestPathIntent("3", 2L, 24L, LOCAL_PORT, 4L, 42L, LOCAL_PORT));
+		opList.add(Operator.ADD, new ShortestPathIntent("4", 2L, 23L, LOCAL_PORT, 3L, 32L, LOCAL_PORT));
+		opList.add(Operator.ADD, new ConstrainedShortestPathIntent("5", 3L, 34L, LOCAL_PORT, 4L, 43L, LOCAL_PORT, 400.0));
 
 		// compile high-level intent operations into low-level intent operations (calculate paths)
 		PathCalcRuntimeModule runtime1 = new PathCalcRuntimeModule();
@@ -206,9 +208,9 @@ public class UseCaseTest {
 
 		// create shortest path intents
 		IntentOperationList opList = new IntentOperationList();
-		opList.add(Operator.ADD, new ShortestPathIntent("1", 1L, 20L, 1L, 4L, 20L, 4L));
-		opList.add(Operator.ADD, new ShortestPathIntent("2", 2L, 20L, 2L, 6L, 20L, 5L));
-		opList.add(Operator.ADD, new ShortestPathIntent("3", 4L, 20L, 3L, 8L, 20L, 6L));
+		opList.add(Operator.ADD, new ShortestPathIntent("1", 1L, 12L, LOCAL_PORT, 2L, 21L, LOCAL_PORT));
+		opList.add(Operator.ADD, new ShortestPathIntent("2", 1L, 14L, LOCAL_PORT, 4L, 41L, LOCAL_PORT));
+		opList.add(Operator.ADD, new ShortestPathIntent("3", 2L, 23L, LOCAL_PORT, 3L, 32L, LOCAL_PORT));
 
 		// compile high-level intent operations into low-level intent operations (calculate paths)
 		PathCalcRuntimeModule runtime1 = new PathCalcRuntimeModule();
@@ -237,10 +239,10 @@ public class UseCaseTest {
 		runtime1.getPathIntents().changeStates(states);
 
 		// link down
-		((MockNetworkGraph)g).removeLink(1L, 2L, 9L, 1L); // This link is used by the intent "1"
-		((MockNetworkGraph)g).removeLink(9L, 1L, 1L, 2L);
-		LinkEvent linkEvent1 = new LinkEvent(1L, 2L, 9L, 1L);
-		LinkEvent linkEvent2 = new LinkEvent(9L, 1L, 1L, 2L);
+		((MockNetworkGraph)g).removeLink(1L, 12L, 2L, 21L); // This link is used by the intent "1"
+		((MockNetworkGraph)g).removeLink(2L, 21L, 1L, 12L);
+		LinkEvent linkEvent1 = new LinkEvent(1L, 12L, 2L, 21L);
+		LinkEvent linkEvent2 = new LinkEvent(2L, 21L, 1L, 12L);
 		removedLinkEvents.clear();
 		removedLinkEvents.add(linkEvent1);
 		removedLinkEvents.add(linkEvent2);
