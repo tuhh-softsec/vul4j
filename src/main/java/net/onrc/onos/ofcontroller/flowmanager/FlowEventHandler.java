@@ -51,8 +51,8 @@ import org.slf4j.LoggerFactory;
 class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 						 IOFSwitchListener {
 
-    private boolean enableOnrc2014MeasurementsFlows = true;
-    private boolean enableOnrc2014MeasurementsTopology = true;
+    private boolean enableOnrc2014MeasurementsFlows = false;
+    private boolean enableOnrc2014MeasurementsTopology = false;
 
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowEventHandler.class);
