@@ -178,16 +178,17 @@ public class KryoFactory {
 	kryo.register(TopologyEvent.class);
 
 	// Intent-related classes
-	kryo.register(IntentOperationList.class);
-	kryo.register(IntentOperation.class);
-	kryo.register(PathIntent.class);
+	kryo.register(Path.class);
 	kryo.register(Intent.class);
-	kryo.register(ErrorIntent.class);
+	kryo.register(Intent.IntentState.class);
+	kryo.register(PathIntent.class);
 	kryo.register(ShortestPathIntent.class);
 	kryo.register(ConstrainedShortestPathIntent.class);
-	kryo.register(Intent.IntentState.class);
-	kryo.register(Path.class);
+	kryo.register(ErrorIntent.class);
+	kryo.register(ErrorIntent.ErrorType.class);
+	kryo.register(IntentOperation.class);
 	kryo.register(IntentOperation.Operator.class);
+	kryo.register(IntentOperationList.class);
 	kryo.register(IntentStateList.class);
 
 	return kryo;
