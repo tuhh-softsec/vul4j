@@ -226,9 +226,11 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 			// send notification
 			p.log("begin_sendNotification");
-			opEventChannel.addEntry(key, pathIntentOperations);
+			// XXX: Send notifications using the same key every time
+			// and receive them by entryAdded() and entryUpdated()
+			opEventChannel.addEntry(0L, pathIntentOperations);
 			p.log("end_sendNotification");
-			opEventChannel.removeEntry(key);
+			//opEventChannel.removeEntry(key);
 			return pathIntentOperations;
 		}
 		finally {
