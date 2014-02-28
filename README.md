@@ -33,20 +33,19 @@ External Dependencies
     Download and install apache-zookeeper-3.4.5:
     http://zookeeper.apache.org/releases.html
 
-    Edit file `(ONOS-INSTALL-DIR)/start-zk.sh` and set variable "ZK_DIR"
-    to point to the Zookeeper directory.
+2. RAMCloud
 
-2. Cassandra
+    Run setup-ramcloud.sh to install RAMCloud git repository
+    
+Configuration
+-------------
+To configure the processes (ONOS, RAMCLoud and Zookeper) refers to the files in (ONOS-INSTALL-DIR)/conf.
+A detailed explanation is given in the ONOS WiKi:
+	- "ONOS Documentation/Getting Started with ONOS/Running the RAMCloud branch of ONOS"
+	
 
-    Download and install apache-cassandra-1.2.4:
-    http://cassandra.apache.org/download/
-
-    Edit file `(ONOS-INSTALL-DIR)/start-cassandra.sh` and set variable
-    "CASSANDRA_DIR" to point to the Cassandra directory.
-
-Running ONOS with Cassandra as a separate process
+Running ONOS with RAMCloud as a separate process
 -------------------------------------------------
-[See below for information how to run ONOS with Embedded Cassandra]
 
 1. Start Zookeeper
 
@@ -56,15 +55,23 @@ Running ONOS with Cassandra as a separate process
         ## Confirm Zookeeper is running:
         $ ./start.zk.sh status
 
-2. Start Cassandra
+2. Start RAMCloud Coordinator (only one for cluster)
 
         $ cd (ONOS-INSTALL-DIR)/
-        $ ./start-cassandra.sh start
+        $ ./start-ramcloud-coordinator.sh start
 
-        ## Confirm Cassandra is running:
-        $ ./start-cassandra.sh status
+        ## Confirm RAMCloud Coordinator is running:
+        $ ./start-ramcloud-coordinator.sh status
+        
+3. Start RAMCloud Server
 
-3. Start ONOS
+        $ cd (ONOS-INSTALL-DIR)/
+        $ ./start-ramcloud-server.sh start
+
+        ## Confirm RAMCloud Server is running:
+        $ ./start-ramcloud-server.sh status
+
+4. Start ONOS
 
         $ cd (ONOS-INSTALL-DIR)/
         $ ./start-onos.sh start
@@ -72,34 +79,7 @@ Running ONOS with Cassandra as a separate process
         ## Confirm ONOS is running:
         $ ./start-onos.sh status
 
-4. Start ONOS REST API server
-
-        $ cd (ONOS-INSTALL-DIR)/
-        $ ./start-rest.sh start
-
-        ## Confirm the REST API server is running:
-        $ ./start-rest.sh status
-
-Running ONOS with Cassandra embedded (Optional)
------------------------------------------------
-
-1. Start Zookeeper
-
-        $ cd (ONOS-INSTALL-DIR)/
-        $ ./start-zk.sh start
-
-        ## Confirm Zookeeper is running:
-        $ ./start.zk.sh status
-
-2. Start ONOS and Cassandra embedded
-
-        $ cd (ONOS-INSTALL_DIR)/
-        $ ./start-onos-embedded.sh start
-
-        ## Confirm ONOS is running:
-        $ ./start-onos-embedded.sh status
-
-3. Start ONOS REST API server
+5. Start ONOS REST API server
 
         $ cd (ONOS-INSTALL-DIR)/
         $ ./start-rest.sh start
@@ -108,7 +88,7 @@ Running ONOS with Cassandra embedded (Optional)
         $ ./start-rest.sh status
 
 
-Developping ONOS in offline environment (Optional)
+Developing ONOS in offline environment (Optional)
 ---------------------------------------------------------------------------
 
 Maven need the Internet connection to download required dependencies and plugins,
