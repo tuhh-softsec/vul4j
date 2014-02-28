@@ -69,8 +69,8 @@ public class GetNGFlowsSummaryResource extends ServerResource {
 	    // Decode the Shortest Path ID
 	    String applnIntentId = parentIntent.getId();
 	    String intentId = applnIntentId.split(":")[1];
-	    // A hack for Flow IDs that are not routable
-	    intentId.replace("F", "");
+ 	    // A hack for Flow IDs that are not routable 
+	    intentId = intentId.replace("F", "");
 
 	    // Create the Flow Path
 	    FlowId flowId = new FlowId(intentId);
