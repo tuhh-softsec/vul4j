@@ -176,6 +176,8 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			for (IntentOperation op : list) {
 				if (op.intent.getState().equals(IntentState.INST_ACK))
 					states.put(op.intent.getId(), IntentState.REROUTE_REQ);
+				if (op.intent.getState().equals(IntentState.CREATED))
+					states.put(op.intent.getId(), IntentState.INST_REQ); // XXX
 			}
 			highLevelIntents.changeStates(states);
 			p.log("end_updateInMemoryIntents");
@@ -210,7 +212,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			pathIntents.executeOperations(pathIntentOperations);
 			p.log("end_updateInMemoryPathIntents");
 
-			// Demo special: add a complete path to remove operation
+			// XXX Demo special: add a complete path to remove operation
 			p.log("begin_addPathToRemoveOperation");
 			for (IntentOperation op: pathIntentOperations) {
 				if(op.operator.equals(Operator.REMOVE)) {
@@ -344,7 +346,8 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		try {
 			// reflect state changes of path-level intent into application-level intents
 			p.log("begin_changeStateByNotification");
-			IntentStateList parentStates = new IntentStateList();
+			IntentStateList highLevelIntentStates = new IntentStateList();
+			IntentStateList pathIntentStates = new IntentStateList();
 			for (Entry<String, IntentState> entry: value.entrySet()) {
 				PathIntent pathIntent = (PathIntent) pathIntents.getIntent(entry.getKey());
 				if (pathIntent == null) continue;
@@ -357,20 +360,21 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 				IntentState state = entry.getValue();
 				switch (state) {
-				case INST_REQ:
+				//case INST_REQ:
 				case INST_ACK:
 				case INST_NACK:
-				case DEL_REQ:
+				//case DEL_REQ:
 				case DEL_ACK:
 				case DEL_PENDING:
-					parentStates.put(parentIntent.getId(), state);
+					highLevelIntentStates.put(parentIntent.getId(), state);
+					pathIntentStates.put(entry.getKey(), entry.getValue());
 					break;
 				default:
 					break;
 				}
 			}
-			highLevelIntents.changeStates(parentStates);
-			pathIntents.changeStates(value);
+			highLevelIntents.changeStates(highLevelIntentStates);
+			pathIntents.changeStates(pathIntentStates);
 			p.log("end_changeStateByNotification");
 		}
 		finally {
