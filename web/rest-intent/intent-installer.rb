@@ -72,6 +72,9 @@ parser = OptionParser.new do |opts|
   opts.on('b', '--bulk_limit bulk_limit', 'bulk request upto this limit') do |bulk_limit|
     options[:bulk_limit] = bulk_limit
   end
+  opts.on('f', '--freeze_intents', 'freeze dont reroute intents') do
+    options[:freeze] = "F"
+  end
   opts.on('-h', '--help', 'Display help') do
     puts opts
     exit
@@ -173,13 +176,15 @@ class Intent
     @port ||= 8080
     @bulk_limit = options[:bulk_limit]
     @bulk_limit ||= 10000
+    @freeze = options[:freeze]
+    @freeze ||= ""
   end
 
 
   def _create_intent json_intents
     (0...@max_switches).each do |idx|
       intent = {
-        :intent_id => "#{@intent_id}",
+        :intent_id => "#{@freeze}#{@intent_id}",
         :intent_type => @intent_type,
         :intent_op => @intent_op,
         :srcSwitch => "258".to_s,

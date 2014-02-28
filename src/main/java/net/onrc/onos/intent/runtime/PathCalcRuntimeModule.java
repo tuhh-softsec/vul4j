@@ -100,8 +100,10 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		IntentOperationList reroutingOperation = new IntentOperationList();
 		for (Intent intent : oldPaths) {
 			PathIntent pathIntent = (PathIntent) intent;
+			if (pathIntent.getId().startsWith("1:F")) // XXX: demo special, the intent start with "F" is skipped
+				continue;
 			if (pathIntent.getState().equals(IntentState.INST_ACK) && // XXX: path intents in flight
-					!reroutingOperation.contains(pathIntent.getParentIntent())) { 
+					!reroutingOperation.contains(pathIntent.getParentIntent())) {
 				reroutingOperation.add(Operator.ADD, pathIntent.getParentIntent());
 			}
 		}
@@ -265,7 +267,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
 		PerfLogger p = new PerfLogger("networkGraphEvents");
 		HashSet<Intent> affectedPaths = new HashSet<>();
-		
+
 		boolean rerouteAll = false;
 		for(LinkEvent le : addedLinkEvents) {
 		    LinkEvent rev = new LinkEvent(le.getDst().getDpid(), le.getDst().getNumber(), le.getSrc().getDpid(), le.getSrc().getNumber());
