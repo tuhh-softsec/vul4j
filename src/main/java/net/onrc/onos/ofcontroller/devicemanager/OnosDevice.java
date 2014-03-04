@@ -17,6 +17,7 @@
 
 package net.onrc.onos.ofcontroller.devicemanager;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import net.floodlightcontroller.devicemanager.internal.Entity;
@@ -37,7 +38,7 @@ import net.floodlightcontroller.util.MACAddress;
  * @author readams
  *
  */
-public class OnosDevice { //implements Comparable<OnosDevice> {
+public class OnosDevice implements Serializable { //implements Comparable<OnosDevice> {
     /**
      * Timeout for computing {@link Entity#activeSince}.
      * @see {@link Entity#activeSince}
@@ -126,6 +127,10 @@ public class OnosDevice { //implements Comparable<OnosDevice> {
     public Integer getIpv4Address() {
         return ipv4Address;
     }
+    
+    public void setIpv4Address(Integer ipv4Address) {
+    	this.ipv4Address = ipv4Address;
+    }
 
     public Short getVlan() {
         return vlan;
@@ -134,9 +139,17 @@ public class OnosDevice { //implements Comparable<OnosDevice> {
     public Long getSwitchDPID() {
         return switchDPID;
     }
+    
+    public void setSwitchDPID(long dpid) {
+    	this.switchDPID = dpid;
+    }
 
     public short getSwitchPort() {
         return switchPort;
+    }
+    
+    public void setSwitchPort(short port) {
+    	this.switchPort = port;
     }
 
     public Date getLastSeenTimestamp() {
@@ -165,7 +178,6 @@ public class OnosDevice { //implements Comparable<OnosDevice> {
         this.activeSince = activeSince;
     }
     
-    /*
     @Override
     public int hashCode() {
         if (hashCode != 0) return hashCode;
@@ -173,10 +185,9 @@ public class OnosDevice { //implements Comparable<OnosDevice> {
         hashCode = 1;
         hashCode = prime * hashCode
                  + ((ipv4Address == null) ? 0 : ipv4Address.hashCode());
-        //hashCode = prime * hashCode + (int) (macAddress ^ (macAddress >>> 32));
-        hashCode = prime * macAddress.hashCode();
-        hashCode = prime * hashCode + (int) (switchDPID ^ (switchDPID >>> 32));
-        hashCode = prime * hashCode + switchPort;
+        hashCode = prime * hashCode + (int) (macAddress.toLong() ^ (macAddress.toLong() >>> 32));
+        hashCode = prime * hashCode + (int)switchDPID;
+        hashCode = prime * hashCode + (int)switchPort;
         hashCode = prime * hashCode + ((vlan == null) ? 0 : vlan.hashCode());
         return hashCode;
     }
@@ -186,26 +197,21 @@ public class OnosDevice { //implements Comparable<OnosDevice> {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        Entity other = (Entity) obj;
+        OnosDevice other = (OnosDevice) obj;
         if (hashCode() != other.hashCode()) return false;
         if (ipv4Address == null) {
             if (other.ipv4Address != null) return false;
-        } else if (!ipv4Address.equals(other.ipv4Address)) return false;
-        if (macAddress != other.macAddress) return false;
-        if (switchDPID == null) {
-            if (other.switchDPID != null) return false;
-        } else if (!switchDPID.equals(other.switchDPID)) return false;
-        if (switchPort == null) {
-            if (other.switchPort != null) return false;
-        } else if (!switchPort.equals(other.switchPort)) return false;
+        } else if (!ipv4Address.equals(other.ipv4Address)) return false; 
+        if (macAddress == null) {
+            if (other.macAddress != null) return false;
+        } else if (!macAddress.equals(other.macAddress)) return false;
+        if(switchDPID != other.switchDPID) return false;
+        if (switchPort != other.switchPort) return false;
         if (vlan == null) {
             if (other.vlan != null) return false;
         } else if (!vlan.equals(other.vlan)) return false;
         return true;
     }
-    */
-
-    
     
     @Override
     public String toString() {

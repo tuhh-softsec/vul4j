@@ -17,6 +17,8 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.datagrid.web.DatagridWebRoutable;
+import net.onrc.onos.ofcontroller.devicemanager.IDeviceEventHandler;
+import net.onrc.onos.ofcontroller.devicemanager.OnosDevice;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
 import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
 import net.onrc.onos.ofcontroller.proxyarp.IArpReplyEventHandler;
@@ -124,6 +126,11 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     }
     
 
+    // State related to the Network Device map
+    protected static final String mapDeviceName = "mapDevice";
+    private IMap<Long, OnosDevice> mapDevice = null;
+    private List<IDeviceEventHandler> deviceEventHandlers = new ArrayList<IDeviceEventHandler>();
+    
     /**
      * Class for receiving notifications for Flow state.
      *
@@ -522,6 +529,35 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	    // NOTE: We don't use eviction for this map
 	}
     }
+    
+    class MapDeviceListener implements EntryListener<Long, OnosDevice> {
+
+		@Override
+		public void entryAdded(EntryEvent<Long, OnosDevice> event) {
+		    for (IDeviceEventHandler deviceEventHandler : deviceEventHandlers) {
+		    	deviceEventHandler.addDeviceEvent(event.getKey(), event.getValue());
+		    }
+		}
+	
+		@Override
+		public void entryRemoved(EntryEvent<Long, OnosDevice> event) {
+		    for (IDeviceEventHandler deviceEventHandler : deviceEventHandlers) {
+		    	deviceEventHandler.deleteDeviceEvent(event.getKey(), event.getValue());
+		    }
+		}
+	
+		@Override
+		public void entryUpdated(EntryEvent<Long, OnosDevice> event) {
+		    for (IDeviceEventHandler deviceEventHandler : deviceEventHandlers) {
+		    	deviceEventHandler.updateDeviceEvent(event.getKey(), event.getValue());
+		    }
+		}
+	
+		@Override
+		public void entryEvicted(EntryEvent<Long, OnosDevice> arg0) {
+			//Not used.
+		}
+    }
 
     /**
      * Class for receiving notifications for sending packet-outs.
@@ -732,7 +768,8 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	arpReplyMap.addEntryListener(new ArpReplyMapListener(), true);
         intentList = hazelcastInstance.getList(intentListName);
         
-        
+	mapDevice = hazelcastInstance.getMap(mapDeviceName);
+	mapDevice.addEntryListener(new MapDeviceListener(), true);
     }
 
     /**
@@ -942,6 +979,18 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     @Override
     public void deregisterArpReplyEventHandler(IArpReplyEventHandler arpReplyEventHandler) {
     	arpReplyEventHandlers.remove(arpReplyEventHandler);
+    }
+    
+    @Override
+    public void registerMapDeviceEventHandler(IDeviceEventHandler deviceEventHandler) {
+    	if (deviceEventHandler != null) {
+    		deviceEventHandlers.add(deviceEventHandler);
+    	}
+    }
+
+    @Override
+    public void deregisterMapDeviceEventHandler(IDeviceEventHandler deviceEventHandler) {
+    	deviceEventHandlers.remove(deviceEventHandler);
     }
 
     /**
@@ -1442,6 +1491,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	//  - Value : Serialized TopologyElement (byte[])
 	//
 	mapTopology.putAsync(topologyElement.elementId(), valueBytes);
+	
     }
 
     /**
@@ -1495,5 +1545,20 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 	@Override
 	public void sendArpReplyNotification(ArpReplyNotification arpReply) {
 		arpReplyMap.putAsync(arpReply, dummyByte, 1L, TimeUnit.MILLISECONDS);
+	}
+	
+	@Override
+	public void sendNotificationDeviceAdded(Long mac, OnosDevice dev) {
+		log.debug("DeviceAdded in datagrid. mac {}", dev.getMacAddress());
+		mapDevice.putAsync(mac, dev);
+	}
+	
+	@Override
+	public void sendNotificationDeviceDeleted(OnosDevice dev) {
+		long mac = dev.getMacAddress().toLong();
+		if(mapDevice.containsKey(mac)){
+			log.debug("DeviceDeleted in datagrid. mac {}", dev.getMacAddress());
+			mapDevice.removeAsync(mac);
+		}
 	}
 }

@@ -122,6 +122,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	 */
 	@Override
 	public void removeDevice(IDevice device) {
+		//Not used
 		IDeviceObject dev;
 
 		if ((dev = ope.searchDevice(device.getMACAddressString())) != null) {
@@ -425,6 +426,22 @@ public class DeviceStorageImpl implements IDeviceStorage {
 		}
 		catch (TitanException e) {
 			log.error("addOnosDevice {} failed:", macAddress, e);
+			ope.rollback();
+		}
+	}
+	
+	@Override
+	public void deleteOnosDevice(OnosDevice onosDevice){
+		String macAddress = HexString.toHexString(onosDevice.getMacAddress().toBytes());	
+		try {
+			IDeviceObject device = ope.searchDevice(macAddress);
+			if(device != null){
+				ope.removeDevice(device);
+			}
+			ope.commit();
+		}
+		catch (TitanException e){
+			log.error("deleteOnosDevice {} failed:", macAddress, e);
 			ope.rollback();
 		}
 	}

@@ -18,4 +18,5 @@ public interface IDeviceStorage extends INetMapStorage {
 	public void commit();
 
 	public void addOnosDevice(OnosDevice onosDevice);
+	public void deleteOnosDevice(OnosDevice onosDevice);
 }

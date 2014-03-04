@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.intent.Intent;
+import net.onrc.onos.ofcontroller.devicemanager.IDeviceEventHandler;
+import net.onrc.onos.ofcontroller.devicemanager.OnosDevice;
 import net.onrc.onos.ofcontroller.flowmanager.IFlowEventHandlerService;
 import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
 import net.onrc.onos.ofcontroller.proxyarp.IArpReplyEventHandler;
@@ -317,4 +319,13 @@ public interface IDatagridService extends IFloodlightService {
      * @param arpReply The notification of the ARP reply
      */
     public void sendArpReplyNotification(ArpReplyNotification arpReply);
+
+	void sendNotificationDeviceAdded(Long mac, OnosDevice dev);
+
+	void sendNotificationDeviceDeleted(OnosDevice dev);
+
+	void registerMapDeviceEventHandler(IDeviceEventHandler deviceEventHandler);
+
+	void deregisterMapDeviceEventHandler(IDeviceEventHandler deviceEventHandler);
+
 }

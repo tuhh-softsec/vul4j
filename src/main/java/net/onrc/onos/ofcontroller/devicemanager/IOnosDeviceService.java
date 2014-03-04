@@ -11,4 +11,8 @@ import net.floodlightcontroller.core.module.IFloodlightService;
  */
 public interface IOnosDeviceService extends IFloodlightService {
 
+	public void deleteOnosDevice(OnosDevice dev);
+
+	public void addOnosDevice(Long mac, OnosDevice dev);
+
 }
