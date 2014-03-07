@@ -32,7 +32,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <powermock.version>1.5.1</powermock.version>
     <restlet.version>2.1.4</restlet.version>
-    <!-- <github.global.server>github</github.global.server> -->
+    <!-- To publish javadoc to github,
+     uncomment com.github.github site-maven-plugin and
+     see https://github.com/OPENNETWORKINGLAB/ONOS/pull/425
+    <github.global.server>github</github.global.server>
+     -->
   </properties>
   <build>
     <plugins>
@@ -89,6 +93,7 @@
           -->
           </excludes>
           <argLine>-XX:MaxPermSize=256m</argLine>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
         </configuration>
       </plugin>
       <!-- exec:java -->
@@ -134,10 +139,6 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.6.3.201306030806</version>
-        <configuration>
-          <destfile>${basedir}/target/jacoco/jacoco.exec</destfile>
-          <datafile>${basedir}/target/jacoco/jacoco.exec</datafile>
-        </configuration>
         <executions>
           <execution>
             <id>jacoco-initialize</id>
@@ -164,6 +165,7 @@
           <dryRun>true</dryRun>
           <repositoryName>ONOS</repositoryName>
           <repositoryOwner>OPENNETWORKINGLAB</repositoryOwner>
+          <path>javadoc/${project.version}/</path>
         </configuration>
         <executions>
           <execution>
@@ -201,6 +203,40 @@
         </executions>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
+          only. It has no influence on the Maven build itself. -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.apache.maven.plugins
+                    </groupId>
+                    <artifactId>
+                      maven-dependency-plugin
+                    </artifactId>
+                    <versionRange>[2.8,)</versionRange>
+                    <goals>
+                      <goal>build-classpath</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
   <!-- for getting visualization reporting   -->
   <reporting>
@@ -283,53 +319,46 @@
     </plugins>
   </reporting>
   <dependencies>
+    <!-- ONOS's direct dependencies -->
     <dependency>
       <groupId>com.esotericsoftware.kryo</groupId>
       <artifactId>kryo</artifactId>
       <version>2.22</version>
     </dependency>
-    <!-- ONOS's direct dependencies -->
     <dependency>
-      <groupId>org.apache.cassandra</groupId>
-      <artifactId>apache-cassandra</artifactId>
-      <version>1.2.4</version>
-      <type>pom</type>
-    </dependency>
-    <dependency>
+      <!-- remove me after BluePrint clean up -->
       <groupId>com.thinkaurelius.titan</groupId>
-      <artifactId>titan-all</artifactId>
+      <artifactId>titan-core</artifactId>
       <version>0.4.2</version>
       <exclusions>
-	<exclusion>
+        <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
-	</exclusion>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
+      <!-- remove me after BluePrint clean up -->
       <groupId>com.tinkerpop</groupId>
       <artifactId>frames</artifactId>
       <version>2.4.0</version>
     </dependency>
     <dependency>
+      <!-- remove me after BluePrint clean up -->
       <groupId>com.tinkerpop.blueprints</groupId>
       <artifactId>blueprints-core</artifactId>
       <version>2.4.0</version>
     </dependency>
     <dependency>
-        <groupId>com.tinkerpop.rexster</groupId>
-        <artifactId>rexster-core</artifactId>
-        <version>2.4.0</version>
+      <!-- remove me after BluePrint clean up -->
+      <groupId>com.tinkerpop.rexster</groupId>
+      <artifactId>rexster-core</artifactId>
+      <version>2.4.0</version>
     </dependency>
     <dependency>
-        <groupId>com.tinkerpop.blueprints</groupId>
-        <artifactId>blueprints-test</artifactId>
-        <version>2.4.0</version>
-    </dependency>
-    <dependency>
-        <groupId>com.google.protobuf</groupId>
-        <artifactId>protobuf-java</artifactId>
-        <version>2.5.0</version>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>2.5.0</version>
     </dependency>
     <dependency>
       <groupId>com.hazelcast</groupId>
@@ -368,19 +397,33 @@
       <version>1.0.13</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+      <version>1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>14.0.1</version>
+    </dependency>
+    <dependency>
+      <!-- Used in net.onrc.onos.ofcontroller.bgproute.RestClient.get(String), but not sure if it is really required -->
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
+      <version>3.4.5</version>
+    </dependency>
     <!-- Floodlight's dependencies -->
     <dependency>
       <groupId>net.sourceforge.cobertura</groupId>
       <artifactId>cobertura</artifactId>
       <version>1.9.4.1</version>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>14.0.1</version>
-    </dependency>
-    -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -431,6 +474,12 @@
       <artifactId>guice</artifactId>
       <version>3.0</version>
     </dependency>
+    <dependency>
+      <!-- dependency to old version of netty? -->
+      <groupId>org.jboss.netty</groupId>
+      <artifactId>netty</artifactId>
+      <version>3.2.7.Final</version>
+    </dependency>
     <!-- Dependency for libraries used for testing -->
     <dependency>
       <groupId>junit</groupId>
@@ -454,6 +503,12 @@
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-easymock</artifactId>
       <version>${powermock.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.1</version>
       <scope>test</scope>
     </dependency>
     <!--
