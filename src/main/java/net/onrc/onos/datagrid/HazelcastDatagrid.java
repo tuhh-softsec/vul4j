@@ -589,18 +589,24 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 		 */
 		@Override
 		public void entryAdded(EntryEvent<ArpReplyNotification, byte[]> event) {
-		    for (IArpReplyEventHandler arpReplyEventHandler : arpReplyEventHandlers) {
-		    	arpReplyEventHandler.arpReplyEvent(event.getKey());
-		    }
+			triggerEventHandler(event.getKey());
+		}
+		@Override
+		public void entryUpdated(EntryEvent<ArpReplyNotification, byte[]> event) {
+			triggerEventHandler(event.getKey());
 		}
 
 		// These methods aren't used for ARP replies
 		@Override
 		public void entryRemoved(EntryEvent<ArpReplyNotification, byte[]> event) {}
 		@Override
-		public void entryUpdated(EntryEvent<ArpReplyNotification, byte[]> event) {}
-		@Override
 		public void entryEvicted(EntryEvent<ArpReplyNotification, byte[]> event) {}
+		
+		private void triggerEventHandler(ArpReplyNotification notification) {
+		    for (IArpReplyEventHandler arpReplyEventHandler : arpReplyEventHandlers) {
+		    	arpReplyEventHandler.arpReplyEvent(notification);
+		    }
+		}
     }
 
     /**
