@@ -17,7 +17,6 @@
 #include <TableEnumerator.h>
 #include <Object.h>
 #include "edu_stanford_ramcloud_JRamCloud.h"
-#include "edu_stanford_ramcloud_JRamCloud_TableEnumerator.h"
 
 using namespace RAMCloud;
 
@@ -635,7 +634,7 @@ JNIEXPORT jlong JNICALL Java_edu_stanford_ramcloud_JRamCloud_00024TableEnumerato
     const static jfieldID fieldId = env->GetFieldID(cls, "ramCloudObjectPointer", "J");
     RamCloud* ramcloud = reinterpret_cast<RamCloud*>(env->GetLongField(jTableEnumerator, fieldId));
 
-    return reinterpret_cast<jlong>(new TableEnumerator(*ramcloud, jTableId));
+    return reinterpret_cast<jlong>(new TableEnumerator(*ramcloud, jTableId, false));
 }
 
 /*
@@ -727,7 +726,7 @@ JNIEXPORT jobject JNICALL Java_edu_stanford_ramcloud_JRamCloud_getTableObjects(J
     bool done = false;
 
     while (true) {
-        jTabletNextHash = ramcloud->enumerateTable(jTableId, jTabletNextHash, state, objects);
+        jTabletNextHash = ramcloud->enumerateTable(jTableId, false, jTabletNextHash, state, objects);
         if (objects.getTotalLength() > 0) {
             break;
         }

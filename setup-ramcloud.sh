@@ -10,27 +10,35 @@ if [ -d ${RAMCLOUD_HOME} ]; then
   exit 1
 fi
 
+# install dependencies
+sudo apt-get -y install build-essential git-core libcppunit-dev libboost-all-dev libpcre3-dev protobuf-compiler libprotobuf-dev libcrypto++-dev libevent-dev scons libssl-dev libzookeeper-mt-dev
+
 # clone ramcloud
-git clone git://github.com/y-higuchi/ramcloud.git ${RAMCLOUD_HOME}
+git clone git://fiz.stanford.edu/git/ramcloud.git ${RAMCLOUD_HOME}
 cd ${RAMCLOUD_HOME}
-git checkout custom
+git checkout master
+# Switch to release 1.0 + fix for newer gcc
+git reset --hard 6a3eb98ae14ec6f732f06775220287c7245f5ff0
+# bug fix for MultiWrite, make zookeeper path configurable. (TODO send this patch to upstream)
+git apply ${ONOS_HOME}/ramcloud-build-scripts/ramcloud.patch
 
-# install some app
-sudo apt-get -y install build-essential git-core libcppunit-dev libcppunit-doc doxygen libboost-all-dev libpcre3-dev protobuf-compiler libprotobuf-dev libcrypto++-dev libevent-dev scons libssl-dev
+mkdir ${RAMCLOUD_HOME}/private
+cp -vf ${ONOS_HOME}/ramcloud-build-scripts/MakefragPrivateTop ${RAMCLOUD_HOME}/private/MakefragPrivateTop
 
-# compile ramcloud
+# download submodule (logcabin, gtest)
 git submodule update --init --recursive
-patch ${RAMCLOUD_HOME}/logcabin/Core/Time.h < ${ONOS_HOME}/logcabin.patch
+# cherry-pick logcabin bug fix
+cd logcabin
+  git cherry-pick --no-commit 77f0ea2da82e7abe71bb4caf084aa527de6dea50 3862499f477d0e371950aebcb829ddd8ee194962
+  git apply ${ONOS_HOME}/ramcloud-build-scripts/logcabin.patch
+cd ..
+
+# compile logcabin
 make logcabin
-make DEBUG=no $*
+# compile ramcloud
+make DEBUG=no "$@"
 
-ln -s ${RAMCLOUD_HOME}/obj.custom obj.blueprint-java
 
-# create ramcloud lib
-cp -pvf ${ONOS_HOME}/src/main/java/edu/stanford/ramcloud/JRamCloud.java ${RAMCLOUD_HOME}/bindings/java/edu/stanford/ramcloud/
-cp -pvf ${ONOS_HOME}/src/main/cpp/edu_stanford_ramcloud_JRamCloud.cc ${RAMCLOUD_HOME}/bindings/java/edu/stanford/ramcloud/
-cd ${RAMCLOUD_HOME}/bindings/java/edu/stanford/ramcloud/
-javac JRamCloud.java
-./build_so.sh
-jar cvf ${RAMCLOUD_HOME}/bindings/java/RamCloud.jar ${RAMCLOUD_HOME}/bindings/java/edu/stanford/ramcloud/*.class
+# build ramcloud JNI lib
+${ONOS_HOME}/build-ramcloud-java-bindings.sh
 

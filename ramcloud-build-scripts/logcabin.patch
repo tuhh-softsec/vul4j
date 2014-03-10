@@ -1,0 +1,12 @@
+diff --git a/Server/RaftLog.cc b/Server/RaftLog.cc
+index 5705cd3..e571251 100644
+--- a/Server/RaftLog.cc
++++ b/Server/RaftLog.cc
+@@ -16,6 +16,7 @@
+ #include <algorithm>
+ #include <fcntl.h>
+ #include <sys/stat.h>
++#include <unistd.h>
+ 
+ #include "build/Protocol/Raft.pb.h"
+ #include "Core/Debug.h"

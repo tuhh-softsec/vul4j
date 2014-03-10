@@ -1,0 +1,28 @@
+diff --git a/GNUmakefile b/GNUmakefile
+index e4c9a07..199fac1 100644
+--- a/GNUmakefile
++++ b/GNUmakefile
+@@ -23,8 +23,8 @@ OBJDIR	:= obj$(OBJSUFFIX)
+ 
+ TOP	:= $(shell echo $${PWD-`pwd`})
+ GTEST_DIR ?= $(TOP)/gtest
+-ZOOKEEPER_LIB := /usr/local/lib/libzookeeper_mt.a
+-ZOOKEEPER_DIR := /usr/local/zookeeper-3.4.5
++ZOOKEEPER_LIB ?= /usr/local/lib/libzookeeper_mt.a
++ZOOKEEPER_DIR ?= /usr/local/zookeeper-3.4.5
+ 
+ ifeq ($(DEBUG),yes)
+ BASECFLAGS := -g
+diff --git a/src/MasterService.cc b/src/MasterService.cc
+index 93cfb5d..02876c7 100644
+--- a/src/MasterService.cc
++++ b/src/MasterService.cc
+@@ -613,7 +613,7 @@ MasterService::multiWrite(const WireFormat::MultiOp::Request* reqHdr,
+             reqOffset, currentReq->valueLength);
+         reqOffset += currentReq->valueLength;
+ 
+-        if (stringKey == NULL || value == NULL) {
++        if (stringKey == NULL) {
+             respHdr->common.status = STATUS_REQUEST_FORMAT_ERROR;
+             break;
+         }

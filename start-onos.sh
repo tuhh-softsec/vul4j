@@ -1,9 +1,13 @@
 #!/bin/bash
+
 ulimit -c unlimited
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/ramcloud/bindings/java/edu/stanford/ramcloud:${HOME}/ramcloud/obj.blueprint-java
 
 # Set paths
 ONOS_HOME="${ONOS_HOME:-`dirname $0`}"
+RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
+RAMCLOUD_BRANCH=${RAMCLOUD_BRANCH:-master}
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${ONOS_HOME}/lib:${RAMCLOUD_HOME}/obj.${RAMCLOUD_BRANCH}
 
 ## Because the script change dir to $ONOS_HOME, we can set ONOS_LOGBACK and LOGDIR relative to $ONOS_HOME
 ONOS_LOGBACK=${ONOS_LOGBACK:-${ONOS_HOME}/logback.`hostname`.xml}

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 ulimit -c unlimited
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/ramcloud/bindings/java/edu/stanford/ramcloud:${HOME}/ramcloud/obj.blueprint-java
 
 # Set paths
 ONOS_HOME=`dirname $0`
@@ -14,6 +13,7 @@ RAMCLOUD_COORDINATOR=`echo $coordinatorip","$coordinatorport`
 serverip=`grep serverIp ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
 serverport=`grep serverPort ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
 RAMCLOUD_SERVER=`echo $serverip","$serverport`
+RAMCLOUD_BRANCH=${RAMCLOUD_BRANCH:-master}
 
 function lotate {
     logfile=$1
@@ -39,12 +39,12 @@ function start {
 
   # Run ramcloud
   echo "Starting ramcloud"
-  $RAMCLOUD_DIR/obj.blueprint-java/server -M -L $RAMCLOUD_SERVER -C $RAMCLOUD_COORDINATOR --masterServiceThreads 1 --logCleanerThreads 1 --detectFailures 0 > $RAMCLOUD_LOG 2>&1 &
+  $RAMCLOUD_DIR/obj.${RAMCLOUD_BRANCH}/server -M -L $RAMCLOUD_SERVER -C $RAMCLOUD_COORDINATOR --masterServiceThreads 1 --logCleanerThreads 1 --detectFailures 0 > $RAMCLOUD_LOG 2>&1 &
 }
 
 function stop {
   # Kill the existing processes
-  capid=`pgrep -f obj.blueprint-java/server | awk '{print $1}'`
+  capid=`pgrep -f obj.${RAMCLOUD_BRANCH}/server | awk '{print $1}'`
   pids="$capid"
   for p in ${pids}; do
     if [ x$p != "x" ]; then
@@ -76,7 +76,7 @@ case "$1" in
 #    deldb
 #    ;;
   status)
-    n=`pgrep -f obj.blueprint-java/server | wc -l`
+    n=`pgrep -f obj.${RAMCLOUD_BRANCH}/server | wc -l`
     echo "$n ramcloud server running"
     ;;
   *)

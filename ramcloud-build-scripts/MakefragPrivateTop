@@ -1,0 +1,7 @@
+# rewrite to match your environment
+ZOOKEEPER_LIB := /usr/lib/x86_64-linux-gnu/libzookeeper_mt.a
+ZOOKEEPER_DIR := ~/zookeeper-3.4.5
+
+# FIXME remove if RAMCloud source is fixed
+EXTRACXXFLAGS := -Wno-error=unused-result -Wno-error=maybe-uninitialized
+

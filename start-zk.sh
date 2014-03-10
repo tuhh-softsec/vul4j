@@ -4,6 +4,7 @@
 ONOS_HOME=`dirname $0`
 ZK_DIR=${HOME}/zookeeper-3.4.5
 #ZK_CONF=${ONOS_HOME}/conf/zoo.cfg
+ZOO_LOG_DIR=${ONOS_HOME}/onos-logs
 
 function start {
   # Run Zookeeper with our configuration

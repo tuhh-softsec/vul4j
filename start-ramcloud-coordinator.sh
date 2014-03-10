@@ -1,6 +1,5 @@
 #!/bin/bash
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/ramcloud/bindings/java/edu/stanford/ramcloud:${HOME}/ramcloud/obj.blueprint-java
 
 # Set paths
 ONOS_HOME=`dirname $0`
@@ -10,6 +9,7 @@ RAMCLOUD_LOG=${LOGDIR}/ramcloud.coordinator.`hostname`.log
 coordinatorip=`grep coordinatorIp ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
 coordinatorport=`grep coordinatorPort ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
 RAMCLOUD_COORDINATOR=`echo $coordinatorip","$coordinatorport`
+RAMCLOUD_BRANCH=${RAMCLOUD_BRANCH:-master}
 
 function lotate {
     logfile=$1
@@ -35,7 +35,7 @@ function start {
 
   # Run ramcloud 
   echo "Starting ramcloud coordinator"
-  $RAMCLOUD_DIR/obj.blueprint-java/coordinator  -L $RAMCLOUD_COORDINATOR > $RAMCLOUD_LOG 2>&1 &
+  $RAMCLOUD_DIR/obj.${RAMCLOUD_BRANCH}/coordinator  -L $RAMCLOUD_COORDINATOR > $RAMCLOUD_LOG 2>&1 &
 }
 
 function stop {
@@ -72,7 +72,7 @@ case "$1" in
 #    deldb
 #    ;;
   status)
-    n=`pgrep -f obj.blueprint-java/coordinator | wc -l`
+    n=`pgrep -f obj.${RAMCLOUD_BRANCH}/coordinator | wc -l`
     echo "$n ramcloud coordinator is running"
     ;;
   *)
