@@ -32,6 +32,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <powermock.version>1.5.1</powermock.version>
     <restlet.version>2.1.4</restlet.version>
+    <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
     <!-- To publish javadoc to github,
      uncomment com.github.github site-maven-plugin and
      see https://github.com/OPENNETWORKINGLAB/ONOS/pull/425
@@ -135,6 +136,7 @@
           <locale>en</locale>
         </configuration>
       </plugin>
+<!-- Remove me when we're sure that system test no longer need JaCoCo
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -155,6 +157,7 @@
           </execution>
         </executions>
       </plugin>
+-->
       <!--
       <plugin>
         <groupId>com.github.github</groupId>
@@ -199,6 +202,30 @@
             <configuration>
               <outputFile>${project.basedir}/.javacp</outputFile>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>${cobertura-maven-plugin.version}</version>
+        <configuration>
+          <instrumentation>
+            <ignores>
+              <ignore>org.slf4j.*</ignore>
+              <ignore>com.tinkerpop.*</ignore>
+            </ignores>
+            <excludes>
+              <exclude>org/openflow/**/*.class</exclude>
+              <exclude>net/floodlightcontroller/**/web/**/*.class</exclude>
+            </excludes>
+          </instrumentation>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>clean</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -316,6 +343,11 @@
 	<artifactId>maven-jxr-plugin</artifactId>
 	<version>2.3</version>
     </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>${cobertura-maven-plugin.version}</version>
+      </plugin>
     </plugins>
   </reporting>
   <dependencies>
@@ -419,11 +451,6 @@
       <version>3.4.5</version>
     </dependency>
     <!-- Floodlight's dependencies -->
-    <dependency>
-      <groupId>net.sourceforge.cobertura</groupId>
-      <artifactId>cobertura</artifactId>
-      <version>1.9.4.1</version>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -565,4 +592,38 @@
     </dependency>
     -->
   </dependencies>
+  <profiles>
+    <!-- Jenkins by default defines a property BUILD_NUMBER which is used to 
+      enable the profile. -->
+    <profile>
+      <id>jenkins</id>
+      <activation>
+        <property>
+          <name>env.BUILD_NUMBER</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+            <version>${cobertura-maven-plugin.version}</version>
+            <configuration>
+              <formats>
+                <format>xml</format>
+              </formats>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>cobertura</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
