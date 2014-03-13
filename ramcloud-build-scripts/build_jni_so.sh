@@ -1,12 +1,11 @@
 #!/bin/bash
+
 JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-7-oracle}
 ONOS_HOME=${ONOS_HOME:-~/ONOS}
 RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
 RAMCLOUD_BRANCH=${RAMCLOUD_BRANCH:-master}
 
-if [ ! -d ${ONOS_HOME}/target/classes ]; then
-  mvn -f ${ONOS_HOME}/pom.xml
-fi
+mvn -f ${ONOS_HOME}/pom.xml compile -T 1C
 
 javah -cp ${ONOS_HOME}/target/classes -o ${ONOS_HOME}/src/main/cpp/edu_stanford_ramcloud_JRamCloud.h edu.stanford.ramcloud.JRamCloud
 
