@@ -1,6 +1,6 @@
 package net.onrc.onos.ofcontroller.networkgraph.web;
 
-import net.onrc.onos.datastore.topology.RCLink;
+import net.onrc.onos.datastore.topology.KVLink;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
@@ -8,7 +8,7 @@ import org.restlet.resource.ServerResource;
 public class RamcloudLinksResource extends ServerResource {
 
 	@Get("json")
-	public Iterable<RCLink> retrieve() {
-		return RCLink.getAllLinks();
+	public Iterable<KVLink> retrieve() {
+		return KVLink.getAllLinks();
 	}
 }

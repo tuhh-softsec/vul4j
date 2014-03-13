@@ -497,7 +497,7 @@ JNICALL Java_edu_stanford_ramcloud_JRamCloud_remove__J_3B(JNIEnv *env,
 {
     RamCloud* ramcloud = getRamCloud(env, jRamCloud);
     JByteArrayReference key(env, jKey);
-    uint64_t version;
+    uint64_t version = VERSION_NONEXISTENT;
     try {
         ramcloud->remove(jTableId, key.pointer, key.length, NULL, &version);
     } EXCEPTION_CATCHER(-1);
@@ -532,7 +532,7 @@ JNICALL Java_edu_stanford_ramcloud_JRamCloud_remove__J_3BLedu_stanford_ramcloud_
     JByteArrayReference key(env, jKey);
     RejectRules rules = {};
     setRejectRules(env, jRejectRules, rules);
-    uint64_t version;
+    uint64_t version = VERSION_NONEXISTENT;
     try {
         ramcloud->remove(jTableId, key.pointer, key.length, &rules, &version);
     } EXCEPTION_CATCHER(-1);

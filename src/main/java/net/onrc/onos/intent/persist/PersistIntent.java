@@ -6,20 +6,24 @@ package net.onrc.onos.intent.persist;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
-import edu.stanford.ramcloud.JRamCloud;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
+
 import net.onrc.onos.datagrid.web.IntentResource;
-import net.onrc.onos.datastore.RCTable;
+import net.onrc.onos.datastore.DataStoreClient;
+import net.onrc.onos.datastore.IKVTable;
+import net.onrc.onos.datastore.ObjectExistsException;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IdBlock;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,24 +38,24 @@ public class PersistIntent {
     NetworkGraph graph = null;
     private final static String intentJournal = "G:IntentJournal";
     private final static int valueStoreLimit = 1024 * 1024;
-    private RCTable table;
+    private IKVTable table;
     private Kryo kryo;
     private ByteArrayOutputStream stream;
     private Output output = null;
     private AtomicLong nextId = null;
     private long rangeEnd;
     private IdBlock idBlock = null;
-    
-    
+
+
     public PersistIntent(final IControllerRegistryService controllerRegistry, INetworkGraphService ng) {
         this.controllerRegistry = controllerRegistry;
         this.graph = ng.getNetworkGraph();
-        table = RCTable.getTable(intentJournal);
+        table = DataStoreClient.getClient().getTable(intentJournal);
         stream = new ByteArrayOutputStream(1024);
         output = new Output(stream);
         kryo = (new KryoFactory()).newKryo();
     }
-    
+
     public long getKey() {
         long key;
         if (idBlock == null) {
@@ -64,15 +68,15 @@ public class PersistIntent {
         }
         return key;
     }
-    
+
     private long getNextBlock() {
-        // XXX This method is not thread safe, may lose allocated IdBlock 
+        // XXX This method is not thread safe, may lose allocated IdBlock
         idBlock = controllerRegistry.allocateUniqueIdBlock(range);
         nextId = new AtomicLong(idBlock.getStart());
         rangeEnd = idBlock.getEnd();
         return nextId.get();
     }
-    
+
     public boolean persistIfLeader(long key, IntentOperationList operations) {
         boolean leader = true;
         boolean ret = false;
@@ -114,7 +118,7 @@ public class PersistIntent {
                 stream.close();
                 log.debug("persist operations to ramcloud size of operations: {}", operations.size());
                 ret = true;
-            } catch (JRamCloud.ObjectExistsException ex) {
+            } catch (ObjectExistsException ex) {
                 log.warn("Failed to store intent journal with key " + key);
             } catch (IOException ex) {
                 log.error("Failed to close the stream");

@@ -10,22 +10,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import net.onrc.onos.datastore.DataStoreClient;
+import net.onrc.onos.datastore.IKVTable.IKVEntry;
+import net.onrc.onos.datastore.topology.KVLink.STATUS;
+import net.onrc.onos.datastore.utils.ByteArrayComparator;
+import net.onrc.onos.datastore.utils.ByteArrayUtil;
+import net.onrc.onos.datastore.utils.KVObject;
+import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
 
-import edu.stanford.ramcloud.JRamCloud;
-import net.onrc.onos.datastore.RCObject;
-import net.onrc.onos.datastore.RCTable;
-import net.onrc.onos.datastore.topology.RCLink.STATUS;
-import net.onrc.onos.datastore.utils.ByteArrayComparator;
-import net.onrc.onos.datastore.utils.ByteArrayUtil;
-import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
-
-public class RCDevice extends RCObject {
-    @SuppressWarnings("unused")
-    private static final Logger log = LoggerFactory.getLogger(RCDevice.class);
+/**
+ * Device object.
+ *
+ * TODO switch to ProtoBuf, etc.
+ */
+public class KVDevice extends KVObject {
+    private static final Logger log = LoggerFactory.getLogger(KVDevice.class);
 
     private static final ThreadLocal<Kryo> deviceKryo = new ThreadLocal<Kryo>() {
 	@Override
@@ -50,35 +54,14 @@ public class RCDevice extends RCObject {
 
     private final byte[] mac;
     private TreeSet<byte[]> portIds;
-    transient private boolean isPortIdsModified;
+    private transient boolean isPortIdsModified;
 
     // Assuming mac is unique cluster-wide
     public static byte[] getDeviceID(final byte[] mac) {
-        return DeviceEvent.getDeviceID(mac).array();
+	return DeviceEvent.getDeviceID(mac).array();
     }
 
-    public static StringBuilder keysToSB(Collection<byte[]> keys) {
-	StringBuilder sb = new StringBuilder();
-	sb.append("[");
-	boolean hasWritten = false;
-	for (byte[] key : keys) {
-	    if (hasWritten) {
-		sb.append(", ");
-	    }
-	    sb.append(keyToString(key));
-	    hasWritten = true;
-	}
-	sb.append("]");
-	return sb;
-    }
-
-    public static String keyToString(byte[] key) {
-	// For debug log
-	byte[] mac = getMacFromKey(key);
-	return "D" + ByteArrayUtil.toHexStringBuffer(mac, ":");
-    }
-
-    public static byte[] getMacFromKey(byte[] key) {
+    public static byte[] getMacFromKey(final byte[] key) {
 	ByteBuffer keyBuf = ByteBuffer.wrap(key);
 	if (keyBuf.getChar() != 'D') {
 	    throw new IllegalArgumentException("Invalid Device key");
@@ -88,8 +71,8 @@ public class RCDevice extends RCObject {
 	return mac;
     }
 
-    public RCDevice(byte[] mac) {
-	super(RCTable.getTable(GLOBAL_DEVICE_TABLE_NAME), getDeviceID(mac));
+    public KVDevice(final byte[] mac) {
+	super(DataStoreClient.getClient().getTable(GLOBAL_DEVICE_TABLE_NAME), getDeviceID(mac));
 
 	this.mac = mac;
 	this.portIds = new TreeSet<>(ByteArrayComparator.BYTEARRAY_COMPARATOR);
@@ -103,35 +86,33 @@ public class RCDevice extends RCObject {
      * @param key
      * @return
      */
-    public static <D extends RCObject> D createFromKey(byte[] key) {
-	@SuppressWarnings("unchecked")
-	D d = (D) new RCDevice(getMacFromKey(key));
-	return d;
+    public static KVDevice createFromKey(final byte[] key) {
+	return new KVDevice(getMacFromKey(key));
     }
 
-    public static Iterable<RCDevice> getAllDevices() {
+    public static Iterable<KVDevice> getAllDevices() {
 	return new DeviceEnumerator();
     }
 
-    public static class DeviceEnumerator implements Iterable<RCDevice> {
+    public static class DeviceEnumerator implements Iterable<KVDevice> {
 
 	@Override
-	public Iterator<RCDevice> iterator() {
+	public Iterator<KVDevice> iterator() {
 	    return new DeviceIterator();
 	}
     }
 
-    public static class DeviceIterator extends ObjectIterator<RCDevice> {
+    public static class DeviceIterator extends AbstractObjectIterator<KVDevice> {
 
 	public DeviceIterator() {
-	    super(RCTable.getTable(GLOBAL_DEVICE_TABLE_NAME));
+	    super(DataStoreClient.getClient().getTable(GLOBAL_DEVICE_TABLE_NAME));
 	}
 
 	@Override
-	public RCDevice next() {
-	    JRamCloud.Object o = enumerator.next();
-	    RCDevice e = RCDevice.createFromKey(o.key);
-	    e.setValueAndDeserialize(o.value, o.version);
+	public KVDevice next() {
+	    IKVEntry o = enumerator.next();
+	    KVDevice e = KVDevice.createFromKey(o.getKey());
+	    e.deserialize(o.getValue(), o.getVersion());
 	    return e;
 	}
     }
@@ -145,12 +126,12 @@ public class RCDevice extends RCObject {
 	return getKey();
     }
 
-    public void addPortId(byte[] portId) {
+    public void addPortId(final byte[] portId) {
 	// TODO: Should we copy portId, or reference is OK.
 	isPortIdsModified |= portIds.add(portId);
     }
 
-    public void removePortId(byte[] portId) {
+    public void removePortId(final byte[] portId) {
 	isPortIdsModified |= portIds.remove(portId);
     }
 
@@ -159,7 +140,7 @@ public class RCDevice extends RCObject {
 	this.isPortIdsModified = true;
     }
 
-    public void addAllToPortIds(Collection<byte[]> portIds) {
+    public void addAllToPortIds(final Collection<byte[]> portIds) {
 	// TODO: Should we copy portId, or reference is OK.
 	isPortIdsModified |= this.portIds.addAll(portIds);
     }
@@ -173,28 +154,33 @@ public class RCDevice extends RCObject {
     }
 
     @Override
-    public void serializeAndSetValue() {
-	Map<Object, Object> map = getObjectMap();
+    public byte[] serialize() {
+	Map<Object, Object> map = getPropertyMap();
 
 	map.put(PROP_MAC, mac);
 	if (isPortIdsModified) {
-	    byte[] portIdArray[] = new byte[portIds.size()][];
+	    byte[][] portIdArray = new byte[portIds.size()][];
 	    map.put(PROP_PORT_IDS, portIds.toArray(portIdArray));
 	    isPortIdsModified = false;
 	}
 
-	serializeAndSetValue(deviceKryo.get(), map);
+	return serializePropertyMap(deviceKryo.get(), map);
     }
 
     @Override
-    public Map<Object, Object> deserializeObjectFromValue() {
-	Map<Object, Object> map = deserializeObjectFromValue(deviceKryo.get());
+    protected boolean deserialize(final byte[] bytes) {
+	boolean success = deserializePropertyMap(deviceKryo.get(), bytes);
+	if (!success) {
+	    log.error("Deserializing Link: " + this + " failed.");
+	    return false;
+	}
+	Map<Object, Object> map = this.getPropertyMap();
 
 	if (this.portIds == null) {
 	    this.portIds = new TreeSet<>(
 		    ByteArrayComparator.BYTEARRAY_COMPARATOR);
 	}
-	byte[] portIdArray[] = (byte[][]) map.get(PROP_PORT_IDS);
+	byte[][] portIdArray = (byte[][]) map.get(PROP_PORT_IDS);
 	if (portIdArray != null) {
 	    this.portIds.clear();
 	    this.portIds.addAll(Arrays.asList(portIdArray));
@@ -204,18 +190,13 @@ public class RCDevice extends RCObject {
 	    isPortIdsModified = true;
 	}
 
-	return map;
+	return success;
     }
 
     @Override
     public String toString() {
-	// TODO OUTPUT ALL?
-	return "[RCDevice " + ByteArrayUtil.toHexStringBuffer(mac, ":") + "]";
+	// TODO output all properties?
+	return "[" + this.getClass().getSimpleName()
+		+ " " + ByteArrayUtil.toHexStringBuffer(mac, ":") + "]";
     }
-
-    public static void main(String[] args) {
-	// TODO Auto-generated method stub
-
-    }
-
 }

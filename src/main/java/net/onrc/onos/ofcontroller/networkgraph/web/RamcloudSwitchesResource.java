@@ -1,6 +1,6 @@
 package net.onrc.onos.ofcontroller.networkgraph.web;
 
-import net.onrc.onos.datastore.topology.RCSwitch;
+import net.onrc.onos.datastore.topology.KVSwitch;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
@@ -8,8 +8,8 @@ import org.restlet.resource.ServerResource;
 public class RamcloudSwitchesResource extends ServerResource {
 	
 	@Get("json")
-	public Iterable<RCSwitch> retrieve() {
-		return RCSwitch.getAllSwitches();
+	public Iterable<KVSwitch> retrieve() {
+		return KVSwitch.getAllSwitches();
 	}
 
 }

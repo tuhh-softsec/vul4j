@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 
-import net.onrc.onos.datastore.RCObject;
-import net.onrc.onos.datastore.RCObject.WriteOp;
-import net.onrc.onos.datastore.topology.RCLink;
-import net.onrc.onos.datastore.topology.RCPort;
-import net.onrc.onos.datastore.topology.RCPort.STATUS;
-import net.onrc.onos.datastore.topology.RCSwitch;
+import net.onrc.onos.datastore.DataStoreClient;
+import net.onrc.onos.datastore.IKVClient;
+import net.onrc.onos.datastore.topology.KVLink;
+import net.onrc.onos.datastore.topology.KVPort;
+import net.onrc.onos.datastore.topology.KVPort.STATUS;
+import net.onrc.onos.datastore.topology.KVSwitch;
+import net.onrc.onos.datastore.utils.KVObject;
+import net.onrc.onos.datastore.utils.KVObject.WriteOp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,22 +47,24 @@ public class NetworkGraphDatastore {
 		log.debug("Adding switch {}", sw);
 		ArrayList<WriteOp> groupOp = new ArrayList<>();
 
-		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
-		rcSwitch.setStatus(RCSwitch.STATUS.ACTIVE);
+		KVSwitch rcSwitch = new KVSwitch(sw.getDpid());
+		rcSwitch.setStatus(KVSwitch.STATUS.ACTIVE);
+
+		IKVClient client = DataStoreClient.getClient();
 
 		// XXX Is ForceCreating Switch on DB OK here?
 		// If ForceCreating, who ever is calling this method needs
 		// to assure that DPID is unique cluster-wide, etc.
-		groupOp.add(WriteOp.ForceCreate(rcSwitch));
+		groupOp.add(rcSwitch.forceCreateOp(client));
 
 		for (PortEvent portEvent : portEvents) {
-			RCPort rcPort = new RCPort(sw.getDpid(), portEvent.getNumber());
-			rcPort.setStatus(RCPort.STATUS.ACTIVE);
+			KVPort rcPort = new KVPort(sw.getDpid(), portEvent.getNumber());
+			rcPort.setStatus(KVPort.STATUS.ACTIVE);
 
-			groupOp.add(WriteOp.ForceCreate(rcPort));
+			groupOp.add(rcPort.forceCreateOp(client));
 		}
 
-		boolean failed = RCObject.multiWrite(groupOp);
+		boolean failed = KVObject.multiWrite(groupOp);
 
 		if (failed) {
 		    log.error("Adding Switch {} and its ports failed.", sw.getDpid());
@@ -84,21 +88,23 @@ public class NetworkGraphDatastore {
 	public boolean deactivateSwitch(SwitchEvent sw,
 					Collection<PortEvent> portEvents) {
 		log.debug("Deactivating switch {}", sw);
-		RCSwitch rcSwitch = new RCSwitch(sw.getDpid());
+		KVSwitch rcSwitch = new KVSwitch(sw.getDpid());
+
+		IKVClient client = DataStoreClient.getClient();
 
 		List<WriteOp> groupOp = new ArrayList<>();
-		rcSwitch.setStatus(RCSwitch.STATUS.INACTIVE);
+		rcSwitch.setStatus(KVSwitch.STATUS.INACTIVE);
 
-		groupOp.add(WriteOp.ForceCreate(rcSwitch));
+		groupOp.add(rcSwitch.forceCreateOp(client));
 
 		for (PortEvent portEvent : portEvents) {
-			RCPort rcPort = new RCPort(sw.getDpid(), portEvent.getNumber());
-			rcPort.setStatus(RCPort.STATUS.INACTIVE);
+			KVPort rcPort = new KVPort(sw.getDpid(), portEvent.getNumber());
+			rcPort.setStatus(KVPort.STATUS.INACTIVE);
 
-			groupOp.add(WriteOp.ForceCreate(rcPort));
+			groupOp.add(rcPort.forceCreateOp(client));
 		}
 
-		boolean failed = RCObject.multiWrite(groupOp);
+		boolean failed = KVObject.multiWrite(groupOp);
 
 		return !failed;
 	}
@@ -112,10 +118,10 @@ public class NetworkGraphDatastore {
 	public boolean addPort(PortEvent port) {
 		log.debug("Adding port {}", port);
 
-		RCPort rcPort = new RCPort(port.getDpid(), port.getNumber());
-		rcPort.setStatus(RCPort.STATUS.ACTIVE);
+		KVPort rcPort = new KVPort(port.getDpid(), port.getNumber());
+		rcPort.setStatus(KVPort.STATUS.ACTIVE);
 		rcPort.forceCreate();
-		// TODO add description into RCPort
+		// TODO add description into KVPort
 		//rcPort.setDescription(port.getDescription());
 
 		return true;
@@ -130,7 +136,7 @@ public class NetworkGraphDatastore {
 	public boolean deactivatePort(PortEvent port) {
 		log.debug("Deactivating port {}", port);
 
-		RCPort rcPort = new RCPort(port.getDpid(), port.getNumber());
+		KVPort rcPort = new KVPort(port.getDpid(), port.getNumber());
 		rcPort.setStatus(STATUS.INACTIVE);
 
 		rcPort.forceCreate();
@@ -147,7 +153,7 @@ public class NetworkGraphDatastore {
 	public boolean addLink(LinkEvent link) {
 		log.debug("Adding link {}", link);
 
-		RCLink rcLink = new RCLink(link.getSrc().getDpid(),
+		KVLink rcLink = new KVLink(link.getSrc().getDpid(),
 					   link.getSrc().getNumber(),
 					   link.getDst().getDpid(),
 					   link.getDst().getNumber());
@@ -157,7 +163,7 @@ public class NetworkGraphDatastore {
 		// so we can force write here
 		//
 		// TODO: We need to check for errors
-		rcLink.setStatus(RCLink.STATUS.ACTIVE);
+		rcLink.setStatus(KVLink.STATUS.ACTIVE);
 		rcLink.forceCreate();
 
 		return true;					// Success
@@ -166,7 +172,7 @@ public class NetworkGraphDatastore {
 	public boolean removeLink(LinkEvent linkEvent) {
 		log.debug("Removing link {}", linkEvent);
 
-		RCLink rcLink = new RCLink(linkEvent.getSrc().getDpid(), linkEvent.getSrc().getNumber(),
+		KVLink rcLink = new KVLink(linkEvent.getSrc().getDpid(), linkEvent.getSrc().getNumber(),
 				linkEvent.getDst().getDpid(), linkEvent.getDst().getNumber());
 		rcLink.forceDelete();
 

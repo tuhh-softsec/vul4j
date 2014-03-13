@@ -17,9 +17,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.datagrid.IEventChannelListener;
-import net.onrc.onos.datastore.topology.RCLink;
-import net.onrc.onos.datastore.topology.RCPort;
-import net.onrc.onos.datastore.topology.RCSwitch;
+import net.onrc.onos.datastore.topology.KVLink;
+import net.onrc.onos.datastore.topology.KVPort;
+import net.onrc.onos.datastore.topology.KVSwitch;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 import net.onrc.onos.ofcontroller.util.EventEntry;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
@@ -1141,8 +1141,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	// how we initially subscribe to replication events
 
 	// Add all active switches
-	for (RCSwitch sw : RCSwitch.getAllSwitches()) {
-	    if (sw.getStatus() != RCSwitch.STATUS.ACTIVE) {
+	for (KVSwitch sw : KVSwitch.getAllSwitches()) {
+	    if (sw.getStatus() != KVSwitch.STATUS.ACTIVE) {
 		continue;
 	    }
 
@@ -1155,8 +1155,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
 
 	// Add all active ports
-	for (RCPort p : RCPort.getAllPorts()) {
-	    if (p.getStatus() != RCPort.STATUS.ACTIVE) {
+	for (KVPort p : KVPort.getAllPorts()) {
+	    if (p.getStatus() != KVPort.STATUS.ACTIVE) {
 		continue;
 	    }
 
@@ -1169,14 +1169,14 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	}
 
 	// TODO Is Device going to be in DB? If so, read from DB.
-	//	for (RCDevice d : RCDevice.getAllDevices()) {
+	//	for (KVDevice d : KVDevice.getAllDevices()) {
 	//	    DeviceEvent devEvent = new DeviceEvent( MACAddress.valueOf(d.getMac()) );
 	//	    for (byte[] portId : d.getAllPortIds() ) {
-	//		devEvent.addAttachmentPoint( new SwitchPort( RCPort.getDpidFromKey(portId), RCPort.getNumberFromKey(portId) ));
+	//		devEvent.addAttachmentPoint( new SwitchPort( KVPort.getDpidFromKey(portId), KVPort.getNumberFromKey(portId) ));
 	//	    }
 	//	}
 
-	for (RCLink l : RCLink.getAllLinks()) {
+	for (KVLink l : KVLink.getAllLinks()) {
 	    LinkEvent linkEvent = new LinkEvent(l.getSrc().dpid,
 						l.getSrc().number,
 						l.getDst().dpid,
