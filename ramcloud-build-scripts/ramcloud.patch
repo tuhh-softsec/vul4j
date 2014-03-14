@@ -1,5 +1,5 @@
 diff --git a/GNUmakefile b/GNUmakefile
-index e4c9a07..199fac1 100644
+index e4c9a07..8548901 100644
 --- a/GNUmakefile
 +++ b/GNUmakefile
 @@ -23,8 +23,8 @@ OBJDIR	:= obj$(OBJSUFFIX)
@@ -13,6 +13,21 @@ index e4c9a07..199fac1 100644
  
  ifeq ($(DEBUG),yes)
  BASECFLAGS := -g
+@@ -103,12 +103,12 @@ endif
+ CFLAGS_BASE := $(COMFLAGS) -std=gnu0x $(INCLUDES)
+ CFLAGS_SILENT := $(CFLAGS_BASE)
+ CFLAGS_NOWERROR := $(CFLAGS_BASE) $(CWARNS)
+-CFLAGS := $(CFLAGS_BASE) -Werror $(CWARNS)
++CFLAGS := $(CFLAGS_BASE) $(CWARNS)
+ 
+ CXXFLAGS_BASE := $(COMFLAGS) -std=c++0x $(INCLUDES)
+ CXXFLAGS_SILENT := $(CXXFLAGS_BASE) $(EXTRACXXFLAGS)
+ CXXFLAGS_NOWERROR := $(CXXFLAGS_BASE) $(CXXWARNS) $(EXTRACXXFLAGS)
+-CXXFLAGS := $(CXXFLAGS_BASE) -Werror $(CXXWARNS) $(EXTRACXXFLAGS)
++CXXFLAGS := $(CXXFLAGS_BASE) $(CXXWARNS) $(EXTRACXXFLAGS)
+ 
+ ifeq ($(COMPILER),intel)
+ CXXFLAGS = $(CXXFLAGS_BASE) $(CXXWARNS)
 diff --git a/src/MasterService.cc b/src/MasterService.cc
 index 93cfb5d..02876c7 100644
 --- a/src/MasterService.cc
