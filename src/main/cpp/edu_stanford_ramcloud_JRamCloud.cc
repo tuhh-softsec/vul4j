@@ -228,7 +228,7 @@ JNICALL Java_edu_stanford_ramcloud_JRamCloud_connect(JNIEnv *env,
     RamCloud* ramcloud = NULL;
     try {
         ramcloud = new RamCloud(locator.string);
-    } EXCEPTION_CATCHER(reinterpret_cast<jlong>(NULL));
+    } EXCEPTION_CATCHER((jlong)(NULL));
     return reinterpret_cast<jlong>(ramcloud);
 }
 
@@ -474,7 +474,7 @@ JNICALL Java_edu_stanford_ramcloud_JRamCloud_multiRead(JNIEnv *env,
 	    check_null(jValue, "NewByteArray failed");
 	    JByteArrayGetter value(env, jValue);
 	    values[i].get()->copy(0, values[i].get()->getTotalLength(), value.pointer);
-	    jobject obj = env->NewObject(jc_RcObject, jm_init, jKey[i], jValue);
+	    jobject obj = env->NewObject(jc_RcObject, jm_init, jKey[i], jValue, (jlong)objects[i].version);
 	    check_null(obj, "NewObject failed");
 	    env->SetObjectArrayElement(outJNIArray, i, obj);
 	}
