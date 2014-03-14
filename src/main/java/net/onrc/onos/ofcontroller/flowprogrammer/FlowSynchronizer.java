@@ -29,6 +29,7 @@ import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.flowmanager.FlowDatabaseOperation;
+import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService.MsgPriority;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
@@ -97,8 +98,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	double graphIDTime, switchTime, compareTime, graphEntryTime, extractTime, pushTime, totalTime;
 	@Override
 	public SyncResult call() {
-	    // TODO: stop adding other flow entries while synchronizing
-	    //pusher.suspend(sw);
+	    pusher.suspend(sw);
 	    long start = System.nanoTime();
 	    Set<FlowEntryWrapper> graphEntries = getFlowEntriesFromGraph();
 	    long step1 = System.nanoTime();
@@ -115,7 +115,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    compareTime = (step3 - step2);
 	    totalTime = (step3 - start);
 	    outputTime();
-	    //pusher.resume(sw);
+	    pusher.resume(sw);
 	    
 	    return result;
 	}
@@ -301,7 +301,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    extractTime = System.nanoTime() - startExtract;
 
 	    double startPush = System.nanoTime();
-	    pusher.pushFlowEntry(sw, flowEntry);
+	    pusher.pushFlowEntry(sw, flowEntry, MsgPriority.HIGH);
 	    pushTime = System.nanoTime() - startPush;
 	}
 
@@ -325,7 +325,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    fm.setPriority(statisticsReply.getPriority());
 	    fm.setOutPort(OFPort.OFPP_NONE);
 
-	    pusher.add(sw, fm);
+	    pusher.add(sw, fm, MsgPriority.HIGH);
 	}
 
 	/**

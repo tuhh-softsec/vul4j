@@ -21,6 +21,18 @@ import net.onrc.onos.ofcontroller.util.Pair;
  *
  */
 public interface IFlowPusherService extends IFloodlightService {
+	public static enum MsgPriority {
+		HIGH,		// High priority: e.g. flow synchronization
+		NORMAL,		// Normal priority
+//		LOW,		// Low priority, not needed for now
+	}
+	
+    public static enum QueueState {
+		READY,		// Queues with all priority are at work
+		SUSPENDED,	// Only prior queue is at work
+		UNKNOWN
+	}
+
 	/**
 	 * Create a queue correspondent to the switch.
 	 * @param sw Switch to which new queue is attached.
@@ -49,7 +61,7 @@ public interface IFlowPusherService extends IFloodlightService {
 	boolean deleteQueue(IOFSwitch sw, boolean forceStop);
 	
 	/**
-	 * Add a message to the queue of the switch.
+	 * Add a message to the queue of the switch with normal priority.
 	 *
 	 * Note: Notification is NOT delivered for the pushed message.
 	 *
@@ -60,7 +72,18 @@ public interface IFlowPusherService extends IFloodlightService {
 	boolean add(IOFSwitch sw, OFMessage msg);
 
 	/**
-	 * Push a collection of Flow Entries to the corresponding switches.
+	 * Add a message to the queue of the switch with specific priority.
+	 *
+	 * @param sw Switch to which message is pushed.
+	 * @param msg Message object to be added.
+	 * @param priority Sending priority of the message.
+	 * @return true if message is successfully added to a queue.
+	 */
+	boolean add(IOFSwitch sw, OFMessage msg, MsgPriority priority);
+	
+	/**
+	 * Push a collection of Flow Entries to the corresponding switches
+	 * with normal priority.
 	 *
 	 * Note: Notification is delivered for the Flow Entries that
 	 * are pushed successfully.
@@ -71,8 +94,22 @@ public interface IFlowPusherService extends IFloodlightService {
 	void pushFlowEntries(Collection<Pair<IOFSwitch, FlowEntry>> entries);
 
 	/**
+	 * Push a collection of Flow Entries to the corresponding switches
+	 * with specific priority.
+	 *
+	 * Note: Notification is delivered for the Flow Entries that
+	 * are pushed successfully.
+	 *
+	 * @param entries the collection of <IOFSwitch, FlowEntry> pairs
+	 * to push.
+	 * @param priority Sending priority of flow entries.
+	 */
+	void pushFlowEntries(Collection<Pair<IOFSwitch, FlowEntry>> entries,
+			MsgPriority priority);
+	
+	/**
 	 * Create a message from FlowEntry and add it to the queue of the
-	 * switch.
+	 * switch with normal priority.
 	 *
 	 * Note: Notification is delivered for the Flow Entries that
 	 * are pushed successfully.
@@ -83,6 +120,20 @@ public interface IFlowPusherService extends IFloodlightService {
 	 */
 	void pushFlowEntry(IOFSwitch sw, FlowEntry flowEntry);
 
+	/**
+	 * Create a message from FlowEntry and add it to the queue of the
+	 * switch with specific priority.
+	 *
+	 * Note: Notification is delivered for the Flow Entries that
+	 * are pushed successfully.
+	 *
+	 * @param sw Switch to which message is pushed.
+	 * @param flowEntry FlowEntry object used for creating message.
+	 * @return true if message is successfully added to a queue.
+	 */
+	void pushFlowEntry(IOFSwitch sw, FlowEntry flowEntry,
+			MsgPriority priority);
+	
 	/**
 	 * Set sending rate to a switch.
 	 * @param sw Switch.
@@ -119,9 +170,9 @@ public interface IFlowPusherService extends IFloodlightService {
 	boolean resume(IOFSwitch sw);
 	
 	/**
-	 * Get whether pushing of message is suspended or not.
+	 * Get state of queue attached to a switch.
 	 * @param sw Switch to be checked.
-	 * @return true if suspended.
+	 * @return State of queue.
 	 */
-	boolean isSuspended(IOFSwitch sw);
+	QueueState getState(IOFSwitch sw);
 }
