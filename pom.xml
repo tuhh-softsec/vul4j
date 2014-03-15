@@ -12,11 +12,11 @@
   <url>http://onlab.us/</url>
   <repositories>
     <!-- In Project repository -->
-    <repository>
+    <!--<repository>
       <id>in-project</id>
       <name>In Project Repo</name>
       <url>file://${project.basedir}/repo</url>
-    </repository>
+    </repository>-->
     <repository>
       <id>central</id>
       <name>Maven Central repository</name>
@@ -550,6 +550,26 @@
       <version>2.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-framework</artifactId>
+      <version>2.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-client</artifactId>
+      <version>2.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-recipes</artifactId>
+      <version>2.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-x-discovery</artifactId>
+      <version>2.4.1</version>
+    </dependency>
     <!--
     <dependency>
       <groupId>org.objenesis</groupId>
@@ -563,27 +583,7 @@
       <version>2.2.2</version>
     </dependency>
     -->
-    <!-- dependency to locally modified version -->
-    <dependency>
-      <groupId>com.netflix.curator</groupId>
-      <artifactId>curator-framework</artifactId>
-      <version>1.3.5-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.netflix.curator</groupId>
-      <artifactId>curator-client</artifactId>
-      <version>1.3.5-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.netflix.curator</groupId>
-      <artifactId>curator-recipes</artifactId>
-      <version>1.3.5-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.netflix.curator</groupId>
-      <artifactId>curator-x-discovery</artifactId>
-      <version>1.3.5-SNAPSHOT</version>
-    </dependency>
+
     <!--
     <dependency>
       <groupId>net.floodlightcontroller</groupId>
