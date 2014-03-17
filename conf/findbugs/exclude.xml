@@ -1,0 +1,14 @@
+<FindBugsFilter>
+     <!--
+        Note: Exclusion definition exists in multiple places.
+        - In file ${findbugs.excludeFilterFile} defined at top of pom.xml (this file)
+        - maven-checkstyle-plugin configuration in pom.xml
+        - maven-pmd-plugin configuration in pom.xml
+     -->
+     <Match>
+       <Class name="~net.onrc.onos.datastore.RCProtos(.*)?" />
+     </Match>
+     <Match>
+       <Class name="~com.tinkerpop.blueprints.impls.ramcloud.RamCloudGraphProtos(.*)?" />
+     </Match>
+</FindBugsFilter>

@@ -33,6 +33,9 @@
     <powermock.version>1.5.1</powermock.version>
     <restlet.version>2.1.4</restlet.version>
     <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
+    <findbugs-plugin.version>2.5.3</findbugs-plugin.version>
+    <findbugs.effort>Max</findbugs.effort>
+    <findbugs.excludeFilterFile>conf/findbugs/exclude.xml</findbugs.excludeFilterFile>
     <!-- To publish javadoc to github,
      uncomment com.github.github site-maven-plugin and
      see https://github.com/OPENNETWORKINGLAB/ONOS/pull/425
@@ -229,6 +232,16 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Note: the findbugs configuration is also in the reporting section -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${findbugs-plugin.version}</version>
+        <configuration>
+          <effort>${findbugs.effort}</effort>
+          <excludeFilterFile>${findbugs.excludeFilterFile}</excludeFilterFile>
+        </configuration>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -311,6 +324,13 @@
 	<version>2.11</version>
 	<configuration>
 	  <configLocation>conf/checkstyle/sun_checks.xml</configLocation>
+          <!--
+            Note: Exclusion definition exists in multiple places.
+            - In file ${findbugs.excludeFilterFile} defined at top of pom.xml
+            - maven-checkstyle-plugin configuration in pom.xml
+            - maven-pmd-plugin configuration in pom.xml
+          -->
+          <excludes>**/RCProtos.java,**/RamCloudGraphProtos.java</excludes>
 	</configuration>
 	<reportSets>
 	  <reportSet>
@@ -320,11 +340,14 @@
 	  </reportSet>
 	</reportSets>
       </plugin>
+      <!-- Note: the findbugs configuration is also in the build section -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.5.3</version>
+        <version>${findbugs-plugin.version}</version>
         <configuration>
+          <effort>${findbugs.effort}</effort>
+          <excludeFilterFile>${findbugs.excludeFilterFile}</excludeFilterFile>
           <reportPlugins>
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
@@ -337,6 +360,18 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.0.1</version>
+        <configuration>
+          <!--
+            Note: Exclusion definition exists in multiple places.
+            - In file ${findbugs.excludeFilterFile} defined at top of pom.xml
+            - maven-checkstyle-plugin configuration in pom.xml
+            - maven-pmd-plugin configuration in pom.xml
+          -->
+          <excludes>
+            <exclude>**/RCProtos.java</exclude>
+            <exclude>**/RamCloudGraphProtos.java</exclude>
+          </excludes>
+        </configuration>
       </plugin>
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
