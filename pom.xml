@@ -36,6 +36,7 @@
     <findbugs-plugin.version>2.5.3</findbugs-plugin.version>
     <findbugs.effort>Max</findbugs.effort>
     <findbugs.excludeFilterFile>conf/findbugs/exclude.xml</findbugs.excludeFilterFile>
+    <checkstyle-plugin.version>2.12</checkstyle-plugin.version>
     <!-- To publish javadoc to github,
      uncomment com.github.github site-maven-plugin and
      see https://github.com/OPENNETWORKINGLAB/ONOS/pull/425
@@ -48,7 +49,7 @@
 	<!-- Note: the checkstyle configuration is also in the reporting section -->
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-checkstyle-plugin</artifactId>
-	<version>2.11</version>
+	<version>${checkstyle-plugin.version}</version>
 	<configuration>
 	  <configLocation>conf/checkstyle/sun_checks.xml</configLocation>
 	</configuration>
@@ -56,7 +57,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-install-plugin</artifactId>
-        <version>2.3.1</version>
+        <version>2.5.1</version>
         <executions>
         </executions>
       </plugin>
@@ -70,7 +71,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.1</version>
         <configuration>
           <source>1.7</source>
           <target>1.7</target>
@@ -83,7 +84,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.12</version>
+        <version>2.16</version>
         <configuration>
           <excludes>
             <!-- exclude all test cases for now -->
@@ -133,7 +134,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
+        <version>2.9.1</version>
         <configuration>
           <charset>UTF-8</charset>
           <locale>en</locale>
@@ -293,7 +294,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.4</version>
+        <version>2.7</version>
         <configuration>
           <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
           <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
@@ -311,7 +312,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
+        <version>2.9.1</version>
         <configuration>
           <charset>UTF-8</charset>
           <locale>en</locale>
@@ -321,7 +322,7 @@
 	<!-- Note: the checkstyle configuration is also in the build section -->
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-checkstyle-plugin</artifactId>
-	<version>2.11</version>
+	<version>${checkstyle-plugin.version}</version>
 	<configuration>
 	  <configLocation>conf/checkstyle/sun_checks.xml</configLocation>
           <!--
@@ -359,7 +360,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.1</version>
         <configuration>
           <!--
             Note: Exclusion definition exists in multiple places.
@@ -376,7 +377,7 @@
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-jxr-plugin</artifactId>
-	<version>2.3</version>
+	<version>2.4</version>
     </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
