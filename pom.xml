@@ -46,7 +46,21 @@
 	<version>${checkstyle-plugin.version}</version>
 	<configuration>
 	  <configLocation>conf/checkstyle/sun_checks.xml</configLocation>
+	  <suppressionsLocation>
+	    ${basedir}/conf/checkstyle/onos_suppressions.xml
+	  </suppressionsLocation>
+	  <failsOnError>false</failsOnError>
 	</configuration>
+	<executions>
+	  <execution>
+	    <id>validate-checkstyle</id>
+	    <phase>compile</phase>
+	    <goals>
+	      <!--  Uncomment this goal to make the build fail on Checkstyle errors -->
+	      <!--<goal>check</goal>-->
+	    </goals>
+	  </execution>
+	</executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -236,6 +250,42 @@
           <effort>${findbugs.effort}</effort>
           <excludeFilterFile>${findbugs.excludeFilterFile}</excludeFilterFile>
         </configuration>
+	<executions>
+	  <execution>
+	    <id>validate-findbugs</id>
+	    <phase>compile</phase>
+	    <goals>
+	      <!--  Uncomment this goal to make the build fail on findbugs errors -->
+	      <!--<goal>check</goal>-->
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.1</version>
+	<configuration>
+	  <excludes>
+	    <exclude>**/com/tinkerpop/**</exclude>
+	    <exclude>**/edu/stanford/**</exclude>
+	    <exclude>**/net/floodlightcontroller/**</exclude>
+	    <exclude>**/org/openflow/**</exclude>
+	  </excludes>
+	  <rulesets>
+	    <ruleset>${basedir}/conf/pmd/onos_ruleset.xml</ruleset>
+	  </rulesets>
+	</configuration>
+	<executions>
+	  <execution>
+	    <id>validate-pmd</id>
+	    <phase>compile</phase>
+	    <goals>
+	      <!--  Uncomment this goal to make the build fail on pmd errors -->
+	      <!--<goal>check</goal>-->
+	    </goals>
+	  </execution>
+	</executions>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -326,6 +376,9 @@
             - maven-pmd-plugin configuration in pom.xml
           -->
           <excludes>**/RCProtos.java,**/RamCloudGraphProtos.java</excludes>
+	  <suppressionsLocation>
+             ${basedir}/conf/checkstyle/onos_suppressions.xml
+          </suppressionsLocation>
 	</configuration>
 	<reportSets>
 	  <reportSet>
@@ -365,7 +418,14 @@
           <excludes>
             <exclude>**/RCProtos.java</exclude>
             <exclude>**/RamCloudGraphProtos.java</exclude>
+	    <exclude>**/com/tinkerpop/**</exclude>
+	    <exclude>**/edu/stanford/**</exclude>
+	    <exclude>**/net/floodlightcontroller/**</exclude>
+	    <exclude>**/org/openflow/**</exclude>
           </excludes>
+	  <rulesets>
+	    <ruleset>${basedir}/conf/pmd/onos_ruleset.xml</ruleset>
+	  </rulesets>
         </configuration>
       </plugin>
       <plugin>

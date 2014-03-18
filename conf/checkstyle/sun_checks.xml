@@ -3,6 +3,7 @@
           "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
           "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
+
 <!--
 
   Checkstyle configuration that checks the sun coding conventions from:
@@ -38,10 +39,11 @@
 
         <property name="basedir" value="${basedir}"/>
     -->
-
     <!-- Checks that a package-info.java file exists for each package.     -->
     <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage -->
-    <module name="JavadocPackage"/>
+    <!-- ONOS does not currently supply package level Javadoc information
+	 in package-info files -->
+    <!-- <module name="JavadocPackage"/> -->
 
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
@@ -81,7 +83,11 @@
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
         <module name="JavadocMethod"/>
         <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
+        <module name="JavadocVariable">
+	   <!-- Suppress check for private member Javadocs.
+		Possibly revist fixing these. -->
+	   <property name="scope" value="public"/>
+	</module>
         <module name="JavadocStyle"/>
 
 
@@ -108,7 +114,11 @@
 
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
-        <module name="LineLength"/>
+        <module name="LineLength">
+	     <!-- ONOS standard usage is 80 columns, but we allow up
+		  to 120 to not break the build. -->
+	     <property name="max" value="120" />
+        </module>
         <module name="MethodLength"/>
         <module name="ParameterNumber"/>
 
@@ -120,7 +130,8 @@
         <module name="MethodParamPad"/>
         <module name="NoWhitespaceAfter"/>
         <module name="NoWhitespaceBefore"/>
-        <module name="OperatorWrap"/>
+	<!-- Disabled for ONOS.  Default rules specify undesired behavior for the '?' operator -->
+        <!-- <module name="OperatorWrap"/> -->
         <module name="ParenPad"/>
         <module name="TypecastParenPad"/>
         <module name="WhitespaceAfter"/>
@@ -135,7 +146,11 @@
 
         <!-- Checks for blocks. You know, those {}'s         -->
         <!-- See http://checkstyle.sf.net/config_blocks.html -->
-        <module name="AvoidNestedBlocks"/>
+        <module name="AvoidNestedBlocks">
+	    <!-- ONOS alows declarations inside of switch case blocks -->
+            <property name="allowInSwitchCase" value="true"/>
+            <property name="severity" value="warning"/>
+        </module>
         <module name="EmptyBlock"/>
         <module name="LeftCurly"/>
         <module name="NeedBraces"/>
@@ -144,13 +159,16 @@
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
-        <module name="AvoidInlineConditionals"/>
+	<!-- ONOS allows conditional operators -->
+        <!-- <module name="AvoidInlineConditionals"/> -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField"/>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <module name="MagicNumber"/>
+	<!-- Many violations of this rule present, revist in a
+	subsequent round of cleanups -->
+        <!-- <module name="MagicNumber"/> -->
         <module name="MissingSwitchDefault"/>
         <module name="RedundantThrows"/>
         <module name="SimplifyBooleanExpression"/>
@@ -158,7 +176,9 @@
 
         <!-- Checks for class design                         -->
         <!-- See http://checkstyle.sf.net/config_design.html -->
-        <module name="DesignForExtension"/>
+	<!-- ONOS produces many warnings of this type.
+	Fixing all of these is outside the scope of the current cleanup. -->
+        <!-- <module name="DesignForExtension"/> -->
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
@@ -168,8 +188,11 @@
         <!-- Miscellaneous other checks.                   -->
         <!-- See http://checkstyle.sf.net/config_misc.html -->
         <module name="ArrayTypeStyle"/>
-        <module name="FinalParameters"/>
-        <module name="TodoComment"/>
+	<!--  Many violations of this rule currently, too many to fix
+	in the current cleanup. -->
+        <!-- <module name="FinalParameters"/> -->
+	<!-- ONOS allows TODO markers in checked in source code -->
+        <!-- <module name="TodoComment"/> -->
         <module name="UpperEll"/>
 
     </module>
