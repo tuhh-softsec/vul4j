@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class to work with Servlet request urls.
- * 
+ *
  * @author Nicolas Richeton
- * 
+ *
  */
 public final class RequestUrl {
     private static final Logger LOG = LoggerFactory.getLogger(RequestUrl.class);
@@ -35,30 +35,25 @@ public final class RequestUrl {
 
     /**
      * Get the relative url to the current servlet.
-     * <p>
-     * Uses the request URI and removes : the context path, the servlet path and the mapping path if used.
-     * 
+     * <p/>
+     * Uses the request URI and removes : the context path, the servlet path if used.
+     *
      * @param request
      *            The current HTTP request
-     * @param mapping
-     *            matched mapping or null
-     * @param servlet 
+     * @param servlet
+     *            true to remove the servlet path
      * @return the url, relative to the servlet mapping.
      */
-    public static String getRelativeUrl(HttpServletRequest request, UriMapping mapping, boolean servlet) {
+    public static String getRelativeUrl(HttpServletRequest request, boolean servlet) {
         // Raw request url
-        String relativeUrl = request.getRequestURI();
+        String requestURI = request.getRequestURI();
         // Application (war) context path
         String contextPath = request.getContextPath();
         // Servlet mapping
         String servletPath = request.getServletPath();
-        // Uri mapping
-        String mappingPath = (mapping == null ? null : mapping.getPath());
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("relativeUrl: {}, contextPath: {}, servletPath: {}, mappingPath: {}", new Object[] {relativeUrl,
-                    contextPath, servletPath, mappingPath});
-        }
+        String relativeUrl = requestURI;
+
 
         // Remove application context path
         if (contextPath != null && relativeUrl.startsWith(contextPath)) {
@@ -70,11 +65,37 @@ public final class RequestUrl {
             relativeUrl = relativeUrl.substring(servletPath.length());
         }
 
-        // Remove mapping path
-        if (mappingPath != null && relativeUrl.startsWith(mappingPath)) {
-            relativeUrl = relativeUrl.substring(mappingPath.length());
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("requestURI: {}, contextPath: {}, servletPath: {}, relativeUrl: {}, ", new Object[]{requestURI,
+                    contextPath, servletPath, relativeUrl});
         }
 
+        return relativeUrl;
+    }
+
+    /**
+     * Get the relative url without the mapping url.
+     * <p/>
+     * Uses the url and remove the mapping path.
+     *
+     * @param url
+     *            incoming relative url
+     * @return the url, relative to the driver remote url.
+     */
+    public static String stripMappingPath(String url, UriMapping mapping) {
+        String relativeUrl = url;
+        // Uri mapping
+        String mappingPath = (mapping == null ? null : mapping.getPath());
+
+
+        // Remove mapping path
+        if (mappingPath != null && url.startsWith(mappingPath)) {
+            relativeUrl = relativeUrl.substring(mappingPath.length());
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("url: {}, mappingPath: {}, relativeUrl: {}", new Object[]{url, mappingPath, relativeUrl});
+        }
         return relativeUrl;
     }
 }

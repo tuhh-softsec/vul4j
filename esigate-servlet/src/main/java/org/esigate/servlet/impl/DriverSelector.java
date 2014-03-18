@@ -26,14 +26,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class handles support of legacy options for Driver selection.
- * <p>
+ * <p/>
  * Configuration is evaluated in the following order :
  * <ol>
  * <li>providers mapping (host-based) in web.xml</li>
  * <li>provider mapping (servlet based) in web.xml</li>
  * <li>provider mapping in configuration file (eg. instance.mappings=/* in esigate.properties)</li>
  * </ol>
- * 
+ *
  * @author Nicolas Richeton
  */
 public final class DriverSelector {
@@ -44,27 +44,65 @@ public final class DriverSelector {
 
     /**
      * Select the provider for this request.
-     * <p>
+     * <p/>
      * Perform selection based on the Host header.
-     * 
-     * @param request
+     *
+     * @param request incoming request
+     * @return Pair Driver/UriMapping
+     * @throws HttpErrorPage
+     */
+    public ProviderContext selectProvider(HttpServletRequest request) throws HttpErrorPage {
+        return selectProvider(request, false);
+    }
+
+    /**
+     * Select the provider for this request.
+     * <p/>
+     * Perform selection based on the incoming request url.
+     *
+     * @param request incoming request
      * @param servlet
      * @return provider name or null.
      * @throws HttpErrorPage
      */
-    public Pair<Driver, UriMapping> selectProvider(HttpServletRequest request, boolean servlet) throws HttpErrorPage {
+    public ProviderContext selectProvider(HttpServletRequest request, boolean servlet) throws HttpErrorPage {
 
         String host = request.getHeader("Host");
         String scheme = request.getScheme();
 
-        String relUrl = RequestUrl.getRelativeUrl(request, null, servlet);
+        String relUrl = RequestUrl.getRelativeUrl(request, servlet);
 
-        Pair<Driver, UriMapping> result;
+        Pair<Driver, UriMapping> result = DriverFactory.getInstanceFor(scheme, host, relUrl);
 
-        result = DriverFactory.getInstanceFor(scheme, host, relUrl);
+        ProviderContext context = new ProviderContext();
+        Driver driver = result.getLeft();
+        UriMapping uriMapping = result.getRight();
+
+        if(driver.getConfiguration().isStripMappingPath()){
+            relUrl = RequestUrl.stripMappingPath(relUrl, uriMapping);
+        }
+        context.driver = driver;
+        context.relUrl = relUrl;
         LOG.debug("Selected {} for scheme:{} host:{} relUrl:{}", result, scheme, host, relUrl);
 
-        return result;
+        return context;
     }
 
+
+    /**
+     * The provider context, composed of driver and remote relative url
+     */
+    public class ProviderContext {
+        private Driver driver;
+        private String relUrl;
+
+        public String getRelUrl() {
+            return relUrl;
+        }
+
+        public Driver getDriver() {
+            return driver;
+        }
+
+    }
 }

@@ -25,16 +25,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.tuple.Pair;
+
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.esigate.Driver;
+
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.http.IncomingRequest;
-import org.esigate.impl.UriMapping;
 import org.esigate.servlet.impl.DriverSelector;
 import org.esigate.servlet.impl.RequestFactory;
-import org.esigate.servlet.impl.RequestUrl;
 import org.esigate.servlet.impl.ResponseSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,12 +56,10 @@ public class ProxyFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         IncomingRequest incomingRequest = requestFactory.create(httpServletRequest, httpServletResponse, chain);
-        Pair<Driver, UriMapping> dm = null;
+
         try {
-            dm = driverSelector.selectProvider(httpServletRequest, false);
-            String relUrl = RequestUrl.getRelativeUrl(httpServletRequest, dm.getRight(), false);
-            LOG.debug("Proxying {}", relUrl);
-            CloseableHttpResponse driverResponse = dm.getLeft().proxy(relUrl, incomingRequest);
+            DriverSelector.ProviderContext dm = driverSelector.selectProvider(httpServletRequest, false);
+            CloseableHttpResponse driverResponse = dm.getDriver().proxy(dm.getRelUrl(), incomingRequest);
             responseSender.sendResponse(driverResponse, incomingRequest, httpServletResponse);
         } catch (HttpErrorPage e) {
             if (!httpServletResponse.isCommitted()) {

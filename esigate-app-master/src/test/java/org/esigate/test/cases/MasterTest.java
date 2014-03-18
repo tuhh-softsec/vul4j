@@ -89,12 +89,20 @@ public class MasterTest extends TestCase {
                 "You should see here the same hostname and port as in the browser=>127.0.0.1:8080", resp.getText());
     }
 
-    public void testProxy() throws Exception {
+    public void testProxyWithStripMappingPath() throws Exception {
         WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "images/smile.jpg");
         WebResponse resp = webConversation.getResponse(req);
         assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
         assertEquals("image/jpeg", resp.getContentType().toLowerCase());
     }
+
+    public void testProxyWithoutStripMappingPath() throws Exception {
+        WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "css/sample.css");
+        WebResponse resp = webConversation.getResponse(req);
+        assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
+        assertEquals("text/css", resp.getContentType().toLowerCase());
+    }
+
 
     public void testProxyIfmodifiedsince() throws Exception {
         WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "images/smile.jpg");

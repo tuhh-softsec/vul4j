@@ -104,7 +104,7 @@ public class ProxyFilterTest {
         Mockito.when(request.getServletPath()).thenReturn("servlet");
         Mockito.when(request.getHeader("Host")).thenReturn("sub2.domain.com");
         Mockito.when(request.getScheme()).thenReturn("http");
-        Assert.assertEquals("provider2", driverSelector.selectProvider(request, true).getLeft().getConfiguration()
+        Assert.assertEquals("provider2", driverSelector.selectProvider(request, true).getDriver().getConfiguration()
                 .getInstanceName());
 
         request = Mockito.mock(HttpServletRequest.class);
@@ -115,7 +115,7 @@ public class ProxyFilterTest {
         Mockito.when(request.getServletPath()).thenReturn("servlet");
         Mockito.when(request.getHeader("Host")).thenReturn("sub.domain.com");
         Mockito.when(request.getScheme()).thenReturn("http");
-        Assert.assertEquals("provider1", driverSelector.selectProvider(request, true).getLeft().getConfiguration()
+        Assert.assertEquals("provider1", driverSelector.selectProvider(request, true).getDriver().getConfiguration()
                 .getInstanceName());
 
         request = Mockito.mock(HttpServletRequest.class);
@@ -125,7 +125,7 @@ public class ProxyFilterTest {
         Mockito.when(request.getMethod()).thenReturn("GET");
         Mockito.when(request.getServletPath()).thenReturn("servlet");
         Mockito.when(request.getScheme()).thenReturn("http");
-        Assert.assertEquals("single", driverSelector.selectProvider(request, true).getLeft().getConfiguration()
+        Assert.assertEquals("single", driverSelector.selectProvider(request, true).getDriver().getConfiguration()
                 .getInstanceName());
 
     }

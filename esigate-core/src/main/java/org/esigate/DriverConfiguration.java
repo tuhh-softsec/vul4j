@@ -44,14 +44,16 @@ public class DriverConfiguration {
     private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
     private final boolean isVisibleBaseURLEmpty;
     private final List<UriMapping> uriMappings;
+    private boolean stripMappingPath;
 
     public DriverConfiguration(String instanceName, Properties props) {
         this.instanceName = instanceName;
-        baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
-        uriEncoding = Parameters.URI_ENCODING.getValueString(props);
-        preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
-        visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValueString(props);
-        isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
+        this.baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
+        this.uriEncoding = Parameters.URI_ENCODING.getValueString(props);
+        this.preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
+        this.visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValueString(props);
+        this.isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
+        this.stripMappingPath= Parameters.STRIP_MAPPING_PATH.getValueBoolean(props);
         this.uriMappings = parseMappings(props);
         properties = props;
     }
@@ -129,4 +131,11 @@ public class DriverConfiguration {
         return this.uriMappings;
     }
 
+    /**
+     *
+     * @return stripMappingPath
+     */
+    public boolean isStripMappingPath() {
+        return stripMappingPath;
+    }
 }

@@ -125,6 +125,13 @@ provider3.mappings=*.php
 # Sample 4 : Process all files in css and images directories
 theme.remoteUrlBase=http://host4/
 theme.mappings=/css/*, /images/*
+
+# Sample 5 : Process all files in css and images directories and strip mapping path
+theme.remoteUrlBase=http://host4/css-and-images/
+theme.mappings=/css/*, /images/*
+theme.stripMappingPath=true
+
+
 	]]></source> 
 	        
 				<p>
@@ -166,6 +173,36 @@ theme.mappings=/css/*, /images/*
 					<td>Yes</td>
 					<td>-</td>
 				</tr>
+                <tr>
+                    <td>mappings</td>
+                    <td>
+                        Paths mappings specifies the Urls pattern for wich the remote application should be called. Eg:
+                        <code>mappings=/cms/*</code>
+                        Use a comma-separated list to define several mappings for same provider.
+
+                        <p/>
+                         Mapping is split in 3 parts :
+                         <ul>
+                         <li>Host, including the scheme and port : http://www.example:8080</li>
+                         <li>path, left part before the wildcard caracter *</li>
+                         <li>extension, right part after the wildcard caracter *</li>
+                         </ul>
+                    </td>
+                    <td>No</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>stripMappingPath</td>
+                    <td>
+                        If enabled, the mapping path will be striped from incoming url before calling the remote application. Eg:
+                        <code>mappings=/cms/*</code>.
+                        With <code>stripMappingPath=true</code>A request to http://esigate/cms/myresource will be proxied to http://remote/myresource
+                        With <code>stripMappingPath=false</code>A request to http://esigate/cms/myresource will proxied to http://remote/cms/myresource
+
+                    </td>
+                    <td>No</td>
+                    <td>false</td>
+                </tr>
 				<tr>
 					<td>uriEncoding</td>
 					<td>Charset used for encoding parameters in URI</td>
