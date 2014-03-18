@@ -11,12 +11,6 @@
   <name>ONOS-RAMCloud</name>
   <url>http://onlab.us/</url>
   <repositories>
-    <!-- In Project repository -->
-    <!--<repository>
-      <id>in-project</id>
-      <name>In Project Repo</name>
-      <url>file://${project.basedir}/repo</url>
-    </repository>-->
     <repository>
       <id>central</id>
       <name>Maven Central repository</name>
@@ -522,16 +516,6 @@
       <artifactId>concurrentlinkedhashmap-lru</artifactId>
       <version>1.4</version>
     </dependency>
-    <!--<dependency>
-      <groupId>org.python</groupId>
-      <artifactId>jython-standalone</artifactId>
-      <version>2.5.2</version>
-    </dependency>-->
-    <!--<dependency>
-      <groupId>org.apache.thrift</groupId>
-      <artifactId>libthrift</artifactId>
-      <version>0.7.0</version>
-    </dependency>-->
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
@@ -606,27 +590,6 @@
       <artifactId>curator-x-discovery</artifactId>
       <version>2.4.1</version>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.objenesis</groupId>
-      <artifactId>objenesis</artifactId>
-      <version>1.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib-nodep</artifactId>
-      <version>2.2.2</version>
-    </dependency>
-    -->
-
-    <!--
-    <dependency>
-      <groupId>net.floodlightcontroller</groupId>
-      <artifactId>packetstreamer-thrift</artifactId>
-      <version>0.1.0</version>
-    </dependency>
-    -->
   </dependencies>
   <profiles>
     <!-- Jenkins by default defines a property BUILD_NUMBER which is used to 
