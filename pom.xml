@@ -36,6 +36,7 @@
      see https://github.com/OPENNETWORKINGLAB/ONOS/pull/425
     <github.global.server>github</github.global.server>
      -->
+    <hazelcast.version>3.0.2</hazelcast.version>
   </properties>
   <build>
     <plugins>
@@ -519,7 +520,12 @@
     <dependency>
       <groupId>com.hazelcast</groupId>
       <artifactId>hazelcast</artifactId>
-      <version>3.0.2</version>
+      <version>${hazelcast.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast-client</artifactId>
+      <version>${hazelcast.version}</version>
     </dependency>
     <dependency>
       <groupId>net.sf.json-lib</groupId>

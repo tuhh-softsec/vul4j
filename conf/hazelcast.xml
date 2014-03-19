@@ -3,6 +3,16 @@
 	xmlns="http://www.hazelcast.com/schema/config"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <!-- Configuration of maps used as a data store. -->
+  <map name="datastore://*">
+    <!-- must use 'sync' backup to imitate other data store -->
+    <backup-count>3</backup-count>
+    <async-backup-count>0</async-backup-count>
+    <!-- must be false for strong consistency -->
+    <read-backup-data>false</read-backup-data>
+    <!-- near cache must not be used -->
+  </map>
+
   <map name="*">
 
     <!--
