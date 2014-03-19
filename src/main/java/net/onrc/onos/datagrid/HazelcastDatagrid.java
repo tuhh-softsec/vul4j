@@ -31,6 +31,7 @@ import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.Pair;
+import net.onrc.onos.ofcontroller.util.PerformanceMonitor;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 
 import org.slf4j.Logger;
@@ -49,8 +50,6 @@ import com.hazelcast.core.IList;
 import com.hazelcast.core.IMap;
 import com.hazelcast.instance.GroupProperties;
 import net.onrc.onos.intent.Intent;
-
-import net.onrc.onos.ofcontroller.flowmanager.PerformanceMonitor;
 
 /**
  * A datagrid service that uses Hazelcast as a datagrid.

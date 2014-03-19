@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.flowmanager;
+package net.onrc.onos.ofcontroller.util;
 
 import java.util.Map.Entry;
 import java.util.Queue;
