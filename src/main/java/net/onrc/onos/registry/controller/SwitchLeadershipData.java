@@ -2,16 +2,20 @@ package net.onrc.onos.registry.controller;
 
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 
-import com.netflix.curator.framework.recipes.leader.LeaderLatch;
+import org.apache.curator.framework.recipes.leader.LeaderLatch;
+import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 
 public class SwitchLeadershipData {
 	
-	private LeaderLatch latch;
-	private ControlChangeCallback cb;
+	private final LeaderLatch latch;
+	private final ControlChangeCallback cb;
+	private final LeaderLatchListener listener;
 
-	public SwitchLeadershipData(LeaderLatch latch, ControlChangeCallback cb) {
+	public SwitchLeadershipData(LeaderLatch latch, ControlChangeCallback cb,
+			LeaderLatchListener listener) {
 		this.latch = latch;
 		this.cb = cb;
+		this.listener = listener;
 	}
 	
 	public LeaderLatch getLatch(){
@@ -20,6 +24,10 @@ public class SwitchLeadershipData {
 	
 	public ControlChangeCallback getCallback(){
 		return cb;
+	}
+	
+	public LeaderLatchListener getListener() {
+		return listener;
 	}
 
 }

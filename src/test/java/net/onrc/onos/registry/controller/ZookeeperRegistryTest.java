@@ -10,6 +10,23 @@ import net.floodlightcontroller.test.FloodlightTestCase;
 import net.onrc.onos.registry.controller.StandaloneRegistryTest.LoggingCallback;
 import net.onrc.onos.registry.controller.ZookeeperRegistry.SwitchLeaderListener;
 
+import org.apache.curator.RetryPolicy;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.listen.ListenerContainer;
+import org.apache.curator.framework.recipes.atomic.AtomicValue;
+import org.apache.curator.framework.recipes.atomic.DistributedAtomicLong;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache.StartMode;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
+import org.apache.curator.framework.recipes.leader.LeaderLatch;
+import org.apache.curator.x.discovery.ServiceCache;
+import org.apache.curator.x.discovery.ServiceCacheBuilder;
+import org.apache.curator.x.discovery.ServiceDiscovery;
+import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
+import org.apache.curator.x.discovery.ServiceInstance;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;
@@ -21,24 +38,6 @@ import org.openflow.util.HexString;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import com.netflix.curator.RetryPolicy;
-import com.netflix.curator.framework.CuratorFramework;
-import com.netflix.curator.framework.CuratorFrameworkFactory;
-import com.netflix.curator.framework.listen.ListenerContainer;
-import com.netflix.curator.framework.recipes.atomic.AtomicValue;
-import com.netflix.curator.framework.recipes.atomic.DistributedAtomicLong;
-import com.netflix.curator.framework.recipes.cache.ChildData;
-import com.netflix.curator.framework.recipes.cache.PathChildrenCache;
-import com.netflix.curator.framework.recipes.cache.PathChildrenCacheEvent;
-import com.netflix.curator.framework.recipes.cache.PathChildrenCacheListener;
-import com.netflix.curator.framework.recipes.cache.PathChildrenCache.StartMode;
-import com.netflix.curator.framework.recipes.leader.LeaderLatch;
-import com.netflix.curator.x.discovery.ServiceCache;
-import com.netflix.curator.x.discovery.ServiceCacheBuilder;
-import com.netflix.curator.x.discovery.ServiceDiscovery;
-import com.netflix.curator.x.discovery.ServiceDiscoveryBuilder;
-import com.netflix.curator.x.discovery.ServiceInstance;
 
 /**
  * Unit test for {@link ZookeeperRegistry}.
@@ -205,7 +204,7 @@ public class ZookeeperRegistryTest extends FloodlightTestCase {
 		EasyMock.expectLastCall().once();
 		latch.start();
 		EasyMock.expectLastCall().once();
-		latch.removeAllListeners();
+		latch.removeListener(EasyMock.anyObject(SwitchLeaderListener.class));
 		EasyMock.expectLastCall().once();
 		latch.close();
 		EasyMock.expectLastCall().once();
@@ -241,7 +240,7 @@ public class ZookeeperRegistryTest extends FloodlightTestCase {
 		latch.start();
 		EasyMock.expectLastCall().once();
 		EasyMock.expect(latch.hasLeadership()).andReturn(true).anyTimes();
-		latch.removeAllListeners();
+		latch.removeListener(EasyMock.anyObject(SwitchLeaderListener.class));
 		EasyMock.expectLastCall().once();
 		latch.close();
 		EasyMock.expectLastCall().once();
