@@ -135,5 +135,12 @@ public interface IControllerRegistryService extends IFloodlightService {
          * Get next unique id and retrieve a new range of ids if needed.
          */
         public IdBlock allocateUniqueIdBlock(long range);
-	
+
+
+	/**
+	 * Get a globally unique ID.
+	 *
+	 * @return a globally unique ID.
+	 */
+	public long getNextUniqueId();
 }

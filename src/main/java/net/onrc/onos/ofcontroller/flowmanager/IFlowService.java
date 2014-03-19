@@ -71,14 +71,6 @@ public interface IFlowService extends IFloodlightService {
     Topology getTopology();
 
     /**
-     * Get a globally unique flow ID from the flow service.
-     * NOTE: Not currently guaranteed to be globally unique.
-     * 
-     * @return unique flow ID
-     */
-    public long getNextFlowEntryId();
-
-    /**
      * Inform the Flow Manager that a Flow Entry on switch expired.
      *
      * @param sw the switch the Flow Entry expired on.

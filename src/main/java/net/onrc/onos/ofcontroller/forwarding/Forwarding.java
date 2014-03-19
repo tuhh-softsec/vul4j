@@ -42,6 +42,7 @@ import net.onrc.onos.ofcontroller.util.FlowPathType;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -74,6 +75,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	private IFlowService flowService;
 	private IFlowPusherService flowPusher;
 	private IDatagridService datagrid;
+	private IControllerRegistryService controllerRegistryService;
 	
 	private IDeviceStorage deviceStorage;
 	private TopologyManager topologyService;
@@ -163,6 +165,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		dependencies.add(IFlowService.class);
 		dependencies.add(IFlowPusherService.class);
 		dependencies.add(IOnosDeviceService.class);
+		dependencies.add(IControllerRegistryService.class);
 		// We don't use the IProxyArpService directly, but reactive forwarding
 		// requires it to be loaded and answering ARP requests
 		dependencies.add(IProxyArpService.class);
@@ -176,6 +179,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		flowService = context.getServiceImpl(IFlowService.class);
 		flowPusher = context.getServiceImpl(IFlowPusherService.class);
 		datagrid = context.getServiceImpl(IDatagridService.class);
+		controllerRegistryService = context.getServiceImpl(IControllerRegistryService.class);
 		
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
 
@@ -411,7 +415,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 			flowPath.flowEntryMatch().enableEthernetFrameType(Ethernet.TYPE_IPv4);
 			flowPath.setDataPath(datapath);
 
-			FlowId flowId = new FlowId(flowService.getNextFlowEntryId());
+			FlowId flowId = new FlowId(controllerRegistryService.getNextUniqueId());
 			
 			flowPath.setFlowId(flowId);
 

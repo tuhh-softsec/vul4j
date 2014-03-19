@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -88,7 +89,16 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	//Zookeeper performance-related configuration
 	protected static final int sessionTimeout = 5000;
 	protected static final int connectionTimeout = 7000;
-	
+
+	//
+	// Unique ID generation state
+	// TODO: The implementation must be updated to use the Zookeeper
+	// instead of a ramdon generator.
+	//
+	private static Random randomGenerator = new Random();
+	private static int nextUniqueIdPrefix = 0;
+	private static int nextUniqueIdSuffix = 0;
+
     private final BlockingQueue<SwitchLeaderEvent> switchLeadershipEvents = 
     		new LinkedBlockingQueue<SwitchLeaderEvent>();
     
@@ -474,7 +484,33 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	public IdBlock allocateUniqueIdBlock(){
             return allocateUniqueIdBlock(ID_BLOCK_SIZE);
 	}
-            
+
+	/**
+	 * Get a globally unique ID.
+	 *
+	 * @return a globally unique ID.
+	 */
+	@Override
+	public synchronized long getNextUniqueId() {
+		//
+		// Generate the next Unique ID.
+		//
+		// TODO: For now, the higher 32 bits are random, and
+		// the lower 32 bits are sequential.
+		// The implementation must be updated to use the Zookeeper
+		// to allocate the higher 32 bits (globally unique).
+		//
+		if ((nextUniqueIdSuffix & 0xffffffffL) == 0xffffffffL) {
+			nextUniqueIdPrefix = randomGenerator.nextInt();
+			nextUniqueIdSuffix = 0;
+		} else {
+			nextUniqueIdSuffix++;
+		}
+		long result = (long)nextUniqueIdPrefix << 32;
+		result = result | (0xffffffffL & nextUniqueIdSuffix);
+		return result;
+	}
+
 	/*
 	 * IFloodlightModule
 	 */
@@ -517,7 +553,13 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			this.connectionString = connectionString;
 		}
 		log.info("Setting Zookeeper connection string to {}", this.connectionString);
-		
+
+		//
+		// Initialize the Unique ID generator
+		// TODO: This must be replaced by Zookeeper-based allocation
+		//
+		nextUniqueIdPrefix = randomGenerator.nextInt();
+
 		restApi = context.getServiceImpl(IRestApiService.class);
 
 		switches = new ConcurrentHashMap<String, SwitchLeadershipData>();

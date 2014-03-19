@@ -560,8 +560,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 
 			// Create flowPath FlowId
-			//FlowId returnByRefFlowId = new FlowId(flowManagerService.getNextFlowEntryId());
-			//flowPath.setFlowId(returnByRefFlowId);
 			flowPath.setFlowId(new FlowId());
 
 			// Create DataPath object: srcSwitchPort
@@ -766,8 +764,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 
 			// Create flowPath FlowId
-			//FlowId returnByRefFlowId = new FlowId(flowManagerService.getNextFlowEntryId());
-			//flowPath.setFlowId(returnByRefFlowId);
 			flowPath.setFlowId(new FlowId());
 
 			// Create the DataPath object: srcSwitchPort
@@ -821,11 +817,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 			Interface peerInterface = interfaces.get(bgpPeer.getInterfaceName());
 
-			// set flowPath FlowId
-			//FlowId returnByRefFlowId = new FlowId(flowManagerService.getNextFlowEntryId());
-			//flowPath.setFlowId(returnByRefFlowId);
-
-
 			// Create the Flow Path Match condition(s)
 			FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
 			flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPv4);
@@ -877,8 +868,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			flowPath.setFlowEntryMatch(flowEntryMatch);
 
 			// Create a new FlowId
-			//FlowId returnByRefFlowId2 = new FlowId(flowManagerService.getNextFlowEntryId());
-			//flowPath.setFlowId(returnByRefFlowId2);
 			flowPath.setFlowId(new FlowId());
 
 			if (flowManagerService.addFlow(flowPath) == null) {
@@ -894,8 +883,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			 * Create the DataPath: BGP <-BGP peer
 			 */
 			// Reversed BGP flow path for src-TCP-port
-			//FlowId returnByRefFlowId3 = new FlowId(flowManagerService.getNextFlowEntryId());
-			//flowPath.setFlowId(returnByRefFlowId3);
 			flowPath.setFlowId(new FlowId());
 
 			DataPath reverse_dataPath = new DataPath();
@@ -929,8 +916,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 
 			// Reversed BGP flow path for dst-TCP-port
-			//FlowId returnByRefFlowId4 = new FlowId(flowManagerService.getNextFlowEntryId());
-			//flowPath.setFlowId(returnByRefFlowId4);
 			flowPath.setFlowId(new FlowId());
 
 			// Disable src-TCP-port, and set the dst-TCP-port
@@ -953,8 +938,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			 * ICMP paths between BGPd and its peers
 			 */
 			//match ICMP protocol BGP <- Peer
-			//FlowId returnByRefFlowId5 = new FlowId(flowManagerService.getNextFlowEntryId());
-			//flowPath.setFlowId(returnByRefFlowId5);
 			flowPath.setFlowId(new FlowId());
 
 			flowEntryMatch.enableIpProto(IPv4.PROTOCOL_ICMP);
@@ -978,8 +961,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 
 			//match ICMP protocol BGP -> Peer
-			//FlowId returnByRefFlowId6 = new FlowId(flowManagerService.getNextFlowEntryId());
-			//flowPath.setFlowId(returnByRefFlowId6);
 			flowPath.setFlowId(new FlowId());
 
 			flowEntryMatch.enableDstIPv4Net(dstIPv4Net);

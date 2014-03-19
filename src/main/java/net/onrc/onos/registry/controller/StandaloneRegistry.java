@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
@@ -33,7 +34,11 @@ public class StandaloneRegistry implements IFloodlightModule,
 	
 	protected String controllerId = null;
 	protected Map<String, ControlChangeCallback> switchCallbacks;
-	
+
+	//
+	// Unique ID generation state
+	//
+	private static AtomicLong nextUniqueId = new AtomicLong(0);
 
 	@Override
 	public void requestControl(long dpid, ControlChangeCallback cb)
@@ -139,6 +144,16 @@ public class StandaloneRegistry implements IFloodlightModule,
 		blockTop = blockTail;
 		
 		return block;
+	}
+
+	/**
+	 * Get a globally unique ID.
+	 *
+	 * @return a globally unique ID.
+	 */
+	@Override
+	public long getNextUniqueId() {
+		return nextUniqueId.incrementAndGet();
 	}
 
 	@Override

@@ -36,6 +36,7 @@ import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.Pair;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.slf4j.Logger;
@@ -63,6 +64,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 
     private FlowManager flowManager;		// The Flow Manager to use
     private IDatagridService datagridService;	// The Datagrid Service to use
+    private IControllerRegistryService registryService; // The Registry Service
     private Topology topology;			// The network topology
     private KryoFactory kryoFactory = new KryoFactory();
 
@@ -109,11 +111,14 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
      *
      * @param flowManager the Flow Manager to use.
      * @param datagridService the Datagrid Service to use.
+     * @param registryService the Registry Service to use.
      */
     FlowEventHandler(FlowManager flowManager,
-		     IDatagridService datagridService) {
+		     IDatagridService datagridService,
+		     IControllerRegistryService registryService) {
 	this.flowManager = flowManager;
 	this.datagridService = datagridService;
+	this.registryService = registryService;
 	this.topology = new Topology();
     }
 
@@ -323,7 +328,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    for (FlowPath flowPath : modifiedFlowPaths.values()) {
 		for (FlowEntry flowEntry : flowPath.flowEntries()) {
 		    if (! flowEntry.isValidFlowEntryId()) {
-			long id = flowManager.getNextFlowEntryId();
+			long id = registryService.getNextUniqueId();
 			flowEntry.setFlowEntryId(new FlowEntryId(id));
 		    }
 		}
@@ -543,7 +548,7 @@ class FlowEventHandler extends Thread implements IFlowEventHandlerService,
 	    if (mySwitch == null)
 		continue;
 	    if (! flowEntry.isValidFlowEntryId()) {
-		long id = flowManager.getNextFlowEntryId();
+		long id = registryService.getNextUniqueId();
 		flowEntry.setFlowEntryId(new FlowEntryId(id));
 	    }
 	}

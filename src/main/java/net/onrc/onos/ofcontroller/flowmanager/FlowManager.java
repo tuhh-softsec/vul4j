@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
@@ -68,11 +67,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     protected IControllerRegistryService registryService;
 
     private KryoFactory kryoFactory = new KryoFactory();
-
-    // Flow Entry ID generation state
-    private static Random randomGenerator = new Random();
-    private static int nextFlowEntryIdPrefix = 0;
-    private static int nextFlowEntryIdSuffix = 0;
 
     /** The logger. */
     private final static Logger log = LoggerFactory.getLogger(FlowManager.class);
@@ -185,30 +179,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
-     * Get the next Flow Entry ID to use.
-     *
-     * @return the next Flow Entry ID to use.
-     */
-    @Override
-    public synchronized long getNextFlowEntryId() {
-	//
-	// Generate the next Flow Entry ID.
-	// NOTE: For now, the higher 32 bits are random, and
-	// the lower 32 bits are sequential.
-	// In the future, we need a better allocation mechanism.
-	//
-	if ((nextFlowEntryIdSuffix & 0xffffffffL) == 0xffffffffL) {
-	    nextFlowEntryIdPrefix = randomGenerator.nextInt();
-	    nextFlowEntryIdSuffix = 0;
-	} else {
-	    nextFlowEntryIdSuffix++;
-	}
-	long result = (long)nextFlowEntryIdPrefix << 32;
-	result = result | (0xffffffffL & nextFlowEntryIdSuffix);
-	return result;
-    }
-
-    /**
      * Startup module operation.
      *
      * @param context the module context to use for the startup.
@@ -216,9 +186,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void startUp(FloodlightModuleContext context) {
 	restApi.addRestletRoutable(new FlowWebRoutable());
-
-	// Initialize the Flow Entry ID generator
-	nextFlowEntryIdPrefix = randomGenerator.nextInt();
 
 	//
 	// The thread to write to the database
@@ -233,7 +200,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//  - register with the Datagrid Service
 	//  - startup
 	//
-	flowEventHandler = new FlowEventHandler(this, datagridService);
+	flowEventHandler = new FlowEventHandler(this, datagridService,
+						registryService);
 	floodlightProvider.addOFSwitchListener(flowEventHandler);
 	datagridService.registerFlowEventHandlerService(flowEventHandler);
 	flowEventHandler.start();
@@ -293,7 +261,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	// Allocate the Flow ID if necessary
 	if (! flowPath.isValidFlowId()) {
-	    long id = getNextFlowEntryId();
+	    long id = registryService.getNextUniqueId();
 	    flowPath.setFlowId(new FlowId(id));
 	}
 
@@ -309,7 +277,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	    // The Flow Entry ID
 	    if (! flowEntry.isValidFlowEntryId()) {
-		long id = getNextFlowEntryId();
+		long id = registryService.getNextUniqueId();
 		flowEntry.setFlowEntryId(new FlowEntryId(id));
 	    }
 	    // The Flow ID
@@ -674,7 +642,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    // assignments by the caller).
 	    //
 	    if (! flowEntry.isValidFlowEntryId()) {
-		long id = getNextFlowEntryId();
+		long id = registryService.getNextUniqueId();
 		flowEntry.setFlowEntryId(new FlowEntryId(id));
 	    }
 
