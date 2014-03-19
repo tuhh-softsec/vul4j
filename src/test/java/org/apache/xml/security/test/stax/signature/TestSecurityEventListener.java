@@ -21,14 +21,14 @@ package org.apache.xml.security.test.stax.signature;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants.Event;
 import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
+import org.junit.Assert;
 
 public class TestSecurityEventListener implements SecurityEventListener {
-    List<SecurityEvent> events = new ArrayList<SecurityEvent>();
+    private List<SecurityEvent> events = new ArrayList<SecurityEvent>();
 
     @Override
     public void registerSecurityEvent(SecurityEvent securityEvent)
