@@ -31,8 +31,6 @@ import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
-import net.onrc.onos.ofcontroller.topology.TopologyElement;
-import net.onrc.onos.ofcontroller.topology.TopologyElement.Type;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -149,6 +147,8 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
         }
 
         //If the switch port we try to attach a new device already has a link, then stop adding device
+	// TODO: Fix/update this after we refactor the Device Discovery mechanism
+	/*
         Collection<TopologyElement> list = datagrid.getAllTopologyElements();
         for(TopologyElement elem: list) {
         	if(elem.getType() == Type.ELEMENT_LINK) {
@@ -162,6 +162,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
         		}
         	}
         }
+	*/
 
         addOnosDevice(mac, srcDevice);
 

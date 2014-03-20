@@ -29,7 +29,6 @@ import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.proxyarp.BroadcastPacketOutNotification;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
-import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -76,7 +75,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	private IControllerRegistryService controllerRegistryService;
 	
 	private IDeviceStorage deviceStorage;
-	private TopologyManager topologyService;
 	
 	// TODO it seems there is a Guava collection that will time out entries.
 	// We should see if this will work here.
@@ -184,8 +182,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		
 		deviceStorage = new DeviceStorageImpl();
 		deviceStorage.init("","");
-		topologyService = new TopologyManager();
-		topologyService.init("","");
 	}
 	
 	@Override

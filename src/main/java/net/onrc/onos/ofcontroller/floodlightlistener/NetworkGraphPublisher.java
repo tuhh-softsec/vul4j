@@ -40,7 +40,6 @@ import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
 import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
-import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.PerformanceMonitor;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
@@ -125,6 +124,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 					    // notification to remove the
 					    // switch, because it is inactive
 					    //
+					    /*
 					    TopologyElement topologyElement =
 						new TopologyElement(dpid);
 					    datagridService.notificationSendTopologyElementRemoved(topologyElement);
@@ -144,6 +144,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 									link.getDstPort());
 						datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
 					    }
+					    */
 					}
 				} catch (Exception e) {
 	                log.error("Error in SwitchCleanup:controlChanged ", e);
@@ -191,12 +192,14 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
     		if (linkStore.deleteLink(lt)) {
     			// TODO publish DELETE_LINK event here
+		    /*
     			TopologyElement topologyElement =
     					new TopologyElement(update.getSrc(),
     							update.getSrcPort(),
     							update.getDst(),
     							update.getDstPort());
     			datagridService.notificationSendTopologyElementRemoved(topologyElement);
+		    */
     		}
     		break;
     	case LINK_UPDATED:
@@ -210,12 +213,14 @@ public class NetworkGraphPublisher implements IDeviceListener,
     			// TODO NOTE: Here we assume that updated
     			// link is UP.
     			//
+		    /*
     			TopologyElement topologyElement =
     					new TopologyElement(update.getSrc(),
     							update.getSrcPort(),
     							update.getDst(),
     							update.getDstPort());
     			datagridService.notificationSendTopologyElementUpdated(topologyElement);
+		    */
     		}
     		break;
     	case LINK_ADDED:
@@ -223,12 +228,14 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
     		if (linkStore.addLink(lt)) {
     			// TODO publish ADD_LINK event here
+		    /*
     			TopologyElement topologyElement =
     					new TopologyElement(update.getSrc(),
     							update.getSrcPort(),
     							update.getDst(),
     							update.getDstPort());
     			datagridService.notificationSendTopologyElementAdded(topologyElement);
+		    */
     		}
 
     		break;
@@ -243,6 +250,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		if (registryService.hasControl(sw.getId())) {
 			if (swStore.addSwitch(sw)) {
 			    // TODO publish ADD_SWITCH event here
+			    /*
 			    TopologyElement topologyElement =
 				new TopologyElement(sw.getId());
 			    datagridService.notificationSendTopologyElementAdded(topologyElement);
@@ -274,6 +282,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 							link.getDstPort());
 				datagridService.notificationSendTopologyElementAdded(topologyElementLink);
 			    }
+			    */
 			}
 		}
 	}
@@ -330,6 +339,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 			linkDiscovery.RemoveFromSuppressLLDPs(switchId, port.getPortNumber());
 
 		    // TODO publish ADD_PORT event here
+			/*
 		    TopologyElement topologyElement =
 			new TopologyElement(switchId, port.getPortNumber());
 		    datagridService.notificationSendTopologyElementAdded(topologyElement);
@@ -349,6 +359,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 						link.getDstPort());
 			datagridService.notificationSendTopologyElementAdded(topologyElementLink);
 		    }
+		    */
 		}
 	}
 
@@ -366,6 +377,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		    PerformanceMonitor.stop("SwitchPortRemoved.DbAccess");
 		    PerformanceMonitor.start("SwitchPortRemoved.NotificationSend");
 		    // TODO publish DELETE_PORT event here
+		    /*
 		    TopologyElement topologyElement =
 			new TopologyElement(switchId, port.getPortNumber());
 		    datagridService.notificationSendTopologyElementRemoved(topologyElement);
@@ -379,6 +391,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 						link.getDstPort());
 			datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
 		    }
+		    */
 		    PerformanceMonitor.stop("SwitchPortRemoved.NotificationSend");
 		    PerformanceMonitor.report("SwitchPortRemoved.DbAccess");
 		    PerformanceMonitor.report("TopologyEntryRemoved.NotificationReceived");

@@ -47,9 +47,6 @@ import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
-import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
-import net.onrc.onos.ofcontroller.topology.Topology;
-import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -96,7 +93,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 	private IFloodlightProviderService floodlightProvider;
 	private ITopologyService topologyService;
-	private ITopologyNetService topologyNetService;
 	private ILinkDiscoveryService linkDiscoveryService;
 	private IRestApiService restApi;
 	private IProxyArpService proxyArp;
@@ -158,7 +154,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 	private FlowCache flowCache;
 
-	private volatile Topology topology = null;
+	// TODO: Fix for the new Topology Network Graph
+	// private volatile Topology topology = null;
 
 	private class TopologyChangeDetector implements Runnable {
 		@Override
@@ -290,7 +287,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		topologyChangeDetectorTask = new SingletonTask(executor, new TopologyChangeDetector());
 
-		topologyNetService = new TopologyManager(context);
 		topoSwitchService = new TopoSwitchServiceImpl();
 
 		pathsWaitingOnArp = new HashMap<InetAddress, Path>();
@@ -1149,7 +1145,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 	private void beginRouting(){
 		log.debug("Topology is now ready, beginning routing function");
-		topology = topologyNetService.newDatabaseTopology();
+		// TODO: Fix for the new Topology Network Graph
+		// topology = topologyNetService.newDatabaseTopology();
 
 		// Wait Pavlin's API. We need the following functions.
 		/*setupArpFlows();
@@ -1201,6 +1198,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					continue;
 				}
 
+				// TODO: Fix for the new Topology Network Graph
+				/*
 				DataPath shortestPath = topologyNetService.getDatabaseShortestPath(
 						srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 
@@ -1209,6 +1208,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 							srcInterface.getSwitchPort(), dstInterface.getSwitchPort());
 					return;
 				}
+				*/
 			}
 		}
 		topologyReady = true;

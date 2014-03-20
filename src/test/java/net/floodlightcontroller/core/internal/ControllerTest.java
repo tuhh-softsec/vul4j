@@ -62,8 +62,6 @@ import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager;
-import net.onrc.onos.ofcontroller.topology.ITopologyNetService;
-import net.onrc.onos.ofcontroller.topology.TopologyManager;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.StandaloneRegistry;
 
@@ -119,7 +117,6 @@ public class ControllerTest extends FloodlightTestCase {
         
         // Following added by ONOS
         // TODO replace with mock if further testing is needed.
-        fmc.addService(ITopologyNetService.class, new TopologyManager() );
         StandaloneRegistry sr = new StandaloneRegistry();
         fmc.addService(IControllerRegistryService.class, sr );
         LinkDiscoveryManager linkDiscovery = new LinkDiscoveryManager();

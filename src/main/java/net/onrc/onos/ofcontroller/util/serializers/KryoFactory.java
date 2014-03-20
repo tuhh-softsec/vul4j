@@ -2,7 +2,6 @@ package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
@@ -19,7 +18,6 @@ import net.onrc.onos.ofcontroller.networkgraph.Path;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
 import net.onrc.onos.ofcontroller.networkgraph.TopologyEvent;
-import net.onrc.onos.ofcontroller.topology.TopologyElement;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
@@ -162,11 +160,6 @@ public class KryoFactory {
 	kryo.register(Port.class);
 	kryo.register(Switch.class);
 	// kryo.register(SwitchPort.class);
-
-	// Topology-related classes
-	kryo.register(TopologyElement.class);
-	kryo.register(TopologyElement.Type.class);
-	kryo.register(TreeMap.class);
 
 	// New data model-related classes
 	kryo.register(DeviceEvent.class);
