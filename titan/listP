@@ -1,2 +1,0 @@
-g.stopTransaction(SUCCESS);
-g.V('type', 'port').map;

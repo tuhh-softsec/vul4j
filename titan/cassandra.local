@@ -1,3 +1,0 @@
-storage.backend=cassandrathrift
-storage.hostname=127.0.0.1
-storage.keyspace=onos
