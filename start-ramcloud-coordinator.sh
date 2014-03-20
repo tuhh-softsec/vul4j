@@ -11,9 +11,15 @@ ONOS_HOME=`dirname $0`
 RAMCLOUD_DIR=${HOME}/ramcloud
 LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
 RAMCLOUD_LOG=${LOGDIR}/ramcloud.coordinator.`hostname`.log
-coordinatorip=`grep coordinatorIp ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
-coordinatorport=`grep coordinatorPort ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
-RAMCLOUD_COORDINATOR=`echo $coordinatorip","$coordinatorport`
+RAMCLOUD_CONF=${RAMCLOUD_CONF:-${ONOS_HOME}/conf/ramcloud.conf}
+#coordinatorip=`grep coordinatorIp ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
+#coordinatorport=`grep coordinatorPort ${ONOS_HOME}/conf/ramcloud.conf | cut -d "=" -f 2,3`
+
+COORDINATOR_IP=`grep coordinatorIp ${RAMCLOUD_CONF} | cut -d "=" -f 2,3`
+COORDINATOR_PORT=`grep coordinatorPort ${RAMCLOUD_CONF} | cut -d "=" -f 2,3`
+
+#RAMCLOUD_COORDINATOR=`echo $coordinatorip","$coordinatorport`
+RAMCLOUD_COORDINATOR=`echo $COORDINATOR_IP","$COORDINATOR_PORT`
 RAMCLOUD_BRANCH=${RAMCLOUD_BRANCH:-master}
 
 function lotate {
@@ -50,32 +56,20 @@ function stop {
   for p in ${pids}; do
     if [ x$p != "x" ]; then
       kill -KILL $p
-      echo "Killed existing prosess (pid: $p)"
+      echo "Killed existing process (pid: $p)"
     fi
   done
 }
 
-function deldb {
-#   # Delete the berkeley db database
-   if [ -d "/tmp/ramcloud.conf" ]; then
-      echo "deleting berkeley db dir"
-      sudo rm -rf /tmp/ramcloud.conf
-   fi
-}
-
 case "$1" in
   start)
-    deldb
-    cp $ONOS_HOME/conf/ramcloud.conf /tmp
+    #cp $ONOS_HOME/conf/ramcloud.conf /tmp
     stop
     start 
     ;;
   stop)
     stop
     ;;
-#  deldb)
-#    deldb
-#    ;;
   status)
     n=`pgrep -f obj.${RAMCLOUD_BRANCH}/coordinator | wc -l`
     echo "$n ramcloud coordinator is running"
