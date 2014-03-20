@@ -42,7 +42,6 @@ import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 import net.onrc.onos.ofcontroller.core.internal.TopoSwitchServiceImpl;
-import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
@@ -101,7 +100,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private ILinkDiscoveryService linkDiscoveryService;
 	private IRestApiService restApi;
 	private IProxyArpService proxyArp;
-	protected volatile IFlowService flowManagerService;
 	private IDeviceStorage deviceStorage;
 	private ITopoSwitchService topoSwitchService;
 
@@ -283,7 +281,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		topologyService = context.getServiceImpl(ITopologyService.class);
 		linkDiscoveryService = context.getServiceImpl(ILinkDiscoveryService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
-		flowManagerService = context.getServiceImpl(IFlowService.class);
 		proxyArp = context.getServiceImpl(IProxyArpService.class);
 
 		deviceStorage = new DeviceStorageImpl();
@@ -590,6 +587,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			flowPath.setFlowEntryActions(flowEntryActions);
 
 			// Flow Path installation, only to first hop switches
+			// TODO: Add the flow by using the new Path Intent framework
+			/*
 			if (flowManagerService.addFlow(flowPath) == null) {
 				log.error("Failed to install flow path to the first hop for " +
 						"prefix: {}, nextHopMacAddress: {}", prefix.getAddress(),
@@ -602,6 +601,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 				pushedFlowIds.put(prefix, flowPath.flowId());
 			}
+			*/
 		}
 	}
 
@@ -646,6 +646,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 		Collection<FlowId> flowIds = pushedFlowIds.removeAll(prefix);
 		for (FlowId flowId : flowIds) {
+		    // TODO: Delete the flow by using the new Path Intent framework
+		    /*
 			if (log.isTraceEnabled()) {
 				//Trace the flow status by flowPath in the switch before deleting it
 				log.trace("Pushing a DELETE flow mod to flowPath : {}",
@@ -660,6 +662,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			{
 				log.debug("Failed to delete FlowId: {}",flowId);
 			}
+		    */
 		}
 	}
 
@@ -785,6 +788,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			// NOTE: No need to add ACTION_OUTPUT. It is implied when creating
 			// Shortest Path Flow, and is always the last action for the Flow Entries
 			log.debug("FlowPath of MAC based forwarding: {}", flowPath.toString());
+			// TODO: Add the flow by using the new Path Intent framework
+			/*
 			if (flowManagerService.addFlow(flowPath) == null) {
 				log.error("Failed to set up MAC based forwarding path to {}, {}",
 						path.getDstIpAddress().getHostAddress(),dstMacAddress);
@@ -793,6 +798,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				log.debug("Successfully set up MAC based forwarding path to {}, {}",
 						path.getDstIpAddress().getHostAddress(),dstMacAddress);
 			}
+			*/
 		}
 	}
 
@@ -853,6 +859,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 			flowPath.setDataPath(dataPath);
 
+			// TODO: Add the flow by using the new Path Intent framework
+			/*
 			if (flowManagerService.addFlow(flowPath) == null) {
 				log.error("Failed to set up path BGP -> peer {}"+"; dst-TCP-port:179",
 						bgpPeer.getIpAddress().getHostAddress());
@@ -861,6 +869,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				log.debug("Successfully set up path BGP -> peer {}"+"; dst-TCP-port:179",
 						bgpPeer.getIpAddress().getHostAddress());
 			}
+			*/
 
 			// Disable dst-TCP-port, and set src-TCP-port
 			flowEntryMatch.disableDstTcpUdpPort();
@@ -870,6 +879,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			// Create a new FlowId
 			flowPath.setFlowId(new FlowId());
 
+			// TODO: Add the flow by using the new Path Intent framework
+			/*
 			if (flowManagerService.addFlow(flowPath) == null) {
 				log.error("Failed to set up path BGP -> Peer {}" + "; src-TCP-port:179",
 						bgpPeer.getIpAddress().getHostAddress());
@@ -878,6 +889,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				log.debug("Successfully set up path BGP -> Peer {}" + "; src-TCP-port:179",
 						bgpPeer.getIpAddress().getHostAddress());
 			}
+			*/
 
 			/**
 			 * Create the DataPath: BGP <-BGP peer
@@ -905,6 +917,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 			log.debug("Reversed BGP FlowPath: {}", flowPath.toString());
 
+			// TODO: Add the flow by using the new Path Intent framework
+			/*
 			if (flowManagerService.addFlow(flowPath) == null) {
 
 				log.error("Failed to set up path BGP <- Peer {}" + "; src-TCP-port:179",
@@ -914,6 +928,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				log.debug("Successfully set up path BGP <- Peer {}" + "; src-TCP-port:179",
 						bgpPeer.getIpAddress().getHostAddress());
 			}
+			*/
 
 			// Reversed BGP flow path for dst-TCP-port
 			flowPath.setFlowId(new FlowId());
@@ -925,6 +940,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 			log.debug("Reversed BGP FlowPath: {}", flowPath.toString());
 
+			// TODO: Add the flow by using the new Path Intent framework
+			/*
 			if (flowManagerService.addFlow(flowPath) == null) {
 				log.error("Failed to setting up path BGP <- Peer {}" + "; dst-TCP-port:179",
 						bgpPeer.getIpAddress().getHostAddress());
@@ -933,6 +950,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				log.debug("Successfully setting up path BGP <- Peer {}" + "; dst-TCP-port:179",
 						bgpPeer.getIpAddress().getHostAddress());
 			}
+			*/
 
 			/**
 			 * ICMP paths between BGPd and its peers
@@ -950,6 +968,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 			log.debug("Reversed ICMP FlowPath: {}", flowPath.toString());
 
+			// TODO: Add the flow by using the new Path Intent framework
+			/*
 			if (flowManagerService.addFlow(flowPath) == null) {
 
 				log.error("Failed to set up ICMP path BGP <- Peer {}",
@@ -959,6 +979,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				log.debug("Successfully set up ICMP path BGP <- Peer {}",
 						bgpPeer.getIpAddress().getHostAddress());
 			}
+			*/
 
 			//match ICMP protocol BGP -> Peer
 			flowPath.setFlowId(new FlowId());
@@ -971,7 +992,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 			log.debug("ICMP flowPath: {}", flowPath.toString());
 
-
+			// TODO: Add the flow by using the new Path Intent framework
+			/*
 			if (flowManagerService.addFlow(flowPath) == null) {
 
 				log.error("Failed to set up ICMP path BGP -> Peer {}",
@@ -981,6 +1003,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 				log.debug("Successfully set up ICMP path BGP -> Peer {}",
 						bgpPeer.getIpAddress().getHostAddress());
 			}
+			*/
 		}
 	}
 

@@ -22,7 +22,6 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.ofcontroller.flowprogrammer.web.FlowProgrammerWebRoutable;
-import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
@@ -43,12 +42,11 @@ public class FlowProgrammer implements IFloodlightModule,
 				       IOFMessageListener,
 				       IOFSwitchListener {
     // flag to enable FlowSynchronizer
-    private static final boolean enableFlowSync = true;
+    private static final boolean enableFlowSync = false;
     protected static final Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
     protected volatile IFloodlightProviderService floodlightProvider;
     protected volatile IControllerRegistryService registryService;
     protected volatile IRestApiService restApi;
-    protected volatile IFlowService flowManager;
 
     protected FlowPusher pusher;
     private static final int NUM_PUSHER_THREAD = 1;
@@ -68,7 +66,6 @@ public class FlowProgrammer implements IFloodlightModule,
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	registryService = context.getServiceImpl(IControllerRegistryService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
-	flowManager = context.getServiceImpl(IFlowService.class);
 	pusher.init(null, context, floodlightProvider.getOFMessageFactory(), null);
 	if (enableFlowSync) {
 	    synchronizer.init(pusher);
@@ -141,7 +138,7 @@ public class FlowProgrammer implements IFloodlightModule,
 	    OFFlowRemoved flowMsg = (OFFlowRemoved) msg;
 	    FlowEntryId id = new FlowEntryId(flowMsg.getCookie());
 	    log.debug("Got flow entry removed from {}: {}",sw.getId(), id);
-	    flowManager.flowEntryOnSwitchExpired(sw, id);
+	    // TODO: Inform the Forwarding module that a flow has expired
 	    break;
 	default:
 	    break;

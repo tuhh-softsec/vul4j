@@ -28,7 +28,6 @@ import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.flowmanager.FlowDatabaseOperation;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService.MsgPriority;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -290,6 +289,10 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    }
 	    dbTime = System.nanoTime() - startDB;
 
+	    //
+	    // TODO: The old FlowDatabaseOperation class is gone, so the code
+	    //
+	    /*
 	    double startExtract = System.nanoTime();
 	    FlowEntry flowEntry =
 		FlowDatabaseOperation.extractFlowEntry(iFlowEntry);
@@ -303,6 +306,7 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    double startPush = System.nanoTime();
 	    pusher.pushFlowEntry(sw, flowEntry, MsgPriority.HIGH);
 	    pushTime = System.nanoTime() - startPush;
+	    */
 	}
 
 	/**

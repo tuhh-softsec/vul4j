@@ -12,7 +12,6 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.flowmanager.FlowDatabaseOperation;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService.MsgPriority;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowSyncService.SyncResult;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -39,7 +38,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 // Test should be fixed to fit RAMCloud basis
 @Ignore
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({FlowSynchronizer.class, DBOperation.class, FlowDatabaseOperation.class})
+@PrepareForTest({FlowSynchronizer.class, DBOperation.class})
 public class FlowSynchronizerTest {
 	private FlowPusher pusher;
 	private FlowSynchronizer sync;
@@ -257,6 +256,11 @@ public class FlowSynchronizerTest {
 	 * @param idList List of FlowEntry IDs stored in DB.
 	 */
 	private void initMockGraph(long[] idList) {
+	    /*
+	     * TODO: The old FlowDatabaseOperation class is gone, so the method
+	     * below needs to be rewritten.
+	     */
+	    /*
 		List<IFlowEntry> flowEntryList = new ArrayList<IFlowEntry>();
 		
 		for (long id : idList) {
@@ -301,6 +305,7 @@ public class FlowSynchronizerTest {
 			fail("Failed to create DBOperation");
 		}
 		PowerMock.replay(DBOperation.class);
+	    */
 	}
 	
 	/**

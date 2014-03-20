@@ -26,7 +26,6 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
-import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.proxyarp.BroadcastPacketOutNotification;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
@@ -72,7 +71,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	private final CallerId callerId = new CallerId("Forwarding");
 	
 	private IFloodlightProviderService floodlightProvider;
-	private IFlowService flowService;
 	private IFlowPusherService flowPusher;
 	private IDatagridService datagrid;
 	private IControllerRegistryService controllerRegistryService;
@@ -162,7 +160,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		List<Class<? extends IFloodlightService>> dependencies = 
 				new ArrayList<Class<? extends IFloodlightService>>();
 		dependencies.add(IFloodlightProviderService.class);
-		dependencies.add(IFlowService.class);
 		dependencies.add(IFlowPusherService.class);
 		dependencies.add(IOnosDeviceService.class);
 		dependencies.add(IControllerRegistryService.class);
@@ -176,7 +173,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	public void init(FloodlightModuleContext context) {
 		floodlightProvider = 
 				context.getServiceImpl(IFloodlightProviderService.class);
-		flowService = context.getServiceImpl(IFlowService.class);
 		flowPusher = context.getServiceImpl(IFlowPusherService.class);
 		datagrid = context.getServiceImpl(IDatagridService.class);
 		controllerRegistryService = context.getServiceImpl(IControllerRegistryService.class);
@@ -430,7 +426,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 
 		log.debug("Adding forward {} to {}. Flow ID {}", new Object[] {
 				srcMacAddress, dstMacAddress, flowPath.flowId()});
-		flowService.addFlow(flowPath);
+		// TODO: Add the flow by using the new Path Intent framework
+		// flowService.addFlow(flowPath);
 	}
 
 	private OFPacketOut constructPacketOut(OFPacketIn pi, IOFSwitch sw) {	
