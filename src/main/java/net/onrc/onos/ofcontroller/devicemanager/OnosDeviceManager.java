@@ -45,37 +45,37 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 	protected final static Logger log = LoggerFactory.getLogger(OnosDeviceManager.class);
 	private static final int CLEANUP_SECOND = 60*60;
 	private static final int AGEING_MILLSEC = 60*60*1000;
-	
+
 	private IDeviceStorage deviceStorage;
 	private IFloodlightProviderService floodlightProvider;
 	private final static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-	
+
 	private IDatagridService datagrid;
 	private Map<Long, OnosDevice> mapDevice = new ConcurrentHashMap<Long, OnosDevice>();
-	
+
     public enum OnosDeviceUpdateType {
         ADD, DELETE, UPDATE;
     }
-	
+
 	private class OnosDeviceUpdate implements IUpdate {
 		private OnosDevice device;
 		private OnosDeviceUpdateType type;
-		
+
 		public OnosDeviceUpdate(OnosDevice device, OnosDeviceUpdateType type) {
 			this.device = device;
 			this.type = type;
 		}
-		
+
 		@Override
 		public void dispatch() {
 			if(type == OnosDeviceUpdateType.ADD) {
-				deviceStorage.addOnosDevice(device);		
+				deviceStorage.addOnosDevice(device);
 			} else if (type == OnosDeviceUpdateType.DELETE){
-				deviceStorage.deleteOnosDevice(device);		
+				deviceStorage.deleteOnosDevice(device);
 			}
 		}
 	}
-	
+
 	@Override
 	public String getName() {
 		return "onosdevicemanager";
@@ -90,7 +90,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 
 	@Override
 	public boolean isCallbackOrderingPostreq(OFType type, String name) {
-		return type == OFType.PACKET_IN && 
+		return type == OFType.PACKET_IN &&
 				("proxyarpmanager".equals(name) || "onosforwarding".equals(name));
 	}
 
@@ -98,16 +98,16 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 	public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
 		if (msg.getType().equals(OFType.PACKET_IN)) {
 			OFPacketIn pi = (OFPacketIn) msg;
-			
+
 			Ethernet eth = IFloodlightProviderService.bcStore.
 					get(cntx, IFloodlightProviderService.CONTEXT_PI_PAYLOAD);
-			
+
 			return processPacketIn(sw, pi, eth);
 		}
-		
+
 		return Command.CONTINUE;
 	}
-	
+
 	private Command processPacketIn(IOFSwitch sw, OFPacketIn pi, Ethernet eth) {
         long dpid =sw.getId();
         short portId = pi.getInPort();
@@ -119,7 +119,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
         if (srcDevice == null){
         	return Command.STOP;
         }
-        
+
         //We check if it is the same device in datagrid to suppress the device update
         OnosDevice exDev = null;
         if((exDev = mapDevice.get(mac)) != null ){
@@ -132,11 +132,11 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 			        		dpid, portId, srcDevice.getMacAddress(), srcDevice.getIpv4Address(), srcDevice.getLastSeenTimestamp().getTime());
 	        	}
 		        return Command.CONTINUE;
-	    	} else if (srcDevice.getIpv4Address() == null && 
-	    			exDev.getSwitchDPID() == srcDevice.getSwitchDPID() &&
+	    	} else if (srcDevice.getIpv4Address() == null &&
+	    			exDev.getSwitchDPID().equals(srcDevice.getSwitchDPID()) &&
 	    			exDev.getSwitchPort() == srcDevice.getSwitchPort() &&
-	    			exDev.getVlan() == srcDevice.getVlan()) {
-	    		//Device attachment point and mac address are the same 
+	    			exDev.getVlan().equals(srcDevice.getVlan())) {
+	    		//Device attachment point and mac address are the same
 	    		//but the packet does not have an ip address.
 	        	exDev.setLastSeenTimestamp(new Date());
 	        	if(log.isTraceEnabled()) {
@@ -147,7 +147,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 	        	return Command.CONTINUE;
 	    	}
         }
-        
+
         //If the switch port we try to attach a new device already has a link, then stop adding device
         Collection<TopologyElement> list = datagrid.getAllTopologyElements();
         for(TopologyElement elem: list) {
@@ -162,17 +162,17 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
         		}
         	}
         }
-        
+
         addOnosDevice(mac, srcDevice);
-        
+
         if(log.isTraceEnabled()) {
 	        log.debug("Add device info in the set. dpid {}, port {}, mac {}, ip {}, lastSeenTime {}",
 	       		dpid, portId, srcDevice.getMacAddress(), srcDevice.getIpv4Address(), srcDevice.getLastSeenTimestamp().getTime());
         }
         return Command.CONTINUE;
 	}
-	
-     //Thread to delete devices periodically. 
+
+     //Thread to delete devices periodically.
 	 //Remove all devices from the map first and then finally delete devices from the DB.
 	private class CleanDevice implements Runnable {
 		@Override
@@ -191,9 +191,9 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 			        		deleteSet.add(dev);
 			        	}
 			        }
-			     
+
 			        for(OnosDevice dev : deleteSet) {
-			        	deleteOnosDevice(dev);        	
+			        	deleteOnosDevice(dev);
 			        }
 			 } catch(Exception e) {
 		    	 log.error("Error:", e);
@@ -202,7 +202,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 	}
 
     /**
-     * Get IP address from packet if the packet is either an ARP 
+     * Get IP address from packet if the packet is either an ARP
      * or a DHCP packet
      * @param eth
      * @param dlAddr
@@ -259,7 +259,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-		List<Class<? extends IFloodlightService>> services = 
+		List<Class<? extends IFloodlightService>> services =
 				new ArrayList<Class<? extends IFloodlightService>>();
 		services.add(IOnosDeviceService.class);
 		return services;
@@ -267,7 +267,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 
 	@Override
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
-		Map<Class<? extends IFloodlightService>, IFloodlightService> impls = 
+		Map<Class<? extends IFloodlightService>, IFloodlightService> impls =
 				new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
 		impls.put(IOnosDeviceService.class, this);
 		return impls;
@@ -275,7 +275,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
-		List<Class<? extends IFloodlightService>> dependencies = 
+		List<Class<? extends IFloodlightService>> dependencies =
 				new ArrayList<Class<? extends IFloodlightService>>();
 		dependencies.add(IFloodlightProviderService.class);
 		return dependencies;
@@ -288,7 +288,7 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 		executor.scheduleAtFixedRate(new CleanDevice(), 30 ,CLEANUP_SECOND, TimeUnit.SECONDS);
 		deviceStorage = new DeviceStorageImpl();
 		deviceStorage.init("","");
-		
+
 		datagrid = context.getServiceImpl(IDatagridService.class);
 	}
 
@@ -303,30 +303,30 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 		datagrid.sendNotificationDeviceDeleted(dev);
 		floodlightProvider.publishUpdate(new OnosDeviceUpdate(dev, OnosDeviceUpdateType.DELETE));
 	}
-	
+
 	@Override
 	public void addOnosDevice(Long mac, OnosDevice dev) {
         datagrid.sendNotificationDeviceAdded(mac, dev);
         floodlightProvider.publishUpdate(new OnosDeviceUpdate(dev, OnosDeviceUpdateType.ADD));
 	}
-	
+
 	//This is listener for datagrid mapDevice change.
     class MapDevListener implements IDeviceEventHandler {
 
 		@Override
-		public void addDeviceEvent(Long mac, OnosDevice dev) {	
+		public void addDeviceEvent(Long mac, OnosDevice dev) {
 			mapDevice.put(mac, dev);
 			log.debug("addDeviceMap: device mac {}", mac);
 		}
 
 		@Override
-		public void deleteDeviceEvent(Long mac, OnosDevice dev) {	
+		public void deleteDeviceEvent(Long mac, OnosDevice dev) {
 			mapDevice.remove(mac);
-			log.debug("deleteDeviceMap: device mac {}", mac);	
+			log.debug("deleteDeviceMap: device mac {}", mac);
 		}
 
 		@Override
-		public void updateDeviceEvent(Long mac, OnosDevice dev) {	
+		public void updateDeviceEvent(Long mac, OnosDevice dev) {
 			mapDevice.put(mac, dev);
 			log.debug("updateDeviceMap: device mac {}", mac);
 		}
