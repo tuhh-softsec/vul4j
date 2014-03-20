@@ -37,8 +37,8 @@ def debug(txt):
   if DEBUG:
     print '%s' % (txt)
 
-# @app.route("/wm/onos/ng/links/json ")
-# @app.route("/wm/onos/ng/switches/json ")
+# @app.route("/wm/onos/topology/links/json ")
+# @app.route("/wm/onos/topology/switches/json ")
 # @app.route("/wm/onos/ng/shortest-path/<src-dpid>/<dst-dpid>/json ")
 # Sample output:
 
@@ -47,7 +47,7 @@ def print_parsed_result(parsedResult):
 
 def get_network_switches():
   try:
-    command = "curl -s \"http://%s:%s/wm/onos/ng/switches/json\"" % (ControllerIP, ControllerPort)
+    command = "curl -s \"http://%s:%s/wm/onos/topology/switches/json\"" % (ControllerIP, ControllerPort)
     debug("get_network_switches %s" % command)
 
     result = os.popen(command).read()
@@ -68,7 +68,7 @@ def get_network_switches():
 
 def get_network_links():
   try:
-    command = "curl -s \"http://%s:%s/wm/onos/ng/links/json\"" % (ControllerIP, ControllerPort)
+    command = "curl -s \"http://%s:%s/wm/onos/topology/links/json\"" % (ControllerIP, ControllerPort)
     debug("get_network_links %s" % command)
 
     result = os.popen(command).read()

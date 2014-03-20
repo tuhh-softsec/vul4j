@@ -22,7 +22,6 @@ public class NetworkGraphWebRoutable implements RestletRoutable {
 
 	@Override
 	public String basePath() {
-		// TODO Auto-generated method stub
 		return "/wm/onos";
 	}
 
