@@ -36,6 +36,13 @@
       <exclude name="ShortVariable" />
       <exclude name="LongVariable" />
     </rule>
+    <rule ref="rulesets/java/naming.xml/VariableNamingConventions">
+      <properties>
+	<!--  ONOS allows the name "log" for static final Loggers -->
+	<property name="violationSuppressRegex" value=".*'log'.*"/>
+      </properties>
+    </rule>
+
     <rule ref="rulesets/java/clone.xml"/>
     <rule ref="rulesets/java/strictexception.xml"/>
     <rule ref="rulesets/java/design.xml">
