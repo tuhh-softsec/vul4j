@@ -98,25 +98,28 @@ public class FlowSynchronizer implements IFlowSyncService {
 	@Override
 	public SyncResult call() {
 	    pusher.suspend(sw);
-	    long start = System.nanoTime();
-	    Set<FlowEntryWrapper> graphEntries = getFlowEntriesFromGraph();
-	    long step1 = System.nanoTime();
-	    Set<FlowEntryWrapper> switchEntries = getFlowEntriesFromSwitch();
-	    if (switchEntries == null) {
-	    	log.debug("getFlowEntriesFromSwitch() failed");
-	    	return null;
+	    try {
+		    long start = System.nanoTime();
+		    Set<FlowEntryWrapper> graphEntries = getFlowEntriesFromGraph();
+		    long step1 = System.nanoTime();
+		    Set<FlowEntryWrapper> switchEntries = getFlowEntriesFromSwitch();
+		    if (switchEntries == null) {
+		    	log.debug("getFlowEntriesFromSwitch() failed");
+		    	return null;
+		    }
+		    long step2 = System.nanoTime();
+		    SyncResult result = compare(graphEntries, switchEntries);
+		    long step3 = System.nanoTime();
+		    graphIDTime = (step1 - start); 
+		    switchTime = (step2 - step1);
+		    compareTime = (step3 - step2);
+		    totalTime = (step3 - start);
+		    outputTime();
+		    
+		    return result;
+	    } finally {
+		    pusher.resume(sw);
 	    }
-	    long step2 = System.nanoTime();
-	    SyncResult result = compare(graphEntries, switchEntries);
-	    long step3 = System.nanoTime();
-	    graphIDTime = (step1 - start); 
-	    switchTime = (step2 - step1);
-	    compareTime = (step3 - step2);
-	    totalTime = (step3 - start);
-	    outputTime();
-	    pusher.resume(sw);
-	    
-	    return result;
 	}
 	
 	private void outputTime() {
