@@ -1,5 +1,11 @@
 #!/bin/bash
 
+echo
+echo "===================================================================="
+echo "[WARNING] This script is deprecated. Use \"\$ ./onos.sh core\" instead."
+echo "===================================================================="
+echo
+
 ulimit -c unlimited
 
 # Set paths

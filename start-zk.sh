@@ -1,4 +1,11 @@
 #!/bin/bash
+
+echo
+echo "=================================================================="
+echo "[WARNING] This script is deprecated. Use \"\$ ./onos.sh zk\" instead."
+echo "=================================================================="
+echo
+
 # Set paths
 
 ONOS_HOME=`dirname $0`

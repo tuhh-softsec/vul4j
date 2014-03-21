@@ -1,0 +1,24 @@
+<configuration scan="true" scanPeriod="1 minutes" debug="true">
+<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+<encoder>
+<pattern>%level [%logger:%thread] %msg%n</pattern>
+</encoder>
+</appender>
+
+<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+<file>__FILENAME__</file>
+<encoder>
+<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+<immediateFlush>true</immediateFlush>
+</encoder>
+</appender>
+
+<logger name="org" level="WARN"/>
+<logger name="LogService" level="WARN"/> <!-- Restlet access logging -->
+<logger name="net.floodlightcontroller.logging" level="WARN"/>
+<logger name="com.hazelcast" level="INFO"/>
+
+<root level="DEBUG">
+<appender-ref ref="FILE" />
+</root>
+</configuration>
