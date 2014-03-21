@@ -59,6 +59,11 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
 
     private final KryoFactory kryoFactory = new KryoFactory();
 
+    //
+    // NOTE: eventChannels is kept thread safe by using explicit "synchronized"
+    // blocks below. Those are needed to protect the integrity of each entry
+    // instance, and avoid preemption during channel creation/startup.
+    //
     private final Map<String, IEventChannel<?, ?>> eventChannels = new HashMap<>();
 
     // State related to the packet out map
