@@ -1,3 +1,0 @@
-storage.backend=cassandra
-storage.hostname=localhost
-storage.keyspace=onos
