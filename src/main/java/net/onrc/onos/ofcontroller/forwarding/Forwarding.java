@@ -20,11 +20,9 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.proxyarp.BroadcastPacketOutNotification;
@@ -73,8 +71,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	private IFlowPusherService flowPusher;
 	private IDatagridService datagrid;
 	private IControllerRegistryService controllerRegistryService;
-	
-	private IDeviceStorage deviceStorage;
 	
 	// TODO it seems there is a Guava collection that will time out entries.
 	// We should see if this will work here.
@@ -179,9 +175,6 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 
 		pendingFlows = new HashMap<Path, PushedFlow>();
 		waitingPackets = LinkedListMultimap.create();
-		
-		deviceStorage = new DeviceStorageImpl();
-		deviceStorage.init("","");
 	}
 	
 	@Override
@@ -252,6 +245,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 				HexString.toHexString(eth.getDestinationMACAddress()); 
 		
 		//FIXME getDeviceByMac() is a blocking call, so it may be better way to handle it to avoid the condition.
+		// TODO: Fix the code below after deviceStorage was removed
+		/*
 		try{	
 			IDeviceObject deviceObject = deviceStorage.getDeviceByMac(
 				destinationMac);
@@ -268,6 +263,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		} finally {
 			deviceStorage.rollback();
 		}
+		*/
 	}
 	
 	private class WaitDeviceArp implements Runnable {
@@ -284,6 +280,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 
 		@Override
 		public void run() {
+			// TODO: Fix the code below after deviceStorage was removed
+			/*
 			try {
 				IDeviceObject deviceObject = deviceStorage.getDeviceByMac(HexString.toHexString(eth.getDestinationMACAddress()));
 					if(deviceObject == null){
@@ -296,6 +294,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 			} finally {
 				deviceStorage.rollback();
 			}
+			*/
 		}
 	}
 

@@ -29,14 +29,10 @@ import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
-import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
-import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
-import net.onrc.onos.ofcontroller.core.internal.TopoSwitchServiceImpl;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.Port;
@@ -73,9 +69,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	private IConfigInfoService configService;
 	private IRestApiService restApi;
 	private IFlowPusherService flowPusher;
-	
-	private IDeviceStorage deviceStorage;
-	private volatile ITopoSwitchService topoSwitchService;
 	
 	private short vlan;
 	private static final short NO_VLAN = 0;
@@ -179,7 +172,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		arpRequests = Multimaps.synchronizedSetMultimap(
 				HashMultimap.<InetAddress, ArpRequest>create());
 		
-		topoSwitchService = new TopoSwitchServiceImpl();
 	}
 	
 	@Override
@@ -192,9 +184,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		
 		datagrid.registerPacketOutEventHandler(this);
 		datagrid.registerArpReplyEventHandler(this);
-		
-		deviceStorage = new DeviceStorageImpl();
-		deviceStorage.init("","");
 		
 		Timer arpTimer = new Timer("arp-processing");
 		arpTimer.scheduleAtFixedRate(new TimerTask() {
@@ -231,6 +220,8 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		
 					// If the ARP request is expired and then delete the device
 					// TODO check whether this is OK from this thread
+					// TODO: Fix the code below after deviceStorage was removed
+					/*
 					IDeviceObject targetDevice = 
 							deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(entry.getKey()));
 					if (targetDevice != null) {
@@ -239,6 +230,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 							log.debug("RemoveDevice: {} due to no have not recieve the ARP reply", targetDevice);
 						}
 					}
+					*/
 					
 					it.remove();
 					
@@ -348,8 +340,12 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		arpRequests.put(target, new ArpRequest(
 				new HostArpRequester(arp, sw.getId(), pi.getInPort()), false));
 
+		// TODO: Fix the code below after deviceStorage was removed
+		/*
 		IDeviceObject targetDevice = 
 				deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(target));
+		*/
+		IDeviceObject targetDevice = null;
 		
 		if (targetDevice == null) {
 			if (log.isTraceEnabled()) {
@@ -626,7 +622,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 			.setPacketData(arpRequest);
 			
 			List<OFAction> actions = new ArrayList<OFAction>();
-			
+
+			// TODO: Fix the code below after topoSwitchService was removed
+			/*
 			Iterable<IPortObject> ports 
 				= topoSwitchService.getPortsOnSwitch(sw.getStringId());
 			if (ports == null) {
@@ -648,6 +646,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 					actions.add(new OFActionOutput(portNumber));
 				}
 			}
+			*/
 			
 			po.setActions(actions);
 			short actionsLength = (short) 

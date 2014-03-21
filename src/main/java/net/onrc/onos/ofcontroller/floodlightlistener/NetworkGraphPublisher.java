@@ -27,15 +27,9 @@ import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.graph.IDBConnection;
 import net.onrc.onos.graph.LocalTopologyEventListener;
-import net.onrc.onos.ofcontroller.core.IDeviceStorage;
-import net.onrc.onos.ofcontroller.core.ILinkStorage;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
-import net.onrc.onos.ofcontroller.core.ISwitchStorage;
-import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
-import net.onrc.onos.ofcontroller.core.internal.LinkStorageImpl;
-import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
@@ -58,9 +52,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 					      ILinkDiscoveryListener,
 					      IFloodlightModule {
 
-	protected IDeviceStorage devStore;
-	protected ISwitchStorage swStore;
-	protected ILinkStorage linkStore;
 	protected final static Logger log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
 	//protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
@@ -103,6 +94,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 		@Override
 		public void controlChanged(long dpid, boolean hasControl) {
+		    /*
 			if (hasControl) {
 				log.debug("got control to set inactive sw {}", HexString.toHexString(dpid));
 				try {
@@ -124,7 +116,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 					    // notification to remove the
 					    // switch, because it is inactive
 					    //
-					    /*
 					    TopologyElement topologyElement =
 						new TopologyElement(dpid);
 					    datagridService.notificationSendTopologyElementRemoved(topologyElement);
@@ -144,12 +135,12 @@ public class NetworkGraphPublisher implements IDeviceListener,
 									link.getDstPort());
 						datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
 					    }
-					    */
 					}
 				} catch (Exception e) {
 	                log.error("Error in SwitchCleanup:controlChanged ", e);
 				}
 			}
+		    */
 		}
     }
 
@@ -190,21 +181,22 @@ public class NetworkGraphPublisher implements IDeviceListener,
     	case LINK_REMOVED:
     		log.debug("LinkDiscoveryUpdate(): Removing link {}", lt);
 
+		/*
     		if (linkStore.deleteLink(lt)) {
     			// TODO publish DELETE_LINK event here
-		    /*
     			TopologyElement topologyElement =
     					new TopologyElement(update.getSrc(),
     							update.getSrcPort(),
     							update.getDst(),
     							update.getDstPort());
     			datagridService.notificationSendTopologyElementRemoved(topologyElement);
-		    */
     		}
+		*/
     		break;
     	case LINK_UPDATED:
     		log.debug("LinkDiscoveryUpdate(): Updating link {}", lt);
 
+		/*
     		LinkInfo linfo = linkStore.getLinkInfo(lt);
     		// TODO update "linfo" using portState derived using "update"
     		if (linkStore.update(lt, linfo, DM_OPERATION.UPDATE)) {
@@ -213,30 +205,29 @@ public class NetworkGraphPublisher implements IDeviceListener,
     			// TODO NOTE: Here we assume that updated
     			// link is UP.
     			//
-		    /*
     			TopologyElement topologyElement =
     					new TopologyElement(update.getSrc(),
     							update.getSrcPort(),
     							update.getDst(),
     							update.getDstPort());
     			datagridService.notificationSendTopologyElementUpdated(topologyElement);
-		    */
     		}
+		*/
     		break;
     	case LINK_ADDED:
     		log.debug("LinkDiscoveryUpdate(): Adding link {}", lt);
 
+		/*
     		if (linkStore.addLink(lt)) {
     			// TODO publish ADD_LINK event here
-		    /*
     			TopologyElement topologyElement =
     					new TopologyElement(update.getSrc(),
     							update.getSrcPort(),
     							update.getDst(),
     							update.getDstPort());
     			datagridService.notificationSendTopologyElementAdded(topologyElement);
-		    */
     		}
+		*/
 
     		break;
     	default:
@@ -247,10 +238,10 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public void addedSwitch(IOFSwitch sw) {
+	    /*
 		if (registryService.hasControl(sw.getId())) {
 			if (swStore.addSwitch(sw)) {
 			    // TODO publish ADD_SWITCH event here
-			    /*
 			    TopologyElement topologyElement =
 				new TopologyElement(sw.getId());
 			    datagridService.notificationSendTopologyElementAdded(topologyElement);
@@ -282,9 +273,9 @@ public class NetworkGraphPublisher implements IDeviceListener,
 							link.getDstPort());
 				datagridService.notificationSendTopologyElementAdded(topologyElementLink);
 			    }
-			    */
 			}
 		}
+	    */
 	}
 
 	@Override
@@ -333,13 +324,13 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
+	    /*
 		if (swStore.addPort(HexString.toHexString(switchId), port)) {
 			// Allow links to be discovered on this port now that it's
 			// in the database
 			linkDiscovery.RemoveFromSuppressLLDPs(switchId, port.getPortNumber());
 
 		    // TODO publish ADD_PORT event here
-			/*
 		    TopologyElement topologyElement =
 			new TopologyElement(switchId, port.getPortNumber());
 		    datagridService.notificationSendTopologyElementAdded(topologyElement);
@@ -359,13 +350,15 @@ public class NetworkGraphPublisher implements IDeviceListener,
 						link.getDstPort());
 			datagridService.notificationSendTopologyElementAdded(topologyElementLink);
 		    }
-		    */
 		}
+	    */
 	}
 
 	@Override
 	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
 		// Remove all links that might be connected already
+
+		/*
 		PerformanceMonitor.start("SwitchPortRemoved.DbAccess");
 
 		List<Link> links = linkStore.getLinks(switchId, port.getPortNumber());
@@ -377,7 +370,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		    PerformanceMonitor.stop("SwitchPortRemoved.DbAccess");
 		    PerformanceMonitor.start("SwitchPortRemoved.NotificationSend");
 		    // TODO publish DELETE_PORT event here
-		    /*
 		    TopologyElement topologyElement =
 			new TopologyElement(switchId, port.getPortNumber());
 		    datagridService.notificationSendTopologyElementRemoved(topologyElement);
@@ -391,11 +383,11 @@ public class NetworkGraphPublisher implements IDeviceListener,
 						link.getDstPort());
 			datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
 		    }
-		    */
 		    PerformanceMonitor.stop("SwitchPortRemoved.NotificationSend");
 		    PerformanceMonitor.report("SwitchPortRemoved.DbAccess");
 		    PerformanceMonitor.report("TopologyEntryRemoved.NotificationReceived");
 		}
+		*/
 	}
 
 	@Override
@@ -406,28 +398,30 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	@Override
 	public void deviceAdded(IDevice device) {
 		log.debug("{}:deviceAdded(): Adding device {}",this.getClass(),device.getMACAddressString());
+		/*
 		devStore.addDevice(device);
 		for (int intIpv4Address : device.getIPv4Addresses()) {
 			datagridService.sendArpReplyNotification(new ArpReplyNotification(
 					InetAddresses.fromInteger(intIpv4Address), 
 					MACAddress.valueOf(device.getMACAddress())));
 		}
+		*/
 	}
 
 	@Override
 	public void deviceRemoved(IDevice device) {
 		// TODO Auto-generated method stub
-		devStore.removeDevice(device);
+		// devStore.removeDevice(device);
 	}
 
 	@Override
 	public void deviceMoved(IDevice device) {
-		devStore.changeDeviceAttachments(device);
+		// devStore.changeDeviceAttachments(device);
 	}
 
 	@Override
 	public void deviceIPV4AddrChanged(IDevice device) {
-		devStore.changeDeviceIPv4Address(device);
+		// devStore.changeDeviceIPv4Address(device);
 	}
 
 	@Override
@@ -473,15 +467,6 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		threadPool = context.getServiceImpl(IThreadPoolService.class);
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 		datagridService = context.getServiceImpl(IDatagridService.class);
-
-		devStore = new DeviceStorageImpl();
-		devStore.init(dbStore, conf);
-
-		swStore = new SwitchStorageImpl();
-		swStore.init(dbStore, conf);
-
-		linkStore = new LinkStorageImpl();
-		linkStore.init(dbStore, conf);
 
 		log.debug("Initializing NetworkGraphPublisher module with {}", conf);
 

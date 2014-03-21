@@ -26,7 +26,6 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IIpv4Address;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
@@ -42,11 +41,13 @@ public abstract class DBOperation implements IDBOperation {
 	 */
 	@Override
 	public ISwitchObject searchActiveSwitch(String dpid) {
+	    /*
 	    ISwitchObject sw = searchSwitch(dpid);
 	    if ((sw != null)
 		    && sw.getState().equals(ISwitchStorage.SwitchState.ACTIVE.toString())) {
 		return sw;
 	    }
+	    */
 	    return null;
 	}
 
@@ -91,9 +92,11 @@ public abstract class DBOperation implements IDBOperation {
 	    List<ISwitchObject> inactiveSwitches = new ArrayList<ISwitchObject>();
 
 	    for (ISwitchObject sw : switches) {
+		/*
 		if (sw.getState().equals(ISwitchStorage.SwitchState.INACTIVE.toString())) {
 		    inactiveSwitches.add(sw);
 		}
+		*/
 	    }
 	    return inactiveSwitches;
 	}
@@ -250,9 +253,11 @@ public abstract class DBOperation implements IDBOperation {
 	    List<ISwitchObject> activeSwitches = new ArrayList<ISwitchObject>();
 
 	    for (ISwitchObject sw : switches) {
+		/*
 		if (sw.getState().equals(ISwitchStorage.SwitchState.ACTIVE.toString())) {
 		    activeSwitches.add(sw);
 		}
+		*/
 	    }
 	    return activeSwitches;
 	}

@@ -29,8 +29,6 @@ import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.packet.UDP;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.ofcontroller.core.IDeviceStorage;
-import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -44,7 +42,6 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 	private static final int CLEANUP_SECOND = 60*60;
 	private static final int AGEING_MILLSEC = 60*60*1000;
 
-	private IDeviceStorage deviceStorage;
 	private IFloodlightProviderService floodlightProvider;
 	private final static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -66,11 +63,14 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 
 		@Override
 		public void dispatch() {
+		    // TODO: Fix the code below after deviceStorage was removed
+		    /*
 			if(type == OnosDeviceUpdateType.ADD) {
 				deviceStorage.addOnosDevice(device);
 			} else if (type == OnosDeviceUpdateType.DELETE){
 				deviceStorage.deleteOnosDevice(device);
 			}
+		    */
 		}
 	}
 
@@ -287,8 +287,6 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 			throws FloodlightModuleException {
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		executor.scheduleAtFixedRate(new CleanDevice(), 30 ,CLEANUP_SECOND, TimeUnit.SECONDS);
-		deviceStorage = new DeviceStorageImpl();
-		deviceStorage.init("","");
 
 		datagrid = context.getServiceImpl(IDatagridService.class);
 	}

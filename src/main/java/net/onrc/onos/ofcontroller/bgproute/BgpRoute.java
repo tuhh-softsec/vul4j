@@ -33,15 +33,9 @@ import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.bgproute.RibUpdate.Operation;
-import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoSwitchService;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
-import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
-import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
-import net.onrc.onos.ofcontroller.core.internal.TopoSwitchServiceImpl;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
@@ -96,8 +90,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	private ILinkDiscoveryService linkDiscoveryService;
 	private IRestApiService restApi;
 	private IProxyArpService proxyArp;
-	private IDeviceStorage deviceStorage;
-	private ITopoSwitchService topoSwitchService;
 
 	private IPatriciaTrie<RibEntry> ptree;
 	private IPatriciaTrie<Interface> interfacePtrie;
@@ -163,6 +155,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			log.debug("Running topology change detection task");
 			synchronized (linkUpdates) {
 				//This is the model the REST API uses to retrieve network graph info
+			    // TODO: Fix the code below after topoLinkService was removed
+			    /*
 				ITopoLinkService topoLinkService = new TopoLinkServiceImpl();
 
 				List<Link> activeLinks = topoLinkService.getActiveLinks();
@@ -177,6 +171,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 						it.remove();
 					}
 				}
+			    */
 			}
 
 			if (!topologyReady) {
@@ -280,14 +275,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		restApi = context.getServiceImpl(IRestApiService.class);
 		proxyArp = context.getServiceImpl(IProxyArpService.class);
 
-		deviceStorage = new DeviceStorageImpl();
-		deviceStorage.init("", "");
-
 		linkUpdates = new ArrayList<LDUpdate>();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		topologyChangeDetectorTask = new SingletonTask(executor, new TopologyChangeDetector());
-
-		topoSwitchService = new TopoSwitchServiceImpl();
 
 		pathsWaitingOnArp = new HashMap<InetAddress, Path>();
 		prefixesWaitingOnArp = Multimaps.synchronizedSetMultimap(
@@ -449,10 +439,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		RibEntry rib = update.getRibEntry();
 
 		InetAddress dstIpAddress = rib.getNextHop();
-		MACAddress nextHopMacAddress;
+		MACAddress nextHopMacAddress = null;
 
 		// See if we know the MAC address of the next hop
 		// TODO if we do not treat the next hop as a device in the future, we need to update this
+		// TODO: Fix the code below after deviceStorage was removed
+		/*
 		IDeviceObject nextHopDevice =
 				deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(dstIpAddress));
 
@@ -465,6 +457,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 		}
 		nextHopMacAddress = MACAddress.valueOf(nextHopDevice.getMACAddress());
+		*/
 
 		// Find the attachment point (egress interface) of the next hop
 		Interface egressInterface = null;
@@ -705,7 +698,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 			//See if we know the MAC address of the peer. If not we can't
 			//do anything until we learn it
-			MACAddress macAddress;
+			// TODO: Fix the code below after deviceStorage was removed
+			MACAddress macAddress = null;
+			/*
 			IDeviceObject nextHopDevice =
 					deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(peer.getIpAddress()));
 
@@ -718,6 +713,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			}
 
 			macAddress = MACAddress.valueOf(nextHopDevice.getMACAddress());
+			*/
 
 			if (macAddress == null) {
 				log.debug("Don't know MAC for {}", peer.getIpAddress().getHostAddress());
@@ -1172,6 +1168,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	// whether all the switches in the configure file are discovered by onos.
 	private void checkSwitchesConnected(){
 		for (String dpid : switches){
+		    // TODO: Fix the code below after topoSwitchSerice was removed
+		    /*
 			Iterator<ISwitchObject> activeSwitches = topoSwitchService.
 					getActiveSwitches().iterator();
 			while(activeSwitches.hasNext())
@@ -1185,6 +1183,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 					return;
 				}
 			}
+		    */
 		}
 		switchesConnected = true;
 	}
