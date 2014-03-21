@@ -105,7 +105,6 @@ public class RestApiServer
                 	logger.debug("Setting number of REST API threads to {}", numThreads);
                 	server.getContext().getParameters().add("defaultThreads", numThreads);
                 }
-                component.getClients().add(Protocol.CLAP);
                 component.getDefaultHost().attach(this);
                 component.start();
             } catch (Exception e) {
