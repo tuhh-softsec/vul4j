@@ -418,8 +418,6 @@ public class FlowPusherTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testAddFlow() {
-		// Code below are copied from FlowManagerTest
-		
 		// instantiate required objects
 		FlowEntry flowEntry1 = new FlowEntry();
 		flowEntry1.setDpid(new Dpid(DPID_TO_VERIFY));

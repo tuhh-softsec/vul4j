@@ -353,7 +353,14 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 				if (existingFlow.installed) {
 					// Flow has been sent to the switches so it is safe to
 					// send a packet out now
-					FlowPath flow = datagrid.getFlow(new FlowId(existingFlow.flowId));
+
+					//
+					// TODO: The getFlow() call below needs
+					// to be updated to the new Path Intent
+					// framework.
+					//
+					// FlowPath flow = datagrid.getFlow(new FlowId(existingFlow.flowId));
+					FlowPath flow = null;
 					FlowEntry flowEntryForThisSwitch = null;
 					
 					if (flow != null) {

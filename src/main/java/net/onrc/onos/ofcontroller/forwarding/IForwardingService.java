@@ -7,7 +7,7 @@ import net.onrc.onos.ofcontroller.util.FlowPath;
 
 /**
  * Temporary interface that allows the Forwarding module to be
- * notified when a flow has been installed by the FlowManager.
+ * notified when a flow has been installed.
  * 
  * This should be refactored to a listener framework in the future.
  * @author jono

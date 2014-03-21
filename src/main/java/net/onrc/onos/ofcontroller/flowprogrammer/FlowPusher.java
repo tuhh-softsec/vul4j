@@ -59,7 +59,6 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
     private final static Logger log = LoggerFactory.getLogger(FlowPusher.class);
     protected static final int DEFAULT_NUMBER_THREAD = 1;
 
-    // NOTE: Below are moved from FlowManager.
     // TODO: Values copied from elsewhere (class LearningSwitch).
     // The local copy should go away!
     //
