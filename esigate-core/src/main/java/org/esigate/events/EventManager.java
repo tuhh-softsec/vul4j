@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EventManager {
 
-    public static final EventDefinition EVENT_FRAGMENT_PRE = new EventDefinition("org.esigate.fragement-pre",
+    public static final EventDefinition EVENT_FRAGMENT_PRE = new EventDefinition("org.esigate.fragment-pre",
             EventDefinition.TYPE_DEFAULT);
     public static final EventDefinition EVENT_FRAGMENT_POST = new EventDefinition("org.esigate.fragment-post",
             EventDefinition.TYPE_POST);
@@ -102,17 +102,18 @@ public class EventManager {
             eventListeners = new ArrayList<IEventListener>();
             listenerMappings.put(eventDefinition, eventListeners);
         }
+        if (!eventListeners.contains(listener)) {
+            // Add listener
+            if (reverseOrder) {
+                eventListeners.add(eventListeners.size(), listener);
+            } else {
+                eventListeners.add(listener);
+            }
 
-        // Add listener
-        if (reverseOrder) {
-            eventListeners.add(eventListeners.size(), listener);
-        } else {
-            eventListeners.add(listener);
-        }
-
-        if (LOG.isInfoEnabled()) {
-            LOG.info("Registered {} on event {}/{}", new Object[] {listener.getClass().getName(), driverId,
-                    eventDefinition});
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Registered {} on event {}/{}", new Object[]{listener.getClass().getName(), driverId,
+                        eventDefinition});
+            }
         }
     }
 
