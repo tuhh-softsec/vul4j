@@ -4,7 +4,7 @@
 .project
 .pydevproject
 .settings
-.javacp
+.javacp*
 target
 onos-logs
 onos.log

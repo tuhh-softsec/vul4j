@@ -201,6 +201,27 @@
 	</configuration>
       </plugin>
       <plugin>
+        <!-- Using groovy script to set maven property ${hostname}.
+             This is a workaround to get hostname as a property inside pom file,
+             which current Maven does not provide. -->
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.0</version>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>
+                project.properties["hostname"] = InetAddress.getLocalHost().getHostName()
+              </source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>2.8</version>
@@ -212,7 +233,7 @@
               <goal>build-classpath</goal>
             </goals>
             <configuration>
-              <outputFile>${project.basedir}/.javacp</outputFile>
+              <outputFile>${project.basedir}/.javacp.${hostname}</outputFile>
             </configuration>
           </execution>
         </executions>
@@ -310,6 +331,19 @@
                     <versionRange>[2.8,)</versionRange>
                     <goals>
                       <goal>build-classpath</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>groovy-maven-plugin</artifactId>
+                    <versionRange>[2.0,)</versionRange>
+                    <goals>
+                      <goal>execute</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>

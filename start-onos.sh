@@ -52,10 +52,11 @@ MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
 
 MVN=${MVN:-mvn -o}
 
-if [ ! -f ${ONOS_HOME}/.javacp ]; then
+CPFILE=${ONOS_HOME}/.javacp.`hostname`
+if [ ! -f ${CPFILE} ]; then
   ${MVN} -f ${ONOS_HOME}/pom.xml compile
 fi
-JAVA_CP=`cat ${ONOS_HOME}/.javacp`
+JAVA_CP=`cat ${CPFILE}`
 JAVA_CP="${JAVA_CP}:${ONOS_HOME}/target/classes"
 
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
