@@ -6,11 +6,11 @@ package net.onrc.onos.datastore;
 public interface IMultiEntryOperation {
 
     public enum STATUS {
-	NOT_EXECUTED, SUCCESS, FAILED
+        NOT_EXECUTED, SUCCESS, FAILED
     }
 
     public enum OPERATION {
-	CREATE, FORCE_CREATE, UPDATE, READ, DELETE, FORCE_DELETE
+        CREATE, FORCE_CREATE, UPDATE, READ, DELETE, FORCE_DELETE
     }
 
     public boolean hasSucceeded();

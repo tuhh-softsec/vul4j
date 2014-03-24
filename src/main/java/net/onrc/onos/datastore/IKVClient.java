@@ -65,7 +65,7 @@ public interface IKVClient {
      * @throws WrongVersionException
      */
     public long update(IKVTableID tableId, byte[] key, byte[] value, long version)
-	    throws ObjectDoesntExistException, WrongVersionException;
+            throws ObjectDoesntExistException, WrongVersionException;
 
     /**
      * Update an existing Key-Value entry in table, without checking version.
@@ -79,7 +79,7 @@ public interface IKVClient {
      */
     @Deprecated
     public long update(IKVTableID tableId, byte[] key, byte[] value)
-	    throws ObjectDoesntExistException;
+            throws ObjectDoesntExistException;
 
     // TODO Adding serialized value as parameter to this interface may
     // give an option to improve performance on some backends.
@@ -95,7 +95,7 @@ public interface IKVClient {
      * @throws WrongVersionException
      */
     public long delete(IKVTableID tableId, byte[] key, long version)
-	    throws ObjectDoesntExistException, WrongVersionException;
+            throws ObjectDoesntExistException, WrongVersionException;
 
     /**
      * Remove a Key-Value entry in table
@@ -123,15 +123,15 @@ public interface IKVClient {
     public IMultiEntryOperation createOp(IKVTableID tableId, byte[] key, byte[] value);
 
     public IMultiEntryOperation forceCreateOp(IKVTableID tableId, byte[] key,
-	    byte[] value);
+            byte[] value);
 
     public IMultiEntryOperation readOp(IKVTableID tableId, byte[] key);
 
     public IMultiEntryOperation updateOp(IKVTableID tableId, byte[] key, byte[] value,
-	    long version);
+            long version);
 
     public IMultiEntryOperation deleteOp(IKVTableID tableId, byte[] key, byte[] value,
-	    long version);
+            long version);
 
     public IMultiEntryOperation forceDeleteOp(IKVTableID tableId, byte[] key);
 

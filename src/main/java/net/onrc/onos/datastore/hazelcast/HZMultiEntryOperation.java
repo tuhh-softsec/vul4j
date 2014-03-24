@@ -33,13 +33,13 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
      * @param operation
      */
     public HZMultiEntryOperation(final HZTable table, final byte[] key, final OPERATION operation) {
-	this.table = table;
-	this.key = key;
-	this.status = STATUS.NOT_EXECUTED;
-	this.operation = operation;
+        this.table = table;
+        this.key = key;
+        this.status = STATUS.NOT_EXECUTED;
+        this.operation = operation;
 
-	this.future = null;
-	this.writeValue = null;
+        this.future = null;
+        this.writeValue = null;
     }
 
     /**
@@ -51,59 +51,59 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
      * @param operation
      */
     public HZMultiEntryOperation(final HZTable table, final byte[] key, final byte[] value, final long version, final OPERATION operation) {
-	this.table = table;
-	this.key = key;
-	this.status = STATUS.NOT_EXECUTED;
-	this.operation = operation;
+        this.table = table;
+        this.key = key;
+        this.status = STATUS.NOT_EXECUTED;
+        this.operation = operation;
 
-	this.future = null;
-	this.writeValue = new VersionedValue(value, version);
+        this.future = null;
+        this.writeValue = new VersionedValue(value, version);
     }
 
     @Override
     public boolean hasSucceeded() {
 
-	VersionedValue value = get();
-	return (value != null) && (this.status == STATUS.SUCCESS);
+        VersionedValue value = get();
+        return (value != null) && (this.status == STATUS.SUCCESS);
     }
 
     @Override
     public STATUS getStatus() {
-	get();
-	return status;
+        get();
+        return status;
     }
 
     @Override
     public IKVTableID getTableId() {
-	return table;
+        return table;
     }
 
     @Override
     public byte[] getKey() {
-	return key;
+        return key;
     }
 
     @Override
     public byte[] getValue() {
-	if (future != null) {
-	    VersionedValue value = get();
-	    return value.getValue();
-	}
-	return writeValue.getValue();
+        if (future != null) {
+            VersionedValue value = get();
+            return value.getValue();
+        }
+        return writeValue.getValue();
     }
 
     @Override
     public long getVersion() {
-	if (future != null) {
-	    VersionedValue value = get();
-	    return value.getVersion();
-	}
-	return writeValue.getVersion();
+        if (future != null) {
+            VersionedValue value = get();
+            return value.getVersion();
+        }
+        return writeValue.getVersion();
     }
 
     @Override
     public OPERATION getOperation() {
-	return operation;
+        return operation;
     }
 
     /**
@@ -125,28 +125,28 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
 
     @Override
     public void setValue(final byte[] value, final long version) {
-	writeValue = new VersionedValue(value, version);
-	setVersion(version);
+        writeValue = new VersionedValue(value, version);
+        setVersion(version);
     }
 
     @Override
     public void setVersion(final long version) {
-	if (future != null) {
-	    // no-op on read
-	}
-	if (writeValue == null) {
-	    writeValue = new VersionedValue(null, version);
-	}
+        if (future != null) {
+            // no-op on read
+        }
+        if (writeValue == null) {
+            writeValue = new VersionedValue(null, version);
+        }
     }
 
     @Override
     public void setStatus(final STATUS status) {
-	this.status = status;
+        this.status = status;
     }
 
     @Override
     public IModifiableMultiEntryOperation getActualOperation() {
-	return this;
+        return this;
     }
 
     void setFuture(final Future<VersionedValue> future) {
@@ -155,8 +155,8 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
 
     @Override
     public String toString() {
-	return "[HZMultiEntryOperation table=" + table + ", key="
-	        + ByteArrayUtil.toHexStringBuffer(key, ":") + ", operation=" + operation
-	        + ", status=" + status + ", writeValue=" + writeValue + "]";
+        return "[HZMultiEntryOperation table=" + table + ", key="
+                + ByteArrayUtil.toHexStringBuffer(key, ":") + ", operation=" + operation
+                + ", status=" + status + ", writeValue=" + writeValue + "]";
     }
 }

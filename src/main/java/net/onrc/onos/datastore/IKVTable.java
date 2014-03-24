@@ -17,11 +17,11 @@ public interface IKVTable {
      */
     public static interface IKVEntry {
 
-	public byte[] getKey();
+        public byte[] getKey();
 
-	public byte[] getValue();
+        public byte[] getValue();
 
-	public long getVersion();
+        public long getVersion();
 
     }
 
@@ -70,7 +70,7 @@ public interface IKVTable {
      * @throws WrongVersionException
      */
     public long update(byte[] key, byte[] value, long version)
-	    throws ObjectDoesntExistException, WrongVersionException;
+            throws ObjectDoesntExistException, WrongVersionException;
 
     /**
      * Update an existing Key-Value entry in table, without checking version.
@@ -81,7 +81,7 @@ public interface IKVTable {
      * @throws ObjectDoesntExistException
      */
     public long update(byte[] key, byte[] value)
-	    throws ObjectDoesntExistException;
+            throws ObjectDoesntExistException;
 
     /**
      * Remove an existing Key-Value entry in table
@@ -94,7 +94,7 @@ public interface IKVTable {
      * @throws WrongVersionException
      */
     public long delete(byte[] key, long version)
-	    throws ObjectDoesntExistException, WrongVersionException;
+            throws ObjectDoesntExistException, WrongVersionException;
 
     /**
      * Remove a Key-Value entry in table

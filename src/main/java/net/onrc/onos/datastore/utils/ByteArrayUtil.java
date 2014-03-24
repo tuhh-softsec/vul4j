@@ -17,8 +17,8 @@ public class ByteArrayUtil {
      * @return {@code bytes} converted to a StringBuffer
      */
     public static StringBuffer toHexStringBuffer(final byte[] bytes,
-	    final String sep) {
-	return toHexStringBuffer(bytes, sep, new StringBuffer());
+            final String sep) {
+        return toHexStringBuffer(bytes, sep, new StringBuffer());
     }
 
     /**
@@ -32,22 +32,22 @@ public class ByteArrayUtil {
      * @return {@code buf}
      */
     public static StringBuffer toHexStringBuffer(final byte[] bytes,
-	    final String sep, final StringBuffer buf) {
-	if (bytes == null) {
-	    return buf;
-	}
+            final String sep, final StringBuffer buf) {
+        if (bytes == null) {
+            return buf;
+        }
 
-	ByteBuffer wrap = ByteBuffer.wrap(bytes);
+        ByteBuffer wrap = ByteBuffer.wrap(bytes);
 
-	boolean hasWritten = false;
-	while (wrap.hasRemaining()) {
-	    if (hasWritten) {
-		buf.append(sep);
-	    }
-	    buf.append(Integer.toHexString(wrap.get()));
-	    hasWritten = true;
-	}
+        boolean hasWritten = false;
+        while (wrap.hasRemaining()) {
+            if (hasWritten) {
+                buf.append(sep);
+            }
+            buf.append(Integer.toHexString(wrap.get()));
+            hasWritten = true;
+        }
 
-	return buf;
+        return buf;
     }
 }

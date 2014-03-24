@@ -29,52 +29,52 @@ public class KVSwitch extends KVObject {
     private static final Logger log = LoggerFactory.getLogger(KVSwitch.class);
 
     private static final ThreadLocal<Kryo> switchKryo = new ThreadLocal<Kryo>() {
-	@Override
-	protected Kryo initialValue() {
-	    Kryo kryo = new Kryo();
-	    kryo.setRegistrationRequired(true);
-	    kryo.setReferences(false);
-	    kryo.register(byte[].class);
-	    kryo.register(byte[][].class);
-	    kryo.register(HashMap.class);
-	    // TODO check if we should explicitly specify EnumSerializer
-	    kryo.register(STATUS.class);
-	    return kryo;
-	}
+        @Override
+        protected Kryo initialValue() {
+            Kryo kryo = new Kryo();
+            kryo.setRegistrationRequired(true);
+            kryo.setReferences(false);
+            kryo.register(byte[].class);
+            kryo.register(byte[][].class);
+            kryo.register(HashMap.class);
+            // TODO check if we should explicitly specify EnumSerializer
+            kryo.register(STATUS.class);
+            return kryo;
+        }
     };
 
     public static final String GLOBAL_SWITCH_TABLE_NAME = "G:Switch";
 
     // must not re-order enum members, ordinal will be sent over wire
     public enum STATUS {
-	INACTIVE, ACTIVE;
+        INACTIVE, ACTIVE;
     }
 
     private final Long dpid;
     private STATUS status;
 
     public static byte[] getSwitchID(final Long dpid) {
-	return SwitchEvent.getSwitchID(dpid).array();
+        return SwitchEvent.getSwitchID(dpid).array();
     }
 
     public static long getDpidFromKey(final byte[] key) {
-	return getDpidFromKey(ByteBuffer.wrap(key));
+        return getDpidFromKey(ByteBuffer.wrap(key));
     }
 
     public static long getDpidFromKey(final ByteBuffer keyBuf) {
-	if (keyBuf.getChar() != 'S') {
-	    throw new IllegalArgumentException("Invalid Switch key");
-	}
-	return keyBuf.getLong();
+        if (keyBuf.getChar() != 'S') {
+            throw new IllegalArgumentException("Invalid Switch key");
+        }
+        return keyBuf.getLong();
     }
 
     // FIXME specify DPID here, or Should caller specify the key it self?
     // In other words, should layer above have the control of the ID?
     public KVSwitch(final Long dpid) {
-	super(DataStoreClient.getClient().getTable(GLOBAL_SWITCH_TABLE_NAME), getSwitchID(dpid));
+        super(DataStoreClient.getClient().getTable(GLOBAL_SWITCH_TABLE_NAME), getSwitchID(dpid));
 
-	this.dpid = dpid;
-	this.status = STATUS.INACTIVE;
+        this.dpid = dpid;
+        this.status = STATUS.INACTIVE;
     }
 
     /**
@@ -85,90 +85,90 @@ public class KVSwitch extends KVObject {
      * @return KVSwitch instance
      */
     public static KVSwitch createFromKey(final byte[] key) {
-	return new KVSwitch(getDpidFromKey(key));
+        return new KVSwitch(getDpidFromKey(key));
     }
 
     public static Iterable<KVSwitch> getAllSwitches() {
-	return new SwitchEnumerator();
+        return new SwitchEnumerator();
     }
 
     public static class SwitchEnumerator implements Iterable<KVSwitch> {
 
-	@Override
-	public Iterator<KVSwitch> iterator() {
-	    return new SwitchIterator();
-	}
+        @Override
+        public Iterator<KVSwitch> iterator() {
+            return new SwitchIterator();
+        }
     }
 
     public static class SwitchIterator extends AbstractObjectIterator<KVSwitch> {
 
-	public SwitchIterator() {
-	    super(DataStoreClient.getClient().getTable(GLOBAL_SWITCH_TABLE_NAME));
-	}
+        public SwitchIterator() {
+            super(DataStoreClient.getClient().getTable(GLOBAL_SWITCH_TABLE_NAME));
+        }
 
-	@Override
-	public KVSwitch next() {
-	    IKVEntry o = enumerator.next();
-	    KVSwitch e = KVSwitch.createFromKey(o.getKey());
-	    e.deserialize(o.getValue(), o.getVersion());
-	    return e;
-	}
+        @Override
+        public KVSwitch next() {
+            IKVEntry o = enumerator.next();
+            KVSwitch e = KVSwitch.createFromKey(o.getKey());
+            e.deserialize(o.getValue(), o.getVersion());
+            return e;
+        }
     }
 
     public STATUS getStatus() {
-	return status;
+        return status;
     }
 
     public void setStatus(final STATUS status) {
-	this.status = status;
+        this.status = status;
     }
 
     public Long getDpid() {
-	return dpid;
+        return dpid;
     }
 
     public byte[] getId() {
-	return getKey();
+        return getKey();
     }
 
     @Override
     public byte[] serialize() {
-	Map<Object, Object> map = getPropertyMap();
+        Map<Object, Object> map = getPropertyMap();
 
-	SwitchProperty.Builder sw = SwitchProperty.newBuilder();
-	sw.setDpid(dpid);
-	sw.setStatus(status.ordinal());
+        SwitchProperty.Builder sw = SwitchProperty.newBuilder();
+        sw.setDpid(dpid);
+        sw.setStatus(status.ordinal());
 
-	if (!map.isEmpty()) {
-	    byte[] propMaps = serializePropertyMap(switchKryo.get(), map);
-	    sw.setValue(ByteString.copyFrom(propMaps));
-	}
+        if (!map.isEmpty()) {
+            byte[] propMaps = serializePropertyMap(switchKryo.get(), map);
+            sw.setValue(ByteString.copyFrom(propMaps));
+        }
 
-	return sw.build().toByteArray();
+        return sw.build().toByteArray();
     }
 
     @Override
     protected boolean deserialize(final byte[] bytes) {
-	try {
-	    boolean success = true;
+        try {
+            boolean success = true;
 
-	    SwitchProperty sw = SwitchProperty.parseFrom(bytes);
-	    byte[] props = sw.getValue().toByteArray();
-	    success &= deserializePropertyMap(switchKryo.get(), props);
-	    this.status = STATUS.values()[sw.getStatus()];
+            SwitchProperty sw = SwitchProperty.parseFrom(bytes);
+            byte[] props = sw.getValue().toByteArray();
+            success &= deserializePropertyMap(switchKryo.get(), props);
+            this.status = STATUS.values()[sw.getStatus()];
 
-	    return success;
-	} catch (InvalidProtocolBufferException e) {
-	    log.error("Deserializing Switch: " + this + " failed.", e);
-	    return false;
-	}
+            return success;
+        } catch (InvalidProtocolBufferException e) {
+            log.error("Deserializing Switch: " + this + " failed.", e);
+            return false;
+        }
     }
 
     @Override
     public String toString() {
-	// TODO output all properties?
-	return "[" + this.getClass().getSimpleName()
-		+ " 0x" + Long.toHexString(dpid) + " STATUS:" + status + "]";
+        // TODO output all properties?
+        return "[" + this.getClass().getSimpleName()
+                + " 0x" + Long.toHexString(dpid) + " STATUS:" + status + "]";
     }
 
 }

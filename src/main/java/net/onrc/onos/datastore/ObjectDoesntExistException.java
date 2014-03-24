@@ -9,17 +9,17 @@ public class ObjectDoesntExistException extends RejectRulesException {
     private static final long serialVersionUID = 859082748533417866L;
 
     public ObjectDoesntExistException(final String message) {
-	super(message);
+        super(message);
     }
 
     public ObjectDoesntExistException(final IKVTableID tableID,
-	    final byte[] key, final Throwable cause) {
-	super(ByteArrayUtil.toHexStringBuffer(key, ":")
-	        + " did not exist on table:" + tableID, cause);
+            final byte[] key, final Throwable cause) {
+        super(ByteArrayUtil.toHexStringBuffer(key, ":")
+                + " did not exist on table:" + tableID, cause);
     }
 
     public ObjectDoesntExistException(final IKVTableID tableID, final byte[] key) {
-	super(ByteArrayUtil.toHexStringBuffer(key, ":")
-	        + " did not exist on table:" + tableID);
+        super(ByteArrayUtil.toHexStringBuffer(key, ":")
+                + " did not exist on table:" + tableID);
     }
 }

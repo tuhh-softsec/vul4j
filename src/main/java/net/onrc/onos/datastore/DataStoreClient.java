@@ -11,15 +11,15 @@ public class DataStoreClient {
     private DataStoreClient() {}
 
     public static IKVClient getClient() {
-	// TODO read config and return appropriate IKVClient
-	switch (BACKEND) {
-	case "ramcloud":
-	    return RCClient.getClient();
-	case "hazelcast":
-	    return HZClient.getClient();
-	default:
-	    return HZClient.getClient();
-	}
+        // TODO read config and return appropriate IKVClient
+        switch (BACKEND) {
+        case "ramcloud":
+            return RCClient.getClient();
+        case "hazelcast":
+            return HZClient.getClient();
+        default:
+            return HZClient.getClient();
+        }
     }
 
 

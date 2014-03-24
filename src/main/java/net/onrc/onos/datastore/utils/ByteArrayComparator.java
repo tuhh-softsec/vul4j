@@ -17,8 +17,8 @@ public final class ByteArrayComparator implements Comparator<byte[]> {
 
     @Override
     public int compare(final byte[] o1, final byte[] o2) {
-	final ByteBuffer b1 = ByteBuffer.wrap(o1);
-	final ByteBuffer b2 = ByteBuffer.wrap(o2);
-	return b1.compareTo(b2);
+        final ByteBuffer b1 = ByteBuffer.wrap(o1);
+        final ByteBuffer b2 = ByteBuffer.wrap(o2);
+        return b1.compareTo(b2);
     }
 }

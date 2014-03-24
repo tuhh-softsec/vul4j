@@ -1,6 +1,5 @@
 package net.onrc.onos.datastore.hazelcast;
 
-
 import com.hazelcast.nio.serialization.DataSerializableFactory;
 import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 
@@ -13,13 +12,13 @@ public class VersionedValueSerializableFactory implements
 
     @Override
     public IdentifiedDataSerializable create(final int typeId) {
-	switch (typeId) {
-	case VERSIONED_VALUE_ID:
-	    return new HZTable.VersionedValue();
+        switch (typeId) {
+        case VERSIONED_VALUE_ID:
+            return new HZTable.VersionedValue();
 
-	default:
-		return null;
-	}
+        default:
+            return null;
+        }
     }
 
 }
