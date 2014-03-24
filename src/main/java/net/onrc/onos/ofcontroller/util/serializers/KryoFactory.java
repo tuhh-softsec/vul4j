@@ -1,8 +1,9 @@
 package net.onrc.onos.ofcontroller.util.serializers;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
-
+import java.util.HashSet;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.ErrorIntent;
@@ -42,6 +43,8 @@ import net.onrc.onos.ofcontroller.util.IPv6Net;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.Switch;
 // import net.onrc.onos.ofcontroller.util.SwitchPort;
+
+
 
 
 import com.esotericsoftware.kryo.Kryo;
@@ -201,6 +204,10 @@ public class KryoFactory {
 	kryo.register(IntentOperation.Operator.class);
 	kryo.register(IntentOperationList.class);
 	kryo.register(IntentStateList.class);
+
+	// Device-related classes
+	kryo.register(HashSet.class);
+	kryo.register(Inet4Address.class);
 
 	return kryo;
     }

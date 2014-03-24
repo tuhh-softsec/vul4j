@@ -55,6 +55,10 @@ public class KVDevice extends KVObject {
     private final byte[] mac;
     private TreeSet<byte[]> portIds;
     private transient boolean isPortIdsModified;
+    
+    // Assume there is only one ip on a device now.
+    private int ip;
+    private long lastSeenTime;
 
     // Assuming mac is unique cluster-wide
     public static byte[] getDeviceID(final byte[] mac) {
@@ -199,4 +203,20 @@ public class KVDevice extends KVObject {
         return "[" + this.getClass().getSimpleName()
                 + " " + ByteArrayUtil.toHexStringBuffer(mac, ":") + "]";
     }
+    
+	public int getIp() {
+		return ip;
+	}
+
+	public void setIp(int ip) {
+		this.ip = ip;
+	}
+
+	public long getLastSeenTime() {
+		return lastSeenTime;
+	}
+
+	public void setLastSeenTime(long lastSeenTime) {
+		this.lastSeenTime = lastSeenTime;
+	}
 }

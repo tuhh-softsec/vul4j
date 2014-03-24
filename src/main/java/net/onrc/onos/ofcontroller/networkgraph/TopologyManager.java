@@ -493,7 +493,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    // Send out notification
 	    TopologyEvent topologyEvent = new TopologyEvent(switchEvent);
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
-
+	    
 	    // Send out notification for each port
 	    for (PortEvent portEvent : portEvents) {
 		topologyEvent = new TopologyEvent(portEvent);
@@ -719,7 +719,8 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	    // Send out notification
 	    TopologyEvent topologyEvent = new TopologyEvent(deviceEvent);
 	    eventChannel.addEntry(topologyEvent.getID(), topologyEvent);
-
+	    log.debug("Put the device info into the cache of the graph. mac {}", deviceEvent.getMac());
+	    
 	    // Store the new Device Event in the local cache
 	    // TODO: The implementation below is probably wrong
 	    for (SwitchPort swp : deviceEvent.getAttachmentPoints()) {
@@ -746,6 +747,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 	if (datastore.removeDevice(deviceEvent)) {
 	    // Send out notification
 	    eventChannel.removeEntry(deviceEvent.getID());
+	    log.debug("Remove the device info into the cache of the graph. mac {}", deviceEvent.getMac());
 
 	    // Cleanup the Device Event from the local cache
 	    // TODO: The implementation below is probably wrong
@@ -998,9 +1000,12 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
      */
     private void addDevice(DeviceEvent deviceEvent) {
 	Device device = networkGraph.getDeviceByMac(deviceEvent.getMac());
+	
 	if (device == null) {
+		log.debug("Existing device was not found in networkGraph. New device. mac {}", deviceEvent.getMac());
 	    device = new DeviceImpl(networkGraph, deviceEvent.getMac());
 	}
+	
 	DeviceImpl deviceImpl = getDeviceImpl(device);
 
 	// Update the IP addresses
@@ -1036,6 +1041,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
 
 	// Update the device in the Network Graph
 	if (attachmentFound) {
+    	log.debug("Storing the info into networkGraph. mac {}", deviceEvent.getMac());
 	    networkGraph.putDevice(device);
 	    apiAddedDeviceEvents.add(deviceEvent);
 	}

@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.floodlightlistener;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,8 +17,12 @@ import net.floodlightcontroller.core.util.SingletonTask;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
+import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceListener;
+import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
+import net.onrc.onos.ofcontroller.devicemanager.OnosDevice;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
@@ -25,6 +30,7 @@ import net.onrc.onos.ofcontroller.networkgraph.NetworkGraphDiscoveryInterface;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
+import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
@@ -33,6 +39,8 @@ import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.net.InetAddresses;
 
 /*
  * I've created a copy of the old NetworkGraphPublisher so I can integrate
@@ -47,7 +55,8 @@ import org.slf4j.LoggerFactory;
 public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 												IOFSwitchPortListener,
 												ILinkDiscoveryListener,
-												IFloodlightModule {
+												IFloodlightModule,
+												IOnosDeviceListener {
 	private static final Logger log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
 
 	private IFloodlightProviderService floodlightProvider;
@@ -56,6 +65,8 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 	private IDatagridService datagridService;
 	private INetworkGraphService networkGraphService;
 
+	private IOnosDeviceService onosDeviceService;
+	
 	private NetworkGraph networkGraph;
 	private NetworkGraphDiscoveryInterface networkGraphDiscoveryInterface;
 	
@@ -311,6 +322,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		linkDiscovery = context.getServiceImpl(ILinkDiscoveryService.class);
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 		datagridService = context.getServiceImpl(IDatagridService.class);
+		onosDeviceService = context.getServiceImpl(IOnosDeviceService.class);
 
 		networkGraphService = context.getServiceImpl(INetworkGraphService.class);
 	}
@@ -320,6 +332,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		// TODO enable cleanup thread
 		floodlightProvider.addOFSwitchListener(this);
 		linkDiscovery.addListener(this);
+		onosDeviceService.addOnosDeviceListener(this);
 
 		networkGraph = networkGraphService.getNetworkGraph();
 		networkGraphDiscoveryInterface = 
@@ -342,5 +355,31 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 			// Run the cleanup task immediately on startup
 			cleanupTask.reschedule(0, TimeUnit.SECONDS);
 		}
+	}
+	
+	@Override
+	public void onosDeviceAdded(OnosDevice device) {
+		log.debug("Called onosDeviceAdded mac {}", device.getMacAddress());
+
+		SwitchPort sp = new SwitchPort(device.getSwitchDPID(), (long)device.getSwitchPort());
+		List<SwitchPort> spLists = new ArrayList<SwitchPort>();
+		spLists.add(sp);
+		DeviceEvent event = new DeviceEvent(device.getMacAddress());
+		event.setAttachmentPoints(spLists);	
+		event.setLastSeenTime(device.getLastSeenTimestamp().getTime());
+		if(device.getIpv4Address() != null) {
+			InetAddress ip = InetAddresses.fromInteger(device.getIpv4Address());	
+			event.addIpAddress(ip);
+		}
+		//Does not use Vlan info now.
+		
+		networkGraphDiscoveryInterface.putDeviceDiscoveryEvent(event);	
+	}
+
+	@Override
+	public void onosDeviceRemoved(OnosDevice device) {	
+		log.debug("Called onosDeviceRemoved");
+		DeviceEvent event = new DeviceEvent(device.getMacAddress());
+		networkGraphDiscoveryInterface.removeDeviceDiscoveryEvent(event);
 	}
 }

@@ -1,20 +1,26 @@
 package net.onrc.onos.ofcontroller.networkgraph;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 
 import net.onrc.onos.datastore.DataStoreClient;
 import net.onrc.onos.datastore.IKVClient;
+import net.onrc.onos.datastore.topology.KVDevice;
 import net.onrc.onos.datastore.topology.KVLink;
 import net.onrc.onos.datastore.topology.KVPort;
 import net.onrc.onos.datastore.topology.KVPort.STATUS;
 import net.onrc.onos.datastore.topology.KVSwitch;
 import net.onrc.onos.datastore.utils.KVObject;
 import net.onrc.onos.datastore.utils.KVObject.WriteOp;
+import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.net.InetAddresses;
 
 /**
  * The southbound interface to the network graph which allows clients to
@@ -186,8 +192,24 @@ public class NetworkGraphDatastore {
 	 * @return true on success, otherwise false.
 	 */
 	public boolean addDevice(DeviceEvent device) {
-		// TODO implement
-		return false;			// Failure: not implemented yet
+		log.debug("Adding device into DB. mac {}", device.getMac());
+
+		KVDevice rcDevice = new KVDevice(device.getMac().toBytes());
+		rcDevice.setLastSeenTime(device.getLastSeenTime());
+		
+		for(SwitchPort sp : device.getAttachmentPoints()) {
+			byte[] portId = KVPort.getPortID(sp.getDpid(), sp.getNumber());		
+			rcDevice.addPortId(portId);
+		}
+		
+		for(InetAddress addr : device.getIpAddresses()) {
+			//It assume only one ip on a device now.
+			rcDevice.setIp(InetAddresses.coerceToInteger(addr));	
+		}
+
+		rcDevice.forceCreate();
+		
+		return true;
 	}
 
 	/**
@@ -197,7 +219,11 @@ public class NetworkGraphDatastore {
 	 * @return true on success, otherwise false.
 	 */
 	public boolean removeDevice(DeviceEvent device) {
-		// TODO implement
-		return false;			// Failure: not implemented yet
+		log.debug("Removing device into DB. mac {}", device.getMac());
+		
+		KVDevice rcDevice = new KVDevice(device.getMac().toBytes());
+		rcDevice.forceDelete();
+		
+		return true;
 	}
 }

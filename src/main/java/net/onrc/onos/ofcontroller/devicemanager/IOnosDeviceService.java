@@ -1,6 +1,7 @@
 package net.onrc.onos.ofcontroller.devicemanager;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.util.MACAddress;
 
 /**
  * {@link OnosDeviceManager} doesn't yet provide any API to fellow modules,
@@ -11,8 +12,13 @@ import net.floodlightcontroller.core.module.IFloodlightService;
  */
 public interface IOnosDeviceService extends IFloodlightService {
 
+	public void addOnosDeviceListener(IOnosDeviceListener listener);
+	
+	public void deleteOnosDeviceListener(IOnosDeviceListener listener);	
+	
 	public void deleteOnosDevice(OnosDevice dev);
 
+	public void deleteOnosDeviceByMac(MACAddress mac);
+	
 	public void addOnosDevice(Long mac, OnosDevice dev);
-
 }

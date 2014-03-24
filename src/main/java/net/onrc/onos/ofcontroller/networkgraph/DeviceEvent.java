@@ -27,7 +27,7 @@ public class DeviceEvent {
     private final MACAddress mac;
     protected List<SwitchPort> attachmentPoints;
     protected Set<InetAddress> ipAddresses;
-
+    private long lastSeenTime;
 
     /**
      * Default constructor for Serializer to use.
@@ -68,11 +68,11 @@ public class DeviceEvent {
     }
 
 
-    boolean addIpAddress(InetAddress addr) {
+    public boolean addIpAddress(InetAddress addr) {
 	return this.ipAddresses.add(addr);
     }
 
-    boolean removeIpAddress(InetAddress addr) {
+    public boolean removeIpAddress(InetAddress addr) {
 	return this.ipAddresses.remove(addr);
     }
 
@@ -93,4 +93,12 @@ public class DeviceEvent {
     public ByteBuffer getIDasByteBuffer() {
 	return getDeviceID(mac.toBytes());
     }
+
+	public long getLastSeenTime() {
+		return lastSeenTime;
+	}
+
+	public void setLastSeenTime(long lastSeenTime) {
+		this.lastSeenTime = lastSeenTime;
+	}
 }
