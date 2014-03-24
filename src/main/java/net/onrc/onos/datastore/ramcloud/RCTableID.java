@@ -44,12 +44,15 @@ public class RCTableID implements IKVTableID {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         RCTableID other = (RCTableID) obj;
         return Objects.equals(tableName, other.tableName)
                 && Objects.equals(getTableID(), other.getTableID());

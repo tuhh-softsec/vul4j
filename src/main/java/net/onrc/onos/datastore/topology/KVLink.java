@@ -86,18 +86,18 @@ public class KVLink extends KVObject {
     }
 
     public static long[] getLinkTupleFromKey(final ByteBuffer keyBuf) {
-        long[] tuple = new long[4];
         if (keyBuf.getChar() != 'L') {
             throw new IllegalArgumentException("Invalid Link key");
         }
-        long[] src_port_pair = KVPort.getPortPairFromKey(keyBuf.slice());
+        final long[] srcPortPair = KVPort.getPortPairFromKey(keyBuf.slice());
         keyBuf.position(2 + PortEvent.PORTID_BYTES);
-        long[] dst_port_pair = KVPort.getPortPairFromKey(keyBuf.slice());
+        final long[] dstPortPair = KVPort.getPortPairFromKey(keyBuf.slice());
 
-        tuple[0] = src_port_pair[0];
-        tuple[1] = src_port_pair[1];
-        tuple[2] = dst_port_pair[0];
-        tuple[3] = dst_port_pair[1];
+        long[] tuple = new long[4];
+        tuple[0] = srcPortPair[0];
+        tuple[1] = srcPortPair[1];
+        tuple[2] = dstPortPair[0];
+        tuple[3] = dstPortPair[1];
 
         return tuple;
     }

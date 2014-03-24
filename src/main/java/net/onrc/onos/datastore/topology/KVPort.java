@@ -65,12 +65,12 @@ public class KVPort extends KVObject {
     }
 
     public static long[] getPortPairFromKey(final ByteBuffer keyBuf) {
-        long[] pair = new long[2];
         if (keyBuf.getChar() != 'S') {
             throw new IllegalArgumentException("Invalid Port key:" + keyBuf
                     + " "
                     + ByteArrayUtil.toHexStringBuffer(keyBuf.array(), ":"));
         }
+        long[] pair = new long[2];
         pair[0] = keyBuf.getLong();
         if (keyBuf.getChar() != 'P') {
             throw new IllegalArgumentException("Invalid Port key:" + keyBuf
