@@ -69,7 +69,7 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
     @Override
     public boolean verifyKeyValueTypes(Class typeKToVerify,
                                        Class typeVToVerify) {
-        return (typeK == typeKToVerify) && (typeV == typeVToVerify);
+        return (typeK.equals(typeKToVerify)) && (typeV.equals(typeVToVerify));
     }
 
     /**
