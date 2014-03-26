@@ -102,10 +102,10 @@ public class ConfigReloadOnChange implements Extension {
         // Load configuration
         try {
             // Try to convert as long
-            long configDelay = CONFIG_RELOAD_DELAY.getValue(properties);
+            delay  = CONFIG_RELOAD_DELAY.getValue(properties);
 
             // Do not watch faster than SPEED_LIMIT
-            if (configDelay < SPEED_LIMIT) {
+            if (delay < SPEED_LIMIT) {
                 delay = SPEED_LIMIT;
             }
         } catch (NumberFormatException e) {
