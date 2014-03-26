@@ -50,17 +50,17 @@ public class CacheAdapter {
     private boolean viaHeader;
 
     public void init(Properties properties) {
-        staleIfError = Parameters.STALE_IF_ERROR.getValueInt(properties);
-        staleWhileRevalidate = Parameters.STALE_WHILE_REVALIDATE.getValueInt(properties);
-        int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValueInt(properties);
+        staleIfError = Parameters.STALE_IF_ERROR.getValue(properties);
+        staleWhileRevalidate = Parameters.STALE_WHILE_REVALIDATE.getValue(properties);
+        int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValue(properties);
         if (staleWhileRevalidate > 0 && maxAsynchronousWorkers == 0) {
             throw new ConfigurationException("You must set a positive value for maxAsynchronousWorkers "
                     + "in order to enable background revalidation (staleWhileRevalidate)");
         }
-        ttl = Parameters.TTL.getValueInt(properties);
-        xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
-        viaHeader = Parameters.VIA_HEADER.getValueBoolean(properties);
-        LOG.info("Initializing cache for provider " + Parameters.REMOTE_URL_BASE.getValueString(properties)
+        ttl = Parameters.TTL.getValue(properties);
+        xCacheHeader = Parameters.X_CACHE_HEADER.getValue(properties);
+        viaHeader = Parameters.VIA_HEADER.getValue(properties);
+        LOG.info("Initializing cache for provider " + Parameters.REMOTE_URL_BASE.getValue(properties)
                 + " staleIfError=" + staleIfError + " staleWhileRevalidate=" + staleWhileRevalidate + " ttl=" + ttl
                 + " xCacheHeader=" + xCacheHeader + " viaHeader=" + viaHeader);
     }

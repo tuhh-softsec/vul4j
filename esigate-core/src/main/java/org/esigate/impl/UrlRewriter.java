@@ -76,12 +76,12 @@ public final class UrlRewriter {
      * 
      */
     public UrlRewriter(Properties properties) {
-        if ("absolute".equalsIgnoreCase(Parameters.FIX_MODE.getValueString(properties))) {
+        if ("absolute".equalsIgnoreCase(Parameters.FIX_MODE.getValue(properties))) {
             mode = ABSOLUTE;
         } else {
             mode = RELATIVE;
         }
-        visibleBaseUrlParameter = stripEnd(Parameters.VISIBLE_URL_BASE.getValueString(properties), "/");
+        visibleBaseUrlParameter = stripEnd(Parameters.VISIBLE_URL_BASE.getValue(properties), "/");
     }
 
     private String concatUrl(String begin, String end) {

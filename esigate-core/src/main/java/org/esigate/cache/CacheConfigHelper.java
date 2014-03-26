@@ -29,19 +29,19 @@ public final class CacheConfigHelper {
     public static CacheConfig createCacheConfig(Properties properties) {
 
         // Heuristic caching
-        boolean heuristicCachingEnabled = Parameters.HEURISTIC_CACHING_ENABLED.getValueBoolean(properties);
-        float heuristicCoefficient = Parameters.HEURISTIC_COEFFICIENT.getValueFloat(properties);
-        long heuristicDefaultLifetimeSecs = Parameters.HEURISTIC_DEFAULT_LIFETIME_SECS.getValueLong(properties);
-        int maxCacheEntries = Parameters.MAX_CACHE_ENTRIES.getValueInt(properties);
-        long maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValueLong(properties);
+        boolean heuristicCachingEnabled = Parameters.HEURISTIC_CACHING_ENABLED.getValue(properties);
+        float heuristicCoefficient = Parameters.HEURISTIC_COEFFICIENT.getValue(properties);
+        long heuristicDefaultLifetimeSecs = Parameters.HEURISTIC_DEFAULT_LIFETIME_SECS.getValue(properties);
+        int maxCacheEntries = Parameters.MAX_CACHE_ENTRIES.getValue(properties);
+        long maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValue(properties);
 
         // Asynchronous revalidation
-        int minAsynchronousWorkers = Parameters.MIN_ASYNCHRONOUS_WORKERS.getValueInt(properties);
-        int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValueInt(properties);
+        int minAsynchronousWorkers = Parameters.MIN_ASYNCHRONOUS_WORKERS.getValue(properties);
+        int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValue(properties);
         int asynchronousWorkerIdleLifetimeSecs = Parameters.ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS
-                .getValueInt(properties);
-        int maxUpdateRetries = Parameters.MAX_UPDATE_RETRIES.getValueInt(properties);
-        int revalidationQueueSize = Parameters.REVALIDATION_QUEUE_SIZE.getValueInt(properties);
+                .getValue(properties);
+        int maxUpdateRetries = Parameters.MAX_UPDATE_RETRIES.getValue(properties);
+        int revalidationQueueSize = Parameters.REVALIDATION_QUEUE_SIZE.getValue(properties);
 
         CacheConfig.Builder builder = CacheConfig.custom();
         builder.setHeuristicCachingEnabled(heuristicCachingEnabled);
@@ -58,7 +58,7 @@ public final class CacheConfigHelper {
     }
 
     public static CacheStorage createCacheStorage(Properties properties) {
-        String cacheStorageClass = Parameters.CACHE_STORAGE.getValueString(properties);
+        String cacheStorageClass = Parameters.CACHE_STORAGE.getValue(properties);
         Object cacheStorageObject;
         try {
             cacheStorageObject = Class.forName(cacheStorageClass).newInstance();

@@ -48,7 +48,7 @@ public class ServletExtension implements Extension, IEventListener {
         this.driver = driver;
         driver.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
         context = properties.getProperty("context");
-        maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValueInt(properties);
+        maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValue(properties);
     }
 
     @Override

@@ -51,9 +51,9 @@ public final class ExtensionFactory {
      *            class which extends Extension class which extends Extension
      * @return instance of {@link Extension} or null.
      */
-    public static <T extends Extension> T getExtension(Properties properties, Parameter parameter, Driver d) {
+    public static <T extends Extension> T getExtension(Properties properties, Parameter<String> parameter, Driver d) {
         T result = null;
-        String className = parameter.getValueString(properties);
+        String className = parameter.getValue(properties);
         if (className == null) {
             return null;
         }
@@ -81,8 +81,8 @@ public final class ExtensionFactory {
      * @param d
      * @return the extension list
      */
-    public static <T extends Extension> List<T> getExtensions(Properties properties, Parameter parameter, Driver d) {
-        Collection<String> className = parameter.getValueList(properties);
+    public static <T extends Extension> List<T> getExtensions(Properties properties, Parameter<Collection<String>> parameter, Driver d) {
+        Collection<String> className = parameter.getValue(properties);
         List<T> finalResult = new ArrayList<T>();
         for (String cName : className) {
             try {

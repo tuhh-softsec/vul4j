@@ -26,7 +26,7 @@ public class ContentTypeHelper {
     private Collection<String> parsableContentTypes;
 
     public ContentTypeHelper(Properties properties) {
-        parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueList(properties);
+        parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValue(properties);
     }
 
     /**

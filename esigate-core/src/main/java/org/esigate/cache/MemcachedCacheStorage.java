@@ -34,7 +34,7 @@ import org.esigate.Parameters;
 public class MemcachedCacheStorage extends CacheStorage {
     @Override
     public void init(Properties properties) {
-        Collection<String> serverStringList = Parameters.MEMCACHED_SERVERS_PROPERTY.getValueList(properties);
+        Collection<String> serverStringList = Parameters.MEMCACHED_SERVERS_PROPERTY.getValue(properties);
         if (serverStringList.isEmpty()) {
             throw new ConfigurationException("No memcached server defined. Property '"
                     + Parameters.MEMCACHED_SERVERS_PROPERTY + "' must be defined.");

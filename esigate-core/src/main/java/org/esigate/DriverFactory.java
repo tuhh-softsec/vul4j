@@ -167,7 +167,7 @@ public final class DriverFactory {
             newInstances.put(name, createDriver(name, properties));
         }
         if (newInstances.get(DEFAULT_INSTANCE_NAME) == null
-                && Parameters.REMOTE_URL_BASE.getValueString(defaultProperties) != null) {
+                && Parameters.REMOTE_URL_BASE.getValue(defaultProperties)!=null) {
 
             newInstances.put(DEFAULT_INSTANCE_NAME, createDriver(DEFAULT_INSTANCE_NAME, defaultProperties));
         }

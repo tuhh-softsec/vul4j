@@ -28,8 +28,8 @@ public class EhcacheCacheStorage extends CacheStorage {
 
     @Override
     public void init(Properties properties) {
-        String cacheName = Parameters.EHCACHE_CACHE_NAME_PROPERTY.getValueString(properties);
-        String configurationFileName = Parameters.EHCACHE_CONFIGURATION_FILE_PROPERTY.getValueString(properties);
+        String cacheName = Parameters.EHCACHE_CACHE_NAME_PROPERTY.getValue(properties);
+        String configurationFileName = Parameters.EHCACHE_CONFIGURATION_FILE_PROPERTY.getValue(properties);
         // Loaded from the Classpath, default will use /ehcache.xml or if not found /ehcache-failsafe.xml
         CacheManager cacheManager = CacheManager.create(configurationFileName);
         Ehcache ehcache = cacheManager.getEhcache(cacheName);

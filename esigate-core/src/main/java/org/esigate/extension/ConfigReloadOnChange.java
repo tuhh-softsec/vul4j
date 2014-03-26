@@ -14,16 +14,17 @@
  */
 package org.esigate.extension;
 
+import org.esigate.Driver;
+import org.esigate.DriverFactory;
+import org.esigate.util.Parameter;
+import org.esigate.util.ParameterLong;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
-
-import org.esigate.Driver;
-import org.esigate.DriverFactory;
-import org.esigate.util.Parameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This extension reloads configuration when esigate.properties is updated.
@@ -47,8 +48,8 @@ public class ConfigReloadOnChange implements Extension {
      * The wait time (ms) between to check for configuration change.
      * 
      */
-    public static final Parameter CONFIG_RELOAD_DELAY = new Parameter("configReloadDelay",
-            String.valueOf(DEFAULT_RELOAD_DELAY));
+    public static final Parameter<Long> CONFIG_RELOAD_DELAY = new ParameterLong("configReloadDelay",
+            DEFAULT_RELOAD_DELAY);
 
     // Do not poll too fast. (ms).
     private static final int SPEED_LIMIT = 100;
@@ -101,15 +102,14 @@ public class ConfigReloadOnChange implements Extension {
         // Load configuration
         try {
             // Try to convert as long
-            long configDelay = CONFIG_RELOAD_DELAY.getValueLong(properties);
+            long configDelay = CONFIG_RELOAD_DELAY.getValue(properties);
 
             // Do not watch faster than SPEED_LIMIT
             if (configDelay < SPEED_LIMIT) {
                 delay = SPEED_LIMIT;
             }
         } catch (NumberFormatException e) {
-            LOG.warn("Unable to convert {}={} as number", CONFIG_RELOAD_DELAY.getName(),
-                    CONFIG_RELOAD_DELAY.getValueString(properties));
+            LOG.warn("Unable to convert {}={} as number", CONFIG_RELOAD_DELAY.getName(),e);
         }
 
         LOG.info("Will reload configuration every {}ms if {} is modified", Long.valueOf(delay),

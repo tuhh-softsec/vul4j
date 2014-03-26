@@ -28,6 +28,7 @@ import org.esigate.events.impl.FetchEvent;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.extension.Extension;
 import org.esigate.util.Parameter;
+import org.esigate.util.ParameterInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Metric implements Extension, IEventListener {
     private static final Logger LOG = LoggerFactory.getLogger(Metric.class);
-    private static final Parameter PARAM_METRIC_PERIOD = new Parameter("metricPeriod", "60");
+    private static final Parameter<Integer> PARAM_METRIC_PERIOD = new ParameterInteger("metricPeriod", 60);
 
     private MetricRegistry metric = new MetricRegistry();
     private ScheduledReporter reporter;
@@ -54,7 +55,7 @@ public class Metric implements Extension, IEventListener {
 
     @Override
     public void init(Driver driver, Properties properties) {
-
+        LOG.debug("Initialize Metric");
         driver.getEventManager().register(EventManager.EVENT_PROXY_POST, this);
         driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
 
@@ -67,7 +68,7 @@ public class Metric implements Extension, IEventListener {
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
 
-        reporter.start(PARAM_METRIC_PERIOD.getValueInt(properties), TimeUnit.MINUTES);
+        reporter.start(PARAM_METRIC_PERIOD.getValue(properties), TimeUnit.SECONDS);
     }
 
 

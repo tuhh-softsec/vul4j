@@ -62,9 +62,9 @@ public class DefaultCookieManager implements CookieManager {
     @Override
     public void init(Driver d, Properties properties) {
         // Cookies to store to session
-        this.storeCookiesInSession = Parameters.STORE_COOKIES_IN_SESSION.getValueList(properties);
+        this.storeCookiesInSession = Parameters.STORE_COOKIES_IN_SESSION.getValue(properties);
         // Cookies to discard
-        this.discardCookies = Parameters.DISCARD_COOKIES.getValueList(properties);
+        this.discardCookies = Parameters.DISCARD_COOKIES.getValue(properties);
 
         // Verify configuration
         if (this.storeCookiesInSession.contains("*") && this.storeCookiesInSession.size() > 1) {

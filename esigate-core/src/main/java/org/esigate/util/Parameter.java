@@ -15,12 +15,11 @@
 
 package org.esigate.util;
 
-import java.util.Collection;
 import java.util.Properties;
 
-public final class Parameter {
+public class Parameter<T> {
     private final String name;
-    private final String defaultValue;
+    private final T defaultValue;
 
     @Override
     public boolean equals(Object obj) {
@@ -37,62 +36,28 @@ public final class Parameter {
         return this.name.hashCode();
     }
 
-    public Parameter(String name, String defaultValue) {
+
+    Parameter(String name, T defaultValue) {
         this.name = name;
         this.defaultValue = defaultValue;
-    }
 
-    public int getValueInt(Properties properties) {
-        int defaultValueInt = 0;
-        if (defaultValue != null) {
-            defaultValueInt = Integer.parseInt(defaultValue);
-        }
-        return PropertiesUtil.getPropertyValue(properties, name, defaultValueInt);
-    }
-
-    public boolean getValueBoolean(Properties properties) {
-        boolean defaultValueBoolean = false;
-        if (defaultValue != null) {
-            defaultValueBoolean = Boolean.parseBoolean(defaultValue);
-        }
-        return PropertiesUtil.getPropertyValue(properties, name, defaultValueBoolean);
-    }
-
-    public float getValueFloat(Properties properties) {
-        float defaultValueFloat = 0;
-        if (defaultValue != null) {
-            defaultValueFloat = Float.parseFloat(defaultValue);
-        }
-        return PropertiesUtil.getPropertyValue(properties, name, defaultValueFloat);
-    }
-
-    public long getValueLong(Properties properties) {
-        long defaultValueLong = 0;
-        if (defaultValue != null) {
-            defaultValueLong = Long.parseLong(defaultValue);
-        }
-        return PropertiesUtil.getPropertyValue(properties, name, defaultValueLong);
-    }
-
-    public String getValueString(Properties properties) {
-        return PropertiesUtil.getPropertyValue(properties, name, defaultValue);
-    }
-
-    public Collection<String> getValueList(Properties properties) {
-        return PropertiesUtil.getPropertyValueAsList(properties, name, defaultValue);
-    }
-
-    public String[] getValueArray(Properties properties) {
-        Collection<String> resultAsCollection = getValueList(properties);
-        return resultAsCollection.toArray(new String[resultAsCollection.size()]);
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDefaultValue() {
+    public T getDefaultValue() {
         return defaultValue;
+    }
+
+    public T getValue(Properties properties) {
+        T value = (T) properties.getProperty(this.name);
+
+        if (value == null) {
+            value = defaultValue;
+        }
+        return value;
     }
 
 }

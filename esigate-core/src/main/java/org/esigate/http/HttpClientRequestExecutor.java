@@ -109,16 +109,16 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             }
             HttpClientRequestExecutor httpClientHelper = new HttpClientRequestExecutor();
             httpClientHelper.eventManager = eventManager;
-            httpClientHelper.preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(properties);
+            httpClientHelper.preserveHost = Parameters.PRESERVE_HOST.getValue(properties);
             httpClientHelper.headerManager = new HeaderManager();
             if (cookieManager == null) {
                 cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, driver);
             }
             httpClientHelper.cookieManager = cookieManager;
-            httpClientHelper.connectTimeout = Parameters.CONNECT_TIMEOUT.getValueInt(properties);
-            httpClientHelper.socketTimeout = Parameters.SOCKET_TIMEOUT.getValueInt(properties);
+            httpClientHelper.connectTimeout = Parameters.CONNECT_TIMEOUT.getValue(properties);
+            httpClientHelper.socketTimeout = Parameters.SOCKET_TIMEOUT.getValue(properties);
             httpClientHelper.httpClient = buildHttpClient(properties, eventManager, connectionManager);
-            String firstBaseURL = Parameters.REMOTE_URL_BASE.getValueArray(properties)[0];
+            String firstBaseURL = Parameters.REMOTE_URL_BASE.getValue(properties)[0];
             httpClientHelper.firstBaseUrlHost = UriUtils.extractHost(firstBaseURL);
             return httpClientHelper;
         }
@@ -150,13 +150,13 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         HttpHost proxyHost = null;
         Credentials proxyCredentials = null;
         // Proxy settings
-        String proxyHostParameter = Parameters.PROXY_HOST.getValueString(properties);
+        String proxyHostParameter = Parameters.PROXY_HOST.getValue(properties);
         if (proxyHostParameter != null) {
-            int proxyPort = Parameters.PROXY_PORT.getValueInt(properties);
+            int proxyPort = Parameters.PROXY_PORT.getValue(properties);
             proxyHost = new HttpHost(proxyHostParameter, proxyPort);
-            String proxyUser = Parameters.PROXY_USER.getValueString(properties);
+            String proxyUser = Parameters.PROXY_USER.getValue(properties);
             if (proxyUser != null) {
-                String proxyPassword = Parameters.PROXY_PASSWORD.getValueString(properties);
+                String proxyPassword = Parameters.PROXY_PASSWORD.getValue(properties);
                 proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
             }
         }
@@ -165,8 +165,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         httpClientBuilder.setProperties(properties);
 
-        httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
-        httpClientBuilder.setMaxConnTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
+        httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
+        httpClientBuilder.setMaxConnTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
         httpClientBuilder.setRedirectStrategy(new RedirectStrategy());
         // Proxy settings
         if (proxyHost != null) {
@@ -179,8 +179,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         }
 
         // Cache settings
-        boolean useCache = Parameters.USE_CACHE.getValueBoolean(properties);
-        httpClientBuilder.setUseCache(Parameters.USE_CACHE.getValueBoolean(properties));
+        boolean useCache = Parameters.USE_CACHE.getValue(properties);
+        httpClientBuilder.setUseCache(Parameters.USE_CACHE.getValue(properties));
         if (useCache) {
             httpClientBuilder.setHttpCacheStorage(CacheConfigHelper.createCacheStorage(properties));
             httpClientBuilder.setCacheConfig(CacheConfigHelper.createCacheConfig(properties));

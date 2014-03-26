@@ -1,8 +1,5 @@
 package org.esigate.extension;
 
-import java.util.Collection;
-import java.util.Properties;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.esigate.Driver;
@@ -13,8 +10,12 @@ import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.util.Parameter;
+import org.esigate.util.ParameterString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Properties;
 
 /**
  * This extension adds a default charset to responses which lack the charset attribute in Content-Type header. Only
@@ -43,7 +44,7 @@ import org.slf4j.LoggerFactory;
 public class DefaultCharset implements Extension, IEventListener {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultCharset.class);
 
-    public static final Parameter PARAM_DEFAULT_CHARSET = new Parameter("defaultCharset", "ISO-8859-1");
+    public static final Parameter<String> PARAM_DEFAULT_CHARSET = new ParameterString("defaultCharset", "ISO-8859-1");
 
     private Collection<String> parsableContentTypes;
     private String defaultCharset;
@@ -52,8 +53,8 @@ public class DefaultCharset implements Extension, IEventListener {
     public void init(Driver driver, Properties properties) {
         driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
 
-        parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueList(properties);
-        defaultCharset = PARAM_DEFAULT_CHARSET.getValueString(properties);
+        parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValue(properties);
+        defaultCharset = PARAM_DEFAULT_CHARSET.getValue(properties);
 
         LOG.info("Will use " + defaultCharset + " as default charset for " + parsableContentTypes.toString());
 

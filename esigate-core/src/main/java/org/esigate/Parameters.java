@@ -26,12 +26,21 @@ import org.esigate.extension.ResourceFixup;
 import org.esigate.extension.XPoweredBy;
 import org.esigate.extension.surrogate.Surrogate;
 import org.esigate.util.Parameter;
+import org.esigate.util.ParameterArray;
+import org.esigate.util.ParameterBoolean;
+import org.esigate.util.ParameterCollection;
+import org.esigate.util.ParameterFloat;
+import org.esigate.util.ParameterInteger;
+import org.esigate.util.ParameterString;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Configuration properties names and default values.
- * 
+ *
  * @author Francois-Xavier Bonnet
- * 
+ *
  */
 public final class Parameters {
 
@@ -40,37 +49,36 @@ public final class Parameters {
     }
 
     // Core parameters
-    public static final Parameter REMOTE_URL_BASE = new Parameter("remoteUrlBase", null);
-    public static final Parameter MAPPINGS = new Parameter("mappings", null);
-    public static final Parameter STRIP_MAPPING_PATH = new Parameter("stripMappingPath", null);
-    public static final Parameter URI_ENCODING = new Parameter("uriEncoding", "ISO-8859-1");
-    public static final Parameter PARSABLE_CONTENT_TYPES = new Parameter("parsableContentTypes",
-            "text/html, application/xhtml+xml");
+    public static final Parameter<String[]> REMOTE_URL_BASE = new ParameterArray("remoteUrlBase", null);
+    public static final Parameter<Collection<String>> MAPPINGS = new ParameterCollection("mappings",null);
+    public static final Parameter<Boolean> STRIP_MAPPING_PATH = new ParameterBoolean("stripMappingPath", false);
+    public static final Parameter<String> URI_ENCODING = new ParameterString("uriEncoding", "ISO-8859-1");
+    public static final Parameter<Collection<String>> PARSABLE_CONTENT_TYPES = new ParameterCollection("parsableContentTypes", Arrays.asList("text/html", "application/xhtml+xml"));
 
     // Network settings
-    public static final Parameter MAX_CONNECTIONS_PER_HOST = new Parameter("maxConnectionsPerHost", "20");
-    public static final Parameter CONNECT_TIMEOUT = new Parameter("connectTimeout", "1000");
-    public static final Parameter SOCKET_TIMEOUT = new Parameter("socketTimeout", "10000");
+    public static final Parameter<Integer> MAX_CONNECTIONS_PER_HOST = new ParameterInteger("maxConnectionsPerHost", 20);
+    public static final Parameter<Integer> CONNECT_TIMEOUT = new ParameterInteger("connectTimeout", 1000);
+    public static final Parameter<Integer> SOCKET_TIMEOUT = new ParameterInteger("socketTimeout", 10000);
 
     // Proxy settings
-    public static final Parameter PROXY_HOST = new Parameter("proxyHost", null);
-    public static final Parameter PROXY_PORT = new Parameter("proxyPort", null);
-    public static final Parameter PROXY_USER = new Parameter("proxyUser", null);
-    public static final Parameter PROXY_PASSWORD = new Parameter("proxyPassword", null);
+    public static final Parameter<String> PROXY_HOST = new ParameterString("proxyHost", null);
+    public static final Parameter<Integer> PROXY_PORT = new ParameterInteger("proxyPort", 0 );
+    public static final Parameter<String> PROXY_USER = new ParameterString("proxyUser", null);
+    public static final Parameter<String> PROXY_PASSWORD = new ParameterString("proxyPassword", null);
 
     // Http headers
-    public static final Parameter PRESERVE_HOST = new Parameter("preserveHost", "true");
+    public static final Parameter<Boolean> PRESERVE_HOST = new ParameterBoolean("preserveHost", true);
 
     // Cookies
-    public static final Parameter COOKIE_MANAGER = new Parameter("cookieManager", DefaultCookieManager.class.getName());
-    public static final Parameter DISCARD_COOKIES = new Parameter("discardCookies", null);
-    public static final Parameter STORE_COOKIES_IN_SESSION = new Parameter("storeCookiesInSession", null);
+    public static final Parameter<String> COOKIE_MANAGER = new ParameterString("cookieManager", DefaultCookieManager.class.getName());
+    public static final Parameter<Collection<String>> DISCARD_COOKIES = new ParameterCollection("discardCookies",null);
+    public static final Parameter<Collection<String>> STORE_COOKIES_IN_SESSION = new ParameterCollection("storeCookiesInSession",null);
 
-    public static final Parameter FIX_MODE = new Parameter("fixMode", "relative");
-    public static final Parameter VISIBLE_URL_BASE = new Parameter("visibleUrlBase", null);
+    public static final Parameter<String> FIX_MODE = new ParameterString("fixMode", "relative");
+    public static final Parameter<String> VISIBLE_URL_BASE = new ParameterString("visibleUrlBase", null);
 
     // Load-balancing
-    public static final Parameter REMOTE_URL_BASE_STRATEGY = new Parameter("remoteUrlBaseStrategy",
+    public static final Parameter<String> REMOTE_URL_BASE_STRATEGY = new ParameterString("remoteUrlBaseStrategy",
             Parameters.ROUNDROBIN);
     // Possible values for remoteUrlBaseStrategy
     public static final String STICKYSESSION = "stickysession";
@@ -78,46 +86,45 @@ public final class Parameters {
     public static final String ROUNDROBIN = "roundrobin";
 
     // Extensions
-    public static final Parameter EXTENSIONS = new Parameter("extensions", FragmentLogging.class.getName() + ","
-            + FetchLogging.class.getName() + "," + RemoteUserAuthenticationHandler.class.getName() + ","
-            + Esi.class.getName() + "," + ResourceFixup.class.getName() + "," + XPoweredBy.class.getName() + ","
-            + Surrogate.class.getName() + "," + ConfigReloadOnChange.class.getName());
+    public static final Parameter<Collection<String>> EXTENSIONS = new ParameterCollection("extensions", Arrays.asList(FragmentLogging.class.getName(),
+             FetchLogging.class.getName() ,  RemoteUserAuthenticationHandler.class.getName()  ,
+             Esi.class.getName() , ResourceFixup.class.getName() , XPoweredBy.class.getName()  ,
+             Surrogate.class.getName() , ConfigReloadOnChange.class.getName()));
 
     // Cache settings
-    public static final Parameter USE_CACHE = new Parameter("useCache", "true");
-    public static final Parameter MAX_CACHE_ENTRIES = new Parameter("maxCacheEntries", "1000");
-    public static final Parameter MAX_OBJECT_SIZE = new Parameter("maxObjectSize", "1000000");
-    public static final Parameter CACHE_STORAGE = new Parameter("cacheStorage", BasicCacheStorage.class.getName());
-    public static final Parameter X_CACHE_HEADER = new Parameter("xCacheHeader", "false");
-    public static final Parameter VIA_HEADER = new Parameter("viaHeader", "true");
+    public static final Parameter<Boolean> USE_CACHE = new ParameterBoolean("useCache", true);
+    public static final Parameter<Integer> MAX_CACHE_ENTRIES = new ParameterInteger("maxCacheEntries", 1000);
+    public static final Parameter<Integer> MAX_OBJECT_SIZE = new ParameterInteger("maxObjectSize", 1000000);
+    public static final Parameter<String> CACHE_STORAGE = new ParameterString("cacheStorage", BasicCacheStorage.class.getName());
+    public static final Parameter<Boolean> X_CACHE_HEADER = new ParameterBoolean("xCacheHeader", false);
+    public static final Parameter<Boolean> VIA_HEADER = new ParameterBoolean("viaHeader", true);
 
     // Forced caching
-    public static final Parameter TTL = new Parameter("ttl", "0");
+    public static final Parameter<Integer> TTL = new ParameterInteger("ttl", 0);
 
     // Heuristic caching
-    public static final Parameter HEURISTIC_CACHING_ENABLED = new Parameter("heuristicCachingEnabled", "true");
+    public static final Parameter<Boolean> HEURISTIC_CACHING_ENABLED = new ParameterBoolean("heuristicCachingEnabled", true);
     // default value defined in
     // http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2.4
-    public static final Parameter HEURISTIC_COEFFICIENT = new Parameter("heuristicCoefficient", "0.1");
+    public static final Parameter<Float> HEURISTIC_COEFFICIENT = new ParameterFloat("heuristicCoefficient", 0.1f);
     // when no cache directive at all, nothing is cached by default
-    public static final Parameter HEURISTIC_DEFAULT_LIFETIME_SECS = new Parameter("heuristicDefaultLifetimeSecs", "0");
+    public static final Parameter<Integer> HEURISTIC_DEFAULT_LIFETIME_SECS = new ParameterInteger("heuristicDefaultLifetimeSecs", 0);
 
     // Background revalidation
-    public static final Parameter STALE_WHILE_REVALIDATE = new Parameter("staleWhileRevalidate", "0");
-    public static final Parameter STALE_IF_ERROR = new Parameter("staleIfError", "0");
-    public static final Parameter MIN_ASYNCHRONOUS_WORKERS = new Parameter("minAsynchronousWorkers", "0");
-    public static final Parameter MAX_ASYNCHRONOUS_WORKERS = new Parameter("maxAsynchronousWorkers", "0");
-    public static final Parameter ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS = new Parameter(
-            "asynchronousWorkerIdleLifetimeSecs", "60");
-    public static final Parameter MAX_UPDATE_RETRIES = new Parameter("maxUpdateRetries", "1");
-    public static final Parameter REVALIDATION_QUEUE_SIZE = new Parameter("revalidationQueueSize", "100");
+    public static final Parameter<Integer> STALE_WHILE_REVALIDATE = new ParameterInteger("staleWhileRevalidate", 0);
+    public static final Parameter<Integer> STALE_IF_ERROR = new ParameterInteger("staleIfError", 0);
+    public static final Parameter<Integer> MIN_ASYNCHRONOUS_WORKERS = new ParameterInteger("minAsynchronousWorkers", 0);
+    public static final Parameter<Integer> MAX_ASYNCHRONOUS_WORKERS = new ParameterInteger("maxAsynchronousWorkers", 0);
+    public static final Parameter<Integer> ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS = new ParameterInteger("asynchronousWorkerIdleLifetimeSecs", 60);
+    public static final Parameter<Integer> MAX_UPDATE_RETRIES = new ParameterInteger("maxUpdateRetries", 1);
+    public static final Parameter<Integer> REVALIDATION_QUEUE_SIZE = new ParameterInteger("revalidationQueueSize", 100);
 
     // EhCache
-    public static final Parameter EHCACHE_CACHE_NAME_PROPERTY = new Parameter("ehcache.cacheName", "esigate");
-    public static final Parameter EHCACHE_CONFIGURATION_FILE_PROPERTY = new Parameter("ehcache.configurationFile", null);
+    public static final Parameter<String> EHCACHE_CACHE_NAME_PROPERTY = new ParameterString("ehcache.cacheName", "esigate");
+    public static final Parameter<String> EHCACHE_CONFIGURATION_FILE_PROPERTY = new ParameterString("ehcache.configurationFile", null);
 
     // MemCached
-    public static final Parameter MEMCACHED_SERVERS_PROPERTY = new Parameter("memcached.servers", null);
+    public static final Parameter<Collection<String>> MEMCACHED_SERVERS_PROPERTY = new ParameterCollection("memcached.servers", null);
 
     // Default size for String or byte buffers used to manipulate html page contents
     public static final int DEFAULT_BUFFER_SIZE = 1024;

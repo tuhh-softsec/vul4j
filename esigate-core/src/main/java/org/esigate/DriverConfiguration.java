@@ -49,11 +49,11 @@ public class DriverConfiguration {
     public DriverConfiguration(String instanceName, Properties props) {
         this.instanceName = instanceName;
         this.baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
-        this.uriEncoding = Parameters.URI_ENCODING.getValueString(props);
-        this.preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
-        this.visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValueString(props);
+        this.uriEncoding = Parameters.URI_ENCODING.getValue(props);
+        this.preserveHost = Parameters.PRESERVE_HOST.getValue(props);
+        this.visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValue(props);
         this.isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
-        this.stripMappingPath= Parameters.STRIP_MAPPING_PATH.getValueBoolean(props);
+        this.stripMappingPath= Parameters.STRIP_MAPPING_PATH.getValue(props);
         this.uriMappings = parseMappings(props);
         properties = props;
     }
@@ -67,7 +67,7 @@ public class DriverConfiguration {
     private static List<UriMapping> parseMappings(Properties props) {
         List<UriMapping> mappings = new ArrayList<UriMapping>();
 
-        Collection<String> mappingsParam = Parameters.MAPPINGS.getValueList(props);
+        Collection<String> mappingsParam = Parameters.MAPPINGS.getValue(props);
         for (String mappingParam : mappingsParam) {
             mappings.add(UriMapping.create(mappingParam));
         }
@@ -77,14 +77,14 @@ public class DriverConfiguration {
 
     private BaseUrlRetrieveStrategy getBaseUrlRetrieveSession(Properties props) {
         BaseUrlRetrieveStrategy urlStrategy;
-        String[] baseURLs = Parameters.REMOTE_URL_BASE.getValueArray(props);
+        String[] baseURLs = Parameters.REMOTE_URL_BASE.getValue(props);
         if (baseURLs.length == 0) {
             throw new ConfigurationException(Parameters.REMOTE_URL_BASE.getName()
                     + " property cannot be empty for instance '" + instanceName + "'");
         } else if (baseURLs.length == 1) {
             urlStrategy = new SingleBaseUrlRetrieveStrategy(baseURLs[0]);
         } else {
-            String strategy = Parameters.REMOTE_URL_BASE_STRATEGY.getValueString(props);
+            String strategy = Parameters.REMOTE_URL_BASE_STRATEGY.getValue(props);
             if (Parameters.ROUNDROBIN.equalsIgnoreCase(strategy)) {
                 urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(baseURLs);
             } else if (Parameters.IPHASH.equalsIgnoreCase(strategy)) {
