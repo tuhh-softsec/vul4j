@@ -202,6 +202,7 @@ theme.stripMappingPath=true
                     </td>
                     <td>No</td>
                     <td>false</td>
+                    <td>5.0</td>
                 </tr>
 				<tr>
 					<td>uriEncoding</td>
