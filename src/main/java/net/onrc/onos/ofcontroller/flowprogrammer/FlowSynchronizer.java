@@ -24,8 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.floodlightcontroller.core.IOFSwitch;
-import net.onrc.onos.graph.DBOperation;
-import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService.MsgPriority;
@@ -45,12 +43,14 @@ public class FlowSynchronizer implements IFlowSyncService {
 
     private static Logger log = LoggerFactory.getLogger(FlowSynchronizer.class);
 
-    private DBOperation dbHandler;
+    // TODO: fix after FlowSynchronizer is refactored
+    // private DBOperation dbHandler;
     protected IFlowPusherService pusher;
     private Map<IOFSwitch, FutureTask<SyncResult>> switchThreads; 
 
     public FlowSynchronizer() {
-	dbHandler = GraphDBManager.getDBOperation();
+	// TODO: fix after FlowSynchronizer is refactored
+	// dbHandler = GraphDBManager.getDBOperation();
 	switchThreads = new HashMap<IOFSwitch, FutureTask<SyncResult>>();
     }
 
@@ -91,7 +91,8 @@ public class FlowSynchronizer implements IFlowSyncService {
 	public Synchronizer(IOFSwitch sw) {
 	    this.sw = sw;
 	    Dpid dpid = new Dpid(sw.getId());
-	    this.swObj = dbHandler.searchSwitch(dpid.toString());
+	    // TODO: fix after FlowSynchronizer is refactored
+	    // this.swObj = dbHandler.searchSwitch(dpid.toString());
 	}
 
 	double graphIDTime, switchTime, compareTime, graphEntryTime, extractTime, pushTime, totalTime;
@@ -283,7 +284,8 @@ public class FlowSynchronizer implements IFlowSyncService {
 	    // Get the Flow Entry state from the Network Graph
 	    if (iFlowEntry == null) {
             try {
-            	iFlowEntry = dbHandler.searchFlowEntry(flowEntryId);
+		// TODO: fix after FlowSynchronizer is refactored
+            	// iFlowEntry = dbHandler.searchFlowEntry(flowEntryId);
             } catch (Exception e) {
             	log.error("Error finding flow entry {} in Network Graph",
             			flowEntryId);

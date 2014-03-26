@@ -9,7 +9,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import net.floodlightcontroller.core.IOFSwitch;
-import net.onrc.onos.graph.DBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService.MsgPriority;
@@ -38,7 +37,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 // Test should be fixed to fit RAMCloud basis
 @Ignore
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({FlowSynchronizer.class, DBOperation.class})
+@PrepareForTest({FlowSynchronizer.class})
 public class FlowSynchronizerTest {
 	private FlowPusher pusher;
 	private FlowSynchronizer sync;
@@ -252,7 +251,7 @@ public class FlowSynchronizerTest {
 	}
 	
 	/**
-	 * Create mock GraphDBOperation and FlowDatabaseOperation to mock DB.
+	 * Create mock FlowDatabaseOperation to mock DB.
 	 * @param idList List of FlowEntry IDs stored in DB.
 	 */
 	private void initMockGraph(long[] idList) {

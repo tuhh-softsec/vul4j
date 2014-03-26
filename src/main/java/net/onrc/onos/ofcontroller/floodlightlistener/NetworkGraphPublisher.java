@@ -21,12 +21,7 @@ import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.graph.DBOperation;
-import net.onrc.onos.graph.DBConnection;
-import net.onrc.onos.graph.GraphDBManager;
 import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.graph.IDBConnection;
-import net.onrc.onos.graph.LocalTopologyEventListener;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
@@ -55,7 +50,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 	protected final static Logger log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
 	//protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
-	protected DBOperation op;
+	// protected DBOperation op;
 
 	protected static final String DBConfigFile = "dbconf";
         protected static final String GraphDBStore = "graph_db_store";
@@ -79,13 +74,13 @@ public class NetworkGraphPublisher implements IDeviceListener,
             Thread.currentThread().setName("SwitchCleanup@" + old);
             try {
             	log.debug("Running cleanup thread");
-		op = GraphDBManager.getDBOperation();
+		// op = GraphDBManager.getDBOperation();
                 switchCleanup();
             }
             catch (Exception e) {
                 log.error("Error in cleanup thread", e);
             } finally {
-            	op.close();
+            	// op.close();
                     cleanupTask.reschedule(CLEANUP_TASK_INTERVAL,
                                               TimeUnit.SECONDS);
                 Thread.currentThread().setName(old);
@@ -146,7 +141,8 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
     protected void switchCleanup() {
     	//op.close();
-    	Iterable<ISwitchObject> switches = op.getActiveSwitches();
+    	// Iterable<ISwitchObject> switches = op.getActiveSwitches();
+    	Iterable<ISwitchObject> switches = null;
 
     	log.debug("Checking for inactive switches");
     	// For each switch check if a controller exists in controller registry
@@ -169,7 +165,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 				e.printStackTrace();
 			}
 		}
-    	op.close();
+    	// op.close();
     }
 
     @Override
@@ -458,7 +454,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
                 String dbStore = configMap.get(GraphDBStore);
-		op = GraphDBManager.getDBOperation();
+		// op = GraphDBManager.getDBOperation();
 
 		floodlightProvider =
 	            context.getServiceImpl(IFloodlightProviderService.class);
@@ -474,6 +470,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public void startUp(FloodlightModuleContext context) {
+	    /*
 		Map<String, String> configMap = context.getConfigParams(this);
 		String cleanupNeeded = configMap.get(CleanupEnabled);
 
@@ -495,6 +492,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		// NOTE: No need to register with the Datagrid Service,
 		// because we don't need to receive any notifications from it.
 		//
+	    */
 	}
 
 }
