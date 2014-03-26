@@ -105,16 +105,18 @@
 					</execution>
 				</executions>
 				<configuration>
-					<configuration>
-						<deployables>
-							<deployable>
-								<artifactId>esigate-app-provider</artifactId>
-								<properties>
-									<context>esigate-app-provider</context>
-								</properties>
-							</deployable>
-						</deployables>
-					</configuration>
+                    <container>
+                        <containerId>jetty7x</containerId>
+                        <type>embedded</type>
+                    </container>
+                    <deployables>
+                        <deployable>
+                            <artifactId>esigate-app-provider</artifactId>
+                            <properties>
+                                <context>esigate-app-provider</context>
+                            </properties>
+                        </deployable>
+                    </deployables>
 				</configuration>
 			</plugin>
 		</plugins>

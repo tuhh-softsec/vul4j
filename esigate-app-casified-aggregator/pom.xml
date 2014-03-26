@@ -130,28 +130,30 @@
 					</execution>
 				</executions>
 				<configuration>
-					<configuration>
-						<deployables>
-							<deployable>
-								<artifactId>esigate-app-cas</artifactId>
-								<properties>
-									<context>esigate-app-cas</context>
-								</properties>
-							</deployable>
-							<deployable>
-								<artifactId>esigate-app-casified-aggregated1</artifactId>
-								<properties>
-									<context>esigate-app-casified-aggregated1</context>
-								</properties>
-							</deployable>
-							<deployable>
-								<artifactId>esigate-app-casified-aggregated2</artifactId>
-								<properties>
-									<context>esigate-app-casified-aggregated2</context>
-								</properties>
-							</deployable>
-						</deployables>
-					</configuration>
+                    <container>
+                        <containerId>jetty7x</containerId>
+                        <type>embedded</type>
+                    </container>
+                    <deployables>
+                        <deployable>
+                            <artifactId>esigate-app-cas</artifactId>
+                            <properties>
+                                <context>esigate-app-cas</context>
+                            </properties>
+                        </deployable>
+                        <deployable>
+                            <artifactId>esigate-app-casified-aggregated1</artifactId>
+                            <properties>
+                                <context>esigate-app-casified-aggregated1</context>
+                            </properties>
+                        </deployable>
+                        <deployable>
+                            <artifactId>esigate-app-casified-aggregated2</artifactId>
+                            <properties>
+                                <context>esigate-app-casified-aggregated2</context>
+                            </properties>
+                        </deployable>
+                    </deployables>
 				</configuration>
 			</plugin>
 		</plugins>

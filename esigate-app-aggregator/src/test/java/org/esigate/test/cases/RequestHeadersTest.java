@@ -159,7 +159,7 @@ public class RequestHeadersTest extends TestCase {
     public void testCookie() throws Exception {
         // In driver.properties, cookie "test0" is supposed to be forwarded but
         // not test4
-        String resp = sendRequestWithHeader("Cookie", "test0=dummy,test4=dummy");
+        String resp = sendRequestWithHeader("Cookie", "test0=dummy;test4=dummy");
         assertEquals("HTTP header Cookie should not be forwarded as is due to cookies filtering",
                 "cookie: test0=dummy", resp.toLowerCase());
     }

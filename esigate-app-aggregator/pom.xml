@@ -31,7 +31,7 @@
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
 
-		<dependency>
+        <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
@@ -134,23 +134,28 @@
 					</execution>
 				</executions>
 				<configuration>
+                    <container>
+                        <containerId>jetty7x</containerId>
+                        <type>embedded</type>
+                    </container>
+                    <deployables>
+                        <deployable>
+                            <groupId>org.esigate</groupId>
+                            <artifactId>esigate-app-aggregated1</artifactId>
+                            <properties>
+                                <context>esigate-app-aggregated1</context>
+                            </properties>
+                        </deployable>
+                        <deployable>
+                            <groupId>org.esigate</groupId>
+                            <artifactId>esigate-app-aggregated2</artifactId>
+                            <properties>
+                                <context>esigate-app-aggregated2</context>
+                            </properties>
+                        </deployable>
+                    </deployables>
 					<configuration>
-						<deployables>
-							<deployable>
-								<groupId>org.esigate</groupId>
-								<artifactId>esigate-app-aggregated1</artifactId>
-								<properties>
-									<context>esigate-app-aggregated1</context>
-								</properties>
-							</deployable>
-							<deployable>
-								<groupId>org.esigate</groupId>
-								<artifactId>esigate-app-aggregated2</artifactId>
-								<properties>
-									<context>esigate-app-aggregated2</context>
-								</properties>
-							</deployable>
-						</deployables>
+
 						<properties>
 						<cargo.jvmargs>-Xmx256M -server</cargo.jvmargs>
 						</properties>
