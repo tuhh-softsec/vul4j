@@ -5,7 +5,7 @@ import net.onrc.onos.datastore.topology.KVLink;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
-public class RamcloudLinksResource extends ServerResource {
+public class DatastoreLinksResource extends ServerResource {
 
 	@Get("json")
 	public Iterable<KVLink> retrieve() {

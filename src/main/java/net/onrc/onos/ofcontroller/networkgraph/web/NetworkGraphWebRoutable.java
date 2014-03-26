@@ -11,9 +11,16 @@ public class NetworkGraphWebRoutable implements RestletRoutable {
 	@Override
 	public Restlet getRestlet(Context context) {
 		Router router = new Router(context);
-		router.attach("/rc/switches/json", RamcloudSwitchesResource.class);
-		router.attach("/rc/links/json", RamcloudLinksResource.class);
-		router.attach("/rc/ports/json", RamcloudPortsResource.class);
+		// leaving old path there for compatibility
+		router.attach("/rc/switches/json", DatastoreSwitchesResource.class);
+		router.attach("/rc/links/json", DatastoreLinksResource.class);
+		router.attach("/rc/ports/json", DatastorePortsResource.class);
+
+                // debug API to dump datastore content
+                router.attach("/ds/switches/json", DatastoreSwitchesResource.class);
+                router.attach("/ds/links/json", DatastoreLinksResource.class);
+                router.attach("/ds/ports/json", DatastorePortsResource.class);
+
 		router.attach("/ng/switches/json", NetworkGraphSwitchesResource.class);
 		router.attach("/ng/links/json", NetworkGraphLinksResource.class);
 		router.attach("/ng/shortest-path/{src-dpid}/{dst-dpid}/json", NetworkGraphShortestPathResource.class);
