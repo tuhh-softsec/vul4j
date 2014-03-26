@@ -17,6 +17,11 @@ public class NetworkGraphWebRoutable implements RestletRoutable {
 		router.attach("/ng/switches/json", NetworkGraphSwitchesResource.class);
 		router.attach("/ng/links/json", NetworkGraphLinksResource.class);
 		router.attach("/ng/shortest-path/{src-dpid}/{dst-dpid}/json", NetworkGraphShortestPathResource.class);
+		
+		// Old URLs for compatibility
+		router.attach("/topology/switches/json", NetworkGraphSwitchesResource.class);
+		router.attach("/topology/links/json", NetworkGraphLinksResource.class);
+		
 		return router;
 	}
 
