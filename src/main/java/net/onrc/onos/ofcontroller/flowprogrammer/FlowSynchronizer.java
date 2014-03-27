@@ -24,8 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.floodlightcontroller.core.IOFSwitch;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService.MsgPriority;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
@@ -43,13 +41,13 @@ public class FlowSynchronizer implements IFlowSyncService {
 
     private static Logger log = LoggerFactory.getLogger(FlowSynchronizer.class);
 
-    // TODO: fix after FlowSynchronizer is refactored
+    // TODO: fix when FlowSynchronizer is refactored
     // private DBOperation dbHandler;
     protected IFlowPusherService pusher;
     private Map<IOFSwitch, FutureTask<SyncResult>> switchThreads; 
 
     public FlowSynchronizer() {
-	// TODO: fix after FlowSynchronizer is refactored
+	// TODO: fix when FlowSynchronizer is refactored
 	// dbHandler = GraphDBManager.getDBOperation();
 	switchThreads = new HashMap<IOFSwitch, FutureTask<SyncResult>>();
     }
@@ -86,12 +84,13 @@ public class FlowSynchronizer implements IFlowSyncService {
      */
 	protected class Synchronizer implements Callable<SyncResult> {
 	IOFSwitch sw;
-	ISwitchObject swObj;
+	// TODO: fix when FlowSynchronizer is refactored
+	// ISwitchObject swObj;
 
 	public Synchronizer(IOFSwitch sw) {
 	    this.sw = sw;
 	    Dpid dpid = new Dpid(sw.getId());
-	    // TODO: fix after FlowSynchronizer is refactored
+	    // TODO: fix when FlowSynchronizer is refactored
 	    // this.swObj = dbHandler.searchSwitch(dpid.toString());
 	}
 
@@ -186,10 +185,14 @@ public class FlowSynchronizer implements IFlowSyncService {
 	 */
 	private Set<FlowEntryWrapper> getFlowEntriesFromGraph() {
 	    Set<FlowEntryWrapper> entries = new HashSet<FlowEntryWrapper>();
+
+	    // TODO: fix when FlowSynchronizer is refactored
+	    /*
 	    for(IFlowEntry entry : swObj.getFlowEntries()) {
 		FlowEntryWrapper fe = new FlowEntryWrapper(entry);
 		entries.add(fe);
 	    }
+	    */
 	    return entries;	    
 	}
 
@@ -254,14 +257,18 @@ public class FlowSynchronizer implements IFlowSyncService {
      */
     class FlowEntryWrapper {
     FlowEntryId flowEntryId;
-    IFlowEntry iFlowEntry;
+    // TODO: fix when FlowSynchronizer is refactored
+    // IFlowEntry iFlowEntry;
     OFFlowStatisticsReply statisticsReply;
 
 
+	// TODO: fix when FlowSynchronizer is refactored
+	/*
 	public FlowEntryWrapper(IFlowEntry entry) {
 	    flowEntryId = new FlowEntryId(entry.getFlowEntryId());
 	    iFlowEntry = entry;
-    }
+	}
+	*/
 
 	public FlowEntryWrapper(OFFlowStatisticsReply entry) {
 	    flowEntryId = new FlowEntryId(entry.getCookie());
@@ -282,16 +289,19 @@ public class FlowSynchronizer implements IFlowSyncService {
 
 	    double startDB = System.nanoTime();
 	    // Get the Flow Entry state from the Network Graph
+	    // TODO: fix when FlowSynchronizer is refactored
+	    /*
 	    if (iFlowEntry == null) {
             try {
-		// TODO: fix after FlowSynchronizer is refactored
-            	// iFlowEntry = dbHandler.searchFlowEntry(flowEntryId);
+		// TODO: fix when FlowSynchronizer is refactored
+            	iFlowEntry = dbHandler.searchFlowEntry(flowEntryId);
             } catch (Exception e) {
             	log.error("Error finding flow entry {} in Network Graph",
             			flowEntryId);
             	return;
             }
 	    }
+	    */
 	    dbTime = System.nanoTime() - startDB;
 
 	    //

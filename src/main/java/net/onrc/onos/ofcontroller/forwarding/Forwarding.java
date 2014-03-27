@@ -20,9 +20,6 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.proxyarp.BroadcastPacketOutNotification;
@@ -298,6 +295,8 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		}
 	}
 
+	// TODO: Fix the code below because IDeviceObject was removed
+	/*
 	private void continueHandlePacketIn(IOFSwitch sw, OFPacketIn pi, Ethernet eth, IDeviceObject deviceObject) {
 		log.debug("Start continuehandlePacketIn");
 
@@ -431,6 +430,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		// TODO: Add the flow by using the new Path Intent framework
 		// flowService.addFlow(flowPath);
 	}
+	*/
 
 	private OFPacketOut constructPacketOut(OFPacketIn pi, IOFSwitch sw) {	
 		OFPacketOut po = new OFPacketOut();

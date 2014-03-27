@@ -29,9 +29,6 @@ import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -345,8 +342,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		IDeviceObject targetDevice = 
 				deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(target));
 		*/
-		IDeviceObject targetDevice = null;
-		
+
+		// TODO: Fix the code below after deviceStorage was removed
+		/*
 		if (targetDevice == null) {
 			if (log.isTraceEnabled()) {
 				log.trace("No device info found for {} - broadcasting",
@@ -390,10 +388,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 					//long outSwitch = 0;
 					//short outPort = 0;
 
-					/*
-					if (!portObject.getLinkedPorts().iterator().hasNext()) {
-						outPort = portObject.getNumber();					
-					}*/
+					// if (!portObject.getLinkedPorts().iterator().hasNext()) {
+					//	outPort = portObject.getNumber();					
+					// }
 					if (portObject.getLinkedPorts().iterator().hasNext()) {
 						continue;
 					}
@@ -414,6 +411,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 				}
 			}
 		}
+		*/
 	}
 	
 	private void handleArpReply(IOFSwitch sw, OFPacketIn pi, ARP arp){

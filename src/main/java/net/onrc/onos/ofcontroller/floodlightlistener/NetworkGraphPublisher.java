@@ -22,8 +22,6 @@ import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
@@ -140,9 +138,9 @@ public class NetworkGraphPublisher implements IDeviceListener,
     }
 
     protected void switchCleanup() {
+	/*
     	//op.close();
-    	// Iterable<ISwitchObject> switches = op.getActiveSwitches();
-    	Iterable<ISwitchObject> switches = null;
+    	Iterable<ISwitchObject> switches = op.getActiveSwitches();
 
     	log.debug("Checking for inactive switches");
     	// For each switch check if a controller exists in controller registry
@@ -166,6 +164,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 			}
 		}
     	// op.close();
+	*/
     }
 
     @Override
