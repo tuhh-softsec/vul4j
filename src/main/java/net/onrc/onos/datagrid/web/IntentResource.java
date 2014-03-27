@@ -7,7 +7,6 @@ package net.onrc.onos.datagrid.web;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
-import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.intent.IntentOperation;
@@ -40,34 +39,6 @@ public class IntentResource extends ServerResource {
     private final static Logger log = LoggerFactory.getLogger(IntentResource.class);
     // TODO need to assign proper application id.
     private final String APPLN_ID = "1";
-
-    private class IntentStatus {
-        String intentId;
-        String status;
-        
-        public IntentStatus() {}
-        
-        public IntentStatus(String intentId, String status) {
-            this.intentId = intentId;
-            this.status = status;
-        }
-        
-        public String getIntentId() {
-            return intentId;
-        }
-        
-        public void setIntentId(String intentId) {
-            this.intentId = intentId;
-        }
-        
-        public String getStatus() {
-            return status;
-        }
-        
-        public void setStatus(String status) {
-            this.status = status;
-        }
-    }
     
     @Post("json")
     public String store(String jsonIntent) throws IOException {
@@ -204,7 +175,13 @@ public class IntentResource extends ServerResource {
         String intentType = (String)fields.get("intent_type");
         String intentOp = (String)fields.get("intent_op");
         Intent intent;
-        String applnIntentId = APPLN_ID + ":" + (String)fields.get("intent_id");
+        String intentId = (String)fields.get("intent_id");
+        boolean pathFrozen = false;
+        if (intentId.startsWith("F")) { // TODO define REST API for frozen intents
+            pathFrozen = true;
+            intentId = intentId.substring(1);
+        }
+        String applnIntentId = APPLN_ID + ":" + intentId;
         
         IntentOperation.Operator operation = IntentOperation.Operator.ADD;
         if ((intentOp.equals("remove"))) {
@@ -218,6 +195,7 @@ public class IntentResource extends ServerResource {
                     Long.decode((String) fields.get("dstSwitch")),
                     (long) fields.get("dstPort"),
                     MACAddress.valueOf((String) fields.get("dstMac")).toLong());
+            spi.setPathFrozen(pathFrozen);
             operations.add(operation, spi);
             intent = spi;
         } else {
@@ -229,6 +207,7 @@ public class IntentResource extends ServerResource {
                     (long) fields.get("dstPort"),
                     MACAddress.valueOf((String) fields.get("dstMac")).toLong(),
                     (double) fields.get("bandwidth"));
+            cspi.setPathFrozen(pathFrozen);
             operations.add(operation, cspi);
             intent = cspi;
         }

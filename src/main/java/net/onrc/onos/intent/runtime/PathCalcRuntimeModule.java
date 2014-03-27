@@ -100,7 +100,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 		IntentOperationList reroutingOperation = new IntentOperationList();
 		for (Intent intent : oldPaths) {
 			PathIntent pathIntent = (PathIntent) intent;
-			if (pathIntent.getId().startsWith("1:F")) // XXX: demo special, the intent start with "F" is skipped
+			if (pathIntent.isPathFrozen())
 				continue;
 			if (pathIntent.getState().equals(IntentState.INST_ACK) && // XXX: path intents in flight
 					!reroutingOperation.contains(pathIntent.getParentIntent())) {

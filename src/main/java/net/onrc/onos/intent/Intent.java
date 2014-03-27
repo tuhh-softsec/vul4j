@@ -21,6 +21,7 @@ public class Intent {
 
 	private String id;
 	private IntentState state = IntentState.CREATED;
+	private boolean pathFrozen = false;
 
 	@Optional(value="logs")
 	private LinkedList<String> logs = new LinkedList<>();
@@ -60,6 +61,14 @@ public class Intent {
 		IntentState oldState = state;
 		state = newState;
 		return oldState;
+	}
+
+	public boolean isPathFrozen() {
+		return pathFrozen;
+	}
+
+	public void setPathFrozen(boolean isFrozen) {
+		pathFrozen = isFrozen;
 	}
 
 	public LinkedList<String> getLogs() {
