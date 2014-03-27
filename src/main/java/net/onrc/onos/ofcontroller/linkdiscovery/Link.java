@@ -15,7 +15,7 @@
 *    under the License.
 **/
 
-package net.floodlightcontroller.routing;
+package net.onrc.onos.ofcontroller.linkdiscovery;
 
 import net.floodlightcontroller.core.web.serializers.DPIDSerializer;
 import net.floodlightcontroller.core.web.serializers.UShortSerializer;

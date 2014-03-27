@@ -6,9 +6,6 @@ import java.util.Iterator;
 
 import net.floodlightcontroller.core.test.MockFloodlightProvider;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier;
-import net.floodlightcontroller.devicemanager.test.MockDeviceManager;
-import net.floodlightcontroller.topology.TopologyManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,25 +16,16 @@ public class FloodlightTestModuleLoader extends FloodlightModuleLoader {
 	// List of default modules to use unless specified otherwise
 	public static final Class<? extends IFloodlightModule> DEFAULT_FLOODLIGHT_PRPOVIDER =
 			MockFloodlightProvider.class;
-	public static final Class<? extends IFloodlightModule> DEFAULT_TOPOLOGY_PROVIDER =
-			TopologyManager.class;
-	public static final Class<? extends IFloodlightModule> DEFAULT_DEVICE_SERVICE =
-			MockDeviceManager.class;
 	public static final Class<? extends IFloodlightModule> DEFAULT_THREADPOOL =
 			MockThreadPoolService.class;
-	public static final Class<? extends IFloodlightModule> DEFAULT_ENTITY_CLASSIFIER =
-			DefaultEntityClassifier.class;
 	
 	
 	protected static final Collection<Class<? extends IFloodlightModule>> DEFAULT_MODULE_LIST;
 	
 	static {
 		DEFAULT_MODULE_LIST = new ArrayList<Class<? extends IFloodlightModule>>();
-		DEFAULT_MODULE_LIST.add(DEFAULT_DEVICE_SERVICE);
 		DEFAULT_MODULE_LIST.add(DEFAULT_FLOODLIGHT_PRPOVIDER);
-		DEFAULT_MODULE_LIST.add(DEFAULT_TOPOLOGY_PROVIDER);
 		DEFAULT_MODULE_LIST.add(DEFAULT_THREADPOOL);
-		DEFAULT_MODULE_LIST.add(DEFAULT_ENTITY_CLASSIFIER);
 
 	}
 	

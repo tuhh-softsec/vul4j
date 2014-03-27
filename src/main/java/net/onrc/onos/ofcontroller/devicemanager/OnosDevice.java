@@ -20,7 +20,6 @@ package net.onrc.onos.ofcontroller.devicemanager;
 import java.io.Serializable;
 import java.util.Date;
 
-import net.floodlightcontroller.devicemanager.internal.Entity;
 import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.util.MACAddress;
 
@@ -78,14 +77,6 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
      */
     private Date lastSeenTimestamp;
 
-    /**
-     * The time between {@link Entity#activeSince} and 
-     * {@link Entity#lastSeenTimestamp} is a period of activity for this
-     * entity where it was observed repeatedly.  If, when the entity is
-     * observed, the  is longer ago than the activity timeout, 
-     * {@link Entity#lastSeenTimestamp} and {@link Entity#activeSince} will 
-     * be set to the current time.
-     */
     private Date activeSince;
     
     private int hashCode = 0;
@@ -156,12 +147,7 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
         return lastSeenTimestamp;
     }
 
-    /**
-     * Set the last seen timestamp and also update {@link Entity#activeSince}
-     * if appropriate
-     * @param lastSeenTimestamp the new last seen timestamp
-     * @see {@link Entity#activeSince}
-     */
+    
     public void setLastSeenTimestamp(Date lastSeenTimestamp) {
         if (activeSince == null ||
             (activeSince.getTime() +  ACTIVITY_TIMEOUT) <

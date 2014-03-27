@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openflow.util.HexString;
 
-import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.ofcontroller.linkdiscovery.Link;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LinkType;
 
 /**

@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,13 +27,9 @@ import net.floodlightcontroller.core.util.SingletonTask;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.routing.Link;
-import net.floodlightcontroller.topology.ITopologyListener;
-import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.bgproute.RibUpdate.Operation;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.proxyarp.IArpRequester;
@@ -78,13 +73,12 @@ import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class BgpRoute implements IFloodlightModule, IBgpRouteService,
-									ITopologyListener, IArpRequester,
+									IArpRequester,
 									IOFSwitchListener, IConfigInfoService {
 
 	private final static Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
 	private IFloodlightProviderService floodlightProvider;
-	private ITopologyService topologyService;
 	private ILinkDiscoveryService linkDiscoveryService;
 	private IRestApiService restApi;
 	private IProxyArpService proxyArp;
@@ -252,7 +246,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		Collection<Class<? extends IFloodlightService>> l
 			= new ArrayList<Class<? extends IFloodlightService>>();
 		l.add(IFloodlightProviderService.class);
-		l.add(ITopologyService.class);
 		l.add(IRestApiService.class);
 		return l;
 	}
@@ -268,7 +261,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 		// Register floodlight provider and REST handler.
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-		topologyService = context.getServiceImpl(ITopologyService.class);
 		linkDiscoveryService = context.getServiceImpl(ILinkDiscoveryService.class);
 		restApi = context.getServiceImpl(IRestApiService.class);
 		proxyArp = context.getServiceImpl(IProxyArpService.class);
@@ -322,7 +314,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		restApi.addRestletRoutable(new BgpRouteWebRoutable());
-		topologyService.addListener(this);
 		floodlightProvider.addOFSwitchListener(this);
 
 		//Retrieve the RIB from BGPd during startup
@@ -1298,6 +1289,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 		}
 	}
 
+	// The code below should be reimplemented after removal of Floodlight's 
+	// ITopologyService API. It should be implemented on top of network graph
+	// notifications. (It was pretty hacky anyway...)
+	/*
 	@Override
 	public void topologyChanged() {
 		if (topologyReady) {
@@ -1325,6 +1320,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 			topologyChangeDetectorTask.reschedule(TOPO_DETECTION_WAIT, TimeUnit.SECONDS);
 		}
 	}
+	*/
 
 	@Override
 	public void addedSwitch(IOFSwitch sw) {

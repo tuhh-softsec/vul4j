@@ -2,10 +2,7 @@ package net.onrc.onos.ofcontroller.floodlightlistener;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
@@ -16,30 +13,20 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
-import net.floodlightcontroller.devicemanager.IDevice;
-import net.floodlightcontroller.devicemanager.IDeviceListener;
-import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
-import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
-import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
-import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
-import net.onrc.onos.ofcontroller.util.PerformanceMonitor;
+import net.onrc.onos.ofcontroller.linkdiscovery.Link;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
-import net.onrc.onos.registry.controller.RegistryException;
 
 import org.openflow.protocol.OFPhysicalPort;
-import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.net.InetAddresses;
-
-public class OldNetworkGraphPublisher implements IDeviceListener,
+public class OldNetworkGraphPublisher implements
 					      IOFSwitchListener,
 					      IOFSwitchPortListener,
 					      ILinkDiscoveryListener,
@@ -389,41 +376,6 @@ public class OldNetworkGraphPublisher implements IDeviceListener,
 	public String getName() {
 		return "OldNetworkGraphPublisher";
 	}
-
-	@Override
-	public void deviceAdded(IDevice device) {
-		log.debug("{}:deviceAdded(): Adding device {}",this.getClass(),device.getMACAddressString());
-		/*
-		devStore.addDevice(device);
-		for (int intIpv4Address : device.getIPv4Addresses()) {
-			datagridService.sendArpReplyNotification(new ArpReplyNotification(
-					InetAddresses.fromInteger(intIpv4Address), 
-					MACAddress.valueOf(device.getMACAddress())));
-		}
-		*/
-	}
-
-	@Override
-	public void deviceRemoved(IDevice device) {
-		// TODO Auto-generated method stub
-		// devStore.removeDevice(device);
-	}
-
-	@Override
-	public void deviceMoved(IDevice device) {
-		// devStore.changeDeviceAttachments(device);
-	}
-
-	@Override
-	public void deviceIPV4AddrChanged(IDevice device) {
-		// devStore.changeDeviceIPv4Address(device);
-	}
-
-	@Override
-	public void deviceVlanChanged(IDevice device) {
-		// TODO Auto-generated method stub
-	}
-
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {

@@ -1,4 +1,4 @@
-package net.floodlightcontroller.topology;
+package net.onrc.onos.ofcontroller.linkdiscovery;
 
 import net.floodlightcontroller.core.web.serializers.DPIDSerializer;
 import net.floodlightcontroller.core.web.serializers.UShortSerializer;

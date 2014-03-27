@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.ofcontroller.linkdiscovery.Link;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
 
 import org.restlet.resource.Get;

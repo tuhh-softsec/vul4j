@@ -1,12 +1,10 @@
 package net.onrc.onos.ofcontroller.proxyarp;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +23,11 @@ import net.floodlightcontroller.packet.ARP;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
-import net.onrc.onos.ofcontroller.util.Dpid;
-import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 import org.openflow.protocol.OFMessage;
@@ -49,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
-import com.google.common.net.InetAddresses;
 
 public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 										IPacketOutEventHandler, IArpReplyEventHandler, 
@@ -61,7 +55,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	private static final int ARP_REQUEST_TIMEOUT = 2000; //ms
 			
 	private IFloodlightProviderService floodlightProvider;
-	private ITopologyService topology;
 	private IDatagridService datagrid;
 	private IConfigInfoService configService;
 	private IRestApiService restApi;
@@ -146,7 +139,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		Collection<Class<? extends IFloodlightService>> dependencies 
 			= new ArrayList<Class<? extends IFloodlightService>>();
 		dependencies.add(IFloodlightProviderService.class);
-		dependencies.add(ITopologyService.class);
 		dependencies.add(IRestApiService.class);
 		dependencies.add(IDatagridService.class);
 		dependencies.add(IConfigInfoService.class);
@@ -158,7 +150,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 	public void init(FloodlightModuleContext context){
 		this.floodlightProvider = 
 				context.getServiceImpl(IFloodlightProviderService.class);
-		this.topology = context.getServiceImpl(ITopologyService.class);
 		this.datagrid = context.getServiceImpl(IDatagridService.class);
 		this.configService = context.getServiceImpl(IConfigInfoService.class);
 		this.restApi = context.getServiceImpl(IRestApiService.class);
@@ -554,58 +545,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 		}
 
 		datagrid.sendArpReplyNotification(new ArpReplyNotification(targetAddress, mac));
-	}
-	
-	// This remains from the older single-instance ARP code. It used Floodlight
-	// APIs to find the edge of the network, but only worked on a single instance.
-	// We now do this using ONOS network graph APIs.
-	@Deprecated
-	private void broadcastArpRequestOutEdge(byte[] arpRequest, long inSwitch, short inPort) {
-		for (IOFSwitch sw : floodlightProvider.getSwitches().values()){
-			Collection<Short> enabledPorts = sw.getEnabledPortNumbers();
-			Set<Short> linkPorts = topology.getPortsWithLinks(sw.getId());
-			
-			if (linkPorts == null){
-				//I think this means the switch doesn't have any links.
-				//continue;
-				linkPorts = new HashSet<Short>();
-			}
-			
-			
-			OFPacketOut po = new OFPacketOut();
-			po.setInPort(OFPort.OFPP_NONE)
-				.setBufferId(-1)
-				.setPacketData(arpRequest);
-				
-			List<OFAction> actions = new ArrayList<OFAction>();
-			
-			for (short portNum : enabledPorts){
-				if (linkPorts.contains(portNum) || 
-						(sw.getId() == inSwitch && portNum == inPort)){
-					//If this port isn't an edge port or is the ingress port
-					//for the ARP, don't broadcast out it
-					continue;
-				}
-				
-				actions.add(new OFActionOutput(portNum));
-			}
-			
-			po.setActions(actions);
-			short actionsLength = (short) (actions.size() * OFActionOutput.MINIMUM_LENGTH);
-			po.setActionsLength(actionsLength);
-			po.setLengthU(OFPacketOut.MINIMUM_LENGTH + actionsLength 
-					+ arpRequest.length);
-			
-			List<OFMessage> msgList = new ArrayList<OFMessage>();
-			msgList.add(po);
-			
-			try {
-				sw.write(msgList, null);
-				sw.flush();
-			} catch (IOException e) {
-				log.error("Failure writing packet out to switch", e);
-			}
-		}
 	}
 	
 	private void broadcastArpRequestOutMyEdge(byte[] arpRequest,

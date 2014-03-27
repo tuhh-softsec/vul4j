@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.routing.Link;
-import net.floodlightcontroller.topology.NodePortTuple;
 
 
 public interface ILinkDiscoveryService extends IFloodlightService {
