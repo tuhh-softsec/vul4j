@@ -53,7 +53,7 @@ public class DriverConfiguration {
         this.preserveHost = Parameters.PRESERVE_HOST.getValue(props);
         this.visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValue(props);
         this.isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
-        this.stripMappingPath= Parameters.STRIP_MAPPING_PATH.getValue(props);
+        this.stripMappingPath = Parameters.STRIP_MAPPING_PATH.getValue(props);
         this.uriMappings = parseMappings(props);
         properties = props;
     }

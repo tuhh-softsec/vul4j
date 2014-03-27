@@ -109,7 +109,7 @@ public class ConfigReloadOnChange implements Extension {
                 delay = SPEED_LIMIT;
             }
         } catch (NumberFormatException e) {
-            LOG.warn("Unable to convert {}={} as number", CONFIG_RELOAD_DELAY.getName(),e);
+            LOG.warn("Unable to convert {}={} as number", CONFIG_RELOAD_DELAY.getName(), e);
         }
 
         LOG.info("Will reload configuration every {}ms if {} is modified", Long.valueOf(delay),

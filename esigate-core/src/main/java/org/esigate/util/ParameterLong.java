@@ -17,6 +17,7 @@ package org.esigate.util;
 import java.util.Properties;
 
 /**
+ * Long parameter.
  * @author Alexis Thaveau
  */
 public class ParameterLong extends Parameter<Long> {
@@ -25,10 +26,14 @@ public class ParameterLong extends Parameter<Long> {
         super(name, defaultValue);
     }
 
+    public ParameterLong(String name) {
+        super(name);
+    }
+
     @Override
     public Long getValue(Properties properties) {
-        Long defaultValue = 0l;
-        if(getDefaultValue()!=null){
+        Long defaultValue = 0L;
+        if (getDefaultValue() != null) {
             defaultValue = getDefaultValue();
         }
         Long value = PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);

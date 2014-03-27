@@ -17,7 +17,8 @@ package org.esigate.util;
 import java.util.Properties;
 
 /**
- * @author  Alexis Thaveau
+ * Boolean parameter.
+ * @author Alexis Thaveau
  */
 public class ParameterBoolean extends Parameter<Boolean> {
 

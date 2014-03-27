@@ -15,7 +15,9 @@
 
 package org.esigate.extension.monitoring;
 
-import com.codahale.metrics.*;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.ScheduledReporter;
+import com.codahale.metrics.Slf4jReporter;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
@@ -76,7 +78,8 @@ public class Metric implements Extension, IEventListener {
     public boolean event(EventDefinition id, Event event) {
 
 
-        String timerName = MetricRegistry.name(this.getClass().getSimpleName(), driver.getConfiguration().getInstanceName(), id.getId());
+        String timerName = MetricRegistry.name(this.getClass().getSimpleName(),
+                driver.getConfiguration().getInstanceName(), id.getId());
 
 
         if (EventManager.EVENT_PROXY_POST.equals(id)) {
@@ -100,7 +103,7 @@ public class Metric implements Extension, IEventListener {
             }
         }
 
-        metric.meter(timerName.toString()).mark();
+        metric.meter(timerName).mark();
 
         return true;
     }

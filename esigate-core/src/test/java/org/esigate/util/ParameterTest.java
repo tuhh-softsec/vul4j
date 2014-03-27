@@ -71,8 +71,8 @@ public class ParameterTest extends TestCase {
     }
 
     public void testGetValueCollection() throws Exception {
-        Parameter<Collection<String>> parameter1 = new ParameterCollection("test1", null);
-        Parameter<Collection<String>> parameter2 = new ParameterCollection("test2", Arrays.asList("v1", "v2"));
+        Parameter<Collection<String>> parameter1 = new ParameterCollection("test1");
+        Parameter<Collection<String>> parameter2 = new ParameterCollection("test2", "v1", "v2");
         Properties properties = new Properties();
         assertNotNull(parameter1.getValue(properties));
         assertTrue(parameter1.getValue(properties).isEmpty());

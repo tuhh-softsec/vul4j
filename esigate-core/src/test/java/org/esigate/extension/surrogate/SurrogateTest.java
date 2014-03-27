@@ -387,7 +387,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
         // Cache expired, this request fails.
         requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         try {
-            response = driverProxy(driver, requestWithSurrogate);
+            driverProxy(driver, requestWithSurrogate);
             fail("Should return 500");
         } catch (HttpErrorPage e) {
             assertEquals("3", EntityUtils.toString(e.getHttpResponse().getEntity()));

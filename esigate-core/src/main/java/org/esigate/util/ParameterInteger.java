@@ -17,7 +17,8 @@ package org.esigate.util;
 import java.util.Properties;
 
 /**
- * @author  Alexis Thaveau
+ * Integer parameter.
+ * @author Alexis Thaveau
  */
 public class ParameterInteger extends Parameter<Integer> {
 
@@ -28,12 +29,12 @@ public class ParameterInteger extends Parameter<Integer> {
     @Override
     public Integer getValue(Properties properties) {
         Integer defaultValue = 0;
-        if(getDefaultValue()!=null){
+        if (getDefaultValue() != null) {
             defaultValue = getDefaultValue();
         }
-        Integer value = PropertiesUtil.getPropertyValue(properties,getName(),defaultValue);
+        Integer value = PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);
         return value;
-        
-        
+
+
     }
 }

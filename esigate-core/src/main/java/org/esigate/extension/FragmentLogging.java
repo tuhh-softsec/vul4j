@@ -128,8 +128,8 @@ public class FragmentLogging implements Extension, IEventListener {
                     logMessage.append(" - ");
                 }
 
-                logMessage.append(requestLine + " " + reqHeaders + " -> " + statusLine + " (" + time + " ms) " + cache
-                        + " " + respHeaders);
+                logMessage.append(requestLine).append(" ").append(reqHeaders).append(" -> ").append(statusLine)
+                        .append(" (").append(time).append(" ms) ").append(cache).append(" ").append(respHeaders);
 
                 // Log level according to status code.
                 if (statusCode >= HttpStatus.SC_BAD_REQUEST) {

@@ -31,14 +31,14 @@ import org.slf4j.LoggerFactory;
 public class CasAuthenticationHandler extends GenericAuthentificationHandler {
     public static final String DEFAULT_LOGIN_URL = "/login";
 
-    private final static Logger LOG = LoggerFactory.getLogger(GenericAuthentificationHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GenericAuthentificationHandler.class);
 
     // Configuration properties names
-    private final static String LOGIN_URL_PROPERTY = "casLoginUrl";
-    private final static String SECOND_REQUEST = "SECOND_REQUEST";
-    private final static String SPRING_SECURITY_PROPERTY = "isSpringSecurity";
+    private static final String LOGIN_URL_PROPERTY = "casLoginUrl";
+    private static final String SECOND_REQUEST = "SECOND_REQUEST";
+    private static final String SPRING_SECURITY_PROPERTY = "isSpringSecurity";
 
-    private final static String SPRING_SECURITY_URL_PATTERN_PROPERTY = "springSecurityUrl";
+    private static final String SPRING_SECURITY_URL_PATTERN_PROPERTY = "springSecurityUrl";
 
     private String loginUrl;
     private boolean springSecurity;

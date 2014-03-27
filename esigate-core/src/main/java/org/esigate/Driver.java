@@ -190,11 +190,10 @@ public final class Driver {
      * 
      * <pre>
      * if (LOG.isInfoEnabled()) {
-     *     logRendering(pageUrl, renderers);
+     *     logAction(pageUrl, renderers);
      * }
      * </pre>
-     * 
-     * @see Driver#logRendering(String, Renderer[]) logRendering for renderer <b>list</b>.
+     *
      * @param action
      *            Action name (eg. "proxy" or "render")
      * @param onUrl

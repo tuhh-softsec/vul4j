@@ -15,6 +15,7 @@
 package org.esigate.cache;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
@@ -60,7 +61,7 @@ public class CacheAdapter {
         ttl = Parameters.TTL.getValue(properties);
         xCacheHeader = Parameters.X_CACHE_HEADER.getValue(properties);
         viaHeader = Parameters.VIA_HEADER.getValue(properties);
-        LOG.info("Initializing cache for provider " + Parameters.REMOTE_URL_BASE.getValue(properties)
+        LOG.info("Initializing cache for provider " + Arrays.toString(Parameters.REMOTE_URL_BASE.getValue(properties))
                 + " staleIfError=" + staleIfError + " staleWhileRevalidate=" + staleWhileRevalidate + " ttl=" + ttl
                 + " xCacheHeader=" + xCacheHeader + " viaHeader=" + viaHeader);
     }

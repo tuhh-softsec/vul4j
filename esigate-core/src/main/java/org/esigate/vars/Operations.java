@@ -124,7 +124,7 @@ public final class Operations {
     }
 
     private static boolean executeOperations(ArrayList<String> operands, ArrayList<String> operations) {
-        boolean res = false;
+        boolean res;
         ArrayList<Boolean> results = new ArrayList<Boolean>();
 
         try {

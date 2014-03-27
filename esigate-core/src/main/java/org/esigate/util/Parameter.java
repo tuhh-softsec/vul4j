@@ -17,13 +17,25 @@ package org.esigate.util;
 
 import java.util.Properties;
 
-public class Parameter<T> {
+/**
+ * A parameter with a T value.
+ * @param <T> type
+ */
+public abstract class Parameter<T> {
     private final String name;
     private final T defaultValue;
 
     @Override
     public boolean equals(Object obj) {
-        return this.name.equals(obj);
+        boolean equals = false;
+        if (obj != null) {
+            if (obj instanceof Parameter) {
+                equals = this.name.equals(((Parameter) obj).getName());
+            } else if (obj != null && obj instanceof String) {
+                equals = this.name.equals(obj);
+            }
+        }
+        return equals;
     }
 
     @Override
@@ -36,6 +48,9 @@ public class Parameter<T> {
         return this.name.hashCode();
     }
 
+    public Parameter(String name) {
+        this(name, null);
+    }
 
     Parameter(String name, T defaultValue) {
         this.name = name;

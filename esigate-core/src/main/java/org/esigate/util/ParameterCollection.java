@@ -14,17 +14,24 @@
  */
 package org.esigate.util;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Properties;
 
 /**
- * @author  Alexis Thaveau
+ * Collection parameter.
+ * @author Alexis Thaveau
  */
 public class ParameterCollection extends Parameter<Collection<String>> {
 
-    public ParameterCollection(String name, Collection<String> defaultValue) {
-        super(name, defaultValue);
+   public ParameterCollection(String name) {
+        super(name);
     }
 
+    public ParameterCollection(String name, String... defaultValue) {
+        super(name, Arrays.asList(defaultValue));
+    }
 
     @Override
     public Collection<String> getValue(Properties properties) {
