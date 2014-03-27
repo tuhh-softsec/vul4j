@@ -8,7 +8,6 @@ import net.onrc.onos.datagrid.IEventChannelListener;
 import net.onrc.onos.intent.*;
 import net.onrc.onos.intent.Intent.IntentState;
 import net.onrc.onos.intent.IntentOperation.Operator;
-import net.onrc.onos.intent.persist.PersistIntent;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphListener;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;

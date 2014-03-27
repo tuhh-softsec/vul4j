@@ -21,7 +21,6 @@ import net.onrc.onos.intent.MockNetworkGraph;
 import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.PathIntentMap;
 import net.onrc.onos.intent.ShortestPathIntent;
-import net.onrc.onos.intent.persist.PersistIntent;
 import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphListener;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
