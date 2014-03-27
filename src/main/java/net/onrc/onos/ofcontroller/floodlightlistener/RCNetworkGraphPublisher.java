@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /*
- * I've created a copy of the NetworkGraphPublisher so I can integrate
+ * I've created a copy of the old NetworkGraphPublisher so I can integrate
  * the new API with ONOS while still having the old NetworkGraphPublisher
  * to reference. I've renamed to RCNetworkGraphPublisher.
  * TODO Remove old NetworkGraphPublisher once the integration of the new

@@ -39,13 +39,13 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.net.InetAddresses;
 
-public class NetworkGraphPublisher implements IDeviceListener,
+public class OldNetworkGraphPublisher implements IDeviceListener,
 					      IOFSwitchListener,
 					      IOFSwitchPortListener,
 					      ILinkDiscoveryListener,
 					      IFloodlightModule {
 
-	protected final static Logger log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
+	protected final static Logger log = LoggerFactory.getLogger(OldNetworkGraphPublisher.class);
 	//protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
 	// protected DBOperation op;
@@ -387,7 +387,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 
 	@Override
 	public String getName() {
-		return "NetworkGraphPublisher";
+		return "OldNetworkGraphPublisher";
 	}
 
 	@Override
@@ -463,7 +463,7 @@ public class NetworkGraphPublisher implements IDeviceListener,
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 		datagridService = context.getServiceImpl(IDatagridService.class);
 
-		log.debug("Initializing NetworkGraphPublisher module with {}", conf);
+		log.debug("Initializing OldNetworkGraphPublisher module with {}", conf);
 
 	}
 
