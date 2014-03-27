@@ -13,6 +13,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*
+ * Future TODO memo.
+ * - Throwing exception is a bit expensive in Java. (Construct backtrace, etc.)
+ *   Those native methods should be modified to notify conditional failure as
+ *   part of return value object instead of exception to eliminate overhead.
+ * - Inner classes in JRamCloud.java should be moved out to be a separate
+ *   stand alone class, to eliminate workaround 00024 signature in
+ *   C methods.
+ *
+ */
+
 #include <RamCloud.h>
 #include <TableEnumerator.h>
 #include <Object.h>
