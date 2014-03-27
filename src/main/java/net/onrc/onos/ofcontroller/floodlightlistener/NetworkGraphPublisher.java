@@ -37,18 +37,18 @@ import org.slf4j.LoggerFactory;
 /*
  * I've created a copy of the old NetworkGraphPublisher so I can integrate
  * the new API with ONOS while still having the old NetworkGraphPublisher
- * to reference. I've renamed to RCNetworkGraphPublisher.
+ * to reference.
  * TODO Remove old NetworkGraphPublisher once the integration of the new
  * API is complete.
  * For now, we just write to the database and don't worry about sending
  * notifications.
  * TODO Send notification after each database write
  */
-public class RCNetworkGraphPublisher implements /*IOFSwitchListener,*/
+public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 												IOFSwitchPortListener,
 												ILinkDiscoveryListener,
 												IFloodlightModule {
-	private static final Logger log = LoggerFactory.getLogger(RCNetworkGraphPublisher.class);
+	private static final Logger log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
 
 	private IFloodlightProviderService floodlightProvider;
 	private ILinkDiscoveryService linkDiscovery;

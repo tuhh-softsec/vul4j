@@ -19,7 +19,6 @@ import net.onrc.onos.registry.controller.IControllerRegistryService;
 public class NetworkGraphModule implements IFloodlightModule, INetworkGraphService {
 
 	// This is initialized as a module for now
-	// private RCNetworkGraphPublisher eventListener;
 
 	private TopologyManager topologyManager;
 	//private NetworkGraphDatastore southboundNetworkGraph;
