@@ -2,7 +2,9 @@ package net.onrc.onos.ofcontroller.proxyarp;
 
 import java.net.InetAddress;
 
-//TODO This class is too generic to be handled by ProxyArpService.
+// TODO This class is too generic to be handled by ProxyArpService.
+// TODO The generic broadcast packet shouldn't contain an IP address which is
+// only for ARP packets.
 /**
  * Notification to all ONOS instances to broadcast this packet out the edge of
  * the network. The edge is defined as any port that doesn't have a link to
@@ -10,33 +12,60 @@ import java.net.InetAddress;
  * on.
  *
  */
-public class BroadcastPacketOutNotification extends
-		PacketOutNotification {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private final InetAddress address;
-	private final long inSwitch;
-	private final short inPort;
+public class BroadcastPacketOutNotification extends PacketOutNotification {
 
-	public BroadcastPacketOutNotification(byte[] packet, InetAddress address,
-			long inSwitch, short inPort) {
-		super(packet);
-		
-		this.address = address;
-		this.inSwitch = inSwitch;
-		this.inPort = inPort;
-	}
+    private static final long serialVersionUID = 1L;
 
-	public long getInSwitch() {
-		return inSwitch;
-	}
+    private final InetAddress address;
+    private final long inSwitch;
+    private final short inPort;
 
-	public short getInPort() {
-		return inPort;
-	}
+    /**
+     * Class constructor.
+     *
+     * @param packet
+     *        packet data to send in the packet-out
+     * @param address
+     *        target IP address if the packet is an ARP packet
+     * @param inSwitch
+     *        dpid of the switch the packet was received on
+     * @param inPort
+     *        port number of the receiving port
+     */
+    public BroadcastPacketOutNotification(byte[] packet, InetAddress address,
+            long inSwitch, short inPort) {
+        super(packet);
 
-	public InetAddress getTargetAddress() {
-		return address;
-	}
+        this.address = address;
+        this.inSwitch = inSwitch;
+        this.inPort = inPort;
+    }
+
+    /**
+     * Get the dpid of the switch the packet was received on.
+     *
+     * @return receiving switch dpid
+     */
+    public long getInSwitch() {
+        return inSwitch;
+    }
+
+    /**
+     * Get the port number of the port the packet was received on.
+     *
+     * @return receiving port number
+     */
+    public short getInPort() {
+        return inPort;
+    }
+
+    /**
+     * Get the target IP address if the packet is an ARP packet.
+     *
+     * @return the target IP address for ARP packets, or null if the packet is
+     *         not an ARP packet
+     */
+    public InetAddress getTargetAddress() {
+        return address;
+    }
 }
