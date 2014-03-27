@@ -17,7 +17,7 @@
 /**
  * 
  */
-package net.floodlightcontroller.packet;
+package net.onrc.onos.packet;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;

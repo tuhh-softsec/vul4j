@@ -17,7 +17,6 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
@@ -35,6 +34,7 @@ import net.onrc.onos.ofcontroller.util.FlowPathType;
 import net.onrc.onos.ofcontroller.util.FlowPathUserState;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
+import net.onrc.onos.packet.Ethernet;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.openflow.protocol.OFMessage;

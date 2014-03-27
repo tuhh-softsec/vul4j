@@ -15,7 +15,7 @@
 *    under the License.
 **/
 
-package net.floodlightcontroller.packet;
+package net.onrc.onos.packet;
 
 public enum DHCPPacketType {
     // From RFC 1533

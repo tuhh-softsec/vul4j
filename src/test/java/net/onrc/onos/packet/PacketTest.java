@@ -1,6 +1,13 @@
-package net.floodlightcontroller.packet;
+package net.onrc.onos.packet;
 
 import static org.junit.Assert.*;
+import net.onrc.onos.packet.ARP;
+import net.onrc.onos.packet.Data;
+import net.onrc.onos.packet.Ethernet;
+import net.onrc.onos.packet.IPacket;
+import net.onrc.onos.packet.IPv4;
+import net.onrc.onos.packet.UDP;
+
 import org.junit.Before;
 import org.junit.Test;
 

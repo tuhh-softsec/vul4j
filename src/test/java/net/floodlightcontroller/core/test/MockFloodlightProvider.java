@@ -42,7 +42,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.ListenerDispatcher;
-import net.floodlightcontroller.packet.Ethernet;
+import net.onrc.onos.packet.Ethernet;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;

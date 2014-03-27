@@ -18,11 +18,16 @@
 /**
  * 
  */
-package net.floodlightcontroller.packet;
+package net.onrc.onos.packet;
 
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+
+import net.onrc.onos.packet.Data;
+import net.onrc.onos.packet.IPacket;
+import net.onrc.onos.packet.IPv4;
+import net.onrc.onos.packet.UDP;
 
 import org.junit.Test;
 

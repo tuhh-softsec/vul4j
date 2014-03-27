@@ -3,12 +3,12 @@ package net.floodlightcontroller.core.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.floodlightcontroller.packet.DHCP;
-import net.floodlightcontroller.packet.DHCPOption;
-import net.floodlightcontroller.packet.Ethernet;
-import net.floodlightcontroller.packet.IPv4;
-import net.floodlightcontroller.packet.UDP;
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.packet.DHCP;
+import net.onrc.onos.packet.DHCPOption;
+import net.onrc.onos.packet.Ethernet;
+import net.onrc.onos.packet.IPv4;
+import net.onrc.onos.packet.UDP;
 
 import org.openflow.protocol.OFPacketIn;
 import org.openflow.protocol.OFPacketOut;

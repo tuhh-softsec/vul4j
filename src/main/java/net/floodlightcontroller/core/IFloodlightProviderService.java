@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.packet.Ethernet;
+import net.onrc.onos.packet.Ethernet;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFType;

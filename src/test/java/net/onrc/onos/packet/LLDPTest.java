@@ -18,12 +18,17 @@
 /**
  *
  */
-package net.floodlightcontroller.packet;
+package net.onrc.onos.packet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+
+import net.onrc.onos.packet.Ethernet;
+import net.onrc.onos.packet.IPacket;
+import net.onrc.onos.packet.LLDP;
+import net.onrc.onos.packet.LLDPTLV;
 
 import org.junit.Test;
 

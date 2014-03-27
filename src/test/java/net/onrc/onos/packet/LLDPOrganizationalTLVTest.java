@@ -12,7 +12,9 @@
  *    under the License.
  **/
 
-package net.floodlightcontroller.packet;
+package net.onrc.onos.packet;
+
+import net.onrc.onos.packet.LLDPOrganizationalTLV;
 
 import org.junit.Test;
 

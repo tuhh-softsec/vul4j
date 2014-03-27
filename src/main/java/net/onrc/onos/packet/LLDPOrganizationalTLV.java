@@ -12,7 +12,7 @@
  *    under the License.
  **/
 
-package net.floodlightcontroller.packet;
+package net.onrc.onos.packet;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;

@@ -1,5 +1,5 @@
 /**
-*    Copyright 2011,2012, Big Switch Networks, Inc. 
+l*    Copyright 2011,2012, Big Switch Networks, Inc. 
 *    Originally created by David Erickson, Stanford University
 * 
 *    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -20,8 +20,8 @@ package net.onrc.onos.ofcontroller.devicemanager;
 import java.io.Serializable;
 import java.util.Date;
 
-import net.floodlightcontroller.packet.IPv4;
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.packet.IPv4;
 
 /**
  * An entity on the network is a visible trace of a device that corresponds
@@ -38,10 +38,7 @@ import net.floodlightcontroller.util.MACAddress;
  *
  */
 public class OnosDevice implements Serializable { //implements Comparable<OnosDevice> {
-    /**
-     * Timeout for computing {@link Entity#activeSince}.
-     * @see {@link Entity#activeSince}
-     */
+
     private static int ACTIVITY_TIMEOUT = 30000;
     
     /**

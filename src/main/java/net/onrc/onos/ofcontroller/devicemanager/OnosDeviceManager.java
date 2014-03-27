@@ -22,13 +22,13 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.packet.ARP;
-import net.floodlightcontroller.packet.DHCP;
-import net.floodlightcontroller.packet.Ethernet;
-import net.floodlightcontroller.packet.IPv4;
-import net.floodlightcontroller.packet.UDP;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
+import net.onrc.onos.packet.ARP;
+import net.onrc.onos.packet.DHCP;
+import net.onrc.onos.packet.Ethernet;
+import net.onrc.onos.packet.IPv4;
+import net.onrc.onos.packet.UDP;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
