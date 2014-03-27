@@ -2,8 +2,6 @@ package net.floodlightcontroller.core.module;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,9 +42,7 @@ public class FloodlightModuleLoader {
     protected static Object lock = new Object();
     
     protected FloodlightModuleContext floodlightModuleContext;
-	
-    public static final String COMPILED_CONF_FILE = 
-            "floodlightdefault.properties";
+
     public static final String FLOODLIGHT_MODULES_KEY =
             "floodlight.modules";
     
@@ -175,15 +171,8 @@ public class FloodlightModuleLoader {
                 System.exit(1);
             }
         } else {
-            logger.info("Loading default modules");
-            InputStream is = this.getClass().getClassLoader().
-                                    getResourceAsStream(COMPILED_CONF_FILE);
-            try {
-                prop.load(is);
-            } catch (IOException e) {
-                logger.error("Could not load default modules", e);
-                System.exit(1);
-            }
+            logger.error("No configuration file specified");
+            System.exit(1);
         }
         
         String moduleList = prop.getProperty(FLOODLIGHT_MODULES_KEY)
