@@ -288,7 +288,15 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.1</version>
 	<configuration>
+          <!--
+            Note: Exclusion definition exists in multiple places.
+            - In file ${findbugs.excludeFilterFile} defined at top of pom.xml
+            - maven-checkstyle-plugin configuration in pom.xml
+            - maven-pmd-plugin configuration in pom.xml
+              (under build and reporting)
+          -->
 	  <excludes>
+            <exclude>**/RCProtos.java</exclude>
 	    <exclude>**/com/tinkerpop/**</exclude>
 	    <exclude>**/edu/stanford/**</exclude>
 	    <exclude>**/net/floodlightcontroller/**</exclude>
@@ -409,6 +417,7 @@
             - In file ${findbugs.excludeFilterFile} defined at top of pom.xml
             - maven-checkstyle-plugin configuration in pom.xml
             - maven-pmd-plugin configuration in pom.xml
+              (under build and reporting)
           -->
           <excludes>**/RCProtos.java,**/RamCloudGraphProtos.java</excludes>
 	  <suppressionsLocation>
@@ -449,10 +458,10 @@
             - In file ${findbugs.excludeFilterFile} defined at top of pom.xml
             - maven-checkstyle-plugin configuration in pom.xml
             - maven-pmd-plugin configuration in pom.xml
+              (under build and reporting)
           -->
           <excludes>
             <exclude>**/RCProtos.java</exclude>
-            <exclude>**/RamCloudGraphProtos.java</exclude>
 	    <exclude>**/com/tinkerpop/**</exclude>
 	    <exclude>**/edu/stanford/**</exclude>
 	    <exclude>**/net/floodlightcontroller/**</exclude>
