@@ -43,7 +43,7 @@ import java.util.Properties;
  */
 public class DefaultCharset implements Extension, IEventListener {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultCharset.class);
-
+    /** default charset */
     public static final Parameter<String> PARAM_DEFAULT_CHARSET = new ParameterString("defaultCharset", "ISO-8859-1");
 
     private Collection<String> parsableContentTypes;

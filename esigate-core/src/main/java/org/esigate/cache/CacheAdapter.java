@@ -50,6 +50,10 @@ public class CacheAdapter {
     private boolean xCacheHeader;
     private boolean viaHeader;
 
+    /**
+     * Inititalize the instance
+     * @param properties properties
+     */
     public void init(Properties properties) {
         staleIfError = Parameters.STALE_IF_ERROR.getValue(properties);
         staleWhileRevalidate = Parameters.STALE_WHILE_REVALIDATE.getValue(properties);

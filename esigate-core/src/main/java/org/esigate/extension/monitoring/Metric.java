@@ -56,12 +56,12 @@ public class Metric implements Extension, IEventListener {
     private Driver driver;
 
     @Override
-    public void init(Driver driver, Properties properties) {
+    public void init(Driver d, Properties properties) {
         LOG.debug("Initialize Metric");
         driver.getEventManager().register(EventManager.EVENT_PROXY_POST, this);
         driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
 
-        this.driver = driver;
+        this.driver = d;
 
         reporter = Slf4jReporter
                 .forRegistry(this.metric)

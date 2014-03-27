@@ -65,7 +65,8 @@ public final class Parameters {
     public static final Parameter<String> COOKIE_MANAGER = new ParameterString("cookieManager",
             DefaultCookieManager.class.getName());
     public static final Parameter<Collection<String>> DISCARD_COOKIES = new ParameterCollection("discardCookies");
-    public static final Parameter<Collection<String>> STORE_COOKIES_IN_SESSION = new ParameterCollection("storeCookiesInSession");
+    public static final Parameter<Collection<String>> STORE_COOKIES_IN_SESSION
+            = new ParameterCollection("storeCookiesInSession");
     public static final Parameter<String> FIX_MODE = new ParameterString("fixMode", "relative");
     public static final Parameter<String> VISIBLE_URL_BASE = new ParameterString("visibleUrlBase");
     // Possible values for remoteUrlBaseStrategy
@@ -84,18 +85,21 @@ public final class Parameters {
     public static final Parameter<Boolean> USE_CACHE = new ParameterBoolean("useCache", true);
     public static final Parameter<Integer> MAX_CACHE_ENTRIES = new ParameterInteger("maxCacheEntries", 1000);
     public static final Parameter<Integer> MAX_OBJECT_SIZE = new ParameterInteger("maxObjectSize", 1000000);
-    public static final Parameter<String> CACHE_STORAGE = new ParameterString("cacheStorage", BasicCacheStorage.class.getName());
+    public static final Parameter<String> CACHE_STORAGE
+            = new ParameterString("cacheStorage", BasicCacheStorage.class.getName());
     public static final Parameter<Boolean> X_CACHE_HEADER = new ParameterBoolean("xCacheHeader", false);
     public static final Parameter<Boolean> VIA_HEADER = new ParameterBoolean("viaHeader", true);
     // Forced caching
     public static final Parameter<Integer> TTL = new ParameterInteger("ttl", 0);
     // Heuristic caching
-    public static final Parameter<Boolean> HEURISTIC_CACHING_ENABLED = new ParameterBoolean("heuristicCachingEnabled", true);
+    public static final Parameter<Boolean> HEURISTIC_CACHING_ENABLED
+            = new ParameterBoolean("heuristicCachingEnabled", true);
     // default value defined in
     // http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2.4
     public static final Parameter<Float> HEURISTIC_COEFFICIENT = new ParameterFloat("heuristicCoefficient", 0.1f);
     // when no cache directive at all, nothing is cached by default
-    public static final Parameter<Integer> HEURISTIC_DEFAULT_LIFETIME_SECS = new ParameterInteger("heuristicDefaultLifetimeSecs", 0);
+    public static final Parameter<Integer> HEURISTIC_DEFAULT_LIFETIME_SECS
+            = new ParameterInteger("heuristicDefaultLifetimeSecs", 0);
     // Background revalidation
     public static final Parameter<Integer> STALE_WHILE_REVALIDATE = new ParameterInteger("staleWhileRevalidate", 0);
     public static final Parameter<Integer> STALE_IF_ERROR = new ParameterInteger("staleIfError", 0);
@@ -106,10 +110,13 @@ public final class Parameters {
     public static final Parameter<Integer> MAX_UPDATE_RETRIES = new ParameterInteger("maxUpdateRetries", 1);
     public static final Parameter<Integer> REVALIDATION_QUEUE_SIZE = new ParameterInteger("revalidationQueueSize", 100);
     // EhCache
-    public static final Parameter<String> EHCACHE_CACHE_NAME_PROPERTY = new ParameterString("ehcache.cacheName", "esigate");
-    public static final Parameter<String> EHCACHE_CONFIGURATION_FILE_PROPERTY = new ParameterString("ehcache.configurationFile");
+    public static final Parameter<String> EHCACHE_CACHE_NAME_PROPERTY
+            = new ParameterString("ehcache.cacheName", "esigate");
+    public static final Parameter<String> EHCACHE_CONFIGURATION_FILE_PROPERTY
+            = new ParameterString("ehcache.configurationFile");
     // MemCached
-    public static final Parameter<Collection<String>> MEMCACHED_SERVERS_PROPERTY = new ParameterCollection("memcached.servers");
+    public static final Parameter<Collection<String>> MEMCACHED_SERVERS_PROPERTY
+            = new ParameterCollection("memcached.servers");
     // Default size for String or byte buffers used to manipulate html page contents
     public static final int DEFAULT_BUFFER_SIZE = 1024;
     // Default size for String or byte buffers used to manipulate small things like tags, cookie, log lines
