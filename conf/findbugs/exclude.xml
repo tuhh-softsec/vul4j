@@ -9,12 +9,6 @@
        <Class name="~net.onrc.onos.datastore.RCProtos(.*)?" />
      </Match>
      <Match>
-       <Class name="~com.tinkerpop.blueprints.impls.ramcloud.RamCloudGraphProtos(.*)?" />
-     </Match>
-     <Match>
-       <Class name="~.*com\.tinkerpop\..*"/>
-     </Match>
-     <Match>
        <Class name="~.*edu\.stanford\..*"/>
      </Match>
      <Match>

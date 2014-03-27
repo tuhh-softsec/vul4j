@@ -7,7 +7,6 @@
 
 <suppressions>
     <!-- Suppressions for ONOS -->
-    <suppress files="com.tinkerpop.*" checks="[_a-zA-Z0-9]*"/>
     <suppress files="edu.stanford.ramcloud.*" checks="[_a-zA-Z0-9]*"/>
     <suppress files="net.floodlightcontroller.*" checks="[_a-zA-Z0-9]*"/>
     <suppress files="org.openflow.*" checks="[_a-zA-Z0-9]*"/>
