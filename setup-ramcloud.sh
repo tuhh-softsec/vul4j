@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# fail on command error
+set -e
+# echo back each command
 set -x
 
 ONOS_HOME=${ONOS_HOME:-~/ONOS}
