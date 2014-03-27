@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
@@ -49,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * Main class used to retrieve data from a provider application using HTTP requests. Data can be retrieved as binary
  * streams or as String for text data. To improve performance, the Driver uses a cache that can be configured depending
  * on the needs.
- * 
+ *
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  * @author Sylvain Sicard
@@ -90,18 +92,18 @@ public final class Driver {
             return driver;
         }
 
-        public DriverBuilder setName(String name) {
-            this.name = name;
+        public DriverBuilder setName(String n) {
+            this.name = n;
             return this;
         }
 
-        public DriverBuilder setProperties(Properties properties) {
-            this.properties = properties;
+        public DriverBuilder setProperties(Properties p) {
+            this.properties = p;
             return this;
         }
 
-        public DriverBuilder setRequestExecutorBuilder(RequestExecutorBuilder requestExecutorBuilder) {
-            this.requestExecutorBuilder = requestExecutorBuilder;
+        public DriverBuilder setRequestExecutorBuilder(RequestExecutorBuilder builder) {
+            this.requestExecutorBuilder = builder;
             return this;
         }
 
@@ -116,7 +118,7 @@ public final class Driver {
 
     /**
      * Get current event manager for this driver instance.
-     * 
+     *
      * @return event manager.
      */
     public EventManager getEventManager() {
@@ -125,7 +127,7 @@ public final class Driver {
 
     /**
      * Perform rendering on a single url content, and append result to "writer".
-     * 
+     *
      * @param pageUrl
      *            Address of the page containing the template
      * @param incomingRequest
@@ -147,29 +149,28 @@ public final class Driver {
         // TODO: should be performed in the ESI extension
         String resultingPageUrl = VariablesResolver.replaceAllVariables(pageUrl, driverRequest);
 
-        // Retrieve URL
-        CloseableHttpResponse response = null;
-        String currentValue = null;
+        String targetUrl = ResourceUtils.getHttpUrlWithQueryString(resultingPageUrl, driverRequest, false);
 
+        String currentValue;
+        CloseableHttpResponse response;
+
+        // Retrieve URL
         // Get from cache to prevent multiple request to the same url if
         // multiple fragments are used.
-        boolean cacheable = "GET".equalsIgnoreCase(incomingRequest.getRequestLine().getMethod());
-        if (cacheable) {
-            currentValue = incomingRequest.getAttribute(resultingPageUrl);
-            response = incomingRequest.getAttribute(CACHE_RESPONSE_PREFIX + resultingPageUrl);
-        }
 
+        String cacheKey = CACHE_RESPONSE_PREFIX + targetUrl;
+        Pair<String, CloseableHttpResponse> cachedValue = incomingRequest.getAttribute(cacheKey);
         // content and response were not in cache
-        if (currentValue == null) {
-            String targetUrl = ResourceUtils.getHttpUrlWithQueryString(resultingPageUrl, driverRequest, false);
+        if (cachedValue == null) {
             response = requestExecutor.createAndExecuteRequest(driverRequest, targetUrl, false);
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
-            if (cacheable) {
-                incomingRequest.setAttribute(resultingPageUrl, currentValue);
-                incomingRequest.setAttribute(CACHE_RESPONSE_PREFIX + resultingPageUrl, response);
-            }
+            cachedValue = new ImmutablePair<String, CloseableHttpResponse>(currentValue,
+                    response);
+            incomingRequest.setAttribute(cacheKey, cachedValue);
         }
+        currentValue = cachedValue.getKey();
+        response = cachedValue.getValue();
 
         logAction("render", pageUrl, renderers);
 
@@ -187,7 +188,7 @@ public final class Driver {
      * This methods log at the INFO level.
      * <p>
      * You should only call this method if INFO level is enabled.
-     * 
+     *
      * <pre>
      * if (LOG.isInfoEnabled()) {
      *     logAction(pageUrl, renderers);
@@ -200,7 +201,7 @@ public final class Driver {
      *            current page url.
      * @param renderers
      *            array of renderers
-     * 
+     *
      */
     private void logAction(String action, String onUrl, Renderer[] renderers) {
         if (LOG.isInfoEnabled()) {
@@ -215,7 +216,7 @@ public final class Driver {
 
     /**
      * Retrieves a resource from the provider application and transforms it using the Renderer passed as a parameter.
-     * 
+     *
      * @param relUrl
      *            the relative URL to the resource
      * @param request
@@ -295,7 +296,7 @@ public final class Driver {
      * Performs rendering on an HttpResponse.
      * <p>
      * Rendering is only performed if page can be parsed.
-     * 
+     *
      * @param pageUrl
      *            The remove url from which the body was retrieved.
      * @param originalRequest
@@ -336,7 +337,7 @@ public final class Driver {
 
     /**
      * Performs rendering (apply a render list) on an http response body (as a String).
-     * 
+     *
      * @param pageUrl
      *            The remove url from which the body was retrieved.
      * @param originalRequest
@@ -379,7 +380,7 @@ public final class Driver {
      * <p>
      * This may be supported in future versions (testing is needed). For the time being, changing configuration settings
      * after getting access through this method is <b>UNSUPPORTED</b> and <b>SHOULD NOT</b> be used.
-     * 
+     *
      * @return current configuration
      */
     public DriverConfiguration getConfiguration() {

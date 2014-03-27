@@ -79,6 +79,9 @@ public class AggregatorTest extends TestCase {
     public void testBlock() throws Exception {
         doSimpleTest("block.html");
     }
+    public void testBlocks2Drivers() throws Exception {
+        doSimpleTest("blocks.html","blocks.html");
+    }
 
     public void testBlockGzip() throws Exception {
         doSimpleTest("block-gzip.html", "block.html");

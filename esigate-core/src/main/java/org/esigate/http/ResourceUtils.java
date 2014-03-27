@@ -35,10 +35,7 @@ public final class ResourceUtils {
 
     private static String buildQueryString(DriverRequest originalRequest, boolean proxy) {
         StringBuilder queryString = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
-        String charset = originalRequest.getCharacterEncoding();
-        if (charset == null) {
-            charset = "ISO-8859-1";
-        }
+
         String originalQuerystring = UriUtils.getRawQuery(originalRequest.getRequestLine().getUri());
         if (proxy && originalQuerystring != null) {
             // Remove jsessionid from request if it is present
