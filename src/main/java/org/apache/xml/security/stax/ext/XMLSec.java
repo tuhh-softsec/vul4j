@@ -29,6 +29,7 @@ import javax.crypto.SecretKey;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
+import org.apache.xml.security.utils.ClassLoaderUtils;
 
 /**
  * This is the central class of the streaming XML-security framework.<br/>
@@ -42,7 +43,7 @@ public class XMLSec {
     
     static {
         try {
-            URL resource = XMLSec.class.getClassLoader().getResource("security-config.xml");
+            URL resource = ClassLoaderUtils.getResource("security-config.xml", XMLSec.class);
             if (resource == null) {
                 throw new RuntimeException("security-config.xml not found in classpath");
             }

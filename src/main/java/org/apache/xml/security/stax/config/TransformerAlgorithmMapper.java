@@ -20,7 +20,7 @@ package org.apache.xml.security.stax.config;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityUtils;
+import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.apache.xml.security.configuration.TransformAlgorithmType;
 import org.apache.xml.security.configuration.TransformAlgorithmsType;
 
@@ -52,11 +52,14 @@ public class TransformerAlgorithmMapper {
         for (int i = 0; i < algorithms.size(); i++) {
             TransformAlgorithmType algorithmType = algorithms.get(i);
             if (algorithmType.getINOUT() == null) {
-                algorithmsClassMapInOut.put(algorithmType.getURI(), XMLSecurityUtils.loadClass(algorithmType.getJAVACLASS()));
+                algorithmsClassMapInOut.put(algorithmType.getURI(), 
+                        ClassLoaderUtils.loadClass(algorithmType.getJAVACLASS(), TransformerAlgorithmMapper.class));
             } else if ("IN".equals(algorithmType.getINOUT().value())) {
-                algorithmsClassMapIn.put(algorithmType.getURI(), XMLSecurityUtils.loadClass(algorithmType.getJAVACLASS()));
+                algorithmsClassMapIn.put(algorithmType.getURI(), 
+                        ClassLoaderUtils.loadClass(algorithmType.getJAVACLASS(), TransformerAlgorithmMapper.class));
             } else if ("OUT".equals(algorithmType.getINOUT().value())) {
-                algorithmsClassMapOut.put(algorithmType.getURI(), XMLSecurityUtils.loadClass(algorithmType.getJAVACLASS()));
+                algorithmsClassMapOut.put(algorithmType.getURI(), 
+                        ClassLoaderUtils.loadClass(algorithmType.getJAVACLASS(), TransformerAlgorithmMapper.class));
             } else {
                 throw new IllegalArgumentException("INOUT parameter " + algorithmType.getINOUT().value() + " unsupported");
             }

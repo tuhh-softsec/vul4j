@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.stax.config;
 
+import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -41,6 +42,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -134,7 +136,7 @@ public class XIncludeHandler extends DefaultHandler {
             }
             String xpointer = atts.getValue("xpointer");
 
-            URL url = this.getClass().getClassLoader().getResource(href);
+            URL url = ClassLoaderUtils.getResource(href, XIncludeHandler.class);
             if (url == null) {
                 throw new SAXException("XML file not found: " + href);
             }

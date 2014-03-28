@@ -20,6 +20,7 @@ package org.apache.xml.security.stax.ext;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.impl.util.ConcreteLSInput;
+import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
@@ -91,23 +92,28 @@ public class XMLSecurityConstants {
                 public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
                     if ("http://www.w3.org/2001/XMLSchema.dtd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/XMLSchema.dtd"));
+                        concreteLSInput.setByteStream(
+                                ClassLoaderUtils.getResourceAsStream("bindings/schemas/XMLSchema.dtd", XMLSecurityConstants.class));
                         return concreteLSInput;
                     } else if ("XMLSchema.dtd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/XMLSchema.dtd"));
+                        concreteLSInput.setByteStream(
+                                ClassLoaderUtils.getResourceAsStream("bindings/schemas/XMLSchema.dtd", XMLSecurityConstants.class));
                         return concreteLSInput;
                     } else if ("datatypes.dtd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/datatypes.dtd"));
+                        concreteLSInput.setByteStream(
+                                ClassLoaderUtils.getResourceAsStream("bindings/schemas/datatypes.dtd", XMLSecurityConstants.class));
                         return concreteLSInput;
                     } else if ("http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd"));
+                        concreteLSInput.setByteStream(
+                                ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd", XMLSecurityConstants.class));
                         return concreteLSInput;
                     } else if ("http://www.w3.org/2001/xml.xsd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xml.xsd"));
+                        concreteLSInput.setByteStream(
+                                ClassLoaderUtils.getResourceAsStream("bindings/schemas/xml.xsd", XMLSecurityConstants.class));
                         return concreteLSInput;
                     }
                     return null;
@@ -115,11 +121,11 @@ public class XMLSecurityConstants {
             });
             Schema schema = schemaFactory.newSchema(
                     new Source[]{
-                            new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/exc-c14n.xsd")),
-                            new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd")),
-                            new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xenc-schema.xsd")),
-                            new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xenc-schema-11.xsd")),
-                            new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xmldsig11-schema.xsd")),
+                            new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/exc-c14n.xsd", XMLSecurityConstants.class)),
+                            new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd", XMLSecurityConstants.class)),
+                            new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema.xsd", XMLSecurityConstants.class)),
+                            new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema-11.xsd", XMLSecurityConstants.class)),
+                            new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig11-schema.xsd", XMLSecurityConstants.class)),
                     }
             );
             setJaxbSchemas(schema);

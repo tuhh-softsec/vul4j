@@ -18,11 +18,12 @@
  */
 package org.apache.xml.security.stax.config;
 
-import org.apache.xml.security.stax.ext.XMLSecurityUtils;
+import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.apache.xml.security.configuration.HandlerType;
 import org.apache.xml.security.configuration.SecurityHeaderHandlersType;
 
 import javax.xml.namespace.QName;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,8 @@ public class SecurityHeaderHandlerMapper {
         for (int i = 0; i < handlerList.size(); i++) {
             HandlerType handlerType = handlerList.get(i);
             QName qName = new QName(handlerType.getURI(), handlerType.getNAME());
-            handlerClassMap.put(qName, XMLSecurityUtils.loadClass(handlerType.getJAVACLASS()));
+            handlerClassMap.put(qName, 
+                    ClassLoaderUtils.loadClass(handlerType.getJAVACLASS(), SecurityHeaderHandlerMapper.class));
         }
     }
 

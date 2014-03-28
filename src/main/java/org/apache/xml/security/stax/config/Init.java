@@ -20,6 +20,7 @@ package org.apache.xml.security.stax.config;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityConfigurationException;
+import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.configuration.ConfigurationType;
 import org.apache.xml.security.configuration.ObjectFactory;
@@ -33,6 +34,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+
 import java.net.URI;
 import java.net.URL;
 
@@ -54,7 +56,8 @@ public class Init {
                 JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
                 final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
                 SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                Schema schema = schemaFactory.newSchema(Init.class.getClassLoader().getResource("schemas/security-config.xsd"));
+                Schema schema = schemaFactory.newSchema(
+                        ClassLoaderUtils.getResource("schemas/security-config.xsd", Init.class));
                 unmarshaller.setSchema(schema);
                 final UnmarshallerHandler unmarshallerHandler = unmarshaller.getUnmarshallerHandler();
 
@@ -63,7 +66,7 @@ public class Init {
                 saxParserFactory.setNamespaceAware(true);
                 SAXParser saxParser = saxParserFactory.newSAXParser();
                 if (uri == null) {
-                    URL resource = Init.class.getClassLoader().getResource("security-config.xml");
+                    URL resource = ClassLoaderUtils.getResource("security-config.xml", Init.class);
                     if (resource == null) {
                         //kind of chicken-egg problem here
                         I18n.init("en", "US");

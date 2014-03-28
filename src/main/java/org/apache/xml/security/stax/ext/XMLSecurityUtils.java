@@ -109,10 +109,6 @@ public class XMLSecurityUtils {
         }
     }
 
-    public static Class<?> loadClass(String className) throws ClassNotFoundException {
-        return Thread.currentThread().getContextClassLoader().loadClass(className);
-    }
-
     public static Transformer getTransformer(
             Transformer transformer, OutputStream outputStream, Map<String, Object> properties, String algorithm,
             XMLSecurityConstants.DIRECTION direction) throws XMLSecurityException {
