@@ -42,6 +42,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 import javax.xml.parsers.DocumentBuilder;
 
+import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.*;
@@ -88,7 +89,7 @@ public class TestUtils {
     }
 
     public static void validateSecurityOrEncryptionElement(Node toValidate) throws SAXException, IOException {
-        
+        XMLSec.init();
         Schema schema = XMLSecurityConstants.getJaxbSchemas();
         Validator validator = schema.newValidator();
         DOMSource source = new DOMSource(toValidate);
