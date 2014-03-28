@@ -1,5 +1,7 @@
 #! /bin/bash
 
+SCRIPT_DIR=$(cd `dirname $0`; pwd)
+
 #controller=`hostname`
 switches=`ifconfig -a | grep sw |grep -v eth | awk '{print $1}'`
 
@@ -20,42 +22,42 @@ cmd=$3
 
 if [  "x00:00:00:00:ba:5e:ba:11" == "x$1" ]; then
         if [ x$cmd == "xup" ]; then
-                ~/ONOS/scripts/prontolink.exp 10.128.0.61 $src_port 1  
+                ${SCRIPT_DIR}/prontolink.exp 10.128.0.61 $src_port 1  
         elif [ x$cmd == "xdown" ]; then
-                ~/ONOS/scripts/prontolink.exp 10.128.0.61 $src_port 0 
+                ${SCRIPT_DIR}/prontolink.exp 10.128.0.61 $src_port 0 
         else
 		echo "no cmd"
         fi
 elif [  "x00:00:00:00:00:00:ba:12" == "x$1" ]; then
         if [ x$cmd == "xup" ]; then
-                ~/ONOS/scripts/prontolink.exp 10.128.0.62 $src_port 1  
+                ${SCRIPT_DIR}/prontolink.exp 10.128.0.62 $src_port 1  
         elif [ x$cmd == "xdown" ]; then
-                ~/ONOS/scripts/prontolink.exp 10.128.0.62 $src_port 0 
+                ${SCRIPT_DIR}/prontolink.exp 10.128.0.62 $src_port 0 
         else
 		echo "no cmd"
         fi
 elif [  "x00:00:00:00:ba:5e:ba:13" == "x$1" ]; then
         if [ x$cmd == "xup" ]; then
-                ~/ONOS/scripts/prontolink.exp 10.128.0.63 $src_port 1 
+                ${SCRIPT_DIR}/prontolink.exp 10.128.0.63 $src_port 1 
         elif [ x$cmd == "xdown" ]; then
-                ~/ONOS/scripts/prontolink.exp 10.128.0.63 $src_port 0 
+                ${SCRIPT_DIR}/prontolink.exp 10.128.0.63 $src_port 0 
         else
 		echo "no cmd"
         fi
 elif [  "x00:00:20:4e:7f:51:8a:35" == "x$1" ]; then
         if [ x$cmd == "xup" ]; then
-                ~/ONOS/scripts/prontolink.exp 10.128.0.50 $src_port 1 
+                ${SCRIPT_DIR}/prontolink.exp 10.128.0.50 $src_port 1 
         elif [ x$cmd == "xdown" ]; then
-                ~/ONOS/scripts/prontolink.exp 10.128.0.50 $src_port 0 
+                ${SCRIPT_DIR}/prontolink.exp 10.128.0.50 $src_port 0 
         else
 		echo "no cmd"
         fi
 
 elif [  "x00:01:00:16:97:08:9a:46" == "x$1" ]; then
         if [ x$cmd == "xup" ]; then
-                ~/ONOS/scripts/neclink.exp $src_port no
+                ${SCRIPT_DIR}/neclink.exp $src_port no
         elif [ x$cmd == "xdown" ]; then
-                ~/ONOS/scripts/neclink.exp $src_port 
+                ${SCRIPT_DIR}/neclink.exp $src_port 
         else
 		echo "no cmd"
         fi
