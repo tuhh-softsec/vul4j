@@ -18,6 +18,9 @@ package org.esigate.parser.future;
 import org.apache.http.HttpResponse;
 import org.esigate.impl.DriverRequest;
 
+import java.io.IOException;
+import java.util.concurrent.Future;
+
 /**
  * The current context used during parsing.
  * <p>
@@ -53,5 +56,10 @@ public interface FutureParserContext {
      * @return custom context data
      */
     Object getData(String key);
+
+
+
+    /** Writes characters into current writer. */
+    void characters(Future<CharSequence> csq) throws IOException;
 
 }

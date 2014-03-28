@@ -101,7 +101,7 @@ class FutureParserContextImpl implements FutureParserContext {
     }
 
     /** Writes characters into current writer. */
-    void characters(Future<CharSequence> csq) throws IOException {
+    public void characters(Future<CharSequence> csq) throws IOException {
         getCurrent().characters(csq);
     }
 

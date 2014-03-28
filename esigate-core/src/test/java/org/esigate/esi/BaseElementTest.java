@@ -22,6 +22,8 @@ import org.esigate.impl.DriverRequest;
 import org.esigate.parser.Element;
 import org.esigate.parser.ParserContext;
 
+import java.io.IOException;
+
 public class BaseElementTest extends TestCase {
 
     public void testOnTagStart() throws Exception {
@@ -95,6 +97,11 @@ public class BaseElementTest extends TestCase {
         @Override
         public HttpResponse getHttpResponse() {
             return null;
+        }
+
+        @Override
+        public void characters(CharSequence cs) throws IOException {
+
         }
 
     }

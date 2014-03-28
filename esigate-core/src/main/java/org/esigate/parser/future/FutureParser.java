@@ -16,7 +16,9 @@
 package org.esigate.parser.future;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +26,7 @@ import java.util.regex.Pattern;
 import org.apache.http.HttpResponse;
 import org.esigate.HttpErrorPage;
 import org.esigate.impl.DriverRequest;
+import org.esigate.parser.UnknownElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class FutureParser {
     private static final Logger LOG = LoggerFactory.getLogger(FutureParser.class);
     private final Pattern pattern;
-    private final FutureElementType[] elementTypes;
+    private final List<FutureElementType> elementTypes;
     private DriverRequest httpRequest;
     private HttpResponse httpResponse;
     private Map<String, Object> data = null;
@@ -52,7 +55,11 @@ public class FutureParser {
      */
     public FutureParser(Pattern pattern, FutureElementType... elementTypes) {
         this.pattern = pattern;
-        this.elementTypes = elementTypes;
+        this.elementTypes = new ArrayList<FutureElementType>(elementTypes.length + 1);
+        for (FutureElementType elementType : elementTypes) {
+            this.elementTypes.add(elementType);
+        }
+        this.elementTypes.add(UnknownElement.TYPE);
     }
 
     /**
@@ -87,16 +94,10 @@ public class FutureParser {
                         break;
                     }
                 }
-                if (type != null) {
-                    FutureElement element = type.newInstance();
-                    ctx.startElement(type, element, tag);
-                    if (element.isClosed()) {
-                        ctx.endElement(tag);
-                    }
-                } else {
-                    // if no element matches, we just ignore it and write it to
-                    // the output
-                    ctx.characters(new CharSequenceFuture(tag));
+                FutureElement element = type.newInstance();
+                ctx.startElement(type, element, tag);
+                if (element.isClosed()) {
+                    ctx.endElement(tag);
                 }
             }
         }

@@ -89,7 +89,7 @@ class ParserContextImpl implements ParserContext {
     }
 
     /** Writes characters into current writer. */
-    void characters(CharSequence cs) throws IOException {
+    public void characters(CharSequence cs) throws IOException {
         characters(cs, 0, cs.length());
     }
 

@@ -22,6 +22,9 @@ import org.esigate.impl.DriverRequest;
 import org.esigate.parser.future.FutureElement;
 import org.esigate.parser.future.FutureParserContext;
 
+import java.io.IOException;
+import java.util.concurrent.Future;
+
 public class BaseElementTest extends TestCase {
 
     public void testOnTagStart() throws Exception {
@@ -100,6 +103,11 @@ public class BaseElementTest extends TestCase {
         @Override
         public Object getData(String key) {
             return null;
+        }
+
+        @Override
+        public void characters(Future<CharSequence> csq) throws IOException {
+
         }
     }
 }

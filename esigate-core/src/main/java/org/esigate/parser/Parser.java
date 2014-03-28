@@ -16,6 +16,8 @@
 package org.esigate.parser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +30,7 @@ import org.slf4j.LoggerFactory;
 public class Parser {
     private static final Logger LOG = LoggerFactory.getLogger(Parser.class);
     private final Pattern pattern;
-    private final ElementType[] elementTypes;
+    private final List<ElementType> elementTypes;
     private DriverRequest httpRequest;
     private HttpResponse httpResponse;
 
@@ -42,7 +44,12 @@ public class Parser {
      */
     public Parser(Pattern pattern, ElementType... elementTypes) {
         this.pattern = pattern;
-        this.elementTypes = elementTypes;
+        this.elementTypes = new ArrayList<ElementType>(elementTypes.length + 1);
+        for (ElementType elementType : elementTypes) {
+            this.elementTypes.add(elementType);
+        }
+        this.elementTypes.add(new UnknownElementType());
+
     }
 
     /**
@@ -77,17 +84,12 @@ public class Parser {
                         break;
                     }
                 }
-                if (type != null) {
-                    Element element = type.newInstance();
-                    ctx.startElement(type, element, tag);
-                    if (element.isClosed()) {
-                        ctx.endElement(tag);
-                    }
-                } else {
-                    // if no element matches, we just ignore it and write it to
-                    // the output
-                    ctx.characters(tag);
+                Element element = type.newInstance();
+                ctx.startElement(type, element, tag);
+                if (element.isClosed()) {
+                    ctx.endElement(tag);
                 }
+
             }
         }
         // we reached the end of input

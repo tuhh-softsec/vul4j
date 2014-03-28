@@ -18,6 +18,8 @@ package org.esigate.parser;
 import org.apache.http.HttpResponse;
 import org.esigate.impl.DriverRequest;
 
+import java.io.IOException;
+
 /**
  * The current context used during parsing.
  * 
@@ -40,4 +42,8 @@ public interface ParserContext {
     Element getCurrent();
 
     <T> T findAncestor(Class<T> type);
+
+    /** Writes characters into current writer. */
+    void characters(CharSequence cs) throws IOException;
+
 }
