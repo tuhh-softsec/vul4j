@@ -174,10 +174,31 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 			// change states of high-level intents
 			IntentStateList states = new IntentStateList();
 			for (IntentOperation op : list) {
-				if (op.intent.getState().equals(IntentState.INST_ACK))
-					states.put(op.intent.getId(), IntentState.REROUTE_REQ);
-				if (op.intent.getState().equals(IntentState.CREATED))
-					states.put(op.intent.getId(), IntentState.INST_REQ); // XXX
+				switch (op.operator) {
+				case ADD:
+					switch (op.intent.getState()) {
+					case CREATED:
+						states.put(op.intent.getId(), IntentState.INST_REQ);
+						break;
+					case INST_ACK:
+						states.put(op.intent.getId(), IntentState.REROUTE_REQ);
+						break;
+					default:
+						break;
+					}
+					break;
+				case REMOVE:
+					switch (op.intent.getState()) {
+					case CREATED:
+						states.put(op.intent.getId(), IntentState.DEL_REQ);
+						break;
+					default:
+						break;
+					}
+					break;
+				default:
+					break;
+				}
 			}
 			highLevelIntents.changeStates(states);
 			p.log("end_updateInMemoryIntents");

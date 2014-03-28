@@ -261,4 +261,41 @@ public class UseCaseTest {
 		showResult((PathIntentMap) runtime1.getPathIntents());
 		// TODO: show results of plan computation
 	}
+
+
+	@Test
+	public void createAndRemoveShortestPaths() throws FloodlightModuleException {
+		// create shortest path intents
+		IntentOperationList opList = new IntentOperationList();
+		opList.add(Operator.ADD, new ShortestPathIntent("1", 1L, 12L, LOCAL_PORT, 2L, 21L, LOCAL_PORT));
+		opList.add(Operator.ADD, new ShortestPathIntent("2", 1L, 14L, LOCAL_PORT, 4L, 41L, LOCAL_PORT));
+		opList.add(Operator.ADD, new ShortestPathIntent("3", 2L, 23L, LOCAL_PORT, 3L, 32L, LOCAL_PORT));
+
+		// compile high-level intent operations into low-level intent operations (calculate paths)
+		PathCalcRuntimeModule runtime1 = new PathCalcRuntimeModule();
+		runtime1.init(modContext);
+		runtime1.startUp(modContext);
+		IntentOperationList pathIntentOpList = runtime1.executeIntentOperations(opList);
+
+		// compile low-level intents into flow entry installation plan
+		PlanCalcRuntime runtime2 = new PlanCalcRuntime();
+		List<Set<FlowEntry>> plan = runtime2.computePlan(pathIntentOpList);
+
+		// show results
+		showResult((PathIntentMap) runtime1.getPathIntents());
+		System.out.println(plan);
+
+		// create remove operations
+		opList.clear();
+		opList.add(Operator.REMOVE, new Intent("1"));
+		opList.add(Operator.REMOVE, new Intent("2"));
+
+		// compile
+		runtime1.executeIntentOperations(opList);
+
+		// show results
+		showResult((PathIntentMap) runtime1.getPathIntents());
+		System.out.println(plan);
+	}
+
 }
