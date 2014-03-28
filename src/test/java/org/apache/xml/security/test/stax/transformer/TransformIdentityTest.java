@@ -18,7 +18,6 @@
  */
 package org.apache.xml.security.test.stax.transformer;
 
-import junit.framework.Assert;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.Transformer;
@@ -27,6 +26,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.transformer.TransformIdentity;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +34,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
