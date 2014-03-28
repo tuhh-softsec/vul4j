@@ -15,21 +15,19 @@
 package org.esigate.parser.future;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.parser.future.CharSequenceFuture;
-import org.esigate.parser.future.FutureElement;
-import org.esigate.parser.future.FutureElementType;
-import org.esigate.parser.future.FutureParserContext;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
 
 /**
- * NullObject pattern to handle unknown tag
+ * Handle unknown tag.
  *
  * @author Alexis thaveau
  */
 public class UnknownElement implements FutureElement {
-
+    /***
+     * UnknownElement type.
+     */
     public static final FutureElementType TYPE = new FutureElementType() {
 
             private final UnknownElement instance = new UnknownElement();
@@ -52,6 +50,7 @@ public class UnknownElement implements FutureElement {
 
     @Override
     public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+
         ctx.characters(new CharSequenceFuture(tag));
     }
 

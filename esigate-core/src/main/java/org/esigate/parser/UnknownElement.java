@@ -20,7 +20,7 @@ import org.esigate.HttpErrorPage;
 import java.io.IOException;
 
 /**
- * NullObject pattern to handle unknown tag
+ * Handle unknown tag.
  * @author  Alexis Thaveau
  */
 public class UnknownElement implements  Element {

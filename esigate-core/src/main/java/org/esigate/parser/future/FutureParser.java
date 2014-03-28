@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import org.apache.http.HttpResponse;
 import org.esigate.HttpErrorPage;
 import org.esigate.impl.DriverRequest;
-import org.esigate.parser.UnknownElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

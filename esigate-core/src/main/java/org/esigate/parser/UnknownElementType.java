@@ -16,7 +16,7 @@
 package org.esigate.parser;
 
 /**
- * NullObject pattern to handle unknown tag type
+ * Handle unknown tag type.
  *
  * @author Alexis thaveau
  */
