@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -135,6 +136,42 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
      */
     @Override
     public void addEntry(K key, V value) {
+        byte[] valueBytes = serializeValue(value);
+        //
+        // Put the entry in the map:
+        //  - Key : Type <K>
+        //  - Value : Serialized Value (byte[])
+        //
+        channelMap.putAsync(key, valueBytes);
+    }
+
+    /**
+     * Add a transient entry to the channel.
+     *
+     * The added entry is transient and will automatically timeout after 1ms.
+     *
+     * @param key   the key of the entry to add.
+     * @param value the value of the entry to add.
+     */
+    @Override
+    public void addTransientEntry(K key, V value) {
+        byte[] valueBytes = serializeValue(value);
+        //
+        // Put the entry in the map:
+        //  - Key : Type <K>
+        //  - Value : Serialized Value (byte[])
+        //  - Timeout: 1ms
+        //
+        channelMap.putAsync(key, valueBytes, 1L, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Serialize the value.
+     *
+     * @param value the value to serialize.
+     * @return the serialized value.
+     */
+    private byte[] serializeValue(V value) {
         //
         // Encode the value
         //
@@ -145,12 +182,7 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
         byte[] valueBytes = output.toBytes();
         kryoFactory.deleteKryo(kryo);
 
-        //
-        // Put the entry in the map:
-        //  - Key : Type <K>
-        //  - Value : Serialized Value (byte[])
-        //
-        channelMap.putAsync(key, valueBytes);
+        return valueBytes;
     }
 
     /**

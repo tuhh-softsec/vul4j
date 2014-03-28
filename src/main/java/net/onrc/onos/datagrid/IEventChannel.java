@@ -49,6 +49,16 @@ public interface IEventChannel<K, V> {
     void addEntry(K key, V value);
 
     /**
+     * Add a transient entry to the channel.
+     *
+     * The added entry is transient and will automatically timeout after 1ms.
+     *
+     * @param key the key of the entry to add.
+     * @param value the value of the entry to add.
+     */
+    void addTransientEntry(K key, V value);
+
+    /**
      * Remove an entry from the channel.
      *
      * @param key the key of the entry to remove.
