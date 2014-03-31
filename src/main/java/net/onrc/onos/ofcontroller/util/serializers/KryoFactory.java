@@ -51,18 +51,30 @@ import com.esotericsoftware.kryo.Kryo;
  * serialization/deserialization of classes.
  */
 public class KryoFactory {
+    private static final int DEFAULT_PREALLOCATIONS = 100;
     private ArrayList<Kryo> kryoList = new ArrayList<Kryo>();
 
     /**
      * Default constructor.
+     *
+     * Preallocates {@code DEFAULT_PREALLOCATIONS} Kryo instances.
      */
     public KryoFactory() {
-	Kryo kryo;
-	// Preallocate
-	for (int i = 0; i < 100; i++) {
-	    kryo = newKryoImpl();
-	    kryoList.add(kryo);
-	}
+        this(DEFAULT_PREALLOCATIONS);
+    }
+
+    /**
+     * Constructor to explicitly specify number of Kryo instances to pool
+     *
+     * @param initialCapacity number of Kryo instance to preallocate
+     */
+    public KryoFactory(final int initialCapacity) {
+        // Preallocate
+        kryoList.ensureCapacity(initialCapacity);
+        for (int i = 0; i < initialCapacity; i++) {
+            Kryo kryo = newKryoImpl();
+            kryoList.add(kryo);
+        }
     }
 
     /**
@@ -118,6 +130,12 @@ public class KryoFactory {
     private Kryo newKryoImpl() {
 	Kryo kryo = new Kryo();
 	kryo.setRegistrationRequired(true);
+	//
+	// WARNING: Order of register() calls affects serialized bytes.
+	//  - Do no insert new entry in the middle, always add to the end.
+	//  - Do not simply remove existing entry
+	//
+
 	// kryo.setReferences(false);
 	//
 	kryo.register(ArrayList.class);
