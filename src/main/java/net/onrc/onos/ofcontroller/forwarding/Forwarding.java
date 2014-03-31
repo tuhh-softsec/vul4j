@@ -19,10 +19,12 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
+import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.proxyarp.BroadcastPacketOutNotification;
 import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
+import net.onrc.onos.ofcontroller.proxyarp.PacketOutNotification;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.Dpid;
@@ -67,6 +69,14 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	private IFloodlightProviderService floodlightProvider;
 	private IFlowPusherService flowPusher;
 	private IDatagridService datagrid;
+	//
+	// TODO: Using PacketOutNotification as both the key and the
+	// value is a hack that should be removed when this module is
+	// refactored.
+	//
+	private IEventChannel<PacketOutNotification, PacketOutNotification> eventChannel;
+	private static final String PACKET_OUT_CHANNEL_NAME = "onos.packet_out";
+
 	private IControllerRegistryService controllerRegistryService;
 	
 	// TODO it seems there is a Guava collection that will time out entries.
@@ -176,7 +186,14 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 	
 	@Override
 	public void startUp(FloodlightModuleContext context) {
-		// no-op
+		//
+		// TODO: Using PacketOutNotification as both the key and the
+		// value is a hack that should be removed when this module is
+		// refactored.
+		//
+		eventChannel = datagrid.createChannel(PACKET_OUT_CHANNEL_NAME,
+						      PacketOutNotification.class,
+						      PacketOutNotification.class);
 	}
 
 	@Override
@@ -231,8 +248,17 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 			log.trace("Sending broadcast packet to other ONOS instances");
 		}
 
-		 datagrid.sendPacketOutNotification(new BroadcastPacketOutNotification(
-				 eth.serialize(), null, sw.getId(), pi.getInPort()));
+		PacketOutNotification key =
+		    new BroadcastPacketOutNotification(
+						       eth.serialize(),
+						       null, sw.getId(),
+						       pi.getInPort());
+		//
+		// TODO: Using PacketOutNotification as both the key and the
+		// value is a hack that should be removed when this module is
+		// refactored.
+		//
+		eventChannel.addTransientEntry(key, key);
 	}
 	
 	private void handlePacketIn(IOFSwitch sw, OFPacketIn pi, Ethernet eth){

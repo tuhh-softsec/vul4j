@@ -25,6 +25,8 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.datagrid.IDatagridService;
+import net.onrc.onos.datagrid.IEventChannel;
+import net.onrc.onos.datagrid.IEventChannelListener;
 import net.onrc.onos.packet.ARP;
 import net.onrc.onos.packet.DHCP;
 import net.onrc.onos.packet.Ethernet;
@@ -39,8 +41,10 @@ import org.openflow.protocol.OFType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
-										IOnosDeviceService {
+public class OnosDeviceManager implements IFloodlightModule,
+					  IOFMessageListener,
+					  IOnosDeviceService,
+					  IEventChannelListener<Long, OnosDevice> {
 	protected final static Logger log = LoggerFactory.getLogger(OnosDeviceManager.class);
 	private static final int CLEANUP_SECOND = 60*60;
 	private static final int AGEING_MILLSEC = 60*60*1000;
@@ -50,6 +54,8 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 	private final static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
 	private IDatagridService datagrid;
+	private IEventChannel<Long, OnosDevice> eventChannel;
+	private static final String DEVICE_CHANNEL_NAME = "onos.device";
 	private Map<Long, OnosDevice> mapDevice = new ConcurrentHashMap<Long, OnosDevice>();
 	private INetworkGraphService networkGraphService;
 	private NetworkGraph networkGraph;
@@ -297,13 +303,16 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
-		datagrid.registerMapDeviceEventHandler(new MapDevListener());
+		eventChannel = datagrid.addListener(DEVICE_CHANNEL_NAME, this,
+						    Long.class,
+						    OnosDevice.class);
 	}
 
     @Override
 	public void deleteOnosDevice(OnosDevice dev) {
-		datagrid.sendNotificationDeviceDeleted(dev);
-		floodlightProvider.publishUpdate(new OnosDeviceUpdate(dev, OnosDeviceUpdateType.DELETE));
+	    Long mac = dev.getMacAddress().toLong();
+	    eventChannel.removeEntry(mac);
+	    floodlightProvider.publishUpdate(new OnosDeviceUpdate(dev, OnosDeviceUpdateType.DELETE));
 	}
     
     @Override
@@ -314,31 +323,30 @@ public class OnosDeviceManager implements IFloodlightModule, IOFMessageListener,
 	
 	@Override
 	public void addOnosDevice(Long mac, OnosDevice dev) {
-        datagrid.sendNotificationDeviceAdded(mac, dev);
-        floodlightProvider.publishUpdate(new OnosDeviceUpdate(dev, OnosDeviceUpdateType.ADD));
+	    eventChannel.addEntry(mac, dev);
+	    floodlightProvider.publishUpdate(new OnosDeviceUpdate(dev, OnosDeviceUpdateType.ADD));
 	}
 
-	//This is listener for datagrid mapDevice change.
-    class MapDevListener implements IDeviceEventHandler {
+	@Override
+	public void entryAdded(OnosDevice dev) {
+	    Long mac = dev.getMacAddress().toLong();
+	    mapDevice.put(mac, dev);
+	    log.debug("Device added: device mac {}", mac);
+	}
 
-		@Override
-		public void addDeviceEvent(Long mac, OnosDevice dev) {
-			mapDevice.put(mac, dev);
-			log.debug("addDeviceMap: device mac {}", mac);
-		}
+	@Override
+	public void entryRemoved(OnosDevice dev) {
+	    Long mac = dev.getMacAddress().toLong();
+	    mapDevice.remove(mac);
+	    log.debug("Device removed: device mac {}", mac);
+	}
 
-		@Override
-		public void deleteDeviceEvent(Long mac, OnosDevice dev) {
-			mapDevice.remove(mac);
-			log.debug("deleteDeviceMap: device mac {}", mac);
-		}
-
-		@Override
-		public void updateDeviceEvent(Long mac, OnosDevice dev) {
-			mapDevice.put(mac, dev);
-			log.debug("updateDeviceMap: device mac {}", mac);
-		}
-    }
+	@Override
+	public void entryUpdated(OnosDevice dev) {
+	    Long mac = dev.getMacAddress().toLong();
+	    mapDevice.put(mac, dev);
+	    log.debug("Device updated: device mac {}", mac);
+	}
 
 	@Override
 	public void addOnosDeviceListener(IOnosDeviceListener listener) {
