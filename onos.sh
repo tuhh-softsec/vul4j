@@ -77,30 +77,40 @@ JMX_PORT=${JMX_PORT:-7189}
 
 # Set JVM options
 JVM_OPTS="${JVM_OPTS:-}"
-## If you want JaCoCo Code Coverage reports... uncomment line below
-#JVM_OPTS="$JVM_OPTS -javaagent:${ONOS_HOME}/lib/jacocoagent.jar=dumponexit=true,output=file,destfile=${LOGDIR}/jacoco.exec"
 JVM_OPTS="$JVM_OPTS -server -d64"
 #JVM_OPTS="$JVM_OPTS -XX:+TieredCompilation -XX:InitialCodeCacheSize=512m -XX:ReservedCodeCacheSize=512m"
-JVM_OPTS="$JVM_OPTS -Xmx4g -Xms4g -Xmn800m"
+
+# Uncomment or specify appropriate value as JVM_OPTS environment variables.
+#JVM_OPTS="$JVM_OPTS -Xmx4g -Xms4g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -Xmx2g -Xms2g -Xmn800m"
 #JVM_OPTS="$JVM_OPTS -Xmx1g -Xms1g -Xmn800m"
-#JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
-JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:+UseAdaptiveSizePolicy -XX:+AggressiveOpts -XX:+UseFastAccessorMethods"
-JVM_OPTS="$JVM_OPTS -XX:MaxInlineSize=8192 -XX:FreqInlineSize=8192"
-JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8"
+
+#JVM_OPTS="$JVM_OPTS -XX:+UseParallelGC"
+JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC"
+JVM_OPTS="$JVM_OPTS -XX:+AggressiveOpts"
+
+# We may want to remove UseFastAccessorMethods option: http://bugs.java.com/view_bug.do?bug_id=6385687
+JVM_OPTS="$JVM_OPTS -XX:+UseFastAccessorMethods"
+
+JVM_OPTS="$JVM_OPTS -XX:MaxInlineSize=8192"
+JVM_OPTS="$JVM_OPTS -XX:FreqInlineSize=8192"
+JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500"
+
 JVM_OPTS="$JVM_OPTS -XX:OnError=crash-logger" ;# For dumping core
-#JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
-JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
-		-XX:+UseThreadPriorities \
-		-XX:ThreadPriorityPolicy=42 \
-		-XX:+UseCompressedOops \
-		-Dcom.sun.management.jmxremote.port=$JMX_PORT \
-		-Dcom.sun.management.jmxremote.ssl=false \
-                -Dbenchmark.measureBP=0 \
-                -Dbenchmark.measureRc=0 \
-                -Dbenchmark.measureONOS=0 \
-		-Dcom.sun.management.jmxremote.authenticate=false"
+
+# Workaround for Thread Priority http://tech.stolsvik.com/2010/01/linux-java-thread-priorities-workaround.html
+JVM_OPTS="$JVM_OPTS -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=42"
+
+JVM_OPTS="$JVM_OPTS -XX:+UseCompressedOops"
+
+JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.port=$JMX_PORT"
+JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
+
 JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
+
+# Uncomment to dump final JVM flags to stdout
+#JVM_OPTS="$JVM_OPTS -XX:+PrintFlagsFinal"
 
 # Set ONOS core main class
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
