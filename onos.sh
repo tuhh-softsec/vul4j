@@ -1,9 +1,46 @@
 #!/bin/bash
 
-ONOS_HOME=$(cd `dirname $0`; pwd)
+### Env vars used by this script. (default value) ###
+# $ONOS_HOME       : path of root directory of ONOS repository (this script's dir)
+# $ONOS_CONF_DIR   : path of ONOS config directory (~/ONOS/conf)
+# $ONOS_CONF       : path of ONOS node config file (~/ONOS/conf/onos_node.conf)
+# $ONOS_PROPS      : path of ONOS properties file (~/ONOS/conf/onos.properties)
+# $ONOS_LOGBACK    : path of logback config file (~/ONOS/conf/logback.`hostname`.xml)
+# $LOGDIR          : path of log output directory (~/ONOS/onos-logs)
+# $LOGBASE         : base name of log output file (onos.`hostname`)
+# $RAMCLOUD_HOME   : path of root directory of RAMCloud repository (~/ramcloud)
+# $RAMCLOUD_BRANCH : branch name of RAMCloud to use (master)
+# $JVM_OPTS        : JVM options ONOS starts with
+#####################################################
+
+
+### Variables read from ONOS config file ###
+ONOS_HOME=${ONOS_HOME:-$(cd `dirname $0`; pwd)}
 ONOS_CONF_DIR=${ONOS_CONF_DIR:-${ONOS_HOME}/conf}
-ONOS_CONF_FILE=onos_node.conf
-ONOS_CONF=${ONOS_CONF:-${ONOS_CONF_DIR}/${ONOS_CONF_FILE}}
+ONOS_CONF=${ONOS_CONF:-${ONOS_CONF_DIR}/onos_node.conf}
+
+if [ ! -f ${ONOS_CONF} ]; then
+  echo "${ONOS_CONF} not found."
+  exit 1
+fi
+ONOS_HOST_NAME=`grep ^host.name ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+if [ -z "${ONOS_HOST_NAME}" ]; then
+  ONOS_HOST_NAME=`hostname`
+fi
+ONOS_HOST_IP=`grep ^host.ip ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+ONOS_HOST_ROLE=`grep ^host.role ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+ONOS_HOST_BACKEND=`grep ^host.backend ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+ZK_HOSTS=`grep ^zookeeper.hosts ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+RC_COORD_PROTOCOL=`grep ^ramcloud.coordinator.protocol ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+RC_COORD_IP=`grep ^ramcloud.coordinator.ip ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+RC_COORD_PORT=`grep ^ramcloud.coordinator.port ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+RC_SERVER_PROTOCOL=`grep ^ramcloud.server.protocol ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+RC_SERVER_IP=`grep ^ramcloud.server.ip ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+RC_SERVER_PORT=`grep ^ramcloud.server.port ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+############################################
+
+
+############## Other variables #############
 LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
 
 ZK_DIR=${HOME}/zookeeper-3.4.5
@@ -17,8 +54,8 @@ ZK_MY_ID=${ZK_LIB_DIR}/myid
 
 RAMCLOUD_DIR=${HOME}/ramcloud
 RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
-RAMCLOUD_COORD_LOG=${LOGDIR}/ramcloud.coordinator.`hostname`.log
-RAMCLOUD_SERVER_LOG=${LOGDIR}/ramcloud.server.`hostname`.log
+RAMCLOUD_COORD_LOG=${LOGDIR}/ramcloud.coordinator.${ONOS_HOST_NAME}.log
+RAMCLOUD_SERVER_LOG=${LOGDIR}/ramcloud.server.${ONOS_HOST_NAME}.log
 RAMCLOUD_BRANCH=${RAMCLOUD_BRANCH:-master}
 RAMCLOUD_COORD_PORT=12246
 RAMCLOUD_SERVER_PORT=12242
@@ -26,11 +63,11 @@ RAMCLOUD_SERVER_PORT=12242
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${ONOS_HOME}/lib:${RAMCLOUD_HOME}/obj.${RAMCLOUD_BRANCH}
 
 ## Because the script change dir to $ONOS_HOME, we can set ONOS_LOGBACK and LOGDIR relative to $ONOS_HOME
-ONOS_LOGBACK=${ONOS_LOGBACK:-${ONOS_CONF_DIR}/logback.`hostname`.xml}
+ONOS_LOGBACK=${ONOS_LOGBACK:-${ONOS_CONF_DIR}/logback.${ONOS_HOST_NAME}.xml}
 ONOS_LOGBACK_BACKUP=${ONOS_LOGBACK}.bak
 ONOS_LOGBACK_TEMPLATE=${ONOS_CONF_DIR}/logback.xml.template
 LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
-LOGBASE=${ONOS_LOGBASE:-onos.`hostname`}
+LOGBASE=${ONOS_LOGBASE:-onos.${ONOS_HOST_NAME}}
 ONOS_LOG="${LOGDIR}/${LOGBASE}.log"
 PCAP_LOG="${LOGDIR}/${LOGBASE}.pcap"
 LOGS="$ONOS_LOG $PCAP_LOG"
@@ -69,51 +106,36 @@ JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
 
 MVN=${MVN:-mvn -o}
+############################################
 
 
-### Variables read from ONOS config
-if [ ! -f ${ONOS_CONF} ]; then
-  echo "${ONOS_CONF} not found."
-  exit 1
-fi
-ONOS_HOST_NAME=`grep ^host.name ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-if [ -z "${ONOS_HOST_NAME}" ]; then
-  ONOS_HOST_NAME='hostname'
-fi
-ONOS_HOST_IP=`grep ^host.ip ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-ONOS_HOST_ROLE=`grep ^host.role ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-ONOS_HOST_BACKEND=`grep ^host.backend ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-ZK_HOSTS=`grep ^zookeeper.hosts ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_COORD_PROTOCOL=`grep ^ramcloud.coordinator.protocol ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_COORD_IP=`grep ^ramcloud.coordinator.ip ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_COORD_PORT=`grep ^ramcloud.coordinator.port ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_SERVER_PROTOCOL=`grep ^ramcloud.server.protocol ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_SERVER_IP=`grep ^ramcloud.server.ip ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_SERVER_PORT=`grep ^ramcloud.server.port ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-
-
-### Common functions
-function usage {
-  echo "Usage: setup/start/stop ONOS on this server."
-  echo "  $0 setup"
-  echo "    Set up ONOS node using ${ONOS_CONF_FILE}"
-  echo "      - generate and replace config file of ZooKeeper."
-  echo "      - create myid in ZooKeeper datadir."
-  echo "      - generate and replace logback.${ONOS_HOST_NAME}.xml"
-  echo "  $0 start [single-node|coord-node|server-node]"
-  echo "    Start ONOS node with specific RAMCloud entities"
-  echo "      - single-node: start ONOS with RAMCloud coordinator/server"
-  echo "      - coord-node : start ONOS with RAMCloud coordinator"
-  echo "      - server-node: start ONOS with RAMCloud server"
-  echo "      * Default behavior can be defined by ${ONOS_CONF_FILE}"
-  echo "  $0 stop"
-  echo "    Stop all ONOS-related processes"
-  echo "  $0 restart"
-  echo "    Stop and start currently running ONOS-related processes"
-  echo "  $0 status"
-  echo "    Show status of ONOS-related processes"
-  echo "  $0 {zk|rc-coord|rc-server|core} {start|stop|restart|status}"
-  echo "    Control specific ONOS-related process"
+############# Common functions #############
+function print_usage {
+  local filename=`basename ${ONOS_CONF}`
+  local usage="Usage: setup/start/stop ONOS on this server.
+ \$ $0 setup [-f]
+    Set up ONOS node using ${filename}.
+      - generate and replace config file of ZooKeeper.
+      - create myid in ZooKeeper datadir.
+      - generate and replace logback.${ONOS_HOST_NAME}.xml
+    If -f option is used, all existing files will be overwritten without confirmation.
+ \$ $0 start [single-node|coord-node|server-node|coord-and-server-node]
+    Start ONOS node with specific RAMCloud entities
+      - single-node: start ONOS with stand-alone RAMCloud
+      - coord-node : start ONOS with RAMCloud coordinator
+      - server-node: start ONOS with RAMCloud server
+      - coord-and-server-node: start ONOS with RAMCloud coordinator and server
+      * Default behavior can be defined by ${filename}
+ \$ $0 stop
+    Stop all ONOS-related processes
+ \$ $0 restart
+    Stop and start currently running ONOS-related processes
+ \$$0 status
+    Show status of ONOS-related processes
+ \$ $0 {zk|rc-coord|rc-server|core} {start|stop|restart|status}
+    Control specific ONOS-related process"
+  
+  echo "${usage}"	
 }
 
 function rotate-log {
@@ -168,15 +190,12 @@ function revert-conf {
   exit 1
 }
 
-function create-conf {
-  # creation of zookeeper config
-  
-  trap revert-conf ERR
-  
+function create-zk-conf {
   echo -n "Creating ${ZK_CONF} ... "
   
-  local temp_zk="${ZK_CONF}.tmp"
+  # creation of zookeeper config
   
+  local temp_zk="${ZK_CONF}.tmp"
   touch ${temp_zk}
   
   if [ -f ${ZK_CONF} ]; then
@@ -204,7 +223,8 @@ function create-conf {
   done
   
   if [ -z "${myid}" ]; then
-    revert-conf "[ERROR in ${ONOS_CONF_FILE}] zookeeper.hosts must have hostname \"${ONOS_HOST_NAME}\""
+    local filename=`basename ${ONOS_CONF}`
+    revert-conf "[ERROR in ${filename}] zookeeper.hosts must have hostname \"${ONOS_HOST_NAME}\""
   fi
   
   # TODO: Remove sudo.
@@ -232,8 +252,11 @@ function create-conf {
   mv ${temp_zk} ${ZK_CONF}
   
   echo "DONE"
+}
 
+function create-logback-conf {
   echo -n "Creating ${ONOS_LOGBACK} ... "
+  
   # creation of logback config
   if [ -f $ONOS_LOGBACK ]; then
     local logback_file=`basename ${ONOS_LOGBACK}`
@@ -242,15 +265,56 @@ function create-conf {
     echo -n "backup old file to ${logback_back_file} ... "
   fi
   sed -e "s|__FILENAME__|${ONOS_LOG}|" ${ONOS_LOGBACK_TEMPLATE} > ${ONOS_LOGBACK}
+  
   echo "DONE"
-  
-  trap - ERR
-  
-  return
 }
 
+function create-conf {
+  local key
+  local filename
+  
+  trap revert-conf ERR
+  
+  if [ -f ${ZK_CONF} -a "$1" != "-f" ]; then
+    # confirmation to overwrite existing config file
+    echo -n "Overwriting ${ZK_CONF_FILE} [Y/n]? "
+    while [ 1 ]; do
+      read key
+      if [ -z "${key}" -o "${key}" == "Y" ]; then
+        create-zk-conf
+        break
+      elif [ "${key}" == "n" ]; then
+        break
+      fi
+      echo "[Y/n]?"
+    done
+  else
+    create-zk-conf
+  fi
+  
+  if [ -f ${ONOS_LOGBACK} -a "$1" != "-f" ]; then
+    filename=`basename ${ONOS_LOGBACK}`
+    echo -n "Overwriting ${filename} [Y/n]? "
+    while [ 1 ]; do
+      read key
+      if [ -z "${key}" -o "${key}" == "Y" ]; then
+        create-logback-conf
+        break
+      elif [ "${key}" == "n" ]; then
+        break
+      fi
+      echo "[Y/n]?"
+    done
+  else
+    create-logback-conf
+  fi
+  
+  trap - ERR
+}
+############################################
 
-### Functions related to ZooKeeper
+
+###### Functions related to ZooKeeper ######
 function zk {
   case "$1" in
     start)
@@ -267,7 +331,7 @@ function zk {
       start-zk
       ;;
     *)
-      usage
+      print_usage
       exit 1
   esac
 }
@@ -296,12 +360,17 @@ function status-zk {
   
   $ZK_DIR/bin/zkServer.sh status
 }
+############################################
 
 
+####### Functions related to RAMCloud ######
 function start-backend {
   if [ "${ONOS_HOST_BACKEND}" = "ramcloud" ]; then
-    rc-coord startifdown
-    rc-server startifdown
+    if [ $1 == "coord" ]; then
+      rc-coord startifdown
+    elif [ $1 == "server" ]; then
+      rc-server startifdown
+    fi
   fi
 }
 
@@ -311,11 +380,17 @@ function stop-backend {
     rc-server stop
   fi
   
-  rccn=`pgrep coordinator | wc -l`
+  rccn=`pgrep -f obj.${RAMCLOUD_BRANCH}/coordinator | wc -l`
   if [ $rccn != 0 ]; then
     rc-coord stop
   fi
 }
+
+function deldb {
+# TODO: implement
+  return
+}
+
 
 ### Functions related to RAMCloud coordinator
 function rc-coord-addr {
@@ -370,7 +445,7 @@ function rc-coord {
       start-coord
       ;;
     startifdown)
-      local n=`pgrep coordinator | wc -l`
+      local n=`pgrep -f obj.${RAMCLOUD_BRANCH}/coordinator | wc -l`
       if [ $n == 0 ]; then
         start-coord
       else
@@ -385,7 +460,7 @@ function rc-coord {
       echo "$n RAMCloud coordinator running"
       ;;
     *)
-      usage
+      print_usage
       exit 1
   esac
 }
@@ -409,11 +484,6 @@ function start-coord {
 
 function stop-coord {
   kill-processes "RAMCloud coordinator" `pgrep -f obj.${RAMCLOUD_BRANCH}/coordinator`
-}
-
-function deldb {
-# TODO: implement
-  return
 }
 
 ### Functions related to RAMCloud server
@@ -443,7 +513,7 @@ function rc-server {
       echo "$n RAMCloud server running"
       ;;
     *)
-      usage
+      print_usage
       exit 1
   esac
 }
@@ -468,11 +538,12 @@ function start-server {
 function stop-server {
   kill-processes "RAMCloud server" `pgrep -f obj.${RAMCLOUD_BRANCH}/server`
 }
+############################################
 
 
-### Functions related to ONOS core process
+## Functions related to ONOS core process ##
 function onos {
-  CPFILE=${ONOS_HOME}/.javacp.`hostname`
+  CPFILE=${ONOS_HOME}/.javacp.${ONOS_HOST_NAME}
   if [ ! -f ${CPFILE} ]; then
     echo "ONOS core needs to be built"
     ${MVN} -f ${ONOS_HOME}/pom.xml compile
@@ -504,7 +575,7 @@ function onos {
       echo "$n instance of onos running"
       ;;
     *)
-      usage
+      print_usage
       exit 1
   esac
 }
@@ -551,13 +622,13 @@ function stop-onos {
   kill-processes "ONOS controller" `jps -l | grep ${MAIN_CLASS} | awk '{print $1}'`
 #  kill-processes "tcpdump" `ps -edalf |grep tcpdump |grep ${PCAP_LOG} | awk '{print $4}'`
 }
+############################################
 
 
-# Main
-
+################## Main ####################
 case "$1" in
   setup)
-    create-conf
+    create-conf $2
     ;;
   start)
     mode_parameter=${ONOS_HOST_ROLE}
@@ -568,21 +639,28 @@ case "$1" in
     case "${mode_parameter}" in
       single-node)
         zk start
-        start-backend
+        start-backend coord
+        start-backend server
         onos startifdown
         ;;
       coord-node)
         zk start
-        rc-coord startifdown
+        start-backend coord
         onos startifdown
         ;;
       server-node)
         zk start
-        rc-server startifdown
+        start-backend server
+        onos startifdown
+        ;;
+      coord-and-server-node)
+        zk start
+        start-backend coord
+        start-backend server
         onos startifdown
         ;;
       *)
-        usage
+        print_usage
         ;;
       esac
     echo
@@ -612,7 +690,7 @@ case "$1" in
       rc-server stop
     fi
     
-    rccn=`pgrep coordinator | wc -l`
+    rccn=`pgrep -f obj.${RAMCLOUD_BRANCH}/coordinator | wc -l`
     if [ $rccn != 0 ]; then
       rc-coord stop
     fi
@@ -662,6 +740,7 @@ case "$1" in
     onos $2
     ;;
   *)
-    usage
+    print_usage
     exit 1
 esac
+
