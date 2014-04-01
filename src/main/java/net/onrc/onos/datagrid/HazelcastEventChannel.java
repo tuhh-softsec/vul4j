@@ -25,15 +25,15 @@ import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
     private final HazelcastInstance hazelcastInstance; // The Hazelcast instance
     private final String channelName;        // The event channel name
-    private final Class<?> typeK;            // The class type of the key
-    private final Class<?> typeV;            // The class type of the value
+    private final Class<K> typeK;            // The class type of the key
+    private final Class<V> typeV;            // The class type of the value
     private IMap<K, byte[]> channelMap;    // The Hazelcast channel map
     // The channel listeners
     private final CopyOnWriteArrayList<IEventChannelListener<K, V>> listeners =
             new CopyOnWriteArrayList<>();
 
     // The map entry listener
-    private final MapEntryListener mapEntryListener = new MapEntryListener<K>();
+    private final EntryListener<K, byte[]> mapEntryListener = new MapEntryListener();
     private String mapListenerId;    // The map listener ID
 
     // TODO: We should use a single global KryoFactory instance
@@ -295,7 +295,7 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
      * - Key: Type K
      * - Value: Serialized V (byte[])
      */
-    private class MapEntryListener<K> implements EntryListener<K, byte[]> {
+    private class MapEntryListener implements EntryListener<K, byte[]> {
         /**
          * Receive a notification that an entry is added.
          *
@@ -315,7 +315,7 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
             // Deliver the notification
             //
             int index = 0;
-            for (IEventChannelListener listener : listeners) {
+            for (IEventChannelListener<K, V> listener : listeners) {
                 V copyValue = value;
                 if (index++ > 0) {
                     // Each listener should get a deep copy of the value
@@ -345,7 +345,7 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
             // Deliver the notification
             //
             int index = 0;
-            for (IEventChannelListener listener : listeners) {
+            for (IEventChannelListener<K, V> listener : listeners) {
                 V copyValue = value;
                 if (index++ > 0) {
                     // Each listener should get a deep copy of the value
@@ -375,7 +375,7 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
             // Deliver the notification
             //
             int index = 0;
-            for (IEventChannelListener listener : listeners) {
+            for (IEventChannelListener<K, V> listener : listeners) {
                 V copyValue = value;
                 if (index++ > 0) {
                     // Each listener should get a deep copy of the value

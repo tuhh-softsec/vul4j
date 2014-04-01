@@ -202,27 +202,28 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     private <K, V> IEventChannel<K, V> createChannelImpl(
             String channelName,
             Class<K> typeK, Class<V> typeV) {
-        IEventChannel<K, V> castedEventChannel;
         IEventChannel<?, ?> genericEventChannel =
                 eventChannels.get(channelName);
 
         // Add the channel if the first listener
         if (genericEventChannel == null) {
-            castedEventChannel =
-                    new HazelcastEventChannel<K, V>(hazelcastInstance,
-                            channelName, typeK, typeV);
+            IEventChannel<K, V> castedEventChannel =
+                new HazelcastEventChannel<K, V>(hazelcastInstance,
+                                                channelName, typeK, typeV);
             eventChannels.put(channelName, castedEventChannel);
-        } else {
-            //
-            // TODO: Find if we can use Java internal support to check for
-            // type mismatch.
-            //
-            if (!genericEventChannel.verifyKeyValueTypes(typeK, typeV)) {
-                throw new ClassCastException("Key-value type mismatch for event channel " + channelName);
-            }
-            castedEventChannel = (IEventChannel<K, V>) genericEventChannel;
+            return castedEventChannel;
         }
 
+        //
+        // TODO: Find if we can use Java internal support to check for
+        // type mismatch.
+        //
+        if (!genericEventChannel.verifyKeyValueTypes(typeK, typeV)) {
+            throw new ClassCastException("Key-value type mismatch for event channel " + channelName);
+        }
+        @SuppressWarnings("unchecked")
+        IEventChannel<K, V> castedEventChannel =
+            (IEventChannel<K, V>) genericEventChannel;
         return castedEventChannel;
     }
 
@@ -276,6 +277,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
                 // NOTE: Using "ClassCastException" exception below doesn't
                 // work.
                 //
+                @SuppressWarnings("unchecked")
                 IEventChannel<K, V> castedEventChannel =
                     (IEventChannel<K, V>) genericEventChannel;
                 castedEventChannel.removeListener(listener);
