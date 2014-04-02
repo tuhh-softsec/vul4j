@@ -35,12 +35,12 @@ import net.onrc.onos.registry.controller.IControllerRegistryService;
  * immediately kicks synchronization to keep switch's flow table latest state.
  * Adversely, when a switch is removed from network, FlowProgrammer immediately
  * stops synchronization.
- * @author Brian
  *
+ * @author Brian
  */
-public class FlowProgrammer implements IFloodlightModule, 
-				       IOFMessageListener,
-				       IOFSwitchListener {
+public class FlowProgrammer implements IFloodlightModule,
+        IOFMessageListener,
+        IOFSwitchListener {
     // flag to enable FlowSynchronizer
     private static final boolean enableFlowSync = false;
     protected static final Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
@@ -52,124 +52,124 @@ public class FlowProgrammer implements IFloodlightModule,
     private static final int NUM_PUSHER_THREAD = 1;
 
     protected FlowSynchronizer synchronizer;
-    
+
     public FlowProgrammer() {
-	pusher = new FlowPusher(NUM_PUSHER_THREAD);
-	if (enableFlowSync) {
-	    synchronizer = new FlowSynchronizer();
-	}
+        pusher = new FlowPusher(NUM_PUSHER_THREAD);
+        if (enableFlowSync) {
+            synchronizer = new FlowSynchronizer();
+        }
     }
-    
+
     @Override
     public void init(FloodlightModuleContext context)
-	    throws FloodlightModuleException {
-	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-	registryService = context.getServiceImpl(IControllerRegistryService.class);
-	restApi = context.getServiceImpl(IRestApiService.class);
-	pusher.init(null, context, floodlightProvider.getOFMessageFactory(), null);
-	if (enableFlowSync) {
-	    synchronizer.init(pusher);
-	}
+            throws FloodlightModuleException {
+        floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
+        registryService = context.getServiceImpl(IControllerRegistryService.class);
+        restApi = context.getServiceImpl(IRestApiService.class);
+        pusher.init(null, context, floodlightProvider.getOFMessageFactory(), null);
+        if (enableFlowSync) {
+            synchronizer.init(pusher);
+        }
     }
 
     @Override
     public void startUp(FloodlightModuleContext context) {
-    restApi.addRestletRoutable(new FlowProgrammerWebRoutable());
-	pusher.start();
-	floodlightProvider.addOFMessageListener(OFType.FLOW_REMOVED, this);
-	floodlightProvider.addOFSwitchListener(this);
+        restApi.addRestletRoutable(new FlowProgrammerWebRoutable());
+        pusher.start();
+        floodlightProvider.addOFMessageListener(OFType.FLOW_REMOVED, this);
+        floodlightProvider.addOFSwitchListener(this);
     }
 
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-	Collection<Class<? extends IFloodlightService>> l = 
-		new ArrayList<Class<? extends IFloodlightService>>();
-	l.add(IFlowPusherService.class);
-	if (enableFlowSync) {
-	    l.add(IFlowSyncService.class);
-	}
-	return l;
+        Collection<Class<? extends IFloodlightService>> l =
+                new ArrayList<Class<? extends IFloodlightService>>();
+        l.add(IFlowPusherService.class);
+        if (enableFlowSync) {
+            l.add(IFlowSyncService.class);
+        }
+        return l;
     }
 
     @Override
     public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
-	Map<Class<? extends IFloodlightService>,
-	    IFloodlightService> m =
-	    new HashMap<Class<? extends IFloodlightService>,
-	    IFloodlightService>();
-	m.put(IFlowPusherService.class, pusher);
-	if (enableFlowSync) {
-	    m.put(IFlowSyncService.class, synchronizer);
-	}
-	return m;
+        Map<Class<? extends IFloodlightService>,
+                IFloodlightService> m =
+                new HashMap<Class<? extends IFloodlightService>,
+                        IFloodlightService>();
+        m.put(IFlowPusherService.class, pusher);
+        if (enableFlowSync) {
+            m.put(IFlowSyncService.class, synchronizer);
+        }
+        return m;
     }
 
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
-	Collection<Class<? extends IFloodlightService>> l =
-		new ArrayList<Class<? extends IFloodlightService>>();
-	l.add(IFloodlightProviderService.class);
-	l.add(IRestApiService.class);
-	return l;
+        Collection<Class<? extends IFloodlightService>> l =
+                new ArrayList<Class<? extends IFloodlightService>>();
+        l.add(IFloodlightProviderService.class);
+        l.add(IRestApiService.class);
+        return l;
     }
 
     @Override
     public String getName() {
-	// TODO Auto-generated method stub
-	return "FlowProgrammer";
+        // TODO Auto-generated method stub
+        return "FlowProgrammer";
     }
 
     @Override
     public boolean isCallbackOrderingPrereq(OFType type, String name) {
-	// TODO Auto-generated method stub
-	return false;
+        // TODO Auto-generated method stub
+        return false;
     }
 
     @Override
     public boolean isCallbackOrderingPostreq(OFType type, String name) {
-	// TODO Auto-generated method stub
-	return false;
+        // TODO Auto-generated method stub
+        return false;
     }
 
     @Override
     public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
-	switch (msg.getType()) {
-	case FLOW_REMOVED:
-	    OFFlowRemoved flowMsg = (OFFlowRemoved) msg;
-	    FlowEntryId id = new FlowEntryId(flowMsg.getCookie());
-	    log.debug("Got flow entry removed from {}: {}",sw.getId(), id);
-	    // TODO: Inform the Forwarding module that a flow has expired
-	    break;
-	default:
-	    break;
-	}
+        switch (msg.getType()) {
+            case FLOW_REMOVED:
+                OFFlowRemoved flowMsg = (OFFlowRemoved) msg;
+                FlowEntryId id = new FlowEntryId(flowMsg.getCookie());
+                log.debug("Got flow entry removed from {}: {}", sw.getId(), id);
+                // TODO: Inform the Forwarding module that a flow has expired
+                break;
+            default:
+                break;
+        }
 
-	return Command.CONTINUE;
+        return Command.CONTINUE;
     }
 
     @Override
     public void addedSwitch(IOFSwitch sw) {
-	log.debug("Switch added: {}", sw.getId());
+        log.debug("Switch added: {}", sw.getId());
 
-	if (enableFlowSync) {
-		if (registryService.hasControl(sw.getId())) {
-		    synchronizer.synchronize(sw);
-		}
-	}
+        if (enableFlowSync) {
+            if (registryService.hasControl(sw.getId())) {
+                synchronizer.synchronize(sw);
+            }
+        }
     }
 
     @Override
     public void removedSwitch(IOFSwitch sw) {
-	log.debug("Switch removed: {}", sw.getId());
-	
-	if (enableFlowSync) {
-	    synchronizer.interrupt(sw);
-	}
+        log.debug("Switch removed: {}", sw.getId());
+
+        if (enableFlowSync) {
+            synchronizer.interrupt(sw);
+        }
     }
 
     @Override
     public void switchPortChanged(Long switchId) {
-	// TODO Auto-generated method stub
+        // TODO Auto-generated method stub
     }
-    
+
 }

@@ -15,13 +15,13 @@ public class OFBarrierReplyFuture extends OFMessageFuture<OFBarrierReply> {
     protected volatile boolean finished;
 
     public OFBarrierReplyFuture(IThreadPoolService tp,
-            IOFSwitch sw, int transactionId) {
+                                IOFSwitch sw, int transactionId) {
         super(tp, sw, OFType.FEATURES_REPLY, transactionId);
         init();
     }
 
     public OFBarrierReplyFuture(IThreadPoolService tp,
-            IOFSwitch sw, int transactionId, long timeout, TimeUnit unit) {
+                                IOFSwitch sw, int transactionId, long timeout, TimeUnit unit) {
         super(tp, sw, OFType.FEATURES_REPLY, transactionId, timeout, unit);
         init();
     }

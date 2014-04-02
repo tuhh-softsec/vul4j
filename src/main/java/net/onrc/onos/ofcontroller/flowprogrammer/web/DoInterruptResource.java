@@ -7,8 +7,8 @@ import org.restlet.resource.Get;
 
 /**
  * FlowProgrammer REST API implementation: Interrupt synchronization to a switch.
- *
- *   GET /wm/fprog/synchronizer/interrupt/{dpid}/json"
+ * <p/>
+ * GET /wm/fprog/synchronizer/interrupt/{dpid}/json"
  */
 public class DoInterruptResource extends SynchronizerResource {
 
@@ -19,26 +19,26 @@ public class DoInterruptResource extends SynchronizerResource {
      */
     @Get("json")
     public boolean retrieve() {
-    	if (! init()) {
-    		return false;
-    	}
-    	
-    	long dpid;
-    	try {
-    		dpid = HexString.toLong((String)getRequestAttributes().get("dpid"));
-    	} catch (NumberFormatException e) {
-    		log.error("Invalid number format");
-    		return false;
-    	}
+        if (!init()) {
+            return false;
+        }
 
-    	IOFSwitch sw = provider.getSwitches().get(dpid);
-    	if (sw == null) {
-    		log.error("Invalid dpid");
-    		return false;
-    	}
-    	
-    	synchronizer.interrupt(sw);
-    	
-    	return true;
+        long dpid;
+        try {
+            dpid = HexString.toLong((String) getRequestAttributes().get("dpid"));
+        } catch (NumberFormatException e) {
+            log.error("Invalid number format");
+            return false;
+        }
+
+        IOFSwitch sw = provider.getSwitches().get(dpid);
+        if (sw == null) {
+            log.error("Invalid dpid");
+            return false;
+        }
+
+        synchronizer.interrupt(sw);
+
+        return true;
     }
 }

@@ -11,23 +11,23 @@ public class PusherResource extends ServerResource {
     protected final static Logger log = LoggerFactory.getLogger(PusherResource.class);
 
     protected IFloodlightProviderService provider;
-	protected IFlowPusherService pusher;
-	
-	protected boolean init() {
-    	provider = (IFloodlightProviderService)
-    			getContext().getAttributes().
-    			get(IFloodlightProviderService.class.getCanonicalName());
-    	if (provider == null) {
-		    log.debug("ONOS FloodlightProvider not found");
-		    return false;
-		}
-    	
-    	pusher = (IFlowPusherService)getContext().getAttributes().
-    			get(IFlowPusherService.class.getCanonicalName());
-    	if (pusher == null) {
-		    log.debug("ONOS FlowPusherService not found");
-		    return false;
-		}
-    	return true;
-	}
+    protected IFlowPusherService pusher;
+
+    protected boolean init() {
+        provider = (IFloodlightProviderService)
+                getContext().getAttributes().
+                        get(IFloodlightProviderService.class.getCanonicalName());
+        if (provider == null) {
+            log.debug("ONOS FloodlightProvider not found");
+            return false;
+        }
+
+        pusher = (IFlowPusherService) getContext().getAttributes().
+                get(IFlowPusherService.class.getCanonicalName());
+        if (pusher == null) {
+            log.debug("ONOS FlowPusherService not found");
+            return false;
+        }
+        return true;
+    }
 }

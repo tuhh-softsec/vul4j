@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * FlowProgrammer REST API implementation: Suspend sending message to switch.
- *
- *   GET /wm/fprog/pusher/suspend/{dpid}/json"
+ * <p/>
+ * GET /wm/fprog/pusher/suspend/{dpid}/json"
  */
 public class SuspendPusherResource extends PusherResource {
 
@@ -23,24 +23,24 @@ public class SuspendPusherResource extends PusherResource {
      */
     @Get("json")
     public boolean retrieve() {
-    	if (! init()) {
-    		return false;
-    	}
-    	
-    	long dpid;
-    	try {
-    		dpid = HexString.toLong((String)getRequestAttributes().get("dpid"));
-    	} catch (NumberFormatException e) {
-    		log.error("Invalid number format");
-    		return false;
-    	}
+        if (!init()) {
+            return false;
+        }
 
-    	IOFSwitch sw = provider.getSwitches().get(dpid);
-    	if (sw == null) {
-    		log.error("Invalid dpid");
-    		return false;
-    	}
-    	
-    	return pusher.suspend(sw);
+        long dpid;
+        try {
+            dpid = HexString.toLong((String) getRequestAttributes().get("dpid"));
+        } catch (NumberFormatException e) {
+            log.error("Invalid number format");
+            return false;
+        }
+
+        IOFSwitch sw = provider.getSwitches().get(dpid);
+        if (sw == null) {
+            log.error("Invalid dpid");
+            return false;
+        }
+
+        return pusher.suspend(sw);
     }
 }
