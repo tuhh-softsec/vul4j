@@ -43,17 +43,17 @@ public interface IEventChannel<K, V> {
     /**
      * Add an entry to the channel.
      *
-     * @param key the key of the entry to add.
+     * @param key   the key of the entry to add.
      * @param value the value of the entry to add.
      */
     void addEntry(K key, V value);
 
     /**
      * Add a transient entry to the channel.
-     *
+     * <p/>
      * The added entry is transient and will automatically timeout after 1ms.
      *
-     * @param key the key of the entry to add.
+     * @param key   the key of the entry to add.
      * @param value the value of the entry to add.
      */
     void addTransientEntry(K key, V value);
@@ -68,7 +68,7 @@ public interface IEventChannel<K, V> {
     /**
      * Update an entry in the channel.
      *
-     * @param key the key of the entry to update.
+     * @param key   the key of the entry to update.
      * @param value the value of the entry to update.
      */
     void updateEntry(K key, V value);

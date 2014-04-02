@@ -178,10 +178,10 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
                                                     Class<K> typeK, Class<V> typeV) {
         synchronized (eventChannels) {
             IEventChannel<K, V> eventChannel =
-                createChannelImpl(channelName, typeK, typeV);
+                    createChannelImpl(channelName, typeK, typeV);
             eventChannel.startup();
             return eventChannel;
-	}
+        }
     }
 
     /**
@@ -208,8 +208,8 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
         // Add the channel if the first listener
         if (genericEventChannel == null) {
             IEventChannel<K, V> castedEventChannel =
-                new HazelcastEventChannel<K, V>(hazelcastInstance,
-                                                channelName, typeK, typeV);
+                    new HazelcastEventChannel<K, V>(hazelcastInstance,
+                            channelName, typeK, typeV);
             eventChannels.put(channelName, castedEventChannel);
             return castedEventChannel;
         }
@@ -223,13 +223,13 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
         }
         @SuppressWarnings("unchecked")
         IEventChannel<K, V> castedEventChannel =
-            (IEventChannel<K, V>) genericEventChannel;
+                (IEventChannel<K, V>) genericEventChannel;
         return castedEventChannel;
     }
 
     /**
      * Add event channel listener.
-     *
+     * <p/>
      * NOTE: The channel is started automatically right after the listener
      * is added.
      *
@@ -247,12 +247,12 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
                                                   Class<K> typeK, Class<V> typeV) {
         synchronized (eventChannels) {
             IEventChannel<K, V> eventChannel =
-                createChannelImpl(channelName, typeK, typeV);
+                    createChannelImpl(channelName, typeK, typeV);
             eventChannel.addListener(listener);
             eventChannel.startup();
 
             return eventChannel;
-	}
+        }
     }
 
     /**
@@ -266,9 +266,9 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
     @Override
     public <K, V> void removeListener(String channelName,
                                       IEventChannelListener<K, V> listener) {
-	synchronized (eventChannels) {
+        synchronized (eventChannels) {
             IEventChannel<?, ?> genericEventChannel =
-                eventChannels.get(channelName);
+                    eventChannels.get(channelName);
 
             if (genericEventChannel != null) {
                 //
@@ -279,7 +279,7 @@ public class HazelcastDatagrid implements IFloodlightModule, IDatagridService {
                 //
                 @SuppressWarnings("unchecked")
                 IEventChannel<K, V> castedEventChannel =
-                    (IEventChannel<K, V>) genericEventChannel;
+                        (IEventChannel<K, V>) genericEventChannel;
                 castedEventChannel.removeListener(listener);
             }
         }

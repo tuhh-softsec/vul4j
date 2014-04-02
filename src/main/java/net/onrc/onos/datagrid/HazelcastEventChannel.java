@@ -45,10 +45,10 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
     /**
      * Constructor for a given event channel name.
      *
-     * @param newHazelcastInstance    the Hazelcast instance to use.
-     * @param newChannelName          the event channel name.
-     * @param newTypeK                the type of the Key in the Key-Value store.
-     * @param newTypeV                the type of the Value in the Key-Value store.
+     * @param newHazelcastInstance the Hazelcast instance to use.
+     * @param newChannelName       the event channel name.
+     * @param newTypeK             the type of the Key in the Key-Value store.
+     * @param newTypeV             the type of the Value in the Key-Value store.
      */
     public HazelcastEventChannel(HazelcastInstance newHazelcastInstance,
                                  String newChannelName, Class<K> newTypeK,
@@ -147,7 +147,7 @@ public class HazelcastEventChannel<K, V> implements IEventChannel<K, V> {
 
     /**
      * Add a transient entry to the channel.
-     *
+     * <p/>
      * The added entry is transient and will automatically timeout after 1ms.
      *
      * @param key   the key of the entry to add.
