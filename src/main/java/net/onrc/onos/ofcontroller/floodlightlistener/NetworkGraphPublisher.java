@@ -28,9 +28,9 @@ import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraphDiscoveryInterface;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
+import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
-import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
@@ -42,16 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.net.InetAddresses;
 
-/*
- * I've created a copy of the old NetworkGraphPublisher so I can integrate
- * the new API with ONOS while still having the old NetworkGraphPublisher
- * to reference.
- * TODO Remove old NetworkGraphPublisher once the integration of the new
- * API is complete.
- * For now, we just write to the database and don't worry about sending
- * notifications.
- * TODO Send notification after each database write
- */
 public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 												IOFSwitchPortListener,
 												ILinkDiscoveryListener,
@@ -66,10 +56,10 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 	private INetworkGraphService networkGraphService;
 
 	private IOnosDeviceService onosDeviceService;
-	
+
 	private NetworkGraph networkGraph;
 	private NetworkGraphDiscoveryInterface networkGraphDiscoveryInterface;
-	
+
 	private static final String ENABLE_CLEANUP_PROPERTY = "EnableCleanup";
 	private boolean cleanupEnabled = true;
 	private static final int CLEANUP_TASK_INTERVAL = 60; // in seconds
@@ -83,7 +73,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
         public void run() {
             String old = Thread.currentThread().getName();
             Thread.currentThread().setName("SwitchCleanup@" + old);
-            
+
             try {
             	log.debug("Running cleanup thread");
                 switchCleanup();
@@ -96,7 +86,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
                 Thread.currentThread().setName(old);
             }
         }
-        
+
         private void switchCleanup() {
         	Iterable<Switch> switches = networkGraph.getSwitches();
 
@@ -104,10 +94,10 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
         	// For each switch check if a controller exists in controller registry
         	for (Switch sw: switches) {
     			try {
-    				String controller = 
+    				String controller =
     						registryService.getControllerForSwitch(sw.getDpid());
     				if (controller == null) {
-    					log.debug("Requesting control to set switch {} INACTIVE", 
+    					log.debug("Requesting control to set switch {} INACTIVE",
     							HexString.toHexString(sw.getDpid()));
     					registryService.requestControl(sw.getDpid(), this);
     				}
@@ -167,10 +157,10 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 
 	@Override
 	public void linkDiscoveryUpdate(LDUpdate update) {
-		LinkEvent linkEvent = new LinkEvent(update.getSrc(), 
-				(long)update.getSrcPort(), update.getDst(), 
+		LinkEvent linkEvent = new LinkEvent(update.getSrc(),
+				(long)update.getSrcPort(), update.getDst(),
 				(long)update.getDstPort());
-		
+
 		switch (update.getOperation()) {
 		case LINK_ADDED:
 			networkGraphDiscoveryInterface.putLinkDiscoveryEvent(linkEvent);
@@ -224,7 +214,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		}
 
 		SwitchEvent switchEvent = new SwitchEvent(sw.getId());
-		
+
 		List<PortEvent> portEvents = new ArrayList<PortEvent>();
 		for (OFPhysicalPort port : sw.getPorts()) {
 			portEvents.add(new PortEvent(sw.getId(), (long)port.getPortNumber()));
@@ -237,7 +227,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		new TopologyElement(sw.getId());
 	    datagridService.notificationSendTopologyElementAdded(topologyElement);
 		*/
-		
+
 	    // Publish: add the ports
 	    // TODO: Add only ports that are UP?
 	    for (OFPhysicalPort port : sw.getPorts()) {
@@ -335,28 +325,28 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		onosDeviceService.addOnosDeviceListener(this);
 
 		networkGraph = networkGraphService.getNetworkGraph();
-		networkGraphDiscoveryInterface = 
+		networkGraphDiscoveryInterface =
 				networkGraphService.getNetworkGraphDiscoveryInterface();
-		
+
 		// Run the cleanup thread
-		String enableCleanup = 
+		String enableCleanup =
 				context.getConfigParams(this).get(ENABLE_CLEANUP_PROPERTY);
 		if (enableCleanup != null && enableCleanup.toLowerCase().equals("false")) {
 			cleanupEnabled = false;
 		}
-		
+
 		log.debug("Cleanup thread is {}enabled", (cleanupEnabled)? "" : "not ");
-		
+
 		if (cleanupEnabled) {
-			IThreadPoolService threadPool = 
+			IThreadPoolService threadPool =
 					context.getServiceImpl(IThreadPoolService.class);
-			cleanupTask = new SingletonTask(threadPool.getScheduledExecutor(), 
+			cleanupTask = new SingletonTask(threadPool.getScheduledExecutor(),
 					new SwitchCleanup());
 			// Run the cleanup task immediately on startup
 			cleanupTask.reschedule(0, TimeUnit.SECONDS);
 		}
 	}
-	
+
 	@Override
 	public void onosDeviceAdded(OnosDevice device) {
 		log.debug("Called onosDeviceAdded mac {}", device.getMacAddress());
@@ -365,19 +355,19 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		List<SwitchPort> spLists = new ArrayList<SwitchPort>();
 		spLists.add(sp);
 		DeviceEvent event = new DeviceEvent(device.getMacAddress());
-		event.setAttachmentPoints(spLists);	
+		event.setAttachmentPoints(spLists);
 		event.setLastSeenTime(device.getLastSeenTimestamp().getTime());
 		if(device.getIpv4Address() != null) {
-			InetAddress ip = InetAddresses.fromInteger(device.getIpv4Address());	
+			InetAddress ip = InetAddresses.fromInteger(device.getIpv4Address());
 			event.addIpAddress(ip);
 		}
 		//Does not use Vlan info now.
-		
-		networkGraphDiscoveryInterface.putDeviceDiscoveryEvent(event);	
+
+		networkGraphDiscoveryInterface.putDeviceDiscoveryEvent(event);
 	}
 
 	@Override
-	public void onosDeviceRemoved(OnosDevice device) {	
+	public void onosDeviceRemoved(OnosDevice device) {
 		log.debug("Called onosDeviceRemoved");
 		DeviceEvent event = new DeviceEvent(device.getMacAddress());
 		networkGraphDiscoveryInterface.removeDeviceDiscoveryEvent(event);
