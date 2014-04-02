@@ -62,7 +62,8 @@ public class PhaosTest extends org.junit.Assert {
 
     @Before
     public void setUp() throws Exception {
-        Init.init(PhaosTest.class.getClassLoader().getResource("security-config.xml").toURI());
+        Init.init(PhaosTest.class.getClassLoader().getResource("security-config.xml").toURI(),
+                this.getClass());
         org.apache.xml.security.Init.init();
 
         xmlInputFactory = XMLInputFactory.newInstance();

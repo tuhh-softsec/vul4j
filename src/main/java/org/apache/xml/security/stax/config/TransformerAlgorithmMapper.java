@@ -43,7 +43,8 @@ public class TransformerAlgorithmMapper {
     private TransformerAlgorithmMapper() {
     }
 
-    protected static synchronized void init(TransformAlgorithmsType transformAlgorithms) throws Exception {
+    protected static synchronized void init(TransformAlgorithmsType transformAlgorithms,
+            Class<?> callingClass) throws Exception {
         List<TransformAlgorithmType> algorithms = transformAlgorithms.getTransformAlgorithm();
         algorithmsClassMapInOut = new HashMap<String, Class<?>>();
         algorithmsClassMapIn = new HashMap<String, Class<?>>();
@@ -53,13 +54,13 @@ public class TransformerAlgorithmMapper {
             TransformAlgorithmType algorithmType = algorithms.get(i);
             if (algorithmType.getINOUT() == null) {
                 algorithmsClassMapInOut.put(algorithmType.getURI(), 
-                        ClassLoaderUtils.loadClass(algorithmType.getJAVACLASS(), TransformerAlgorithmMapper.class));
+                        ClassLoaderUtils.loadClass(algorithmType.getJAVACLASS(), callingClass));
             } else if ("IN".equals(algorithmType.getINOUT().value())) {
                 algorithmsClassMapIn.put(algorithmType.getURI(), 
-                        ClassLoaderUtils.loadClass(algorithmType.getJAVACLASS(), TransformerAlgorithmMapper.class));
+                        ClassLoaderUtils.loadClass(algorithmType.getJAVACLASS(), callingClass));
             } else if ("OUT".equals(algorithmType.getINOUT().value())) {
                 algorithmsClassMapOut.put(algorithmType.getURI(), 
-                        ClassLoaderUtils.loadClass(algorithmType.getJAVACLASS(), TransformerAlgorithmMapper.class));
+                        ClassLoaderUtils.loadClass(algorithmType.getJAVACLASS(), callingClass));
             } else {
                 throw new IllegalArgumentException("INOUT parameter " + algorithmType.getINOUT().value() + " unsupported");
             }

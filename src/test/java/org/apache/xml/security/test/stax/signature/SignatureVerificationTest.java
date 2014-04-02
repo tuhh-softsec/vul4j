@@ -74,7 +74,8 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
     
     @Before
     public void setUp() throws Exception {
-        Init.init(SignatureVerificationTest.class.getClassLoader().getResource("security-config.xml").toURI());
+        Init.init(SignatureVerificationTest.class.getClassLoader().getResource("security-config.xml").toURI(),
+                this.getClass());
         org.apache.xml.security.Init.init();
         
         xmlInputFactory = XMLInputFactory.newInstance();

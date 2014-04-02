@@ -50,7 +50,7 @@ public class Init {
     private static URI initialized = null;
 
     @SuppressWarnings("unchecked")
-    public static synchronized void init(URI uri) throws XMLSecurityException {
+    public static synchronized void init(URI uri, Class<?> callingClass) throws XMLSecurityException {
         if (initialized == null || uri != null && !uri.equals(initialized)) {
             try {
                 JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
@@ -77,11 +77,11 @@ public class Init {
                 saxParser.parse(uri.toURL().toExternalForm(), new XIncludeHandler(unmarshallerHandler));
                 JAXBElement<ConfigurationType> configurationTypeJAXBElement = (JAXBElement<ConfigurationType>) unmarshallerHandler.getResult();
 
-                ConfigurationProperties.init(configurationTypeJAXBElement.getValue().getProperties());
-                SecurityHeaderHandlerMapper.init(configurationTypeJAXBElement.getValue().getSecurityHeaderHandlers());
+                ConfigurationProperties.init(configurationTypeJAXBElement.getValue().getProperties(), callingClass);
+                SecurityHeaderHandlerMapper.init(configurationTypeJAXBElement.getValue().getSecurityHeaderHandlers(), callingClass);
                 JCEAlgorithmMapper.init(configurationTypeJAXBElement.getValue().getJCEAlgorithmMappings());
-                TransformerAlgorithmMapper.init(configurationTypeJAXBElement.getValue().getTransformAlgorithms());
-                ResourceResolverMapper.init(configurationTypeJAXBElement.getValue().getResourceResolvers());
+                TransformerAlgorithmMapper.init(configurationTypeJAXBElement.getValue().getTransformAlgorithms(), callingClass);
+                ResourceResolverMapper.init(configurationTypeJAXBElement.getValue().getResourceResolvers(), callingClass);
 
                 I18n.init(ConfigurationProperties.getProperty("DefaultLanguageCode"), ConfigurationProperties.getProperty("DefaultCountryCode"));
 

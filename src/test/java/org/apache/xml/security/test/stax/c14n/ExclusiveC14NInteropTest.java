@@ -68,7 +68,8 @@ public class ExclusiveC14NInteropTest extends org.junit.Assert {
     
     @Before
     public void setUp() throws Exception {
-        Init.init(ExclusiveC14NInteropTest.class.getClassLoader().getResource("security-config.xml").toURI());
+        Init.init(ExclusiveC14NInteropTest.class.getClassLoader().getResource("security-config.xml").toURI(),
+                this.getClass());
         org.apache.xml.security.Init.init();
         
         xmlInputFactory = XMLInputFactory.newInstance();

@@ -58,7 +58,7 @@ public class XMLSec {
             if (resource == null) {
                 throw new RuntimeException("security-config.xml not found in classpath");
             }
-            Init.init(resource.toURI());
+            Init.init(resource.toURI(), XMLSec.class);
             
             try {
                 XMLSecurityConstants.setJaxbContext(

@@ -68,7 +68,8 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             BASEDIR = new File(".").getCanonicalPath();
         }
 
-        Init.init(AbstractSignatureVerificationTest.class.getClassLoader().getResource("security-config.xml").toURI());
+        Init.init(AbstractSignatureVerificationTest.class.getClassLoader().getResource("security-config.xml").toURI(),
+                this.getClass());
         org.apache.xml.security.Init.init();
 
         xmlInputFactory = XMLInputFactory.newInstance();

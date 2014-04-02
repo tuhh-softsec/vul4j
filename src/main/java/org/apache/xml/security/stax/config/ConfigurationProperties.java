@@ -33,21 +33,28 @@ import java.util.Properties;
 public class ConfigurationProperties {
 
     private static Properties properties;
+    private static Class<?> callingClass;
 
     private ConfigurationProperties() {
         super();
     }
 
-    protected static synchronized void init(PropertiesType propertiesType) throws Exception {
+    protected static synchronized void init(PropertiesType propertiesType,
+            Class<?> callingClass) throws Exception {
         properties = new Properties();
         List<PropertyType> handlerList = propertiesType.getProperty();
         for (int i = 0; i < handlerList.size(); i++) {
             PropertyType propertyType = handlerList.get(i);
             properties.setProperty(propertyType.getNAME(), propertyType.getVAL());
         }
+        ConfigurationProperties.callingClass = callingClass;
     }
 
     public static String getProperty(String key) {
         return properties.getProperty(key);
+    }
+    
+    public static Class<?> getCallingClass() {
+        return callingClass;
     }
 }

@@ -52,7 +52,8 @@ public class TransformEnvelopedSignatureTest extends org.junit.Assert {
 
     @Before
     public void setUp() throws Exception {
-        Init.init(this.getClass().getClassLoader().getResource("security-config.xml").toURI());
+        Init.init(this.getClass().getClassLoader().getResource("security-config.xml").toURI(),
+                this.getClass());
         this.xmlInputFactory = XMLInputFactory.newInstance();
         this.xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
     }

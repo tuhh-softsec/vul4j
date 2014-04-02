@@ -43,7 +43,7 @@ public class UncategorizedTest extends org.junit.Assert {
             this.getClass().getClassLoader().getResource(
                 "org/apache/xml/security/c14n/in/31_input.xml");
         try {
-            Init.init(url.toURI());
+            Init.init(url.toURI(), this.getClass());
             Assert.fail();
         } catch (XMLSecurityException e) {
             Assert.assertTrue(e.getMessage().contains("Cannot find the declaration of element 'doc'."));
