@@ -302,6 +302,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
         l.add(IControllerRegistryService.class);
         l.add(IDatagridService.class);
         l.add(INetworkGraphService.class);
+        l.add(IOnosDeviceService.class);
         return l;
 	}
 
