@@ -15,7 +15,6 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
-import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceListener;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
@@ -52,7 +51,6 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 	private IFloodlightProviderService floodlightProvider;
 	private ILinkDiscoveryService linkDiscovery;
 	private IControllerRegistryService registryService;
-	private IDatagridService datagridService;
 	private INetworkGraphService networkGraphService;
 
 	private IOnosDeviceService onosDeviceService;
@@ -111,46 +109,10 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		public void controlChanged(long dpid, boolean hasControl) {
 			if (hasControl) {
 				log.debug("Got control to set switch {} INACTIVE", HexString.toHexString(dpid));
-				/*
-				// Get the affected ports
-				List<Short> ports = swStore.getPorts(HexString.toHexString(dpid));
-				// Get the affected links
-				List<Link> links = linkStore.getLinks(HexString.toHexString(dpid));
-				// Get the affected reverse links
-				List<Link> reverseLinks = linkStore.getReverseLinks(HexString.toHexString(dpid));
-				links.addAll(reverseLinks);
-				*/
+
 				SwitchEvent switchEvent = new SwitchEvent(dpid);
 				networkGraphDiscoveryInterface.removeSwitchDiscoveryEvent(switchEvent);
 			    registryService.releaseControl(dpid);
-
-			    // TODO publish UPDATE_SWITCH event here
-			    //
-			    // NOTE: Here we explicitly send
-			    // notification to remove the
-			    // switch, because it is inactive
-			    //
-			    /*
-			    TopologyElement topologyElement =
-				new TopologyElement(dpid);
-			    datagridService.notificationSendTopologyElementRemoved(topologyElement);
-
-			    // Publish: remove the affected ports
-			    for (Short port : ports) {
-				TopologyElement topologyElementPort =
-				    new TopologyElement(dpid, port);
-				datagridService.notificationSendTopologyElementRemoved(topologyElementPort);
-			    }
-			    // Publish: remove the affected links
-			    for (Link link : links) {
-				TopologyElement topologyElementLink =
-				    new TopologyElement(link.getSrc(),
-							link.getSrcPort(),
-							link.getDst(),
-							link.getDstPort());
-				datagridService.notificationSendTopologyElementRemoved(topologyElementLink);
-			    }
-			    */
 			}
 		}
     }
@@ -164,29 +126,12 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		switch (update.getOperation()) {
 		case LINK_ADDED:
 			networkGraphDiscoveryInterface.putLinkDiscoveryEvent(linkEvent);
-			/*
-			TopologyElement topologyElement =
-					new TopologyElement(update.getSrc(),
-							update.getSrcPort(),
-							update.getDst(),
-							update.getDstPort());
-			datagridService.notificationSendTopologyElementAdded(topologyElement);
-			*/
 			break;
 		case LINK_UPDATED:
-			// I don't know what a LINK_UPDATED event is.
-			// We never use it.
+			// We don't use the LINK_UPDATED event (unsure what it means)
 			break;
 		case LINK_REMOVED:
 			networkGraphDiscoveryInterface.removeLinkDiscoveryEvent(linkEvent);
-			/*
-			TopologyElement topologyElement =
-					new TopologyElement(update.getSrc(),
-							update.getSrcPort(),
-							update.getDst(),
-							update.getDstPort());
-			datagridService.notificationSendTopologyElementRemoved(topologyElement);
-			*/
 			break;
 		default:
 			break;
@@ -219,56 +164,24 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		for (OFPhysicalPort port : sw.getPorts()) {
 			portEvents.add(new PortEvent(sw.getId(), (long)port.getPortNumber()));
 		}
-		networkGraphDiscoveryInterface.putSwitchDiscoveryEvent(switchEvent, portEvents);
+		networkGraphDiscoveryInterface
+		    .putSwitchDiscoveryEvent(switchEvent, portEvents);
 
-		/*
-		// TODO publish ADD_SWITCH event here
-	    TopologyElement topologyElement =
-		new TopologyElement(sw.getId());
-	    datagridService.notificationSendTopologyElementAdded(topologyElement);
-		*/
-
-	    // Publish: add the ports
-	    // TODO: Add only ports that are UP?
 	    for (OFPhysicalPort port : sw.getPorts()) {
-			//TopologyElement topologyElementPort =
-			    //new TopologyElement(sw.getId(), port.getPortNumber());
-			//datagridService.notificationSendTopologyElementAdded(topologyElementPort);
-
 			// Allow links to be discovered on this port now that it's
 			// in the database
 			linkDiscovery.RemoveFromSuppressLLDPs(sw.getId(), port.getPortNumber());
 	    }
-
-	    /*
-	    // Add all links that might be connected already
-	    List<Link> links = linkStore.getLinks(HexString.toHexString(sw.getId()));
-	    // Add all reverse links as well
-	    List<Link> reverseLinks = linkStore.getReverseLinks(HexString.toHexString(sw.getId()));
-	    links.addAll(reverseLinks);
-
-	    // Publish: add the links
-	    for (Link link : links) {
-		TopologyElement topologyElementLink =
-		    new TopologyElement(link.getSrc(),
-					link.getSrcPort(),
-					link.getDst(),
-					link.getDstPort());
-		datagridService.notificationSendTopologyElementAdded(topologyElementLink);
-		*/
 	}
 
 	@Override
 	public void removedSwitch(IOFSwitch sw) {
-		// TODO move to cleanup thread
-		//SwitchEvent switchEvent = new SwitchEvent(sw.getId());
-		//networkGraphDiscoveryInterface.removeSwitchDiscoveryEvent(switchEvent);
+		// We don't use this event - switch remove is done by cleanup thread
 	}
 
 	@Override
 	public void switchPortChanged(Long switchId) {
-		// TODO Auto-generated method stub
-
+		// We don't use this event
 	}
 
 	@Override
@@ -300,7 +213,6 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
         l.add(ILinkDiscoveryService.class);
         l.add(IThreadPoolService.class);
         l.add(IControllerRegistryService.class);
-        l.add(IDatagridService.class);
         l.add(INetworkGraphService.class);
         l.add(IOnosDeviceService.class);
         return l;
@@ -312,7 +224,6 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		linkDiscovery = context.getServiceImpl(ILinkDiscoveryService.class);
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
-		datagridService = context.getServiceImpl(IDatagridService.class);
 		onosDeviceService = context.getServiceImpl(IOnosDeviceService.class);
 
 		networkGraphService = context.getServiceImpl(INetworkGraphService.class);
@@ -320,7 +231,6 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 
 	@Override
 	public void startUp(FloodlightModuleContext context) {
-		// TODO enable cleanup thread
 		floodlightProvider.addOFSwitchListener(this);
 		linkDiscovery.addListener(this);
 		onosDeviceService.addOnosDeviceListener(this);
@@ -362,7 +272,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 			InetAddress ip = InetAddresses.fromInteger(device.getIpv4Address());
 			event.addIpAddress(ip);
 		}
-		//Does not use Vlan info now.
+		// Does not use vlan info now.
 
 		networkGraphDiscoveryInterface.putDeviceDiscoveryEvent(event);
 	}
