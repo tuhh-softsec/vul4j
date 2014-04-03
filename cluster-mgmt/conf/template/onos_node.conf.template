@@ -1,0 +1,44 @@
+# Name of this host (`hostname` by default)
+host.name = __HOST_NAME__
+
+# IP address of this host used for ONOS communication
+host.ip = __HOST_IP__
+
+# Role of this host
+host.role = __ONOS_ROLE__
+
+# Back-end module to store topology/flows
+host.backend = __BACKEND__
+
+# List of host name/IPs that constitute ZooKeeper cluster
+# myid will be assigned incrementally according to order of list
+zookeeper.hosts = __ZK_HOSTS__
+
+# Protocol used by RAMCloud coordinator (fast+udp by default)
+ramcloud.coordinator.protocol = __RAMCLOUD_PROTOCOL__
+
+# IP address of RAMCloud coordinator (host.ip by default)
+ramcloud.coordinator.ip = __RAMCLOUD_IP__
+
+# Port number of RAMCloud coordinator (12246 by default)
+ramcloud.coordinator.port = __RAMCLOUD_COORD_PORT__
+
+# Protocol used by RAMCloud server (fast+udp by default)
+ramcloud.server.protocol = __RAMCLOUD_PROTOCOL__
+
+# IP address of RAMCloud server (host.ip by default)
+ramcloud.server.ip = __RAMCLOUD_IP__
+
+# Port number of RAMCloud server (12242 by default)
+ramcloud.server.port = __RAMCLOUD_SERVER_PORT__
+
+# List of hostname/ip[:port] which forms Hazelcast datagrid
+# If this value is empty, Hazelcast will be set to multicast mode.
+# Inversely, if this value is set, multicast settings will be ignored.
+hazelcast.tcp-ip.members = __HAZELCAST_MEMBERS__
+
+# Multicast address used by Hazelcast. (224.2.2.3 by default)
+hazelcast.multicast.group = __HAZELCAST_MULTICAST_GROUP__
+
+# Multicast port used by Hazelcast. (54327 by default)
+#hazelcast.multicast.port = __HAZELCAST_MULTICAST_PORT__

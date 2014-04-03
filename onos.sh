@@ -3,7 +3,7 @@
 ### Env vars used by this script. (default value) ###
 # $ONOS_HOME       : path of root directory of ONOS repository (this script's dir)
 # $ONOS_CONF_DIR   : path of ONOS config directory (~/ONOS/conf)
-# $ONOS_CONF       : path of ONOS node config file (~/ONOS/conf/onos_node.conf)
+# $ONOS_CONF       : path of ONOS node config file (~/ONOS/conf/onos_node.`hostname`.conf or onos_node.conf)
 # $ONOS_PROPS      : path of ONOS properties file (~/ONOS/conf/onos.properties)
 # $ONOS_LOGBACK    : path of logback config file (~/ONOS/conf/logback.`hostname`.xml)
 # $LOGDIR          : path of log output directory (~/ONOS/onos-logs)
@@ -28,11 +28,15 @@ function read-conf {
 
 ONOS_HOME=${ONOS_HOME:-$(cd `dirname $0`; pwd)}
 ONOS_CONF_DIR=${ONOS_CONF_DIR:-${ONOS_HOME}/conf}
-ONOS_CONF=${ONOS_CONF:-${ONOS_CONF_DIR}/onos_node.conf}
+ONOS_CONF=${ONOS_CONF:-${ONOS_CONF_DIR}/onos_node.`hostname`.conf}
 
 if [ ! -f ${ONOS_CONF} ]; then
-  echo "${ONOS_CONF} not found."
-  exit 1
+  # falling back to default config file
+  ONOS_CONF=${ONOS_CONF_DIR}/onos_node.conf
+  if [ ! -f ${ONOS_CONF} ]; then
+    echo "${ONOS_CONF} not found."
+    exit 1
+  fi
 fi
 
 
@@ -191,6 +195,16 @@ function kill-processes {
   done
 }
 
+function handle-error {
+  set -e
+  
+  revert-confs
+  
+  set +e
+  
+  exit 1
+}
+
 # revert-file {filename}
 # revert "filename" from "filename.bak" if "filename.tmp" exists.
 function revert-file {
@@ -208,8 +222,6 @@ function revert-file {
 
 # revert-confs [error message]
 function revert-confs {
-  set -e
-  
   echo -n "ERROR occurred ... "
   
   revert-file `basename ${ZK_CONF}`
@@ -220,10 +232,6 @@ function revert-confs {
   if [ ! -z "$1" ]; then
     echo $1
   fi
-  
-  set +e
-  
-  exit 1
 }
 
 function create-zk-conf {
@@ -248,7 +256,7 @@ function create-zk-conf {
   local i=1
   local myid=
   for host in ${hostarr}; do
-    if [ ${host} = ${ONOS_HOST_NAME} ]; then
+    if [ "${host}" = "${ONOS_HOST_NAME}" -o "${host}" = "${ONOS_HOST_IP}" ]; then
       myid=$i
       break
     fi
@@ -257,7 +265,7 @@ function create-zk-conf {
   
   if [ -z "${myid}" ]; then
     local filename=`basename ${ONOS_CONF}`
-    revert-confs "[ERROR in ${filename}] zookeeper.hosts must have hostname \"${ONOS_HOST_NAME}\""
+    revert-confs "[ERROR in ${filename}] zookeeper.hosts must have hostname \"${ONOS_HOST_NAME}\" or IP address"
   fi
   
   if [ -f "${ZK_MY_ID}" ]; then
@@ -369,10 +377,10 @@ function create-conf-interactive {
     echo -n "Overwriting ${filename} [Y/n]? "
     while [ 1 ]; do
       read key
-      if [ -z "${key}" -o "${key}" == "Y" ]; then
+      if [ -z "${key}" -o "${key}" == "Y" -o "${key}" == "y" ]; then
         ${func}
         break
-      elif [ "${key}" == "n" ]; then
+      elif [ "${key}" == "N" -o "${key}" == "n" ]; then
         break
       fi
       echo "[Y/n]?"
@@ -386,7 +394,7 @@ function create-confs {
   local key
   local filename
   
-  trap revert-confs ERR
+  trap handle-error ERR
 
   if [ "$1" == "-f" ]; then
     create-zk-conf
@@ -397,7 +405,6 @@ function create-confs {
     create-conf-interactive ${HC_CONF} create-hazelcast-conf
     create-conf-interactive ${ONOS_LOGBACK} create-logback-conf
   fi
-
   
   trap - ERR
 }
