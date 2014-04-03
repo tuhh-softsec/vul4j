@@ -7,7 +7,7 @@ import java.util.Map;
 
 import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
-import net.onrc.onos.core.datastore.RCProtos.LinkProperty;
+import net.onrc.onos.core.datastore.serializers.Topology.LinkProperty;
 import net.onrc.onos.core.datastore.utils.KVObject;
 import net.onrc.onos.core.topology.LinkEvent;
 import net.onrc.onos.core.topology.PortEvent;

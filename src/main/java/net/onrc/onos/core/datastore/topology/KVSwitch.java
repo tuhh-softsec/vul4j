@@ -7,7 +7,7 @@ import java.util.Map;
 
 import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
-import net.onrc.onos.core.datastore.RCProtos.SwitchProperty;
+import net.onrc.onos.core.datastore.serializers.Topology.SwitchProperty;
 import net.onrc.onos.core.datastore.utils.KVObject;
 import net.onrc.onos.core.topology.SwitchEvent;
 

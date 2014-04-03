@@ -7,7 +7,7 @@
           (under build and reporting)
      -->
      <Match>
-       <Class name="~net.onrc.onos.core.datastore.RCProtos(.*)?" />
+       <Class name="~net\.onrc\.onos\.core\.datastore\.serializers\..*" />
      </Match>
      <Match>
        <Class name="~.*edu\.stanford\..*"/>

@@ -295,7 +295,7 @@
               (under build and reporting)
           -->
 	  <excludes>
-            <exclude>**/RCProtos.java</exclude>
+            <exclude>**/datastore/serializers/**</exclude>
 	    <exclude>**/edu/stanford/**</exclude>
 	    <exclude>**/net/floodlightcontroller/**</exclude>
 	    <exclude>**/org/openflow/**</exclude>
@@ -417,7 +417,7 @@
             - maven-pmd-plugin configuration in pom.xml
               (under build and reporting)
           -->
-          <excludes>**/RCProtos.java,**/RamCloudGraphProtos.java</excludes>
+          <excludes>**/datastore/serializers/**</excludes>
 	  <suppressionsLocation>
              ${basedir}/conf/checkstyle/onos_suppressions.xml
           </suppressionsLocation>
@@ -459,7 +459,7 @@
               (under build and reporting)
           -->
           <excludes>
-            <exclude>**/RCProtos.java</exclude>
+            <exclude>**/datastore/serializers/**</exclude>
 	    <exclude>**/edu/stanford/**</exclude>
 	    <exclude>**/net/floodlightcontroller/**</exclude>
 	    <exclude>**/org/openflow/**</exclude>

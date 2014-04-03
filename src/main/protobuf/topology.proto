@@ -1,7 +1,7 @@
-package RCProtos;
+package topology;
 
-option java_package = "net.onrc.onos.core.datastore";
-option java_outer_classname = "RCProtos";
+option java_package = "net.onrc.onos.core.datastore.serializers";
+option java_outer_classname = "Topology";
 
 message SwitchProperty {
   required int64 dpid = 1;
