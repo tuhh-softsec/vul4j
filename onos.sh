@@ -607,7 +607,7 @@ function start-onos {
     exit 1
   fi
 
-  JVM_OPTS="${JVM_OPTS} -Dnet.onrc.onos.datastore.backend=${ONOS_HOST_BACKEND}"
+  JVM_OPTS="${JVM_OPTS} -Dnet.onrc.onos.core.datastore.backend=${ONOS_HOST_BACKEND}"
   
   # Run ONOS
   
