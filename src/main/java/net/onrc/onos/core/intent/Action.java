@@ -1,6 +1,6 @@
 package net.onrc.onos.core.intent;
 
-import net.onrc.onos.ofcontroller.util.FlowEntryAction;
+import net.onrc.onos.core.util.FlowEntryAction;
 
 /**
  * 

@@ -26,16 +26,16 @@ import net.onrc.onos.apps.bgproute.Interface;
 import net.onrc.onos.core.datagrid.IDatagridService;
 import net.onrc.onos.core.datagrid.IEventChannel;
 import net.onrc.onos.core.datagrid.IEventChannelListener;
+import net.onrc.onos.core.devicemanager.IOnosDeviceService;
+import net.onrc.onos.core.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.core.main.config.IConfigInfoService;
-import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
-import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
+import net.onrc.onos.core.util.Dpid;
+import net.onrc.onos.core.util.Port;
+import net.onrc.onos.core.util.SwitchPort;
 import net.onrc.onos.ofcontroller.networkgraph.Device;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
-import net.onrc.onos.ofcontroller.util.Dpid;
-import net.onrc.onos.ofcontroller.util.Port;
-import net.onrc.onos.ofcontroller.util.SwitchPort;
 import net.onrc.onos.packet.ARP;
 import net.onrc.onos.packet.Ethernet;
 import net.onrc.onos.packet.IPv4;
@@ -754,7 +754,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 						continue;
 					}		
 					switchPorts.add(new SwitchPort(new Dpid(sw.getId()), 
-							new net.onrc.onos.ofcontroller.util.Port(portNumber.shortValue())));
+							new net.onrc.onos.core.util.Port(portNumber.shortValue())));
 					actions.add(new OFActionOutput(portNumber.shortValue()));
 				}
 			}

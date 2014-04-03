@@ -14,7 +14,7 @@ import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
-import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
+import net.onrc.onos.core.util.serializers.KryoFactory;
 
 /**
  * A datagrid event channel that uses Hazelcast as a datagrid.

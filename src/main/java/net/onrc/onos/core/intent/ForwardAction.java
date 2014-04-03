@@ -1,6 +1,6 @@
 package net.onrc.onos.core.intent;
 
-import net.onrc.onos.ofcontroller.util.FlowEntryAction;
+import net.onrc.onos.core.util.FlowEntryAction;
 
 /**
  * 
@@ -22,7 +22,7 @@ class ForwardAction extends Action {
 	@Override
 	public FlowEntryAction getFlowEntryAction() {
 	    FlowEntryAction action = new FlowEntryAction();
-	    action.setActionOutput(new net.onrc.onos.ofcontroller.util.Port((short) dstPort));
+	    action.setActionOutput(new net.onrc.onos.core.util.Port((short) dstPort));
 	    return action;
 	}
 

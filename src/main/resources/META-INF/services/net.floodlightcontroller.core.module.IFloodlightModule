@@ -1,6 +1,6 @@
 net.floodlightcontroller.core.FloodlightProvider
 net.onrc.onos.ofcontroller.floodlightlistener.NetworkGraphPublisher
-net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager
+net.onrc.onos.core.linkdiscovery.internal.LinkDiscoveryManager
 net.floodlightcontroller.topology.TopologyManager
 net.floodlightcontroller.forwarding.Forwarding
 net.floodlightcontroller.restserver.RestApiServer
@@ -10,14 +10,14 @@ net.floodlightcontroller.devicemanager.test.MockDeviceManager
 net.floodlightcontroller.core.test.MockFloodlightProvider
 net.floodlightcontroller.core.test.MockThreadPoolService
 net.onrc.onos.core.datagrid.HazelcastDatagrid
-net.onrc.onos.ofcontroller.flowprogrammer.FlowProgrammer
+net.onrc.onos.core.flowprogrammer.FlowProgrammer
 net.onrc.onos.apps.bgproute.BgpRoute
 net.onrc.onos.registry.controller.ZookeeperRegistry
 net.onrc.onos.registry.controller.StandaloneRegistry
 net.onrc.onos.apps.forwarding.Forwarding
 net.onrc.onos.apps.proxyarp.ProxyArpManager
 net.onrc.onos.core.main.config.DefaultConfiguration
-net.onrc.onos.ofcontroller.devicemanager.OnosDeviceManager
+net.onrc.onos.core.devicemanager.OnosDeviceManager
 net.onrc.onos.ofcontroller.networkgraph.NetworkGraphModule
 net.onrc.onos.core.intent.runtime.PathCalcRuntimeModule
 net.onrc.onos.core.intent.runtime.PlanInstallModule

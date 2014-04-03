@@ -11,10 +11,10 @@ import java.util.concurrent.ExecutionException;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.internal.OFMessageFuture;
+import net.onrc.onos.core.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.core.intent.FlowEntry;
-import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 //import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.util.Pair;
+import net.onrc.onos.core.util.Pair;
 
 import org.openflow.protocol.OFBarrierReply;
 import org.slf4j.Logger;
@@ -102,7 +102,7 @@ public class PlanInstallRuntime {
 	
 	FlowModCount.startCount();
 	for(Set<FlowEntry> phase : plan) {
-	    Set<Pair<IOFSwitch, net.onrc.onos.ofcontroller.util.FlowEntry>> entries = new HashSet<>();
+	    Set<Pair<IOFSwitch, net.onrc.onos.core.util.FlowEntry>> entries = new HashSet<>();
 	    Set<IOFSwitch> modifiedSwitches = new HashSet<>();
 	    
 	    long step1 = System.nanoTime();

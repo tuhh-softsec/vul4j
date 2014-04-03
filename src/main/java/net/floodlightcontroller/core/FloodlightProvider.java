@@ -12,7 +12,7 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.core.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 public class FloodlightProvider implements IFloodlightModule {

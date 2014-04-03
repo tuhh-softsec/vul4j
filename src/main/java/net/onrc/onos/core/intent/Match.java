@@ -5,7 +5,7 @@ import java.util.Arrays;
 import net.floodlightcontroller.util.MACAddress;
 //import net.onrc.onos.ofcontroller.networkgraph.Port;
 //import net.onrc.onos.ofcontroller.networkgraph.Switch;
-import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
+import net.onrc.onos.core.util.FlowEntryMatch;
 
 /**
  *
@@ -45,7 +45,7 @@ public class Match {
 	    FlowEntryMatch match = new FlowEntryMatch();
 	    match.enableSrcMac(srcMac);
 	    match.enableDstMac(dstMac);
-	    match.enableInPort(new net.onrc.onos.ofcontroller.util.Port((short) srcPort));
+	    match.enableInPort(new net.onrc.onos.core.util.Port((short) srcPort));
 	    return match;
 	}
 

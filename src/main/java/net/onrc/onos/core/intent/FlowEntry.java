@@ -5,10 +5,10 @@ import java.util.Set;
 
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.core.intent.IntentOperation.Operator;
-import net.onrc.onos.ofcontroller.util.Dpid;
-import net.onrc.onos.ofcontroller.util.FlowEntryActions;
-import net.onrc.onos.ofcontroller.util.FlowEntryId;
-import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
+import net.onrc.onos.core.util.Dpid;
+import net.onrc.onos.core.util.FlowEntryActions;
+import net.onrc.onos.core.util.FlowEntryId;
+import net.onrc.onos.core.util.FlowEntryUserState;
 
 /**
  * 
@@ -48,8 +48,8 @@ public class FlowEntry {
 	    operator = op;
 	}
 	
-	public net.onrc.onos.ofcontroller.util.FlowEntry getFlowEntry() {
-		net.onrc.onos.ofcontroller.util.FlowEntry entry = new net.onrc.onos.ofcontroller.util.FlowEntry();
+	public net.onrc.onos.core.util.FlowEntry getFlowEntry() {
+		net.onrc.onos.core.util.FlowEntry entry = new net.onrc.onos.core.util.FlowEntry();
 		entry.setDpid(new Dpid(sw));
 		entry.setFlowEntryId(new FlowEntryId(hashCode())); // naive, but useful for now
 		entry.setFlowEntryMatch(match.getFlowEntryMatch());

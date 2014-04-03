@@ -1,9 +1,9 @@
 package net.floodlightcontroller.core.web;
 
 import net.floodlightcontroller.util.EventHistory;
-import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
-import net.onrc.onos.ofcontroller.linkdiscovery.internal.EventHistoryTopologySwitch;
-import net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager;
+import net.onrc.onos.core.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.core.linkdiscovery.internal.EventHistoryTopologySwitch;
+import net.onrc.onos.core.linkdiscovery.internal.LinkDiscoveryManager;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

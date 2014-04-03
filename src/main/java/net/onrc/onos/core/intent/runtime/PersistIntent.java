@@ -18,9 +18,9 @@ import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVTable;
 import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.core.intent.IntentOperationList;
+import net.onrc.onos.core.util.serializers.KryoFactory;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IdBlock;
 

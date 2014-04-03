@@ -1,7 +1,7 @@
 package net.onrc.onos.core.intent;
 
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.core.util.Dpid;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.onrc.onos.core.intent.ConstrainedBFSTree;
+import net.onrc.onos.core.util.Dpid;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.Link;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
@@ -12,7 +13,6 @@ import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.ofcontroller.networkgraph.serializers.LinkSerializer;
-import net.onrc.onos.ofcontroller.util.Dpid;
 
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;

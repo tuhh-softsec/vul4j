@@ -2,7 +2,7 @@ package net.onrc.onos.core.intent;
 
 import static org.junit.Assert.assertEquals;
 import net.onrc.onos.core.intent.ConstrainedShortestPathIntent;
-import net.onrc.onos.ofcontroller.util.serializers.KryoFactory;
+import net.onrc.onos.core.util.serializers.KryoFactory;
 
 import org.junit.After;
 import org.junit.Before;

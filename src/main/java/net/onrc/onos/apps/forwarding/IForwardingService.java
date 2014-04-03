@@ -3,7 +3,7 @@ package net.onrc.onos.apps.forwarding;
 import java.util.Collection;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.core.util.FlowPath;
 
 /**
  * Temporary interface that allows the Forwarding module to be

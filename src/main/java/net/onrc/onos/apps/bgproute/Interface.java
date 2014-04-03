@@ -2,9 +2,9 @@ package net.onrc.onos.apps.bgproute;
 
 import java.net.InetAddress;
 
-import net.onrc.onos.ofcontroller.util.Dpid;
-import net.onrc.onos.ofcontroller.util.Port;
-import net.onrc.onos.ofcontroller.util.SwitchPort;
+import net.onrc.onos.core.util.Dpid;
+import net.onrc.onos.core.util.Port;
+import net.onrc.onos.core.util.SwitchPort;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
