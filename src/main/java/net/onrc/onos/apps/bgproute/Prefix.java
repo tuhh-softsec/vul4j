@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.bgproute;
+package net.onrc.onos.apps.bgproute;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

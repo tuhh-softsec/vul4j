@@ -1,8 +1,8 @@
-package net.onrc.onos.ofcontroller.bgproute;
+package net.onrc.onos.apps.bgproute;
 
 import java.util.Iterator;
 
-import net.onrc.onos.ofcontroller.bgproute.RibUpdate.Operation;
+import net.onrc.onos.apps.bgproute.RibUpdate.Operation;
 
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;

@@ -4,7 +4,7 @@ import java.net.InetAddress;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.bgproute.Interface;
+import net.onrc.onos.apps.bgproute.Interface;
 
 /**
  * Provides information about the layer 3 properties of the network.

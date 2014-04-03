@@ -11,7 +11,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.bgproute.Interface;
+import net.onrc.onos.apps.bgproute.Interface;
 
 import org.openflow.util.HexString;
 

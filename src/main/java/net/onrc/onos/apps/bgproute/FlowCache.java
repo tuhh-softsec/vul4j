@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.bgproute;
+package net.onrc.onos.apps.bgproute;
 
 import java.io.IOException;
 import java.util.ArrayList;

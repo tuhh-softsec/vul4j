@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.bgproute;
+package net.onrc.onos.apps.bgproute;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

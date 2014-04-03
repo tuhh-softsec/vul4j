@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.bgproute;
+package net.onrc.onos.apps.bgproute;
 
 /*
  * TODO This Ptree needs to be refactored if we're going to use it permenantly.

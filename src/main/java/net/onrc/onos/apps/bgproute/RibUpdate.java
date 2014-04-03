@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.bgproute;
+package net.onrc.onos.apps.bgproute;
 
 public class RibUpdate {
 	public enum Operation {UPDATE, DELETE}; 

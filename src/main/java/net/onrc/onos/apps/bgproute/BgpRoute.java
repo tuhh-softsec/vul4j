@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.bgproute;
+package net.onrc.onos.apps.bgproute;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.bgproute.RibUpdate.Operation;
+import net.onrc.onos.apps.bgproute.RibUpdate.Operation;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
