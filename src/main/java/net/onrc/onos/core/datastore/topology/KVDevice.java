@@ -16,7 +16,7 @@ import net.onrc.onos.core.datastore.topology.KVLink.STATUS;
 import net.onrc.onos.core.datastore.utils.ByteArrayComparator;
 import net.onrc.onos.core.datastore.utils.ByteArrayUtil;
 import net.onrc.onos.core.datastore.utils.KVObject;
-import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
+import net.onrc.onos.core.topology.DeviceEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -9,7 +9,7 @@ import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
 import net.onrc.onos.core.datastore.RCProtos.SwitchProperty;
 import net.onrc.onos.core.datastore.utils.KVObject;
-import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
+import net.onrc.onos.core.topology.SwitchEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

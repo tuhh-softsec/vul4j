@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import net.onrc.onos.ofcontroller.networkgraph.Link;
-import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
+import net.onrc.onos.core.topology.Link;
+import net.onrc.onos.core.topology.LinkEvent;
+import net.onrc.onos.core.topology.PortEvent.SwitchPort;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)

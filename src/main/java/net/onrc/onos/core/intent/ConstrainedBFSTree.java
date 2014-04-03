@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import net.onrc.onos.ofcontroller.networkgraph.Link;
-import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-import net.onrc.onos.ofcontroller.networkgraph.Path;
-import net.onrc.onos.ofcontroller.networkgraph.Switch;
+import net.onrc.onos.core.topology.Link;
+import net.onrc.onos.core.topology.LinkEvent;
+import net.onrc.onos.core.topology.Path;
+import net.onrc.onos.core.topology.Switch;
 
 /**
  * This class creates bandwidth constrained breadth first tree

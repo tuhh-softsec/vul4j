@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import net.onrc.onos.core.datagrid.IDatagridService;
 import net.onrc.onos.core.datagrid.IEventChannel;
-import net.onrc.onos.ofcontroller.networkgraph.TopologyEvent;
-import net.onrc.onos.ofcontroller.networkgraph.TopologyManager;
+import net.onrc.onos.core.topology.TopologyEvent;
+import net.onrc.onos.core.topology.TopologyManager;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

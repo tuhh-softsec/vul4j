@@ -1,12 +1,12 @@
 package net.onrc.onos.core.intent;
 
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraphImpl;
-import net.onrc.onos.ofcontroller.networkgraph.Link;
-import net.onrc.onos.ofcontroller.networkgraph.LinkImpl;
-import net.onrc.onos.ofcontroller.networkgraph.Port;
-import net.onrc.onos.ofcontroller.networkgraph.Switch;
-import net.onrc.onos.ofcontroller.networkgraph.SwitchImpl;
+import net.onrc.onos.core.topology.Link;
+import net.onrc.onos.core.topology.LinkImpl;
+import net.onrc.onos.core.topology.NetworkGraph;
+import net.onrc.onos.core.topology.NetworkGraphImpl;
+import net.onrc.onos.core.topology.Port;
+import net.onrc.onos.core.topology.Switch;
+import net.onrc.onos.core.topology.SwitchImpl;
 
 /**
  * A mock class of NetworkGraph.

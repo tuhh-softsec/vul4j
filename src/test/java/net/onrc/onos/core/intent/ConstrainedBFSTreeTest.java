@@ -7,8 +7,8 @@ import net.onrc.onos.core.intent.IntentOperationList;
 import net.onrc.onos.core.intent.PathIntent;
 import net.onrc.onos.core.intent.PathIntentMap;
 import net.onrc.onos.core.intent.IntentOperation.Operator;
-import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-import net.onrc.onos.ofcontroller.networkgraph.Path;
+import net.onrc.onos.core.topology.LinkEvent;
+import net.onrc.onos.core.topology.Path;
 
 import org.junit.After;
 import org.junit.Before;

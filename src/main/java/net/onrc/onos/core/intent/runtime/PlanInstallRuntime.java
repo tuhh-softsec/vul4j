@@ -13,7 +13,7 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.internal.OFMessageFuture;
 import net.onrc.onos.core.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.core.intent.FlowEntry;
-//import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+//import net.onrc.onos.core.topology.NetworkGraph;
 import net.onrc.onos.core.util.Pair;
 
 import org.openflow.protocol.OFBarrierReply;

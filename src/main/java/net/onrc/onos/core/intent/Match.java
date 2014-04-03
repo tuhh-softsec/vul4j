@@ -3,8 +3,8 @@ package net.onrc.onos.core.intent;
 import java.util.Arrays;
 
 import net.floodlightcontroller.util.MACAddress;
-//import net.onrc.onos.ofcontroller.networkgraph.Port;
-//import net.onrc.onos.ofcontroller.networkgraph.Switch;
+//import net.onrc.onos.core.topology.Port;
+//import net.onrc.onos.core.topology.Switch;
 import net.onrc.onos.core.util.FlowEntryMatch;
 
 /**

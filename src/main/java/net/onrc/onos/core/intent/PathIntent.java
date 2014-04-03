@@ -1,6 +1,6 @@
 package net.onrc.onos.core.intent;
 
-import net.onrc.onos.ofcontroller.networkgraph.Path;
+import net.onrc.onos.core.topology.Path;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)

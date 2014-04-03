@@ -29,13 +29,13 @@ import net.onrc.onos.core.datagrid.IEventChannelListener;
 import net.onrc.onos.core.devicemanager.IOnosDeviceService;
 import net.onrc.onos.core.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.core.main.config.IConfigInfoService;
+import net.onrc.onos.core.topology.Device;
+import net.onrc.onos.core.topology.INetworkGraphService;
+import net.onrc.onos.core.topology.NetworkGraph;
+import net.onrc.onos.core.topology.Switch;
 import net.onrc.onos.core.util.Dpid;
 import net.onrc.onos.core.util.Port;
 import net.onrc.onos.core.util.SwitchPort;
-import net.onrc.onos.ofcontroller.networkgraph.Device;
-import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.packet.ARP;
 import net.onrc.onos.packet.Ethernet;
 import net.onrc.onos.packet.IPv4;
@@ -527,7 +527,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
 			// sendArpReply(arp, sw.getId(), pi.getInPort(), macAddress);
 
-			Iterable<net.onrc.onos.ofcontroller.networkgraph.Port> outPorts = targetDevice.getAttachmentPoints();
+			Iterable<net.onrc.onos.core.topology.Port> outPorts = targetDevice.getAttachmentPoints();
 
 			if (!outPorts.iterator().hasNext()){
 				if (log.isTraceEnabled()) {
@@ -541,7 +541,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 //				broadcastPacketOutEventChannel.addTransientEntry(eth.getDestinationMAC().toLong(), key);
 			} 
 			else {
-				for (net.onrc.onos.ofcontroller.networkgraph.Port portObject : outPorts) {
+				for (net.onrc.onos.core.topology.Port portObject : outPorts) {
 					//long outSwitch = 0;
 					//short outPort = 0;
 
@@ -738,13 +738,13 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
             List<OFAction> actions = new ArrayList<OFAction>();
 
 			Switch graphSw = networkGraph.getSwitch(sw.getId());
-			Collection<net.onrc.onos.ofcontroller.networkgraph.Port> ports = graphSw.getPorts();
+			Collection<net.onrc.onos.core.topology.Port> ports = graphSw.getPorts();
 			
 			if (ports == null) {
 				continue;
 			}
 			
-			for (net.onrc.onos.ofcontroller.networkgraph.Port portObject : ports) {
+			for (net.onrc.onos.core.topology.Port portObject : ports) {
 				if (portObject.getOutgoingLink() == null && portObject.getNumber() > 0) {
 					Long portNumber = portObject.getNumber();
 					

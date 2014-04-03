@@ -16,9 +16,9 @@ import net.onrc.onos.core.intent.ShortestPathIntent;
 import net.onrc.onos.core.intent.ErrorIntent.ErrorType;
 import net.onrc.onos.core.intent.Intent.IntentState;
 import net.onrc.onos.core.intent.IntentOperation.Operator;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.networkgraph.Path;
-import net.onrc.onos.ofcontroller.networkgraph.Switch;
+import net.onrc.onos.core.topology.NetworkGraph;
+import net.onrc.onos.core.topology.Path;
+import net.onrc.onos.core.topology.Switch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

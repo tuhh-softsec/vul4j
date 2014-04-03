@@ -6,9 +6,9 @@ import net.onrc.onos.core.intent.Intent;
 import net.onrc.onos.core.intent.IntentOperation;
 import net.onrc.onos.core.intent.IntentOperationList;
 import net.onrc.onos.core.intent.PathIntent;
+import net.onrc.onos.core.topology.LinkEvent;
+import net.onrc.onos.core.topology.Path;
 import net.onrc.onos.core.util.serializers.KryoFactory;
-import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-import net.onrc.onos.ofcontroller.networkgraph.Path;
 
 import org.junit.After;
 import org.junit.Before;

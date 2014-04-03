@@ -10,6 +10,8 @@ import net.onrc.onos.core.intent.PathIntent;
 import net.onrc.onos.core.intent.ShortestPathIntent;
 import net.onrc.onos.core.intent.Intent.IntentState;
 import net.onrc.onos.core.intent.runtime.IPathCalcRuntimeService;
+import net.onrc.onos.core.topology.LinkEvent;
+import net.onrc.onos.core.topology.Path;
 import net.onrc.onos.core.util.CallerId;
 import net.onrc.onos.core.util.Dpid;
 import net.onrc.onos.core.util.FlowEntry;
@@ -19,8 +21,6 @@ import net.onrc.onos.core.util.FlowPathType;
 import net.onrc.onos.core.util.FlowPathUserState;
 import net.onrc.onos.core.util.Port;
 import net.onrc.onos.core.util.SwitchPort;
-import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-import net.onrc.onos.ofcontroller.networkgraph.Path;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

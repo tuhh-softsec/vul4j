@@ -35,15 +35,15 @@ import net.onrc.onos.core.intent.ShortestPathIntent;
 import net.onrc.onos.core.intent.Intent.IntentState;
 import net.onrc.onos.core.intent.runtime.IPathCalcRuntimeService;
 import net.onrc.onos.core.intent.runtime.IntentStateList;
+import net.onrc.onos.core.topology.Device;
+import net.onrc.onos.core.topology.INetworkGraphService;
+import net.onrc.onos.core.topology.LinkEvent;
+import net.onrc.onos.core.topology.NetworkGraph;
+import net.onrc.onos.core.topology.Switch;
 import net.onrc.onos.core.util.Dpid;
 import net.onrc.onos.core.util.FlowPath;
 import net.onrc.onos.core.util.Port;
 import net.onrc.onos.core.util.SwitchPort;
-import net.onrc.onos.ofcontroller.networkgraph.Device;
-import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
-import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
-import net.onrc.onos.ofcontroller.networkgraph.Switch;
 import net.onrc.onos.packet.Ethernet;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
@@ -319,7 +319,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		log.debug("Start continuehandlePacketIn");
 		
 		//Iterator<IPortObject> ports = deviceObject.getAttachedPorts().iterator();	
-		Iterator<net.onrc.onos.ofcontroller.networkgraph.Port> ports = deviceObject.getAttachmentPoints().iterator();	
+		Iterator<net.onrc.onos.core.topology.Port> ports = deviceObject.getAttachmentPoints().iterator();	
 		if (!ports.hasNext()) {
 			log.debug("No attachment point found for device {} - broadcasting packet", 
 					deviceObject.getMacAddress());
@@ -328,7 +328,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		}
 
 		//This code assumes the device has only one port. It should be problem.
-		net.onrc.onos.ofcontroller.networkgraph.Port portObject = ports.next();
+		net.onrc.onos.core.topology.Port portObject = ports.next();
 		short destinationPort = portObject.getNumber().shortValue();
 		Switch switchObject = portObject.getSwitch();
 		long destinationDpid = switchObject.getDpid();
@@ -376,7 +376,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 					}
 					
 					Boolean isflowEntryForThisSwitch = false;		
-					net.onrc.onos.ofcontroller.networkgraph.Path path = pathIntent.getPath();
+					net.onrc.onos.core.topology.Path path = pathIntent.getPath();
 
 					for(Iterator<LinkEvent> i = path.iterator(); i.hasNext();) {
 						LinkEvent le = (LinkEvent)i.next();
@@ -497,7 +497,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 		// packets in the meantime and probably don't want to send very old packets.
 		
 		List<PacketToPush> packets = null;
-		net.onrc.onos.ofcontroller.networkgraph.Path graphPath = installedPath.getPath();
+		net.onrc.onos.core.topology.Path graphPath = installedPath.getPath();
 		
 		log.debug("path{}", graphPath);
 		Short outPort = graphPath.get(0).getSrc().getNumber().shortValue();

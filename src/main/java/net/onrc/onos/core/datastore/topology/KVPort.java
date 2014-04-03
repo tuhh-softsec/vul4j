@@ -10,7 +10,7 @@ import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
 import net.onrc.onos.core.datastore.RCProtos.PortProperty;
 import net.onrc.onos.core.datastore.utils.ByteArrayUtil;
 import net.onrc.onos.core.datastore.utils.KVObject;
-import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
+import net.onrc.onos.core.topology.PortEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

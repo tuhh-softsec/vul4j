@@ -9,8 +9,8 @@ import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
 import net.onrc.onos.core.datastore.RCProtos.LinkProperty;
 import net.onrc.onos.core.datastore.utils.KVObject;
-import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
+import net.onrc.onos.core.topology.LinkEvent;
+import net.onrc.onos.core.topology.PortEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

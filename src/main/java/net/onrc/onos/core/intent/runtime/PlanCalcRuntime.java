@@ -18,8 +18,9 @@ import net.onrc.onos.core.intent.IntentOperationList;
 import net.onrc.onos.core.intent.PathIntent;
 import net.onrc.onos.core.intent.ShortestPathIntent;
 import net.onrc.onos.core.intent.IntentOperation.Operator;
-import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
-//import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+import net.onrc.onos.core.topology.LinkEvent;
+//import net.onrc.onos.core.topology.NetworkGraph;
+
 
 
 import org.slf4j.Logger;

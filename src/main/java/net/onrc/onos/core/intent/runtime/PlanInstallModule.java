@@ -22,8 +22,9 @@ import net.onrc.onos.core.intent.FlowEntry;
 import net.onrc.onos.core.intent.IntentOperation;
 import net.onrc.onos.core.intent.IntentOperationList;
 import net.onrc.onos.core.intent.Intent.IntentState;
-import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
-//import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+import net.onrc.onos.core.topology.INetworkGraphService;
+//import net.onrc.onos.core.topology.NetworkGraph;
+
 
 
 
