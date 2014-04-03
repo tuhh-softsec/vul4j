@@ -81,7 +81,8 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
     // ************
     // Constructors
     // ************
-    
+     protected OnosDevice() {}
+     
     /**
      * Create a new entity
      * 

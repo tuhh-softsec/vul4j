@@ -2,6 +2,7 @@ package net.onrc.onos.ofcontroller.proxyarp;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,7 +27,14 @@ import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.datagrid.IEventChannelListener;
 import net.onrc.onos.ofcontroller.bgproute.Interface;
 import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
+import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
+import net.onrc.onos.ofcontroller.networkgraph.Device;
+import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
+import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+import net.onrc.onos.ofcontroller.networkgraph.Switch;
+import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 import net.onrc.onos.packet.ARP;
 import net.onrc.onos.packet.Ethernet;
@@ -58,91 +66,135 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
     private IFloodlightProviderService floodlightProvider;
     private IDatagridService datagrid;
-    private IEventChannel<PacketOutNotification, PacketOutNotification> packetOutEventChannel;
-    private IEventChannel<ArpReplyNotification, ArpReplyNotification> arpReplyEventChannel;
-    private static final String PACKET_OUT_CHANNEL_NAME = "onos.packet_out";
+    private IEventChannel<Long, ArpReplyNotification> arpReplyEventChannel;
+    private IEventChannel<Long, BroadcastPacketOutNotification> broadcastPacketOutEventChannel;
+    private IEventChannel<Long, SinglePacketOutNotification> singlePacketOutEventChannel;
     private static final String ARP_REPLY_CHANNEL_NAME = "onos.arp_reply";
-    private PacketOutEventHandler packetOutEventHandler =
-	new PacketOutEventHandler();
-    private ArpReplyEventHandler arpReplyEventHandler =
-	new ArpReplyEventHandler();
+    private static final String BROADCAST_PACKET_OUT_CHANNEL_NAME = "onos.broadcast_packet_out";
+    private static final String SINGLE_PACKET_OUT_CHANNEL_NAME = "onos.single_packet_out";
+    private ArpReplyEventHandler arpReplyEventHandler = new ArpReplyEventHandler();
+    private BroadcastPacketOutEventHandler broadcastPacketOutEventHandler = new BroadcastPacketOutEventHandler();  
+    private SinglePacketOutEventHandler singlePacketOutEventHandler = new SinglePacketOutEventHandler();
 
     private IConfigInfoService configService;
     private IRestApiService restApi;
     private IFlowPusherService flowPusher;
+    
+	private INetworkGraphService networkGraphService;
+	private NetworkGraph networkGraph;
+	private IOnosDeviceService onosDeviceService;
 
     private short vlan;
     private static final short NO_VLAN = 0;
 
     private SetMultimap<InetAddress, ArpRequest> arpRequests;
 
-    //
-    // TODO: Using PacketOutNotification as both the key and the
-    // value is a hack that should be removed when this module is
-    // refactored.
-    //
-    private class PacketOutEventHandler implements
-	IEventChannelListener<PacketOutNotification, PacketOutNotification> {
-	@Override
-	public void entryAdded(PacketOutNotification packetOutNotification) {
-	    if (packetOutNotification instanceof SinglePacketOutNotification) {
-		SinglePacketOutNotification notification =
-		    (SinglePacketOutNotification) packetOutNotification;
-		sendArpRequestOutPort(notification.packet,
-				      notification.getOutSwitch(),
-				      notification.getOutPort());
+    private class BroadcastPacketOutEventHandler implements
+    IEventChannelListener<Long, BroadcastPacketOutNotification> {
 
-		// set timestamp
-		InetAddress addr = notification.getTargetAddress();
-		if (addr != null) {
-		    for (ArpRequest request : arpRequests.get(addr)) {
-			request.setRequestTime();
-		    }
+		@Override
+		public void entryAdded(BroadcastPacketOutNotification value) {
+			if(log.isTraceEnabled()) {
+				log.trace("entryAdded ip{}, sw {}, port {}, packet {}", value.getTargetAddress(), value.getInSwitch(), value.getInPort(), value.packet.length);
+			}
+			BroadcastPacketOutNotification notification = (BroadcastPacketOutNotification) value;
+			broadcastArpRequestOutMyEdge(notification.packet,
+						     notification.getInSwitch(),
+						     notification.getInPort());
+		
+			// set timestamp
+			ByteBuffer buffer = ByteBuffer.allocate(4);
+			buffer.putInt(notification.getTargetAddress());
+			InetAddress addr = null;
+			try {
+				addr = InetAddress.getByAddress(buffer.array());
+			} catch (UnknownHostException e) {
+				log.error("Exception:", e);
+			}
+			
+			if (addr != null) {
+			    for (ArpRequest request : arpRequests.get(addr)) {
+			    	request.setRequestTime();
+			    }
+			}			
 		}
-	    } else if (packetOutNotification instanceof BroadcastPacketOutNotification) {
-		BroadcastPacketOutNotification notification =
-		    (BroadcastPacketOutNotification) packetOutNotification;
-		broadcastArpRequestOutMyEdge(notification.packet,
-					     notification.getInSwitch(),
-					     notification.getInPort());
-
-		// set timestamp
-		InetAddress addr = notification.getTargetAddress();
-		if (addr != null) {
-		    for (ArpRequest request : arpRequests.get(addr)) {
-			request.setRequestTime();
-		    }
+		
+		@Override
+		public void entryUpdated(BroadcastPacketOutNotification value) {
+			log.debug("entryUpdated");
+		    // TODO: For now, entryUpdated() is processed as entryAdded()
+		    entryAdded(value);
 		}
-	    } else {
-		log.warn("Unknown packet out notification received");
-	    }
-	}
-
-	@Override
-	public void entryUpdated(PacketOutNotification packetOutNotification) {
-	    // TODO: For now, entryUpdated() is processed as entryAdded()
-	    entryAdded(packetOutNotification);
-	}
-
-	@Override
-	public void entryRemoved(PacketOutNotification packetOutNotification) {
-	    // TODO: Not implemented. Revisit when this module is refactored
-	}
+		
+		@Override
+		public void entryRemoved(BroadcastPacketOutNotification value) {
+			log.debug("entryRemoved");
+		    // TODO: Not implemented. Revisit when this module is refactored
+		}
+    }
+    
+    private class SinglePacketOutEventHandler implements
+		IEventChannelListener<Long, SinglePacketOutNotification> {
+		@Override
+		public void entryAdded(SinglePacketOutNotification packetOutNotification) {
+			log.debug("entryAdded");
+			SinglePacketOutNotification notification =
+			    (SinglePacketOutNotification) packetOutNotification;
+			sendArpRequestOutPort(notification.packet,
+					      notification.getOutSwitch(),
+					      notification.getOutPort());
+	
+			// set timestamp
+			ByteBuffer buffer = ByteBuffer.allocate(4);
+			buffer.putInt(notification.getTargetAddress());
+			InetAddress addr = null;
+			try {
+				addr = InetAddress.getByAddress(buffer.array());
+			} catch (UnknownHostException e) {
+				log.error("Exception:", e);
+			}
+			
+			if (addr != null) {
+			    for (ArpRequest request : arpRequests.get(addr)) {
+			    	request.setRequestTime();
+			    }
+			}		
+		}
+	
+		@Override
+		public void entryUpdated(SinglePacketOutNotification packetOutNotification) {
+			log.debug("entryUpdated");
+		    // TODO: For now, entryUpdated() is processed as entryAdded()
+		    entryAdded(packetOutNotification);
+		}
+	
+		@Override
+		public void entryRemoved(SinglePacketOutNotification packetOutNotification) {
+			log.debug("entryRemoved");
+		    // TODO: Not implemented. Revisit when this module is refactored
+		}
     }
 
-    //
-    // TODO: Using ArpReplyNotification as both the key and the
-    // value is a hack that should be removed when this module is
-    // refactored.
-    //
     private class ArpReplyEventHandler implements
-	IEventChannelListener<ArpReplyNotification, ArpReplyNotification> {
+	IEventChannelListener<Long, ArpReplyNotification> {
+    	
 	@Override
 	public void entryAdded(ArpReplyNotification arpReply) {
-	    log.debug("Received ARP reply notification for {}",
-		      arpReply.getTargetAddress());
-	    sendArpReplyToWaitingRequesters(arpReply.getTargetAddress(),
-					    arpReply.getTargetMacAddress());
+	    log.debug("Received ARP reply notification for ip {}, mac {}",
+	    		arpReply.getTargetAddress(), arpReply.getTargetMacAddress());
+		ByteBuffer buffer = ByteBuffer.allocate(4);
+		buffer.putInt(arpReply.getTargetAddress());
+		InetAddress addr = null;
+		try {
+			addr = InetAddress.getByAddress(buffer.array());
+		} catch (UnknownHostException e) {
+			log.error("Exception:", e);
+		}
+	   
+		if(addr != null) {
+			sendArpReplyToWaitingRequesters(addr,
+				    arpReply.getTargetMacAddress());
+		}
 	}
 
 	@Override
@@ -209,6 +261,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
             ProxyArpManager.this.sendArpReply(arpRequest, dpid, port,
                     macAddress);
         }
+        
+		public ARP getArpRequest() {
+			return arpRequest;
+		}
     }
 
     @Override
@@ -236,17 +292,20 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
         dependencies.add(IDatagridService.class);
         dependencies.add(IConfigInfoService.class);
         dependencies.add(IFlowPusherService.class);
+        dependencies.add(INetworkGraphService.class);
+        dependencies.add(IOnosDeviceService.class);
         return dependencies;
     }
 
     @Override
     public void init(FloodlightModuleContext context) {
-        this.floodlightProvider = context
-                .getServiceImpl(IFloodlightProviderService.class);
-        this.datagrid = context.getServiceImpl(IDatagridService.class);
+        this.floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class); 
         this.configService = context.getServiceImpl(IConfigInfoService.class);
         this.restApi = context.getServiceImpl(IRestApiService.class);
+        this.datagrid = context.getServiceImpl(IDatagridService.class);
         this.flowPusher = context.getServiceImpl(IFlowPusherService.class);
+        this.networkGraphService = context.getServiceImpl(INetworkGraphService.class);
+        this.onosDeviceService = context.getServiceImpl(IOnosDeviceService.class);
 
         // arpCache = new ArpCache();
 
@@ -262,22 +321,24 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
         restApi.addRestletRoutable(new ArpWebRoutable());
         floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
-
+		networkGraph = networkGraphService.getNetworkGraph();
+		
 	//
 	// Event notification setup: channels and event handlers
-	//
-	//
-	// TODO: Using PacketOutNotification or ArpReplyNotification as both
-	// the key and the value is a hack that should be removed when this
-	// module is refactored.
-	//
-	packetOutEventChannel = datagrid.addListener(PACKET_OUT_CHANNEL_NAME,
-						     packetOutEventHandler,
-						     PacketOutNotification.class,
-						     PacketOutNotification.class);
+	//	
+	broadcastPacketOutEventChannel = datagrid.addListener(BROADCAST_PACKET_OUT_CHANNEL_NAME,
+			     broadcastPacketOutEventHandler,
+			     Long.class,
+			     BroadcastPacketOutNotification.class);
+	
+	singlePacketOutEventChannel = datagrid.addListener(SINGLE_PACKET_OUT_CHANNEL_NAME,
+			     singlePacketOutEventHandler,
+			     Long.class,
+			     SinglePacketOutNotification.class);
+	
 	arpReplyEventChannel = datagrid.addListener(ARP_REPLY_CHANNEL_NAME,
 						    arpReplyEventHandler,
-						    ArpReplyNotification.class,
+						    Long.class,
 						    ArpReplyNotification.class);
 
         Timer arpTimer = new Timer("arp-processing");
@@ -313,19 +374,17 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
                     log.debug("Cleaning expired ARP request for {}", entry
                             .getKey().getHostAddress());
 
-                    // If the ARP request is expired and then delete the device
-                    // TODO check whether this is OK from this thread
-                    // TODO: Fix the code below after deviceStorage was removed
-                    /*
-                    IDeviceObject targetDevice =
-                    		deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(entry.getKey()));
-                    if (targetDevice != null) {
-                    	deviceStorage.removeDevice(targetDevice);
-                    	if (log.isDebugEnabled()) {
-                    		log.debug("RemoveDevice: {} due to no have not recieve the ARP reply", targetDevice);
-                    	}
-                    }
-                    */
+					// If the ARP request is expired and then delete the device
+					// TODO check whether this is OK from this thread
+					HostArpRequester requester = (HostArpRequester) request.requester;
+					ARP req = requester.getArpRequest();
+					Device targetDev = networkGraph.getDeviceByMac(MACAddress.valueOf(req.getTargetHardwareAddress()));
+					if(targetDev != null) {
+						onosDeviceService.deleteOnosDeviceByMac(MACAddress.valueOf(req.getTargetHardwareAddress()));
+						if (log.isDebugEnabled()) {
+							log.debug("RemoveDevice: {} due to no have not recieve the ARP reply", targetDev.getMacAddress());
+						}
+					}
 
                     it.remove();
 
@@ -434,90 +493,79 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
         // MACAddress macAddress = arpCache.lookup(target);
 
-        arpRequests.put(
-                target,
-                new ArpRequest(new HostArpRequester(arp, sw.getId(), pi
-                        .getInPort()), false));
+		arpRequests.put(target, new ArpRequest(
+				new HostArpRequester(arp, sw.getId(), pi.getInPort()), false));
+		
+		Device targetDevice = networkGraph.getDeviceByMac(MACAddress.valueOf(arp.getTargetHardwareAddress()));
 
-        // TODO: Fix the code below after deviceStorage was removed
-        /*
-        IDeviceObject targetDevice =
-        		deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(target));
-        */
+		if (targetDevice == null) {
+			if (log.isTraceEnabled()) {
+				log.trace("No device info found for {} - broadcasting",
+						target.getHostAddress());
+			}
+			
+			// We don't know the device so broadcast the request out
+			BroadcastPacketOutNotification key =
+					new BroadcastPacketOutNotification(eth.serialize(),
+							ByteBuffer.wrap(arp.getTargetProtocolAddress()).getInt(), sw.getId(), pi.getInPort());
+			log.debug("broadcastPacketOutEventChannel mac {}, ip {}, dpid {}, port {}, paket {}", eth.getSourceMAC().toLong(), 
+					ByteBuffer.wrap(arp.getTargetProtocolAddress()).getInt(), sw.getId(), pi.getInPort(), eth.serialize().length);
+			broadcastPacketOutEventChannel.addTransientEntry(eth.getDestinationMAC().toLong(), key);
+		}
+		else {
+			// Even if the device exists in our database, we do not reply to
+			// the request directly, but check whether the device is still valid
+			MACAddress macAddress = MACAddress.valueOf(arp.getTargetHardwareAddress());
 
-        // TODO: Fix the code below after deviceStorage was removed
-        /*
-        if (targetDevice == null) {
-        	if (log.isTraceEnabled()) {
-        		log.trace("No device info found for {} - broadcasting",
-        				target.getHostAddress());
-        	}
+			if (log.isTraceEnabled()) {
+				log.trace("The target Device Record in DB is: {} => {} from ARP request host at {}/{}",
+						new Object [] {
+						inetAddressToString(arp.getTargetProtocolAddress()),
+						macAddress,
+						HexString.toHexString(sw.getId()), pi.getInPort()});
+			}
 
-        	// We don't know the device so broadcast the request out
-		PacketOutNotification key =
-		    new BroadcastPacketOutNotification(eth.serialize(),
-        					target, sw.getId(),
-						pi.getInPort());
-        	packetOutEventChannel.addTransientEntry(key, key);
-        }
-        else {
-        	// Even if the device exists in our database, we do not reply to
-        	// the request directly, but check whether the device is still valid
-        	MACAddress macAddress = MACAddress.valueOf(targetDevice.getMACAddress());
+			// sendArpReply(arp, sw.getId(), pi.getInPort(), macAddress);
 
-        	if (log.isTraceEnabled()) {
-        		log.trace("The target Device Record in DB is: {} => {} from ARP request host at {}/{}",
-        				new Object [] {
-        				inetAddressToString(arp.getTargetProtocolAddress()),
-        				macAddress,
-        				HexString.toHexString(sw.getId()), pi.getInPort()});
-        	}
+			Iterable<net.onrc.onos.ofcontroller.networkgraph.Port> outPorts = targetDevice.getAttachmentPoints();
 
-        	// sendArpReply(arp, sw.getId(), pi.getInPort(), macAddress);
+			if (!outPorts.iterator().hasNext()){
+				if (log.isTraceEnabled()) {
+					log.trace("Device {} exists but is not connected to any ports" + 
+							" - broadcasting", macAddress);
+				}
+				
+//				BroadcastPacketOutNotification key =
+//						new BroadcastPacketOutNotification(eth.serialize(), 
+//								target, sw.getId(), pi.getInPort());
+//				broadcastPacketOutEventChannel.addTransientEntry(eth.getDestinationMAC().toLong(), key);
+			} 
+			else {
+				for (net.onrc.onos.ofcontroller.networkgraph.Port portObject : outPorts) {
+					//long outSwitch = 0;
+					//short outPort = 0;
 
-        	Iterable<IPortObject> outPorts = targetDevice.getAttachedPorts();
-
-        	if (!outPorts.iterator().hasNext()){
-        		if (log.isTraceEnabled()) {
-        			log.trace("Device {} exists but is not connected to any ports" +
-        					" - broadcasting", macAddress);
-        		}
-			PacketOutNotification key =
-			    new BroadcastPacketOutNotification(eth.serialize(),
-					target, sw.getId(),
-					pi.getInPort());
-			packetOutEventChannel.addTransientEntry(key, key);
-        	}
-        	else {
-        		for (IPortObject portObject : outPorts) {
-        			//long outSwitch = 0;
-        			//short outPort = 0;
-
-        			// if (!portObject.getLinkedPorts().iterator().hasNext()) {
-        			//	outPort = portObject.getNumber();
-        			// }
-        			if (portObject.getLinkedPorts().iterator().hasNext()) {
-        				continue;
-        			}
-
-        			short outPort = portObject.getNumber();
-        			ISwitchObject outSwitchObject = portObject.getSwitch();
-        			long outSwitch = HexString.toLong(outSwitchObject.getDPID());
-
-        			if (log.isTraceEnabled()) {
-        				log.trace("Probing device {} on port {}/{}",
-        						new Object[] {macAddress,
-        						HexString.toHexString(outSwitch), outPort});
-        			}
-
-				PacketOutNotification key =
-        				new SinglePacketOutNotification(eth.serialize(),
-						target, outSwitch, outPort);
-				packetOutEventChannel.addTransientEntry(key, key);
-        		}
-        	}
-        }
-        */
+					if(portObject.getOutgoingLink() != null || portObject.getIncomingLink() != null) {
+						continue;
+					}
+					
+					short outPort = portObject.getNumber().shortValue();
+					Switch outSwitchObject = portObject.getSwitch();
+					long outSwitch = outSwitchObject.getDpid();
+					
+					if (log.isTraceEnabled()) {
+						log.trace("Probing device {} on port {}/{}", 
+								new Object[] {macAddress, 
+								HexString.toHexString(outSwitch), outPort});
+					}
+					
+					SinglePacketOutNotification key =
+						    new SinglePacketOutNotification(eth.serialize(), 
+						    		ByteBuffer.wrap(target.getAddress()).getInt(), outSwitch, outPort);
+					singlePacketOutEventChannel.addTransientEntry(eth.getDestinationMAC().toLong(), key);
+				}
+			}
+		}
     }
 
     // Not used because device manager currently updates the database
@@ -613,16 +661,15 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
         }
 
         // sendArpRequestToSwitches(ipAddress, eth.serialize());
-	PacketOutNotification key =
-	    new SinglePacketOutNotification(eth.serialize(), ipAddress,
-					    intf.getDpid(), intf.getPort());
-	packetOutEventChannel.addTransientEntry(key, key);
+		SinglePacketOutNotification key =
+		    new SinglePacketOutNotification(eth.serialize(), ByteBuffer.wrap(ipAddress.getAddress()).getInt(),
+						    intf.getDpid(), intf.getPort());
+		singlePacketOutEventChannel.addTransientEntry(MACAddress.valueOf(senderMacAddress).toLong(), key);
     }
-
-    private void sendArpRequestToSwitches(InetAddress dstAddress,
-            byte[] arpRequest) {
-        sendArpRequestToSwitches(dstAddress, arpRequest, 0,
-                OFPort.OFPP_NONE.getValue());
+    
+    private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest) {
+    		sendArpRequestToSwitches(dstAddress, arpRequest, 0,
+    		OFPort.OFPP_NONE.getValue());
     }
 
     private void sendArpRequestToSwitches(InetAddress dstAddress,
@@ -672,9 +719,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
         MACAddress mac = new MACAddress(arp.getSenderHardwareAddress());
 
-	ArpReplyNotification key =
-	    new ArpReplyNotification(targetAddress, mac);
-	arpReplyEventChannel.addTransientEntry(key, key);
+		ArpReplyNotification key =
+		    new ArpReplyNotification(ByteBuffer.wrap(targetAddress.getAddress()).getInt(), mac);
+		log.debug("ArpReplyNotification ip {}, mac{}", ByteBuffer.wrap(targetAddress.getAddress()).getInt(), mac);
+		arpReplyEventChannel.addTransientEntry(mac.toLong(), key);
     }
 
     private void broadcastArpRequestOutMyEdge(byte[] arpRequest, long inSwitch,
@@ -689,30 +737,27 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
             List<OFAction> actions = new ArrayList<OFAction>();
 
-            // TODO: Fix the code below after topoSwitchService was removed
-            /*
-            Iterable<IPortObject> ports
-            	= topoSwitchService.getPortsOnSwitch(sw.getStringId());
-            if (ports == null) {
-            	continue;
-            }
-
-            for (IPortObject portObject : ports) {
-            	if (!portObject.getLinkedPorts().iterator().hasNext()) {
-            		short portNumber = portObject.getNumber();
-
-            		if (sw.getId() == inSwitch && portNumber == inPort) {
-            			// This is the port that the ARP message came in,
-            			// so don't broadcast out this port
-            			continue;
-            		}
-
-            		switchPorts.add(new SwitchPort(new Dpid(sw.getId()),
-            				new Port(portNumber)));
-            		actions.add(new OFActionOutput(portNumber));
-            	}
-            }
-            */
+			Switch graphSw = networkGraph.getSwitch(sw.getId());
+			Collection<net.onrc.onos.ofcontroller.networkgraph.Port> ports = graphSw.getPorts();
+			
+			if (ports == null) {
+				continue;
+			}
+			
+			for (net.onrc.onos.ofcontroller.networkgraph.Port portObject : ports) {
+				if (portObject.getOutgoingLink() == null && portObject.getNumber() > 0) {
+					Long portNumber = portObject.getNumber();
+					
+					if (sw.getId() == inSwitch && portNumber.shortValue() == inPort) {
+						// This is the port that the ARP message came in,
+						// so don't broadcast out this port
+						continue;
+					}		
+					switchPorts.add(new SwitchPort(new Dpid(sw.getId()), 
+							new net.onrc.onos.ofcontroller.util.Port(portNumber.shortValue())));
+					actions.add(new OFActionOutput(portNumber.shortValue()));
+				}
+			}
 
             po.setActions(actions);
             short actionsLength = (short) (actions.size() * OFActionOutput.MINIMUM_LENGTH);
@@ -853,31 +898,6 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
         return new ArrayList<String>();
     }
 
-    /*
-    @Override
-    public void arpRequestNotification(ArpMessage arpMessage) {
-    	log.debug("Received ARP notification from other instances");
-
-    	switch (arpMessage.getType()){
-    	case REQUEST:
-    		if(arpMessage.getOutSwitch() == -1 || arpMessage.getOutPort() == -1){
-    			broadcastArpRequestOutMyEdge(arpMessage.getPacket(),
-    					arpMessage.getInSwitch(), arpMessage.getInPort());
-    		}else{
-    			sendArpRequestOutPort(arpMessage.getPacket(),arpMessage.getOutSwitch(),arpMessage.getOutPort());
-    			log.debug("OutSwitch in ARP request message is: {}; " +
-    			"OutPort in ARP request message is: {}",arpMessage.getOutSwitch(),arpMessage.getOutPort());
-    		}
-    		break;
-    	case REPLY:
-    		log.debug("Received ARP reply notification for {}",
-    				arpMessage.getAddress());
-    		sendArpReplyToWaitingRequesters(arpMessage.getAddress(),arpMessage.getMAC());
-    		break;
-    	}
-    }
-    */
-
     private void sendArpReplyToWaitingRequesters(InetAddress address,
             MACAddress mac) {
         log.debug("Sending ARP reply for {} to requesters",
@@ -899,6 +919,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
             }
         }
 
+        //TODO here, comment outed from long time ago. I will check if we need it later.
         /*IDeviceObject deviceObject = deviceStorage.getDeviceByIP(
         		InetAddresses.coerceToInteger(address));
 

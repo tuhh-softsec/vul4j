@@ -1,7 +1,6 @@
 package net.onrc.onos.ofcontroller.proxyarp;
 
 import java.io.Serializable;
-import java.net.InetAddress;
 
 import net.floodlightcontroller.util.MACAddress;
 
@@ -13,15 +12,16 @@ public class ArpReplyNotification implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private InetAddress targetAddress;
+    private int targetAddress;
     private MACAddress targetMacAddress;
 
+    protected ArpReplyNotification() {}
     /**
      * Class constructor.
      * @param targetAddress IP address received from the ARP reply
      * @param targetMacAddress MAC address received from the ARP reply
      */
-    public ArpReplyNotification(InetAddress targetAddress,
+    public ArpReplyNotification(int targetAddress,
             MACAddress targetMacAddress) {
         this.targetAddress = targetAddress;
         this.targetMacAddress = targetMacAddress;
@@ -31,7 +31,7 @@ public class ArpReplyNotification implements Serializable {
      * Returns the IP address of the ARP reply.
      * @return the IP address
      */
-    public InetAddress getTargetAddress() {
+    public int getTargetAddress() {
         return targetAddress;
     }
 

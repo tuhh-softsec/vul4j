@@ -1,6 +1,6 @@
 package net.onrc.onos.ofcontroller.proxyarp;
 
-import java.net.InetAddress;
+
 
 // TODO This class is too generic to be handled by ProxyArpService.
 // TODO The generic broadcast packet shouldn't contain an IP address which is
@@ -16,10 +16,16 @@ public class BroadcastPacketOutNotification extends PacketOutNotification {
 
     private static final long serialVersionUID = 1L;
 
-    private final InetAddress address;
+    private final int address;
     private final long inSwitch;
     private final short inPort;
 
+    protected BroadcastPacketOutNotification() {
+    	super();
+        this.address = -1;
+        this.inSwitch = -1;
+        this.inPort = -1;
+    }
     /**
      * Class constructor.
      *
@@ -32,7 +38,7 @@ public class BroadcastPacketOutNotification extends PacketOutNotification {
      * @param inPort
      *        port number of the receiving port
      */
-    public BroadcastPacketOutNotification(byte[] packet, InetAddress address,
+    public BroadcastPacketOutNotification(byte[] packet, int address,
             long inSwitch, short inPort) {
         super(packet);
 
@@ -40,7 +46,7 @@ public class BroadcastPacketOutNotification extends PacketOutNotification {
         this.inSwitch = inSwitch;
         this.inPort = inPort;
     }
-
+    
     /**
      * Get the dpid of the switch the packet was received on.
      *
@@ -65,7 +71,7 @@ public class BroadcastPacketOutNotification extends PacketOutNotification {
      * @return the target IP address for ARP packets, or null if the packet is
      *         not an ARP packet
      */
-    public InetAddress getTargetAddress() {
+    public int getTargetAddress() {
         return address;
     }
 }

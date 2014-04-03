@@ -1,6 +1,6 @@
 package net.onrc.onos.ofcontroller.proxyarp;
 
-import java.net.InetAddress;
+
 
 // TODO This class is too generic to be handled by ProxyArpService.
 /**
@@ -10,7 +10,7 @@ public class SinglePacketOutNotification extends PacketOutNotification {
 
     private static final long serialVersionUID = 1L;
 
-    private final InetAddress address;
+    private final int address;
     private final long outSwitch;
     private final short outPort;
 
@@ -21,7 +21,7 @@ public class SinglePacketOutNotification extends PacketOutNotification {
      * @param outSwitch the dpid of the switch to send the packet on
      * @param outPort the port number of the port to send the packet out
      */
-    public SinglePacketOutNotification(byte[] packet, InetAddress address,
+    public SinglePacketOutNotification(byte[] packet, int address,
             long outSwitch, short outPort) {
         super(packet);
 
@@ -51,7 +51,7 @@ public class SinglePacketOutNotification extends PacketOutNotification {
      * @return the target IP address for ARP packets, or null if the packet is
      *         not an ARP packet
      */
-    public InetAddress getTargetAddress() {
+    public int getTargetAddress() {
         return address;
     }
 }

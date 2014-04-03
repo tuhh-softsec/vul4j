@@ -3,7 +3,9 @@ package net.onrc.onos.ofcontroller.util.serializers;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
+
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.ErrorIntent;
@@ -13,12 +15,17 @@ import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.intent.PathIntent;
 import net.onrc.onos.intent.ShortestPathIntent;
 import net.onrc.onos.intent.runtime.IntentStateList;
+import net.onrc.onos.ofcontroller.devicemanager.OnosDevice;
 import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent;
 import net.onrc.onos.ofcontroller.networkgraph.SwitchEvent;
 import net.onrc.onos.ofcontroller.networkgraph.TopologyEvent;
+import net.onrc.onos.ofcontroller.proxyarp.ArpReplyNotification;
+import net.onrc.onos.ofcontroller.proxyarp.BroadcastPacketOutNotification;
+import net.onrc.onos.ofcontroller.proxyarp.PacketOutNotification;
+import net.onrc.onos.ofcontroller.proxyarp.SinglePacketOutNotification;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
@@ -43,6 +50,12 @@ import net.onrc.onos.ofcontroller.util.IPv6Net;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.Switch;
 // import net.onrc.onos.ofcontroller.util.SwitchPort;
+
+
+
+
+
+
 
 
 
@@ -208,6 +221,13 @@ public class KryoFactory {
 	// Device-related classes
 	kryo.register(HashSet.class);
 	kryo.register(Inet4Address.class);
+	kryo.register(OnosDevice.class);
+	kryo.register(Date.class);
+
+	// ProxyArp-related classes
+	kryo.register(BroadcastPacketOutNotification.class);
+	kryo.register(SinglePacketOutNotification.class);
+	kryo.register(ArpReplyNotification.class);
 
 	return kryo;
     }
