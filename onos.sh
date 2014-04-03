@@ -14,7 +14,16 @@
 #####################################################
 
 
-### Variables read from ONOS config file ###
+# read-conf {filename} {parameter name} [default value]
+function read-conf {
+  local value=`grep ^${2} ${1} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+  if [ -z "${value}" ]; then
+    echo $3
+  else
+    echo ${value}
+  fi
+}
+
 ONOS_HOME=${ONOS_HOME:-$(cd `dirname $0`; pwd)}
 ONOS_CONF_DIR=${ONOS_CONF_DIR:-${ONOS_HOME}/conf}
 ONOS_CONF=${ONOS_CONF:-${ONOS_CONF_DIR}/onos_node.conf}
@@ -23,49 +32,54 @@ if [ ! -f ${ONOS_CONF} ]; then
   echo "${ONOS_CONF} not found."
   exit 1
 fi
-ONOS_HOST_NAME=`grep ^host.name ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-if [ -z "${ONOS_HOST_NAME}" ]; then
-  ONOS_HOST_NAME=`hostname`
-fi
-ONOS_HOST_IP=`grep ^host.ip ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-ONOS_HOST_ROLE=`grep ^host.role ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-ONOS_HOST_BACKEND=`grep ^host.backend ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-ZK_HOSTS=`grep ^zookeeper.hosts ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_COORD_PROTOCOL=`grep ^ramcloud.coordinator.protocol ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_COORD_IP=`grep ^ramcloud.coordinator.ip ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_COORD_PORT=`grep ^ramcloud.coordinator.port ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_SERVER_PROTOCOL=`grep ^ramcloud.server.protocol ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_SERVER_IP=`grep ^ramcloud.server.ip ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
-RC_SERVER_PORT=`grep ^ramcloud.server.port ${ONOS_CONF} | cut -d "=" -f 2 | sed -e 's/^[ \t]*//'`
+
+
+### Variables read from ONOS config file ###
+ONOS_HOST_NAME=$(read-conf ${ONOS_CONF}     host.name                     `hostname`)
+ONOS_HOST_IP=$(read-conf ${ONOS_CONF}       host.ip)
+ONOS_HOST_ROLE=$(read-conf ${ONOS_CONF}     host.role)
+ONOS_HOST_BACKEND=$(read-conf ${ONOS_CONF}  host.backend)
+ZK_HOSTS=$(read-conf ${ONOS_CONF}           zookeeper.hosts               ${ONOS_HOST_NAME})
+RC_COORD_PROTOCOL=$(read-conf ${ONOS_CONF}  ramcloud.coordinator.protocol "fast+udp")
+RC_COORD_IP=$(read-conf ${ONOS_CONF}        ramcloud.coordinator.ip       ${ONOS_HOST_IP})
+RC_COORD_PORT=$(read-conf ${ONOS_CONF}      ramcloud.coordinator.port     12246)
+RC_SERVER_PROTOCOL=$(read-conf ${ONOS_CONF} ramcloud.server.protocol      "fast+udp")
+RC_SERVER_IP=$(read-conf ${ONOS_CONF}       ramcloud.server.ip            ${ONOS_HOST_IP})
+RC_SERVER_PORT=$(read-conf ${ONOS_CONF}     ramcloud.server.port          12242)
+HC_TCPIP_MEMBERS=$(read-conf ${ONOS_CONF}   hazelcast.tcp-ip.members)
+HC_MULTICAST_GROUP=$(read-conf ${ONOS_CONF} hazelcast.multicast.group     "224.2.2.3")
+HC_MULTICAST_PORT=$(read-conf ${ONOS_CONF}  hazelcast.multicast.port      54327)
 ############################################
 
 
 ############## Other variables #############
+ONOS_TEMPLATE_DIR=${ONOS_CONF_DIR}/template
+
 LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
 
 ZK_DIR=${HOME}/zookeeper-3.4.5
 ZK_CONF_FILE=zoo.cfg
 ZK_CONF=${ONOS_CONF_DIR}/${ZK_CONF_FILE}
-ZK_CONF_BACKUP=${ZK_CONF}.bak
-ZK_CONF_TEMPLATE=${ONOS_CONF_DIR}/zoo.cfg.template
-ZOO_LOG_DIR=${ONOS_HOME}/onos-logs
+ZK_CONF_TEMPLATE=${ONOS_TEMPLATE_DIR}/zoo.cfg.template
+ZK_LOG_DIR=${ONOS_HOME}/onos-logs
 ZK_LIB_DIR=/var/lib/zookeeper
 ZK_MY_ID=${ZK_LIB_DIR}/myid
+
+HC_CONF=${ONOS_CONF_DIR}/hazelcast.xml
+HC_CONF_TEMPLATE=${ONOS_TEMPLATE_DIR}/hazelcast.xml.template
 
 RAMCLOUD_DIR=${HOME}/ramcloud
 RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
 RAMCLOUD_COORD_LOG=${LOGDIR}/ramcloud.coordinator.${ONOS_HOST_NAME}.log
 RAMCLOUD_SERVER_LOG=${LOGDIR}/ramcloud.server.${ONOS_HOST_NAME}.log
 RAMCLOUD_BRANCH=${RAMCLOUD_BRANCH:-master}
-RAMCLOUD_COORD_PORT=12246
-RAMCLOUD_SERVER_PORT=12242
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${ONOS_HOME}/lib:${RAMCLOUD_HOME}/obj.${RAMCLOUD_BRANCH}
 
 ## Because the script change dir to $ONOS_HOME, we can set ONOS_LOGBACK and LOGDIR relative to $ONOS_HOME
 ONOS_LOGBACK=${ONOS_LOGBACK:-${ONOS_CONF_DIR}/logback.${ONOS_HOST_NAME}.xml}
 ONOS_LOGBACK_BACKUP=${ONOS_LOGBACK}.bak
-ONOS_LOGBACK_TEMPLATE=${ONOS_CONF_DIR}/logback.xml.template
+ONOS_LOGBACK_TEMPLATE=${ONOS_TEMPLATE_DIR}/logback.xml.template
 LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
 LOGBASE=${ONOS_LOGBASE:-onos.${ONOS_HOST_NAME}}
 ONOS_LOG="${LOGDIR}/${LOGBASE}.log"
@@ -149,16 +163,16 @@ function print_usage {
 }
 
 function rotate-log {
-    local logfile=$1
-    local nr_max=${2:-10}
-    if [ -f $logfile ]; then
-	for i in `seq $(expr $nr_max - 1) -1 1`; do
-	    if [ -f ${logfile}.${i} ]; then
-		mv -f ${logfile}.${i} ${logfile}.`expr $i + 1`
-	    fi
-	done
-	mv $logfile $logfile.1
-    fi
+  local logfile=$1
+  local nr_max=${2:-10}
+  if [ -f $logfile ]; then
+    for i in `seq $(expr $nr_max - 1) -1 1`; do
+      if [ -f ${logfile}.${i} ]; then
+        mv -f ${logfile}.${i} ${logfile}.`expr $i + 1`
+      fi
+    done
+    mv $logfile $logfile.1
+  fi
 }
 
 # kill-processes {module-name} {array of pids}
@@ -176,18 +190,29 @@ function kill-processes {
   done
 }
 
-function revert-conf {
+# revert-file {filename}
+# revert "filename" from "filename.bak" if "filename.tmp" exists.
+function revert-file {
+  local filename=$1
+  local temp="${filename}.tmp"
+  local backup="${filename}.bak"
+  
+  if [ -f "${temp}" ]; then
+    echo -n "reverting ${filename} ... "
+    mv ${backup} ${filename}
+    rm ${temp}
+    echo "DONE"
+  fi
+}
+
+# revert-confs [error message]
+function revert-confs {
   set -e
   
   echo -n "ERROR occurred ... "
-  local temp_zk="${ZK_CONF}.tmp"
   
-  if [ -f "${temp_zk}" ]; then
-    local zk_file=`basename ${ZK_CONF}`
-    echo -n "reverting ${zk_file} ... "
-    rm ${temp_zk}
-    mv ${ZK_CONF_BACKUP} ${ZK_CONF}
-  fi
+  revert-file `basename ${ZK_CONF}`
+  revert-file `basename ${HC_CONF}`
 
   echo "EXIT"
   
@@ -206,21 +231,18 @@ function create-zk-conf {
   # creation of zookeeper config
   
   local temp_zk="${ZK_CONF}.tmp"
+  if [ -f ${temp_zk} ]; then
+    rm ${temp_zk}
+  fi
   touch ${temp_zk}
-  
+
   if [ -f ${ZK_CONF} ]; then
-    mv ${ZK_CONF} ${ZK_CONF_BACKUP}
-    local backup_file=`basename ${ZK_CONF_BACKUP}`
-    echo -n "backup old file to ${backup_file} ... "
+    mv ${ZK_CONF} ${ZK_CONF}.bak
+    local filename=`basename ${ZK_CONF}`
+    echo -n "backup old file to ${filename}.bak ... "
   fi
   
-  local hosts=${ZK_HOSTS}
-  if [ -z "${hosts}" ]; then
-    # assume single-node mode
-    hosts=${ONOS_HOST_NAME}
-  fi
-  
-  hostarr=`echo ${hosts} | tr "," " "`
+  hostarr=`echo ${ZK_HOSTS} | tr "," " "`
   
   local i=1
   local myid=
@@ -234,7 +256,7 @@ function create-zk-conf {
   
   if [ -z "${myid}" ]; then
     local filename=`basename ${ONOS_CONF}`
-    revert-conf "[ERROR in ${filename}] zookeeper.hosts must have hostname \"${ONOS_HOST_NAME}\""
+    revert-confs "[ERROR in ${filename}] zookeeper.hosts must have hostname \"${ONOS_HOST_NAME}\""
   fi
   
   # TODO: Remove sudo.
@@ -264,51 +286,81 @@ function create-zk-conf {
   echo "DONE"
 }
 
+function create-hazelcast-conf {
+  echo -n "Creating ${HC_CONF} ... "
+  
+  local temp_hc="${HC_CONF}.tmp"
+  if [ -f ${temp_hc} ]; then
+    rm ${temp_hc}
+  fi
+  touch ${temp_hc}
+  
+  if [ -f ${HC_CONF} ]; then
+    mv ${HC_CONF} ${HC_CONF}.bak
+    local filename=`basename ${HC_CONF}`
+    echo -n "backup old file to ${filename}.bak ... "
+  fi
+  
+  # To keep indent of XML file, change IFS
+  local IFS=''
+  while read line; do
+    if [[ $line =~ __HC_NETWORK__ ]]; then
+      if [ ! -z "${HC_TCPIP_MEMBERS}" ]; then
+        # temporary change
+        IFS=' '
+        local memberarr=`echo ${HC_TCPIP_MEMBERS} | tr "," " "`
+        echo '<multicast enabled="false" />'
+        echo '<tcp-ip enabled="true">'
+        for member in ${memberarr}; do
+          echo "  <member>${member}</member>"
+        done
+        echo '</tcp-ip>'
+        IFS=''
+      else
+        echo '<multicast enabled="true">'
+        echo "  <multicast-group>${HC_MULTICAST_GROUP}</multicast-group>"
+        echo "  <multicast-port>${HC_MULTICAST_PORT}</multicast-port>"
+        echo '</multicast>'
+        echo '<tcp-ip enabled="false" />'
+      fi
+    else
+      echo "${line}"
+    fi
+  done < ${HC_CONF_TEMPLATE} > ${temp_hc}
+  
+  mv ${temp_hc} ${HC_CONF}
+  
+  echo "DONE"
+}
+
 function create-logback-conf {
   echo -n "Creating ${ONOS_LOGBACK} ... "
   
   # creation of logback config
   if [ -f $ONOS_LOGBACK ]; then
     local logback_file=`basename ${ONOS_LOGBACK}`
-    mv ${ONOS_LOGBACK} ${ONOS_LOGBACK_BACKUP}
-    local logback_back_file=`basename ${ONOS_LOGBACK_BACKUP}`
-    echo -n "backup old file to ${logback_back_file} ... "
+    mv ${ONOS_LOGBACK} ${ONOS_LOGBACK}.bak
+    local filename=`basename ${ONOS_LOGBACK}`
+    echo -n "backup old file to ${filename}.bak ... "
   fi
   sed -e "s|__FILENAME__|${ONOS_LOG}|" ${ONOS_LOGBACK_TEMPLATE} > ${ONOS_LOGBACK}
   
   echo "DONE"
 }
 
-function create-conf {
-  local key
-  local filename
+# create-conf-interactive {filename} {function to create conf}
+function create-conf-interactive {
+  local filepath=$1
+  local filename=`basename ${filepath}`
+  local func=$2
   
-  trap revert-conf ERR
-  
-  if [ -f ${ZK_CONF} -a "$1" != "-f" ]; then
+  if [ -f ${filepath} ]; then
     # confirmation to overwrite existing config file
-    echo -n "Overwriting ${ZK_CONF_FILE} [Y/n]? "
-    while [ 1 ]; do
-      read key
-      if [ -z "${key}" -o "${key}" == "Y" ]; then
-        create-zk-conf
-        break
-      elif [ "${key}" == "n" ]; then
-        break
-      fi
-      echo "[Y/n]?"
-    done
-  else
-    create-zk-conf
-  fi
-  
-  if [ -f ${ONOS_LOGBACK} -a "$1" != "-f" ]; then
-    filename=`basename ${ONOS_LOGBACK}`
     echo -n "Overwriting ${filename} [Y/n]? "
     while [ 1 ]; do
       read key
       if [ -z "${key}" -o "${key}" == "Y" ]; then
-        create-logback-conf
+        ${func}
         break
       elif [ "${key}" == "n" ]; then
         break
@@ -316,8 +368,26 @@ function create-conf {
       echo "[Y/n]?"
     done
   else
-    create-logback-conf
+    ${func}
   fi
+}
+
+function create-confs {
+  local key
+  local filename
+  
+  trap revert-confs ERR
+
+  if [ "$1" == "-f" ]; then
+    create-zk-conf
+    create-hazelcast-conf
+    create-logback-conf
+  else
+    create-conf-interactive ${ZK_CONF} create-zk-conf
+    create-conf-interactive ${HC_CONF} create-hazelcast-conf
+    create-conf-interactive ${ONOS_LOGBACK} create-logback-conf
+  fi
+
   
   trap - ERR
 }
@@ -349,6 +419,7 @@ function zk {
 function start-zk {
   echo -n "Starting Zookeeper ... "
   
+  export ZOO_LOG_DIR=${ZK_LOG_DIR}
   if [ -f "${ZK_CONF}" ]; then
     # Run Zookeeper with our configuration
     export ZOOCFG=${ZK_CONF_FILE}
@@ -404,47 +475,11 @@ function deldb {
 
 ### Functions related to RAMCloud coordinator
 function rc-coord-addr {
-  local coordproto=${RC_COORD_PROTOCOL}
-  local coordip=${RC_COORD_IP}
-  local coordport=${RC_COORD_PORT}
-
-  if [ -z "${coordproto}" ]; then
-    coordproto='fast+udp'
-  fi
-
-  if [ -z "${coordip}" ]; then
-    # assume single-node mode
-    coordip=${ONOS_HOST_IP}
-  fi
-  
-  if [ -z "${coordport}" ]; then
-    # assume default port
-    coordport=${RAMCLOUD_COORD_PORT}
-  fi
-  
-  echo "${coordproto}:host=${coordip},port=${coordport}"
+  echo "${RC_COORD_PROTOCOL}:host=${RC_COORD_IP},port=${RC_COORD_PORT}"
 }
 
 function rc-server-addr {
-  local serverproto=${RC_SERVER_PROTOCOL}
-  local serverip=${RC_SERVER_IP}
-  local serverport=${RC_SERVER_PORT}
-
-  if [ -z "${serverproto}" ]; then
-    serverproto='fast+udp'
-  fi
-
-  # Normally this parameter should be null
-  if [ -z "${serverip}" ]; then
-    serverip=${ONOS_HOST_IP}
-  fi
-  
-  if [ -z "${serverport}" ]; then
-    # assume default port
-    serverport=${RAMCLOUD_SERVER_PORT}
-  fi
-  
-  echo "${serverproto}:host=${serverip},port=${serverport}"
+  echo "${RC_SERVER_PROTOCOL}:host=${RC_SERVER_IP},port=${RC_SERVER_PORT}"
 }
 
 function rc-coord {
@@ -638,7 +673,7 @@ function stop-onos {
 ################## Main ####################
 case "$1" in
   setup)
-    create-conf $2
+    create-confs $2
     ;;
   start)
     mode_parameter=${ONOS_HOST_ROLE}
