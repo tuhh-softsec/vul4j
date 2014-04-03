@@ -13,10 +13,10 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 
-import net.onrc.onos.datagrid.web.IntentResource;
-import net.onrc.onos.datastore.DataStoreClient;
-import net.onrc.onos.datastore.IKVTable;
-import net.onrc.onos.datastore.ObjectExistsException;
+import net.onrc.onos.core.datagrid.web.IntentResource;
+import net.onrc.onos.core.datastore.DataStoreClient;
+import net.onrc.onos.core.datastore.IKVTable;
+import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;

@@ -9,7 +9,7 @@ net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier
 net.floodlightcontroller.devicemanager.test.MockDeviceManager
 net.floodlightcontroller.core.test.MockFloodlightProvider
 net.floodlightcontroller.core.test.MockThreadPoolService
-net.onrc.onos.datagrid.HazelcastDatagrid
+net.onrc.onos.core.datagrid.HazelcastDatagrid
 net.onrc.onos.ofcontroller.flowprogrammer.FlowProgrammer
 net.onrc.onos.apps.bgproute.BgpRoute
 net.onrc.onos.registry.controller.ZookeeperRegistry

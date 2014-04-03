@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 
-import net.onrc.onos.datastore.DataStoreClient;
-import net.onrc.onos.datastore.IKVClient;
-import net.onrc.onos.datastore.topology.KVDevice;
-import net.onrc.onos.datastore.topology.KVLink;
-import net.onrc.onos.datastore.topology.KVPort;
-import net.onrc.onos.datastore.topology.KVPort.STATUS;
-import net.onrc.onos.datastore.topology.KVSwitch;
-import net.onrc.onos.datastore.utils.KVObject;
-import net.onrc.onos.datastore.utils.KVObject.WriteOp;
+import net.onrc.onos.core.datastore.DataStoreClient;
+import net.onrc.onos.core.datastore.IKVClient;
+import net.onrc.onos.core.datastore.topology.KVDevice;
+import net.onrc.onos.core.datastore.topology.KVLink;
+import net.onrc.onos.core.datastore.topology.KVPort;
+import net.onrc.onos.core.datastore.topology.KVSwitch;
+import net.onrc.onos.core.datastore.topology.KVPort.STATUS;
+import net.onrc.onos.core.datastore.utils.KVObject;
+import net.onrc.onos.core.datastore.utils.KVObject.WriteOp;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 
 import org.slf4j.Logger;

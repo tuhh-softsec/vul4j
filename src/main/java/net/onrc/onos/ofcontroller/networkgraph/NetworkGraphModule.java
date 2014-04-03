@@ -12,7 +12,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
-import net.onrc.onos.datagrid.IDatagridService;
+import net.onrc.onos.core.datagrid.IDatagridService;
 import net.onrc.onos.ofcontroller.networkgraph.web.NetworkGraphWebRoutable;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 

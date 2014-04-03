@@ -8,9 +8,9 @@ import java.util.Set;
 
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
-import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.datagrid.IEventChannel;
-import net.onrc.onos.datagrid.IEventChannelListener;
+import net.onrc.onos.core.datagrid.IDatagridService;
+import net.onrc.onos.core.datagrid.IEventChannel;
+import net.onrc.onos.core.datagrid.IEventChannelListener;
 import net.onrc.onos.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.Intent;

@@ -1,6 +1,6 @@
 package net.onrc.onos.ofcontroller.networkgraph.web;
 
-import net.onrc.onos.datastore.topology.KVSwitch;
+import net.onrc.onos.core.datastore.topology.KVSwitch;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

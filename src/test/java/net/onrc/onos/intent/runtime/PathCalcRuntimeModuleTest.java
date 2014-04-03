@@ -2,10 +2,9 @@ package net.onrc.onos.intent.runtime;
 
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
-import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.datagrid.IEventChannel;
-import net.onrc.onos.datagrid.IEventChannelListener;
-
+import net.onrc.onos.core.datagrid.IDatagridService;
+import net.onrc.onos.core.datagrid.IEventChannel;
+import net.onrc.onos.core.datagrid.IEventChannelListener;
 import net.onrc.onos.intent.Intent;
 import net.onrc.onos.intent.Intent.IntentState;
 import net.onrc.onos.intent.IntentMap;
@@ -38,6 +37,7 @@ import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
+
 import static org.easymock.EasyMock.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

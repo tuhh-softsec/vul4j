@@ -14,12 +14,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.datagrid.IEventChannel;
-import net.onrc.onos.datagrid.IEventChannelListener;
-import net.onrc.onos.datastore.topology.KVLink;
-import net.onrc.onos.datastore.topology.KVPort;
-import net.onrc.onos.datastore.topology.KVSwitch;
+import net.onrc.onos.core.datagrid.IDatagridService;
+import net.onrc.onos.core.datagrid.IEventChannel;
+import net.onrc.onos.core.datagrid.IEventChannelListener;
+import net.onrc.onos.core.datastore.topology.KVLink;
+import net.onrc.onos.core.datastore.topology.KVPort;
+import net.onrc.onos.core.datastore.topology.KVSwitch;
 import net.onrc.onos.ofcontroller.networkgraph.PortEvent.SwitchPort;
 import net.onrc.onos.ofcontroller.util.EventEntry;
 import net.onrc.onos.registry.controller.IControllerRegistryService;

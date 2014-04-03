@@ -14,9 +14,9 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.onrc.onos.datagrid.IDatagridService;
-import net.onrc.onos.datagrid.IEventChannel;
-import net.onrc.onos.datagrid.IEventChannelListener;
+import net.onrc.onos.core.datagrid.IDatagridService;
+import net.onrc.onos.core.datagrid.IEventChannel;
+import net.onrc.onos.core.datagrid.IEventChannelListener;
 import net.onrc.onos.intent.FlowEntry;
 import net.onrc.onos.intent.Intent.IntentState;
 import net.onrc.onos.intent.IntentOperation;
@@ -24,6 +24,7 @@ import net.onrc.onos.intent.IntentOperationList;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 //import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
 package net.onrc.onos.ofcontroller.networkgraph.web;
 
-import net.onrc.onos.datastore.topology.KVPort;
+import net.onrc.onos.core.datastore.topology.KVPort;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

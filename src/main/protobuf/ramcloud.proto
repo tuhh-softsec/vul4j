@@ -1,6 +1,6 @@
 package RCProtos;
 
-option java_package = "net.onrc.onos.datastore";
+option java_package = "net.onrc.onos.core.datastore";
 option java_outer_classname = "RCProtos";
 
 message SwitchProperty {
