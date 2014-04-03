@@ -20,9 +20,9 @@ import net.onrc.onos.core.datagrid.IEventChannelListener;
 import net.onrc.onos.core.datastore.topology.KVLink;
 import net.onrc.onos.core.datastore.topology.KVPort;
 import net.onrc.onos.core.datastore.topology.KVSwitch;
+import net.onrc.onos.core.registry.IControllerRegistryService;
 import net.onrc.onos.core.topology.PortEvent.SwitchPort;
 import net.onrc.onos.core.util.EventEntry;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -15,13 +15,13 @@ import net.onrc.onos.core.intent.IntentOperation.Operator;
 import net.onrc.onos.core.intent.runtime.IntentStateList;
 import net.onrc.onos.core.intent.runtime.PathCalcRuntimeModule;
 import net.onrc.onos.core.intent.runtime.PersistIntent;
+import net.onrc.onos.core.registry.IControllerRegistryService;
 import net.onrc.onos.core.topology.DeviceEvent;
 import net.onrc.onos.core.topology.INetworkGraphListener;
 import net.onrc.onos.core.topology.INetworkGraphService;
 import net.onrc.onos.core.topology.LinkEvent;
 import net.onrc.onos.core.topology.PortEvent;
 import net.onrc.onos.core.topology.SwitchEvent;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.junit.After;
 import org.junit.Before;

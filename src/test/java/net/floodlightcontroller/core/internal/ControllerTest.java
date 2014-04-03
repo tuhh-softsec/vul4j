@@ -58,12 +58,12 @@ import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.core.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.core.linkdiscovery.internal.LinkDiscoveryManager;
 import net.onrc.onos.core.main.IOFSwitchPortListener;
-import net.onrc.onos.packet.ARP;
-import net.onrc.onos.packet.Ethernet;
-import net.onrc.onos.packet.IPacket;
-import net.onrc.onos.packet.IPv4;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
-import net.onrc.onos.registry.controller.StandaloneRegistry;
+import net.onrc.onos.core.packet.ARP;
+import net.onrc.onos.core.packet.Ethernet;
+import net.onrc.onos.core.packet.IPacket;
+import net.onrc.onos.core.packet.IPv4;
+import net.onrc.onos.core.registry.IControllerRegistryService;
+import net.onrc.onos.core.registry.StandaloneRegistry;
 
 import org.easymock.Capture;
 import org.easymock.EasyMock;

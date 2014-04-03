@@ -35,6 +35,8 @@ import net.onrc.onos.core.intent.ShortestPathIntent;
 import net.onrc.onos.core.intent.Intent.IntentState;
 import net.onrc.onos.core.intent.runtime.IPathCalcRuntimeService;
 import net.onrc.onos.core.intent.runtime.IntentStateList;
+import net.onrc.onos.core.packet.Ethernet;
+import net.onrc.onos.core.registry.IControllerRegistryService;
 import net.onrc.onos.core.topology.Device;
 import net.onrc.onos.core.topology.INetworkGraphService;
 import net.onrc.onos.core.topology.LinkEvent;
@@ -44,8 +46,6 @@ import net.onrc.onos.core.util.Dpid;
 import net.onrc.onos.core.util.FlowPath;
 import net.onrc.onos.core.util.Port;
 import net.onrc.onos.core.util.SwitchPort;
-import net.onrc.onos.packet.Ethernet;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;

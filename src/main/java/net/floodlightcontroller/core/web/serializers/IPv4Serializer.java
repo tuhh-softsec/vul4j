@@ -19,7 +19,7 @@ package net.floodlightcontroller.core.web.serializers;
 
 import java.io.IOException;
 
-import net.onrc.onos.packet.IPv4;
+import net.onrc.onos.core.packet.IPv4;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;

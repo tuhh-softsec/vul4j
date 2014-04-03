@@ -61,10 +61,10 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.core.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.core.main.IOFSwitchPortListener;
-import net.onrc.onos.packet.Ethernet;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
-import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
-import net.onrc.onos.registry.controller.RegistryException;
+import net.onrc.onos.core.packet.Ethernet;
+import net.onrc.onos.core.registry.IControllerRegistryService;
+import net.onrc.onos.core.registry.RegistryException;
+import net.onrc.onos.core.registry.IControllerRegistryService.ControlChangeCallback;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;

@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.packet.IPv4;
+import net.onrc.onos.core.packet.IPv4;
 
 /**
  * An entity on the network is a visible trace of a device that corresponds

@@ -50,7 +50,7 @@ public class MACAddressTest {
         MACAddress.valueOf(new byte[]{0x01, 0x01, 0x02, 0x03, 0x04});
     }
 
-    //  Test data is imported from net.onrc.onos.packet.EthernetTest
+    //  Test data is imported from net.onrc.onos.core.packet.EthernetTest
     @Test
     public void testToLong() {
         assertEquals(

@@ -21,10 +21,10 @@ import net.onrc.onos.core.devicemanager.OnosDevice;
 import net.onrc.onos.core.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.core.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.core.main.IOFSwitchPortListener;
+import net.onrc.onos.core.registry.IControllerRegistryService;
+import net.onrc.onos.core.registry.RegistryException;
+import net.onrc.onos.core.registry.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.core.topology.PortEvent.SwitchPort;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
-import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
-import net.onrc.onos.registry.controller.RegistryException;
 
 import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.util.HexString;

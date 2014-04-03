@@ -22,8 +22,8 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.core.flowprogrammer.web.FlowProgrammerWebRoutable;
+import net.onrc.onos.core.registry.IControllerRegistryService;
 import net.onrc.onos.core.util.FlowEntryId;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 /**
  * FlowProgrammer is a module responsible to maintain flows installed to switches.

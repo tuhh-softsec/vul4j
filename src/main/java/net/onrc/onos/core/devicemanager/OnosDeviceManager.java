@@ -27,13 +27,13 @@ import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.core.datagrid.IDatagridService;
 import net.onrc.onos.core.datagrid.IEventChannel;
 import net.onrc.onos.core.datagrid.IEventChannelListener;
+import net.onrc.onos.core.packet.ARP;
+import net.onrc.onos.core.packet.DHCP;
+import net.onrc.onos.core.packet.Ethernet;
+import net.onrc.onos.core.packet.IPv4;
+import net.onrc.onos.core.packet.UDP;
 import net.onrc.onos.core.topology.INetworkGraphService;
 import net.onrc.onos.core.topology.NetworkGraph;
-import net.onrc.onos.packet.ARP;
-import net.onrc.onos.packet.DHCP;
-import net.onrc.onos.packet.Ethernet;
-import net.onrc.onos.packet.IPv4;
-import net.onrc.onos.packet.UDP;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;

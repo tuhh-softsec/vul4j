@@ -18,11 +18,11 @@ import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVTable;
 import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.core.intent.IntentOperationList;
+import net.onrc.onos.core.registry.IControllerRegistryService;
+import net.onrc.onos.core.registry.IdBlock;
 import net.onrc.onos.core.topology.INetworkGraphService;
 import net.onrc.onos.core.topology.NetworkGraph;
 import net.onrc.onos.core.util.serializers.KryoFactory;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
-import net.onrc.onos.registry.controller.IdBlock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

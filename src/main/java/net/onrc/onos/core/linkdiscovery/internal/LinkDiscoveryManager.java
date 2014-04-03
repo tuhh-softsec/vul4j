@@ -66,12 +66,12 @@ import net.onrc.onos.core.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.core.linkdiscovery.ILinkDiscovery.UpdateOperation;
 import net.onrc.onos.core.linkdiscovery.web.LinkDiscoveryWebRoutable;
 import net.onrc.onos.core.main.IOnosRemoteSwitch;
-import net.onrc.onos.packet.BSN;
-import net.onrc.onos.packet.Ethernet;
-import net.onrc.onos.packet.IPv4;
-import net.onrc.onos.packet.LLDP;
-import net.onrc.onos.packet.LLDPTLV;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
+import net.onrc.onos.core.packet.BSN;
+import net.onrc.onos.core.packet.Ethernet;
+import net.onrc.onos.core.packet.IPv4;
+import net.onrc.onos.core.packet.LLDP;
+import net.onrc.onos.core.packet.LLDPTLV;
+import net.onrc.onos.core.registry.IControllerRegistryService;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;

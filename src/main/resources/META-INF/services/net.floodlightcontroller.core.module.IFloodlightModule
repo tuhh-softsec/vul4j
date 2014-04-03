@@ -12,8 +12,8 @@ net.floodlightcontroller.core.test.MockThreadPoolService
 net.onrc.onos.core.datagrid.HazelcastDatagrid
 net.onrc.onos.core.flowprogrammer.FlowProgrammer
 net.onrc.onos.apps.bgproute.BgpRoute
-net.onrc.onos.registry.controller.ZookeeperRegistry
-net.onrc.onos.registry.controller.StandaloneRegistry
+net.onrc.onos.core.registry.ZookeeperRegistry
+net.onrc.onos.core.registry.StandaloneRegistry
 net.onrc.onos.apps.forwarding.Forwarding
 net.onrc.onos.apps.proxyarp.ProxyArpManager
 net.onrc.onos.core.main.config.DefaultConfiguration

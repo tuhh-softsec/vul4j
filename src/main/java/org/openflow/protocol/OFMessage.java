@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.onrc.onos.packet.Ethernet;
+import net.onrc.onos.core.packet.Ethernet;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.openflow.util.HexString;

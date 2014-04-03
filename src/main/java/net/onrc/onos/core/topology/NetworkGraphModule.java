@@ -13,8 +13,8 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.onrc.onos.core.datagrid.IDatagridService;
+import net.onrc.onos.core.registry.IControllerRegistryService;
 import net.onrc.onos.core.topology.web.NetworkGraphWebRoutable;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 public class NetworkGraphModule implements IFloodlightModule, INetworkGraphService {
 
