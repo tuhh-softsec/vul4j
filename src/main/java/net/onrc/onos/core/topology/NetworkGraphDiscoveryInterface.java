@@ -11,10 +11,10 @@ public interface NetworkGraphDiscoveryInterface {
      * Switch discovered event.
      *
      * @param switchEvent the switch event.
-     * @param portEvents the corresponding port events for the switch.
+     * @param portEvents  the corresponding port events for the switch.
      */
     public void putSwitchDiscoveryEvent(SwitchEvent switchEvent,
-					Collection<PortEvent> portEvents);
+                                        Collection<PortEvent> portEvents);
 
     /**
      * Switch removed event.

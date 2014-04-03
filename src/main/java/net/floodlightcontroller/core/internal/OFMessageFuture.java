@@ -1,19 +1,19 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 package net.floodlightcontroller.core.internal;
 
@@ -51,13 +51,13 @@ public abstract class OFMessageFuture<V> implements Future<V> {
     protected static final TimeUnit DEFAULT_TIMEOUT_UNIT = TimeUnit.SECONDS;
 
     public OFMessageFuture(IThreadPoolService tp,
-            IOFSwitch sw, OFType responseType, int transactionId) {
-        this(tp, sw, responseType, transactionId, 
-                 DEFAULT_TIMEOUT, DEFAULT_TIMEOUT_UNIT);
+                           IOFSwitch sw, OFType responseType, int transactionId) {
+        this(tp, sw, responseType, transactionId,
+                DEFAULT_TIMEOUT, DEFAULT_TIMEOUT_UNIT);
     }
 
     public OFMessageFuture(IThreadPoolService tp,
-            IOFSwitch sw, OFType responseType, int transactionId, long timeout, TimeUnit unit) {
+                           IOFSwitch sw, OFType responseType, int transactionId, long timeout, TimeUnit unit) {
         this.threadPool = tp;
         this.canceled = false;
         this.latch = new CountDownLatch(1);
@@ -80,7 +80,7 @@ public abstract class OFMessageFuture<V> implements Future<V> {
         this.timeoutTimer = null;
     }
 
-  
+
     public void deliverFuture(IOFSwitch sw, OFMessage msg) {
         if (transactionId == msg.getXid()) {
             handleReply(sw, msg);
@@ -95,6 +95,7 @@ public abstract class OFMessageFuture<V> implements Future<V> {
      * Used to handle the specific expected message this Future was reigstered
      * for, the specified msg parameter is guaranteed to match the type and
      * transaction id specified.
+     *
      * @param sw
      * @param msg
      * @return
@@ -106,6 +107,7 @@ public abstract class OFMessageFuture<V> implements Future<V> {
      * indicate when the future can deregister itself from receiving future
      * messages, and when it is safe to return the results to any waiting
      * threads.
+     *
      * @return when this Future has completed its work
      */
     protected abstract boolean isFinished();

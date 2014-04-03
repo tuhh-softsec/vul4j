@@ -62,7 +62,7 @@ public class KryoFactory {
 
     /**
      * Default constructor.
-     *
+     * <p/>
      * Preallocates {@code DEFAULT_PREALLOCATIONS} Kryo instances.
      */
     public KryoFactory() {
@@ -89,7 +89,7 @@ public class KryoFactory {
      * @return the created Kryo object.
      */
     public Kryo newKryo() {
-	return newDeleteKryo(null);
+        return newDeleteKryo(null);
     }
 
     /**
@@ -98,34 +98,34 @@ public class KryoFactory {
      * @param deleteKryo the object to delete.
      */
     public void deleteKryo(Kryo deleteKryo) {
-	newDeleteKryo(deleteKryo);
+        newDeleteKryo(deleteKryo);
     }
 
     /**
      * Create or delete a Kryo object.
      *
      * @param deleteKryo if null, then allocate and return a new object,
-     * otherwise delete the provided object.
+     *                   otherwise delete the provided object.
      * @return a new Kryo object if needed, otherwise null.
      */
     synchronized private Kryo newDeleteKryo(Kryo deleteKryo) {
-	if (deleteKryo != null) {
-	    // Delete an entry by moving it back to the buffer
-	    kryoList.add(deleteKryo);
-	    return null;
-	} else {
-	    Kryo kryo = null;
-	    if (kryoList.isEmpty()) {
-		// Preallocate
-		for (int i = 0; i < 100; i++) {
-		    kryo = newKryoImpl();
-		    kryoList.add(kryo);
-		}
-	    }
+        if (deleteKryo != null) {
+            // Delete an entry by moving it back to the buffer
+            kryoList.add(deleteKryo);
+            return null;
+        } else {
+            Kryo kryo = null;
+            if (kryoList.isEmpty()) {
+                // Preallocate
+                for (int i = 0; i < 100; i++) {
+                    kryo = newKryoImpl();
+                    kryoList.add(kryo);
+                }
+            }
 
-	    kryo = kryoList.remove(kryoList.size() - 1);
-	    return kryo;
-	}
+            kryo = kryoList.remove(kryoList.size() - 1);
+            return kryo;
+        }
     }
 
     /**
@@ -134,91 +134,91 @@ public class KryoFactory {
      * @return the created Kryo object.
      */
     private Kryo newKryoImpl() {
-	Kryo kryo = new Kryo();
-	kryo.setRegistrationRequired(true);
-	//
-	// WARNING: Order of register() calls affects serialized bytes.
-	//  - Do no insert new entry in the middle, always add to the end.
-	//  - Do not simply remove existing entry
-	//
+        Kryo kryo = new Kryo();
+        kryo.setRegistrationRequired(true);
+        //
+        // WARNING: Order of register() calls affects serialized bytes.
+        //  - Do no insert new entry in the middle, always add to the end.
+        //  - Do not simply remove existing entry
+        //
 
-	// kryo.setReferences(false);
-	//
-	kryo.register(ArrayList.class);
+        // kryo.setReferences(false);
+        //
+        kryo.register(ArrayList.class);
 
-	// FlowPath and related classes
-	kryo.register(CallerId.class);
-	kryo.register(DataPath.class);
-	kryo.register(DataPathEndpoints.class);
-	kryo.register(Dpid.class);
-	kryo.register(FlowEntryAction.class);
-	kryo.register(FlowEntryAction.ActionEnqueue.class);
-	kryo.register(FlowEntryAction.ActionOutput.class);
-	kryo.register(FlowEntryAction.ActionSetEthernetAddr.class);
-	kryo.register(FlowEntryAction.ActionSetIpToS.class);
-	kryo.register(FlowEntryAction.ActionSetIPv4Addr.class);
-	kryo.register(FlowEntryAction.ActionSetTcpUdpPort.class);
-	kryo.register(FlowEntryAction.ActionSetVlanId.class);
-	kryo.register(FlowEntryAction.ActionSetVlanPriority.class);
-	kryo.register(FlowEntryAction.ActionStripVlan.class);
-	kryo.register(FlowEntryAction.ActionValues.class);
-	kryo.register(FlowEntryActions.class);
-	kryo.register(FlowEntryErrorState.class);
-	kryo.register(FlowEntryId.class);
-	kryo.register(FlowEntry.class);
-	kryo.register(FlowEntryMatch.class);
-	kryo.register(FlowEntryMatch.Field.class);
-	kryo.register(FlowEntrySwitchState.class);
-	kryo.register(FlowEntryUserState.class);
-	kryo.register(FlowId.class);
-	kryo.register(FlowPath.class);
-	kryo.register(FlowPathFlags.class);
-	kryo.register(FlowPathType.class);
-	kryo.register(FlowPathUserState.class);
-	kryo.register(IPv4.class);
-	kryo.register(IPv4Net.class);
-	kryo.register(IPv6.class);
-	kryo.register(IPv6Net.class);
-	kryo.register(byte[].class);
-	kryo.register(MACAddress.class);
-	kryo.register(Port.class);
-	kryo.register(Switch.class);
-	// kryo.register(SwitchPort.class);
+        // FlowPath and related classes
+        kryo.register(CallerId.class);
+        kryo.register(DataPath.class);
+        kryo.register(DataPathEndpoints.class);
+        kryo.register(Dpid.class);
+        kryo.register(FlowEntryAction.class);
+        kryo.register(FlowEntryAction.ActionEnqueue.class);
+        kryo.register(FlowEntryAction.ActionOutput.class);
+        kryo.register(FlowEntryAction.ActionSetEthernetAddr.class);
+        kryo.register(FlowEntryAction.ActionSetIpToS.class);
+        kryo.register(FlowEntryAction.ActionSetIPv4Addr.class);
+        kryo.register(FlowEntryAction.ActionSetTcpUdpPort.class);
+        kryo.register(FlowEntryAction.ActionSetVlanId.class);
+        kryo.register(FlowEntryAction.ActionSetVlanPriority.class);
+        kryo.register(FlowEntryAction.ActionStripVlan.class);
+        kryo.register(FlowEntryAction.ActionValues.class);
+        kryo.register(FlowEntryActions.class);
+        kryo.register(FlowEntryErrorState.class);
+        kryo.register(FlowEntryId.class);
+        kryo.register(FlowEntry.class);
+        kryo.register(FlowEntryMatch.class);
+        kryo.register(FlowEntryMatch.Field.class);
+        kryo.register(FlowEntrySwitchState.class);
+        kryo.register(FlowEntryUserState.class);
+        kryo.register(FlowId.class);
+        kryo.register(FlowPath.class);
+        kryo.register(FlowPathFlags.class);
+        kryo.register(FlowPathType.class);
+        kryo.register(FlowPathUserState.class);
+        kryo.register(IPv4.class);
+        kryo.register(IPv4Net.class);
+        kryo.register(IPv6.class);
+        kryo.register(IPv6Net.class);
+        kryo.register(byte[].class);
+        kryo.register(MACAddress.class);
+        kryo.register(Port.class);
+        kryo.register(Switch.class);
+        // kryo.register(SwitchPort.class);
 
-	// New data model-related classes
-	kryo.register(DeviceEvent.class);
-	kryo.register(InetAddress.class);
-	kryo.register(LinkEvent.class);
-	kryo.register(PortEvent.class);
-	kryo.register(PortEvent.SwitchPort.class);
-	kryo.register(SwitchEvent.class);
-	kryo.register(TopologyEvent.class);
+        // New data model-related classes
+        kryo.register(DeviceEvent.class);
+        kryo.register(InetAddress.class);
+        kryo.register(LinkEvent.class);
+        kryo.register(PortEvent.class);
+        kryo.register(PortEvent.SwitchPort.class);
+        kryo.register(SwitchEvent.class);
+        kryo.register(TopologyEvent.class);
 
-	// Intent-related classes
-	kryo.register(Path.class);
-	kryo.register(Intent.class);
-	kryo.register(Intent.IntentState.class);
-	kryo.register(PathIntent.class);
-	kryo.register(ShortestPathIntent.class);
-	kryo.register(ConstrainedShortestPathIntent.class);
-	kryo.register(ErrorIntent.class);
-	kryo.register(ErrorIntent.ErrorType.class);
-	kryo.register(IntentOperation.class);
-	kryo.register(IntentOperation.Operator.class);
-	kryo.register(IntentOperationList.class);
-	kryo.register(IntentStateList.class);
+        // Intent-related classes
+        kryo.register(Path.class);
+        kryo.register(Intent.class);
+        kryo.register(Intent.IntentState.class);
+        kryo.register(PathIntent.class);
+        kryo.register(ShortestPathIntent.class);
+        kryo.register(ConstrainedShortestPathIntent.class);
+        kryo.register(ErrorIntent.class);
+        kryo.register(ErrorIntent.ErrorType.class);
+        kryo.register(IntentOperation.class);
+        kryo.register(IntentOperation.Operator.class);
+        kryo.register(IntentOperationList.class);
+        kryo.register(IntentStateList.class);
 
-	// Device-related classes
-	kryo.register(HashSet.class);
-	kryo.register(Inet4Address.class);
-	kryo.register(OnosDevice.class);
-	kryo.register(Date.class);
+        // Device-related classes
+        kryo.register(HashSet.class);
+        kryo.register(Inet4Address.class);
+        kryo.register(OnosDevice.class);
+        kryo.register(Date.class);
 
-	// ProxyArp-related classes
-	kryo.register(BroadcastPacketOutNotification.class);
-	kryo.register(SinglePacketOutNotification.class);
-	kryo.register(ArpReplyNotification.class);
+        // ProxyArp-related classes
+        kryo.register(BroadcastPacketOutNotification.class);
+        kryo.register(SinglePacketOutNotification.class);
+        kryo.register(ArpReplyNotification.class);
 
-	return kryo;
+        return kryo;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.floodlightcontroller.util;
 
@@ -7,30 +7,33 @@ import java.util.ArrayList;
 
 /**
  * @author subrata
- *
  */
 
 public class EventHistory<T> {
     public static final int EV_HISTORY_DEFAULT_SIZE = 1024;
 
-    public String  description;
-    public int     event_history_size;
-    public int     current_index;
+    public String description;
+    public int event_history_size;
+    public int current_index;
     public boolean full; // true if all are in use
     public ArrayList<Event> events;
 
     public String getDescription() {
         return description;
     }
+
     public int getEvent_history_size() {
         return event_history_size;
     }
+
     public int getCurrent_index() {
         return current_index;
     }
+
     public boolean isFull() {
         return full;
     }
+
     public ArrayList<Event> getEvents() {
         return events;
     }
@@ -69,18 +72,18 @@ public class EventHistory<T> {
         events = new ArrayList<Event>(maxEvents);
 
         for (int idx = 0; idx < maxEvents; idx++) {
-            Event evH     = new Event();
+            Event evH = new Event();
             evH.base_info = new EventHistoryBaseInfo();
-            evH.info      = null;
+            evH.info = null;
             evH.base_info.state = EvState.FREE;
-            evH.base_info.idx   = idx;
+            evH.base_info.idx = idx;
             events.add(idx, evH);
         }
 
         description = "Event-History:" + desc;
-        event_history_size   = maxEvents;
-        current_index        = 0;
-        full                 = false;
+        event_history_size = maxEvents;
+        current_index = 0;
+        full = false;
     }
 
     // Constructor for default size
@@ -95,11 +98,11 @@ public class EventHistory<T> {
             description = "No event found";
             return;
         }
-        int curSize = (eventHist.full)?eventHist.event_history_size:
-                                                    eventHist.current_index;
-        int size  = (latestK < curSize)?latestK:curSize;
+        int curSize = (eventHist.full) ? eventHist.event_history_size :
+                eventHist.current_index;
+        int size = (latestK < curSize) ? latestK : curSize;
         int evIdx = eventHist.current_index;
-        int topSz = (evIdx >= size)?size:evIdx;
+        int topSz = (evIdx >= size) ? size : evIdx;
 
         // Need to create a new one since size is different
         events = new ArrayList<Event>(size);
@@ -107,7 +110,7 @@ public class EventHistory<T> {
         // Get the top part
         int origIdx = evIdx;
         for (int idx = 0; idx < topSz; idx++) {
-            Event evH         = eventHist.events.get(--origIdx);
+            Event evH = eventHist.events.get(--origIdx);
             evH.base_info.idx = idx;
             events.add(idx, evH);
         }
@@ -121,9 +124,9 @@ public class EventHistory<T> {
         }
 
         description = eventHist.description;
-        event_history_size   = size;
-        current_index        = 0; // since it is full
-        full                 = true;
+        event_history_size = size;
+        current_index = 0; // since it is full
+        full = true;
     }
 
     // Get an index for writing a new event. This method is synchronized for
@@ -131,13 +134,13 @@ public class EventHistory<T> {
     // by the caller event at the index is updated without any lock
     public synchronized int NextIdx() {
         // curIdx should be in the 0 to evArraySz-1
-        if (current_index == (event_history_size-1)) {
+        if (current_index == (event_history_size - 1)) {
             current_index = 0;
             full = true;
-            return (event_history_size-1);
+            return (event_history_size - 1);
         } else {
             current_index++;
-            return (current_index-1);
+            return (current_index - 1);
         }
     }
 
@@ -148,6 +151,7 @@ public class EventHistory<T> {
      * and the current object at that array location is returned to the
      * calling process so that the calling process can use that object
      * for the next event of the same type
+     *
      * @param t
      * @param op
      * @return
@@ -165,7 +169,7 @@ public class EventHistory<T> {
         return temp;
     }
 
-    /***
+    /**
      * Clear the event history, needs to be done under lock
      */
     public void clear() {

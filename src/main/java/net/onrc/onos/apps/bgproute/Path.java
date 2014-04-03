@@ -11,51 +11,51 @@ import java.util.List;
 
 public class Path {
 
-	private Interface dstInterface;
-	private InetAddress dstIpAddress;
-	private int numUsers = 0;
-	
-	private List<PushedFlowMod> flowMods = null;
-	private boolean permanent = false;
-	
-	public Path(Interface dstInterface, InetAddress dstIpAddress) {
-		this.dstInterface = dstInterface;
-		this.dstIpAddress = dstIpAddress;
-	}
+    private Interface dstInterface;
+    private InetAddress dstIpAddress;
+    private int numUsers = 0;
 
-	public Interface getDstInterface() {
-		return dstInterface;
-	}
+    private List<PushedFlowMod> flowMods = null;
+    private boolean permanent = false;
 
-	public InetAddress getDstIpAddress() {
-		return dstIpAddress;
-	}
-	
-	public void incrementUsers() {
-		numUsers++;
-	}
-	
-	public void decrementUsers() {
-		numUsers--;
-	}
-	
-	public int getUsers() {
-		return numUsers;
-	}
-	
-	public List<PushedFlowMod> getFlowMods() {
-		return Collections.unmodifiableList(flowMods);
-	}
-	
-	public void setFlowMods(List<PushedFlowMod> flowMods) {
-		this.flowMods = flowMods;
-	}
-	
-	public boolean isPermanent() {
-		return permanent;
-	}
-	
-	public void setPermanent() {
-		permanent = true;
-	}
+    public Path(Interface dstInterface, InetAddress dstIpAddress) {
+        this.dstInterface = dstInterface;
+        this.dstIpAddress = dstIpAddress;
+    }
+
+    public Interface getDstInterface() {
+        return dstInterface;
+    }
+
+    public InetAddress getDstIpAddress() {
+        return dstIpAddress;
+    }
+
+    public void incrementUsers() {
+        numUsers++;
+    }
+
+    public void decrementUsers() {
+        numUsers--;
+    }
+
+    public int getUsers() {
+        return numUsers;
+    }
+
+    public List<PushedFlowMod> getFlowMods() {
+        return Collections.unmodifiableList(flowMods);
+    }
+
+    public void setFlowMods(List<PushedFlowMod> flowMods) {
+        this.flowMods = flowMods;
+    }
+
+    public boolean isPermanent() {
+        return permanent;
+    }
+
+    public void setPermanent() {
+        permanent = true;
+    }
 }

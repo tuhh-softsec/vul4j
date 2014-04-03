@@ -11,15 +11,17 @@ public class CallerId {
     /**
      * Default constructor.
      */
-    public CallerId() {}
-    
+    public CallerId() {
+    }
+
     /**
      * Copy constructor
+     *
      * @param otherCallerId
      */
     public CallerId(CallerId otherCallerId) {
-    // Note: make a full copy if we change value to a mutable type
-    value = otherCallerId.value;
+        // Note: make a full copy if we change value to a mutable type
+        value = otherCallerId.value;
     }
 
     /**
@@ -28,7 +30,7 @@ public class CallerId {
      * @param value the value to use.
      */
     public CallerId(String value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -37,7 +39,9 @@ public class CallerId {
      * @return the value of the Caller ID.
      */
     @JsonProperty("value")
-    public String value() { return value; }
+    public String value() {
+        return value;
+    }
 
     /**
      * Set the value of the Caller ID.
@@ -46,7 +50,7 @@ public class CallerId {
      */
     @JsonProperty("value")
     public void setValue(String value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -56,22 +60,22 @@ public class CallerId {
      */
     @Override
     public String toString() {
-	return value;
+        return value;
     }
-    
+
     @Override
     public boolean equals(Object other) {
-    if (!(other instanceof CallerId)) {
-        return false;
+        if (!(other instanceof CallerId)) {
+            return false;
+        }
+
+        CallerId otherCallerId = (CallerId) other;
+
+        return value.equals(otherCallerId.value);
     }
-    
-    CallerId otherCallerId = (CallerId) other;
-    
-    return value.equals(otherCallerId.value);
-    }
-    
+
     @Override
     public int hashCode() {
-    return value.hashCode();
+        return value.hashCode();
     }
 }

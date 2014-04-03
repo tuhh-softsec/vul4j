@@ -7,8 +7,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * The class representing the Data Path Endpoints.
  */
 public class DataPathEndpoints {
-    private SwitchPort srcPort;		// The source port
-    private SwitchPort dstPort;		// The destination port
+    private SwitchPort srcPort;        // The source port
+    private SwitchPort dstPort;        // The destination port
 
     /**
      * Default constructor.
@@ -23,8 +23,8 @@ public class DataPathEndpoints {
      * @param dstPort the destination port to use.
      */
     public DataPathEndpoints(SwitchPort srcPort, SwitchPort dstPort) {
-	this.srcPort = srcPort;
-	this.dstPort = dstPort;
+        this.srcPort = srcPort;
+        this.dstPort = dstPort;
     }
 
     /**
@@ -33,7 +33,9 @@ public class DataPathEndpoints {
      * @return the data path source port.
      */
     @JsonProperty("srcPort")
-    public SwitchPort srcPort() { return srcPort; }
+    public SwitchPort srcPort() {
+        return srcPort;
+    }
 
     /**
      * Set the data path source port.
@@ -42,7 +44,7 @@ public class DataPathEndpoints {
      */
     @JsonProperty("srcPort")
     public void setSrcPort(SwitchPort srcPort) {
-	this.srcPort = srcPort;
+        this.srcPort = srcPort;
     }
 
     /**
@@ -51,7 +53,9 @@ public class DataPathEndpoints {
      * @return the data path destination port.
      */
     @JsonProperty("dstPort")
-    public SwitchPort dstPort() { return dstPort; }
+    public SwitchPort dstPort() {
+        return dstPort;
+    }
 
     /**
      * Set the data path destination port.
@@ -60,12 +64,12 @@ public class DataPathEndpoints {
      */
     @JsonProperty("dstPort")
     public void setDstPort(SwitchPort dstPort) {
-	this.dstPort = dstPort;
+        this.dstPort = dstPort;
     }
 
     /**
      * Convert the data path endpoints to a string.
-     *
+     * <p/>
      * The string has the following form:
      * [src=01:01:01:01:01:01:01:01/1111 dst=02:02:02:02:02:02:02:02/2222]
      *
@@ -73,8 +77,8 @@ public class DataPathEndpoints {
      */
     @Override
     public String toString() {
-	String ret = "[src=" + this.srcPort.toString() +
-	    " dst=" + this.dstPort.toString() + "]";
-	return ret;
+        String ret = "[src=" + this.srcPort.toString() +
+                " dst=" + this.dstPort.toString() + "]";
+        return ret;
     }
 }

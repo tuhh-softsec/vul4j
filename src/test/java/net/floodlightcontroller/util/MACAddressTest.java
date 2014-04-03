@@ -21,33 +21,33 @@ public class MACAddressTest {
         assertEquals(address,
                 MACAddress.valueOf(new byte[]{(byte) 0xFF, (byte) 0xFE, (byte) 0xFD, 0x10, 0x20, 0x30}));
         assertEquals("ff:fe:fd:10:20:30", address.toString());
-        
+
         address = MACAddress.valueOf("00:11:22:aa:bb:cc");
         assertEquals(address,
-                MACAddress.valueOf(new byte[]{0x00, 0x11, 0x22, (byte)0xaa, (byte)0xbb, (byte)0xcc}));
+                MACAddress.valueOf(new byte[]{0x00, 0x11, 0x22, (byte) 0xaa, (byte) 0xbb, (byte) 0xcc}));
     }
 
-    @Test(expected=NumberFormatException.class)
+    @Test(expected = NumberFormatException.class)
     public void testIllegalFormat() {
         MACAddress.valueOf("0T:00:01:02:03:04");
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testLongStringFields() {
         MACAddress.valueOf("00:01:02:03:04:05:06");
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testShortStringFields() {
         MACAddress.valueOf("00:01:02:03:04");
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testLongByteFields() {
         MACAddress.valueOf(new byte[]{0x01, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06});
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testShortByteField() {
         MACAddress.valueOf(new byte[]{0x01, 0x01, 0x02, 0x03, 0x04});
     }
@@ -62,16 +62,16 @@ public class MACAddressTest {
 
         assertEquals(
                 1103823438081L,
-                MACAddress.valueOf(new byte[] { (byte) 0x01, (byte) 0x01,
-                        (byte) 0x01, (byte) 0x01, (byte) 0x01, (byte) 0x01 }).toLong());
+                MACAddress.valueOf(new byte[]{(byte) 0x01, (byte) 0x01,
+                        (byte) 0x01, (byte) 0x01, (byte) 0x01, (byte) 0x01}).toLong());
 
         assertEquals(
                 141289400074368L,
-                MACAddress.valueOf(new byte[] { (byte) 0x80, (byte) 0x80,
-                        (byte) 0x80, (byte) 0x80, (byte) 0x80, (byte) 0x80 }).toLong());
+                MACAddress.valueOf(new byte[]{(byte) 0x80, (byte) 0x80,
+                        (byte) 0x80, (byte) 0x80, (byte) 0x80, (byte) 0x80}).toLong());
 
     }
-    
+
     @Test
     public void testIsBroadcast() {
         assertTrue(MACAddress.valueOf("FF:FF:FF:FF:FF:FF").isBroadcast());

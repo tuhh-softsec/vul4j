@@ -28,7 +28,6 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
 
 /**
- *
  * @author nickkaranatsios
  */
 public class PersistIntent {
@@ -90,7 +89,7 @@ public class PersistIntent {
                 ByteBuffer keyBytes = ByteBuffer.allocate(8).putLong(key);
                 byte[] buffer = stream.toByteArray();
                 int total = buffer.length;
-                if ((total >= valueStoreLimit )) {
+                if ((total >= valueStoreLimit)) {
                     int writeCount = total / valueStoreLimit;
                     int remainder = total % valueStoreLimit;
                     int upperIndex = 0;
@@ -99,14 +98,14 @@ public class PersistIntent {
                         keyBytes.putLong(key);
                         keyBytes.flip();
                         upperIndex = (i * valueStoreLimit + valueStoreLimit) - 1;
-                        log.debug("writing using indexes {}:{}", (i*valueStoreLimit) ,upperIndex);
+                        log.debug("writing using indexes {}:{}", (i * valueStoreLimit), upperIndex);
                         table.create(keyBytes.array(), Arrays.copyOfRange(buffer, i * valueStoreLimit, upperIndex));
                     }
                     if (remainder > 0) {
                         keyBytes.clear();
                         keyBytes.putLong(key);
                         keyBytes.flip();
-                        log.debug("writing using indexes {}:{}" ,upperIndex ,total);
+                        log.debug("writing using indexes {}:{}", upperIndex, total);
                         table.create(keyBytes.array(), Arrays.copyOfRange(buffer, upperIndex + 1, total - 1));
                     }
                 } else {

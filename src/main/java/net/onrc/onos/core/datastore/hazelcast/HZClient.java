@@ -62,7 +62,7 @@ public class HZClient implements IKVClient {
             baseHzConfig = new FileSystemXmlConfig(hazelcastConfigFileName);
         } catch (FileNotFoundException e) {
             log.error("Error opening Hazelcast XML configuration. File not found: " + hazelcastConfigFileName, e);
-            throw new Error("Cannot find Hazelcast configuration: " + hazelcastConfigFileName , e);
+            throw new Error("Cannot find Hazelcast configuration: " + hazelcastConfigFileName, e);
         }
 
         // use xml config if present, if not use System.property
@@ -118,6 +118,7 @@ public class HZClient implements IKVClient {
 
     /**
      * Register serializer for VersionedValue class used to imitate value version.
+     *
      * @param config
      */
     private static void registerSerializer(final SerializationConfig config) {
@@ -178,7 +179,7 @@ public class HZClient implements IKVClient {
 
     @Override
     public long update(final IKVTableID tableId, final byte[] key, final byte[] value,
-            final long version) throws ObjectDoesntExistException,
+                       final long version) throws ObjectDoesntExistException,
             WrongVersionException {
         IKVTable table = (IKVTable) tableId;
         return table.update(key, value, version);
@@ -212,13 +213,13 @@ public class HZClient implements IKVClient {
 
     @Override
     public IMultiEntryOperation createOp(final IKVTableID tableId, final byte[] key,
-            final byte[] value) {
+                                         final byte[] value) {
         return new HZMultiEntryOperation((HZTable) tableId, key, value, HZClient.VERSION_NONEXISTENT, OPERATION.CREATE);
     }
 
     @Override
     public IMultiEntryOperation forceCreateOp(final IKVTableID tableId, final byte[] key,
-            final byte[] value) {
+                                              final byte[] value) {
         return new HZMultiEntryOperation((HZTable) tableId, key, value, HZClient.VERSION_NONEXISTENT, OPERATION.FORCE_CREATE);
     }
 
@@ -229,13 +230,13 @@ public class HZClient implements IKVClient {
 
     @Override
     public IMultiEntryOperation updateOp(final IKVTableID tableId, final byte[] key,
-            final byte[] value, final long version) {
+                                         final byte[] value, final long version) {
         return new HZMultiEntryOperation((HZTable) tableId, key, value, version, OPERATION.UPDATE);
     }
 
     @Override
     public IMultiEntryOperation deleteOp(final IKVTableID tableId, final byte[] key,
-            final byte[] value, final long version) {
+                                         final byte[] value, final long version) {
         return new HZMultiEntryOperation((HZTable) tableId, key, value, version, OPERATION.DELETE);
     }
 
@@ -250,24 +251,24 @@ public class HZClient implements IKVClient {
         for (IMultiEntryOperation op : ops) {
             HZMultiEntryOperation mop = (HZMultiEntryOperation) op;
             switch (mop.getOperation()) {
-            case DELETE:
-                try {
-                    final long version = delete(mop.getTableId(), mop.getKey(), mop.getVersion());
+                case DELETE:
+                    try {
+                        final long version = delete(mop.getTableId(), mop.getKey(), mop.getVersion());
+                        mop.setVersion(version);
+                        mop.setStatus(STATUS.SUCCESS);
+                    } catch (ObjectDoesntExistException | WrongVersionException e) {
+                        log.error(mop + " failed.", e);
+                        mop.setStatus(STATUS.FAILED);
+                        failExists = true;
+                    }
+                    break;
+                case FORCE_DELETE:
+                    final long version = forceDelete(mop.getTableId(), mop.getKey());
                     mop.setVersion(version);
                     mop.setStatus(STATUS.SUCCESS);
-                } catch (ObjectDoesntExistException | WrongVersionException e) {
-                    log.error(mop + " failed.", e);
-                    mop.setStatus(STATUS.FAILED);
-                    failExists = true;
-                }
-                break;
-            case FORCE_DELETE:
-                final long version = forceDelete(mop.getTableId(), mop.getKey());
-                mop.setVersion(version);
-                mop.setStatus(STATUS.SUCCESS);
-                break;
-            default:
-                throw new UnsupportedOperationException(mop.toString());
+                    break;
+                default:
+                    throw new UnsupportedOperationException(mop.toString());
             }
         }
         return failExists;
@@ -280,37 +281,36 @@ public class HZClient implements IKVClient {
         for (IMultiEntryOperation op : ops) {
             IModifiableMultiEntryOperation mop = (IModifiableMultiEntryOperation) op;
             switch (mop.getOperation()) {
-            case CREATE:
-                try {
-                    long version = create(mop.getTableId(), mop.getKey(), mop.getValue());
+                case CREATE:
+                    try {
+                        long version = create(mop.getTableId(), mop.getKey(), mop.getValue());
+                        mop.setVersion(version);
+                        mop.setStatus(STATUS.SUCCESS);
+                    } catch (ObjectExistsException e) {
+                        log.error(mop + " failed.", e);
+                        mop.setStatus(STATUS.FAILED);
+                        failExists = true;
+                    }
+                    break;
+                case FORCE_CREATE: {
+                    final long version = forceCreate(mop.getTableId(), mop.getKey(), mop.getValue());
                     mop.setVersion(version);
                     mop.setStatus(STATUS.SUCCESS);
-                } catch (ObjectExistsException e) {
-                    log.error(mop + " failed.", e);
-                    mop.setStatus(STATUS.FAILED);
-                    failExists = true;
+                    break;
                 }
-                break;
-            case FORCE_CREATE:
-            {
-                final long version = forceCreate(mop.getTableId(), mop.getKey(), mop.getValue());
-                mop.setVersion(version);
-                mop.setStatus(STATUS.SUCCESS);
-                break;
-            }
-            case UPDATE:
-                try {
-                    long version = update(mop.getTableId(), mop.getKey(), mop.getValue(), mop.getVersion());
-                    mop.setVersion(version);
-                    mop.setStatus(STATUS.SUCCESS);
-                } catch (ObjectDoesntExistException | WrongVersionException e) {
-                    log.error(mop + " failed.", e);
-                    mop.setStatus(STATUS.FAILED);
-                    failExists = true;
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException(mop.toString());
+                case UPDATE:
+                    try {
+                        long version = update(mop.getTableId(), mop.getKey(), mop.getValue(), mop.getVersion());
+                        mop.setVersion(version);
+                        mop.setStatus(STATUS.SUCCESS);
+                    } catch (ObjectDoesntExistException | WrongVersionException e) {
+                        log.error(mop + " failed.", e);
+                        mop.setStatus(STATUS.FAILED);
+                        failExists = true;
+                    }
+                    break;
+                default:
+                    throw new UnsupportedOperationException(mop.toString());
             }
         }
         return failExists;

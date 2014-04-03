@@ -28,6 +28,7 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
 
     /**
      * Constructor for Read/ForceDelete Operation.
+     *
      * @param table
      * @param key
      * @param operation
@@ -44,6 +45,7 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
 
     /**
      * Constructor for Other Operations.
+     *
      * @param table
      * @param key
      * @param value
@@ -108,6 +110,7 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
 
     /**
      * Evaluate Future object and set Status and Value+Version.
+     *
      * @return the value read or null on failure.
      */
     private VersionedValue get() {

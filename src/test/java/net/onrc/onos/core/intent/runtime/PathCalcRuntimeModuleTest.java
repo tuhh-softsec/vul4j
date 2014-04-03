@@ -52,13 +52,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * @author Ray Milkey (ray@onlab.us)
- *
- * Unit tests for the Path Calculation Runtime module (PathCalcRuntimeModule).
- * These test cases check the results of creating paths, deleting paths, and
- * rerouting paths.  The network graph, controller registry, and data grid are
- * mocked out.  The individual tests check the high level intents and the
- * resulting operation lists to be sure they match the intended APIs.
- *
+ *         <p/>
+ *         Unit tests for the Path Calculation Runtime module (PathCalcRuntimeModule).
+ *         These test cases check the results of creating paths, deleting paths, and
+ *         rerouting paths.  The network graph, controller registry, and data grid are
+ *         mocked out.  The individual tests check the high level intents and the
+ *         resulting operation lists to be sure they match the intended APIs.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(PathCalcRuntimeModule.class)
@@ -139,7 +138,7 @@ public class PathCalcRuntimeModuleTest {
         @Override
         public boolean matchesSafely(Collection<Intent> intents) {
             assertThat(intents,
-                       hasItem(Matchers.<Intent>hasProperty("id", equalTo(id))));
+                    hasItem(Matchers.<Intent>hasProperty("id", equalTo(id))));
             return true;
         }
 
@@ -155,6 +154,7 @@ public class PathCalcRuntimeModuleTest {
     /**
      * Factory method to create an Intent entry Matcher.  Returns a matcher
      * for the Intent with the given id.
+     *
      * @param id id of the intent to match
      * @return Matcher object
      */
@@ -203,7 +203,7 @@ public class PathCalcRuntimeModuleTest {
                                            Description mismatchDescription) {
             if (intent != null) {
                 mismatchDescription.appendText("was ").
-                                    appendText(intent.getState().toString());
+                        appendText(intent.getState().toString());
             } else {
                 mismatchDescription.appendText("that intent was not found");
             }
@@ -215,7 +215,7 @@ public class PathCalcRuntimeModuleTest {
      * Factory method to create a Matcher for an IntentMap that looks for an
      * Intent with a given id and state.
      *
-     * @param id id of the Intent to match
+     * @param id    id of the Intent to match
      * @param state if the Intent is found, its state must match this
      * @return Matcher object
      */
@@ -239,7 +239,7 @@ public class PathCalcRuntimeModuleTest {
      * Test the result of executing a path calculation on an
      * Intent Operation List which contains a path that references a
      * non-existent switch.
-     *
+     * <p/>
      * A 3 path list is created where one of the paths references a switch
      * that is not in the topology.  The test checks that the resulting
      * Operation List has entries for the 2 correct paths, and that the
@@ -302,7 +302,7 @@ public class PathCalcRuntimeModuleTest {
     /**
      * Test the result of executing a path calculation on an
      * Intent Operation List and then removing one of the switches.
-     *
+     * <p/>
      * A 3 path list is created and then one of the paths is removed.
      * The test checks that the resulting Operation List is correct,
      * and that the high level intents contain a proper "delete requested"
@@ -315,13 +315,13 @@ public class PathCalcRuntimeModuleTest {
         final IntentOperationList opList = new IntentOperationList();
         opList.add(Operator.ADD,
                 new ShortestPathIntent("1", 1L, 12L, LOCAL_PORT, 2L, 21L,
-                                       LOCAL_PORT));
+                        LOCAL_PORT));
         opList.add(Operator.ADD,
                 new ShortestPathIntent("2", 1L, 14L, LOCAL_PORT, 4L, 41L,
-                                       LOCAL_PORT));
+                        LOCAL_PORT));
         opList.add(Operator.ADD,
                 new ShortestPathIntent("3", 2L, 23L, LOCAL_PORT, 3L, 32L,
-                                       LOCAL_PORT));
+                        LOCAL_PORT));
 
         // compile high-level intent operations into low-level intent
         // operations (calculate paths)
@@ -351,15 +351,15 @@ public class PathCalcRuntimeModuleTest {
 
         //  Check that switch 1 was correctly processed
         assertThat(highLevelIntents,
-                   hasIntentWithIdAndState("1", IntentState.INST_REQ));
+                hasIntentWithIdAndState("1", IntentState.INST_REQ));
 
         //  Check that switch 2 was correctly processed
         assertThat(highLevelIntents,
-                   hasIntentWithIdAndState("2", IntentState.INST_REQ));
+                hasIntentWithIdAndState("2", IntentState.INST_REQ));
 
         //  Check that switch 3 was correctly processed
         assertThat(highLevelIntents,
-                   hasIntentWithIdAndState("3", IntentState.INST_REQ));
+                hasIntentWithIdAndState("3", IntentState.INST_REQ));
 
         //  Now delete one path and check the results
         final IntentOperationList opListForRemoval = new IntentOperationList();
@@ -402,7 +402,7 @@ public class PathCalcRuntimeModuleTest {
     /**
      * Test the result of executing a path calculation on an
      * Intent Operation List and then forcing a reroute.
-     *
+     * <p/>
      * A 3 path list is created and then one of the links is removed.
      * The test checks that the resulting Operation List is correct,
      * and that the high level intents contain a proper "reroute requested"
@@ -415,15 +415,15 @@ public class PathCalcRuntimeModuleTest {
         final IntentOperationList opList = new IntentOperationList();
         final ShortestPathIntent pathIntent1 =
                 new ShortestPathIntent("1", 1L, 12L, LOCAL_PORT, 2L, 21L,
-                                       LOCAL_PORT);
+                        LOCAL_PORT);
 
         opList.add(Operator.ADD, pathIntent1);
         opList.add(Operator.ADD,
                 new ShortestPathIntent("2", 1L, 14L, LOCAL_PORT, 4L, 41L,
-                                       LOCAL_PORT));
+                        LOCAL_PORT));
         opList.add(Operator.ADD,
                 new ShortestPathIntent("3", 2L, 23L, LOCAL_PORT, 3L, 32L,
-                                       LOCAL_PORT));
+                        LOCAL_PORT));
 
         // compile high-level intent operations into low-level intent
         // operations (calculate paths)
@@ -453,15 +453,15 @@ public class PathCalcRuntimeModuleTest {
 
         //  Check that switch 1 was correctly processed
         assertThat(highLevelIntents,
-                   hasIntentWithIdAndState("1", IntentState.INST_REQ));
+                hasIntentWithIdAndState("1", IntentState.INST_REQ));
 
         //  Check that switch 2 was correctly processed
         assertThat(highLevelIntents,
-                   hasIntentWithIdAndState("2", IntentState.INST_REQ));
+                hasIntentWithIdAndState("2", IntentState.INST_REQ));
 
         //  Check that switch 3 was correctly processed
         assertThat(highLevelIntents,
-                   hasIntentWithIdAndState("3", IntentState.INST_REQ));
+                hasIntentWithIdAndState("3", IntentState.INST_REQ));
 
         //  Now add a different path to one of the switches path and check
         //  the results

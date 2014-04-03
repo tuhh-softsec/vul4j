@@ -7,12 +7,11 @@ import net.floodlightcontroller.util.MACAddress;
 
 /**
  * Interface of Device Object exposed to the "NB" read-only Topology.
- *
+ * <p/>
  * TODO What a Device Object represent is unclear at the moment.
- *
+ * <p/>
  * Everything returned by these interfaces must be either Unmodifiable view,
  * immutable object, or a copy of the original "SB" In-memory Topology.
- *
  */
 public interface Device {
     /**
@@ -31,7 +30,7 @@ public interface Device {
 
     /**
      * Get the device attachment points.
-     *
+     * <p/>
      * Add requirement for Iteration order? Latest observed port first.
      *
      * @return the device attachment points.
@@ -40,7 +39,7 @@ public interface Device {
 
     /**
      * Get the device last seen time.
-     *
+     * <p/>
      * TODO: what is the time definition?
      *
      * @return the device last seen time.

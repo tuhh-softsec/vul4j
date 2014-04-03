@@ -23,176 +23,176 @@ import org.slf4j.LoggerFactory;
  * Implementation of a registry that doesn't rely on any external registry
  * service. This is designed to be used only in single-node setups (e.g. for
  * development). All registry data is stored in local memory.
- * @author jono
  *
+ * @author jono
  */
 public class StandaloneRegistry implements IFloodlightModule,
-		IControllerRegistryService {
-	protected final static Logger log = LoggerFactory.getLogger(StandaloneRegistry.class);
-	
-	protected IRestApiService restApi;
-	
-	protected String controllerId = null;
-	protected Map<String, ControlChangeCallback> switchCallbacks;
+        IControllerRegistryService {
+    protected final static Logger log = LoggerFactory.getLogger(StandaloneRegistry.class);
 
-	//
-	// Unique ID generation state
-	//
-	private static AtomicLong nextUniqueId = new AtomicLong(0);
+    protected IRestApiService restApi;
 
-	@Override
-	public void requestControl(long dpid, ControlChangeCallback cb)
-			throws RegistryException {
-		if (controllerId == null) {
-			throw new RuntimeException(
-					"Must register a controller before calling requestControl");
-		}
-		
-		switchCallbacks.put(HexString.toHexString(dpid), cb);
-		
-		log.debug("Control granted for {}", HexString.toHexString(dpid));
-		
-		//Immediately grant request for control
-		if (cb != null) {
-			cb.controlChanged(dpid, true);
-		}
-	}
+    protected String controllerId = null;
+    protected Map<String, ControlChangeCallback> switchCallbacks;
 
-	@Override
-	public void releaseControl(long dpid) {
-		ControlChangeCallback cb = switchCallbacks.remove(HexString.toHexString(dpid));
-		
-		log.debug("Control released for {}", HexString.toHexString(dpid));
-		
-		if (cb != null){
-			cb.controlChanged(dpid, false);
-		}
-	}
+    //
+    // Unique ID generation state
+    //
+    private static AtomicLong nextUniqueId = new AtomicLong(0);
 
-	@Override
-	public boolean hasControl(long dpid) {
-		return switchCallbacks.containsKey(HexString.toHexString(dpid));
-	}
+    @Override
+    public void requestControl(long dpid, ControlChangeCallback cb)
+            throws RegistryException {
+        if (controllerId == null) {
+            throw new RuntimeException(
+                    "Must register a controller before calling requestControl");
+        }
 
-	@Override
-	public boolean isClusterLeader() {
-	    return true;
-	}
+        switchCallbacks.put(HexString.toHexString(dpid), cb);
 
-	@Override
-	public String getControllerId() {
-		return controllerId;
-	}
+        log.debug("Control granted for {}", HexString.toHexString(dpid));
 
-	@Override
-	public void registerController(String controllerId)
-			throws RegistryException {
-		if (this.controllerId != null) {
-			throw new RegistryException(
-					"Controller already registered with id " + this.controllerId);
-		}
-		this.controllerId = controllerId;
-	}
+        //Immediately grant request for control
+        if (cb != null) {
+            cb.controlChanged(dpid, true);
+        }
+    }
 
-	@Override
-	public Collection<String> getAllControllers() throws RegistryException {
-		List<String> l = new ArrayList<String>();
-		l.add(controllerId);
-		return l;
-	}
+    @Override
+    public void releaseControl(long dpid) {
+        ControlChangeCallback cb = switchCallbacks.remove(HexString.toHexString(dpid));
 
-	@Override
-	public String getControllerForSwitch(long dpid) throws RegistryException {
-		return (switchCallbacks.get(HexString.toHexString(dpid)) != null)? controllerId: null;
-	}
+        log.debug("Control released for {}", HexString.toHexString(dpid));
 
-	@Override
-	public Map<String, List<ControllerRegistryEntry>> getAllSwitches() {
-		Map<String, List<ControllerRegistryEntry>> switches = 
-				new HashMap<String, List<ControllerRegistryEntry>>();
-		
-		for (String strSwitch : switchCallbacks.keySet()){
-			log.debug("Switch _{}", strSwitch);
-			List<ControllerRegistryEntry> list = new ArrayList<ControllerRegistryEntry>();
-			list.add(new ControllerRegistryEntry(controllerId, 0));
-			
-			switches.put(strSwitch, list);
-		}
-		
-		return switches;
-	}
+        if (cb != null) {
+            cb.controlChanged(dpid, false);
+        }
+    }
 
-	@Override
-	public Collection<Long> getSwitchesControlledByController(
-			String controllerId) {
-		throw new RuntimeException("Not yet implemented");
-	}
-	
-	private long blockTop = 0L;
-	private static final long BLOCK_SIZE = 0x1000000L;
-	
-	/**
-	 * Returns a block of IDs which are unique and unused.
-	 * Range of IDs is fixed size and is assigned incrementally as this method called.
-	 */
-	@Override
-	public synchronized IdBlock allocateUniqueIdBlock(){
-		long blockHead = blockTop;
-		long blockTail = blockTop + BLOCK_SIZE;
-		
-		IdBlock block = new IdBlock(blockHead, blockTail - 1, BLOCK_SIZE);
-		blockTop = blockTail;
-		
-		return block;
-	}
+    @Override
+    public boolean hasControl(long dpid) {
+        return switchCallbacks.containsKey(HexString.toHexString(dpid));
+    }
 
-	/**
-	 * Get a globally unique ID.
-	 *
-	 * @return a globally unique ID.
-	 */
-	@Override
-	public long getNextUniqueId() {
-		return nextUniqueId.incrementAndGet();
-	}
+    @Override
+    public boolean isClusterLeader() {
+        return true;
+    }
 
-	@Override
-	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-		Collection<Class<? extends IFloodlightService>> l = 
-				new ArrayList<Class<? extends IFloodlightService>>();
-		l.add(IControllerRegistryService.class);
-		return l;
-	}
+    @Override
+    public String getControllerId() {
+        return controllerId;
+    }
 
-	@Override
-	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
-		Map<Class<? extends IFloodlightService>, IFloodlightService> m = 
-				new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
-		m.put(IControllerRegistryService.class,  this);
-		return m;
-	}
+    @Override
+    public void registerController(String controllerId)
+            throws RegistryException {
+        if (this.controllerId != null) {
+            throw new RegistryException(
+                    "Controller already registered with id " + this.controllerId);
+        }
+        this.controllerId = controllerId;
+    }
 
-	@Override
-	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
-		Collection<Class<? extends IFloodlightService>> l =
+    @Override
+    public Collection<String> getAllControllers() throws RegistryException {
+        List<String> l = new ArrayList<String>();
+        l.add(controllerId);
+        return l;
+    }
+
+    @Override
+    public String getControllerForSwitch(long dpid) throws RegistryException {
+        return (switchCallbacks.get(HexString.toHexString(dpid)) != null) ? controllerId : null;
+    }
+
+    @Override
+    public Map<String, List<ControllerRegistryEntry>> getAllSwitches() {
+        Map<String, List<ControllerRegistryEntry>> switches =
+                new HashMap<String, List<ControllerRegistryEntry>>();
+
+        for (String strSwitch : switchCallbacks.keySet()) {
+            log.debug("Switch _{}", strSwitch);
+            List<ControllerRegistryEntry> list = new ArrayList<ControllerRegistryEntry>();
+            list.add(new ControllerRegistryEntry(controllerId, 0));
+
+            switches.put(strSwitch, list);
+        }
+
+        return switches;
+    }
+
+    @Override
+    public Collection<Long> getSwitchesControlledByController(
+            String controllerId) {
+        throw new RuntimeException("Not yet implemented");
+    }
+
+    private long blockTop = 0L;
+    private static final long BLOCK_SIZE = 0x1000000L;
+
+    /**
+     * Returns a block of IDs which are unique and unused.
+     * Range of IDs is fixed size and is assigned incrementally as this method called.
+     */
+    @Override
+    public synchronized IdBlock allocateUniqueIdBlock() {
+        long blockHead = blockTop;
+        long blockTail = blockTop + BLOCK_SIZE;
+
+        IdBlock block = new IdBlock(blockHead, blockTail - 1, BLOCK_SIZE);
+        blockTop = blockTail;
+
+        return block;
+    }
+
+    /**
+     * Get a globally unique ID.
+     *
+     * @return a globally unique ID.
+     */
+    @Override
+    public long getNextUniqueId() {
+        return nextUniqueId.incrementAndGet();
+    }
+
+    @Override
+    public Collection<Class<? extends IFloodlightService>> getModuleServices() {
+        Collection<Class<? extends IFloodlightService>> l =
                 new ArrayList<Class<? extends IFloodlightService>>();
-		l.add(IFloodlightProviderService.class);
-		l.add(IRestApiService.class);
-		return l;
-	}
+        l.add(IControllerRegistryService.class);
+        return l;
+    }
 
-	@Override
-	public void init(FloodlightModuleContext context)
-			throws FloodlightModuleException {
-		restApi = context.getServiceImpl(IRestApiService.class);
-		
-		switchCallbacks = new HashMap<String, ControlChangeCallback>();
-	}
+    @Override
+    public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
+        Map<Class<? extends IFloodlightService>, IFloodlightService> m =
+                new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
+        m.put(IControllerRegistryService.class, this);
+        return m;
+    }
 
-	@Override
-	public void startUp(FloodlightModuleContext context) {
-		restApi.addRestletRoutable(new RegistryWebRoutable());
-	}
+    @Override
+    public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
+        Collection<Class<? extends IFloodlightService>> l =
+                new ArrayList<Class<? extends IFloodlightService>>();
+        l.add(IFloodlightProviderService.class);
+        l.add(IRestApiService.class);
+        return l;
+    }
+
+    @Override
+    public void init(FloodlightModuleContext context)
+            throws FloodlightModuleException {
+        restApi = context.getServiceImpl(IRestApiService.class);
+
+        switchCallbacks = new HashMap<String, ControlChangeCallback>();
+    }
+
+    @Override
+    public void startUp(FloodlightModuleContext context) {
+        restApi.addRestletRoutable(new RegistryWebRoutable());
+    }
 
     @Override
     public IdBlock allocateUniqueIdBlock(long range) {

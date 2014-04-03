@@ -16,8 +16,8 @@ public class FlowEntryIdSerializer extends JsonSerializer<FlowEntryId> {
 
     @Override
     public void serialize(FlowEntryId flowEntryId, JsonGenerator jGen,
-			  SerializerProvider serializer)
-	throws IOException, JsonProcessingException {
-	jGen.writeString(flowEntryId.toString());
+                          SerializerProvider serializer)
+            throws IOException, JsonProcessingException {
+        jGen.writeString(flowEntryId.toString());
     }
 }

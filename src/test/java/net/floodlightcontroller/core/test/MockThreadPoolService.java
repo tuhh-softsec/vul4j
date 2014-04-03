@@ -13,11 +13,11 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 
 public class MockThreadPoolService implements IFloodlightModule, IThreadPoolService {
-    
+
     protected ScheduledExecutorService mockExecutor = new MockScheduledExecutor();
 
     /**
-     * Return a mock executor that will simply execute each task 
+     * Return a mock executor that will simply execute each task
      * synchronously once.
      */
     @Override
@@ -26,10 +26,10 @@ public class MockThreadPoolService implements IFloodlightModule, IThreadPoolServ
     }
 
     // IFloodlightModule
-    
+
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-        Collection<Class<? extends IFloodlightService>> l = 
+        Collection<Class<? extends IFloodlightService>> l =
                 new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IThreadPoolService.class);
         return l;
@@ -37,11 +37,11 @@ public class MockThreadPoolService implements IFloodlightModule, IThreadPoolServ
 
     @Override
     public Map<Class<? extends IFloodlightService>, IFloodlightService>
-            getServiceImpls() {
+    getServiceImpls() {
         Map<Class<? extends IFloodlightService>,
-            IFloodlightService> m = 
+                IFloodlightService> m =
                 new HashMap<Class<? extends IFloodlightService>,
-                    IFloodlightService>();
+                        IFloodlightService>();
         m.put(IThreadPoolService.class, this);
         // We are the class that implements the service
         return m;
@@ -49,14 +49,14 @@ public class MockThreadPoolService implements IFloodlightModule, IThreadPoolServ
 
     @Override
     public Collection<Class<? extends IFloodlightService>>
-            getModuleDependencies() {
+    getModuleDependencies() {
         // No dependencies
         return null;
     }
 
     @Override
     public void init(FloodlightModuleContext context)
-                                 throws FloodlightModuleException {
+            throws FloodlightModuleException {
     }
 
     @Override

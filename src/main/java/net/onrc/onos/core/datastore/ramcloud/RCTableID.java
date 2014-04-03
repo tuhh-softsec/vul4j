@@ -21,7 +21,7 @@ public class RCTableID implements IKVTableID {
     // following is RAMCloud specific
 
     public long getTableID() {
-        if ( tableID != 0) {
+        if (tableID != 0) {
             return tableID;
         }
         tableID = RCClient.getJRamCloudClient().createTable(tableName);
@@ -34,7 +34,7 @@ public class RCTableID implements IKVTableID {
 
     @Override
     public String toString() {
-        return "["+tableName + "]@" + getTableID();
+        return "[" + tableName + "]@" + getTableID();
     }
 
     @Override

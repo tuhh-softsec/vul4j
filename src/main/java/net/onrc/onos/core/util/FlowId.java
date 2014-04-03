@@ -12,8 +12,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 /**
  * The class representing a Flow ID.
  */
-@JsonDeserialize(using=FlowIdDeserializer.class)
-@JsonSerialize(using=FlowIdSerializer.class)
+@JsonDeserialize(using = FlowIdDeserializer.class)
+@JsonSerialize(using = FlowIdSerializer.class)
 public class FlowId implements Comparable<FlowId> {
     private long value;
 
@@ -21,7 +21,7 @@ public class FlowId implements Comparable<FlowId> {
      * Default constructor.
      */
     public FlowId() {
-	this.value = -1;
+        this.value = -1;
     }
 
     /**
@@ -30,7 +30,7 @@ public class FlowId implements Comparable<FlowId> {
      * @param value the value to use.
      */
     public FlowId(long value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -39,17 +39,17 @@ public class FlowId implements Comparable<FlowId> {
      * @param value the value to use.
      */
     public FlowId(String value) {
-	//
-	// Use the help of BigInteger to parse strings representing
-	// large unsigned hex long values.
-	//
-	char c = 0;
-	if (value.length() > 2)
-	    c = value.charAt(1);
-	if ((c == 'x') || (c == 'X'))
-	    this.value = new BigInteger(value.substring(2), 16).longValue();
-	else
-	    this.value = Long.decode(value);
+        //
+        // Use the help of BigInteger to parse strings representing
+        // large unsigned hex long values.
+        //
+        char c = 0;
+        if (value.length() > 2)
+            c = value.charAt(1);
+        if ((c == 'x') || (c == 'X'))
+            this.value = new BigInteger(value.substring(2), 16).longValue();
+        else
+            this.value = Long.decode(value);
     }
 
     /**
@@ -57,7 +57,9 @@ public class FlowId implements Comparable<FlowId> {
      *
      * @return the value of the Flow ID.
      */
-    public long value() { return value; }
+    public long value() {
+        return value;
+    }
 
     /**
      * Set the value of the Flow ID.
@@ -65,7 +67,7 @@ public class FlowId implements Comparable<FlowId> {
      * @param value the value to set.
      */
     public void setValue(long value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -75,7 +77,7 @@ public class FlowId implements Comparable<FlowId> {
      */
     @JsonIgnore
     public boolean isValid() {
-	return (this.value() != -1);
+        return (this.value() != -1);
     }
 
     /**
@@ -85,18 +87,18 @@ public class FlowId implements Comparable<FlowId> {
      */
     @Override
     public String toString() {
-	return "0x" + Long.toHexString(this.value);
+        return "0x" + Long.toHexString(this.value);
     }
 
     /**
      * Compare two FlowId objects numerically using their Flow IDs.
      *
      * @return the value 0 if the Flow ID is equal to the argument's Flow ID;
-     *         a value less than 0 if the Flow ID is numerically less than the argument's Flow ID;
-     *         and a value greater than 0 if the Flow ID is numerically greater than the argument's Flow ID.
+     * a value less than 0 if the Flow ID is numerically less than the argument's Flow ID;
+     * and a value greater than 0 if the Flow ID is numerically greater than the argument's Flow ID.
      */
- 	@Override
-	public int compareTo(FlowId o) {
-		return Long.valueOf(this.value).compareTo(o.value());
-	}
+    @Override
+    public int compareTo(FlowId o) {
+        return Long.valueOf(this.value).compareTo(o.value());
+    }
 }

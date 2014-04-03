@@ -1,17 +1,17 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc.*    Originally created by David Erickson, Stanford University
-**    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.*    Originally created by David Erickson, Stanford University
+ **    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 package net.onrc.onos.core.linkdiscovery;
 
@@ -40,7 +40,8 @@ public class LinkInfo {
     protected Long lastLldpReceivedTime; /* Standard LLLDP received time */
     protected Long lastBddpReceivedTime; /* Modified LLDP received time  */
 
-    /** The port states stored here are topology's last knowledge of
+    /**
+     * The port states stored here are topology's last knowledge of
      * the state of the port. This mostly mirrors the state
      * maintained in the port list in IOFSwitch (i.e. the one returned
      * from getPort), except that during a port status message the
@@ -51,10 +52,9 @@ public class LinkInfo {
      */
 
 
-
     public boolean linkStpBlocked() {
         return ((srcPortState & OFPortState.OFPPS_STP_MASK.getValue()) == OFPortState.OFPPS_STP_BLOCK.getValue()) ||
-            ((dstPortState & OFPortState.OFPPS_STP_MASK.getValue()) == OFPortState.OFPPS_STP_BLOCK.getValue());
+                ((dstPortState & OFPortState.OFPPS_STP_MASK.getValue()) == OFPortState.OFPPS_STP_BLOCK.getValue());
     }
 
     public Long getFirstSeenTime() {

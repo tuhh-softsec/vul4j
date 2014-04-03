@@ -43,6 +43,7 @@ class ArpCache {
 
         /**
          * Class constructor, specifying the MAC address for the entry.
+         *
          * @param macAddress MAC address for the entry
          */
         public ArpCacheEntry(MACAddress macAddress) {
@@ -52,6 +53,7 @@ class ArpCache {
 
         /**
          * Returns the MAC address this entry represents.
+         *
          * @return this entry's MAC address
          */
         public MACAddress getMacAddress() {
@@ -60,6 +62,7 @@ class ArpCache {
 
         /**
          * Update the timestamp for this entry.
+         *
          * @param time the new timestamp to update the entry with
          */
         public void setTimeLastSeen(long time) {
@@ -68,6 +71,7 @@ class ArpCache {
 
         /**
          * Returns whether the entry has timed out or not.
+         *
          * @return true if the entry has timed out.
          */
         public boolean isExpired() {
@@ -84,6 +88,7 @@ class ArpCache {
 
     /**
      * Get the MAC address that is mapped to an IP address in the ARP cache.
+     *
      * @param ipAddress the IP address to look up
      * @return the MAC address if found in the cache, null if not
      */
@@ -110,7 +115,8 @@ class ArpCache {
      * Update an entry in the ARP cache. If the IP to MAC mapping is already
      * in the cache, its timestamp will be updated. If not, the entry will
      * be added with a new timestamp of the current time.
-     * @param ipAddress the IP address that will be mapped in the cache
+     *
+     * @param ipAddress  the IP address that will be mapped in the cache
      * @param macAddress the MAC address that maps to {@code ipAddress}
      */
     synchronized void update(InetAddress ipAddress, MACAddress macAddress) {
@@ -125,8 +131,8 @@ class ArpCache {
 
     /**
      * Retrieve a list of all mappings in the ARP cache.
-     * @return list of all ARP mappings, formatted as a human-readable string
      *
+     * @return list of all ARP mappings, formatted as a human-readable string
      */
     synchronized List<String> getMappings() {
         List<String> result = new ArrayList<String>(arpCache.size());

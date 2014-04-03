@@ -21,20 +21,20 @@ public class DpidDeserializer extends JsonDeserializer<Dpid> {
 
     @Override
     public Dpid deserialize(JsonParser jp,
-			    DeserializationContext ctxt)
-	throws IOException, JsonProcessingException {
+                            DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
 
-	Dpid dpid = null;
+        Dpid dpid = null;
 
-	jp.nextToken();		// Move to JsonToken.START_OBJECT
-	while (jp.nextToken() != JsonToken.END_OBJECT) {
-	    String fieldname = jp.getCurrentName();
-	    if ("value".equals(fieldname)) {
-		String value = jp.getText();
-		log.debug("Fieldname: {} Value: {}", fieldname, value);
-		dpid = new Dpid(value);
-	    }
-	}
-	return dpid;
+        jp.nextToken();        // Move to JsonToken.START_OBJECT
+        while (jp.nextToken() != JsonToken.END_OBJECT) {
+            String fieldname = jp.getCurrentName();
+            if ("value".equals(fieldname)) {
+                String value = jp.getText();
+                log.debug("Fieldname: {} Value: {}", fieldname, value);
+                dpid = new Dpid(value);
+            }
+        }
+        return dpid;
     }
 }

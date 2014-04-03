@@ -12,34 +12,32 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author subrata
- *
  */
 public class EventHistoryTopologyClusterResource extends ServerResource {
     // TODO - Move this to the LinkDiscovery rest API
-    protected final static Logger log = 
+    protected final static Logger log =
             LoggerFactory.getLogger(EventHistoryTopologyClusterResource.class);
 
     @Get("json")
     public EventHistory<EventHistoryTopologyCluster> handleEvHistReq() {
 
         // Get the event history count. Last <count> events would be returned
-        String evHistCount = (String)getRequestAttributes().get("count");
-        int    count = EventHistory.EV_HISTORY_DEFAULT_SIZE;
+        String evHistCount = (String) getRequestAttributes().get("count");
+        int count = EventHistory.EV_HISTORY_DEFAULT_SIZE;
         try {
             count = Integer.parseInt(evHistCount);
-        }
-        catch(NumberFormatException nFE) {
+        } catch (NumberFormatException nFE) {
             // Invalid input for event count - use default value
         }
 
         LinkDiscoveryManager topoManager =
-                (LinkDiscoveryManager)getContext().getAttributes().
-                get(ILinkDiscoveryService.class.getCanonicalName());
+                (LinkDiscoveryManager) getContext().getAttributes().
+                        get(ILinkDiscoveryService.class.getCanonicalName());
         if (topoManager != null) {
             return new EventHistory<EventHistoryTopologyCluster>(
                     topoManager.evHistTopologyCluster, count);
         }
-        
+
         return null;
     }
 }

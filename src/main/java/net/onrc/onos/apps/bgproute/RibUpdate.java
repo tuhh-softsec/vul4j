@@ -1,27 +1,30 @@
 package net.onrc.onos.apps.bgproute;
 
 public class RibUpdate {
-	public enum Operation {UPDATE, DELETE}; 
-	
-	private final Operation operation;
-	private final Prefix prefix;
-	private final RibEntry ribEntry;
-	
-	public RibUpdate(Operation operation, Prefix prefix, RibEntry ribEntry) {
-		this.operation = operation;
-		this.prefix = prefix;
-		this.ribEntry = ribEntry;
-	}
+    public enum Operation {
+        UPDATE,
+        DELETE
+    }
 
-	public Operation getOperation() {
-		return operation;
-	}
+    private final Operation operation;
+    private final Prefix prefix;
+    private final RibEntry ribEntry;
 
-	public Prefix getPrefix() {
-		return prefix;
-	}
+    public RibUpdate(Operation operation, Prefix prefix, RibEntry ribEntry) {
+        this.operation = operation;
+        this.prefix = prefix;
+        this.ribEntry = ribEntry;
+    }
 
-	public RibEntry getRibEntry() {
-		return ribEntry;
-	}
+    public Operation getOperation() {
+        return operation;
+    }
+
+    public Prefix getPrefix() {
+        return prefix;
+    }
+
+    public RibEntry getRibEntry() {
+        return ribEntry;
+    }
 }

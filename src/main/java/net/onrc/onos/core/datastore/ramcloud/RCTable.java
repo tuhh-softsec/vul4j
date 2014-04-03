@@ -58,8 +58,8 @@ public class RCTable implements IKVTable {
     private final RCTableID rcTableId;
 
     /**
-     *
      * {@code rcTableName} must be unique cluster wide.
+     *
      * @param rcTableName RAMCloud table name
      */
     RCTable(final String rcTableName) {

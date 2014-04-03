@@ -12,111 +12,111 @@ import java.util.Set;
 
 /**
  * Switch Object stored in In-memory Topology.
- *
+ * <p/>
  * TODO REMOVE following design memo: This object itself may hold the DBObject,
  * but this Object itself will not issue any read/write to the DataStore.
  */
 public class SwitchImpl extends NetworkGraphObject implements Switch {
 
-	private Long dpid;
-	// These needs to be ConcurrentCollecton if allowing Graph to be accessed Concurrently
-	private final Map<Long, Port> ports;
+    private Long dpid;
+    // These needs to be ConcurrentCollecton if allowing Graph to be accessed Concurrently
+    private final Map<Long, Port> ports;
 
-	public SwitchImpl(NetworkGraph graph, Long dpid) {
-		super(graph);
-		this.dpid = dpid;
-		ports = new HashMap<Long, Port>();
-	}
+    public SwitchImpl(NetworkGraph graph, Long dpid) {
+        super(graph);
+        this.dpid = dpid;
+        ports = new HashMap<Long, Port>();
+    }
 
-	@Override
-	public Long getDpid() {
-		return dpid;
-	}
+    @Override
+    public Long getDpid() {
+        return dpid;
+    }
 
-	@Override
-	public Collection<Port> getPorts() {
-		return Collections.unmodifiableCollection(ports.values());
-	}
+    @Override
+    public Collection<Port> getPorts() {
+        return Collections.unmodifiableCollection(ports.values());
+    }
 
-	@Override
-	public Port getPort(Long number) {
-		return ports.get(number);
-	}
+    @Override
+    public Port getPort(Long number) {
+        return ports.get(number);
+    }
 
-	@Override
-	public Iterable<Switch> getNeighbors() {
-		Set<Switch> neighbors = new HashSet<>();
-		for (Link link : getOutgoingLinks()) {
-		    neighbors.add(link.getDstSwitch());
-		}
-		// XXX should incoming considered neighbor?
-		for (Link link : getIncomingLinks()) {
-		    neighbors.add(link.getSrcSwitch());
-		}
-		return neighbors;
-	}
+    @Override
+    public Iterable<Switch> getNeighbors() {
+        Set<Switch> neighbors = new HashSet<>();
+        for (Link link : getOutgoingLinks()) {
+            neighbors.add(link.getDstSwitch());
+        }
+        // XXX should incoming considered neighbor?
+        for (Link link : getIncomingLinks()) {
+            neighbors.add(link.getSrcSwitch());
+        }
+        return neighbors;
+    }
 
-	@Override
-	public Link getLinkToNeighbor(Long neighborDpid) {
-		for (Link link : getOutgoingLinks()) {
-			if (link.getDstSwitch().getDpid().equals(neighborDpid) ) {
-				return link;
-			}
-		}
-		return null;
-	}
+    @Override
+    public Link getLinkToNeighbor(Long neighborDpid) {
+        for (Link link : getOutgoingLinks()) {
+            if (link.getDstSwitch().getDpid().equals(neighborDpid)) {
+                return link;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public Collection<Device> getDevices() {
-		// TODO Should switch also store a list of attached devices to avoid
-		// calculating this every time?
-		List<Device> devices = new ArrayList<Device>();
+    @Override
+    public Collection<Device> getDevices() {
+        // TODO Should switch also store a list of attached devices to avoid
+        // calculating this every time?
+        List<Device> devices = new ArrayList<Device>();
 
-		for (Port port : ports.values()) {
-			for (Device device : port.getDevices()) {
-				devices.add(device);
-			}
-		}
+        for (Port port : ports.values()) {
+            for (Device device : port.getDevices()) {
+                devices.add(device);
+            }
+        }
 
-		return devices;
-	}
+        return devices;
+    }
 
-	public void addPort(Port port) {
-		this.ports.put(port.getNumber(), port);
-	}
+    public void addPort(Port port) {
+        this.ports.put(port.getNumber(), port);
+    }
 
-	public Port removePort(Port port) {
-	    Port p = this.ports.remove(port.getNumber());
-	    return p;
-	}
+    public Port removePort(Port port) {
+        Port p = this.ports.remove(port.getNumber());
+        return p;
+    }
 
-	public Port addPort(Long portNumber) {
-		PortImpl port = new PortImpl(graph, this, portNumber);
-		ports.put(port.getNumber(), port);
-		return port;
-	}
+    public Port addPort(Long portNumber) {
+        PortImpl port = new PortImpl(graph, this, portNumber);
+        ports.put(port.getNumber(), port);
+        return port;
+    }
 
-	@Override
-	public Iterable<Link> getOutgoingLinks() {
-		LinkedList<Link> links = new LinkedList<Link>();
-		for (Port port: getPorts()) {
-			Link link = port.getOutgoingLink();
-			if (link != null) {
-				links.add(link);
-			}
-		}
-		return links;
-	}
+    @Override
+    public Iterable<Link> getOutgoingLinks() {
+        LinkedList<Link> links = new LinkedList<Link>();
+        for (Port port : getPorts()) {
+            Link link = port.getOutgoingLink();
+            if (link != null) {
+                links.add(link);
+            }
+        }
+        return links;
+    }
 
-	@Override
-	public Iterable<Link> getIncomingLinks() {
-		LinkedList<Link> links = new LinkedList<Link>();
-		for (Port port: getPorts()) {
-			Link link = port.getIncomingLink();
-			if (link != null) {
-				links.add(link);
-			}
-		}
-		return links;
-	}
+    @Override
+    public Iterable<Link> getIncomingLinks() {
+        LinkedList<Link> links = new LinkedList<Link>();
+        for (Port port : getPorts()) {
+            Link link = port.getIncomingLink();
+            if (link != null) {
+                links.add(link);
+            }
+        }
+        return links;
+    }
 }

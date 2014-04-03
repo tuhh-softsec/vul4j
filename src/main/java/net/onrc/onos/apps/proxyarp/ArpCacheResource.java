@@ -7,12 +7,12 @@ import org.restlet.resource.ServerResource;
 
 /**
  * REST resource to view the IP to MAC mappings in the ARP cache.
- *
  */
 public class ArpCacheResource extends ServerResource {
 
     /**
      * Handler for a REST call to retrieve the ARP cache.
+     *
      * @return list of mappings formatted as a human-readable string.
      */
     @Get("json")

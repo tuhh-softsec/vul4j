@@ -21,20 +21,20 @@ public class FlowIdDeserializer extends JsonDeserializer<FlowId> {
 
     @Override
     public FlowId deserialize(JsonParser jp,
-			      DeserializationContext ctxt)
-	throws IOException, JsonProcessingException {
+                              DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
 
-	FlowId flowId = null;
+        FlowId flowId = null;
 
-	jp.nextToken();		// Move to JsonToken.START_OBJECT
-	while (jp.nextToken() != JsonToken.END_OBJECT) {
-	    String fieldname = jp.getCurrentName();
-	    if ("value".equals(fieldname)) {
-		String value = jp.getText();
-		log.debug("Fieldname: {} Value: {}", fieldname, value);
-		flowId = new FlowId(value);
-	    }
-	}
-	return flowId;
+        jp.nextToken();        // Move to JsonToken.START_OBJECT
+        while (jp.nextToken() != JsonToken.END_OBJECT) {
+            String fieldname = jp.getCurrentName();
+            if ("value".equals(fieldname)) {
+                String value = jp.getText();
+                log.debug("Fieldname: {} Value: {}", fieldname, value);
+                flowId = new FlowId(value);
+            }
+        }
+        return flowId;
     }
 }

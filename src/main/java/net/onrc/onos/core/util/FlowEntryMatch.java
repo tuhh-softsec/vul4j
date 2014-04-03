@@ -6,7 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The class representing the Flow Entry Matching filter.
- *
+ * <p/>
  * The Flow Entry matching filter that is used to specify
  * the network data that would be forwarded on the data path from
  * the source to the destination. Examples: source or destination MAC address,
@@ -17,70 +17,74 @@ public class FlowEntryMatch {
      * A class for storing a value to match.
      */
     public static class Field<T> {
-	/**
-	 * Default constructor.
-	 */
-	public Field() {
-	    this.enabled = false;
-	}
+        /**
+         * Default constructor.
+         */
+        public Field() {
+            this.enabled = false;
+        }
 
-	/**
-	 * Constructor for a given value to match.
-	 *
-	 * @param value the value to match.
-	 */
-	public Field(T value) {
-	    this.value = value;
-	    this.enabled = true;
-	}
+        /**
+         * Constructor for a given value to match.
+         *
+         * @param value the value to match.
+         */
+        public Field(T value) {
+            this.value = value;
+            this.enabled = true;
+        }
 
-	/**
-	 * Get the value.
-	 *
-	 * @return the value.
-	 */
-	public T value() { return this.value; }
+        /**
+         * Get the value.
+         *
+         * @return the value.
+         */
+        public T value() {
+            return this.value;
+        }
 
-	/**
-	 * Enable the matching for a given value.
-	 *
-	 * @param value the value to set.
-	 */
-	public void enableMatch(T value) {
-	    this.value = value;
-	    this.enabled = true;
-	}
+        /**
+         * Enable the matching for a given value.
+         *
+         * @param value the value to set.
+         */
+        public void enableMatch(T value) {
+            this.value = value;
+            this.enabled = true;
+        }
 
-	/**
-	 * Disable the matching.
-	 */
-	public void disableMatch() {
-	    this.enabled = false;
-	}
+        /**
+         * Disable the matching.
+         */
+        public void disableMatch() {
+            this.enabled = false;
+        }
 
-	/**
-	 * Test whether matching is enabled.
-	 *
-	 * @return true if matching is enabled, otherwise false.
-	 */
-	public boolean enabled() { return this.enabled; }
+        /**
+         * Test whether matching is enabled.
+         *
+         * @return true if matching is enabled, otherwise false.
+         */
+        public boolean enabled() {
+            return this.enabled;
+        }
 
-	private T value;		// The value to match
-	private boolean enabled;	// Set to true, if matching is enabled
+        private T value;        // The value to match
+        private boolean enabled;    // Set to true, if matching is enabled
     }
 
-    private Field<Port> inPort;		// Matching input switch port
-    private Field<MACAddress> srcMac;	// Matching source MAC address
-    private Field<MACAddress> dstMac;	// Matching destination MAC address
+    private Field<Port> inPort;        // Matching input switch port
+    private Field<MACAddress> srcMac;    // Matching source MAC address
+    private Field<MACAddress> dstMac;    // Matching destination MAC address
     private Field<Short> ethernetFrameType; // Matching Ethernet frame type
-    private Field<Short> vlanId;	// Matching VLAN ID
-    private Field<Byte> vlanPriority;	// Matching VLAN priority
-    private Field<IPv4Net> srcIPv4Net;	// Matching source IPv4 prefix
-    private Field<IPv4Net> dstIPv4Net;	// Matching destination IPv4 prefix
-    private Field<Byte> ipProto;	// Matching IP protocol
-    private Field<Byte> ipToS;		// Matching IP ToS (DSCP field, 6 bits)
-    private Field<Short> srcTcpUdpPort;	// Matching source TCP/UDP port
-    private Field<Short> dstTcpUdpPort;	// Matching destination TCP/UDP port
+    private Field<Short> vlanId;    // Matching VLAN ID
+    private Field<Byte> vlanPriority;    // Matching VLAN priority
+    private Field<IPv4Net> srcIPv4Net;    // Matching source IPv4 prefix
+    private Field<IPv4Net> dstIPv4Net;    // Matching destination IPv4 prefix
+    private Field<Byte> ipProto;    // Matching IP protocol
+    private Field<Byte> ipToS;        // Matching IP ToS (DSCP field, 6 bits)
+    private Field<Short> srcTcpUdpPort;    // Matching source TCP/UDP port
+    private Field<Short> dstTcpUdpPort;    // Matching destination TCP/UDP port
 
     /**
      * Default constructor.
@@ -94,30 +98,30 @@ public class FlowEntryMatch {
      * @param other the object to copy from.
      */
     public FlowEntryMatch(FlowEntryMatch other) {
-	if ((other.inPort != null) && other.inPort.enabled())
-	    this.enableInPort(other.inPort.value());
-	if ((other.srcMac != null) && other.srcMac.enabled())
-	    this.enableSrcMac(other.srcMac.value());
-	if ((other.dstMac != null) && other.dstMac.enabled())
-	    this.enableDstMac(other.dstMac.value());
-	if ((other.ethernetFrameType != null) && other.ethernetFrameType.enabled())
-	    this.enableEthernetFrameType(other.ethernetFrameType.value());
-	if ((other.vlanId != null) && other.vlanId.enabled())
-	    this.enableVlanId(other.vlanId.value());
-	if ((other.vlanPriority != null) && other.vlanPriority.enabled())
-	    this.enableVlanPriority(other.vlanPriority.value());
-	if ((other.srcIPv4Net != null) && other.srcIPv4Net.enabled())
-	    this.enableSrcIPv4Net(other.srcIPv4Net.value());
-	if ((other.dstIPv4Net != null) && other.dstIPv4Net.enabled())
-	    this.enableDstIPv4Net(other.dstIPv4Net.value());
-	if ((other.ipProto != null) && other.ipProto.enabled())
-	    this.enableIpProto(other.ipProto.value());
-	if ((other.ipToS != null) && other.ipToS.enabled())
-	    this.enableIpToS(other.ipToS.value());
-	if ((other.srcTcpUdpPort != null) && other.srcTcpUdpPort.enabled())
-	    this.enableSrcTcpUdpPort(other.srcTcpUdpPort.value());
-	if ((other.dstTcpUdpPort != null) && other.dstTcpUdpPort.enabled())
-	    this.enableDstTcpUdpPort(other.dstTcpUdpPort.value());
+        if ((other.inPort != null) && other.inPort.enabled())
+            this.enableInPort(other.inPort.value());
+        if ((other.srcMac != null) && other.srcMac.enabled())
+            this.enableSrcMac(other.srcMac.value());
+        if ((other.dstMac != null) && other.dstMac.enabled())
+            this.enableDstMac(other.dstMac.value());
+        if ((other.ethernetFrameType != null) && other.ethernetFrameType.enabled())
+            this.enableEthernetFrameType(other.ethernetFrameType.value());
+        if ((other.vlanId != null) && other.vlanId.enabled())
+            this.enableVlanId(other.vlanId.value());
+        if ((other.vlanPriority != null) && other.vlanPriority.enabled())
+            this.enableVlanPriority(other.vlanPriority.value());
+        if ((other.srcIPv4Net != null) && other.srcIPv4Net.enabled())
+            this.enableSrcIPv4Net(other.srcIPv4Net.value());
+        if ((other.dstIPv4Net != null) && other.dstIPv4Net.enabled())
+            this.enableDstIPv4Net(other.dstIPv4Net.value());
+        if ((other.ipProto != null) && other.ipProto.enabled())
+            this.enableIpProto(other.ipProto.value());
+        if ((other.ipToS != null) && other.ipToS.enabled())
+            this.enableIpToS(other.ipToS.value());
+        if ((other.srcTcpUdpPort != null) && other.srcTcpUdpPort.enabled())
+            this.enableSrcTcpUdpPort(other.srcTcpUdpPort.value());
+        if ((other.dstTcpUdpPort != null) && other.dstTcpUdpPort.enabled())
+            this.enableDstTcpUdpPort(other.dstTcpUdpPort.value());
     }
 
     /**
@@ -127,9 +131,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("inPort")
     public Port inPort() {
-	if (inPort != null)
-	    return inPort.value();
-	return null;
+        if (inPort != null)
+            return inPort.value();
+        return null;
     }
 
     /**
@@ -139,14 +143,14 @@ public class FlowEntryMatch {
      */
     @JsonProperty("inPort")
     public void enableInPort(Port inPort) {
-	this.inPort = new Field<Port>(inPort);
+        this.inPort = new Field<Port>(inPort);
     }
 
     /**
      * Disable the matching on input switch port.
      */
     public void disableInPort() {
-	this.inPort = null;
+        this.inPort = null;
     }
 
     /**
@@ -156,9 +160,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchInPort")
     public boolean matchInPort() {
-	if (inPort != null)
-	    return inPort.enabled();
-	return false;
+        if (inPort != null)
+            return inPort.enabled();
+        return false;
     }
 
     /**
@@ -168,9 +172,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("srcMac")
     public MACAddress srcMac() {
-	if (srcMac != null)
-	    return srcMac.value();
-	return null;
+        if (srcMac != null)
+            return srcMac.value();
+        return null;
     }
 
     /**
@@ -180,14 +184,14 @@ public class FlowEntryMatch {
      */
     @JsonProperty("srcMac")
     public void enableSrcMac(MACAddress srcMac) {
-	this.srcMac = new Field<MACAddress>(srcMac);
+        this.srcMac = new Field<MACAddress>(srcMac);
     }
 
     /**
      * Disable the matching on source MAC address.
      */
     public void disableSrcMac() {
-	this.srcMac = null;
+        this.srcMac = null;
     }
 
     /**
@@ -197,9 +201,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchSrcMac")
     public boolean matchSrcMac() {
-	if (srcMac != null)
-	    return srcMac.enabled();
-	return false;
+        if (srcMac != null)
+            return srcMac.enabled();
+        return false;
     }
 
     /**
@@ -209,9 +213,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("dstMac")
     public MACAddress dstMac() {
-	if (dstMac != null)
-	    return dstMac.value();
-	return null;
+        if (dstMac != null)
+            return dstMac.value();
+        return null;
     }
 
     /**
@@ -221,14 +225,14 @@ public class FlowEntryMatch {
      */
     @JsonProperty("dstMac")
     public void enableDstMac(MACAddress dstMac) {
-	this.dstMac = new Field<MACAddress>(dstMac);
+        this.dstMac = new Field<MACAddress>(dstMac);
     }
 
     /**
      * Disable the matching on destination MAC address.
      */
     public void disableDstMac() {
-	this.dstMac = null;
+        this.dstMac = null;
     }
 
     /**
@@ -238,9 +242,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchDstMac")
     public boolean matchDstMac() {
-	if (dstMac != null)
-	    return dstMac.enabled();
-	return false;
+        if (dstMac != null)
+            return dstMac.enabled();
+        return false;
     }
 
     /**
@@ -250,27 +254,27 @@ public class FlowEntryMatch {
      */
     @JsonProperty("ethernetFrameType")
     public Short ethernetFrameType() {
-	if (ethernetFrameType != null)
-	    return ethernetFrameType.value();
-	return null;
+        if (ethernetFrameType != null)
+            return ethernetFrameType.value();
+        return null;
     }
 
     /**
      * Enable the matching on Ethernet frame type.
      *
      * @param ethernetFrameType the Ethernet frame type value to enable for
-     * matching.
+     *                          matching.
      */
     @JsonProperty("ethernetFrameType")
     public void enableEthernetFrameType(Short ethernetFrameType) {
-	this.ethernetFrameType = new Field<Short>(ethernetFrameType);
+        this.ethernetFrameType = new Field<Short>(ethernetFrameType);
     }
 
     /**
      * Disable the matching on Ethernet frame type.
      */
     public void disableEthernetFrameType() {
-	this.ethernetFrameType = null;
+        this.ethernetFrameType = null;
     }
 
     /**
@@ -280,9 +284,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchEthernetFrameType")
     public boolean matchEthernetFrameType() {
-	if (ethernetFrameType != null)
-	    return ethernetFrameType.enabled();
-	return false;
+        if (ethernetFrameType != null)
+            return ethernetFrameType.enabled();
+        return false;
     }
 
     /**
@@ -292,9 +296,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("vlanId")
     public Short vlanId() {
-	if (vlanId != null)
-	    return vlanId.value();
-	return null;
+        if (vlanId != null)
+            return vlanId.value();
+        return null;
     }
 
     /**
@@ -304,14 +308,14 @@ public class FlowEntryMatch {
      */
     @JsonProperty("vlanId")
     public void enableVlanId(Short vlanId) {
-	this.vlanId = new Field<Short>(vlanId);
+        this.vlanId = new Field<Short>(vlanId);
     }
 
     /**
      * Disable the matching on VLAN ID.
      */
     public void disableVlanId() {
-	this.vlanId = null;
+        this.vlanId = null;
     }
 
     /**
@@ -321,9 +325,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchVlanId")
     public boolean matchVlanId() {
-	if (vlanId != null)
-	    return vlanId.enabled();
-	return false;
+        if (vlanId != null)
+            return vlanId.enabled();
+        return false;
     }
 
     /**
@@ -333,9 +337,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("vlanPriority")
     public Byte vlanPriority() {
-	if (vlanPriority != null)
-	    return vlanPriority.value();
-	return null;
+        if (vlanPriority != null)
+            return vlanPriority.value();
+        return null;
     }
 
     /**
@@ -345,14 +349,14 @@ public class FlowEntryMatch {
      */
     @JsonProperty("vlanPriority")
     public void enableVlanPriority(Byte vlanPriority) {
-	this.vlanPriority = new Field<Byte>(vlanPriority);
+        this.vlanPriority = new Field<Byte>(vlanPriority);
     }
 
     /**
      * Disable the matching on VLAN priority.
      */
     public void disableVlanPriority() {
-	this.vlanPriority = null;
+        this.vlanPriority = null;
     }
 
     /**
@@ -362,9 +366,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchVlanPriority")
     public boolean matchVlanPriority() {
-	if (vlanPriority != null)
-	    return vlanPriority.enabled();
-	return false;
+        if (vlanPriority != null)
+            return vlanPriority.enabled();
+        return false;
     }
 
     /**
@@ -374,9 +378,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("srcIPv4Net")
     public IPv4Net srcIPv4Net() {
-	if (srcIPv4Net != null)
-	    return srcIPv4Net.value();
-	return null;
+        if (srcIPv4Net != null)
+            return srcIPv4Net.value();
+        return null;
     }
 
     /**
@@ -386,14 +390,14 @@ public class FlowEntryMatch {
      */
     @JsonProperty("srcIPv4Net")
     public void enableSrcIPv4Net(IPv4Net srcIPv4Net) {
-	this.srcIPv4Net = new Field<IPv4Net>(srcIPv4Net);
+        this.srcIPv4Net = new Field<IPv4Net>(srcIPv4Net);
     }
 
     /**
      * Disable the matching on source IPv4 prefix.
      */
     public void disableSrcIPv4Net() {
-	this.srcIPv4Net = null;
+        this.srcIPv4Net = null;
     }
 
     /**
@@ -403,9 +407,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchSrcIPv4Net")
     public boolean matchSrcIPv4Net() {
-	if (srcIPv4Net != null)
-	    return srcIPv4Net.enabled();
-	return false;
+        if (srcIPv4Net != null)
+            return srcIPv4Net.enabled();
+        return false;
     }
 
     /**
@@ -415,27 +419,27 @@ public class FlowEntryMatch {
      */
     @JsonProperty("dstIPv4Net")
     public IPv4Net dstIPv4Net() {
-	if (dstIPv4Net != null)
-	    return dstIPv4Net.value();
-	return null;
+        if (dstIPv4Net != null)
+            return dstIPv4Net.value();
+        return null;
     }
 
     /**
      * Enable the matching on destination IPv4 prefix.
      *
      * @param dstIPv4Net the destination IPv4 prefix value to enable for
-     * matching.
+     *                   matching.
      */
     @JsonProperty("dstIPv4Net")
     public void enableDstIPv4Net(IPv4Net dstIPv4Net) {
-	this.dstIPv4Net = new Field<IPv4Net>(dstIPv4Net);
+        this.dstIPv4Net = new Field<IPv4Net>(dstIPv4Net);
     }
 
     /**
      * Disable the matching on destination IPv4 prefix.
      */
     public void disableDstIPv4Net() {
-	this.dstIPv4Net = null;
+        this.dstIPv4Net = null;
     }
 
     /**
@@ -445,9 +449,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchDstIPv4Net")
     public boolean matchDstIPv4Net() {
-	if (dstIPv4Net != null)
-	    return dstIPv4Net.enabled();
-	return false;
+        if (dstIPv4Net != null)
+            return dstIPv4Net.enabled();
+        return false;
     }
 
     /**
@@ -457,9 +461,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("ipProto")
     public Byte ipProto() {
-	if (ipProto != null)
-	    return ipProto.value();
-	return null;
+        if (ipProto != null)
+            return ipProto.value();
+        return null;
     }
 
     /**
@@ -469,14 +473,14 @@ public class FlowEntryMatch {
      */
     @JsonProperty("ipProto")
     public void enableIpProto(Byte ipProto) {
-	this.ipProto = new Field<Byte>(ipProto);
+        this.ipProto = new Field<Byte>(ipProto);
     }
 
     /**
      * Disable the matching on IP protocol.
      */
     public void disableIpProto() {
-	this.ipProto = null;
+        this.ipProto = null;
     }
 
     /**
@@ -486,9 +490,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchIpProto")
     public boolean matchIpProto() {
-	if (ipProto != null)
-	    return ipProto.enabled();
-	return false;
+        if (ipProto != null)
+            return ipProto.enabled();
+        return false;
     }
 
     /**
@@ -498,9 +502,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("ipToS")
     public Byte ipToS() {
-	if (ipToS != null)
-	    return ipToS.value();
-	return null;
+        if (ipToS != null)
+            return ipToS.value();
+        return null;
     }
 
     /**
@@ -510,14 +514,14 @@ public class FlowEntryMatch {
      */
     @JsonProperty("ipToS")
     public void enableIpToS(Byte ipToS) {
-	this.ipToS = new Field<Byte>(ipToS);
+        this.ipToS = new Field<Byte>(ipToS);
     }
 
     /**
      * Disable the matching on IP ToS (DSCP field, 6 bits).
      */
     public void disableIpToS() {
-	this.ipToS = null;
+        this.ipToS = null;
     }
 
     /**
@@ -527,9 +531,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchIpToS")
     public boolean matchIpToS() {
-	if (ipToS != null)
-	    return ipToS.enabled();
-	return false;
+        if (ipToS != null)
+            return ipToS.enabled();
+        return false;
     }
 
     /**
@@ -539,9 +543,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("srcTcpUdpPort")
     public Short srcTcpUdpPort() {
-	if (srcTcpUdpPort != null)
-	    return srcTcpUdpPort.value();
-	return null;
+        if (srcTcpUdpPort != null)
+            return srcTcpUdpPort.value();
+        return null;
     }
 
     /**
@@ -551,14 +555,14 @@ public class FlowEntryMatch {
      */
     @JsonProperty("srcTcpUdpPort")
     public void enableSrcTcpUdpPort(Short srcTcpUdpPort) {
-	this.srcTcpUdpPort = new Field<Short>(srcTcpUdpPort);
+        this.srcTcpUdpPort = new Field<Short>(srcTcpUdpPort);
     }
 
     /**
      * Disable the matching on source TCP/UDP port.
      */
     public void disableSrcTcpUdpPort() {
-	this.srcTcpUdpPort = null;
+        this.srcTcpUdpPort = null;
     }
 
     /**
@@ -568,9 +572,9 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchSrcTcpUdpPort")
     public boolean matchSrcTcpUdpPort() {
-	if (srcTcpUdpPort != null)
-	    return srcTcpUdpPort.enabled();
-	return false;
+        if (srcTcpUdpPort != null)
+            return srcTcpUdpPort.enabled();
+        return false;
     }
 
     /**
@@ -580,27 +584,27 @@ public class FlowEntryMatch {
      */
     @JsonProperty("dstTcpUdpPort")
     public Short dstTcpUdpPort() {
-	if (dstTcpUdpPort != null)
-	    return dstTcpUdpPort.value();
-	return null;
+        if (dstTcpUdpPort != null)
+            return dstTcpUdpPort.value();
+        return null;
     }
 
     /**
      * Enable the matching on destination TCP/UDP port.
      *
      * @param dstTcpUdpPort the destination TCP/UDP port to enable for
-     * matching.
+     *                      matching.
      */
     @JsonProperty("dstTcpUdpPort")
     public void enableDstTcpUdpPort(Short dstTcpUdpPort) {
-	this.dstTcpUdpPort = new Field<Short>(dstTcpUdpPort);
+        this.dstTcpUdpPort = new Field<Short>(dstTcpUdpPort);
     }
 
     /**
      * Disable the matching on destination TCP/UDP port.
      */
     public void disableDstTcpUdpPort() {
-	this.dstTcpUdpPort = null;
+        this.dstTcpUdpPort = null;
     }
 
     /**
@@ -610,102 +614,102 @@ public class FlowEntryMatch {
      */
     @JsonProperty("matchDstTcpUdpPort")
     public boolean matchDstTcpUdpPort() {
-	if (dstTcpUdpPort != null)
-	    return dstTcpUdpPort.enabled();
-	return false;
+        if (dstTcpUdpPort != null)
+            return dstTcpUdpPort.enabled();
+        return false;
     }
 
     /**
      * Convert the matching filter to a string.
-     *
+     * <p/>
      * The string has the following form:
-     *  [srcMac=XXX dstMac=XXX srcIPv4Net=XXX dstIPv4Net=XXX]
+     * [srcMac=XXX dstMac=XXX srcIPv4Net=XXX dstIPv4Net=XXX]
      *
      * @return the matching filter as a string.
      */
     @Override
     public String toString() {
-	String ret = "[";
-	boolean addSpace = false;
+        String ret = "[";
+        boolean addSpace = false;
 
-	//
-	// Conditionally add only those matching fields that are enabled
-	//
-	if (matchInPort()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "inPort=" + this.inPort().toString();
-	}
-	if (matchSrcMac()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "srcMac=" + this.srcMac().toString();
-	}
-	if (matchDstMac()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "dstMac=" + this.dstMac().toString();
-	}
-	if (matchEthernetFrameType()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "ethernetFrameType=" + this.ethernetFrameType().toString();
-	}
-	if (matchVlanId()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "vlanId=" + this.vlanId().toString();
-	}
-	if (matchVlanPriority()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "vlanPriority=" + this.vlanPriority().toString();
-	}
-	if (matchSrcIPv4Net()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "srcIPv4Net=" + this.srcIPv4Net().toString();
-	}
-	if (matchDstIPv4Net()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "dstIPv4Net=" + this.dstIPv4Net().toString();
-	}
-	if (matchIpProto()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "ipProto=" + this.ipProto().toString();
-	}
-	if (matchIpToS()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "ipToS=" + this.ipToS().toString();
-	}
-	if (matchSrcTcpUdpPort()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "srcTcpUdpPort=" + this.srcTcpUdpPort().toString();
-	}
-	if (matchDstTcpUdpPort()) {
-	    if (addSpace)
-		ret += " ";
-	    addSpace = true;
-	    ret += "dstTcpUdpPort=" + this.dstTcpUdpPort().toString();
-	}
+        //
+        // Conditionally add only those matching fields that are enabled
+        //
+        if (matchInPort()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "inPort=" + this.inPort().toString();
+        }
+        if (matchSrcMac()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "srcMac=" + this.srcMac().toString();
+        }
+        if (matchDstMac()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "dstMac=" + this.dstMac().toString();
+        }
+        if (matchEthernetFrameType()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "ethernetFrameType=" + this.ethernetFrameType().toString();
+        }
+        if (matchVlanId()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "vlanId=" + this.vlanId().toString();
+        }
+        if (matchVlanPriority()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "vlanPriority=" + this.vlanPriority().toString();
+        }
+        if (matchSrcIPv4Net()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "srcIPv4Net=" + this.srcIPv4Net().toString();
+        }
+        if (matchDstIPv4Net()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "dstIPv4Net=" + this.dstIPv4Net().toString();
+        }
+        if (matchIpProto()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "ipProto=" + this.ipProto().toString();
+        }
+        if (matchIpToS()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "ipToS=" + this.ipToS().toString();
+        }
+        if (matchSrcTcpUdpPort()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "srcTcpUdpPort=" + this.srcTcpUdpPort().toString();
+        }
+        if (matchDstTcpUdpPort()) {
+            if (addSpace)
+                ret += " ";
+            addSpace = true;
+            ret += "dstTcpUdpPort=" + this.dstTcpUdpPort().toString();
+        }
 
-	ret += "]";
+        ret += "]";
 
-	return ret;
+        return ret;
     }
 }

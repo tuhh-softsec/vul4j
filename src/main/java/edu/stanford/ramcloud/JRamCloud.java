@@ -112,11 +112,11 @@ public class JRamCloud {
             this.keyLength = new short[size];
         }
 
-	public void setObject(int num, long tableId, byte key[]){
+        public void setObject(int num, long tableId, byte key[]){
             this.tableId[num] = tableId;
             this.key[num] = key;
             this.keyLength[num] = (short) this.key[num].length;
-	}
+        }
     }
 
     public static class MultiWriteObject {
@@ -136,14 +136,14 @@ public class JRamCloud {
             this.rules = new RejectRules[size];
         }
 
-	public void setObject(int num, long tableId, byte key[], byte value[], RejectRules rules){
-	    this.tableId[num] = tableId;
-	    this.key[num] = key;
-	    this.keyLength[num] = (short) key.length;
-	    this.value[num] = value;
-	    this.valueLength[num] = value.length;
-	    this.rules[num] = rules;
-	}
+        public void setObject(int num, long tableId, byte key[], byte value[], RejectRules rules){
+            this.tableId[num] = tableId;
+            this.key[num] = key;
+            this.keyLength[num] = (short) key.length;
+            this.value[num] = value;
+            this.valueLength[num] = value.length;
+            this.rules[num] = rules;
+        }
 
     }
 
@@ -198,14 +198,14 @@ public class JRamCloud {
     }
 
     public static class TableEnumeratorObject {
-	TableEnumeratorObject(Object[] _object, long _nextHash)
-	{
-	    object = _object;
-	    nextHash = _nextHash;
-	}
+        TableEnumeratorObject(Object[] _object, long _nextHash)
+        {
+            object = _object;
+            nextHash = _nextHash;
+        }
 
-	final public Object[] object;
-	final public long nextHash;
+        final public Object[] object;
+        final public long nextHash;
     }
 
     public class TableEnumerator {
@@ -225,39 +225,39 @@ public class JRamCloud {
 
     public class TableEnumerator2 {
 
-	protected long tableId;
-	protected LinkedList<JRamCloud.Object> rcobjs = null;
-	protected long nextHash = 0;
-	protected boolean done = false;
+        protected long tableId;
+        protected LinkedList<JRamCloud.Object> rcobjs = null;
+        protected long nextHash = 0;
+        protected boolean done = false;
 
         public TableEnumerator2(long tableId)
         {
-	    this.tableId = tableId;
-	    rcobjs = new LinkedList<>();
+            this.tableId = tableId;
+            rcobjs = new LinkedList<>();
         }
         public boolean hasNext() {
-	    if (rcobjs.isEmpty())
-	    {
-		if (done) {
-		    return false;
-		}
-		JRamCloud.TableEnumeratorObject o = getTableObjects(this.tableId, this.nextHash);
-		if (o.nextHash == 0L) {
-		    done = true;
-		}
-		this.nextHash = o.nextHash;
-		rcobjs.addAll(Arrays.asList(o.object));
-		if (rcobjs.isEmpty()) {
-		    return false;
-		}
-	    }
-	    return true;
-	}
+            if (rcobjs.isEmpty())
+            {
+                if (done) {
+                    return false;
+                }
+                JRamCloud.TableEnumeratorObject o = getTableObjects(this.tableId, this.nextHash);
+                if (o.nextHash == 0L) {
+                    done = true;
+                }
+                this.nextHash = o.nextHash;
+                rcobjs.addAll(Arrays.asList(o.object));
+                if (rcobjs.isEmpty()) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
-	public Object next()
-	{
-	    return rcobjs.pop();
-	}
+        public Object next()
+        {
+            return rcobjs.pop();
+        }
     }
 
     /**
@@ -544,11 +544,11 @@ public class JRamCloud {
         ramcloud.write(tableId6, "object3-1", "value:3-1");
         ramcloud.write(tableId6, "object3-2", "value:3-2");
 
-	MultiReadObject mr = new MultiReadObject(2);
-	MultiWriteObject mw = new MultiWriteObject(2);
+        MultiReadObject mr = new MultiReadObject(2);
+        MultiWriteObject mw = new MultiWriteObject(2);
 
-	mr.setObject(0, tableId4, "object1-1".getBytes(StandardCharsets.UTF_8));
-	mr.setObject(1, tableId5, "object2-1".getBytes(StandardCharsets.UTF_8));
+        mr.setObject(0, tableId4, "object1-1".getBytes(StandardCharsets.UTF_8));
+        mr.setObject(1, tableId5, "object2-1".getBytes(StandardCharsets.UTF_8));
 
         JRamCloud.Object out[] = ramcloud.multiRead(mr.tableId, mr.key, mr.keyLength, 2);
         for (int i = 0 ; i < 2 ; i++){

@@ -31,25 +31,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RestApiServer
-    implements IFloodlightModule, IRestApiService {
+        implements IFloodlightModule, IRestApiService {
     protected final static Logger logger = LoggerFactory.getLogger(RestApiServer.class);
     protected List<RestletRoutable> restlets;
     protected FloodlightModuleContext fmlContext;
     protected int restPort = 8080;
     protected String numThreads = null;
-    
+
     // ***********
     // Application
     // ***********
-    
+
     protected class RestApplication extends Application {
         protected Context context;
-        
+
         public RestApplication() {
             super(new Context());
             this.context = getContext();
         }
-        
+
         @Override
         public Restlet createInboundRoot() {
             Router baseRouter = new Router(context);
@@ -58,13 +58,12 @@ public class RestApiServer
                 baseRouter.attach(rr.basePath(), rr.getRestlet(context));
             }
 
-            Filter slashFilter = new Filter() {            
+            Filter slashFilter = new Filter() {
                 @Override
                 protected int beforeHandle(Request request, Response response) {
                     Reference ref = request.getResourceRef();
                     String originalPath = ref.getPath();
-                    if (originalPath.contains("//"))
-                    {
+                    if (originalPath.contains("//")) {
                         String newPath = originalPath.replaceAll("/+", "/");
                         ref.setPath(newPath);
                     }
@@ -73,10 +72,10 @@ public class RestApiServer
 
             };
             slashFilter.setNext(baseRouter);
-            
+
             return slashFilter;
         }
-        
+
         public void run(FloodlightModuleContext fmlContext, int restPort) {
             setStatusService(new StatusService() {
                 @Override
@@ -84,26 +83,26 @@ public class RestApiServer
                                                         Request request,
                                                         Response response) {
                     return new JacksonRepresentation<Status>(status);
-                }                
+                }
             });
-            
+
             // Add everything in the module context to the rest
             for (Class<? extends IFloodlightService> s : fmlContext.getAllServices()) {
                 if (logger.isTraceEnabled()) {
                     logger.trace("Adding {} for service {} into context",
-                                 s.getCanonicalName(), fmlContext.getServiceImpl(s));
+                            s.getCanonicalName(), fmlContext.getServiceImpl(s));
                 }
-                context.getAttributes().put(s.getCanonicalName(), 
-                                            fmlContext.getServiceImpl(s));
+                context.getAttributes().put(s.getCanonicalName(),
+                        fmlContext.getServiceImpl(s));
             }
-            
+
             // Start listening for REST requests
             try {
                 final Component component = new Component();
                 Server server = component.getServers().add(Protocol.HTTP, restPort);
-                if (numThreads != null){
-                	logger.debug("Setting number of REST API threads to {}", numThreads);
-                	server.getContext().getParameters().add("defaultThreads", numThreads);
+                if (numThreads != null) {
+                    logger.debug("Setting number of REST API threads to {}", numThreads);
+                    server.getContext().getParameters().add("defaultThreads", numThreads);
                 }
                 component.getDefaultHost().attach(this);
                 component.start();
@@ -112,11 +111,11 @@ public class RestApiServer
             }
         }
     }
-    
+
     // ***************
     // IRestApiService
     // ***************
-    
+
     @Override
     public void addRestletRoutable(RestletRoutable routable) {
         restlets.add(routable);
@@ -135,15 +134,15 @@ public class RestApiServer
             }
             logger.debug(sb.toString());
         }
-        
+
         RestApplication restApp = new RestApplication();
         restApp.run(fmlContext, restPort);
     }
-    
+
     // *****************
     // IFloodlightModule
     // *****************
-    
+
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
         Collection<Class<? extends IFloodlightService>> services =
@@ -154,10 +153,10 @@ public class RestApiServer
 
     @Override
     public Map<Class<? extends IFloodlightService>, IFloodlightService>
-            getServiceImpls() {
+    getServiceImpls() {
         Map<Class<? extends IFloodlightService>,
-        IFloodlightService> m = 
-            new HashMap<Class<? extends IFloodlightService>,
+                IFloodlightService> m =
+                new HashMap<Class<? extends IFloodlightService>,
                         IFloodlightService>();
         m.put(IRestApiService.class, this);
         return m;
@@ -176,7 +175,7 @@ public class RestApiServer
         // startUp methods will be called
         this.restlets = new ArrayList<RestletRoutable>();
         this.fmlContext = context;
-        
+
         // read our config options
         Map<String, String> configOptions = context.getConfigParams(this);
         String port = configOptions.get("port");
@@ -184,10 +183,10 @@ public class RestApiServer
             restPort = Integer.parseInt(port);
         }
         logger.debug("REST port set to {}", restPort);
-        
+
         String numThreads = configOptions.get("dispatcherthreads");
         if (numThreads != null) {
-        	this.numThreads = numThreads;
+            this.numThreads = numThreads;
         }
     }
 

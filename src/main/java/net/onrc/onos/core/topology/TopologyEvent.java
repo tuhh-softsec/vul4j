@@ -2,16 +2,16 @@ package net.onrc.onos.core.topology;
 
 /**
  * Self-contained Topology event Object
- *
+ * <p/>
  * TODO: For now the topology event contains one of the following events:
  * Switch, Port, Link, Device. In the future it will contain multiple events
  * in a single transaction.
  */
 public class TopologyEvent {
-    SwitchEvent switchEvent = null;		// Set for Switch event
-    PortEvent portEvent = null;			// Set for Port event
-    LinkEvent linkEvent = null;			// Set for Link event
-    DeviceEvent deviceEvent = null;		// Set for Device event
+    SwitchEvent switchEvent = null;        // Set for Switch event
+    PortEvent portEvent = null;            // Set for Port event
+    LinkEvent linkEvent = null;            // Set for Link event
+    DeviceEvent deviceEvent = null;        // Set for Device event
 
     /**
      * Default constructor.
@@ -25,7 +25,7 @@ public class TopologyEvent {
      * @param switchEvent the Switch event to use.
      */
     TopologyEvent(SwitchEvent switchEvent) {
-	this.switchEvent = switchEvent;
+        this.switchEvent = switchEvent;
     }
 
     /**
@@ -34,7 +34,7 @@ public class TopologyEvent {
      * @param portEvent the Port event to use.
      */
     TopologyEvent(PortEvent portEvent) {
-	this.portEvent = portEvent;
+        this.portEvent = portEvent;
     }
 
     /**
@@ -43,7 +43,7 @@ public class TopologyEvent {
      * @param linkEvent the Link event to use.
      */
     TopologyEvent(LinkEvent linkEvent) {
-	this.linkEvent = linkEvent;
+        this.linkEvent = linkEvent;
     }
 
     /**
@@ -52,7 +52,7 @@ public class TopologyEvent {
      * @param deviceEvent the Device event to use.
      */
     TopologyEvent(DeviceEvent deviceEvent) {
-	this.deviceEvent = deviceEvent;
+        this.deviceEvent = deviceEvent;
     }
 
     /**
@@ -62,15 +62,15 @@ public class TopologyEvent {
      */
     @Override
     public String toString() {
-	if (switchEvent != null)
-	    return switchEvent.toString();
-	if (portEvent != null)
-	    return portEvent.toString();
-	if (linkEvent != null)
-	    return linkEvent.toString();
-	if (deviceEvent != null)
-	    return deviceEvent.toString();
-	return "[Empty TopologyEvent]";
+        if (switchEvent != null)
+            return switchEvent.toString();
+        if (portEvent != null)
+            return portEvent.toString();
+        if (linkEvent != null)
+            return linkEvent.toString();
+        if (deviceEvent != null)
+            return deviceEvent.toString();
+        return "[Empty TopologyEvent]";
     }
 
     /**
@@ -79,14 +79,14 @@ public class TopologyEvent {
      * @return the Topology event ID.
      */
     public byte[] getID() {
-	if (switchEvent != null)
-	    return switchEvent.getID();
-	if (portEvent != null)
-	    return portEvent.getID();
-	if (linkEvent != null)
-	    return linkEvent.getID();
-	if (deviceEvent != null)
-	    return deviceEvent.getID();
-	return null;
+        if (switchEvent != null)
+            return switchEvent.getID();
+        if (portEvent != null)
+            return portEvent.getID();
+        if (linkEvent != null)
+            return linkEvent.getID();
+        if (deviceEvent != null)
+            return deviceEvent.getID();
+        return null;
     }
 }

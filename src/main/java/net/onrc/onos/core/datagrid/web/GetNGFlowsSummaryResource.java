@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * REST API call to get a summary of Flow Paths.
- *
+ * <p/>
  * NOTE: This REST API call is needed for the ONOS GUI.
- *
+ * <p/>
  * GET /wm/onos/datagrid/get/ng-flows/summary/json
  */
 public class GetNGFlowsSummaryResource extends ServerResource {

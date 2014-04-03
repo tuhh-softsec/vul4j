@@ -73,33 +73,33 @@ public class RCMultiEntryOperation implements IMultiEntryOperation, IModifiableM
     }
 
     public static IMultiEntryOperation create(final IKVTableID tableId, final byte[] key, final byte[] value) {
-        return  new RCMultiEntryOperation(tableId, new Entry(key,value, RCClient.VERSION_NONEXISTENT), OPERATION.CREATE);
+        return new RCMultiEntryOperation(tableId, new Entry(key, value, RCClient.VERSION_NONEXISTENT), OPERATION.CREATE);
     }
 
     public static IMultiEntryOperation forceCreate(final IKVTableID tableId, final byte[] key, final byte[] value) {
-        return  new RCMultiEntryOperation(tableId, new Entry(key,value, RCClient.VERSION_NONEXISTENT), OPERATION.FORCE_CREATE);
+        return new RCMultiEntryOperation(tableId, new Entry(key, value, RCClient.VERSION_NONEXISTENT), OPERATION.FORCE_CREATE);
     }
 
     /**
      * Constructor for READ operation.
      *
      * @param tableId table to read from
-     * @param key key of an Entry to read
+     * @param key     key of an Entry to read
      */
     public static IMultiEntryOperation read(final IKVTableID tableId, final byte[] key) {
         return new RCMultiEntryOperation(tableId, new Entry(key), OPERATION.READ);
     }
 
     public static IMultiEntryOperation update(final IKVTableID tableId, final byte[] key, final byte[] value, final long version) {
-        return  new RCMultiEntryOperation(tableId, new Entry(key,value, version), OPERATION.UPDATE);
+        return new RCMultiEntryOperation(tableId, new Entry(key, value, version), OPERATION.UPDATE);
     }
 
     public static IMultiEntryOperation delete(final IKVTableID tableId, final byte[] key, final byte[] value, final long version) {
-        return  new RCMultiEntryOperation(tableId, new Entry(key,value, version), OPERATION.DELETE);
+        return new RCMultiEntryOperation(tableId, new Entry(key, value, version), OPERATION.DELETE);
     }
 
     public static IMultiEntryOperation forceDelete(final IKVTableID tableId, final byte[] key) {
-        return  new RCMultiEntryOperation(tableId, new Entry(key), OPERATION.FORCE_DELETE);
+        return new RCMultiEntryOperation(tableId, new Entry(key), OPERATION.FORCE_DELETE);
     }
 
     @Override

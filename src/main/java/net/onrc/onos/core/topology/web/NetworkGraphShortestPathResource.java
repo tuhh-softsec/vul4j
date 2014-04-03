@@ -28,54 +28,54 @@ public class NetworkGraphShortestPathResource extends ServerResource {
 
     @Get("json")
     public String retrieve() {
-	INetworkGraphService networkGraphService =
-	    (INetworkGraphService)getContext().getAttributes().
-	    get(INetworkGraphService.class.getCanonicalName());
+        INetworkGraphService networkGraphService =
+                (INetworkGraphService) getContext().getAttributes().
+                        get(INetworkGraphService.class.getCanonicalName());
 
-	NetworkGraph graph = networkGraphService.getNetworkGraph();
+        NetworkGraph graph = networkGraphService.getNetworkGraph();
 
-	ObjectMapper mapper = new ObjectMapper();
-	SimpleModule module = new SimpleModule("module", new Version(1, 0, 0, null));
-	module.addSerializer(new LinkSerializer());
-	mapper.registerModule(module);
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule("module", new Version(1, 0, 0, null));
+        module.addSerializer(new LinkSerializer());
+        mapper.registerModule(module);
 
-	//
-	// Fetch the attributes
-	//
-	String srcDpidStr = (String)getRequestAttributes().get("src-dpid");
-	String dstDpidStr = (String)getRequestAttributes().get("dst-dpid");
-	Dpid srcDpid = new Dpid(srcDpidStr);
-	Dpid dstDpid = new Dpid(dstDpidStr);
-	log.debug("Getting Shortest Path {}--{}", srcDpidStr, dstDpidStr);
+        //
+        // Fetch the attributes
+        //
+        String srcDpidStr = (String) getRequestAttributes().get("src-dpid");
+        String dstDpidStr = (String) getRequestAttributes().get("dst-dpid");
+        Dpid srcDpid = new Dpid(srcDpidStr);
+        Dpid dstDpid = new Dpid(dstDpidStr);
+        log.debug("Getting Shortest Path {}--{}", srcDpidStr, dstDpidStr);
 
-	//
-	// Do the Shortest Path computation and return the result: list of
-	// links.
-	//
-	try {
-	    graph.acquireReadLock();
-	    Switch srcSwitch = graph.getSwitch(srcDpid.value());
-	    Switch dstSwitch = graph.getSwitch(dstDpid.value());
-	    if ((srcSwitch == null) || (dstSwitch == null))
-		return "";
-	    ConstrainedBFSTree bfsTree = new ConstrainedBFSTree(srcSwitch);
-	    Path path = bfsTree.getPath(dstSwitch);
-	    List<Link> links = new LinkedList<>();
-	    for (LinkEvent linkEvent : path) {
-		Link link = graph.getLink(linkEvent.getSrc().getDpid(),
-					  linkEvent.getSrc().getNumber(),
-					  linkEvent.getDst().getDpid(),
-					  linkEvent.getDst().getNumber());
-		if (link == null)
-		    return "";
-		links.add(link);
-	    }
-	    return mapper.writeValueAsString(links);
-	} catch (IOException e) {
-	    log.error("Error writing Shortest Path to JSON", e);
-	    return "";
-	} finally {
-	    graph.releaseReadLock();
-	}
+        //
+        // Do the Shortest Path computation and return the result: list of
+        // links.
+        //
+        try {
+            graph.acquireReadLock();
+            Switch srcSwitch = graph.getSwitch(srcDpid.value());
+            Switch dstSwitch = graph.getSwitch(dstDpid.value());
+            if ((srcSwitch == null) || (dstSwitch == null))
+                return "";
+            ConstrainedBFSTree bfsTree = new ConstrainedBFSTree(srcSwitch);
+            Path path = bfsTree.getPath(dstSwitch);
+            List<Link> links = new LinkedList<>();
+            for (LinkEvent linkEvent : path) {
+                Link link = graph.getLink(linkEvent.getSrc().getDpid(),
+                        linkEvent.getSrc().getNumber(),
+                        linkEvent.getDst().getDpid(),
+                        linkEvent.getDst().getNumber());
+                if (link == null)
+                    return "";
+                links.add(link);
+            }
+            return mapper.writeValueAsString(links);
+        } catch (IOException e) {
+            log.error("Error writing Shortest Path to JSON", e);
+            return "";
+        } finally {
+            graph.releaseReadLock();
+        }
     }
 }

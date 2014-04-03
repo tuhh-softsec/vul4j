@@ -7,6 +7,7 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.MACAddress;
 
 // Extends IFloodlightService so we can access it from REST API resources
+
 /**
  * Provides ARP services to other modules.
  */
@@ -17,7 +18,7 @@ public interface IProxyArpService extends IFloodlightService {
      *
      * @param ipAddress the IP address to request the ARP mapping for
      * @return the MACAddress that maps to the specified IP address, or null if
-     *         no mapping is found
+     * no mapping is found
      */
     public MACAddress getMacAddress(InetAddress ipAddress);
 
@@ -28,10 +29,10 @@ public interface IProxyArpService extends IFloodlightService {
      * @param ipAddress the IP address to send an ARP request for
      * @param requester the {@link IArpRequester} object that will be called if
      *                  a reply is received
-     * @param retry whether to keep sending requests until the MAC is learnt
+     * @param retry     whether to keep sending requests until the MAC is learnt
      */
     public void sendArpRequest(InetAddress ipAddress, IArpRequester requester,
-            boolean retry);
+                               boolean retry);
 
     /**
      * Returns a snapshot of the entire ARP cache.

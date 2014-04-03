@@ -61,16 +61,16 @@ public class RCClient implements IKVClient {
 
     /**
      * @return JRamCloud instance intended to be used only within the
-     *         SameThread.
+     * SameThread.
      * @note Do not store the returned instance in a member variable, etc. which
-     *       may be accessed later by another thread.
+     * may be accessed later by another thread.
      */
     static JRamCloud getJRamCloudClient() {
         return tlsRCClient.get();
     }
 
     // Currently RCClient is state-less
-    private static final RCClient theInstance= new RCClient();
+    private static final RCClient theInstance = new RCClient();
 
     public static RCClient getClient() {
         return theInstance;
@@ -172,13 +172,13 @@ public class RCClient implements IKVClient {
     }
 
     @Override
-    public IMultiEntryOperation updateOp(IKVTableID tableId, byte[] key, byte[] value,long version) {
+    public IMultiEntryOperation updateOp(IKVTableID tableId, byte[] key, byte[] value, long version) {
         return RCMultiEntryOperation.update(tableId, key, value, version);
     }
 
     @Override
     public long update(IKVTableID tableId, byte[] key, byte[] value,
-            long version) throws ObjectDoesntExistException,
+                       long version) throws ObjectDoesntExistException,
             WrongVersionException {
 
         RCTableID rcTableId = (RCTableID) tableId;
@@ -222,7 +222,7 @@ public class RCClient implements IKVClient {
     }
 
     @Override
-    public IMultiEntryOperation deleteOp(IKVTableID tableId, byte[] key, byte[] value,long version) {
+    public IMultiEntryOperation deleteOp(IKVTableID tableId, byte[] key, byte[] value, long version) {
         return RCMultiEntryOperation.delete(tableId, key, value, version);
     }
 
@@ -323,9 +323,9 @@ public class RCClient implements IKVClient {
     @Override
     public boolean multiRead(final Collection<IMultiEntryOperation> ops) {
 
-        if ( ops.size() <= MAX_MULTI_READS && ops instanceof ArrayList) {
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            final ArrayList<RCMultiEntryOperation> arrays = (ArrayList)ops;
+        if (ops.size() <= MAX_MULTI_READS && ops instanceof ArrayList) {
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            final ArrayList<RCMultiEntryOperation> arrays = (ArrayList) ops;
             return multiReadInternal(arrays);
         }
 
@@ -356,9 +356,9 @@ public class RCClient implements IKVClient {
     @Override
     public boolean multiWrite(final List<IMultiEntryOperation> ops) {
 
-        if ( ops.size() <= MAX_MULTI_WRITES && ops instanceof ArrayList) {
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            final ArrayList<RCMultiEntryOperation> arrays = (ArrayList)ops;
+        if (ops.size() <= MAX_MULTI_WRITES && ops instanceof ArrayList) {
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            final ArrayList<RCMultiEntryOperation> arrays = (ArrayList) ops;
             return multiWriteInternal(arrays);
         }
 
@@ -395,45 +395,45 @@ public class RCClient implements IKVClient {
         JRamCloud rcClient = getJRamCloudClient();
 
         for (IMultiEntryOperation iop : ops) {
-            RCMultiEntryOperation op = (RCMultiEntryOperation)iop;
+            RCMultiEntryOperation op = (RCMultiEntryOperation) iop;
             switch (op.getOperation()) {
-            case DELETE:
-                RejectRules rules = new RejectRules();
-                rules.rejectIfDoesntExists();
-                rules.rejectIfNeVersion(op.getVersion());
+                case DELETE:
+                    RejectRules rules = new RejectRules();
+                    rules.rejectIfDoesntExists();
+                    rules.rejectIfNeVersion(op.getVersion());
 
-                try {
-                    final long removedVersion = rcClient.remove(op.tableId.getTableID(), op.entry.getKey(), rules);
-                    op.entry.setVersion(removedVersion);
-                    op.status = STATUS.SUCCESS;
-                } catch (JRamCloud.ObjectDoesntExistException|JRamCloud.WrongVersionException e) {
-                    log.error("Failed to remove key:" + ByteArrayUtil.toHexStringBuffer(op.entry.getKey(), "") + " from tableID:" + op.tableId, e );
+                    try {
+                        final long removedVersion = rcClient.remove(op.tableId.getTableID(), op.entry.getKey(), rules);
+                        op.entry.setVersion(removedVersion);
+                        op.status = STATUS.SUCCESS;
+                    } catch (JRamCloud.ObjectDoesntExistException | JRamCloud.WrongVersionException e) {
+                        log.error("Failed to remove key:" + ByteArrayUtil.toHexStringBuffer(op.entry.getKey(), "") + " from tableID:" + op.tableId, e);
+                        failExists = true;
+                        op.status = STATUS.FAILED;
+                    } catch (JRamCloud.RejectRulesException e) {
+                        log.error("Failed to remove key:" + ByteArrayUtil.toHexStringBuffer(op.entry.getKey(), "") + " from tableID:" + op.tableId, e);
+                        failExists = true;
+                        op.status = STATUS.FAILED;
+                    }
+                    break;
+
+                case FORCE_DELETE:
+                    final long removedVersion = rcClient.remove(op.tableId.getTableID(), op.entry.getKey());
+                    if (removedVersion != VERSION_NONEXISTENT) {
+                        op.entry.setVersion(removedVersion);
+                        op.status = STATUS.SUCCESS;
+                    } else {
+                        log.error("Failed to remove key:{} from tableID:{}", ByteArrayUtil.toHexStringBuffer(op.entry.getKey(), ""), op.tableId);
+                        failExists = true;
+                        op.status = STATUS.FAILED;
+                    }
+                    break;
+
+                default:
+                    log.error("Invalid operation {} specified on multiDelete", op.getOperation());
                     failExists = true;
                     op.status = STATUS.FAILED;
-                } catch (JRamCloud.RejectRulesException e) {
-                    log.error("Failed to remove key:" + ByteArrayUtil.toHexStringBuffer(op.entry.getKey(), "") + " from tableID:" + op.tableId, e );
-                    failExists = true;
-                    op.status = STATUS.FAILED;
-                }
-                break;
-
-            case FORCE_DELETE:
-                final long removedVersion = rcClient.remove(op.tableId.getTableID(), op.entry.getKey());
-                if (removedVersion != VERSION_NONEXISTENT) {
-                    op.entry.setVersion(removedVersion);
-                    op.status = STATUS.SUCCESS;
-                } else {
-                    log.error("Failed to remove key:{} from tableID:{}", ByteArrayUtil.toHexStringBuffer(op.entry.getKey(), ""), op.tableId );
-                    failExists = true;
-                    op.status = STATUS.FAILED;
-                }
-                break;
-
-            default:
-                log.error("Invalid operation {} specified on multiDelete", op.getOperation() );
-                failExists = true;
-                op.status = STATUS.FAILED;
-                break;
+                    break;
             }
         }
         return failExists;
@@ -450,7 +450,7 @@ public class RCClient implements IKVClient {
         // setup multi-read operation objects
         for (int i = 0; i < reqs; ++i) {
             IMultiEntryOperation op = ops.get(i);
-            multiReadObjects.setObject(i, ((RCTableID)op.getTableId()).getTableID(), op.getKey());
+            multiReadObjects.setObject(i, ((RCTableID) op.getTableId()).getTableID(), op.getKey());
         }
 
         // execute
@@ -496,24 +496,24 @@ public class RCClient implements IKVClient {
             RejectRules rules = new RejectRules();
 
             switch (op.getOperation()) {
-            case CREATE:
-                rules.rejectIfExists();
-                break;
-            case FORCE_CREATE:
-                // no reject rule
-                break;
-            case UPDATE:
-                rules.rejectIfDoesntExists();
-                rules.rejectIfNeVersion(op.getVersion());
-                break;
+                case CREATE:
+                    rules.rejectIfExists();
+                    break;
+                case FORCE_CREATE:
+                    // no reject rule
+                    break;
+                case UPDATE:
+                    rules.rejectIfDoesntExists();
+                    rules.rejectIfNeVersion(op.getVersion());
+                    break;
 
-            default:
-                log.error("Invalid operation {} specified on multiWriteInternal", op.getOperation() );
-                failExists = true;
-                op.setStatus(STATUS.FAILED);
-                return failExists;
+                default:
+                    log.error("Invalid operation {} specified on multiWriteInternal", op.getOperation());
+                    failExists = true;
+                    op.setStatus(STATUS.FAILED);
+                    return failExists;
             }
-            multiWriteObjects.setObject(i, ((RCTableID)op.getTableId()).getTableID(), op.getKey(), op.getValue(), rules);
+            multiWriteObjects.setObject(i, ((RCTableID) op.getTableId()).getTableID(), op.getKey(), op.getValue(), rules);
         }
 
         MultiWriteRspObject[] results = rcClient.multiWrite(multiWriteObjects.tableId, multiWriteObjects.key, multiWriteObjects.keyLength, multiWriteObjects.value, multiWriteObjects.valueLength, ops.size(), multiWriteObjects.rules);

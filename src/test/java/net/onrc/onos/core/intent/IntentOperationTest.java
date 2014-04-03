@@ -1,6 +1,7 @@
 package net.onrc.onos.core.intent;
 
 import static org.junit.Assert.assertEquals;
+
 import net.onrc.onos.core.intent.IntentOperation.Operator;
 
 import org.junit.After;
@@ -9,6 +10,7 @@ import org.junit.Test;
 
 /**
  * Unit tests for the IntentOperation class.
+ *
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class IntentOperationTest {

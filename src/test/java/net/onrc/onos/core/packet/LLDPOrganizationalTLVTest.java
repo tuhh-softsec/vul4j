@@ -23,15 +23,15 @@ import java.nio.charset.Charset;
 import org.junit.Test;
 
 public class LLDPOrganizationalTLVTest {
-    private final byte[] expected = new byte[] {
-        //  Type: 127, Length: 13
-        (byte) 254, 13,
-        // OpenFlow OUI: 00-26-E1
-        0x0, 0x26, (byte)0xe1,
-        //  SubType: 12
-        0xc,
-        //  Bytes in "ExtraInfo"
-        0x45, 0x78, 0x74, 0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f
+    private final byte[] expected = new byte[]{
+            //  Type: 127, Length: 13
+            (byte) 254, 13,
+            // OpenFlow OUI: 00-26-E1
+            0x0, 0x26, (byte) 0xe1,
+            //  SubType: 12
+            0xc,
+            //  Bytes in "ExtraInfo"
+            0x45, 0x78, 0x74, 0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f
     };
 
     @Test(expected = IllegalArgumentException.class)
@@ -70,14 +70,14 @@ public class LLDPOrganizationalTLVTest {
         LLDPOrganizationalTLV tlv = new LLDPOrganizationalTLV();
         tlv.setLength((short) 13);
         // OpenFlow OUI is 00-26-E1
-        tlv.setOUI(new byte[] {0x0, 0x26, (byte) 0xe1});
+        tlv.setOUI(new byte[]{0x0, 0x26, (byte) 0xe1});
         tlv.setSubType((byte) 12);
         tlv.setInfoString("ExtraInfo".getBytes(Charset.forName("UTF-8")));
 
-        assertThat(tlv.getType(), is((byte)127));
-        assertThat(tlv.getLength(), is((short)13));
-        assertThat(tlv.getOUI(), is(new byte[] {0x0, 0x26, (byte) 0xe1}));
-        assertThat(tlv.getSubType(), is((byte)12));
+        assertThat(tlv.getType(), is((byte) 127));
+        assertThat(tlv.getLength(), is((short) 13));
+        assertThat(tlv.getOUI(), is(new byte[]{0x0, 0x26, (byte) 0xe1}));
+        assertThat(tlv.getSubType(), is((byte) 12));
         assertThat(tlv.serialize(), is(expected));
     }
 
@@ -86,10 +86,10 @@ public class LLDPOrganizationalTLVTest {
         LLDPOrganizationalTLV tlv = new LLDPOrganizationalTLV();
         tlv.deserialize(ByteBuffer.wrap(expected));
 
-        assertThat(tlv.getType(), is((byte)127));
-        assertThat(tlv.getLength(), is((short)13));
-        assertThat(tlv.getOUI(), is(new byte[] {0x0, 0x26, (byte) 0xe1}));
-        assertThat(tlv.getSubType(), is((byte)12));
+        assertThat(tlv.getType(), is((byte) 127));
+        assertThat(tlv.getLength(), is((short) 13));
+        assertThat(tlv.getOUI(), is(new byte[]{0x0, 0x26, (byte) 0xe1}));
+        assertThat(tlv.getSubType(), is((byte) 12));
         assertThat(tlv.getInfoString(), is("ExtraInfo".getBytes(Charset.forName("UTF-8"))));
     }
 }

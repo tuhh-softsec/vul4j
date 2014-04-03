@@ -16,10 +16,10 @@ public class IPv6Serializer extends JsonSerializer<IPv6> {
 
     @Override
     public void serialize(IPv6 ipv6, JsonGenerator jGen,
-			  SerializerProvider serializer)
-	throws IOException, JsonProcessingException {
-	jGen.writeStartObject();
-	jGen.writeStringField("value", ipv6.toString());
-	jGen.writeEndObject();
+                          SerializerProvider serializer)
+            throws IOException, JsonProcessingException {
+        jGen.writeStartObject();
+        jGen.writeStringField("value", ipv6.toString());
+        jGen.writeEndObject();
     }
 }

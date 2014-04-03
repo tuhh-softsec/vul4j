@@ -14,10 +14,10 @@ public class AutoPortFast extends ServerResource {
     @Get("json")
     public String retrieve() {
         ILinkDiscoveryService linkDiscovery;
-        linkDiscovery = (ILinkDiscoveryService)getContext().getAttributes().
+        linkDiscovery = (ILinkDiscoveryService) getContext().getAttributes().
                 get(ILinkDiscoveryService.class.getCanonicalName());
 
-        String param = ((String)getRequestAttributes().get("state")).toLowerCase();
+        String param = ((String) getRequestAttributes().get("state")).toLowerCase();
         if (param.equals("enable") || param.equals("true")) {
             linkDiscovery.setAutoPortFastFeature(true);
         } else if (param.equals("disable") || param.equals("false")) {

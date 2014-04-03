@@ -4,6 +4,7 @@ package net.onrc.onos.core.datastore;
 // Not sure if we really need this base class.
 // Just copied hierarchy from RAMCloud.
 //
+
 /**
  * Base exception class for conditional write, etc. failure.
  */

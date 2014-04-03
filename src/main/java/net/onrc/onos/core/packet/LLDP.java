@@ -1,22 +1,22 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 /**
- * 
+ *
  */
 package net.onrc.onos.core.packet;
 
@@ -26,7 +26,6 @@ import java.util.List;
 
 /**
  * @author David Erickson (daviderickson@cs.stanford.edu)
- *
  */
 public class LLDP extends BasePacket {
     protected LLDPTLV chassisId;
@@ -102,8 +101,8 @@ public class LLDP extends BasePacket {
 
     @Override
     public byte[] serialize() {
-        int length = 2+this.chassisId.getLength() + 2+this.portId.getLength() +
-            2+this.ttl.getLength() + 2;
+        int length = 2 + this.chassisId.getLength() + 2 + this.portId.getLength() +
+                2 + this.ttl.getLength() + 2;
         for (LLDPTLV tlv : this.optionalTLVList) {
             length += 2 + tlv.getLength();
         }
@@ -119,7 +118,7 @@ public class LLDP extends BasePacket {
         bb.putShort((short) 0); // End of LLDPDU
 
         if (this.parent != null && this.parent instanceof Ethernet)
-            ((Ethernet)this.parent).setEtherType(ethType);
+            ((Ethernet) this.parent).setEtherType(ethType);
 
         return data;
     }

@@ -18,80 +18,80 @@ import net.onrc.onos.core.topology.web.NetworkGraphWebRoutable;
 
 public class NetworkGraphModule implements IFloodlightModule, INetworkGraphService {
 
-	// This is initialized as a module for now
+    // This is initialized as a module for now
 
-	private TopologyManager topologyManager;
-	//private NetworkGraphDatastore southboundNetworkGraph;
-	private IDatagridService datagridService;
-	private IControllerRegistryService registryService;
+    private TopologyManager topologyManager;
+    //private NetworkGraphDatastore southboundNetworkGraph;
+    private IDatagridService datagridService;
+    private IControllerRegistryService registryService;
 
-	private CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners;
+    private CopyOnWriteArrayList<INetworkGraphListener> networkGraphListeners;
 
-	private IRestApiService restApi;
+    private IRestApiService restApi;
 
-	@Override
-	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-		List<Class<? extends IFloodlightService>> services =
-				new ArrayList<Class<? extends IFloodlightService>>();
-		services.add(INetworkGraphService.class);
-		return services;
-	}
+    @Override
+    public Collection<Class<? extends IFloodlightService>> getModuleServices() {
+        List<Class<? extends IFloodlightService>> services =
+                new ArrayList<Class<? extends IFloodlightService>>();
+        services.add(INetworkGraphService.class);
+        return services;
+    }
 
-	@Override
-	public Map<Class<? extends IFloodlightService>, IFloodlightService>
-			getServiceImpls() {
-		Map<Class<? extends IFloodlightService>, IFloodlightService> impls =
-				new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
-		impls.put(INetworkGraphService.class, this);
-		return impls;
-	}
+    @Override
+    public Map<Class<? extends IFloodlightService>, IFloodlightService>
+    getServiceImpls() {
+        Map<Class<? extends IFloodlightService>, IFloodlightService> impls =
+                new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
+        impls.put(INetworkGraphService.class, this);
+        return impls;
+    }
 
-	@Override
-	public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
-		List<Class<? extends IFloodlightService>> dependencies =
-				new ArrayList<Class<? extends IFloodlightService>>();
-		dependencies.add(IDatagridService.class);
-		dependencies.add(IRestApiService.class);
-		dependencies.add(IControllerRegistryService.class);
-		return dependencies;
-	}
+    @Override
+    public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
+        List<Class<? extends IFloodlightService>> dependencies =
+                new ArrayList<Class<? extends IFloodlightService>>();
+        dependencies.add(IDatagridService.class);
+        dependencies.add(IRestApiService.class);
+        dependencies.add(IControllerRegistryService.class);
+        return dependencies;
+    }
 
-	@Override
-	public void init(FloodlightModuleContext context)
-			throws FloodlightModuleException {
-		restApi = context.getServiceImpl(IRestApiService.class);
-		datagridService = context.getServiceImpl(IDatagridService.class);
-		registryService = context.getServiceImpl(IControllerRegistryService.class);
+    @Override
+    public void init(FloodlightModuleContext context)
+            throws FloodlightModuleException {
+        restApi = context.getServiceImpl(IRestApiService.class);
+        datagridService = context.getServiceImpl(IDatagridService.class);
+        registryService = context.getServiceImpl(IControllerRegistryService.class);
 
-		networkGraphListeners = new CopyOnWriteArrayList<>();
-		topologyManager = new TopologyManager(registryService, networkGraphListeners);
-		//southboundNetworkGraph = new NetworkGraphDatastore(networkGraph);
-	}
+        networkGraphListeners = new CopyOnWriteArrayList<>();
+        topologyManager = new TopologyManager(registryService, networkGraphListeners);
+        //southboundNetworkGraph = new NetworkGraphDatastore(networkGraph);
+    }
 
-	@Override
-	public void startUp(FloodlightModuleContext context) {
-		restApi.addRestletRoutable(new NetworkGraphWebRoutable());
-		topologyManager.startup(datagridService);
-	}
+    @Override
+    public void startUp(FloodlightModuleContext context) {
+        restApi.addRestletRoutable(new NetworkGraphWebRoutable());
+        topologyManager.startup(datagridService);
+    }
 
-	@Override
-	public NetworkGraph getNetworkGraph() {
-		return topologyManager.getNetworkGraph();
-	}
+    @Override
+    public NetworkGraph getNetworkGraph() {
+        return topologyManager.getNetworkGraph();
+    }
 
-	@Override
-	public NetworkGraphDiscoveryInterface getNetworkGraphDiscoveryInterface() {
-		return topologyManager;
-	}
+    @Override
+    public NetworkGraphDiscoveryInterface getNetworkGraphDiscoveryInterface() {
+        return topologyManager;
+    }
 
-	@Override
-	public void registerNetworkGraphListener(INetworkGraphListener listener) {
-	    networkGraphListeners.addIfAbsent(listener);
-	}
+    @Override
+    public void registerNetworkGraphListener(INetworkGraphListener listener) {
+        networkGraphListeners.addIfAbsent(listener);
+    }
 
-	@Override
-	public void deregisterNetworkGraphListener(INetworkGraphListener listener) {
-	    networkGraphListeners.remove(listener);
-	}
+    @Override
+    public void deregisterNetworkGraphListener(INetworkGraphListener listener) {
+        networkGraphListeners.remove(listener);
+    }
 
 }

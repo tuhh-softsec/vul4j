@@ -6,8 +6,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * The class representing a Switch-Port.
  */
 public class SwitchPort {
-    private Dpid dpid;		// The DPID of the switch
-    private Port port;		// The port of the switch
+    private Dpid dpid;        // The DPID of the switch
+    private Port port;        // The port of the switch
 
     /**
      * Default constructor.
@@ -22,8 +22,8 @@ public class SwitchPort {
      * @param port the port to use.
      */
     public SwitchPort(Dpid dpid, Port port) {
-	this.dpid = dpid;
-	this.port = port;
+        this.dpid = dpid;
+        this.port = port;
     }
 
     /**
@@ -32,7 +32,9 @@ public class SwitchPort {
      * @return the DPID value of the Switch-Port.
      */
     @JsonProperty("dpid")
-    public Dpid dpid() { return dpid; }
+    public Dpid dpid() {
+        return dpid;
+    }
 
     /**
      * Set the DPID value of the Switch-Port.
@@ -41,7 +43,7 @@ public class SwitchPort {
      */
     @JsonProperty("dpid")
     public void setDpid(Dpid dpid) {
-	this.dpid = dpid;
+        this.dpid = dpid;
     }
 
     /**
@@ -50,7 +52,9 @@ public class SwitchPort {
      * @return the port value of the Switch-Port.
      */
     @JsonProperty("port")
-    public Port port() { return port; }
+    public Port port() {
+        return port;
+    }
 
     /**
      * Set the port value of the Switch-Port.
@@ -59,7 +63,7 @@ public class SwitchPort {
      */
     @JsonProperty("port")
     public void setPort(Port port) {
-	this.port = port;
+        this.port = port;
     }
 
     /**
@@ -69,41 +73,41 @@ public class SwitchPort {
      * @param port the port to use.
      */
     public void setValue(Dpid dpid, Port port) {
-	this.dpid = dpid;
-	this.port = port;
+        this.dpid = dpid;
+        this.port = port;
     }
 
     /**
      * Convert the Switch-Port value to a string.
-     *
+     * <p/>
      * The string has the following form:
-     *  01:02:03:04:05:06:07:08/1234
+     * 01:02:03:04:05:06:07:08/1234
      *
      * @return the Switch-Port value as a string.
      */
     @Override
     public String toString() {
-	return this.dpid.toString() + "/" + this.port;
+        return this.dpid.toString() + "/" + this.port;
     }
-    
+
 
     @Override
     public boolean equals(Object other) {
-    	if (!(other instanceof SwitchPort)) {
-    		return false;
-    	}
+        if (!(other instanceof SwitchPort)) {
+            return false;
+        }
 
-    	SwitchPort otherSwitchPort = (SwitchPort) other;
+        SwitchPort otherSwitchPort = (SwitchPort) other;
 
-    	return (dpid.equals(otherSwitchPort.dpid) &&
-    			port.equals(otherSwitchPort.port));
+        return (dpid.equals(otherSwitchPort.dpid) &&
+                port.equals(otherSwitchPort.port));
     }
 
     @Override
     public int hashCode() {
-    	int hash = 17;
-    	hash += 31 * hash + dpid.hashCode();
-    	hash += 31 * hash + port.hashCode();
-    	return hash;
+        int hash = 17;
+        hash += 31 * hash + dpid.hashCode();
+        hash += 31 * hash + port.hashCode();
+        return hash;
     }
 }

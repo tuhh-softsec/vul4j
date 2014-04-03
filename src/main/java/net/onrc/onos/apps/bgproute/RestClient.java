@@ -13,92 +13,92 @@ import org.slf4j.LoggerFactory;
 
 
 public class RestClient {
-	protected final static Logger log = LoggerFactory.getLogger(RestClient.class);
+    protected final static Logger log = LoggerFactory.getLogger(RestClient.class);
 
-	public static String get(String str) {
-		StringBuilder response = new StringBuilder();
+    public static String get(String str) {
+        StringBuilder response = new StringBuilder();
 
-		try {
+        try {
 
-			URL url = new URL(str);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setConnectTimeout(2 * 1000); //2 seconds
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Accept", "application/json");
+            URL url = new URL(str);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(2 * 1000); //2 seconds
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
 
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			}
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + conn.getResponseCode());
+            }
 
-			if (!conn.getContentType().equals("application/json")){	
-				log.warn("The content received from {} is not json", str);
-			}		
+            if (!conn.getContentType().equals("application/json")) {
+                log.warn("The content received from {} is not json", str);
+            }
 
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-			String line;
-			while ((line = br.readLine()) != null) {
-				response.append(line);
-			}
-			
-			br.close();
-			conn.disconnect();
-			
-		} catch (MalformedURLException e) {
-			log.error("Malformed URL for GET request", e);
-		} catch (ConnectTimeoutException e) {
-			log.warn("Couldn't connect remote REST server");
-		} catch (IOException e) {
-			log.warn("Couldn't connect remote REST server");
-		}
-		
-		return response.toString();
-	}
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
 
-	public static void post (String str) {
+            br.close();
+            conn.disconnect();
 
-		try {
-			URL url = new URL(str);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/json");		
+        } catch (MalformedURLException e) {
+            log.error("Malformed URL for GET request", e);
+        } catch (ConnectTimeoutException e) {
+            log.warn("Couldn't connect remote REST server");
+        } catch (IOException e) {
+            log.warn("Couldn't connect remote REST server");
+        }
 
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			}
+        return response.toString();
+    }
 
-			conn.disconnect();
+    public static void post(String str) {
 
-		} catch (MalformedURLException e) {
-			log.error("Malformed URL for GET request", e);
-		} catch (IOException e) {
-			log.warn("Couldn't connect remote REST server");
-		}
-	}
+        try {
+            URL url = new URL(str);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
 
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + conn.getResponseCode());
+            }
 
-	public static void delete (String str) {
+            conn.disconnect();
 
-		try {
-			URL url = new URL(str);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("DELETE");
-			conn.setRequestProperty("Accept", "application/json");
+        } catch (MalformedURLException e) {
+            log.error("Malformed URL for GET request", e);
+        } catch (IOException e) {
+            log.warn("Couldn't connect remote REST server");
+        }
+    }
 
 
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			}
+    public static void delete(String str) {
 
-			conn.disconnect();
+        try {
+            URL url = new URL(str);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("DELETE");
+            conn.setRequestProperty("Accept", "application/json");
 
-		} catch (MalformedURLException e) {
-			log.error("Malformed URL for GET request", e);
-		} catch (IOException e) {
-			log.warn("Couldn't connect remote REST server");
-		}
-	}
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + conn.getResponseCode());
+            }
+
+            conn.disconnect();
+
+        } catch (MalformedURLException e) {
+            log.error("Malformed URL for GET request", e);
+        } catch (IOException e) {
+            log.warn("Couldn't connect remote REST server");
+        }
+    }
 }

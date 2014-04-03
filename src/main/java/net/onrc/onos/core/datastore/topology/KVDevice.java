@@ -25,7 +25,7 @@ import com.esotericsoftware.kryo.Kryo;
 
 /**
  * Device object.
- *
+ * <p/>
  * TODO switch to ProtoBuf, etc.
  */
 public class KVDevice extends KVObject {
@@ -55,7 +55,7 @@ public class KVDevice extends KVObject {
     private final byte[] mac;
     private TreeSet<byte[]> portIds;
     private transient boolean isPortIdsModified;
-    
+
     // Assume there is only one ip on a device now.
     private int ip;
     private long lastSeenTime;
@@ -86,9 +86,9 @@ public class KVDevice extends KVObject {
     /**
      * Get an instance from Key.
      *
-     * @note You need to call `read()` to get the DB content.
      * @param key
      * @return
+     * @note You need to call `read()` to get the DB content.
      */
     public static KVDevice createFromKey(final byte[] key) {
         return new KVDevice(getMacFromKey(key));
@@ -150,7 +150,6 @@ public class KVDevice extends KVObject {
     }
 
     /**
-     *
      * @return Unmodifiable Set view of all the PortIds;
      */
     public Set<byte[]> getAllPortIds() {
@@ -203,20 +202,20 @@ public class KVDevice extends KVObject {
         return "[" + this.getClass().getSimpleName()
                 + " " + ByteArrayUtil.toHexStringBuffer(mac, ":") + "]";
     }
-    
-	public int getIp() {
-		return ip;
-	}
 
-	public void setIp(int ip) {
-		this.ip = ip;
-	}
+    public int getIp() {
+        return ip;
+    }
 
-	public long getLastSeenTime() {
-		return lastSeenTime;
-	}
+    public void setIp(int ip) {
+        this.ip = ip;
+    }
 
-	public void setLastSeenTime(long lastSeenTime) {
-		this.lastSeenTime = lastSeenTime;
-	}
+    public long getLastSeenTime() {
+        return lastSeenTime;
+    }
+
+    public void setLastSeenTime(long lastSeenTime) {
+        this.lastSeenTime = lastSeenTime;
+    }
 }

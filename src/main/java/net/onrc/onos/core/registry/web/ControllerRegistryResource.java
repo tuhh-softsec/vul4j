@@ -13,26 +13,26 @@ import org.slf4j.LoggerFactory;
 
 public class ControllerRegistryResource extends ServerResource {
 
-	protected final static Logger log = LoggerFactory.getLogger(ControllerRegistryResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(ControllerRegistryResource.class);
 
-	@Get("json")
-	public Collection<String> getControllers() {
-		IControllerRegistryService registry = 
-				(IControllerRegistryService) getContext().getAttributes().
-				get(IControllerRegistryService.class.getCanonicalName());
-		
-		Collection<String> controllers = null;
-		try {
-			controllers = registry.getAllControllers();
-		} catch (RegistryException e) {
-			log.warn("Error retrieving controller list: {}", e.getMessage());
-		}
-		
-		if (controllers == null){
-			controllers = new ArrayList<String>();
-		}
-		
-		return controllers;
-	}
-	
+    @Get("json")
+    public Collection<String> getControllers() {
+        IControllerRegistryService registry =
+                (IControllerRegistryService) getContext().getAttributes().
+                        get(IControllerRegistryService.class.getCanonicalName());
+
+        Collection<String> controllers = null;
+        try {
+            controllers = registry.getAllControllers();
+        } catch (RegistryException e) {
+            log.warn("Error retrieving controller list: {}", e.getMessage());
+        }
+
+        if (controllers == null) {
+            controllers = new ArrayList<String>();
+        }
+
+        return controllers;
+    }
+
 }

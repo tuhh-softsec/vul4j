@@ -26,10 +26,11 @@ public class HZTable implements IKVTable, IKVTableID {
     private static final Logger log = LoggerFactory.getLogger(HZTable.class);
 
     // not sure how strict this should be managed
-    private static final AtomicLong  initialVersion = new AtomicLong(HZClient.VERSION_NONEXISTENT);
+    private static final AtomicLong initialVersion = new AtomicLong(HZClient.VERSION_NONEXISTENT);
 
     /**
      * generate a new initial version for an entry.
+     *
      * @return initial value
      */
     protected static long getInitialVersion() {
@@ -43,6 +44,7 @@ public class HZTable implements IKVTable, IKVTableID {
 
     /**
      * increment version, avoiding VERSION_NONEXISTENT.
+     *
      * @param version
      * @return
      */
@@ -183,7 +185,6 @@ public class HZTable implements IKVTable, IKVTableID {
             this.version = version;
         }
     }
-
 
 
     private final String mapName;

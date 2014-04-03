@@ -11,6 +11,7 @@ import org.openflow.util.HexString;
  * A NodePortTuple is similar to a SwitchPortTuple
  * but it only stores IDs instead of references
  * to the actual objects.
+ *
  * @author srini
  */
 public class NodePortTuple {
@@ -19,6 +20,7 @@ public class NodePortTuple {
 
     /**
      * Creates a NodePortTuple
+     *
      * @param nodeId The DPID of the switch
      * @param portId The port of the switch
      */
@@ -33,22 +35,25 @@ public class NodePortTuple {
     }
 
     @JsonProperty("switch")
-    @JsonSerialize(using=DPIDSerializer.class)
+    @JsonSerialize(using = DPIDSerializer.class)
     public long getNodeId() {
         return nodeId;
     }
+
     public void setNodeId(long nodeId) {
         this.nodeId = nodeId;
     }
+
     @JsonProperty("port")
-    @JsonSerialize(using=UShortSerializer.class)
+    @JsonSerialize(using = UShortSerializer.class)
     public short getPortId() {
         return portId;
     }
+
     public void setPortId(short portId) {
         this.portId = portId;
     }
-    
+
     public String toString() {
         return "[id=" + HexString.toHexString(nodeId) + ", port=" + new Short(portId) + "]";
     }
@@ -77,14 +82,15 @@ public class NodePortTuple {
             return false;
         return true;
     }
-    
+
     /**
      * API to return a String value formed wtih NodeID and PortID
      * The portID is a 16-bit field, so mask it as an integer to get full
      * positive value
+     *
      * @return
      */
     public String toKeyString() {
-        return (HexString.toHexString(nodeId)+ "|" + (portId & 0xffff));
+        return (HexString.toHexString(nodeId) + "|" + (portId & 0xffff));
     }
 }

@@ -17,29 +17,29 @@ public class SwitchRoleResource extends ServerResource {
 
     @Get("json")
     public Object getRole() {
-        IFloodlightProviderService floodlightProvider = 
-                (IFloodlightProviderService)getContext().getAttributes().
-                    get(IFloodlightProviderService.class.getCanonicalName());
+        IFloodlightProviderService floodlightProvider =
+                (IFloodlightProviderService) getContext().getAttributes().
+                        get(IFloodlightProviderService.class.getCanonicalName());
 
         String switchId = (String) getRequestAttributes().get("switchId");
-        
+
         RoleInfo roleInfo;
-        
+
         if (switchId.equalsIgnoreCase("all")) {
-            HashMap<String,RoleInfo> model = new HashMap<String,RoleInfo>();
-            for (IOFSwitch sw: floodlightProvider.getSwitches().values()) {
-            	switchId = sw.getStringId();
-            	roleInfo = new RoleInfo(sw.getRole());
-            	model.put(switchId, roleInfo);
+            HashMap<String, RoleInfo> model = new HashMap<String, RoleInfo>();
+            for (IOFSwitch sw : floodlightProvider.getSwitches().values()) {
+                switchId = sw.getStringId();
+                roleInfo = new RoleInfo(sw.getRole());
+                model.put(switchId, roleInfo);
             }
             return model;
         }
-        
-    	Long dpid = HexString.toLong(switchId);
-    	IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
-    	if (sw == null)
-    		return null;
-    	roleInfo = new RoleInfo(sw.getRole());
-    	return roleInfo;
+
+        Long dpid = HexString.toLong(switchId);
+        IOFSwitch sw = floodlightProvider.getSwitches().get(dpid);
+        if (sw == null)
+            return null;
+        roleInfo = new RoleInfo(sw.getRole());
+        return roleInfo;
     }
 }

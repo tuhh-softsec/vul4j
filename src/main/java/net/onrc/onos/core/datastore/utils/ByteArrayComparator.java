@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 /**
  * Comparator which will compares the content of byte[].
- *
+ * <p/>
  * Expected to be used with TreeMap, etc. when you want to use byte[] as a key.
  */
 public final class ByteArrayComparator implements Comparator<byte[]> {

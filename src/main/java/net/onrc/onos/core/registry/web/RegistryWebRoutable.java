@@ -8,17 +8,17 @@ import org.restlet.routing.Router;
 
 public class RegistryWebRoutable implements RestletRoutable {
 
-	@Override
-	public Restlet getRestlet(Context context) {
-		Router router = new Router(context);
-		router.attach("/controllers/json", ControllerRegistryResource.class);
-		router.attach("/switches/json", SwitchRegistryResource.class);
-		return router;
-	}
+    @Override
+    public Restlet getRestlet(Context context) {
+        Router router = new Router(context);
+        router.attach("/controllers/json", ControllerRegistryResource.class);
+        router.attach("/switches/json", SwitchRegistryResource.class);
+        return router;
+    }
 
-	@Override
-	public String basePath() {
-		return "/wm/onos/registry";
-	}
+    @Override
+    public String basePath() {
+        return "/wm/onos/registry";
+    }
 
 }

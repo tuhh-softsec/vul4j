@@ -1,19 +1,19 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 package net.onrc.onos.core.linkdiscovery;
 
@@ -47,24 +47,25 @@ public class Link {
     }
 
     @JsonProperty("src-switch")
-    @JsonSerialize(using=DPIDSerializer.class)
+    @JsonSerialize(using = DPIDSerializer.class)
     public long getSrc() {
         return src;
     }
 
     @JsonProperty("src-port")
-    @JsonSerialize(using=UShortSerializer.class)
+    @JsonSerialize(using = UShortSerializer.class)
     public short getSrcPort() {
         return srcPort;
     }
 
     @JsonProperty("dst-switch")
-    @JsonSerialize(using=DPIDSerializer.class)
+    @JsonSerialize(using = DPIDSerializer.class)
     public long getDst() {
         return dst;
     }
+
     @JsonProperty("dst-port")
-    @JsonSerialize(using=UShortSerializer.class)
+    @JsonSerialize(using = UShortSerializer.class)
     public short getDstPort() {
         return dstPort;
     }
@@ -103,7 +104,7 @@ public class Link {
 
     @Override
     public String toString() {
-        return "Link [src=" + HexString.toHexString(this.src) 
+        return "Link [src=" + HexString.toHexString(this.src)
                 + " outPort="
                 + (srcPort & 0xffff)
                 + ", dst=" + HexString.toHexString(this.dst)
@@ -111,12 +112,12 @@ public class Link {
                 + (dstPort & 0xffff)
                 + "]";
     }
-    
+
     public String toKeyString() {
-    	return (HexString.toHexString(this.src) + "|" +
-    			(this.srcPort & 0xffff) + "|" +
-    			HexString.toHexString(this.dst) + "|" +
-    		    (this.dstPort & 0xffff) );
+        return (HexString.toHexString(this.src) + "|" +
+                (this.srcPort & 0xffff) + "|" +
+                HexString.toHexString(this.dst) + "|" +
+                (this.dstPort & 0xffff));
     }
 }
 

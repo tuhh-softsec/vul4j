@@ -10,11 +10,11 @@ import net.floodlightcontroller.core.module.IFloodlightService;
  * A registry service that allows ONOS to register controllers and switches
  * in a way that is global to the entire ONOS cluster. The registry is the
  * arbiter for allowing controllers to control switches.
- *
+ * <p/>
  * The OVS/OF1.{2,3} fault tolerance model is a switch connects to multiple
  * controllers, and the controllers send role requests to determine what their
  * role is in controlling the switch.
- *
+ * <p/>
  * The ONOS fault tolerance model allows only a single controller to have
  * control of a switch (MASTER role) at once. Controllers therefore need a
  * mechanism that enables them to decide who should control a each switch.
@@ -52,7 +52,7 @@ public interface IControllerRegistryService extends IFloodlightService {
      * @throws RegistryException Errors contacting the registry service
      */
     public void requestControl(long dpid, ControlChangeCallback cb)
-                throws RegistryException;
+            throws RegistryException;
 
     /**
      * Stop trying to take control of a switch. This removes the entry
@@ -94,12 +94,12 @@ public interface IControllerRegistryService extends IFloodlightService {
      * the registry can be used to take control of any switches.
      *
      * @param controllerId A unique string ID identifying this controller
-     *        in the cluster
+     *                     in the cluster
      * @throws RegistryException for errors connecting to registry service,
-     *         controllerId already registered
+     *                           controllerId already registered
      */
     public void registerController(String controllerId)
-           throws RegistryException;
+            throws RegistryException;
 
     /**
      * Get all controllers in the cluster.
@@ -144,6 +144,7 @@ public interface IControllerRegistryService extends IFloodlightService {
 
     /**
      * Get next unique id and retrieve a new range of ids if needed.
+     *
      * @param range range to use for the identifier
      * @return Id Block.
      */

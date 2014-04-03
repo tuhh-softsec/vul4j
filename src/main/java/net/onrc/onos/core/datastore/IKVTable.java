@@ -63,8 +63,7 @@ public interface IKVTable {
      *
      * @param key
      * @param value
-     * @param version
-     *            expected version in the data store
+     * @param version expected version in the data store
      * @return version after update
      * @throws ObjectDoesntExistException
      * @throws WrongVersionException
@@ -87,8 +86,7 @@ public interface IKVTable {
      * Remove an existing Key-Value entry in table
      *
      * @param key
-     * @param version
-     *            expected version in the data store
+     * @param version expected version in the data store
      * @return version of removed object
      * @throws ObjectDoesntExistException
      * @throws WrongVersionException
@@ -106,6 +104,7 @@ public interface IKVTable {
 
     /**
      * Get all the entries in table.
+     *
      * @return entries in this table.
      */
     public Iterable<IKVEntry> getAllEntries();

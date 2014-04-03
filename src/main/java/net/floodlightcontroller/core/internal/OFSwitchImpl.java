@@ -1,19 +1,19 @@
 /**
-*    Copyright 2012, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2012, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 package net.floodlightcontroller.core.internal;
 
@@ -82,11 +82,11 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     // exception that can then be handled by callers?
     protected final static Logger log = LoggerFactory.getLogger(OFSwitchImpl.class);
 
-    private static final String HA_CHECK_SWITCH = 
+    private static final String HA_CHECK_SWITCH =
             "Check the health of the indicated switch.  If the problem " +
-            "persists or occurs repeatedly, it likely indicates a defect " +
-            "in the switch HA implementation.";
-    
+                    "persists or occurs repeatedly, it likely indicates a defect " +
+                    "in the switch HA implementation.";
+
     protected ConcurrentMap<Object, Object> attributes;
     protected IFloodlightProviderService floodlightProvider;
     protected IThreadPoolService threadPool;
@@ -104,9 +104,9 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     // XXX: The OF spec doesn't specify if port names need to be unique but
     //      according it's always the case in practice. 
     protected ConcurrentHashMap<String, OFPhysicalPort> portsByName;
-    protected Map<Integer,OFStatisticsFuture> statsFutureMap;
+    protected Map<Integer, OFStatisticsFuture> statsFutureMap;
     protected Map<Integer, IOFMessageListener> iofMsgListenersMap;
-    protected Map<Integer,OFFeaturesReplyFuture> featuresFutureMap;
+    protected Map<Integer, OFFeaturesReplyFuture> featuresFutureMap;
     protected boolean connected;
     protected Role role;
     protected TimedCache<Long> timedCache;
@@ -114,16 +114,16 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     protected ConcurrentMap<Short, Long> portBroadcastCacheHitMap;
     /**
      * When sending a role request message, the role request is added
-     * to this queue. If a role reply is received this queue is checked to 
+     * to this queue. If a role reply is received this queue is checked to
      * verify that the reply matches the expected reply. We require in order
-     * delivery of replies. That's why we use a Queue. 
+     * delivery of replies. That's why we use a Queue.
      * The RoleChanger uses a timeout to ensure we receive a timely reply.
-     * 
-     * Need to synchronize on this instance if a request is sent, received, 
-     * checked. 
+     * <p/>
+     * Need to synchronize on this instance if a request is sent, received,
+     * checked.
      */
     protected LinkedList<PendingRoleRequestEntry> pendingRoleRequests;
-    
+
     /* Switch features from initial featuresReply */
     protected int capabilities;
     protected int buffers;
@@ -132,29 +132,30 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     protected long datapathId;
 
     public static IOFSwitchFeatures switchFeatures;
-    protected static final ThreadLocal<Map<OFSwitchImpl,List<OFMessage>>> local_msg_buffer =
-            new ThreadLocal<Map<OFSwitchImpl,List<OFMessage>>>() {
-            @Override
-            protected Map<OFSwitchImpl,List<OFMessage>> initialValue() {
-                return new HashMap<OFSwitchImpl,List<OFMessage>>();
-            }
-    };
-    
+    protected static final ThreadLocal<Map<OFSwitchImpl, List<OFMessage>>> local_msg_buffer =
+            new ThreadLocal<Map<OFSwitchImpl, List<OFMessage>>>() {
+                @Override
+                protected Map<OFSwitchImpl, List<OFMessage>> initialValue() {
+                    return new HashMap<OFSwitchImpl, List<OFMessage>>();
+                }
+            };
+
     // for managing our map sizes
-    protected static final int MAX_MACS_PER_SWITCH  = 1000;
-    
+    protected static final int MAX_MACS_PER_SWITCH = 1000;
+
     protected static class PendingRoleRequestEntry {
         protected int xid;
         protected Role role;
         // cookie is used to identify the role "generation". roleChanger uses
         protected long cookie;
+
         public PendingRoleRequestEntry(int xid, Role role, long cookie) {
             this.xid = xid;
             this.role = role;
             this.cookie = cookie;
         }
     }
-    
+
     public OFSwitchImpl() {
         this.stringId = null;
         this.attributes = new ConcurrentHashMap<Object, Object>();
@@ -164,21 +165,21 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
         this.portsByNumber = new ConcurrentHashMap<Short, OFPhysicalPort>();
         this.portsByName = new ConcurrentHashMap<String, OFPhysicalPort>();
         this.connected = true;
-        this.statsFutureMap = new ConcurrentHashMap<Integer,OFStatisticsFuture>();
-        this.featuresFutureMap = new ConcurrentHashMap<Integer,OFFeaturesReplyFuture>();
-        this.iofMsgListenersMap = new ConcurrentHashMap<Integer,IOFMessageListener>();
+        this.statsFutureMap = new ConcurrentHashMap<Integer, OFStatisticsFuture>();
+        this.featuresFutureMap = new ConcurrentHashMap<Integer, OFFeaturesReplyFuture>();
+        this.iofMsgListenersMap = new ConcurrentHashMap<Integer, IOFMessageListener>();
         this.role = null;
-        this.timedCache = new TimedCache<Long>(100, 5*1000 );  // 5 seconds interval
+        this.timedCache = new TimedCache<Long>(100, 5 * 1000);  // 5 seconds interval
         this.listenerLock = new ReentrantReadWriteLock();
         this.portBroadcastCacheHitMap = new ConcurrentHashMap<Short, Long>();
         this.pendingRoleRequests = new LinkedList<OFSwitchImpl.PendingRoleRequestEntry>();
-        
+
         // Defaults properties for an ideal switch
         this.setAttribute(PROP_FASTWILDCARDS, OFMatch.OFPFW_ALL);
         this.setAttribute(PROP_SUPPORTS_OFPP_FLOOD, new Boolean(true));
         this.setAttribute(PROP_SUPPORTS_OFPP_TABLE, new Boolean(true));
     }
-    
+
 
     @Override
     public Object getAttribute(String name) {
@@ -187,7 +188,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
         }
         return null;
     }
-    
+
     @Override
     public void setAttribute(String name, Object value) {
         this.attributes.put(name, value);
@@ -198,12 +199,12 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     public Object removeAttribute(String name) {
         return this.attributes.remove(name);
     }
-    
+
     @Override
     public boolean hasAttribute(String name) {
         return this.attributes.containsKey(name);
     }
-        
+
     @Override
     @JsonIgnore
     public Channel getChannel() {
@@ -214,10 +215,10 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
-    
+
     @Override
     public void write(OFMessage m, FloodlightContext bc) throws IOException {
-        Map<OFSwitchImpl,List<OFMessage>> msg_buffer_map = local_msg_buffer.get();
+        Map<OFSwitchImpl, List<OFMessage>> msg_buffer_map = local_msg_buffer.get();
         List<OFMessage> msg_buffer = msg_buffer_map.get(this);
         if (msg_buffer == null) {
             msg_buffer = new ArrayList<OFMessage>();
@@ -228,20 +229,20 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
         msg_buffer.add(m);
 
         if ((msg_buffer.size() >= Controller.BATCH_MAX_SIZE) ||
-            ((m.getType() != OFType.PACKET_OUT) && (m.getType() != OFType.FLOW_MOD))) {
+                ((m.getType() != OFType.PACKET_OUT) && (m.getType() != OFType.FLOW_MOD))) {
             this.write(msg_buffer);
             msg_buffer.clear();
         }
     }
 
     @Override
-    @LogMessageDoc(level="WARN",
-                   message="Sending OF message that modifies switch " +
-                           "state while in the slave role: {switch}",
-                   explanation="An application has sent a message to a switch " +
-                   		"that is not valid when the switch is in a slave role",
-                   recommendation=LogMessageDoc.REPORT_CONTROLLER_BUG)
-    public void write(List<OFMessage> msglist, 
+    @LogMessageDoc(level = "WARN",
+            message = "Sending OF message that modifies switch " +
+                    "state while in the slave role: {switch}",
+            explanation = "An application has sent a message to a switch " +
+                    "that is not valid when the switch is in a slave role",
+            recommendation = LogMessageDoc.REPORT_CONTROLLER_BUG)
+    public void write(List<OFMessage> msglist,
                       FloodlightContext bc) throws IOException {
         for (OFMessage m : msglist) {
             if (role == Role.SLAVE) {
@@ -250,8 +251,8 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
                     case FLOW_MOD:
                     case PORT_MOD:
                         log.warn("Sending OF message that modifies switch " +
-                        		 "state while in the slave role: {}", 
-                        		 m.getType().name());
+                                "state while in the slave role: {}",
+                                m.getType().name());
                         break;
                     default:
                         break;
@@ -265,7 +266,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     public void write(List<OFMessage> msglist) throws IOException {
         this.channel.write(msglist);
     }
-    
+
     @Override
     public void disconnectOutputStream() {
         channel.close();
@@ -274,7 +275,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     @Override
     @JsonIgnore
     public void setFeaturesReply(OFFeaturesReply featuresReply) {
-        synchronized(portLock) {
+        synchronized (portLock) {
             if (stringId == null) {
                 /* ports are updated via port status message, so we
                  * only fill in ports on initial connection.
@@ -303,7 +304,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
         }
         return result;
     }
-    
+
     @Override
     @JsonIgnore
     public Collection<Short> getEnabledPortNumbers() {
@@ -320,7 +321,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     public OFPhysicalPort getPort(short portNumber) {
         return portsByNumber.get(portNumber);
     }
-    
+
     @Override
     public OFPhysicalPort getPort(String portName) {
         return portsByName.get(portName);
@@ -329,29 +330,29 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     @Override
     @JsonIgnore
     public void setPort(OFPhysicalPort port) {
-        synchronized(portLock) {
+        synchronized (portLock) {
             portsByNumber.put(port.getPortNumber(), port);
             portsByName.put(port.getName(), port);
         }
     }
-    
+
     @Override
     @JsonProperty("ports")
     public Collection<OFPhysicalPort> getPorts() {
         return Collections.unmodifiableCollection(portsByNumber.values());
     }
-    
+
     @Override
     public void deletePort(short portNumber) {
-        synchronized(portLock) {
+        synchronized (portLock) {
             portsByName.remove(portsByNumber.get(portNumber).getName());
             portsByNumber.remove(portNumber);
         }
     }
-    
+
     @Override
     public void deletePort(String portName) {
-        synchronized(portLock) {
+        synchronized (portLock) {
             portsByNumber.remove(portsByName.get(portName).getPortNumber());
             portsByName.remove(portName);
         }
@@ -362,13 +363,13 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
         if (portsByNumber.get(portNumber) == null) return false;
         return portEnabled(portsByNumber.get(portNumber));
     }
-    
+
     @Override
     public boolean portEnabled(String portName) {
         if (portsByName.get(portName) == null) return false;
         return portEnabled(portsByName.get(portName));
     }
-    
+
     @Override
     public boolean portEnabled(OFPhysicalPort port) {
         if (port == null)
@@ -382,9 +383,9 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
         //    return false;
         return true;
     }
-    
+
     @Override
-    @JsonSerialize(using=DPIDSerializer.class)
+    @JsonSerialize(using = DPIDSerializer.class)
     @JsonProperty("dpid")
     public long getId() {
         if (this.stringId == null)
@@ -424,7 +425,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
 
     @Override
     public void sendStatsQuery(OFStatisticsRequest request, int xid,
-                                IOFMessageListener caller) throws IOException {
+                               IOFMessageListener caller) throws IOException {
         request.setXid(xid);
         this.iofMsgListenersMap.put(xid, caller);
         List<OFMessage> msglist = new ArrayList<OFMessage>(1);
@@ -462,7 +463,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
 
     @Override
     public void cancelStatisticsReply(int transactionId) {
-        if (null ==  this.statsFutureMap.remove(transactionId)) {
+        if (null == this.statsFutureMap.remove(transactionId)) {
             this.iofMsgListenersMap.remove(transactionId);
         }
     }
@@ -478,8 +479,8 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
         statsFutureMap.clear();
         iofMsgListenersMap.clear();
     }
- 
-    
+
+
     /**
      * @param floodlightProvider the floodlightProvider to set
      */
@@ -487,7 +488,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     public void setFloodlightProvider(IFloodlightProviderService floodlightProvider) {
         this.floodlightProvider = floodlightProvider;
     }
-    
+
     @JsonIgnore
     public void setThreadPoolService(IThreadPoolService tp) {
         this.threadPool = tp;
@@ -504,18 +505,18 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     public synchronized void setConnected(boolean connected) {
         this.connected = connected;
     }
-    
+
     @Override
     public Role getRole() {
         return role;
     }
-    
+
     @JsonIgnore
     @Override
     public boolean isActive() {
         return (role != Role.SLAVE);
     }
-    
+
     @Override
     @JsonIgnore
     public void setSwitchProperties(OFDescriptionStatistics description) {
@@ -525,20 +526,20 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     }
 
     @Override
-    @LogMessageDoc(level="ERROR",
-                   message="Failed to clear all flows on switch {switch}",
-                   explanation="An I/O error occured while trying to clear " +
-                   		"flows on the switch.",
-                   recommendation=LogMessageDoc.CHECK_SWITCH)
+    @LogMessageDoc(level = "ERROR",
+            message = "Failed to clear all flows on switch {switch}",
+            explanation = "An I/O error occured while trying to clear " +
+                    "flows on the switch.",
+            recommendation = LogMessageDoc.CHECK_SWITCH)
     public void clearAllFlowMods() {
         // Delete all pre-existing flows
         OFMatch match = new OFMatch().setWildcards(OFMatch.OFPFW_ALL);
         OFMessage fm = ((OFFlowMod) floodlightProvider.getOFMessageFactory()
-            .getMessage(OFType.FLOW_MOD))
+                .getMessage(OFType.FLOW_MOD))
                 .setMatch(match)
-            .setCommand(OFFlowMod.OFPFC_DELETE)
-            .setOutPort(OFPort.OFPP_NONE)
-            .setLength(U16.t(OFFlowMod.MINIMUM_LENGTH));
+                .setCommand(OFFlowMod.OFPFC_DELETE)
+                .setOutPort(OFPort.OFPP_NONE)
+                .setLength(U16.t(OFFlowMod.MINIMUM_LENGTH));
         try {
             List<OFMessage> msglist = new ArrayList<OFMessage>(1);
             msglist.add(fm);
@@ -564,13 +565,13 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     @Override
     @JsonIgnore
     public Map<Short, Long> getPortBroadcastHits() {
-    	return this.portBroadcastCacheHitMap;
+        return this.portBroadcastCacheHitMap;
     }
-    
+
 
     @Override
     public void flush() {
-        Map<OFSwitchImpl,List<OFMessage>> msg_buffer_map = local_msg_buffer.get();
+        Map<OFSwitchImpl, List<OFMessage>> msg_buffer_map = local_msg_buffer.get();
         List<OFMessage> msglist = msg_buffer_map.get(this);
         if ((msglist != null) && (msglist.size() > 0)) {
             try {
@@ -584,7 +585,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     }
 
     public static void flush_all() {
-        Map<OFSwitchImpl,List<OFMessage>> msg_buffer_map = local_msg_buffer.get();
+        Map<OFSwitchImpl, List<OFMessage>> msg_buffer_map = local_msg_buffer.get();
         for (OFSwitchImpl sw : msg_buffer_map.keySet()) {
             sw.flush();
         }
@@ -594,7 +595,8 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
      * Return a read lock that must be held while calling the listeners for
      * messages from the switch. Holding the read lock prevents the active
      * switch list from being modified out from under the listeners.
-     * @return 
+     *
+     * @return
      */
     @JsonIgnore
     public Lock getListenerReadLock() {
@@ -606,6 +608,7 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
      * list of active switches. This is to ensure that the active switch list
      * doesn't change out from under the listeners as they are handling a
      * message from the switch.
+     *
      * @return
      */
     @JsonIgnore
@@ -615,29 +618,31 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
 
     /**
      * Get the IP Address for the switch
+     *
      * @return the inet address
      */
-    @JsonSerialize(using=ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class)
     public SocketAddress getInetAddress() {
         return channel.getRemoteAddress();
     }
-    
+
     /**
      * Send NX role request message to the switch requesting the specified role.
-     * 
-     * This method should ONLY be called by @see RoleChanger.submitRequest(). 
-     * 
+     * <p/>
+     * This method should ONLY be called by @see RoleChanger.submitRequest().
+     * <p/>
      * After sending the request add it to the queue of pending request. We
      * use the queue to later verify that we indeed receive the correct reply.
-     * @param sw switch to send the role request message to
-     * @param role role to request
+     *
+     * @param sw     switch to send the role request message to
+     * @param role   role to request
      * @param cookie an opaque value that will be stored in the pending queue so
-     *        RoleChanger can check for timeouts.
+     *               RoleChanger can check for timeouts.
      * @return transaction id of the role request message that was sent
      */
     protected int sendNxRoleRequest(Role role, long cookie)
             throws IOException {
-        synchronized(pendingRoleRequests) {
+        synchronized (pendingRoleRequests) {
             // Convert the role enum to the appropriate integer constant used
             // in the NX role request message
             int nxRole = 0;
@@ -653,13 +658,13 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
                     break;
                 default:
                     log.error("Invalid Role specified for switch {}."
-                              + " Disconnecting.", this);
+                            + " Disconnecting.", this);
                     // TODO: should throw an error
                     return 0;
             }
-            
+
             // Construct the role request message
-            OFVendor roleRequest = (OFVendor)floodlightProvider.
+            OFVendor roleRequest = (OFVendor) floodlightProvider.
                     getOFMessageFactory().getMessage(OFType.VENDOR);
             int xid = this.getNextTransactionId();
             roleRequest.setXid(xid);
@@ -667,79 +672,76 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
             OFRoleRequestVendorData roleRequestData = new OFRoleRequestVendorData();
             roleRequestData.setRole(nxRole);
             roleRequest.setVendorData(roleRequestData);
-            roleRequest.setLengthU(OFVendor.MINIMUM_LENGTH + 
-                                   roleRequestData.getLength());
-            
+            roleRequest.setLengthU(OFVendor.MINIMUM_LENGTH +
+                    roleRequestData.getLength());
+
             // Send it to the switch
             List<OFMessage> msglist = new ArrayList<OFMessage>(1);
             msglist.add(roleRequest);
             // FIXME: should this use this.write() in order for messages to
             // be processed by handleOutgoingMessage()
             this.channel.write(msglist);
-            
+
             pendingRoleRequests.add(new PendingRoleRequestEntry(xid, role, cookie));
             return xid;
         }
     }
-    
-    /** 
-     * Deliver a RoleReply message to this switch. Checks if the reply 
-     * message matches the expected reply (head of the pending request queue). 
+
+    /**
+     * Deliver a RoleReply message to this switch. Checks if the reply
+     * message matches the expected reply (head of the pending request queue).
      * We require in-order delivery of replies. If there's any deviation from
-     * our expectations we disconnect the switch. 
-     * 
+     * our expectations we disconnect the switch.
+     * <p/>
      * We must not check the received role against the controller's current
      * role because there's no synchronization but that's fine @see RoleChanger
-     * 
+     * <p/>
      * Will be called by the OFChannelHandler's receive loop
-     * 
-     * @param xid Xid of the reply message
+     *
+     * @param xid  Xid of the reply message
      * @param role The Role in the the reply message
      */
     @LogMessageDocs({
-        @LogMessageDoc(level="ERROR",
-                message="Switch {switch}: received unexpected role reply for " +
-                        "Role {role}" + 
-                        " Disconnecting switch",
-                explanation="The switch sent an unexpected HA role reply",
-                recommendation=HA_CHECK_SWITCH),                           
-        @LogMessageDoc(level="ERROR",
-                message="Switch {switch}: expected role reply with " +
-                        "Xid {xid}, got {xid}. Disconnecting switch",
-                explanation="The switch sent an unexpected HA role reply",
-                recommendation=HA_CHECK_SWITCH),                           
-        @LogMessageDoc(level="ERROR",
-                message="Switch {switch}: expected role reply with " +
-                        "Role {role}, got {role}. Disconnecting switch",
-                explanation="The switch sent an unexpected HA role reply",
-                recommendation=HA_CHECK_SWITCH)                           
+            @LogMessageDoc(level = "ERROR",
+                    message = "Switch {switch}: received unexpected role reply for " +
+                            "Role {role}" +
+                            " Disconnecting switch",
+                    explanation = "The switch sent an unexpected HA role reply",
+                    recommendation = HA_CHECK_SWITCH),
+            @LogMessageDoc(level = "ERROR",
+                    message = "Switch {switch}: expected role reply with " +
+                            "Xid {xid}, got {xid}. Disconnecting switch",
+                    explanation = "The switch sent an unexpected HA role reply",
+                    recommendation = HA_CHECK_SWITCH),
+            @LogMessageDoc(level = "ERROR",
+                    message = "Switch {switch}: expected role reply with " +
+                            "Role {role}, got {role}. Disconnecting switch",
+                    explanation = "The switch sent an unexpected HA role reply",
+                    recommendation = HA_CHECK_SWITCH)
     })
     protected void deliverRoleReply(int xid, Role role) {
-        synchronized(pendingRoleRequests) {
+        synchronized (pendingRoleRequests) {
             PendingRoleRequestEntry head = pendingRoleRequests.poll();
             if (head == null) {
                 // Maybe don't disconnect if the role reply we received is 
                 // for the same role we are already in. 
-                log.error("Switch {}: received unexpected role reply for Role {}" + 
-                          " Disconnecting switch", this, role );
+                log.error("Switch {}: received unexpected role reply for Role {}" +
+                        " Disconnecting switch", this, role);
                 this.channel.close();
-            }
-            else if (head.xid != xid) {
+            } else if (head.xid != xid) {
                 // check xid before role!!
                 log.error("Switch {}: expected role reply with " +
-                       "Xid {}, got {}. Disconnecting switch",
-                       new Object[] { this, head.xid, xid } );
+                        "Xid {}, got {}. Disconnecting switch",
+                        new Object[]{this, head.xid, xid});
                 this.channel.close();
-            }
-            else if (head.role != role) {
+            } else if (head.role != role) {
                 log.error("Switch {}: expected role reply with " +
-                       "Role {}, got {}. Disconnecting switch",
-                       new Object[] { this, head.role, role } );
+                        "Role {}, got {}. Disconnecting switch",
+                        new Object[]{this, head.role, role});
                 this.channel.close();
-            }
-            else {
+            } else {
                 log.debug("Received role reply message from {}, setting role to {}",
-                          this, role);
+                        this, role);
                 if (this.role == null && getAttribute(SWITCH_SUPPORTS_NX_ROLE) == null) {
                     // The first role reply we received. Set the attribute
                     // that the switch supports roles
@@ -749,44 +751,47 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
             }
         }
     }
-    
-    /** 
+
+    /**
      * Checks whether the given xid matches the xid of the first pending
-     * role request. 
+     * role request.
+     *
      * @param xid
-     * @return 
+     * @return
      */
-    protected boolean checkFirstPendingRoleRequestXid (int xid) {
-        synchronized(pendingRoleRequests) {
+    protected boolean checkFirstPendingRoleRequestXid(int xid) {
+        synchronized (pendingRoleRequests) {
             PendingRoleRequestEntry head = pendingRoleRequests.peek();
             if (head == null)
                 return false;
-            else 
+            else
                 return head.xid == xid;
         }
     }
-    
+
     /**
-     * Checks whether the given request cookie matches the cookie of the first 
+     * Checks whether the given request cookie matches the cookie of the first
      * pending request
+     *
      * @param cookie
      * @return
      */
     protected boolean checkFirstPendingRoleRequestCookie(long cookie) {
-        synchronized(pendingRoleRequests) {
+        synchronized (pendingRoleRequests) {
             PendingRoleRequestEntry head = pendingRoleRequests.peek();
             if (head == null)
                 return false;
-            else 
+            else
                 return head.cookie == cookie;
         }
     }
-    
+
     /**
      * Called if we receive a vendor error message indicating that roles
      * are not supported by the switch. If the xid matches the first pending
      * one, we'll mark the switch as not supporting roles and remove the head.
      * Otherwise we ignore it.
+     *
      * @param xid
      */
     protected void deliverRoleRequestNotSupported(int xid) {
@@ -796,21 +801,21 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     /**
      * ONOS Extension to deliverRoleRequestNotSupported().
      * This version return the Roll request made.
-     * @see deliverRoleRequestNotSupported
+     *
      * @param xid
      * @return Role of attempted RoleRequest.
+     * @see deliverRoleRequestNotSupported
      */
     protected Role deliverRoleRequestNotSupportedEx(int xid) {
-        synchronized(pendingRoleRequests) {
+        synchronized (pendingRoleRequests) {
             PendingRoleRequestEntry head = pendingRoleRequests.poll();
             this.role = null;
-            if (head!=null && head.xid == xid) {
+            if (head != null && head.xid == xid) {
                 setAttribute(SWITCH_SUPPORTS_NX_ROLE, false);
                 return head.role;
-            }
-            else {
-            	log.debug("Closing {} because a role request error didn't match " + 
-            			"head of pendingRoleRequests queue", this);
+            } else {
+                log.debug("Closing {} because a role request error didn't match " +
+                        "head of pendingRoleRequests queue", this);
                 this.channel.close();
                 return null;
             }
@@ -873,9 +878,9 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     }
 
 
-	@Override
-	public void setupRemoteSwitch(Long dpid) {
-	    this.datapathId = dpid;
-	    this.stringId = HexString.toHexString(this.datapathId);
-	}
+    @Override
+    public void setupRemoteSwitch(Long dpid) {
+        this.datapathId = dpid;
+        this.stringId = HexString.toHexString(this.datapathId);
+    }
 }

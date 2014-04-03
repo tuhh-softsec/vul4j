@@ -21,20 +21,20 @@ public class IPv4NetDeserializer extends JsonDeserializer<IPv4Net> {
 
     @Override
     public IPv4Net deserialize(JsonParser jp,
-			       DeserializationContext ctxt)
-	throws IOException, JsonProcessingException {
+                               DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
 
-	IPv4Net ipv4Net = null;
+        IPv4Net ipv4Net = null;
 
-	jp.nextToken();		// Move to JsonToken.START_OBJECT
-	while (jp.nextToken() != JsonToken.END_OBJECT) {
-	    String fieldname = jp.getCurrentName();
-	    if ("value".equals(fieldname)) {
-		String value = jp.getText();
-		log.debug("Fieldname: {} Value: {}", fieldname, value);
-		ipv4Net = new IPv4Net(value);
-	    }
-	}
-	return ipv4Net;
+        jp.nextToken();        // Move to JsonToken.START_OBJECT
+        while (jp.nextToken() != JsonToken.END_OBJECT) {
+            String fieldname = jp.getCurrentName();
+            if ("value".equals(fieldname)) {
+                String value = jp.getText();
+                log.debug("Fieldname: {} Value: {}", fieldname, value);
+                ipv4Net = new IPv4Net(value);
+            }
+        }
+        return ipv4Net;
     }
 }

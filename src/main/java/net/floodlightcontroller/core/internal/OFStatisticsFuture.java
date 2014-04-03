@@ -1,19 +1,19 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 package net.floodlightcontroller.core.internal;
 
@@ -31,7 +31,7 @@ import org.openflow.protocol.statistics.OFStatistics;
 
 /**
  * A concrete implementation that handles asynchronously receiving OFStatistics
- * 
+ *
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
 public class OFStatisticsFuture extends
@@ -40,13 +40,13 @@ public class OFStatisticsFuture extends
     protected volatile boolean finished;
 
     public OFStatisticsFuture(IThreadPoolService tp,
-            IOFSwitch sw, int transactionId) {
+                              IOFSwitch sw, int transactionId) {
         super(tp, sw, OFType.STATS_REPLY, transactionId);
         init();
     }
 
     public OFStatisticsFuture(IThreadPoolService tp,
-            IOFSwitch sw, int transactionId, long timeout, TimeUnit unit) {
+                              IOFSwitch sw, int transactionId, long timeout, TimeUnit unit) {
         super(tp, sw, OFType.STATS_REPLY, transactionId, timeout, unit);
         init();
     }
@@ -71,7 +71,7 @@ public class OFStatisticsFuture extends
     protected boolean isFinished() {
         return finished;
     }
-    
+
     @Override
     protected void unRegister() {
         super.unRegister();

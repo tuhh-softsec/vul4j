@@ -8,28 +8,29 @@ import org.openflow.util.HexString;
 
 public interface ILinkDiscovery {
 
-    @JsonSerialize(using=ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class)
     public enum UpdateOperation {
-    	LINK_ADDED("Link Added"), // Operation Added by ONOS
+        LINK_ADDED("Link Added"), // Operation Added by ONOS
         LINK_UPDATED("Link Updated"),
         LINK_REMOVED("Link Removed"),
         SWITCH_UPDATED("Switch Updated"),
         SWITCH_REMOVED("Switch Removed"),
         PORT_UP("Port Up"),
         PORT_DOWN("Port Down");
-        
+
         private String value;
+
         UpdateOperation(String v) {
             value = v;
         }
-        
+
         @Override
         public String toString() {
             return value;
         }
     }
 
-    public class LDUpdate implements IUpdate{
+    public class LDUpdate implements IUpdate {
         protected long src;
         protected short srcPort;
         protected long dst;
@@ -39,9 +40,9 @@ public interface ILinkDiscovery {
         protected UpdateOperation operation;
 
         public LDUpdate(long src, short srcPort,
-                      long dst, short dstPort,
-                      ILinkDiscovery.LinkType type,
-                      UpdateOperation operation) {
+                        long dst, short dstPort,
+                        ILinkDiscovery.LinkType type,
+                        UpdateOperation operation) {
             this.src = src;
             this.srcPort = srcPort;
             this.dst = dst;
@@ -61,7 +62,7 @@ public interface ILinkDiscovery {
         }
 
         // For updtedSwitch(sw)
-        public LDUpdate(long switchId, SwitchType stype, UpdateOperation oper ){
+        public LDUpdate(long switchId, SwitchType stype, UpdateOperation oper) {
             this.operation = oper;
             this.src = switchId;
             this.srcType = stype;
@@ -105,68 +106,69 @@ public interface ILinkDiscovery {
         public void setOperation(UpdateOperation operation) {
             this.operation = operation;
         }
-        
+
         @Override
         public String toString() {
             switch (operation) {
-            case LINK_ADDED:
-            case LINK_REMOVED:
-            case LINK_UPDATED:
-                return "LDUpdate [operation=" + operation +
-                        ", src=" + HexString.toHexString(src)
-                        + ", srcPort=" + srcPort
-                        + ", dst=" + HexString.toHexString(dst) 
-                        + ", dstPort=" + dstPort
-                        + ", type=" + type + "]";
-            case PORT_DOWN:
-            case PORT_UP:
-                return "LDUpdate [operation=" + operation +
-                        ", src=" + HexString.toHexString(src)
-                        + ", srcPort=" + srcPort + "]";
-            case SWITCH_REMOVED:
-            case SWITCH_UPDATED:
-                return "LDUpdate [operation=" + operation +
-                        ", src=" + HexString.toHexString(src) + "]";
-            default:
-                return "LDUpdate: Unknown update.";
+                case LINK_ADDED:
+                case LINK_REMOVED:
+                case LINK_UPDATED:
+                    return "LDUpdate [operation=" + operation +
+                            ", src=" + HexString.toHexString(src)
+                            + ", srcPort=" + srcPort
+                            + ", dst=" + HexString.toHexString(dst)
+                            + ", dstPort=" + dstPort
+                            + ", type=" + type + "]";
+                case PORT_DOWN:
+                case PORT_UP:
+                    return "LDUpdate [operation=" + operation +
+                            ", src=" + HexString.toHexString(src)
+                            + ", srcPort=" + srcPort + "]";
+                case SWITCH_REMOVED:
+                case SWITCH_UPDATED:
+                    return "LDUpdate [operation=" + operation +
+                            ", src=" + HexString.toHexString(src) + "]";
+                default:
+                    return "LDUpdate: Unknown update.";
             }
         }
 
-		@Override
-		public void dispatch() {
-			// TODO Auto-generated method stub
-			
-		}
+        @Override
+        public void dispatch() {
+            // TODO Auto-generated method stub
+
+        }
     }
 
     public enum SwitchType {
-        BASIC_SWITCH, CORE_SWITCH
-    };
+        BASIC_SWITCH,
+        CORE_SWITCH
+    }
 
     public enum LinkType {
         INVALID_LINK {
-        	@Override
-        	public String toString() {
-        		return "invalid";
-        	}
-        }, 
-        DIRECT_LINK{
-        	@Override
-        	public String toString() {
-        		return "internal";
-        	}
-        }, 
+            @Override
+            public String toString() {
+                return "invalid";
+            }
+        },
+        DIRECT_LINK {
+            @Override
+            public String toString() {
+                return "internal";
+            }
+        },
         MULTIHOP_LINK {
-        	@Override
-        	public String toString() {
-        		return "external";
-        	}
-        }, 
+            @Override
+            public String toString() {
+                return "external";
+            }
+        },
         TUNNEL {
-        	@Override
-        	public String toString() {
-        		return "tunnel";
-        	}
+            @Override
+            public String toString() {
+                return "tunnel";
+            }
         }
-    };
+    }
 }

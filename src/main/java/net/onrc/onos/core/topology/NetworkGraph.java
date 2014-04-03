@@ -28,7 +28,7 @@ public interface NetworkGraph {
     /**
      * Get the port on a switch.
      *
-     * @param dpid the switch DPID.
+     * @param dpid   the switch DPID.
      * @param number the switch port number.
      * @return the switch port if found, otherwise null.
      */
@@ -37,7 +37,7 @@ public interface NetworkGraph {
     /**
      * Get the outgoing link for a switch and a port.
      *
-     * @param dpid the switch DPID.
+     * @param dpid   the switch DPID.
      * @param number the switch port number.
      * @return the outgoing link if found, otherwise null.
      */
@@ -47,18 +47,18 @@ public interface NetworkGraph {
      * Get the outgoing link from a switch and a port to another switch and
      * a port.
      *
-     * @param srcDpid the source switch DPID.
+     * @param srcDpid   the source switch DPID.
      * @param srcNumber the source switch port number.
-     * @param dstDpid the destination switch DPID.
+     * @param dstDpid   the destination switch DPID.
      * @param dstNumber the destination switch port number.
      * @return the outgoing link if found, otherwise null.
      */
     public Link getLink(Long srcDpid, Long srcNumber, Long dstDpid,
-			Long dstNumber);
+                        Long dstNumber);
 
     /**
      * Get all links in the network.
-     *
+     * <p/>
      * TODO: Not clear if this method is needed. Remove if not used.
      *
      * @return all links in the network.
@@ -80,15 +80,15 @@ public interface NetworkGraph {
      * @return the network device for the MAC address if found, otherwise null.
      */
     public Device getDeviceByMac(MACAddress address);
-	
+
     /**
-     * Acquire a read lock on the entire topology. The topology will not 
-     * change while readers have the lock. Must be released using 
+     * Acquire a read lock on the entire topology. The topology will not
+     * change while readers have the lock. Must be released using
      * {@link releaseReadLock()}. This method will block until a read lock is
      * available.
      */
     public void acquireReadLock();
-	
+
     /**
      * Release the read lock on the topology.
      */

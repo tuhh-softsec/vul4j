@@ -21,20 +21,20 @@ public class MACAddressDeserializer extends JsonDeserializer<MACAddress> {
 
     @Override
     public MACAddress deserialize(JsonParser jp,
-				  DeserializationContext ctxt)
-	throws IOException, JsonProcessingException {
+                                  DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
 
-	MACAddress mac = null;
+        MACAddress mac = null;
 
-	jp.nextToken();		// Move to JsonToken.START_OBJECT
-	while (jp.nextToken() != JsonToken.END_OBJECT) {
-	    String fieldname = jp.getCurrentName();
-	    if ("value".equals(fieldname)) {
-		String value = jp.getText();
-		log.debug("Fieldname: {} Value: {}", fieldname, value);
-		mac = MACAddress.valueOf(value);
-	    }
-	}
-	return mac;
+        jp.nextToken();        // Move to JsonToken.START_OBJECT
+        while (jp.nextToken() != JsonToken.END_OBJECT) {
+            String fieldname = jp.getCurrentName();
+            if ("value".equals(fieldname)) {
+                String value = jp.getText();
+                log.debug("Fieldname: {} Value: {}", fieldname, value);
+                mac = MACAddress.valueOf(value);
+            }
+        }
+        return mac;
     }
 }

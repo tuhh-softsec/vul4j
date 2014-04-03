@@ -14,7 +14,7 @@ public interface IKVClient {
 
     /**
      * Drop table.
-     *
+     * <p/>
      * Behavior of IKVTable instances accessing dropped table is undefined.
      *
      * @param table IKVTable to drop.
@@ -58,8 +58,7 @@ public interface IKVClient {
      * @param tableId
      * @param key
      * @param value
-     * @param version
-     *            expected version in the data store
+     * @param version expected version in the data store
      * @return version after update
      * @throws ObjectDoesntExistException
      * @throws WrongVersionException
@@ -69,8 +68,9 @@ public interface IKVClient {
 
     /**
      * Update an existing Key-Value entry in table, without checking version.
-     *
+     * <p/>
      * FIXME remove this method and use forceCreate for this purpose?
+     *
      * @param tableId
      * @param key
      * @param value
@@ -83,13 +83,13 @@ public interface IKVClient {
 
     // TODO Adding serialized value as parameter to this interface may
     // give an option to improve performance on some backends.
+
     /**
      * Remove an existing Key-Value entry in table
      *
      * @param tableId
      * @param key
-     * @param version
-     *            expected version in the data store
+     * @param version expected version in the data store
      * @return version of removed object
      * @throws ObjectDoesntExistException
      * @throws WrongVersionException
@@ -108,35 +108,34 @@ public interface IKVClient {
 
     /**
      * Get all the entries in table.
+     *
      * @param tableId
      * @return entries in this table.
      */
     public Iterable<IKVEntry> getAllEntries(IKVTableID tableId);
 
     /**
-     *
-     * @see #create(IKVTableID, byte[], byte[])
-     *
      * @return IMultiOpEntry for this operation
-     *
+     * @see #create(IKVTableID, byte[], byte[])
      */
     public IMultiEntryOperation createOp(IKVTableID tableId, byte[] key, byte[] value);
 
     public IMultiEntryOperation forceCreateOp(IKVTableID tableId, byte[] key,
-            byte[] value);
+                                              byte[] value);
 
     public IMultiEntryOperation readOp(IKVTableID tableId, byte[] key);
 
     public IMultiEntryOperation updateOp(IKVTableID tableId, byte[] key, byte[] value,
-            long version);
+                                         long version);
 
     public IMultiEntryOperation deleteOp(IKVTableID tableId, byte[] key, byte[] value,
-            long version);
+                                         long version);
 
     public IMultiEntryOperation forceDeleteOp(IKVTableID tableId, byte[] key);
 
     /**
      * Batch delete operation
+     *
      * @param ops delete operations
      * @return true if failed operation exists
      */
@@ -144,6 +143,7 @@ public interface IKVClient {
 
     /**
      * Batch write operation
+     *
      * @param ops write operations
      * @return true if failed operation exists
      */
@@ -151,6 +151,7 @@ public interface IKVClient {
 
     /**
      * Batch read operation
+     *
      * @param ops read operations
      * @return true if failed operation exists
      */

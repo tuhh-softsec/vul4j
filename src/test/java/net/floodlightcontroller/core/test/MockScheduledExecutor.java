@@ -1,19 +1,19 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 package net.floodlightcontroller.core.test;
 
@@ -33,10 +33,10 @@ import java.util.concurrent.TimeoutException;
 public class MockScheduledExecutor implements ScheduledExecutorService {
     ScheduledExecutorService ses = null;
 
-    public static class MockFuture<T> implements Future<T>,ScheduledFuture<T>{
+    public static class MockFuture<T> implements Future<T>, ScheduledFuture<T> {
         T result;
         ExecutionException e;
-        
+
         /**
          * @param result
          */
@@ -44,7 +44,7 @@ public class MockScheduledExecutor implements ScheduledExecutorService {
             super();
             this.result = result;
         }
-        
+
         /**
          * @param result
          */
@@ -91,7 +91,7 @@ public class MockScheduledExecutor implements ScheduledExecutorService {
             return 0;
         }
     }
-    
+
     @Override
     public boolean awaitTermination(long arg0, TimeUnit arg1)
             throws InterruptedException {
@@ -134,7 +134,7 @@ public class MockScheduledExecutor implements ScheduledExecutorService {
 
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> arg0, long arg1,
-            TimeUnit arg2) throws InterruptedException, ExecutionException,
+                           TimeUnit arg2) throws InterruptedException, ExecutionException,
             TimeoutException {
         return invokeAny(arg0);
     }
@@ -151,7 +151,7 @@ public class MockScheduledExecutor implements ScheduledExecutorService {
     public boolean isTerminated() {
         if (ses != null)
             return ses.isTerminated();
-        
+
         return false;
     }
 
@@ -191,7 +191,7 @@ public class MockScheduledExecutor implements ScheduledExecutorService {
     public <T> Future<T> submit(Runnable arg0, T arg1) {
         try {
             arg0.run();
-            return new MockFuture<T>((T)null);
+            return new MockFuture<T>((T) null);
         } catch (Exception e) {
             return new MockFuture<T>(new ExecutionException(e));
         }
@@ -215,7 +215,7 @@ public class MockScheduledExecutor implements ScheduledExecutorService {
 
     @Override
     public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay,
-            TimeUnit unit) {
+                                           TimeUnit unit) {
         if (ses == null)
             ses = Executors.newScheduledThreadPool(1);
         try {

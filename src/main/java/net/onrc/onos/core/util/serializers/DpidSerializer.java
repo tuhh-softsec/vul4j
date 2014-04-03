@@ -16,10 +16,10 @@ public class DpidSerializer extends JsonSerializer<Dpid> {
 
     @Override
     public void serialize(Dpid dpid, JsonGenerator jGen,
-			  SerializerProvider serializer)
-	throws IOException, JsonProcessingException {
-	jGen.writeStartObject();
-	jGen.writeStringField("value", dpid.toString());
-	jGen.writeEndObject();
+                          SerializerProvider serializer)
+            throws IOException, JsonProcessingException {
+        jGen.writeStartObject();
+        jGen.writeStringField("value", dpid.toString());
+        jGen.writeEndObject();
     }
 }

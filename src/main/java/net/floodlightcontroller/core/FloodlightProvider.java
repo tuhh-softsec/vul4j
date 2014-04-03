@@ -17,7 +17,7 @@ import net.onrc.onos.core.registry.IControllerRegistryService;
 
 public class FloodlightProvider implements IFloodlightModule {
     Controller controller;
-    
+
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
         Collection<Class<? extends IFloodlightService>> services =
@@ -28,13 +28,13 @@ public class FloodlightProvider implements IFloodlightModule {
 
     @Override
     public Map<Class<? extends IFloodlightService>,
-               IFloodlightService> getServiceImpls() {
+            IFloodlightService> getServiceImpls() {
         controller = new Controller();
-        
+
         Map<Class<? extends IFloodlightService>,
-            IFloodlightService> m = 
+                IFloodlightService> m =
                 new HashMap<Class<? extends IFloodlightService>,
-                            IFloodlightService>();
+                        IFloodlightService>();
         m.put(IFloodlightProviderService.class, controller);
         return m;
     }
@@ -42,7 +42,7 @@ public class FloodlightProvider implements IFloodlightModule {
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
         Collection<Class<? extends IFloodlightService>> dependencies =
-            new ArrayList<Class<? extends IFloodlightService>>(4);
+                new ArrayList<Class<? extends IFloodlightService>>(4);
         dependencies.add(IRestApiService.class);
         dependencies.add(IThreadPoolService.class);
         // Following added by ONOS
@@ -54,17 +54,17 @@ public class FloodlightProvider implements IFloodlightModule {
 
     @Override
     public void init(FloodlightModuleContext context) throws FloodlightModuleException {
-       controller.setRestApiService(
-           context.getServiceImpl(IRestApiService.class));
-       controller.setThreadPoolService(
-           context.getServiceImpl(IThreadPoolService.class));
-       // Following added by ONOS
-       controller.setMastershipService(
-    		   context.getServiceImpl(IControllerRegistryService.class));
-       controller.setLinkDiscoveryService(
-    		   context.getServiceImpl(ILinkDiscoveryService.class));
+        controller.setRestApiService(
+                context.getServiceImpl(IRestApiService.class));
+        controller.setThreadPoolService(
+                context.getServiceImpl(IThreadPoolService.class));
+        // Following added by ONOS
+        controller.setMastershipService(
+                context.getServiceImpl(IControllerRegistryService.class));
+        controller.setLinkDiscoveryService(
+                context.getServiceImpl(ILinkDiscoveryService.class));
 
-       controller.init(context.getConfigParams(this));
+        controller.init(context.getConfigParams(this));
     }
 
     @Override

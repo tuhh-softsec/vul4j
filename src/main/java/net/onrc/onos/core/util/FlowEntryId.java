@@ -12,8 +12,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 /**
  * The class representing a Flow Entry ID.
  */
-@JsonDeserialize(using=FlowEntryIdDeserializer.class)
-@JsonSerialize(using=FlowEntryIdSerializer.class)
+@JsonDeserialize(using = FlowEntryIdDeserializer.class)
+@JsonSerialize(using = FlowEntryIdSerializer.class)
 public class FlowEntryId {
     private long value;
 
@@ -21,7 +21,7 @@ public class FlowEntryId {
      * Default constructor.
      */
     public FlowEntryId() {
-	this.value = -1;
+        this.value = -1;
     }
 
     /**
@@ -30,7 +30,7 @@ public class FlowEntryId {
      * @param value the value to use.
      */
     public FlowEntryId(long value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -39,17 +39,17 @@ public class FlowEntryId {
      * @param value the value to use.
      */
     public FlowEntryId(String value) {
-	//
-	// Use the help of BigInteger to parse strings representing
-	// large unsigned hex long values.
-	//
-	char c = 0;
-	if (value.length() > 2)
-	    c = value.charAt(1);
-	if ((c == 'x') || (c == 'X'))
-	    this.value = new BigInteger(value.substring(2), 16).longValue();
-	else
-	    this.value = Long.decode(value);
+        //
+        // Use the help of BigInteger to parse strings representing
+        // large unsigned hex long values.
+        //
+        char c = 0;
+        if (value.length() > 2)
+            c = value.charAt(1);
+        if ((c == 'x') || (c == 'X'))
+            this.value = new BigInteger(value.substring(2), 16).longValue();
+        else
+            this.value = Long.decode(value);
     }
 
     /**
@@ -57,7 +57,9 @@ public class FlowEntryId {
      *
      * @return the value of the Flow Entry ID.
      */
-    public long value() { return value; }
+    public long value() {
+        return value;
+    }
 
     /**
      * Set the value of the Flow Entry ID.
@@ -65,7 +67,7 @@ public class FlowEntryId {
      * @param value the value to set.
      */
     public void setValue(long value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -75,30 +77,30 @@ public class FlowEntryId {
      */
     @JsonIgnore
     public boolean isValid() {
-	return (this.value() != -1);
+        return (this.value() != -1);
     }
 
     /**
-     * Returns true of the object is another Flow Entry ID with 
+     * Returns true of the object is another Flow Entry ID with
      * the same value; otherwise, returns false.
-     * 
+     *
      * @param Object to compare
      */
     @Override
-    public boolean equals(Object obj){
-	if(obj != null && obj.getClass() == this.getClass()) {
-	    FlowEntryId entry = (FlowEntryId) obj;
-	    return this.value() == entry.value();
-	}
-	return false;
+    public boolean equals(Object obj) {
+        if (obj != null && obj.getClass() == this.getClass()) {
+            FlowEntryId entry = (FlowEntryId) obj;
+            return this.value() == entry.value();
+        }
+        return false;
     }
-    
+
     /**
      * Return the hash code of the Flow Entry ID
      */
     @Override
     public int hashCode() {
-	return Long.valueOf(value).hashCode();
+        return Long.valueOf(value).hashCode();
     }
 
     /**
@@ -108,6 +110,6 @@ public class FlowEntryId {
      */
     @Override
     public String toString() {
-	return "0x" + Long.toHexString(this.value);
+        return "0x" + Long.toHexString(this.value);
     }
 }

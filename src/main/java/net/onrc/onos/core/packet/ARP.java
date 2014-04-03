@@ -1,19 +1,19 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 package net.onrc.onos.core.packet;
 
@@ -21,7 +21,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
- *
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
 public class ARP extends BasePacket {
@@ -148,7 +147,7 @@ public class ARP extends BasePacket {
         this.senderProtocolAddress = senderProtocolAddress;
         return this;
     }
-    
+
     public ARP setSenderProtocolAddress(int address) {
         this.senderProtocolAddress = ByteBuffer.allocate(4).putInt(address).array();
         return this;
@@ -179,9 +178,9 @@ public class ARP extends BasePacket {
     /**
      * @return True if gratuitous ARP (SPA = TPA), false otherwise
      */
-    public boolean isGratuitous() {        
-        assert(senderProtocolAddress.length == targetProtocolAddress.length);
-        
+    public boolean isGratuitous() {
+        assert (senderProtocolAddress.length == targetProtocolAddress.length);
+
         int indx = 0;
         while (indx < senderProtocolAddress.length) {
             if (senderProtocolAddress[indx] != targetProtocolAddress[indx]) {
@@ -189,10 +188,10 @@ public class ARP extends BasePacket {
             }
             indx++;
         }
-        
+
         return true;
     }
-    
+
     /**
      * @param targetProtocolAddress the targetProtocolAddress to set
      */
@@ -200,7 +199,7 @@ public class ARP extends BasePacket {
         this.targetProtocolAddress = targetProtocolAddress;
         return this;
     }
-    
+
     public ARP setTargetProtocolAddress(int address) {
         this.targetProtocolAddress = ByteBuffer.allocate(4).putInt(address).array();
         return this;

@@ -20,10 +20,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
  * Switch object in data store.
- *
+ * <p/>
  * Note: This class will not maintain invariants.
- *       e.g., It will NOT automatically remove Ports on Switch,
- *       when deleting a Switch.
+ * e.g., It will NOT automatically remove Ports on Switch,
+ * when deleting a Switch.
  */
 public class KVSwitch extends KVObject {
     private static final Logger log = LoggerFactory.getLogger(KVSwitch.class);
@@ -80,9 +80,9 @@ public class KVSwitch extends KVObject {
     /**
      * Get an instance from Key.
      *
-     * @note You need to call `read()` to get the DB content.
      * @param key
      * @return KVSwitch instance
+     * @note You need to call `read()` to get the DB content.
      */
     public static KVSwitch createFromKey(final byte[] key) {
         return new KVSwitch(getDpidFromKey(key));

@@ -76,7 +76,7 @@ public class KVLink extends KVObject {
     private STATUS status;
 
     public static byte[] getLinkID(final Long src_dpid, final Long src_port_no,
-            final Long dst_dpid, final Long dst_port_no) {
+                                   final Long dst_dpid, final Long dst_port_no) {
         return LinkEvent.getLinkID(src_dpid, src_port_no, dst_dpid,
                 dst_port_no).array();
     }
@@ -103,7 +103,7 @@ public class KVLink extends KVObject {
     }
 
     public KVLink(final Long src_dpid, final Long src_port_no,
-            final Long dst_dpid, final Long dst_port_no) {
+                  final Long dst_dpid, final Long dst_port_no) {
         super(DataStoreClient.getClient().getTable(GLOBAL_LINK_TABLE_NAME), getLinkID(src_dpid,
                 src_port_no, dst_dpid, dst_port_no));
 
@@ -115,9 +115,9 @@ public class KVLink extends KVObject {
     /**
      * Get an instance from Key.
      *
-     * @note You need to call `read()` to get the DB content.
      * @param key
      * @return KVLink instance
+     * @note You need to call `read()` to get the DB content.
      */
     public static KVLink createFromKey(final byte[] key) {
         long[] linkTuple = getLinkTupleFromKey(key);

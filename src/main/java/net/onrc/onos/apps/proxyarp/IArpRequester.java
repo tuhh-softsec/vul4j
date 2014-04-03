@@ -7,7 +7,6 @@ import net.floodlightcontroller.util.MACAddress;
 /**
  * Callback interface for modules using the {@link IProxyArpService} to send ARP
  * requests.
- *
  */
 public interface IArpRequester {
     /**
@@ -15,10 +14,8 @@ public interface IArpRequester {
      * it receives a reply for a request previously submitted by this
      * {@code IArpRequester}.
      *
-     * @param ipAddress
-     *        The IP address than an ARP request was sent for
-     * @param macAddress
-     *        The MAC address mapped to the requested IP address
+     * @param ipAddress  The IP address than an ARP request was sent for
+     * @param macAddress The MAC address mapped to the requested IP address
      */
     public void arpResponse(InetAddress ipAddress, MACAddress macAddress);
 }

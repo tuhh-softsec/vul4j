@@ -24,7 +24,7 @@ public interface IFlowPusherService extends IFloodlightService {
     public static enum MsgPriority {
         HIGH,        // High priority: e.g. flow synchronization
         NORMAL,        // Normal priority
-//		LOW,		// Low priority, not needed for now
+//              LOW,            // Low priority, not needed for now
     }
 
     public static enum QueueState {

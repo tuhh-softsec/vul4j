@@ -27,7 +27,6 @@ import com.esotericsoftware.kryo.io.Output;
 
 /**
  * Class to represent an Object represented as a single K-V pair Value blob.
- *
  */
 public class KVObject {
     private static final Logger log = LoggerFactory.getLogger(KVObject.class);
@@ -55,7 +54,7 @@ public class KVObject {
     private long version;
 
     /**
-     *  Map to store user-defined properties
+     * Map to store user-defined properties
      */
     private Map<Object, Object> propertyMap;
 
@@ -105,8 +104,8 @@ public class KVObject {
     /**
      * Return user-defined object properties.
      *
-     * @note Will not trigger deserialization
      * @return Will return null, if never been set, or was not deserialized
+     * @note Will not trigger deserialization
      */
     protected Map<Object, Object> getPropertyMap() {
         return this.propertyMap;
@@ -120,7 +119,7 @@ public class KVObject {
 
     /**
      * Serialize object.
-     *
+     * <p/>
      * sub-classes should override this method to customize serialization.
      *
      * @return serialized byte array
@@ -130,7 +129,7 @@ public class KVObject {
     }
 
     protected byte[] serializePropertyMap(final Kryo kryo,
-            final Map<Object, Object> propMap) {
+                                          final Map<Object, Object> propMap) {
 
 
         // value
@@ -144,7 +143,7 @@ public class KVObject {
     /**
      * Deserialize using value and version stored in data store.
      *
-     * @param bytes serialized bytes
+     * @param bytes   serialized bytes
      * @param version version of this {@code bytes}
      * @return true if success
      */
@@ -155,7 +154,7 @@ public class KVObject {
 
     /**
      * Deserialize object.
-     *
+     * <p/>
      * sub-classes should override this method to customize deserialization.
      *
      * @param bytes serialized byte array
@@ -168,7 +167,8 @@ public class KVObject {
 
     /**
      * Deserialize and set {@link propertyMap}.
-     * @param kryo serializer to use
+     *
+     * @param kryo  serializer to use
      * @param bytes Kryo serialized Map object
      * @return true if success
      */
@@ -183,7 +183,7 @@ public class KVObject {
     }
 
     protected <T extends Map<?, ?>> T deserializePropertyMap(final Kryo kryo,
-            final byte[] bytes, final Class<T> type) {
+                                                             final byte[] bytes, final Class<T> type) {
 
         if (bytes == null || bytes.length == 0) {
             return null;
@@ -198,7 +198,7 @@ public class KVObject {
 
     /**
      * Create an Object in DataStore.
-     *
+     * <p/>
      * Fails if the Object with same key already exists.
      *
      * @throws ObjectExistsException
@@ -225,11 +225,10 @@ public class KVObject {
 
     /**
      * Read an Object from DataStore.
-     *
+     * <p/>
      * Fails if the Object with the key does not exist.
      *
      * @throws ObjectDoesntExistException
-     *
      */
     public void read() throws ObjectDoesntExistException {
         IKVEntry e = table.read(key);
@@ -238,14 +237,14 @@ public class KVObject {
 
     /**
      * Update an existing Object in DataStore checking versions.
-     *
+     * <p/>
      * Fails if the Object with key does not exists, or conditional failure.
      *
      * @throws WrongVersionException
      * @throws ObjectDoesntExistException
      */
     public void update() throws ObjectDoesntExistException,
-    WrongVersionException {
+            WrongVersionException {
         if (this.propertyMap == null) {
             replacePropertyMap(new HashMap<Object, Object>());
         }
@@ -255,14 +254,14 @@ public class KVObject {
 
     /**
      * Remove an existing Object in DataStore.
-     *
+     * <p/>
      * Fails if the Object with key does not exists.
      *
      * @throws ObjectDoesntExistException
      * @throws WrongVersionException
      */
     public void delete() throws ObjectDoesntExistException,
-    WrongVersionException {
+            WrongVersionException {
         this.version = table.delete(key, this.version);
     }
 
@@ -297,11 +296,10 @@ public class KVObject {
 
     /**
      * Multi-read RCObjects.
-     *
+     * <p/>
      * If the blob value was read successfully, RCObject will deserialize them.
      *
-     * @param objects
-     *            RCObjects to read
+     * @param objects RCObjects to read
      * @return true if there exist a failed read.
      */
     public static boolean multiRead(final List<? extends KVObject> objects) {
@@ -318,8 +316,8 @@ public class KVObject {
         for (int i = 0; i < readOps.size(); ++i) {
             KVObject obj = objects.get(i);
             IMultiEntryOperation entry = readOps.get(i);
-            if ( entry.hasSucceeded() ) {
-                if ( !obj.deserialize(entry.getValue(), entry.getVersion()) ) {
+            if (entry.hasSucceeded()) {
+                if (!obj.deserialize(entry.getValue(), entry.getVersion())) {
                     //deserialize return true on success
                     failExists = true;
                     log.error("MultiRead error, failed to deserialize {}, {}", obj.getTable(), obj);
@@ -346,14 +344,14 @@ public class KVObject {
             this.base = (IModifiableMultiEntryOperation) base;
             this.obj = obj;
 
-            //	    switch (base.getOperation()) {
-            //	    case CREATE:
-            //	    case FORCE_CREATE:
-            //	    case UPDATE:
-            //		break;
-            //	    default:
-            //		throw new UnsupportedOperationException("Unexpected OPERATION:"+base.getOperation());
-            //	    }
+            //      switch (base.getOperation()) {
+            //      case CREATE:
+            //      case FORCE_CREATE:
+            //      case UPDATE:
+            //          break;
+            //      default:
+            //          throw new UnsupportedOperationException("Unexpected OPERATION:"+base.getOperation());
+            //      }
         }
 
         @Override
@@ -436,7 +434,7 @@ public class KVObject {
     }
 
     public abstract static class AbstractObjectIterator<E extends KVObject> implements
-    Iterator<E> {
+            Iterator<E> {
 
         protected Iterator<IKVEntry> enumerator;
 
@@ -450,13 +448,13 @@ public class KVObject {
         }
 
         // Implement something similar to below to realize Iterator
-        //	@Override
-        //	public E next() {
-        //	    IKVTable.IKVEntry o = enumerator.next();
-        //	    E obj = E.createFromKey(o.getKey());
-        //	    obj.deserialize(o.getValue(), o.getVersion());
-        //	    return obj;
-        //	}
+        //      @Override
+        //      public E next() {
+        //          IKVTable.IKVEntry o = enumerator.next();
+        //          E obj = E.createFromKey(o.getKey());
+        //          obj.deserialize(o.getValue(), o.getVersion());
+        //          return obj;
+        //      }
 
         @Deprecated
         @Override

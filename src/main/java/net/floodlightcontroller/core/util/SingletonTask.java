@@ -1,19 +1,19 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 package net.floodlightcontroller.core.util;
 
@@ -27,26 +27,26 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This allows you to represent a task that should be queued for future execution
- * but where you only want the task to complete once in response to some sequence 
+ * but where you only want the task to complete once in response to some sequence
  * of events.  For example, if you get a change notification and want to reload state,
  * you only want to reload the state once, at the end, and don't want to queue
  * an update for every notification that might come in.
- * 
+ * <p/>
  * The semantics are as follows:
  * * If the task hasn't begun yet, do not queue a new task
  * * If the task has begun, set a bit to restart it after the current task finishes
  */
 public class SingletonTask {
     protected final static Logger logger = LoggerFactory.getLogger(SingletonTask.class);
-            
-    protected static class SingletonTaskContext  {
+
+    protected static class SingletonTaskContext {
         protected boolean taskShouldRun = false;
         protected boolean taskRunning = false;
 
         protected SingletonTaskWorker waitingTask = null;
     }
 
-    protected static class SingletonTaskWorker implements Runnable  {
+    protected static class SingletonTaskWorker implements Runnable {
         SingletonTask parent;
         boolean canceled = false;
         long nextschedule = 0;
@@ -57,9 +57,9 @@ public class SingletonTask {
         }
 
         @Override
-        @LogMessageDoc(level="ERROR",
-                       message="Exception while executing task",
-                       recommendation=LogMessageDoc.GENERIC_ACTION)
+        @LogMessageDoc(level = "ERROR",
+                message = "Exception while executing task",
+                recommendation = LogMessageDoc.GENERIC_ACTION)
         public void run() {
             synchronized (parent.context) {
                 if (canceled || !parent.context.taskShouldRun)
@@ -83,9 +83,9 @@ public class SingletonTask {
                     if ((nextschedule <= 0 || (nextschedule - now) <= 0)) {
                         parent.ses.execute(this);
                     } else {
-                        parent.ses.schedule(this, 
-                                            nextschedule-now, 
-                                            TimeUnit.NANOSECONDS);
+                        parent.ses.schedule(this,
+                                nextschedule - now,
+                                TimeUnit.NANOSECONDS);
                     }
                 }
             }
@@ -101,11 +101,12 @@ public class SingletonTask {
      * Construct a new SingletonTask for the given runnable.  The context
      * is used to manage the state of the task execution and can be shared
      * by more than one instance of the runnable.
+     *
      * @param context
      * @param Task
      */
     public SingletonTask(ScheduledExecutorService ses,
-            Runnable task) {
+                         Runnable task) {
         super();
         this.task = task;
         this.ses = ses;
@@ -117,9 +118,9 @@ public class SingletonTask {
      * cancel that task and reschedule it to run at the given time.  If the
      * task is already started, it will cause the task to be rescheduled once
      * it completes to run after delay from the time of reschedule.
-     * 
+     *
      * @param delay the delay in scheduling
-     * @param unit the timeunit of the delay
+     * @param unit  the timeunit of the delay
      */
     public void reschedule(long delay, TimeUnit unit) {
         boolean needQueue = true;
@@ -131,8 +132,8 @@ public class SingletonTask {
                     // schedule to restart at the right time
                     if (delay > 0) {
                         long now = System.nanoTime();
-                        long then = 
-                            now + TimeUnit.NANOSECONDS.convert(delay, unit);
+                        long then =
+                                now + TimeUnit.NANOSECONDS.convert(delay, unit);
                         context.waitingTask.nextschedule = then;
                     } else {
                         context.waitingTask.nextschedule = 0;
@@ -148,7 +149,7 @@ public class SingletonTask {
             context.taskShouldRun = true;
 
             if (needQueue) {
-                stw = context.waitingTask = new SingletonTaskWorker(this);                    
+                stw = context.waitingTask = new SingletonTaskWorker(this);
             }
         }
 

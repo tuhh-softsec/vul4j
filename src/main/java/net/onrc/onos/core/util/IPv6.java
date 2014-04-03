@@ -10,18 +10,18 @@ import org.openflow.util.HexString;
 /**
  * The class representing an IPv6 address.
  */
-@JsonDeserialize(using=IPv6Deserializer.class)
-@JsonSerialize(using=IPv6Serializer.class)
+@JsonDeserialize(using = IPv6Deserializer.class)
+@JsonSerialize(using = IPv6Serializer.class)
 public class IPv6 {
-    private long valueHigh;	// The higher (more significant) 64 bits
-    private long valueLow;	// The lower (less significant) 64 bits
+    private long valueHigh;    // The higher (more significant) 64 bits
+    private long valueLow;    // The lower (less significant) 64 bits
 
     /**
      * Default constructor.
      */
     public IPv6() {
-	this.valueHigh = 0;
-	this.valueLow = 0;
+        this.valueHigh = 0;
+        this.valueLow = 0;
     }
 
     /**
@@ -30,19 +30,19 @@ public class IPv6 {
      * @param other the object to copy from.
      */
     public IPv6(IPv6 other) {
-	this.valueHigh = other.valueHigh;
-	this.valueLow = other.valueLow;
+        this.valueHigh = other.valueHigh;
+        this.valueLow = other.valueLow;
     }
 
     /**
      * Constructor from integer values.
      *
      * @param valueHigh the higher (more significant) 64 bits of the address.
-     * @param valueLow the lower (less significant) 64 bits of the address.
+     * @param valueLow  the lower (less significant) 64 bits of the address.
      */
     public IPv6(long valueHigh, long valueLow) {
-	this.valueHigh = valueHigh;
-	this.valueLow = valueLow;
+        this.valueHigh = valueHigh;
+        this.valueLow = valueLow;
     }
 
     /**
@@ -51,9 +51,9 @@ public class IPv6 {
      * @param value the value to use.
      */
     public IPv6(String value) {
-	// TODO: Implement it!
-	this.valueHigh = 0;
-	this.valueLow = 0;
+        // TODO: Implement it!
+        this.valueHigh = 0;
+        this.valueLow = 0;
     }
 
     /**
@@ -62,7 +62,9 @@ public class IPv6 {
      * @return the value of the higher (more significant) 64 bits of the
      * address.
      */
-    public long valueHigh() { return valueHigh; }
+    public long valueHigh() {
+        return valueHigh;
+    }
 
     /**
      * Set the value of the higher (more significant) 64 bits of the address.
@@ -70,7 +72,7 @@ public class IPv6 {
      * @param valueHigh the higher (more significant) 64 bits of the address.
      */
     public void setValueHigh(long valueHigh) {
-	this.valueHigh = valueHigh;
+        this.valueHigh = valueHigh;
     }
 
     /**
@@ -79,7 +81,9 @@ public class IPv6 {
      * @return the value of the lower (less significant) 64 bits of the
      * address.
      */
-    public long valueLow() { return valueLow; }
+    public long valueLow() {
+        return valueLow;
+    }
 
     /**
      * Get the value of the lower (less significant) 64 bits of the address.
@@ -87,18 +91,18 @@ public class IPv6 {
      * @param valueLow the lower (less significant) 64 bits of the address.
      */
     public void setValueLow(long valueLow) {
-	this.valueLow = valueLow;
+        this.valueLow = valueLow;
     }
 
     /**
      * Set the value of the IPv6 address.
      *
      * @param valueHigh the higher (more significant) 64 bits of the address.
-     * @param valueLow the lower (less significant) 64 bits of the address.
+     * @param valueLow  the lower (less significant) 64 bits of the address.
      */
     public void setValue(long valueHigh, long valueLow) {
-	this.valueHigh = valueHigh;
-	this.valueLow = valueLow;
+        this.valueHigh = valueHigh;
+        this.valueLow = valueLow;
     }
 
     /**
@@ -108,7 +112,7 @@ public class IPv6 {
      */
     @Override
     public String toString() {
-	return HexString.toHexString(this.valueHigh) + ":" +
-	    HexString.toHexString(this.valueLow);
+        return HexString.toHexString(this.valueHigh) + ":" +
+                HexString.toHexString(this.valueLow);
     }
 }

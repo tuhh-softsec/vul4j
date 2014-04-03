@@ -37,13 +37,12 @@ import com.google.common.net.InetAddresses;
  * The NetworkGraphPublisher subscribes to topology network events from the
  * discovery modules. These events are reformatted and relayed to the topology
  * part of the network graph
- *
  */
 public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
-                                    IOFSwitchPortListener,
-                                    ILinkDiscoveryListener,
-                                    IFloodlightModule,
-                                    IOnosDeviceListener {
+        IOFSwitchPortListener,
+        ILinkDiscoveryListener,
+        IFloodlightModule,
+        IOnosDeviceListener {
     private static final Logger log =
             LoggerFactory.getLogger(NetworkGraphPublisher.class);
 
@@ -96,7 +95,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
                 log.trace("Checking for inactive switches");
             }
             // For each switch check if a controller exists in controller registry
-            for (Switch sw: switches) {
+            for (Switch sw : switches) {
                 try {
                     String controller =
                             registryService.getControllerForSwitch(sw.getDpid());
@@ -115,7 +114,8 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
          * Second half of the switch cleanup operation. If the registry grants
          * control of a switch, we can be sure no other instance is writing
          * this switch to the network graph, so we can remove it now.
-         * @param dpid the dpid of the switch we requested control for
+         *
+         * @param dpid       the dpid of the switch we requested control for
          * @param hasControl whether we got control or not
          */
         @Override
@@ -139,17 +139,17 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
                 (long) update.getDstPort());
 
         switch (update.getOperation()) {
-        case LINK_ADDED:
-            networkGraphDiscoveryInterface.putLinkDiscoveryEvent(linkEvent);
-            break;
-        case LINK_UPDATED:
-            // We don't use the LINK_UPDATED event (unsure what it means)
-            break;
-        case LINK_REMOVED:
-            networkGraphDiscoveryInterface.removeLinkDiscoveryEvent(linkEvent);
-            break;
-        default:
-            break;
+            case LINK_ADDED:
+                networkGraphDiscoveryInterface.putLinkDiscoveryEvent(linkEvent);
+                break;
+            case LINK_UPDATED:
+                // We don't use the LINK_UPDATED event (unsure what it means)
+                break;
+            case LINK_REMOVED:
+                networkGraphDiscoveryInterface.removeLinkDiscoveryEvent(linkEvent);
+                break;
+            default:
+                break;
         }
     }
 
@@ -180,7 +180,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
             portEvents.add(new PortEvent(sw.getId(), (long) port.getPortNumber()));
         }
         networkGraphDiscoveryInterface
-        .putSwitchDiscoveryEvent(switchEvent, portEvents);
+                .putSwitchDiscoveryEvent(switchEvent, portEvents);
 
         for (OFPhysicalPort port : sw.getPorts()) {
             // Allow links to be discovered on this port now that it's
@@ -222,7 +222,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
 
     @Override
     public Collection<Class<? extends IFloodlightService>>
-                getModuleDependencies() {
+    getModuleDependencies() {
         Collection<Class<? extends IFloodlightService>> l =
                 new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFloodlightProviderService.class);

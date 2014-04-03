@@ -9,17 +9,17 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 /**
  * The class representing an IPv4 network address.
  */
-@JsonDeserialize(using=IPv4NetDeserializer.class)
-@JsonSerialize(using=IPv4NetSerializer.class)
+@JsonDeserialize(using = IPv4NetDeserializer.class)
+@JsonSerialize(using = IPv4NetSerializer.class)
 public class IPv4Net {
-    private IPv4 address;		// The IPv4 address
-    private short prefixLen;		// The prefix length
+    private IPv4 address;        // The IPv4 address
+    private short prefixLen;        // The prefix length
 
     /**
      * Default constructor.
      */
     public IPv4Net() {
-	this.prefixLen = 0;
+        this.prefixLen = 0;
     }
 
     /**
@@ -28,20 +28,20 @@ public class IPv4Net {
      * @param other the object to copy from.
      */
     public IPv4Net(IPv4Net other) {
-	if (other.address != null)
-	    this.address = new IPv4(other.address);
-	this.prefixLen = other.prefixLen;
+        if (other.address != null)
+            this.address = new IPv4(other.address);
+        this.prefixLen = other.prefixLen;
     }
 
     /**
      * Constructor for a given address and prefix length.
      *
-     * @param address the address to use.
+     * @param address   the address to use.
      * @param prefixLen the prefix length to use.
      */
     public IPv4Net(IPv4 address, short prefixLen) {
-	this.address = address;
-	this.prefixLen = prefixLen;
+        this.address = address;
+        this.prefixLen = prefixLen;
     }
 
     /**
@@ -50,13 +50,13 @@ public class IPv4Net {
      * @param value the value to use.
      */
     public IPv4Net(String value) {
-	String[] splits = value.split("/");
-	if (splits.length != 2) {
-	    throw new IllegalArgumentException("Specified IPv4Net address must contain an IPv4 " +
-					       "address and a prefix length separated by '/'");
-	}
-	this.address = new IPv4(splits[0]);
-	this.prefixLen = Short.decode(splits[1]);
+        String[] splits = value.split("/");
+        if (splits.length != 2) {
+            throw new IllegalArgumentException("Specified IPv4Net address must contain an IPv4 " +
+                    "address and a prefix length separated by '/'");
+        }
+        this.address = new IPv4(splits[0]);
+        this.prefixLen = Short.decode(splits[1]);
     }
 
     /**
@@ -64,7 +64,9 @@ public class IPv4Net {
      *
      * @return the address value of the IPv4Net address.
      */
-    public IPv4 address() { return address; }
+    public IPv4 address() {
+        return address;
+    }
 
     /**
      * Set the address value of the IPv4Net address.
@@ -72,7 +74,7 @@ public class IPv4Net {
      * @param address the address to use.
      */
     public void setAddress(IPv4 address) {
-	this.address = address;
+        this.address = address;
     }
 
     /**
@@ -80,7 +82,9 @@ public class IPv4Net {
      *
      * @return the prefix length value of the IPv4Net address.
      */
-    public short prefixLen() { return prefixLen; }
+    public short prefixLen() {
+        return prefixLen;
+    }
 
     /**
      * Set the prefix length value of the IPv4Net address.
@@ -88,18 +92,18 @@ public class IPv4Net {
      * @param prefixLen the prefix length to use.
      */
     public void setPrefixLen(short prefixLen) {
-	this.prefixLen = prefixLen;
+        this.prefixLen = prefixLen;
     }
 
     /**
      * Set the value of the IPv4Net address.
      *
-     * @param address the address to use.
+     * @param address   the address to use.
      * @param prefixLen the prefix length to use.
      */
     public void setValue(IPv4 address, short prefixLen) {
-	this.address = address;
-	this.prefixLen = prefixLen;
+        this.address = address;
+        this.prefixLen = prefixLen;
     }
 
     /**
@@ -109,6 +113,6 @@ public class IPv4Net {
      */
     @Override
     public String toString() {
-	return this.address.toString() + "/" + this.prefixLen;
+        return this.address.toString() + "/" + this.prefixLen;
     }
 }

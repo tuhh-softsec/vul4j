@@ -16,10 +16,10 @@ public class MACAddressSerializer extends JsonSerializer<MACAddress> {
 
     @Override
     public void serialize(MACAddress mac, JsonGenerator jGen,
-			  SerializerProvider serializer)
-	throws IOException, JsonProcessingException {
-	jGen.writeStartObject();
-	jGen.writeStringField("value", mac.toString());
-	jGen.writeEndObject();
+                          SerializerProvider serializer)
+            throws IOException, JsonProcessingException {
+        jGen.writeStartObject();
+        jGen.writeStringField("value", mac.toString());
+        jGen.writeEndObject();
     }
 }

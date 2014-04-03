@@ -14,19 +14,19 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 
 public class ThreadPool implements IThreadPoolService, IFloodlightModule {
     protected ScheduledExecutorService executor = null;
-    
+
     // IThreadPoolService
 
     @Override
     public ScheduledExecutorService getScheduledExecutor() {
         return executor;
     }
-    
+
     // IFloodlightModule
-    
+
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-        Collection<Class<? extends IFloodlightService>> l = 
+        Collection<Class<? extends IFloodlightService>> l =
                 new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IThreadPoolService.class);
         return l;
@@ -34,11 +34,11 @@ public class ThreadPool implements IThreadPoolService, IFloodlightModule {
 
     @Override
     public Map<Class<? extends IFloodlightService>, IFloodlightService>
-            getServiceImpls() {
+    getServiceImpls() {
         Map<Class<? extends IFloodlightService>,
-            IFloodlightService> m = 
+                IFloodlightService> m =
                 new HashMap<Class<? extends IFloodlightService>,
-                    IFloodlightService>();
+                        IFloodlightService>();
         m.put(IThreadPoolService.class, this);
         // We are the class that implements the service
         return m;
@@ -46,14 +46,14 @@ public class ThreadPool implements IThreadPoolService, IFloodlightModule {
 
     @Override
     public Collection<Class<? extends IFloodlightService>>
-            getModuleDependencies() {
+    getModuleDependencies() {
         // No dependencies
         return null;
     }
 
     @Override
     public void init(FloodlightModuleContext context)
-                                 throws FloodlightModuleException {
+            throws FloodlightModuleException {
         executor = Executors.newScheduledThreadPool(15);
     }
 

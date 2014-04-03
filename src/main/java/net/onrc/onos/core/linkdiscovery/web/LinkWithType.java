@@ -15,9 +15,10 @@ import org.openflow.util.HexString;
 /**
  * This class is both the datastructure and the serializer
  * for a link with the corresponding type of link.
+ *
  * @author alexreimers
  */
-@JsonSerialize(using=LinkWithType.class)
+@JsonSerialize(using = LinkWithType.class)
 public class LinkWithType extends JsonSerializer<LinkWithType> {
     public long srcSwDpid;
     public short srcPort;
@@ -28,8 +29,9 @@ public class LinkWithType extends JsonSerializer<LinkWithType> {
     public LinkType type;
 
     // Do NOT delete this, it's required for the serializer
-    public LinkWithType() {}
-    
+    public LinkWithType() {
+    }
+
     public LinkWithType(Link link,
                         int srcPortState,
                         int dstPortState,
@@ -43,23 +45,23 @@ public class LinkWithType extends JsonSerializer<LinkWithType> {
         this.type = type;
     }
 
-	@Override
-	public void serialize(LinkWithType lwt, JsonGenerator jgen, SerializerProvider arg2) 
-			throws IOException, JsonProcessingException {
-		// You ****MUST*** use lwt for the fields as it's actually a different object.
-		jgen.writeStartObject();
-		jgen.writeStringField("src-switch", HexString.toHexString(lwt.srcSwDpid));
-		jgen.writeNumberField("src-port", lwt.srcPort);
-		jgen.writeNumberField("src-port-state", lwt.srcPortState);
-		jgen.writeStringField("dst-switch", HexString.toHexString(lwt.dstSwDpid));
-		jgen.writeNumberField("dst-port", lwt.dstPort);
-		jgen.writeNumberField("dst-port-state", lwt.dstPortState);
-		jgen.writeStringField("type", lwt.type.toString());
-		jgen.writeEndObject();
-	}
-	
-	@Override
-	public Class<LinkWithType> handledType() {
-		return LinkWithType.class;
-	}
+    @Override
+    public void serialize(LinkWithType lwt, JsonGenerator jgen, SerializerProvider arg2)
+            throws IOException, JsonProcessingException {
+        // You ****MUST*** use lwt for the fields as it's actually a different object.
+        jgen.writeStartObject();
+        jgen.writeStringField("src-switch", HexString.toHexString(lwt.srcSwDpid));
+        jgen.writeNumberField("src-port", lwt.srcPort);
+        jgen.writeNumberField("src-port-state", lwt.srcPortState);
+        jgen.writeStringField("dst-switch", HexString.toHexString(lwt.dstSwDpid));
+        jgen.writeNumberField("dst-port", lwt.dstPort);
+        jgen.writeNumberField("dst-port-state", lwt.dstPortState);
+        jgen.writeStringField("type", lwt.type.toString());
+        jgen.writeEndObject();
+    }
+
+    @Override
+    public Class<LinkWithType> handledType() {
+        return LinkWithType.class;
+    }
 }

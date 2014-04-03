@@ -15,29 +15,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NetworkGraphLinksResource extends ServerResource {
-	
-	private static final Logger log = LoggerFactory.getLogger(NetworkGraphLinksResource.class);
 
-	@Get("json")
-	public String retrieve() {
-		INetworkGraphService networkGraphService = (INetworkGraphService) getContext().getAttributes().
-				get(INetworkGraphService.class.getCanonicalName());
-		
-		NetworkGraph graph = networkGraphService.getNetworkGraph();
+    private static final Logger log = LoggerFactory.getLogger(NetworkGraphLinksResource.class);
 
-		ObjectMapper mapper = new ObjectMapper();
-		SimpleModule module = new SimpleModule("module", new Version(1, 0, 0, null));
-		module.addSerializer(new LinkSerializer());
-		mapper.registerModule(module);
-		
-		try {
-			graph.acquireReadLock();
-			return mapper.writeValueAsString(graph.getLinks());
-		} catch (IOException e) {
-			log.error("Error writing link list to JSON", e);
-			return "";
-		} finally {
-		    graph.releaseReadLock();
-		}
-	}
+    @Get("json")
+    public String retrieve() {
+        INetworkGraphService networkGraphService = (INetworkGraphService) getContext().getAttributes().
+                get(INetworkGraphService.class.getCanonicalName());
+
+        NetworkGraph graph = networkGraphService.getNetworkGraph();
+
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule("module", new Version(1, 0, 0, null));
+        module.addSerializer(new LinkSerializer());
+        mapper.registerModule(module);
+
+        try {
+            graph.acquireReadLock();
+            return mapper.writeValueAsString(graph.getLinks());
+        } catch (IOException e) {
+            log.error("Error writing link list to JSON", e);
+            return "";
+        } finally {
+            graph.releaseReadLock();
+        }
+    }
 }

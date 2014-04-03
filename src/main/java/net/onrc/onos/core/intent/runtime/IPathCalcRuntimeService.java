@@ -8,8 +8,11 @@ import net.onrc.onos.core.intent.IntentOperationList;
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public interface IPathCalcRuntimeService extends IFloodlightService {
-	public IntentOperationList executeIntentOperations(IntentOperationList list);
-	public IntentMap getHighLevelIntents();
-	public IntentMap getPathIntents();
-	public void purgeIntents();
+    public IntentOperationList executeIntentOperations(IntentOperationList list);
+
+    public IntentMap getHighLevelIntents();
+
+    public IntentMap getPathIntents();
+
+    public void purgeIntents();
 }

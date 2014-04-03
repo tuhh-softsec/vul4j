@@ -7,8 +7,8 @@ import org.restlet.resource.ServerResource;
 
 public class DatastorePortsResource extends ServerResource {
 
-	@Get("json")
-	public Iterable<KVPort> retrieve() {
-		return KVPort.getAllPorts();
-	}
+    @Get("json")
+    public Iterable<KVPort> retrieve() {
+        return KVPort.getAllPorts();
+    }
 }

@@ -1,7 +1,7 @@
 /**
  *    Copyright 2011, Big Switch Networks, Inc. 
  *    Originally created by David Erickson, Stanford University
- * 
+ *
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may
  *    not use this file except in compliance with the License. You may obtain
  *    a copy of the License at
@@ -37,40 +37,45 @@ public interface IFloodlightProviderService extends IFloodlightService {
 
     /**
      * A value stored in the floodlight context containing a parsed packet
-     * representation of the payload of a packet-in message. 
+     * representation of the payload of a packet-in message.
      */
-    public static final String CONTEXT_PI_PAYLOAD = 
+    public static final String CONTEXT_PI_PAYLOAD =
             "net.floodlightcontroller.core.IFloodlightProvider.piPayload";
 
     /**
      * The role of the controller as used by the OF 1.2 and OVS failover and
      * load-balancing mechanism.
      */
-    public static enum Role { EQUAL, MASTER, SLAVE };
-    
+    public static enum Role {
+        EQUAL, MASTER, SLAVE
+    }
+
     /**
-     * A FloodlightContextStore object that can be used to retrieve the 
+     * A FloodlightContextStore object that can be used to retrieve the
      * packet-in payload
      */
-    public static final FloodlightContextStore<Ethernet> bcStore = 
+    public static final FloodlightContextStore<Ethernet> bcStore =
             new FloodlightContextStore<Ethernet>();
 
     /**
      * Adds an OpenFlow message listener
-     * @param type The OFType the component wants to listen for
+     *
+     * @param type     The OFType the component wants to listen for
      * @param listener The component that wants to listen for the message
      */
     public void addOFMessageListener(OFType type, IOFMessageListener listener);
 
     /**
      * Removes an OpenFlow message listener
-     * @param type The OFType the component no long wants to listen for
+     *
+     * @param type     The OFType the component no long wants to listen for
      * @param listener The component that no longer wants to receive the message
      */
     public void removeOFMessageListener(OFType type, IOFMessageListener listener);
-    
+
     /**
      * Return a non-modifiable list of all current listeners
+     *
      * @return listeners
      */
     public Map<OFType, List<IOFMessageListener>> getListeners();
@@ -78,34 +83,38 @@ public interface IFloodlightProviderService extends IFloodlightService {
     /**
      * Returns an unmodifiable map of all actively connected OpenFlow switches. This doesn't
      * contain switches that are connected but the controller's in the slave role.
+     *
      * @return the set of actively connected switches
      */
     public Map<Long, IOFSwitch> getSwitches();
-    
+
     /**
      * Get the current mapping of controller IDs to their IP addresses
-     * Returns a copy of the current mapping. 
+     * Returns a copy of the current mapping.
+     *
      * @see IHAListener
      */
-    public Map<String,String> getControllerNodeIPs();
-    
+    public Map<String, String> getControllerNodeIPs();
+
     /**
      * Gets the ID of the controller
      */
     public String getControllerId();
-    
+
     /**
      * Add a switch listener
+     *
      * @param listener The module that wants to listen for events
      */
     public void addOFSwitchListener(IOFSwitchListener listener);
 
     /**
      * Remove a switch listener
+     *
      * @param listener The The module that no longer wants to listen for events
      */
     public void removeOFSwitchListener(IOFSwitchListener listener);
-    
+
     /**
      * Terminate the process
      */
@@ -113,7 +122,8 @@ public interface IFloodlightProviderService extends IFloodlightService {
 
     /**
      * Re-injects an OFMessage back into the packet processing chain
-     * @param sw The switch to use for the message
+     *
+     * @param sw  The switch to use for the message
      * @param msg the message to inject
      * @return True if successfully re-injected, false otherwise
      */
@@ -121,25 +131,28 @@ public interface IFloodlightProviderService extends IFloodlightService {
 
     /**
      * Re-injects an OFMessage back into the packet processing chain
-     * @param sw The switch to use for the message
-     * @param msg the message to inject
+     *
+     * @param sw       The switch to use for the message
+     * @param msg      the message to inject
      * @param bContext a floodlight context to use if required
      * @return True if successfully re-injected, false otherwise
      */
-    public boolean injectOfMessage(IOFSwitch sw, OFMessage msg, 
-            FloodlightContext bContext);
+    public boolean injectOfMessage(IOFSwitch sw, OFMessage msg,
+                                   FloodlightContext bContext);
 
     /**
      * Process written messages through the message listeners for the controller
+     *
      * @param sw The switch being written to
-     * @param m the message 
+     * @param m  the message
      * @param bc any accompanying context object
      */
-    public void handleOutgoingMessage(IOFSwitch sw, OFMessage m, 
-            FloodlightContext bc);
+    public void handleOutgoingMessage(IOFSwitch sw, OFMessage m,
+                                      FloodlightContext bc);
 
     /**
      * Gets the BasicFactory
+     *
      * @return an OpenFlow message factory
      */
     public BasicFactory getOFMessageFactory();
@@ -148,25 +161,27 @@ public interface IFloodlightProviderService extends IFloodlightService {
      * Run the main I/O loop of the Controller.
      */
     public void run();
-   
-   /**
-    * Return the controller start time in  milliseconds
-    * @return
-    */
-   public long getSystemStartTime();
-   
-   /**
-    * Configure controller to always clear the flow table on the switch,
-    * when it connects to controller. This will be true for first time switch
-    * reconnect, as well as a switch re-attaching to Controller after HA
-    * switch over to ACTIVE role
-    */
-   public void setAlwaysClearFlowsOnSwAdd(boolean value);
-   
-   /**
-    * Publish updates to Controller updates queue
-    * @param IUpdate
-    */
-   public void publishUpdate(IUpdate update);
+
+    /**
+     * Return the controller start time in  milliseconds
+     *
+     * @return
+     */
+    public long getSystemStartTime();
+
+    /**
+     * Configure controller to always clear the flow table on the switch,
+     * when it connects to controller. This will be true for first time switch
+     * reconnect, as well as a switch re-attaching to Controller after HA
+     * switch over to ACTIVE role
+     */
+    public void setAlwaysClearFlowsOnSwAdd(boolean value);
+
+    /**
+     * Publish updates to Controller updates queue
+     *
+     * @param IUpdate
+     */
+    public void publishUpdate(IUpdate update);
 
 }

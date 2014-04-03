@@ -20,71 +20,75 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     private long lastSeenTime;
 
     public DeviceImpl(NetworkGraph graph, MACAddress mac) {
-		super(graph);
-		this.macAddr = mac;
-		this.attachmentPoints = new LinkedList<>();
-		this.ipAddresses = new HashSet<>();
+        super(graph);
+        this.macAddr = mac;
+        this.attachmentPoints = new LinkedList<>();
+        this.ipAddresses = new HashSet<>();
     }
 
     @Override
     public MACAddress getMacAddress() {
-    	return this.macAddr;
+        return this.macAddr;
     }
 
     @Override
     public Collection<InetAddress> getIpAddress() {
-    	return Collections.unmodifiableSet(ipAddresses);
+        return Collections.unmodifiableSet(ipAddresses);
     }
 
     @Override
     public Iterable<Port> getAttachmentPoints() {
-    	return Collections.unmodifiableList(this.attachmentPoints);
+        return Collections.unmodifiableList(this.attachmentPoints);
     }
 
     @Override
     public long getLastSeenTime() {
-    	return lastSeenTime;
+        return lastSeenTime;
     }
 
     @Override
     public String toString() {
-    	return macAddr.toString();
+        return macAddr.toString();
     }
-    
+
     void setLastSeenTime(long lastSeenTime) {
-    	this.lastSeenTime = lastSeenTime;
+        this.lastSeenTime = lastSeenTime;
     }
 
     /**
      * Only {@link TopologyManager} should use this method
+     *
      * @param p
      */
     void addAttachmentPoint(Port p) {
-    	this.attachmentPoints.remove(p);
-    	this.attachmentPoints.addFirst(p);
+        this.attachmentPoints.remove(p);
+        this.attachmentPoints.addFirst(p);
     }
 
     /**
      * Only {@link TopologyManager} should use this method
+     *
      * @param p
      */
     boolean removeAttachmentPoint(Port p) {
-    	return this.attachmentPoints.remove(p);
+        return this.attachmentPoints.remove(p);
     }
 
     /**
      * Only {@link TopologyManager} should use this method
+     *
      * @param p
      */
     boolean addIpAddress(InetAddress addr) {
-    	return this.ipAddresses.add(addr);
+        return this.ipAddresses.add(addr);
     }
 
     /**
      * Only {@link TopologyManager} should use this method
+     *
      * @param p
      */
     boolean removeIpAddress(InetAddress addr) {
-    	return this.ipAddresses.remove(addr);
+        return this.ipAddresses.remove(addr);
     }
 }

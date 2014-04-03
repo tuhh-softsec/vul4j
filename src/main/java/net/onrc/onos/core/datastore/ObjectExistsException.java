@@ -13,7 +13,7 @@ public class ObjectExistsException extends RejectRulesException {
     }
 
     public ObjectExistsException(final IKVTableID tableID, final byte[] key,
-            final Throwable cause) {
+                                 final Throwable cause) {
         super(ByteArrayUtil.toHexStringBuffer(key, ":")
                 + " already exist on table:" + tableID, cause);
     }

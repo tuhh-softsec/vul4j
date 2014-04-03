@@ -21,10 +21,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
  * Port object in data store.
- *
+ * <p/>
  * Note: This class will not maintain invariants.
- *       e.g., It will NOT automatically remove Links or Devices on Port,
- *       when deleting a Port.
+ * e.g., It will NOT automatically remove Links or Devices on Port,
+ * when deleting a Port.
  */
 public class KVPort extends KVObject {
     private static final Logger log = LoggerFactory.getLogger(KVPort.class);
@@ -105,9 +105,9 @@ public class KVPort extends KVObject {
     /**
      * Get an instance from Key.
      *
-     * @note You need to call `read()` to get the DB content.
      * @param key
      * @return KVPort instance
+     * @note You need to call `read()` to get the DB content.
      */
     public static KVPort createFromKey(final byte[] key) {
         long[] pair = getPortPairFromKey(key);

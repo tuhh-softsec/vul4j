@@ -9,32 +9,32 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * The class representing the Flow Path.
  */
 public class FlowPath implements Comparable<FlowPath> {
-    public static final int PRIORITY_DEFAULT = 32768;	// Default Flow Priority
+    public static final int PRIORITY_DEFAULT = 32768;    // Default Flow Priority
 
-    private FlowId flowId;		// The Flow ID
-    private CallerId installerId;	// The Caller ID of the path installer
-    private FlowPathType flowPathType;	// The Flow Path type
+    private FlowId flowId;        // The Flow ID
+    private CallerId installerId;    // The Caller ID of the path installer
+    private FlowPathType flowPathType;    // The Flow Path type
     private FlowPathUserState flowPathUserState; // The Flow Path User state
     private FlowPathFlags flowPathFlags; // The Flow Path flags
-    private int		idleTimeout;	// The Flow idle timeout
-    private int		hardTimeout;	// The Flow hard timeout
-    private int		priority;	// The Flow priority
-    private DataPath	dataPath;	// The data path
+    private int idleTimeout;    // The Flow idle timeout
+    private int hardTimeout;    // The Flow hard timeout
+    private int priority;    // The Flow priority
+    private DataPath dataPath;    // The data path
     private FlowEntryMatch flowEntryMatch; // Common Flow Entry Match for all
-					// Flow Entries
+    // Flow Entries
     private FlowEntryActions flowEntryActions; // The Flow Entry Actions for
-					// the first Flow Entry
+    // the first Flow Entry
 
     /**
      * Default constructor.
      */
     public FlowPath() {
-	flowPathType = FlowPathType.FP_TYPE_UNKNOWN;
-	flowPathUserState = FlowPathUserState.FP_USER_UNKNOWN;
-	flowPathFlags = new FlowPathFlags();
-	priority = FlowPath.PRIORITY_DEFAULT;
-	dataPath = new DataPath();
-	flowEntryActions = new FlowEntryActions();
+        flowPathType = FlowPathType.FP_TYPE_UNKNOWN;
+        flowPathUserState = FlowPathUserState.FP_USER_UNKNOWN;
+        flowPathFlags = new FlowPathFlags();
+        priority = FlowPath.PRIORITY_DEFAULT;
+        dataPath = new DataPath();
+        flowEntryActions = new FlowEntryActions();
     }
 
     /**
@@ -43,7 +43,9 @@ public class FlowPath implements Comparable<FlowPath> {
      * @return the flow path Flow ID.
      */
     @JsonProperty("flowId")
-    public FlowId flowId() { return flowId; }
+    public FlowId flowId() {
+        return flowId;
+    }
 
     /**
      * Set the flow path Flow ID.
@@ -52,7 +54,7 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonProperty("flowId")
     public void setFlowId(FlowId flowId) {
-	this.flowId = flowId;
+        this.flowId = flowId;
     }
 
     /**
@@ -62,9 +64,9 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonIgnore
     public boolean isValidFlowId() {
-	if (this.flowId == null)
-	    return false;
-	return (this.flowId.isValid());
+        if (this.flowId == null)
+            return false;
+        return (this.flowId.isValid());
     }
 
     /**
@@ -73,7 +75,9 @@ public class FlowPath implements Comparable<FlowPath> {
      * @return the Caller ID of the flow path installer.
      */
     @JsonProperty("installerId")
-    public CallerId installerId() { return installerId; }
+    public CallerId installerId() {
+        return installerId;
+    }
 
     /**
      * Set the Caller ID of the flow path installer.
@@ -82,7 +86,7 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonProperty("installerId")
     public void setInstallerId(CallerId installerId) {
-	this.installerId = installerId;
+        this.installerId = installerId;
     }
 
     /**
@@ -91,7 +95,9 @@ public class FlowPath implements Comparable<FlowPath> {
      * @return the flow path type.
      */
     @JsonProperty("flowPathType")
-    public FlowPathType flowPathType() { return flowPathType; }
+    public FlowPathType flowPathType() {
+        return flowPathType;
+    }
 
     /**
      * Set the flow path type.
@@ -100,7 +106,7 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonProperty("flowPathType")
     public void setFlowPathType(FlowPathType flowPathType) {
-	this.flowPathType = flowPathType;
+        this.flowPathType = flowPathType;
     }
 
     /**
@@ -109,7 +115,9 @@ public class FlowPath implements Comparable<FlowPath> {
      * @return the flow path user state.
      */
     @JsonProperty("flowPathUserState")
-    public FlowPathUserState flowPathUserState() { return flowPathUserState; }
+    public FlowPathUserState flowPathUserState() {
+        return flowPathUserState;
+    }
 
     /**
      * Set the flow path user state.
@@ -118,7 +126,7 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonProperty("flowPathUserState")
     public void setFlowPathUserState(FlowPathUserState flowPathUserState) {
-	this.flowPathUserState = flowPathUserState;
+        this.flowPathUserState = flowPathUserState;
     }
 
     /**
@@ -127,7 +135,9 @@ public class FlowPath implements Comparable<FlowPath> {
      * @return the flow path flags.
      */
     @JsonProperty("flowPathFlags")
-    public FlowPathFlags flowPathFlags() { return flowPathFlags; }
+    public FlowPathFlags flowPathFlags() {
+        return flowPathFlags;
+    }
 
     /**
      * Set the flow path flags.
@@ -136,23 +146,25 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonProperty("flowPathFlags")
     public void setFlowPathFlags(FlowPathFlags flowPathFlags) {
-	this.flowPathFlags = flowPathFlags;
+        this.flowPathFlags = flowPathFlags;
     }
 
     /**
      * Get the flow idle timeout in seconds.
-     *
+     * <p/>
      * It should be an unsigned integer in the interval [0, 65535].
      * If zero, the timeout is not set.
      *
      * @return the flow idle timeout.
      */
     @JsonProperty("idleTimeout")
-    public int idleTimeout() { return idleTimeout; }
+    public int idleTimeout() {
+        return idleTimeout;
+    }
 
     /**
      * Set the flow idle timeout in seconds.
-     *
+     * <p/>
      * It should be an unsigned integer in the interval [0, 65535].
      * If zero, the timeout is not set.
      *
@@ -160,23 +172,25 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonProperty("idleTimeout")
     public void setIdleTimeout(int idleTimeout) {
-	this.idleTimeout = 0xffff & idleTimeout;
+        this.idleTimeout = 0xffff & idleTimeout;
     }
 
     /**
      * Get the flow hard timeout in seconds.
-     *
+     * <p/>
      * It should be an unsigned integer in the interval [0, 65535].
      * If zero, the timeout is not set.
      *
      * @return the flow hard timeout.
      */
     @JsonProperty("hardTimeout")
-    public int hardTimeout() { return hardTimeout; }
+    public int hardTimeout() {
+        return hardTimeout;
+    }
 
     /**
      * Set the flow hard timeout.
-     *
+     * <p/>
      * It should be an unsigned integer in the interval [0, 65535].
      * If zero, the timeout is not set.
      *
@@ -184,29 +198,31 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonProperty("hardTimeout")
     public void setHardTimeout(int hardTimeout) {
-	this.hardTimeout = 0xffff & hardTimeout;
+        this.hardTimeout = 0xffff & hardTimeout;
     }
 
     /**
      * Get the flow priority.
-     *
+     * <p/>
      * It should be an unsigned integer in the interval [0, 65535].
      *
      * @return the flow priority.
      */
     @JsonProperty("priority")
-    public int priority() { return priority; }
+    public int priority() {
+        return priority;
+    }
 
     /**
      * Set the flow priority.
-     *
+     * <p/>
      * It should be an unsigned integer in the interval [0, 65535].
      *
      * @param priority the flow priority to set.
      */
     @JsonProperty("priority")
     public void setPriority(int priority) {
-	this.priority = 0xffff & priority;
+        this.priority = 0xffff & priority;
     }
 
     /**
@@ -215,7 +231,9 @@ public class FlowPath implements Comparable<FlowPath> {
      * @return the flow path's data path.
      */
     @JsonProperty("dataPath")
-    public DataPath dataPath() { return dataPath; }
+    public DataPath dataPath() {
+        return dataPath;
+    }
 
     /**
      * Set the flow path's data path.
@@ -224,7 +242,7 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonProperty("dataPath")
     public void setDataPath(DataPath dataPath) {
-	this.dataPath = dataPath;
+        this.dataPath = dataPath;
     }
 
     /**
@@ -233,7 +251,7 @@ public class FlowPath implements Comparable<FlowPath> {
      * @return the data path flow entries.
      */
     public ArrayList<FlowEntry> flowEntries() {
-	return this.dataPath.flowEntries();
+        return this.dataPath.flowEntries();
     }
 
     /**
@@ -242,17 +260,19 @@ public class FlowPath implements Comparable<FlowPath> {
      * @return the flow path's match conditions common for all Flow Entries.
      */
     @JsonProperty("flowEntryMatch")
-    public FlowEntryMatch flowEntryMatch() { return flowEntryMatch; }
+    public FlowEntryMatch flowEntryMatch() {
+        return flowEntryMatch;
+    }
 
     /**
      * Set the flow path's match conditions common for all Flow Entries.
      *
      * @param flowEntryMatch the flow path's match conditions common for all
-     * Flow Entries.
+     *                       Flow Entries.
      */
     @JsonProperty("flowEntryMatch")
     public void setFlowEntryMatch(FlowEntryMatch flowEntryMatch) {
-	this.flowEntryMatch = flowEntryMatch;
+        this.flowEntryMatch = flowEntryMatch;
     }
 
     /**
@@ -262,55 +282,55 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonProperty("flowEntryActions")
     public FlowEntryActions flowEntryActions() {
-	return flowEntryActions;
+        return flowEntryActions;
     }
 
     /**
      * Set the flow path's flow entry actions for the first Flow Entry.
      *
      * @param flowEntryActions the flow path's flow entry actions for the first
-     * Flow Entry.
+     *                         Flow Entry.
      */
     @JsonProperty("flowEntryActions")
     public void setFlowEntryActions(FlowEntryActions flowEntryActions) {
-	this.flowEntryActions = flowEntryActions;
+        this.flowEntryActions = flowEntryActions;
     }
 
     /**
      * Convert the flow path to a string.
-     *
+     * <p/>
      * The string has the following form:
-     *  [flowId=XXX installerId=XXX flowPathType = XXX flowPathUserState = XXX
-     *   flowPathFlags=XXX idleTimeout=XXX hardTimeout=XXX priority=XXX
-     *   dataPath=XXX flowEntryMatch=XXX flowEntryActions=XXX]
+     * [flowId=XXX installerId=XXX flowPathType = XXX flowPathUserState = XXX
+     * flowPathFlags=XXX idleTimeout=XXX hardTimeout=XXX priority=XXX
+     * dataPath=XXX flowEntryMatch=XXX flowEntryActions=XXX]
      *
      * @return the flow path as a string.
      */
     @Override
     public String toString() {
-	String ret = "[flowId=" + this.flowId.toString();
-	ret += " installerId=" + this.installerId.toString();
-	ret += " flowPathType=" + this.flowPathType;
-	ret += " flowPathUserState=" + this.flowPathUserState;
-	ret += " flowPathFlags=" + this.flowPathFlags.toString();
-	ret += " idleTimeout=" + this.idleTimeout;
-	ret += " hardTimeout=" + this.hardTimeout;
-	ret += " priority=" + this.priority;
-	if (dataPath != null)
-	    ret += " dataPath=" + this.dataPath.toString();
-	if (flowEntryMatch != null)
-	    ret += " flowEntryMatch=" + this.flowEntryMatch.toString();
-	if (flowEntryActions != null)
-	    ret += " flowEntryActions=" + this.flowEntryActions.toString();
-	ret += "]";
-	return ret;
+        String ret = "[flowId=" + this.flowId.toString();
+        ret += " installerId=" + this.installerId.toString();
+        ret += " flowPathType=" + this.flowPathType;
+        ret += " flowPathUserState=" + this.flowPathUserState;
+        ret += " flowPathFlags=" + this.flowPathFlags.toString();
+        ret += " idleTimeout=" + this.idleTimeout;
+        ret += " hardTimeout=" + this.hardTimeout;
+        ret += " priority=" + this.priority;
+        if (dataPath != null)
+            ret += " dataPath=" + this.dataPath.toString();
+        if (flowEntryMatch != null)
+            ret += " flowEntryMatch=" + this.flowEntryMatch.toString();
+        if (flowEntryActions != null)
+            ret += " flowEntryActions=" + this.flowEntryActions.toString();
+        ret += "]";
+        return ret;
     }
-    
+
     /**
      * CompareTo method to order flowPath by Id
      */
     @Override
     public int compareTo(FlowPath f) {
-    	return (int) (this.flowId.value() - f.flowId.value());
+        return (int) (this.flowId.value() - f.flowId.value());
     }
 }

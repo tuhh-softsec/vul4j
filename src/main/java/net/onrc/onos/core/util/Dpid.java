@@ -10,8 +10,8 @@ import org.openflow.util.HexString;
 /**
  * The class representing a network switch DPID.
  */
-@JsonDeserialize(using=DpidDeserializer.class)
-@JsonSerialize(using=DpidSerializer.class)
+@JsonDeserialize(using = DpidDeserializer.class)
+@JsonSerialize(using = DpidSerializer.class)
 public class Dpid {
     static public final long UNKNOWN = 0;
 
@@ -21,7 +21,7 @@ public class Dpid {
      * Default constructor.
      */
     public Dpid() {
-	this.value = Dpid.UNKNOWN;
+        this.value = Dpid.UNKNOWN;
     }
 
     /**
@@ -30,7 +30,7 @@ public class Dpid {
      * @param value the value to use.
      */
     public Dpid(long value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -39,7 +39,7 @@ public class Dpid {
      * @param value the value to use.
      */
     public Dpid(String value) {
-	this.value = HexString.toLong(value);
+        this.value = HexString.toLong(value);
     }
 
     /**
@@ -47,7 +47,9 @@ public class Dpid {
      *
      * @return the value of the DPID.
      */
-    public long value() { return value; }
+    public long value() {
+        return value;
+    }
 
     /**
      * Set the value of the DPID.
@@ -55,7 +57,7 @@ public class Dpid {
      * @param value the value to set.
      */
     public void setValue(long value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -65,24 +67,24 @@ public class Dpid {
      */
     @Override
     public String toString() {
-	return HexString.toHexString(this.value);
+        return HexString.toHexString(this.value);
     }
 
     @Override
     public boolean equals(Object other) {
-    	if (!(other instanceof Dpid)) {
-    		return false;
-    	}
+        if (!(other instanceof Dpid)) {
+            return false;
+        }
 
-    	Dpid otherDpid = (Dpid) other;
+        Dpid otherDpid = (Dpid) other;
 
-    	return value == otherDpid.value;
+        return value == otherDpid.value;
     }
 
     @Override
     public int hashCode() {
-    	int hash = 17;
-    	hash += 31 * hash + (int)(value ^ value >>> 32); 
-    	return hash;
+        int hash = 17;
+        hash += 31 * hash + (int) (value ^ value >>> 32);
+        return hash;
     }
 }

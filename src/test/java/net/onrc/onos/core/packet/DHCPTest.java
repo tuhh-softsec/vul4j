@@ -1,25 +1,24 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 /**
- * 
+ *
  */
 package net.onrc.onos.core.packet;
-
 
 
 import java.util.Arrays;
@@ -30,10 +29,9 @@ import junit.framework.TestCase;
 
 /**
  * @author David Erickson (daviderickson@cs.stanford.edu)
- *
  */
 public class DHCPTest extends TestCase {
-    public byte[] dhcpPacket = new byte[] {
+    public byte[] dhcpPacket = new byte[]{
             (byte) 0x01, (byte) 0x01,
             (byte) 0x06, (byte) 0x00, (byte) 0x66, (byte) 0xf2, (byte) 0x8a,
             (byte) 0x11, (byte) 0x00, (byte) 0x06, (byte) 0x00, (byte) 0x00,
@@ -97,7 +95,7 @@ public class DHCPTest extends TestCase {
             (byte) 0x00, (byte) 0x00, (byte) 0x00
     };
 
-    public byte[] dhcpPacket2 = new byte[] { (byte) 0xff, (byte) 0xff,
+    public byte[] dhcpPacket2 = new byte[]{(byte) 0xff, (byte) 0xff,
             (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0x00,
             (byte) 0xc0, (byte) 0x9f, (byte) 0x9e, (byte) 0x11, (byte) 0x84,
             (byte) 0x08, (byte) 0x00, (byte) 0x45, (byte) 0x00, (byte) 0x02,
@@ -215,73 +213,73 @@ public class DHCPTest extends TestCase {
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-            (byte) 0x00, (byte) 0x00, (byte) 0x00 };
-    
-    public byte[] dhcpPacket3 = new byte[] { 
+            (byte) 0x00, (byte) 0x00, (byte) 0x00};
+
+    public byte[] dhcpPacket3 = new byte[]{
             (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff,
-            (byte) 0xff, (byte) 0x74, (byte) 0x44, (byte) 0x01, (byte) 0x72, 
-            (byte) 0xd8, (byte) 0x41, (byte) 0x08, (byte) 0x00, (byte) 0x45, 
-            (byte) 0x00, (byte) 0x01, (byte) 0x1f, (byte) 0x48, (byte) 0xcd, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x40, (byte) 0x11, (byte) 0x6f, 
-            (byte) 0x6a, (byte) 0xc0, (byte) 0xa8, (byte) 0x00, (byte) 0xef, 
-            (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0x00, 
-            (byte) 0x44, (byte) 0x00, (byte) 0x43, (byte) 0x01, (byte) 0x0b, 
-            (byte) 0xb3, (byte) 0x0f, (byte) 0x01, (byte) 0x01, (byte) 0x06, 
-            (byte) 0x00, (byte) 0x82, (byte) 0x88, (byte) 0xa6, (byte) 0xc9, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x80, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x74, (byte) 0x44, (byte) 0x01, (byte) 0x72, (byte) 0xd8, 
-            (byte) 0x41, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, 
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x63, (byte) 0x82, 
-            (byte) 0x53, (byte) 0x63, (byte) 0x35, (byte) 0x01, (byte) 0x01, 
-            (byte) 0x32, (byte) 0x04, (byte) 0xc0, (byte) 0xa8, (byte) 0x0a, 
-            (byte) 0xa9, (byte) 0x39, (byte) 0x02, (byte) 0x02, (byte) 0x40, 
-            (byte) 0x37, (byte) 0x03, (byte) 0x01, (byte) 0x03, (byte) 0x06, 
-            (byte) 0xff                               
+            (byte) 0xff, (byte) 0x74, (byte) 0x44, (byte) 0x01, (byte) 0x72,
+            (byte) 0xd8, (byte) 0x41, (byte) 0x08, (byte) 0x00, (byte) 0x45,
+            (byte) 0x00, (byte) 0x01, (byte) 0x1f, (byte) 0x48, (byte) 0xcd,
+            (byte) 0x00, (byte) 0x00, (byte) 0x40, (byte) 0x11, (byte) 0x6f,
+            (byte) 0x6a, (byte) 0xc0, (byte) 0xa8, (byte) 0x00, (byte) 0xef,
+            (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0x00,
+            (byte) 0x44, (byte) 0x00, (byte) 0x43, (byte) 0x01, (byte) 0x0b,
+            (byte) 0xb3, (byte) 0x0f, (byte) 0x01, (byte) 0x01, (byte) 0x06,
+            (byte) 0x00, (byte) 0x82, (byte) 0x88, (byte) 0xa6, (byte) 0xc9,
+            (byte) 0x00, (byte) 0x00, (byte) 0x80, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x74, (byte) 0x44, (byte) 0x01, (byte) 0x72, (byte) 0xd8,
+            (byte) 0x41, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x63, (byte) 0x82,
+            (byte) 0x53, (byte) 0x63, (byte) 0x35, (byte) 0x01, (byte) 0x01,
+            (byte) 0x32, (byte) 0x04, (byte) 0xc0, (byte) 0xa8, (byte) 0x0a,
+            (byte) 0xa9, (byte) 0x39, (byte) 0x02, (byte) 0x02, (byte) 0x40,
+            (byte) 0x37, (byte) 0x03, (byte) 0x01, (byte) 0x03, (byte) 0x06,
+            (byte) 0xff
     };
-    
-    public byte[] dhcpPacketPXE = new byte[] { (byte) 0xff, (byte) 0xff,
+
+    public byte[] dhcpPacketPXE = new byte[]{(byte) 0xff, (byte) 0xff,
             (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0x00,
             (byte) 0x19, (byte) 0xb9, (byte) 0xb0, (byte) 0x01, (byte) 0x44,
             (byte) 0x08, (byte) 0x00, (byte) 0x45, (byte) 0x10, (byte) 0x01,
@@ -352,7 +350,7 @@ public class DHCPTest extends TestCase {
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
     };
 
-    public byte[] dhcpPacketBadOption1 = new byte[] { (byte) 0xff, (byte) 0xff,
+    public byte[] dhcpPacketBadOption1 = new byte[]{(byte) 0xff, (byte) 0xff,
             (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0x00,
             (byte) 0x19, (byte) 0xb9, (byte) 0xb0, (byte) 0x01, (byte) 0x44,
             (byte) 0x08, (byte) 0x00, (byte) 0x45, (byte) 0x10, (byte) 0x01,
@@ -422,8 +420,8 @@ public class DHCPTest extends TestCase {
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
     };
-    
-    public byte[] dhcpPacketBadHeader = new byte[] { (byte) 0xff, (byte) 0xff,
+
+    public byte[] dhcpPacketBadHeader = new byte[]{(byte) 0xff, (byte) 0xff,
             (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0x00,
             (byte) 0x19, (byte) 0xb9, (byte) 0xb0, (byte) 0x01, (byte) 0x44,
             (byte) 0x08, (byte) 0x00, (byte) 0x45, (byte) 0x10, (byte) 0x01,
@@ -480,12 +478,12 @@ public class DHCPTest extends TestCase {
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
     };
-    
+
     private void resetChecksumsAndLengths(IPv4 ipv4, UDP udp) {
-        ipv4.setChecksum((short)0);
-        udp.setChecksum((short)0);
+        ipv4.setChecksum((short) 0);
+        udp.setChecksum((short) 0);
     }
-    
+
     public void testSerialize() {
         DHCP dhcp = new DHCP();
         dhcp.deserialize(dhcpPacket, 0, dhcpPacket.length);
@@ -508,14 +506,14 @@ public class DHCPTest extends TestCase {
         resetChecksumsAndLengths(ipv4, udp);
         assertEquals(DHCP.OPCODE_REQUEST, dhcp.getOpCode());
     }
-    
+
     public void testDeSerializeReSerialize() {
         Ethernet eth = new Ethernet();
         eth.deserialize(dhcpPacket3, 0, dhcpPacket3.length);
         assertTrue(eth.getPayload() instanceof IPv4);
         IPv4 ipv4 = (IPv4) eth.getPayload();
         assertTrue(ipv4.getPayload() instanceof UDP);
-        
+
         byte[] serializedPacket = eth.serialize();
         Ethernet eth2 = new Ethernet();
         eth2.deserialize(serializedPacket, 0, serializedPacket.length);
@@ -523,7 +521,7 @@ public class DHCPTest extends TestCase {
 
         short ipchecksum = ipv42.getChecksum();
         ipv42.setChecksum((short) 0);
-        eth2.serialize();        
+        eth2.serialize();
         assertEquals(ipchecksum, ipv42.getChecksum());
     }
 
@@ -540,14 +538,14 @@ public class DHCPTest extends TestCase {
          *  length field so that the serialize() function can re-compute them
          */
         resetChecksumsAndLengths(ipv4, udp);
-        
+
         assertEquals(DHCP.OPCODE_REPLY, dhcp.getOpCode());
         assertEquals("xenserver_5.6/pxelinux.0", dhcp.getBootFileName());
 
         byte[] result = eth.serialize();
         assertTrue(Arrays.equals(this.dhcpPacketPXE, result));
     }
-    
+
     public void testDeSerializeBad1() {
         Ethernet eth = new Ethernet();
         eth.deserialize(dhcpPacketBadOption1, 0, dhcpPacketBadOption1.length);
@@ -561,21 +559,21 @@ public class DHCPTest extends TestCase {
          *  length field so that the serialize() function can re-compute them
          */
         resetChecksumsAndLengths(ipv4, udp);
-        
+
         assertEquals(DHCP.OPCODE_REPLY, dhcp.getOpCode());
         ListIterator<DHCPOption> lit = dhcp.getOptions().listIterator();
         // Expect 5 correct options and an END option.
         assertEquals(dhcp.getOptions().size(), 6);
         while (lit.hasNext()) {
             DHCPOption option = lit.next();
-            assertFalse(option.code == (byte)0x0c);
+            assertFalse(option.code == (byte) 0x0c);
         }
 
         byte[] result = eth.serialize();
         // Since one option is badly formated, the result is different.
         assertFalse(Arrays.equals(this.dhcpPacketPXE, result));
     }
-    
+
     public void testDeSerializeBadHeader() {
         Ethernet eth = new Ethernet();
         eth.deserialize(dhcpPacketBadHeader, 0, dhcpPacketBadHeader.length);
@@ -588,7 +586,7 @@ public class DHCPTest extends TestCase {
 
         assertEquals(UDP.DHCP_CLIENT_PORT, udp.getSourcePort());
         assertEquals(UDP.DHCP_SERVER_PORT, udp.getDestinationPort());
-        
+
         // should get invalid opCode of 0
         assertEquals(0, dhcp.getOpCode());
     }

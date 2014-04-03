@@ -1,19 +1,19 @@
 /**
-*    Copyright 2011, Big Switch Networks, Inc. 
-*    Originally created by David Erickson, Stanford University
-* 
-*    Licensed under the Apache License, Version 2.0 (the "License"); you may
-*    not use this file except in compliance with the License. You may obtain
-*    a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*    License for the specific language governing permissions and limitations
-*    under the License.
-**/
+ *    Copyright 2011, Big Switch Networks, Inc.
+ *    Originally created by David Erickson, Stanford University
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ **/
 
 package net.onrc.onos.core.linkdiscovery.internal;
 
@@ -47,14 +47,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
 public class LinkDiscoveryManagerTest extends FloodlightTestCase {
 
     private TestLinkDiscoveryManager ldm;
     protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManagerTest.class);
-    
+
     public class TestLinkDiscoveryManager extends LinkDiscoveryManager {
         public boolean isSendLLDPsCalled = false;
         public boolean isClearLinksCalled = false;
@@ -70,7 +69,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
             isClearLinksCalled = false;
         }
     }
-    
+
     public LinkDiscoveryManager getTopology() {
         return ldm;
     }
@@ -115,8 +114,8 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
 
         Link lt = new Link(1L, 2, 2L, 1);
         LinkInfo info = new LinkInfo(System.currentTimeMillis(),
-                                     System.currentTimeMillis(), null,
-                                     0, 0);
+                System.currentTimeMillis(), null,
+                0, 0);
         topology.addOrUpdateLink(lt, info);
 
 
@@ -139,8 +138,8 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
 
         Link lt = new Link(1L, 2, 2L, 1);
         LinkInfo info = new LinkInfo(System.currentTimeMillis(),
-                                     System.currentTimeMillis(), null,
-                                     0, 0);
+                System.currentTimeMillis(), null,
+                0, 0);
         topology.addOrUpdateLink(lt, info);
         topology.deleteLinks(Collections.singletonList(lt), "Test");
 
@@ -161,8 +160,8 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         NodePortTuple dstNpt = new NodePortTuple(2L, 3);
 
         LinkInfo info = new LinkInfo(System.currentTimeMillis(),
-                                     System.currentTimeMillis(), null,
-                                     0, 0);
+                System.currentTimeMillis(), null,
+                0, 0);
         topology.addOrUpdateLink(lt, info);
 
         // check invariants hold
@@ -184,8 +183,8 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         NodePortTuple dstNpt = new NodePortTuple(2L, 3);
 
         LinkInfo info = new LinkInfo(System.currentTimeMillis(),
-                                     System.currentTimeMillis(), null,
-                                     0, 0);
+                System.currentTimeMillis(), null,
+                0, 0);
         topology.addOrUpdateLink(lt, info);
         topology.deleteLinks(Collections.singletonList(lt), "Test to self");
 
@@ -205,8 +204,8 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         NodePortTuple srcNpt = new NodePortTuple(1L, 2);
         NodePortTuple dstNpt = new NodePortTuple(2L, 1);
         LinkInfo info = new LinkInfo(System.currentTimeMillis(),
-                                     System.currentTimeMillis(), null,
-                                     0, 0);
+                System.currentTimeMillis(), null,
+                0, 0);
         topology.addOrUpdateLink(lt, info);
 
         IOFSwitch sw1 = getMockFloodlightProvider().getSwitches().get(1L);
@@ -230,8 +229,8 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         replay(sw1);
         Link lt = new Link(1L, 2, 1L, 3);
         LinkInfo info = new LinkInfo(System.currentTimeMillis(),
-                                     System.currentTimeMillis(), null,
-                                     0, 0);
+                System.currentTimeMillis(), null,
+                0, 0);
         topology.addOrUpdateLink(lt, info);
 
         // Mock up our expected behavior
@@ -252,12 +251,12 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         Link lt = new Link(1L, 1, 2L, 1);
         NodePortTuple srcNpt = new NodePortTuple(1L, 1);
         NodePortTuple dstNpt = new NodePortTuple(2L, 1);
-        
+
         LinkInfo info;
 
         info = new LinkInfo(System.currentTimeMillis() - 40000,
-                            System.currentTimeMillis() - 40000, null,
-                                     0, 0);
+                System.currentTimeMillis() - 40000, null,
+                0, 0);
         topology.addOrUpdateLink(lt, info);
 
         // check invariants hold
@@ -277,8 +276,8 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
 
 
         info = new LinkInfo(System.currentTimeMillis(),/* firstseen */
-                            null,/* unicast */
-                            System.currentTimeMillis(), 0, 0);
+                null,/* unicast */
+                System.currentTimeMillis(), 0, 0);
         topology.addOrUpdateLink(lt, info);
         assertTrue(topology.links.get(lt).getUnicastValidTime() == null);
         assertTrue(topology.links.get(lt).getMulticastValidTime() != null);
@@ -292,7 +291,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         // with LT_OPENFLOW_LINK, the link property should be changed to LT_NON_OPENFLOW
         // by the addOrUpdateLink method.
         info = new LinkInfo(System.currentTimeMillis() - 40000,
-                            System.currentTimeMillis() - 40000, null, 0, 0);
+                System.currentTimeMillis() - 40000, null, 0, 0);
         topology.addOrUpdateLink(lt, info);
         assertTrue(topology.portBroadcastDomainLinks.get(srcNpt) == null ||
                 topology.portBroadcastDomainLinks.get(srcNpt).contains(lt) == false);
@@ -309,7 +308,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
 
         // Set the multicastValidTime to be old and see if that also times out.
         info = new LinkInfo(System.currentTimeMillis() - 40000,
-                            null, System.currentTimeMillis() - 40000, 0, 0);
+                null, System.currentTimeMillis() - 40000, 0, 0);
         topology.addOrUpdateLink(lt, info);
         topology.timeoutLinks();
         assertTrue(topology.links.get(lt) == null);
@@ -321,7 +320,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
 
         // Test again only with multicast LLDP
         info = new LinkInfo(System.currentTimeMillis() - 40000,
-                            null, System.currentTimeMillis() - 40000, 0, 0);
+                null, System.currentTimeMillis() - 40000, 0, 0);
         topology.addOrUpdateLink(lt, info);
         assertTrue(topology.links.get(lt).getUnicastValidTime() == null);
         assertTrue(topology.links.get(lt).getMulticastValidTime() != null);
@@ -341,7 +340,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         srcNpt = new NodePortTuple(1L, 1);
         dstNpt = new NodePortTuple(1L, 2);
         info = new LinkInfo(System.currentTimeMillis() - 40000,
-                            null, System.currentTimeMillis() - 40000, 0, 0);
+                null, System.currentTimeMillis() - 40000, 0, 0);
         topology.addOrUpdateLink(lt, info);
         assertTrue(topology.portBroadcastDomainLinks.get(srcNpt).contains(lt));
         assertTrue(topology.portBroadcastDomainLinks.get(dstNpt).contains(lt));
@@ -352,7 +351,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         srcNpt = new NodePortTuple(1L, 1);
         dstNpt = new NodePortTuple(1L, 3);
         info = new LinkInfo(System.currentTimeMillis() - 40000,
-                            null, System.currentTimeMillis() - 40000, 0, 0);
+                null, System.currentTimeMillis() - 40000, 0, 0);
         topology.addOrUpdateLink(lt, info);
         assertTrue(topology.portBroadcastDomainLinks.get(srcNpt).contains(lt));
         assertTrue(topology.portBroadcastDomainLinks.get(dstNpt).contains(lt));
@@ -363,7 +362,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         srcNpt = new NodePortTuple(1L, 4);
         dstNpt = new NodePortTuple(1L, 5);
         info = new LinkInfo(System.currentTimeMillis() - 40000,
-                            null, System.currentTimeMillis() - 40000, 0, 0);
+                null, System.currentTimeMillis() - 40000, 0, 0);
         topology.addOrUpdateLink(lt, info);
         assertTrue(topology.portBroadcastDomainLinks.get(srcNpt).contains(lt));
         assertTrue(topology.portBroadcastDomainLinks.get(dstNpt).contains(lt));
@@ -374,7 +373,7 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         srcNpt = new NodePortTuple(1L, 3);
         dstNpt = new NodePortTuple(1L, 5);
         info = new LinkInfo(System.currentTimeMillis() - 40000,
-                            null, System.currentTimeMillis() - 40000, 0, 0);
+                null, System.currentTimeMillis() - 40000, 0, 0);
         topology.addOrUpdateLink(lt, info);
         assertTrue(topology.portBroadcastDomainLinks.get(srcNpt).contains(lt));
         assertTrue(topology.portBroadcastDomainLinks.get(dstNpt).contains(lt));

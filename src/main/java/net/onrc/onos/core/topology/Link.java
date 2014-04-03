@@ -2,10 +2,9 @@ package net.onrc.onos.core.topology;
 
 /**
  * Interface of Link Object exposed to the "NB" read-only Topology.
- *
+ * <p/>
  * Everything returned by these interfaces must be either Unmodifiable view,
  * immutable object, or a copy of the original "SB" In-memory Topology.
- *
  */
 public interface Link {
     /**
@@ -38,7 +37,7 @@ public interface Link {
 
     /**
      * Get the last seen time for the link.
-     *
+     * <p/>
      * TODO: Not implemented yet.
      * TODO: what is the time definition?
      *
@@ -48,7 +47,7 @@ public interface Link {
 
     /**
      * Get the link cost.
-     *
+     * <p/>
      * TODO: What is the unit?
      *
      * @param return the link cost.
@@ -57,7 +56,7 @@ public interface Link {
 
     /**
      * Get the link capacity.
-     *
+     * <p/>
      * TODO: What is the unit?
      *
      * @return the link capacity.

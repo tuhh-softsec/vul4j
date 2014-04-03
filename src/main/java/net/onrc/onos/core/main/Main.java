@@ -12,20 +12,22 @@ import org.kohsuke.args4j.CmdLineParser;
 
 /**
  * Host for the ONOS main method
+ *
  * @author alexreimers
  */
 public class Main {
 
     /**
      * Main method to load configuration and modules
+     *
      * @param args
-     * @throws FloodlightModuleException 
+     * @throws FloodlightModuleException
      */
     public static void main(String[] args) throws FloodlightModuleException {
         // Setup logger
-        System.setProperty("org.restlet.engine.loggerFacadeClass", 
+        System.setProperty("org.restlet.engine.loggerFacadeClass",
                 "org.restlet.ext.slf4j.Slf4jLoggerFacade");
-        
+
         CmdLineSettings settings = new CmdLineSettings();
         CmdLineParser parser = new CmdLineParser(settings);
         try {
@@ -34,7 +36,7 @@ public class Main {
             parser.printUsage(System.out);
             System.exit(1);
         }
-        
+
         // Load modules
         FloodlightModuleLoader fml = new FloodlightModuleLoader();
         IFloodlightModuleContext moduleContext = fml.loadModulesFromConfig(settings.getModuleFile());

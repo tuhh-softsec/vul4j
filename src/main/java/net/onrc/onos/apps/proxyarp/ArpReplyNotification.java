@@ -15,20 +15,24 @@ public class ArpReplyNotification implements Serializable {
     private int targetAddress;
     private MACAddress targetMacAddress;
 
-    protected ArpReplyNotification() {}
+    protected ArpReplyNotification() {
+    }
+
     /**
      * Class constructor.
-     * @param targetAddress IP address received from the ARP reply
+     *
+     * @param targetAddress    IP address received from the ARP reply
      * @param targetMacAddress MAC address received from the ARP reply
      */
     public ArpReplyNotification(int targetAddress,
-            MACAddress targetMacAddress) {
+                                MACAddress targetMacAddress) {
         this.targetAddress = targetAddress;
         this.targetMacAddress = targetMacAddress;
     }
 
     /**
      * Returns the IP address of the ARP reply.
+     *
      * @return the IP address
      */
     public int getTargetAddress() {
@@ -37,6 +41,7 @@ public class ArpReplyNotification implements Serializable {
 
     /**
      * Returns the MAC address of the ARP reply.
+     *
      * @return the MAC address
      */
     public MACAddress getTargetMacAddress() {

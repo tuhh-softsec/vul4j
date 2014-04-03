@@ -6,15 +6,15 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * The class representing the Flow Entry error state.
  */
 public class FlowEntryErrorState {
-    private short type;	// The error type (e.g., see OF-1.3.1 spec, pp. 95)
-    private short code;	// The error code (e.g., see OF-1.3.1 spec, pp. 95)
+    private short type;    // The error type (e.g., see OF-1.3.1 spec, pp. 95)
+    private short code;    // The error code (e.g., see OF-1.3.1 spec, pp. 95)
 
     /**
      * Default constructor.
      */
     public FlowEntryErrorState() {
-	this.type = 0;
-	this.code = 0;
+        this.type = 0;
+        this.code = 0;
     }
 
     /**
@@ -24,8 +24,8 @@ public class FlowEntryErrorState {
      * @param code the error code to use.
      */
     public FlowEntryErrorState(short type, short code) {
-	this.type = type;
-	this.code = code;
+        this.type = type;
+        this.code = code;
     }
 
     /**
@@ -34,7 +34,9 @@ public class FlowEntryErrorState {
      * @return the error type.
      */
     @JsonProperty("type")
-    public short type() { return type; }
+    public short type() {
+        return type;
+    }
 
     /**
      * Set the error type.
@@ -43,7 +45,7 @@ public class FlowEntryErrorState {
      */
     @JsonProperty("type")
     public void setType(short type) {
-	this.type = type;
+        this.type = type;
     }
 
     /**
@@ -52,7 +54,9 @@ public class FlowEntryErrorState {
      * @return the error code.
      */
     @JsonProperty("code")
-    public short code() { return code; }
+    public short code() {
+        return code;
+    }
 
     /**
      * Set the error code.
@@ -61,7 +65,7 @@ public class FlowEntryErrorState {
      */
     @JsonProperty("code")
     public void setCode(short code) {
-	this.code = code;
+        this.code = code;
     }
 
     /**
@@ -71,13 +75,13 @@ public class FlowEntryErrorState {
      * @param code the error code to use.
      */
     public void setValue(short type, short code) {
-	this.type = type;
-	this.code = code;
+        this.type = type;
+        this.code = code;
     }
 
     /**
      * Convert the error type and code to a string.
-     *
+     * <p/>
      * The string has the following form:
      * [type=1 code=2]
      *
@@ -85,7 +89,7 @@ public class FlowEntryErrorState {
      */
     @Override
     public String toString() {
-	String ret = "[type=" + this.type + " code=" + code + "]";
-	return ret;
+        String ret = "[type=" + this.type + " code=" + code + "]";
+        return ret;
     }
 }

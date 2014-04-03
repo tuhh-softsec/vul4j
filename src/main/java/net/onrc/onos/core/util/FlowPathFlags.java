@@ -9,7 +9,7 @@ public class FlowPathFlags {
     private long flags;
 
     // Discard the first-hop Flow Entry
-    public static final long DISCARD_FIRST_HOP_ENTRY   = (1 << 0);
+    public static final long DISCARD_FIRST_HOP_ENTRY = (1 << 0);
 
     // Keep only the first-hop Flow Entry
     public static final long KEEP_ONLY_FIRST_HOP_ENTRY = (1 << 1);
@@ -18,7 +18,7 @@ public class FlowPathFlags {
      * Default constructor.
      */
     public FlowPathFlags() {
-	this.flags = 0;
+        this.flags = 0;
     }
 
     /**
@@ -27,18 +27,19 @@ public class FlowPathFlags {
      * @param flags the flags value to set.
      */
     public FlowPathFlags(long flags) {
-	this.flags = flags;
+        this.flags = flags;
     }
 
     /**
      * Constructor for given flags as a string.
-     *
+     * <p/>
      * The string value should contain the name of each flags to set. E.g.:
-     *  "DISCARD_FIRST_HOP_ENTRY,KEEP_ONLY_FIRST_HOP_ENTRY"
+     * "DISCARD_FIRST_HOP_ENTRY,KEEP_ONLY_FIRST_HOP_ENTRY"
+     *
      * @param flagsStr the string value of the flags to set.
      */
     public FlowPathFlags(String flagsStr) {
-	this.setFlagsStr(flagsStr);
+        this.setFlagsStr(flagsStr);
     }
 
     /**
@@ -47,7 +48,9 @@ public class FlowPathFlags {
      * @return the flags.
      */
     @JsonProperty("flags")
-    public long flags() { return flags; }
+    public long flags() {
+        return flags;
+    }
 
     /**
      * Set the flags.
@@ -56,25 +59,26 @@ public class FlowPathFlags {
      */
     @JsonProperty("flags")
     public void setFlags(long flags) {
-	this.flags = flags;
+        this.flags = flags;
     }
 
     /**
      * Set the flags as a string.
-     *
+     * <p/>
      * The string value should contain the name of each flags to set. E.g.:
-     *  "DISCARD_FIRST_HOP_ENTRY,KEEP_ONLY_FIRST_HOP_ENTRY"
+     * "DISCARD_FIRST_HOP_ENTRY,KEEP_ONLY_FIRST_HOP_ENTRY"
+     *
      * @param flagsStr the string value of the flags to set.
      */
     @JsonProperty("flagsStr")
     public void setFlagsStr(String flagsStr) {
-	this.flags = 0L;
+        this.flags = 0L;
 
-	// Test all flags
-	if (flagsStr.contains("DISCARD_FIRST_HOP_ENTRY"))
-	    this.flags |= DISCARD_FIRST_HOP_ENTRY;
-	if (flagsStr.contains("KEEP_ONLY_FIRST_HOP_ENTRY"))
-	    this.flags |= KEEP_ONLY_FIRST_HOP_ENTRY;
+        // Test all flags
+        if (flagsStr.contains("DISCARD_FIRST_HOP_ENTRY"))
+            this.flags |= DISCARD_FIRST_HOP_ENTRY;
+        if (flagsStr.contains("KEEP_ONLY_FIRST_HOP_ENTRY"))
+            this.flags |= KEEP_ONLY_FIRST_HOP_ENTRY;
     }
 
     /**
@@ -84,7 +88,7 @@ public class FlowPathFlags {
      * otherwise false.
      */
     public boolean isDiscardFirstHopEntry() {
-	return ((flags & DISCARD_FIRST_HOP_ENTRY) != 0);
+        return ((flags & DISCARD_FIRST_HOP_ENTRY) != 0);
     }
 
     /**
@@ -94,36 +98,36 @@ public class FlowPathFlags {
      * otherwise false.
      */
     public boolean isKeepOnlyFirstHopEntry() {
-	return ((flags & KEEP_ONLY_FIRST_HOP_ENTRY) != 0);
+        return ((flags & KEEP_ONLY_FIRST_HOP_ENTRY) != 0);
     }
 
     /**
      * Convert the Flow Path Flags to a string.
-     *
+     * <p/>
      * The string has the following form:
-     *  [flags=DISCARD_FIRST_HOP_ENTRY,KEEP_ONLY_FIRST_HOP_ENTRY]
+     * [flags=DISCARD_FIRST_HOP_ENTRY,KEEP_ONLY_FIRST_HOP_ENTRY]
      *
      * @return the Flow Path flags as a string.
      */
     @Override
     public String toString() {
-	String flagsStr = null;
-	String ret = "[flags=";
+        String flagsStr = null;
+        String ret = "[flags=";
 
-	// Test all flags
-	if ((this.flags & DISCARD_FIRST_HOP_ENTRY) != 0) {
-	    flagsStr += "DISCARD_FIRST_HOP_ENTRY";
-	}
-	if ((this.flags & KEEP_ONLY_FIRST_HOP_ENTRY) != 0) {
-	    if (flagsStr != null)
-		flagsStr += ",";
-	    flagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY";
-	}
-	if (flagsStr != null)
-	    ret += flagsStr;
-	ret += "]";
+        // Test all flags
+        if ((this.flags & DISCARD_FIRST_HOP_ENTRY) != 0) {
+            flagsStr += "DISCARD_FIRST_HOP_ENTRY";
+        }
+        if ((this.flags & KEEP_ONLY_FIRST_HOP_ENTRY) != 0) {
+            if (flagsStr != null)
+                flagsStr += ",";
+            flagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY";
+        }
+        if (flagsStr != null)
+            ret += flagsStr;
+        ret += "]";
 
-	return ret;
+        return ret;
     }
 
 }

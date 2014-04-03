@@ -21,20 +21,20 @@ public class IPv6NetDeserializer extends JsonDeserializer<IPv6Net> {
 
     @Override
     public IPv6Net deserialize(JsonParser jp,
-			       DeserializationContext ctxt)
-	throws IOException, JsonProcessingException {
+                               DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
 
-	IPv6Net ipv6Net = null;
+        IPv6Net ipv6Net = null;
 
-	jp.nextToken();		// Move to JsonToken.START_OBJECT
-	while (jp.nextToken() != JsonToken.END_OBJECT) {
-	    String fieldname = jp.getCurrentName();
-	    if ("value".equals(fieldname)) {
-		String value = jp.getText();
-		log.debug("Fieldname: {} Value: {}", fieldname, value);
-		ipv6Net = new IPv6Net(value);
-	    }
-	}
-	return ipv6Net;
+        jp.nextToken();        // Move to JsonToken.START_OBJECT
+        while (jp.nextToken() != JsonToken.END_OBJECT) {
+            String fieldname = jp.getCurrentName();
+            if ("value".equals(fieldname)) {
+                String value = jp.getText();
+                log.debug("Fieldname: {} Value: {}", fieldname, value);
+                ipv6Net = new IPv6Net(value);
+            }
+        }
+        return ipv6Net;
     }
 }

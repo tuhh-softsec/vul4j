@@ -1,6 +1,6 @@
 /**
  *    Copyright 2012, Big Switch Networks, Inc. 
- * 
+ *
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may
  *    not use this file except in compliance with the License. You may obtain
  *    a copy of the License at
@@ -28,7 +28,7 @@ import org.openflow.protocol.OFType;
 /**
  * A concrete implementation that handles asynchronously receiving
  * OFFeaturesReply
- * 
+ *
  * @author Shudong Zhou
  */
 public class OFFeaturesReplyFuture extends
@@ -37,13 +37,13 @@ public class OFFeaturesReplyFuture extends
     protected volatile boolean finished;
 
     public OFFeaturesReplyFuture(IThreadPoolService tp,
-            IOFSwitch sw, int transactionId) {
+                                 IOFSwitch sw, int transactionId) {
         super(tp, sw, OFType.FEATURES_REPLY, transactionId);
         init();
     }
 
     public OFFeaturesReplyFuture(IThreadPoolService tp,
-            IOFSwitch sw, int transactionId, long timeout, TimeUnit unit) {
+                                 IOFSwitch sw, int transactionId, long timeout, TimeUnit unit) {
         super(tp, sw, OFType.FEATURES_REPLY, transactionId, timeout, unit);
         init();
     }

@@ -7,8 +7,8 @@ import org.restlet.resource.ServerResource;
 
 public class DatastoreLinksResource extends ServerResource {
 
-	@Get("json")
-	public Iterable<KVLink> retrieve() {
-		return KVLink.getAllLinks();
-	}
+    @Get("json")
+    public Iterable<KVLink> retrieve() {
+        return KVLink.getAllLinks();
+    }
 }

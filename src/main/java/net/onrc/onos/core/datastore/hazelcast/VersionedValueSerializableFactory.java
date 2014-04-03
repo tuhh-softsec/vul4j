@@ -13,11 +13,11 @@ public class VersionedValueSerializableFactory implements
     @Override
     public IdentifiedDataSerializable create(final int typeId) {
         switch (typeId) {
-        case VERSIONED_VALUE_ID:
-            return new HZTable.VersionedValue();
+            case VERSIONED_VALUE_ID:
+                return new HZTable.VersionedValue();
 
-        default:
-            return null;
+            default:
+                return null;
         }
     }
 

@@ -16,10 +16,10 @@ public class IPv4Serializer extends JsonSerializer<IPv4> {
 
     @Override
     public void serialize(IPv4 ipv4, JsonGenerator jGen,
-			  SerializerProvider serializer)
-	throws IOException, JsonProcessingException {
-	jGen.writeStartObject();
-	jGen.writeStringField("value", ipv4.toString());
-	jGen.writeEndObject();
+                          SerializerProvider serializer)
+            throws IOException, JsonProcessingException {
+        jGen.writeStartObject();
+        jGen.writeStringField("value", ipv4.toString());
+        jGen.writeEndObject();
     }
 }

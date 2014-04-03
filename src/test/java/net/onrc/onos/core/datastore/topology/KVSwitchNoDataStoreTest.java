@@ -14,72 +14,72 @@ public class KVSwitchNoDataStoreTest {
 
     @Test
     public void testGetDpidFromKeyByteArray() {
-	// reference bytes
-	final byte[] key = KVSwitch.getSwitchID(0x1L);
+        // reference bytes
+        final byte[] key = KVSwitch.getSwitchID(0x1L);
 
-	assertEquals(0x1L, KVSwitch.getDpidFromKey(key));
+        assertEquals(0x1L, KVSwitch.getDpidFromKey(key));
     }
 
     @Test
     public void testGetDpidFromKeyByteBuffer() {
-	// reference bytes
-	final ByteBuffer key = ByteBuffer.wrap(KVSwitch.getSwitchID(0x1L));
+        // reference bytes
+        final ByteBuffer key = ByteBuffer.wrap(KVSwitch.getSwitchID(0x1L));
 
-	assertEquals(0x1L, KVSwitch.getDpidFromKey(key));
+        assertEquals(0x1L, KVSwitch.getDpidFromKey(key));
     }
 
     @Test
     public void testCreateFromKeyByteArray() {
-	// reference bytes
-	Long dpid = Long.valueOf(0x1L);
-	final byte[] key = KVSwitch.getSwitchID(dpid);
+        // reference bytes
+        Long dpid = Long.valueOf(0x1L);
+        final byte[] key = KVSwitch.getSwitchID(dpid);
 
-	KVSwitch sw = KVSwitch.createFromKey(key);
-	assertNotNull(sw);
-	assertEquals(dpid, sw.getDpid());
+        KVSwitch sw = KVSwitch.createFromKey(key);
+        assertNotNull(sw);
+        assertEquals(dpid, sw.getDpid());
     }
 
     @Test
     public void testGetStatus() {
-	KVSwitch sw = new KVSwitch(0x1L);
+        KVSwitch sw = new KVSwitch(0x1L);
 
-	assertEquals(STATUS.INACTIVE, sw.getStatus());
+        assertEquals(STATUS.INACTIVE, sw.getStatus());
     }
 
     @Test
     public void testSetStatus() {
-	KVSwitch sw = new KVSwitch(0x1L);
-	assertEquals(STATUS.INACTIVE, sw.getStatus());
+        KVSwitch sw = new KVSwitch(0x1L);
+        assertEquals(STATUS.INACTIVE, sw.getStatus());
 
-	sw.setStatus(STATUS.ACTIVE);
-	assertEquals(STATUS.ACTIVE, sw.getStatus());
+        sw.setStatus(STATUS.ACTIVE);
+        assertEquals(STATUS.ACTIVE, sw.getStatus());
     }
 
     @Test
     public void testGetDpid() {
-	Long dpid = 0x1L;
-	KVSwitch sw = new KVSwitch(dpid);
-	assertEquals(dpid, sw.getDpid());
+        Long dpid = 0x1L;
+        KVSwitch sw = new KVSwitch(dpid);
+        assertEquals(dpid, sw.getDpid());
     }
 
     @Test
     public void testGetId() {
-	// reference bytes
-	Long dpid = Long.valueOf(0x1L);
-	final byte[] key = KVSwitch.getSwitchID(dpid);
+        // reference bytes
+        Long dpid = Long.valueOf(0x1L);
+        final byte[] key = KVSwitch.getSwitchID(dpid);
 
-	KVSwitch sw = KVSwitch.createFromKey(key);
-	assertArrayEquals(key, sw.getId());
+        KVSwitch sw = KVSwitch.createFromKey(key);
+        assertArrayEquals(key, sw.getId());
     }
 
     @Test
     public void testToString() {
-	final String expected = "[" + "KVSwitch"
-		+ " 0x" + 1 + " STATUS:" + STATUS.INACTIVE + "]";
+        final String expected = "[" + "KVSwitch"
+                + " 0x" + 1 + " STATUS:" + STATUS.INACTIVE + "]";
 
-	Long dpid = 0x1L;
-	KVSwitch sw = new KVSwitch(dpid);
+        Long dpid = 0x1L;
+        KVSwitch sw = new KVSwitch(dpid);
 
-	assertEquals(expected, sw.toString());
+        assertEquals(expected, sw.toString());
     }
 }

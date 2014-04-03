@@ -16,10 +16,10 @@ public class FlowIdSerializer extends JsonSerializer<FlowId> {
 
     @Override
     public void serialize(FlowId flowId, JsonGenerator jGen,
-			  SerializerProvider serializer)
-	throws IOException, JsonProcessingException {
-	jGen.writeStartObject();
-	jGen.writeStringField("value", flowId.toString());
-	jGen.writeEndObject();
+                          SerializerProvider serializer)
+            throws IOException, JsonProcessingException {
+        jGen.writeStartObject();
+        jGen.writeStringField("value", flowId.toString());
+        jGen.writeEndObject();
     }
 }

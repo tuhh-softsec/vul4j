@@ -10,7 +10,6 @@ import org.restlet.resource.ServerResource;
 
 /**
  * @author subrata
- *
  */
 public class EventHistoryTopologySwitchResource extends ServerResource {
 
@@ -18,20 +17,19 @@ public class EventHistoryTopologySwitchResource extends ServerResource {
     public EventHistory<EventHistoryTopologySwitch> handleEvHistReq() {
 
         // Get the event history count. Last <count> events would be returned
-        String evHistCount = (String)getRequestAttributes().get("count");
-        int    count = EventHistory.EV_HISTORY_DEFAULT_SIZE;
+        String evHistCount = (String) getRequestAttributes().get("count");
+        int count = EventHistory.EV_HISTORY_DEFAULT_SIZE;
         try {
             count = Integer.parseInt(evHistCount);
-        }
-        catch(NumberFormatException nFE) {
+        } catch (NumberFormatException nFE) {
             // Invalid input for event count - use default value
         }
 
         LinkDiscoveryManager topoManager =
-           (LinkDiscoveryManager)getContext().getAttributes().
-               get(ILinkDiscoveryService.class.getCanonicalName());
+                (LinkDiscoveryManager) getContext().getAttributes().
+                        get(ILinkDiscoveryService.class.getCanonicalName());
 
         return new EventHistory<EventHistoryTopologySwitch>(
-                                topoManager.evHistTopologySwitch, count);
+                topoManager.evHistTopologySwitch, count);
     }
 }

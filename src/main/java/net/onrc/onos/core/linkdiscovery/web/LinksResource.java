@@ -17,20 +17,20 @@ public class LinksResource extends ServerResource {
 
     @Get("json")
     public Set<LinkWithType> retrieve() {
-        ILinkDiscoveryService ld = (ILinkDiscoveryService)getContext().getAttributes().
+        ILinkDiscoveryService ld = (ILinkDiscoveryService) getContext().getAttributes().
                 get(ILinkDiscoveryService.class.getCanonicalName());
         Map<Link, LinkInfo> links = new HashMap<Link, LinkInfo>();
         Set<LinkWithType> returnLinkSet = new HashSet<LinkWithType>();
 
         if (ld != null) {
             links.putAll(ld.getLinks());
-            for(Entry<Link, LinkInfo> e : links.entrySet()) {
+            for (Entry<Link, LinkInfo> e : links.entrySet()) {
                 Link link = e.getKey();
                 LinkInfo info = e.getValue();
                 LinkWithType lwt = new LinkWithType(link,
-                                                    info.getSrcPortState(),
-                                                    info.getDstPortState(),
-                                                    ld.getLinkType(link, info));
+                        info.getSrcPortState(),
+                        info.getDstPortState(),
+                        ld.getLinkType(link, info));
                 returnLinkSet.add(lwt);
             }
         }
