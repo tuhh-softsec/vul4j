@@ -21,6 +21,7 @@ package net.onrc.onos.core.packet;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
 import org.openflow.util.HexString;
 
 /**

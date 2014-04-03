@@ -9,7 +9,6 @@ import java.util.HashSet;
 import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.apps.proxyarp.ArpReplyNotification;
 import net.onrc.onos.apps.proxyarp.BroadcastPacketOutNotification;
-import net.onrc.onos.apps.proxyarp.PacketOutNotification;
 import net.onrc.onos.apps.proxyarp.SinglePacketOutNotification;
 import net.onrc.onos.core.devicemanager.OnosDevice;
 import net.onrc.onos.core.intent.ConstrainedShortestPathIntent;
@@ -50,20 +49,6 @@ import net.onrc.onos.core.util.IPv6Net;
 import net.onrc.onos.core.util.Port;
 import net.onrc.onos.core.util.Switch;
 // import net.onrc.onos.core.util.SwitchPort;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import com.esotericsoftware.kryo.Kryo;
 

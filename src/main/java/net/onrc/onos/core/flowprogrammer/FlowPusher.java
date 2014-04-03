@@ -18,12 +18,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.openflow.protocol.*;
-import org.openflow.protocol.action.*;
-import org.openflow.protocol.factory.BasicFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
@@ -35,13 +29,46 @@ import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
 import net.onrc.onos.core.util.FlowEntry;
 import net.onrc.onos.core.util.FlowEntryAction;
+import net.onrc.onos.core.util.FlowEntryAction.ActionEnqueue;
+import net.onrc.onos.core.util.FlowEntryAction.ActionOutput;
+import net.onrc.onos.core.util.FlowEntryAction.ActionSetEthernetAddr;
+import net.onrc.onos.core.util.FlowEntryAction.ActionSetIPv4Addr;
+import net.onrc.onos.core.util.FlowEntryAction.ActionSetIpToS;
+import net.onrc.onos.core.util.FlowEntryAction.ActionSetTcpUdpPort;
+import net.onrc.onos.core.util.FlowEntryAction.ActionSetVlanId;
+import net.onrc.onos.core.util.FlowEntryAction.ActionSetVlanPriority;
+import net.onrc.onos.core.util.FlowEntryAction.ActionStripVlan;
 import net.onrc.onos.core.util.FlowEntryActions;
 import net.onrc.onos.core.util.FlowEntryMatch;
 import net.onrc.onos.core.util.FlowEntryUserState;
 import net.onrc.onos.core.util.IPv4Net;
 import net.onrc.onos.core.util.Pair;
 import net.onrc.onos.core.util.Port;
-import net.onrc.onos.core.util.FlowEntryAction.*;
+
+import org.openflow.protocol.OFBarrierReply;
+import org.openflow.protocol.OFBarrierRequest;
+import org.openflow.protocol.OFFlowMod;
+import org.openflow.protocol.OFMatch;
+import org.openflow.protocol.OFMessage;
+import org.openflow.protocol.OFPacketOut;
+import org.openflow.protocol.OFPort;
+import org.openflow.protocol.OFType;
+import org.openflow.protocol.action.OFAction;
+import org.openflow.protocol.action.OFActionDataLayerDestination;
+import org.openflow.protocol.action.OFActionDataLayerSource;
+import org.openflow.protocol.action.OFActionEnqueue;
+import org.openflow.protocol.action.OFActionNetworkLayerDestination;
+import org.openflow.protocol.action.OFActionNetworkLayerSource;
+import org.openflow.protocol.action.OFActionNetworkTypeOfService;
+import org.openflow.protocol.action.OFActionOutput;
+import org.openflow.protocol.action.OFActionStripVirtualLan;
+import org.openflow.protocol.action.OFActionTransportLayerDestination;
+import org.openflow.protocol.action.OFActionTransportLayerSource;
+import org.openflow.protocol.action.OFActionVirtualLanIdentifier;
+import org.openflow.protocol.action.OFActionVirtualLanPriorityCodePoint;
+import org.openflow.protocol.factory.BasicFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * FlowPusher is a implementation of FlowPusherService.

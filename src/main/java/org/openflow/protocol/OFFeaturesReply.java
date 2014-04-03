@@ -20,7 +20,6 @@ package org.openflow.protocol;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.openflow.protocol.serializers.OFFeaturesReplyJSONSerializer;

@@ -37,7 +37,6 @@ import net.onrc.onos.core.topology.INetworkGraphService;
 import net.onrc.onos.core.topology.NetworkGraph;
 import net.onrc.onos.core.topology.Switch;
 import net.onrc.onos.core.util.Dpid;
-import net.onrc.onos.core.util.Port;
 import net.onrc.onos.core.util.SwitchPort;
 
 import org.openflow.protocol.OFMessage;

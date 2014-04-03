@@ -2,13 +2,13 @@ package net.onrc.onos.core.flowprogrammer;
 
 import java.util.concurrent.TimeUnit;
 
-import org.openflow.protocol.OFBarrierReply;
-import org.openflow.protocol.OFMessage;
-import org.openflow.protocol.OFType;
-
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.internal.OFMessageFuture;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+
+import org.openflow.protocol.OFBarrierReply;
+import org.openflow.protocol.OFMessage;
+import org.openflow.protocol.OFType;
 
 public class OFBarrierReplyFuture extends OFMessageFuture<OFBarrierReply> {
 

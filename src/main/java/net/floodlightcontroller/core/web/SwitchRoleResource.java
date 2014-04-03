@@ -2,13 +2,12 @@ package net.floodlightcontroller.core.web;
 
 import java.util.HashMap;
 
-import org.openflow.util.HexString;
-import org.restlet.resource.ServerResource;
-
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFSwitch;
 
+import org.openflow.util.HexString;
 import org.restlet.resource.Get;
+import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

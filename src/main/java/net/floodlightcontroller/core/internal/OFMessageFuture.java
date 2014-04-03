@@ -23,11 +23,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.openflow.protocol.OFMessage;
-import org.openflow.protocol.OFType;
-
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+
+import org.openflow.protocol.OFMessage;
+import org.openflow.protocol.OFType;
 
 /**
  * A Future object used to retrieve asynchronous OFMessage replies. Unregisters

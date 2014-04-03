@@ -2,14 +2,14 @@ package net.onrc.onos.core.flowprogrammer;
 
 import java.util.Collection;
 
-import org.openflow.protocol.OFBarrierReply;
-import org.openflow.protocol.OFMessage;
-
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.internal.OFMessageFuture;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.onrc.onos.core.util.FlowEntry;
 import net.onrc.onos.core.util.Pair;
+
+import org.openflow.protocol.OFBarrierReply;
+import org.openflow.protocol.OFMessage;
 
 /**
  * FlowPusherService is a service to send message to switches in proper rate.

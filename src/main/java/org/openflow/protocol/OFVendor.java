@@ -18,10 +18,10 @@
 package org.openflow.protocol;
 
 import org.jboss.netty.buffer.ChannelBuffer;
-import org.openflow.util.U16;
 import org.openflow.protocol.factory.OFVendorDataFactory;
 import org.openflow.protocol.factory.OFVendorDataFactoryAware;
 import org.openflow.protocol.vendor.OFVendorData;
+import org.openflow.util.U16;
 
 /**
  * Represents ofp_vendor_header

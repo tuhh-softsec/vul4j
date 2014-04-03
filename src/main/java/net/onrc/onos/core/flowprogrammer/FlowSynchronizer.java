@@ -12,6 +12,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import net.floodlightcontroller.core.IOFSwitch;
+import net.onrc.onos.core.flowprogrammer.IFlowPusherService.MsgPriority;
+import net.onrc.onos.core.util.Dpid;
+import net.onrc.onos.core.util.FlowEntryId;
+
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFPort;
@@ -22,12 +27,6 @@ import org.openflow.protocol.statistics.OFStatistics;
 import org.openflow.protocol.statistics.OFStatisticsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.floodlightcontroller.core.IOFSwitch;
-import net.onrc.onos.core.flowprogrammer.IFlowPusherService.MsgPriority;
-import net.onrc.onos.core.util.Dpid;
-import net.onrc.onos.core.util.FlowEntry;
-import net.onrc.onos.core.util.FlowEntryId;
 
 /**
  * FlowSynchronizer is an implementation of FlowSyncService.

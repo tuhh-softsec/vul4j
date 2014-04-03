@@ -4,14 +4,14 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.onrc.onos.core.datastore.IKVTableID;
 import net.onrc.onos.core.datastore.IMultiEntryOperation;
 import net.onrc.onos.core.datastore.hazelcast.HZTable.VersionedValue;
 import net.onrc.onos.core.datastore.internal.IModifiableMultiEntryOperation;
 import net.onrc.onos.core.datastore.utils.ByteArrayUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableMultiEntryOperation {
     private static final Logger log = LoggerFactory.getLogger(HZMultiEntryOperation.class);

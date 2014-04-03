@@ -3,9 +3,9 @@
  */
 package net.onrc.onos.core.main;
 
-import org.openflow.protocol.OFPhysicalPort;
-
 import net.floodlightcontroller.core.IOFSwitchListener;
+
+import org.openflow.protocol.OFPhysicalPort;
 
 /**
  * @author y-higuchi

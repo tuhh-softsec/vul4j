@@ -1,18 +1,17 @@
 package net.onrc.onos.core.topology;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
 import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVClient;
 import net.onrc.onos.core.datastore.topology.KVDevice;
 import net.onrc.onos.core.datastore.topology.KVLink;
 import net.onrc.onos.core.datastore.topology.KVPort;
-import net.onrc.onos.core.datastore.topology.KVSwitch;
 import net.onrc.onos.core.datastore.topology.KVPort.STATUS;
+import net.onrc.onos.core.datastore.topology.KVSwitch;
 import net.onrc.onos.core.datastore.utils.KVObject;
 import net.onrc.onos.core.datastore.utils.KVObject.WriteOp;
 import net.onrc.onos.core.topology.PortEvent.SwitchPort;

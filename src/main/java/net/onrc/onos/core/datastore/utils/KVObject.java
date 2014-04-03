@@ -9,13 +9,13 @@ import java.util.Map;
 import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVClient;
 import net.onrc.onos.core.datastore.IKVTable;
+import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
 import net.onrc.onos.core.datastore.IKVTableID;
 import net.onrc.onos.core.datastore.IMultiEntryOperation;
 import net.onrc.onos.core.datastore.IMultiObjectOperation;
 import net.onrc.onos.core.datastore.ObjectDoesntExistException;
 import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.core.datastore.WrongVersionException;
-import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
 import net.onrc.onos.core.datastore.internal.IModifiableMultiEntryOperation;
 
 import org.slf4j.Logger;

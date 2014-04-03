@@ -2,7 +2,6 @@ package net.onrc.onos.core.intent.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,15 +18,11 @@ import net.onrc.onos.core.datagrid.IEventChannel;
 import net.onrc.onos.core.datagrid.IEventChannelListener;
 import net.onrc.onos.core.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.core.intent.FlowEntry;
+import net.onrc.onos.core.intent.Intent.IntentState;
 import net.onrc.onos.core.intent.IntentOperation;
 import net.onrc.onos.core.intent.IntentOperationList;
-import net.onrc.onos.core.intent.Intent.IntentState;
 import net.onrc.onos.core.topology.INetworkGraphService;
 //import net.onrc.onos.core.topology.NetworkGraph;
-
-
-
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

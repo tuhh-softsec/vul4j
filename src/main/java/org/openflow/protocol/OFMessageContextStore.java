@@ -17,7 +17,6 @@
 
 package org.openflow.protocol;
 
-import org.openflow.protocol.OFMessage;
 
 public class OFMessageContextStore<V> {
     protected OFMessage msg;

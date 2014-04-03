@@ -2,15 +2,15 @@ package net.onrc.onos.core.linkdiscovery.web;
 
 import java.io.IOException;
 
+import net.onrc.onos.core.linkdiscovery.ILinkDiscovery.LinkType;
+import net.onrc.onos.core.linkdiscovery.Link;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openflow.util.HexString;
-
-import net.onrc.onos.core.linkdiscovery.Link;
-import net.onrc.onos.core.linkdiscovery.ILinkDiscovery.LinkType;
 
 /**
  * This class is both the datastructure and the serializer

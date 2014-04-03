@@ -6,14 +6,14 @@ import java.util.List;
 
 import net.onrc.onos.core.datastore.IKVClient;
 import net.onrc.onos.core.datastore.IKVTable;
+import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
 import net.onrc.onos.core.datastore.IKVTableID;
 import net.onrc.onos.core.datastore.IMultiEntryOperation;
+import net.onrc.onos.core.datastore.IMultiEntryOperation.OPERATION;
+import net.onrc.onos.core.datastore.IMultiEntryOperation.STATUS;
 import net.onrc.onos.core.datastore.ObjectDoesntExistException;
 import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.core.datastore.WrongVersionException;
-import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
-import net.onrc.onos.core.datastore.IMultiEntryOperation.OPERATION;
-import net.onrc.onos.core.datastore.IMultiEntryOperation.STATUS;
 import net.onrc.onos.core.datastore.hazelcast.HZTable.VersionedValue;
 import net.onrc.onos.core.datastore.internal.IModifiableMultiEntryOperation;
 

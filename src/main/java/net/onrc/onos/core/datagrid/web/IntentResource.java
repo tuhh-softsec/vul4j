@@ -6,8 +6,12 @@ package net.onrc.onos.core.datagrid.web;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
+import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.core.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.core.intent.Intent;
 import net.onrc.onos.core.intent.IntentMap;
@@ -19,20 +23,13 @@ import net.onrc.onos.core.intent.runtime.IPathCalcRuntimeService;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.restlet.resource.Post;
-import org.restlet.resource.ServerResource;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import net.floodlightcontroller.util.MACAddress;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Post;
+import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

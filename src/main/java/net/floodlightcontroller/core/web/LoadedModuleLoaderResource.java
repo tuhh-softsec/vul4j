@@ -2,9 +2,9 @@ package net.floodlightcontroller.core.web;
 
 import java.util.Map;
 
-import org.restlet.resource.Get;
-
 import net.floodlightcontroller.core.module.ModuleLoaderResource;
+
+import org.restlet.resource.Get;
 
 public class LoadedModuleLoaderResource extends ModuleLoaderResource {
 	/**

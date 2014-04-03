@@ -1,11 +1,11 @@
 package net.onrc.onos.core.flowprogrammer.web;
 
+import net.floodlightcontroller.core.IFloodlightProviderService;
+import net.onrc.onos.core.flowprogrammer.IFlowPusherService;
+
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.onrc.onos.core.flowprogrammer.IFlowPusherService;
 
 public class PusherResource extends ServerResource {
     protected final static Logger log = LoggerFactory.getLogger(PusherResource.class);
