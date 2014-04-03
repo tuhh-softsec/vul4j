@@ -53,7 +53,7 @@ class ONOS( Controller ):
     # Additions for reactive forwarding
     reactiveModules = (
             'net.onrc.onos.apps.proxyarp.ProxyArpManager',
-            'net.onrc.onos.ofcontroller.core.config.DefaultConfiguration',
+            'net.onrc.onos.core.main.config.DefaultConfiguration',
             'net.onrc.onos.apps.forwarding.Forwarding'
     )
 

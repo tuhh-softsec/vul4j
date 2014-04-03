@@ -59,7 +59,7 @@ import net.floodlightcontroller.core.util.ListenerDispatcher;
 import net.floodlightcontroller.core.web.CoreWebRoutable;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
-import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
+import net.onrc.onos.core.main.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.packet.Ethernet;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
@@ -127,7 +127,7 @@ import org.slf4j.LoggerFactory;
  * 
  * Extensions made by ONOS are:
  * - Detailed Port event: PORTCHANGED -> {PORTCHANGED, PORTADDED, PORTREMOVED} 
- *    Available as net.onrc.onos.ofcontroller.core.IOFSwitchPortListener
+ *    Available as net.onrc.onos.core.main.IOFSwitchPortListener
  * - Distributed ownership control of switch through RegistryService(IControllerRegistryService)
  * - Register ONOS services. (IControllerRegistryService)
  * - Additional DEBUG logs

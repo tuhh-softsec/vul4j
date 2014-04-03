@@ -44,7 +44,7 @@ import net.floodlightcontroller.core.annotations.LogMessageDocs;
 import net.floodlightcontroller.core.web.serializers.DPIDSerializer;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.TimedCache;
-import net.onrc.onos.ofcontroller.core.IOnosRemoteSwitch;
+import net.onrc.onos.core.main.IOnosRemoteSwitch;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;

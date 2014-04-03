@@ -26,7 +26,7 @@ import net.onrc.onos.apps.bgproute.Interface;
 import net.onrc.onos.core.datagrid.IDatagridService;
 import net.onrc.onos.core.datagrid.IEventChannel;
 import net.onrc.onos.core.datagrid.IEventChannelListener;
-import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
+import net.onrc.onos.core.main.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.flowprogrammer.IFlowPusherService;
 import net.onrc.onos.ofcontroller.networkgraph.Device;

@@ -113,7 +113,7 @@ JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 #JVM_OPTS="$JVM_OPTS -XX:+PrintFlagsFinal"
 
 # Set ONOS core main class
-MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
+MAIN_CLASS="net.onrc.onos.core.main.Main"
 
 MVN=${MVN:-mvn -o}
 ############################################

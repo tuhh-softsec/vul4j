@@ -37,7 +37,7 @@ JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8 \
 JVM_OPTS="$JVM_OPTS -Dhazelcast.logging.type=slf4j"
 
 # Set ONOS core main class
-MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
+MAIN_CLASS="net.onrc.onos.core.main.Main"
 
 if [ -z "${MVN}" ]; then
     MVN="mvn -o"

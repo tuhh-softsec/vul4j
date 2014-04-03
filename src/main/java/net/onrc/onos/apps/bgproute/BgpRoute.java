@@ -29,7 +29,7 @@ import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.apps.bgproute.RibUpdate.Operation;
 import net.onrc.onos.apps.proxyarp.IArpRequester;
 import net.onrc.onos.apps.proxyarp.IProxyArpService;
-import net.onrc.onos.ofcontroller.core.config.IConfigInfoService;
+import net.onrc.onos.core.main.config.IConfigInfoService;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.util.CallerId;

@@ -116,7 +116,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.2.1</version>
         <configuration>
-          <mainClass>net.onrc.onos.ofcontroller.core.Main</mainClass>
+          <mainClass>net.onrc.onos.core.main.Main</mainClass>
         </configuration>
         <executions>
         </executions>

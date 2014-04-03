@@ -16,7 +16,7 @@ net.onrc.onos.registry.controller.ZookeeperRegistry
 net.onrc.onos.registry.controller.StandaloneRegistry
 net.onrc.onos.apps.forwarding.Forwarding
 net.onrc.onos.apps.proxyarp.ProxyArpManager
-net.onrc.onos.ofcontroller.core.config.DefaultConfiguration
+net.onrc.onos.core.main.config.DefaultConfiguration
 net.onrc.onos.ofcontroller.devicemanager.OnosDeviceManager
 net.onrc.onos.ofcontroller.networkgraph.NetworkGraphModule
 net.onrc.onos.core.intent.runtime.PathCalcRuntimeModule

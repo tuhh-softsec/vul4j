@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.core;
+package net.onrc.onos.core.main;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

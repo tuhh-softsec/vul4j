@@ -15,7 +15,7 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
-import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
+import net.onrc.onos.core.main.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceListener;
 import net.onrc.onos.ofcontroller.devicemanager.IOnosDeviceService;
 import net.onrc.onos.ofcontroller.devicemanager.OnosDevice;

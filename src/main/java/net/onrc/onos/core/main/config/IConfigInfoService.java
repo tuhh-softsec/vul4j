@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.core.config;
+package net.onrc.onos.core.main.config;
 
 import java.net.InetAddress;
 

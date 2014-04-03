@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.onrc.onos.ofcontroller.core;
+package net.onrc.onos.core.main;
 
 import org.openflow.protocol.OFPhysicalPort;
 
