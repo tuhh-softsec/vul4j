@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.forwarding;
+package net.onrc.onos.apps.forwarding;
 
 import java.util.Collection;
 

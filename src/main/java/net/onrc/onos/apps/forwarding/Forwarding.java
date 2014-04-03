@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.forwarding;
+package net.onrc.onos.apps.forwarding;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +19,8 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.apps.proxyarp.BroadcastPacketOutNotification;
+import net.onrc.onos.apps.proxyarp.IProxyArpService;
 import net.onrc.onos.datagrid.IDatagridService;
 import net.onrc.onos.datagrid.IEventChannel;
 import net.onrc.onos.datagrid.IEventChannelListener;
@@ -38,8 +40,6 @@ import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.NetworkGraph;
 import net.onrc.onos.ofcontroller.networkgraph.Switch;
-import net.onrc.onos.ofcontroller.proxyarp.BroadcastPacketOutNotification;
-import net.onrc.onos.ofcontroller.proxyarp.IProxyArpService;
 import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.Port;

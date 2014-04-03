@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.proxyarp;
+package net.onrc.onos.apps.proxyarp;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
