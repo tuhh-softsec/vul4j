@@ -11,14 +11,14 @@ import net.onrc.onos.apps.proxyarp.ArpReplyNotification;
 import net.onrc.onos.apps.proxyarp.BroadcastPacketOutNotification;
 import net.onrc.onos.apps.proxyarp.PacketOutNotification;
 import net.onrc.onos.apps.proxyarp.SinglePacketOutNotification;
-import net.onrc.onos.intent.ConstrainedShortestPathIntent;
-import net.onrc.onos.intent.ErrorIntent;
-import net.onrc.onos.intent.Intent;
-import net.onrc.onos.intent.IntentOperation;
-import net.onrc.onos.intent.IntentOperationList;
-import net.onrc.onos.intent.PathIntent;
-import net.onrc.onos.intent.ShortestPathIntent;
-import net.onrc.onos.intent.runtime.IntentStateList;
+import net.onrc.onos.core.intent.ConstrainedShortestPathIntent;
+import net.onrc.onos.core.intent.ErrorIntent;
+import net.onrc.onos.core.intent.Intent;
+import net.onrc.onos.core.intent.IntentOperation;
+import net.onrc.onos.core.intent.IntentOperationList;
+import net.onrc.onos.core.intent.PathIntent;
+import net.onrc.onos.core.intent.ShortestPathIntent;
+import net.onrc.onos.core.intent.runtime.IntentStateList;
 import net.onrc.onos.ofcontroller.devicemanager.OnosDevice;
 import net.onrc.onos.ofcontroller.networkgraph.DeviceEvent;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
@@ -50,6 +50,7 @@ import net.onrc.onos.ofcontroller.util.IPv6Net;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.Switch;
 // import net.onrc.onos.ofcontroller.util.SwitchPort;
+
 
 
 

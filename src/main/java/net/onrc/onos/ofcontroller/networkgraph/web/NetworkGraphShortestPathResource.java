@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.onrc.onos.intent.ConstrainedBFSTree;
+import net.onrc.onos.core.intent.ConstrainedBFSTree;
 import net.onrc.onos.ofcontroller.networkgraph.INetworkGraphService;
 import net.onrc.onos.ofcontroller.networkgraph.Link;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;

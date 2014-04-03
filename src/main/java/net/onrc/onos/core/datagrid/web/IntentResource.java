@@ -8,19 +8,21 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.onrc.onos.intent.ConstrainedShortestPathIntent;
-import net.onrc.onos.intent.ShortestPathIntent;
-import net.onrc.onos.intent.IntentOperation;
-import net.onrc.onos.intent.IntentMap;
-import net.onrc.onos.intent.Intent;
-import net.onrc.onos.intent.runtime.IPathCalcRuntimeService;
-import net.onrc.onos.intent.IntentOperationList;
+import net.onrc.onos.core.intent.ConstrainedShortestPathIntent;
+import net.onrc.onos.core.intent.Intent;
+import net.onrc.onos.core.intent.IntentMap;
+import net.onrc.onos.core.intent.IntentOperation;
+import net.onrc.onos.core.intent.IntentOperationList;
+import net.onrc.onos.core.intent.ShortestPathIntent;
+import net.onrc.onos.core.intent.runtime.IPathCalcRuntimeService;
+
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import org.codehaus.jackson.map.ObjectMapper;
+
 import net.floodlightcontroller.util.MACAddress;
 
 import java.util.HashMap;

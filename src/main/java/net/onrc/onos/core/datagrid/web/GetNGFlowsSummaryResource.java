@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import net.onrc.onos.intent.Intent;
-import net.onrc.onos.intent.PathIntent;
-import net.onrc.onos.intent.ShortestPathIntent;
-import net.onrc.onos.intent.Intent.IntentState;
-import net.onrc.onos.intent.IntentMap;
-import net.onrc.onos.intent.runtime.IPathCalcRuntimeService;
-
+import net.onrc.onos.core.intent.Intent;
+import net.onrc.onos.core.intent.IntentMap;
+import net.onrc.onos.core.intent.PathIntent;
+import net.onrc.onos.core.intent.ShortestPathIntent;
+import net.onrc.onos.core.intent.Intent.IntentState;
+import net.onrc.onos.core.intent.runtime.IPathCalcRuntimeService;
 import net.onrc.onos.ofcontroller.networkgraph.LinkEvent;
 import net.onrc.onos.ofcontroller.networkgraph.Path;
 import net.onrc.onos.ofcontroller.util.CallerId;
