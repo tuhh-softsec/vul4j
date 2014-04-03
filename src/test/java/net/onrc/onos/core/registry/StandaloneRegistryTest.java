@@ -1,6 +1,12 @@
 package net.onrc.onos.core.registry;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,10 +17,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
-import net.onrc.onos.core.registry.ControllerRegistryEntry;
-import net.onrc.onos.core.registry.IdBlock;
-import net.onrc.onos.core.registry.RegistryException;
-import net.onrc.onos.core.registry.StandaloneRegistry;
 import net.onrc.onos.core.registry.IControllerRegistryService.ControlChangeCallback;
 
 import org.junit.After;

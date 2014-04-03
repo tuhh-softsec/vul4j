@@ -1,12 +1,8 @@
 package net.onrc.onos.core.packet;
 
-import static org.junit.Assert.*;
-import net.onrc.onos.core.packet.ARP;
-import net.onrc.onos.core.packet.Data;
-import net.onrc.onos.core.packet.Ethernet;
-import net.onrc.onos.core.packet.IPacket;
-import net.onrc.onos.core.packet.IPv4;
-import net.onrc.onos.core.packet.UDP;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Before;
 import org.junit.Test;

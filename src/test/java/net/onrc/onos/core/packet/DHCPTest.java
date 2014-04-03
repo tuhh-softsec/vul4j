@@ -25,11 +25,6 @@ package net.onrc.onos.core.packet;
 import java.util.Arrays;
 import java.util.ListIterator;
 
-import net.onrc.onos.core.packet.DHCP;
-import net.onrc.onos.core.packet.DHCPOption;
-import net.onrc.onos.core.packet.Ethernet;
-import net.onrc.onos.core.packet.IPv4;
-import net.onrc.onos.core.packet.UDP;
 import junit.framework.TestCase;
 
 

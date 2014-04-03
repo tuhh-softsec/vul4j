@@ -1,11 +1,8 @@
 package net.onrc.onos.core.intent;
 
-import static org.junit.Assert.*;
-import net.onrc.onos.core.intent.ConstrainedBFSTree;
-import net.onrc.onos.core.intent.ConstrainedShortestPathIntent;
-import net.onrc.onos.core.intent.IntentOperationList;
-import net.onrc.onos.core.intent.PathIntent;
-import net.onrc.onos.core.intent.PathIntentMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import net.onrc.onos.core.intent.IntentOperation.Operator;
 import net.onrc.onos.core.topology.LinkEvent;
 import net.onrc.onos.core.topology.Path;

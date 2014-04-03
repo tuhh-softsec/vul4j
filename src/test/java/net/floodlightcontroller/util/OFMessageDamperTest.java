@@ -1,6 +1,9 @@
 package net.floodlightcontroller.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.EnumSet;
 
 import net.floodlightcontroller.core.FloodlightContext;
 
@@ -12,9 +15,6 @@ import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.factory.BasicFactory;
 import org.openflow.protocol.factory.OFMessageFactory;
-
-import java.io.IOException;
-import java.util.EnumSet;
 
 public class OFMessageDamperTest {
     OFMessageFactory factory;

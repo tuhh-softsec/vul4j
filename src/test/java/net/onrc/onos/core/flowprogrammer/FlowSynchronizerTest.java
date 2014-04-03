@@ -1,6 +1,8 @@
 package net.onrc.onos.core.flowprogrammer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,12 +11,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import net.floodlightcontroller.core.IOFSwitch;
-import net.onrc.onos.core.flowprogrammer.FlowPusher;
-import net.onrc.onos.core.flowprogrammer.FlowSynchronizer;
 import net.onrc.onos.core.flowprogrammer.IFlowPusherService.MsgPriority;
 import net.onrc.onos.core.flowprogrammer.IFlowSyncService.SyncResult;
 import net.onrc.onos.core.util.FlowEntry;
-import net.onrc.onos.core.util.FlowEntryId;
 
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
@@ -30,7 +29,6 @@ import org.openflow.protocol.OFStatisticsRequest;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.statistics.OFFlowStatisticsReply;
 import org.openflow.protocol.statistics.OFStatistics;
-import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 

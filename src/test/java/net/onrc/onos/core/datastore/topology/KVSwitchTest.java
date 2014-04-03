@@ -1,6 +1,10 @@
 package net.onrc.onos.core.datastore.topology;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +14,6 @@ import net.onrc.onos.core.datastore.IKVTable;
 import net.onrc.onos.core.datastore.ObjectDoesntExistException;
 import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.core.datastore.WrongVersionException;
-import net.onrc.onos.core.datastore.topology.KVSwitch;
 import net.onrc.onos.core.datastore.topology.KVSwitch.STATUS;
 
 import org.junit.After;

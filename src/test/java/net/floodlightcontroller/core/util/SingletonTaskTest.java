@@ -21,10 +21,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import net.floodlightcontroller.test.FloodlightTestCase;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import net.floodlightcontroller.test.FloodlightTestCase;
 
 public class SingletonTaskTest extends FloodlightTestCase {
     

@@ -40,7 +40,6 @@ import net.onrc.onos.core.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.core.linkdiscovery.Link;
 import net.onrc.onos.core.linkdiscovery.LinkInfo;
 import net.onrc.onos.core.linkdiscovery.NodePortTuple;
-import net.onrc.onos.core.linkdiscovery.internal.LinkDiscoveryManager;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -17,10 +17,10 @@
 
 package org.openflow.util;
 
+import junit.framework.TestCase;
+
 import org.openflow.protocol.factory.BasicFactory;
 import org.openflow.protocol.factory.OFMessageFactory;
-
-import junit.framework.TestCase;
 
 public class OFTestCase extends TestCase {
     public OFMessageFactory messageFactory;

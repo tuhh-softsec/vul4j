@@ -1,7 +1,6 @@
 package net.onrc.onos.core.intent;
 
-import static org.junit.Assert.*;
-import net.onrc.onos.core.intent.ShortestPathIntent;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;

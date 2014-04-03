@@ -1,10 +1,10 @@
 package net.onrc.onos.core.intent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
-
-import net.onrc.onos.core.intent.Intent;
 
 import org.junit.Test;
 

@@ -1,10 +1,11 @@
 package net.onrc.onos.core.datastore.topology;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.nio.ByteBuffer;
 
-import net.onrc.onos.core.datastore.topology.KVSwitch;
 import net.onrc.onos.core.datastore.topology.KVSwitch.STATUS;
 
 import org.junit.Test;

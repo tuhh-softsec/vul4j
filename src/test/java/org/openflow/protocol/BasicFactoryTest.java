@@ -19,13 +19,13 @@ package org.openflow.protocol;
 
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.openflow.protocol.factory.BasicFactory;
 import org.openflow.protocol.factory.MessageParseException;
 import org.openflow.util.U16;
-
-import junit.framework.TestCase;
 
 public class BasicFactoryTest extends TestCase {
 

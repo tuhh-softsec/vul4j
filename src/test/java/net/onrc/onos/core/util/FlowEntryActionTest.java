@@ -2,9 +2,6 @@ package net.onrc.onos.core.util;
 
 import static org.junit.Assert.assertEquals;
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.core.util.FlowEntryAction;
-import net.onrc.onos.core.util.IPv4;
-import net.onrc.onos.core.util.Port;
 import net.onrc.onos.core.util.FlowEntryAction.ActionEnqueue;
 import net.onrc.onos.core.util.FlowEntryAction.ActionOutput;
 import net.onrc.onos.core.util.FlowEntryAction.ActionSetEthernetAddr;

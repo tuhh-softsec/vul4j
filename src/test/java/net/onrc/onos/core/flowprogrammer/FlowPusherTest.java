@@ -1,6 +1,9 @@
 package net.onrc.onos.core.flowprogrammer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,8 +19,6 @@ import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.OFMessageDamper;
-import net.onrc.onos.core.flowprogrammer.FlowPusher;
-import net.onrc.onos.core.flowprogrammer.OFBarrierReplyFuture;
 import net.onrc.onos.core.util.Dpid;
 import net.onrc.onos.core.util.FlowEntry;
 import net.onrc.onos.core.util.FlowEntryActions;
@@ -31,7 +32,6 @@ import net.onrc.onos.core.util.Port;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.Test;
-import org.openflow.protocol.OFBarrierReply;
 import org.openflow.protocol.OFBarrierRequest;
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;

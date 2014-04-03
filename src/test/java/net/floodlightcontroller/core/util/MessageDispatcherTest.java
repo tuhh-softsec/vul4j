@@ -26,11 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Test;
-import org.openflow.protocol.OFType;
-
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.test.FloodlightTestCase;
+
+import org.junit.Test;
+import org.openflow.protocol.OFType;
 
 public class MessageDispatcherTest extends FloodlightTestCase {
 

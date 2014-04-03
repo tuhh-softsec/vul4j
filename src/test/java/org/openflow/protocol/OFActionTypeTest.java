@@ -18,10 +18,10 @@
 package org.openflow.protocol;
 
 
+import junit.framework.TestCase;
+
 import org.junit.Test;
 import org.openflow.protocol.action.OFActionType;
-
-import junit.framework.TestCase;
 
 
 public class OFActionTypeTest extends TestCase {

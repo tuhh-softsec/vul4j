@@ -1,6 +1,12 @@
 package net.onrc.onos.core.intent.runtime;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,17 +20,13 @@ import net.onrc.onos.core.datagrid.IEventChannelListener;
 import net.onrc.onos.core.intent.ConstrainedShortestPathIntent;
 import net.onrc.onos.core.intent.FlowEntry;
 import net.onrc.onos.core.intent.Intent;
+import net.onrc.onos.core.intent.Intent.IntentState;
+import net.onrc.onos.core.intent.IntentOperation.Operator;
 import net.onrc.onos.core.intent.IntentOperationList;
 import net.onrc.onos.core.intent.MockNetworkGraph;
 import net.onrc.onos.core.intent.PathIntent;
 import net.onrc.onos.core.intent.PathIntentMap;
 import net.onrc.onos.core.intent.ShortestPathIntent;
-import net.onrc.onos.core.intent.Intent.IntentState;
-import net.onrc.onos.core.intent.IntentOperation.Operator;
-import net.onrc.onos.core.intent.runtime.IntentStateList;
-import net.onrc.onos.core.intent.runtime.PathCalcRuntimeModule;
-import net.onrc.onos.core.intent.runtime.PersistIntent;
-import net.onrc.onos.core.intent.runtime.PlanCalcRuntime;
 import net.onrc.onos.core.registry.IControllerRegistryService;
 import net.onrc.onos.core.topology.DeviceEvent;
 import net.onrc.onos.core.topology.INetworkGraphListener;

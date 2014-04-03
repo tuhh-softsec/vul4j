@@ -7,11 +7,6 @@ import java.util.Map;
 
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.test.FloodlightTestCase;
-import net.onrc.onos.core.registry.ControllerRegistryEntry;
-import net.onrc.onos.core.registry.ControllerService;
-import net.onrc.onos.core.registry.IdBlock;
-import net.onrc.onos.core.registry.RegistryException;
-import net.onrc.onos.core.registry.ZookeeperRegistry;
 import net.onrc.onos.core.registry.StandaloneRegistryTest.LoggingCallback;
 import net.onrc.onos.core.registry.ZookeeperRegistry.SwitchLeaderListener;
 

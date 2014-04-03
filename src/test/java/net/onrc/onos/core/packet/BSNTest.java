@@ -25,10 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import net.onrc.onos.core.packet.BSN;
-import net.onrc.onos.core.packet.BSNPROBE;
-import net.onrc.onos.core.packet.Ethernet;
-
 import org.junit.Test;
 
 /**

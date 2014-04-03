@@ -1,8 +1,6 @@
 package net.onrc.onos.core.intent;
 
-import static org.junit.Assert.*;
-import net.onrc.onos.core.intent.ErrorIntent;
-import net.onrc.onos.core.intent.Intent;
+import static org.junit.Assert.assertEquals;
 import net.onrc.onos.core.intent.ErrorIntent.ErrorType;
 
 import org.junit.After;

@@ -24,11 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import net.onrc.onos.core.packet.Data;
-import net.onrc.onos.core.packet.ICMP;
-import net.onrc.onos.core.packet.IPacket;
-import net.onrc.onos.core.packet.IPv4;
-
 import org.junit.Test;
 
 /**

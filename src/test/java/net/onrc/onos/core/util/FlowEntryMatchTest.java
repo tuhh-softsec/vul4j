@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.core.util.FlowEntryMatch;
-import net.onrc.onos.core.util.IPv4Net;
-import net.onrc.onos.core.util.Port;
 
 import org.junit.Before;
 import org.junit.Test;

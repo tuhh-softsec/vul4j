@@ -14,15 +14,13 @@
 
 package net.onrc.onos.core.packet;
 
-import net.onrc.onos.core.packet.LLDPOrganizationalTLV;
-
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 public class LLDPOrganizationalTLVTest {
     private final byte[] expected = new byte[] {

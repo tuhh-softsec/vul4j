@@ -25,11 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import net.onrc.onos.core.packet.Ethernet;
-import net.onrc.onos.core.packet.IPacket;
-import net.onrc.onos.core.packet.LLDP;
-import net.onrc.onos.core.packet.LLDPTLV;
-
 import org.junit.Test;
 
 /**

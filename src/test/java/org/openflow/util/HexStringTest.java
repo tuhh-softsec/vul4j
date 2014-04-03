@@ -17,9 +17,9 @@
 
 package org.openflow.util;
 
-import org.junit.Test;
-
 import junit.framework.TestCase;
+
+import org.junit.Test;
 
 /**
  * Does hexstring conversion work?

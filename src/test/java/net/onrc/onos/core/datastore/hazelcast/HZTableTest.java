@@ -1,17 +1,21 @@
 package net.onrc.onos.core.datastore.hazelcast;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
 import net.onrc.onos.core.datastore.ObjectDoesntExistException;
 import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.core.datastore.WrongVersionException;
-import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
-import net.onrc.onos.core.datastore.hazelcast.HZClient;
-import net.onrc.onos.core.datastore.hazelcast.HZTable;
 import net.onrc.onos.core.datastore.hazelcast.HZTable.VersionedValue;
 import net.onrc.onos.core.datastore.utils.ByteArrayComparator;
 
