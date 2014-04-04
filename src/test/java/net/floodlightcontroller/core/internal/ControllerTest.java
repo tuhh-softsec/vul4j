@@ -977,8 +977,6 @@ public class ControllerTest extends FloodlightTestCase {
                 chdlr.sw, controller.activeSwitches.get(1L));
     }
 
-    ;
-
     @Test
     /** Slave2Slave transition ==> no change */
     public void testNiciraRoleReplySlave2Slave() throws Exception {
