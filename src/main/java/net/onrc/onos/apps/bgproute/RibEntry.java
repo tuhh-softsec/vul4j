@@ -60,7 +60,7 @@ public class RibEntry {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null || !(other instanceof RibEntry)) {
+        if (!(other instanceof RibEntry)) {
             return false;
         }
 

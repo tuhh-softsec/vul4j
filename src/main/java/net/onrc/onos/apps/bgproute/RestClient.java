@@ -11,23 +11,26 @@ import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+public final class RestClient {
+    private final static Logger log = LoggerFactory.getLogger(RestClient.class);
 
-public class RestClient {
-    protected final static Logger log = LoggerFactory.getLogger(RestClient.class);
-
+    private RestClient() {
+        // Private constructor to prevent instantiation
+    }
+    
     public static String get(String str) {
         StringBuilder response = new StringBuilder();
 
         try {
-
             URL url = new URL(str);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(2 * 1000); //2 seconds
+            conn.setConnectTimeout(2 * 1000); // 2 seconds
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
 
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : "
+                // XXX bad. RestClient API needs to be redesigned
+                throw new IOException("Failed : HTTP error code : "
                         + conn.getResponseCode());
             }
 
@@ -47,9 +50,9 @@ public class RestClient {
         } catch (MalformedURLException e) {
             log.error("Malformed URL for GET request", e);
         } catch (ConnectTimeoutException e) {
-            log.warn("Couldn't connect remote REST server");
+            log.warn("Couldn't connect to the remote REST server", e);
         } catch (IOException e) {
-            log.warn("Couldn't connect remote REST server");
+            log.warn("Couldn't connect to the remote REST server", e);
         }
 
         return response.toString();
@@ -65,7 +68,8 @@ public class RestClient {
             conn.setRequestProperty("Content-Type", "application/json");
 
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : "
+                // XXX bad. RestClient API needs to be redesigned
+                throw new IOException("Failed : HTTP error code : "
                         + conn.getResponseCode());
             }
 
@@ -74,10 +78,9 @@ public class RestClient {
         } catch (MalformedURLException e) {
             log.error("Malformed URL for GET request", e);
         } catch (IOException e) {
-            log.warn("Couldn't connect remote REST server");
+            log.warn("Couldn't connect to the remote REST server", e);
         }
     }
-
 
     public static void delete(String str) {
 
@@ -87,9 +90,9 @@ public class RestClient {
             conn.setRequestMethod("DELETE");
             conn.setRequestProperty("Accept", "application/json");
 
-
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : "
+                // XXX bad. RestClient API needs to be redesigned
+                throw new IOException("Failed : HTTP error code : "
                         + conn.getResponseCode());
             }
 
@@ -98,7 +101,7 @@ public class RestClient {
         } catch (MalformedURLException e) {
             log.error("Malformed URL for GET request", e);
         } catch (IOException e) {
-            log.warn("Couldn't connect remote REST server");
+            log.warn("Couldn't connect to the remote REST server", e);
         }
     }
 }

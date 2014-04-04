@@ -7,7 +7,7 @@ import java.util.Arrays;
 import com.google.common.net.InetAddresses;
 
 public class Prefix {
-    private final int MAX_BYTES = 4;
+    private static final int MAX_BYTES = 4;
 
     private final int prefixLength;
     private final byte[] address;
@@ -27,7 +27,7 @@ public class Prefix {
         try {
             inetAddress = InetAddress.getByAddress(address);
         } catch (UnknownHostException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Couldn't parse IP address", e);
         }
     }
 
@@ -46,7 +46,7 @@ public class Prefix {
         try {
             inetAddress = InetAddress.getByAddress(address);
         } catch (UnknownHostException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Couldn't parse IP address", e);
         }
     }
 
@@ -94,7 +94,7 @@ public class Prefix {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null || !(other instanceof Prefix)) {
+        if (!(other instanceof Prefix)) {
             return false;
         }
 
@@ -118,17 +118,17 @@ public class Prefix {
     }
 
     public String printAsBits() {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < address.length; i++) {
             byte b = address[i];
             for (int j = 0; j < Byte.SIZE; j++) {
                 byte mask = (byte) (0x80 >>> j);
-                result += ((b & mask) == 0) ? "0" : "1";
+                result.append(((b & mask) == 0) ? "0" : "1");
                 if (i * Byte.SIZE + j == prefixLength - 1) {
-                    return result;
+                    return result.toString();
                 }
             }
-            result += " ";
+            result.append(" ");
         }
         return result.substring(0, result.length() - 1);
     }

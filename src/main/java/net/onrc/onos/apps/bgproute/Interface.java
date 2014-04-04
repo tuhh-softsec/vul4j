@@ -60,7 +60,7 @@ public class Interface {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null || !(other instanceof Interface)) {
+        if (!(other instanceof Interface)) {
             return false;
         }
 

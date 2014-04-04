@@ -12,32 +12,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BgpRouteResource extends ServerResource {
-
-    protected final static Logger log = LoggerFactory.getLogger(BgpRouteResource.class);
+    private final static Logger log = LoggerFactory.getLogger(BgpRouteResource.class);
 
     @Get
     public String get(String fmJson) {
         String dest = (String) getRequestAttributes().get("dest");
-        String output = "";
-        IBgpRouteService bgpRoute = (IBgpRouteService) getContext().getAttributes().
+        StringBuilder output = new StringBuilder(80);
+        IBgpRouteService bgpRoute = (IBgpRouteService) getContext()
+                .getAttributes().
                 get(IBgpRouteService.class.getCanonicalName());
 
-        if (dest != null) {
-            //TODO Needs to be changed to use the new RestClient.get().
-
-            // the dest here refers to router-id
-            //bgpdRestIp includes port number, such as 1.1.1.1:8080
-            String BGPdRestIp = bgpRoute.getBGPdRestIp();
-            String url = "http://" + BGPdRestIp + "/wm/bgp/" + dest;
-
-            //Doesn't actually do anything with the response
-            RestClient.get(url);
-
-            output = "Get rib from bgpd finished!\n";
-            return output;
-        } else {
+        if (dest == null) {
             IPatriciaTrie<RibEntry> ptree = bgpRoute.getPtree();
-            output += "{\n  \"rib\": [\n";
+            output.append("{\n  \"rib\": [\n");
             boolean printed = false;
 
             synchronized (ptree) {
@@ -45,26 +32,42 @@ public class BgpRouteResource extends ServerResource {
                 while (it.hasNext()) {
                     IPatriciaTrie.Entry<RibEntry> entry = it.next();
 
-                    if (printed == true) {
-                        output += ",\n";
+                    if (printed) {
+                        output.append(",\n");
                     }
 
-                    output += "    {\"prefix\": \"" + entry.getPrefix() + "\", ";
-                    output += "\"nexthop\": \"" + entry.getValue().getNextHop().getHostAddress() + "\"}";
+                    output.append("    {\"prefix\": \"");
+                    output.append(entry.getPrefix());
+                    output.append("\", \"nexthop\": \"");
+                    output.append(entry.getValue().getNextHop().getHostAddress());
+                    output.append("\"}");
 
                     printed = true;
                 }
             }
 
-            output += "\n  ]\n}\n";
+            output.append("\n  ]\n}\n");
+        } else {
+            // TODO Needs to be changed to use the new RestClient.get().
+
+            // the dest here refers to router-id
+            // bgpdRestIp includes port number, such as 1.1.1.1:8080
+            String bgpdRestIp = bgpRoute.getBGPdRestIp();
+            String url = "http://" + bgpdRestIp + "/wm/bgp/" + dest;
+
+            // Doesn't actually do anything with the response
+            RestClient.get(url);
+
+            output.append("Get rib from bgpd finished!\n");
         }
 
-        return output;
+        return output.toString();
     }
 
     @Post
     public String store(String fmJson) {
-        IBgpRouteService bgpRoute = (IBgpRouteService) getContext().getAttributes().
+        IBgpRouteService bgpRoute = (IBgpRouteService) getContext()
+                .getAttributes().
                 get(IBgpRouteService.class.getCanonicalName());
 
         String strSysuptime = (String) getRequestAttributes().get("sysuptime");
@@ -98,13 +101,14 @@ public class BgpRouteResource extends ServerResource {
                 return reply + "\n";
             }
 
-            RibEntry rib = new RibEntry(routerId, nexthop, sysUpTime, sequenceNum);
+            RibEntry rib = new RibEntry(routerId, nexthop, sysUpTime,
+                    sequenceNum);
 
             bgpRoute.newRibUpdate(new RibUpdate(Operation.UPDATE, p, rib));
 
             reply = "[POST: " + prefix + "/" + mask + ":" + nexthop + "]";
             log.info(reply);
-        } else if (capability.equals("1")) {
+        } else if ("1".equals(capability)) {
             reply = "[POST-capability: " + capability + "]\n";
             log.info(reply);
             // to store the number in the top node of the Ptree
@@ -119,7 +123,8 @@ public class BgpRouteResource extends ServerResource {
 
     @Delete
     public String delete(String fmJson) {
-        IBgpRouteService bgpRoute = (IBgpRouteService) getContext().getAttributes().
+        IBgpRouteService bgpRoute = (IBgpRouteService) getContext()
+                .getAttributes().
                 get(IBgpRouteService.class.getCanonicalName());
 
         String strSysuptime = (String) getRequestAttributes().get("sysuptime");
@@ -157,11 +162,13 @@ public class BgpRouteResource extends ServerResource {
 
             bgpRoute.newRibUpdate(new RibUpdate(Operation.DELETE, p, r));
 
-            reply = reply + "[DELE: " + prefix + "/" + mask + ":" + nextHop + "]";
+            reply = reply + "[DELE: " + prefix + "/" + mask + ":" + nextHop
+                    + "]";
         } else {
             // clear the local rib: Ptree
             bgpRoute.clearPtree();
-            reply = "[DELE-capability: " + capability + "; The local RibEntry is cleared!]\n";
+            reply = "[DELE-capability: " + capability
+                    + "; The local RibEntry is cleared!]\n";
 
             // to store the number in the top node of the Ptree
         }

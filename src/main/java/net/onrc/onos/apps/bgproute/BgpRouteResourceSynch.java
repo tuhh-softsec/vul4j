@@ -1,17 +1,13 @@
 package net.onrc.onos.apps.bgproute;
 
-
 import org.restlet.resource.Delete;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class BgpRouteResourceSynch extends ServerResource {
-
-    protected final static Logger log = LoggerFactory
-            .getLogger(BgpRouteResource.class);
+    private final static Logger log = LoggerFactory.getLogger(BgpRouteResourceSynch.class);
 
     @Post
     public String store(String fmJson) {
@@ -19,27 +15,22 @@ public class BgpRouteResourceSynch extends ServerResource {
         IBgpRouteService bgpRoute = (IBgpRouteService) getContext().getAttributes().
                 get(IBgpRouteService.class.getCanonicalName());
 
-        String router_id = (String) getRequestAttributes().get("routerid");
+        String routerId = (String) getRequestAttributes().get("routerid");
         String prefix = (String) getRequestAttributes().get("prefix");
         String mask = (String) getRequestAttributes().get("mask");
         String nexthop = (String) getRequestAttributes().get("nexthop");
 
-        try {
+        String bgpdRestIp = bgpRoute.getBGPdRestIp();
 
-            String BGPdRestIp = bgpRoute.getBGPdRestIp();
-
-            //bgpdRestIp includes port number, such as 1.1.1.1:8080
-            RestClient.post("http://" + BGPdRestIp + "/wm/bgp/" + router_id + "/" + prefix + "/" + mask + "/" + nexthop);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // bgpdRestIp includes port number, e.g. 1.1.1.1:8080
+        RestClient.post("http://" + bgpdRestIp + "/wm/bgp/" + routerId + "/" + prefix + "/"
+                + mask + "/" + nexthop);
 
         String reply = "";
         reply = "[POST: " + prefix + "/" + mask + ":" + nexthop + "/synch]";
         log.info(reply);
 
         return reply + "\n";
-
 
     }
 
@@ -54,19 +45,15 @@ public class BgpRouteResourceSynch extends ServerResource {
         String nextHop = (String) getRequestAttributes().get("nexthop");
 
         String reply = "";
-        try {
-            String BGPdRestIp = bgpRoute.getBGPdRestIp();
 
-            RestClient.delete("http://" + BGPdRestIp + "/wm/bgp/" + routerId + "/" + prefix + "/" + mask + "/" + nextHop);
+        String bgpdRestIp = bgpRoute.getBGPdRestIp();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        RestClient.delete("http://" + bgpdRestIp + "/wm/bgp/" + routerId + "/" + prefix + "/"
+                + mask + "/" + nextHop);
 
         reply = reply + "[DELE: " + prefix + "/" + mask + ":" + nextHop + "/synch]";
 
         log.info(reply);
-
 
         return reply + "\n";
     }

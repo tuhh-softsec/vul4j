@@ -11,12 +11,12 @@ import java.util.List;
 
 public class Path {
 
-    private Interface dstInterface;
-    private InetAddress dstIpAddress;
-    private int numUsers = 0;
+    private final Interface dstInterface;
+    private final InetAddress dstIpAddress;
+    private int numUsers; // initialized to 0
 
-    private List<PushedFlowMod> flowMods = null;
-    private boolean permanent = false;
+    private List<PushedFlowMod> flowMods; // initialized to null
+    private boolean permanent; // initialized to false
 
     public Path(Interface dstInterface, InetAddress dstIpAddress) {
         this.dstInterface = dstInterface;

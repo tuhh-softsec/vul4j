@@ -9,7 +9,7 @@ import org.openflow.protocol.OFFlowMod;
  * TODO This functionality should be handled by ONOS's flow layer in future.
  */
 public class PushedFlowMod {
-    private long dpid;
+    private final long dpid;
     private OFFlowMod flowMod;
 
     public PushedFlowMod(long dpid, OFFlowMod flowMod) {
