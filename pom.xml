@@ -288,6 +288,7 @@
                     </executions>
                     <configuration>
                         <attach>true</attach>
+                        <excludePackageNames>org.apache.xml.security.binding.*</excludePackageNames>
                     </configuration>
                 </plugin>
                 <plugin>
