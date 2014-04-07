@@ -41,27 +41,27 @@
   <build>
     <plugins>
       <plugin>
-	<!-- Note: the checkstyle configuration is also in the reporting section -->
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-checkstyle-plugin</artifactId>
-	<version>${checkstyle-plugin.version}</version>
-	<configuration>
-	  <configLocation>conf/checkstyle/sun_checks.xml</configLocation>
-	  <suppressionsLocation>
-	    ${basedir}/conf/checkstyle/onos_suppressions.xml
-	  </suppressionsLocation>
-	  <failsOnError>false</failsOnError>
-	</configuration>
-	<executions>
-	  <execution>
-	    <id>validate-checkstyle</id>
-	    <phase>compile</phase>
-	    <goals>
-	      <!--  Uncomment this goal to make the build fail on Checkstyle errors -->
-	      <!--<goal>check</goal>-->
-	    </goals>
-	  </execution>
-	</executions>
+        <!-- Note: the checkstyle configuration is also in the reporting section -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle-plugin.version}</version>
+        <configuration>
+          <configLocation>conf/checkstyle/sun_checks.xml</configLocation>
+          <suppressionsLocation>
+            ${basedir}/conf/checkstyle/onos_suppressions.xml
+          </suppressionsLocation>
+          <failsOnError>false</failsOnError>
+          <logViolationsToConsole>true</logViolationsToConsole>
+        </configuration>
+        <executions>
+          <execution>
+            <id>validate-checkstyle</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -194,12 +194,12 @@
       </plugin>
       -->
       <plugin>
-	<artifactId>maven-assembly-plugin</artifactId>
-	<configuration>
-	  <descriptorRefs>
-	    <descriptorRef>jar-with-dependencies</descriptorRef>
-	  </descriptorRefs>
-	</configuration>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
       </plugin>
       <plugin>
         <!-- Using groovy script to set maven property ${hostname}.
@@ -271,22 +271,22 @@
           <effort>${findbugs.effort}</effort>
           <excludeFilterFile>${findbugs.excludeFilterFile}</excludeFilterFile>
         </configuration>
-	<executions>
-	  <execution>
-	    <id>validate-findbugs</id>
-	    <phase>compile</phase>
-	    <goals>
-	      <!--  Uncomment this goal to make the build fail on findbugs errors -->
-	      <!--<goal>check</goal>-->
-	    </goals>
-	  </execution>
-	</executions>
+        <executions>
+          <execution>
+            <id>validate-findbugs</id>
+            <phase>compile</phase>
+            <goals>
+              <!--  Uncomment this goal to make the build fail on findbugs errors -->
+              <!--<goal>check</goal>-->
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.1</version>
-	<configuration>
+        <configuration>
           <!--
             Note: Exclusion definition exists in multiple places.
             - In file ${findbugs.excludeFilterFile} defined at top of pom.xml
@@ -294,26 +294,26 @@
             - maven-pmd-plugin configuration in pom.xml
               (under build and reporting)
           -->
-	  <excludes>
+          <excludes>
             <exclude>**/datastore/serializers/**</exclude>
-	    <exclude>**/edu/stanford/**</exclude>
-	    <exclude>**/net/floodlightcontroller/**</exclude>
-	    <exclude>**/org/openflow/**</exclude>
-	  </excludes>
-	  <rulesets>
-	    <ruleset>${basedir}/conf/pmd/onos_ruleset.xml</ruleset>
-	  </rulesets>
-	</configuration>
-	<executions>
-	  <execution>
-	    <id>validate-pmd</id>
-	    <phase>compile</phase>
-	    <goals>
-	      <!--  Uncomment this goal to make the build fail on pmd errors -->
-	      <!--<goal>check</goal>-->
-	    </goals>
-	  </execution>
-	</executions>
+            <exclude>**/edu/stanford/**</exclude>
+            <exclude>**/net/floodlightcontroller/**</exclude>
+            <exclude>**/org/openflow/**</exclude>
+          </excludes>
+          <rulesets>
+            <ruleset>${basedir}/conf/pmd/onos_ruleset.xml</ruleset>
+          </rulesets>
+        </configuration>
+        <executions>
+          <execution>
+            <id>validate-pmd</id>
+            <phase>compile</phase>
+            <goals>
+              <!--  Uncomment this goal to make the build fail on pmd errors -->
+              <!--<goal>check</goal>-->
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -404,12 +404,12 @@
         </configuration>
       </plugin>
       <plugin>
-	<!-- Note: the checkstyle configuration is also in the build section -->
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-checkstyle-plugin</artifactId>
-	<version>${checkstyle-plugin.version}</version>
-	<configuration>
-	  <configLocation>conf/checkstyle/sun_checks.xml</configLocation>
+        <!-- Note: the checkstyle configuration is also in the build section -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle-plugin.version}</version>
+        <configuration>
+          <configLocation>conf/checkstyle/sun_checks.xml</configLocation>
           <!--
             Note: Exclusion definition exists in multiple places.
             - In file ${findbugs.excludeFilterFile} defined at top of pom.xml
@@ -418,17 +418,17 @@
               (under build and reporting)
           -->
           <excludes>**/datastore/serializers/**</excludes>
-	  <suppressionsLocation>
+          <suppressionsLocation>
              ${basedir}/conf/checkstyle/onos_suppressions.xml
           </suppressionsLocation>
-	</configuration>
-	<reportSets>
-	  <reportSet>
-	    <reports>
-	      <report>checkstyle</report>
-	    </reports>
-	  </reportSet>
-	</reportSets>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>checkstyle</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
       <!-- Note: the findbugs configuration is also in the build section -->
       <plugin>
@@ -460,19 +460,19 @@
           -->
           <excludes>
             <exclude>**/datastore/serializers/**</exclude>
-	    <exclude>**/edu/stanford/**</exclude>
-	    <exclude>**/net/floodlightcontroller/**</exclude>
-	    <exclude>**/org/openflow/**</exclude>
+            <exclude>**/edu/stanford/**</exclude>
+            <exclude>**/net/floodlightcontroller/**</exclude>
+            <exclude>**/org/openflow/**</exclude>
           </excludes>
-	  <rulesets>
-	    <ruleset>${basedir}/conf/pmd/onos_ruleset.xml</ruleset>
-	  </rulesets>
+          <rulesets>
+            <ruleset>${basedir}/conf/pmd/onos_ruleset.xml</ruleset>
+          </rulesets>
         </configuration>
       </plugin>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jxr-plugin</artifactId>
-	<version>2.4</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.4</version>
     </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
