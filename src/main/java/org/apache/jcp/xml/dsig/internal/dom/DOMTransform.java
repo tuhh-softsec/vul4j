@@ -61,9 +61,8 @@ public class DOMTransform extends BaseStructure implements Transform {
     }
 
     /**
-     * Creates a <code>DOMTransform</code> from an element. This constructor
-     * invokes the abstract {@link #unmarshalParams unmarshalParams} method to
-     * unmarshal any algorithm-specific input parameters.
+     * Creates a <code>DOMTransform</code> from an element. It unmarshals any 
+     * algorithm-specific input parameters.
      *
      * @param transElem a Transform element
      */
@@ -107,8 +106,7 @@ public class DOMTransform extends BaseStructure implements Transform {
     }
 
     /**
-     * This method invokes the abstract {@link #marshalParams marshalParams} 
-     * method to marshal any algorithm-specific parameters.
+     * This method marshals any algorithm-specific parameters.
      */
     public void marshal(XmlWriter xwriter, String dsPrefix, XMLCryptoContext context)
         throws MarshalException
@@ -128,7 +126,7 @@ public class DOMTransform extends BaseStructure implements Transform {
      * Transforms the specified data using the underlying transform algorithm.
      *
      * @param data the data to be transformed
-     * @param sc the <code>XMLCryptoContext</code> containing
+     * @param xc the <code>XMLCryptoContext</code> containing
      *    additional context (may be <code>null</code> if not applicable)
      * @return the transformed data
      * @throws NullPointerException if <code>data</code> is <code>null</code>
@@ -146,7 +144,7 @@ public class DOMTransform extends BaseStructure implements Transform {
      * Transforms the specified data using the underlying transform algorithm.
      *
      * @param data the data to be transformed
-     * @param sc the <code>XMLCryptoContext</code> containing
+     * @param xc     the <code>XMLCryptoContext</code> containing
      *    additional context (may be <code>null</code> if not applicable)
      * @param os the <code>OutputStream</code> that should be used to write
      *    the transformed data to

@@ -57,9 +57,8 @@ public class DOMCanonicalizationMethod extends DOMTransform
     }
 
     /**
-     * Creates a <code>DOMCanonicalizationMethod</code> from an element. This 
-     * ctor invokes the abstract {@link #unmarshalParams unmarshalParams} 
-     * method to unmarshal any algorithm-specific input parameters.
+     * Creates a <code>DOMCanonicalizationMethod</code> from an element. It unmarshals any 
+     * algorithm-specific input parameters.
      *
      * @param cmElem a CanonicalizationMethod element
      */

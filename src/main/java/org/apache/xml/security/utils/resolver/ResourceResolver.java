@@ -59,7 +59,7 @@ public class ResourceResolver {
     /**
      * Method getInstance
      *
-     * @param uri
+     * @param uriAttr
      * @param baseURI
      * @param secureValidation
      * @return the instance

@@ -53,7 +53,7 @@ public interface SecurityToken {
 
     /**
      * Returns the public key if one exists and already initialized, null otherwise
-     * @return
+     * @return the public key
      * @throws org.apache.xml.security.exceptions.XMLSecurityException
      */
     PublicKey getPublicKey() throws XMLSecurityException;

@@ -217,7 +217,7 @@ public class KeyInfoReferenceResolver extends KeyResolverSpi {
      * @param uri
      * @param baseURI
      * @param secureValidation
-     * @return
+     * @return the XML signature input represented by the specified URI. 
      * @throws XMLSecurityException 
      */
     private XMLSignatureInput resolveInput(Attr uri, String baseURI, boolean secureValidation)
@@ -230,7 +230,7 @@ public class KeyInfoReferenceResolver extends KeyResolverSpi {
      * Resolve the Element effectively represented by the XML signature input source.
      * 
      * @param resource
-     * @return
+     * @return the Element effectively represented by the XML signature input source.
      * @throws CanonicalizationException
      * @throws ParserConfigurationException
      * @throws IOException

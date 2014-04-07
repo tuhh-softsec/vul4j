@@ -36,7 +36,7 @@ public class KeyInfoReference extends Signature11ElementProxy implements KeyInfo
      * Constructor RetrievalMethod
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @throws XMLSecurityException
      */
     public KeyInfoReference(Element element, String baseURI) throws XMLSecurityException {
@@ -47,12 +47,12 @@ public class KeyInfoReference extends Signature11ElementProxy implements KeyInfo
      * Constructor RetrievalMethod
      *
      * @param doc
-     * @param URI
+     * @param uri
      */
-    public KeyInfoReference(Document doc, String URI) {
+    public KeyInfoReference(Document doc, String uri) {
         super(doc);
 
-        setLocalAttribute(Constants._ATT_URI, URI);
+        setLocalAttribute(Constants._ATT_URI, uri);
     }
 
     /**
@@ -76,7 +76,7 @@ public class KeyInfoReference extends Signature11ElementProxy implements KeyInfo
     /**
      * Sets the <code>Id</code> attribute
      *
-     * @param Id ID
+     * @param id ID
      */
     public void setId(String id) {
         setLocalIdAttribute(Constants._ATT_ID, id);

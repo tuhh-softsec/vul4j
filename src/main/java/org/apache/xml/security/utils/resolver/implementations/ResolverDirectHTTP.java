@@ -91,14 +91,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     }
     
     /**
-     * Method resolve
-     *
-     * @param uri
-     * @param baseURI
-     *
-     * @throws ResourceResolverException
-     * @return 
-     * $todo$ calculate the correct URI from the attribute and the baseURI
+     * @inheritDoc
      */
     @Override
     public XMLSignatureInput engineResolveURI(ResourceResolverContext context)
@@ -204,8 +197,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     /**
      * We resolve http URIs <I>without</I> fragment...
      *
-     * @param uri
-     * @param baseURI
+     * @param context
      * @return true if can be resolved
      */
     public boolean engineCanResolveURI(ResourceResolverContext context) {

@@ -235,17 +235,17 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     /**
      * Method addDigest
      *
-     * @param x509CertificateDigestByes
+     * @param x509CertificateDigestBytes
      * @param algorithmURI
      */
-    public void addDigest(byte[] x509certificateDigestBytes, String algorithmURI) {
-        this.add(new XMLX509Digest(getDocument(), x509certificateDigestBytes, algorithmURI));
+    public void addDigest(byte[] x509CertificateDigestBytes, String algorithmURI) {
+        this.add(new XMLX509Digest(getDocument(), x509CertificateDigestBytes, algorithmURI));
     }
     
     /**
      * Method add
      *
-     * @param XMLX509Digest
+     * @param xmlX509Digest
      */
     public void add(XMLX509Digest xmlX509Digest) {
         appendSelf(xmlX509Digest);

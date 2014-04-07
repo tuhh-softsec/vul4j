@@ -519,7 +519,7 @@ public abstract class ElementProxy {
      * 
      * @param elem  New element
      * 
-     * @see #getWrappedElement()
+     * @see #getElement()
      */
     protected void setElement(Element elem) {
         wrappedElement = elem;
@@ -530,7 +530,7 @@ public abstract class ElementProxy {
      * 
      * @param doc New document object being wrapped.
      * 
-     * @see #getWrappedDocument()
+     * @see #getDocument()
      */
     protected void setDocument(Document doc) {
         wrappedDoc = doc;

@@ -152,7 +152,7 @@ public class KeyInfo extends SignatureElementProxy {
     /**
      * Sets the <code>Id</code> attribute
      *
-     * @param Id ID
+     * @param id ID
      */
     public void setId(String id) {
         if (id != null) {

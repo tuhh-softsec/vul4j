@@ -58,7 +58,7 @@ public class SingleKeyResolver extends KeyResolverSpi
      * This method returns whether the KeyResolverSpi is able to perform the requested action.
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return whether the KeyResolverSpi is able to perform the requested action.
      */

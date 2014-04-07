@@ -219,7 +219,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @param e
      * @param baseURI
      * @param storage
-     * @return
+     * @return a x509Certificate from the given information
      * @throws KeyResolverException 
      */
     private static X509Certificate resolveCertificate(
@@ -241,7 +241,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @param e
      * @param baseURI
      * @param storage
-     * @return
+     * @return a PublicKey from the given information
      * @throws KeyResolverException 
      */
     private static PublicKey resolveKey(
@@ -292,7 +292,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
     /**
      * Resolves the input from the given retrieval method 
-     * @return
+     * @return the input from the given retrieval method
      * @throws XMLSecurityException 
      */
     private static XMLSignatureInput resolveInput(

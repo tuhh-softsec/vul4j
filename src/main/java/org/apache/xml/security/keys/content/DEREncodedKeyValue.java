@@ -68,7 +68,7 @@ public class DEREncodedKeyValue extends Signature11ElementProxy implements KeyIn
      * Constructor DEREncodedKeyValue
      *
      * @param doc
-     * @param base64EncodedKey 
+     * @param encodedKey 
      */
     public DEREncodedKeyValue(Document doc, byte[] encodedKey) {
         super(doc);
@@ -79,7 +79,7 @@ public class DEREncodedKeyValue extends Signature11ElementProxy implements KeyIn
     /**
      * Sets the <code>Id</code> attribute
      *
-     * @param Id ID
+     * @param id ID
      */
     public void setId(String id) {
         setLocalIdAttribute(Constants._ATT_ID, id);

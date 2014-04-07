@@ -25,13 +25,10 @@ import org.w3c.dom.Node;
 public abstract class BaseStructure implements XMLStructure {
 
     /**
-     * Since the behavior of {@link Model#getStringValue(Object)} returns the value
-     * of all descendant text nodes of an element, whereas we just want the immediate children.
+     * Just return the text of the immediate child of a node.
      * 
-     * @param <N>
-     * @param model
      * @param node
-     * @return
+     * @return the text of a Node
      */
     public static String textOfNode(Node node) {
         return node.getFirstChild().getNodeValue();

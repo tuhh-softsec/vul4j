@@ -31,9 +31,9 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 public interface OutboundSecurityToken extends SecurityToken {
 
     /**
-     * Returns the responsible processor for this token
+     * Returns the processor responsible for this token
      *
-     * @return
+     * @return the processor responsible for this token
      */
     Object getProcessor();
 

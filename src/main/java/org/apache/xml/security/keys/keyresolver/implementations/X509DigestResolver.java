@@ -91,7 +91,7 @@ public class X509DigestResolver extends KeyResolverSpi {
      * @param element
      * @param baseURI
      * @param storage
-     * @return
+     * @return the certificate represented by the digest.
      * @throws XMLSecurityException
      */
     private X509Certificate resolveCertificate(Element element, String baseURI, StorageResolver storage) 

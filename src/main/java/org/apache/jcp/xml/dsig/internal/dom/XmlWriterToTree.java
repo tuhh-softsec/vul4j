@@ -55,7 +55,7 @@ public class XmlWriterToTree implements XmlWriter {
     
     /**
      * Get the root element created with this writer.
-     * @return
+     * @return the root element created with this writer.
      */
     public Element getCreatedElement() {
         return m_createdElement;
@@ -63,10 +63,10 @@ public class XmlWriterToTree implements XmlWriter {
     
     /**
      * In cases where the serialization is supposed to precede a specific
-     * element, we add an extra paramter to capture that. Only affects the
+     * element, we add an extra parameter to capture that. Only affects the
      * first element insertion (obviously?).
      * 
-     * @param model
+     * @param marshallers
      * @param parent
      * @param nextSibling The first element created will be created *before* this element.
      */

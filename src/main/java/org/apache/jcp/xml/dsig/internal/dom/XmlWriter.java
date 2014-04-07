@@ -57,12 +57,12 @@ public interface XmlWriter {
      * @param localName What local name to use?
      * @param namespaceURI  What namespace URI?
      * 
-     * @see {@link XMLStreamWriter#writeStartElement(String, String, String)}
+     * See also {@link javax.xml.stream.XMLStreamWriter#writeStartElement(String, String, String)}
      */
     void writeStartElement(String prefix, String localName, String namespaceURI);
     
     /**
-     * @see {@link XMLStreamWriter#writeEndElement()}
+     * See also {@link javax.xml.stream.XMLStreamWriter#writeEndElement()}
      */
     void writeEndElement();
     
@@ -89,7 +89,7 @@ public interface XmlWriter {
 
     /**
      * Get the local name of the current element.
-     * @return
+     * @return the local name of the current element.
      */
     String getCurrentLocalName();
 

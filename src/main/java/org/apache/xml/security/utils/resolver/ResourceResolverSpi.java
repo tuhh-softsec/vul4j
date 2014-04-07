@@ -100,8 +100,6 @@ public abstract class ResourceResolverSpi {
      * This method helps the {@link ResourceResolver} to decide whether a
      * {@link ResourceResolverSpi} is able to perform the requested action.
      *
-     * <p>New clients should override this method, and not override {@link #engineCanResolve(Attr, String)}
-     * </p>
      * @param context Context in which to do resolution.
      * @return true if the engine can resolve the uri
      */

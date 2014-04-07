@@ -43,7 +43,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
      * Method engineResolvePublicKey
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return null if no {@link PublicKey} could be obtained
      * @throws KeyResolverException

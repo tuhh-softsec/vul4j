@@ -48,7 +48,7 @@ public final class DOMKeyInfo extends BaseStructure implements KeyInfo {
     /**
      * A utility function to suppress casting warnings.
      * @param ki
-     * @return
+     * @return the content of a KeyInfo Object
      */
     @SuppressWarnings("unchecked")
     public static List<XMLStructure> getContent(KeyInfo ki) {

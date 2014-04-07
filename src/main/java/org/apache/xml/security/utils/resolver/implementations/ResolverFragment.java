@@ -46,11 +46,7 @@ public class ResolverFragment extends ResourceResolverSpi {
     }
     
     /**
-     * Method engineResolve
-     *
      * @inheritDoc
-     * @param uri
-     * @param baseURI
      */
     @Override
     public XMLSignatureInput engineResolveURI(ResourceResolverContext context) 
@@ -118,8 +114,7 @@ public class ResolverFragment extends ResourceResolverSpi {
     /**
      * Method engineCanResolve
      * @inheritDoc
-     * @param uri
-     * @param baseURI
+     * @param context
      */
     public boolean engineCanResolveURI(ResourceResolverContext context) {
         if (context.uriToResolve == null) {

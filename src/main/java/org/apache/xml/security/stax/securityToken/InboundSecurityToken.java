@@ -78,7 +78,7 @@ public interface InboundSecurityToken extends SecurityToken {
     /**
      * Returns the first XMLEvent for this token
      *
-     * @return
+     * @return the first XMLEvent for this token
      */
     XMLSecEvent getXMLSecEvent();
 
