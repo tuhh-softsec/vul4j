@@ -158,6 +158,56 @@ public interface IKVClient {
     public boolean multiRead(final Collection<IMultiEntryOperation> ops);
 
     /**
+     * Create atomic 64bit integer counter in data store.
+     *
+     * @param tableId
+     * @param key
+     * @param initialValue
+     * @throws ObjectExistsException
+     */
+    public void createCounter(final IKVTableID tableId, final byte[] key, final long initialValue) throws ObjectExistsException;
+
+    /**
+     * Set atomic 64bit integer counter in data store to specified value.
+     *
+     * @param tableId
+     * @param key
+     * @param value
+     * @throws ObjectExistsException
+     */
+    public void setCounter(final IKVTableID tableId, final byte[] key, final long value);
+
+    /**
+     * Atomically increment 64bit integer counter in data store.
+     *
+     * @param tableId
+     * @param key key where 64bit integer is stored
+     * @param incrementValue
+     * @return value after incrementing
+     */
+    public long incrementCounter(final IKVTableID tableId, final byte[] key, final long incrementValue);
+
+
+    /**
+     * Get atomic 64bit integer counter value in data store.
+     *
+     * @param tableId
+     * @param key
+     * @return current value
+     * @throws ObjectDoesntExistException
+     */
+    public long getCounter(final IKVTableID tableId, final byte[] key)
+            throws ObjectDoesntExistException;
+
+    /**
+     * Destroy atomic 64bit integer counter in data store.
+     *
+     * @param tableId
+     * @param key
+     */
+    public void destroyCounter(final IKVTableID tableId, final byte[] key);
+
+    /**
      * Version number which represents that the object does not exist, or has
      * never been read the DB before.
      */

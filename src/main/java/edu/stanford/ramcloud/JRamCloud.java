@@ -395,6 +395,7 @@ public class JRamCloud {
     public native long writeRule(long tableId, byte[] key, byte[] value, RejectRules rules);
     public native MultiWriteRspObject[] multiWrite(long[] tableId, byte[] key[], short[] keyDataSize, byte[] value[], int[] valueDataSize, int requestNum, RejectRules[] rules);
     public native TableEnumeratorObject getTableObjects(long tableId, long nextHash);
+    public native long increment(long tableId, byte[] key, long incrementValue) throws ObjectDoesntExistException;
 
     /*
      * The following exceptions may be thrown by the JNI functions:

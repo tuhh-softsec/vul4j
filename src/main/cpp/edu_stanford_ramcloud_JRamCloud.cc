@@ -885,3 +885,17 @@ JNIEXPORT jobjectArray JNICALL Java_edu_stanford_ramcloud_JRamCloud_multiWrite(J
     }
     return outJNIArray;
 }
+
+/*
+ * Class:     edu_stanford_ramcloud_JRamCloud
+ * Method:    increment
+ * Signature: (J[BJ)J
+ */
+JNIEXPORT jlong JNICALL Java_edu_stanford_ramcloud_JRamCloud_increment (JNIEnv* env, jobject jRamCloud, jlong jTableId, jbyteArray jKey, jlong incrementValue) {
+    RamCloud* ramcloud = getRamCloud(env, jRamCloud);
+    JByteArrayReference key(env, jKey);
+    uint64_t version = VERSION_NONEXISTENT;
+    try {
+        return ramcloud->increment(jTableId, key.pointer, key.length, incrementValue, NULL, &version);
+    } EXCEPTION_CATCHER(VERSION_NONEXISTENT);
+}

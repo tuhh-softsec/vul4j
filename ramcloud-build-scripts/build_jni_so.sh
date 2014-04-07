@@ -22,7 +22,9 @@ export ONOS_HOME=${ONOS_HOME:-$(cd `dirname $0`; cd ..; pwd)}
 export RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
 RAMCLOUD_BRANCH=${RAMCLOUD_BRANCH:-master}
 
-mvn -f ${ONOS_HOME}/pom.xml compile -T 1C
+if [ ! -e ${ONOS_HOME}/target/classes/edu/stanford/ramcloud/JRamCloud.class ]; then
+  mvn -f ${ONOS_HOME}/pom.xml compile -T 1C
+fi
 
 javah -cp ${ONOS_HOME}/target/classes -o ${ONOS_HOME}/src/main/cpp/edu_stanford_ramcloud_JRamCloud.h edu.stanford.ramcloud.JRamCloud
 
