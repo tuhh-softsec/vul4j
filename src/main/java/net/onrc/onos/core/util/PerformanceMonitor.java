@@ -256,7 +256,7 @@ public class PerformanceMonitor {
         theInstance.reportStep(tag);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         // test the measurement overhead
         String tag;
         for (int i = 0; i < 2; i++) {

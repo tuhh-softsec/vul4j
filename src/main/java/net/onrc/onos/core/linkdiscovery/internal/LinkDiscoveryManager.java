@@ -139,8 +139,8 @@ public class LinkDiscoveryManager
     // periodically or in response to a recieved LLDP
     private static final byte TLV_DIRECTION_TYPE = 0x73;
     private static final short TLV_DIRECTION_LENGTH = 1;  // 1 byte
-    private static final byte TLV_DIRECTION_VALUE_FORWARD[] = {0x01};
-    private static final byte TLV_DIRECTION_VALUE_REVERSE[] = {0x02};
+    private static final byte[] TLV_DIRECTION_VALUE_FORWARD = {0x01};
+    private static final byte[] TLV_DIRECTION_VALUE_REVERSE = {0x02};
     private static final LLDPTLV forwardTLV
             = new LLDPTLV().
             setType(TLV_DIRECTION_TYPE).

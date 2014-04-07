@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class PatriciaTrie<V> implements IPatriciaTrie<V> {
-    private final byte maskBits[] = {(byte) 0x00, (byte) 0x80, (byte) 0xc0, (byte) 0xe0, (byte) 0xf0,
+    private final byte[] maskBits = {(byte) 0x00, (byte) 0x80, (byte) 0xc0, (byte) 0xe0, (byte) 0xf0,
             (byte) 0xf8, (byte) 0xfc, (byte) 0xfe, (byte) 0xff};
 
     private int maxPrefixLength;

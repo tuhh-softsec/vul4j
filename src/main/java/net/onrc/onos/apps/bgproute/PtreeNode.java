@@ -8,7 +8,7 @@ public class PtreeNode {
     public PtreeNode left;
     public PtreeNode right;
 
-    public byte key[];
+    public byte[] key;
     public int keyBits;
 
     public int refCount;
