@@ -13,6 +13,7 @@
         <Property NAME="MaximumAllowedEncryptedDataEvents" VAL="200"/>
         <Property NAME="DefaultLanguageCode" VAL="en"/>
         <Property NAME="DefaultCountryCode" VAL="US"/>
+        <Property NAME="LoadSchemas" VAL="false"/>
     </Properties>
     <SecurityHeaderHandlers>
     </SecurityHeaderHandlers>

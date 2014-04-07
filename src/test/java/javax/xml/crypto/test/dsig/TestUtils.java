@@ -21,31 +21,63 @@
  */
 package javax.xml.crypto.test.dsig;
 
-import java.io.*;
-import java.security.*;
-import java.security.spec.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.KeyFactory;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.DSAPrivateKeySpec;
+import java.security.spec.DSAPublicKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.crypto.SecretKey;
-import javax.xml.crypto.dsig.*;
+import javax.xml.crypto.Data;
+import javax.xml.crypto.NodeSetData;
+import javax.xml.crypto.OctetStreamData;
+import javax.xml.crypto.URIDereferencer;
+import javax.xml.crypto.URIReference;
+import javax.xml.crypto.XMLCryptoContext;
+import javax.xml.crypto.XMLStructure;
+import javax.xml.crypto.dom.DOMStructure;
+import javax.xml.crypto.dsig.DigestMethod;
+import javax.xml.crypto.dsig.Reference;
+import javax.xml.crypto.dsig.XMLSignatureException;
+import javax.xml.crypto.dsig.XMLSignatureFactory;
+import javax.xml.crypto.dsig.XMLValidateContext;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.crypto.dsig.spec.*;
-import javax.xml.crypto.dom.*;
-import javax.xml.crypto.*;
-
-import java.math.BigInteger;
-
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
+import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
+import javax.xml.crypto.dsig.spec.DigestMethodParameterSpec;
+import javax.xml.crypto.dsig.spec.SignatureMethodParameterSpec;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
-import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.utils.XMLUtils;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /*
@@ -90,6 +122,9 @@ public class TestUtils {
 
     public static void validateSecurityOrEncryptionElement(Node toValidate) throws SAXException, IOException {
         XMLSec.init();
+        if (XMLSecurityConstants.getJaxbSchemas() == null) {
+            XMLSecurityConstants.setJaxbSchemas(XMLSecurityUtils.loadXMLSecuritySchemas());
+        }
         Schema schema = XMLSecurityConstants.getJaxbSchemas();
         Validator validator = schema.newValidator();
         DOMSource source = new DOMSource(toValidate);

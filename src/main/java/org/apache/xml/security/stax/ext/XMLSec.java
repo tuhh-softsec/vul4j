@@ -25,21 +25,15 @@ import java.security.interfaces.RSAPrivateKey;
 import java.util.HashSet;
 
 import javax.crypto.SecretKey;
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.config.Init;
-import org.apache.xml.security.stax.impl.util.ConcreteLSInput;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.utils.ClassLoaderUtils;
-import org.w3c.dom.ls.LSInput;
-import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
 /**
@@ -70,50 +64,12 @@ public class XMLSec {
                             org.apache.xml.security.binding.excc14n.ObjectFactory.class 
                         )
                 );
-                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                schemaFactory.setResourceResolver(new LSResourceResolver() {
-                    @Override
-                    public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
-                        if ("http://www.w3.org/2001/XMLSchema.dtd".equals(systemId)) {
-                            ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                            concreteLSInput.setByteStream(
-                                    ClassLoaderUtils.getResourceAsStream("bindings/schemas/XMLSchema.dtd", XMLSecurityConstants.class));
-                            return concreteLSInput;
-                        } else if ("XMLSchema.dtd".equals(systemId)) {
-                            ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                            concreteLSInput.setByteStream(
-                                    ClassLoaderUtils.getResourceAsStream("bindings/schemas/XMLSchema.dtd", XMLSecurityConstants.class));
-                            return concreteLSInput;
-                        } else if ("datatypes.dtd".equals(systemId)) {
-                            ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                            concreteLSInput.setByteStream(
-                                    ClassLoaderUtils.getResourceAsStream("bindings/schemas/datatypes.dtd", XMLSecurityConstants.class));
-                            return concreteLSInput;
-                        } else if ("http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd".equals(systemId)) {
-                            ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                            concreteLSInput.setByteStream(
-                                    ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd", XMLSecurityConstants.class));
-                            return concreteLSInput;
-                        } else if ("http://www.w3.org/2001/xml.xsd".equals(systemId)) {
-                            ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                            concreteLSInput.setByteStream(
-                                    ClassLoaderUtils.getResourceAsStream("bindings/schemas/xml.xsd", XMLSecurityConstants.class));
-                            return concreteLSInput;
-                        }
-                        return null;
-                    }
-                });
-                Schema schema = schemaFactory.newSchema(
-                        new Source[]{
-                                new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/exc-c14n.xsd", XMLSecurityConstants.class)),
-                                new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd", XMLSecurityConstants.class)),
-                                new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema.xsd", XMLSecurityConstants.class)),
-                                new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema-11.xsd", XMLSecurityConstants.class)),
-                                new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig11-schema.xsd", XMLSecurityConstants.class)),
-                        }
-                );
-                XMLSecurityConstants.setJaxbSchemas(schema);
-
+                
+                String loadSchemas = ConfigurationProperties.getProperty("LoadSchemas");
+                if (Boolean.parseBoolean(loadSchemas)) {
+                    Schema schema = XMLSecurityUtils.loadXMLSecuritySchemas();
+                    XMLSecurityConstants.setJaxbSchemas(schema);
+                }
             } catch (JAXBException e) {
                 throw new RuntimeException(e);
             } catch (SAXException e) {
