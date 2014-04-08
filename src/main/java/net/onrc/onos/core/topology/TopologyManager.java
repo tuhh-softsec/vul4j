@@ -773,6 +773,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
         } else {
             // TODO: Update the switch attributes
             // TODO: Nothing to do for now
+            log.debug("Update switch attributes");
         }
         apiAddedSwitchEvents.add(switchEvent);
     }
@@ -828,6 +829,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
             switchImpl.addPort(port);
         } else {
             // TODO: Update the port attributes
+            log.debug("Update port attributes");
         }
         apiAddedPortEvents.add(portEvent);
     }
@@ -942,6 +944,7 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
                 removeDevice(deviceEvent);
         } else {
             // TODO: Update the link attributes
+            log.debug("Update link attributes");
         }
 
         apiAddedLinkEvents.add(linkEvent);

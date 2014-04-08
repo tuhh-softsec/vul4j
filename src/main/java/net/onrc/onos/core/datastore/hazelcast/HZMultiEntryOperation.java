@@ -134,9 +134,6 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
 
     @Override
     public void setVersion(final long version) {
-        if (future != null) {
-            // no-op on read
-        }
         if (writeValue == null) {
             writeValue = new VersionedValue(null, version);
         }

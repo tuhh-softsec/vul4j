@@ -68,10 +68,6 @@ public class PatriciaTrie<V> implements IPatriciaTrie<V> {
             }
         } else {
             add = node_common(node, prefix.getAddress(), prefix.getPrefixLength());
-            if (add == null) {
-                //I think this is -ENOMEM?
-                //return null;
-            }
 
             if (match != null) {
                 node_link(match, add);

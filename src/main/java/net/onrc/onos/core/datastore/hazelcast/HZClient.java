@@ -326,9 +326,7 @@ public class HZClient implements IKVClient {
         }
         for (IMultiEntryOperation op : ops) {
             IModifiableMultiEntryOperation mop = (IModifiableMultiEntryOperation) op;
-            if (mop.hasSucceeded()) {
-                // status update is already done, nothing to do.
-            } else {
+            if (!mop.hasSucceeded()) {
                 failExists = true;
             }
         }

@@ -627,6 +627,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         log.debug("Deleting flows for prefix {}", prefix);
 
         Collection<FlowId> flowIds = pushedFlowIds.removeAll(prefix);
+/*
         for (FlowId flowId : flowIds) {
             // TODO: Delete the flow by using the new Path Intent framework
             /*
@@ -644,8 +645,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             {
                 log.debug("Failed to delete FlowId: {}",flowId);
             }
-            */
         }
+*/
     }
 
     // TODO need to record the path and then delete here

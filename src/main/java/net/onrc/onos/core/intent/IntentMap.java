@@ -148,6 +148,7 @@ public class IntentMap {
         Intent intent = getIntent(operation.intent.getId());
         if (intent == null) {
             // TODO error handling
+            return;
         } else {
             setState(intent.getId(), IntentState.DEL_REQ);
         }

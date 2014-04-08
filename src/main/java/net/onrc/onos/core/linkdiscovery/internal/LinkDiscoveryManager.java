@@ -385,7 +385,11 @@ public class LinkDiscoveryManager
      */
     protected void removeFromQuarantineQueue(NodePortTuple npt) {
         // Remove all occurrences of the node port tuple from the list.
-        while (quarantineQueue.remove(npt)) { }
+        boolean removedSomething;
+
+        do {
+            removedSomething = quarantineQueue.remove(npt);
+        } while (removedSomething);
     }
 
     /**
@@ -408,7 +412,10 @@ public class LinkDiscoveryManager
      */
     protected void removeFromMaintenanceQueue(NodePortTuple npt) {
         // Remove all occurrences of the node port tuple from the queue.
-        while (maintenanceQueue.remove(npt)) { }
+        boolean removedSomething;
+        do {
+            removedSomething = maintenanceQueue.remove(npt);
+        } while (removedSomething);
     }
 
     /**
@@ -1335,8 +1342,10 @@ public class LinkDiscoveryManager
     private void processNewPort(long sw, short p) {
         if (isLinkDiscoverySuppressed(sw, p)) {
             // Do nothing as link discovery is suppressed.
+            return;
         } else if (autoPortFastFeature && isFastPort(sw, p)) {
             // Do nothing as the port is a fast port.
+            return;
         } else {
             NodePortTuple npt = new NodePortTuple(sw, p);
             discover(sw, p);
