@@ -7,7 +7,7 @@ package net.onrc.onos.apps.bgproute;
  * the Ptree as they contain data fundamental to the structure of the tree.
  * You should put RIB entries in and get RIB entries out.
  * Also we need to get rid of the referencing scheme to determine when to delete nodes.
- * Deletes should be explicit, and there's no need to keep track of references if 
+ * Deletes should be explicit, and there's no need to keep track of references if
  * we don't leak them out the the Ptree.
  */
 public class Ptree {

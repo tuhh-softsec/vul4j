@@ -17,7 +17,7 @@ public final class RestClient {
     private RestClient() {
         // Private constructor to prevent instantiation
     }
-    
+
     public static String get(String str) {
         StringBuilder response = new StringBuilder();
 

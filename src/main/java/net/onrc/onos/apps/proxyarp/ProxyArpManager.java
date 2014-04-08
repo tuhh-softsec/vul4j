@@ -534,7 +534,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
                 }
 
 //                              BroadcastPacketOutNotification key =
-//                                              new BroadcastPacketOutNotification(eth.serialize(), 
+//                                              new BroadcastPacketOutNotification(eth.serialize(),
 //                                                              target, sw.getId(), pi.getInPort());
 //                              broadcastPacketOutEventChannel.addTransientEntry(eth.getDestinationMAC().toLong(), key);
             } else {

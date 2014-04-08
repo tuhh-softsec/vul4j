@@ -81,7 +81,6 @@
         <property name="minimum" value="0"/>
         <property name="maximum" value="0"/>
         <property name="message" value="Line has trailing spaces."/>
-      <property name="severity" value="warning"/>
     </module>
 
     <!-- Checks for Headers                                -->

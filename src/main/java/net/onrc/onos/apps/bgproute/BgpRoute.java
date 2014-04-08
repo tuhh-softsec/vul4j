@@ -92,7 +92,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
     private String configFilename = "config.json";
 
     private static final short ARP_PRIORITY = 20;
-    
+
     // The fields below are unused after the move to FlowManager.
     // Remove them if no longer needed.
     /*
@@ -403,17 +403,17 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
     public void processRibAdd(RibUpdate update) {
         synchronized (this) {
             Prefix prefix = update.getPrefix();
-    
+
             log.debug("Processing prefix add {}", prefix);
-    
+
             RibEntry rib = ptree.put(prefix, update.getRibEntry());
-    
+
             if (rib != null && !rib.equals(update.getRibEntry())) {
                 // There was an existing nexthop for this prefix. This update supersedes that,
                 // so we need to remove the old flows for this prefix from the switches
                 _processDeletePrefix(prefix, rib);
             }
-    
+
             if (update.getRibEntry().getNextHop().equals(
                     InetAddresses.forString("0.0.0.0"))) {
                 // Route originated by SDN domain
@@ -422,7 +422,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
                         update.getRibEntry().getNextHop().getHostAddress());
                 return;
             }
-    
+
             _processRibAdd(update);
         }
     }
@@ -588,7 +588,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
     public void processRibDelete(RibUpdate update) {
         synchronized (this) {
             Prefix prefix = update.getPrefix();
-    
+
             if (ptree.remove(prefix, update.getRibEntry())) {
                 /*
                  * Only delete flows if an entry was actually removed from the trie.
@@ -1163,7 +1163,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         // TODO: Fix the code below after topoSwitchSerice was removed
         /*
         for (String dpid : switches) {
-            
+
             Iterator<ISwitchObject> activeSwitches = topoSwitchService.
                     getActiveSwitches().iterator();
             while(activeSwitches.hasNext())
@@ -1177,7 +1177,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
                     return;
                 }
             }
-            
         }
         switchesConnected = true;
         */

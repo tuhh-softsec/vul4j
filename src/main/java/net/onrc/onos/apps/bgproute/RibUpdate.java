@@ -4,7 +4,7 @@ public class RibUpdate {
     private final Operation operation;
     private final Prefix prefix;
     private final RibEntry ribEntry;
-    
+
     public enum Operation {
         UPDATE,
         DELETE

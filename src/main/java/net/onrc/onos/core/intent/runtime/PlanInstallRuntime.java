@@ -30,7 +30,7 @@ public class PlanInstallRuntime {
     IFloodlightProviderService provider;
     private final static Logger log = LoggerFactory.getLogger(PlanInstallRuntime.class);
 
-    public PlanInstallRuntime(//NetworkGraph graph, 
+    public PlanInstallRuntime(//NetworkGraph graph,
                               IFloodlightProviderService provider,
                               IFlowPusherService pusher) {
 //      this.graph = graph;
