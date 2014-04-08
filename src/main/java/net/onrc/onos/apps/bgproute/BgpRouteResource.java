@@ -138,7 +138,8 @@ public class BgpRouteResource extends ServerResource {
         log.debug("sysuptime: {}", strSysuptime);
         log.debug("sequence: {}", strSequence);
 
-        String reply = "";
+        //String reply = "";
+        StringBuilder replyStringBuilder = new StringBuilder(80);
 
         if (capability == null) {
             // this is a prefix delete
@@ -149,11 +150,11 @@ public class BgpRouteResource extends ServerResource {
                 sysUpTime = Long.parseLong(strSysuptime);
                 sequenceNum = Long.parseLong(strSequence);
             } catch (NumberFormatException e) {
-                reply = "[DELE: mask format is wrong]";
+                String reply = "[DELE: mask format is wrong]";
                 log.info(reply);
                 return reply + "\n";
             } catch (IllegalArgumentException e1) {
-                reply = "[DELE: prefix format is wrong]";
+                String reply = "[DELE: prefix format is wrong]";
                 log.info(reply);
                 return reply + "\n";
             }
@@ -162,18 +163,25 @@ public class BgpRouteResource extends ServerResource {
 
             bgpRoute.newRibUpdate(new RibUpdate(Operation.DELETE, p, r));
 
-            reply = reply + "[DELE: " + prefix + "/" + mask + ":" + nextHop
-                    + "]";
+            replyStringBuilder.append("[DELE: ")
+                .append(prefix)
+                .append('/')
+                .append(mask)
+                .append(':')
+                .append(nextHop)
+                .append(']');
         } else {
             // clear the local rib: Ptree
             bgpRoute.clearPtree();
-            reply = "[DELE-capability: " + capability
-                    + "; The local RibEntry is cleared!]\n";
+            replyStringBuilder.append("[DELE-capability: ")
+                    .append(capability)
+                    .append("; The local RibEntry is cleared!]\n");
 
             // to store the number in the top node of the Ptree
         }
 
-        log.info(reply);
-        return reply + "\n";
+        log.info(replyStringBuilder.toString());
+        replyStringBuilder.append('\n');
+        return replyStringBuilder.toString();
     }
 }

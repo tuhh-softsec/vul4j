@@ -44,17 +44,23 @@ public class BgpRouteResourceSynch extends ServerResource {
         String mask = (String) getRequestAttributes().get("mask");
         String nextHop = (String) getRequestAttributes().get("nexthop");
 
-        String reply = "";
+        StringBuilder reply = new StringBuilder();
 
         String bgpdRestIp = bgpRoute.getBGPdRestIp();
 
         RestClient.delete("http://" + bgpdRestIp + "/wm/bgp/" + routerId + "/" + prefix + "/"
                 + mask + "/" + nextHop);
 
-        reply = reply + "[DELE: " + prefix + "/" + mask + ":" + nextHop + "/synch]";
+        reply.append("[DELE: ")
+             .append(prefix)
+             .append('/')
+             .append(mask)
+             .append(':')
+             .append(nextHop)
+             .append("/synch]");
 
-        log.info(reply);
+        log.info(reply.toString());
 
-        return reply + "\n";
+        return reply.append("\n").toString();
     }
 }

@@ -128,7 +128,7 @@ public class Prefix {
                     return result.toString();
                 }
             }
-            result.append(" ");
+            result.append(' ');
         }
         return result.substring(0, result.length() - 1);
     }
