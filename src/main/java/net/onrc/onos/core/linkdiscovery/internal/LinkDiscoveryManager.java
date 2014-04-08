@@ -385,7 +385,7 @@ public class LinkDiscoveryManager
      */
     protected void removeFromQuarantineQueue(NodePortTuple npt) {
         // Remove all occurrences of the node port tuple from the list.
-        while (quarantineQueue.remove(npt)) ;
+        while (quarantineQueue.remove(npt)) { }
     }
 
     /**
@@ -408,7 +408,7 @@ public class LinkDiscoveryManager
      */
     protected void removeFromMaintenanceQueue(NodePortTuple npt) {
         // Remove all occurrences of the node port tuple from the queue.
-        while (maintenanceQueue.remove(npt)) ;
+        while (maintenanceQueue.remove(npt)) { }
     }
 
     /**
