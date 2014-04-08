@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class IntentResource extends ServerResource {
     private final static Logger log = LoggerFactory.getLogger(IntentResource.class);
     // TODO need to assign proper application id.
-    private final String APPLN_ID = "1";
+    private static final String APPLN_ID = "1";
 
     @Post("json")
     public String store(String jsonIntent) throws IOException {

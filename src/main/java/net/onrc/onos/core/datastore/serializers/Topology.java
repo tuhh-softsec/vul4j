@@ -74,7 +74,7 @@ public final class Topology {
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
-      int mutable_bitField0_ = 0;
+      int mutableBitField0 = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -93,18 +93,18 @@ public final class Topology {
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
-              dpid_ = input.readInt64();
+              bitField0 |= 0x00000001;
+              dpid = input.readInt64();
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
-              status_ = input.readInt32();
+              bitField0 |= 0x00000002;
+              status = input.readInt32();
               break;
             }
             case 26: {
-              bitField0_ |= 0x00000004;
-              value_ = input.readBytes();
+              bitField0 |= 0x00000004;
+              value = input.readBytes();
               break;
             }
           }
@@ -121,12 +121,12 @@ public final class Topology {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_SwitchProperty_descriptor;
+      return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologySwitchPropertyDescriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_SwitchProperty_fieldAccessorTable
+      return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologySwitchPropertyFieldAccessorTable
           .ensureFieldAccessorsInitialized(
               net.onrc.onos.core.datastore.serializers.Topology.SwitchProperty.class, net.onrc.onos.core.datastore.serializers.Topology.SwitchProperty.Builder.class);
     }
@@ -146,59 +146,59 @@ public final class Topology {
       return PARSER;
     }
 
-    private int bitField0_;
+    private int bitField0;
     // required int64 dpid = 1;
     public static final int DPID_FIELD_NUMBER = 1;
-    private long dpid_;
+    private long dpid;
     /**
      * <code>required int64 dpid = 1;</code>
      */
     public boolean hasDpid() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return ((bitField0 & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required int64 dpid = 1;</code>
      */
     public long getDpid() {
-      return dpid_;
+      return dpid;
     }
 
     // required int32 status = 2;
     public static final int STATUS_FIELD_NUMBER = 2;
-    private int status_;
+    private int status;
     /**
      * <code>required int32 status = 2;</code>
      */
     public boolean hasStatus() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0 & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required int32 status = 2;</code>
      */
     public int getStatus() {
-      return status_;
+      return status;
     }
 
     // optional bytes value = 3;
     public static final int VALUE_FIELD_NUMBER = 3;
-    private com.google.protobuf.ByteString value_;
+    private com.google.protobuf.ByteString value;
     /**
      * <code>optional bytes value = 3;</code>
      */
     public boolean hasValue() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0 & 0x00000004) == 0x00000004);
     }
     /**
      * <code>optional bytes value = 3;</code>
      */
     public com.google.protobuf.ByteString getValue() {
-      return value_;
+      return value;
     }
 
     private void initFields() {
-      dpid_ = 0L;
-      status_ = 0;
-      value_ = com.google.protobuf.ByteString.EMPTY;
+      dpid = 0L;
+      status = 0;
+      value = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -220,14 +220,14 @@ public final class Topology {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt64(1, dpid_);
+      if (((bitField0 & 0x00000001) == 0x00000001)) {
+        output.writeInt64(1, dpid);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt32(2, status_);
+      if (((bitField0 & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, status);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, value_);
+      if (((bitField0 & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, value);
       }
       getUnknownFields().writeTo(output);
     }
@@ -238,17 +238,17 @@ public final class Topology {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0 & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, dpid_);
+          .computeInt64Size(1, dpid);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0 & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, status_);
+          .computeInt32Size(2, status);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0 & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, value_);
+          .computeBytesSize(3, value);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -336,12 +336,12 @@ public final class Topology {
        implements net.onrc.onos.core.datastore.serializers.Topology.SwitchPropertyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_SwitchProperty_descriptor;
+        return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologySwitchPropertyDescriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_SwitchProperty_fieldAccessorTable
+        return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologySwitchPropertyFieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 net.onrc.onos.core.datastore.serializers.Topology.SwitchProperty.class, net.onrc.onos.core.datastore.serializers.Topology.SwitchProperty.Builder.class);
       }
@@ -366,12 +366,12 @@ public final class Topology {
 
       public Builder clear() {
         super.clear();
-        dpid_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        status_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        value_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000004);
+        dpid = 0L;
+        bitField0 = (bitField0 & ~0x00000001);
+        status = 0;
+        bitField0 = (bitField0 & ~0x00000002);
+        value = com.google.protobuf.ByteString.EMPTY;
+        bitField0 = (bitField0 & ~0x00000004);
         return this;
       }
 
@@ -381,7 +381,7 @@ public final class Topology {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_SwitchProperty_descriptor;
+        return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologySwitchPropertyDescriptor;
       }
 
       public net.onrc.onos.core.datastore.serializers.Topology.SwitchProperty getDefaultInstanceForType() {
@@ -398,21 +398,21 @@ public final class Topology {
 
       public net.onrc.onos.core.datastore.serializers.Topology.SwitchProperty buildPartial() {
         net.onrc.onos.core.datastore.serializers.Topology.SwitchProperty result = new net.onrc.onos.core.datastore.serializers.Topology.SwitchProperty(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
+        int fromBitField0 = bitField0;
+        int toBitField0 = 0;
+        if (((fromBitField0 & 0x00000001) == 0x00000001)) {
+          toBitField0 |= 0x00000001;
         }
-        result.dpid_ = dpid_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
+        result.dpid = dpid;
+        if (((fromBitField0 & 0x00000002) == 0x00000002)) {
+          toBitField0 |= 0x00000002;
         }
-        result.status_ = status_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
+        result.status = status;
+        if (((fromBitField0 & 0x00000004) == 0x00000004)) {
+          toBitField0 |= 0x00000004;
         }
-        result.value_ = value_;
-        result.bitField0_ = to_bitField0_;
+        result.value = value;
+        result.bitField0 = toBitField0;
         onBuilt();
         return result;
       }
@@ -470,28 +470,28 @@ public final class Topology {
         }
         return this;
       }
-      private int bitField0_;
+      private int bitField0;
 
       // required int64 dpid = 1;
-      private long dpid_ ;
+      private long dpid;
       /**
        * <code>required int64 dpid = 1;</code>
        */
       public boolean hasDpid() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return ((bitField0 & 0x00000001) == 0x00000001);
       }
       /**
        * <code>required int64 dpid = 1;</code>
        */
       public long getDpid() {
-        return dpid_;
+        return dpid;
       }
       /**
        * <code>required int64 dpid = 1;</code>
        */
       public Builder setDpid(long value) {
-        bitField0_ |= 0x00000001;
-        dpid_ = value;
+        bitField0 |= 0x00000001;
+        dpid = value;
         onChanged();
         return this;
       }
@@ -499,32 +499,32 @@ public final class Topology {
        * <code>required int64 dpid = 1;</code>
        */
       public Builder clearDpid() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        dpid_ = 0L;
+        bitField0 = (bitField0 & ~0x00000001);
+        dpid = 0L;
         onChanged();
         return this;
       }
 
       // required int32 status = 2;
-      private int status_ ;
+      private int status;
       /**
        * <code>required int32 status = 2;</code>
        */
       public boolean hasStatus() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0 & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required int32 status = 2;</code>
        */
       public int getStatus() {
-        return status_;
+        return status;
       }
       /**
        * <code>required int32 status = 2;</code>
        */
       public Builder setStatus(int value) {
-        bitField0_ |= 0x00000002;
-        status_ = value;
+        bitField0 |= 0x00000002;
+        status = value;
         onChanged();
         return this;
       }
@@ -532,25 +532,25 @@ public final class Topology {
        * <code>required int32 status = 2;</code>
        */
       public Builder clearStatus() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        status_ = 0;
+        bitField0 = (bitField0 & ~0x00000002);
+        status = 0;
         onChanged();
         return this;
       }
 
       // optional bytes value = 3;
-      private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
+      private com.google.protobuf.ByteString value = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes value = 3;</code>
        */
       public boolean hasValue() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0 & 0x00000004) == 0x00000004);
       }
       /**
        * <code>optional bytes value = 3;</code>
        */
       public com.google.protobuf.ByteString getValue() {
-        return value_;
+        return value;
       }
       /**
        * <code>optional bytes value = 3;</code>
@@ -559,8 +559,8 @@ public final class Topology {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
-        value_ = value;
+  bitField0 |= 0x00000004;
+        this.value = value;
         onChanged();
         return this;
       }
@@ -568,8 +568,8 @@ public final class Topology {
        * <code>optional bytes value = 3;</code>
        */
       public Builder clearValue() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        value_ = getDefaultInstance().getValue();
+        bitField0 = (bitField0 & ~0x00000004);
+        value = getDefaultInstance().getValue();
         onChanged();
         return this;
       }
@@ -661,7 +661,7 @@ public final class Topology {
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
-      int mutable_bitField0_ = 0;
+      int mutableBitField0 = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -680,23 +680,23 @@ public final class Topology {
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
-              dpid_ = input.readInt64();
+              bitField0 |= 0x00000001;
+              dpid = input.readInt64();
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
-              number_ = input.readInt64();
+              bitField0 |= 0x00000002;
+              number = input.readInt64();
               break;
             }
             case 24: {
-              bitField0_ |= 0x00000004;
-              status_ = input.readInt32();
+              bitField0 |= 0x00000004;
+              status = input.readInt32();
               break;
             }
             case 34: {
-              bitField0_ |= 0x00000008;
-              value_ = input.readBytes();
+              bitField0 |= 0x00000008;
+              value = input.readBytes();
               break;
             }
           }
@@ -713,12 +713,12 @@ public final class Topology {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_PortProperty_descriptor;
+      return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyPortPropertyDescriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_PortProperty_fieldAccessorTable
+      return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyPortPropertyFieldAccessorTable
           .ensureFieldAccessorsInitialized(
               net.onrc.onos.core.datastore.serializers.Topology.PortProperty.class, net.onrc.onos.core.datastore.serializers.Topology.PortProperty.Builder.class);
     }
@@ -738,76 +738,76 @@ public final class Topology {
       return PARSER;
     }
 
-    private int bitField0_;
+    private int bitField0;
     // required int64 dpid = 1;
     public static final int DPID_FIELD_NUMBER = 1;
-    private long dpid_;
+    private long dpid;
     /**
      * <code>required int64 dpid = 1;</code>
      */
     public boolean hasDpid() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return ((bitField0 & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required int64 dpid = 1;</code>
      */
     public long getDpid() {
-      return dpid_;
+      return dpid;
     }
 
     // required int64 number = 2;
     public static final int NUMBER_FIELD_NUMBER = 2;
-    private long number_;
+    private long number;
     /**
      * <code>required int64 number = 2;</code>
      */
     public boolean hasNumber() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0 & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required int64 number = 2;</code>
      */
     public long getNumber() {
-      return number_;
+      return number;
     }
 
     // required int32 status = 3;
     public static final int STATUS_FIELD_NUMBER = 3;
-    private int status_;
+    private int status;
     /**
      * <code>required int32 status = 3;</code>
      */
     public boolean hasStatus() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0 & 0x00000004) == 0x00000004);
     }
     /**
      * <code>required int32 status = 3;</code>
      */
     public int getStatus() {
-      return status_;
+      return status;
     }
 
     // optional bytes value = 4;
     public static final int VALUE_FIELD_NUMBER = 4;
-    private com.google.protobuf.ByteString value_;
+    private com.google.protobuf.ByteString value;
     /**
      * <code>optional bytes value = 4;</code>
      */
     public boolean hasValue() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+      return ((bitField0 & 0x00000008) == 0x00000008);
     }
     /**
      * <code>optional bytes value = 4;</code>
      */
     public com.google.protobuf.ByteString getValue() {
-      return value_;
+      return value;
     }
 
     private void initFields() {
-      dpid_ = 0L;
-      number_ = 0L;
-      status_ = 0;
-      value_ = com.google.protobuf.ByteString.EMPTY;
+      dpid = 0L;
+      number = 0L;
+      status = 0;
+      value = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -833,17 +833,17 @@ public final class Topology {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt64(1, dpid_);
+      if (((bitField0 & 0x00000001) == 0x00000001)) {
+        output.writeInt64(1, dpid);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt64(2, number_);
+      if (((bitField0 & 0x00000002) == 0x00000002)) {
+        output.writeInt64(2, number);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(3, status_);
+      if (((bitField0 & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, status);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, value_);
+      if (((bitField0 & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, value);
       }
       getUnknownFields().writeTo(output);
     }
@@ -854,21 +854,21 @@ public final class Topology {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0 & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, dpid_);
+          .computeInt64Size(1, dpid);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0 & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, number_);
+          .computeInt64Size(2, number);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0 & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, status_);
+          .computeInt32Size(3, status);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (((bitField0 & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, value_);
+          .computeBytesSize(4, value);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -956,12 +956,12 @@ public final class Topology {
        implements net.onrc.onos.core.datastore.serializers.Topology.PortPropertyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_PortProperty_descriptor;
+        return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyPortPropertyDescriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_PortProperty_fieldAccessorTable
+        return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyPortPropertyFieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 net.onrc.onos.core.datastore.serializers.Topology.PortProperty.class, net.onrc.onos.core.datastore.serializers.Topology.PortProperty.Builder.class);
       }
@@ -986,14 +986,14 @@ public final class Topology {
 
       public Builder clear() {
         super.clear();
-        dpid_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        number_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        status_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        value_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000008);
+        dpid = 0L;
+        bitField0 = (bitField0 & ~0x00000001);
+        number = 0L;
+        bitField0 = (bitField0 & ~0x00000002);
+        status = 0;
+        bitField0 = (bitField0 & ~0x00000004);
+        value = com.google.protobuf.ByteString.EMPTY;
+        bitField0 = (bitField0 & ~0x00000008);
         return this;
       }
 
@@ -1003,7 +1003,7 @@ public final class Topology {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_PortProperty_descriptor;
+        return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyPortPropertyDescriptor;
       }
 
       public net.onrc.onos.core.datastore.serializers.Topology.PortProperty getDefaultInstanceForType() {
@@ -1020,25 +1020,25 @@ public final class Topology {
 
       public net.onrc.onos.core.datastore.serializers.Topology.PortProperty buildPartial() {
         net.onrc.onos.core.datastore.serializers.Topology.PortProperty result = new net.onrc.onos.core.datastore.serializers.Topology.PortProperty(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
+        int bitField0 = this.bitField0;
+        int toBitField0 = 0;
+        if (((bitField0 & 0x00000001) == 0x00000001)) {
+          toBitField0 |= 0x00000001;
         }
-        result.dpid_ = dpid_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
+        result.dpid = dpid;
+        if (((bitField0 & 0x00000002) == 0x00000002)) {
+          toBitField0 |= 0x00000002;
         }
-        result.number_ = number_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
+        result.number = number;
+        if (((bitField0 & 0x00000004) == 0x00000004)) {
+          toBitField0 |= 0x00000004;
         }
-        result.status_ = status_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
+        result.status = status;
+        if (((bitField0 & 0x00000008) == 0x00000008)) {
+          toBitField0 |= 0x00000008;
         }
-        result.value_ = value_;
-        result.bitField0_ = to_bitField0_;
+        result.value = value;
+        result.bitField0 = toBitField0;
         onBuilt();
         return result;
       }
@@ -1103,28 +1103,28 @@ public final class Topology {
         }
         return this;
       }
-      private int bitField0_;
+      private int bitField0;
 
       // required int64 dpid = 1;
-      private long dpid_ ;
+      private long dpid;
       /**
        * <code>required int64 dpid = 1;</code>
        */
       public boolean hasDpid() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return ((bitField0 & 0x00000001) == 0x00000001);
       }
       /**
        * <code>required int64 dpid = 1;</code>
        */
       public long getDpid() {
-        return dpid_;
+        return dpid;
       }
       /**
        * <code>required int64 dpid = 1;</code>
        */
       public Builder setDpid(long value) {
-        bitField0_ |= 0x00000001;
-        dpid_ = value;
+        bitField0 |= 0x00000001;
+        dpid = value;
         onChanged();
         return this;
       }
@@ -1132,32 +1132,32 @@ public final class Topology {
        * <code>required int64 dpid = 1;</code>
        */
       public Builder clearDpid() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        dpid_ = 0L;
+        bitField0 = (bitField0 & ~0x00000001);
+        dpid = 0L;
         onChanged();
         return this;
       }
 
       // required int64 number = 2;
-      private long number_ ;
+      private long number;
       /**
        * <code>required int64 number = 2;</code>
        */
       public boolean hasNumber() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0 & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required int64 number = 2;</code>
        */
       public long getNumber() {
-        return number_;
+        return number;
       }
       /**
        * <code>required int64 number = 2;</code>
        */
       public Builder setNumber(long value) {
-        bitField0_ |= 0x00000002;
-        number_ = value;
+        bitField0 |= 0x00000002;
+        number = value;
         onChanged();
         return this;
       }
@@ -1165,32 +1165,32 @@ public final class Topology {
        * <code>required int64 number = 2;</code>
        */
       public Builder clearNumber() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        number_ = 0L;
+        bitField0 = (bitField0 & ~0x00000002);
+        number = 0L;
         onChanged();
         return this;
       }
 
       // required int32 status = 3;
-      private int status_ ;
+      private int status;
       /**
        * <code>required int32 status = 3;</code>
        */
       public boolean hasStatus() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0 & 0x00000004) == 0x00000004);
       }
       /**
        * <code>required int32 status = 3;</code>
        */
       public int getStatus() {
-        return status_;
+        return status;
       }
       /**
        * <code>required int32 status = 3;</code>
        */
       public Builder setStatus(int value) {
-        bitField0_ |= 0x00000004;
-        status_ = value;
+        bitField0 |= 0x00000004;
+        status = value;
         onChanged();
         return this;
       }
@@ -1198,25 +1198,25 @@ public final class Topology {
        * <code>required int32 status = 3;</code>
        */
       public Builder clearStatus() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        status_ = 0;
+        bitField0 = (bitField0 & ~0x00000004);
+        status = 0;
         onChanged();
         return this;
       }
 
       // optional bytes value = 4;
-      private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
+      private com.google.protobuf.ByteString value = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes value = 4;</code>
        */
       public boolean hasValue() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0 & 0x00000008) == 0x00000008);
       }
       /**
        * <code>optional bytes value = 4;</code>
        */
       public com.google.protobuf.ByteString getValue() {
-        return value_;
+        return value;
       }
       /**
        * <code>optional bytes value = 4;</code>
@@ -1225,8 +1225,8 @@ public final class Topology {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
-        value_ = value;
+  bitField0 |= 0x00000008;
+        this.value = value;
         onChanged();
         return this;
       }
@@ -1234,8 +1234,8 @@ public final class Topology {
        * <code>optional bytes value = 4;</code>
        */
       public Builder clearValue() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        value_ = getDefaultInstance().getValue();
+        bitField0 = (bitField0 & ~0x00000008);
+        value = getDefaultInstance().getValue();
         onChanged();
         return this;
       }
@@ -1347,7 +1347,7 @@ public final class Topology {
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
-      int mutable_bitField0_ = 0;
+      int mutableBitField0 = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -1366,33 +1366,33 @@ public final class Topology {
               break;
             }
             case 10: {
-              bitField0_ |= 0x00000001;
-              srcSwId_ = input.readBytes();
+              bitField0 |= 0x00000001;
+              srcSwId = input.readBytes();
               break;
             }
             case 18: {
-              bitField0_ |= 0x00000002;
-              srcPortId_ = input.readBytes();
+              bitField0 |= 0x00000002;
+              srcPortId = input.readBytes();
               break;
             }
             case 26: {
-              bitField0_ |= 0x00000004;
-              dstSwId_ = input.readBytes();
+              bitField0 |= 0x00000004;
+              dstSwId = input.readBytes();
               break;
             }
             case 34: {
-              bitField0_ |= 0x00000008;
-              dstPortId_ = input.readBytes();
+              bitField0 |= 0x00000008;
+              dstPortId = input.readBytes();
               break;
             }
             case 40: {
-              bitField0_ |= 0x00000010;
-              status_ = input.readInt32();
+              bitField0 |= 0x00000010;
+              status = input.readInt32();
               break;
             }
             case 50: {
-              bitField0_ |= 0x00000020;
-              value_ = input.readBytes();
+              bitField0 |= 0x00000020;
+              value = input.readBytes();
               break;
             }
           }
@@ -1409,17 +1409,17 @@ public final class Topology {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_LinkProperty_descriptor;
+      return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyLinkPropertyDescriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_LinkProperty_fieldAccessorTable
+      return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyLinkPropertyFieldAccessorTable
           .ensureFieldAccessorsInitialized(
               net.onrc.onos.core.datastore.serializers.Topology.LinkProperty.class, net.onrc.onos.core.datastore.serializers.Topology.LinkProperty.Builder.class);
     }
 
-    public static com.google.protobuf.Parser<LinkProperty> PARSER =
+    public static final com.google.protobuf.Parser<LinkProperty> PARSER =
         new com.google.protobuf.AbstractParser<LinkProperty>() {
       public LinkProperty parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
@@ -1434,110 +1434,110 @@ public final class Topology {
       return PARSER;
     }
 
-    private int bitField0_;
+    private int bitField0;
     // required bytes srcSwId = 1;
     public static final int SRCSWID_FIELD_NUMBER = 1;
-    private com.google.protobuf.ByteString srcSwId_;
+    private com.google.protobuf.ByteString srcSwId;
     /**
      * <code>required bytes srcSwId = 1;</code>
      */
     public boolean hasSrcSwId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return ((bitField0 & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required bytes srcSwId = 1;</code>
      */
     public com.google.protobuf.ByteString getSrcSwId() {
-      return srcSwId_;
+      return srcSwId;
     }
 
     // required bytes srcPortId = 2;
     public static final int SRCPORTID_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString srcPortId_;
+    private com.google.protobuf.ByteString srcPortId;
     /**
      * <code>required bytes srcPortId = 2;</code>
      */
     public boolean hasSrcPortId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0 & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required bytes srcPortId = 2;</code>
      */
     public com.google.protobuf.ByteString getSrcPortId() {
-      return srcPortId_;
+      return srcPortId;
     }
 
     // required bytes dstSwId = 3;
     public static final int DSTSWID_FIELD_NUMBER = 3;
-    private com.google.protobuf.ByteString dstSwId_;
+    private com.google.protobuf.ByteString dstSwId;
     /**
      * <code>required bytes dstSwId = 3;</code>
      */
     public boolean hasDstSwId() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0 & 0x00000004) == 0x00000004);
     }
     /**
      * <code>required bytes dstSwId = 3;</code>
      */
     public com.google.protobuf.ByteString getDstSwId() {
-      return dstSwId_;
+      return dstSwId;
     }
 
     // required bytes dstPortId = 4;
     public static final int DSTPORTID_FIELD_NUMBER = 4;
-    private com.google.protobuf.ByteString dstPortId_;
+    private com.google.protobuf.ByteString dstPortId;
     /**
      * <code>required bytes dstPortId = 4;</code>
      */
     public boolean hasDstPortId() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+      return ((bitField0 & 0x00000008) == 0x00000008);
     }
     /**
      * <code>required bytes dstPortId = 4;</code>
      */
     public com.google.protobuf.ByteString getDstPortId() {
-      return dstPortId_;
+      return dstPortId;
     }
 
     // required int32 status = 5;
     public static final int STATUS_FIELD_NUMBER = 5;
-    private int status_;
+    private int status;
     /**
      * <code>required int32 status = 5;</code>
      */
     public boolean hasStatus() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0 & 0x00000010) == 0x00000010);
     }
     /**
      * <code>required int32 status = 5;</code>
      */
     public int getStatus() {
-      return status_;
+      return status;
     }
 
     // optional bytes value = 6;
     public static final int VALUE_FIELD_NUMBER = 6;
-    private com.google.protobuf.ByteString value_;
+    private com.google.protobuf.ByteString value;
     /**
      * <code>optional bytes value = 6;</code>
      */
     public boolean hasValue() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+      return ((bitField0 & 0x00000020) == 0x00000020);
     }
     /**
      * <code>optional bytes value = 6;</code>
      */
     public com.google.protobuf.ByteString getValue() {
-      return value_;
+      return value;
     }
 
     private void initFields() {
-      srcSwId_ = com.google.protobuf.ByteString.EMPTY;
-      srcPortId_ = com.google.protobuf.ByteString.EMPTY;
-      dstSwId_ = com.google.protobuf.ByteString.EMPTY;
-      dstPortId_ = com.google.protobuf.ByteString.EMPTY;
-      status_ = 0;
-      value_ = com.google.protobuf.ByteString.EMPTY;
+      srcSwId = com.google.protobuf.ByteString.EMPTY;
+      srcPortId = com.google.protobuf.ByteString.EMPTY;
+      dstSwId = com.google.protobuf.ByteString.EMPTY;
+      dstPortId = com.google.protobuf.ByteString.EMPTY;
+      status = 0;
+      value = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1571,23 +1571,23 @@ public final class Topology {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, srcSwId_);
+      if (((bitField0 & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, srcSwId);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, srcPortId_);
+      if (((bitField0 & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, srcPortId);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, dstSwId_);
+      if (((bitField0 & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, dstSwId);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, dstPortId_);
+      if (((bitField0 & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, dstPortId);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeInt32(5, status_);
+      if (((bitField0 & 0x00000010) == 0x00000010)) {
+        output.writeInt32(5, status);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(6, value_);
+      if (((bitField0 & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, value);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1598,29 +1598,29 @@ public final class Topology {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0 & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, srcSwId_);
+          .computeBytesSize(1, srcSwId);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0 & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, srcPortId_);
+          .computeBytesSize(2, srcPortId);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0 & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, dstSwId_);
+          .computeBytesSize(3, dstSwId);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (((bitField0 & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, dstPortId_);
+          .computeBytesSize(4, dstPortId);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (((bitField0 & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, status_);
+          .computeInt32Size(5, status);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (((bitField0 & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(6, value_);
+          .computeBytesSize(6, value);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1708,12 +1708,12 @@ public final class Topology {
        implements net.onrc.onos.core.datastore.serializers.Topology.LinkPropertyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_LinkProperty_descriptor;
+        return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyLinkPropertyDescriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_LinkProperty_fieldAccessorTable
+        return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyLinkPropertyFieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 net.onrc.onos.core.datastore.serializers.Topology.LinkProperty.class, net.onrc.onos.core.datastore.serializers.Topology.LinkProperty.Builder.class);
       }
@@ -1738,18 +1738,18 @@ public final class Topology {
 
       public Builder clear() {
         super.clear();
-        srcSwId_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        srcPortId_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        dstSwId_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        dstPortId_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000008);
-        status_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        value_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000020);
+        srcSwId = com.google.protobuf.ByteString.EMPTY;
+        bitField0 = (bitField0 & ~0x00000001);
+        srcPortId = com.google.protobuf.ByteString.EMPTY;
+        bitField0 = (bitField0 & ~0x00000002);
+        dstSwId = com.google.protobuf.ByteString.EMPTY;
+        bitField0 = (bitField0 & ~0x00000004);
+        dstPortId = com.google.protobuf.ByteString.EMPTY;
+        bitField0 = (bitField0 & ~0x00000008);
+        status = 0;
+        bitField0 = (bitField0 & ~0x00000010);
+        value = com.google.protobuf.ByteString.EMPTY;
+        bitField0 = (bitField0 & ~0x00000020);
         return this;
       }
 
@@ -1759,7 +1759,7 @@ public final class Topology {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return net.onrc.onos.core.datastore.serializers.Topology.internal_static_topology_LinkProperty_descriptor;
+        return net.onrc.onos.core.datastore.serializers.Topology.internalStaticTopologyLinkPropertyDescriptor;
       }
 
       public net.onrc.onos.core.datastore.serializers.Topology.LinkProperty getDefaultInstanceForType() {
@@ -1776,33 +1776,33 @@ public final class Topology {
 
       public net.onrc.onos.core.datastore.serializers.Topology.LinkProperty buildPartial() {
         net.onrc.onos.core.datastore.serializers.Topology.LinkProperty result = new net.onrc.onos.core.datastore.serializers.Topology.LinkProperty(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
+        int fromBitField0 = bitField0;
+        int toBitField0 = 0;
+        if (((fromBitField0 & 0x00000001) == 0x00000001)) {
+          toBitField0 |= 0x00000001;
         }
-        result.srcSwId_ = srcSwId_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
+        result.srcSwId = srcSwId;
+        if (((fromBitField0 & 0x00000002) == 0x00000002)) {
+          toBitField0 |= 0x00000002;
         }
-        result.srcPortId_ = srcPortId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
+        result.srcPortId = srcPortId;
+        if (((fromBitField0 & 0x00000004) == 0x00000004)) {
+          toBitField0 |= 0x00000004;
         }
-        result.dstSwId_ = dstSwId_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
+        result.dstSwId = dstSwId;
+        if (((fromBitField0 & 0x00000008) == 0x00000008)) {
+          toBitField0 |= 0x00000008;
         }
-        result.dstPortId_ = dstPortId_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
+        result.dstPortId = dstPortId;
+        if (((fromBitField0 & 0x00000010) == 0x00000010)) {
+          toBitField0 |= 0x00000010;
         }
-        result.status_ = status_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
+        result.status = status;
+        if (((fromBitField0 & 0x00000020) == 0x00000020)) {
+          toBitField0 |= 0x00000020;
         }
-        result.value_ = value_;
-        result.bitField0_ = to_bitField0_;
+        result.value = value;
+        result.bitField0 = toBitField0;
         onBuilt();
         return result;
       }
@@ -1881,21 +1881,21 @@ public final class Topology {
         }
         return this;
       }
-      private int bitField0_;
+      private int bitField0;
 
       // required bytes srcSwId = 1;
-      private com.google.protobuf.ByteString srcSwId_ = com.google.protobuf.ByteString.EMPTY;
+      private com.google.protobuf.ByteString srcSwId = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>required bytes srcSwId = 1;</code>
        */
       public boolean hasSrcSwId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return ((bitField0 & 0x00000001) == 0x00000001);
       }
       /**
        * <code>required bytes srcSwId = 1;</code>
        */
       public com.google.protobuf.ByteString getSrcSwId() {
-        return srcSwId_;
+        return srcSwId;
       }
       /**
        * <code>required bytes srcSwId = 1;</code>
@@ -1904,8 +1904,8 @@ public final class Topology {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
-        srcSwId_ = value;
+  bitField0 |= 0x00000001;
+        srcSwId = value;
         onChanged();
         return this;
       }
@@ -1913,25 +1913,25 @@ public final class Topology {
        * <code>required bytes srcSwId = 1;</code>
        */
       public Builder clearSrcSwId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        srcSwId_ = getDefaultInstance().getSrcSwId();
+        bitField0 = (bitField0 & ~0x00000001);
+        srcSwId = getDefaultInstance().getSrcSwId();
         onChanged();
         return this;
       }
 
       // required bytes srcPortId = 2;
-      private com.google.protobuf.ByteString srcPortId_ = com.google.protobuf.ByteString.EMPTY;
+      private com.google.protobuf.ByteString srcPortId = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>required bytes srcPortId = 2;</code>
        */
       public boolean hasSrcPortId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0 & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required bytes srcPortId = 2;</code>
        */
       public com.google.protobuf.ByteString getSrcPortId() {
-        return srcPortId_;
+        return srcPortId;
       }
       /**
        * <code>required bytes srcPortId = 2;</code>
@@ -1940,8 +1940,8 @@ public final class Topology {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
-        srcPortId_ = value;
+  bitField0 |= 0x00000002;
+        srcPortId = value;
         onChanged();
         return this;
       }
@@ -1949,25 +1949,25 @@ public final class Topology {
        * <code>required bytes srcPortId = 2;</code>
        */
       public Builder clearSrcPortId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        srcPortId_ = getDefaultInstance().getSrcPortId();
+        bitField0 = (bitField0 & ~0x00000002);
+        srcPortId = getDefaultInstance().getSrcPortId();
         onChanged();
         return this;
       }
 
       // required bytes dstSwId = 3;
-      private com.google.protobuf.ByteString dstSwId_ = com.google.protobuf.ByteString.EMPTY;
+      private com.google.protobuf.ByteString dstSwId = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>required bytes dstSwId = 3;</code>
        */
       public boolean hasDstSwId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0 & 0x00000004) == 0x00000004);
       }
       /**
        * <code>required bytes dstSwId = 3;</code>
        */
       public com.google.protobuf.ByteString getDstSwId() {
-        return dstSwId_;
+        return dstSwId;
       }
       /**
        * <code>required bytes dstSwId = 3;</code>
@@ -1976,8 +1976,8 @@ public final class Topology {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
-        dstSwId_ = value;
+  bitField0 |= 0x00000004;
+        dstSwId = value;
         onChanged();
         return this;
       }
@@ -1985,25 +1985,25 @@ public final class Topology {
        * <code>required bytes dstSwId = 3;</code>
        */
       public Builder clearDstSwId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        dstSwId_ = getDefaultInstance().getDstSwId();
+        bitField0 = (bitField0 & ~0x00000004);
+        dstSwId = getDefaultInstance().getDstSwId();
         onChanged();
         return this;
       }
 
       // required bytes dstPortId = 4;
-      private com.google.protobuf.ByteString dstPortId_ = com.google.protobuf.ByteString.EMPTY;
+      private com.google.protobuf.ByteString dstPortId = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>required bytes dstPortId = 4;</code>
        */
       public boolean hasDstPortId() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0 & 0x00000008) == 0x00000008);
       }
       /**
        * <code>required bytes dstPortId = 4;</code>
        */
       public com.google.protobuf.ByteString getDstPortId() {
-        return dstPortId_;
+        return dstPortId;
       }
       /**
        * <code>required bytes dstPortId = 4;</code>
@@ -2012,8 +2012,8 @@ public final class Topology {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
-        dstPortId_ = value;
+  bitField0 |= 0x00000008;
+        dstPortId = value;
         onChanged();
         return this;
       }
@@ -2021,32 +2021,32 @@ public final class Topology {
        * <code>required bytes dstPortId = 4;</code>
        */
       public Builder clearDstPortId() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        dstPortId_ = getDefaultInstance().getDstPortId();
+        bitField0 = (bitField0 & ~0x00000008);
+        dstPortId = getDefaultInstance().getDstPortId();
         onChanged();
         return this;
       }
 
       // required int32 status = 5;
-      private int status_ ;
+      private int status;
       /**
        * <code>required int32 status = 5;</code>
        */
       public boolean hasStatus() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0 & 0x00000010) == 0x00000010);
       }
       /**
        * <code>required int32 status = 5;</code>
        */
       public int getStatus() {
-        return status_;
+        return status;
       }
       /**
        * <code>required int32 status = 5;</code>
        */
       public Builder setStatus(int value) {
-        bitField0_ |= 0x00000010;
-        status_ = value;
+        bitField0 |= 0x00000010;
+        status = value;
         onChanged();
         return this;
       }
@@ -2054,25 +2054,25 @@ public final class Topology {
        * <code>required int32 status = 5;</code>
        */
       public Builder clearStatus() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        status_ = 0;
+        bitField0 = (bitField0 & ~0x00000010);
+        status = 0;
         onChanged();
         return this;
       }
 
       // optional bytes value = 6;
-      private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
+      private com.google.protobuf.ByteString value = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes value = 6;</code>
        */
       public boolean hasValue() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+        return ((bitField0 & 0x00000020) == 0x00000020);
       }
       /**
        * <code>optional bytes value = 6;</code>
        */
       public com.google.protobuf.ByteString getValue() {
-        return value_;
+        return value;
       }
       /**
        * <code>optional bytes value = 6;</code>
@@ -2081,8 +2081,8 @@ public final class Topology {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
-        value_ = value;
+  bitField0 |= 0x00000020;
+        this.value = value;
         onChanged();
         return this;
       }
@@ -2090,8 +2090,8 @@ public final class Topology {
        * <code>optional bytes value = 6;</code>
        */
       public Builder clearValue() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        value_ = getDefaultInstance().getValue();
+        bitField0 = (bitField0 & ~0x00000020);
+        value = getDefaultInstance().getValue();
         onChanged();
         return this;
       }
@@ -2108,20 +2108,20 @@ public final class Topology {
   }
 
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_topology_SwitchProperty_descriptor;
+          internalStaticTopologySwitchPropertyDescriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_topology_SwitchProperty_fieldAccessorTable;
+          internalStaticTopologySwitchPropertyFieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_topology_PortProperty_descriptor;
+          internalStaticTopologyPortPropertyDescriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_topology_PortProperty_fieldAccessorTable;
+          internalStaticTopologyPortPropertyFieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_topology_LinkProperty_descriptor;
+          internalStaticTopologyLinkPropertyDescriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_topology_LinkProperty_fieldAccessorTable;
+          internalStaticTopologyLinkPropertyFieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -2146,23 +2146,23 @@ public final class Topology {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_topology_SwitchProperty_descriptor =
+          internalStaticTopologySwitchPropertyDescriptor =
             getDescriptor().getMessageTypes().get(0);
-          internal_static_topology_SwitchProperty_fieldAccessorTable = new
+          internalStaticTopologySwitchPropertyFieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_topology_SwitchProperty_descriptor,
+                  internalStaticTopologySwitchPropertyDescriptor,
               new java.lang.String[] { "Dpid", "Status", "Value", });
-          internal_static_topology_PortProperty_descriptor =
+          internalStaticTopologyPortPropertyDescriptor =
             getDescriptor().getMessageTypes().get(1);
-          internal_static_topology_PortProperty_fieldAccessorTable = new
+          internalStaticTopologyPortPropertyFieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_topology_PortProperty_descriptor,
+                  internalStaticTopologyPortPropertyDescriptor,
               new java.lang.String[] { "Dpid", "Number", "Status", "Value", });
-          internal_static_topology_LinkProperty_descriptor =
+          internalStaticTopologyLinkPropertyDescriptor =
             getDescriptor().getMessageTypes().get(2);
-          internal_static_topology_LinkProperty_fieldAccessorTable = new
+          internalStaticTopologyLinkPropertyFieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_topology_LinkProperty_descriptor,
+                  internalStaticTopologyLinkPropertyDescriptor,
               new java.lang.String[] { "SrcSwId", "SrcPortId", "DstSwId", "DstPortId", "Status", "Value", });
           return null;
         }

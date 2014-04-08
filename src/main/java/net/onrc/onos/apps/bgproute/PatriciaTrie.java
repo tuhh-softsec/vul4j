@@ -320,22 +320,22 @@ public class PatriciaTrie<V> implements IPatriciaTrie<V> {
             }
         }
 
-        int common_len = i * 8;
+        int commonLen = i * 8;
         int boundary = 0;
 
-        if (common_len != key_bits) {
+        if (commonLen != key_bits) {
             byte diff = (byte) (node.prefix.getAddress()[i] ^ key[i]);
             byte mask = (byte) 0x80;
-            int shift_mask = 0;
+            int shiftMask = 0;
 
-            while (common_len < key_bits && ((mask & diff) == 0)) {
+            while (commonLen < key_bits && ((mask & diff) == 0)) {
                 boundary = 1;
 
-                shift_mask = (mask & 0xff);
-                shift_mask >>= 1;
-                mask = (byte) shift_mask;
+                shiftMask = (mask & 0xff);
+                shiftMask >>= 1;
+                mask = (byte) shiftMask;
 
-                common_len++;
+                commonLen++;
             }
         }
 
@@ -356,10 +356,10 @@ public class PatriciaTrie<V> implements IPatriciaTrie<V> {
             newPrefix[j] = node.prefix.getAddress()[j];
 
         if (boundary != 0)
-            newPrefix[j] = (byte) (node.prefix.getAddress()[j] & maskBits[common_len % 8]);
+            newPrefix[j] = (byte) (node.prefix.getAddress()[j] & maskBits[commonLen % 8]);
 
         //return new Node(new Prefix(newPrefix, common_len), null);
-        return new Node(new Prefix(newPrefix, common_len));
+        return new Node(new Prefix(newPrefix, commonLen));
         //return add;
     }
 

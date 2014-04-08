@@ -93,21 +93,21 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
     //We need to identify our flows somehow. But like it says in LearningSwitch.java,
     //the controller/OS should hand out cookie IDs to prevent conflicts.
-    private final long APP_COOKIE = 0xa0000000000000L;
+    private static final long APP_COOKIE = 0xa0000000000000L;
     //Cookie for flows that do L2 forwarding within SDN domain to egress routers
-    private final long L2_FWD_COOKIE = APP_COOKIE + 1;
+    private static final long L2_FWD_COOKIE = APP_COOKIE + 1;
     //Cookie for flows in ingress switches that rewrite the MAC address
-    private final long MAC_RW_COOKIE = APP_COOKIE + 2;
+    private static final long MAC_RW_COOKIE = APP_COOKIE + 2;
     //Cookie for flows that setup BGP paths
-    private final long BGP_COOKIE = APP_COOKIE + 3;
+    private static final long BGP_COOKIE = APP_COOKIE + 3;
     //Forwarding uses priority 0, and the mac rewrite entries in ingress switches
     //need to be higher priority than this otherwise the rewrite may not get done
-    private final short SDNIP_PRIORITY = 10;
-    private final short ARP_PRIORITY = 20;
+    private static final short SDNIP_PRIORITY = 10;
+    private static final short ARP_PRIORITY = 20;
 
-    private final short BGP_PORT = 179;
+    private static final short BGP_PORT = 179;
 
-    private final int TOPO_DETECTION_WAIT = 2; //seconds
+    private static final int TOPO_DETECTION_WAIT = 2; //seconds
 
     //Configuration stuff
     private List<String> switches;
@@ -347,17 +347,17 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
         response = response.replaceAll("\"", "'");
         JSONObject jsonObj = (JSONObject) JSONSerializer.toJSON(response);
-        JSONArray rib_json_array = jsonObj.getJSONArray("rib");
-        String router_id = jsonObj.getString("router-id");
+        JSONArray ribJsonArray = jsonObj.getJSONArray("rib");
+        String routerId = jsonObj.getString("router-id");
 
-        int size = rib_json_array.size();
+        int size = ribJsonArray.size();
 
         log.info("Retrived RIB of {} entries from BGPd", size);
 
         for (int j = 0; j < size; j++) {
-            JSONObject second_json_object = rib_json_array.getJSONObject(j);
-            String prefix = second_json_object.getString("prefix");
-            String nexthop = second_json_object.getString("nexthop");
+            JSONObject secondJsonObject = ribJsonArray.getJSONObject(j);
+            String prefix = secondJsonObject.getString("prefix");
+            String nexthop = secondJsonObject.getString("nexthop");
 
             //insert each rib entry into the local rib;
             String[] substring = prefix.split("/");
@@ -375,7 +375,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
                 continue;
             }
 
-            RibEntry rib = new RibEntry(router_id, nexthop);
+            RibEntry rib = new RibEntry(routerId, nexthop);
 
             try {
                 ribUpdates.put(new RibUpdate(Operation.UPDATE, p, rib));
@@ -873,18 +873,18 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             // Reversed BGP flow path for src-TCP-port
             flowPath.setFlowId(new FlowId());
 
-            DataPath reverse_dataPath = new DataPath();
+            DataPath reverseDataPath = new DataPath();
 
-            SwitchPort reverse_dstPort = new SwitchPort();
-            reverse_dstPort.setDpid(bgpdAttachmentPoint.dpid());
-            reverse_dstPort.setPort(bgpdAttachmentPoint.port());
-            reverse_dataPath.setDstPort(reverse_dstPort);
+            SwitchPort reverseDstPort = new SwitchPort();
+            reverseDstPort.setDpid(bgpdAttachmentPoint.dpid());
+            reverseDstPort.setPort(bgpdAttachmentPoint.port());
+            reverseDataPath.setDstPort(reverseDstPort);
 
-            SwitchPort reverse_srcPort = new SwitchPort();
-            reverse_srcPort.setDpid(new Dpid(peerInterface.getDpid()));
-            reverse_srcPort.setPort(new Port(peerInterface.getSwitchPort().port()));
-            reverse_dataPath.setSrcPort(reverse_srcPort);
-            flowPath.setDataPath(reverse_dataPath);
+            SwitchPort reverseSrcPort = new SwitchPort();
+            reverseSrcPort.setDpid(new Dpid(peerInterface.getDpid()));
+            reverseSrcPort.setPort(new Port(peerInterface.getSwitchPort().port()));
+            reverseDataPath.setSrcPort(reverseSrcPort);
+            flowPath.setDataPath(reverseDataPath);
 
             // reverse the dst IP and src IP addresses
             flowEntryMatch.enableDstIPv4Net(srcIPv4Net);
@@ -940,7 +940,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
             flowPath.setFlowEntryMatch(flowEntryMatch);
 
-            flowPath.setDataPath(reverse_dataPath);
+            flowPath.setDataPath(reverseDataPath);
 
             log.debug("Reversed ICMP FlowPath: {}", flowPath.toString());
 

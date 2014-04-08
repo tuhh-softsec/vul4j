@@ -254,26 +254,26 @@ public class Ptree {
             }
         }
 
-        int common_len = i * 8;
+        int commonLen = i * 8;
         int boundary = 0;
 
-        if (common_len != key_bits) {
+        if (commonLen != key_bits) {
             byte diff = (byte) (node.key[i] ^ key[i]);
             byte mask = (byte) 0x80;
-            int shift_mask = 0;
+            int shiftMask = 0;
 
-            while (common_len < key_bits && ((mask & diff) == 0)) {
+            while (commonLen < key_bits && ((mask & diff) == 0)) {
                 boundary = 1;
 
-                shift_mask = (mask & 0xff);
-                shift_mask >>= 1;
-                mask = (byte) shift_mask;
+                shiftMask = (mask & 0xff);
+                shiftMask >>= 1;
+                mask = (byte) shiftMask;
 
-                common_len++;
+                commonLen++;
             }
         }
 
-        PtreeNode add = new PtreeNode(null, common_len, maxKeyOctets);
+        PtreeNode add = new PtreeNode(null, commonLen, maxKeyOctets);
 
         int j;
         for (j = 0; j < i; j++)

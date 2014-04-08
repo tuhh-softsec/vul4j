@@ -51,10 +51,10 @@ public class PerformanceMonitor {
         Queue<Measurement> list = map.get(tag);
         if (list == null) {
             list = new ConcurrentLinkedQueue<Measurement>();
-            Queue<Measurement> existing_list = map.putIfAbsent(tag, list);
-            if (existing_list != null) {
+            Queue<Measurement> existingList = map.putIfAbsent(tag, list);
+            if (existingList != null) {
                 // someone concurrently added, using theirs
-                list = existing_list;
+                list = existingList;
             }
         }
         Measurement m = new Measurement();

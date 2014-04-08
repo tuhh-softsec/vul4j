@@ -66,10 +66,10 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
     private final String namespace = "onos";
     private final String switchLatchesPath = "/switches";
-    private final String CLUSTER_LEADER_PATH = "/cluster/leader";
+    private static final String CLUSTER_LEADER_PATH = "/cluster/leader";
 
-    private final String SERVICES_PATH = "/"; //i.e. the root of our namespace
-    private final String CONTROLLER_SERVICE_NAME = "controllers";
+    private static final String SERVICES_PATH = "/"; //i.e. the root of our namespace
+    private static final String CONTROLLER_SERVICE_NAME = "controllers";
 
     protected CuratorFramework client;
 
@@ -82,8 +82,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
     protected ClusterLeaderListener clusterLeaderListener;
     private static final long CLUSTER_LEADER_ELECTION_RETRY_MS = 100;
 
-    private final String ID_COUNTER_PATH = "/flowidcounter";
-    private final Long ID_BLOCK_SIZE = 0x100000000L;
+    private static final String ID_COUNTER_PATH = "/flowidcounter";
+    private static final Long ID_BLOCK_SIZE = 0x100000000L;
     protected DistributedAtomicLong distributedIdCounter;
 
     //Zookeeper performance-related configuration

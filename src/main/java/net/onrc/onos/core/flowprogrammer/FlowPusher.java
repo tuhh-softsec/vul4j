@@ -114,22 +114,22 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
      * @author Naoki Shiota
      */
     private class SwitchQueue {
-        List<Queue<SwitchQueueEntry>> raw_queues;
+        List<Queue<SwitchQueueEntry>> rawQueues;
         QueueState state;
 
         // Max rate of sending message (bytes/ms). 0 implies no limitation.
-        long max_rate = 0;    // 0 indicates no limitation
-        long last_sent_time = 0;
-        long last_sent_size = 0;
+        long maxRate = 0;    // 0 indicates no limitation
+        long lastSentTime = 0;
+        long lastSentSize = 0;
 
         // "To be deleted" flag
         boolean toBeDeleted = false;
 
         SwitchQueue() {
-            raw_queues = new ArrayList<Queue<SwitchQueueEntry>>(
+            rawQueues = new ArrayList<Queue<SwitchQueueEntry>>(
                     MsgPriority.values().length);
             for (int i = 0; i < MsgPriority.values().length; ++i) {
-                raw_queues.add(i, new ArrayDeque<SwitchQueueEntry>());
+                rawQueues.add(i, new ArrayDeque<SwitchQueueEntry>());
             }
 
             state = QueueState.READY;
@@ -142,18 +142,18 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
          * @return true if within the rate
          */
         boolean isSendable(long current) {
-            if (max_rate == 0) {
+            if (maxRate == 0) {
                 // no limitation
                 return true;
             }
 
-            if (current == last_sent_time) {
+            if (current == lastSentTime) {
                 return false;
             }
 
             // Check if sufficient time (from aspect of rate) elapsed or not.
-            long rate = last_sent_size / (current - last_sent_time);
-            return (rate < max_rate);
+            long rate = lastSentSize / (current - lastSentTime);
+            return (rate < maxRate);
         }
 
         /**
@@ -163,8 +163,8 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
          * @param size    Size of sent data (in bytes).
          */
         void logSentData(long current, long size) {
-            last_sent_time = current;
-            last_sent_size = size;
+            lastSentTime = current;
+            lastSentSize = size;
         }
 
         boolean add(SwitchQueueEntry entry, MsgPriority priority) {
@@ -184,8 +184,8 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
         SwitchQueueEntry poll() {
             switch (state) {
                 case READY: {
-                    for (int i = 0; i < raw_queues.size(); ++i) {
-                        SwitchQueueEntry entry = raw_queues.get(i).poll();
+                    for (int i = 0; i < rawQueues.size(); ++i) {
+                        SwitchQueueEntry entry = rawQueues.get(i).poll();
                         if (entry != null) {
                             return entry;
                         }
@@ -212,7 +212,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
         boolean hasMessageToSend() {
             switch (state) {
                 case READY:
-                    for (Queue<SwitchQueueEntry> queue : raw_queues) {
+                    for (Queue<SwitchQueueEntry> queue : rawQueues) {
                         if (!queue.isEmpty()) {
                             return true;
                         }
@@ -230,7 +230,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
         }
 
         Queue<SwitchQueueEntry> getQueue(MsgPriority priority) {
-            return raw_queues.get(priority.ordinal());
+            return rawQueues.get(priority.ordinal());
         }
     }
 
@@ -294,7 +294,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
     private Map<BarrierInfo, OFBarrierReplyFuture> barrierFutures
             = new ConcurrentHashMap<BarrierInfo, OFBarrierReplyFuture>();
 
-    private int number_thread;
+    private int numberThread;
 
     /**
      * Main thread that reads messages from queues and sends them to switches.
@@ -362,10 +362,10 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
          */
         private void processQueue(IOFSwitch sw, SwitchQueue queue, int max_msg) {
             // check sending rate and determine it to be sent or not
-            long current_time = System.currentTimeMillis();
+            long currentTime = System.currentTimeMillis();
             long size = 0;
 
-            if (queue.isSendable(current_time)) {
+            if (queue.isSendable(currentTime)) {
                 int i = 0;
                 while (queue.hasMessageToSend()) {
                     // Number of messages excess the limit
@@ -393,7 +393,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
                 }
 
                 sw.flush();
-                queue.logSentData(current_time, size);
+                queue.logSentData(currentTime, size);
             }
         }
 
@@ -421,7 +421,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
      * Initialize object with one thread.
      */
     public FlowPusher() {
-        number_thread = DEFAULT_NUMBER_THREAD;
+        numberThread = DEFAULT_NUMBER_THREAD;
     }
 
     /**
@@ -431,9 +431,9 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
      */
     public FlowPusher(int number_thread) {
         if (number_thread > 0) {
-            this.number_thread = number_thread;
+            this.numberThread = number_thread;
         } else {
-            this.number_thread = DEFAULT_NUMBER_THREAD;
+            this.numberThread = DEFAULT_NUMBER_THREAD;
         }
     }
 
@@ -479,7 +479,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
         }
 
         threadMap = new HashMap<Long, FlowPusherThread>();
-        for (long i = 0; i < number_thread; ++i) {
+        for (long i = 0; i < numberThread; ++i) {
             FlowPusherThread thread = new FlowPusherThread();
 
             threadMap.put(i, thread);
@@ -563,7 +563,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
         if (rate > 0) {
             log.debug("rate for {} is set to {}", sw.getId(), rate);
             synchronized (queue) {
-                queue.max_rate = rate;
+                queue.maxRate = rate;
             }
         }
     }
@@ -1039,7 +1039,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
     protected long getHash(IOFSwitch sw) {
         // This code assumes DPID is sequentially assigned.
         // TODO consider equalization algorithm
-        return sw.getId() % number_thread;
+        return sw.getId() % numberThread;
     }
 
     /**

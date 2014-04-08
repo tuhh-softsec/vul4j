@@ -122,13 +122,9 @@
         </module>
         <module name="LocalFinalVariableName"/>
 
-        <module name="LocalVariableName">
-          <property name="severity" value="warning"/>
-        </module>
+        <module name="LocalVariableName"/>
 
-        <module name="MemberName">
-          <property name="severity" value="warning"/>
-        </module>
+        <module name="MemberName"/>
 
         <module name="MethodName">
           <property name="severity" value="warning"/>
