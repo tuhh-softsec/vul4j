@@ -377,7 +377,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
                     Boolean isflowEntryForThisSwitch = false;
                     net.onrc.onos.core.topology.Path path = pathIntent.getPath();
 
-                    for (Iterator<LinkEvent> i = path.iterator(); i.hasNext(); ) {
+                    for (Iterator<LinkEvent> i = path.iterator(); i.hasNext();) {
                         LinkEvent le = (LinkEvent) i.next();
                         if (le.getSrc().dpid == sw.getId()) {
                             log.debug("src {} dst {}", le.getSrc(), le.getDst());

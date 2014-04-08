@@ -204,8 +204,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
         }
     }
 
-    ;
-
     protected class ClusterLeaderListener implements LeaderLatchListener {
         LeaderLatch latch;
 
