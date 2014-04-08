@@ -10,6 +10,8 @@
 # $LOGBASE         : base name of log output file (onos.`hostname`)
 # $RAMCLOUD_HOME   : path of root directory of RAMCloud repository (~/ramcloud)
 # $RAMCLOUD_BRANCH : branch name of RAMCloud to use (master)
+# $ZK_HOME         : path of root directory of ZooKeeper (~/zookeeper-3.4.5)
+# $ZK_LIB_DIR      : path of ZooKeeper library (/var/lib/zookeeper)
 # $JVM_OPTS        : JVM options ONOS starts with
 #####################################################
 
@@ -57,18 +59,17 @@ ONOS_TEMPLATE_DIR=${ONOS_CONF_DIR}/template
 
 LOGDIR=${ONOS_LOGDIR:-${ONOS_HOME}/onos-logs}
 
-ZK_DIR=${HOME}/zookeeper-3.4.5
+ZK_HOME=${ZK_HOME:-~/zookeeper-3.4.5}
 ZK_CONF_FILE=zoo.cfg
 ZK_CONF=${ONOS_CONF_DIR}/${ZK_CONF_FILE}
 ZK_CONF_TEMPLATE=${ONOS_TEMPLATE_DIR}/zoo.cfg.template
 ZK_LOG_DIR=${ONOS_HOME}/onos-logs
-ZK_LIB_DIR=/var/lib/zookeeper
+ZK_LIB_DIR=${ZK_LIB_DIR:-/var/lib/zookeeper}
 ZK_MY_ID=${ZK_LIB_DIR}/myid
 
 HC_CONF=${ONOS_CONF_DIR}/hazelcast.xml
 HC_CONF_TEMPLATE=${ONOS_TEMPLATE_DIR}/hazelcast.xml.template
 
-RAMCLOUD_DIR=${HOME}/ramcloud
 RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
 RAMCLOUD_COORD_LOG=${LOGDIR}/ramcloud.coordinator.${ONOS_HOST_NAME}.log
 RAMCLOUD_SERVER_LOG=${LOGDIR}/ramcloud.server.${ONOS_HOST_NAME}.log
@@ -426,7 +427,7 @@ function start-zk {
     export ZOOCFGDIR=${ONOS_CONF_DIR}
   fi
   
-  $ZK_DIR/bin/zkServer.sh start
+  ${ZK_HOME}/bin/zkServer.sh start
 }
 
 function stop-zk {
@@ -439,7 +440,7 @@ function status-zk {
     export ZOOCFGDIR=${ONOS_CONF_DIR}
   fi
   
-  $ZK_DIR/bin/zkServer.sh status
+  ${ZK_HOME}/bin/zkServer.sh status
 }
 ############################################
 
@@ -522,7 +523,7 @@ function start-coord {
 
   # Run ramcloud 
   echo -n "Starting RAMCloud coordinator ... "
-  $RAMCLOUD_DIR/obj.${RAMCLOUD_BRANCH}/coordinator -L ${coord_addr} > $RAMCLOUD_COORD_LOG 2>&1 &
+  ${RAMCLOUD_HOME}/obj.${RAMCLOUD_BRANCH}/coordinator -L ${coord_addr} > $RAMCLOUD_COORD_LOG 2>&1 &
   echo "STARTED"
 }
 
@@ -576,7 +577,7 @@ function start-server {
 
   # Run ramcloud
   echo -n "Starting RAMCloud server ... "
-  ${RAMCLOUD_DIR}/obj.${RAMCLOUD_BRANCH}/server -M -L ${server_addr} -C ${coord_addr} --masterServiceThreads 1 --logCleanerThreads 1 --detectFailures 0 > $RAMCLOUD_SERVER_LOG 2>&1 &
+  ${RAMCLOUD_HOME}/obj.${RAMCLOUD_BRANCH}/server -M -L ${server_addr} -C ${coord_addr} --masterServiceThreads 1 --logCleanerThreads 1 --detectFailures 0 > $RAMCLOUD_SERVER_LOG 2>&1 &
   echo "STARTED"
 }
 
