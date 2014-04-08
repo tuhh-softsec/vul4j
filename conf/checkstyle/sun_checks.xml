@@ -219,10 +219,7 @@
         <!-- See http://checkstyle.sf.net/config_coding.html -->
         <!-- ONOS allows conditional operators -->
         <!-- <module name="AvoidInlineConditionals"/> -->
-        <module name="EmptyStatement">
-          <property name="severity" value="warning"/>
-        </module>
-
+        <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
 
         <module name="HiddenField">

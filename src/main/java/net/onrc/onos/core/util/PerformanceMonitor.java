@@ -236,19 +236,16 @@ public class PerformanceMonitor {
     @Deprecated
     public static void stop(String tag) {
         theInstance.stopStep(tag);
-        ;
     }
 
     @Deprecated
     public static void clear() {
         theInstance.reset();
-        ;
     }
 
     @Deprecated
     public static void report() {
         theInstance.reportAll();
-        ;
     }
 
     @Deprecated
