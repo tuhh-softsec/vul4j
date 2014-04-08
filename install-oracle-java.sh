@@ -43,8 +43,19 @@ fi
 set -e
 
 sudo apt-get update
-sudo apt-get install ${SILENT} oracle-java7-set-default
-
+{
+  sudo apt-get install ${SILENT} oracle-java7-set-default
+} || {
+  { set +x; } 2>/dev/null
+  echo
+  echo "Installing Oracle Java failed."
+  echo "This script cannot be used if ubuntu release has reached end of life."
+  echo "Check if your ubuntu release is still supported."
+  echo " https://wiki.ubuntu.com/Releases"
+  echo
+  lsb_release -a
+  exit 1
+}
 { set +x; } 2>/dev/null
 echo
 echo "Done. You may need to relogin for the environment variable change to take effect."
