@@ -74,8 +74,9 @@ class ONOS( Controller ):
     proctag = 'mn-onos-id'
 
     # List of scripts that we need/use
-    scripts = ( 'start-zk.sh', 'start-ramcloud-coordinator.sh',
-                'start-ramcloud-server.sh', 'start-onos.sh', 'start-rest.sh' )
+#    scripts = ( 'start-zk.sh', 'start-ramcloud-coordinator.sh',
+#                'start-ramcloud-server.sh', 'start-onos.sh', 'start-rest.sh' )
+    scripts = ( 'onos.sh', 'start-rest.sh' )
 
     def __init__( self, name, n=1, reactive=True, runAsRoot=False, **params):
         """n: number of ONOS instances to run (1)
@@ -153,47 +154,45 @@ class ONOS( Controller ):
         """Start Ramcloud
            cpu: CPU usage limit (in seconds/s)"""
         # Edit configuration file
-        self.cmd( "sed -ibak -e 's/host=.*/host=127.0.0.1/' %s/conf/ramcloud.conf" %
-            self.onosDir)
+#         self.cmd( "sed -ibak -e 's/host=.*/host=127.0.0.1/' %s/conf/ramcloud.conf" %
+#             self.onosDir)
         # Create a cgroup so Ramcloud doesn't eat all of our CPU
         ramcloud = CPULimitedHost( 'ramcloud', inNamespace=False, period_us=5000 )
         ramcloud.setCPUFrac( cpu / numCores() )
         ramcloud.cmd( 'export PATH=%s:$PATH' % self.onosDir )
         ramcloud.cmd( 'export ONOS_LOGDIR=%s' % self.logDir )
-        for daemon in 'coordinator', 'server':
-            ramcloud.cmd( 'start-ramcloud-%s.sh stop' % daemon )
-            ramcloud.cmd( 'start-ramcloud-%s.sh start' % daemon )
+        for daemon in 'coord', 'server':
+            ramcloud.cmd( 'onos.sh rc-%s start' % daemon )
             pid = self.waitStart( 'Ramcloud %s' % daemon, 'obj.master/' + daemon )
             self.waitNetstat( pid )
-            status = self.cmd( 'start-ramcloud-%s.sh status' % daemon )
+            status = self.cmd( 'onos.sh rc-%s.sh status' % daemon )
             if 'running' not in status:
                 raise Exception( 'Ramcloud %s startup failed: ' % daemon + status )
         self.ramcloud = ramcloud
 
     def stopRamcloud( self ):
         "Stop Ramcloud"
-        for daemon in 'coordinator', 'server':
-            self.ramcloud.cmd( './start-ramcloud-%s.sh stop' % daemon )
+        for daemon in 'coord', 'server':
+            self.ramcloud.cmd( './onos.sh rc-%s stop' % daemon )
         self.ramcloud.terminate()
 
     def startZookeeper( self, initcfg=True ):
         "Start Zookeeper"
-        # Reinitialize configuration file
-        if initcfg:
-            cfg = self.zookeeperDir + '/conf/zoo.cfg'
-            template = self.zookeeperDir + '/conf/zoo_sample.cfg'
-            copyfile( template, cfg )
-        self.cmd( 'start-zk.sh stop' )
-        self.cmd( 'start-zk.sh start' )
+#         # Reinitialize configuration file
+#         if initcfg:
+#             cfg = self.zookeeperDir + '/conf/zoo.cfg'
+#             template = self.zookeeperDir + '/conf/zoo_sample.cfg'
+#             copyfile( template, cfg )
+        self.cmd( 'onos.sh zk start' )
         pid = self.waitStart( 'Zookeeper', 'zookeeper' )
         self.waitNetstat( pid )
-        status = self.cmd( 'start-zk.sh status' )
+        status = self.cmd( 'onos.sh zk status' )
         if 'Error' in status:
             raise Exception( 'Zookeeper startup failed: ' + status )
 
     def stopZookeeper( self ):
         "Stop Zookeeper"
-        self.cmd( 'start-zk.sh stop' )
+        self.cmd( 'onos.sh zk stop' )
 
     def genProperties( self, id, path='/tmp' ):
         "Generate ONOS properties file and return its full pathname"
@@ -241,7 +240,7 @@ class ONOS( Controller ):
         self.stopONOS( id )
         propsFile = self.genProperties( id )
         self.setVars( id, propsFile )
-        self.cmd( 'start-onos.sh startnokill' )
+        self.cmd( 'onos.sh core startnokill' )
         # start-onos.sh waits for ONOS startup
         elapsed = time.time() - start
         info( '* ONOS %s started in %.2f seconds\n' % ( id, elapsed ) )
