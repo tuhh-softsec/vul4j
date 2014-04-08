@@ -315,7 +315,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
             log.debug("Unmatched link events: {} events", unmatchedLinkEvents.size());
         }
 
-        if (rerouteAll) {//addedLinkEvents.size() > 0) { // ||
+        if (rerouteAll) { //addedLinkEvents.size() > 0) { // ||
 //                              addedPortEvents.size() > 0 ||
 //                              addedSwitchEvents.size() > 0) {
             p.log("begin_getAllIntents");

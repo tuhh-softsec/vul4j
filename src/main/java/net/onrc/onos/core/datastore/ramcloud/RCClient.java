@@ -324,7 +324,7 @@ public class RCClient implements IKVClient {
     public boolean multiRead(final Collection<IMultiEntryOperation> ops) {
 
         if (ops.size() <= MAX_MULTI_READS && ops instanceof ArrayList) {
-            @SuppressWarnings({"unchecked", "rawtypes"})
+            @SuppressWarnings({ "unchecked", "rawtypes" })
             final ArrayList<RCMultiEntryOperation> arrays = (ArrayList) ops;
             return multiReadInternal(arrays);
         }
@@ -357,7 +357,7 @@ public class RCClient implements IKVClient {
     public boolean multiWrite(final List<IMultiEntryOperation> ops) {
 
         if (ops.size() <= MAX_MULTI_WRITES && ops instanceof ArrayList) {
-            @SuppressWarnings({"unchecked", "rawtypes"})
+            @SuppressWarnings({ "unchecked", "rawtypes" })
             final ArrayList<RCMultiEntryOperation> arrays = (ArrayList) ops;
             return multiWriteInternal(arrays);
         }
