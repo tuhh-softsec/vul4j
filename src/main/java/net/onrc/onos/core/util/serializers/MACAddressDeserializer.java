@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MACAddressDeserializer extends JsonDeserializer<MACAddress> {
 
-    protected final static Logger log = LoggerFactory.getLogger(MACAddressDeserializer.class);
+    private static final Logger log = LoggerFactory.getLogger(MACAddressDeserializer.class);
 
     @Override
     public MACAddress deserialize(JsonParser jp,

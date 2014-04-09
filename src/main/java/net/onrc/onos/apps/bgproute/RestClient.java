@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class RestClient {
-    private final static Logger log = LoggerFactory.getLogger(RestClient.class);
+    private static final Logger log = LoggerFactory.getLogger(RestClient.class);
 
     private RestClient() {
         // Private constructor to prevent instantiation

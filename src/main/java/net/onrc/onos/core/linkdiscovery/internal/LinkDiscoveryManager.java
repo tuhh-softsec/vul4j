@@ -115,7 +115,7 @@ public class LinkDiscoveryManager
         implements IOFMessageListener, IOFSwitchListener,
         ILinkDiscoveryService, IFloodlightModule {
     protected IFloodlightProviderService controller;
-    protected final static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
+    private static final Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
 
     protected IFloodlightProviderService floodlightProvider;
     protected IThreadPoolService threadPool;

@@ -28,7 +28,7 @@ public class PlanInstallRuntime {
     //    NetworkGraph graph;
     IFlowPusherService pusher;
     IFloodlightProviderService provider;
-    private final static Logger log = LoggerFactory.getLogger(PlanInstallRuntime.class);
+    private static final Logger log = LoggerFactory.getLogger(PlanInstallRuntime.class);
 
     public PlanInstallRuntime(//NetworkGraph graph,
                               IFloodlightProviderService provider,

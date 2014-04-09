@@ -63,12 +63,12 @@ import com.google.common.collect.ListMultimap;
 
 public class Forwarding implements IOFMessageListener, IFloodlightModule,
         IForwardingService, IEventChannelListener<Long, IntentStateList> {
-    private final static Logger log = LoggerFactory.getLogger(Forwarding.class);
+    private static final Logger log = LoggerFactory.getLogger(Forwarding.class);
 
     private static final int SLEEP_TIME_FOR_DB_DEVICE_INSTALLED = 100; // milliseconds
-    private final static int NUMBER_OF_THREAD_FOR_EXECUTOR = 1;
+    private static final int NUMBER_OF_THREAD_FOR_EXECUTOR = 1;
 
-    private final static ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(NUMBER_OF_THREAD_FOR_EXECUTOR);
+    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(NUMBER_OF_THREAD_FOR_EXECUTOR);
 
     private final String callerId = "Forwarding";
 

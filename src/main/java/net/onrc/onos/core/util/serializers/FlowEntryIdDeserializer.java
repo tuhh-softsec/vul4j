@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowEntryIdDeserializer extends JsonDeserializer<FlowEntryId> {
 
-    protected final static Logger log = LoggerFactory.getLogger(FlowEntryIdDeserializer.class);
+    private static final Logger log = LoggerFactory.getLogger(FlowEntryIdDeserializer.class);
 
     @Override
     public FlowEntryId deserialize(JsonParser jp,

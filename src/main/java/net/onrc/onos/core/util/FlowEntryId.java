@@ -16,7 +16,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonDeserialize(using = FlowEntryIdDeserializer.class)
 @JsonSerialize(using = FlowEntryIdSerializer.class)
 public final class FlowEntryId {
-    private final static long INVALID = -1;
+    private static final long INVALID = -1;
     private final long value;
 
     /**

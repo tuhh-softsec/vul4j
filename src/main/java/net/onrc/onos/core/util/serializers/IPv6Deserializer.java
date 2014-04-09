@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class IPv6Deserializer extends JsonDeserializer<IPv6> {
 
-    protected final static Logger log = LoggerFactory.getLogger(IPv6Deserializer.class);
+    private static final Logger log = LoggerFactory.getLogger(IPv6Deserializer.class);
 
     @Override
     public IPv6 deserialize(JsonParser jp,

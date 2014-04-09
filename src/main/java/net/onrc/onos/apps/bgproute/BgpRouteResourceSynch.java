@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BgpRouteResourceSynch extends ServerResource {
-    private final static Logger log = LoggerFactory.getLogger(BgpRouteResourceSynch.class);
+    private static final Logger log = LoggerFactory.getLogger(BgpRouteResourceSynch.class);
 
     @Post
     public String store(String fmJson) {

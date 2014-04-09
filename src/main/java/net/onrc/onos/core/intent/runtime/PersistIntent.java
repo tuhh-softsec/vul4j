@@ -31,12 +31,12 @@ import com.esotericsoftware.kryo.io.Output;
  * @author nickkaranatsios
  */
 public class PersistIntent {
-    private final static Logger log = LoggerFactory.getLogger(IntentResource.class);
+    private static final Logger log = LoggerFactory.getLogger(IntentResource.class);
     private long range = 10000L;
     private final IControllerRegistryService controllerRegistry;
     NetworkGraph graph = null;
-    private final static String INTENT_JOURNAL = "G:IntentJournal";
-    private final static int VALUE_STORE_LIMIT = 1024 * 1024;
+    private static final String INTENT_JOURNAL = "G:IntentJournal";
+    private static final int VALUE_STORE_LIMIT = 1024 * 1024;
     private IKVTable table;
     private Kryo kryo;
     private ByteArrayOutputStream stream;

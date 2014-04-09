@@ -108,7 +108,7 @@ public class KryoFactory {
      *                   otherwise delete the provided object.
      * @return a new Kryo object if needed, otherwise null.
      */
-    synchronized private Kryo newDeleteKryo(Kryo deleteKryo) {
+    private synchronized Kryo newDeleteKryo(Kryo deleteKryo) {
         if (deleteKryo != null) {
             // Delete an entry by moving it back to the buffer
             kryoList.add(deleteKryo);

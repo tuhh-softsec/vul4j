@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SynchronizerResource extends ServerResource {
-    protected final static Logger log = LoggerFactory.getLogger(SynchronizerResource.class);
+    protected static final Logger log = LoggerFactory.getLogger(SynchronizerResource.class);
 
     protected IFloodlightProviderService provider;
     protected IFlowSyncService synchronizer;

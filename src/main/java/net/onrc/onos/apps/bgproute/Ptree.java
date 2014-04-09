@@ -175,7 +175,7 @@ public class Ptree {
         return null;
     }
 
-    static public int bit_to_octet(int key_bits) {
+    public static int bit_to_octet(int key_bits) {
         return Math.max((key_bits + 7) / 8, 1);
     }
 

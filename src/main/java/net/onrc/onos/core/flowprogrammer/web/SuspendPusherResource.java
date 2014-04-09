@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SuspendPusherResource extends PusherResource {
 
-    protected final static Logger log = LoggerFactory.getLogger(SetPushRateResource.class);
+    private static final Logger log = LoggerFactory.getLogger(SetPushRateResource.class);
 
     /**
      * Implement the API.

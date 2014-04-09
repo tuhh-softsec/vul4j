@@ -56,7 +56,7 @@ import com.google.common.base.Charsets;
  */
 public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistryService {
 
-    protected final static Logger log = LoggerFactory.getLogger(ZookeeperRegistry.class);
+    private static final Logger log = LoggerFactory.getLogger(ZookeeperRegistry.class);
     protected String controllerId = null;
 
     protected IRestApiService restApi;

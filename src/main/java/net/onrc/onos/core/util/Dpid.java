@@ -14,7 +14,7 @@ import org.openflow.util.HexString;
 @JsonDeserialize(using = DpidDeserializer.class)
 @JsonSerialize(using = DpidSerializer.class)
 public final class Dpid {
-    private final static long UNKNOWN = 0;
+    private static final long UNKNOWN = 0;
     private final long value;
 
     /**

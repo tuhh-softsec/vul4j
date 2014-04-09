@@ -22,7 +22,7 @@ public class RibEntry {
      * The user of this class should make sure they don't check this data
      * if they don't provide it.
      */
-    private final static long NULL_TIME = -1;
+    private static final long NULL_TIME = -1;
 
     public RibEntry(InetAddress routerId, InetAddress nextHop) {
         this.routerId = routerId;

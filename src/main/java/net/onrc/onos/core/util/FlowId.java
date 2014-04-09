@@ -16,7 +16,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonDeserialize(using = FlowIdDeserializer.class)
 @JsonSerialize(using = FlowIdSerializer.class)
 public final class FlowId implements Comparable<FlowId> {
-    private final static long INVALID = -1;
+    private static final long INVALID = -1;
     private final long value;
 
     /**

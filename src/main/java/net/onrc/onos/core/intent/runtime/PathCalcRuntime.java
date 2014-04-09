@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PathCalcRuntime implements IFloodlightService {
     private NetworkGraph graph;
-    private final static Logger log = LoggerFactory.getLogger(PathCalcRuntime.class);
+    private static final Logger log = LoggerFactory.getLogger(PathCalcRuntime.class);
 
     public PathCalcRuntime(NetworkGraph g) {
         this.graph = g;

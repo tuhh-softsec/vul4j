@@ -45,13 +45,13 @@ public class OnosDeviceManager implements IFloodlightModule,
         IOFMessageListener,
         IOnosDeviceService,
         IEventChannelListener<Long, OnosDevice> {
-    protected final static Logger log = LoggerFactory.getLogger(OnosDeviceManager.class);
+    private static final Logger log = LoggerFactory.getLogger(OnosDeviceManager.class);
     private static final int CLEANUP_SECOND = 60 * 60;
     private static final int AGEING_MILLSEC = 60 * 60 * 1000;
 
     private CopyOnWriteArrayList<IOnosDeviceListener> deviceListeners;
     private IFloodlightProviderService floodlightProvider;
-    private final static ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor();
 
     private IDatagridService datagrid;
     private IEventChannel<Long, OnosDevice> eventChannel;

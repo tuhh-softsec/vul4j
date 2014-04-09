@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PusherResource extends ServerResource {
-    protected final static Logger log = LoggerFactory.getLogger(PusherResource.class);
+    protected static final Logger log = LoggerFactory.getLogger(PusherResource.class);
 
     protected IFloodlightProviderService provider;
     protected IFlowPusherService pusher;

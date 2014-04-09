@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class PlanCalcRuntime {
 
     //    NetworkGraph graph;
-    private final static Logger log = LoggerFactory.getLogger(PlanCalcRuntime.class);
+    private static final Logger log = LoggerFactory.getLogger(PlanCalcRuntime.class);
 
     public PlanCalcRuntime(/*NetworkGraph graph*/) {
 //      this.graph = graph;

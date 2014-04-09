@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * Class for collecting performance measurements
  */
 public class PerformanceMonitor {
-    private final static Logger log = LoggerFactory.getLogger(PerformanceMonitor.class);
+    private static final Logger log = LoggerFactory.getLogger(PerformanceMonitor.class);
 
     // experiment name -> PerformanceMonitor
     private static final ConcurrentHashMap<String, PerformanceMonitor> PERF_MONS = new ConcurrentHashMap<>();
@@ -33,7 +33,7 @@ public class PerformanceMonitor {
     private final ConcurrentHashMap<String, Queue<Measurement>> map = new ConcurrentHashMap<>();
     private long overhead;
     private long experimentStart = Long.MAX_VALUE;
-    private final static double NORMALIZATION = Math.pow(10, 6);
+    private static final double NORMALIZATION = Math.pow(10, 6);
 
     /**
      * Start a performance measurement, identified by a tag

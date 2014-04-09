@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author nickkaranatsios
  */
 public class IntentResource extends ServerResource {
-    private final static Logger log = LoggerFactory.getLogger(IntentResource.class);
+    private static final Logger log = LoggerFactory.getLogger(IntentResource.class);
     // TODO need to assign proper application id.
     private static final String APPLN_ID = "1";
 

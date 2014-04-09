@@ -83,7 +83,7 @@ import org.slf4j.LoggerFactory;
  * @author Naoki Shiota
  */
 public class FlowPusher implements IFlowPusherService, IOFMessageListener {
-    private final static Logger log = LoggerFactory.getLogger(FlowPusher.class);
+    private static final Logger log = LoggerFactory.getLogger(FlowPusher.class);
     protected static final int DEFAULT_NUMBER_THREAD = 1;
 
     // TODO: Values copied from elsewhere (class LearningSwitch).

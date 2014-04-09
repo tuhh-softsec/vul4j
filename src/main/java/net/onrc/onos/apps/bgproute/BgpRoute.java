@@ -76,7 +76,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         IArpRequester,
         IOFSwitchListener, IConfigInfoService {
 
-    private final static Logger log = LoggerFactory.getLogger(BgpRoute.class);
+    private static final Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
     private IFloodlightProviderService floodlightProvider;
     private ILinkDiscoveryService linkDiscoveryService;

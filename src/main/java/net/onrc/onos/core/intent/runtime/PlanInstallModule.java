@@ -36,7 +36,7 @@ public class PlanInstallModule implements IFloodlightModule {
     private PlanInstallRuntime planInstall;
     private EventListener eventListener;
     private IEventChannel<Long, IntentStateList> intentStateChannel;
-    private final static Logger log = LoggerFactory.getLogger(PlanInstallModule.class);
+    private static final Logger log = LoggerFactory.getLogger(PlanInstallModule.class);
 
 
     private static final String PATH_INTENT_CHANNEL_NAME = "onos.pathintent";
