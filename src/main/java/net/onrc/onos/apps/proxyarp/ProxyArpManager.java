@@ -434,6 +434,9 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
     @Override
     public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
+        if (!(msg instanceof OFPacketIn)) {
+            return Command.CONTINUE;
+        }
 
         OFPacketIn pi = (OFPacketIn) msg;
 
@@ -642,9 +645,16 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
 
         byte[] senderIPAddress = zeroIpv4;
         Interface intf = configService.getOutgoingInterface(ipAddress);
-        if (intf != null) {
-            senderIPAddress = intf.getIpAddress().getAddress();
+        if (intf == null) {
+            // TODO handle the case where the controller needs to send an ARP
+            // request but there's not IP configuration. In this case the
+            // request should be broadcast out all edge ports in the network.
+            log.warn("Sending ARP requests with default configuration "
+                    + "not supported");
+            return;
         }
+
+        senderIPAddress = intf.getIpAddress().getAddress();
 
         arpRequest.setSenderProtocolAddress(senderIPAddress);
 

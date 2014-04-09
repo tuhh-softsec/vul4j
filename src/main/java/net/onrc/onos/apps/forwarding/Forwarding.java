@@ -93,7 +93,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 
     private final Object lock = new Object();
 
-    private class PacketToPush {
+    private static class PacketToPush {
         public final OFPacketOut packet;
         public final long dpid;
 
@@ -103,7 +103,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
         }
     }
 
-    private class PushedFlow {
+    private static class PushedFlow {
         public final String intentId;
         public boolean installed = false;
         public short firstOutPort;
@@ -113,7 +113,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
         }
     }
 
-    private final class Path {
+    private static final class Path {
         public final MACAddress srcMac;
         public final MACAddress dstMac;
 
@@ -228,7 +228,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
     public Command receive(
             IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
 
-        if (msg.getType() != OFType.PACKET_IN) {
+        if (msg.getType() != OFType.PACKET_IN || !(msg instanceof OFPacketIn)) {
             return Command.CONTINUE;
         }
 

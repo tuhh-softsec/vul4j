@@ -1,6 +1,7 @@
 package net.onrc.onos.apps.proxyarp;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * A PacketOutNotification contains data sent between ONOS instances that
@@ -24,6 +25,6 @@ public abstract class PacketOutNotification implements Serializable {
     }
 
     public PacketOutNotification(byte[] packet) {
-        this.packet = packet;
+        this.packet = Arrays.copyOf(packet, packet.length);
     }
 }
