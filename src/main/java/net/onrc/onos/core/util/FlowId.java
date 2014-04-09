@@ -87,11 +87,38 @@ public final class FlowId implements Comparable<FlowId> {
      * Compare two FlowId objects numerically using their Flow IDs.
      *
      * @return the value 0 if the Flow ID is equal to the argument's Flow ID;
-     * a value less than 0 if the Flow ID is numerically less than the argument's Flow ID;
-     * and a value greater than 0 if the Flow ID is numerically greater than the argument's Flow ID.
+     * a value less than 0 if the Flow ID is numerically less than the
+     * argument's Flow ID; and a value greater than 0 if the Flow ID is
+     * numerically greater than the argument's Flow ID.
      */
     @Override
     public int compareTo(FlowId o) {
         return Long.valueOf(this.value).compareTo(o.value());
+    }
+
+    /**
+     * Test whether some other object is "equal to" this one.
+     *
+     * @param obj the reference object with which to compare.
+     * @return true if this object is the same as the obj argument; false
+     * otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof FlowId) {
+            FlowId other = (FlowId) obj;
+            return (this.value == other.value);
+        }
+        return false;
+    }
+
+    /**
+     * Get the hash code for the object.
+     *
+     * @return a hash code value for this object.
+     */
+    @Override
+    public int hashCode() {
+        return Long.valueOf(this.value).hashCode();
     }
 }
