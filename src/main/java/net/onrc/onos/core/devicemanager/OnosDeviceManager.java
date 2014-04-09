@@ -319,7 +319,7 @@ public class OnosDeviceManager implements IFloodlightModule,
 
     @Override
     public void deleteOnosDeviceByMac(MACAddress mac) {
-        OnosDevice deleteDevice = mapDevice.get(mac);
+        OnosDevice deleteDevice = mapDevice.get(mac.toLong());
         deleteOnosDevice(deleteDevice);
     }
 
