@@ -9,13 +9,13 @@ import org.openflow.util.HexString;
 
 /**
  * The class representing a network switch DPID.
+ * This class is immutable.
  */
 @JsonDeserialize(using = DpidDeserializer.class)
 @JsonSerialize(using = DpidSerializer.class)
-public class Dpid {
-    static public final long UNKNOWN = 0;
-
-    private long value;
+public final class Dpid {
+    private final static long UNKNOWN = 0;
+    private final long value;
 
     /**
      * Default constructor.
@@ -49,15 +49,6 @@ public class Dpid {
      */
     public long value() {
         return value;
-    }
-
-    /**
-     * Set the value of the DPID.
-     *
-     * @param value the value to set.
-     */
-    public void setValue(long value) {
-        this.value = value;
     }
 
     /**

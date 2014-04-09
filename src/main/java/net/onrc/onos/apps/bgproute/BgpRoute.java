@@ -518,9 +518,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         flowPath.setFlowPathFlags(flowPathFlags);
 
         // Create the DataPath object: dstSwitchPort
-        SwitchPort dstPort = new SwitchPort();
-        dstPort.setDpid(new Dpid(egressInterface.getDpid()));
-        dstPort.setPort(new Port(egressInterface.getPort()));
+        SwitchPort dstPort =
+            new SwitchPort(new Dpid(egressInterface.getDpid()),
+                           new Port(egressInterface.getPort()));
 
         // We only need one flow mod per switch, so pick one interface on each switch
         Map<Long, Interface> srcInterfaces = new HashMap<Long, Interface>();
@@ -540,9 +540,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             flowPath.setFlowId(new FlowId());
 
             // Create DataPath object: srcSwitchPort
-            SwitchPort srcPort = new SwitchPort();
-            srcPort.setDpid(new Dpid(srcInterface.getDpid()));
-            srcPort.setPort(new Port(srcInterface.getPort()));
+            SwitchPort srcPort =
+                new SwitchPort(new Dpid(srcInterface.getDpid()),
+                               new Port(srcInterface.getPort()));
 
             DataPath dataPath = new DataPath();
             dataPath.setSrcPort(srcPort);
@@ -742,9 +742,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         flowPath.setFlowPathFlags(flowPathFlags);
 
         // Create the DataPath object: dstSwitchPort
-        SwitchPort dstPort = new SwitchPort();
-        dstPort.setDpid(new Dpid(dstInterface.getDpid()));
-        dstPort.setPort(new Port(dstInterface.getPort()));
+        SwitchPort dstPort =
+            new SwitchPort(new Dpid(dstInterface.getDpid()),
+                           new Port(dstInterface.getPort()));
 
         for (Interface srcInterface : interfaces.values()) {
 
@@ -756,9 +756,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             flowPath.setFlowId(new FlowId());
 
             // Create the DataPath object: srcSwitchPort
-            SwitchPort srcPort = new SwitchPort();
-            srcPort.setDpid(new Dpid(srcInterface.getDpid()));
-            srcPort.setPort(new Port(srcInterface.getPort()));
+            SwitchPort srcPort =
+                new SwitchPort(new Dpid(srcInterface.getDpid()),
+                               new Port(srcInterface.getPort()));
 
             DataPath dataPath = new DataPath();
             dataPath.setSrcPort(srcPort);
@@ -833,14 +833,14 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             // Flow path for src-TCP-port
             DataPath dataPath = new DataPath();
 
-            SwitchPort srcPort = new SwitchPort();
-            srcPort.setDpid(bgpdAttachmentPoint.dpid());
-            srcPort.setPort(bgpdAttachmentPoint.port());
+            SwitchPort srcPort =
+                new SwitchPort(bgpdAttachmentPoint.dpid(),
+                               bgpdAttachmentPoint.port());
             dataPath.setSrcPort(srcPort);
 
-            SwitchPort dstPort = new SwitchPort();
-            dstPort.setDpid(new Dpid(peerInterface.getDpid()));
-            dstPort.setPort(new Port(peerInterface.getSwitchPort().port()));
+            SwitchPort dstPort =
+                new SwitchPort(new Dpid(peerInterface.getDpid()),
+                               new Port(peerInterface.getSwitchPort().port()));
             dataPath.setDstPort(dstPort);
 
             flowPath.setDataPath(dataPath);
@@ -885,14 +885,14 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
             DataPath reverseDataPath = new DataPath();
 
-            SwitchPort reverseDstPort = new SwitchPort();
-            reverseDstPort.setDpid(bgpdAttachmentPoint.dpid());
-            reverseDstPort.setPort(bgpdAttachmentPoint.port());
+            SwitchPort reverseDstPort =
+                new SwitchPort(bgpdAttachmentPoint.dpid(),
+                               bgpdAttachmentPoint.port());
             reverseDataPath.setDstPort(reverseDstPort);
 
-            SwitchPort reverseSrcPort = new SwitchPort();
-            reverseSrcPort.setDpid(new Dpid(peerInterface.getDpid()));
-            reverseSrcPort.setPort(new Port(peerInterface.getSwitchPort().port()));
+            SwitchPort reverseSrcPort =
+                new SwitchPort(new Dpid(peerInterface.getDpid()),
+                               new Port(peerInterface.getSwitchPort().port()));
             reverseDataPath.setSrcPort(reverseSrcPort);
             flowPath.setDataPath(reverseDataPath);
 

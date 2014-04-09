@@ -9,12 +9,13 @@ import org.openflow.util.HexString;
 
 /**
  * The class representing an IPv6 address.
+ * This class is immutable.
  */
 @JsonDeserialize(using = IPv6Deserializer.class)
 @JsonSerialize(using = IPv6Serializer.class)
-public class IPv6 {
-    private long valueHigh;    // The higher (more significant) 64 bits
-    private long valueLow;    // The lower (less significant) 64 bits
+public final class IPv6 {
+    private final long valueHigh;    // The higher (more significant) 64 bits
+    private final long valueLow;     // The lower (less significant) 64 bits
 
     /**
      * Default constructor.
@@ -67,15 +68,6 @@ public class IPv6 {
     }
 
     /**
-     * Set the value of the higher (more significant) 64 bits of the address.
-     *
-     * @param valueHigh the higher (more significant) 64 bits of the address.
-     */
-    public void setValueHigh(long valueHigh) {
-        this.valueHigh = valueHigh;
-    }
-
-    /**
      * Get the value of the lower (less significant) 64 bits of the address.
      *
      * @return the value of the lower (less significant) 64 bits of the
@@ -83,26 +75,6 @@ public class IPv6 {
      */
     public long valueLow() {
         return valueLow;
-    }
-
-    /**
-     * Get the value of the lower (less significant) 64 bits of the address.
-     *
-     * @param valueLow the lower (less significant) 64 bits of the address.
-     */
-    public void setValueLow(long valueLow) {
-        this.valueLow = valueLow;
-    }
-
-    /**
-     * Set the value of the IPv6 address.
-     *
-     * @param valueHigh the higher (more significant) 64 bits of the address.
-     * @param valueLow  the lower (less significant) 64 bits of the address.
-     */
-    public void setValue(long valueHigh, long valueLow) {
-        this.valueHigh = valueHigh;
-        this.valueLow = valueLow;
     }
 
     /**

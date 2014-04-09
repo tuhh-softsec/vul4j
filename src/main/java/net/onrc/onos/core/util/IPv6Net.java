@@ -8,17 +8,19 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing an IPv6 network address.
+ * This class is immutable.
  */
 @JsonDeserialize(using = IPv6NetDeserializer.class)
 @JsonSerialize(using = IPv6NetSerializer.class)
-public class IPv6Net {
-    private IPv6 address;        // The IPv6 address
-    private short prefixLen;        // The prefix length
+public final class IPv6Net {
+    private final IPv6 address;         // The IPv6 address
+    private final short prefixLen;      // The prefix length
 
     /**
      * Default constructor.
      */
     public IPv6Net() {
+        this.address = null;
         this.prefixLen = 0;
     }
 
@@ -30,6 +32,8 @@ public class IPv6Net {
     public IPv6Net(IPv6Net other) {
         if (other.address != null)
             this.address = new IPv6(other.address);
+        else
+            this.address = null;
         this.prefixLen = other.prefixLen;
     }
 
@@ -69,41 +73,12 @@ public class IPv6Net {
     }
 
     /**
-     * Set the address value of the IPv6Net address.
-     *
-     * @param address the address to use.
-     */
-    public void setAddress(IPv6 address) {
-        this.address = address;
-    }
-
-    /**
      * Get the prefix length value of the IPv6Net address.
      *
      * @return the prefix length value of the IPv6Net address.
      */
     public short prefixLen() {
         return prefixLen;
-    }
-
-    /**
-     * Set the prefix length value of the IPv6Net address.
-     *
-     * @param prefixLen the prefix length to use.
-     */
-    public void setPrefixLen(short prefixLen) {
-        this.prefixLen = prefixLen;
-    }
-
-    /**
-     * Set the value of the IPv6Net address.
-     *
-     * @param address   the address to use.
-     * @param prefixLen the prefix length to use.
-     */
-    public void setValue(IPv6 address, short prefixLen) {
-        this.address = address;
-        this.prefixLen = prefixLen;
     }
 
     /**

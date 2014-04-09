@@ -5,15 +5,18 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The class representing the Data Path Endpoints.
+ * This class is immutable.
  */
-public class DataPathEndpoints {
-    private SwitchPort srcPort;        // The source port
-    private SwitchPort dstPort;        // The destination port
+public final class DataPathEndpoints {
+    private final SwitchPort srcPort;        // The source port
+    private final SwitchPort dstPort;        // The destination port
 
     /**
      * Default constructor.
      */
     public DataPathEndpoints() {
+        srcPort = null;
+        dstPort = null;
     }
 
     /**
@@ -38,16 +41,6 @@ public class DataPathEndpoints {
     }
 
     /**
-     * Set the data path source port.
-     *
-     * @param srcPort the data path source port to set.
-     */
-    @JsonProperty("srcPort")
-    public void setSrcPort(SwitchPort srcPort) {
-        this.srcPort = srcPort;
-    }
-
-    /**
      * Get the data path destination port.
      *
      * @return the data path destination port.
@@ -55,16 +48,6 @@ public class DataPathEndpoints {
     @JsonProperty("dstPort")
     public SwitchPort dstPort() {
         return dstPort;
-    }
-
-    /**
-     * Set the data path destination port.
-     *
-     * @param dstPort the data path destination port to set.
-     */
-    @JsonProperty("dstPort")
-    public void setDstPort(SwitchPort dstPort) {
-        this.dstPort = dstPort;
     }
 
     /**

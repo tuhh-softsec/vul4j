@@ -4,14 +4,16 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The class representing a Caller ID for an ONOS component.
+ * This class is immutable.
  */
-public class CallerId {
-    private String value;
+public final class CallerId {
+    private final String value;
 
     /**
      * Default constructor.
      */
     public CallerId() {
+        this.value = null;
     }
 
     /**
@@ -41,16 +43,6 @@ public class CallerId {
     @JsonProperty("value")
     public String value() {
         return value;
-    }
-
-    /**
-     * Set the value of the Caller ID.
-     *
-     * @param value the value to set.
-     */
-    @JsonProperty("value")
-    public void setValue(String value) {
-        this.value = value;
     }
 
     /**

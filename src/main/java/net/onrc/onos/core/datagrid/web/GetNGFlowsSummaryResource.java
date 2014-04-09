@@ -80,12 +80,14 @@ public class GetNGFlowsSummaryResource extends ServerResource {
             flowPath.setFlowPathUserState(FlowPathUserState.FP_USER_ADD);
 
             // Setup the Source and Destination DPID and Port
-            SwitchPort srcPort = flowPath.dataPath().srcPort();
-            SwitchPort dstPort = flowPath.dataPath().dstPort();
-            srcPort.setDpid(new Dpid(spIntent.getSrcSwitchDpid()));
-            srcPort.setPort(new Port((short) spIntent.getSrcPortNumber()));
-            dstPort.setDpid(new Dpid(spIntent.getDstSwitchDpid()));
-            dstPort.setPort(new Port((short) spIntent.getDstPortNumber()));
+            Dpid srcDpid = new Dpid(spIntent.getSrcSwitchDpid());
+            Port srcPort = new Port((short) spIntent.getSrcPortNumber());
+            Dpid dstDpid = new Dpid(spIntent.getDstSwitchDpid());
+            Port dstPort = new Port((short) spIntent.getDstPortNumber());
+            SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
+            SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+            flowPath.dataPath().setSrcPort(srcSwitchPort);
+            flowPath.dataPath().setDstPort(dstSwitchPort);
 
             // Extract the Flow Entries
             Path path = pathIntent.getPath();

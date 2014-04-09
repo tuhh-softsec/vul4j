@@ -4,9 +4,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The class representing a network port of a switch.
+ * This class is immutable.
  */
-
-public class Port {
+public final class Port {
     /**
      * Special port values.
      * <p/>
@@ -70,7 +70,7 @@ public class Port {
         }
     }
 
-    private short value;
+    private final short value;
 
     /**
      * Default constructor.
@@ -117,16 +117,6 @@ public class Port {
     }
 
     /**
-     * Set the value of the port.
-     *
-     * @param value the value to set.
-     */
-    @JsonProperty("value")
-    public void setValue(short value) {
-        this.value = value;
-    }
-
-    /**
      * Convert the port value to a string.
      *
      * @return the port value as a string.
@@ -135,7 +125,6 @@ public class Port {
     public String toString() {
         return Short.toString(this.value);
     }
-
 
     @Override
     public boolean equals(Object other) {

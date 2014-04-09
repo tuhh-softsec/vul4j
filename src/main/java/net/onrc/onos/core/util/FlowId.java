@@ -11,17 +11,19 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing a Flow ID.
+ * This class is immutable.
  */
 @JsonDeserialize(using = FlowIdDeserializer.class)
 @JsonSerialize(using = FlowIdSerializer.class)
-public class FlowId implements Comparable<FlowId> {
-    private long value;
+public final class FlowId implements Comparable<FlowId> {
+    private final static long INVALID = -1;
+    private final long value;
 
     /**
      * Default constructor.
      */
     public FlowId() {
-        this.value = -1;
+        this.value = FlowId.INVALID;
     }
 
     /**
@@ -62,22 +64,13 @@ public class FlowId implements Comparable<FlowId> {
     }
 
     /**
-     * Set the value of the Flow ID.
-     *
-     * @param value the value to set.
-     */
-    public void setValue(long value) {
-        this.value = value;
-    }
-
-    /**
      * Test whether the Flow ID is valid.
      *
      * @return true if the Flow ID is valid, otherwise false.
      */
     @JsonIgnore
     public boolean isValid() {
-        return (this.value() != -1);
+        return (this.value() != FlowId.INVALID);
     }
 
     /**

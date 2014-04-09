@@ -4,15 +4,18 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The class representing a Switch-Port.
+ * This class is immutable.
  */
-public class SwitchPort {
-    private Dpid dpid;        // The DPID of the switch
-    private Port port;        // The port of the switch
+public final class SwitchPort {
+    private final Dpid dpid;        // The DPID of the switch
+    private final Port port;        // The port of the switch
 
     /**
      * Default constructor.
      */
     public SwitchPort() {
+        this.dpid = null;
+        this.port = null;
     }
 
     /**
@@ -37,16 +40,6 @@ public class SwitchPort {
     }
 
     /**
-     * Set the DPID value of the Switch-Port.
-     *
-     * @param dpid the DPID to use.
-     */
-    @JsonProperty("dpid")
-    public void setDpid(Dpid dpid) {
-        this.dpid = dpid;
-    }
-
-    /**
      * Get the port value of the Switch-Port.
      *
      * @return the port value of the Switch-Port.
@@ -54,27 +47,6 @@ public class SwitchPort {
     @JsonProperty("port")
     public Port port() {
         return port;
-    }
-
-    /**
-     * Set the port value of the Switch-Port.
-     *
-     * @param port the port to use.
-     */
-    @JsonProperty("port")
-    public void setPort(Port port) {
-        this.port = port;
-    }
-
-    /**
-     * Set the DPID and port values of the Switch-Port.
-     *
-     * @param dpid the DPID to use.
-     * @param port the port to use.
-     */
-    public void setValue(Dpid dpid, Port port) {
-        this.dpid = dpid;
-        this.port = port;
     }
 
     /**
@@ -89,7 +61,6 @@ public class SwitchPort {
     public String toString() {
         return this.dpid.toString() + "/" + this.port;
     }
-
 
     @Override
     public boolean equals(Object other) {

@@ -8,11 +8,12 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing an IPv4 address.
+ * This class is immutable.
  */
 @JsonDeserialize(using = IPv4Deserializer.class)
 @JsonSerialize(using = IPv4Serializer.class)
-public class IPv4 {
-    private int value;
+public final class IPv4 {
+    private final int value;
 
     /**
      * Default constructor.
@@ -64,15 +65,6 @@ public class IPv4 {
      */
     public int value() {
         return value;
-    }
-
-    /**
-     * Set the value of the IPv4 address.
-     *
-     * @param value the value to set.
-     */
-    public void setValue(int value) {
-        this.value = value;
     }
 
     /**

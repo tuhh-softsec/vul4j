@@ -4,9 +4,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The class representing a Switch.
+ * This class is almost immutable: the switch state is mutable.
  * NOTE: Currently this class is (almost) not used.
  */
-public class Switch {
+public final class Switch {
     /**
      * The Switch state.
      */
@@ -15,8 +16,8 @@ public class Switch {
         ACTIVE,
     }
 
-    private Dpid dpid;            // The DPID of the switch
-    private SwitchState state;        // The state of the switch
+    private final Dpid dpid;            // The DPID of the switch
+    private SwitchState state;          // The state of the switch
 
     /**
      * Default constructor.
@@ -59,16 +60,6 @@ public class Switch {
     @JsonProperty("dpid")
     public Dpid dpid() {
         return dpid;
-    }
-
-    /**
-     * Set the DPID.
-     *
-     * @param dpid the DPID to use.
-     */
-    @JsonProperty("dpid")
-    public void setDpid(Dpid dpid) {
-        this.dpid = dpid;
     }
 
     /**

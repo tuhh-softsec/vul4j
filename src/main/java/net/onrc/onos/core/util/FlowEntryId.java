@@ -11,17 +11,19 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing a Flow Entry ID.
+ * This class is immutable.
  */
 @JsonDeserialize(using = FlowEntryIdDeserializer.class)
 @JsonSerialize(using = FlowEntryIdSerializer.class)
-public class FlowEntryId {
-    private long value;
+public final class FlowEntryId {
+    private final static long INVALID = -1;
+    private final long value;
 
     /**
      * Default constructor.
      */
     public FlowEntryId() {
-        this.value = -1;
+        this.value = FlowEntryId.INVALID;
     }
 
     /**
@@ -62,22 +64,13 @@ public class FlowEntryId {
     }
 
     /**
-     * Set the value of the Flow Entry ID.
-     *
-     * @param value the value to set.
-     */
-    public void setValue(long value) {
-        this.value = value;
-    }
-
-    /**
      * Test whether the Flow Entry ID is valid.
      *
      * @return true if the Flow Entry ID is valid, otherwise false.
      */
     @JsonIgnore
     public boolean isValid() {
-        return (this.value() != -1);
+        return (this.value() != FlowEntryId.INVALID);
     }
 
     /**
