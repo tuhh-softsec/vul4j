@@ -14,7 +14,6 @@ import java.util.concurrent.FutureTask;
 
 import net.floodlightcontroller.core.IOFSwitch;
 import net.onrc.onos.core.flowprogrammer.IFlowPusherService.MsgPriority;
-import net.onrc.onos.core.util.Dpid;
 import net.onrc.onos.core.util.FlowEntryId;
 
 import org.openflow.protocol.OFFlowMod;
@@ -89,8 +88,8 @@ public class FlowSynchronizer implements IFlowSyncService {
 
         public Synchronizer(IOFSwitch sw) {
             this.sw = sw;
-            Dpid dpid = new Dpid(sw.getId());
             // TODO: fix when FlowSynchronizer is refactored
+            // Dpid dpid = new Dpid(sw.getId());
             // this.swObj = dbHandler.searchSwitch(dpid.toString());
         }
 
