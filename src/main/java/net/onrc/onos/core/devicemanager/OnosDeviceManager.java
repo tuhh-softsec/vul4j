@@ -132,8 +132,8 @@ public class OnosDeviceManager implements IFloodlightModule,
         }
 
         //We check if it is the same device in datagrid to suppress the device update
-        OnosDevice exDev = null;
-        if ((exDev = mapDevice.get(mac)) != null) {
+        OnosDevice exDev = mapDevice.get(mac);
+        if (exDev != null) {
             if (exDev.equals(srcDevice)) {
                 //There is the same existing device. Update only ActiveSince time.
                 exDev.setLastSeenTimestamp(new Date());

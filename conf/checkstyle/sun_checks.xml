@@ -220,10 +220,7 @@
         </module>
 
         <module name="IllegalInstantiation"/>
-
-        <module name="InnerAssignment">
-          <property name="severity" value="warning"/>
-        </module>
+        <module name="InnerAssignment"/>
 
         <!-- Many violations of this rule present, revist in a
         subsequent round of cleanups -->
