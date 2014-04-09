@@ -151,13 +151,15 @@ public class DataPath {
      */
     @Override
     public String toString() {
-        String ret = "[src=" + this.srcPort.toString();
+        StringBuilder ret = new StringBuilder();
+
+        ret.append("[src=" + this.srcPort.toString());
 
         for (FlowEntry fe : flowEntries) {
-            ret += " flowEntry=" + fe.toString();
+            ret.append(" flowEntry=" + fe.toString());
         }
-        ret += " dst=" + this.dstPort.toString() + "]";
+        ret.append(" dst=" + this.dstPort.toString() + "]");
 
-        return ret;
+        return ret.toString();
     }
 }

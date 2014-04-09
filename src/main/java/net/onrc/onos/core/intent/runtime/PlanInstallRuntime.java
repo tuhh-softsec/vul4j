@@ -84,14 +84,16 @@ public class PlanInstallRuntime {
         }
 
         static void printCount() {
-            String result = "FLOWMOD COUNT:\n";
+            StringBuilder result = new StringBuilder();
+
+            result.append("FLOWMOD COUNT:\n");
             for (FlowModCount count : map.values()) {
-                result += count.toString() + '\n';
+                result.append(count.toString() + '\n');
             }
             if (map.values().isEmpty()) {
-                result += "No flow mods installed\n";
+                result.append("No flow mods installed\n");
             }
-            log.error(result);
+            log.error(result.toString());
         }
     }
 
@@ -153,5 +155,4 @@ public class PlanInstallRuntime {
         // TODO: we assume that the plan installation succeeds for now
         return true;
     }
-
 }

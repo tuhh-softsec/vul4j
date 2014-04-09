@@ -97,10 +97,12 @@ public class PerformanceMonitor {
      * Write all performance measurements to the log
      */
     public void reportAll() {
-        String result = "Performance Results: (avg/start/stop/count)\n";
+        StringBuilder result = new StringBuilder();
+
+        result.append("Performance Results: (avg/start/stop/count)\n");
         if (map.size() == 0) {
-            result += "No Measurements";
-            log.error(result);
+            result.append("No Measurements");
+            log.error(result.toString());
             return;
         }
         long experimentEnd = -1;
@@ -131,16 +133,16 @@ public class PerformanceMonitor {
             // Normalize start/stop
             start -= experimentStart;
             stop -= experimentStart;
-            result += key + '=' +
+            result.append(key + '=' +
                     (avg / NORMALIZATION) + '/' +
                     (start / NORMALIZATION) + '/' +
                     (stop / NORMALIZATION) + '/' +
-                    count + '\n';
+                    count + '\n');
         }
         double overheadMs = overhead / NORMALIZATION;
         double experimentElapsed = (experimentEnd - experimentStart) / NORMALIZATION;
-        result += "TotalTime:" + experimentElapsed + "/Overhead:" + overheadMs;
-        log.error(result);
+        result.append("TotalTime:" + experimentElapsed + "/Overhead:" + overheadMs);
+        log.error(result.toString());
 //      log.error("Performance Results: {} with measurement overhead: {} ms", map, overheadMilli);
     }
 

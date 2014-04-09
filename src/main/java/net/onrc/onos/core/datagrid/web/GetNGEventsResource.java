@@ -30,12 +30,11 @@ public class GetNGEventsResource extends ServerResource {
 
         Collection<TopologyEvent> entries = channel.getAllEntries();
 
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (TopologyEvent event : entries) {
-            result += event.toString() + "\n";
+            result.append(event.toString() + "\n");
         }
 
-        return result;
+        return result.toString();
     }
-
 }

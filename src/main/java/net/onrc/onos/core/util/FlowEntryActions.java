@@ -95,13 +95,15 @@ public class FlowEntryActions {
      */
     @Override
     public String toString() {
-        String ret = "[";
-        for (FlowEntryAction action : actions) {
-            ret += action.toString() + ";";
-        }
-        ret += "]";
+        StringBuilder ret = new StringBuilder();
 
-        return ret;
+        ret.append("[");
+        for (FlowEntryAction action : actions) {
+            ret.append(action.toString() + ";");
+        }
+        ret.append("]");
+
+        return ret.toString();
     }
 
     /**
