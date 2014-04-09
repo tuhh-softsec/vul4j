@@ -76,6 +76,8 @@ public class PerformanceMonitor {
         Queue<Measurement> list = map.get(tag);
         if (list == null || list.size() == 0) {
             log.error("Tag {} does not exist", tag);
+            overhead += System.nanoTime() - time;
+            return;
         }
         list.peek().stop(time);
         if (list.size() > 1) {
