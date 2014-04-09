@@ -72,7 +72,7 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>13</version>
+        <version>14</version>
     </parent>
 
     <build>
@@ -407,7 +407,7 @@
     <properties>
         <xml.apis.version>1.4.01</xml.apis.version>
         <oldxmlsec.version>1.5.6</oldxmlsec.version>
-        <slf4j.version>1.7.6</slf4j.version>
+        <slf4j.version>1.7.7</slf4j.version>
         <xalan.version>2.7.1</xalan.version>
         <xerces.version>2.11.0</xerces.version>
         <junit.version>4.11</junit.version>
@@ -415,7 +415,7 @@
         <bcprov.version>1.50</bcprov.version>
         <xmlunit.version>1.4</xmlunit.version>
         <commons.codec.version>1.9</commons.codec.version>
-        <woodstox.core.asl.version>4.2.1</woodstox.core.asl.version>
+        <woodstox.core.asl.version>4.3.0</woodstox.core.asl.version>
         <jetty.version>8.1.4.v20120524</jetty.version>
         <xmlsec.jaxb.context.class />
     </properties>
