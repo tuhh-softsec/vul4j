@@ -15,13 +15,13 @@ public class PerformanceMonitor {
     private final static Logger log = LoggerFactory.getLogger(PerformanceMonitor.class);
 
     // experiment name -> PerformanceMonitor
-    private static final ConcurrentHashMap<String, PerformanceMonitor> perfMons = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, PerformanceMonitor> PERF_MONS = new ConcurrentHashMap<>();
 
     public static PerformanceMonitor experiment(String name) {
-        PerformanceMonitor pm = perfMons.get(name);
+        PerformanceMonitor pm = PERF_MONS.get(name);
         if (pm == null) {
             pm = new PerformanceMonitor();
-            PerformanceMonitor existing = perfMons.putIfAbsent(name, pm);
+            PerformanceMonitor existing = PERF_MONS.putIfAbsent(name, pm);
             if (existing != null) {
                 pm = existing;
             }
@@ -33,7 +33,7 @@ public class PerformanceMonitor {
     private final ConcurrentHashMap<String, Queue<Measurement>> map = new ConcurrentHashMap<>();
     private long overhead;
     private long experimentStart = Long.MAX_VALUE;
-    private final static double normalization = Math.pow(10, 6);
+    private final static double NORMALIZATION = Math.pow(10, 6);
 
     /**
      * Start a performance measurement, identified by a tag
@@ -132,13 +132,13 @@ public class PerformanceMonitor {
             start -= experimentStart;
             stop -= experimentStart;
             result += key + '=' +
-                    (avg / normalization) + '/' +
-                    (start / normalization) + '/' +
-                    (stop / normalization) + '/' +
+                    (avg / NORMALIZATION) + '/' +
+                    (start / NORMALIZATION) + '/' +
+                    (stop / NORMALIZATION) + '/' +
                     count + '\n';
         }
-        double overheadMs = overhead / normalization;
-        double experimentElapsed = (experimentEnd - experimentStart) / normalization;
+        double overheadMs = overhead / NORMALIZATION;
+        double experimentElapsed = (experimentEnd - experimentStart) / NORMALIZATION;
         result += "TotalTime:" + experimentElapsed + "/Overhead:" + overheadMs;
         log.error(result);
 //      log.error("Performance Results: {} with measurement overhead: {} ms", map, overheadMilli);
@@ -217,40 +217,40 @@ public class PerformanceMonitor {
          */
         @Override
         public String toString() {
-            double milli = elapsed() / normalization;
-            double startMs = start / normalization;
-            double stopMs = stop / normalization;
+            double milli = elapsed() / NORMALIZATION;
+            double startMs = start / NORMALIZATION;
+            double stopMs = stop / NORMALIZATION;
 
             return milli + "ms/" + startMs + '/' + stopMs;
         }
     }
 
     @Deprecated
-    private static final PerformanceMonitor theInstance = new PerformanceMonitor();
+    private static final PerformanceMonitor PERFORMANCE_MONITOR_INSTANCE = new PerformanceMonitor();
 
     @Deprecated
     public static Measurement start(String tag) {
-        return theInstance.startStep(tag);
+        return PERFORMANCE_MONITOR_INSTANCE.startStep(tag);
     }
 
     @Deprecated
     public static void stop(String tag) {
-        theInstance.stopStep(tag);
+        PERFORMANCE_MONITOR_INSTANCE.stopStep(tag);
     }
 
     @Deprecated
     public static void clear() {
-        theInstance.reset();
+        PERFORMANCE_MONITOR_INSTANCE.reset();
     }
 
     @Deprecated
     public static void report() {
-        theInstance.reportAll();
+        PERFORMANCE_MONITOR_INSTANCE.reportAll();
     }
 
     @Deprecated
     public static void report(String tag) {
-        theInstance.reportStep(tag);
+        PERFORMANCE_MONITOR_INSTANCE.reportStep(tag);
     }
 
     public static void main(String[] args) {

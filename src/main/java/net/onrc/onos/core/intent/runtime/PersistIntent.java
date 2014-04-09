@@ -35,8 +35,8 @@ public class PersistIntent {
     private long range = 10000L;
     private final IControllerRegistryService controllerRegistry;
     NetworkGraph graph = null;
-    private final static String intentJournal = "G:IntentJournal";
-    private final static int valueStoreLimit = 1024 * 1024;
+    private final static String INTENT_JOURNAL = "G:IntentJournal";
+    private final static int VALUE_STORE_LIMIT = 1024 * 1024;
     private IKVTable table;
     private Kryo kryo;
     private ByteArrayOutputStream stream;
@@ -49,7 +49,7 @@ public class PersistIntent {
     public PersistIntent(final IControllerRegistryService controllerRegistry, INetworkGraphService ng) {
         this.controllerRegistry = controllerRegistry;
         this.graph = ng.getNetworkGraph();
-        table = DataStoreClient.getClient().getTable(intentJournal);
+        table = DataStoreClient.getClient().getTable(INTENT_JOURNAL);
         stream = new ByteArrayOutputStream(1024);
         output = new Output(stream);
         kryo = (new KryoFactory()).newKryo();
@@ -89,17 +89,17 @@ public class PersistIntent {
                 ByteBuffer keyBytes = ByteBuffer.allocate(8).putLong(key);
                 byte[] buffer = stream.toByteArray();
                 int total = buffer.length;
-                if ((total >= valueStoreLimit)) {
-                    int writeCount = total / valueStoreLimit;
-                    int remainder = total % valueStoreLimit;
+                if ((total >= VALUE_STORE_LIMIT)) {
+                    int writeCount = total / VALUE_STORE_LIMIT;
+                    int remainder = total % VALUE_STORE_LIMIT;
                     int upperIndex = 0;
                     for (int i = 0; i < writeCount; i++, key++) {
                         keyBytes.clear();
                         keyBytes.putLong(key);
                         keyBytes.flip();
-                        upperIndex = (i * valueStoreLimit + valueStoreLimit) - 1;
-                        log.debug("writing using indexes {}:{}", (i * valueStoreLimit), upperIndex);
-                        table.create(keyBytes.array(), Arrays.copyOfRange(buffer, i * valueStoreLimit, upperIndex));
+                        upperIndex = (i * VALUE_STORE_LIMIT + VALUE_STORE_LIMIT) - 1;
+                        log.debug("writing using indexes {}:{}", (i * VALUE_STORE_LIMIT), upperIndex);
+                        table.create(keyBytes.array(), Arrays.copyOfRange(buffer, i * VALUE_STORE_LIMIT, upperIndex));
                     }
                     if (remainder > 0) {
                         keyBytes.clear();

@@ -17,7 +17,7 @@ public class PacketTest {
         this.pkt1 = new Ethernet()
                 .setDestinationMACAddress("00:11:22:33:44:55")
                 .setSourceMACAddress("00:44:33:22:11:00")
-                .setEtherType(Ethernet.TYPE_IPv4)
+                .setEtherType(Ethernet.TYPE_IPV4)
                 .setPayload(
                         new IPv4()
                                 .setTtl((byte) 128)
@@ -65,7 +65,7 @@ public class PacketTest {
         this.pkt4 = new Ethernet()
                 .setDestinationMACAddress("FF:FF:FF:FF:FF:FF")
                 .setSourceMACAddress("00:11:33:55:77:01")
-                .setEtherType(Ethernet.TYPE_IPv4)
+                .setEtherType(Ethernet.TYPE_IPV4)
                 .setPayload(
                         new IPv4()
                                 .setTtl((byte) 128)

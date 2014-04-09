@@ -25,7 +25,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 public class KVLink extends KVObject {
     private static final Logger log = LoggerFactory.getLogger(KVLink.class);
 
-    private static final ThreadLocal<Kryo> linkKryo = new ThreadLocal<Kryo>() {
+    private static final ThreadLocal<Kryo> LINK_KRYO = new ThreadLocal<Kryo>() {
         @Override
         protected Kryo initialValue() {
             Kryo kryo = new Kryo();
@@ -184,7 +184,7 @@ public class KVLink extends KVObject {
         link.setStatus(status.ordinal());
 
         if (!map.isEmpty()) {
-            byte[] propMaps = serializePropertyMap(linkKryo.get(), map);
+            byte[] propMaps = serializePropertyMap(LINK_KRYO.get(), map);
             link.setValue(ByteString.copyFrom(propMaps));
         }
 
@@ -198,7 +198,7 @@ public class KVLink extends KVObject {
 
             LinkProperty link = LinkProperty.parseFrom(bytes);
             byte[] props = link.getValue().toByteArray();
-            success &= deserializePropertyMap(linkKryo.get(), props);
+            success &= deserializePropertyMap(LINK_KRYO.get(), props);
             this.status = STATUS.values()[link.getStatus()];
 
             return success;

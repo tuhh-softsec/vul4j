@@ -28,7 +28,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 public class KVSwitch extends KVObject {
     private static final Logger log = LoggerFactory.getLogger(KVSwitch.class);
 
-    private static final ThreadLocal<Kryo> switchKryo = new ThreadLocal<Kryo>() {
+    private static final ThreadLocal<Kryo> SWITCH_KRYO = new ThreadLocal<Kryo>() {
         @Override
         protected Kryo initialValue() {
             Kryo kryo = new Kryo();
@@ -140,7 +140,7 @@ public class KVSwitch extends KVObject {
         sw.setStatus(status.ordinal());
 
         if (!map.isEmpty()) {
-            byte[] propMaps = serializePropertyMap(switchKryo.get(), map);
+            byte[] propMaps = serializePropertyMap(SWITCH_KRYO.get(), map);
             sw.setValue(ByteString.copyFrom(propMaps));
         }
 
@@ -154,7 +154,7 @@ public class KVSwitch extends KVObject {
 
             SwitchProperty sw = SwitchProperty.parseFrom(bytes);
             byte[] props = sw.getValue().toByteArray();
-            success &= deserializePropertyMap(switchKryo.get(), props);
+            success &= deserializePropertyMap(SWITCH_KRYO.get(), props);
             this.status = STATUS.values()[sw.getStatus()];
 
             return success;

@@ -51,7 +51,7 @@ public class OnosDeviceManager implements IFloodlightModule,
 
     private CopyOnWriteArrayList<IOnosDeviceListener> deviceListeners;
     private IFloodlightProviderService floodlightProvider;
-    private final static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private final static ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor();
 
     private IDatagridService datagrid;
     private IEventChannel<Long, OnosDevice> eventChannel;
@@ -294,7 +294,7 @@ public class OnosDeviceManager implements IFloodlightModule,
     public void init(FloodlightModuleContext context)
             throws FloodlightModuleException {
         floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
-        executor.scheduleAtFixedRate(new CleanDevice(), 30, CLEANUP_SECOND, TimeUnit.SECONDS);
+        EXECUTOR_SERVICE.scheduleAtFixedRate(new CleanDevice(), 30, CLEANUP_SECOND, TimeUnit.SECONDS);
 
         deviceListeners = new CopyOnWriteArrayList<IOnosDeviceListener>();
         datagrid = context.getServiceImpl(IDatagridService.class);

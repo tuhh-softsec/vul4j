@@ -110,7 +110,7 @@ public class PacketFactory {
         Ethernet requestPacket = new Ethernet();
         requestPacket.setSourceMACAddress(hostMac.toBytes())
                 .setDestinationMACAddress(broadcastMac)
-                .setEtherType(Ethernet.TYPE_IPv4)
+                .setEtherType(Ethernet.TYPE_IPV4)
                 .setPayload(
                         new IPv4()
                                 .setVersion((byte) 4)

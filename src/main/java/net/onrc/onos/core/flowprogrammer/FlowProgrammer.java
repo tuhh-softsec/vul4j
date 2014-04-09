@@ -42,7 +42,7 @@ public class FlowProgrammer implements IFloodlightModule,
         IOFMessageListener,
         IOFSwitchListener {
     // flag to enable FlowSynchronizer
-    private static final boolean enableFlowSync = false;
+    private static final boolean ENABLE_FLOW_SYNC = false;
     protected static final Logger log = LoggerFactory.getLogger(FlowProgrammer.class);
     protected volatile IFloodlightProviderService floodlightProvider;
     protected volatile IControllerRegistryService registryService;
@@ -55,7 +55,7 @@ public class FlowProgrammer implements IFloodlightModule,
 
     public FlowProgrammer() {
         pusher = new FlowPusher(NUM_PUSHER_THREAD);
-        if (enableFlowSync) {
+        if (ENABLE_FLOW_SYNC) {
             synchronizer = new FlowSynchronizer();
         }
     }
@@ -67,7 +67,7 @@ public class FlowProgrammer implements IFloodlightModule,
         registryService = context.getServiceImpl(IControllerRegistryService.class);
         restApi = context.getServiceImpl(IRestApiService.class);
         pusher.init(null, context, floodlightProvider.getOFMessageFactory(), null);
-        if (enableFlowSync) {
+        if (ENABLE_FLOW_SYNC) {
             synchronizer.init(pusher);
         }
     }
@@ -85,7 +85,7 @@ public class FlowProgrammer implements IFloodlightModule,
         Collection<Class<? extends IFloodlightService>> l =
                 new ArrayList<Class<? extends IFloodlightService>>();
         l.add(IFlowPusherService.class);
-        if (enableFlowSync) {
+        if (ENABLE_FLOW_SYNC) {
             l.add(IFlowSyncService.class);
         }
         return l;
@@ -98,7 +98,7 @@ public class FlowProgrammer implements IFloodlightModule,
                 new HashMap<Class<? extends IFloodlightService>,
                         IFloodlightService>();
         m.put(IFlowPusherService.class, pusher);
-        if (enableFlowSync) {
+        if (ENABLE_FLOW_SYNC) {
             m.put(IFlowSyncService.class, synchronizer);
         }
         return m;
@@ -151,7 +151,7 @@ public class FlowProgrammer implements IFloodlightModule,
     public void addedSwitch(IOFSwitch sw) {
         log.debug("Switch added: {}", sw.getId());
 
-        if (enableFlowSync) {
+        if (ENABLE_FLOW_SYNC) {
             if (registryService.hasControl(sw.getId())) {
                 synchronizer.synchronize(sw);
             }
@@ -162,7 +162,7 @@ public class FlowProgrammer implements IFloodlightModule,
     public void removedSwitch(IOFSwitch sw) {
         log.debug("Switch removed: {}", sw.getId());
 
-        if (enableFlowSync) {
+        if (ENABLE_FLOW_SYNC) {
             synchronizer.interrupt(sw);
         }
     }

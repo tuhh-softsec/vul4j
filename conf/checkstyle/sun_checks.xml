@@ -117,7 +117,6 @@
             <!--  ONOS allows the name "log" for static final Loggers -->
             <property name="format"
                       value="^log$|^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
-            <property name="severity" value="warning"/>
         </module>
         <module name="LocalFinalVariableName"/>
 

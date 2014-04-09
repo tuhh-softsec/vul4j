@@ -34,7 +34,7 @@ public class KVObject {
     // Default Kryo serializer.
     // each sub-class should prepare their own serializer, which has required
     // objects registered for better performance.
-    private static final ThreadLocal<Kryo> defaultKryo = new ThreadLocal<Kryo>() {
+    private static final ThreadLocal<Kryo> DEFAULT_KRYO = new ThreadLocal<Kryo>() {
         @Override
         protected Kryo initialValue() {
             Kryo kryo = new Kryo();
@@ -125,7 +125,7 @@ public class KVObject {
      * @return serialized byte array
      */
     public byte[] serialize() {
-        return serializePropertyMap(defaultKryo.get(), this.propertyMap);
+        return serializePropertyMap(DEFAULT_KRYO.get(), this.propertyMap);
     }
 
     protected byte[] serializePropertyMap(final Kryo kryo,
@@ -161,7 +161,7 @@ public class KVObject {
      * @return true if success
      */
     protected boolean deserialize(final byte[] bytes) {
-        deserializePropertyMap(defaultKryo.get(), bytes);
+        deserializePropertyMap(DEFAULT_KRYO.get(), bytes);
         return true;
     }
 

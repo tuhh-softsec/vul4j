@@ -31,7 +31,7 @@ import com.esotericsoftware.kryo.Kryo;
 public class KVDevice extends KVObject {
     private static final Logger log = LoggerFactory.getLogger(KVDevice.class);
 
-    private static final ThreadLocal<Kryo> deviceKryo = new ThreadLocal<Kryo>() {
+    private static final ThreadLocal<Kryo> DEVICE_KRYO = new ThreadLocal<Kryo>() {
         @Override
         protected Kryo initialValue() {
             Kryo kryo = new Kryo();
@@ -167,12 +167,12 @@ public class KVDevice extends KVObject {
             isPortIdsModified = false;
         }
 
-        return serializePropertyMap(deviceKryo.get(), map);
+        return serializePropertyMap(DEVICE_KRYO.get(), map);
     }
 
     @Override
     protected boolean deserialize(final byte[] bytes) {
-        boolean success = deserializePropertyMap(deviceKryo.get(), bytes);
+        boolean success = deserializePropertyMap(DEVICE_KRYO.get(), bytes);
         if (!success) {
             log.error("Deserializing Link: " + this + " failed.");
             return false;

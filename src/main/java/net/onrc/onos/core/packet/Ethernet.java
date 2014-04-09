@@ -33,7 +33,7 @@ public class Ethernet extends BasePacket {
     private static String HEXES = "0123456789ABCDEF";
     public static final short TYPE_ARP = 0x0806;
     public static final short TYPE_RARP = (short) 0x8035;
-    public static final short TYPE_IPv4 = 0x0800;
+    public static final short TYPE_IPV4 = 0x0800;
     public static final short TYPE_LLDP = (short) 0x88cc;
     public static final short TYPE_BSN = (short) 0x8942;
     public static final short VLAN_UNTAGGED = (short) 0xffff;
@@ -44,7 +44,7 @@ public class Ethernet extends BasePacket {
         etherTypeClassMap = new HashMap<Short, Class<? extends IPacket>>();
         etherTypeClassMap.put(TYPE_ARP, ARP.class);
         etherTypeClassMap.put(TYPE_RARP, ARP.class);
-        etherTypeClassMap.put(TYPE_IPv4, IPv4.class);
+        etherTypeClassMap.put(TYPE_IPV4, IPv4.class);
         etherTypeClassMap.put(TYPE_LLDP, LLDP.class);
         etherTypeClassMap.put(TYPE_BSN, BSN.class);
     }

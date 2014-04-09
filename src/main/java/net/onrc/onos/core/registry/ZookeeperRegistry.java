@@ -87,8 +87,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
     protected DistributedAtomicLong distributedIdCounter;
 
     //Zookeeper performance-related configuration
-    protected static final int sessionTimeout = 5000;
-    protected static final int connectionTimeout = 7000;
+    protected static final int SESSION_TIMEOUT = 5000;
+    protected static final int CONNECTION_TIMEOUT = 7000;
 
     //
     // Unique ID generation state
@@ -569,7 +569,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         client = CuratorFrameworkFactory.newClient(this.connectionString,
-                sessionTimeout, connectionTimeout, retryPolicy);
+                SESSION_TIMEOUT, CONNECTION_TIMEOUT, retryPolicy);
 
         client.start();
         client = client.usingNamespace(namespace);

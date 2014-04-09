@@ -26,7 +26,7 @@ public class HZTable implements IKVTable, IKVTableID {
     private static final Logger log = LoggerFactory.getLogger(HZTable.class);
 
     // not sure how strict this should be managed
-    private static final AtomicLong initialVersion = new AtomicLong(HZClient.VERSION_NONEXISTENT);
+    private static final AtomicLong INITIAL_VERSION = new AtomicLong(HZClient.VERSION_NONEXISTENT);
 
     /**
      * generate a new initial version for an entry.
@@ -34,10 +34,10 @@ public class HZTable implements IKVTable, IKVTableID {
      * @return initial value
      */
     protected static long getInitialVersion() {
-        long version = initialVersion.incrementAndGet();
+        long version = INITIAL_VERSION.incrementAndGet();
         if (version == HZClient.VERSION_NONEXISTENT) {
             // used up whole 64bit space?
-            version = initialVersion.incrementAndGet();
+            version = INITIAL_VERSION.incrementAndGet();
         }
         return version;
     }

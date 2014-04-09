@@ -551,7 +551,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
             // Create flow path matching condition(s): IPv4 Prefix
             FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
-            flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPv4);
+            flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPV4);
             IPv4Net dstIPv4Net = new IPv4Net(prefix.toString());
             flowEntryMatch.enableDstIPv4Net(dstIPv4Net);
             flowPath.setFlowEntryMatch(flowEntryMatch);
@@ -767,7 +767,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
             // Create the Flow Path Match condition(s)
             FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
-            flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPv4);
+            flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPV4);
             flowEntryMatch.enableDstMac(dstMacAddress);
             flowPath.setFlowEntryMatch(flowEntryMatch);
 
@@ -811,7 +811,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
             // Create the Flow Path Match condition(s)
             FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
-            flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPv4);
+            flowEntryMatch.enableEthernetFrameType(Ethernet.TYPE_IPV4);
 
             // Match both source address and dest address
             IPv4Net dstIPv4Net = new IPv4Net(bgpPeer.getIpAddress().getHostAddress() + "/32");

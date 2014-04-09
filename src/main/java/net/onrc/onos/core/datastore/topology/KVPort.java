@@ -29,7 +29,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 public class KVPort extends KVObject {
     private static final Logger log = LoggerFactory.getLogger(KVPort.class);
 
-    private static final ThreadLocal<Kryo> portKryo = new ThreadLocal<Kryo>() {
+    private static final ThreadLocal<Kryo> PORT_KRYO = new ThreadLocal<Kryo>() {
         @Override
         protected Kryo initialValue() {
             Kryo kryo = new Kryo();
@@ -171,7 +171,7 @@ public class KVPort extends KVObject {
         port.setStatus(status.ordinal());
 
         if (!map.isEmpty()) {
-            byte[] propMaps = serializePropertyMap(portKryo.get(), map);
+            byte[] propMaps = serializePropertyMap(PORT_KRYO.get(), map);
             port.setValue(ByteString.copyFrom(propMaps));
         }
 
@@ -185,7 +185,7 @@ public class KVPort extends KVObject {
 
             PortProperty port = PortProperty.parseFrom(bytes);
             byte[] props = port.getValue().toByteArray();
-            success &= deserializePropertyMap(portKryo.get(), props);
+            success &= deserializePropertyMap(PORT_KRYO.get(), props);
             this.status = STATUS.values()[port.getStatus()];
 
             return success;

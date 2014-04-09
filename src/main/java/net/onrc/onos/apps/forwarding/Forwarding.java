@@ -68,7 +68,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
     private static final int SLEEP_TIME_FOR_DB_DEVICE_INSTALLED = 100; // milliseconds
     private final static int NUMBER_OF_THREAD_FOR_EXECUTOR = 1;
 
-    private final static ScheduledExecutorService executor = Executors.newScheduledThreadPool(NUMBER_OF_THREAD_FOR_EXECUTOR);
+    private final static ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(NUMBER_OF_THREAD_FOR_EXECUTOR);
 
     private final String callerId = "Forwarding";
 
@@ -239,7 +239,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
 
         log.debug("Receive PACKET_IN swId {}, portId {}", sw.getId(), pi.getInPort());
 
-        if (eth.getEtherType() != Ethernet.TYPE_IPv4) {
+        if (eth.getEtherType() != Ethernet.TYPE_IPV4) {
             return Command.CONTINUE;
         }
 
@@ -281,7 +281,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
                     destinationMac);
 
             //Device is not in the DB, so wait it until the device is added.
-            executor.schedule(new WaitDeviceArp(sw, pi, eth), SLEEP_TIME_FOR_DB_DEVICE_INSTALLED, TimeUnit.MILLISECONDS);
+            EXECUTOR_SERVICE.schedule(new WaitDeviceArp(sw, pi, eth), SLEEP_TIME_FOR_DB_DEVICE_INSTALLED, TimeUnit.MILLISECONDS);
             return;
         }
 

@@ -141,13 +141,13 @@ public class LinkDiscoveryManager
     private static final short TLV_DIRECTION_LENGTH = 1;  // 1 byte
     private static final byte[] TLV_DIRECTION_VALUE_FORWARD = {0x01};
     private static final byte[] TLV_DIRECTION_VALUE_REVERSE = {0x02};
-    private static final LLDPTLV forwardTLV
+    private static final LLDPTLV FORWARD_TLV
             = new LLDPTLV().
             setType(TLV_DIRECTION_TYPE).
             setLength(TLV_DIRECTION_LENGTH).
             setValue(TLV_DIRECTION_VALUE_FORWARD);
 
-    private static final LLDPTLV reverseTLV
+    private static final LLDPTLV REVERSE_TLV
             = new LLDPTLV().
             setType(TLV_DIRECTION_TYPE).
             setLength(TLV_DIRECTION_LENGTH).
@@ -635,9 +635,9 @@ public class LinkDiscoveryManager
         // Add the controller identifier to the TLV value.
         lldp.getOptionalTLVList().add(controllerTLV);
         if (isReverse) {
-            lldp.getOptionalTLVList().add(reverseTLV);
+            lldp.getOptionalTLVList().add(REVERSE_TLV);
         } else {
-            lldp.getOptionalTLVList().add(forwardTLV);
+            lldp.getOptionalTLVList().add(FORWARD_TLV);
         }
 
         Ethernet ethernet;

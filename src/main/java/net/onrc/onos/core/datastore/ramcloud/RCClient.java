@@ -39,7 +39,7 @@ public class RCClient implements IKVClient {
     private static final Logger log = LoggerFactory.getLogger(RCClient.class);
 
     private static final String DB_CONFIG_FILE = "conf/ramcloud.conf";
-    public static final Configuration config = getConfiguration();
+    public static final Configuration CONFIG = getConfiguration();
 
     // Value taken from RAMCloud's Status.h
     // FIXME These constants should be defined by JRamCloud
@@ -52,10 +52,10 @@ public class RCClient implements IKVClient {
     public static final int MAX_MULTI_WRITES = Math.max(1, Integer
             .valueOf(System.getProperty("ramcloud.max_multi_writes", "800")));
 
-    private static final ThreadLocal<JRamCloud> tlsRCClient = new ThreadLocal<JRamCloud>() {
+    private static final ThreadLocal<JRamCloud> TLS_RC_CLIENT = new ThreadLocal<JRamCloud>() {
         @Override
         protected JRamCloud initialValue() {
-            return new JRamCloud(getCoordinatorUrl(config));
+            return new JRamCloud(getCoordinatorUrl(CONFIG));
         }
     };
 
@@ -66,14 +66,14 @@ public class RCClient implements IKVClient {
      * may be accessed later by another thread.
      */
     static JRamCloud getJRamCloudClient() {
-        return tlsRCClient.get();
+        return TLS_RC_CLIENT.get();
     }
 
     // Currently RCClient is state-less
-    private static final RCClient theInstance = new RCClient();
+    private static final RCClient THE_INSTANCE = new RCClient();
 
     public static RCClient getClient() {
-        return theInstance;
+        return THE_INSTANCE;
     }
 
     public static final Configuration getConfiguration() {
@@ -538,14 +538,14 @@ public class RCClient implements IKVClient {
         return failExists;
     }
 
-    private static final ConcurrentHashMap<String, RCTable> tables = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, RCTable> TABLES = new ConcurrentHashMap<>();
 
     @Override
     public IKVTable getTable(final String tableName) {
-        RCTable table = tables.get(tableName);
+        RCTable table = TABLES.get(tableName);
         if (table == null) {
             RCTable newTable = new RCTable(tableName);
-            RCTable existingTable = tables
+            RCTable existingTable = TABLES
                     .putIfAbsent(tableName, newTable);
             if (existingTable != null) {
                 return existingTable;
@@ -560,7 +560,7 @@ public class RCClient implements IKVClient {
     public void dropTable(IKVTable table) {
         JRamCloud rcClient = RCClient.getJRamCloudClient();
         rcClient.dropTable(table.getTableId().getTableName());
-        tables.remove(table.getTableId().getTableName());
+        TABLES.remove(table.getTableId().getTableName());
     }
 
     static final long VERSION_NONEXISTENT = JRamCloud.VERSION_NONEXISTENT;
