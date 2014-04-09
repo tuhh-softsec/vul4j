@@ -117,21 +117,26 @@ public class IntentMap {
     //================================================================================
 
     protected void putIntent(Intent intent) {
-        if (intents.containsKey(intent.getId()))
+        if (intents.containsKey(intent.getId())) {
             removeIntent(intent.getId());
+        }
         intents.put(intent.getId(), intent);
         events.add(new ChangedEvent(ChangedEventType.ADDED, intent));
     }
 
     protected void removeIntent(String intentId) {
         Intent intent = intents.remove(intentId);
-        if (intent == null) return;
+        if (intent == null) {
+            return;
+        }
         events.add(new ChangedEvent(ChangedEventType.REMOVED, intent));
     }
 
     protected void setState(String intentId, IntentState state) {
         Intent intent = intents.get(intentId);
-        if (intent == null) return;
+        if (intent == null) {
+            return;
+        }
         intent.setState(state);
         events.add(new ChangedEvent(ChangedEventType.STATE_CHANGED, intent));
     }

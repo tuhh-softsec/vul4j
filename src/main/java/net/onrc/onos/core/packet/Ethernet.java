@@ -223,8 +223,9 @@ public class Ethernet extends BasePacket {
             bb.putShort((short) ((priorityCode << 13) | (vlanID & 0x0fff)));
         }
         bb.putShort(etherType);
-        if (payloadData != null)
+        if (payloadData != null) {
             bb.put(payloadData);
+        }
         if (pad) {
             Arrays.fill(data, bb.position(), data.length, (byte) 0x0);
         }
@@ -233,17 +234,20 @@ public class Ethernet extends BasePacket {
 
     @Override
     public IPacket deserialize(byte[] data, int offset, int length) {
-        if (length <= 0)
+        if (length <= 0) {
             return null;
+        }
         ByteBuffer bb = ByteBuffer.wrap(data, offset, length);
-        if (this.destinationMACAddress == null)
+        if (this.destinationMACAddress == null) {
             this.destinationMACAddress = MACAddress.valueOf(new byte[6]);
+        }
         byte[] dstAddr = new byte[MACAddress.MAC_ADDRESS_LENGTH];
         bb.get(dstAddr);
         this.destinationMACAddress = MACAddress.valueOf(dstAddr);
 
-        if (this.sourceMACAddress == null)
+        if (this.sourceMACAddress == null) {
             this.sourceMACAddress = MACAddress.valueOf(new byte[6]);
+        }
         byte[] srcAddr = new byte[MACAddress.MAC_ADDRESS_LENGTH];
         bb.get(srcAddr);
         this.sourceMACAddress = MACAddress.valueOf(srcAddr);
@@ -283,8 +287,9 @@ public class Ethernet extends BasePacket {
      */
     public static boolean isMACAddress(String macAddress) {
         String[] macBytes = macAddress.split(":");
-        if (macBytes.length != 6)
+        if (macBytes.length != 6) {
             return false;
+        }
         for (int i = 0; i < 6; ++i) {
             if (HEXES.indexOf(macBytes[i].toUpperCase().charAt(0)) == -1 ||
                     HEXES.indexOf(macBytes[i].toUpperCase().charAt(1)) == -1) {
@@ -348,25 +353,34 @@ public class Ethernet extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof Ethernet))
+        }
+        if (!(obj instanceof Ethernet)) {
             return false;
+        }
         Ethernet other = (Ethernet) obj;
-        if (!destinationMACAddress.equals(other.destinationMACAddress))
+        if (!destinationMACAddress.equals(other.destinationMACAddress)) {
             return false;
-        if (priorityCode != other.priorityCode)
+        }
+        if (priorityCode != other.priorityCode) {
             return false;
-        if (vlanID != other.vlanID)
+        }
+        if (vlanID != other.vlanID) {
             return false;
-        if (etherType != other.etherType)
+        }
+        if (etherType != other.etherType) {
             return false;
-        if (pad != other.pad)
+        }
+        if (pad != other.pad) {
             return false;
-        if (!sourceMACAddress.equals(other.sourceMACAddress))
+        }
+        if (!sourceMACAddress.equals(other.sourceMACAddress)) {
             return false;
+        }
         return true;
     }
 
@@ -380,23 +394,26 @@ public class Ethernet extends BasePacket {
 
         IPacket pkt = (IPacket) this.getPayload();
 
-        if (pkt instanceof ARP)
+        if (pkt instanceof ARP) {
             sb.append("arp");
-        else if (pkt instanceof LLDP)
+        } else if (pkt instanceof LLDP) {
             sb.append("lldp");
-        else if (pkt instanceof ICMP)
+        } else if (pkt instanceof ICMP) {
             sb.append("icmp");
-        else if (pkt instanceof IPv4)
+        } else if (pkt instanceof IPv4) {
             sb.append("ip");
-        else if (pkt instanceof DHCP)
+        } else if (pkt instanceof DHCP) {
             sb.append("dhcp");
-        else sb.append(this.getEtherType());
+        } else {
+            sb.append(this.getEtherType());
+        }
 
         sb.append("\ndl_vlan: ");
-        if (this.getVlanID() == Ethernet.VLAN_UNTAGGED)
+        if (this.getVlanID() == Ethernet.VLAN_UNTAGGED) {
             sb.append("untagged");
-        else
+        } else {
             sb.append(this.getVlanID());
+        }
         sb.append("\ndl_vlan_pcp: ");
         sb.append(this.getPriorityCode());
         sb.append("\ndl_src: ");
@@ -460,7 +477,9 @@ public class Ethernet extends BasePacket {
             sb.append("\nllc packet");
         } else if (pkt instanceof BPDU) {
             sb.append("\nbpdu packet");
-        } else sb.append("\nunknown packet");
+        } else {
+            sb.append("\nunknwon packet");
+        }
 
         return sb.toString();
     }

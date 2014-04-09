@@ -376,8 +376,9 @@ public class LinkDiscoveryManager
      * @param npt
      */
     protected void addToQuarantineQueue(NodePortTuple npt) {
-        if (quarantineQueue.contains(npt) == false)
+        if (quarantineQueue.contains(npt) == false) {
             quarantineQueue.add(npt);
+        }
     }
 
     /**
@@ -401,8 +402,9 @@ public class LinkDiscoveryManager
         // TODO We are not checking if the switch port tuple is already
         // in the maintenance list or not.  This will be an issue for
         // really large number of switch ports in the network.
-        if (maintenanceQueue.contains(npt) == false)
+        if (maintenanceQueue.contains(npt) == false) {
             maintenanceQueue.add(npt);
+        }
     }
 
     /**
@@ -469,18 +471,25 @@ public class LinkDiscoveryManager
         UpdateOperation operation;
 
         IOFSwitch iofSwitch = floodlightProvider.getSwitches().get(sw);
-        if (iofSwitch == null) return;
+        if (iofSwitch == null) {
+            return;
+        }
 
         OFPhysicalPort ofp = iofSwitch.getPort(port);
-        if (ofp == null) return;
+        if (ofp == null) {
+            return;
+        }
 
         int srcPortState = ofp.getState();
         boolean portUp = ((srcPortState &
                 OFPortState.OFPPS_STP_MASK.getValue()) !=
                 OFPortState.OFPPS_STP_BLOCK.getValue());
 
-        if (portUp) operation = UpdateOperation.PORT_UP;
-        else operation = UpdateOperation.PORT_DOWN;
+        if (portUp) {
+            operation = UpdateOperation.PORT_UP;
+        } else {
+            operation = UpdateOperation.PORT_DOWN;
+        }
 
         LinkUpdate update = new LinkUpdate(new LDUpdate(sw, port, operation));
 
@@ -567,8 +576,9 @@ public class LinkDiscoveryManager
             return;
         }
 
-        if (port == OFPort.OFPP_LOCAL.getValue())
+        if (port == OFPort.OFPP_LOCAL.getValue()) {
             return;
+        }
 
         OFPhysicalPort ofpPort = iofSwitch.getPort(port);
 
@@ -587,8 +597,9 @@ public class LinkDiscoveryManager
         }
 
         // For fast ports, do not send forward LLDPs or BDDPs.
-        if (!isReverse && autoPortFastFeature && isFastPort(sw, port))
+        if (!isReverse && autoPortFastFeature && isFastPort(sw, port)) {
             return;
+        }
 
         if (log.isTraceEnabled()) {
             log.trace("Sending LLDP packet out of swich: {}, port: {}",
@@ -696,13 +707,17 @@ public class LinkDiscoveryManager
         // Send standard LLDPs
         for (long sw : switches) {
             IOFSwitch iofSwitch = floodlightProvider.getSwitches().get(sw);
-            if (iofSwitch == null) continue;
+            if (iofSwitch == null) {
+                continue;
+            }
             if (iofSwitch.getEnabledPorts() != null) {
                 for (OFPhysicalPort ofp : iofSwitch.getEnabledPorts()) {
-                    if (isLinkDiscoverySuppressed(sw, ofp.getPortNumber()))
+                    if (isLinkDiscoverySuppressed(sw, ofp.getPortNumber())) {
                         continue;
-                    if (autoPortFastFeature && isFastPort(sw, ofp.getPortNumber()))
+                    }
+                    if (autoPortFastFeature && isFastPort(sw, ofp.getPortNumber())) {
                         continue;
+                    }
 
                     // sends forward LLDP only non-fastports.
                     sendDiscoveryMessage(sw, ofp.getPortNumber(), true, false);
@@ -736,10 +751,12 @@ public class LinkDiscoveryManager
         }
 
         long result = System.nanoTime();
-        if (localIPAddress != null)
+        if (localIPAddress != null) {
             result = result * prime + IPv4.toIPv4Address(localIPAddress.getHostAddress());
-        if (localInterface != null)
+        }
+        if (localInterface != null) {
             result = result * prime + localInterface.hashCode();
+        }
         // set the first 4 bits to 0.
         result = result & (0x0fffffffffffffffL);
 
@@ -776,12 +793,14 @@ public class LinkDiscoveryManager
             return Command.STOP;
         }
 
-        if (isLinkDiscoverySuppressed(sw, pi.getInPort()))
+        if (isLinkDiscoverySuppressed(sw, pi.getInPort())) {
             return Command.STOP;
+        }
 
         // If this is a malformed LLDP, or not from us, exit
-        if (lldp.getPortId() == null || lldp.getPortId().getLength() != 3)
+        if (lldp.getPortId() == null || lldp.getPortId().getLength() != 3) {
             return Command.CONTINUE;
+        }
 
         long myId = ByteBuffer.wrap(controllerTLV.getValue()).getLong();
         long otherId = 0;
@@ -809,14 +828,16 @@ public class LinkDiscoveryManager
                 }
             } else if (lldptlv.getType() == 12 && lldptlv.getLength() == 8) {
                 otherId = ByteBuffer.wrap(lldptlv.getValue()).getLong();
-                if (myId == otherId)
+                if (myId == otherId) {
                     myLLDP = true;
+                }
             } else if (lldptlv.getType() == TLV_DIRECTION_TYPE &&
                     lldptlv.getLength() == TLV_DIRECTION_LENGTH) {
-                if (lldptlv.getValue()[0] == TLV_DIRECTION_VALUE_FORWARD[0])
+                if (lldptlv.getValue()[0] == TLV_DIRECTION_VALUE_FORWARD[0]) {
                     isReverse = false;
-                else if (lldptlv.getValue()[0] == TLV_DIRECTION_VALUE_REVERSE[0])
+                } else if (lldptlv.getValue()[0] == TLV_DIRECTION_VALUE_REVERSE[0]) {
                     isReverse = true;
+                }
             }
         }
 
@@ -896,10 +917,11 @@ public class LinkDiscoveryManager
 
         Long firstSeenTime = System.currentTimeMillis();
 
-        if (isStandard)
+        if (isStandard) {
             lastLldpTime = System.currentTimeMillis();
-        else
+        } else {
             lastBddpTime = System.currentTimeMillis();
+        }
 
         LinkInfo newLinkInfo =
                 new LinkInfo(firstSeenTime, lastLldpTime, lastBddpTime,
@@ -959,12 +981,17 @@ public class LinkDiscoveryManager
 
         if (eth.getEtherType() == Ethernet.TYPE_BSN) {
             BSN bsn = (BSN) eth.getPayload();
-            if (bsn == null) return Command.STOP;
-            if (bsn.getPayload() == null) return Command.STOP;
+            if (bsn == null) {
+                return Command.STOP;
+            }
+            if (bsn.getPayload() == null) {
+                return Command.STOP;
+            }
             // It could be a packet other than BSN LLDP, therefore
             // continue with the regular processing.
-            if (bsn.getPayload() instanceof LLDP == false)
+            if (bsn.getPayload() instanceof LLDP == false) {
                 return Command.CONTINUE;
+            }
             return handleLldp((LLDP) bsn.getPayload(), sw, pi, false, cntx);
         } else if (eth.getEtherType() == Ethernet.TYPE_LLDP) {
             return handleLldp((LLDP) eth.getPayload(), sw, pi, true, cntx);
@@ -981,7 +1008,9 @@ public class LinkDiscoveryManager
 
         // If packet-in is from a quarantine port, stop processing.
         NodePortTuple npt = new NodePortTuple(sw, pi.getInPort());
-        if (quarantineQueue.contains(npt)) return Command.STOP;
+        if (quarantineQueue.contains(npt)) {
+            return Command.STOP;
+        }
 
         return Command.CONTINUE;
     }
@@ -996,7 +1025,9 @@ public class LinkDiscoveryManager
                                 OFPortState.OFPPS_STP_MASK.getValue()) !=
                                 OFPortState.OFPPS_STP_BLOCK.getValue()));
 
-        if (added) return UpdateOperation.LINK_UPDATED;
+        if (added) {
+            return UpdateOperation.LINK_UPDATED;
+        }
         return UpdateOperation.LINK_REMOVED;
     }
 
@@ -1006,8 +1037,11 @@ public class LinkDiscoveryManager
                 OFPortState.OFPPS_STP_MASK.getValue()) !=
                 OFPortState.OFPPS_STP_BLOCK.getValue());
 
-        if (portUp) return UpdateOperation.PORT_UP;
-        else return UpdateOperation.PORT_DOWN;
+        if (portUp) {
+            return UpdateOperation.PORT_UP;
+        } else {
+            return UpdateOperation.PORT_DOWN;
+        }
     }
 
     protected boolean addOrUpdateLink(Link lt, LinkInfo newInfo) {
@@ -1020,8 +1054,9 @@ public class LinkDiscoveryManager
             // put the new info.  if an old info exists, it will be returned.
             LinkInfo oldInfo = links.put(lt, newInfo);
             if (oldInfo != null &&
-                    oldInfo.getFirstSeenTime() < newInfo.getFirstSeenTime())
+                    oldInfo.getFirstSeenTime() < newInfo.getFirstSeenTime()) {
                 newInfo.setFirstSeenTime(oldInfo.getFirstSeenTime());
+            }
 
             if (log.isTraceEnabled()) {
                 log.trace("addOrUpdateLink: {} {}",
@@ -1037,27 +1072,32 @@ public class LinkDiscoveryManager
 
             if (oldInfo == null) {
                 // index it by switch source
-                if (!switchLinks.containsKey(lt.getSrc()))
+                if (!switchLinks.containsKey(lt.getSrc())) {
                     switchLinks.put(lt.getSrc(), new HashSet<Link>());
+                }
                 switchLinks.get(lt.getSrc()).add(lt);
 
                 // index it by switch dest
-                if (!switchLinks.containsKey(lt.getDst()))
+                if (!switchLinks.containsKey(lt.getDst())) {
                     switchLinks.put(lt.getDst(), new HashSet<Link>());
+                }
                 switchLinks.get(lt.getDst()).add(lt);
 
                 // index both ends by switch:port
-                if (!portLinks.containsKey(srcNpt))
+                if (!portLinks.containsKey(srcNpt)) {
                     portLinks.put(srcNpt, new HashSet<Link>());
+                }
                 portLinks.get(srcNpt).add(lt);
 
-                if (!portLinks.containsKey(dstNpt))
+                if (!portLinks.containsKey(dstNpt)) {
                     portLinks.put(dstNpt, new HashSet<Link>());
+                }
                 portLinks.get(dstNpt).add(lt);
 
                 // Add to portNOFLinks if the unicast valid time is null
-                if (newInfo.getUnicastValidTime() == null)
+                if (newInfo.getUnicastValidTime() == null) {
                     addLinkToBroadcastDomain(lt);
+                }
 
                 // ONOS: Distinguish added event separately from updated event
                 updateOperation = UpdateOperation.LINK_ADDED;
@@ -1108,8 +1148,9 @@ public class LinkDiscoveryManager
                 if (newInfo.getSrcPortState().intValue() !=
                         oldInfo.getSrcPortState().intValue() ||
                         newInfo.getDstPortState().intValue() !=
-                                oldInfo.getDstPortState().intValue())
+                                oldInfo.getDstPortState().intValue()) {
                     linkChanged = true;
+                }
 
                 if (linkChanged) {
                     updateOperation = getUpdateOperation(newInfo.getSrcPortState(),
@@ -1166,21 +1207,25 @@ public class LinkDiscoveryManager
                 switchLinks.get(lt.getSrc()).remove(lt);
                 switchLinks.get(lt.getDst()).remove(lt);
                 if (switchLinks.containsKey(lt.getSrc()) &&
-                        switchLinks.get(lt.getSrc()).isEmpty())
+                        switchLinks.get(lt.getSrc()).isEmpty()) {
                     this.switchLinks.remove(lt.getSrc());
+                }
                 if (this.switchLinks.containsKey(lt.getDst()) &&
-                        this.switchLinks.get(lt.getDst()).isEmpty())
+                        this.switchLinks.get(lt.getDst()).isEmpty()) {
                     this.switchLinks.remove(lt.getDst());
+                }
 
                 if (this.portLinks.get(srcNpt) != null) {
                     this.portLinks.get(srcNpt).remove(lt);
-                    if (this.portLinks.get(srcNpt).isEmpty())
+                    if (this.portLinks.get(srcNpt).isEmpty()) {
                         this.portLinks.remove(srcNpt);
+                    }
                 }
                 if (this.portLinks.get(dstNpt) != null) {
                     this.portLinks.get(dstNpt).remove(lt);
-                    if (this.portLinks.get(dstNpt).isEmpty())
+                    if (this.portLinks.get(dstNpt).isEmpty()) {
                         this.portLinks.remove(dstNpt);
+                    }
                 }
 
                 LinkInfo info = this.links.remove(lt);
@@ -1222,11 +1267,14 @@ public class LinkDiscoveryManager
     protected Command handlePortStatus(long sw, OFPortStatus ps) {
 
         IOFSwitch iofSwitch = floodlightProvider.getSwitches().get(sw);
-        if (iofSwitch == null) return Command.CONTINUE;
+        if (iofSwitch == null) {
+            return Command.CONTINUE;
+        }
 
         // ONOS: If we do not control this switch, then we should not process its port status messages
-        if (!registryService.hasControl(iofSwitch.getId()))
+        if (!registryService.hasControl(iofSwitch.getId())) {
             return Command.CONTINUE;
+        }
 
         if (log.isTraceEnabled()) {
             log.trace("handlePortStatus: Switch {} port #{} reason {}; " +
@@ -1465,8 +1513,9 @@ public class LinkDiscoveryManager
                         (info.getUnicastValidTime() + (this.LINK_TIMEOUT * 1000) < curTime)) {
                     info.setUnicastValidTime(null);
 
-                    if (info.getMulticastValidTime() != null)
+                    if (info.getMulticastValidTime() != null) {
                         addLinkToBroadcastDomain(lt);
+                    }
                     // Note that even if mTime becomes null later on,
                     // the link would be deleted, which would trigger updateClusters().
                     linkChanged = true;
@@ -1507,12 +1556,15 @@ public class LinkDiscoveryManager
     }
 
     private boolean portEnabled(OFPhysicalPort port) {
-        if (port == null)
+        if (port == null) {
             return false;
-        if ((OFPortConfig.OFPPC_PORT_DOWN.getValue() & port.getConfig()) > 0)
+        }
+        if ((OFPortConfig.OFPPC_PORT_DOWN.getValue() & port.getConfig()) > 0) {
             return false;
-        if ((OFPortState.OFPPS_LINK_DOWN.getValue() & port.getState()) > 0)
+        }
+        if ((OFPortState.OFPPS_LINK_DOWN.getValue() & port.getState()) > 0) {
             return false;
+        }
         // Port STP state doesn't work with multiple VLANs, so ignore it for now
         // if ((port.getState() & OFPortState.OFPPS_STP_MASK.getValue()) == OFPortState.OFPPS_STP_BLOCK.getValue())
         //    return false;
@@ -1541,12 +1593,14 @@ public class LinkDiscoveryManager
         srcNpt = new NodePortTuple(lt.getSrc(), lt.getSrcPort());
         dstNpt = new NodePortTuple(lt.getDst(), lt.getDstPort());
 
-        if (!portBroadcastDomainLinks.containsKey(srcNpt))
+        if (!portBroadcastDomainLinks.containsKey(srcNpt)) {
             portBroadcastDomainLinks.put(srcNpt, new HashSet<Link>());
+        }
         portBroadcastDomainLinks.get(srcNpt).add(lt);
 
-        if (!portBroadcastDomainLinks.containsKey(dstNpt))
+        if (!portBroadcastDomainLinks.containsKey(dstNpt)) {
             portBroadcastDomainLinks.put(dstNpt, new HashSet<Link>());
+        }
         portBroadcastDomainLinks.get(dstNpt).add(lt);
     }
 
@@ -1558,14 +1612,16 @@ public class LinkDiscoveryManager
 
         if (portBroadcastDomainLinks.containsKey(srcNpt)) {
             portBroadcastDomainLinks.get(srcNpt).remove(lt);
-            if (portBroadcastDomainLinks.get(srcNpt).isEmpty())
+            if (portBroadcastDomainLinks.get(srcNpt).isEmpty()) {
                 portBroadcastDomainLinks.remove(srcNpt);
+            }
         }
 
         if (portBroadcastDomainLinks.containsKey(dstNpt)) {
             portBroadcastDomainLinks.get(dstNpt).remove(lt);
-            if (portBroadcastDomainLinks.get(dstNpt).isEmpty())
+            if (portBroadcastDomainLinks.get(dstNpt).isEmpty()) {
                 portBroadcastDomainLinks.remove(dstNpt);
+            }
         }
     }
 
@@ -1736,8 +1792,9 @@ public class LinkDiscoveryManager
         floodlightProvider.addOFMessageListener(OFType.PORT_STATUS, this);
         // Register for switch updates
         floodlightProvider.addOFSwitchListener(this);
-        if (restApi != null)
+        if (restApi != null) {
             restApi.addRestletRoutable(new LinkDiscoveryWebRoutable());
+        }
         setControllerTLV();
     }
 

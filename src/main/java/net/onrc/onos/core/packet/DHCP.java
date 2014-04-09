@@ -286,8 +286,9 @@ public class DHCP extends BasePacket {
      */
     public DHCPOption getOption(DHCPOptionCode optionCode) {
         for (DHCPOption opt : options) {
-            if (opt.code == optionCode.value)
+            if (opt.code == optionCode.value) {
                 return opt;
+            }
         }
         return null;
     }
@@ -368,8 +369,9 @@ public class DHCP extends BasePacket {
             }
         }
         int optionsPadLength = 0;
-        if (optionsLength < 60)
+        if (optionsLength < 60) {
             optionsPadLength = 60 - optionsLength;
+        }
 
         byte[] data = new byte[240 + optionsLength + optionsPadLength];
         ByteBuffer bb = ByteBuffer.wrap(data);
@@ -454,8 +456,9 @@ public class DHCP extends BasePacket {
         this.clientHardwareAddress = new byte[hardwareAddressLength];
 
         bb.get(this.clientHardwareAddress);
-        for (int i = hardwareAddressLength; i < 16; ++i)
+        for (int i = hardwareAddressLength; i < 16; ++i) {
             bb.get();
+        }
         this.serverName = readString(bb, 64);
         this.bootFileName = readString(bb, 128);
         // read the magic cookie

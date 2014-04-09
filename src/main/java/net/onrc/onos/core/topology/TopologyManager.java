@@ -278,26 +278,34 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
                 // Apply the "add" events in the proper order:
                 //   switch, port, link, device
                 //
-                for (SwitchEvent switchEvent : addedSwitchEvents.values())
+                for (SwitchEvent switchEvent : addedSwitchEvents.values()) {
                     addSwitch(switchEvent);
-                for (PortEvent portEvent : addedPortEvents.values())
+                }
+                for (PortEvent portEvent : addedPortEvents.values()) {
                     addPort(portEvent);
-                for (LinkEvent linkEvent : addedLinkEvents.values())
+                }
+                for (LinkEvent linkEvent : addedLinkEvents.values()) {
                     addLink(linkEvent);
-                for (DeviceEvent deviceEvent : addedDeviceEvents.values())
+                }
+                for (DeviceEvent deviceEvent : addedDeviceEvents.values()) {
                     addDevice(deviceEvent);
+                }
                 //
                 // Apply the "remove" events in the reverse order:
                 //   device, link, port, switch
                 //
-                for (DeviceEvent deviceEvent : removedDeviceEvents.values())
+                for (DeviceEvent deviceEvent : removedDeviceEvents.values()) {
                     removeDevice(deviceEvent);
-                for (LinkEvent linkEvent : removedLinkEvents.values())
+                }
+                for (LinkEvent linkEvent : removedLinkEvents.values()) {
                     removeLink(linkEvent);
-                for (PortEvent portEvent : removedPortEvents.values())
+                }
+                for (PortEvent portEvent : removedPortEvents.values()) {
                     removePort(portEvent);
-                for (SwitchEvent switchEvent : removedSwitchEvents.values())
+                }
+                for (SwitchEvent switchEvent : removedSwitchEvents.values()) {
                     removeSwitch(switchEvent);
+                }
 
                 //
                 // Apply reordered events
@@ -389,22 +397,30 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
             // Debug statements
             // TODO: Those statements should be removed in the future
             //
-            for (SwitchEvent switchEvent : apiAddedSwitchEvents)
+            for (SwitchEvent switchEvent : apiAddedSwitchEvents) {
                 log.debug("Dispatch Network Graph Event: ADDED {}", switchEvent);
-            for (SwitchEvent switchEvent : apiRemovedSwitchEvents)
+            }
+            for (SwitchEvent switchEvent : apiRemovedSwitchEvents) {
                 log.debug("Dispatch Network Graph Event: REMOVED {}", switchEvent);
-            for (PortEvent portEvent : apiAddedPortEvents)
+            }
+            for (PortEvent portEvent : apiAddedPortEvents) {
                 log.debug("Dispatch Network Graph Event: ADDED {}", portEvent);
-            for (PortEvent portEvent : apiRemovedPortEvents)
+            }
+            for (PortEvent portEvent : apiRemovedPortEvents) {
                 log.debug("Dispatch Network Graph Event: REMOVED {}", portEvent);
-            for (LinkEvent linkEvent : apiAddedLinkEvents)
+            }
+            for (LinkEvent linkEvent : apiAddedLinkEvents) {
                 log.debug("Dispatch Network Graph Event: ADDED {}", linkEvent);
-            for (LinkEvent linkEvent : apiRemovedLinkEvents)
+            }
+            for (LinkEvent linkEvent : apiRemovedLinkEvents) {
                 log.debug("Dispatch Network Graph Event: REMOVED {}", linkEvent);
-            for (DeviceEvent deviceEvent : apiAddedDeviceEvents)
+            }
+            for (DeviceEvent deviceEvent : apiAddedDeviceEvents) {
                 log.debug("Dispatch Network Graph Event: ADDED {}", deviceEvent);
-            for (DeviceEvent deviceEvent : apiRemovedDeviceEvents)
+            }
+            for (DeviceEvent deviceEvent : apiRemovedDeviceEvents) {
                 log.debug("Dispatch Network Graph Event: REMOVED {}", deviceEvent);
+            }
         }
 
         // Deliver the events
@@ -441,8 +457,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
      */
     private void applyReorderedEvents(boolean hasAddedSwitchEvents,
                                       boolean hasAddedPortEvents) {
-        if (!(hasAddedSwitchEvents || hasAddedPortEvents))
+        if (!(hasAddedSwitchEvents || hasAddedPortEvents)) {
             return;        // Nothing to do
+        }
 
         //
         // Try to apply the reordered events.
@@ -460,8 +477,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
         if (hasAddedSwitchEvents) {
             Map<ByteBuffer, PortEvent> portEvents = reorderedAddedPortEvents;
             reorderedAddedPortEvents = new HashMap<>();
-            for (PortEvent portEvent : portEvents.values())
+            for (PortEvent portEvent : portEvents.values()) {
                 addPort(portEvent);
+            }
         }
         //
         // Apply reordered Link and Device Events if Switches or Ports
@@ -469,13 +487,15 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
         //
         Map<ByteBuffer, LinkEvent> linkEvents = reorderedAddedLinkEvents;
         reorderedAddedLinkEvents = new HashMap<>();
-        for (LinkEvent linkEvent : linkEvents.values())
+        for (LinkEvent linkEvent : linkEvents.values()) {
             addLink(linkEvent);
+        }
         //
         Map<ByteBuffer, DeviceEvent> deviceEvents = reorderedAddedDeviceEvents;
         reorderedAddedDeviceEvents = new HashMap<>();
-        for (DeviceEvent deviceEvent : deviceEvents.values())
+        for (DeviceEvent deviceEvent : deviceEvents.values()) {
             addDevice(deviceEvent);
+        }
     }
 
     /**
@@ -504,8 +524,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
             // Get the old Port Events
             Map<ByteBuffer, PortEvent> oldPortEvents =
                     discoveredAddedPortEvents.get(switchEvent.getDpid());
-            if (oldPortEvents == null)
+            if (oldPortEvents == null) {
                 oldPortEvents = new HashMap<>();
+            }
 
             // Store the new Port Events in the local cache
             Map<ByteBuffer, PortEvent> newPortEvents = new HashMap<>();
@@ -523,13 +544,15 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
             for (Map.Entry<ByteBuffer, PortEvent> entry : oldPortEvents.entrySet()) {
                 ByteBuffer key = entry.getKey();
                 PortEvent portEvent = entry.getValue();
-                if (!newPortEvents.containsKey(key))
+                if (!newPortEvents.containsKey(key)) {
                     removedPortEvents.add(portEvent);
+                }
             }
 
             // Cleanup old removed ports
-            for (PortEvent portEvent : removedPortEvents)
+            for (PortEvent portEvent : removedPortEvents) {
                 removePortDiscoveryEvent(portEvent);
+            }
         }
     }
 
@@ -543,8 +566,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
         // Get the old Port Events
         Map<ByteBuffer, PortEvent> oldPortEvents =
                 discoveredAddedPortEvents.get(switchEvent.getDpid());
-        if (oldPortEvents == null)
+        if (oldPortEvents == null) {
             oldPortEvents = new HashMap<>();
+        }
 
         if (datastore.deactivateSwitch(switchEvent, oldPortEvents.values())) {
             // Send out notification
@@ -557,8 +581,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
             // because it will attempt to remove the port from the database,
             // and the deactiveSwitch() call above already removed all ports.
             //
-            for (PortEvent portEvent : oldPortEvents.values())
+            for (PortEvent portEvent : oldPortEvents.values()) {
                 eventChannel.removeEntry(portEvent.getID());
+            }
             discoveredAddedPortEvents.remove(switchEvent.getDpid());
 
             // Cleanup for each link
@@ -654,8 +679,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
                         }
                     }
                 }
-                for (DeviceEvent deviceEvent : removedDeviceEvents)
+                for (DeviceEvent deviceEvent : removedDeviceEvents) {
                     removeDeviceDiscoveryEvent(deviceEvent);
+                }
             }
         }
     }
@@ -801,8 +827,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
                     port.getNumber());
             portsToRemove.add(portEvent);
         }
-        for (PortEvent portEvent : portsToRemove)
+        for (PortEvent portEvent : portsToRemove) {
             removePort(portEvent);
+        }
 
         networkGraph.removeSwitch(switchEvent.getDpid());
         apiRemovedSwitchEvents.add(switchEvent);
@@ -865,8 +892,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
             deviceEvent.addAttachmentPoint(switchPort);
             devicesToRemove.add(deviceEvent);
         }
-        for (DeviceEvent deviceEvent : devicesToRemove)
+        for (DeviceEvent deviceEvent : devicesToRemove) {
             removeDevice(deviceEvent);
+        }
 
         //
         // Remove all Links connected to the Port
@@ -876,8 +904,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
         links.add(port.getIncomingLink());
         ArrayList<LinkEvent> linksToRemove = new ArrayList<>();
         for (Link link : links) {
-            if (link == null)
+            if (link == null) {
                 continue;
+            }
             log.debug("Removing Link {} on Port {}", link, portEvent);
             LinkEvent linkEvent = new LinkEvent(link.getSrcSwitch().getDpid(),
                     link.getSrcPort().getNumber(),
@@ -885,8 +914,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
                     link.getDstPort().getNumber());
             linksToRemove.add(linkEvent);
         }
-        for (LinkEvent linkEvent : linksToRemove)
+        for (LinkEvent linkEvent : linksToRemove) {
             removeLink(linkEvent);
+        }
 
         // Remove the Port from the Switch
         SwitchImpl switchImpl = getSwitchImpl(sw);
@@ -940,8 +970,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
                     devicesToRemove.add(deviceEvent);
                 }
             }
-            for (DeviceEvent deviceEvent : devicesToRemove)
+            for (DeviceEvent deviceEvent : devicesToRemove) {
                 removeDevice(deviceEvent);
+            }
         } else {
             // TODO: Update the link attributes
             log.debug("Update link attributes");
@@ -1010,8 +1041,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
         DeviceImpl deviceImpl = getDeviceImpl(device);
 
         // Update the IP addresses
-        for (InetAddress ipAddr : deviceEvent.getIpAddresses())
+        for (InetAddress ipAddr : deviceEvent.getIpAddresses()) {
             deviceImpl.addIpAddress(ipAddr);
+        }
 
         // Process each attachment point
         boolean attachmentFound = false;

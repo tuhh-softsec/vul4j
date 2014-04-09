@@ -41,7 +41,9 @@ public class PathIntentMap extends IntentMap {
 
     @Override
     protected void putIntent(Intent intent) {
-        if (!(intent instanceof PathIntent)) return; // TODO throw exception
+        if (!(intent instanceof PathIntent)) {
+            return; // TODO throw exception
+        }
         super.putIntent(intent);
 
         PathIntent pathIntent = (PathIntent) intent;
@@ -96,14 +98,17 @@ public class PathIntentMap extends IntentMap {
      * @return
      */
     public Double getAvailableBandwidth(Link link) {
-        if (link == null) return null;
+        if (link == null) {
+            return null;
+        }
         Double bandwidth = link.getCapacity();
         LinkEvent linkEvent = new LinkEvent(link);
         if (!bandwidth.isInfinite()) {
             for (PathIntent intent : getIntentsByLink(linkEvent)) {
                 Double intentBandwidth = intent.getBandwidth();
-                if (intentBandwidth == null || intentBandwidth.isInfinite() || intentBandwidth.isNaN())
+                if (intentBandwidth == null || intentBandwidth.isInfinite() || intentBandwidth.isNaN()) {
                     continue;
+                }
                 bandwidth -= intentBandwidth;
             }
         }

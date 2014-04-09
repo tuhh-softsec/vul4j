@@ -62,14 +62,18 @@ public class TopologyEvent {
      */
     @Override
     public String toString() {
-        if (switchEvent != null)
+        if (switchEvent != null) {
             return switchEvent.toString();
-        if (portEvent != null)
+        }
+        if (portEvent != null) {
             return portEvent.toString();
-        if (linkEvent != null)
+        }
+        if (linkEvent != null) {
             return linkEvent.toString();
-        if (deviceEvent != null)
+        }
+        if (deviceEvent != null) {
             return deviceEvent.toString();
+        }
         return "[Empty TopologyEvent]";
     }
 
@@ -79,14 +83,18 @@ public class TopologyEvent {
      * @return the Topology event ID.
      */
     public byte[] getID() {
-        if (switchEvent != null)
+        if (switchEvent != null) {
             return switchEvent.getID();
-        if (portEvent != null)
+        }
+        if (portEvent != null) {
             return portEvent.getID();
-        if (linkEvent != null)
+        }
+        if (linkEvent != null) {
             return linkEvent.getID();
-        if (deviceEvent != null)
+        }
+        if (deviceEvent != null) {
             return deviceEvent.getID();
+        }
         return null;
     }
 }

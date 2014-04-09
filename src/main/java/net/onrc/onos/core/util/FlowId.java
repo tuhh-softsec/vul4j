@@ -46,12 +46,14 @@ public final class FlowId implements Comparable<FlowId> {
         // large unsigned hex long values.
         //
         char c = 0;
-        if (value.length() > 2)
+        if (value.length() > 2) {
             c = value.charAt(1);
-        if ((c == 'x') || (c == 'X'))
+        }
+        if ((c == 'x') || (c == 'X')) {
             this.value = new BigInteger(value.substring(2), 16).longValue();
-        else
+        } else {
             this.value = Long.decode(value);
+        }
     }
 
     /**

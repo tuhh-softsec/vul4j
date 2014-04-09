@@ -144,8 +144,9 @@ public class FlowEntry {
      */
     @JsonIgnore
     public boolean isValidFlowId() {
-        if (this.flowId == null)
+        if (this.flowId == null) {
             return false;
+        }
         return (this.flowId.isValid());
     }
 
@@ -176,8 +177,9 @@ public class FlowEntry {
      */
     @JsonIgnore
     public boolean isValidFlowEntryId() {
-        if (this.flowEntryId == null)
+        if (this.flowEntryId == null) {
             return false;
+        }
         return (this.flowEntryId.isValid());
     }
 

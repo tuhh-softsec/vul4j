@@ -117,8 +117,9 @@ public class LLDP extends BasePacket {
         }
         bb.putShort((short) 0); // End of LLDPDU
 
-        if (this.parent != null && this.parent instanceof Ethernet)
+        if (this.parent != null && this.parent instanceof Ethernet) {
             ((Ethernet) this.parent).setEtherType(ethType);
+        }
 
         return data;
     }
@@ -131,8 +132,9 @@ public class LLDP extends BasePacket {
             tlv = new LLDPTLV().deserialize(bb);
 
             // if there was a failure to deserialize stop processing TLVs
-            if (tlv == null)
+            if (tlv == null) {
                 break;
+            }
             switch (tlv.getType()) {
                 case 0x0:
                     // can throw this one away, its just an end delimiter
@@ -174,30 +176,40 @@ public class LLDP extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof LLDP))
+        }
+        if (!(obj instanceof LLDP)) {
             return false;
+        }
         LLDP other = (LLDP) obj;
         if (chassisId == null) {
-            if (other.chassisId != null)
+            if (other.chassisId != null) {
                 return false;
-        } else if (!chassisId.equals(other.chassisId))
+            }
+        } else if (!chassisId.equals(other.chassisId)) {
             return false;
-        if (!optionalTLVList.equals(other.optionalTLVList))
+        }
+        if (!optionalTLVList.equals(other.optionalTLVList)) {
             return false;
+        }
         if (portId == null) {
-            if (other.portId != null)
+            if (other.portId != null) {
                 return false;
-        } else if (!portId.equals(other.portId))
+            }
+        } else if (!portId.equals(other.portId)) {
             return false;
+        }
         if (ttl == null) {
-            if (other.ttl != null)
+            if (other.ttl != null) {
                 return false;
-        } else if (!ttl.equals(other.ttl))
+            }
+        } else if (!ttl.equals(other.ttl)) {
             return false;
+        }
         return true;
     }
 }

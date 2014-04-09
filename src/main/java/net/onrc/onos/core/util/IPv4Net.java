@@ -30,10 +30,11 @@ public final class IPv4Net {
      * @param other the object to copy from.
      */
     public IPv4Net(IPv4Net other) {
-        if (other.address != null)
+        if (other.address != null) {
             this.address = new IPv4(other.address);
-        else
+        } else {
             this.address = null;
+        }
         this.prefixLen = other.prefixLen;
     }
 

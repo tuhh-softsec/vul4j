@@ -557,11 +557,13 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
         for (Entry<String, IntentState> entry : value.entrySet()) {
             log.debug("path intent key {}, value {}", entry.getKey(), entry.getValue());
             PathIntent pathIntent = (PathIntent) intentMap.getIntent(entry.getKey());
-            if (pathIntent == null)
+            if (pathIntent == null) {
                 continue;
+            }
 
-            if (!(pathIntent.getParentIntent() instanceof ShortestPathIntent))
+            if (!(pathIntent.getParentIntent() instanceof ShortestPathIntent)) {
                 continue;
+            }
 
             IntentState state = entry.getValue();
             switch (state) {

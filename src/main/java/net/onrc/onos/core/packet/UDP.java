@@ -125,11 +125,13 @@ public class UDP extends BasePacket {
         bb.putShort(this.destinationPort);
         bb.putShort(this.length);
         bb.putShort(this.checksum);
-        if (payloadData != null)
+        if (payloadData != null) {
             bb.put(payloadData);
+        }
 
-        if (this.parent != null && this.parent instanceof IPv4)
+        if (this.parent != null && this.parent instanceof IPv4) {
             ((IPv4) this.parent).setProtocol(IPv4.PROTOCOL_UDP);
+        }
 
         // compute checksum if needed
         if (this.checksum == 0) {
@@ -182,21 +184,28 @@ public class UDP extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof UDP))
+        }
+        if (!(obj instanceof UDP)) {
             return false;
+        }
         UDP other = (UDP) obj;
-        if (checksum != other.checksum)
+        if (checksum != other.checksum) {
             return false;
-        if (destinationPort != other.destinationPort)
+        }
+        if (destinationPort != other.destinationPort) {
             return false;
-        if (length != other.length)
+        }
+        if (length != other.length) {
             return false;
-        if (sourcePort != other.sourcePort)
+        }
+        if (sourcePort != other.sourcePort) {
             return false;
+        }
         return true;
     }
 

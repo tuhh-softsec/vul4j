@@ -64,8 +64,9 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     @JsonIgnore
     public boolean isValidFlowId() {
-        if (this.flowId == null)
+        if (this.flowId == null) {
             return false;
+        }
         return (this.flowId.isValid());
     }
 
@@ -316,12 +317,15 @@ public class FlowPath implements Comparable<FlowPath> {
         ret += " idleTimeout=" + this.idleTimeout;
         ret += " hardTimeout=" + this.hardTimeout;
         ret += " priority=" + this.priority;
-        if (dataPath != null)
+        if (dataPath != null) {
             ret += " dataPath=" + this.dataPath.toString();
-        if (flowEntryMatch != null)
+        }
+        if (flowEntryMatch != null) {
             ret += " flowEntryMatch=" + this.flowEntryMatch.toString();
-        if (flowEntryActions != null)
+        }
+        if (flowEntryActions != null) {
             ret += " flowEntryActions=" + this.flowEntryActions.toString();
+        }
         ret += "]";
         return ret;
     }

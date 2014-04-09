@@ -167,8 +167,9 @@ public class TCP extends BasePacket {
      */
     public byte[] serialize() {
         int length;
-        if (dataOffset == 0)
+        if (dataOffset == 0) {
             dataOffset = 5;  // default header length
+        }
         length = dataOffset << 2;
         byte[] payloadData = null;
         if (payload != null) {
@@ -192,14 +193,17 @@ public class TCP extends BasePacket {
             int padding;
             bb.put(options);
             padding = (dataOffset << 2) - 20 - options.length;
-            for (int i = 0; i < padding; i++)
+            for (int i = 0; i < padding; i++) {
                 bb.put((byte) 0);
+            }
         }
-        if (payloadData != null)
+        if (payloadData != null) {
             bb.put(payloadData);
+        }
 
-        if (this.parent != null && this.parent instanceof IPv4)
+        if (this.parent != null && this.parent instanceof IPv4) {
             ((IPv4) this.parent).setProtocol(IPv4.PROTOCOL_TCP);
+        }
 
         // compute checksum if needed
         if (this.checksum == 0) {
@@ -251,12 +255,15 @@ public class TCP extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof TCP))
+        }
+        if (!(obj instanceof TCP)) {
             return false;
+        }
         TCP other = (TCP) obj;
         // May want to compare fields based on the flags set
         return (checksum == other.checksum) &&

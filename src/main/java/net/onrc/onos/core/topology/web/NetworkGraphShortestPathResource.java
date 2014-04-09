@@ -56,8 +56,9 @@ public class NetworkGraphShortestPathResource extends ServerResource {
             graph.acquireReadLock();
             Switch srcSwitch = graph.getSwitch(srcDpid.value());
             Switch dstSwitch = graph.getSwitch(dstDpid.value());
-            if ((srcSwitch == null) || (dstSwitch == null))
+            if ((srcSwitch == null) || (dstSwitch == null)) {
                 return "";
+            }
             ConstrainedBFSTree bfsTree = new ConstrainedBFSTree(srcSwitch);
             Path path = bfsTree.getPath(dstSwitch);
             List<Link> links = new LinkedList<>();
@@ -66,8 +67,9 @@ public class NetworkGraphShortestPathResource extends ServerResource {
                         linkEvent.getSrc().getNumber(),
                         linkEvent.getDst().getDpid(),
                         linkEvent.getDst().getNumber());
-                if (link == null)
+                if (link == null) {
                     return "";
+                }
                 links.add(link);
             }
             return mapper.writeValueAsString(links);

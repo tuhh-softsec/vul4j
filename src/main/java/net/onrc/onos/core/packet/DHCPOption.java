@@ -90,19 +90,25 @@ public class DHCPOption {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (!(obj instanceof DHCPOption))
+        }
+        if (!(obj instanceof DHCPOption)) {
             return false;
+        }
         DHCPOption other = (DHCPOption) obj;
-        if (code != other.code)
+        if (code != other.code) {
             return false;
-        if (!Arrays.equals(data, other.data))
+        }
+        if (!Arrays.equals(data, other.data)) {
             return false;
-        if (length != other.length)
+        }
+        if (length != other.length) {
             return false;
+        }
         return true;
     }
 

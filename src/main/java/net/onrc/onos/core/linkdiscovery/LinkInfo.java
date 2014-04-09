@@ -126,43 +126,56 @@ public class LinkInfo {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (!(obj instanceof LinkInfo))
+        }
+        if (!(obj instanceof LinkInfo)) {
             return false;
+        }
         LinkInfo other = (LinkInfo) obj;
 
         if (firstSeenTime == null) {
-            if (other.firstSeenTime != null)
+            if (other.firstSeenTime != null) {
                 return false;
-        } else if (!firstSeenTime.equals(other.firstSeenTime))
+            }
+        } else if (!firstSeenTime.equals(other.firstSeenTime)) {
             return false;
+        }
 
         if (lastLldpReceivedTime == null) {
-            if (other.lastLldpReceivedTime != null)
+            if (other.lastLldpReceivedTime != null) {
                 return false;
-        } else if (!lastLldpReceivedTime.equals(other.lastLldpReceivedTime))
+            }
+        } else if (!lastLldpReceivedTime.equals(other.lastLldpReceivedTime)) {
             return false;
+        }
 
         if (lastBddpReceivedTime == null) {
-            if (other.lastBddpReceivedTime != null)
+            if (other.lastBddpReceivedTime != null) {
                 return false;
-        } else if (!lastBddpReceivedTime.equals(other.lastBddpReceivedTime))
+            }
+        } else if (!lastBddpReceivedTime.equals(other.lastBddpReceivedTime)) {
             return false;
+        }
 
         if (srcPortState == null) {
-            if (other.srcPortState != null)
+            if (other.srcPortState != null) {
                 return false;
-        } else if (!srcPortState.equals(other.srcPortState))
+            }
+        } else if (!srcPortState.equals(other.srcPortState)) {
             return false;
+        }
 
         if (dstPortState == null) {
-            if (other.dstPortState != null)
+            if (other.dstPortState != null) {
                 return false;
-        } else if (!dstPortState.equals(other.dstPortState))
+            }
+        } else if (!dstPortState.equals(other.dstPortState)) {
             return false;
+        }
 
         return true;
     }

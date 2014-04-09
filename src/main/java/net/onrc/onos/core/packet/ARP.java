@@ -266,31 +266,43 @@ public class ARP extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof ARP))
+        }
+        if (!(obj instanceof ARP)) {
             return false;
+        }
         ARP other = (ARP) obj;
-        if (hardwareAddressLength != other.hardwareAddressLength)
+        if (hardwareAddressLength != other.hardwareAddressLength) {
             return false;
-        if (hardwareType != other.hardwareType)
+        }
+        if (hardwareType != other.hardwareType) {
             return false;
-        if (opCode != other.opCode)
+        }
+        if (opCode != other.opCode) {
             return false;
-        if (protocolAddressLength != other.protocolAddressLength)
+        }
+        if (protocolAddressLength != other.protocolAddressLength) {
             return false;
-        if (protocolType != other.protocolType)
+        }
+        if (protocolType != other.protocolType) {
             return false;
-        if (!Arrays.equals(senderHardwareAddress, other.senderHardwareAddress))
+        }
+        if (!Arrays.equals(senderHardwareAddress, other.senderHardwareAddress)) {
             return false;
-        if (!Arrays.equals(senderProtocolAddress, other.senderProtocolAddress))
+        }
+        if (!Arrays.equals(senderProtocolAddress, other.senderProtocolAddress)) {
             return false;
-        if (!Arrays.equals(targetHardwareAddress, other.targetHardwareAddress))
+        }
+        if (!Arrays.equals(targetHardwareAddress, other.targetHardwareAddress)) {
             return false;
-        if (!Arrays.equals(targetProtocolAddress, other.targetProtocolAddress))
+        }
+        if (!Arrays.equals(targetProtocolAddress, other.targetProtocolAddress)) {
             return false;
+        }
         return true;
     }
 

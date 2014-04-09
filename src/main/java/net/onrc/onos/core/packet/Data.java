@@ -79,15 +79,19 @@ public class Data extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof Data))
+        }
+        if (!(obj instanceof Data)) {
             return false;
+        }
         Data other = (Data) obj;
-        if (!Arrays.equals(data, other.data))
+        if (!Arrays.equals(data, other.data)) {
             return false;
+        }
         return true;
     }
 }

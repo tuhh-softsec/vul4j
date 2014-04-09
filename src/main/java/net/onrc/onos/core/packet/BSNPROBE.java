@@ -115,11 +115,13 @@ public class BSNPROBE extends BasePacket {
         bb.put(this.dstMac);
         bb.putLong(this.srcSwDpid);
         bb.putInt(this.srcPortNo);
-        if (payloadData != null)
+        if (payloadData != null) {
             bb.put(payloadData);
+        }
 
-        if (this.parent != null && this.parent instanceof BSN)
+        if (this.parent != null && this.parent instanceof BSN) {
             ((BSN) this.parent).setType(BSN.BSN_TYPE_PROBE);
+        }
 
         return data;
     }
@@ -163,17 +165,22 @@ public class BSNPROBE extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof BSNPROBE))
+        }
+        if (!(obj instanceof BSNPROBE)) {
             return false;
+        }
         BSNPROBE other = (BSNPROBE) obj;
-        if (!Arrays.equals(srcMac, other.srcMac))
+        if (!Arrays.equals(srcMac, other.srcMac)) {
             return false;
-        if (!Arrays.equals(dstMac, other.dstMac))
+        }
+        if (!Arrays.equals(dstMac, other.dstMac)) {
             return false;
+        }
         return (sequenceId == other.sequenceId &&
                 srcSwDpid == other.srcSwDpid &&
                 srcPortNo == other.srcPortNo

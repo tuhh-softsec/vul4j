@@ -87,13 +87,15 @@ public class DataPath {
      * @param flowPathFlags the Flow Path Flags to apply.
      */
     public void applyFlowPathFlags(FlowPathFlags flowPathFlags) {
-        if (flowPathFlags == null)
+        if (flowPathFlags == null) {
             return;        // Nothing to do
+        }
 
         // Discard the first Flow Entry
         if (flowPathFlags.isDiscardFirstHopEntry()) {
-            if (flowEntries.size() > 0)
+            if (flowEntries.size() > 0) {
                 flowEntries.remove(0);
+            }
         }
 
         // Keep only the first Flow Entry
@@ -127,8 +129,9 @@ public class DataPath {
                 break;
             }
         }
-        if (!foundDeletedFlowEntry)
+        if (!foundDeletedFlowEntry) {
             return;            // Nothing to do
+        }
 
         // Create a new collection and exclude the deleted flow entries
         ArrayList<FlowEntry> newFlowEntries = new ArrayList<FlowEntry>();

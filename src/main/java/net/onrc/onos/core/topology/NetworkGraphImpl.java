@@ -71,8 +71,9 @@ public class NetworkGraphImpl implements NetworkGraph {
     @Override
     public Link getLink(Long dpid, Long number) {
         Port srcPort = getPort(dpid, number);
-        if (srcPort == null)
+        if (srcPort == null) {
             return null;
+        }
         return srcPort.getOutgoingLink();
     }
 
@@ -80,12 +81,15 @@ public class NetworkGraphImpl implements NetworkGraph {
     public Link getLink(Long srcDpid, Long srcNumber, Long dstDpid,
                         Long dstNumber) {
         Link link = getLink(srcDpid, srcNumber);
-        if (link == null)
+        if (link == null) {
             return null;
-        if (!link.getDstSwitch().getDpid().equals(dstDpid))
+        }
+        if (!link.getDstSwitch().getDpid().equals(dstDpid)) {
             return null;
-        if (!link.getDstPort().getNumber().equals(dstNumber))
+        }
+        if (!link.getDstPort().getNumber().equals(dstNumber)) {
             return null;
+        }
         return link;
     }
 
@@ -134,8 +138,9 @@ public class NetworkGraphImpl implements NetworkGraph {
             Set<Device> devices = addr2Device.get(ipAddr);
             if (devices != null) {
                 devices.remove(device);
-                if (devices.isEmpty())
+                if (devices.isEmpty()) {
                     addr2Device.remove(ipAddr);
+                }
             }
         }
     }

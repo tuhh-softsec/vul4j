@@ -149,8 +149,9 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
     public void setLastSeenTimestamp(Date lastSeenTimestamp) {
         if (activeSince == null ||
                 (activeSince.getTime() + ACTIVITY_TIMEOUT) <
-                        lastSeenTimestamp.getTime())
+                        lastSeenTimestamp.getTime()) {
             this.activeSince = lastSeenTimestamp;
+        }
         this.lastSeenTimestamp = lastSeenTimestamp;
     }
 
@@ -164,7 +165,9 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
 
     @Override
     public int hashCode() {
-        if (hashCode != 0) return hashCode;
+        if (hashCode != 0) {
+            return hashCode;
+        }
         final int prime = 31;
         hashCode = 1;
         hashCode = prime * hashCode
@@ -178,22 +181,46 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         OnosDevice other = (OnosDevice) obj;
-        if (hashCode() != other.hashCode()) return false;
+        if (hashCode() != other.hashCode()) {
+            return false;
+        }
         if (ipv4Address == null) {
-            if (other.ipv4Address != null) return false;
-        } else if (!ipv4Address.equals(other.ipv4Address)) return false;
+            if (other.ipv4Address != null) {
+                return false;
+            }
+        } else if (!ipv4Address.equals(other.ipv4Address)) {
+            return false;
+        }
         if (macAddress == null) {
-            if (other.macAddress != null) return false;
-        } else if (!macAddress.equals(other.macAddress)) return false;
-        if (switchDPID != other.switchDPID) return false;
-        if (switchPort != other.switchPort) return false;
+            if (other.macAddress != null) {
+                return false;
+            }
+        } else if (!macAddress.equals(other.macAddress)) {
+            return false;
+        }
+        if (switchDPID != other.switchDPID) {
+            return false;
+        }
+        if (switchPort != other.switchPort) {
+            return false;
+        }
         if (vlan == null) {
-            if (other.vlan != null) return false;
-        } else if (!vlan.equals(other.vlan)) return false;
+            if (other.vlan != null) {
+                return false;
+            }
+        } else if (!vlan.equals(other.vlan)) {
+            return false;
+        }
         return true;
     }
 

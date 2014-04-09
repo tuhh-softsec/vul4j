@@ -95,14 +95,16 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
     // ================================================================================
 
     private void reroutePaths(Collection<Intent> oldPaths) {
-        if (oldPaths == null || oldPaths.isEmpty())
+        if (oldPaths == null || oldPaths.isEmpty()) {
             return;
+        }
 
         IntentOperationList reroutingOperation = new IntentOperationList();
         for (Intent intent : oldPaths) {
             PathIntent pathIntent = (PathIntent) intent;
-            if (pathIntent.isPathFrozen())
+            if (pathIntent.isPathFrozen()) {
                 continue;
+            }
             if (pathIntent.getState().equals(IntentState.INST_ACK) && // XXX: path intents in flight
                     !reroutingOperation.contains(pathIntent.getParentIntent())) {
                 reroutingOperation.add(Operator.ADD, pathIntent.getParentIntent());
@@ -162,8 +164,9 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
 
     @Override
     public IntentOperationList executeIntentOperations(IntentOperationList list) {
-        if (list == null || list.size() == 0)
+        if (list == null || list.size() == 0) {
             return null;
+        }
         PerfLogger p = new PerfLogger("executeIntentOperations_" + list.get(0).operator);
 
         lock.lock(); // TODO optimize locking using smaller steps
@@ -325,18 +328,21 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
                 removedLinkEvents.size() > 0 ||
                 removedPortEvents.size() > 0) {
             p.log("begin_getIntentsByLink");
-            for (LinkEvent linkEvent : removedLinkEvents)
+            for (LinkEvent linkEvent : removedLinkEvents) {
                 affectedPaths.addAll(pathIntents.getIntentsByLink(linkEvent));
+            }
             p.log("end_getIntentsByLink");
 
             p.log("begin_getIntentsByPort");
-            for (PortEvent portEvent : removedPortEvents)
+            for (PortEvent portEvent : removedPortEvents) {
                 affectedPaths.addAll(pathIntents.getIntentsByPort(portEvent.getDpid(), portEvent.getNumber()));
+            }
             p.log("end_getIntentsByPort");
 
             p.log("begin_getIntentsByDpid");
-            for (SwitchEvent switchEvent : removedSwitchEvents)
+            for (SwitchEvent switchEvent : removedSwitchEvents) {
                 affectedPaths.addAll(pathIntents.getIntentsByDpid(switchEvent.getDpid()));
+            }
             p.log("end_getIntentsByDpid");
         }
         p.log("begin_reroutePaths");
@@ -371,13 +377,16 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
             IntentStateList pathIntentStates = new IntentStateList();
             for (Entry<String, IntentState> entry : value.entrySet()) {
                 PathIntent pathIntent = (PathIntent) pathIntents.getIntent(entry.getKey());
-                if (pathIntent == null) continue;
+                if (pathIntent == null) {
+                    continue;
+                }
 
                 Intent parentIntent = pathIntent.getParentIntent();
                 if (parentIntent == null ||
                         !(parentIntent instanceof ShortestPathIntent) ||
-                        !((ShortestPathIntent) parentIntent).getPathIntentId().equals(pathIntent.getId()))
+                        !((ShortestPathIntent) parentIntent).getPathIntentId().equals(pathIntent.getId())) {
                     continue;
+                }
 
                 IntentState state = entry.getValue();
                 switch (state) {

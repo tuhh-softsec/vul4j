@@ -61,8 +61,9 @@ public abstract class BasePacket implements IPacket {
 
     @Override
     public void resetChecksum() {
-        if (this.parent != null)
+        if (this.parent != null) {
             this.parent.resetChecksum();
+        }
     }
 
     /* (non-Javadoc)
@@ -81,18 +82,23 @@ public abstract class BasePacket implements IPacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (!(obj instanceof BasePacket))
+        }
+        if (!(obj instanceof BasePacket)) {
             return false;
+        }
         BasePacket other = (BasePacket) obj;
         if (payload == null) {
-            if (other.payload != null)
+            if (other.payload != null) {
                 return false;
-        } else if (!payload.equals(other.payload))
+            }
+        } else if (!payload.equals(other.payload)) {
             return false;
+        }
         return true;
     }
 

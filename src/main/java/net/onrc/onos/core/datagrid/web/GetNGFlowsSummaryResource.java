@@ -52,16 +52,19 @@ public class GetNGFlowsSummaryResource extends ServerResource {
         IntentMap intentMap = pathRuntime.getPathIntents();
         for (Intent parentIntent : parentIntentMap.getAllIntents()) {
             // Get only installed Shortest Paths
-            if (parentIntent.getState() != IntentState.INST_ACK)
+            if (parentIntent.getState() != IntentState.INST_ACK) {
                 continue;
-            if (!(parentIntent instanceof ShortestPathIntent))
+            }
+            if (!(parentIntent instanceof ShortestPathIntent)) {
                 continue;
+            }
             ShortestPathIntent spIntent = (ShortestPathIntent) parentIntent;
 
             // Get the Path Intent
             Intent intent = intentMap.getIntent(spIntent.getPathIntentId());
-            if (!(intent instanceof PathIntent))
+            if (!(intent instanceof PathIntent)) {
                 continue;
+            }
             PathIntent pathIntent = (PathIntent) intent;
 
             // Decode the Shortest Path ID
@@ -107,8 +110,9 @@ public class GetNGFlowsSummaryResource extends ServerResource {
         }
 
         // Prepare the return result
-        for (FlowPath flowPath : sortedFlowPaths.values())
+        for (FlowPath flowPath : sortedFlowPaths.values()) {
             result.add(flowPath);
+        }
 
         return result;
     }

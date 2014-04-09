@@ -112,7 +112,7 @@ public class Ptree {
         PtreeNode node = top;
         PtreeNode matched = null;
 
-        if (node != null)
+        if (node != null) {
 
             while (node != null
                     && node.keyBits <= key_bits
@@ -125,6 +125,7 @@ public class Ptree {
                     node = node.left;
                 }
             }
+        }
 
         if (matched != null) {
             return addReference(matched);
@@ -273,11 +274,13 @@ public class Ptree {
         PtreeNode add = new PtreeNode(null, commonLen, maxKeyOctets);
 
         int j;
-        for (j = 0; j < i; j++)
+        for (j = 0; j < i; j++) {
             add.key[j] = node.key[j];
+        }
 
-        if (boundary != 0)
+        if (boundary != 0) {
             add.key[j] = (byte) (node.key[j] & maskBits[add.keyBits % 8]);
+        }
 
         return add;
     }

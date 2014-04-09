@@ -101,9 +101,9 @@ public class PathCalcRuntime implements IFloodlightService {
                     // generate new path-intent ID
                     String oldPathIntentId = spIntent.getPathIntentId();
                     String newPathIntentId;
-                    if (oldPathIntentId == null)
+                    if (oldPathIntentId == null) {
                         newPathIntentId = PathIntent.createFirstId(spIntent.getId());
-                    else {
+                    } else {
                         newPathIntentId = PathIntent.createNextId(oldPathIntentId);
 
                         // Request removal of low-level intent if it exists.

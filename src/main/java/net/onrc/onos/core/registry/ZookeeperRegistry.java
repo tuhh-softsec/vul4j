@@ -638,8 +638,9 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
         do {
             try {
                 Participant leader = clusterLeaderLatch.getLeader();
-                if (!leader.getId().isEmpty())
+                if (!leader.getId().isEmpty()) {
                     break;
+                }
                 Thread.sleep(CLUSTER_LEADER_ELECTION_RETRY_MS);
             } catch (Exception e) {
                 log.error("Error on startup waiting for cluster leader election: {}", e.getMessage());

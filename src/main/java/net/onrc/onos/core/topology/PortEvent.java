@@ -51,23 +51,30 @@ public class PortEvent {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             SwitchPort other = (SwitchPort) obj;
             if (dpid == null) {
-                if (other.dpid != null)
+                if (other.dpid != null) {
                     return false;
-            } else if (!dpid.equals(other.dpid))
+                }
+            } else if (!dpid.equals(other.dpid)) {
                 return false;
+            }
             if (number == null) {
-                if (other.number != null)
+                if (other.number != null) {
                     return false;
-            } else if (!number.equals(other.number))
+                }
+            } else if (!number.equals(other.number)) {
                 return false;
+            }
             return true;
         }
     }

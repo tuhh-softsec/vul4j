@@ -81,8 +81,9 @@ public class LLDPTLV {
         byte[] data = new byte[2 + this.length];
         ByteBuffer bb = ByteBuffer.wrap(data);
         bb.putShort(scratch);
-        if (this.value != null)
+        if (this.value != null) {
             bb.put(this.value);
+        }
         return data;
     }
 
@@ -95,8 +96,9 @@ public class LLDPTLV {
             this.value = new byte[this.length];
 
             // if there is an underrun just toss the TLV
-            if (bb.remaining() < this.length)
+            if (bb.remaining() < this.length) {
                 return null;
+            }
             bb.get(this.value);
         }
         return this;
@@ -120,19 +122,25 @@ public class LLDPTLV {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (!(obj instanceof LLDPTLV))
+        }
+        if (!(obj instanceof LLDPTLV)) {
             return false;
+        }
         LLDPTLV other = (LLDPTLV) obj;
-        if (length != other.length)
+        if (length != other.length) {
             return false;
-        if (type != other.type)
+        }
+        if (type != other.type) {
             return false;
-        if (!Arrays.equals(value, other.value))
+        }
+        if (!Arrays.equals(value, other.value)) {
             return false;
+        }
         return true;
     }
 }

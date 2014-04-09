@@ -47,9 +47,10 @@ public final class IPv4 {
      */
     public IPv4(String value) {
         String[] splits = value.split("\\.");
-        if (splits.length != 4)
+        if (splits.length != 4) {
             throw new IllegalArgumentException("Specified IPv4 address must contain four " +
                     "numerical digits separated by '.'");
+        }
 
         int result = 0;
         for (int i = 0; i < 4; ++i) {

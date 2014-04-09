@@ -251,8 +251,9 @@ public class OnosDeviceManager implements IFloodlightModule,
         long dlAddr = Ethernet.toLong(dlAddrArr);
 
         // Ignore broadcast/multicast source
-        if ((dlAddrArr[0] & 0x1) != 0)
+        if ((dlAddrArr[0] & 0x1) != 0) {
             return null;
+        }
 
         short vlan = eth.getVlanID();
         int nwSrc = getSrcNwAddr(eth, dlAddr);

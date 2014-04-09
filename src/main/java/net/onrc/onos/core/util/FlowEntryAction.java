@@ -76,8 +76,9 @@ public class FlowEntryAction {
          * @param other the object to copy from.
          */
         public ActionOutput(ActionOutput other) {
-            if (other.port != null)
+            if (other.port != null) {
                 this.port = new Port(other.port);
+            }
             this.maxLen = other.maxLen;
         }
 
@@ -168,8 +169,9 @@ public class FlowEntryAction {
             String decode = null;
 
             // Decode the "port=XXX" part
-            if (parts.length > 0)
+            if (parts.length > 0) {
                 decode = parts[0];
+            }
             if (decode != null) {
                 String[] tokens = decode.split("port=");
                 if (tokens.length > 1 && tokens[1] != null) {
@@ -186,8 +188,9 @@ public class FlowEntryAction {
 
             // Decode the "maxLen=XXX" part
             decode = null;
-            if (parts.length > 1)
+            if (parts.length > 1) {
                 decode = parts[1];
+            }
             if (decode != null) {
                 decode = decode.replace("]", "");
                 String[] tokens = decode.split("maxLen=");
@@ -287,8 +290,9 @@ public class FlowEntryAction {
             String decode = null;
 
             // Decode the value
-            if (parts.length > 1)
+            if (parts.length > 1) {
                 decode = parts[1];
+            }
             if (decode != null) {
                 decode = decode.replace("]", "");
                 try {
@@ -385,8 +389,9 @@ public class FlowEntryAction {
             String decode = null;
 
             // Decode the value
-            if (parts.length > 1)
+            if (parts.length > 1) {
                 decode = parts[1];
+            }
             if (decode != null) {
                 decode = decode.replace("]", "");
                 try {
@@ -483,8 +488,9 @@ public class FlowEntryAction {
             String decode = null;
 
             // Decode the value
-            if (parts.length > 1)
+            if (parts.length > 1) {
                 decode = parts[1];
+            }
             if (decode != null) {
                 decode = decode.replace("]", "");
                 stripVlan = Boolean.valueOf(decode);
@@ -514,8 +520,9 @@ public class FlowEntryAction {
          * @param other the object to copy from.
          */
         public ActionSetEthernetAddr(ActionSetEthernetAddr other) {
-            if (other.addr != null)
+            if (other.addr != null) {
                 this.addr = MACAddress.valueOf(other.addr.toLong());
+            }
         }
 
         /**
@@ -579,8 +586,9 @@ public class FlowEntryAction {
             String decode = null;
 
             // Decode the value
-            if (parts.length > 1)
+            if (parts.length > 1) {
                 decode = parts[1];
+            }
             if (decode != null) {
                 decode = decode.replace("]", "");
                 try {
@@ -614,8 +622,9 @@ public class FlowEntryAction {
          * @param other the object to copy from.
          */
         public ActionSetIPv4Addr(ActionSetIPv4Addr other) {
-            if (other.addr != null)
+            if (other.addr != null) {
                 this.addr = new IPv4(other.addr);
+            }
         }
 
         /**
@@ -679,8 +688,9 @@ public class FlowEntryAction {
             String decode = null;
 
             // Decode the value
-            if (parts.length > 1)
+            if (parts.length > 1) {
                 decode = parts[1];
+            }
             if (decode != null) {
                 decode = decode.replace("]", "");
                 try {
@@ -778,8 +788,9 @@ public class FlowEntryAction {
             String decode = null;
 
             // Decode the value
-            if (parts.length > 1)
+            if (parts.length > 1) {
                 decode = parts[1];
+            }
             if (decode != null) {
                 decode = decode.replace("]", "");
                 try {
@@ -877,8 +888,9 @@ public class FlowEntryAction {
             String decode = null;
 
             // Decode the value
-            if (parts.length > 1)
+            if (parts.length > 1) {
                 decode = parts[1];
+            }
             if (decode != null) {
                 decode = decode.replace("]", "");
                 try {
@@ -915,8 +927,9 @@ public class FlowEntryAction {
          * @param other the object to copy from.
          */
         public ActionEnqueue(ActionEnqueue other) {
-            if (other.port != null)
+            if (other.port != null) {
                 this.port = new Port(other.port);
+            }
             this.queueId = other.queueId;
         }
 
@@ -994,8 +1007,9 @@ public class FlowEntryAction {
             String decode = null;
 
             // Decode the "port=XXX" part
-            if (parts.length > 0)
+            if (parts.length > 0) {
                 decode = parts[0];
+            }
             if (decode != null) {
                 String[] tokens = decode.split("port=");
                 if (tokens.length > 1 && tokens[1] != null) {
@@ -1012,8 +1026,9 @@ public class FlowEntryAction {
 
             // Decode the "queueId=XXX" part
             decode = null;
-            if (parts.length > 1)
+            if (parts.length > 1) {
                 decode = parts[1];
+            }
             if (decode != null) {
                 decode = decode.replace("]", "");
                 String[] tokens = decode.split("queueId=");
@@ -1065,65 +1080,77 @@ public class FlowEntryAction {
         this.actionType = other.actionType;
 
         //
-        if (other.actionOutput != null)
+        if (other.actionOutput != null) {
             this.actionOutput = new ActionOutput(other.actionOutput);
-        else
+        } else {
             this.actionOutput = null;
+        }
         //
-        if (other.actionSetVlanId != null)
+        if (other.actionSetVlanId != null) {
             this.actionSetVlanId = new ActionSetVlanId(other.actionSetVlanId);
-        else
+        } else {
             this.actionSetVlanId = null;
+        }
         //
-        if (other.actionSetVlanPriority != null)
+        if (other.actionSetVlanPriority != null) {
             this.actionSetVlanPriority = new ActionSetVlanPriority(other.actionSetVlanPriority);
-        else
+        } else {
             this.actionSetVlanPriority = null;
+        }
         //
-        if (other.actionStripVlan != null)
+        if (other.actionStripVlan != null) {
             this.actionStripVlan = new ActionStripVlan(other.actionStripVlan);
-        else
+        } else {
             this.actionStripVlan = null;
+        }
         //
-        if (other.actionSetEthernetSrcAddr != null)
+        if (other.actionSetEthernetSrcAddr != null) {
             this.actionSetEthernetSrcAddr = new ActionSetEthernetAddr(other.actionSetEthernetSrcAddr);
-        else
+        } else {
             this.actionSetEthernetSrcAddr = null;
+        }
         //
-        if (other.actionSetEthernetDstAddr != null)
+        if (other.actionSetEthernetDstAddr != null) {
             this.actionSetEthernetDstAddr = new ActionSetEthernetAddr(other.actionSetEthernetDstAddr);
-        else
+        } else {
             this.actionSetEthernetDstAddr = null;
+        }
         //
-        if (other.actionSetIPv4SrcAddr != null)
+        if (other.actionSetIPv4SrcAddr != null) {
             this.actionSetIPv4SrcAddr = new ActionSetIPv4Addr(other.actionSetIPv4SrcAddr);
-        else
+        } else {
             this.actionSetIPv4SrcAddr = null;
+        }
         //
-        if (other.actionSetIPv4DstAddr != null)
+        if (other.actionSetIPv4DstAddr != null) {
             this.actionSetIPv4DstAddr = new ActionSetIPv4Addr(other.actionSetIPv4DstAddr);
-        else
+        } else {
             this.actionSetIPv4DstAddr = null;
+        }
         //
-        if (other.actionSetIpToS != null)
+        if (other.actionSetIpToS != null) {
             this.actionSetIpToS = new ActionSetIpToS(other.actionSetIpToS);
-        else
+        } else {
             this.actionSetIpToS = null;
+        }
         //
-        if (other.actionSetTcpUdpSrcPort != null)
+        if (other.actionSetTcpUdpSrcPort != null) {
             this.actionSetTcpUdpSrcPort = new ActionSetTcpUdpPort(other.actionSetTcpUdpSrcPort);
-        else
+        } else {
             this.actionSetTcpUdpSrcPort = null;
+        }
         //
-        if (other.actionSetTcpUdpDstPort != null)
+        if (other.actionSetTcpUdpDstPort != null) {
             this.actionSetTcpUdpDstPort = new ActionSetTcpUdpPort(other.actionSetTcpUdpDstPort);
-        else
+        } else {
             this.actionSetTcpUdpDstPort = null;
+        }
         //
-        if (other.actionEnqueue != null)
+        if (other.actionEnqueue != null) {
             this.actionEnqueue = new ActionEnqueue(other.actionEnqueue);
-        else
+        } else {
             this.actionEnqueue = null;
+        }
     }
 
     /**
@@ -1603,10 +1630,12 @@ public class FlowEntryAction {
         String decode = null;
 
         // Extract the string after the "type="
-        if (parts.length > 1)
+        if (parts.length > 1) {
             decode = parts[1];
-        if (decode == null)
+        }
+        if (decode == null) {
             throw new IllegalArgumentException("Invalid action string");
+        }
 
         // Remove the trailing ']'
         if ((decode.length() > 0) && (decode.charAt(decode.length() - 1) == ']')) {
@@ -1619,8 +1648,9 @@ public class FlowEntryAction {
         parts = decode.split(" action=");
 
         // Decode the "type=XXX" payload
-        if (parts.length > 0)
+        if (parts.length > 0) {
             decode = parts[0];
+        }
         if (decode != null) {
             try {
                 actionType = Enum.valueOf(ActionValues.class, decode);
@@ -1633,10 +1663,12 @@ public class FlowEntryAction {
 
         // Decode the "action=XXX" payload
         decode = null;
-        if (parts.length > 1)
+        if (parts.length > 1) {
             decode = parts[1];
-        if (decode == null)
+        }
+        if (decode == null) {
             throw new IllegalArgumentException("Invalid action string");
+        }
         //
         try {
             switch (actionType) {

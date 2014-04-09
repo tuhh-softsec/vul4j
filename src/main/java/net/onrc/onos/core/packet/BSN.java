@@ -85,11 +85,13 @@ public class BSN extends BasePacket {
         bb.putInt(BSN_MAGIC);
         bb.putShort(this.type);
         bb.putShort(this.version);
-        if (payloadData != null)
+        if (payloadData != null) {
             bb.put(payloadData);
+        }
 
-        if (this.parent != null && this.parent instanceof Ethernet)
+        if (this.parent != null && this.parent instanceof Ethernet) {
             ((Ethernet) this.parent).setEtherType(Ethernet.TYPE_BSN);
+        }
 
         return data;
     }
@@ -147,12 +149,15 @@ public class BSN extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof BSN))
+        }
+        if (!(obj instanceof BSN)) {
             return false;
+        }
         BSN other = (BSN) obj;
         return (type == other.type &&
                 version == other.version);
@@ -161,10 +166,12 @@ public class BSN extends BasePacket {
     public String toString() {
         StringBuffer sb = new StringBuffer("\n");
         sb.append("BSN packet");
-        if (TYPE_CLASS_MAP.containsKey(this.type))
+        if (TYPE_CLASS_MAP.containsKey(this.type)) {
             sb.append(" type: " + TYPE_CLASS_MAP.get(this.type).getCanonicalName());
-        else
+        } else {
             sb.append(" type: " + this.type);
+        }
+
 
         return sb.toString();
     }

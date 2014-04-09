@@ -75,10 +75,12 @@ public class FlowPathFlags {
         this.flags = 0L;
 
         // Test all flags
-        if (flagsStr.contains("DISCARD_FIRST_HOP_ENTRY"))
+        if (flagsStr.contains("DISCARD_FIRST_HOP_ENTRY")) {
             this.flags |= DISCARD_FIRST_HOP_ENTRY;
-        if (flagsStr.contains("KEEP_ONLY_FIRST_HOP_ENTRY"))
+        }
+        if (flagsStr.contains("KEEP_ONLY_FIRST_HOP_ENTRY")) {
             this.flags |= KEEP_ONLY_FIRST_HOP_ENTRY;
+        }
     }
 
     /**
@@ -119,12 +121,14 @@ public class FlowPathFlags {
             flagsStr += "DISCARD_FIRST_HOP_ENTRY";
         }
         if ((this.flags & KEEP_ONLY_FIRST_HOP_ENTRY) != 0) {
-            if (flagsStr != null)
+            if (flagsStr != null) {
                 flagsStr += ",";
+            }
             flagsStr += "KEEP_ONLY_FIRST_HOP_ENTRY";
         }
-        if (flagsStr != null)
+        if (flagsStr != null) {
             ret += flagsStr;
+        }
         ret += "]";
 
         return ret;

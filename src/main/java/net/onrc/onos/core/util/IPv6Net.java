@@ -30,10 +30,11 @@ public final class IPv6Net {
      * @param other the object to copy from.
      */
     public IPv6Net(IPv6Net other) {
-        if (other.address != null)
+        if (other.address != null) {
             this.address = new IPv6(other.address);
-        else
+        } else {
             this.address = null;
+        }
         this.prefixLen = other.prefixLen;
     }
 

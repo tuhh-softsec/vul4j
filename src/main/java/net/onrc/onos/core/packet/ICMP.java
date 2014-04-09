@@ -95,11 +95,13 @@ public class ICMP extends BasePacket {
         bb.put(this.icmpType);
         bb.put(this.icmpCode);
         bb.putShort(this.checksum);
-        if (payloadData != null)
+        if (payloadData != null) {
             bb.put(payloadData);
+        }
 
-        if (this.parent != null && this.parent instanceof IPv4)
+        if (this.parent != null && this.parent instanceof IPv4) {
             ((IPv4) this.parent).setProtocol(IPv4.PROTOCOL_ICMP);
+        }
 
         // compute checksum if needed
         if (this.checksum == 0) {
@@ -140,19 +142,25 @@ public class ICMP extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof ICMP))
+        }
+        if (!(obj instanceof ICMP)) {
             return false;
+        }
         ICMP other = (ICMP) obj;
-        if (icmpType != other.icmpType)
+        if (icmpType != other.icmpType) {
             return false;
-        if (icmpCode != other.icmpCode)
+        }
+        if (icmpCode != other.icmpCode) {
             return false;
-        if (checksum != other.checksum)
+        }
+        if (checksum != other.checksum) {
             return false;
+        }
         return true;
     }
 

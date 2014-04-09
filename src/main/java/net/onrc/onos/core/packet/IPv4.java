@@ -273,9 +273,10 @@ public class IPv4 extends BasePacket {
      * @param options the options to set
      */
     public IPv4 setOptions(byte[] options) {
-        if (options != null && (options.length % 4) > 0)
+        if (options != null && (options.length % 4) > 0) {
             throw new IllegalArgumentException(
                     "Options length must be a multiple of 4");
+        }
         this.options = options;
         return this;
     }
@@ -295,8 +296,9 @@ public class IPv4 extends BasePacket {
         }
 
         int optionsLength = 0;
-        if (this.options != null)
+        if (this.options != null) {
             optionsLength = this.options.length / 4;
+        }
         this.headerLength = (byte) (5 + optionsLength);
 
         this.totalLength = (short) (this.headerLength * 4 + ((payloadData == null) ? 0
@@ -315,10 +317,12 @@ public class IPv4 extends BasePacket {
         bb.putShort(this.checksum);
         bb.putInt(this.sourceAddress);
         bb.putInt(this.destinationAddress);
-        if (this.options != null)
+        if (this.options != null) {
             bb.put(this.options);
-        if (payloadData != null)
+        }
+        if (payloadData != null) {
             bb.put(payloadData);
+        }
 
         // compute checksum if needed
         if (this.checksum == 0) {
@@ -375,10 +379,11 @@ public class IPv4 extends BasePacket {
         this.payload = payload.deserialize(data, bb.position(), bb.limit() - bb.position());
         this.payload.setParent(this);
 
-        if (this.totalLength != length)
+        if (this.totalLength != length) {
             this.isTruncated = true;
-        else
+        } else {
             this.isTruncated = false;
+        }
 
         return this;
     }
@@ -391,13 +396,15 @@ public class IPv4 extends BasePacket {
      * @return
      */
     public static int toIPv4Address(String ipAddress) {
-        if (ipAddress == null)
+        if (ipAddress == null) {
             throw new IllegalArgumentException("Specified IPv4 address must" +
                     "contain 4 sets of numerical digits separated by periods");
+        }
         String[] octets = ipAddress.split("\\.");
-        if (octets.length != 4)
+        if (octets.length != 4) {
             throw new IllegalArgumentException("Specified IPv4 address must" +
                     "contain 4 sets of numerical digits separated by periods");
+        }
 
         int result = 0;
         for (int i = 0; i < 4; ++i) {
@@ -435,8 +442,9 @@ public class IPv4 extends BasePacket {
         for (int i = 0; i < 4; ++i) {
             result = (ipAddress >> ((3 - i) * 8)) & 0xff;
             sb.append(Integer.valueOf(result).toString());
-            if (i != 3)
+            if (i != 3) {
                 sb.append(".");
+            }
         }
         return sb.toString();
     }
@@ -450,8 +458,9 @@ public class IPv4 extends BasePacket {
      * @return
      */
     public static String fromIPv4AddressCollection(Collection<Integer> ipAddresses) {
-        if (ipAddresses == null)
+        if (ipAddresses == null) {
             return "null";
+        }
         StringBuffer sb = new StringBuffer();
         sb.append("[");
         for (Integer ip : ipAddresses) {
@@ -471,9 +480,10 @@ public class IPv4 extends BasePacket {
      */
     public static byte[] toIPv4AddressBytes(String ipAddress) {
         String[] octets = ipAddress.split("\\.");
-        if (octets.length != 4)
+        if (octets.length != 4) {
             throw new IllegalArgumentException("Specified IPv4 address must" +
                     "contain 4 sets of numerical digits separated by periods");
+        }
 
         byte[] result = new byte[4];
         for (int i = 0; i < 4; ++i) {
@@ -525,39 +535,55 @@ public class IPv4 extends BasePacket {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof IPv4))
+        }
+        if (!(obj instanceof IPv4)) {
             return false;
+        }
         IPv4 other = (IPv4) obj;
-        if (checksum != other.checksum)
+        if (checksum != other.checksum) {
             return false;
-        if (destinationAddress != other.destinationAddress)
+        }
+        if (destinationAddress != other.destinationAddress) {
             return false;
-        if (diffServ != other.diffServ)
+        }
+        if (diffServ != other.diffServ) {
             return false;
-        if (flags != other.flags)
+        }
+        if (flags != other.flags) {
             return false;
-        if (fragmentOffset != other.fragmentOffset)
+        }
+        if (fragmentOffset != other.fragmentOffset) {
             return false;
-        if (headerLength != other.headerLength)
+        }
+        if (headerLength != other.headerLength) {
             return false;
-        if (identification != other.identification)
+        }
+        if (identification != other.identification) {
             return false;
-        if (!Arrays.equals(options, other.options))
+        }
+        if (!Arrays.equals(options, other.options)) {
             return false;
-        if (protocol != other.protocol)
+        }
+        if (protocol != other.protocol) {
             return false;
-        if (sourceAddress != other.sourceAddress)
+        }
+        if (sourceAddress != other.sourceAddress) {
             return false;
-        if (totalLength != other.totalLength)
+        }
+        if (totalLength != other.totalLength) {
             return false;
-        if (ttl != other.ttl)
+        }
+        if (ttl != other.ttl) {
             return false;
-        if (version != other.version)
+        }
+        if (version != other.version) {
             return false;
+        }
         return true;
     }
 }

@@ -268,12 +268,15 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
 
             BarrierInfo other = (BarrierInfo) obj;
             return (this.dpid == other.dpid) && (this.xid == other.xid);
@@ -906,8 +909,9 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
         fm.setOutPort(OFPort.OFPP_NONE.getValue());
         if ((flowModCommand == OFFlowMod.OFPFC_DELETE)
                 || (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
-            if (actionOutputPort != null)
+            if (actionOutputPort != null) {
                 fm.setOutPort(actionOutputPort);
+            }
         }
 
         //

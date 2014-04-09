@@ -24,8 +24,10 @@ public class AutoPortFast extends ServerResource {
             linkDiscovery.setAutoPortFastFeature(false);
         }
         setStatus(Status.SUCCESS_OK, "OK");
-        if (linkDiscovery.isAutoPortFastFeature())
+        if (linkDiscovery.isAutoPortFastFeature()) {
             return "enabled";
-        else return "disabled";
+        } else {
+            return "disabled";
+        }
     }
 }

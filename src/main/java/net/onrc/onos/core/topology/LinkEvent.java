@@ -78,23 +78,30 @@ public class LinkEvent {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         LinkEvent other = (LinkEvent) obj;
         if (dst == null) {
-            if (other.dst != null)
+            if (other.dst != null) {
                 return false;
-        } else if (!dst.equals(other.dst))
+            }
+        } else if (!dst.equals(other.dst)) {
             return false;
+        }
         if (src == null) {
-            if (other.src != null)
+            if (other.src != null) {
                 return false;
-        } else if (!src.equals(other.src))
+            }
+        } else if (!src.equals(other.src)) {
             return false;
+        }
         return true;
     }
 }

@@ -119,8 +119,9 @@ public class FlowEntryActions {
 
         actions = new ArrayList<FlowEntryAction>();
 
-        if (decode.isEmpty())
+        if (decode.isEmpty()) {
             return;        // Nothing to do
+        }
 
         // Remove the '[' and ']' in the beginning and the end of the string
         if ((decode.length() > 1) && (decode.charAt(0) == '[') &&
@@ -134,8 +135,9 @@ public class FlowEntryActions {
         String[] parts = decode.split(";");
         for (int i = 0; i < parts.length; i++) {
             decode = parts[i];
-            if ((decode == null) || decode.isEmpty())
+            if ((decode == null) || decode.isEmpty()) {
                 continue;
+            }
             FlowEntryAction flowEntryAction = null;
             try {
                 flowEntryAction = new FlowEntryAction(decode);
@@ -143,8 +145,9 @@ public class FlowEntryActions {
                 // TODO: Ignore invalid actions for now
                 continue;
             }
-            if (flowEntryAction != null)
+            if (flowEntryAction != null) {
                 actions.add(flowEntryAction);
+            }
         }
     }
 }

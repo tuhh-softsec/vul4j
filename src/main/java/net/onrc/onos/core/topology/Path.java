@@ -17,8 +17,9 @@ public class Path extends LinkedList<LinkEvent> {
         Iterator<LinkEvent> i = this.iterator();
         while (i.hasNext()) {
             builder.append(i.next().toString());
-            if (i.hasNext())
+            if (i.hasNext()) {
                 builder.append(", ");
+            }
         }
         return builder.toString();
     }
