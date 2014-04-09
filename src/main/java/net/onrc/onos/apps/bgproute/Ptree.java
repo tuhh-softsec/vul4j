@@ -63,9 +63,6 @@ public class Ptree {
             }
         } else {
             add = node_common(node, key, key_bits);
-            if (add == null) {
-                return null;
-            }
 
             if (match != null) {
                 node_link(match, add);

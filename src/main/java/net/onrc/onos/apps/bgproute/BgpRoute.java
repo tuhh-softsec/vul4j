@@ -52,6 +52,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import org.apache.commons.configuration.ConfigurationRuntimeException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -150,10 +151,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         @Override
         public void run() {
             log.debug("Running topology change detection task");
+            // TODO: Fix the code below after topoLinkService was removed
+            /*
             synchronized (linkUpdates) {
-                //This is the model the REST API uses to retrieve network graph info
-                // TODO: Fix the code below after topoLinkService was removed
-                /*
+
                 ITopoLinkService topoLinkService = new TopoLinkServiceImpl();
 
                 List<Link> activeLinks = topoLinkService.getActiveLinks();
@@ -168,8 +169,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
                         it.remove();
                     }
                 }
-                */
             }
+            */
 
             if (!topologyReady) {
                 if (linkUpdates.isEmpty()) {
@@ -211,13 +212,13 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             vlan = config.getVlan();
         } catch (JsonParseException e) {
             log.error("Error in JSON file", e);
-            System.exit(1);
+            throw new ConfigurationRuntimeException("Error in JSON file", e);
         } catch (JsonMappingException e) {
             log.error("Error in JSON file", e);
-            System.exit(1);
+            throw new ConfigurationRuntimeException("Error in JSON file", e);
         } catch (IOException e) {
             log.error("Error reading JSON file", e);
-            System.exit(1);
+            throw new ConfigurationRuntimeException("Error in JSON file", e);
         }
 
         // Populate the interface Patricia Trie
@@ -291,7 +292,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         bgpdRestIp = context.getConfigParams(this).get("BgpdRestIp");
         if (bgpdRestIp == null) {
             log.error("BgpdRestIp property not found in config file");
-            System.exit(1);
+            throw new ConfigurationRuntimeException(
+                    "BgpdRestIp property not found in config file");
         } else {
             log.info("BgpdRestIp set to {}", bgpdRestIp);
         }
@@ -299,7 +301,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
         routerId = context.getConfigParams(this).get("RouterId");
         if (routerId == null) {
             log.error("RouterId property not found in config file");
-            System.exit(1);
+            throw new ConfigurationRuntimeException(
+                    "RouterId property not found in config file");
         } else {
             log.info("RouterId set to {}", routerId);
         }

@@ -89,7 +89,7 @@ public class Prefix {
     }
 
     public byte[] getAddress() {
-        return address;
+        return Arrays.copyOf(address, address.length);
     }
 
     @Override

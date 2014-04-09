@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.slf4j.Logger;
@@ -38,7 +39,8 @@ public final class RestClient {
                 log.warn("The content received from {} is not json", str);
             }
 
-            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream(), StandardCharsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
                 response.append(line);

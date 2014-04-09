@@ -108,15 +108,16 @@ public class BgpRouteResource extends ServerResource {
 
             reply = "[POST: " + prefix + "/" + mask + ":" + nexthop + "]";
             log.info(reply);
-        } else if ("1".equals(capability)) {
-            reply = "[POST-capability: " + capability + "]\n";
-            log.info(reply);
-            // to store the number in the top node of the Ptree
         } else {
             reply = "[POST-capability: " + capability + "]\n";
             log.info(reply);
             // to store the number in the top node of the Ptree
         }
+        /*else if ("1".equals(capability)) {
+            reply = "[POST-capability: " + capability + "]\n";
+            log.info(reply);
+            // to store the number in the top node of the Ptree
+        }*/
 
         return reply + "\n";
     }
