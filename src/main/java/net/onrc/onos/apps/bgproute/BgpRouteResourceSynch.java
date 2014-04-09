@@ -6,11 +6,24 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * REST handler for sending commands to SDN-IP. This interface is intended for
+ * operators or developers to change the route table of BGPd. There are
+ * interfaces for both sending new routes and deleting routes. This is
+ * not intended to be used during general operation. It is to have a way to
+ * influence BGPd's behavior for debugging.
+ */
 public class BgpRouteResourceSynch extends ServerResource {
     private static final Logger log = LoggerFactory.getLogger(BgpRouteResourceSynch.class);
 
+    /**
+     * Handles a REST call to SDN-IP which gives a command to send a new route
+     * to BGPd.
+     *
+     * @return a String describing the result of the operation
+     */
     @Post
-    public String store(String fmJson) {
+    public String handlePostMethod() {
 
         IBgpRouteService bgpRoute = (IBgpRouteService) getContext().getAttributes().
                 get(IBgpRouteService.class.getCanonicalName());
@@ -34,8 +47,14 @@ public class BgpRouteResourceSynch extends ServerResource {
 
     }
 
+    /**
+     * Handles a REST call to SDN-IP which gives a command to BGPd to delete a
+     * route from its route table.
+     *
+     * @return a String description of the result of the operation
+     */
     @Delete
-    public String delete(String fmJson) {
+    public String handleDeleteMethod() {
         IBgpRouteService bgpRoute = (IBgpRouteService) getContext().getAttributes().
                 get(IBgpRouteService.class.getCanonicalName());
 

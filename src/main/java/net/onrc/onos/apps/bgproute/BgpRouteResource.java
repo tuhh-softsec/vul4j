@@ -11,11 +11,20 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * REST resource that handles REST calls from BGPd. This is the interface BGPd
+ * uses to push RIB entries (routes) to SDN-IP.
+ */
 public class BgpRouteResource extends ServerResource {
     private static final Logger log = LoggerFactory.getLogger(BgpRouteResource.class);
 
+    /**
+     * Gets the contents of SDN-IP's route table.
+     *
+     * @return the contents of SDN-IP's route table formatted as JSON
+     */
     @Get
-    public String get(String fmJson) {
+    public String handleGetMethod() {
         String dest = (String) getRequestAttributes().get("dest");
         StringBuilder output = new StringBuilder(80);
         IBgpRouteService bgpRoute = (IBgpRouteService) getContext()
@@ -64,8 +73,14 @@ public class BgpRouteResource extends ServerResource {
         return output.toString();
     }
 
+    /**
+     * Handler to receive a new RIB entry. The details of the RIB entry are
+     * given as part of the URL.
+     *
+     * @return a String describing the result of the action
+     */
     @Post
-    public String store(String fmJson) {
+    public String handlePostMethod() {
         IBgpRouteService bgpRoute = (IBgpRouteService) getContext()
                 .getAttributes().
                 get(IBgpRouteService.class.getCanonicalName());
@@ -122,8 +137,14 @@ public class BgpRouteResource extends ServerResource {
         return reply + "\n";
     }
 
+    /**
+     * Handler to remove a RIB entry from ONOS's route table. The details of
+     * the route to remove are passed as part of the URL.
+     *
+     * @return a String describing the result of the action
+     */
     @Delete
-    public String delete(String fmJson) {
+    public String handleDeleteMethod() {
         IBgpRouteService bgpRoute = (IBgpRouteService) getContext()
                 .getAttributes().
                 get(IBgpRouteService.class.getCanonicalName());

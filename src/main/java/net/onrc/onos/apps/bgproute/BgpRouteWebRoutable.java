@@ -6,6 +6,9 @@ import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
+/**
+ * REST URL router for SDN-IP REST calls.
+ */
 public class BgpRouteWebRoutable implements RestletRoutable {
     @Override
     public Restlet getRestlet(Context context) {
