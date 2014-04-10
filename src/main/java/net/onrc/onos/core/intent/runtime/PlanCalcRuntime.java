@@ -131,8 +131,9 @@ public class PlanCalcRuntime {
         // really simple first iteration of plan
         //TODO: optimize the map in phases
         Set<FlowEntry> phase = new HashSet<>();
-        for (FlowEntry e : map.keySet()) {
-            Integer i = map.get(e);
+        for (Map.Entry<FlowEntry, Integer> entry : map.entrySet()) {
+            FlowEntry e = entry.getKey();
+            Integer i = entry.getValue();
             if (i == 0) {
                 continue;
             } else if (i > 0) {
