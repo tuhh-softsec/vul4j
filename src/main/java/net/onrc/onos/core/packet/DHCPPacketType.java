@@ -79,7 +79,7 @@ public enum DHCPPacketType {
                 return "DHCPLEASEACTIVE";
         }
 
-        return null;
+        return "DHCP_UnknownType(" + value + ")";
     }
 
     public static DHCPPacketType getType(int value) {
