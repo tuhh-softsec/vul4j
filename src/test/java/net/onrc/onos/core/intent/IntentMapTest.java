@@ -36,7 +36,7 @@ public class IntentMapTest {
     @Test
     public void testChangedEventCreate() {
         IntentMap intents = new IntentMap();
-        IntentMap.ChangedEvent event = intents.new ChangedEvent(
+        IntentMap.ChangedEvent event = new IntentMap.ChangedEvent(
                 ChangedEventType.ADDED,
                 new Intent("id1"));
         assertEquals(ChangedEventType.ADDED, event.eventType);

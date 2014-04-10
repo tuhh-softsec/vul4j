@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author Toshio Koide (t-koide@onlab.us)
  */
 public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntimeService, INetworkGraphListener, IEventChannelListener<Long, IntentStateList> {
-    class PerfLog {
+    static class PerfLog {
         private String step;
         private long time;
 

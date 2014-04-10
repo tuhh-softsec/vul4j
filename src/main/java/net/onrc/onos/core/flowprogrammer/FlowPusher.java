@@ -113,7 +113,7 @@ public final class FlowPusher implements IFlowPusherService, IOFMessageListener 
      *
      * @author Naoki Shiota
      */
-    private class SwitchQueue {
+    private static class SwitchQueue {
         List<Queue<SwitchQueueEntry>> rawQueues;
         QueueState state;
 

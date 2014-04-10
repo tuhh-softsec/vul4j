@@ -39,7 +39,7 @@ public class IntentMap {
         STATE_CHANGED,
     }
 
-    public class ChangedEvent {
+    public static class ChangedEvent {
         public ChangedEvent(ChangedEventType eventType, Intent intent) {
             this.eventType = eventType;
             this.intent = intent;
