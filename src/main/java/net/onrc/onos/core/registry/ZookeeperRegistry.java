@@ -150,14 +150,14 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
         public void isLeader() {
             log.debug("Became leader for {}", dpid);
 
-            switchLeadershipEvents.offer(new SwitchLeaderEvent(HexString.toLong(dpid), true));
+            switchLeadershipEvents.add(new SwitchLeaderEvent(HexString.toLong(dpid), true));
         }
 
         @Override
         public void notLeader() {
             log.debug("Lost leadership for {}", dpid);
 
-            switchLeadershipEvents.offer(new SwitchLeaderEvent(HexString.toLong(dpid), false));
+            switchLeadershipEvents.add(new SwitchLeaderEvent(HexString.toLong(dpid), false));
         }
     }
 
