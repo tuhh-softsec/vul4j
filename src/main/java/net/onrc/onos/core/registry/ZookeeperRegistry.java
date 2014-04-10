@@ -96,8 +96,10 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
     // instead of a ramdon generator.
     //
     private static Random randomGenerator = new Random();
-    private static int nextUniqueIdPrefix = 0;
-    private static int nextUniqueIdSuffix = 0;
+    private static long nextUniqueIdPrefix = 0;
+    // NOTE: The 0xffffffffL value is used by the Unique ID generator for
+    // initialization purpose.
+    private static long nextUniqueIdSuffix = 0xffffffffL;
 
     private final BlockingQueue<SwitchLeaderEvent> switchLeadershipEvents =
             new LinkedBlockingQueue<SwitchLeaderEvent>();
@@ -502,7 +504,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
         } else {
             nextUniqueIdSuffix++;
         }
-        long result = (long) nextUniqueIdPrefix << 32;
+        long result = nextUniqueIdPrefix << 32;
         result = result | (0xffffffffL & nextUniqueIdSuffix);
         return result;
     }
@@ -549,12 +551,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
             this.connectionString = connectionString;
         }
         log.info("Setting Zookeeper connection string to {}", this.connectionString);
-
-        //
-        // Initialize the Unique ID generator
-        // TODO: This must be replaced by Zookeeper-based allocation
-        //
-        nextUniqueIdPrefix = randomGenerator.nextInt();
 
         restApi = context.getServiceImpl(IRestApiService.class);
 
