@@ -21,3 +21,4 @@ net.onrc.onos.core.devicemanager.OnosDeviceManager
 net.onrc.onos.core.topology.NetworkGraphModule
 net.onrc.onos.core.intent.runtime.PathCalcRuntimeModule
 net.onrc.onos.core.intent.runtime.PlanInstallModule
+net.onrc.onos.core.packetservice.PacketModule
