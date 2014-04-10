@@ -430,25 +430,26 @@ public class Ethernet extends BasePacket {
             sb.append("\nnw_proto: ");
             sb.append(p.getProtocol());
 
-            if (pkt instanceof TCP) {
+            IPacket payload = (IPacket) pkt.getPayload();
+            if (payload instanceof TCP) {
                 sb.append("\ntp_src: ");
-                sb.append(((TCP) pkt).getSourcePort());
+                sb.append(((TCP) payload).getSourcePort());
                 sb.append("\ntp_dst: ");
-                sb.append(((TCP) pkt).getDestinationPort());
+                sb.append(((TCP) payload).getDestinationPort());
 
-            } else if (pkt instanceof UDP) {
+            } else if (payload instanceof UDP) {
                 sb.append("\ntp_src: ");
-                sb.append(((UDP) pkt).getSourcePort());
+                sb.append(((UDP) payload).getSourcePort());
                 sb.append("\ntp_dst: ");
-                sb.append(((UDP) pkt).getDestinationPort());
-            }
-
-            if (pkt instanceof ICMP) {
-                ICMP icmp = (ICMP) pkt;
+                sb.append(((UDP) payload).getDestinationPort());
+            } else if (payload instanceof ICMP) {
+                ICMP icmp = (ICMP) payload;
                 sb.append("\nicmp_type: ");
                 sb.append(icmp.getIcmpType());
                 sb.append("\nicmp_code: ");
                 sb.append(icmp.getIcmpCode());
+            } else {
+                sb.append("\nunknown IPv4 packet");
             }
 
         } else if (pkt instanceof DHCP) {
@@ -459,9 +460,8 @@ public class Ethernet extends BasePacket {
             sb.append("\nllc packet");
         } else if (pkt instanceof BPDU) {
             sb.append("\nbpdu packet");
-        } else sb.append("\nunknwon packet");
+        } else sb.append("\nunknown packet");
 
         return sb.toString();
     }
-
 }
