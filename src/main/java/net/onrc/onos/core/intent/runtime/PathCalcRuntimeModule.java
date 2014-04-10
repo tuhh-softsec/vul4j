@@ -255,8 +255,8 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
             //opEventChannel.removeEntry(key);
             return pathIntentOperations;
         } finally {
-            p.flushLog();
             lock.unlock();
+            p.flushLog();
         }
     }
 
@@ -398,8 +398,8 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
             pathIntents.changeStates(pathIntentStates);
             p.log("end_changeStateByNotification");
         } finally {
-            p.flushLog();
             lock.unlock();
+            p.flushLog();
         }
     }
 }
