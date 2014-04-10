@@ -676,11 +676,14 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
         singlePacketOutEventChannel.addTransientEntry(MACAddress.valueOf(senderMacAddress).toLong(), key);
     }
 
+    /*
     private void sendArpRequestToSwitches(InetAddress dstAddress, byte[] arpRequest) {
         sendArpRequestToSwitches(dstAddress, arpRequest, 0,
                 OFPort.OFPP_NONE.getValue());
     }
+    */
 
+    /*
     private void sendArpRequestToSwitches(InetAddress dstAddress,
                                           byte[] arpRequest, long inSwitch, short inPort) {
 
@@ -707,6 +710,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
             broadcastArpRequestOutMyEdge(arpRequest, inSwitch, inPort);
         }
     }
+    */
 
     private void sendArpReplyNotification(Ethernet eth, OFPacketIn pi) {
         ARP arp = (ARP) eth.getPayload();
