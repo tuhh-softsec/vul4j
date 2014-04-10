@@ -1079,7 +1079,8 @@ public final class FlowPusher implements IFlowPusherService, IOFMessageListener 
             log.trace("Received BARRIER_REPLY from : {}", sw.getId());
         }
 
-        if (msg.getType() != OFType.BARRIER_REPLY) {
+        if ((msg.getType() != OFType.BARRIER_REPLY) ||
+            !(msg instanceof OFBarrierReply)) {
             log.error("Unexpected reply message : {}", msg.getType());
             return Command.CONTINUE;
         }

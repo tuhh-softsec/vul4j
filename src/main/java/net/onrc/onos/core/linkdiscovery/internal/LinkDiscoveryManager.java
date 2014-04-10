@@ -779,9 +779,16 @@ public class LinkDiscoveryManager
     public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
         switch (msg.getType()) {
             case PACKET_IN:
-                return this.handlePacketIn(sw.getId(), (OFPacketIn) msg, cntx);
+                if (msg instanceof OFPacketIn) {
+                    return this.handlePacketIn(sw.getId(), (OFPacketIn) msg,
+                                               cntx);
+                }
+                break;
             case PORT_STATUS:
-                return this.handlePortStatus(sw.getId(), (OFPortStatus) msg);
+                if (msg instanceof OFPortStatus) {
+                    return this.handlePortStatus(sw.getId(), (OFPortStatus) msg);
+                }
+                break;
             default:
                 break;
         }

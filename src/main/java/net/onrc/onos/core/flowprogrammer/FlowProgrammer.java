@@ -133,15 +133,12 @@ public class FlowProgrammer implements IFloodlightModule,
 
     @Override
     public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
-        switch (msg.getType()) {
-            case FLOW_REMOVED:
-                OFFlowRemoved flowMsg = (OFFlowRemoved) msg;
-                FlowEntryId id = new FlowEntryId(flowMsg.getCookie());
-                log.debug("Got flow entry removed from {}: {}", sw.getId(), id);
-                // TODO: Inform the Forwarding module that a flow has expired
-                break;
-            default:
-                break;
+        if (msg.getType().equals(OFType.FLOW_REMOVED) &&
+            (msg instanceof OFFlowRemoved)) {
+            OFFlowRemoved flowMsg = (OFFlowRemoved) msg;
+            FlowEntryId id = new FlowEntryId(flowMsg.getCookie());
+            log.debug("Got flow entry removed from {}: {}", sw.getId(), id);
+            // TODO: Inform the Forwarding module that a flow has expired
         }
 
         return Command.CONTINUE;

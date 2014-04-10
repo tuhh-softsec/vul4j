@@ -107,7 +107,8 @@ public class OnosDeviceManager implements IFloodlightModule,
 
     @Override
     public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
-        if (msg.getType().equals(OFType.PACKET_IN)) {
+        if (msg.getType().equals(OFType.PACKET_IN) &&
+            (msg instanceof OFPacketIn)) {
             OFPacketIn pi = (OFPacketIn) msg;
 
             Ethernet eth = IFloodlightProviderService.bcStore.
