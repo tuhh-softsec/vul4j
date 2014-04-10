@@ -55,7 +55,7 @@ public class NodePortTuple {
     }
 
     public String toString() {
-        return "[id=" + HexString.toHexString(nodeId) + ", port=" + new Short(portId) + "]";
+        return "[id=" + HexString.toHexString(nodeId) + ", port=" + portId + "]";
     }
 
     @Override
