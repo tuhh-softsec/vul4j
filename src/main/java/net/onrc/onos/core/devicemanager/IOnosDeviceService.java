@@ -6,7 +6,7 @@ import net.floodlightcontroller.util.MACAddress;
 /**
  * {@link OnosDeviceManager} doesn't yet provide any API to fellow modules,
  * however making it export a dummy service means we can specify it as
- * a dependency of Forwarding
+ * a dependency of Forwarding.
  *
  * @author jono
  */

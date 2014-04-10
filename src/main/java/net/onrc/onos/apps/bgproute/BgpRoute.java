@@ -500,7 +500,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
     /**
      * Add a flow to match dst-IP prefix and rewrite MAC for one IP prefix
-     * to all other border switches
+     * to all other border switches.
      */
     private void addPrefixFlows(Prefix prefix, Interface egressInterface,
                                 MACAddress nextHopMacAddress) {
@@ -682,7 +682,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
     /**
      * On startup, we need to calculate a full mesh of paths between all gateway
-     * switches
+     * switches.
      */
     private void setupFullMesh() {
         //For each border router, calculate and install a path from every other
@@ -799,7 +799,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
     /**
      * Proactively install all BGP traffic paths from BGP host attachment point
-     * in SDN network to all the virtual gateways to BGP peers in other networks
+     * in SDN network to all the virtual gateways to BGP peers in other networks.
      */
     private void setupBgpPaths() {
 

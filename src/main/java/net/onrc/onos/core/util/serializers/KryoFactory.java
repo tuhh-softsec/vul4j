@@ -70,7 +70,7 @@ public class KryoFactory {
     }
 
     /**
-     * Constructor to explicitly specify number of Kryo instances to pool
+     * Constructor to explicitly specify number of Kryo instances to pool.
      *
      * @param initialCapacity number of Kryo instance to preallocate
      */

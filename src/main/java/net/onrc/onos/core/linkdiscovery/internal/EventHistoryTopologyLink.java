@@ -6,7 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Topology link up/down event history related classes and members
+ * Topology link up/down event history related classes and members.
  *
  * @author subrata
  */

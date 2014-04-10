@@ -208,7 +208,7 @@ public class OnosDeviceManager implements IFloodlightModule,
 
     /**
      * Get IP address from packet if the packet is either an ARP
-     * or a DHCP packet
+     * or a DHCP packet.
      *
      * @param eth
      * @param dlAddr

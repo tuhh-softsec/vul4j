@@ -92,7 +92,7 @@ public class PathIntentMap extends IntentMap {
     }
 
     /**
-     * calculate available bandwidth of specified link
+     * calculate available bandwidth of specified link.
      *
      * @param link
      * @return

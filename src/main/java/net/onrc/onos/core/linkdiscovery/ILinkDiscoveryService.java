@@ -31,7 +31,7 @@ public interface ILinkDiscoveryService extends IFloodlightService {
     public Map<Link, LinkInfo> getLinks();
 
     /**
-     * Returns link type of a given link
+     * Returns link type of a given link.
      *
      * @param info
      * @return
@@ -45,7 +45,7 @@ public interface ILinkDiscoveryService extends IFloodlightService {
     public Map<Long, Set<Link>> getSwitchLinks();
 
     /**
-     * Adds a listener to listen for ILinkDiscoveryService messages
+     * Adds a listener to listen for ILinkDiscoveryService messages.
      *
      * @param listener The listener that wants the notifications
      */
@@ -57,17 +57,17 @@ public interface ILinkDiscoveryService extends IFloodlightService {
     public Set<NodePortTuple> getSuppressLLDPsInfo();
 
     /**
-     * Adds a switch port to suppress lldp set
+     * Adds a switch port to suppress lldp set.
      */
     public void addToSuppressLLDPs(long sw, short port);
 
     /**
-     * Removes a switch port from suppress lldp set
+     * Removes a switch port from suppress lldp set.
      */
     public void removeFromSuppressLLDPs(long sw, short port);
 
     /**
-     * Get the set of quarantined ports on a switch
+     * Get the set of quarantined ports on a switch.
      */
     public Set<Short> getQuarantinedPorts(long sw);
 

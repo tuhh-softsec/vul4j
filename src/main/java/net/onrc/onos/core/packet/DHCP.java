@@ -51,6 +51,7 @@ public class DHCP extends BasePacket {
      * ------------------------------------------
      * |            options (312)               |
      * ------------------------------------------
+     * Basic packet.
      */
     // Header + magic without options
     public static final int MIN_HEADER_LENGTH = 240;
@@ -279,7 +280,7 @@ public class DHCP extends BasePacket {
     }
 
     /**
-     * Gets a specific DHCP option parameter
+     * Gets a specific DHCP option parameter.
      *
      * @param opetionCode The option code to get
      * @return The value of the option if it exists, null otherwise

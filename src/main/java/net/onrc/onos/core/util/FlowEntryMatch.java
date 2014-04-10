@@ -526,7 +526,7 @@ public class FlowEntryMatch {
     }
 
     /**
-     * Get the matching IP ToS (DSCP field, 6 bits)
+     * Get the matching IP ToS (DSCP field, 6 bits).
      *
      * @return the matching IP ToS.
      */

@@ -91,7 +91,7 @@ public final class FlowEntryId {
     }
 
     /**
-     * Return the hash code of the Flow Entry ID
+     * Return the hash code of the Flow Entry ID.
      */
     @Override
     public int hashCode() {

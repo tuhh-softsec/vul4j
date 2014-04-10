@@ -136,7 +136,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
         }
 
         /**
-         * Check if sending rate is within the rate
+         * Check if sending rate is within the rate.
          *
          * @param current Current time
          * @return true if within the rate
@@ -205,7 +205,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
         }
 
         /**
-         * Check if this object has any messages in the queues to be sent
+         * Check if this object has any messages in the queues to be sent.
          *
          * @return True if there are some messages to be sent.
          */
@@ -939,7 +939,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
     }
 
     /**
-     * Add message to queue
+     * Add message to queue.
      *
      * @param sw
      * @param msg

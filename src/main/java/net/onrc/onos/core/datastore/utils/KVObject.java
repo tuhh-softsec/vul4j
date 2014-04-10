@@ -54,7 +54,7 @@ public class KVObject {
     private long version;
 
     /**
-     * Map to store user-defined properties
+     * Map to store user-defined properties.
      */
     private Map<Object, Object> propertyMap;
 
@@ -333,7 +333,7 @@ public class KVObject {
     }
 
     /**
-     * TODO Extract common interface
+     * TODO Extract common interface.
      */
     public static class WriteOp implements IMultiObjectOperation, IModifiableMultiEntryOperation {
 

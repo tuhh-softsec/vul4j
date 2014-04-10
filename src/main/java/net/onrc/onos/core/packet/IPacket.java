@@ -18,7 +18,7 @@
 package net.onrc.onos.core.packet;
 
 /**
- * @author David Erickson (daviderickson@cs.stanford.edu)
+ * @author David Erickson (daviderickson@cs.stanford.edu).
  */
 public interface IPacket {
     /**
@@ -44,20 +44,20 @@ public interface IPacket {
     public IPacket setParent(IPacket packet);
 
     /**
-     * Reset any checksums as needed, and call resetChecksum on all parents
+     * Reset any checksums as needed, and call resetChecksum on all parents.
      */
     public void resetChecksum();
 
     /**
      * Sets all payloads parent packet if applicable, then serializes this
-     * packet and all payloads
+     * packet and all payloads.
      *
      * @return a byte[] containing this packet and payloads
      */
     public byte[] serialize();
 
     /**
-     * Deserializes this packet layer and all possible payloads
+     * Deserializes this packet layer and all possible payloads.
      *
      * @param data
      * @param offset offset to start deserializing from

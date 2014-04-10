@@ -3,9 +3,9 @@ package net.onrc.onos.core.topology;
 import java.nio.ByteBuffer;
 
 /**
- * Self-contained Port event Object
+ * Self-contained Port event Object.
  * <p/>
- * TODO: We probably want common base class/interface for Self-Contained Event Object
+ * TODO: We probably want common base class/interface for Self-Contained Event Object.
  */
 public class PortEvent {
     public static class SwitchPort {

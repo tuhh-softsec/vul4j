@@ -353,7 +353,7 @@ public class FlowSynchronizer implements IFlowSyncService {
         }
 
         /**
-         * Return the hash code of the Flow Entry ID
+         * Return the hash code of the Flow Entry ID.
          */
         @Override
         public int hashCode() {

@@ -208,7 +208,7 @@ public class FlowEntryAction {
     }
 
     /**
-     * Action structure for ACTION_SET_VLAN_VID: Set the 802.1q VLAN id
+     * Action structure for ACTION_SET_VLAN_VID: Set the 802.1q VLAN id.
      */
     public static class ActionSetVlanId {
         private short vlanId;        // The VLAN ID to set
@@ -307,7 +307,7 @@ public class FlowEntryAction {
     }
 
     /**
-     * Action structure for ACTION_SET_VLAN_PCP: Set the 802.1q priority
+     * Action structure for ACTION_SET_VLAN_PCP: Set the 802.1q priority.
      */
     public static class ActionSetVlanPriority {
         private byte vlanPriority;    // The VLAN priority to set
@@ -406,7 +406,7 @@ public class FlowEntryAction {
     }
 
     /**
-     * Action structure for ACTION_STRIP_VLAN: Strip the 802.1q header
+     * Action structure for ACTION_STRIP_VLAN: Strip the 802.1q header.
      */
     public static class ActionStripVlan {
         private boolean stripVlan;    // If true, strip the VLAN header

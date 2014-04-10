@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class to represent a Table in RAMCloud
+ * Class to represent a Table in RAMCloud.
  */
 public class RCTable implements IKVTable {
     @SuppressWarnings("unused")

@@ -16,7 +16,7 @@ public class ShortestPathIntent extends Intent {
     protected String pathIntentId = null;
 
     /**
-     * Default constructor for Kryo deserialization
+     * Default constructor for Kryo deserialization.
      */
     protected ShortestPathIntent() {
     }

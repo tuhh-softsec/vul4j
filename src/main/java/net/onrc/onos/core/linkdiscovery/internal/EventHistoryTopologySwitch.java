@@ -7,7 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Topology Switch event history related classes and members
+ * Topology Switch event history related classes and members.
  *
  * @author subrata
  */

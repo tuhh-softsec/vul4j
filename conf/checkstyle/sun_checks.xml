@@ -106,9 +106,7 @@
             <property name="scope" value="public"/>
             <property name="severity" value="warning"/>
         </module>
-        <module name="JavadocStyle">
-          <property name="severity" value="warning"/>
-        </module>
+        <module name="JavadocStyle"/>
 
 
         <!-- Checks for Naming Conventions.                  -->

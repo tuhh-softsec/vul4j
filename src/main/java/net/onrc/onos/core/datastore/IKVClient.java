@@ -6,7 +6,7 @@ import java.util.List;
 import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
 
 /**
- * Interface for a client class used to access the Key-Value store
+ * Interface for a client class used to access the Key-Value store.
  */
 public interface IKVClient {
 
@@ -85,7 +85,7 @@ public interface IKVClient {
     // give an option to improve performance on some backends.
 
     /**
-     * Remove an existing Key-Value entry in table
+     * Remove an existing Key-Value entry in table.
      *
      * @param tableId
      * @param key
@@ -98,7 +98,7 @@ public interface IKVClient {
             throws ObjectDoesntExistException, WrongVersionException;
 
     /**
-     * Remove a Key-Value entry in table
+     * Remove a Key-Value entry in table.
      *
      * @param tableId
      * @param key
@@ -134,7 +134,7 @@ public interface IKVClient {
     public IMultiEntryOperation forceDeleteOp(IKVTableID tableId, byte[] key);
 
     /**
-     * Batch delete operation
+     * Batch delete operation.
      *
      * @param ops delete operations
      * @return true if failed operation exists
@@ -142,7 +142,7 @@ public interface IKVClient {
     public boolean multiDelete(final Collection<IMultiEntryOperation> ops);
 
     /**
-     * Batch write operation
+     * Batch write operation.
      *
      * @param ops write operations
      * @return true if failed operation exists
@@ -150,7 +150,7 @@ public interface IKVClient {
     public boolean multiWrite(final List<IMultiEntryOperation> ops);
 
     /**
-     * Batch read operation
+     * Batch read operation.
      *
      * @param ops read operations
      * @return true if failed operation exists

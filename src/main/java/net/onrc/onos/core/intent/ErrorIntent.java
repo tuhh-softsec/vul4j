@@ -1,7 +1,7 @@
 package net.onrc.onos.core.intent;
 
 /**
- * This class is instantiated by Run-times to express intent calculation error
+ * This class is instantiated by Run-times to express intent calculation error.
  *
  * @author Toshio Koide (t-koide@onlab.us)
  */
@@ -17,7 +17,7 @@ public class ErrorIntent extends Intent {
     public Intent parentIntent;
 
     /**
-     * Default constructor for Kryo deserialization
+     * Default constructor for Kryo deserialization.
      */
     protected ErrorIntent() {
     }

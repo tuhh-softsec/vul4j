@@ -41,35 +41,35 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
     private static int ACTIVITY_TIMEOUT = 30000;
 
     /**
-     * The MAC address associated with this entity
+     * The MAC address associated with this entity.
      */
     private MACAddress macAddress;
 
     /**
      * The IP address associated with this entity, or null if no IP learned
-     * from the network observation associated with this entity
+     * from the network observation associated with this entity.
      */
     private Integer ipv4Address;
 
     /**
-     * The VLAN tag on this entity, or null if untagged
+     * The VLAN tag on this entity, or null if untagged.
      */
     private Short vlan;
 
     /**
      * The DPID of the switch for the ingress point for this entity,
-     * or null if not present
+     * or null if not present.
      */
     private long switchDPID;
 
     /**
      * The port number of the switch for the ingress point for this entity,
-     * or null if not present
+     * or null if not present.
      */
     private short switchPort;
 
     /**
-     * The last time we observed this entity on the network
+     * The last time we observed this entity on the network.
      */
     private Date lastSeenTimestamp;
 
@@ -84,7 +84,7 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
     }
 
     /**
-     * Create a new entity
+     * Create a new entity.
      *
      * @param macAddress
      * @param vlan

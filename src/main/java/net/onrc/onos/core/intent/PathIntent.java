@@ -20,7 +20,7 @@ public class PathIntent extends Intent {
     }
 
     /**
-     * Default constructor for Kryo deserialization
+     * Default constructor for Kryo deserialization.
      */
     protected PathIntent() {
     }

@@ -6,7 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Topology Cluster merge/split event history related classes and members
+ * Topology Cluster merge/split event history related classes and members.
  *
  * @author subrata
  */

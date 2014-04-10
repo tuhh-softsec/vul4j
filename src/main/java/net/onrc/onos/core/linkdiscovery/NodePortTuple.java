@@ -19,7 +19,7 @@ public class NodePortTuple {
     protected short portId; // switch port id
 
     /**
-     * Creates a NodePortTuple
+     * Creates a NodePortTuple.
      *
      * @param nodeId The DPID of the switch
      * @param portId The port of the switch
@@ -91,7 +91,7 @@ public class NodePortTuple {
     /**
      * API to return a String value formed wtih NodeID and PortID
      * The portID is a 16-bit field, so mask it as an integer to get full
-     * positive value
+     * positive value.
      *
      * @return
      */

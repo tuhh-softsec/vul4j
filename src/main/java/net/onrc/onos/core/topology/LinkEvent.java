@@ -5,9 +5,9 @@ import java.nio.ByteBuffer;
 import net.onrc.onos.core.topology.PortEvent.SwitchPort;
 
 /**
- * Self-contained Link event Object
+ * Self-contained Link event Object.
  * <p/>
- * TODO: We probably want common base class/interface for Self-Contained Event Object
+ * TODO: We probably want common base class/interface for Self-Contained Event Object.
  */
 public class LinkEvent {
     protected final SwitchPort src;

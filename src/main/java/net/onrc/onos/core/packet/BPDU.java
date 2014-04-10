@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 
 /**
  * This class is a Rapid Spanning Tree Protocol
- * Bridge Protocol Data Unit
+ * Bridge Protocol Data Unit.
  *
  * @author alexreimers
  */

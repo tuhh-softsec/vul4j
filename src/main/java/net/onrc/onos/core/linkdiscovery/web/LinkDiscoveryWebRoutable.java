@@ -18,7 +18,7 @@ public class LinkDiscoveryWebRoutable implements RestletRoutable {
     }
 
     /**
-     * Set the base path for the Topology
+     * Set the base path for the Topology.
      */
     @Override
     public String basePath() {

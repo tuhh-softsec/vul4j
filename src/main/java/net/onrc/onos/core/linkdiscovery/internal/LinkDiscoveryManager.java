@@ -101,14 +101,14 @@ import org.slf4j.LoggerFactory;
  * <p/>
  * Invariants:
  * -portLinks and switchLinks will not contain empty Sets outside of
- * critical sections
+ * critical sections.
  * -portLinks contains LinkTuples where one of the src or dst
- * SwitchPortTuple matches the map key
+ * SwitchPortTuple matches the map key.
  * -switchLinks contains LinkTuples where one of the src or dst
- * SwitchPortTuple's id matches the switch id
+ * SwitchPortTuple's id matches the switch id.
  * -Each LinkTuple will be indexed into switchLinks for both
- * src.id and dst.id, and portLinks for each src and dst
- * -The updates queue is only added to from within a held write lock
+ * src.id and dst.id, and portLinks for each src and dst.
+ * -The updates queue is only added to from within a held write lock.
  */
 @LogMessageCategory("Network Topology")
 public class LinkDiscoveryManager
@@ -181,17 +181,17 @@ public class LinkDiscoveryManager
     protected Map<Long, IOnosRemoteSwitch> remoteSwitches;
 
     /**
-     * Map from link to the most recent time it was verified functioning
+     * Map from link to the most recent time it was verified functioning.
      */
     protected Map<Link, LinkInfo> links;
 
     /**
-     * Map from switch id to a set of all links with it as an endpoint
+     * Map from switch id to a set of all links with it as an endpoint.
      */
     protected Map<Long, Set<Link>> switchLinks;
 
     /**
-     * Map from a id:port to the set of links containing it as an endpoint
+     * Map from a id:port to the set of links containing it as an endpoint.
      */
     protected Map<NodePortTuple, Set<Link>> portLinks;
 
@@ -203,8 +203,10 @@ public class LinkDiscoveryManager
 
     protected volatile boolean shuttingDown = false;
 
-    /* topology aware components are called in the order they were added to the
-     * the array */
+    /**
+     * Topology aware components are called in the order they were added to the
+     * the array.
+     */
     protected ArrayList<ILinkDiscoveryListener> linkDiscoveryAware;
 
     protected class LinkUpdate extends LDUpdate {
@@ -252,7 +254,7 @@ public class LinkDiscoveryManager
     protected LinkedBlockingQueue<NodePortTuple> quarantineQueue;
     protected LinkedBlockingQueue<NodePortTuple> maintenanceQueue;
     /**
-     * Quarantine task
+     * Quarantine task.
      */
     protected SingletonTask bddpTask;
     protected static final int BDDP_TASK_INTERVAL = 100; // 100 ms.
@@ -274,7 +276,7 @@ public class LinkDiscoveryManager
     }
 
     /**
-     * Get the LLDP timeout value in seconds
+     * Get the LLDP timeout value in seconds.
      *
      * @return LLDP timeout value in seconds
      */
@@ -498,7 +500,7 @@ public class LinkDiscoveryManager
     }
 
     /**
-     * Send LLDP on known ports
+     * Send LLDP on known ports.
      */
     protected void discoverOnKnownLinkPorts() {
         // Copy the port set.
@@ -520,7 +522,7 @@ public class LinkDiscoveryManager
     }
 
     /**
-     * Learn remote switches when running as a distributed controller ONOS
+     * Learn remote switches when running as a distributed controller ONOS.
      */
     protected IOFSwitch addRemoteSwitch(long sw, short port) {
         IOnosRemoteSwitch remotesw = null;
@@ -697,7 +699,7 @@ public class LinkDiscoveryManager
     }
 
     /**
-     * Send LLDPs to all switch-ports
+     * Send LLDPs to all switch-ports.
      */
     protected void discoverOnAllPorts() {
         if (log.isTraceEnabled()) {
@@ -1409,7 +1411,7 @@ public class LinkDiscoveryManager
     }
 
     /**
-     * We send out LLDP messages when a switch is added to discover the topology
+     * We send out LLDP messages when a switch is added to discover the topology.
      *
      * @param sw The IOFSwitch that connected to the controller
      */
@@ -1631,7 +1633,7 @@ public class LinkDiscoveryManager
     }
 
     /**
-     * Register a link discovery aware component
+     * Register a link discovery aware component.
      *
      * @param linkDiscoveryAwareComponent
      */
@@ -1641,7 +1643,7 @@ public class LinkDiscoveryManager
     }
 
     /**
-     * Deregister a link discovery aware component
+     * Deregister a link discovery aware component.
      *
      * @param linkDiscoveryAwareComponent
      */

@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
- * Base class for Path representation
+ * Base class for Path representation.
  *
  * @author Toshio Koide (t-koide@onlab.us)
  */

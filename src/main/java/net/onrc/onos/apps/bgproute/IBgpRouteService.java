@@ -16,7 +16,7 @@ public interface IBgpRouteService extends IFloodlightService {
     public void clearPtree();
 
     /**
-     * Pass a RIB update to the {@link IBgpRouteService}
+     * Pass a RIB update to the {@link IBgpRouteService}.
      *
      * @param update
      */

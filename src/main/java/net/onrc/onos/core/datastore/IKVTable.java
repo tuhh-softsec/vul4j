@@ -2,7 +2,7 @@ package net.onrc.onos.core.datastore;
 
 
 /**
- * Interface for a class to represent a Table in a Key-Value store
+ * Interface for a class to represent a Table in a Key-Value store.
  */
 public interface IKVTable {
 
@@ -83,7 +83,7 @@ public interface IKVTable {
             throws ObjectDoesntExistException;
 
     /**
-     * Remove an existing Key-Value entry in table
+     * Remove an existing Key-Value entry in table.
      *
      * @param key
      * @param version expected version in the data store
@@ -95,7 +95,7 @@ public interface IKVTable {
             throws ObjectDoesntExistException, WrongVersionException;
 
     /**
-     * Remove a Key-Value entry in table
+     * Remove a Key-Value entry in table.
      *
      * @param key
      * @return version of removed object or VERSION_NONEXISTENT, if it did not exist.

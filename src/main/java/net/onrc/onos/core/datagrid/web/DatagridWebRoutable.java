@@ -28,7 +28,7 @@ public class DatagridWebRoutable implements RestletRoutable {
     }
 
     /**
-     * Set the base path for the Topology
+     * Set the base path for the Topology.
      */
     @Override
     public String basePath() {

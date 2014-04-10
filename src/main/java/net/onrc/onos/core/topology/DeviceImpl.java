@@ -56,7 +56,7 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     }
 
     /**
-     * Only {@link TopologyManager} should use this method
+     * Only {@link TopologyManager} should use this method.
      *
      * @param p
      */
@@ -66,7 +66,7 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     }
 
     /**
-     * Only {@link TopologyManager} should use this method
+     * Only {@link TopologyManager} should use this method.
      *
      * @param p
      */
@@ -75,7 +75,7 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     }
 
     /**
-     * Only {@link TopologyManager} should use this method
+     * Only {@link TopologyManager} should use this method.
      *
      * @param p
      */
@@ -84,7 +84,7 @@ public class DeviceImpl extends NetworkGraphObject implements Device {
     }
 
     /**
-     * Only {@link TopologyManager} should use this method
+     * Only {@link TopologyManager} should use this method.
      *
      * @param p
      */

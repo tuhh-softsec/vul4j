@@ -431,7 +431,7 @@ public class IPv4 extends BasePacket {
 
     /**
      * Accepts an IPv4 address and returns of string of the form xxx.xxx.xxx.xxx
-     * ie 192.168.0.1
+     * ie 192.168.0.1.
      *
      * @param ipAddress
      * @return

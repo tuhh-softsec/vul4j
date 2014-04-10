@@ -35,7 +35,7 @@ public class PathCalcRuntime implements IFloodlightService {
     }
 
     /**
-     * calculate shortest-path and constrained-shortest-path intents into low-level path intents
+     * calculate shortest-path and constrained-shortest-path intents into low-level path intents.
      *
      * @param intentOpList IntentOperationList having instances of ShortestPathIntent/ConstrainedShortestPathIntent
      * @param pathIntents  a set of current low-level intents

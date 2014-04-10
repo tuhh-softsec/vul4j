@@ -57,7 +57,7 @@ public class Ethernet extends BasePacket {
     protected boolean pad = false;
 
     /**
-     * By default, set Ethernet to untagged
+     * By default, set Ethernet to untagged.
      */
     public Ethernet() {
         super();
@@ -323,7 +323,7 @@ public class Ethernet extends BasePacket {
     }
 
     /**
-     * Convert a long MAC address to a byte array
+     * Convert a long MAC address to a byte array.
      *
      * @param macAddress
      * @return the bytes of the mac address
@@ -478,7 +478,7 @@ public class Ethernet extends BasePacket {
         } else if (pkt instanceof BPDU) {
             sb.append("\nbpdu packet");
         } else {
-            sb.append("\nunknwon packet");
+            sb.append("\nunknown packet");
         }
 
         return sb.toString();

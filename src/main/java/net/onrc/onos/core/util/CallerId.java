@@ -17,7 +17,7 @@ public final class CallerId {
     }
 
     /**
-     * Copy constructor
+     * Copy constructor.
      *
      * @param otherCallerId
      */

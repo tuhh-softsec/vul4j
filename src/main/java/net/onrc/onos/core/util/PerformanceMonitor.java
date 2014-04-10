@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for collecting performance measurements
+ * Class for collecting performance measurements.
  */
 public class PerformanceMonitor {
     private static final Logger log = LoggerFactory.getLogger(PerformanceMonitor.class);
@@ -36,7 +36,7 @@ public class PerformanceMonitor {
     private static final double NORMALIZATION = Math.pow(10, 6);
 
     /**
-     * Start a performance measurement, identified by a tag
+     * Start a performance measurement, identified by a tag.
      * <p/>
      * Note: Only a single measurement can use the same tag at a time.
      * ..... not true anymore.
@@ -96,7 +96,7 @@ public class PerformanceMonitor {
     }
 
     /**
-     * Write all performance measurements to the log
+     * Write all performance measurements to the log.
      */
     public void reportAll() {
         StringBuilder result = new StringBuilder();
@@ -149,7 +149,7 @@ public class PerformanceMonitor {
     }
 
     /**
-     * Write the performance measurement for a tag to the log
+     * Write the performance measurement for a tag to the log.
      *
      * @param tag the tag name.
      */
@@ -169,14 +169,14 @@ public class PerformanceMonitor {
     }
 
     /**
-     * A single performance measurement
+     * A single performance measurement.
      */
     public static class Measurement {
         long start;
         long stop = -1;
 
         /**
-         * Start the measurement
+         * Start the measurement.
          */
         public void start() {
             if (start <= 0) {
@@ -185,7 +185,7 @@ public class PerformanceMonitor {
         }
 
         /**
-         * Stop the measurement
+         * Stop the measurement.
          */
         public void stop() {
             long now = System.nanoTime();
@@ -193,7 +193,7 @@ public class PerformanceMonitor {
         }
 
         /**
-         * Stop the measurement at a specific time
+         * Stop the measurement at a specific time.
          *
          * @param time to stop
          */
@@ -204,7 +204,7 @@ public class PerformanceMonitor {
         }
 
         /**
-         * Compute the elapsed time of the measurement in nanoseconds
+         * Compute the elapsed time of the measurement in nanoseconds.
          *
          * @return the measurement time in nanoseconds, or -1 if the measurement is stil running.
          */

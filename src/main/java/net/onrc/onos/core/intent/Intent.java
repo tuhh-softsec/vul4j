@@ -27,7 +27,7 @@ public class Intent {
     private LinkedList<String> logs = new LinkedList<>();
 
     /**
-     * Default constructor for Kryo deserialization
+     * Default constructor for Kryo deserialization.
      */
     protected Intent() {
         logs.add(String.format("created, time:%d", System.nanoTime())); // for measurement

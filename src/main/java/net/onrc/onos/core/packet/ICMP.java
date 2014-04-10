@@ -20,7 +20,7 @@ package net.onrc.onos.core.packet;
 import java.nio.ByteBuffer;
 
 /**
- * Implements ICMP packet format
+ * Implements ICMP packet format.
  *
  * @author shudong.zhou@bigswitch.com
  */

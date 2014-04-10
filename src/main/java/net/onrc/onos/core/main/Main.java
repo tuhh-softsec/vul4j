@@ -11,14 +11,14 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 /**
- * Host for the ONOS main method
+ * Host for the ONOS main method.
  *
  * @author alexreimers
  */
 public class Main {
 
     /**
-     * Main method to load configuration and modules
+     * Main method to load configuration and modules.
      *
      * @param args
      * @throws FloodlightModuleException
