@@ -151,8 +151,8 @@ public class BSNPROBE extends BasePacket {
     public int hashCode() {
         final int prime = 883;
         int result = super.hashCode();
-        result = prime * result + srcMac.hashCode();
-        result = prime * result + dstMac.hashCode();
+        result = prime * result + Arrays.hashCode(srcMac);
+        result = prime * result + Arrays.hashCode(dstMac);
         result = prime * result + (int) (srcSwDpid >> 32) + (int) srcSwDpid;
         result = prime * result + srcPortNo;
         return result;
