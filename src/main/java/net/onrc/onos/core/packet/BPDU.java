@@ -31,7 +31,7 @@ public class BPDU extends BasePacket {
         TOPOLOGY_CHANGE;
     }
 
-    private final long destMac = 0x0180c2000000L; // 01-80-c2-00-00-00
+    private static final long DEST_MAC = 0x0180c2000000L; // 01-80-c2-00-00-00
 
     // TODO - check this for RSTP
     private LLC llcHeader;
@@ -134,6 +134,6 @@ public class BPDU extends BasePacket {
     }
 
     public long getDestMac() {
-        return destMac;
+        return DEST_MAC;
     }
 }

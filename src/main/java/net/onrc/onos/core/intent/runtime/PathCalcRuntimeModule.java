@@ -55,7 +55,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
         }
     }
 
-    class PerfLogger {
+    static class PerfLogger {
         private LinkedList<PerfLog> logData = new LinkedList<>();
 
         public PerfLogger(String logPhase) {
