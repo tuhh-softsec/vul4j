@@ -1523,7 +1523,7 @@ public class LinkDiscoveryManager
                     linkChanged = true;
                 }
                 if ((info.getMulticastValidTime() != null) &&
-                        (info.getMulticastValidTime() + (this.LINK_TIMEOUT * 1000) < curTime)) {
+                        (info.getMulticastValidTime() + (1000L * this.LINK_TIMEOUT) < curTime)) {
                     info.setMulticastValidTime(null);
                     // if uTime is not null, then link will remain as openflow
                     // link. If uTime is null, it will be deleted.  So, we
