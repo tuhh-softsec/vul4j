@@ -1,4 +1,4 @@
-package net.onrc.onos.apps.proxyarp;
+package net.onrc.onos.core.packetservice;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ public abstract class PacketOutNotification implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    protected final byte[] packet;
+    private final byte[] packet;
 
     /**
      * Class constructor.
@@ -26,5 +26,9 @@ public abstract class PacketOutNotification implements Serializable {
 
     public PacketOutNotification(byte[] packet) {
         this.packet = Arrays.copyOf(packet, packet.length);
+    }
+
+    public byte[] getPacketData() {
+        return Arrays.copyOf(packet, packet.length);
     }
 }

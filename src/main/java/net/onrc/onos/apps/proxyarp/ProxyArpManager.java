@@ -32,6 +32,8 @@ import net.onrc.onos.core.main.config.IConfigInfoService;
 import net.onrc.onos.core.packet.ARP;
 import net.onrc.onos.core.packet.Ethernet;
 import net.onrc.onos.core.packet.IPv4;
+import net.onrc.onos.core.packetservice.BroadcastPacketOutNotification;
+import net.onrc.onos.core.packetservice.SinglePacketOutNotification;
 import net.onrc.onos.core.topology.Device;
 import net.onrc.onos.core.topology.INetworkGraphService;
 import net.onrc.onos.core.topology.NetworkGraph;
@@ -94,10 +96,10 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
         @Override
         public void entryAdded(BroadcastPacketOutNotification value) {
             if (log.isTraceEnabled()) {
-                log.trace("entryAdded ip{}, sw {}, port {}, packet {}", value.getTargetAddress(), value.getInSwitch(), value.getInPort(), value.packet.length);
+                log.trace("entryAdded ip{}, sw {}, port {}, packet {}", value.getTargetAddress(), value.getInSwitch(), value.getInPort(), value.getPacketData().length);
             }
             BroadcastPacketOutNotification notification = (BroadcastPacketOutNotification) value;
-            broadcastArpRequestOutMyEdge(notification.packet,
+            broadcastArpRequestOutMyEdge(notification.getPacketData(),
                     notification.getInSwitch(),
                     notification.getInPort());
 
@@ -139,7 +141,7 @@ public class ProxyArpManager implements IProxyArpService, IOFMessageListener,
             log.debug("entryAdded");
             SinglePacketOutNotification notification =
                     (SinglePacketOutNotification) packetOutNotification;
-            sendArpRequestOutPort(notification.packet,
+            sendArpRequestOutPort(notification.getPacketData(),
                     notification.getOutSwitch(),
                     notification.getOutPort());
 

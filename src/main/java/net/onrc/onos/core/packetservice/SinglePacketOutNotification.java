@@ -1,4 +1,4 @@
-package net.onrc.onos.apps.proxyarp;
+package net.onrc.onos.core.packetservice;
 
 
 // TODO This class is too generic to be handled by ProxyArpService.
