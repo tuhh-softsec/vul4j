@@ -22,10 +22,10 @@ public class LinkEvent {
         dst = null;
     }
 
-    public LinkEvent(Long src_dpid, Long src_port_no, Long dst_dpid,
-                     Long dst_port_no) {
-        src = new SwitchPort(src_dpid, src_port_no);
-        dst = new SwitchPort(dst_dpid, dst_port_no);
+    public LinkEvent(Long srcDpid, Long srcPortNo, Long dstDpid,
+                     Long dstPortNo) {
+        src = new SwitchPort(srcDpid, srcPortNo);
+        dst = new SwitchPort(dstDpid, dstPortNo);
     }
 
     public LinkEvent(Link link) {
@@ -50,11 +50,11 @@ public class LinkEvent {
 
     public static final int LINKID_BYTES = 2 + PortEvent.PORTID_BYTES * 2;
 
-    public static ByteBuffer getLinkID(Long src_dpid, Long src_port_no,
-                                       Long dst_dpid, Long dst_port_no) {
+    public static ByteBuffer getLinkID(Long srcDpid, Long srcPortNo,
+                                       Long dstDpid, Long dstPortNo) {
         return (ByteBuffer) ByteBuffer.allocate(LinkEvent.LINKID_BYTES).putChar('L')
-                .put(PortEvent.getPortID(src_dpid, src_port_no))
-                .put(PortEvent.getPortID(dst_dpid, dst_port_no)).flip();
+                .put(PortEvent.getPortID(srcDpid, srcPortNo))
+                .put(PortEvent.getPortID(dstDpid, dstPortNo)).flip();
     }
 
     public byte[] getID() {

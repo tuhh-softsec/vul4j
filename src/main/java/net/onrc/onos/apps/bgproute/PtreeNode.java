@@ -16,18 +16,18 @@ public class PtreeNode {
     public RibEntry rib;
     private static final Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
-    PtreeNode(byte[] key, int key_bits, int max_key_octet) {
+    PtreeNode(byte[] key, int keyBits, int maxKeyOctet) {
         parent = null;
         left = null;
         right = null;
         refCount = 0;
         rib = null;
-        this.key = new byte[max_key_octet];
-        this.keyBits = key_bits;
-        log.debug("inside Ptreenode constructor key {} bits {}", key, key_bits);
+        this.key = new byte[maxKeyOctet];
+        this.keyBits = keyBits;
+        log.debug("inside Ptreenode constructor key {} bits {}", key, keyBits);
 
-        int octet = Ptree.bit_to_octet(key_bits);
-        for (int i = 0; i < max_key_octet; i++) {
+        int octet = Ptree.bit_to_octet(keyBits);
+        for (int i = 0; i < maxKeyOctet; i++) {
             if (i < octet) {
                 if (key != null) {
                     log.debug(octet + ": filling key[{}] {}", i, key[i]);

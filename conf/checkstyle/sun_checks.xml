@@ -127,11 +127,7 @@
         </module>
 
         <module name="PackageName"/>
-
-        <module name="ParameterName">
-          <property name="severity" value="warning"/>
-        </module>
-
+        <module name="ParameterName"/>
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
 

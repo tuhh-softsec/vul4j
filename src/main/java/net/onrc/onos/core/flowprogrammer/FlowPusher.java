@@ -360,10 +360,10 @@ public final class FlowPusher implements IFlowPusherService, IOFMessageListener 
          *
          * @param sw      Switch to which messages will be sent.
          * @param queue   Queue of messages.
-         * @param max_msg Limitation of number of messages to be sent. If set to 0,
+         * @param maxMsg Limitation of number of messages to be sent. If set to 0,
          *                all messages in queue will be sent.
          */
-        private void processQueue(IOFSwitch sw, SwitchQueue queue, int max_msg) {
+        private void processQueue(IOFSwitch sw, SwitchQueue queue, int maxMsg) {
             // check sending rate and determine it to be sent or not
             long currentTime = System.currentTimeMillis();
             long size = 0;
@@ -372,7 +372,7 @@ public final class FlowPusher implements IFlowPusherService, IOFMessageListener 
                 int i = 0;
                 while (queue.hasMessageToSend()) {
                     // Number of messages excess the limit
-                    if (0 < max_msg && max_msg <= i) {
+                    if (0 < maxMsg && maxMsg <= i) {
                         break;
                     }
                     ++i;
@@ -430,13 +430,13 @@ public final class FlowPusher implements IFlowPusherService, IOFMessageListener 
     /**
      * Initialize object with threads of given number.
      *
-     * @param number_thread Number of threads to handle messages.
+     * @param numberThreadValue Number of threads to handle messages.
      */
-    public FlowPusher(int number_thread) {
-        if (number_thread > 0) {
-            this.numberThread = number_thread;
+    public FlowPusher(int numberThreadValue) {
+        if (numberThreadValue > 0) {
+            numberThread = numberThreadValue;
         } else {
-            this.numberThread = DEFAULT_NUMBER_THREAD;
+            numberThread = DEFAULT_NUMBER_THREAD;
         }
     }
 

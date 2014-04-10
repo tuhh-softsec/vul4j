@@ -75,10 +75,10 @@ public class KVLink extends KVObject {
     private final SwitchPort dst;
     private STATUS status;
 
-    public static byte[] getLinkID(final Long src_dpid, final Long src_port_no,
-                                   final Long dst_dpid, final Long dst_port_no) {
-        return LinkEvent.getLinkID(src_dpid, src_port_no, dst_dpid,
-                dst_port_no).array();
+    public static byte[] getLinkID(final Long srcDpid, final Long srcPortNo,
+                                   final Long dstDpid, final Long dstPortNo) {
+        return LinkEvent.getLinkID(srcDpid, srcPortNo, dstDpid,
+                dstPortNo).array();
     }
 
     public static long[] getLinkTupleFromKey(final byte[] key) {
@@ -102,13 +102,13 @@ public class KVLink extends KVObject {
         return tuple;
     }
 
-    public KVLink(final Long src_dpid, final Long src_port_no,
-                  final Long dst_dpid, final Long dst_port_no) {
-        super(DataStoreClient.getClient().getTable(GLOBAL_LINK_TABLE_NAME), getLinkID(src_dpid,
-                src_port_no, dst_dpid, dst_port_no));
+    public KVLink(final Long srcDpid, final Long srcPortNo,
+                  final Long dstDpid, final Long dstPortNo) {
+        super(DataStoreClient.getClient().getTable(GLOBAL_LINK_TABLE_NAME), getLinkID(srcDpid,
+                srcPortNo, dstDpid, dstPortNo));
 
-        src = new SwitchPort(src_dpid, src_port_no);
-        dst = new SwitchPort(dst_dpid, dst_port_no);
+        src = new SwitchPort(srcDpid, srcPortNo);
+        dst = new SwitchPort(dstDpid, dstPortNo);
         status = STATUS.INACTIVE;
     }
 

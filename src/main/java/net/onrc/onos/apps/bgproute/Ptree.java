@@ -17,9 +17,9 @@ public class Ptree {
     private PtreeNode top;
     private byte[] maskBits = {(byte) 0x00, (byte) 0x80, (byte) 0xc0, (byte) 0xe0, (byte) 0xf0, (byte) 0xf8, (byte) 0xfc, (byte) 0xfe, (byte) 0xff};
 
-    public Ptree(int max_key_bits) {
-        maxKeyBits = max_key_bits;
-        maxKeyOctets = bit_to_octet(max_key_bits);
+    public Ptree(int maxKeyBits) {
+        this.maxKeyBits = maxKeyBits;
+        maxKeyOctets = bit_to_octet(maxKeyBits);
         //refCount = 0;
     }
 
@@ -27,8 +27,8 @@ public class Ptree {
         return acquire(key, maxKeyBits);
     }
 
-    public synchronized PtreeNode acquire(byte[] key, int key_bits) {
-        if (key_bits > maxKeyBits) {
+    public synchronized PtreeNode acquire(byte[] key, int keyBits) {
+        if (keyBits > maxKeyBits) {
             return null;
         }
 
@@ -36,9 +36,9 @@ public class Ptree {
         PtreeNode match = null;
 
         while (node != null
-                && node.keyBits <= key_bits
-                && key_match(node.key, node.keyBits, key, key_bits) == true) {
-            if (node.keyBits == key_bits) {
+                && node.keyBits <= keyBits
+                && key_match(node.key, node.keyBits, key, keyBits) == true) {
+            if (node.keyBits == keyBits) {
                 return addReference(node);
             }
 
@@ -54,7 +54,7 @@ public class Ptree {
         PtreeNode add = null;
 
         if (node == null) {
-            add = new PtreeNode(key, key_bits, maxKeyOctets);
+            add = new PtreeNode(key, keyBits, maxKeyOctets);
 
             if (match != null) {
                 node_link(match, add);
@@ -62,7 +62,7 @@ public class Ptree {
                 top = add;
             }
         } else {
-            add = node_common(node, key, key_bits);
+            add = node_common(node, key, keyBits);
 
             if (match != null) {
                 node_link(match, add);
@@ -71,10 +71,10 @@ public class Ptree {
             }
             node_link(add, node);
 
-            if (add.keyBits != key_bits) {
+            if (add.keyBits != keyBits) {
                 match = add;
 
-                add = new PtreeNode(key, key_bits, maxKeyOctets);
+                add = new PtreeNode(key, keyBits, maxKeyOctets);
                 node_link(match, add);
             }
         }
@@ -82,17 +82,17 @@ public class Ptree {
         return addReference(add);
     }
 
-    public synchronized PtreeNode lookup(byte[] key, int key_bits) {
-        if (key_bits > maxKeyBits) {
+    public synchronized PtreeNode lookup(byte[] key, int keyBits) {
+        if (keyBits > maxKeyBits) {
             return null;
         }
 
         PtreeNode node = top;
 
         while (node != null
-                && node.keyBits <= key_bits
-                && key_match(node.key, node.keyBits, key, key_bits) == true) {
-            if (node.keyBits == key_bits) {
+                && node.keyBits <= keyBits
+                && key_match(node.key, node.keyBits, key, keyBits) == true) {
+            if (node.keyBits == keyBits) {
                 return addReference(node);
             }
 
@@ -105,8 +105,8 @@ public class Ptree {
         return null;
     }
 
-    public synchronized PtreeNode match(byte[] key, int key_bits) {
-        if (key_bits > maxKeyBits) {
+    public synchronized PtreeNode match(byte[] key, int keyBits) {
+        if (keyBits > maxKeyBits) {
             return null;
         }
         PtreeNode node = top;
@@ -115,8 +115,8 @@ public class Ptree {
         if (node != null) {
 
             while (node != null
-                    && node.keyBits <= key_bits
-                    && key_match(node.key, node.keyBits, key, key_bits) == true) {
+                    && node.keyBits <= keyBits
+                    && key_match(node.key, node.keyBits, key, keyBits) == true) {
                 matched = node;
 
                 if (bit_check(key, node.keyBits) == true) {
@@ -173,8 +173,8 @@ public class Ptree {
         return null;
     }
 
-    public static int bit_to_octet(int key_bits) {
-        return Math.max((key_bits + 7) / 8, 1);
+    public static int bit_to_octet(int keyBits) {
+        return Math.max((keyBits + 7) / 8, 1);
     }
 
     private PtreeNode addReference(PtreeNode node) {
@@ -191,16 +191,16 @@ public class Ptree {
         }
     }
 
-    private boolean key_match(byte[] key1, int key1_len, byte[] key2, int key2_len) {
+    private boolean key_match(byte[] key1, int key1Len, byte[] key2, int key2Len) {
         int offset;
         int shift;
 
-        if (key1_len > key2_len) {
+        if (key1Len > key2Len) {
             return false;
         }
 
-        offset = (Math.min(key1_len, key2_len)) / 8;
-        shift = (Math.min(key1_len, key2_len)) % 8;
+        offset = (Math.min(key1Len, key2Len)) / 8;
+        shift = (Math.min(key1Len, key2Len)) % 8;
 
         if (shift != 0) {
             if ((maskBits[shift] & (key1[offset] ^ key2[offset])) != 0) {
@@ -217,9 +217,9 @@ public class Ptree {
         return true;
     }
 
-    private boolean bit_check(byte[] key, int key_bits) {
-        int offset = key_bits / 8;
-        int shift = 7 - (key_bits % 8);
+    private boolean bit_check(byte[] key, int keyBits) {
+        int offset = keyBits / 8;
+        int shift = 7 - (keyBits % 8);
         int bit = key[offset] & 0xff;
 
         bit >>= shift;
@@ -242,9 +242,9 @@ public class Ptree {
         add.parent = node;
     }
 
-    private PtreeNode node_common(PtreeNode node, byte[] key, int key_bits) {
+    private PtreeNode node_common(PtreeNode node, byte[] key, int keyBits) {
         int i;
-        int limit = Math.min(node.keyBits, key_bits) / 8;
+        int limit = Math.min(node.keyBits, keyBits) / 8;
 
         for (i = 0; i < limit; i++) {
             if (node.key[i] != key[i]) {
@@ -255,12 +255,12 @@ public class Ptree {
         int commonLen = i * 8;
         int boundary = 0;
 
-        if (commonLen != key_bits) {
+        if (commonLen != keyBits) {
             byte diff = (byte) (node.key[i] ^ key[i]);
             byte mask = (byte) 0x80;
             int shiftMask = 0;
 
-            while (commonLen < key_bits && ((mask & diff) == 0)) {
+            while (commonLen < keyBits && ((mask & diff) == 0)) {
                 boundary = 1;
 
                 shiftMask = (mask & 0xff);
