@@ -139,11 +139,9 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
     protected class SwitchLeaderListener implements LeaderLatchListener {
         String dpid;
-        LeaderLatch latch;
 
-        public SwitchLeaderListener(String dpid, LeaderLatch latch) {
+        public SwitchLeaderListener(String dpid) {
             this.dpid = dpid;
-            this.latch = latch;
         }
 
         @Override
@@ -205,10 +203,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
     }
 
     protected static class ClusterLeaderListener implements LeaderLatchListener {
-        LeaderLatch latch;
-
-        public ClusterLeaderListener(LeaderLatch latch) {
-            this.latch = latch;
+        public ClusterLeaderListener() {
         }
 
         //
@@ -254,7 +249,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
         }
 
         LeaderLatch latch = new LeaderLatch(client, latchPath, controllerId);
-        SwitchLeaderListener listener = new SwitchLeaderListener(dpidStr, latch);
+        SwitchLeaderListener listener = new SwitchLeaderListener(dpidStr);
         latch.addListener(listener);
 
 
@@ -626,7 +621,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
         clusterLeaderLatch = new LeaderLatch(client,
                 CLUSTER_LEADER_PATH,
                 controllerId);
-        clusterLeaderListener = new ClusterLeaderListener(clusterLeaderLatch);
+        clusterLeaderListener = new ClusterLeaderListener();
         clusterLeaderLatch.addListener(clusterLeaderListener);
         try {
             clusterLeaderLatch.start();

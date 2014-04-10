@@ -85,8 +85,7 @@ public class PathCalcRuntimeModuleTest {
         persistIntent = PowerMock.createMock(PersistIntent.class);
 
         PowerMock.expectNew(PersistIntent.class,
-                anyObject(IControllerRegistryService.class),
-                anyObject(INetworkGraphService.class)).andReturn(persistIntent);
+                anyObject(IControllerRegistryService.class)).andReturn(persistIntent);
 
         expect(modContext.getServiceImpl(IDatagridService.class))
                 .andReturn(datagridService).once();

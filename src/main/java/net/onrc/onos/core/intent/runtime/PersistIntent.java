@@ -17,8 +17,6 @@ import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.core.intent.IntentOperationList;
 import net.onrc.onos.core.registry.IControllerRegistryService;
 import net.onrc.onos.core.registry.IdBlock;
-import net.onrc.onos.core.topology.INetworkGraphService;
-import net.onrc.onos.core.topology.NetworkGraph;
 import net.onrc.onos.core.util.serializers.KryoFactory;
 
 import org.slf4j.Logger;
@@ -34,7 +32,6 @@ public class PersistIntent {
     private static final Logger log = LoggerFactory.getLogger(IntentResource.class);
     private long range = 10000L;
     private final IControllerRegistryService controllerRegistry;
-    NetworkGraph graph = null;
     private static final String INTENT_JOURNAL = "G:IntentJournal";
     private static final int VALUE_STORE_LIMIT = 1024 * 1024;
     private IKVTable table;
@@ -46,9 +43,8 @@ public class PersistIntent {
     private IdBlock idBlock = null;
 
 
-    public PersistIntent(final IControllerRegistryService controllerRegistry, INetworkGraphService ng) {
+    public PersistIntent(final IControllerRegistryService controllerRegistry) {
         this.controllerRegistry = controllerRegistry;
-        this.graph = ng.getNetworkGraph();
         table = DataStoreClient.getClient().getTable(INTENT_JOURNAL);
         stream = new ByteArrayOutputStream(1024);
         output = new Output(stream);

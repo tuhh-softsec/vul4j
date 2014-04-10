@@ -155,7 +155,7 @@ public class PathCalcRuntimeModule implements IFloodlightModule, IPathCalcRuntim
         opEventChannel = datagridService.createChannel(INTENT_OP_EVENT_CHANNEL_NAME, Long.class, IntentOperationList.class);
         datagridService.addListener(INTENT_STATE_EVENT_CHANNEL_NAME, this, Long.class, IntentStateList.class);
         networkGraphService.registerNetworkGraphListener(this);
-        persistIntent = new PersistIntent(controllerRegistry, networkGraphService);
+        persistIntent = new PersistIntent(controllerRegistry);
     }
 
     // ================================================================================
