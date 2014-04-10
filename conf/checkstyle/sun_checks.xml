@@ -192,7 +192,6 @@
         <module name="AvoidNestedBlocks">
             <!-- ONOS alows declarations inside of switch case blocks -->
             <property name="allowInSwitchCase" value="true"/>
-            <property name="severity" value="warning"/>
         </module>
         <module name="EmptyBlock"/>
         <module name="LeftCurly"/>
