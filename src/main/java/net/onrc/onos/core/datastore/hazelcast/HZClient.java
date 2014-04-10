@@ -30,7 +30,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
-public class HZClient implements IKVClient {
+public final class HZClient implements IKVClient {
     private static final Logger log = LoggerFactory.getLogger(HZClient.class);
 
     static final long VERSION_NONEXISTENT = 0L;

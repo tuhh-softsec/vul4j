@@ -4,7 +4,7 @@ import net.onrc.onos.core.datastore.hazelcast.HZClient;
 import net.onrc.onos.core.datastore.ramcloud.RCClient;
 
 // This class probably need to be a service
-public class DataStoreClient {
+public final class DataStoreClient {
     private static final String BACKEND = System.getProperty("net.onrc.onos.core.datastore.backend", "hazelcast");
 
     // Suppresses default constructor, ensuring non-instantiability.

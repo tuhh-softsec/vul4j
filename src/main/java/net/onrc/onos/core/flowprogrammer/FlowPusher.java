@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Naoki Shiota
  */
-public class FlowPusher implements IFlowPusherService, IOFMessageListener {
+public final class FlowPusher implements IFlowPusherService, IOFMessageListener {
     private static final Logger log = LoggerFactory.getLogger(FlowPusher.class);
     protected static final int DEFAULT_NUMBER_THREAD = 1;
 
@@ -239,7 +239,7 @@ public class FlowPusher implements IFlowPusherService, IOFMessageListener {
      *
      * @author Naoki
      */
-    private static class BarrierInfo {
+    private static final class BarrierInfo {
         final long dpid;
         final int xid;
 

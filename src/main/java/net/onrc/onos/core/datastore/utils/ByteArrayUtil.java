@@ -2,7 +2,7 @@ package net.onrc.onos.core.datastore.utils;
 
 import java.nio.ByteBuffer;
 
-public class ByteArrayUtil {
+public final class ByteArrayUtil {
 
     // Suppresses default constructor, ensuring non-instantiability.
     private ByteArrayUtil() {
