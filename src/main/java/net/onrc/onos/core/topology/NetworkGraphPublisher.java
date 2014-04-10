@@ -157,7 +157,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
     public void switchPortAdded(Long switchId, OFPhysicalPort port) {
         PortEvent portEvent = new PortEvent(switchId, (long) port.getPortNumber());
         networkGraphDiscoveryInterface.putPortDiscoveryEvent(portEvent);
-        linkDiscovery.RemoveFromSuppressLLDPs(switchId, port.getPortNumber());
+        linkDiscovery.removeFromSuppressLLDPs(switchId, port.getPortNumber());
     }
 
     @Override
@@ -185,7 +185,7 @@ public class NetworkGraphPublisher implements /*IOFSwitchListener,*/
         for (OFPhysicalPort port : sw.getPorts()) {
             // Allow links to be discovered on this port now that it's
             // in the database
-            linkDiscovery.RemoveFromSuppressLLDPs(sw.getId(), port.getPortNumber());
+            linkDiscovery.removeFromSuppressLLDPs(sw.getId(), port.getPortNumber());
         }
     }
 

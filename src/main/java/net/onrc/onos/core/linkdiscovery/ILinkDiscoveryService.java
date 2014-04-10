@@ -59,12 +59,12 @@ public interface ILinkDiscoveryService extends IFloodlightService {
     /**
      * Adds a switch port to suppress lldp set
      */
-    public void AddToSuppressLLDPs(long sw, short port);
+    public void addToSuppressLLDPs(long sw, short port);
 
     /**
      * Removes a switch port from suppress lldp set
      */
-    public void RemoveFromSuppressLLDPs(long sw, short port);
+    public void removeFromSuppressLLDPs(long sw, short port);
 
     /**
      * Get the set of quarantined ports on a switch

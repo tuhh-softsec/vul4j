@@ -296,7 +296,7 @@ public class LinkDiscoveryManager
      * Remove any known links on the switch port.
      */
     @Override
-    public void AddToSuppressLLDPs(long sw, short port) {
+    public void addToSuppressLLDPs(long sw, short port) {
         NodePortTuple npt = new NodePortTuple(sw, port);
         this.suppressLinkDiscovery.add(npt);
         deleteLinksOnPort(npt, "LLDP suppressed.");
@@ -307,7 +307,7 @@ public class LinkDiscoveryManager
      * Discover links on that switchport.
      */
     @Override
-    public void RemoveFromSuppressLLDPs(long sw, short port) {
+    public void removeFromSuppressLLDPs(long sw, short port) {
         NodePortTuple npt = new NodePortTuple(sw, port);
         this.suppressLinkDiscovery.remove(npt);
         discover(npt);

@@ -1086,7 +1086,7 @@ public class Controller implements IFloodlightProviderService {
             // and attempted to be written to the database before the port is in
             // the database. We now suppress link discovery on ports until we're
             // sure they're in the database.
-            linkDiscovery.AddToSuppressLLDPs(sw.getId(), port.getPortNumber());
+            linkDiscovery.addToSuppressLLDPs(sw.getId(), port.getPortNumber());
 
             sw.setPort(port);
             SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTADDED);
@@ -1338,7 +1338,7 @@ public class Controller implements IFloodlightProviderService {
         // the database. We now suppress link discovery on ports until we're
         // sure they're in the database.
         for (OFPhysicalPort port : sw.getPorts()) {
-            linkDiscovery.AddToSuppressLLDPs(sw.getId(), port.getPortNumber());
+            linkDiscovery.addToSuppressLLDPs(sw.getId(), port.getPortNumber());
         }
 
         // TODO: is it safe to modify the HashMap without holding 

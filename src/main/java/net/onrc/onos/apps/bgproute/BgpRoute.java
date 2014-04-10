@@ -1156,7 +1156,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
         //Suppress link discovery on external-facing router ports
         for (Interface intf : interfaces.values()) {
-            linkDiscoveryService.AddToSuppressLLDPs(intf.getDpid(), intf.getPort());
+            linkDiscoveryService.addToSuppressLLDPs(intf.getDpid(), intf.getPort());
         }
 
         bgpUpdatesExecutor.execute(new Runnable() {
