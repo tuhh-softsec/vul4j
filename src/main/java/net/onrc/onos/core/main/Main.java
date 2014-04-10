@@ -15,7 +15,12 @@ import org.kohsuke.args4j.CmdLineParser;
  *
  * @author alexreimers
  */
-public class Main {
+public final class Main {
+
+    /**
+     * Private default constructor.
+     */
+    private Main() { }
 
     /**
      * Main method to load configuration and modules.
