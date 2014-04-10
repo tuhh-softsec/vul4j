@@ -1512,7 +1512,7 @@ public class LinkDiscoveryManager
                 // Timeout the unicast and multicast LLDP valid times
                 // independently.
                 if ((info.getUnicastValidTime() != null) &&
-                        (info.getUnicastValidTime() + (this.LINK_TIMEOUT * 1000) < curTime)) {
+                        (info.getUnicastValidTime() + (1000L * this.LINK_TIMEOUT) < curTime)) {
                     info.setUnicastValidTime(null);
 
                     if (info.getMulticastValidTime() != null) {
