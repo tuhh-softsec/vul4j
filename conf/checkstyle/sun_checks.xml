@@ -132,10 +132,7 @@
           <property name="severity" value="warning"/>
         </module>
 
-        <module name="StaticVariableName">
-          <property name="severity" value="warning"/>
-        </module>
-
+        <module name="StaticVariableName"/>
         <module name="TypeName"/>
 
         <!-- Checks for imports                              -->

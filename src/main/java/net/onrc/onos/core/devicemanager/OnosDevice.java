@@ -38,7 +38,7 @@ import net.onrc.onos.core.packet.IPv4;
  */
 public class OnosDevice implements Serializable { //implements Comparable<OnosDevice> {
 
-    private static int ACTIVITY_TIMEOUT = 30000;
+    private static final int ACTIVITY_TIMEOUT = 30000;
 
     /**
      * The MAC address associated with this entity.

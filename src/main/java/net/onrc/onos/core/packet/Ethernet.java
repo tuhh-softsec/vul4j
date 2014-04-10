@@ -30,7 +30,7 @@ import org.openflow.util.HexString;
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
 public class Ethernet extends BasePacket {
-    private static String HEXES = "0123456789ABCDEF";
+    private static final String HEXES = "0123456789ABCDEF";
     public static final short TYPE_ARP = 0x0806;
     public static final short TYPE_RARP = (short) 0x8035;
     public static final short TYPE_IPV4 = 0x0800;
