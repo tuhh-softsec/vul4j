@@ -13,7 +13,7 @@ public class PtreeNode {
 
     public int refCount;
 
-    public RibEntry rib;
+    // public RibEntry rib;
     private static final Logger log = LoggerFactory.getLogger(BgpRoute.class);
 
     PtreeNode(byte[] key, int keyBits, int maxKeyOctet) {
@@ -21,7 +21,7 @@ public class PtreeNode {
         left = null;
         right = null;
         refCount = 0;
-        rib = null;
+        // rib = null;
         this.key = new byte[maxKeyOctet];
         this.keyBits = keyBits;
         log.debug("inside Ptreenode constructor key {} bits {}", key, keyBits);

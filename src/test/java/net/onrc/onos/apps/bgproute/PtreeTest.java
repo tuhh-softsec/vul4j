@@ -53,7 +53,7 @@ public class PtreeTest {
             byteAddresses.put(prefix, InetAddresses.forString(address).getAddress());
 
             PtreeNode node = ptree.acquire(byteAddresses.get(prefix), prefixLength);
-            node.rib = new RibEntry("192.168.10.101", "192.168.60.1");
+            // node.rib = new RibEntry("192.168.10.101", "192.168.60.1");
             ooptrie.put(new Prefix(byteAddresses.get(prefix), prefixLength),
                     new RibEntry("192.168.10.101", "192.168.60.1"));
         }
@@ -75,14 +75,16 @@ public class PtreeTest {
         //First let's test an empty Ptree
         Ptree localPtree = new Ptree(32);
         PtreeNode node = localPtree.acquire(new byte[]{0x00, 0x00, 0x00, 0x00});
-        assertTrue(node != null && node.rib == null);
+        // assertTrue(node != null && node.rib == null);
+        assertTrue(node != null);
 
         //Now let's look at the prepopulated tree
         String testPrefix = "206.17.144.0/20";
         PtreeNode existingNode = ptree.acquire(byteAddresses.get(testPrefix), 20);
         printByteArray(existingNode.key);
         printByteArray(byteAddresses.get(testPrefix));
-        assertTrue(existingNode != null && existingNode.rib == null);
+        // assertTrue(existingNode != null && existingNode.rib == null);
+        assertTrue(existingNode != null);
 
         assertTrue(Arrays.equals(existingNode.key, byteAddresses.get(testPrefix)));
     }

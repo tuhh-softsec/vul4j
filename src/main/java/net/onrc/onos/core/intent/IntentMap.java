@@ -47,6 +47,25 @@ public class IntentMap {
 
         public ChangedEventType eventType;
         public Intent intent;
+
+        /**
+         * Get a string representation of the object.
+         * <p/>
+         * The string has the following form:
+         * [eventType=XXX intent=XXX]
+         *
+         * @return a string representation of the object.
+         */
+        @Override
+        public String toString() {
+            StringBuilder ret = new StringBuilder();
+            ret.append("[eventType=");
+            ret.append(this.eventType.toString());
+            ret.append(" intent=");
+            ret.append(this.intent.toString());
+            ret.append("]");
+            return ret.toString();
+        }
     }
 
     public interface ChangedListener extends EventListener {
