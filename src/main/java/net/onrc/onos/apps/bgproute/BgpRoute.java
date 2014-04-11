@@ -1287,15 +1287,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
         if (newEntry.getSysUpTime() > oldEntry.getSysUpTime()) {
             return true;
-        } else if (newEntry.getSysUpTime() == oldEntry.getSysUpTime()) {
-            if (newEntry.getSequenceNum() > oldEntry.getSequenceNum()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
         }
+
+        return newEntry.getSysUpTime() == oldEntry.getSysUpTime() &&
+               newEntry.getSequenceNum() > oldEntry.getSequenceNum();
     }
 
     // The code below should be reimplemented after removal of Floodlight's

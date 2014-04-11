@@ -224,11 +224,7 @@ public class Ptree {
 
         bit >>= shift;
 
-        if ((bit & 1) == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return ((bit & 1) == 1);
     }
 
     private void node_link(PtreeNode node, PtreeNode add) {
