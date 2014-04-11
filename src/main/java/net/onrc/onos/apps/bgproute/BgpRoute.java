@@ -431,6 +431,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
     }
 
     private void executeRibAdd(RibUpdate update) {
+        // TODO: Fix the code below. Note that "deviceStorage" was removed.
+
+        /*
         Prefix prefix = update.getPrefix();
         RibEntry rib = update.getRibEntry();
 
@@ -439,8 +442,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
         // See if we know the MAC address of the next hop
         // TODO if we do not treat the next hop as a device in the future, we need to update this
-        // TODO: Fix the code below after deviceStorage was removed
-        /*
         IDeviceObject nextHopDevice =
                 deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(dstIpAddress));
 
@@ -453,7 +454,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
         }
         nextHopMacAddress = MACAddress.valueOf(nextHopDevice.getMACAddress());
-        */
 
         // Find the attachment point (egress interface) of the next hop
         Interface egressInterface = null;
@@ -496,6 +496,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             //For all prefixes we need to add the first-hop mac-rewriting flows
             addPrefixFlows(prefix, egressInterface, nextHopMacAddress);
         }
+        */
     }
 
     /**
@@ -685,6 +686,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
      * switches.
      */
     private void setupFullMesh() {
+        // TODO: Fix the code below. Note that "deviceStorage" was removed.
+
+        /*
+
         //For each border router, calculate and install a path from every other
         //border switch to said border router. However, don't install the entry
         //in to the first hop switch, as we need to install an entry to rewrite
@@ -701,9 +706,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
             //See if we know the MAC address of the peer. If not we can't
             //do anything until we learn it
-            // TODO: Fix the code below after deviceStorage was removed
             MACAddress macAddress = null;
-            /*
             IDeviceObject nextHopDevice =
                     deviceStorage.getDeviceByIP(InetAddresses.coerceToInteger(peer.getIpAddress()));
 
@@ -716,7 +719,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             }
 
             macAddress = MACAddress.valueOf(nextHopDevice.getMACAddress());
-            */
 
             if (macAddress == null) {
                 log.debug("Don't know MAC for {}", peer.getIpAddress().getHostAddress());
@@ -729,6 +731,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             //If we know the MAC, lets go ahead and push the paths to this peer
             calculateAndPushPath(path, macAddress);
         }
+        */
     }
 
     private void calculateAndPushPath(Path path, MACAddress dstMacAddress) {

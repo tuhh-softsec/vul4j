@@ -18,6 +18,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
@@ -572,6 +574,8 @@ public final class FlowPusher implements IFlowPusherService, IOFMessageListener 
     }
 
     @Override
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
+                        justification = "Future versions of createQueueImpl() might return null")
     public boolean createQueue(IOFSwitch sw) {
         SwitchQueue queue = createQueueImpl(sw);
 
