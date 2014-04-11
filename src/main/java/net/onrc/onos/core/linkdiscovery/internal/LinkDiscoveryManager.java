@@ -378,7 +378,7 @@ public class LinkDiscoveryManager
      * @param npt
      */
     protected void addToQuarantineQueue(NodePortTuple npt) {
-        if (quarantineQueue.contains(npt) == false) {
+        if (!quarantineQueue.contains(npt)) {
             quarantineQueue.add(npt);
         }
     }
@@ -404,7 +404,7 @@ public class LinkDiscoveryManager
         // TODO We are not checking if the switch port tuple is already
         // in the maintenance list or not.  This will be an issue for
         // really large number of switch ports in the network.
-        if (maintenanceQueue.contains(npt) == false) {
+        if (!maintenanceQueue.contains(npt)) {
             maintenanceQueue.add(npt);
         }
     }
@@ -850,7 +850,7 @@ public class LinkDiscoveryManager
             }
         }
 
-        if (myLLDP == false) {
+        if (!myLLDP) {
             // This is not the LLDP sent by this controller.
             // If the LLDP message has multicast bit set, then we need to broadcast
             // the packet as a regular packet.
@@ -944,7 +944,7 @@ public class LinkDiscoveryManager
         // reverse link.
 
         newLinkInfo = links.get(lt);
-        if (newLinkInfo != null && isStandard && isReverse == false) {
+        if (newLinkInfo != null && isStandard && !isReverse) {
             Link reverseLink = new Link(lt.getDst(), lt.getDstPort(),
                     lt.getSrc(), lt.getSrcPort());
             LinkInfo reverseInfo = links.get(reverseLink);
@@ -998,7 +998,7 @@ public class LinkDiscoveryManager
             }
             // It could be a packet other than BSN LLDP, therefore
             // continue with the regular processing.
-            if (bsn.getPayload() instanceof LLDP == false) {
+            if (!(bsn.getPayload() instanceof LLDP)) {
                 return Command.CONTINUE;
             }
             return handleLldp((LLDP) bsn.getPayload(), sw, pi, false, cntx);

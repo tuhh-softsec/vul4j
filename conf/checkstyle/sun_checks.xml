@@ -219,10 +219,7 @@
           <property name="severity" value="warning"/>
         </module>
 
-        <module name="SimplifyBooleanExpression">
-          <property name="severity" value="warning"/>
-        </module>
-
+        <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
 
         <!-- Checks for class design                         -->

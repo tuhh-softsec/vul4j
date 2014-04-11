@@ -835,7 +835,7 @@ public final class FlowPusher implements IFlowPusherService, IOFMessageListener 
             }
 
             if (actionStripVlan != null) {
-                if (actionStripVlan.stripVlan() == true) {
+                if (actionStripVlan.stripVlan()) {
                     OFActionStripVirtualLan ofa = new OFActionStripVirtualLan();
                     openFlowActions.add(ofa);
                     actionsLen += ofa.getLength();

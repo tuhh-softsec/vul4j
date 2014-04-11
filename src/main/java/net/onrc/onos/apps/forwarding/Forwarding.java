@@ -386,7 +386,7 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
                         }
                     }
 
-                    if (isflowEntryForThisSwitch == false) {
+                    if (!isflowEntryForThisSwitch) {
                         // If we don't find a flow entry for that switch, then we're
                         // in the middle of a rerouting (or something's gone wrong).
                         // This packet will be dropped as a victim of the rerouting.

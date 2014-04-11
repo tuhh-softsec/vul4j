@@ -37,14 +37,14 @@ public class Ptree {
 
         while (node != null
                 && node.keyBits <= keyBits
-                && key_match(node.key, node.keyBits, key, keyBits) == true) {
+                && key_match(node.key, node.keyBits, key, keyBits)) {
             if (node.keyBits == keyBits) {
                 return addReference(node);
             }
 
             match = node;
 
-            if (bit_check(key, node.keyBits) == true) {
+            if (bit_check(key, node.keyBits)) {
                 node = node.right;
             } else {
                 node = node.left;
@@ -91,12 +91,12 @@ public class Ptree {
 
         while (node != null
                 && node.keyBits <= keyBits
-                && key_match(node.key, node.keyBits, key, keyBits) == true) {
+                && key_match(node.key, node.keyBits, key, keyBits)) {
             if (node.keyBits == keyBits) {
                 return addReference(node);
             }
 
-            if (bit_check(key, node.keyBits) == true) {
+            if (bit_check(key, node.keyBits)) {
                 node = node.right;
             } else {
                 node = node.left;
@@ -116,10 +116,10 @@ public class Ptree {
 
             while (node != null
                     && node.keyBits <= keyBits
-                    && key_match(node.key, node.keyBits, key, keyBits) == true) {
+                    && key_match(node.key, node.keyBits, key, keyBits)) {
                 matched = node;
 
-                if (bit_check(key, node.keyBits) == true) {
+                if (bit_check(key, node.keyBits)) {
                     node = node.right;
                 } else {
                     node = node.left;
@@ -230,7 +230,7 @@ public class Ptree {
     private void node_link(PtreeNode node, PtreeNode add) {
         boolean bit = bit_check(add.key, node.keyBits);
 
-        if (bit == true) {
+        if (bit) {
             node.right = add;
         } else {
             node.left = add;
