@@ -216,8 +216,8 @@
         </module>
 
         <module name="RedundantThrows">
-          <property name="severity" value="warning"/>
-        </module>
+	   <property name="allowSubclasses" value="true"/>
+	</module>
 
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
