@@ -496,8 +496,14 @@ public class Forwarding implements IOFMessageListener, IFloodlightModule,
         List<PacketToPush> packets = null;
         net.onrc.onos.core.topology.Path graphPath = installedPath.getPath();
 
-        log.debug("path{}", graphPath);
-        Short outPort = graphPath.get(0).getSrc().getNumber().shortValue();
+        short outPort;
+        if (graphPath.isEmpty()) {
+            outPort = (short) spfIntent.getDstPortNumber();
+            log.debug("Path is empty. Maybe devices on the same switch. outPort {}", outPort);
+        } else {
+            outPort = graphPath.get(0).getSrc().getNumber().shortValue();
+            log.debug("path{}, outPort {}", graphPath, outPort);
+        }
 
         PushedFlow existingFlow = null;
 
