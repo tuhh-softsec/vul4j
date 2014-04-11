@@ -128,7 +128,25 @@ public class LLDPTLV {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof LLDPTLV)) {
+        //
+        // NOTE: Subclasses are are considered as change of identity, hence
+        // equals() will return false if the class type doesn't match.
+        //
+        // The implication is that two instances - base class and derived class
+        // will be different even if they have same bits on the wire.
+        // We use this assumption to address the fundamental
+        // "equivalence relation" issue with class inheritance and "equals()":
+        //    http://www.artima.com/lejava/articles/equality.html
+        //    http://www.angelikalanger.com/Articles/JavaSolutions/SecretsOfEquals/Equals.html
+        //
+        // Based on existing code, we don't mix the usage of based and derived
+        // class instances.
+        //
+        // Note that the fix below is different from the Floodlight fix.
+        // The Floodlight code uses "if (!(obj instanceof LLDPTLV))", but
+        // that statement breaks the "equivalence relation".
+        //
+        if (getClass() != obj.getClass()) {
             return false;
         }
         LLDPTLV other = (LLDPTLV) obj;

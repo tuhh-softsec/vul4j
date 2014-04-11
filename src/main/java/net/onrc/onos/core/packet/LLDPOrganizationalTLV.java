@@ -161,11 +161,16 @@ public class LLDPOrganizationalTLV extends LLDPTLV {
         if (o == this) {
             return true;
         }
-
-        if (!(o instanceof LLDPOrganizationalTLV)) {
+        if (!super.equals(o)) {
             return false;
         }
-
+        //
+        // NOTE: Subclasses are are considered as change of identity, hence
+        // equals() will return false if the class type doesn't match.
+        //
+        if (getClass() != o.getClass()) {
+            return false;
+        }
         LLDPOrganizationalTLV other = (LLDPOrganizationalTLV) o;
         if (this.type != other.type) {
             return false;
