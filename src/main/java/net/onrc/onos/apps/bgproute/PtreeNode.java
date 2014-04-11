@@ -26,7 +26,7 @@ public class PtreeNode {
         this.keyBits = keyBits;
         log.debug("inside Ptreenode constructor key {} bits {}", key, keyBits);
 
-        int octet = Ptree.bit_to_octet(keyBits);
+        int octet = Ptree.bitToOctet(keyBits);
         for (int i = 0; i < maxKeyOctet; i++) {
             if (i < octet) {
                 if (key != null) {

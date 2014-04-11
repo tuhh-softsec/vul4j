@@ -127,7 +127,7 @@ public class RCTable implements IKVTable {
     }
 
     @Override
-    public long VERSION_NONEXISTENT() {
+    public long getVersionNonexistant() {
         return RCClient.VERSION_NONEXISTENT;
     }
 

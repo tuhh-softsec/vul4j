@@ -49,7 +49,7 @@ public class KVObject {
 
     /**
      * serialized value version stored on data store or
-     * {@link IKVTable.VERSION_NONEXISTENT()} if is a new object.
+     * {@link IKVTable.getVersionNonexistant()} if is a new object.
      */
     private long version;
 
@@ -59,7 +59,7 @@ public class KVObject {
     private Map<Object, Object> propertyMap;
 
     public KVObject(final IKVTable table, final byte[] key) {
-        this(table, key, null, table.VERSION_NONEXISTENT());
+        this(table, key, null, table.getVersionNonexistant());
     }
 
     public KVObject(final IKVTable table, final byte[] key, final byte[] value, final long version) {
@@ -324,7 +324,7 @@ public class KVObject {
                 }
             } else {
                 log.error("MultiRead error, skipping {}, {}", obj.getTable(), obj);
-                obj.version = obj.getTable().VERSION_NONEXISTENT();
+                obj.version = obj.getTable().getVersionNonexistant();
                 failExists = true;
             }
         }

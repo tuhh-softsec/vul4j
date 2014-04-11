@@ -161,6 +161,6 @@ public interface IKVClient {
      * Version number which represents that the object does not exist, or has
      * never been read the DB before.
      */
-    public long VERSION_NONEXISTENT();
+    public long getVersionNonexistant();
 
 }

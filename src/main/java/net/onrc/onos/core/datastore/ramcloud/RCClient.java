@@ -566,7 +566,7 @@ public class RCClient implements IKVClient {
     static final long VERSION_NONEXISTENT = JRamCloud.VERSION_NONEXISTENT;
 
     @Override
-    public long VERSION_NONEXISTENT() {
+    public long getVersionNonexistant() {
         return VERSION_NONEXISTENT;
     }
 }

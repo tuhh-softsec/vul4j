@@ -34,7 +34,7 @@ import org.junit.Test;
 
 public class KVTopologyTest {
 
-    static final long VERSION_NONEXISTENT = DataStoreClient.getClient().VERSION_NONEXISTENT();
+    static final long VERSION_NONEXISTENT = DataStoreClient.getClient().getVersionNonexistant();
 
     private static final byte[] DEVICE2_MAC_SW2P2 = new byte[]{6, 5, 4, 3, 2, 1, 0};
 

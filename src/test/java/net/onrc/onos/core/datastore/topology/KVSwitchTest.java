@@ -40,7 +40,7 @@ public class KVSwitchTest {
         try {
             final KVSwitch sw = new KVSwitch(dpid);
             sw.read();
-            assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw.getVersion());
+            assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw.getVersion());
             assertEquals(dpid, sw.getDpid());
             assertEquals(status, sw.getStatus());
             return sw;
@@ -67,7 +67,7 @@ public class KVSwitchTest {
             KVSwitch sw = new KVSwitch(dpid);
             sw.setStatus(STATUS.ACTIVE);
             sw.create();
-            assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw.getVersion());
+            assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw.getVersion());
             expected.put(sw.getDpid(), sw);
         }
 
@@ -88,7 +88,7 @@ public class KVSwitchTest {
     public void testCreate() throws ObjectExistsException {
         sw1.setStatus(STATUS.ACTIVE);
         sw1.create();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw1.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw1.getVersion());
 
         assertEquals(dpid1, sw1.getDpid());
         assertEquals(STATUS.ACTIVE, sw1.getStatus());
@@ -101,7 +101,7 @@ public class KVSwitchTest {
         // setup pre-existing Switch
         KVSwitch sw = new KVSwitch(dpid1);
         sw.forceCreate();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw.getVersion());
         assertSwitchInDataStore(dpid1, STATUS.INACTIVE);
 
         sw1.setStatus(STATUS.ACTIVE);
@@ -114,13 +114,13 @@ public class KVSwitchTest {
         // setup pre-existing Switch
         KVSwitch sw = new KVSwitch(dpid1);
         sw.forceCreate();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw.getVersion());
         assertSwitchInDataStore(dpid1, STATUS.INACTIVE);
 
 
         sw1.setStatus(STATUS.ACTIVE);
         sw1.forceCreate();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw1.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw1.getVersion());
 
         assertEquals(dpid1, sw1.getDpid());
         assertEquals(STATUS.ACTIVE, sw1.getStatus());
@@ -133,11 +133,11 @@ public class KVSwitchTest {
         KVSwitch sw = new KVSwitch(dpid1);
         sw.setStatus(STATUS.ACTIVE);
         sw.forceCreate();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw.getVersion());
         assertSwitchInDataStore(dpid1, STATUS.ACTIVE);
 
         sw1.read();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw1.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw1.getVersion());
         assertEquals(sw.getVersion(), sw1.getVersion());
         assertEquals(dpid1, sw1.getDpid());
         assertEquals(STATUS.ACTIVE, sw1.getStatus());
@@ -156,16 +156,16 @@ public class KVSwitchTest {
         KVSwitch sw = new KVSwitch(dpid1);
         sw.setStatus(STATUS.ACTIVE);
         sw.forceCreate();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw.getVersion());
         assertSwitchInDataStore(dpid1, STATUS.ACTIVE);
 
 
         sw1.read();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw1.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw1.getVersion());
 
         sw1.setStatus(STATUS.INACTIVE);
         sw1.update();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw1.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw1.getVersion());
         assertNotEquals(sw.getVersion(), sw1.getVersion());
         assertEquals(dpid1, sw1.getDpid());
         assertEquals(STATUS.INACTIVE, sw1.getStatus());
@@ -177,7 +177,7 @@ public class KVSwitchTest {
         KVSwitch sw = new KVSwitch(dpid1);
         sw.setStatus(STATUS.ACTIVE);
         sw.forceCreate();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw.getVersion());
         assertSwitchInDataStore(dpid1, STATUS.ACTIVE);
 
 
@@ -186,7 +186,7 @@ public class KVSwitchTest {
         } catch (ObjectDoesntExistException e) {
             fail("Failed reading switch to delete");
         }
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw1.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw1.getVersion());
         sw1.delete();
         assertSwitchNotInDataStore(dpid1);
     }
@@ -197,12 +197,12 @@ public class KVSwitchTest {
         KVSwitch sw = new KVSwitch(dpid1);
         sw.setStatus(STATUS.ACTIVE);
         sw.forceCreate();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw.getVersion());
         assertSwitchInDataStore(dpid1, STATUS.ACTIVE);
 
 
         sw1.forceDelete();
-        assertNotEquals(DataStoreClient.getClient().VERSION_NONEXISTENT(), sw1.getVersion());
+        assertNotEquals(DataStoreClient.getClient().getVersionNonexistant(), sw1.getVersion());
     }
 
 }

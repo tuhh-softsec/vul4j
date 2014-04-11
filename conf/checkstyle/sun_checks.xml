@@ -121,11 +121,7 @@
         <module name="LocalVariableName"/>
 
         <module name="MemberName"/>
-
-        <module name="MethodName">
-          <property name="severity" value="warning"/>
-        </module>
-
+        <module name="MethodName"/>
         <module name="PackageName"/>
         <module name="ParameterName"/>
         <module name="StaticVariableName"/>

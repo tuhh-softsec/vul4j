@@ -43,7 +43,7 @@ public class HZTable implements IKVTable, IKVTableID {
     }
 
     /**
-     * increment version, avoiding VERSION_NONEXISTENT.
+     * increment version, avoiding versionNonexistant.
      *
      * @param version
      * @return
@@ -320,7 +320,7 @@ public class HZTable implements IKVTable, IKVTableID {
     }
 
     @Override
-    public long VERSION_NONEXISTENT() {
+    public long getVersionNonexistant() {
         return HZClient.VERSION_NONEXISTENT;
     }
 }

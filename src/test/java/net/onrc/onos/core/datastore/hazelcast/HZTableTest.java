@@ -93,7 +93,7 @@ public class HZTableTest {
 
     @Test
     public void testVERSION_NONEXISTENT() {
-        assertEquals(HZClient.VERSION_NONEXISTENT, table.VERSION_NONEXISTENT());
+        assertEquals(HZClient.VERSION_NONEXISTENT, table.getVersionNonexistant());
     }
 
     @Test

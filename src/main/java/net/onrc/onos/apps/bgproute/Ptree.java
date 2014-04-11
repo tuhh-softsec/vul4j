@@ -19,7 +19,7 @@ public class Ptree {
 
     public Ptree(int maxKeyBits) {
         this.maxKeyBits = maxKeyBits;
-        maxKeyOctets = bit_to_octet(maxKeyBits);
+        maxKeyOctets = bitToOctet(maxKeyBits);
         //refCount = 0;
     }
 
@@ -37,14 +37,14 @@ public class Ptree {
 
         while (node != null
                 && node.keyBits <= keyBits
-                && key_match(node.key, node.keyBits, key, keyBits)) {
+                && keyMatch(node.key, node.keyBits, key, keyBits)) {
             if (node.keyBits == keyBits) {
                 return addReference(node);
             }
 
             match = node;
 
-            if (bit_check(key, node.keyBits)) {
+            if (bitCheck(key, node.keyBits)) {
                 node = node.right;
             } else {
                 node = node.left;
@@ -57,25 +57,25 @@ public class Ptree {
             add = new PtreeNode(key, keyBits, maxKeyOctets);
 
             if (match != null) {
-                node_link(match, add);
+                nodeLink(match, add);
             } else {
                 top = add;
             }
         } else {
-            add = node_common(node, key, keyBits);
+            add = nodeCommon(node, key, keyBits);
 
             if (match != null) {
-                node_link(match, add);
+                nodeLink(match, add);
             } else {
                 top = add;
             }
-            node_link(add, node);
+            nodeLink(add, node);
 
             if (add.keyBits != keyBits) {
                 match = add;
 
                 add = new PtreeNode(key, keyBits, maxKeyOctets);
-                node_link(match, add);
+                nodeLink(match, add);
             }
         }
 
@@ -91,12 +91,12 @@ public class Ptree {
 
         while (node != null
                 && node.keyBits <= keyBits
-                && key_match(node.key, node.keyBits, key, keyBits)) {
+                && keyMatch(node.key, node.keyBits, key, keyBits)) {
             if (node.keyBits == keyBits) {
                 return addReference(node);
             }
 
-            if (bit_check(key, node.keyBits)) {
+            if (bitCheck(key, node.keyBits)) {
                 node = node.right;
             } else {
                 node = node.left;
@@ -116,10 +116,10 @@ public class Ptree {
 
             while (node != null
                     && node.keyBits <= keyBits
-                    && key_match(node.key, node.keyBits, key, keyBits)) {
+                    && keyMatch(node.key, node.keyBits, key, keyBits)) {
                 matched = node;
 
-                if (bit_check(key, node.keyBits)) {
+                if (bitCheck(key, node.keyBits)) {
                     node = node.right;
                 } else {
                     node = node.left;
@@ -173,7 +173,7 @@ public class Ptree {
         return null;
     }
 
-    public static int bit_to_octet(int keyBits) {
+    public static int bitToOctet(int keyBits) {
         return Math.max((keyBits + 7) / 8, 1);
     }
 
@@ -187,11 +187,11 @@ public class Ptree {
             node.refCount--;
         }
         if (node.refCount == 0) {
-            node_remove(node);
+            nodeRemove(node);
         }
     }
 
-    private boolean key_match(byte[] key1, int key1Len, byte[] key2, int key2Len) {
+    private boolean keyMatch(byte[] key1, int key1Len, byte[] key2, int key2Len) {
         int offset;
         int shift;
 
@@ -217,7 +217,7 @@ public class Ptree {
         return true;
     }
 
-    private boolean bit_check(byte[] key, int keyBits) {
+    private boolean bitCheck(byte[] key, int keyBits) {
         int offset = keyBits / 8;
         int shift = 7 - (keyBits % 8);
         int bit = key[offset] & 0xff;
@@ -227,8 +227,8 @@ public class Ptree {
         return ((bit & 1) == 1);
     }
 
-    private void node_link(PtreeNode node, PtreeNode add) {
-        boolean bit = bit_check(add.key, node.keyBits);
+    private void nodeLink(PtreeNode node, PtreeNode add) {
+        boolean bit = bitCheck(add.key, node.keyBits);
 
         if (bit) {
             node.right = add;
@@ -238,7 +238,7 @@ public class Ptree {
         add.parent = node;
     }
 
-    private PtreeNode node_common(PtreeNode node, byte[] key, int keyBits) {
+    private PtreeNode nodeCommon(PtreeNode node, byte[] key, int keyBits) {
         int i;
         int limit = Math.min(node.keyBits, keyBits) / 8;
 
@@ -281,7 +281,7 @@ public class Ptree {
         return add;
     }
 
-    private void node_remove(PtreeNode node) {
+    private void nodeRemove(PtreeNode node) {
         PtreeNode child;
         PtreeNode parent;
 
@@ -312,7 +312,7 @@ public class Ptree {
         }
 
         if (parent != null && parent.refCount == 0) {
-            node_remove(parent);
+            nodeRemove(parent);
         }
     }
 }

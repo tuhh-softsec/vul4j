@@ -10,7 +10,7 @@ public interface IKVTable {
      * Version number which represents that the object does not exist, or has
      * never been read the DB before.
      */
-    public long VERSION_NONEXISTENT();
+    public long getVersionNonexistant();
 
     /**
      * Interface for a class to represent an entry in Table.
@@ -98,7 +98,7 @@ public interface IKVTable {
      * Remove a Key-Value entry in table.
      *
      * @param key
-     * @return version of removed object or VERSION_NONEXISTENT, if it did not exist.
+     * @return version of removed object or non existant version if it did not exist.
      */
     public long forceDelete(byte[] key);
 

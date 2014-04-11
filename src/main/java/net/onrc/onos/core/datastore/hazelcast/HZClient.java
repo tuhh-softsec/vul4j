@@ -335,7 +335,7 @@ public final class HZClient implements IKVClient {
     }
 
     @Override
-    public long VERSION_NONEXISTENT() {
+    public long getVersionNonexistant() {
         return VERSION_NONEXISTENT;
     }
 

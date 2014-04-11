@@ -414,7 +414,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
             if (rib != null && !rib.equals(update.getRibEntry())) {
                 // There was an existing nexthop for this prefix. This update supersedes that,
                 // so we need to remove the old flows for this prefix from the switches
-                _processDeletePrefix(prefix, rib);
+                executeDeletePrefix(prefix, rib);
             }
 
             if (update.getRibEntry().getNextHop().equals(
@@ -426,11 +426,11 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
                 return;
             }
 
-            _processRibAdd(update);
+            executeRibAdd(update);
         }
     }
 
-    private void _processRibAdd(RibUpdate update) {
+    private void executeRibAdd(RibUpdate update) {
         Prefix prefix = update.getPrefix();
         RibEntry rib = update.getRibEntry();
 
@@ -598,12 +598,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
                  * If no entry was removed, the <prefix, nexthop> wasn't there so
                  * it's probably already been removed and we don't need to do anything
                  */
-                _processDeletePrefix(prefix, update.getRibEntry());
+                executeDeletePrefix(prefix, update.getRibEntry());
             }
         }
     }
 
-    private void _processDeletePrefix(Prefix prefix, RibEntry ribEntry) {
+    private void executeDeletePrefix(Prefix prefix, RibEntry ribEntry) {
         deletePrefixFlows(prefix);
 
         log.debug("Deleting {} to {}", prefix, ribEntry.getNextHop());
@@ -1046,7 +1046,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
                     // and the next hop is the same as our update. The prefix could
                     // have been removed while we were waiting for the ARP, or the
                     // next hop could have changed.
-                    _processRibAdd(update);
+                    executeRibAdd(update);
                 } else {
                     log.debug("Received ARP response, but {},{} is no longer in ptree",
                             update.getPrefix(), update.getRibEntry());
