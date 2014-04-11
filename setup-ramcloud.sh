@@ -5,8 +5,8 @@ set -e
 # echo back each command
 set -x
 
-ONOS_HOME=${ONOS_HOME:-~/ONOS}
-RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
+export ONOS_HOME=${ONOS_HOME:-$(cd `dirname $0`; pwd)}
+export RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
 
 if [ -d ${RAMCLOUD_HOME} ]; then
   echo "${RAMCLOUD_HOME} already exist, please rename or remove them."

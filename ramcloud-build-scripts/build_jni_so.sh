@@ -18,8 +18,8 @@ set -e
 set -x
 
 JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-7-oracle}
-ONOS_HOME=${ONOS_HOME:-~/ONOS}
-RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
+export ONOS_HOME=${ONOS_HOME:-$(cd `dirname $0`; cd ..; pwd)}
+export RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
 RAMCLOUD_BRANCH=${RAMCLOUD_BRANCH:-master}
 
 mvn -f ${ONOS_HOME}/pom.xml compile -T 1C

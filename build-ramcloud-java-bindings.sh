@@ -4,8 +4,8 @@
 
 set -x
 
-ONOS_HOME=${ONOS_HOME:-~/ONOS}
-RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
+export ONOS_HOME=${ONOS_HOME:-$(cd `dirname $0`; pwd)}
+export RAMCLOUD_HOME=${RAMCLOUD_HOME:-~/ramcloud}
 
 ${ONOS_HOME}/ramcloud-build-scripts/build_jni_so.sh
 
