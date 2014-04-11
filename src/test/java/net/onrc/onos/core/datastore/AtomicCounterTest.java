@@ -69,8 +69,11 @@ public class AtomicCounterTest {
     }
 
 
-    private static final int NUM_INCREMENTS = 500;
-    private static final int NUM_THREADS = 5;
+    private static final int NUM_INCREMENTS = Math.max(1, Integer
+            .valueOf(System.getProperty("AtomicCounterTest.NUM_INCREMENTS",
+                    "500")));
+    private static final int NUM_THREADS = Math.max(1, Integer.valueOf(System
+            .getProperty("AtomicCounterTest.NUM_THREADS", "3")));
 
     class Incrementor implements Callable<Long> {
         private final ConcurrentMap<Long,Long> uniquenessTestSet;
@@ -97,18 +100,33 @@ public class AtomicCounterTest {
     }
 
     @Test
-    public void testParallelIncrementCounter() throws ObjectExistsException, InterruptedException, ExecutionException {
+    public void testParallelIncrementCounter() throws ObjectExistsException,
+                                    InterruptedException, ExecutionException {
+
         IKVClient client = DataStoreClient.getClient();
 
         client.createCounter(counterID, LONG_ZERO, 0L);
 
+        ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
+        final int initThreads = Math.max(1, Integer.valueOf(System
+                .getProperty("AtomicCounterTest.initThreads",
+                        String.valueOf(NUM_THREADS))));
+        for (int num_threads = initThreads; num_threads <= NUM_THREADS; ++num_threads) {
+            client.setCounter(counterID, LONG_ZERO, 0L);
+            parallelIncrementCounter(executor, num_threads);
+        }
+
+        executor.shutdown();
+    }
+
+    private void parallelIncrementCounter(final ExecutorService executor,
+            final int num_threads) throws InterruptedException, ExecutionException {
+
         ConcurrentNavigableMap<Long,Long> uniquenessTestSet = new ConcurrentSkipListMap<>();
         ConcurrentLinkedQueue<Long> incrementTimes = new ConcurrentLinkedQueue<Long>();
 
-        ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
-
-        List<Callable<Long>> tasks = new ArrayList<>(NUM_THREADS);
-        for (int i = 0 ; i < NUM_THREADS ; ++i) {
+        List<Callable<Long>> tasks = new ArrayList<>(num_threads);
+        for (int i = 0 ; i < num_threads ; ++i) {
             tasks.add(new Incrementor(uniquenessTestSet, incrementTimes));
         }
         List<Future<Long>> futures = executor.invokeAll(tasks);
@@ -118,10 +136,10 @@ public class AtomicCounterTest {
             future.get();
         }
 
-        assertEquals(NUM_THREADS * NUM_INCREMENTS , uniquenessTestSet.size() );
+        assertEquals(num_threads * NUM_INCREMENTS , uniquenessTestSet.size());
         long prevValue = 0;
         for (Long value : uniquenessTestSet.keySet() ) {
-            assertTrue( (prevValue + 1) == value );
+            assertEquals( (prevValue + 1), value.longValue() );
             prevValue = value;
         }
 
@@ -133,7 +151,9 @@ public class AtomicCounterTest {
             max = Math.max(max, time);
             min = Math.min(min, time);
         }
-        System.err.printf("incrementCounter avg:%f (ns) min:%d (ns) max:%d (ns) N:%d\n", sum/(double)incrementTimes.size(), min, max, incrementTimes.size() );
+        System.err.printf("incrementCounter(th:%d , incs:%d ) N:%d\tavg:%f (ns) min:%d (ns) max:%d (ns)\n",
+                num_threads, NUM_INCREMENTS, incrementTimes.size(),
+                sum/(double)incrementTimes.size(), min, max );
     }
 
 }
