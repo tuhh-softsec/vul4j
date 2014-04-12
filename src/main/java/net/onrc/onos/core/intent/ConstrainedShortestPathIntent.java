@@ -23,4 +23,16 @@ public class ConstrainedShortestPathIntent extends ShortestPathIntent {
     public double getBandwidth() {
         return bandwidth;
     }
+
+    @Override
+    public int hashCode() {
+        // TODO: Is this the intended behavior?
+        return (super.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // TODO: Is this the intended behavior?
+        return (super.equals(obj));
+    }
 }

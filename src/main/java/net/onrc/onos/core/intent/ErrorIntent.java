@@ -28,4 +28,16 @@ public class ErrorIntent extends Intent {
         this.message = message;
         this.parentIntent = parentIntent;
     }
+
+    @Override
+    public int hashCode() {
+        // TODO: Is this the intended behavior?
+        return (super.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // TODO: Is this the intended behavior?
+        return (super.equals(obj));
+    }
 }

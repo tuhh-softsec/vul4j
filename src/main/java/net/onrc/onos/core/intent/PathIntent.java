@@ -53,6 +53,18 @@ public class PathIntent extends Intent {
     }
 
     @Override
+    public int hashCode() {
+        // TODO: Is this the intended behavior?
+        return (super.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // TODO: Is this the intended behavior?
+        return (super.equals(obj));
+    }
+
+    @Override
     public String toString() {
         return String.format("%s, %s, %s", getId(), getState(), getPath());
     }
