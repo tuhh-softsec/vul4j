@@ -20,6 +20,8 @@ package net.onrc.onos.core.packet;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * @author shudong.zhou@bigswitch.com
  */
@@ -141,11 +143,15 @@ public class TCP extends BasePacket {
         return this;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getOptions() {
         return this.options;
     }
 
-    public TCP setOptions(byte[] options) {
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
+    public TCP setOptions(final byte[] options) {
         this.options = options;
         this.dataOffset = (byte) ((20 + options.length + 3) >> 2);
         return this;

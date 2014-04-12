@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import net.onrc.onos.core.datastore.IKVTable;
 import net.onrc.onos.core.datastore.IKVTableID;
 import net.onrc.onos.core.datastore.ObjectDoesntExistException;
@@ -152,6 +154,8 @@ public class HZTable implements IKVTable, IKVTableID {
         byte[] value;
         long version;
 
+        @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                            justification = "TODO: Store a copy of the object?")
         public Entry(final byte[] key, final byte[] value, final long version) {
             this.key = key;
             this.setValue(value);
@@ -163,11 +167,15 @@ public class HZTable implements IKVTable, IKVTableID {
         }
 
         @Override
+        @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                            justification = "TODO: Return a copy of the object?")
         public byte[] getKey() {
             return key;
         }
 
         @Override
+        @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                            justification = "TODO: Return a copy of the object?")
         public byte[] getValue() {
             return value;
         }

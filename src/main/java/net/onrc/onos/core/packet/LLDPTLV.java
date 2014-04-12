@@ -20,6 +20,8 @@ package net.onrc.onos.core.packet;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
@@ -61,6 +63,8 @@ public class LLDPTLV {
     /**
      * @return the value
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getValue() {
         return value;
     }
@@ -68,6 +72,8 @@ public class LLDPTLV {
     /**
      * @param value the value to set
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public LLDPTLV setValue(byte[] value) {
         this.value = value;
         return this;

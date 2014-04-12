@@ -4,6 +4,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import net.onrc.onos.core.datastore.IKVTableID;
 import net.onrc.onos.core.datastore.IMultiEntryOperation;
 import net.onrc.onos.core.datastore.hazelcast.HZTable.VersionedValue;
@@ -33,6 +35,8 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
      * @param key
      * @param operation
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public HZMultiEntryOperation(final HZTable table, final byte[] key, final OPERATION operation) {
         this.table = table;
         this.key = key;
@@ -52,6 +56,8 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
      * @param version
      * @param operation
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public HZMultiEntryOperation(final HZTable table, final byte[] key, final byte[] value, final long version, final OPERATION operation) {
         this.table = table;
         this.key = key;
@@ -81,6 +87,8 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
     }
 
     @Override
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getKey() {
         return key;
     }
