@@ -1611,6 +1611,9 @@ public class FlowEntryAction {
             case ACTION_VENDOR:
                 ret += " action=VENDOR";
                 break;
+            default:
+                ret += " action=unknown";
+                break;
         }
         ret += "]";
 
@@ -1711,9 +1714,11 @@ public class FlowEntryAction {
                 case ACTION_VENDOR:
                     // TODO: Handle it as appropriate
                     break;
+                default:
+                    throw new IllegalArgumentException("Invalid action string");
             }
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid action string");
+            throw new IllegalArgumentException("Invalid action type", e);
         }
     }
 }

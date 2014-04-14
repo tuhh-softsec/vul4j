@@ -77,9 +77,9 @@ public enum DHCPPacketType {
                 return "DHCPLEASEUNKNOWN";
             case 13:
                 return "DHCPLEASEACTIVE";
+            default:
+                return "DHCP_UnknownType(" + value + ")";
         }
-
-        return "DHCP_UnknownType(" + value + ")";
     }
 
     public static DHCPPacketType getType(int value) {
@@ -110,8 +110,8 @@ public enum DHCPPacketType {
                 return DHCPLEASEUNKNOWN;
             case 13:
                 return DHCPLEASEACTIVE;
+            default:
+                return null;
         }
-
-        return null;
     }
 }

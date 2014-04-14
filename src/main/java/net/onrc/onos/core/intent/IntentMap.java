@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 
 import net.onrc.onos.core.intent.Intent.IntentState;
 import net.onrc.onos.core.intent.runtime.IntentStateList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Toshio Koide (t-koide@onlab.us)
@@ -17,6 +19,7 @@ public class IntentMap {
     private HashSet<ChangedListener> listeners = new HashSet<>();
     private HashMap<String, Intent> intents = new HashMap<>();
     private LinkedList<ChangedEvent> events = new LinkedList<>();
+    private static final Logger log = LoggerFactory.getLogger(IntentMap.class);
 
     public enum ChangedEventType {
         /**
@@ -87,6 +90,9 @@ public class IntentMap {
                     break;
                 case ERROR:
                     handleErrorOperation(operation);
+                    break;
+                default:
+                    log.error("Unknown intent operation {}", operation.operator);
                     break;
             }
         }
@@ -202,6 +208,9 @@ public class IntentMap {
             case DEL_PENDING:
             case DEL_ACK:
                 // do nothing
+                break;
+            default:
+                log.error("Unknown intent state {}", targetIntent.getState());
                 break;
         }
     }

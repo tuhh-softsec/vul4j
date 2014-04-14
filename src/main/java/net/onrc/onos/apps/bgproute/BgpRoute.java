@@ -1255,6 +1255,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
                                         update.getPrefix(), update.getRibEntry().getNextHop());
                             }
                             break;
+                        default:
+                            log.error("Unknown operation {}", update.getOperation());
+                            break;
                     }
                 } catch (InterruptedException e) {
                     log.debug("Interrupted while taking from updates queue", e);

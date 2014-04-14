@@ -66,9 +66,7 @@
 
     <!-- Checks for Size Violations.                    -->
     <!-- See http://checkstyle.sf.net/config_sizes.html -->
-    <module name="FileLength">
-      <property name="severity" value="warning"/>
-    </module>
+    <module name="FileLength"/>
 
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.sf.net/config_whitespace.html -->
@@ -207,9 +205,7 @@
         <!-- Many violations of this rule present, revist in a
         subsequent round of cleanups -->
         <!-- <module name="MagicNumber"/> -->
-        <module name="MissingSwitchDefault">
-          <property name="severity" value="warning"/>
-        </module>
+        <module name="MissingSwitchDefault"/>
 
         <module name="RedundantThrows">
 	   <property name="allowSubclasses" value="true"/>

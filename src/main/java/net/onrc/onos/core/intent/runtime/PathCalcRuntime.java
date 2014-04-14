@@ -132,6 +132,9 @@ public class PathCalcRuntime implements IFloodlightService {
                 case ERROR:
                     // just ignore
                     break;
+                default:
+                    log.error("Unknown intent operator {}", intentOp.operator);
+                    break;
             }
         }
         // TODO optimize locking of NetworkGraph

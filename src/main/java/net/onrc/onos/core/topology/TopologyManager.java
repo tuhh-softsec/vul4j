@@ -263,6 +263,9 @@ public class TopologyManager implements NetworkGraphDiscoveryInterface {
                             reorderedAddedDeviceEvents.remove(id);
                         }
                         break;
+                    default:
+                        log.error("Unknown topology event {}",
+                                  event.eventType());
                 }
             }
 
