@@ -15,20 +15,6 @@
 
 package org.esigate;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpStatus;
@@ -37,6 +23,21 @@ import org.esigate.impl.IndexedInstances;
 import org.esigate.impl.UriMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
+
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 /**
  * Factory class used to configure and retrieve {@linkplain Driver} INSTANCIES.
@@ -66,6 +67,16 @@ public final class DriverFactory {
         // Do not instantiate
     }
 
+
+    /**
+     *
+     * @return All configured driver
+     */
+    public static Collection<Driver> getInstances(){
+        DriverFactory.ensureConfigured();
+        return instances.getInstances().values();
+
+    }
     /**
      * Loads all instances according to default configuration file.
      */
