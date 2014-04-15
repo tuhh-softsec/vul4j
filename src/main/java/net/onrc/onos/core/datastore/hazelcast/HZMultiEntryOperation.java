@@ -124,9 +124,14 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
     private VersionedValue get() {
         try {
             VersionedValue value = future.get();
-            setValue(value.getValue(), value.getVersion());
-            setStatus(STATUS.SUCCESS);
-            return value;
+            if (value == null) {
+                setStatus(STATUS.FAILED);
+                return null;
+            } else {
+                setValue(value.getValue(), value.getVersion());
+                setStatus(STATUS.SUCCESS);
+                return value;
+            }
         } catch (CancellationException | InterruptedException | ExecutionException e) {
             log.error(this + " has failed.", e);
             setStatus(STATUS.FAILED);
