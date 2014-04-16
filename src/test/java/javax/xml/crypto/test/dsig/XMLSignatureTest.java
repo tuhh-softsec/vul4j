@@ -337,6 +337,35 @@ public class XMLSignatureTest extends org.junit.Assert {
             throw new Exception("Object namespace definition not retained");
     }
 
+    @org.junit.Test
+    public void testCreateSignatureWithEmptyId() throws Exception {
+        // create references
+        DigestMethod dm = fac.newDigestMethod(DigestMethod.SHA1, null);
+        List<Reference> refs = Collections.singletonList
+            (fac.newReference("#", dm));
+
+        // create SignedInfo
+        CanonicalizationMethod cm = fac.newCanonicalizationMethod
+            (CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
+        SignedInfo si = fac.newSignedInfo(cm, SIG_METHODS[1], refs);
+
+        // create object with empty id
+        Document doc = TestUtils.newDocument();
+        XMLObject obj = fac.newXMLObject(Collections.singletonList
+            (new DOMStructure(doc.createTextNode("I am the text."))),
+            "", "text/plain", null);
+
+        KeyInfo	ki = kifac.newKeyInfo(Collections.singletonList
+                    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[1])));
+
+        // create XMLSignature
+        XMLSignature sig = fac.newXMLSignature(si, ki,
+                                               Collections.singletonList(obj),
+                                               "signature", null);
+        DOMSignContext dsc = new DOMSignContext(SIGN_KEYS[1], doc);
+        sig.sign(dsc);
+    }
+
     private SignedInfo createSignedInfo(SignatureMethod sm) throws Exception {
         // set up the building blocks
         CanonicalizationMethod cm = fac.newCanonicalizationMethod
