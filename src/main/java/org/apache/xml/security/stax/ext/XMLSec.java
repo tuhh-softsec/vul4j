@@ -30,7 +30,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.validation.Schema;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.utils.ClassLoaderUtils;
@@ -65,11 +64,8 @@ public class XMLSec {
                         )
                 );
                 
-                String loadSchemas = ConfigurationProperties.getProperty("LoadSchemas");
-                if (Boolean.parseBoolean(loadSchemas)) {
-                    Schema schema = XMLSecurityUtils.loadXMLSecuritySchemas();
-                    XMLSecurityConstants.setJaxbSchemas(schema);
-                }
+                Schema schema = XMLSecurityUtils.loadXMLSecuritySchemas();
+                XMLSecurityConstants.setJaxbSchemas(schema);
             } catch (JAXBException e) {
                 throw new RuntimeException(e);
             } catch (SAXException e) {
