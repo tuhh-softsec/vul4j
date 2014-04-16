@@ -260,9 +260,18 @@ function create-zk-conf {
     revert-confs "[ERROR in ${filename}] zookeeper.hosts must have hostname \"${ONOS_HOST_NAME}\""
   fi
   
-  # TODO: Remove sudo.
-  # This is temporary code for the sake of compatibility with old code (which creates myid with root user).
-  sudo mv ${ZK_MY_ID} ${ZK_MY_ID}.old
+  if [ -f "${ZK_MY_ID}" ]; then
+    local SUDO=${SUDO:-}
+    {
+      ${SUDO} mv -f ${ZK_MY_ID} ${ZK_MY_ID}.old
+    } || {
+      echo "FAILED"
+      echo "[ERROR] Failed to rename ${ZK_MY_ID}."
+      echo "[ERROR] Please retry after setting \"export SUDO=sudo\""
+      exit 1
+    }
+  fi
+  
   echo ${myid} > ${ZK_MY_ID}
   
   echo -n "myid is assigned to ${myid} ... "
