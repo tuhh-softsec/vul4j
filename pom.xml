@@ -56,7 +56,7 @@
         <executions>
           <execution>
             <id>validate-checkstyle</id>
-            <phase>compile</phase>
+            <phase>verify</phase>
             <goals>
               <goal>check</goal>
             </goals>
@@ -274,10 +274,9 @@
         <executions>
           <execution>
             <id>validate-findbugs</id>
-            <phase>compile</phase>
+            <phase>verify</phase>
             <goals>
-              <!--  Uncomment this goal to make the build fail on findbugs errors -->
-              <!--<goal>check</goal>-->
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
@@ -307,7 +306,7 @@
         <executions>
           <execution>
             <id>validate-pmd</id>
-            <phase>compile</phase>
+            <phase>verify</phase>
             <goals>
               <!--  Uncomment this goal to make the build fail on pmd errors -->
               <!--<goal>check</goal>-->
