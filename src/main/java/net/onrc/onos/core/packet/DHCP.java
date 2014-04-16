@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
@@ -269,19 +267,22 @@ public class DHCP extends BasePacket {
     /**
      * @return the clientHardwareAddress
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
     public byte[] getClientHardwareAddress() {
-        return clientHardwareAddress;
+        if (this.clientHardwareAddress == null) {
+            return null;
+        }
+        return this.clientHardwareAddress.clone();
     }
 
     /**
      * @param clientHardwareAddress the clientHardwareAddress to set
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
     public DHCP setClientHardwareAddress(byte[] clientHardwareAddress) {
-        this.clientHardwareAddress = clientHardwareAddress;
+        if (clientHardwareAddress == null) {
+            this.clientHardwareAddress = null;
+        } else {
+            this.clientHardwareAddress = clientHardwareAddress.clone();
+        }
         return this;
     }
 
