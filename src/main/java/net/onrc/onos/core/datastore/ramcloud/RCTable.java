@@ -1,13 +1,12 @@
 package net.onrc.onos.core.datastore.ramcloud;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import net.onrc.onos.core.datastore.IKVTable;
 import net.onrc.onos.core.datastore.IKVTableID;
 import net.onrc.onos.core.datastore.ObjectDoesntExistException;
 import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.core.datastore.WrongVersionException;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +22,8 @@ public class RCTable implements IKVTable {
         byte[] value;
         long version;
 
-        @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                            justification = "TODO: Store a copy of the object?")
         public Entry(final byte[] key, final byte[] value, final long version) {
-            this.key = key;
+            this.key = key.clone();
             this.setValue(value);
             this.setVersion(version);
         }
@@ -36,17 +33,13 @@ public class RCTable implements IKVTable {
         }
 
         @Override
-        @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                            justification = "TODO: Return a copy of the object?")
         public byte[] getKey() {
-            return key;
+            return key.clone();
         }
 
         @Override
-        @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                            justification = "TODO: Return a copy of the object?")
         public byte[] getValue() {
-            return value;
+            return ArrayUtils.clone(value);
         }
 
         @Override
@@ -55,7 +48,7 @@ public class RCTable implements IKVTable {
         }
 
         void setValue(byte[] value) {
-            this.value = value;
+            this.value = ArrayUtils.clone(value);
         }
 
         void setVersion(long version) {
