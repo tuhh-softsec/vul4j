@@ -15,12 +15,6 @@
 
 package org.esigate.vars;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.cookie.Cookie;
 import org.esigate.ConfigurationException;
@@ -31,6 +25,13 @@ import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Manage variables replacement.
@@ -56,9 +57,16 @@ public final class VariablesResolver {
     }
 
     /**
+     * Loads variables from properties
+     */
+	public static void configure(Properties props) {
+		properties = props;
+	}
+
+    /**
      * Loads variables according to default configuration file org/esigate/vars.properties.
      */
-    private static void configure() {
+    public static void configure() {
         InputStream inputStream = null;
         try {
             LOG.debug("Loading esigate-vars.properties file");
@@ -82,6 +90,17 @@ public final class VariablesResolver {
             }
         }
     }
+
+    /**
+     * @return The URL of the variables file.
+     */
+	public static URL getVariablessUrl() {
+		URL varsUrl = Driver.class.getResource("/esigate-vars.properties");
+        if (varsUrl == null){
+            varsUrl = Driver.class.getResource("vars.properties");
+        }
+        return varsUrl;
+	}
 
     /**
      * Regexp to find variables

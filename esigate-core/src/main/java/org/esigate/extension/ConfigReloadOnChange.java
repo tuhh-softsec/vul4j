@@ -17,6 +17,7 @@ package org.esigate.extension;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.util.Parameter;
+import org.esigate.vars.VariablesResolver;
 import org.esigate.util.ParameterLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,9 @@ public class ConfigReloadOnChange implements Extension {
     protected static final Logger LOG = LoggerFactory.getLogger(ConfigReloadOnChange.class);
 
     private static File configuration = null;
-    private static long lastModified = -1;
+	private static File variables = null;
+    private static long configLastModified = -1;
+    private static long varsLastModified = -1;
     private static long delay = DEFAULT_RELOAD_DELAY;
 
     // this variable will be used in the future, when extension supports
@@ -67,15 +70,27 @@ public class ConfigReloadOnChange implements Extension {
         @Override
         public void run() {
             while (!stop) {
+				// configuration
                 if (configuration != null && configuration.exists()) {
-                    if (configuration.lastModified() != lastModified) {
-                        lastModified = configuration.lastModified();
+                    if (configuration.lastModified() != configLastModified) {
+                        configLastModified = configuration.lastModified();
 
                         // Reload
                         LOG.warn("Configuration file changed : reloading.");
                         DriverFactory.configure();
                     }
                 }
+
+				// variables
+				if (variables != null && variables.exists()){
+					if (variables.lastModified() != varsLastModified) {
+						varsLastModified = variables.lastModified();
+
+						// Reload
+						LOG.warn("Variables file changed : reloading.");
+						VariablesResolver.configure();
+					}
+				}
 
                 // Wait before checking again
                 try {
@@ -133,7 +148,21 @@ public class ConfigReloadOnChange implements Extension {
         }
 
         if (configuration != null && configuration.exists()) {
-            lastModified = configuration.lastModified();
+            configLastModified = configuration.lastModified();
+        }
+
+		// variables
+		URL variablesUrl = VariablesResolver.getVariablessUrl();
+		if (variablesUrl != null && "file".equalsIgnoreCase(variablesUrl.getProtocol())) {
+			try {
+				variables = new File(variablesUrl.toURI());
+			} catch (URISyntaxException e) {
+				LOG.error("Unable to access variables file", e);
+			}
+		}
+
+        if (variables != null && variables.exists()) {
+            varsLastModified = variables.lastModified();
         }
 
         // Start watcher
