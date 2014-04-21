@@ -303,6 +303,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo);
                     }
                 };
+        processor.getAfterProcessors().add(XMLEncryptOutputProcessor.class.getName());
         return processor;
     }
 }
