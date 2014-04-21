@@ -437,6 +437,7 @@ public class XMLEncryption11Test extends org.junit.Assert {
         // Perform decryption
         try {
             decryptElementStAX(ed, rsaKey, (X509Certificate) cert);
+            Assert.fail("Exception expected");
         } catch (XMLStreamException e) {
             Assert.assertTrue(e.getCause() instanceof IOException);
             Assert.assertTrue(e.getCause().getCause() instanceof BadPaddingException);

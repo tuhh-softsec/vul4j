@@ -658,6 +658,9 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                             xmlSecEvent = inputProcessorChain.processEvent();
                         }
 
+                        //test again for an exception in the decryption thread.
+                        //todo: Thread.join()...
+                        testAndThrowUncaughtException();
                         inputProcessorChain.removeProcessor(this);
                     }
                     break;
