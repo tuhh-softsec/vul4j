@@ -54,6 +54,13 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                                           XMLSecurityProperties securityProperties,
                                           InboundSecurityContext inboundSecurityContext) throws XMLSecurityException {
         if (keyInfoType != null) {
+            // X509Data
+            final X509DataType x509DataType =
+                    XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_X509Data);
+            if (x509DataType != null) {
+                return getSecurityToken(x509DataType, securityProperties, inboundSecurityContext, keyUsage);
+            }
+            
             // KeyValue
             final KeyValueType keyValueType
                     = XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_KeyValue);
@@ -69,13 +76,6 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                         new KeyNameSecurityToken(keyName, inboundSecurityContext);
                 setTokenKey(securityProperties, keyUsage, token);
                 return token;
-            }
-
-            // X509Data
-            final X509DataType x509DataType =
-                    XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_X509Data);
-            if (x509DataType != null) {
-                return getSecurityToken(x509DataType, securityProperties, inboundSecurityContext, keyUsage);
             }
         }
 
