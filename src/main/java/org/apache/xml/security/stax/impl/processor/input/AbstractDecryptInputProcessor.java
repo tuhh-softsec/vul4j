@@ -567,7 +567,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         ) {
             super(securityProperties);
             addAfterProcessor(abstractDecryptInputProcessor);
-            this.rootElementProcessed = encryptionModifier != SecurePart.Modifier.Element;
+            this.rootElementProcessed = encryptionModifier == SecurePart.Modifier.Content;
             this.encryptedHeader = encryptedHeader;
             this.inboundSecurityToken = inboundSecurityToken;
             this.parentXmlSecStartElement = xmlSecStartElement;
