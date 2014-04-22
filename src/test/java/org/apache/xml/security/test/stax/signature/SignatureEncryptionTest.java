@@ -277,7 +277,6 @@ public class SignatureEncryptionTest extends AbstractSignatureCreationTest {
                 this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
                 "default".toCharArray()
         );
-        Key key = keyStore.getKey("transmitter", "default".toCharArray());
         X509Certificate cert = (X509Certificate) keyStore.getCertificate("transmitter");
 
         // Set the key up
