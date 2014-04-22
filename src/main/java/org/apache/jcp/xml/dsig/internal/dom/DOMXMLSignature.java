@@ -536,11 +536,16 @@ public final class DOMXMLSignature extends DOMStructure
             // get validating key
             SignatureMethod sm = si.getSignatureMethod();
             Key validationKey = null;
-            KeySelectorResult ksResult;
+            KeySelectorResult ksResult = null;
             try {
-                ksResult = validateContext.getKeySelector().select
-                    (ki, KeySelector.Purpose.VERIFY, sm, validateContext);
-                validationKey = ksResult.getKey();
+                KeySelector keySelector = validateContext.getKeySelector();
+                if (keySelector != null) {
+                    ksResult = keySelector.select
+                        (ki, KeySelector.Purpose.VERIFY, sm, validateContext);
+                    if (ksResult != null) {
+                        validationKey = ksResult.getKey();
+                    }
+                }
                 if (validationKey == null) {
                     throw new XMLSignatureException("the keyselector did not " +
                                                     "find a validation key");
