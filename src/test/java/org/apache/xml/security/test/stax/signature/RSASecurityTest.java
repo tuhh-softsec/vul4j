@@ -21,14 +21,6 @@ package org.apache.xml.security.test.stax.signature;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.security.spec.RSAPublicKeySpec;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.stream.XMLInputFactory;
@@ -55,12 +47,6 @@ import org.w3c.dom.Document;
  * <CODE>data/com/rsasecurity/bdournaee/</CODE>.
  */
 public class RSASecurityTest extends AbstractSignatureVerificationTest {
-    
-    // Define the Keys
-    private static final String RSA_MOD =
-            "9661680572529043443849950482212724320718124640414882147275313836986288409918106491052525494831498427659036889326389109401815873387955487016402407137565137";
-    private static final String RSA_PUB = 
-            "17";
     
     private XMLInputFactory xmlInputFactory;
     private TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -103,7 +89,7 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         
         // Check the SecurityEvents
-        checkSignatureToken(securityEventListener, null, getPublicKey(),
+        checkSignatureToken(securityEventListener, null, null,
                             SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
     
@@ -117,9 +103,6 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
         Document document = builder.parse(sourceDocument);
         
-        // Set up the Key
-        Key publicKey = getPublicKey();
-        
         // XMLUtils.outputDOM(document, System.out);
         
         // Convert Document to a Stream Reader
@@ -131,7 +114,6 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
   
         // Verify signature
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
         TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
         XMLStreamReader securityStreamReader = 
@@ -140,17 +122,9 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
         
         // Check the SecurityEvents
-        checkSignatureToken(securityEventListener, null, getPublicKey(),
+        checkSignatureToken(securityEventListener, null, null,
                             SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
     
     
-    private static PublicKey getPublicKey() 
-            throws InvalidKeySpecException, NoSuchAlgorithmException {
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        KeySpec kspec = new RSAPublicKeySpec(new BigInteger(RSA_MOD), new BigInteger(RSA_PUB));
-        
-        return kf.generatePublic(kspec);
-    }
-
 }

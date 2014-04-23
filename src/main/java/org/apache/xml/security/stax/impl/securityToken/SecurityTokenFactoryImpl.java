@@ -65,7 +65,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             final KeyValueType keyValueType
                     = XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_KeyValue);
             if (keyValueType != null) {
-                return getSecurityToken(keyValueType, inboundSecurityContext);
+                return getSecurityToken(keyValueType, securityProperties, inboundSecurityContext, keyUsage);
             }
 
             // KeyName
@@ -109,23 +109,35 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         throw new XMLSecurityException("stax.noKey", keyUsage);
     }
 
-    private static InboundSecurityToken getSecurityToken(KeyValueType keyValueType, InboundSecurityContext inboundSecurityContext)
+    private static InboundSecurityToken getSecurityToken(KeyValueType keyValueType, 
+            XMLSecurityProperties securityProperties,
+            InboundSecurityContext inboundSecurityContext,
+            SecurityTokenConstants.KeyUsage keyUsage)
             throws XMLSecurityException {
 
         final RSAKeyValueType rsaKeyValueType =
                 XMLSecurityUtils.getQNameType(keyValueType.getContent(), XMLSecurityConstants.TAG_dsig_RSAKeyValue);
         if (rsaKeyValueType != null) {
-            return new RsaKeyValueSecurityToken(rsaKeyValueType, inboundSecurityContext);
+            RsaKeyValueSecurityToken token = 
+                new RsaKeyValueSecurityToken(rsaKeyValueType, inboundSecurityContext);
+            setTokenKey(securityProperties, keyUsage, token);
+            return token;
         }
         final DSAKeyValueType dsaKeyValueType =
                 XMLSecurityUtils.getQNameType(keyValueType.getContent(), XMLSecurityConstants.TAG_dsig_DSAKeyValue);
         if (dsaKeyValueType != null) {
-            return new DsaKeyValueSecurityToken(dsaKeyValueType, inboundSecurityContext);
+            DsaKeyValueSecurityToken token = 
+                    new DsaKeyValueSecurityToken(dsaKeyValueType, inboundSecurityContext);
+            setTokenKey(securityProperties, keyUsage, token);
+            return token;
         }
         final ECKeyValueType ecKeyValueType =
                 XMLSecurityUtils.getQNameType(keyValueType.getContent(), XMLSecurityConstants.TAG_dsig11_ECKeyValue);
         if (ecKeyValueType != null) {
-            return new ECKeyValueSecurityToken(ecKeyValueType, inboundSecurityContext);
+            ECKeyValueSecurityToken token = 
+                    new ECKeyValueSecurityToken(ecKeyValueType, inboundSecurityContext);
+            setTokenKey(securityProperties, keyUsage, token);
+            return token;
         }
         throw new XMLSecurityException("stax.unsupportedKeyValue");
     }
@@ -232,7 +244,8 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         } else if (SecurityTokenConstants.KeyUsage_Decryption.equals(keyUsage)) {
             key = securityProperties.getDecryptionKey();
         }
-        if (key instanceof PublicKey) {
+        if (key instanceof PublicKey 
+            && !SecurityTokenConstants.KeyValueToken.equals(token.getTokenType())) {
             token.setPublicKey((PublicKey) key);
         } else {
             token.setSecretKey("", key);
