@@ -95,9 +95,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://svn.code.sf.net/p/webassembletool/code/trunk</connection>
-		<developerConnection>scm:svn:https://svn.code.sf.net/p/webassembletool/code/trunk</developerConnection>
-		<url>http://svn.code.sf.net/p/webassembletool/code/trunk/</url>
+		<connection>scm:git:https://github.com/esigate/esigate.git</connection>
+		<developerConnection>scm:git:https://github.com/esigate/esigate.git</developerConnection>
+		<url>https://github.com/esigate/esigate</url>
 	</scm>
 	<build>
 		<pluginManagement>
