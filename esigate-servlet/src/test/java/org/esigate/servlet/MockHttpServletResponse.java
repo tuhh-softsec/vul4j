@@ -15,6 +15,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
     private ByteArrayOutputStream outputStreamContent;
     private PrintWriter writer;
     private StringWriter writerContent;
+    private int bufferSize = 0;
 
     @Override
     public String getCharacterEncoding() {
@@ -86,11 +87,12 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setBufferSize(int size) {
+        bufferSize = size;
     }
 
     @Override
     public int getBufferSize() {
-        return 0;
+        return bufferSize;
     }
 
     @Override
