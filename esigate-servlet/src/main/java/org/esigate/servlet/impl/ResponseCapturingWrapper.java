@@ -292,10 +292,10 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
                     } else {
                         responseOutputStream.write(b);
                     }
+                    bytesWritten++;
                     if (bytesWritten == bufferSize) {
                         commit();
                     }
-                    bytesWritten++;
                 }
 
                 @Override
@@ -342,10 +342,10 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
                     } else {
                         responseWriter.write(cbuf, off, len);
                     }
+                    bytesWritten++;
                     if (bytesWritten == bufferSize) {
                         commit();
                     }
-                    bytesWritten++;
                 }
 
                 @Override
@@ -426,8 +426,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
         if (internalWriter != null) {
             httpClientResponse.setEntity(new StringEntity(internalWriter.toString(), contentType));
         } else if (internalOutputStream != null) {
-            httpClientResponse.setEntity(new ByteArrayEntity(internalOutputStream.toByteArray(), 0, Math.min(
-                    bytesWritten, bufferSize), contentType));
+            httpClientResponse.setEntity(new ByteArrayEntity(internalOutputStream.toByteArray(), contentType));
         }
         return httpClientResponse;
     }
