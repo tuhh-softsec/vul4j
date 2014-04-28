@@ -1,10 +1,9 @@
 package org.esigate.util;
 
-import junit.framework.TestCase;
-
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
+
+import junit.framework.TestCase;
 
 /**
  * @author Alexis Thaveau
@@ -94,7 +93,7 @@ public class ParameterTest extends TestCase {
 
     public void testGetValueArray() throws Exception {
         Parameter<String[]> parameter1 = new ParameterArray("test1", null);
-        Parameter<String[]> parameter2 = new ParameterArray("test2", new String[]{"v1", "v2"});
+        Parameter<String[]> parameter2 = new ParameterArray("test2", new String[] {"v1", "v2"});
         Properties properties = new Properties();
         assertNull(parameter1.getValue(properties));
         assertEquals(2, parameter2.getValue(properties).length);
@@ -111,8 +110,6 @@ public class ParameterTest extends TestCase {
         assertEquals("v1", parameter2.getValue(properties)[0]);
         assertEquals("v3", parameter2.getValue(properties)[1]);
 
-
     }
-
 
 }
