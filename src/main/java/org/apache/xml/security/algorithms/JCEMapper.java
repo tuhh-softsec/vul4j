@@ -277,9 +277,11 @@ public class JCEMapper {
         if (log.isDebugEnabled()) {
             log.debug("Request for URI " + algorithmURI);
         }
-        Algorithm algorithm = algorithmsMap.get(algorithmURI);
-        if (algorithm != null) {
-            return algorithm.requiredKey;
+        if (algorithmURI != null) {
+            Algorithm algorithm = algorithmsMap.get(algorithmURI);
+            if (algorithm != null) {
+                return algorithm.requiredKey;
+            }
         }
         return null;
     }
