@@ -59,9 +59,9 @@ public final class VariablesResolver {
     /**
      * Loads variables from properties
      */
-	public static void configure(Properties props) {
-		properties = props;
-	}
+    public static void configure(Properties props) {
+        properties = props;
+    }
 
     /**
      * Loads variables according to default configuration file org/esigate/vars.properties.
@@ -94,13 +94,13 @@ public final class VariablesResolver {
     /**
      * @return The URL of the variables file.
      */
-	public static URL getVariablessUrl() {
-		URL varsUrl = Driver.class.getResource("/esigate-vars.properties");
-        if (varsUrl == null){
+    public static URL getVariablessUrl() {
+        URL varsUrl = Driver.class.getResource("/esigate-vars.properties");
+        if (varsUrl == null) {
             varsUrl = Driver.class.getResource("vars.properties");
         }
         return varsUrl;
-	}
+    }
 
     /**
      * Regexp to find variables
