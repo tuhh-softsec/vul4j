@@ -95,6 +95,16 @@ public class TestUtils {
         "05421644057436475141609648488325705128047428394380474376834667300766108262613900542681289080713724597310673074119355136085795982097390670890367185141189796";
     private static final String DSA_X = 
         "0527140396812450214498055937934275626078768840117";
+    private static final String DSA_2048_Y =
+        "15119007057343785981993995134621348945077524760182795513668325877793414638620983617627033248732235626178802906346261435991040697338468329634416089753032362617771631199351767336660070462291411472735835843440140283101463231807789628656218830720378705090795271104661936237385140354825159080766174663596286149653433914842868551355716015585570827642835307073681358328172009941968323702291677280809277843998510864653406122348712345584706761165794179850728091522094227603562280855104749858249588234915206290448353957550635709520273178475097150818955098638774564910092913714625772708285992586894795017709678223469405896699928";
+    private static final String DSA_2048_P =
+        "18111848663142005571178770624881214696591339256823507023544605891411707081617152319519180201250440615163700426054396403795303435564101919053459832890139496933938670005799610981765220283775567361483662648340339405220348871308593627647076689407931875483406244310337925809427432681864623551598136302441690546585427193224254314088256212718983105131138772434658820375111735710449331518776858786793875865418124429269409118756812841019074631004956409706877081612616347900606555802111224022921017725537417047242635829949739109274666495826205002104010355456981211025738812433088757102520562459649777989718122219159982614304359";
+    private static final String DSA_2048_Q =
+        "19689526866605154788513693571065914024068069442724893395618704484701";
+    private static final String DSA_2048_G =
+        "2859278237642201956931085611015389087970918161297522023542900348087718063098423976428252369340967506010054236052095950169272612831491902295835660747775572934757474194739347115870723217560530672532404847508798651915566434553729839971841903983916294692452760249019857108409189016993380919900231322610083060784269299257074905043636029708121288037909739559605347853174853410208334242027740275688698461842637641566056165699733710043802697192696426360843173620679214131951400148855611740858610821913573088059404459364892373027492936037789337011875710759208498486908611261954026964574111219599568903257472567764789616958430";
+    private static final String DSA_2048_X =
+        "14562787764977288900757387442281559936279834964901963465277698843172";
     private static final String RSA_MOD = 
         "010800185049102889923150759252557522305032794699952150943573164381936603255999071981574575044810461362008102247767482738822150129277490998033971789476107463";
     private static final String RSA_PUB = "065537";
@@ -103,18 +113,36 @@ public class TestUtils {
 
     private TestUtils() {}
     
-    public static PublicKey getPublicKey(String algo) 
+    public static PublicKey getPublicKey(String algo)
+        throws InvalidKeySpecException, NoSuchAlgorithmException {
+        if (algo.equalsIgnoreCase("DSA")) {
+            return getPublicKey("DSA", 1024);
+        } else if (algo.equalsIgnoreCase("RSA")) {
+            return getPublicKey("RSA", 512);
+        } else throw new RuntimeException("Unsupported key algorithm " + algo);
+    }
+        
+    public static PublicKey getPublicKey(String algo, int keysize)
         throws InvalidKeySpecException, NoSuchAlgorithmException {
         KeyFactory kf = KeyFactory.getInstance(algo);
         KeySpec kspec;
         if (algo.equalsIgnoreCase("DSA")) {
-            kspec = new DSAPublicKeySpec(new BigInteger(DSA_Y), 
-                                         new BigInteger(DSA_P), 
-                                         new BigInteger(DSA_Q), 
-                                         new BigInteger(DSA_G));
+            if (keysize == 1024) {
+                kspec = new DSAPublicKeySpec(new BigInteger(DSA_Y), 
+                                             new BigInteger(DSA_P), 
+                                             new BigInteger(DSA_Q), 
+                                             new BigInteger(DSA_G));
+            } else if (keysize == 2048) {
+                kspec = new DSAPublicKeySpec(new BigInteger(DSA_2048_Y), 
+                                             new BigInteger(DSA_2048_P), 
+                                             new BigInteger(DSA_2048_Q), 
+                                             new BigInteger(DSA_2048_G));
+            } else throw new RuntimeException("Unsupported keysize:" + keysize);
         } else if (algo.equalsIgnoreCase("RSA")) {
-            kspec = new RSAPublicKeySpec(new BigInteger(RSA_MOD), 
-                                         new BigInteger(RSA_PUB));
+            if (keysize == 512) {
+                kspec = new RSAPublicKeySpec(new BigInteger(RSA_MOD), 
+                                             new BigInteger(RSA_PUB));
+            } else throw new RuntimeException("Unsupported keysize:" + keysize);
         } else throw new RuntimeException("Unsupported key algorithm " + algo);
         return kf.generatePublic(kspec);
     }
@@ -127,17 +155,34 @@ public class TestUtils {
         validator.validate(source);
     }
     
-    public static PrivateKey getPrivateKey(String algo) 
+    public static PrivateKey getPrivateKey(String algo)
+        throws InvalidKeySpecException, NoSuchAlgorithmException {
+        if (algo.equalsIgnoreCase("DSA")) {
+            return getPrivateKey("DSA", 1024);
+        } else if (algo.equalsIgnoreCase("RSA")) {
+            return getPrivateKey("RSA", 512);
+        } else throw new RuntimeException("Unsupported key algorithm " + algo);
+    }
+
+    public static PrivateKey getPrivateKey(String algo, int keysize) 
         throws InvalidKeySpecException, NoSuchAlgorithmException {
         KeyFactory kf = KeyFactory.getInstance(algo);
         KeySpec kspec;
         if (algo.equalsIgnoreCase("DSA")) {
-            kspec = new DSAPrivateKeySpec
-                (new BigInteger(DSA_X), new BigInteger(DSA_P), 
-                 new BigInteger(DSA_Q), new BigInteger(DSA_G));
+            if (keysize == 1024) {
+                kspec = new DSAPrivateKeySpec
+                    (new BigInteger(DSA_X), new BigInteger(DSA_P), 
+                     new BigInteger(DSA_Q), new BigInteger(DSA_G));
+            } else if (keysize == 2048) {
+                kspec = new DSAPrivateKeySpec
+                    (new BigInteger(DSA_2048_X), new BigInteger(DSA_2048_P), 
+                     new BigInteger(DSA_2048_Q), new BigInteger(DSA_2048_G));
+            } else throw new RuntimeException("Unsupported keysize:" + keysize);
         } else if (algo.equalsIgnoreCase("RSA")) {
-            kspec = new RSAPrivateKeySpec
-                (new BigInteger(RSA_MOD), new BigInteger(RSA_PRIV));
+            if (keysize == 512) {
+                kspec = new RSAPrivateKeySpec
+                    (new BigInteger(RSA_MOD), new BigInteger(RSA_PRIV));
+            } else throw new RuntimeException("Unsupported keysize:" + keysize);
         } else throw new RuntimeException("Unsupported key algorithm " + algo);
         return kf.generatePrivate(kspec);
     }
@@ -178,11 +223,12 @@ public class TestUtils {
             Document doc = docBuilder.parse(input);
             if (tag == null) {
                 return new DOMValidateContext
-                    (TestUtils.getPublicKey("RSA"), doc.getDocumentElement());
+                    (TestUtils.getPublicKey("RSA", 512),
+                     doc.getDocumentElement());
             } else {
                 NodeList list = doc.getElementsByTagName(tag);
                 return new DOMValidateContext
-                    (TestUtils.getPublicKey("RSA"), list.item(0));
+                    (TestUtils.getPublicKey("RSA", 512), list.item(0));
             }
         } else {
             throw new Exception("Unsupported XMLValidateContext type: " + 

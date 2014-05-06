@@ -55,6 +55,8 @@ public class XMLSignatureTest extends org.junit.Assert {
     private Key[] VALIDATE_KEYS;
     private SignatureMethod[] SIG_METHODS;
     private URIDereferencer ud;
+    private final static String DSA_SHA256 =
+        "http://www.w3.org/2009/xmldsig11#dsa-sha256";
 
     static {
         Security.insertProviderAt
@@ -74,13 +76,13 @@ public class XMLSignatureTest extends org.junit.Assert {
         SIG_METHODS[2] = fac.newSignatureMethod(SignatureMethod.HMAC_SHA1, null);
         // set up the signingKeys
         SIGN_KEYS = new Key[3];
-        SIGN_KEYS[0] = TestUtils.getPrivateKey("DSA");
-        SIGN_KEYS[1] = TestUtils.getPrivateKey("RSA");
+        SIGN_KEYS[0] = TestUtils.getPrivateKey("DSA", 1024);
+        SIGN_KEYS[1] = TestUtils.getPrivateKey("RSA", 512);
         SIGN_KEYS[2] = new SecretKeySpec(new byte[16], "HmacSHA1");
         // set up the validatingKeys
         VALIDATE_KEYS = new Key[3];
-        VALIDATE_KEYS[0] = TestUtils.getPublicKey("DSA");
-        VALIDATE_KEYS[1] = TestUtils.getPublicKey("RSA");
+        VALIDATE_KEYS[0] = TestUtils.getPublicKey("DSA", 1024);
+        VALIDATE_KEYS[1] = TestUtils.getPublicKey("RSA", 512);
         VALIDATE_KEYS[2] = new SecretKeySpec(new byte[16], "HmacSHA1");
         defSi = createSignedInfo(SIG_METHODS[0]);
         defKi = kifac.newKeyInfo
@@ -188,7 +190,7 @@ public class XMLSignatureTest extends org.junit.Assert {
     }
 
     @org.junit.Test
-    public void testsignWithProvider() throws Exception {
+    public void testSignWithProvider() throws Exception {
         XMLSignature sig;
         SignedInfo si;
         KeyInfo ki = null;
@@ -364,6 +366,33 @@ public class XMLSignatureTest extends org.junit.Assert {
                                                "signature", null);
         DOMSignContext dsc = new DOMSignContext(SIGN_KEYS[1], doc);
         sig.sign(dsc);
+    }
+
+    @org.junit.Test
+    public void testCreateDSA2048Signature() throws Exception {
+
+        // check if SHA256withDSA is supported
+        boolean gotSHA256withDSA = false;
+        try {
+            Signature.getInstance("SHA256withDSA");
+            gotSHA256withDSA = true;
+        } catch (NoSuchAlgorithmException e) {}
+        org.junit.Assume.assumeTrue(gotSHA256withDSA);
+
+        SignatureMethod sm = fac.newSignatureMethod(DSA_SHA256, null);
+        SignedInfo si = createSignedInfo(sm);
+        KeyInfo ki = kifac.newKeyInfo(Collections.singletonList
+            (kifac.newKeyValue((PublicKey)TestUtils.getPublicKey("DSA", 2048))));
+        XMLSignature sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
+        Document doc = TestUtils.newDocument();
+        XMLSignContext signContext =
+            new DOMSignContext(TestUtils.getPrivateKey("DSA", 2048), doc);
+        signContext.setURIDereferencer(ud);
+        sig.sign(signContext);
+        XMLValidateContext validateContext = new DOMValidateContext
+            (TestUtils.getPublicKey("DSA", 2048), doc.getDocumentElement());
+        validateContext.setURIDereferencer(ud);
+        assertTrue(sig.validate(validateContext));
     }
 
     private SignedInfo createSignedInfo(SignatureMethod sm) throws Exception {

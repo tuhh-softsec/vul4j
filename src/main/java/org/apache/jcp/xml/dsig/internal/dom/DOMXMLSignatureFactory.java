@@ -253,6 +253,8 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
             return new DOMSignatureMethod.SHA512withRSA(params);
         } else if (algorithm.equals(SignatureMethod.DSA_SHA1)) {
             return new DOMSignatureMethod.SHA1withDSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.DSA_SHA256)) {
+            return new DOMSignatureMethod.SHA256withDSA(params);
         } else if (algorithm.equals(SignatureMethod.HMAC_SHA1)) {
             return new DOMHMACSignatureMethod.SHA1(params);
         } else if (algorithm.equals(DOMHMACSignatureMethod.HMAC_SHA256)) {

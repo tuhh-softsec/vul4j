@@ -242,7 +242,7 @@ public class CreateInteropXMLDSig11Test extends org.junit.Assert {
     @org.junit.Test
     public void test_create_enveloping_sha256_rsa_sha256() throws Exception {
         test_create_signature_enveloping(rsaSha256, sha256, rsaki,
-                                        TestUtils.getPrivateKey("RSA"), kvks);
+                                         TestUtils.getPrivateKey("RSA"), kvks);
     }
 
     @org.junit.Test
