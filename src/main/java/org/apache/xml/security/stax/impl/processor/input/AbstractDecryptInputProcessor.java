@@ -251,9 +251,11 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
                 Thread thread = new Thread(decryptionThread);
                 thread.setPriority(Thread.NORM_PRIORITY + 1);
-                thread.setName("decrypting thread");
+                thread.setName("decryption thread");
                 //when an exception in the decryption thread occurs, we want to forward them:
                 thread.setUncaughtExceptionHandler(decryptedEventReaderInputProcessor);
+
+                decryptedEventReaderInputProcessor.setDecryptionThread(thread);
 
                 //we have to start the thread before we call decryptionThread.getPipedInputStream().
                 //Otherwise we will end in a deadlock, because the StAX reader expects already data.
@@ -557,6 +559,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         private final InboundSecurityToken inboundSecurityToken;
         private boolean rootElementProcessed;
         private EncryptedDataType encryptedDataType;
+        private Thread decryptionThread;
 
         public AbstractDecryptedEventReaderInputProcessor(
                 XMLSecurityProperties securityProperties, SecurePart.Modifier encryptionModifier,
@@ -576,6 +579,10 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             if (xmlSecStartElement != null) {
                 this.currentXMLStructureDepth = xmlSecStartElement.getDocumentLevel();
             }
+        }
+
+        public void setDecryptionThread(Thread decryptionThread) {
+            this.decryptionThread = decryptionThread;
         }
 
         public void setXmlStreamReader(XMLStreamReader xmlStreamReader) {
@@ -658,8 +665,13 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                             xmlSecEvent = inputProcessorChain.processEvent();
                         }
 
-                        //test again for an exception in the decryption thread.
-                        //todo: Thread.join()...
+                        //wait until the decryption thread dies...
+                        try {
+                            decryptionThread.join();
+                        } catch (InterruptedException e) {
+                            throw new XMLStreamException(e);
+                        }
+                        //...and test again for an exception in the decryption thread.
                         testAndThrowUncaughtException();
                         inputProcessorChain.removeProcessor(this);
                     }
