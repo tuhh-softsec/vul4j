@@ -91,6 +91,8 @@ public abstract class DOMDigestMethod extends BaseStructure
             return new SHA384(dmElem);
         } else if (alg.equals(DigestMethod.SHA512)) {
             return new SHA512(dmElem);
+        } else if (alg.equals(DigestMethod.RIPEMD160)) {
+            return new RIPEMD160(dmElem);
         } else {
             throw new MarshalException("unsupported DigestMethod algorithm: " +
                                        alg);
@@ -279,6 +281,24 @@ public abstract class DOMDigestMethod extends BaseStructure
         @Override
         String getMessageDigestAlgorithm() {
             return "SHA-512";
+        }
+    }
+    
+    static final class RIPEMD160 extends DOMDigestMethod {
+        RIPEMD160(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        RIPEMD160(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return DigestMethod.RIPEMD160;
+        }
+        @Override
+        String getMessageDigestAlgorithm() {
+            return "RIPEMD160";
         }
     }
 }
