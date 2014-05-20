@@ -67,6 +67,10 @@ public class JCEMapper {
             new Algorithm("SHA-1", "SHA-1", "MessageDigest")
         );
         algorithmsMap.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA224, 
+            new Algorithm("SHA-224", "SHA-224", "MessageDigest")
+        );
+        algorithmsMap.put(
             MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA256, 
             new Algorithm("SHA-256", "SHA-256", "MessageDigest")
         );

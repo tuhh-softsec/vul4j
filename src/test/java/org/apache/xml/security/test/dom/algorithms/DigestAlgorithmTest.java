@@ -79,6 +79,24 @@ public class DigestAlgorithmTest extends org.junit.Assert {
     }
     
     @org.junit.Test
+    public void testSHA224() throws Exception {
+        Document doc = XMLUtils.createDocumentBuilder(false).newDocument();
+        
+        MessageDigestAlgorithm digestAlgorithm = 
+            MessageDigestAlgorithm.getInstance(doc, MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA224);
+        assertEquals(MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA224, digestAlgorithm.getAlgorithmURI());
+        
+        byte[] digest = digestAlgorithm.digest("test-string".getBytes());
+        assertNotNull(digest);
+        assertTrue(digest.length > 0);
+        
+        // Now compare against a JDK MessageDigest Object
+        MessageDigest md = MessageDigest.getInstance("SHA-224");
+        byte[] digest2 = md.digest("test-string".getBytes());
+        assertTrue(Arrays.equals(digest, digest2));
+    }
+    
+    @org.junit.Test
     public void testSHA256() throws Exception {
         Document doc = XMLUtils.createDocumentBuilder(false).newDocument();
         

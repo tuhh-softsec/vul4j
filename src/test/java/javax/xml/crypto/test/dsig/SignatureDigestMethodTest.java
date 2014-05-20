@@ -54,7 +54,7 @@ public class SignatureDigestMethodTest extends org.junit.Assert {
 
     private KeySelector kvks;
     private CanonicalizationMethod withoutComments;
-    private DigestMethod sha1, sha256, sha384, sha512, ripemd160;
+    private DigestMethod sha1, sha224, sha256, sha384, sha512, ripemd160;
     private SignatureMethod rsaSha1;
     private KeyInfo rsaki;
     private XMLSignatureFactory fac;
@@ -94,6 +94,7 @@ public class SignatureDigestMethodTest extends org.junit.Assert {
         withoutComments = fac.newCanonicalizationMethod
             (CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
         sha1 = fac.newDigestMethod(DigestMethod.SHA1, null);
+        sha224 = fac.newDigestMethod("http://www.w3.org/2001/04/xmldsig-more#sha224", null);
         sha256 = fac.newDigestMethod(DigestMethod.SHA256, null);
         sha384 = fac.newDigestMethod("http://www.w3.org/2001/04/xmldsig-more#sha384", null);
         sha512 = fac.newDigestMethod(DigestMethod.SHA512, null);
@@ -114,13 +115,18 @@ public class SignatureDigestMethodTest extends org.junit.Assert {
         test_create_signature_enveloping(rsaSha1, sha1, rsaki,
                                          TestUtils.getPrivateKey("RSA"), kvks);
     }
+  
+    @org.junit.Test
+    public void testSHA224() throws Exception {
+        test_create_signature_enveloping(rsaSha1, sha224, rsaki,
+                                         TestUtils.getPrivateKey("RSA"), kvks);
+    }
     
     @org.junit.Test
     public void testSHA256() throws Exception {
         test_create_signature_enveloping(rsaSha1, sha256, rsaki,
                                          TestUtils.getPrivateKey("RSA"), kvks);
     }
-    
     
     @org.junit.Test
     public void testSHA384() throws Exception {

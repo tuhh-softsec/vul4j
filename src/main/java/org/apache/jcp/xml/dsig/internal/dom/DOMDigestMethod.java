@@ -40,6 +40,8 @@ import org.w3c.dom.Element;
 public abstract class DOMDigestMethod extends BaseStructure 
     implements DigestMethod {
 
+    static final String SHA224 =
+        "http://www.w3.org/2001/04/xmldsig-more#sha224"; // see RFC 4051
     static final String SHA384 =
         "http://www.w3.org/2001/04/xmldsig-more#sha384"; // see RFC 4051
     private DigestMethodParameterSpec params;
@@ -85,6 +87,8 @@ public abstract class DOMDigestMethod extends BaseStructure
         String alg = DOMUtils.getAttributeValue(dmElem, "Algorithm");
         if (alg.equals(DigestMethod.SHA1)) {
             return new SHA1(dmElem);
+        } else if (alg.equals(SHA224)) {
+            return new SHA224(dmElem);
         } else if (alg.equals(DigestMethod.SHA256)) {
             return new SHA256(dmElem);
         } else if (alg.equals(SHA384)) {
@@ -227,6 +231,24 @@ public abstract class DOMDigestMethod extends BaseStructure
         @Override
         String getMessageDigestAlgorithm() {
             return "SHA-1";
+        }
+    }
+    
+    static final class SHA224 extends DOMDigestMethod {
+        SHA224(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        SHA224(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return SHA224;
+        }
+        @Override
+        String getMessageDigestAlgorithm() {
+            return "SHA-224";
         }
     }
 

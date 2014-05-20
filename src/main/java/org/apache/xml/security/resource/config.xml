@@ -116,6 +116,12 @@
                     AlgorithmClass="MessageDigest"
                     RequirementLevel="REQUIRED"
                     JCEName="SHA-1"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#sha224"
+                    Description="SHA-224 message digest"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    JCEName="SHA-224"/>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#sha256"
                     Description="SHA-1 message digest with 256 bit"

@@ -40,6 +40,9 @@ public class MessageDigestAlgorithm extends Algorithm {
         Constants.MoreAlgorithmsSpecNS + "md5";
     /** Digest - Required SHA1*/
     public static final String ALGO_ID_DIGEST_SHA1 = Constants.SignatureSpecNS + "sha1";
+    /** Message Digest - OPTIONAL SHA224*/
+    public static final String ALGO_ID_DIGEST_SHA224 =
+        Constants.MoreAlgorithmsSpecNS + "sha224";
     /** Message Digest - RECOMMENDED SHA256*/
     public static final String ALGO_ID_DIGEST_SHA256 = 
         EncryptionConstants.EncryptionSpecNS + "sha256";
