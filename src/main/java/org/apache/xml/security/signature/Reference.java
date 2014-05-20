@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.xml.security.algorithms.Algorithm;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
@@ -177,10 +178,20 @@ public class Reference extends SignatureElementProxy {
             appendSelf(transforms);
             addReturnToSelf();
         }
-        MessageDigestAlgorithm mda =
-            MessageDigestAlgorithm.getInstance(getDocument(), messageDigestAlgorithm);
+        
+        // Create DigestMethod Element without actually instantiating a MessageDigest Object
+        Algorithm digestAlgorithm = new Algorithm(getDocument(), messageDigestAlgorithm) {
+            public String getBaseNamespace() {
+                return Constants.SignatureSpecNS;
+            }
 
-        digestMethodElem = mda.getElement();
+            public String getBaseLocalName() {
+                return Constants._TAG_DIGESTMETHOD;
+            }
+        };
+
+        digestMethodElem = digestAlgorithm.getElement();
+        
         appendSelf(digestMethodElem);
         addReturnToSelf();
 
