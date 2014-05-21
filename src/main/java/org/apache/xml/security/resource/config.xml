@@ -141,7 +141,37 @@
                     AlgorithmClass="MessageDigest"
                     RequirementLevel="OPTIONAL"
                     JCEName="SHA-512"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#whirlpool"
+                    Description="WHIRLPOOL message digest"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    JCEName="WHIRLPOOL"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha3-224"
+                    Description="SHA-3 message digest with 224 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    JCEName="SHA3-224"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha3-256"
+                    Description="SHA-3 message digest with 256 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    JCEName="SHA3-256"/>                     
 
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha3-384"
+                    Description="SHA-3 message digest with 384 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    JCEName="SHA3-384"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha3-512"
+                    Description="SHA-3 message digest with 512 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    JCEName="SHA3-512"/>
+                               
          <!-- Signature Algorithms -->
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     Description="Digital Signature Algorithm with SHA-1 message digest"

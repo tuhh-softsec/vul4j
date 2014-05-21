@@ -82,6 +82,26 @@ public class JCEMapper {
             MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512, 
             new Algorithm("SHA-512", "SHA-512", "MessageDigest")
         );
+        algorithmsMap.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_WHIRLPOOL, 
+            new Algorithm("WHIRLPOOL", "WHIRLPOOL", "MessageDigest")
+        );
+        algorithmsMap.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA3_224, 
+            new Algorithm("SHA3-224", "SHA3-224", "MessageDigest")
+        );
+        algorithmsMap.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA3_256, 
+            new Algorithm("SHA3-256", "SHA3-256", "MessageDigest")
+        );
+        algorithmsMap.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA3_384, 
+            new Algorithm("SHA3-384", "SHA3-384", "MessageDigest")
+        );
+        algorithmsMap.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA3_512, 
+            new Algorithm("SHA3-512", "SHA3-512", "MessageDigest")
+        );
         // Signature algorithms
         algorithmsMap.put(
             XMLSignature.ALGO_ID_SIGNATURE_DSA, 

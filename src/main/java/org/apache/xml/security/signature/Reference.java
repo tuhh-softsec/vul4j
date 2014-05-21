@@ -174,7 +174,7 @@ public class Reference extends SignatureElementProxy {
         // this.manifest.appendChild(this.doc.createTextNode("\n"));
 
         if (transforms != null) {
-            this.transforms=transforms;
+            this.transforms = transforms;
             appendSelf(transforms);
             addReturnToSelf();
         }

@@ -71,6 +71,13 @@
                     RequirementLevel="REQUIRED"
                     KeyLength="160"
                     JCEName="SHA-1"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#sha224"
+                    Description="SHA-224 message digest"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="224"
+                    JCEName="SHA-224"/>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#sha256"
                     Description="SHA-1 message digest with 256 bit"
@@ -93,6 +100,41 @@
                     RequirementLevel="OPTIONAL"
                     KeyLength="512"
                     JCEName="SHA-512"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#whirlpool"
+                    Description="WHIRLPOOL Message Digest with 512 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="512"
+                    JCEName="WHIRLPOOL"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha3-224"
+                    Description="SHA-3 message digest with 224 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="224"
+                    JCEName="SHA3-224"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha3-256"
+                    Description="SHA-3 message digest with 256 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="256"
+                    JCEName="SHA3-256"/>                     
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha3-384"
+                    Description="SHA-3 message digest with 384 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="384"
+                    JCEName="SHA3-384"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha3-512"
+                    Description="SHA-3 message digest with 512 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="512"
+                    JCEName="SHA3-512"/>
 
        <Algorithm URI="http://www.w3.org/2009/xmlenc11#mgf1sha1"
                   Description="Mask Generation Function with SHA-1 used with the RSA-OAEP key transport algorithm"

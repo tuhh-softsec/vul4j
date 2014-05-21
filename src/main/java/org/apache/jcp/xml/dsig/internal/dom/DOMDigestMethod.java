@@ -44,6 +44,17 @@ public abstract class DOMDigestMethod extends BaseStructure
         "http://www.w3.org/2001/04/xmldsig-more#sha224"; // see RFC 4051
     static final String SHA384 =
         "http://www.w3.org/2001/04/xmldsig-more#sha384"; // see RFC 4051
+    static final String WHIRLPOOL =
+        "http://www.w3.org/2007/05/xmldsig-more#whirlpool"; // see RFC 6931
+    static final String SHA3_224 =
+        "http://www.w3.org/2007/05/xmldsig-more#sha3-224"; // see RFC 6931
+    static final String SHA3_256 =
+        "http://www.w3.org/2007/05/xmldsig-more#sha3-256"; // see RFC 6931
+    static final String SHA3_384 =
+        "http://www.w3.org/2007/05/xmldsig-more#sha3-384"; // see RFC 6931
+    static final String SHA3_512 =
+        "http://www.w3.org/2007/05/xmldsig-more#sha3-512"; // see RFC 6931
+    
     private DigestMethodParameterSpec params;
 
     /**
@@ -97,6 +108,16 @@ public abstract class DOMDigestMethod extends BaseStructure
             return new SHA512(dmElem);
         } else if (alg.equals(DigestMethod.RIPEMD160)) {
             return new RIPEMD160(dmElem);
+        } else if (alg.equals(WHIRLPOOL)) {
+            return new WHIRLPOOL(dmElem);
+        } else if (alg.equals(SHA3_224)) {
+            return new SHA3_224(dmElem);
+        } else if (alg.equals(SHA3_256)) {
+            return new SHA3_256(dmElem);
+        } else if (alg.equals(SHA3_384)) {
+            return new SHA3_384(dmElem);
+        } else if (alg.equals(SHA3_512)) {
+            return new SHA3_512(dmElem);
         } else {
             throw new MarshalException("unsupported DigestMethod algorithm: " +
                                        alg);
@@ -321,6 +342,96 @@ public abstract class DOMDigestMethod extends BaseStructure
         @Override
         String getMessageDigestAlgorithm() {
             return "RIPEMD160";
+        }
+    }
+    
+    static final class WHIRLPOOL extends DOMDigestMethod {
+        WHIRLPOOL(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        WHIRLPOOL(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return WHIRLPOOL;
+        }
+        @Override
+        String getMessageDigestAlgorithm() {
+            return "WHIRLPOOL";
+        }
+    }
+    
+    static final class SHA3_224 extends DOMDigestMethod {
+        SHA3_224(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        SHA3_224(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return SHA3_224;
+        }
+        @Override
+        String getMessageDigestAlgorithm() {
+            return "SHA3-224";
+        }
+    }
+    
+    static final class SHA3_256 extends DOMDigestMethod {
+        SHA3_256(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        SHA3_256(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return SHA3_256;
+        }
+        @Override
+        String getMessageDigestAlgorithm() {
+            return "SHA3-256";
+        }
+    }
+    
+    static final class SHA3_384 extends DOMDigestMethod {
+        SHA3_384(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        SHA3_384(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return SHA3_384;
+        }
+        @Override
+        String getMessageDigestAlgorithm() {
+            return "SHA3-384";
+        }
+    }
+    
+    static final class SHA3_512 extends DOMDigestMethod {
+        SHA3_512(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        SHA3_512(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return SHA3_512;
+        }
+        @Override
+        String getMessageDigestAlgorithm() {
+            return "SHA3-512";
         }
     }
 }

@@ -55,6 +55,18 @@ public class MessageDigestAlgorithm extends Algorithm {
     /** Message Digest - OPTIONAL RIPEMD-160*/
     public static final String ALGO_ID_DIGEST_RIPEMD160 = 
         EncryptionConstants.EncryptionSpecNS + "ripemd160";
+    
+    // Newer digest algorithms...all optional
+    public static final String ALGO_ID_DIGEST_WHIRLPOOL = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "whirlpool";
+    public static final String ALGO_ID_DIGEST_SHA3_224 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "sha3-224";
+    public static final String ALGO_ID_DIGEST_SHA3_256 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "sha3-256";
+    public static final String ALGO_ID_DIGEST_SHA3_384 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "sha3-384";
+    public static final String ALGO_ID_DIGEST_SHA3_512 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "sha3-512";
 
     /** Field algorithm stores the actual {@link java.security.MessageDigest} */
     private final MessageDigest algorithm;

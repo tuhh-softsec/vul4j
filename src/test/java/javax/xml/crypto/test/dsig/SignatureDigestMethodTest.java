@@ -54,7 +54,8 @@ public class SignatureDigestMethodTest extends org.junit.Assert {
 
     private KeySelector kvks;
     private CanonicalizationMethod withoutComments;
-    private DigestMethod sha1, sha224, sha256, sha384, sha512, ripemd160;
+    private DigestMethod sha1, sha224, sha256, sha384, sha512, ripemd160,
+                whirlpool, sha3_224, sha3_256, sha3_384, sha3_512;
     private SignatureMethod rsaSha1;
     private KeyInfo rsaki;
     private XMLSignatureFactory fac;
@@ -93,12 +94,19 @@ public class SignatureDigestMethodTest extends org.junit.Assert {
         KeyInfoFactory kifac = fac.getKeyInfoFactory();
         withoutComments = fac.newCanonicalizationMethod
             (CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
+        
+        // Digest Methods
         sha1 = fac.newDigestMethod(DigestMethod.SHA1, null);
         sha224 = fac.newDigestMethod("http://www.w3.org/2001/04/xmldsig-more#sha224", null);
         sha256 = fac.newDigestMethod(DigestMethod.SHA256, null);
         sha384 = fac.newDigestMethod("http://www.w3.org/2001/04/xmldsig-more#sha384", null);
         sha512 = fac.newDigestMethod(DigestMethod.SHA512, null);
         ripemd160 = fac.newDigestMethod(DigestMethod.RIPEMD160, null);
+        whirlpool = fac.newDigestMethod("http://www.w3.org/2007/05/xmldsig-more#whirlpool", null);
+        sha3_224 = fac.newDigestMethod("http://www.w3.org/2007/05/xmldsig-more#sha3-224", null);
+        sha3_256 = fac.newDigestMethod("http://www.w3.org/2007/05/xmldsig-more#sha3-256", null);
+        sha3_384 = fac.newDigestMethod("http://www.w3.org/2007/05/xmldsig-more#sha3-384", null);
+        sha3_512 = fac.newDigestMethod("http://www.w3.org/2007/05/xmldsig-more#sha3-512", null);
         
         rsaSha1 = fac.newSignatureMethod
             ("http://www.w3.org/2000/09/xmldsig#rsa-sha1", null);
@@ -143,6 +151,36 @@ public class SignatureDigestMethodTest extends org.junit.Assert {
     @org.junit.Test
     public void testRIPEMD160() throws Exception {
         test_create_signature_enveloping(rsaSha1, ripemd160, rsaki,
+                                         TestUtils.getPrivateKey("RSA"), kvks);
+    }
+    
+    @org.junit.Test
+    public void testWHIRLPOOL() throws Exception {
+        test_create_signature_enveloping(rsaSha1, whirlpool, rsaki,
+                                         TestUtils.getPrivateKey("RSA"), kvks);
+    }
+    
+    @org.junit.Test
+    public void testSHA3_224() throws Exception {
+        test_create_signature_enveloping(rsaSha1, sha3_224, rsaki,
+                                         TestUtils.getPrivateKey("RSA"), kvks);
+    }
+    
+    @org.junit.Test
+    public void testSHA3_256() throws Exception {
+        test_create_signature_enveloping(rsaSha1, sha3_256, rsaki,
+                                         TestUtils.getPrivateKey("RSA"), kvks);
+    }
+    
+    @org.junit.Test
+    public void testSHA3_384() throws Exception {
+        test_create_signature_enveloping(rsaSha1, sha3_384, rsaki,
+                                         TestUtils.getPrivateKey("RSA"), kvks);
+    }
+    
+    @org.junit.Test
+    public void testSHA3_512() throws Exception {
+        test_create_signature_enveloping(rsaSha1, sha3_512, rsaki,
                                          TestUtils.getPrivateKey("RSA"), kvks);
     }
     

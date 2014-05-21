@@ -65,6 +65,9 @@ public final class Constants {
     /** The URL for more algorithms **/
     public static final String MoreAlgorithmsSpecNS = "http://www.w3.org/2001/04/xmldsig-more#";
     
+    /** The (newer) URL for more algorithms **/
+    public static final String XML_DSIG_NS_MORE_07_05 = "http://www.w3.org/2007/05/xmldsig-more#";
+    
     /** The URI for XML spec*/
     public static final String XML_LANG_SPACE_SpecNS = "http://www.w3.org/XML/1998/namespace";
     
