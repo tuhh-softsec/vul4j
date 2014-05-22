@@ -292,6 +292,14 @@
                     RequiredKey="HmacSHA1"
                     JCEName="HmacSHA1"/>
 
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha224"
+                    Description="Message Authentication code using SHA-224"
+                    AlgorithmClass="Mac"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="224"
+                    RequiredKey="HmacSHA224"
+                    JCEName="HmacSHA224"/>
+                    
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
                     Description="Message Authentication code using SHA-256"
                     AlgorithmClass="Mac"
