@@ -121,6 +121,10 @@ public final class XMLSignature extends SignatureElementProxy {
     public static final String ALGO_ID_MAC_HMAC_RIPEMD160 = 
         Constants.MoreAlgorithmsSpecNS + "hmac-ripemd160";
     
+    /** HMAC - Optional HMAC-SHA2224 */
+    public static final String ALGO_ID_MAC_HMAC_SHA224 = 
+        Constants.MoreAlgorithmsSpecNS + "hmac-sha224";
+    
     /** HMAC - Optional HMAC-SHA256 */
     public static final String ALGO_ID_MAC_HMAC_SHA256 = 
         Constants.MoreAlgorithmsSpecNS + "hmac-sha256";

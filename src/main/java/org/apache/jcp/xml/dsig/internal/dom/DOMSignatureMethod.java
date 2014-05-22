@@ -131,12 +131,16 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
             return new SHA512withECDSA(smElem);
         } else if (alg.equals(SignatureMethod.HMAC_SHA1)) {
             return new DOMHMACSignatureMethod.SHA1(smElem);
+        } else if (alg.equals(DOMHMACSignatureMethod.HMAC_SHA224)) {
+            return new DOMHMACSignatureMethod.SHA224(smElem);
         } else if (alg.equals(DOMHMACSignatureMethod.HMAC_SHA256)) {
             return new DOMHMACSignatureMethod.SHA256(smElem);
         } else if (alg.equals(DOMHMACSignatureMethod.HMAC_SHA384)) {
             return new DOMHMACSignatureMethod.SHA384(smElem);
         } else if (alg.equals(DOMHMACSignatureMethod.HMAC_SHA512)) {
             return new DOMHMACSignatureMethod.SHA512(smElem);
+        } else if (alg.equals(DOMHMACSignatureMethod.HMAC_RIPEMD160)) {
+            return new DOMHMACSignatureMethod.RIPEMD160(smElem);
         } else {
             throw new MarshalException
                 ("unsupported SignatureMethod algorithm: " + alg);

@@ -391,6 +391,34 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
             return 160;
         }
     }
+    
+    /**
+     * Class IntegrityHmacSHA224
+     */
+    public static class IntegrityHmacSHA224 extends IntegrityHmac {
+
+        /**
+         * Constructor IntegrityHmacSHA224
+         *
+         * @throws XMLSignatureException
+         */
+        public IntegrityHmacSHA224() throws XMLSignatureException {
+            super();
+        }
+
+        /**
+         * Method engineGetURI
+         *
+         * @inheritDoc
+         */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_MAC_HMAC_SHA224;
+        }
+
+        int getDigestLength() {
+            return 224;
+        }
+    }
 
     /**
      * Class IntegrityHmacSHA256

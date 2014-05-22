@@ -424,6 +424,9 @@ public class SignatureAlgorithm extends Algorithm {
             XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160, IntegrityHmac.IntegrityHmacRIPEMD160.class
         );
         algorithmHash.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_SHA224, IntegrityHmac.IntegrityHmacSHA224.class
+        );
+        algorithmHash.put(
             XMLSignature.ALGO_ID_MAC_HMAC_SHA256, IntegrityHmac.IntegrityHmacSHA256.class
         );
         algorithmHash.put(

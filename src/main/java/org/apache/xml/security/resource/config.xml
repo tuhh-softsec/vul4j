@@ -271,6 +271,14 @@
                     RequirementLevel="REQUIRED"
                     KeyLength="160"
                     JCEName="HmacSHA1"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha224"
+                    Description="Message Authentication code using SHA-224"
+                    AlgorithmClass="Mac"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
+                    KeyLength="224"
+                    JCEName="HmacSHA224"/>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
                     Description="Message Authentication code using SHA-256"

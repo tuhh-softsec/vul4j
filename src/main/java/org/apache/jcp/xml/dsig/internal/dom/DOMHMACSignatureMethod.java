@@ -53,12 +53,16 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
         org.slf4j.LoggerFactory.getLogger(DOMHMACSignatureMethod.class);
 
     // see RFC 4051 for these algorithm definitions
+    static final String HMAC_SHA224 = 
+        "http://www.w3.org/2001/04/xmldsig-more#hmac-sha224";
     static final String HMAC_SHA256 =
         "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256";
     static final String HMAC_SHA384 =
         "http://www.w3.org/2001/04/xmldsig-more#hmac-sha384";
     static final String HMAC_SHA512 =
         "http://www.w3.org/2001/04/xmldsig-more#hmac-sha512";
+    static final String HMAC_RIPEMD160 =
+        "http://www.w3.org/2001/04/xmldsig-more#hmac-ripemd160";
 
     private Mac hmac;
     private int outputLength;
@@ -235,6 +239,28 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
             return 160;
         }
     }
+    
+    static final class SHA224 extends DOMHMACSignatureMethod {
+        SHA224(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        SHA224(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return HMAC_SHA224;
+        }
+        @Override
+        String getJCAAlgorithm() {
+            return "HmacSHA224";
+        }
+        @Override
+        int getDigestLength() {
+            return 224;
+        }
+    }
 
     static final class SHA256 extends DOMHMACSignatureMethod {
         SHA256(AlgorithmParameterSpec params)
@@ -299,6 +325,28 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
         @Override
         int getDigestLength() {
             return 512;
+        }
+    }
+    
+    static final class RIPEMD160 extends DOMHMACSignatureMethod {
+        RIPEMD160(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        RIPEMD160(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return HMAC_RIPEMD160;
+        }
+        @Override
+        String getJCAAlgorithm() {
+            return "HMACRIPEMD160";
+        }
+        @Override
+        int getDigestLength() {
+            return 160;
         }
     }
 }
