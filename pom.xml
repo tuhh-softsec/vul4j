@@ -326,7 +326,7 @@
         <profile>
             <id>jdk16</id>
             <activation>
-                <jdk>[1.5,)</jdk>
+                <jdk>[1.6,)</jdk>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <dependencies>
