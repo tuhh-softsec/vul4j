@@ -140,6 +140,10 @@ public class JCEMapper {
             new Algorithm("SHA1withECDSA", "SHA1withECDSA", "Signature")
         );
         algorithmsMap.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA224, 
+            new Algorithm("SHA224withECDSA", "SHA224withECDSA", "Signature")
+        );
+        algorithmsMap.put(
             XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA256, 
             new Algorithm("SHA256withECDSA", "SHA256withECDSA", "Signature")
         );

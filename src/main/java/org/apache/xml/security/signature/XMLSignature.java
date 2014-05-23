@@ -141,6 +141,10 @@ public final class XMLSignature extends SignatureElementProxy {
     public static final String ALGO_ID_SIGNATURE_ECDSA_SHA1 = 
         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1";
     
+    /**Signature - Optional ECDSAwithSHA224 */
+    public static final String ALGO_ID_SIGNATURE_ECDSA_SHA224 = 
+        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224";
+    
     /**Signature - Optional ECDSAwithSHA256 */
     public static final String ALGO_ID_SIGNATURE_ECDSA_SHA256 = 
         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";

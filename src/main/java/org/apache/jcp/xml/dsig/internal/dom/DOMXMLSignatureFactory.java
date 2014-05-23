@@ -265,6 +265,10 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
             return new DOMSignatureMethod.SHA384withRSA(params);
         } else if (algorithm.equals(DOMSignatureMethod.RSA_SHA512)) {
             return new DOMSignatureMethod.SHA512withRSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.RSA_SHA512)) {
+            return new DOMSignatureMethod.SHA512withRSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.RSA_RIPEMD160)) {
+            return new DOMSignatureMethod.RIPEMD160withRSA(params);
         } else if (algorithm.equals(SignatureMethod.DSA_SHA1)) {
             return new DOMSignatureMethod.SHA1withDSA(params);
         } else if (algorithm.equals(DOMSignatureMethod.DSA_SHA256)) {
@@ -283,6 +287,8 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
             return new DOMHMACSignatureMethod.RIPEMD160(params);
         } else if (algorithm.equals(DOMSignatureMethod.ECDSA_SHA1)) {
             return new DOMSignatureMethod.SHA1withECDSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.ECDSA_SHA224)) {
+            return new DOMSignatureMethod.SHA224withECDSA(params);
         } else if (algorithm.equals(DOMSignatureMethod.ECDSA_SHA256)) {
             return new DOMSignatureMethod.SHA256withECDSA(params);
         } else if (algorithm.equals(DOMSignatureMethod.ECDSA_SHA384)) {

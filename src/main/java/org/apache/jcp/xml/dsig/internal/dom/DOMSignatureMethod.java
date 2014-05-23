@@ -58,8 +58,12 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384";
     static final String RSA_SHA512 =
         "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
+    static final String RSA_RIPEMD160 =
+        "http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160";
     static final String ECDSA_SHA1 =
         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1";
+    static final String ECDSA_SHA224 =
+        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224";
     static final String ECDSA_SHA256 =
         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";
     static final String ECDSA_SHA384 =
@@ -117,12 +121,16 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
             return new SHA384withRSA(smElem);
         } else if (alg.equals(RSA_SHA512)) {
             return new SHA512withRSA(smElem);
+        } else if (alg.equals(RSA_RIPEMD160)) {
+            return new RIPEMD160withRSA(smElem);
         } else if (alg.equals(SignatureMethod.DSA_SHA1)) {
             return new SHA1withDSA(smElem);
         } else if (alg.equals(DSA_SHA256)) {
             return new SHA256withDSA(smElem);
         } else if (alg.equals(ECDSA_SHA1)) {
             return new SHA1withECDSA(smElem);
+        } else if (alg.equals(ECDSA_SHA224)) {
+            return new SHA224withECDSA(smElem);
         } else if (alg.equals(ECDSA_SHA256)) {
             return new SHA256withECDSA(smElem);
         } else if (alg.equals(ECDSA_SHA384)) {
@@ -333,6 +341,28 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
             return Type.RSA;
         }
     }
+    
+    static final class RIPEMD160withRSA extends DOMSignatureMethod {
+        RIPEMD160withRSA(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        RIPEMD160withRSA(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return RSA_RIPEMD160;
+        }
+        @Override
+        String getJCAAlgorithm() {
+            return "RIPEMD160withRSA";
+        }
+        @Override
+        Type getAlgorithmType() {
+            return Type.RSA;
+        }
+    }
 
     static final class SHA1withDSA extends DOMSignatureMethod {
         SHA1withDSA(AlgorithmParameterSpec params)
@@ -390,6 +420,28 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         @Override
         String getJCAAlgorithm() {
             return "SHA1withECDSA";
+        }
+        @Override
+        Type getAlgorithmType() {
+            return Type.ECDSA;
+        }
+    }
+    
+    static final class SHA224withECDSA extends DOMSignatureMethod {
+        SHA224withECDSA(AlgorithmParameterSpec params)
+            throws InvalidAlgorithmParameterException {
+            super(params);
+        }
+        SHA224withECDSA(Element dmElem) throws MarshalException {
+            super(dmElem);
+        }
+        @Override
+        public String getAlgorithm() {
+            return ECDSA_SHA224;
+        }
+        @Override
+        String getJCAAlgorithm() {
+            return "SHA224withECDSA";
         }
         @Override
         Type getAlgorithmType() {

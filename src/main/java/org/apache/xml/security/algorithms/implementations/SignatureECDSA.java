@@ -362,13 +362,13 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
     }
 
     /**
-     * Class SignatureRSASHA1
+     * Class SignatureECDSASHA1
      *
      * @author $Author: marcx $
      */
     public static class SignatureECDSASHA1 extends SignatureECDSA {
         /**
-         * Constructor SignatureRSASHA1
+         * Constructor SignatureECDSASHA1
          *
          * @throws XMLSignatureException
          */
@@ -383,14 +383,34 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
     }
 
     /**
-     * Class SignatureRSASHA256
+     * Class SignatureECDSASHA224
+     */
+    public static class SignatureECDSASHA224 extends SignatureECDSA {
+
+        /**
+         * Constructor SignatureECDSASHA224
+         *
+         * @throws XMLSignatureException
+         */
+        public SignatureECDSASHA224() throws XMLSignatureException {
+            super();
+        }
+
+        /** @inheritDoc */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA224;
+        }
+    }
+    
+    /**
+     * Class SignatureECDSASHA256
      *
      * @author Alex Dupre
      */
     public static class SignatureECDSASHA256 extends SignatureECDSA {
 
         /**
-         * Constructor SignatureRSASHA256
+         * Constructor SignatureECDSASHA256
          *
          * @throws XMLSignatureException
          */
@@ -405,14 +425,14 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
     }
 
     /**
-     * Class SignatureRSASHA384
+     * Class SignatureECDSASHA384
      *
      * @author Alex Dupre
      */
     public static class SignatureECDSASHA384 extends SignatureECDSA {
 
         /**
-         * Constructor SignatureRSASHA384
+         * Constructor SignatureECDSASHA384
          *
          * @throws XMLSignatureException
          */
@@ -427,14 +447,14 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
     }
 
     /**
-     * Class SignatureRSASHA512
+     * Class SignatureECDSASHA512
      *
      * @author Alex Dupre
      */
     public static class SignatureECDSASHA512 extends SignatureECDSA {
 
         /**
-         * Constructor SignatureRSASHA512
+         * Constructor SignatureECDSASHA512
          *
          * @throws XMLSignatureException
          */
