@@ -19,10 +19,10 @@
 package org.apache.xml.security.test.stax.signature;
 
 import java.io.File;
+import java.security.Key;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import javax.crypto.SecretKey;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -133,7 +133,7 @@ public class AbstractSignatureCreationTest extends org.junit.Assert {
      */
     protected void verifyUsingDOM(
             Document document,
-            SecretKey secretKey,
+            Key key,
             List<SecurePart> secureParts
     ) throws Exception {
         XPathFactory xpf = XPathFactory.newInstance();
@@ -154,6 +154,6 @@ public class AbstractSignatureCreationTest extends org.junit.Assert {
         }
 
         XMLSignature signature = new XMLSignature(sigElement, "");
-        Assert.assertTrue(signature.checkSignatureValue(secretKey));
+        Assert.assertTrue(signature.checkSignatureValue(key));
     }
 }

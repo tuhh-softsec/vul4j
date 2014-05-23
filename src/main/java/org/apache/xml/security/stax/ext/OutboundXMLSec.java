@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -170,13 +171,18 @@ public class OutboundXMLSec {
     private void configureSignatureKeys(final OutboundSecurityContextImpl outboundSecurityContext) throws XMLSecurityException {
         Key key = securityProperties.getSignatureKey();
         X509Certificate[] x509Certificates = securityProperties.getSignatureCerts();
-        if (key instanceof PrivateKey && (x509Certificates == null || x509Certificates.length == 0)) {
+        if (key instanceof PrivateKey && (x509Certificates == null || x509Certificates.length == 0)
+            && securityProperties.getSignatureVerificationKey() == null) {
             throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
         }
 
         final String securityTokenid = IDGenerator.generateID("SIG");
         final OutboundSecurityToken securityToken =
                 new GenericOutboundSecurityToken(securityTokenid, SecurityTokenConstants.DefaultToken, key, x509Certificates);
+        if (securityProperties.getSignatureVerificationKey() instanceof PublicKey) {
+            ((GenericOutboundSecurityToken)securityToken).setPublicKey(
+                (PublicKey)securityProperties.getSignatureVerificationKey());
+        }
 
         final SecurityTokenProvider<OutboundSecurityToken> securityTokenProvider =
                 new SecurityTokenProvider<OutboundSecurityToken>() {

@@ -241,6 +241,14 @@
                     RequiredKey="SHA1withECDSA"
                     JCEName="SHA1withECDSA"/>
 
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224"
+                    Description="ECDSA Signature with SHA-224 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
+                    RequiredKey="SHA224withECDSA"
+                    JCEName="SHA224withECDSA"/>
+                    
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"
                     Description="ECDSA Signature with SHA-256 message digest"
                     AlgorithmClass="Signature"
