@@ -31,13 +31,9 @@ public final class HttpRequestHelper {
     }
 
     public static String getFirstHeader(String name, HttpRequest request) {
-        Header[] values = request.getHeaders(name);
-        if (values.length > 0) {
-            return values[0].getValue();
-        }
-        return null;
+        final Header header = request.getFirstHeader(name);
+        return header == null ? null : header.getValue();
     }
-
     public static String getParameter(DriverRequest request, String name) {
         String characterEncoding = request.getCharacterEncoding();
         if (characterEncoding == null) {

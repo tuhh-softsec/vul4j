@@ -102,6 +102,7 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
         addVariable(expected, "HTTP_COOKIE{missing}", "");
         addVariable(expected, "QUERY_STRING{missing}", "");
         addVariable(expected, "HTTP_USER_AGENT{version}", "5.0");
+        addVariable(expected, "HTTP_HEADER{Accept-Language}", "da, en-gb;q=0.8, en;q=0.7");
 
         addVariable(expected, "HTTP_COOKIE", "test-cookie=test-cookie-value; test-cookie2=test-cookie-value2");
         addVariable(expected, "QUERY_STRING{missing}|default-value", "default-value");
