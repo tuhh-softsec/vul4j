@@ -487,5 +487,46 @@ public class PKSignatureCreationTest extends AbstractSignatureCreationTest {
         verifyUsingDOM(document, ecKeyPair.getPublic(), properties.getSignatureSecureParts());
     }
     
+    @Test
+    public void testECDSA_RIPEMD160() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
+        properties.setActions(actions);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_KeyValue);
+        
+        String signatureAlgorithm = "http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160";
+        properties.setSignatureAlgorithm(signatureAlgorithm);
+        properties.setSignatureKey(ecKeyPair.getPrivate());
+        properties.setSignatureVerificationKey(ecKeyPair.getPublic());
+        
+        SecurePart securePart = new SecurePart(
+                new QName("urn:example:po", "PaymentInfo"),
+                SecurePart.Modifier.Content,
+                new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
+                "http://www.w3.org/2000/09/xmldsig#sha1");
+        properties.addSignaturePart(securePart);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document =
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify using DOM
+        verifyUsingDOM(document, ecKeyPair.getPublic(), properties.getSignatureSecureParts());
+    }
+    
     
 }

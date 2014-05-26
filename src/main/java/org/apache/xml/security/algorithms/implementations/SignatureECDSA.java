@@ -467,5 +467,25 @@ public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
             return XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA512;
         }
     }
+    
+    /**
+     * Class SignatureECDSARIPEMD160
+     */
+    public static class SignatureECDSARIPEMD160 extends SignatureECDSA {
 
+        /**
+         * Constructor SignatureECDSARIPEMD160
+         *
+         * @throws XMLSignatureException
+         */
+        public SignatureECDSARIPEMD160() throws XMLSignatureException {
+            super();
+        }
+
+        /** @inheritDoc */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_SIGNATURE_ECDSA_RIPEMD160;
+        }
+    }
+    
 }

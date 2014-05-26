@@ -267,6 +267,23 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
         verify(document, ecKeyPair.getPublic(), localNames);
     }
     
+    @org.junit.Test
+    public void testECDSA_RIPEMD160() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
+        Document document = builder.parse(sourceDocument);
+        
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        
+        sign(XMLSignature.ALGO_ID_SIGNATURE_ECDSA_RIPEMD160, document, localNames, ecKeyPair.getPrivate());
+        // XMLUtils.outputDOM(document, System.out);
+        verify(document, ecKeyPair.getPublic(), localNames);
+    }
+    
     private XMLSignature sign(
         String algorithm,
         Document document,

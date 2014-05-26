@@ -156,6 +156,10 @@ public final class XMLSignature extends SignatureElementProxy {
     /**Signature - Optional ECDSAwithSHA512 */
     public static final String ALGO_ID_SIGNATURE_ECDSA_SHA512 = 
         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512";
+    
+    /**Signature - Optional ECDSAwithRIPEMD160 */
+    public static final String ALGO_ID_SIGNATURE_ECDSA_RIPEMD160 = 
+        "http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160";
 
     private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(XMLSignature.class);

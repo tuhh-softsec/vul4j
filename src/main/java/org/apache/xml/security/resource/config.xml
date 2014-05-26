@@ -85,6 +85,8 @@
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureECDSA$SignatureECDSASHA384" />
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureECDSA$SignatureECDSASHA512" />
+      <SignatureAlgorithm URI="http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureECDSA$SignatureECDSARIPEMD160" />
 
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmac$IntegrityHmacMD5" />
@@ -256,7 +258,14 @@
                     RequirementLevel="OPTIONAL"
                     SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
                     JCEName="SHA512withECDSA"/>
-
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160"
+                    Description="ECDSA Signature with RIPEMD-160 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="https://tools.ietf.org/html/rfc6931"
+                    JCEName="RIPEMD160withECDSA"/>
+                    
          <!-- MAC Algorithms -->
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"
                     Description="Message Authentication code using MD5"

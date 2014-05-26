@@ -58,7 +58,7 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
     private CanonicalizationMethod withoutComments;
     private DigestMethod sha1;
     private SignatureMethod rsaSha1, rsaSha256, rsaSha384, rsaSha512, rsaRipemd160;
-    private SignatureMethod ecdsaSha1, ecdsaSha224, ecdsaSha256, ecdsaSha384, ecdsaSha512;
+    private SignatureMethod ecdsaSha1, ecdsaSha224, ecdsaSha256, ecdsaSha384, ecdsaSha512, ecdsaRipemd160;
     private XMLSignatureFactory fac;
     private DocumentBuilder db;
     private KeyPair rsaKeyPair, ecKeyPair;
@@ -111,6 +111,7 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
         ecdsaSha256 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256", null);
         ecdsaSha384 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384", null);
         ecdsaSha512 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512", null);
+        ecdsaRipemd160 = fac.newSignatureMethod("http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160", null);
         
         kvks = new KeySelectors.KeyValueKeySelector();
         
@@ -181,6 +182,12 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
     @org.junit.Test
     public void testECDSA_SHA512() throws Exception {
         test_create_signature_enveloping(ecdsaSha512, sha1, ecki,
+                                         ecKeyPair.getPrivate(), kvks);
+    }
+    
+    @org.junit.Test
+    public void testECDSA_RIPEMD160() throws Exception {
+        test_create_signature_enveloping(ecdsaRipemd160, sha1, ecki,
                                          ecKeyPair.getPrivate(), kvks);
     }
   

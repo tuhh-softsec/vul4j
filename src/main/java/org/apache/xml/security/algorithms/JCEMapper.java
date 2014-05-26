@@ -156,6 +156,10 @@ public class JCEMapper {
             new Algorithm("SHA512withECDSA", "SHA512withECDSA", "Signature")
         );
         algorithmsMap.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_RIPEMD160, 
+            new Algorithm("RIPEMD160withECDSA", "RIPEMD160withECDSA", "Signature")
+        );
+        algorithmsMap.put(
             XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5,
             new Algorithm("HmacMD5", "HmacMD5", "Mac", 128, 0)
         );
