@@ -1,5 +1,12 @@
+# Eclipse
 /.project
 /.settings
+
+# IDEA
+/*.iml
+/.idea
+
+# Maven
 /target
 
 esigate-servlet/.settings/org.eclipse.wst.common.component

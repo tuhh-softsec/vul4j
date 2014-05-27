@@ -87,7 +87,7 @@ public class ServletExtension implements Extension, IEventListener {
                             if (context == null) {
                                 httpServletRequestContext.getFilterChain().doFilter(
                                         httpServletRequestContext.getRequest(), wrappedResponse);
-                                result = wrappedResponse.getResponse();
+                                result = wrappedResponse.getCloseableHttpResponse();
                             } else {
                                 ServletContext crossContext = httpServletRequestContext.getServletContext().getContext(
                                         context);
@@ -97,7 +97,7 @@ public class ServletExtension implements Extension, IEventListener {
                                 } else {
                                     crossContext.getRequestDispatcher(relUrl).forward(
                                             httpServletRequestContext.getRequest(), wrappedResponse);
-                                    result = wrappedResponse.getResponse();
+                                    result = wrappedResponse.getCloseableHttpResponse();
                                 }
                             }
                         } else {
@@ -107,7 +107,7 @@ public class ServletExtension implements Extension, IEventListener {
                             if (context == null) {
                                 httpServletRequestContext.getRequest().getRequestDispatcher(relUrl)
                                         .forward(httpServletRequestContext.getRequest(), wrappedResponse);
-                                result = wrappedResponse.getResponse();
+                                result = wrappedResponse.getCloseableHttpResponse();
                             } else {
                                 ServletContext crossContext = httpServletRequestContext.getServletContext().getContext(
                                         context);
@@ -117,7 +117,7 @@ public class ServletExtension implements Extension, IEventListener {
                                 } else {
                                     crossContext.getRequestDispatcher(relUrl).include(
                                             httpServletRequestContext.getRequest(), wrappedResponse);
-                                    result = wrappedResponse.getResponse();
+                                    result = wrappedResponse.getCloseableHttpResponse();
                                 }
                             }
                         }
