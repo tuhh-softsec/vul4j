@@ -75,6 +75,20 @@
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA384" />
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA512" />
+                          
+      <SignatureAlgorithm URI="http://www.w3.org/2007/05/xmldsig-more#ripemd160-rsa-MGF1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSARIPEMD160MGF1" />
+      <SignatureAlgorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA1MGF1" />
+      <SignatureAlgorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha224-rsa-MGF1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA224MGF1" />
+      <SignatureAlgorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA256MGF1" />
+      <SignatureAlgorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA384MGF1" />
+      <SignatureAlgorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA512MGF1" />
+                          
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureECDSA$SignatureECDSASHA1" />
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224"
@@ -87,7 +101,7 @@
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureECDSA$SignatureECDSASHA512" />
       <SignatureAlgorithm URI="http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureECDSA$SignatureECDSARIPEMD160" />
-
+                          
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmac$IntegrityHmacMD5" />
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-ripemd160"
@@ -223,6 +237,47 @@
                     RequirementLevel="OPTIONAL"
                     SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
                     JCEName="SHA512withRSA"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#ripemd160-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with RIPEMD-160 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    JCEName="RIPEMD160withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-1 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="RECOMMENDED"
+                    JCEName="SHA1withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha224-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-224 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    JCEName="SHA224withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-256 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    JCEName="SHA256withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-384 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    JCEName="SHA384withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-512 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    JCEName="SHA512withRSAandMGF1"/>
                     
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"
                     Description="ECDSA Signature with SHA-1 message digest"

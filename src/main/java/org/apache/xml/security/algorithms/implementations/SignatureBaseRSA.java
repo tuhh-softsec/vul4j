@@ -336,4 +336,124 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
             return XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5;
         }
     }
+    
+    /**
+     * Class SignatureRSARIPEMD160MGF1
+     */
+    public static class SignatureRSARIPEMD160MGF1 extends SignatureBaseRSA {
+
+        /**
+         * Constructor SignatureRSARIPEMD160MGF1
+         *
+         * @throws XMLSignatureException
+         */
+        public SignatureRSARIPEMD160MGF1() throws XMLSignatureException {
+            super();
+        }
+
+        /** @inheritDoc */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160_MGF1;
+        }
+    }
+    
+    /**
+     * Class SignatureRSASHA1MGF1
+     */
+    public static class SignatureRSASHA1MGF1 extends SignatureBaseRSA {
+
+        /**
+         * Constructor SignatureRSASHA1MGF1
+         *
+         * @throws XMLSignatureException
+         */
+        public SignatureRSASHA1MGF1() throws XMLSignatureException {
+            super();
+        }
+
+        /** @inheritDoc */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1_MGF1;
+        }
+    }
+    
+    /**
+     * Class SignatureRSASHA224MGF1
+     */
+    public static class SignatureRSASHA224MGF1 extends SignatureBaseRSA {
+
+        /**
+         * Constructor SignatureRSASHA224MGF1
+         *
+         * @throws XMLSignatureException
+         */
+        public SignatureRSASHA224MGF1() throws XMLSignatureException {
+            super();
+        }
+
+        /** @inheritDoc */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA224_MGF1;
+        }
+    }
+    
+    /**
+     * Class SignatureRSASHA256MGF1
+     */
+    public static class SignatureRSASHA256MGF1 extends SignatureBaseRSA {
+
+        /**
+         * Constructor SignatureRSASHA256MGF1
+         *
+         * @throws XMLSignatureException
+         */
+        public SignatureRSASHA256MGF1() throws XMLSignatureException {
+            super();
+        }
+
+        /** @inheritDoc */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256_MGF1;
+        }
+    }
+    
+    /**
+     * Class SignatureRSASHA384MGF1
+     */
+    public static class SignatureRSASHA384MGF1 extends SignatureBaseRSA {
+
+        /**
+         * Constructor SignatureRSASHA384MGF1
+         *
+         * @throws XMLSignatureException
+         */
+        public SignatureRSASHA384MGF1() throws XMLSignatureException {
+            super();
+        }
+
+        /** @inheritDoc */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384_MGF1;
+        }
+    }
+    
+    /**
+     * Class SignatureRSASHA512MGF1
+     */
+    public static class SignatureRSASHA512MGF1 extends SignatureBaseRSA {
+
+        /**
+         * Constructor SignatureRSASHA512MGF1
+         *
+         * @throws XMLSignatureException
+         */
+        public SignatureRSASHA512MGF1() throws XMLSignatureException {
+            super();
+        }
+
+        /** @inheritDoc */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512_MGF1;
+        }
+    }
 }

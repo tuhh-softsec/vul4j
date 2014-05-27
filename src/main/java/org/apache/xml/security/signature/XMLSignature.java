@@ -112,6 +112,30 @@ public final class XMLSignature extends SignatureElementProxy {
     /** Signature - Optional RSAwithSHA512 */
     public static final String ALGO_ID_SIGNATURE_RSA_SHA512 = 
         Constants.MoreAlgorithmsSpecNS + "rsa-sha512";
+    
+    /** Signature - Optional RSAwithSHA1andMGF1 */
+    public static final String ALGO_ID_SIGNATURE_RSA_SHA1_MGF1 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "sha1-rsa-MGF1";
+    
+    /** Signature - Optional RSAwithSHA224andMGF1 */
+    public static final String ALGO_ID_SIGNATURE_RSA_SHA224_MGF1 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "sha224-rsa-MGF1";
+
+    /** Signature - Optional RSAwithSHA256andMGF1 */
+    public static final String ALGO_ID_SIGNATURE_RSA_SHA256_MGF1 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "sha256-rsa-MGF1";
+
+    /** Signature - Optional RSAwithSHA384andMGF1 */
+    public static final String ALGO_ID_SIGNATURE_RSA_SHA384_MGF1 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "sha384-rsa-MGF1";
+
+    /** Signature - Optional RSAwithSHA512andMGF1 */
+    public static final String ALGO_ID_SIGNATURE_RSA_SHA512_MGF1 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "sha512-rsa-MGF1";
+
+    /** Signature - Optional RSAwithRIPEMD160andMGF1 */
+    public static final String ALGO_ID_SIGNATURE_RSA_RIPEMD160_MGF1 = 
+        Constants.XML_DSIG_NS_MORE_07_05 + "ripemd160-rsa-MGF1";
 
     /** HMAC - NOT Recommended HMAC-MD5 */
     public static final String ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5 = 

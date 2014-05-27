@@ -232,6 +232,59 @@
                     KeyLength="512"
                     RequiredKey="SHA512withRSA"
                     JCEName="SHA512withRSA"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#ripemd160-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with RIPEMD-160 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    KeyLength="160"
+                    RequiredKey="RIPEMD160withRSAandMGF1"
+                    JCEName="RIPEMD160withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-1 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="RECOMMENDED"
+                    KeyLength="160"
+                    RequiredKey="SHA1withRSAandMGF1"
+                    JCEName="SHA1withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha224-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-224 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    KeyLength="224"
+                    RequiredKey="SHA224withRSAandMGF1"
+                    JCEName="SHA224withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-256 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    KeyLength="256"
+                    RequiredKey="SHA256withRSAandMGF1"
+                    JCEName="SHA256withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-384 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    KeyLength="384"
+                    RequiredKey="SHA384withRSAandMGF1"
+                    JCEName="SHA384withRSAandMGF1"/>
+
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1"
+                    Description="RSASSA-PSS Signature with SHA-512 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
+                    KeyLength="512"
+                    RequiredKey="SHA512withRSAandMGF1"
+                    JCEName="SHA512withRSAandMGF1"/>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"
                     Description="ECDSA Signature with SHA-1 message digest"
