@@ -58,6 +58,7 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
     private CanonicalizationMethod withoutComments;
     private DigestMethod sha1;
     private SignatureMethod rsaSha1, rsaSha256, rsaSha384, rsaSha512, rsaRipemd160;
+    private SignatureMethod rsaSha1Mgf1, rsaSha224Mgf1, rsaSha256Mgf1, rsaSha384Mgf1, rsaSha512Mgf1;
     private SignatureMethod ecdsaSha1, ecdsaSha224, ecdsaSha256, ecdsaSha384, ecdsaSha512, ecdsaRipemd160;
     private XMLSignatureFactory fac;
     private DocumentBuilder db;
@@ -106,6 +107,12 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
         rsaSha512 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512", null);
         rsaRipemd160 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160", null);
         
+        rsaSha1Mgf1 = fac.newSignatureMethod("http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1", null);
+        rsaSha224Mgf1 = fac.newSignatureMethod("http://www.w3.org/2007/05/xmldsig-more#sha224-rsa-MGF1", null);
+        rsaSha256Mgf1 = fac.newSignatureMethod("http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1", null);
+        rsaSha384Mgf1 = fac.newSignatureMethod("http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1", null);
+        rsaSha512Mgf1 = fac.newSignatureMethod("http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1", null);
+        
         ecdsaSha1 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1", null);
         ecdsaSha224 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224", null);
         ecdsaSha256 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256", null);
@@ -152,6 +159,36 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
     @org.junit.Test
     public void testRSA_RIPEMD160() throws Exception {
         test_create_signature_enveloping(rsaRipemd160, sha1, rsaki,
+                                         rsaKeyPair.getPrivate(), kvks);
+    }
+    
+    @org.junit.Test
+    public void testRSA_SHA1_MGF1() throws Exception {
+        test_create_signature_enveloping(rsaSha1Mgf1, sha1, rsaki,
+                                         rsaKeyPair.getPrivate(), kvks);
+    }
+    
+    @org.junit.Test
+    public void testRSA_SHA224_MGF1() throws Exception {
+        test_create_signature_enveloping(rsaSha224Mgf1, sha1, rsaki,
+                                         rsaKeyPair.getPrivate(), kvks);
+    }
+    
+    @org.junit.Test
+    public void testRSA_SHA256_MGF1() throws Exception {
+        test_create_signature_enveloping(rsaSha256Mgf1, sha1, rsaki,
+                                         rsaKeyPair.getPrivate(), kvks);
+    }
+    
+    @org.junit.Test
+    public void testRSA_SHA384_MGF1() throws Exception {
+        test_create_signature_enveloping(rsaSha384Mgf1, sha1, rsaki,
+                                         rsaKeyPair.getPrivate(), kvks);
+    }
+    
+    @org.junit.Test
+    public void testRSA_SHA512_MGF1() throws Exception {
+        test_create_signature_enveloping(rsaSha512Mgf1, sha1, rsaki,
                                          rsaKeyPair.getPrivate(), kvks);
     }
     

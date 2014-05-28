@@ -406,9 +406,6 @@ public class SignatureAlgorithm extends Algorithm {
             XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512, SignatureBaseRSA.SignatureRSASHA512.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160_MGF1, SignatureBaseRSA.SignatureRSARIPEMD160MGF1.class
-        );
-        algorithmHash.put(
             XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1_MGF1, SignatureBaseRSA.SignatureRSASHA1MGF1.class
         );
         algorithmHash.put(

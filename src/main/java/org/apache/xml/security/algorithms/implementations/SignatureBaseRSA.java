@@ -338,26 +338,6 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     }
     
     /**
-     * Class SignatureRSARIPEMD160MGF1
-     */
-    public static class SignatureRSARIPEMD160MGF1 extends SignatureBaseRSA {
-
-        /**
-         * Constructor SignatureRSARIPEMD160MGF1
-         *
-         * @throws XMLSignatureException
-         */
-        public SignatureRSARIPEMD160MGF1() throws XMLSignatureException {
-            super();
-        }
-
-        /** @inheritDoc */
-        public String engineGetURI() {
-            return XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160_MGF1;
-        }
-    }
-    
-    /**
      * Class SignatureRSASHA1MGF1
      */
     public static class SignatureRSASHA1MGF1 extends SignatureBaseRSA {

@@ -238,13 +238,6 @@
                     SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
                     JCEName="SHA512withRSA"/>
                     
-         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#ripemd160-rsa-MGF1"
-                    Description="RSASSA-PSS Signature with RIPEMD-160 message digest"
-                    AlgorithmClass="Signature"
-                    RequirementLevel="OPTIONAL"
-                    SpecificationURL="http://www.ietf.org/rfc/rfc6931.txt"
-                    JCEName="RIPEMD160withRSAandMGF1"/>
-
          <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1"
                     Description="RSASSA-PSS Signature with SHA-1 message digest"
                     AlgorithmClass="Signature"

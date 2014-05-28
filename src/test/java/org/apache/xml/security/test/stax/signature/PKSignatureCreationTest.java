@@ -283,6 +283,211 @@ public class PKSignatureCreationTest extends AbstractSignatureCreationTest {
     }
     
     @Test
+    public void testRSA_SHA1_MGF1() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
+        properties.setActions(actions);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_KeyValue);
+        
+        String signatureAlgorithm = "http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1";
+        properties.setSignatureAlgorithm(signatureAlgorithm);
+        properties.setSignatureKey(rsaKeyPair.getPrivate());
+        properties.setSignatureVerificationKey(rsaKeyPair.getPublic());
+        
+        SecurePart securePart = new SecurePart(
+                new QName("urn:example:po", "PaymentInfo"),
+                SecurePart.Modifier.Content,
+                new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
+                "http://www.w3.org/2000/09/xmldsig#sha1");
+        properties.addSignaturePart(securePart);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document =
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify using DOM
+        verifyUsingDOM(document, rsaKeyPair.getPublic(), properties.getSignatureSecureParts());
+    }
+    
+    @Test
+    public void testRSA_SHA224_MGF1() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
+        properties.setActions(actions);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_KeyValue);
+        
+        String signatureAlgorithm = "http://www.w3.org/2007/05/xmldsig-more#sha224-rsa-MGF1";
+        properties.setSignatureAlgorithm(signatureAlgorithm);
+        properties.setSignatureKey(rsaKeyPair.getPrivate());
+        properties.setSignatureVerificationKey(rsaKeyPair.getPublic());
+        
+        SecurePart securePart = new SecurePart(
+                new QName("urn:example:po", "PaymentInfo"),
+                SecurePart.Modifier.Content,
+                new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
+                "http://www.w3.org/2000/09/xmldsig#sha1");
+        properties.addSignaturePart(securePart);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document =
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify using DOM
+        verifyUsingDOM(document, rsaKeyPair.getPublic(), properties.getSignatureSecureParts());
+    }
+    
+    @Test
+    public void testRSA_SHA256_MGF1() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
+        properties.setActions(actions);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_KeyValue);
+        
+        String signatureAlgorithm = "http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1";
+        properties.setSignatureAlgorithm(signatureAlgorithm);
+        properties.setSignatureKey(rsaKeyPair.getPrivate());
+        properties.setSignatureVerificationKey(rsaKeyPair.getPublic());
+        
+        SecurePart securePart = new SecurePart(
+                new QName("urn:example:po", "PaymentInfo"),
+                SecurePart.Modifier.Content,
+                new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
+                "http://www.w3.org/2000/09/xmldsig#sha1");
+        properties.addSignaturePart(securePart);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document =
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify using DOM
+        verifyUsingDOM(document, rsaKeyPair.getPublic(), properties.getSignatureSecureParts());
+    }
+    
+    @Test
+    public void testRSA_SHA384_MGF1() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
+        properties.setActions(actions);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_KeyValue);
+        
+        String signatureAlgorithm = "http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1";
+        properties.setSignatureAlgorithm(signatureAlgorithm);
+        properties.setSignatureKey(rsaKeyPair.getPrivate());
+        properties.setSignatureVerificationKey(rsaKeyPair.getPublic());
+        
+        SecurePart securePart = new SecurePart(
+                new QName("urn:example:po", "PaymentInfo"),
+                SecurePart.Modifier.Content,
+                new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
+                "http://www.w3.org/2000/09/xmldsig#sha1");
+        properties.addSignaturePart(securePart);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document =
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify using DOM
+        verifyUsingDOM(document, rsaKeyPair.getPublic(), properties.getSignatureSecureParts());
+    }
+    
+    @Test
+    public void testRSA_SHA512_MGF1() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.SIGNATURE);
+        properties.setActions(actions);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_KeyValue);
+        
+        String signatureAlgorithm = "http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1";
+        properties.setSignatureAlgorithm(signatureAlgorithm);
+        properties.setSignatureKey(rsaKeyPair.getPrivate());
+        properties.setSignatureVerificationKey(rsaKeyPair.getPublic());
+        
+        SecurePart securePart = new SecurePart(
+                new QName("urn:example:po", "PaymentInfo"),
+                SecurePart.Modifier.Content,
+                new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
+                "http://www.w3.org/2000/09/xmldsig#sha1");
+        properties.addSignaturePart(securePart);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document =
+                XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify using DOM
+        verifyUsingDOM(document, rsaKeyPair.getPublic(), properties.getSignatureSecureParts());
+    }
+    
+    @Test
     public void testECDSA_SHA1() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
