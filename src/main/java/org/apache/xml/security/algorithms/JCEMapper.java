@@ -237,6 +237,22 @@ public class JCEMapper {
             new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 256, 96)
         );
         algorithmsMap.put(
+            XMLCipher.SEED_128, 
+            new Algorithm("SEED", "SEED/CBC/ISO10126Padding", "BlockEncryption", 128, 128)
+        );
+        algorithmsMap.put(
+            XMLCipher.CAMELLIA_128, 
+            new Algorithm("Camellia", "Camellia/CBC/ISO10126Padding", "BlockEncryption", 128, 128)
+        );
+        algorithmsMap.put(
+            XMLCipher.CAMELLIA_192, 
+            new Algorithm("Camellia", "Camellia/CBC/ISO10126Padding", "BlockEncryption", 192, 128)
+        );
+        algorithmsMap.put(
+            XMLCipher.CAMELLIA_256, 
+            new Algorithm("Camellia", "Camellia/CBC/ISO10126Padding", "BlockEncryption", 256, 128)
+        );
+        algorithmsMap.put(
             XMLCipher.RSA_v1dot5, 
             new Algorithm("RSA", "RSA/ECB/PKCS1Padding", "KeyTransport")
         );

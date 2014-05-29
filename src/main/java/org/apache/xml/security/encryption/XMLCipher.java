@@ -111,6 +111,22 @@ public class XMLCipher {
     public static final String AES_256_GCM = 
         EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256_GCM;
     
+    /** SEED 128 Cipher */
+    public static final String SEED_128 = 
+        EncryptionConstants.ALGO_ID_BLOCKCIPHER_SEED128;
+    
+    /** CAMELLIA 128 Cipher */
+    public static final String CAMELLIA_128 = 
+        EncryptionConstants.ALGO_ID_BLOCKCIPHER_CAMELLIA128;
+    
+    /** CAMELLIA 192 Cipher */
+    public static final String CAMELLIA_192 = 
+        EncryptionConstants.ALGO_ID_BLOCKCIPHER_CAMELLIA192;
+    
+    /** CAMELLIA 256 Cipher */
+    public static final String CAMELLIA_256 = 
+        EncryptionConstants.ALGO_ID_BLOCKCIPHER_CAMELLIA256;
+    
     /** RSA 1.5 Cipher */
     public static final String RSA_v1dot5 =                  
         EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSA15;
@@ -203,7 +219,8 @@ public class XMLCipher {
     AES_128 + "\n" + AES_256 + "\n" + AES_192 + "\n" + RSA_v1dot5 + "\n" +
     RSA_OAEP + "\n" + RSA_OAEP_11 + "\n" + TRIPLEDES_KeyWrap + "\n" + 
     AES_128_KeyWrap + "\n" + AES_256_KeyWrap + "\n" + AES_192_KeyWrap + "\n" +
-    AES_128_GCM + "\n" + AES_192_GCM + "\n" + AES_256_GCM + "\n";
+    AES_128_GCM + "\n" + AES_192_GCM + "\n" + AES_256_GCM + "\n" + SEED_128 + "\n" +
+    CAMELLIA_128 + "\n" + CAMELLIA_192 + "\n" + CAMELLIA_256 + "\n";
 
     /** Cipher created during initialisation that is used for encryption */
     private Cipher contextCipher;
@@ -335,6 +352,10 @@ public class XMLCipher {
             algorithm.equals(AES_128_GCM) ||
             algorithm.equals(AES_192_GCM) ||
             algorithm.equals(AES_256_GCM) ||
+            algorithm.equals(SEED_128) ||
+            algorithm.equals(CAMELLIA_128) ||
+            algorithm.equals(CAMELLIA_192) ||
+            algorithm.equals(CAMELLIA_256) ||
             algorithm.equals(RSA_v1dot5) ||
             algorithm.equals(RSA_OAEP) ||
             algorithm.equals(RSA_OAEP_11) ||

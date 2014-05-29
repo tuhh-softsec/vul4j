@@ -433,6 +433,42 @@
                    IVLength="96"
                    RequiredKey="AES"
                    JCEName="AES/GCM/NoPadding"/>
+                   
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#seed128-cbc"
+                    Description="Block encryption using SEED with a key length of 128 bit"
+                    AlgorithmClass="BlockEncryption"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="128"
+                    IVLength="128"
+                    RequiredKey="SEED"
+                    JCEName="SEED/CBC/ISO10126Padding"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#camellia128-cbc"
+                    Description="Block encryption using Camellia with a key length of 128 bit"
+                    AlgorithmClass="BlockEncryption"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="128"
+                    IVLength="128"
+                    RequiredKey="Camellia"
+                    JCEName="Camellia/CBC/ISO10126Padding"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#camellia192-cbc"
+                    Description="Block encryption using Camellia with a key length of 192 bit"
+                    AlgorithmClass="BlockEncryption"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="192"
+                    IVLength="128"
+                    RequiredKey="Camellia"
+                    JCEName="Camellia/CBC/ISO10126Padding"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#camellia256-cbc"
+                    Description="Block encryption using Camellia with a key length of 256 bit"
+                    AlgorithmClass="BlockEncryption"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="256"
+                    IVLength="128"
+                    RequiredKey="Camellia"
+                    JCEName="Camellia/CBC/ISO10126Padding"/>
          
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#rsa-1_5"
                     Description="Key Transport RSA-v1.5"

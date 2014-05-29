@@ -158,6 +158,22 @@ public final class EncryptionConstants {
     /** Block Encryption - OPTIONAL AES-256-GCM */
     public static final String ALGO_ID_BLOCKCIPHER_AES256_GCM = 
         "http://www.w3.org/2009/xmlenc11#aes256-gcm";
+    
+    /** Block Encryption - OPTIONAL SEED-128 */
+    public static final String ALGO_ID_BLOCKCIPHER_SEED128 = 
+        "http://www.w3.org/2007/05/xmldsig-more#seed128-cbc";
+
+    /** Block Encryption - OPTIONAL CAMELLIA-128 */
+    public static final String ALGO_ID_BLOCKCIPHER_CAMELLIA128 = 
+        "http://www.w3.org/2001/04/xmldsig-more#camellia128-cbc";
+    
+    /** Block Encryption - OPTIONAL CAMELLIA-128 */
+    public static final String ALGO_ID_BLOCKCIPHER_CAMELLIA192 = 
+        "http://www.w3.org/2001/04/xmldsig-more#camellia192-cbc";
+    
+    /** Block Encryption - OPTIONAL CAMELLIA-128 */
+    public static final String ALGO_ID_BLOCKCIPHER_CAMELLIA256 = 
+        "http://www.w3.org/2001/04/xmldsig-more#camellia256-cbc";
 
     /** Key Transport - REQUIRED RSA-v1.5*/
     public static final String ALGO_ID_KEYTRANSPORT_RSA15 = 
