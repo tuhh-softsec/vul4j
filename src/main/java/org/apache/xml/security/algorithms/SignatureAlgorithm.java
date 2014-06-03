@@ -397,6 +397,9 @@ public class SignatureAlgorithm extends Algorithm {
             SignatureBaseRSA.SignatureRSARIPEMD160.class
         );
         algorithmHash.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA224, SignatureBaseRSA.SignatureRSASHA224.class
+        );
+        algorithmHash.put(
             XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256, SignatureBaseRSA.SignatureRSASHA256.class
         );
         algorithmHash.put(

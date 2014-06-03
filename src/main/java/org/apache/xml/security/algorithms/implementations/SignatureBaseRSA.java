@@ -238,6 +238,26 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     }
 
     /**
+     * Class SignatureRSASHA224
+     */
+    public static class SignatureRSASHA224 extends SignatureBaseRSA {
+
+        /**
+         * Constructor SignatureRSASHA224
+         *
+         * @throws XMLSignatureException
+         */
+        public SignatureRSASHA224() throws XMLSignatureException {
+            super();
+        }
+
+        /** @inheritDoc */
+        public String engineGetURI() {
+            return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA224;
+        }
+    }
+    
+    /**
      * Class SignatureRSASHA256
      */
     public static class SignatureRSASHA256 extends SignatureBaseRSA {

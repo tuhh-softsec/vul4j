@@ -69,6 +69,8 @@
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSAMD5" />
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSARIPEMD160" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha224"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA224" />
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA256" />
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"
@@ -217,6 +219,13 @@
                     RequirementLevel="RECOMMENDED"
                     JCEName="SHA1withRSA"/>
 
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha2224"
+                    Description="RSA Signature with SHA-2224 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
+                    JCEName="SHA224withRSA"/>
+                    
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
                     Description="RSA Signature with SHA-256 message digest"
                     AlgorithmClass="Signature"

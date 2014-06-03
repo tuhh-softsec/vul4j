@@ -57,7 +57,7 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
     private KeySelector kvks;
     private CanonicalizationMethod withoutComments;
     private DigestMethod sha1;
-    private SignatureMethod rsaSha1, rsaSha256, rsaSha384, rsaSha512, rsaRipemd160;
+    private SignatureMethod rsaSha1, rsaSha224, rsaSha256, rsaSha384, rsaSha512, rsaRipemd160;
     private SignatureMethod rsaSha1Mgf1, rsaSha224Mgf1, rsaSha256Mgf1, rsaSha384Mgf1, rsaSha512Mgf1;
     private SignatureMethod ecdsaSha1, ecdsaSha224, ecdsaSha256, ecdsaSha384, ecdsaSha512, ecdsaRipemd160;
     private XMLSignatureFactory fac;
@@ -102,6 +102,7 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
         sha1 = fac.newDigestMethod(DigestMethod.SHA1, null);
         
         rsaSha1 = fac.newSignatureMethod("http://www.w3.org/2000/09/xmldsig#rsa-sha1", null);
+        rsaSha224 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha224", null);
         rsaSha256 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null);
         rsaSha384 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha384", null);
         rsaSha512 = fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512", null);
@@ -135,6 +136,12 @@ public class PKSignatureAlgorithmTest extends org.junit.Assert {
     @org.junit.Test
     public void testRSA_SHA1() throws Exception {
         test_create_signature_enveloping(rsaSha1, sha1, rsaki,
+                                         rsaKeyPair.getPrivate(), kvks);
+    }
+    
+    @org.junit.Test
+    public void testRSA_SHA_224() throws Exception {
+        test_create_signature_enveloping(rsaSha224, sha1, rsaki,
                                          rsaKeyPair.getPrivate(), kvks);
     }
     

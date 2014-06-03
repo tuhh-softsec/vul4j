@@ -101,6 +101,10 @@ public final class XMLSignature extends SignatureElementProxy {
     public static final String ALGO_ID_SIGNATURE_RSA_RIPEMD160 = 
         Constants.MoreAlgorithmsSpecNS + "rsa-ripemd160";
     
+    /** Signature - Optional RSAwithSHA224 */
+    public static final String ALGO_ID_SIGNATURE_RSA_SHA224 = 
+        Constants.MoreAlgorithmsSpecNS + "rsa-sha224";
+    
     /** Signature - Optional RSAwithSHA256 */
     public static final String ALGO_ID_SIGNATURE_RSA_SHA256 = 
         Constants.MoreAlgorithmsSpecNS + "rsa-sha256";
