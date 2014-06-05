@@ -28,6 +28,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +60,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.transforms.InvalidTransformException;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.EncryptionConstants;
@@ -82,6 +84,9 @@ public class XMLCipher {
 
     private static org.slf4j.Logger log = 
         org.slf4j.LoggerFactory.getLogger(XMLCipher.class);
+    
+    private static final boolean gcmUseIvParameterSpec =
+            System.getProperty("org.apache.xml.security.cipher.gcm.useIvParameterSpec", "false").equals("true");
 
     /** Triple DES EDE (192 bit key) in CBC mode */
     public static final String TRIPLEDES =                   
@@ -1143,10 +1148,10 @@ public class XMLCipher {
         }
         // Now perform the encryption
 
+        int ivLen = JCEMapper.getIVLengthFromURI(algorithm) / 8;
+        byte[] iv = XMLSecurityConstants.generateBytes(ivLen);
         try {
-            int ivLen = JCEMapper.getIVLengthFromURI(algorithm) / 8;
-            byte[] temp = XMLSecurityConstants.generateBytes(ivLen);
-            IvParameterSpec paramSpec = new IvParameterSpec(temp);
+            AlgorithmParameterSpec paramSpec = constructBlockCipherParameters(algorithm, iv);
             c.init(cipherMode, key, paramSpec);
         } catch (InvalidKeyException ike) {
             throw new XMLEncryptionException("empty", ike);
@@ -1186,7 +1191,6 @@ public class XMLCipher {
 
         // Now build up to a properly XML Encryption encoded octet stream
         // IvParameterSpec iv;
-        byte[] iv = c.getIV();
         byte[] finalEncryptedBytes = new byte[iv.length + encryptedBytes.length];
         System.arraycopy(iv, 0, finalEncryptedBytes, 0, iv.length);
         System.arraycopy(encryptedBytes, 0, finalEncryptedBytes, iv.length, encryptedBytes.length);
@@ -1214,6 +1218,51 @@ public class XMLCipher {
             throw new XMLEncryptionException("empty", ex);
         }
         return ed;
+    }
+
+    /**
+     * Build an <code>AlgorithmParameterSpec</code> instance used to initialize a <code>Cipher</code> instance
+     * for block cipher encryption and decryption.
+     * 
+     * @param algorithm the XML encryption algorithm URI
+     * @param iv the initialization vector
+     * @return the newly constructed AlgorithmParameterSpec instance, appropriate for the
+     *         specified algorithm
+     */
+    private AlgorithmParameterSpec constructBlockCipherParameters(String algorithm, byte[] iv) {
+        if (EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128_GCM.equals(algorithm)
+                || EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192_GCM.equals(algorithm)
+                || EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256_GCM.equals(algorithm)) {
+            
+            if (gcmUseIvParameterSpec) {
+                // This override allows to support Java 1.7+ with (usually older versions of) third-party security 
+                // providers which support or even require GCM via IvParameterSpec rather than GCMParameterSpec,
+                // e.g. BouncyCastle <= 1.49 (really <= 1.50 due to a semi-related bug).
+                log.debug("Saw AES-GCM block cipher, using IvParameterSpec due to system property override: {}", algorithm);
+                return new IvParameterSpec(iv);
+            }
+            
+            log.debug("Saw AES-GCM block cipher, attempting to create GCMParameterSpec: {}", algorithm);
+            
+            try {
+                // This class only added in Java 1.7. So load reflectively until Santuario starts targeting a minimum of Java 1.7. 
+                Class<?> gcmSpecClass = ClassLoaderUtils.loadClass("javax.crypto.spec.GCMParameterSpec", this.getClass());
+                
+                // XML Encryption 1.1 mandates a 128-bit Authentication Tag for AES GCM modes.
+                AlgorithmParameterSpec gcmSpec = (AlgorithmParameterSpec) gcmSpecClass.getConstructor(int.class, byte[].class)
+                        .newInstance(128, iv);
+                log.debug("Successfully created GCMParameterSpec");
+                return gcmSpec;
+            } catch (Exception e) {
+                // This handles the case of Java < 1.7 with a third-party security provider that 
+                // supports GCM mode using only an IvParameterSpec, such as BouncyCastle.
+                log.debug("Failed to create GCMParameterSpec, falling back to returning IvParameterSpec", e);
+                return new IvParameterSpec(iv);
+            }
+        } else {
+            log.debug("Saw non-AES-GCM mode block cipher, returning IvParameterSpec: {}", algorithm);
+            return new IvParameterSpec(iv);
+        }
     }
 
     /**
@@ -1752,10 +1801,10 @@ public class XMLCipher {
         // necessary bytes into a dedicated array.
 
         System.arraycopy(encryptedBytes, 0, ivBytes, 0, ivLen);
-        IvParameterSpec iv = new IvParameterSpec(ivBytes);		
+        AlgorithmParameterSpec paramSpec = constructBlockCipherParameters(algorithm, ivBytes);
 
         try {
-            c.init(cipherMode, key, iv);
+            c.init(cipherMode, key, paramSpec);
         } catch (InvalidKeyException ike) {
             throw new XMLEncryptionException("empty", ike);
         } catch (InvalidAlgorithmParameterException iape) {
