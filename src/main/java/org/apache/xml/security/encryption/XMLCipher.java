@@ -23,11 +23,13 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.AccessController;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivilegedAction;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
@@ -86,7 +88,12 @@ public class XMLCipher {
         org.slf4j.LoggerFactory.getLogger(XMLCipher.class);
     
     private static final boolean gcmUseIvParameterSpec =
-            System.getProperty("org.apache.xml.security.cipher.gcm.useIvParameterSpec", "false").equals("true");
+        AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
+                return Boolean.getBoolean
+                    ("org.apache.xml.security.cipher.gcm.useIvParameterSpec");
+            }
+        });
 
     /** Triple DES EDE (192 bit key) in CBC mode */
     public static final String TRIPLEDES =                   
