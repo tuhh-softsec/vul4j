@@ -122,13 +122,13 @@ public final class EncryptionConstants {
         "http://www.w3.org/2009/xmlenc11#";
 
     /** URI for content*/
-    public static final String TYPE_CONTENT                = EncryptionSpecNS + "Content";
+    public static final String TYPE_CONTENT = EncryptionSpecNS + "Content";
     
     /** URI for element*/
-    public static final String TYPE_ELEMENT                = EncryptionSpecNS + "Element";
+    public static final String TYPE_ELEMENT = EncryptionSpecNS + "Element";
     
     /** URI for mediatype*/
-    public static final String TYPE_MEDIATYPE              = 
+    public static final String TYPE_MEDIATYPE = 
         "http://www.isi.edu/in-notes/iana/assignments/media-types/";
 
     /** Block Encryption - REQUIRED TRIPLEDES */

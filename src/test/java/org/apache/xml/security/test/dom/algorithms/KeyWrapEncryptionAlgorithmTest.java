@@ -117,7 +117,7 @@ public class KeyWrapEncryptionAlgorithmTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 0);
         
         // XMLUtils.outputDOM(document, System.out);
-        document = decrypt(document, keyWrappingKey, localNames);
+        document = decrypt(document, keyWrappingKey);
         
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -158,7 +158,7 @@ public class KeyWrapEncryptionAlgorithmTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 0);
         
         // XMLUtils.outputDOM(document, System.out);
-        document = decrypt(document, keyWrappingKey, localNames);
+        document = decrypt(document, keyWrappingKey);
         
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -199,7 +199,7 @@ public class KeyWrapEncryptionAlgorithmTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 0);
         
         // XMLUtils.outputDOM(document, System.out);
-        document = decrypt(document, keyWrappingKey, localNames);
+        document = decrypt(document, keyWrappingKey);
         
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -240,7 +240,7 @@ public class KeyWrapEncryptionAlgorithmTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 0);
         
         // XMLUtils.outputDOM(document, System.out);
-        document = decrypt(document, keyWrappingKey, localNames);
+        document = decrypt(document, keyWrappingKey);
         
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -278,7 +278,7 @@ public class KeyWrapEncryptionAlgorithmTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 0);
         
         // XMLUtils.outputDOM(document, System.out);
-        document = decrypt(document, rsaKeyPair.getPrivate(), localNames);
+        document = decrypt(document, rsaKeyPair.getPrivate());
         
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -316,7 +316,7 @@ public class KeyWrapEncryptionAlgorithmTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 0);
         
         // XMLUtils.outputDOM(document, System.out);
-        document = decrypt(document, rsaKeyPair.getPrivate(), localNames);
+        document = decrypt(document, rsaKeyPair.getPrivate());
         
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -354,7 +354,7 @@ public class KeyWrapEncryptionAlgorithmTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 0);
         
         // XMLUtils.outputDOM(document, System.out);
-        document = decrypt(document, rsaKeyPair.getPrivate(), localNames);
+        document = decrypt(document, rsaKeyPair.getPrivate());
         
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
@@ -401,8 +401,7 @@ public class KeyWrapEncryptionAlgorithmTest extends org.junit.Assert {
     
     private Document decrypt(
         Document document,
-        Key keyWrappingKey,
-        List<String> localNames
+        Key keyWrappingKey
     ) throws Exception {
         NodeList nodeList = document.getElementsByTagNameNS(
                 XMLSecurityConstants.TAG_xenc_EncryptedData.getNamespaceURI(),
