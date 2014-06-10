@@ -171,6 +171,18 @@ public class XMLCipher {
     public static final String AES_192_KeyWrap =             
         EncryptionConstants.ALGO_ID_KEYWRAP_AES192;
     
+    /** CAMELLIA 128 Cipher KeyWrap */
+    public static final String CAMELLIA_128_KeyWrap =             
+        EncryptionConstants.ALGO_ID_KEYWRAP_CAMELLIA128;
+    
+    /** CAMELLIA 192 Cipher KeyWrap */
+    public static final String CAMELLIA_192_KeyWrap =             
+        EncryptionConstants.ALGO_ID_KEYWRAP_CAMELLIA192;
+    
+    /** CAMELLIA 256 Cipher KeyWrap */
+    public static final String CAMELLIA_256_KeyWrap =             
+        EncryptionConstants.ALGO_ID_KEYWRAP_CAMELLIA256;
+    
     /** SHA1 Cipher */
     public static final String SHA1 =                        
         Constants.ALGO_ID_DIGEST_SHA1;
@@ -232,7 +244,8 @@ public class XMLCipher {
     RSA_OAEP + "\n" + RSA_OAEP_11 + "\n" + TRIPLEDES_KeyWrap + "\n" + 
     AES_128_KeyWrap + "\n" + AES_256_KeyWrap + "\n" + AES_192_KeyWrap + "\n" +
     AES_128_GCM + "\n" + AES_192_GCM + "\n" + AES_256_GCM + "\n" + SEED_128 + "\n" +
-    CAMELLIA_128 + "\n" + CAMELLIA_192 + "\n" + CAMELLIA_256 + "\n";
+    CAMELLIA_128 + "\n" + CAMELLIA_192 + "\n" + CAMELLIA_256 + "\n" +
+    CAMELLIA_128_KeyWrap + "\n" + CAMELLIA_192_KeyWrap + "\n" + CAMELLIA_256_KeyWrap + "\n";
 
     /** Cipher created during initialisation that is used for encryption */
     private Cipher contextCipher;
@@ -374,7 +387,10 @@ public class XMLCipher {
             algorithm.equals(TRIPLEDES_KeyWrap) ||
             algorithm.equals(AES_128_KeyWrap) ||
             algorithm.equals(AES_256_KeyWrap) ||
-            algorithm.equals(AES_192_KeyWrap);
+            algorithm.equals(AES_192_KeyWrap) ||
+            algorithm.equals(CAMELLIA_128_KeyWrap) ||
+            algorithm.equals(CAMELLIA_192_KeyWrap) ||
+            algorithm.equals(CAMELLIA_256_KeyWrap);
     }
 
     /**

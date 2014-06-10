@@ -536,6 +536,30 @@
                     KeyLength="256"
                     RequiredKey="AES"
                     JCEName="AESWrap"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#kw-camellia128"
+                    Description="Symmetric Key Wrap using CAMELLIA with a key length of 128 bit"
+                    AlgorithmClass="SymmetricKeyWrap"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="128"
+                    RequiredKey="Camellia"
+                    JCEName="CamelliaWrap"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#kw-camellia192"
+                    Description="Symmetric Key Wrap using CAMELLIA with a key length of 192 bit"
+                    AlgorithmClass="SymmetricKeyWrap"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="192"
+                    RequiredKey="Camellia"
+                    JCEName="CamelliaWrap"/>
+                    
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#kw-camellia256"
+                    Description="Symmetric Key Wrap using CAMELLIA with a key length of 256 bit"
+                    AlgorithmClass="SymmetricKeyWrap"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="256"
+                    RequiredKey="Camellia"
+                    JCEName="CamelliaWrap"/>
 
       </Algorithms>
    </JCEAlgorithmMappings>

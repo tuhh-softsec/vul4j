@@ -288,6 +288,18 @@ public class JCEMapper {
             XMLCipher.AES_256_KeyWrap, 
             new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 256, 0)
         );
+        algorithmsMap.put(
+            XMLCipher.CAMELLIA_128_KeyWrap, 
+            new Algorithm("Camellia", "CamelliaWrap", "SymmetricKeyWrap", 128, 0)
+        );
+        algorithmsMap.put(
+            XMLCipher.CAMELLIA_192_KeyWrap, 
+            new Algorithm("Camellia", "CamelliaWrap", "SymmetricKeyWrap", 192, 0)
+        );
+        algorithmsMap.put(
+            XMLCipher.CAMELLIA_256_KeyWrap, 
+            new Algorithm("Camellia", "CamelliaWrap", "SymmetricKeyWrap", 256, 0)
+        );
     }
 
     /**

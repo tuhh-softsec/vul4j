@@ -206,7 +206,19 @@ public final class EncryptionConstants {
     /** Symmetric Key Wrap - OPTIONAL AES-192 KeyWrap */
     public static final String ALGO_ID_KEYWRAP_AES192 = 
         EncryptionConstants.EncryptionSpecNS + "kw-aes192";
+    
+    /** Symmetric Key Wrap - OPTIONAL CAMELLIA-128 KeyWrap */
+    public static final String ALGO_ID_KEYWRAP_CAMELLIA128 = 
+        "http://www.w3.org/2001/04/xmldsig-more#kw-camellia128";
 
+    /** Symmetric Key Wrap - OPTIONAL CAMELLIA-192 KeyWrap */
+    public static final String ALGO_ID_KEYWRAP_CAMELLIA192 = 
+        "http://www.w3.org/2001/04/xmldsig-more#kw-camellia192";
+
+    /** Symmetric Key Wrap - OPTIONAL CAMELLIA-256 KeyWrap */
+    public static final String ALGO_ID_KEYWRAP_CAMELLIA256 = 
+        "http://www.w3.org/2001/04/xmldsig-more#kw-camellia256";
+    
     /** Message Authentication - RECOMMENDED XML Digital Signature */
     public static final String ALGO_ID_AUTHENTICATION_XMLSIGNATURE = 
         "http://www.w3.org/TR/2001/CR-xmldsig-core-20010419/";
