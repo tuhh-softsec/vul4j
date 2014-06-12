@@ -749,6 +749,72 @@ public class KeyWrapEncryptionCreationTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 1);
     }
     
+    @Test
+    public void testSEED128KW() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
+        properties.setActions(actions);
+        
+        // Set up the Key
+        KeyGenerator keygen = KeyGenerator.getInstance("SEED");
+        keygen.init(128);
+        SecretKey key = keygen.generateKey();
+        properties.setEncryptionKey(key);
+        String algorithm = "http://www.w3.org/2007/05/xmldsig-more#seed128-cbc";
+        properties.setEncryptionSymAlgorithm(algorithm);
+        
+        // Set up the Key Wrapping Key
+        keygen = KeyGenerator.getInstance("SEED");
+        keygen.init(128);
+        SecretKey keyWrappingKey = keygen.generateKey();
+        String wrappingAlgorithm = "http://www.w3.org/2007/05/xmldsig-more#kw-seed128";
+        properties.setEncryptionKeyTransportAlgorithm(wrappingAlgorithm);
+        properties.setEncryptionTransportKey(keyWrappingKey);
+        
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
+        properties.addEncryptionPart(securePart);
+        
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+        
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+        
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        
+        Document document = 
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
+        
+        NodeList nodeList = document.getElementsByTagNameNS("urn:example:po", "PaymentInfo");
+        Assert.assertEquals(nodeList.getLength(), 0);
+        
+        // Check the CreditCard encrypted ok
+        nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
+        Assert.assertEquals(nodeList.getLength(), 0);
+        
+        nodeList = document.getElementsByTagNameNS(
+                XMLSecurityConstants.TAG_xenc_EncryptedData.getNamespaceURI(),
+                XMLSecurityConstants.TAG_xenc_EncryptedData.getLocalPart()
+            );
+        Assert.assertEquals(nodeList.getLength(), 1);
+        
+        // Decrypt using DOM API
+        Document doc = decryptUsingDOM(document, keyWrappingKey);
+        
+        // Check the CreditCard decrypted ok
+        nodeList = doc.getElementsByTagNameNS("urn:example:po", "CreditCard");
+        Assert.assertEquals(nodeList.getLength(), 1);
+    }
+    
     private Document decryptUsingDOM(
         Document document,
         Key keyWrappingKey

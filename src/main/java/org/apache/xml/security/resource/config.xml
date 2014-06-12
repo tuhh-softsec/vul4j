@@ -560,6 +560,14 @@
                     KeyLength="256"
                     RequiredKey="Camellia"
                     JCEName="CamelliaWrap"/>
+                    
+         <Algorithm URI="http://www.w3.org/2007/05/xmldsig-more#kw-seed128"
+                    Description="Symmetric Key Wrap using SEED with a key length of 128 bit"
+                    AlgorithmClass="SymmetricKeyWrap"
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="128"
+                    RequiredKey="SEED"
+                    JCEName="SEEDWrap"/>
 
       </Algorithms>
    </JCEAlgorithmMappings>

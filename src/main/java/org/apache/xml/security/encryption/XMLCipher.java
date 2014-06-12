@@ -183,6 +183,10 @@ public class XMLCipher {
     public static final String CAMELLIA_256_KeyWrap =             
         EncryptionConstants.ALGO_ID_KEYWRAP_CAMELLIA256;
     
+    /** SEED 128 Cipher KeyWrap */
+    public static final String SEED_128_KeyWrap =             
+        EncryptionConstants.ALGO_ID_KEYWRAP_SEED128;
+    
     /** SHA1 Cipher */
     public static final String SHA1 =                        
         Constants.ALGO_ID_DIGEST_SHA1;
@@ -245,7 +249,8 @@ public class XMLCipher {
     AES_128_KeyWrap + "\n" + AES_256_KeyWrap + "\n" + AES_192_KeyWrap + "\n" +
     AES_128_GCM + "\n" + AES_192_GCM + "\n" + AES_256_GCM + "\n" + SEED_128 + "\n" +
     CAMELLIA_128 + "\n" + CAMELLIA_192 + "\n" + CAMELLIA_256 + "\n" +
-    CAMELLIA_128_KeyWrap + "\n" + CAMELLIA_192_KeyWrap + "\n" + CAMELLIA_256_KeyWrap + "\n";
+    CAMELLIA_128_KeyWrap + "\n" + CAMELLIA_192_KeyWrap + "\n" + CAMELLIA_256_KeyWrap + "\n" +
+    SEED_128_KeyWrap + "\n";
 
     /** Cipher created during initialisation that is used for encryption */
     private Cipher contextCipher;
@@ -390,7 +395,8 @@ public class XMLCipher {
             algorithm.equals(AES_192_KeyWrap) ||
             algorithm.equals(CAMELLIA_128_KeyWrap) ||
             algorithm.equals(CAMELLIA_192_KeyWrap) ||
-            algorithm.equals(CAMELLIA_256_KeyWrap);
+            algorithm.equals(CAMELLIA_256_KeyWrap) ||
+            algorithm.equals(SEED_128_KeyWrap);
     }
 
     /**

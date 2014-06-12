@@ -219,6 +219,10 @@ public final class EncryptionConstants {
     public static final String ALGO_ID_KEYWRAP_CAMELLIA256 = 
         "http://www.w3.org/2001/04/xmldsig-more#kw-camellia256";
     
+    /** Symmetric Key Wrap - OPTIONAL SEED-128 KeyWrap */
+    public static final String ALGO_ID_KEYWRAP_SEED128 = 
+        "http://www.w3.org/2007/05/xmldsig-more#kw-seed128";
+    
     /** Message Authentication - RECOMMENDED XML Digital Signature */
     public static final String ALGO_ID_AUTHENTICATION_XMLSIGNATURE = 
         "http://www.w3.org/TR/2001/CR-xmldsig-core-20010419/";

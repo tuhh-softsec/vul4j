@@ -300,6 +300,10 @@ public class JCEMapper {
             XMLCipher.CAMELLIA_256_KeyWrap, 
             new Algorithm("Camellia", "CamelliaWrap", "SymmetricKeyWrap", 256, 0)
         );
+        algorithmsMap.put(
+            XMLCipher.SEED_128_KeyWrap, 
+            new Algorithm("SEED", "SEEDWrap", "SymmetricKeyWrap", 128, 0)
+        );
     }
 
     /**
