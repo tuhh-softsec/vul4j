@@ -87,16 +87,17 @@ public final class DOMManifest extends BaseStructure implements Manifest {
         
         boolean secVal = Utils.secureValidation(context);
         
-        Element refElem = DOMUtils.getFirstChildElement(manElem, "Reference");
+        Element refElem = DOMUtils.getFirstChildElement(manElem, "Reference", XMLSignature.XMLNS);
         List<DOMReference> refs = new ArrayList<DOMReference>();
         refs.add(new DOMReference(refElem, context, provider));
         
         refElem = DOMUtils.getNextSiblingElement(refElem);
         while (refElem != null) {
             String localName = refElem.getLocalName();
-            if (!localName.equals("Reference")) {        
+            String namespace = refElem.getNamespaceURI();
+            if (!localName.equals("Reference") || !XMLSignature.XMLNS.equals(namespace)) {        
                 throw new MarshalException("Invalid element name: " +
-                                           localName + ", expected Reference");
+                                           namespace + ":" + localName + ", expected Reference");
             }
             refs.add(new DOMReference(refElem, context, provider));
             if (secVal && refs.size() > DOMSignedInfo.MAXIMUM_REFERENCE_COUNT) {

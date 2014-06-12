@@ -40,10 +40,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.*;
 import java.util.*;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 import org.apache.jcp.xml.dsig.internal.DigesterOutputStream;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.exceptions.Base64DecodingException;
@@ -197,14 +197,17 @@ public final class DOMReference extends DOMStructure
         // unmarshal Transforms, if specified
         Element nextSibling = DOMUtils.getFirstChildElement(refElem);
         List<Transform> transforms = new ArrayList<Transform>(5);
-        if (nextSibling.getLocalName().equals("Transforms")) {
+        if (nextSibling.getLocalName().equals("Transforms")
+            && XMLSignature.XMLNS.equals(nextSibling.getNamespaceURI())) {
             Element transformElem = DOMUtils.getFirstChildElement(nextSibling,
-                                                                  "Transform");
+                                                                  "Transform",
+                                                                  XMLSignature.XMLNS);
             transforms.add(new DOMTransform(transformElem, context, provider));
             transformElem = DOMUtils.getNextSiblingElement(transformElem);
             while (transformElem != null) {
                 String localName = transformElem.getLocalName();
-                if (!localName.equals("Transform")) {    
+                String namespace = transformElem.getNamespaceURI();
+                if (!localName.equals("Transform") || !XMLSignature.XMLNS.equals(namespace)) {    
                     throw new MarshalException(
                         "Invalid element name: " + localName +
                         ", expected Transform");
@@ -220,7 +223,8 @@ public final class DOMReference extends DOMStructure
             }
             nextSibling = DOMUtils.getNextSiblingElement(nextSibling);
         }
-        if (!nextSibling.getLocalName().equals("DigestMethod")) {
+        if (!nextSibling.getLocalName().equals("DigestMethod") 
+            && XMLSignature.XMLNS.equals(nextSibling.getNamespaceURI())) {
             throw new MarshalException("Invalid element name: " +
                                        nextSibling.getLocalName() +
                                        ", expected DigestMethod");
@@ -238,7 +242,7 @@ public final class DOMReference extends DOMStructure
         }
 
         // unmarshal DigestValue
-        Element dvElem = DOMUtils.getNextSiblingElement(dmElem, "DigestValue");
+        Element dvElem = DOMUtils.getNextSiblingElement(dmElem, "DigestValue", XMLSignature.XMLNS);
         try {
             this.digestValue = Base64.decode(dvElem);
         } catch (Base64DecodingException bde) {

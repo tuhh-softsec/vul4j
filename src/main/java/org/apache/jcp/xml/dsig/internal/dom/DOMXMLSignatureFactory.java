@@ -34,6 +34,7 @@ import javax.xml.crypto.dsig.spec.*;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -196,14 +197,15 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
 
         // check tag
         String tag = element.getLocalName();
-        if (tag == null) {
+        String namespace = element.getNamespaceURI();
+        if (tag == null || namespace == null) {
             throw new MarshalException("Document implementation must " +
                 "support DOM Level 2 and be namespace aware");
         }
-        if (tag.equals("Signature")) {
+        if (tag.equals("Signature") && XMLSignature.XMLNS.equals(namespace)) {
             return new DOMXMLSignature(element, context, getProvider());
         } else {
-            throw new MarshalException("invalid Signature tag: " + tag);
+            throw new MarshalException("invalid Signature tag: " + namespace + ":" + tag);
         }
     }
 

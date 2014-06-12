@@ -132,17 +132,17 @@ public final class DOMRetrievalMethod extends DOMStructure
         
         if (transformsElem != null) {
             String localName = transformsElem.getLocalName();
-            if (!localName.equals("Transforms")) {
+            String namespace = transformsElem.getNamespaceURI();
+            if (!localName.equals("Transforms") || !XMLSignature.XMLNS.equals(namespace)) {
                 throw new MarshalException("Invalid element name: " +
-                                           localName + ", expected Transforms");            
+                                           namespace + ":" + localName + ", expected Transforms");            
             }
             Element transformElem =
-                DOMUtils.getFirstChildElement(transformsElem, "Transform");
-            transforms.add(new DOMTransform(transformElem, context, provider));
-            transformElem = DOMUtils.getNextSiblingElement(transformElem);
+                DOMUtils.getFirstChildElement(transformsElem, "Transform", XMLSignature.XMLNS);
             while (transformElem != null) {
                 String name = transformElem.getLocalName();
-                if (!name.equals("Transform")) {
+                namespace = transformElem.getNamespaceURI();
+                if (!name.equals("Transform") || !XMLSignature.XMLNS.equals(namespace)) {
                     throw new MarshalException("Invalid element name: " +
                                                name + ", expected Transform");
                 }
@@ -237,7 +237,7 @@ public final class DOMRetrievalMethod extends DOMStructure
         // guard against RetrievalMethod loops
         if (data instanceof NodeSetData && Utils.secureValidation(context)) {
             NodeSetData nsd = (NodeSetData)data;
-            Iterator i = nsd.iterator();
+            Iterator<?> i = nsd.iterator();
             if (i.hasNext()) {
                 Node root = (Node)i.next();
                 if ("RetrievalMethod".equals(root.getLocalName())) {
@@ -262,7 +262,8 @@ public final class DOMRetrievalMethod extends DOMStructure
             Document doc = db.parse(new ByteArrayInputStream
                 (data.getXMLSignatureInput().getBytes()));
             Element kiElem = doc.getDocumentElement();
-            if (kiElem.getLocalName().equals("X509Data")) {
+            if (kiElem.getLocalName().equals("X509Data") 
+                && XMLSignature.XMLNS.equals(kiElem.getNamespaceURI())) {
                 return new DOMX509Data(kiElem);
             } else {
                 return null; // unsupported

@@ -128,20 +128,22 @@ public final class DOMXMLSignature extends DOMStructure
 
         // get Id attribute, if specified
         id = DOMUtils.getAttributeValue(localSigElem, "Id");
-
         // unmarshal SignedInfo
         Element siElem = DOMUtils.getFirstChildElement(localSigElem,
-                                                       "SignedInfo");
+                                                       "SignedInfo",
+                                                       XMLSignature.XMLNS);
         si = new DOMSignedInfo(siElem, context, provider);
 
         // unmarshal SignatureValue 
         Element sigValElem = DOMUtils.getNextSiblingElement(siElem,
-                                                            "SignatureValue");
+                                                            "SignatureValue",
+                                                            XMLSignature.XMLNS);
         sv = new DOMSignatureValue(sigValElem);
 
         // unmarshal KeyInfo, if specified
         Element nextSibling = DOMUtils.getNextSiblingElement(sigValElem);
-        if (nextSibling != null && nextSibling.getLocalName().equals("KeyInfo")) {
+        if (nextSibling != null && nextSibling.getLocalName().equals("KeyInfo")
+            && XMLSignature.XMLNS.equals(nextSibling.getNamespaceURI())) {
             ki = new DOMKeyInfo(nextSibling, context, provider);
             nextSibling = DOMUtils.getNextSiblingElement(nextSibling);
         }
@@ -153,8 +155,9 @@ public final class DOMXMLSignature extends DOMStructure
             List<XMLObject> tempObjects = new ArrayList<XMLObject>();
             while (nextSibling != null) {
                 String name = nextSibling.getLocalName();
-                if (!name.equals("Object")) {
-                    throw new MarshalException("Invalid element name: " + name +
+                String namespace = nextSibling.getNamespaceURI();
+                if (!name.equals("Object") || !XMLSignature.XMLNS.equals(namespace)) {
+                    throw new MarshalException("Invalid element name: " + namespace + ":" + name +
                                                ", expected KeyInfo or Object");
                 }
                 tempObjects.add(new DOMXMLObject(nextSibling,
