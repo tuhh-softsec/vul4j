@@ -41,7 +41,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
@@ -286,9 +285,8 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
 
         QName elementName = new QName(element.getNamespaceURI(), element.getLocalName(), element.getPrefix());
         createStartElementAndOutputAsEvent(outputProcessorChain, elementName, namespaces, attributes);
-        NodeList childNodes = element.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node childNode = childNodes.item(i);
+        Node childNode = element.getFirstChild();
+        while (childNode != null) {
             switch (childNode.getNodeType()) {
                 case Node.ELEMENT_NODE:
                     outputDOMElement((Element) childNode, outputProcessorChain);
@@ -297,6 +295,7 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
                     createCharactersAndOutputAsEvent(outputProcessorChain, ((Text) childNode).getData());
                     break;
             }
+            childNode = childNode.getNextSibling();
         }
         createEndElementAndOutputAsEvent(outputProcessorChain, elementName);
     }

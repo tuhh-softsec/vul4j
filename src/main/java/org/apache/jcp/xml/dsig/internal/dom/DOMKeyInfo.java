@@ -33,7 +33,6 @@ import java.util.*;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * DOM-based implementation of KeyInfo.
@@ -97,36 +96,32 @@ public final class DOMKeyInfo extends BaseStructure implements KeyInfo {
         id = DOMUtils.getIdAttributeValue(kiElem, "Id");
 
         // get all children nodes
-        NodeList nl = kiElem.getChildNodes();
-        int length = nl.getLength();
-        if (length < 1) {
-            throw new MarshalException
-                ("KeyInfo must contain at least one type");
+        List<XMLStructure> content = new ArrayList<XMLStructure>();
+        Node firstChild = kiElem.getFirstChild();
+        if (firstChild == null) {
+            throw new MarshalException("KeyInfo must contain at least one type");
         }
-        List<XMLStructure> content = new ArrayList<XMLStructure>(length);
-        for (int i = 0; i < length; i++) {
-            Node child = nl.item(i);
-            // ignore all non-Element nodes
-            if (child.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
+        while (firstChild != null) {
+            if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
+                Element childElem = (Element)firstChild;
+                String localName = childElem.getLocalName();
+                String namespace = childElem.getNamespaceURI();
+                if (localName.equals("X509Data") && XMLSignature.XMLNS.equals(namespace)) {
+                    content.add(new DOMX509Data(childElem));
+                } else if (localName.equals("KeyName") && XMLSignature.XMLNS.equals(namespace)) {
+                    content.add(new DOMKeyName(childElem));
+                } else if (localName.equals("KeyValue") && XMLSignature.XMLNS.equals(namespace)) {
+                    content.add(DOMKeyValue.unmarshal(childElem));
+                } else if (localName.equals("RetrievalMethod") && XMLSignature.XMLNS.equals(namespace)) {
+                    content.add(new DOMRetrievalMethod(childElem,
+                                                       context, provider));
+                } else if (localName.equals("PGPData") && XMLSignature.XMLNS.equals(namespace)) {
+                    content.add(new DOMPGPData(childElem));
+                } else { //may be MgmtData, SPKIData or element from other namespace
+                    content.add(new javax.xml.crypto.dom.DOMStructure(childElem));
+                }
             }
-            Element childElem = (Element)child;
-            String localName = childElem.getLocalName();
-            String namespace = childElem.getNamespaceURI();
-            if (localName.equals("X509Data") && XMLSignature.XMLNS.equals(namespace)) {
-                content.add(new DOMX509Data(childElem));
-            } else if (localName.equals("KeyName") && XMLSignature.XMLNS.equals(namespace)) {
-                content.add(new DOMKeyName(childElem));
-            } else if (localName.equals("KeyValue") && XMLSignature.XMLNS.equals(namespace)) {
-                content.add(DOMKeyValue.unmarshal(childElem));
-            } else if (localName.equals("RetrievalMethod") && XMLSignature.XMLNS.equals(namespace)) {
-                content.add(new DOMRetrievalMethod(childElem,
-                                                   context, provider));
-            } else if (localName.equals("PGPData") && XMLSignature.XMLNS.equals(namespace)) {
-                content.add(new DOMPGPData(childElem));
-            } else { //may be MgmtData, SPKIData or element from other namespace
-                content.add(new javax.xml.crypto.dom.DOMStructure(childElem));
-            }
+            firstChild = firstChild.getNextSibling();
         }
         keyInfoTypes = Collections.unmodifiableList(content);
     }

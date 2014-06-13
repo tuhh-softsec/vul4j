@@ -92,7 +92,7 @@ public class TransformXPath extends TransformSpi {
 
                 throw new TransformationException("xml.WrongContent", exArgs);
             }
-            Node xpathnode = xpathElement.getChildNodes().item(0);
+            Node xpathnode = xpathElement.getFirstChild();
             String str = XMLUtils.getStrFromNode(xpathnode);
             input.setNeedsToBeExpanded(needsCircumvent(str));
             if (xpathnode == null) {

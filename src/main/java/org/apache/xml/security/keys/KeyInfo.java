@@ -55,7 +55,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * This class stand for KeyInfo Element that may contain keys, names,
@@ -474,21 +473,19 @@ public class KeyInfo extends SignatureElementProxy {
      */
     public int lengthUnknownElement() {
         int res = 0;
-        NodeList nl = getElement().getChildNodes();
-
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node current = nl.item(i);
-
+        Node childNode = getElement().getFirstChild();
+        while (childNode != null) {
             /**
              * $todo$ using this method, we don't see unknown Elements
              *  from Signature NS; revisit
              */
-            if (current.getNodeType() == Node.ELEMENT_NODE
-                && current.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
+            if (childNode.getNodeType() == Node.ELEMENT_NODE
+                && childNode.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
                 res++;
             }
+            childNode = childNode.getNextSibling();
         }
-
+        
         return res;
     }
 
@@ -687,24 +684,22 @@ public class KeyInfo extends SignatureElementProxy {
      * @return the element number of the unknown elements
      */
     public Element itemUnknownElement(int i) {
-        NodeList nl = getElement().getChildNodes();
         int res = 0;
-
-        for (int j = 0; j < nl.getLength(); j++) {
-            Node current = nl.item(j);
-
+        Node childNode = getElement().getFirstChild();
+        while (childNode != null) {
             /**
              * $todo$ using this method, we don't see unknown Elements
              *  from Signature NS; revisit
              */
-            if (current.getNodeType() == Node.ELEMENT_NODE
-                && current.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
+            if (childNode.getNodeType() == Node.ELEMENT_NODE
+                && childNode.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
                 res++;
 
                 if (res == i) {
-                    return (Element) current;
+                    return (Element) childNode;
                 }
             }
+            childNode = childNode.getNextSibling();
         }
 
         return null;

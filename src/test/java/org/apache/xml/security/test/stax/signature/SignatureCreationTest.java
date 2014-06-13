@@ -92,14 +92,14 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
             XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         //first child element must be the dsig:Signature @see SANTUARIO-324:
-        NodeList nodeList = document.getDocumentElement().getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node child = nodeList.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element)child;
+        Node childNode = document.getDocumentElement().getFirstChild();
+        while (childNode != null) {
+            if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element)childNode;
                 Assert.assertEquals(element.getLocalName(), "Signature");
                 break;
             }
+            childNode = childNode.getNextSibling();
         }
         
         // Verify using DOM
@@ -196,14 +196,14 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
                 XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         //first child element must be the dsig:Signature @see SANTUARIO-324:
-        NodeList nodeList = document.getDocumentElement().getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node child = nodeList.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element)child;
+        Node childNode = document.getDocumentElement().getFirstChild();
+        while (childNode != null) {
+            if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element)childNode;
                 Assert.assertEquals(element.getLocalName(), "Signature");
                 break;
             }
+            childNode = childNode.getNextSibling();
         }
 
         // Verify using DOM
@@ -258,14 +258,14 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
             XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
 
         //first child element must be the dsig:Signature @see SANTUARIO-324:
-        NodeList nodeList = document.getDocumentElement().getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node child = nodeList.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element)child;
+        Node childNode = document.getDocumentElement().getFirstChild();
+        while (childNode != null) {
+            if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element)childNode;
                 Assert.assertEquals(element.getLocalName(), "Signature");
                 break;
             }
+            childNode = childNode.getNextSibling();
         }
         
         // Verify using DOM

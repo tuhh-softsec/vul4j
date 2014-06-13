@@ -77,10 +77,9 @@ public class InvalidKeyTest extends org.junit.Assert {
             ((Element)assertion).setIdAttributeNode(attr, true);
         }
         
-        NodeList nl = assertion.getChildNodes();
-        Element n = (Element)nl.item(nl.getLength()-1);
+        Element n = (Element)assertion.getLastChild();
             
-        XMLSignature si = new XMLSignature(n,"");
+        XMLSignature si = new XMLSignature(n, "");
         si.checkSignatureValue(pk);
 
         // System.out.println("VALIDATION OK" );

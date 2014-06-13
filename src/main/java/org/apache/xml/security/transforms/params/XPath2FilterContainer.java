@@ -250,14 +250,12 @@ public class XPath2FilterContainer extends ElementProxy implements TransformPara
      * @return the first Text node which contains information from the XPath 2 Filter String
      */
     public Node getXPathFilterTextNode() {
-
-        NodeList children = getElement().getChildNodes();
-        int length = children.getLength();
-
-        for (int i = 0; i < length; i++) {
-            if (children.item(i).getNodeType() == Node.TEXT_NODE) {
-                return children.item(i);
+        Node childNode = getElement().getFirstChild();
+        while (childNode != null) {
+            if (childNode.getNodeType() == Node.TEXT_NODE) {
+                return childNode;
             }
+            childNode = childNode.getNextSibling();
         }
 
         return null;

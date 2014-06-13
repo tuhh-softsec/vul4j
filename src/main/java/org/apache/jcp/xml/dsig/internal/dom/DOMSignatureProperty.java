@@ -31,7 +31,6 @@ import java.util.*;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * DOM-based implementation of SignatureProperty.
@@ -96,11 +95,11 @@ public final class DOMSignatureProperty extends BaseStructure
         }
         id = DOMUtils.getIdAttributeValue(propElem, "Id");
 
-        NodeList nodes = propElem.getChildNodes();
-        int length = nodes.getLength();
-        List<XMLStructure> content = new ArrayList<XMLStructure>(length);
-        for (int i = 0; i < length; i++) {
-            content.add(new javax.xml.crypto.dom.DOMStructure(nodes.item(i)));
+        List<XMLStructure> content = new ArrayList<XMLStructure>();
+        Node firstChild = propElem.getFirstChild();
+        while (firstChild != null) {
+            content.add(new javax.xml.crypto.dom.DOMStructure(firstChild));
+            firstChild = firstChild.getNextSibling();
         }
         if (content.isEmpty()) {
             throw new MarshalException("content cannot be empty");

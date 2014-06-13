@@ -23,7 +23,7 @@ import org.apache.xml.security.transforms.TransformParam;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 /**
@@ -50,12 +50,11 @@ public class XPathContainer extends SignatureElementProxy implements TransformPa
      * @param xpath
      */
     public void setXPath(String xpath) {
-        if (getElement().getChildNodes() != null) {
-            NodeList nl = getElement().getChildNodes();
-
-            for (int i = 0; i < nl.getLength(); i++) {
-                getElement().removeChild(nl.item(i));
-            }
+        Node childNode = getElement().getFirstChild();
+        while (childNode != null) {
+            Node nodeToBeRemoved = childNode;
+            childNode = childNode.getNextSibling();
+            getElement().removeChild(nodeToBeRemoved);
         }
 
         Text xpathText = createText(xpath);

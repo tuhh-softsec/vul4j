@@ -48,7 +48,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
@@ -428,13 +427,11 @@ public final class XMLSignature extends SignatureElementProxy {
                 objectElem.setIdAttributeNode(objectAttr, true);
             }
 
-            NodeList nodes = objectElem.getChildNodes();
-            int length = nodes.getLength();
+            Node firstChild = objectElem.getFirstChild();
             // Register Ids of the Object child elements
-            for (int i = 0; i < length; i++) {
-                Node child = nodes.item(i);
-                if (child.getNodeType() == Node.ELEMENT_NODE) {
-                    Element childElem = (Element)child;
+            while (firstChild != null) {
+                if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
+                    Element childElem = (Element)firstChild;
                     String tag = childElem.getLocalName();
                     if (tag.equals("Manifest")) {
                         new Manifest(childElem, baseURI);
@@ -442,6 +439,7 @@ public final class XMLSignature extends SignatureElementProxy {
                         new SignatureProperties(childElem, baseURI);
                     }
                 }
+                firstChild = firstChild.getNextSibling();
             }
 
             objectElem = XMLUtils.getNextElement(objectElem.getNextSibling());

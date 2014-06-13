@@ -24,7 +24,6 @@ import org.apache.xml.security.utils.ElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Implements the parameters for the <A
@@ -218,13 +217,12 @@ public class XPath2FilterContainer04 extends ElementProxy implements TransformPa
      * @return the first Text node which contains information from the XPath 2 Filter String
      */
     public Node getXPathFilterTextNode() {
-        NodeList children = getElement().getChildNodes();
-        int length = children.getLength();
-
-        for (int i = 0; i < length; i++) {
-            if (children.item(i).getNodeType() == Node.TEXT_NODE) {
-                return children.item(i);
+        Node childNode = getElement().getFirstChild();
+        while (childNode != null) {
+            if (childNode.getNodeType() == Node.TEXT_NODE) {
+                return childNode;
             }
+            childNode = childNode.getNextSibling();
         }
 
         return null;

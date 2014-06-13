@@ -32,7 +32,6 @@ import javax.xml.crypto.dsig.keyinfo.PGPData;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 
@@ -144,13 +143,12 @@ public final class DOMPGPData extends BaseStructure implements PGPData {
         // get all children nodes
         byte[] keyId = null;
         byte[] keyPacket = null;
-        NodeList nl = pdElem.getChildNodes();
-        int length = nl.getLength();
-        List<XMLStructure> other = new ArrayList<XMLStructure>(length);
-        for (int x = 0; x < length; x++) {
-            Node n = nl.item(x);
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
-                Element childElem = (Element)n;
+        
+        List<XMLStructure> other = new ArrayList<XMLStructure>();
+        Node firstChild = pdElem.getFirstChild();
+        while (firstChild != null) {
+            if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
+                Element childElem = (Element)firstChild;
                 String localName = childElem.getLocalName();
                 String namespace = childElem.getNamespaceURI();
                 try {
@@ -166,6 +164,7 @@ public final class DOMPGPData extends BaseStructure implements PGPData {
                     throw new MarshalException(bde);
                 }
             }
+            firstChild = firstChild.getNextSibling();
         }
         this.keyId = keyId;
         this.keyPacket = keyPacket;
