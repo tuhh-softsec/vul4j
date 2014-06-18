@@ -693,7 +693,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         final int length = value.length();
         int i = 0;
         while (i < length) {        
-            char c = value.charAt(i++);
+            int c = value.codePointAt(i);
+            i += Character.charCount(c);
 
             switch (c) {
 
@@ -725,7 +726,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 if (c < 0x80) {
                     writer.write(c);
                 } else {
-                    UtfHelpper.writeCharToUtf8(c, writer);
+                    UtfHelpper.writeCodePointToUtf8(c, writer);
                 }
                 continue;
             }
@@ -753,15 +754,16 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         final String target = currentPI.getTarget();
         int length = target.length();
 
-        for (int i = 0; i < length; i++) {         
-            char c = target.charAt(i);
+        for (int i = 0; i < length; ) {
+            int c = target.codePointAt(i);
+            i += Character.charCount(c);
             if (c == 0x0D) {
                 writer.write(XD.clone());
             } else {
                 if (c < 0x80) {
                     writer.write(c);
                 } else {
-                    UtfHelpper.writeCharToUtf8(c, writer);
+                    UtfHelpper.writeCodePointToUtf8(c, writer);
                 }     
             }
         }
@@ -773,12 +775,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         if (length > 0) {
             writer.write(' ');
 
-            for (int i = 0; i < length; i++) {            
-                char c = data.charAt(i);
+            for (int i = 0; i < length; ) {
+                int c = data.codePointAt(i);
+                i += Character.charCount(c);
                 if (c == 0x0D) {
                     writer.write(XD.clone());
                 } else {
-                    UtfHelpper.writeCharToUtf8(c, writer);               
+                    UtfHelpper.writeCodePointToUtf8(c, writer);
                 }
             }
         }
@@ -807,15 +810,16 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         final String data = currentComment.getData();
         final int length = data.length();      
 
-        for (int i = 0; i < length; i++) {         
-            char c = data.charAt(i);
+        for (int i = 0; i < length; ) {
+            int c = data.codePointAt(i);
+            i += Character.charCount(c);
             if (c == 0x0D) {
                 writer.write(XD.clone());
             } else {
                 if (c < 0x80) {
                     writer.write(c);
                 } else {
-                    UtfHelpper.writeCharToUtf8(c, writer);
+                    UtfHelpper.writeCodePointToUtf8(c, writer);
                 }    
             }      
         }
@@ -838,8 +842,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     ) throws IOException {
         final int length = text.length();
         byte[] toWrite;
-        for (int i = 0; i < length; i++) {
-            char c = text.charAt(i);
+        for (int i = 0; i < length; ) {
+            int c = text.codePointAt(i);
+            i += Character.charCount(c);
 
             switch (c) {
 
@@ -863,7 +868,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 if (c < 0x80) {
                     writer.write(c);
                 } else {
-                    UtfHelpper.writeCharToUtf8(c, writer);
+                    UtfHelpper.writeCodePointToUtf8(c, writer);
                 }
                 continue;
             }

@@ -35,8 +35,8 @@ import java.io.*;
 import java.util.*;
 
 /**
- * @author $Author$
- * @version $Revision$ $Date$
+ * @author $Author: coheigea $
+ * @version $Revision: 1556187 $ $Date: 2014-01-07 11:46:31 +0000 (Tue, 07 Jan 2014) $
  */
 public abstract class CanonicalizerBase extends TransformIdentity {
 
@@ -401,7 +401,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         writer.write(' ');
         if (prefix != null) {
             UtfHelpper.writeByte(prefix, writer, cache);
-            UtfHelpper.writeCharToUtf8(DOUBLEPOINT, writer);
+            UtfHelpper.writeCodePointToUtf8(DOUBLEPOINT, writer);
         }
         UtfHelpper.writeByte(name, writer, cache);
         writer.write(EQUAL_STRING);
@@ -409,7 +409,8 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         final int length = value.length();
         int i = 0;
         while (i < length) {
-            final char c = value.charAt(i++);
+            final int c = value.codePointAt(i);
+            i += Character.charCount(c);
 
             switch (c) {
 
@@ -441,7 +442,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     if (c < 0x80) {
                         writer.write(c);
                     } else {
-                        UtfHelpper.writeCharToUtf8(c, writer);
+                        UtfHelpper.writeCodePointToUtf8(c, writer);
                     }
                     continue;
             }
@@ -461,8 +462,9 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     protected static void outputTextToWriter(final String text, final OutputStream writer) throws IOException {
         final int length = text.length();
         byte[] toWrite;
-        for (int i = 0; i < length; i++) {
-            final char c = text.charAt(i);
+        for (int i = 0; i < length; ) {
+            final int c = text.codePointAt(i);
+            i += Character.charCount(c);
 
             switch (c) {
 
@@ -486,7 +488,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     if (c < 0x80) {
                         writer.write(c);
                     } else {
-                        UtfHelpper.writeCharToUtf8(c, writer);
+                        UtfHelpper.writeCodePointToUtf8(c, writer);
                     }
                     continue;
             }
@@ -498,7 +500,12 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         final int length = text.length;
         byte[] toWrite;
         for (int i = 0; i < length; i++) {
-            final char c = text[i];
+            int c;
+            if (Character.isHighSurrogate(text[i]) && i + 1 != length && Character.isLowSurrogate(text[i+1])) {
+                c = Character.toCodePoint(text[i], text[++i]);
+            } else {
+                c = text[i];
+            }
 
             switch (c) {
 
@@ -522,7 +529,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     if (c < 0x80) {
                         writer.write(c);
                     } else {
-                        UtfHelpper.writeCharToUtf8(c, writer);
+                        UtfHelpper.writeCodePointToUtf8(c, writer);
                     }
                     continue;
             }
@@ -546,15 +553,16 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         final String target = currentPI.getTarget();
         int length = target.length();
 
-        for (int i = 0; i < length; i++) {
-            final char c = target.charAt(i);
+        for (int i = 0; i < length; ) {
+            final int c = target.codePointAt(i);
+            i += Character.charCount(c);
             if (c == 0x0D) {
                 writer.write(__XD_);
             } else {
                 if (c < 0x80) {
                     writer.write(c);
                 } else {
-                    UtfHelpper.writeCharToUtf8(c, writer);
+                    UtfHelpper.writeCodePointToUtf8(c, writer);
                 }
             }
         }
@@ -566,12 +574,13 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         if (length > 0) {
             writer.write(' ');
 
-            for (int i = 0; i < length; i++) {
-                char c = data.charAt(i);
+            for (int i = 0; i < length; ) {
+                int c = data.codePointAt(i);
+                i += Character.charCount(c);
                 if (c == 0x0D) {
                     writer.write(__XD_);
                 } else {
-                    UtfHelpper.writeCharToUtf8(c, writer);
+                    UtfHelpper.writeCodePointToUtf8(c, writer);
                 }
             }
         }
@@ -598,15 +607,16 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         final String data = currentComment.getText();
         final int length = data.length();
 
-        for (int i = 0; i < length; i++) {
-            final char c = data.charAt(i);
+        for (int i = 0; i < length; ) {
+            final int c = data.codePointAt(i);
+            i += Character.charCount(c);
             if (c == 0x0D) {
                 writer.write(__XD_);
             } else {
                 if (c < 0x80) {
                     writer.write(c);
                 } else {
-                    UtfHelpper.writeCharToUtf8(c, writer);
+                    UtfHelpper.writeCodePointToUtf8(c, writer);
                 }
             }
         }

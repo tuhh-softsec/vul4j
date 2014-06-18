@@ -25,7 +25,7 @@ import java.util.Arrays;
 import org.apache.xml.security.c14n.implementations.UtfHelpper;
 
 public class UtfHelperTest extends org.junit.Assert {
-    
+
     @org.junit.Test
     public void testBug40156() {
         String s = "\u00e4\u00f6\u00fc";
@@ -39,24 +39,38 @@ public class UtfHelperTest extends org.junit.Assert {
             e.printStackTrace();
         }
     }
-    
+
     @org.junit.Test
     public void testUtf() throws Exception {
-        int chunk = 1 << 16; 
+        // if system property org.apache.xml.security.c14n.oldUtf8=true, can only validate 
+        // 16bit chars against String.getBytes("UTF8");
+        int chunk = (Boolean.getBoolean("org.apache.xml.security.c14n.oldUtf8")) ? (1 << 16)
+            : (Character.MAX_CODE_POINT + 1);
         int j = 0;
         ByteArrayOutputStream charByCharOs = new ByteArrayOutputStream();
         ByteArrayOutputStream strOs = new ByteArrayOutputStream();
 
-        char chs[] = new char[chunk];
+        char chs[] = new char[chunk * 2];
+        int pos = 0;
         for (int i = 0; i < chunk; i++) {
             int ch = (chunk * j) + i;
+            int offset = Character.toChars(ch, chs, pos);
+            pos += offset;
             if (ch == 0xDBFF) {
-                ch = 1;
+                // since 0xDBFF with next character 0xDC00 will form a surrogate pair, so insert a space character in between
+                offset = Character.toChars(Character.SPACE_SEPARATOR, chs, pos);
+                pos += offset;
             }
-            chs[i] = (char)ch;
-            UtfHelpper.writeCharToUtf8((char)ch, charByCharOs);
         }
-        String str = new String(chs);
+        char newResult[] = new char[pos];
+        System.arraycopy(chs, 0, newResult, 0, pos);
+        for (int i = 0; i < pos; ) {
+            int ch = Character.codePointAt(newResult, i);
+            i += Character.charCount(ch);
+            UtfHelpper.writeCodePointToUtf8(ch, charByCharOs);
+        }
+
+        String str = new String(newResult);
         byte a[] = UtfHelpper.getStringInUtf8(str);
         try {
             // System.out.println("chunk:"+j);
@@ -75,5 +89,5 @@ public class UtfHelperTest extends org.junit.Assert {
             e.printStackTrace();
         }
     }
-    
+
 }
