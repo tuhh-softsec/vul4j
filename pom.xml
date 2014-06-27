@@ -22,7 +22,7 @@
     <artifactId>xmlsec</artifactId>
     <packaging>bundle</packaging>
     <name>Apache XML Security for Java</name>
-    <version>2.0.1</version>
+    <version>2.0.2-SNAPSHOT</version>
     <description>
         Apache XML Security for Java supports XML-Signature Syntax and Processing,
         W3C Recommendation 12 February 2002, and XML Encryption Syntax and
@@ -57,12 +57,12 @@
     </licenses>
     <scm>
         <connection>
-            scm:svn:http://svn.apache.org/repos/asf/santuario/xml-security-java/tags/xmlsec-2.0.1
+            scm:svn:http://svn.apache.org/repos/asf/santuario/xml-security-java/trunk/
         </connection>
         <developerConnection>
-            scm:svn:https://svn.apache.org/repos/asf/santuario/xml-security-java/tags/xmlsec-2.0.1
+            scm:svn:https://svn.apache.org/repos/asf/santuario/xml-security-java/trunk/
         </developerConnection>
-        <url>http://svn.apache.org/repos/asf/santuario/xml-security-java/tags/xmlsec-2.0.1</url>
+        <url>http://svn.apache.org/repos/asf/santuario/xml-security-java/trunk/</url>
     </scm>
     <organization>
         <name>The Apache Software Foundation</name>
