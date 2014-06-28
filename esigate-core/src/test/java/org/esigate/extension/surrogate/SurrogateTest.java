@@ -45,6 +45,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
      * appropriate) is consumed; that is, it is not passed forward to surrogates.
      * 
      * @throws Exception
+     *             test error.
      */
     public void testSurrogateControlWithSurrogate() throws Exception {
 
@@ -89,6 +90,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
      * 
      * 
      * @throws Exception
+     *             test error.
      */
     public void testSurrogateControlWithNoSurrogate() throws Exception {
 
@@ -112,6 +114,12 @@ public class SurrogateTest extends AbstractDriverTestCase {
 
     }
 
+    /**
+     * Ensure Surrogate-Capabilities header is added to fetch requests.
+     * 
+     * @throws Exception
+     *             test error.
+     */
     public void testSurrogateCapabilities() throws Exception {
 
         // Conf
@@ -144,6 +152,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
      * it. Device tokens must be unique within a request's Surrogate-Capabilities header.
      * 
      * @throws Exception
+     *             test error.
      */
     public void testSurrogateCapabilitiesUniqueToken() throws Exception {
 
@@ -180,6 +189,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
      * Empty control directive => no processing.
      * 
      * @throws Exception
+     *             test error.
      */
     public void testSurrogateControlDisableCapability() throws Exception {
 
@@ -210,6 +220,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
      * processing by surrogates.
      * 
      * @throws Exception
+     *             test error.
      */
     public void testSurrogateControlEnable() throws Exception {
         // Conf
@@ -237,6 +248,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
      * for the original request, and may not be validated on the origin server.
      * 
      * @throws Exception
+     *             test error.
      */
     public void testSurrogateControlNoStore() throws Exception {
         // Conf
@@ -283,6 +295,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
      * 
      * 
      * @throws Exception
+     *             test error.
      */
     public void testSurrogateControlMaxAge() throws Exception {
         // Conf
@@ -327,6 +340,7 @@ public class SurrogateTest extends AbstractDriverTestCase {
      * seconds) the stale entity may be served, before it must be revalidated or refetched as appropriate.
      * 
      * @throws Exception
+     *             test error.
      */
     public void testSurrogateControlMaxAgeExtended() throws Exception {
         // Conf
@@ -416,5 +430,75 @@ public class SurrogateTest extends AbstractDriverTestCase {
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("4", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("MISS"));
+    }
+
+    /**
+     * 2.3 Surrogate-Control Targetting
+     * 
+     * Because surrogates can be deployed hetrogeneously in a hierarchy, it is necessary to enable the targetting of
+     * directives at individual devices.
+     * 
+     * Surrogate-Control directives may have a parameter that identifies the surrogate that they are targetted at, as
+     * identified by the device token in the request's Surrogate-Capabilities header. Directives without targetting
+     * parameters are applied to all surrogates, unless a targetted directive overrides it.
+     * 
+     * @throws Exception
+     *             test error.
+     */
+
+    public void testSurrogateControlTargeting() throws Exception {
+
+        // Conf
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
+        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+
+        // Setup remote server (provider) response.
+        Driver driver = createMockDriver(
+                properties,
+                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                        .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\";ab, no-store")
+                        .header("Content-Type", "text/html; charset=utf-8").build()));
+
+        // Request
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader(
+                "Surrogate-Capabilities", "ab=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0\"").build();
+
+        // content="" is kept since it is not targeted for esigate.
+        HttpResponse response = driverProxy(driver, requestWithSurrogate);
+        Assert.assertEquals("content=\"ESI/1.0 ESI-Inline/1.0\";ab, no-store",
+                response.getFirstHeader("Surrogate-Control").getValue());
+
+    }
+
+    /**
+     * Handle case when previous surrogate is an esigate instance.
+     * 
+     * @throws Exception
+     *             test error.
+     */
+    public void testSurrogateControlTargeting2Esigate() throws Exception {
+
+        // Conf
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
+        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+
+        // Setup remote server (provider) response.
+        Driver driver = createMockDriver(
+                properties,
+                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                        .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\";esigate, no-store")
+                        .header("Content-Type", "text/html; charset=utf-8").build()));
+
+        // Request
+        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader(
+                "Surrogate-Capabilities", "esigate=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0\"").build();
+
+        // content="" is kept since it is not targeted for esigate.
+        HttpResponse response = driverProxy(driver, requestWithSurrogate);
+        Assert.assertEquals("content=\"ESI/1.0 ESI-Inline/1.0\";esigate, no-store",
+                response.getFirstHeader("Surrogate-Control").getValue());
+
     }
 }

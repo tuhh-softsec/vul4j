@@ -87,10 +87,12 @@ import org.slf4j.LoggerFactory;
  * </pre>
  * 
  * <p>
+ * Targeting is supported.
+ * 
+ * <p>
  * NOTE:
  * <ul>
  * <li>no-store-remote is not honored since esigate is generally not used as a CDN.</li>
- * <li>Optional feature targeting is not implemented yet</li>
  * </ul>
  * 
  * @author Nicolas Richeton
@@ -115,8 +117,20 @@ public class Surrogate implements Extension, IEventListener {
      */
     private static final String H_X_SURROGATE = "X-Esigate-Internal-Surrogate";
     private static final String H_X_ORIGINAL_CACHE_CONTROL = "X-Esigate-Int-Surrogate-OCC";
+    /**
+     * This header is used to store the esigate instance id for the current request.
+     */
+    private static final String H_X_SURROGATE_ID = "X-Esigate-Int-Surrogate-Id";
+    /**
+     * This is an internal header used to store the value of the Surrogate-Control header which will be set to the next
+     * surrogate. This is based on the original header, but with the removal of Capabilities processed on the current
+     * hop.
+     */
     private static final String H_X_NEXT_SURROGATE_CONTROL = "X-Esigate-Int-Surrogate-NSC";
     private String[] capabilities;
+    /**
+     * Pre-generated esigate token including all capabilities reported by extensions.
+     */
     private String esigateToken;
     /**
      * This event is fired on startup to collect all installed capabilities.
@@ -191,7 +205,9 @@ public class Surrogate implements Extension, IEventListener {
                 archCapabilities.append(", ");
             }
 
-            archCapabilities.append(getUniqueToken(h == null ? null : h.getValue()));
+            String uniqueId = getUniqueToken(h == null ? null : h.getValue());
+            e.getHttpRequest().setHeader(H_X_SURROGATE_ID, uniqueId);
+            archCapabilities.append(uniqueId);
             archCapabilities.append(this.esigateToken);
             e.getHttpRequest().setHeader(H_SURROGATE_CAPABILITIES, archCapabilities.toString());
 
@@ -247,11 +263,25 @@ public class Surrogate implements Extension, IEventListener {
         String controlHeader = e.getHttpResponse().getFirstHeader(H_SURROGATE_CONTROL).getValue();
         String[] control = split(controlHeader, ",");
 
-        for (String directive : control) {
-            directive = strip(directive);
+        for (String directiveAndTarget : control) {
+            String directive = strip(directiveAndTarget);
 
-            //
-            if (directive.startsWith("content=\"")) {
+            // Is directive targeted
+            int targetIndex = directive.lastIndexOf(';');
+            String target = null;
+
+            if (targetIndex > 0) {
+                target = directive.substring(targetIndex + 1);
+                directive = directive.substring(0, targetIndex);
+            }
+
+            if (target != null && !target.equals(e.getHttpRequest().getFirstHeader(H_X_SURROGATE_ID))) {
+                // If directive is not targeted to current instance.
+                newSurrogateControlL.add(directiveAndTarget);
+
+            } else if (directive.startsWith("content=\"")) {
+                // Handle content
+
                 String[] content = split(directive.substring("content=\"".length(), directive.length() - 1), " ");
 
                 for (String contentCap : content) {
