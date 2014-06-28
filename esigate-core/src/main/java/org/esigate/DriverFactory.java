@@ -67,16 +67,16 @@ public final class DriverFactory {
         // Do not instantiate
     }
 
-
     /**
-     *
+     * 
      * @return All configured driver
      */
-    public static Collection<Driver> getInstances(){
+    public static Collection<Driver> getInstances() {
         DriverFactory.ensureConfigured();
         return instances.getInstances().values();
 
     }
+
     /**
      * Loads all instances according to default configuration file.
      */

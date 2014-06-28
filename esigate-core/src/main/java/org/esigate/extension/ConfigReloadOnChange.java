@@ -57,7 +57,7 @@ public class ConfigReloadOnChange implements Extension {
     protected static final Logger LOG = LoggerFactory.getLogger(ConfigReloadOnChange.class);
 
     private static File configuration = null;
-	private static File variables = null;
+    private static File variables = null;
     private static long configLastModified = -1;
     private static long varsLastModified = -1;
     private static long delay = DEFAULT_RELOAD_DELAY;
@@ -70,7 +70,7 @@ public class ConfigReloadOnChange implements Extension {
         @Override
         public void run() {
             while (!stop) {
-				// configuration
+                // configuration
                 if (configuration != null && configuration.exists()) {
                     if (configuration.lastModified() != configLastModified) {
                         configLastModified = configuration.lastModified();
@@ -81,16 +81,16 @@ public class ConfigReloadOnChange implements Extension {
                     }
                 }
 
-				// variables
-				if (variables != null && variables.exists()){
-					if (variables.lastModified() != varsLastModified) {
-						varsLastModified = variables.lastModified();
+                // variables
+                if (variables != null && variables.exists()) {
+                    if (variables.lastModified() != varsLastModified) {
+                        varsLastModified = variables.lastModified();
 
-						// Reload
-						LOG.warn("Variables file changed : reloading.");
-						VariablesResolver.configure();
-					}
-				}
+                        // Reload
+                        LOG.warn("Variables file changed : reloading.");
+                        VariablesResolver.configure();
+                    }
+                }
 
                 // Wait before checking again
                 try {
@@ -117,7 +117,7 @@ public class ConfigReloadOnChange implements Extension {
         // Load configuration
         try {
             // Try to convert as long
-            delay  = CONFIG_RELOAD_DELAY.getValue(properties);
+            delay = CONFIG_RELOAD_DELAY.getValue(properties);
 
             // Do not watch faster than SPEED_LIMIT
             if (delay < SPEED_LIMIT) {
@@ -151,15 +151,15 @@ public class ConfigReloadOnChange implements Extension {
             configLastModified = configuration.lastModified();
         }
 
-		// variables
-		URL variablesUrl = VariablesResolver.getVariablessUrl();
-		if (variablesUrl != null && "file".equalsIgnoreCase(variablesUrl.getProtocol())) {
-			try {
-				variables = new File(variablesUrl.toURI());
-			} catch (URISyntaxException e) {
-				LOG.error("Unable to access variables file", e);
-			}
-		}
+        // variables
+        URL variablesUrl = VariablesResolver.getVariablessUrl();
+        if (variablesUrl != null && "file".equalsIgnoreCase(variablesUrl.getProtocol())) {
+            try {
+                variables = new File(variablesUrl.toURI());
+            } catch (URISyntaxException e) {
+                LOG.error("Unable to access variables file", e);
+            }
+        }
 
         if (variables != null && variables.exists()) {
             varsLastModified = variables.lastModified();
