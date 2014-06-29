@@ -85,14 +85,14 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         private CookieManager cookieManager;
 
         @Override
-        public HttpClientHelperBuilder setDriver(Driver driver) {
-            this.driver = driver;
+        public HttpClientHelperBuilder setDriver(Driver pDriver) {
+            this.driver = pDriver;
             return this;
         }
 
         @Override
-        public HttpClientHelperBuilder setProperties(Properties properties) {
-            this.properties = properties;
+        public HttpClientHelperBuilder setProperties(Properties pProperties) {
+            this.properties = pProperties;
             return this;
         }
 
@@ -128,19 +128,19 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             return this;
         }
 
-        public HttpClientHelperBuilder setConnectionManager(HttpClientConnectionManager connectionManager) {
-            this.connectionManager = connectionManager;
+        public HttpClientHelperBuilder setConnectionManager(HttpClientConnectionManager pConnectionManager) {
+            this.connectionManager = pConnectionManager;
             return this;
         }
 
         @Override
-        public HttpClientHelperBuilder setEventManager(EventManager eventManager) {
-            this.eventManager = eventManager;
+        public HttpClientHelperBuilder setEventManager(EventManager pEventManager) {
+            this.eventManager = pEventManager;
             return this;
         }
 
-        public HttpClientHelperBuilder setCookieManager(CookieManager cookieManager) {
-            this.cookieManager = cookieManager;
+        public HttpClientHelperBuilder setCookieManager(CookieManager pCookieManager) {
+            this.cookieManager = pCookieManager;
             return this;
         }
     }

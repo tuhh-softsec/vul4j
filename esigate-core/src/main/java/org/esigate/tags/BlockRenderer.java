@@ -65,9 +65,9 @@ public class BlockRenderer implements Renderer, Appendable {
 
     /** {@inheritDoc} */
     @Override
-    public void render(DriverRequest httpRequest, String content, Writer out) throws IOException, HttpErrorPage {
+    public void render(DriverRequest httpRequest, String content, Writer pOut) throws IOException, HttpErrorPage {
         LOG.debug("Rendering block " + name + " in page " + page);
-        this.out = out;
+        this.out = pOut;
         if (content == null) {
             return;
         }
