@@ -14,6 +14,7 @@
  */
 package org.esigate.extension.parallelesi;
 
+import org.apache.commons.lang3.StringUtils;
 import org.esigate.Driver;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
@@ -53,7 +54,7 @@ public class Esi implements Extension, IEventListener {
     private int maxThreads;
     private int idle;
     private Executor executor;
-    static final String[] CAPABILITIES = new String[] {"ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
+   public static final String[] CAPABILITIES = new String[] {"ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
             "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0"};
 
     @Override
@@ -71,7 +72,7 @@ public class Esi implements Extension, IEventListener {
 
             doEsi = false;
             for (String capability : CAPABILITIES) {
-                if (containsIgnoreCase(enabledCapabilities, capability)) {
+                if (StringUtils.contains(enabledCapabilities, capability)) {
                     doEsi = true;
                     break;
                 }

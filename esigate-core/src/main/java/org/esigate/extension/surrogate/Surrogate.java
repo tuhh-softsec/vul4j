@@ -22,7 +22,9 @@ import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.StringUtils.strip;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.http.Header;
@@ -34,8 +36,13 @@ import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FetchEvent;
+import org.esigate.events.impl.FragmentEvent;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.extension.Extension;
+import org.esigate.extension.parallelesi.Esi;
+import org.esigate.extension.surrogate.http.Capability;
+import org.esigate.extension.surrogate.http.SurrogateCapabilities;
+import org.esigate.extension.surrogate.http.SurrogateCapabilitiesHeader;
 import org.esigate.http.DeleteResponseHeader;
 import org.esigate.http.MoveResponseHeader;
 import org.slf4j.Logger;
@@ -157,6 +164,7 @@ public class Surrogate implements Extension, IEventListener {
         driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
         driver.getEventManager().register(EventManager.EVENT_PROXY_PRE, this);
         driver.getEventManager().register(EventManager.EVENT_PROXY_POST, this);
+        driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
 
         // Restore original Cache-Control header
         driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST,
@@ -195,8 +203,16 @@ public class Surrogate implements Extension, IEventListener {
     public boolean event(EventDefinition id, Event event) {
 
         if (EventManager.EVENT_FETCH_PRE.equals(id)) {
-            // Add Surrogate-Capabilities or append to existing header.
             FetchEvent e = (FetchEvent) event;
+
+            // This header is used internally, and should not be forwarded.
+            e.getHttpRequest().removeHeaders(H_X_SURROGATE);
+        } else if (EventManager.EVENT_FETCH_POST.equals(id)) {
+            onPostFetch(event);
+        } else if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
+
+            // Add Surrogate-Capabilities or append to existing header.
+            FragmentEvent e = (FragmentEvent) event;
             Header h = e.getHttpRequest().getFirstHeader(H_SURROGATE_CAPABILITIES);
 
             StringBuilder archCapabilities = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
@@ -211,10 +227,6 @@ public class Surrogate implements Extension, IEventListener {
             archCapabilities.append(this.esigateToken);
             e.getHttpRequest().setHeader(H_SURROGATE_CAPABILITIES, archCapabilities.toString());
 
-            // This header is used internally, and should not be forwarded.
-            e.getHttpRequest().removeHeaders(H_X_SURROGATE);
-        } else if (EventManager.EVENT_FETCH_POST.equals(id)) {
-            onPostFetch(event);
         } else if (EventManager.EVENT_PROXY_PRE.equals(id)) {
             ProxyEvent e = (ProxyEvent) event;
             // Do we have another surrogate in front of esigate
@@ -227,14 +239,29 @@ public class Surrogate implements Extension, IEventListener {
 
             if (e.getResponse() != null) {
                 processSurrogateControlContent(e.getResponse(), e.getOriginalRequest().containsHeader(H_X_SURROGATE));
+                removeVarySurrogateCapabilities(e.getResponse());
             } else if (e.getErrorPage() != null) {
                 processSurrogateControlContent(e.getErrorPage().getHttpResponse(), e.getOriginalRequest()
                         .containsHeader(H_X_SURROGATE));
+                removeVarySurrogateCapabilities(e.getErrorPage().getHttpResponse());
             }
 
         }
 
         return true;
+    }
+
+    private void removeVarySurrogateCapabilities(HttpResponse response) {
+        // Remove Vary: Surrogate-Capabilities
+        Header[] varyHeaders = response.getHeaders("Vary");
+        if (varyHeaders != null) {
+            for (Header h : varyHeaders) {
+                if (H_SURROGATE_CAPABILITIES.equals(h.getValue())) {
+                    response.removeHeader(h);
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -251,9 +278,73 @@ public class Surrogate implements Extension, IEventListener {
         // Update caching policies
         FetchEvent e = (FetchEvent) event;
 
+        String ourSurrogateId = e.getHttpRequest().getFirstHeader(H_X_SURROGATE_ID).getValue();
+
+        SurrogateCapabilitiesHeader surrogateCapabilitiesHeader = SurrogateCapabilitiesHeader.fromHeaderValue(e
+                .getHttpRequest().getFirstHeader(H_SURROGATE_CAPABILITIES).getValue());
+
+        if (!e.getHttpResponse().containsHeader(H_SURROGATE_CONTROL)
+                && surrogateCapabilitiesHeader.getSurrogates().size() > 1) {
+
+            // Ensure another proxy can process the request
+
+            LinkedHashMap<String, List<String>> targetCapabilities = new LinkedHashMap<String, List<String>>();
+            initSurrogateMap(targetCapabilities, surrogateCapabilitiesHeader);
+            for (String c : this.capabilities) {
+
+                // Ignore Surrogate/1.0
+                if ("Surrogate/1.0".equals(c)) {
+                    continue;
+                }
+
+                String firstSurrogate = getFirstSurrogateFor(surrogateCapabilitiesHeader, c);
+
+                // firstSurrogate cannot be null since we are the last surrogate.
+                targetCapabilities.get(firstSurrogate).add(c);
+            }
+
+            fixSurrogateMap(targetCapabilities, ourSurrogateId);
+
+            StringBuilder sb = new StringBuilder();
+            boolean firstDevice = true;
+            for (String device : targetCapabilities.keySet()) {
+                if (targetCapabilities.get(device).size() == 0) {
+                    continue;
+                }
+
+                if (!firstDevice) {
+                    sb.append(", ");
+                } else {
+                    firstDevice = false;
+                }
+
+                sb.append("content=\"");
+                boolean firstCap = true;
+                for (String cap : targetCapabilities.get(device)) {
+                    if (!firstCap) {
+                        sb.append(" ");
+                    } else {
+                        firstCap = false;
+
+                    }
+                    sb.append(cap);
+
+                }
+                sb.append("\";");
+                sb.append(device);
+
+            }
+
+            e.getHttpResponse().addHeader(H_SURROGATE_CONTROL, sb.toString());
+        }
+
         if (!e.getHttpResponse().containsHeader(H_SURROGATE_CONTROL)) {
             return;
         }
+
+        // If there is a Surrogate-Control header, add a Vary header to ensure content is not reuse when using a
+        // different set of Surrogates
+        e.getHttpResponse().addHeader("Vary", H_SURROGATE_CAPABILITIES);
 
         List<String> enabledCapabilities = new ArrayList<String>();
         List<String> remainingCapabilities = new ArrayList<String>();
@@ -275,9 +366,9 @@ public class Surrogate implements Extension, IEventListener {
                 directive = directive.substring(0, targetIndex);
             }
 
-            if (target != null && !target.equals(e.getHttpRequest().getFirstHeader(H_X_SURROGATE_ID))) {
+            if (target != null && !target.equals(ourSurrogateId)) {
                 // If directive is not targeted to current instance.
-                newSurrogateControlL.add(directiveAndTarget);
+                newSurrogateControlL.add(strip(directiveAndTarget));
 
             } else if (directive.startsWith("content=\"")) {
                 // Handle content
@@ -321,6 +412,87 @@ public class Surrogate implements Extension, IEventListener {
             MoveResponseHeader.moveHeader(e.getHttpResponse(), "Cache-Control", H_X_ORIGINAL_CACHE_CONTROL);
             e.getHttpResponse().setHeader("Cache-Control", join(newCacheContent, ", "));
         }
+    }
+
+    /**
+     * The current implementation of ESI cannot execute rules partially. For instance if ESI-Inline is requested, ESI,
+     * ESI-Inline, X-ESI-Fragment are executed.
+     * 
+     * <p>
+     * This method handles this specific case : if one requested capability enables the Esi extension in this instance,
+     * all other capabilities are moved to this instance. This prevents broken behavior.
+     * 
+     * 
+     * @see Esi
+     * @see org.esigate.extension.Esi
+     * 
+     * @param targetCapabilities
+     * @param currentSurrogate
+     *            the current surrogate id.
+     */
+    private void fixSurrogateMap(LinkedHashMap<String, List<String>> targetCapabilities, String currentSurrogate) {
+        boolean esiEnabledInEsigate = false;
+
+        // Check if Esigate will perform ESI.
+        for (String c : Esi.CAPABILITIES) {
+            if (targetCapabilities.get(currentSurrogate).contains(c)) {
+                esiEnabledInEsigate = true;
+                break;
+            }
+        }
+
+        if (esiEnabledInEsigate) {
+            // Ensure all Esi capabilities are executed by our instance.
+            for (String c : Esi.CAPABILITIES) {
+                for (String device : targetCapabilities.keySet()) {
+                    if (device.equals(currentSurrogate)) {
+                        if (!targetCapabilities.get(device).contains(c)) {
+                            targetCapabilities.get(device).add(c);
+                        }
+                    } else {
+                        targetCapabilities.get(device).remove(c);
+                    }
+
+                }
+            }
+
+        }
+
+    }
+
+   
+    
+    /**
+     * Populate the Map with all current devices, with empty capabilities.
+     * 
+     * @param targetCapabilities
+     * @param surrogateCapabilitiesHeader
+     */
+    private void initSurrogateMap(Map<String, List<String>> targetCapabilities,
+            SurrogateCapabilitiesHeader surrogateCapabilitiesHeader) {
+
+        for (SurrogateCapabilities sc : surrogateCapabilitiesHeader.getSurrogates()) {
+            targetCapabilities.put(sc.getDeviceToken(), new ArrayList<String>());
+        }
+    }
+
+    /**
+     * Returns the first surrogate which supports the requested capability.
+     * 
+     * @param surrogateCapabilitiesHeader
+     * @param capability
+     * @return a Surrogate or null if the capability is not found.
+     */
+    private String getFirstSurrogateFor(SurrogateCapabilitiesHeader surrogateCapabilitiesHeader, String capability) {
+        for (SurrogateCapabilities surrogate : surrogateCapabilitiesHeader.getSurrogates()) {
+
+            for (Capability sc : surrogate.getCapabilities()) {
+                if (capability.equals(sc.toString())) {
+                    return surrogate.getDeviceToken();
+                }
+            }
+        }
+        return null;
     }
 
     /**

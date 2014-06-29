@@ -18,13 +18,19 @@ import org.esigate.extension.surrogate.Surrogate;
  * This extension processes ESI directives. Ex:
  * <p>
  * &lt;esi:include src="$(PROVIDER{cms})/news" fragment="news_1"/>
- * 
+ * <p>
+ * Surrogate-Control is supported, with the following behavior :
+ * <ul>
+ * <li>Exposed capabilities : "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0", "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0",
+ * "ESIGATE/4.0"</li>
+ * <li>When one of these capabilities is requested, all are applied at once.</li>
+ * </ul>
  * 
  * @author Nicolas Richeton
  */
 public class Esi implements Extension, IEventListener {
     private static final String[] CAPABILITIES = new String[] {"ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
-            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0"};
+            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
 
     @Override
     public boolean event(EventDefinition id, Event event) {
