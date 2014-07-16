@@ -123,7 +123,10 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
      */
     protected void engineInitVerify(Key publicKey) throws XMLSignatureException {
         if (!(publicKey instanceof PublicKey)) {
-            String supplied = publicKey.getClass().getName();
+            String supplied = null;
+            if (publicKey != null) {
+                supplied = publicKey.getClass().getName();
+            }
             String needed = PublicKey.class.getName();
             Object exArgs[] = { supplied, needed };
 
@@ -172,7 +175,10 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     protected void engineInitSign(Key privateKey, SecureRandom secureRandom)
         throws XMLSignatureException {
         if (!(privateKey instanceof PrivateKey)) {
-            String supplied = privateKey.getClass().getName();
+            String supplied = null;
+            if (privateKey != null) {
+                supplied = privateKey.getClass().getName();
+            }
             String needed = PrivateKey.class.getName();
             Object exArgs[] = { supplied, needed };
 
@@ -180,7 +186,11 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
         }
 
         try {
-            this.signatureAlgorithm.initSign((PrivateKey) privateKey, secureRandom);
+            if (secureRandom == null) {
+                this.signatureAlgorithm.initSign((PrivateKey) privateKey);
+            } else {
+                this.signatureAlgorithm.initSign((PrivateKey) privateKey, secureRandom);
+            }
         } catch (InvalidKeyException ex) {
             throw new XMLSignatureException("empty", ex);
         }
@@ -191,20 +201,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
      * @inheritDoc
      */
     protected void engineInitSign(Key privateKey) throws XMLSignatureException {
-        if (!(privateKey instanceof PrivateKey)) {
-            String supplied = privateKey.getClass().getName();
-            String needed = PrivateKey.class.getName();
-            Object exArgs[] = { supplied, needed };
-
-            throw new XMLSignatureException("algorithms.WrongKeyForThisOperation", exArgs);
-        }
-
-        try {
-            this.signatureAlgorithm.initSign((PrivateKey) privateKey);
-        } catch (InvalidKeyException ex) {
-            throw new XMLSignatureException("empty", ex);
-        }
-        size = ((DSAKey)privateKey).getParams().getQ().bitLength();
+        engineInitSign(privateKey, (SecureRandom)null);
     }
 
     /**
