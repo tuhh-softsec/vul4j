@@ -25,6 +25,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.transformer.TransformIdentity;
+import org.apache.xml.security.test.stax.utils.UnixInputStream;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -231,8 +232,8 @@ public class TransformIdentityTest extends org.junit.Assert {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         transformIdentity.setOutputStream(byteArrayOutputStream);
 
-        transformIdentity.transform(this.getClass().getClassLoader().getResourceAsStream(
-                "ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64"));
+        transformIdentity.transform(new UnixInputStream(this.getClass().getClassLoader().getResourceAsStream(
+                "ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64")));
 
         Assert.assertEquals(17786, byteArrayOutputStream.size());
     }
@@ -277,8 +278,8 @@ public class TransformIdentityTest extends org.junit.Assert {
 
         transformIdentity.setTransformer(transformer);
 
-        transformIdentity.transform(this.getClass().getClassLoader().getResourceAsStream(
-                "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext-base64.xml"));
+        transformIdentity.transform(new UnixInputStream(this.getClass().getClassLoader().getResourceAsStream(
+                "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext-base64.xml")));
 
         transformIdentity.doFinal();
 

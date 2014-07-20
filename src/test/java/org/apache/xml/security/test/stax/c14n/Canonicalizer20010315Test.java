@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.test.stax.c14n;
 
+import org.apache.xml.security.test.stax.utils.UnixInputStream;
 import org.junit.Test;
 
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
@@ -393,7 +394,7 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
 
         byte[] reference =
                 getBytesFromResource(this.getClass().getClassLoader().getResource(
-                        "org/apache/xml/security/c14n/in/default_ns_redefinition_c14n.xml"));
+                        "org/apache/xml/security/c14n/in/default_ns_redefinition_c14n.xml"), true);
         boolean equals = java.security.MessageDigest.isEqual(reference, baos.toByteArray());
 
         if (!equals) {
@@ -718,11 +719,17 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
         assertTrue(result);
     }
 
-
     public static byte[] getBytesFromResource(URL resource) throws IOException {
+        return getBytesFromResource(resource, false);
+    }
+
+    public static byte[] getBytesFromResource(URL resource, boolean unix) throws IOException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         InputStream inputStream = resource.openStream();
+        if (unix) {
+            inputStream = new UnixInputStream(inputStream);
+        }
         try {
             byte buf[] = new byte[1024];
             int len;
