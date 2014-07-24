@@ -73,7 +73,10 @@ public class PKSignatureCreationTest extends AbstractSignatureCreationTest {
             }
         }
         
-        rsaKeyPair = KeyPairGenerator.getInstance("RSA").genKeyPair();
+        KeyPairGenerator rsaKpg = KeyPairGenerator.getInstance("RSA");
+        rsaKpg.initialize(2048);
+        rsaKeyPair = rsaKpg.genKeyPair();
+        
         ecKeyPair = KeyPairGenerator.getInstance("EC").genKeyPair();
     }
 
