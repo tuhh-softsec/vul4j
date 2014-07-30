@@ -117,6 +117,14 @@
 					</reportPlugins>
 				</configuration>
 			</plugin>
+			<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<configLocation>../src/main/resources/esigate_checks.xml</configLocation>
+						<headerLocation>../src/main/resources/LICENSE-2.0.txt</headerLocation>
+					</configuration>
+				</plugin>
 		</plugins>
 	</build>
 </project>
