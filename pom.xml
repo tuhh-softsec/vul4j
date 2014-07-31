@@ -292,7 +292,7 @@
 					<configuration>
 						<lineEnding>LF</lineEnding>
 						<encoding>UTF-8</encoding>
-						<configFile>code-formater.xml</configFile>
+						<configFile>/code-formater.xml</configFile>
 					</configuration>
 					<dependencies>
 						<dependency>
