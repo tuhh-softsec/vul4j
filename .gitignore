@@ -1,18 +1,11 @@
 # Eclipse
-/.project
-/.settings
+.project
+.settings
+.classpath
 
 # IDEA
-/*.iml
-/.idea
+*.iml
+.idea
 
 # Maven
-/target
-
-esigate-servlet/.settings/org.eclipse.wst.common.component
-
-esigate-servlet/.settings/org.eclipse.wst.common.project.facet.core.xml
-
-esigate-servlet/.classpath
-
-esigate-servlet/.classpath
+target
