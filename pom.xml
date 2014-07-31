@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -277,6 +278,30 @@
 						<headerLocation>../src/main/resources/LICENSE-2.0.txt</headerLocation>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+					<artifactId>maven-java-formatter-plugin</artifactId>
+					<version>0.4</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>format</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<lineEnding>LF</lineEnding>
+						<encoding>UTF-8</encoding>
+						<configFile>code-formater.xml</configFile>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.esigate</groupId>
+							<artifactId>esigate-tool-conf</artifactId>
+							<version>${project.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -306,7 +331,7 @@
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-changelog-plugin</artifactId>
 						</plugin>
-					
+
 					</reportPlugins>
 				</configuration>
 			</plugin>
@@ -643,6 +668,7 @@
 		</profile>
 	</profiles>
 	<modules>
+		<module>esigate-tool-conf</module>
 		<module>esigate-core</module>
 		<module>esigate-servlet</module>
 		<module>esigate-cas</module>
