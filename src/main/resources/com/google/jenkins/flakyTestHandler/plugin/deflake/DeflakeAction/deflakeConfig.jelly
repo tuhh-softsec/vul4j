@@ -1,0 +1,50 @@
+<!--
+Copyright 2014 Google Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+ <?jelly escape-by-default='true'?>
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+     <l:layout title="${%Deflake failed build}" norefresh="true" permission="${it.requiredPermission}">
+         <l:side-panel>
+             <l:tasks>
+                 <l:task icon="images/24x24/up.gif" href="${rootURL}/" title="${%Back to Dashboard}"/>
+             </l:tasks>
+         </l:side-panel>
+         <l:main-panel>
+             <f:form method="post" action="submitDeflakeRequest" name="config" tableClass="parameters">
+                 <f:entry title="rerunFailingTestsCount" description="How many times to re-run" help="/plugin/flaky-test-handler/help-rerun.html">
+                 <div name="rerunFailingTestsCountParam" description="How many times to re-run">
+                     <input type="hidden" name="name" value="surefire.rerunFailingTestsCount" />
+                     <f:textbox name="value" value="0" />
+                 </div>
+                 </f:entry>
+
+                 <f:entry title="only run failing tests" field="only-failing" description="Whether to run only failing tests" help="/plugin/flaky-test-handler/help-only-fail.html">
+                 <div name="testParam" description="Whether only run failing tests">
+                     <input type="hidden" name="name" value="onlyRunFailingTests" />
+                     <f:checkbox name="value" checked="false" />
+                 </div>
+                 </f:entry>
+
+                 <br/>
+                 <br/>
+                 <f:block>
+                     <f:submit value="${%Deflake}"/>
+                 </f:block>
+             </f:form>
+         </l:main-panel>
+     </l:layout>
+ </j:jelly>

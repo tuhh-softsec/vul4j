@@ -1,0 +1,57 @@
+<!--
+Copyright 2014 Google Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <j:if test="${it.isPassed}">
+        <div><img src="${rootURL}${it.getBigImagePath(100)}"/>  No flake or failure </div>
+    </j:if>
+    <j:if test="${it.isFailed}">
+        <div><img src="${rootURL}${it.getBigImagePath(0)}"/>  Failed with ${it.flakyRuns.size()} retries </div>
+    </j:if>
+    <j:if test="${it.isFlaked}">
+        <div><img src="${rootURL}${it.getBigImagePath(80)}"/>  Flaked with ${it.flakyRuns.size()} failures </div>
+    </j:if>
+
+    <j:forEach var="flakyRun" items="${it.flakyRuns}" varStatus="theCount">
+        <h3>Run ${theCount.index + 1}:</h3>
+
+        <j:if test="${!empty(flakyRun.flakyErrorDetails)}">
+            <h3>${%Error Message}</h3>
+            <pre><j:out value="${it.annotate(flakyRun.flakyErrorDetails)}"/></pre>
+        </j:if>
+        <j:if test="${!empty(flakyRun.flakyErrorStackTrace)}">
+            <h3>${%Stacktrace}</h3>
+            <pre><j:out value="${it.annotate(flakyRun.flakyErrorStackTrace)}"/></pre>
+        </j:if>
+        <j:if test="${!empty(flakyRun.flakyStdOut)}">
+            <h3>${%Standard Output}</h3>
+            <pre><j:out value="${it.annotate(flakyRun.flakyStdOut)}"/></pre>
+        </j:if>
+        <j:if test="${!empty(flakyRun.flakyStdErr)}">
+            <h3>${%Standard Error}</h3>
+            <pre><j:out value="${it.annotate(flakyRun.flakyStdErr)}"/></pre>
+        </j:if>
+    </j:forEach>
+
+    <j:if test="${!it.isFailed}">
+        <h3>Run ${it.flakyRuns.size() + 1}: PASS</h3>
+    </j:if>
+
+    <j:if test="${it.isFailed}">
+        <h3>Run ${it.flakyRuns.size() + 1}: </h3>
+    </j:if>
+</j:jelly>

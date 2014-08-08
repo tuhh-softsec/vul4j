@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites>
+  <testsuite errors="0" failures="0" hostname="archbuild" id="0"
+      name="StudioAllTests" package="test.infor.clearux.studio.integration"
+      tests="456" time="107.824" timestamp="2008-01-23T10:49:26">
+    <testcase classname="test.foo.bar.DefaultIntegrationTest" name="experimentsWithJavaElements" time="0.0">
+      <flakyFailure message="flaky failure 1">flaky stacktrace
+          <system-out>flaky system out</system-out>
+          <system-err>flaky system err</system-err>
+      </flakyFailure>
+      <flakyError message="flaky error 1">error stacktrace
+          <system-out>error system out</system-out>
+          <system-err>error system err</system-err>
+      </flakyError>
+    </testcase>
+    <testcase classname="test.foo.bar.BundleResolverIntegrationTest" name="testGetBundle" time="0.0" >
+      <failure message="failure">stacktrace
+      </failure>
+      <rerunFailure message="flaky failure 2">flaky stacktrace 2
+          <system-out>flaky system out 2</system-out>
+          <system-err>flaky system err 2</system-err>
+      </rerunFailure>
+      <rerunFailure message="flaky error 2">error stacktrace 2
+          <system-out>error system out 2</system-out>
+          <system-err>error system err 2</system-err>
+      </rerunFailure>
+      <system-out>failure system out</system-out>
+      <system-err>failure system err</system-err>
+    </testcase>
+    <testcase classname="test.foo.bar.BundleResolverIntegrationTest" name="testGetBundleLocation" time="0.656" />
+    <testcase classname="test.foo.bar.ProjectSettingsTest" name="testNatureAddition" time="0.125" />
+    <testcase classname="test.foo.bar.ProjectSettingsTest" name="testNatureRemoval" time="0.11" />
+  </testsuite>
+</testsuites>

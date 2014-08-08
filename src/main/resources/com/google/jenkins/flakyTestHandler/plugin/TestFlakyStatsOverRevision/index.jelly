@@ -1,0 +1,64 @@
+<!--
+Copyright 2014 Google Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
+  <l:layout title="Test">
+
+    <st:include page="sidepanel.jelly" it="${it.project}" />
+    <l:main-panel>
+    <j:set var="testName" value="${request.getParameter('test')}"/>
+    <j:invoke var="statsMap" on="${it}" method="getFlakyStatsMap">
+      <j:arg value="${testName}" type="java.lang.String" />
+    </j:invoke>
+    <h2> ${testName}</h2>
+
+     <table class="pane sortable bigtable" id="testStatsOverRevision">
+       <tr>
+         <td class="pane-header" style="width:4em">${%Rev Number}</td>
+         <td class="pane-header" style="width:10em">${%Revision}</td>
+         <td class="pane-header" style="width:4em">${%Passes}</td>
+         <td class="pane-header" style="width:4em">${%Fails}</td>
+       </tr>
+       <tbody>
+         <j:set var="count" value="1"/>
+         <j:forEach var="entry" items="${statsMap.entrySet()}">
+           <j:set var="revision" value="${entry.getKey()}"/>
+           <j:set var="stat" value="${entry.getValue()}"/>
+           <tr>
+             <td class="pane" style="text-align:left" data="${count}">
+                <j:out value="Rev #${count}"/>
+             </td>
+             <td class="pane" style="text-align:left">
+                <j:out value="${revision}"/>
+             </td>
+             <td class="pane" style="text-align:left" data="${stat.pass}">${stat.pass}</td>
+             <td class="pane" style="text-align:left" data="${stat.fail}">${stat.fail}</td>
+           </tr>
+         <j:set var="count" value="${count + 1}"/>
+         </j:forEach>
+       </tbody>
+     </table>
+     <br></br>
+     <br></br>
+     <br></br>
+     <div>
+        <img src="statsGraph/png" alt="[Test result trend chart]"/>
+     </div>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>
+

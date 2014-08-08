@@ -1,0 +1,54 @@
+<!--
+Copyright 2014 Google Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+     <h2> Flaky History </h2>
+     <a href="historyAggregate/showAll">
+       <j:choose>
+         <j:when test="${it.onlyShowFlakyTests}">(${%Show all the tests})</j:when>
+         <j:otherwise>(${%Only show flaky tests})</j:otherwise>
+       </j:choose>
+     </a>
+     <table class="pane sortable bigtable" id="flakyStats">
+       <tr>
+         <td class="pane-header" style="width:15em">${%Test Name}</td>
+         <td class="pane-header" style="width:5em">${%Passes}</td>
+         <td class="pane-header" style="width:5em">${%Fails}</td>
+         <td class="pane-header" style="width:5em">${%Flakes}</td>
+       </tr>
+       <tbody>
+         <j:forEach var="entry" items="${it.filteredAggregatedFlakyStats.entrySet()}">
+           <j:set var="test" value="${entry.getKey()}"/>
+           <j:set var="stat" value="${entry.getValue()}"/>
+           <tr>
+             <td class="pane" style="text-align:left">
+             <j:invokeStatic var="safeName" className="com.google.jenkins.flakyTestHandler.plugin.TestFlakyStatsOverRevision"
+                method="getSafeTestName">
+                <j:arg value="${test}" type="java.lang.String" />
+             </j:invokeStatic>
+             <a href="flakyStatsRevision?test=${safeName}">
+                <j:out value="${test}"/>
+             </a>
+             </td>
+             <td class="pane" style="text-align:left" data="${stat.pass}">${stat.pass}</td>
+             <td class="pane" style="text-align:left" data="${stat.fail}">${stat.fail}</td>
+             <td class="pane" style="text-align:left" data="${stat.flake}">${stat.flake}</td>
+           </tr>
+         </j:forEach>
+       </tbody>
+     </table>
+</j:jelly>
