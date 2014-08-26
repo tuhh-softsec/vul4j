@@ -82,7 +82,7 @@ public class XmlWriterToTree implements XmlWriter {
             m_nextSibling.getParentNode().insertBefore(newElem, m_nextSibling);
         }
         else {
-            m_currentNode.appendChild(newElem);
+            newElem = (Element)m_currentNode.appendChild(newElem);
         }
         m_nextSibling = null;
         m_currentNode = newElem;
