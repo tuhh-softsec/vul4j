@@ -9,29 +9,27 @@
 		<version>5.0-SNAPSHOT</version>
 	</parent>
 	<dependencies>
-        <dependency>
-            <groupId>org.esigate</groupId>
-            <artifactId>esigate-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esigate</groupId>
-            <artifactId>esigate-app-aggregated1</artifactId>
-            <type>war</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.esigate</groupId>
-            <artifactId>esigate-app-aggregated2</artifactId>
-            <type>war</type>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-
-        <dependency>
+		<dependency>
+			<groupId>org.esigate</groupId>
+			<artifactId>esigate-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.esigate</groupId>
+			<artifactId>esigate-app-aggregated1</artifactId>
+			<type>war</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.esigate</groupId>
+			<artifactId>esigate-app-aggregated2</artifactId>
+			<type>war</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
@@ -68,10 +66,9 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
-					 <skipDeploy>true</skipDeploy>
+					<skipDeploy>true</skipDeploy>
 				</configuration>
 			</plugin>
-		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -94,26 +91,26 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--  Performance test is disabled. It succeeds only on some linux machines (like the one it was written on), we need a better performance test  -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 				<artifactId>maven-failsafe-plugin</artifactId> -->
-<!-- 				<version>2.15</version> -->
-<!-- 				<configuration> -->
-<!-- 					<includes> -->
-<!-- 						<include>**/*PerformanceTestCase.java</include> -->
-<!-- 					</includes> -->
-<!-- 				</configuration> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>perf-test</id> -->
-<!-- 						<phase>integration-test</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>integration-test</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+			<!-- Performance test is disabled. It succeeds only on some linux machines (like the one it was written on), we need a better performance test -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-failsafe-plugin</artifactId> -->
+			<!-- <version>2.15</version> -->
+			<!-- <configuration> -->
+			<!-- <includes> -->
+			<!-- <include>**/*PerformanceTestCase.java</include> -->
+			<!-- </includes> -->
+			<!-- </configuration> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>perf-test</id> -->
+			<!-- <phase>integration-test</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>integration-test</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
 			<plugin>
 				<groupId>org.codehaus.cargo</groupId>
 				<artifactId>cargo-maven2-plugin</artifactId>
@@ -134,33 +131,36 @@
 					</execution>
 				</executions>
 				<configuration>
-                    <container>
-                        <containerId>jetty7x</containerId>
-                        <type>embedded</type>
-                    </container>
-                    <deployables>
-                        <deployable>
-                            <groupId>org.esigate</groupId>
-                            <artifactId>esigate-app-aggregated1</artifactId>
-                            <properties>
-                                <context>esigate-app-aggregated1</context>
-                            </properties>
-                        </deployable>
-                        <deployable>
-                            <groupId>org.esigate</groupId>
-                            <artifactId>esigate-app-aggregated2</artifactId>
-                            <properties>
-                                <context>esigate-app-aggregated2</context>
-                            </properties>
-                        </deployable>
-                    </deployables>
+					<container>
+						<containerId>jetty7x</containerId>
+						<type>embedded</type>
+					</container>
+					<deployables>
+						<deployable>
+							<groupId>org.esigate</groupId>
+							<artifactId>esigate-app-aggregated1</artifactId>
+							<properties>
+								<context>esigate-app-aggregated1</context>
+							</properties>
+						</deployable>
+						<deployable>
+							<groupId>org.esigate</groupId>
+							<artifactId>esigate-app-aggregated2</artifactId>
+							<properties>
+								<context>esigate-app-aggregated2</context>
+							</properties>
+						</deployable>
+					</deployables>
 					<configuration>
-
 						<properties>
-						<cargo.jvmargs>-Xmx256M -server</cargo.jvmargs>
+							<cargo.jvmargs>-Xmx256M -server</cargo.jvmargs>
 						</properties>
 					</configuration>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+				<artifactId>maven-java-formatter-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

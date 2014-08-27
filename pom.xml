@@ -116,9 +116,7 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.4.1</version>
-					<!-- These dependencies are required : release plugin 2.4.1 depends 
-						on a previous version of svn plugin which has issues with svn+ssh. scm 1.8.1 
-						is required -->
+					<!-- These dependencies are required : release plugin 2.4.1 depends on a previous version of svn plugin which has issues with svn+ssh. scm 1.8.1 is required -->
 					<dependencies>
 						<dependency>
 							<groupId>org.apache.maven.scm</groupId>
@@ -242,7 +240,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-project-info-reports-plugin</artifactId>
-					<version>2.6</version>
+					<version>2.7</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -252,16 +250,17 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-enforcer-plugin</artifactId>
-					<version>1.2</version>
+					<version>1.3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jxr-plugin</artifactId>
-					<version>2.2</version>
+					<version>2.4</version>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-report-plugin</artifactId>
-					<version>2.13</version>
+					<version>2.17</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -271,11 +270,49 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.10</version>
+					<version>2.12.1</version>
+				</plugin>
+				<plugin>
+					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+					<artifactId>maven-java-formatter-plugin</artifactId>
+					<version>0.4</version>
+					<executions>
+						<execution>
+							<phase>compile</phase>
+							<goals>
+								<goal>format</goal>
+							</goals>
+						</execution>
+					</executions>
 					<configuration>
-						<configLocation>../src/main/resources/esigate_checks.xml</configLocation>
-						<headerLocation>../src/main/resources/LICENSE-2.0.txt</headerLocation>
+						<lineEnding>LF</lineEnding>
+						<encoding>UTF-8</encoding>
+						<configFile>/code-formater.xml</configFile>
 					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.esigate</groupId>
+							<artifactId>esigate-tool-conf</artifactId>
+							<version>${project.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.3</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.esigate</groupId>
+							<artifactId>esigate-tool-conf</artifactId>
+							<version>${project.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.8</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -283,31 +320,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.2</version>
 				<configuration>
 					<chmod>true</chmod>
 					<chmodMode>g+wX,a+rX</chmodMode>
 					<chmodOptions>-Rf</chmodOptions>
-					<reportPlugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<reports>
-								<report>summary</report>
-								<report>license</report>
-								<report>scm</report>
-								<report>distribution-management</report>
-								<report>issue-tracking</report>
-								<report>project-team</report>
-								<report>mailing-list</report>
-							</reports>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-changelog-plugin</artifactId>
-						</plugin>
-					
-					</reportPlugins>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -319,6 +335,52 @@
 			</extension>
 		</extensions>
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<id>aggregate</id>
+						<inherited>false</inherited>
+						<reports>
+							<report>summary</report>
+							<report>license</report>
+							<report>scm</report>
+							<report>distribution-management</report>
+							<report>issue-tracking</report>
+							<report>project-team</report>
+							<report>mailing-list</report>
+						</reports>
+					</reportSet>
+					<reportSet>
+						<reports>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changelog-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<id>aggregate</id>
+						<inherited>false</inherited>
+						<reports>
+							<report>dev-activity</report>
+							<report>file-activity</report>
+							<report>changelog</report>
+						</reports>
+					</reportSet>
+					<reportSet>
+						<reports>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -458,8 +520,7 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.8.2</version>
-				<!-- Junit must be provided in order to compile org.esigate.test package. 
-					This scope ensure it is not included in war -->
+				<!-- Junit must be provided in order to compile org.esigate.test package. This scope ensure it is not included in war -->
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -643,6 +704,7 @@
 		</profile>
 	</profiles>
 	<modules>
+		<module>esigate-tool-conf</module>
 		<module>esigate-core</module>
 		<module>esigate-servlet</module>
 		<module>esigate-cas</module>
@@ -655,7 +717,6 @@
 		<module>esigate-app-casified-aggregated1</module>
 		<module>esigate-app-casified-aggregated2</module>
 		<module>esigate-app-casified-aggregator</module>
-
 		<module>esigate-war</module>
 		<module>esigate-server</module>
 		<module>esigate-distribution</module>
@@ -665,8 +726,7 @@
 			<id>esigate-site</id>
 			<name>ESIGate</name>
 			<!-- <url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url> -->
-			<!-- To use scp, you need to create a shell first : ssh -t USER,webassembletool@shell.sourceforge.net 
-				create -->
+			<!-- To use scp, you need to create a shell first : ssh -t USER,webassembletool@shell.sourceforge.net create -->
 			<url>scp://shell.sourceforge.net/home/project-web/webassembletool/htdocs</url>
 		</site>
 		<snapshotRepository>
