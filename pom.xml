@@ -293,7 +293,7 @@
 						<dependency>
 							<groupId>org.esigate</groupId>
 							<artifactId>esigate-tool-conf</artifactId>
-							<version>${project.version}</version>
+							<version>${esigate-tool-conf.version}</version>
 						</dependency>
 					</dependencies>
 				</plugin>
@@ -305,7 +305,7 @@
 						<dependency>
 							<groupId>org.esigate</groupId>
 							<artifactId>esigate-tool-conf</artifactId>
-							<version>${project.version}</version>
+							<version>${esigate-tool-conf.version}</version>
 						</dependency>
 					</dependencies>
 				</plugin>
@@ -704,7 +704,6 @@
 		</profile>
 	</profiles>
 	<modules>
-		<module>esigate-tool-conf</module>
 		<module>esigate-core</module>
 		<module>esigate-servlet</module>
 		<module>esigate-cas</module>
@@ -739,5 +738,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<dependency.httpclient.version>4.3.3</dependency.httpclient.version>
 		<currentVersion>${project.version}</currentVersion>
+		<esigate-tool-conf.version>5.0-SNAPSHOT</esigate-tool-conf.version>
 	</properties>
 </project>
