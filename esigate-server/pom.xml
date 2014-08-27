@@ -14,7 +14,6 @@
 			<artifactId>esigate-war</artifactId>
 			<type>war</type>
 		</dependency>
-
 		<!-- Jetty artifacts. Note: They do have transitive dependencies. -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -73,7 +72,6 @@
 					</webApp>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -143,8 +141,11 @@
 					</reportPlugins>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+				<artifactId>maven-java-formatter-plugin</artifactId>
+			</plugin>
 		</plugins>
-
 		<pluginManagement>
 			<plugins>
 				<plugin>
