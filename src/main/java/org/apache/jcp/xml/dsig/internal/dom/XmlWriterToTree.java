@@ -79,7 +79,7 @@ public class XmlWriterToTree implements XmlWriter {
     public void writeStartElement(String prefix, String localName, String namespaceURI) {
         Element newElem = m_factory.createElementNS(namespaceURI, DOMUtils.getQNameString(prefix, localName));
         if (m_nextSibling != null) {
-            m_nextSibling.getParentNode().insertBefore(newElem, m_nextSibling);
+            newElem = (Element)m_nextSibling.getParentNode().insertBefore(newElem, m_nextSibling);
         }
         else {
             newElem = (Element)m_currentNode.appendChild(newElem);
