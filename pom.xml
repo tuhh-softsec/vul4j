@@ -271,6 +271,17 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>2.12.1</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.esigate</groupId>
+							<artifactId>esigate-tool-conf</artifactId>
+							<version>${esigate-tool-conf.version}</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<configLocation>checkstyle.xml</configLocation>
+						<headerLocation>LICENSE-2.0.txt</headerLocation>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
