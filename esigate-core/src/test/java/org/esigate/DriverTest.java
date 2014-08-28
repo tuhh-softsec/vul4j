@@ -74,17 +74,20 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderBlock() throws IOException, HttpErrorPage {
-        CloseableHttpResponse response = DriverFactory.getInstance("mock").render("/testBlock", request.build(),
-                new BlockRenderer("A", "/testBlock"));
+        CloseableHttpResponse response =
+                DriverFactory.getInstance("mock").render("/testBlock", request.build(),
+                        new BlockRenderer("A", "/testBlock"));
 
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 
-        response = DriverFactory.getInstance("mock").render("$(vartestBlock)", request.build(),
-                new BlockRenderer("A", "$(vartestBlock)"));
+        response =
+                DriverFactory.getInstance("mock").render("$(vartestBlock)", request.build(),
+                        new BlockRenderer("A", "$(vartestBlock)"));
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 
-        response = DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", request.build(),
-                new BlockRenderer("A", "/$(vartest)$(varBlock)"));
+        response =
+                DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", request.build(),
+                        new BlockRenderer("A", "/$(vartest)$(varBlock)"));
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 
     }
@@ -93,8 +96,9 @@ public class DriverTest extends TestCase {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
-        CloseableHttpResponse response = DriverFactory.getInstance("mock").render("/testTemplateFullPage",
-                request.build(), new TemplateRenderer(null, params, "/testTemplateFullPage"));
+        CloseableHttpResponse response =
+                DriverFactory.getInstance("mock").render("/testTemplateFullPage", request.build(),
+                        new TemplateRenderer(null, params, "/testTemplateFullPage"));
         String result = HttpResponseUtils.toString(response);
         assertFalse(result.contains("key"));
         assertTrue(result.contains("'value'"));
@@ -105,12 +109,14 @@ public class DriverTest extends TestCase {
     public void testRenderTemplate() throws IOException, HttpErrorPage {
         IncomingRequest incomingRequest = request.build();
 
-        CloseableHttpResponse response = DriverFactory.getInstance("mock").render("/testTemplate", incomingRequest,
-                new TemplateRenderer("A", null, "/testTemplate"));
+        CloseableHttpResponse response =
+                DriverFactory.getInstance("mock").render("/testTemplate", incomingRequest,
+                        new TemplateRenderer("A", null, "/testTemplate"));
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 
-        response = DriverFactory.getInstance("mock").render("/test$(varTemplate)", incomingRequest,
-                new TemplateRenderer("A", null, "/test$(varTemplate)"));
+        response =
+                DriverFactory.getInstance("mock").render("/test$(varTemplate)", incomingRequest,
+                        new TemplateRenderer("A", null, "/test$(varTemplate)"));
         assertEquals("some text goes here", HttpResponseUtils.toString(response));
 
     }
@@ -118,8 +124,9 @@ public class DriverTest extends TestCase {
     public void testHeadersPreservedWhenError500() throws Exception {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1),
-                HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        "Internal Server Error");
         response.addHeader("Content-type", "Text/html;Charset=UTF-8");
         response.addHeader("Dummy", "dummy");
         HttpEntity httpEntity = new StringEntity("Error", "UTF-8");
@@ -133,16 +140,16 @@ public class DriverTest extends TestCase {
         } catch (HttpErrorPage e) {
             driverResponse = e.getHttpResponse();
         }
-        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse
-                .getStatusLine().getStatusCode());
+        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse.getStatusLine().getStatusCode());
         assertTrue("Header 'Dummy'", driverResponse.containsHeader("Dummy"));
     }
 
     public void testHeadersFilteredWhenError500() throws Exception {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1),
-                HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        "Internal Server Error");
         response.addHeader("Content-type", "Text/html;Charset=UTF-8");
         response.addHeader("Transfer-Encoding", "dummy");
         HttpEntity httpEntity = new StringEntity("Error", "UTF-8");
@@ -156,16 +163,16 @@ public class DriverTest extends TestCase {
         } catch (HttpErrorPage e) {
             driverResponse = e.getHttpResponse();
         }
-        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse.getStatusLine()
-                .getStatusCode());
+        assertEquals("Status code", HttpStatus.SC_INTERNAL_SERVER_ERROR, driverResponse.getStatusLine().getStatusCode());
         assertFalse("Header 'Transfer-Encoding'", driverResponse.containsHeader("Transfer-Encoding"));
     }
 
     public void testSpecialCharacterInErrorPage() throws Exception {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1),
-                HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        "Internal Server Error");
         response.addHeader("Content-type", "Text/html;Charset=UTF-8");
         HttpEntity httpEntity = new StringEntity("é", "UTF-8");
         response.setEntity(httpEntity);
@@ -184,8 +191,9 @@ public class DriverTest extends TestCase {
     public void testGzipErrorPage() throws Exception {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1),
-                HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        "Internal Server Error");
         response.addHeader("Content-type", "Text/html;Charset=UTF-8");
         response.addHeader("Content-encoding", "gzip");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -215,9 +223,12 @@ public class DriverTest extends TestCase {
     }
 
     private Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager, String name) {
-        Driver driver = Driver.builder().setName(name).setProperties(properties)
-                .setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setConnectionManager(connectionManager))
-                .build();
+        Driver driver =
+                Driver.builder()
+                        .setName(name)
+                        .setProperties(properties)
+                        .setRequestExecutorBuilder(
+                                HttpClientRequestExecutor.builder().setConnectionManager(connectionManager)).build();
         DriverFactory.put(name, driver);
         return driver;
     }
@@ -227,8 +238,8 @@ public class DriverTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com:8080/");
         properties.put(Parameters.PRESERVE_HOST, "false");
         request = TestUtils.createIncomingRequest("http://www.bar.com/foo/");
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1),
-                HttpStatus.SC_MOVED_TEMPORARILY, "Found");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_TEMPORARILY, "Found");
         response.addHeader("Location", "http://www.foo.com:8080/somewhere/");
         mockConnectionManager.setResponse(response);
         Driver driver = createMockDriver(properties, mockConnectionManager);
@@ -250,8 +261,8 @@ public class DriverTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE, "http://www.foo.com:8080");
         properties.put(Parameters.PRESERVE_HOST, "true");
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1),
-                HttpStatus.SC_MOVED_TEMPORARILY, "Found");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_TEMPORARILY, "Found");
         // The backend server sets the port even if default (OK it should not
         // but some servers do it)
         response.addHeader("Location", "http://www.foo.com:80/foo/bar");
@@ -316,8 +327,8 @@ public class DriverTest extends TestCase {
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
         properties.put(Parameters.USE_CACHE.getName(), true);
 
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED,
-                "Not Modified");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
         response.addHeader("Etag", "b5e3f57c0e84fc7a197b849fdfd3d407");
         response.addHeader("Date", "Thu, 13 Dec 2012 07:28:01 GMT");
         mockConnectionManager.setResponse(response);
@@ -360,8 +371,8 @@ public class DriverTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com/");
         properties.put(Parameters.TTL.getName(), "43200");
 
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED,
-                "Not Modified");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
         response.addHeader("Etag", "a86ecd6cc6d361776ed05f063921aa34");
         response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
         response.addHeader("Cache-Control", "max-age=2051, public");
@@ -397,8 +408,8 @@ public class DriverTest extends TestCase {
         properties.put(Parameters.PRESERVE_HOST.getName(), "true");
         properties.put(Parameters.USE_CACHE.getName(), true);
 
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED,
-                "Not Modified");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
         response.addHeader("Etag", "a86ecd6cc6d361776ed05f063921aa34");
         response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
         response.addHeader("Cache-Control", "max-age=2051, public, must-revalidate, proxy-revalidate");
@@ -461,8 +472,9 @@ public class DriverTest extends TestCase {
 
         Driver driver = createMockDriver(properties, mockConnectionManager);
 
-        request = TestUtils.createIncomingRequest("http://test.mydomain.fr/foobar/").addCookie(
-                new BasicClientCookie("TEST_cookie", "233445436436346"));
+        request =
+                TestUtils.createIncomingRequest("http://test.mydomain.fr/foobar/").addCookie(
+                        new BasicClientCookie("TEST_cookie", "233445436436346"));
 
         driver.proxy("/foobar/", request.build());
 
@@ -518,8 +530,8 @@ public class DriverTest extends TestCase {
         properties.put(Parameters.EXTENSIONS.getName(), DefaultCharset.class.getName());
         properties.put(Parameters.USE_CACHE.getName(), "false");
 
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK,
-                "Not Modified");
+        HttpResponse response =
+                new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Not Modified");
         response.addHeader("Content-Type", "text/html");
 
         mockConnectionManager.setResponse(response);
@@ -716,7 +728,7 @@ public class DriverTest extends TestCase {
     }
 
     /**
-     * Cookies from external URLs calls should also be forwarded
+     * Cookies from external URLs calls should also be forwarded.
      * 
      * @see <a href="https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=255">0000255: forwardCookies does
      *      not work with esi:include if not using a provider variable</a>
@@ -730,8 +742,8 @@ public class DriverTest extends TestCase {
         mockConnectionManager = new MockConnectionManager() {
             @Override
             public HttpResponse execute(HttpRequest httpRequest) {
-                BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK,
-                        "OK");
+                BasicHttpResponse response =
+                        new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
                 response.addHeader(new BasicHeader("Set-Cookie", "name1=value1;domain=www.external.server"));
                 return response;
             }
@@ -755,8 +767,8 @@ public class DriverTest extends TestCase {
         mockConnectionManager = new MockConnectionManager() {
             @Override
             public HttpResponse execute(HttpRequest httpRequest) {
-                BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK,
-                        "OK");
+                BasicHttpResponse response =
+                        new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
                 response.addHeader(new BasicHeader("Set-Cookie", "name1=value1;Path=/foo"));
                 return response;
             }
@@ -781,8 +793,8 @@ public class DriverTest extends TestCase {
         mockConnectionManager = new MockConnectionManager() {
             @Override
             public HttpResponse execute(HttpRequest httpRequest) {
-                BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK,
-                        "OK");
+                BasicHttpResponse response =
+                        new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
                 response.addHeader(new BasicHeader("Set-Cookie", "name1=value1;Path=/bar"));
                 return response;
             }

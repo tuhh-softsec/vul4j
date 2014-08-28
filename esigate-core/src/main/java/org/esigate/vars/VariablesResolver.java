@@ -15,6 +15,13 @@
 
 package org.esigate.vars;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.cookie.Cookie;
 import org.esigate.ConfigurationException;
@@ -25,13 +32,6 @@ import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Manage variables replacement.
@@ -57,7 +57,7 @@ public final class VariablesResolver {
     }
 
     /**
-     * Loads variables from properties
+     * Loads variables from properties.
      */
     public static void configure(Properties props) {
         properties = props;
@@ -235,8 +235,9 @@ public final class VariablesResolver {
             if (arg == null) {
                 res = HttpRequestHelper.getFirstHeader("User-agent", request);
             } else {
-                String userAgent = StringUtils.defaultString(HttpRequestHelper.getFirstHeader("User-Agent", request))
-                        .toLowerCase();
+                String userAgent =
+                        StringUtils.defaultString(HttpRequestHelper.getFirstHeader("User-Agent", request))
+                                .toLowerCase();
                 if (arg.equals("os")) {
                     if (userAgent.indexOf("unix") != -1) {
                         res = "UNIX";
@@ -265,8 +266,8 @@ public final class VariablesResolver {
             String providerUrl = StringUtils.EMPTY;
             try {
                 Driver driver = DriverFactory.getInstance(arg);
-                providerUrl = driver.getConfiguration().getBaseUrlRetrieveStrategy()
-                        .getBaseURL(request.getOriginalRequest());
+                providerUrl =
+                        driver.getConfiguration().getBaseUrlRetrieveStrategy().getBaseURL(request.getOriginalRequest());
             } catch (Exception e) {
                 // No driver available for this id.
             }
