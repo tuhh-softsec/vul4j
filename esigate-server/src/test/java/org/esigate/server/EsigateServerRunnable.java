@@ -15,7 +15,7 @@
 package org.esigate.server;
 
 import java.util.Properties;
- 
+
 /**
  * Starts esigate server.
  * 

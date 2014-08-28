@@ -125,8 +125,8 @@ public class RequestHeadersTest extends TestCase {
         // requests so we will find it in the request even if it is not
         // forwarded
         WebConversation webConversation = new WebConversation();
-        WebRequest req = new PostMethodWebRequest(APPLICATION_PATH
-                + "nocache/ag1/request-headers.jsp?name=Content-Length");
+        WebRequest req =
+                new PostMethodWebRequest(APPLICATION_PATH + "nocache/ag1/request-headers.jsp?name=Content-Length");
         WebResponse resp = webConversation.getResponse(req);
         String result = resp.getText();
         assertEquals("Content-Length request header should be set for POST requests", "content-length: 0",
@@ -189,15 +189,17 @@ public class RequestHeadersTest extends TestCase {
 
     public void testHost() throws Exception {
         WebConversation webConversation = new WebConversation();
-        WebRequest req = new GetMethodWebRequest(APPLICATION_PATH.replace("localhost", "127.0.0.1")
-                + "nocache/ag1/request-headers.jsp?name=host");
+        WebRequest req =
+                new GetMethodWebRequest(APPLICATION_PATH.replace("localhost", "127.0.0.1")
+                        + "nocache/ag1/request-headers.jsp?name=host");
         req.setHeaderField("Host", "127.0.0.1:8080");
         WebResponse resp = webConversation.getResponse(req);
         String result = resp.getText();
         assertEquals("As 'preserveHost' is not set to 'true', Host should be the one defined in "
                 + "driver.properties, not the one defined in the request", "host: localhost:8080", result.toLowerCase());
-        req = new GetMethodWebRequest(APPLICATION_PATH.replace("localhost", "127.0.0.1")
-                + "preservehost/request-headers.jsp?name=host");
+        req =
+                new GetMethodWebRequest(APPLICATION_PATH.replace("localhost", "127.0.0.1")
+                        + "preservehost/request-headers.jsp?name=host");
         req.setHeaderField("Host", "127.0.0.1:8080");
         resp = webConversation.getResponse(req);
         result = resp.getText();
@@ -318,8 +320,8 @@ public class RequestHeadersTest extends TestCase {
 
     public void testXForwardedForNotPresent() throws Exception {
         WebConversation webConversation = new WebConversation();
-        WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
-                + "nocache/ag1/request-headers.jsp?name=X-Forwarded-For");
+        WebRequest req =
+                new GetMethodWebRequest(APPLICATION_PATH + "nocache/ag1/request-headers.jsp?name=X-Forwarded-For");
         WebResponse resp = webConversation.getResponse(req);
         if (!resp.getText().toLowerCase().startsWith("x-forwarded-for: 127.0.0.1")) {
             fail("X-Forwarded-For header should be generated if not present in request. Header value: '"

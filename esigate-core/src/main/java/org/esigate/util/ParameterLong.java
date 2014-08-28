@@ -18,6 +18,7 @@ import java.util.Properties;
 
 /**
  * Long parameter.
+ * 
  * @author Alexis Thaveau
  */
 public class ParameterLong extends Parameter<Long> {

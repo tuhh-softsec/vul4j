@@ -33,11 +33,12 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS.getName(), "org.esigate.extension.DefaultCharset");
         properties.put(Parameters.USE_CACHE.getName(), "true");
 
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
-                        .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
-                        .entity("test").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
+                                .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
+                                .entity("test").build()));
 
         IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
 
@@ -54,11 +55,12 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
         properties.put(Parameters.USE_CACHE.getName(), "false");
         properties.put("defaultCharset", "utf-8");
 
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
-                        .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
-                        .entity("test").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
+                                .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
+                                .entity("test").build()));
 
         IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
 
@@ -74,11 +76,12 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS.getName(), "org.esigate.extension.DefaultCharset");
         properties.put(Parameters.USE_CACHE.getName(), "true");
 
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
-                        .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/xml")
-                        .entity("test").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
+                                .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/xml")
+                                .entity("test").build()));
 
         IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
 

@@ -132,7 +132,7 @@ public class DriverConfiguration {
     }
 
     /**
-     *
+     * 
      * @return stripMappingPath
      */
     public boolean isStripMappingPath() {

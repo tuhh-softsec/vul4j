@@ -21,7 +21,7 @@ import org.mockito.Mockito;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author  Alexis Thaveau.
+ * @author Alexis Thaveau.
  */
 public class RequestUrlTest extends TestCase {
     public void testGetRelativeUrl() throws Exception {
@@ -29,8 +29,8 @@ public class RequestUrlTest extends TestCase {
         Mockito.when(request.getContextPath()).thenReturn("/context");
         Mockito.when(request.getServletPath()).thenReturn("/servlet");
         Mockito.when(request.getRequestURI()).thenReturn("/context/servlet/resource");
-        assertEquals("/servlet/resource",RequestUrl.getRelativeUrl(request,false));
-        assertEquals("/resource",RequestUrl.getRelativeUrl(request,true));
+        assertEquals("/servlet/resource", RequestUrl.getRelativeUrl(request, false));
+        assertEquals("/resource", RequestUrl.getRelativeUrl(request, true));
     }
 
     public void testStripMappingPath() throws Exception {
@@ -39,7 +39,7 @@ public class RequestUrlTest extends TestCase {
         assertEquals("/mapping/path/test", relUrl);
 
         mapping = UriMapping.create("/mapping/path/test");
-        relUrl = RequestUrl.stripMappingPath("/mapping/path/test/url/to/resource",mapping);
+        relUrl = RequestUrl.stripMappingPath("/mapping/path/test/url/to/resource", mapping);
         assertEquals("/url/to/resource", relUrl);
     }
 }

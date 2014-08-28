@@ -44,9 +44,10 @@ public class ParserTest extends TestCase {
     }
 
     public void testParse() throws IOException, HttpErrorPage {
-        String page = "begin " + "<test:simple name='ignored'> this text will be ignored </test:simple>"
-                + "<test:body>this text should be {request} </test:body>" + "<test:unknown name='value' />"
-                + "<test:simple name='also ignored'/>" + " end";
+        String page =
+                "begin " + "<test:simple name='ignored'> this text will be ignored </test:simple>"
+                        + "<test:body>this text should be {request} </test:body>" + "<test:unknown name='value' />"
+                        + "<test:simple name='also ignored'/>" + " end";
         StringBuilderWriter out = new StringBuilderWriter();
 
         tested.parse(page, out);
@@ -94,8 +95,9 @@ public class ParserTest extends TestCase {
 
         @Override
         public void onTagEnd(String tag, ParserContext ctx) throws IOException {
-            String result = buf.toString().replaceAll("\\{request\\}",
-                    HttpRequestHelper.getParameter(ctx.getHttpRequest(), "request"));
+            String result =
+                    buf.toString().replaceAll("\\{request\\}",
+                            HttpRequestHelper.getParameter(ctx.getHttpRequest(), "request"));
             ctx.getCurrent().characters(result, 0, result.length());
         }
 

@@ -36,8 +36,9 @@ public class XsltRendererTest extends TestCase {
 
     private String extractBody(String src) throws IOException {
         String template = "<?xml version=\"1.0\"?>";
-        template += "<xsl:stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/xhtml\" "
-                + "xmlns:html=\"http://www.w3.org/1999/xhtml\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">";
+        template +=
+                "<xsl:stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/xhtml\" "
+                        + "xmlns:html=\"http://www.w3.org/1999/xhtml\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">";
         template += "<xsl:output method=\"xml\" omit-xml-declaration=\"yes\"/> indent=\"no\"";
         template += "<xsl:template match=\"//html:body\">";
         template += "<xsl:copy-of select=\".\"/>";
@@ -55,10 +56,11 @@ public class XsltRendererTest extends TestCase {
      * @throws Exception
      */
     public void testParserSupportsUnescapedAmpersandCharacter() throws Exception {
-        String src = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
-                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-                + "<html lang=\"fr\" xml:lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\">"
-                + "<head><title>The header</title></head><body>&x=</body></html>";
+        String src =
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+                        + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+                        + "<html lang=\"fr\" xml:lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\">"
+                        + "<head><title>The header</title></head><body>&x=</body></html>";
         String result = extractBody(src);
         assertEquals("<body>&amp;x=</body>", result);
     }
@@ -69,11 +71,12 @@ public class XsltRendererTest extends TestCase {
      * @throws Exception
      */
     public void testParserSupportsDuplicatedId() throws Exception {
-        String src = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
-                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-                + "<html lang=\"fr\" xml:lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\">"
-                + "<head><title>The header</title></head><body>"
-                + "<span id=\"test\">a</span><span id=\"test\">b</span></body></html>";
+        String src =
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+                        + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+                        + "<html lang=\"fr\" xml:lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\">"
+                        + "<head><title>The header</title></head><body>"
+                        + "<span id=\"test\">a</span><span id=\"test\">b</span></body></html>";
         String result = extractBody(src);
         assertEquals("<body><span id=\"test\">a</span><span id=\"test\">b</span></body>", result);
     }

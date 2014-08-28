@@ -103,7 +103,6 @@ public class MasterTest extends TestCase {
         assertEquals("text/css", resp.getContentType().toLowerCase());
     }
 
-
     public void testProxyIfmodifiedsince() throws Exception {
         WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "images/smile.jpg");
         WebResponse resp = webConversation.getResponse(req);

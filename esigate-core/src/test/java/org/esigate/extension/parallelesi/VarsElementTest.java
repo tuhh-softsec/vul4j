@@ -30,16 +30,18 @@ public class VarsElementTest extends AbstractElementTest {
     }
 
     public void testCookie() throws IOException, HttpErrorPage {
-        String page = "begin <esi:vars>"
-                + "<img src=\"http://www.example.com/$(HTTP_COOKIE{cookieName})/hello.gif\"/ >" + "</esi:vars> end";
+        String page =
+                "begin <esi:vars>" + "<img src=\"http://www.example.com/$(HTTP_COOKIE{cookieName})/hello.gif\"/ >"
+                        + "</esi:vars> end";
         getRequestBuilder().addCookie(new BasicClientCookie("cookieName", "value"));
         String result = render(page);
         assertEquals("begin <img src=\"http://www.example.com/value/hello.gif\"/ > end", result);
     }
 
     public void testQueryString() throws IOException, HttpErrorPage {
-        String page = "begin <esi:vars>" + "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >"
-                + "</esi:vars> end";
+        String page =
+                "begin <esi:vars>" + "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >"
+                        + "</esi:vars> end";
         incomingRequest("http://localhost/?param1=param1value");
         String result = render(page);
         assertEquals("begin <img src=\"http://www.example.com/param1value/hello.gif\"/ > end", result);

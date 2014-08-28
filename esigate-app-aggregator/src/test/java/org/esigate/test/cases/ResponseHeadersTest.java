@@ -73,8 +73,9 @@ public class ResponseHeadersTest extends TestCase {
      * @throws Exception
      */
     private void assertUriInHeaderIsRewritten(String name) throws Exception {
-        String resp = sendRequestAndExpectResponseHeader(name,
-                APPLICATION_PATH.replaceFirst("aggregator", "aggregated1") + "dummy");
+        String resp =
+                sendRequestAndExpectResponseHeader(name, APPLICATION_PATH.replaceFirst("aggregator", "aggregated1")
+                        + "dummy");
         assertEquals(name + " header should be rewritten ('aggregator' replaced with 'aggregated1')", APPLICATION_PATH
                 + "nocache/ag1/dummy", resp);
     }
@@ -226,8 +227,10 @@ public class ResponseHeadersTest extends TestCase {
      */
     public void testLink() throws Exception {
 
-        String resp = sendRequestAndExpectResponseHeader("Link",
-                "<" + APPLICATION_PATH.replaceFirst("aggregator", "aggregated1") + "dummy" + ">; rel=\"shortlink\"");
+        String resp =
+                sendRequestAndExpectResponseHeader("Link",
+                        "<" + APPLICATION_PATH.replaceFirst("aggregator", "aggregated1") + "dummy"
+                                + ">; rel=\"shortlink\"");
 
         // Assert link is rewritten correctly.
         assertEquals("Link" + " header should be rewritten ('aggregated1' replaced with 'aggregator')", "<"
@@ -264,8 +267,9 @@ public class ResponseHeadersTest extends TestCase {
     }
 
     public void testRefresh() throws Exception {
-        String resp = sendRequestAndExpectResponseHeader("Refresh",
-                "5; url=" + APPLICATION_PATH.replaceFirst("aggregator", "aggregated1") + "dummy");
+        String resp =
+                sendRequestAndExpectResponseHeader("Refresh",
+                        "5; url=" + APPLICATION_PATH.replaceFirst("aggregator", "aggregated1") + "dummy");
 
         // Assert link is rewritten correctly.
         assertEquals("Refresh" + " header should be rewritten ('aggregated1' replaced with 'aggregator')", "5; url="

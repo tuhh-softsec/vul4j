@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class to work with Servlet request urls.
- *
+ * 
  * @author Nicolas Richeton
- *
+ * 
  */
 public final class RequestUrl {
     private static final Logger LOG = LoggerFactory.getLogger(RequestUrl.class);
@@ -37,7 +37,7 @@ public final class RequestUrl {
      * Get the relative url to the current servlet.
      * <p/>
      * Uses the request URI and removes : the context path, the servlet path if used.
-     *
+     * 
      * @param request
      *            The current HTTP request
      * @param servlet
@@ -54,7 +54,6 @@ public final class RequestUrl {
 
         String relativeUrl = requestURI;
 
-
         // Remove application context path
         if (contextPath != null && relativeUrl.startsWith(contextPath)) {
             relativeUrl = relativeUrl.substring(contextPath.length());
@@ -65,10 +64,9 @@ public final class RequestUrl {
             relativeUrl = relativeUrl.substring(servletPath.length());
         }
 
-
         if (LOG.isDebugEnabled()) {
-            LOG.debug("requestURI: {}, contextPath: {}, servletPath: {}, relativeUrl: {}, ", new Object[]{requestURI,
-                    contextPath, servletPath, relativeUrl});
+            LOG.debug("requestURI: {}, contextPath: {}, servletPath: {}, relativeUrl: {}, ", new Object[] { requestURI,
+                    contextPath, servletPath, relativeUrl });
         }
 
         return relativeUrl;
@@ -78,7 +76,7 @@ public final class RequestUrl {
      * Get the relative url without the mapping url.
      * <p/>
      * Uses the url and remove the mapping path.
-     *
+     * 
      * @param url
      *            incoming relative url
      * @return the url, relative to the driver remote url.
@@ -88,13 +86,12 @@ public final class RequestUrl {
         // Uri mapping
         String mappingPath = (mapping == null ? null : mapping.getPath());
 
-
         // Remove mapping path
         if (mappingPath != null && url.startsWith(mappingPath)) {
             relativeUrl = relativeUrl.substring(mappingPath.length());
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug("url: {}, mappingPath: {}, relativeUrl: {}", new Object[]{url, mappingPath, relativeUrl});
+            LOG.debug("url: {}, mappingPath: {}, relativeUrl: {}", new Object[] { url, mappingPath, relativeUrl });
         }
         return relativeUrl;
     }

@@ -38,8 +38,7 @@ public final class CacheConfigHelper {
         // Asynchronous revalidation
         int minAsynchronousWorkers = Parameters.MIN_ASYNCHRONOUS_WORKERS.getValue(properties);
         int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValue(properties);
-        int asynchronousWorkerIdleLifetimeSecs = Parameters.ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS
-                .getValue(properties);
+        int asynchronousWorkerIdleLifetimeSecs = Parameters.ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS.getValue(properties);
         int maxUpdateRetries = Parameters.MAX_UPDATE_RETRIES.getValue(properties);
         int revalidationQueueSize = Parameters.REVALIDATION_QUEUE_SIZE.getValue(properties);
 

@@ -43,9 +43,12 @@ public final class ExtensionFactory {
     /**
      * Get an extension as configured in properties.
      * 
-     * @param properties properties
-     * @param parameter the class name parameter
-     * @param d driver
+     * @param properties
+     *            properties
+     * @param parameter
+     *            the class name parameter
+     * @param d
+     *            driver
      * 
      * @param <T>
      *            class which extends Extension class which extends Extension
@@ -82,7 +85,7 @@ public final class ExtensionFactory {
      * @return the extension list
      */
     public static <T extends Extension> List<T> getExtensions(Properties properties,
-                                                              Parameter<Collection<String>> parameter, Driver d) {
+            Parameter<Collection<String>> parameter, Driver d) {
         Collection<String> className = parameter.getValue(properties);
         List<T> finalResult = new ArrayList<T>();
         for (String cName : className) {

@@ -19,7 +19,9 @@ import java.util.Properties;
 
 /**
  * A parameter with a T value.
- * @param <T> type
+ * 
+ * @param <T>
+ *            type
  */
 public abstract class Parameter<T> {
     private final String name;

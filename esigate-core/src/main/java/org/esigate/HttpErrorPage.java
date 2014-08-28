@@ -157,8 +157,9 @@ public class HttpErrorPage extends Exception {
     }
 
     public static CloseableHttpResponse generateHttpResponse(int statusCode, String statusText) {
-        CloseableHttpResponse result = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(
-                HttpVersion.HTTP_1_1, statusCode, statusText)));
+        CloseableHttpResponse result =
+                BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
+                        statusCode, statusText)));
         result.setEntity(toMemoryEntity(statusText));
         return result;
     }

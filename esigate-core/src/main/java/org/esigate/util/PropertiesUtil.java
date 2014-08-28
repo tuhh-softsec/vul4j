@@ -22,10 +22,10 @@ import org.esigate.ConfigurationException;
 
 /**
  * Utility methods for loading configuration parameters.
- *
+ * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
- *
+ * 
  */
 public final class PropertiesUtil {
 
@@ -36,14 +36,14 @@ public final class PropertiesUtil {
     /**
      * Retrieves a property containing a comma separated list of values, trim them and return them as a Collection of
      * String.
-     *
+     * 
      * @param properties
      * @param propertyName
      * @param defaultValue
      * @return the values
      */
     public static Collection<String> getPropertyValue(Properties properties, String propertyName,
-             Collection<String> defaultValue) {
+            Collection<String> defaultValue) {
         Collection<String> result = defaultValue;
         String propertyValue = properties.getProperty(propertyName);
         if (propertyValue != null) {
@@ -57,7 +57,7 @@ public final class PropertiesUtil {
 
     /**
      * Return the provided comma-separated String as a collection. Order is maintained.
-     *
+     * 
      * @param list
      * @return Ordered collection
      */

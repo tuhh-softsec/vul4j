@@ -45,9 +45,10 @@ public class FutureParserTest extends TestCase {
     }
 
     public void testParse() throws IOException, HttpErrorPage, ExecutionException {
-        String page = "begin " + "<test:simple name='ignored'> this text will be ignored </test:simple>"
-                + "<test:body>this text should be {request} </test:body>" + "<test:unknown name='value' />"
-                + "<test:simple name='also ignored'/>" + " end";
+        String page =
+                "begin " + "<test:simple name='ignored'> this text will be ignored </test:simple>"
+                        + "<test:body>this text should be {request} </test:body>" + "<test:unknown name='value' />"
+                        + "<test:simple name='also ignored'/>" + " end";
         StringBuilderFutureAppendable sbf = new StringBuilderFutureAppendable();
 
         tested.parse(page, sbf);
@@ -99,8 +100,11 @@ public class FutureParserTest extends TestCase {
         public void onTagEnd(String tag, FutureParserContext ctx) throws IOException {
             String result;
             try {
-                result = buf.get().toString()
-                        .replaceAll("\\{request\\}", HttpRequestHelper.getParameter(ctx.getHttpRequest(), "request"));
+                result =
+                        buf.get()
+                                .toString()
+                                .replaceAll("\\{request\\}",
+                                        HttpRequestHelper.getParameter(ctx.getHttpRequest(), "request"));
             } catch (ExecutionException e) {
                 throw new IOException(e);
             }

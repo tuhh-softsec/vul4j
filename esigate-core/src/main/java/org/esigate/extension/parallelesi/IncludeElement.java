@@ -212,8 +212,9 @@ class IncludeElement extends BaseElement {
                 } else if (xslt != null) {
                     rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
                 }
-                CloseableHttpResponse response = driver.render(page, httpRequest.getOriginalRequest(),
-                        rendererList.toArray(new Renderer[rendererList.size()]));
+                CloseableHttpResponse response =
+                        driver.render(page, httpRequest.getOriginalRequest(),
+                                rendererList.toArray(new Renderer[rendererList.size()]));
                 out.append(HttpResponseUtils.toString(response));
             }
         }
@@ -254,8 +255,9 @@ class IncludeElement extends BaseElement {
         // write accumulated data into parent
         Executor executor = (Executor) ctx.getData(EsiRenderer.DATA_EXECUTOR);
         Future<CharSequence> result = null;
-        IncludeTask task = new IncludeTask(includeTag, src, alt, ctx, current, ignoreError, fragmentReplacements,
-                regexpReplacements, executor);
+        IncludeTask task =
+                new IncludeTask(includeTag, src, alt, ctx, current, ignoreError, fragmentReplacements,
+                        regexpReplacements, executor);
         if (executor == null) {
             // No threads.
             CharSequence content = task.call();

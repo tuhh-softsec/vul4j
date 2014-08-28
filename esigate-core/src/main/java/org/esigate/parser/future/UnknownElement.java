@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 
 /**
  * Handle unknown tag.
- *
+ * 
  * @author Alexis thaveau
  */
 public class UnknownElement implements FutureElement {
@@ -30,22 +30,22 @@ public class UnknownElement implements FutureElement {
      */
     public static final FutureElementType TYPE = new FutureElementType() {
 
-            private final UnknownElement instance = new UnknownElement();
+        private final UnknownElement instance = new UnknownElement();
 
-            @Override
-            public boolean isStartTag(String tag) {
-                return true;
-            }
+        @Override
+        public boolean isStartTag(String tag) {
+            return true;
+        }
 
-            @Override
-            public boolean isEndTag(String tag) {
-                return false;
-            }
+        @Override
+        public boolean isEndTag(String tag) {
+            return false;
+        }
 
-            @Override
-            public FutureElement newInstance() {
-                return instance;
-            }
+        @Override
+        public FutureElement newInstance() {
+            return instance;
+        }
     };
 
     @Override

@@ -23,8 +23,8 @@ import org.esigate.extension.surrogate.Surrogate;
  * @author Nicolas Richeton
  */
 public class Esi implements Extension, IEventListener {
-    private static final String[] CAPABILITIES = new String[] {"ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
-            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0"};
+    private static final String[] CAPABILITIES = new String[] { "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
+            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
 
     @Override
     public boolean event(EventDefinition id, Event event) {
@@ -34,8 +34,8 @@ public class Esi implements Extension, IEventListener {
         // ensure we should process esi
         if (renderEvent.getHttpResponse() != null
                 && renderEvent.getHttpResponse().containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
-            String enabledCapabilities = renderEvent.getHttpResponse()
-                    .getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES).getValue();
+            String enabledCapabilities =
+                    renderEvent.getHttpResponse().getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES).getValue();
 
             doEsi = false;
             for (String capability : CAPABILITIES) {

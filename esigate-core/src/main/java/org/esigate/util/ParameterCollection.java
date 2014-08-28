@@ -21,11 +21,12 @@ import java.util.Properties;
 
 /**
  * Collection parameter.
+ * 
  * @author Alexis Thaveau
  */
 public class ParameterCollection extends Parameter<Collection<String>> {
 
-   public ParameterCollection(String name) {
+    public ParameterCollection(String name) {
         super(name);
     }
 

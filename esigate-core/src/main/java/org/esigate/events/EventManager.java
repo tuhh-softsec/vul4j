@@ -90,8 +90,8 @@ public class EventManager {
     /**
      * Post events are stored in reverse order. This allows an extension to enclose the whole processing.
      */
-    private Map<EventDefinition, List<IEventListener>> listenersPost = new HashMap<EventDefinition,
-            List<IEventListener>>();
+    private Map<EventDefinition, List<IEventListener>> listenersPost =
+            new HashMap<EventDefinition, List<IEventListener>>();
 
     private void register(Map<EventDefinition, List<IEventListener>> listenerMappings, EventDefinition eventDefinition,
             IEventListener listener, boolean reverseOrder) {

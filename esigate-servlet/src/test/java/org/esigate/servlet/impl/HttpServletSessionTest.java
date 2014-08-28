@@ -54,8 +54,8 @@ public class HttpServletSessionTest extends TestCase {
      * @throws Exception
      */
     public void testSetAttributeNoSession() throws Exception {
-        HttpServletRequest request = new MockHttpServletRequestBuilder().protocolVersion("HTTP/1.0").method("GET")
-                .session(null).build();
+        HttpServletRequest request =
+                new MockHttpServletRequestBuilder().protocolVersion("HTTP/1.0").method("GET").session(null).build();
         HttpServletResponse response = mock(HttpServletResponse.class);
         ServletOutputStream outputStream = new ServletOutputStream() {
 

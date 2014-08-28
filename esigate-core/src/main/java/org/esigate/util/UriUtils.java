@@ -100,8 +100,9 @@ public final class UriUtils {
     public static String translateUrl(String sourceUrl, String sourceContext, String targetContext) {
         // Find what has been replaced at the beginning of sourceContext to
         // transform it to targetContext
-        String commonSuffix = StringUtils.reverse(StringUtils.getCommonPrefix(StringUtils.reverse(sourceContext),
-                StringUtils.reverse(targetContext)));
+        String commonSuffix =
+                StringUtils.reverse(StringUtils.getCommonPrefix(StringUtils.reverse(sourceContext),
+                        StringUtils.reverse(targetContext)));
         String sourcePrefix = StringUtils.removeEnd(sourceContext, commonSuffix);
         HttpHost sourceHost = extractHost(sourcePrefix);
         String targetPrefix = StringUtils.removeEnd(targetContext, commonSuffix);

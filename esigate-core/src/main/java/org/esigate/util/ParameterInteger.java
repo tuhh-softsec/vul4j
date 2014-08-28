@@ -18,6 +18,7 @@ import java.util.Properties;
 
 /**
  * Integer parameter.
+ * 
  * @author Alexis Thaveau
  */
 public class ParameterInteger extends Parameter<Integer> {
@@ -34,7 +35,6 @@ public class ParameterInteger extends Parameter<Integer> {
         }
         Integer value = PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);
         return value;
-
 
     }
 }
