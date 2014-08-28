@@ -32,7 +32,11 @@ public final class HttpRequestHelper {
 
     public static String getFirstHeader(String name, HttpRequest request) {
         final Header header = request.getFirstHeader(name);
-        return header == null ? null : header.getValue();
+        String headerValue = null;
+        if (header != null) {
+            headerValue = header.getValue();
+        }
+        return headerValue;
     }
 
     public static String getParameter(DriverRequest request, String name) {

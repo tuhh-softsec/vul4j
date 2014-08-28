@@ -77,12 +77,20 @@ public final class PropertiesUtil {
 
     public static int getPropertyValue(Properties props, String name, int defaultValue) {
         String value = props.getProperty(name);
-        return value != null ? Integer.parseInt(value) : defaultValue;
+        int result = defaultValue;
+        if (value != null) {
+            result = Integer.parseInt(value);
+        }
+        return result;
     }
 
     public static boolean getPropertyValue(Properties props, String name, boolean defaultValue) {
         String value = props.getProperty(name);
-        return value != null ? Boolean.parseBoolean(value) : defaultValue;
+        boolean result = defaultValue;
+        if (value != null) {
+            result = Boolean.parseBoolean(value);
+        }
+        return result;
     }
 
     public static String getPropertyValue(Properties props, String name, String defaultValue) {
@@ -91,12 +99,20 @@ public final class PropertiesUtil {
 
     public static float getPropertyValue(Properties properties, String name, float defaultValue) {
         String value = properties.getProperty(name);
-        return value != null ? Float.parseFloat(value) : defaultValue;
+        float result = defaultValue;
+        if (value != null) {
+            result = Float.parseFloat(value);
+        }
+        return result;
     }
 
     public static long getPropertyValue(Properties properties, String name, long defaultValue) {
         String value = properties.getProperty(name);
-        return value != null ? Long.parseLong(value) : defaultValue;
+        long result = defaultValue;
+        if (value != null) {
+            result = Long.parseLong(value);
+        }
+        return result;
     }
 
 }

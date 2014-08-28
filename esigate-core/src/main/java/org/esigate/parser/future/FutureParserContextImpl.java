@@ -107,7 +107,11 @@ class FutureParserContextImpl implements FutureParserContext {
 
     @Override
     public FutureElement getCurrent() {
-        return (!stack.isEmpty()) ? stack.peek().element : root;
+        FutureElement result = root;
+        if (!stack.isEmpty()) {
+            result = stack.peek().element;
+        }
+        return result;
     }
 
     @Override
@@ -176,6 +180,10 @@ class FutureParserContextImpl implements FutureParserContext {
 
     @Override
     public Object getData(String key) {
-        return this.data == null ? null : this.data.get(key);
+        Object result = null;
+        if (this.data != null) {
+            result = this.data.get(key);
+        }
+        return result;
     }
 }

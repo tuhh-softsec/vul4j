@@ -47,7 +47,11 @@ public final class CacheConfigHelper {
         builder.setHeuristicCoefficient(heuristicCoefficient);
         builder.setHeuristicDefaultLifetime(heuristicDefaultLifetimeSecs);
         builder.setMaxCacheEntries(maxCacheEntries);
-        builder.setMaxObjectSize(maxObjectSize > 0 ? maxObjectSize : Long.MAX_VALUE);
+        long usedMaxObjectSize = Long.MAX_VALUE;
+        if (maxObjectSize > 0) {
+            usedMaxObjectSize = maxObjectSize;
+        }
+        builder.setMaxObjectSize(usedMaxObjectSize);
         builder.setAsynchronousWorkersCore(minAsynchronousWorkers);
         builder.setAsynchronousWorkersMax(maxAsynchronousWorkers);
         builder.setAsynchronousWorkerIdleLifetimeSecs(asynchronousWorkerIdleLifetimeSecs);

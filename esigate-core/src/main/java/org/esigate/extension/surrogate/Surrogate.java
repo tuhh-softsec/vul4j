@@ -204,8 +204,11 @@ public class Surrogate implements Extension, IEventListener {
                 archCapabilities.append(defaultString(h.getValue()));
                 archCapabilities.append(", ");
             }
-
-            String uniqueId = getUniqueToken(h == null ? null : h.getValue());
+            String currentCapabilitiesHeader = null;
+            if (h != null) {
+                currentCapabilitiesHeader = h.getValue();
+            }
+            String uniqueId = getUniqueToken(currentCapabilitiesHeader);
             e.getHttpRequest().setHeader(H_X_SURROGATE_ID, uniqueId);
             archCapabilities.append(uniqueId);
             archCapabilities.append(this.esigateToken);
