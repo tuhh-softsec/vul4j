@@ -140,10 +140,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo, true, null);
 
                         List<XMLSecAttribute> attributes = new ArrayList<XMLSecAttribute>(1);
-                        String keyId = getEncryptionPartDef().getKeyId();
-                        if (keyId == null) {
-                            keyId = IDGenerator.generateID("EK");
-                        }
+                        String keyId = IDGenerator.generateID("EK");
                         attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, keyId));
                         createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptedKey, true, attributes);
 

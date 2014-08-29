@@ -588,6 +588,68 @@ public class EncryptionCreationTest extends org.junit.Assert {
     }
     
     @Test
+    public void testEncryptedKeyMultipleElements() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        List<XMLSecurityConstants.Action> actions = new ArrayList<XMLSecurityConstants.Action>();
+        actions.add(XMLSecurityConstants.ENCRYPT);
+        properties.setActions(actions);
+        
+        // Set the key up
+        // Generate an RSA key
+        KeyPairGenerator rsaKeygen = KeyPairGenerator.getInstance("RSA");
+        KeyPair kp = rsaKeygen.generateKeyPair();
+        PrivateKey priv = kp.getPrivate();
+        PublicKey pub = kp.getPublic();
+        properties.setEncryptionTransportKey(pub);
+        properties.setEncryptionKeyTransportAlgorithm("http://www.w3.org/2001/04/xmlenc#rsa-1_5");
+        
+        KeyGenerator keygen = KeyGenerator.getInstance("AES");
+        keygen.init(256);
+        SecretKey key = keygen.generateKey();
+        properties.setEncryptionKey(key);
+        properties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes256-cbc");
+        properties.setEncryptionKeyIdentifier(SecurityTokenConstants.KeyIdentifier_KeyValue);
+        
+        SecurePart securePart = 
+            new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
+        properties.addEncryptionPart(securePart);
+        securePart = 
+            new SecurePart(new QName("urn:example:po", "ShippingAddress"), SecurePart.Modifier.Content);
+        properties.addEncryptionPart(securePart);
+        
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+        
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+        
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        
+        Document document = 
+            XMLUtils.createDocumentBuilder(false).parse(new ByteArrayInputStream(baos.toByteArray()));
+        
+        // Check the CreditCard encrypted ok
+        NodeList nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
+        Assert.assertEquals(nodeList.getLength(), 0);
+        
+        nodeList = document.getElementsByTagNameNS(
+                XMLSecurityConstants.TAG_xenc_EncryptedData.getNamespaceURI(),
+                XMLSecurityConstants.TAG_xenc_EncryptedData.getLocalPart()
+            );
+        Assert.assertEquals(nodeList.getLength(), 2);
+        
+        // Decrypt using DOM API
+        decryptUsingDOM("http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null, priv, document);
+    }
+    
+    @Test
     public void testEncryptedKeyIssuerSerialReference() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
