@@ -3,7 +3,7 @@ esigate
 
 http://www.esigate.org - Webapp integration, Remote templating, Web accelerator 
 
-![Build status](http://esigate.org/esigate-status.png)
+![Build status](http://esigate.org/esigate-status.svg)
 
 # Features
 **Server-side integration** : Esigate allows a fast and invisible mashup of any web applications.
