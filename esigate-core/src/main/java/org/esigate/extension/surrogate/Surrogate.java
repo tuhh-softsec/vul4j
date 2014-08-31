@@ -220,8 +220,11 @@ public class Surrogate implements Extension, IEventListener {
                 archCapabilities.append(defaultString(h.getValue()));
                 archCapabilities.append(", ");
             }
-
-            String uniqueId = getUniqueToken(h == null ? null : h.getValue());
+            String currentCapabilitiesHeader = null;
+            if (h != null) {
+                currentCapabilitiesHeader = h.getValue();
+            }
+            String uniqueId = getUniqueToken(currentCapabilitiesHeader);
             e.getHttpRequest().setHeader(H_X_SURROGATE_ID, uniqueId);
             archCapabilities.append(uniqueId);
             archCapabilities.append(this.esigateToken);
@@ -280,8 +283,9 @@ public class Surrogate implements Extension, IEventListener {
 
         String ourSurrogateId = e.getHttpRequest().getFirstHeader(H_X_SURROGATE_ID).getValue();
 
-        SurrogateCapabilitiesHeader surrogateCapabilitiesHeader = SurrogateCapabilitiesHeader.fromHeaderValue(e
-                .getHttpRequest().getFirstHeader(H_SURROGATE_CAPABILITIES).getValue());
+        SurrogateCapabilitiesHeader surrogateCapabilitiesHeader =
+                SurrogateCapabilitiesHeader.fromHeaderValue(e.getHttpRequest().getFirstHeader(H_SURROGATE_CAPABILITIES)
+                        .getValue());
 
         if (!e.getHttpResponse().containsHeader(H_SURROGATE_CONTROL)
                 && surrogateCapabilitiesHeader.getSurrogates().size() > 1) {
@@ -460,8 +464,6 @@ public class Surrogate implements Extension, IEventListener {
 
     }
 
-   
-    
     /**
      * Populate the Map with all current devices, with empty capabilities.
      * 

@@ -51,9 +51,10 @@ public class CommentTest extends AbstractElementTest {
      * @throws Exception
      */
     public void testCommentedEsiTags() throws Exception {
-        String page = "begin "
-                + "<!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>-->"
-                + " end";
+        String page =
+                "begin "
+                        + "<!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>-->"
+                        + " end";
         String result = render(page);
         assertEquals("begin replacement end", result);
     }

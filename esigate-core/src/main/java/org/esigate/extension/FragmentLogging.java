@@ -103,8 +103,8 @@ public class FragmentLogging implements Extension, IEventListener {
                 String respHeaders = ArrayUtils.toString(e.getHttpResponse().getAllHeaders());
 
                 String cache = "";
-                CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) e.getHttpContext().getAttribute(
-                        HttpCacheContext.CACHE_RESPONSE_STATUS);
+                CacheResponseStatus cacheResponseStatus =
+                        (CacheResponseStatus) e.getHttpContext().getAttribute(HttpCacheContext.CACHE_RESPONSE_STATUS);
                 if (cacheResponseStatus != null) {
                     cache = cacheResponseStatus.toString();
                 }

@@ -55,22 +55,24 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(
-                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                                .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\", no-store")
-                                .header("Content-Type", "text/html; charset=utf-8").build()).response(
-                        createHttpResponse()
-                                .status(HttpStatus.SC_OK)
-                                .reason("OK")
-                                .header("Surrogate-Control",
-                                        "content=\"ESI/1.0 ESI-Inline/1.0 ORAESI/9.0.2\", no-store")
-                                .header("Content-Type", "text/html; charset=utf-8").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(
+                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                        .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\", no-store")
+                                        .header("Content-Type", "text/html; charset=utf-8").build()).response(
+                                createHttpResponse()
+                                        .status(HttpStatus.SC_OK)
+                                        .reason("OK")
+                                        .header("Surrogate-Control",
+                                                "content=\"ESI/1.0 ESI-Inline/1.0 ORAESI/9.0.2\", no-store")
+                                        .header("Content-Type", "text/html; charset=utf-8").build()));
 
         // Request
-        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader(
-                "Surrogate-Capabilities", "ab=\"Surrogate/1.0\"").build();
+        IncomingRequest requestWithSurrogate =
+                createRequest("http://test.mydomain.fr/foobar/").addHeader("Surrogate-Capabilities",
+                        "ab=\"Surrogate/1.0\"").build();
 
         // content="" is completely removed
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -100,9 +102,9 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+        Driver driver =
+                createMockDriver(properties, new SequenceResponse().response(createHttpResponse()
+                        .status(HttpStatus.SC_OK).reason("OK")
                         .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\", max-age=600").build()));
 
         // Request
@@ -173,8 +175,9 @@ public class SurrogateTest extends AbstractDriverTestCase {
             }
         });
 
-        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader(
-                "Surrogate-Capabilities", "esigate=\"Surrogate/1.0\"").build();
+        IncomingRequest requestWithSurrogate =
+                createRequest("http://test.mydomain.fr/foobar/").addHeader("Surrogate-Capabilities",
+                        "esigate=\"Surrogate/1.0\"").build();
         driverProxy(driver, requestWithSurrogate);
 
     }
@@ -199,12 +202,13 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                        .entity("before <esi:vars>$(HTTP_HOST)</esi:vars> after")
-                        .header("Surrogate-Control", "content=\"\"").header("Content-Type", "text/html; charset=utf-8")
-                        .build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .entity("before <esi:vars>$(HTTP_HOST)</esi:vars> after")
+                                .header("Surrogate-Control", "content=\"\"")
+                                .header("Content-Type", "text/html; charset=utf-8").build()));
 
         IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -229,12 +233,13 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                        .entity("before <esi:vars>$(HTTP_HOST)</esi:vars> after")
-                        .header("Surrogate-Control", "content=\"ESI/1.0\"")
-                        .header("Content-Type", "text/html; charset=utf-8").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .entity("before <esi:vars>$(HTTP_HOST)</esi:vars> after")
+                                .header("Surrogate-Control", "content=\"ESI/1.0\"")
+                                .header("Content-Type", "text/html; charset=utf-8").build()));
 
         IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -258,15 +263,17 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.X_CACHE_HEADER, "true");
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(
-                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("1")
-                                .header("Surrogate-Control", "no-store").header("Cache-Control", "public, max-age=60")
-                                .header("Content-Type", "text/html; charset=utf-8").build()).response(
-                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("2")
-                                .header("Surrogate-Control", "").header("Cache-Control", "public, max-age=60")
-                                .header("Content-Type", "text/html; charset=utf-8").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(
+                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("1")
+                                        .header("Surrogate-Control", "no-store")
+                                        .header("Cache-Control", "public, max-age=60")
+                                        .header("Content-Type", "text/html; charset=utf-8").build()).response(
+                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("2")
+                                        .header("Surrogate-Control", "").header("Cache-Control", "public, max-age=60")
+                                        .header("Content-Type", "text/html; charset=utf-8").build()));
 
         IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -305,15 +312,16 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.X_CACHE_HEADER, "true");
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(
-                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("1")
-                                .header("Cache-Control", "no-store").header("Content-Type", "text/html; charset=utf-8")
-                                .build()).response(
-                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("2")
-                                .header("Surrogate-Control", "max-age=60").header("Cache-Control", "no-store")
-                                .header("Content-Type", "text/html; charset=utf-8").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(
+                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("1")
+                                        .header("Cache-Control", "no-store")
+                                        .header("Content-Type", "text/html; charset=utf-8").build()).response(
+                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("2")
+                                        .header("Surrogate-Control", "max-age=60").header("Cache-Control", "no-store")
+                                        .header("Content-Type", "text/html; charset=utf-8").build()));
 
         IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -350,33 +358,34 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.X_CACHE_HEADER, "true");
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse()
-                        .response(
-                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                                        .header("Cache-Control", "no-store")
-                                        .header("Content-Type", "text/html; charset=utf-8").entity("1").build())
-                        .response(
-                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                                        .header("Surrogate-Control", "max-age=1").header("Cache-Control", "no-store")
-                                        .header("Etag", "1").header("Content-Type", "text/html; charset=utf-8")
-                                        .entity("2").build())
-                        .response(
-                                createHttpResponse().status(HttpStatus.SC_INTERNAL_SERVER_ERROR).reason("Failed")
-                                        .header("Cache-Control", "no-store")
-                                        .header("Content-Type", "text/html; charset=utf-8").entity("3").build())
-                        .response(
-                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                                        .header("Surrogate-Control", "max-age=1+60")
-                                        .header("Cache-Control", "no-store").header("Etag", "1")
-                                        .header("Content-Type", "text/html; charset=utf-8").entity("4").build())
-                        .response(
-                                createHttpResponse().status(HttpStatus.SC_INTERNAL_SERVER_ERROR).reason("Failed")
-                                        .header("Cache-Control", "no-store")
-                                        .header("Content-Type", "text/html; charset=utf-8").entity("5").build())
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse()
+                                .response(
+                                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                                .header("Cache-Control", "no-store")
+                                                .header("Content-Type", "text/html; charset=utf-8").entity("1").build())
+                                .response(
+                                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                                .header("Surrogate-Control", "max-age=1")
+                                                .header("Cache-Control", "no-store").header("Etag", "1")
+                                                .header("Content-Type", "text/html; charset=utf-8").entity("2").build())
+                                .response(
+                                        createHttpResponse().status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                                                .reason("Failed").header("Cache-Control", "no-store")
+                                                .header("Content-Type", "text/html; charset=utf-8").entity("3").build())
+                                .response(
+                                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                                .header("Surrogate-Control", "max-age=1+60")
+                                                .header("Cache-Control", "no-store").header("Etag", "1")
+                                                .header("Content-Type", "text/html; charset=utf-8").entity("4").build())
+                                .response(
+                                        createHttpResponse().status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                                                .reason("Failed").header("Cache-Control", "no-store")
+                                                .header("Content-Type", "text/html; charset=utf-8").entity("5").build())
 
-        );
+                );
 
         IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -454,15 +463,17 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                        .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\";ab, no-store")
-                        .header("Content-Type", "text/html; charset=utf-8").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\";ab, no-store")
+                                .header("Content-Type", "text/html; charset=utf-8").build()));
 
         // Request
-        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader(
-                "Surrogate-Capabilities", "ab=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0\"").build();
+        IncomingRequest requestWithSurrogate =
+                createRequest("http://test.mydomain.fr/foobar/").addHeader("Surrogate-Capabilities",
+                        "ab=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0\"").build();
 
         // content="" is kept since it is not targeted for esigate.
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -485,15 +496,17 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                        .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\";esigate, no-store")
-                        .header("Content-Type", "text/html; charset=utf-8").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .header("Surrogate-Control", "content=\"ESI/1.0 ESI-Inline/1.0\";esigate, no-store")
+                                .header("Content-Type", "text/html; charset=utf-8").build()));
 
         // Request
-        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader(
-                "Surrogate-Capabilities", "esigate=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0\"").build();
+        IncomingRequest requestWithSurrogate =
+                createRequest("http://test.mydomain.fr/foobar/").addHeader("Surrogate-Capabilities",
+                        "esigate=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0\"").build();
 
         // content="" is kept since it is not targeted for this esigate instance.
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
@@ -513,15 +526,16 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                        .header("Content-Type", "text/html; charset=utf-8")
-                        .entity("before <esi:vars>$(HTTP_HOST)</esi:vars> after").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .header("Content-Type", "text/html; charset=utf-8")
+                                .entity("before <esi:vars>$(HTTP_HOST)</esi:vars> after").build()));
 
         // Request
-        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/")
-                .addHeader(
+        IncomingRequest requestWithSurrogate =
+                createRequest("http://test.mydomain.fr/foobar/").addHeader(
                         "Surrogate-Capabilities",
                         "esigate=\"Surrogate/1.0 ESI/1.0 ESI-Inline/1.0 X-ESI-Fragment/1.0 "
                                 + "X-ESI-Replace/1.0 X-ESI-XSLT/1.0 ESIGATE/4.0\""
@@ -554,33 +568,38 @@ public class SurrogateTest extends AbstractDriverTestCase {
         properties.put(Parameters.X_CACHE_HEADER, "true");
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(
-                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("1")
-                                .header("Surrogate-Control", "content=\"ESI/1.0\";a")
-                                .header("Cache-Control", "public, max-age=60")
-                                .header("Content-Type", "text/html; charset=utf-8").build()).response(
-                        createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("2")
-                                .header("Surrogate-Control", "content=\"ESI/1.0\";esigate")
-                                .header("Cache-Control", "public, max-age=60")
-                                .header("Content-Type", "text/html; charset=utf-8").header("Vary", "Cookie").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(
+                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("1")
+                                        .header("Surrogate-Control", "content=\"ESI/1.0\";a")
+                                        .header("Cache-Control", "public, max-age=60")
+                                        .header("Content-Type", "text/html; charset=utf-8").build()).response(
+                                createHttpResponse().status(HttpStatus.SC_OK).reason("OK").entity("2")
+                                        .header("Surrogate-Control", "content=\"ESI/1.0\";esigate")
+                                        .header("Cache-Control", "public, max-age=60")
+                                        .header("Content-Type", "text/html; charset=utf-8").header("Vary", "Cookie")
+                                        .build()));
 
-        IncomingRequest requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader(
-                "Surrogate-Capabilities", "a=\"Surrogate/1.0 ORAESI/4.0 ESI/1.0\"").build();
+        IncomingRequest requestWithSurrogate =
+                createRequest("http://test.mydomain.fr/foobar/").addHeader("Surrogate-Capabilities",
+                        "a=\"Surrogate/1.0 ORAESI/4.0 ESI/1.0\"").build();
         HttpResponse response = driverProxy(driver, requestWithSurrogate);
         assertEquals("1", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("MISS"));
         assertNull(response.getFirstHeader("Vary"));
 
-        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader("Surrogate-Capabilities",
-                "a=\"Surrogate/1.0 ORAESI/4.0 ESI/1.0\"").build();
+        requestWithSurrogate =
+                createRequest("http://test.mydomain.fr/foobar/").addHeader("Surrogate-Capabilities",
+                        "a=\"Surrogate/1.0 ORAESI/4.0 ESI/1.0\"").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("1", EntityUtils.toString(response.getEntity()));
         assertTrue(response.getFirstHeader("X-Cache").getValue().startsWith("HIT"));
 
-        requestWithSurrogate = createRequest("http://test.mydomain.fr/foobar/").addHeader("Surrogate-Capabilities",
-                "esigate=\"Surrogate/1.0 ORAESI/4.0 ESI/1.0\"").build();
+        requestWithSurrogate =
+                createRequest("http://test.mydomain.fr/foobar/").addHeader("Surrogate-Capabilities",
+                        "esigate=\"Surrogate/1.0 ORAESI/4.0 ESI/1.0\"").build();
         response = driverProxy(driver, requestWithSurrogate);
         assertEquals("content=\"ESI/1.0\";esigate", response.getFirstHeader("Surrogate-Control").getValue());
         assertEquals("2", EntityUtils.toString(response.getEntity()));

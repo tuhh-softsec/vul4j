@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * Main class used to retrieve data from a provider application using HTTP requests. Data can be retrieved as binary
  * streams or as String for text data. To improve performance, the Driver uses a cache that can be configured depending
  * on the needs.
- *
+ * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  * @author Sylvain Sicard
@@ -86,8 +86,9 @@ public final class Driver {
             driver.contentTypeHelper = new ContentTypeHelper(properties);
             // Load extensions.
             ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, driver);
-            driver.requestExecutor = requestExecutorBuilder.setDriver(driver).setEventManager(driver.eventManager)
-                    .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper).build();
+            driver.requestExecutor =
+                    requestExecutorBuilder.setDriver(driver).setEventManager(driver.eventManager)
+                            .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper).build();
             driver.urlRewriter = new UrlRewriter(properties);
             return driver;
         }
@@ -118,7 +119,7 @@ public final class Driver {
 
     /**
      * Get current event manager for this driver instance.
-     *
+     * 
      * @return event manager.
      */
     public EventManager getEventManager() {
@@ -127,7 +128,7 @@ public final class Driver {
 
     /**
      * Perform rendering on a single url content, and append result to "writer".
-     *
+     * 
      * @param pageUrl
      *            Address of the page containing the template
      * @param incomingRequest
@@ -165,8 +166,7 @@ public final class Driver {
             response = requestExecutor.createAndExecuteRequest(driverRequest, targetUrl, false);
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
-            cachedValue = new ImmutablePair<String, CloseableHttpResponse>(currentValue,
-                    response);
+            cachedValue = new ImmutablePair<String, CloseableHttpResponse>(currentValue, response);
             incomingRequest.setAttribute(cacheKey, cachedValue);
         }
         currentValue = cachedValue.getKey();
@@ -188,20 +188,20 @@ public final class Driver {
      * This methods log at the INFO level.
      * <p>
      * You should only call this method if INFO level is enabled.
-     *
+     * 
      * <pre>
      * if (LOG.isInfoEnabled()) {
      *     logAction(pageUrl, renderers);
      * }
      * </pre>
-     *
+     * 
      * @param action
      *            Action name (eg. "proxy" or "render")
      * @param onUrl
      *            current page url.
      * @param renderers
      *            array of renderers
-     *
+     * 
      */
     private void logAction(String action, String onUrl, Renderer[] renderers) {
         if (LOG.isInfoEnabled()) {
@@ -216,7 +216,7 @@ public final class Driver {
 
     /**
      * Retrieves a resource from the provider application and transforms it using the Renderer passed as a parameter.
-     *
+     * 
      * @param relUrl
      *            the relative URL to the resource
      * @param request
@@ -296,7 +296,7 @@ public final class Driver {
      * Performs rendering on an HttpResponse.
      * <p>
      * Rendering is only performed if page can be parsed.
-     *
+     * 
      * @param pageUrl
      *            The remove url from which the body was retrieved.
      * @param originalRequest
@@ -327,8 +327,8 @@ public final class Driver {
 
         // Generate the new response.
         HttpEntity transformedHttpEntity = new StringEntity(currentValue, ContentType.get(response.getEntity()));
-        CloseableHttpResponse transformedResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(response
-                .getStatusLine()));
+        CloseableHttpResponse transformedResponse =
+                BasicCloseableHttpResponse.adapt(new BasicHttpResponse(response.getStatusLine()));
         transformedResponse.setHeaders(response.getAllHeaders());
         transformedResponse.setEntity(transformedHttpEntity);
         return transformedResponse;
@@ -337,7 +337,7 @@ public final class Driver {
 
     /**
      * Performs rendering (apply a render list) on an http response body (as a String).
-     *
+     * 
      * @param pageUrl
      *            The remove url from which the body was retrieved.
      * @param originalRequest
@@ -380,7 +380,7 @@ public final class Driver {
      * <p>
      * This may be supported in future versions (testing is needed). For the time being, changing configuration settings
      * after getting access through this method is <b>UNSUPPORTED</b> and <b>SHOULD NOT</b> be used.
-     *
+     * 
      * @return current configuration
      */
     public DriverConfiguration getConfiguration() {

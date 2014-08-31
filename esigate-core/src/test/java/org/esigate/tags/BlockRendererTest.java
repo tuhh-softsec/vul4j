@@ -30,8 +30,8 @@ public class BlockRendererTest extends TestCase {
     }
 
     public void testRenderBlock() throws IOException, HttpErrorPage {
-        final String expectedOutput = "abc some"
-                + "<!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$-->" + " cdf hello";
+        final String expectedOutput =
+                "abc some" + "<!--$beginblock$myblock$-->some text goes here<!--$endblock$myblock$-->" + " cdf hello";
         Writer out = new StringBuilderWriter();
         BlockRenderer tested = new BlockRenderer("myblock", null);
         tested.render(null, expectedOutput, out);

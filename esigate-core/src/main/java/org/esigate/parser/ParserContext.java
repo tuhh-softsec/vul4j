@@ -34,7 +34,8 @@ public interface ParserContext {
     HttpResponse getHttpResponse();
 
     /**
-     * @param e exception
+     * @param e
+     *            exception
      * @return <code>true</code> if error has been handled by this element and it should not be propagated further.
      */
     boolean reportError(Exception e);
@@ -44,9 +45,12 @@ public interface ParserContext {
     <T> T findAncestor(Class<T> type);
 
     /**
-     *  Writes characters into current writer.
-     * @param cs sequence
-     * @throws IOException exception
+     * Writes characters into current writer.
+     * 
+     * @param cs
+     *            sequence
+     * @throws IOException
+     *             exception
      */
     void characters(CharSequence cs) throws IOException;
 

@@ -22,10 +22,13 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
-					 <skipDeploy>true</skipDeploy>
+					<skipDeploy>true</skipDeploy>
 				</configuration>
 			</plugin>
-		
+			<plugin>
+				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+				<artifactId>maven-java-formatter-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>

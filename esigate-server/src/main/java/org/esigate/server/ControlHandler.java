@@ -189,19 +189,21 @@ public class ControlHandler extends AbstractHandler {
         }
 
         // Get total accesses
-        Long accesses = new Long(meters.get(PREFIX_CONTEXT + "1xx-responses").getCount()
-                + meters.get(PREFIX_CONTEXT + "2xx-responses").getCount()
-                + meters.get(PREFIX_CONTEXT + "3xx-responses").getCount()
-                + meters.get(PREFIX_CONTEXT + "4xx-responses").getCount()
-                + meters.get(PREFIX_CONTEXT + "5xx-responses").getCount());
+        Long accesses =
+                new Long(meters.get(PREFIX_CONTEXT + "1xx-responses").getCount()
+                        + meters.get(PREFIX_CONTEXT + "2xx-responses").getCount()
+                        + meters.get(PREFIX_CONTEXT + "3xx-responses").getCount()
+                        + meters.get(PREFIX_CONTEXT + "4xx-responses").getCount()
+                        + meters.get(PREFIX_CONTEXT + "5xx-responses").getCount());
         result.put("Total Accesses", accesses);
 
         // Get ReqPerSec
-        Double reqPerSec = new Double(meters.get(PREFIX_CONTEXT + "1xx-responses").getOneMinuteRate()
-                + meters.get(PREFIX_CONTEXT + "2xx-responses").getOneMinuteRate()
-                + meters.get(PREFIX_CONTEXT + "3xx-responses").getOneMinuteRate()
-                + meters.get(PREFIX_CONTEXT + "4xx-responses").getOneMinuteRate()
-                + meters.get(PREFIX_CONTEXT + "5xx-responses").getOneMinuteRate());
+        Double reqPerSec =
+                new Double(meters.get(PREFIX_CONTEXT + "1xx-responses").getOneMinuteRate()
+                        + meters.get(PREFIX_CONTEXT + "2xx-responses").getOneMinuteRate()
+                        + meters.get(PREFIX_CONTEXT + "3xx-responses").getOneMinuteRate()
+                        + meters.get(PREFIX_CONTEXT + "4xx-responses").getOneMinuteRate()
+                        + meters.get(PREFIX_CONTEXT + "5xx-responses").getOneMinuteRate());
         result.put("ReqPerSec", reqPerSec);
 
         // Get uptime

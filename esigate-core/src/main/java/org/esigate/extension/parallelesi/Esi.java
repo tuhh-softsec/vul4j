@@ -54,8 +54,8 @@ public class Esi implements Extension, IEventListener {
     private int maxThreads;
     private int idle;
     private Executor executor;
-   public static final String[] CAPABILITIES = new String[] {"ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
-            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0"};
+    public static final String[] CAPABILITIES = new String[] { "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
+            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
 
     @Override
     public boolean event(EventDefinition id, Event event) {
@@ -66,9 +66,8 @@ public class Esi implements Extension, IEventListener {
         // ensure we should process esi
         if (renderEvent.getHttpResponse() != null
                 && renderEvent.getHttpResponse().containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
-            String enabledCapabilities = renderEvent.getHttpResponse()
-                    .getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
-                    .getValue();
+            String enabledCapabilities =
+                    renderEvent.getHttpResponse().getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES).getValue();
 
             doEsi = false;
             for (String capability : CAPABILITIES) {
@@ -111,8 +110,9 @@ public class Esi implements Extension, IEventListener {
             this.executor = null;
             LOG.info("Linear ESI processing enabled.");
         } else {
-            this.executor = new ThreadPoolExecutor(0, this.maxThreads, this.idle, TimeUnit.SECONDS,
-                    new SynchronousQueue<Runnable>());
+            this.executor =
+                    new ThreadPoolExecutor(0, this.maxThreads, this.idle, TimeUnit.SECONDS,
+                            new SynchronousQueue<Runnable>());
 
             LOG.info("Multi-threaded ESI processing enabled. Thread limit: {}, max idle {}.",
                     String.valueOf(this.maxThreads), String.valueOf(this.idle));

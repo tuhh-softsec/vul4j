@@ -10,19 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ChunkedEncodingServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		resp.setContentType("text/plain");
-		Writer writer = resp.getWriter();
-		writer.write("Bonjour ");
-		writer.flush();
-		resp.flushBuffer();
-		writer.write("Monde !");
-		writer.flush();
-		writer.close();
-		resp.flushBuffer();
-	}
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/plain");
+        Writer writer = resp.getWriter();
+        writer.write("Bonjour ");
+        writer.flush();
+        resp.flushBuffer();
+        writer.write("Monde !");
+        writer.flush();
+        writer.close();
+        resp.flushBuffer();
+    }
 }

@@ -79,6 +79,7 @@ public class DriverConfigurationTest extends TestCase {
         }
 
     }
+
     public void testStripMappingPath() {
         Properties properties = new Properties();
         properties.setProperty(Parameters.REMOTE_URL_BASE.getName(), "http://example.com");
@@ -92,8 +93,6 @@ public class DriverConfigurationTest extends TestCase {
         properties.setProperty(Parameters.STRIP_MAPPING_PATH.getName(), "true");
         config = new DriverConfiguration("testStripMappingPath", properties);
         assertTrue(config.isStripMappingPath());
-
-
 
     }
 }

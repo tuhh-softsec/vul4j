@@ -1,5 +1,8 @@
 package org.esigate.extension;
 
+import java.util.Collection;
+import java.util.Properties;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.esigate.Driver;
@@ -13,9 +16,6 @@ import org.esigate.util.Parameter;
 import org.esigate.util.ParameterString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Properties;
 
 /**
  * This extension adds a default charset to responses which lack the charset attribute in Content-Type header. Only
@@ -43,7 +43,7 @@ import java.util.Properties;
  */
 public class DefaultCharset implements Extension, IEventListener {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultCharset.class);
-    /** default charset */
+    /** default charset. */
     public static final Parameter<String> PARAM_DEFAULT_CHARSET = new ParameterString("defaultCharset", "ISO-8859-1");
 
     private Collection<String> parsableContentTypes;

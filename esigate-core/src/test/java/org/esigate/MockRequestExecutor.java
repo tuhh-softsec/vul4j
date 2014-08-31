@@ -142,8 +142,9 @@ public final class MockRequestExecutor implements RequestExecutor {
     }
 
     public static Driver createDriver(String name, Properties defaultProps) {
-        Driver driver = Driver.builder().setName(name).setProperties(defaultProps)
-                .setRequestExecutorBuilder(new MockDriverBuilder()).build();
+        Driver driver =
+                Driver.builder().setName(name).setProperties(defaultProps)
+                        .setRequestExecutorBuilder(new MockDriverBuilder()).build();
         DriverFactory.put(name, driver);
         return driver;
     }

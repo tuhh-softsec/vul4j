@@ -51,10 +51,11 @@ public class APITest extends AbstractDriverTestCase {
         properties.put(Parameters.EXTENSIONS, AssertEventInit.class.getName());
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                        .header("Content-Type", "text/html; charset=utf-8").build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .header("Content-Type", "text/html; charset=utf-8").build()));
 
         IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
 

@@ -79,8 +79,9 @@ public class AggregatorTest extends TestCase {
     public void testBlock() throws Exception {
         doSimpleTest("block.html");
     }
+
     public void testBlocks2Drivers() throws Exception {
-        doSimpleTest("blocks.html","blocks.html");
+        doSimpleTest("blocks.html", "blocks.html");
     }
 
     public void testBlockGzip() throws Exception {
@@ -162,23 +163,26 @@ public class AggregatorTest extends TestCase {
 
     public void testPost() throws Exception {
         // Post request with a e-acute urlencoded using UTF-8 charset
-        PostMethodWebRequest req = new PostMethodWebRequest(APPLICATION_PATH + "post.jsp", new ByteArrayInputStream(
-                "myField=%C3%A9".getBytes("UTF-8")), "application/x-www-form-urlencoded");
+        PostMethodWebRequest req =
+                new PostMethodWebRequest(APPLICATION_PATH + "post.jsp", new ByteArrayInputStream(
+                        "myField=%C3%A9".getBytes("UTF-8")), "application/x-www-form-urlencoded");
         WebResponse resp = webConversation.getResponse(req);
         assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
         assertEquals(getResource("post.jsp"), resp.getText());
     }
 
     public void testRawPost() throws Exception {
-        PostMethodWebRequest req = new PostMethodWebRequest(APPLICATION_PATH + "post_raw.jsp",
-                new ByteArrayInputStream("Hello smile!".getBytes("UTF-8")), "raw/post-data");
+        PostMethodWebRequest req =
+                new PostMethodWebRequest(APPLICATION_PATH + "post_raw.jsp", new ByteArrayInputStream(
+                        "Hello smile!".getBytes("UTF-8")), "raw/post-data");
         WebResponse resp = webConversation.getResponse(req);
         assertEquals("Response body did not match", "Posted body data : Hello smile!", resp.getText());
     }
 
     public void testRawPostWithQueryString() throws Exception {
-        PostMethodWebRequest req = new PostMethodWebRequest(APPLICATION_PATH + "post_raw.jsp?param=smile",
-                new ByteArrayInputStream("Hello !".getBytes("UTF-8")), "raw/post-data");
+        PostMethodWebRequest req =
+                new PostMethodWebRequest(APPLICATION_PATH + "post_raw.jsp?param=smile", new ByteArrayInputStream(
+                        "Hello !".getBytes("UTF-8")), "raw/post-data");
         WebResponse resp = webConversation.getResponse(req);
         assertEquals("Response body did not match", "Posted body data : Hello !smile", resp.getText());
     }

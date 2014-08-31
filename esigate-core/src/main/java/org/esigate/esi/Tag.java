@@ -72,8 +72,8 @@ final class Tag {
         return name;
     }
 
-    public String getAttribute(String pName) {
-        return attributes.get(pName);
+    public String getAttribute(String name) {
+        return attributes.get(name);
     }
 
     public boolean isClosing() {

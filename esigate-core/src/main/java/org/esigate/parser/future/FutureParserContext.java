@@ -52,17 +52,19 @@ public interface FutureParserContext {
     /**
      * Allow to get custom context data.
      * 
-     * @param key key
+     * @param key
+     *            key
      * @return custom context data
      */
     Object getData(String key);
 
-
-
     /**
-     *  Writes characters into current writer.
-     * @param csq sequence
-     * @throws IOException exception
+     * Writes characters into current writer.
+     * 
+     * @param csq
+     *            sequence
+     * @throws IOException
+     *             exception
      */
     void characters(Future<CharSequence> csq) throws IOException;
 

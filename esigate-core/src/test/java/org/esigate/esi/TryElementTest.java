@@ -52,104 +52,118 @@ public class TryElementTest extends AbstractElementTest {
      * @throws HttpErrorPage
      */
     public void testInvalidMarkup() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try> invalid " + "<esi:attempt> "
-                + "<esi:include src='http://www.foo.com/test' /> abc "
-                + "<esi:include src=\"http://www.foo2.com/test\" />" + " cba" + "</esi:attempt>  invalid "
-                + "<esi:except>inside except</esi:except>" + " invalid </esi:try> end";
+        String page =
+                "begin <esi:try> invalid " + "<esi:attempt> " + "<esi:include src='http://www.foo.com/test' /> abc "
+                        + "<esi:include src=\"http://www.foo2.com/test\" />" + " cba" + "</esi:attempt>  invalid "
+                        + "<esi:except>inside except</esi:except>" + " invalid </esi:try> end";
         String result = render(page);
         assertEquals("begin inside except end", result);
     }
 
     public void testTry() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>" + "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>"
-                + "</esi:try> end";
+        String page =
+                "begin <esi:try>" + "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>"
+                        + "</esi:try> end";
         String result = render(page);
         assertEquals("begin test end", result);
     }
 
     public void testAttempt1() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>"
-                + "<esi:attempt>abc <esi:include src=\"http://www.foo.com/test\" /> cba</esi:attempt>"
-                + "<esi:except>inside except</esi:except>" + "</esi:try> end";
+        String page =
+                "begin <esi:try>"
+                        + "<esi:attempt>abc <esi:include src=\"http://www.foo.com/test\" /> cba</esi:attempt>"
+                        + "<esi:except>inside except</esi:except>" + "</esi:try> end";
         String result = render(page);
         assertEquals("begin abc test cba end", result);
     }
 
     public void testAttempt2() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>" + "<esi:attempt>abc " + "<esi:include src=\"http://www.foo.com/test\" />"
-                + "<esi:include src='http://www.foo.com/not-found' onerror='continue' />" + " cba</esi:attempt>"
-                + "<esi:except>inside except</esi:except>" + "</esi:try> end";
+        String page =
+                "begin <esi:try>" + "<esi:attempt>abc " + "<esi:include src=\"http://www.foo.com/test\" />"
+                        + "<esi:include src='http://www.foo.com/not-found' onerror='continue' />"
+                        + " cba</esi:attempt>" + "<esi:except>inside except</esi:except>" + "</esi:try> end";
         String result = render(page);
         assertEquals("begin abc test cba end", result);
     }
 
     public void testExcept1() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>"
-                + "<esi:attempt>abc <esi:include src=\"http://www.foo2.com/test\" /> cba</esi:attempt>"
-                + "<esi:except>inside except</esi:except>" + "</esi:try> end";
+        String page =
+                "begin <esi:try>"
+                        + "<esi:attempt>abc <esi:include src=\"http://www.foo2.com/test\" /> cba</esi:attempt>"
+                        + "<esi:except>inside except</esi:except>" + "</esi:try> end";
         String result = render(page);
         assertEquals("begin inside except end", result);
     }
 
     public void testExcept2() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>" + "<esi:attempt> " + "<esi:include src='http://www.foo.com/test' /> abc "
-                + "<esi:include src=\"http://www.foo2.com/test\" /> cba" + "</esi:attempt>"
-                + "<esi:except>inside except</esi:except>" + "</esi:try> end";
+        String page =
+                "begin <esi:try>" + "<esi:attempt> " + "<esi:include src='http://www.foo.com/test' /> abc "
+                        + "<esi:include src=\"http://www.foo2.com/test\" /> cba" + "</esi:attempt>"
+                        + "<esi:except>inside except</esi:except>" + "</esi:try> end";
         String result = render(page);
         assertEquals("begin inside except end", result);
     }
 
     public void testMultipleExcept() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>" + "<esi:attempt> "
-                + "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' /> cba</esi:attempt>"
-                + "</esi:attempt>" + "<esi:except code='500'>inside incorrect except</esi:except>"
-                + "<esi:except code='404'>inside correct except</esi:except>"
-                + "<esi:except code='412'>inside incorrect except</esi:except>"
-                + "<esi:except>inside default except</esi:except>" + "</esi:try> end";
+        String page =
+                "begin <esi:try>" + "<esi:attempt> "
+                        + "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' /> cba</esi:attempt>"
+                        + "</esi:attempt>" + "<esi:except code='500'>inside incorrect except</esi:except>"
+                        + "<esi:except code='404'>inside correct except</esi:except>"
+                        + "<esi:except code='412'>inside incorrect except</esi:except>"
+                        + "<esi:except>inside default except</esi:except>" + "</esi:try> end";
         String result = render(page);
         assertEquals("begin inside correct except end", result);
     }
 
     public void testDefaultExcept() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>" + "<esi:attempt> "
-                + "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' /> cba</esi:attempt>"
-                + "</esi:attempt>" + "<esi:except code='500'>inside incorrect except</esi:except>"
-                + "<esi:except code='412'>inside incorrect except</esi:except>"
-                + "<esi:except>inside default except</esi:except>" + "</esi:try> end";
+        String page =
+                "begin <esi:try>" + "<esi:attempt> "
+                        + "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' /> cba</esi:attempt>"
+                        + "</esi:attempt>" + "<esi:except code='500'>inside incorrect except</esi:except>"
+                        + "<esi:except code='412'>inside incorrect except</esi:except>"
+                        + "<esi:except>inside default except</esi:except>" + "</esi:try> end";
         String result = render(page);
         assertEquals("begin inside default except end", result);
     }
 
     public void testTryCatchFragmentNotFound() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>" + "<esi:attempt> "
-                + "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' fragment='fragmentNotFound'/>" + " cba"
-                + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>" + "</esi:try> end";
+        String page =
+                "begin <esi:try>" + "<esi:attempt> "
+                        + "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' fragment='fragmentNotFound'/>"
+                        + " cba" + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>"
+                        + "</esi:try> end";
         String result = render(page);
         assertEquals("begin NOT FOUND end", result);
     }
 
     public void testTryFragmentNotFound() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>" + "<esi:attempt> "
-                + "<esi:attempt>abc<esi:include src='http://www.foo.com/testFragment' fragment='fragmentFound'/>"
-                + " cba" + "</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
+        String page =
+                "begin <esi:try>"
+                        + "<esi:attempt> "
+                        + "<esi:attempt>abc<esi:include src='http://www.foo.com/testFragment' fragment='fragmentFound'/>"
+                        + " cba" + "</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
         String result = render(page);
         assertEquals("begin  abcFRAGMENT FOUND cbaend", result);
     }
 
     public void testTryFragmentNotFound2() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>"
-                + "<esi:attempt> "
-                + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
-                + " cba</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
+        String page =
+                "begin <esi:try>"
+                        + "<esi:attempt> "
+                        + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
+                        + " cba</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
         String result = render(page);
         assertEquals("begin end", result);
     }
 
     public void testTryCatchFragmentNotFound2() throws IOException, HttpErrorPage {
-        String page = "begin <esi:try>"
-                + "<esi:attempt> "
-                + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
-                + " cba" + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>" + "</esi:try>end";
+        String page =
+                "begin <esi:try>"
+                        + "<esi:attempt> "
+                        + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
+                        + " cba" + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>"
+                        + "</esi:try>end";
         String result = render(page);
         assertEquals("begin NOT FOUNDend", result);
     }

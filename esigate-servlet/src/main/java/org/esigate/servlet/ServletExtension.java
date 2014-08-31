@@ -56,8 +56,8 @@ public class ServletExtension implements Extension, IEventListener {
         FetchEvent fetchEvent = (FetchEvent) event;
         if (EventManager.EVENT_FETCH_PRE.equals(id)) {
             String uriString = fetchEvent.getHttpRequest().getRequestLine().getUri();
-            OutgoingRequest outgoingRequest = OutgoingRequestContext.adapt(fetchEvent.getHttpContext())
-                    .getOutgoingRequest();
+            OutgoingRequest outgoingRequest =
+                    OutgoingRequestContext.adapt(fetchEvent.getHttpContext()).getOutgoingRequest();
             String baseUrl = outgoingRequest.getBaseUrl().toString();
             if (outgoingRequest.getOriginalRequest().isExternal()) {
                 // Non local absolute uri
@@ -74,50 +74,50 @@ public class ServletExtension implements Extension, IEventListener {
                 ContainerRequestContext requestContext = outgoingRequest.getContainerRequestContext();
                 CloseableHttpResponse result;
                 if (!(requestContext instanceof HttpServletRequestContext)) {
-                    String message = ServletExtension.class.getName()
-                            + " can be used only inside a java servlet engine";
+                    String message =
+                            ServletExtension.class.getName() + " can be used only inside a java servlet engine";
                     result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                 } else {
                     HttpServletRequestContext httpServletRequestContext = (HttpServletRequestContext) requestContext;
                     try {
                         if (fetchEvent.getHttpContext().isProxy()) {
-                            ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
-                                    httpServletRequestContext.getResponse(), driver.getContentTypeHelper(), true,
-                                    maxObjectSize);
+                            ResponseCapturingWrapper wrappedResponse =
+                                    new ResponseCapturingWrapper(httpServletRequestContext.getResponse(),
+                                            driver.getContentTypeHelper(), true, maxObjectSize);
                             if (context == null) {
                                 httpServletRequestContext.getFilterChain().doFilter(
                                         httpServletRequestContext.getRequest(), wrappedResponse);
-                                result = wrappedResponse.getResponse();
+                                result = wrappedResponse.getCloseableHttpResponse();
                             } else {
-                                ServletContext crossContext = httpServletRequestContext.getServletContext().getContext(
-                                        context);
+                                ServletContext crossContext =
+                                        httpServletRequestContext.getServletContext().getContext(context);
                                 if (crossContext == null) {
                                     String message = "Context " + context + " does not exist or cross context disabled";
                                     result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                                 } else {
                                     crossContext.getRequestDispatcher(relUrl).forward(
                                             httpServletRequestContext.getRequest(), wrappedResponse);
-                                    result = wrappedResponse.getResponse();
+                                    result = wrappedResponse.getCloseableHttpResponse();
                                 }
                             }
                         } else {
-                            ResponseCapturingWrapper wrappedResponse = new ResponseCapturingWrapper(
-                                    httpServletRequestContext.getResponse(), driver.getContentTypeHelper(), false,
-                                    maxObjectSize);
+                            ResponseCapturingWrapper wrappedResponse =
+                                    new ResponseCapturingWrapper(httpServletRequestContext.getResponse(),
+                                            driver.getContentTypeHelper(), false, maxObjectSize);
                             if (context == null) {
                                 httpServletRequestContext.getRequest().getRequestDispatcher(relUrl)
                                         .forward(httpServletRequestContext.getRequest(), wrappedResponse);
-                                result = wrappedResponse.getResponse();
+                                result = wrappedResponse.getCloseableHttpResponse();
                             } else {
-                                ServletContext crossContext = httpServletRequestContext.getServletContext().getContext(
-                                        context);
+                                ServletContext crossContext =
+                                        httpServletRequestContext.getServletContext().getContext(context);
                                 if (crossContext == null) {
                                     String message = "Context " + context + " does not exist or cross context disabled";
                                     result = HttpErrorPage.generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, message);
                                 } else {
                                     crossContext.getRequestDispatcher(relUrl).include(
                                             httpServletRequestContext.getRequest(), wrappedResponse);
-                                    result = wrappedResponse.getResponse();
+                                    result = wrappedResponse.getCloseableHttpResponse();
                                 }
                             }
                         }

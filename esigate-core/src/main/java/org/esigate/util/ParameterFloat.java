@@ -18,6 +18,7 @@ import java.util.Properties;
 
 /**
  * Float parameter.
+ * 
  * @author Alexis Thaveau
  */
 public class ParameterFloat extends Parameter<Float> {

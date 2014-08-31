@@ -59,9 +59,12 @@ class ExceptElement extends BaseElement {
 
         @Override
         public CharSequence get() throws ExecutionException {
-            int code = (tag.getAttribute("code") != null) ? Integer.parseInt(tag.getAttribute("code")) : -1;
-            boolean processContent = (parent.hasErrors() && !parent.exceptProcessed() && (code == -1 || code == parent
-                    .getErrorCode()));
+            int code = -1;
+            if (tag.getAttribute("code") != null) {
+                code = Integer.parseInt(tag.getAttribute("code"));
+            }
+            boolean processContent =
+                    (parent.hasErrors() && !parent.exceptProcessed() && (code == -1 || code == parent.getErrorCode()));
             if (processContent) {
                 parent.setExceptProcessed(processContent);
                 return buf.get();

@@ -50,14 +50,15 @@ public class RequestFactory {
 
     public IncomingRequest create(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException {
-        HttpServletRequestContext context = new HttpServletRequestContext(request, response, servletContext,
-                filterChain);
+        HttpServletRequestContext context =
+                new HttpServletRequestContext(request, response, servletContext, filterChain);
         // create request line
-        String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(),
-                request.getRequestURI(), request.getQueryString(), null);
+        String uri =
+                UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(),
+                        request.getRequestURI(), request.getQueryString(), null);
         ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(request.getProtocol(), null);
-        IncomingRequest.Builder builder = IncomingRequest.builder(new BasicRequestLine(request.getMethod(), uri,
-                protocolVersion));
+        IncomingRequest.Builder builder =
+                IncomingRequest.builder(new BasicRequestLine(request.getMethod(), uri, protocolVersion));
         builder.setContext(context);
         // copy headers
         @SuppressWarnings("rawtypes")

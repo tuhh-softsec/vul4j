@@ -23,6 +23,7 @@ import java.util.Locale;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -58,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * @author Francois-Xavier Bonnet
  * 
  */
-public class ResponseCapturingWrapper implements HttpServletResponse {
+public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
     private static final Logger LOG = LoggerFactory.getLogger(ResponseCapturingWrapper.class);
 
     // OutputStream and Writer exposed
@@ -89,6 +90,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
 
     public ResponseCapturingWrapper(HttpServletResponse response, ContentTypeHelper contentTypeHelper, boolean proxy,
             int bufferSize) {
+        super(response);
         this.response = response;
         this.bufferSize = bufferSize;
         this.contentTypeHelper = contentTypeHelper;
@@ -271,8 +273,9 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
         if (isCommitted()) {
             throw new IllegalStateException("Response is already committed");
         }
-        httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(
-                HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
+        httpClientResponse =
+                BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
+                        HttpStatus.SC_OK, "OK")));
     }
 
     @Override
@@ -418,7 +421,7 @@ public class ResponseCapturingWrapper implements HttpServletResponse {
                 || HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpClientResponse) == null;
     }
 
-    public CloseableHttpResponse getResponse() {
+    public CloseableHttpResponse getCloseableHttpResponse() {
         ContentType contentType = null;
         if (this.contentType != null) {
             contentType = ContentType.create(this.contentType, characterEncoding);

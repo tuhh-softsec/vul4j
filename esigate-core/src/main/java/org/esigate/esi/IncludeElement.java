@@ -115,8 +115,9 @@ class IncludeElement extends BaseElement {
         // apply regexp replacements
         if (!regexpReplacements.isEmpty()) {
             for (Entry<String, CharSequence> entry : regexpReplacements.entrySet()) {
-                buf = new StringBuilder(Pattern.compile(entry.getKey()).matcher(buf)
-                        .replaceAll(entry.getValue().toString()));
+                buf =
+                        new StringBuilder(Pattern.compile(entry.getKey()).matcher(buf)
+                                .replaceAll(entry.getValue().toString()));
             }
         }
 
@@ -208,8 +209,9 @@ class IncludeElement extends BaseElement {
             } else if (xslt != null) {
                 rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
             }
-            CloseableHttpResponse response = driver.render(page, httpRequest.getOriginalRequest(),
-                    rendererList.toArray(new Renderer[rendererList.size()]));
+            CloseableHttpResponse response =
+                    driver.render(page, httpRequest.getOriginalRequest(),
+                            rendererList.toArray(new Renderer[rendererList.size()]));
             outAdapter.append(HttpResponseUtils.toString(response));
         }
     }

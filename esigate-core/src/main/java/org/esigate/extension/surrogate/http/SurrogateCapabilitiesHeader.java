@@ -45,9 +45,6 @@ public final class SurrogateCapabilitiesHeader {
         }
         return null;
     }
-    
-    
-    
 
     @Override
     public String toString() {

@@ -18,6 +18,7 @@ import java.util.Properties;
 
 /**
  * Boolean parameter.
+ * 
  * @author Alexis Thaveau
  */
 public class ParameterBoolean extends Parameter<Boolean> {

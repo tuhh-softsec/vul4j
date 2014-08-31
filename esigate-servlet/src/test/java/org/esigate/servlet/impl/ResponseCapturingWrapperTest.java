@@ -33,11 +33,11 @@ public class ResponseCapturingWrapperTest extends TestCase {
     }
 
     public void testSmallHtmlResponse() throws Exception {
-        ResponseCapturingWrapper tested = new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false,
-                BUFFER_SIZE);
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false, BUFFER_SIZE);
         tested.setContentType("text/html;charset=UTF-8");
         tested.getWriter().write(SMALL_STRING);
-        HttpEntity entity = tested.getResponse().getEntity();
+        HttpEntity entity = tested.getCloseableHttpResponse().getEntity();
         assertNotNull(entity);
         assertEquals(SMALL_STRING, EntityUtils.toString(entity));
         assertNull("Nothing should have been written to the response yet", httpServletResponse.getWriterContent());
@@ -46,11 +46,11 @@ public class ResponseCapturingWrapperTest extends TestCase {
     }
 
     public void testSmallHtmlResponseWrittenToOutputStream() throws Exception {
-        ResponseCapturingWrapper tested = new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false,
-                BUFFER_SIZE);
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false, BUFFER_SIZE);
         tested.setContentType("text/html;charset=UTF-8");
         tested.getOutputStream().write(SMALL_STRING.getBytes("UTF-8"));
-        HttpEntity entity = tested.getResponse().getEntity();
+        HttpEntity entity = tested.getCloseableHttpResponse().getEntity();
         assertNotNull(entity);
         assertEquals(SMALL_STRING, EntityUtils.toString(entity));
         assertNull("Nothing should have been written to the response yet", httpServletResponse.getWriterContent());
@@ -59,12 +59,12 @@ public class ResponseCapturingWrapperTest extends TestCase {
     }
 
     public void testSmallHtmlResponseWrittenToOutputStreamAndClose() throws Exception {
-        ResponseCapturingWrapper tested = new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false,
-                BUFFER_SIZE);
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false, BUFFER_SIZE);
         tested.setContentType("text/html;charset=UTF-8");
         tested.getOutputStream().write(SMALL_STRING.getBytes("UTF-8"));
         tested.getOutputStream().close();
-        HttpEntity entity = tested.getResponse().getEntity();
+        HttpEntity entity = tested.getCloseableHttpResponse().getEntity();
         assertNotNull(entity);
         assertEquals(SMALL_STRING, EntityUtils.toString(entity));
         assertNull("Nothing should have been written to the response yet", httpServletResponse.getWriterContent());
@@ -73,11 +73,11 @@ public class ResponseCapturingWrapperTest extends TestCase {
     }
 
     public void testSmallNonParseableResponse() throws Exception {
-        ResponseCapturingWrapper tested = new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, true,
-                BUFFER_SIZE);
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, true, BUFFER_SIZE);
         tested.setContentType("binary/octet-stream");
         tested.getOutputStream().print(SMALL_STRING);
-        HttpEntity entity = tested.getResponse().getEntity();
+        HttpEntity entity = tested.getCloseableHttpResponse().getEntity();
         assertNotNull(entity);
         assertEquals(SMALL_STRING, EntityUtils.toString(entity));
         assertNull("Nothing should have been written to the response yet", httpServletResponse.getWriterContent());
@@ -86,11 +86,11 @@ public class ResponseCapturingWrapperTest extends TestCase {
     }
 
     public void testBigHtmlResponse() throws Exception {
-        ResponseCapturingWrapper tested = new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false,
-                BUFFER_SIZE);
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false, BUFFER_SIZE);
         tested.setContentType("text/html;charset=UTF-8");
         tested.getWriter().write(BIG_STRING);
-        HttpEntity entity = tested.getResponse().getEntity();
+        HttpEntity entity = tested.getCloseableHttpResponse().getEntity();
         assertNotNull(entity);
         assertEquals(BIG_STRING, EntityUtils.toString(entity));
         assertNull("Nothing should have been written to the response yet", httpServletResponse.getWriterContent());
@@ -99,11 +99,11 @@ public class ResponseCapturingWrapperTest extends TestCase {
     }
 
     public void testBigHtmlResponseWrittenToOutpustream() throws Exception {
-        ResponseCapturingWrapper tested = new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false,
-                BUFFER_SIZE);
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, false, BUFFER_SIZE);
         tested.setContentType("text/html;charset=UTF-8");
         tested.getOutputStream().write(BIG_STRING.getBytes("UTF-8"));
-        HttpEntity entity = tested.getResponse().getEntity();
+        HttpEntity entity = tested.getCloseableHttpResponse().getEntity();
         assertNotNull(entity);
         assertEquals(BIG_STRING, EntityUtils.toString(entity));
         assertNull("Nothing should have been written to the response yet", httpServletResponse.getWriterContent());
@@ -112,11 +112,11 @@ public class ResponseCapturingWrapperTest extends TestCase {
     }
 
     public void testBigNonParseableResponse() throws Exception {
-        ResponseCapturingWrapper tested = new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, true,
-                BUFFER_SIZE);
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, true, BUFFER_SIZE);
         tested.setContentType("binary/octet-stream");
         tested.getOutputStream().print(BIG_STRING);
-        HttpEntity entity = tested.getResponse().getEntity();
+        HttpEntity entity = tested.getCloseableHttpResponse().getEntity();
         assertNotNull(entity);
         // Should be truncated to the buffer size as the rest did not need to be captured
         assertEquals(BIG_STRING.substring(0, BUFFER_SIZE), EntityUtils.toString(entity));
@@ -126,11 +126,11 @@ public class ResponseCapturingWrapperTest extends TestCase {
     }
 
     public void testParseableResponseNoCharset() throws Exception {
-        ResponseCapturingWrapper tested = new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, true,
-                BUFFER_SIZE);
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, true, BUFFER_SIZE);
         tested.setContentType("text/html");
         tested.getWriter().write(SMALL_STRING);
-        HttpEntity entity = tested.getResponse().getEntity();
+        HttpEntity entity = tested.getCloseableHttpResponse().getEntity();
         assertNotNull(entity);
         assertEquals(SMALL_STRING, EntityUtils.toString(entity));
         assertNull("Nothing should have been written to the response yet", httpServletResponse.getWriterContent());
@@ -139,10 +139,10 @@ public class ResponseCapturingWrapperTest extends TestCase {
     }
 
     public void testParseableResponseNoContentType() throws Exception {
-        ResponseCapturingWrapper tested = new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, true,
-                BUFFER_SIZE);
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, true, BUFFER_SIZE);
         tested.getWriter().write(SMALL_STRING);
-        HttpEntity entity = tested.getResponse().getEntity();
+        HttpEntity entity = tested.getCloseableHttpResponse().getEntity();
         assertNotNull(entity);
         assertEquals(SMALL_STRING, EntityUtils.toString(entity));
         assertNull("Nothing should have been written to the response yet", httpServletResponse.getWriterContent());

@@ -9,8 +9,9 @@ public class SurrogateHeaderTest {
 
     @Test
     public void testParsingAndFormating() {
-        SurrogateCapabilitiesHeader h = SurrogateCapabilitiesHeader
-                .fromHeaderValue("abc=\"Surrogate/1.0\", def=\"Surrogate/1.0  ESI/1.0 ESI-Inline\"");
+        SurrogateCapabilitiesHeader h =
+                SurrogateCapabilitiesHeader
+                        .fromHeaderValue("abc=\"Surrogate/1.0\", def=\"Surrogate/1.0  ESI/1.0 ESI-Inline\"");
 
         assertEquals(2, h.getSurrogates().size());
         assertEquals("abc", h.getSurrogates().get(0).getDeviceToken());

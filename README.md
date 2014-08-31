@@ -3,6 +3,8 @@ esigate
 
 http://www.esigate.org - Webapp integration, Remote templating, Web accelerator 
 
+![Build status](http://esigate.org/esigate-status.svg)
+
 # Features
 **Server-side integration** : Esigate allows a fast and invisible mashup of any web applications.
 It can be used to add application modules, written in any programming language (PHP, Java, .Net...) to a CMS, without cache or accessibility issues.

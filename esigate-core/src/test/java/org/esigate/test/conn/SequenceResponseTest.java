@@ -34,9 +34,10 @@ public class SequenceResponseTest {
 
     @Test
     public void testSequence() throws IOException {
-        SequenceResponse seq = new SequenceResponse().response(
-                new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 1").build()).response(
-                new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 2").build());
+        SequenceResponse seq =
+                new SequenceResponse().response(
+                        new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 1").build()).response(
+                        new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 2").build());
 
         assertEquals("OK 1",
                 EntityUtils.toString(seq.execute(IncomingRequest.builder("http://locahost").build()).getEntity()));
