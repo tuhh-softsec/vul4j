@@ -30,8 +30,10 @@ public interface Session {
      * decide to store the objects serialized in a cookie on the client side or server side with some session tracking
      * mechanism.
      * 
-     * @param key the key
-     * @param value obejct to store
+     * @param key
+     *            the key
+     * @param value
+     *            obejct to store
      */
     void setAttribute(String key, Serializable value);
 
@@ -39,7 +41,8 @@ public interface Session {
      * Retrieves an Object previously stored with method @see #setSessionAttribute(String, Serializable) or
      * <code>null</code>.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * @return the previously stored object or <code>null</code>
      */
     Serializable getAttribute(String key);

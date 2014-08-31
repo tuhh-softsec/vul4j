@@ -34,9 +34,10 @@ public class UriResponseTest {
 
     @Test
     public void testUri() throws IOException {
-        UriResponse seq = new UriResponse().response("http://test/path1",
-                new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 1").build()).response(
-                "http://test/path2", new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 2").build());
+        UriResponse seq =
+                new UriResponse().response("http://test/path1",
+                        new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 1").build()).response(
+                        "http://test/path2", new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("OK 2").build());
 
         assertEquals("OK 1",
                 EntityUtils.toString(seq.execute(IncomingRequest.builder("http://test/path1").build()).getEntity()));

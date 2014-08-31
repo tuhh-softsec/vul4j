@@ -20,7 +20,8 @@ import java.util.Properties;
 
 /**
  * Array parameter.
- * @author  Alexis Thaveau
+ * 
+ * @author Alexis Thaveau
  */
 public class ParameterArray extends Parameter<String[]> {
 
@@ -28,10 +29,10 @@ public class ParameterArray extends Parameter<String[]> {
         super(name, defaultValue);
 
     }
+
     public ParameterArray(String name) {
         super(name);
     }
-
 
     @Override
     public String[] getValue(Properties properties) {

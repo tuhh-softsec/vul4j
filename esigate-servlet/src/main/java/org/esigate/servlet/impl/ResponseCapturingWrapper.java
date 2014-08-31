@@ -273,8 +273,9 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
         if (isCommitted()) {
             throw new IllegalStateException("Response is already committed");
         }
-        httpClientResponse = BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(
-                HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK")));
+        httpClientResponse =
+                BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
+                        HttpStatus.SC_OK, "OK")));
     }
 
     @Override

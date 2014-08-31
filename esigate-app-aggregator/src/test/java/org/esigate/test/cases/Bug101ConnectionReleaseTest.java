@@ -25,8 +25,9 @@ public class Bug101ConnectionReleaseTest {
         StringBuilderWriter writer = new StringBuilderWriter();
         IncomingRequest httpRequest = TestUtils.createIncomingRequest().build();
         try {
-            CloseableHttpResponse response = driver.render("/esigate-app-aggregated1/" + page, httpRequest,
-                    new BlockRenderer(null, "/esigate-app-aggregated1/" + page));
+            CloseableHttpResponse response =
+                    driver.render("/esigate-app-aggregated1/" + page, httpRequest, new BlockRenderer(null,
+                            "/esigate-app-aggregated1/" + page));
             writer.append(HttpResponseUtils.toString(response));
             writer.close();
         } catch (HttpErrorPage e) {

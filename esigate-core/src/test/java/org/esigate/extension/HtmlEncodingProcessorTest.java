@@ -48,11 +48,12 @@ public class HtmlEncodingProcessorTest extends AbstractDriverTestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
         properties.put(Parameters.EXTENSIONS.getName(), HtmlCharsetProcessor.class.getName());
 
-        Driver driver = createMockDriver(
-                properties,
-                new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
-                        .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", contentType)
-                        .entity(new ByteArrayEntity(s.getBytes("utf-8"))).build()));
+        Driver driver =
+                createMockDriver(
+                        properties,
+                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
+                                .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", contentType)
+                                .entity(new ByteArrayEntity(s.getBytes("utf-8"))).build()));
 
         IncomingRequest request = TestUtils.createIncomingRequest("http://test.mydomain.fr/foobar/").build();
 

@@ -25,7 +25,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import org.esigate.DriverFactory;

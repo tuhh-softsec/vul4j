@@ -26,21 +26,22 @@ import org.esigate.test.TestUtils;
 public class StickySessionBaseUrlRetrieveStrategyTest extends TestCase {
 
     public void testGetBaseURL() {
-        final String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
-                "http://example2.com/test/"};
+        final String[] baseUrls =
+                new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
         BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
         int times = 100;
         for (int i = 0; i < times; i++) {
-            Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME,
-                    Integer.toString(i % baseUrls.length));
+            Cookie cookie =
+                    new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME,
+                            Integer.toString(i % baseUrls.length));
             IncomingRequest request = TestUtils.createIncomingRequest().addCookie(cookie).build();
             assertEquals(baseUrls[i % baseUrls.length], strategy.getBaseURL(request));
         }
     }
 
     public void testGetBaseURLWithWrongIndex() {
-        final String[] baseUrls = new String[] {"http://example.com/test/", "http://example1.com/test/",
-                "http://example2.com/test/"};
+        final String[] baseUrls =
+                new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
         BaseUrlRetrieveStrategy strategy = new StickySessionBaseUrlRetrieveStrategy(baseUrls);
 
         Cookie cookie = new BasicClientCookie(StickySessionBaseUrlRetrieveStrategy.ESI_SESSION_COOKIE_NAME, "-1");

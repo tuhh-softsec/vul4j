@@ -39,13 +39,16 @@ public class UrlRewriterTest extends TestCase {
     public void testRenderBlock1() {
         String base = "http://myapp/context";
         String page = "templates/template1.html";
-        final String input = "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
-                + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputRelative = "  <img src=\"/context/templates/images/logo.png\"/> "
-                + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute = "  <img src=\"http://myapp/context/templates/images/logo.png\"/> "
-                + "<a href=\"http://myapp/context/page/page1.htm\">link</a> "
-                + "<img src=\"http://www.google.com/logo.com\"/>";
+        final String input =
+                "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
+                        + "<img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputRelative =
+                "  <img src=\"/context/templates/images/logo.png\"/> "
+                        + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputAbsolute =
+                "  <img src=\"http://myapp/context/templates/images/logo.png\"/> "
+                        + "<a href=\"http://myapp/context/page/page1.htm\">link</a> "
+                        + "<img src=\"http://www.google.com/logo.com\"/>";
 
         UrlRewriter tested = createUrlRewriter(base, "absolute");
         String result = tested.rewriteHtml(input, page, base).toString();
@@ -81,13 +84,16 @@ public class UrlRewriterTest extends TestCase {
         String base = "http://myapp/context/";
         String newBase = "http://myapp/newcontext/";
         String page = "templates/template1.html";
-        final String input = "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
-                + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputRelative = "  <img src=\"/newcontext/templates/images/logo.png\"/> "
-                + "<a href=\"/newcontext/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute = "  <img src=\"http://myapp/newcontext/templates/images/logo.png\"/> "
-                + "<a href=\"http://myapp/newcontext/page/page1.htm\">link</a> "
-                + "<img src=\"http://www.google.com/logo.com\"/>";
+        final String input =
+                "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
+                        + "<img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputRelative =
+                "  <img src=\"/newcontext/templates/images/logo.png\"/> "
+                        + "<a href=\"/newcontext/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputAbsolute =
+                "  <img src=\"http://myapp/newcontext/templates/images/logo.png\"/> "
+                        + "<a href=\"http://myapp/newcontext/page/page1.htm\">link</a> "
+                        + "<img src=\"http://www.google.com/logo.com\"/>";
 
         UrlRewriter tested = createUrlRewriter(newBase, "absolute");
         String result = tested.rewriteHtml(input, page, base).toString();
@@ -101,13 +107,16 @@ public class UrlRewriterTest extends TestCase {
     public void testUrlSanitizing() {
         String base = "http://myapp/context/";
         String page = "templates/template1.html";
-        final String input = "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
-                + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputRelative = "  <img src=\"/context/templates/images/logo.png\"/> "
-                + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute = "  <img src=\"http://myapp/context/templates/images/logo.png\"/> "
-                + "<a href=\"http://myapp/context/page/page1.htm\">link</a> "
-                + "<img src=\"http://www.google.com/logo.com\"/>";
+        final String input =
+                "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
+                        + "<img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputRelative =
+                "  <img src=\"/context/templates/images/logo.png\"/> "
+                        + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputAbsolute =
+                "  <img src=\"http://myapp/context/templates/images/logo.png\"/> "
+                        + "<a href=\"http://myapp/context/page/page1.htm\">link</a> "
+                        + "<img src=\"http://www.google.com/logo.com\"/>";
 
         UrlRewriter tested = createUrlRewriter(base, "absolute");
         String result = tested.rewriteHtml(input, page, base).toString();
@@ -122,14 +131,16 @@ public class UrlRewriterTest extends TestCase {
         String base = "http://myapp/context/";
         String visibleBase = "http://app2/";
         String page = "/page/";
-        final String input = "  <a href=\"../styles/style.css\"/> <img src=\"images/logo.png\"/> "
-                + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputRelative = "  <a href=\"/page/../styles/style.css\"/> "
-                + "<img src=\"/page/images/logo.png\"/>"
-                + " <a href=\"/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute = "  <a href=\"http://app2/page/../styles/style.css\"/> "
-                + "<img src=\"http://app2/page/images/logo.png\"/> "
-                + "<a href=\"http://app2/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
+        final String input =
+                "  <a href=\"../styles/style.css\"/> <img src=\"images/logo.png\"/> "
+                        + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputRelative =
+                "  <a href=\"/page/../styles/style.css\"/> " + "<img src=\"/page/images/logo.png\"/>"
+                        + " <a href=\"/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputAbsolute =
+                "  <a href=\"http://app2/page/../styles/style.css\"/> "
+                        + "<img src=\"http://app2/page/images/logo.png\"/> "
+                        + "<a href=\"http://app2/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
 
         UrlRewriter tested = createUrlRewriter(visibleBase, "absolute");
         String result = tested.rewriteHtml(input, page, base).toString();
@@ -144,11 +155,13 @@ public class UrlRewriterTest extends TestCase {
         String base = "http://myapp/context/";
         String visibleBase = "http://app2/";
         String page = "/page/";
-        final String input = "  <a href=\"../styles/style$.css\"/> <img src=\"images/logo$.png\"/></a> "
-                + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute = "  <a href=\"http://app2/page/../styles/style$.css\"/> "
-                + "<img src=\"http://app2/page/images/logo$.png\"/></a>"
-                + " <img src=\"http://www.google.com/logo.com\"/>";
+        final String input =
+                "  <a href=\"../styles/style$.css\"/> <img src=\"images/logo$.png\"/></a> "
+                        + "<img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputAbsolute =
+                "  <a href=\"http://app2/page/../styles/style$.css\"/> "
+                        + "<img src=\"http://app2/page/images/logo$.png\"/></a>"
+                        + " <img src=\"http://www.google.com/logo.com\"/>";
 
         UrlRewriter tested = createUrlRewriter(visibleBase, "absolute");
         String result = tested.rewriteHtml(input, page, base).toString();
@@ -159,10 +172,12 @@ public class UrlRewriterTest extends TestCase {
         String base = "http://myapp/context/";
         String visibleBase = "http://app2/";
         String page = "/page/";
-        final String input = "  <a HREF=\"../styles/style.css\"/> <img SrC=\"images/logo.png\"/></a> "
-                + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute = "  <a HREF=\"http://app2/page/../styles/style.css\"/> "
-                + "<img SrC=\"http://app2/page/images/logo.png\"/></a> <img src=\"http://www.google.com/logo.com\"/>";
+        final String input =
+                "  <a HREF=\"../styles/style.css\"/> <img SrC=\"images/logo.png\"/></a> "
+                        + "<img src=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputAbsolute =
+                "  <a HREF=\"http://app2/page/../styles/style.css\"/> "
+                        + "<img SrC=\"http://app2/page/images/logo.png\"/></a> <img src=\"http://www.google.com/logo.com\"/>";
 
         UrlRewriter tested = createUrlRewriter(visibleBase, "absolute");
         String result = tested.rewriteHtml(input, page, base).toString();
@@ -173,11 +188,13 @@ public class UrlRewriterTest extends TestCase {
         String base = "http://myapp/context/";
         String visibleBase = "http://app2/";
         String page = "/page/";
-        final String input = "  <a background=\"../styles/style.css\"/> <img background=\"images/logo.png\"/></a> "
-                + "<img background=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute = "  <a background=\"http://app2/page/../styles/style.css\"/> "
-                + "<img background=\"http://app2/page/images/logo.png\"/></a> "
-                + "<img background=\"http://www.google.com/logo.com\"/>";
+        final String input =
+                "  <a background=\"../styles/style.css\"/> <img background=\"images/logo.png\"/></a> "
+                        + "<img background=\"http://www.google.com/logo.com\"/>";
+        final String expectedOutputAbsolute =
+                "  <a background=\"http://app2/page/../styles/style.css\"/> "
+                        + "<img background=\"http://app2/page/images/logo.png\"/></a> "
+                        + "<img background=\"http://www.google.com/logo.com\"/>";
 
         UrlRewriter tested = createUrlRewriter(visibleBase, "absolute");
         String result = tested.rewriteHtml(input, page, base).toString();

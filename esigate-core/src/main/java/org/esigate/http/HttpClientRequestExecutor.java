@@ -235,9 +235,12 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         OutgoingRequestContext context = new OutgoingRequestContext();
 
-        String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
-        OutgoingRequest httpRequest = new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(),
-                originalRequest, config, context);
+        String method = "GET";
+        if (proxy) {
+            method = originalRequest.getRequestLine().getMethod().toUpperCase();
+        }
+        OutgoingRequest httpRequest =
+                new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest, config, context);
         if (ENTITY_METHODS.contains(method)) {
             httpRequest.setEntity(originalRequest.getEntity());
         } else if (!SIMPLE_METHODS.contains(method)) {
@@ -316,8 +319,9 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
      *             if server returned no response or if the response as an error status code.
      */
     @Override
-    public CloseableHttpResponse createAndExecuteRequest(DriverRequest originalRequest, String targetUrl, boolean proxy)
-            throws HttpErrorPage {
+    public CloseableHttpResponse
+            createAndExecuteRequest(DriverRequest originalRequest, String targetUrl, boolean proxy)
+                    throws HttpErrorPage {
         OutgoingRequest httpRequest = createHttpRequest(originalRequest, targetUrl, proxy);
         CloseableHttpResponse httpResponse = execute(httpRequest);
         if (httpResponse == null) {

@@ -35,8 +35,8 @@ public class Aggregate implements Extension, IEventListener {
         // ensure we should process esi
         if (renderEvent.getHttpResponse() != null
                 && renderEvent.getHttpResponse().containsHeader(Surrogate.H_X_ENABLED_CAPABILITIES)) {
-            String capabilities = renderEvent.getHttpResponse().getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES)
-                    .getValue();
+            String capabilities =
+                    renderEvent.getHttpResponse().getFirstHeader(Surrogate.H_X_ENABLED_CAPABILITIES).getValue();
 
             if (!containsIgnoreCase(capabilities, "Aggregator/1.0")) {
                 doAggregate = false;

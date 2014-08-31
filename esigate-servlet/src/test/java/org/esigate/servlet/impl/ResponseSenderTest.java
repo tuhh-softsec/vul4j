@@ -45,8 +45,9 @@ public class ResponseSenderTest extends TestCase {
     public void testRewriteCookieExpires() throws Exception {
         CookieSpec cookieSpec = new BrowserCompatSpec();
         String expires = format.format(new Date(System.currentTimeMillis() + 86400000));
-        Header header = new BasicHeader("Set-Cookie", "K_lm_66638=121203111217326896; Domain=.foo.com; Expires="
-                + expires + "; Path=/");
+        Header header =
+                new BasicHeader("Set-Cookie", "K_lm_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
+                        + "; Path=/");
         CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
         Cookie src = cookieSpec.parse(header, origin).get(0);
         javax.servlet.http.Cookie result = renderer.rewriteCookie(src);
@@ -57,8 +58,9 @@ public class ResponseSenderTest extends TestCase {
     public void testRewriteCookieExpiresLongTime() throws Exception {
         CookieSpec cookieSpec = new BrowserCompatSpec();
         String expires = format.format(new Date(System.currentTimeMillis() + 15552000000L));
-        Header header = new BasicHeader("Set-Cookie", "K_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
-                + "; Path=/");
+        Header header =
+                new BasicHeader("Set-Cookie", "K_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
+                        + "; Path=/");
         CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
         Cookie src = cookieSpec.parse(header, origin).get(0);
         javax.servlet.http.Cookie result = renderer.rewriteCookie(src);

@@ -99,7 +99,11 @@ public class DriverConfiguration {
     }
 
     public String getVisibleBaseURL(String currentBaseUrl) {
-        return isVisibleBaseURLEmpty ? currentBaseUrl : visibleBaseURL;
+        String returnedVisibleBaseUrl = visibleBaseURL;
+        if (isVisibleBaseURLEmpty) {
+            returnedVisibleBaseUrl = currentBaseUrl;
+        }
+        return returnedVisibleBaseUrl;
     }
 
     public boolean isPreserveHost() {
@@ -132,7 +136,7 @@ public class DriverConfiguration {
     }
 
     /**
-     *
+     * 
      * @return stripMappingPath
      */
     public boolean isStripMappingPath() {

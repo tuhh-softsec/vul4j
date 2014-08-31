@@ -60,8 +60,8 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
                     LOG.debug("params: " + params.substring(1));
                 }
                 if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
-                    resultLocation = outgoingRequest.getBaseUrl() + springSecurityUrl
-                            + ((params != null) ? params : "");
+                    resultLocation =
+                            outgoingRequest.getBaseUrl() + springSecurityUrl + ((params != null) ? params : "");
                     springRedirectParam = "&spring-security-redirect=" + location;
                     LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
                 }

@@ -100,7 +100,11 @@ class ParserContextImpl implements ParserContext {
 
     @Override
     public Element getCurrent() {
-        return (!stack.isEmpty()) ? stack.peek().element : root;
+        Element result = root;
+        if (!stack.isEmpty()) {
+            result = stack.peek().element;
+        }
+        return result;
     }
 
     @Override

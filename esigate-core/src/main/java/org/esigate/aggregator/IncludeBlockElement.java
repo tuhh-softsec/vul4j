@@ -64,8 +64,9 @@ class IncludeBlockElement implements Element {
         String page = tagAttributes.getPage();
         String name = tagAttributes.getName();
 
-        CloseableHttpResponse response = driver.render(page, ctx.getHttpRequest().getOriginalRequest(),
-                new BlockRenderer(name, page), new AggregateRenderer());
+        CloseableHttpResponse response =
+                driver.render(page, ctx.getHttpRequest().getOriginalRequest(), new BlockRenderer(name, page),
+                        new AggregateRenderer());
         new Adapter(ctx.getCurrent()).append(HttpResponseUtils.toString(response));
     }
 

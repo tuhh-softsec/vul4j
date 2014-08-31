@@ -64,8 +64,8 @@ public class TemplateRendererTest extends TestCase {
     }
 
     public void testRenderTemplateWithSimilarParamNames() throws IOException, HttpErrorPage {
-        final String expectedOutput = "some <!--$beginparam$key1$-->" + "some hidden text goes here"
-                + "<!--$endparam$key1$--> printed";
+        final String expectedOutput =
+                "some <!--$beginparam$key1$-->" + "some hidden text goes here" + "<!--$endparam$key1$--> printed";
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "Should not work");
         StringBuilderWriter out = new StringBuilderWriter();
@@ -76,8 +76,8 @@ public class TemplateRendererTest extends TestCase {
     }
 
     public void testRenderTemplate2() throws IOException, HttpErrorPage {
-        final String expectedOutput = "abc some<!--$begintemplate$A$-->" + "some text goes here"
-                + "<!--$endtemplate$A$--> cdf hello";
+        final String expectedOutput =
+                "abc some<!--$begintemplate$A$-->" + "some text goes here" + "<!--$endtemplate$A$--> cdf hello";
         StringBuilderWriter out = new StringBuilderWriter();
         TemplateRenderer tested = new TemplateRenderer("A", null, null);
         tested.render(null, expectedOutput, out);

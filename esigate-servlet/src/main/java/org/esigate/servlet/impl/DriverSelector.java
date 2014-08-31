@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * <li>provider mapping (servlet based) in web.xml</li>
  * <li>provider mapping in configuration file (eg. instance.mappings=/* in esigate.properties)</li>
  * </ol>
- *
+ * 
  * @author Nicolas Richeton
  */
 public final class DriverSelector {
@@ -46,8 +46,9 @@ public final class DriverSelector {
      * Select the provider for this request.
      * <p/>
      * Perform selection based on the Host header.
-     *
-     * @param request incoming request
+     * 
+     * @param request
+     *            incoming request
      * @return Pair Driver/UriMapping
      * @throws HttpErrorPage
      */
@@ -59,8 +60,9 @@ public final class DriverSelector {
      * Select the provider for this request.
      * <p/>
      * Perform selection based on the incoming request url.
-     *
-     * @param request incoming request
+     * 
+     * @param request
+     *            incoming request
      * @param servlet
      * @return provider name or null.
      * @throws HttpErrorPage
@@ -78,7 +80,7 @@ public final class DriverSelector {
         Driver driver = result.getLeft();
         UriMapping uriMapping = result.getRight();
 
-        if(driver.getConfiguration().isStripMappingPath()){
+        if (driver.getConfiguration().isStripMappingPath()) {
             relUrl = RequestUrl.stripMappingPath(relUrl, uriMapping);
         }
         context.driver = driver;
@@ -87,7 +89,6 @@ public final class DriverSelector {
 
         return context;
     }
-
 
     /**
      * The provider context, composed of driver and remote relative url

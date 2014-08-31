@@ -33,7 +33,11 @@ public class IpHashBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
     private int getHashCode(String ip) {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (ip == null ? 0 : ip.hashCode());
+        int ipHashcode = 0;
+        if (ip != null) {
+            ipHashcode = ip.hashCode();
+        }
+        result = prime * result + ipHashcode;
         return result;
     }
 

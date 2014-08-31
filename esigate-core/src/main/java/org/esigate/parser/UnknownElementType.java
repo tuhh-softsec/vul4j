@@ -17,7 +17,7 @@ package org.esigate.parser;
 
 /**
  * Handle unknown tag type.
- *
+ * 
  * @author Alexis thaveau
  */
 public class UnknownElementType implements ElementType {

@@ -21,12 +21,13 @@ import java.io.IOException;
 
 /**
  * Handle unknown tag.
- * @author  Alexis Thaveau
+ * 
+ * @author Alexis Thaveau
  */
-public class UnknownElement implements  Element {
+public class UnknownElement implements Element {
     @Override
     public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-        //Write content in parent element
+        // Write content in parent element
         ctx.characters(tag);
     }
 

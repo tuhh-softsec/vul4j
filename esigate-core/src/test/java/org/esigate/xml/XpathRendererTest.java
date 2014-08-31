@@ -40,10 +40,11 @@ public class XpathRendererTest extends TestCase {
      * @throws Exception
      */
     public void testXpathXhtml() throws Exception {
-        String src = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
-                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-                + "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
-                + "<head><title>The header</title></head><body>The body<br/><b></b></body></html>";
+        String src =
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+                        + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+                        + "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
+                        + "<head><title>The header</title></head><body>The body<br/><b></b></body></html>";
         StringBuilderWriter out = new StringBuilderWriter();
         XpathRenderer tested = new XpathRenderer("//html:body");
         tested.render(null, src, out);
@@ -56,10 +57,11 @@ public class XpathRendererTest extends TestCase {
      * @throws Exception
      */
     public void testXpathAttribute() throws Exception {
-        String src = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
-                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-                + "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
-                + "<head><title>The header</title></head><body class=\"test\">The body<br/><b></b></body></html>";
+        String src =
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+                        + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+                        + "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
+                        + "<head><title>The header</title></head><body class=\"test\">The body<br/><b></b></body></html>";
         StringBuilderWriter out = new StringBuilderWriter();
         XpathRenderer tested = new XpathRenderer("//html:body/@class");
         tested.render(null, src, out);

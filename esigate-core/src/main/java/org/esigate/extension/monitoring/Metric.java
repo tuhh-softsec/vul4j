@@ -62,41 +62,36 @@ public class Metric implements Extension, IEventListener {
         driver.getEventManager().register(EventManager.EVENT_PROXY_POST, this);
         driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
 
-        reporter = Slf4jReporter
-                .forRegistry(this.metric)
-                .outputTo(LOG)
-                .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build();
+        reporter =
+                Slf4jReporter.forRegistry(this.metric).outputTo(LOG).convertRatesTo(TimeUnit.SECONDS)
+                        .convertDurationsTo(TimeUnit.MILLISECONDS).build();
 
         reporter.start(PARAM_METRIC_PERIOD.getValue(properties), TimeUnit.SECONDS);
     }
 
-
     @Override
     public boolean event(EventDefinition id, Event event) {
 
-
-        String timerName = MetricRegistry.name(this.getClass().getSimpleName(),
-                driver.getConfiguration().getInstanceName(), id.getId());
-
+        String timerName =
+                MetricRegistry.name(this.getClass().getSimpleName(), driver.getConfiguration().getInstanceName(),
+                        id.getId());
 
         if (EventManager.EVENT_PROXY_POST.equals(id)) {
             if (((ProxyEvent) event).getErrorPage() != null) {
                 timerName = MetricRegistry.name(timerName, "error");
             }
         } else if (EventManager.EVENT_FETCH_POST.equals(id)) {
-            //Retrieve HTTP response status code and cache status
+            // Retrieve HTTP response status code and cache status
             FetchEvent e = (FetchEvent) event;
             int statusCode = e.getHttpResponse().getStatusLine().getStatusCode();
-            CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) e.getHttpContext().getAttribute(
-                    HttpCacheContext.CACHE_RESPONSE_STATUS);
+            CacheResponseStatus cacheResponseStatus =
+                    (CacheResponseStatus) e.getHttpContext().getAttribute(HttpCacheContext.CACHE_RESPONSE_STATUS);
 
-            //Adding status code when error
+            // Adding status code when error
             if (statusCode >= HttpStatus.SC_BAD_REQUEST) {
                 timerName = MetricRegistry.name(timerName, "error", String.valueOf(statusCode));
             }
-            //Adding cache if not MISS
+            // Adding cache if not MISS
             if (cacheResponseStatus != null && !cacheResponseStatus.equals(CacheResponseStatus.CACHE_MISS)) {
                 timerName = MetricRegistry.name(timerName, cacheResponseStatus.name().toLowerCase());
             }

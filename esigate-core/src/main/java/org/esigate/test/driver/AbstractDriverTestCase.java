@@ -79,9 +79,12 @@ public abstract class AbstractDriverTestCase extends TestCase {
      */
     protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager,
             String name) {
-        Driver driver = Driver.builder().setName(name).setProperties(properties)
-                .setRequestExecutorBuilder(HttpClientRequestExecutor.builder().setConnectionManager(connectionManager))
-                .build();
+        Driver driver =
+                Driver.builder()
+                        .setName(name)
+                        .setProperties(properties)
+                        .setRequestExecutorBuilder(
+                                HttpClientRequestExecutor.builder().setConnectionManager(connectionManager)).build();
         DriverFactory.put(name, driver);
         return driver;
     }
