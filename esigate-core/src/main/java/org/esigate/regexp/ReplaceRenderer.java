@@ -59,10 +59,10 @@ public class ReplaceRenderer implements Renderer {
      * 
      * @return the result of the replace rules
      */
-    private CharSequence replace(CharSequence charSequence, Map<String, String> replaceRules) {
+    private CharSequence replace(CharSequence charSequence, Map<String, String> pReplaceRules) {
         CharSequence result = charSequence;
-        if (replaceRules != null && replaceRules.size() > 0) {
-            for (Entry<String, String> replaceRule : replaceRules.entrySet()) {
+        if (pReplaceRules != null && pReplaceRules.size() > 0) {
+            for (Entry<String, String> replaceRule : pReplaceRules.entrySet()) {
                 result = Pattern.compile(replaceRule.getKey()).matcher(result).replaceAll(replaceRule.getValue());
             }
         }

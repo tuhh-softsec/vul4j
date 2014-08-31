@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  * <p/>
  * Result will be logged using SLF4J in INFO level every 60 minutes. Period can be configured in driver properties :
  * <p/>
- * <code>metriPeriod=60</code>
+ * <code>metricPeriod=60</code>
  * <p/>
  * <p/>
  * Created by alexis on 20/03/14.

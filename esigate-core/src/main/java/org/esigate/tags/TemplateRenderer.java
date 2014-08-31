@@ -65,9 +65,9 @@ public class TemplateRenderer implements Renderer, Appendable {
 
     /** {@inheritDoc} */
     @Override
-    public void render(DriverRequest httpRequest, String content, Writer out) throws IOException, HttpErrorPage {
+    public void render(DriverRequest httpRequest, String content, Writer pOut) throws IOException, HttpErrorPage {
         LOG.debug("Rendering block " + name + " in page " + page);
-        this.out = out;
+        this.out = pOut;
         if (content == null) {
             if (params != null) {
                 for (String value : params.values()) {
@@ -87,8 +87,8 @@ public class TemplateRenderer implements Renderer, Appendable {
         this.write = write;
     }
 
-    public String getParam(String name) {
-        return params.get(name);
+    public String getParam(String pName) {
+        return params.get(pName);
     }
 
     @Override

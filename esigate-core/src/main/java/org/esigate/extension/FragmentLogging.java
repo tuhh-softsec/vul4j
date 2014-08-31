@@ -70,10 +70,10 @@ public class FragmentLogging implements Extension, IEventListener {
     private Driver driver;
 
     @Override
-    public void init(Driver driver, Properties properties) {
-        this.driver = driver;
-        driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST, this);
-        driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
+    public void init(Driver pDriver, Properties properties) {
+        this.driver = pDriver;
+        this.driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST, this);
+        this.driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
     }
 
     @Override
