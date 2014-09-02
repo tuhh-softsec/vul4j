@@ -18,7 +18,9 @@ package org.esigate;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -52,7 +54,7 @@ public class DriverFactoryTest extends TestCase {
         assertEquals("http://base.url", request.getBaseUrl().toString());
     }
 
-    public void testMergeProperties() {
+    public void testMergeProperties() throws UnsupportedEncodingException {
         String defaultBaseUrl = "http://basedefault.url";
         String extendedBaseUrl = "http://baseextended.url";
 
@@ -65,7 +67,7 @@ public class DriverFactoryTest extends TestCase {
         extendedProps.setProperty("default." + Parameters.URI_ENCODING.getName(), "UTF-8");
 
         URL dir = this.getClass().getResource("DriverFactoryTest.class");
-        File file = new File(dir.getPath());
+        File file = new File(URLDecoder.decode(dir.getPath(), "UTF-8"));
         File classPathFile = file.getParentFile();
         File extFolder = classPathFile.getParentFile().getParentFile();
 
