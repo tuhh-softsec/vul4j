@@ -39,11 +39,13 @@ import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
 import org.esigate.xml.XsltRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class IncludeElement extends BaseElement {
     private static final String PROVIDER_PATTERN = "$(PROVIDER{";
     private static final String LEGACY_PROVIDER_PATTERN = "$PROVIDER({";
-
+    private static final Logger LOG = LoggerFactory.getLogger(IncludeElement.class);
     public static final ElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
         @Override
         public IncludeElement newInstance() {
@@ -150,17 +152,29 @@ class IncludeElement extends BaseElement {
             page = src;
             driver = httpRequest.getDriver();
         } else if (idx >= 0) {
+
             int startIdx = idx + PROVIDER_PATTERN.length();
             int endIndex = src.indexOf("})", startIdx);
             String provider = src.substring(startIdx, endIndex);
             page = src.substring(endIndex + "})".length());
             driver = DriverFactory.getInstance(provider);
+            if (LOG.isWarnEnabled() && idx > 0) {
+                LOG.warn(
+                        "Invalid src attribute : [{}], src should start with [{}{}})]. First characters [{}] have been ignored",
+                        src, PROVIDER_PATTERN, provider, src.substring(0, idx));
+            }
+
         } else {
             int startIdx = idxLegacyPattern + PROVIDER_PATTERN.length();
             int endIndex = src.indexOf("})", startIdx);
             String provider = src.substring(startIdx, endIndex);
             page = src.substring(endIndex + "})".length());
             driver = DriverFactory.getInstance(provider);
+            if (LOG.isWarnEnabled() && idxLegacyPattern > 0) {
+                LOG.warn(
+                        "Invalid src attribute : [{}], src should start with [{}{}})]. First characters [{}] have been ignored",
+                        src, PROVIDER_PATTERN, provider, src.substring(0, idxLegacyPattern));
+            }
         }
 
         if (rewriteAbsoluteUrl) {
