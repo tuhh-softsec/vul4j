@@ -545,6 +545,7 @@ someUrl=/cms/article123
 				a precise control on what you want to retrieve from the page,
 				transform, cache, handle errors... See the reference table bellow for
 				details.
+                src should start with $(PROVIDER, any character before will be ignored
 			</p>
 		</subsection>
 		<subsection name="&lt;esi:replace&gt;">
