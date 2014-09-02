@@ -352,4 +352,17 @@ public class IncludeElementTest extends AbstractElementTest {
         assertEquals("before begin include replacement end include after", result);
     }
 
+    public void testIncludeProviderWithCharactersBeforeProvider() throws IOException, HttpErrorPage {
+
+        String page = "<esi:include src=\"somechars$(PROVIDER{mock})/test\" />";
+        addResource("/test", "code fragment");
+        String result = render(page);
+        String expected = "code fragment";
+        assertEquals(expected, result);
+
+        page = "<esi:include src=\"somechars$PROVIDER({mock})/test\" />";
+        result = render(page);
+        expected = "code fragment";
+        assertEquals(expected, result);
+    }
 }
