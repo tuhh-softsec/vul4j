@@ -51,8 +51,9 @@ public class ResponseSenderTest extends TestCase {
         CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
         Cookie src = cookieSpec.parse(header, origin).get(0);
         javax.servlet.http.Cookie result = renderer.rewriteCookie(src);
-        assertTrue(result.getMaxAge() > 86398);
-        assertTrue(result.getMaxAge() < 86401);
+        assertTrue("maxAge should be greater than 86395, actual value " + result.getMaxAge(),
+                result.getMaxAge() > 86395);
+        assertTrue("maxAge should be lower than 86401, actual value " + result.getMaxAge(), result.getMaxAge() < 86401);
     }
 
     public void testRewriteCookieExpiresLongTime() throws Exception {
@@ -64,8 +65,10 @@ public class ResponseSenderTest extends TestCase {
         CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
         Cookie src = cookieSpec.parse(header, origin).get(0);
         javax.servlet.http.Cookie result = renderer.rewriteCookie(src);
-        assertTrue(result.getMaxAge() > 15551998);
-        assertTrue(result.getMaxAge() < 15552001);
+        assertTrue("maxAge should be greater than 15551995, actual value " + result.getMaxAge(),
+                result.getMaxAge() > 15551995);
+        assertTrue("maxAge should be lower than 15552001, actual value " + result.getMaxAge(),
+                result.getMaxAge() < 15552001);
     }
 
 }
