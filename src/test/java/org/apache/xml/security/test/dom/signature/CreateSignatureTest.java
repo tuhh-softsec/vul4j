@@ -36,11 +36,12 @@ import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.ObjectContainer;
+import org.apache.xml.security.signature.SignedInfo;
+import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer;
 import org.apache.xml.security.transforms.params.XPathContainer;
-import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
@@ -205,6 +206,46 @@ public class CreateSignatureTest extends org.junit.Assert {
         XMLSignature signature = new XMLSignature(sigElement, "");
         assertTrue(signature.checkSignatureValue(ks.getCertificate("test").getPublicKey()));
     }
+    
+    @org.junit.Test
+    public void testCanonicalizedOctetStream() throws Exception {        
+        String signedXML = doSign();
+        
+        org.w3c.dom.Document doc = db.parse(new ByteArrayInputStream(signedXML.getBytes()));
+
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "//ds:Signature[1]";
+        Element sigElement = 
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+        
+        XMLSignature signature = new XMLSignature(sigElement, "");
+        KeyInfo ki = signature.getKeyInfo();
+
+        if (ki == null) {
+            throw new RuntimeException("No keyinfo");
+        }
+        PublicKey pk = signature.getKeyInfo().getPublicKey();
+
+        if (pk == null) {
+            throw new RuntimeException("No public key");
+        }
+        
+        SignedInfo si = signature.getSignedInfo();
+        SignatureAlgorithm sa = si.getSignatureAlgorithm();
+        sa.initVerify(pk);
+
+        byte[] sigBytes = signature.getSignatureValue();
+        
+        byte[] canonicalizedBytes = si.getCanonicalizedOctetStream();
+        sa.update(canonicalizedBytes, 0, canonicalizedBytes.length);
+        
+        assertTrue(sa.verify(sigBytes));
+        assertTrue(si.verify(false));
+    }
+
 
     private String doSign() throws Exception {
         PrivateKey privateKey = kp.getPrivate();

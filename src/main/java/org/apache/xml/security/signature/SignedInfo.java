@@ -271,8 +271,12 @@ public class SignedInfo extends Manifest {
                 Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
             c14nizer.setSecureValidation(isSecureValidation());
 
-            this.c14nizedBytes =
-                c14nizer.canonicalizeSubtree(getElement());
+            String inclusiveNamespaces = this.getInclusiveNamespaces();
+            if (inclusiveNamespaces == null) {
+                this.c14nizedBytes = c14nizer.canonicalizeSubtree(getElement());
+            } else {
+                this.c14nizedBytes = c14nizer.canonicalizeSubtree(getElement(), inclusiveNamespaces);
+            }
         }
 
         // make defensive copy
@@ -353,7 +357,7 @@ public class SignedInfo extends Manifest {
         return new SecretKeySpec(secretKeyBytes, this.signatureAlgorithm.getJCEAlgorithmString());
     }
 
-    protected SignatureAlgorithm getSignatureAlgorithm() {
+    public SignatureAlgorithm getSignatureAlgorithm() {
         return signatureAlgorithm;
     }
 
