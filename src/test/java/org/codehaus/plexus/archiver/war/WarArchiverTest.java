@@ -1,19 +1,12 @@
 package org.codehaus.plexus.archiver.war;
 
 import java.io.File;
-import java.io.IOException;
+
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.Archiver;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.ResourceIterator;
-import org.codehaus.plexus.archiver.jar.JarArchiver;
-import org.codehaus.plexus.archiver.jar.Manifest;
-import org.codehaus.plexus.archiver.jar.ManifestException;
 import org.codehaus.plexus.util.FileUtils;
-
-import junit.framework.TestCase;
 
 /**
  * @author Kristian Rosenvold
@@ -22,7 +15,7 @@ public class WarArchiverTest
     extends PlexusTestCase
 {
 
-    private int expected = 8;
+    private final int expected = 8;
 
     public void testReAddingPlatformSpecificEncoding()
         throws Exception

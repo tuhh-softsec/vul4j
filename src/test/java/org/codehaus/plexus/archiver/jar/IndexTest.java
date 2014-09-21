@@ -112,12 +112,7 @@ public class IndexTest extends PlexusTestCase {
         int i = bis.read(buf);
         String res = new String(buf,0,i);
         //System.out.println(res);
-        
-        StringBuilder expected = new StringBuilder();
-        expected.append("JarIndex-Version: 1.0\n\n");
-        expected.append("archive2.jar\ntwo.txt\n\n");
-        expected.append("archive1.jar\nMETA-INF\none.txt\n\n");
-        expected.append("archive3.jar\norg\norg/apache\norg/apache/maven\n\n");
-        assertEquals(expected.toString(), res.replaceAll("\r\n", "\n"));
+
+		assertEquals("JarIndex-Version: 1.0\n\n" + "archive2.jar\ntwo.txt\n\n" + "archive1.jar\nMETA-INF\none.txt\n\n" + "archive3.jar\norg\norg/apache\norg/apache/maven\n\n", res.replaceAll("\r\n", "\n"));
     }
 }

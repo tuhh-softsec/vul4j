@@ -154,12 +154,11 @@ public abstract class AbstractUnArchiver
     {
         if ( finalizers != null )
         {
-            for ( final Iterator it = finalizers.iterator(); it.hasNext(); )
-            {
-                final ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
+			for (Object finalizer1 : finalizers) {
+				final ArchiveFinalizer finalizer = (ArchiveFinalizer) finalizer1;
 
-                finalizer.finalizeArchiveExtraction( this );
-            }
+				finalizer.finalizeArchiveExtraction(this);
+			}
         }
     }
 
@@ -229,21 +228,16 @@ public abstract class AbstractUnArchiver
     {
         if ( fileSelectors != null )
         {
-            for ( int i = 0; i < fileSelectors.length; i++ )
-            {
-                try
-                {
-                    if ( !fileSelectors[i].isSelected( fileInfo ) )
-                    {
-                        return false;
-                    }
-                }
-                catch ( final IOException e )
-                {
-                    throw new ArchiverException( "Failed to check, whether " + fileInfo.getName() + " is selected: "
-                                    + e.getMessage(), e );
-                }
-            }
+			for (FileSelector fileSelector : fileSelectors) {
+				try {
+					if (!fileSelector.isSelected(fileInfo)) {
+						return false;
+					}
+				} catch (final IOException e) {
+					throw new ArchiverException("Failed to check, whether " + fileInfo.getName() + " is selected: "
+							+ e.getMessage(), e);
+				}
+			}
         }
         return true;
     }

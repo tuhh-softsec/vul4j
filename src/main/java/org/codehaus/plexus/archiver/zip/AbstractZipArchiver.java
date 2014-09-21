@@ -69,9 +69,9 @@ public abstract class AbstractZipArchiver
     //not used: private boolean keepCompression = false;
     private boolean doFilesonly = false;
 
-    protected Hashtable<String, String> entries = new Hashtable<String, String>();
+    protected final Hashtable<String, String> entries = new Hashtable<String, String>();
 
-    protected Hashtable<String, String> addedDirs = new Hashtable<String, String>();
+    protected final Hashtable<String, String> addedDirs = new Hashtable<String, String>();
 
     private static final long EMPTY_CRC = new CRC32().getValue();
 
@@ -82,7 +82,7 @@ public abstract class AbstractZipArchiver
     /**
      * @deprecated Use {@link Archiver#setDuplicateBehavior(String)} instead.
      */
-    protected String duplicate = Archiver.DUPLICATES_SKIP;
+    protected final String duplicate = Archiver.DUPLICATES_SKIP;
 
     /**
      * true when we are adding new files into the Zip file, as opposed

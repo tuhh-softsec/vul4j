@@ -18,15 +18,11 @@ public class JarSecurityFileFilter
     public boolean include( InputStream dataStream, String entryName )
         throws ArchiveFilterException
     {
-        for ( int i = 0; i < SECURITY_FILE_PATTERNS.length; i++ )
-        {
-            String pattern = SECURITY_FILE_PATTERNS[i];
-
-            if ( SelectorUtils.match( pattern, entryName ) )
-            {
-                return false;
-            }
-        }
+		for (String pattern : SECURITY_FILE_PATTERNS) {
+			if (SelectorUtils.match(pattern, entryName)) {
+				return false;
+			}
+		}
 
         return true;
     }

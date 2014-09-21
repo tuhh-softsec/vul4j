@@ -104,15 +104,14 @@ public class ArchiveFileComparator
     {
         final Map map1 = getFileEntries( file1 );
         final Map map2 = getFileEntries( file2 );
-        for ( java.util.Iterator iter = map1.keySet().iterator();  iter.hasNext();  )
-        {
-            final String name1 = (String) iter.next();
-            final String name2 = prefix == null ? name1 : (prefix + name1);
-            TarArchiveEntry ze1 = (TarArchiveEntry) map1.get( name1 );
-            TarArchiveEntry ze2 = (TarArchiveEntry) map2.remove( name2 );
-            Assert.assertNotNull( ze2 );
-            assertEquals( file1, ze1, file2, ze2 );
-        }
+		for (Object o : map1.keySet()) {
+			final String name1 = (String) o;
+			final String name2 = prefix == null ? name1 : (prefix + name1);
+			TarArchiveEntry ze1 = (TarArchiveEntry) map1.get(name1);
+			TarArchiveEntry ze2 = (TarArchiveEntry) map2.remove(name2);
+			Assert.assertNotNull(ze2);
+			assertEquals(file1, ze1, file2, ze2);
+		}
         Assert.assertTrue( map2.isEmpty() );
     }
 
@@ -121,15 +120,14 @@ public class ArchiveFileComparator
     {
         final Map map1 = getFileEntries( file1 );
         final Map map2 = getFileEntries( file2 );
-        for ( java.util.Iterator iter = map1.keySet().iterator();  iter.hasNext();  )
-        {
-            final String name1 = (String) iter.next();
-            final String name2 = prefix == null ? name1 : (prefix + name1);
-            ZipArchiveEntry ze1 = (ZipArchiveEntry) map1.get( name1 );
-            ZipArchiveEntry ze2 = (ZipArchiveEntry) map2.remove( name2 );
-            Assert.assertNotNull( ze2 );
-            assertEquals( file1, ze1, file2, ze2 );
-        }
+		for (Object o : map1.keySet()) {
+			final String name1 = (String) o;
+			final String name2 = prefix == null ? name1 : (prefix + name1);
+			ZipArchiveEntry ze1 = (ZipArchiveEntry) map1.get(name1);
+			ZipArchiveEntry ze2 = (ZipArchiveEntry) map2.remove(name2);
+			Assert.assertNotNull(ze2);
+			assertEquals(file1, ze1, file2, ze2);
+		}
         Assert.assertTrue( map2.isEmpty() );
     }
 }

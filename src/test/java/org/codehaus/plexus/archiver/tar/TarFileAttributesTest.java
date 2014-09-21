@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.plexus.PlexusTestCase;
@@ -17,6 +16,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class TarFileAttributesTest
     extends PlexusTestCase
 {
@@ -106,8 +106,6 @@ public class TarFileAttributesTest
 
         tarArchiver.createArchive();
         
-        tarArchiver = null;
-
         TarArchiver tarArchiver2 = (TarArchiver) lookup( Archiver.ROLE, "tar" );
 
         File tempTarFile2 = File.createTempFile( "tar-file.", ".tar" );
@@ -207,13 +205,9 @@ public class TarFileAttributesTest
 
     private boolean checkForWindows()
     {
-        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
-        {
-            return true;
-        }
+		return Os.isFamily(Os.FAMILY_WINDOWS);
 
-        return false;
-    }
+	}
 
     public void testOverrideDetectedFileAttributes()
         throws Exception

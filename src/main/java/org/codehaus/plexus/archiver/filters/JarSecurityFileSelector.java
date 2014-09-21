@@ -40,15 +40,11 @@ public class JarSecurityFileSelector
         throws IOException
     {
         String name = fileInfo.getName();
-        for ( int i = 0; i < SECURITY_FILE_PATTERNS.length; i++ )
-        {
-            String pattern = SECURITY_FILE_PATTERNS[i];
-
-            if ( SelectorUtils.match( pattern, name ) )
-            {
-                return false;
-            }
-        }
+		for (String pattern : SECURITY_FILE_PATTERNS) {
+			if (SelectorUtils.match(pattern, name)) {
+				return false;
+			}
+		}
 
         return true;
     }

@@ -24,10 +24,7 @@ package org.codehaus.plexus.archiver.zip;
  * SOFTWARE.
  */
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.*;
-import org.apache.commons.compress.archivers.zip.ExtraFieldUtils;
-import org.apache.commons.compress.archivers.zip.ZipExtraField;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
@@ -104,62 +101,50 @@ public class ZipArchiverTest
             tmpDir.delete();
             
             tmpDir.mkdirs();
-            
-            for ( int i = 0; i < executablePaths.length; i++ )
-            {
-                writeFile( tmpDir, executablePaths[i], exeMode );
-            }
-            
-            for ( int i = 0; i < confPaths.length; i++ )
-            {
-                writeFile( tmpDir, confPaths[i], confMode );
-            }
-            
-            for ( int i = 0; i < logPaths.length; i++ )
-            {
-                writeFile( tmpDir, logPaths[i], logMode );
-            }
+
+			for (String executablePath : executablePaths) {
+				writeFile(tmpDir, executablePath, exeMode);
+			}
+
+			for (String confPath : confPaths) {
+				writeFile(tmpDir, confPath, confMode);
+			}
+
+			for (String logPath : logPaths) {
+				writeFile(tmpDir, logPath, logMode);
+			}
             
             {
                 Map attributesByPath = PlexusIoResourceAttributeUtils.getFileAttributesByPath( tmpDir );
-                for ( int i = 0; i < executablePaths.length; i++ )
-                {
-                    String path = executablePaths[i];
-                    PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get( path );
-                    if ( attrs == null )
-                    {
-                        attrs = (PlexusIoResourceAttributes) attributesByPath.get( new File( tmpDir, path ).getAbsolutePath() );
-                    }
-                    
-                    assertNotNull( attrs );
-                    assertEquals( "Wrong mode for: " + path + "; expected: " + exeMode, exeMode, attrs.getOctalMode() );
-                }
-                
-                for ( int i = 0; i < confPaths.length; i++ )
-                {
-                    String path = confPaths[i];
-                    PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get( path );
-                    if ( attrs == null )
-                    {
-                        attrs = (PlexusIoResourceAttributes) attributesByPath.get( new File( tmpDir, path ).getAbsolutePath() );
-                    }
-                    
-                    assertNotNull( attrs );
-                    assertEquals( "Wrong mode for: " + path + "; expected: " + confMode, confMode, attrs.getOctalMode() );
-                }
-                
-                for ( int i = 0; i < logPaths.length; i++ )
-                {
-                    String path = logPaths[i];
-                    PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get( path );
-                    if ( attrs == null )
-                    {
-                        attrs = (PlexusIoResourceAttributes) attributesByPath.get( new File( tmpDir, path ).getAbsolutePath() );
-                    }
-                    
-                    assertNotNull( attrs );
-                    assertEquals( "Wrong mode for: " + path + "; expected: " + logMode, logMode, attrs.getOctalMode() );
-                }
+				for (String path : executablePaths) {
+					PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get(path);
+					if (attrs == null) {
+						attrs = (PlexusIoResourceAttributes) attributesByPath.get(new File(tmpDir, path).getAbsolutePath());
+					}
+
+					assertNotNull(attrs);
+					assertEquals("Wrong mode for: " + path + "; expected: " + exeMode, exeMode, attrs.getOctalMode());
+				}
+
+				for (String path : confPaths) {
+					PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get(path);
+					if (attrs == null) {
+						attrs = (PlexusIoResourceAttributes) attributesByPath.get(new File(tmpDir, path).getAbsolutePath());
+					}
+
+					assertNotNull(attrs);
+					assertEquals("Wrong mode for: " + path + "; expected: " + confMode, confMode, attrs.getOctalMode());
+				}
+
+				for (String path : logPaths) {
+					PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get(path);
+					if (attrs == null) {
+						attrs = (PlexusIoResourceAttributes) attributesByPath.get(new File(tmpDir, path).getAbsolutePath());
+					}
+
+					assertNotNull(attrs);
+					assertEquals("Wrong mode for: " + path + "; expected: " + logMode, logMode, attrs.getOctalMode());
+				}
             }
             
             File zipFile = getTestFile( "target/output/zip-with-modes.zip" );
@@ -181,36 +166,30 @@ public class ZipArchiverTest
             archiver.createArchive();
 
             org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( zipFile2 );
-            
-            for ( int i = 0; i < executablePaths.length; i++ )
-            {
-                String path = executablePaths[i];
-                ZipArchiveEntry ze = zf.getEntry( path );
-                
-                int mode = ze.getUnixMode() & UnixStat.PERM_MASK;
-                
-                assertEquals( "Wrong mode for: " + path + "; expected: " + exeMode, exeMode, mode );
-            }
-            
-            for ( int i = 0; i < confPaths.length; i++ )
-            {
-                String path = confPaths[i];
-                ZipArchiveEntry ze = zf.getEntry( path );
-                
-                int mode = ze.getUnixMode() & UnixStat.PERM_MASK;
-                
-                assertEquals( "Wrong mode for: " + path + "; expected: " + confMode, confMode, mode );
-            }
-            
-            for ( int i = 0; i < logPaths.length; i++ )
-            {
-                String path = logPaths[i];
-                ZipArchiveEntry ze = zf.getEntry( path );
-                
-                int mode = ze.getUnixMode() & UnixStat.PERM_MASK;
-                
-                assertEquals( "Wrong mode for: " + path + "; expected: " + logMode, logMode, mode );
-            }
+
+			for (String path : executablePaths) {
+				ZipArchiveEntry ze = zf.getEntry(path);
+
+				int mode = ze.getUnixMode() & UnixStat.PERM_MASK;
+
+				assertEquals("Wrong mode for: " + path + "; expected: " + exeMode, exeMode, mode);
+			}
+
+			for (String path : confPaths) {
+				ZipArchiveEntry ze = zf.getEntry(path);
+
+				int mode = ze.getUnixMode() & UnixStat.PERM_MASK;
+
+				assertEquals("Wrong mode for: " + path + "; expected: " + confMode, confMode, mode);
+			}
+
+			for (String path : logPaths) {
+				ZipArchiveEntry ze = zf.getEntry(path);
+
+				int mode = ze.getUnixMode() & UnixStat.PERM_MASK;
+
+				assertEquals("Wrong mode for: " + path + "; expected: " + logMode, logMode, mode);
+			}
         }
         finally
         {
