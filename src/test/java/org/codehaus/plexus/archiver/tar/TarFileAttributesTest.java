@@ -140,7 +140,8 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( "644", fileAttributes.getOctalModeString() );
+        assertEquals( "This test will fail if your umask is not X2X (or more)",
+                      "644", fileAttributes.getOctalModeString() );
     }
 
     public void testUseDetectedFileAttributes()
@@ -200,7 +201,8 @@ public class TarFileAttributesTest
 
         fileAttributes = PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( "444", fileAttributes.getOctalModeString() );
+        assertEquals( "This test will fail if your umask is not X2X (or more)",
+                      "444", fileAttributes.getOctalModeString() );
     }
 
     private boolean checkForWindows()
@@ -266,7 +268,8 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( "644", fileAttributes.getOctalModeString() );
+        assertEquals( "This test will fail if your umask is not X2X (or more)",
+                      "644", fileAttributes.getOctalModeString() );
     }
 
     public void testOverrideDetectedFileAttributesUsingFileMode()
@@ -323,7 +326,8 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( "644", fileAttributes.getOctalModeString() );
+        assertEquals( "This test will fail if your umask is not X2X (or more)",
+                      "644", fileAttributes.getOctalModeString() );
     }
 
 }
