@@ -193,59 +193,6 @@ public abstract class AbstractZipUnArchiver
         }
     }
 
-    protected void extractFile( final File srcF, final File dir, final InputStream compressedInputStream,
-                                final String entryName, final Date entryDate, final boolean isDirectory,
-                                final Integer mode )
-        throws IOException, ArchiverException
-    {
-        final File f = FileUtils.resolveFile( dir, entryName );
-
-        try
-        {
-            if ( !isOverwrite() && f.exists() && ( f.lastModified() >= entryDate.getTime() ) )
-            {
-                return;
-            }
-
-            // create intermediary directories - sometimes zip don't add them
-            final File dirF = f.getParentFile();
-            if ( dirF != null )
-            {
-                dirF.mkdirs();
-            }
-
-            if ( isDirectory )
-            {
-                f.mkdirs();
-            }
-            else
-            {
-                OutputStream out = null;
-                try
-                {
-                    out = new FileOutputStream( f );
-
-                    IOUtil.copy( compressedInputStream, out );
-                }
-                finally
-                {
-                    IOUtil.close( out );
-                }
-            }
-
-            f.setLastModified( entryDate.getTime() );
-
-            if ( !isIgnorePermissions() && mode != null && !isDirectory)
-            {
-                ArchiveEntryUtils.chmod( f, mode, getLogger(), isUseJvmChmod() );
-            }
-        }
-        catch ( final FileNotFoundException ex )
-        {
-            getLogger().warn( "Unable to expand to file " + f.getPath() );
-        }
-    }
-
     protected void execute( final String path, final File outputDirectory )
         throws ArchiverException
     {
