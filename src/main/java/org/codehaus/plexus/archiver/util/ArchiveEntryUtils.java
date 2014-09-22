@@ -10,16 +10,17 @@ import org.codehaus.plexus.util.cli.Commandline;
 import java.io.File;
 import java.lang.reflect.Method;
 
+@SuppressWarnings("JavaDoc")
 public final class ArchiveEntryUtils
 {
 
-    public static boolean jvmFilePermAvailable = false;
+    public static boolean jvmFilePermAvailable;
 
     static
     {
         try
         {
-            jvmFilePermAvailable = File.class.getMethod( "setReadable", new Class[] { Boolean.TYPE } ) != null;
+            jvmFilePermAvailable = File.class.getMethod( "setReadable", Boolean.TYPE) != null;
         }
         catch ( final Exception e )
         {
@@ -56,7 +57,7 @@ public final class ArchiveEntryUtils
             useJvmChmod = false;
         }
 
-        if ( useJvmChmod && jvmFilePermAvailable )
+        if (useJvmChmod)
         {
             applyPermissionsWithJvm( file, m, logger );
             return;
@@ -135,21 +136,21 @@ public final class ArchiveEntryUtils
         Method method;
         try
         {
-            method = File.class.getMethod( "setReadable", new Class[] { Boolean.TYPE, Boolean.TYPE } );
+            method = File.class.getMethod( "setReadable", Boolean.TYPE, Boolean.TYPE);
 
             method.invoke( file,
-                           new Object[] { Boolean.valueOf( filePermission.isReadable() ),
-                               Boolean.valueOf( filePermission.isOwnerOnlyReadable() ) } );
+					filePermission.isReadable(),
+					filePermission.isOwnerOnlyReadable());
 
-            method = File.class.getMethod( "setExecutable", new Class[] { Boolean.TYPE, Boolean.TYPE } );
+            method = File.class.getMethod( "setExecutable", Boolean.TYPE, Boolean.TYPE);
             method.invoke( file,
-                           new Object[] { Boolean.valueOf( filePermission.isExecutable() ),
-                               Boolean.valueOf( filePermission.isOwnerOnlyExecutable() ) } );
+					filePermission.isExecutable(),
+					filePermission.isOwnerOnlyExecutable());
 
-            method = File.class.getMethod( "setWritable", new Class[] { Boolean.TYPE, Boolean.TYPE } );
+            method = File.class.getMethod( "setWritable", Boolean.TYPE, Boolean.TYPE);
             method.invoke( file,
-                           new Object[] { Boolean.valueOf( filePermission.isWritable() ),
-                               Boolean.valueOf( filePermission.isOwnerOnlyWritable() ) } );
+					filePermission.isWritable(),
+					filePermission.isOwnerOnlyWritable());
         }
         catch ( final Exception e )
         {

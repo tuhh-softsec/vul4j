@@ -30,7 +30,7 @@ import java.io.IOException;
 public class GZipArchiver
     extends AbstractArchiver
 {
-    GZipCompressor compressor = new GZipCompressor();
+    final GZipCompressor compressor = new GZipCompressor();
     
     protected void execute()
         throws ArchiverException, IOException

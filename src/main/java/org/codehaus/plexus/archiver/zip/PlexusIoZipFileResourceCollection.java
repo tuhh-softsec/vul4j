@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
+
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
@@ -24,7 +26,7 @@ public class PlexusIoZipFileResourceCollection
         {
             throw new IOException( "The tar archive file has not been set." );
         }
-        final ZipFile zipFile = new ZipFile( f );
+        final org.apache.commons.compress.archivers.zip.ZipFile zipFile = new org.apache.commons.compress.archivers.zip.ZipFile( f );
         final Enumeration en = zipFile.getEntries();
         return new Iterator<PlexusIoResource>()
         {
@@ -35,7 +37,7 @@ public class PlexusIoZipFileResourceCollection
 
             public PlexusIoResource next()
             {
-                final ZipEntry entry = (ZipEntry) en.nextElement();
+                final ZipArchiveEntry entry = (ZipArchiveEntry) en.nextElement();
 
                 return new ZipResource( zipFile, entry );
             }

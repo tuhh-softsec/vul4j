@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.attributes.SimpleResourceAttributes;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
@@ -16,10 +17,10 @@ public class TarResource
 {
 
     private final TarFile tarFile;
-    private final TarEntry entry;
+    private final TarArchiveEntry entry;
     private PlexusIoResourceAttributes attributes;
 
-    public TarResource( TarFile tarFile, TarEntry entry )
+    public TarResource( TarFile tarFile, TarArchiveEntry entry )
     {
         this.tarFile = tarFile;
         this.entry = entry;
@@ -30,7 +31,7 @@ public class TarResource
         setExisting( true );
         setFile( !dir );
 
-        long l = entry.getLastModificationTime();
+        long l = entry.getModTime().getTime();
         setLastModified( l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l );
         setSize( dir ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize() );
     }

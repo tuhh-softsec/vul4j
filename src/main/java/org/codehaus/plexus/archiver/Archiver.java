@@ -191,7 +191,7 @@ public interface Archiver
     /**
      * @deprecated Use {@link #getResources()}
      */
-    Map getFiles();
+    Map<String,ArchiveEntry> getFiles();
 
     /**
      * <p>

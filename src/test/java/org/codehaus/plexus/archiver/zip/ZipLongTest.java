@@ -39,7 +39,7 @@ public class ZipLongTest
      */
     public void testToBytes()
     {
-        ZipLong zl = new ZipLong( 0x12345678 );
+        org.apache.commons.compress.archivers.zip.ZipLong zl = new org.apache.commons.compress.archivers.zip.ZipLong( 0x12345678 );
         byte[] result = zl.getBytes();
         assertEquals( "length getBytes", 4, result.length );
         assertEquals( "first byte getBytes", 0x78, result[ 0 ] );
@@ -54,7 +54,7 @@ public class ZipLongTest
     public void testFromBytes()
     {
         byte[] val = new byte[]{0x78, 0x56, 0x34, 0x12};
-        ZipLong zl = new ZipLong( val );
+        org.apache.commons.compress.archivers.zip.ZipLong zl = new org.apache.commons.compress.archivers.zip.ZipLong( val );
         assertEquals( "value from bytes", 0x12345678, zl.getValue() );
     }
 
@@ -63,9 +63,9 @@ public class ZipLongTest
      */
     public void testEquals()
     {
-        ZipLong zl = new ZipLong( 0x12345678 );
-        ZipLong zl2 = new ZipLong( 0x12345678 );
-        ZipLong zl3 = new ZipLong( 0x87654321 );
+        org.apache.commons.compress.archivers.zip.ZipLong zl = new org.apache.commons.compress.archivers.zip.ZipLong( 0x12345678 );
+        org.apache.commons.compress.archivers.zip.ZipLong zl2 = new org.apache.commons.compress.archivers.zip.ZipLong( 0x12345678 );
+        org.apache.commons.compress.archivers.zip.ZipLong zl3 = new org.apache.commons.compress.archivers.zip.ZipLong( 0x87654321 );
 
         assertTrue( "reflexive", zl.equals( zl ) );
 
@@ -83,7 +83,7 @@ public class ZipLongTest
      */
     public void testSign()
     {
-        ZipLong zl = new ZipLong( new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF} );
+        org.apache.commons.compress.archivers.zip.ZipLong zl = new org.apache.commons.compress.archivers.zip.ZipLong( new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF} );
         assertEquals( 0x00000000FFFFFFFFl, zl.getValue() );
     }
 

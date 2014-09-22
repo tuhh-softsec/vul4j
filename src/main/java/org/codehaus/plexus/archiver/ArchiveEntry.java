@@ -38,13 +38,13 @@ public class ArchiveEntry
 
     public static final int DIRECTORY = 2;
 
-    private PlexusIoResource resource;
+    private final PlexusIoResource resource;
 
-    private String name;
+    private final String name;
 
-    private int type;
+    private final int type;
 
-    private int mode;
+    private final int mode;
 
     private PlexusIoResourceAttributes attributes;
 

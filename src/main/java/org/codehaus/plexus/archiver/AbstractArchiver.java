@@ -73,7 +73,7 @@ public abstract class AbstractArchiver
      * of {@link ArchiveEntry} by {@link #getResources()}.
      * </ul>
      */
-    private final List resources = new ArrayList();
+    private final List<Object> resources = new ArrayList<Object>();
 
     private boolean includeEmptyDirs = true;
 
@@ -250,7 +250,7 @@ public abstract class AbstractArchiver
     public void addDirectory( final File directory )
         throws ArchiverException
     {
-        addDirectory( directory, "" );
+        addDirectory(directory, "");
     }
 
     public void addDirectory( final File directory, final String prefix )
@@ -262,7 +262,7 @@ public abstract class AbstractArchiver
     public void addDirectory( final File directory, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
-        addDirectory( directory, "", includes, excludes );
+        addDirectory(directory, "", includes, excludes);
     }
 
     public void addDirectory( final File directory, final String prefix, final String[] includes,
@@ -323,7 +323,7 @@ public abstract class AbstractArchiver
     {
         final int fileMode = getOverrideFileMode();
 
-        addFile( inputFile, destFileName, fileMode );
+        addFile(inputFile, destFileName, fileMode);
     }
 
     protected ArchiveEntry asArchiveEntry( final PlexusIoResource resource, final String destFileName,
@@ -459,6 +459,7 @@ public abstract class AbstractArchiver
                                 {
                                     nextEntry = (ArchiveEntry) o;
                                 }
+								// TODO: Kr. Make iteartor handle commons compress archive entry. Maybe make
                                 else if ( o instanceof PlexusIoResourceCollection )
                                 {
                                     currentResourceCollection = (PlexusIoResourceCollection) o;
@@ -556,11 +557,11 @@ public abstract class AbstractArchiver
         };
     }
 
-    public Map getFiles()
+    public Map<String,ArchiveEntry> getFiles()
     {
         try
         {
-            final Map map = new HashMap();
+            final Map<String,ArchiveEntry> map = new HashMap<String,ArchiveEntry>();
             for ( final ResourceIterator iter = getResources(); iter.hasNext(); )
             {
                 final ArchiveEntry entry = iter.next();
@@ -686,7 +687,7 @@ public abstract class AbstractArchiver
     public void addResources( final PlexusIoResourceCollection collection )
         throws ArchiverException
     {
-        resources.add( collection );
+        resources.add(collection);
     }
 
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
@@ -727,7 +728,7 @@ public abstract class AbstractArchiver
     public void addArchivedFileSet( final File archiveFile, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
-        addArchivedFileSet( archiveFile, null, includes, excludes );
+        addArchivedFileSet(archiveFile, null, includes, excludes);
     }
 
     /**
@@ -768,7 +769,7 @@ public abstract class AbstractArchiver
         this.forced = forced;
     }
 
-    public void setArchiveFilters( final List filters )
+    public void setArchiveFilters(final List filters)
     {
         filterSupport = new FilterSupport( filters, getLogger() );
     }
@@ -877,12 +878,9 @@ public abstract class AbstractArchiver
     {
         if ( finalizers != null )
         {
-            for ( final Iterator it = finalizers.iterator(); it.hasNext(); )
-            {
-                final ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
-
-                finalizer.finalizeArchiveCreation( this );
-            }
+			for (final ArchiveFinalizer finalizer : finalizers) {
+				finalizer.finalizeArchiveCreation(this);
+			}
         }
     }
 
@@ -936,17 +934,13 @@ public abstract class AbstractArchiver
     {
         if ( finalizers != null )
         {
-            for ( final Iterator it = finalizers.iterator(); it.hasNext(); )
-            {
-                final ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
+			for (final ArchiveFinalizer finalizer : finalizers) {
+				final List virtualFiles = finalizer.getVirtualFiles();
 
-                final List virtualFiles = finalizer.getVirtualFiles();
-
-                if ( ( virtualFiles != null ) && !virtualFiles.isEmpty() )
-                {
-                    return true;
-                }
-            }
+				if ((virtualFiles != null) && !virtualFiles.isEmpty()) {
+					return true;
+				}
+			}
         }
         return false;
     }

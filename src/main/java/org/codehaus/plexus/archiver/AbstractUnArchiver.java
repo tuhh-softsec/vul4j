@@ -25,7 +25,12 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -131,7 +136,7 @@ public abstract class AbstractUnArchiver
         runArchiveFinalizers();
     }
 
-    public void setArchiveFilters( final List filters )
+    public void setArchiveFilters(final List filters)
     {
         filterSupport = new FilterSupport( filters, getLogger() );
     }
@@ -156,12 +161,11 @@ public abstract class AbstractUnArchiver
     {
         if ( finalizers != null )
         {
-            for ( final Iterator it = finalizers.iterator(); it.hasNext(); )
-            {
-                final ArchiveFinalizer finalizer = (ArchiveFinalizer) it.next();
+			for (Object finalizer1 : finalizers) {
+				final ArchiveFinalizer finalizer = (ArchiveFinalizer) finalizer1;
 
-                finalizer.finalizeArchiveExtraction( this );
-            }
+				finalizer.finalizeArchiveExtraction(this);
+			}
         }
     }
 
@@ -231,21 +235,16 @@ public abstract class AbstractUnArchiver
     {
         if ( fileSelectors != null )
         {
-            for ( int i = 0; i < fileSelectors.length; i++ )
-            {
-                try
-                {
-                    if ( !fileSelectors[i].isSelected( fileInfo ) )
-                    {
-                        return false;
-                    }
-                }
-                catch ( final IOException e )
-                {
-                    throw new ArchiverException( "Failed to check, whether " + fileInfo.getName() + " is selected: "
-                                    + e.getMessage(), e );
-                }
-            }
+			for (FileSelector fileSelector : fileSelectors) {
+				try {
+					if (!fileSelector.isSelected(fileInfo)) {
+						return false;
+					}
+				} catch (final IOException e) {
+					throw new ArchiverException("Failed to check, whether " + fileInfo.getName() + " is selected: "
+							+ e.getMessage(), e);
+				}
+			}
         }
         return true;
     }
@@ -292,9 +291,9 @@ public abstract class AbstractUnArchiver
     protected void extractFile( final File srcF, final File dir, final InputStream compressedInputStream,
                                 final String entryName, final Date entryDate, final boolean isDirectory,
                                 final Integer mode )
-            throws IOException, ArchiverException
+        throws IOException, ArchiverException
     {
-        final File f = FileUtils.resolveFile(dir, entryName);
+        final File f = FileUtils.resolveFile( dir, entryName );
 
         try
         {
@@ -321,7 +320,7 @@ public abstract class AbstractUnArchiver
                 {
                     out = new FileOutputStream( f );
 
-                    IOUtil.copy(compressedInputStream, out);
+                    IOUtil.copy( compressedInputStream, out );
                 }
                 finally
                 {
@@ -333,7 +332,7 @@ public abstract class AbstractUnArchiver
 
             if ( !isIgnorePermissions() && mode != null && !isDirectory)
             {
-                ArchiveEntryUtils.chmod(f, mode, getLogger(), isUseJvmChmod());
+                ArchiveEntryUtils.chmod( f, mode, getLogger(), isUseJvmChmod() );
             }
         }
         catch ( final FileNotFoundException ex )

@@ -22,11 +22,11 @@ import java.util.List;
 public class DotDirectiveArchiveFinalizer
     extends AbstractArchiveFinalizer
 {
-    private static String DEFAULT_DOT_FILE_PREFIX = ".plxarc";
+    private static final String DEFAULT_DOT_FILE_PREFIX = ".plxarc";
 
-    private File dotFileDirectory;
+    private final File dotFileDirectory;
 
-    private String dotFilePrefix;
+    private final String dotFilePrefix;
 
     public DotDirectiveArchiveFinalizer( File dotFileDirectory )
     {
@@ -47,45 +47,37 @@ public class DotDirectiveArchiveFinalizer
         {
             List dotFiles = FileUtils.getFiles( dotFileDirectory, dotFilePrefix + "*", null );
 
-            for ( Iterator i = dotFiles.iterator(); i.hasNext(); )
-            {
-                File dotFile = (File) i.next();
+			for (Object dotFile1 : dotFiles) {
+				File dotFile = (File) dotFile1;
 
-                BufferedReader in = new BufferedReader( new FileReader( dotFile ) );
+				BufferedReader in = new BufferedReader(new FileReader(dotFile));
 
-                String line;
+				String line;
 
-                while ( ( line = in.readLine() ) != null )
-                {
-                    String[] s = StringUtils.split( line, ":" );
+				while ((line = in.readLine()) != null) {
+					String[] s = StringUtils.split(line, ":");
 
-                    if ( s.length == 1 )
-                    {
-                        File directory = new File( dotFileDirectory, s[0] );
+					if (s.length == 1) {
+						File directory = new File(dotFileDirectory, s[0]);
 
-                        System.out.println( "adding directory = " + directory );
+						System.out.println("adding directory = " + directory);
 
-                        archiver.addDirectory( directory );
-                    }
-                    else
-                    {
-                        File directory = new File( dotFileDirectory, s[0] );
+						archiver.addDirectory(directory);
+					} else {
+						File directory = new File(dotFileDirectory, s[0]);
 
-                        System.out.println( "adding directory = " + directory + " to: " + s[1] );
+						System.out.println("adding directory = " + directory + " to: " + s[1]);
 
-                        if ( s[1].endsWith( "/" ) )
-                        {
-                            archiver.addDirectory( directory, s[1] );
-                        }
-                        else
-                        {
-                            archiver.addDirectory( directory, s[1] + "/" );
-                        }
-                    }
-                }
+						if (s[1].endsWith("/")) {
+							archiver.addDirectory(directory, s[1]);
+						} else {
+							archiver.addDirectory(directory, s[1] + "/");
+						}
+					}
+				}
 
-                in.close();
-            }
+				in.close();
+			}
 
         }
         catch ( IOException e )

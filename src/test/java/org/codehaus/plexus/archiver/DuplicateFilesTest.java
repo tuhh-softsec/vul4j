@@ -1,10 +1,8 @@
 package org.codehaus.plexus.archiver;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.archiver.zip.AbstractZipArchiver;
-import org.codehaus.plexus.archiver.zip.ZipFile;
-import org.codehaus.plexus.archiver.zip.ZipEntry;
-import org.codehaus.plexus.archiver.tar.TarInputStream;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -42,12 +40,12 @@ public class DuplicateFilesTest
 
         File archive = createArchive( archiver, "zip" );
 
-        ZipFile zf = new ZipFile( archive );
+        org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archive );
         Enumeration e = zf.getEntries();
         int entryCount = 0;
         while ( e.hasMoreElements() )
         {
-            ZipEntry entry = (ZipEntry) e.nextElement();
+            ZipArchiveEntry entry = (ZipArchiveEntry) e.nextElement();
             System.out.println( entry.getName() );
             entryCount++;
         }
@@ -71,9 +69,9 @@ public class DuplicateFilesTest
         archiver.setDuplicateBehavior( Archiver.DUPLICATES_SKIP );
         
         File archive = createArchive( archiver, "tar" );
-        TarInputStream tis;
+        TarArchiveInputStream tis;
 
-        tis = new TarInputStream( new BufferedInputStream( new FileInputStream( archive ) ) );
+        tis = new TarArchiveInputStream( new BufferedInputStream( new FileInputStream( archive ) ) );
         int entryCount = 0;
         while ( ( tis.getNextEntry() ) != null )
         {

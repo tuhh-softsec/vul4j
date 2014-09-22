@@ -18,6 +18,7 @@ package org.codehaus.plexus.archiver.tar;
  */
 
 import junit.framework.TestCase;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 
 /**
  * @version $Revision$ $Date$
@@ -33,7 +34,7 @@ public class TarEntryTest
      */
     public void testFileConstructor()
     {
-        new TarEntry( new java.io.File( "/foo" ) );
+        new TarArchiveEntry( new java.io.File( "/foo" ) );
     }
 
     /**
@@ -41,14 +42,18 @@ public class TarEntryTest
      */
     public void testInvalidUidGid()
     {
-        final TarEntry writtenEntry = new TarEntry( "test.java" );
+        final TarArchiveEntry writtenEntry = new TarArchiveEntry( "test.java" );
         writtenEntry.setUserId( -1 );
         writtenEntry.setGroupId( -1 );
-        final byte[] buffer = new byte[TarBuffer.DEFAULT_RCDSIZE];
+        final byte[] buffer = new byte[defaultRcdsize()];
         writtenEntry.writeEntryHeader( buffer );
 
-        final TarEntry readEntry = new TarEntry( buffer );
+        final TarArchiveEntry readEntry = new TarArchiveEntry( buffer );
         assertEquals( 0, readEntry.getUserId() );
         assertEquals( 0, readEntry.getGroupId() );
     }
+
+	private int defaultRcdsize() {
+		return 512;
+	}
 }

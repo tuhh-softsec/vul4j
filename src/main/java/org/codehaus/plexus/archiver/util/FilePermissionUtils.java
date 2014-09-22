@@ -69,7 +69,7 @@ public class FilePermissionUtils
         // handle user perm
         try
         {
-            int userMode = Integer.valueOf( (String) modes.get( mode.length() == 4 ? 1 : 0 ) ).intValue();
+            int userMode = Integer.valueOf((String) modes.get(mode.length() == 4 ? 1 : 0));
             switch ( userMode )
             {
                 case 0 :
@@ -113,7 +113,7 @@ public class FilePermissionUtils
         // handle all perm
         try
         {
-            int allMode = Integer.valueOf( (String) modes.get( mode.length() == 4 ? 3 : 2 ) ).intValue();
+            int allMode = Integer.valueOf((String) modes.get(mode.length() == 4 ? 3 : 2));
             switch ( allMode )
             {
                 case 0 :

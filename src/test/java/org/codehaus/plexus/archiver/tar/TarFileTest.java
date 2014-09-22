@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Enumeration;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.bzip2.BZip2Compressor;
@@ -95,7 +96,7 @@ public class TarFileTest
 
         for ( Enumeration en = tarFile.getEntries();  en.hasMoreElements();  )
         {
-            final TarEntry te = (TarEntry) en.nextElement();
+            final TarArchiveEntry te = (TarArchiveEntry) en.nextElement();
             if ( te.isDirectory() )
             {
                 continue;

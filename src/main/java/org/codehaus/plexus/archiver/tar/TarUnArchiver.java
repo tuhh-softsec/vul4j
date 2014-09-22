@@ -17,6 +17,8 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -79,44 +81,41 @@ public class TarUnArchiver
     protected void execute()
         throws ArchiverException
     {
-        execute(getSourceFile(), getDestDirectory());
+        execute( getSourceFile(), getDestDirectory() );
     }
 
     protected void execute( String path, File outputDirectory )
     {
-        execute( new File(path), getDestDirectory());
+        execute( new File( path ), getDestDirectory() );
     }
 
-    protected void execute( File sourceFile, File outputDirectory )
+    protected void execute( File sourceFile, File destDirectory )
+        throws ArchiverException
     {
-        TarInputStream tis = null;
+        TarArchiveInputStream tis = null;
         try
         {
-            getLogger().info( "Expanding: " + sourceFile + " into " + outputDirectory );
-
-            tis = new TarInputStream( compression.decompress( sourceFile,
-                    new BufferedInputStream(
-                            new FileInputStream( sourceFile ) ) ) );
-            TarEntry te;
+            getLogger().info( "Expanding: " + sourceFile + " into " + destDirectory );
             TarFile tarFile = new TarFile( sourceFile );
-
-            while ( ( te = tis.getNextEntry() ) != null )
+            tis = new TarArchiveInputStream(
+                compression.decompress( sourceFile, new BufferedInputStream( new FileInputStream( sourceFile ) ) ) );
+            TarArchiveEntry te;
+            while ( ( te = tis.getNextTarEntry() ) != null )
             {
-                TarResource fileInfo = new TarResource( tarFile, te);
-                if (!isSelected( te.getName(), fileInfo )) {
-                    continue;
+                TarResource fileInfo = new TarResource( tarFile, te );
+                if ( isSelected( te.getName(), fileInfo ) )
+                {
+                    extractFile( sourceFile, destDirectory, tis, te.getName(), te.getModTime(), te.isDirectory(),
+                                 te.getMode() != 0 ? te.getMode() : null );
                 }
 
-                extractFile( sourceFile, outputDirectory, tis, te.getName(), te.getModTime(),
-
-                        te.isDirectory(), te.getMode() != 0 ? te.getMode() : null);
             }
             getLogger().debug( "expand complete" );
 
         }
         catch ( IOException ioe )
         {
-            throw new ArchiverException( "Error while expanding " + getSourceFile().getAbsolutePath(), ioe );
+            throw new ArchiverException( "Error while expanding " + sourceFile.getAbsolutePath(), ioe );
         }
         finally
         {
@@ -188,7 +187,7 @@ public class TarUnArchiver
          */
         public String[] getValues()
         {
-            return new String[]{NONE, GZIP, BZIP2};
+            return new String[]{ NONE, GZIP, BZIP2 };
         }
 
         /**
@@ -198,7 +197,7 @@ public class TarUnArchiver
          * @param file    provides location information for BuildException
          * @param istream input stream
          * @return input stream with on-the-fly decompression
-         * @throws IOException    thrown by GZIPInputStream constructor
+         * @throws IOException thrown by GZIPInputStream constructor
          */
         private InputStream decompress( final File file, final InputStream istream )
             throws IOException, ArchiverException
@@ -215,5 +214,4 @@ public class TarUnArchiver
             return istream;
         }
     }
-
 }

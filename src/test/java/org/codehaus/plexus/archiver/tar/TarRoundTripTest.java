@@ -18,6 +18,9 @@ package org.codehaus.plexus.archiver.tar;
  */
 
 import junit.framework.TestCase;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,19 +43,19 @@ public class TarRoundTripTest
     public void testLongRoundTripping()
         throws IOException
     {
-        TarEntry original = new TarEntry( LONG_NAME );
+        TarArchiveEntry original = new TarArchiveEntry( LONG_NAME );
         assertEquals( "over 100 chars", true, LONG_NAME.length() > 100 );
         assertEquals( "original name", LONG_NAME, original.getName() );
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        TarOutputStream tos = new TarOutputStream( buff );
-        tos.setLongFileMode( TarOutputStream.LONGFILE_GNU );
-        tos.putNextEntry( original );
-        tos.closeEntry();
+        TarArchiveOutputStream tos = new TarArchiveOutputStream( buff );
+        tos.setLongFileMode( TarArchiveOutputStream.LONGFILE_GNU );
+        tos.putArchiveEntry(original);
+        tos.closeArchiveEntry();
         tos.close();
 
-        TarInputStream tis = new TarInputStream( new ByteArrayInputStream( buff.toByteArray() ) );
-        TarEntry tripped = tis.getNextEntry();
+        TarArchiveInputStream tis = new TarArchiveInputStream( new ByteArrayInputStream( buff.toByteArray() ) );
+        TarArchiveEntry tripped = tis.getNextTarEntry();
         assertEquals( "round-tripped name", LONG_NAME, tripped.getName() );
         assertNull( "no more entries", tis.getNextEntry() );
         tis.close();

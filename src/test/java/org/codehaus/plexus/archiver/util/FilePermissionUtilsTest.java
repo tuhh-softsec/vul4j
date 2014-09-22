@@ -19,9 +19,6 @@ package org.codehaus.plexus.archiver.util;
  * under the License.
  */
 
-import java.io.File;
-import java.lang.reflect.Method;
-
 import junit.framework.TestCase;
 
 import org.codehaus.plexus.logging.Logger;

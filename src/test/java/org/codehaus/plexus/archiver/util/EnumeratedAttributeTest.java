@@ -28,7 +28,7 @@ public class EnumeratedAttributeTest
     extends TestCase
 {
 
-    private static String[] expected = {"a", "b", "c"};
+    private static final String[] expected = {"a", "b", "c"};
 
     public EnumeratedAttributeTest( String name )
     {
@@ -38,13 +38,12 @@ public class EnumeratedAttributeTest
     public void testContains()
     {
         EnumeratedAttribute t1 = new TestNormal();
-        for ( int i = 0; i < expected.length; i++ )
-        {
-            assertTrue( expected[ i ] + " is in TestNormal",
-                        t1.containsValue( expected[ i ] ) );
-            assertTrue( expected[ i ].toUpperCase() + " is in TestNormal",
-                        !t1.containsValue( expected[ i ].toUpperCase() ) );
-        }
+		for (String anExpected : expected) {
+			assertTrue(anExpected + " is in TestNormal",
+					t1.containsValue(anExpected));
+			assertTrue(anExpected.toUpperCase() + " is in TestNormal",
+					!t1.containsValue(anExpected.toUpperCase()));
+		}
         assertTrue( "TestNormal doesn\'t have \"d\" attribute",
                     !t1.containsValue( "d" ) );
         assertTrue( "TestNull doesn\'t have \"d\" attribute and doesn\'t die",
@@ -54,17 +53,13 @@ public class EnumeratedAttributeTest
     public void testExceptions()
     {
         EnumeratedAttribute t1 = new TestNormal();
-        for ( int i = 0; i < expected.length; i++ )
-        {
-            try
-            {
-                t1.setValue( expected[ i ] );
-            }
-            catch ( ArchiverException ae )
-            {
-                fail( "unexpected exception for value " + expected[ i ] );
-            }
-        }
+		for (String anExpected : expected) {
+			try {
+				t1.setValue(anExpected);
+			} catch (ArchiverException ae) {
+				fail("unexpected exception for value " + anExpected);
+			}
+		}
         try
         {
             t1.setValue( "d" );
