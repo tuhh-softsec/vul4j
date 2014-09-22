@@ -1,6 +1,8 @@
 package org.codehaus.plexus.archiver.util;
 
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.components.io.attributes.Java7AttributeUtils;
+import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -8,6 +10,7 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 
 @SuppressWarnings("JavaDoc")
@@ -49,6 +52,18 @@ public final class ArchiveEntryUtils
         {
             return;
         }
+
+		if (Java7Reflector.isJava7())
+		{
+			try
+			{
+				Java7AttributeUtils.chmod(file, mode);
+				return;
+			} catch (IOException e)
+			{
+				throw new ArchiverException("Failed setting file attributes with java7+", e);
+			}
+		}
 
         final String m = Integer.toOctalString( mode & 0xfff );
 

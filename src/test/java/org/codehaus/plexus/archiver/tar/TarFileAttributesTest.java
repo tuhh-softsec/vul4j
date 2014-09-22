@@ -10,6 +10,7 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
+import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.util.FileUtils;
@@ -138,8 +139,10 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( "This test will fail if your umask is not X2X (or more)",
-                      "644", fileAttributes.getOctalModeString() );
+		final String expected = Java7Reflector.isJava7() ? "660" : "644";
+
+		assertEquals( "This test will fail if your umask is not X2X (or more)",
+				expected, fileAttributes.getOctalModeString() );
     }
 
     public void testUseDetectedFileAttributes()
@@ -199,8 +202,10 @@ public class TarFileAttributesTest
 
         fileAttributes = PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( "This test will fail if your umask is not X2X (or more)",
-                      "444", fileAttributes.getOctalModeString() );
+		final String expected = Java7Reflector.isJava7() ? "440" : "444";
+
+		assertEquals( "This test will fail if your umask is not X2X (or more)",
+				expected, fileAttributes.getOctalModeString() );
     }
 
     private boolean checkForWindows()
@@ -262,8 +267,10 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( "This test will fail if your umask is not X2X (or more)",
-                      "644", fileAttributes.getOctalModeString() );
+		final String expected = Java7Reflector.isJava7() ? "660" : "644";
+
+		assertEquals( "This test will fail if your umask is not X2X (or more)",
+				expected, fileAttributes.getOctalModeString() );
     }
 
     public void testOverrideDetectedFileAttributesUsingFileMode()
@@ -320,8 +327,9 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( "This test will fail if your umask is not X2X (or more)",
-                      "644", fileAttributes.getOctalModeString() );
+		final String expected = Java7Reflector.isJava7() ? "660" : "644";
+		assertEquals( "This test will fail if your umask is not X2X (or more)",
+				expected, fileAttributes.getOctalModeString() );
     }
 
 }
