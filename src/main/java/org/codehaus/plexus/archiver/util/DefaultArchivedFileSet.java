@@ -10,7 +10,7 @@ import org.codehaus.plexus.archiver.ArchivedFileSet;
  * @since 1.0-alpha-9
  */
 public class DefaultArchivedFileSet
-    extends AbstractFileSet
+    extends AbstractFileSet<DefaultArchivedFileSet>
     implements ArchivedFileSet
 {
     private File archive;
@@ -27,4 +27,14 @@ public class DefaultArchivedFileSet
     {
         return archive;
     }
+
+	public static DefaultArchivedFileSet archivedFileSet( File archiveFile ){
+        if (archiveFile == null)
+        {
+            throw new IllegalArgumentException( "Archive File cannot be null" );
+        }
+        final DefaultArchivedFileSet fileSet = new DefaultArchivedFileSet();
+        fileSet.setArchive( archiveFile );
+        return fileSet;
+	}
 }

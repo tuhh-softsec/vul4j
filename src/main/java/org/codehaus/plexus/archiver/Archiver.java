@@ -68,25 +68,40 @@ public interface Archiver
 
     /**
      * Obsolete, use {@link #addFileSet(FileSet)}.
+     * You can use "inline" of this method in your
+     * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
      */
+    @Deprecated
     void addDirectory( File directory )
         throws ArchiverException;
 
     /**
      * Obsolete, use {@link #addFileSet(FileSet)}.
+     * You can use "inline" of this method in your
+     * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
      */
+    @Deprecated
     void addDirectory( File directory, String prefix )
         throws ArchiverException;
 
     /**
-     * Obsolete, use {@link #addFileSet(FileSet)}.
+     * Obsolete, use {@link #addFileSet(FileSet)}.You can use "inline" of this method in your
+     * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
      */
+    @Deprecated
     void addDirectory( File directory, String[] includes, String[] excludes )
         throws ArchiverException;
 
     /**
      * Obsolete, use {@link #addFileSet(FileSet)}.
+     * You can use "inline" of this method in your
+     * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
      */
+    @Deprecated
     void addDirectory( File directory, String prefix, String[] includes, String[] excludes )
         throws ArchiverException;
 
@@ -108,16 +123,36 @@ public interface Archiver
 
     void addFile( File inputFile, String destFileName, int permissions )
         throws ArchiverException;
-
+    /**
+     * Obsolete, use {@link #addArchivedFileSet(ArchivedFileSet)}. You can use "inline" of this method in your
+     * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
+     */
     void addArchivedFileSet( File archiveFile )
         throws ArchiverException;
 
+    /**
+     * Obsolete, use {@link #addArchivedFileSet(ArchivedFileSet)}. You can use "inline" of this method in your
+     * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
+     */
+    @Deprecated
     void addArchivedFileSet( File archiveFile, String prefix )
         throws ArchiverException;
 
+    /**
+     * Obsolete, use {@link #addArchivedFileSet(ArchivedFileSet)}. You can use "inline" of this method in your
+     * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
+     */
     void addArchivedFileSet( File archiveFile, String[] includes, String[] excludes )
         throws ArchiverException;
 
+    /**
+     * Obsolete, use {@link #addArchivedFileSet(ArchivedFileSet)}. You can use "inline" of this method in your
+     * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
+     */
     void addArchivedFileSet( File archiveFile, String prefix, String[] includes, String[] excludes )
         throws ArchiverException;
 

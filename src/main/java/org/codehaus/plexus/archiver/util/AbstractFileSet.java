@@ -8,7 +8,7 @@ import org.codehaus.plexus.components.io.fileselectors.FileSelector;
  * Default implementation of {@link BaseFileSet}.
  * @since 1.0-alpha-9
  */
-public abstract class AbstractFileSet
+public abstract class AbstractFileSet<T extends AbstractFileSet>
     implements BaseFileSet
 {
     private String prefix;
@@ -121,5 +121,29 @@ public abstract class AbstractFileSet
     public boolean isIncludingEmptyDirectories()
     {
         return includingEmptyDirectories;
+    }
+
+    public T prefixed(String prefix){
+        setPrefix(  prefix );
+        return (T)this;
+    }
+
+    public T include(String[] includes){
+        setIncludes( includes );
+        return (T)this;
+    }
+
+    public T exclude(String[] excludes){
+        setExcludes( excludes );
+        return (T) this;
+    }
+
+    public T includeExclude( String[] includes, String[] excludes ){
+        return (T) include( includes ).exclude( excludes );
+    }
+
+    public T includeEmptyDirs( boolean includeEmptyDirectories  ){
+        setIncludingEmptyDirectories(  includeEmptyDirectories );
+        return (T) this;
     }
 }

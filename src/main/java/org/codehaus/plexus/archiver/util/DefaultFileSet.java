@@ -10,7 +10,7 @@ import org.codehaus.plexus.archiver.FileSet;
  * @since 1.0-alpha-9
  */
 public class DefaultFileSet
-    extends AbstractFileSet
+    extends AbstractFileSet<DefaultFileSet>
     implements FileSet
 {
     private File directory;
@@ -27,4 +27,11 @@ public class DefaultFileSet
     {
         return directory;
     }
+
+	public static DefaultFileSet fileSet( File directory ){
+        final DefaultFileSet defaultFileSet = new DefaultFileSet();
+        defaultFileSet.setDirectory( directory);
+        return defaultFileSet;
+	}
+
 }

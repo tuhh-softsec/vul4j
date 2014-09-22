@@ -34,8 +34,6 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
-import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
-import org.codehaus.plexus.archiver.util.DefaultFileSet;
 import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
@@ -52,6 +50,9 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.IOUtil;
+
+import static org.codehaus.plexus.archiver.util.DefaultArchivedFileSet.archivedFileSet;
+import static org.codehaus.plexus.archiver.util.DefaultFileSet.fileSet;
 
 /**
  * @version $Id$
@@ -250,32 +251,30 @@ public abstract class AbstractArchiver
     public void addDirectory( final File directory )
         throws ArchiverException
     {
-        addDirectory(directory, "");
+        addFileSet( fileSet( directory ).prefixed( "" )
+            .includeExclude( null, null ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
     public void addDirectory( final File directory, final String prefix )
         throws ArchiverException
     {
-        addDirectory( directory, prefix, null, null );
+        addFileSet( fileSet( directory ).prefixed( prefix )
+            .includeExclude( null, null ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
     public void addDirectory( final File directory, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
-        addDirectory(directory, "", includes, excludes);
+        addFileSet( fileSet( directory ).prefixed( "" )
+            .includeExclude( includes, excludes ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
     public void addDirectory( final File directory, final String prefix, final String[] includes,
                               final String[] excludes )
         throws ArchiverException
     {
-        final DefaultFileSet fileSet = new DefaultFileSet();
-        fileSet.setDirectory( directory );
-        fileSet.setPrefix( prefix );
-        fileSet.setIncludes( includes );
-        fileSet.setExcludes( excludes );
-        fileSet.setIncludingEmptyDirectories( includeEmptyDirs );
-        addFileSet( fileSet );
+        addFileSet( fileSet( directory ).prefixed( prefix )
+            .includeExclude( includes, excludes ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
     public void addFileSet( final FileSet fileSet )
@@ -704,13 +703,11 @@ public abstract class AbstractArchiver
                                     final String[] excludes )
         throws ArchiverException
     {
-        final DefaultArchivedFileSet fileSet = new DefaultArchivedFileSet();
-        fileSet.setArchive( archiveFile );
-        fileSet.setPrefix( prefix );
-        fileSet.setIncludes( includes );
-        fileSet.setExcludes( excludes );
-        fileSet.setIncludingEmptyDirectories( includeEmptyDirs );
-        addArchivedFileSet( fileSet );
+        addArchivedFileSet(
+            archivedFileSet( archiveFile )
+                .prefixed( prefix )
+                .includeExclude( includes, excludes )
+                .includeEmptyDirs( includeEmptyDirs ) );
     }
 
     /**
@@ -719,7 +716,10 @@ public abstract class AbstractArchiver
     public void addArchivedFileSet( final File archiveFile, final String prefix )
         throws ArchiverException
     {
-        addArchivedFileSet( archiveFile, prefix, null, null );
+        addArchivedFileSet(
+            archivedFileSet( archiveFile )
+                .prefixed( prefix )
+                .includeEmptyDirs( includeEmptyDirs ) );
     }
 
     /**
@@ -728,7 +728,10 @@ public abstract class AbstractArchiver
     public void addArchivedFileSet( final File archiveFile, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
-        addArchivedFileSet(archiveFile, null, includes, excludes);
+        addArchivedFileSet(
+            archivedFileSet( archiveFile )
+                .includeExclude( includes, excludes )
+                .includeEmptyDirs( includeEmptyDirs ) );
     }
 
     /**
@@ -737,7 +740,7 @@ public abstract class AbstractArchiver
     public void addArchivedFileSet( final File archiveFile )
         throws ArchiverException
     {
-        addArchivedFileSet( archiveFile, null, null, null );
+        addArchivedFileSet( archivedFileSet( archiveFile ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
     /**
