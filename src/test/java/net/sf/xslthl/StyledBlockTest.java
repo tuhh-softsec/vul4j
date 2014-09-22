@@ -27,6 +27,10 @@ package net.sf.xslthl;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
+import net.sf.xslthl.highlighters.XMLHighlighter;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -116,6 +120,28 @@ public class StyledBlockTest {
 		assertEquals(StyledBlock.HIDDEN_STYLE, block.getStyle());
 		block = new StyledBlock(BLOCK_CONTENT, null);
 		assertNull(block.getStyle());
+	}
+
+	/**
+	 * Guard against cases in which the tag is not properly finished.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testXMLHighlighter() throws Exception {
+		XMLHighlighter hl = new XMLHighlighter();
+		ArrayList<Block> blocks = new ArrayList<Block>();
+		hl.highlight(new CharIter(
+		        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+		                + "        <!DOCTYPE x:root [\n"
+		                + "            <!ENTITY ent \"entity\">\n"
+		                + "        ]>\n" + "\n" + "        <x:root"), blocks);
+		assertEquals(
+		        "[, <directive><?xml version=\"1.0\" encoding=\"UTF-8\"?></directive>, \n"
+		                + "        , <doctype><!DOCTYPE x:root [\n"
+		                + "            <!ENTITY ent \"entity\">\n"
+		                + "        ]></doctype>, \n" + "\n"
+		                + "        , <tag><x:root</tag>]", blocks.toString());
 	}
 
 }

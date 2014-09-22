@@ -259,7 +259,7 @@ public class XMLHighlighter extends WholeHighlighter {
 					        && !(XMLHighlighter.GREATER_THAN.equals(in
 					                .current())
 					                && XMLHighlighter.HYPHEN.equals(in.prev()) && XMLHighlighter.HYPHEN
-					                .equals(in.prev(2)))) {
+					                    .equals(in.prev(2)))) {
 						in.moveNext();
 					}
 					in.moveNext();
@@ -314,17 +314,21 @@ public class XMLHighlighter extends WholeHighlighter {
 					        && !XMLHighlighter.SLASH.equals(in.current())
 					        && Character.isWhitespace(in.current())) {
 						in.moveNext();
+
 						++cnt;
 					}
-					if (XMLHighlighter.SLASH.equals(in.current())) {
-						in.moveNext();
-						++cnt;
-					}
-					if (XMLHighlighter.GREATER_THAN.equals(in.current())) {
-						in.moveNext();
-						shortTag = true;
-					} else {
-						in.moveNext(-cnt);
+
+					if (!in.finished()) {
+						if (XMLHighlighter.SLASH.equals(in.current())) {
+							in.moveNext();
+							++cnt;
+						}
+						if (XMLHighlighter.GREATER_THAN.equals(in.current())) {
+							in.moveNext();
+							shortTag = true;
+						} else {
+							in.moveNext(-cnt);
+						}
 					}
 
 					if (style != null) {
