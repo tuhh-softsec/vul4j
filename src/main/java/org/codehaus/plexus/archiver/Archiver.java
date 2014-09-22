@@ -264,6 +264,7 @@ public interface Archiver
     void setDuplicateBehavior( String duplicate );
 
     /**
+	 * For java7 and above, new java method will be used, regardless of this setting
      * to use or not the jvm method for file permissions : user all <b>not active for group permissions</b>
      * 
      * @since 1.1
@@ -272,6 +273,7 @@ public interface Archiver
     void setUseJvmChmod( boolean useJvmChmod );
 
     /**
+	 * For java7 and above, new java method will be used, regardless of this setting
      * @since 1.1
      * @return
      */
