@@ -27,7 +27,9 @@ package net.sf.xslthl;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.xslthl.highlighters.XMLHighlighter;
 
@@ -142,6 +144,24 @@ public class StyledBlockTest {
 		                + "            <!ENTITY ent \"entity\">\n"
 		                + "        ]></doctype>, \n" + "\n"
 		                + "        , <tag><x:root</tag>]", blocks.toString());
+	}
+
+	/**
+	 * Guard against cases in which the CSS tokenizer is fed XML content.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testCSSHighlighterWithXML() throws Exception {
+		Config c = Config
+		        .getInstance(new File("highlighters/xslthl-config.xml").toURI()
+		                .toString());
+		MainHighlighter hl = c.getMainHighlighter("css");
+		List<Block> blocks = new ArrayList<Block>();
+		blocks = hl.highlight("<p padding-left=\"20\">....");
+		assertEquals(
+		        "[<p , <keyword>padding-left</keyword>, =, <string>\"20\"</string>, >....]",
+		        blocks.toString());
 	}
 
 }

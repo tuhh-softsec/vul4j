@@ -135,9 +135,15 @@ public class NumberHighlighter extends Highlighter {
 			return in.startsWith(prefix, ignoreCase)
 			        && isDigit(in.next(prefix.length()));
 		}
-		if (pointStarts && in.startsWith(decimalPoint, ignoreCase)
-		        && isDigit(in.next(decimalPoint.length()))) {
-			return true;
+		if (pointStarts) {
+			if (in.startsWith(decimalPoint, ignoreCase)) {
+				Character next = in.next(decimalPoint.length());
+				if (next != null) {
+					if (isDigit(next)) {
+						return true;
+					}
+				}
+			}
 		}
 		return isDigit(in.current());
 	}
