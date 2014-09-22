@@ -3218,6 +3218,11 @@ public class XMLCipher {
                     Element digestElement = 
                         XMLUtils.createElementInSignatureSpace(contextDocument, Constants._TAG_DIGESTMETHOD);
                     digestElement.setAttributeNS(null, "Algorithm", digestAlgorithm);
+                    digestElement.setAttributeNS(
+                        Constants.NamespaceSpecNS,
+                        "xmlns:" + ElementProxy.getDefaultPrefix(Constants.SignatureSpecNS),
+                        Constants.SignatureSpecNS
+                    );
                     result.appendChild(digestElement);
                 }
                 if (mgfAlgorithm != null) {
