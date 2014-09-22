@@ -18,22 +18,18 @@ package org.codehaus.plexus.archiver.zip;
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.utils.IOUtils;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
@@ -143,15 +139,15 @@ public abstract class AbstractZipUnArchiver
             {
                 final ZipArchiveEntry ze = (ZipArchiveEntry) e.nextElement();
                 final ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zf, ze );
-                if ( !isSelected( ze.getName(), fileInfo ) )
+                if ( isSelected( ze.getName(), fileInfo ) )
                 {
-                    continue;
-                }
-                InputStream in = zf.getInputStream( ze );
-                extractFileIfIncluded( getSourceFile(), getDestDirectory(), in, ze.getName(),
-                                       new Date( ze.getTime() ), ze.isDirectory(), ze.getUnixMode()!= 0 ? ze.getUnixMode() : null );
-                in.close();
-            }
+					InputStream in = zf.getInputStream( ze );
+					extractFileIfIncluded(getSourceFile(), getDestDirectory(), in, ze.getName(),
+							new Date(ze.getTime()), ze.isDirectory(), ze.getUnixMode() != 0 ? ze.getUnixMode() : null);
+					IOUtil.close(in);
+				}
+
+			}
 
             getLogger().debug( "expand complete" );
         }
@@ -161,17 +157,7 @@ public abstract class AbstractZipUnArchiver
         }
         finally
         {
-            if ( zf != null )
-            {
-                try
-                {
-                    zf.close();
-                }
-                catch ( final IOException e )
-                {
-                    // ignore
-                }
-            }
+			IOUtils.closeQuietly( zf);
         }
     }
 
@@ -219,7 +205,7 @@ public abstract class AbstractZipUnArchiver
                     extractFileIfIncluded( getSourceFile(), outputDirectory, inputStream,
                                            ze.getName(), new Date( ze.getTime() ), ze.isDirectory(),
                                            ze.getUnixMode() != 0 ? ze.getUnixMode() : null );
-                    inputStream.close();
+					IOUtil.close(inputStream);
                 }
             }
         }
@@ -229,17 +215,7 @@ public abstract class AbstractZipUnArchiver
         }
         finally
         {
-            if ( zipFile != null )
-            {
-                try
-                {
-                    zipFile.close();
-                }
-                catch ( final IOException e )
-                {
-                    // ignore
-                }
-            }
+			IOUtils.closeQuietly( zipFile);
         }
     }
 }
