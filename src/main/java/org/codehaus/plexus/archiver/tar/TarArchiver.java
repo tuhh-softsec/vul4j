@@ -25,10 +25,10 @@ import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.UnixStat;
-import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoSymlink;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -52,9 +52,9 @@ public class TarArchiver
      */
     private boolean longWarningGiven = false;
 
-    private TarLongFileMode longFileMode = new TarLongFileMode();
+    private TarLongFileMode longFileMode = TarLongFileMode.warn;
 
-    private TarCompressionMethod compression = new TarCompressionMethod();
+    private TarCompressionMethod compression = TarCompressionMethod.none;
 
     private TarOptions options = new TarOptions();
 
@@ -180,9 +180,9 @@ public class TarArchiver
 
         getLogger().info( "Building tar: " + tarFile.getAbsolutePath() );
 
-        tOut = new TarArchiveOutputStream(
-            compression.compress( new BufferedOutputStream( new FileOutputStream( tarFile ) ) ) );
-        //tOut.setDebug( true ); TODO: FInd out out about debug flag // KR
+        final OutputStream bufferedOutputStream = new BufferedOutputStream( new FileOutputStream( tarFile ) );
+        tOut =
+            new TarArchiveOutputStream( compress( compression, bufferedOutputStream ) );
         if ( longFileMode.isTruncateMode() )
         {
             tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_TRUNCATE );
@@ -190,6 +190,8 @@ public class TarArchiver
         else if ( longFileMode.isPosixMode() || longFileMode.isPosixWarnMode() )
         {
             tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_POSIX );
+			// Todo: Patch 2.5.1   for this fix. Also make closeable fix on 2.5.1
+			tOut.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);
         }
         else if ( longFileMode.isFailMode() || longFileMode.isOmitMode() )
         {
@@ -255,21 +257,12 @@ public class TarArchiver
         int pathLength = vPath.length();
         try
         {
-            final TarArchiveEntry te;
+            TarArchiveEntry te;
 			if (  !longFileMode.isGnuMode() && pathLength >= TarConstants.NAMELEN )
 			{
         		int maxPosixPathLen = TarConstants.NAMELEN + TarConstants.POSIX_PREFIXLEN;
             	if ( longFileMode.isPosixMode() )
             	{
-            		if ( pathLength > maxPosixPathLen )
-            		{
-                        te = new TarArchiveEntry( vPath );
-            		}
-            		else
-            		{
-                        // TODO: Kr, how to handle posix ??
-                        te = new TarArchiveEntry( vPath );
-            		}
             	}
             	else if ( longFileMode.isPosixWarnMode() )
             	{
@@ -282,12 +275,6 @@ public class TarArchiver
                                               + "successfully by GNU compatible tar commands" );
                             longWarningGiven = true;
                         }
-                        te = new TarArchiveEntry( vPath );
-            		}
-            		else
-            		{
-                        // TODO: Kr, how to handle posix ??
-                        te = new TarArchiveEntry( vPath );
             		}
             	}
             	else if ( longFileMode.isOmitMode() )
@@ -304,7 +291,6 @@ public class TarArchiver
                                           + "successfully by GNU compatible tar commands" );
                         longWarningGiven = true;
                     }
-                    te = new TarArchiveEntry( vPath );
                 }
                 else if ( longFileMode.isFailMode() )
                 {
@@ -316,53 +302,61 @@ public class TarArchiver
                     throw new IllegalStateException("Non gnu mode should never get here?");
                 }
             }
-        	else
-        	{
-        		/* Did not touch it, because this would change the following default tar format, however
-        		 * GNU tar can untar POSIX tar, so I think we should us PosixTarEntry here instead. */
-                te = new TarArchiveEntry( vPath );
-        	}
 
-            long teLastModified = entry.getResource().getLastModified();
-            te.setModTime(teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
-                    : teLastModified);
-
-            if ( !entry.getResource().isDirectory() )
+            if ( entry.getType() == ArchiveEntry.SYMLINK )
             {
-                final long size = entry.getResource().getSize();
-                te.setSize( size == PlexusIoResource.UNKNOWN_RESOURCE_SIZE ? 0 : size );
-                
-                te.setMode( entry.getMode() );
+                final PlexusIoSymlink plexusIoSymlinkResource = (PlexusIoSymlink) entry.getResource();
+                te = new TarArchiveEntry( vPath, TarArchiveEntry.LF_SYMLINK);
+                te.setLinkName( plexusIoSymlinkResource.getSymlinkDestination() );
             }
             else
             {
-                te.setMode( entry.getMode() );
+                te = new TarArchiveEntry( vPath );
             }
-            
+
+            long teLastModified = entry.getResource().getLastModified();
+            te.setModTime( teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
+                               : teLastModified );
+            te.setModTime(teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
+                    : teLastModified);
+
+            if (entry.getType() == ArchiveEntry.SYMLINK){
+                te.setSize( 0 );
+
+            } else
+            if ( !entry.getResource().isDirectory()  )
+            {
+                final long size = entry.getResource().getSize();
+                te.setSize( size == PlexusIoResource.UNKNOWN_RESOURCE_SIZE ? 0 : size );
+            }
+            te.setMode( entry.getMode() );
+
             PlexusIoResourceAttributes attributes = entry.getResourceAttributes();
-            
+
             te.setUserName( ( attributes != null && attributes.getUserName() != null ) ? attributes.getUserName()
-                            : options.getUserName() );
+                                : options.getUserName() );
+            te.setGroupName((attributes != null && attributes.getGroupName() != null) ? attributes.getGroupName()
+					: options.getGroup());
             te.setGroupName( ( attributes != null && attributes.getGroupName() != null ) ? attributes.getGroupName()
                             : options.getGroup() );
 
             final int userId =
                 ( attributes != null && attributes.getUserId() != null ) ? attributes.getUserId() : options.getUid();
-            if ( userId > 0 )
+            if ( userId >= 0 )
             {
                 te.setUserId( userId );
             }
 
             final int groupId =
                 ( attributes != null && attributes.getGroupId() != null ) ? attributes.getGroupId() : options.getGid();
-            if ( groupId > 0 )
+            if ( groupId >= 0 )
             {
                 te.setGroupId( groupId );
             }
 
             tOut.putArchiveEntry(te);
 
-            if ( !entry.getResource().isDirectory() )
+            if ( entry.getResource().isFile() && !(entry.getType() == ArchiveEntry.SYMLINK))
             {
                 fIn = entry.getInputStream();
 
@@ -573,76 +567,24 @@ public class TarArchiver
     /**
      * Valid Modes for Compression attribute to Tar Task
      */
-    public static final class TarCompressionMethod
-        extends EnumeratedAttribute
+    public static enum TarCompressionMethod
     {
+        none, gzip, bzip2;
 
-        // permissible values for compression attribute
+    }
 
-        /**
-         * No compression
-         */
-        private static final String NONE = "none";
-
-        /**
-         * GZIP compression
-         */
-        private static final String GZIP = "gzip";
-
-        /**
-         * BZIP2 compression
-         */
-        private static final String BZIP2 = "bzip2";
-
-
-        /**
-         * Default constructor
-         */
-        public TarCompressionMethod()
+    private OutputStream compress( TarCompressionMethod tarCompressionMethod, final OutputStream ostream )
+        throws IOException
+    {
+        if ( TarCompressionMethod.gzip.equals( tarCompressionMethod ))
         {
-            super();
-            try
-            {
-                setValue( NONE );
-            }
-            catch ( ArchiverException ae )
-            {
-                //Do nothing
-            }
+            return new GZIPOutputStream( ostream );
         }
-
-        /**
-         * Get valid enumeration values.
-         *
-         * @return valid enumeration values
-         */
-        public String[] getValues()
+        else if ( TarCompressionMethod.bzip2.equals( tarCompressionMethod) )
         {
-            return new String[]{NONE, GZIP, BZIP2};
+            return new BZip2CompressorOutputStream( ostream );
         }
-
-        /**
-         * This method wraps the output stream with the
-         * corresponding compression method
-         *
-         * @param ostream output stream
-         * @return output stream with on-the-fly compression
-         * @throws IOException thrown if file is not writable
-         */
-        private OutputStream compress( final OutputStream ostream )
-            throws IOException
-        {
-            final String value = getValue();
-            if ( GZIP.equals( value ) )
-            {
-                return new GZIPOutputStream( ostream );
-            }
-            else if ( BZIP2.equals( value ) )
-            {
-                return new BZip2CompressorOutputStream( ostream );
-            }
-            return ostream;
-        }
+        return ostream;
     }
 
     public boolean isSupportingForced()

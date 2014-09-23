@@ -21,8 +21,11 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.CRC32;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipEncoding;
+import org.apache.commons.compress.archivers.zip.ZipEncodingHelper;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.Archiver;
@@ -30,8 +33,8 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
-import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoSymlink;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
@@ -42,7 +45,7 @@ import org.codehaus.plexus.util.IOUtil;
 public abstract class AbstractZipArchiver
     extends AbstractArchiver
 {
-    
+
     private String comment;
 
     /**
@@ -78,7 +81,7 @@ public abstract class AbstractZipArchiver
     protected boolean doubleFilePass = false;
 
     protected boolean skipWriting = false;
-    
+
     /**
      * @deprecated Use {@link Archiver#setDuplicateBehavior(String)} instead.
      */
@@ -205,7 +208,7 @@ public abstract class AbstractZipArchiver
         {
             createArchiveMain();
         }
-        
+
         finalizeZipOutputStream( zOut );
     }
 
@@ -223,7 +226,7 @@ public abstract class AbstractZipArchiver
             //noinspection deprecation
             setDuplicateBehavior( duplicate );
         }
-        
+
         ResourceIterator iter = getResources();
         if ( !iter.hasNext() && !hasVirtualFiles() )
         {
@@ -366,7 +369,7 @@ public abstract class AbstractZipArchiver
             ArchiveEntry entry = resources.next();
             String name = entry.getName();
             name = name.replace( File.separatorChar, '/' );
-            
+
             if ( "".equals( name ) )
             {
                 continue;
@@ -392,6 +395,11 @@ public abstract class AbstractZipArchiver
 
     /**
      * Ensure all parent dirs of a given entry have been added.
+	 *
+	 * This method is computed in terms of the potentially remapped entry (that may be disconnected from the file system)
+	 * we do not *relly* know the entry's connection to the file system so establishing the attributes of the parents can
+	 * be impossible and is not really supported.
+	 *
      */
     @SuppressWarnings({"JavaDoc"})
     protected final void addParentDirs( File baseDir, String entry, ZipArchiveOutputStream zOut, String prefix )
@@ -429,7 +437,9 @@ public abstract class AbstractZipArchiver
                 {
                     f = new File( dir );
                 }
-                final PlexusIoFileResource res = new PlexusIoFileResource( f );
+				// the
+				// At this point we could do something like read the atr
+				final PlexusIoResource res = new AnonymousResource( f);
                 zipDir( res, zOut, prefix + dir, getRawDefaultDirectoryMode() );
             }
         }
@@ -487,12 +497,11 @@ public abstract class AbstractZipArchiver
      * @param vPath        the name this entry shall have in the archive.
      * @param lastModified last modification time for the entry.
      * @param fromArchive  the original archive we are copying this
-     *                     entry from, will be null if we are not copying from an archive.
-     * @param mode         the Unix permissions to set.
+     * @param symlinkDestination
      */
     @SuppressWarnings({"JavaDoc"})
     protected void zipFile( InputStream in, ZipArchiveOutputStream zOut, String vPath, long lastModified, File fromArchive,
-                            int mode )
+                            int mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
         getLogger().debug( "adding entry " + vPath );
@@ -523,8 +532,11 @@ public abstract class AbstractZipArchiver
              */
 
 
-
-            if (zOut.isSeekable() || compressThis) {
+            if (ze.isUnixSymlink()){
+                zOut.putArchiveEntry( ze );
+                final byte[] bytes = symlinkDestination.getBytes(); // encoding ??
+                zOut.write( bytes, 0, bytes.length);
+            } else if (zOut.isSeekable() || compressThis) {
                 zOut.putArchiveEntry( ze );
                 if (read > 0) zOut.write(header, 0, read);
                 IOUtil.copy( in, zOut, 8 * 1024);
@@ -548,6 +560,7 @@ public abstract class AbstractZipArchiver
                     bos.writeTo( zOut);
                 }
             }
+
             zOut.closeArchiveEntry();
         }
     }
@@ -575,10 +588,12 @@ public abstract class AbstractZipArchiver
             throw new ArchiverException( "A zip file cannot include itself" );
         }
 
+        final boolean b = entry.getResource() instanceof PlexusIoSymlink;
+        String symlinkTarget = b ? ((PlexusIoSymlink)entry.getResource()).getSymlinkDestination() : null;
         InputStream in = entry.getInputStream();
         try
         {
-			zipFile( in, zOut, vPath, resource.getLastModified(), null, entry.getMode() );
+			zipFile( in, zOut, vPath, resource.getLastModified(), null, entry.getMode(), symlinkTarget );
         }
         catch ( IOException e )
         {
@@ -624,6 +639,19 @@ public abstract class AbstractZipArchiver
         {
             ZipArchiveEntry ze = new ZipArchiveEntry( vPath );
 
+            /*
+             * ZipOutputStream.putNextEntry expects the ZipEntry to
+             * know its size and the CRC sum before you start writing
+             * the data when using STORED mode - unless it is seekable.
+             *
+             * This forces us to process the data twice.
+             */
+
+
+            final boolean isSymlink = dir instanceof PlexusIoSymlink;
+            if (isSymlink) mode = UnixStat.LINK_FLAG | mode;
+
+
             if ( dir != null && dir.isExisting() )
             {
                 setTime( ze, dir.getLastModified());
@@ -633,13 +661,25 @@ public abstract class AbstractZipArchiver
                 // ZIPs store time with a granularity of 2 seconds, round up
                 setTime( ze, System.currentTimeMillis() );
             }
-            ze.setSize( 0 );
-            ze.setMethod( ZipArchiveEntry.STORED );
-            // This is faintly ridiculous:
-            ze.setCrc( EMPTY_CRC );
+            if (!isSymlink){
+                ze.setSize( 0 );
+                ze.setMethod( ZipArchiveEntry.STORED );
+                // This is faintly ridiculous:
+                ze.setCrc( EMPTY_CRC );
+            }
             ze.setUnixMode( mode );
 
             zOut.putArchiveEntry( ze );
+
+            if ( isSymlink )
+            {
+                String symlinkDestination = ( (PlexusIoSymlink) dir ).getSymlinkDestination();
+                ZipEncoding enc = ZipEncodingHelper.getZipEncoding( zOut.getEncoding() );
+                final byte[] bytes = enc.encode( symlinkDestination ).array();
+                zOut.write( bytes, 0, bytes.length );
+
+            }
+
             zOut.closeArchiveEntry();
         }
     }

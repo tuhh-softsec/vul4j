@@ -22,7 +22,6 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.BufferedInputStream;
@@ -51,7 +50,7 @@ public class TarUnArchiver
     /**
      * compression method
      */
-    private UntarCompressionMethod compression = new UntarCompressionMethod();
+    private UntarCompressionMethod compression = UntarCompressionMethod.NONE;
 
     /**
      * Set decompression algorithm to use; default=none.
@@ -98,15 +97,16 @@ public class TarUnArchiver
             getLogger().info( "Expanding: " + sourceFile + " into " + destDirectory );
             TarFile tarFile = new TarFile( sourceFile );
             tis = new TarArchiveInputStream(
-                compression.decompress( sourceFile, new BufferedInputStream( new FileInputStream( sourceFile ) ) ) );
+                decompress( compression, sourceFile, new BufferedInputStream( new FileInputStream( sourceFile ) ) ) );
             TarArchiveEntry te;
             while ( ( te = tis.getNextTarEntry() ) != null )
             {
                 TarResource fileInfo = new TarResource( tarFile, te );
                 if ( isSelected( te.getName(), fileInfo ) )
                 {
+                    final String symlinkDestination = te.isSymbolicLink() ? te.getLinkName() : null;
                     extractFile( sourceFile, destDirectory, tis, te.getName(), te.getModTime(), te.isDirectory(),
-                                 te.getMode() != 0 ? te.getMode() : null );
+                                 te.getMode() != 0 ? te.getMode() : null, symlinkDestination );
                 }
 
             }
@@ -123,95 +123,45 @@ public class TarUnArchiver
         }
     }
 
-    /**
+	/**
+	 * This method wraps the input stream with the
+	 * corresponding decompression method
+	 *
+	 * @param file    provides location information for BuildException
+	 * @param istream input stream
+	 * @return input stream with on-the-fly decompression
+	 * @throws IOException thrown by GZIPInputStream constructor
+	 */
+	private InputStream decompress( UntarCompressionMethod compression, final File file, final InputStream istream )
+			throws IOException, ArchiverException
+	{
+		if ( compression == UntarCompressionMethod.GZIP )
+		{
+			return new GZIPInputStream( istream );
+		}
+		else if ( compression == UntarCompressionMethod.BZIP2 )
+		{
+			return new BZip2CompressorInputStream( istream );
+		}
+		return istream;
+	}
+
+	/**
      * Valid Modes for Compression attribute to Untar Task
      */
-    public static final class UntarCompressionMethod
-        extends EnumeratedAttribute
+    public static enum UntarCompressionMethod
     {
+		NONE("none"), GZIP("gzip"), BZIP2("bzip2");
 
-        // permissible values for compression attribute
-
-        /**
-         * No compression
-         */
-        public static final String NONE = "none";
-
-        /**
-         * GZIP compression
-         */
-        public static final String GZIP = "gzip";
-
-        /**
-         * BZIP2 compression
-         */
-        public static final String BZIP2 = "bzip2";
-
+		final String value;
 
         /**
          * Constructor
          */
-        public UntarCompressionMethod()
+        UntarCompressionMethod(String value)
         {
-            super();
-            try
-            {
-                setValue( NONE );
-            }
-            catch ( ArchiverException ae )
-            {
-                //Do nothing
-            }
+			this.value = value;
         }
 
-        /**
-         * Constructor
-         */
-        public UntarCompressionMethod( String method )
-        {
-            super();
-            try
-            {
-                setValue( method );
-            }
-            catch ( ArchiverException ae )
-            {
-                //Do nothing
-            }
-        }
-
-        /**
-         * Get valid enumeration values
-         *
-         * @return valid values
-         */
-        public String[] getValues()
-        {
-            return new String[]{ NONE, GZIP, BZIP2 };
-        }
-
-        /**
-         * This method wraps the input stream with the
-         * corresponding decompression method
-         *
-         * @param file    provides location information for BuildException
-         * @param istream input stream
-         * @return input stream with on-the-fly decompression
-         * @throws IOException thrown by GZIPInputStream constructor
-         */
-        private InputStream decompress( final File file, final InputStream istream )
-            throws IOException, ArchiverException
-        {
-            final String value = getValue();
-            if ( GZIP.equals( value ) )
-            {
-                return new GZIPInputStream( istream );
-            }
-            else if ( BZIP2.equals( value ) )
-            {
-                return new BZip2CompressorInputStream( istream );
-            }
-            return istream;
-        }
     }
 }

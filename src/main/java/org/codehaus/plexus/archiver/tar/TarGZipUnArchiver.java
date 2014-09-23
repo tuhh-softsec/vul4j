@@ -40,8 +40,7 @@ public class TarGZipUnArchiver
     
     private void setupCompressionMethod()
     {
-        UntarCompressionMethod untarCompressionMethod = new UntarCompressionMethod( UntarCompressionMethod.GZIP );
-        this.setCompression( untarCompressionMethod );
+		this.setCompression(UntarCompressionMethod.GZIP);
     }
 
 }

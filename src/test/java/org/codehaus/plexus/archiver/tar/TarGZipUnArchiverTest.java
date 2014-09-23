@@ -42,6 +42,7 @@ public class TarGZipUnArchiverTest
         throws Exception
     {
         TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+		tarArchiver.setLongfile(TarLongFileMode.posix );
 
         String fileName1 = "TarGZipUnArchiverTest1.txt";
         String fileName2 = "TarGZipUnArchiverTest2.txt";

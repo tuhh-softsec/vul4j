@@ -53,7 +53,7 @@ public final class ArchiveEntryUtils
             return;
         }
 
-		if (Java7Reflector.isJava7())
+		if (Java7Reflector.isAtLeastJava7())
 		{
 			try
 			{

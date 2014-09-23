@@ -97,7 +97,8 @@ public class TarFileAttributesTest
         int result = Runtime.getRuntime().exec( "chmod 440 " + tempFile.getAbsolutePath() ).waitFor();
         assertEquals( 0, result );
 
-        TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+		TarArchiver tarArchiver = getPosixCompliantTarArchiver();
+
 
         File tempTarFile = File.createTempFile( "tar-file.", ".tar" );
         toDelete.add( tempTarFile );
@@ -106,8 +107,8 @@ public class TarFileAttributesTest
         tarArchiver.addFile( tempFile, tempFile.getName(), 0660 );
 
         tarArchiver.createArchive();
-        
-        TarArchiver tarArchiver2 = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+
+		TarArchiver tarArchiver2 = getPosixCompliantTarArchiver();
 
         File tempTarFile2 = File.createTempFile( "tar-file.", ".tar" );
         toDelete.add( tempTarFile2 );
@@ -139,7 +140,7 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final String expected = Java7Reflector.isJava7() ? "660" : "644";
+		final String expected = Java7Reflector.isAtLeastJava7() ? "660" : "644";
 
 		assertEquals( "This test will fail if your umask is not X2X (or more)",
 				expected, fileAttributes.getOctalModeString() );
@@ -177,7 +178,7 @@ public class TarFileAttributesTest
 
         assertEquals( 0440, fileAttributes.getOctalMode() );
 
-        TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+        TarArchiver tarArchiver = getPosixCompliantTarArchiver();
 
         File tempTarFile = File.createTempFile( "tar-file.", ".tar" );
         toDelete.add( tempTarFile );
@@ -202,7 +203,7 @@ public class TarFileAttributesTest
 
         fileAttributes = PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final String expected = Java7Reflector.isJava7() ? "440" : "444";
+		final String expected = Java7Reflector.isAtLeastJava7() ? "440" : "444";
 
 		assertEquals( "This test will fail if your umask is not X2X (or more)",
 				expected, fileAttributes.getOctalModeString() );
@@ -241,7 +242,7 @@ public class TarFileAttributesTest
         int result = Runtime.getRuntime().exec( "chmod 440 " + tempFile.getAbsolutePath() ).waitFor();
         assertEquals( 0, result );
 
-        TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+		TarArchiver tarArchiver = getPosixCompliantTarArchiver();
 
         File tempTarFile = File.createTempFile( "tar-file.", ".tar" );
         toDelete.add( tempTarFile );
@@ -267,13 +268,19 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final String expected = Java7Reflector.isJava7() ? "660" : "644";
+		final String expected = Java7Reflector.isAtLeastJava7() ? "660" : "644";
 
 		assertEquals( "This test will fail if your umask is not X2X (or more)",
 				expected, fileAttributes.getOctalModeString() );
     }
 
-    public void testOverrideDetectedFileAttributesUsingFileMode()
+	private TarArchiver getPosixCompliantTarArchiver() throws Exception {
+		TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+		tarArchiver.setLongfile(TarLongFileMode.posix );
+		return tarArchiver;
+	}
+
+	public void testOverrideDetectedFileAttributesUsingFileMode()
         throws Exception
     {
         printTestHeader();
@@ -300,7 +307,7 @@ public class TarFileAttributesTest
         int result = Runtime.getRuntime().exec( "chmod 440 " + tempFile.getAbsolutePath() ).waitFor();
         assertEquals( 0, result );
 
-        TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+		TarArchiver tarArchiver = getPosixCompliantTarArchiver();
 
         File tempTarFile = File.createTempFile( "tar-file.", ".tar" );
         toDelete.add( tempTarFile );
@@ -327,7 +334,7 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final String expected = Java7Reflector.isJava7() ? "660" : "644";
+		final String expected = Java7Reflector.isAtLeastJava7() ? "660" : "644";
 		assertEquals( "This test will fail if your umask is not X2X (or more)",
 				expected, fileAttributes.getOctalModeString() );
     }

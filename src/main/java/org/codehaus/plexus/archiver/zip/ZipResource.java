@@ -1,5 +1,9 @@
 package org.codehaus.plexus.archiver.zip;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
@@ -7,10 +11,6 @@ import org.codehaus.plexus.components.io.attributes.SimpleResourceAttributes;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 public class ZipResource extends AbstractPlexusIoResource
     implements PlexusIoResourceWithAttributes
@@ -22,21 +22,16 @@ public class ZipResource extends AbstractPlexusIoResource
 
     public ZipResource( org.apache.commons.compress.archivers.zip.ZipFile zipFile, ZipArchiveEntry entry )
     {
+        super(entry.getName(),getLastModofied( entry), entry.isDirectory() ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize() ,
+              !entry.isDirectory(), entry.isDirectory(), true);
         this.zipFile = zipFile;
         this.entry = entry;
-        final boolean dir = entry.isDirectory();
-        
-        setName( entry.getName() );
-        
-        setFile( !dir );
-        setDirectory( dir );
-        
-        setExisting( true );
-        setFile( !dir );
-        
+    }
+
+    private static long getLastModofied( ZipArchiveEntry entry )
+    {
         long l = entry.getLastModifiedDate().getTime();
-        setLastModified( l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l );
-        setSize( dir ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize() );
+        return l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l;
     }
 
     public synchronized PlexusIoResourceAttributes getAttributes()
@@ -53,8 +48,7 @@ public class ZipResource extends AbstractPlexusIoResource
         
         if ( attributes == null )
         {
-            attributes = new SimpleResourceAttributes();
-            attributes.setOctalMode( mode );
+            attributes = new SimpleResourceAttributes(null, null,null,null, mode);
         }
         
         return attributes;

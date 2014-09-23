@@ -41,6 +41,11 @@ public interface Archiver
      */
     int DEFAULT_FILE_MODE = UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
 
+    /**
+     * Default value for the symlinkmode attribute.
+     */
+    int DEFAULT_SYMLILNK_MODE = UnixStat.LINK_FLAG | UnixStat.DEFAULT_LINK_PERM;
+
     String ROLE = Archiver.class.getName();
 
     public static final String DUPLICATES_ADD = "add";
@@ -116,6 +121,12 @@ public interface Archiver
      * @since 1.0-alpha-9
      */
     void addFileSet( FileSet fileSet )
+        throws ArchiverException;
+
+    void addSymlink(String symlinkName, String symlinkDestination)
+        throws ArchiverException;
+
+    void addSymlink(String symlinkName, int permissions, String symlinkDestination)
         throws ArchiverException;
 
     void addFile( File inputFile, String destFileName )

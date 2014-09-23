@@ -17,60 +17,26 @@ package org.codehaus.plexus.archiver.tar;
  *
  */
 
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
-
 /**
  * Set of options for long file handling in the task.
  */
-public class TarLongFileMode
-    extends EnumeratedAttribute
+public enum TarLongFileMode
 {
+        warn,
+        fail,
+        truncate,
+        gnu,
+        omit,
+        posix,
+        posix_warn;
 
-    /**
-     * permissible values for longfile attribute
-     */
-    public static final String
-        WARN = "warn",
-        FAIL = "fail",
-        TRUNCATE = "truncate",
-        GNU = "gnu",
-        OMIT = "omit",
-        POSIX = "posix",
-        POSIX_WARN = "posix_warn";
-
-    private final String[] validModes = {WARN, FAIL, TRUNCATE, GNU, OMIT, POSIX, POSIX_WARN};
-
-    /**
-     * Constructor, defaults to "warn"
-     */
-    public TarLongFileMode()
-    {
-        super();
-        try
-        {
-            setValue( WARN );
-        }
-        catch ( ArchiverException ae )
-        {
-            //Do nothing
-        }
-    }
-
-    /**
-     * @return the possible values for this enumerated type.
-     */
-    public String[] getValues()
-    {
-        return validModes;
-    }
 
     /**
      * @return true if value is "truncate".
      */
     public boolean isTruncateMode()
     {
-        return TRUNCATE.equalsIgnoreCase( getValue() );
+        return truncate.equals(this);
     }
 
     /**
@@ -78,7 +44,7 @@ public class TarLongFileMode
      */
     public boolean isWarnMode()
     {
-        return WARN.equalsIgnoreCase( getValue() );
+        return warn.equals(this);
     }
 
     /**
@@ -86,7 +52,7 @@ public class TarLongFileMode
      */
     public boolean isGnuMode()
     {
-        return GNU.equalsIgnoreCase( getValue() );
+        return gnu.equals(this);
     }
 
     /**
@@ -94,7 +60,7 @@ public class TarLongFileMode
      */
     public boolean isFailMode()
     {
-        return FAIL.equalsIgnoreCase( getValue() );
+        return fail.equals(this);
     }
 
     /**
@@ -102,7 +68,7 @@ public class TarLongFileMode
      */
     public boolean isOmitMode()
     {
-        return OMIT.equalsIgnoreCase( getValue() );
+        return omit.equals(this);
     }
 
     /**
@@ -110,7 +76,7 @@ public class TarLongFileMode
      */
     public boolean isPosixMode()
     {
-        return POSIX.equalsIgnoreCase( getValue() );
+        return posix.equals(this);
     }
 
     /**
@@ -118,6 +84,6 @@ public class TarLongFileMode
      */
     public boolean isPosixWarnMode()
     {
-        return POSIX_WARN.equalsIgnoreCase( getValue() );
+        return posix_warn.equals( this );
     }
 }

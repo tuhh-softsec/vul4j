@@ -40,10 +40,10 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
@@ -263,9 +263,9 @@ public class JarArchiver
     public void setFilesetmanifest( FilesetManifestConfig config )
     {
         filesetManifestConfig = config;
-        mergeManifestsMain = "merge".equals( config.getValue() );
+        mergeManifestsMain = FilesetManifestConfig.merge == config;
 
-        if ( ( filesetManifestConfig != null ) && !filesetManifestConfig.getValue().equals( "skip" ) )
+        if ( ( filesetManifestConfig != null ) && filesetManifestConfig != FilesetManifestConfig.skip )
         {
 
             doubleFilePass = true;
@@ -348,7 +348,7 @@ public class JarArchiver
         manifest.write( baos );
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
-        super.zipFile( bais, zOut, MANIFEST_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE );
+        super.zipFile( bais, zOut, MANIFEST_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE, null );
         super.initZipOutputStream( zOut );
     }
 
@@ -449,14 +449,14 @@ public class JarArchiver
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
 
-        super.zipFile( bais, zOut, INDEX_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE );
+        super.zipFile( bais, zOut, INDEX_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE, null );
     }
 
     /**
      * Overridden from Zip class to deal with manifests and index lists.
      */
     protected void zipFile( InputStream is, ZipArchiveOutputStream zOut, String vPath, long lastModified, File fromArchive,
-                            int mode )
+                            int mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
         if ( MANIFEST_NAME.equalsIgnoreCase( vPath ) )
@@ -477,7 +477,7 @@ public class JarArchiver
             {
                 rootEntries.addElement( vPath );
             }
-            super.zipFile( is, zOut, vPath, lastModified, fromArchive, mode );
+            super.zipFile( is, zOut, vPath, lastModified, fromArchive, mode, symlinkDestination );
         }
     }
 
@@ -498,7 +498,7 @@ public class JarArchiver
                 manifest = getManifest( file );
             }
         }
-        else if ( ( filesetManifestConfig != null ) && !filesetManifestConfig.getValue().equals( "skip" ) )
+        else if ( ( filesetManifestConfig != null ) && filesetManifestConfig != FilesetManifestConfig.skip)
         {
             // we add this to our group of fileset manifests
             getLogger().debug( "Found manifest to merge in file " + file );
@@ -602,13 +602,9 @@ public class JarArchiver
         index = false;
     }
 
-    public static class FilesetManifestConfig
-        extends EnumeratedAttribute
+    public enum FilesetManifestConfig
     {
-        public String[] getValues()
-        {
-            return new String[]{ "skip", "merge", "mergewithoutmain" };
-        }
+		skip, merge, mergewithoutmain
     }
 
     /**

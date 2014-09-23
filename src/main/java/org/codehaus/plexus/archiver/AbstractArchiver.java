@@ -36,6 +36,7 @@ import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
@@ -50,6 +51,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.Os;
 
 import static org.codehaus.plexus.archiver.util.DefaultArchivedFileSet.archivedFileSet;
 import static org.codehaus.plexus.archiver.util.DefaultFileSet.fileSet;
@@ -294,6 +296,7 @@ public abstract class AbstractArchiver
         // The PlexusIoFileResourceCollection contains platform-specific File.separatorChar which
         // is an interesting cause of grief, see PLXCOMP-192
         final PlexusIoFileResourceCollection collection = new PlexusIoFileResourceCollection( getLogger() );
+        collection.setFollowingSymLinks( !isSymlinkSupported() );
 
         collection.setIncludes( fileSet.getIncludes() );
         collection.setExcludes( fileSet.getExcludes() );
@@ -317,12 +320,32 @@ public abstract class AbstractArchiver
         addResources( collection );
     }
 
+    private boolean isSymlinkSupported()
+    {
+        return Os.isFamily( Os.FAMILY_UNIX )  &&
+        Java7Reflector.isAtLeastJava7();
+    }
+
     public void addFile( final File inputFile, final String destFileName )
         throws ArchiverException
     {
         final int fileMode = getOverrideFileMode();
 
-        addFile(inputFile, destFileName, fileMode);
+        addFile( inputFile, destFileName, fileMode );
+    }
+
+    public void addSymlink(String symlinkName, String symlinkDestination)
+        throws ArchiverException
+    {
+        final int fileMode = getOverrideFileMode();
+
+        addSymlink(symlinkName, fileMode, symlinkDestination);
+    }
+
+    public void addSymlink(String symlinkName, int permissions, String symlinkDestination)
+        throws ArchiverException
+    {
+        resources.add( ArchiveEntry.createSymlinkEntry( symlinkName, permissions, symlinkDestination ) );
     }
 
     protected ArchiveEntry asArchiveEntry( final PlexusIoResource resource, final String destFileName,
@@ -458,7 +481,6 @@ public abstract class AbstractArchiver
                                 {
                                     nextEntry = (ArchiveEntry) o;
                                 }
-								// TODO: Kr. Make iteartor handle commons compress archive entry. Maybe make
                                 else if ( o instanceof PlexusIoResourceCollection )
                                 {
                                     currentResourceCollection = (PlexusIoResourceCollection) o;
@@ -656,9 +678,8 @@ public abstract class AbstractArchiver
                                              + resources.getClass().getName() );
         }
 
-        final PlexusIoProxyResourceCollection proxy = new PlexusIoProxyResourceCollection();
+        final PlexusIoProxyResourceCollection proxy = new PlexusIoProxyResourceCollection(resources);
 
-        proxy.setSrc( resources );
         proxy.setExcludes( fileSet.getExcludes() );
         proxy.setIncludes( fileSet.getIncludes() );
         proxy.setIncludingEmptyDirectories( fileSet.isIncludingEmptyDirectories() );

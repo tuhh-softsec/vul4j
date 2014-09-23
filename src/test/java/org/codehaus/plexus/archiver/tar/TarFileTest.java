@@ -12,6 +12,7 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.bzip2.BZip2Compressor;
 import org.codehaus.plexus.archiver.gzip.GZipCompressor;
+import org.codehaus.plexus.archiver.util.ArchiverAttributeUtils;
 import org.codehaus.plexus.archiver.util.Compressor;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.util.FileUtils;
@@ -78,7 +79,8 @@ public class TarFileTest
         throws Exception
     {
         File file = new File( "target/output/TarFileTest.tar" );
-        final Archiver archiver = (Archiver) lookup( Archiver.ROLE, "tar" );
+        final TarArchiver archiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+		archiver.setLongfile(TarLongFileMode.posix );
         archiver.setDestFile( file );
         archiver.addDirectory( new File( "src" ) );
         FileUtils.removePath( file.getPath() );
@@ -86,7 +88,7 @@ public class TarFileTest
         if ( compressor != null )
         {
             final File compressedFile = new File( file.getPath() + extension );
-            compressor.setSource( new PlexusIoFileResource( file ) );
+			compressor.setSource( new PlexusIoFileResource( file, ArchiverAttributeUtils.getFileAttributes(file) ) );
             compressor.setDestFile( compressedFile );
             compressor.compress();
             compressor.close();
@@ -97,7 +99,7 @@ public class TarFileTest
         for ( Enumeration en = tarFile.getEntries();  en.hasMoreElements();  )
         {
             final TarArchiveEntry te = (TarArchiveEntry) en.nextElement();
-            if ( te.isDirectory() )
+            if ( te.isDirectory() || te.isSymbolicLink())
             {
                 continue;
             }

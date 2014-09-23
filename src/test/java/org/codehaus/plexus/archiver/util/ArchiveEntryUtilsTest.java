@@ -22,7 +22,7 @@ public class ArchiveEntryUtilsTest extends TestCase {
 
 	public void testChmodWithJava7() throws Exception
 	{
-		if (!Java7Reflector.isJava7()) return; // Require at least java7
+		if (!Java7Reflector.isAtLeastJava7()) return; // Require at least java7
 
 		File temp = File.createTempFile("D$D", "BB$");
 		ArchiveEntryUtils.chmod( temp, 0770, new ConsoleLogger( org.codehaus.plexus.logging.Logger.LEVEL_DEBUG, "foo" ));

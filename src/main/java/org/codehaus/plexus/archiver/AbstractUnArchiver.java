@@ -19,11 +19,13 @@ package org.codehaus.plexus.archiver;
 
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.FilterSupport;
+import org.codehaus.plexus.components.io.attributes.SymlinkUtils;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -290,9 +292,10 @@ public abstract class AbstractUnArchiver
 
     protected void extractFile( final File srcF, final File dir, final InputStream compressedInputStream,
                                 final String entryName, final Date entryDate, final boolean isDirectory,
-                                final Integer mode )
+                                final Integer mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
+        // Hmm. Symlinks re-evaluate back to the original file here. Unsure if this is a good thing...
         final File f = FileUtils.resolveFile( dir, entryName );
 
         try
@@ -309,7 +312,10 @@ public abstract class AbstractUnArchiver
                 dirF.mkdirs();
             }
 
-            if ( isDirectory )
+            if ( !StringUtils.isEmpty( symlinkDestination )){
+                SymlinkUtils.createSymbolicLink( f, new File( symlinkDestination) );
+            }
+            else if ( isDirectory )
             {
                 f.mkdirs();
             }

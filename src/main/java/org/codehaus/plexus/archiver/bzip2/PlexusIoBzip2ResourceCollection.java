@@ -4,7 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.util.HashMap;
 
+import org.codehaus.plexus.components.io.attributes.Java7AttributeUtils;
+import org.codehaus.plexus.components.io.attributes.Java7FileAttributes;
+import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.util.IOUtil;
@@ -38,7 +43,14 @@ public class PlexusIoBzip2ResourceCollection
         }
     }
 
-    protected String getDefaultExtension()
+
+	@Override protected PlexusIoResourceAttributes getAttributes(File file) throws IOException {
+		final PosixFileAttributes posixFileAttributes = Java7AttributeUtils.getPosixFileAttributes(file);
+		PlexusIoResourceAttributes attrs = new Java7FileAttributes(file, posixFileAttributes, new HashMap<Integer, String>(), new HashMap<Integer, String>());
+		return attrs;
+	}
+
+	protected String getDefaultExtension()
     {
         return ".bz2";
     }

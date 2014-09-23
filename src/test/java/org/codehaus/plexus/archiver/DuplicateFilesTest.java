@@ -3,6 +3,8 @@ package org.codehaus.plexus.archiver;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.archiver.tar.TarArchiver;
+import org.codehaus.plexus.archiver.tar.TarLongFileMode;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -65,7 +67,8 @@ public class DuplicateFilesTest
     public void testTarArchiver()
         throws Exception
     {
-        Archiver archiver = (Archiver) lookup( Archiver.ROLE, "tar" );
+        TarArchiver archiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+		archiver.setLongfile(TarLongFileMode.posix );
         archiver.setDuplicateBehavior( Archiver.DUPLICATES_SKIP );
         
         File archive = createArchive( archiver, "tar" );

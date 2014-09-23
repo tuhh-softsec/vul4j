@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Enumeration;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.utils.IOUtils;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
@@ -93,7 +94,12 @@ public abstract class AbstractZipUnArchiver
 
         public boolean isFile()
         {
-            return !zipEntry.isDirectory();
+            return !zipEntry.isDirectory() && !zipEntry.isUnixSymlink();
+        }
+
+        public boolean isSymbolicLink()
+        {
+            return zipEntry.isUnixSymlink();
         }
 
         public InputStream getContents()
@@ -143,7 +149,8 @@ public abstract class AbstractZipUnArchiver
                 {
 					InputStream in = zf.getInputStream( ze );
 					extractFileIfIncluded(getSourceFile(), getDestDirectory(), in, ze.getName(),
-							new Date(ze.getTime()), ze.isDirectory(), ze.getUnixMode() != 0 ? ze.getUnixMode() : null);
+							new Date(ze.getTime()), ze.isDirectory(), ze.getUnixMode() != 0 ? ze.getUnixMode() : null,
+                            resolveSymlink( zf, ze ) );
 					IOUtil.close(in);
 				}
 
@@ -161,16 +168,24 @@ public abstract class AbstractZipUnArchiver
         }
     }
 
+    private String resolveSymlink( ZipFile zf, ZipArchiveEntry ze )
+        throws IOException
+    {
+        if  (ze.isUnixSymlink())
+            return zf.getUnixSymlink( ze );
+        else return null;
+    }
+
     private void extractFileIfIncluded( final File sourceFile, final File destDirectory, final InputStream inputStream,
                                         final String name, final Date time, final boolean isDirectory,
-                                        final Integer mode )
+                                        final Integer mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
         try
         {
             if ( include( inputStream, name ) )
             {
-                extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory, mode );
+                extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory, mode, symlinkDestination );
             }
         }
         catch ( final ArchiveFilterException e )
@@ -204,7 +219,7 @@ public abstract class AbstractZipUnArchiver
                     final InputStream inputStream = zipFile.getInputStream( ze );
                     extractFileIfIncluded( getSourceFile(), outputDirectory, inputStream,
                                            ze.getName(), new Date( ze.getTime() ), ze.isDirectory(),
-                                           ze.getUnixMode() != 0 ? ze.getUnixMode() : null );
+                                           ze.getUnixMode() != 0 ? ze.getUnixMode() : null, resolveSymlink( zipFile, ze ) );
 					IOUtil.close(inputStream);
                 }
             }

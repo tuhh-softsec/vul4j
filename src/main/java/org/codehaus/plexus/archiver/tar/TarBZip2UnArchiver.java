@@ -40,8 +40,7 @@ public class TarBZip2UnArchiver
 
     private void setupCompressionMethod()
     {
-        UntarCompressionMethod untarCompressionMethod = new UntarCompressionMethod( UntarCompressionMethod.BZIP2 );
-        this.setCompression( untarCompressionMethod );
+		this.setCompression(UntarCompressionMethod.BZIP2);
     }
     
 }

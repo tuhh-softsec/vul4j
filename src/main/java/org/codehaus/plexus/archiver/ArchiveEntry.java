@@ -17,15 +17,18 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
+import org.codehaus.plexus.archiver.resources.PlexusIoVirtualSymlinkResource;
+import org.codehaus.plexus.archiver.util.ArchiverAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
+import org.codehaus.plexus.components.io.resources.PlexusIoSymlinkResource;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @version $Revision: 1502 $ $Date$
@@ -38,6 +41,7 @@ public class ArchiveEntry
 
     public static final int DIRECTORY = 2;
 
+    public static final int SYMLINK = 3;
     private final PlexusIoResource resource;
 
     private final String name;
@@ -51,7 +55,7 @@ public class ArchiveEntry
     /**
      * @param name     the filename as it will appear in the archive. This is platform-specific
      *                 normalized with File.separatorChar
-     * @param original original filename
+     * @param resource original filename
      * @param type     FILE or DIRECTORY
      * @param mode     octal unix style permissions
      */
@@ -59,19 +63,19 @@ public class ArchiveEntry
     {
         this.name = name;
         this.resource = resource;
-        this.attributes =
-            ( resource instanceof PlexusIoResourceWithAttributes ) ? ( (PlexusIoResourceWithAttributes) resource ).getAttributes()
-                            : null;
+        this.attributes = ( resource instanceof PlexusIoResourceWithAttributes )
+            ? ( (PlexusIoResourceWithAttributes) resource ).getAttributes() : null;
         this.type = type;
         int permissions = mode;
-        
+
         if ( mode == -1 && this.attributes == null )
         {
-            permissions = resource.isFile() ? Archiver.DEFAULT_FILE_MODE : Archiver.DEFAULT_DIR_MODE;
+            permissions = resource.isFile() ? Archiver.DEFAULT_FILE_MODE
+                : resource.isSymbolicLink() ? Archiver.DEFAULT_SYMLILNK_MODE : Archiver.DEFAULT_DIR_MODE;
         }
-        
+
         this.mode = permissions == -1 ? permissions : ( permissions & UnixStat.PERM_MASK ) |
-                    ( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
+            ( type == FILE ? UnixStat.FILE_FLAG : type == SYMLINK ? UnixStat.LINK_FLAG : UnixStat.DIR_FLAG );
     }
 
     /**
@@ -85,8 +89,8 @@ public class ArchiveEntry
     /**
      * @return The original file that will be stored in the archive.
      * @deprecated As of 1.0-alpha-10, file entries are no longer backed
-     *   by files, but by instances of {@link PlexusIoResource}.
-     *   Consequently, you should use {@link #getInputStream()}-
+     *             by files, but by instances of {@link PlexusIoResource}.
+     *             Consequently, you should use {@link #getInputStream()}-
      */
     public File getFile()
     {
@@ -107,8 +111,6 @@ public class ArchiveEntry
     }
     
     /**
-     * TODO: support for SYMLINK?
-     *
      * @return FILE or DIRECTORY
      */
     public int getType()
@@ -131,8 +133,9 @@ public class ArchiveEntry
             return attributes.getOctalMode();
         }
         
-        return ( ( type == FILE ? Archiver.DEFAULT_FILE_MODE : Archiver.DEFAULT_DIR_MODE ) & UnixStat.PERM_MASK )
-            | ( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
+        return ( ( type == FILE ? Archiver.DEFAULT_FILE_MODE
+            : type == SYMLINK ? Archiver.DEFAULT_SYMLILNK_MODE : Archiver.DEFAULT_DIR_MODE ) & UnixStat.PERM_MASK ) |
+            ( type == FILE ? UnixStat.FILE_FLAG : type == SYMLINK ? UnixStat.LINK_FLAG : UnixStat.DIR_FLAG );
     }
 
     public static ArchiveEntry createFileEntry( String target, PlexusIoResource resource, int permissions )
@@ -142,7 +145,8 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Not a file: " + resource.getName() );
         }
-        return new ArchiveEntry( target, resource, FILE, permissions );
+        final int type = resource.isSymbolicLink() ? SYMLINK : FILE;
+        return new ArchiveEntry( target, resource, type, permissions );
     }
 
     public static ArchiveEntry createFileEntry( String target, File file, int permissions )
@@ -174,7 +178,8 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Not a directory: " + resource.getName() );
         }
-        return new ArchiveEntry( target, resource, DIRECTORY, permissions );
+        final int type = resource.isSymbolicLink() ? SYMLINK : DIRECTORY;
+        return new ArchiveEntry( target, resource, type, permissions );
     }
 
     public static ArchiveEntry createDirectoryEntry( String target, final File file, int permissions )
@@ -184,18 +189,8 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Not a directory: " + file );
         }
-        
-        PlexusIoResourceAttributes attrs;
-        try
-        {
-            attrs = PlexusIoResourceAttributeUtils.getFileAttributes( file );
-        }
-        catch ( IOException e )
-        {
-            throw new ArchiverException( "Failed to read filesystem attributes for: " + file, e );
-        }
-        
-        final PlexusIoFileResource res = new PlexusIoFileResource( file, attrs );
+
+		final PlexusIoFileResource res = new PlexusIoFileResource( file, ArchiverAttributeUtils.getFileAttributes(file));
         return new ArchiveEntry( target, res, DIRECTORY, permissions );
     }
 
@@ -216,6 +211,13 @@ public class ArchiveEntry
         }
     }
     
+    public static ArchiveEntry createSymlinkEntry(String symlinkName, int permissions, String symlinkDestination)
+    {
+		File symlinkFile = new File(symlinkName);
+		final ArchiveEntry archiveEntry = new ArchiveEntry(symlinkName, new PlexusIoVirtualSymlinkResource(symlinkFile, symlinkDestination), SYMLINK, permissions);
+		return archiveEntry;
+    }
+
     public PlexusIoResourceAttributes getResourceAttributes()
     {
         return attributes;

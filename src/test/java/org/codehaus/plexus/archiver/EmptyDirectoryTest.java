@@ -25,6 +25,8 @@ package org.codehaus.plexus.archiver;
  */
 
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.archiver.tar.TarArchiver;
+import org.codehaus.plexus.archiver.tar.TarLongFileMode;
 
 import java.io.File;
 
@@ -38,7 +40,7 @@ public class EmptyDirectoryTest
     public void testZipArchiver()
         throws Exception
     {
-        testEmptyDirectory( "zip" );
+        testEmptyDirectory( "zip", (Archiver) lookup( Archiver.ROLE, "zip"));
     }
 
     public void testJarArchiver()
@@ -51,20 +53,21 @@ public class EmptyDirectoryTest
     public void testTarArchiver()
         throws Exception
     {
-        testEmptyDirectory( "tar" );
+		final TarArchiver tar = (TarArchiver) lookup(Archiver.ROLE, "tar");
+		tar.setLongfile(TarLongFileMode.posix );
+		testEmptyDirectory("tar", tar);
     }
 
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
 
-    private void testEmptyDirectory( String role )
+    private void testEmptyDirectory(String role, Archiver archiver)
         throws Exception
     {
-        Archiver archiver = (Archiver) lookup( Archiver.ROLE, role );
 
-        // Should default to true...
-        assertTrue( archiver.getIncludeEmptyDirs() );
+		// Should default to true...
+        assertTrue(archiver.getIncludeEmptyDirs());
 
         // create an empty directory to store in the zip archive
         File emptyDir = getTestFile( "target/output/emptyTest/TmpEmptyDir" );
@@ -75,7 +78,7 @@ public class EmptyDirectoryTest
             emptyDir.delete();
         }
         emptyDir.mkdirs();
-        archiver.addDirectory( emptyDir.getParentFile() );
+        archiver.addDirectory(emptyDir.getParentFile());
 
         File archive = getTestFile( "target/output/emptyDirArchive.zip" );
         if ( archive.exists() )
@@ -83,7 +86,7 @@ public class EmptyDirectoryTest
             archive.delete();
         }
 
-        archiver.setDestFile( archive );
+        archiver.setDestFile(archive);
         archiver.createArchive();
 
         // delete the empty dir, we will extract it from the archive

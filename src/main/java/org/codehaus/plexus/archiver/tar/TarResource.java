@@ -22,30 +22,23 @@ public class TarResource
 
     public TarResource( TarFile tarFile, TarArchiveEntry entry )
     {
+        super(entry.getName(), getLastModifiedTime( entry ),  entry.isDirectory() ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize(),
+              !entry.isDirectory(), entry.isDirectory(), true);
         this.tarFile = tarFile;
         this.entry = entry;
-        final boolean dir = entry.isDirectory();
+    }
 
-        setName( entry.getName() );
-        setDirectory( dir );
-        setExisting( true );
-        setFile( !dir );
-
+    private static long getLastModifiedTime( TarArchiveEntry entry )
+    {
         long l = entry.getModTime().getTime();
-        setLastModified( l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l );
-        setSize( dir ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize() );
+        return l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l;
     }
 
     public synchronized PlexusIoResourceAttributes getAttributes()
     {
         if ( attributes == null )
         {
-            attributes = new SimpleResourceAttributes();
-            attributes.setUserId( entry.getUserId() );
-            attributes.setUserName( entry.getUserName() );
-            attributes.setGroupId( entry.getGroupId() );
-            attributes.setGroupName( entry.getGroupName() );
-            attributes.setOctalMode( entry.getMode() );
+            attributes = new SimpleResourceAttributes(entry.getUserId(), entry.getUserName(), entry.getGroupId(), entry.getGroupName(), entry.getMode());
         }
 
         return attributes;
