@@ -4,15 +4,16 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.attributes.SimpleResourceAttributes;
-import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResourceWithAttributes;
+import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class ZipResource
-    extends AbstractPlexusIoResourceWithAttributes
+public class ZipResource extends AbstractPlexusIoResource
+    implements PlexusIoResourceWithAttributes
 {
 
     private final org.apache.commons.compress.archivers.zip.ZipFile zipFile;
