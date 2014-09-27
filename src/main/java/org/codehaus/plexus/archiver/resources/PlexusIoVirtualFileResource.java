@@ -1,7 +1,7 @@
 package org.codehaus.plexus.archiver.resources;
 
 /*
- * Copyright 2007 The Codehaus Foundation.
+ * Copyright 2014 The Codehaus Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
