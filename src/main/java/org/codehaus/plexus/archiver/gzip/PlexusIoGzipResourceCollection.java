@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
@@ -44,7 +45,7 @@ public class PlexusIoGzipResourceCollection
     }
 
 	@Override protected PlexusIoResourceAttributes getAttributes(File file) throws IOException {
-		final PosixFileAttributes posixFileAttributes = Java7AttributeUtils.getPosixFileAttributes(file);
+		final BasicFileAttributes posixFileAttributes = Java7AttributeUtils.getFileAttributes( file );
 		PlexusIoResourceAttributes attrs = new Java7FileAttributes(file, posixFileAttributes, new HashMap<Integer, String>(), new HashMap<Integer, String>());
 		return attrs;
 	}
