@@ -21,7 +21,6 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.CRC32;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipEncoding;
@@ -534,7 +533,8 @@ public abstract class AbstractZipArchiver
 
             if (ze.isUnixSymlink()){
                 zOut.putArchiveEntry( ze );
-                final byte[] bytes = symlinkDestination.getBytes(); // encoding ??
+                ZipEncoding enc = ZipEncodingHelper.getZipEncoding( getEncoding() );
+                final byte[] bytes =  enc.encode( symlinkDestination).array();
                 zOut.write( bytes, 0, bytes.length);
             } else if (zOut.isSeekable() || compressThis) {
                 zOut.putArchiveEntry( ze );
