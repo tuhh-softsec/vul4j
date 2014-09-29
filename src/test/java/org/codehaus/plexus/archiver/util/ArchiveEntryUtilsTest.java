@@ -9,12 +9,14 @@ import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.util.Os;
 
 public class ArchiveEntryUtilsTest extends TestCase {
 
 	public void testChmodForFileWithDollarPLXCOMP164() throws Exception
 	{
 
+        if ( Os.isFamily( Os.FAMILY_WINDOWS )) return;
 		File temp = File.createTempFile("A$A", "BB$");
 		ArchiveEntryUtils.chmod( temp, 0770, new ConsoleLogger( org.codehaus.plexus.logging.Logger.LEVEL_DEBUG, "foo" ), false);
 		assert0770(temp);
@@ -23,8 +25,10 @@ public class ArchiveEntryUtilsTest extends TestCase {
 	public void testChmodWithJava7() throws Exception
 	{
 		if (!Java7Reflector.isAtLeastJava7()) return; // Require at least java7
+        if ( Os.isFamily( Os.FAMILY_WINDOWS )) return;
 
-		File temp = File.createTempFile("D$D", "BB$");
+
+        File temp = File.createTempFile("D$D", "BB$");
 		ArchiveEntryUtils.chmod( temp, 0770, new ConsoleLogger( org.codehaus.plexus.logging.Logger.LEVEL_DEBUG, "foo" ));
 		assert0770(temp);
 	}

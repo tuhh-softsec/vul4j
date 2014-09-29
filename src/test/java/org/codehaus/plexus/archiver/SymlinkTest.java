@@ -6,6 +6,7 @@ import org.codehaus.plexus.archiver.tar.TarLongFileMode;
 import org.codehaus.plexus.archiver.tar.TarUnArchiver;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
+import org.codehaus.plexus.util.Os;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -18,6 +19,7 @@ public class SymlinkTest
 {
 
     public void testSymlinkDir(){
+        if ( Os.isFamily( Os.FAMILY_WINDOWS )) return;
         File dummyContent = getTestFile( "src/test/resources/symlinks/src/symDir" );
         assertTrue( dummyContent.isDirectory());
         assertTrue( Files.isSymbolicLink( dummyContent.toPath()));
@@ -25,6 +27,7 @@ public class SymlinkTest
     }
 
     public void testSymlinkFile(){
+        if ( Os.isFamily( Os.FAMILY_WINDOWS )) return;
         File dummyContent = getTestFile( "src/test/resources/symlinks/src/symR" );
         assertFalse( dummyContent.isDirectory() );
         assertTrue( Files.isSymbolicLink( dummyContent.toPath()));
