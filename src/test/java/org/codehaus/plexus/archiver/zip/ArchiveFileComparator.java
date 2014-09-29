@@ -125,7 +125,7 @@ public class ArchiveFileComparator
 			final String name2 = prefix == null ? name1 : (prefix + name1);
 			ZipArchiveEntry ze1 = (ZipArchiveEntry) map1.get(name1);
 			ZipArchiveEntry ze2 = (ZipArchiveEntry) map2.remove(name2);
-			Assert.assertNotNull(ze2);
+			Assert.assertNotNull("Missing " + name1 + "in file 2",  ze2);
 			assertEquals(file1, ze1, file2, ze2);
 		}
         Assert.assertTrue( map2.isEmpty() );
