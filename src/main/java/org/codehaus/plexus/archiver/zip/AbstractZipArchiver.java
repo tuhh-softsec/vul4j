@@ -444,15 +444,16 @@ public abstract class AbstractZipArchiver
         }
     }
 
-    private void readWithZipStats(InputStream in, byte[] header, ZipArchiveEntry ze, ByteArrayOutputStream bos) throws IOException {
+    private void readWithZipStats( InputStream in, byte[] header, int headerRead, ZipArchiveEntry ze,
+                                   ByteArrayOutputStream bos ) throws IOException {
         byte[] buffer = new byte[8 * 1024];
 
         CRC32 cal2 = new CRC32();
 
         long size = 0;
 
-        for (byte aHeader : header) {
-            cal2.update(aHeader);
+        for (int i = 0; i < headerRead; i++){
+            cal2.update(header[i]);
             size++;
         }
 
@@ -544,7 +545,7 @@ public abstract class AbstractZipArchiver
                 if (in.markSupported())
                 {
                     in.mark( Integer.MAX_VALUE );
-                    readWithZipStats(in, header, ze, null);
+                    readWithZipStats(in, header, read, ze, null);
                     in.reset();
                     zOut.putArchiveEntry( ze);
                     if (read > 0) zOut.write(header, 0, read);
@@ -553,8 +554,9 @@ public abstract class AbstractZipArchiver
                 else
                 {
                     // Store data into a byte[]
+                    // todo: explain how on earth this code works with zip streams > 128KB ???
                     ByteArrayOutputStream bos = new ByteArrayOutputStream(128 * 1024);
-                    readWithZipStats(in, header, ze, bos);
+                    readWithZipStats(in, header,read, ze, bos);
                     zOut.putArchiveEntry(ze);
                     if (read > 0) zOut.write(header, 0, read);
                     bos.writeTo( zOut);

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.archiver.FileSet;
 
 public class JarArchiverTest
     extends TestCase
@@ -27,6 +28,18 @@ public class JarArchiverTest
 
         archiver.addConfiguredManifest( manifest );
 
+        archiver.createArchive();
+    }
+
+    public void testNonCompressed()
+        throws IOException, ManifestException, ArchiverException
+    {
+        File jarFile = new File("target/output/jarArchiveNonCompressed.jar" );
+
+        JarArchiver archiver = new JarArchiver();
+        archiver.setDestFile( jarFile );
+        archiver.setCompress( false );
+        archiver.addDirectory( new File( "src/test/resources/mjar179" ) );
         archiver.createArchive();
     }
 

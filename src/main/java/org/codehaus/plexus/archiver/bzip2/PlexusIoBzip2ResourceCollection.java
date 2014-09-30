@@ -46,9 +46,7 @@ public class PlexusIoBzip2ResourceCollection
 
 
 	@Override protected PlexusIoResourceAttributes getAttributes(File file) throws IOException {
-		final BasicFileAttributes posixFileAttributes = Java7AttributeUtils.getFileAttributes( file );
-		PlexusIoResourceAttributes attrs = new Java7FileAttributes(file, posixFileAttributes, new HashMap<Integer, String>(), new HashMap<Integer, String>());
-		return attrs;
+        return new Java7FileAttributes(file, new HashMap<Integer, String>(), new HashMap<Integer, String>());
 	}
 
 	protected String getDefaultExtension()
