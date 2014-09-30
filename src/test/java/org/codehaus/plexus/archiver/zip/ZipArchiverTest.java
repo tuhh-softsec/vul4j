@@ -409,13 +409,12 @@ public class ZipArchiverTest
 	public void testCreateResourceCollection()
         throws Exception
     {
-        if ( Os.isFamily( Os.FAMILY_WINDOWS )) return;  // THe
-
         final File srcDir = new File("src");
         final File zipFile = new File( "target/output/src.zip" );
         ZipArchiver zipArchiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
         zipArchiver.setDestFile( zipFile );
         zipArchiver.addDirectory( srcDir, null, FileUtils.getDefaultExcludes() );
+        zipArchiver.setEncoding( "UTF-8" );
         FileUtils.removePath( zipFile.getPath() );
         zipArchiver.createArchive();
 
@@ -423,6 +422,7 @@ public class ZipArchiverTest
         ZipArchiver zipArchiver2 = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
         zipArchiver2.setDestFile( zipFile2 );
         zipArchiver2.addArchivedFileSet( zipFile, "prfx/" );
+        zipArchiver2.setEncoding( "UTF-8" );
         FileUtils.removePath( zipFile2.getPath() );
         zipArchiver2.createArchive();
 
