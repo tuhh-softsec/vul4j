@@ -107,7 +107,7 @@ public class XmlWriterToTree implements XmlWriter {
 
     @Override
     public void writeNamespace(String prefix, String namespaceURI) {
-        if ("".equals(prefix)) {
+        if ("".equals(prefix) || prefix == null) {
             writeAttribute(null, XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns", namespaceURI);
         }
         else {
