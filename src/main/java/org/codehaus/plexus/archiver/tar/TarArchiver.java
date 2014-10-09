@@ -284,8 +284,6 @@ public class TarArchiver
             long teLastModified = entry.getResource().getLastModified();
             te.setModTime( teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
                                : teLastModified );
-            te.setModTime(teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
-                    : teLastModified);
 
             if (entry.getType() == ArchiveEntry.SYMLINK){
                 te.setSize( 0 );
