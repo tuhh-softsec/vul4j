@@ -269,20 +269,28 @@ public class TarArchiverTest
     public void testCreateArchive()
         throws Exception
     {
-		TarArchiver archiver = getPosixTarArchiver();
+        createArchive(0500, new int[] {0400, 0640, 0664});
+        createArchive(0500, new int[] {0400, 0640, 0664});
+    }
 
-        archiver.setDirectoryMode( 0500 );
-        archiver.getOptions().setDirMode( 0500 );
+    public void createArchive(final int directoryMode, final int fileModes[])
+        throws Exception
+    {
+        int defaultFileMode = fileModes[0];
+        int oneFileMode = fileModes[1];
+        int twoFileMode = fileModes[2];
 
-        archiver.setFileMode( 0400 );
-        archiver.getOptions().setMode( 0400 );
+        TarArchiver archiver = getPosixTarArchiver();
+
+        archiver.setDirectoryMode( directoryMode );
+
+        archiver.setFileMode( defaultFileMode );
 
         archiver.addDirectory( getTestFile( "src" ) );
-        archiver.setFileMode( 0640 );
-        archiver.getOptions().setMode( 0640 );
+        archiver.setFileMode( oneFileMode );
 
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "one.txt" );
-        archiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), "two.txt", 0664 );
+        archiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), "two.txt", twoFileMode );
         archiver.setDestFile( getTestFile( "target/output/archive.tar" ) );
 
         archiver.addSymlink("link_to_test_destinaton", "../test_destination/");
@@ -298,7 +306,7 @@ public class TarArchiverTest
         {
             if ( te.isDirectory() )
             {
-                assertEquals( "un-expected tar-entry mode for [te.name=" + te.getName() + "]", 0500,
+                assertEquals( "un-expected tar-entry mode for [te.name=" + te.getName() + "]", directoryMode,
                               te.getMode() & UnixStat.PERM_MASK );
             }
             else if ( te.isSymbolicLink() )
@@ -311,15 +319,15 @@ public class TarArchiverTest
             {
                 if ( te.getName().equals( "one.txt" ) )
                 {
-                    assertEquals( 0640, te.getMode() & UnixStat.PERM_MASK );
+                    assertEquals( oneFileMode, te.getMode() & UnixStat.PERM_MASK );
                 }
                 else if ( te.getName().equals( "two.txt" ) )
                 {
-                    assertEquals( 0664, te.getMode() & UnixStat.PERM_MASK );
+                    assertEquals( twoFileMode, te.getMode() & UnixStat.PERM_MASK );
                 }
                 else
                 {
-                    assertEquals( "un-expected tar-entry mode for [te.name=" + te.getName() + "]", 0400,
+                    assertEquals( "un-expected tar-entry mode for [te.name=" + te.getName() + "]", defaultFileMode,
                                   te.getMode() & UnixStat.PERM_MASK );
                 }
 
@@ -334,13 +342,10 @@ public class TarArchiverTest
 		TarArchiver archiver = getPosixTarArchiver();
 
 		archiver.setDirectoryMode( 0500 );
-		archiver.getOptions().setDirMode( 0500 );
 
 		archiver.setFileMode( 0400 );
-		archiver.getOptions().setMode( 0400 );
 
 		archiver.setFileMode( 0640 );
-		archiver.getOptions().setMode( 0640 );
 
 		archiver.setDestFile( getTestFile( "target/output/symlinkarchive.tar" ) );
 
