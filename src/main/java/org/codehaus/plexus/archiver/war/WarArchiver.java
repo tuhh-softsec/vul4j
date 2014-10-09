@@ -53,16 +53,30 @@ public class WarArchiver
     /**
      * flag set if finding the webxml is to be expected.
      */
-    private boolean ignoreWebxml = true;
+    private boolean expectWebXml = true;
 
     /**
      * flag set if the descriptor is added
      */
     private boolean descriptorAdded;
 
-    public void setIgnoreWebxml( boolean ignore )
+    /*
+     * @deprecated Use setExpectWebXml instead !
+     * @param excpectWebXml true if web xml is *expected* from the client
+     */
+    @Deprecated
+    public void setIgnoreWebxml( boolean excpectWebXml )
     {
-        ignoreWebxml = ignore;
+        expectWebXml = excpectWebXml;
+    }
+
+    /*.
+     * Indicates if the client is required to supply web.xml
+     * @param excpectWebXml true if web xml is *expected* from the client
+     */
+    public void setExpectWebXml( boolean expectWebXml )
+    {
+        this.expectWebXml = expectWebXml;
     }
 
     public WarArchiver()
@@ -143,7 +157,7 @@ public class WarArchiver
         throws IOException, ArchiverException
     {
         // If no webxml file is specified, it's an error.
-        if ( ignoreWebxml && deploymentDescriptor == null && !isInUpdateMode() )
+        if ( expectWebXml && deploymentDescriptor == null && !isInUpdateMode() )
         {
             throw new ArchiverException( "webxml attribute is required (or pre-existing WEB-INF/web.xml if executing in update mode)" );
         }
@@ -162,7 +176,7 @@ public class WarArchiver
         // by the "webxml" attribute and in a <fileset> element.
         if ( vPath.equalsIgnoreCase( "WEB-INF/web.xml" ) )
         {
-            if ( descriptorAdded || ( ignoreWebxml
+            if ( descriptorAdded || ( expectWebXml
                  && ( deploymentDescriptor == null
                      || !ResourceUtils.isCanonicalizedSame( entry.getResource(), deploymentDescriptor ) ) ) )
             {
@@ -190,7 +204,7 @@ public class WarArchiver
     protected void cleanUp()
     {
         descriptorAdded = false;
-        ignoreWebxml = true;
+        expectWebXml = true;
         super.cleanUp();
     }
 }
