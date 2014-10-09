@@ -304,8 +304,6 @@ public class TarArchiver
                                 : options.getUserName() );
             te.setGroupName((attributes != null && attributes.getGroupName() != null) ? attributes.getGroupName()
 					: options.getGroup());
-            te.setGroupName( ( attributes != null && attributes.getGroupName() != null ) ? attributes.getGroupName()
-                            : options.getGroup() );
 
             final int userId =
                 ( attributes != null && attributes.getUserId() != null ) ? attributes.getUserId() : options.getUid();
