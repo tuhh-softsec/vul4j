@@ -149,8 +149,7 @@ public class ZipArchiverTest
             
             File zipFile = getTestFile( "target/output/zip-with-modes.zip" );
             
-            ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
-            archiver.setDestFile( zipFile );
+            ZipArchiver archiver = getZipArchiver(zipFile);
 
             archiver.addDirectory( tmpDir );
             archiver.createArchive();
@@ -159,7 +158,7 @@ public class ZipArchiverTest
             
             File zipFile2 = getTestFile( "target/output/zip-with-modes-L2.zip" );
             
-            archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+            archiver = getZipArchiver();
             archiver.setDestFile( zipFile2 );
 
             archiver.addArchivedFileSet( zipFile );
@@ -206,7 +205,26 @@ public class ZipArchiverTest
             }
         }
     }
-    
+
+    private ZipArchiver getZipArchiver()
+    {
+        try
+        {
+            return (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
+    private ZipArchiver getZipArchiver(File destFile)
+    {
+        final ZipArchiver zipArchiver = getZipArchiver();
+        zipArchiver.setDestFile(  destFile );
+        return zipArchiver;
+    }
+
     private void writeFile( File dir, String fname, int mode )
         throws IOException, ArchiverException
     {
@@ -240,7 +258,7 @@ public class ZipArchiverTest
     }
 
     private ZipArchiver newArchiver( String name ) throws Exception {
-        ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        ZipArchiver archiver = getZipArchiver(getTestFile( "target/output/" + name ));
 
         archiver.setFileMode( 0640 );
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "one.txt" );
@@ -257,8 +275,6 @@ public class ZipArchiverTest
         archiver.setDirectoryMode( 0500 );
         archiver.setFileMode( 0400 );
         archiver.addDirectory( getTestFile( "src" ) );
-
-        archiver.setDestFile( getTestFile( "target/output/" + name ) );
 
         return archiver;
     }
@@ -397,8 +413,7 @@ public class ZipArchiverTest
 		final File zipFile = new File( "target/output/zz1.zip" );
 
 		final File zipFile2 = new File( "target/output/zz2.zip" );
-		ZipArchiver zipArchiver2 = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
-		zipArchiver2.setDestFile( zipFile2 );
+		ZipArchiver zipArchiver2 = getZipArchiver(zipFile2);
 
 		// Bugbug: This does not work on 1.8....?
 		zipArchiver2.addArchivedFileSet( zipFile );
@@ -411,16 +426,14 @@ public class ZipArchiverTest
     {
         final File srcDir = new File("src");
         final File zipFile = new File( "target/output/src.zip" );
-        ZipArchiver zipArchiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
-        zipArchiver.setDestFile( zipFile );
+        ZipArchiver zipArchiver = getZipArchiver(zipFile);
         zipArchiver.addDirectory( srcDir, null, FileUtils.getDefaultExcludes() );
         zipArchiver.setEncoding( "UTF-8" );
         FileUtils.removePath( zipFile.getPath() );
         zipArchiver.createArchive();
 
         final File zipFile2 = new File( "target/output/src2.zip" );
-        ZipArchiver zipArchiver2 = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
-        zipArchiver2.setDestFile( zipFile2 );
+        ZipArchiver zipArchiver2 = getZipArchiver(zipFile2);
         zipArchiver2.addArchivedFileSet( zipFile, "prfx/" );
         zipArchiver2.setEncoding( "UTF-8" );
         FileUtils.removePath( zipFile2.getPath() );
@@ -431,5 +444,22 @@ public class ZipArchiverTest
         ArchiveFileComparator.assertEquals( cmp1, cmp2, "prfx/" );
         cmp1.close();
         cmp2.close();
+    }
+
+    public void testDefaultUTF8()
+        throws IOException
+    {
+        final ZipArchiver zipArchiver = getZipArchiver( new File( "target/output/utf8-default.zip" ) );
+        zipArchiver.addDirectory( new File("src/test/resources/miscUtf8") );
+        zipArchiver.createArchive();
+    }
+
+    public void testDefaultUTF8withUTF8()
+        throws IOException
+    {
+        final ZipArchiver zipArchiver = getZipArchiver( new File( "target/output/utf8-with_utf.zip" ) );
+        zipArchiver.setEncoding( "UTF-8" );
+        zipArchiver.addDirectory( new File("src/test/resources/miscUtf8") );
+        zipArchiver.createArchive();
     }
 }
