@@ -140,10 +140,10 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final String expected = Java7Reflector.isAtLeastJava7() ? "660" : "644";
+		final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
 
 		assertEquals( "This test will fail if your umask is not X2X (or more)",
-				expected, fileAttributes.getOctalModeString() );
+				expected, fileAttributes.getOctalMode() );
     }
 
     public void testUseDetectedFileAttributes()
@@ -203,10 +203,10 @@ public class TarFileAttributesTest
 
         fileAttributes = PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final String expected = Java7Reflector.isAtLeastJava7() ? "440" : "444";
+		final int expected = Java7Reflector.isAtLeastJava7() ? 0440 : 0444;
 
 		assertEquals( "This test will fail if your umask is not X2X (or more)",
-				expected, fileAttributes.getOctalModeString() );
+				expected, fileAttributes.getOctalMode() );
     }
 
     private boolean checkForWindows()
@@ -268,10 +268,10 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final String expected = Java7Reflector.isAtLeastJava7() ? "660" : "644";
+		final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
 
 		assertEquals( "This test will fail if your umask is not X2X (or more)",
-				expected, fileAttributes.getOctalModeString() );
+				expected, fileAttributes.getOctalMode() );
     }
 
 	private TarArchiver getPosixCompliantTarArchiver() throws Exception {
@@ -334,9 +334,9 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final String expected = Java7Reflector.isAtLeastJava7() ? "660" : "644";
+		final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
 		assertEquals( "This test will fail if your umask is not X2X (or more)",
-				expected, fileAttributes.getOctalModeString() );
+				expected, fileAttributes.getOctalMode() );
     }
 
 }
