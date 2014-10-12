@@ -149,7 +149,7 @@ public class TarArchiver
 
         final OutputStream bufferedOutputStream = new BufferedOutputStream( new FileOutputStream( tarFile ) );
         tOut =
-            new TarArchiveOutputStream( compress( compression, bufferedOutputStream ) );
+            new TarArchiveOutputStream( compress( compression, bufferedOutputStream ), "UTF8" );
         if ( longFileMode.isTruncateMode() )
         {
             tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_TRUNCATE );
