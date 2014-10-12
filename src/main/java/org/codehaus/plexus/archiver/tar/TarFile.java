@@ -174,7 +174,7 @@ public class TarFile
     private void open()
         throws IOException
     {
-        inputStream = new TarArchiveInputStream( getInputStream( file ) );
+        inputStream = new TarArchiveInputStream( getInputStream( file ), "UTF8" );
     }
 
     private boolean findEntry( TarArchiveEntry entry, TarArchiveEntry currentEntry)

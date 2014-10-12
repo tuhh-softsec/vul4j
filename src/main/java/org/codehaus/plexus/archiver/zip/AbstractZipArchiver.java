@@ -295,6 +295,7 @@ public abstract class AbstractZipArchiver
             BufferedOutputStream buffered = new BufferedOutputStream( out, 65536 );
             zOut = new ZipArchiveOutputStream( buffered );
 
+            zOut.setCreateUnicodeExtraFields( ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NOT_ENCODEABLE );
             zOut.setEncoding( encoding );
             if ( doCompress )
             {
