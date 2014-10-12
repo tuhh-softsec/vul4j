@@ -75,7 +75,6 @@ public interface Archiver
      * Obsolete, use {@link #addFileSet(FileSet)}.
      * You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
-     * @deprecated  Will go away in next major version
      */
     @Deprecated
     void addDirectory( File directory )
@@ -85,7 +84,6 @@ public interface Archiver
      * Obsolete, use {@link #addFileSet(FileSet)}.
      * You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
-     * @deprecated  Will go away in next major version
      */
     @Deprecated
     void addDirectory( File directory, String prefix )
@@ -94,7 +92,6 @@ public interface Archiver
     /**
      * Obsolete, use {@link #addFileSet(FileSet)}.You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
-     * @deprecated  Will go away in next major version
      */
     @Deprecated
     void addDirectory( File directory, String[] includes, String[] excludes )
@@ -104,7 +101,6 @@ public interface Archiver
      * Obsolete, use {@link #addFileSet(FileSet)}.
      * You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
-     * @deprecated  Will go away in next major version
      */
     @Deprecated
     void addDirectory( File directory, String prefix, String[] includes, String[] excludes )
