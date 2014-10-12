@@ -51,7 +51,7 @@ public abstract class AbstractZipArchiver
      * Encoding to use for filenames, defaults to the platform's
      * default encoding.
      */
-    private String encoding;
+    private String encoding = "UTF8";
 
     private boolean doCompress = true;
 
