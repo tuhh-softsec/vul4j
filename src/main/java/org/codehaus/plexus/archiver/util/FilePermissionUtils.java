@@ -57,7 +57,7 @@ public class FilePermissionUtils
 
         
         
-        List modes = new ArrayList(mode.length());
+        List<String> modes = new ArrayList<String>(mode.length());
         for (int i = 0,size = mode.length();i<size;i++)
         {
             modes.add( String.valueOf( mode.charAt( i ) ) );
@@ -69,7 +69,7 @@ public class FilePermissionUtils
         // handle user perm
         try
         {
-            int userMode = Integer.valueOf((String) modes.get(mode.length() == 4 ? 1 : 0));
+            int userMode = Integer.valueOf(modes.get(mode.length() == 4 ? 1 : 0));
             switch ( userMode )
             {
                 case 0 :
@@ -113,7 +113,7 @@ public class FilePermissionUtils
         // handle all perm
         try
         {
-            int allMode = Integer.valueOf((String) modes.get(mode.length() == 4 ? 3 : 2));
+            int allMode = Integer.valueOf(modes.get(mode.length() == 4 ? 3 : 2));
             switch ( allMode )
             {
                 case 0 :

@@ -146,7 +146,14 @@ public final class ArchiveEntryUtils
     private static void applyPermissionsWithJvm( final File file, final String mode, final Logger logger )
         throws ArchiverException
     {
-        final FilePermission filePermission = FilePermissionUtils.getFilePermissionFromMode( mode, logger );
+        final FilePermission filePermission;
+        try
+        {
+             filePermission = FilePermissionUtils.getFilePermissionFromMode(mode, logger);
+        } catch (IllegalArgumentException e)
+        {
+            throw new ArchiverException("Problem getting permission from mode for " + file.getPath(), e);
+        }
 
         Method method;
         try
