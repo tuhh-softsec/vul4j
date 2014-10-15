@@ -239,7 +239,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     protected final void canonicalizeSubTree(
         Node currentNode, NameSpaceSymbTable ns, Node endnode, int documentLevel
     ) throws CanonicalizationException, IOException {
-        if (isVisibleInt(currentNode) == -1) {
+        if (currentNode == null || isVisibleInt(currentNode) == -1) {
             return;
         }
         Node sibling = null;

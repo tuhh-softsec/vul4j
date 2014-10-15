@@ -2305,7 +2305,6 @@ public class XMLCipher {
                 result.setKeyInfo(ki);
             }
 
-            // TODO: Implement
             Element encryptionPropertiesElement =
                 (Element) element.getElementsByTagNameNS(
                     EncryptionConstants.EncryptionSpecNS,
@@ -3386,8 +3385,19 @@ public class XMLCipher {
                 if (null != id) {
                     result.setAttributeNS(null, EncryptionConstants._ATT_ID, id);
                 }
-                // TODO: figure out the anyAttribyte stuff...
-                // TODO: figure out the any stuff...
+                
+                if (!attributeMap.isEmpty()) {
+                    for (String attribute : attributeMap.keySet()) {
+                        result.setAttributeNS(Constants.XML_LANG_SPACE_SpecNS, 
+                                              attribute, attributeMap.get(attribute));
+                    }
+                }
+                
+                if (!encryptionInformation.isEmpty()) {
+                    for (Element element : encryptionInformation) {
+                        result.appendChild(element);
+                    }
+                }
 
                 return result;
             }

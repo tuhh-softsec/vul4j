@@ -39,6 +39,8 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.encryption.EncryptionProperties;
+import org.apache.xml.security.encryption.EncryptionProperty;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
@@ -538,6 +540,64 @@ public class XMLCipherTest extends org.junit.Assert {
             cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
             cipher.init(XMLCipher.ENCRYPT_MODE, key);
             ed = cipher.doFinal(d, e);
+
+            //decrypt
+            cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            cipher.init(XMLCipher.DECRYPT_MODE, key);
+            ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
+            dd = cipher.doFinal(ed, ee);
+
+            target = toString(dd);
+            assertEquals(source, target);
+        } else {
+            log.warn(
+                "Test testTripleDesDocumentCipher skipped as "
+                + "necessary algorithms not available"
+            );
+        }
+    }
+    
+    @org.junit.Test
+    public void testEncryptionProperties() throws Exception {
+        Document d = document(); // source
+        Document ed = null;      // target
+        Document dd = null;      // target
+        Element e = d.getDocumentElement();
+        Element ee = null;
+
+        String source = null;
+        String target = null;
+
+        if (haveISOPadding) {
+            source = toString(d);
+
+            // prepare for encryption
+            byte[] passPhrase = "24 Bytes per DESede key!".getBytes();
+            DESedeKeySpec keySpec = new DESedeKeySpec(passPhrase);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DESede");
+            SecretKey key = keyFactory.generateSecret(keySpec);
+
+            // encrypt
+            cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            cipher.init(XMLCipher.ENCRYPT_MODE, key);
+            
+            // Add EncryptionProperties
+            Element elem = d.createElement("CustomInformation");
+            elem.setTextContent("Some text content");
+
+            EncryptionProperties eps = cipher.createEncryptionProperties();
+            EncryptionProperty ep = cipher.createEncryptionProperty();
+            ep.addEncryptionInformation(elem);
+            ep.setId("_124124");
+            ep.setTarget("http://localhost/");
+            ep.setAttribute("xml:lang", "en");
+            eps.addEncryptionProperty(ep);
+            
+            EncryptedData encData = cipher.getEncryptedData();
+            encData.setEncryptionProperties(eps);
+            
+            ed = cipher.doFinal(d, e);
+            // XMLUtils.outputDOM(ed, System.out);
 
             //decrypt
             cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
