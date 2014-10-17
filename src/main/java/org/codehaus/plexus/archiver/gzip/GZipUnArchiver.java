@@ -19,13 +19,13 @@ package org.codehaus.plexus.archiver.gzip;
 
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.util.IOUtil;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.util.zip.GZIPInputStream;
+
+import static org.codehaus.plexus.archiver.util.Streams.*;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -34,6 +34,9 @@ import java.util.zip.GZIPInputStream;
 public class GZipUnArchiver
     extends AbstractUnArchiver
 {
+    private static final String OPERATION_GZIP = "gzip";
+
+
     public GZipUnArchiver()
     {
     }
@@ -48,37 +51,24 @@ public class GZipUnArchiver
     {
         if ( getSourceFile().lastModified() > getDestFile().lastModified() )
         {
-            getLogger().info( "Expanding " + getSourceFile().getAbsolutePath() + " to "
-                              + getDestFile().getAbsolutePath() );
+            getLogger().info(
+                "Expanding " + getSourceFile().getAbsolutePath() + " to " + getDestFile().getAbsolutePath() );
 
-            FileOutputStream out = null;
-            GZIPInputStream zIn = null;
-            FileInputStream fis = null;
-            try
-            {
-                out = new FileOutputStream( getDestFile() );
-                fis = new FileInputStream( getSourceFile() );
-                zIn = new GZIPInputStream( fis );
-                byte[] buffer = new byte[8 * 1024];
-                int count = 0;
-                do
-                {
-                    out.write( buffer, 0, count );
-                    count = zIn.read( buffer, 0, buffer.length );
-                }
-                while ( count != -1 );
-            }
-            catch ( IOException ioe )
-            {
-                String msg = "Problem expanding gzip " + ioe.getMessage();
-                throw new ArchiverException( msg, ioe );
-            }
-            finally
-            {
-                IOUtil.close( fis );
-                IOUtil.close( out );
-                IOUtil.close( zIn );
-            }
+            copyFully( getGzipInputStream( fileInputStream( getSourceFile(), OPERATION_GZIP ) ),
+                       fileOutputStream( getDestFile(), OPERATION_GZIP ), OPERATION_GZIP );
+        }
+    }
+
+    private GZIPInputStream getGzipInputStream( FileInputStream in )
+        throws ArchiverException
+    {
+        try
+        {
+            return new GZIPInputStream( in );
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( "Problem creating GZIP input stream", e );
         }
     }
 

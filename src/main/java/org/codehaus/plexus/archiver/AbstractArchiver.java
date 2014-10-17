@@ -17,6 +17,7 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -985,7 +986,15 @@ public abstract class AbstractArchiver
         throws IOException;
 
     protected void cleanUp()
+        throws IOException
     {
+        for ( Object resource : resources )
+        {
+            if (resource instanceof  PlexusIoProxyResourceCollection){
+                resource = ( (PlexusIoProxyResourceCollection) resource ).getSrc();
+            }
+            if (resource instanceof Closeable ) ((Closeable)resource).close();
+        }
         resources.clear();
     }
 

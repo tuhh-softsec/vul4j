@@ -22,9 +22,11 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
 import org.codehaus.plexus.util.IOUtil;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+
+import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
+import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 
 /**
  * @version $Revision$ $Date$
@@ -42,9 +44,7 @@ public class BZip2Compressor
     {
         try
         {
-            BufferedOutputStream bos =
-                new BufferedOutputStream( new FileOutputStream( getDestFile() ) );
-            zOut = new BZip2CompressorOutputStream( bos );
+            zOut = new BZip2CompressorOutputStream( bufferedOutputStream( fileOutputStream( getDestFile() ) ) );
             compress( getSource(), zOut );
         }
         catch ( IOException ioe )

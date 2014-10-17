@@ -62,6 +62,7 @@ public class DuplicateFilesTest
         Archiver archiver = (Archiver) lookup( Archiver.ROLE, "dir" );
         createArchive( archiver, "dir" );
         testFinalFile( "target/output/duplicateFiles.dir/duplicateFiles/foo.txt" );
+
     }
 
     public void testTarArchiver()
@@ -82,6 +83,7 @@ public class DuplicateFilesTest
         }
         assertEquals( 1, entryCount );
         testArchive( archive, "tar" );
+        tis.close();
     }
 
     private File createArchive( Archiver archiver, String outputFileExt )

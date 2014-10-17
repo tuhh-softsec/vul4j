@@ -34,6 +34,7 @@ public class DirectoryArchiver
     extends AbstractArchiver
 {
     public void resetArchiver()
+        throws IOException
     {
         cleanUp();
     }
@@ -161,6 +162,7 @@ public class DirectoryArchiver
     }
 
     protected void cleanUp()
+        throws IOException
     {
         super.cleanUp();
         setIncludeEmptyDirs( false );

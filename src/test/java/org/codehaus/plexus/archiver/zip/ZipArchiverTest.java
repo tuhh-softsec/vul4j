@@ -30,6 +30,7 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
+import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.logging.Logger;
@@ -361,7 +362,7 @@ public class ZipArchiverTest
 
 	// Used to investigate extrafields
 	public void testLookAtExtraZipFields_from_macos() throws IOException {
-		FileInputStream fis = new FileInputStream("src/test/resources/zip-timestamp/macOsZipFile.zip");
+		InputStream fis = Streams.fileInputStream(new File("src/test/resources/zip-timestamp/macOsZipFile.zip"));
 		ZipInputStream zis = new ZipInputStream(fis);
 		final java.util.zip.ZipEntry evenEntry = zis.getNextEntry();
 		final ZipExtraField[] parse = ExtraFieldUtils.parse(evenEntry.getExtra());

@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.attributes.Java7FileAttributes;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.util.IOUtil;
+
+import javax.annotation.WillNotClose;
 
 
 /**
@@ -20,18 +23,13 @@ import org.codehaus.plexus.util.IOUtil;
 public class PlexusIoBzip2ResourceCollection
     extends PlexusIoCompressedFileResourceCollection
 {
-    protected InputStream getInputStream( File file )
+    protected @WillNotClose InputStream getInputStream( File file )
         throws IOException
     {
         InputStream fis = new FileInputStream( file );
         try
         {
             final InputStream result = BZip2UnArchiver.getBZip2InputStream( fis );
-            if ( result == null )
-            {
-                throw new IOException( file.getPath()
-                                       + " is an invalid bzip2 file. " );
-            }
             fis = null;
             return result;
         }

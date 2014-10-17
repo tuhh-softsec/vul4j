@@ -9,11 +9,11 @@ import java.util.Map;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.zip.*;
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiveFile;
 import org.codehaus.plexus.archiver.ArchiveFile.Entry;
 import org.codehaus.plexus.util.IOUtil;
-
-import junit.framework.Assert;
+import org.junit.Assert;
 
 
 /**
@@ -21,12 +21,28 @@ import junit.framework.Assert;
  */
 public class ArchiveFileComparator
 {
+    public interface TarArchiveEntryConsumer {
+        void accept(TarArchiveEntry entry) throws IOException;
+    }
+    public static void forEachTarArchiveEntry( ArchiveFile file, TarArchiveEntryConsumer consumer )
+        throws IOException
+    {
+        for ( java.util.Enumeration en = file.getEntries();  en.hasMoreElements();  )
+        {
+            TarArchiveEntry ze = (TarArchiveEntry) en.nextElement();
+            if ( !ze.isDirectory() )
+            {
+                consumer.accept(  ze );
+            }
+        }
+    }
+
     /**
      * Creates a map with the archive files contents. The map keys
      * are the names of file entries in the archive file. The map
      * values are the respective archive entries.
      */
-    private static Map getFileEntries( ArchiveFile file )
+    private static Map<String, TarArchiveEntry> getFileEntries( ArchiveFile file )
         throws IOException
     {
         final Map map = new HashMap();
@@ -67,7 +83,7 @@ public class ArchiveFileComparator
      */
     private static void assertEquals( ArchiveFile file1, TarArchiveEntry entry1,
                                      ArchiveFile file2, TarArchiveEntry entry2 )
-        throws Exception
+        throws IOException
     {
         Assert.assertEquals( entry1.isDirectory(), entry2.isDirectory() );
         Assert.assertEquals( entry1.getModTime().getTime(), entry2.getModTime().getTime() );
@@ -99,19 +115,24 @@ public class ArchiveFileComparator
     /**
      * Called to compare the given archive files.
      */
-    public static void assertEquals( ArchiveFile file1, ArchiveFile file2, String prefix )
+    public static void assertEquals( final ArchiveFile file1, final ArchiveFile file2, final String prefix )
         throws Exception
     {
-        final Map map1 = getFileEntries( file1 );
-        final Map map2 = getFileEntries( file2 );
-		for (Object o : map1.keySet()) {
-			final String name1 = (String) o;
-			final String name2 = prefix == null ? name1 : (prefix + name1);
-			TarArchiveEntry ze1 = (TarArchiveEntry) map1.get(name1);
-			TarArchiveEntry ze2 = (TarArchiveEntry) map2.remove(name2);
-			Assert.assertNotNull(ze2);
-			assertEquals(file1, ze1, file2, ze2);
-		}
+
+        final Map<String,TarArchiveEntry> map2 = getFileEntries( file2 );
+        forEachTarArchiveEntry( file1, new TarArchiveEntryConsumer()
+        {
+            public void accept( TarArchiveEntry ze1 )
+                throws IOException
+            {
+                final String name1 = ze1.getName();
+                final String name2 = prefix == null ? name1 : (prefix + name1);
+                TarArchiveEntry ze2 = map2.remove(name2);
+                Assert.assertNotNull(ze2);
+                assertEquals(file1, ze1, file2, ze2);
+
+            }
+        } );
         Assert.assertTrue( map2.isEmpty() );
     }
 

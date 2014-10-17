@@ -23,6 +23,6 @@ public class BZip2TarFile extends TarFile
     protected InputStream getInputStream( File file )
         throws IOException
     {
-        return BZip2UnArchiver.getBZip2InputStream( super.getInputStream( file ) );
+        return BZip2UnArchiver.getBZip2InputStream(  super.getInputStream( file ) );
     }
 }

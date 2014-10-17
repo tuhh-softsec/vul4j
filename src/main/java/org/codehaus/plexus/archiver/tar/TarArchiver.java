@@ -24,21 +24,22 @@ import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
-import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
+import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoSymlink;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
+
+import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -147,7 +148,7 @@ public class TarArchiver
 
         getLogger().info( "Building tar: " + tarFile.getAbsolutePath() );
 
-        final OutputStream bufferedOutputStream = new BufferedOutputStream( new FileOutputStream( tarFile ) );
+        final OutputStream bufferedOutputStream = bufferedOutputStream( new FileOutputStream( tarFile ) );
         tOut =
             new TarArchiveOutputStream( compress( compression, bufferedOutputStream ), "UTF8" );
         if ( longFileMode.isTruncateMode() )
@@ -171,18 +172,24 @@ public class TarArchiver
         }
 
         longWarningGiven = false;
-        while ( iter.hasNext() )
+        try
         {
-            ArchiveEntry entry = iter.next();
-            // Check if we don't add tar file in inself
-            if ( ResourceUtils.isSame( entry.getResource(), tarFile ) )
+            while ( iter.hasNext() )
             {
-                throw new ArchiverException( "A tar file cannot include itself." );
-            }
-            String fileName = entry.getName();
-            String name = StringUtils.replace( fileName, File.separatorChar, '/' );
+                ArchiveEntry entry = iter.next();
+                // Check if we don't add tar file in inself
+                if ( ResourceUtils.isSame( entry.getResource(), tarFile ) )
+                {
+                    throw new ArchiverException( "A tar file cannot include itself." );
+                }
+                String fileName = entry.getName();
+                String name = StringUtils.replace( fileName, File.separatorChar, '/' );
 
-            tarFile( entry, tOut, name );
+                tarFile( entry, tOut, name );
+            }
+        } finally
+        {
+            IOUtil.close( tOut );
         }
     }
 
@@ -197,7 +204,7 @@ public class TarArchiver
     protected void tarFile( ArchiveEntry entry, TarArchiveOutputStream tOut, String vPath )
         throws ArchiverException, IOException
     {
-        InputStream fIn = null;
+
 
         // don't add "" to the archive
         if ( vPath.length() <= 0 )
@@ -222,6 +229,8 @@ public class TarArchiver
         }
 
         int pathLength = vPath.length();
+        InputStream fIn = null;
+
         try
         {
             TarArchiveEntry te;
@@ -323,14 +332,7 @@ public class TarArchiver
             {
                 fIn = entry.getInputStream();
 
-                byte[] buffer = new byte[8 * 1024];
-                int count = 0;
-                do
-                {
-                    tOut.write( buffer, 0, count );
-                    count = fIn.read( buffer, 0, buffer.length );
-                }
-                while ( count != -1 );
+                Streams.copyFullyDontCloseOutput( fIn, tOut, "xAR" );
             }
 
             tOut.closeArchiveEntry();
@@ -482,9 +484,10 @@ public class TarArchiver
     }
 
     protected void cleanUp()
+        throws IOException
     {
         super.cleanUp();
-        tOut = null;
+        tOut.close();
     }
 
     protected void close()

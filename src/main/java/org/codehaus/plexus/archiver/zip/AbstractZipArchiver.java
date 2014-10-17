@@ -32,10 +32,14 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
+import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoSymlink;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+
+import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
+import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 
 /**
  * @version $Revision$ $Date$
@@ -291,10 +295,7 @@ public abstract class AbstractZipArchiver
 
         if ( !skipWriting )
         {
-            FileOutputStream out = new FileOutputStream( zipFile );
-            BufferedOutputStream buffered = new BufferedOutputStream( out, 65536 );
-            zOut = new ZipArchiveOutputStream( buffered );
-
+            zOut = new ZipArchiveOutputStream( bufferedOutputStream( fileOutputStream( zipFile, "zip" ) ) );
             zOut.setCreateUnicodeExtraFields( ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NOT_ENCODEABLE );
             zOut.setEncoding( encoding );
             if ( doCompress )
@@ -740,6 +741,7 @@ public abstract class AbstractZipArchiver
      * @see #reset
      */
     protected void cleanUp()
+        throws IOException
     {
         super.cleanUp();
         addedDirs.clear();
@@ -773,7 +775,7 @@ public abstract class AbstractZipArchiver
      * method for subclasses to override
      */
     protected void initZipOutputStream( ZipArchiveOutputStream zOut )
-        throws IOException, ArchiverException
+        throws ArchiverException, IOException
     {
     }
 

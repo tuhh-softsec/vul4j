@@ -80,7 +80,7 @@ public class EarArchiver
     }
 
     protected void initZipOutputStream( ZipArchiveOutputStream zOut )
-        throws IOException, ArchiverException
+        throws ArchiverException, IOException
     {
         // If no webxml file is specified, it's an error.
         if ( deploymentDescriptor == null && !isInUpdateMode() )
@@ -129,6 +129,7 @@ public class EarArchiver
      * time this task gets executed.
      */
     protected void cleanUp()
+        throws IOException
     {
         descriptorAdded = false;
         super.cleanUp();

@@ -1,5 +1,6 @@
 package org.codehaus.plexus.archiver.tar;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -11,7 +12,7 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
 
 public class PlexusIoTarFileResourceCollection
-    extends AbstractPlexusIoArchiveResourceCollection
+    extends AbstractPlexusIoArchiveResourceCollection implements Closeable
 {
     /**
      * The zip file resource collections role hint.
@@ -23,6 +24,15 @@ public class PlexusIoTarFileResourceCollection
         return new TarFile( file );
     }
 
+    TarFile tarFile = null;
+
+    public void close()
+        throws IOException
+    {
+        if (tarFile != null) tarFile.close();
+
+    }
+
     protected Iterator<PlexusIoResource> getEntries()
         throws IOException
     {
@@ -31,7 +41,8 @@ public class PlexusIoTarFileResourceCollection
         {
             throw new IOException( "The tar archive file has not been set." );
         }
-        final TarFile tarFile = newTarFile( f );
+        if (tarFile == null)
+          tarFile = newTarFile( f );
         final Enumeration en = tarFile.getEntries();
         return new Iterator<PlexusIoResource>()
         {

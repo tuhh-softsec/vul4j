@@ -17,12 +17,18 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
-import java.io.BufferedOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.zip.ZipArchiver;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.codehaus.plexus.util.IOUtil;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -40,13 +46,8 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.zip.ZipArchiver;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.plexus.util.IOUtil;
+import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
+import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 
 /**
  * Base class for tasks that build archives in JAR file format.
@@ -284,7 +285,7 @@ public class JarArchiver
     }
 
     protected void initZipOutputStream( ZipArchiveOutputStream zOut )
-        throws IOException, ArchiverException
+        throws ArchiverException, IOException
     {
         if ( !skipWriting )
         {
@@ -537,8 +538,7 @@ public class JarArchiver
         try
         {
             getLogger().debug( "Building MANIFEST-only jar: " + getDestFile().getAbsolutePath() );
-            FileOutputStream out = new FileOutputStream( getDestFile() );
-            zOut = new ZipArchiveOutputStream( new BufferedOutputStream( out, 65536) );
+            zOut = new ZipArchiveOutputStream( bufferedOutputStream( fileOutputStream( getDestFile(), "jar" ) ));
 
             zOut.setEncoding( getEncoding() );
             if ( isCompress() )
@@ -572,6 +572,7 @@ public class JarArchiver
      * @see ZipArchiver#cleanUp
      */
     protected void cleanUp()
+        throws IOException
     {
         super.cleanUp();
 

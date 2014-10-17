@@ -18,6 +18,7 @@ package org.codehaus.plexus.archiver.gzip;
  */
 
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.archiver.util.Compressor;
 import org.codehaus.plexus.util.IOUtil;
 
@@ -41,7 +42,7 @@ public class GZipCompressor
     {
         try
         {
-            zOut = new GZIPOutputStream( new FileOutputStream( getDestFile() ) );
+            zOut = new GZIPOutputStream( Streams.bufferedOutputStream( new FileOutputStream( getDestFile() ) ));
             compress( getSource(), zOut );
         }
         catch ( IOException ioe )

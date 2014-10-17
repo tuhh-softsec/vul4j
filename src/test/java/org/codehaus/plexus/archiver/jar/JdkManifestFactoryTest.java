@@ -3,9 +3,11 @@ package org.codehaus.plexus.archiver.jar;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.archiver.util.Streams;
 
 /**
  * @author Kristian Rosenvold
@@ -98,7 +100,7 @@ public class JdkManifestFactoryTest
     private java.util.jar.Manifest getManifest( String filename )
         throws IOException, ManifestException
     {
-        FileInputStream r = new FileInputStream( getTestFile( filename ) );
+        InputStream r = Streams.fileInputStream( getTestFile( filename ) );
 
         try
         {

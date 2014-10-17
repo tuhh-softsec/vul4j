@@ -44,6 +44,7 @@ import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
+import org.junit.Assert;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -53,6 +54,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
 
 /**
  * @author Emmanuel Venisse
@@ -299,7 +302,7 @@ public class TarArchiverTest
 
         TarArchiveInputStream tis;
 
-        tis = new TarArchiveInputStream( new BufferedInputStream( new FileInputStream( archiver.getDestFile() ) ) );
+        tis = new TarArchiveInputStream( bufferedInputStream( new FileInputStream( archiver.getDestFile() ) ) );
         TarArchiveEntry te;
 
         while ( ( te = tis.getNextTarEntry() ) != null )
@@ -333,6 +336,7 @@ public class TarArchiverTest
 
             }
         }
+        IOUtil.close( tis );
 
     }
 
@@ -377,6 +381,7 @@ public class TarArchiverTest
 							te.getMode() & UnixStat.PERM_MASK );
 			}
 		}
+        tis.close();
 
 	}
 	private TarArchiver getPosixTarArchiver() throws Exception {
@@ -392,6 +397,17 @@ public class TarArchiverTest
         {
             final File srcDir = new File( "src" );
             final File tarFile = new File( "target/output/src.tar" );
+            TarArchiver tarArchiver = getPosixTarArchiver();
+            tarArchiver.setDestFile( tarFile );
+            tarArchiver.addDirectory( srcDir, null, FileUtils.getDefaultExcludes() );
+            FileUtils.removePath( tarFile.getPath() );
+            tarArchiver.createArchive();
+            return tarFile;
+        }
+        File createTarFile(File tarFile)
+            throws Exception
+        {
+            final File srcDir = new File( "src" );
             TarArchiver tarArchiver = getPosixTarArchiver();
             tarArchiver.setDestFile( tarFile );
             tarArchiver.addDirectory( srcDir, null, FileUtils.getDefaultExcludes() );
@@ -476,10 +492,46 @@ public class TarArchiverTest
         testCreateResourceCollection( new GZipTarHandler() );
     }
 
+    public void testGzipFIleHandleLeak()
+        throws Exception
+    {
+        GZipTarHandler tarHandler = new GZipTarHandler();
+        final File tarFile = tarHandler.createTarFile();
+        final File tarFile2 = tarHandler.createTarfile2( tarFile );
+        final TarFile cmp1 = tarHandler.newTarFile( tarFile );
+        final TarFile cmp2 = new TarFile( tarFile2 );
+       ArchiveFileComparator.forEachTarArchiveEntry( cmp1, new ArchiveFileComparator.TarArchiveEntryConsumer()
+        {
+            public void accept( TarArchiveEntry ze1 )
+                throws IOException
+            {
+                final String name1 = ze1.getName();
+                Assert.assertNotNull( name1 );
+
+            }
+        } );
+        cmp1.close();
+        cmp2.close();
+
+
+    }
+
+
     public void testBzip2CompressedResourceCollection()
         throws Exception
     {
         testCreateResourceCollection( new BZip2TarHandler() );
+    }
+
+    public void testTarFileNotClosingInputStream()
+        throws Exception
+    {
+        // Supposedly not closing the stream according to yjp.
+        TarHandler tarHandler = new BZip2TarHandler();
+        final File fileName = tarHandler.createTarFile();
+        final TarFile tarFile = tarHandler.newTarFile( fileName );
+        tarFile.getEntries();
+        tarFile.close();
     }
 
     private void testCreateResourceCollection( TarHandler tarHandler )

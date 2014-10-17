@@ -18,10 +18,14 @@ package org.codehaus.plexus.archiver.jar;
  */
 
 import java.io.BufferedInputStream;
+import java.io.InputStream;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.util.Streams;
+
+import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
 
 /**
  * @author Richard van der Hoff <richardv@mxtelecom.com>
@@ -55,7 +59,7 @@ public class IndexTest extends PlexusTestCase {
         org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archiver2.getDestFile() );
         ZipArchiveEntry indexEntry = zf.getEntry("META-INF/INDEX.LIST");
         assertNotNull(indexEntry);
-        BufferedInputStream bis = new BufferedInputStream(zf.getInputStream(indexEntry));
+        InputStream bis = bufferedInputStream( zf.getInputStream( indexEntry ) );
 
         byte buf[] = new byte[1024];
         int i = bis.read(buf);
@@ -106,7 +110,7 @@ public class IndexTest extends PlexusTestCase {
         org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archiver2.getDestFile() );
         ZipArchiveEntry indexEntry = zf.getEntry("META-INF/INDEX.LIST");
         assertNotNull(indexEntry);
-        BufferedInputStream bis = new BufferedInputStream(zf.getInputStream(indexEntry));
+        InputStream bis = bufferedInputStream( zf.getInputStream( indexEntry ) );
 
         byte buf[] = new byte[1024];
         int i = bis.read(buf);

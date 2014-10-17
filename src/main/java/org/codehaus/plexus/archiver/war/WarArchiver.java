@@ -154,7 +154,7 @@ public class WarArchiver
      * before initializing the output stream.
      */
     protected void initZipOutputStream( ZipArchiveOutputStream zOut )
-        throws IOException, ArchiverException
+        throws ArchiverException, IOException
     {
         // If no webxml file is specified, it's an error.
         if ( expectWebXml && deploymentDescriptor == null && !isInUpdateMode() )
@@ -202,6 +202,7 @@ public class WarArchiver
      * gets executed.
      */
     protected void cleanUp()
+        throws IOException
     {
         descriptorAdded = false;
         expectWebXml = true;

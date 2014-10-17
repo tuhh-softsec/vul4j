@@ -13,6 +13,8 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.codehaus.plexus.archiver.ArchiveFile;
 
+import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
+
 
 /**
  * <p>Implementation of {@link ArchiveFile} for tar files.</p>
@@ -135,7 +137,8 @@ public class TarFile
     protected InputStream getInputStream( File file )
         throws IOException
     {
-        return new FileInputStream( file );
+        final FileInputStream fileInputStream = new FileInputStream( file );
+        return fileInputStream;
     }
     
     private InputStream getInputStream( TarArchiveEntry entry, TarArchiveEntry currentEntry )
@@ -174,7 +177,7 @@ public class TarFile
     private void open()
         throws IOException
     {
-        inputStream = new TarArchiveInputStream( getInputStream( file ), "UTF8" );
+        inputStream = new TarArchiveInputStream( bufferedInputStream( getInputStream( file ) ), "UTF8" );
     }
 
     private boolean findEntry( TarArchiveEntry entry, TarArchiveEntry currentEntry)

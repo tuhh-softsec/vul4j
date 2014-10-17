@@ -17,17 +17,17 @@ package org.codehaus.plexus.archiver.bzip2;
  *  limitations under the License.
  */
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.util.IOUtil;
+
+import javax.annotation.Nonnull;
+
+import static org.codehaus.plexus.archiver.util.Streams.*;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -36,6 +36,8 @@ import org.codehaus.plexus.util.IOUtil;
 public class BZip2UnArchiver
     extends AbstractUnArchiver
 {
+    private final static String OPERATION_BZIP2 = "bzip2";
+
     public BZip2UnArchiver()
     {
     }
@@ -50,51 +52,27 @@ public class BZip2UnArchiver
     {
         if ( getSourceFile().lastModified() > getDestFile().lastModified() )
         {
-            getLogger().info( "Expanding " + getSourceFile().getAbsolutePath() + " to "
-                              + getDestFile().getAbsolutePath() );
+            getLogger().info(
+                "Expanding " + getSourceFile().getAbsolutePath() + " to " + getDestFile().getAbsolutePath() );
 
-            FileOutputStream out = null;
-            BZip2CompressorInputStream zIn = null;
-            FileInputStream fis = null;
-            BufferedInputStream bis = null;
-            try
-            {
-                out = new FileOutputStream( getDestFile() );
-                fis = new FileInputStream( getSourceFile() );
-                bis = new BufferedInputStream( fis );
-                zIn = getBZip2InputStream( bis );
-                if ( zIn == null )
-                {
-                    throw new ArchiverException( getSourceFile().getAbsolutePath() + " is an invalid bz2 file." );
-                }
-                byte[] buffer = new byte[8 * 1024];
-                int count = 0;
-                do
-                {
-                    out.write( buffer, 0, count );
-                    count = zIn.read( buffer, 0, buffer.length );
-                }
-                while ( count != -1 );
-            }
-            catch ( IOException ioe )
-            {
-                String msg = "Problem expanding bzip2 " + ioe.getMessage();
-                throw new ArchiverException( msg, ioe );
-            }
-            finally
-            {
-                IOUtil.close( bis );
-                IOUtil.close( fis );
-                IOUtil.close( out );
-                IOUtil.close( zIn );
-            }
+            copyFully( getBZip2InputStream( bufferedInputStream( fileInputStream( getSourceFile(), OPERATION_BZIP2 ) ) ),
+                       bufferedOutputStream( fileOutputStream( getDestFile(), OPERATION_BZIP2 ) ), OPERATION_BZIP2 );
         }
     }
 
-    public static BZip2CompressorInputStream getBZip2InputStream( InputStream bis )
-        throws IOException
+    public static
+    @Nonnull
+    BZip2CompressorInputStream getBZip2InputStream( InputStream bis )
+        throws ArchiverException
     {
-        return new BZip2CompressorInputStream( bis );
+        try
+        {
+            return new BZip2CompressorInputStream( bis );
+        }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( "Trouble creating BZIP2 compressor, invalid file ?", e );
+        }
     }
 
     protected void execute( String path, File outputDirectory )
