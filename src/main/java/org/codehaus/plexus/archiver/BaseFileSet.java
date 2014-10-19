@@ -1,6 +1,9 @@
 package org.codehaus.plexus.archiver;
 
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
+import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
+
+import java.util.Arrays;
 
 
 /**
@@ -50,4 +53,13 @@ public interface BaseFileSet
      * to select the included files.
      */
     FileSelector[] getFileSelectors();
+
+    /**
+     * Returns the InputStreamTransformers that can be applied to this fileset
+     * @return The transformers.
+     */
+
+    InputStreamTransformer[] getStreamTransformers();
+
+
 }

@@ -307,6 +307,7 @@ public abstract class AbstractArchiver
         collection.setPrefix( fileSet.getPrefix() );
         collection.setCaseSensitive( fileSet.isCaseSensitive() );
         collection.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
+        collection.setStreamTransformers( fileSet.getStreamTransformers() );
 
         if ( getOverrideDirectoryMode() > -1 || getOverrideFileMode() > -1 )
         {
@@ -688,6 +689,7 @@ public abstract class AbstractArchiver
         proxy.setPrefix( fileSet.getPrefix() );
         proxy.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
         proxy.setFileSelectors( fileSet.getFileSelectors() );
+        proxy.setStreamTransformers( fileSet.getStreamTransformers() );
 
         if ( getOverrideDirectoryMode() > -1 || getOverrideFileMode() > -1 )
         {

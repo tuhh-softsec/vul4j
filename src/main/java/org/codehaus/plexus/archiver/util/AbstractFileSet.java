@@ -17,6 +17,9 @@ package org.codehaus.plexus.archiver.util;
  */
 import org.codehaus.plexus.archiver.BaseFileSet;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
+import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
+
+import java.util.Arrays;
 
 
 /**
@@ -26,6 +29,8 @@ import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 public abstract class AbstractFileSet<T extends AbstractFileSet>
     implements BaseFileSet
 {
+    private static final InputStreamTransformer[] empty = new InputStreamTransformer[0];
+
     private String prefix;
 
     private String[] includes;
@@ -39,6 +44,9 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
     private boolean usingDefaultExcludes = true;
 
     private boolean includingEmptyDirectories = true;
+
+    private InputStreamTransformer[] streamTransformers = empty;
+
 
     /**
      * Sets a string of patterns, which excluded files
@@ -160,5 +168,16 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
     public T includeEmptyDirs( boolean includeEmptyDirectories  ){
         setIncludingEmptyDirectories(  includeEmptyDirectories );
         return (T) this;
+    }
+
+    public void addStreamTransformer( InputStreamTransformer streamTransformer )
+    {
+        streamTransformers = Arrays.copyOf( this.streamTransformers, this.streamTransformers.length + 1 );
+        streamTransformers[streamTransformers.length -1] = streamTransformer;
+    }
+
+    public InputStreamTransformer[] getStreamTransformers()
+    {
+        return streamTransformers;
     }
 }

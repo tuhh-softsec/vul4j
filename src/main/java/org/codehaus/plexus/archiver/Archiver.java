@@ -168,6 +168,8 @@ public interface Archiver
      * {@link #addArchivedFileSet(File)}, {@link #addArchivedFileSet(File, String[], String[])}, and
      * {@link #addArchivedFileSet(File, String, String[], String[])}. However, as these methods are in widespread use,
      * they cannot easily be made deprecated.
+     *
+     * Stream transformers are supported on this method
      * 
      * @since 1.0-alpha-9
      */
@@ -176,7 +178,9 @@ public interface Archiver
 
     /**
      * Adds the given resource collection to the archive.
-     * 
+     *
+     * Stream transformers are *not* supported on this method
+     *
      * @since 1.0-alpha-10
      */
     void addResource( PlexusIoResource resource, String destFileName, int permissions )
@@ -184,7 +188,9 @@ public interface Archiver
 
     /**
      * Adds the given resource collection to the archive.
-     * 
+     *
+     * Stream transformers are supported om this method
+     *
      * @since 1.0-alpha-10
      */
     void addResources( PlexusIoResourceCollection resources )
