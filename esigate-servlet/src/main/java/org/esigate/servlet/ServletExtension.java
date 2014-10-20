@@ -33,15 +33,18 @@ import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.extension.Extension;
+import org.esigate.http.IncomingRequest;
 import org.esigate.http.OutgoingRequest;
 import org.esigate.http.OutgoingRequestContext;
 import org.esigate.servlet.impl.ResponseCapturingWrapper;
+import org.esigate.servlet.impl.ResponseSender;
 import org.esigate.util.UriUtils;
 
 public class ServletExtension implements Extension, IEventListener {
     private Driver driver;
     private String context;
     private int maxObjectSize;
+    private final ResponseSender responseSender = new ResponseSender();
 
     @Override
     public void init(Driver driver, Properties properties) {
@@ -58,6 +61,7 @@ public class ServletExtension implements Extension, IEventListener {
             String uriString = fetchEvent.getHttpRequest().getRequestLine().getUri();
             OutgoingRequest outgoingRequest =
                     OutgoingRequestContext.adapt(fetchEvent.getHttpContext()).getOutgoingRequest();
+            IncomingRequest incomingRequest = outgoingRequest.getOriginalRequest().getOriginalRequest();
             String baseUrl = outgoingRequest.getBaseUrl().toString();
             if (outgoingRequest.getOriginalRequest().isExternal()) {
                 // Non local absolute uri
@@ -83,7 +87,8 @@ public class ServletExtension implements Extension, IEventListener {
                         if (fetchEvent.getHttpContext().isProxy()) {
                             ResponseCapturingWrapper wrappedResponse =
                                     new ResponseCapturingWrapper(httpServletRequestContext.getResponse(),
-                                            driver.getContentTypeHelper(), true, maxObjectSize);
+                                            driver.getContentTypeHelper(), true, maxObjectSize, responseSender,
+                                            incomingRequest);
                             if (context == null) {
                                 httpServletRequestContext.getFilterChain().doFilter(
                                         httpServletRequestContext.getRequest(), wrappedResponse);
@@ -103,7 +108,8 @@ public class ServletExtension implements Extension, IEventListener {
                         } else {
                             ResponseCapturingWrapper wrappedResponse =
                                     new ResponseCapturingWrapper(httpServletRequestContext.getResponse(),
-                                            driver.getContentTypeHelper(), false, maxObjectSize);
+                                            driver.getContentTypeHelper(), false, maxObjectSize, responseSender,
+                                            incomingRequest);
                             if (context == null) {
                                 httpServletRequestContext.getRequest().getRequestDispatcher(relUrl)
                                         .forward(httpServletRequestContext.getRequest(), wrappedResponse);
