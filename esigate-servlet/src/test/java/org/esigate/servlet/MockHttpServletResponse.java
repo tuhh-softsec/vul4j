@@ -1,9 +1,11 @@
 package org.esigate.servlet;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -16,6 +18,9 @@ public class MockHttpServletResponse implements HttpServletResponse {
     private PrintWriter writer;
     private StringWriter writerContent;
     private int bufferSize = 0;
+    private boolean committed = false;
+    private boolean closed = false;
+    private HashMap<String, String> headers = new HashMap<String, String>();
 
     @Override
     public String getCharacterEncoding() {
@@ -29,6 +34,9 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public ServletOutputStream getOutputStream() {
+        if (closed) {
+            throw new IllegalStateException("Response is already closed");
+        }
         if (writer != null) {
             throw new IllegalStateException("Writer already obtained");
         }
@@ -40,6 +48,17 @@ public class MockHttpServletResponse implements HttpServletResponse {
                 public void write(int b) {
                     outputStreamContent.write(b);
                 }
+
+                @Override
+                public void close() throws IOException {
+                    flush();
+                    closed = true;
+                }
+
+                @Override
+                public void flush() throws IOException {
+                    committed = true;
+                }
             };
         }
         return outputStream;
@@ -47,12 +66,28 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public PrintWriter getWriter() {
+        if (closed) {
+            throw new IllegalStateException("Response is already closed");
+        }
         if (outputStream != null) {
             throw new IllegalStateException("OutputStream already obtained");
         }
         if (writer == null) {
             writerContent = new StringWriter();
-            writer = new PrintWriter(writerContent);
+            writer = new PrintWriter(writerContent) {
+
+                @Override
+                public void close() {
+                    flush();
+                    closed = true;
+                }
+
+                @Override
+                public void flush() {
+                    committed = true;
+                }
+
+            };
         }
         return writer;
     }
@@ -97,6 +132,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void flushBuffer() {
+        committed = true;
     }
 
     @Override
@@ -105,7 +141,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public boolean isCommitted() {
-        return false;
+        return committed;
     }
 
     @Override
@@ -152,14 +188,17 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void sendError(int sc, String msg) {
+        committed = true;
     }
 
     @Override
     public void sendError(int sc) {
+        committed = true;
     }
 
     @Override
     public void sendRedirect(String location) {
+        committed = true;
     }
 
     @Override
@@ -172,10 +211,12 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setHeader(String name, String value) {
+        headers.put(name.toLowerCase(), value);
     }
 
     @Override
     public void addHeader(String name, String value) {
+        headers.put(name.toLowerCase(), value);
     }
 
     @Override
@@ -192,6 +233,10 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setStatus(int sc, String sm) {
+    }
+
+    public String getHeader(String name) {
+        return headers.get(name.toLowerCase());
     }
 
 }

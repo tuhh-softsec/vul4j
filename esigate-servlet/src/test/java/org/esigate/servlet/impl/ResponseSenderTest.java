@@ -15,6 +15,7 @@
 
 package org.esigate.servlet.impl;
 
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -23,12 +24,20 @@ import java.util.TimeZone;
 import junit.framework.TestCase;
 
 import org.apache.http.Header;
+import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.message.BasicStatusLine;
+import org.esigate.http.BasicCloseableHttpResponse;
+import org.esigate.servlet.MockHttpServletResponse;
 
 public class ResponseSenderTest extends TestCase {
     private SimpleDateFormat format;
@@ -69,6 +78,18 @@ public class ResponseSenderTest extends TestCase {
                 result.getMaxAge() > 15551995);
         assertTrue("maxAge should be lower than 15552001, actual value " + result.getMaxAge(),
                 result.getMaxAge() < 15552001);
+    }
+
+    public void testSendResponseAlreadySent() throws Exception {
+        MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+        PrintWriter writer = httpServletResponse.getWriter();
+        writer.write("Test");
+        writer.close();
+        CloseableHttpResponse httpClientResponse =
+                BasicCloseableHttpResponse.adapt(new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1,
+                        HttpStatus.SC_OK, "OK")));
+        httpClientResponse.setEntity(new StringEntity("Abcdefg"));
+        renderer.sendResponse(httpClientResponse, null, httpServletResponse);
     }
 
 }
