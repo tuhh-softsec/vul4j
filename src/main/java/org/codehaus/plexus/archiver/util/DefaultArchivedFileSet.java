@@ -2,6 +2,8 @@ package org.codehaus.plexus.archiver.util;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+
 import org.codehaus.plexus.archiver.ArchivedFileSet;
 
 
@@ -14,6 +16,14 @@ public class DefaultArchivedFileSet
     implements ArchivedFileSet
 {
     private File archive;
+
+	public DefaultArchivedFileSet(@Nonnull File archive) {
+		this.archive = archive;
+	}
+
+
+    public DefaultArchivedFileSet() {
+    }
 
     /**
      * Sets the file sets archive.
@@ -33,8 +43,6 @@ public class DefaultArchivedFileSet
         {
             throw new IllegalArgumentException( "Archive File cannot be null" );
         }
-        final DefaultArchivedFileSet fileSet = new DefaultArchivedFileSet();
-        fileSet.setArchive( archiveFile );
-        return fileSet;
+        return new DefaultArchivedFileSet(archiveFile);
 	}
 }

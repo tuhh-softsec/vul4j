@@ -2,6 +2,8 @@ package org.codehaus.plexus.archiver.util;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+
 import org.codehaus.plexus.archiver.FileSet;
 
 
@@ -15,22 +17,29 @@ public class DefaultFileSet
 {
     private File directory;
 
+	public DefaultFileSet(File directory) {
+		this.directory = directory;
+	}
+
+
+    public DefaultFileSet() {
+    }
+
     /**
      * Sets the file sets base directory.
      */
-    public void setDirectory( File directory )
+    public void setDirectory( @Nonnull File directory )
     {
         this.directory = directory;
     }
 
-    public File getDirectory()
+    @Nonnull public File getDirectory()
     {
         return directory;
     }
 
 	public static DefaultFileSet fileSet( File directory ){
-        final DefaultFileSet defaultFileSet = new DefaultFileSet();
-        defaultFileSet.setDirectory( directory);
+        final DefaultFileSet defaultFileSet = new DefaultFileSet(directory);
         return defaultFileSet;
 	}
 

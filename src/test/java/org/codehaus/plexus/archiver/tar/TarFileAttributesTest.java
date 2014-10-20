@@ -115,8 +115,7 @@ public class TarFileAttributesTest
 
         tarArchiver2.setDestFile( tempTarFile2 );
         
-        DefaultArchivedFileSet afs = new DefaultArchivedFileSet();
-        afs.setArchive( tempTarFile );
+        DefaultArchivedFileSet afs = new DefaultArchivedFileSet(tempTarFile);
 
         System.out.println( "Adding tar archive to new archiver: " + tempTarFile );
         tarArchiver2.addArchivedFileSet( afs );

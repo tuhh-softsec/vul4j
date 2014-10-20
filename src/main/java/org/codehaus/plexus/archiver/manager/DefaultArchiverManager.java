@@ -20,6 +20,9 @@ package org.codehaus.plexus.archiver.manager;
 
 import java.io.File;
 import java.util.Locale;
+
+import javax.annotation.Nonnull;
+
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.Archiver;
@@ -52,7 +55,7 @@ public class DefaultArchiverManager
         container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 
-    public Archiver getArchiver( String archiverName )
+    @Nonnull public Archiver getArchiver( @Nonnull String archiverName )
         throws NoSuchArchiverException
     {
         try
@@ -65,7 +68,7 @@ public class DefaultArchiverManager
         }
     }
 
-    public UnArchiver getUnArchiver( String unArchiverName )
+    @Nonnull public UnArchiver getUnArchiver( @Nonnull String unArchiverName )
         throws NoSuchArchiverException
     {
         try
@@ -78,7 +81,8 @@ public class DefaultArchiverManager
         }
     }
 
-    public PlexusIoResourceCollection getResourceCollection( String resourceCollectionName )
+
+    public @Nonnull PlexusIoResourceCollection getResourceCollection( String resourceCollectionName )
         throws NoSuchArchiverException
     {
         try
@@ -91,7 +95,7 @@ public class DefaultArchiverManager
         }
     }    
 
-    private static String getFileExtention ( File file )
+    private static @Nonnull String getFileExtention ( @Nonnull File file )
     {
         String path = file.getAbsolutePath();
         
@@ -110,19 +114,19 @@ public class DefaultArchiverManager
         return archiveExt;
         
     }
-    public Archiver getArchiver( File file )
+    @Nonnull public Archiver getArchiver( @Nonnull File file )
         throws NoSuchArchiverException
     {
         return getArchiver( getFileExtention( file ) );
     }
     
-    public UnArchiver getUnArchiver( File file )
+    @Nonnull public UnArchiver getUnArchiver( @Nonnull File file )
         throws NoSuchArchiverException
     {        
         return getUnArchiver( getFileExtention( file ) );
     }
 
-    public PlexusIoResourceCollection getResourceCollection( File file )
+    @Nonnull public PlexusIoResourceCollection getResourceCollection( @Nonnull File file )
         throws NoSuchArchiverException
     {
         return getResourceCollection( getFileExtention( file ) );

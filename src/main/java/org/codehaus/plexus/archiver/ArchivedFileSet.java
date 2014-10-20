@@ -2,6 +2,8 @@ package org.codehaus.plexus.archiver;
 
 import java.io.File;
 
+import javax.annotation.CheckForNull;
+
 
 /**
  * A file set, which consists of the files and directories in
@@ -14,5 +16,6 @@ public interface ArchivedFileSet
     /**
      * Returns the archive file.
      */
+	@CheckForNull
     File getArchive();
 }

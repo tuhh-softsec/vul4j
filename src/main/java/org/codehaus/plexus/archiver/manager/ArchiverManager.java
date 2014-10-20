@@ -20,6 +20,8 @@ package org.codehaus.plexus.archiver.manager;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
@@ -32,21 +34,22 @@ public interface ArchiverManager
 {
     String ROLE = ArchiverManager.class.getName();
 
-    Archiver getArchiver( String archiverName )
+	@Nonnull Archiver getArchiver( @Nonnull String archiverName )
         throws NoSuchArchiverException;
 
-    Archiver getArchiver( File file )
+	@Nonnull Archiver getArchiver( @Nonnull File file )
       throws NoSuchArchiverException;
     
-    UnArchiver getUnArchiver( String unArchiverName )
+    @Nonnull UnArchiver getUnArchiver( @Nonnull String unArchiverName )
         throws NoSuchArchiverException;
 
-    UnArchiver getUnArchiver( File file )
+	@Nonnull UnArchiver getUnArchiver(  @Nonnull File file )
         throws NoSuchArchiverException;    
 
-    PlexusIoResourceCollection getResourceCollection( File file )
+    @Nonnull PlexusIoResourceCollection getResourceCollection( @Nonnull File file )
         throws NoSuchArchiverException;
 
+	@Nonnull
     PlexusIoResourceCollection getResourceCollection( String unArchiverName )
         throws NoSuchArchiverException;
 }

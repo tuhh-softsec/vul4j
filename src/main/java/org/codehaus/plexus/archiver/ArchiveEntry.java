@@ -19,6 +19,12 @@ package org.codehaus.plexus.archiver;
 
 import org.codehaus.plexus.archiver.resources.PlexusIoVirtualSymlinkResource;
 import org.codehaus.plexus.archiver.util.ArchiverAttributeUtils;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.annotation.Nonnull;
+
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
@@ -42,7 +48,7 @@ public class ArchiveEntry
     public static final int DIRECTORY = 2;
 
     public static final int SYMLINK = 3;
-    private final PlexusIoResource resource;
+    @Nonnull private PlexusIoResource resource;
 
     private final String name;
 
@@ -59,7 +65,7 @@ public class ArchiveEntry
      * @param type     FILE or DIRECTORY
      * @param mode     octal unix style permissions
      */
-    private ArchiveEntry( String name, PlexusIoResource resource, int type, int mode )
+    private ArchiveEntry( String name, @Nonnull PlexusIoResource resource, int type, int mode )
     {
         this.name = name;
         this.resource = resource;
@@ -171,7 +177,7 @@ public class ArchiveEntry
         return new ArchiveEntry( target, res, FILE, permissions );
     }
 
-    public static ArchiveEntry createDirectoryEntry( String target, PlexusIoResource resource, int permissions )
+    public static ArchiveEntry createDirectoryEntry( String target, @Nonnull PlexusIoResource resource, int permissions )
         throws ArchiverException
     {
         if ( !resource.isDirectory() )
@@ -228,7 +234,7 @@ public class ArchiveEntry
         this.attributes = attributes;
     }
 
-    public PlexusIoResource getResource()
+    public @Nonnull PlexusIoResource getResource()
     {
         return resource;
     }

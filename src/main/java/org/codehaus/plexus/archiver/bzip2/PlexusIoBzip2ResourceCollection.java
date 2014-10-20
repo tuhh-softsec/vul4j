@@ -30,7 +30,7 @@ public class PlexusIoBzip2ResourceCollection
         try
         {
             final InputStream result = BZip2UnArchiver.getBZip2InputStream( fis );
-            fis = null;
+			fis = null;
             return result;
         }
         finally

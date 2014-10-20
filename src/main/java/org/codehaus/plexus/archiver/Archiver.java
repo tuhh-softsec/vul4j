@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 /**
  * @version $Revision$ $Date$
  */
@@ -56,7 +58,7 @@ public interface Archiver
 
     public static final String DUPLICATES_FAIL = "fail";
 
-    public static final Set DUPLICATES_VALID_BEHAVIORS = new HashSet()
+    public static final Set<String> DUPLICATES_VALID_BEHAVIORS = new HashSet<String>()
     {
         private static final long serialVersionUID = 1L;
 
@@ -77,7 +79,7 @@ public interface Archiver
      * IDE to get the proper implementation for this release.
      */
     @Deprecated
-    void addDirectory( File directory )
+    void addDirectory( @Nonnull File directory )
         throws ArchiverException;
 
     /**
@@ -86,7 +88,7 @@ public interface Archiver
      * IDE to get the proper implementation for this release.
      */
     @Deprecated
-    void addDirectory( File directory, String prefix )
+    void addDirectory( @Nonnull File directory, String prefix )
         throws ArchiverException;
 
     /**
@@ -94,7 +96,7 @@ public interface Archiver
      * IDE to get the proper implementation for this release.
      */
     @Deprecated
-    void addDirectory( File directory, String[] includes, String[] excludes )
+    void addDirectory( @Nonnull File directory, String[] includes, String[] excludes )
         throws ArchiverException;
 
     /**
@@ -102,8 +104,7 @@ public interface Archiver
      * You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
      */
-    @Deprecated
-    void addDirectory( File directory, String prefix, String[] includes, String[] excludes )
+    void addDirectory( @Nonnull File directory, String prefix, String[] includes, String[] excludes )
         throws ArchiverException;
 
     /**
@@ -116,7 +117,7 @@ public interface Archiver
      *             Adding the file set failed.
      * @since 1.0-alpha-9
      */
-    void addFileSet( FileSet fileSet )
+    void addFileSet( @Nonnull FileSet fileSet )
         throws ArchiverException;
 
     void addSymlink(String symlinkName, String symlinkDestination)
@@ -125,17 +126,17 @@ public interface Archiver
     void addSymlink(String symlinkName, int permissions, String symlinkDestination)
         throws ArchiverException;
 
-    void addFile( File inputFile, String destFileName )
+    void addFile( @Nonnull File inputFile, @Nonnull String destFileName )
         throws ArchiverException;
 
-    void addFile( File inputFile, String destFileName, int permissions )
+    void addFile( @Nonnull File inputFile, @Nonnull String destFileName, int permissions )
         throws ArchiverException;
     /**
      * Obsolete, use {@link #addArchivedFileSet(ArchivedFileSet)}. You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
      * @deprecated  Will go away in next major version
      */
-    void addArchivedFileSet( File archiveFile )
+    void addArchivedFileSet( @Nonnull File archiveFile )
         throws ArchiverException;
 
     /**
@@ -144,7 +145,7 @@ public interface Archiver
      * @deprecated  Will go away in next major version
      */
     @Deprecated
-    void addArchivedFileSet( File archiveFile, String prefix )
+    void addArchivedFileSet( @Nonnull File archiveFile, String prefix )
         throws ArchiverException;
 
     /**
@@ -160,7 +161,7 @@ public interface Archiver
      * IDE to get the proper implementation for this release.
      * @deprecated  Will go away in next major version
      */
-    void addArchivedFileSet( File archiveFile, String prefix, String[] includes, String[] excludes )
+    void addArchivedFileSet( @Nonnull File archiveFile, String prefix, String[] includes, String[] excludes )
         throws ArchiverException;
 
     /**
@@ -233,6 +234,7 @@ public interface Archiver
      * 
      * @since 1.0-alpha-10
      */
+	@Nonnull
     ResourceIterator getResources()
         throws ArchiverException;
 
