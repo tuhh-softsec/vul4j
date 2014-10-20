@@ -19,6 +19,7 @@ import org.codehaus.plexus.archiver.BaseFileSet;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 
@@ -170,10 +171,11 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         return (T) this;
     }
 
-    public void addStreamTransformer( InputStreamTransformer streamTransformer )
+    public void addStreamTransformers( @Nonnull InputStreamTransformer... streamTransformer )
     {
-        streamTransformers = Arrays.copyOf( this.streamTransformers, this.streamTransformers.length + 1 );
-        streamTransformers[streamTransformers.length -1] = streamTransformer;
+        final int orgLength = this.streamTransformers.length;
+        streamTransformers = Arrays.copyOf( this.streamTransformers, orgLength + streamTransformer.length );
+        System.arraycopy(streamTransformer, 0, streamTransformers, orgLength, streamTransformer.length);
     }
 
     public InputStreamTransformer[] getStreamTransformers()
