@@ -5,6 +5,7 @@ import java.util.Properties;
 import junit.framework.TestCase;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.servlet.MockHttpServletResponse;
@@ -148,6 +149,15 @@ public class ResponseCapturingWrapperTest extends TestCase {
         assertNull("Nothing should have been written to the response yet", httpServletResponse.getWriterContent());
         assertNull("Nothing should have been written to the response yet",
                 httpServletResponse.getOutputStreamContentAsString("UTF-8"));
+    }
+
+    public void testSendRedirect() throws Exception {
+        ResponseCapturingWrapper tested =
+                new ResponseCapturingWrapper(httpServletResponse, contentTypeHelper, true, BUFFER_SIZE);
+        tested.sendRedirect("http://dummy/");
+        CloseableHttpResponse response = tested.getCloseableHttpResponse();
+        assertEquals(302, response.getStatusLine().getStatusCode());
+        assertEquals("http://dummy/", response.getFirstHeader("Location").getValue());
     }
 
 }
