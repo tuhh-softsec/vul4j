@@ -601,7 +601,7 @@ public abstract class AbstractZipArchiver
         }
         catch ( IOException e )
         {
-            throw new ArchiverException( "IOException when zipping " + entry.getName() + ": " + e.getMessage(), e );
+            throw new ArchiverException( "IOException when zipping r" + entry.getName() + ": " + e.getMessage(), e );
         }
         finally
         {

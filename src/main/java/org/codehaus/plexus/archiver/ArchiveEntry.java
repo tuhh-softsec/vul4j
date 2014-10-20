@@ -30,11 +30,6 @@ import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
-import org.codehaus.plexus.components.io.resources.PlexusIoSymlinkResource;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * @version $Revision: 1502 $ $Date$
@@ -173,7 +168,7 @@ public class ArchiveEntry
             throw new ArchiverException( "Failed to read filesystem attributes for: " + file, e );
         }
         
-        final PlexusIoFileResource res =  PlexusIoFileResource.existingFile( file, attrs );
+        final PlexusIoFileResource res =  PlexusIoFileResource.justAFile( file, attrs );
         return new ArchiveEntry( target, res, FILE, permissions );
     }
 

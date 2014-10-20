@@ -65,7 +65,7 @@ public interface BaseFileSet
      * @return The transformers.
      */
 
-    InputStreamTransformer[] getStreamTransformers();
+    InputStreamTransformer getStreamTransformer();
 
 
 }

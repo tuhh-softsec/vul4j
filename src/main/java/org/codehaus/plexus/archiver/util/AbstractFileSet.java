@@ -20,7 +20,6 @@ import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 
 
 /**
@@ -30,7 +29,6 @@ import java.util.Arrays;
 public abstract class AbstractFileSet<T extends AbstractFileSet>
     implements BaseFileSet
 {
-    private static final InputStreamTransformer[] empty = new InputStreamTransformer[0];
 
     private String prefix;
 
@@ -46,7 +44,7 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
 
     private boolean includingEmptyDirectories = true;
 
-    private InputStreamTransformer[] streamTransformers = empty;
+    private InputStreamTransformer streamTransformer = null;
 
 
     /**
@@ -171,15 +169,13 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         return (T) this;
     }
 
-    public void addStreamTransformers( @Nonnull InputStreamTransformer... streamTransformer )
+    public void setStreamTransformer( @Nonnull InputStreamTransformer streamTransformer )
     {
-        final int orgLength = this.streamTransformers.length;
-        streamTransformers = Arrays.copyOf( this.streamTransformers, orgLength + streamTransformer.length );
-        System.arraycopy(streamTransformer, 0, streamTransformers, orgLength, streamTransformer.length);
+        this.streamTransformer = streamTransformer;
     }
 
-    public InputStreamTransformer[] getStreamTransformers()
+    public InputStreamTransformer getStreamTransformer()
     {
-        return streamTransformers;
+        return streamTransformer;
     }
 }

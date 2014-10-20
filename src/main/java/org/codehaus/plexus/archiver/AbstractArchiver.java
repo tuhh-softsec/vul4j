@@ -42,6 +42,7 @@ import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
+import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
@@ -310,7 +311,7 @@ public abstract class AbstractArchiver
         collection.setPrefix( fileSet.getPrefix() );
         collection.setCaseSensitive( fileSet.isCaseSensitive() );
         collection.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
-        collection.setStreamTransformers( fileSet.getStreamTransformers() );
+        collection.setStreamTransformer( fileSet.getStreamTransformer() );
 
         if ( getOverrideDirectoryMode() > -1 || getOverrideFileMode() > -1 )
         {
@@ -684,6 +685,9 @@ public abstract class AbstractArchiver
                                              + resources.getClass().getName() );
         }
 
+        if (resources instanceof AbstractPlexusIoResourceCollection ){
+            ((AbstractPlexusIoResourceCollection)resources).setStreamTransformer( fileSet.getStreamTransformer() );
+        }
         final PlexusIoProxyResourceCollection proxy = new PlexusIoProxyResourceCollection(resources);
 
         proxy.setExcludes( fileSet.getExcludes() );
@@ -693,7 +697,7 @@ public abstract class AbstractArchiver
         proxy.setPrefix( fileSet.getPrefix() );
         proxy.setUsingDefaultExcludes( fileSet.isUsingDefaultExcludes() );
         proxy.setFileSelectors( fileSet.getFileSelectors() );
-        proxy.setStreamTransformers( fileSet.getStreamTransformers() );
+        proxy.setStreamTransformer( fileSet.getStreamTransformer() );
 
         if ( getOverrideDirectoryMode() > -1 || getOverrideFileMode() > -1 )
         {

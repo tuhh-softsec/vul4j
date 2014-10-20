@@ -39,7 +39,7 @@ public class PlexusIoZipFileResourceCollection
             {
                 final ZipArchiveEntry entry = (ZipArchiveEntry) en.nextElement();
 
-                return new ZipResource( zipFile, entry );
+                return new ZipResource( zipFile, entry, getStreamTransformer() );
             }
 
             public void remove()

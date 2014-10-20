@@ -25,14 +25,21 @@ package org.codehaus.plexus.archiver.zip;
  */
 
 import org.apache.commons.compress.archivers.zip.*;
+import org.apache.commons.compress.utils.BoundedInputStream;
+import org.codehaus.plexus.archiver.ArchivedFileSet;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
+import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
+import org.codehaus.plexus.archiver.util.DefaultFileSet;
 import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
+import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
+import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
@@ -258,6 +265,40 @@ public class ZipArchiverTest
         createArchive(archiver);
     }
 
+    public void testCreateArchiveWithStreamTransformer()
+        throws IOException
+    {
+        InputStreamTransformer is = new InputStreamTransformer()
+        {
+            public InputStream transform( PlexusIoResource resource, InputStream inputStream )
+                throws IOException
+            {
+                return new BoundedInputStream( inputStream, 3 );
+            }
+        };
+
+        final ZipArchiver zipArchiver = getZipArchiver( getTestFile( "target/output/all3bytes.zip" ) );
+        DefaultArchivedFileSet afs = new DefaultArchivedFileSet( new File("src/test/resources/test.zip" ));
+        afs.setStreamTransformer( is );
+        afs.setPrefix( "azip/" );
+        zipArchiver.addArchivedFileSet( afs );
+
+        DefaultFileSet dfs = new DefaultFileSet( new File("src/test/resources/mjar179" ));
+        dfs.setStreamTransformer( is );
+        dfs.setPrefix( "mj179/" );
+        zipArchiver.addFileSet( dfs );
+
+        PlexusIoFileResourceCollection files = new PlexusIoFileResourceCollection();
+        files.setBaseDir( new File("src/test/resources" ));
+        files.setStreamTransformer( is );
+        files.setPrefix( "plexus/" );
+        zipArchiver.addResources( files );
+
+        zipArchiver.createArchive();
+
+
+
+    }
     private ZipArchiver newArchiver( String name ) throws Exception {
         ZipArchiver archiver = getZipArchiver(getTestFile( "target/output/" + name ));
 
