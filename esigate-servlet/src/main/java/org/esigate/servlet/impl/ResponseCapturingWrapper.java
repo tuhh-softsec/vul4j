@@ -123,7 +123,7 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
 
     @Override
     public void sendRedirect(String location) {
-        httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_TEMPORARY_REDIRECT,
+        httpClientResponse.setStatusLine(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_MOVED_TEMPORARILY,
                 "Temporary redirect"));
         httpClientResponse.setHeader(HttpHeaders.LOCATION, location);
     }
