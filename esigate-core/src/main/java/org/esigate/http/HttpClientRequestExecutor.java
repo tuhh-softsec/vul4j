@@ -35,8 +35,17 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.cookie.CookieOrigin;
+import org.apache.http.cookie.CookieSpec;
+import org.apache.http.cookie.CookieSpecProvider;
+import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.cookie.BestMatchSpecFactory;
+import org.apache.http.impl.cookie.BrowserCompatSpecFactory;
 import org.apache.http.message.BasicHttpResponse;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
@@ -48,6 +57,7 @@ import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FragmentEvent;
 import org.esigate.extension.ExtensionFactory;
+import org.esigate.http.cookie.CustomBrowserCompatSpecFactory;
 import org.esigate.impl.DriverRequest;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
@@ -195,6 +205,19 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             httpClientBuilder.setConnectionManager(connectionManager);
         }
 
+        Registry<CookieSpecProvider> r =
+                RegistryBuilder
+                        .<CookieSpecProvider> create()
+                        .register(CookieSpecs.BEST_MATCH, new BestMatchSpecFactory())
+                        .register(CookieSpecs.BROWSER_COMPATIBILITY, new BrowserCompatSpecFactory())
+                        .register(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY,
+                                new CustomBrowserCompatSpecFactory()).build();
+
+        RequestConfig config =
+                RequestConfig.custom().setCookieSpec(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY)
+                        .build();
+
+        httpClientBuilder.setDefaultCookieSpecRegistry(r).setDefaultRequestConfig(config);
         return httpClientBuilder.build();
     }
 
@@ -228,7 +251,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         // Use browser compatibility cookie policy. This policy is the closest
         // to the behavior of a real browser.
-        builder.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY);
+        builder.setCookieSpec(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY);
 
         builder.setRedirectsEnabled(!proxy);
         RequestConfig config = builder.build();

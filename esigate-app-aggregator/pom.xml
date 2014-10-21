@@ -38,7 +38,7 @@
 			<artifactId>junit-addons</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>httpunit</groupId>
+			<groupId>org.httpunit</groupId>
 			<artifactId>httpunit</artifactId>
 		</dependency>
 		<dependency>
@@ -132,8 +132,8 @@
 				</executions>
 				<configuration>
 					<container>
-						<containerId>jetty7x</containerId>
-						<type>embedded</type>
+						<containerId>jetty8x</containerId>
+                        <type>embedded</type>
 					</container>
 					<deployables>
 						<deployable>

@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.apache.http.cookie.ClientCookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
@@ -63,6 +64,37 @@ public class DefaultCookieManagerTest extends TestCase {
         assertEquals("b", cookie.getName());
         assertEquals("value", cookie.getValue());
         assertEquals(org.apache.http.impl.cookie.BasicClientCookie.class, cookie.getClass());
+
+        // Test httponly attribute
+        org.apache.http.impl.cookie.BasicClientCookie httponlycookie =
+                new org.apache.http.impl.cookie.BasicClientCookie("f", "httponly_insession");
+        httponlycookie.setAttribute("HttpOnly", "");
+        cookieManager.addCookie(httponlycookie, request);
+
+        assertEquals(2, cookieManager.getCookies(request).size());
+        cookie = cookieManager.getCookies(request).get(1);
+        assertEquals("f", cookie.getName());
+
+        assertTrue(((ClientCookie) cookie).containsAttribute("HttpOnly"));
+
+    }
+
+    public void testRewriteForBrowser() {
+        // Test httponly attribute
+        BasicClientCookie cookie = new org.apache.http.impl.cookie.BasicClientCookie("a", "httponly_sendtobrowser");
+        cookie.setDomain("localhost");
+        cookie.setPath("test");
+        cookie.setComment("comment");
+
+        ClientCookie cookieRewrited = (ClientCookie) DefaultCookieManager.rewriteForBrowser(cookie, request);
+
+        assertEquals(cookieRewrited.getComment(), cookie.getComment());
+        assertFalse(cookieRewrited.containsAttribute("httponly"));
+
+        cookie.setAttribute("httponly", "");
+
+        cookieRewrited = (ClientCookie) DefaultCookieManager.rewriteForBrowser(cookie, request);
+        assertTrue(cookieRewrited.containsAttribute("httponly"));
     }
 
     public void testInit() {

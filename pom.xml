@@ -108,8 +108,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.1</version>
 					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>1.7</source>
+						<target>1.7</target>
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
@@ -523,9 +523,9 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>httpunit</groupId>
+				<groupId>org.httpunit</groupId>
 				<artifactId>httpunit</artifactId>
-				<version>1.6.2</version>
+				<version>1.7.2</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>

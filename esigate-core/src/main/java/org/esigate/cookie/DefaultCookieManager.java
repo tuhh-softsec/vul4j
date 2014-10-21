@@ -28,6 +28,7 @@ import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.UserContext;
+import org.esigate.http.cookie.CookieUtil;
 import org.esigate.impl.DriverRequest;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -179,7 +180,7 @@ public class DefaultCookieManager implements CookieManager {
         return domain;
     }
 
-    private static Cookie rewriteForBrowser(Cookie cookie, DriverRequest request) {
+    protected static Cookie rewriteForBrowser(Cookie cookie, DriverRequest request) {
         String name = cookie.getName();
         // Rewrite name if JSESSIONID because it will interfere with current
         // server session
@@ -212,6 +213,10 @@ public class DefaultCookieManager implements CookieManager {
         cookieToForward.setComment(cookie.getComment());
         cookieToForward.setVersion(cookie.getVersion());
         cookieToForward.setExpiryDate(cookie.getExpiryDate());
+
+        if (((BasicClientCookie) cookie).containsAttribute(CookieUtil.HTTP_ONLY_ATTR)) {
+            cookieToForward.setAttribute(CookieUtil.HTTP_ONLY_ATTR, "");
+        }
 
         if (LOG.isDebugEnabled()) {
             // Ensure .toString is only called if debug enabled.

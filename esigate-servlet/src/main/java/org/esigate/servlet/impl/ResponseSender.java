@@ -24,36 +24,14 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import org.esigate.http.IncomingRequest;
+import org.esigate.http.cookie.CookieUtil;
 
 /**
  * Renders a response to the HttpSerlvetResponse.
  * 
  * @author Francois-Xavier Bonnet
- * 
  */
 public class ResponseSender {
-
-    public javax.servlet.http.Cookie rewriteCookie(Cookie src) {
-        javax.servlet.http.Cookie servletCookie = new javax.servlet.http.Cookie(src.getName(), src.getValue());
-
-        if (src.getDomain() != null) {
-            servletCookie.setDomain(src.getDomain());
-        }
-        servletCookie.setPath(src.getPath());
-        servletCookie.setSecure(src.isSecure());
-        servletCookie.setComment(src.getComment());
-        servletCookie.setVersion(src.getVersion());
-        if (src.getExpiryDate() != null) {
-            int maxAge = (int) ((src.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000);
-            // According to Cookie class specification, a negative value
-            // would be considered as no value. That is not what we want!
-            if (maxAge < 0) {
-                maxAge = 0;
-            }
-            servletCookie.setMaxAge(maxAge);
-        }
-        return servletCookie;
-    }
 
     public void sendResponse(HttpResponse httpResponse, IncomingRequest httpRequest, HttpServletResponse response)
             throws IOException {
@@ -66,8 +44,9 @@ public class ResponseSender {
 
         // Copy new cookies
         Cookie[] newCookies = httpRequest.getNewCookies();
+
         for (int i = 0; i < newCookies.length; i++) {
-            response.addCookie(rewriteCookie(newCookies[i]));
+            response.addHeader("Set-Cookie", CookieUtil.encodeCookie(newCookies[i]));
         }
 
         HttpEntity httpEntity = httpResponse.getEntity();

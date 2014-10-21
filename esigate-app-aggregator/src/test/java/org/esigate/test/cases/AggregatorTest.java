@@ -31,10 +31,22 @@ public class AggregatorTest extends TestCase {
     private void doCookieSimpleTest(String page, String resultResource) throws Exception {
         WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + page);
         WebResponse resp = webConversation.getResponse(req);
+
         assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
         assertEquals(getResource(resultResource).replaceAll("\r", "").replaceAll("\n", "").replaceAll("\t", "")
                 .replaceAll(" ", "").replaceAll("JSESSIONID=[^;]+;", ""), resp.getText().replaceAll("\r", "")
                 .replaceAll("\n", "").replaceAll("\t", "").replaceAll(" ", "").replaceAll("JSESSIONID=[^;]+;", ""));
+
+        String[] setcookies = resp.getHeaderFields("Set-Cookie");
+        boolean containsHttpOnlyCookie = false;
+        for (int i = 0; i < setcookies.length; i++) {
+            if (setcookies[i].toString().contains("test0")) {
+                assertTrue(setcookies[i].contains("HttpOnly"));
+                containsHttpOnlyCookie = true;
+            }
+        }
+        assertTrue("Response should contains an HttpOnly cookie test0", containsHttpOnlyCookie);
+
     }
 
     private void doSimpleTest(String page) throws Exception {
@@ -112,6 +124,7 @@ public class AggregatorTest extends TestCase {
     public void testCookies() throws Exception {
         doCookieSimpleTest("nocache/ag1/cookies.jsp", "cookies-firstcall.html");
         doCookieSimpleTest("nocache/ag1/cookies.jsp", "cookies.html");
+        webConversation.getCookieDetails("test0");
     }
 
     /**
