@@ -37,6 +37,7 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoSymlink;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
@@ -641,6 +642,13 @@ public abstract class AbstractZipArchiver
 
         if ( !skipWriting )
         {
+            final boolean isSymlink = dir instanceof PlexusIoSymlink;
+
+            if (isSymlink && vPath.endsWith(File.separator))
+            {
+                vPath= vPath.substring(0, vPath.length() -1);
+            }
+
             ZipArchiveEntry ze = new ZipArchiveEntry( vPath );
 
             /*
@@ -652,7 +660,6 @@ public abstract class AbstractZipArchiver
              */
 
 
-            final boolean isSymlink = dir instanceof PlexusIoSymlink;
             if (isSymlink) mode = UnixStat.LINK_FLAG | mode;
 
 

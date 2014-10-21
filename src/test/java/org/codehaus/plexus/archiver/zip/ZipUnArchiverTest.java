@@ -25,8 +25,7 @@ public class ZipUnArchiverTest
 
         FileUtils.deleteDirectory( outputDirectory );
 
-        ZipUnArchiver zu = (ZipUnArchiver) lookup( UnArchiver.ROLE, "zip" );
-        zu.setSourceFile( testZip );
+        ZipUnArchiver zu = getZipUnArchiver(testZip);
         zu.extract( "", outputDirectory );
         File testScript = new File( outputDirectory, "test.sh" );
 
@@ -52,8 +51,7 @@ public class ZipUnArchiverTest
 
         FileUtils.deleteDirectory( outputDirectory );
 
-        ZipUnArchiver zu = (ZipUnArchiver) lookup( UnArchiver.ROLE, "zip" );
-        zu.setSourceFile( testZip );
+        ZipUnArchiver zu = getZipUnArchiver(testZip);
         zu.setIgnorePermissions( false );
         zu.extract( "", outputDirectory );
 
@@ -80,8 +78,7 @@ public class ZipUnArchiverTest
 
         File outputDirectory = new File( getBasedir(), s );
 
-        ZipUnArchiver zu = (ZipUnArchiver) lookup( UnArchiver.ROLE, "zip" );
-        zu.setSourceFile( testJar );
+        ZipUnArchiver zu = getZipUnArchiver(testJar);
         zu.setFileSelectors( selectors );
 
         FileUtils.deleteDirectory( outputDirectory );
@@ -99,6 +96,12 @@ public class ZipUnArchiverTest
         File f2 = new File( getBasedir(), s + "/META-INF/MANIFEST.MF" );
 
         assertEquals( results[2], f2.exists() );
+    }
+
+    private ZipUnArchiver getZipUnArchiver(File testJar) throws Exception {
+        ZipUnArchiver zu = (ZipUnArchiver) lookup( UnArchiver.ROLE, "zip" );
+        zu.setSourceFile( testJar );
+        return zu;
     }
 
     public void testExtractingADirectoryFromAJarFile()
