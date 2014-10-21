@@ -51,12 +51,12 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>3.0.18</version>
+      <version>3.0.20</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-io</artifactId>
-      <version>2.3-SNAPSHOT</version>
+      <version>2.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
