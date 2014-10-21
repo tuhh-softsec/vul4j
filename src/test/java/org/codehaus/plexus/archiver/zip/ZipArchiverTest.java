@@ -27,14 +27,19 @@ package org.codehaus.plexus.archiver.zip;
 import org.apache.commons.compress.archivers.zip.*;
 import org.apache.commons.compress.utils.BoundedInputStream;
 import org.codehaus.plexus.archiver.ArchivedFileSet;
+import org.apache.commons.compress.archivers.zip.ExtraFieldUtils;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipExtraField;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
+import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
 import org.codehaus.plexus.archiver.util.DefaultFileSet;
 import org.codehaus.plexus.archiver.util.Streams;
+import org.codehaus.plexus.components.io.attributes.Java7FileAttributes;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
@@ -46,7 +51,12 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -229,8 +239,14 @@ public class ZipArchiverTest
     private ZipArchiver getZipArchiver(File destFile)
     {
         final ZipArchiver zipArchiver = getZipArchiver();
-        zipArchiver.setDestFile(  destFile );
+        zipArchiver.setDestFile( destFile );
         return zipArchiver;
+    }
+
+    private ZipUnArchiver getZipUnArchiver(File testJar) throws Exception {
+        ZipUnArchiver zu = (ZipUnArchiver) lookup( UnArchiver.ROLE, "zip" );
+        zu.setSourceFile( testJar );
+        return zu;
     }
 
     private void writeFile( File dir, String fname, int mode )
@@ -366,6 +382,26 @@ public class ZipArchiverTest
 
         }
     }
+
+    public void testSymlinkZip() throws Exception {
+        final File zipFile = getTestFile("target/output/pasymlinks.zip");
+        final ZipArchiver zipArchiver = getZipArchiver(zipFile);
+        PlexusIoFileResourceCollection files = new PlexusIoFileResourceCollection();
+        files.setFollowingSymLinks( false );
+        files.setBaseDir( new File( "src/test/resources/symlinks" ) );
+        files.setPrefix( "plexus/" );
+        zipArchiver.addResources( files );
+        zipArchiver.createArchive();
+        final File output = getTestFile("target/output/unzipped");
+        output.mkdirs();
+        final ZipUnArchiver zipUnArchiver = getZipUnArchiver(zipFile);
+        zipUnArchiver.setDestFile( output );
+        zipUnArchiver.extract();
+        File symDir = new File("target/output/unzipped/plexus/src/symDir");
+        PlexusIoResourceAttributes fa= Java7FileAttributes.uncached(symDir);
+        assertTrue( fa.isSymbolicLink() );
+    }
+
 
     public void testForced()
         throws Exception
