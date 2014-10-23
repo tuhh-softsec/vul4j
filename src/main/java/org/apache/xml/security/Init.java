@@ -21,6 +21,8 @@ package org.apache.xml.security;
 import java.io.InputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.utils.ElementProxy;
@@ -111,42 +114,49 @@ public class Init {
             log.debug("Registering default algorithms");
         }
         try {
-            //
-            // Bind the default prefixes
-            //
-            ElementProxy.registerDefaultPrefixes();
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>(){
+                @Override public Void run() throws XMLSecurityException {
+                    //
+                    // Bind the default prefixes
+                    //
+                    ElementProxy.registerDefaultPrefixes();
             
-            //
-            // Set the default Transforms
-            //
-            Transform.registerDefaultAlgorithms();
+                    //
+                    // Set the default Transforms
+                    //
+                    Transform.registerDefaultAlgorithms();
             
-            //
-            // Set the default signature algorithms
-            //
-            SignatureAlgorithm.registerDefaultAlgorithms();
+                    //
+                    // Set the default signature algorithms
+                    //
+                    SignatureAlgorithm.registerDefaultAlgorithms();
             
-            //
-            // Set the default JCE algorithms
-            //
-            JCEMapper.registerDefaultAlgorithms();
+                    //
+                    // Set the default JCE algorithms
+                    //
+                    JCEMapper.registerDefaultAlgorithms();
             
-            //
-            // Set the default c14n algorithms
-            //
-            Canonicalizer.registerDefaultAlgorithms();
+                    //
+                    // Set the default c14n algorithms
+                    //
+                    Canonicalizer.registerDefaultAlgorithms();
             
-            //
-            // Register the default resolvers
-            //
-            ResourceResolver.registerDefaultResolvers();
+                    //
+                    // Register the default resolvers
+                    //
+                    ResourceResolver.registerDefaultResolvers();
             
-            //
-            // Register the default key resolvers
-            //
-            KeyResolver.registerDefaultResolvers();
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
+                    //
+                    // Register the default key resolvers
+                    //
+                    KeyResolver.registerDefaultResolvers();
+
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException ex) {
+            XMLSecurityException xse = (XMLSecurityException)ex.getException();
+            log.error(xse.getMessage(), xse);
         }
     }
     

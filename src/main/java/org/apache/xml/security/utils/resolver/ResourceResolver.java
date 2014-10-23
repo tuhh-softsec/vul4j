@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.ClassLoaderUtils;
+import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
 import org.apache.xml.security.utils.resolver.implementations.ResolverFragment;
 import org.apache.xml.security.utils.resolver.implementations.ResolverLocalFilesystem;
@@ -181,9 +182,12 @@ public class ResourceResolver {
      * the class cannot be registered.
      *
      * @param className the name of the ResourceResolverSpi class to be registered
+     * @throws SecurityException if a security manager is installed and the
+     *    caller does not have permission to register a resource resolver
      */
     @SuppressWarnings("unchecked")
     public static void register(String className) {
+        JavaUtils.checkRegisterPermission();
         try {
             Class<ResourceResolverSpi> resourceResolverClass = 
                 (Class<ResourceResolverSpi>) 
@@ -199,9 +203,12 @@ public class ResourceResolver {
      * list. This method logs a warning if the class cannot be registered.
      *
      * @param className the name of the ResourceResolverSpi class to be registered
+     * @throws SecurityException if a security manager is installed and the
+     *    caller does not have permission to register a resource resolver
      */
     @SuppressWarnings("unchecked")
     public static void registerAtStart(String className) {
+        JavaUtils.checkRegisterPermission();
         try {
             Class<ResourceResolverSpi> resourceResolverClass = 
                 (Class<ResourceResolverSpi>)
@@ -217,8 +224,11 @@ public class ResourceResolver {
      * cannot be registered.
      * @param className
      * @param start
+     * @throws SecurityException if a security manager is installed and the
+     *    caller does not have permission to register a resource resolver
      */
     public static void register(Class<? extends ResourceResolverSpi> className, boolean start) {
+        JavaUtils.checkRegisterPermission();
         try {
             ResourceResolverSpi resourceResolverSpi = className.newInstance();
             register(resourceResolverSpi, start);
@@ -234,8 +244,11 @@ public class ResourceResolver {
      * cannot be registered.
      * @param resourceResolverSpi
      * @param start
+     * @throws SecurityException if a security manager is installed and the
+     *    caller does not have permission to register a resource resolver
      */
     public static void register(ResourceResolverSpi resourceResolverSpi, boolean start) {
+        JavaUtils.checkRegisterPermission();
         synchronized(resolverList) {
             if (start) {
                 resolverList.add(0, new ResourceResolver(resourceResolverSpi));

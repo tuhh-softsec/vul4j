@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecurityPermission;
 
 /**
  * A collection of different, general-purpose methods for JAVA-specific things
@@ -33,6 +34,9 @@ public final class JavaUtils {
 
     private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(JavaUtils.class);
+
+    private static final SecurityPermission REGISTER_PERMISSION =
+        new SecurityPermission("org.apache.xml.security.register");
 
     private JavaUtils() {
         // we don't allow instantiation
@@ -227,5 +231,22 @@ public final class JavaUtils {
                          6 + j + l - k, k);
 
         return asn1Bytes;
+    }
+
+    /**
+     * Throws a {@code SecurityException} if a security manager is installed
+     * and the caller is not allowed to register an implementation of an
+     * algorithm, transform, or other security sensitive XML Signature function.
+     *
+     * @throws SecurityException if a security manager is installed and the
+     *    caller has not been granted the
+     *    {@literal "org.apache.xml.security.register"}
+     *    {@code SecurityPermission}
+     */
+    public static void checkRegisterPermission() {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(REGISTER_PERMISSION);
+        }
     }
 }

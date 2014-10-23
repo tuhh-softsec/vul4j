@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.utils.JavaUtils;
 import org.w3c.dom.Element;
 
 
@@ -44,8 +45,11 @@ public class JCEMapper {
      *
      * @param id
      * @param algorithm
+     * @throws SecurityException if a security manager is installed and the
+     *    caller does not have permission to register the JCE algorithm
      */
     public static void register(String id, Algorithm algorithm) {
+        JavaUtils.checkRegisterPermission();
         algorithmsMap.put(id, algorithm);
     }
     
@@ -413,8 +417,11 @@ public class JCEMapper {
     /**
      * Sets the default Provider for obtaining the security algorithms
      * @param provider the default providerId.  
+     * @throws SecurityException if a security manager is installed and the
+     *    caller does not have permission to register the JCE algorithm
      */
     public static void setProviderId(String provider) {
+        JavaUtils.checkRegisterPermission();
         providerName = provider;
     }
 

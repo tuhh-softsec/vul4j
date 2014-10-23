@@ -36,6 +36,7 @@ import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithCom
 import org.apache.xml.security.c14n.implementations.CanonicalizerPhysical;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.apache.xml.security.utils.ClassLoaderUtils;
+import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -139,10 +140,13 @@ public class Canonicalizer {
      * @param algorithmURI
      * @param implementingClass
      * @throws AlgorithmAlreadyRegisteredException
+     * @throws SecurityException if a security manager is installed and the
+     *    caller does not have permission to register the canonicalizer
      */
     @SuppressWarnings("unchecked")
     public static void register(String algorithmURI, String implementingClass)
         throws AlgorithmAlreadyRegisteredException, ClassNotFoundException {
+        JavaUtils.checkRegisterPermission();
         // check whether URI is already registered
         Class<? extends CanonicalizerSpi> registeredClass = 
             canonicalizerHash.get(algorithmURI);
@@ -164,9 +168,12 @@ public class Canonicalizer {
      * @param algorithmURI
      * @param implementingClass
      * @throws AlgorithmAlreadyRegisteredException
+     * @throws SecurityException if a security manager is installed and the
+     *    caller does not have permission to register the canonicalizer
      */
     public static void register(String algorithmURI, Class<? extends CanonicalizerSpi> implementingClass)
         throws AlgorithmAlreadyRegisteredException, ClassNotFoundException {
+        JavaUtils.checkRegisterPermission();
         // check whether URI is already registered
         Class<? extends CanonicalizerSpi> registeredClass = canonicalizerHash.get(algorithmURI);
 
