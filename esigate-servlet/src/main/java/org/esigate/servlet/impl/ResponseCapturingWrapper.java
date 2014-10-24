@@ -42,6 +42,7 @@ import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpResponseUtils;
+import org.esigate.http.IncomingRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,14 +88,18 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
     private ContentTypeHelper contentTypeHelper;
     private final boolean proxy;
     private boolean capture = true;
+    private final ResponseSender responseSender;
+    private final IncomingRequest incomingRequest;
 
     public ResponseCapturingWrapper(HttpServletResponse response, ContentTypeHelper contentTypeHelper, boolean proxy,
-            int bufferSize) {
+            int bufferSize, ResponseSender responseSender, IncomingRequest incomingRequest) {
         super(response);
         this.response = response;
         this.bufferSize = bufferSize;
         this.contentTypeHelper = contentTypeHelper;
         this.proxy = proxy;
+        this.responseSender = responseSender;
+        this.incomingRequest = incomingRequest;
     }
 
     @Override
@@ -315,6 +320,7 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
                     if (!committed) {
                         capture = hasToCaptureOutput();
                         if (!capture) {
+                            responseSender.sendHeaders(httpClientResponse, incomingRequest, response);
                             responseOutputStream = response.getOutputStream();
                             internalOutputStream.writeTo(responseOutputStream);
                         }
@@ -365,6 +371,7 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
                     if (!committed) {
                         capture = hasToCaptureOutput();
                         if (!capture) {
+                            responseSender.sendHeaders(httpClientResponse, incomingRequest, response);
                             responseWriter = response.getWriter();
                             responseWriter.write(internalWriter.toString());
                         }
@@ -421,15 +428,41 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
                 || HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpClientResponse) == null;
     }
 
+    /**
+     * Returns the response. If the response has not been captured and has been written directly to the
+     * {@link HttpServletResponse}, calling this method closes the HttpServletResponse writer OutputStream
+     * 
+     * @return the response
+     */
     public CloseableHttpResponse getCloseableHttpResponse() {
         ContentType contentType = null;
         if (this.contentType != null) {
             contentType = ContentType.create(this.contentType, characterEncoding);
         }
         if (internalWriter != null) {
+            writer.flush();
             httpClientResponse.setEntity(new StringEntity(internalWriter.toString(), contentType));
         } else if (internalOutputStream != null) {
+            try {
+                outputStream.flush();
+            } catch (IOException e) {
+                // Nothing to do;
+            }
             httpClientResponse.setEntity(new ByteArrayEntity(internalOutputStream.toByteArray(), contentType));
+        }
+        if (!capture) {
+            // The result has already been written to the response, let's close
+            // the response stream
+            if (responseWriter != null) {
+                responseWriter.close();
+            }
+            if (responseOutputStream != null) {
+                try {
+                    responseOutputStream.close();
+                } catch (IOException e) {
+                    LOG.warn("Could not close servlet output stream: " + e.getMessage());
+                }
+            }
         }
         return httpClientResponse;
     }
