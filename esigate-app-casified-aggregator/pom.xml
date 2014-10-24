@@ -53,7 +53,7 @@
 			<artifactId>junit-addons</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>httpunit</groupId>
+			<groupId>org.httpunit</groupId>
 			<artifactId>httpunit</artifactId>
 		</dependency>
 		<dependency>

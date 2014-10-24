@@ -97,7 +97,9 @@ public class RequestFactory {
             builder.setSessionId(session.getId());
         }
         builder.setUserPrincipal(request.getUserPrincipal());
+
         // Copy cookies
+        // FIXME : As cookie header contains only name=value, why are we copying all attributes ?
         javax.servlet.http.Cookie[] src = request.getCookies();
         if (src != null) {
             for (int i = 0; i < src.length; i++) {
