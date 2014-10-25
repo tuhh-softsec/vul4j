@@ -37,6 +37,9 @@ import java.util.Map;
 @SuppressWarnings( "UnusedDeclaration" )
 public class NoOpArchiver implements Archiver
 {
+    boolean useJvmChmod;
+    private boolean ignorePermissions;
+
     public void createArchive()
         throws ArchiverException, IOException
     {
@@ -264,21 +267,21 @@ public class NoOpArchiver implements Archiver
 
     public void setUseJvmChmod( boolean useJvmChmod )
     {
-
+        this.useJvmChmod = useJvmChmod;
     }
 
     public boolean isUseJvmChmod()
     {
-        return false;
+        return useJvmChmod;
     }
 
     public boolean isIgnorePermissions()
     {
-        return false;
+        return ignorePermissions;
     }
 
     public void setIgnorePermissions( boolean ignorePermissions )
     {
-
+        this.ignorePermissions = ignorePermissions;
     }
 }
