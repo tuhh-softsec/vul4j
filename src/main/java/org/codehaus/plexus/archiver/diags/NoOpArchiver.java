@@ -232,6 +232,11 @@ public class NoOpArchiver implements Archiver
             {
                 return null;
             }
+
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+
         };
     }
 

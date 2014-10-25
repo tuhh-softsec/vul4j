@@ -23,7 +23,6 @@ import org.codehaus.plexus.archiver.*;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.util.StringUtils;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -225,7 +224,7 @@ public class TrackingArchiver
     ResourceIterator getResources()
         throws ArchiverException
     {
-        throw new NotImplementedException();
+        throw new RuntimeException("Not implemented");
     }
 
     @SuppressWarnings( "rawtypes" )
