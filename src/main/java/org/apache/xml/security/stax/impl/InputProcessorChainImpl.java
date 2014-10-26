@@ -200,9 +200,15 @@ public class InputProcessorChainImpl implements InputProcessorChain {
 
     @Override
     public InputProcessorChain createSubChain(InputProcessor inputProcessor) throws XMLStreamException, XMLSecurityException {
+        return createSubChain(inputProcessor, true);
+    }
+
+    @Override
+    public InputProcessorChain createSubChain(InputProcessor inputProcessor, boolean clone) throws XMLStreamException, XMLSecurityException {
         InputProcessorChainImpl inputProcessorChain;
         try {
-            inputProcessorChain = new InputProcessorChainImpl(inboundSecurityContext, documentContext.clone(),
+            final DocumentContextImpl docContext = clone ? documentContext.clone() : documentContext;
+            inputProcessorChain = new InputProcessorChainImpl(inboundSecurityContext, docContext,
                     inputProcessors.indexOf(inputProcessor) + 1, new ArrayList<InputProcessor>(this.inputProcessors));
         } catch (CloneNotSupportedException e) {
             throw new XMLSecurityException(e);

@@ -63,6 +63,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * A set of test-cases for Signature verification.
@@ -1419,5 +1420,265 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
         StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
+    }
+
+    @Test
+    public void testPartialSignedDocumentTampered_ContentFirst() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
+        Document document = builder.parse(sourceDocument);
+
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        XMLSignature sig = signUsingDOM(
+                "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, localNames, key
+        );
+
+        // Add KeyInfo
+        sig.addKeyInfo(cert);
+
+        // Now modify the context of PaymentInfo
+        Element paymentInfoElement =
+                (Element)document.getElementsByTagNameNS("urn:example:po", "BillingAddress").item(0);
+        paymentInfoElement.setTextContent("Dig PLC, 1 First Ave, Dublin 1, US");
+
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader =
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader =
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+        try {
+            StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
+            fail("Failure expected on a modified document");
+        } catch (XMLStreamException ex) {
+            Assert.assertTrue(ex.getMessage().contains("Invalid digest of reference"));
+        }
+    }
+
+    @Test
+    public void testPartialSignedDocumentTampered_SignatureFirst() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
+        Document document = builder.parse(sourceDocument);
+
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        XMLSignature sig = signUsingDOM(
+                "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, localNames, key
+        );
+
+        // Add KeyInfo
+        sig.addKeyInfo(cert);
+
+        // Now modify the context of PaymentInfo
+        Element paymentInfoElement =
+                (Element)document.getElementsByTagNameNS("urn:example:po", "BillingAddress").item(0);
+        paymentInfoElement.setTextContent("Dig PLC, 1 First Ave, Dublin 1, US");
+
+        //move signature below root element
+        Element sigElement = (Element)document.getElementsByTagNameNS(
+                XMLSecurityConstants.TAG_dsig_Signature.getNamespaceURI(),
+                XMLSecurityConstants.TAG_dsig_Signature.getLocalPart()).item(0);
+        document.getDocumentElement().insertBefore(sigElement,
+                XMLUtils.getNextElement(document.getDocumentElement().getFirstChild()));
+
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader =
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader =
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+        try {
+            StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
+            fail("Failure expected on a modified document");
+        } catch (XMLStreamException ex) {
+            Assert.assertTrue(ex.getMessage().contains("Invalid digest of reference"));
+        }
+    }
+
+    @Test
+    public void testEnvelopedSignatureTampered_ContentFirst() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
+        Document document = builder.parse(sourceDocument);
+
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+
+        ReferenceInfo referenceInfo = new ReferenceInfo(
+                "",
+                new String[]{
+                        "http://www.w3.org/2000/09/xmldsig#enveloped-signature",
+                        "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
+                },
+                "http://www.w3.org/2000/09/xmldsig#sha1",
+                false
+        );
+
+        List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
+        referenceInfos.add(referenceInfo);
+
+        XMLSignature sig = signUsingDOM(
+                "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, localNames, key, referenceInfos
+        );
+
+        // Add KeyInfo
+        sig.addKeyInfo(cert);
+
+        // Now modify the context of PaymentInfo
+        Element paymentInfoElement =
+                (Element)document.getElementsByTagNameNS("urn:example:po", "BillingAddress").item(0);
+        paymentInfoElement.setTextContent("Dig PLC, 1 First Ave, Dublin 1, US");
+
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader =
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader =
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+        try {
+            final Document res = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
+            fail("Failure expected on a modified document");
+        } catch (XMLStreamException ex) {
+            Assert.assertTrue(ex.getMessage().contains("Invalid digest of reference"));
+        }
+    }
+
+    @Test
+    public void testEnvelopedSignatureTampered_SignatureFirst() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = XMLUtils.createDocumentBuilder(false);
+        Document document = builder.parse(sourceDocument);
+
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+
+        ReferenceInfo referenceInfo = new ReferenceInfo(
+                "",
+                new String[]{
+                        "http://www.w3.org/2000/09/xmldsig#enveloped-signature",
+                        "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
+                },
+                "http://www.w3.org/2000/09/xmldsig#sha1",
+                false
+        );
+
+        List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
+        referenceInfos.add(referenceInfo);
+
+        XMLSignature sig = signUsingDOM(
+                "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, localNames, key, referenceInfos
+        );
+
+        // Add KeyInfo
+        sig.addKeyInfo(cert);
+
+        // Now modify the context of PaymentInfo
+        Element paymentInfoElement =
+                (Element)document.getElementsByTagNameNS("urn:example:po", "BillingAddress").item(0);
+        paymentInfoElement.setTextContent("Dig PLC, 1 First Ave, Dublin 1, US");
+
+        //move signature below root element
+        Element sigElement = (Element)document.getElementsByTagNameNS(
+                XMLSecurityConstants.TAG_dsig_Signature.getNamespaceURI(),
+                XMLSecurityConstants.TAG_dsig_Signature.getLocalPart()).item(0);
+        document.getDocumentElement().insertBefore(sigElement,
+                XMLUtils.getNextElement(document.getDocumentElement().getFirstChild()));
+
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader =
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader =
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+        try {
+            final Document res = StAX2DOM.readDoc(XMLUtils.createDocumentBuilder(false), securityStreamReader);
+            fail("Failure expected on a modified document");
+        } catch (XMLStreamException ex) {
+            Assert.assertTrue(ex.getMessage().contains("Invalid digest of reference"));
+        }
     }
 }

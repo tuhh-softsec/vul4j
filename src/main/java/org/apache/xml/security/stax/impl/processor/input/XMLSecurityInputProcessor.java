@@ -138,11 +138,15 @@ public class XMLSecurityInputProcessor extends AbstractInputProcessor {
                     inputProcessorChain.addProcessor(internalReplayProcessor);
 
                     //...and let the SignatureVerificationProcessor process the buffered events (enveloped signature).
-                    InputProcessorChain subInputProcessorChain = inputProcessorChain.createSubChain(this);
+                    InputProcessorChain subInputProcessorChain = inputProcessorChain.createSubChain(this, false);
                     while (!xmlSecEventList.isEmpty()) {
                         subInputProcessorChain.reset();
                         subInputProcessorChain.processEvent();
                     }
+
+                    // copy all processor back to main chain for finalization
+                    inputProcessorChain.getProcessors().clear();
+                    inputProcessorChain.getProcessors().addAll(subInputProcessorChain.getProcessors());
                 }
                 break;
         }

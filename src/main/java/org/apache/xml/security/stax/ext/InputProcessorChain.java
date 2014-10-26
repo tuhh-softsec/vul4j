@@ -72,6 +72,7 @@ public interface InputProcessorChain extends ProcessorChain {
     /**
      * Create a new SubChain. The XMLEvents will be only be processed from the given InputProcessor to the end.
      * All earlier InputProcessors don't get these events. In other words the chain will be splitted in two parts.
+     * The associated DocumentContext will be cloned.
      *
      * @param inputProcessor The InputProcessor position the XMLEvents should be processed over this SubChain.
      * @return A new InputProcessorChain
@@ -79,6 +80,20 @@ public interface InputProcessorChain extends ProcessorChain {
      * @throws XMLSecurityException thrown when a Security failure occurs
      */
     InputProcessorChain createSubChain(InputProcessor inputProcessor) throws XMLStreamException, XMLSecurityException;
+
+    /**
+     * Create a new SubChain. The XMLEvents will be only be processed from the given InputProcessor to the end.
+     * All earlier InputProcessors don't get these events. In other words the chain will be splitted in two parts.
+     *
+     * The parameter clone controls if the associated DocumentContext should be cloned or reference the existing one.
+     *
+     * @param inputProcessor The InputProcessor position the XMLEvents should be processed over this SubChain.
+     * @param clone if true the associated DocumentContext will be cloned otherwise the DocumentContext will be referenced.
+     * @return A new InputProcessorChain
+     * @throws XMLStreamException   thrown when a streaming error occurs
+     * @throws XMLSecurityException thrown when a Security failure occurs
+     */
+    InputProcessorChain createSubChain(InputProcessor inputProcessor, boolean clone) throws XMLStreamException, XMLSecurityException;
 
     /**
      * Requests the next security header XMLEvent from the next processor in the chain.
