@@ -1663,7 +1663,7 @@ discardCookies=*
 				<ul>
 					<li>200 OK</li>
 					<li>301 Moved permanently</li>
-					<li>302 Moved temporarily</li>
+					<li>302 Found</li>
 					<li>304 Not modified</li>
 				</ul>
 			</subsection>
