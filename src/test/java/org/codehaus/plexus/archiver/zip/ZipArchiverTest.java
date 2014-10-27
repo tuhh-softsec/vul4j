@@ -281,6 +281,33 @@ public class ZipArchiverTest
         createArchive(archiver);
     }
 
+    public void testAddArchivedFileSet() throws Exception {
+        File toBeAdded = new File("src/test/resources/test.zip");
+        DefaultArchivedFileSet sfd = DefaultArchivedFileSet.archivedFileSet(toBeAdded);
+        File zipFIle = getTestFile("target/output/withZip.zip");
+        final ZipArchiver zipArchiver = getZipArchiver(zipFIle);
+        InputStreamTransformer is = new InputStreamTransformer()
+        {
+            public InputStream transform( PlexusIoResource resource, InputStream inputStream )
+                    throws IOException
+            {
+                return new BoundedInputStream( inputStream, 3 );
+            }
+        };
+        sfd.setStreamTransformer(is);
+        zipArchiver.addArchivedFileSet(sfd);
+        zipArchiver.createArchive();
+
+        final ZipUnArchiver zipUnArchiver = getZipUnArchiver(zipFIle);
+        File destFile = new File("target/output/withZip");
+        destFile.mkdirs();
+        zipUnArchiver.setDestFile(destFile);
+        zipUnArchiver.extract();
+        File a3byteFile = new File(destFile, "Users/kristian/lsrc/plexus/plexus-archiver/src/main/java/org/codehaus/plexus/archiver/zip/ZipArchiver.java");
+        assertTrue(a3byteFile.exists());
+        assertTrue(a3byteFile.length() == 3);
+    }
+
     public void testCreateArchiveWithStreamTransformer()
         throws IOException
     {
@@ -294,7 +321,8 @@ public class ZipArchiverTest
         };
 
         final ZipArchiver zipArchiver = getZipArchiver( getTestFile( "target/output/all3bytes.zip" ) );
-        DefaultArchivedFileSet afs = new DefaultArchivedFileSet( new File("src/test/resources/test.zip" ));
+        File zipFIle = new File("src/test/resources/test.zip");
+        DefaultArchivedFileSet afs = new DefaultArchivedFileSet(zipFIle);
         afs.setStreamTransformer( is );
         afs.setPrefix( "azip/" );
         zipArchiver.addArchivedFileSet( afs );
