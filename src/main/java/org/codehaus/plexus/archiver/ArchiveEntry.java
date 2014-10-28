@@ -69,8 +69,12 @@ public class ArchiveEntry
                           PlexusIoResourceCollection collection )
     {
         this.name = name;
-        this.resource = resource;
         this.collection = collection;
+        try {
+            this.resource = collection != null ? collection.resolve(resource) : resource;
+        } catch (IOException e) {
+            throw new   ArchiverException("Error resolving resource " + resource.getName(), e);
+        }
         this.attributes = ( resource instanceof PlexusIoResourceWithAttributes )
             ? ( (PlexusIoResourceWithAttributes) resource ).getAttributes() : null;
         this.type = type;
@@ -115,7 +119,7 @@ public class ArchiveEntry
     public InputStream getInputStream()
         throws IOException
     {
-        return collection != null ? collection.getInputStream( resource ) : resource.getContents();
+        return resource.getContents();
     }
     
     /**

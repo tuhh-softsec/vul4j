@@ -328,15 +328,19 @@ public class TarArchiver
 
             tOut.putArchiveEntry(te);
 
-            if ( entry.getResource().isFile() && !(entry.getType() == ArchiveEntry.SYMLINK))
-            {
-                fIn = entry.getInputStream();
+            try {
+                if (entry.getResource().isFile() && !(entry.getType() == ArchiveEntry.SYMLINK)) {
+                    fIn = entry.getInputStream();
 
-                Streams.copyFullyDontCloseOutput( fIn, tOut, "xAR" );
+                    Streams.copyFullyDontCloseOutput(fIn, tOut, "xAR");
+                }
+
+            } catch (Throwable e){
+                getLogger().warn("When creating tar entry", e);
+            } finally {
+                tOut.closeArchiveEntry();
             }
-
-            tOut.closeArchiveEntry();
-        }
+    }
         finally
         {
             IOUtil.close( fIn );

@@ -12,6 +12,8 @@ import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourceCollection;
 import org.codehaus.plexus.util.IOUtil;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * Abstract base class for compressed files, aka singleton
@@ -25,6 +27,7 @@ public class PlexusIoGzipResourceCollection
         return ".gz";
     }
 
+    @Nonnull
     protected InputStream getInputStream( File file )
         throws IOException
     {

@@ -13,6 +13,7 @@ import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourc
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.util.IOUtil;
 
+import javax.annotation.Nonnull;
 import javax.annotation.WillNotClose;
 
 
@@ -23,6 +24,7 @@ import javax.annotation.WillNotClose;
 public class PlexusIoBzip2ResourceCollection
     extends PlexusIoCompressedFileResourceCollection
 {
+    @Nonnull
     protected @WillNotClose InputStream getInputStream( File file )
         throws IOException
     {

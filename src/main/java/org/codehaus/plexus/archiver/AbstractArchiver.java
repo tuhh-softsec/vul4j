@@ -258,30 +258,30 @@ public abstract class AbstractArchiver
     public void addDirectory( @Nonnull final File directory )
         throws ArchiverException
     {
-        addFileSet( fileSet( directory ).prefixed( "" )
-            .includeExclude( null, null ).includeEmptyDirs( includeEmptyDirs ) );
+        addFileSet(
+            fileSet( directory ).prefixed( "" ).includeExclude( null, null ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
     public void addDirectory( @Nonnull final File directory, final String prefix )
         throws ArchiverException
     {
-        addFileSet( fileSet( directory ).prefixed( prefix )
-            .includeExclude( null, null ).includeEmptyDirs( includeEmptyDirs ) );
+        addFileSet(
+            fileSet( directory ).prefixed( prefix ).includeExclude( null, null ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
     public void addDirectory( @Nonnull final File directory, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
-        addFileSet( fileSet( directory ).prefixed( "" )
-            .includeExclude( includes, excludes ).includeEmptyDirs( includeEmptyDirs ) );
+        addFileSet( fileSet( directory ).prefixed( "" ).includeExclude( includes, excludes ).includeEmptyDirs(
+            includeEmptyDirs ) );
     }
 
     public void addDirectory( @Nonnull final File directory, final String prefix, final String[] includes,
                               final String[] excludes )
         throws ArchiverException
     {
-        addFileSet( fileSet( directory ).prefixed( prefix )
-            .includeExclude( includes, excludes ).includeEmptyDirs( includeEmptyDirs ) );
+        addFileSet( fileSet( directory ).prefixed( prefix ).includeExclude( includes, excludes ).includeEmptyDirs(
+            includeEmptyDirs ) );
     }
 
     public void addFileSet( @Nonnull final FileSet fileSet )
@@ -300,7 +300,7 @@ public abstract class AbstractArchiver
 
         // The PlexusIoFileResourceCollection contains platform-specific File.separatorChar which
         // is an interesting cause of grief, see PLXCOMP-192
-        final PlexusIoFileResourceCollection collection = new PlexusIoFileResourceCollection( );
+        final PlexusIoFileResourceCollection collection = new PlexusIoFileResourceCollection();
         collection.setFollowingSymLinks( !isSymlinkSupported() );
 
         collection.setIncludes( fileSet.getIncludes() );
@@ -328,8 +328,7 @@ public abstract class AbstractArchiver
 
     private boolean isSymlinkSupported()
     {
-        return Os.isFamily( Os.FAMILY_UNIX )  &&
-        Java7Reflector.isAtLeastJava7();
+        return Os.isFamily( Os.FAMILY_UNIX ) && Java7Reflector.isAtLeastJava7();
     }
 
     public void addFile( @Nonnull final File inputFile, @Nonnull final String destFileName )
@@ -340,22 +339,22 @@ public abstract class AbstractArchiver
         addFile( inputFile, destFileName, fileMode );
     }
 
-    public void addSymlink(String symlinkName, String symlinkDestination)
+    public void addSymlink( String symlinkName, String symlinkDestination )
         throws ArchiverException
     {
         final int fileMode = getOverrideFileMode();
 
-        addSymlink(symlinkName, fileMode, symlinkDestination);
+        addSymlink( symlinkName, fileMode, symlinkDestination );
     }
 
-    public void addSymlink(String symlinkName, int permissions, String symlinkDestination)
+    public void addSymlink( String symlinkName, int permissions, String symlinkDestination )
         throws ArchiverException
     {
         resources.add( ArchiveEntry.createSymlinkEntry( symlinkName, permissions, symlinkDestination ) );
     }
 
     protected ArchiveEntry asArchiveEntry( @Nonnull final PlexusIoResource resource, final String destFileName,
-                                           final int permissions,  PlexusIoResourceCollection collection)
+                                           final int permissions, PlexusIoResourceCollection collection )
         throws ArchiverException
     {
         if ( !resource.isExisting() )
@@ -377,27 +376,20 @@ public abstract class AbstractArchiver
                                            final PlexusIoResource resource )
         throws ArchiverException
     {
-        try
-        {
-            final String destFileName = collection.getName( resource );
+        final String destFileName = collection.getName( resource );
 
-            int permissions = -1;
-            if ( resource instanceof PlexusIoResourceWithAttributes )
+        int permissions = -1;
+        if ( resource instanceof PlexusIoResourceWithAttributes )
+        {
+            final PlexusIoResourceAttributes attrs = ( (PlexusIoResourceWithAttributes) resource ).getAttributes();
+
+            if ( attrs != null )
             {
-                final PlexusIoResourceAttributes attrs = ( (PlexusIoResourceWithAttributes) resource ).getAttributes();
-
-                if ( attrs != null )
-                {
-                    permissions = attrs.getOctalMode();
-                }
+                permissions = attrs.getOctalMode();
             }
+        }
 
-            return asArchiveEntry( resource, destFileName, permissions, collection );
-        }
-        catch ( final IOException e )
-        {
-            throw new ArchiverException( e.getMessage(), e );
-        }
+        return asArchiveEntry( resource, destFileName, permissions, collection );
     }
 
     public void addResource( final PlexusIoResource resource, final String destFileName, final int permissions )
@@ -457,7 +449,7 @@ public abstract class AbstractArchiver
         }
     }
 
-	@Nonnull
+    @Nonnull
     public ResourceIterator getResources()
         throws ArchiverException
     {
@@ -559,8 +551,8 @@ public abstract class AbstractArchiver
             private boolean throwIllegalResourceType( Object o )
             {
                 throw new IllegalStateException(
-                    "An invalid resource of type: " + o.getClass().getName()
-                        + " was added to archiver: " + getClass().getName() );
+                    "An invalid resource of type: " + o.getClass().getName() + " was added to archiver: "
+                        + getClass().getName() );
             }
 
             public ArchiveEntry next()
@@ -585,11 +577,11 @@ public abstract class AbstractArchiver
         };
     }
 
-    public Map<String,ArchiveEntry> getFiles()
+    public Map<String, ArchiveEntry> getFiles()
     {
         try
         {
-            final Map<String,ArchiveEntry> map = new HashMap<String,ArchiveEntry>();
+            final Map<String, ArchiveEntry> map = new HashMap<String, ArchiveEntry>();
             for ( final ResourceIterator iter = getResources(); iter.hasNext(); )
             {
                 final ArchiveEntry entry = iter.next();
@@ -685,10 +677,11 @@ public abstract class AbstractArchiver
                                              + resources.getClass().getName() );
         }
 
-        if (resources instanceof AbstractPlexusIoResourceCollection ){
-            ((AbstractPlexusIoResourceCollection)resources).setStreamTransformer( fileSet.getStreamTransformer() );
+        if ( resources instanceof AbstractPlexusIoResourceCollection )
+        {
+            ( (AbstractPlexusIoResourceCollection) resources ).setStreamTransformer( fileSet.getStreamTransformer() );
         }
-        final PlexusIoProxyResourceCollection proxy = new PlexusIoProxyResourceCollection(resources);
+        final PlexusIoProxyResourceCollection proxy = new PlexusIoProxyResourceCollection( resources );
 
         proxy.setExcludes( fileSet.getExcludes() );
         proxy.setIncludes( fileSet.getIncludes() );
@@ -718,7 +711,7 @@ public abstract class AbstractArchiver
     public void addResources( final PlexusIoResourceCollection collection )
         throws ArchiverException
     {
-        resources.add(collection);
+        resources.add( collection );
     }
 
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
@@ -736,10 +729,8 @@ public abstract class AbstractArchiver
         throws ArchiverException
     {
         addArchivedFileSet(
-            archivedFileSet( archiveFile )
-                .prefixed( prefix )
-                .includeExclude( includes, excludes )
-                .includeEmptyDirs( includeEmptyDirs ) );
+            archivedFileSet( archiveFile ).prefixed( prefix ).includeExclude( includes, excludes ).includeEmptyDirs(
+                includeEmptyDirs ) );
     }
 
     /**
@@ -748,10 +739,7 @@ public abstract class AbstractArchiver
     public void addArchivedFileSet( @Nonnull final File archiveFile, final String prefix )
         throws ArchiverException
     {
-        addArchivedFileSet(
-            archivedFileSet( archiveFile )
-                .prefixed( prefix )
-                .includeEmptyDirs( includeEmptyDirs ) );
+        addArchivedFileSet( archivedFileSet( archiveFile ).prefixed( prefix ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
     /**
@@ -761,9 +749,7 @@ public abstract class AbstractArchiver
         throws ArchiverException
     {
         addArchivedFileSet(
-            archivedFileSet( archiveFile )
-                .includeExclude( includes, excludes )
-                .includeEmptyDirs( includeEmptyDirs ) );
+            archivedFileSet( archiveFile ).includeExclude( includes, excludes ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
     /**
@@ -804,7 +790,7 @@ public abstract class AbstractArchiver
         this.forced = forced;
     }
 
-    public void setArchiveFilters(final List filters)
+    public void setArchiveFilters( final List filters )
     {
         filterSupport = new FilterSupport( filters, getLogger() );
     }
@@ -913,9 +899,10 @@ public abstract class AbstractArchiver
     {
         if ( finalizers != null )
         {
-			for (final ArchiveFinalizer finalizer : finalizers) {
-				finalizer.finalizeArchiveCreation(this);
-			}
+            for ( final ArchiveFinalizer finalizer : finalizers )
+            {
+                finalizer.finalizeArchiveCreation( this );
+            }
         }
     }
 
@@ -969,13 +956,15 @@ public abstract class AbstractArchiver
     {
         if ( finalizers != null )
         {
-			for (final ArchiveFinalizer finalizer : finalizers) {
-				final List virtualFiles = finalizer.getVirtualFiles();
+            for ( final ArchiveFinalizer finalizer : finalizers )
+            {
+                final List virtualFiles = finalizer.getVirtualFiles();
 
-				if ((virtualFiles != null) && !virtualFiles.isEmpty()) {
-					return true;
-				}
-			}
+                if ( ( virtualFiles != null ) && !virtualFiles.isEmpty() )
+                {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -1000,10 +989,14 @@ public abstract class AbstractArchiver
     {
         for ( Object resource : resources )
         {
-            if (resource instanceof  PlexusIoProxyResourceCollection){
+            if ( resource instanceof PlexusIoProxyResourceCollection )
+            {
                 resource = ( (PlexusIoProxyResourceCollection) resource ).getSrc();
             }
-            if (resource instanceof Closeable ) ((Closeable)resource).close();
+            if ( resource instanceof Closeable )
+            {
+                ( (Closeable) resource ).close();
+            }
         }
         resources.clear();
     }
