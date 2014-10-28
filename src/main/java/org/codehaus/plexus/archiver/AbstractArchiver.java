@@ -355,7 +355,7 @@ public abstract class AbstractArchiver
     }
 
     protected ArchiveEntry asArchiveEntry( @Nonnull final PlexusIoResource resource, final String destFileName,
-                                           final int permissions )
+                                           final int permissions,  PlexusIoResourceCollection collection)
         throws ArchiverException
     {
         if ( !resource.isExisting() )
@@ -365,7 +365,7 @@ public abstract class AbstractArchiver
 
         if ( resource.isFile() )
         {
-            return ArchiveEntry.createFileEntry( destFileName, resource, permissions );
+            return ArchiveEntry.createFileEntry( destFileName, resource, permissions, collection );
         }
         else
         {
@@ -392,7 +392,7 @@ public abstract class AbstractArchiver
                 }
             }
 
-            return asArchiveEntry( resource, destFileName, permissions );
+            return asArchiveEntry( resource, destFileName, permissions, collection );
         }
         catch ( final IOException e )
         {
@@ -403,7 +403,7 @@ public abstract class AbstractArchiver
     public void addResource( final PlexusIoResource resource, final String destFileName, final int permissions )
         throws ArchiverException
     {
-        resources.add( asArchiveEntry( resource, destFileName, permissions ) );
+        resources.add( asArchiveEntry( resource, destFileName, permissions, null ) );
     }
 
     public void addFile( @Nonnull final File inputFile, @Nonnull String destFileName, int permissions )

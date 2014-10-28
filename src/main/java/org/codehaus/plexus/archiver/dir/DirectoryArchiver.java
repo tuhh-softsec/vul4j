@@ -131,7 +131,7 @@ public class DirectoryArchiver
                     throw new ArchiverException( "Unable to create directory or parent directory of " + outFile );
                 }
             }
-            ResourceUtils.copyFile( in, outFile );
+            ResourceUtils.copyFile( entry.getInputStream(), outFile );
 
             if ( !isIgnorePermissions() )
             {

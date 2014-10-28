@@ -93,6 +93,25 @@ public class ResourceUtils
     }
 
     /**
+     * Copies the sources contents to the given destination file.
+     */
+    public static void copyFile( InputStream input, File outFile )
+        throws IOException
+    {
+        OutputStream output = null;
+        try
+        {
+            output = new FileOutputStream( outFile );
+            IOUtil.copy( input, output );
+        }
+        finally
+        {
+            IOUtil.close( input );
+            IOUtil.close( output );
+        }
+    }
+
+    /**
      * Checks, whether the resource and the file are identical.
      */
     public static boolean isSame( PlexusIoResource resource, File file )
