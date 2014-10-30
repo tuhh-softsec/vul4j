@@ -15,7 +15,9 @@
 
 package org.esigate.extension;
 
+import java.util.LinkedList;
 import java.util.Properties;
+import java.util.Queue;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpHost;
@@ -66,6 +68,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FragmentLogging implements Extension, IEventListener {
     private static final String TIME = "org.esigate.time";
+    private static final String TIME_QUEUE = "org.esigate.time.queue";
     private static final Logger LOG = LoggerFactory.getLogger(FragmentLogging.class);
     private Driver driver;
 
@@ -81,7 +84,17 @@ public class FragmentLogging implements Extension, IEventListener {
 
         FragmentEvent e = (FragmentEvent) event;
 
+        Queue<Long> times = (Queue<Long>) e.getHttpContext().getAttribute(TIME_QUEUE);
+
         if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
+            // Keep track of the previous request start time.
+            if (e.getHttpContext().getAttribute(TIME) != null) {
+                if (times == null) {
+                    times = new LinkedList<Long>();
+                    e.getHttpContext().setAttribute(TIME_QUEUE, times);
+                }
+                times.add((Long) e.getHttpContext().getAttribute(TIME));
+            }
             // Keep track of the start time.
             e.getHttpContext().setAttribute(TIME, System.currentTimeMillis());
         } else {
@@ -110,7 +123,10 @@ public class FragmentLogging implements Extension, IEventListener {
                 }
 
                 long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME);
-
+                if (times != null && !times.isEmpty()) {
+                    // Put previous request start time
+                    e.getHttpContext().setAttribute(TIME, times.remove());
+                }
                 StringBuilder logMessage = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
                 logMessage.append(driver.getConfiguration().getInstanceName());
                 logMessage.append(" ");
