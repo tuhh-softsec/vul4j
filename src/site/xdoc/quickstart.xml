@@ -47,7 +47,7 @@
 			
 <source>
 esigate.remoteUrlBase=http://localhost:8080/
-esigate.mapping=/*
+esigate.mappings=/*
 </source>
 			<p>mapping=/* means that all requests will be forwarded to this application.</p>
 		</section>

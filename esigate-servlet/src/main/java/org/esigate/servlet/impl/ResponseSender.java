@@ -35,6 +35,19 @@ public class ResponseSender {
 
     public void sendResponse(HttpResponse httpResponse, IncomingRequest httpRequest, HttpServletResponse response)
             throws IOException {
+        if (response.isCommitted())
+            return; // Response already sent
+        sendHeaders(httpResponse, httpRequest, response);
+        HttpEntity httpEntity = httpResponse.getEntity();
+        if (httpEntity != null) {
+            httpEntity.writeTo(response.getOutputStream());
+        } else {
+            response.sendError(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine()
+                    .getReasonPhrase());
+        }
+    }
+
+    void sendHeaders(HttpResponse httpResponse, IncomingRequest httpRequest, HttpServletResponse response) {
         response.setStatus(httpResponse.getStatusLine().getStatusCode());
         for (Header header : httpResponse.getAllHeaders()) {
             String name = header.getName();
@@ -48,7 +61,6 @@ public class ResponseSender {
         for (int i = 0; i < newCookies.length; i++) {
             response.addHeader("Set-Cookie", CookieUtil.encodeCookie(newCookies[i]));
         }
-
         HttpEntity httpEntity = httpResponse.getEntity();
         if (httpEntity != null) {
             long contentLength = httpEntity.getContentLength();
@@ -63,11 +75,6 @@ public class ResponseSender {
             if (contentEncoding != null) {
                 response.setHeader(contentEncoding.getName(), contentEncoding.getValue());
             }
-
-            httpEntity.writeTo(response.getOutputStream());
-        } else {
-            response.sendError(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine()
-                    .getReasonPhrase());
         }
     }
 
