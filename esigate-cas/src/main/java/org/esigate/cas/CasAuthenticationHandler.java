@@ -93,10 +93,16 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
 
     @Override
     public void init(Properties properties) {
+
         loginUrl = properties.getProperty(LOGIN_URL_PROPERTY);
         if (loginUrl == null) {
             loginUrl = DEFAULT_LOGIN_URL;
         }
+
+        CASRedirectStrategy strategy = new CASRedirectStrategy();
+        strategy.setLoginURL(loginUrl);
+        driver.setRedirectStrategy(strategy);
+
         String springSecurityString = properties.getProperty(SPRING_SECURITY_PROPERTY);
         if (springSecurityString != null) {
             springSecurity = Boolean.parseBoolean(springSecurityString);

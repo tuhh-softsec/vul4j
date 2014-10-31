@@ -38,9 +38,7 @@ public class CasAuthenticationHandlerTest extends TestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080");
         properties.put(CasAuthenticationHandler.LOGIN_URL_PROPERTY, "/loginurl");
-        handler = new CasAuthenticationHandler();
 
-        handler.init(properties);
         mockConnectionManager = new MockConnectionManager();
 
         driver1 =
@@ -68,6 +66,9 @@ public class CasAuthenticationHandlerTest extends TestCase {
                                                         Parameters.COOKIE_MANAGER, null))).build();
 
         httpClientRequestExecutor = (HttpClientRequestExecutor) driver1.getRequestExecutor();
+        handler = new CasAuthenticationHandler();
+
+        handler.init(driver1, properties);
     }
 
     public void testBeforeProxy() throws Exception {
