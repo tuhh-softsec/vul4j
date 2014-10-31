@@ -21,6 +21,7 @@ import java.util.Properties;
 import org.apache.http.Header;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.esigate.Driver;
 import org.esigate.authentication.GenericAuthentificationHandler;
 import org.esigate.http.IncomingRequest;
 import org.esigate.http.OutgoingRequest;
@@ -34,8 +35,8 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
     private static final Logger LOG = LoggerFactory.getLogger(GenericAuthentificationHandler.class);
 
     // Configuration properties names
-    private static final String LOGIN_URL_PROPERTY = "casLoginUrl";
-    private static final String SECOND_REQUEST = "SECOND_REQUEST";
+    protected static final String LOGIN_URL_PROPERTY = "casLoginUrl";
+    protected static final String SECOND_REQUEST = "SECOND_REQUEST";
     private static final String SPRING_SECURITY_PROPERTY = "isSpringSecurity";
 
     private static final String SPRING_SECURITY_URL_PATTERN_PROPERTY = "springSecurityUrl";
@@ -62,6 +63,11 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
                 if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
                     resultLocation =
                             outgoingRequest.getBaseUrl() + springSecurityUrl + ((params != null) ? params : "");
+                    /*
+                     * if (outgoingRequest.getContext().isProxy()) { springRedirectParam = "&spring-security-redirect="
+                     * + request.getRequestLine().getUri(); } else { springRedirectParam = "&spring-security-redirect="
+                     * + location; }
+                     */
                     springRedirectParam = "&spring-security-redirect=" + location;
                     LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
                 }
@@ -87,10 +93,16 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
 
     @Override
     public void init(Properties properties) {
+
         loginUrl = properties.getProperty(LOGIN_URL_PROPERTY);
         if (loginUrl == null) {
             loginUrl = DEFAULT_LOGIN_URL;
         }
+
+        CASRedirectStrategy strategy = new CASRedirectStrategy();
+        strategy.setLoginURL(loginUrl);
+        driver.setRedirectStrategy(strategy);
+
         String springSecurityString = properties.getProperty(SPRING_SECURITY_PROPERTY);
         if (springSecurityString != null) {
             springSecurity = Boolean.parseBoolean(springSecurityString);
@@ -103,7 +115,9 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
     @Override
     public boolean needsNewRequest(HttpResponse httpResponse, OutgoingRequest outgoingRequest,
             IncomingRequest incomingRequest) {
-        Boolean secondRequest = incomingRequest.getAttribute(SECOND_REQUEST);
+        String secondRequestAttribute =
+                driverSpecificName(outgoingRequest.getOriginalRequest().getDriver(), SECOND_REQUEST);
+        Boolean secondRequest = incomingRequest.getAttribute(secondRequestAttribute);
         if (secondRequest == null) {
             secondRequest = Boolean.FALSE;
         }
@@ -129,13 +143,27 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
 
     @Override
     public void preRequest(OutgoingRequest outgoingRequest, IncomingRequest incomingRequest) {
-        Boolean secondRequest = incomingRequest.getAttribute(SECOND_REQUEST);
+        String secondRequestAttribute =
+                driverSpecificName(outgoingRequest.getOriginalRequest().getDriver(), SECOND_REQUEST);
+        Boolean secondRequest = incomingRequest.getAttribute(secondRequestAttribute);
         if (secondRequest == null) {
             secondRequest = Boolean.FALSE;
         }
         if (secondRequest) {
             addCasAuthentication(outgoingRequest, incomingRequest);
         }
-        incomingRequest.setAttribute(SECOND_REQUEST, true);
+        incomingRequest.setAttribute(secondRequestAttribute, true);
+    }
+
+    /**
+     * Prefix attribute to be driver specific
+     * 
+     * @param driver
+     * @param name
+     * @return
+     */
+    protected String driverSpecificName(Driver driver, String name) {
+        return new StringBuilder().append(driver.getConfiguration().getInstanceName()).append("-").append(name)
+                .toString();
     }
 }

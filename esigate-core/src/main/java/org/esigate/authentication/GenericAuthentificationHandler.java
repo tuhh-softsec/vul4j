@@ -56,7 +56,7 @@ import org.esigate.http.OutgoingRequest;
  */
 public abstract class GenericAuthentificationHandler implements IEventListener, Extension {
 
-    private Driver driver;
+    protected Driver driver;
 
     /**
      * Method called before proxying a request

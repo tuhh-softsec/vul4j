@@ -39,6 +39,7 @@ import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
+import org.esigate.http.RedirectStrategy;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
 import org.esigate.impl.UrlRewriter;
@@ -64,6 +65,16 @@ public final class Driver {
     private RequestExecutor requestExecutor;
     private ContentTypeHelper contentTypeHelper;
     private UrlRewriter urlRewriter;
+
+    private RedirectStrategy redirectStrategy = new RedirectStrategy();
+
+    public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
+        this.redirectStrategy = redirectStrategy;
+    }
+
+    public RedirectStrategy getRedirectStrategy() {
+        return redirectStrategy;
+    }
 
     public static class DriverBuilder {
         private Driver driver = new Driver();

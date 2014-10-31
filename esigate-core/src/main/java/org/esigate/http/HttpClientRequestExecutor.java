@@ -127,7 +127,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             httpClientHelper.cookieManager = cookieManager;
             httpClientHelper.connectTimeout = Parameters.CONNECT_TIMEOUT.getValue(properties);
             httpClientHelper.socketTimeout = Parameters.SOCKET_TIMEOUT.getValue(properties);
-            httpClientHelper.httpClient = buildHttpClient(properties, eventManager, connectionManager);
+            httpClientHelper.httpClient = buildHttpClient(driver, properties, eventManager, connectionManager);
             String firstBaseURL = Parameters.REMOTE_URL_BASE.getValue(properties)[0];
             httpClientHelper.firstBaseUrlHost = UriUtils.extractHost(firstBaseURL);
             return httpClientHelper;
@@ -155,7 +155,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         }
     }
 
-    private static HttpClient buildHttpClient(Properties properties, EventManager eventManager,
+    private static HttpClient buildHttpClient(Driver driver, Properties properties, EventManager eventManager,
             HttpClientConnectionManager connectionManager) {
         HttpHost proxyHost = null;
         Credentials proxyCredentials = null;
@@ -177,7 +177,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
         httpClientBuilder.setMaxConnTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
-        httpClientBuilder.setRedirectStrategy(new RedirectStrategy());
+        httpClientBuilder.setRedirectStrategy(driver.getRedirectStrategy());
+
         // Proxy settings
         if (proxyHost != null) {
             httpClientBuilder.setProxy(proxyHost);
