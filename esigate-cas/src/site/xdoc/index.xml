@@ -30,7 +30,7 @@
 	&lt;filter-class&gt;org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class&gt;
 	&lt;init-param&gt;
 		&lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
-		&lt;param-value&gt;http://localhost:8080/esigate-app-cas/login&lt;/param-value&gt;
+		&lt;param-value&gt;http://cas-server/cas/login&lt;/param-value&gt;
 	&lt;/init-param&gt;
 	&lt;init-param&gt;
 		&lt;param-name&gt;serverName&lt;/param-name&gt;
@@ -42,7 +42,7 @@
 	&lt;filter-class&gt;org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter&lt;/filter-class&gt;
 	&lt;init-param&gt;
 		&lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
-		&lt;param-value&gt;http://localhost:8080/esigate-app-cas&lt;/param-value&gt;
+		&lt;param-value&gt;http://cas-server/cas&lt;/param-value&gt;
 	&lt;/init-param&gt;
 	&lt;init-param&gt;
 		&lt;param-name&gt;serverName&lt;/param-name&gt;
@@ -86,11 +86,21 @@
 	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
 &lt;/filter-mapping&gt;
 </source>
-	In addition, you must configure the AuthenticationHandler in
-	esigate.properties file for each provider:
+	In addition, you must configure the AuthenticationHandler and the cas login url in
+	esigate.properties file for each provider that need CAS Authentication :
 <source>
+#Global configuration (for each provider) :
+casLoginUrl=http://cas-server/cas/login
 authenticationHandler=org.esigate.cas.CasAuthenticationHandler
+
+#or configuration by provider
+aggregated1.casLoginUrl=http://cas-server/cas/login
+aggregated1.authenticationHandler=org.esigate.cas.CasAuthenticationHandler
+
+aggregated2.casLoginUrl=http://cas-server/cas/login
 aggregated2.authenticationHandler=org.esigate.cas.CasAuthenticationHandler
+
+
 </source>
 		</section>
 		<section
@@ -106,7 +116,7 @@ aggregated2.authenticationHandler=org.esigate.cas.CasAuthenticationHandler
 	&lt;filter-class&gt;org.jasig.cas.client.authentication.AuthenticationFilter&lt;/filter-class&gt;
 	&lt;init-param&gt;
 		&lt;param-name&gt;casServerLoginUrl&lt;/param-name&gt;
-		&lt;param-value&gt;http://localhost:8080/esigate-app-cas/login&lt;/param-value&gt;
+		&lt;param-value&gt;http://cas-server/cas/login&lt;/param-value&gt;
 	&lt;/init-param&gt;
 	&lt;init-param&gt;
 		&lt;param-name&gt;serverName&lt;/param-name&gt;
@@ -118,7 +128,7 @@ aggregated2.authenticationHandler=org.esigate.cas.CasAuthenticationHandler
 	&lt;filter-class&gt;org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter&lt;/filter-class&gt;
 	&lt;init-param&gt;
 		&lt;param-name&gt;casServerUrlPrefix&lt;/param-name&gt;
-		&lt;param-value&gt;http://localhost:8080/esigate-app-cas&lt;/param-value&gt;
+		&lt;param-value&gt;http://cas-server/cas&lt;/param-value&gt;
 	&lt;/init-param&gt;
 	&lt;init-param&gt;
 		&lt;param-name&gt;serverName&lt;/param-name&gt;
