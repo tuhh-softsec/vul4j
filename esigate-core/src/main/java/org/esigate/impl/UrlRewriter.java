@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.esigate.Parameters;
 import org.esigate.util.UriUtils;
@@ -172,20 +173,61 @@ public final class UrlRewriter {
                 result = pagePath + "/" + result;
             }
         }
-
+        result = cleanUpPath(result);
         LOG.debug("url fixed: {} -> {}", url, result);
         return result;
     }
 
+    private final static String REL_PATH = "../";
+
     /**
-     * Fix all resources urls and return the result.
+     * Cleanup url path to remove ../ when possible
      * 
-     * @param input
-     *            The original charSequence to be processed.
-     * @param requestUrl
-     *            The request URL.
-     * @param baseUrlParam
-     *            The base URL selected for this request.
+     * /path/to/a/../page=/path/to/page /path/to/a/../../page=/path/page /path/to/a/../../=/path/
+     * 
+     */
+    protected String cleanUpPath(String path) {
+
+        String result = path;
+        if (path.contains(REL_PATH)) {
+            int postPro = path.indexOf("//");
+            String protocol = "";
+            if (postPro != -1) {
+                protocol = path.substring(0, postPro + 2);
+                result = result.substring(postPro + 2, result.length());
+            }
+            int nbRelPath = StringUtils.countMatches(result, REL_PATH);
+            int nbSlash = StringUtils.countMatches(result, "/");
+            // look if we can rewrite
+            if (nbSlash - nbRelPath >= nbRelPath) {
+                int pos;
+                // While url contains ../
+                while ((pos = result.indexOf(REL_PATH)) > 0) {
+                    // Get url part after ../
+                    String lastPart = result.substring(pos + REL_PATH.length(), result.length());
+                    // Calculate url part before ../
+                    String firstPart = result.substring(0, pos - 1);
+                    firstPart = firstPart.substring(0, firstPart.lastIndexOf("/") + 1);
+                    result = firstPart + lastPart;
+                }
+            }
+            result = protocol + result;
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("cleanup url [{}] to [{}]", path, result);
+            }
+        }
+        return result;
+    }
+
+    /*
+     * 
+     * /** Fix all resources urls and return the result.
+     * 
+     * @param input The original charSequence to be processed.
+     * 
+     * @param requestUrl The request URL.
+     * 
+     * @param baseUrlParam The base URL selected for this request.
      * 
      * @return the result of this renderer.
      */
