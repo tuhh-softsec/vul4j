@@ -135,10 +135,10 @@ public class UrlRewriterTest extends TestCase {
                 "  <a href=\"../styles/style.css\"/> <img src=\"images/logo.png\"/> "
                         + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
         final String expectedOutputRelative =
-                "  <a href=\"/page/../styles/style.css\"/> " + "<img src=\"/page/images/logo.png\"/>"
+                "  <a href=\"/styles/style.css\"/> " + "<img src=\"/page/images/logo.png\"/>"
                         + " <a href=\"/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
         final String expectedOutputAbsolute =
-                "  <a href=\"http://app2/page/../styles/style.css\"/> "
+                "  <a href=\"http://app2/styles/style.css\"/> "
                         + "<img src=\"http://app2/page/images/logo.png\"/> "
                         + "<a href=\"http://app2/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
 
@@ -159,7 +159,7 @@ public class UrlRewriterTest extends TestCase {
                 "  <a href=\"../styles/style$.css\"/> <img src=\"images/logo$.png\"/></a> "
                         + "<img src=\"http://www.google.com/logo.com\"/>";
         final String expectedOutputAbsolute =
-                "  <a href=\"http://app2/page/../styles/style$.css\"/> "
+                "  <a href=\"http://app2/styles/style$.css\"/> "
                         + "<img src=\"http://app2/page/images/logo$.png\"/></a>"
                         + " <img src=\"http://www.google.com/logo.com\"/>";
 
@@ -176,7 +176,7 @@ public class UrlRewriterTest extends TestCase {
                 "  <a HREF=\"../styles/style.css\"/> <img SrC=\"images/logo.png\"/></a> "
                         + "<img src=\"http://www.google.com/logo.com\"/>";
         final String expectedOutputAbsolute =
-                "  <a HREF=\"http://app2/page/../styles/style.css\"/> "
+                "  <a HREF=\"http://app2/styles/style.css\"/> "
                         + "<img SrC=\"http://app2/page/images/logo.png\"/></a> <img src=\"http://www.google.com/logo.com\"/>";
 
         UrlRewriter tested = createUrlRewriter(visibleBase, "absolute");
@@ -192,7 +192,7 @@ public class UrlRewriterTest extends TestCase {
                 "  <a background=\"../styles/style.css\"/> <img background=\"images/logo.png\"/></a> "
                         + "<img background=\"http://www.google.com/logo.com\"/>";
         final String expectedOutputAbsolute =
-                "  <a background=\"http://app2/page/../styles/style.css\"/> "
+                "  <a background=\"http://app2/styles/style.css\"/> "
                         + "<img background=\"http://app2/page/images/logo.png\"/></a> "
                         + "<img background=\"http://www.google.com/logo.com\"/>";
 
@@ -212,6 +212,28 @@ public class UrlRewriterTest extends TestCase {
         final String input = "<a href=\"?p=services\">test</a>";
         final String expectedOutputRelative = "<a href=\"/context/status?p=services\">test</a>";
         final String expectedOutputAbsolute = "<a href=\"http://myapp/context/status?p=services\">test</a>";
+
+        // Relative test
+        UrlRewriter tested = createUrlRewriter(base, "absolute");
+        String result = tested.rewriteHtml(input, page, base).toString();
+        assertEquals(expectedOutputAbsolute, result);
+
+        // Absolute test
+        tested = createUrlRewriter(base, "relative");
+        result = tested.rewriteHtml(input, page, base).toString();
+        assertEquals(expectedOutputRelative, result);
+    }
+
+    /**
+     * Ensures links like &lt;a href="../../path">link&lt;a/> are correctly fixed with ABSOLUTE settings.
+     * 
+     */
+    public void testSimpleUrlWithRelativePath() {
+        String base = "http://myapp/";
+        String page = "/context/status/page1";
+        final String input = "<a href=\"../path/to/page\">test</a>";
+        final String expectedOutputRelative = "<a href=\"/context/path/to/page\">test</a>";
+        final String expectedOutputAbsolute = "<a href=\"http://myapp/context/path/to/page\">test</a>";
 
         // Relative test
         UrlRewriter tested = createUrlRewriter(base, "absolute");
@@ -296,6 +318,36 @@ public class UrlRewriterTest extends TestCase {
         tested = createUrlRewriter(base, "relative");
         result = tested.rewriteHtml(input, page, base).toString();
         assertEquals(input, result);
+    }
+
+    public void testCleanUp() {
+        UrlRewriter urlRewriter = createUrlRewriter("", "absolute");
+        assertEquals("path/to/page", urlRewriter.cleanUpPath("path/to/page"));
+        assertEquals("path/page", urlRewriter.cleanUpPath("path/to/../page"));
+        assertEquals("page", urlRewriter.cleanUpPath("path/to/../../page"));
+
+        assertEquals("http://host/page", urlRewriter.cleanUpPath("http://host/path/to/../../page"));
+        assertEquals("//host/page", urlRewriter.cleanUpPath("//host/path/to/../../page"));
+        assertEquals("http://host/", urlRewriter.cleanUpPath("http://host/path/to/../../page/../"));
+        assertEquals("http://", urlRewriter.cleanUpPath("http://host/path/to/../../../page/../"));
+
+        // Test bad url
+        assertEquals("http://host/path/to/../../../../page/../",
+                urlRewriter.cleanUpPath("http://host/path/to/../../../../page/../"));
+
+        assertEquals("page", urlRewriter.cleanUpPath("path/../to/../page"));
+
+        // test empty url
+        assertEquals("", urlRewriter.cleanUpPath(""));
+
+        // Test url that can't be totally cleaned
+        assertEquals("path/../../page", urlRewriter.cleanUpPath("path/../../page"));
+
+        // Test url that can't be cleaned
+        assertEquals("../../path/../to/../page", urlRewriter.cleanUpPath("../../path/../to/../page"));
+        assertEquals("../page", urlRewriter.cleanUpPath("../page"));
+        assertEquals("../", urlRewriter.cleanUpPath("../"));
+
     }
 
 }

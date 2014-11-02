@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.esigate.Parameters;
 import org.esigate.util.UriUtils;
@@ -45,6 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class UrlRewriter {
     private static final Logger LOG = LoggerFactory.getLogger(UrlRewriter.class);
+    private static final String REL_PATH = "../";
 
     public static final int ABSOLUTE = 0;
     public static final int RELATIVE = 1;
@@ -172,8 +174,54 @@ public final class UrlRewriter {
                 result = pagePath + "/" + result;
             }
         }
+        result = cleanUpPath(result);
+        LOG.debug("url fixed: [{}] -> [{}]", url, result);
+        return result;
+    }
 
-        LOG.debug("url fixed: {} -> {}", url, result);
+    /**
+     * Cleanup url path to remove ../ when possible.
+     * 
+     * /path/to/a/../page=>/path/to/page
+     * 
+     * /path/to/a/../../page=>/path/page
+     * 
+     * @param url
+     *            the url to clean
+     * 
+     * @return the cleaned url
+     */
+    protected String cleanUpPath(String url) {
+
+        String result = url;
+        if (url.contains(REL_PATH)) {
+            String protocol = "//";
+            int posPro = url.indexOf(protocol);
+            String protocolPart = "";
+            if (posPro != -1) {
+                protocolPart = url.substring(0, posPro + protocol.length());
+                result = result.substring(posPro + protocol.length(), result.length());
+            }
+            int nbRelPath = StringUtils.countMatches(result, REL_PATH);
+            int nbSlash = StringUtils.countMatches(result, "/");
+            // look if we can rewrite
+            if (nbSlash - nbRelPath >= nbRelPath) {
+                int pos;
+                // While url contains ../
+                while ((pos = result.indexOf(REL_PATH)) > 0) {
+                    // Get url part after ../
+                    String lastPart = result.substring(pos + REL_PATH.length(), result.length());
+                    // Calculate url part before ../
+                    String firstPart = result.substring(0, pos - 1);
+                    firstPart = firstPart.substring(0, firstPart.lastIndexOf("/") + 1);
+                    result = firstPart + lastPart;
+                }
+            }
+            result = protocolPart + result;
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("cleanup url [{}] to [{}]", url, result);
+            }
+        }
         return result;
     }
 
@@ -182,8 +230,10 @@ public final class UrlRewriter {
      * 
      * @param input
      *            The original charSequence to be processed.
+     * 
      * @param requestUrl
      *            The request URL.
+     * 
      * @param baseUrlParam
      *            The base URL selected for this request.
      * 
