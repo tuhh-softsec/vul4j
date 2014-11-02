@@ -32,6 +32,7 @@ import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FragmentEvent;
+import org.esigate.http.OutgoingRequestContext;
 import org.esigate.http.RedirectStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,19 +85,9 @@ public class FragmentLogging implements Extension, IEventListener {
 
         FragmentEvent e = (FragmentEvent) event;
 
-        Queue<Long> times = (Queue<Long>) e.getHttpContext().getAttribute(TIME_QUEUE);
-
         if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {
-            // Keep track of the previous request start time.
-            if (e.getHttpContext().getAttribute(TIME) != null) {
-                if (times == null) {
-                    times = new LinkedList<Long>();
-                    e.getHttpContext().setAttribute(TIME_QUEUE, times);
-                }
-                times.add((Long) e.getHttpContext().getAttribute(TIME));
-            }
             // Keep track of the start time.
-            e.getHttpContext().setAttribute(TIME, System.currentTimeMillis());
+            e.getHttpContext().setAttribute(TIME, System.currentTimeMillis(), true);
         } else {
             int statusCode = e.getHttpResponse().getStatusLine().getStatusCode();
 
@@ -122,11 +113,8 @@ public class FragmentLogging implements Extension, IEventListener {
                     cache = cacheResponseStatus.toString();
                 }
 
-                long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME);
-                if (times != null && !times.isEmpty()) {
-                    // Put previous request start time
-                    e.getHttpContext().setAttribute(TIME, times.remove());
-                }
+                long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME, true);
+
                 StringBuilder logMessage = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
                 logMessage.append(driver.getConfiguration().getInstanceName());
                 logMessage.append(" ");

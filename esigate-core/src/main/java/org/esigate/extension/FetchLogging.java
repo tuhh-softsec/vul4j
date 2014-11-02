@@ -90,7 +90,7 @@ public class FetchLogging implements Extension, IEventListener {
 
                 HttpHost targetHost = e.getHttpContext().getTargetHost();
 
-                long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME);
+                long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME, true);
 
                 StringBuilder logMessage = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
 
@@ -133,7 +133,7 @@ public class FetchLogging implements Extension, IEventListener {
                 }
             }
         } else {
-            e.getHttpContext().setAttribute(TIME, System.currentTimeMillis());
+            e.getHttpContext().setAttribute(TIME, System.currentTimeMillis(), true);
         }
 
         // Continue processing

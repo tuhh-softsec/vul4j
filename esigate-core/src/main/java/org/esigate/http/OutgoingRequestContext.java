@@ -19,6 +19,9 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.protocol.HttpContext;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class OutgoingRequestContext extends HttpClientContext {
     private static final String PROXY = "PROXY";
     private static final String OUTGOING_REQUEST = "OUTGOING_REQUEST";
@@ -69,4 +72,49 @@ public class OutgoingRequestContext extends HttpClientContext {
         setAttribute(PHYSICAL_HOST, httpHost);
     }
 
+    /**
+     * 
+     * @param name
+     *            attribute name
+     * @param o
+     *            value
+     * @param save
+     *            save previous attribute value to restore later
+     */
+    public void setAttribute(String name, Object o, boolean save) {
+        if (save) {
+            String historyAttribute = name + "history";
+            Queue history = (Queue) getAttribute(historyAttribute);
+            if (history == null) {
+                history = new LinkedList<Long>();
+                setAttribute(historyAttribute, history);
+            }
+            if (this.getAttribute(name) != null) {
+                history.add(getAttribute(name));
+            }
+        }
+        setAttribute(name, o);
+    }
+
+    /**
+     * remove attribute
+     * 
+     * @param name
+     *            attribute name
+     * @param restore
+     *            restore previous attribute value
+     * @return attribute value
+     */
+    public Object removeAttribute(String name, boolean restore) {
+        Object result = removeAttribute(name);
+        if (restore) {
+            String historyAttribute = name + "history";
+            Queue history = (Queue) getAttribute(historyAttribute);
+            if (history != null && !history.isEmpty()) {
+                Object previous = history.remove();
+                setAttribute(name, previous);
+            }
+        }
+        return result;
+    }
 }
