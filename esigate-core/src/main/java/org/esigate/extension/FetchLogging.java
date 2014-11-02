@@ -15,8 +15,6 @@
 
 package org.esigate.extension;
 
-import java.util.Properties;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -30,6 +28,8 @@ import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FetchEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 /**
  * This extension logs requests to remote systems.
@@ -90,7 +90,7 @@ public class FetchLogging implements Extension, IEventListener {
 
                 HttpHost targetHost = e.getHttpContext().getTargetHost();
 
-                long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME);
+                long time = System.currentTimeMillis() - (Long) e.getHttpContext().removeAttribute(TIME, true);
 
                 StringBuilder logMessage = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
 
@@ -133,7 +133,7 @@ public class FetchLogging implements Extension, IEventListener {
                 }
             }
         } else {
-            e.getHttpContext().setAttribute(TIME, System.currentTimeMillis());
+            e.getHttpContext().setAttribute(TIME, System.currentTimeMillis(), true);
         }
 
         // Continue processing

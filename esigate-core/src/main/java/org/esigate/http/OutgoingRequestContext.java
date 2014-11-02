@@ -19,6 +19,9 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.protocol.HttpContext;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class OutgoingRequestContext extends HttpClientContext {
     private static final String PROXY = "PROXY";
     private static final String OUTGOING_REQUEST = "OUTGOING_REQUEST";
@@ -61,12 +64,67 @@ public class OutgoingRequestContext extends HttpClientContext {
         setAttribute(OUTGOING_REQUEST, outgoingRequest);
     }
 
+    /**
+     * 
+     * @return physical host
+     */
     public HttpHost getPhysicalHost() {
         return getAttribute(PHYSICAL_HOST, HttpHost.class);
     }
 
+    /**
+     * 
+     * @param httpHost
+     *            host
+     */
     public void setPhysicalHost(HttpHost httpHost) {
         setAttribute(PHYSICAL_HOST, httpHost);
     }
 
+    /**
+     * Set attribute and save previous attribute value
+     * 
+     * @param id
+     *            attribute name
+     * @param obj
+     *            value
+     * @param save
+     *            save previous attribute value to restore later
+     */
+    public void setAttribute(String id, Object obj, boolean save) {
+        if (save) {
+            String historyAttribute = id + "history";
+            Queue history = (Queue) getAttribute(historyAttribute);
+            if (history == null) {
+                history = new LinkedList<Long>();
+                setAttribute(historyAttribute, history);
+            }
+            if (this.getAttribute(id) != null) {
+                history.add(getAttribute(id));
+            }
+        }
+        setAttribute(id, obj);
+    }
+
+    /**
+     * remove attribute and restore previous attribute value
+     * 
+     * @param id
+     *            attribute name
+     * @param restore
+     *            restore previous attribute value
+     * @return attribute value
+     */
+    public Object removeAttribute(String id, boolean restore) {
+        Object value = removeAttribute(id);
+        if (restore) {
+            String historyAttribute = id + "history";
+            Queue history = (Queue) getAttribute(historyAttribute);
+            if (history != null && !history.isEmpty()) {
+                Object previous = history.remove();
+                setAttribute(id, previous);
+            }
+        }
+        return value;
+    }
 }
