@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class UrlRewriter {
     private static final Logger LOG = LoggerFactory.getLogger(UrlRewriter.class);
+    private static final String REL_PATH = "../";
 
     public static final int ABSOLUTE = 0;
     public static final int RELATIVE = 1;
@@ -174,27 +175,32 @@ public final class UrlRewriter {
             }
         }
         result = cleanUpPath(result);
-        LOG.debug("url fixed: {} -> {}", url, result);
+        LOG.debug("url fixed: [{}] -> [{}]", url, result);
         return result;
     }
 
-    private final static String REL_PATH = "../";
-
     /**
-     * Cleanup url path to remove ../ when possible
+     * Cleanup url path to remove ../ when possible.
      * 
-     * /path/to/a/../page=/path/to/page /path/to/a/../../page=/path/page /path/to/a/../../=/path/
+     * /path/to/a/../page=>/path/to/page
      * 
+     * /path/to/a/../../page=>/path/page
+     * 
+     * @param url
+     *            the url to clean
+     * 
+     * @return the cleaned url
      */
-    protected String cleanUpPath(String path) {
+    protected String cleanUpPath(String url) {
 
-        String result = path;
-        if (path.contains(REL_PATH)) {
-            int postPro = path.indexOf("//");
-            String protocol = "";
-            if (postPro != -1) {
-                protocol = path.substring(0, postPro + 2);
-                result = result.substring(postPro + 2, result.length());
+        String result = url;
+        if (url.contains(REL_PATH)) {
+            String protocol = "//";
+            int posPro = url.indexOf(protocol);
+            String protocolPart = "";
+            if (posPro != -1) {
+                protocolPart = url.substring(0, posPro + protocol.length());
+                result = result.substring(posPro + protocol.length(), result.length());
             }
             int nbRelPath = StringUtils.countMatches(result, REL_PATH);
             int nbSlash = StringUtils.countMatches(result, "/");
@@ -211,23 +217,25 @@ public final class UrlRewriter {
                     result = firstPart + lastPart;
                 }
             }
-            result = protocol + result;
+            result = protocolPart + result;
             if (LOG.isDebugEnabled()) {
-                LOG.debug("cleanup url [{}] to [{}]", path, result);
+                LOG.debug("cleanup url [{}] to [{}]", url, result);
             }
         }
         return result;
     }
 
-    /*
+    /**
+     * Fix all resources urls and return the result.
      * 
-     * /** Fix all resources urls and return the result.
+     * @param input
+     *            The original charSequence to be processed.
      * 
-     * @param input The original charSequence to be processed.
+     * @param requestUrl
+     *            The request URL.
      * 
-     * @param requestUrl The request URL.
-     * 
-     * @param baseUrlParam The base URL selected for this request.
+     * @param baseUrlParam
+     *            The base URL selected for this request.
      * 
      * @return the result of this renderer.
      */
