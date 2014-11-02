@@ -2056,7 +2056,39 @@ discardCookies=*
 						<td>No</td>
 						<td>5.0</td>
 					</tr>
-					
+                    <tr>
+                        <td>org.esigate.extension.Metric</td>
+                        <td>
+                            This extension will record proxy request, and backend request to generate driver statistics.
+                            <br/>
+                            Metric extension will count occurrences of backend request(fetch-post) and driver proxy request (proxy-post) events to generate statistics about rate of event per seconds.
+
+                            Statistic will display the mean throughput and the average throughputs during the last one, five, and fifteen-minute.
+<br/>
+                            Errors events are maintained in separated counters for each status code.
+                            <br/>
+                            <br/>
+                            Statistics are logged using SLF4J in INFO level every 60 seconds. Period can be configured in driver properties :
+
+                            <pre>metricPeriod=60</pre>
+
+
+                            <br/>
+                            Sample statistics logs :
+                            <pre>
+ Metric.aggregated1.org.esigate.fetch-post, count=13, mean_rate=0.28, m1=0.86, m5=1.41, m15=1.53, rate_unit=events/second
+ Metric.aggregated1.org.esigate.fetch-post.error.404, count=32, mean_rate=0.60, m1=3.02, m5=5.50, m15=6.08, rate_unit=events/second
+ <b>Metric.aggregated1.org.esigate.proxy-post</b>, count=<b>31</b>, mean_rate=0.68, m1=1.04, m5=1.46, m15=1.55, rate_unit=events/second
+ <b>Metric.aggregated1.org.esigate.proxy-post.error.404</b>, count=<b>32</b>, mean_rate=0.60, m1=3.02, m5=5.50, m15=6.08, rate_unit=events/second
+ Metric.aggregated2.org.esigate.fetch-post, count=59, mean_rate=1.37, m1=6.17, m5=9.80, m15=10.58, rate_unit=events/second
+                            </pre>
+In this example, proxy-post for aggregated1 driver show 31 successfull request , and 32   errors with 404 status code
+
+                        </td>
+                        <td>No</td>
+                        <td>5.0</td>
+                    </tr>
+
 				</table>
 				
 				<p>ESIGate users can add custom extensions packaged in a jar or
