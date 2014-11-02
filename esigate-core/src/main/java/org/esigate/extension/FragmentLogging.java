@@ -15,10 +15,6 @@
 
 package org.esigate.extension;
 
-import java.util.LinkedList;
-import java.util.Properties;
-import java.util.Queue;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -32,10 +28,11 @@ import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FragmentEvent;
-import org.esigate.http.OutgoingRequestContext;
 import org.esigate.http.RedirectStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 /**
  * This extension logs fragments usage.
