@@ -25,7 +25,6 @@ import org.esigate.parser.future.CharSequenceFuture;
 import org.esigate.parser.future.FutureElementType;
 import org.esigate.parser.future.FutureParserContext;
 import org.esigate.parser.future.StringBuilderFutureAppendable;
-import org.esigate.vars.VariablesResolver;
 
 /**
  * Support for &lt;esi:replace&gt; element inside of parent &lt;esi:include&gt;
