@@ -40,9 +40,10 @@ public class ChooseElementTest extends AbstractElementTest {
     public void testMultipleWhen() throws IOException, HttpErrorPage {
         String page =
                 "begin <esi:choose>" + "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Advanced'\">"
-                        + "unexpected cookie '$(HTTP_COOKIE{group})'" + "</esi:when>"
+                        + "<esi:vars>unexpected cookie '$(HTTP_COOKIE{group})'</esi:vars>" + "</esi:when>"
                         + "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Beginner'\">"
-                        + "expected cookie '$(HTTP_COOKIE{group})'" + "</esi:when>" + "</esi:choose> end";
+                        + "<esi:vars>expected cookie '$(HTTP_COOKIE{group})'</esi:vars>" + "</esi:when>"
+                        + "</esi:choose> end";
         getRequestBuilder().addCookie(new BasicClientCookie("group", "Beginner"));
         String result = render(page);
         assertEquals("begin expected cookie 'Beginner' end", result);
@@ -73,9 +74,9 @@ public class ChooseElementTest extends AbstractElementTest {
     public void testMultipleWhenOtherwise2() throws IOException, HttpErrorPage {
         String page =
                 "begin <esi:choose>" + "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Advanced'\">"
-                        + "expected cookie '$(HTTP_COOKIE{group})'" + "</esi:when>"
+                        + "<esi:vars>expected cookie '$(HTTP_COOKIE{group})'</esi:vars>" + "</esi:when>"
                         + "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Beginner'\">"
-                        + "unexpected cookie '$(HTTP_COOKIE{group})'" + "</esi:when>"
+                        + "<esi:vars>unexpected cookie '$(HTTP_COOKIE{group})'</esi:vars>" + "</esi:when>"
                         + "<esi:otherwise>inside otherwise</esi:otherwise>" + "</esi:choose> end";
         getRequestBuilder().addCookie(new BasicClientCookie("group", "Advanced"));
         String result = render(page);
@@ -84,8 +85,9 @@ public class ChooseElementTest extends AbstractElementTest {
 
     public void testOtherwise() throws IOException, HttpErrorPage {
         String page =
-                "begin <esi:choose>" + "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Beginner'\">inside when</esi:when>"
-                        + "<esi:otherwise>inside otherwise with '$(HTTP_COOKIE{group})' cookie</esi:otherwise>"
+                "begin <esi:choose>"
+                        + "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Beginner'\">inside when</esi:when>"
+                        + "<esi:otherwise><esi:vars>inside otherwise with '$(HTTP_COOKIE{group})' cookie</esi:vars></esi:otherwise>"
                         + "</esi:choose> end";
         getRequestBuilder().addCookie(new BasicClientCookie("group", "Advanced"));
         String result = render(page);

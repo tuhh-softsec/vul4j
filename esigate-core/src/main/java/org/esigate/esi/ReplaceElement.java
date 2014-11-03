@@ -19,7 +19,6 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
-import org.esigate.vars.VariablesResolver;
 
 /**
  * Support for &lt;esi:replace&gt; element inside of parent &lt;esi:include&gt;
@@ -51,7 +50,7 @@ class ReplaceElement extends BaseElement {
         if (parent == null) {
             throw new EsiSyntaxError("<esi:replace> tag can only be used inside an <esi:include> tag");
         }
-        String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
+        String result = buf.toString();
         if (fragment != null) {
             parent.addFragmentReplacement(fragment, result);
         } else if (regexp != null) {

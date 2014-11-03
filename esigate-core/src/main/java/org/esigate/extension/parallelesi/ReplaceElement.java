@@ -59,7 +59,7 @@ class ReplaceElement extends BaseElement {
         }
         String result;
         try {
-            result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
+            result = buf.get().toString();
         } catch (ExecutionException e) {
             if (e.getCause() instanceof HttpErrorPage) {
                 throw (HttpErrorPage) e.getCause();

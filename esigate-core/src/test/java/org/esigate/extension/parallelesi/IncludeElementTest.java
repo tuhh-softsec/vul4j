@@ -131,7 +131,7 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementFragment() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace fragment='replaceable-fragment'>$(HTTP_COOKIE{cookieName})</esi:replace>"
+                        + "<esi:replace fragment='replaceable-fragment'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
                         + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='replaceable-fragment'>replaced content</esi:fragment>"
@@ -145,7 +145,7 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementRegexp() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace regexp='replaceable-regexp'>$(HTTP_COOKIE{cookieName})</esi:replace>"
+                        + "<esi:replace regexp='replaceable-regexp'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
                         + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>"
@@ -159,7 +159,7 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementExpression() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace expression='replaceable-regexp'>$(HTTP_COOKIE{cookieName})</esi:replace>"
+                        + "<esi:replace expression='replaceable-regexp'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
                         + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>"
