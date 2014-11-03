@@ -82,9 +82,7 @@ class IncludeElement extends BaseElement {
         // Handle src
         try {
             processPage(src, includeTag, ctx);
-        } catch (IOException e) {
-            currentException = e;
-        } catch (HttpErrorPage e) {
+        } catch (IOException | HttpErrorPage e) {
             currentException = e;
         }
 
@@ -94,9 +92,7 @@ class IncludeElement extends BaseElement {
             currentException = null;
             try {
                 processPage(alt, includeTag, ctx);
-            } catch (IOException e) {
-                currentException = e;
-            } catch (HttpErrorPage e) {
+            } catch (IOException | HttpErrorPage e) {
                 currentException = e;
             }
         }

@@ -71,6 +71,9 @@
 				ESIGate runs as a standard Java servlet filter and can be run in any Java servlet container like Tomcat, Jetty, WebSphere JBoss...
 				If you are not familiar with Java servlet containers, you can use esigate-server that includes a pre-configured web application
 				with an embedded Jetty server.
+
+                Since Esigate 5.0, minimal Java version is 1.7.
+
 			</p>
 			<p>
 				If you are familiar with Java servlet-api, you may want to build your own web application using esigate-servlet as a dependency. With Maven:

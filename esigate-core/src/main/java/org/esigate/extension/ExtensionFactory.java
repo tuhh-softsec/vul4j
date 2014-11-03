@@ -66,11 +66,7 @@ public final class ExtensionFactory {
             }
             result = (T) Class.forName(className).newInstance();
             result.init(d, properties);
-        } catch (InstantiationException e) {
-            throw new ConfigurationException(e);
-        } catch (IllegalAccessException e) {
-            throw new ConfigurationException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new ConfigurationException(e);
         }
         return result;
@@ -98,11 +94,7 @@ public final class ExtensionFactory {
                 result = (T) Class.forName(cName).newInstance();
                 result.init(d, properties);
                 finalResult.add(result);
-            } catch (InstantiationException e) {
-                throw new ConfigurationException(e);
-            } catch (IllegalAccessException e) {
-                throw new ConfigurationException(e);
-            } catch (ClassNotFoundException e) {
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                 throw new ConfigurationException(e);
             }
         }

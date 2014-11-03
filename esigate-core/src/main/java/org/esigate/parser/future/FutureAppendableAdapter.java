@@ -56,9 +56,7 @@ public class FutureAppendableAdapter implements FutureAppendable {
                 CharSequence csq = f.get(timeout, unit);
                 this.out.append(csq);
             }
-        } catch (CancellationException e) {
-            throw new IOException(e);
-        } catch (InterruptedException e) {
+        } catch (CancellationException | InterruptedException e) {
             throw new IOException(e);
         } catch (ExecutionException e) {
             // HttpErrorPage must be
@@ -84,9 +82,7 @@ public class FutureAppendableAdapter implements FutureAppendable {
                 CharSequence csq = f.get();
                 this.out.append(csq);
             }
-        } catch (CancellationException e) {
-            throw new IOException(e);
-        } catch (InterruptedException e) {
+        } catch (CancellationException | InterruptedException e) {
             throw new IOException(e);
         } catch (ExecutionException e) {
             // HttpErrorPage must be
