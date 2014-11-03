@@ -66,7 +66,6 @@ import java.util.Properties;
  */
 public class FragmentLogging implements Extension, IEventListener {
     private static final String TIME = "org.esigate.time";
-    private static final String TIME_QUEUE = "org.esigate.time.queue";
     private static final Logger LOG = LoggerFactory.getLogger(FragmentLogging.class);
     private Driver driver;
 

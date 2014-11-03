@@ -37,7 +37,8 @@ public class ParameterArray extends Parameter<String[]> {
     @Override
     public String[] getValue(Properties properties) {
         String[] value;
-        Collection<String> list = PropertiesUtil.getPropertyValue(properties, getName(), Collections.EMPTY_LIST);
+        Collection<String> list =
+                PropertiesUtil.getPropertyValue(properties, getName(), Collections.<String> emptyList());
         if (list == null || list.isEmpty()) {
             value = getDefaultValue();
         } else {

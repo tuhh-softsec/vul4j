@@ -20,13 +20,13 @@ public class CASRedirectStrategy extends RedirectStrategy {
         super();
     }
 
+    @Override
     public boolean isRedirected(final HttpRequest request, final HttpResponse response, final HttpContext context)
             throws ProtocolException {
         Args.notNull(request, "HTTP request");
         Args.notNull(response, "HTTP response");
 
         final int statusCode = response.getStatusLine().getStatusCode();
-        final String method = request.getRequestLine().getMethod();
         final Header locationHeader = response.getFirstHeader("location");
 
         switch (statusCode) {

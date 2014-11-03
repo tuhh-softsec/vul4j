@@ -133,7 +133,6 @@ public class FutureParserTest extends TestCase {
             closed = tag.endsWith("/>");
         }
 
-        @SuppressWarnings("unused")
         @Override
         public void onTagEnd(String tag, FutureParserContext ctx) throws IOException {
         }

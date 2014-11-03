@@ -38,7 +38,6 @@ public class MemcachedCacheStorageTest extends TestCase {
         // CacheStorageTestUtils.testBasicOperations(cacheStorage);
     }
 
-    @SuppressWarnings("unused")
     public void testConfiguration() throws Exception {
         // Cannot be really tested as we would need a running memcached server
         Properties properties = new Properties();

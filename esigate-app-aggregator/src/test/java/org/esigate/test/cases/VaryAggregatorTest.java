@@ -6,10 +6,13 @@ import java.net.MalformedURLException;
 import junit.framework.TestCase;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.CookiePolicy;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.http.HttpResponseUtils;
 import org.xml.sax.SAXException;
@@ -35,20 +38,23 @@ public class VaryAggregatorTest extends TestCase {
      * @throws SAXException
      */
     private String doRequestWithHeader(String headerValue, boolean forceRefresh) throws Exception {
-        DefaultHttpClient client = new DefaultHttpClient();
-        client.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
+        RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+        HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+        HttpClientContext context = new HttpClientContext();
+        context.setCookieStore(new BasicCookieStore());
+
         HttpGet request = new HttpGet(APPLICATION_PATH + "vary.jsp");
         if (headerValue != null) {
             BasicClientCookie cookie = new BasicClientCookie("test-cookie", headerValue);
             cookie.setDomain("localhost");
             cookie.setPath("/");
-            client.getCookieStore().addCookie(cookie);
+            context.getCookieStore().addCookie(cookie);
             request.setHeader("foo", headerValue);
         }
         if (forceRefresh) {
             request.addHeader("Cache-Control", "no-cache");
         }
-        HttpResponse response = client.execute(request);
+        HttpResponse response = client.execute(request, context);
         // Ensure content is valid.
         String text = HttpResponseUtils.toString(response, null);
         assertNotNull(text);
@@ -61,8 +67,6 @@ public class VaryAggregatorTest extends TestCase {
         // Ensure vary and Cache-Control header were forwarded
         assertEquals("foo", response.getFirstHeader("Vary").getValue());
         assertEquals("public, max-age=3600", response.getFirstHeader("Cache-Control").getValue());
-
-        client.getConnectionManager().shutdown();
 
         // Return page timestamp. Can be used to detect cache hits.
         return text.substring(text.indexOf("stime") + 5, text.indexOf("etime"));
