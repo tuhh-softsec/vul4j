@@ -348,6 +348,15 @@ public class UrlRewriterTest extends TestCase {
         assertEquals("../page", urlRewriter.cleanUpPath("../page"));
         assertEquals("../", urlRewriter.cleanUpPath("../"));
 
+        // Test with parameters
+        assertEquals("path/to/page?param1=value1", urlRewriter.cleanUpPath("path/to/page?param1=value1"));
+        assertEquals("path/to/page?param1=value1#test", urlRewriter.cleanUpPath("path/to/page?param1=value1#test"));
+        assertEquals("path/to/page#test", urlRewriter.cleanUpPath("path/to/page#test"));
+
+        assertEquals("path/page?param1=../test", urlRewriter.cleanUpPath("path/to/../page?param1=../test"));
+        assertEquals("path/to/page?param1=../test#test", urlRewriter.cleanUpPath("path/to/page?param1=../test#test"));
+        assertEquals("path/to/page#test", urlRewriter.cleanUpPath("path/to/page#test"));
+
     }
 
 }

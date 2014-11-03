@@ -198,26 +198,40 @@ public final class UrlRewriter {
             String protocol = "//";
             int posPro = url.indexOf(protocol);
             String protocolPart = "";
+            String pathPart = result;
             if (posPro != -1) {
                 protocolPart = url.substring(0, posPro + protocol.length());
-                result = result.substring(posPro + protocol.length(), result.length());
+                pathPart = result.substring(posPro + protocol.length(), result.length());
             }
-            int nbRelPath = StringUtils.countMatches(result, REL_PATH);
-            int nbSlash = StringUtils.countMatches(result, "/");
+            String endPart = "";
+
+            int posEndPath = pathPart.indexOf("?");
+            if (posEndPath == -1) {
+                posEndPath = pathPart.indexOf("#");
+                ;
+            }
+
+            if (posEndPath != -1) {
+                endPart = pathPart.substring(posEndPath);
+                pathPart = pathPart.substring(0, posEndPath);
+            }
+
+            int nbRelPath = StringUtils.countMatches(pathPart, REL_PATH);
+            int nbSlash = StringUtils.countMatches(pathPart, "/");
             // look if we can rewrite
             if (nbSlash - nbRelPath >= nbRelPath) {
                 int pos;
                 // While url contains ../
-                while ((pos = result.indexOf(REL_PATH)) > 0) {
+                while ((pos = pathPart.indexOf(REL_PATH)) > 0) {
                     // Get url part after ../
-                    String lastPart = result.substring(pos + REL_PATH.length(), result.length());
+                    String lastPart = pathPart.substring(pos + REL_PATH.length());
                     // Calculate url part before ../
-                    String firstPart = result.substring(0, pos - 1);
+                    String firstPart = pathPart.substring(0, pos - 1);
                     firstPart = firstPart.substring(0, firstPart.lastIndexOf("/") + 1);
-                    result = firstPart + lastPart;
+                    pathPart = firstPart + lastPart;
                 }
             }
-            result = protocolPart + result;
+            result = protocolPart + pathPart + endPart;
             if (LOG.isDebugEnabled()) {
                 LOG.debug("cleanup url [{}] to [{}]", url, result);
             }
