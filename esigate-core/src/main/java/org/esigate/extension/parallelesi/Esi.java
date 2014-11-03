@@ -35,8 +35,6 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
-
 /**
  * This extension processes ESI directives, like :
  * <p>

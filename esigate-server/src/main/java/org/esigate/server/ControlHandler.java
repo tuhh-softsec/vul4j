@@ -74,7 +74,6 @@ public class ControlHandler extends AbstractHandler {
      * IdleWorkers: 4
      * </pre>
      */
-    private static final String URL_STATUS_AUTO = "/server-status?auto";
     private final MetricRegistry registry;
 
     /**

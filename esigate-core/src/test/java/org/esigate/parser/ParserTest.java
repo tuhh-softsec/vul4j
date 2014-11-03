@@ -123,7 +123,6 @@ public class ParserTest extends TestCase {
             closed = tag.endsWith("/>");
         }
 
-        @SuppressWarnings("unused")
         @Override
         public void onTagEnd(String tag, ParserContext ctx) throws IOException {
         }

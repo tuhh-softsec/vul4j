@@ -35,7 +35,6 @@ abstract class BaseElement implements FutureElement {
      * @throws IOException
      * 
      **/
-    @SuppressWarnings("unused")
     protected void parseTag(Tag tag, FutureParserContext ctx) throws HttpErrorPage, IOException {
         // Default implementation does nothing
     }

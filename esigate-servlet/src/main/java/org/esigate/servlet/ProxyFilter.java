@@ -26,18 +26,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
-
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.http.IncomingRequest;
 import org.esigate.servlet.impl.DriverSelector;
 import org.esigate.servlet.impl.RequestFactory;
 import org.esigate.servlet.impl.ResponseSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ProxyFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(ProxyFilter.class);
     private RequestFactory requestFactory;
     private final DriverSelector driverSelector = new DriverSelector();
     private final ResponseSender responseSender = new ResponseSender();

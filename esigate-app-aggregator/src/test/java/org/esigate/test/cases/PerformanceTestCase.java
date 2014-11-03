@@ -1,4 +1,4 @@
-/* 
+/*
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,16 +27,11 @@ import junitx.framework.AssertionFailedError;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.esigate.http.HttpResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +81,7 @@ public class PerformanceTestCase extends TestCase {
     private final static String AGGREGATOR_NO_CACHE = "http://localhost:8080/esigate-app-aggregator/nocache/ag1/";
 
     private static final Logger LOG = LoggerFactory.getLogger(PerformanceTestCase.class);
-    private PoolingClientConnectionManager connectionManager;
+    private PoolingHttpClientConnectionManager connectionManager;
 
     private HttpClient httpClient;
 
@@ -98,15 +93,16 @@ public class PerformanceTestCase extends TestCase {
      * @throws Exception
      */
     private long execute(HttpGetRequestRunnable request, int numberOfRequests, int threads) throws Exception {
-        SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
-        connectionManager = new PoolingClientConnectionManager(schemeRegistry);
-        connectionManager.setMaxTotal(threads);
-        connectionManager.setDefaultMaxPerRoute(threads);
-        HttpParams httpParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
-        HttpConnectionParams.setSoTimeout(httpParams, 10000);
-        httpClient = new DefaultHttpClient(connectionManager, httpParams);
+        connectionManager = new PoolingHttpClientConnectionManager();
+        httpClient =
+                HttpClientBuilder
+                        .create()
+                        .setConnectionManager(connectionManager)
+                        .setMaxConnTotal(threads)
+                        .setMaxConnPerRoute(threads)
+                        .setDefaultRequestConfig(
+                                RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(10000).build())
+                        .build();
         // Warm up
         request.run();
 

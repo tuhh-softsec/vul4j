@@ -52,7 +52,7 @@ public class ProxyFilterTest {
         }
 
         @Override
-        public Enumeration getInitParameterNames() {
+        public Enumeration<String> getInitParameterNames() {
             return null;
         }
 
