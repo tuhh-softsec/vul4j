@@ -125,7 +125,7 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementFragment() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace fragment='replaceable-fragment'>$(HTTP_COOKIE{cookieName})</esi:replace>"
+                        + "<esi:replace fragment='replaceable-fragment'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
                         + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='replaceable-fragment'>replaced content</esi:fragment>"
@@ -139,7 +139,7 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementRegexp() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace regexp='replaceable-regexp'>$(HTTP_COOKIE{cookieName})</esi:replace>"
+                        + "<esi:replace regexp='replaceable-regexp'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
                         + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>"
@@ -153,7 +153,7 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementExpression() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace expression='replaceable-regexp'>$(HTTP_COOKIE{cookieName})</esi:replace>"
+                        + "<esi:replace expression='replaceable-regexp'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
                         + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>"
@@ -287,6 +287,23 @@ public class IncludeElementTest extends AbstractElementTest {
         String result = render(page);
         assertEquals("before <IMG src=\"/contextExt/~miko/counter.gif?name=idocsguide\">"
                 + "<a href=\"http://www.foo.com/test\"><a href=\"/contextExt/test\"> after", result);
+    }
+
+    /**
+     * JQuery selector interpreted like a ESIgate variable during an esi:include
+     * https://github.com/esigate/esigate/issues/35
+     * 
+     * @throws IOException
+     * @throws HttpErrorPage
+     */
+    public void testIncludeReplaceJquerySelector() throws IOException, HttpErrorPage {
+        String page =
+                "<esi:include src=\"$(PROVIDER{mock})/test\"><esi:replace fragment=\"fragment\">"
+                        + "<script type=\"text/javascript\">$(document).ready(function () {...});</script>"
+                        + "</esi:replace></esi:include>";
+        addResource("/test", "<esi:fragment name=\"fragment\">---fragment content---</esi:fragment>");
+        String result = render(page);
+        assertEquals("<script type=\"text/javascript\">$(document).ready(function () {...});</script>", result);
     }
 
     public void testIncludeReplaceAbsoluteBaseUrl() throws IOException, HttpErrorPage {

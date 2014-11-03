@@ -55,8 +55,7 @@ class WhenElement extends BaseElement {
     @Override
     public void onTagEnd(String tag, ParserContext ctx) throws IOException {
         if (active) {
-            String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
-            super.characters(result, 0, result.length());
+            super.characters(buf, 0, buf.length());
         }
     }
 

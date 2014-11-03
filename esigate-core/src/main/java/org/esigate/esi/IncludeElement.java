@@ -36,7 +36,6 @@ import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.regexp.ReplaceRenderer;
 import org.esigate.util.UriUtils;
-import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
 import org.esigate.xml.XsltRenderer;
 import org.slf4j.Logger;
@@ -202,7 +201,6 @@ class IncludeElement extends BaseElement {
             rendererList.add(new ReplaceRenderer(replaceRules));
         }
 
-        page = VariablesResolver.replaceAllVariables(page, httpRequest);
         InlineCache ic = InlineCache.getFragment(src);
         if (ic != null && !ic.isExpired()) {
             String cache = ic.getFragment();

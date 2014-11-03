@@ -59,16 +59,14 @@ class WhenElement extends BaseElement {
     @Override
     public void onTagEnd(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
         if (active) {
-            String result;
             try {
-                result = VariablesResolver.replaceAllVariables(buf.get().toString(), ctx.getHttpRequest());
+                super.characters(new CharSequenceFuture(buf.get()));
             } catch (ExecutionException e) {
                 if (e.getCause() instanceof HttpErrorPage) {
                     throw (HttpErrorPage) e.getCause();
                 }
                 throw new IOException(e);
             }
-            super.characters(new CharSequenceFuture(result));
         }
     }
 
