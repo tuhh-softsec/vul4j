@@ -48,9 +48,7 @@ public final class StatusReader {
                 }
             }
 
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (NumberFormatException | IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -76,9 +74,7 @@ public final class StatusReader {
                 }
             }
 
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (NumberFormatException | IOException e) {
             e.printStackTrace();
         }
         return null;

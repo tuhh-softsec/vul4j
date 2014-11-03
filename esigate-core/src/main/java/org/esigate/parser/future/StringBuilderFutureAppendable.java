@@ -90,9 +90,7 @@ public class StringBuilderFutureAppendable implements FutureAppendable, Future<C
     public CharSequence get() throws ExecutionException {
         try {
             this.futureBuilder.performAppends();
-        } catch (IOException e) {
-            throw new ExecutionException(e);
-        } catch (HttpErrorPage e) {
+        } catch (IOException | HttpErrorPage e) {
             throw new ExecutionException(e);
         }
         return this.builder.toString();

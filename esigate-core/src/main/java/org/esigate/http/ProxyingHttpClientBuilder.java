@@ -103,9 +103,7 @@ public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
                 } else {
                     try {
                         fetchEvent.setHttpResponse(wrapped.execute(route, request, context, execAware));
-                    } catch (IOException e) {
-                        fetchEvent.setHttpResponse(HttpErrorPage.generateHttpResponse(e));
-                    } catch (HttpException e) {
+                    } catch (IOException | HttpException e) {
                         fetchEvent.setHttpResponse(HttpErrorPage.generateHttpResponse(e));
                     }
                 }

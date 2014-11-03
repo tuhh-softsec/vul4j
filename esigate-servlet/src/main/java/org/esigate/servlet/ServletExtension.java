@@ -127,9 +127,7 @@ public class ServletExtension implements Extension, IEventListener {
                                 }
                             }
                         }
-                    } catch (IOException e) {
-                        result = HttpErrorPage.generateHttpResponse(e);
-                    } catch (ServletException e) {
+                    } catch (IOException | ServletException e) {
                         result = HttpErrorPage.generateHttpResponse(e);
                     }
                 }
