@@ -82,7 +82,29 @@ public class ZipArchiverTest
         
         logger = new ConsoleLogger( Logger.LEVEL_DEBUG, "test" );
     }
-    
+
+    public void testImplicitPermissions()
+        throws IOException
+    {
+        File zipFile = getTestFile( "target/output/zip-with-implicit-dirmode.zip" );
+
+        ZipArchiver archiver = getZipArchiver(zipFile);
+
+        archiver.setDefaultDirectoryMode( 0777 );
+        archiver.setDirectoryMode( 0641 );
+        archiver.setFileMode( 0222 );
+        archiver.addFile( new File( "pom.xml" ), "fizz/buzz/pom.xml" );
+        archiver.createArchive();
+
+        assertTrue( zipFile.exists() );
+        ZipFile zf = new ZipFile( zipFile );
+        ZipArchiveEntry fizz = zf.getEntry( "fizz/" );
+        assertEquals( 040641, fizz.getUnixMode() );
+        ZipArchiveEntry pom = zf.getEntry( "fizz/buzz/pom.xml" );
+        assertEquals( 0100222, pom.getUnixMode() );
+
+
+    }
     public void testCreateArchiveWithDetectedModes()
         throws Exception
     {
@@ -133,11 +155,11 @@ public class ZipArchiverTest
 			}
             
             {
-                Map attributesByPath = PlexusIoResourceAttributeUtils.getFileAttributesByPath( tmpDir );
+                Map<String, PlexusIoResourceAttributes> attributesByPath = PlexusIoResourceAttributeUtils.getFileAttributesByPath( tmpDir );
 				for (String path : executablePaths) {
-					PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get(path);
+					PlexusIoResourceAttributes attrs = attributesByPath.get(path);
 					if (attrs == null) {
-						attrs = (PlexusIoResourceAttributes) attributesByPath.get(new File(tmpDir, path).getAbsolutePath());
+						attrs = attributesByPath.get(new File(tmpDir, path).getAbsolutePath());
 					}
 
 					assertNotNull(attrs);
@@ -145,9 +167,9 @@ public class ZipArchiverTest
 				}
 
 				for (String path : confPaths) {
-					PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get(path);
+					PlexusIoResourceAttributes attrs = attributesByPath.get(path);
 					if (attrs == null) {
-						attrs = (PlexusIoResourceAttributes) attributesByPath.get(new File(tmpDir, path).getAbsolutePath());
+						attrs = attributesByPath.get(new File(tmpDir, path).getAbsolutePath());
 					}
 
 					assertNotNull(attrs);
@@ -155,9 +177,9 @@ public class ZipArchiverTest
 				}
 
 				for (String path : logPaths) {
-					PlexusIoResourceAttributes attrs = (PlexusIoResourceAttributes) attributesByPath.get(path);
+					PlexusIoResourceAttributes attrs = attributesByPath.get(path);
 					if (attrs == null) {
-						attrs = (PlexusIoResourceAttributes) attributesByPath.get(new File(tmpDir, path).getAbsolutePath());
+						attrs = attributesByPath.get(new File(tmpDir, path).getAbsolutePath());
 					}
 
 					assertNotNull(attrs);
@@ -182,7 +204,7 @@ public class ZipArchiverTest
             archiver.addArchivedFileSet( zipFile );
             archiver.createArchive();
 
-            org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( zipFile2 );
+            ZipFile zf = new ZipFile( zipFile2 );
 
 			for (String path : executablePaths) {
 				ZipArchiveEntry ze = zf.getEntry(path);
@@ -370,7 +392,7 @@ public class ZipArchiverTest
     {
         archiver.createArchive();
 
-        org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archiver.getDestFile() );
+        ZipFile zf = new ZipFile( archiver.getDestFile() );
 
         Enumeration e = zf.getEntries();
 
@@ -545,8 +567,8 @@ public class ZipArchiverTest
         FileUtils.removePath( zipFile2.getPath() );
         zipArchiver2.createArchive();
 
-        final org.apache.commons.compress.archivers.zip.ZipFile cmp1 = new org.apache.commons.compress.archivers.zip.ZipFile( zipFile );
-        final org.apache.commons.compress.archivers.zip.ZipFile cmp2 = new org.apache.commons.compress.archivers.zip.ZipFile( zipFile2 );
+        final ZipFile cmp1 = new ZipFile( zipFile );
+        final ZipFile cmp2 = new ZipFile( zipFile2 );
         ArchiveFileComparator.assertEquals( cmp1, cmp2, "prfx/" );
         cmp1.close();
         cmp2.close();

@@ -442,7 +442,7 @@ public abstract class AbstractZipArchiver
 				// the
 				// At this point we could do something like read the atr
 				final PlexusIoResource res = new AnonymousResource( f);
-                zipDir( res, zOut, prefix + dir, getRawDefaultDirectoryMode() );
+                zipDir( res, zOut, prefix + dir, getDirectoryMode() );
             }
         }
     }
