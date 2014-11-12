@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  * 
  */
-public final class UrlRewriter {
+public class UrlRewriter {
     private static final Logger LOG = LoggerFactory.getLogger(UrlRewriter.class);
     private static final String REL_PATH = "../";
 
@@ -191,7 +191,7 @@ public final class UrlRewriter {
      * 
      * @return the cleaned url
      */
-    protected String cleanUpPath(String url) {
+    protected static String cleanUpPath(String url) {
 
         String result = url;
         if (url.contains(REL_PATH)) {
