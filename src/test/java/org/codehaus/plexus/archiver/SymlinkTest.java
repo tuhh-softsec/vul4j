@@ -9,7 +9,10 @@ import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 import org.codehaus.plexus.util.Os;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.PosixFileAttributes;
 
 /**
  * @author Kristian Rosenvold
@@ -18,12 +21,23 @@ public class SymlinkTest
     extends PlexusTestCase
 {
 
-    public void testSymlinkDir(){
+    public void testSymlinkDir()
+        throws IOException
+    {
         if ( Os.isFamily( Os.FAMILY_WINDOWS )) return;
         File dummyContent = getTestFile( "src/test/resources/symlinks/src/symDir" );
         assertTrue( dummyContent.isDirectory());
         assertTrue( Files.isSymbolicLink( dummyContent.toPath()));
 
+    }
+
+    public void testSymlinkDirWithSlash()
+        throws IOException
+    {
+        if ( Os.isFamily( Os.FAMILY_WINDOWS )) return;
+        File dummyContent = getTestFile( "src/test/resources/symlinks/src/symDir/" );
+        assertTrue( dummyContent.isDirectory());
+        assertTrue( Files.isSymbolicLink( dummyContent.toPath()));
     }
 
     public void testSymlinkFile(){

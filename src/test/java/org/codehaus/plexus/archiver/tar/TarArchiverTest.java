@@ -289,7 +289,7 @@ public class TarArchiverTest
 
         archiver.setFileMode( defaultFileMode );
 
-        archiver.addDirectory( getTestFile( "src" ) );
+        archiver.addDirectory( getTestFile( "src/main" ) );
         archiver.setFileMode( oneFileMode );
 
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "one.txt" );

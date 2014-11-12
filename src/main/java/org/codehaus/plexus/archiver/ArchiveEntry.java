@@ -184,9 +184,17 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Failed to read filesystem attributes for: " + file, e );
         }
-        
+
+        final int type;
+        if (attrs.isSymbolicLink()){
+            type = SYMLINK;
+            permissions =  permissions & ~(UnixStat.FILE_FLAG); // remove file flag again .doh.
+        } else {
+            type = FILE; // File flag was there already. This is a bit of a mess !
+        }
+
         final PlexusIoFileResource res =  PlexusIoFileResource.justAFile( file, attrs );
-        return new ArchiveEntry( target, res, FILE, permissions, null, defaultDirectoryPermissions );
+        return new ArchiveEntry( target, res, type, permissions, null, defaultDirectoryPermissions );
     }
 
     public static ArchiveEntry createDirectoryEntry( String target, @Nonnull PlexusIoResource resource, int permissions,
@@ -197,7 +205,14 @@ public class ArchiveEntry
         {
             throw new ArchiverException( "Not a directory: " + resource.getName() );
         }
-        final int type = resource.isSymbolicLink() ? SYMLINK : DIRECTORY;
+        final int type;
+        if (resource.isSymbolicLink()){
+            type = SYMLINK;
+            permissions =  permissions & ~(UnixStat.DIR_FLAG); // remove dir flag again .doh.
+        } else {
+            type = DIRECTORY; // Dir flag was there already. This is a bit of a mess !
+
+        }
         return new ArchiveEntry( target, resource, type, permissions, null, defaultDirectoryPermissions );
     }
 
