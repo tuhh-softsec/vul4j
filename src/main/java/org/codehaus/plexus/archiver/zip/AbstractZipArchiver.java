@@ -382,7 +382,7 @@ public abstract class AbstractZipArchiver
                 name = name + "/";
             }
 
-            addParentDirs( base, name, zOut, "" );
+            addParentDirs( entry, base, name, zOut, "" );
 
             if ( entry.getResource().isFile() )
             {
@@ -404,7 +404,8 @@ public abstract class AbstractZipArchiver
 	 *
      */
     @SuppressWarnings({"JavaDoc"})
-    protected final void addParentDirs( File baseDir, String entry, ZipArchiveOutputStream zOut, String prefix )
+    private void addParentDirs( ArchiveEntry archiveEntry, File baseDir, String entry, ZipArchiveOutputStream zOut,
+                                String prefix )
         throws IOException
     {
         if ( !doFilesonly && getIncludeEmptyDirs() )
@@ -442,7 +443,7 @@ public abstract class AbstractZipArchiver
 				// the
 				// At this point we could do something like read the atr
 				final PlexusIoResource res = new AnonymousResource( f);
-                zipDir( res, zOut, prefix + dir, getDirectoryMode() );
+                zipDir( res, zOut, prefix + dir, archiveEntry.getDefaultDirMode() );
             }
         }
     }

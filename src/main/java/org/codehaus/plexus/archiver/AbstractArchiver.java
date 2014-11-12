@@ -350,7 +350,8 @@ public abstract class AbstractArchiver
     public void addSymlink( String symlinkName, int permissions, String symlinkDestination )
         throws ArchiverException
     {
-        resources.add( ArchiveEntry.createSymlinkEntry( symlinkName, permissions, symlinkDestination ) );
+        resources.add( ArchiveEntry.createSymlinkEntry( symlinkName, permissions, symlinkDestination,
+                                                        getDirectoryMode() ) );
     }
 
     protected ArchiveEntry asArchiveEntry( @Nonnull final PlexusIoResource resource, final String destFileName,
@@ -364,11 +365,12 @@ public abstract class AbstractArchiver
 
         if ( resource.isFile() )
         {
-            return ArchiveEntry.createFileEntry( destFileName, resource, permissions, collection );
+            return ArchiveEntry.createFileEntry( destFileName, resource, permissions, collection,
+                                                 getDirectoryMode() );
         }
         else
         {
-            return ArchiveEntry.createDirectoryEntry( destFileName, resource, permissions );
+            return ArchiveEntry.createDirectoryEntry( destFileName, resource, permissions, getDirectoryMode() );
         }
     }
 
@@ -427,12 +429,14 @@ public abstract class AbstractArchiver
 
                 if ( include( in, destFileName ) )
                 {
-                    resources.add( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
+                    resources.add( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions,
+                                                                 getDirectoryMode() ) );
                 }
             }
             else
             {
-                resources.add( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
+                resources.add( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions,
+                                                             getDirectoryMode() ) );
             }
         }
         catch ( final IOException e )

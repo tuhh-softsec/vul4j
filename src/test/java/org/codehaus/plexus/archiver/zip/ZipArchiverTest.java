@@ -94,6 +94,10 @@ public class ZipArchiverTest
         archiver.setDirectoryMode( 0641 );
         archiver.setFileMode( 0222 );
         archiver.addFile( new File( "pom.xml" ), "fizz/buzz/pom.xml" );
+        archiver.setDefaultDirectoryMode( 0530);
+        archiver.setDirectoryMode( -1 ); // Not forced mode
+        archiver.setFileMode( 0111 );
+        archiver.addFile( new File( "pom.xml" ), "fazz/bazz/pam.xml" );
         archiver.createArchive();
 
         assertTrue( zipFile.exists() );
@@ -102,6 +106,11 @@ public class ZipArchiverTest
         assertEquals( 040641, fizz.getUnixMode() );
         ZipArchiveEntry pom = zf.getEntry( "fizz/buzz/pom.xml" );
         assertEquals( 0100222, pom.getUnixMode() );
+
+        ZipArchiveEntry fazz = zf.getEntry( "fazz/" );
+        assertEquals( 040530, fazz.getUnixMode() );
+        ZipArchiveEntry pam = zf.getEntry( "fazz/bazz/pam.xml" );
+        assertEquals( 0100111, pam.getUnixMode() );
 
 
     }

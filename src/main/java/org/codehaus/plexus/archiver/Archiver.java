@@ -211,12 +211,24 @@ public interface Archiver
 
     int getDefaultFileMode();
 
+    /**
+     * This is the forced mode that should be used regardless if set, otherwise falls back to default.
+     * @param mode
+     */
     void setDirectoryMode( int mode );
 
+    /**
+     * Gets the forced mode for directories, falling back to default if none is forced.
+     * @return
+     */
     int getDirectoryMode();
 
     int getOverrideDirectoryMode();
 
+    /**
+     * This is the "default" value we should use if no other value is specified
+     * @param mode
+     */
     void setDefaultDirectoryMode( int mode );
 
     int getDefaultDirectoryMode();

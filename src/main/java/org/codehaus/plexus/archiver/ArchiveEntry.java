@@ -55,6 +55,9 @@ public class ArchiveEntry
 
     private final int mode;
 
+    private final int defaultDirMode;  // Sometimes a directory needs to be created. Which mode should it be ?
+    // this mode is at the time of the creation of the archive entry, which is an important distinction
+
     private PlexusIoResourceAttributes attributes;
 
     /**
@@ -64,12 +67,14 @@ public class ArchiveEntry
      * @param type     FILE or DIRECTORY
      * @param mode     octal unix style permissions
      * @param collection
+     * @param defaultDirMode
      */
     private ArchiveEntry( String name, @Nonnull PlexusIoResource resource, int type, int mode,
-                          PlexusIoResourceCollection collection )
+                          PlexusIoResourceCollection collection, int defaultDirMode )
     {
         this.name = name;
         this.collection = collection;
+        this.defaultDirMode = defaultDirMode;
         try {
             this.resource = collection != null ? collection.resolve(resource) : resource;
         } catch (IOException e) {
@@ -151,7 +156,7 @@ public class ArchiveEntry
     }
 
     public static ArchiveEntry createFileEntry( String target, PlexusIoResource resource, int permissions,
-                                                PlexusIoResourceCollection collection )
+                                                PlexusIoResourceCollection collection, int defaultDirectoryPermissions )
         throws ArchiverException
     {
         if ( resource.isDirectory() )
@@ -159,10 +164,10 @@ public class ArchiveEntry
             throw new ArchiverException( "Not a file: " + resource.getName() );
         }
         final int type = resource.isSymbolicLink() ? SYMLINK : FILE;
-        return new ArchiveEntry( target, resource, type, permissions, collection );
+        return new ArchiveEntry( target, resource, type, permissions, collection, defaultDirectoryPermissions );
     }
 
-    public static ArchiveEntry createFileEntry( String target, File file, int permissions )
+    public static ArchiveEntry createFileEntry( String target, File file, int permissions, int defaultDirectoryPermissions )
         throws ArchiverException
     {
         if ( !file.isFile() )
@@ -181,10 +186,11 @@ public class ArchiveEntry
         }
         
         final PlexusIoFileResource res =  PlexusIoFileResource.justAFile( file, attrs );
-        return new ArchiveEntry( target, res, FILE, permissions, null );
+        return new ArchiveEntry( target, res, FILE, permissions, null, defaultDirectoryPermissions );
     }
 
-    public static ArchiveEntry createDirectoryEntry( String target, @Nonnull PlexusIoResource resource, int permissions )
+    public static ArchiveEntry createDirectoryEntry( String target, @Nonnull PlexusIoResource resource, int permissions,
+                                                     int defaultDirectoryPermissions )
         throws ArchiverException
     {
         if ( !resource.isDirectory() )
@@ -192,10 +198,11 @@ public class ArchiveEntry
             throw new ArchiverException( "Not a directory: " + resource.getName() );
         }
         final int type = resource.isSymbolicLink() ? SYMLINK : DIRECTORY;
-        return new ArchiveEntry( target, resource, type, permissions, null );
+        return new ArchiveEntry( target, resource, type, permissions, null, defaultDirectoryPermissions );
     }
 
-    public static ArchiveEntry createDirectoryEntry( String target, final File file, int permissions )
+    public static ArchiveEntry createDirectoryEntry( String target, final File file, int permissions,
+                                                     int defaultDirMode1 )
         throws ArchiverException
     {
         if ( !file.isDirectory() )
@@ -204,19 +211,19 @@ public class ArchiveEntry
         }
 
 		final PlexusIoFileResource res = new PlexusIoFileResource( file, ArchiverAttributeUtils.getFileAttributes(file));
-        return new ArchiveEntry( target, res, DIRECTORY, permissions, null );
+        return new ArchiveEntry( target, res, DIRECTORY, permissions, null, defaultDirMode1 );
     }
 
-    public static ArchiveEntry createEntry( String target, File file, int filePerm, int dirPerm )
+    public static ArchiveEntry createEntry( String target, File file, int filePerm, int dirPerm, int defaultDirectoryPermissions )
         throws ArchiverException
     {
         if ( file.isDirectory() )
         {
-            return createDirectoryEntry( target, file, dirPerm );
+            return createDirectoryEntry( target, file, dirPerm, defaultDirectoryPermissions );
         }
         else if ( file.isFile() )
         {
-            return createFileEntry( target, file, filePerm );
+            return createFileEntry( target, file, filePerm, defaultDirectoryPermissions );
         }
         else // FIXME: handle symlinks?
         {
@@ -224,11 +231,13 @@ public class ArchiveEntry
         }
     }
     
-    public static ArchiveEntry createSymlinkEntry(String symlinkName, int permissions, String symlinkDestination)
+    public static ArchiveEntry createSymlinkEntry( String symlinkName, int permissions, String symlinkDestination,
+                                                   int defaultDirectoryPermissions
+    )
     {
 		File symlinkFile = new File(symlinkName);
 		final ArchiveEntry archiveEntry = new ArchiveEntry(symlinkName, new PlexusIoVirtualSymlinkResource(symlinkFile, symlinkDestination), SYMLINK, permissions,
-                                                           null );
+                                                           null, defaultDirectoryPermissions );
 		return archiveEntry;
     }
 
@@ -245,5 +254,10 @@ public class ArchiveEntry
     public @Nonnull PlexusIoResource getResource()
     {
         return resource;
+    }
+
+    public int getDefaultDirMode()
+    {
+        return defaultDirMode;
     }
 }
