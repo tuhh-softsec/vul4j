@@ -521,7 +521,7 @@ public abstract class AbstractArchiver
                         }
                     }
 
-                    if ( nextEntry != null && seenEntries.contains( nextEntry.getName() ) )
+                    if ( nextEntry != null && seenEntries.contains( normalizedForDuplicateCheck(nextEntry ) ))
                     {
                         final String path = nextEntry.getName();
 
@@ -569,7 +569,7 @@ public abstract class AbstractArchiver
                 final ArchiveEntry next = nextEntry;
                 nextEntry = null;
 
-                seenEntries.add( next.getName() );
+                seenEntries.add( normalizedForDuplicateCheck(next) );
 
                 return next;
             }
@@ -578,7 +578,13 @@ public abstract class AbstractArchiver
             {
                 throw new UnsupportedOperationException( "Does not support iterator" );
             }
+
+            private String normalizedForDuplicateCheck(ArchiveEntry entry){
+                return entry.getName().replace( '\\', '/'  );
+            }
+
         };
+
     }
 
     public Map<String, ArchiveEntry> getFiles()
