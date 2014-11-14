@@ -103,11 +103,6 @@ public class UrlRewriter {
      * @return the fixed url.
      */
     public String rewriteUrl(String url, String requestUrl, String baseUrl) {
-        if (url.isEmpty()) {
-            LOG.debug("skip empty url");
-            return url;
-        }
-
         // Store the filename, if specified
         String fileName = null;
         if (!requestUrl.isEmpty() && !requestUrl.endsWith("/")) {

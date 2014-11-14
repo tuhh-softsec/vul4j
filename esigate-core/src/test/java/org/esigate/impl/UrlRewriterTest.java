@@ -301,4 +301,17 @@ public class UrlRewriterTest extends TestCase {
         assertEquals("path/to/page?param1=../test#test", UrlRewriter.cleanUpPath("path/to/page?param1=../test#test"));
         assertEquals("path/to/page#test", UrlRewriter.cleanUpPath("path/to/page#test"));
     }
+    
+    public void testUrlRewriteEmptyUrl() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://backend";
+        requestUrl = "/test";
+
+        fixMode = "relative";
+        assertRewrites("", "/");
+
+        fixMode = "absolute";
+        assertRewrites("", "http://backend/");
+    }
+
 }
