@@ -110,4 +110,68 @@ public class UriBuilderTest extends TestCase {
         uriBuilder.setPath("", "/test");
         assertEquals("/test/", uriBuilder.getPath());
     }
+
+    public void testConstructorRelativeUrl() {
+        UriBuilder uriBuilder = new UriBuilder("relative/test");
+        assertNull(uriBuilder.getScheme());
+        assertNull(uriBuilder.getHost());
+        assertEquals(-1, uriBuilder.getPort());
+        assertEquals("relative/", uriBuilder.getPath());
+        assertEquals("test", uriBuilder.getFile());
+        assertNull(uriBuilder.getQueryString());
+        assertEquals("relative/test", uriBuilder.toString());
+    }
+
+    public void testConstructorRelativeUrlRawQueryString() {
+        UriBuilder uriBuilder = new UriBuilder("/relative/test").resolve("?test");
+        assertEquals("/relative/test?test", uriBuilder.toString());
+    }
+
+    private void assertNormalize(String path, String expectedNormalizedPath) {
+        UriBuilder uriBuilder = new UriBuilder(path);
+        uriBuilder.normalize();
+        assertEquals(expectedNormalizedPath, uriBuilder.toString());
+    }
+
+    public void testNormalizePath() {
+        assertNormalize("test", "test");
+        assertNormalize("/test/", "/test/");
+        assertNormalize("/test/../", "/");
+        assertNormalize("/test/../../", "/");
+        assertNormalize("/test/../../aaa/", "/aaa/");
+
+        assertNormalize("path/to/page", "path/to/page");
+        assertNormalize("path/to/../page", "path/page");
+        assertNormalize("path/to/../../page", "page");
+
+        assertNormalize("http://host/path/to/../../page", "http://host/page");
+        assertNormalize("//host/path/to/../../page", "//host/page");
+        assertNormalize("http://host/path/to/../../page/../", "http://host/");
+        assertNormalize("http://host/path/to/../../../page/../", "http://host/");
+
+        // Test bad url
+        assertNormalize("http://host/path/to/../../../../page/../", "http://host/");
+
+        assertNormalize("path/../to/../page", "page");
+
+        // test empty url
+        assertNormalize("", "");
+
+        // Test url that can't be totally cleaned
+        assertNormalize("path/../../page", "../page");
+
+        // Test url that can't be cleaned
+        assertNormalize("../../path/../to/../page", "../../page");
+        assertNormalize("../page", "../page");
+        assertNormalize("../", "../");
+
+        // Test with parameters
+        assertNormalize("path/to/page?param1=value1", "path/to/page?param1=value1");
+        assertNormalize("path/to/page?param1=value1#test", "path/to/page?param1=value1#test");
+        assertNormalize("path/to/page#test", "path/to/page#test");
+
+        assertNormalize("path/to/../page?param1=../test", "path/page?param1=../test");
+        assertNormalize("path/to/page?param1=../test#test", "path/to/page?param1=../test#test");
+        assertNormalize("path/to/page#test", "path/to/page#test");
+    }
 }

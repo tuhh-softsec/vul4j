@@ -16,16 +16,12 @@
 package org.esigate.impl;
 
 import static org.apache.commons.lang3.StringUtils.stripEnd;
-import static org.apache.commons.lang3.StringUtils.stripStart;
 
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
 import org.esigate.Parameters;
-import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,14 +42,13 @@ import org.slf4j.LoggerFactory;
  */
 public class UrlRewriter {
     private static final Logger LOG = LoggerFactory.getLogger(UrlRewriter.class);
-    private static final String REL_PATH = "../";
 
     public static final int ABSOLUTE = 0;
     public static final int RELATIVE = 1;
 
-    private static final Pattern URL_PATTERN = Pattern.compile(
-            "<([^\\!][^>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
-            Pattern.CASE_INSENSITIVE);
+    private static final Pattern URL_PATTERN = Pattern
+            .compile("<([^\\!:>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
+                    Pattern.CASE_INSENSITIVE);
 
     private String visibleBaseUrlParameter;
     private int mode;
@@ -86,152 +81,73 @@ public class UrlRewriter {
         visibleBaseUrlParameter = stripEnd(Parameters.VISIBLE_URL_BASE.getValue(properties), "/");
     }
 
-    private String concatUrl(String begin, String end) {
-        return stripEnd(begin, "/") + "/" + stripStart(end, "/");
-    }
-
     /**
      * Fix an url according to the chosen mode.
      * 
      * @param url
-     *            the url to fix.
+     *            the url to fix (can be anything found in an html page, relative, absolute, empty...)
      * @param requestUrl
-     *            The request URL.
+     *            The relative incoming request URL (relative to visible base url).
      * @param baseUrl
      *            The base URL selected for this request.
      * 
      * @return the fixed url.
      */
     public String rewriteUrl(String url, String requestUrl, String baseUrl) {
-        // Store the filename, if specified
-        String fileName = null;
-        if (!requestUrl.isEmpty() && !requestUrl.endsWith("/")) {
-            fileName = requestUrl.substring(requestUrl.lastIndexOf('/') + 1);
+        if (url.isEmpty()) {
+            LOG.debug("skip empty url");
+            return url;
         }
 
-        // Build clean URI for further processing
-        String cleanBaseUrl = stripEnd(baseUrl, "/");
-        String visibleBaseUrl = visibleBaseUrlParameter;
-        if (visibleBaseUrl == null) {
-            visibleBaseUrl = cleanBaseUrl;
+        // TODO temporary hack
+        if (!baseUrl.endsWith("/")) {
+            baseUrl = baseUrl + "/";
         }
-        String visibleBaseUrlPath = UriUtils.getPath(visibleBaseUrl);
-        String pagePath = concatUrl(visibleBaseUrlPath, requestUrl);
-        if (pagePath != null) {
-            int indexSlash = pagePath.lastIndexOf('/');
-            if (indexSlash >= 0) {
-                pagePath = pagePath.substring(0, indexSlash);
-            }
+        if (visibleBaseUrlParameter != null && !visibleBaseUrlParameter.endsWith("/")) {
+            visibleBaseUrlParameter = visibleBaseUrlParameter + "/";
         }
 
-        String result = url;
-        if (visibleBaseUrl != null && result.startsWith(cleanBaseUrl)) {
-            result = visibleBaseUrl + result.substring(cleanBaseUrl.length());
-            LOG.debug("fix absolute url: {} -> {} ", url, result);
-            return result;
-        }
+        UriBuilder baseUriBuilder = new UriBuilder(baseUrl);
 
-        // Keep absolute, protocol-absolute and javascript urls untouched.
-        if (result.startsWith("http://") || result.startsWith("https://") || result.startsWith("//")
-                || result.startsWith("#") || result.startsWith("javascript:")) {
-            LOG.debug("keeping absolute url: {}", result);
-            return result;
-        }
-
-        HttpHost httpHost = UriUtils.extractHost(visibleBaseUrl);
-        String server = httpHost.toURI();
-
-        // Add domain to context absolute urls
-        if (result.startsWith("/")) {
-
-            // Check if we are going to replace context
-            if (cleanBaseUrl != null && !cleanBaseUrl.equals(visibleBaseUrl)) {
-                String baseUrlPath = UriUtils.getPath(cleanBaseUrl);
-                if (result.startsWith(baseUrlPath)) {
-                    result = result.substring(baseUrlPath.length());
-                    result = concatUrl(visibleBaseUrlPath, result);
-                }
-            }
-
-            if (mode == ABSOLUTE) {
-                result = server + result;
-            }
+        // If no visible url base is defined, use base url as visible base url
+        UriBuilder visibleBaseUriBuilder;
+        if (visibleBaseUrlParameter == null) {
+            visibleBaseUriBuilder = baseUriBuilder;
         } else {
-
-            if (result.charAt(0) == '?' && fileName != null) {
-                result = fileName + result;
-            }
-
-            // Process relative urls
-            if (mode == ABSOLUTE) {
-                result = server + pagePath + "/" + result;
-            } else {
-                result = pagePath + "/" + result;
-            }
+            visibleBaseUriBuilder = new UriBuilder(visibleBaseUrlParameter);
         }
-        result = cleanUpPath(result);
+
+        // Build the absolute Uri of the request sent to the backend
+        // TODO extract concatenation method
+        UriBuilder requestUriBuilder = new UriBuilder(requestUrl);
+        requestUriBuilder.setScheme(baseUriBuilder.getScheme());
+        requestUriBuilder.setHost(baseUriBuilder.getHost());
+        requestUriBuilder.setPort(baseUriBuilder.getPort());
+        requestUriBuilder.setPath(baseUriBuilder.getPath(), requestUriBuilder.getPath());
+
+        // Interpret the url relatively to the request url (may be relative)
+        UriBuilder uriBuilder = requestUriBuilder.resolve(url);
+        // Normalize the path (remove . or .. if possible)
+        uriBuilder.normalize();
+
+        // Try to relativize url to base url
+        UriBuilder relativeUriBuilder = uriBuilder.relativize(baseUriBuilder);
+        // If the url is unchanged do nothing
+        if (relativeUriBuilder.equals(uriBuilder)) {
+            LOG.debug("url kept unchanged: [{}]", url);
+            return url;
+        }
+        // Else rewrite replacing baseUrl by visibleBaseUrl
+        UriBuilder result = visibleBaseUriBuilder.resolve(relativeUriBuilder);
+        // If mode relative, remove all the scheme://host:port to keep only a url relative to server root (starts with
+        // /)
+        if (mode == RELATIVE) {
+            result.setScheme(null);
+            result.setHost(null);
+            result.setPort(-1);
+        }
         LOG.debug("url fixed: [{}] -> [{}]", url, result);
-        return result;
-    }
-
-    /**
-     * Cleanup url path to remove ../ when possible.
-     * 
-     * /path/to/a/../page=>/path/to/page
-     * 
-     * /path/to/a/../../page=>/path/page
-     * 
-     * @param url
-     *            the url to clean
-     * 
-     * @return the cleaned url
-     */
-    protected static String cleanUpPath(String url) {
-
-        String result = url;
-        if (url.contains(REL_PATH)) {
-            String protocol = "//";
-            int posPro = url.indexOf(protocol);
-            String protocolPart = "";
-            String pathPart = result;
-            if (posPro != -1) {
-                protocolPart = url.substring(0, posPro + protocol.length());
-                pathPart = result.substring(posPro + protocol.length(), result.length());
-            }
-            String endPart = "";
-
-            int posEndPath = pathPart.indexOf("?");
-            if (posEndPath == -1) {
-                posEndPath = pathPart.indexOf("#");
-                ;
-            }
-
-            if (posEndPath != -1) {
-                endPart = pathPart.substring(posEndPath);
-                pathPart = pathPart.substring(0, posEndPath);
-            }
-
-            int nbRelPath = StringUtils.countMatches(pathPart, REL_PATH);
-            int nbSlash = StringUtils.countMatches(pathPart, "/");
-            // look if we can rewrite
-            if (nbSlash - nbRelPath >= nbRelPath) {
-                int pos;
-                // While url contains ../
-                while ((pos = pathPart.indexOf(REL_PATH)) > 0) {
-                    // Get url part after ../
-                    String lastPart = pathPart.substring(pos + REL_PATH.length());
-                    // Calculate url part before ../
-                    String firstPart = pathPart.substring(0, pos - 1);
-                    firstPart = firstPart.substring(0, firstPart.lastIndexOf("/") + 1);
-                    pathPart = firstPart + lastPart;
-                }
-            }
-            result = protocolPart + pathPart + endPart;
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("cleanup url [{}] to [{}]", url, result);
-            }
-        }
-        return result;
+        return result.toString();
     }
 
     /**

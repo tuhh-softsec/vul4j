@@ -16,6 +16,7 @@
 package org.esigate.impl;
 
 import java.net.URI;
+import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.esigate.Parameters;
@@ -27,9 +28,30 @@ public class UriBuilder {
     private String path;
     private String file;
     private String queryString;
+    private String fragment;
 
+    /**
+     * Creates a copy of an existing {@link UriBuilder}
+     * 
+     * @param uriBuilder
+     */
+    public UriBuilder(UriBuilder uriBuilder) {
+        this.scheme = uriBuilder.scheme;
+        this.host = uriBuilder.host;
+        this.port = uriBuilder.port;
+        this.path = uriBuilder.path;
+        this.file = uriBuilder.file;
+        this.queryString = uriBuilder.queryString;
+        this.fragment = uriBuilder.fragment;
+    }
+
+    /**
+     * Parses an uri written as a {@link String}
+     * 
+     * @param uriString
+     */
     public UriBuilder(String uriString) {
-        URI uri = URI.create(uriString);
+        URI uri = createUri(uriString);
         scheme = uri.getScheme();
         host = uri.getHost();
         port = uri.getPort();
@@ -44,9 +66,21 @@ public class UriBuilder {
             }
         }
         queryString = uri.getRawQuery();
+        fragment = uri.getRawFragment();
     }
 
     public UriBuilder() {
+    }
+
+    /**
+     * Creates an {@link URI} after escaping some special characters in order to tolerate some incorrect URI types
+     * 
+     * @param uriString
+     * @return
+     */
+    private URI createUri(String uriString) {
+        uriString = uriString.replaceAll(" ", "+");
+        return URI.create(uriString);
     }
 
     public String getPath() {
@@ -112,6 +146,9 @@ public class UriBuilder {
         if (queryString != null) {
             result.append("?").append(queryString);
         }
+        if (fragment != null) {
+            result.append("#").append(fragment);
+        }
         return result.toString();
     }
 
@@ -174,6 +211,116 @@ public class UriBuilder {
 
     public boolean isRelative() {
         return path != null && !path.startsWith("/");
+    }
+
+    public void normalize() {
+        if (StringUtils.isEmpty(path)) {
+            return;
+        }
+        boolean isAbsolute = path.startsWith("/");
+        Stack<String> stack = new Stack<String>();
+        String[] split = path.split("/");
+        for (int i = 0; i < split.length; i++) {
+            String pathElement = split[i];
+            if (pathElement.equals(".") || pathElement.equals("")) {
+                // ignore
+            } else if (pathElement.equals("..")) {
+                if (isAbsolute) {
+                    if (!stack.isEmpty()) {
+                        stack.pop();
+                    }
+                } else {
+                    if (!stack.empty() && !stack.peek().equals("..")) {
+                        stack.pop();
+                    } else {
+                        stack.push(pathElement);
+                    }
+                }
+            } else {
+                stack.push(pathElement);
+            }
+        }
+        String result = "";
+        while (!stack.isEmpty()) {
+            result = "/" + result;
+            ;
+            result = stack.pop() + result;
+        }
+        if (isAbsolute) {
+            result = "/" + result;
+        }
+        path = result;
+    }
+
+    public String getFragment() {
+        return fragment;
+    }
+
+    public void setFragment(String fragment) {
+        this.fragment = fragment;
+    }
+
+    /**
+     * Creates a new {@link UriBuilder} based on an url interpreted relatively to another {@link UriBuilder}
+     * 
+     * @param relativeUrl
+     * @param base
+     */
+    public UriBuilder resolve(String relativeUrl) {
+        UriBuilder result = new UriBuilder(relativeUrl);
+        if (result.getScheme() != null) {
+            return result;
+        }
+        result.setScheme(this.getScheme());
+        if (result.getHost() != null) {
+            return result;
+        }
+        result.setHost(this.getHost());
+        if (result.getPort() != -1) {
+            return result;
+        }
+        result.setPort(this.getPort());
+        if (result.getPath() != null && result.getPath().startsWith("/")) {
+            return result;
+        }
+        result.setPath(this.getPath(), result.getPath());
+        if (result.getFile() != null) {
+            return result;
+        }
+        result.setFile(this.getFile());
+        if (result.getQueryString() != null) {
+            return result;
+        }
+        result.setQueryString(this.getQueryString());
+        if (result.getFragment() != null) {
+            return result;
+        }
+        result.setFragment(this.getFragment());
+        return result;
+    }
+
+    public UriBuilder relativize(UriBuilder baseUriBuilder) {
+        // TODO improve and test
+        URI thisUri = createUri(this.toString());
+        URI baseUri = createUri(baseUriBuilder.toString());
+        return new UriBuilder(baseUri.relativize(thisUri).toString());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO improve and test
+        if (object == null) {
+            return false;
+        }
+        if (!(object instanceof UriBuilder)) {
+            return false;
+        }
+        return this.toString().equals(object.toString());
+    }
+
+    public UriBuilder resolve(UriBuilder relativeUriBuilder) {
+        // TODO improve and test
+        return resolve(relativeUriBuilder.toString());
     }
 
 }
