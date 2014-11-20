@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.util;
 
 import java.net.URI;
@@ -13,8 +28,48 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.esigate.Parameters;
 
 public final class UriUtils {
+
+    private static final String RESERVED_CHARACTERS = ":/?&=#%";
+    private static final String[] CONVERSION_TABLE = new String[128];
+    static {
+        for (int i = 0; i < 128; i++) {
+            char character = (char) i;
+            String charString = Character.toString(character);
+            if (RESERVED_CHARACTERS.indexOf(i) == -1) {
+                charString = encode(charString);
+            }
+            CONVERSION_TABLE[i] = charString;
+        }
+    }
+
     private UriUtils() {
         // Do not instantiate
+    }
+
+    private static String encode(char character) {
+        return Character.toString(character);
+    }
+
+    private static String encode(String charString) {
+        try {
+            return new URI(null, null, null, -1, charString, null, null).toASCIIString();
+        } catch (URISyntaxException e) {
+            throw new InvalidUriException(e);
+        }
+    }
+
+    public static String encodeIllegalCharacters(String uri) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < uri.length(); i++) {
+            char character = uri.charAt(i);
+            int j = (int) character;
+            if (j >= 128 || j < 0) {
+                result.append(encode(character));
+            } else {
+                result.append(CONVERSION_TABLE[j]);
+            }
+        }
+        return result.toString();
     }
 
     private static final class InvalidUriException extends RuntimeException {
@@ -62,16 +117,23 @@ public final class UriUtils {
     }
 
     public static HttpHost extractHost(final String uri) {
-        return URIUtils.extractHost(createUri(uri));
+        return URIUtils.extractHost(createURI(uri));
     }
 
-    private static URI createUri(String uri) {
-        return URI.create(uri);
+    /**
+     * Creates an {@link URI} after escaping some special characters in order to tolerate some incorrect URI types
+     * 
+     * @param uriString
+     * @return
+     */
+    public static URI createURI(String uriString) {
+        uriString = encodeIllegalCharacters(uriString);
+        return URI.create(uriString);
     }
 
     public static String rewriteURI(String uri, HttpHost targetHost) {
         try {
-            return URIUtils.rewriteURI(createUri(uri), targetHost).toString();
+            return URIUtils.rewriteURI(createURI(uri), targetHost).toString();
         } catch (URISyntaxException e) {
             throw new InvalidUriException(e);
         }
@@ -111,7 +173,7 @@ public final class UriUtils {
         if (isAbsolute(sourceUrl)) {
             absoluteSourceUrl = sourceUrl;
         } else {
-            absoluteSourceUrl = URIUtils.resolve(createUri(sourceContext), sourceUrl).toString();
+            absoluteSourceUrl = URIUtils.resolve(createURI(sourceContext), sourceUrl).toString();
         }
 
         // If url is on the same host than the request, do translation
@@ -131,7 +193,7 @@ public final class UriUtils {
      * @return The raw query component of this URI, or null if the query is undefined
      */
     public static String getRawQuery(String uri) {
-        return createUri(uri).getRawQuery();
+        return createURI(uri).getRawQuery();
     }
 
     /**
@@ -139,11 +201,12 @@ public final class UriUtils {
      * the getRawPath method except that all sequences of escaped octets are decoded.
      * 
      * @param uri
+     *            the uri to retrieve the path from
      * @return The decoded path component of this URI, or null if the path is undefined
      */
 
     public static String getPath(String uri) {
-        return createUri(uri).getPath();
+        return createURI(uri).getPath();
     }
 
     /**
@@ -162,11 +225,63 @@ public final class UriUtils {
      * @return a list of {@link NameValuePair} as built from the URI's query portion.
      */
     public static List<NameValuePair> parse(final String uri, final String charset) {
-        return URLEncodedUtils.parse(createUri(uri), charset);
+        return URLEncodedUtils.parse(createURI(uri), charset);
     }
 
     public static boolean isAbsolute(String uri) {
         return (uri.startsWith("http://") || uri.startsWith("https://"));
+    }
+
+    /**
+     * Concatenates 2 {@link URI} by taking the beginning of the first (up to the path) and the end of the other
+     * (starting from the path). While concatenating, checks that there is no doubled "/" character between the path
+     * fragments.
+     * 
+     * @param base
+     *            the base uri
+     * @param relPath
+     *            the path to concatenate with the base uri
+     * @return the concatenated uri
+     */
+    public static URI concatPath(URI base, String relPath) {
+        String resultPath = base.getPath() + StringUtils.stripStart(relPath, "/");
+        try {
+            return new URI(base.getScheme(), base.getUserInfo(), base.getHost(), base.getPort(), resultPath, null, null);
+        } catch (URISyntaxException e) {
+            throw new InvalidUriException(e);
+        }
+    }
+
+    public static URI removeServer(URI uri) {
+        try {
+            return new URI(null, null, null, -1, uri.getPath(), uri.getQuery(), uri.getFragment());
+        } catch (URISyntaxException e) {
+            throw new InvalidUriException(e);
+        }
+
+    }
+
+    /**
+     * Interpret the url relatively to the request url (may be relative). Due to a bug in {@link URI} class when using a
+     * relUri containing only a query string, we cannot use directly the method provided by {@link URI} class.
+     * 
+     * @param relUri
+     * @param base
+     * @return the resolved {@link URI}
+     */
+    public static URI resolve(String relUri, URI base) {
+        URI uri = createURI(relUri);
+        if (uri.getScheme() == null && uri.getUserInfo() == null && uri.getHost() == null && uri.getPort() == -1
+                && StringUtils.isEmpty(uri.getPath()) && uri.getQuery() != null) {
+            try {
+                return new URI(base.getScheme(), base.getUserInfo(), base.getHost(), base.getPort(), base.getPath(),
+                        uri.getQuery(), uri.getFragment());
+            } catch (URISyntaxException e) {
+                throw new InvalidUriException(e);
+            }
+        } else {
+            return base.resolve(uri);
+        }
     }
 
 }

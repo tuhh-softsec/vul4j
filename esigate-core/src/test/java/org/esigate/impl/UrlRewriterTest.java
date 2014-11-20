@@ -119,6 +119,10 @@ public class UrlRewriterTest extends TestCase {
         assertPatternDoesNotMatch("<![CDATA[   var src=\"test\" ]]>");
     }
 
+    public void testEsiIncludePatternDoesNotMatch() {
+        assertPatternDoesNotMatch("<esi:include src=\"$(PROVIDER{provider})/\" />");
+    }
+
     public void testUrlRewrite() {
         baseUrl = "http://backend/context";
         visibleUrlBase = "http://backend/context";
@@ -151,13 +155,14 @@ public class UrlRewriterTest extends TestCase {
         assertDoesNotRewrite("http://www.google.com/logo.com");
     }
 
-    public void testUrlRewriteWithDollarSign() {
+    public void testUrlRewriteSpecialChars() {
         baseUrl = "http://backend/context/";
         visibleUrlBase = "http://visibleservername/";
         requestUrl = "/page/";
 
         fixMode = "absolute";
         assertRewrites("images/logo$.png", "http://visibleservername/page/images/logo$.png");
+        assertRewrites("images/logo 1.png", "http://visibleservername/page/images/logo%201.png");
     }
 
     /**
@@ -265,40 +270,16 @@ public class UrlRewriterTest extends TestCase {
         assertRewrites("../styles/style.css", "http://visibleservername/styles/style.css");
     }
 
-    public void testCleanUpPath() {
-        assertEquals("path/to/page", UrlRewriter.cleanUpPath("path/to/page"));
-        assertEquals("path/page", UrlRewriter.cleanUpPath("path/to/../page"));
-        assertEquals("page", UrlRewriter.cleanUpPath("path/to/../../page"));
+    public void testUrlRewriteEmptyUrl() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://backend";
+        requestUrl = "/test";
 
-        assertEquals("http://host/page", UrlRewriter.cleanUpPath("http://host/path/to/../../page"));
-        assertEquals("//host/page", UrlRewriter.cleanUpPath("//host/path/to/../../page"));
-        assertEquals("http://host/", UrlRewriter.cleanUpPath("http://host/path/to/../../page/../"));
-        assertEquals("http://", UrlRewriter.cleanUpPath("http://host/path/to/../../../page/../"));
+        fixMode = "relative";
+        assertRewrites("", "");
 
-        // Test bad url
-        assertEquals("http://host/path/to/../../../../page/../",
-                UrlRewriter.cleanUpPath("http://host/path/to/../../../../page/../"));
-
-        assertEquals("page", UrlRewriter.cleanUpPath("path/../to/../page"));
-
-        // test empty url
-        assertEquals("", UrlRewriter.cleanUpPath(""));
-
-        // Test url that can't be totally cleaned
-        assertEquals("path/../../page", UrlRewriter.cleanUpPath("path/../../page"));
-
-        // Test url that can't be cleaned
-        assertEquals("../../path/../to/../page", UrlRewriter.cleanUpPath("../../path/../to/../page"));
-        assertEquals("../page", UrlRewriter.cleanUpPath("../page"));
-        assertEquals("../", UrlRewriter.cleanUpPath("../"));
-
-        // Test with parameters
-        assertEquals("path/to/page?param1=value1", UrlRewriter.cleanUpPath("path/to/page?param1=value1"));
-        assertEquals("path/to/page?param1=value1#test", UrlRewriter.cleanUpPath("path/to/page?param1=value1#test"));
-        assertEquals("path/to/page#test", UrlRewriter.cleanUpPath("path/to/page#test"));
-
-        assertEquals("path/page?param1=../test", UrlRewriter.cleanUpPath("path/to/../page?param1=../test"));
-        assertEquals("path/to/page?param1=../test#test", UrlRewriter.cleanUpPath("path/to/page?param1=../test#test"));
-        assertEquals("path/to/page#test", UrlRewriter.cleanUpPath("path/to/page#test"));
+        fixMode = "absolute";
+        assertRewrites("", "");
     }
+
 }
