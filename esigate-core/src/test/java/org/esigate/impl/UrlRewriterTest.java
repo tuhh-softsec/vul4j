@@ -162,7 +162,7 @@ public class UrlRewriterTest extends TestCase {
 
         fixMode = "absolute";
         assertRewrites("images/logo$.png", "http://visibleservername/page/images/logo$.png");
-        assertRewrites("images/logo 1.png", "http://visibleservername/page/images/logo+1.png");
+        assertRewrites("images/logo 1.png", "http://visibleservername/page/images/logo%201.png");
     }
 
     /**

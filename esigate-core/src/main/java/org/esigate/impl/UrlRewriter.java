@@ -15,13 +15,13 @@
 
 package org.esigate.impl;
 
-import static org.apache.commons.lang3.StringUtils.stripEnd;
-
+import java.net.URI;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.esigate.Parameters;
+import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +50,8 @@ public class UrlRewriter {
             .compile("<([^\\!:>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
                     Pattern.CASE_INSENSITIVE);
 
-    private String visibleBaseUrlParameter;
-    private int mode;
+    private final URI visibleBaseUrlParameter;
+    private final int mode;
 
     /**
      * Creates a renderer which fixes urls. The domain name and the url path are computed from the full url made of
@@ -78,7 +78,15 @@ public class UrlRewriter {
         } else {
             mode = RELATIVE;
         }
-        visibleBaseUrlParameter = stripEnd(Parameters.VISIBLE_URL_BASE.getValue(properties), "/");
+        String visibleBaseUrl = Parameters.VISIBLE_URL_BASE.getValue(properties);
+        if (visibleBaseUrl == null) {
+            visibleBaseUrlParameter = null;
+        } else {
+            if (!visibleBaseUrl.endsWith("/")) {
+                visibleBaseUrl = visibleBaseUrl + "/";
+            }
+            visibleBaseUrlParameter = UriUtils.createURI(visibleBaseUrl);
+        }
     }
 
     /**
@@ -99,52 +107,41 @@ public class UrlRewriter {
             return url;
         }
 
-        // TODO temporary hack
+        // Base url should end with /
         if (!baseUrl.endsWith("/")) {
             baseUrl = baseUrl + "/";
         }
-        if (visibleBaseUrlParameter != null && !visibleBaseUrlParameter.endsWith("/")) {
-            visibleBaseUrlParameter = visibleBaseUrlParameter + "/";
-        }
-
-        UriBuilder baseUriBuilder = new UriBuilder(baseUrl);
+        URI baseUri = UriUtils.createURI(baseUrl);
 
         // If no visible url base is defined, use base url as visible base url
-        UriBuilder visibleBaseUriBuilder;
+        URI visibleBaseUri;
         if (visibleBaseUrlParameter == null) {
-            visibleBaseUriBuilder = baseUriBuilder;
+            visibleBaseUri = baseUri;
         } else {
-            visibleBaseUriBuilder = new UriBuilder(visibleBaseUrlParameter);
+            visibleBaseUri = visibleBaseUrlParameter;
         }
 
         // Build the absolute Uri of the request sent to the backend
-        // TODO extract concatenation method
-        UriBuilder requestUriBuilder = new UriBuilder(requestUrl);
-        requestUriBuilder.setScheme(baseUriBuilder.getScheme());
-        requestUriBuilder.setHost(baseUriBuilder.getHost());
-        requestUriBuilder.setPort(baseUriBuilder.getPort());
-        requestUriBuilder.setPath(baseUriBuilder.getPath(), requestUriBuilder.getPath());
+        URI requestUri = UriUtils.concatPath(baseUri, requestUrl);
 
         // Interpret the url relatively to the request url (may be relative)
-        UriBuilder uriBuilder = requestUriBuilder.resolve(url);
+        URI uri = UriUtils.resolve(url, requestUri);
         // Normalize the path (remove . or .. if possible)
-        uriBuilder.normalize();
+        uri = uri.normalize();
 
         // Try to relativize url to base url
-        UriBuilder relativeUriBuilder = uriBuilder.relativize(baseUriBuilder);
+        URI relativeUri = baseUri.relativize(uri);
         // If the url is unchanged do nothing
-        if (relativeUriBuilder.equals(uriBuilder)) {
+        if (relativeUri.equals(uri)) {
             LOG.debug("url kept unchanged: [{}]", url);
             return url;
         }
         // Else rewrite replacing baseUrl by visibleBaseUrl
-        UriBuilder result = visibleBaseUriBuilder.resolve(relativeUriBuilder);
+        URI result = visibleBaseUri.resolve(relativeUri);
         // If mode relative, remove all the scheme://host:port to keep only a url relative to server root (starts with
-        // /)
+        // "/")
         if (mode == RELATIVE) {
-            result.setScheme(null);
-            result.setHost(null);
-            result.setPort(-1);
+            result = UriUtils.removeServer(result);
         }
         LOG.debug("url fixed: [{}] -> [{}]", url, result);
         return result.toString();
