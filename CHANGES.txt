@@ -1,5 +1,7 @@
 2.1.0
 
+* Bug fixes (NPE, IOB)
+* Added support for SaxonEE connector
 * Added new syntax highlighter for HTML
   Basicaly same as for XML, but handles better some edge cases
 * New syntax configurations for:
