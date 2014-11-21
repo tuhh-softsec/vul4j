@@ -7,7 +7,7 @@ import java.util.zip.GZIPInputStream;
 
 
 /**
- * Extension of {@link TarFile} for bzip2 compressed files.
+ * Extension of {@link TarFile} for gzip compressed files.
  */
 public class GZipTarFile extends TarFile
 {
