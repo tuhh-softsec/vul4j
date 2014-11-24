@@ -13,9 +13,9 @@ XSLT syntax highlighting
   for syntax highlighting using xslthl. 
   But xslthl is not limited to be used just with DocBook Xsl, you can use it for anything that used XSLT 
   and one of the supported XSLT processors. More information about how to use xslthl with your own xslt processing 
-  can be found on the {{{http://sourceforge.net/apps/mediawiki/xslthl/index.php?title=Usage}wiki}}, 
+  can be found on the {{{http://xslthl.sourceforge.net/wiki/index.php/Usage}wiki}}, 
   just like information about how to configure xslthl to 
-  {{{http://sourceforge.net/apps/mediawiki/xslthl/index.php?title=Syntax_Highlighters}support new languages}}.
+  {{{http://xslthl.sourceforge.net/wiki/index.php/Syntax_Highlighters}support new languages}}.
 
 
 * Supported XSLT Processors

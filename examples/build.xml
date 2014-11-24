@@ -19,6 +19,7 @@
 		<path id="classpath.xalan">
 			<filelist>
 				<file name="${xalan:xalan:jar}" />
+				<file name="${xalan:serializer:jar}" />
 				<file name="${project.build.outputDirectory}" />
 			</filelist>
 		</path>

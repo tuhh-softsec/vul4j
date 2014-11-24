@@ -21,11 +21,25 @@ This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT pr
 		</license>
 	</licenses>
 
+	<!--
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
 	</parent>
+	-->
+
+	<!-- For deploying to SF.net, shell account must be created first as decsribed at: http://maven.apache.org/plugins/maven-site-plugin/examples/site-deploy-to-sourceforge.net.html -->
+	<distributionManagement>
+	  <repository>
+	    <id>sourceforge.net</id>
+	    <url>scpexe://shell.sourceforge.net/home/project-web/xslthl/htdocs/maven/repository</url>
+	  </repository>
+	  <site>
+	    <id>sourceforge.net</id>
+	    <url>scpexe://shell.sourceforge.net/home/project-web/xslthl/htdocs/</url>
+	  </site>
+	</distributionManagement>
 
 	<build>
 		<plugins>
@@ -105,6 +119,14 @@ This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT pr
 				</executions>
 			</plugin>
 		</plugins>
+		<extensions>
+		  <!-- Enabling the use of FTP -->
+		  <extension>
+		    <groupId>org.apache.maven.wagon</groupId>
+		    <artifactId>wagon-ssh-external</artifactId>
+		    <version>1.0-beta-6</version>
+		  </extension>
+		</extensions>
 	</build>
 
 	<reporting>
@@ -130,6 +152,12 @@ This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT pr
 			<artifactId>xalan</artifactId>
 			<version>[2.7,2.8)</version>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+		  <groupId>xalan</groupId>
+		  <artifactId>serializer</artifactId>
+		  <version>2.7.2</version>
+		  <optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>saxon</groupId>
@@ -177,6 +205,11 @@ This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT pr
 			<id>elmuerte</id>
 			<name>Michiel Hendriks</name>
 			<email>elmuerte at users.sourceforge.net</email>
+		</developer>
+		<developer>
+			<id>raducoravu</id>
+			<name>Radu Coravu</name>
+			<email>raducoravu at users.sourceforge.net</email>
 		</developer>
 	</developers>
 
