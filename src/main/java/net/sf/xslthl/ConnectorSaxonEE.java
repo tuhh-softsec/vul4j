@@ -47,7 +47,7 @@ import net.sf.saxon.type.Type;
 public class ConnectorSaxonEE {
 
 	private static void blockToSaxon6Node(Block b, Builder builder,
-	        NamePool pool, Config config) throws Exception {
+	        Config config) throws Exception {
 		if (b.isStyled()) {
 			// int elemId = pool.allocate(config.prefix, config.uri,
 			// ((StyledBlock) b).getStyle());
@@ -107,8 +107,6 @@ public class ConnectorSaxonEE {
 			Config c = Config.getInstance(configFilename);
 			MainHighlighter hl = c.getMainHighlighter(hlCode);
 
-			NamePool pool = context.getController().getNamePool();
-
 			// Axis info obtained via Java reflection.
 			byte childType = (Byte) Class.forName("net.sf.saxon.om.AxisInfo")
 			        .getField("CHILD").get(null);
@@ -122,11 +120,11 @@ public class ConnectorSaxonEE {
 			Class axisIterClazz = Class
 			        .forName("net.sf.saxon.tree.iter.AxisIterator");
 			Method next = axisIterClazz.getMethod("next", new Class[0]);
-			Method current = axisIterClazz.getMethod("current", new Class[0]);
 
 			List<Item> resultNodes = new ArrayList<Item>();
-			while (seq.next() != null) {
-				Item itm = seq.current();
+			Item itm = null;
+			while ((itm = seq.next()) != null) {
+				// Item itm = seq.current();
 				if (itm instanceof NodeInfo) {
 					NodeInfo ni = (NodeInfo) itm;
 					SequenceIterator ae = (SequenceIterator) iterateAxis
@@ -137,8 +135,8 @@ public class ConnectorSaxonEE {
 					                                .getInstance() });
 					// SequenceIterator ae = ni.iterateAxis(childType,
 					// net.sf.saxon.pattern.AnyNodeTest.getInstance());
-					while (ae.next() != null) {
-						Item itm2 = ae.current();
+					Item itm2 = null;
+					while ((itm2 = ae.next()) != null) {
 						if (itm2 instanceof NodeInfo) {
 							NodeInfo n2i = (NodeInfo) itm2;
 							if (n2i.getNodeKind() == Type.TEXT) {
@@ -150,7 +148,7 @@ public class ConnectorSaxonEE {
 									List<Block> l = hl.highlight(n2i
 									        .getStringValue());
 									for (Block b : l) {
-										blockToSaxon6Node(b, builder, pool, c);
+										blockToSaxon6Node(b, builder, c);
 									}
 									builder.endDocument();
 									builder.close();
@@ -164,9 +162,10 @@ public class ConnectorSaxonEE {
 									                                .getInstance() });
 									// Object elms =
 									// doc.iterateAxis(childType,net.sf.saxon.pattern.AnyNodeTest);
-									while (next.invoke(elms, new Object[0]) != null) {
-										resultNodes.add((Item) current.invoke(
-										        elms, new Object[0]));
+									Item crt = null;
+									while ((crt = (Item) next.invoke(elms,
+									        new Object[0])) != null) {
+										resultNodes.add(crt);
 									}
 								} else {
 									resultNodes.add(n2i);
