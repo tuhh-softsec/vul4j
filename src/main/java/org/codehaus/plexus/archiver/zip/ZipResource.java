@@ -10,13 +10,13 @@ import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.attributes.SimpleResourceAttributes;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
+import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 import org.codehaus.plexus.components.io.resources.ClosingInputStream;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
 
 public class ZipResource extends AbstractPlexusIoResource
-    implements PlexusIoResourceWithAttributes
+    implements ResourceAttributeSupplier
 {
 
     private final org.apache.commons.compress.archivers.zip.ZipFile zipFile;

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.codehaus.plexus.components.io.functions.FileSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.IOUtil;
@@ -116,9 +117,9 @@ public class ResourceUtils
      */
     public static boolean isSame( PlexusIoResource resource, File file )
     {
-        if ( resource instanceof PlexusIoFileResource )
+        if ( resource instanceof FileSupplier )
         {
-            File resourceFile = ((PlexusIoFileResource) resource).getFile();
+            File resourceFile = ((FileSupplier) resource).getFile();
             return file.equals( resourceFile );
         }
         return false;
@@ -132,9 +133,9 @@ public class ResourceUtils
     public static boolean isCanonicalizedSame( PlexusIoResource resource, File file )
         throws IOException
     {
-        if ( resource instanceof PlexusIoFileResource )
+        if ( resource instanceof FileSupplier)
         {
-            File resourceFile = ((PlexusIoFileResource) resource).getFile();
+            File resourceFile = ((FileSupplier) resource).getFile();
             return file.getCanonicalFile().equals( resourceFile.getCanonicalFile() );
         }
         return false;

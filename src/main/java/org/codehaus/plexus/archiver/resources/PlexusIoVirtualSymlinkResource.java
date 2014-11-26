@@ -20,14 +20,14 @@ import java.io.File;
 import java.io.IOException;
 
 import org.codehaus.plexus.components.io.attributes.SymlinkUtils;
-import org.codehaus.plexus.components.io.resources.PlexusIoSymlink;
+import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 
 /**
  * A symlink that does not necessarily exist (anywhere).
  */
 
 public class PlexusIoVirtualSymlinkResource extends PlexusIoVirtualFileResource
-	implements PlexusIoSymlink {
+	implements SymlinkDestinationSupplier {
 		private final String symnlinkDestination;
 
 		public PlexusIoVirtualSymlinkResource(File symlinkFile, String symnlinkDestination)

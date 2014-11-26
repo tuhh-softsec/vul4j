@@ -7,13 +7,13 @@ import java.net.URL;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.attributes.SimpleResourceAttributes;
+import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
 
 public class TarResource
     extends AbstractPlexusIoResource
-    implements PlexusIoResourceWithAttributes
+    implements ResourceAttributeSupplier
 {
 
     private final TarFile tarFile;

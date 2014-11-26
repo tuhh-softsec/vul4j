@@ -32,12 +32,10 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
-import org.codehaus.plexus.archiver.util.Streams;
+import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.components.io.resources.PlexusIoSymlink;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
@@ -594,8 +592,8 @@ public abstract class AbstractZipArchiver
             throw new ArchiverException( "A zip file cannot include itself" );
         }
 
-        final boolean b = entry.getResource() instanceof PlexusIoSymlink;
-        String symlinkTarget = b ? ((PlexusIoSymlink)entry.getResource()).getSymlinkDestination() : null;
+        final boolean b = entry.getResource() instanceof SymlinkDestinationSupplier;
+        String symlinkTarget = b ? ((SymlinkDestinationSupplier)entry.getResource()).getSymlinkDestination() : null;
         InputStream in = entry.getInputStream();
         try
         {
@@ -643,7 +641,7 @@ public abstract class AbstractZipArchiver
 
         if ( !skipWriting )
         {
-            final boolean isSymlink = dir instanceof PlexusIoSymlink;
+            final boolean isSymlink = dir instanceof SymlinkDestinationSupplier;
 
             if (isSymlink && vPath.endsWith(File.separator))
             {
@@ -685,7 +683,7 @@ public abstract class AbstractZipArchiver
 
             if ( isSymlink )
             {
-                String symlinkDestination = ( (PlexusIoSymlink) dir ).getSymlinkDestination();
+                String symlinkDestination = ( (SymlinkDestinationSupplier) dir ).getSymlinkDestination();
                 ZipEncoding enc = ZipEncodingHelper.getZipEncoding( zOut.getEncoding() );
                 final byte[] bytes = enc.encode( symlinkDestination ).array();
                 zOut.write( bytes, 0, bytes.length );

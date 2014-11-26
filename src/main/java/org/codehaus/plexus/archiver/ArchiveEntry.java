@@ -27,10 +27,10 @@ import javax.annotation.Nonnull;
 
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
+import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
-import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
 
 /**
  * @version $Revision: 1502 $ $Date$
@@ -80,8 +80,8 @@ public class ArchiveEntry
         } catch (IOException e) {
             throw new   ArchiverException("Error resolving resource " + resource.getName(), e);
         }
-        this.attributes = ( resource instanceof PlexusIoResourceWithAttributes )
-            ? ( (PlexusIoResourceWithAttributes) resource ).getAttributes() : null;
+        this.attributes = ( resource instanceof ResourceAttributeSupplier)
+            ? ( (ResourceAttributeSupplier) resource ).getAttributes() : null;
         this.type = type;
         int permissions = mode;
 

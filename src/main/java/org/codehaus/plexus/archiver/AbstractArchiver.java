@@ -42,12 +42,12 @@ import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
+import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
-import org.codehaus.plexus.components.io.resources.PlexusIoResourceWithAttributes;
 import org.codehaus.plexus.components.io.resources.proxy.PlexusIoProxyResourceCollection;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
@@ -381,9 +381,9 @@ public abstract class AbstractArchiver
         final String destFileName = collection.getName( resource );
 
         int permissions = -1;
-        if ( resource instanceof PlexusIoResourceWithAttributes )
+        if ( resource instanceof ResourceAttributeSupplier)
         {
-            final PlexusIoResourceAttributes attrs = ( (PlexusIoResourceWithAttributes) resource ).getAttributes();
+            final PlexusIoResourceAttributes attrs = ( (ResourceAttributeSupplier) resource ).getAttributes();
 
             if ( attrs != null )
             {
@@ -521,7 +521,7 @@ public abstract class AbstractArchiver
                         }
                     }
 
-                    if ( nextEntry != null && seenEntries.contains( normalizedForDuplicateCheck(nextEntry ) ))
+                    if ( nextEntry != null && seenEntries.contains( normalizedForDuplicateCheck(nextEntry) ))
                     {
                         final String path = nextEntry.getName();
 

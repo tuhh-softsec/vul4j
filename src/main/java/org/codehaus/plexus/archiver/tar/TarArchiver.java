@@ -27,8 +27,8 @@ import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
+import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.components.io.resources.PlexusIoSymlink;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -281,7 +281,7 @@ public class TarArchiver
 
             if ( entry.getType() == ArchiveEntry.SYMLINK )
             {
-                final PlexusIoSymlink plexusIoSymlinkResource = (PlexusIoSymlink) entry.getResource();
+                final SymlinkDestinationSupplier plexusIoSymlinkResource = (SymlinkDestinationSupplier) entry.getResource();
                 te = new TarArchiveEntry( vPath, TarArchiveEntry.LF_SYMLINK);
                 te.setLinkName( plexusIoSymlinkResource.getSymlinkDestination() );
             }
