@@ -76,8 +76,18 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-  
+
+
   <build>
+    <pluginManagement>
+      <plugins>
+         <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-gpg-plugin</artifactId>
+           <version>1.5</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -133,5 +143,5 @@
       </plugin>
     </plugins>
   </build>
-  
+
 </project>
