@@ -56,7 +56,7 @@ public abstract class BasePlexusArchiverTest extends PlexusTestCase
         FileUtils.copyFile( tmpFile, outputFile );       
         while ( timestampReference >= outputFile.lastModified() )
         {
-            outputFile.setLastModified(System.currentTimeMillis());
+            FileUtils.copyFile( tmpFile, outputFile );
             Thread.yield();
         }
         
