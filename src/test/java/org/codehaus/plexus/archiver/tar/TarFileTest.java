@@ -15,8 +15,11 @@ import org.codehaus.plexus.archiver.gzip.GZipCompressor;
 import org.codehaus.plexus.archiver.util.ArchiverAttributeUtils;
 import org.codehaus.plexus.archiver.util.Compressor;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
+import org.codehaus.plexus.components.io.resources.ResourceFactory;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+
+import static org.codehaus.plexus.components.io.resources.ResourceFactory.createResource;
 
 
 /**
@@ -88,7 +91,7 @@ public class TarFileTest
         if ( compressor != null )
         {
             final File compressedFile = new File( file.getPath() + extension );
-			compressor.setSource( new PlexusIoFileResource( file, ArchiverAttributeUtils.getFileAttributes(file) ) );
+			compressor.setSource( createResource( file, file.getName() ) );
             compressor.setDestFile( compressedFile );
             compressor.compress();
             compressor.close();

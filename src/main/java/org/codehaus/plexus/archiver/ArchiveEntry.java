@@ -31,6 +31,9 @@ import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
+import org.codehaus.plexus.components.io.resources.ResourceFactory;
+
+import static org.codehaus.plexus.components.io.resources.ResourceFactory.createResource;
 
 /**
  * @version $Revision: 1502 $ $Date$
@@ -44,8 +47,6 @@ public class ArchiveEntry
     public static final int DIRECTORY = 2;
 
     public static final int SYMLINK = 3;
-
-    private PlexusIoResourceCollection collection;
 
     @Nonnull private PlexusIoResource resource;
 
@@ -73,7 +74,6 @@ public class ArchiveEntry
                           PlexusIoResourceCollection collection, int defaultDirMode )
     {
         this.name = name;
-        this.collection = collection;
         this.defaultDirMode = defaultDirMode;
         try {
             this.resource = collection != null ? collection.resolve(resource) : resource;
@@ -168,8 +168,7 @@ public class ArchiveEntry
     }
 
     public static ArchiveEntry createFileEntry( String target, File file, int permissions, int defaultDirectoryPermissions )
-        throws ArchiverException
-    {
+            throws ArchiverException, IOException {
         if ( !file.isFile() )
         {
             throw new ArchiverException( "Not a file: " + file );
@@ -218,34 +217,16 @@ public class ArchiveEntry
 
     public static ArchiveEntry createDirectoryEntry( String target, final File file, int permissions,
                                                      int defaultDirMode1 )
-        throws ArchiverException
-    {
+            throws ArchiverException, IOException {
         if ( !file.isDirectory() )
         {
             throw new ArchiverException( "Not a directory: " + file );
         }
 
-		final PlexusIoFileResource res = new PlexusIoFileResource( file, ArchiverAttributeUtils.getFileAttributes(file));
+        final PlexusIoResource res = createResource( file, file.getName() );
         return new ArchiveEntry( target, res, DIRECTORY, permissions, null, defaultDirMode1 );
     }
 
-    public static ArchiveEntry createEntry( String target, File file, int filePerm, int dirPerm, int defaultDirectoryPermissions )
-        throws ArchiverException
-    {
-        if ( file.isDirectory() )
-        {
-            return createDirectoryEntry( target, file, dirPerm, defaultDirectoryPermissions );
-        }
-        else if ( file.isFile() )
-        {
-            return createFileEntry( target, file, filePerm, defaultDirectoryPermissions );
-        }
-        else // FIXME: handle symlinks?
-        {
-            throw new ArchiverException( "Neither a file nor a directory: " + file );
-        }
-    }
-    
     public static ArchiveEntry createSymlinkEntry( String symlinkName, int permissions, String symlinkDestination,
                                                    int defaultDirectoryPermissions
     )

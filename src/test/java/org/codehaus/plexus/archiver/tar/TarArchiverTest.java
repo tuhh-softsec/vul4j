@@ -39,6 +39,7 @@ import org.codehaus.plexus.archiver.zip.ArchiveFileComparator;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
+import org.codehaus.plexus.components.io.resources.ResourceFactory;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
@@ -56,6 +57,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
+import static org.codehaus.plexus.components.io.resources.ResourceFactory.createResource;
 
 /**
  * @author Emmanuel Venisse
@@ -444,7 +446,7 @@ public class TarArchiverTest
             File file = super.createTarFile();
             File compressedFile = new File( file.getPath() + ".gz" );
             Compressor compressor = new GZipCompressor();
-            compressor.setSource( new PlexusIoFileResource( file, ArchiverAttributeUtils.getFileAttributes(file) ) );
+            compressor.setSource( createResource( file, file.getName() ) );
             compressor.setDestFile( compressedFile );
             compressor.compress();
             compressor.close();
@@ -467,7 +469,7 @@ public class TarArchiverTest
             File file = super.createTarFile();
             File compressedFile = new File( file.getPath() + ".bz2" );
             Compressor compressor = new BZip2Compressor();
-            compressor.setSource( new PlexusIoFileResource( file, ArchiverAttributeUtils.getFileAttributes(file) ) );
+            compressor.setSource( createResource( file ) );
             compressor.setDestFile( compressedFile );
             compressor.compress();
             compressor.close();

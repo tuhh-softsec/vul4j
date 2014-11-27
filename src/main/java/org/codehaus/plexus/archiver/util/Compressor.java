@@ -26,8 +26,11 @@ import java.io.OutputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.ResourceFactory;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.IOUtil;
+
+import static org.codehaus.plexus.components.io.resources.ResourceFactory.createResource;
 
 /**
  * @version $Revision$ $Date$
@@ -74,10 +77,8 @@ public abstract class Compressor
      * the file to compress; required.
      * @deprecated Use {@link #getSource()}.
      */
-    public void setSourceFile( File srcFile )
-    {
-		final PlexusIoFileResource res = new PlexusIoFileResource( srcFile, ArchiverAttributeUtils.getFileAttributes(srcFile));
-        setSource( res );
+    public void setSourceFile( File srcFile ) throws IOException {
+        setSource( createResource( srcFile, srcFile.getName() ) );
     }
 
     /**

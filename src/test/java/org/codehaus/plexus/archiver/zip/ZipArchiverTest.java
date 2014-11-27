@@ -51,6 +51,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -340,7 +341,8 @@ public class ZipArchiverTest
         final ZipArchiver zipArchiver = getZipArchiver(zipFIle);
         InputStreamTransformer is = new InputStreamTransformer()
         {
-            public InputStream transform( PlexusIoResource resource, InputStream inputStream )
+            @Nonnull
+            public InputStream transform( @Nonnull PlexusIoResource resource, @Nonnull InputStream inputStream )
                     throws IOException
             {
                 return new BoundedInputStream( inputStream, 3 );
@@ -365,7 +367,8 @@ public class ZipArchiverTest
     {
         InputStreamTransformer is = new InputStreamTransformer()
         {
-            public InputStream transform( PlexusIoResource resource, InputStream inputStream )
+            @Nonnull
+            public InputStream transform( @Nonnull PlexusIoResource resource, @Nonnull InputStream inputStream )
                 throws IOException
             {
                 return new BoundedInputStream( inputStream, 3 );
