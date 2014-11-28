@@ -27,12 +27,19 @@ import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.esigate.Parameters;
 
+/**
+ * Utility class to manipulate {@link URI} represented as a {@link String} or as a {@link URI}.
+ * 
+ * @author Francois-Xavier Bonnet
+ *
+ */
 public final class UriUtils {
 
+    private static final int CONVERSION_TABLE_SIZE = 128;
     private static final String RESERVED_CHARACTERS = ":/?&=#%";
-    private static final String[] CONVERSION_TABLE = new String[128];
+    private static final String[] CONVERSION_TABLE = new String[CONVERSION_TABLE_SIZE];
     static {
-        for (int i = 0; i < 128; i++) {
+        for (int i = 0; i < CONVERSION_TABLE_SIZE; i++) {
             char character = (char) i;
             String charString = Character.toString(character);
             if (RESERVED_CHARACTERS.indexOf(i) == -1) {
@@ -58,12 +65,19 @@ public final class UriUtils {
         }
     }
 
+    /**
+     * Fixes common mistakes in URI by replacing all illegal characters by their encoded value.
+     * 
+     * @param uri
+     *            the URI to fix
+     * @return the fixed URI
+     */
     public static String encodeIllegalCharacters(String uri) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < uri.length(); i++) {
             char character = uri.charAt(i);
             int j = (int) character;
-            if (j >= 128 || j < 0) {
+            if (j >= CONVERSION_TABLE_SIZE || j < 0) {
                 result.append(encode(character));
             } else {
                 result.append(CONVERSION_TABLE[j]);
@@ -81,6 +95,23 @@ public final class UriUtils {
 
     }
 
+    /**
+     * Creates an URI as a String.
+     * 
+     * @param scheme
+     *            the scheme
+     * @param host
+     *            the host
+     * @param port
+     *            the port
+     * @param path
+     *            the path
+     * @param query
+     *            the query
+     * @param fragment
+     *            the fragment
+     * @return the uri
+     */
     public static String createURI(final String scheme, final String host, int port, final String path,
             final String query, final String fragment) {
         StringBuilder buffer = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
@@ -112,25 +143,49 @@ public final class UriUtils {
         return buffer.toString();
     }
 
+    /**
+     * Extracts the host name from a URI.
+     * 
+     * @param uri
+     *            the uri
+     * @return the host name
+     */
     public static String extractHostName(final String uri) {
         return extractHost(uri).getHostName();
     }
 
+    /**
+     * Extracts the {@link HttpHost} from a URI.
+     * 
+     * @param uri
+     *            the uri
+     * @return the {@link HttpHost}
+     */
     public static HttpHost extractHost(final String uri) {
         return URIUtils.extractHost(createURI(uri));
     }
 
     /**
-     * Creates an {@link URI} after escaping some special characters in order to tolerate some incorrect URI types
+     * Creates an {@link URI} after escaping some special characters in order to tolerate some incorrect URI types.
      * 
-     * @param uriString
-     * @return
+     * @param uri
+     *            the URI as a {@link String}
+     * @return the URI as a {@link URI} object
      */
-    public static URI createURI(String uriString) {
-        uriString = encodeIllegalCharacters(uriString);
-        return URI.create(uriString);
+    public static URI createURI(String uri) {
+        uri = encodeIllegalCharacters(uri);
+        return URI.create(uri);
     }
 
+    /**
+     * Replaces the scheme, host and port in a URI.
+     * 
+     * @param uri
+     *            the URI
+     * @param targetHost
+     *            the target host
+     * @return the rewritten URI
+     */
     public static String rewriteURI(String uri, HttpHost targetHost) {
         try {
             return URIUtils.rewriteURI(createURI(uri), targetHost).toString();
@@ -139,50 +194,29 @@ public final class UriUtils {
         }
     }
 
+    /**
+     * Removes the jsessionid that may have been added to a URI on a java application server.
+     * 
+     * @param sessionId
+     *            the value of the sessionId that can also be found in a JSESSIONID cookie
+     * @param page
+     *            the html code of the page
+     * @return the fixed html
+     */
     public static String removeSessionId(String sessionId, String page) {
         String regexp = ";?jsessionid=" + Pattern.quote(sessionId);
         return page.replaceAll(regexp, "");
     }
 
+    /**
+     * Extracts the scheme of a URI.
+     * 
+     * @param uri
+     *            the URI
+     * @return the scheme
+     */
     public static String extractScheme(String uri) {
         return extractHost(uri).getSchemeName();
-    }
-
-    /**
-     * Translates an URL by replacing the beginning like in the example passed as parameters.
-     * 
-     * @param sourceUrl
-     *            The url to translate
-     * @param sourceContext
-     *            The request which was sent to backend
-     * @param targetContext
-     *            The request which was received by esigate
-     * @return The translated URL
-     */
-    public static String translateUrl(String sourceUrl, String sourceContext, String targetContext) {
-        // Find what has been replaced at the beginning of sourceContext to
-        // transform it to targetContext
-        String commonSuffix =
-                StringUtils.reverse(StringUtils.getCommonPrefix(StringUtils.reverse(sourceContext),
-                        StringUtils.reverse(targetContext)));
-        String sourcePrefix = StringUtils.removeEnd(sourceContext, commonSuffix);
-        HttpHost sourceHost = extractHost(sourcePrefix);
-        String targetPrefix = StringUtils.removeEnd(targetContext, commonSuffix);
-        // Make the source url absolute
-        String absoluteSourceUrl;
-        if (isAbsolute(sourceUrl)) {
-            absoluteSourceUrl = sourceUrl;
-        } else {
-            absoluteSourceUrl = URIUtils.resolve(createURI(sourceContext), sourceUrl).toString();
-        }
-
-        // If url is on the same host than the request, do translation
-        if (extractHost(absoluteSourceUrl).equals(sourceHost) && absoluteSourceUrl.startsWith(sourcePrefix)) {
-            return targetPrefix + StringUtils.removeStart(absoluteSourceUrl, sourcePrefix);
-        }
-
-        // follow redirect url.
-        return absoluteSourceUrl;
     }
 
     /**
@@ -190,6 +224,7 @@ public final class UriUtils {
      * characters.
      * 
      * @param uri
+     *            the URI
      * @return The raw query component of this URI, or null if the query is undefined
      */
     public static String getRawQuery(String uri) {
@@ -228,6 +263,13 @@ public final class UriUtils {
         return URLEncodedUtils.parse(createURI(uri), charset);
     }
 
+    /**
+     * Checks if a URI starts with a protocol.
+     * 
+     * @param uri
+     *            the URI
+     * @return true if the URI starts with "http://" or "https://"
+     */
     public static boolean isAbsolute(String uri) {
         return (uri.startsWith("http://") || uri.startsWith("https://"));
     }
@@ -252,6 +294,13 @@ public final class UriUtils {
         }
     }
 
+    /**
+     * Removes the server information frome a {@link URI}.
+     * 
+     * @param uri
+     *            the {@link URI}
+     * @return a new {@link URI} with no scheme, host and port
+     */
     public static URI removeServer(URI uri) {
         try {
             return new URI(null, null, null, -1, uri.getPath(), uri.getQuery(), uri.getFragment());
@@ -266,7 +315,9 @@ public final class UriUtils {
      * relUri containing only a query string, we cannot use directly the method provided by {@link URI} class.
      * 
      * @param relUri
+     *            the relative URI
      * @param base
+     *            the reference {@link URI}
      * @return the resolved {@link URI}
      */
     public static URI resolve(String relUri, URI base) {
@@ -281,6 +332,24 @@ public final class UriUtils {
             }
         } else {
             return base.resolve(uri);
+        }
+    }
+
+    /**
+     * Removes the query and fragment at the end of a URI.
+     * 
+     * @param uriString
+     *            the original URI as a String
+     * 
+     * @return the URI without querystring nor fragment
+     */
+    public static String removeQuerystring(String uriString) {
+        URI uri = createURI(uriString);
+        try {
+            return new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), null, null)
+                    .toASCIIString();
+        } catch (URISyntaxException e) {
+            throw new InvalidUriException(e);
         }
     }
 

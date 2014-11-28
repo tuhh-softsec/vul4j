@@ -81,46 +81,6 @@ public class UriUtilsTest extends TestCase {
                         + "/test;jsessionid=84FF5970F8A92E41F752F8A15F736727" + "</a>", "<a href=\"/test\">/test</a>");
     }
 
-    public void testTranslate() {
-        String sourceUrl = "http://www.test.com/aaa/bb";
-        String sourceExample = "http://www.test.com/aaa/cccc/d/";
-        String targetExample = "https://localhost:8080/eee/cccc/d/";
-        String expected = "https://localhost:8080/eee/bb";
-        assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
-    }
-
-    public void testTranslateSlash1() {
-        String sourceUrl = "http://www.test.com";
-        String sourceExample = "https://localhost:8080/";
-        String targetExample = "http://www.test.com/";
-        String expected = "http://www.test.com";
-        assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
-    }
-
-    public void testTranslateSlash2() {
-        String sourceUrl = "http://www.test.com/";
-        String sourceExample = "https://localhost:8080/";
-        String targetExample = "http://www.test.com";
-        String expected = "http://www.test.com/";
-        assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
-    }
-
-    public void testTranslateUnmodified() {
-        String sourceUrl = "http://www.test.com/zz/bb";
-        String sourceExample = "http://www.test.com/aaa/cccc/d/";
-        String targetExample = "https://localhost:8080/eee/cccc/d/";
-        String expected = sourceUrl;
-        assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
-    }
-
-    public void testTranslateIssue132() {
-        String sourceUrl = "http://mbl-ez-dua.sirissie.caisse-epargne.fr/rhone-alpes";
-        String sourceExample = "http://esigate:8080/switchlanguage/to/mbl_rhone-alpes/";
-        String targetExample = "http://esigate:8080/switchlanguage/to/mbl_rhone-alpes/";
-        String expected = sourceUrl;
-        assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
-    }
-
     private void assertEncodes(String character, String expectedResult) {
         assertEquals(expectedResult, UriUtils.encodeIllegalCharacters(character));
     }
