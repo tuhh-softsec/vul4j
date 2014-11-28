@@ -281,4 +281,19 @@ public class UrlRewriterTest extends TestCase {
         assertRewrites("", "");
     }
 
+    /**
+     * generation of relative links not correct https://github.com/esigate/esigate/issues/59
+     */
+    public void testUrlSanitizingWithDot() {
+        baseUrl = "http://backend/context/";
+        visibleUrlBase = "http://visibleservername/";
+        requestUrl = "/page";
+
+        fixMode = "relative";
+        assertRewrites("./test", "/test");
+
+        fixMode = "absolute";
+        assertRewrites("./test", "http://visibleservername/test");
+    }
+
 }
